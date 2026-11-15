@@ -9,7 +9,7 @@ import {html, nothing} from 'lit';
 //                          the list of all steps on demand
 //     .sf-wizard-main      the column of steps (progress column: as tall as
 //                          the body, never taller -- it scrolls inside, an
-//                          sf-scrollbar in standard mode) and the body:
+//                          sf-scrollbar with the one bar) and the body:
 //                          the step's title (heading, the focus target), its
 //                          «why», the running line, the result, the steps
 //                          themselves (data-sf-live: the page's live nodes,
@@ -154,7 +154,7 @@ function frame(context) {
   return html`<div class=${classes} data-sf-wizard=${context.id} style=${context.rootStyle || nothing} role="region" aria-label=${name || nothing}>
     ${head(context)}
     <div class="sf-wizard-main">
-      ${shape === 'column' ? html`<nav class="sf-wizard-column sf-scrollbar" data-mode="standard" aria-label=${context.words.steps}>
+      ${shape === 'column' ? html`<nav class="sf-wizard-column sf-scrollbar" aria-label=${context.words.steps}>
         <div class="sf-wizard-column-scroll sf-scrollbar__viewport">${stepList(context, 'sf-wizard-list--column')}</div>
       </nav>` : nothing}
       ${body(context)}

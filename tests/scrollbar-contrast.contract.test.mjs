@@ -24,60 +24,34 @@ const subtlePath = 'src/utility/scroll-subtle/default/scss/_sf_css__scroll_subtl
 // clears 3:1 on every place (surfaces research 5.2) and follows a coloured place
 // or glass, where an opaque grey would be drawn on the colour.
 const REST = 'var(--sf-outline)';
-// The held state has to stay above that rest, and --sf-on-surface-variant cannot:
-// in the dark theme it is neutral-60, the rest colour itself.
-const HELD = 'var(--sf-on-surface)';
+// C210 (2): the held thumb takes one quiet step, the place's secondary text,
+// never its text colour (owner 2026-11-15).
+const HELD = 'var(--sf-on-surface-variant)';
 
-test('every page scrollbar draws its thumb in the boundary role', () => {
+test('every scrollbar draws its thumb in the boundary role', () => {
   const css = read(corePath);
 
   assert.match(css, new RegExp(`--sf-scroll-bg-thumb:\\s*${REST.replace(/[()]/g, '\\$&')}`));
   assert.doesNotMatch(css, /--sf-scroll-bg-thumb:\s*var\(--sf-surface-\d\)/);
-  // The thumb is painted from that variable, so a page overriding it keeps its address.
-  assert.match(css, /::-webkit-scrollbar-thumb\s*\{[^}]*background-color:\s*var\(--sf-scroll-bg-thumb\)/s);
+  // The engine reads that variable off the area, so a page overriding it keeps its address.
+  assert.match(read('src/core/js/scrollbars.js'), /'--sf-scroll--rest-colour': prop\('--sf-scroll-bg-thumb'\)/);
 });
 
-test('the scrollbar component paints rest and held in one pair', () => {
+test('the scrollbar component paints no thumb of its own', () => {
   const css = read(barPath);
-  const rest = REST.replace(/[()]/g, '\\$&');
-
-  // The drawn overlay thumb, through its public variable.
-  assert.match(css, new RegExp(`--sf-scrollbar-thumb-color:\\s*${rest}`));
-  assert.doesNotMatch(css, /--sf-scrollbar-thumb-color:\s*color-mix/);
-  // C208 (1): held is the place's text, through the component's hook.
-  assert.match(css, /--sf-scrollbar--thumb-hover:\s*var\(--sf-on-surface\)/);
-  assert.match(css, /background:\s*var\(--sf-scrollbar--thumb-hover\)/);
-  // C208, SB-7: the standard preset is core's system bar; it sets no
-  // scrollbar-color, which would switch Chrome 121+ to the platform's bar.
-  assert.doesNotMatch(css, /scrollbar-color:\s*var\(/);
-  // The legacy .scrollbar class is published in this sheet and named in no
-  // document; it takes the same pair until the question of removing a public
-  // class is answered on its own.
-  assert.match(css, new RegExp(`\\.scrollbar::-webkit-scrollbar-thumb\\s*\\{\\s*background:\\s*${rest}`));
+  assert.doesNotMatch(css, /background(?:-color)?:\s*var\(--sf-(?:outline|on-surface)/);
   assert.doesNotMatch(css, /var\(--sf-surface-4\)/);
-  // Held, both places, and nothing left on the role that would match the rest in dark.
-  assert.equal(css.match(/var\(--sf-on-surface\)/gu)?.length, 2);
-  assert.doesNotMatch(css, /var\(--sf-on-surface-variant\)/);
 });
 
-test('core holds the one hover rule: rest the boundary, held the text (C208 (1))', () => {
+test('core holds the one colour rule: rest the boundary, held the secondary text (C210 (2))', () => {
   const css = read(corePath);
-  assert.match(css, new RegExp(`--sf-scroll--thumb-hover:\\s*${HELD.replace(/[()]/g, '\\$&')}`));
-  assert.match(css, /::-webkit-scrollbar-thumb:hover,\s*::-webkit-scrollbar-thumb:active\s*\{\s*background-color:\s*var\(--sf-scroll--thumb-hover\)/);
+  assert.match(css, new RegExp(`--sf-scroll--thumb-held:\\s*${HELD.replace(/[()]/g, '\\$&')}`));
 });
 
-test('the two scroll utilities keep their own addresses', () => {
-  // scroll-hover reads the kit's variables: the thumb is transparent at rest and
-  // the boundary while the area is hovered or focused (C208 (1): no width change).
+test('the two retired scroll utilities keep their own addresses until 2027-01-01', () => {
   const hover = read(hoverPath);
   assert.match(hover, /--sf-scroll-bg-thumb:\s*var\(--sf-transparent\)/);
-  assert.match(hover, /&:is\(:hover, :focus-within\)\s*\{\s*--sf-scroll-bg-thumb:\s*var\(--sf-outline\)/);
-  assert.doesNotMatch(hover, /var\(--sf-surface-\d\)/);
   assert.doesNotMatch(hover, /scrollbar-(?:width|color):/);
-
-  // scroll-subtle is how a page asks for a quieter bar on purpose: the place's
-  // text on the ink steps of the alpha scale, 48 at rest, 64 held (C208 (1)).
   const subtle = read(subtlePath);
   assert.match(subtle, /--sf-scroll-bg-thumb:\s*color-mix\(in srgb, var\(--sf-transparent\), var\(--sf-on-surface\) 48%\)/);
-  assert.match(subtle, /--sf-scroll--thumb-hover:\s*color-mix\(in srgb, var\(--sf-transparent\), var\(--sf-on-surface\) 64%\)/);
 });

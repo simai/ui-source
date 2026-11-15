@@ -1,26 +1,12 @@
 @use 'var__scrollbar' as *;
 
+// sf-scrollbar: a wrapper around one scrolling area (owner decision C210,
+// 2026-11-15). The bar is the Framework's one bar, drawn by core over the room
+// the native bar keeps (core/scss/_sf_css__scroll.scss, core/js/scrollbars.js);
+// data-mode's words become its modifier classes on the viewport (always, thin,
+// flush, square, hidden). Here: the area's box, its axis and the edge fade.
 @layer sf.components {
   .sf-scrollbar {
-    --sf-scrollbar-hit-size: var(--sf-b6);
-    --sf-scrollbar-rest-size: var(--sf-a2);
-    --sf-scrollbar-active-size: var(--sf-a6);
-    --sf-scrollbar-min-thumb-size: var(--sf-d1);
-    --sf-scrollbar-keyboard-step: var(--sf-d0);
-    // The drawn overlay thumb. A 34% ink read 2.09-2.70:1 over the surface
-    // ladder, under the 3:1 non-text threshold; the graphic role holds it.
-    --sf-scrollbar-thumb-color: var(--sf-outline);
-    // C208 (1): under the pointer and while dragged the thumb is the place's
-    // text, as every other bar of the Framework (core _sf_css__scroll.scss).
-    --sf-scrollbar--thumb-hover: var(--sf-on-surface);
-    // The distances around the drawn thumb (open owner question q-sb-gaps):
-    // content to bar, --sf-space-1/4 under a strip's items (C208 (5)), and bar
-    // to the area's edge, the system bar's.
-    --sf-scrollbar--gap-content: var(--sf-space-1\/4);
-    --sf-scrollbar--gap-edge: var(--sf-scroll--gap-edge);
-    // C208 (5): a horizontal strip's track runs inside the content's inset.
-    --sf-scrollbar--inset-inline: var(--sf-space-1\/2);
-
     position: relative;
     min-block-size: 0;
     overflow: hidden;
@@ -34,150 +20,20 @@
     scrollbar-gutter: auto;
   }
 
-  .sf-scrollbar:not([data-mode]):not([data-sf-scrollbar]) .sf-scrollbar__viewport,
-  .sf-scrollbar:is(
-    [data-mode=""],
-    [data-mode="overlay"],
-    [data-mode="persistent"],
-    [data-mode="hidden"],
-    :not([data-mode])[data-sf-scrollbar=""],
-    :not([data-mode])[data-sf-scrollbar="overlay"],
-    :not([data-mode])[data-sf-scrollbar="persistent"],
-    :not([data-mode])[data-sf-scrollbar="hidden"]
-  ) .sf-scrollbar__viewport {
-    scrollbar-width: none;
-  }
-
-  .sf-scrollbar:not([data-mode]):not([data-sf-scrollbar]) .sf-scrollbar__viewport::-webkit-scrollbar,
-  .sf-scrollbar:is(
-    [data-mode=""],
-    [data-mode="overlay"],
-    [data-mode="persistent"],
-    [data-mode="hidden"],
-    :not([data-mode])[data-sf-scrollbar=""],
-    :not([data-mode])[data-sf-scrollbar="overlay"],
-    :not([data-mode])[data-sf-scrollbar="persistent"],
-    :not([data-mode])[data-sf-scrollbar="hidden"]
-  ) .sf-scrollbar__viewport::-webkit-scrollbar {
-    display: none;
-  }
-
-  // The standard mode is the Framework's system bar (core
-  // _sf_css__scroll.scss): it takes its room, 14, thumb 6 with the place's
-  // colours and the one hover rule (C208 (1), (4)). It used to set
-  // scrollbar-color and scrollbar-width here, and Chrome 121 and later drop
-  // every ::-webkit-scrollbar rule of such an element: the platform's overlay
-  // bar, room 0 (SB-7). Firefox takes the colour from core's support query.
-
-  .sf-scrollbar__track {
-    position: absolute;
-    z-index: 1;
-    inset-block: 0;
-    inset-inline-end: 0;
-    inline-size: var(--sf-scrollbar-hit-size);
-    opacity: 0;
-    pointer-events: auto;
-    transition: opacity var(--sf-duration-fast) var(--sf-animation);
-  }
-
-  .sf-scrollbar__thumb {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    inline-size: var(--sf-scrollbar-hit-size);
-    min-block-size: var(--sf-scrollbar-min-thumb-size);
-    padding: 0;
-    border: 0;
-    // Round ends, as the system bar's thumb (SB-2: they were square).
-    border-radius: var(--sf-scroll-radius);
-    background: transparent;
-    cursor: grab;
-    touch-action: none;
-    transform: translateY(var(--sf-scrollbar-thumb-offset, 0));
-  }
-
-  .sf-scrollbar__thumb::before {
-    position: absolute;
-    inset-block: 0;
-    inset-inline-end: var(--sf-scrollbar--gap-edge);
-    inline-size: var(--sf-scrollbar-rest-size);
-    border-radius: var(--sf-scroll-radius);
-    background: var(--sf-scrollbar-thumb-color);
-    content: "";
-    transition: inline-size var(--sf-duration-fast) var(--sf-animation);
-  }
-
-  .sf-scrollbar:is(
-    [data-mode="persistent"],
-    :not([data-mode])[data-sf-scrollbar="persistent"]
-  ) .sf-scrollbar__thumb::before,
-  .sf-scrollbar__track:hover .sf-scrollbar__thumb::before,
-  .sf-scrollbar__thumb:focus-visible::before,
-  .sf-scrollbar[data-sf-scrollbar-dragging="true"] .sf-scrollbar__thumb::before {
-    inline-size: var(--sf-scrollbar-active-size);
-  }
-
-  // C208 (1): the one hover rule -- the place's text under the pointer and
-  // while dragged; the thickness is (3)'s, 2 at rest and 6 on hover.
-  .sf-scrollbar__track:hover .sf-scrollbar__thumb::before,
-  .sf-scrollbar[data-sf-scrollbar-dragging="true"] .sf-scrollbar__thumb::before {
-    background: var(--sf-scrollbar--thumb-hover);
-  }
-
-  // A persistent bar takes its room, as the system bar does (C208 (4)): the
-  // viewport keeps gap + thumb + gap free on the bar's side, so the bar never
-  // lies over the content and the content stops --sf-scrollbar--gap-content
-  // before it (C208 (5): --sf-space-1/4 under a strip's items by default).
-  // Only while the content overflows (C07): an area that fits keeps no room.
-  .sf-scrollbar:not([data-sf-scrollbar-overflow="false"]):is(
-    [data-mode="persistent"],
-    :not([data-mode])[data-sf-scrollbar="persistent"]
-  ) .sf-scrollbar__viewport {
-    padding-inline-end: calc(var(--sf-scrollbar--gap-content) + var(--sf-scrollbar-active-size) + var(--sf-scrollbar--gap-edge));
-  }
-
-  .sf-scrollbar:not([data-sf-scrollbar-overflow="false"]):is(
-    [data-mode="persistent"],
-    :not([data-mode])[data-sf-scrollbar="persistent"]
-  ):is(
-    [data-axis="horizontal"],
-    :not([data-axis])[data-sf-scrollbar-axis="horizontal"]
-  ) .sf-scrollbar__viewport {
-    padding-inline-end: 0;
-    padding-block-end: calc(var(--sf-scrollbar--gap-content) + var(--sf-scrollbar-active-size) + var(--sf-scrollbar--gap-edge));
-  }
-
-  .sf-scrollbar[data-sf-scrollbar-state="active"] .sf-scrollbar__track,
-  .sf-scrollbar:is(
-    [data-mode="persistent"],
-    :not([data-mode])[data-sf-scrollbar="persistent"]
-  ) .sf-scrollbar__track,
-  .sf-scrollbar:focus-within .sf-scrollbar__track {
-    opacity: 1;
-  }
-
-  .sf-scrollbar[data-sf-scrollbar-dragging="true"] .sf-scrollbar__thumb {
-    cursor: grabbing;
-  }
-
-  .sf-scrollbar[data-sf-scrollbar-overflow="false"] .sf-scrollbar__track {
-    display: none;
-  }
-
   // The scroll-edge fade (owner decision C91, level 1: on by default, a
   // function, not a decoration). The script marks where the content goes on
   // past the edge (data-sf-scrollbar-more: start, end or both); that edge of
   // the viewport fades out over --sf-scrollbar-fade-size. A mask, not a paint
   // (the gradient-fade kind): it fades the content on any place, card, glass
-  // or pattern, and reads only the alpha of its stops. The standard mode keeps
-  // the platform's own bar, which the mask would fade with the content.
+  // or pattern, and reads only the alpha of its stops. The drawn bar stands
+  // beside the viewport, so the mask never fades it.
   .sf-scrollbar__viewport {
     --sf-scrollbar--fade-direction: to bottom;
     --sf-scrollbar--fade-start: 0px;
     --sf-scrollbar--fade-end: 0px;
   }
 
-  .sf-scrollbar[data-sf-scrollbar-more]:not([data-mode="standard"], :not([data-mode])[data-sf-scrollbar="standard"]) .sf-scrollbar__viewport {
+  .sf-scrollbar[data-sf-scrollbar-more] .sf-scrollbar__viewport {
     mask-image: linear-gradient(var(--sf-scrollbar--fade-direction), transparent 0, var(--sf-black) var(--sf-scrollbar--fade-start), var(--sf-black) calc(100% - var(--sf-scrollbar--fade-end)), transparent 100%);
   }
 
@@ -203,11 +59,6 @@
     --sf-scrollbar--fade-direction: to left;
   }
 
-  .sf-scrollbar__thumb:focus-visible {
-    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(-1 * var(--sf-focus--width));
-  }
-
   .sf-scrollbar:is(
     [data-axis="horizontal"],
     :not([data-axis])[data-sf-scrollbar-axis="horizontal"]
@@ -220,95 +71,17 @@
     overscroll-behavior-inline: contain;
   }
 
-  // C208 (5), SB-5: the strip's track starts and ends at the content's inset,
-  // not at the area's edges.
-  .sf-scrollbar__track--horizontal {
-    inset-block: auto 0;
-    inset-inline: var(--sf-scrollbar--inset-inline);
-    block-size: var(--sf-scrollbar-hit-size);
-    inline-size: auto;
-  }
-
-  .sf-scrollbar__thumb--horizontal {
-    inset-block: auto 0;
-    inset-inline-start: 0;
-    block-size: var(--sf-scrollbar-hit-size);
-    inline-size: auto;
-    min-block-size: 0;
-    min-inline-size: var(--sf-scrollbar-min-thumb-size);
-    transform: translateX(var(--sf-scrollbar-thumb-offset, 0));
-  }
-
-  .sf-scrollbar__thumb--horizontal::before {
-    inset-block: auto var(--sf-scrollbar--gap-edge);
-    inset-inline: 0;
-    block-size: var(--sf-scrollbar-rest-size);
-    inline-size: auto;
-    transition: block-size var(--sf-duration-fast) var(--sf-animation);
-  }
-
-  .sf-scrollbar:is(
-    [data-mode="persistent"],
-    :not([data-mode])[data-sf-scrollbar="persistent"]
-  ) .sf-scrollbar__thumb--horizontal::before,
-  .sf-scrollbar__track--horizontal:hover .sf-scrollbar__thumb--horizontal::before,
-  .sf-scrollbar__thumb--horizontal:focus-visible::before,
-  .sf-scrollbar[data-sf-scrollbar-dragging="true"] .sf-scrollbar__thumb--horizontal::before {
-    block-size: var(--sf-scrollbar-active-size);
-    inline-size: auto;
-  }
-
-  // Backward-compatible component class.
-  .scrollbar::-webkit-scrollbar {
-    inline-size: var(--sf-a8);
-  }
-
-  .scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  /* The legacy .scrollbar class, published in the component sheet and named
-     in no document: --sf-surface-4 read 1.30-1.69:1. Repainted with the same
-     pair as the standard preset; whether it is removed is a separate
-     question about a public class. */
-  .scrollbar::-webkit-scrollbar-thumb {
-    background: var(--sf-outline);
-  }
-
-  .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: var(--sf-on-surface);
-  }
-
-  // A touch screen: the bar only shows where the content is (no pointer to
-  // hover it), 4 in a zone of 8, in every mode. The sizes are the variables'
-  // own, so the touch values win over the persistent, hover and drag rules,
-  // and over both axes (SB-8: the persistent thumb stayed 6, and a horizontal
-  // track took the vertical zone's 8 as its length).
-  @media (pointer: coarse) {
-    .sf-scrollbar {
-      --sf-scrollbar-hit-size: var(--sf-a8);
-      --sf-scrollbar-rest-size: var(--sf-a4);
-      --sf-scrollbar-active-size: var(--sf-a4);
-    }
-
-    .sf-scrollbar__track,
-    .sf-scrollbar__thumb {
-      pointer-events: none;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .sf-scrollbar__track,
-    .sf-scrollbar__thumb::before {
-      transition: none;
-    }
+  // The legacy .scrollbar class, published in the component sheet and named
+  // in no document: an 8 strip. A dated alias until 2027-01-01 (owner
+  // decision C210 (5), retired-classes table): it keeps its strip, the thumb
+  // is the one bar's.
+  .scrollbar {
+    --sf-scroll-bg-width: var(--sf-a8);
+    --sf-scroll--gap-content: var(--sf-a1);
+    --sf-scroll--gap-edge: var(--sf-a1);
   }
 
   @media (forced-colors: active) {
-    .sf-scrollbar__track {
-      display: none;
-    }
-
     .sf-scrollbar .sf-scrollbar__viewport {
       scrollbar-color: auto;
       scrollbar-width: auto !important;

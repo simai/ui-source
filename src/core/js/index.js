@@ -57,6 +57,9 @@ import {publishMenu} from './menu-open.js';
 // The reading position of a scrolling column (duplication audit 2026-11-03,
 // A-6): SF.readingPosition, which sf-list-feed and sf-list keep a place by.
 import './reading-position.js';
+// The one scrollbar of every scrolling area (owner decision C210): a drawn
+// bar over the room the native bar keeps, SF.scrollbars.
+import './scrollbars.js';
 // The glyphs a person chooses from (duplication audit 2026-11-03, A-1):
 // SF.icons.choices.
 import './icon-choices.js';

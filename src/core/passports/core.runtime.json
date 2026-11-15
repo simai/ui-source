@@ -193,6 +193,7 @@
     "src/core/js/rule.src.js",
     "src/core/js/runtime.js",
     "src/core/js/sanitize.js",
+    "src/core/js/scrollbars.js",
     "src/core/js/sets.js",
     "src/core/js/sheet-swipe.js",
     "src/core/js/smart-base.js",
@@ -247,7 +248,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "bb7e594f008ce33348f2fe63a94cf69f1402f5ab0c67f2c14d8b85e12a62d31a",
+  "content_sha256": "9377ba3b695ed482bce07c10653e27ee85d24750c9b1975526cf9f70b1dbeb82",
   "dependencies": [
     {
       "id": "core.styles",

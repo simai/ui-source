@@ -38,37 +38,17 @@ $thumb: var(--sf-scroll-thumb-width);
 // padding (the gap on either side of the thumb), $track the name of the
 // custom property that holds the track's width, $thumb-min the thumb's
 // shortest length (a row's height), $thumb-width the thumb's width.
+// C210 (owner 2026-11-15): one bar everywhere. The panel no longer draws a
+// native bar of its own: it gives core's one bar its values -- the strip is
+// the inset, the thumb and the inset again, the thumb no shorter than a row --
+// and core keeps the native bar as the transparent spacer of that room and
+// draws the bar over it (core/scss/_sf_css__scroll.scss).
 @mixin scrollbar($inset, $track, $thumb-min, $thumb-width: $thumb) {
   #{$track}: calc(2 * #{$inset} + #{$thumb-width});
-
-  &::-webkit-scrollbar {
-    width: var(#{$track});
-    height: var(#{$track});
-  }
-
-  &::-webkit-scrollbar-track {
-    border: 0;
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    min-height: $thumb-min;
-    border: $inset solid transparent;
-    border-radius: var(#{$track});
-    background-clip: padding-box;
-    background-color: var(--sf-scroll-bg-thumb);
-  }
-
-  // C208 (1): the one hover rule of every bar -- the place's text under the
-  // pointer and while dragged (core's --sf-scroll--thumb-hover).
-  &::-webkit-scrollbar-thumb:hover,
-  &::-webkit-scrollbar-thumb:active {
-    background-color: var(--sf-scroll--thumb-hover);
-  }
-
-  @supports not selector(::-webkit-scrollbar) {
-    scrollbar-width: thin;
-  }
+  --sf-scroll-bg-width: var(#{$track});
+  --sf-scroll--gap-content: #{$inset};
+  --sf-scroll--gap-edge: #{$inset};
+  --sf-scroll--thumb-min: #{$thumb-min};
 }
 
 // C06, the header: a row's height and the inset above and below

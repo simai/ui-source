@@ -560,6 +560,22 @@
       ]
     },
     {
+      "name": "SF.scrollbars",
+      "status": "internal",
+      "layer": "core",
+      "audience": "internal",
+      "author": "Is the runtime's own scrollbar engine; a page does not call it.",
+      "kind": "object",
+      "loaded_by": "core",
+      "summary": "The one scrollbar of every scrolling area (owner decision C210, 2026-11-15): core's sheet keeps the native bar as a transparent spacer of 14 and this engine draws the bar over it, shown while the area scrolls, at its strip, with the focus inside and once on appearing, hidden 1 s after. show(area) shows an area's bar as a scroll would (the page's without an argument); refresh(area) reads an area's modifier classes and place values again (sf-scrollbar calls it after it changes data-mode); count() is the number of areas with a drawn bar, for a probe; installed is true once core has set it up. src/core/js/scrollbars.js.",
+      "members": [
+        "installed",
+        "show",
+        "refresh",
+        "count"
+      ]
+    },
+    {
       "name": "SF.readingPosition",
       "status": "public",
       "layer": "core",

@@ -27,7 +27,10 @@
     min-block-size: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
-    scrollbar-gutter: stable both-edges;
+    /* The room of the one bar on its own side only (owner decision C210 (5)):
+       kept while the feed is short, so the turns do not move when it starts
+       to scroll; the mirrored room on the other side is gone. */
+    scrollbar-gutter: stable;
     /* The Framework scrolls smoothly page-wide; the jumps the feed makes itself
        (to the end on open, keeping place on prepend) must land at once. */
     scroll-behavior: auto;

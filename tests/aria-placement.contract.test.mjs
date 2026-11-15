@@ -45,9 +45,12 @@ test('tree: items written straight inside an item are gathered into a group', as
   assert.match(source, /ensureTreeGroup\(item\);\s*const branch = isBranch\(item\);/);
 });
 
-test('scrollbar: the scrolling area is the keyboard stop, the thumb is for the pointer', async () => {
+// C210: the drawn bar is core's (core/js/scrollbars.js) and never takes the
+// focus; the scrolling area is the one keyboard stop.
+test('scrollbar: the scrolling area is the keyboard stop, the bar is for the pointer', async () => {
   const source = await read('component/scrollbar/js/_scrollbar.js');
-  assert.match(source, /thumb\.tabIndex = -1;/);
+  assert.doesNotMatch(source, /tabIndex = -1/);
+  assert.doesNotMatch(await read('core/js/scrollbars.js'), /tabIndex|tabindex/);
   assert.match(source, /viewport\.tabIndex = 0;/);
   assert.match(source, /viewport\.setAttribute\('role', 'region'\)/);
 });
