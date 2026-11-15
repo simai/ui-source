@@ -74,7 +74,11 @@ Slots:
   heading has its room and takes a line of its own only when the actions that
   must stay do not fit there. `overflow="wrap"` keeps the former row that
   wraps onto further rows. Either way the page never scrolls sideways. On a
-  phone the main action stays and the rest go under «Ещё» (C161 (4)).
+  narrow line — below the g6 step (32rem) of the line's own width, a phone's
+  head or a narrow column (C181 (2)) — the main action, a pressed toggle and
+  `priority="pin"` stay and every other action goes under «Ещё», whatever
+  room is left (C155 (7), C161 (4)); a printed head folds the same way before
+  its code comes.
 - `tabs` — the page's views, an `sf-tabs` `type="underline"` (C161 (5)). They
   end the header the header's gap (`--sf-space-1/2`, 12) below the line, and
   the tabs' own line is the header's lower edge: do not place tabs under the
