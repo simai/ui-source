@@ -52,10 +52,19 @@ test('stylesheet max-width is read before inline writes and stays the width cap'
 
 test('a panel may reach the viewport edge its field reaches, and no further in', async () => {
   const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
-  assert.match(source, /left: Math\.min\(padding, Math\.max\(0, box\.left\)\)/);
-  assert.match(source, /right: Math\.min\(padding, Math\.max\(0, clientWidth - box\.right\)\)/);
+  assert.match(source, /left: atPoint \? padding : Math\.min\(padding, Math\.max\(0, box\.left\)\)/);
+  assert.match(source, /right: atPoint \? padding : Math\.min\(padding, Math\.max\(0, clientWidth - box\.right\)\)/);
   assert.match(source, /shift\(\{padding: edges, crossAxis: false\}\)/);
   assert.match(source, /size\(\{\s*padding: edges,/);
+});
+
+// C164 (1): a menu at a point (a zero-size reference that is drawn: a fixed
+// span where a right-click was) flips across the point on both axes; a box
+// flips its side only. Browser: tests/browser/context-menu-point-flip.browser.mjs.
+test('a point flips across itself on both axes, a box on its side only', async () => {
+  const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  assert.match(source, /const atPoint = pointBox\.width === 0 && pointBox\.height === 0 && reference\.getClientRects\(\)\.length > 0;/);
+  assert.match(source, /flip\(\{padding, crossAxis: atPoint\}\)/);
 });
 
 test('an anchored surface is lifted into the top layer, unless it is already there', async () => {
