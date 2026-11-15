@@ -70,6 +70,7 @@ export function renderInputTemplate(context) {
     countOver = false,
     countSaid = '',
     countable = false,
+    capsLock,
   } = context;
   // The shortcut's keys (C04, C38): the kbd component's, read in this
   // platform's words; the field draws them at its end and never styles them.
@@ -99,6 +100,16 @@ export function renderInputTemplate(context) {
   const nativeType = isPassword && revealed ? 'text' : inputType;
   const clearWord = context.component?.sfWord?.('clear') || 'Clear';
   const revealWord = context.component?.sfWord?.('reveal') || 'Show password';
+  // C191 (3): while the focused password field types with Caps Lock on, a line
+  // in the hint's place and type says so; a polite live region after the
+  // label says it to assistive technology (the line itself is not read twice).
+  const capsWord = isPassword && !disabled ? context.component?.sfWord?.('caps-lock') || 'Caps Lock is on' : '';
+  const capsLine = capsLock && capsWord
+    ? html`<span class="sf-input-hint-text-wrap sf-input-caps" data-field-message="caps" aria-hidden="true">${capsWord}</span>`
+    : nothing;
+  const capsSaid = capsWord
+    ? html`<span class="sf-input-caps-said" role="status" aria-live="polite" aria-atomic="true">${capsLock ? capsWord : ''}</span>`
+    : nothing;
   const actionsContent = html`
     ${showClear
       ? html`<button
@@ -322,10 +333,10 @@ export function renderInputTemplate(context) {
 
       ${count
         ? html`<span class="sf-input-message flex">${messageNode}<span id=${countId} class="sf-input-count">${count}</span></span>`
-        : messageNode}
+        : messageNode}${capsLine}
       ${textStart ? html`<span id=${startId} class="sf-input-said" hidden>${textStart}</span>` : ''}
     </label>${countable
       ? html`<span class="sf-input-count-said" aria-live="polite">${countSaid}</span>`
-      : ''}
+      : ''}${capsSaid}
   `;
 }

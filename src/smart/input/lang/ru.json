@@ -15,7 +15,8 @@
     "step-mismatch": "Шаг значения — {step}",
     "bad-input": "Введите число",
     "count-text": "{count} / {max}",
-    "help": "Подробнее: {label}"
+    "help": "Подробнее: {label}",
+    "caps-lock": "Включён Caps Lock"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

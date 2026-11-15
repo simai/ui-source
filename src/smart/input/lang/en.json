@@ -15,7 +15,8 @@
     "step-mismatch": "Use steps of {step}",
     "bad-input": "Enter a number",
     "count-text": "{count} / {max}",
-    "help": "More about: {label}"
+    "help": "More about: {label}",
+    "caps-lock": "Caps Lock is on"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",
