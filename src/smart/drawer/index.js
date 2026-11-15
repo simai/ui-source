@@ -67,6 +67,12 @@ const DRAWER_SELECTOR = 'sf-drawer';
 // control/research/2026-11-14-view-property-base.md VB-4: «Изменить» on a
 // record), filled the same way.
 const DRAWER_AREAS = ['edge', 'footer', 'header-action'];
+// The width ladder (owner decision C157 (2)): size, the token the sheet gives
+// the step, the step in words. A host width that is none of them is still
+// drawn until the date and said once (noteOffLadderWidth).
+const LADDER_WIDTHS = [['1/2', 'var(--sf-g0)', '20rem'], ['1', 'var(--sf-g2)', '24rem'], ['2', 'var(--sf-g5)', '30rem']];
+const OFF_LADDER_SINCE = '2026-11-15';
+const OFF_LADDER_UNTIL = '2027-01-01';
 const AREA_SELECTORS = [['edge', '[data-sf-drawer-edge]'], ['footer', '[data-sf-drawer-foot]'], ['header-action', '[data-sf-drawer-action]']];
 const asksFor = (node, slot) => node.nodeType === 1 && node.getAttribute('slot') === slot;
 const asksForArea = (node) => DRAWER_AREAS.some((slot) => asksFor(node, slot));
@@ -529,6 +535,9 @@ class SfDrawer extends DrawerElement {
     if (!this._isMounted) return;
     if (this.openState) {
       this.recheckOpener();
+      // The room beside a panel of a fixed width changes with the window
+      // alone, which no observer of the panel sees.
+      this.onPanelScroll();
       this.placeCloseOnAxis();
       return;
     }
@@ -702,7 +711,7 @@ class SfDrawer extends DrawerElement {
     const close = head?.querySelector('.sf-drawer-close');
     const opener = side ? this.knownOpener() : null;
     const box = opener ? this.panelBox() : null;
-    const whole = root.hasAttribute('data-sf-drawer-whole') && root.querySelector('[data-sf-drawer-edge]')?.childElementCount;
+    const whole = root.hasAttribute('data-sf-drawer-edge-in-head') && root.querySelector('[data-sf-drawer-edge]')?.childElementCount;
     if (!side || !close || !box || (side === 'end' && whole)) {
       root.removeAttribute('data-sf-drawer-close-axis');
       root.style.removeProperty('--sf-drawer--close-axis');
@@ -1042,6 +1051,7 @@ class SfDrawer extends DrawerElement {
     }
     this.observeScrollEdges(root);
     this.applyStackPosition();
+    this.noteOffLadderWidth(root);
     // The close on the opener's axis, once the head is laid out; then
     // whether the drawing still holds for the opener (C104 (4)).
     this.placeCloseOnAxis();
@@ -1084,7 +1094,7 @@ class SfDrawer extends DrawerElement {
     // the look of a control over a picture (C14 (3), the core glass role --
     // a dark round plate, a white cross, the same in both themes). In the
     // theme's grey it stood on the scrim at about 1:1 and could not be seen.
-    const outside = context.closePlacement === 'outside' && !this._drawnWhole;
+    const outside = context.closePlacement === 'outside' && !this._edgeInHead;
     const closeButton = context.showClose
       ? html`<sf-button-close
           size="1/3"
@@ -1453,24 +1463,111 @@ class SfDrawer extends DrawerElement {
   }
 
   // A side panel that fills the screen -- a phone (C56, C157 (4)) or size
-  // full -- has no outside: its edge controls (an outside close, «Открыть
-  // полностью») come into the head's row at its end, on the panel, not on a
-  // scrim (no glass plate), and the head keeps their room
-  // (data-sf-drawer-whole, --sf-drawer-edge-room). Placed along the top they
-  // covered the title.
+  // full -- has no outside, and a panel that leaves less room beside it than
+  // its edge controls take has none to speak of (study view-property-base,
+  // ui-admin.test record r-077): its edge controls (an outside close,
+  // «Открыть полностью», «Скопировать ссылку») come into the head's row at
+  // its end as ordinary icon buttons, on the panel, not on a scrim (no glass
+  // plate), the close last (C14), and the head keeps their room
+  // (data-sf-drawer-edge-in-head, --sf-drawer-edge-room); the title keeps the
+  // rest of the row. data-sf-drawer-whole still says the panel fills the
+  // screen. Placed along the top they covered the title.
   noteWhole(root, panel) {
     const edge = root.querySelector('[data-sf-drawer-edge]');
-    const whole = Boolean(panel && this.openState && !this.sheet && !(this.docked && this.dockColumn)
-      && panel.getBoundingClientRect().width >= globalThis.innerWidth - 1);
+    const floating = Boolean(panel && this.openState && !this.sheet && !(this.docked && this.dockColumn));
+    const whole = floating && panel.getBoundingClientRect().width >= globalThis.innerWidth - 1;
     root.toggleAttribute('data-sf-drawer-whole', whole);
-    const room = whole && edge && edge.childElementCount ? Math.ceil(edge.getBoundingClientRect().width) : 0;
+    const inHead = whole || (floating && this.edgeLacksRoom(root, panel, edge));
+    root.toggleAttribute('data-sf-drawer-edge-in-head', inHead);
+    if (edge) this.orderEdge(edge, inHead);
+    const room = inHead && edge && edge.childElementCount ? Math.ceil(edge.getBoundingClientRect().width) : 0;
     if (room) root.style.setProperty('--sf-drawer-edge-room', `${room}px`);
     else root.style.removeProperty('--sf-drawer-edge-room');
-    if (whole !== Boolean(this._drawnWhole)) {
-      this._drawnWhole = whole;
+    // In the head the controls end where the panel's head ends: the panel's
+    // inline end, measured from the root's (0 when the panel reaches it).
+    const end = inHead && !whole ? this.panelEndInset(root, panel) : 0;
+    if (end) root.style.setProperty('--sf-drawer-edge-end', `${end}px`);
+    else root.style.removeProperty('--sf-drawer-edge-end');
+    if (inHead !== Boolean(this._edgeInHead)) {
+      this._edgeInHead = inHead;
       // The outside close changes its look with it.
       if (this.closePlacement === 'outside') this.requestComponentUpdate('whole');
     }
+  }
+
+  // Whether the column of edge controls beside a floating panel finds room on
+  // the screen: the room on the panel's outer side against what the column
+  // took there, measured while it stood outside (its span from the panel and
+  // as much again to the screen's edge, so it never touches the edge).
+  edgeLacksRoom(root, panel, edge) {
+    if (!edge || !edge.childElementCount) return false;
+    const box = panel.getBoundingClientRect();
+    const width = globalThis.innerWidth || document.documentElement.clientWidth;
+    const outerRight = box.left < width - box.right;
+    const room = outerRight ? width - box.right : box.left;
+    if (!root.hasAttribute('data-sf-drawer-edge-in-head')) {
+      const seen = edge.getBoundingClientRect();
+      if (!seen.width) return false;
+      const near = outerRight ? seen.left - box.right : box.left - seen.right;
+      this._edgeNeed = Math.ceil(seen.width + 2 * Math.max(0, near));
+    }
+    return Boolean(this._edgeNeed) && room < this._edgeNeed;
+  }
+
+  // The distance from the root's inline end to the panel's, for a panel that
+  // does not reach it (an inline-start panel without room beside it).
+  panelEndInset(root, panel) {
+    const frame = root.getBoundingClientRect();
+    const box = panel.getBoundingClientRect();
+    const rtl = getComputedStyle(root).direction === 'rtl';
+    return Math.max(0, Math.round(rtl ? box.left - frame.left : frame.right - box.right));
+  }
+
+  // A host width off the ladder (owner decision C157 (2): 20 · 24 · 30rem
+  // and the whole screen, a width of its own only through sf-resizer within
+  // 1/2...2) is still drawn -- an old width keeps working until 2027-01-01,
+  // as C157's old names do -- and said once per element in the console and
+  // in SF.deprecations.list(), naming the steps. The width and the steps are
+  // resolved where the panel stands (its tokens, its root font size).
+  noteOffLadderWidth(root) {
+    const width = (this.getAttribute('width') || '').trim();
+    if (!width || this._offLadderWidth === width || !this.openState || typeof document === 'undefined') return;
+    const measure = (value) => {
+      const probe = document.createElement('div');
+      probe.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;inset-block-start:0;block-size:0;inline-size:${value}`;
+      root.append(probe);
+      const px = probe.getBoundingClientRect().width;
+      probe.remove();
+      return px;
+    };
+    const drawn = measure(width);
+    if (!drawn) return;
+    this._offLadderWidth = width;
+    const steps = [...LADDER_WIDTHS.map(([, token]) => measure(token)), measure('100vi')];
+    if (steps.some((px) => Math.abs(px - drawn) < 0.5)) return;
+    noteDeprecated({component: 'sf-drawer', tag: 'sf-drawer', kind: 'value', attribute: 'width', from: width,
+      to: 'size 1/2, 1, 2 or full; sf-resizer within 1/2...2', since: OFF_LADDER_SINCE, remove_after: OFF_LADDER_UNTIL});
+    const name = this.id ? `#${this.id}` : this.drawerId ? ` ${this.drawerId}` : '';
+    const ladder = LADDER_WIDTHS.map(([size, , rem]) => `size='${size}' ${rem}`).join(', ');
+    globalThis.console?.warn?.(`[SIMAI Framework] sf-drawer${name}: width='${width}' draws ${Math.round(drawn)}px, off the width ladder (${ladder}, size='full' the whole screen; C157 (2)). It is still drawn until ${OFF_LADDER_UNTIL}; take a step, and an sf-resizer within 1/2...2 for a width of its own.`);
+  }
+
+  // The close stands first in the column outside (at the top, nearest the
+  // corner) and last in the head's row (C14: the close ends the row), so the
+  // page's edge controls move before it in the head and back after it
+  // outside. The drawn close keeps its place (lit's); the page's controls
+  // move round it, and a focused one keeps the focus.
+  orderEdge(edge, inHead) {
+    const close = edge.querySelector(':scope > [data-sf-drawer-close]');
+    if (!close) return;
+    const items = [...edge.children].filter((node) => node !== close);
+    if (!items.length) return;
+    const closeFirst = Boolean(close.compareDocumentPosition(items[0]) & Node.DOCUMENT_POSITION_FOLLOWING);
+    if (inHead === !closeFirst) return;
+    const focused = items.find((node) => node.contains(document.activeElement)) ? document.activeElement : null;
+    if (inHead) edge.prepend(...items);
+    else edge.append(...items);
+    if (focused && document.activeElement !== focused) focused.focus?.({preventScroll: true});
   }
 
   observeScrollEdges(root) {

@@ -97,7 +97,9 @@
   "cl-drawer": [
     "display/default",
     "margin/default",
+    "position/default",
     "resize/default",
+    "text-max-width/default",
     "visibility/default"
   ],
   "cl-dropdown": [

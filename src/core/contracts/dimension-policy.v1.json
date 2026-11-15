@@ -79,9 +79,9 @@
       "id": "smart-overlay-measured-geometry",
       "category": "runtime-review",
       "filePattern": "^smart/drawer/index\\.js$",
-      "contextPattern": "(?:Math\\.max|sides\\[side\\]|\\$\\{room\\}px)",
+      "contextPattern": "(?:Math\\.max|sides\\[side\\]|\\$\\{room\\}px|\\$\\{end\\}px|\\$\\{Math\\.round\\(drawn\\)\\}px)",
       "status": "accepted-runtime-geometry",
-      "reason": "The drawer's scroll-lock gutters, its bottom sheet's drag offset and the head's room for the edge controls of a full-screen panel are derived from the current viewport, rendered boxes and the pointer."
+      "reason": "The drawer's scroll-lock gutters, its bottom sheet's drag offset, the head's room for the edge controls of a panel without room beside it and where the panel's head ends, and the drawn width an off-ladder warning reports are derived from the current viewport, rendered boxes and the pointer."
     },
     {
       "id": "smart-drag-measured-geometry",
@@ -345,9 +345,9 @@
         "script-data-template-review"
       ],
       "filePattern": "^smart/drawer/index\\.js$",
-      "contextPattern": "(?:DOCK_MIN_REM|^//)",
+      "contextPattern": "(?:DOCK_MIN_REM|LADDER_WIDTHS|^//)",
       "status": "accepted-size-step",
-      "reason": "The dock threshold's default, 48rem (h2), a step of the size scale, and the comments that name it."
+      "reason": "The dock threshold's default, 48rem (h2), a step of the size scale, the width ladder's steps named in the off-ladder warning (20 · 24 · 30rem, the sheet's g0 · g2 · g5, C157 (2)), and the comments that name them."
     },
     {
       "id": "deferred-legacy-sf-system-panel",

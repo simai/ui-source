@@ -327,6 +327,25 @@
     padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
   }
 
+  /* The panel's title is the top heading of the panel (C157 (7), the h4
+     step): the headings of its content start below it, so none outranks it
+     -- a rich-text h1 in a property view drew 32 under a title of 20
+     (ui-admin.test record r-077). The heading roles shift down the ladder
+     inside the body and the foot: h1 takes the h5 step, h2 to h4 the h6
+     step, h5 and h6 keep theirs. Only the sizes move; the levels stay the
+     page's, as a screen reader reads them. */
+  .sf-drawer-body,
+  .sf-drawer-foot {
+    --sf-heading-1--size: var(--sf-heading-5--size);
+    --sf-heading-1--height: var(--sf-heading-5--height);
+    --sf-heading-2--size: var(--sf-heading-6--size);
+    --sf-heading-2--height: var(--sf-heading-6--height);
+    --sf-heading-3--size: var(--sf-heading-6--size);
+    --sf-heading-3--height: var(--sf-heading-6--height);
+    --sf-heading-4--size: var(--sf-heading-6--size);
+    --sf-heading-4--height: var(--sf-heading-6--height);
+  }
+
   /* In the panel the body keeps its content's height (it still grows to pin a
      foot): shrunk below it, the panel scrolled the content flush to its end,
      so the body's end padding and the ring of the last control lay outside
@@ -516,8 +535,9 @@
      close there is sf-button-close appearance="media"; a page's own icon
      buttons in the edge slot («Открыть полностью») take the same plate. In
      the theme's grey the close stood on the scrim at about 1:1. A column of
-     the page has no scrim: its edge keeps the page's look. */
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-whole]) .sf-drawer-edge {
+     the page has no scrim: its edge keeps the page's look; nor has a panel
+     whose edge stands in its head (data-sf-drawer-edge-in-head). */
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge {
     @include places.sf-place-glass-accent;
     --sf-on-surface: var(--sf-on-surface-media);
     --sf-on-surface-icon: var(--sf-on-surface-media);
@@ -526,7 +546,7 @@
     --sf-on-surface-variant: var(--sf-on-surface-media);
   }
 
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-whole]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
     --sf-icon-button--radius: var(--sf-radius-rounded);
     --sf-icon-button--background-color: var(--sf-surface-media);
     --sf-icon-button--border-color: transparent;
@@ -534,11 +554,11 @@
     color: var(--sf-on-surface-media);
   }
 
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-whole]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):hover {
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):hover {
     --sf-icon-button--background-color: var(--sf-surface-media-hover);
   }
 
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-whole]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):active {
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):active {
     --sf-icon-button--background-color: var(--sf-surface-media-active);
   }
 
@@ -575,14 +595,17 @@
     touch-action: pan-y;
   }
 
-  /* A panel filling the screen (a phone, size full) has no outside: its edge
+  /* A panel filling the screen (a phone, size full) has no outside, and a
+     panel with less room beside it than its edge controls take has none to
+     speak of (data-sf-drawer-edge-in-head, measured by the drawer): its edge
      controls stand in the head's row at its end, a button group's gap apart,
-     and the head keeps their room (--sf-drawer-edge-room, measured by the
-     drawer), so the title never runs under them. */
-  .sf-drawer[data-sf-drawer-whole]:not([data-sf-drawer-column='true']) .sf-drawer-edge {
-    /* The panel's gutter (the edge is the panel's sibling, so it reads the
-       gutter, not the panel's own inset). */
-    inset-inline: auto var(--sf-drawer-gutter, var(--sf-space-2));
+     the close last, and the head keeps their room (--sf-drawer-edge-room), so
+     the title never runs under them. */
+  .sf-drawer[data-sf-drawer-edge-in-head]:not([data-sf-drawer-column='true']) .sf-drawer-edge {
+    /* The panel's gutter from the panel's inline end (the edge is the panel's
+       sibling, so it reads the gutter, not the panel's own inset); the end is
+       the root's unless the panel stops short of it (--sf-drawer-edge-end). */
+    inset-inline: auto calc(var(--sf-drawer-edge-end, calc(var(--sf-px) * 0)) + var(--sf-drawer-gutter, var(--sf-space-2)));
     /* The head's content box: its row less its block padding, so the
        controls stand on the title's centre line. */
     inset-block-start: var(--sf-space-1);
@@ -592,7 +615,7 @@
     gap: var(--sf-space-1\/3);
   }
 
-  .sf-drawer[data-sf-drawer-whole]:has(.sf-drawer-edge:not(:empty)) .sf-drawer-head {
+  .sf-drawer[data-sf-drawer-edge-in-head]:has(.sf-drawer-edge:not(:empty)) .sf-drawer-head {
     padding-inline-end: calc(var(--sf-drawer--inset-end) + var(--sf-drawer-edge-room, calc(var(--sf-px) * 0)) + var(--sf-space-1\/3));
   }
 
