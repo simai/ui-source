@@ -328,6 +328,11 @@
         "type": "array",
         "default": [],
         "description": "Quick ranges, range mode only; the attribute keeps its comma list of built-in ids"
+      },
+      "holidays": {
+        "type": "array",
+        "default": [],
+        "description": "The site's special days (owner decision C198): a list of {date: 'YYYY-MM-DD', kind, name?}, the property or JSON in the attribute. holiday and day-off (a moved day off) take the day-off ink, working-day (a moved working Saturday) the weekday's; each listed day gets a dot under its number, its name joins the day's accessible name, and a line under the grid names the day under the pointer, with the focus or chosen. Empty: plain weekends, as before. The Framework ships no country calendar."
       }
     },
     "additionalProperties": false
@@ -747,11 +752,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "914179c393a23384445647710a8c86ed29ebe870f741e8cd80c5fbfb3822c123"
+        "sha256": "ae7461bd7982a7affe3c748930769c60636b4fee9be9041c60a9b13581493195"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "618934884ea36f2b6ebab20b12640c99bd252a4c1a50e96e08e834baf1bfc217"
+        "sha256": "ccd5ddc524cf75b10beb0cb9497a1f518c8ff1a5e05d9be09c3cece3b51a9c7a"
       },
       {
         "path": "src/smart/input-date/rule.js",
@@ -759,7 +764,7 @@
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "25f5771c1905be0e948001336226b50a9bf60c3526435fcf450dc9263a40b7b8"
+        "sha256": "07c38fd9445b8302aa3b642a3538bc6e289efc6546f0dc5ea4552c6ec8c63c92"
       }
     ],
     "generated_runtime": [

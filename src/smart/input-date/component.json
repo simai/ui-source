@@ -283,6 +283,26 @@
         }
       },
       "summary": "Quick ranges, range mode only; the attribute keeps its comma list of built-in ids"
+    },
+    "holidays": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "date": "string",
+        "kind": {
+          "type": "enum",
+          "values": [
+            "holiday",
+            "day-off",
+            "working-day"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "summary": "The site's special days (owner decision C198): a list of {date: 'YYYY-MM-DD', kind, name?}, the property or JSON in the attribute. holiday and day-off (a moved day off) take the day-off ink, working-day (a moved working Saturday) the weekday's; each listed day gets a dot under its number, its name joins the day's accessible name, and a line under the grid names the day under the pointer, with the focus or chosen. Empty: plain weekends, as before. The Framework ships no country calendar."
     }
   },
   "values": {
@@ -587,7 +607,7 @@
     "version 1.8.1 (2026-11-14, owner decisions C173 point 7 and C181 (3), the layer roles): a patch. The open calendar reads the popover layer (--sf-layer--popover, 90, as before). Settings, values, events and keys unchanged.",
     "version 1.8.2 (2026-11-14, owner decision C181 (2); component.datepicker 1.5.2): a patch. The list of presets stands as a row above the grid below 30rem of the picker's own width, the container step g5 of the one ladder; it was 28rem (g4, 448 px, no step), so between 448 and 480 px the list now stands above the grid instead of beside it (beside, it needs 488 px on a desktop). Markup, settings, values, events and keys unchanged.",
     "version 1.9.0 (2026-11-15, owner decision C189 (9), recipe report-period; component.datepicker 1.6.0): a minor, a look and its behaviour. The phone ribbon sheet shows the quick ranges: the popup's list, its buttons and «Свой период», on one row between the sheet's head and the weekdays (the popup's narrow row: buttons a control of size 1/2 tall, 4 apart), scrolled sideways when it is wider than the sheet; the pressed one is scrolled into view when the sheet opens. A range is the value at once and the change is said once, as in the popup; the sheet closes with it unless close-on-select is off, and then the ribbon shows the range on its start month. A day tapped on the ribbon lets the range go. «Свой период» clears the draft only and gives the ribbon the focus: the value changes by «Готово», the sheet's rule (C62). The list is one tab stop with the popup's keys (arrows, Home, End; mirrored in RTL), role group named by the presets word («Быстрый выбор»), aria-pressed. The action choose-custom-range acts on the sheet's draft while the sheet is open. Settings, values, events and the popup unchanged; single dates have no quick ranges, as before.",
-    "version 1.11.0 (2026-11-15, owner decision C197, prototype date-icon-place.html#q-date-icon variant B; component.datepicker 1.7.0; numbered above group build 7's 1.10.0): a minor. The calendar (a clock in time mode) moves to the field's end, after sf-input's clear, by the C123 (6) order text -> clear -> action: the field's indicator, the field layer's .sf-field-action glyph as sf-dropdown's chevron is (C123 (3)) -- the leading icon's size, its glyph ending on the inset, half an inset from a glyph before it, a hit area the field's inner height and never under 24, quiet ink at rest, the text's ink while the field is under the pointer, the disabled ink on a disabled field. The whole field opens the panel as before, so the glyph is no Tab stop and is hidden from a screen reader. The hint marker (hint-icon) stands before it. icon-start and left-icon now default to none: the start of the field is for an icon that says what the date is; a page that set one keeps it there. The printed first paint draws the new place (snapshots retaken)."
+    "version 1.11.0 (2026-11-15, owner decision C197, prototype date-icon-place.html#q-date-icon variant B; component.datepicker 1.7.0; numbered above group build 7's 1.10.0): a minor. The calendar (a clock in time mode) moves to the field's end, after sf-input's clear, by the C123 (6) order text -> clear -> action: the field's indicator, the field layer's .sf-field-action glyph as sf-dropdown's chevron is (C123 (3)) -- the leading icon's size, its glyph ending on the inset, half an inset from a glyph before it, a hit area the field's inner height and never under 24, quiet ink at rest, the text's ink while the field is under the pointer, the disabled ink on a disabled field. The whole field opens the panel as before, so the glyph is no Tab stop and is hidden from a screen reader. The hint marker (hint-icon) stands before it. icon-start and left-icon now default to none: the start of the field is for an icon that says what the date is; a page that set one keeps it there. The printed first paint draws the new place (snapshots retaken). And owner decision C198 (prototype calendar-holidays-and-more-study.html#q-cal-holidays, variant C; closes the open part of C62): the setting holidays, a list of {date, kind: holiday | day-off | working-day, name?} as the property or JSON in the attribute. A holiday and a moved day off take the day-off ink, a working day (a moved working Saturday) the weekday's, in the popup grid and the phone ribbon alike; a listed day wins over weekend. The dot under the number (--sf-space-1/4, the number's ink) and the line under the grid (two lines of the small text, the name of the day under the pointer, with the focus or chosen) are drawn only when the site gave the list; without it the calendar is its plain weekends, as before. The day's name joins its accessible name; the line is hidden from a screen reader. An added setting behind no rename: a minor (§4.10). Example holidays."
   ],
   "x-registry": {
     "kind": "composite",

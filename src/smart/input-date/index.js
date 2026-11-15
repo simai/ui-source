@@ -26,6 +26,8 @@ const RIBBON_BEFORE = 3;
 const RIBBON_AFTER = 12;
 const RIBBON_STEP = 6;
 const YEARS_PAGE_SIZE = 18;
+// The kinds of a special day a site passes (owner decision C198).
+const HOLIDAY_KINDS = new Set(['holiday', 'day-off', 'working-day']);
 
 function padDatePart(value) {
     return String(value).padStart(2, '0');
@@ -571,6 +573,10 @@ class SfDatepicker extends FormField(DatepickerElement) {
             // The chosen quick range. Set by a host, it wins over start-value and
             // end-value: a stored «last-7-days» is resolved when drawn.
             preset: {default: ''},
+            // The site's special days (owner decision C198): holidays, moved
+            // days off and moved working days, the property as a list or JSON
+            // in the attribute (see get holidays).
+            holidays: {default: ''},
         };
     }
 
@@ -587,6 +593,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
         }
         this.upgradeProperty('value');
         this.upgradeProperty('presets');
+        this.upgradeProperty('holidays');
         super.connectedCallback();
     }
 
@@ -734,6 +741,102 @@ class SfDatepicker extends FormField(DatepickerElement) {
 
     get preset() {
         return this.getAttribute('preset') || '';
+    }
+
+    // The special days a site passes (owner decision C198, 2026-11-15,
+    // prototype calendar-holidays-and-more-study.html#q-cal-holidays,
+    // variant C; closes the open part of C62): [{date: 'YYYY-MM-DD', kind:
+    // 'holiday' | 'day-off' | 'working-day', name?}]. The Framework ships no
+    // country calendar: the dates change by decree and differ by region and
+    // company, so the site gives them. A holiday and a moved day off take the
+    // day-off ink; a working day (a moved working Saturday) the weekday's.
+    // Set as a property (a list) or as JSON in the attribute; anything else,
+    // and any entry without a date or a known kind, is no special day.
+    get holidays() {
+        if (Array.isArray(this._holidayList)) return this._holidayList;
+        const raw = this.getAttribute('holidays');
+        if (!raw) return [];
+        try {
+            const parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch {
+            return [];
+        }
+    }
+
+    set holidays(next) {
+        if (Array.isArray(next)) {
+            this._holidayList = next;
+            this._holidayMap = null;
+            this.requestComponentUpdate('holidays');
+            return;
+        }
+        this._holidayList = null;
+        this._holidayMap = null;
+        this.setState({holidays: typeof next === 'string' ? next : (next ? JSON.stringify(next) : '')});
+    }
+
+    // date -> {kind, name}, read once per list.
+    get holidayDays() {
+        const list = this.holidays;
+        const key = Array.isArray(this._holidayList) ? this._holidayList : this.getAttribute('holidays');
+        if (this._holidayMap && this._holidayMapKey === key) return this._holidayMap;
+        const map = new Map();
+        for (const entry of list) {
+            const date = typeof entry?.date === 'string' ? entry.date.trim() : '';
+            if (!/^\d{4}-\d{2}-\d{2}$/u.test(date) || !HOLIDAY_KINDS.has(entry?.kind)) continue;
+            const name = typeof entry.name === 'string' ? entry.name.trim() : '';
+            map.set(date, {kind: entry.kind, name});
+        }
+        this._holidayMap = map;
+        this._holidayMapKey = key;
+        return map;
+    }
+
+    // A day as the calendar draws it: off or not, and its accessible name --
+    // the date, the special day's name, «выходной» for a day off. A day the
+    // site listed keeps its mark (the dot under the number, `special`), and
+    // its kind wins over the week's days off.
+    dayFacts(date, value, daysOff, locale = this.locale) {
+        const special = this.holidayDays.get(value) || null;
+        const weekend = special ? special.kind !== 'working-day' : daysOff.has(date.getDay());
+        const parts = [getDateLabel(date, locale)];
+        if (special?.name) parts.push(special.name);
+        if (weekend) parts.push(this.sfWord('day-off'));
+        return {weekend, special: Boolean(special), specialName: special?.name || '', label: parts.join(', ')};
+    }
+
+    // The line under the grid (C198): drawn only when the site gave special
+    // days, two text lines high in every month so the panel keeps its size.
+    // It names the day under the pointer, else the day with the focus, else
+    // the chosen one in the month shown, when that day has a name.
+    get dayLine() {
+        if (!this.holidayDays.size) return null;
+        const isoOf = (date) => (date instanceof Date && !Number.isNaN(date.getTime()) ? formatIsoDate(date) : '');
+        // The chosen day only while its month is the one shown.
+        const chosen = this.selectedDate || this.startDate;
+        const shown = chosen instanceof Date && chosen.getFullYear() === this.year && chosen.getMonth() === this.month;
+        const iso = this._lineDay || (this._daysFocused ? isoOf(this.activeDate) : '') || (shown ? isoOf(chosen) : '');
+        const special = iso ? this.holidayDays.get(iso) : null;
+        if (!special?.name) return {date: '', name: ''};
+        const date = parseDate(iso);
+        let day = iso;
+        try {
+            day = dateFormat(this.locale, {day: 'numeric', month: 'long'}).format(date);
+        } catch { /* the ISO date stays */ }
+        return {date: day, name: special.name};
+    }
+
+    noteDaysFocus(focused) {
+        if (!this.holidayDays.size || this._daysFocused === focused) return;
+        this._daysFocused = focused;
+        this.requestComponentUpdate('holidays');
+    }
+
+    showDayLine(value) {
+        if (!this.holidayDays.size || this._lineDay === value) return;
+        this._lineDay = value;
+        this.requestComponentUpdate('holidays');
     }
 
     set preset(next) {
@@ -1357,17 +1460,18 @@ class SfDatepicker extends FormField(DatepickerElement) {
                 (minDate && time < minDate.getTime()) ||
                 (maxDate && time > maxDate.getTime()),
             );
-            const weekend = daysOff.has(date.getDay());
+            const value = formatIsoDate(date);
+            // A day off says so in its name (DP-02): the ink is not the
+            // only cue. The ink is the calendar's day-off role
+            // (--sf-datepicker-day-off, C67 H2), not the error red. A special
+            // day of the site (C198) says its own name too.
+            const {weekend, special, label} = this.dayFacts(date, value, daysOff);
             return {
                 date,
-                value: formatIsoDate(date),
+                value,
                 formattedValue: formatDateValue(date, this.format),
-                // A day off says so in its name (DP-02): the ink is not the
-                // only cue. The ink is the calendar's day-off role
-                // (--sf-datepicker-day-off, C67 H2), not the error red.
-                label: weekend
-                    ? `${getDateLabel(date, this.locale)}, ${this.sfWord('day-off')}`
-                    : getDateLabel(date, this.locale),
+                label,
+                special,
                 day: date.getDate(),
                 today: sameDay(date, today),
                 currentMonth: date.getMonth() === this.month,
@@ -2048,16 +2152,17 @@ class SfDatepicker extends FormField(DatepickerElement) {
                 if (day < 1 || day > length) return null;
                 const date = new Date(first.getFullYear(), first.getMonth(), day);
                 const value = formatIsoDate(date);
-                const weekend = daysOff.has(date.getDay());
+                const {weekend, special, label} = this.dayFacts(date, value, daysOff, locale);
                 const disabled = Boolean((minDate && compareDates(date, minDate) < 0) || (maxDate && compareDates(date, maxDate) > 0));
                 const both = Boolean(start && end);
                 return {
                     value,
                     day,
                     weekend,
+                    special,
                     disabled,
                     today: sameDay(date, today),
-                    label: weekend ? `${getDateLabel(date, locale)}, ${this.sfWord('day-off')}` : getDateLabel(date, locale),
+                    label,
                     selected: sameDay(date, start) || sameDay(date, end),
                     rangeStart: both && sameDay(date, start),
                     rangeEnd: both && sameDay(date, end),
@@ -2802,6 +2907,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             locale: this.locale,
             // time mode draws no grid: the time row is the panel.
             days: this.mode === 'time' ? [] : this.days,
+            dayLine: this.mode === 'time' ? null : this.dayLine,
             mode: this.mode,
             timeParts: this.timeParts,
             presetItems: this.presetItems,

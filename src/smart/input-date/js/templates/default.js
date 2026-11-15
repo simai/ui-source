@@ -136,7 +136,8 @@ function renderDay(day, context) {
     const classes = joinClasses('sf-datepicker-day', day.weekend ? 'sf-datepicker-day-off' : '',
         day.selected ? 'active' : '', day.rangeStart ? 'sf-datepicker-day-start' : '',
         day.rangeSelected ? 'sf-datepicker-day-selected' : '', day.rangeEnd ? 'sf-datepicker-day-end' : '',
-        day.currentMonth ? '' : 'sf-datepicker-another-month', day.disabled ? 'disabled' : '');
+        day.currentMonth ? '' : 'sf-datepicker-another-month', day.special ? 'sf-datepicker-day-special' : '',
+        day.disabled ? 'disabled' : '');
 
     return html`
         <button class=${classes} type="button" role="gridcell" ?disabled=${day.disabled}
@@ -145,6 +146,7 @@ function renderDay(day, context) {
             aria-selected=${day.selected || day.rangeSelected ? 'true' : 'false'} tabindex=${day.tabIndex}
             @click=${() => context.component.selectDate(day)}
             @focus=${() => context.component.setActiveDate(day.value)}
+            @pointerenter=${() => context.component.showDayLine(day.value)}
             @keydown=${(event) => context.component.handleDayKeydown(event, day)}>
             <span class="sf-datepicker-day-date">${day.day}</span>
         </button>`;
@@ -160,12 +162,27 @@ function renderGrid(context) {
     for (let at = 0; at < context.days.length; at += 7) weeks.push(context.days.slice(at, at + 7));
     return html`
         <div class="sf-datepicker-grid grid grid-col-7" role="grid" aria-label=${context.calendarLabel}
-            aria-readonly=${context.valueLocked ? 'true' : nothing}>
+            aria-readonly=${context.valueLocked ? 'true' : nothing}
+            @pointerleave=${() => context.component.showDayLine('')}
+            @focusin=${() => context.component.noteDaysFocus(true)}
+            @focusout=${() => context.component.noteDaysFocus(false)}>
             <div class="sf-datepicker-week" role="row">
                 ${context.weekdayNames.map((name) => html`<span class="sr-only" role="columnheader">${name}</span>`)}
             </div>
             ${weeks.map((week) => html`<div class="sf-datepicker-week" role="row">${week.map((day) => renderDay(day, context))}</div>`)}
         </div>`;
+}
+
+// The line under the grid (owner decision C198): only when the site gave
+// special days; the name of the day under the pointer, with the focus or
+// chosen. Two text lines high in every month, so the panel keeps its size.
+// A screen reader hears the name in the day's own label, so the line is
+// hidden from it.
+function renderDayLine(context) {
+    const line = context.dayLine;
+    if (!line) return nothing;
+    return html`<p class="sf-datepicker-dayline" aria-hidden="true">${line.name
+        ? html`<b class="sf-datepicker-dayline-date">${line.date}</b> · ${line.name}` : nothing}</p>`;
 }
 
 function renderPresets(context) {
@@ -280,6 +297,7 @@ function renderDatepickerPanel(context) {
                         ${context.weekdays.map((weekday, at) => html`<span class=${context.weekdaysOff?.[at] ? 'sf-datepicker-weekday sf-datepicker-weekday-off' : 'sf-datepicker-weekday'}>${weekday}</span>`)}
                     </div>
                     ${renderGrid(context)}
+                    ${renderDayLine(context)}
                 </div>
                 ${renderTime(context)}
             </div>

@@ -263,8 +263,37 @@ where the browser does not say). A product sets them with `weekend`:
 - `weekend="5,6"` -- the days listed, `0` or `7` Sunday, `1` Monday to `6`
   Saturday (Intl writes Saturday and Sunday as `6,7`).
 
-Holidays and transferred days off are not drawn yet: they are an open owner
-question (C67).
+## Holidays and moved days
+
+The Framework ships no country calendar: holidays and moved days change by
+decree and differ by country, region and company, so the site passes them
+(owner decision C198). `holidays` is a list, the property or JSON in the
+attribute:
+
+```html
+<sf-input-date label="Дата отгрузки" locale="ru" holidays='[
+  {"date": "2026-04-20", "kind": "day-off", "name": "Выходной, перенос с 25 апреля"},
+  {"date": "2026-04-21", "kind": "holiday", "name": "Радуница"},
+  {"date": "2026-04-25", "kind": "working-day", "name": "Рабочая суббота, за 20 апреля"}
+]'></sf-input-date>
+```
+
+- `holiday` and `day-off` (a moved day off) take the day-off ink, whatever the
+  weekday; `working-day` (a moved working Saturday) takes the weekday's ink.
+  A listed day wins over `weekend`.
+- Each listed day gets a dot under its number, in the number's ink: it tells a
+  holiday from a plain weekend and a working Saturday from a day off, and it
+  stays inside a chosen range, where the days take the range's ink.
+- Its `name` joins the day's accessible name («вторник, 21 апреля 2026 г.,
+  Радуница, выходной»).
+- A line under the grid, two lines of the small text high in every month,
+  names the day under the pointer, else the one with the focus, else the
+  chosen one. A screen reader hears the name in the day itself, so the line is
+  hidden from it.
+
+Without `holidays` the calendar shows its plain weekends, with no dot and no
+line. Whether a holiday can be chosen (delivery, for example) is not the look:
+use `min-date` and `max-date` or validate on the host.
 
 ## Interaction and accessibility
 
