@@ -1,6 +1,6 @@
 @use '../../../../core/scss/vars/sf_var__breakpoint' as *;
 @use '../../../../core/scss/mix/mix__breakpoint' as *;
-@use '../../../opacity/default/scss/sf_var__opacity' as *;
+@use 'sf_var__ring_opacity' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -13,7 +13,7 @@ $infix: xs;
     @include breakpoint-media($infix) {
         $infix: breakpoint-infix($infix, $breakpoint-array);
 
-        @each $opacity-name, $opacity-value in $opacity-array {
+        @each $opacity-name, $opacity-value in $ring-opacity-array {
             .#{$infix}ring-opacity-#{$opacity-name} {
                 --sf-ring--alpha: #{$opacity-value};
             }

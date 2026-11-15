@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.opacity",
   "kind": "tokens",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "summary": "The alpha scale and the per-property alpha channels.",
   "includes": [

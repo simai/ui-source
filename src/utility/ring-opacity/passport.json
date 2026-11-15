@@ -3,13 +3,14 @@
   "schema_version": 1,
   "id": "utility.ring-opacity",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/ring-opacity/default/index.js",
     "src/utility/ring-opacity/default/index.scss",
     "src/utility/ring-opacity/default/rule.js",
     "src/utility/ring-opacity/default/scss/_sf_css__ring_opacity.scss",
+    "src/utility/ring-opacity/default/scss/_sf_var__ring_opacity.scss",
     "src/utility/ring-opacity/default/scss/index.scss",
     "src/utility/ring-opacity/focus-visible/index.js",
     "src/utility/ring-opacity/focus-visible/index.scss",
@@ -27,7 +28,7 @@
     "src/utility/ring-opacity/hover/scss/_sf_css__ring_opacity.scss",
     "src/utility/ring-opacity/hover/scss/index.scss"
   ],
-  "content_sha256": "03b923d1867b7964ffef0e972380d629b6345b7c8fe8e98516e96576f85508c1",
+  "content_sha256": "279691b5b5123e1c6b820d2851440f600a828721cda4ea68e7b4c9c25b65664a",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
