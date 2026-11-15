@@ -129,38 +129,39 @@ try {
     return {widths: 281, off: off.length, first: off.slice(0, 3)};
   });
   if (sweep.off) note({case: 'a field label mark follows the last word over every width (C33, inputs 1.4.0)', got: sweep});
-  // C133 (owner 2026-11-13): the «?» is an icon, not a button -- no plate in
-  // any state, the explanation's ink at rest, the text's ink under the pointer
-  // and on a press, the keyboard ring round the glyph and not the target.
+  // C133 (owner 2026-11-13), now C201 (owner 2026-11-15, sf-help-mark 1.5.0):
+  // the «?» is the icon button's plain look -- no plate in any state, the
+  // explanation's ink at rest, the text's ink under the pointer, the primary
+  // colour on a press, the keyboard ring every button's (round the target).
   const look = (id) => page.evaluate((key) => {
     const button = document.querySelector(`#${key} .sf-help-mark-button button`); const icon = button.querySelector('.sf-icon');
     const ink = (name) => { const probe = document.createElement('i'); probe.style.color = `var(${name})`; document.body.append(probe); const colour = getComputedStyle(probe).color; probe.remove(); return colour; };
     const b = getComputedStyle(button); const i = getComputedStyle(icon);
     const clear = (colour) => /^rgba\(.*,\s*0\)$/.test(colour) || colour === 'transparent';
     const shadow = (b.boxShadow.match(/rgba?\([^)]+\)/g) || []).every(clear);
-    return {plate: !(clear(b.backgroundColor) && b.backgroundImage === 'none' && shadow), ink: i.color, variant: ink('--sf-on-surface-variant'), text: ink('--sf-on-surface'),
+    return {plate: !(clear(b.backgroundColor) && b.backgroundImage === 'none' && shadow), ink: i.color, variant: ink('--sf-on-surface-variant'), text: ink('--sf-on-surface'), primary: ink('--sf-primary'),
       buttonRing: b.outlineStyle !== 'none' && parseFloat(b.outlineWidth) > 0, glyphRing: i.outlineStyle !== 'none' && parseFloat(i.outlineWidth) > 0};
   }, id);
   await page.mouse.move(0, 0);
   await page.waitForTimeout(200);
   const rest = await look('plain');
-  if (rest.plate || rest.ink !== rest.variant) note({case: '«?» at rest: no plate, on-surface-variant (C133)', got: rest});
+  if (rest.plate || rest.ink !== rest.variant) note({case: '«?» at rest: no plate, on-surface-variant (C201)', got: rest});
   await page.hover('#plain .sf-help-mark-button button');
   await page.waitForTimeout(200);
   const hoverLook = await look('plain');
-  if (hoverLook.plate || hoverLook.ink !== hoverLook.text) note({case: '«?» hovered: no plate, on-surface (C133)', got: hoverLook});
+  if (hoverLook.plate || hoverLook.ink !== hoverLook.text) note({case: '«?» hovered: no plate, on-surface (C201)', got: hoverLook});
   await page.mouse.down();
   await page.waitForTimeout(150);
   const pressLook = await look('plain');
   await page.mouse.up();
   await page.keyboard.press('Escape');
-  if (pressLook.plate || pressLook.ink !== pressLook.text) note({case: '«?» pressed: no plate, on-surface (C133)', got: pressLook});
+  if (pressLook.plate || pressLook.ink !== pressLook.primary) note({case: '«?» pressed: no plate, primary (C201)', got: pressLook});
   await page.mouse.move(0, 0);
   await page.evaluate(() => { document.activeElement?.blur(); document.getElementById('f2')?.focus(); });
   await page.keyboard.press('Shift+Tab');
   await page.waitForTimeout(150);
   const focusLook = await look('field-marked');
-  if (focusLook.plate || focusLook.buttonRing || !focusLook.glyphRing) note({case: '«?» keyboard focus: the ring round the glyph, no plate (C133)', got: focusLook});
+  if (focusLook.plate || !focusLook.buttonRing || focusLook.glyphRing) note({case: '«?» keyboard focus: every button\'s ring round the target, no plate (C201)', got: focusLook});
   await page.evaluate(() => document.activeElement?.blur());
   await page.hover('#plain .sf-help-mark-button button');
   await page.waitForTimeout(200);

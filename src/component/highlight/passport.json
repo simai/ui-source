@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.highlight",
   "kind": "component",
-  "version": "1.3.1",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/highlight/docs/docs.md",
@@ -16,7 +16,7 @@
     "src/component/highlight/scss/_theme.scss",
     "src/component/highlight/scss/index.scss"
   ],
-  "content_sha256": "d82838718b28d2eae579a34fc2c6cc67f1adef1740c47642d2d881cbd29b2b18",
+  "content_sha256": "3bcc1bd01df624ab0093936de20fdf8391b1b8d4aedd919dda61795f4ffc27e4",
   "dependencies": [
     {
       "id": "component.clipboard",

@@ -14,8 +14,10 @@
 //   at either end stands.
 //
 // (1) A glyph without a plate in any state: the quiet ink (on-surface-variant,
-//     C107 (3)) at rest, the text's ink under the pointer and on a press
-//     (C107 (4)); the keyboard ring stands round the glyph, inside the field.
+//     C107 (3)) at rest, the text's ink under the pointer (C107 (4)), the
+//     primary colour on a press (C201, the plain look of an icon button,
+//     sf-icon-button--plain); the keyboard ring stands round the glyph, inside
+//     the field.
 // (2) The glyph is the leading icon's size and its end stands on the inset,
 //     as the leading icon's start does.
 // (3) The hit area is invisible: the field's inner height (its control height
@@ -78,8 +80,16 @@
   }
 
   @layer sf.states {
-    .sf-field-action:not(:disabled):not([aria-disabled="true"]):is(:hover, :active) {
+    .sf-field-action:not(:disabled):not([aria-disabled="true"]):hover {
       --sf-field-action--ink: var(--sf-on-surface);
+    }
+
+    // A press takes the primary colour (owner decision C201, variant B1): the
+    // field's action is the icon button's plain look in the field's geometry,
+    // so its ink moves as sf-icon-button--plain's does -- on-surface-variant,
+    // on-surface under the pointer, primary on a press.
+    .sf-field-action:not(:disabled):not([aria-disabled="true"]):active {
+      --sf-field-action--ink: var(--sf-primary);
     }
 
     .sf-field-action:is(:disabled, [aria-disabled="true"]) {

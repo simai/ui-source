@@ -59,10 +59,11 @@ const sfButtonIconMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost"
+        "ghost",
+        "plain"
       ],
       "default": "default",
-      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning."
+      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it), and plain (owner decision C201): no fill or edge in any state, only the glyph's ink moves -- on-surface-variant at rest, on-surface under the pointer, primary on a press -- for an icon inside another element (a field's action, the help mark at a heading, copy in a code block); a plain icon button is neutral whatever the scheme or the status say. link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning."
     },
     "scheme": {
       "kind": "enum",
@@ -250,7 +251,8 @@ const sfButtonIconMeta = {
         "default",
         "tonal",
         "outline",
-        "ghost"
+        "ghost",
+        "plain"
       ],
       "default": "default",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
