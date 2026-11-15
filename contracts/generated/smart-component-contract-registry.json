@@ -1815,7 +1815,6 @@
           "hint"
         ],
         "uses": [
-          "component.icon-buttons",
           "component.icons",
           "component.inputs",
           "component.textarea",
@@ -1831,7 +1830,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-textarea/smart.manifest.json",
-      "manifest_sha256": "96f364b758481c9834d9a55c38714ba03bb3c578d36d2148a87c47960dc5ff40",
+      "manifest_sha256": "c81b78583ebea945e32bc7878cdd7f910595498298108051094f14aa6fe88924",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3112,7 +3111,6 @@
           "description"
         ],
         "uses": [
-          "component.icon-buttons",
           "component.icons",
           "component.inputs",
           "component.switch",
@@ -3128,7 +3126,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "413de433be44d52155ad7bb932895a6bdcabd77354e3772803f8434914be3e83",
+      "manifest_sha256": "9c6a6e2ffeb82dfcd68877bcd7ab03f861034de97c0baa7e0c3fbfda5f5908e3",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

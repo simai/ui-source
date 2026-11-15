@@ -52,7 +52,7 @@ test('Smart Textarea projects native metadata and closed visual axes', async () 
     assert.ok(declared.settings[name], name);
   }
   // Generated from the Loader relations (standard 1.4): the reset button's sheets too.
-  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.inputs', 'component.textarea', 'smart.help-mark']);
+  assert.deepEqual(manifest.composition.uses, ['component.icons', 'component.inputs', 'component.textarea', 'smart.help-mark']);
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'flush']);
   assert.deepEqual(manifest.inputs.properties.appearance.enum, ['bordered', 'filled', 'flush']);

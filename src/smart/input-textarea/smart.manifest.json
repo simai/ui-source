@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-textarea",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -22,7 +22,6 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.icon-buttons",
       "component.icons",
       "component.inputs",
       "component.textarea",
@@ -516,7 +515,7 @@
       },
       {
         "path": "src/smart/input-textarea/rule.js",
-        "sha256": "8f1fa81854e78254c9f8c03b836f93b55591bfeaaa2befeefaf12d22fbf183e7"
+        "sha256": "a0cb83199a8673b76af3791194f739882c94953387aef0ca26a04b1ac51b6c0c"
       },
       {
         "path": "src/smart/input-textarea/js/templates/default.js",
