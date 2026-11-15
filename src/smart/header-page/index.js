@@ -78,6 +78,9 @@ class SfPageHeader extends PageHeaderElement {
     this._rowObserver?.disconnect();
     this._rowObserver = null;
     this._rowObserved = null;
+    this._rowMutations?.disconnect();
+    this._rowMutations = null;
+    this._rowWatched = null;
     super.onDisconnected?.();
   }
 
@@ -138,7 +141,10 @@ class SfPageHeader extends PageHeaderElement {
   // where the page gives one, the main action (the filled one), a pressed
   // toggle and priority="pin" never. ⋯ lists them with their icons and words
   // and presses the action itself. overflow="wrap" keeps the former row that
-  // wraps onto further rows (OV-2).
+  // wraps onto further rows (OV-2). On a narrow line (below the g6 step of the
+  // line's own width, C181 (2); the sheet says --sf-page-header--fold: 1) the
+  // head folds as C155 (7) and C161 (4) say for a phone: the actions that must
+  // stay stay and every other one is in ⋯, whatever room is left (1.8.0).
   get overflowMore() {
     return this.getAttribute('overflow') !== 'wrap';
   }
@@ -164,14 +170,36 @@ class SfPageHeader extends PageHeaderElement {
   // row laid for the wider fallback, on a line of its own). The observer's
   // callback runs after layout and before paint, so the row is never drawn
   // whole first.
+  //
+  // An action is watched by the box it draws, and that box is replaced when
+  // the action's own code comes: sf-button draws a new <button> in place of
+  // its printed one. The row's children and their markup are watched too
+  // (1.8.0): the new box is observed and the row laid again at once. Before,
+  // a printed head adopted by the code was laid while its buttons were
+  // pictures held out of view (every width 0, everything fits) and never
+  // again: on a phone path-and-action stood 116 high with both actions under
+  // the heading, where its rule lays «Создать» and ⋯ beside it (68). A toggle
+  // pressed or a look changed moves an action in or out of what must stay.
   observeActionRow() {
     const row = this.actionRow();
     if (!row || typeof ResizeObserver === 'undefined') {
       this._rowObserver?.disconnect();
       this._rowObserved = null;
+      this._rowMutations?.disconnect();
+      this._rowWatched = null;
       return;
     }
     this._rowObserver ??= new ResizeObserver(() => this.layoutActions());
+    if (typeof MutationObserver !== 'undefined' && this._rowWatched !== row) {
+      this._rowMutations ??= new MutationObserver(() => {
+        if (!this.actionRow()) return;
+        this.observeActionRow();
+        this.layoutActions();
+      });
+      this._rowMutations.disconnect();
+      this._rowMutations.observe(row, {childList: true, subtree: true, attributes: true, attributeFilter: ['appearance', 'variant', 'pressed', 'aria-pressed', 'priority']});
+      this._rowWatched = row;
+    }
     // overflow="wrap" watches the line alone: the star follows its wrap.
     const title = row.parentElement.querySelector(':scope > .sf-page-header-title');
     const boxes = [row.parentElement, title, ...(this.overflowMore ? this.actionItems(row) : []).map((item) => {
@@ -217,6 +245,26 @@ class SfPageHeader extends PageHeaderElement {
   layoutActions() {
     this.placeActions();
     this.syncStarRung();
+    this.relayWhenSheetArrives();
+  }
+
+  // A row laid before the header's own sheet applied read no fold and no
+  // title basis; the sheet's arrival need not resize anything the observers
+  // watch, so the row is laid again once the sheet is in (its title rule:
+  // flex-basis var(--sf-g0), never auto), checked once a frame, for a few
+  // seconds at most (1.8.0: 1 load in 16 of a 435 px column was left with
+  // every action in view where its rule folds it).
+  relayWhenSheetArrives() {
+    const title = this.querySelector(':scope > .sf-page-header > .sf-page-header-line > .sf-page-header-title');
+    if (!title || this._sheetWait || getComputedStyle(title).flexBasis !== 'auto' || typeof requestAnimationFrame !== 'function') return;
+    const until = performance.now() + 5000;
+    const check = () => {
+      const now = this.querySelector(':scope > .sf-page-header > .sf-page-header-line > .sf-page-header-title');
+      if (!this.isConnected || !now) { this._sheetWait = 0; return; }
+      if (getComputedStyle(now).flexBasis !== 'auto') { this._sheetWait = 0; this.layoutActions(); return; }
+      this._sheetWait = performance.now() < until ? requestAnimationFrame(check) : 0;
+    };
+    this._sheetWait = requestAnimationFrame(check);
   }
 
   // The side of the actions' controls: the drawn height of the first one
@@ -269,14 +317,27 @@ class SfPageHeader extends PageHeaderElement {
     if (!row || !more) return;
     const items = this.actionItems(row);
     if (!this.overflowMore) {
-      for (const item of [...items, more]) item.classList.remove('sf-page-header-out');
+      for (const item of [...items, more]) item.classList.remove('sf-page-header-out', 'sf-page-header-pin');
       return;
     }
     const units = items.map((element) => {
       const {rank, pin} = readPriority(element.getAttribute('priority'));
       return {element, rank, pin: pin || isMainAction(element) || isPressed(element), group: 0};
     });
+    // The ones that must stay are marked (sf-page-header-pin): a printed
+    // head folds on a narrow line by the same mark before its code comes.
+    for (const unit of units) unit.element.classList.toggle('sf-page-header-pin', unit.pin);
     const line = row.parentElement;
+    if (getComputedStyle(row).getPropertyValue('--sf-page-header--fold').trim() === '1') {
+      const out = [];
+      units.forEach((unit, at) => {
+        unit.element.classList.toggle('sf-page-header-out', !unit.pin);
+        if (!unit.pin) out.push(at);
+      });
+      more.classList.toggle('sf-page-header-out', !out.length);
+      this.finishRow(row, more, out);
+      return;
+    }
     // The line's wrap has no tolerance: a row half a pixel over the room
     // beside the title moves to a line of its own, so the room is taken a
     // pixel short.
@@ -284,7 +345,10 @@ class SfPageHeader extends PageHeaderElement {
     // The ones that must stay do not fit beside the title: the row takes a
     // line of its own (the line wraps it there), as wide as the line.
     if (!laid.fits) laid = layoutActionRow({row, units, more, outClass: 'sf-page-header-out', room: rowRoomOf(line)});
-    const out = laid.out;
+    this.finishRow(row, more, laid.out);
+  }
+
+  finishRow(row, more, out) {
     row.setAttribute('data-sf-row-laid', '');
     this._actionsOut = out;
     more.setAttribute('aria-label', this.sfWord('more'));

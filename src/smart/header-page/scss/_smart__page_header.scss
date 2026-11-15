@@ -1,5 +1,21 @@
 @use "sass:map";
+@use "sass:meta";
 @use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+@use "../../../core/scss/mix/mix__breakpoint" as mq;
+
+/// A step of the container threshold ladder (owner decision C181 (2)): core's
+/// container-step() where the core has the ladder; on a core before it, the
+/// sm breakpoint, which is the ladder's g6 step (32rem). Only g6 is asked for.
+@function container-step($step) {
+  $ladder: map.get(meta.module-functions("mq"), "container-step");
+  @if $ladder {
+    @return meta.call($ladder, $step);
+  }
+  @if $step != g6 {
+    @error "sf-header-page asks only for the g6 step before the core has the ladder.";
+  }
+  @return map.get(bp.$breakpoint-array, sm);
+}
 
 @layer sf.components {
 /* The head of an admin page. The public variables (standard 1.3.8 §6): the gap
@@ -18,6 +34,9 @@
 .sf-page-header-line {
   gap: var(--sf-page-header-line-gap, var(--sf-space-1));
   min-block-size: var(--sf-ui-1\/2--control-height);
+  /* The line is the container its actions fold by (C181 (2), 1.8.0): a block
+     of the head's column, its width is never its content's. */
+  container: sf-page-header-line / inline-size;
 }
 
 /* The title: the heading, the count, the install mark and the star, the
@@ -87,6 +106,29 @@
 
 .sf-page-header-actions > .sf-page-header-out {
   display: none !important;
+}
+
+/* The narrow fold (owner decisions C155 (7), C161 (4): on a phone the main
+   action stays and the others are in ⋯), below the g6 step of the line's own
+   width (C181 (2), 1.8.0). The row says so to the code (index.js reads
+   --sf-page-header--fold), which keeps the actions that must stay (the main
+   one, a pressed toggle, priority="pin": sf-page-header-pin) and puts every
+   other one in ⋯. A printed head (data-sf-static, a snapshot laid wide) folds
+   the same way by the same marks before its code comes, so the first frame
+   is the head the code lays: the row then stands beside the heading or on a
+   line of its own as the line's wrap puts it, for the code as for the print. */
+@container sf-page-header-line (width < #{container-step(g6)}) {
+  .sf-page-header-actions--more {
+    --sf-page-header--fold: 1;
+  }
+
+  .sf-page-header[data-sf-static] .sf-page-header-actions--more > :not(.sf-page-header-more, .sf-page-header-pin) {
+    display: none !important;
+  }
+
+  .sf-page-header[data-sf-static] .sf-page-header-actions--more:has(> :not(.sf-page-header-more, .sf-page-header-pin)) > .sf-page-header-more {
+    display: contents !important;
+  }
 }
 
 /* The decorative level (owner decisions C91 level 2 and C65 round 2, R164,
