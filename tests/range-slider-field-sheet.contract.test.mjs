@@ -81,3 +81,22 @@ test('C80 acceptance R2: the from/to numbers stay whole -- the box is as wide as
   assert.match(rule('.sf-range-slider-line'), /flex-wrap: wrap;/u);
   assert.match(rule('.sf-range-slider-track-column'), /min-inline-size: var\(--sf-ui-2--control-height\);/u);
 });
+
+test('C202: the slider with the field picks its layout by its own width, at the ladder step g3 (26rem)', () => {
+  assert.match(rule('.sf-range-slider-group--field'), /container: sf-range-slider \/ inline-size;/u);
+  const at = sheet.indexOf('@container sf-range-slider (inline-size < #{mq.container-step(g3)}) {');
+  assert.ok(at >= 0, 'the narrow layout is a container query at g3');
+  const narrow = sheet.slice(at);
+  // Under the track: two boxes, equal halves of the full width, a group gap.
+  assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-line \{\n {4}align-items: stretch;\n {4}flex-direction: column;/u);
+  assert.match(narrow, /grid-auto-columns: minmax\(0, 1fr\);\n {4}grid-auto-flow: column;\n {4}inline-size: 100%;/u);
+  assert.match(narrow, /gap: var\(--sf-space-1\\\/3\);/u);
+  // Each box is a field of the step, the unit and the dash leave, the words and the name's unit show.
+  assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-field-box \{[\s\S]*?block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);[\s\S]*?border: var\(--sf-px\) solid var\(--sf-outline\);/u);
+  assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-field-dash,\n {2}\.sf-range-slider-group--field \.sf-range-slider-field-unit \{\n {4}display: none;/u);
+  assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-name-unit \{\n {4}display: inline;/u);
+  assert.match(narrow, /\.sf-range-slider-field-box > \.sf-range-slider-field-word \{[\s\S]*?display: block;/u);
+  assert.match(narrow, /\.sf-range-slider-field-box:has\(\.sf-range-slider-field-input:focus-visible\) \{\n {4}outline: var\(--sf-focus--width\)/u);
+  // Wide: the words and the name's unit are printed but hidden.
+  assert.match(rule('.sf-range-slider-field-word,\n.sf-range-slider-name-unit'), /display: none;/u);
+});
