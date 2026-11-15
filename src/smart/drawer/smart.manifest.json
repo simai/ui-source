@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "title": "Drawer",
   "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
   "kind": "smart",
@@ -113,12 +113,12 @@
       "show-close": {
         "type": "boolean",
         "default": true,
-        "description": "Draws the close button (not while a controlled panel's outside switch is on screen)."
+        "description": "Draws the close button (not while a controlled panel's outside switch is on screen). A panel that covers the switch that opened it draws one anyway unless its content holds a close of its own (C104)."
       },
       "controlled": {
         "type": "boolean",
         "default": false,
-        "description": "An outside switch (an element naming the drawer in aria-controls) opens and closes the panel: no close button while that switch is on screen."
+        "description": "An outside switch (an element naming the drawer in aria-controls) opens and closes the panel: no close button while that switch is on screen and not under the open panel."
       },
       "close-placement": {
         "type": "string",
@@ -891,6 +891,14 @@
           "On a phone a side panel closes with a swipe toward its edge (C157 (4)); the bottom sheet's grab bar is 24 x 4 in on-surface-variant on every screen (C157 (5)).",
           "The outside close stands on the scrim as sf-button-close appearance=\"media\"; icon buttons in the edge slot take the same plate (study VP-16)."
         ]
+      },
+      {
+        "from": "1.12.0",
+        "to": "1.13.0",
+        "changes": [
+          "The close stands on the axis of the switch that opened the panel (owner decision C104 (4)); nothing to change in a page.",
+          "A panel that covers the switch that opened it always offers a close (controlled, show-close=\"false\" without a close of the page's own)."
+        ]
       }
     ]
   },
@@ -900,11 +908,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "37bec735acbb3a2efc1ed24e480a6d14853a15ccfc39fba197c954a837bb952d"
+        "sha256": "8c6cec087caaee7d3e5f54afab3cd9075867d91dbd92fe80dedb85a1494b30cf"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "67c61d03f5e8ff92ed23c050874718b908158a333ae711bf1023dbcaff208554"
+        "sha256": "070d1125f687e8bd623f06c16c0936b6d1343224cd6818144d4a4373d9e1c40f"
       },
       {
         "path": "src/smart/drawer/rule.js",
@@ -912,7 +920,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "c6a0803649c76cf827d56775cf3514f41f3071bd1be4e2ba1251ab7a6e41d5c3"
+        "sha256": "de83f8bdf236c2f72fe6b5b77191991bf2fbf03518ec49b4e9114db6ee660ee5"
       }
     ],
     "generated_runtime": [
