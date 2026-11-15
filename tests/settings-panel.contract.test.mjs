@@ -160,5 +160,6 @@ test('ST-2, C166: the pin is sf-button-icon that names itself; RT-1: the footer 
   assert.match(css, /--sf-settings-panel--pin: calc\(var\(--sf-text-height-1\\\/2\) \+ 2 \* var\(--sf-ui-1\\\/2--space-y-tightness-low\)\);/u);
   assert.match(css, /--sf-settings-panel--pin: calc\(var\(--sf-text-height-1\) \+ 2 \* var\(--sf-ui-1--space-y-tightness-low\)\);/u);
   const footer = css.match(/\.sf-settings-panel-footer \{([^}]*)\}/u)[1];
-  assert.match(footer, /gap: var\(--sf-space-1\\\/3\);/u);
+  // Group build 7: the role (C173 (9) RT-ROLE-STEP); --sf-gap--actions is --sf-space-1/3, compact 4.
+  assert.match(footer, /gap: var\(--sf-gap--actions\);/u);
 });

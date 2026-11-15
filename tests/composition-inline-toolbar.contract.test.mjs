@@ -83,7 +83,8 @@ test('C172 is sf-editor-inline 1.9.0: its edit action, its script API, its words
   // A hidden bar is not drawn: the sheet's display: flex would otherwise win over [hidden].
   assert.match(sheet, /\.sf-inline-editor-toolbar\[hidden\]/u);
   // RT-4 (C173 (2), C144): the toolbar's gap is the toolbar role, 4; it was --sf-space-1 (16).
-  assert.match(sheet, /gap: var\(--sf-inline-editor-toolbar-gap, var\(--sf-gap--toolbar, var\(--sf-space-1\\\/4\)\)\);/u);
+  // Group build 7: the role alone (C173 (9) RT-ROLE-STEP); --sf-gap--toolbar is --sf-space-1/4.
+  assert.match(sheet, /gap: var\(--sf-inline-editor-toolbar-gap, var\(--sf-gap--toolbar\)\);/u);
   assert.doesNotMatch(sheet, /var\(--sf-space-1\)/u);
   const source = await read('src/core/js/composition/inline-editor.mjs');
   assert.match(source, /const toolbarMode = options\.toolbar \?\? 'selection';/u, 'the default is selection (C172 (1))');
