@@ -64,7 +64,8 @@ test('drawer r-077 (3): content headings start below the panel title, by role to
 });
 
 test('drawer r-077: the version and its migration step', () => {
-  assert.equal(manifest.version, '1.16.0');
+  // 1.16.0 or a later patch (1.16.1: owner decision C205, docs and gates only).
+  assert.match(manifest.version, /^1\.16\.\d+$/u);
   const steps = JSON.stringify(manifest);
   assert.match(steps, /"from":"1\.13\.0","to":"1\.16\.0"/u);
 });

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.16.0",
+  "version": "1.16.1",
   "title": "Drawer",
   "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
   "kind": "smart",
@@ -908,6 +908,13 @@
           "A width off the ladder warns once per element (console and SF.deprecations.list()) and is still drawn until 2027-01-01: take size=\"1/2|1|2|full\", and an sf-resizer within 1/2...2 for a width of its own (C157 (2)).",
           "Headings inside the panel's content draw below the panel's title: h1 at the h5 step, h2 to h4 at the h6 step (C157 (7)); a page that styled its own heading sizes keeps them."
         ]
+      },
+      {
+        "from": "1.16.0",
+        "to": "1.16.1",
+        "changes": [
+          "Buttons a page or a set puts into the head (slot=\"header-action\", and slot=\"edge\", whose controls join the head's row when there is no room beside the panel) are written size=\"1/3\", the close's step (owner decision C205 (2)); the base does not resize them. A button of a larger step in the head now fails the drawer's gate: write size=\"1/3\" on it."
+        ]
       }
     ]
   },
@@ -929,7 +936,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "baf13ced326f2b3909720a60244e0b81b8928863dd02beb41f62dd77ad30693d"
+        "sha256": "9e95d364485aa475049346722171a1c11fc79148396406c43c1844e40d6d938a"
       }
     ],
     "generated_runtime": [
