@@ -293,6 +293,10 @@ function renderCursor(context, component) {
 // more: «Показать ещё 20», then «Показано 40 из 240» and a thin bar. It adds a
 // portion (sf-pagination-load-more); current is the number of portions shown.
 // When everything is shown the button goes and the line stays.
+// The line is a polite status (heard once a portion has loaded) and takes the
+// focus when the last portion removes the button (tabindex -1, never a Tab
+// stop); its words are shown-label (C167 (1)). load="auto" watches the button
+// itself (index.js watchMore), so the template is the same for both.
 function renderMore(context, component) {
   return html`
     <div class="sf-pagination-more flex flex-col items-cross-center">
@@ -312,7 +316,7 @@ function renderMore(context, component) {
         : nothing}
       ${context.shownText
         ? html`
-            <span class="sf-pagination-shown" role="status">${context.shownText}</span>
+            <span class="sf-pagination-shown" role="status" tabindex="-1">${context.shownText}</span>
             ${context.shownPercent === null
               ? nothing
               : html`<sf-progress-bar

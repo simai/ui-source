@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "title": "Pagination",
   "summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
   "kind": "smart",
@@ -256,6 +256,19 @@
         "type": "boolean",
         "default": false,
         "description": "Mark the Show more control as working while the host fetches the next portion; it is disabled and shows a loader."
+      },
+      "shown-label": {
+        "type": "string",
+        "description": "The line under the more button (decision C167 (1)): {shown} for the records shown, {total} for all of them. Empty: the text of the page's language («Показано {shown} из {total}», \"Showing {shown} of {total}\" in English). It is a polite status, so a screen reader hears it once a portion has loaded."
+      },
+      "load": {
+        "type": "string",
+        "default": "button",
+        "description": "How the more appearance asks for the next portion (decision C167 (1)): button, a person presses «Показать ещё 20»; auto, also when a person's scroll brings the button into reach (never on load by itself), for side panels and pickers. The button stays in both, for the keyboard and for a browser without IntersectionObserver; either way the request is sf-pagination-load-more.",
+        "enum": [
+          "button",
+          "auto"
+        ]
       },
       "size": {
         "type": "string",
@@ -1168,7 +1181,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pagination/index.js",
-        "sha256": "ad877743e746731b8a343378f5386463b9c02a0f5b71747a40384a78ef2c65a2"
+        "sha256": "db0416ab0766b055e2a9cae922c824e5efcd0150c0497544c3dd356ece73c0e1"
       }
     ],
     "generated_runtime": [

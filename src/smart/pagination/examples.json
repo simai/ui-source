@@ -119,6 +119,22 @@
         "max-bytes": 11264,
         "why": "The bulk row is shown at rest beside the pages: two closed dropdowns, a button, a checkbox and a clear button, each a printed Smart element with its own markup; since C97 the pages also print the first / previous / next / last icon buttons and the range, so the budget is 11 KiB (was 10000)."
       }
+    },
+    {
+      "name": "more",
+      "title": "Показать ещё",
+      "settings": {
+        "appearance": "more",
+        "current": 2,
+        "total": 240,
+        "page-size": 20,
+        "load": "auto"
+      },
+      "expect": {
+        "values": {
+          "current": 2
+        }
+      }
     }
   ],
   "pages": [

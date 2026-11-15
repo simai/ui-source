@@ -4,6 +4,7 @@ import SfBaseElement, {
 import { elementFromManifest } from "../../core/js/element-manifest";
 import { noteDeprecated } from "../../core/js/deprecations";
 import { breakpointMedia } from "../../core/js/breakpoints.js";
+import { EDGE_MARGIN, scrollerOf, watchEdge } from "../../core/js/reading-position.js";
 import { renderPaginationTemplate } from "./js/templates/default";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
@@ -40,6 +41,18 @@ const LATER_WORDS = new Set([
 const APPEARANCES = ["field", "numbers", "arrows", "cursor", "more"];
 const FOOTER_SINCE = "2026-11-12";
 const FOOTER_UNTIL = "2027-01-01";
+// How the more appearance asks for the next portion (C167 (1)).
+const LOADS = ["button", "auto"];
+
+// Is the button within watchEdge's margin of the box that scrolls it (or of
+// the window)? Read once, on the scroll that arms the watch.
+const EDGE_REACH = parseFloat(EDGE_MARGIN) || 0;
+function inReach(node, root) {
+  const at = node.getBoundingClientRect();
+  const view = node.ownerDocument.defaultView;
+  const box = root ? root.getBoundingClientRect() : { top: 0, bottom: view?.innerHeight ?? 0 };
+  return at.top <= box.bottom + EDGE_REACH && at.bottom >= box.top - EDGE_REACH;
+}
 // Places of numbers: seven, five below the sm step of the ladder
 // (core/js/breakpoints.js, the sheets' media-breakpoint-down).
 
@@ -207,6 +220,8 @@ class SfPagination extends PaginationElement {
       },
       countingLabel: { attribute: "counting-label", default: "" },
       showMoreBusy: { attribute: "show-more-busy", type: Boolean, default: false },
+      shownLabel: { attribute: "shown-label", default: "" },
+      load: { default: "button", values: LOADS },
       current: { type: Number, default: 1 },
       total: { type: Number, default: 10 },
       pageSize: { attribute: "page-size", type: Number, default: 10 },
@@ -431,6 +446,24 @@ class SfPagination extends PaginationElement {
   // going anywhere.
   get showMoreBusy() {
     return this.getBooleanAttr("show-more-busy", false);
+  }
+
+  // button (default) or auto: auto also asks when a person's scroll brings
+  // the more button within reach (C167 (1)).
+  get load() {
+    const value = this.getAttribute("load");
+    return LOADS.includes(value) ? value : "button";
+  }
+
+  // The line under the more button, {shown} and {total} filled in: an
+  // author's shown-label, else the language word.
+  get shownText() {
+    if (!this.countKnown) return "";
+    const vars = { shown: this.shown, total: this.shownTotal };
+    const own = this.getAttribute("shown-label");
+    return own
+      ? own.replace(/\{(shown|total)\}/gu, (_, name) => String(vars[name]))
+      : this.sfWord("shown", { vars });
   }
 
   get countingLabel() {
@@ -791,9 +824,7 @@ class SfPagination extends PaginationElement {
         || (this.exactCount
           ? this.sfWord("show-more-count", {vars: {count: Math.min(this.pageSize, Math.max(0, this.total - this.shown))}})
           : this.showMoreText),
-      shownText: this.countKnown
-        ? this.sfWord("shown", {vars: {shown: this.shown, total: this.shownTotal}})
-        : "",
+      shownText: this.shownText,
       shownPercent: this.exactCount && this.total > 0 ? Math.round((this.shown / this.total) * 100) : null,
       rangeText: this.rangeText,
       pageSizeText: this.sfWord("page-size-text", {vars: {size: this.pageSize}}),
@@ -986,6 +1017,7 @@ class SfPagination extends PaginationElement {
 
   onDisconnected() {
     this.restoreTitle();
+    this.unwatchMore();
     super.onDisconnected?.();
   }
 
@@ -995,6 +1027,8 @@ class SfPagination extends PaginationElement {
     if (typeof changed !== "function") {
       this.applyTitle();
       this.noteFooterParts();
+      this.keepMoreFocus();
+      this.watchMore();
     }
 
     return result;
@@ -1108,11 +1142,100 @@ class SfPagination extends PaginationElement {
     return this;
   }
 
+  // The more button's own control: sf-button's host is display: contents (no
+  // box to observe or focus), so the native button it draws inside.
+  moreButton() {
+    return this.querySelector(".sf-pagination-more .sf-pagination-more-button")?.querySelector("button, a") ?? null;
+  }
+
+  // load="auto": the more button asks for the next portion when a person
+  // brings it within reach (core/js/reading-position.js watchEdge), not when
+  // it is there already -- a short list whose button shows on load waits for
+  // the press or for the first scroll (study LF-8: the next page was asked for
+  // on load). The first scroll of the box that scrolls the button arms the
+  // watch; if the button is in reach then, that scroll brought it there. The
+  // button stays for the keyboard and for a browser without IntersectionObserver.
+  watchMore() {
+    const button = this.appearance === "more" && !this.footer && this.load === "auto" ? this.moreButton() : null;
+    if (!button) {
+      this.unwatchMore();
+      return;
+    }
+    if (this._moreEdge === button && this._stopMore) return;
+    this.unwatchMore();
+    this._moreEdge = button;
+    const root = scrollerOf(button);
+    const scroller = root ?? this.ownerDocument;
+    let moved = false;
+    let reached = false;
+    const ask = () => {
+      if (!this.isConnected || this.showMoreBusy || !this.hasNext) return;
+      this.showMore(null);
+    };
+    const onScroll = () => {
+      moved = true;
+      scroller.removeEventListener("scroll", onScroll);
+      if (reached && inReach(button, root)) ask();
+    };
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    const stopEdge = watchEdge(button, () => {
+      if (moved) ask();
+      else reached = true;
+    }, { root });
+    this._stopMore = () => {
+      stopEdge();
+      scroller.removeEventListener("scroll", onScroll);
+    };
+  }
+
+  unwatchMore() {
+    this._stopMore?.();
+    this._stopMore = null;
+    this._moreEdge = null;
+  }
+
+  // The focus a person left on the more button stays with it: the button is
+  // disabled while the portion loads (the browser drops the focus of a
+  // disabled control), so it takes the focus back when the portion arrives,
+  // and when the last portion removes the button the focus goes to the
+  // «Показано» line rather than to the page.
+  keepMoreFocus() {
+    if (!this._moreFocus || this.showMoreBusy) return;
+    const active = this.ownerDocument.activeElement;
+    if (active && active !== this.ownerDocument.body && !this.contains(active)) {
+      this._moreFocus = false;
+      return;
+    }
+    const button = this.moreButton();
+    const line = this.querySelector(".sf-pagination-more .sf-pagination-shown");
+    if (button && !button.disabled) {
+      this._moreFocus = false;
+      if (active !== button) button.focus({ preventScroll: true });
+    } else if (!button && line) {
+      this._moreFocus = false;
+      line.focus({ preventScroll: true });
+    } else if (button) {
+      // sf-button draws its enabled state a frame after this element: ask
+      // again then, a few frames at most.
+      this._moreFocusTries = (this._moreFocusTries ?? 0) + 1;
+      if (this._moreFocusTries > 10) {
+        this._moreFocus = false;
+        this._moreFocusTries = 0;
+        return;
+      }
+      globalThis.requestAnimationFrame?.(() => this.keepMoreFocus());
+      return;
+    }
+    this._moreFocusTries = 0;
+  }
+
   // The action show-more (§4.4), vocabulary §5 load-more {direction: after}.
   // The button the person pressed was `item`; it is no data (§8), so only
   // the old name sf-show-more still carries it.
   showMore(item = null) {
     this._showMoreItem = item;
+    // A press of the more button keeps its focus (keepMoreFocus).
+    if (item && this.appearance === "more" && item.contains?.(this.ownerDocument.activeElement)) this._moreFocus = true;
     try {
       this.sfEmit("load-more", {
         direction: "after",
