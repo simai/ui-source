@@ -103,7 +103,7 @@ test('C191 (4)-(6): sf-menu-context 1.24.0 draws a meter row over sf-progress-ba
 
 test('C191 (4): the meter row is declared, styled from the systems, documented and loads the bar lazily', () => {
   const manifest = json('src/smart/menu-context/component.json');
-  assert.equal(manifest.version, '1.25.3'); // group build 7: the integrated number (the branch wrote 1.24.0)
+  assert.ok(['1.25.3', '1.25.4'].includes(manifest.version), manifest.version); // group build 7: the integrated number (the branch wrote 1.24.0); 1.25.4: TT-11 (fix/returns-gb67)
   assert.ok(manifest['x-registry'].item_contract.kinds.meter.fields.valueText);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-progress-bar' && relation.lazy === true));
   assert.equal(json('src/component/context-menu/passport.json').version, '1.16.0');
