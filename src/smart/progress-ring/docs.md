@@ -66,6 +66,23 @@ take their size from it: at most half the box, the avatar's own size where the
 box is as large as its step (a size 1/3 avatar in a ring of 1/2 has 8 px
 letters in a compact region, where the middle is 16 px).
 
+The avatar must say `slot="content"`. An sf-avatar put inside the ring without
+it is not the ring's content: it is drawn beside the ring. The ring says so
+once a page in the console and lists each such ring in `SF.deprecations.list()`
+(`kind: "markup"`, `from: "sf-avatar without slot"`, `to: 'slot="content"'`).
+
+```html
+<!-- right -->
+<sf-progress-ring value="70" label="Профиль заполнен на 70 %">
+  <sf-avatar slot="content" size="1/2" heading="Анна Ким"></sf-avatar>
+</sf-progress-ring>
+
+<!-- wrong: drawn beside the ring, with a warning -->
+<sf-progress-ring value="70" label="Профиль заполнен на 70 %">
+  <sf-avatar size="1/2" heading="Анна Ким"></sf-avatar>
+</sf-progress-ring>
+```
+
 A slotted avatar's presence point (`status="online"` or `away`) stands on the
 ring itself at 45 degrees, towards the bottom end corner, at the ring's own
 step (owner decisions C132 (7), C152 (8)): 12 px with a 2 px cut-out on a

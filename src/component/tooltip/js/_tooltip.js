@@ -2,6 +2,7 @@
 import registerComponent from '../../register-helper';
 import BundledPosition from '../../../core/js/position.js';
 import { partId } from '../../../core/js/instance-path.js';
+import { surfaceShortcut, writeTriggerKeyShortcuts } from './_keyshortcuts.js';
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.
 const positioning = () => globalThis.SF?.Position || BundledPosition;
@@ -169,6 +170,8 @@ class SfTooltipController {
     if (descriptions.size) this.trigger.setAttribute('aria-describedby', [...descriptions].join(' '));
     this.trigger.setAttribute('data-tooltip', this.surface.id);
     this.surface.setAttribute('role', 'tooltip');
+    // A shortcut the tooltip shows is said on the trigger (KB-4).
+    writeTriggerKeyShortcuts(this.trigger, surfaceShortcut(this.surface));
     this.surface.hidden = true;
     this.surface.classList.remove('active');
 
@@ -207,6 +210,7 @@ class SfTooltipController {
       this.onDocumentKeydown,
     );
 
+    writeTriggerKeyShortcuts(this.trigger, '');
     if (this.originalDescription === null) {
       this.trigger.removeAttribute('aria-describedby');
     } else {

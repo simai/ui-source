@@ -8,6 +8,7 @@
   "sheets": [
     "component/avatars/css/avatars.min.css",
     "component/badges/css/badges.min.css",
+    "component/dot/css/dot.min.css",
     "component/icons/css/icons.min.css",
     "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
@@ -33,6 +34,7 @@
     "away": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -55,6 +57,7 @@
     "badge": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -77,6 +80,7 @@
     "card": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -100,6 +104,7 @@
     "disabled": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -122,6 +127,7 @@
     "hue-amber": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -145,6 +151,7 @@
     "hue-auto": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -168,6 +175,7 @@
     "hue-green": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -191,6 +199,7 @@
     "hue-indigo": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -214,6 +223,7 @@
     "hue-lime": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -237,6 +247,7 @@
     "hue-pink": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -260,6 +271,7 @@
     "hue-purple": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -283,6 +295,7 @@
     "hue-sky": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -306,6 +319,7 @@
     "hue-teal": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -329,6 +343,7 @@
     "image": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -351,6 +366,7 @@
     "initials": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -373,6 +389,7 @@
     "link": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
@@ -396,6 +413,7 @@
     "reference": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -418,6 +436,7 @@
     "verified": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",

@@ -323,7 +323,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "default",
             "tonal",
             "outline",
-            "ghost"
+            "ghost",
+            "plain"
           ],
           "type": "string"
         },
@@ -490,7 +491,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.11.0"
+    "version": "1.12.0"
   },
   "sf-checkbox": {
     "inputs": {
@@ -562,7 +563,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.5.0"
+    "version": "1.5.1"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -789,7 +790,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.icon",
-    "version": "1.3.1"
+    "version": "1.4.0"
   },
   "sf-input": {
     "inputs": {
@@ -998,7 +999,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.13.1"
+    "version": "1.13.2"
   },
   "sf-input-textarea": {
     "inputs": {

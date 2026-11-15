@@ -7,6 +7,8 @@ SF.RuleLoader['cl-icon'] = {
   relation: [
     { name: 'icons' },
     { name: 'badges', lazy: true },
+    // A badge's dot is the Framework's one dot, .sf-dot (owner decision C185 (8)): fetched with the badge sheet when a badge draws.
+    { name: 'dot', lazy: true },
   ],
 };
 

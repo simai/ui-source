@@ -35,6 +35,7 @@ test('Smart Icon Button mirrors blocked loading and declared composition', async
   // the shared tooltip that shows its name (owner decision C160 (1)).
   assert.deepEqual(manifest.composition.uses, [
     'component.badges',
+    'component.dot',
     'component.icon-buttons',
     'component.spinner',
     'component.tooltip',

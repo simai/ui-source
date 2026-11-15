@@ -7,6 +7,7 @@
   ],
   "sheets": [
     "component/badges/css/badges.min.css",
+    "component/dot/css/dot.min.css",
     "component/icons/css/icons.min.css",
     "core/css/core.css",
     "utility/font-weight/default/css/default.min.css",
@@ -15,6 +16,7 @@
   "examples": {
     "count": [
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/font-weight/default/css/default.min.css",
@@ -22,6 +24,7 @@
     ],
     "dot": [
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/font-weight/default/css/default.min.css",

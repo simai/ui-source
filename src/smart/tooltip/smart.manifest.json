@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tooltip",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Tooltip",
   "summary": "Tooltip surface that can join the ordinary data-tooltip trigger composition.",
   "kind": "smart",
@@ -209,7 +209,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tooltip/index.js",
-        "sha256": "a3a287ac6f48d11b174f0fb569ac597b3d138ba71feeb00017f8382272d6f54e"
+        "sha256": "5116cc09970d86d3b4868ef58254069451181f30bec23a7744d60084f882e1f9"
       }
     ],
     "generated_runtime": [

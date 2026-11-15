@@ -10,6 +10,7 @@
     "component/breadcrumbs/css/breadcrumbs.min.css",
     "component/buttons/css/buttons.min.css",
     "component/close/css/close.min.css",
+    "component/dot/css/dot.min.css",
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
     "component/kbd/css/kbd.min.css",
@@ -43,6 +44,7 @@
       "component/badges/css/badges.min.css",
       "component/buttons/css/buttons.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
@@ -69,6 +71,7 @@
     "count": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
@@ -92,6 +95,7 @@
     "favourite": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
@@ -116,6 +120,7 @@
     "install": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
@@ -140,6 +145,7 @@
     "no-star": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
@@ -166,6 +172,7 @@
       "component/breadcrumbs/css/breadcrumbs.min.css",
       "component/buttons/css/buttons.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
@@ -195,6 +202,7 @@
     "reference": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
@@ -220,6 +228,7 @@
       "component/badges/css/badges.min.css",
       "component/buttons/css/buttons.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",

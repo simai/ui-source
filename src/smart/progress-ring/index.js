@@ -1,5 +1,6 @@
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
+import { noteDeprecated } from '../../core/js/deprecations';
 import { renderProgressRingTemplate } from './js/templates/default';
 import manifest from './component.json';
 import enFile from './lang/en.json';
@@ -87,7 +88,25 @@ class SfProgressRing extends ProgressRingElement {
     return [...new Set([...super.observedAttributes, 'aria-label'])];
   }
 
+  // An avatar put in the ring without slot="content" is not the ring's
+  // content: it stands beside the ring (AR-4, recipe C152 (8)). It is said
+  // once a page -- one console warning, wherever the ring is -- and each
+  // ring is listed in SF.deprecations, so a person or a probe finds it.
+  noteUnslottedAvatar() {
+    if (this._unslottedNoted) return;
+    const stray = [...this.children].find((child) => (child.localName === 'sf-avatar' || child.classList?.contains('sf-avatar'))
+      && !child.hasAttribute('slot') && !child.hasAttribute('data-sf-held'));
+    if (!stray) return;
+    this._unslottedNoted = true;
+    noteDeprecated({component: 'sf-progress-ring', tag: 'sf-progress-ring', kind: 'markup', attribute: 'slot', from: 'sf-avatar without slot', to: 'slot="content"'});
+    const root = globalThis.SF = globalThis.SF || {};
+    if (root.__progressRingAvatarWarned) return;
+    Object.defineProperty(root, '__progressRingAvatarWarned', {value: true, configurable: true});
+    globalThis.console?.warn?.(`[SIMAI Framework] sf-progress-ring${this.id ? ` #${this.id}` : ''}: an sf-avatar inside the ring without slot="content" is drawn beside the ring, not in it. Give the sf-avatar slot="content" (decision C152 (8)).`);
+  }
+
   templateContext() {
+    this.noteUnslottedAvatar();
     const status = this.drawnStatus;
     this.sfHostState('data-status', status);
     return this.createTemplateContext({
