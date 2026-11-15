@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tabs's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/tabs (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.tabs",
   "tag": "sf-tabs",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "kind": "leaf",
   "family": "tabs",
   "settings": {
@@ -109,7 +109,7 @@
         "never"
       ],
       "default": "auto",
-      "summary": "Whether the tabs share the row equally when they all fit, each at least its own width (owner decision C96 item 7): auto on a phone (below the md breakpoint) with two to four tabs, always, or never. What does not fit still goes into «Ещё (n)». Not for vertical tabs."
+      "summary": "Whether the tabs share the row equally when they all fit, each at least its own width (owner decision C96 item 7): auto on a narrow place (the row below 44rem of its own width, the container step h1) with two to four tabs, always, or never. What does not fit still goes into «Ещё (n)». Not for vertical tabs."
     },
     "configurable": {
       "type": "boolean",
@@ -460,7 +460,8 @@
     "version 1.3.0, also (written on the branch as 1.1.18; 2026-11-13, defect BT-1, rule C15): a patch. The default template asked sf-button and sf-button-icon for appearance=\"primary\" scheme=<the tabs scheme>, two values outside their lists, so every tab fell back to default primary whatever scheme said. It now asks them on their own axes, appearance=\"default\" scheme=\"primary\", the classes every tab drew already. Group build 3: the branch took the look from scheme (outline, link as ghost); the integration keeps one look per type whatever the retired scheme (owner decision C96 item 1), so scheme=\"outline\" and scheme=\"link\" still draw the same tabs. Settings, values, events and keys unchanged.",
     "version 1.3.0 also (2026-11-13, navigation intent acceptance on group build 2): (1) the plain count of a tab stands on the top of the label's line, one line high (block-size 1lh, vertical-align top), as the errors badge does: vertical-align middle grew the line box under it and a counted tab made the row 41.6 px where the size ladder says 40 (37.2 on the phone, 33.2 dense); the row is now the ladder's height with a count, with errors and with neither (tabs class sheet, component.tabs 1.2.0). (2) R193 DP-11 done: the 1.3.0 drawing writes no data-tab on any tab -- text, icon, component or link tab -- only data-sf-tab-index (the built 1.3.0 still wrote both); the class tabs (component.tabs 1.2.0) stop writing data-tab on their buttons and panels too. Nothing in the Framework or in the documentation read it. Settings, values, events and keys unchanged.",
     "version 1.3.2 (2026-11-14, group build 5; numbered above 1.3.1 on origin/fix/accordion-c154): a patch, its own code unchanged: 4 first-paint snapshot file(s) follow the merged markup (fix/icons-c151).",
-    "version 1.3.3 (2026-11-14, owner decision C184 (4); written on the branch as 1.3.2): a patch, above 1.3.1. «Ещё (n)» opens the page's one menu (core SF.menu.open) instead of a menu of its own; the entries, the size and a chosen tab are as before, a second press closes it. Settings, values, events and keys unchanged."
+    "version 1.3.3 (2026-11-14, owner decision C184 (4); written on the branch as 1.3.2): a patch, above 1.3.1. «Ещё (n)» opens the page's one menu (core SF.menu.open) instead of a menu of its own; the entries, the size and a chosen tab are as before, a second press closes it. Settings, values, events and keys unchanged.",
+    "version 1.3.4 (2026-11-15, first paint; numbered above 1.3.3 of group build 7 and 1.3.2 on origin): a patch. fit auto shares the row by its own width, not the screen's (owner decision C96 item 7 by C181 (2)): the row of «Ещё» is a container, and below its h1 step (44rem) two to four tabs share it in the tabs' sheet (component.tabs 1.3.1), so the printed first frame is the laid row; the code reads the same condition (--sf-tabs--narrow) and marks a narrow row whose tabs keep their own widths with data-sf-tabs-own. A printed row was laid at the snapshot's desktop width, and its tabs widened and moved when the code shared the row on a phone (CLS 0.0064 at 390, 0.005 at 320). The vertical look still turns into the line below the md breakpoint of the screen. Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "css": null
