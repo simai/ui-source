@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.10.3",
+  "version": "1.11.0",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -367,15 +367,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "9a4499d1a694e0c2cbf175f8bab78fd45821598c703a8deb76b7274c04d23e4c"
+        "sha256": "bb8c7b69dee8b40f9652c0a2b050c02afe8c38b2ff492d53940f200ea36bb4da"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
-        "sha256": "d127881ab1067ec5f7446e83dc022db8fdf4389310cfbb3c2b07131906e3ab43"
+        "sha256": "3000d65e830ea948a1f7ab6f70edc6df42a91a90bc351a2c61022b890006f6aa"
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "5dd43391c6a9a8bb35a10b2166433cd15303af830a8656c4a225d38bdc575248"
+        "sha256": "052f45f1052914482a24d70f7864f4193b8ce3db19579982cac13343b1063ea3"
       },
       {
         "path": "src/smart/header-site/rule.js",
@@ -383,13 +383,13 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "96d8e1882356b4b91176ac3788e84cd7a396dfed00492dd114b1faed4cf1c796"
+        "sha256": "b74b067a85cf217af6d5a6946aea7362b81f4191a5508f3129d7d17b95c41f9e"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-header-site as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
+    "use_when": "Use sf-header-site as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen. An app with a side menu (admin, SIMAI Pro, mail) has no top bar: its pages use sf-header-page.",
     "do_not": [
       "Do not draw a header of your own on a SIMAI site",
       "Do not set the bar's colours, height or gutters per site; a product sets --sf-container-gutter once for the page",

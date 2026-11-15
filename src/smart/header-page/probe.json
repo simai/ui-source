@@ -10,6 +10,8 @@
       "  <sf-header-page id=\"h-on\" heading=\"Заказы\" star></sf-header-page>",
       "  <sf-header-page id=\"h-none\" heading=\"Настройки\" level=\"install\"></sf-header-page>",
       "  <div lang=\"en\"><sf-header-page id=\"h-en\" heading=\"Orders\" star=\"false\" level=\"install\"></sf-header-page></div>",
+      "  <sf-header-page id=\"h-order\" heading=\"Заказы\"><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button><sf-button slot=\"actions\" appearance=\"outline\" text=\"Импорт\"></sf-button></sf-header-page>",
+      "  <sf-header-page id=\"h-tabs\" heading=\"Каталог\"><sf-tabs slot=\"tabs\" type=\"underline\" items='[{\"id\":\"all\",\"label\":\"Все\",\"current\":true}]'></sf-tabs></sf-header-page>",
       "</main>"
     ]
   },
@@ -123,6 +125,26 @@
         },
         {
           "check": "getComputedStyle(document.querySelector('#h .sf-page-header-line')).columnGap === '17px' && getComputedStyle(document.querySelector('#h h1')).color === 'rgb(1, 2, 3)'"
+        }
+      ]
+    },
+    {
+      "id": "p7-main-last",
+      "title": "the header places the main (filled) action last, the outlined one before it (C161 (3))",
+      "covers": "slots.actions",
+      "steps": [
+        {
+          "check": "(() => { const row = document.querySelector('#h-order .sf-page-header-actions'); const texts = [...row.querySelectorAll(':scope > sf-button')].map((b) => b.getAttribute('text')); return texts.join(',') === 'Импорт,Создать'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p8-tabs-and-sticky",
+      "title": "the tabs slot ends the drawn header; sticky is off by default (C161 (5), (7))",
+      "covers": "slots.tabs, settings.sticky",
+      "steps": [
+        {
+          "check": "(() => { const hd = document.querySelector('#h-tabs > .sf-page-header'); return hd.lastElementChild.classList.contains('sf-page-header-tabs') && !!hd.querySelector('.sf-page-header-tabs sf-tabs') && document.querySelector('#h-tabs').sticky === false && getComputedStyle(hd).position === 'static'; })()"
         }
       ]
     }

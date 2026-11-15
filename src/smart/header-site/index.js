@@ -13,7 +13,10 @@
 // holds the one page lock and gives focus back when it closes. The panel is
 // the header's own element: wide it is display: contents, so the slot nodes
 // stand in the row; collapsed it is the panel. The nodes are placed once and
-// never move or get copied (§4.5).
+// never get copied (§4.5); only the settings among the tools -- the language
+// and the theme switch -- move, between the bar's tools and the panel's
+// «Настройки» group, when the bar crosses its breakpoint (owner decision C161
+// (8)): a phone's bar keeps the menu button, the brand, search and profile.
 //
 // From its component.json (§3, §4, §8): the settings are made by
 // core/js/element-manifest.js, open, close and toggle are the actions and
@@ -36,6 +39,17 @@ import './scss/index.scss';
 const SLOTS = ['brand', 'nav', 'actions', 'tools', 'sheet'];
 const TAGS = ['sf-header-site', 'sf-site-header'];
 const SWITCH_OPERATIONS = ['toggle', 'open', 'close'];
+
+// A tool that is a setting of the page rather than a tool of the site: the
+// language (sf-language) and the theme switch (any element with theme-switch).
+// On a collapsed bar these stand in the panel under the sections (C161 (8)).
+const SETTING_TOOLS = 'sf-language, [theme-switch]';
+function settingKind(node) {
+  if (node?.nodeType !== 1) return null;
+  const setting = node.matches(SETTING_TOOLS) ? node : node.querySelector?.(SETTING_TOOLS);
+  if (!setting) return null;
+  return setting.localName === 'sf-language' ? 'language' : 'theme';
+}
 let sequence = 0;
 
 // A switch of the page's own (owner decision C104, as sf-drawer's
@@ -182,6 +196,9 @@ class SfSiteHeader extends SiteHeaderElement {
   syncCollapsed() {
     const collapsed = this.collapsed;
     this.sfHostState('data-collapsed', collapsed);
+    // The settings among the tools stand in the bar or in the panel by the
+    // bar's form: a change of form draws them again in their place.
+    if (this._drawnCollapsed !== undefined && this._drawnCollapsed !== collapsed) this.requestComponentUpdate('collapse');
     for (const menu of this.navMenus()) {
       if (collapsed) {
         if (menu.dataset.sfSiteHeaderOrientation === undefined) menu.dataset.sfSiteHeaderOrientation = menu.getAttribute('orientation') ?? '';
@@ -403,7 +420,20 @@ class SfSiteHeader extends SiteHeaderElement {
     if (link && this.panel()?.contains(link)) this.runClose({reason: 'api', restoreFocus: false});
   }
 
+  // The tools split by the bar's form (C161 (8)): wide, every tool in the
+  // bar in the page's order; collapsed, the settings (language, theme) in the
+  // panel's «Настройки» group, each with its word, and the rest in the bar.
+  toolParts(collapsed) {
+    const nodes = [].concat(this.hasSlotContent('tools') ? this.getSlotContent('tools') : []).filter((node) => node && typeof node === 'object' && 'nodeType' in node);
+    if (!collapsed) return {bar: nodes, settings: []};
+    const settings = nodes.filter((node) => settingKind(node)).map((node) => ({node, label: this.sfWord(settingKind(node))}));
+    return {bar: nodes.filter((node) => !settingKind(node)), settings};
+  }
+
   templateContext() {
+    const collapsed = this.collapsed;
+    this._drawnCollapsed = collapsed;
+    const tools = this.toolParts(collapsed);
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
@@ -417,6 +447,8 @@ class SfSiteHeader extends SiteHeaderElement {
       navigationAlign: this.navigationAlign,
       label: this.label,
       menuLabel: this.menuLabel,
+      tools,
+      settingsLabel: this.sfWord('settings'),
       closeLabel: this.closeLabel,
       slot: (name) => this.getSlotContent(name),
       hasSlot: (name) => SLOTS.includes(name) && this.hasSlotContent(name),

@@ -124,6 +124,65 @@
   }
 }
 
+/* The tabs slot (owner decision C161 (5), HD-14): the page's views end the
+   header, the header's gap (--sf-space-1/2, 12) below the line, and the tabs'
+   own line is the header's lower edge: nothing of the header stands below
+   it, the decorative level's foot padding included. */
+.sf-page-header-tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.sf-page-header:has(> .sf-page-header-tabs) {
+  padding-block-end: 0;
+}
+
+/* The slot holds the tabs' strip; the view each tab shows is the page's,
+   below the header. An sf-tabs whose panels hold nothing (a switch of views
+   the page draws itself: no element in any panel) draws no empty panel area
+   under its line here -- 2 x 16 of padding -- so that line stays the
+   header's edge. */
+.sf-page-header-tabs .sf-tabs-main-container:not(:has(> .sf-tabs-main-tab > *)) {
+  display: none;
+}
+
+/* sticky (owner decision C161 (7), off by default): the header stays at the
+   top of the work area that scrolls it -- the host is display: contents, so
+   the drawn header is the sticky box in the page's column. It is the flat
+   place on the page's surface while the area is at its top, a half step of
+   room above and below its line; while content runs under it (the host says
+   data-scrolled) it is the raised place of C20, as sf-header-site's bar, and
+   the path folds away so the header holds only its line. */
+.sf-page-header--sticky {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--sf-z-index-1);
+  padding-block: var(--sf-space-1\/2);
+  background-color: var(--sf-surface-page);
+  box-shadow: var(--sf-shadow-flat);
+  transition: box-shadow var(--sf-duration-fast) var(--sf-animation), background-color var(--sf-duration-fast) var(--sf-animation);
+}
+
+.sf-page-header--sticky:has(> .sf-page-header-tabs) {
+  padding-block-end: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-page-header--sticky {
+    transition: none;
+  }
+}
+
+:is(sf-header-page, sf-page-header)[data-scrolled='true'] > .sf-page-header--sticky {
+  background-color: var(--sf-surface-raised);
+  box-shadow: var(--sf-shadow-raised);
+}
+
+:is(sf-header-page, sf-page-header)[data-scrolled='true'] > .sf-page-header--sticky > .sf-page-header-path {
+  display: none;
+}
+
 /* The icon button's schemes set the glyph's ink on its button, so the
    favourite's colour is given to the glyph itself. */
 .sf-page-header-star--on .sf-icon {

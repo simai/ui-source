@@ -60,10 +60,17 @@ export const FOCUSABLE = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
-/** The focusable nodes inside these roots that are drawn and not inert, in order. */
+/**
+ * The focusable nodes inside these roots that are drawn and not inert, in
+ * order. A control taken out of the Tab order (tabindex -1: the other
+ * segments of a roving group such as sf-segmented, a menu's rows) is no Tab
+ * stop: counted, it was the trap's last stop that Tab never reaches, and Tab
+ * from the group's current segment left the layer (sf-header-site's panel
+ * with the theme switch in its settings group, owner decision C161 (8)).
+ */
 export function focusablesIn(...roots) {
   return roots.flatMap((root) => Array.from(root?.querySelectorAll?.(FOCUSABLE) ?? []))
-    .filter((node) => node.getClientRects().length > 0 && !node.closest('[inert]'));
+    .filter((node) => node.getClientRects().length > 0 && !node.closest('[inert]') && node.tabIndex >= 0);
 }
 
 function stack() {

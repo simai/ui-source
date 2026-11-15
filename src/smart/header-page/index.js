@@ -1,12 +1,14 @@
-// The head of an admin page: where the page is, what it is called, how many
-// records it holds, whether it is a favourite, and its main action. The admin's
-// top bar is gone (larena-specs frontend-interface-program, sf-admin-menu
-// assignment, v5, section 6), so this is the only place a page says these
-// things -- and it is a shared part because every admin page, Docara's
-// included, says the same four.
+// The head of a work page of an app: where the page is, what it is called,
+// whether it is a favourite, its actions and its views. An app with a side
+// menu has no top bar (owner decision C161 (1); larena-specs
+// frontend-interface-program, sf-admin-menu assignment, v5, section 6), so
+// this is the only place a page says these things -- the admin's pages, SIMAI
+// Pro's conversation head and ui-mail's columns alike; a site shows
+// sf-header-site.
 //
-// The host owns everything in it. The path, the start of the line on a phone
-// and the actions are the host's own markup in slots; the heading, the count
+// The host owns everything in it. The path, the start of the line («назад»,
+// a phone's menu), the actions and the tabs are the host's own markup in
+// slots; the heading, the count
 // and whether the page is shared by every site are attributes. The star is the
 // one control the header draws itself, and pressing it is a request the host
 // answers: sf-page-header-toggle {on} is cancelable, and a host that wants to
@@ -16,6 +18,7 @@
 // the settings are made by core/js/element-manifest.js, the words are the
 // language files', and the old sf-page-header-star follows the toggle as a
 // dated alias (aliases.json).
+import {nothing} from 'lit';
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {noteAuthored} from '../../core/js/density';
@@ -39,7 +42,18 @@ const PageHeaderElement = elementFromManifest(manifest, {
 });
 
 // The header's slots. A child naming one of them is the page's content for it.
-const HOST_SLOTS = new Set(['path', 'start', 'actions']);
+const HOST_SLOTS = new Set(['path', 'start', 'actions', 'tabs']);
+
+// The nearest box that scrolls the header (overflow auto or scroll on the
+// block axis), or null for the window: the work area a sticky header stays
+// at the top of.
+function scrollerOf(element) {
+  for (let node = element.parentElement; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
+    const overflow = getComputedStyle(node).overflowY;
+    if (overflow === 'auto' || overflow === 'scroll' || overflow === 'overlay') return node;
+  }
+  return null;
+}
 
 class SfPageHeader extends PageHeaderElement {
   // The base takes the slot children once, when the element connects. A page
@@ -50,6 +64,7 @@ class SfPageHeader extends PageHeaderElement {
   // ones it already holds, and the header draws again.
   onConnected() {
     super.onConnected?.();
+    this.watchScroll();
     if (this._lateSlotObserver) return;
     this._lateSlotObserver = new MutationObserver(() => this.adoptLateSlotChildren());
     this._lateSlotObserver.observe(this, {childList: true});
@@ -57,12 +72,64 @@ class SfPageHeader extends PageHeaderElement {
   }
 
   onDisconnected() {
+    this.unwatchScroll();
     this._lateSlotObserver?.disconnect();
     this._lateSlotObserver = null;
     this._rowObserver?.disconnect();
     this._rowObserver = null;
     this._rowObserved = null;
     super.onDisconnected?.();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback?.(name, oldValue, newValue);
+    if (name === 'sticky' && oldValue !== newValue && this._isMounted) this.watchScroll();
+  }
+
+  // ─── sticky (owner decision C161 (7)) ───────────────────────────────────────
+  // A sticky header stays at the top of the work area that scrolls it -- the
+  // nearest box that scrolls, else the window -- flat while the area is at its
+  // top and raised while content runs under it (C20, as sf-header-site): the
+  // host says data-scrolled, and the sheet draws the raised shadow and folds
+  // the path away from it. Only a sticky header listens.
+  watchScroll() {
+    this.unwatchScroll();
+    if (!this.sticky || typeof globalThis.addEventListener !== 'function') {
+      this.sfHostState('data-scrolled', false);
+      return;
+    }
+    this._scroller = scrollerOf(this);
+    this._onScroll ??= () => {
+      if (this._scrollFrame) return;
+      this._scrollFrame = globalThis.requestAnimationFrame?.(() => {
+        this._scrollFrame = 0;
+        this.syncScrolled();
+      }) ?? 0;
+      if (!this._scrollFrame) this.syncScrolled();
+    };
+    (this._scroller || globalThis).addEventListener('scroll', this._onScroll, {passive: true});
+    this._watchingScroll = true;
+    this.syncScrolled();
+  }
+
+  unwatchScroll() {
+    if (this._watchingScroll) (this._scroller || globalThis).removeEventListener?.('scroll', this._onScroll);
+    this._watchingScroll = false;
+    this._scroller = null;
+    if (this._scrollFrame) globalThis.cancelAnimationFrame?.(this._scrollFrame);
+    this._scrollFrame = 0;
+  }
+
+  // Content is under the header when its area has scrolled and the header
+  // stands stuck at the area's top edge.
+  syncScrolled() {
+    const header = this.querySelector(':scope > .sf-page-header');
+    const scroller = this._scroller;
+    const scrolled = scroller ? scroller.scrollTop : (globalThis.scrollY ?? 0);
+    const edge = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).borderTopWidth) || 0) : 0;
+    // Stuck: at the edge, not above it (a header whose column ended has
+    // scrolled away with it, and nothing runs under it).
+    this.sfHostState('data-scrolled', Boolean(header) && scrolled > 0 && Math.abs(header.getBoundingClientRect().top - edge) <= 1);
   }
 
   // ─── «Ещё» (owner decision C155 (7), C161 (4)) ─────────────────────────────
@@ -215,10 +282,33 @@ class SfPageHeader extends PageHeaderElement {
     if (this.sfEmit('toggle', {on}, {cancelable: true})) this.star = on;
   }
 
+  // The actions in the order the header places them (owner decision C161 (3)):
+  // the main action -- the filled sf-button -- last, at the end of the line,
+  // the outlined and quiet ones before it in the page's order. The nodes are
+  // the page's and are only placed, so the reading and Tab order follow what
+  // is seen. Windows and panels keep their own order (C157 (3), C159 (4)).
+  // ⋯ «Ещё» stands between the two, so the main action ends the line on a
+  // phone too (C161 (3), (4)).
+  orderedActions() {
+    const nodes = [].concat(this.getSlotContent('actions') || []).filter((node) => node && node !== nothing);
+    const main = nodes.filter((node) => node.nodeType === 1 && isMainAction(node));
+    return {rest: nodes.filter((node) => !main.includes(node)), main};
+  }
+
+  // ⋯ takes the look of the actions it stands for: outlined when the first
+  // action that may leave is outlined (the prototype's «Ещё» beside «Импорт»,
+  // «Экспорт»), else the row's quiet ghost on the surface (C155 (2)).
+  actionMoreLook() {
+    const first = this.orderedActions().rest.find((node) => node.nodeType === 1);
+    return first?.getAttribute('appearance') === 'outline' ? {appearance: 'outline', scheme: first.getAttribute('scheme') || ''} : {appearance: 'ghost', scheme: 'on-surface'};
+  }
+
   templateContext() {
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
+      sticky: this.sticky,
+      actions: () => this.orderedActions(),
       heading: this.heading,
       count: this.count,
       level: this.level,
@@ -226,6 +316,7 @@ class SfPageHeader extends PageHeaderElement {
       rootClass: this.getRootClass(),
       overflow: this.overflowMore ? 'more' : 'wrap',
       moreSize: this.actionMoreSize(),
+      moreLook: this.actionMoreLook(),
       text: (key) => this.sfWord(key),
       hostSlot: (name) => this.getSlotContent(name),
       hasHostSlot: (name) => this.hasSlotContent(name),

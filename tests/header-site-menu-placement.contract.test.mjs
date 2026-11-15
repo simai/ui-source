@@ -99,8 +99,8 @@ test('header site C104: the docs name both settings and the version is a minor',
   assert.match(docs, /menu-placement="inline-end"/u);
   assert.match(docs, /data-header-site="toggle"/u);
   assert.match(docs, /aria-controls="site-header"/u);
-  // 1.10.2: the bar reads the sticky layer (C181 (3)); the C104 minor stays 1.9.0 in the journal.
-  // 1.10.1 (fix/drawer-c157): the panel moved to the 20rem step (owner decision C157 (2)).
-  assert.equal(component.version, '1.10.2');
+  // 1.9.0 brought C104; later versions keep it (1.10.0: C161 (8)).
+  const [major, minor] = component.version.split('.').map(Number);
+  assert.ok(major === 1 && minor >= 9, component.version);
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.9.0 (2026-11-12, owner decision C104')));
 });
