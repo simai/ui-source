@@ -158,6 +158,11 @@
         "default": false,
         "description": "A close button at the end of the panel's head."
       },
+      "for": {
+        "type": "string",
+        "default": "",
+        "description": "The id of a page area -- a list, a table, a tree -- or several separated by spaces, whose objects open this menu by the right button, the menu key (Shift+F10) and a long press on a touch screen (owner decision C164 (1)). The object is the row the event came from (a table body's row, an element with a row, option, treeitem or listitem role, a list item), or the area itself; its «⋯» opened with openFor() names the same object, so one open listener gives one list for every way in (C164 (2)). On a selected row (aria-selected=\"true\") the menu acts on every selected row of the area and says «Выбрано N»; a row that can be selected and is not is selected alone first (C164 (3)). A link, a field, selected text and the right button with Shift keep the browser's own menu. On a phone the menu of an object is the sheet at the bottom (C164 (6))."
+      },
       "aria-label": {
         "type": "string",
         "default": ""
@@ -370,6 +375,53 @@
       "returns": {
         "type": "Promise<object>",
         "description": "Resolves to an outcome whose value says whether the menu is open afterwards: {outcome: applied, value: false} when it closed, openFor()'s outcome when it opened; refused with prevented when a listener kept it open."
+      }
+    },
+    "openAt": {
+      "summary": "Open with the menu's corner exactly at a point of the screen -- the pointer's -- with no gap, flipping and shifting at the screen's edges (owner decision C164). The menu then owns its lifecycle as with openFor(); the focus goes back to the target given, or to where it was.",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "options": {
+                "type": "object",
+                "properties": {
+                  "target": {
+                    "type": "object",
+                    "summary": "The object the menu acts on: the open event names it, the focus goes back to it, and on a phone the menu is the sheet at the bottom."
+                  },
+                  "focus": {
+                    "type": "string",
+                    "enum": [
+                      "first",
+                      "last",
+                      "none"
+                    ],
+                    "default": "first"
+                  }
+                }
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "Promise<object>",
+        "description": "openFor()'s outcome; refused with invalid when x or y is not a number."
       }
     },
     "close": {
@@ -650,11 +702,26 @@
       "canonical": true
     },
     "sf-menu-context-open": {
-      "summary": "Opened through openFor(). Bubbles and is composed; carries no detail.",
+      "summary": "Opened through openFor() or openAt(), or by an object of an area named by for: the request, cancelable. Bubbles and is composed; carries the object and the objects the menu acts on, so the host sets the entries for them in its listener.",
       "payload": {
         "type": "object",
-        "required": [],
-        "properties": {},
+        "required": [
+          "target",
+          "targets"
+        ],
+        "properties": {
+          "target": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The object the menu is opened for (C164): the row of an area named by for that holds the anchor or the pointer, or openAt()'s target; null for a menu opened at a control alone."
+          },
+          "targets": {
+            "type": "array",
+            "description": "The objects it acts on: every selected row when the target is selected, else the target alone (C164 (3)); empty with no target. The host gives the entries for them here, one list for the right button, the menu key, a long press and «⋯» (C164 (2))."
+          }
+        },
         "additionalProperties": true
       },
       "canonical": true
@@ -953,19 +1020,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "6050bf4d22812dcb9f3f75f4936536939c05a84d3dd116c90c93ec2366f108fd"
+        "sha256": "d9ad1ea12c556a1cfe2961196b0d45d457364174573de3efb9b7facaf0953241"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",
-        "sha256": "9fd48de66a63b444ebe63bd65bafaffa91bc024c9f5d418448379c2a0b19b38b"
+        "sha256": "05cfc59e405460ae8ded929e18f492bb51202ab02c4f78add5548d3e12391bc3"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "fe633b4fb15bda0e84cad6ca84e36d2782ec7eec1f5207f3bb1c99a962488bc6"
+        "sha256": "57d5095116ed79622b901ec16313ba8acb9681506ed5a2aa73c5689fa8c22ffe"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
-        "sha256": "ab86d4eccbd894c2bda24baaf98687d340ffdeaad236b673d69950b25665e9ff"
+        "sha256": "b7f11bc99b50dd47f204947cf61be997ca3dacf739626738c173b33cc6acf479"
       }
     ],
     "generated_runtime": [

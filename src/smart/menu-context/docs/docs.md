@@ -46,8 +46,14 @@
 компонент `kbd`, своих стилей для клавиш в меню нет. Галочка
 `kind: 'check'` стоит слева, в колонке иконок; выбранный `kind: 'radio'`
 отмечен заливкой. Есть разделитель `{type: 'separator'}` и заголовок
-группы `{type: 'heading'}`. Опасное действие отмечается `danger: true` или `status: 'danger'`, как у кнопок (`'error'` читается так же), недоступное —
-`disabled`. Если хотя бы у одного пункта есть иконка, место под иконку
+группы `{type: 'heading'}`. Опасное действие отмечается `danger: true` или `status: 'danger'`, как у кнопок (`'error'` читается так же);
+меню всегда ставит его последним, после линии, где бы оно ни стояло в
+`entries` (решение C164 (5)). Если удаление задевает других или его нельзя
+вернуть, хост спрашивает перед ним (`sf-confirm`, решение C25). Недоступное
+действие — `disabled`: строка бледная, но остаётся в обходе стрелками, а
+`caption` объясняет причину («Буфер обмена пуст»); нажатие на неё ничего не
+делает (C164 (4)). Действие, которое к объекту не относится никогда, в
+список не включают. Если хотя бы у одного пункта есть иконка, место под иконку
 сохраняется у всех, и подписи начинаются на одной линии.
 
 Открытое меню находится в верхнем слое страницы: его не обрезает прокручиваемый
@@ -63,39 +69,67 @@
 кнопке. Выбор на любом уровне приходит одним событием `sf-context-menu-select`;
 чтобы меню осталось открытым, отмените событие или задайте пункту `keepOpen`.
 
-### Правый щелчок
+### Меню объекта: правая кнопка, клавиша меню, долгое нажатие
 
-Меню открывается и у указателя: страница слушает `contextmenu` на строке или
-объекте, ставит в место щелчка точку без размера и вызывает `openFor(точка)`.
-Угол меню встаёт ровно в точку (у нижнего края экрана меню открывается вверх,
-его низ — в точке), плотность меню — плотность строки под указателем, а Escape и
-выбор возвращают фокус этой строке. Клавиша меню и Shift+F10 на строке с фокусом
-присылают то же событие.
+Атрибут `for` называет области страницы — список, таблицу, дерево — по
+`id` (несколько через пробел). Строки этих областей открывают меню правой
+кнопкой мыши, клавишей меню (и `Shift+F10`) и долгим нажатием пальцем
+(полсекунды, палец на месте) — это одна настройка (решение C164 (1)).
+Строка — это строка тела таблицы, элемент с ролью `row`, `option`,
+`treeitem` или `listitem`, пункт списка `li`; область без строк — один
+объект. На ссылке, в поле, на выделенном тексте и с `Shift` остаётся меню
+браузера.
+
+Меню открывается углом точно в указателе (`openAt(x, y)`), от клавиатуры —
+под началом строки, и после закрытия возвращает фокус строке. Кнопка «⋯»
+строки открывает его через `toggleFor(кнопка)`. Перед открытием приходит
+событие `sf-menu-context-open` с `detail.target` (строка) и
+`detail.targets` (строки, над которыми действует меню); хост задаёт пункты в
+одном обработчике, поэтому у «⋯» и у правой кнопки один и тот же список
+(C164 (2)).
+
+Если строка выбрана (`aria-selected="true"`), меню действует на все
+выбранные строки области и сверху пишет «Выбрано N»; если строка не выбрана,
+меню сначала выбирает её одну (C164 (3)). На телефоне меню объекта —
+шторка снизу (C157 (5)): ручка, заголовок с названием объекта, те же строки
+текстом размера 1, строки не ниже 44; закрывается касанием мимо и смахиванием
+вниз (C164 (6)).
 
 ```html
-<div role="list" aria-label="Файлы">
-  <div role="listitem" tabindex="0" class="file">Отчёт за ноябрь.pdf</div>
-</div>
-<sf-menu-context id="fileMenu" popup aria-label="Действия с файлом"></sf-menu-context>
+<ul id="files" role="listbox" aria-label="Файлы" aria-multiselectable="true">
+  <li role="option" tabindex="0" aria-selected="false" data-name="Отчёт.pdf">
+    Отчёт.pdf
+    <sf-button-icon class="more" icon="more_horiz" appearance="ghost" aria-label="Ещё: Отчёт.pdf"></sf-button-icon>
+  </li>
+</ul>
+<sf-menu-context id="file-menu" popup for="files" aria-label="Действия с файлом"></sf-menu-context>
 <script>
-  fileMenu.entries = [
-    {id: 'open', text: 'Открыть', icon: 'open_in_new'},
-    {id: 'rename', text: 'Переименовать', shortcut: 'f2'},
-    {type: 'separator'},
-    {id: 'delete', text: 'Удалить', icon: 'delete', shortcut: 'delete', danger: true},
-  ];
-  for (const row of document.querySelectorAll('.file')) {
-    row.addEventListener('contextmenu', (event) => {
-      event.preventDefault();
-      const point = document.createElement('span');
-      point.style.cssText = `position: fixed; left: ${event.clientX}px; top: ${event.clientY}px`;
-      document.body.append(point);
-      fileMenu.addEventListener('sf-menu-context-closed', () => point.remove(), {once: true});
-      fileMenu.openFor(point);
-    });
-  }
+  const menu = document.getElementById('file-menu');
+  menu.addEventListener('sf-menu-context-open', (event) => {
+    const {targets} = event.detail;
+    menu.entries = targets.length > 1
+      ? [{id: 'copy', text: 'Копировать', icon: 'content_copy'},
+         {id: 'delete', text: 'Удалить', icon: 'delete', danger: true}]
+      : [{type: 'heading', text: targets[0]?.dataset.name ?? ''},
+         {id: 'open', text: 'Открыть', icon: 'open_in_new', shortcut: 'Enter'},
+         {id: 'paste', text: 'Вставить', icon: 'content_paste', disabled: true, caption: 'Буфер обмена пуст'},
+         {id: 'delete', text: 'Удалить', icon: 'delete', danger: true, shortcut: 'Delete'}];
+  });
+  files.addEventListener('click', (event) => {
+    const more = event.target.closest('.more');
+    if (more) menu.toggleFor(more.querySelector('button') ?? more);
+  });
 </script>
 ```
+
+Таблица с классом `table` открывает то же меню: `for` — `id` таблицы, строки
+тела — объекты; выбор строки отмечают `aria-selected` на `<tr>`.
+
+Меню можно открыть и у любой точки без `for`: `openAt(x, y)` или
+`openFor(точка)`, где точка — элемент без размера. Угол меню встаёт ровно в
+точку (у нижнего края экрана меню открывается вверх, его низ — в точке),
+плотность меню — плотность строки под точкой, а Escape и выбор возвращают
+фокус этой строке.
 
 ### Размер, ширина и подвал
 
