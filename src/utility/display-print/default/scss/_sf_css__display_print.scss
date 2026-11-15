@@ -13,7 +13,8 @@ $infix: xs;
     @include breakpoint-media($infix) {
         $infix: breakpoint-infix($infix, $breakpoint-array);
 
-        // Display Print
+        // Display Print (deprecated until 2027-01-01, owner decision C212 (6):
+        // write print-only; core/js/retired-classes.table.js)
         @each $display-print-name, $display-print-value in $display-print-array {
             .#{$infix}print-#{$display-print-name} {
                 display: none;
@@ -26,9 +27,18 @@ $infix: xs;
             @media print { visibility: visible; }
         }
 
+        // print-visible-none is deprecated until 2027-01-01 (C212 (6)): write
+        // print-invisible.
         .#{$infix}print-hidden,
+        .#{$infix}print-invisible,
         .#{$infix}print-visible-none {
             @media print { visibility: hidden; }
+        }
+
+        // Owner decision C212 (6): shown on paper only. The element keeps the
+        // display its own classes give it when printed.
+        .#{$infix}print-only {
+            @media not print { display: none; }
         }
     }
 // }

@@ -13731,6 +13731,63 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "class-c212-hide-print",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (6): one set to hide -- hidden (display), invisible (visibility), sr-only with not-sr-only (now in the core sheet, there at the first paint) and on paper print-hidden, print-only, print-invisible. The six display-print classes print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table hid an element on screen and set its display on paper; print-only hides it on screen and leaves on paper the display its own classes give it. print-visible-none is the second name of print-invisible (invisible on paper, its room kept). The old names keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js). utility.display-print 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "print-block",
+          "to": "print-only",
+          "match": "(?<![\\w-])print-block(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "print-inline",
+          "to": "print-only",
+          "match": "(?<![\\w-])print-inline(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "print-inline-block",
+          "to": "print-only",
+          "match": "(?<![\\w-])print-inline-block(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "print-flex",
+          "to": "print-only",
+          "match": "(?<![\\w-])print-flex(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "print-inline-flex",
+          "to": "print-only",
+          "match": "(?<![\\w-])print-inline-flex(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "print-table",
+          "to": "print-only",
+          "match": "(?<![\\w-])print-table(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "print-visible-none",
+          "to": "print-invisible",
+          "match": "(?<![\\w-])print-visible-none(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write print-only for print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table; when the element must take a display on paper other than its own, set it in a page rule under @media print. Write print-invisible for print-visible-none.",
+      "owner": "ui-source",
+      "source": "src/utility/display-print/default/scss/_sf_css__display_print.scss; src/core/scss/_sf_css__hide.scss; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md; control/docs-review/decisions.md C212"
     }
   ]
 }

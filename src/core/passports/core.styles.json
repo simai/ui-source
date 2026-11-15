@@ -5,7 +5,7 @@
   "kind": "core",
   "version": "1.14.0",
   "owner": "simai/ui-source",
-  "summary": "The core sheet around the token sets: the entry, the layer order, the base, presets, scrollbars, the loader, the logo, composition regions and the workspace layout, placeholders, touch fields and the display settings (the five colour schemes, text size and spacing, images, motion, the skip link, prefers-contrast and prefers-reduced-transparency).",
+  "summary": "The core sheet around the token sets: the entry, the layer order, the base, presets, scrollbars, the loader, the logo, composition regions and the workspace layout, placeholders, touch fields, sr-only and not-sr-only (C212 (6)) and the display settings (the five colour schemes, text size and spacing, images, motion, the skip link, prefers-contrast and prefers-reduced-transparency).",
   "includes": [
     "src/core/scss/",
     "src/core/figma_variables/"
@@ -18,6 +18,7 @@
     "src/core/scss/_sf_css__composition.scss",
     "src/core/scss/_sf_css__density.scss",
     "src/core/scss/_sf_css__display.scss",
+    "src/core/scss/_sf_css__hide.scss",
     "src/core/scss/_sf_css__loader.scss",
     "src/core/scss/_sf_css__logo.scss",
     "src/core/scss/_sf_css__placeholder.scss",
@@ -33,7 +34,7 @@
     "src/core/scss/mix/_mix__window-footer.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "53c0985f797ed00915704785b739806cbd4bc155ad3011ce43ec8dc1d41e4ca9",
+  "content_sha256": "da2185f4c83bf729b32d804c783c2aa88b54a370f091ef4fe9cf407703d770d0",
   "dependencies": [
     {
       "id": "font.inter",
