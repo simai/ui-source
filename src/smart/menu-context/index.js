@@ -1,5 +1,5 @@
 import SfBaseElement from "../../core/js/smart-base";
-import { densityOf, followDensity } from "../../core/js/density.js";
+import { densityOf, followDensity, sizeOf, sizeStep } from "../../core/js/density.js";
 import { elementFromManifest } from "../../core/js/element-manifest";
 import BundledPosition from "../../core/js/position.js";
 import { renderContextMenuTemplate } from "./js/templates/default";
@@ -1000,6 +1000,34 @@ class SfContextMenu extends ContextMenuElement {
     return Boolean(this._owned);
   }
 
+  // The menu takes the size step of what opens it (owner remark 2026-11-15):
+  // the opener's size, else its component's or the Smart component holding
+  // it (core density.js sizeOf); its two steps are "1/2" for an opener below
+  // 1 and "1" from 1 up, as sf-button's own menu reads its size. A size the
+  // page or a host gave the menu wins: the menu takes the opener's only while
+  // its size attribute is the one it wrote itself, and writes it again on
+  // every opening, so one menu opened from two tables follows each.
+  followOpenerSize(place) {
+    if (this.hasAttribute("size") && this._openerSize === undefined) return;
+    const step = sizeStep(sizeOf(place));
+    const size = Number.isNaN(step) ? null : step < 1 ? "1/2" : "1";
+    this._writingSize = true;
+    try {
+      if (size === null) this.removeAttribute("size");
+      else if (this.getAttribute("size") !== size) this.setAttribute("size", size);
+    } finally {
+      this._writingSize = false;
+    }
+    this._openerSize = size === null ? undefined : size;
+  }
+
+  // A size written by anyone but the menu itself is the menu's own: it wins
+  // over the opener's from then on.
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "size" && !this._writingSize) this._openerSize = undefined;
+    super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
   // Open with the menu's corner exactly at a point of the screen -- the
   // pointer's -- with no gap (CM-5), flipping at the edges. `target` is the
   // object it acts on: the focus goes back to it, and on a phone the menu is
@@ -1186,20 +1214,24 @@ class SfContextMenu extends ContextMenuElement {
       this._targets = targets;
       this.requestComponentUpdate("targets");
     }
-    await this.whenRendered();
-    const surface = this.surface();
-    if (!surface) return {outcome: "unavailable", reason: "no-surface"};
     // An anchor the size of nothing is a point: where a right-click was (a
     // host's contextmenu, SF.Effects). The menu's corner is the point itself,
     // not --sf-space-1/4 below it (CM-5, as system menus open), and what
     // stands under the point is the place the menu belongs to: its density
-    // (C22/C79) and where the focus goes back (CM-2). A point appended to
-    // <body> had neither, so the menu came out normal in a compact table and
-    // the focus fell to <body>. Where it does not fit, core positioning
-    // turns it to the other side of the point (C164 (1)): left of it at the
-    // right edge, above it at the bottom edge.
+    // (C22/C79), its size and where the focus goes back (CM-2). A point
+    // appended to <body> had neither, so the menu came out normal in a compact
+    // table and the focus fell to <body>. Where it does not fit, core
+    // positioning turns it to the other side of the point (C164 (1)): left of
+    // it at the right edge, above it at the bottom edge.
     const point = pointOf(anchor, this);
     const place = point?.under ?? anchor;
+    // The size of what opens it, on every opening (owner remark 2026-11-15):
+    // a menu without a size of its own is drawn where it stands -- often on
+    // <body> -- so the row menu of a table of size 1 opened at 1/2.
+    this.followOpenerSize(place);
+    await this.whenRendered();
+    const surface = this.surface();
+    if (!surface) return {outcome: "unavailable", reason: "no-surface"};
     // Focus goes back where it was, or to the control that opened the menu
     // when it was nowhere -- a press on an sf-button leaves it on the body in
     // some browsers, and the menu returned it there. A host element is not

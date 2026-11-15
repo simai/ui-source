@@ -17,7 +17,9 @@
 //   menu's corner exactly there;
 // - entries: the rows, as sf-menu-context takes them;
 // - label: the menu's name, read by a screen reader;
-// - size: the menu's size step, as sf-menu-context's size attribute;
+// - size: the menu's size step, as sf-menu-context's size attribute; left
+//   out, the step of what opens it (the anchor's, its component's or the
+//   Smart component holding it: a row menu of a table of size 1 is size 1);
 // - returnTo: where the focus goes when the menu closes (the row it acted
 //   on); left out, the menu gives the focus back to where it was, or to the
 //   anchor.
