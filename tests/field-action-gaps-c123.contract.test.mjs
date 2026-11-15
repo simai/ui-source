@@ -43,11 +43,11 @@ test('the fields read the value step: sf-input, the slot, the colour frame, the 
 });
 
 test('the versions', () => {
-  assert.equal(json('src/component/inputs/passport.json').version, '1.7.1');
+  assert.equal(json('src/component/inputs/passport.json').version, '1.9.0'); // 1.9.0: the script's layout in the sheet (RG-B-53)
   assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.13.0'); // 1.13.0: the anchored badge's .sf-dot (C185 (8))
   // input-color moved on to 1.13.0 (fix/field-action-gaps-2-c123); its 1.12.1 note stays.
   // Group build 7: the notes numbered above the released pair (1.12.1 -> 1.13.1, 1.13.2 -> 1.15.1).
-  for (const [folder, version, current] of [['input-color', '1.13.1', '1.15.0'], ['input-lookup', '1.15.1', '1.15.1']]) {
+  for (const [folder, version, current] of [['input-color', '1.13.1', '1.15.0'], ['input-lookup', '1.15.1', '1.15.3']]) {
     const component = json(`src/smart/${folder}/component.json`);
     assert.equal(component.version, current, folder);
     const note = new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123 \\(6\\)`, 'u');

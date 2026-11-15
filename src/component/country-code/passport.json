@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.country-code",
   "kind": "component",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/country-code/data/countries.json",
@@ -16,11 +16,12 @@
     "src/component/country-code/lang/index.mjs",
     "src/component/country-code/lang/ru.json",
     "src/component/country-code/rule.js",
+    "src/component/country-code/scss/_css__utility_hint_layout.scss",
     "src/component/country-code/scss/_css_country_code.scss",
     "src/component/country-code/scss/_css_country_code_custom.scss",
     "src/component/country-code/scss/index.scss"
   ],
-  "content_sha256": "82ebf9247563a30f142694fd261ec39cf7d420e40547cb77b1fc714806383540",
+  "content_sha256": "b93bde0e14d86f4b6c9b91879accdf9b608b5bf303db70b8499fbd71787ce100",
   "dependencies": [
     {
       "id": "component.inputs",
