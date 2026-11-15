@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.17.0",
+  "version": "1.18.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -102,6 +102,16 @@
           "none",
           "icon",
           "avatar"
+        ]
+      },
+      "lines": {
+        "type": "string",
+        "default": "auto",
+        "description": "The line count of the skeleton rows while loading, from the first frame: auto takes the rows the list has shown (the caption row until it has shown any); 1 keeps one-line rows (the row's height, an avatar of the row's line); 2 keeps rows with a second line (the caption row, an avatar of the control height). So a one-line list's first skeleton row is as tall as its rows and its title bar where the title will be, whatever leading says. It shapes the skeleton alone: the rows draw what their items carry (C130).",
+        "enum": [
+          "auto",
+          "1",
+          "2"
         ]
       },
       "size": {
@@ -770,7 +780,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "2a780fc88a4b5507efba194b2b74532677e94cddc036a37de717674028df98e4"
+        "sha256": "42afed674aab410780b807508938f94d190600be7ec3c5d69e377add25294091"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
@@ -786,11 +796,11 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "055e09f7fc69e01ac64e5da458927a59cf065a58bf9986d796cf3e7ceaa442de"
+        "sha256": "f8136184b116ca7feb5bc180750245a8e1e1a7fe978fff822a8d636560b563ea"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "4625a68f0d0f3948b8fd6599f0fb433033b3b72922406611228532e69b256161"
+        "sha256": "893a9f9c814705ab3c555d6628a91c1794ce135128de7742ee4dd027e2c96406"
       },
       {
         "path": "src/smart/list/lang/en.json",

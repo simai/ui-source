@@ -72,6 +72,8 @@ const word = (value) => (typeof value === "string" ? value.trim() : "");
 const SHAPES = new Set(["circle", "square"]);
 // The skeleton's leading place by the setting leading (1.17.0).
 const LEADING = new Set(["auto", "none", "icon", "avatar"]);
+// The skeleton rows' line count by the setting lines (1.18.0).
+const LINES = new Set(["auto", "1", "2"]);
 // The badge's tone is a word of the Framework's status set
 // (contracts/public-api-axes.json status_vocabulary); neutral is no status.
 const TONES = new Set(["neutral", "info", "success", "warning", "error"]);
@@ -446,6 +448,14 @@ class SfList extends ListElement {
     // rows shown. The line count, and an avatar's shape and width, still
     // come from the rows shown; before any, the caption row's: an avatar of
     // the control height, a circle.
+    //
+    // 1.18.0: the setting lines says the line count instead of the rows shown
+    // (C130): 1 or 2 hold from the first frame, so a one-line list's first
+    // skeleton row is as tall as its rows (40, not the caption row's 48 at
+    // 1440) and an avatar's box is the one-line box; auto is the line count
+    // of the rows shown, the caption row before any. A declared count also
+    // gives the avatar its width: the control height with a second line,
+    // else the row's line.
     skeletonShape() {
         const items = this._items;
         if (items.length) {
@@ -459,15 +469,15 @@ class SfList extends ListElement {
             };
         }
         const shown = this._shownShape ?? {twoLine: true, lead: null};
+        const lines = LINES.has(this.lines) ? this.lines : "auto";
+        const twoLine = lines === "auto" ? shown.twoLine : lines === "2";
         const declared = LEADING.has(this.leading) ? this.leading : "auto";
-        if (declared === "auto") return shown;
-        if (declared === "none") return {twoLine: shown.twoLine, lead: null};
-        if (declared === "icon") return {twoLine: shown.twoLine, lead: {kind: "icon"}};
         const learned = shown.lead?.kind === "avatar" ? shown.lead : null;
-        return {
-            twoLine: shown.twoLine,
-            lead: {kind: "avatar", wide: learned ? learned.wide : shown.twoLine, shape: learned ? learned.shape : "circle"},
-        };
+        const wide = learned && lines === "auto" ? learned.wide : twoLine;
+        if (declared === "none") return {twoLine, lead: null};
+        if (declared === "icon") return {twoLine, lead: {kind: "icon"}};
+        if (declared === "auto") return {twoLine, lead: learned ? {...learned, wide} : shown.lead};
+        return {twoLine, lead: {kind: "avatar", wide, shape: learned ? learned.shape : "circle"}};
     }
 
     templateContext() {

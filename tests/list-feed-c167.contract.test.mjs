@@ -25,7 +25,7 @@ test('C167 (3): a row with a count is unread, its title semibold', () => {
   assert.match(template, /\$\{context\.countOf\(item\) \? "sf-list__row--unread" : ""\}/u);
   const sheet = read('src/smart/list/js/templates/default.css');
   assert.match(sheet, /\.sf-list__row--unread > sf-list-item > \.sf-list-item \.sf-list-item-title \{\n\s*font-weight: var\(--sf-weight--semi-bold\);/u);
-  assert.ok(['1.11.0', '1.12.0', '1.16.0', '1.17.0'].includes(json('src/smart/list/component.json').version));
+  assert.ok(['1.11.0', '1.12.0', '1.16.0', '1.17.0', '1.18.0'].includes(json('src/smart/list/component.json').version));
 });
 
 test('C167 (4): the feed\'s default entry is a comment, the author over it, no fill', () => {
