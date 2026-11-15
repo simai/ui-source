@@ -30,6 +30,19 @@ FIXTURES.push(...ROLES.map((role) => `
 </div>
 <div class="bg-${role} color-on-${role}"><span data-case="FW-B-1 bg-${role} color-on-${role} on one element" data-need="4.5">Pair</span></div>`));
 
+// FW-B-2: a nested theme class takes its theme's ink; the roles changed with
+// the class, the inherited colour did not. A section in the other theme lays
+// its own surface (the ground stays the author's).
+FIXTURES.push(...['light', 'dark'].map((inner) => `
+<div class="theme-${inner} bg-surface-card">
+  <span data-case="FW-B-2 text in a nested theme-${inner} card" data-need="4.5">Nested theme</span>
+  <p><span data-case="FW-B-2 text deeper in a nested theme-${inner} card" data-need="4.5">Nested theme</span></p>
+  <span class="color-on-surface-variant" data-case="FW-B-2 dim text in a nested theme-${inner} card" data-need="4.5">Nested theme</span>
+</div>
+<div class="theme-${inner === 'light' ? 'dark' : 'light'} bg-surface-page"><div class="theme-${inner} bg-surface-card">
+  <span data-case="FW-B-2 text in theme-${inner} inside the other theme" data-need="4.5">Nested twice</span>
+</div></div>`));
+
 // The sheets a case needs, from the build output root.
 export function markupSheets(out) {
   return [

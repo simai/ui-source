@@ -61,6 +61,15 @@ the matrix runs them over the built sheets in both themes.
   so `bg-primary` with `color-on-primary` -- the role pair C192 teaches --
   works as on one element.
 
+- **A theme class takes its ink (FW-B-2).** `.theme-light` and `.theme-dark`
+  re-declare the roles, but colour is inherited as a computed value, so text
+  inside a nested theme kept the outer theme's ink: light on a white card in
+  the dark theme (1.29:1), dark on a dark card in the light one (1.14:1). The
+  class writes its own `--sf-on-surface` as `color` (11.76 and 17.21:1). The
+  ground stays the author's: a section in the other theme lays its surface
+  (`bg-surface-page`, `bg-surface-card`); without one, its text is the other
+  theme's ink on this theme's ground.
+
 ### What changed with C113 (2026-11-13)
 
 - **The neutral fill weighs as much as the coloured ones.** The study of tonal
