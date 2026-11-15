@@ -102,7 +102,7 @@ class SfProgressRing extends ProgressRingElement {
     const root = globalThis.SF = globalThis.SF || {};
     if (root.__progressRingAvatarWarned) return;
     Object.defineProperty(root, '__progressRingAvatarWarned', {value: true, configurable: true});
-    globalThis.console?.warn?.(`[SIMAI Framework] sf-progress-ring${this.id ? ` #${this.id}` : ''}: an sf-avatar inside the ring without slot="content" is drawn beside the ring, not in it. Write <sf-avatar slot="content"> (decision C152 (8)).`);
+    globalThis.console?.warn?.(`[SIMAI Framework] sf-progress-ring${this.id ? ` #${this.id}` : ''}: an sf-avatar inside the ring without slot="content" is drawn beside the ring, not in it. Give the sf-avatar slot="content" (decision C152 (8)).`);
   }
 
   templateContext() {
