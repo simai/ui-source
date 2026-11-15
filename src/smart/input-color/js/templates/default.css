@@ -83,17 +83,19 @@
      chevron all stand inside it. The product colours moved into the window,
      where they are the window's swatches; before they stood beside the chip
      one rung down (40 / 32 / 40 in one row). The value starts one inset from
-     the frame's edge (C77). The value and the buttons beside it (the reset
-     of the inherited colour, the restore of the brand colour) are buttons of
-     one group (C105 H5): 8 apart, 4 in the compact density of a desktop
-     (--sf-space-1/3). They stood the button's icon-to-text space apart
-     (H1: 6-7 at the half size, compact and on a phone). */
+     the frame's edge (C77). The value stands half the frame's inset from the
+     chevron, the field's indicator glyph (C123 (3), (6)): 6 / 7 / 8 / 10 / 12
+     at 1/3, 1/2, 1, 2, 3 on a desktop. It stood the C105 H5 group gap
+     (--sf-space-1/3: 8, 4 in the compact density), which was half an inset at
+     size 1 on a desktop only. While the frame holds an action (the reset of
+     the inherited colour, the restore of the brand colour) the gap is the
+     field layer's value space (below), so the glyphs keep the same steps. */
   .sf-color-frame {
     box-sizing: border-box;
     display: flex;
     flex: 1 1 auto;
     align-items: center;
-    gap: var(--sf-space-1\/3);
+    gap: calc(var(--sf-color--space-x) / 2);
     min-inline-size: 0;
     block-size: var(--sf-color--control-height);
     padding-inline: var(--sf-color--space-x);

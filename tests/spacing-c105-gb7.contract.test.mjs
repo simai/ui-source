@@ -29,15 +29,16 @@ test('(1) the pagination list is one group of buttons: --sf-space-1/3 behind the
   assert.equal(json('src/smart/pagination/component.json').version, '1.6.1');
 });
 
-test('(2) the colour frame spaces its value and its reset by H5, not by the icon-to-text space', () => {
+test('(2) the colour frame spaces its value and its glyphs by C123, not by the icon-to-text space', () => {
   const css = read('src/smart/input-color/js/templates/default.css');
   const frame = rule(css, '.sf-color-frame');
-  assert.match(frame, /gap: var\(--sf-space-1\\\/3\);/u);
   assert.doesNotMatch(frame, /gap: var\(--sf-color--text-space-x\)/u);
   // 1.11.0 (owner decision C123): the reset is a field action and the frame
-  // keeps the half inset round its glyph (tests/input-color-reset-c123.*); the
-  // frame's own gap stays H5's.
-  assert.equal(json('src/smart/input-color/component.json').version, '1.12.1');
+  // keeps the half inset round its glyph (tests/input-color-reset-c123.*).
+  // 1.13.0: without an action the value -> chevron step is half the inset too
+  // (C123 (3), (6)), no longer H5's --sf-space-1/3.
+  assert.match(frame, /gap: calc\(var\(--sf-color--space-x\) \/ 2\);/u);
+  assert.equal(json('src/smart/input-color/component.json').version, '1.13.0');
 });
 
 test('(3) the brand clear has words of its own; the field keeps the inherited ones', () => {

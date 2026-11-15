@@ -53,7 +53,7 @@ test('(6) half an inset from the value and to the next glyph; the last glyph on 
 });
 
 test('the versions move with the look', () => {
-  const want = {input: '1.12.0', 'input-textarea': '1.11.0', dropdown: '1.15.0', 'input-color': '1.12.1', switch: '1.7.0', 'input-quantity': '1.8.0'};
+  const want = {input: '1.12.0', 'input-textarea': '1.11.0', dropdown: '1.15.0', 'input-color': '1.13.0', switch: '1.7.0', 'input-quantity': '1.8.0'};
   for (const [folder, version] of Object.entries(want)) {
     const component = JSON.parse(read(`src/smart/${folder}/component.json`));
     assert.equal(component.version, version, folder);
