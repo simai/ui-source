@@ -233,6 +233,13 @@ class SfColor extends FormField(ColorElement) {
         return this.getAttribute("clear-label") || this.sfWord("theme-reset");
     }
 
+    // The brand field's clear returns the product's own colour, SIMAI's,
+    // not an inherited one: «Вернуть цвет SIMAI» (DEV, recipe brand-theme,
+    // 2026-11-15). clear-label still names it.
+    get brandResetLabel() {
+        return this.getAttribute("clear-label") || this.sfWord("brand-reset");
+    }
+
     _palette() {
         const palette = globalThis.SF?.ThemePalette;
         if (palette?.applyTheme) return palette;
@@ -915,7 +922,7 @@ class SfColor extends FormField(ColorElement) {
             inheritedText: this.inheritedText,
             hasInheritedValue: this.hasInheritedValue,
             chooseLabel: this.chooseLabel,
-            clearLabel: this.clearLabel,
+            clearLabel: this.isBrand ? this.brandResetLabel : this.clearLabel,
             swatchList: this.swatchList,
             clearable: this.clearable,
             disabled: this.disabled,
