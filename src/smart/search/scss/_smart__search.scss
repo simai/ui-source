@@ -571,7 +571,9 @@ a.sf-search-row-main:focus-visible {
   white-space: nowrap;
 }
 
-@container (max-width: 26rem) {
+/* A narrow window keeps two key hints (C175 (11)); the step is the ladder's g5
+   (30rem; the branch wrote 26rem, which is off the C181 (2) ladder). */
+@container (width < #{mq.container-step(g5)}) {
   .sf-search-key:nth-child(n + 3) {
     display: none;
   }
