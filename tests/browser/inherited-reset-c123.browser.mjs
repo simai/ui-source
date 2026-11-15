@@ -137,6 +137,8 @@ for (const view of VIEWS) for (const theme of ['light', 'dark']) for (const lang
     await tab.evaluate(() => document.fonts.ready); await tab.waitForTimeout(500);
     const tokens = await tab.evaluate(TOKENS);
     const name = `${view.width} ${view.density} ${theme} ${lang} #${load}`;
+    // The ligature font of <i class="sf-icon"> arrives after fonts.ready on a cold page: wait before the picture.
+    if (shots && load === 1 && lang === 'ru') await tab.waitForTimeout(1500);
     if (shots && load === 1 && lang === 'ru') await tab.screenshot({path: join(shots, `${view.width}-${view.density}-${theme}.png`), fullPage: true});
     const fields = {};
     for (const f of FIELDS) {
