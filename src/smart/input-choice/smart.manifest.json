@@ -336,31 +336,31 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "4638e4ffb789fa3f57dbcf765eb230972bd1aec9",
+    "source_revision": "409385ff3cbac7fdac6df386ae472fc5a9e019fa",
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "5248701fe473819b8db703596e11e247120021ebe952a3b12a520b2e1cc721bc"
+        "sha256": "4bc1b08631ab4544bd6750aa29600bf308291c2c5c93aa68981d3d3300cda080"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "301014ab34aeed8a30e3cf696703b7e8368584434513358e20d2f0a56955d589"
+        "sha256": "00576c24bfd686cbc40d90c45643019afec5ad86d6f97e7bf722b2ce3e7966f0"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "eb72ae4d188ca33ec685d608edbe4d60e5ad8b9f78a9a8ede62d679020d1a219"
+        "sha256": "484998807742ef285580166bda3c5fb864e45db2633cb55bb04f06a1e1b33de2"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "9200cec8f21f019738591e550a0e1723a62cad7018bd5ada6ef6a282a998524e"
+        "sha256": "52062b32a64992e71add8a1adda20a65e3abf352ab09cbf59ec4e95b11d7365c"
       },
       {
         "path": "src/smart/input-choice/rule.js",
-        "sha256": "8bef1d6848be2e826d9720f4140e18f218fbcc044d07036d5fa63f19706f5a9a"
+        "sha256": "7d56822070344939d33f26c4907f9633dcbc8d39c35b0c5fe37e6c94f437f143"
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "5eabc65aa15e7fe031d18d3b80ea073cc32888f2c62cae2e00b80a033c617a4a"
+        "sha256": "71c20e270344a1e358eefbe1c4f8ed652c033fc81966115da9581e5ee89097c2"
       }
     ],
     "generated_runtime": []
