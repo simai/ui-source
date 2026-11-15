@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.17.0'], ['list-feed', 'sf-list-feed', '1.3.1']]) { // group build 7: list-feed's patch for moved files
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.18.0'], ['list-feed', 'sf-list-feed', '1.3.1']]) { // group build 7: list-feed's patch for moved files
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,7 +32,7 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'lines', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
   assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
@@ -64,9 +64,9 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   const of = contract.settings.items.of;
   assert.deepEqual(Object.keys(of).sort(),
     ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text', 'unread']);
-  // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap, 1.17.0 leading).
+  // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap, 1.17.0 leading, 1.18.0 lines).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'lines', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
@@ -279,10 +279,11 @@ test('sf-list 1.17.0: leading says the skeleton\'s leading place from the first 
   assert.match(source, /leadingPlace\(\) \{/u);
   assert.match(source, /leading: this\.leadingPlace\(\),/u);
   assert.doesNotMatch(source, /this\.leading\(\)/u);
-  assert.match(source, /if \(declared === "auto"\) return shown;/u);
-  assert.match(source, /if \(declared === "none"\) return \{twoLine: shown\.twoLine, lead: null\};/u);
-  assert.match(source, /if \(declared === "icon"\) return \{twoLine: shown\.twoLine, lead: \{kind: "icon"\}\};/u);
-  assert.match(source, /lead: \{kind: "avatar", wide: learned \? learned\.wide : shown\.twoLine, shape: learned \? learned\.shape : "circle"\}/u);
+  // (1.18.0: the line count is the setting lines' twoLine, auto = the rows shown.)
+  assert.match(source, /if \(declared === "auto"\) return \{twoLine, lead: learned \? \{\.\.\.learned, wide\} : shown\.lead\};/u);
+  assert.match(source, /if \(declared === "none"\) return \{twoLine, lead: null\};/u);
+  assert.match(source, /if \(declared === "icon"\) return \{twoLine, lead: \{kind: "icon"\}\};/u);
+  assert.match(source, /return \{twoLine, lead: \{kind: "avatar", wide, shape: learned \? learned\.shape : "circle"\}\};/u);
   // The example and its printed first paint: three skeleton rows, each with the avatar's box of the list's step.
   const example = json('src/smart/list/examples.json').examples.find((one) => one.name === 'loading-avatar');
   assert.deepEqual(example.settings, {label: 'Беседы', loading: true, leading: 'avatar'});
@@ -290,4 +291,24 @@ test('sf-list 1.17.0: leading says the skeleton\'s leading place from the first 
   assert.match(printed, /leading="avatar"/u);
   assert.equal((printed.match(/sf-avatar sf-avatar--picture sf-avatar--size-1 sf-first-paint-fill sf-list__lead-skeleton/gu) || []).length, 3);
   assert.match(printed, /sf-list__skeleton sf-list__skeleton--lead-wide/u);
+});
+
+test('sf-list 1.18.0: lines says the skeleton rows\' line count from the first frame (C130)', () => {
+  const contract = json('src/smart/list/component.json');
+  const manifest = json('src/smart/list/smart.manifest.json');
+  const source = read('src/smart/list/index.js');
+  // The setting: auto | 1 | 2, auto by default (1.17.0's behaviour: the rows shown, the caption row before any).
+  assert.deepEqual(contract.settings.lines.values, ['auto', '1', '2']);
+  assert.equal(contract.settings.lines.default, 'auto');
+  assert.deepEqual(manifest.inputs.properties.lines.enum, ['auto', '1', '2']);
+  assert.match(source, /const twoLine = lines === "auto" \? shown\.twoLine : lines === "2";/u);
+  // A declared count gives an avatar's place its width; auto keeps the width the rows shown had.
+  assert.match(source, /const wide = learned && lines === "auto" \? learned\.wide : twoLine;/u);
+  // The example and its printed first paint: three one-line skeleton rows, each with the one-line avatar box.
+  const example = json('src/smart/list/examples.json').examples.find((one) => one.name === 'loading-one-line');
+  assert.deepEqual(example.settings, {label: 'Беседы', loading: true, leading: 'avatar', lines: '1'});
+  const printed = read('src/smart/list/static/default/loading-one-line.html');
+  assert.match(printed, /lines="1"/u);
+  assert.equal((printed.match(/sf-avatar sf-avatar--picture sf-avatar--size-1 sf-avatar--line-1 sf-first-paint-fill sf-list__lead-skeleton/gu) || []).length, 3);
+  assert.doesNotMatch(printed, /sf-list__skeleton--lead-wide|sf-list-item--two-line|sf-list__bar--supporting/u);
 });
