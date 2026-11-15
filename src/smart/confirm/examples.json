@@ -234,7 +234,7 @@
         },
         {
           "id": "p5-open-focuses-safe-answer",
-          "title": "open() puts the question with the focus on the declining answer; a dangerous question fills its accepting answer and leaves the declining one quiet; a plain one outlines its accepting answer and its «Отмена» is quiet too (decisions C25, C116)",
+          "title": "open() puts the question with the focus on the declining answer; a dangerous question fills its accepting answer and leaves the declining one quiet; a plain one draws its accepting answer as the filled primary main answer and its «Отмена» is quiet too (decisions C25, C116, C183)",
           "covers": "actions.open, settings.status danger, decision C25",
           "steps": [
             {
@@ -244,7 +244,7 @@
             {
               "script": "(document.querySelector('#c').open(), true)",
               "wait": 200,
-              "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"decline\"]') && document.querySelector('#c button[data-action=\"accept\"]').closest('sf-button').getAttribute('appearance') === 'default' && document.querySelector('#c button[data-action=\"decline\"]').closest('sf-button').getAttribute('appearance') === 'ghost' && document.querySelector('#d button[data-action=\"accept\"]').closest('sf-button').getAttribute('appearance') === 'outline' && document.querySelector('#d button[data-action=\"decline\"]').closest('sf-button').getAttribute('appearance') === 'ghost'"
+              "check": "document.querySelector('#c').state === 'open' && document.activeElement === document.querySelector('#c button[data-action=\"decline\"]') && document.querySelector('#c button[data-action=\"accept\"]').closest('sf-button').getAttribute('appearance') === 'default' && document.querySelector('#c button[data-action=\"decline\"]').closest('sf-button').getAttribute('appearance') === 'ghost' && document.querySelector('#c button[data-action=\"accept\"]').closest('sf-button').getAttribute('status') === 'danger' && document.querySelector('#d button[data-action=\"accept\"]').closest('sf-button').getAttribute('appearance') === 'default' && !document.querySelector('#d button[data-action=\"accept\"]').closest('sf-button').hasAttribute('status') && document.querySelector('#d button[data-action=\"decline\"]').closest('sf-button').getAttribute('appearance') === 'ghost'"
             }
           ]
         }

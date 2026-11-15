@@ -361,8 +361,11 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
 // two answers. `block` is the drawn surface's class; `acceptStatus` "danger"
 // marks a destructive acceptance (a delete, decision C13).
 //
-// The answers (decision C25): a plain question's accepting answer is outlined;
-// a dangerous one fills it with the danger colour. The declining answer, the
+// The answers (decision C25): a dangerous question fills its accepting answer
+// with the danger colour; a plain one draws it as the template asks
+// (`acceptAppearance`, outlined by default; sf-confirm 1.3.6 asks for the
+// filled primary main answer, owner decision C183 and C176 by DEV's answer
+// msg-68999d65). The declining answer, the
 // question's «Отмена», is always the quiet one, ghost on-surface (decision
 // C116, #q-cancel: «Отмена» is quiet everywhere), so the two are told apart by
 // more than the red of a word. A surface whose declining answer is a decision
@@ -374,7 +377,7 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
 // In a window (sf-confirm appearance="window", decision C39) the answers come
 // before the status line, at the start; the declining one is ghost there too
 // (C116; it was tonal, the window's quiet answer).
-export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, declineAppearance = "ghost"} = {}) {
+export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, acceptAppearance = "outline", declineAppearance = "ghost"} = {}) {
     const {component} = context;
     const danger = acceptStatus === "danger" || acceptStatus === "error";
     const size = context.size || "1";
@@ -394,7 +397,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                      the person sees which answer is on its way. -->
                 <div class="${block}__actions" ?hidden=${!context.open && !context.pending}>
                     <sf-button
-                            appearance=${danger ? "default" : "outline"}
+                            appearance=${danger ? "default" : acceptAppearance}
                             scheme="primary"
                             status=${danger ? "danger" : nothing}
                             size=${size}
