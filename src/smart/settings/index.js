@@ -65,6 +65,11 @@ const onPhone = () => !getComputedStyle(document.documentElement).getPropertyVal
 // The panel's own parts (templates/panel.js).
 const PANEL = ':scope > .sf-settings-parts > .sf-settings-panel';
 const ROW = '.sf-settings-row-main';
+// A pin is sf-button-icon (ST-2, C166): the host lays out as display:contents
+// and hands its data-* and tabindex to its native button, which is what takes
+// the focus and carries the row's setting and option.
+const PIN = '.sf-settings-row-pin';
+const pinButton = (pin) => (pin?.matches?.('button') ? pin : pin?.querySelector?.('button')) ?? null;
 const rowKey = (main) => main?.dataset.sfOption ?? main?.dataset.sfSetting ?? '';
 
 // The values are a preference of the person (SF.Preferences, owner
@@ -650,7 +655,7 @@ class SfSettings extends SettingsElement {
       this.applyDraft();
       return;
     }
-    const pin = target.closest('.sf-settings-row-pin');
+    const pin = target.closest(PIN);
     if (pin) {
       this.togglePin(pin);
       return;
@@ -679,15 +684,17 @@ class SfSettings extends SettingsElement {
   }
 
   async togglePin(pin) {
-    const id = pin.dataset.sfSetting;
-    const option = pin.dataset.sfOption;
+    const button = pinButton(pin);
+    if (!button) return;
+    const id = button.dataset.sfSetting;
+    const option = button.dataset.sfOption;
     const item = findItem(this.shownItems(), id);
     const value = item && toggledField(item, option, 'pinned');
     if (!value) return;
-    const focused = pin === document.activeElement;
+    const focused = button === document.activeElement;
     await this.commitValue(id, value);
     await this.whenRendered?.();
-    if (focused) this.rowControl(id, option, '.sf-settings-row-pin')?.focus({preventScroll: true});
+    if (focused) this.rowControl(id, option, `${PIN} button`)?.focus({preventScroll: true});
   }
 
   // A row's control or pin by its setting and option, after a drawing.
@@ -754,7 +761,7 @@ class SfSettings extends SettingsElement {
       }
       return;
     }
-    const pin = target.closest('.sf-settings-row-pin');
+    const pin = target.closest(PIN);
     const main = pin ? pin.parentElement?.querySelector(`:scope > ${ROW}`) : target.closest(ROW);
     if (!main) return;
     const list = main.closest('.sf-settings-list');
@@ -767,7 +774,7 @@ class SfSettings extends SettingsElement {
       } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault();
         const next = rows[(at + (event.key === 'ArrowDown' ? 1 : rows.length - 1)) % rows.length];
-        next?.parentElement?.querySelector(':scope > .sf-settings-row-pin')?.focus() ?? next?.focus();
+        pinButton(next?.parentElement?.querySelector(`:scope > ${PIN}`))?.focus() ?? next?.focus();
       }
       return;
     }
@@ -798,7 +805,7 @@ class SfSettings extends SettingsElement {
       return;
     }
     if (event.key === inward) {
-      const own = main.parentElement?.querySelector(':scope > .sf-settings-row-pin');
+      const own = pinButton(main.parentElement?.querySelector(`:scope > ${PIN}`));
       if (own) {
         event.preventDefault();
         own.focus();

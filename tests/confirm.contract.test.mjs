@@ -95,7 +95,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.3.5');
+  assert.equal(contract.version, '1.3.6');
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
@@ -114,4 +114,34 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.equal(en['declined-text'], undefined);
   assert.equal(json('src/smart/confirm-change/lang/ru.json').runtime['declined-text'], undefined);
   assert.equal(json('src/smart/confirm-change/lang/en.json').runtime['declined-text'], undefined);
+});
+
+test('C166 (4), R245: every question puts its answers first, at the start, 8 apart; the inline one stands on a quiet plate', () => {
+  // sf-confirm: one row, the answers first at the start, a button group's gap (C173 role, 8) apart.
+  {
+    const css = read('src/smart/confirm/js/templates/default.css');
+    const footer = css.match(/\.sf-confirm__footer \{([^}]*)\}/u)[1];
+    assert.match(footer, /justify-content: flex-start;/u, 'confirm: the answers at the start');
+    assert.match(footer, /column-gap: var\(--sf-(?:gap--actions|space-1\\\/3)\);/u, "confirm: a button group's gap");
+    const actions = css.match(/\.sf-confirm__actions \{([^}]*)\}/u)[1];
+    assert.match(actions, /order: -1;/u, 'confirm: the answers before the status line');
+    assert.doesNotMatch(css, /justify-content: space-between/u, 'confirm: no answers at the end');
+  }
+  // sf-confirm-change (group build 7): the same answers at the start, with C183 (6)'s status line under them
+  // (a column, the answers first in the markup), the later decision on this element.
+  {
+    const css = read('src/smart/confirm-change/js/templates/default.css');
+    const footer = css.match(/\.sf-confirm-change__footer \{([^}]*)\}/u)[1];
+    assert.match(footer, /flex-direction: column;/u);
+    assert.match(footer, /align-items: flex-start;/u, 'confirm-change: the answers at the start');
+    assert.doesNotMatch(css, /justify-content: space-between/u, 'confirm-change: no answers at the end');
+  }
+  const css = read('src/smart/confirm/js/templates/default.css');
+  const inline = css.match(/\.sf-confirm--inline \{([^}]*)\}/u)[1];
+  assert.match(inline, /background: var\(--sf-confirm-background-color, var\(--sf-surface-container\)\);/u);
+  assert.match(inline, /border-radius: var\(--sf-confirm-radius, var\(--sf-radius-2\)\);/u);
+  assert.doesNotMatch(inline, /border:/u, 'no second frame');
+  // On a phone the answers share the row in halves in every form, measured.
+  assert.match(css, /\.sf-confirm__actions > sf-button > button \{\s*inline-size: 100%;/u);
+  assert.match(read('src/smart/confirm/index.js'), /const actions = this\.querySelector\("\.sf-confirm__actions"\);/u);
 });
