@@ -103,6 +103,8 @@
   // focus ring in the link tone, every edge in the text tone.
   @mixin scheme-roles {
     --sf-surface-page: var(--sf-scheme-ground);
+    // The former name travels with the role (C16; tests/token-aliases.contract.test.mjs).
+    @include aliases.sf-role-aliases(('surface-page',));
     --sf-paper: var(--sf-scheme-ground);
     --sf-on-paper: var(--sf-scheme-text);
     --sf-paper-primary: var(--sf-scheme-text);
