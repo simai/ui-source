@@ -558,7 +558,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             invalid: {type: Boolean, default: false},
             errorMessage: {attribute: 'error-message', default: ''},
             iconStart: {type: String, attribute: 'icon-start', default: null},
-            leftIcon: {attribute: 'left-icon', default: 'calendar_today'},
+            leftIcon: {attribute: 'left-icon', default: ''},
             inputRootClass: {attribute: 'input-root-class', default: ''},
             mask: {type: Boolean, default: false},
             maskPattern: {attribute: 'mask-pattern', default: ''},
@@ -1075,9 +1075,18 @@ class SfDatepicker extends FormField(DatepickerElement) {
         return this.getBooleanAttr('close-on-select', true);
     }
 
+    // The start of the field is for an icon that says what the date is (a
+    // meaning icon, as search is for a search field): none unless the page
+    // gives one. The calendar is the field's indicator at its end (owner
+    // decision C197, 2026-11-15); it is not this setting.
     get leftIcon() {
         if (this.hasAttribute('icon-start')) return this.getAttribute('icon-start');
-        return this.getAttribute('left-icon') || (this.mode === 'time' ? 'schedule' : 'calendar_today');
+        return this.getAttribute('left-icon') || '';
+    }
+
+    // The indicator at the field's end: a clock in time mode, else a calendar.
+    get calendarIcon() {
+        return this.mode === 'time' ? 'schedule' : 'calendar_today';
     }
 
     get iconStart() {
@@ -2830,6 +2839,7 @@ class SfDatepicker extends FormField(DatepickerElement) {
             hint: this.hint,
             leftIcon: this.leftIcon,
             iconStart: this.leftIcon,
+            calendarIcon: this.calendarIcon,
             hintIcon: this.hintIcon,
             inputRootClass: this.inputRootClass,
             mask: this.mask,

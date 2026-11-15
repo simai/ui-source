@@ -94,6 +94,19 @@ function renderContext(context) {
     return nothing;
 }
 
+// The field's end (owner decision C197, 2026-11-15, prototype
+// date-icon-place.html#q-date-icon, variant B): from the text to the edge, by
+// the C123 (6) order, sf-input's own clear, then the hint marker, then the
+// calendar -- the field's indicator at the edge, as sf-dropdown's chevron is
+// (C123 (3)): the field layer's .sf-field-action glyph, quiet at rest, the
+// text's ink while the field is under the pointer; the whole field opens the
+// panel, so the glyph is no Tab stop of its own and is hidden from a screen
+// reader (the field is the combobox that names the dialog). The start of the
+// field stays for an icon that says what the date is (icon-start).
+// Both are the inner sf-input's end slot: it draws its actions, then the slot.
+// They are written in the field's own template, always, with no part that
+// comes and goes, because sf-input takes its slot's children once, when it
+// connects; their attributes still follow the settings.
 function renderDatepickerInput(context) {
     return html`
         <sf-input class="sf-datepicker-input" ${ref(context.component.refs.input)}
@@ -104,7 +117,7 @@ function renderDatepickerInput(context) {
             root-class=${context.inputRootClass || nothing} value=${context.displayValue || ''}
             ?disabled=${context.disabled} ?required=${context.required} ?invalid=${context.invalid}
             error-message=${context.errorMessage || nothing}
-            hint=${context.hint || nothing} hint-icon=${context.hintIcon || nothing}
+            hint=${context.hint || nothing}
             ?mask=${context.mask}
             mask-pattern=${context.maskPattern || nothing} mask-lazy=${String(context.maskLazy)}
             mask-placeholder-char=${context.maskPlaceholderChar || nothing}
@@ -112,7 +125,11 @@ function renderDatepickerInput(context) {
             @click=${(event) => context.component.handleInputClick(event)}
             @change=${(event) => context.component.handleInputChange(event)}
             @input=${(event) => context.component.handleInputInput(event)}
-            @keydown=${(event) => context.component.handleInputKeydown(event)}></sf-input>`;
+            @keydown=${(event) => context.component.handleInputKeydown(event)}
+        ><span slot="end" class=${context.hintIcon ? 'sf-input-hint flex' : 'sf-input-hint'} ?hidden=${!context.hintIcon} aria-hidden="true"
+            ><sf-icon icon=${context.hintIcon || nothing}></sf-icon></span
+        ><span slot="end" class="sf-field-action sf-field-action--indicator sf-datepicker-indicator" aria-hidden="true"
+            ><sf-icon icon=${context.calendarIcon}></sf-icon></span></sf-input>`;
 }
 
 function renderDay(day, context) {

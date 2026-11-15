@@ -296,6 +296,15 @@ The field stands on the field ladder (1.7.0): `size` takes `1/3`, `1/2`, `1`,
 `2` and `3`, and the field is as tall as `sf-input` of the same size (28 / 32 /
 40 / 48 / 56 on a desktop).
 
+The calendar (a clock in time mode) stands at the field's end (owner decision
+C197), by the order of every field (C123 (6)): the text, then clear, then the
+action. It is the field's indicator, as sf-dropdown's chevron is: a glyph with
+no plate, the leading icon's size, ending on the field's inset, quiet at rest
+and in the text's ink while the field is under the pointer. The whole field
+opens the calendar, so the glyph is no Tab stop. A `hint-icon` marker stands
+before it. The start of the field is for an icon that says what the date is:
+`icon-start` (none by default).
+
 The popup is a large surface and therefore uses `--sf-radius--surface`. Days,
 month cells and year cells are compact controls and use `--sf-radius--ui`.
 Spacing, typography, focus and z-order use semantic Framework tokens. The
