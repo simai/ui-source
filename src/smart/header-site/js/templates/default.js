@@ -9,6 +9,8 @@ import {html, nothing} from 'lit';
 // over a scrim, named by its heading. The button is in the DOM where it is
 // shown, so the reading and Tab order follow what is seen. While a switch of
 // the page's own is on screen (data-header-site, C104) the bar draws none.
+// The panel's close is sf-button-close, the one close button (C14), at the
+// bar's size, ghost on the panel's surface.
 // The page's slot nodes are placed once and stay where they are in both
 // forms.
 export function renderSiteHeaderTemplate(context) {
@@ -39,8 +41,8 @@ export function renderSiteHeaderTemplate(context) {
         @click=${(event) => component.onPanelClick(event)}>
         <div class="sf-site-header-panel-head">
           <span class="sf-site-header-panel-heading" id=${headingId}>${label}</span>
-          <sf-button-icon class="sf-site-header-close-button" icon="close" size=${size} appearance="ghost" scheme="on-surface"
-            aria-label=${closeLabel} @click=${() => component.close({reason: 'close'})}></sf-button-icon>
+          <sf-button-close class="sf-site-header-close-button" size=${size}
+            aria-label=${closeLabel} @click=${() => component.close({reason: 'close'})}></sf-button-close>
         </div>
         ${hasSlot('nav') ? html`<div class="sf-site-header-nav">${slot('nav')}</div>` : nothing}
         ${hasSlot('actions') ? html`<div class="sf-site-header-actions">${slot('actions')}</div>` : nothing}

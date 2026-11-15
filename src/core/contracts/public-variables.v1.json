@@ -3171,7 +3171,7 @@
           "name": "--sf-site-header-gap",
           "role": "gap",
           "summary": "The space between the brand, the navigation, the actions and the tools.",
-          "default": "var(--sf-space-2)",
+          "default": "var(--sf-space-1)",
           "since": "2026-10-28"
         },
         {

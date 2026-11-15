@@ -11,7 +11,10 @@ Tag:
 
 Attributes:
 
-- `heading` — the page heading, drawn as the fourth heading step.
+- `heading` — the page heading, drawn as the fourth heading step. A long
+  heading ends in an ellipsis on one line: beside the actions while it has
+  at least 20rem (the g0 step) there, and the count, the install mark and the
+  star stay whole right after it.
 - `count` — how many records the page holds. The admin menu carries no totals,
   so this is where they are. Empty draws no count.
 - `level` — `site` (default) or `install`. An install page is marked «для всех
@@ -32,7 +35,8 @@ Slots:
 - `start` — the start of the line, for a phone's ☰.
 - `actions` — the main action, at the end of the line. The actions stand 8
   apart (C105 H5); a row of actions wider than the line moves to a line of its
-  own and wraps there, so the page never scrolls sideways.
+  own and wraps there, so the page never scrolls sideways. Moved or wrapped,
+  the actions stay at the end of the line.
 
 Event:
 
