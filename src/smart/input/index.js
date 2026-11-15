@@ -65,7 +65,8 @@ class SfInput extends ShownRequired(FormField(InputElement)) {
     this.getInputElement()?.focus?.();
   }
 
-  // The password reveal (C123 (5)): a toggle button, aria-pressed, the eye
+  // The password reveal (C123 (4), (5)): a button named by what it does next
+  // («Показать пароль» / «Скрыть пароль», no aria-pressed: C12 (3)), the eye
   // crossed out while the password shows. The native input's type follows;
   // the focus stays on the button.
   toggleReveal(event) {

@@ -3,7 +3,8 @@
   "runtime": {
     "value-missing": "Заполните поле",
     "clear": "Очистить",
-    "reveal": "Показать пароль"
+    "reveal": "Показать пароль",
+    "conceal": "Скрыть пароль"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

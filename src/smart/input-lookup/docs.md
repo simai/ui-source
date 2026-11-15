@@ -115,11 +115,10 @@ names of `create` are **PROVISIONAL**.
   Without it a choice is the value and closes the list; the value's avatar
 or icon stands before its name in the field (the caption does not), and
 leaves while the person types (C139 (5)).
-- `chips="wrap|row"` -- **PROVISIONAL name** (the public name waits for the
-  owner; it may change before it is final). Multiple only. `wrap` (the
-  default) shows every chip, on as many rows as they take: forms. `row`
-  keeps one row and a "+N" chip for the rest: filter bars, table cells, card
-  headers (owner decision C58). The "+N" names the hidden items in its
+- `chips="wrap|row"` -- multiple only. `wrap` (the default) shows every
+  chip, on as many rows as they take: forms. `row` keeps one row and a "+N"
+  chip for the rest: filter bars, table cells, card headers (owner decision
+  C58). The "+N" names the hidden items in its
   tooltip and accessible name; a press on it, or the focus coming into the
   field (Tab, a press in the frame), opens the field to every chip, and
   leaving the field closes it to one row again. The count follows the

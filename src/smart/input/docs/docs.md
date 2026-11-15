@@ -177,9 +177,11 @@ a copy button), then an indicator (a dropdown's chevron).
   value and can be changed. A press empties the field with `input` and `change`
   and gives the focus back to it. `input-type="search"` has it without the
   setting, in place of the browser's own.
-- `input-type="password"` draws the reveal: a toggle button «Показать пароль»
-  («Show password») with `aria-pressed`; the eye, crossed out while the password
-  shows. `form.reset()` hides the password again.
+- `input-type="password"` draws the reveal: a button named by what a press does
+  next, «Показать пароль» («Show password») while the password is hidden and
+  «Скрыть пароль» («Hide password») while it shows, without `aria-pressed`
+  (C12 (3)); the eye, crossed out while the password shows. `form.reset()` hides
+  the password again.
 - An `sf-button-copy` placed in the field (the `end` slot or the class markup's
   `.sf-input-field`) draws the same glyph and shows its check after a copy.
 
