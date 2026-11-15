@@ -474,6 +474,124 @@
     padding-block: var(--sf-space-1\/2);
   }
 }
+
+/* appearance="list" (owner decision C165 (1), (3); research ui-control
+   control/research/2026-11-14-checks.md, prototype checks-study.html
+   #q-group, #q-inline): the ready group of checks or radios. No frame, no
+   cards: the heading (text 1, medium, in the text ink) with its «*» and «?»,
+   the hint under it, the options as the rows sf-checkbox and sf-radio draw
+   (C63: a row of the step, 40 at size 1 and 60 with a description, the
+   control and its words the target and nothing beside them; box to name
+   C105 H2 from the class sheets), then the error under the last row, its
+   icon first. */
+.sf-choice.sf-choice--list {
+  gap: 0;
+}
+
+.sf-choice--list .sf-choice-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+  font-weight: var(--sf-font-weight-medium);
+  color: var(--sf-on-surface);
+}
+
+/* «*» in the heading's ink, hidden from assistive technology (C153 (2)). */
+.sf-choice--list .sf-choice-heading .sf-choice-required {
+  color: inherit;
+}
+
+/* The «?» keeps the line it stands on (C103, C153 (8)): its box is that
+   line, the mark centred in it. The same beside the cards' label. */
+.sf-choice .sf-choice-label-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+}
+
+.sf-choice .sf-choice-label-row > .sf-choice-label {
+  min-inline-size: 0;
+}
+
+.sf-choice :is(.sf-choice-heading, .sf-choice-label-row) .sf-help-mark {
+  display: flex;
+  align-items: center;
+  block-size: var(--sf-text-height-1);
+}
+
+.sf-choice .sf-choice-label-row .sf-help-mark {
+  block-size: var(--sf-text-height-1\/2);
+}
+
+.sf-choice--list .sf-choice-hint {
+  margin-block-end: var(--sf-space-1\/4);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-choice--list .sf-choice-options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-inline-size: 0;
+}
+
+/* A row of the step (C63, W5): (control height - line) / 2 above and below,
+   so a column keeps one pitch; under a coarse pointer the step is the touch
+   target, max(step, --sf-d1), as the C49 rows are. */
+.sf-choice--list .sf-choice-row {
+  --sf-choice--row-pad: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2);
+  box-sizing: border-box;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  padding-block: var(--sf-choice--row-pad);
+}
+
+@media (pointer: coarse) {
+  .sf-choice--list .sf-choice-row {
+    --sf-choice--row-pad: calc((max(var(--sf-ui-1--control-height), var(--sf-d1)) - var(--sf-text-height-1)) / 2);
+  }
+}
+
+/* layout row (C165 (3)): side by side, the groups' gap between them (C105
+   H6, --sf-space-1: 16, compact and phone 12); a row that does not fit
+   wraps. */
+.sf-choice--list[data-layout='row'] .sf-choice-options {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: var(--sf-space-1);
+}
+
+/* In a narrow field (a phone) a row is a column again (C165 (3)). */
+@container sf-choice (inline-size < 30rem) {
+  .sf-choice--list[data-layout='row'] .sf-choice-options {
+    flex-direction: column;
+  }
+}
+
+/* The error under the last row: the error ink, text 1/2, the error icon a
+   line tall first. */
+.sf-choice--list .sf-choice-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sf-space-1\/4);
+  color: var(--sf-error);
+}
+
+.sf-choice--list .sf-choice-message-icon {
+  --sf-icon--color: var(--sf-error);
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
+}
 }
 
 /* The card owns the focus ring: the control gives its own up (one component,

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.3.0",
+  "version": "1.5.0",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -38,7 +38,8 @@
       "component.checkbox",
       "component.icons",
       "component.radio",
-      "smart.badge"
+      "smart.badge",
+      "smart.help-mark"
     ],
     "public_parts": []
   },
@@ -65,14 +66,26 @@
         "default": false,
         "description": "Several options: the cards are checkboxes in a group. Without it one option is chosen, the cards are a radio group."
       },
+      "appearance": {
+        "type": "string",
+        "default": "cards",
+        "description": "cards: the options as cards in a layout of tile, list or picture (C28). list (owner decision C165 (1)): the ready group of checks or radios -- the label as a heading (text 1, medium) with its «*» and «?», the hint under it, each option a row of the class checkbox or radio (as sf-checkbox and sf-radio draw them: 40 at size 1, 60 with a caption as its description; only the control and its words are the target), and the error under the last row with the error icon; an option's icon, badge, price, term and image are not drawn. The value, the form, the keys and the events are the same in both.",
+        "enum": [
+          "cards",
+          "list"
+        ]
+      },
       "layout": {
         "type": "string",
         "default": "tile",
-        "description": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start.",
+        "description": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start. Under appearance list (C165 (3)) the rows' layout: auto -- a row for up to three short options (a name of at most 20 characters, no caption), else a column; row -- side by side, --sf-space-1 apart (C105 H6), wrapping where they do not fit and a column in a field narrower than 30rem (a phone); column -- one under another. A cards value there is auto, and auto, row or column under cards is tile.",
         "enum": [
           "tile",
           "list",
-          "picture"
+          "picture",
+          "auto",
+          "row",
+          "column"
         ]
       },
       "columns": {
@@ -96,6 +109,11 @@
         "type": "string",
         "default": "",
         "description": "The line under the cards; it describes the group."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label (C153 (8), C165 (1)): size 1/3, --sf-space-1/4 after it, held to the label's line so the line keeps its height. The mark is named by its subject («Подробнее: <label>», lang runtime help). Empty: no mark."
       },
       "name": {
         "type": "string",
@@ -348,10 +366,10 @@
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-input-choice to pick one or several of a few options that need words to tell apart -- a site's kind, a page type, a template, a field type, a backup target, a plan -- shown all at once as cards.",
+    "use_when": "Use sf-input-choice to pick one or several of a few options shown all at once: as cards (appearance cards) where the options need words to tell apart -- a site's kind, a page type, a template, a field type, a backup target, a plan; as a ready group of checks or radios (appearance list) for a question with a heading, a hint and one error -- a buyer's kind, notifications, a payment way.",
     "do_not": [
       "Do not use it for a long list; use sf-input-select or sf-input-lookup",
-      "Do not use it for two or three short words; use sf-button-group (segmented) or sf-radio",
+      "Do not build a group of sf-radio or sf-checkbox with a heading and an error of your own; use appearance list",
       "Do not draw cards of your own with radios inside; give the options to the field"
     ],
     "required_reads": [

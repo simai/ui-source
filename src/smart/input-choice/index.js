@@ -3,7 +3,8 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {FormField, ShownValidity} from '../helpers/form-field';
 import {renderChoiceTemplate} from './js/templates/default';
-import {CHOICE_COLUMNS, CHOICE_LAYOUTS, applyChoice, formatValue, normaliseItems, orderValues, parseValue} from './js/choice-model.mjs';
+import {fieldHelpLabel} from '../helpers/field-help';
+import {CHOICE_APPEARANCES, CHOICE_COLUMNS, CHOICE_LAYOUTS, applyChoice, formatValue, listLayout, normaliseItems, orderValues, parseValue} from './js/choice-model.mjs';
 import manifest from './component.json';
 import enFile from './lang/en.json';
 import ruFile from './lang/ru.json';
@@ -19,6 +20,11 @@ import './scss/index.scss';
 // and term, an icon or an image, in one of three layouts (list, tile,
 // picture; owner decision C28). Larena's request msg-993e1e39 item 3 (choice
 // cards).
+//
+// appearance="list" (owner decision C165 (1), (3)) draws the same field as a
+// ready group of checks or radios: a heading with its «?», the hint, the
+// options as rows of the class checkbox or radio, the error under the last
+// row; layout auto, row or column arranges the rows.
 //
 // From its component.json (standard simai.smart-component 1.3.14 §3, §4, §8,
 // §17): the settings are made by core/js/element-manifest.js; the host is the
@@ -103,8 +109,17 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     return CHOICE_COLUMNS.includes(columns) ? columns : 'auto';
   }
 
+  get appearanceValue() {
+    const appearance = String(this.appearance ?? 'cards');
+    return CHOICE_APPEARANCES.includes(appearance) ? appearance : 'cards';
+  }
+
+  // Cards: tile, list or picture (tile otherwise). List (C165 (3)): row or
+  // column as asked; auto, or a cards value, is a row for up to three short
+  // options and a column for the rest.
   get layoutValue() {
     const layout = String(this.layout ?? 'tile');
+    if (this.appearanceValue === 'list') return listLayout(layout, this.options);
     return CHOICE_LAYOUTS.includes(layout) ? layout : 'tile';
   }
 
@@ -211,8 +226,12 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
       chosen: new Set(this.selected),
       multiple: Boolean(this.multiple),
       columns: this.columnsValue,
+      appearance: this.appearanceValue,
       layout: this.layoutValue,
       label: this.label || '',
+      // C165 (1), C153 (8): the «?» after the heading, named by its subject.
+      help: this.help || '',
+      helpLabel: fieldHelpLabel(this, this.label || ''),
       ariaLabel: this.getAttribute('aria-label') || '',
       hint: this.hint || '',
       // C153 (3): the page's error, or the one the field shows itself (ShownValidity).

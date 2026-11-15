@@ -14,6 +14,36 @@ export const CHOICE_COLUMNS = Object.freeze(['auto', '1', '2', '3', '4']);
 // to the edges, the caption under it (rows on a phone).
 export const CHOICE_LAYOUTS = Object.freeze(['tile', 'list', 'picture']);
 
+// The appearance (owner decision C165 (1), dispatcher's names 2026-11-14):
+// cards -- the cards of C28 above; list -- the ready group of checks or
+// radios: a heading with its «?», the hint under it, the options as rows of
+// the class checkbox or radio (the rows sf-checkbox and sf-radio draw, C63)
+// and the error under the last row.
+export const CHOICE_APPEARANCES = Object.freeze(['cards', 'list']);
+
+// How the rows of appearance list stand (C165 (3)): row -- side by side, 16
+// apart (C105 H6), a column again in a narrow field (a phone); column -- one
+// under another; auto -- a row for up to three short options, else a column.
+// The layout setting holds these beside the cards' tile, list and picture:
+// the two sets do not overlap, and each appearance reads its own.
+export const CHOICE_LIST_LAYOUTS = Object.freeze(['auto', 'row', 'column']);
+
+// «Short» for auto (C165 (3), prototype checks-study.html#q-inline: «Да /
+// Нет», «Физлицо / Организация»): an option of one name line, no
+// description, a name of at most this many characters.
+export const SHORT_OPTION_LENGTH = 20;
+export const ROW_MOST = 3;
+
+// The layout a list draws: row or column as asked; auto a row for up to three
+// short options (no description, a short name), else a column.
+export function listLayout(asked, items) {
+  if (asked === 'row' || asked === 'column') return asked;
+  const list = Array.isArray(items) ? items : [];
+  const short = list.length > 0 && list.length <= ROW_MOST
+    && list.every((item) => !item.caption && String(item.label ?? '').length <= SHORT_OPTION_LENGTH);
+  return short ? 'row' : 'column';
+}
+
 const text = (value) => (value === null || value === undefined ? '' : String(value));
 
 // One option: {value, label, caption?, icon?, badge?, price?, term?, image?,
