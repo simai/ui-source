@@ -17,12 +17,19 @@
     color-scheme: dark;
   }
 
-  /* An effect area or window card takes the theme its effect is drawn in
-     (SF.Effects, area-takes-the-drawn-theme). The class changes the tokens,
-     but the text keeps the colour it inherited from the page, so a light page
-     left dark text over a dark scene; the area takes its theme's ink. In
-     sf.base, so a colour utility on the area still wins. */
-  .sf-effect-area:is(.theme-dark, .theme-light) {
+  /* A theme class takes its theme's ink (FW-B-2, docs batch B 2026-11-15).
+     The class re-declares the roles, but colour is inherited as a computed
+     value: text inside a nested .theme-light or .theme-dark kept the ink of
+     the theme outside it, light text on a white card in the dark theme
+     (1.29:1) and dark text on a dark card in the light one (1.14:1). The
+     class writes --sf-on-surface of its own theme on itself, as an effect
+     area already did (SF.Effects, area-takes-the-drawn-theme), so what stands
+     inside reads its theme. The ground stays the author's: a section in the
+     other theme lays its surface (bg-surface-page, bg-surface-card), and a
+     portal that carries the theme of its host (layer-stack) is no surface. In
+     sf.base, so a colour utility on the element still wins. */
+  .theme-light,
+  .theme-dark {
     color: var(--sf-on-surface);
   }
 

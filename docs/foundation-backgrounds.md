@@ -43,6 +43,46 @@ Each colour has the same family: `--sf-<colour>-state-*`,
 state layers now (`--sf-info-state-*`, `--sf-info-container-strong`); it had
 none.
 
+### What changed with docs batch B (2026-11-15)
+
+The example contrast gate of the documentation (owner decision C192) and the
+contrast matrix (C178) found where a correct role and a correct place gave an
+unreadable pair. `tests/browser/contrast-markup-cases.mjs` holds each case;
+the matrix runs them over the built sheets in both themes.
+
+- **The on-colour a child names (FW-B-1).** A strong place's accent (C42 (4))
+  re-declares `--sf-on-primary` as the place's colour on its children, so a
+  filled button there is white with a label in the place's colour. A child
+  that names the role itself (`color-on-primary`, and its `hover:`, `focus:`,
+  `active:` forms) drew blue on blue on `bg-primary` (1:1, both themes) and
+  the plate's colour on every other strong place (1:1). On such a child the
+  role is the on-primary the place found, white in the light theme and tone
+  20 in the dark (6.43-6.49:1 light, 7.68-7.72:1 dark on the seven places),
+  so `bg-primary` with `color-on-primary` -- the role pair C192 teaches --
+  works as on one element.
+
+- **A theme class takes its ink (FW-B-2).** `.theme-light` and `.theme-dark`
+  re-declare the roles, but colour is inherited as a computed value, so text
+  inside a nested theme kept the outer theme's ink: light on a white card in
+  the dark theme (1.29:1), dark on a dark card in the light one (1.14:1). The
+  class writes its own `--sf-on-surface` as `color` (11.76 and 17.21:1). The
+  ground stays the author's: a section in the other theme lays its surface
+  (`bg-surface-page`, `bg-surface-card`); without one, its text is the other
+  theme's ink on this theme's ground.
+
+- **Inline code takes its place's ink (FW-B-5, C192 (2)).** The code tokens
+  (`--sf-code--color`, `--sf-code--background`) are declared on the root, so
+  a word of code on `bg-primary` kept the page's dark ink on a grey fill over
+  blue: 2.62-2.77:1 light and 1.27-1.29:1 dark on the seven strong places,
+  1.48 and 1:1 on the inverse. Every place re-declares them from its own
+  roles (`sf-place-code`): a strong place its ink on its ink at 12 (the fill
+  family's first step on a colour; 4.87-5.42:1 light, 6.22-6.38:1 dark), a
+  soft place its paired ink `on-<c>-container` on its own container
+  (12.30-13.03:1 light, 8.52-8.98:1 dark), the inverse the other theme's ink
+  and fill (7.37 and 11.80:1), an opaque place the theme's again (code in a
+  card on a colour is ordinary code). A site's `--sf-code-color` and
+  `--sf-code-background` still win.
+
 ### What changed with C113 (2026-11-13)
 
 - **The neutral fill weighs as much as the coloured ones.** The study of tonal

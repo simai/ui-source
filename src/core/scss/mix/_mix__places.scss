@@ -445,6 +445,23 @@ $sf-place-step4-variant: 'light-dark(var(--sf-neutral-35), var(--sf-neutral-80))
 // inside a popup it reads the nested popup's (R3b, DEV 2026-11-11).
 $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-place--popup-container-variant, var(--sf-neutral-90)))';
 
+// Inline code on a place (FW-B-5, docs batch B 2026-11-15; C192 (2): code
+// on a plate takes the plate's ink). The code tokens are declared on the root
+// (core typography): their ink, --sf-on-surface, and their plate, the neutral
+// fill, resolve there, so a word of code on bg-primary kept the page's dark
+// ink on a grey 12 over blue -- 2.62-2.77:1 light and 1.27-1.29:1 dark on the
+// seven strong places, 1.48 and 1:1 on the inverse. Every place re-declares
+// the two tokens from its own roles: a strong place its ink and its ink at 12
+// (the fill family's first step on a colour), a soft place its paired ink
+// (on-<c>-container) and its own container, the inverse its other theme's ink
+// and fill, and an opaque place the theme's again, so code in a card on a
+// colour is ordinary code. A site's --sf-code-color / --sf-code-background
+// still win: the rule reads them first.
+@mixin sf-place-code($ink, $fill) {
+  --sf-code--color: #{$ink};
+  --sf-code--background: #{$fill};
+}
+
 // $popup: the place is a popup step. A popup is told by its dim ink (a
 // popup-variant) unless the place says so itself: bg-surface-4 passes its
 // own ink and $popup: true, so a popup inside it is nested (R3b).
@@ -477,6 +494,7 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
     }
   }
   @include aliases.sf-role-aliases($sf-place-aliased);
+  @include sf-place-code(var(--sf-on-surface), var(--sf-surface-container));
   --sf-place--container-outline: initial;
   @include sf-place-back-on-colour;
   @include sf-place-step-4-accent-back;
@@ -524,6 +542,7 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   --sf-outline: var(--sf-#{$c}-outline);
   --sf-outline-variant: var(--sf-#{$c}-container-strong);
   --sf-place--container-outline: var(--sf-outline);
+  @include sf-place-code(var(--sf-on-#{$c}-container), var(--sf-#{$c}-container));
   @include aliases.sf-role-aliases(('surface-state-hover', 'surface-state-select', 'surface-state-active'));
   @include sf-place-step-4-accent-back;
 }
@@ -573,6 +592,7 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   @each $role, $value in $sf-place-colour-roles {
     --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
   }
+  @include sf-place-code(var(--sf-on-surface), var(--sf-surface-container));
   @include aliases.sf-role-aliases($sf-place-aliased);
   // The accent the place found, kept for an opaque place on it (D1); the
   // status containers' ink, the link and the ring too (inverse places IP,
@@ -658,6 +678,7 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   --sf-outline: #{sf-ink($c, 64)};
   --sf-outline-variant: #{sf-ink($c, 24)};
   --sf-place--container-outline: var(--sf-outline);
+  @include sf-place-code(var(--sf-on-#{$c}), sf-ink($c, 12));
   --sf-surface-disabled: #{sf-ink($c, 8)};
   --sf-on-surface-disabled: #{sf-ink($c, 64)};
   --sf-on-surface-muted: var(--sf-on-surface-disabled);
@@ -743,6 +764,20 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
   @include sf-place-link-ring(light-dark(var(--sf-white), var(--sf-#{$c}-20)),
     light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25)), light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30)),
     #{sf-ink($c, 80)});
+}
+
+// A child that asks for the on-colour by name keeps it (FW-B-1, docs batch B
+// 2026-11-15; C192 (1) against C42 (4)): the accent above re-declares
+// --sf-on-primary as the place's colour on every child of a strong place, so
+// color-on-primary on bg-primary -- the role pair C192 teaches -- drew blue on
+// blue, 1:1 in both themes, and on any other strong place the plate's own
+// colour, 1:1 again. The text utility reads the role; on the element that
+// names it the role is the on-primary the place found (the place keeps it as
+// --sf-place--outer-on-primary), white in the light theme and tone 20 in the
+// dark on bg-primary. A filled button and a checked box on the place still
+// take the place's colour as their label: they do not name the utility.
+@mixin sf-place-strong-named-ink {
+  --sf-on-primary: var(--sf-place--outer-on-primary);
 }
 
 // Glass keeps the accent it found (C70), for an opaque place on it to take
