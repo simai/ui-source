@@ -23,13 +23,15 @@
     "reject-size": "«{name}» — {size}, а можно до {max}",
     "reject-total": "«{name}» не добавлен: все файлы вместе — до {max}",
     "reject-type": "«{name}» не подходит: можно {formats}",
-    "remove": "Удалить",
+    "remove": "Убрать",
     "remove-failed": "Уберите или повторите файлы с ошибкой",
     "retry": "Повторить",
     "text": "или перетащите его сюда",
     "uploading": "Загрузка",
     "value-missing": "Добавьте файл",
     "value-missing-many": "Добавьте хотя бы один файл",
-    "wait-for-uploads": "Дождитесь, пока файлы загрузятся"
+    "wait-for-uploads": "Дождитесь, пока файлы загрузятся",
+    "file-removed": "Файл убран",
+    "undo": "Вернуть"
   }
 }

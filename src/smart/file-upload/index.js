@@ -2,6 +2,8 @@ import {
   bindFileUpload,
   formatAcceptWords,
   normalizeItemState,
+  removeFileUploadItem,
+  retryFileUploadItem,
   setFileUploadItems,
   unbindFileUpload,
 } from '../../component/file-upload/js/_file_upload';
@@ -47,6 +49,11 @@ const itemId = (item, index) => {
   if (item?.name || item?.fileName) return `${item.name || item.fileName}-${index}`;
   return `item-${index}`;
 };
+
+// The pictures a browser draws from a chosen file's own bytes (C81: a photo's
+// thumbnail in its row). A video's frame and a PDF's page are the host's
+// imageUrl: the component never decodes them (C149 (4)).
+const DRAWN_PICTURES = /^image\/(?:png|jpeg|gif|webp|avif|bmp|svg\+xml)$/u;
 
 const itemProgress = (item) => Math.max(0, Math.min(100, Number(item?.progress ?? 0) || 0));
 
@@ -130,6 +137,9 @@ class SfFileUpload extends FormField(FileUploadElement) {
     this._uploads = new Map();
     this._uploader = null;
     this._lastAttach = null;
+    // The object addresses of chosen photos drawn in their rows: File -> URL,
+    // given back when the file leaves the list or the element the page.
+    this._pictures = new Map();
     // A file held over the area is said on the host (§5.3).
     this.addEventListener('dragover', this._onDragState);
     this.addEventListener('dragleave', this._onDragState);
@@ -201,6 +211,7 @@ class SfFileUpload extends FormField(FileUploadElement) {
 
   set items(value) {
     this._items = Array.isArray(value) ? value : [];
+    this._releasePictures();
     this.syncRuntimeItems();
     this._trackStreams(this._items);
     this._abortGone();
@@ -304,6 +315,85 @@ class SfFileUpload extends FormField(FileUploadElement) {
   set uploader(value) {
     this._uploader = typeof value === 'function' ? value : null;
     this._pumpUploads();
+  }
+
+  // The picture of a row (C81, C149 (4)): the host's imageUrl for any file,
+  // else a chosen photo's own bytes through an object address.
+  pictureOf(item) {
+    const given = item?.imageUrl ?? item?.['image-url'];
+    if (given) return String(given);
+    const file = item?.file;
+    if (typeof Blob === 'undefined' || !(file instanceof Blob) || !DRAWN_PICTURES.test(String(file.type || ''))) return '';
+    let address = this._pictures.get(file);
+    if (!address && typeof URL?.createObjectURL === 'function') {
+      address = URL.createObjectURL(file);
+      this._pictures.set(file, address);
+    }
+    return address || '';
+  }
+
+  _releasePictures(all = false) {
+    if (!this._pictures?.size) return;
+    const listed = all ? new Set() : new Set(this.items.map((item) => item?.file).filter(Boolean));
+    for (const [file, address] of [...this._pictures]) {
+      if (listed.has(file)) continue;
+      this._pictures.delete(file);
+      URL.revokeObjectURL?.(address);
+    }
+  }
+
+  // «×» in a row (C149 (8)): the file leaves the list at once and the notice
+  // gives it back with «Вернуть» (C25); the trash of a stored file asked
+  // first in its row, and its yes (action delete) leaves nothing to give
+  // back: the page erases the file on detach. Either way detach carries the
+  // action, and the focus goes to the row that took the place, else the area.
+  handleRowDetach(event, index) {
+    event?.stopPropagation?.();
+    if (this.disabled) return;
+    const item = this.items[index];
+    if (!item) return;
+    const action = event?.detail?.action === 'delete' ? 'delete' : 'remove';
+    if (this._boundRoot) removeFileUploadItem(this._boundRoot, index, {action});
+    else this.items = this.items.filter((_, at) => at !== index);
+    this._focusAfterRemoval(index);
+    if (action === 'delete') return;
+    const name = String(item?.name || item?.fileName || item?.file?.name || '');
+    globalThis.SF?.notify?.({
+      status: 'neutral',
+      title: this.sfWord('file-removed'),
+      text: name,
+      source: 'sf-file-upload',
+      action: {label: this.sfWord('undo'), onSelect: () => this.restoreItem(item, index)},
+    });
+  }
+
+  // «Вернуть»: the file stands again where it was. A file that was on its
+  // way is ready again (its transfer was stopped): the uploader sends it, and
+  // a page that sends files itself hears change with it.
+  restoreItem(item, index) {
+    if (!item || this.items.includes(item)) return;
+    const back = itemState(item) === 'process' ? {...item, state: 'ready', progress: undefined} : item;
+    const next = Array.from(this.items);
+    next.splice(Math.min(Math.max(0, Number(index) || 0), next.length), 0, back);
+    this.items = next;
+    if (back.file) this.sfEmit('change', {files: [back.file], source: 'undo'});
+  }
+
+  handleRowRetry(event, index) {
+    event?.stopPropagation?.();
+    if (this.disabled || !this._boundRoot) return;
+    retryFileUploadItem(this._boundRoot, index);
+  }
+
+  _focusAfterRemoval(index) {
+    const place = () => {
+      const rows = this.querySelectorAll(':scope .sf-file-upload-files > .sf-file-upload-item');
+      const row = rows[Math.min(index, rows.length - 1)];
+      const button = row?.querySelector('button[data-action="remove"], button[data-action="delete"]');
+      (button || this.querySelector('.sf-file-upload'))?.focus?.({preventScroll: true});
+    };
+    if (typeof this.whenRendered === 'function') this.whenRendered(() => requestAnimationFrame(place), {next: true});
+    else requestAnimationFrame(place);
   }
 
   _patchItem(id, changes) {
@@ -438,6 +528,7 @@ class SfFileUpload extends FormField(FileUploadElement) {
       formats: this.formats,
       supportingText: this.supportingText,
       items: this.items,
+      keyOf: itemId,
     });
   }
 
@@ -555,6 +646,7 @@ class SfFileUpload extends FormField(FileUploadElement) {
 
     const refresh = () => {
       this._items = Array.from(this._boundRoot?.__sfFileUploadItems || []);
+      this._releasePictures();
       this._trackStreams(this._items);
       this._abortGone();
       if (this._lastAttach) {
@@ -582,6 +674,7 @@ class SfFileUpload extends FormField(FileUploadElement) {
 
   onDisconnected() {
     this.teardownRuntime();
+    this._releasePictures(true);
   }
 
   syncRuntimeItems() {

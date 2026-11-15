@@ -1019,7 +1019,7 @@
           "component.featured-icon",
           "component.file-upload",
           "component.icon-buttons",
-          "smart.progress-bar"
+          "smart.file-preview"
         ]
       },
       "contract_schema": {
@@ -1031,7 +1031,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-upload/smart.manifest.json",
-      "manifest_sha256": "9df9b0f94d60548f3b3b0285edb742b39e86440d49084e55256cc56e1d9b1186",
+      "manifest_sha256": "ead3345d6c6111f08e80c62527a6ec40a8ba16c9ca7b2f882a65a13128cc3011",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

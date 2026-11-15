@@ -1,6 +1,6 @@
 {
   "runtime": {
-    "remove": "Удалить",
+    "remove": "Убрать",
     "uploading": "Загрузка",
     "uploading-name": "Загрузка {name}",
     "retry": "Повторить",

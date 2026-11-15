@@ -124,15 +124,11 @@
   ],
   "cl-file-upload": [
     "align-items/default",
-    "align-self/default",
     "cursor/default",
     "display/default",
     "flex-direction/default",
-    "flex/default",
     "gap/default",
     "grid-template-columns/default",
-    "justify-content/default",
-    "justify-items/default",
     "width/default"
   ],
   "cl-form": [
