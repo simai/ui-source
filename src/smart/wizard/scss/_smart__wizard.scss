@@ -186,6 +186,29 @@
   display: none;
 }
 
+/* progress auto where the row does not fit the wizard's own width (owner
+   decision C101 (4)): the count line instead -- the wizard measures
+   (index.js fitProgress) and marks the frame data-sf-progress-fit="count".
+   The row stays in the markup out of view, so a wider wizard measures it
+   again; while it measures, data-sf-measure shows the row for a moment, in
+   the same task, never painted. */
+.sf-wizard[data-sf-progress-fit="count"]:not([data-sf-measure]) .sf-wizard-steps > .sf-steps {
+  display: none;
+}
+
+.sf-wizard[data-sf-progress-fit="count"] .sf-wizard-compact {
+  display: flex;
+}
+
+.sf-wizard[data-sf-progress-fit="count"] .sf-wizard-top .sf-wizard-position,
+.sf-wizard[data-sf-progress-fit="count"] .sf-wizard-top--bare {
+  display: none;
+}
+
+.sf-wizard[data-sf-measure] .sf-wizard-steps > .sf-steps {
+  display: block;
+}
+
 .sf-wizard-compact-line {
   display: flex;
   align-items: center;
@@ -558,6 +581,12 @@
   .sf-wizard--progress-row .sf-wizard-head > .sf-wizard-list,
   .sf-wizard--progress-column .sf-wizard-head > .sf-wizard-list {
     display: none;
+  }
+
+  /* A row that does not fit draws the count line, and its «Все шаги» opens
+     the list as in the count progress. */
+  .sf-wizard--progress-row[data-sf-progress-fit="count"] .sf-wizard-head > .sf-wizard-list {
+    display: flex;
   }
 }
 
