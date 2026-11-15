@@ -172,6 +172,8 @@ class SfList extends ListElement {
     constructor() {
         super();
         this._items = [];
+        // The shape of the rows last shown, for the skeleton (skeletonShape()).
+        this._shownShape = null;
         this._actions = [];
         this._groups = [];
         this._loadingMore = false;
@@ -476,6 +478,28 @@ class SfList extends ListElement {
         return underDay ? "time" : "auto";
     }
 
+    // The shape of the skeleton rows (1.16.0, C130, C148 (1)): the shape of
+    // the rows the list has shown -- one line or the caption row, and the
+    // leading place they draw: an avatar's (wide when a row has a second
+    // line, its shape), an icon's, or none. It is kept when the rows are
+    // taken away for a reload (items = [] and loading), so the rows that come
+    // back find their place; until the list has shown rows it is the caption
+    // row with no leading place -- the list does not guess one.
+    skeletonShape() {
+        const items = this._items;
+        if (items.length) {
+            const avatar = items.map((item) => avatarOf(item)).find(Boolean);
+            const icon = items.some((item) => typeof item?.icon === "string" && item.icon.trim() !== "");
+            this._shownShape = {
+                twoLine: items.some((item) => Boolean(item.supporting)),
+                lead: avatar
+                    ? {kind: "avatar", wide: items.some((item) => Boolean(item.supporting)), shape: avatar.shape}
+                    : icon ? {kind: "icon"} : null,
+            };
+        }
+        return this._shownShape ?? {twoLine: true, lead: null};
+    }
+
     templateContext() {
         const loading = this.loading;
         const empty = !loading && this._items.length === 0;
@@ -506,8 +530,9 @@ class SfList extends ListElement {
             editing: this._editing,
             loading,
             // The skeleton's rows take the shape of the rows the list has
-            // shown, else the caption row (template skeleton()).
-            skeleton: {twoLine: this._items.length === 0 || this._items.some((item) => Boolean(item.supporting))},
+            // shown, else the caption row with no leading place (template
+            // skeleton()).
+            skeleton: this.skeletonShape(),
             loadingText: this.sfWord("loading-text"),
             empty,
             emptyHeading: this.emptyText,

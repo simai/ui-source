@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.15.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.16.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -248,4 +248,21 @@ test('sf-list 1.14.0: the narrow layout is a container query on the frame, so a 
   assert.match(check, /requestAnimationFrame\(\(\) => \{[\s\S]*frame\.toggleAttribute\(FIT, fit\);/u);
   // 1.14.0 brought the container query; later versions keep it (group build 7).
   assert.ok(Number(json('src/smart/list/component.json').version.split('.')[1]) >= 14);
+});
+
+test('sf-list 1.16.0: a skeleton row keeps the leading place of the rows it stands for (C130, C148 (1))', () => {
+  const source = read('src/smart/list/index.js');
+  const template = read('src/smart/list/js/templates/default.js');
+  const sheet = read('src/smart/list/js/templates/default.css');
+  // The shape is the rows' own, kept across items = [] for a reload; none before rows were shown.
+  assert.match(source, /skeletonShape\(\) \{/u);
+  assert.match(source, /return this\._shownShape \?\? \{twoLine: true, lead: null\};/u);
+  assert.match(source, /skeleton: this\.skeletonShape\(\),/u);
+  // The skeleton row draws the place in sf-list-item's leading slot: sf-avatar's own box, or the icon square.
+  assert.match(template, /kind=\$\{lead \? "icon" : "text"\}/u);
+  assert.match(template, /sf-avatar sf-avatar--picture \$\{box\}\$\{shape\} sf-first-paint-fill sf-list__lead-skeleton/u);
+  assert.match(template, /sf-first-paint-fill sf-list__lead-skeleton sf-list__lead-skeleton--icon/u);
+  assert.match(sheet, /\.sf-list__skeleton--lead-wide \{ --sf-list--lead-size: var\(--sf-list--lead-block\); \}/u);
+  assert.match(sheet, /\.sf-list__lead-skeleton\.sf-first-paint-fill \{\n\s*background-color: var\(--sf-skeleton-base\);/u);
+  assert.match(sheet, /\.sf-list__lead-skeleton--icon \{[^}]*inline-size: var\(--sf-list--lead-line\);[^}]*border-radius: var\(--sf-radius--ui\);/u);
 });
