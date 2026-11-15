@@ -182,14 +182,14 @@ try {
   const reverted = await page.evaluate(() => document.querySelector('.sf-list__row[data-id="b"] sf-list-item').getAttribute('text'));
   if (reverted !== 'Ответ клиенту') note({case: 'a cancelled rename puts the old title back', got: reverted});
 
-  // 4. The row's actions in the one shared menu.
+  // 4. The row's actions in the page's one menu (core SF.menu.open, C184 (4)).
   await make({attributes: {renamable: ''}});
   await page.evaluate(() => document.querySelector('.sf-list__row[data-id="c"] .sf-list-item').focus());
   await page.keyboard.press('Shift+F10');
   await settle(300);
   const menu = await page.evaluate(() => {
-    const menus = document.querySelectorAll('#list sf-menu-context');
-    const items = [...document.querySelectorAll('#list .sf-list__menu [role="menuitem"]')].filter((node) => node.getClientRects().length);
+    const menus = document.querySelectorAll('sf-menu-context');
+    const items = [...document.querySelectorAll('[data-sf-menu-shared] [role="menuitem"]')].filter((node) => node.getClientRects().length);
     return {
       menus: menus.length,
       open: menus[0]?.isOpen,
@@ -200,7 +200,7 @@ try {
   });
   if (menu.menus !== 1 || !menu.open || menu.entries.join() !== 'rename,action:copy,action:delete/error' || menu.label !== 'Действия: Отчёт за неделю') note({case: 'Shift+F10 opens the one menu: Rename, then the actions, the destructive in error', got: menu});
   await page.evaluate(() => {
-    const target = [...document.querySelectorAll('#list .sf-list__menu [role="menuitem"]')].find((node) => /Удалить/u.test(node.textContent));
+    const target = [...document.querySelectorAll('[data-sf-menu-shared] [role="menuitem"]')].find((node) => /Удалить/u.test(node.textContent));
     target?.click();
   });
   await settle(150);
@@ -209,10 +209,11 @@ try {
   if (!apply || apply.action !== 'delete' || apply.scope !== 'entry' || apply.ids.join() !== 'c') note({case: 'a chosen action says apply {action, scope entry, ids}', got: now});
   // A row allowed only copy, and no rename on a list that does not rename.
   await make();
-  const narrow = await page.evaluate(() => {
+  const narrow = await page.evaluate(async () => {
     const list = document.getElementById('list');
     list.openMenu({id: 'd'});
-    return list.querySelector('.sf-list__menu').entries.map((entry) => entry.id);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    return document.querySelector('[data-sf-menu-shared]').entries.map((entry) => entry.id);
   });
   if (narrow.join() !== 'action:copy') note({case: 'a row narrows its actions; no rename unless renamable', got: narrow});
   await page.keyboard.press('Escape');

@@ -33,13 +33,16 @@ function toolButton(context, tool) {
   // greyed, still reached by the arrows; the whole toolbar is disabled with
   // the field.
   const unavailable = Boolean(tool.unavailable?.(state));
+  // Why it is unavailable, as its tooltip and its description (C184 (2)).
+  const reason = unavailable && tool.reason ? component.sfWord(tool.reason) : '';
   return html`<button
       type="button"
       class="sf-rich-text-tool sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-${buttonSize} flex items-cross-center"
       data-sf-tool=${tool.id}
       tabindex=${roving === tool.id ? '0' : '-1'}
       aria-label=${component.sfWord(tool.word)}
-      title=${tool.keys ? `${component.sfWord(tool.word)} (${tool.keys})` : component.sfWord(tool.word)}
+      title=${reason || (tool.keys ? `${component.sfWord(tool.word)} (${tool.keys})` : component.sfWord(tool.word))}
+      aria-description=${reason || nothing}
       aria-pressed=${pressed}
       aria-keyshortcuts=${tool.shortcut || nothing}
       aria-haspopup=${tool.popup || nothing}
@@ -190,10 +193,9 @@ export function renderRichTextTemplate(context) {
         ${readonly ? '' : html`<div class=${more ? 'sf-rich-text-toolbar sf-rich-text-toolbar--more flex items-cross-center' : 'sf-rich-text-toolbar flex flex-wrap items-cross-center'} role="toolbar" id=${toolbarId}
           aria-label=${component.sfWord('toolbar')} aria-controls=${field.controlId}
           aria-disabled=${disabled || readonly ? 'true' : nothing}
-          @keydown=${(event) => component.onToolbarKeydown(event)}
           @mousedown=${(event) => component.onToolbarMouseDown(event)}
           @click=${(event) => component.onToolbarClick(event)}
-          @focusin=${(event) => component.onToolbarFocusIn(event)}>
+>
           <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="1">${levels}</div>
           ${separator}
           <div class="sf-rich-text-group flex items-cross-center" role="group" data-sf-priority="1">${group(['bold', 'italic', 'link'])}</div>

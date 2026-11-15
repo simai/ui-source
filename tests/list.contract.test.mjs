@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.14.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.14.1'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -43,9 +43,10 @@ test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next pa
   // The row is the Framework's row, interactive, inside one [data-sf-list].
   assert.match(template, /<sf-list-item\s+interactive/u);
   assert.equal([...template.matchAll(/^\s+data-sf-list$/gmu)].length, 1);
-  // «⋯» is not a Tab stop of its own; one context menu for every row.
+  // «⋯» is not a Tab stop of its own; the row actions open in the page's one
+  // menu (core SF.menu.open, owner decision C184 (4)), not in a menu of the list's.
   assert.match(template, /class="sf-list__actions[^"]*"\s+tabindex="-1"\s+aria-haspopup="menu"/u);
-  assert.equal([...template.matchAll(/<sf-menu-context/gu)].length, 1);
+  assert.equal([...template.matchAll(/<sf-menu-context/gu)].length, 0);
   assert.match(template, /<sf-empty-state kind="no-data"/u);
   const source = read('src/smart/list/index.js');
   assert.match(source, /import \{EDGE_MARGIN, scrollerOf, watchEdge\} from "\.\.\/\.\.\/core\/js\/reading-position\.js";/u);

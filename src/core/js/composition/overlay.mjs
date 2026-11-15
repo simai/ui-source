@@ -5,6 +5,7 @@ import { activeSortableSession, registerSortableDropTarget, SORTABLE_DROP_LINE }
 import { drawnBox, fitByPriority, measureShown, openRowMenu, readPriority } from '../overflow-row.js';
 import { breakpointMedia } from '../breakpoints.js';
 import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
+import { roving } from '../roving.js';
 
 // Editor canvas overlay. It draws hover and selection frames, an action toolbar
 // above the selected block and one insertion point at the seam under the pointer
@@ -583,6 +584,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.tree.addEventListener('blur', () => this.removeAttribute('data-sf-overlay-focus'), options);
       this.toolbar.addEventListener('click', (event) => this.onToolbarClick(event), options);
       this.toolbar.addEventListener('keydown', (event) => this.onToolbarKey(event), options);
+      // One Tab stop that comes back to the action left, Home and End (core's
+      // roving helper, owner decision C184 (1), (3)); the arrows stay
+      // onToolbarKey's, which knows the bar's side.
+      this.toolbarKeys?.destroy();
+      this.toolbarKeys = roving(this.toolbar, { items: 'button[data-action]' });
       this.insertionLayer.addEventListener('click', (event) => this.onInsertionClick(event), options);
       this.toolbar.addEventListener('pointerdown', (event) => this.onToolbarPointerDown(event), options);
       this.insertionLayer.addEventListener('pointerover', () => this.holdSeam(), passive);
@@ -1572,6 +1578,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.moreSeparator.classList.toggle(OUT, this.menuOnly.length === 0 || this.toolGroups.length === 0);
       this.rowKey = '';
       if (focused && (!focused.isConnected || focused.disabled)) (this.toolbar.querySelector('button:not(:disabled)') || this.tree)?.focus();
+      this.toolbarKeys?.refresh();
       if (!this.selectedId || this.actions.length === 0) this.toolbar.hidden = true;
     }
 

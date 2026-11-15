@@ -1,5 +1,6 @@
 import { pageText } from '../page-language.js';
 import { actionEntry, layoutActionRow, openRowMenu } from '../overflow-row.js';
+import { roving } from '../roving.js';
 import { defineTagAliases } from '../tag-aliases.js';
 import { INLINE_COMPONENTS, INLINE_LIMITS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
@@ -549,6 +550,10 @@ export function startInlineEdit(element, options = {}) {
   moreButton.setAttribute('aria-expanded', 'false');
   toolbar.append(moreSeparator, moreButton);
   doc.body.append(toolbar);
+  // The toolbar's keys (owner decision C184 (1)-(3), TL-4): one Tab stop that
+  // comes back to the tool left, the arrows in the row's direction, Home and
+  // End; a tool under «Ещё» (C155) and the link panel's buttons are not in the walk.
+  const toolbarKeys = roving(toolbar, { items: () => [...tools, moreButton], out: `.${OUT}, [hidden], [inert]` });
   let toolsOut = [];
   let docked = false;
   let savedSelection = [0, 0];
@@ -866,6 +871,7 @@ export function startInlineEdit(element, options = {}) {
     finished = true;
     connection.abort();
     observer?.disconnect();
+    toolbarKeys.destroy();
     toolbar._sfRowMoreMenu?.remove?.();
     toolbar.remove();
     linkPanel.remove();
@@ -1057,24 +1063,13 @@ export function startInlineEdit(element, options = {}) {
     if (button === moreButton) openMore();
     else runTool(button.dataset.sfTool);
   }, signal);
-  // A toolbar is one Tab stop's worth of arrows: Left/Right/Home/End move
-  // between its shown buttons; Escape goes back to the text.
+  // The arrows, Home and End are core's roving helper (C184, above); Escape
+  // goes back to the text.
   toolbar.addEventListener('keydown', (event) => {
-    const shown = tools.filter((button) => button.getClientRects().length);
-    const at = shown.indexOf(doc.activeElement);
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      element.focus({ preventScroll: true });
-      if (lastSelection) setSelection(element, ...lastSelection);
-      return;
-    }
-    if (at < 0) return;
-    const rtl = globalThis.getComputedStyle(toolbar).direction === 'rtl';
-    const step = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1 }[event.key];
-    const to = step ? (at + step + shown.length) % shown.length : event.key === 'Home' ? 0 : event.key === 'End' ? shown.length - 1 : -1;
-    if (to < 0) return;
+    if (event.key !== 'Escape') return;
     event.preventDefault();
-    shown[to].focus();
+    element.focus({ preventScroll: true });
+    if (lastSelection) setSelection(element, ...lastSelection);
   }, signal);
   linkPanel.addEventListener('keydown', (event) => {
     if (event.isComposing) return;

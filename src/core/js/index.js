@@ -49,6 +49,8 @@ import './code-copy.js';
 // A link that opens a new tab shows arrow_outward and says «(откроется в
 // новой вкладке)» to a screen reader (owner decision C186 (3)): SF.newTabLink.
 import './new-tab-link.js';
+// The page's one menu of actions (owner decision C184 (4)): SF.menu.open.
+import {publishMenu} from './menu-open.js';
 // The reading position of a scrolling column (duplication audit 2026-11-03,
 // A-6): SF.readingPosition, which sf-list-feed and sf-list keep a place by.
 import './reading-position.js';
@@ -78,6 +80,7 @@ import {
 
 // SF.format, before anything below can be asked to format.
 publishFormat();
+publishMenu();
 
 // The shared Smart runtime: core/js/smart-base.js, a script of its own beside
 // core.js, holding the modules the Smart bundles are built against (they carry

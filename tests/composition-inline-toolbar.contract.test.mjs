@@ -69,8 +69,8 @@ test('Ctrl/⌘+K with no selection takes the word under the caret (IE-3)', () =>
 test('C172 is sf-editor-inline 1.9.0: its edit action, its script API, its words and its sheet', async () => {
   const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
   const manifest = JSON.parse(await read('src/smart/editor-inline/component.json'));
-  // 1.5.0: the toolbar is the overlay place (C20); 1.6.0 it declares a popup place (C16); 1.6.1 one above the released 1.5.3; 1.6.2 its sheet takes back --sf-surface-underlay (C43); 1.6.3 the C16 role names; 1.7.0 Shift+Enter break, strike (F2.1), unknown marks survive, atoms never in a link (F1); 1.8.0 the language files (C177, fix/localization-lc); 1.9.0 C172.
-  assert.equal(manifest.version, '1.10.0');
+  // 1.5.0: the toolbar is the overlay place (C20); 1.6.0 it declares a popup place (C16); 1.6.1 one above the released 1.5.3; 1.6.2 its sheet takes back --sf-surface-underlay (C43); 1.6.3 the C16 role names; 1.7.0 Shift+Enter break, strike (F2.1), unknown marks survive, atoms never in a link (F1); 1.8.0 the language files (C177, fix/localization-lc); 1.9.0 C172; 1.10.1 the toolbar is one Tab stop through core's roving helper (C184).
+  assert.equal(manifest.version, '1.10.1');
   assert.match(manifest.actions.edit.summary, /toolbar \(selection: [^)]+the default; session: [^)]+\)/u);
   assert.match(manifest.actions.edit.summary, /enter \(save: [^)]+; new-block: [^)]+\)/u);
   assert.deepEqual(manifest.relations.map((relation) => relation.name), ['icon-buttons', 'icons', 'cl-input', 'cl-button', 'cl-menu-context']);

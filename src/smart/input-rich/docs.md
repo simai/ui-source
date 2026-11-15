@@ -126,11 +126,19 @@ nothing.
 ## Keyboard
 
 - Tab reaches the toolbar (one stop) and then the text; Tab in the text
-  leaves the field and never inserts a tab.
-- In the toolbar, ArrowLeft and ArrowRight move between the buttons the row
-  shows (in a right-to-left page ArrowRight goes back), Home and End go to the
-  first and the last; Enter or Space presses one. On «Абзац ▾» and ⋯ Enter,
-  Space or ArrowDown open the menu; Escape closes it and gives the focus back.
+  leaves the field and never inserts a tab. Shift+Tab back into the toolbar
+  comes to the tool the person left (owner decision C184 (3)).
+- In the toolbar, ArrowLeft and ArrowRight move between the buttons in the
+  page's direction (in a right-to-left page ArrowLeft moves forward), Home
+  and End go to the first and the last, and the walk wraps; Enter or Space
+  presses one. The keys are core's roving helper (core/js/roving.js), the
+  same for every toolbar of the Framework.
+- A tool that cannot be used now (Undo with nothing to undo, a text level
+  inside a list) is dimmed but the arrows stop on it, and its tooltip and
+  description say why: «Нечего отменять», «Нечего повторять», «Недоступно в
+  списке» (C184 (2)).
+- On «Абзац ▾» and ⋯ Enter, Space or ArrowDown open the menu; Escape
+  closes it and gives the focus back.
 - Ctrl+B / Cmd+B bold, Ctrl+I / Cmd+I italic, Ctrl+K / Cmd+K the link
   editor, Ctrl+Z / Cmd+Z undo, Ctrl+Shift+Z / Cmd+Shift+Z and Ctrl+Y redo.
 - Bold and Italic say the marks of the text, not how it looks: a heading is

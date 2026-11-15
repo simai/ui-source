@@ -166,6 +166,7 @@
     "src/core/js/layer-stack.js",
     "src/core/js/loader.js",
     "src/core/js/mask.js",
+    "src/core/js/menu-open.js",
     "src/core/js/new-tab-link.js",
     "src/core/js/notify.js",
     "src/core/js/on-view.js",
@@ -185,6 +186,7 @@
     "src/core/js/ready.js",
     "src/core/js/region-navigation.js",
     "src/core/js/retired-classes.table.js",
+    "src/core/js/roving.js",
     "src/core/js/rule.js",
     "src/core/js/rule.src.js",
     "src/core/js/runtime.js",
@@ -243,7 +245,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "4ee6e56120ff90e4ceb4c63c9cc35ea06f779b0fe74c62291e36681ba293927d",
+  "content_sha256": "fa4ee99d9d6f0c1d85c1c4fbf9c23f9164ca5b74f26ea4bb32aa058053f6f9c4",
   "dependencies": [
     {
       "id": "core.styles",
