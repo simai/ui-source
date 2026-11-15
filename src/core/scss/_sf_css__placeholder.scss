@@ -919,7 +919,7 @@
    and the slots the page gave it, by the rules its sheet draws with: the path
    row (the trail's 1/3 control height) and the path gap, the line (the
    fourth heading's line, never under the star's 1/2 control) or the actions'
-   control height, the expressive padding. The actions stand beside the
+   control height, the tabs row, the expressive padding. The actions stand beside the
    heading at every width: since C161 (4) and C103 a phone keeps them on the
    heading's line, and below the g6 step of the line's own width the head
    folds them to the main action and «Ещё» (sf-header-page 1.8.0), so the
@@ -936,8 +936,9 @@
   --sf-page-header--box-path: calc(var(--sf-px) * 0);
   --sf-page-header--box-line: max(var(--sf-heading-4--height), var(--sf-ui-1\/2--control-height));
   --sf-page-header--box-actions: calc(var(--sf-px) * 0);
+  --sf-page-header--box-tabs: calc(var(--sf-px) * 0);
   --sf-page-header--box-pad: calc(var(--sf-px) * 0);
-  --sf-page-header--box: calc(var(--sf-page-header--box-path) + max(var(--sf-page-header--box-line), var(--sf-page-header--box-actions)) + var(--sf-page-header--box-pad));
+  --sf-page-header--box: calc(var(--sf-page-header--box-path) + max(var(--sf-page-header--box-line), var(--sf-page-header--box-actions)) + var(--sf-page-header--box-tabs) + var(--sf-page-header--box-pad));
 }
 
 :where(:is(sf-header-page, sf-page-header)):has(> [slot="path"], > header > .sf-page-header-path > [slot="path"]) {
@@ -963,6 +964,31 @@
 :where(:is(sf-header-page, sf-page-header)):where([expressive]:not([expressive="false"])),
 :where([data-sf-style="expressive"]) :where(:is(sf-header-page, sf-page-header)):not([expressive="false"]) {
   --sf-page-header--box-pad: calc(var(--sf-space-1) + var(--sf-space-2));
+}
+
+/* The tabs slot (C161 (5)) ends the head: the header's gap below the line,
+   then the tabs' strip, the control height of the tabs' size (1 unless they
+   say 1/2 or 2; the strip without panels, as the head draws it). The strip
+   is the head's lower edge, so the decorative level keeps its top padding
+   only. The header's sheet holds the strip while the tabs have no code
+   (sf-header-page 1.8.1: before, the bare tag's box had no tabs row and the
+   head grew 40 -> 52 -> 92 at 1440). */
+:where(:is(sf-header-page, sf-page-header)):has(> [slot="tabs"], > header > .sf-page-header-tabs > [slot="tabs"]) {
+  --sf-page-header--box-tabs-strip: var(--sf-ui-1--control-height);
+  --sf-page-header--box-tabs: calc(var(--sf-page-header-gap, var(--sf-space-1\/2)) + var(--sf-page-header--box-tabs-strip));
+}
+
+:where(:is(sf-header-page, sf-page-header)):has(> [slot="tabs"][size="1/2"], > header > .sf-page-header-tabs > [slot="tabs"][size="1/2"]) {
+  --sf-page-header--box-tabs-strip: var(--sf-ui-1\/2--control-height);
+}
+
+:where(:is(sf-header-page, sf-page-header)):has(> [slot="tabs"][size="2"], > header > .sf-page-header-tabs > [slot="tabs"][size="2"]) {
+  --sf-page-header--box-tabs-strip: var(--sf-ui-2--control-height);
+}
+
+:where(:is(sf-header-page, sf-page-header)):where([expressive]:not([expressive="false"])):has(> [slot="tabs"], > header > .sf-page-header-tabs > [slot="tabs"]),
+:where([data-sf-style="expressive"]) :where(:is(sf-header-page, sf-page-header)):not([expressive="false"]):has(> [slot="tabs"], > header > .sf-page-header-tabs > [slot="tabs"]) {
+  --sf-page-header--box-pad: var(--sf-space-1);
 }
 
 :where(:is(sf-header-page, sf-page-header)):not(:defined):not(:has(> [data-sf-static])) {
