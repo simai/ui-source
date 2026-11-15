@@ -48,7 +48,7 @@ test('C165 (3): layout auto puts up to three short options in a row, more in a c
 test('C165 (3): the row is the groups gap apart and a column in a narrow field; rows of the step', () => {
   const sheet = read('src/smart/input-choice/scss/_smart__choice.scss');
   assert.match(sheet, /\.sf-choice--list\[data-layout='row'\] \.sf-choice-options \{[^}]*column-gap: var\(--sf-space-1\);/u);
-  assert.match(sheet, /@container sf-choice \(inline-size < 30rem\) \{\s*\.sf-choice--list\[data-layout='row'\] \.sf-choice-options \{\s*flex-direction: column;/u);
+  assert.match(sheet, /@container sf-choice \(inline-size < (?:30rem|#\{mq\.container-step\(g5\)\})\) \{\s*\.sf-choice--list\[data-layout='row'\] \.sf-choice-options \{\s*flex-direction: column;/u);
   assert.match(sheet, /--sf-choice--row-pad: calc\(\(var\(--sf-ui-1--control-height\) - var\(--sf-text-height-1\)\) \/ 2\);/u);
   assert.match(sheet, /max\(var\(--sf-ui-1--control-height\), var\(--sf-d1\)\)/u);
 });
