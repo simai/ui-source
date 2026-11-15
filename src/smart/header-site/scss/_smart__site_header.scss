@@ -1,5 +1,3 @@
-@use 'sass:map';
-@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../utility/container/default/scss/sf_var__container' as container;
@@ -31,6 +29,13 @@
   --sf-site-header--centring: calc(var(--sf-px) * 0);
   /* The open panel's width, read by the panel and by its head. */
   --sf-site-header--sheet-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g1)));
+  /* The bar collapses at a step of its own width (C181 (2), C104): it is the
+     container its parts query, so a bar narrower than the window -- a
+     column, a card, an example frame -- collapses as its nav and actions run
+     out of room, not when the window does. A block in the flow, its width is
+     never its content's. The containment makes no containing block: the
+     open panel stays fixed to the window. */
+  container: sf-site-header / inline-size;
   min-block-size: var(--sf-site-header--block-size);
   border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
   background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
@@ -356,6 +361,10 @@
 
 .sf-site-header--collapse-always {
   @include collapsed;
+
+  .sf-site-header-row {
+    --sf-site-header--collapsed: 1;
+  }
 }
 
 @each $step, $space in container.$container-array {
@@ -367,10 +376,20 @@
   }
 }
 
-@each $step in (sm, md, lg, xl) {
-  @media not all and (min-width: map.get(bp.$breakpoint-array, $step)) {
+/* collapse <step>: below that step of the bar's own width. The steps are the
+   screen breakpoints' places on the one container ladder (C181 (2)): sm g6
+   32rem, md h1 44rem, lg h5 60rem, xl h8 72rem. A full-width bar reads the
+   window's width less a classic scrollbar, so it collapses as before. The row
+   publishes the answer (--sf-site-header--collapsed: 1), and index.js reads it
+   from there: the script and the sheet cannot disagree. */
+@each $step, $container-step in (sm: g6, md: h1, lg: h5, xl: h8) {
+  @container sf-site-header (width < #{mq.container-step($container-step)}) {
     .sf-site-header--collapse-#{$step} {
       @include collapsed;
+
+      .sf-site-header-row {
+        --sf-site-header--collapsed: 1;
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -55,7 +55,7 @@
       "collapse": {
         "type": "string",
         "default": "lg",
-        "description": "Below this Framework breakpoint (sm 32rem, md 44rem, lg 60rem, xl 72rem) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A media rule, so the first paint is right without the script",
+        "description": "Below this step of the bar's own width (sm 32rem, md 44rem, lg 60rem, xl 72rem: the screen breakpoints' places on the container ladder, C181) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A container condition of the sheet, so the first paint is right without the script, and a bar narrower than the window collapses with its nav",
         "enum": [
           "none",
           "sm",
@@ -366,7 +366,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "f4f2760f1c3560bbfc8ebadb5532742363eb9265665532e10bde948276f993ee"
+        "sha256": "adacfaecfdbd4ac9e0b909bcccad488840d9d37bee600a96afbc8e25a96c12aa"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
@@ -374,7 +374,7 @@
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "5ab1d9a280f64f0c6a962ae36295b2addb7174299addd1e82049c238f15d64dc"
+        "sha256": "a20094d7034845e012c055b536a70aa3db299eb35d4389e6d1b9f7712e67eacf"
       },
       {
         "path": "src/smart/header-site/rule.js",
@@ -382,7 +382,7 @@
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "4cdda91d5fa9f01cc5493387e2fb95ee40915c1616b87efac52cd132158ed1e3"
+        "sha256": "d61d53ea96122d80158240abe23eafd4271b2fe7c491e4d46c8d81aded3b3a5d"
       }
     ],
     "generated_runtime": []
