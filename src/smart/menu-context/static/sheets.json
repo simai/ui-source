@@ -11,6 +11,7 @@
     "component/context-menu/css/context-menu.min.css",
     "component/icons/css/icons.min.css",
     "component/kbd/css/kbd.min.css",
+    "component/progress-bar/css/progress-bar.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
     "utility/border-radius/default/css/default.min.css",
@@ -23,7 +24,8 @@
     "utility/pointer-events/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
-    "utility/text-decoration/default/css/default.min.css"
+    "utility/text-decoration/default/css/default.min.css",
+    "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
     "checks": [
@@ -57,6 +59,25 @@
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-decoration/default/css/default.min.css"
+    ],
+    "profile-meter": [
+      "component/avatars/css/avatars.min.css",
+      "component/buttons/css/buttons.min.css",
+      "component/context-menu/css/context-menu.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "component/progress-bar/css/progress-bar.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/transition-property/default/css/default.min.css"
     ],
     "reference": [
       "component/avatars/css/avatars.min.css",

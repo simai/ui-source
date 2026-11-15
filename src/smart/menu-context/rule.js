@@ -17,5 +17,8 @@ SF.RuleLoader['cl-menu-context'] = {
     { name: 'avatars' },
     // The picture's placeholder glyph is an sf-icon element.
     { name: 'cl-icon' },
+    // A meter row (type meter, owner decision C191 (4)) is sf-progress-bar's meter: fetched after the
+    // page is ready, as the tabs are, and only a menu with a meter draws one.
+    { name: 'cl-progress-bar', lazy: true },
   ],
 };

@@ -67,13 +67,46 @@ ring itself at 45 degrees, towards the bottom end corner, at the ring's own
 step (owner decisions C132 (7), C152 (8)): 12 px with a 2 px cut-out on a
 ring of 1, centred on the middle of the line.
 
+## A ring around an avatar: the person's own things
+
+A ring around an avatar says something about the person's own things (owner
+decision C191): how much of the profile is filled in, a new photo being sent.
+It is not the place for the account's quota or tariff: rings around avatars
+read as «news» or as the person's status, and the remainder of a tariff is a
+meter row in the person menu (sf-menu-context, `{type: 'meter'}`), not a ring
+on the header's avatar.
+
+- **Completeness.** The ring shows the share filled in; there is no number in
+  the middle, so the page writes it in words beside the avatar («Профиль
+  заполнен на 70 %») with the steps still missing as links. The ring's
+  `label` says the same words.
+- **Done.** At 100 % the ring goes away (1.4.0): a ring around slot content
+  that is not a `meter` and not `indeterminate` draws no line and says no
+  value at 100, and the avatar stays where it stood, in the same box, so
+  nothing around it moves. The page can also put a plain sf-avatar there.
+- **Photo upload.** While a new photo is sent, the ring goes round the avatar:
+  `indeterminate` while the size is unknown, then `value` (or `chunk`) as the
+  bytes go; at 100 the ring goes away and the new photo shows (sf-avatar
+  fades the picture in).
+
 ```html
-<button type="button" class="account" aria-label="Анна Ким, использовано 62 % лимита">
-  <sf-progress-ring value="62" meter label="Использовано">
-    <sf-avatar slot="content" size="1/2" text="АК"></sf-avatar>
+<div class="flex items-cross-center gap-1/2">
+  <sf-progress-ring size="3" value="70" label="Профиль заполнен на 70 %">
+    <sf-avatar slot="content" size="2" heading="Анна Петрова"></sf-avatar>
   </sf-progress-ring>
-</button>
+  <div class="flex flex-col">
+    <b>Профиль заполнен на 70 %</b>
+    <span>Осталось два шага: <a href="#photo">добавьте фото</a>, <a href="#phone">укажите телефон</a></span>
+  </div>
+</div>
+
+<sf-progress-ring size="3" indeterminate label="Загрузка фото">
+  <sf-avatar slot="content" size="2" heading="Анна Петрова"></sf-avatar>
+</sf-progress-ring>
 ```
+
+A ring inside a button is named by the button: give the button a name that
+says the value too.
 
 ## Actions
 

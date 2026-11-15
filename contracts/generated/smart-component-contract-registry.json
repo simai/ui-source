@@ -2184,6 +2184,7 @@
           "smart.button",
           "smart.button-icon",
           "smart.icon",
+          "smart.progress-bar",
           "smart.tabs"
         ]
       },
@@ -2196,7 +2197,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "db999bc744c64112cc7eb8bb24b9e9502c1af5f0b418785ef023719e055f24ed",
+      "manifest_sha256": "cbc65174d7b5107900433d3c08b809a4ca920525741b87cd8d10af29a90167b0",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2474,7 +2475,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "13ca76a24cab5260eabd8705f90e92cf142e3242cf77835acc456b98f6407904",
+      "manifest_sha256": "bf701424468ae2e2446b994fd5fdc283d07bf8cf5c4ed12692a7ee7ce328aa5a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

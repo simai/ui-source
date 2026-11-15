@@ -69,18 +69,43 @@
     },
     {
       "name": "avatar",
-      "title": "Расход лимита вокруг аватара",
+      "title": "Заполненность профиля вокруг аватара",
       "children": "<sf-avatar slot=\"content\" size=\"1/2\" text=\"АК\" aria-label=\"Анна Ким\"></sf-avatar>",
       "settings": {
-        "label": "Использовано 85 % лимита",
-        "value": 85,
-        "status": "warning",
-        "meter": true
+        "label": "Профиль заполнен на 70 %",
+        "value": 70
       },
       "expect": {
-        "name": "Использовано 85 % лимита",
-        "role": "meter",
-        "valuenow": 85
+        "name": "Профиль заполнен на 70 %",
+        "role": "progressbar",
+        "valuenow": 70
+      }
+    },
+    {
+      "name": "avatar-upload",
+      "title": "Загрузка фото: размер неизвестен",
+      "children": "<sf-avatar slot=\"content\" size=\"1/2\" text=\"АК\" aria-label=\"Анна Ким\"></sf-avatar>",
+      "settings": {
+        "label": "Загрузка фото",
+        "indeterminate": true
+      },
+      "expect": {
+        "name": "Загрузка фото",
+        "role": "progressbar"
+      }
+    },
+    {
+      "name": "avatar-done",
+      "title": "Заполнено на 100 %: кольцо ушло",
+      "children": "<sf-avatar slot=\"content\" size=\"1/2\" text=\"АК\" aria-label=\"Анна Ким\"></sf-avatar>",
+      "settings": {
+        "label": "Профиль заполнен",
+        "value": 100
+      },
+      "expect": {
+        "values": {
+          "value": 100
+        }
       }
     },
     {
