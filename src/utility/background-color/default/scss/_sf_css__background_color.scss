@@ -175,6 +175,16 @@
     :where(.bg-surface-4 > :not(.bg-primary)) {
         @include places.sf-place-step-4-accent;
     }
+    // An inverse place is the other theme (inverse places IP): its text takes
+    // that theme's ink, as a theme area does (core .sf-effect-area). The place
+    // re-declared --sf-on-surface, but the text kept the colour it inherited
+    // from the page: dark on the dark grey in the light theme (#1a1b1f on
+    // #2f3035), light on the light grey in the dark one. In sf.base, so a
+    // colour utility on the place still wins.
+    .bg-surface-inverse,
+    .bg-surface-inverse-fixed {
+        color: var(--sf-on-surface);
+    }
     .bg-surface-inverse > * {
         @include places.sf-place-inverse-accent;
     }

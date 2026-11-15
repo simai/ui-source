@@ -6,43 +6,18 @@
 // SCROLLBAR
 
 // @include layer-priority(utility,default) {
+  // The bar shows while the pointer is over the area or the area holds the
+  // focus. Owner decision C208 (1): the width does not change on hover, so
+  // the bar keeps its room (core's 14) and only the thumb appears -- the
+  // content no longer moves by the bar's width. It used to be 0 wide at rest
+  // and set scrollbar-width / scrollbar-color on hover, which made Chrome 121
+  // and later drop the drawn bar for the platform's (SB-7). Firefox takes
+  // the colours from core's support query, which reads these variables.
   .scroll-hover {
-    /* Firefox: hide by default */
-    scrollbar-width: none;
+    --sf-scroll-bg-thumb: var(--sf-transparent);
 
-    &::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-    }
-
-    &:hover {
-      /* Firefox: show thin scrollbar on hover */
-      scrollbar-width: thin;
-      scrollbar-color: var(--sf-scroll-bg-thumb) var(--sf-transparent);
-    }
-
-    &:hover::-webkit-scrollbar {
-      width: var(--sf-scroll-bg-width);
-      height: var(--sf-scroll-bg-width);
-    }
-
-    &:hover::-webkit-scrollbar-thumb {
-      height: var(--sf-scroll-thumb-size, var(--sf-scroll-thumb-width));
-      border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
-      background-clip: padding-box;
-      border-radius: var(--sf-scroll-radius);
-      background-color: var(--sf-scroll-bg-thumb);
-    }
-
-    &:hover::-webkit-scrollbar-track {
-      background-color: var(--sf-scroll-bg-track);
-      border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
-      background-clip: padding-box;
-      border-radius: var(--sf-scroll-radius);
-    }
-
-    &, &::-webkit-scrollbar, &::-webkit-scrollbar-thumb, &::-webkit-scrollbar-track {
-      transition: var(--sf-duration-normal) var(--sf-animation);
+    &:is(:hover, :focus-within) {
+      --sf-scroll-bg-thumb: var(--sf-outline);
     }
   }
 // }

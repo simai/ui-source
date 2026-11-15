@@ -154,7 +154,9 @@
 .sf-wizard .sf-wizard-steps .sf-steps-container {
   flex-wrap: nowrap;
   overflow-x: auto;
-  scrollbar-width: thin;
+  /* No scrollbar-width: Chrome 121+ drops the drawn ::-webkit-scrollbar of an
+     element that sets it (SB-7); core draws the one bar (C208), Firefox's thin
+     bar comes from core's support query. */
   padding-block: var(--sf-focus--width);
 }
 

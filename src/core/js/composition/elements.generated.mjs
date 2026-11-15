@@ -491,7 +491,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.12.0"
+    "version": "1.12.1"
   },
   "sf-checkbox": {
     "inputs": {
@@ -698,7 +698,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.16.0"
+    "version": "1.16.1"
   },
   "sf-icon": {
     "inputs": {
