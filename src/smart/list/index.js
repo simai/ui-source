@@ -70,6 +70,8 @@ const normalItem = (item) => ({...item, id: String(item.id)});
 
 const word = (value) => (typeof value === "string" ? value.trim() : "");
 const SHAPES = new Set(["circle", "square"]);
+// The skeleton's leading place by the setting leading (1.17.0).
+const LEADING = new Set(["auto", "none", "icon", "avatar"]);
 // The badge's tone is a word of the Framework's status set
 // (contracts/public-api-axes.json status_vocabulary); neutral is no status.
 const TONES = new Set(["neutral", "info", "success", "warning", "error"]);
@@ -418,8 +420,9 @@ class SfList extends ListElement {
     // two-line row when any row of the list has a second line, else the row's
     // line: a one-line row keeps its control height. A row without an icon
     // among rows with one keeps the icon's place too (owner C105), at the
-    // row's line.
-    leading() {
+    // row's line. (1.17.0: named leadingPlace(), the setting leading is the
+    // skeleton's.)
+    leadingPlace() {
         if (this._items.some((item) => avatarOf(item))) {
             return {wide: this._items.some((item) => Boolean(item.supporting))};
         }
@@ -435,6 +438,14 @@ class SfList extends ListElement {
     // taken away for a reload (items = [] and loading), so the rows that come
     // back find their place; until the list has shown rows it is the caption
     // row with no leading place -- the list does not guess one.
+    //
+    // 1.17.0: the setting leading says the place instead of the rows shown
+    // (C130, C148 (1)): icon, avatar or none hold from the first frame, so a
+    // list whose rows will carry icons or avatars has its title bar start
+    // where the title will before it has shown any; auto is the shape of the
+    // rows shown. The line count, and an avatar's shape and width, still
+    // come from the rows shown; before any, the caption row's: an avatar of
+    // the control height, a circle.
     skeletonShape() {
         const items = this._items;
         if (items.length) {
@@ -447,7 +458,16 @@ class SfList extends ListElement {
                     : icon ? {kind: "icon"} : null,
             };
         }
-        return this._shownShape ?? {twoLine: true, lead: null};
+        const shown = this._shownShape ?? {twoLine: true, lead: null};
+        const declared = LEADING.has(this.leading) ? this.leading : "auto";
+        if (declared === "auto") return shown;
+        if (declared === "none") return {twoLine: shown.twoLine, lead: null};
+        if (declared === "icon") return {twoLine: shown.twoLine, lead: {kind: "icon"}};
+        const learned = shown.lead?.kind === "avatar" ? shown.lead : null;
+        return {
+            twoLine: shown.twoLine,
+            lead: {kind: "avatar", wide: learned ? learned.wide : shown.twoLine, shape: learned ? learned.shape : "circle"},
+        };
     }
 
     templateContext() {
@@ -463,7 +483,7 @@ class SfList extends ListElement {
             noWrap: this.noWrap === true,
             divided: this.divided === true,
             sections: this.arranged(),
-            leading: this.leading(),
+            leading: this.leadingPlace(),
             avatarOf,
             countOf,
             badgeOf,

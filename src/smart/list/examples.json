@@ -259,6 +259,18 @@
       }
     },
     {
+      "name": "loading-avatar",
+      "title": "Загрузка: место аватара с первого кадра",
+      "settings": {
+        "label": "Беседы",
+        "loading": true,
+        "leading": "avatar"
+      },
+      "expect": {
+        "name": "Беседы"
+      }
+    },
+    {
       "name": "empty",
       "title": "Пусто",
       "settings": {

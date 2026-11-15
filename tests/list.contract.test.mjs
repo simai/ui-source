@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.16.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.17.0'], ['list-feed', 'sf-list-feed', '1.3.0']]) {
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,7 +32,7 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
   assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
@@ -63,9 +63,9 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
   const of = contract.settings.items.of;
   assert.deepEqual(Object.keys(of).sort(),
     ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text']);
-  // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap).
+  // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap, 1.17.0 leading).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
+    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
@@ -222,7 +222,7 @@ test('sf-list 1.16.0: a skeleton row keeps the leading place of the rows it stan
   const sheet = read('src/smart/list/js/templates/default.css');
   // The shape is the rows' own, kept across items = [] for a reload; none before rows were shown.
   assert.match(source, /skeletonShape\(\) \{/u);
-  assert.match(source, /return this\._shownShape \?\? \{twoLine: true, lead: null\};/u);
+  assert.match(source, /const shown = this\._shownShape \?\? \{twoLine: true, lead: null\};/u);
   assert.match(source, /skeleton: this\.skeletonShape\(\),/u);
   // The skeleton row draws the place in sf-list-item's leading slot: sf-avatar's own box, or the icon square.
   assert.match(template, /kind=\$\{lead \? "icon" : "text"\}/u);
@@ -231,4 +231,29 @@ test('sf-list 1.16.0: a skeleton row keeps the leading place of the rows it stan
   assert.match(sheet, /\.sf-list__skeleton--lead-wide \{ --sf-list--lead-size: var\(--sf-list--lead-block\); \}/u);
   assert.match(sheet, /\.sf-list__lead-skeleton\.sf-first-paint-fill \{\n\s*background-color: var\(--sf-skeleton-base\);/u);
   assert.match(sheet, /\.sf-list__lead-skeleton--icon \{[^}]*inline-size: var\(--sf-list--lead-line\);[^}]*border-radius: var\(--sf-radius--ui\);/u);
+});
+
+test('sf-list 1.17.0: leading says the skeleton\'s leading place from the first frame (C130, C148 (1))', () => {
+  const contract = json('src/smart/list/component.json');
+  const manifest = json('src/smart/list/smart.manifest.json');
+  const source = read('src/smart/list/index.js');
+  // The setting: auto | none | icon | avatar, auto by default (1.16.0's behaviour).
+  assert.deepEqual(contract.settings.leading.values, ['auto', 'none', 'icon', 'avatar']);
+  assert.equal(contract.settings.leading.default, 'auto');
+  assert.deepEqual(manifest.inputs.properties.leading.enum, ['auto', 'none', 'icon', 'avatar']);
+  // The rows' own place is leadingPlace(); the setting shapes the skeleton alone.
+  assert.match(source, /leadingPlace\(\) \{/u);
+  assert.match(source, /leading: this\.leadingPlace\(\),/u);
+  assert.doesNotMatch(source, /this\.leading\(\)/u);
+  assert.match(source, /if \(declared === "auto"\) return shown;/u);
+  assert.match(source, /if \(declared === "none"\) return \{twoLine: shown\.twoLine, lead: null\};/u);
+  assert.match(source, /if \(declared === "icon"\) return \{twoLine: shown\.twoLine, lead: \{kind: "icon"\}\};/u);
+  assert.match(source, /lead: \{kind: "avatar", wide: learned \? learned\.wide : shown\.twoLine, shape: learned \? learned\.shape : "circle"\}/u);
+  // The example and its printed first paint: three skeleton rows, each with the avatar's box of the list's step.
+  const example = json('src/smart/list/examples.json').examples.find((one) => one.name === 'loading-avatar');
+  assert.deepEqual(example.settings, {label: 'Беседы', loading: true, leading: 'avatar'});
+  const printed = read('src/smart/list/static/default/loading-avatar.html');
+  assert.match(printed, /leading="avatar"/u);
+  assert.equal((printed.match(/sf-avatar sf-avatar--picture sf-avatar--size-1 sf-first-paint-fill sf-list__lead-skeleton/gu) || []).length, 3);
+  assert.match(printed, /sf-list__skeleton sf-list__skeleton--lead-wide/u);
 });
