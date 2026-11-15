@@ -228,14 +228,15 @@ const rows = (context, group, labelled) => html`
 //
 // 1.16.0 (C130, C148 (1)): the skeleton row keeps the leading place of the
 // rows it stands for, so its title bar starts where the title will. The
-// place is the one the rows draw (leading() and the row's own icon): an icon
+// place is the one the rows draw (leadingPlace() and the row's own icon): an icon
 // is the row's line square with the control radius (C130 (1)); an avatar is
 // sf-avatar's own box of the step the rows give it -- the control height in a
 // list with a second line, else the row's line -- and its shape; a list with
 // neither keeps no place. The shape is read from the rows the list has shown
 // (context.skeleton.lead), never guessed: with none shown yet there is no
 // place (a printed first paint, data-sf-first-paint="skeleton", carries the
-// rows' own picture).
+// rows' own picture) -- unless the list's setting leading says it (1.17.0:
+// icon, avatar or none, from the first frame).
 const SKELETON_ROWS = 3;
 
 const skeletonLead = (context) => {

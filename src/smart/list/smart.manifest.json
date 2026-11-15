@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.16.0",
+  "version": "1.17.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -92,6 +92,17 @@
         "type": "boolean",
         "default": false,
         "description": "The first page is on its way: three skeleton rows of the list's size, each as tall as the row that replaces it (the caption row until rows were shown, then the shape of the rows shown, their leading icon or avatar place included, so the title starts where it will), their words core's pulsing first-paint bars (C130, C136, C148 (1))."
+      },
+      "leading": {
+        "type": "string",
+        "default": "auto",
+        "description": "The leading place the skeleton rows keep while loading, from the first frame: auto takes the shape of the rows the list has shown (none until it has shown any); icon keeps the icon place (the row's line square, the control radius); avatar keeps sf-avatar's own box of the list's step (the control height while the rows have a second line, else the row's line), a circle (square when the rows shown were); none keeps no place. So a list whose rows will carry icons or avatars has its title bar start on the first frame where the title will. It shapes the skeleton alone: the rows draw what their items carry (C130, C148 (1)).",
+        "enum": [
+          "auto",
+          "none",
+          "icon",
+          "avatar"
+        ]
       },
       "size": {
         "type": "string",
@@ -774,11 +785,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "89c57ac719576de5fc273c60a6d7c75eaea5926f8750ccee81bc31540145b7d7"
+        "sha256": "7e85b2bec6f4ad5c5902332fdb24e6cd70c502cac352e993060316f3aaf9b179"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "df1ef3e58fe1b6b473fa6e5ce317d18e1df1e880fc3ce249ac65cb039de060d6"
+        "sha256": "ab6f7829588f2239b629825cb2ef669e12bb7c9e03b0af944e33663729e082c6"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
@@ -790,11 +801,11 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "7a82ce0bcb274168d4d0ad0f363d7439a680a2688f309e42b22690b2d62ad859"
+        "sha256": "3b35a7af2bcd2bdd63d1a80d592bc09364ffbdee3d518342c9da87b3e1550abf"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "4318c46914634a140603ea4a176f7a61fd28fb8245969b0ad0ea9376864fd0da"
+        "sha256": "3fa13f93637ea5f9dcd4cd3d6b147623915c1692b13224d78c3a78e1e5150929"
       },
       {
         "path": "src/smart/list/lang/en.json",
