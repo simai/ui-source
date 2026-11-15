@@ -259,6 +259,20 @@
     padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
   }
 
+  /* The close on the axis of the switch that opened the panel (owner decision
+     C104 (4), as sf-header-site's): the switch's side of the head, the head's
+     padding there measured to the switch's axis (--sf-drawer--close-axis,
+     placeCloseOnAxis in index.js). The close is drawn first in the head when
+     that side is its start, so the title follows it. Without a measure the
+     padding is the window inset, as before. */
+  .sf-drawer[data-sf-drawer-close-axis='start'] .sf-drawer-head {
+    padding-inline-start: var(--sf-drawer--close-axis, var(--sf-drawer--inset-start));
+  }
+
+  .sf-drawer[data-sf-drawer-close-axis='end'] .sf-drawer-head {
+    padding-inline-end: var(--sf-drawer--close-axis, var(--sf-drawer--inset-end));
+  }
+
   /* The head's one action (slot header-action; study view-property-base VB-4),
      before the close. Nothing asked for it: no box. */
   .sf-drawer-action {

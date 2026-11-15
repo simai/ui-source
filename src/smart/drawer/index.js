@@ -122,6 +122,35 @@ function layerOpener(drawer) {
   return active;
 }
 
+// A switch that names the drawer (owner decision C104 (3), (4)): aria-controls
+// (a data-drawer button, a header's menu button) or the older
+// data-sf-drawer-open / data-sf-drawer-toggle.
+function namesDrawer(element, id) {
+  if (!id || !(element instanceof Element)) return false;
+  return ['aria-controls', 'data-sf-drawer-open', 'data-sf-drawer-toggle'].some((attribute) =>
+    (element.getAttribute(attribute) || '').split(/\s+/u).includes(id));
+}
+
+// The box a control is seen in: a host drawn as display: contents (sf-button,
+// sf-button-icon) has none of its own, its button has.
+function seenBox(element) {
+  const own = element.getBoundingClientRect();
+  if (own.width || own.height) return own;
+  const inner = element.querySelector?.('button, a[href], [tabindex]');
+  return inner ? inner.getBoundingClientRect() : own;
+}
+
+const FOCUSABLE = 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+// What takes the focus back for a switch: itself, or its button.
+function focusTarget(element) {
+  if (!(element instanceof HTMLElement)) return null;
+  return element.matches(FOCUSABLE) ? element : element.querySelector(FOCUSABLE) || null;
+}
+
+// A close of the page's own in the drawer's content (data-drawer="close").
+const OWN_CLOSE = '[data-drawer="close"], [data-sf-drawer-close]';
+
 function escapeSelector(value) {
   if (globalThis.CSS?.escape) return globalThis.CSS.escape(value);
   return String(value).replace(/["\\]/g, '\\$&');
@@ -290,7 +319,13 @@ const drawerManager = {
         || trigger.closest('[data-sf-drawer-id]')?.getAttribute('data-sf-drawer-id');
       if (!id) return;
       customElements.whenDefined(DRAWER_SELECTOR).then(() => {
-        document.getElementById(id)?.[operation]?.();
+        const drawer = document.getElementById(id);
+        // The switch pressed is the opener, also where a press gives a
+        // button no focus (Safari): the close stands on its axis and the
+        // focus goes back to it (C104 (4)).
+        if (drawer && operation !== 'close') drawer._openerHint = trigger;
+        drawer?.[operation]?.();
+        if (drawer) drawer._openerHint = null;
       });
     });
     this.globalBound = true;
@@ -400,6 +435,14 @@ class SfDrawer extends DrawerElement {
     this.onPanelPointerDown = this.onPanelPointerDown.bind(this);
     this.onPanelScroll = this.onPanelScroll.bind(this);
     this._switchVisible = false;
+    // The switch that opened the panel and what the head drew for it
+    // (C104 (4)): the close's side on the switch's axis, and a close drawn
+    // because the open panel covers the switch.
+    this._opener = null;
+    this._openerHint = null;
+    this._closeAxis = '';
+    this._coversOpener = false;
+    this._openerRechecks = 0;
     this._dockColumn = true;
     this._declaredModal = null;
   }
@@ -417,6 +460,7 @@ class SfDrawer extends DrawerElement {
       // does, so closing gives focus back there and not to the nearest
       // landmark. A drawer open in the page's own markup has no opener.
       this._lastActive = layerOpener(this);
+      this.noteOpener();
       this._focusReturnAncestors = landmarksAround(this._lastActive);
       this._focusAfterRender = this.modal;
       drawerManager.add(this);
@@ -470,14 +514,183 @@ class SfDrawer extends DrawerElement {
       if (!element.getAttribute('aria-controls').split(/\s+/u).includes(id)) return false;
       if (root?.contains(element) || this.contains(element)) return false;
       if (element.getClientRects().length === 0) return false;
-      return getComputedStyle(element).visibility !== 'hidden';
+      if (getComputedStyle(element).visibility === 'hidden') return false;
+      // Under the open panel it is not on screen: a panel as wide as a phone
+      // covers the switch that opened it, and a panel that drew no close then
+      // had none at all (recipe admin-frame, 2026-11-15).
+      return !(this.openState && this.coversElement(element));
     });
   }
 
   onWindowResize() {
-    if (!this.controlled || !this._isMounted) return;
+    if (!this._isMounted) return;
+    if (this.openState) {
+      this.recheckOpener();
+      this.placeCloseOnAxis();
+      return;
+    }
+    if (!this.controlled) return;
     const visible = this.hasVisibleSwitch();
     if (visible !== this._switchVisible) this.requestComponentUpdate('controlled');
+  }
+
+  // The switches outside the panel that name it, in document order.
+  namingSwitches() {
+    const id = this.drawerId || this.id;
+    if (!id || typeof document === 'undefined') return [];
+    const root = this.getDrawerRoot();
+    return [...document.querySelectorAll('[aria-controls], [data-sf-drawer-open], [data-sf-drawer-toggle]')]
+      .filter((element) => namesDrawer(element, id) && !root?.contains(element) && !this.contains(element));
+  }
+
+  // Notes the switch that opens the panel (C104 (4)): the one the drawer's
+  // own press handler saw, else the switch naming it that holds the focus
+  // (a page's script that calls open() from its button). Any other focused
+  // element -- a row of a list -- is not a switch, and the close keeps its
+  // place. Where the focus was nowhere (Safari gives a pressed button none),
+  // the focus goes back to the switch.
+  noteOpener() {
+    const id = this.drawerId || this.id;
+    let opener = this._openerHint?.isConnected ? this._openerHint : null;
+    const active = document.activeElement;
+    for (let node = active; !opener && node instanceof Element && node !== document.body; node = node.parentElement) {
+      if (namesDrawer(node, id)) opener = node;
+    }
+    this._opener = opener;
+    this._openerRechecks = 0;
+    const nowhere = !(this._lastActive instanceof HTMLElement) || this._lastActive === document.body
+      || this._lastActive === document.documentElement;
+    if (nowhere && opener) this._lastActive = focusTarget(opener) || this._lastActive;
+  }
+
+  // The switch the close stands on the axis of: the one that opened the
+  // panel while it is on the page and drawn, else the first switch naming
+  // the panel that is (a panel open in the page's markup, a header's menu
+  // button).
+  knownOpener() {
+    const drawn = (element) => element?.isConnected && element.getClientRects().length > 0
+      && getComputedStyle(element).visibility !== 'hidden' && seenBox(element).width > 0;
+    if (drawn(this._opener)) return this._opener;
+    return this.namingSwitches().find(drawn) || null;
+  }
+
+  // The panel's box where it rests open: its slide (transform) and a
+  // finger's push (translate) taken out, so a closed or opening panel
+  // answers where it will stand.
+  panelBox() {
+    const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+    if (!panel) return null;
+    const rect = panel.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    const style = getComputedStyle(panel);
+    let x = 0;
+    let y = 0;
+    if (style.transform && style.transform !== 'none' && typeof DOMMatrixReadOnly === 'function') {
+      const matrix = new DOMMatrixReadOnly(style.transform);
+      x += matrix.m41;
+      y += matrix.m42;
+    }
+    if (style.translate && style.translate !== 'none') {
+      const [tx = '0', ty = '0'] = style.translate.split(/\s+/u);
+      x += parseFloat(tx) || 0;
+      y += parseFloat(ty) || 0;
+    }
+    return {left: rect.left - x, right: rect.right - x, top: rect.top - y, bottom: rect.bottom - y, width: rect.width, panel};
+  }
+
+  // Whether the open panel covers an element: its centre is on the panel.
+  coversElement(element) {
+    if (this.docked && this._dockColumn) return false;
+    const box = this.panelBox();
+    if (!box || !element) return false;
+    const seen = seenBox(element);
+    const x = seen.left + seen.width / 2;
+    const y = seen.top + seen.height / 2;
+    return x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
+  }
+
+  // The open panel covers the switch that opened it.
+  coversOpener() {
+    if (!this.openState) return false;
+    const opener = this.knownOpener();
+    return Boolean(opener && this.coversElement(opener));
+  }
+
+  // A close of the page's own in the content or the foot.
+  hasOwnClose() {
+    const root = this.getDrawerRoot();
+    if (root?.querySelector(`:is([data-sf-drawer-body], [data-sf-drawer-foot]) :is(${OWN_CLOSE})`)) return true;
+    return (this._contentNodes || []).some((node) => node.nodeType === 1 && (node.matches(OWN_CLOSE) || node.querySelector(OWN_CLOSE)));
+  }
+
+  // The side of the head the close stands at on the opener's axis (owner
+  // decision C104 (4), as sf-header-site): 'start' or 'end' of the head's
+  // line when the switch that opened the panel stands on the panel's own
+  // side of the frame (the window, or the overlay container that holds the
+  // drawer); '' otherwise, and the close keeps its place at the end. A
+  // bottom sheet, a nested panel (its head starts with «Назад»), a column of
+  // the page and a close outside the panel keep theirs.
+  closeAxisSide() {
+    if (this.sheet || this.closePlacement === 'outside' || (this.docked && this._dockColumn)) return '';
+    if (typeof document === 'undefined' || this.nestedUnder()) return '';
+    const opener = this.knownOpener();
+    if (!opener) return '';
+    const seen = seenBox(opener);
+    const frame = this.closest(OVERLAY_CONTAINER)?.getBoundingClientRect()
+      || {left: 0, width: globalThis.innerWidth || document.documentElement.clientWidth};
+    const onLeft = seen.left + seen.width / 2 < frame.left + frame.width / 2;
+    const edgeLeft = this.stackEdge === 'left';
+    if (onLeft !== edgeLeft) return '';
+    const rtl = getComputedStyle(this).direction === 'rtl';
+    return edgeLeft !== rtl ? 'start' : 'end';
+  }
+
+  // After a drawing or a resize: what the head drew still holds (the opener
+  // moved, the panel came to cover it); one more drawing per change, at most
+  // a few per opening.
+  recheckOpener() {
+    if (!this.openState || this._openerRechecks > 3) return;
+    const side = this.closeAxisSide();
+    const covers = this.coversOpener();
+    const visible = this.controlled && this.hasVisibleSwitch();
+    if (side !== this._closeAxis || covers !== this._coversOpener || visible !== this._switchVisible) {
+      this._openerRechecks += 1;
+      this.requestComponentUpdate('opener');
+    }
+  }
+
+  // The close on the opener's axis (C104 (4)): the head's padding on the
+  // close's side is the distance from the panel's edge to the axis less half
+  // the close, held inside the panel (the close and the head's padding on
+  // the other side). Measured, as the edge's room is: the axis is the
+  // page's, not a step of the space system.
+  placeCloseOnAxis() {
+    const root = this.getDrawerRoot();
+    if (!root) return;
+    const side = this.openState ? this._closeAxis : '';
+    const head = root.querySelector('.sf-drawer-head');
+    const close = head?.querySelector('.sf-drawer-close');
+    const opener = side ? this.knownOpener() : null;
+    const box = opener ? this.panelBox() : null;
+    const whole = root.hasAttribute('data-sf-drawer-whole') && root.querySelector('[data-sf-drawer-edge]')?.childElementCount;
+    if (!side || !close || !box || (side === 'end' && whole)) {
+      root.removeAttribute('data-sf-drawer-close-axis');
+      root.style.removeProperty('--sf-drawer--close-axis');
+      return;
+    }
+    const seen = seenBox(opener);
+    const axis = seen.left + seen.width / 2;
+    const width = close.getBoundingClientRect().width;
+    const panelStyle = getComputedStyle(box.panel);
+    const edgeLeft = this.stackEdge === 'left';
+    const border = parseFloat(edgeLeft ? panelStyle.borderLeftWidth : panelStyle.borderRightWidth) || 0;
+    const fromEdge = (edgeLeft ? axis - box.left : box.right - axis) - border;
+    const headStyle = getComputedStyle(head);
+    const other = parseFloat(side === 'start' ? headStyle.paddingInlineEnd : headStyle.paddingInlineStart) || 0;
+    const room = box.width - border - width - other;
+    const inset = Math.max(0, Math.min(fromEdge - width / 2, room));
+    root.setAttribute('data-sf-drawer-close-axis', side);
+    root.style.setProperty('--sf-drawer--close-axis', `${Math.round(inset * 100) / 100}px`);
   }
 
   // A modal drawer -- the default -- covers the page while it floats over it:
@@ -602,8 +815,14 @@ class SfDrawer extends DrawerElement {
   }
 
   templateContext() {
-    this._switchVisible = this.controlled && this.hasVisibleSwitch();
     if (this.docked && typeof document !== 'undefined') this._dockColumn = drawerManager.reservesDock(this);
+    this._switchVisible = this.controlled && this.hasVisibleSwitch();
+    this._coversOpener = typeof document !== 'undefined' && this.coversOpener();
+    this._closeAxis = typeof document !== 'undefined' ? this.closeAxisSide() : '';
+    // A panel that covers the switch that opened it always offers a close
+    // (C104): a phone-wide panel over its ☰ with show-close="false" and no
+    // close of the page's own in it could be closed only by Escape.
+    const coveredWithoutClose = this._coversOpener && !this.showClose && !this.hasOwnClose();
     return this.createTemplateContext({
       drawerId: this.drawerId || this.resolveDrawerId(),
       // A path id (§7.1.1): <path>--title.
@@ -615,7 +834,10 @@ class SfDrawer extends DrawerElement {
       docked: this.docked,
       column: this.docked && this._dockColumn,
       size: this.size,
-      showClose: this.showClose && !this._switchVisible,
+      showClose: (this.showClose && !this._switchVisible) || coveredWithoutClose,
+      // The close's side on the opener's axis (C104 (4)): 'start' draws it
+      // first in the head, before the title.
+      closeAxis: this._closeAxis,
       controlled: this.controlled,
       sheet: this.sheet,
       snap: this.snap,
@@ -788,6 +1010,13 @@ class SfDrawer extends DrawerElement {
     }
     this.observeScrollEdges(root);
     this.applyStackPosition();
+    // The close on the opener's axis, once the head is laid out; then
+    // whether the drawing still holds for the opener (C104 (4)).
+    this.placeCloseOnAxis();
+    globalThis.requestAnimationFrame?.(() => {
+      this.placeCloseOnAxis();
+      this.recheckOpener();
+    });
     this.observeDock(root);
     // A closed drawer's panel content starts after the page's first paint,
     // out of view (its panel is inert, so the Loader leaves it until it
@@ -871,9 +1100,10 @@ class SfDrawer extends DrawerElement {
                     ${context.nested ? html`<sf-button-icon class="sf-drawer-back" icon="arrow_back" appearance="ghost"
                         scheme="on-surface" size="1/3" aria-label=${context.backLabel} title=${context.backLabel}
                         data-sf-drawer-back></sf-button-icon>` : nothing}
+                    ${context.closePlacement === 'inside' && context.closeAxis === 'start' ? closeButton : nothing}
                     ${context.title ? html`<div class="sf-drawer-title" id=${context.titleId}>${context.title}</div>` : nothing}
                     <div class="sf-drawer-action" data-sf-drawer-action></div>
-                    ${context.closePlacement === 'inside' ? closeButton : nothing}
+                    ${context.closePlacement === 'inside' && context.closeAxis !== 'start' ? closeButton : nothing}
                   </header>`
                 : nothing}
         <div class=${joinClasses('sf-drawer-body', context.bodyClass)} data-sf-drawer-body></div>
@@ -895,6 +1125,7 @@ class SfDrawer extends DrawerElement {
     }
     if (options.emit !== false && !this.emitDrawerEvent('open', true)) return refused('prevented');
     this._lastActive = document.activeElement;
+    this.noteOpener();
     this._focusReturnAncestors = landmarksAround(this._lastActive);
     this.syncOpenAttribute(true);
     drawerManager.add(this);
@@ -950,6 +1181,7 @@ class SfDrawer extends DrawerElement {
   syncExternalOpenState(open) {
     if (open) {
       this._lastActive = document.activeElement;
+      this.noteOpener();
       this._focusReturnAncestors = landmarksAround(this._lastActive);
       this._focusAfterRender = this.modal;
       drawerManager.add(this);
@@ -1211,7 +1443,7 @@ class SfDrawer extends DrawerElement {
 
   observeScrollEdges(root) {
     if (typeof ResizeObserver !== 'function') return;
-    if (!this._edgeObserver) this._edgeObserver = new ResizeObserver(() => this.onPanelScroll());
+    if (!this._edgeObserver) this._edgeObserver = new ResizeObserver(() => { this.onPanelScroll(); this.placeCloseOnAxis(); });
     this._edgeObserver.disconnect();
     for (const area of ['[data-sf-drawer-panel]', '[data-sf-drawer-body]', '[data-sf-drawer-edge]']) {
       const node = root.querySelector(area);
