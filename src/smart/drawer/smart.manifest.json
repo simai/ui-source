@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.13.0",
+  "version": "1.15.0",
   "title": "Drawer",
   "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
   "kind": "smart",
@@ -879,8 +879,8 @@
         ]
       },
       {
-        "from": "1.11.1",
-        "to": "1.12.0",
+        "from": "1.12.1",
+        "to": "1.14.0",
         "changes": [
           "modal is a setting, not a deprecated mode: everything at an edge is sf-drawer (owner decision C157 (1)); sf-modal position=\"inline-*|bottom\" is its old name until 2027-01-01.",
           "slot=\"footer\": a pinned foot, the actions at its start, the main one first, 8 apart (compact 4), halves on a phone (C157 (3)).",
@@ -893,8 +893,8 @@
         ]
       },
       {
-        "from": "1.12.0",
-        "to": "1.13.0",
+        "from": "1.14.0",
+        "to": "1.15.0",
         "changes": [
           "The close stands on the axis of the switch that opened the panel (owner decision C104 (4)); nothing to change in a page.",
           "A panel that covers the switch that opened it always offers a close (controlled, show-close=\"false\" without a close of the page's own)."
