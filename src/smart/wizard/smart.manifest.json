@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.wizard",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "title": "Wizard",
   "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal (36rem, wide with the column), drawer (a side panel 30rem) and pages (the server's page per step, its form posting). The wizard's name is the page's or window's title (h4), the step's title one step under it (h5); on a phone a window takes the screen with the footer at its bottom. The draft is kept by the wizard itself, closing is continue later, and one value of all answers.",
   "kind": "smart",
@@ -515,7 +515,7 @@
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",
-        "sha256": "6aa6008205fa004d0b28460941a2ab5410edc3afbe283fe1152dfcb272cb2a9f"
+        "sha256": "84adc4aa4f4d78423f0a1e83791e63761494e36035ea7582a46208aeb3838467"
       },
       {
         "path": "src/smart/wizard/rule.js",

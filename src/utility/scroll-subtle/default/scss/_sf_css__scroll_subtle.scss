@@ -1,32 +1,25 @@
 @layer sf.utilities {
-  // Keep the browser/OS scrollbar lifecycle while making the thumb quiet.
+  // The quiet look of the one bar (owner decision C208 (1), q-sb-hover): the
+  // place's text on the ink steps of the alpha scale, 48 at rest and 64 under
+  // the pointer and while dragged. The bar, its room and its thickness are
+  // core's (14 / 6, C208 (3), (4)). It used to set scrollbar-width and
+  // scrollbar-color, and Chrome 121 and later then drop every
+  // ::-webkit-scrollbar rule of the element: the platform's bar, room 0
+  // (SB-7); its 10 / 20 % mixes were off the alpha scale.
   .scroll-subtle {
-    --sf-scroll-thumb-subtle: color-mix(
-      in srgb,
-      var(--sf-on-surface) 10%,
-      var(--sf-transparent)
-    );
-    --sf-scroll-thumb-subtle-interactive: color-mix(
-      in srgb,
-      var(--sf-on-surface) 20%,
-      var(--sf-transparent)
-    );
     --sf-scroll-bg-track: var(--sf-transparent);
-    --sf-scroll-bg-thumb: var(--sf-scroll-thumb-subtle);
+    --sf-scroll-bg-thumb: color-mix(in srgb, var(--sf-transparent), var(--sf-on-surface) 48%);
+    --sf-scroll--thumb-hover: color-mix(in srgb, var(--sf-transparent), var(--sf-on-surface) 64%);
 
     scrollbar-gutter: auto;
-    // Keep one native width in every state; changing it on hover shifts content
-    // on platforms that use classic (non-overlay) scrollbars.
-    scrollbar-width: thin;
-    scrollbar-color: var(--sf-scroll-thumb-subtle) var(--sf-transparent);
+  }
 
-    &:hover,
-    &:focus-within {
-      --sf-scroll-bg-thumb: var(--sf-scroll-thumb-subtle-interactive);
-
-      scrollbar-color:
-        var(--sf-scroll-thumb-subtle-interactive)
-        var(--sf-transparent);
+  // Firefox reads only scrollbar-color (core's support query writes it from
+  // the variables above) and has no thumb hover: the area's hover and focus
+  // stand in for it.
+  @supports not selector(::-webkit-scrollbar) {
+    .scroll-subtle:is(:hover, :focus-within) {
+      --sf-scroll-bg-thumb: var(--sf-scroll--thumb-hover);
     }
   }
 

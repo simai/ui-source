@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
@@ -10,29 +9,29 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const utilityPath = 'src/utility/scroll-subtle/default/scss/_sf_css__scroll_subtle.scss';
 
-test('scroll-subtle preserves native sizing and interaction states', () => {
+test('scroll-subtle is the quiet look of the one bar, not a platform bar (C208 (1), SB-7)', () => {
   const source = read(utilityPath);
 
   assert.match(source, /\.scroll-subtle\s*\{/);
   assert.match(source, /scrollbar-gutter:\s*auto/);
-  assert.match(source, /scrollbar-width:\s*thin/);
-  assert.match(source, /scrollbar-color:/);
-  assert.match(source, /&:hover/);
-  assert.match(source, /&:focus-within/);
+  // Chrome 121+ drops the drawn ::-webkit-scrollbar of an element with
+  // scrollbar-width or scrollbar-color: neither is set outside forced colours.
+  const outsideForced = source.replace(/@media\s*\(forced-colors:\s*active\)\s*\{[\s\S]*$/, '');
+  assert.doesNotMatch(outsideForced, /scrollbar-(?:width|color):/);
+  assert.match(source, /@supports not selector\(::-webkit-scrollbar\)/);
+  assert.match(source, /:is\(:hover, :focus-within\)/);
   assert.match(source, /@media\s*\(forced-colors:\s*active\)/);
   assert.match(source, /scrollbar-color:\s*auto/);
-  assert.doesNotMatch(source, /scrollbar-width:\s*none/);
   assert.doesNotMatch(source, /scrollbar-gutter:\s*stable/);
   assert.doesNotMatch(source, /setTimeout|setInterval|transition:/);
 });
 
-test('scroll-subtle exposes theme-relative semantic thumb tokens', () => {
+test('scroll-subtle takes the ink steps of the alpha scale (48 rest, 64 held)', () => {
   const source = read(utilityPath);
 
-  assert.match(source, /--sf-scroll-thumb-subtle:/);
-  assert.match(source, /--sf-scroll-thumb-subtle-interactive:/);
-  assert.match(source, /var\(--sf-on-surface\)\s*10%/);
-  assert.match(source, /var\(--sf-on-surface\)\s*20%/);
+  assert.match(source, /var\(--sf-on-surface\) 48%/);
+  assert.match(source, /var\(--sf-on-surface\) 64%/);
+  assert.doesNotMatch(source, /\s10%|\s20%/);
   assert.match(source, /--sf-scroll-bg-track:\s*var\(--sf-transparent\)/);
 });
 
@@ -55,9 +54,10 @@ test('full utility and RuleLoader entrypoints include scroll-subtle', () => {
   assert.equal(rule.test('overflow-auto scroll-hover'), false);
 });
 
-test('legacy scroll-hover remains byte-identical', () => {
+test('scroll-hover keeps the room of the bar and shows only the thumb (C208 (1))', () => {
   const source = read('src/utility/scroll-hover/default/scss/_sf_css__scroll_hover.scss');
-  const digest = crypto.createHash('sha256').update(source).digest('hex');
 
-  assert.equal(digest, 'c42128720fe544b1cb1ee231417a9f34a96e28ad0a2016e5b2edec5ecf407f5a');
+  assert.doesNotMatch(source, /scrollbar-(?:width|color):/);
+  assert.doesNotMatch(source, /::-webkit-scrollbar\s*\{/);
+  assert.match(source, /--sf-scroll-bg-thumb:\s*var\(--sf-transparent\)/);
 });
