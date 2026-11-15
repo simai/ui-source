@@ -45,7 +45,8 @@ test('the popup kinds read core\'s popup widths (C32)', () => {
   assert.match(base,/\.sf-context-menu\[data-sf-sheet\]::backdrop \{\s*background-color: var\(--sf-scrim-color\);/);
   // The sheet keeps clear of a phone's home indicator (DEV acceptance, 2026-11-09);
   // since C164 (6) the menu of an object is the same sheet, so the rule reads every content.
-  assert.match(base,/\[data-sf-sheet\] \.sf-context-menu-content \{[^}]*padding-bottom: calc\(var\(--sf-context-menu-content--padding-bottom\) \+ env\(safe-area-inset-bottom, var\(--sf-a0\)\)\);/);
+  // Group build 7: one rule for C164's every content, C176's drilling menu and the sized content.
+  assert.match(base,/\.sf-context-menu\[data-sf-sheet\] \.sf-context-menu-content,\n\.sf-context-menu\.sf-context-menu--drill\[data-sf-sheet\] \.sf-context-menu-content,\n\.sf-context-menu\[data-sf-sheet\] \.sf-context-menu-content\[data-sf-width\] \{[^}]*padding-bottom: calc\(var\(--sf-context-menu-content--padding-bottom\) \+ env\(safe-area-inset-bottom, var\(--sf-a0\)\)\);/);
 });
 
 // The form's sheet is a phone's (below md); a form takes the focus at its

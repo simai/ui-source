@@ -119,7 +119,9 @@ test('C105 H4 (C77, HS-3, HS-4): a framed sf-list is a 4 plate and the C77 row i
 
 test('C105 H5: tags in a field stand --sf-space-1/4 apart', async () => {
   const lookup = await read('src/smart/input-lookup/scss/_smart__lookup.scss');
-  assert.ok(lookup.includes('gap: var(--sf-lookup--chip-row-gap) var(--sf-space-1\\/4);'));
+  // Group build 7: C123 (6) names the column gap (--sf-lookup--column-gap, still --sf-space-1/4).
+  assert.ok(lookup.includes('gap: var(--sf-lookup--chip-row-gap) var(--sf-lookup--column-gap);'));
+  assert.ok(lookup.includes('--sf-lookup--column-gap: var(--sf-space-1\\/4);'));
 });
 
 test.todo('C105 H5: tabs abut and buttons of one group stand --sf-space-1/3 apart (tabs C99 / HS-10 and docs examples HS-13 are not on this branch)');

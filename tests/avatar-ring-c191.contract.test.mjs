@@ -64,7 +64,7 @@ test('C191 (8): a photo upload is indeterminate around the avatar while the size
 
 test('C191 (4), (6)-(8): the ring\'s examples are completeness, upload and done, no quota around an avatar', () => {
   const manifest = json('src/smart/progress-ring/component.json');
-  assert.equal(manifest.version, '1.4.0');
+  assert.equal(manifest.version, '1.4.1'); // group build 7: the integrated number (the branch wrote 1.4.0)
   const examples = Object.fromEntries(json('src/smart/progress-ring/examples.json').examples.map((example) => [example.name, example]));
   assert.equal(examples.avatar.settings.label, 'Профиль заполнен на 70 %');
   assert.equal(examples.avatar.settings.meter, undefined);
@@ -103,7 +103,7 @@ test('C191 (4)-(6): sf-menu-context 1.24.0 draws a meter row over sf-progress-ba
 
 test('C191 (4): the meter row is declared, styled from the systems, documented and loads the bar lazily', () => {
   const manifest = json('src/smart/menu-context/component.json');
-  assert.equal(manifest.version, '1.24.0');
+  assert.equal(manifest.version, '1.25.3'); // group build 7: the integrated number (the branch wrote 1.24.0)
   assert.ok(manifest['x-registry'].item_contract.kinds.meter.fields.valueText);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-progress-bar' && relation.lazy === true));
   assert.equal(json('src/component/context-menu/passport.json').version, '1.16.0');

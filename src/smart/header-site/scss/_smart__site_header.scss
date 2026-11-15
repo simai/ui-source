@@ -166,7 +166,7 @@
 /* The actions (a link, a button) are neighbours of one group: 8 apart, 4 in
    a compact region (C105 H5, --sf-space-1/3). */
 .sf-site-header-actions {
-  gap: var(--sf-space-1\/3);
+  gap: var(--sf-gap--actions);
 }
 
 /* The tools are a toolbar of icon-sized controls: one even step between them,

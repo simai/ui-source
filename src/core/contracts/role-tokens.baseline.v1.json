@@ -2,22 +2,5 @@
   "schema": "simai.framework.role-tokens-baseline",
   "schema_version": 1,
   "summary": "Known role gaps that do not read their role token yet (scripts/check-role-tokens.mjs, RT-ROLE-STEP). Each names its defect and the work that fixes it. An entry that no longer matches fails the check: the fix removes its entry. No new entry without a defect.",
-  "entries": [
-    {
-      "file": "src/smart/editor-inline/scss/_smart__inline-editor.scss",
-      "selector": ".sf-inline-editor-toolbar",
-      "prop": "gap",
-      "value": "var(--sf-inline-editor-toolbar-gap, var(--sf-space-1))",
-      "defect": "RT-4 / IE-1",
-      "reason": "The toolbar is four words 16 apart; C144 asks 4 (--sf-gap--toolbar). Rebuilt with the toolbar itself by the inline-editor group (C172: sf-button-icon 1/2 at 4, a separator before the link)."
-    },
-    {
-      "file": "src/smart/header-site/scss/_smart__site_header.scss",
-      "selector": ".sf-site-header-actions, .sf-site-header-tools",
-      "prop": "gap",
-      "value": "var(--sf-space-1)",
-      "defect": "RT-1 (header-site)",
-      "reason": "The site header's actions stand 16 apart (the tools are set to 8 by the next rule). The header group (C161, fix/headers-c161) owns the row: --sf-gap--actions for buttons of one group, --sf-gap--groups between groups."
-    }
-  ]
+  "entries": []
 }

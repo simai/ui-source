@@ -32,7 +32,8 @@ test('C184 (1): no sf-toolbar; one core roving helper the toolbars import', () =
   // Every toolbar of the Framework uses it.
   assert.match(read('src/smart/input-rich/index.js'), /import \{roving\} from '\.\.\/\.\.\/core\/js\/roving\.js';/u);
   assert.match(read('src/core/js/composition/overlay.mjs'), /this\.toolbarKeys = roving\(this\.toolbar, \{ items: 'button\[data-action\]' \}\);/u);
-  assert.match(read('src/core/js/composition/inline-editor.mjs'), /const toolbarKeys = roving\(toolbar, \{ items: \(\) => \[\.\.\.buttons\.values\(\)\] \}\);/u);
+  // Group build 7: C155's row keeps «Ещё» in the walk and the parts that left it out (overflow-c155).
+  assert.match(read('src/core/js/composition/inline-editor.mjs'), /const toolbarKeys = roving\(toolbar, \{ items: \(\) => \[\.\.\.tools, moreButton\], out: `\.\$\{OUT\}, \[hidden\], \[inert\]` \}\);/u);
   // sf-input-rich has no arrow handling of its own any more.
   assert.doesNotMatch(read('src/smart/input-rich/index.js'), /onToolbarKeydown|event\.key === 'ArrowRight'/u);
   assert.doesNotMatch(read('src/smart/input-rich/js/templates/default.js'), /@keydown=\$\{\(event\) => component\.onToolbarKeydown/u);
@@ -104,11 +105,13 @@ test('C184 (5): a list is one Tab stop; Shift+F10 and the menu key open the same
 });
 
 test('C184: versions above every branch and the notes say the decision', () => {
-  const versions = {'input-rich': '1.7.0', list: '1.13.0', tabs: '1.3.2', contents: '1.7.3', 'editor-overlay': '1.10.0', 'editor-inline': '1.10.0'};
+  // Group build 7: the C184 notes as numbered on the integration line; later notes may stand above them.
+  const versions = {'input-rich': '1.8.1', list: '1.14.1', tabs: '1.3.3', contents: '1.7.3', 'editor-overlay': '1.11.1', 'editor-inline': '1.11.1'};
+  const at = (v) => v.split('.').map(Number).reduce((sum, part) => sum * 1000 + part, 0);
   for (const [name, version] of Object.entries(versions)) {
     const component = json(`src/smart/${name}/component.json`);
-    assert.equal(component.version, version, name);
-    assert.equal(json(`src/smart/${name}/smart.manifest.json`).version, version, `${name} manifest`);
+    assert.ok(at(component.version) >= at(version), name);
+    assert.equal(json(`src/smart/${name}/smart.manifest.json`).version, component.version, `${name} manifest`);
     assert.ok(component['x-decisions'].some((note) => note.startsWith(`version ${version} `) && /C184/u.test(note)), `${name} note`);
   }
   const policy = read('src/core/contracts/dimension-policy.v1.json');

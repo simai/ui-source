@@ -354,7 +354,7 @@
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "4b5288bcf9f1b5ad7f2460f7040101be70fc025cb4439a1324bfc4b038e01177"
+        "sha256": "093141f81622000428d9cb2864c81acd86702f393ce8bba5e1c6fa175f5a8ad3"
       },
       {
         "path": "src/smart/confirm/lang/en.json",

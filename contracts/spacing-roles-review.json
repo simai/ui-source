@@ -148,28 +148,6 @@
       "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 4 is --sf-space-1/4 (H5 plates)"
     },
     {
-      "file": "src/smart/profile-picker/scss/_smart__profile_picker.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-a2",
-      "count": 1,
-      "status": "defect",
-      "owner": "sf-profile-picker (Smart)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
-    },
-    {
-      "file": "src/smart/profile-picker/scss/_smart__profile_picker.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-a6",
-      "count": 1,
-      "status": "defect",
-      "owner": "sf-profile-picker (Smart)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 6 has no space step"
-    },
-    {
       "file": "src/smart/tag/js/templates/default.css",
       "role": "table",
       "property": "gap",

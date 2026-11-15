@@ -1674,7 +1674,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input-textarea",
-      "version": "1.12.0"
+      "version": "1.12.1"
     },
     "sf-switch": {
       "inputs": {
@@ -1742,7 +1742,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.7.0"
+      "version": "1.7.1"
     }
   },
   "parameter_sets": {

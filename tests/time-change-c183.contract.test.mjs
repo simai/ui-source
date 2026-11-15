@@ -28,7 +28,7 @@ test('C183 (3): core formats and counts days on a named zone\'s clock', () => {
 
 test('C183: sf-time 1.3.0 -- just now, the time-zone setting, list times off the Tab order, the future mirrors the past', () => {
   const manifest = json('src/smart/time/component.json');
-  assert.equal(manifest.version, '1.3.1'); // group build 5 patch above the C183 1.3.0
+  assert.equal(manifest.version, '1.6.0'); // group build 5 patch above the C183 1.3.0 // group build 7: the integrated number (the branch wrote 1.3.1)
   assert.deepEqual(manifest.settings['time-zone'], {type: 'string', default: '', summary: manifest.settings['time-zone'].summary});
   const ru = json('src/smart/time/lang/ru.json').runtime;
   const en = json('src/smart/time/lang/en.json').runtime;

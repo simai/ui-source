@@ -38,8 +38,9 @@ test('outline, surface and ghost secondary and danger write the place ink, the h
 });
 
 test('a pressed filled secondary takes its own pressed step', () => {
-  const rule = main.slice(main.indexOf('.sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled):active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled):not(.disabled).active {'));
+  // Group build 7: the selectors carry fix/clipboard-cb's aria-disabled exclusion.
+  const rule = main.slice(main.indexOf('.sf-button.sf-button--default.sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled).active {'));
   assert.match(rule.slice(0, rule.indexOf('}')), /--sf-button--background-color: var\(--sf-secondary-active\);/u);
-  const primary = main.slice(main.indexOf('.sf-button.sf-button--default.sf-button--primary:not(:disabled):not(.disabled):active'));
+  const primary = main.slice(main.indexOf('.sf-button.sf-button--default.sf-button--primary:not(:disabled, [aria-disabled="true"]):not(.disabled):active'));
   assert.ok(!primary.slice(0, primary.indexOf('{')).includes('secondary'), 'primary\'s pressed rule no longer names secondary');
 });

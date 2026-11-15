@@ -367,7 +367,7 @@ a.sf-search-row-main:focus-visible {
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--sf-space-1\/3);
+  gap: var(--sf-gap--actions);
   margin-inline-end: calc(var(--sf-space-1\/3) - var(--sf-search--row-pad));
 }
 

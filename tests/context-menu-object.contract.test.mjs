@@ -65,7 +65,8 @@ test('C164 (5): a destructive row is drawn last, after a line', () => {
 });
 
 test('C164 (6): the menu of an object is the one sheet on a phone, at size 1', () => {
-  assert.match(source, /const sheets = FORM_KINDS\.has\(kind\) \|\| Boolean\(found\);/);
+  // Group build 7: C176's drilling popup is the same sheet (fix/settings-menu-c176).
+  assert.match(source, /const sheets = FORM_KINDS\.has\(kind\) \|\| Boolean\(found\) \|\| \(this\.drill && !parentMenu\);/);
   assert.match(sizes, /\.sf-context-menu\[data-sf-sheet\] \.sf-context-menu-content:not\(\[data-sf-width\]\) \{/);
   assert.match(sheet, /\.sf-context-menu\[data-sf-sheet\] \.sf-context-menu-content > \.sf-context-menu-heading:first-child/);
   // The grab bar's row stands right on the content.

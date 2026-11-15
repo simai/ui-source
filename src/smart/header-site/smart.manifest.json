@@ -375,7 +375,7 @@
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "1245247072e6a06e61e84b8276d7a41ca8c7e58527ba0d93832383aa1f194cf7"
+        "sha256": "20139f0fd239dec1a3c981add2a9250a80f79583d3e3d0018f091b6eea75393e"
       },
       {
         "path": "src/smart/header-site/rule.js",

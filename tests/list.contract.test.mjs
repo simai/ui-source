@@ -231,7 +231,7 @@ test('sf-list 1.14.0: the narrow layout is a container query on the frame, so a 
     .map(([, selector, body]) => [selector.replace(/\/\*[\s\S]*?\*\//gu, '').trim().replaceAll(prefix, '').replace(/\s+/gu, ' '), body.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\s+/gu, ' ').trim()]);
   const inQuery = rules(query, '.sf-list__frame.sf-list ');
   const byMark = rules(marked, '.sf-list__frame[data-sf-list-narrow] ');
-  assert.equal(inQuery.length, 5);
+  assert.equal(inQuery.length, 6); // 6 since group build 7: register smart-2's narrow caption row (RG-S2-34)
   assert.deepEqual(inQuery, byMark);
   assert.doesNotMatch(query, /\d+px/u);
   // The code marks the frame only where the query does not answer: a title

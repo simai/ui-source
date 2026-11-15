@@ -16,7 +16,9 @@ const manifest = JSON.parse(read('src/smart/input-lookup/component.json'));
 test('LS-1: a chip is the field less --sf-space-1/4 above and below, 4 apart in a row and between rows', () => {
   assert.match(scss, /--sf-lookup--chip-height: calc\(var\(--sf-field-action--height\) - 2 \* var\(--sf-space-1\\\/4\)\);/u);
   assert.match(scss, /--sf-lookup--chip-row-gap: var\((?:--sf-space-1\\\/4|--sf-gap--tags)\);/u);
-  assert.match(scss, /gap: var\(--sf-lookup--chip-row-gap\) var\(--sf-space-1\\\/4\);/u);
+  // Group build 7: C123 (6) names the column gap; it stays --sf-space-1/4.
+  assert.match(scss, /gap: var\(--sf-lookup--chip-row-gap\) var\(--sf-lookup--column-gap\);/u);
+  assert.match(scss, /--sf-lookup--column-gap: var\(--sf-space-1\\\/4\);/u);
 });
 
 test('LS-2: the avatar in a chip is the chip less 8 and never under 16 (C145 (1), C132)', () => {
