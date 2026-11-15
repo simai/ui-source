@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1192,
-    "translated": 1191,
+    "words": 1191,
+    "translated": 1190,
     "share": 99.9
   },
   "words": {
@@ -547,11 +547,10 @@
       "eyedropper": "Экраннан түс алу",
       "eyedropper-missing": "Тамызғыш тек компьютердегі Chrome мен Edge-де бар",
       "code": "Түс коды",
-      "code-in": "Түс коды, {format}",
-      "format": "Код түрі",
-      "format-current": "Код түрі: {format}",
+      "copy": "Кодты көшіру",
+      "apply": "Қолдану",
       "opacity": "Мөлдірсіздік, пайыз",
-      "not-a-colour": "Бұл {format} түріндегі түске ұқсамайды",
+      "not-a-colour": "Бұл түске ұқсамайды",
       "hue-red": "Қызыл",
       "hue-orange": "Сарғылт",
       "hue-amber": "Кәріптас",
