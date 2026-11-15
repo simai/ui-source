@@ -187,6 +187,7 @@
     "plain": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
