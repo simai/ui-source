@@ -28,6 +28,13 @@ Registration: `registerComponent('Inputs', Inputs)`
   `--sf-outline`. A project's `--sf-input-border-color` colours the line.
 - Read-only inputs remain focusable and selectable but do not use editable
   hover or active feedback.
+- An action inside a field (`.sf-field-action`, owner decision C123: the
+  clear, the password reveal, a copy, a dropdown's chevron) has no plate in any
+  state: `--sf-on-surface-variant` at rest, `--sf-on-surface` under the
+  pointer, `--sf-primary` on a press (1.8.0, owner decision C201: the ink of
+  the icon button's plain look, `sf-icon-button--plain`). Its hit area is the
+  field's height and its keyboard ring stands round the glyph inside the
+  field (C123).
 - A label row (`.sf-input-label`) that holds its text in `.sf-input-text`
   and an `sf-help-mark` is running text, not a flex row: the mark stands
   `--sf-input-label--gap` after the label's last word, centred on the line it

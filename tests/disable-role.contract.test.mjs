@@ -86,6 +86,8 @@ test('the disabled content role paints a fill only where the fill is the content
     // third, the tonal secondary close, left with component.icon-buttons 1.6.0, C15.)
     'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
     'src/component/icon-buttons/scss/_css_icon_buttons.scss: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
+    // The plain look's disabled close (component.icon-buttons 1.11.0, C201).
+    'src/component/icon-buttons/scss/_css_icon_buttons_custom.scss: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
     'src/component/quantity/scss/_css__quantity.scss: background-color: var(--sf-on-surface-disabled);',
     'src/component/radio/scss/_css_radio.scss: --sf-radio-button-mark--background-color: var(--sf-on-surface-disabled);',
     // The slider's handle is the content of its rail, laid over the surface

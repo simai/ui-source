@@ -2,7 +2,7 @@
   "$comment": "The source of sf-radio's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/radio (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.radio",
   "tag": "sf-radio",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "kind": "leaf",
   "family": "radio",
   "settings": {
@@ -193,8 +193,9 @@
     "version 1.2.2, also (2026-11-13, integration-fix/choice-motion-4; R210 research CR-4, CR-5, control/research/2026-11-13-check-radio-motion.md): the ring's timing is the component's, with component.radio 1.2.2. The template no longer writes the `.transition` utility on .sf-radio-button-box; the radio sheet gives the box the same clock it had from it (color, background-color, border-color and box-shadow over --sf-duration-normal on --sf-ease-move: 300 ms, the same as before), and the sheet's reduced-motion rule now reaches it: under prefers-reduced-motion: reduce the ring changes in one frame (0), where it ran 284 ms of colour change. The dot and the motion look (tick draw, dot scale, one clock for the family) wait for the owner (R210). Settings, values, events and keys unchanged.",
     "version 1.3.0 (2026-11-13, owner decision C121, R210; research control/research/2026-11-13-check-radio-motion.md, prototype prototypes/check-radio-motion.html, variant 1 «like the switch», C66): a minor, the motion look. With component.radio 1.3.0 the ring and the dot run on the switch's clock: 200 ms (calc(var(--sf-duration-fast) * 2)) on --sf-ease-move, internal --sf-radio-button--duration / --sf-radio-button--easing (no public variable); the ring had 300 ms (CR-3). The dot keeps its size, half the ring, at every state and grows from the centre, transform scale(0) -> scale(1) with its colour on the same clock (CR-6: it jumped 0 -> 12 px in one frame); its radius is a circle unchecked too, so it shrinks round. Reduced motion: ring, dot and plate change in one frame. Settings, values, events and keys unchanged.",
     "version 1.3.1 (2026-11-13, R229 spacing audit X1, dispatcher ruling on C105 H2 «выбор»; component.radio 1.3.1): a patch. The label stands --sf-space-1/2 after the ring at every size (12 at 1440; compact and phone 8), the row gap of a list row, so a sf-radio lines up with list rows that carry one; it was the size's text-space-x (7 / 8 / 10 at 1/2, 1, 2; compact 6 / 7 / 8; phone 6 / 6 / 8). --sf-radio-button-gap still sets it. Settings, values, events and keys unchanged.",
+    "version 1.3.3 (2026-11-14, group build 5; numbered above 1.3.2 on origin/fix/checks-c165): a patch, its own code unchanged: 1 first-paint snapshot file(s) follow the merged markup (fix/icons-c151).",
     "version 1.3.4 (2026-11-14, checks study CK-7; written on the branch as 1.3.2): a patch. A help setting that is a single lowercase word (help=\"info\") is almost always a placeholder: a development warning says so once per page (checks study CK-7, shared with sf-checkbox, sf-radio and sf-switch through helpers/checkable-row.js). Settings, values, events and keys unchanged.",
-    "version 1.3.3 (2026-11-14, group build 5; numbered above 1.3.2 on origin/fix/checks-c165): a patch, its own code unchanged: 1 first-paint snapshot file(s) follow the merged markup (fix/icons-c151)."
+    "version 1.3.5 (2026-11-15, owner decision C201; numbered above every open line): a patch, its own code unchanged. The first-paint snapshots that hold sf-help-mark follow its plain look (sf-help-mark 1.5.0: its button is sf-button-icon appearance=\"plain\", the class sf-icon-button--plain)."
   ],
   "x-rule": {
     "css": true

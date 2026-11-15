@@ -13,7 +13,11 @@ expose pending, ready or error state.
 
 Chrome defaults to `data-chrome="auto"`: the generated header identifies the
 requested language and creates a named native Framework Icon Button bound to Clipboard.
-`data-chrome="none"` omits the header. `data-chrome="static"` lets the host own
+The copy button has the icon button's plain look (1.5.0, owner decision C201,
+`sf-icon-button--plain`): it is an icon inside the block, so it has no plate
+in any state, and only its glyph's ink moves -- the block's dim ink at rest,
+the text's ink under the pointer, the primary colour on a press. The wrap
+toggle beside it keeps its look. `data-chrome="none"` omits the header. `data-chrome="static"` lets the host own
 the existing header without duplication. The historical
 `data-sf-highlight-chrome="static"` input remains compatible. Generated copy
 labels follow the document language and may be overridden by `data-copy-label`

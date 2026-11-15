@@ -181,8 +181,10 @@ that colours the border (hover, press) colours the line with it.
 
 Since 1.9.0 (owner decision C123) the actions inside the field are glyphs
 without a plate, the field layer's `.sf-field-action` (component.inputs): quiet
-(`--sf-on-surface-variant`) at rest, the text's ink under the pointer and on a
-press, the keyboard ring round the glyph inside the field. The glyph is the
+(`--sf-on-surface-variant`) at rest, the text's ink under the pointer, the
+primary colour on a press (1.13.1, owner decision C201: the ink of the icon
+button's plain look, `sf-icon-button--plain`), the keyboard ring round the
+glyph inside the field. The glyph is the
 leading icon's size (24 / 20 / 28 at sizes 1, 1/2, 2 on a desktop), its end on
 the field's inset; the hit area is invisible, the field's height and never under
 24. From the text to the edge: the clear, then the action (the password reveal,

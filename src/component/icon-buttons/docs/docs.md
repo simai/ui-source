@@ -11,6 +11,19 @@ decorative and uses `aria-hidden="true"`.
   `sf-icon-button--link` (sf-button-icon calls it `ghost`, decision C15);
   `surface` is kept for markup written before and draws as `tonal` does with
   the destructive status;
+- plain: `sf-icon-button--plain` (1.11.0, owner decision C201, the name the
+  owner's) -- an icon inside another element: a field's action, the help mark
+  at a heading, copy in a code block, the plain copy component. No plate in
+  any state (hover, press, focus, a pressed toggle); only the glyph's ink
+  moves: `--sf-on-surface-variant` at rest, `--sf-on-surface` under the
+  pointer, `--sf-primary` on a press and while a toggle is on (its glyph
+  filled). The focus ring is every button's, the hit area the icon button's
+  of the same size. It is neutral whatever the scheme or the status classes
+  say: a destructive or coloured action stays a ghost or an outline. Panels
+  and toolbars keep the looks with a plate; the ghost look
+  (`sf-icon-button--link`) is unchanged. At rest the glyph stands at least
+  3:1 from the page, a card, the grey plate and a field's fill in both
+  themes. `sf-button-icon` draws it with `appearance="plain"`;
 - scheme: `primary`, `on-surface`, or `on-surface-variant` (written beside
   `on-surface`); `secondary` is kept for older markup;
 - status: `sf-icon-button--danger` for a destructive control, in every

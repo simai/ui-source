@@ -43,11 +43,28 @@ Main attributes:
   32 / 40 / 48 / 56 on desktop, 28 / 32 / 40 / 48 compact, 28 / 36 / 44 / 52
   on a phone. `kind="close"` takes the same heights; a new close is
   `sf-button-close height="…"`.
-- `appearance="default|tonal|outline|ghost"` — four looks (1.6.0, decision
-  C15): a fill, a soft fill, an edge, and `ghost`, which keeps nothing until a
+- `appearance="default|tonal|outline|ghost|plain"` — four looks on one ladder
+  (1.6.0, decision C15) and `plain` for an icon inside another element
+  (1.12.0, below): a fill, a soft fill, an edge, and `ghost`, which keeps nothing until a
   pointer or the keyboard reaches it. `link` is ghost's former name, a dated
   alias. `surface` is retired: it is drawn as `tonal` in `on-surface`, and the
   console notes it until 2027-01-01.
+- `plain` (1.12.0, owner decision C201) — an icon inside another
+  element: no fill or edge in any state, only the glyph's ink moves —
+  `--sf-on-surface-variant` at rest, `--sf-on-surface` under the pointer,
+  `--sf-primary` on a press (and while a toggle is on, its glyph filled). The
+  focus ring is every button's; the hit area is the icon button's of the same
+  size. Take it for a field's action, the help mark at a heading
+  (`sf-help-mark`), copy in a code block or the plain copy component; buttons
+  in panels and toolbars keep a look with a plate (`ghost` and the others).
+  A plain icon button is neutral whatever `scheme` or `status` say: a
+  destructive action stays `ghost` or `outline`. The class is
+  `sf-icon-button--plain`.
+
+  ```html
+  <h3 class="flex items-cross-center gap-1/3">Уровни доступа
+    <sf-button-icon size="1/2" appearance="plain" icon="info" aria-label="Подробнее: уровни доступа"></sf-button-icon></h3>
+  ```
 - `scheme="primary|on-surface|on-surface-variant"` — which colour
   family the control takes (`secondary` is retired and drawn as
   `on-surface-variant` until 2027-01-01). A ghost or outline `on-surface-variant`
