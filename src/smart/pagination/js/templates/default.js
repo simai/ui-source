@@ -1,4 +1,6 @@
 import { html, nothing } from "lit";
+import { keyed } from "lit/directives/keyed.js";
+import { isDestructiveAction, orderActions } from "../actions.js";
 
 // sf-pagination's markup (decision C97, 2026-11-12). The element is page
 // navigation, in five appearances, each a named <nav> holding only the way
@@ -389,6 +391,12 @@ function renderPageSize(context, component) {
 // The band of bulk controls, kept for a pagination that carries it until
 // 2027-01-01 (C97 point 5: it belongs to sf-view, which draws it itself).
 function renderBand(context, component) {
+  // C116: Apply is a regular button in a band of controls (outline
+  // on-surface), never the filled main one; over an action that deletes it is
+  // the outlined danger, and that action is listed last. A Smart button draws
+  // its look once, so a look that changes is a new button in the same place
+  // (keyed), bound once by the template: one press, one apply.
+  const danger = isDestructiveAction(context.actions.find((item) => item.value === context.action));
   return html`
     <div
       class=${joinClasses("sf-pagination-actions", "flex", "items-cross-center", context.bottomClass)}
@@ -417,7 +425,7 @@ function renderBand(context, component) {
             value: "",
             selected: !context.action,
           },
-          ...context.actions.map((action) => ({
+          ...orderActions(context.actions).map((action) => ({
             type: "text",
             size: context.size,
             text: action.text,
@@ -428,14 +436,16 @@ function renderBand(context, component) {
         ]}
         @change=${(event) => component.setAction(event.detail.value)}
       ></sf-dropdown>
-      <sf-button
+      ${keyed(danger, html`<sf-button
+        data-sf-bulk="apply"
         size=${context.size}
-        appearance="default"
-        scheme="primary"
+        appearance="outline"
+        scheme="on-surface"
+        status=${danger ? "danger" : nothing}
         text=${context.actionApplyText}
         ?disabled=${!context.action}
         @click=${() => component.applyAction()}
-      ></sf-button>
+      ></sf-button>`)}
       ${context.showActionForAll
         ? html`
             <span class="sf-pagination-actions-separator" aria-hidden="true"></span>

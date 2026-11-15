@@ -138,6 +138,7 @@ function parseActions(value, fallback = []) {
         text,
         disabled: flags.includes("disabled"),
         selected: flags.includes("selected"),
+        danger: flags.includes("danger"),
       };
     })
     .filter((item) => item.value || item.text)

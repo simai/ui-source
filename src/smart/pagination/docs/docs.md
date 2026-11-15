@@ -87,6 +87,14 @@ An author's own `total-label` still draws «Всего: 240», an author's own
 `pages-label` its label. `sf-view` uses this footer until it composes its
 own.
 
+The band's Apply is a regular button (outline on-surface, C116), never the
+filled main one. While the chosen action deletes, Apply is the outlined
+danger button, and such an action is listed last (1.6.0). An action says it
+deletes with the `danger` flag (`actions="archive:В архив|delete:Удалить::danger"`,
+or `{value, text, danger: true}` in the property), or by its value: `delete`,
+`remove`, `destroy`, `trash` -- the rule `sf-view`'s own band reads. One
+press of Apply sends one `sf-pagination-apply`.
+
 ## Data and labels
 
 `total` is the number of collection items, not the page count. `page-size`
