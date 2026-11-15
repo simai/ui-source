@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -38,7 +38,8 @@
       "component.checkbox",
       "component.icons",
       "component.radio",
-      "smart.badge"
+      "smart.badge",
+      "smart.help-mark"
     ],
     "public_parts": []
   },
@@ -65,6 +66,15 @@
         "default": false,
         "description": "Several options: the cards are checkboxes in a group. Without it one option is chosen, the cards are a radio group."
       },
+      "appearance": {
+        "type": "string",
+        "default": "cards",
+        "description": "cards: the options as cards in a layout of tile, list or picture (C28). list (owner decision C165 (1)): the ready group of checks or radios -- the label as a heading (text 1, medium) with its «*» and «?», the hint under it, each option a row of the class checkbox or radio (as sf-checkbox and sf-radio draw them: 40 at size 1, 60 with a caption as its description; only the control and its words are the target), and the error under the last row with the error icon; an option's icon, badge, price, term and image are not drawn. The value, the form, the keys and the events are the same in both.",
+        "enum": [
+          "cards",
+          "list"
+        ]
+      },
       "layout": {
         "type": "string",
         "default": "tile",
@@ -73,6 +83,16 @@
           "tile",
           "list",
           "picture"
+        ]
+      },
+      "flow": {
+        "type": "string",
+        "default": "auto",
+        "description": "How the rows of appearance list stand (C165 (3)); read only under list, layout stays the cards'. auto -- a row for up to three short options (a name of at most 20 characters, no caption), else a column; row -- side by side, --sf-space-1 apart (C105 H6), wrapping where they do not fit and a column in a field narrower than 24rem (the container step g2: a phone, while a form's half column keeps the row); column -- one under another.",
+        "enum": [
+          "auto",
+          "row",
+          "column"
         ]
       },
       "columns": {
@@ -96,6 +116,11 @@
         "type": "string",
         "default": "",
         "description": "The line under the cards; it describes the group."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label (C153 (8), C165 (1)): size 1/3, --sf-space-1/4 after it, held to the label's line so the line keeps its height. The mark is named by its subject («Подробнее: <label>», lang runtime help). Empty: no mark."
       },
       "name": {
         "type": "string",
@@ -276,7 +301,7 @@
       "mobile"
     ],
     "skeleton": {
-      "shape": "block",
+      "shape": "none",
       "while_loading": "none"
     }
   },
@@ -322,36 +347,36 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "5248701fe473819b8db703596e11e247120021ebe952a3b12a520b2e1cc721bc"
+        "sha256": "afec2b7ef4d6ec6bf9d9cb614acea51413abd10d3fcf6d1ba305d6bc2dd20025"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "301014ab34aeed8a30e3cf696703b7e8368584434513358e20d2f0a56955d589"
+        "sha256": "6f7ba1e37505074ca2932039817dcb77e37e2ec8f96f360a807c44c871731a0b"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "eb72ae4d188ca33ec685d608edbe4d60e5ad8b9f78a9a8ede62d679020d1a219"
+        "sha256": "7abf240b6297e650ef03382b82c043b60b8233f65d9c898e08cf9fcb8aa1e848"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "444bebe9212b4011f6fb7c7d3a6787ac923652a3c50127ae5aedde49bb7f23fa"
+        "sha256": "a5df56f7e3234512629fb691214a352671dc2d750438a0b6de5ab03ebd673a88"
       },
       {
         "path": "src/smart/input-choice/rule.js",
-        "sha256": "8bef1d6848be2e826d9720f4140e18f218fbcc044d07036d5fa63f19706f5a9a"
+        "sha256": "7d56822070344939d33f26c4907f9633dcbc8d39c35b0c5fe37e6c94f437f143"
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "5eabc65aa15e7fe031d18d3b80ea073cc32888f2c62cae2e00b80a033c617a4a"
+        "sha256": "9e1bb8689e945cffb7943f4125fef7d817ac7da1f09b7f244c721b21d6984a71"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-input-choice to pick one or several of a few options that need words to tell apart -- a site's kind, a page type, a template, a field type, a backup target, a plan -- shown all at once as cards.",
+    "use_when": "Use sf-input-choice to pick one or several of a few options shown all at once: as cards (appearance cards) where the options need words to tell apart -- a site's kind, a page type, a template, a field type, a backup target, a plan; as a ready group of checks or radios (appearance list) for a question with a heading, a hint and one error -- a buyer's kind, notifications, a payment way.",
     "do_not": [
       "Do not use it for a long list; use sf-input-select or sf-input-lookup",
-      "Do not use it for two or three short words; use sf-button-group (segmented) or sf-radio",
+      "Do not build a group of sf-radio or sf-checkbox with a heading and an error of your own; use appearance list",
       "Do not draw cards of your own with radios inside; give the options to the field"
     ],
     "required_reads": [

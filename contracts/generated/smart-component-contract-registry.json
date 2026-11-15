@@ -1069,7 +1069,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/form/smart.manifest.json",
-      "manifest_sha256": "08637f4be429cdec63aa0a1be450dfeb96ea66c1c30f607cfbd3d3845efde461",
+      "manifest_sha256": "7dfee4770f18ba4f993f0fbe671c706dd2f43386ad0983a1dcf7b3ad718a6c6a",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1389,7 +1389,8 @@
           "component.checkbox",
           "component.icons",
           "component.radio",
-          "smart.badge"
+          "smart.badge",
+          "smart.help-mark"
         ]
       },
       "contract_schema": {
@@ -1401,7 +1402,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-choice/smart.manifest.json",
-      "manifest_sha256": "5495f7cc3131665d0cb77b8d40812daee673437e3f989993e73a03b8dce2330d",
+      "manifest_sha256": "be2d01655153862cdda9f7f8d7ac0bd96a527bc71dfbbeda879c54e4d42ad41d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

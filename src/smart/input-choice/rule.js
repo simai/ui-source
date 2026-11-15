@@ -17,5 +17,8 @@ SF.RuleLoader['cl-input-choice'] = {
     // An option's badge is sf-badge (tonal, primary, on the half line) beside its
     // name, only when an option carries one.
     { name: 'cl-badge', lazy: true },
+    // The «?» after the label or the heading (help, C153 (8), C165 (1)) is
+    // sf-help-mark, only when help is set.
+    { name: 'cl-help-mark', lazy: true },
   ],
 };
