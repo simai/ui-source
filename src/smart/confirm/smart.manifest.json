@@ -338,7 +338,7 @@
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
-        "sha256": "6e4295aeed99aacf2d75a88a79bf2895295f2afa54f5db5079b7837a8803c6f2"
+        "sha256": "36226e2893a27fd334690b8304ac6f2c87ab7c3bd237ebaef9a834029735da46"
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
@@ -350,11 +350,11 @@
       },
       {
         "path": "src/smart/confirm/docs.md",
-        "sha256": "c3ac79dec983af3ae73911c3cae2151371961f0d7e15d6609945a8ba1c78765c"
+        "sha256": "a024a86612162295d934fac28af7198977ac3fc5bdf9ff58846495a9b99c1983"
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "642bfaecedc40628e3dfe623a19dc8c19a6714ef68e198da7b6332d5edebec84"
+        "sha256": "954917a135e1ae0c37ffdd91144700cf06d531dd01424804f55c0a8b942b2666"
       },
       {
         "path": "src/smart/confirm/lang/en.json",
