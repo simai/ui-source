@@ -260,6 +260,31 @@
   .sf-datepicker .sf-datepicker-sheet-close {
     flex: none;
   }
+  /* The quick ranges in the sheet (owner decision C189 (9)): the popup's
+     row of them (the one it draws where it has no room beside the grid, the
+     buttons a control of size 1/2 tall, 4 apart), on one line between the
+     head and the weekdays, scrolled sideways when it is wider than the sheet,
+     as the row of a page's contents is; the page never scrolls sideways. */
+  .sf-datepicker.sf-datepicker--sheet .sf-datepicker-sheet-presets {
+    flex: none;
+    flex-wrap: nowrap;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin-block-end: var(--sf-space-1\/3);
+    padding-block-start: var(--sf-0);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+    touch-action: pan-x;
+  }
+  .sf-datepicker.sf-datepicker--sheet .sf-datepicker-sheet-presets .sf-datepicker-preset {
+    flex: none;
+    min-block-size: var(--sf-ui-1\/2--control-height);
+    padding-block: var(--sf-0);
+    overflow: visible;
+    text-overflow: clip;
+  }
   .sf-datepicker .sf-datepicker-sheet-weekdays {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
