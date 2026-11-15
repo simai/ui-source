@@ -254,7 +254,7 @@
 @layer sf.states {
   /* A disabled button's spinner (disabled and loading) takes the disabled
      ink, the ink of its label -- unless --sf-loader--color is set. */
-  .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
+  .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), [aria-disabled="true"]:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
     color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 
@@ -273,21 +273,21 @@
      outline primary's does: on the neutral fill's 16 and 20, which the dark
      theme lightens, the resting secondary (80) fell to 4.30 hovered and 3.88
      pressed on a popup (C113 follow-up). */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover:not(:has(> *)) {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):hover:not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-place--ink, var(--sf-secondary-hover));
   }
 
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):hover .sf-icon {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):hover .sf-icon {
     --sf-icon--color: var(--sf-place--ink, var(--sf-secondary-hover));
   }
 
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active):not(:has(> *)) {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-place--ink, var(--sf-secondary-active));
   }
 
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:active, .active) .sf-icon {
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) .sf-icon {
     --sf-icon--color: var(--sf-place--ink, var(--sf-secondary-active));
   }
 }
@@ -371,29 +371,29 @@
    ring; disabled wears the disabled look. The selectors repeat the block class
    to stand over every appearance's state rule in this layer. */
 @layer sf.states {
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
     --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container));
     --sf-button--border-color: transparent;
     --sf-button--focus-ink: transparent;
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
     --sf-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):not(:has(> *)),
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible):not(:has(> *)) {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):not(:has(> *)),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) .sf-icon,
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) .sf-icon {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) .sf-icon,
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible) .sf-icon {
     --sf-icon--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
   }
 
@@ -407,16 +407,16 @@
      so hover and press over it do not step the container further: they lay
      the surface's state layer on it (4 and 12 of the state family, the
      place's own ink on a coloured place). */
-  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled),
-  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active) {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled),
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) {
     --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container-active));
   }
 
-  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
   }
 
-  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
     background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
@@ -430,15 +430,15 @@
      takes the press layer (12) and press adds the hover layer to that (12 and
      4), one state step each, so the label keeps 4.5:1 on a popup. Coloured
      tonal toggles rest on their own container and keep TB-3's look. */
-  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
     background-image: linear-gradient(var(--sf-surface-state-select), var(--sf-surface-state-select));
   }
 
-  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
-  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
     background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover)), linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
@@ -446,7 +446,7 @@
      the edge does, in Highlight, inside the control height. The filled icon
      still says it too. */
   @media (forced-colors: active) {
-    .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
       --sf-button--border-top-width: var(--sf-px);
       --sf-button--border-bottom-width: var(--sf-px);
       --sf-button--border-inline-start-width: var(--sf-px);
@@ -463,4 +463,17 @@
    page's --sf-icon-fill still wins, as everywhere. */
 .sf-button:is(.sf-button--pressed, [aria-pressed="true"]) .sf-icon {
   --sf-icon--fill: 1;
+}
+
+/* aria-disabled="true" is disabled for the look and the pointer (owner remark
+   2026-11-15, the copy button): a button that keeps its focus while it cannot
+   act -- a copy at work, a step not yet open -- draws the disabled look, takes
+   no hover or press, and shows the arrow. The state rules read
+   :not(:disabled, [aria-disabled="true"]) and the disabled look
+   :is(:disabled, [aria-disabled="true"]), at the specificity they had. It
+   still takes focus and its ring, and the page decides what a press does. */
+@layer sf.components {
+  .sf-button[aria-disabled="true"] {
+    cursor: default;
+  }
 }

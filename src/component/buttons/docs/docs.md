@@ -170,6 +170,13 @@ wears the disabled look; the constructor does that for `loading` with
 `disabled`. Markup with the bare `loading` class and no state class keeps the
 disabled look.
 
+`aria-disabled="true"` is disabled for the look as well (1.15.0, owner remark
+2026-11-15 on the copy button): a button that keeps its focus while it cannot
+act wears the disabled look, takes no hover or press fill and shows the arrow
+cursor; it still takes focus and draws the ring, and the page decides what a
+press does. Before, only native `disabled` and `.disabled` turned the states
+off, so an `aria-disabled` button lit up on hover as a working one.
+
 A loading button shows the spinner, the Framework's one loading indicator, at
 the size of its icon (simai/ui-source#10):
 

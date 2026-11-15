@@ -160,7 +160,7 @@ test('the controls of the C107 group name their roles', () => {
   // its own.
   for (const [state, ink] of [[':hover', 'hover'], [':active', 'active']]) {
     const pair = `light-dark\\(var\\(--sf-on-surface-${ink}\\), var\\(--sf-on-surface\\)\\)`;
-    const head = `\\.sf-button\\.sf-button--tonal\\.sf-button--on-surface:not\\(:disabled\\):not\\(\\.disabled\\)${state}`;
+    const head = `\\.sf-button\\.sf-button--tonal\\.sf-button--on-surface:not\\(:disabled, \\[aria-disabled="true"\\]\\):not\\(\\.disabled\\)${state}`;
     assert.match(buttons, new RegExp(`${head} \\.sf-icon, [^{]+\\{\\s*--sf-icon--color: ${pair};`, 'u'),
       `${ink}, the icon is the label's --sf-on-surface-${ink} (light) / --sf-on-surface (dark)`);
     assert.match(buttons, new RegExp(`${head} :is\\(\\.sf-button-text-container, \\.sf-button-shortcut\\), [^{]+\\{\\s*--sf-button-text-container--color: ${pair};`, 'u'),

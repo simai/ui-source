@@ -166,24 +166,24 @@
      docs review R033): a glyph without a fill in --sf-on-surface-variant
      darkens to --sf-on-surface on hover and press, as Material 3 and GitHub
      do, so the state layer and the ink say the same thing. */
-  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
-  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
+  .sf-icon-button:is(.sf-icon-button--on-surface.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
   /* The plain neutral icon catches the label's ink up under a pointer (C107
      (4)): at rest --sf-on-surface-icon, hovered and pressed --sf-on-surface,
      as the quiet neutral above. A filled control keeps its inverse glyph. */
-  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--icon:not(.sf-icon-button--on-surface-variant):not(.sf-icon-button--default):not(:disabled):not(.disabled):is(:hover, :active, .active) {
+  .sf-icon-button.sf-icon-button--on-surface.sf-icon-button--icon:not(.sf-icon-button--on-surface-variant):not(.sf-icon-button--default):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, .active) {
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface));
   }
 
   /* A disabled icon button's spinner (disabled and loading) takes the disabled
      ink -- unless --sf-loader--color is set. */
-  .sf-icon-button:is(:disabled:not(.sf-icon-button-state-loading:not(.disabled)), .disabled) .sf-icon-button-spinner {
+  .sf-icon-button:is(:disabled:not(.sf-icon-button-state-loading:not(.disabled)), [aria-disabled="true"]:not(.sf-icon-button-state-loading:not(.disabled)), .disabled) .sf-icon-button-spinner {
     color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 }
@@ -197,22 +197,22 @@
    and press step the container; focus keeps the fill and draws the ring;
    disabled wears the disabled look. */
 @layer sf.states {
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
     --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container));
     --sf-icon-button--border-color: transparent;
     --sf-icon-button--focus-ink: transparent;
     --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
   }
 
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible) {
     --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
   }
 
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
     --sf-icon-button--background-color: var(--sf-primary-container-active);
   }
 
@@ -224,16 +224,16 @@
      container's -active), whatever its scheme. The fill family stops at 32, so
      hover and press over it lay the surface's state layer on that fill (4 and
      12 of the state family, the place's own ink on a coloured place). */
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled),
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active) {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled),
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) {
     --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container-active));
   }
 
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
   }
 
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
     background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
@@ -247,20 +247,20 @@
      takes the press layer (12) and press adds the hover layer to that (12 and
      4), one state step each, so the label keeps 4.5:1 on a popup. Primary and the
      other coloured schemes rest on their own container and keep TB-3's look. */
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
     background-image: linear-gradient(var(--sf-surface-state-select), var(--sf-surface-state-select));
   }
 
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
-  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
     background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover)), linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
   @media (forced-colors: active) {
-    .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
       --sf-icon-button--border-top-width: var(--sf-px);
       --sf-icon-button--border-bottom-width: var(--sf-px);
       --sf-icon-button--border-inline-start-width: var(--sf-px);
@@ -289,4 +289,13 @@
 .sf-icon-button .sf-icon,
 .sf-icon-button sf-icon {
   vertical-align: bottom;
+}
+
+/* aria-disabled="true" is disabled for the look and the pointer (owner remark
+   2026-11-15, the copy button), as on sf-button: the disabled look, no hover
+   or press, the arrow; focus and its ring stay. */
+@layer sf.components {
+  .sf-icon-button[aria-disabled="true"] {
+    cursor: default;
+  }
 }

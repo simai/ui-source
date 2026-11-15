@@ -86,7 +86,10 @@ fill family of the alpha scale; `--sf-spinner-track-color` wins). A button that
 is disabled and loading at once adds `.disabled` and wears the disabled look,
 the spinner in the disabled ink; the constructor does that for `loading` with
 `disabled`. Markup with the bare `loading` class and no state class keeps the
-disabled look. Tonal danger greys when disabled, as every other look does. The stripes are gone;
+disabled look. Tonal danger greys when disabled, as every other look does.
+`aria-disabled="true"` is disabled for the look as well (1.10.0, owner remark
+2026-11-15 on the copy button): the disabled look, no hover or press fill, the
+arrow cursor; focus and its ring stay. The stripes are gone;
 `--sf-icon-button-loading-stripe` is read until 2026-12-01 (journal
 `token-button-loading-stripe`). A two-state action -- bold in an editor's
 toolbar, wrap lines in a code block -- keeps one name and says its state with
