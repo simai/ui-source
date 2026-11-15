@@ -98,6 +98,14 @@ keeps the value in full ink, shows no hover or press colour on the box, the
 number or the placeholder, and its steppers are disabled buttons; the value
 stays focusable and selectable (1.4.3).
 
+The class markup (`label.sf-quantity` with `.sf-quantity-wrap` as its own
+child) is as wide as its column: the number stretches between the steppers,
+`--sf-quantity-gap` (`--sf-space-2`) stands between the parts and the number
+keeps the field's text inset. The compact look of owner decision C53 (the
+steppers hug the number, gap 0, the number as wide as its digits) is
+`sf-input-quantity`'s; it reaches the box only through that element's
+`.sf-quantity-row` (1.4.4).
+
 The composite control uses the UI radius token `--sf-radius--ui`, the hairline
 token `--sf-px`, semantic typography and spacing tokens. Pointer activation
 does not leave a focus ring. Keyboard focus is visible on the actual field or
