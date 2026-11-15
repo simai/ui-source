@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-bar",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "title": "Progress Bar",
   "summary": "Continuous determinate progress with normalized value, accessible range semantics and explicit semantic tone.",
   "kind": "smart",
@@ -318,7 +318,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-bar/index.js",
-        "sha256": "036ac355af8eabb583a14b526c87dd23757ca173fa0bf31f08f636b5edc78c4a"
+        "sha256": "14a080621f3a8a7828626728068630852d98a8b9642b7e77c3d75d892999f4c6"
       },
       {
         "path": "src/smart/progress-bar/js/templates/default.js",
