@@ -82,9 +82,20 @@ const leadContent = (context, item) => {
     return icon ? html`<sf-icon class="sf-list__glyph" icon=${icon} aria-hidden="true"></sf-icon>` : nothing;
 };
 
-const metaContent = (context, item) => {
+// The row's time (1.15.0, time-format; C189 (8)) leads the end part: in a
+// two-line row it stands on the title's line, above the badge and the count
+// (sf-list-item's end column, C148 (2)), and reads first. It is sf-time (C40)
+// without a tooltip: the row is the list's one Tab stop (C148 (3)), and a
+// time with a tooltip outside a button would be a stop of its own. A row
+// unread without a count says so to a screen reader at its end (the count's
+// own words say it where there is one); the word is the only thing it adds,
+// so the end part of a row with nothing else stays out of the layout (CSS).
+const metaContent = (context, item, group) => {
     const count = context.countOf(item);
     const badge = context.badgeOf(item);
+    const format = context.timeFormat(group);
+    const moment = format ? context.momentOf(item) : "";
+    const unreadWord = !count && context.unreadOf(item);
     // A two-line row's badge and count stand on its caption's line, in the
     // row's end column (owner decision C148 (2)): the line of the text they
     // stand in. A one-line row's take the row's line.
@@ -95,17 +106,21 @@ const metaContent = (context, item) => {
     // (owner decision C140 (3); list item study LI-8). It was sf-badge scheme
     // primary, the filled blue count; the filled look is the attention
     // count's alone (red), which a list row does not draw.
-    return html`${badge
+    return html`${moment
+        ? html`<sf-time class="sf-list__time" datetime=${moment} format=${format} tooltip="none"></sf-time>`
+        : nothing}${badge
         ? html`<sf-badge class="sf-list__badge" line=${line} appearance="tonal" tight
                          status=${BADGE_STATUS[badge.tone]} text=${badge.text}></sf-badge>`
         : nothing}${count
         ? html`<sf-badge class="sf-list__count" line=${line} appearance="tonal" tight
                          text=${count > context.countCap ? `${context.countCap}+` : String(count)}
                          aria-label=${context.countLabel(count)}></sf-badge>`
+        : nothing}${unreadWord
+        ? html`<span class="sf-list__unread sr-only">${context.unreadText}</span>`
         : nothing}`;
 };
 
-const row = (context, item) => {
+const row = (context, item, group) => {
     const {component} = context;
     const text = String(item.text ?? "") || context.untitledText;
     const supporting = item.supporting ? String(item.supporting) : "";
@@ -161,7 +176,7 @@ const row = (context, item) => {
                     ?disabled=${disabled}
                     ?divided=${context.divided}
             ><span slot="leading" class="sf-list__lead">${leadContent(context, item)}</span><span
-                    slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`
+                    slot="trailing" class="sf-list__meta">${metaContent(context, item, group)}</span></sf-list-item>`
         : html`<sf-list-item
                     interactive
                     kind=${icon ? "icon" : "text"}
@@ -174,9 +189,9 @@ const row = (context, item) => {
                     ?selected=${current}
                     ?disabled=${disabled}
                     ?divided=${context.divided}
-            ><span slot="trailing" class="sf-list__meta">${metaContent(context, item)}</span></sf-list-item>`;
+            ><span slot="trailing" class="sf-list__meta">${metaContent(context, item, group)}</span></sf-list-item>`;
     return html`
-        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.countOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}>
+        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.unreadOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}>
             ${listItem}
             ${menu
                 ? html`<button
@@ -193,9 +208,9 @@ const row = (context, item) => {
     `;
 };
 
-const rows = (context, items, labelled) => html`
+const rows = (context, group, labelled) => html`
     <ul class="sf-list__rows" aria-labelledby=${labelled ?? nothing} aria-label=${labelled ? nothing : context.label}>
-        ${repeat(items, (item) => item.id, (item) => row(context, item))}
+        ${repeat(group.items, (item) => item.id, (item) => row(context, item, group))}
     </ul>
 `;
 
@@ -255,9 +270,9 @@ export function renderListTemplate(context) {
                                  id=${`${context.uid}-${group.key.replace(/[^\w-]/gu, "_")}`}>${group.heading}${group.date
                                 ? html` <sf-time class="sf-group-heading-date" format="date" tooltip="none" datetime=${group.date}></sf-time>`
                                 : nothing}</div>
-                            ${rows(context, group.items, `${context.uid}-${group.key.replace(/[^\w-]/gu, "_")}`)}
+                            ${rows(context, group, `${context.uid}-${group.key.replace(/[^\w-]/gu, "_")}`)}
                         </section>`
-                    : rows(context, group.items, null))}
+                    : rows(context, group, null))}
             </div>
             ${context.emptyContent
                 // The page's own empty state stays in the document while the

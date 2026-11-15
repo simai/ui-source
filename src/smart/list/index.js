@@ -120,6 +120,24 @@ function countOf(item) {
     return Number.isFinite(count) && count >= 1 ? Math.floor(count) : 0;
 }
 
+/**
+ * Is the row unread? A count says so (owner decision C167 (3)); a letter
+ * without one says it with unread: true (1.15.0, C189 (8)). A number above 0
+ * is read as true -- sf-chat-threads spells its unread count unread -- and
+ * draws no number: the number is count's.
+ */
+function unreadOf(item) {
+    if (countOf(item)) return true;
+    const unread = item?.unread;
+    return unread === true || (typeof unread === "number" && unread > 0);
+}
+
+/** The item's date as an ISO moment for sf-time, or "" when it has none. */
+function momentOf(item) {
+    const moment = item?.date == null || item.date === "" ? null : toDate(item.date);
+    return moment && Number.isFinite(moment.getTime()) ? moment.toISOString() : "";
+}
+
 /** The item's badge, {text, tone}, or null: a badge with no text draws nothing. */
 function badgeOf(item) {
     const badge = item?.badge;
@@ -445,6 +463,19 @@ class SfList extends ListElement {
         return null;
     }
 
+    // The format of a row's time (1.15.0), as sf-list-timeline's time-format
+    // reads: under a day heading the clock time, since the heading names the
+    // day; elsewhere -- ungrouped, by key, the pinned group -- the moment in
+    // full. null: time-format none, no time.
+    timeFormatFor(group) {
+        const asked = this.timeFormat;
+        if (asked !== "auto" && asked !== "relative" && asked !== "exact") return null;
+        if (asked === "relative") return "relative";
+        const underDay = this.groupBy === "day" && typeof group?.key === "string" && group.key.startsWith("day:");
+        if (asked === "exact") return underDay ? "time" : "datetime";
+        return underDay ? "time" : "auto";
+    }
+
     templateContext() {
         const loading = this.loading;
         const empty = !loading && this._items.length === 0;
@@ -461,6 +492,12 @@ class SfList extends ListElement {
             leading: this.leading(),
             avatarOf,
             countOf,
+            unreadOf,
+            momentOf,
+            // The row's time (1.15.0): sf-time's format for the rows of a
+            // group, or null when the list draws no time (timeFormatFor).
+            timeFormat: (group) => this.timeFormatFor(group),
+            unreadText: this.sfWord("unread-text"),
             badgeOf,
             countCap: COUNT_CAP,
             countLabel: (count) => this.sfWord("count-label", {count}),
@@ -728,6 +765,8 @@ class SfList extends ListElement {
         const box = wrap.getBoundingClientRect();
         const textBox = text.getBoundingClientRect();
         const metaBox = meta.getBoundingClientRect();
+        // An end part with only the screen-reader word takes no place (1.15.0).
+        if (!(metaBox.width > 0)) return false;
         const gap = parseFloat(wrapStyle.columnGap) || 0;
         const inset = (parseFloat(textStyle.paddingLeft) || 0) + (parseFloat(textStyle.paddingRight) || 0);
         const end = rtl

@@ -243,6 +243,7 @@
     "display/default",
     "flex/default",
     "justify-content/default",
+    "position/default",
     "sr-only/default"
   ],
   "cl-list-attention": [
