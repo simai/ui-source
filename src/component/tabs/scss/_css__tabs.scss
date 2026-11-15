@@ -5,7 +5,7 @@
 
 /// container-step() of core's one ladder (owner decision C181 (2)) where the
 /// core has it; on a core before the ladder, the md breakpoint (the ladder's
-/// h1, 44rem).
+/// h1, 704 px at the root size: the same step).
 @function tabs-container-step($step) {
   $ladder: map.get(meta.module-functions("mq"), "container-step");
   @if $ladder {
@@ -653,8 +653,8 @@
   }
 
   // fit auto on a narrow place (C96 item 7 by C181 (2)): the row of «Ещё» is a
-  // container, and below the h1 step of its own width (44rem) two to four tabs
-  // share it -- in the sheet, so the printed first frame shares it as the laid
+  // container, and below the h1 step of its own width (704 px at the root
+  // size) two to four tabs share it -- in the sheet, so the printed first frame shares it as the laid
   // row does. The code says the place is narrow by reading --sf-tabs--narrow,
   // the same condition, and writes data-sf-tabs-own on a narrow row whose tabs
   // keep their own widths (fit never, a row that does not fit, «Ещё» shown).
