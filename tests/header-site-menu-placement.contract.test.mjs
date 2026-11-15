@@ -116,4 +116,8 @@ test('header site C104 / C181 (2): collapse is a container step of the bar, and 
   assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => this\.syncCollapsed\(\)\);/u);
   assert.match(source, /if \(collapsed === this\._collapsedNow\) return;/u);
   assert.match(component.settings.collapse.summary, /own width/u);
+  // Below xl the row's gutter is the step the bar is at (the .container utility's own inset).
+  assert.match(sheet, /@each \$from, \$to, \$step in \(g6 h1 sm, h1 h5 md, h5 h8 lg\) \{\n  \$space: map\.get\(container\.\$container-array, \$step\);/u);
+  assert.match(sheet, /--sf-container--inset: var\(--sf-container-gutter, var\(--sf-space-#\{\$space\}\)\);/u);
+  assert.match(sheet, /@container sf-site-header \(width >= #\{mq\.container-step\(h8\)\}\) \{\n  \.sf-site-header-row \{\n    --sf-container--inset: initial;/u);
 });

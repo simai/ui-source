@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../utility/container/default/scss/sf_var__container' as container;
@@ -373,6 +374,38 @@
       --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-#{$space}));
       --sf-site-header--centring: max(calc(var(--sf-px) * 0), calc((var(--sf-container-breakout-page, 100vw) - var(--sf-breakpoint-#{$step})) / 2));
     }
+  }
+}
+
+/* The row's gutter on the bar's own width (C104, C181 (2)): below the xl
+   step the .container inset is the step the bar is at, not the window's --
+   a bar in a 512 px column of a 1440 window had the window's xl gutter and
+   ran its parts over each other. --sf-container--inset is the utility's own
+   per-element inset (it does not inherit), --sf-container-gutter a product's
+   setting, kept first. From xl up nothing is set: the window's steps (xl,
+   xxl) draw the gutter as before, and a full-width bar under xl is at the
+   window's own step, so it is unchanged. The steps are the screen
+   breakpoints' places on the container ladder. */
+.sf-site-header-row {
+  --sf-container--inset: var(--sf-container-gutter, var(--sf-space-1));
+  --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-1));
+}
+
+@each $from, $to, $step in (g6 h1 sm, h1 h5 md, h5 h8 lg) {
+  $space: map.get(container.$container-array, $step);
+
+  @container sf-site-header (width >= #{mq.container-step($from)}) and (width < #{mq.container-step($to)}) {
+    .sf-site-header-row {
+      --sf-container--inset: var(--sf-container-gutter, var(--sf-space-#{$space}));
+      --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-#{$space}));
+    }
+  }
+}
+
+@container sf-site-header (width >= #{mq.container-step(h8)}) {
+  .sf-site-header-row {
+    --sf-container--inset: initial;
+    --sf-site-header--gutter: inherit;
   }
 }
 
