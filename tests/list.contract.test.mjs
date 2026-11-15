@@ -192,7 +192,7 @@ test('owner decision C148: the list row -- end column, one Tab stop with arrows 
   const sheet = read('src/component/dropdown/scss/_css__list-item.scss');
   // (4) no line by default; divided draws one from the text, none under the last row.
   assert.match(sheet, /--sf-list-item--border-bottom-width: 0;/u);
-  assert.match(sheet, /:is\(sf-list-item:last-child, li:last-child > sf-list-item\) > \.sf-list-item\.sf-list-item--divided/u);
+  assert.match(sheet, /:is\(:not\(li\) > sf-list-item:last-child, li:last-child > sf-list-item\) > \.sf-list-item\.sf-list-item--divided/u);
   // (2) the end column: the title's line over the caption's, no step between them.
   assert.match(sheet, /grid-template-rows: var\(--sf-list-item--title-line\) var\(--sf-list-item-supporting--line-height\);/u);
   // (5) one line with an ellipsis, two with lines="2".
