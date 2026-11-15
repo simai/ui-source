@@ -93,7 +93,7 @@
 
   .sf-gallery-thumb:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: var(--sf-a1);
+    outline-offset: var(--sf-focus--offset);
   }
 
   .sf-gallery-count {

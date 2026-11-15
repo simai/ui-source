@@ -6,12 +6,12 @@ test('FileUpload retry uses semantic control insets with an internal focus ring'
   // The retry control sits inside the upload panel, so the shared ring turns
   // inwards instead of spilling over the panel edge.
   assert.match(css,/outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/);
-  assert.match(css,/outline-offset: calc\(var\(--sf-focus--width\) \* -1\)/);
-  assert.match(css,/outline-offset: calc\(var\(--sf-focus-outline-width\) \* -1\)/);
+  assert.match(css,/outline-offset: var\(--sf-focus--inset\)/);
+  assert.match(css,/outline-offset: var\(--sf-focus--inset\)/);
   assert.match(css,/--sf-upload-progress-repeat--radius: var\(--sf-radius--ui\)/);
   for(const size of ['1\\/2','1','2']){
     assert.ok(css.includes(`--sf-upload-progress-repeat--padding-block: var(--sf-ui-${size}--space-y-tightness-default)`));
     assert.ok(css.includes(`--sf-upload-progress-repeat--padding-inline: var(--sf-ui-${size}--space-x)`));
   }
-  assert.doesNotMatch(css,/outline-offset: var\(--sf-focus-outline-width\)/);
+  assert.doesNotMatch(css,/outline-offset: var\(--sf-focus--width\)/);
 });

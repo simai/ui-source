@@ -306,8 +306,8 @@
     .sf-radio-button:has(input:disabled) .sf-radio-button-box { border-color: GrayText; }
     .sf-radio-button:has(input:disabled:checked) .sf-radio-button-mark { background-color: GrayText; }
     .sf-radio-button:has(input:not(:disabled):not(.disabled):focus-visible) .sf-radio-button-box {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
       --sf-radio-button-box--box-shadow: none;
     }
   }

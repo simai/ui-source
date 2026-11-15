@@ -80,7 +80,7 @@ surrounding text for panels; Tabs does not introduce another text-size scale.
 Keyboard focus is an inset ring whose foreground role follows the tab's painted
 surface: on-primary for selected/filled primary, on-surface for underline and
 transparent controls, and the matching foreground for other base button pairs.
-Its width uses --sf-focus-outline-width; an optional --sf-tabs--focus-color
+Its width uses --sf-focus--width and it stands inside the tab by --sf-focus--inset; an optional --sf-tabs--focus-color
 override lets authors supply a semantic role for a custom surface. Recheck
 contrast after customization. Do not reuse the translucent external focus halo
 inside a filled control. Pointer focus does not paint the keyboard ring;

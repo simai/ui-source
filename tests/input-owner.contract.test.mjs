@@ -13,7 +13,7 @@ test('Input presentation uses semantic UI, hairline and motion tokens', async ()
   assert.match(css, /transition-duration:\s*var\(--sf-duration-fast\)/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   // C153 (4), R242: mouse and keys alike, a 2 px edge inside the field.
-  assert.match(css, /\.sf-input:has\(input:enabled:not\(:disabled\):not\(\.disabled\):focus\) \.sf-input-field \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/);
+  assert.match(css, /\.sf-input:has\(input:enabled:not\(:disabled\):not\(\.disabled\):focus\) \.sf-input-field \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: var\(--sf-focus--inset\);/);
   assert.doesNotMatch(css, /(?:^|[\s:])1px(?:[\s;]|$)/m);
 });
 

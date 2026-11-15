@@ -10,7 +10,7 @@ test('FileUpload keyboard activation stays with its own non-native trigger',()=>
 test('FileUpload focus uses modality and real forced-color outline without changing the surface',()=>{
   assert.doesNotMatch(css,/:focus(?!-)/);
   assert.doesNotMatch(css,/transparent-for-focus/);
-  assert.match(css,/@media \(forced-colors: active\)[\s\S]*outline: var\(--sf-focus-outline-width\) solid Highlight/);
+  assert.match(css,/@media \(forced-colors: active\)[\s\S]*outline: var\(--sf-focus--width\) solid Highlight/);
 });
 test('FileUpload synchronizes disabled controls, preserves authored names and tears down its observer',()=>{
   assert.match(js,/__sfFileUploadInteractionObserver\?\.disconnect\(\)/);

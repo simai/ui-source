@@ -76,13 +76,13 @@
 .sf-country-code .sf-country-code-left:focus-visible,
 .sf-country-code .sf-country-code-item:focus-visible {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: calc(var(--sf-focus--width) * -1);
+  outline-offset: var(--sf-focus--inset);
 }
 
 @media (forced-colors: active) {
   .sf-country-code:has(input:not(:disabled):focus-visible) .sf-country-code-field {
-    outline: var(--sf-focus-outline-width) solid currentColor;
-    outline-offset: var(--sf-focus-outline-width);
+    outline: var(--sf-focus--width) solid currentColor;
+    outline-offset: var(--sf-focus--width);
   }
   .sf-country-code .sf-country-code-left:focus-visible,
   .sf-country-code .sf-country-code-item:focus-visible {

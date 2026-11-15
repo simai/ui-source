@@ -183,8 +183,8 @@
   }
 
   .sf-radio-button--type-font:has(input:focus-visible) .sf-radio-text {
-    outline: var(--sf-focus-outline-width) solid currentColor;
-    outline-offset: var(--sf-focus-outline-width);
+    outline: var(--sf-focus--width) solid currentColor;
+    outline-offset: var(--sf-focus--width);
     box-shadow: none;
   }
 

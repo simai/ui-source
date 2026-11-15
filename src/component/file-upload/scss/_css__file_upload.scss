@@ -239,8 +239,8 @@ sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disable
 
 @media (forced-colors: active) {
   .sf-file-upload:not([disabled]):not(.disabled):focus-visible {
-    outline: var(--sf-focus-outline-width) solid Highlight;
-    outline-offset: var(--sf-focus-outline-width);
+    outline: var(--sf-focus--width) solid Highlight;
+    outline-offset: var(--sf-focus--width);
   }
 }
 }

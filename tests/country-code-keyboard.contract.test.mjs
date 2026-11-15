@@ -16,7 +16,7 @@ test('Country Code focus uses semantic width and role color only for focus-visib
   // The list ring used a text colour of its own; it reads the shared focus
   // triple now, like every other ring in the system.
   assert.match(css,/outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/);
-  assert.match(css,/outline-offset: calc\(var\(--sf-focus--width\) \* -1\)/);
+  assert.match(css,/outline-offset: var\(--sf-focus--inset\)/);
   assert.match(css,/forced-colors: active/);
 });
 test('Country Code machine keyboard contract describes explicit selection and cancellation',()=>{

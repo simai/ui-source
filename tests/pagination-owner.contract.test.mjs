@@ -97,7 +97,7 @@ test("Pagination geometry uses semantic tokens and keyboard-only focus", async (
   assert.match(styles, /var\(--sf-radius--ui\)/);
   assert.match(styles, /display: inline-flex/);
   assert.match(styles, /text-decoration: none/);
-  assert.match(styles, /var\(--sf-a1\)/);
+  assert.match(styles, /var\(--sf-focus--offset\)/);
   assert.match(pageNumber, /:focus-visible/);
   assert.doesNotMatch(pageNumber, /:focus(?!-visible)/);
   assert.match(pageNumber, /transition-property: background-color, border-color, box-shadow, color/);

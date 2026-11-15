@@ -203,7 +203,7 @@
   .sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
   .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
     outline: var(--sf-px) solid Highlight;
-    outline-offset: var(--sf-px);
+    outline-offset: var(--sf-focus--offset);
   }
 }
 }

@@ -364,8 +364,8 @@
     }
     .sf-switch:has(input:disabled) .sf-switch-inner { background-color: GrayText; }
     .sf-switch:has(input:not(:disabled):not(.disabled):focus-visible) .sf-switch-toggler {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
       --sf-switch-toggler--box-shadow: none;
     }
   }

@@ -103,11 +103,11 @@ test('C145 amendment R238: the first tag in a field stands 4 from its start edge
 
 test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1 (group build 6: the integration line\'s higher numbers carry these notes)', () => {
   assert.equal(json('src/smart/dropdown/component.json').version, '1.16.0'); // C153 // group build 7: the integrated number (the branch wrote 1.14.0)
-  assert.equal(json('src/component/dropdown/passport.json').version, '1.13.3'); // group build 7: the patch for moved files (the line had 1.13.2)
-  assert.equal(json('src/smart/input-lookup/component.json').version, '1.15.1'); // group build 7: the integrated number (the branch wrote 1.13.1)
-  assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.15.1'); // group build 7
-  assert.equal(json('src/smart/tag/component.json').version, '1.11.0'); // group build 7: the GB6 notes numbered above the released 1.9.1
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.0'); // group build 7
-  assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
+  assert.equal(json('src/component/dropdown/passport.json').version, '1.13.6'); // group build 7: the patch for moved files (the line had 1.13.2) // C212 focus offsets: 1.13.6
+  assert.equal(json('src/smart/input-lookup/component.json').version, '1.15.4'); // group build 7: the integrated number (the branch wrote 1.13.1) // C212 focus offsets: 1.15.4
+  assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.15.4'); // group build 7 // C212 focus offsets: 1.15.4
+  assert.equal(json('src/smart/tag/component.json').version, '1.11.1'); // group build 7: the GB6 notes numbered above the released 1.9.1 // C212 focus offsets: 1.11.1
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.1'); // group build 7 // C212 focus offsets: 1.11.1
+  assert.equal(json('src/component/tags/passport.json').version, '1.7.1'); // C212 focus offsets: 1.7.1
   assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
 });

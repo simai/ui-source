@@ -39,7 +39,7 @@
   /* The region takes focus so a keyboard can scroll it; the ring is drawn
      inside, because the region fills its container edge to edge. */
   .sf-list-feed:focus-visible {
-    outline-offset: calc(-1 * var(--sf-focus--width));
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-list-feed__column,

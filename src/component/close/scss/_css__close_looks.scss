@@ -98,7 +98,7 @@
 
     .sf-icon-button.sf-button-close.sf-button-close--plain:not(:disabled):focus-visible > .sf-close {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-        outline-offset: calc(var(--sf-px) * 1);
+        outline-offset: var(--sf-focus--offset);
         border-radius: var(--sf-radius--ui);
     }
 

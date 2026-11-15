@@ -399,7 +399,7 @@
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
-  .sf-list__actions:focus-visible { outline-offset: calc(-1 * var(--sf-focus--width)); }
+  .sf-list__actions:focus-visible { outline-offset: var(--sf-focus--inset); }
 
   .sf-list__rename {
     flex: 1;
@@ -417,7 +417,7 @@
     line-height: var(--sf-list--line-height);
   }
 
-  .sf-list__rename:focus-visible { outline-offset: calc(-1 * var(--sf-focus--width)); }
+  .sf-list__rename:focus-visible { outline-offset: var(--sf-focus--inset); }
 
   .sf-list__empty {
     display: flex;

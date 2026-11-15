@@ -64,7 +64,7 @@ test('drawer r-077 (3): content headings start below the panel title, by role to
 });
 
 test('drawer r-077: the version and its migration step', () => {
-  assert.equal(manifest.version, '1.16.0');
+  assert.equal(manifest.version, '1.16.2'); // C212 focus offsets
   const steps = JSON.stringify(manifest);
   assert.match(steps, /"from":"1\.15\.0","to":"1\.16\.0"/u);
 });

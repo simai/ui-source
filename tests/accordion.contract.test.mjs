@@ -78,8 +78,8 @@ test('accordion keeps interaction states neutral and keyboard-visible', async ()
   // The trigger fills its row, so the shared ring turns inwards instead of
   // covering the row above.
   assert.match(styles, /outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/);
-  assert.match(styles, /outline-offset: calc\(var\(--sf-focus--width\) \* -1\)/);
-  assert.match(styles, /--sf-focus-outline-width/);
+  assert.match(styles, /outline-offset: var\(--sf-focus--inset\)/);
+  assert.match(styles, /var\(--sf-focus--width\)/);
   assert.match(styles, /@media \(forced-colors: active\)/);
   assert.doesNotMatch(styles, /\.sf-accordion-trigger:focus\s*\{/);
   assert.match(styles, /prefers-reduced-motion: reduce/);

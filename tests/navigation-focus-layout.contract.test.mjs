@@ -14,7 +14,7 @@ for (const [owner, file] of [['step', '_css__step.scss'], ['breadcrumbs', '_css_
     assert.match(css, /outline-offset: var\(--sf-focus--offset\)/);
     assert.doesNotMatch(css, /--sf-ui-focus\b/);
     assert.match(css, /@media \(forced-colors: active\)/);
-    assert.match(css, /outline: var\(--sf-focus-outline-width\) solid currentColor/);
+    assert.match(css, /outline: var\(--sf-focus--width\) solid currentColor/);
     assert.match(css, /not\(\[aria-disabled="true"\]\)/);
     // A step label breaks between words only (sf-steps 1.3.0, R185 ST-1);
     // a breadcrumb may still break anywhere.

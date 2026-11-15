@@ -27,7 +27,7 @@ const rule = (css, selector) => {
 test('versions: smart.steps 1.4.3, component.step 1.3.3', () => {
   assert.equal(component.version, '1.4.3');
   assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.3');
-  assert.equal(json('src/component/step/passport.json').version, '1.3.3'); // docs batch B, FW-B-8: size 1 named; above C61's 1.3.2
+  assert.equal(json('src/component/step/passport.json').version, '1.3.5'); // docs batch B, FW-B-8: size 1 named; above C61's 1.3.2 // C212 focus offsets: 1.3.5
 });
 
 test('C101 (1) role: an ordered process of a person; a server job is sf-progress-run, tasks in any order are not steps', () => {

@@ -108,7 +108,7 @@
   // so the disc stays solid.
   .sf-range-slider .sf-thumb-handle {
     background-color: ButtonText;
-    border: var(--sf-focus-outline-width) solid ButtonText;
+    border: var(--sf-focus--width) solid ButtonText;
   }
 
   .sf-range-slider:is([disabled], .disabled) .sf-thumb-handle {
@@ -117,8 +117,8 @@
   }
 
   .sf-range-slider:not([disabled]):not(.disabled) .sf-range-slider-handle:focus-visible .sf-thumb-handle {
-    outline: var(--sf-focus-outline-width) solid Highlight;
-    outline-offset: var(--sf-focus-outline-width);
+    outline: var(--sf-focus--width) solid Highlight;
+    outline-offset: var(--sf-focus--width);
   }
 }
 

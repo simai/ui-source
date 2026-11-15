@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.18.0'], ['list-feed', 'sf-list-feed', '1.3.1']]) { // group build 7: list-feed's patch for moved files
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.18.2'], ['list-feed', 'sf-list-feed', '1.3.3']]) { // group build 7: list-feed's patch for moved files // C212 focus offsets
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);

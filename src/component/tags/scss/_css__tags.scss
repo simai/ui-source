@@ -559,7 +559,7 @@
      off the tag's own edge. */
   .sf-tag--removable > .sf-icon-button:not(:disabled):focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(var(--sf-focus--width) * -1);
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-tag.disabled {
@@ -575,8 +575,8 @@
   @media (forced-colors: active) {
     .sf-tag--interactive:focus-visible,
     .sf-tag--removable > .sf-icon-button:focus-visible {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
       box-shadow: none;
     }
   }

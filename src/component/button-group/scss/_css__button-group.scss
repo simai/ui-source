@@ -15,7 +15,7 @@
      was cut at the track's bottom (owner report R242, DEV's audit 2026-11-14). */
   .sf-button-group--segmented :focus-visible,
   .sf-button-group--segmented .focus-visible {
-    outline-offset: calc(var(--sf-focus--width) * -1);
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-button-group > sf-button,
@@ -151,14 +151,14 @@
      focus either. */
   .sf-button-group > sf-button:has(> .sf-button:focus-visible) > .sf-button,
   .sf-button-group > .sf-button:focus-visible {
-    outline-offset: calc(var(--sf-focus--width) * -1);
+    outline-offset: var(--sf-focus--inset);
   }
 
   @media (forced-colors: active) {
     .sf-button-group > sf-button:has(> .sf-button:focus-visible) > .sf-button,
     .sf-button-group > .sf-button:focus-visible {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(var(--sf-focus-outline-width) * -1);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
       --sf-button--box-shadow: none;
     }
   }
@@ -617,7 +617,7 @@
     }
 
     .sf-button-group--segmented > .sf-button-group-segment:focus-visible {
-      outline: var(--sf-focus-outline-width) solid CanvasText;
+      outline: var(--sf-focus--width) solid CanvasText;
       outline-offset: 0;
     }
   }

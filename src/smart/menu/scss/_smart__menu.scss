@@ -70,7 +70,7 @@
 
   .sf-smart-menu .sf-menu-element > a.sf-menu-element-wrap:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(var(--sf-focus--width) * -1);
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-smart-menu .sf-menu-element > button.sf-icon-button[aria-expanded='false']:dir(rtl) .sf-icon {
@@ -153,7 +153,7 @@
 
   @media (forced-colors: active) {
     .sf-smart-menu .sf-menu-element > a.sf-menu-element-wrap:focus-visible {
-      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline: var(--sf-focus--width) solid currentColor;
     }
   }
 }

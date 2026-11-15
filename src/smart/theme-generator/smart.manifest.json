@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.theme-generator",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "title": "Theme generator",
   "summary": "Leaving until 2027-01-01 (C84): use sf-input-color variant=\"brand\". A theme from one colour: the main colour, the generator's own hue and chroma, a preview of the four theme palettes and a way back to SIMAI Framework's colour; it stores nothing and changes the page only with apply.",
   "kind": "smart",
@@ -479,7 +479,7 @@
       },
       {
         "path": "src/smart/theme-generator/scss/_smart__theme_generator.scss",
-        "sha256": "83ccb807e421f01ad4179b459be7fc03aa589733e86deccfa6987d3f4bffc389"
+        "sha256": "db4b9c64fe5018770a3745e61be2f65f8583997e55707ed2ea91e4c6d63e4d00"
       },
       {
         "path": "src/smart/theme-generator/rule.js",

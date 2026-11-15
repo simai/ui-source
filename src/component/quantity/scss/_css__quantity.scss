@@ -365,7 +365,7 @@
    inside the wrap, over its border; no ring outside, nothing moves. */
 .sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: calc(-1 * var(--sf-focus--width));
+  outline-offset: var(--sf-focus--inset);
 }
 
 /* The ring belongs to the wrap, so the bare control gives its own up -- the same
@@ -600,17 +600,17 @@
   }
   /* The step buttons sit inside the field, so their own ring turns inwards. */
   .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
-    outline-offset: calc(var(--sf-focus--width) * -1);
+    outline-offset: var(--sf-focus--inset);
   }
   @media (forced-colors: active) {
     .sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus--width));
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
       --sf-quantity-wrap--box-shadow: none;
     }
     .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
       --sf-icon-button--box-shadow: none;
     }
   }

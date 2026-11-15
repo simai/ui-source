@@ -1,14 +1,14 @@
 @layer sf.components {
   .sf-upload-progress-repeat:not(:disabled):focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(var(--sf-focus--width) * -1);
+    outline-offset: var(--sf-focus--inset);
   }
 
   @media (forced-colors: active) {
     .sf-upload-progress-repeat:not(:disabled):focus-visible {
       box-shadow: none;
-      outline: var(--sf-focus-outline-width) solid Highlight;
-      outline-offset: calc(var(--sf-focus-outline-width) * -1);
+      outline: var(--sf-focus--width) solid Highlight;
+      outline-offset: var(--sf-focus--inset);
     }
   }
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -89,11 +89,11 @@
    line's start (docs report on pair ui-2d39b617a719: they stood inset). */
 .sf-upload-progress .sf-upload-progress-repeat {
   --sf-upload-progress-repeat--radius: var(--sf-radius--ui);
-  --sf-upload-progress-repeat--inset: max(var(--sf-upload-progress-repeat--padding-inline), var(--sf-focus-outline-width));
+  --sf-upload-progress-repeat--inset: max(var(--sf-upload-progress-repeat--padding-inline), var(--sf-focus--width));
   max-inline-size: calc(100% + var(--sf-upload-progress-repeat--inset) * 2);
   border-radius: var(--sf-upload-progress-repeat--radius);
   margin-inline: calc(var(--sf-upload-progress-repeat--inset) * -1);
-  padding-block: max(var(--sf-upload-progress-repeat--padding-block), var(--sf-focus-outline-width));
+  padding-block: max(var(--sf-upload-progress-repeat--padding-block), var(--sf-focus--width));
   padding-inline: var(--sf-upload-progress-repeat--inset);
   text-align: start;
   text-decoration: underline;

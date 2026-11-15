@@ -368,7 +368,7 @@ sf-profile-picker {
   .sf-profile-picker-row:focus-visible,
   .sf-profile-picker-field:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(-1 * var(--sf-focus--width));
+    outline-offset: var(--sf-focus--inset);
   }
 }
 

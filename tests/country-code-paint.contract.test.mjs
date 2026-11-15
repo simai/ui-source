@@ -25,8 +25,8 @@ test('Country Code input and placeholder use the same size and line-height token
 test('Country Code focus shadow is never a surface color and forced colors has a native outline', () => {
   assert.doesNotMatch(css,/--background-color:\s*var\(--sf-ui-focus\)/);
   // C153 (4), R242: focus by mouse or keys is a 2 px edge inside the field.
-  assert.match(css,/\.sf-country-code:has\(input:enabled:not\(:disabled\):not\(\.disabled\):focus\) \.sf-country-code-field \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/);
+  assert.match(css,/\.sf-country-code:has\(input:enabled:not\(:disabled\):not\(\.disabled\):focus\) \.sf-country-code-field \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: var\(--sf-focus--inset\);/);
   assert.match(css,/:focus-visible/);
   assert.match(custom,/@media\s*\(forced-colors:\s*active\)/);
-  assert.match(custom,/outline:\s*var\(--sf-focus-outline-width\) solid currentColor/);
+  assert.match(custom,/outline:\s*var\(--sf-focus--width\) solid currentColor/);
 });

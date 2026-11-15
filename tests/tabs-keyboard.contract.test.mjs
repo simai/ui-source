@@ -128,7 +128,7 @@ test('Tabs presentation does not suppress keyboard focus or mismatch selected ic
   assert.doesNotMatch(css, /--sf-(?:icon-)?button--box-shadow/u);
   assert.match(css, /--sf-focus--color: var\(--sf-tabs--focus-color, var\(--sf-tabs--focus-ink\)\)/u);
   assert.match(css, /outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/u);
-  assert.match(css, /outline-offset: calc\(var\(--sf-focus--width\) \* -1\)/u, 'a tab is flush with its neighbours');
+  assert.match(css, /outline-offset: var\(--sf-focus--inset\)/u, 'a tab is flush with its neighbours');
   assert.doesNotMatch(css, /var\(--sf-ui-focus-inset\)/u);
   assert.match(css, /column-gap: var\(--sf-tabs--gap, var\(--sf-space-2\)\)/);
   assert.doesNotMatch(css, /:focus(?!-visible)/);

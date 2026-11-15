@@ -14,7 +14,7 @@
     "src/core/figma_variables/figma_focus.scss",
     "src/core/scss/_sf_css__border.scss"
   ],
-  "content_sha256": "3b6bf39877eee7b48819af89e6da96d3217a26aaa498f63711c29b3d836874d3",
+  "content_sha256": "f616bb17a752654628da29f28720dc3be8619d3131e63e4093666e327d9eafb0",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

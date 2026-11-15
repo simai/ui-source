@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.4.2'); // group build 7: the integrated number (the branch wrote 1.3.4)
+  assert.equal(manifest.version, '1.4.5'); // group build 7: the integrated number (the branch wrote 1.3.4) // C212 focus offsets
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'drawer', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);

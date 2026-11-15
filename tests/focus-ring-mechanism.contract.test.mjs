@@ -127,7 +127,7 @@ test('an element flush against its neighbours turns the ring inwards', () => {
     assert.match(source, new RegExp(needle, 'u'), `${path}: the seamless case is still described`);
     assert.match(
       source,
-      /outline-offset: calc\(var\(--sf-focus--width\) \* -1\)/u,
+      /outline-offset: var\(--sf-focus--inset\)/u,
       `${path}: inwards by the same width, not a second ring`,
     );
   }

@@ -20,8 +20,8 @@ for (const [component, file, selector] of [
     // Retain the native high-contrast indicator; do not suppress focus globally.
     assert.doesNotMatch(styles, /outline:\s*(?:none|0)(?:\s|;)/);
     assert.match(styles, /@media\s*\(forced-colors:\s*active\)/);
-    assert.match(styles, /outline:\s*var\(--sf-focus-outline-width\) solid currentColor/);
-    assert.match(styles, /outline-offset:\s*calc\(var\(--sf-focus-outline-width\) \* -1\)/);
+    assert.match(styles, /outline:\s*var\(--sf-focus--width\) solid currentColor/);
+    assert.match(styles, /outline-offset:\s*var\(--sf-focus--inset\)/);
   });
 }
 
@@ -30,7 +30,7 @@ test('joined icon buttons keep the focus indicator inside each segment', async (
     '../src/component/icon-buttons/scss/_css_icon_buttons.scss', import.meta.url,
   ), 'utf8');
   // Flush against its neighbours, the same ring turns inwards.
-  assert.match(styles, /outline-offset: calc\(var\(--sf-focus--width\) \* -1\)/);
+  assert.match(styles, /outline-offset: var\(--sf-focus--inset\)/);
   for (const position of ['start', 'middle', 'end']) {
     assert.match(styles, new RegExp(
       `\\.sf-icon-button\\.segment-${position}:not\\(:disabled\\):not\\(\\.disabled\\):focus-visible`,

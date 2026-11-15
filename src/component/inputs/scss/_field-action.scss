@@ -124,7 +124,7 @@
 
     .sf-field-action:focus-visible .sf-icon {
       outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-      outline-offset: var(--sf-px);
+      outline-offset: var(--sf-focus--offset);
     }
 
     @media (forced-colors: active) {
