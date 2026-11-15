@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-download",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "title": "Download File",
   "summary": "Native file download or application-owned file preparation action.",
   "kind": "smart",
@@ -421,7 +421,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-download/index.js",
-        "sha256": "0d10f73f27a2912741b1ab4566bd9c0a0e33a140b4d38e94854c9cfb9fd3d5d6"
+        "sha256": "a48c0c2ceaf578eda062f500df96e6ed27d2c7e51e064260fc430e2eefb82d63"
       }
     ],
     "generated_runtime": [

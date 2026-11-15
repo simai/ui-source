@@ -63,6 +63,9 @@ test('sf-progress-bar: the script, the sheet and the words follow the same spell
   assert.match(sheet, /width: var\(--sf-progress-bar-track-size, var\(--sf-progress-bar--track-size\)\);/u);
   assert.match(sheet, /\.sf-progress-bar--inline \.sf-progress-bar-main \{\s*--sf-progress-bar-main--height: var\(--sf-a4\);/u);
   assert.match(sheet, /\.sf-progress-bar--inline \.sf-progress-bar-text \{\s*order: -1;/u);
+  // The number's box holds the widest value, «100 %», at every size: three
+  // tabular figures and the space with the sign, so 0 % and 100 % stand alike.
+  assert.match(sheet, /min-inline-size: calc\(3ch \+ 1\.3em\);/u);
   assert.match(sheet, /\.sf-progress-bar--inline\.sf-progress-bar--error \.sf-progress-bar-text \{\s*color: var\(--sf-progress-bar-color, var\(--sf-error\)\);/u);
   // IM-5: no number below the 1/3 text step; IM-4: compact moves the thickness.
   assert.match(sheet, /--size-1\\\/3 \{\s*--sf-progress-bar--font-size: var\(--sf-text-size-1\\\/3\);/u);
@@ -97,4 +100,19 @@ test('field renderers: a percent value and the meter variant', async () => {
   const source = await read('src/smart/field-renderers/index.js');
   assert.match(source, /if \(variant === 'meter'\) return \{component: \{type: 'progress-bar', props: meterProps\(field, number\)\}\};/u);
   assert.match(source, /return \{inline: true, meter: true, value: String\(number\)/u);
+});
+
+test('sf-file-download says its preparing per cent as «72 %»', async () => {
+  const index = await read('src/smart/file-download/index.js');
+  assert.match(index, /import \{ percentText \} from '\.\.\/\.\.\/core\/js\/format-number\.js';/u);
+  assert.match(index, /percentText\(value\) \{\s*return percentText\(Math\.round\(Number\(value\)\), this\);\s*\}/u);
+  assert.doesNotMatch(index, /style: 'percent'/u);
+  const said = {ru: 'Готовим… 72\u00a0%', en: 'Preparing… 72\u00a0%'};
+  for (const locale of ['en', 'ru']) {
+    const words = JSON.parse(await read(`src/smart/file-download/lang/${locale}.json`));
+    const word = (words.runtime ?? words)['preparing-value-text'];
+    assert.equal(word.replace('{percent}', percentText(Math.round(72.4), null)), said[locale], locale);
+  }
+  assert.equal(percentText(Math.round(100), null), '100\u00a0%');
+  assert.equal(percentText(Math.round(0), null), '0\u00a0%');
 });
