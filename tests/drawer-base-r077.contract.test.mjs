@@ -43,7 +43,7 @@ test('drawer r-077 (2): a width off the ladder is drawn and said once, naming th
   assert.match(source, /if \(!width \|\| this\._offLadderWidth === width/u);
   assert.match(source, /measure\('100vi'\)/u);
   assert.match(source, /noteDeprecated\(\{component: 'sf-drawer', tag: 'sf-drawer', kind: 'value', attribute: 'width', from: width,/u);
-  assert.match(source, /off the width ladder \(\$\{ladder\}, size="full" the whole screen; C157 \(2\)\)/u);
+  assert.match(source, /off the width ladder \(\$\{ladder\}, size='full' the whole screen; C157 \(2\)\)/u);
   assert.match(source, /this\.noteOffLadderWidth\(root\);/u);
   assert.match(manifest.settings.width.summary, /still drawn until 2027-01-01 and said once per element/u);
 });

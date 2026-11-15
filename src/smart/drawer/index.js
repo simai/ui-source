@@ -1542,10 +1542,10 @@ class SfDrawer extends DrawerElement {
     const steps = [...LADDER_WIDTHS.map(([, token]) => measure(token)), measure('100vi')];
     if (steps.some((px) => Math.abs(px - drawn) < 0.5)) return;
     noteDeprecated({component: 'sf-drawer', tag: 'sf-drawer', kind: 'value', attribute: 'width', from: width,
-      to: 'size="1/2|1|2|full", sf-resizer within 1/2...2', since: OFF_LADDER_SINCE, remove_after: OFF_LADDER_UNTIL});
+      to: 'size 1/2, 1, 2 or full; sf-resizer within 1/2...2', since: OFF_LADDER_SINCE, remove_after: OFF_LADDER_UNTIL});
     const name = this.id ? `#${this.id}` : this.drawerId ? ` ${this.drawerId}` : '';
-    const ladder = LADDER_WIDTHS.map(([size, , rem]) => `size="${size}" ${rem}`).join(', ');
-    globalThis.console?.warn?.(`[SIMAI Framework] sf-drawer${name}: width="${width}" draws ${Math.round(drawn)}px, off the width ladder (${ladder}, size="full" the whole screen; C157 (2)). It is still drawn until ${OFF_LADDER_UNTIL}; take a step, and an sf-resizer within 1/2...2 for a width of its own.`);
+    const ladder = LADDER_WIDTHS.map(([size, , rem]) => `size='${size}' ${rem}`).join(', ');
+    globalThis.console?.warn?.(`[SIMAI Framework] sf-drawer${name}: width='${width}' draws ${Math.round(drawn)}px, off the width ladder (${ladder}, size='full' the whole screen; C157 (2)). It is still drawn until ${OFF_LADDER_UNTIL}; take a step, and an sf-resizer within 1/2...2 for a width of its own.`);
   }
 
   // The close stands first in the column outside (at the top, nearest the
