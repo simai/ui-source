@@ -19,7 +19,7 @@ screens secondary labels and omitted-range indicators may be hidden, but the
 page controls remain on one line.
 
 The controls of one row are one group of buttons (C105 H5): they stand
-`--sf-space-1/3` apart -- 8, 4 in the compact density and on a phone (1.4.5;
+`--sf-space-1/3` apart -- 8, 4 in the compact density of a desktop (1.4.5;
 outside the compatible footer the row had no gap before and its edge buttons
 touched their neighbours). `--sf-pagination-gap` still sets it.
 

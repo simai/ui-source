@@ -49,7 +49,7 @@ test('PG-11: the last-page button is drawn only where the jump can be answered',
 });
 
 test('PG-10: three settings, all off by default, and the word of the title', () => {
-  assert.equal(component.version, '1.5.1');
+  assert.equal(component.version, '1.6.1');
   assert.deepEqual(
     [component.settings.href.type, component.settings.href.default],
     ['string', ''],
