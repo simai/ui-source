@@ -247,3 +247,48 @@ test('quantity: the public variables wrap the values the class sheet drew before
   const docs = read('src/smart/input-quantity/docs.md');
   for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
 });
+
+test('quantity: read-only is sf-input\'s read-only look and changes nothing (C16, QT-08)', () => {
+  // The same rule and tokens as sf-input's read-only field: no fill, the
+  // region line (outline-variant) for the edge, the value in full ink.
+  const inputSheet = read('src/component/inputs/scss/_css__inputs.scss');
+  const inputRule = inputSheet.slice(inputSheet.indexOf('.sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {')).split('}')[0];
+  assert.ok(inputRule.includes('--sf-input-field--background-color: var(--sf-transparent);'));
+  assert.ok(inputRule.includes('--sf-input-field--border-color: var(--sf-outline-variant);'));
+  // The read-only ground is set on the internal name, after the base rule, so
+  // it wins over --sf-quantity-background-color too (C16: a fill reads as a
+  // control to press).
+  const base = '--sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-transparent));';
+  const selector = '.sf-quantity:not(.error):has(input:read-only:not(:disabled)) .sf-quantity-wrap {';
+  assert.ok(sheet.indexOf(base) > -1 && sheet.indexOf(base) < sheet.indexOf(selector));
+  const rule = sheet.slice(sheet.indexOf(selector)).split('}')[0];
+  assert.ok(rule.includes('--sf-quantity-wrap--background-color: var(--sf-transparent);'));
+  assert.ok(rule.includes('--sf-quantity-wrap--border-color: var(--sf-outline-variant);'));
+  const ink = sheet.slice(sheet.indexOf('.sf-quantity input {')).split('}')[0];
+  assert.ok(ink.includes('--sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));'));
+  assert.doesNotMatch(sheet, /:read-only[^{]*\{[^}]*--sf-quantity-input--color/u);
+  // No hover or press state reaches a read-only box, number place or
+  // placeholder: every hover/press rule on the input skips :read-only.
+  const pressed = sheet.split('\n').filter((one) => /\.sf-quantity[^{]*:(?:hover|active)\)?[^{]*\{/u.test(one) && /\binput\b/u.test(one));
+  assert.ok(pressed.some((one) => one.includes('input::placeholder')), 'the placeholder press rule is checked');
+  for (const line of pressed) {
+    if (/\.sf-quantity-count|focus-visible/u.test(line)) continue;
+    assert.match(line, /:not\(:read-only\)/u, line);
+  }
+  // The steppers are disabled buttons, so the icon button draws no hover or
+  // press; the keys and the steppers do not step; the box stays focusable and
+  // selectable (a read-only input, not a disabled one).
+  assert.match(template, /\?disabled=\$\{!context\.interactive \|\| reached\}/u);
+  assert.match(template, /\?readonly=\$\{context\.readonly\}/u);
+  assert.match(source, /get interactive\(\) \{\n    return !this\.disabled && !this\.readonly;\n  \}/u);
+  assert.match(source, /stepBy\(count, source, \{change = true\} = \{\}\) \{\n    if \(!this\.interactive\) return false;/u);
+  assert.match(source, /onStepPointerDown\(event, direction\) \{\n(?: {4}[^\n]*\n)*? {4}if \(event\.button !== 0 \|\| !this\.interactive\) return;/u);
+  // The class component: the steppers turn disabled with the input's
+  // read-only, and a step or a typed character does nothing.
+  assert.match(classSource, /const isDisabled = Boolean\(input\.disabled \|\| input\.readOnly\);/u);
+  assert.match(classSource, /function adjustValue\(root, deltaSign\) \{\n  const input = root\.querySelector\('\.sf-quantity-wrap input'\);\n  if \(!input \|\| input\.disabled \|\| input\.readOnly\) return;/u);
+  assert.match(classSource, /attributeFilter: \['disabled', 'readonly'\]/u);
+  // The documentation says so.
+  const docs = read('src/component/quantity/docs/docs.md');
+  assert.match(docs, /no fill \(`--sf-transparent`, also over\n`--sf-quantity-background-color`/u);
+});

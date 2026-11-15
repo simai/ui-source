@@ -550,7 +550,7 @@
     },
     {
       "id": "remove-mode-off-by-default",
-      "covers": "settings.removable default false (C122, provisional name): at the bound «−» stays the disabled minus",
+      "covers": "settings.removable default false (C122): at the bound «−» stays the disabled minus",
       "field": "<sf-input-quantity name=\"line\" value=\"1\" min=\"1\" max=\"99\"></sf-input-quantity>",
       "setting": {
         "name": "value",
@@ -568,7 +568,7 @@
     },
     {
       "id": "remove-mode-trash-at-min",
-      "covers": "settings.removable, remove-label (C122, provisional names): on the bound «−» is the trash, enabled, in the Tab order, named, not aria-controls",
+      "covers": "settings.removable, remove-label (C122): on the bound «−» is the trash, enabled, in the Tab order, named, not aria-controls",
       "field": "<sf-input-quantity name=\"line\" value=\"1\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
       "setting": {
         "name": "remove-label",
@@ -608,7 +608,7 @@
     },
     {
       "id": "remove-mode-trash-press",
-      "covers": "events.remove (C122, provisional name): a press on the trash asks, the field keeps its value",
+      "covers": "events.remove (C122): a press on the trash asks, the field keeps its value",
       "field": "<sf-input-quantity name=\"line\" value=\"1\" min=\"1\" max=\"99\" removable></sf-input-quantity>",
       "listen": [
         "sf-input-quantity-remove",
