@@ -84,7 +84,7 @@ function renderMenu(context) {
       scheme="on-surface"
       size=${context.size}
       aria-label=${context.triggerLabel}
-      title=${context.triggerLabel}
+      data-tooltip=${context.tipId || nothing}
       aria-haspopup="menu"
       ?disabled=${context.disabled}
       @click=${() => context.component.toggleMenu()}
@@ -101,7 +101,18 @@ function renderMenu(context) {
       @sf-context-menu-search=${stop}
       @sf-menu-context-closed=${(event) => context.component.onMenuClosed(event)}
       @sf-context-menu-closed=${stop}
-    ></sf-menu-context>`;
+    ></sf-menu-context>${renderTooltip(context)}`;
+}
+
+// The trigger's name as the Framework's tooltip (owner decision C160 (1),
+// TT-11), not a browser title: «Язык: Русский» on hover, keyboard focus or a
+// long press, the surface named by the button's data-tooltip (sf-button hands
+// a data-* to its native button) and shown by the tooltip controller
+// (component tooltip, asked for once the trigger draws). The text is the
+// button's accessible name, so the controller adds no description.
+function renderTooltip(context) {
+  if (!context.tipId || !context.triggerLabel) return nothing;
+  return html`<span class="sf-tooltip sf-tooltip--dark sf-language-tooltip" id=${context.tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${context.triggerLabel}</span></span></span>`;
 }
 
 // The parts stand in a frame without a box of its own (display: contents), so

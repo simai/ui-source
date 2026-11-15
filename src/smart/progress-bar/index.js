@@ -7,6 +7,7 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { renderProgressBarTemplate } from './js/templates/default';
 import { percentText } from '../../core/js/format-number.js';
+import { STATUS_RANK as RANK, effectiveStatus, readThreshold, thresholdStatus } from '../../component/progress-threshold';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import enFile from './lang/en.json';
@@ -50,22 +51,10 @@ export function showChunk(element, done, total) {
 }
 
 // The status the bar draws (1.2.0): the more serious of the page's status and
-// the threshold the value reached. The thresholds are the page's, in per cent
-// like the value; unset (null) is no threshold. neutral, info and success rank
-// below warning, warning below error.
-const RANK = { warning: 1, error: 2 };
-export function thresholdStatus(value, warningAt, errorAt) {
-  const number = Number(value);
-  if (!Number.isFinite(number)) return '';
-  if (Number.isFinite(errorAt) && number >= errorAt) return 'error';
-  if (Number.isFinite(warningAt) && number >= warningAt) return 'warning';
-  return '';
-}
-
-export function effectiveStatus(status, value, warningAt, errorAt) {
-  const reached = thresholdStatus(value, warningAt, errorAt);
-  return (RANK[reached] ?? 0) > (RANK[status] ?? 0) ? reached : status;
-}
+// the threshold the value reached -- one source with sf-progress-scale and the
+// class scale (component/progress-threshold.js); kept exported here for the
+// modules that import it from the bar.
+export { effectiveStatus, thresholdStatus };
 
 // Paused (1.3.0, C34): at least a warning; an error stays an error.
 export function pausedStatus(status, paused) {
@@ -102,11 +91,10 @@ class SfProgressBar extends ProgressBarElement {
     return this.getProp('status');
   }
 
-  // A threshold holds only where the page set it: an unset number reads 0.
+  // A threshold holds only where the page set it a number: unset or empty is
+  // none (Number('') would read 0).
   threshold(attribute) {
-    if (!this.hasAttribute(attribute)) return null;
-    const number = Number(this.getAttribute(attribute));
-    return Number.isFinite(number) ? number : null;
+    return readThreshold(this.getAttribute(attribute));
   }
 
   // The status drawn: the page's, or the threshold the value reached; a

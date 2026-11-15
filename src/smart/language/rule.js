@@ -10,5 +10,7 @@ SF.RuleLoader['cl-language'] = {
     { name: 'cl-icon' },
     { name: 'cl-menu-context', lazy: true },
     { name: 'cl-dropdown', lazy: true },
+    // The trigger's name as the Framework's tooltip (C160 (1), TT-11): the controller and its sheet, fetched when a menu trigger draws.
+    { name: 'tooltip', lazy: true },
   ],
 };

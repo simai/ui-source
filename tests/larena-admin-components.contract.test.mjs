@@ -25,18 +25,21 @@ test('the three names are registered to the Framework, family tile with them, an
 
 test('sf-progress-bar 1.2.0: warning-at and error-at, the more serious of status and the threshold', () => {
   const manifest = json('src/smart/progress-bar/component.json');
-  assert.equal(manifest.version, '1.5.1');
+  assert.equal(manifest.version, '1.5.2'); // fix/returns-gb67: the thresholds from component/progress-threshold.js
   for (const name of ['warning-at', 'error-at']) {
     assert.equal(manifest.settings[name].type, 'number');
     assert.equal(manifest.settings[name].optional, true);
   }
   assert.deepEqual(manifest['host-states'], {'data-status': 'string'});
-  const source = code('src/smart/progress-bar/index.js');
+  // One threshold source with sf-progress-scale and the class scale (MR-2).
+  assert.match(code('src/smart/progress-bar/index.js'), /from '\.\.\/\.\.\/component\/progress-threshold'/u);
+  const source = code('src/component/progress-threshold.js');
   assert.match(source, /if \(Number\.isFinite\(errorAt\) && number >= errorAt\) return 'error';/u);
   assert.match(source, /if \(Number\.isFinite\(warningAt\) && number >= warningAt\) return 'warning';/u);
-  assert.match(source, /return \(RANK\[reached\] \?\? 0\) > \(RANK\[status\] \?\? 0\) \? reached : status;/u);
-  // An unset threshold is no threshold (an unset number reads 0).
-  assert.match(source, /if \(!this\.hasAttribute\(attribute\)\) return null;/u);
+  assert.match(source, /return \(STATUS_RANK\[reached\] \?\? 0\) > \(STATUS_RANK\[status\] \?\? 0\) \? reached : status;/u);
+  // An unset or empty threshold is no threshold (Number('') reads 0).
+  assert.match(source, /if \(raw === null \|\| raw === undefined \|\| String\(raw\)\.trim\(\) === ''\) return null;/u);
+  assert.match(code('src/smart/progress-bar/index.js'), /return readThreshold\(this\.getAttribute\(attribute\)\);/u);
 });
 
 test('sf-tile-metric: sf-chart-metric 0.1.0\'s setting names, one target, thresholds of max', () => {

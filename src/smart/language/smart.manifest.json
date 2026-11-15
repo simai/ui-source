@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "title": "Language",
   "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -30,6 +30,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.tooltip",
       "smart.button",
       "smart.dropdown",
       "smart.icon",
@@ -346,15 +347,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "fa8baccd145e70e5a5a9263ae29d342e4339f33f755ed3addbfeb32008db9a0d"
+        "sha256": "68a63060b0e121adfd684d07d2932f4aee02ae11ee7dbc8b95405de64b4a40c9"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "6c192244d3ae62bd1fe7d6d75f3ee363af0b8e285d9db00e34c82bd158ec384c"
+        "sha256": "d2a2f42205e715f9135f299434bcd5cc343e6647de480045e35cc15712aa11be"
       },
       {
         "path": "src/smart/language/rule.js",
-        "sha256": "50f693d112621440ca8cc7992f2a3ecbba8efe5ac57347a1ed6f5fb1c650a360"
+        "sha256": "0eacb6755dc8360b9f48e3efdad0d335c8c2cac76ccecf944b449aee4dd0de90"
       },
       {
         "path": "src/smart/language/docs.md",
