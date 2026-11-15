@@ -122,6 +122,16 @@ the scrim, Escape, a swipe down) keeps the value the field had. The keys are
 the grid's: the arrows move a day or a week across the months' borders,
 PageUp and PageDown a month, with Shift a year.
 
+A field with `presets` shows its quick ranges in the sheet too (owner
+decision C189 (9)): the popup's list and «Свой период» on one row between the
+head and the weekdays, scrolled sideways when it is wider than the sheet. A
+range is the value at once and fires one `change`, as in the popup, and the
+sheet closes with it (with `close-on-select="false"` it stays, the ribbon on
+the range). A day tapped on the ribbon lets the range go; «Свой период»
+clears the draft and gives the ribbon the focus, and the value changes by
+«Готово». The row is one tab stop, moved along with the arrow keys, Home and
+End, as in the popup.
+
 The sheet is a lazy relation (`cl-drawer`): it is loaded when a phone first
 opens a period. A page without `sf-drawer` gets the popup, as on a wide
 screen. A single date keeps the popup on every screen.

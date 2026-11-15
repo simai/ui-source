@@ -477,7 +477,8 @@ const DatepickerElement = elementFromManifest(manifest, {
             if (this.disabled) return 'disabled';
             if (this.valueLocked) return 'readonly';
             if (!this.range) return 'not-a-range';
-            this._chooseCustomRange();
+            if (this._sheetOpen) this.pickRibbonCustomRange();
+            else this._chooseCustomRange();
             return 'applied';
         },
     },
@@ -1648,6 +1649,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
             anchor: `${anchor.getFullYear()}-${padDatePart(anchor.getMonth() + 1)}`,
             from: this.clampRibbonMonth(first),
             count: 0,
+            preset: this.activePreset?.id || '',
         };
         this._ribbon.count = this.ribbonMonthsUntil(new Date(anchor.getFullYear(), anchor.getMonth() + RIBBON_AFTER, 1));
         const sheet = this.ribbonSheet();
@@ -1792,6 +1794,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         }
         const month = scroller.querySelector(`[data-month="${this._ribbon.anchor}"]`);
         if (month) scroller.scrollTo({top: month.offsetTop, behavior: 'instant'});
+        this.showRibbonPressedPreset();
         this.focusRibbonDay();
         // The window grows only from here: before, the ribbon stood at its top
         // and would have asked for months it does not show.
@@ -1897,6 +1900,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         } else {
             ribbon.end = value;
         }
+        ribbon.preset = '';
         ribbon.focus = value;
         this.renderRibbon();
     }
@@ -1918,6 +1922,64 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         this.set({activeDate: ribbon.end});
         this.emitChange();
         this._sheet?.close?.({reason: 'close'});
+    }
+
+    // A quick range in the sheet (owner decision C189 (9)): the value at once,
+    // said once, as the popup's list does (_choosePreset); the sheet closes
+    // with it unless close-on-select is off, and then the draft is the range,
+    // its start month at the ribbon's top.
+    pickRibbonPreset(item) {
+        if (!this._ribbon) return;
+        this._choosePreset(item);
+    }
+
+    // «Свой период» in the sheet: the quick range lets go of the draft and the
+    // ribbon takes the focus for two taps. The value stays as it is until
+    // «Готово», the sheet's rule (C62); the popup clears it because its grid
+    // takes every tap as the value.
+    pickRibbonCustomRange() {
+        const ribbon = this._ribbon;
+        if (!ribbon || this.disabled || this.valueLocked) return;
+        if (ribbon.preset) {
+            ribbon.start = '';
+            ribbon.end = '';
+            ribbon.preset = '';
+        }
+        this.renderRibbon();
+        this.focusRibbonDay();
+    }
+
+    // The draft follows a quick range chosen while the sheet stays open: its
+    // dates, the range pressed, the ribbon on its start month.
+    showRibbonPreset(item) {
+        const ribbon = this._ribbon;
+        if (!ribbon || !item) return;
+        const start = item.from;
+        ribbon.start = formatIsoDate(start);
+        ribbon.end = formatIsoDate(item.to);
+        ribbon.preset = item.id;
+        ribbon.focus = ribbon.start;
+        const month = new Date(start.getFullYear(), start.getMonth(), 1);
+        const last = new Date(ribbon.from.getFullYear(), ribbon.from.getMonth() + ribbon.count - 1, 1);
+        if (month < ribbon.from || month > last) {
+            ribbon.from = this.clampRibbonMonth(new Date(month.getFullYear(), month.getMonth() - RIBBON_BEFORE, 1));
+            ribbon.count = this.ribbonMonthsUntil(new Date(month.getFullYear(), month.getMonth() + RIBBON_AFTER, 1));
+        }
+        this.renderRibbon();
+        const scroller = this.ribbonScroller;
+        const target = scroller?.querySelector(`[data-month="${month.getFullYear()}-${padDatePart(month.getMonth() + 1)}"]`);
+        if (scroller && target) scroller.scrollTo({top: target.offsetTop, behavior: 'instant'});
+    }
+
+    // The pressed quick range in view in its row, without moving the page.
+    showRibbonPressedPreset() {
+        const row = this._sheetBody?.querySelector('.sf-datepicker-sheet-presets');
+        const pressed = row?.querySelector('.sf-datepicker-preset[aria-pressed="true"]');
+        if (!row || !pressed) return;
+        const box = row.getBoundingClientRect();
+        const cell = pressed.getBoundingClientRect();
+        if (cell.left < box.left) row.scrollBy({left: cell.left - box.left, behavior: 'instant'});
+        else if (cell.right > box.right) row.scrollBy({left: cell.right - box.right, behavior: 'instant'});
     }
 
     // The ribbon's keys are the grid's (APG date picker): the arrows a day and
@@ -2018,6 +2080,11 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
             title: ribbon.title,
             complete: Boolean(start && end),
             periodSummary: this.ribbonSummary(start, end),
+            // The quick ranges (C189 (9)): pressed is the draft's, so a day
+            // tapped on the ribbon lets the range go, as on the popup's grid.
+            presetItems: this.presetItems.map((item) => ({...item, pressed: Boolean(ribbon.preset) && item.id === ribbon.preset})),
+            customPressed: !ribbon.preset && Boolean(ribbon.start),
+            disabled: this.disabled,
         };
     }
 
@@ -2429,6 +2496,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         this.set({activeDate: to});
         this.emitChange();
         if (this.closeOnSelect) this._closePanel({restoreFocus: true});
+        else if (this._sheetOpen) this.showRibbonPreset(item);
         return this;
     }
 

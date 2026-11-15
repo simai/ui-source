@@ -41,14 +41,42 @@ function renderRibbonMonth(month, context) {
         </section>`;
 }
 
+// The quick ranges in the sheet (owner decision C189 (9), 2026-11-15: the
+// quick periods on a phone too): the popup's list and its buttons -- the same
+// ranges, names, one tab stop and keys (templates/default.js renderPresets) --
+// as one row between the sheet's head and the weekdays, scrolled sideways when
+// it is wider than the sheet, as the popup draws it where it has no room
+// beside the grid. A range is the value at once, as in the popup; «Свой
+// период» lets the draft go and gives the ribbon the focus.
+function renderRibbonPresets(context) {
+    const items = context.presetItems;
+    if (!items.length) return nothing;
+    const focusable = context.disabled ? null
+        : items.find((item) => item.pressed && !item.disabled) ?? items.find((item) => !item.disabled);
+    return html`
+        <div class="sf-datepicker-presets sf-datepicker-sheet-presets flex gap-1/4" role="group" aria-label=${context.labels.presets}
+            @keydown=${(event) => context.component.handlePresetKeydown(event)}>
+            ${items.map((item) => html`
+                <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', item.pressed ? 'active' : '')}
+                    type="button" ?disabled=${item.disabled || context.disabled} aria-pressed=${item.pressed ? 'true' : 'false'}
+                    tabindex=${item === focusable ? '0' : '-1'} data-preset=${item.id}
+                    @click=${() => context.component.pickRibbonPreset(item)}>${item.label}</button>`)}
+            <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', context.customPressed ? 'active' : '')}
+                type="button" ?disabled=${context.disabled} aria-pressed=${context.customPressed ? 'true' : 'false'}
+                tabindex=${focusable || context.disabled ? '-1' : '0'} data-preset=""
+                @click=${() => context.component.pickRibbonCustomRange()}>${context.labels.customRange}</button>
+        </div>`;
+}
+
 // The period on a phone (owner decision C62, ui-control prototypes/
 // datepicker.html#lenta): a ribbon of months in a bottom sheet. The weekday
 // row is pinned above the ribbon, the months stand one under another and
 // scroll with a finger, and the period chosen and «Готово» are pinned under
-// it. The sheet is the Framework's (sf-drawer placement="bottom"); this is
-// its content. Its head is the ribbon's own, as in #lenta: the title,
-// «К сегодня» (today's month to the top) and the close button, which keeps
-// the value the field had, as any close but «Готово» does.
+// it, and the quick ranges, when the field has them, stand between the head
+// and the weekdays (C189 (9)). The sheet is the Framework's (sf-drawer
+// placement="bottom"); this is its content. Its head is the ribbon's own, as
+// in #lenta: the title, «К сегодня» (today's month to the top) and the close
+// button, which keeps the value the field had, as any close but «Готово» does.
 export function renderDatepickerRibbon(context) {
     // The period line under the ribbon (index.js ribbonSummary).
     const summary = context.periodSummary;
@@ -62,6 +90,7 @@ export function renderDatepickerRibbon(context) {
                 icon="close" aria-label=${context.labels.close}
                 @click=${() => context.component.closeRibbon()}></sf-button-icon>
         </div>
+        ${renderRibbonPresets(context)}
         <div class="sf-datepicker-sheet-weekdays" aria-hidden="true">
             ${context.weekdays.map((weekday, at) => html`<span class=${joinClasses('sf-datepicker-weekday', context.weekdaysOff[at] && 'sf-datepicker-weekday-off')}>${weekday}</span>`)}
         </div>
