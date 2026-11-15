@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.13.0",
+  "version": "1.16.0",
   "title": "Drawer",
   "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
   "kind": "smart",
@@ -123,7 +123,7 @@
       "close-placement": {
         "type": "string",
         "default": "inside",
-        "description": "Where the close button stands: inside the panel's head, or outside, on the scrim beside the panel's edge, where it takes the look of a control over a picture (sf-button-close appearance=\"media\": a dark round plate, a white cross, a white focus ring; study VP-16).",
+        "description": "Where the close button stands: inside the panel's head, or outside, on the scrim beside the panel's edge, where it takes the look of a control over a picture (sf-button-close appearance=\"media\": a dark round plate, a white cross, a white focus ring; study VP-16). Outside only while there is room beside the panel: a panel that fills the screen, or leaves less room than its edge controls take, draws them in its head's row as ordinary icon buttons, the close last (C14).",
         "enum": [
           "inside",
           "outside"
@@ -146,7 +146,7 @@
       "width": {
         "type": "string",
         "default": "",
-        "description": "The panel's width, a CSS length (sets --sf-drawer-width); empty: the size step's width."
+        "description": "The panel's width, a CSS length (sets --sf-drawer-width); empty: the size step's width. A width off the ladder (20 · 24 · 30rem, the whole screen; owner decision C157 (2)) is still drawn until 2027-01-01 and said once per element in the console and in SF.deprecations.list(); take a size step, and an sf-resizer within 1/2...2 for a width of its own."
       },
       "stack-offset": {
         "type": "string",
@@ -899,6 +899,15 @@
           "The close stands on the axis of the switch that opened the panel (owner decision C104 (4)); nothing to change in a page.",
           "A panel that covers the switch that opened it always offers a close (controlled, show-close=\"false\" without a close of the page's own)."
         ]
+      },
+      {
+        "from": "1.13.0",
+        "to": "1.16.0",
+        "changes": [
+          "Edge controls stand outside only while there is room beside the panel; otherwise they join the head's row, the close last (C14); nothing to change in a page.",
+          "A width off the ladder warns once per element (console and SF.deprecations.list()) and is still drawn until 2027-01-01: take size=\"1/2|1|2|full\", and an sf-resizer within 1/2...2 for a width of its own (C157 (2)).",
+          "Headings inside the panel's content draw below the panel's title: h1 at the h5 step, h2 to h4 at the h6 step (C157 (7)); a page that styled its own heading sizes keeps them."
+        ]
       }
     ]
   },
@@ -908,11 +917,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "f9591e529e7b4aee86cac260ea9bafef383745aea00059b20e0c621d6614ad4f"
+        "sha256": "ea3632f62dd6dda293c601c4ee4c17149ce3a9fc4b55ea16b9e459c07cb04b22"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "c431cb6eecbf50bc7b43db65041b56eaa22ac61f2400ddb28ebc6d9d334666eb"
+        "sha256": "24630ad1e47bbd8f028b236bc39eec16631fd369501718ea9764c58302dda855"
       },
       {
         "path": "src/smart/drawer/rule.js",
@@ -920,7 +929,7 @@
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "fed0eb033f7acaf1f63e5c1132cf386d369fd28830f00b345adf638fa9636123"
+        "sha256": "baf13ced326f2b3909720a60244e0b81b8928863dd02beb41f62dd77ad30693d"
       }
     ],
     "generated_runtime": [
