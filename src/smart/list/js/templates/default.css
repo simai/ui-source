@@ -175,8 +175,11 @@
   .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > sf-badge > * { grid-row: 2; }
 
   /* The time is the column's first line, the title's (C148 (2)), across the
-     column's width and at its end, above the badge and the count. */
-  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+     column's width and at its end, above the badge and the count. sf-time's
+     host may be display: contents: its time element is then the column's
+     item. */
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time,
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time > * {
     grid-row: 1;
     grid-column: 1 / -1;
     justify-self: end;
