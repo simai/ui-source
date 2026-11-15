@@ -101,7 +101,10 @@ async function open(context, lang = 'ru') {
 
 const reveal = (tab) => tab.evaluate(() => {
   const h = (id) => document.getElementById(id);
-  const state = (id) => ({type: h(id).querySelector('input').type, pressed: h(id).querySelector('.sf-input-reveal').getAttribute('aria-pressed')});
+  // The reveal is named by its next action and carries no aria-pressed (C12 (3), RG-S2-15):
+  // «shown» reads from the name «Скрыть пароль» / «Hide password»; an aria-pressed fails it.
+  const shownBy = (button) => (button.hasAttribute('aria-pressed') ? 'aria-pressed present' : String(/Скрыть|Hide/u.test(button.getAttribute('aria-label') ?? '')));
+  const state = (id) => ({type: h(id).querySelector('input').type, pressed: shownBy(h(id).querySelector('.sf-input-reveal'))});
   return Object.fromEntries(['pw', 'pw2', 'joined', 'stays'].map((id) => [id, state(id)]));
 });
 

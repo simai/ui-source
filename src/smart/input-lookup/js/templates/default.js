@@ -70,7 +70,7 @@ function chip(context, item, index) {
     ></sf-tag>`;
 }
 
-// The chips that do not fit one row (chips="row", PROVISIONAL name; C58: one
+// The chips that do not fit one row (chips="row", final name, C174 (5); C58: one
 // row and a «+N» to press in filters, tables and cards). A press, or the focus
 // coming into the field, opens the field to every chip; leaving it closes it.
 function moreChips(context) {

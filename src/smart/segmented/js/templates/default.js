@@ -8,6 +8,12 @@ function segmentFor(index, total) {
   return 'middle';
 }
 
+// The buttons look hands its scheme to sf-button, whose current names are
+// primary and on-surface (C116): secondary is sf-button's former name there and
+// draws as on-surface with a console warning, so it is told on-surface. The
+// track keeps secondary, a segment colour in core.
+const BUTTON_SCHEME = {secondary: 'on-surface'};
+
 function renderItem(item, index, context) {
   const selected = item.value === context.value;
   const disabled = context.disabled || item.disabled;
@@ -20,7 +26,7 @@ function renderItem(item, index, context) {
       height=${context.height && context.height !== 'default' ? context.height : nothing}
       root-class=${context.spacing && context.spacing !== 'normal' ? `spacing-${context.spacing}` : nothing}
       appearance=${selected ? 'default' : 'outline'}
-      scheme=${selected ? context.scheme : 'on-surface'}
+      scheme=${selected ? BUTTON_SCHEME[context.scheme] ?? context.scheme : 'on-surface'}
       segment=${segmentFor(index, context.entries.length)}
       data-sf-button-group-value=${item.value}
       aria-label=${item.ariaLabel || nothing}
