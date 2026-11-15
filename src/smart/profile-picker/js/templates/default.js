@@ -6,9 +6,10 @@ const fill = (text, values) => Object.entries(values).reduce((out, [key, value])
 // A row's icon buttons are one step below the picker's size, so they sit in
 // its row (sf-button-icon, PP-5; they were own buttons with raw glyphs).
 const BUTTON_SIZE = {'1': '1/2', '1/2': '1/3'};
-const iconButton = (context, {icon: name, label, title, danger = false, onClick}) => html`<sf-button-icon class="sf-profile-picker-icon-button"
-  icon=${name} size=${BUTTON_SIZE[context.size] ?? '1/2'} appearance="ghost" scheme="on-surface" status=${danger ? 'danger' : nothing}
-  aria-label=${label} title=${title ?? nothing} @click=${onClick}></sf-button-icon>`;
+const iconButton = (context, {icon: name, label, title, className = '', popup = false, onClick}) => html`<sf-button-icon
+  class=${['sf-profile-picker-icon-button', className].filter(Boolean).join(' ')}
+  icon=${name} size=${BUTTON_SIZE[context.size] ?? '1/2'} appearance="ghost" scheme="on-surface"
+  aria-label=${label} aria-haspopup=${popup ? 'menu' : nothing} title=${title ?? nothing} @click=${onClick}></sf-button-icon>`;
 
 function renderRow(context, profile) {
   const {component, state, text} = context;
@@ -40,6 +41,9 @@ function renderRow(context, profile) {
 
   // The profile in use is the row's fill alone (owner decisions C08, C106
   // (3): a single choice is the fill, no check); aria-checked says it.
+  // A profile the person may change has one «⋯» at its end (owner decision
+  // C163 (3)): its menu holds «Переименовать» (F2) and «Удалить…» (Delete);
+  // the pencil and the red bin stood on every row.
   return html`<div class="sf-profile-picker-row" role="menuitemradio" tabindex="-1" data-id=${id}
                    aria-checked=${String(current)} @click=${(event) => { if (!event.target.closest('button, .sf-profile-picker-icon-button')) component.choose(id); }}>
     ${icon(kindIcon(profile), 'sf-profile-picker-kind')}
@@ -49,10 +53,9 @@ function renderRow(context, profile) {
     </span>
     ${may
       ? html`<span class="sf-profile-picker-actions">
-          ${iconButton(context, {icon: 'edit', label: `${text('rename')}: ${profile.label ?? id}`, title: `${text('rename')} (F2)`,
-            onClick: () => component.setMode('rename', id)})}
-          ${iconButton(context, {icon: 'delete', label: `${text('remove')}: ${profile.label ?? id}`, title: `${text('remove')} (Delete)`, danger: true,
-            onClick: () => component.setMode('delete-confirm', id)})}
+          ${iconButton(context, {icon: 'more_horiz', className: 'sf-profile-picker-more', popup: true,
+            label: `${text('actions')}: ${profile.label ?? id}`, title: text('actions'),
+            onClick: (event) => component.openActions(id, event.currentTarget)})}
         </span>`
       : profile.editable === false ? html`<span class="sf-profile-picker-lock" title=${text('locked')}>${icon('lock')}</span>` : nothing}
   </div>`;
@@ -94,36 +97,65 @@ function renderCreate(context) {
   </div>`;
 }
 
+// What the open panel holds: a row per profile, the new-profile row or its
+// form, the host's refusal and the reset. The same content stands in the
+// dropping panel and in the bottom sheet on a phone.
+function renderContent(context) {
+  const {component, text} = context;
+  const current = context.currentProfile;
+  return html`
+    ${context.profiles.map((profile) => renderRow(context, profile))}
+    <div class="sf-profile-picker-separator" role="separator"></div>
+    ${renderCreate(context)}
+    ${context.message ? html`<p class="sf-profile-picker-message" role="alert">${context.message}</p>` : nothing}
+    ${context.resettable && component.mayChange({...current, builtin: false})
+      ? html`<div class="sf-profile-picker-footer">
+          <sf-button size=${context.size} appearance="outline" scheme="on-surface" icon-start="restart_alt"
+                     text=${text('reset')} @click=${() => component.reset()}></sf-button>
+        </div>`
+      : nothing}
+  `;
+}
+
+const rootClasses = (context, extra = '') => ['sf-profile-picker', `sf-profile-picker--size-${context.size === '1' ? '1' : '1-2'}`, extra, context.rootClass]
+  .filter(Boolean).join(' ');
+
+// The bottom sheet's body on a phone (owner decisions C163 (4), C157 (5)): the
+// Framework's sheet, sf-drawer placement=bottom, draws the head -- the
+// picker's name and its close button -- and this is what stands under it,
+// the rows (60 under a finger, C49) and the new-profile form in the same sheet.
+export function renderProfilePickerSheet(context) {
+  const {component} = context;
+  return html`<div class="${rootClasses(context, 'sf-profile-picker--sheet')}">
+    <div class="sf-profile-picker-panel sf-profile-picker-panel--in-sheet" role="menu" aria-label=${context.heading}
+         @keydown=${(event) => component.handleKeyDown(event)}>
+      ${context.state.open ? renderContent(context) : nothing}
+    </div>
+  </div>`;
+}
+
 export function renderProfilePickerTemplate(context) {
   const {component, state, text} = context;
   const current = context.currentProfile;
+  // The trigger is the standard button (owner decision C163 (2)): sf-button
+  // ghost on-surface with the kind's glyph and a chevron, as tall as the
+  // toolbar buttons beside it; it was a field-like button of its own.
   return html`
-    <div class=${['sf-profile-picker', `sf-profile-picker--size-${context.size === '1' ? '1' : '1-2'}`, context.rootClass].filter(Boolean).join(' ')}>
-      <button type="button" class="sf-profile-picker-trigger" aria-haspopup="menu" aria-expanded=${String(state.open)}
-              ?disabled=${context.disabled} @click=${() => component.toggle()}>
-        ${icon(kindIcon(current), 'sf-profile-picker-kind')}
-        <span class="sf-profile-picker-name">${context.heading}: <b>${current?.label ?? ''}</b></span>
-        ${icon('expand_more', 'sf-profile-picker-chevron')}
-      </button>
-      <div class=${`sf-profile-picker-panel${state.sheet ? ' sf-profile-picker-panel--sheet' : ''}`} role="menu" aria-label=${context.heading} ?hidden=${!state.open}
+    <div class=${rootClasses(context)}>
+      <sf-button class="sf-profile-picker-trigger" size=${context.size} appearance="ghost" scheme="on-surface"
+                 icon-start=${kindIcon(current)} icon-end="expand_more"
+                 text=${`${context.heading}: ${current?.label ?? ''}`}
+                 aria-haspopup="menu" expanded=${state.open ? '' : 'false'} ?disabled=${context.disabled}
+                 @click=${() => component.toggle()}></sf-button>
+      <div class=${`sf-profile-picker-panel${state.sheet ? ' sf-profile-picker-panel--sheet' : ''}`} role="menu" aria-label=${context.heading}
+           ?hidden=${!state.open || state.drawer}
            @keydown=${(event) => component.handleKeyDown(event)}>
-        ${state.open && state.sheet ? html`<div class="sf-profile-picker-sheet-head" role="presentation">
+        ${state.open && state.sheet && !state.drawer ? html`<div class="sf-profile-picker-sheet-head" role="presentation">
           <span class="sf-profile-picker-sheet-title">${context.heading}</span>
           <sf-button-icon class="sf-profile-picker-sheet-close" icon="close" appearance="ghost" scheme="on-surface"
                           aria-label=${text('close')} @click=${() => component.close()}></sf-button-icon>
         </div>` : nothing}
-        ${state.open ? html`
-          ${context.profiles.map((profile) => renderRow(context, profile))}
-          <div class="sf-profile-picker-separator" role="separator"></div>
-          ${renderCreate(context)}
-          ${context.message ? html`<p class="sf-profile-picker-message" role="alert">${context.message}</p>` : nothing}
-          ${context.resettable && component.mayChange({...current, builtin: false})
-            ? html`<div class="sf-profile-picker-footer">
-                <sf-button size=${context.size} appearance="outline" scheme="on-surface" icon-start="restart_alt"
-                           text=${text('reset')} @click=${() => component.reset()}></sf-button>
-              </div>`
-            : nothing}
-        ` : nothing}
+        ${state.open && !state.drawer ? renderContent(context) : nothing}
       </div>
     </div>
   `;

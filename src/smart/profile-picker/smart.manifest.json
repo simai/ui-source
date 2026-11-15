@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.7.0",
-  "title": "Profile picker",
-  "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
+  "version": "1.7.1",
+  "title": "Settings profiles",
+  "summary": "Settings profiles: one way to choose, make, rename, remove and reset a named set of settings -- an admin menu's rows, a record's view, a table's columns -- never an account or an organisation. The standard button names the profile in use, and a panel (a bottom sheet on a phone) is where every act happens. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -26,7 +26,9 @@
     "uses": [
       "smart.button",
       "smart.button-icon",
+      "smart.drawer",
       "smart.icon",
+      "smart.menu-context",
       "smart.segmented"
     ],
     "public_parts": []
@@ -398,7 +400,7 @@
       "Delete",
       "Escape"
     ],
-    "focus": "The trigger is a button with aria-haspopup=menu; the panel's rows are menuitemradio, the current one checked. Arrows, Home and End move between rows, Enter chooses, F2 renames, Delete asks to remove, Escape closes the form and then the panel, returning focus to the trigger."
+    "focus": "The trigger is sf-button with aria-haspopup=menu and aria-expanded; the panel's rows are menuitemradio, the current one checked. Arrows, Home and End move between rows, Enter chooses, F2 renames, Delete asks to remove, Shift+F10 or the context-menu key opens the row's «⋯» menu, Escape closes the form and then the panel, returning focus to the trigger."
   },
   "presentation": {
     "themes": [
@@ -466,33 +468,34 @@
     "source_artifacts": [
       {
         "path": "src/smart/profile-picker/index.js",
-        "sha256": "51b7faa218b8980b32629429ccf49126e76f9200e3c948c52eae3314e0754853"
+        "sha256": "a6cd78ac55fa86a55e82b6ef39d2b27365ad8ac16feae61e02133baa67ae6e97"
       },
       {
         "path": "src/smart/profile-picker/js/templates/default.js",
-        "sha256": "34dd95cae3cb895ee8bd355e0bc0fc436f7704a633761f00d65ca039b13fb57e"
+        "sha256": "b1a669155a5a7403accccb91fe1c8900515b535f18b62c155dd2265f28f99656"
       },
       {
         "path": "src/smart/profile-picker/scss/_smart__profile_picker.scss",
-        "sha256": "eb2ab4d428fe9aa1f53753cc907b4882785338b21642e3977c2fb5adef532a76"
+        "sha256": "4016cd5f124af9754dd6d3693a279e3e891690e1edc4fb4e63d5a1a5d32b4a3e"
       },
       {
         "path": "src/smart/profile-picker/rule.js",
-        "sha256": "a7ec7aea3ab6473b7e696860a668059bf646d8203a7c4046a69a6617468f0a3c"
+        "sha256": "c8b201548af6bc405f9427f1999e16c2a8e582d5cbae598c65962d309904405f"
       },
       {
         "path": "src/smart/profile-picker/docs.md",
-        "sha256": "0e29678dfc9fb43ef2d17c7692aa62c9e8855c3dfb80a89016f68e935fed69f1"
+        "sha256": "281c388b395c48170cccdb3df211c618c16486a1f8cc0a43025a07f6031d25ec"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-profile-picker wherever a person chooses between profiles or views of something and may make, rename or remove them: the admin menu's profiles, a record's views.",
+    "use_when": "Use sf-profile-picker wherever a person chooses between settings profiles -- named sets of menu rows, record views or table columns, personal or shared -- and may make, rename or remove them. Switching the signed-in account, the organisation or the site is not a profile: it is a plain sf-menu-context (the person menu, organisations as square avatars; owner decision C163 (5)).",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not let the component change its own list; answer its events by setting profiles and current",
-      "Do not build a second profile switcher"
+      "Do not build a second profile switcher",
+      "Do not use it to switch accounts, organisations or sites"
     ],
     "required_reads": [
       "inputs",

@@ -2384,7 +2384,9 @@
         "uses": [
           "smart.button",
           "smart.button-icon",
+          "smart.drawer",
           "smart.icon",
+          "smart.menu-context",
           "smart.segmented"
         ]
       },
@@ -2397,19 +2399,19 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/profile-picker/smart.manifest.json",
-      "manifest_sha256": "99be5edec2d3e48511e71f04baf0d275ad9c56293d76097d32b818f764861cf8",
+      "manifest_sha256": "9dd1b3658a4a6cbac358af5afcb3dbe23a13dd746df8b8bcfac1c1fdb51f76d9",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
+      "summary": "Settings profiles: one way to choose, make, rename, remove and reset a named set of settings -- an admin menu's rows, a record's view, a table's columns -- never an account or an organisation. The standard button names the profile in use, and a panel (a bottom sheet on a phone) is where every act happens. The profiles and the rights are the host's; the component says what was asked.",
       "tags": [
         "profiles",
         "views",
         "picker"
       ],
-      "title": "Profile picker"
+      "title": "Settings profiles"
     },
     {
       "backend_adapters": [],

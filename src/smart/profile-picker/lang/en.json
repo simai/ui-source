@@ -1,6 +1,7 @@
 {
-  "title": "Profile picker",
+  "title": "Settings profiles",
   "runtime": {
+    "actions": "Actions",
     "builtin": "standard",
     "cancel": "Cancel",
     "close": "Close",
@@ -15,6 +16,7 @@
     "personal": "Personal",
     "personal-taken": "You already have a personal profile",
     "remove": "Delete",
+    "remove-ask": "Delete…",
     "remove-question": "Delete «{name}»?",
     "remove-shared": "It goes for everyone on the site.",
     "rename": "Rename",
