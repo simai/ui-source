@@ -124,6 +124,49 @@ sf-profile-picker {
   display: none;
 }
 
+/* A phone (owner decisions C32, C106 (8); PP-4): a sheet at the bottom of the
+   screen, the screen's width up to 44rem, over the scrim, clear of the home
+   indicator, with the picker's name and a close button at its top (the
+   study's proposal, profile-picker-study.html #q-phone). It was a popover by
+   the trigger, holding the new-profile form. */
+.sf-profile-picker-panel.sf-profile-picker-panel--sheet {
+  inset: auto 0 0;
+  inline-size: 100%;
+  max-inline-size: var(--sf-h1);
+  max-block-size: calc(100dvh - var(--sf-space-4));
+  margin-inline: auto;
+  /* No inline border on a sheet, so the whole inset is the padding: a row's
+     icon stays 12 from the screen's edge (C105 H4). */
+  padding-inline: var(--sf-profile-picker--inset);
+  padding-block-end: max(var(--sf-space-1\/2), env(safe-area-inset-bottom, var(--sf-a0)));
+  border-block-end-width: 0;
+  border-inline-width: 0;
+  border-end-end-radius: 0;
+  border-end-start-radius: 0;
+  box-shadow: var(--sf-shadow-modal);
+}
+
+.sf-profile-picker-panel.sf-profile-picker-panel--sheet::backdrop {
+  background-color: var(--sf-scrim-color);
+}
+
+.sf-profile-picker-sheet-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-space-1\/2);
+  padding-inline-start: var(--sf-space-1\/2);
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-profile-picker-sheet-title {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .sf-profile-picker-row {
   display: flex;
   align-items: center;
@@ -136,13 +179,16 @@ sf-profile-picker {
   outline: none;
 }
 
-/* A profile with a caption under its name keeps a one-line row's space above
-   and below its text, (row step - line) / 2, and is taller by the caption's
-   line: 48 at 1440, 60 under a coarse pointer at 390 (owner decision C49,
-   2026-11-10; docs/foundation-composition-geometry.md §4). It was the row's
-   2px, 40 [2/2]. */
+/* A profile with a caption under its name is a menu's row with a caption
+   (owner decision C49; one height for every «name + caption» row, as
+   sf-input-lookup's, dispatcher ruling LS-14): the menu's row step (a control
+   of 1/2) and the caption's line -- 48 on a desktop, 44 compact, 60 under a
+   coarse pointer (below) -- at every size of the picker, its text centred in
+   it and at least --sf-a2 from its edges. Size 1 drew 56 (a size 1 row's
+   (40 - 24) / 2 above and below its two lines; PP-3). */
 .sf-profile-picker-row:where(:has(.sf-profile-picker-caption)) {
-  padding-block: calc((var(--sf-profile-picker--row-step, var(--sf-profile-picker--row-height)) - var(--sf-profile-picker--line)) / 2);
+  min-block-size: calc(var(--sf-profile-picker--caption-step, var(--sf-ui-1\/2--control-height)) + var(--sf-text-height-1\/3));
+  padding-block: var(--sf-a2);
 }
 
 .sf-profile-picker-row:hover {
@@ -151,7 +197,9 @@ sf-profile-picker {
 
 /* The chosen profile: the soft fill of the chosen, as a chosen row of a
    context menu (C16: selected is primary-container everywhere; it was
-   secondary-container through 1.3.1); the check mark is the second sign. */
+   secondary-container through 1.3.1). The fill alone (owner decisions C08,
+   C106 (3): a single choice has no check; the check and its column went in
+   1.5.0, PP-1). */
 .sf-profile-picker-row[aria-checked="true"] {
   background-color: var(--sf-primary-container);
   color: var(--sf-on-primary-container);
@@ -159,13 +207,6 @@ sf-profile-picker {
 
 .sf-profile-picker-row[aria-checked="true"]:hover {
   background-color: var(--sf-primary-container-hover);
-}
-
-.sf-profile-picker-check {
-  display: inline-flex;
-  flex: none;
-  inline-size: var(--sf-profile-picker--line);
-  --sf-icon--color: var(--sf-primary);
 }
 
 .sf-profile-picker-text {
@@ -209,27 +250,6 @@ sf-profile-picker {
   opacity: 1;
 }
 
-.sf-profile-picker-icon-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--sf-a2);
-  border: 0;
-  border-radius: var(--sf-radius--ui);
-  background: none;
-  color: inherit;
-  cursor: pointer;
-  --sf-icon--color: var(--sf-on-surface-variant);
-}
-
-.sf-profile-picker-icon-button:hover {
-  background-color: var(--sf-surface-container-hover);
-}
-
-.sf-profile-picker-danger {
-  --sf-icon--color: var(--sf-error);
-}
-
 .sf-profile-picker-lock {
   display: inline-flex;
   padding-inline: var(--sf-a4);
@@ -271,7 +291,8 @@ sf-profile-picker {
 .sf-profile-picker-edit {
   display: flex;
   align-items: center;
-  gap: var(--sf-a2);
+  /* The field, then Save · Cancel: a button group's gap (C105 H5, C144). */
+  gap: var(--sf-space-1\/3);
   padding: var(--sf-a2) var(--sf-a4);
 }
 
@@ -286,42 +307,6 @@ sf-profile-picker {
   background-color: transparent;
   color: var(--sf-on-surface);
   font: inherit;
-}
-
-.sf-profile-picker-segmented {
-  display: flex;
-  border: var(--sf-px) solid var(--sf-outline-variant);
-  border-radius: var(--sf-radius--ui);
-  overflow: hidden;
-}
-
-.sf-profile-picker-segmented > button {
-  display: inline-flex;
-  flex: 1 1 0;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sf-a6);
-  min-block-size: calc(var(--sf-profile-picker--line) + 2 * var(--sf-a4));
-  border: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-.sf-profile-picker-segmented > button + button {
-  border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
-}
-
-/* The pressed segment: a pressed toggle's soft primary fill (C12, C16). */
-.sf-profile-picker-segmented > button[aria-pressed="true"] {
-  background-color: var(--sf-primary-container);
-  color: var(--sf-on-primary-container);
-}
-
-.sf-profile-picker-segmented > button:disabled {
-  color: var(--sf-on-surface-disabled);
-  cursor: default;
 }
 
 .sf-profile-picker-buttons {
@@ -353,7 +338,13 @@ sf-profile-picker {
   @layer sf.states {
     .sf-profile-picker-row {
       --sf-profile-picker--row-step: max(var(--sf-profile-picker--row-height), var(--sf-d1));
+      --sf-profile-picker--caption-step: max(var(--sf-ui-1\/2--control-height), var(--sf-d1));
       min-block-size: var(--sf-profile-picker--row-step);
+    }
+
+    /* A row with a caption: the touch step and the caption's line, 60 (C49). */
+    .sf-profile-picker-row:has(.sf-profile-picker-caption) {
+      min-block-size: calc(var(--sf-profile-picker--caption-step) + var(--sf-text-height-1\/3));
     }
   }
 }
@@ -361,9 +352,7 @@ sf-profile-picker {
 @layer sf.states {
   .sf-profile-picker-trigger:focus-visible,
   .sf-profile-picker-row:focus-visible,
-  .sf-profile-picker-icon-button:focus-visible,
-  .sf-profile-picker-field:focus-visible,
-  .sf-profile-picker-segmented > button:focus-visible {
+  .sf-profile-picker-field:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: calc(-1 * var(--sf-focus--width));
   }

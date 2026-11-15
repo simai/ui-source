@@ -3,8 +3,10 @@
   "runtime": {
     "builtin": "standard",
     "cancel": "Cancel",
+    "close": "Close",
     "copy-of": "A copy of «{name}».",
     "create": "Create",
+    "kind": "Who sees the profile",
     "label": "Profile",
     "locked": "You cannot change it",
     "name": "Profile name",

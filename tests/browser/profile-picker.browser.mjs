@@ -2,7 +2,8 @@
 // Usage: node this-file /absolute/path/to/output
 // sf-profile-picker (owner, 2026-10-14), measured on the built bytes: folded
 // it names the profile in use; open, it lists the profiles with the current
-// one checked, a lock on one the person may not change and no rename or
+// one filled (no check, C08 / C106 (3)), a caption row 48 high (C49), the
+// row's actions sf-button-icon 8 apart (C105 H5), a lock on one the person may not change and no rename or
 // remove on the standard one; choosing, making, renaming and removing are
 // events the host answers; a personal profile cannot be made twice; the
 // keyboard walks the rows and F2 renames.
@@ -77,11 +78,19 @@ try {
       reset: Boolean(panel.querySelector('.sf-profile-picker-footer')),
       width: Math.round(panel.getBoundingClientRect().width),
       height: Math.round(rows[2]?.getBoundingClientRect().height ?? 0),
+      check: Boolean(panel.querySelector('.sf-profile-picker-check')),
+      fill: getComputedStyle(rows[0]).backgroundColor,
+      triggerHeight: Math.round(document.querySelector('#p .sf-profile-picker-trigger').getBoundingClientRect().height),
+      actions: (() => {
+        const buttons = [...rows[2].querySelectorAll('.sf-profile-picker-actions sf-button-icon button')].map((b) => b.getBoundingClientRect());
+        return {count: buttons.length, gap: buttons.length === 2 ? Math.round(buttons[1].left - buttons[0].right) : null};
+      })(),
     };
   });
   const expected = 'regular:true:false:false,editors:false:false:true,mine:false:true:false';
   const seen = open.rows.map((row) => `${row.id}:${row.checked}:${row.actions}:${row.lock}`).join(',');
-  if (!open.top || seen !== expected || !open.add || !open.reset || open.width < 260 || open.height < 32) {
+  if (!open.top || seen !== expected || !open.add || !open.reset || open.width < 260 || open.height !== 48 || open.check
+      || open.fill === 'rgba(0, 0, 0, 0)' || open.triggerHeight !== 40 || open.actions.count !== 2 || open.actions.gap !== 8) {
     note({case: 'open', got: open, expected});
   }
 
@@ -89,8 +98,9 @@ try {
   await page.click('#p .sf-profile-picker-add');
   await page.waitForTimeout(150);
   const form = await page.evaluate(() => {
-    const buttons = [...document.querySelectorAll('#p .sf-profile-picker-segmented button')];
-    return {personalDisabled: buttons[0]?.disabled, sharedPressed: buttons[1]?.getAttribute('aria-pressed'), focused: document.activeElement?.classList.contains('sf-profile-picker-field')};
+    const kinds = document.querySelector('#p sf-segmented.sf-profile-picker-kinds');
+    const items = JSON.parse(kinds?.getAttribute('items') || '[]');
+    return {personalDisabled: items[0]?.disabled === true, sharedPressed: kinds?.getAttribute('value') === 'shared' ? 'true' : 'false', focused: document.activeElement?.classList.contains('sf-profile-picker-field')};
   });
   await page.keyboard.type('Продажи');
   await page.keyboard.press('Enter');
