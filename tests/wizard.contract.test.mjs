@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.3.3');
+  assert.equal(manifest.version, '1.3.4');
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'drawer', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -176,4 +176,22 @@ test('C179: footer gap, names, window sizes, the phone footer and the Framework 
   // (5), WZ-6: no browser words.
   assert.doesNotMatch(code, /: control\.validationMessage;/u);
   assert.match(source, /typeof field\?\.sfShownMessage === 'function'/u);
+});
+
+test('progress auto: the row while it fits the wizard\'s own width, else the count (C101 (4), 1.3.4)', () => {
+  // The wizard measures the row at its one-line width (data-sf-measure on the
+  // frame and on sf-steps' root) against the room the head gives it, and marks
+  // the frame; the sheet draws the count line on the mark. Measured after each
+  // drawing, after sf-steps' own, and on a change of the frame's width.
+  assert.match(code, /fitProgress\(\) \{/u);
+  assert.match(code, /root\.setAttribute\('data-sf-measure', ''\);/u);
+  assert.match(code, /const fit = need > room \+ FIT_SLACK \? 'count' : 'row';/u);
+  assert.match(code, /frame\.setAttribute\('data-sf-progress-fit', fit\)/u);
+  assert.match(code, /new ResizeObserver\(/u);
+  assert.match(code, /addEventListener\('sf-after-render', this\._onStepsDrawn\)/u);
+  // Only auto measures: an explicit row stays a row.
+  assert.match(code, /if \(!auto \|\| !frame\.classList\.contains\('sf-wizard--progress-row'\)\)/u);
+  assert.match(sheet, /\.sf-wizard\[data-sf-progress-fit="count"\]:not\(\[data-sf-measure\]\) \.sf-wizard-steps > \.sf-steps \{\s*display: none;/u);
+  assert.match(sheet, /\.sf-wizard\[data-sf-progress-fit="count"\] \.sf-wizard-compact \{\s*display: flex;/u);
+  assert.match(sheet, /\.sf-wizard\[data-sf-measure\] \.sf-wizard-steps > \.sf-steps \{\s*display: block;/u);
 });

@@ -38,8 +38,11 @@ import './scss/index.scss';
 
 export const TYPES = ['info', 'form', 'action', 'review', 'result'];
 export const STATES = ['done', 'skipped', 'running', 'error'];
-// The progress draws a row up to this many steps, the count above (owner).
+// The progress draws a row up to this many steps, the count above (owner);
+// auto also draws the count where the row does not fit (C101 (4), fitProgress).
 export const ROW_LIMIT = 7;
+// A pixel of slack: a row that fits exactly is a row (as sf-steps' checkFit).
+const FIT_SLACK = 1;
 // sf-steps' word for each state of a step.
 export const STAGES = {done: 'completed', skipped: 'skipped', running: 'running', error: 'error', '': 'default'};
 // The place kept for remember: SF.Preferences under sf-wizard/<key> (the
@@ -209,6 +212,9 @@ class SfWizard extends WizardElement {
     this._onTrigger = (event) => this.onTrigger(event);
     this._onModal = (event) => this.onModalClose(event);
     this._onPhone = () => this.requestComponentUpdate('phone');
+    this._onStepsDrawn = (event) => {
+      if (event.target?.classList?.contains('sf-wizard-steps')) this.fitProgress();
+    };
   }
 
   // ------------------------------------------------------------ the steps
@@ -337,6 +343,7 @@ class SfWizard extends WizardElement {
     this.unbindTriggers();
     this._phoneQuery?.removeEventListener?.('change', this._onPhone);
     this._phoneQuery = null;
+    this.unobserveFit();
     if (this._draftTimer) { clearTimeout(this._draftTimer); this._draftTimer = 0; this.keep(); }
   }
 
@@ -897,7 +904,8 @@ class SfWizard extends WizardElement {
       one.element.hidden = one.index !== index;
       one.element.sfWizard = this;
     });
-    // The drawn progress: auto resolves to a row up to ROW_LIMIT steps, the count above.
+    // The drawn progress: auto resolves to a row up to ROW_LIMIT steps, the
+    // count above; a row that does not fit draws the count too (fitProgress).
     const shape = this.progress === 'auto' || !this.progress ? (count > ROW_LIMIT ? 'count' : 'row') : this.progress;
     const primary = primaryOf(step, last);
     this.sfHostState('data-place', this.place);
@@ -975,6 +983,75 @@ class SfWizard extends WizardElement {
       if (frame && frame !== this._listening) this.listen(frame);
     }
     this.revealInColumn();
+    this.fitProgress();
+  }
+
+  // ------------------------------------------------------------ the row's fit
+
+  /**
+   * progress auto (owner decision C101 (4)): the row of steps while it fits
+   * the wizard's own width, else the count line «Шаг N из M» over the bar.
+   * The row is laid out at its one-line width for a moment (data-sf-measure
+   * on the frame and on sf-steps' root, in the same task, never painted) and
+   * compared with the room the head gives it; the frame is marked
+   * data-sf-progress-fit="row|count" and the sheet draws the one or the
+   * other. The row stays in the markup, out of view, so a wider wizard
+   * measures it again. Measured after each drawing of the wizard and of its
+   * sf-steps (before the first paint of the row: sf-steps' after-render), when
+   * the fonts are in, and when the wizard's own width changes (a
+   * ResizeObserver on the frame, the change applied in the next frame so the
+   * observer never sees its own change).
+   */
+  fitProgress() {
+    const frame = this.frameRoot;
+    if (!frame || !this.isConnected) return;
+    this.observeFit(frame);
+    const auto = this.progress === 'auto' || !this.progress;
+    if (!auto || !frame.classList.contains('sf-wizard--progress-row')) {
+      frame.removeAttribute('data-sf-progress-fit');
+      return;
+    }
+    const root = frame.querySelector('.sf-wizard-steps > .sf-steps');
+    const list = root?.querySelector(':scope > .sf-steps-container');
+    // sf-steps has not drawn yet: its after-render comes back here.
+    if (!root || !list) return;
+    frame.setAttribute('data-sf-measure', '');
+    root.setAttribute('data-sf-measure', '');
+    const room = root.getBoundingClientRect().width;
+    const need = list.getBoundingClientRect().width;
+    root.removeAttribute('data-sf-measure');
+    frame.removeAttribute('data-sf-measure');
+    this._fitWidth = frame.getBoundingClientRect().width;
+    // Not laid out (a closed window, display none): nothing to decide.
+    if (!room) return;
+    const fit = need > room + FIT_SLACK ? 'count' : 'row';
+    if (frame.getAttribute('data-sf-progress-fit') !== fit) frame.setAttribute('data-sf-progress-fit', fit);
+  }
+
+  observeFit(frame) {
+    if (frame === this._fitFrame) return;
+    this.unobserveFit();
+    this._fitFrame = frame;
+    frame.addEventListener('sf-after-render', this._onStepsDrawn);
+    if (typeof ResizeObserver !== 'function') return;
+    if (!this._fitObserver) {
+      this._fitObserver = new ResizeObserver(() => {
+        const seen = this._fitFrame?.getBoundingClientRect().width;
+        if (!seen || Math.abs(seen - (this._fitWidth ?? 0)) < 0.5 || this._fitQueued) return;
+        this._fitQueued = true;
+        const settle = () => { this._fitQueued = false; this.fitProgress(); };
+        if (typeof globalThis.requestAnimationFrame === 'function') globalThis.requestAnimationFrame(settle);
+        else Promise.resolve().then(settle);
+      });
+      globalThis.document?.fonts?.ready?.then?.(() => this.fitProgress());
+    }
+    this._fitObserver.observe(frame);
+  }
+
+  unobserveFit() {
+    this._fitObserver?.disconnect();
+    this._fitFrame?.removeEventListener('sf-after-render', this._onStepsDrawn);
+    this._fitFrame = null;
   }
 
   /**

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.wizard",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "title": "Wizard",
   "summary": "The universal step-by-step wizard: a frame of sf-wizard-step children with the progress on top (a row up to 7 steps, «Шаг 4 из 12» and a bar above, a column inside the frame as an option, the current step and a bar on a phone), the step's title, «why» and body, and one footer: Back, Skip, one primary action. Step types info, form, action, review, result; states not started, done, skipped, running, error; navigation linear, free or visited; places inline, modal (36rem, wide with the column), drawer (a side panel 30rem) and pages (the server's page per step, its form posting). The wizard's name is the page's or window's title (h4), the step's title one step under it (h5); on a phone a window takes the screen with the footer at its bottom. The draft is kept by the wizard itself, closing is continue later, and one value of all answers.",
   "kind": "smart",
@@ -87,7 +87,7 @@
       "progress": {
         "type": "string",
         "default": "auto",
-        "description": "How the progress is drawn: row, the steps in a row on top (sf-steps); count, «Шаг 4 из 12», a bar and the list of all steps on demand; column, a column of the steps inside the frame on the left, on a wide wizard (40rem and more of its own width, else count). auto: row up to 7 steps, count above. A narrow wizard (under 40rem) always draws the compact head: the current step and the bar.",
+        "description": "How the progress is drawn: row, the steps in a row on top (sf-steps); count, «Шаг 4 из 12», a bar and the list of all steps on demand; column, a column of the steps inside the frame on the left, on a wide wizard (40rem and more of its own width, else count). auto: the row up to 7 steps while it fits the wizard's own width, else the count (owner decision C101 (4): the wizard measures the row at its one-line width and draws the count where it is wider than its place, again when its width changes). A narrow wizard (under 40rem) always draws the compact head: the current step and the bar.",
         "enum": [
           "auto",
           "row",
@@ -507,7 +507,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/wizard/index.js",
-        "sha256": "c1a5a55fc9384a55cc2290a6b4a436f07c09292d66694466d60fc35d351048a6"
+        "sha256": "4ae3e2a12bacdbda0781f0a60ae66984681f395125d90b3fa6a4fd5c14bfaeda"
       },
       {
         "path": "src/smart/wizard/js/templates/default.js",
@@ -515,7 +515,7 @@
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",
-        "sha256": "522bad3b02851be1866d56b220c5759061771c57bd65dd8f3fe9c8f65547a02b"
+        "sha256": "cc83f1c1682246f818585a6a7a118f657e0d6c10c270204c87331006abfc4851"
       },
       {
         "path": "src/smart/wizard/rule.js",
@@ -523,7 +523,7 @@
       },
       {
         "path": "src/smart/wizard/docs.md",
-        "sha256": "3e4a00c8ab6766f13ee4668181d7124aa318b7eda0095a3df13ccbf3aea94858"
+        "sha256": "df7f47da8122db2c016a6c6ec43230fc40ad4200773a50ff0a41628b1c50fe81"
       }
     ],
     "generated_runtime": []
