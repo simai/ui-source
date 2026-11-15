@@ -121,6 +121,13 @@
     {
       "name": "badges",
       "lazy": true
+    },
+    {
+      "name": "dot",
+      "lazy": true,
+      "$comment": [
+        "A badge's dot is the Framework's one dot, .sf-dot (owner decision C185 (8)): fetched with the badge sheet when a badge draws."
+      ]
     }
   ],
   "templates": {

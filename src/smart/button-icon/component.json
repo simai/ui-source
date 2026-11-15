@@ -291,6 +291,12 @@
       ]
     },
     {
+      "name": "dot",
+      "$comment": [
+        "A badge's dot is the Framework's one dot, .sf-dot (owner decision C185 (8)): the dot sheet."
+      ]
+    },
+    {
       "name": "spinner",
       "lazy": true,
       "$comment": [

@@ -103,6 +103,12 @@
       "name": "avatars"
     },
     {
+      "name": "dot",
+      "$comment": [
+        "A member's presence point is the Framework's one dot, .sf-dot (owner decision C185 (8)): the dot sheet."
+      ]
+    },
+    {
       "name": "icons"
     },
     {
