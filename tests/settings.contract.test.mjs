@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
 import test from 'node:test';
-import {COLOR_OPTIONS, HUES, OWN_COLOR, colorCode, colorFill, entriesFor, findItem, itemValue, rewriteValues, tileItems, valueMap, valuePatch} from '../src/smart/settings/js/settings.js';
+import {COLOR_OPTIONS, HUES, OWN_COLOR, colorCode, colorFill, entriesFor, findItem, itemValue, lookOf, rewriteValues, valueMap, valuePatch} from '../src/smart/settings/js/settings.js';
 import {PALETTE} from '../src/smart/input-color/js/color-math.js';
 
 // sf-settings (owner decision 2026-11-06), compact settings over
@@ -27,10 +27,12 @@ const ITEMS = [
 test('the manifest: a leaf of family settings with items, look, apply, search, size, for, remember, label; change, changed, reset, open, opened, close, closed; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.4.2'); // group build 7: fix/settings-c166's 1.3.1 above the released 1.4.1
+  assert.equal(manifest.version, '1.5.0'); // group build 7: fix/settings-menu-c176's 1.4.0 above the line's 1.4.2
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'apply', 'search', 'size', 'for', 'remember', 'label']);
   // C106: the panel is a value of look (the setting «вид»); view is reserved (standard §3.1).
-  assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'tiles', 'panel']);
+  assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'panel']);
+  // C176 (5): tiles left; a dated value alias of drill until 2027-01-01.
+  assert.deepEqual(manifest.aliases.rows.map(({from, to, kind, setting, remove_after: until}) => [from, to, kind, setting, until]), [['tiles', 'drill', 'value', 'look', '2027-01-01']]);
   assert.equal(manifest.settings.view, undefined);
   assert.deepEqual(manifest.settings.apply.values, ['instant', 'button']);
   assert.equal(manifest.settings.apply.default, 'instant');
@@ -38,6 +40,7 @@ test('the manifest: a leaf of family settings with items, look, apply, search, s
   assert.equal(manifest.settings.search.default, false);
   assert.ok(manifest.settings.items.schema.items.properties.type.enum.includes('fields'));
   assert.deepEqual(manifest.settings.size.values, ['1/2', '1']);
+  assert.equal(manifest.settings.size.default, '1', 'C22 / C176 SM-1: the ordinary size; density makes it compact');
   // C106 follow-up: the popup panel of look=panel sends sf-menu-context's open/close events.
   assert.deepEqual(Object.keys(manifest.events), ['change', 'changed', 'reset', 'open', 'opened', 'close', 'closed']);
   assert.equal(manifest.events.open.cancelable, true);
@@ -96,22 +99,22 @@ test('rows: no levels, choices quiet; a separator never opens, closes or doubles
   assert.deepEqual(entriesFor([{type: 'unknown'}, {type: 'switch', text: 'no id'}], 'rows'), []);
 });
 
-test('tiles: the switches marked tile on top, a separator, the rest as rows; unmarked, the top level\'s switches', () => {
-  assert.deepEqual(tileItems(ITEMS).map((item) => item.id), ['sound']);
-  const entries = entriesFor(ITEMS, 'tiles', {tilesLabel: 'Быстрые настройки'});
-  assert.equal(entries[0].type, 'group');
-  assert.equal(entries[0].view, 'tiles');
-  assert.equal(entries[0].text, 'Быстрые настройки');
-  assert.deepEqual(entries[0].items.map((item) => item.id), ['sound']);
-  assert.equal(entries[1].type, 'separator');
-  assert.ok(!JSON.stringify(entries.slice(1)).includes('"sound"'), 'a tile is not a row as well');
-  const plain = ITEMS.map((item) => (item.type === 'group' ? {...item, items: item.items.map(({tile, ...rest}) => rest)} : item));
-  assert.deepEqual(tileItems(plain).map((item) => item.id), ['night']);
+test('C176 (3), (5): a rows-look choice that did not fit is a drill row; tiles is a former name of drill, its switches rows', () => {
+  const folded = entriesFor(ITEMS, 'rows', {folded: new Set(['theme'])});
+  assert.equal(folded[0].view, 'drill');
+  assert.equal(entriesFor(ITEMS, 'rows')[0].view, undefined);
+  assert.equal(lookOf('tiles'), 'drill');
+  assert.equal(lookOf('nonsense'), 'drill');
+  assert.equal(lookOf('rows'), 'rows');
+  const former = entriesFor(ITEMS, 'tiles');
+  assert.deepEqual(former, entriesFor(ITEMS, 'drill'));
+  assert.ok(!JSON.stringify(former).includes('"tiles"'), 'no tiles group');
+  assert.match(source, /noteDeprecated\(\{component: 'sf-settings'[\s\S]*remove_after: '2027-01-01'/u);
 });
 
 test('it composes sf-menu-context: a fixed panel at the menu\'s ceiling (C32), drill as the menu\'s submenu, the menu\'s events kept inside', () => {
   assert.match(template, /<sf-menu-context[\s\S]*\?popup=\$\{context\.popup\}/u);
-  assert.match(template, /submenu=\$\{context\.look === 'drill' \? 'drill' : 'flyout'\}/u);
+  assert.match(template, /submenu="drill"/u);
   assert.match(template, /--sf-context-menu-inline-size, var\(--sf-popup-menu-max-width\)/u);
   assert.match(template, /class="sf-settings-parts" style="display: contents"/u);
   for (const verb of ['select', 'reset']) assert.match(template, new RegExp(`@sf-menu-context-${verb}=\\$\\{stop\\}`, 'u'));

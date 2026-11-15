@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -81,18 +81,17 @@
         }
       },
       "default": [],
-      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
+      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
     },
     "look": {
       "type": "enum",
       "values": [
         "drill",
         "rows",
-        "tiles",
         "panel"
       ],
       "default": "drill",
-      "summary": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet pills, a switch, a slider. tiles: the switches used most as tiles on top (those marked tile, else the top level's), the rest as rows. panel (owner decision C106): a list's view settings in a panel of its own -- the groups as sections in one scroll, or as tabs when the panel has a search and a group holds a fields list; a checked field is the theme's light fill with a check at the inline end, a choice of one the fill alone; a dialog over the page, a bottom sheet on a phone"
+      "summary": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet options, a switch, a slider; a choice whose options do not fit beside its name becomes a drill row by itself, the value under the name and the options a level deeper (owner decision C176 (3)). panel (owner decision C106): a list's view settings in a panel of its own -- the groups as sections in one scroll, or as tabs when the panel has a search and a group holds a fields list; a checked field is the theme's light fill with a check at the inline end, a choice of one the fill alone; a dialog over the page, a bottom sheet on a phone. tiles is a former name of drill until 2027-01-01 (C176 (5)): its switches are rows, and a page that asks for deprecation notes hears it once. The menu looks are a bottom sheet on a phone (C157 (5))"
     },
     "apply": {
       "type": "enum",
@@ -114,8 +113,8 @@
         "1/2",
         "1"
       ],
-      "default": "1/2",
-      "summary": "The menu's rung: rows of 32 px at 1/2, of 40 px at 1"
+      "default": "1",
+      "summary": "The menu's rung: rows of 40 px at 1 (the default, owner decision C22: a site and the docs are the ordinary size; compactness is the region's density, data-sf-density=\"compact\"), of 32 px at 1/2. A value row (the value under the name) grows by its line"
     },
     "for": {
       "type": "string",
@@ -392,7 +391,7 @@
   "host-states": {
     "data-look": "string"
   },
-  "x-summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
+  "x-summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of two looks -- drill (the value under the name, the options in the same panel) or rows (the control at the row's end; a choice that does not fit beside its name drills by itself). With a trigger it opens over the page (a bottom sheet on a phone); without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. Where a product has a sign-in, the person's theme, language and text size are rows of the person menu (sf-menu-context, owner decision C176 (1)); sf-settings is the gear of a screen's view and of a site without a sign-in. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "x-source": {
     "package": "framework",
     "folder": "settings",
@@ -427,7 +426,8 @@
     "version 1.2.0, also (written on the branch as 1.1.1; 2026-11-13, defect BT-2, rules C15 / CB-01): a patch, nothing drawn differently. The popup example, the probe and the docs give the trigger sf-button-icon appearance=\"ghost\", the name of the no-fill look, where they wrote link, its former name (an alias until 2027-01-01). Settings, values, events and keys unchanged.",
     "version 1.2.0 also (2026-11-13, owner decision C106 (9)): the example «Панель: колонки и вид списка» (columns) -- a list's columns to check, order and pin, with its view in a second group, opened by a button: the panel example the context menu's page held (sf-menu-context 1.16.3). Nothing drawn or done differently.",
     "version 1.2.1 (2026-11-13, owner decision C105 H4, spacing audit C2): a patch. The panel look's 1 px border is inside its inline inset: the head, the search and the body start --sf-space-1/4 less the border from the border's inner edge, so the rows, the title and the search icon stand one pixel nearer the outer edge (a size 1/2 row's text 16 from it, compact and phone 12, not 17 and 13); a handle keeps its step into the inset. The scrollbar's gap on either side of its thumb stays the whole inset (C106). Settings, values, events and keys unchanged.",
-    "version 1.4.1 (2026-11-14, group build 5; numbered above 1.4.0 on origin/fix/settings-menu-c176): a patch, its own code unchanged: 2 first-paint snapshot file(s) follow the merged markup (fix/icons-c151)."
+    "version 1.4.1 (2026-11-14, group build 5; numbered above 1.4.0 on origin/fix/settings-menu-c176): a patch, its own code unchanged: 2 first-paint snapshot file(s) follow the merged markup (fix/icons-c151).",
+    "version 1.5.0 (written on the branch as 1.4.0; 2026-11-14, owner decision C176; defects SM-1, SM-3, SM-8, SM-11): a minor. (3) In the rows look a choice whose options do not fit beside its name (its name on more than one line or cut, its options on two lines or cut) becomes a drill row by itself -- the value under the name, the options a level deeper, as in the drill look (C85) -- measured as the menu is drawn and when a popup opens, before the frame is painted; both looks are a drilling sf-menu-context. (4) After a choice the menu goes back to the list, the focus on the changed row, the new value under its name; Escape goes back a level, then closes. (5) The tiles look left: tiles is a dated former name of drill until 2027-01-01 (aliases, a deprecation note), its switches are rows; tile on an item is no longer read. SM-1: the default size is 1 (C22); SM-3: a popup menu is the one bottom sheet on a phone (sf-menu-context 1.22.0: a drilling popup is a sheet, C157 (5)). (1), (2): the person menu recipe in the docs -- sf-menu-context with type choice rows and the sf-language row, sign out last and plain. setValue, setAll, show, reset, change and changed unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -457,7 +457,6 @@
         "look": [
           "drill",
           "rows",
-          "tiles",
           "panel"
         ],
         "apply": [
@@ -508,12 +507,15 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-settings for a small set of settings a person changes on the spot -- a reader's theme and text size, a table's view, a chat's sound -- opened from a button or standing in a panel.",
+      "use_when": "Use sf-settings for a small set of settings a person changes on the spot -- a reader's theme and text size, a table's view, a chat's sound -- opened from a gear or standing in a panel. Where the product has a sign-in, put the person's theme, language and text size as rows of the person menu (sf-menu-context with type choice rows, the language row from SfLanguage.menuEntry) instead (owner decision C176 (1)).",
       "do_not": [
         "Do not use sf-settings for a menu of actions or a mixed menu; use sf-menu-context with its value rows",
         "Do not use sf-settings-menu; it was removed and is not an alias",
         "Do not keep a setting's value outside its item; read values or listen to changed",
-        "Do not use sf-settings for a long form with validation; use a form"
+        "Do not use sf-settings for a long form with validation; use a form",
+        "Do not use look=\"tiles\"; it is a former name of drill until 2027-01-01 (C176 (5))",
+        "Do not put settings among the actions of a «⋯» menu, and do not write a setting as a submenu of radio rows; a submenu of radio rows is for actions (C176 (2))",
+        "Do not set size=\"1/2\" to make it compact; the region's density does that (C22)"
       ],
       "required_reads": [
         "inputs",
@@ -539,5 +541,23 @@
       "show": "object|string"
     }
   },
-  "styles": "scss/_smart__settings.scss"
+  "styles": "scss/_smart__settings.scss",
+  "aliases": {
+    "$comment": "Dated aliases of sf-settings for the shim (core/js/aliases.js, standard §16 item 20).",
+    "since": "2026-11-14",
+    "remove-after": "2027-01-01",
+    "rows": [
+      {
+        "from": "tiles",
+        "to": "drill",
+        "kind": "value",
+        "setting": "look",
+        "since": "2026-11-14",
+        "remove_after": "2027-01-01",
+        "since-version": "1.4.0",
+        "section": "§16 item 20",
+        "note": "owner decision C176 (5): the tiles look left; its switches are rows of the drill look"
+      }
+    ]
+  }
 }

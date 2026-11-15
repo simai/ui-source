@@ -161,6 +161,18 @@
   padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
 }
 
+/* The same rows at the ordinary size (owner decision C49: 48 normal, 44
+   compact; C176 defect SM-2): its line is 24 (20 compact) over a 16 value
+   line, so the one-line rule's (40 - 24) / 2 made a value row 56 (compact 48).
+   With a mouse such a row keeps --sf-a4 above and below its two lines; under
+   a coarse pointer the touch step's rule above stands (60). */
+@media (pointer: fine) {
+  .sf-context-menu--size-1 .sf-context-menu-item:where(:has(.sf-context-menu-item-caption, .sf-context-menu-item-under)),
+  .sf-context-menu--size-1 .sf-context-menu-value-row:where(:has(.sf-context-menu-item-caption)) {
+    padding-block: var(--sf-a4);
+  }
+}
+
 .sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
   /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
@@ -546,7 +558,7 @@
   --sf-icon--height: var(--sf-context-menu--line);
 }
 
-.sf-context-menu-choice--band .sf-context-menu-choice-option + .sf-context-menu-choice-option {
+.sf-context-menu-choice--band .sf-context-menu-choice-option ~ .sf-context-menu-choice-option {
   border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
 }
 
@@ -1015,9 +1027,12 @@
   min-inline-size: 0;
 }
 
-/* The menu of an object is the same sheet on a phone (owner decision C164
-   (6)): its rows the whole width, as a form's are. */
-.sf-context-menu[data-sf-sheet] .sf-context-menu-content {
+/* On a phone the menu of an object (owner decision C164 (6)) and a drilling
+   menu (C176, SM-3) are the one sheet, its rows the whole width, as a form's
+   are; a drilling menu's fixed 18rem is the popup's. */
+.sf-context-menu[data-sf-sheet] .sf-context-menu-content,
+.sf-context-menu.sf-context-menu--drill[data-sf-sheet] .sf-context-menu-content,
+.sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width] {
   inline-size: 100%;
   max-inline-size: none;
   max-block-size: calc(100dvh - var(--sf-space-4) - var(--sf-ui-1\/2--control-height));

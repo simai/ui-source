@@ -135,19 +135,27 @@ function renderItemText(entry, under = "") {
 }
 
 // The options of a choice, side by side. Each is a menuitemradio of the menu,
-// so the arrows walk through them as through any row.
-function renderChoiceOptions(entry, path, iconsOnly) {
+// so the arrows walk through them as through any row. An option drawn as an
+// icon alone shows its name as the Framework's tooltip (owner decision C160
+// (1), C176 defect SM-6), not a browser title: the tooltip's surface stands
+// beside it, named by data-tooltip, and the tooltip controller (component
+// tooltip, loaded by the menu when it draws one) shows it on hover, focus or
+// a long press.
+function renderChoiceOptions(entry, path, iconsOnly, context) {
+    const tip = (at) => `${context?.tipPrefix ?? "sf-menu-tip"}-${String(path).replace(/[^\w-]/gu, "-")}-${at}`;
     return (entry.options ?? []).map((option, at) => html`<button
             type="button"
             class="sf-context-menu-item sf-context-menu-choice-option"
             role="menuitemradio"
             data-sf-entry=${path}
             data-sf-option=${at}
+            data-tooltip=${iconsOnly && option.text ? tip(at) : nothing}
             aria-checked=${String(Boolean(option.checked))}
             aria-label=${option.text ?? nothing}
-            title=${iconsOnly ? option.text ?? nothing : nothing}
             ?disabled=${Boolean(option.disabled)}
-    >${hasSwatch(option) ? swatch(option.swatch) : option.icon ? icon(option.icon, "") : option.text ?? ""}</button>`);
+    >${hasSwatch(option) ? swatch(option.swatch) : option.icon ? icon(option.icon, "") : option.text ?? ""}</button>${iconsOnly && option.text
+        ? html`<span class="sf-tooltip sf-tooltip--dark sf-context-menu-choice-tooltip" id=${tip(at)} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${option.text}</span></span></span>`
+        : nothing}`);
 }
 
 // A choice of a few options -- the theme in a profile menu, a setting in a
@@ -211,7 +219,7 @@ function renderChoice(entry, path, lead, context) {
     }
     if (entry.view === "band") {
         return html`<div class="sf-context-menu-choice sf-context-menu-choice--band" role="group" aria-label=${entry.text ?? nothing}>
-            ${renderChoiceOptions(entry, path, iconsOnly)}
+            ${renderChoiceOptions(entry, path, iconsOnly, context)}
         </div>`;
     }
     return html`<div class="sf-context-menu-value-row sf-context-menu-value-row--choice">
@@ -219,7 +227,7 @@ function renderChoice(entry, path, lead, context) {
         ${renderItemText(entry)}
         <span class=${joinClasses("sf-context-menu-choice", iconsOnly ? "sf-context-menu-choice--icons" : "")}
                 role="group" aria-label=${entry.text ?? nothing}>
-            ${renderChoiceOptions(entry, path, iconsOnly)}
+            ${renderChoiceOptions(entry, path, iconsOnly, context)}
         </span>
     </div>`;
 }

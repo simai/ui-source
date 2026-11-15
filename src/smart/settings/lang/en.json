@@ -2,7 +2,6 @@
   "title": "Settings",
   "runtime": {
     "label": "Settings",
-    "tiles": "Quick settings",
     "hue-red": "Red",
     "hue-orange": "Orange",
     "hue-amber": "Amber",

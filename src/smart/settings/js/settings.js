@@ -18,8 +18,17 @@
 // checked and which are pinned; its value reads them as [{id, checked, pinned}]
 // in order, the pinned ones first.
 
-export const LOOKS = ['drill', 'rows', 'tiles', 'panel'];
+export const LOOKS = ['drill', 'rows', 'panel'];
+// The tiles look left (owner decision C176 (5), 2026-11-14): its switches are
+// rows. tiles stays a dated former name of drill until 2027-01-01
+// (component.json aliases); a page that still writes it gets the drill look.
+export const FORMER_LOOKS = Object.freeze({tiles: 'drill'});
+/** The look a written value draws: a look, a former name's look, else drill. */
+export const lookOf = (value) => (LOOKS.includes(value) ? value : FORMER_LOOKS[value] ?? 'drill');
 export const SIZES = ['1/2', '1'];
+// The size a page that writes none gets (C176, defect SM-1; owner decision
+// C22): the ordinary step; compactness is the density of the region.
+export const DEFAULT_SIZE = '1';
 export const APPLY = ['instant', 'button'];
 export const TYPES = ['switch', 'choice', 'range', 'color', 'heading', 'separator', 'group', 'fields'];
 const VALUE_TYPES = new Set(['switch', 'choice', 'range', 'color', 'fields']);
@@ -247,8 +256,12 @@ const plainWord = (key, vars = {}) => {
 };
 
 // One setting as a menu entry. A choice's value becomes its options' checked
-// marks, the way the menu reads it; drill opens its options in the panel.
-function settingEntry(item, look, word = plainWord) {
+// marks, the way the menu reads it; drill opens its options in the panel, and
+// so does a choice of the rows look whose options did not fit beside its name
+// (owner decision C176 (3)): the row becomes a drill row by itself, the value
+// under the name, the options a level deeper.
+function settingEntry(item, look, word = plainWord, folded = NONE) {
+  if (look === 'rows' && folded.has(item.id) && (item.type === 'choice' || item.type === 'color')) look = 'drill';
   const base = {...own(item, ['id', 'text', 'caption', 'icon', 'keywords']), type: item.type};
   if (item.disabled) base.disabled = true;
   if (item.type === 'color') return colorEntry(item, base, look, word);
@@ -263,9 +276,11 @@ function settingEntry(item, look, word = plainWord) {
   return {...base, ...(look === 'drill' ? {view: 'drill'} : {}), options};
 }
 
+const NONE = new Set();
+
 // The entries of a list of items: a group is its title (a heading) and its
 // rows; an item of no known type is left out.
-function entriesOf(items, look, skip, word) {
+function entriesOf(items, look, word, folded = NONE) {
   const out = [];
   for (const item of Array.isArray(items) ? items : []) {
     if (!isItem(item)) continue;
@@ -274,13 +289,13 @@ function entriesOf(items, look, skip, word) {
     } else if (item.type === 'separator') {
       out.push({type: 'separator'});
     } else if (item.type === 'group') {
-      const rows = entriesOf(item.items, look, skip, word);
+      const rows = entriesOf(item.items, look, word, folded);
       if (!rows.length) continue;
       if (item.text) out.push({type: 'heading', text: item.text});
       out.push({type: 'group', ...own(item, ['text']), items: rows});
-    } else if (holdsValue(item) && item.type !== 'fields' && !skip.has(item.id)) {
+    } else if (holdsValue(item) && item.type !== 'fields') {
       // A fields list is the panel look's alone: a menu has no row for it.
-      out.push(settingEntry(item, look, word));
+      out.push(settingEntry(item, look, word, folded));
     }
   }
   // A separator does not open or close the list, and two do not stand together.
@@ -289,38 +304,17 @@ function entriesOf(items, look, skip, word) {
 }
 
 /**
- * The switches the tiles look puts on top: those marked tile: true, at any
- * depth; when none is marked, the switches of the top level.
- */
-export function tileItems(items) {
-  const marked = [];
-  const walk = (list) => {
-    for (const item of Array.isArray(list) ? list : []) {
-      if (holdsValue(item) && item.type === 'switch' && item.tile === true) marked.push(item);
-      if (item?.type === 'group') walk(item.items);
-    }
-  };
-  walk(items);
-  if (marked.length) return marked;
-  return (Array.isArray(items) ? items : []).filter((item) => holdsValue(item) && item.type === 'switch');
-}
-
-/**
  * The menu's entries for a look:
  *   drill  every choice opens its options in the panel (view: drill), the
  *          value under the name; the menu is submenu="drill";
- *   rows   the name at the start, the control at the end: quiet pills, a
- *          switch, a slider;
- *   tiles  the tile switches as tiles on top (a group with view: tiles named
- *          tilesLabel), the rest as rows below a separator.
+ *   rows   the name at the start, the control at the end: quiet options, a
+ *          switch, a slider; a choice named in `folded` -- its options did
+ *          not fit beside its name -- is a drill row instead (C176 (3)).
+ * A former look (tiles) draws the look it became (lookOf). A switch is a row
+ * in every look (C176 (5)); `tile` on an item is no longer read.
  */
-export function entriesFor(items, look = 'drill', {tilesLabel = '', word = plainWord} = {}) {
-  if (look !== 'tiles') return entriesOf(items, look, new Set(), word);
-  const tiles = tileItems(items);
-  if (!tiles.length) return entriesOf(items, 'rows', new Set(), word);
-  const rest = entriesOf(items, 'rows', new Set(tiles.map((item) => item.id)), word);
-  const top = {type: 'group', view: 'tiles', text: tilesLabel, items: tiles.map((item) => settingEntry(item, 'rows'))};
-  return rest.length ? [top, {type: 'separator'}, ...rest] : [top];
+export function entriesFor(items, look = 'drill', {word = plainWord, folded = NONE} = {}) {
+  return entriesOf(items, lookOf(look), word, folded instanceof Set ? folded : new Set(folded ?? []));
 }
 
 // ─── the panel look (owner decision C106) ─────────────────────────────────

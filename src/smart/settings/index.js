@@ -1,5 +1,9 @@
 // sf-settings: compact settings -- a few settings a person changes on the
 // spot, a reader's theme and text size, a table's density, a chat's sound.
+// Where a product has a sign-in, the person's own settings (theme, language,
+// text size) are rows of the person menu (owner decision C176 (1)); this
+// element is the gear of a screen's view (a table, reading) and of a site
+// without a sign-in.
 // The items are data, each holding its own value:
 //
 //   <sf-settings look="rows">
@@ -9,9 +13,11 @@
 //
 // It composes sf-menu-context and draws nothing of its own (owner decision
 // 2026-11-06): the items become the menu's entries, laid out by one attribute,
-// look -- drill (the value under the name, the options in the same panel),
-// rows (the name at the start, the control at the end) or tiles (the switches
-// used most as tiles on top, the rest as rows). With a trigger (the trigger
+// look -- drill (the value under the name, the options in the same panel) or
+// rows (the name at the start, the control at the end; a choice whose options
+// do not fit beside its name becomes a drill row by itself, C176 (3)). The
+// tiles look left (C176 (5)): tiles is a dated former name of drill until
+// 2027-01-01, its switches rows. With a trigger (the trigger
 // slot, the children without a slot, or for="<id>") the panel opens over the
 // page against it; without one it stands open in the page's flow.
 //
@@ -32,13 +38,15 @@ import {densityOf} from '../../core/js/density.js';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark} from '../../core/js/open-surface-mark';
 import {focusablesIn} from '../../core/js/layer-stack.js';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {swipeToClose} from '../../core/js/sheet-swipe.js';
 import {PanelScrollbar} from '../../component/panel-scrollbar.js';
 import {
-  APPLY, LOOKS, OWN_COLOR, SIZES, applyCount, colorCode, entriesFor, findItem, itemValue, matches, movedField, panelGroups, panelLayout,
+  APPLY, DEFAULT_SIZE, FORMER_LOOKS, OWN_COLOR, SIZES, applyCount, lookOf, colorCode, entriesFor, findItem, itemValue, matches, movedField, panelGroups, panelLayout,
   placedField, rewriteValues, sameValue, toggledField, valueMap, valuePatch,
 } from './js/settings';
 import manifest from './component.json';
+import aliases from './aliases.json';
 // The panel look's sheet (C106); the menu looks draw nothing of their own.
 import './scss/index.scss';
 import enFile from './lang/en.json';
@@ -85,7 +93,29 @@ const SettingsElement = elementFromManifest(manifest, {
   base: SfBaseElement,
   lang: {en, ru},
   source: 'ru',
+  aliases,
 });
+
+// A row of the rows look fits when its name stands on one line, whole, and its
+// options on one line beside it, none of them cut (C176 (3), defect SM-8: in
+// an 18rem menu three Russian words broke «Плотность» inside the word and
+// left «Размер текста» without its name).
+function lineCount(element) {
+  const range = document.createRange();
+  range.selectNodeContents(element);
+  return new Set([...range.getClientRects()].filter((rect) => rect.width > 0).map((rect) => Math.round(rect.top))).size;
+}
+
+function choiceFits(row) {
+  const label = row.querySelector('.sf-context-menu-item-label');
+  const choice = row.querySelector('.sf-context-menu-choice');
+  if (!choice) return true;
+  if (label && (lineCount(label) > 1 || label.scrollWidth > label.clientWidth + 1)) return false;
+  if (choice.scrollWidth > choice.clientWidth + 1) return false;
+  const options = [...choice.querySelectorAll('.sf-context-menu-choice-option')];
+  if (new Set(options.map((option) => Math.round(option.getBoundingClientRect().top))).size > 1) return false;
+  return options.every((option) => option.scrollWidth <= option.clientWidth + 1 && lineCount(option) <= 1);
+}
 
 class SfSettings extends SettingsElement {
   constructor() {
@@ -93,7 +123,11 @@ class SfSettings extends SettingsElement {
     this._declared = null;
     this._declaredFor = null;
     this._restoredFor = null;
-    this._entries = {items: null, look: '', label: '', list: []};
+    this._entries = {items: null, look: '', folded: null, list: []};
+    // The rows look's choices that did not fit beside their names (C176 (3)),
+    // measured for the panel's width and text size they were drawn at.
+    this._fit = {key: '', ids: new Set()};
+    this._watched = null;
     this._onDocumentClick = (event) => this.onDocumentClick(event);
     this._onHostClick = (event) => this.onHostClick(event);
     // The panel look (C106): whether a popup panel is open, the search, the
@@ -316,7 +350,7 @@ class SfSettings extends SettingsElement {
       const opened = await menu.openFor(anchor, {focus: 'none'});
       if (opened !== true && opened?.outcome !== 'applied') return {outcome: 'cancelled'};
     }
-    if (this.look === 'drill') {
+    if (this.shownLook === 'drill' || this._fit.ids.has(id)) {
       const result = menu.show(id);
       if (result?.outcome !== 'applied') return result;
       return {outcome: 'applied'};
@@ -470,19 +504,83 @@ class SfSettings extends SettingsElement {
   // The entries are made again only when the items, the look or the words
   // change, so the menu is not handed a new list (and a new declared
   // snapshot) on every drawing.
-  entries(look, tilesLabel) {
+  entries(look) {
     const cache = this._entries;
-    if (cache.items !== this.items || cache.look !== look || cache.label !== tilesLabel) {
+    const folded = this._fit.ids;
+    if (cache.items !== this.items || cache.look !== look || cache.folded !== folded) {
       const word = (key, vars) => this.sfWord(key, vars ? {vars} : undefined);
-      this._entries = {items: this.items, look, label: tilesLabel, list: entriesFor(this.items, look, {tilesLabel, word})};
+      this._entries = {items: this.items, look, folded, list: entriesFor(this.items, look, {word, folded})};
     }
     return this._entries.list;
   }
 
+  // The look drawn: a former name (tiles, C176 (5)) draws the look it became
+  // and is noted once, as the dated alias of the attribute is.
+  get shownLook() {
+    const written = this.look;
+    if (Object.hasOwn(FORMER_LOOKS, written)) {
+      noteDeprecated({component: 'sf-settings', tag: this.localName, kind: 'value', attribute: 'look', from: written, to: FORMER_LOOKS[written],
+        since: '2026-11-14', remove_after: '2027-01-01'});
+    }
+    return lookOf(written);
+  }
+
+  // ─── the rows look: a choice that does not fit (C176 (3))
+  // The menu is measured as it is drawn: in the flow after each drawing, a
+  // popup when it opens (closed, it has no box). A choice row whose options do
+  // not fit beside its name is given to the menu again as a drill row -- the
+  // value under the name, the options a level deeper -- before the frame is
+  // painted (the drawings are microtasks). The rows are measured anew when
+  // the panel's width or text size changes (a density, a sheet).
+  measureFit() {
+    if (this.shownLook !== 'rows') return false;
+    const menu = this.menu;
+    const content = menu?.querySelector('.sf-context-menu-content');
+    if (!content || !content.getClientRects().length || !content.clientWidth) return false;
+    const key = `${content.clientWidth}|${getComputedStyle(content).fontSize}`;
+    if (key !== this._fit.key) {
+      const had = this._fit.ids.size > 0 && this._fit.key !== '';
+      this._fit = {key, ids: new Set()};
+      if (had) {
+        this.requestComponentUpdate('fit');
+        return true;
+      }
+    }
+    const add = [];
+    for (const row of content.querySelectorAll('.sf-context-menu-value-row--choice')) {
+      const option = row.querySelector('.sf-context-menu-choice-option');
+      const id = option ? menu.entryOf?.(option)?.id : null;
+      if (id && !this._fit.ids.has(id) && !choiceFits(row)) add.push(id);
+    }
+    if (!add.length) return false;
+    this._fit = {key, ids: new Set([...this._fit.ids, ...add])};
+    this.requestComponentUpdate('fit');
+    return true;
+  }
+
+  // The menu tells when it has drawn and when it has opened; a row that held
+  // the focus and became a drill row gives it to the level's first row.
+  watchMenu() {
+    const menu = this.menu;
+    if (!menu || this._watched === menu) return;
+    this._watched = menu;
+    menu.addEventListener('sf-after-render', (event) => {
+      if (event.target === menu) this.measureFit();
+    });
+    menu.addEventListener('sf-menu-context-opened', (event) => {
+      if (event.target !== menu || !this.measureFit()) return;
+      menu.whenRendered?.(null, {next: true}).then(() => {
+        if (menu.contains(document.activeElement)) return;
+        menu.syncMenuItems?.();
+        menu.availableMenuItems?.()[0]?.focus({preventScroll: true});
+      });
+    });
+  }
+
   templateContext() {
     this.restore();
-    const look = LOOKS.includes(this.look) ? this.look : 'drill';
-    const size = SIZES.includes(this.size) ? this.size : '1/2';
+    const look = this.shownLook;
+    const size = SIZES.includes(this.size) ? this.size : DEFAULT_SIZE;
     const popup = this.popup;
     this.sfHostState('data-look', look);
     return this.createTemplateContext({
@@ -493,7 +591,7 @@ class SfSettings extends SettingsElement {
       size,
       popup,
       label: this.label,
-      entries: look === 'panel' ? [] : this.entries(look, this.sfWord('tiles')),
+      entries: look === 'panel' ? [] : this.entries(look),
       hasColor: this._hasColor,
       slot: (name) => this.getSlotContent(name),
       hasSlot: (name) => name === 'trigger' && this.hasSlotContent(name),
@@ -509,7 +607,11 @@ class SfSettings extends SettingsElement {
     super.afterRender?.(changed);
     this.syncTriggers();
     if (this.isPanel) this.afterPanelRender();
-    else this._scrollbar.disconnect();
+    else {
+      this._scrollbar.disconnect();
+      this.watchMenu();
+      this.measureFit();
+    }
   }
 
   // ─────────────────────────────────────────── the panel look (C106)
@@ -520,7 +622,7 @@ class SfSettings extends SettingsElement {
   // Escape, a press outside, Tab out), a panel in the page's flow a group.
 
   get isPanel() {
-    return this.look === 'panel';
+    return lookOf(this.look) === 'panel';
   }
 
   get panel() {

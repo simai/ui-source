@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "title": "Settings",
-  "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of three looks -- drill (the value under the name, the options in the same panel), rows (the control at the row's end) or tiles (the switches used most as tiles on top). With a trigger it opens over the page; without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
+  "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of two looks -- drill (the value under the name, the options in the same panel) or rows (the control at the row's end; a choice that does not fit beside its name drills by itself). With a trigger it opens over the page (a bottom sheet on a phone); without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. Where a product has a sign-in, the person's theme, language and text size are rows of the person menu (sf-menu-context, owner decision C176 (1)); sf-settings is the gear of a screen's view and of a site without a sign-in. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -60,11 +60,10 @@
       "look": {
         "type": "string",
         "default": "drill",
-        "description": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet pills, a switch, a slider. tiles: the switches used most as tiles on top (those marked tile, else the top level's), the rest as rows. panel (owner decision C106): a list's view settings in a panel of its own -- the groups as sections in one scroll, or as tabs when the panel has a search and a group holds a fields list; a checked field is the theme's light fill with a check at the inline end, a choice of one the fill alone; a dialog over the page, a bottom sheet on a phone",
+        "description": "The arrangement. drill: the current value under the name and a chevron, the options open in the same panel with a way back. rows: the name at the start, the control at the end -- quiet options, a switch, a slider; a choice whose options do not fit beside its name becomes a drill row by itself, the value under the name and the options a level deeper (owner decision C176 (3)). panel (owner decision C106): a list's view settings in a panel of its own -- the groups as sections in one scroll, or as tabs when the panel has a search and a group holds a fields list; a checked field is the theme's light fill with a check at the inline end, a choice of one the fill alone; a dialog over the page, a bottom sheet on a phone. tiles is a former name of drill until 2027-01-01 (C176 (5)): its switches are rows, and a page that asks for deprecation notes hears it once. The menu looks are a bottom sheet on a phone (C157 (5))",
         "enum": [
           "drill",
           "rows",
-          "tiles",
           "panel"
         ]
       },
@@ -84,8 +83,8 @@
       },
       "size": {
         "type": "string",
-        "default": "1/2",
-        "description": "The menu's rung: rows of 32 px at 1/2, of 40 px at 1",
+        "default": "1",
+        "description": "The menu's rung: rows of 40 px at 1 (the default, owner decision C22: a site and the docs are the ordinary size; compactness is the region's density, data-sf-density=\"compact\"), of 32 px at 1/2. A value row (the value under the name) grows by its line",
         "enum": [
           "1/2",
           "1"
@@ -108,7 +107,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option, tile: true on a switch the tiles look puts on top. A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
+        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
       }
     },
     "additionalProperties": false
@@ -340,7 +339,6 @@
       "look": [
         "drill",
         "rows",
-        "tiles",
         "panel"
       ],
       "apply": [
@@ -437,7 +435,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "look=tiles"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []
@@ -448,11 +448,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "967e38304f0a22d25ff6afce37815ae719447d4ade936df1ff0c2f52d35b7689"
+        "sha256": "13d523b75c125d3ceec52cd59c0271f5cbc79b89f5eff7d1afc304e90671db97"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
-        "sha256": "ac4fd0b6d3de24c8fbe44b566fc8db2586f05de1a50009ed1c7190bcdbc717d6"
+        "sha256": "f3adac7ea5f86926e92b022a62b256a3cab208a44662c361405bdeb777771e02"
       },
       {
         "path": "src/smart/settings/rule.js",
@@ -460,18 +460,21 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "9852e9eda9a08adca807ea610252c347c5e3ddc0f2519aa11be5aa1e3e1bfb15"
+        "sha256": "6b090e2bcdf1e04b3cbf69a6be2bebb78a6c213f658bbaf70c6a9fd6a02d91a0"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-settings for a small set of settings a person changes on the spot -- a reader's theme and text size, a table's view, a chat's sound -- opened from a button or standing in a panel.",
+    "use_when": "Use sf-settings for a small set of settings a person changes on the spot -- a reader's theme and text size, a table's view, a chat's sound -- opened from a gear or standing in a panel. Where the product has a sign-in, put the person's theme, language and text size as rows of the person menu (sf-menu-context with type choice rows, the language row from SfLanguage.menuEntry) instead (owner decision C176 (1)).",
     "do_not": [
       "Do not use sf-settings for a menu of actions or a mixed menu; use sf-menu-context with its value rows",
       "Do not use sf-settings-menu; it was removed and is not an alias",
       "Do not keep a setting's value outside its item; read values or listen to changed",
-      "Do not use sf-settings for a long form with validation; use a form"
+      "Do not use sf-settings for a long form with validation; use a form",
+      "Do not use look=\"tiles\"; it is a former name of drill until 2027-01-01 (C176 (5))",
+      "Do not put settings among the actions of a «⋯» menu, and do not write a setting as a submenu of radio rows; a submenu of radio rows is for actions (C176 (2))",
+      "Do not set size=\"1/2\" to make it compact; the region's density does that (C22)"
     ],
     "required_reads": [
       "inputs",
