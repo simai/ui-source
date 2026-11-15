@@ -190,7 +190,7 @@ test('quantity: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-input-quantity'\] = \{\n  tags: \['sf-input-quantity', 'sf-quantity'\],/u);
   assert.match(rule, /\{ name: 'quantity' \},\n    \{ name: 'icons' \},\n    \{ name: 'icon-buttons' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-quantity\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.quantity', 'smart.help-mark']);
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.inputs', 'component.quantity', 'smart.help-mark']);
 });
 
 // The public variables (2026-10-25): nine on the class sheet, each read with the

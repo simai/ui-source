@@ -159,6 +159,8 @@ value stays empty. Once something is chosen, the marker gives way to a reset
 button in the same place; the chevron keeps its axis. Select mode; a tag-mode
 field does not draw it.
 
+The reset is the field's own action (owner decision C123), as a clear is: a glyph without a plate in any state, in the hint's ink at rest and the text's ink under the pointer, the size of the field's text line, with an invisible hit area never under 24 px; the keyboard ring goes round the glyph.
+
 ```html
 <sf-dropdown name="font" label="Font" inherited-value="inter">
   <sf-list-item value="inter" text="Inter"></sf-list-item>
