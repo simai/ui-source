@@ -184,13 +184,13 @@ export const collect = (root = repositoryRoot) => {
 
 // Only markup a page wrote. A Smart element draws its own markup, with the
 // layout classes its template chose -- an sf-button's root is `flex
-// items-cross-center`, its label container no flex box at all -- and that
-// drawing must not move. Its root is the element's child (the element itself
-// is display: contents) and is marked data-sf-static while it is the printed
-// first paint, so the guard sits on the first part of the selector, the
-// component's root: a root a started Smart element drew, or a printed one, is
-// left as it was. In :where(), so the specificity stays the selector's own.
-export const PLAIN_ROOT = ':where(:not([data-sf-started] > *):not([data-sf-static]))';
+// items-cross-center`, its label container no flex box at all, and a segmented
+// control's buttons are built the same way -- and that drawing must not move.
+// Everything a started Smart element holds (it is marked data-sf-started), and
+// a printed first paint (data-sf-static), is left as it was: the guard sits on
+// the first part of the selector, the component's root. In :where(), so the
+// specificity stays the selector's own.
+export const PLAIN_ROOT = ':where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *))';
 
 export const plainSelector = (selector) => selector
   .split(',')
@@ -236,7 +236,7 @@ export const renderPartial = ({family, rules}) => {
     '// The same layout in the stylesheet, so markup a page writes -- without the script, or',
     '// where the script never builds the part -- draws as the script\'s own parts do (RG-B-53).',
     '// In sf.base, below the utilities and the component rules: the classes the script adds and',
-    '// every rule of the component sheet still decide. A root a Smart element drew is left alone.',
+    '// every rule of the component sheet still decide. What a Smart element drew is left alone.',
     '@layer sf.base {',
     ...indent(body),
     '}',

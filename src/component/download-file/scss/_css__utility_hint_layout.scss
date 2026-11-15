@@ -5,10 +5,10 @@
 // The same layout in the stylesheet, so markup a page writes -- without the script, or
 // where the script never builds the part -- draws as the script's own parts do (RG-B-53).
 // In sf.base, below the utilities and the component rules: the classes the script adds and
-// every rule of the component sheet still decide. A root a Smart element drew is left alone.
+// every rule of the component sheet still decide. What a Smart element drew is left alone.
 @layer sf.base {
   // src/component/download-file/json/download-file.utility.json
-  .sf-download-file:where(:not([data-sf-started] > *):not([data-sf-static])) {
+  .sf-download-file:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -18,7 +18,7 @@
   }
 
   // src/component/download-file/json/download-file.utility.json
-  .sf-download-file:where(:not([data-sf-started] > *):not([data-sf-static])) .sf-download-file-wrap {
+  .sf-download-file:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-download-file-wrap {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;

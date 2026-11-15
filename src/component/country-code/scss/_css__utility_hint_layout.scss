@@ -5,10 +5,10 @@
 // The same layout in the stylesheet, so markup a page writes -- without the script, or
 // where the script never builds the part -- draws as the script's own parts do (RG-B-53).
 // In sf.base, below the utilities and the component rules: the classes the script adds and
-// every rule of the component sheet still decide. A root a Smart element drew is left alone.
+// every rule of the component sheet still decide. What a Smart element drew is left alone.
 @layer sf.base {
   // src/component/country-code/json/country-code.utility.json
-  .sf-country-code:where(:not([data-sf-started] > *):not([data-sf-static])) {
+  .sf-country-code:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -16,7 +16,7 @@
   }
 
   // src/component/country-code/json/country-code.utility.json
-  .sf-country-code:where(:not([data-sf-started] > *):not([data-sf-static])) .sf-country-code-label {
+  .sf-country-code:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-country-code-label {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -26,7 +26,7 @@
   }
 
   // src/component/country-code/json/country-code.utility.json
-  .sf-country-code:where(:not([data-sf-started] > *):not([data-sf-static])) .sf-country-code-field {
+  .sf-country-code:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-country-code-field {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -36,7 +36,7 @@
   }
 
   // src/component/country-code/json/country-code.utility.json
-  .sf-country-code:where(:not([data-sf-started] > *):not([data-sf-static])) .sf-country-code-left {
+  .sf-country-code:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-country-code-left {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -46,13 +46,13 @@
   }
 
   // src/component/country-code/json/country-code.utility.json
-  .sf-country-code:where(:not([data-sf-started] > *):not([data-sf-static])) .sf-country-code-field input {
+  .sf-country-code:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-country-code-field input {
     flex: 1 1 0%;
     display: flex;
   }
 
   // src/component/country-code/json/country-code.utility.json
-  .sf-country-code:where(:not([data-sf-started] > *):not([data-sf-static])) .sf-country-code-item {
+  .sf-country-code:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-country-code-item {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -62,7 +62,7 @@
   }
 
   // src/component/country-code/json/country-code.utility.json
-  .sf-country-code:where(:not([data-sf-started] > *):not([data-sf-static])) .sf-country-code-flag {
+  .sf-country-code:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-country-code-flag {
     display: flex;
     justify-content: flex-start;
     align-items: center;
