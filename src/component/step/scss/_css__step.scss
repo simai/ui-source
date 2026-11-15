@@ -30,6 +30,20 @@
   color: var(--sf-on-surface);
 }
 
+/* Size 1 is named too: the template writes sf-step--size-1 (and the class
+   markup in the docs), and a class the sheets never name is unknown to a
+   class check (docs batch B, FW-B-8). The values are the defaults above, so
+   a step without a size class draws the same. */
+.sf-step.sf-step--size-1 {
+  --sf-step--marker: var(--sf-text-height-1);
+  --sf-step--dot: var(--sf-a8);
+  --sf-step--font-size: var(--sf-text-size-1);
+  --sf-step--line-height: var(--sf-text-height-1);
+  --sf-step--small-size: var(--sf-text-size-1\/2);
+  --sf-step--small-height: var(--sf-text-height-1\/2);
+  --sf-step--icon: var(--sf-text-height-1\/2);
+}
+
 .sf-step.sf-step--size-1\/2 {
   --sf-step--marker: var(--sf-text-height-1\/2);
   --sf-step--dot: var(--sf-a6);

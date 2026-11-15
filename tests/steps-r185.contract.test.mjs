@@ -46,3 +46,22 @@ test('ST-13: the committed first-paint snapshots print the ordered list', () => 
     }
   }
 });
+
+// Docs batch B, FW-B-8: the template writes sf-steps--size-<size> and
+// sf-step--size-<size> for every size the element takes; a class no sheet
+// names is unknown to a class check (ui-doc audit-example-classes reads the
+// built sheets). Every size of the manifest is named by the step sheets.
+test('FW-B-8: every size class the template writes is named by the sheets', () => {
+  const step = read('src/component/step/scss/_css__step.scss');
+  const steps = read('src/component/step/scss/_css__steps.scss');
+  const sizes = JSON.parse(read('src/smart/steps/component.json')).settings.size.values;
+  const template = read('src/smart/steps/js/templates/default.js');
+  assert.match(template, /`sf-steps--size-\$\{context\.size\}`/);
+  assert.match(template, /`sf-step--size-\$\{context\.size\}`/);
+  assert.ok(sizes.length > 0);
+  for (const size of sizes) {
+    const escaped = size.replace('/', '\\/');
+    assert.ok(step.includes(`.sf-step.sf-step--size-${escaped} {`), `sf-step--size-${size}`);
+    assert.ok(steps.includes(`.sf-steps.sf-steps--size-${escaped} `), `sf-steps--size-${size}`);
+  }
+});
