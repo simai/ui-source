@@ -10,7 +10,7 @@
 //  - the menu is on screen and the page has no horizontal scroll;
 //  - the focus is in the menu, and Escape gives it back to the row;
 //  - a menu too wide for either side of the pointer stands --sf-space-1/2
-//    (8px) from the window's edge;
+//    (12px at 1440, 8px at 390: adaptive) from the window's edge;
 //  - a menu opened at an element (the menu key, Shift+F10, a button) keeps its
 //    placement: below the element, not flipped across it.
 import {resolve, join} from 'node:path';
@@ -36,7 +36,9 @@ if (absent.length) {
 }
 
 const VIEWS = [{width: 1440, height: 900}, {width: 390, height: 844}];
-const EDGE = 12;
+// Not the window padding (--sf-space-1/2: 12 at 1440, 8 at 390): a shift to
+// the padding would land on the pointer by chance.
+const EDGE = 30;
 const failures = [];
 const browser = await chromium.launch();
 
@@ -129,7 +131,15 @@ try {
       await escape(page);
       await page.evaluate(() => { window.menuWidth = undefined; });
       const inset = Math.min(m.left, m.width - m.right);
-      if (Math.abs(inset - 8) >= 1 || m.left < 0 || m.right > m.width) failures.push({case: label, want: 'an edge 8px (--sf-space-1/2) from the window', inset, rect: [m.left, m.right]});
+      const padding = await page.evaluate(() => {
+        const probe = document.createElement('div');
+        probe.style.inlineSize = 'var(--sf-space-1\\/2)';
+        document.body.append(probe);
+        const value = probe.getBoundingClientRect().width;
+        probe.remove();
+        return value;
+      });
+      if (!(padding > 0) || Math.abs(inset - padding) >= 1 || m.left < 0 || m.right > m.width) failures.push({case: label, want: 'an edge --sf-space-1/2 from the window', padding, inset, rect: [m.left, m.right]});
       if (Math.abs(m.top - 100) >= 1) failures.push({case: label, want: 'top on the pointer', top: m.top});
       if (m.hscroll) failures.push({case: label, want: 'no horizontal scroll'});
     }
@@ -156,4 +166,4 @@ if (failures.length) {
   console.error(JSON.stringify(failures.slice(0, 20), null, 2));
   throw new Error(`${failures.length} point menu placement check(s) failed`);
 }
-process.stdout.write('Context menu at a point: PASS — the corner on the pointer, flipped across it at the right (RTL: left) and bottom edges, on screen, no horizontal scroll, focus in and back on Escape; too wide for either side: 8px (--sf-space-1/2) from the edge; opened at a button: below it, not flipped; 1440 and 390, LTR and RTL\n');
+process.stdout.write('Context menu at a point: PASS — the corner on the pointer, flipped across it at the right (RTL: left) and bottom edges, on screen, no horizontal scroll, focus in and back on Escape; too wide for either side: --sf-space-1/2 from the edge; opened at a button: below it, not flipped; 1440 and 390, LTR and RTL\n');
