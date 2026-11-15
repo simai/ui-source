@@ -209,21 +209,47 @@ const rows = (context, items, labelled) => html`
 // the lists it serves (conversations, letters, files, versions); a list that
 // has shown rows keeps their shape. aria-hidden: the status beside it says
 // the wait.
+//
+// 1.16.0 (C130, C148 (1)): the skeleton row keeps the leading place of the
+// rows it stands for, so its title bar starts where the title will. The
+// place is the one the rows draw (leading() and the row's own icon): an icon
+// is the row's line square with the control radius (C130 (1)); an avatar is
+// sf-avatar's own box of the step the rows give it -- the control height in a
+// list with a second line, else the row's line -- and its shape; a list with
+// neither keeps no place. The shape is read from the rows the list has shown
+// (context.skeleton.lead), never guessed: with none shown yet there is no
+// place (a printed first paint, data-sf-first-paint="skeleton", carries the
+// rows' own picture).
 const SKELETON_ROWS = 3;
 
+const skeletonLead = (context) => {
+    const lead = context.skeleton.lead;
+    if (!lead) return nothing;
+    if (lead.kind === "avatar") {
+        const wide = lead.wide && context.skeleton.twoLine;
+        const box = wide ? `sf-avatar--size-${context.size}` : `sf-avatar--size-1 sf-avatar--line-${context.size}`;
+        const shape = lead.shape === "square" ? " sf-avatar--square" : "";
+        return html`<span slot="leading" class="sf-list__lead"><span
+                class=${`sf-avatar sf-avatar--picture ${box}${shape} sf-first-paint-fill sf-list__lead-skeleton`}></span></span>`;
+    }
+    return html`<span slot="leading" class="sf-list__lead"><span
+            class="sf-first-paint-fill sf-list__lead-skeleton sf-list__lead-skeleton--icon"></span></span>`;
+};
+
 const skeleton = (context) => {
-    const {twoLine} = context.skeleton;
+    const {twoLine, lead} = context.skeleton;
     const bar = (part) => html`<span class=${`sf-first-paint-bar sf-list__bar sf-list__bar--${part}`}>\u00a0</span>`;
+    const wide = lead?.kind === "avatar" && lead.wide && twoLine;
     return html`
-        <ul class="sf-list__rows sf-list__skeleton" aria-hidden="true">
+        <ul class="sf-list__rows sf-list__skeleton${wide ? " sf-list__skeleton--lead-wide" : ""}" aria-hidden="true">
             ${Array.from({length: SKELETON_ROWS}, () => html`
                 <li class="sf-list__row sf-list__row--skeleton">
                     <sf-list-item
-                            kind="text"
+                            kind=${lead ? "icon" : "text"}
                             size=${context.size}
                             text="\u00a0"
                             supporting=${twoLine ? "\u00a0" : nothing}
-                    ><span slot="text">${bar("title")}</span>${twoLine
+                    >${skeletonLead(context)}<span slot="text">${bar("title")}</span>${twoLine
                         ? html`<span slot="supporting">${bar("supporting")}</span>`
                         : nothing}</sf-list-item>
                 </li>`)}

@@ -348,6 +348,36 @@
 
   /* Skeleton rows take no pointer, so the row hover never reaches them. */
   .sf-list__row--skeleton { pointer-events: none; }
+
+  /* 1.16.0 (C130, C148 (1)): the skeleton row's leading place is the place
+     its rows draw, so the title bar starts where the title will. A list with
+     avatars and a second line keeps the avatar's control height, as
+     .sf-list--lead-wide does for the rows; the skeleton says it itself, since
+     the rows it stands for may have been taken away for the reload. */
+  .sf-list__skeleton--lead-wide { --sf-list--lead-size: var(--sf-list--lead-block); }
+
+  /* The place's shape, drawn in the skeleton fill with its pulse: an
+     avatar's box is sf-avatar's own (its size or line class and its shape,
+     from the avatars sheet); an icon's is the row's line square with the
+     control radius (C130 (1)). */
+  .sf-list__lead-skeleton {
+    flex: none;
+  }
+
+  /* The fill is core's (.sf-first-paint-fill, in sf.base); the avatars
+     sheet's .sf-avatar paints its own plate in sf.components, so the place
+     says the skeleton fill again here, above it. */
+  .sf-list__lead-skeleton.sf-first-paint-fill {
+    background-color: var(--sf-skeleton-base);
+    animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
+  }
+
+  .sf-list__lead-skeleton--icon {
+    display: block;
+    inline-size: var(--sf-list--lead-line);
+    block-size: var(--sf-list--lead-line);
+    border-radius: var(--sf-radius--ui);
+  }
 }
 
 /* Under a finger (1.2.0) every row, the rename field, the loading rows and
@@ -439,5 +469,13 @@
   .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--divided {
     position: static;
     overflow: visible;
+  }
+}
+
+/* The leading place's pulse stops with the bars' under reduced motion (core
+   .sf-first-paint-bar). */
+@media (prefers-reduced-motion: reduce) {
+  @layer sf.components {
+    .sf-list__lead-skeleton.sf-first-paint-fill { animation: none; }
   }
 }

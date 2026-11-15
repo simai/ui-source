@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.12.0",
+  "version": "1.16.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -91,7 +91,7 @@
       "loading": {
         "type": "boolean",
         "default": false,
-        "description": "The first page is on its way: three skeleton rows of the list's size, each as tall as the row that replaces it (the caption row until rows were shown, then the shape of the rows shown), their words core's pulsing first-paint bars (C130, C136)."
+        "description": "The first page is on its way: three skeleton rows of the list's size, each as tall as the row that replaces it (the caption row until rows were shown, then the shape of the rows shown, their leading icon or avatar place included, so the title starts where it will), their words core's pulsing first-paint bars (C130, C136, C148 (1))."
       },
       "size": {
         "type": "string",
@@ -759,15 +759,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "9464c9a651ee74b1e9f37ea51f102d9dc950b7adb1e916061e29486f28a2c2ce"
+        "sha256": "5c408c32d00355d13ec235e97a1ab44c59e316a3b3b7b0fe5d44957ba0894852"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "c0ed4bba9eb420c8daf6654f9a0acd31ac9e200f92dcc3634b00093e49642001"
+        "sha256": "d5b1967143da1268b1bd9092e7bef7fe693cda52b6f5cae6c75efe7bc92dfb5a"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "e42e6b1ffbdb87563e8ab2906aff50a229247da051abf229665b1986577c0a94"
+        "sha256": "261b4c621fe127c34b3aa4b7af28d58038bfcbefe0a0f964e17588584c99969f"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -775,11 +775,11 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "70a24bc79a4de04cb0233899a622da8588b70a79a4c7bac64e00d590f400722c"
+        "sha256": "be54b894c6a44911dd02b7cb6629c7d4af59da9512617ea3508e336354295c24"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "1a37c4309d7598a1d6b5fed0c9271f912fdbbbb6762ab471d324604c4dc87117"
+        "sha256": "72c9a4e15830f593e055918ad561bbf4d4d6d4f6026fcebaf1365f127f292d34"
       },
       {
         "path": "src/smart/list/lang/en.json",
