@@ -113,7 +113,8 @@ test('the drag module is unchanged: the sortable bundle defines the element exte
   assert.match(inserter, /ensureAccessibilityNodes\(\) \{\s*super\.ensureAccessibilityNodes\(\);[\s\S]{0,120}this\.inserterController\?\.ensure\(\);/);
   // Instructions are written only when they change: the list observes itself.
   assert.match(inserter, /if \(next !== current\) this\.instructions\.textContent = next;/);
-  assert.match(entry, /defineSortable\(inserterRegistry\(\), \{base: manifestHost\(manifest, /);
+  // The handle's move menu (C171 (1)) extends it the same way, over the inserter's registry.
+  assert.match(entry, /defineSortable\(moveMenuRegistry\(inserterRegistry\(\)\), \{base: manifestHost\(manifest, /);
   assert.match(entry, /SORTABLE_INSERT_EVENT, SORTABLE_INTENT_EVENT/);
   assert.doesNotMatch(overlay, /sortable-inserter/);
 });
@@ -146,6 +147,8 @@ test('the inserter is the standard menu, and Escape is its layer alone', async (
   assert.match(menu, /holdOpenSurfaceMark\(this, true, \{onOutsidePress: this\._onOutsidePress\}\);/);
   // The point is a native button of the smallest rung, a tab stop after the items.
   assert.match(source, /sf-icon-button--size-1\/3/);
+  // Under a finger the phone's step 36 (rung 1) with a 44 target (SO-5).
+  assert.match(source, /finger \? 'sf-icon-button--size-1' :/);
   assert.match(source, /control\.compareDocumentPosition\(last\) & globalThis\.Node\.DOCUMENT_POSITION_FOLLOWING/);
 });
 

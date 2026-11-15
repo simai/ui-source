@@ -128,6 +128,7 @@
     "src/core/js/composition/routing.mjs",
     "src/core/js/composition/schema-name.mjs",
     "src/core/js/composition/sortable-inserter.mjs",
+    "src/core/js/composition/sortable-move-menu.mjs",
     "src/core/js/composition/sortable.mjs",
     "src/core/js/composition/tree.mjs",
     "src/core/js/composition/utilities.mjs",
@@ -242,7 +243,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "77dff9f71fd07a80ee02fa694076b27729460c6a0b3882377c71baaff0a6c09f",
+  "content_sha256": "4ee6e56120ff90e4ceb4c63c9cc35ea06f779b0fe74c62291e36681ba293927d",
   "dependencies": [
     {
       "id": "core.styles",
