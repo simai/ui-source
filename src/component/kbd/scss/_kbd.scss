@@ -302,6 +302,25 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
     display: none;
   }
 
+  // A combination written as notation in text (owner decision C191 (9),
+  // 2026-11-15): <kbd data-sf-shortcut="mod+k"></kbd> is filled by this
+  // component's script with the caps the shared helper draws (js/shortcut.js).
+  // Until it is filled an empty one draws nothing rather than an empty plate.
+  :where(kbd[data-sf-shortcut]:empty) {
+    display: none;
+  }
+
+  // The words a screen reader says for the caps (C191 (10)): read, never
+  // seen, and out of the group's flex row (an absolute box takes no gap).
+  :where(.sf-kbd-spoken) {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   @media (forced-colors: active) {
     :where(#{$key}) {
       border-color: CanvasText;
