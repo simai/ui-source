@@ -8,6 +8,7 @@
   "sheets": [
     "component/badges/css/badges.min.css",
     "component/breadcrumbs/css/breadcrumbs.min.css",
+    "component/button-group/css/button-group.min.css",
     "component/buttons/css/buttons.min.css",
     "component/checkbox/css/checkbox.min.css",
     "component/close/css/close.min.css",
@@ -47,6 +48,7 @@
     "reference": [
       "component/badges/css/badges.min.css",
       "component/breadcrumbs/css/breadcrumbs.min.css",
+      "component/button-group/css/button-group.min.css",
       "component/buttons/css/buttons.min.css",
       "component/checkbox/css/checkbox.min.css",
       "component/close/css/close.min.css",
