@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.3.2');
+  assert.equal(manifest.version, '1.3.3');
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'drawer', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -166,8 +166,13 @@ test('C179: footer gap, names, window sizes, the phone footer and the Framework 
   assert.match(template, /context\.phone \? 'full' : context\.shape === 'column' \? 'wide' : 'form'/u);
   assert.match(template, /<sf-drawer class="sf-wizard-drawer" heading=\$\{name\} size="2" placement="inline-end">/u);
   assert.doesNotMatch(template, /show-header="false"|width="min\(48rem/u);
-  // (4): the footer sticks to the window's bottom on a phone.
-  assert.match(sheet, /\.sf-wizard--window \.sf-wizard-footer \{\n\s+position: sticky;/u);
+  // (4): the footer sticks to the window's bottom on a phone -- by the
+  // wizard's own width below the container step g5, not the screen's
+  // (C181 (2), 1.3.3; the browser test wizard-container-c181 measures it).
+  const narrow = sheet.indexOf('@container sf-wizard (width < #{mq.container-step(g5)}) {');
+  assert.ok(narrow > 0, 'the window footer rule is a container condition at g5');
+  assert.match(sheet.slice(narrow + 1), /^[^@]*\.sf-wizard--window \.sf-wizard-footer \{\n\s+position: sticky;/u);
+  assert.doesNotMatch(sheet, /@media[^{]*(?:breakpoint-array|min-width|max-width|width <)/u, 'no screen-width query in the sheet');
   // (5), WZ-6: no browser words.
   assert.doesNotMatch(code, /: control\.validationMessage;/u);
   assert.match(source, /typeof field\?\.sfShownMessage === 'function'/u);

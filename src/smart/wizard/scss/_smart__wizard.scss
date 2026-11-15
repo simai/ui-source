@@ -451,30 +451,39 @@
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
-/* On a phone a window or a side panel takes the whole screen (C159 (2),
-   C157 (4), C179 (4)) and the footer stays at its bottom while the step
-   scrolls: it sticks to the end of the window's scroll box on the window's
-   surface. Back keeps the start and the main the end (C179 (1)); the two
-   halves share the row (C179 (4)). */
-@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
-  /* The frame fills the screen-high window: its holder (the window's
-     content box) and the frame grow, the step's body takes the room, so a
-     short step leaves the footer at the screen's bottom too. */
-  :where(.sf-modal-content):has(> .sf-wizard-window) {
-    flex: 1 1 auto;
-  }
+/* A window or a side panel on a phone takes the whole screen (C159 (2),
+   C157 (4), C179 (4)): the window's size, a page frame the wizard picks in
+   script (size full below sm, index.js). The frame then fills it: its holder
+   (the window's content box) and the frame grow, so a short step leaves the
+   footer at the window's bottom. These rules hold in every window: where the
+   window is as tall as its content (form and wide sizes) there is no room to
+   grow into and nothing moves; only the step's body below takes the room. */
+:where(.sf-modal-content):has(> .sf-wizard-window) {
+  flex: 1 1 auto;
+}
 
-  .sf-wizard-window:has(> .sf-wizard--window) {
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    min-block-size: 100%;
-  }
+.sf-wizard-window:has(> .sf-wizard--window) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-block-size: 100%;
+}
 
-  .sf-wizard--window {
-    flex: 1 1 auto;
-  }
+.sf-wizard--window {
+  flex: 1 1 auto;
+}
 
+/* A narrow frame in a window (below the container step g5, 30rem of its own
+   width; C181 (2)): the step's body takes the room and the footer stays at
+   the window's bottom while the step scrolls: it sticks to the end of the
+   window's scroll box on the window's surface. Back keeps the start and the
+   main the end (C179 (1)); the two halves share the row (C179 (4)). It read
+   the screen's sm step (32rem) before. A phone's window is the screen less
+   its frame, 16 px each side: below sm the frame is below 32rem less 2rem,
+   g5, so every phone draws it as before. Now a narrow window on a wide screen
+   draws it too, and a frame of 30rem or more on a phone-wide screen (a window
+   in a wide overlay container) does not. */
+@container sf-wizard (width < #{mq.container-step(g5)}) {
   .sf-wizard--window > .sf-wizard-main {
     flex: 1 1 auto;
   }
