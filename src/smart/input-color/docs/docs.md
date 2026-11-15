@@ -102,6 +102,10 @@ chevron's size, half the frame's inset from the value and from the chevron.
 The theme variant's reset beside the circle stands outside a field and keeps
 its plate.
 
+Without an action the value stands half the frame's inset from the chevron
+(1.13.0, owner decision C123): 6, 7, 8, 10 and 12 at the sizes 1/3, 1/2, 1, 2
+and 3 on a desktop, the steps of every glyph in a field.
+
 ## Brand colour (`variant="brand"` and `variant="theme"`)
 
 The brand colour is a mode of this field (C84; `sf-theme-generator` leaves on
