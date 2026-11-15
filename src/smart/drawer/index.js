@@ -140,12 +140,11 @@ function seenBox(element) {
   return inner ? inner.getBoundingClientRect() : own;
 }
 
-const FOCUSABLE = 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-
-// What takes the focus back for a switch: itself, or its button.
+// What takes the focus back for a switch: itself, or its button (the layer
+// stack's one list of what takes focus).
 function focusTarget(element) {
   if (!(element instanceof HTMLElement)) return null;
-  return element.matches(FOCUSABLE) ? element : element.querySelector(FOCUSABLE) || null;
+  return focusablesIn(element.parentElement || element).find((node) => node === element || element.contains(node)) || null;
 }
 
 // A close of the page's own in the drawer's content (data-drawer="close").
@@ -687,10 +686,11 @@ class SfDrawer extends DrawerElement {
     const fromEdge = (edgeLeft ? axis - box.left : box.right - axis) - border;
     const headStyle = getComputedStyle(head);
     const other = parseFloat(side === 'start' ? headStyle.paddingInlineEnd : headStyle.paddingInlineStart) || 0;
-    const room = box.width - border - width - other;
-    const inset = Math.max(0, Math.min(fromEdge - width / 2, room));
+    const limit = box.width - border - width - other;
+    // The head's room before the close on its side.
+    const room = Math.round(Math.max(0, Math.min(fromEdge - width / 2, limit)) * 100) / 100;
     root.setAttribute('data-sf-drawer-close-axis', side);
-    root.style.setProperty('--sf-drawer--close-axis', `${Math.round(inset * 100) / 100}px`);
+    root.style.setProperty('--sf-drawer--close-axis', `${room}px`);
   }
 
   // A modal drawer -- the default -- covers the page while it floats over it:
