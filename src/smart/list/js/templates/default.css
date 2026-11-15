@@ -258,6 +258,19 @@
     padding-inline-start: 0;
   }
 
+  /* A narrow row with a caption keeps its caption row's padding and adds the
+     band and the meta as whole lines (register smart-2 RG-S2-34; C49, C18
+     multi-line rows): its caption row is the C49 floor -- the 1/2 step
+     (--sf-d1 under a finger) and a 1/3 line -- drawn as padding, not as a
+     least height the grown row passes. It fell back to the next step's
+     padding: 64 against 72 at 1/2, 60 against 80 under a finger on a phone,
+     its words on the row's edges. */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item.sf-list-item--two-line:has(> .sf-list-item-wrap > .sf-list__meta:not(:empty)) {
+    --sf-list--caption-block: calc((var(--sf-list-item--caption-step, var(--sf-ui-1\/2--control-height)) + var(--sf-text-height-1\/3) - var(--sf-list--line-height) - var(--sf-list-item-supporting--line-height, var(--sf-text-height-1\/3))) / 2);
+    --sf-list-item--padding-top: max(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)), var(--sf-list--caption-block));
+    --sf-list-item--padding-bottom: max(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)), var(--sf-list--caption-block));
+  }
+
   .sf-list__body,
   .sf-list__group {
     display: flex;

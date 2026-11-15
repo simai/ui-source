@@ -328,6 +328,6 @@ test('the manifest names the new setting and the new default', async () => {
   assert.equal(manifest.settings.siblings.default, false);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-menu-context' && relation.lazy === true));
   const passport = JSON.parse(await read('src/component/breadcrumbs/passport.json'));
-  assert.equal(passport.version, '1.1.6'); // 1.1.5: the words in lang files (LC-4); 1.1.6: they name sf-breadcrumbs for a language pack (C177)
+  assert.equal(passport.version, '1.1.7'); // above every branch's 1.1.6 (register smart-2)
   assert.ok(passport.files.includes('src/component/breadcrumbs/js/_trail.js'));
 });

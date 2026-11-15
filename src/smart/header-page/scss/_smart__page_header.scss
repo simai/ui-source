@@ -1,3 +1,6 @@
+@use "sass:map";
+@use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+
 @layer sf.components {
 /* The head of an admin page. The public variables (standard 1.3.8 §6): the gap
    between the path and the line, the line's gap, the actions' gap, the
@@ -181,6 +184,33 @@
 
 :is(sf-header-page, sf-page-header)[data-scrolled='true'] > .sf-page-header--sticky > .sf-page-header-path {
   display: none;
+}
+
+/* core.css holds the drawn head at its height (from the attributes and the
+   slots, --sf-page-header--box), clipped, its rows out of view, until this
+   sheet arrives (register smart-2 RG-S2-5, the first paint without printed
+   markup); with the sheet the head is as tall as its rows. */
+.sf-page-header {
+  block-size: auto;
+  overflow: visible;
+}
+
+.sf-page-header > * {
+  visibility: inherit;
+}
+
+/* An action whose code has not come yet is no box: the line holds the
+   actions' control height core worked out from their size, on a phone with
+   their own line under the heading as core's box does, until every action
+   has drawn. */
+.sf-page-header-line:has(> .sf-page-header-actions > :not(:defined)) {
+  min-block-size: max(var(--sf-ui-1\/2--control-height), var(--sf-page-header--box-actions, var(--sf-ui-1--control-height)));
+}
+
+@media (width < map.get(bp.$breakpoint-array, sm)) {
+  .sf-page-header-line:has(> .sf-page-header-actions > :not(:defined)) {
+    min-block-size: calc(var(--sf-page-header--box-line, var(--sf-heading-4--height)) + var(--sf-page-header-line-gap, var(--sf-space-1)) + var(--sf-page-header--box-actions, var(--sf-ui-1--control-height)));
+  }
 }
 
 /* The icon button's schemes set the glyph's ink on its button, so the
