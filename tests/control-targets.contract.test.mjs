@@ -28,6 +28,20 @@ test('control targets: checkbox, radio and switch reach 24px around a smaller ma
   }
 });
 
+/* Docs batch B, FW-B-4: a checkbox box at the row's end grew its 24px hit area
+   evenly, 2px past the row on a 20 box, and the page scrolled sideways at
+   390. There the hit area grows towards the text: its inline end stays on
+   the box's outer edge (measured: 0 past the row at 1440, compact and 390,
+   LTR and RTL; still 24x24). */
+test('control targets: a checkbox box at the row end keeps its hit area inside the row', async () => {
+  const css = await read('component/checkbox/scss/_custom__checkbox.scss');
+  const start = css.indexOf(".sf-checkbox > .sf-checkbox-container + .sf-checkbox-box:last-child > input[type='checkbox'] {");
+  assert.ok(start >= 0);
+  const rule = css.slice(start, css.indexOf('}', start));
+  assert.match(rule, /inset-inline-start: auto;/);
+  assert.ok(rule.includes('inset-inline-end: max(calc(-1 * var(--sf-checkbox-border-width, var(--sf-px))), min(0px, calc((100% - var(--sf-c2)) / 2)));'));
+});
+
 /* A phone field was 2px taller than the field beside it at every size. It now
    follows the composition standard: the control height outright and the
    padding giving up the border. Owner C87 (variant V4): the flag is 7:5 at
