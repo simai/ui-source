@@ -1,0 +1,27 @@
+{
+  "id": "recent-clear-answers-the-empty-list",
+  "intent": "recent.clear",
+  "capability": "recent",
+  "summary": "Every recent query removed at once is answered with the empty list the host now keeps; nothing is taken as done because the panel asked for it.",
+  "given": {
+    "capabilities": [
+      "recent"
+    ],
+    "recent": [
+      "theme",
+      "button",
+      "table"
+    ]
+  },
+  "when": {
+    "intent": "recent.clear",
+    "payload": {}
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "recent"
+    ],
+    "note": "recent is []. A host that refuses the clear answers refused with a reason and keeps its list; the panel then still shows the three queries, because what it draws is what the host last answered."
+  }
+}

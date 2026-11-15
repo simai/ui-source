@@ -1,0 +1,32 @@
+{
+  "id": "recent-page-forgotten-by-id",
+  "intent": "recent.forget",
+  "capability": "recent",
+  "summary": "A page of the recent list removed by its cross is named by its id; the host answers the whole list, queries and pages.",
+  "given": {
+    "capabilities": [
+      "recent"
+    ],
+    "recent": [
+      "таблица",
+      {
+        "id": "p1",
+        "title": "Таблица в рамке",
+        "url": "/utilities/table"
+      }
+    ]
+  },
+  "when": {
+    "intent": "recent.forget",
+    "payload": {
+      "id": "p1"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "recent"
+    ],
+    "note": "Up to five queries and three pages are drawn; recent.clear removes both."
+  }
+}

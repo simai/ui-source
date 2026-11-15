@@ -2705,10 +2705,15 @@
         "uses": [
           "component.icons",
           "component.kbd",
+          "smart.avatar",
+          "smart.badge",
           "smart.button-icon",
           "smart.empty-state",
           "smart.icon",
-          "smart.spinner"
+          "smart.spinner",
+          "smart.tag",
+          "smart.tag-group",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -2720,7 +2725,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/search/smart.manifest.json",
-      "manifest_sha256": "094a92e9e188bd2d1e56e4ee7228aa2704eb36429697dafc1c4f9b1b291447c4",
+      "manifest_sha256": "a2b4ac4aed35a021f5dfb5a30958a2b51f5714cae5a4999a81b1e75f03c80585",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -1,0 +1,30 @@
+{
+  "id": "scope-is-a-field-of-the-query",
+  "intent": "query.change",
+  "capability": "scopes",
+  "summary": "A scope pressed is the same question as a keystroke: query.change with scope set, never an intent of its own.",
+  "given": {
+    "capabilities": [
+      "scopes"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 6,
+      "query": "tab",
+      "scope": "components",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo",
+      "scopes"
+    ],
+    "note": "One keystroke and one scope click ask the same thing, «what matches now», so the port has one read. scope is a hint: the panel filters what it holds by group as well, so a host that answers every group still draws the right rows."
+  }
+}

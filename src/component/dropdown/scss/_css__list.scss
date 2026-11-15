@@ -270,10 +270,9 @@
     background-color: var(--sf-list--background-color, var(--sf-surface-place));
     padding-block: var(--sf-space-1\/4);
     padding-inline: var(--sf-list-item--padding-inline-start, var(--sf-space-1\/2));
-    color: var(--sf-on-surface-variant);
-    font-size: var(--sf-label-small--size);
-    line-height: var(--sf-label-small--height);
-    font-weight: var(--sf-weight-medium, 500);
+    /* The popup group heading (C175 (3)): 12/16 medium, as the menu's and
+       the search's; it was the 10/12 label. */
+    @include panel.group-heading;
   }
 
   .sf-list-heading:not(:first-child) {

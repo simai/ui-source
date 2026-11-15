@@ -1,0 +1,33 @@
+{
+  "id": "query-echoes-what-it-answered",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "The answer echoes the query the host read: its own trimming and its own idea of the scope, so the panel can tell an answer to the question it is asking now from an answer to another one.",
+  "given": {
+    "capabilities": [
+      "scopes"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 2,
+      "query": "  tab ",
+      "scope": "components",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "echo_must_include": {
+      "query": "tab",
+      "scope": "components"
+    },
+    "note": "echo.query is what the host searched for, echo.scope the scope it applied. A host that ignores the scope echoes it empty, and the panel then filters what it holds by group itself."
+  }
+}

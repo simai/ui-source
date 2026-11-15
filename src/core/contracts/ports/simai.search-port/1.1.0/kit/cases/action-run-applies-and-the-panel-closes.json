@@ -1,0 +1,24 @@
+{
+  "id": "action-run-applies-and-the-panel-closes",
+  "intent": "action.run",
+  "capability": "actions",
+  "summary": "A command result chosen is run by the host: applied closes the panel, and only the host knows what the command did.",
+  "given": {
+    "capabilities": [
+      "actions",
+      "recent"
+    ],
+    "recent": []
+  },
+  "when": {
+    "intent": "action.run",
+    "payload": {
+      "id": "theme",
+      "query": "the"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "note": "The panel waits with the card busy and closes on applied; it never guesses what a command does and never runs one itself. A command is a result with no url and kind action, so one list, one keyboard and two outcomes make the documentation search and the command palette one component with different hosts. The answer may carry recent, as result.open may."
+  }
+}

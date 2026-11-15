@@ -1,7 +1,9 @@
-// sf-search: the site search of a SIMAI site -- a window with a large rounded
-// field and a separate results card under it, over a light scrim; a
-// full-screen sheet on a phone. Variant 1 «Прожектор» of the owner's prototype
-// (ui-control prototypes/search-and-settings.html, approved 2026-10-30).
+// sf-search: the one search window of a SIMAI site or app -- pages, records
+// and commands (owner decision C162 (1); the admin palette is a host of it).
+// One surface over the shared scrim: the field is its frameless head with a
+// line under it, then the filters, the rows and, after the first arrow key,
+// one line of key hints (owner decision C175, prototype ui-control
+// prototypes/search-window-study.html); the whole screen below lg (C162 (7)).
 //
 // The trigger is the page's: an element in the trigger slot (the default slot)
 // or one named by `for`; a key opens the window too (`shortcut`, Command or
@@ -13,7 +15,7 @@
 // carrying the host's language, direction, theme and public variables, so no
 // stacking context of the page (a sticky header) holds it under the page.
 //
-// The panel asks a host through simai.search-port 1.0.0 (§4.9, declared in
+// The panel asks a host through simai.search-port 1.1.0 (§4.9, declared in
 // component.json): six intents on one event, one answer envelope, every read
 // sequenced. It fetches nothing itself -- the index, the ranking, the access
 // and what a command does are the host's. The capability says what is
@@ -37,8 +39,8 @@ import BundledPreferences from '../../core/js/preferences.js';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, landmarksAround, openLayer, returnLayerFocus} from '../../core/js/layer-stack';
-import {renderSearchTemplate, renderSearchWindow} from './js/templates/default';
-import {PORT_ID, RESULT_LIMIT, SUPPORTED_PORT_VERSIONS, builtinSearchHost, indexHost, providerHost, recentStore} from './js/host';
+import {ALL_SCOPE_KEY, renderSearchTemplate, renderSearchWindow} from './js/templates/default';
+import {PORT_ID, RECENT_LIMIT, RECENT_PAGES_LIMIT, RESULT_LIMIT, SUPPORTED_PORT_VERSIONS, builtinSearchHost, indexHost, providerHost, recentStore} from './js/host';
 import manifest from './component.json';
 import enFile from './lang/en.json';
 import ruFile from './lang/ru.json';
@@ -60,6 +62,13 @@ const ANSWERS = ['applied', 'refused', 'unavailable'];
 // intent of a capability the host did not announce is never raised.
 const INTENT_CAPABILITY = {'result.preview': 'preview', 'action.run': 'actions',
   'recent.forget': 'recent', 'recent.clear': 'recent'};
+// The rows a group shows in the window (owner decision C175 (9)): the rest is
+// on the product's results page, reached by the group's last row.
+export const GROUP_ROWS = 5;
+// The operators sf-search knows (C175 (8)): their words are the interface
+// language's (lang operator-<id>), and the English ids are read too.
+export const OPERATORS = ['from', 'subject', 'has', 'date'];
+const OPERATOR_ICON = {from: 'person', subject: 'subject', has: 'attach_file', date: 'event'};
 // Which block a setting wants, and the capability it wants it over; path and
 // keys are the panel's own, so they have no capability.
 const BLOCK_CAPABILITY = {scopes: 'scopes', recent: 'recent', popular: 'popular', actions: 'actions'};
@@ -190,6 +199,21 @@ class SfSearch extends SearchElement {
     this._portRequested = false;
     this._querySequence = 0;
     this._previewSequence = 0;
+    // The pages last opened (C162 (6)), kept beside the recent queries.
+    this.recentPages = [];
+    // A command's next steps open in the same window (C175 (7)): the stack of
+    // commands entered, each with the words that stood in the field.
+    this.steps = [];
+    // The operators turned into tags (C175 (8)), the one being typed, and
+    // the operators the host reads.
+    this.tokens = [];
+    this.draft = null;
+    this.operatorList = [];
+    // The key hints wait for the first arrow key (R252, C175 (11)).
+    this.keysUsed = false;
+    // A sentence for the screen reader that is not the count: a scope
+    // pressed, a step opened, a link copied (SW-20).
+    this.announcement = '';
     this._previewMedia = breakpointMedia(PREVIEW_STEP);
     this._onPreviewMedia = () => this.onPreviewRoomChange();
     this._onDocumentKeydown = (event) => this.onDocumentKeydown(event);
@@ -317,6 +341,11 @@ class SfSearch extends SearchElement {
     this.notice = '';
     this.answer = null;
     this.previewOf = null;
+    this.steps = [];
+    this.tokens = [];
+    this.draft = null;
+    this.keysUsed = false;
+    this.announcement = '';
     this.sfHostState('data-open', true);
     this.mountPortal();
     const contained = this._contained;
@@ -436,27 +465,48 @@ class SfSearch extends SearchElement {
     if (!(event.target instanceof Element) || !event.target.closest('input')) event.preventDefault();
   }
 
-  // Escape: a filled field is cleared first, an empty one closes the window.
+  // Escape: from a row's buttons back to the field (C148 (3)); a filled field
+  // is cleared first (C153 (6)); in a command's step it goes back a step
+  // (C175 (7)); an empty field closes the window.
   onEscape(event) {
     if (event.defaultPrevented || !this.isOpen || !isTopLayer(this)) return false;
+    if (document.activeElement?.closest?.('.sf-search-row-actions')) {
+      this.focusField();
+      return true;
+    }
     if (this.query) {
       this.setQuery('');
+      return true;
+    }
+    if (this.steps.length) {
+      this.leaveStep();
       return true;
     }
     this.close({reason: 'escape'});
     return true;
   }
 
-  // The X in the field: the same two steps as Escape.
+  // The X in the field, drawn only while there is something to clear (SW-3):
+  // the words, then the operator tags; it is not a Tab stop.
   onClearPress() {
     if (this.query) this.setQuery('');
+    else if (this.tokens.length) this.setTokens([]);
+    else this.focusField();
+  }
+
+  // The arrow at the head's start: back a step, else (on a phone, where it
+  // stands for the window's close) close.
+  onBackPress() {
+    if (this.steps.length) this.leaveStep();
     else this.close({reason: 'close'});
   }
 
   onTab(event) {
     if (!this.isOpen) return;
     const root = this.dialog();
-    const items = focusablesIn(root);
+    // The Tab stops alone: the rows (links), the X and a row's buttons are
+    // reached by the arrows, so their tabindex -1 keeps them off the cycle.
+    const items = focusablesIn(root).filter((node) => node.tabIndex >= 0);
     if (!items.length) return;
     const first = items[0];
     const last = items.at(-1);
@@ -478,6 +528,8 @@ class SfSearch extends SearchElement {
   onInput(event) {
     this.query = event.target.value;
     this.selected = 0;
+    this.announcement = '';
+    this.readDraft();
     this.scheduleLoad();
     this.renderWindow();
   }
@@ -487,15 +539,68 @@ class SfSearch extends SearchElement {
     const count = this._view?.rowCount ?? 0;
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
-      if (!count) return;
+      // The key hints appear with the first arrow and stay until the window
+      // closes (R252, C175 (11)).
+      if (!this.keysUsed) this.keysUsed = true;
+      if (!count) {
+        this.renderWindow();
+        return;
+      }
       const step = event.key === 'ArrowDown' ? 1 : -1;
       this.selected = (this.selected + step + count) % count;
       this.renderWindow({reveal: true});
       this.askPreview();
     } else if (event.key === 'Enter') {
       event.preventDefault();
-      if (count) this.choose(this.selected);
+      if (!count) return;
+      // Ctrl or Command with Enter: a page in a new tab (C175 (6)).
+      if (event.ctrlKey || event.metaKey) this.openInNewTab(this.selected);
+      else this.choose(this.selected);
+    } else if (event.key === (getComputedStyle(this._portal).direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight')
+      && this.atFieldEnd() && this.rowActions().length) {
+      // To the selected row's buttons (C148 (3)), toward the row's end: →,
+      // ← in a right-to-left page; the other arrow or Escape comes back.
+      event.preventDefault();
+      this.rowActions()[0].focus();
+    } else if (event.key === 'Backspace' && !event.target.value && event.target.selectionStart === 0) {
+      // Backspace on an empty field: back a step, else the last tag goes
+      // (C175 (7), (8)).
+      if (this.steps.length) {
+        event.preventDefault();
+        this.leaveStep();
+      } else if (this.tokens.length) {
+        event.preventDefault();
+        this.setTokens(this.tokens.slice(0, -1));
+      }
     }
+  }
+
+  atFieldEnd() {
+    const input = this.field();
+    return Boolean(input) && input.selectionStart === input.value.length && input.selectionEnd === input.value.length;
+  }
+
+  // The selected row's own buttons (C175 (6), C148 (3)): drawn buttons of the
+  // selected row, in order.
+  rowActions() {
+    const row = this._portal?.querySelector('.sf-search-row--selected');
+    return Array.from(row?.querySelectorAll('.sf-search-row-actions button') ?? []);
+  }
+
+  // The arrows walk the row's buttons; ← from the first, or Escape, goes back
+  // to the field.
+  onRowActionsKeydown(event) {
+    const buttons = this.rowActions();
+    const at = buttons.indexOf(document.activeElement);
+    if (at < 0) return;
+    const rtl = getComputedStyle(this._portal).direction === 'rtl';
+    const next = event.key === (rtl ? 'ArrowLeft' : 'ArrowRight');
+    const previous = event.key === (rtl ? 'ArrowRight' : 'ArrowLeft');
+    if (!next && !previous) return;
+    event.preventDefault();
+    if (next && at < buttons.length - 1) buttons[at + 1].focus();
+    else if (previous && at > 0) buttons[at - 1].focus();
+    else if (previous) this.focusField();
   }
 
   setQuery(value) {
@@ -503,6 +608,8 @@ class SfSearch extends SearchElement {
     if (input) input.value = value;
     this.query = value;
     this.selected = 0;
+    this.announcement = '';
+    this.readDraft();
     this.scheduleLoad();
     this.renderWindow();
     this.focusField();
@@ -510,13 +617,117 @@ class SfSearch extends SearchElement {
 
   // A scope pressed is the same question as a keystroke (the port: scope is a
   // field of query.change, never an intent of its own), so the host is asked
-  // again; the panel also filters what it holds, so the pills answer at once.
-  setScope(id) {
+  // again; the panel also filters what it holds, so the tags answer at once.
+  // The tags are one sf-tag-group of single choice (C175 (4)): the focus stays
+  // on the tag pressed, and the reader hears the scope and its count.
+  setScope(id, {focus = true} = {}) {
     this.scope = id;
+    this.selected = 0;
+    const scope = this._view?.scopes?.find((one) => one.id === id);
+    this.announcement = scope ? `${scope.label}: ${this.sfWord('count-text', {count: scope.count})}` : '';
+    this.renderWindow();
+    if (focus) this.focusField();
+    this.askQuery(this.query.trim());
+  }
+
+  // sf-tag-group's select: a tag chosen is the scope; the chosen tag cleared
+  // is «Все» again, so one tag is always chosen.
+  onScopeSelect(event) {
+    event.stopPropagation();
+    // «Все» is the tag of no scope; a scope released is «Все» again.
+    const {id, selected} = event.detail ?? {};
+    const key = String(id ?? '');
+    this.setScope(selected && key !== ALL_SCOPE_KEY ? key : '', {focus: false});
+  }
+
+  // ---------------------------------------------------------- operators
+
+  /** The operators the host reads, with the words that name them. */
+  operators() {
+    if (!this.hostOffers('operators')) return [];
+    const listed = this.operatorList.length ? this.operatorList : OPERATORS.map((id) => ({id, suggest: false}));
+    return listed.filter((one) => OPERATORS.includes(one.id)).map((one) => ({
+      ...one,
+      word: this.sfWord(`operator-${one.id}`),
+    }));
+  }
+
+  // An operator being typed at the end of the field (C175 (8)): its word in
+  // the interface language or in English, a colon, and what follows it.
+  readDraft() {
+    const known = this.operators();
+    this.draft = null;
+    if (!known.length) return;
+    const match = /(^|\s)([\p{L}]+):\s*([^:]*)$/u.exec(this.query);
+    if (!match) return;
+    const word = match[2].toLowerCase();
+    const operator = known.find((one) => one.word.toLowerCase() === word || one.id === word);
+    if (!operator) return;
+    this.draft = {id: operator.id, word: operator.word, suggest: Boolean(operator.suggest), value: match[3].trim(),
+      before: this.query.slice(0, match.index + match[1].length).trim()};
+  }
+
+  setTokens(list) {
+    this.tokens = list;
     this.selected = 0;
     this.renderWindow();
     this.focusField();
     this.askQuery(this.query.trim());
+  }
+
+  // A value chosen for the operator being typed: it becomes a tag, and the
+  // words before the operator stay the query.
+  addToken(token) {
+    const before = this.draft?.before ?? '';
+    this.draft = null;
+    this.tokens = [...this.tokens.filter((one) => !(one.id === token.id && one.value === token.value)), token];
+    const input = this.field();
+    if (input) input.value = before ? `${before} ` : '';
+    this.query = input?.value ?? '';
+    this.selected = 0;
+    this.renderWindow();
+    this.focusField();
+    this.askQuery(this.query.trim());
+  }
+
+  // «Уточнить»: an operator chosen from the empty window starts it in the field.
+  startOperator(operator) {
+    const now = this.query.trim();
+    this.setQuery(`${now ? `${now} ` : ''}${operator.word}: `);
+  }
+
+  // ---------------------------------------------------------- steps
+
+  // A command with steps opens its next step in the same window (C175 (7)):
+  // its tag in the field, the back arrow, the options as rows.
+  enterStep(item) {
+    this.steps = [...this.steps, {id: item.id, title: text(item.title), icon: text(item.icon), query: this.query}];
+    const input = this.field();
+    if (input) input.value = '';
+    this.query = '';
+    this.draft = null;
+    this.answer = null;
+    this.scope = '';
+    this.selected = 0;
+    this.status = 'loading';
+    this.renderWindow();
+    this.focusField();
+    this.askQuery('');
+  }
+
+  leaveStep() {
+    const left = this.steps.at(-1);
+    this.steps = this.steps.slice(0, -1);
+    const input = this.field();
+    const back = left?.query ?? '';
+    if (input) input.value = back;
+    this.query = back;
+    this.answer = null;
+    this.selected = 0;
+    this.announcement = '';
+    this.renderWindow();
+    this.focusField();
+    this.askQuery(back.trim());
   }
 
   // A row whose title or path is cut by its ellipsis shows the whole of them
@@ -532,10 +743,17 @@ class SfSearch extends SearchElement {
     else row.removeAttribute('title');
   }
 
-  // «Повторить» of the error state asks the same question again (C120 (5)).
+  // «Повторить» of the error state asks the same question again (C120 (5));
+  // «Искать во всех» of nothing found in a scope asks it of every scope
+  // (C162 (5)).
   onStateAction(event) {
     event.stopPropagation();
-    if (event.detail?.id !== 'retry') return;
+    const id = event.detail?.id;
+    if (id === 'all') {
+      this.setScope('');
+      return;
+    }
+    if (id !== 'retry') return;
     this.focusField();
     this.askQuery(this.query.trim());
   }
@@ -559,8 +777,84 @@ class SfSearch extends SearchElement {
       this.setQuery(row.text);
       return undefined;
     }
+    if (row.kind === 'refine') {
+      this.startOperator(row.operator);
+      return undefined;
+    }
+    if (row.kind === 'token') {
+      this.addToken(row.token);
+      return undefined;
+    }
+    if (row.kind === 'more') {
+      // «Все результаты: N ›» (C175 (9)): the product's results page, or,
+      // where the host named none, the group's own scope in the window.
+      if (row.url) this.followLink(row.url, {id: row.scope || 'all', group: row.scope});
+      else this.setScope(row.scope);
+      return undefined;
+    }
+    if (row.kind === 'option') return this.runAction(this.steps.at(-1), row.item.id);
     const {item} = row;
+    if (item.kind === 'action' && item.steps) {
+      this.enterStep(item);
+      return undefined;
+    }
     return item.kind === 'action' ? this.runAction(item) : this.openResult(item);
+  }
+
+  // A press on a row: a page row is a link, so Ctrl, Command or Shift with a
+  // press and the middle button are the browser's (a new tab or window); the
+  // window stays open behind them (C175 (6)). A plain press chooses the row.
+  onRowClick(event, index) {
+    if (event.defaultPrevented) return;
+    if (event.target instanceof Element && event.target.closest('.sf-search-row-actions')) return;
+    const link = event.currentTarget instanceof HTMLAnchorElement && event.currentTarget.href;
+    if (link && (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0)) return;
+    event.preventDefault();
+    this.choose(index);
+  }
+
+  /** The address of a row, absolute, or empty. */
+  rowUrl(index) {
+    const row = this._view?.rows[index];
+    const url = row?.kind === 'more' ? row.url : text(row?.item?.url);
+    if (!url) return '';
+    try {
+      return new URL(url, globalThis.location?.href).href;
+    } catch {
+      return '';
+    }
+  }
+
+  // «Открыть в новой вкладке» and Ctrl/Command+Enter: a page row in a new tab;
+  // a command or a step's option runs as Enter would.
+  openInNewTab(index) {
+    const url = this.rowUrl(index);
+    if (!url) return this.choose(index);
+    globalThis.open?.(url, '_blank', 'noopener');
+    return undefined;
+  }
+
+  // «Копировать ссылку»: the row's address on the clipboard, said once.
+  async copyLink(index) {
+    const url = this.rowUrl(index);
+    if (!url) return false;
+    let done = false;
+    try {
+      await globalThis.navigator?.clipboard?.writeText(url);
+      done = true;
+    } catch {
+      done = false;
+    }
+    this.announcement = this.sfWord(done ? 'copied-text' : 'copy-failed-text');
+    this.renderWindow();
+    return done;
+  }
+
+  followLink(href, {id = '', group = ''} = {}) {
+    const query = this.query.trim();
+    this.runClose({reason: 'api'});
+    const detail = {id, href, action: '', query, group};
+    if (this.sfEmit('navigate', detail, {cancelable: true}) && detail.href) globalThis.location?.assign(detail.href);
   }
 
   async openResult(item) {
@@ -583,11 +877,15 @@ class SfSearch extends SearchElement {
   // Only the host knows what a command does, so the panel never guesses: the
   // card is busy while it waits, an applied answer closes the window and the
   // page hears navigate with the command as `action`.
-  async runAction(item) {
-    const query = this.query.trim();
+  async runAction(item, value) {
+    if (!item) return undefined;
+    // In a step, the query recorded is the one the command was found by.
+    const query = this.steps.length ? text(this.steps[0].query).trim() : this.query.trim();
     this.running = true;
     this.renderWindow();
-    const answer = await this.raise('action.run', {id: item.id, query});
+    const payload = {id: item.id, query};
+    if (value !== undefined) payload.value = value;
+    const answer = await this.raise('action.run', payload);
     this.running = false;
     if (!answer) return answer;
     if (answer.answer !== 'applied') {
@@ -597,7 +895,9 @@ class SfSearch extends SearchElement {
     }
     this.takeRecent(answer);
     this.runClose({reason: 'api'});
-    this.sfEmit('navigate', {id: item.id, href: '', action: text(item.id), query, group: text(item.group)}, {cancelable: true});
+    const detail = {id: item.id, href: '', action: text(item.id), query, group: text(item.group)};
+    if (value !== undefined) detail.value = value;
+    this.sfEmit('navigate', detail, {cancelable: true});
     return answer;
   }
 
@@ -606,13 +906,24 @@ class SfSearch extends SearchElement {
   // The recent queries are the host's data: a removal and a clear are
   // answered with the whole list the host keeps now, and that list is what is
   // drawn -- the panel keeps no history of its own.
+  // The recent list (1.1.0): strings are queries, objects the pages last
+  // opened; up to five of one and three of the other are drawn (C162 (6)).
   takeRecent(answer) {
-    const list = strings(answer?.data?.recent);
-    if (list) this.recentList = list;
+    const list = answer?.data?.recent;
+    if (!Array.isArray(list)) return;
+    this.recentList = list.filter((entry) => typeof entry === 'string' && entry).slice(0, RECENT_LIMIT);
+    this.recentPages = list.filter((entry) => entry && typeof entry === 'object' && text(entry.title) && text(entry.url))
+      .slice(0, RECENT_PAGES_LIMIT);
   }
 
   async forgetRecent(query) {
     const answer = await this.raise('recent.forget', {query: text(query)});
+    this.afterRecent(answer);
+    return answer;
+  }
+
+  async forgetRecentPage(id) {
+    const answer = await this.raise('recent.forget', {id});
     this.afterRecent(answer);
     return answer;
   }
@@ -664,11 +975,16 @@ class SfSearch extends SearchElement {
     this.answer = null;
     this.emptyAnswer = null;
     this.recentList = [];
+    this.recentPages = [];
     this.popularList = [];
+    this.operatorList = [];
     this.previewOf = null;
     this.notice = '';
     this.statusMessage = '';
     this.scope = '';
+    this.tokens = [];
+    this.steps = [];
+    this.draft = null;
     if (this.isOpen) this.askQuery(this.query.trim());
   }
 
@@ -776,6 +1092,13 @@ class SfSearch extends SearchElement {
     clearTimeout(this._timer);
     const query = this.query.trim();
     this.notice = '';
+    // In a step, with operator tags or while an operator is typed the empty
+    // field is a question too: the step's options, the tags alone.
+    if (!query && (this.steps.length || this.tokens.length)) {
+      this.startWait();
+      this._timer = setTimeout(() => this.askQuery(''), DEBOUNCE);
+      return;
+    }
     if (!query) {
       // An empty field starts afresh: the next query waits for its own answer
       // rather than showing the last one's under new marks.
@@ -820,25 +1143,62 @@ class SfSearch extends SearchElement {
    * window opens with -- one question for all of them. The empty query is the
    * host's chance to answer the blocks (recent, popular, the commands).
    */
+  // What a question carries besides the words: the step it asks (C175 (7)),
+  // the operator tags and the operator being typed (C175 (8)).
+  queryPayload(asked, query) {
+    const payload = {sequence: asked, query, scope: this.scope || null, limit: RESULT_LIMIT, offset: 0};
+    const step = this.steps.at(-1);
+    if (step) {
+      payload.step = step.id;
+      payload.scope = null;
+      return payload;
+    }
+    if (this.hostOffers('operators')) {
+      if (this.tokens.length) payload.operators = this.tokens.map(({id, value, label}) => ({id, value: text(value), label: text(label)}));
+      if (this.draft?.suggest) {
+        payload.query = this.draft.before;
+        payload.operator = {id: this.draft.id, value: this.draft.value};
+      }
+    }
+    return payload;
+  }
+
+  // Whether the question asked is more than the empty field's blocks.
+  asksMore(query) {
+    return Boolean(query) || this.steps.length > 0 || this.tokens.length > 0;
+  }
+
   async askQuery(query) {
     this._controller?.abort();
     const controller = new AbortController();
     this._controller = controller;
     const asked = ++this._querySequence;
-    if (query) {
+    const more = this.asksMore(query);
+    if (more) {
       this.startWait();
       this.renderWindow();
     }
-    const answer = await this.raise('query.change', {sequence: asked, query,
-      scope: this.scope || null, limit: RESULT_LIMIT, offset: 0}, {signal: controller.signal, sequence: asked});
+    // An operator being typed that the host does not suggest for is the
+    // person's own words: nothing to ask until it becomes a tag.
+    if (this.draft && !this.draft.suggest) {
+      this.stopWait();
+      this.status = 'ready';
+      this.renderWindow();
+      return null;
+    }
+    const answer = await this.raise('query.change', this.queryPayload(asked, query), {signal: controller.signal, sequence: asked});
     if (this._controller === controller) this._controller = null;
     if (!answer || controller.signal.aborted || !this.isOpen || asked !== this._querySequence) return answer;
     if (answer.answer === 'applied') {
       const data = answer.data ?? {};
-      const results = (Array.isArray(data.results) ? data.results : []).filter(drawable);
+      const step = this.steps.at(-1);
+      // A step's options and an operator's suggestions need no url: they are
+      // chosen, not opened.
+      const chosen = Boolean(step) || Boolean(this.draft?.suggest);
+      const results = (Array.isArray(data.results) ? data.results : []).filter((result) => (chosen ? Boolean(result && text(result.title)) : drawable(result)));
       const echo = data.echo ?? {};
       const scopes = (Array.isArray(data.scopes) ? data.scopes : []).filter((scope) => scope && text(scope.id));
-      if (query) {
+      if (more) {
         // The panel draws the question the host answered, not the one the
         // person has since typed (echo).
         this.answer = {
@@ -847,20 +1207,28 @@ class SfSearch extends SearchElement {
           results,
           scopes,
           total: Number.isInteger(data.total) ? data.total : null,
+          more: text(data.more),
+          step: step ? step.id : null,
+          suggest: !step && this.draft?.suggest ? this.draft.id : null,
           correction: this.hostOffers('spelling') && text(data.correction?.query) ? data.correction : null,
         };
         this.status = results.length ? 'ready' : 'empty';
         this.statusMessage = '';
         this.statusKind = '';
         this.stopWait();
+        // A step opened is said with its options (C175 (7), as C157 (6)).
+        if (step && !query) this.announcement = `${step.title}, ${this.sfWord('options-text', {count: results.length})}`;
       } else {
         this.emptyAnswer = {results, scopes};
+        if (Array.isArray(data.operators)) {
+          this.operatorList = data.operators.filter((one) => one && OPERATORS.includes(one.id))
+            .map((one) => ({id: one.id, suggest: Boolean(one.suggest)}));
+        }
       }
-      const recent = strings(data.recent);
-      if (recent) this.recentList = recent;
+      this.takeRecent(answer);
       const popular = strings(data.popular);
       if (popular?.length) this.popularList = popular;
-    } else if (query) {
+    } else if (more) {
       this.answer = null;
       this.status = 'error';
       this.statusMessage = this.answerWords(answer, 'refused-text');
@@ -927,6 +1295,7 @@ class SfSearch extends SearchElement {
       rows.push(row);
       return row;
     };
+    const step = this.steps.at(-1) ?? null;
     const resultRow = (item) => add({
       kind: 'result',
       item,
@@ -934,33 +1303,70 @@ class SfSearch extends SearchElement {
       path: text(item.path),
       icon: text(item.icon) || (item.kind === 'action' ? 'bolt' : 'description'),
       shortcut: item.kind === 'action' ? text(item.shortcut) : '',
+      url: item.kind === 'action' ? '' : text(item.url),
     });
     const commands = this.shows('actions');
     let scopes = [];
     let correction = null;
     let message = '';
     let state = null;
-    const waiting = Boolean(query) && this.status === 'loading';
-    // A first query waits over what the empty field showed (the recent
-    // queries, the commands): those rows stay, a step paler, until the answer
-    // replaces them (C139 (4)); before, the card emptied at once for «Ищем…».
-    if (!query || (waiting && !this.answer)) {
-      if (this.shows('recent') && this.recentList.length) {
+    const asking = this.asksMore(query);
+    const waiting = asking && this.status === 'loading';
+    // «Уточнить» (C175 (8)): the operators the host reads and the field does
+    // not hold yet, each a row that starts it in the field.
+    const refine = (except = '') => {
+      const used = new Set([except, ...this.tokens.map((token) => token.id)]);
+      const rows = this.operators().filter((operator) => !used.has(operator.id)).map((operator) => add({kind: 'refine', operator,
+        title: [`${operator.word}: ${this.sfWord(`operator-${operator.id}-hint`)}`, '', ''], path: '', icon: OPERATOR_ICON[operator.id], shortcut: '', url: ''}));
+      if (rows.length) sections.push({kind: 'refine', id: `${this._id}-refine`, label: this.sfWord('refine-label'), rows});
+    };
+    if (step) {
+      // A command's next step (C175 (7)): its options under the command's
+      // name, chosen, not opened.
+      const options = (this.answer?.step === step.id ? this.answer.results : []).map((item) => add({
+        kind: 'option', item, title: highlight(text(item.title), query), path: text(item.path), icon: text(item.icon), shortcut: '', url: ''}));
+      if (options.length) sections.push({kind: 'results', id: `${this._id}-results`, groups: [{label: step.title, captionId: `${this._id}-step`, rows: options}]});
+      else if (this.answer?.step === step.id && !waiting) state = {kind: 'nothing-found', text: this.sfWord('empty-text', {vars: {query: query || step.title}})};
+    } else if (this.draft) {
+      // An operator being typed (C175 (8)): the host's suggestions for its
+      // value, or the words typed as the one row that makes the tag.
+      const {draft} = this;
+      if (draft.suggest) {
+        const found = this.answer?.suggest === draft.id ? this.answer.results : [];
+        const rowsOf = found.map((item) => add({kind: 'token', item, token: {id: draft.id, value: text(item.id), label: text(item.title)},
+          title: highlight(text(item.title), draft.value), path: text(item.path), icon: text(item.icon) || OPERATOR_ICON[draft.id], avatar: item.avatar ?? null, shortcut: '', url: ''}));
+        if (rowsOf.length) sections.push({kind: 'results', id: `${this._id}-results`, groups: [{label: this.sfWord(`operator-${draft.id}-label`), captionId: `${this._id}-suggest`, rows: rowsOf}]});
+        refine(draft.id);
+      } else if (draft.value) {
+        const row = add({kind: 'token', token: {id: draft.id, value: draft.value, label: draft.value}, title: [`${draft.word}: ${draft.value}`, '', ''],
+          path: '', icon: OPERATOR_ICON[draft.id], shortcut: '', url: ''});
+        sections.push({kind: 'results', id: `${this._id}-results`, groups: [{label: this.sfWord('refine-label'), captionId: `${this._id}-suggest`, rows: [row]}]});
+      }
+    } else if (!asking || (waiting && !this.answer)) {
+      // A first query waits over what the empty field showed (the recent
+      // queries, the commands): those rows stay, a step paler, until the answer
+      // replaces them (C139 (4)); before, the card emptied at once for «Ищем…».
+      if (this.shows('recent') && (this.recentList.length || this.recentPages.length)) {
         sections.push({kind: 'recent', id: `${this._id}-recent`, label: this.sfWord('recent-label'),
-          rows: this.recentList.map((entry) => add({kind: 'recent', text: entry, title: [entry, '', ''], path: '', icon: 'history',
-            removeLabel: this.sfWord('recent-remove-label', {vars: {query: entry}})}))});
+          rows: [
+            ...this.recentList.map((entry) => add({kind: 'recent', text: entry, title: [entry, '', ''], path: '', icon: 'history',
+              removeLabel: this.sfWord('recent-remove-label', {vars: {query: entry}})})),
+            ...this.recentPages.map((page) => Object.assign(resultRow({...page, kind: 'page'}), {
+              recentPage: true, removeLabel: this.sfWord('recent-remove-label', {vars: {query: text(page.title)}})})),
+          ]});
       }
       if (this.shows('popular') && this.popularList.length) sections.push({kind: 'popular', texts: this.popularList});
       const actions = commands ? (this.emptyAnswer?.results ?? []).filter((item) => item.kind === 'action') : [];
       if (actions.length) {
         sections.push({kind: 'actions', id: `${this._id}-actions`, label: this.sfWord('actions-label'), rows: actions.map(resultRow)});
       }
-      if (!sections.length && !query) message = this.sfWord('start-text');
+      refine();
+      if (!sections.length && !asking) message = this.sfWord('start-text');
     } else {
       const answer = this.answer;
       const items = (answer?.results ?? []).filter((item) => commands || item.kind !== 'action');
       // The scopes the host announced, then any group its results name that
-      // it did not: the pills follow the host's order, the panel adds nothing
+      // it did not: the tags follow the host's order, the panel adds nothing
       // of its own to it.
       const order = [];
       if (this.shows('scopes')) {
@@ -974,9 +1380,11 @@ class SfSearch extends SearchElement {
         }
       }
       const present = order.filter((scope) => items.some((item) => item.group === scope.id));
-      if (!present.some((scope) => scope.id === this.scope)) this.scope = '';
+      // A scope the host answered with nothing stays pressed: the empty state
+      // offers «Искать во всех» (C162 (5)).
+      if (items.length && !present.some((scope) => scope.id === this.scope)) this.scope = '';
       // The host's count where it sent one (the whole index), else the number
-      // the panel holds, so a pill says what pressing it will show.
+      // the panel holds, so a tag says what pressing it will show.
       const counted = (scope) => (Number.isInteger(scope.count) ? scope.count : items.filter((item) => item.group === scope.id).length);
       if (present.length) {
         scopes = [{id: '', label: this.sfWord('all-label'), count: Number.isInteger(answer?.total) ? answer.total : items.length, pressed: this.scope === ''},
@@ -985,13 +1393,31 @@ class SfSearch extends SearchElement {
       const chosen = present.filter((scope) => !this.scope || scope.id === this.scope);
       const ungrouped = this.scope ? [] : items.filter((item) => !present.some((scope) => scope.id === item.group));
       const captions = !this.scope && (present.length > 1 || text(present[0]?.label));
+      // Up to five rows of a group while every group is shown (C175 (9)); the
+      // last row leads to the rest: the product's results page where the host
+      // named one, else the group's own scope here. A scope pressed shows the
+      // rows held of it, and the page where the host has more.
+      const capped = (scope, list) => {
+        const count = counted(scope);
+        const url = text(scope.more);
+        const room = this.scope ? list.length : Math.min(list.length, GROUP_ROWS);
+        const shown = list.slice(0, room).map(resultRow);
+        const rest = count > shown.length && (url || (!this.scope && this.shows('scopes') && list.length > shown.length));
+        if (rest) shown.push(add({kind: 'more', scope: scope.id, url, count, title: [this.sfWord('more-text', {vars: {count}}), '', ''], path: '', icon: 'arrow_forward', shortcut: ''}));
+        return shown;
+      };
       const groups = [
         ...chosen.map((scope, n) => ({
           label: text(scope.label) || scope.id || this.sfWord('results-label'),
           captionId: captions && text(scope.label) ? `${this._id}-group-${n}` : '',
-          rows: items.filter((item) => item.group === scope.id).map(resultRow),
+          rows: capped(scope, items.filter((item) => item.group === scope.id)),
         })),
-        ...(ungrouped.length ? [{label: this.sfWord('results-label'), captionId: '', rows: ungrouped.map(resultRow)}] : []),
+        ...(ungrouped.length ? [{label: this.sfWord('results-label'), captionId: '', rows: (() => {
+          const shown = ungrouped.map(resultRow);
+          const total = Number.isInteger(answer?.total) ? answer.total : ungrouped.length;
+          if (answer?.more && total > shown.length) shown.push(add({kind: 'more', scope: '', url: answer.more, count: total, title: [this.sfWord('more-text', {vars: {count: total}}), '', ''], path: '', icon: 'arrow_forward', shortcut: ''}));
+          return shown;
+        })()}] : []),
       ].filter((group) => group.rows.length);
       if (groups.length) sections.push({kind: 'results', id: `${this._id}-results`, groups});
       // «Возможно, вы искали …»: offered, never applied -- accepting it is an
@@ -1014,7 +1440,9 @@ class SfSearch extends SearchElement {
         else message = words;
       } else if (!rows.length && answer) {
         const popular = this.shows('popular') ? this.popularList.slice(0, 3) : [];
-        state = {kind: 'nothing-found', text: this.sfWord(popular.length ? 'empty-advice-text' : 'empty-text', {vars: {query}})};
+        state = {kind: 'nothing-found', text: this.sfWord(popular.length ? 'empty-advice-text' : 'empty-text', {vars: {query: query || this.tokens.map((one) => one.label).join(', ')}}),
+          // In a scope: «Искать во всех» (C162 (5)).
+          actions: this.scope ? [{id: 'all', label: this.sfWord('search-all-label')}] : null};
         if (popular.length) sections.push({kind: 'popular', texts: popular});
       }
     }
@@ -1033,6 +1461,9 @@ class SfSearch extends SearchElement {
       notice: this.notice,
       message,
       state,
+      step,
+      draft: this.draft,
+      tokens: this.tokens.map((token) => ({...token, word: this.sfWord(`operator-${token.id}`)})),
       // The rows on screen belong to the last answer while a new one is
       // awaited; the «Поиск…» line comes after WAIT_LINE_DELAY.
       stale: waiting && rows.length > 0,
@@ -1042,11 +1473,27 @@ class SfSearch extends SearchElement {
   }
 
   statusText(view) {
-    if (!this.query.trim()) return '';
+    if (this.announcement) return this.announcement;
+    if (!this.asksMore(this.query.trim())) return '';
     if (this.status === 'loading') return this.waitShown ? this.sfWord('loading-text') : '';
     if (this.status === 'error') return this.statusMessage || this.sfWord('error-text');
     if (!view.rowCount) return this.answer ? this.sfWord('empty-text', {vars: {query: this.query.trim()}}) : '';
     return this.sfWord('count-text', {count: view.rowCount});
+  }
+
+  // The key hints (R252, C175 (11)): none until the first arrow in the
+  // window, then at most three on one line -- move, the Enter of this list
+  // and the Escape of this state. The other keys are in the labels of the
+  // buttons they act on (aria-keyshortcuts).
+  keyHints(view) {
+    if (!this.keysUsed || this.keys === false || !view.rowCount) return [];
+    const enter = view.step ? 'key-apply-label' : (view.draft ? 'key-tag-label' : 'key-open-label');
+    const escape = this.query ? 'key-clear-label' : (view.step ? 'key-back-label' : 'key-close-label');
+    return [
+      {keys: ['↑', '↓'], label: this.sfWord('key-select-label')},
+      {keys: ['↵'], label: this.sfWord(enter)},
+      {keys: ['Esc'], label: this.sfWord(escape)},
+    ];
   }
 
   renderWindow({reveal = false} = {}) {
@@ -1062,10 +1509,9 @@ class SfSearch extends SearchElement {
       popular: this.sfWord('popular-label'),
       preview: this.sfWord('preview-label'),
       recentClear: this.sfWord('recent-clear-label'),
-      keySelect: this.sfWord('key-select-label'),
-      keyOpen: this.sfWord('key-open-label'),
-      keyClear: this.sfWord('key-clear-label'),
-      keyClose: this.sfWord('key-close-label'),
+      newTab: this.sfWord('new-tab-label'),
+      copyLink: this.sfWord('copy-link-label'),
+      removeTag: this.sfWord('remove-tag-label'),
       loading: this.sfWord('loading-text'),
     };
     this.drawInto(renderSearchWindow({
@@ -1073,16 +1519,28 @@ class SfSearch extends SearchElement {
       ids: {dialog: `${this._id}-dialog`, option: (index) => `${this._id}-option-${index}`},
       query: this.query,
       label: this.label,
-      placeholder: this.placeholder,
+      placeholder: view.step ? this.sfWord('step-placeholder') : this.placeholder,
       selected: this.selected,
       status: this.status,
       busy: this.status === 'loading' || this.running,
       statusText: this.statusText(view),
-      show: {path: this.path, keys: this.keys},
+      show: {path: this.path, keys: this.keys !== false},
+      hints: this.keyHints(view),
       words,
       view,
     }), this._portal);
+    // The X and a row's buttons are not Tab stops (C153 (6), C148 (3)): the
+    // X is Escape's, a row's buttons are reached with →. The buttons draw
+    // their native button when they upgrade, so once more after that.
+    this.untabButtons();
+    if (typeof globalThis.requestAnimationFrame === 'function') globalThis.requestAnimationFrame(() => this.untabButtons());
     if (reveal) this._portal.querySelector('.sf-search-row--selected')?.scrollIntoView?.({block: 'nearest'});
+  }
+
+  untabButtons() {
+    for (const button of this._portal?.querySelectorAll('.sf-search-clear button, .sf-search-row-actions button') ?? []) {
+      if (button.tabIndex !== -1) button.tabIndex = -1;
+    }
   }
 
   templateContext() {
