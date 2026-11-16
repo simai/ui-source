@@ -69,7 +69,11 @@ export function retiredClassName(token) {
     }
   }
   if (!found) return null;
-  return {found, from: token, to: to === null ? '' : `${variants}${to}`};
+  // A name may retire into two classes (C212 (2), journal class-c212-alignment:
+  // md:center-center -> md:content-main-center md:items-cross-center); the
+  // variant prefix goes on each of them.
+  if (to === null) return {found, from: token, to: ''};
+  return {found, from: token, to: to.split(' ').map((name) => `${variants}${name}`).join(' ')};
 }
 
 /**

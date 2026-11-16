@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.justify-content",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/justify-content/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/justify-content/xxl/scss/_sf_css__justify_content.scss",
     "src/utility/justify-content/xxl/scss/index.scss"
   ],
-  "content_sha256": "90f0316b08aa0c94c443dca34cc5ca865e925d51acba3979ae1ccd4f9938db30",
+  "content_sha256": "d4886e1fde30a68d8be1c0e2019f71b5fa8f8a0c001c0666d6dc8b30ed6e96bd",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

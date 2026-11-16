@@ -198,6 +198,31 @@ export default {
       }
     },
     {
+      "journal": "class-c212-alignment",
+      "decision": "C212 (2)",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "Alignment is written with the SIMAI Framework axis names: content-main-*, content-cross-*, items-main-*, items-cross-*, self-main-*, self-cross-*, and for both axes items-*, content-*, self-*. justify-* is the Tailwind spelling of content-main-*: the Loader converts it (Tailwind names work through the Loader conversion only), and the class keeps drawing for pages without the Loader until remove_after. The nine two-axis classes of flex-align (start-start ... end-end, main axis first) become two classes, content-main-<main> items-cross-<cross>; they wrote flex-start and flex-end on the cross axis where items-cross-* writes start and end (the same place except under flex-wrap: wrap-reverse).",
+      "names": {
+        "justify-start": "content-main-start",
+        "justify-end": "content-main-end",
+        "justify-center": "content-main-center",
+        "justify-between": "content-main-between",
+        "justify-around": "content-main-around",
+        "justify-evenly": "content-main-evenly",
+        "start-start": "content-main-start items-cross-start",
+        "start-center": "content-main-start items-cross-center",
+        "start-end": "content-main-start items-cross-end",
+        "center-start": "content-main-center items-cross-start",
+        "center-center": "content-main-center items-cross-center",
+        "center-end": "content-main-center items-cross-end",
+        "end-start": "content-main-end items-cross-start",
+        "end-center": "content-main-end items-cross-center",
+        "end-end": "content-main-end items-cross-end"
+      }
+    },
+    {
       "journal": "class-c96-tabs-looks",
       "decision": "C96 (1)",
       "component": "sf-tabs",

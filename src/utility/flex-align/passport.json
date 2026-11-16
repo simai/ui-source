@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.flex-align",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/flex-align/default/index.js",
@@ -37,7 +37,7 @@
     "src/utility/flex-align/xxl/scss/_sf_css__align.scss",
     "src/utility/flex-align/xxl/scss/index.scss"
   ],
-  "content_sha256": "f066aa614eaeee11afc173b38e95e1b796a6e18d62eba3b72b3d314fefbd4b52",
+  "content_sha256": "db748c5a5766b45c588525cf462206f5ac97ff78b3355f9df1755c8c60bc9ccf",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
