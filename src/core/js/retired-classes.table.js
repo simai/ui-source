@@ -236,7 +236,7 @@ export default {
       "component": "utility",
       "since": "2026-11-16",
       "remove_after": "2027-01-01",
-      "note": "Palette tones are variables, not utilities (C212 (5), C17). The legacy palette classes color-, bg- and border-<hue>[-<0..9>] (white, black, gray, red, orange, yellow, green, blue, purple, pink) keep drawing the static tone they read until remove_after. The hint is the role nearest to that tone in the light theme among the roles of the hue's family: gray, white and black the neutral places and inks, red error, orange and yellow warning, green success, blue primary, purple and pink tertiary. A role follows the theme and a tone does not, so a person checks the look; a colour that must stay its hue is the hue role (sf-hue-<hue> color-hue) or the tone as a variable (var(--sf-red-50)).",
+      "note": "Palette tones are variables, not utilities (C212 (5), C17). The legacy palette classes color-, bg- and border-<hue>[-<0..9>] (the ten names of SF4's colour array) keep drawing the static tone they read until remove_after. The hint is the role nearest to that tone in the light theme among the roles of the hue's family: the neutral places and inks for the greys and the two extremes, and error, warning, success, primary or tertiary for the others (journal utility-c17-legacy-palette-classes names the family of each). A role follows the theme and a tone does not, so a person checks the look; a colour that must stay its hue is the hue role (sf-hue-<hue> color-hue) or the tone as a variable (var(--sf-<hue>-<tone>)).",
       "names": {
         "color-white": "color-on-surface-inverse",
         "color-black": "color-on-surface",
