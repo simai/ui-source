@@ -242,13 +242,18 @@ export function checkIconGlyph(el) {
       const box = glyph.getBoundingClientRect();
       // Not rendered (a closed panel): read again when it loads anew.
       if (!box.width || !box.height) return null;
-      return {glyph, box: box.width, text: textWidth(glyph)};
+      // The glyph's em, not its box alone: a box squeezed narrower than its
+      // font size (a 12 px slot for a 16 px glyph, RG-CC-5) made one real
+      // ligature look like letters and dropped it.
+      const view = glyph.ownerDocument?.defaultView;
+      const em = parseFloat(view?.getComputedStyle?.(glyph).fontSize) || 0;
+      return {glyph, box: Math.max(box.width, em), text: textWidth(glyph)};
     });
     for (const reading of readings) {
       if (!reading) continue;
       const {glyph, box, text} = reading;
       const name = String(glyph.getAttribute('data-icon') || glyph.textContent || '').trim();
-      // A ligature is one glyph, one box wide; letters are several.
+      // A ligature is one glyph, one em (or one box) wide; letters are several.
       const missing = text > box * 1.5;
       if (missing) {
         const face = faceOnItsWay(glyph, name);
