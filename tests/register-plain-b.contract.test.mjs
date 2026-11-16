@@ -48,5 +48,5 @@ test('C102 (4) (RG-B-47): the class tree toggles by the chevron, the folder is t
   assert.match(js, /if \(branch && nodeIcon && folderPair\.includes\(nodeIcon\.textContent\.trim\(\)\)\)/);
   // A press on the button or the chevron opens and closes the branch.
   assert.match(js, /event\.target\.closest\?\.\('\.sf-icon-button, \.sf-tree-chevron'\)/);
-  assert.equal((await json('src/component/tree/passport.json')).version, '1.4.0');
+  assert.equal((await json('src/component/tree/passport.json')).version, '1.5.1');
 });

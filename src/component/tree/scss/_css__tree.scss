@@ -205,6 +205,14 @@
     display: none;
   }
 
+  /* Right to left the closed chevron points to the start, as the menu's and
+     the breadcrumbs' do: chevron_right is drawn mirrored (the open one, a
+     down arrow, is the same either way). The class tree and sf-tree draw the
+     same .sf-tree-chevron. */
+  .sf-tree .sf-tree-chevron:dir(rtl) {
+    transform: scaleX(-1);
+  }
+
   .sf-tree .sf-tree-chevron .sf-icon,
   .sf-tree .sf-tree-chevron.sf-icon {
     font-size: var(--sf-icon--font-size, var(--sf-tree--column));
