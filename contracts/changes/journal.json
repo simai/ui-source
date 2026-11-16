@@ -14102,6 +14102,37 @@
       },
       "owner": "ui-source",
       "source": "src/utility/background-position/default/scss/_sf_var_background_position.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-background-study.html UT-BG-2, UT-BG-3"
+    },
+    {
+      "id": "class-ut1-blur",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V FLT-3, by the principle of owner decision C212 (one name per job): blur and backdrop-blur are second names of blur-medium and backdrop-blur-medium (the same --sf-blur-medium). They keep drawing until remove_after, and the Loader notes each once in SF.deprecations. utility.filter-blur and utility.backdrop-filter-blur 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "blur",
+          "to": "blur-medium",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*blur(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-blur",
+          "to": "backdrop-blur-medium",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*backdrop-blur(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write blur-medium for blur and backdrop-blur-medium for backdrop-blur in class attributes, keeping a variant prefix (hover:blur -> hover:blur-medium); sf-upgrade reports them in class attributes only, since blur is also an event name.",
+      "examples": {
+        "before": "<div class=\"backdrop-blur\">",
+        "after": "<div class=\"backdrop-blur-medium\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/filter-blur/default/scss/_sf_var__filter_blur.scss; src/utility/backdrop-filter-blur/default/scss/_sf_var__backdrop_blur.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-filters-study.html UT-FLT-3"
     }
   ]
 }

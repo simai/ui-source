@@ -327,6 +327,18 @@ export default {
         "bg-right-top": "bg-inline-end-top",
         "bg-right-bottom": "bg-inline-end-bottom"
       }
+    },
+    {
+      "journal": "class-ut1-blur",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One name per job (C212): blur and backdrop-blur drew the same 4 px as blur-medium and backdrop-blur-medium. They keep drawing until remove_after.",
+      "names": {
+        "blur": "blur-medium",
+        "backdrop-blur": "backdrop-blur-medium"
+      }
     }
   ],
   "extended": {
