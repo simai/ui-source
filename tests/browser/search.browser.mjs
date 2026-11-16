@@ -230,9 +230,12 @@ try {
     await typeQuery(tab, 'таб');
     const typed = await tab.evaluate(() => ({
       captions: [...document.querySelectorAll('.sf-search-group .sf-search-caption')].map((n) => n.textContent.trim()),
-      scopes: [...document.querySelectorAll('.sf-search-scope')].map((n) => [...n.childNodes].filter((c) => c.nodeType !== 8 && c.localName !== 'sf-icon').map((c) => c.textContent).join('').replace(/\s+/gu, ' ').trim()),
-      pressed: [...(document.querySelector('.sf-search-scope[aria-pressed="true"]')?.childNodes ?? [])].filter((c) => c.nodeType !== 8 && c.localName !== 'sf-icon').map((c) => c.textContent).join('').trim(),
-      checks: [...document.querySelectorAll('.sf-search-scope')].map((n) => n.querySelector('.sf-search-scope-check')?.textContent.trim() ?? ''),
+      // Scopes are sf-tag filter tags in an sf-tag-group (sf-search 1.10.1):
+      // the label and count are the tag's settings, the state its button's
+      // aria-pressed, the scope in force carries the check icon.
+      scopes: [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((n) => `${n.getAttribute('text')}${n.getAttribute('count')}`),
+      pressed: document.querySelector('.sf-search-scopes sf-tag:has(button[aria-pressed="true"])')?.getAttribute('text') ?? '',
+      checks: [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((n) => (n.querySelector('.sf-tag-check') ? 'check' : '')),
       mark: (() => { const m = document.querySelector('.sf-search-row mark'); const cs = m && getComputedStyle(m); return m && {weight: cs.fontWeight, fill: cs.backgroundColor}; })(),
       status: document.querySelector('.sf-search-window [role="status"]')?.textContent.trim(),
       xLabel: document.querySelector('.sf-search-clear button')?.getAttribute('aria-label') ?? document.querySelector('.sf-search-clear')?.getAttribute('aria-label'),
@@ -263,15 +266,15 @@ try {
     expect('hover-selects', hovered[1]?.selected === true, hovered);
 
     // Scopes filter: Компоненты shows its one row, without captions.
-    await tab.click('.sf-search-scope >> nth=2');
+    await tab.click('.sf-search-scopes sf-tag >> nth=2 >> button');
     const scoped = await tab.evaluate(() => ({
       rows: [...document.querySelectorAll('.sf-search-row-title')].map((n) => n.textContent.trim()),
       captions: document.querySelectorAll('.sf-search-group .sf-search-caption').length,
-      scopes: [...document.querySelectorAll('.sf-search-scope')].map((n) => `${[...n.childNodes].filter((c) => c.nodeType !== 8 && c.localName !== 'sf-icon').map((c) => c.textContent).join('').replace(/\s+/gu, '')}:${n.getAttribute('aria-pressed')}`),
+      scopes: [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((n) => `${n.getAttribute('text')}${n.getAttribute('count')}:${n.querySelector('button')?.getAttribute('aria-pressed')}`),
       focused: document.activeElement === document.querySelector('.sf-search-input'),
     }));
     expect('scope-filters', scoped.rows.join('|') === 'sf-view-table' && scoped.captions === 0 && scoped.scopes.join('|') === 'Все3:false|Страницы2:false|Компоненты1:true' && scoped.focused, scoped);
-    await tab.click('.sf-search-scope >> nth=0');
+    await tab.click('.sf-search-scopes sf-tag >> nth=0 >> button');
 
     // Geometry, measured on the open window (rows: two lines and one line).
     const geometry = await tab.evaluate(() => {
@@ -533,7 +536,7 @@ try {
     const blocks = () => tab.evaluate(() => ({
       recent: document.querySelectorAll('.sf-search-row--recent').length,
       popular: document.querySelectorAll('.sf-search-section .sf-search-pill').length,
-      scopes: document.querySelectorAll('.sf-search-scope').length,
+      scopes: document.querySelectorAll('.sf-search-scopes sf-tag').length,
       commands: [...document.querySelectorAll('.sf-search-row-title')].filter((n) => n.textContent.includes('Сменить тему')).length,
       pane: document.querySelectorAll('.sf-search-preview').length,
       correction: document.querySelector('.sf-search-correction')?.textContent.trim() ?? '',
