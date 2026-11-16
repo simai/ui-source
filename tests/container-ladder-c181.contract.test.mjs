@@ -57,11 +57,11 @@ const SCREEN_QUERIES = {
   'src/smart/confirm': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/confirm-change': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/list-description': 'owner decision C180 (3): on a phone (below md, sf-drawer\'s whole-screen panel) a label is always over its value; a phone\'s list is wider than a 24rem panel\'s, so no container step tells them apart',
-  // Not moved to @container yet (C181 follow-up, 2026-11-14: pagination, pager,
-  // progress-run and search moved; these three wait for a choice).
-  'src/component/reference-link': 'to move: the card stacks below sm and the rule styles the card itself; class markup has no element around the card to be the container',
-  'src/component/admin-menu': 'page frame (to confirm): below sm the panel fills a phone screen; the root stands in the application shell, where a contained root would collapse',
-  'src/component/download-file': 'to move: the card is as wide as its text (C51), so it cannot be its own container; the narrow form follows a place the card does not own',
+  'src/component/admin-menu': 'page frame: below sm the panel fills a phone screen; the root stands in the application shell, where a contained root would collapse (dispatcher decision 2026-11-15, C181 (2) follow-up)',
+  // Kept on the screen by decision (C181 (2) follow-up, dispatcher 2026-11-15;
+  // pagination, pager, progress-run and search moved 2026-11-14).
+  'src/component/download-file': 'screen rule kept: the card is as wide as its text (C51), so it cannot be its own container, and its narrow form follows a place the card does not own (dispatcher decision 2026-11-15)',
+  'src/component/reference-link': 'class markup only: the card stacks below sm and the rule styles the card itself, and class markup has no element around the card to be the container. The Smart card follows its host, the container sf-reference-link, at container-step(g6) (dispatcher decision 2026-11-15, smart.reference-link 1.3.0)',
 };
 // Container conditions that are a page frame of their own: the workspace's
 // author-chosen split and wide steps (classes on the size scale), and the cq-*
@@ -151,6 +151,38 @@ test('C181: a component queries the screen only at a breakpoint, and only from t
     }
   }
   assert.deepEqual(offenders, []);
+});
+
+// Every entry is settled (dispatcher decisions 2026-11-15): admin-menu is a
+// page frame, download-file keeps its screen rule, reference-link keeps it
+// for class markup only. An entry's reason says what it is, not that it waits.
+test('C181: no screen-query entry waits for a choice', () => {
+  const waiting = Object.entries(SCREEN_QUERIES).filter(([, reason]) => /to confirm|to move/u.test(reason)).map(([dir]) => dir);
+  assert.deepEqual(waiting, []);
+  assert.match(SCREEN_QUERIES['src/component/admin-menu'], /^page frame: /u);
+  assert.match(SCREEN_QUERIES['src/component/download-file'], /^screen rule kept: /u);
+  assert.match(SCREEN_QUERIES['src/component/reference-link'], /^class markup only: /u);
+});
+
+// sf-reference-link's Smart card stacks by its own place (dispatcher decision
+// 2026-11-15): the host of a card is a block and the container
+// sf-reference-link; the stack rule reads it at container-step(g6). The
+// screen rule is left to class markup and the Smart plain form.
+test('C181: the Smart reference card stacks by its host container, class markup by the screen', () => {
+  const sheet = uncomment(read('src/component/reference-link/scss/_css__reference_link.scss'));
+  assert.match(sheet, /@container sf-reference-link \(width < #\{mq\.container-step\(g6\)\}\) \{\s*@include card-stacks\(':where\(sf-reference-link > \*\)'\);/u);
+  assert.match(sheet, /@media \(width < map\.get\(bp\.\$breakpoint-array, sm\)\) \{\s*@include card-stacks\(':where\(:not\(sf-reference-link > \.sf-reference-link:not\(\.sf-reference-link--plain\)\)\)'\);/u);
+  assert.equal(preludes(sheet, 'media').filter((prelude) => /width/u.test(prelude)).length, 1, 'one screen rule, for class markup');
+  const host = sheet.match(/sf-reference-link:has\(> \.sf-reference-link:not\(([^{]*)\)\) \{([^}]*)\}/u);
+  assert.ok(host, 'the card\'s host rule');
+  for (const form of ['--inline', '--plain', '--size-', '--line-']) assert.ok(host[1].includes(form), `a ${form} host is no container`);
+  assert.match(host[2], /container: sf-reference-link \/ inline-size;/u);
+  assert.match(host[2], /inline-size: 100%;/u);
+  const element = read('src/smart/reference-link/index.js');
+  const apply = element.slice(element.indexOf('  applyHostDisplayStyle() {'), element.indexOf('  afterRender('));
+  assert.match(apply, /display: \$\{this\.isCard \? 'block' : 'contents'\};/u);
+  assert.match(element, /return appearance !== 'inline' && appearance !== 'plain' && !this\.size && !this\.line;/u);
+  assert.match(element.slice(element.indexOf('  afterRender(')), /this\.applyHostDisplayStyle\(\);\s*this\.markCutName\(\);/u);
 });
 
 test('C181: the screen-query list names only components that still query the screen', () => {
