@@ -23,6 +23,21 @@ function resolveCheckboxIcon(state) {
   return '';
 }
 
+// The box's glyphs are asked for when the first box binds, with the page's
+// first icons: a box that starts unchecked names no glyph, so the first
+// subset font had no «check», and the first tick stayed unseen until a second
+// font came (the Loader draws a glyph only from a font it has). Once per
+// bundle; the Loader asks nothing for a name it already has.
+let boxIconsAsked = false;
+export function preloadCheckboxIcons() {
+  if (boxIconsAsked) return false;
+  const loader = globalThis.SF?.Loader;
+  if (typeof loader?.preloadIcons !== 'function') return false;
+  boxIconsAsked = true;
+  loader.preloadIcons(['check', 'remove']);
+  return true;
+}
+
 function setCheckboxIcon(iconElement, icon = '') {
   if (!iconElement) return;
 
@@ -73,6 +88,7 @@ function bindCheckbox(root) {
   root.__sfCheckboxReleaseReset = bindFormReset(input, handleChange);
 
   root.dataset[CHECKBOX_BOUND_FLAG] = '1';
+  preloadCheckboxIcons();
   syncCheckboxState(root);
   linkCheckableText(root, CHECKBOX_TEXT_PARTS);
 }

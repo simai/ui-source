@@ -2,7 +2,7 @@
   "$comment": "The source of sf-checkbox's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/checkbox (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.checkbox",
   "tag": "sf-checkbox",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "kind": "leaf",
   "family": "checkbox",
   "settings": {
@@ -233,7 +233,8 @@
     "version 1.3.1 (2026-11-13, R229 spacing audit X1, dispatcher ruling on C105 H2 «выбор»; component.checkbox 1.3.1): a patch. The label stands --sf-space-1/2 after the box at every size (12 at 1440; compact and phone 8), the row gap of a list row, so a sf-checkbox lines up with list rows that carry one; it was the size's text-space-x (7 / 8 / 10 at 1/2, 1, 2; compact 6 / 7 / 8; phone 6 / 6 / 8). --sf-checkbox-gap still sets it. Settings, values, events and keys unchanged.",
     "version 1.4.1 (2026-11-14, group build 5; numbered above 1.4.0 on origin/fix/checks-c165): a patch, its own code unchanged: 9 first-paint snapshot file(s) follow the merged markup (fix/icons-c151).",
     "version 1.5.0 (2026-11-14, owner decision C165 (2); research control/research/2026-11-14-checks.md, #q-parent; written on the branch as 1.4.0): a minor. New setting controls: a parent checkbox names the checkboxes it stands for by id and computes its own state from them -- all checked: checked; some: indeterminate (aria-checked mixed); none: unchecked -- following their changes by a press, a property or an attribute, and checking them all (or unchecking them all, when all were checked) when it is pressed, from the keyboard too; each child it changes sends change as a press would, so the page hears one event per changed option. A disabled child is counted and not changed. Without controls nothing changed. Settings, values, events and keys otherwise unchanged. A help setting that is a single lowercase word (help=\"info\") is almost always a placeholder: a development warning says so once per page (checks study CK-7, shared with sf-checkbox, sf-radio and sf-switch through helpers/checkable-row.js).",
-    "version 1.5.1 (2026-11-15, owner decision C201; numbered above every open line): a patch, its own code unchanged. The first-paint snapshots that hold sf-help-mark follow its plain look (sf-help-mark 1.5.0: its button is sf-button-icon appearance=\"plain\", the class sf-icon-button--plain)."
+    "version 1.5.1 (2026-11-15, owner decision C201; numbered above every open line): a patch, its own code unchanged. The first-paint snapshots that hold sf-help-mark follow its plain look (sf-help-mark 1.5.0: its button is sf-button-icon appearance=\"plain\", the class sf-icon-button--plain).",
+    "version 1.5.2 (2026-11-16, queue item #53; component.checkbox 1.5.1): a patch. The tick and the indeterminate dash (check, remove) are asked of the icon subset when the element connects (SF.Loader.preloadIcons), with the page's first icons: a box that starts unchecked names no glyph, so the first subset font had no check and the first tick stayed unseen until a second font arrived. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "contracts": {
