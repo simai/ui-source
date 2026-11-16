@@ -152,7 +152,10 @@ test('a neutral icon beside text is not --sf-on-surface at rest (C107, R192)', (
 
 test('the controls of the C107 group name their roles', () => {
   const buttons = read('component/buttons/scss/_css__buttons.scss');
-  assert.match(buttons, /\.sf-button\.sf-button--tonal\.sf-button--on-surface \.sf-icon, [^{]+\{\s*--sf-icon--color: var\(--sf-on-surface-icon\);/u);
+  // C116 (3), (6): the tonal on-surface selectors name the former secondary
+  // and surface too (component.buttons 1.17.0).
+  const tonalOnSurface = String.raw`\.sf-button:is\(\.sf-button--tonal, \.sf-button--surface:where\(:not\(\.sf-button--danger, \.sf-button--error\)\)\):is\(\.sf-button--on-surface, \.sf-button--secondary, \.sf-button--surface:where\(:not\(\.sf-button--danger, \.sf-button--error\)\)\)`;
+  assert.match(buttons, new RegExp(`${tonalOnSurface} \\.sf-icon, [^{]+\\{\\s*--sf-icon--color: var\\(--sf-on-surface-icon\\);`, 'u'));
   // Hovered and pressed, the icon catches its label up (C107 (4)). The label
   // reads the state ink in the light theme and keeps --sf-on-surface in the
   // dark one (C113 follow-up: the dark fill rises, a dimmer ink fell to
@@ -160,7 +163,7 @@ test('the controls of the C107 group name their roles', () => {
   // its own.
   for (const [state, ink] of [[':hover', 'hover'], [':active', 'active']]) {
     const pair = `light-dark\\(var\\(--sf-on-surface-${ink}\\), var\\(--sf-on-surface\\)\\)`;
-    const head = `\\.sf-button\\.sf-button--tonal\\.sf-button--on-surface:not\\(:disabled, \\[aria-disabled="true"\\]\\):not\\(\\.disabled\\)${state}`;
+    const head = `${tonalOnSurface}:not\\(:disabled, \\[aria-disabled="true"\\]\\):not\\(\\.disabled\\)${state}`;
     assert.match(buttons, new RegExp(`${head} \\.sf-icon, [^{]+\\{\\s*--sf-icon--color: ${pair};`, 'u'),
       `${ink}, the icon is the label's --sf-on-surface-${ink} (light) / --sf-on-surface (dark)`);
     assert.match(buttons, new RegExp(`${head} :is\\(\\.sf-button-text-container, \\.sf-button-shortcut\\), [^{]+\\{\\s*--sf-button-text-container--color: ${pair};`, 'u'),

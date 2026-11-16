@@ -22,25 +22,24 @@ test('a filled on-surface button labels its plate with the place accent label on
   assert.ok(main.includes('--sf-button--focus-ink: var(--sf-button--on-place-ink, var(--sf-on-surface-inverse, var(--sf-surface-page)));'));
 });
 
-test('outline, surface and ghost secondary and danger write the place ink, the hue elsewhere, in every state', () => {
-  for (const hue of ['secondary', 'secondary-hover', 'secondary-active']) {
-    assert.match(custom, new RegExp(`--sf-icon--color: var\\(--sf-place--ink, var\\(--sf-${hue}\\)\\);`, 'u'), hue);
-  }
-  assert.ok(custom.includes('--sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-secondary)));'));
+test('outline and ghost danger write the place ink, the hue elsewhere, in every state', () => {
+  // C116 (3) (component.buttons 1.17.0): secondary draws as on-surface, so it
+  // has no ink of its own on a place or anywhere.
+  assert.doesNotMatch(custom, /--sf-secondary/u);
+  assert.doesNotMatch(main, /var\(--sf-(?:on-)?secondary/u);
   assert.ok(main.includes('--sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));'));
   for (const hue of ['error-hover', 'error-active']) {
     assert.ok(main.includes(`--sf-button-text-container--color: var(--sf-place--ink, var(--sf-${hue}));`), hue);
     assert.ok(main.includes(`--sf-icon--color: var(--sf-place--ink, var(--sf-${hue}));`), hue);
   }
   // No bare hue left on these labels.
-  assert.doesNotMatch(custom, /--sf-(?:button-text-container--|icon--)color: var\(--sf-secondary(?:-hover|-active)?\);/u);
   assert.doesNotMatch(main, /--sf-(?:button-text-container--|icon--)color: var\(--sf-error(?:-hover|-active)?\);/u);
 });
 
-test('a pressed filled secondary takes its own pressed step', () => {
-  // Group build 7: the selectors carry fix/clipboard-cb's aria-disabled exclusion.
-  const rule = main.slice(main.indexOf('.sf-button.sf-button--default.sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-button.sf-button--default.sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled).active {'));
-  assert.match(rule.slice(0, rule.indexOf('}')), /--sf-button--background-color: var\(--sf-secondary-active\);/u);
+test('a pressed filled secondary is the pressed filled on-surface', () => {
+  // C116 (3): the on-surface pressed rule names the former secondary.
+  const rule = main.slice(main.indexOf('.sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))):not(:disabled, [aria-disabled="true"]):not(.disabled):active'));
+  assert.match(rule.slice(0, rule.indexOf('}')), /--sf-button--background-color: var\(--sf-on-surface-active\);/u);
   const primary = main.slice(main.indexOf('.sf-button.sf-button--default.sf-button--primary:not(:disabled, [aria-disabled="true"]):not(.disabled):active'));
   assert.ok(!primary.slice(0, primary.indexOf('{')).includes('secondary'), 'primary\'s pressed rule no longer names secondary');
 });

@@ -38,7 +38,7 @@ async page => {
   await page.locator('#dynamic').evaluate(root => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'sf-button sf-button--outline sf-button--secondary sf-button--size-1';
+    button.className = 'sf-button sf-button--outline sf-button--on-surface sf-button--size-1';
     button.innerHTML = '<span class="sf-button-text-container">Третье</span>';
     root.append(button);
   });

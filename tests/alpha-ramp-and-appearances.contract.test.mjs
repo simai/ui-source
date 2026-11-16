@@ -281,8 +281,10 @@ test('every size dresses the new appearances too', () => {
   const label = ':is(.sf-button-text-container, .sf-button-shortcut)';
   for (const size of ['1', '2', '3', '1\\/2', '1\\/3']) {
     assert.ok(
-      buttons.includes(`.sf-button.sf-button--size-${size}.sf-button--surface ${label}`),
-      `size ${size} would otherwise leave surface text unsized`,
+      // C116 (6): only a danger surface keeps the former look (1.17.0); the
+      // others draw as tonal on-surface, sized with it.
+      buttons.includes(`.sf-button.sf-button--size-${size}.sf-button--surface:where(.sf-button--danger, .sf-button--error) ${label}`),
+      `size ${size} would otherwise leave the danger surface text unsized`,
     );
     // Ghost now reads as link, so it is sized wherever link is.
     assert.ok(

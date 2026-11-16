@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import buttonUtility from '../json/button.utility.json';
 import registerComponent from "../../register-helper";
+import { watchButtons } from './button-checks.js';
 import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
 
 class Buttons extends ComponentObserver {
@@ -174,3 +175,7 @@ class Buttons extends ComponentObserver {
 Buttons.utilityMap = buttonUtility;
 
 registerComponent('Buttons', Buttons);
+
+// The pressed look on a toggle only, a square icon-only button with a name,
+// the set's former classes (C116, C211): said once in the console.
+watchButtons();

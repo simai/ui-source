@@ -80,8 +80,8 @@ test('danger outline border: red at 64 % on the button and the icon button; the 
   const buttons = read('src/component/buttons/scss/_css__buttons.scss');
   const dangerButton = buttons.slice(buttons.indexOf('.sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) {'));
   assert.ok(dangerButton.slice(0, 300).includes(`--sf-button--border-color: var(--sf-button-border-color, ${red});`));
-  const greyButton = buttons.slice(buttons.indexOf('.sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary) {'));
-  assert.ok(greyButton.slice(0, 300).includes('--sf-button--border-color: var(--sf-button-border-color, var(--sf-outline));'));
+  const greyButton = buttons.slice(buttons.indexOf('.sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))) {'));
+  assert.ok(greyButton.slice(0, 450).includes('--sf-button--border-color: var(--sf-button-border-color, var(--sf-outline));'));
   const icons = read('src/component/icon-buttons/scss/_css_icon_buttons.scss');
   const dangerIcon = icons.slice(icons.indexOf('.sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {'));
   assert.ok(dangerIcon.slice(0, 700).includes(`--sf-icon-button--border-color: var(--sf-icon-button-border-color, ${red});`));
