@@ -20,10 +20,11 @@ test('the date field is read-only only where it has to be', async () => {
   // declares read-only; a disabled one cannot be typed in either.
   assert.match(source, /get readonly\(\) \{\s*return this\.range \|\| this\.getBooleanAttr\('readonly', false\);/u);
   assert.match(source, /get typed\(\) \{\s*return !this\.readonly && !this\.disabled;/u);
-  // The template reads the value the component resolves: `!this.typed` also
-  // counted `disabled`, so a range or disabled field drew read-only while
-  // `readonly` said false (template-context probe, rel135).
-  assert.ok(source.includes('readonly: this.readonly,'));
+  // The template's text box is read-only only where the value is locked: `!this.typed`
+  // also counted `disabled` (template-context probe, rel135), and `this.readonly`
+  // also counted a range, which drew a changeable period as a read-only field
+  // (RG-DP-5, 1.12.0); a range takes no typing through pickOnly instead.
+  assert.ok(source.includes('readonly: this.valueLocked,'));
   assert.ok(!source.includes('readonly: !this.typed'));
 });
 
