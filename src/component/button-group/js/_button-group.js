@@ -1,6 +1,7 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
+import { tagSelector } from '../../../core/js/tag-aliases.js';
 import {
   actionEntry,
   controlOf,
@@ -242,7 +243,7 @@ function stackWanted(root) {
     && root.getAttribute('data-orientation') !== 'vertical'
     && !root.classList.contains('sf-button-group--segmented')
     && root.getAttribute('overflow') !== 'more'
-    && !root.parentElement?.matches('sf-segmented, sf-button-group')
+    && !root.parentElement?.matches(tagSelector('sf-segmented'))
     && typeof ResizeObserver !== 'undefined';
 }
 

@@ -21,7 +21,7 @@
   .sf-button-group > sf-button,
   .sf-button-group > .sf-button,
   .sf-button-group > .sf-icon-button,
-  .sf-button-group > :is(sf-button, sf-button-icon, sf-icon-button) > :is(.sf-button, .sf-icon-button) {
+  .sf-button-group > :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button, .sf-icon-button) {
     flex: 0 0 auto;
     min-inline-size: 0;
   }
@@ -51,7 +51,7 @@
   }
 
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > sf-button,
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(sf-button, sf-button-icon, sf-icon-button) > :is(.sf-button, .sf-icon-button),
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button, .sf-icon-button),
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(.sf-button, .sf-icon-button) {
     inline-size: 100%;
   }
@@ -87,7 +87,7 @@
   /* A Smart host draws no box (display: contents), so its control is the one
      that stands above its neighbours, as a class button does. */
   .sf-button-group > .sf-icon-button:focus-visible,
-  .sf-button-group > :is(sf-button, sf-button-icon, sf-icon-button) > :is(.sf-button, .sf-icon-button):is(:focus-visible, [aria-pressed='true'], .active) {
+  .sf-button-group > :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button, .sf-icon-button):is(:focus-visible, [aria-pressed='true'], .active) {
     position: relative;
     z-index: 1;
   }
