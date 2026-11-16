@@ -23,7 +23,7 @@ const PATTERNS = [];
 const SHEETS = new Map();
 for (const record of table.records) {
   for (const [from, value] of Object.entries(record.names || {})) NAMES.set(from, entry(record, from, value));
-  for (const item of record.patterns || []) PATTERNS.push({...entry(record, item.from, item.to), re: new RegExp(item.pattern)});
+  for (const item of record.patterns || []) PATTERNS.push({...entry(record, item.from, item.to), re: new RegExp(item.pattern), values: item.values});
   for (const [sheet, to] of Object.entries(record.sheets || {})) SHEETS.set(sheet, entry(record, sheet, to));
 }
 
@@ -64,7 +64,12 @@ export function retiredClassName(token) {
       const match = base.match(item.re);
       if (!match) continue;
       found = item;
-      to = item.to === null ? null : base.replace(item.re, item.to);
+      // values maps a group to the name it stands for in `to` (C212 (4): the
+      // rung m-b6 is written m-1, its nearest space step; journal
+      // class-c212-length-nearest).
+      to = item.to === null ? null : base.replace(item.re, item.values
+        ? (...groups) => item.to.replace(/\$(\d)/gu, (ref, n) => item.values[n]?.[groups[n]] ?? groups[n])
+        : item.to);
       break;
     }
   }

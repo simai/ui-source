@@ -11,6 +11,8 @@
     @include breakpoint-media(xs) {
         $infix: breakpoint-infix(xs, $breakpoint-array);
 
+        // g-*, g-x-*, g-y-* are dated aliases of gap-*, gap-x-*, gap-y-* until
+        // 2027-01-01 (owner decision C212 (4); journal class-c212-length).
         // Gap Size
         // For size use text size variables
         // Atention! Text variables have different size for mobile and destop devices

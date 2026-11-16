@@ -13731,6 +13731,1210 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "class-c212-length",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (4): spacing and sizes only in the system steps, one name per length. These old names draw exactly what their new name draws and keep drawing until remove_after; the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js): g-*, g-x-*, g-y-* are gap-*, gap-x-*, gap-y-*; a fraction is written in lowest terms (w-2/4, w-3/6, w-6/12 -> w-1/2; w-2/6, w-4/12 -> w-1/3; ... for w-, basis-, h-, h-screen-, top-, bottom-, inline-start-, inline-end-), and 1/1 is full; the percent widths that are such a fraction (w-20, w-25, w-40, w-50, w-60, w-75, w-80) are that fraction. utility.gap, utility.width, utility.width-ext, utility.flex-basis, utility.height and utility.element-position 1.1.0 (comments only).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "w-1/1",
+          "to": "w-full",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-1\\/1(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-10/12",
+          "to": "w-5/6"
+        },
+        {
+          "component": "utility",
+          "from": "w-2/12",
+          "to": "w-1/6"
+        },
+        {
+          "component": "utility",
+          "from": "w-2/4",
+          "to": "w-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "w-2/6",
+          "to": "w-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "w-3/12",
+          "to": "w-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "w-3/6",
+          "to": "w-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "w-4/12",
+          "to": "w-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "w-4/6",
+          "to": "w-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "w-6/12",
+          "to": "w-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "w-8/12",
+          "to": "w-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "w-9/12",
+          "to": "w-3/4"
+        },
+        {
+          "component": "utility",
+          "from": "basis-1/1",
+          "to": "basis-full",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*basis-1\\/1(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "basis-10/12",
+          "to": "basis-5/6"
+        },
+        {
+          "component": "utility",
+          "from": "basis-2/12",
+          "to": "basis-1/6"
+        },
+        {
+          "component": "utility",
+          "from": "basis-2/4",
+          "to": "basis-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "basis-2/6",
+          "to": "basis-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "basis-3/12",
+          "to": "basis-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "basis-3/6",
+          "to": "basis-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "basis-4/12",
+          "to": "basis-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "basis-4/6",
+          "to": "basis-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "basis-6/12",
+          "to": "basis-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "basis-8/12",
+          "to": "basis-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "basis-9/12",
+          "to": "basis-3/4"
+        },
+        {
+          "component": "utility",
+          "from": "h-2/4",
+          "to": "h-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "h-2/6",
+          "to": "h-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "h-3/6",
+          "to": "h-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "h-4/6",
+          "to": "h-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "h-screen-2/4",
+          "to": "h-screen-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "top-10/12",
+          "to": "top-5/6"
+        },
+        {
+          "component": "utility",
+          "from": "top-2/12",
+          "to": "top-1/6"
+        },
+        {
+          "component": "utility",
+          "from": "top-2/4",
+          "to": "top-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "top-2/6",
+          "to": "top-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "top-3/12",
+          "to": "top-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "top-3/6",
+          "to": "top-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "top-4/12",
+          "to": "top-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "top-4/6",
+          "to": "top-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "top-6/12",
+          "to": "top-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "top-8/12",
+          "to": "top-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "top-9/12",
+          "to": "top-3/4"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-10/12",
+          "to": "bottom-5/6"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-2/12",
+          "to": "bottom-1/6"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-2/4",
+          "to": "bottom-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-2/6",
+          "to": "bottom-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-3/12",
+          "to": "bottom-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-3/6",
+          "to": "bottom-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-4/12",
+          "to": "bottom-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-4/6",
+          "to": "bottom-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-6/12",
+          "to": "bottom-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-8/12",
+          "to": "bottom-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "bottom-9/12",
+          "to": "bottom-3/4"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-10/12",
+          "to": "inline-start-5/6"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-2/12",
+          "to": "inline-start-1/6"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-2/4",
+          "to": "inline-start-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-2/6",
+          "to": "inline-start-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-3/12",
+          "to": "inline-start-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-3/6",
+          "to": "inline-start-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-4/12",
+          "to": "inline-start-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-4/6",
+          "to": "inline-start-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-6/12",
+          "to": "inline-start-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-8/12",
+          "to": "inline-start-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-start-9/12",
+          "to": "inline-start-3/4"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-10/12",
+          "to": "inline-end-5/6"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-2/12",
+          "to": "inline-end-1/6"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-2/4",
+          "to": "inline-end-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-2/6",
+          "to": "inline-end-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-3/12",
+          "to": "inline-end-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-3/6",
+          "to": "inline-end-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-4/12",
+          "to": "inline-end-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-4/6",
+          "to": "inline-end-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-6/12",
+          "to": "inline-end-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-8/12",
+          "to": "inline-end-2/3"
+        },
+        {
+          "component": "utility",
+          "from": "inline-end-9/12",
+          "to": "inline-end-3/4"
+        },
+        {
+          "component": "utility",
+          "from": "g-0",
+          "to": "gap-0"
+        },
+        {
+          "component": "utility",
+          "from": "g-1",
+          "to": "gap-1"
+        },
+        {
+          "component": "utility",
+          "from": "g-1/2",
+          "to": "gap-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "g-1/3",
+          "to": "gap-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "g-1/4",
+          "to": "gap-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "g-2",
+          "to": "gap-2"
+        },
+        {
+          "component": "utility",
+          "from": "g-3",
+          "to": "gap-3"
+        },
+        {
+          "component": "utility",
+          "from": "g-4",
+          "to": "gap-4"
+        },
+        {
+          "component": "utility",
+          "from": "g-5",
+          "to": "gap-5"
+        },
+        {
+          "component": "utility",
+          "from": "g-6",
+          "to": "gap-6"
+        },
+        {
+          "component": "utility",
+          "from": "g-7",
+          "to": "gap-7"
+        },
+        {
+          "component": "utility",
+          "from": "g-8",
+          "to": "gap-8"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-0",
+          "to": "gap-x-0"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-1",
+          "to": "gap-x-1"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-1/2",
+          "to": "gap-x-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-1/3",
+          "to": "gap-x-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-1/4",
+          "to": "gap-x-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-2",
+          "to": "gap-x-2"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-3",
+          "to": "gap-x-3"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-4",
+          "to": "gap-x-4"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-5",
+          "to": "gap-x-5"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-6",
+          "to": "gap-x-6"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-7",
+          "to": "gap-x-7"
+        },
+        {
+          "component": "utility",
+          "from": "g-x-8",
+          "to": "gap-x-8"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-0",
+          "to": "gap-y-0"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-1",
+          "to": "gap-y-1"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-1/2",
+          "to": "gap-y-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-1/3",
+          "to": "gap-y-1/3"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-1/4",
+          "to": "gap-y-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-2",
+          "to": "gap-y-2"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-3",
+          "to": "gap-y-3"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-4",
+          "to": "gap-y-4"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-5",
+          "to": "gap-y-5"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-6",
+          "to": "gap-y-6"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-7",
+          "to": "gap-y-7"
+        },
+        {
+          "component": "utility",
+          "from": "g-y-8",
+          "to": "gap-y-8"
+        },
+        {
+          "component": "utility",
+          "from": "w-20",
+          "to": "w-1/5"
+        },
+        {
+          "component": "utility",
+          "from": "w-25",
+          "to": "w-1/4"
+        },
+        {
+          "component": "utility",
+          "from": "w-40",
+          "to": "w-2/5"
+        },
+        {
+          "component": "utility",
+          "from": "w-50",
+          "to": "w-1/2"
+        },
+        {
+          "component": "utility",
+          "from": "w-60",
+          "to": "w-3/5"
+        },
+        {
+          "component": "utility",
+          "from": "w-75",
+          "to": "w-3/4"
+        },
+        {
+          "component": "utility",
+          "from": "w-80",
+          "to": "w-4/5"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write gap-* for g-*, the fraction in lowest terms (w-1/2 for w-2/4, w-3/6, w-6/12 and w-50) and full for 1/1; sf-upgrade --apply rewrites them, and reports w-1/1 and basis-1/1 for a person (they are the head of w-1/12 and basis-1/12).",
+      "examples": {
+        "before": "<div class=\"flex g-2\"><div class=\"w-2/4\">…</div><div class=\"w-50 md:w-6/12\">…</div></div>",
+        "after": "<div class=\"flex gap-2\"><div class=\"w-1/2\">…</div><div class=\"w-1/2 md:w-1/2\">…</div></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/gap; src/utility/width; src/utility/width-ext; src/utility/flex-basis; src/utility/height; src/utility/element-position; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 4; control/docs-review/decisions.md C212"
+    },
+    {
+      "id": "class-c212-length-nearest",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (4): the lengths with no exact twin in the system steps. They keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations with the nearest public name, which looks different, so a person chooses: w-1 ... w-99 (a width in percent) -> the nearest fraction in lowest terms (w-33 -> w-1/3, w-10 -> w-1/12); space-x-N and space-y-N (a margin on every child but the first) -> gap-x-N and gap-y-N on a flex or grid parent, and space-x-reverse, space-y-reverse go with them; the raw rungs a0 ... i9 of the spacing ladders retired by C187 (2) (m-, p-, scroll-m-, scroll-p- and their sides) -> the space step nearest to the rung on a desktop (m-b6, 16 px -> m-1; m-c2, 24 px -> m-3), where a step also follows the device and a rung does not. utility.space 1.1.0, utility.width-ext 1.1.0 (comments only).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "w-1",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-1(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-2",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-2(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-3",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-3(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-4",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-4(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-5",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-5(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-6",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-6(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-7",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-7(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-8",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-8(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-9",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-9(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-10",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-10(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-11",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-11(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-12",
+          "to": "w-1/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-12(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-13",
+          "to": "w-1/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-13(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-14",
+          "to": "w-1/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-14(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-15",
+          "to": "w-1/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-15(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-16",
+          "to": "w-1/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-16(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-17",
+          "to": "w-1/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-17(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-18",
+          "to": "w-1/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-18(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-19",
+          "to": "w-1/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-19(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-21",
+          "to": "w-1/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-21(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-22",
+          "to": "w-1/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-22(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-23",
+          "to": "w-1/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-23(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-24",
+          "to": "w-1/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-24(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-26",
+          "to": "w-1/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-26(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-27",
+          "to": "w-1/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-27(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-28",
+          "to": "w-1/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-28(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-29",
+          "to": "w-1/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-29(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-30",
+          "to": "w-1/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-30(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-31",
+          "to": "w-1/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-31(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-32",
+          "to": "w-1/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-32(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-33",
+          "to": "w-1/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-33(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-34",
+          "to": "w-1/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-34(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-35",
+          "to": "w-1/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-35(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-36",
+          "to": "w-1/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-36(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-37",
+          "to": "w-2/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-37(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-38",
+          "to": "w-2/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-38(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-39",
+          "to": "w-2/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-39(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-41",
+          "to": "w-5/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-41(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-42",
+          "to": "w-5/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-42(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-43",
+          "to": "w-5/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-43(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-44",
+          "to": "w-5/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-44(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-45",
+          "to": "w-5/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-45(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-46",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-46(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-47",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-47(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-48",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-48(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-49",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-49(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-51",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-51(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-52",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-52(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-53",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-53(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-54",
+          "to": "w-1/2",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-54(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-55",
+          "to": "w-7/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-55(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-56",
+          "to": "w-7/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-56(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-57",
+          "to": "w-7/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-57(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-58",
+          "to": "w-7/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-58(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-59",
+          "to": "w-7/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-59(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-61",
+          "to": "w-3/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-61(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-62",
+          "to": "w-3/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-62(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-63",
+          "to": "w-3/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-63(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-64",
+          "to": "w-2/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-64(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-65",
+          "to": "w-2/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-65(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-66",
+          "to": "w-2/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-66(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-67",
+          "to": "w-2/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-67(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-68",
+          "to": "w-2/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-68(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-69",
+          "to": "w-2/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-69(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-70",
+          "to": "w-2/3",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-70(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-71",
+          "to": "w-3/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-71(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-72",
+          "to": "w-3/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-72(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-73",
+          "to": "w-3/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-73(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-74",
+          "to": "w-3/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-74(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-76",
+          "to": "w-3/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-76(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-77",
+          "to": "w-3/4",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-77(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-78",
+          "to": "w-4/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-78(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-79",
+          "to": "w-4/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-79(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-81",
+          "to": "w-4/5",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-81(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-82",
+          "to": "w-5/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-82(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-83",
+          "to": "w-5/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-83(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-84",
+          "to": "w-5/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-84(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-85",
+          "to": "w-5/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-85(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-86",
+          "to": "w-5/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-86(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-87",
+          "to": "w-5/6",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-87(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-88",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-88(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-89",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-89(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-90",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-90(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-91",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-91(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-92",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-92(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-93",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-93(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-94",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-94(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-95",
+          "to": "w-11/12",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-95(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-96",
+          "to": "w-full",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-96(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-97",
+          "to": "w-full",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-97(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-98",
+          "to": "w-full",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-98(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "w-99",
+          "to": "w-full",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*w-99(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "space-x-reverse",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "space-y-reverse",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "space-x-*",
+          "to": "gap-x-*",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*space-x-(?:0|1\\/[234]|[1-8])(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "space-y-*",
+          "to": "gap-y-*",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*space-y-(?:0|1\\/[234]|[1-8])(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "m-, p-, scroll-m-, scroll-p- <a0-i9>",
+          "to": "the nearest space step"
+        },
+        {
+          "component": "utility",
+          "from": "-scroll-m-, -scroll-p- <a0-i9>",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Choose the length: a fraction in lowest terms for w-N (the nearest is named in SF.deprecations), gap-x-N or gap-y-N on a flex or grid parent for space-x-N or space-y-N (a block parent becomes flex flex-col for space-y), and a space step (m-1, p-2 ...) for a rung (m-b6, p-c2 ...).",
+      "examples": {
+        "before": "<div class=\"w-33 space-y-2\"><p class=\"m-top-b6\">…</p></div>",
+        "after": "<div class=\"w-1/3 flex flex-col gap-y-2\"><p class=\"m-top-1\">…</p></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/width-ext; src/utility/space; src/utility/margin-ext; src/utility/padding-ext; src/utility/scroll-margin-ext; src/utility/scroll-padding-ext; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 4; control/docs-review/decisions.md C212"
     }
   ]
 }
