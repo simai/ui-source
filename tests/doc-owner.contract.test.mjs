@@ -30,7 +30,9 @@ test('Doc surfaces use semantic typography, spacing, color and radius contracts'
   assert.match(css, /--sf-text-large--height/);
   assert.match(css, /--sf-radius--surface/);
   assert.match(css, /--sf-on-surface-variant/);
-  assert.match(css, /--sf-on-surface-inverse/);
+  // D20: the source block is the code surface's look, never the inverse one.
+  assert.doesNotMatch(css, /--sf-surface-inverse|--sf-on-surface-inverse/);
+  assert.match(css, /--sf-surface-container/);
   assert.match(css, /--sf-space-2/);
   assert.match(css, /\.sf-doc-pair/);
   assert.match(css, /forced-colors: active/);

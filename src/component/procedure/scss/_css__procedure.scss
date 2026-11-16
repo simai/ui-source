@@ -16,8 +16,11 @@
 // edge, the number at the 1/2 text size. It reads the same tokens as the
 // sf-steps marker, so the two stay equal on every rung.
 //
-// sf-procedure-step--complete fills the marker with the primary role;
-// sf-procedure-step--current rings it. sf-procedure--list drops
+// The states are the sf-steps number marker's too (C194 with C101 (6),
+// content study Pr1-Pr3): a step ahead is the empty circle with its number in
+// the explanation's ink; sf-procedure-step--complete is the primary fill with
+// a check; sf-procedure-step--current is the primary fill with its number and
+// a 2 px ring through a 2 px gap. sf-procedure--list drops
 // the line. content.steps renders with it. sf-steps, the indicator of where
 // a person is in a process, is another component.
 
@@ -26,6 +29,11 @@
     --sf-procedure--marker-size: var(--sf-text-height-1);
     --sf-procedure--gap: var(--sf-procedure-gap, var(--sf-content--space-related));
     --sf-procedure--line-width: var(--sf-procedure-line-width, var(--sf-px));
+    // The current marker's ring and its gap, as sf-steps (C73): 2 and 2.
+    --sf-procedure--ring: calc(var(--sf-px) * 2);
+    // Half the check's stroke: the stroke is 2, as the icon font's check at
+    // the marker's glyph size.
+    --sf-procedure--check: var(--sf-px);
 
     display: flex;
     flex-direction: column;
@@ -60,7 +68,8 @@
     box-sizing: border-box;
     inline-size: var(--sf-procedure--marker-size);
     block-size: var(--sf-procedure--marker-size);
-    color: var(--sf-procedure-marker-color, var(--sf-on-surface));
+    // A step ahead: the number in the explanation's ink, as sf-steps (Pr3).
+    color: var(--sf-procedure-marker-color, var(--sf-on-surface-variant));
     // No fill: an empty circle, as the sf-steps marker of a step ahead.
     background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, transparent));
     border: var(--sf-px) solid var(--sf-outline);
@@ -115,17 +124,58 @@
     padding-block-start: calc((var(--sf-procedure--marker-size) - var(--sf-text--height)) / 2);
   }
 
+  // A done step: the primary fill with a check, no number (Pr1). The marker
+  // is a pseudo-element, so the check is drawn, not set from the icon font
+  // (whose subset holds only the glyphs a page names): two strokes in the
+  // on-primary ink, each the diagonal of its own box, placed where the font's
+  // check stands in the glyph box sf-steps uses (20 in a 24 marker). The
+  // marker is decoration either way: the step's own words say it is done.
   .sf-procedure-step--complete::before {
+    content: '';
     color: var(--sf-on-primary);
     background-color: var(--sf-primary);
     border-color: var(--sf-primary);
+    background-image:
+      linear-gradient(
+        to top right,
+        var(--sf-transparent) calc(50% - var(--sf-procedure--check)),
+        var(--sf-on-primary) calc(50% - var(--sf-procedure--check)) calc(50% + var(--sf-procedure--check)),
+        var(--sf-transparent) calc(50% + var(--sf-procedure--check))
+      ),
+      linear-gradient(
+        to bottom right,
+        var(--sf-transparent) calc(50% - var(--sf-procedure--check)),
+        var(--sf-on-primary) calc(50% - var(--sf-procedure--check)) calc(50% + var(--sf-procedure--check)),
+        var(--sf-transparent) calc(50% + var(--sf-procedure--check))
+      );
+    background-origin: border-box;
+    background-repeat: no-repeat;
+    // The short stroke spans 22.6-39.6 % of the marker across and 52.4-69.4 %
+    // down, the long one 39.6-78.8 % and 30.2-69.4 %; a background position
+    // in per cent is the box's start over the room left (start / (1 - size)).
+    background-size: 17% 17%, 39.2% 39.2%;
+    background-position: 27.2% 63.1%, 65.1% 49.7%;
   }
 
+  // The current step: the primary fill, its number in on-primary, and the
+  // ring through a gap, as sf-steps (Pr2; it was a pale primary-container
+  // circle with a 1 px ring flush against it).
   .sf-procedure-step--current::before {
-    color: var(--sf-on-primary-container);
-    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary);
+    background-color: var(--sf-primary);
     border-color: var(--sf-primary);
-    box-shadow: var(--sf-0) var(--sf-0) var(--sf-0) var(--sf-px) var(--sf-primary);
+    outline: var(--sf-procedure--ring) solid var(--sf-primary);
+    outline-offset: var(--sf-procedure--ring);
+  }
+
+  // The line keeps its 4 off the ring, which reaches past the marker by the
+  // gap and the ring.
+  .sf-procedure-step--current:not(:last-child)::after {
+    inset-block-start: calc(var(--sf-procedure--marker-size) + var(--sf-procedure--ring) * 2 + var(--sf-space-1\/4));
+  }
+
+  .sf-procedure-step:has(+ .sf-procedure-step--current)::after {
+    inset-block-end: calc(var(--sf-space-1\/4) + var(--sf-procedure--ring) * 2 - var(--sf-procedure--gap));
   }
 
   .sf-procedure--list > .sf-procedure-step::after {
@@ -139,6 +189,16 @@
 
     .sf-procedure-step:not(:last-child)::after {
       background-color: CanvasText;
+    }
+
+    // Forced colours drop the fill and the drawn check: a done step keeps its
+    // number, a current step its ring.
+    .sf-procedure-step--complete::before {
+      content: counter(sf-procedure);
+    }
+
+    .sf-procedure-step--current::before {
+      outline-color: CanvasText;
     }
   }
 }

@@ -50,9 +50,11 @@ export function renderReferenceLinkTemplate(context) {
     : nothing;
   // A new tab says so (C147 (4)): the sign after the words and, for a screen
   // reader, the words in the link's name -- in the page's language, the
-  // words sf-file-download says for a file opened to view (C25).
+  // words sf-file-download says for a file opened to view (C25). The sign is
+  // the Framework's one new-tab sign, arrow_outward, as sf-link and core's
+  // link in text (C186 (3); content study C5, it was open_in_new).
   const tabPart = newTab
-    ? html`<i class="sf-reference-link__tab sf-icon" aria-hidden="true">open_in_new</i><span class="sf-reference-link__tab-words">${words.newTab}</span>`
+    ? html`<i class="sf-reference-link__tab sf-icon" aria-hidden="true">arrow_outward</i><span class="sf-reference-link__tab-words">${words.newTab}</span>`
     : nothing;
   const name = ariaLabel && newTab ? `${ariaLabel} ${words.newTab}` : ariaLabel;
   const reasonPart = gone
@@ -62,12 +64,15 @@ export function renderReferenceLinkTemplate(context) {
   if (inline) {
     // In text (C147 (1), (2)): one inline run that wraps with the sentence --
     // the type icon, the name, the record's number in a quiet ink, the new
-    // tab sign. No white space between the parts: the icon never parts from
-    // the name's first word at a line end.
+    // tab sign. No white space between the parts, and a word joiner after
+    // the icon: the icon is an atomic inline, which the browser may break
+    // after even with no space, so on a narrow line it stood alone at the
+    // line end with the name on the next (content study C6).
     const numberPart = textContent
       ? html` <span class="sf-reference-link__number">${textContent}</span>`
       : nothing;
-    const body = html`${iconPart}<span class="sf-reference-link__label">${labelContent}</span>${numberPart}${reasonPart}${tabPart}`;
+    const joiner = shownIcon ? '\u2060' : nothing;
+    const body = html`${iconPart}${joiner}<span class="sf-reference-link__label">${labelContent}</span>${numberPart}${reasonPart}${tabPart}`;
     const run = href && !disabled && !gone
       ? html`<a class="sf-reference-link__link"
           href=${href}

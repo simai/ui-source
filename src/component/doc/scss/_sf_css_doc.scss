@@ -21,22 +21,62 @@
     max-inline-size: 100%;
   }
 
+  // The result of an example stands on the page with an outline-variant edge
+  // and no fill of its own (D20; content study D1, it was surface-container).
+  // Only the block's inline and end margins are reset: the start margin is
+  // the one * + .sf-doc-example gives after content, which a whole-margin
+  // reset of the same weight further down cancelled (content study D3).
   .sf-doc-example,
   .example {
     min-inline-size: 0;
-    margin: 0;
+    margin-inline: 0;
+    margin-block-end: 0;
     padding: var(--sf-space-3);
     overflow-wrap: anywhere;
-    background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     border: var(--sf-px) solid var(--sf-outline-variant);
     border-radius: var(--sf-radius--surface);
     color: var(--sf-on-surface);
   }
 
+  // The source block's own paint, and not the highlighter's: a highlighted
+  // block is drawn by the code surface, whose root or scroller may carry
+  // these classes. It is the code surface's look (D20, C186 (10), (11)):
+  // surface-container with an outline-variant edge and the highlighter's
+  // colours, the code at step 1/2, the space-1 field around it. It was the
+  // inverse surface -- always dark on a light page and light on a dark one
+  // -- with no field, the code against its edge at the text's own size
+  // (content study D1, D4).
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin-block-end: var(--sf-text--space-bottom);
+    padding: var(--sf-space-1);
+    overflow: auto;
+    background-color: var(--sf-highlight-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
+    color: var(--sf-highlight-color, var(--sf-on-surface));
+    tab-size: 2;
+  }
+
+  // Inside the block code takes the block's colour (the core gives <code>
+  // the main text colour outright) and the block's code step.
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) code {
+    color: inherit;
+    font-family: var(--sf-code-font-family, var(--sf-code--font-family, var(--sf-mono)));
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
+  // The seam of an example and its source: after the source block's own
+  // corner above, so its top corners come out square (content study D2: an
+  // equal-weight corner rule stood below this one and won). One edge at the
+  // seam, the example's: the source's top edge is dropped.
   // A highlighted source block is wrapped in the highlighter's code surface,
   // and the wrapper is what follows the example then.
   :is(.sf-doc-example, .sf-playground, .example) + :is(.sf-doc-source, .source, .sf-highlight:has(.sf-doc-source)) {
+    border-block-start-width: 0;
     border-start-end-radius: var(--sf-radius-square);
     border-start-start-radius: var(--sf-radius-square);
   }
@@ -45,30 +85,6 @@
   :is(.sf-doc-example, .sf-playground, .example):has(+ :is(.sf-doc-source, .source), + .sf-highlight .sf-doc-source) {
     border-end-end-radius: var(--sf-radius-square);
     border-end-start-radius: var(--sf-radius-square);
-  }
-
-  // The source block's own paint, and not the highlighter's: a highlighted
-  // block is drawn by the code surface (--sf-surface-container), whose root or
-  // scroller may carry these classes. Matched, the inverse fill won over the
-  // surface by load order, and in the dark theme plain identifiers stood light
-  // on light (ui-chat).
-  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
-    min-inline-size: 0;
-    max-inline-size: 100%;
-    margin-block-end: var(--sf-text--space-bottom);
-    overflow: auto;
-    background-color: var(--sf-surface-inverse);
-    border-radius: var(--sf-radius--surface);
-    color: var(--sf-on-surface-inverse);
-    tab-size: 2;
-  }
-
-  // The core gives <code> the main text colour outright, which is right on a
-  // surface and wrong here: the source block is an inverse surface, and code
-  // in it stayed dark on dark, 1.3:1. Inside the block it takes the block's
-  // colour.
-  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) code {
-    color: inherit;
   }
 
   .sf-doc-stripes,

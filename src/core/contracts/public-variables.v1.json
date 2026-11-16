@@ -3777,8 +3777,8 @@
         {
           "name": "--sf-procedure-marker-color",
           "role": "color",
-          "summary": "The number in a step's marker.",
-          "default": "var(--sf-on-surface)",
+          "summary": "The number in the marker of a step ahead; the explanation's ink, as the sf-steps marker (C194). A complete step draws a check and a current one its own number in on-primary.",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-01"
         },
         {

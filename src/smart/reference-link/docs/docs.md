@@ -21,7 +21,7 @@ when `disabled` is set. Use ordinary Link when no secondary reference is needed.
 - `text` — the route or number: at the far end of a card or a line, after the
   name in a quiet ink in text
 - `href`
-- `target` — `_blank` adds the `open_in_new` sign after the words and
+- `target` — `_blank` adds the `arrow_outward` sign after the words and
   «(откроется в новой вкладке)» / "(opens in a new tab)" to the name
 - `disabled`
 - `appearance="card|inline|plain"` — `card` is the box; `inline` is a link in
@@ -52,7 +52,7 @@ The underline is always on in text; in a card, a field and a table (`line`,
 `size`, `plain`) the link is underlined under the pointer and on keyboard
 focus only.
 
-`target="_blank"` adds `rel="noopener noreferrer"`, the `open_in_new` sign and
+`target="_blank"` adds `rel="noopener noreferrer"`, the `arrow_outward` sign and
 the words for a screen reader, in the page's language; do not write them by
 hand. The icons are decorative and are not copied with the text.
 

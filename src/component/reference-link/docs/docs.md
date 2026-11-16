@@ -37,7 +37,7 @@ Since component.reference-link 1.2.0 (owner decision C147, 2026-11-14):
 - **Underline** — in a card, a size, a line and plain the link is underlined
   under the pointer and on keyboard focus only; in text always.
 - **New tab** — after the words `<i class="sf-reference-link__tab sf-icon"
-  aria-hidden="true">open_in_new</i>` and `<span
+  aria-hidden="true">arrow_outward</i>` and `<span
   class="sf-reference-link__tab-words">(откроется в новой вкладке)</span>`
   (read by a screen reader, not seen). The Smart element writes both.
 - **Visited** — `--sf-link-visited` only for `--inline` inside

@@ -280,11 +280,11 @@
         },
         {
           "id": "p8-new-tab",
-          "title": "target _blank adds the open_in_new sign and the words to the name",
+          "title": "target _blank adds the arrow_outward sign and the words to the name",
           "covers": "settings.target (C147 (4)), lang runtime new-tab-text",
           "steps": [
             {
-              "check": "(() => { const a = document.querySelector('#r-tab a'); return a.getAttribute('rel') === 'noopener noreferrer' && a.querySelector('.sf-reference-link__tab').textContent === 'open_in_new' && a.querySelector('.sf-reference-link__tab-words').textContent === '(откроется в новой вкладке)'; })()"
+              "check": "(() => { const a = document.querySelector('#r-tab a'); return a.getAttribute('rel') === 'noopener noreferrer' && a.querySelector('.sf-reference-link__tab').textContent === 'arrow_outward' && a.querySelector('.sf-reference-link__tab-words').textContent === '(откроется в новой вкладке)'; })()"
             }
           ]
         },

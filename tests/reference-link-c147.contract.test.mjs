@@ -20,8 +20,11 @@ test('two looks: inline in text beside the card; three settings added (C147 (1),
   assert.equal(manifest.settings.copy.default, false);
   assert.match(css, /\.sf-reference-link\.sf-reference-link--inline \{\s*display: inline;/u);
   assert.match(css, /\.sf-reference-link--inline :where\(\.sf-reference-link__link\)::after \{\s*content: none;/u);
-  // The icon never parts from the name: no white space between them in the template.
-  assert.match(template, /\$\{iconPart\}<span class="sf-reference-link__label">/u);
+  // The icon never parts from the name: no white space between them in the
+  // template, and a word joiner after the icon (an atomic inline the browser
+  // may break after; content study C6).
+  assert.match(template, /\$\{iconPart\}\$\{joiner\}<span class="sf-reference-link__label">/u);
+  assert.match(template, /const joiner = shownIcon \? '\\u2060' : nothing;/u);
 });
 
 test('a record in text: type icon one line high, 4 before the name, the number quiet and whole (C147 (2))', () => {
@@ -40,7 +43,7 @@ test('underline: always in text, under the pointer and on focus elsewhere (C147 
 
 test('a new tab adds the sign and the words, in the page language (C147 (4))', () => {
   assert.match(template, /newTab = !gone && !disabled && Boolean\(href\) && target === '_blank'/u);
-  assert.match(template, /sf-reference-link__tab sf-icon" aria-hidden="true">open_in_new</u);
+  assert.match(template, /sf-reference-link__tab sf-icon" aria-hidden="true">arrow_outward</u);
   assert.equal(ru.runtime['new-tab-text'], '(откроется в новой вкладке)');
   assert.equal(en.runtime['new-tab-text'], '(opens in a new tab)');
   assert.match(css, /__tab-words\) \{\s*position: absolute;[^}]*clip-path: inset\(50%\);/u);
