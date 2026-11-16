@@ -53,7 +53,8 @@ test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async (
   assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
   assert.match(tags, /@media not all and \(min-width: #\{bp\.\$breakpoint-desktop\}\) \{\n  \.sf-tag\.sf-tag--size-1\\\/2 > \.sf-icon-button/u, 'phone 1/2: 1.5 line');
   assert.match(tags, /\[data-sf-density="compact"\] \.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="normal"\] \*\) > \.sf-icon-button/u, 'compact 1/2: 1.5 line');
-  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),[^{]*\{\s*--sf-tag--close-size: var\(--sf-micro--cross-1\);/u, 'desktop 1/2: 12');
+  assert.match(tags, /\.sf-tag\.sf-tag--inline\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),[^{]*\{\s*--sf-tag--close-size: var\(--sf-micro--cross-1\);/u, 'desktop 1/2 chip on a field line: 12');
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/2:not\(\.sf-tag--inline\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon,/u, '1/2 outside a field: 8 with the 1.5 line (C132, content study T3)');
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');
   assert.match(css, /--sf-close-icon--background-color: color-mix\(in srgb, var\(--sf-tag-color, var\(--sf-on-surface\)\) 64%, transparent\);/u);

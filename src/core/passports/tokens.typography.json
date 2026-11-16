@@ -26,7 +26,7 @@
     "src/core/scss/_sf_css__typograpy.scss",
     "src/core/scss/vars/_sf_var__link.scss"
   ],
-  "content_sha256": "75597412c3553a8b51c0fe89e83cb522d8bc6c407e0edfea0da23adada335493",
+  "content_sha256": "35652f7ff719d6dfc63036ee8f6be166bc9a7b6321666a24026c64bf6643bffb",
   "dependencies": [
     {
       "id": "font.inter",

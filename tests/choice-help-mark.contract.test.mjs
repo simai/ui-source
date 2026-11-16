@@ -58,7 +58,8 @@ test('radio: an icon beside the label is the line of its size; tag check: a mark
   const tags = await read('src/component/tags/scss/_css__tags.scss');
   // C145 (2): no square; the chosen tag's check mark is an icon, the picture
   // of the tag's size (tag - 8, C58), hidden until the tag is chosen.
-  assert.match(tags, /\.sf-tag:not\(\.active\) \.sf-tag-check \{\s*display: none;/);
+  // Unchosen (neither .active nor aria-pressed) hides the mark over the icons sheet's unlayered display (content study T1).
+  assert.match(tags, /\.sf-tag:not\(\.active, \[aria-pressed="true"\]\) \.sf-tag-check \{\s*display: none !important;/);
   assert.doesNotMatch(tags, /\.sf-tag \.sf-tag-check \{[^}]*border:/);
   assert.doesNotMatch(tags, /\.sf-tag \.sf-tag-check \{[^}]*--sf-icon-size-1/);
 });

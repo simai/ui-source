@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.icons",
   "kind": "component",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/icons/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/icons/scss/_var__icons.scss",
     "src/component/icons/scss/index.scss"
   ],
-  "content_sha256": "eb9adea52e1de288ae0d8aef31984317e63c8add6832c2d1904f79268f8cf313",
+  "content_sha256": "b28056688a2e64037612acd4aeaf3578c58a91223dfb04a64a585a13a05f3223",
   "dependencies": [
     {
       "id": "icons.material-symbols",

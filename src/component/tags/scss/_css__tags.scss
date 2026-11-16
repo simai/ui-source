@@ -61,8 +61,12 @@
      C58): the Smart tag draws an sf-icon, class markup writes
      <i class="sf-icon sf-tag-check" aria-hidden="true">check</i>. It keeps
      the ink of the fill's own text role, as the old square's tick did. */
-  .sf-tag:not(.active) .sf-tag-check {
-    display: none;
+  /* !important: the mark is an .sf-icon, and the icons sheet shows every
+     glyph with an unlayered display that outranks any layer, so an unchosen
+     filter drew its check (content study T1, 2026-11-16). An important
+     declaration in a layer is above every normal one. */
+  .sf-tag:not(.active, [aria-pressed="true"]) .sf-tag-check {
+    display: none !important;
   }
 
   .sf-tag .sf-tag-check {
@@ -667,11 +671,14 @@
     --sf-tag--close-size: var(--sf-micro--cross-1\/2);
   }
 
-  /* A 1/2 tag on a desktop outside a compact region is 32 high: its cross is
-     12, the cross of every 32 tag (C145 (1), C132; a compact 1 is 32 too). */
+  /* A chip on another control's line (sf-tag--inline: a field's value) takes
+     the cross of its height, 12 from 32 (C145 (1) variant A: in a field the
+     field owns the tag). A tag outside a field is a control on the ladder and
+     takes the cross of its size, C132's table: 8 at 1/3 and 1/2, 12 at 1 and
+     2 -- a 1/2 tag drew 12 on a desktop (content study T3, 2026-11-16). */
   @media (min-width: bp.$breakpoint-desktop) {
-    .sf-tag.sf-tag--size-1\/2:not([data-sf-density="compact"] *),
-    [data-sf-density="compact"] [data-sf-density="normal"] .sf-tag.sf-tag--size-1\/2 {
+    .sf-tag.sf-tag--inline.sf-tag--size-1\/2:not([data-sf-density="compact"] *),
+    [data-sf-density="compact"] [data-sf-density="normal"] .sf-tag.sf-tag--inline.sf-tag--size-1\/2 {
       --sf-tag--close-size: var(--sf-micro--cross-1);
     }
   }
@@ -1016,6 +1023,14 @@
   --sf-tag-container--padding-inline-start: 0;
 }
 
+/* A filter tag that is not chosen draws no mark (C145 (2)): the hidden mark
+   is still the first part in the markup, so the label is the first part
+   drawn and keeps no padding of its own -- edge | text | edge, 16 and 16 in
+   size 1, not 24 and 16 (C76; content study T2, 2026-11-16). */
+.sf-tag.sf-tag:not(.active, [aria-pressed="true"]) .sf-tag-check:first-child + .sf-tag-container {
+  --sf-tag-container--padding-inline-start: 0;
+}
+
 .sf-tag.sf-tag .sf-tag-container:last-child {
   --sf-tag-container--padding-inline-end: 0;
 }
@@ -1143,9 +1158,12 @@
    than the letters beside it. Larger crosses keep the 2 px line of C14. Its
    press target stays --sf-c2 (24). The cross follows the tag's height (owner
    decision C145 (1), C132): 8 on tags up to 28, 12 from 32. So it is 8 at
-   1/3, and at 1/2 on a phone and in a compact region (28); a 1/2 tag on a
-   desktop is 32 and takes 12 with the 2 px line, as a compact 1 of the same
-   32 does (it drew 8 there: two crosses for one height). */
+   1/3, and at 1/2 on a phone and in a compact region (28); a 1/2 chip on a
+   field's line on a desktop is 32 and takes 12 with the 2 px line, as a
+   compact 1 of the same 32 does. A 1/2 tag outside a field takes C132's 8 at
+   every width (content study T3, 2026-11-16), with the 1.5 line. */
+.sf-tag.sf-tag--size-1\/2:not(.sf-tag--inline) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
+.sf-tag.sf-tag--size-1\/2:not(.sf-tag--inline) > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
 .sf-tag.sf-tag--size-1\/3 > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon,
 .sf-tag.sf-tag--size-1\/3 > :is(sf-button-close, sf-close) > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
   --sf-close-icon--mask-image: url("data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%208%208%27%3E%3Cpath%20d=%27M0%200L8%208M8%200L0%208%27%20stroke=%27black%27%20stroke-width=%271.5%27/%3E%3C/svg%3E");

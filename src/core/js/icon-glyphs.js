@@ -133,6 +133,23 @@ export function mirrorsInRtl(name, mode = 'auto') {
   return DIRECTIONAL_ICONS.has(String(name || '').trim());
 }
 
+// The class markup <i class="sf-icon">arrow_forward</i> is marked the way the
+// Smart icon marks its glyph, so the icons sheet turns it over in a
+// right-to-left part. Before, only sf-icon did, and a class glyph pointed the
+// wrong way in dir="rtl" (content study Z2, 2026-11-16). The author's mode is
+// data-mirror="auto|on|off" (the Smart icon's mirror). The mark follows the
+// name: a glyph renamed to a non-directional one gives it back.
+export function markMirrorGlyph(el, name) {
+  if (!el?.setAttribute) return false;
+  const mirrors = mirrorsInRtl(name, el.getAttribute('data-mirror') || 'auto');
+  if (mirrors) {
+    if (!el.hasAttribute('data-sf-icon-mirror')) el.setAttribute('data-sf-icon-mirror', '');
+  } else if (el.hasAttribute('data-sf-icon-mirror')) {
+    el.removeAttribute('data-sf-icon-mirror');
+  }
+  return mirrors;
+}
+
 // ---------------------------------------------------------------- point 2
 // An unknown or misspelt name is drawn by the icon font as its letters: wider
 // than the glyph's box. The box clips them (the icons sheet), the glyph is
@@ -192,14 +209,44 @@ export function nearestIconName(name, names = []) {
   return bestDistance <= Math.max(2, Math.ceil(wanted.length / 3)) ? best : '';
 }
 
+// Only an unknown name is said (C151 (2)). A name the font's list holds is
+// a face still on its way -- the subset that grows, a family whose face came
+// later than the check -- not a misspelling: it is not said ("no icon
+// "favorite"; nearest: "favorite"", content study Z1, 2026-11-16), it waits
+// unseen and is read again when a face arrives (recheckMissing).
 function warnMissing(name) {
   const state = shared();
   if (state.warned.has(name)) return;
   state.warned.add(name);
   loadNames().then((names) => {
+    if (names.includes(name)) {
+      state.warned.delete(name);
+      watchFaces();
+      return;
+    }
     const near = nearestIconName(name, names);
     globalThis.console?.warn?.(`[SIMAI Framework] sf-icon: no icon "${name}"${near ? `; nearest: "${near}"` : ''}. The box stays empty.`);
   });
+}
+
+// The glyphs marked missing are read again once a face has loaded (a subset
+// swapped in, a family's own face): one that now draws leaves the state.
+function recheckMissing() {
+  const doc = globalThis.document;
+  doc?.querySelectorAll?.('.sf-icon[data-sf-icon-missing]').forEach((el) => checkIconGlyph(el));
+}
+
+function watchFaces() {
+  const state = shared();
+  if (state.watching) return;
+  state.watching = true;
+  const later = () => {
+    const raf = globalThis.requestAnimationFrame;
+    if (typeof raf === 'function') raf(recheckMissing);
+    else setTimeout(recheckMissing, 16);
+  };
+  globalThis.document?.fonts?.addEventListener?.('loadingdone', later);
+  globalThis.addEventListener?.('sf-icons-subset:ready', later);
 }
 
 // A glyph is judged only once the face that draws it is in: marked loaded,

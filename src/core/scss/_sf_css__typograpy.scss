@@ -114,6 +114,13 @@
     --sf-text--family: "Inter Variable", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --sf-heading--family: "Inter Variable", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --sf-display--family: "Inter Variable", "Inter Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+    // The middle of a text line above the text's baseline: half of the face's
+    // ascent less its descent, 0.3633 em for Inter (97 and 24 of 100), whatever
+    // the line height. Unregistered, so the em is the reader's: a glyph, flag
+    // or mark whose box clips (its baseline is its bottom edge) stands on the
+    // middle of the line with vertical-align: calc(this - its height / 2)
+    // (C151 (5); content study 2026-11-16).
+    --sf-text--middle: 0.3633em;
 
     // Default text variables
     --sf-text--size: var(--sf-text--size-1);
