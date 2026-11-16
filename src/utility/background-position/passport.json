@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.background-position",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/background-position/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/background-position/xxl/scss/_sf_css_background_position.scss",
     "src/utility/background-position/xxl/scss/index.scss"
   ],
-  "content_sha256": "5d3980888b7409816c4e910ea2461c1371c35f9b234b2a8e417bbab66717870f",
+  "content_sha256": "61f76ef2e4808c786a950511e2c3f8ad2d77687806d2b82c94d019f8f33a1b89",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

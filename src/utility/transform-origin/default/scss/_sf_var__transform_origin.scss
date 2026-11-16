@@ -15,3 +15,15 @@ $transform-origin-array: (
     inline-start: left,
     top-inline-start: top left,
 );
+
+// The logical names under dir="rtl" (RG-UT-V TRF-1): transform-origin has
+// no logical keywords, so the start side is the right there. The point stayed
+// on the left.
+$transform-origin-rtl-array: (
+    top-inline-end: top left,
+    inline-end: left,
+    bottom-inline-end: bottom left,
+    bottom-inline-start: bottom right,
+    inline-start: right,
+    top-inline-start: top right,
+);

@@ -311,6 +311,22 @@ export default {
         "-m-inline-auto": null,
         "-m-block-auto": null
       }
+    },
+    {
+      "journal": "class-ut1-bg-position",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One set per job (C212): the background position is written with the logical sides, bg-inline-start* and bg-inline-end*, which follow dir=\"rtl\" (utility.background-position 1.1.0). bg-left, bg-right and their -top/-bottom forms keep drawing their physical side until remove_after; the Loader's Tailwind conversion already writes the logical names.",
+      "names": {
+        "bg-left": "bg-inline-start",
+        "bg-left-top": "bg-inline-start-top",
+        "bg-left-bottom": "bg-inline-start-bottom",
+        "bg-right": "bg-inline-end",
+        "bg-right-top": "bg-inline-end-top",
+        "bg-right-bottom": "bg-inline-end-bottom"
+      }
     }
   ],
   "extended": {

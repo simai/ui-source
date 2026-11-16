@@ -14053,6 +14053,55 @@
       },
       "owner": "ui-source",
       "source": "src/utility/margin/default/scss/_sf_css__margin.scss; src/utility/margin/*/rule.js; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-indents-study.html IN-4"
+    },
+    {
+      "id": "class-ut1-bg-position",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V BG-2, BG-3 (C212, one set per job): bg-inline-start* and bg-inline-end* draw the start and the end side of the line, the right under dir=\"rtl\" (they wrote left and right); bg-left, bg-left-top, bg-left-bottom, bg-right, bg-right-top, bg-right-bottom are dated aliases of them, keep drawing their physical side until remove_after, and the Loader notes each once in SF.deprecations. utility.background-position 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "bg-left",
+          "to": "bg-inline-start"
+        },
+        {
+          "component": "utility",
+          "from": "bg-left-top",
+          "to": "bg-inline-start-top"
+        },
+        {
+          "component": "utility",
+          "from": "bg-left-bottom",
+          "to": "bg-inline-start-bottom"
+        },
+        {
+          "component": "utility",
+          "from": "bg-right",
+          "to": "bg-inline-end"
+        },
+        {
+          "component": "utility",
+          "from": "bg-right-top",
+          "to": "bg-inline-end-top"
+        },
+        {
+          "component": "utility",
+          "from": "bg-right-bottom",
+          "to": "bg-inline-end-bottom"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write bg-inline-start for bg-left and bg-inline-end for bg-right (with -top/-bottom kept); in a right-to-left page the image then moves to the start side, which is the point. sf-upgrade --apply rewrites it.",
+      "examples": {
+        "before": "<div class=\"bg-left-top\">",
+        "after": "<div class=\"bg-inline-start-top\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/background-position/default/scss/_sf_var_background_position.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-background-study.html UT-BG-2, UT-BG-3"
     }
   ]
 }

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.transform-origin",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/transform-origin/default/index.js",
@@ -13,7 +13,7 @@
     "src/utility/transform-origin/default/scss/_sf_var__transform_origin.scss",
     "src/utility/transform-origin/default/scss/index.scss"
   ],
-  "content_sha256": "05f71d8fc037b2d472ae1f51bb256b2f5e9889330fd9048d62b87a7245858578",
+  "content_sha256": "5c1589225fa321eeea347fbe6158f0644be7ec97fd6a052776e9eecfc68cc7b4",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

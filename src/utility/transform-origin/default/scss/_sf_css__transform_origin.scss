@@ -19,6 +19,13 @@ $infix: xs;
                 transform-origin:#{$transform-origin-value};
             }
         }
+
+        // Under dir="rtl" the logical names take the other side (RG-UT-V TRF-1).
+        @each $transform-origin-name, $transform-origin-value in $transform-origin-rtl-array {
+            .#{$infix}origin-#{$transform-origin-name}:where(:dir(rtl)) {
+                transform-origin: #{$transform-origin-value};
+            }
+        }
     }
 // }
 }
