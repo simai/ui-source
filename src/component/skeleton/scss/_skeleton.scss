@@ -164,7 +164,7 @@
   --sf-skeleton-text--line: var(--sf-text-height-1\/4);
 }
 
-.sf-skeleton-text:is(.sf-skeleton-circle, .sf-skeleton-square):not([style*="inline-size"]) {
+.sf-skeleton-text:is(.sf-skeleton-circle, .sf-skeleton-square):not(.sf-skeleton-icon, [style*="inline-size"]) {
   inline-size: var(--sf-skeleton-text--height);
 }
 
@@ -175,7 +175,7 @@
    took the text size (12 / 14 / 16 / 20 / 24), and a size-1 placeholder of 16
    was replaced by an icon of 24. Steps the ladder has no icon for (1/4 and
    below, 4 to 7) keep the text size. A width or a height in style still wins. */
-.sf-skeleton-icon {
+.sf-skeleton-text.sf-skeleton-icon:not([style*="inline-size"]) {
   inline-size: var(--sf-skeleton-text--icon, var(--sf-skeleton-text--height));
 }
 

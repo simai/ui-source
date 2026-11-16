@@ -43,7 +43,9 @@ function checkSkeleton(css, where) {
     assert.ok(rule, `${where}: size ${step}`);
     assert.ok(rule[1].includes(`--sf-skeleton-text--icon: var(--sf-text-height-${step})`), `${where}: the icon of ${step} is the step's ladder icon`);
   }
-  assert.match(flat, /\.sf-skeleton-icon ?\{ ?inline-size: ?var\(--sf-skeleton-text--icon, ?var\(--sf-skeleton-text--height\)\)/u, `${where}: icon width`);
+  assert.match(flat, /\.sf-skeleton-text\.sf-skeleton-icon:not\(\[style\*=["']?inline-size["']?\]\) ?\{ ?inline-size: ?var\(--sf-skeleton-text--icon, ?var\(--sf-skeleton-text--height\)\)/u, `${where}: icon width`);
+  // A circle or square icon keeps equal sides (the shape rule leaves icons to the icon rule).
+  assert.match(flat, /\.sf-skeleton-text:is\(\.sf-skeleton-circle, ?\.sf-skeleton-square\):not\(\.sf-skeleton-icon, ?\[style\*=["']?inline-size["']?\]\)/u, `${where}: icon shapes square`);
   assert.match(flat, /\.sf-skeleton-text\.sf-skeleton-icon:not\(\[style\*=["']?block-size["']?\]\) ?\{ ?block-size: ?var\(--sf-skeleton-text--icon/u, `${where}: icon height`);
 }
 
