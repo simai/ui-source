@@ -24,6 +24,19 @@ const formatMessage = (template, index, length) => String(template)
   .replaceAll('{{index}}', String(index + 1))
   .replaceAll('{{slidesLength}}', String(length));
 const numeric = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
+// The engine owns the strip's accessibility (owner decision C245): hidden
+// slides inert, an edge button really disabled, slide names counted again on
+// update(), no autoplay under reduced motion. a11y: false (or
+// {enabled: false}) leaves all four to the caller.
+const a11yOn = (params) => params.a11y !== false && !(isPlainObject(params.a11y) && params.a11y.enabled === false);
+// The <button> of a navigation element: the element itself, or the one button
+// inside a host (an sf-button-icon around its .sf-icon-button).
+const buttonOf = (element) => {
+  if (!(element instanceof Element)) return null;
+  if (element instanceof HTMLButtonElement) return element;
+  const inner = element.querySelectorAll('button');
+  return inner.length === 1 ? inner[0] : null;
+};
 
 function resolveElement(value, root) {
   if (value instanceof Element) return value;
@@ -125,7 +138,10 @@ class SimaiSlider {
       if (!allowed() || !event.isPrimary) return;
       if (event.pointerType === 'mouse' && (event.button !== 0 || this.params.simulateTouch === false)) return;
       if (event.target instanceof Element && event.target.closest(EDITABLE)) return;
-      if (this.slides.length <= Math.ceil(this.perView())) return;
+      // Nothing to page: every slide is in view. With a fractional count
+      // (three slides at 2.2) there is one stop more than whole slides give,
+      // and a drag reaches it as the button does (RG-OT 2).
+      if (!this.params.loop && this.lastIndex() === 0) return;
       this._drag = {id: event.pointerId, x: event.clientX, y: event.clientY, t: event.timeStamp, dx: 0, state: 'pending'};
     };
     this._pointerMove = (event) => {
@@ -204,9 +220,11 @@ class SimaiSlider {
     return Math.min(this.activeIndex, Math.max(0, this.slides.length - this.perView()));
   }
 
-  // Responsive settings (breakpoints) are read again when the window changes
-  // width; nothing listened before, so a slider kept the count of the width it
-  // was started at.
+  // Responsive settings (breakpoints) are read again when their width changes;
+  // nothing listened before, so a slider kept the count of the width it was
+  // started at. The width is the strip's own (breakpointsBase 'container', the
+  // default since 1.2.0: a component follows the width of its place, C181
+  // (2)); breakpointsBase 'window' keeps Swiper's window width.
   attachResize() {
     this._resizeFrame = 0;
     this._resize = () => {
@@ -220,7 +238,23 @@ class SimaiSlider {
         this.emit('resize');
       });
     };
-    if (this.originalParams.breakpoints) window.addEventListener('resize', this._resize);
+    if (!this.originalParams.breakpoints) return;
+    if (this.breakpointsBase() === 'window' || typeof ResizeObserver !== 'function') {
+      window.addEventListener('resize', this._resize);
+      return;
+    }
+    this._resizeObserver = new ResizeObserver(this._resize);
+    this._resizeObserver.observe(this.el);
+  }
+
+  breakpointsBase() {
+    return this.originalParams.breakpointsBase === 'window' ? 'window' : 'container';
+  }
+
+  // The width breakpoints are read against: the strip's own, or the window's.
+  breakpointsWidth() {
+    if (this.breakpointsBase() === 'window') return window.innerWidth;
+    return this.el.getBoundingClientRect().width;
   }
 
   gap() {
@@ -255,6 +289,8 @@ class SimaiSlider {
       running: false,
       start: () => {
         if (!settings || settings.enabled === false || api.running) return false;
+        // Under reduced motion the slides do not turn by themselves (C245).
+        if (a11yOn(this.params) && prefersReducedMotion()) return false;
         api.running = true;
         timer = window.setInterval(() => this.slideNext(), numeric(settings.delay, 5000));
         this.emit('autoplayStart');
@@ -279,9 +315,10 @@ class SimaiSlider {
   }
 
   selectedParams() {
+    const width = this.breakpointsWidth();
     const points = Object.entries(this.originalParams.breakpoints || {})
       .map(([point, value]) => [Number(point), value])
-      .filter(([point]) => Number.isFinite(point) && point <= window.innerWidth)
+      .filter(([point]) => Number.isFinite(point) && point <= width)
       .sort((a, b) => a[0] - b[0]);
     return points.length ? { ...this.originalParams, ...points.at(-1)[1] } : { ...this.originalParams };
   }
@@ -304,11 +341,20 @@ class SimaiSlider {
       if (a11y.itemRoleDescriptionMessage) slide.setAttribute('aria-roledescription', a11y.itemRoleDescriptionMessage);
       // A slide the page named keeps its name («Закат»); it used to be replaced
       // by «1 / 2» on every update, before the carousel could even remember it.
-      if (slide.__sfAuthoredLabel === undefined) {
-        slide.__sfAuthoredLabel = slide.getAttribute('aria-label') ?? '';
+      // A name the engine wrote is counted again on every update (C245, RG-OT
+      // 3): it is kept in data-swiper-slide-label, so a slide copied from
+      // another («1 / 2» and its mark) is renamed «3 / 3», not taken as the
+      // page's own name.
+      const current = slide.getAttribute('aria-label');
+      if (slide.__sfAuthoredLabel === undefined || (current !== null && current !== slide.__sfAuthoredLabel
+        && current !== slide.dataset.swiperSlideLabel)) {
+        slide.__sfAuthoredLabel = current !== null && current === slide.dataset.swiperSlideLabel ? '' : (current ?? '');
       }
-      slide.setAttribute('aria-label', slide.__sfAuthoredLabel
-        || formatMessage(a11y.slideLabelMessage || '{{index}} / {{slidesLength}}', index, slides.length));
+      const label = slide.__sfAuthoredLabel
+        || formatMessage(a11y.slideLabelMessage || '{{index}} / {{slidesLength}}', index, slides.length);
+      if (slide.__sfAuthoredLabel) delete slide.dataset.swiperSlideLabel;
+      else slide.dataset.swiperSlideLabel = label;
+      slide.setAttribute('aria-label', label);
       slide.style.flexBasis = gap && slidesPerView > 1
         ? `calc((100% - ${(slidesPerView - 1) * gap}px) / ${slidesPerView})`
         : `${100 / slidesPerView}%`;
@@ -379,6 +425,7 @@ class SimaiSlider {
 
   sync() {
     const slides = this.slides;
+    const a11y = a11yOn(this.params);
     const slidesPerView = this.perView();
     // In view: every slide the window shows a part of, from the offset (short
     // of the end at the last stop) to offset + slidesPerView.
@@ -389,6 +436,12 @@ class SimaiSlider {
       slide.classList.toggle('swiper-slide-active', active);
       slide.classList.toggle('swiper-slide-visible', visible);
       slide.setAttribute('aria-hidden', String(!visible));
+      // A hidden slide's links and buttons leave the Tab order (C245); an
+      // inert the page wrote stays.
+      if (a11y) {
+        if (slide.__sfAuthoredInert === undefined) slide.__sfAuthoredInert = slide.hasAttribute('inert');
+        slide.toggleAttribute('inert', !visible || slide.__sfAuthoredInert);
+      }
     });
     if (this.wrapperEl) {
       this.place();
@@ -396,8 +449,12 @@ class SimaiSlider {
     }
     const disabledClass = this.params.navigation?.disabledClass || 'swiper-button-disabled';
     const looping = Boolean(this.params.loop);
-    this.navigation.prevEl?.classList.toggle(disabledClass, !looping && this.activeIndex === 0);
-    this.navigation.nextEl?.classList.toggle(disabledClass, !looping && this.activeIndex === this.lastIndex());
+    const edges = [
+      [this.navigation.prevEl, !looping && this.activeIndex === 0],
+      [this.navigation.nextEl, !looping && this.activeIndex === this.lastIndex()],
+    ];
+    edges.forEach(([element, off]) => element?.classList.toggle(disabledClass, off));
+    if (a11y) this.disableEdgeButtons(edges);
     const pagination = this.params.pagination || {};
     if (pagination.type === 'fraction' && this.pagination.el) {
       const current = this.pagination.el.querySelector(`.${pagination.currentClass || 'swiper-pagination-current'}`);
@@ -415,6 +472,30 @@ class SimaiSlider {
       if (pagination.keyboard) bullet.tabIndex = active ? 0 : -1;
     });
     return this;
+  }
+
+  // A button with nowhere to go is a disabled button (C245, RG-OT 1): out of
+  // the Tab order, drawn by its own disabled look; the mark class stays for a
+  // non-button arrow. When the focus is on the button that stops, it moves to
+  // the other one, so it does not fall to the page.
+  disableEdgeButtons(edges) {
+    const buttons = edges.map(([element, off]) => {
+      const button = buttonOf(element);
+      // A button the page disabled stays disabled.
+      if (button && button.__sfSwiperDisabled === undefined) button.__sfSwiperDisabled = button.disabled;
+      return [button, off || Boolean(button?.__sfSwiperDisabled)];
+    });
+    buttons.forEach(([button, off], index) => {
+      if (!button || button.disabled === off) return;
+      if (off && button === button.ownerDocument?.activeElement) {
+        const [other, otherOff] = buttons[1 - index];
+        if (other && !otherOff) {
+          other.disabled = false;
+          other.focus?.();
+        }
+      }
+      button.disabled = off;
+    });
   }
 
   slideTo(index, speed = this.params.speed, runCallbacks = true) {
@@ -453,6 +534,7 @@ class SimaiSlider {
     this.keyboardEl?.removeEventListener('keydown', this._keyboard);
     if (this._paginationKeys) this.pagination.el?.removeEventListener('keydown', this._paginationKeys);
     window.removeEventListener('resize', this._resize);
+    this._resizeObserver?.disconnect();
     if (this._resizeFrame) window.cancelAnimationFrame(this._resizeFrame);
     this.el.removeEventListener('pointerdown', this._pointerDown);
     this.el.removeEventListener('pointermove', this._pointerMove);
@@ -464,7 +546,14 @@ class SimaiSlider {
     this.slides.forEach(slide => {
       slide.classList.remove('swiper-slide-active', 'swiper-slide-visible');
       slide.removeAttribute('aria-hidden');
+      if (slide.__sfAuthoredInert !== undefined) slide.toggleAttribute('inert', slide.__sfAuthoredInert);
+      delete slide.__sfAuthoredInert;
       if (cleanStyles) slide.style.removeProperty('flex-basis');
+    });
+    [this.navigation.prevEl, this.navigation.nextEl].map(buttonOf).forEach((button) => {
+      if (!button || button.__sfSwiperDisabled === undefined) return;
+      button.disabled = button.__sfSwiperDisabled;
+      delete button.__sfSwiperDisabled;
     });
     this.el.classList.remove('swiper-initialized', 'swiper-horizontal');
     this.destroyed = true;

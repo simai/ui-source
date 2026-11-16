@@ -195,11 +195,12 @@
   pointer-events: none;
 }
 
-/* A button arrow with nowhere to go is a disabled button (the script sets
-   `disabled`, SL-04) and draws the system's disabled look; an arrow drawn
-   with another element keeps the pale mark. */
+/* A button arrow with nowhere to go is a disabled button (the engine sets
+   `disabled`, C245) and draws the system's disabled look, once: the engine's
+   fade is for an arrow drawn with another element (RG-OT 6), the system's
+   disabled opacity (C18). */
 .sf-slider .sf-slider-arrows .sf-icon-button.swiper-button-disabled:not(:disabled) {
-  opacity: 0.4;
+  opacity: var(--sf-opacity-disabled);
 }
 
 /* From eight slides a counter «2 / 12» stands in the dots' place (C143 (4)),

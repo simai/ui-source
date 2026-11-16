@@ -18,11 +18,11 @@
     "src/component/slider/scss/_var__slider.scss",
     "src/component/slider/scss/index.scss"
   ],
-  "content_sha256": "470a820584d6a900038c72c90b91ad6d266f0a392af38f11818e3e03ba10d3f4",
+  "content_sha256": "19ccdc5e05bd352e67c745fb5a6e906e8d680145f1ddc3c42d2dbbc3a3ba79d4",
   "dependencies": [
     {
       "id": "component.swiper",
-      "range": "^1.1.0"
+      "range": "^1.2.0"
     },
     {
       "id": "core.runtime",
@@ -39,6 +39,10 @@
     {
       "id": "tokens.elevation",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.opacity",
+      "range": "^1.1.0"
     },
     {
       "id": "tokens.radius",

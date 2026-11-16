@@ -36,3 +36,30 @@ and lifecycle methods without an external runtime dependency.
   stop lays the last slide whole at the end.
 - With `breakpoints` the engine reads them again when the window changes width
   and emits `breakpoint` and `resize`; `update` is emitted after each update.
+
+## The engine owns the strip's accessibility (1.2.0, decision C245)
+
+- Owner decision C245 (2026-11-16): the engine, not each component above it,
+  makes the strip accessible, so the slider, the carousel and any later strip
+  get it from one place. `a11y: false` (or `a11y: {enabled: false}`) leaves
+  all of it to the caller:
+  - a slide out of view is `inert` (its links leave the Tab order); an `inert`
+    the page wrote stays and comes back on `destroy()`;
+  - a navigation `<button>` with nowhere to go (or the one button inside the
+    element named as `prevEl` / `nextEl`) is `disabled`: out of the Tab order,
+    drawn by its own disabled look; when it held the focus, the focus moves to
+    the other button. A button the page disabled stays disabled;
+  - `update()` counts the slide names again (`a11y.slideLabelMessage`): a slide
+    added, or copied from another, is «3 / 3», not the copied «1 / 2»; a name
+    the page wrote stays;
+  - autoplay does not start under reduced motion.
+- `.swiper-button-disabled` takes the pointer away; the pale mark is only for
+  an element that is not a disabled button, at `--sf-opacity-disabled` (new in
+  tokens.opacity 1.1.0, one step of the scale: 40 %). It was a raw 0.38 on
+  every button too, so the slider's disabled arrow faded twice.
+- With a fractional `slidesPerView` and few slides (three at 2.2) a drag
+  reaches the last stop, as the button does; it did not move the strip.
+- `breakpoints` are read against the strip's own width by default
+  (`breakpointsBase: 'container'`, a component follows the width of its
+  place, C181 (2)), and again when that width changes; `breakpointsBase:
+  'window'` keeps the window width.

@@ -1,4 +1,5 @@
 import { noteDeprecated } from '../../../core/js/deprecations.js';
+import { bindSlider, unbindSlider } from '../../slider/js/_slider.js';
 
 // One slider (decision C143 (1), owner 2026-11-14): sf-slider took this
 // block's region name and its mandatory pause button. .sf-carousel keeps
@@ -7,266 +8,100 @@ import { noteDeprecated } from '../../../core/js/deprecations.js';
 const DEPRECATED = { since: '2026-11-14', remove_after: '2027-01-01' };
 
 const CAROUSEL_SELECTOR = '.sf-carousel';
-const BOUND_FLAG = 'sfCarouselBound';
-const WAITING_FLAG = 'sfCarouselWaiting';
 
-function normalizeBoolean(value, fallback = false) {
-  if (value === undefined || value === null || value === '') return fallback;
-  if (typeof value === 'boolean') return value;
-  return ['1', 'true', 'yes', 'on'].includes(String(value).toLowerCase());
-}
+// Until it is removed the carousel runs through the slider's code (owner
+// decision C247, component.carousel 1.4.0): the region and its slides are
+// named in the page's language («карусель», «слайд», «1 из 3»), the dots are
+// one Tab stop paged by ArrowLeft / ArrowRight, Home and End, an arrow with
+// nowhere to go is a disabled button, the pause button changes its glyph with
+// its name and is hidden when nothing turns (RG-OT 10-13). Its own classes
+// and look (the glass switches, its dots) stay until the date.
+const CAROUSEL_PARTS = {
+  main: '.sf-carousel-slider.swiper, .swiper',
+  prev: '.sf-carousel-switch--left, .sf-carousel-switch--prev',
+  next: '.sf-carousel-switch--right, .sf-carousel-switch--next',
+  pagination: '.sf-carousel-pagination',
+  thumbs: '',
+  rotation: '.sf-carousel-rotation',
+  bulletClass: 'sf-carousel-pagination-item',
+  bulletActiveClass: 'sf-carousel-pagination-item--active',
+  // The carousel always drew dots; it keeps them.
+  counter: false,
+  // Its former motion: 450 ms unless data-speed says otherwise.
+  speed: 450,
+  delay: 5000,
+  // Its former word for a stopped rotation (data-rotation="paused").
+  stopped: 'paused',
+};
 
-function normalizeNumber(value, fallback, minimum, maximum) {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return fallback;
-  return Math.min(maximum, Math.max(minimum, parsed));
-}
-
-function getCarouselParts(root) {
-  return {
-    main: root.querySelector('.sf-carousel-slider.swiper, .swiper'),
-    next: root.querySelector('.sf-carousel-switch--right, .sf-carousel-switch--next'),
-    previous: root.querySelector('.sf-carousel-switch--left, .sf-carousel-switch--prev'),
-    pagination: root.querySelector('.sf-carousel-pagination'),
-    rotation: root.querySelector('.sf-carousel-rotation'),
-  };
-}
-
-function setOptionalAttribute(element, name, value) {
-  const normalized = String(value || '').trim();
-  if (normalized) element.setAttribute(name, normalized);
-  else element.removeAttribute(name);
-}
-
-function rememberSlideState(slide) {
-  if (slide._sfCarouselAuthoredState) return;
-  slide._sfCarouselAuthoredState = {
-    ariaHidden: slide.getAttribute('aria-hidden'),
-    ariaLabel: slide.getAttribute('aria-label'),
-    role: slide.getAttribute('role'),
-    roleDescription: slide.getAttribute('aria-roledescription'),
-    inert: slide.hasAttribute('inert'),
-  };
-}
-
-function restoreSlideState(slide) {
-  const state = slide._sfCarouselAuthoredState;
-  if (!state) return;
-  const values = {
-    'aria-hidden': state.ariaHidden,
-    'aria-label': state.ariaLabel,
-    role: state.role,
-    'aria-roledescription': state.roleDescription,
-  };
-  Object.entries(values).forEach(([name, value]) => {
-    if (value === null) slide.removeAttribute(name);
-    else slide.setAttribute(name, value);
-  });
-  slide.toggleAttribute('inert', state.inert);
-  delete slide._sfCarouselAuthoredState;
-}
-
-function formatSlideLabel(root, index, count) {
-  const template = String(root.dataset.slideLabel || '').trim();
-  if (!template) return `${index + 1} / ${count}`;
-  return template
-    .replaceAll('{{index}}', String(index + 1))
-    .replaceAll('{{count}}', String(count));
-}
-
-function syncCarouselState(root) {
+function emitChange(root) {
   const slider = root._sfCarousel;
-  const { main, rotation } = getCarouselParts(root);
-  if (!slider || !main) return;
-
-  const slides = [...main.querySelectorAll('.swiper-wrapper > .swiper-slide')];
-  const current = slider.activeIndex ?? 0;
-  slides.forEach((slide, index) => {
-    rememberSlideState(slide);
-    const active = index === current || slide.classList.contains('swiper-slide-active');
-    slide.setAttribute('role', 'group');
-    slide.setAttribute('aria-roledescription', 'slide');
-    if (!slide._sfCarouselAuthoredState.ariaLabel) {
-      slide.setAttribute('aria-label', formatSlideLabel(root, index, slides.length));
-    }
-    slide.setAttribute('aria-hidden', String(!active));
-    slide.toggleAttribute('inert', !active);
-  });
-
-  const playing = Boolean(slider.autoplay?.running);
-  root.dataset.rotation = playing ? 'playing' : 'paused';
-  main.setAttribute('aria-live', playing ? 'off' : 'polite');
-  if (rotation) {
-    // The control is named by what it does next (pause / play): a toggle whose
-    // name changes carries no aria-pressed (rule C12), or a reader would hear
-    // «Play, pressed»; a page's stale aria-pressed is taken off.
-    rotation.removeAttribute('aria-pressed');
-    setOptionalAttribute(
-      rotation,
-      'aria-label',
-      playing ? root.dataset.pauseLabel : root.dataset.playLabel,
-    );
-  }
-
+  if (!slider) return;
   root.dispatchEvent(new CustomEvent('sf:carousel-change', {
     bubbles: true,
-    detail: { index: slider.realIndex ?? current, playing },
+    detail: { index: slider.realIndex ?? slider.activeIndex ?? 0, playing: Boolean(slider.autoplay?.running) },
   }));
-}
-
-function pauseCarousel(root, reason = 'api') {
-  const slider = root?._sfCarousel;
-  if (!slider) return false;
-  slider.autoplay?.stop?.();
-  root.dataset.pauseReason = reason;
-  syncCarouselState(root);
-  return true;
-}
-
-function playCarousel(root, reason = 'api') {
-  const slider = root?._sfCarousel;
-  if (!slider || !root._sfCarouselAutoplayAllowed) return false;
-  slider.autoplay?.start?.();
-  delete root.dataset.pauseReason;
-  root.dataset.playReason = reason;
-  syncCarouselState(root);
-  return true;
-}
-
-function bindCarouselEvents(root) {
-  const { rotation } = getCarouselParts(root);
-  const onFocusIn = () => pauseCarousel(root, 'focus');
-  const onMouseEnter = () => {
-    root._sfCarouselWasPlaying = Boolean(root._sfCarousel?.autoplay?.running);
-    if (root._sfCarouselWasPlaying) pauseCarousel(root, 'hover');
-  };
-  const onMouseLeave = () => {
-    if (root._sfCarouselWasPlaying && !root.matches(':focus-within')) {
-      playCarousel(root, 'hover-end');
-    }
-    root._sfCarouselWasPlaying = false;
-  };
-  const onRotation = () => {
-    if (root._sfCarousel?.autoplay?.running) pauseCarousel(root, 'user');
-    else playCarousel(root, 'user');
-  };
-  root.addEventListener('focusin', onFocusIn);
-  root.addEventListener('mouseenter', onMouseEnter);
-  root.addEventListener('mouseleave', onMouseLeave);
-  rotation?.addEventListener('click', onRotation);
-  root._sfCarouselEvents = { onFocusIn, onMouseEnter, onMouseLeave, onRotation, rotation };
-}
-
-function unbindCarouselEvents(root) {
-  const events = root._sfCarouselEvents;
-  if (!events) return;
-  root.removeEventListener('focusin', events.onFocusIn);
-  root.removeEventListener('mouseenter', events.onMouseEnter);
-  root.removeEventListener('mouseleave', events.onMouseLeave);
-  events.rotation?.removeEventListener('click', events.onRotation);
-  delete root._sfCarouselEvents;
-}
-
-function waitForCarouselReady(root) {
-  if (root.dataset[WAITING_FLAG] === 'true') return null;
-  root.dataset[WAITING_FLAG] = 'true';
-  let attempts = 0;
-  const retry = () => {
-    if (!document.documentElement.contains(root)) return;
-    if (typeof window.Swiper === 'function') {
-      delete root.dataset[WAITING_FLAG];
-      bindCarousel(root);
-      return;
-    }
-    attempts += 1;
-    if (attempts < 40) window.setTimeout(retry, 50);
-    else delete root.dataset[WAITING_FLAG];
-  };
-  window.setTimeout(retry, 0);
-  return null;
 }
 
 function bindCarousel(root) {
   if (!(root instanceof HTMLElement)) return null;
-  if (root.dataset[BOUND_FLAG] === 'true') return root._sfCarousel;
-  if (typeof window.Swiper !== 'function') return waitForCarouselReady(root);
-
-  const { main, next, previous, pagination, rotation } = getCarouselParts(root);
-  if (!(main instanceof HTMLElement)) return null;
+  if (root._sfCarousel) return root._sfCarousel;
+  if (!root.querySelector(CAROUSEL_PARTS.main)) return null;
   noteDeprecated({ component: 'sf-carousel', kind: 'class', from: 'sf-carousel', to: 'sf-slider', ...DEPRECATED });
-  const autoplayRequested = normalizeBoolean(root.dataset.autoplay, false);
-  const autoplayAllowed = autoplayRequested
-    && rotation instanceof HTMLButtonElement
-    && Boolean(root.dataset.playLabel?.trim())
-    && Boolean(root.dataset.pauseLabel?.trim());
-  root._sfCarouselAutoplayAllowed = autoplayAllowed;
-
-  const label = root.getAttribute('aria-label') || root.dataset.label;
-  root.setAttribute('role', label ? 'region' : 'group');
-  root.setAttribute('aria-roledescription', 'carousel');
-  if (label) root.setAttribute('aria-label', label);
-
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const options = {
-    a11y: {
-      enabled: true,
-      nextSlideMessage: next?.getAttribute('aria-label') || undefined,
-      prevSlideMessage: previous?.getAttribute('aria-label') || undefined,
-      paginationBulletMessage: root.dataset.slideLabel || '{{index}}',
-    },
-    loop: normalizeBoolean(root.dataset.loop, false),
-    speed: reducedMotion ? 0 : normalizeNumber(root.dataset.speed, 450, 0, 2000),
-  };
-  if (next || previous) {
-    options.navigation = { nextEl: next, prevEl: previous };
+  const slider = bindSlider(root, CAROUSEL_PARTS);
+  if (!slider) {
+    // The engine is still loading: the slider adapter binds when it arrives.
+    const wait = window.setInterval(() => {
+      if (!root.isConnected || root._sfCarousel) { window.clearInterval(wait); return; }
+      if (root._sfSlider) { window.clearInterval(wait); adopt(root, root._sfSlider); }
+    }, 50);
+    window.setTimeout(() => window.clearInterval(wait), 2500);
+    return null;
   }
-  if (pagination) {
-    options.pagination = {
-      bulletActiveClass: 'sf-carousel-pagination-item--active',
-      bulletClass: 'sf-carousel-pagination-item',
-      bulletElement: 'button',
-      clickable: true,
-      el: pagination,
-    };
-  }
-  if (autoplayAllowed && !reducedMotion) {
-    options.autoplay = {
-      delay: normalizeNumber(root.dataset.delay, 5000, 1000, 60000),
-      disableOnInteraction: true,
-      pauseOnMouseEnter: false,
-    };
-  }
+  return adopt(root, slider);
+}
 
-  const slider = new window.Swiper(main, options);
+function adopt(root, slider) {
   root._sfCarousel = slider;
-  root.dataset[BOUND_FLAG] = 'true';
-  bindCarouselEvents(root);
-  ['init', 'slideChange', 'transitionEnd', 'autoplayStart', 'autoplayStop'].forEach((eventName) => {
-    slider.on?.(eventName, () => syncCarouselState(root));
-  });
-  syncCarouselState(root);
+  const onChange = () => emitChange(root);
+  ['slideChange', 'autoplayStart', 'autoplayStop'].forEach((name) => slider.on?.(name, onChange));
+  root._sfCarouselChange = onChange;
+  emitChange(root);
   return slider;
+}
+
+function pauseCarousel(root, reason = 'api') {
+  if (!root?._sfCarousel || !root._sfSliderRotation) return false;
+  root._sfSliderRotation.stop();
+  root.dataset.pauseReason = reason;
+  return true;
+}
+
+function playCarousel(root, reason = 'api') {
+  if (!root?._sfCarousel || !root._sfSliderRotation) return false;
+  root._sfSliderRotation.start();
+  delete root.dataset.pauseReason;
+  root.dataset.playReason = reason;
+  return true;
+}
+
+function unbindCarousel(root) {
+  if (!(root instanceof HTMLElement)) return;
+  const slider = root._sfCarousel;
+  if (slider && root._sfCarouselChange) {
+    ['slideChange', 'autoplayStart', 'autoplayStop'].forEach((name) => slider.off?.(name, root._sfCarouselChange));
+  }
+  unbindSlider(root);
+  delete root._sfCarousel;
+  delete root._sfCarouselChange;
+  delete root.dataset.pauseReason;
+  delete root.dataset.playReason;
 }
 
 function refreshCarousel(root) {
   const slider = root?._sfCarousel || bindCarousel(root);
   slider?.update?.();
-  syncCarouselState(root);
   return slider || null;
-}
-
-function unbindCarousel(root) {
-  if (!(root instanceof HTMLElement)) return;
-  unbindCarouselEvents(root);
-  root._sfCarousel?.destroy?.(true, true);
-  root.querySelectorAll('.swiper-wrapper > .swiper-slide').forEach(restoreSlideState);
-  delete root._sfCarousel;
-  delete root._sfCarouselAutoplayAllowed;
-  delete root._sfCarouselWasPlaying;
-  delete root.dataset[BOUND_FLAG];
-  delete root.dataset.pauseReason;
-  delete root.dataset.playReason;
-  delete root.dataset.rotation;
 }
 
 function initCarouselTree(target = document) {
