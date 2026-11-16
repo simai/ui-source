@@ -5,7 +5,10 @@
 
 $bg-color-brand-array:(
     fb: #2B74E1,
-    fb-messenger: linear-gradient(to bottom, #e72c83 0%,#a742c6 100%),
+    // Messenger's mark is a gradient: its first colour as the fill and the
+    // gradient as the image, as instagram and skype do. It wrote the gradient
+    // into background-color, which the browser dropped (RG-UT-V BG-1).
+    fb-messenger: '#e72c83; background-image: linear-gradient(to bottom, #e72c83 0%, #a742c6 100%)',
     youtube: #F60D00,
     whatsapp: #30B944,
     instagram: '#d6249f; background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%)',
