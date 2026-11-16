@@ -4,10 +4,13 @@
 // The `password` variant of a string (owner, 2026-10-19), measured on the built
 // bytes. A host never sends a password: the value is {set: true|false}, and the
 // set shows only «задан»/«не задан». The edit control is an empty
-// type=password input with autocomplete=new-password and spellcheck off, a
-// «Показать пароль» icon button that switches the type and says what it will do
-// next by its name -- «Скрыть пароль» while shown, no aria-pressed (rule C12:
-// a toggle whose name changes is not a pressed toggle) -- and the control writes only what a person types -- an untouched
+// type=password input with autocomplete=new-password and spellcheck off; the
+// eye that shows it is sf-input's own reveal inside the field (C123 (4); the
+// set's second eye beside the field went with the text inputs study, TI-7), so
+// there is exactly one, inside .sf-input-field, and no sf-button-icon. It is
+// named «Показать пароль», switches the type and says what it will do next by
+// its name -- «Скрыть пароль» while shown, no aria-pressed (rule C12: a toggle
+// whose name changes is not a pressed toggle) -- and the control writes only what a person types -- an untouched
 // field puts nothing in the save, a typed one puts the text, an erased one takes
 // it back. A sentinel password is searched for in the whole document's markup
 // in every state: it must never appear there.
@@ -94,7 +97,8 @@ try {
       return {
         host: box.querySelector('sf-input'),
         input: box.querySelector('sf-input input'),
-        button: box.querySelector('sf-button-icon button'),
+        button: box.querySelector('sf-input .sf-input-field .sf-input-reveal'),
+        eyes: box.querySelectorAll('.sf-input-reveal, sf-button-icon').length,
         field: box.querySelector('.sf-input-field'),
       };
     };
@@ -105,8 +109,7 @@ try {
       value: a.input?.value, valueAttribute: a.host?.hasAttribute('value'), required: a.input?.required,
       placeholder: a.input?.placeholder, freshRequired: b.input?.required, freshPlaceholder: b.input?.placeholder,
       buttonName: a.button?.getAttribute('aria-label'), pressed: a.button?.getAttribute('aria-pressed'),
-      buttonHeight: Math.round(a.button?.getBoundingClientRect().height ?? -1),
-      fieldHeight: Math.round(a.field?.getBoundingClientRect().height ?? -2),
+      eyes: a.eyes, freshEyes: b.eyes, buttonType: a.button?.type,
     };
     const untouched = {payload: payload()};
 
@@ -118,7 +121,8 @@ try {
       pressedLook: parts('secret').button?.classList.contains('sf-icon-button--pressed')};
 
     // A typed value goes out; the markup still does not hold it, and the
-    // re-render the write caused keeps the person's choice to see it.
+    // re-render the write caused keeps the person's choice to see it (sf-input
+    // holds the reveal as its own state, C123 (5)).
     const typing = parts('secret').input;
     typing.value = SENTINEL;
     typing.dispatchEvent(new Event('input', {bubbles: true}));
@@ -171,12 +175,13 @@ try {
     holder.append(box);
     render(set.renderEditField(fields.fresh, null, host), box);
     await tick(300);
-    english.buttonName = box.querySelector('sf-button-icon button')?.getAttribute('aria-label');
+    english.buttonName = box.querySelector('sf-input .sf-input-reveal')?.getAttribute('aria-label');
     box.remove();
     document.documentElement.lang = 'ru';
 
     // The size ladder: at 1 and at 1/2 the field stands as tall as a plain
-    // string's at the same rung, and the toggle as tall as the field.
+    // string's at the same rung; the eye is a glyph inside it (C123), so it
+    // adds no height and sits within the field's box.
     const ladder = {};
     for (const size of ['1', '1/2']) {
       const pair = document.createElement('div');
@@ -188,8 +193,12 @@ try {
       render(set.renderEditField(fields.fresh, null, host, {size}), secret);
       await tick(300);
       const height = (node) => Math.round(node?.getBoundingClientRect().height ?? -1);
+      const box = (node) => node?.getBoundingClientRect();
+      const field = box(secret.querySelector('.sf-input-field'));
+      const eye = box(secret.querySelector('.sf-input-reveal'));
       ladder[size] = {plain: height(plain.querySelector('.sf-input-field')), field: height(secret.querySelector('.sf-input-field')),
-        button: height(secret.querySelector('sf-button-icon button'))};
+        eyeInside: Boolean(field && eye && eye.height > 0 && eye.top >= field.top - 0.5 && eye.bottom <= field.bottom + 0.5
+          && eye.left >= field.left - 0.5 && eye.right <= field.right + 0.5)};
       pair.remove();
     }
 
@@ -209,15 +218,15 @@ try {
     if (e.required !== false || e.freshRequired !== true || !e.placeholder) {
       note({case: 'a set password is not required again and says an empty field keeps it; an unset required one is required', got: e});
     }
-    if (e.buttonName !== 'Показать пароль' || e.pressed !== null) {
-      note({case: 'the toggle is named in the page language and says no aria-pressed', got: e});
+    if (e.buttonName !== 'Показать пароль' || e.pressed !== null || e.buttonType !== 'button') {
+      note({case: 'the eye is a button inside the field, named in the page language, with no aria-pressed', got: e});
     }
-    if (e.buttonHeight !== e.fieldHeight) {
-      note({case: 'the toggle stands on the field\'s rung of the size ladder', got: {button: e.buttonHeight, field: e.fieldHeight}});
+    if (e.eyes !== 1 || e.freshEyes !== 1) {
+      note({case: 'one eye per password field, sf-input\'s own, no second button beside the field (TI-7)', got: {eyes: e.eyes, fresh: e.freshEyes}});
     }
     for (const [size, rung] of Object.entries(result.ladder)) {
-      if (rung.plain <= 0 || rung.field !== rung.plain || rung.button !== rung.plain) {
-        note({case: `at size ${size} the password field and its toggle are as tall as a string field`, got: rung});
+      if (rung.plain <= 0 || rung.field !== rung.plain || !rung.eyeInside) {
+        note({case: `at size ${size} the password field is as tall as a string field, the eye inside it`, got: rung});
       }
     }
     if (result.ladder['1']?.plain === result.ladder['1/2']?.plain) {
