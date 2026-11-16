@@ -16,7 +16,7 @@
     "src/component/alerts/scss/_var__alerts.scss",
     "src/component/alerts/scss/index.scss"
   ],
-  "content_sha256": "a74fd0cc423b97110dd41559a9669ace974503252bc095b99e2c252c1a1eecb9",
+  "content_sha256": "8124925c60008e64a7cf736d8021425a9a71b58f110958ca60348f1945688039",
   "dependencies": [
     {
       "id": "core.styles",
