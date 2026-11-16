@@ -109,7 +109,7 @@
     transition-timing-function: var(--sf-animation);
   }
 
-  .sf-color-frame:hover:not([data-disabled]) {
+  .sf-color-frame:hover:not([data-disabled], [data-readonly]) {
     background-color: var(--sf-surface-state-hover);
   }
 
@@ -125,6 +125,13 @@
   .sf-color-frame[data-disabled] {
     border-color: var(--sf-surface-disabled);
     color: var(--sf-on-surface-disabled);
+    cursor: default;
+  }
+
+  /* Read-only (as sf-input's): the value in the text's ink, the region line
+     for the edge, nothing to press. */
+  .sf-color-frame[data-readonly] {
+    border-color: var(--sf-outline-variant);
     cursor: default;
   }
 

@@ -97,7 +97,7 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
     }
 
     static get observedAttributes() {
-        return [...(super.observedAttributes ?? []), "value", "inherited-value", "swatches", "disabled", "aria-label",
+        return [...(super.observedAttributes ?? []), "value", "inherited-value", "swatches", "disabled", "readonly", "aria-label",
             "palette", "custom", "alpha", "variant", "target"];
     }
 
@@ -591,7 +591,7 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
      * a settings menu (C85) -- instead of the field. Returns whether it is open.
      */
     openPicker({anchor = null, view = ""} = {}) {
-        if (this.disabled || this._open) return Boolean(this._open);
+        if (this.disabled || this.readonly || this._open) return Boolean(this._open);
         const value = this.value || this.inheritedValue;
         this._seed(value);
         this._codeError = "";
@@ -743,7 +743,7 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
     // The shade area and the strips follow the pointer from the press to the
     // release; the release commits.
     dragOn(event, kind) {
-        if (this.disabled || event.button > 0) return;
+        if (this.disabled || this.readonly || event.button > 0) return;
         const target = event.currentTarget;
         event.preventDefault();
         target.setPointerCapture?.(event.pointerId);
@@ -960,6 +960,7 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
             swatchList: this.swatchList,
             clearable: this.clearable,
             disabled: this.disabled,
+            readonly: Boolean(this.readonly),
             size: this.size,
             appearance: this.appearance,
             name: this.name,

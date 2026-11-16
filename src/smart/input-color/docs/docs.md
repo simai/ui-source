@@ -78,6 +78,7 @@ right half as it is over a checkerboard (C86).
 | `alpha` | `false` | An own colour may be translucent. |
 | `swatches` | — | The product's colours: `#hex`, `#hex|Name` or `name|Name`, comma separated. |
 | `clearable` | `false` | A button that empties the colour when there is no inherited one. |
+| `readonly` | `false` | The colour to read, not to change, as `sf-input`'s `readonly`: the value in the text's ink, the region line for the frame, no chevron, no window, no reset, no Tab stop of its own. A record card's view draws a colour so; `disabled` is a field nobody may use now. |
 | `variant` | `field` | `theme`: the header circle; `brand`: the brand colour field of a settings screen (below). |
 | `target` | — | `theme` and `brand`: a selector of the element the theme goes on; empty, `<html>`. |
 

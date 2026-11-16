@@ -482,14 +482,16 @@ function renderColorCell(field, value) {
     // general part is for.
     return html`
         <sf-input-color size="1/2" appearance="plain" value=${String(hex)}
-                  aria-label=${field.label || field.key || ''} disabled></sf-input-color>
+                  aria-label=${field.label || field.key || ''} readonly></sf-input-color>
     `;
 }
 
 // Reads what port 1.8.0 declares: `inherited` says a value comes from somewhere
 // else, `inheritedValue` says what it is. A view that drew the inherited colour as
 // the value would make «not set» and «set to the same colour» look identical, and
-// only the first follows the theme when the theme moves.
+// only the first follows the theme when the theme moves. The view and the cell
+// draw the field read-only (sf-input-color 1.17.0): the value in the text's ink;
+// disabled drew it in the disabled ink, as a field nobody may use.
 function renderColorView(field, value) {
     const hex = scalarValue(value);
     const inherited = field.inheritedValue ?? '';
@@ -501,7 +503,7 @@ function renderColorView(field, value) {
                 value=${hex ? String(hex) : nothing}
                 inherited-value=${inherited ? String(inherited) : nothing}
                 aria-label=${field.label || field.key || ''}
-                disabled
+                readonly
         ></sf-input-color>
     `;
 }
@@ -518,7 +520,7 @@ function renderColorEdit(field, value, host) {
                 inherited-value=${inherited ? String(inherited) : nothing}
                 swatches=${field.swatches ? String(field.swatches) : nothing}
                 ?clearable=${Boolean(inherited) || field.required !== true}
-                ?disabled=${field.readonly === true}
+                ?readonly=${field.readonly === true}
                 aria-label=${field.label || field.key || ''}
                 @change=${(event) => host.setFieldValue(field, event.detail?.value ?? '')}
         ></sf-input-color>
