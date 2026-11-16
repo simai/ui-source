@@ -253,6 +253,22 @@ one of two ways:
   `style="--sf-skeleton-block-size: 320px"` or a class that sets it; the
   element keeps that floor until it draws.
 
+Three bare tags have markup or attributes core reads, yet not enough for an
+exact box; the host holds them the same two ways (first-paint status R222,
+open items 4, 5 and 9, 2026-11-16):
+
+- **sf-wizard.** Its steps are written inside, but which one is open
+  (`current` names a step) and how its content and description wrap cannot
+  be read by a sheet: core holds a guessed box (frame, head, one step's
+  usual content and the footer), closer than nothing but not the drawn one
+  (1440: 315-619 held, 359-687 drawn over the examples).
+- **sf-accordion.** Sections written as `<details>` hold their own box;
+  sections given as `items` are data (above).
+- **sf-file-preview, state="error".** The row holds the holder's height; the
+  reason wraps under the name when the row is narrow (the «Повторить» button
+  is a word of the page's language, and below 24rem it moves under the text),
+  so a narrow row draws one line taller (390: 44 held, 52 drawn).
+
 ## The «Первая отрисовка» data (C252)
 
 `scripts/first-paint-docs.mjs` writes `src/core/contracts/first-paint-docs.v1.json`

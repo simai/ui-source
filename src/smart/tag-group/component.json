@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tag-group's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.16 and vocabulary 1.1.5: owner decision C145 (3)-(5) (2026-11-14; tags study ui-control control/research/2026-11-14-tags.md #q-group, #q-keys, #q-more, prototype prototypes/tags-study.html).",
   "id": "smart.tag-group",
   "tag": "sf-tag-group",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "kind": "leaf",
   "family": "tag",
   "settings": {
@@ -124,7 +124,8 @@
     "«+N» (C145 (5), study #q-more A): an sf-popover (placement bottom-start, width --sf-g0, offset gap-1/4) whose trigger is an interactive default tag of the first tag's size and height, named «Ещё 3: Казань, Тверь, Омск»; its surface holds a wrapping sf-tag-group of copies of the hidden tags with their crosses and checks. A press on a copy acts on the page's tag (sf-tag-close and change are sent by the page's tag, never by the copy), so the page removes or chooses the tag it owns; the row is laid out again and the panel follows. The surface pads its row with --sf-space-1/3. No new look: the popover's surface and the tag's.",
     "keys (C145 (4), as C139 (6)): one Tab stop for the row (roving tabindex over each tag's own stop -- the label button of a filter or interactive tag, the link, else the cross -- and «+N»); ArrowLeft / ArrowRight (mirrored right to left), Home, End; Delete and Backspace remove a removable tag (sf-tag-close; the page removes the element) and the focus goes to the neighbour that took its place, or the one before the last. A polite live line says «{label}, {n} из {total}, Delete — убрать» (or without the last part for a tag that is not removable). The mouse cross is unchanged.",
     "selection (C145 (3), §18.2): none by default; one or many for filter tags (kind checkbox). A tag is known by its key setting, else its text. one clears the others when a tag is chosen; select {ids, id, selected} reports a person's change (x-native: a tag's own change keeps its name and detail). selected and selected-ids are read from the tags and can be written.",
-    "css-variables: none in 1.0.0 -- the gap is C105's and the look is the tag's and the popover's."
+    "css-variables: none in 1.0.0 -- the gap is C105's and the look is the tag's and the popover's.",
+    "version 1.0.1 (2026-11-16, first paint R222 open item 10): a patch. A printed first paint (static/more.html) carries its own «+N» item; the row now replaces it with its own once its own has drawn (until then the printed row stands, so no frame shows one tag too many), and the drawn row shows one «+N», not the printed one left beside its own (gate 24 static: 1 node left at 1440 and 390). Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

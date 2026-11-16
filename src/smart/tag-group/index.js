@@ -263,6 +263,13 @@ class SfTagGroup extends GroupElement {
   }
 
   fit() {
+    // A printed first paint (static/<example>.html) carries its own «+N» item;
+    // the row's own one replaces it, so the page never shows two (first-paint
+    // status R222 open item 10: the gate found the printed one left beside the
+    // drawn row). The printed row stands until the row's own «+N» has drawn:
+    // measured before it draws, the trigger has no box, and the row showed
+    // one tag too many for a frame (a layout shift at 390).
+    if (!this.replacePrintedMore()) return;
     const tags = this.tags;
     for (const tag of tags) {
       setAttr(tag, OVER, false);
@@ -288,6 +295,31 @@ class SfTagGroup extends GroupElement {
     // ellipsis.
     setAttr(shown[0], SHRINK, true);
     this.fillPanel(shown.slice(1));
+  }
+
+  // True when no printed «+N» is left; otherwise the row's own one is made,
+  // drawn out of view with the printed count, and the row is laid out again
+  // once it has drawn.
+  replacePrintedMore() {
+    const printed = [...this.querySelectorAll(`:scope > [${MORE}]`)].filter((node) => node !== this._more);
+    if (!printed.length) return true;
+    const more = this.moreElement(this.tags.filter((tag) => !tag.hidden));
+    const trigger = more.querySelector(':scope > sf-popover > sf-tag[slot="trigger"]');
+    if (!trigger.isRendered) {
+      const text = printed[0].querySelector('sf-tag[slot="trigger"]')?.getAttribute('text');
+      if (text && !trigger.hasAttribute('text')) trigger.setAttribute('text', text);
+      if (more.parentElement !== this) {
+        more.hidden = true;
+        this.append(more);
+      }
+      const again = () => this.schedule();
+      if (typeof trigger.whenRendered === 'function') trigger.whenRendered(again);
+      else globalThis.customElements?.whenDefined('sf-tag').then(() => requestAnimationFrame(again));
+      return false;
+    }
+    for (const node of printed) node.remove();
+    more.hidden = false;
+    return true;
   }
 
   // «+N»: an sf-popover whose trigger is an interactive tag of the first
