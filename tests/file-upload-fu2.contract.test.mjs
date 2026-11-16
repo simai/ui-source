@@ -87,8 +87,10 @@ test('RG-FU-2 (C151 (1)): a hand-written row icon takes the icon ladder, not the
   for (const size of ['1\\/2', '1', '2']) {
     const block = css.match(new RegExp(`\\.sf-upload-progress\\.sf-upload-progress--size-${size.replace('/', '\\/')} \\.sf-icon \\{[^}]*\\}`, 'u'))?.[0] || '';
     for (const property of ['font-size', 'height', 'width']) {
-      assert.ok(block.includes(`--sf-icon--${property}: var(--sf-icon-size-${size});`), `${size} ${property}: ${block}`);
+      assert.ok(block.includes(`--sf-icon--${property}: var(--sf-text-height-${size});`), `${size} ${property}: ${block}`);
     }
+    // The ladder is the step's text line (sf-icon's $sf-icon-ladder), not
+    // the text size.
     assert.doesNotMatch(block, /--sf-text-size-/u);
   }
 });

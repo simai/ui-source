@@ -352,7 +352,7 @@ function createUploadProgressItem(item, owner = null) {
 
   const holder = document.createElement('span');
   holder.className = 'sf-file-preview-holder';
-  const picture = state === 'error' ? '' : (owner ? rowPicture(owner, item) : '');
+  const picture = owner ? rowPicture(owner, item) : '';
   if (picture) {
     holder.classList.add('sf-file-preview-holder--picture');
     const image = document.createElement('img');
@@ -367,7 +367,9 @@ function createUploadProgressItem(item, owner = null) {
     // The glyphs are pictures: their ligature names were read as text (docs
     // pre-check 2026-11-10 FU-03).
     glyph.setAttribute('aria-hidden', 'true');
-    glyph.textContent = row.icon;
+    // The type's glyph in every state, as the Smart row: the error is said by
+    // the reason line in the error colour.
+    glyph.textContent = uploadItemIcon(item, 'ready');
     holder.append(glyph);
   }
 
