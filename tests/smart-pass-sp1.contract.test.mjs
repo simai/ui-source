@@ -196,3 +196,21 @@ test('SM-CNF-1/SM-CCH-1: the confirm surface writes no old-scale icon size', () 
     assert.match(icon, /data-sf-icon-scale="ladder"/u, icon);
   }
 });
+
+// ---- SM-MD-4, SM-PO-2: a passport example is the model for Studio ----------
+
+test('SM-MD-4: no sf-modal example uses the dated position for a side panel', () => {
+  const examples = json('src/smart/modal/examples.json').examples;
+  for (const example of examples) {
+    assert.ok(!['inline-start', 'inline-end'].includes(example.settings?.position), example.name);
+  }
+  assert.equal(existsSync(new URL('src/smart/modal/static/default/side.html', root)), false);
+});
+
+test('SM-PO-2: every sf-popover example trigger is a Framework button', () => {
+  for (const example of json('src/smart/popover/examples.json').examples) {
+    const trigger = example.slots?.trigger;
+    if (trigger === undefined) continue;
+    assert.match(trigger, /^<sf-button\b/u, example.name);
+  }
+});
