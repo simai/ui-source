@@ -266,11 +266,18 @@ function renderSearch(context) {
 // row and the nested ul.sf-menu. The whole of it carries data-sf-menu-owned,
 // so the class runtime, loaded beside it for the sheet, leaves it to the
 // element.
+// The class preset an appearance draws. default is the C30 site menu (owner
+// decisions C23, C30): a column or a row of rows with no frame, the current
+// page filled in a column and the 2 px line in a header row -- the navigation
+// preset. The class menu's framed rows stay a class preset for class markup;
+// no kind of sf-menu C30 names draws them, and they marked no current page.
+const presentation = (appearance) => (appearance === 'default' ? 'navigation' : appearance);
+
 export function renderMenuTemplate(context) {
   const listClasses = joinClasses(
     'sf-menu',
     context.flyouts ? 'sf-menu--horizontal' : '',
-    context.appearance !== 'default' ? `sf-menu--${context.appearance}` : '',
+    `sf-menu--${presentation(context.appearance)}`,
     // The rail writes its former class beside its own until 2027-01-01, so a
     // page selector that reached sf-menu--compact still does (C134; journal
     // class-menu-compact-to-rail).

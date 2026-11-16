@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.13.2",
+  "version": "1.13.3",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -68,7 +68,7 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail).",
+        "description": "The class menu's presentations: default, the C30 site menu -- drawn as navigation (rows with no frame, the current page filled in a column, the 2 px line in a header row; owner decisions C23, C30); documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail).",
         "enum": [
           "default",
           "documentation-tree",
@@ -750,7 +750,7 @@
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
-        "sha256": "8e61d8b5afb3941c09bd2e9676734fd1ca39b8741ece9d4be214a1e353e8d7f7"
+        "sha256": "2e8e3014dce98b96c384d825c29af318c1afb7eceb2ffcacda9888dae4c3e3ef"
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
@@ -762,7 +762,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "a0c50011dde242dfc690f9273164c7ada09759757b7aa5352b0974f078534336"
+        "sha256": "b8d55147a2c92e90049143fe4be574194a0b4f9eceee526e9791aa13e4be685e"
       }
     ],
     "generated_runtime": []
