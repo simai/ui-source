@@ -97,7 +97,7 @@
 .sf-verification:has(.sf-verification-input:enabled:focus) .sf-verification-cell.current,
 .sf-verification-form-wrap .sf-verification:has(input:enabled:focus) {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: calc(-1 * var(--sf-focus--width));
+  outline-offset: var(--sf-focus--inset);
 }
 
 /* The cell the next character goes to is marked only while the field has the

@@ -56,6 +56,9 @@ export const KEPT = [
   // a sortable item stand off their neighbours' frames.
   {file: 'core/scss/_sf_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out'},
   {file: 'component/link/scss/_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out'},
+  {file: 'component/breadcrumbs/scss/_css__breadcrumbs_item.scss', value: 'var(--sf-a2)', why: 'crumb link, 2px out (C186 (4))'},
+  {file: 'component/reference-link/scss/_css__reference_link.scss', value: 'var(--sf-a2)', why: 'link in text, 2px out (C186 (4))'},
+  {file: 'component/pagination/scss/_css__pagination.scss', value: 'var(--sf-a2)', why: 'shown line, a ring of words, 2px out'},
   {file: 'core/scss/_sf_css__composition.scss', value: '2px', why: 'editor field control, 2px out'},
   {file: 'smart/editor-overlay/scss/_smart__composition-overlay.scss', value: 'var(--sf-a2)', why: 'overlay insert, 2px out'},
   {file: 'smart/sortable/scss/_smart__sortable.scss', value: '2px', why: 'sortable item, 2px out'},
@@ -64,6 +67,9 @@ export const KEPT = [
   {file: 'smart/confirm/js/templates/default.css', value: 'var(--sf-space-1\\/4)', why: 'status line, 4px out'},
   {file: 'smart/confirm-change/js/templates/default.css', value: 'var(--sf-space-1\\/4)', why: 'status line, 4px out'},
   {file: 'smart/list-feed/js/templates/default.css', value: 'var(--sf-space-1\\/4)', why: 'feed item, 4px out'},
+  // Two ring widths in: a selected day's ring in its fill's ink, a rim of the
+  // fill round it.
+  {file: 'component/datepicker/scss/_css_day.scss', value: 'calc(var(--sf-focus--width) * -2)', why: 'selected day, inside its fill'},
   // Built from the tokens: a copy button inside a field keeps its ring inside
   // the field's 1px border (inset minus the border); a range thumb's ring stands
   // the focus offset off the handle's own ring.

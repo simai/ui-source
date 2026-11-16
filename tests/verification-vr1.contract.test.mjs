@@ -47,7 +47,7 @@ function checkSheet(css, form) {
   // RG-VR-5 (C153 (4)): one focus look, a 2 px edge inside the current cell.
   const focus = declarations(css, CURRENT);
   assert.match(focus, /outline:var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/u);
-  assert.match(focus, /outline-offset:calc\(-1 ?\* ?var\(--sf-focus--width\)\)/u);
+  assert.match(focus, /outline-offset:var\(--sf-focus--inset\)/u);
   assert.doesNotMatch(flat(css), /sf-verification--pointer-focus\)/u, 'no second focus look for a pointer');
   // RG-VR-3 (C153 (4)): the hovered cell's border is the text ink.
   assert.match(declarations(css, '.sf-verification-cell.hover'), /border-color:var\(--sf-on-surface\)/u);

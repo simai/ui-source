@@ -193,8 +193,8 @@
     }
 
     .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):focus-visible {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(var(--sf-focus-outline-width) * -1);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
     }
   }
 }

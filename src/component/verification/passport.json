@@ -18,7 +18,7 @@
     "src/component/verification/scss/_css__verification_custom.scss",
     "src/component/verification/scss/index.scss"
   ],
-  "content_sha256": "15cf6c1a6379b04e9e35d8a718bb3df4773bcfb28151e6e3f950e0acb660f2b8",
+  "content_sha256": "21f21b29b47b6aa10e74bf9463fa29742c49579968086bb2d3f646fed6abc0ca",
   "dependencies": [
     {
       "id": "component.inputs",

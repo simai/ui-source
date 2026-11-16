@@ -12,7 +12,7 @@
     "src/component/clipboard/scss/_sf_copy.scss",
     "src/component/clipboard/scss/index.scss"
   ],
-  "content_sha256": "605d03fb1a8eb22bfb0da1897ac328b1e9f262f904742ddfdf1036815d5302af",
+  "content_sha256": "827de01db8755f85db45fd813b22067764dc8525dc0d10563d7edc415c515bd3",
   "dependencies": [
     {
       "id": "component.buttons",

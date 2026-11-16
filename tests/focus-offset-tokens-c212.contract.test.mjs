@@ -45,8 +45,9 @@ test('every Framework focus ring reads the two tokens, apart from the listed one
   assert.deepEqual(findings, [], 'no focus rule writes an offset of its own or reads --sf-focus-outline-width');
   assert.deepEqual(stale, [], 'every kept offset is still there; a fixed one leaves KEPT');
   // The kept distances wait for the owner (2px out in forced colours, flush,
-  // 2px and 4px out, two built from the tokens): 23 entries, none added
-  // without a reason.
-  assert.equal(KEPT.length, 23);
+  // 2px and 4px out, two built from the tokens, a selected day two widths
+  // in): 27 entries, none added without a reason (group build 9 added three
+  // rings of words and the selected day, written before C212 merged).
+  assert.equal(KEPT.length, 27);
   assert.ok(KEPT.every((entry) => entry.why), 'each kept offset says why');
 });

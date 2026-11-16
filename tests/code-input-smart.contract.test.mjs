@@ -221,7 +221,7 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.match(source, /classList\.add\('sf-verification--pointer-focus'\)/u);
   assert.match(source, /classList\.remove\('sf-verification--pointer-focus'\)/u);
   assert.match(classRuntime, /control\.classList\.add\('sf-verification--pointer-focus'\)/u);
-  assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.current,\n[^{]*\{\n  outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n  outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/u);
+  assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.current,\n[^{]*\{\n  outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n  outline-offset: var\(--sf-focus--inset\);/u);
   assert.doesNotMatch(classSheet, /sf-verification--pointer-focus\)/u, 'one focus look');
   assert.doesNotMatch(classSheet, /^\.sf-verification:has\(\.sf-verification-input:[a-z-]*focus[a-z-]*\) \{/mu, 'no ring on the row');
   // K3: a bare caret inside the code becomes a one-cell selection; the caret

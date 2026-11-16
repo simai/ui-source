@@ -360,7 +360,7 @@
 // minus its width). No ring outside, nothing moves.
 .sf-range-slider-group:not(.disabled) .sf-range-slider-field:has(.sf-range-slider-field-input:focus) {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: calc(-1 * var(--sf-focus--width));
+  outline-offset: var(--sf-focus--inset);
 }
 
 .sf-range-slider-group.readonly .sf-range-slider-field {
@@ -485,7 +485,7 @@
   // Each box takes the field's focus look (C153 (4)): 2 px inside, no ring.
   .sf-range-slider-group--field:not(.disabled) .sf-range-slider-field-box:has(.sf-range-slider-field-input:focus) {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(-1 * var(--sf-focus--width));
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-range-slider-group--field.readonly .sf-range-slider-field-box {

@@ -447,7 +447,8 @@ class Copy extends ComponentObserver {
       hasText ? `sf-button--${normalizedScheme}` : `sf-icon-button--size-${normalizedSize}`,
       hasText ? `sf-button--${normalizedType}` : `sf-icon-button--${normalizedScheme}`,
     );
-    if (!hasText) button.classList.add(`sf-icon-button--${normalizedType}`);
+    // An icon button's link look is retired (RG-IB-2): it writes --ghost.
+    if (!hasText) button.classList.add(`sf-icon-button--${normalizedType === 'link' ? 'ghost' : normalizedType}`);
     const icon = document.createElement('sf-icon');
     icon.setAttribute('icon', 'content_copy');
     icon.setAttribute('aria-hidden', 'true');
