@@ -66,5 +66,5 @@ test('C165 (1): sf-form draws a short choice field through sf-input-choice appea
   assert.match(source, /new Set\(\['buttons', 'select', 'checklist'\]\)/u);
   const form = read('src/smart/form/index.js');
   assert.match(form, /isListChoice\(field\) \? renderChoiceList\(field, value, host\) : renderEditField/u);
-  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.1.0');
+  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.2.1'); // 1.2.1: hint read with the field (area E)
 });
