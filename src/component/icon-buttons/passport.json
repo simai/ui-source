@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.icon-buttons",
   "kind": "component",
-  "version": "1.14.0",
+  "version": "1.15.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/icon-buttons/docs/docs.md",
@@ -16,7 +16,7 @@
     "src/component/icon-buttons/scss/_css_icon_buttons_custom.scss",
     "src/component/icon-buttons/scss/index.scss"
   ],
-  "content_sha256": "05c7e096a30f421afa4d5c1763141f1158a944b1682246c6caf7de8e8b88b1bf",
+  "content_sha256": "ac2b8163880cf5b63643d78dd191959870b1c4de8c30bfbe4d103722e5523bec",
   "dependencies": [
     {
       "id": "component.buttons",

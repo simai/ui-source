@@ -3,19 +3,24 @@
   "schema_version": 1,
   "id": "component.fab",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/fab/docs/docs.md",
     "src/component/fab/index.js",
+    "src/component/fab/js/_fab-checks.js",
     "src/component/fab/js/_fab.js",
     "src/component/fab/js/index.js",
     "src/component/fab/json/fab.utility.json",
+    "src/component/fab/lang/en.json",
+    "src/component/fab/lang/index.mjs",
+    "src/component/fab/lang/kk.json",
+    "src/component/fab/lang/ru.json",
     "src/component/fab/rule.js",
     "src/component/fab/scss/_css_fab.scss",
     "src/component/fab/scss/index.scss"
   ],
-  "content_sha256": "94f0c8988f94f9aa1589f895e9410b62d3fc068651104724788c26285203ccfa",
+  "content_sha256": "9d8c538781870763200ca9be6271c63fe05b16d196bcfc922f42928dea4c510c",
   "dependencies": [
     {
       "id": "core.runtime",

@@ -127,7 +127,6 @@ const selectorsAt = (css, index) => {
 const labelColourAtRest = new Map([
   ['component/menu/scss/_css__menu.scss', 'the current item of a header row: the mark of the current page, as the plate\'s on-colour in the navigation look'],
   ['smart/wizard/scss/_smart__wizard.scss', 'a done step\'s state mark, not a neutral icon beside text'],
-  ['component/fab/scss/_css_fab.scss', 'follow-up: the tonal on-surface FAB is an icon alone in a control (C107 (3)); not in the C107 group'],
 ]);
 const state = /:hover|:active|\.active\b|:focus-visible|\.selected\b|aria-current|aria-pressed|--pressed|\.open\b/u;
 

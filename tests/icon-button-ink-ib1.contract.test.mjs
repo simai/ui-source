@@ -44,7 +44,7 @@ test('RG-IB-2: the Framework writes sf-icon-button--ghost; link and surface are 
   const journal = JSON.parse(read('contracts/changes/journal.json')).records;
   assert.ok(journal.some((record) => record.id === 'class-icon-button-link-to-ghost' && record.remove_after === '2027-01-01'));
   assert.ok(journal.some((record) => record.id === 'class-icon-button-density-c213' && record.remove_after === '2027-01-01'));
-  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.14.0');
+  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.15.1'); // 1.14.0 here; 1.15.1 fix/fab-c113-fab1 (RG-FAB-3)
   assert.equal(JSON.parse(read('src/smart/button-icon/component.json')).version, '1.13.0');
 });
 

@@ -1,5 +1,13 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
+import { pageText } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4).
+import LANG_WORDS from '../lang/index.mjs';
+import { watchFabs } from './_fab-checks.js';
+
+const FAB_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+
+watchFabs();
 
 class Fab extends ComponentObserver {
   static componentName = 'Fab';
@@ -12,7 +20,10 @@ class Fab extends ComponentObserver {
       size = '1',
       type = 'default',
       scheme = 'primary',
-      icon = 'chevron_left',
+      // An upward arrow, not a turned chevron (1.2.0, RG-FAB-5): a turned
+      // chevron_left would point down once directional glyphs mirror in a
+      // right-to-left part (C151 (3)).
+      icon = 'arrow_upward',
     } = this.params || {};
     const className = this.attrs.class || this.attrs.className;
     this.button = document.createElement('button');
@@ -26,7 +37,6 @@ class Fab extends ComponentObserver {
       'flex-nowrap',
       'justify-center',
       'items-center',
-      'rotate-90',
       'z-7',
       'cursor-pointer',
       'transition-bg',
@@ -55,6 +65,12 @@ class Fab extends ComponentObserver {
       });
     if (!this.button.hasAttribute('type')) {
       this.button.setAttribute('type', 'button');
+    }
+    // A name by default, as the close button has one (C14): the icon alone
+    // says nothing to a screen reader. The page's language (ru «Наверх»,
+    // en «Back to top»); a caller's aria-label or aria-labelledby wins.
+    if (!this.button.hasAttribute('aria-label') && !this.button.hasAttribute('aria-labelledby')) {
+      this.button.setAttribute('aria-label', pageText(FAB_TEXT, 'top', document.documentElement, 'sf-fab'));
     }
     this.icon = document.createElement('i');
     this.icon.classList.add(

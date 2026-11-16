@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1192,
-    "translated": 1191,
+    "words": 1193,
+    "translated": 1192,
     "share": 99.9
   },
   "words": {
@@ -278,6 +278,9 @@
       "processing-text": "Бұл бірнеше минутқа созылуы мүмкін. Нәтиже осында шығады — бетті жабуға болады",
       "processing-title": "Дайындалуда",
       "retry": "Қайталау"
+    },
+    "sf-fab": {
+      "top": "Жоғарыға"
     },
     "sf-field-renderers": {
       "yes": "Иә",

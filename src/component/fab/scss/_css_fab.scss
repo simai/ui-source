@@ -11,7 +11,11 @@
   padding-inline-end: var(--sf-fab--padding-inline-end);
   padding-bottom: var(--sf-fab--padding-bottom);
   background-color: var(--sf-fab--background-color);
-  box-shadow: var(--sf-fab--focus-inset, 0 0 var(--sf-transparent)), var(--sf-fab--box-shadow, 0 0 var(--sf-transparent));
+  /* A floating button always carries the raised place's shadow (C20), in
+     every kind and theme (owner decision C216, 2026-11-16; 1.2.0). Over
+     content only the filled kind is placed; tonal is translucent and belongs
+     inside a card or a panel. */
+  box-shadow: var(--sf-fab--focus-inset, 0 0 var(--sf-transparent)), var(--sf-fab--box-shadow, var(--sf-shadow-raised));
 }
 
 .sf-fab .sf-icon {
@@ -43,10 +47,19 @@
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface {
   --sf-fab--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
+/* An icon with no text is the icon of a button with text (C107 (3), owner
+   2026-11-12): --sf-on-surface-icon, as sf-icon-button of the same look; under
+   a pointer and pressed it catches the label's --sf-on-surface (C107 (4)).
+   1.2.0 (RG-FAB-2): it was --sf-on-surface at rest, and the rule re-declared
+   the role --sf-on-surface-variant on the button itself, which a role is not
+   (C18). */
 .sf-fab.sf-fab--tonal.sf-fab--on-surface .sf-icon {
+  --sf-icon--color: var(--sf-on-surface-icon);
+}
+
+.sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled):is(:hover, :active) .sf-icon {
   --sf-icon--color: var(--sf-on-surface);
 }
 
@@ -54,8 +67,11 @@
   --sf-fab--background-color: var(--sf-primary-hover);
 }
 
-.sf-fab.sf-fab--default.sf-fab--primary:not(:disabled):not(.disabled):active,
-.sf-fab.sf-fab--default.sf-fab--primary:not(:disabled):not(.disabled).active {
+/* The pressed tone is the press under a pointer or a key, nothing more. A
+   floating button is filled or tonal, and those have no pressed state
+   (C211 (1), owner 2026-11-16): the class active and aria-pressed draw nothing
+   (1.2.0, RG-FAB-1; the script says it once per button). */
+.sf-fab.sf-fab--default.sf-fab--primary:not(:disabled):not(.disabled):active {
   --sf-fab--background-color: var(--sf-primary-active);
 }
 
@@ -67,27 +83,31 @@
   --sf-fab--background-color: var(--sf-surface-container-hover);
 }
 
-.sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary):not(:disabled):not(.disabled):active, .sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary):not(:disabled):not(.disabled).active {
+.sf-fab.sf-fab--tonal:is(.sf-fab--primary, .sf-fab--secondary):not(:disabled):not(.disabled):active {
   --sf-fab--background-color: var(--sf-primary-container-active);
 }
 
-.sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled):active, .sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled).active {
+.sf-fab.sf-fab--tonal.sf-fab--on-surface:not(:disabled):not(.disabled):active {
   --sf-fab--background-color: var(--sf-surface-container-active);
 }
 
-.sf-fab.sf-fab--default.sf-fab--on-surface {
+/* sf-fab--default sf-fab--secondary was no pair and drew a transparent,
+   invisible button. The set's former secondary is the grey (C116 (3)): it
+   draws as default on-surface until 2027-01-01, said once per button (1.2.0,
+   RG-FAB-4; journal class-fab-default-secondary-c116). */
+.sf-fab.sf-fab--default:is(.sf-fab--on-surface, .sf-fab--secondary) {
   --sf-fab--background-color: var(--sf-on-surface);
 }
 
-.sf-fab.sf-fab--default.sf-fab--on-surface .sf-icon {
+.sf-fab.sf-fab--default:is(.sf-fab--on-surface, .sf-fab--secondary) .sf-icon {
   --sf-icon--color: var(--sf-on-surface-inverse);
 }
 
-.sf-fab.sf-fab--default.sf-fab--on-surface:not(:disabled):not(.disabled):hover {
+.sf-fab.sf-fab--default:is(.sf-fab--on-surface, .sf-fab--secondary):not(:disabled):not(.disabled):hover {
   --sf-fab--background-color: var(--sf-on-surface-hover);
 }
 
-.sf-fab.sf-fab--default.sf-fab--on-surface:not(:disabled):not(.disabled):active, .sf-fab.sf-fab--default.sf-fab--on-surface:not(:disabled):not(.disabled).active {
+.sf-fab.sf-fab--default:is(.sf-fab--on-surface, .sf-fab--secondary):not(:disabled):not(.disabled):active {
   --sf-fab--background-color: var(--sf-on-surface-active);
 }
 
@@ -124,10 +144,27 @@
   --sf-fab--padding-top: var(--sf-ui-3--space-y-tightness-default);
 }
 
+/* The icon of size 3 is 36 on the icon ladder (C151 (1)) and one step down,
+   28, on a phone, where the text line of size 3 is 24 like size 2's (1.2.0,
+   RG-FAB-3). On a desktop the text line of size 3 is that step, in a compact
+   region too (28). */
 .sf-fab.sf-fab--size-3 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-height-3);
-  --sf-icon--height: var(--sf-text-height-3);
-  --sf-icon--width: var(--sf-text-height-3);
+  --sf-icon--font-size: var(--sf-c4);
+  --sf-icon--height: var(--sf-c4);
+  --sf-icon--width: var(--sf-c4);
+  /* The control keeps its ladder height (52 on a phone): the larger glyph
+     takes its two extra pixels a side from the padding, so it sits in the
+     middle with 12 around it and every height variant keeps its size. */
+  margin: calc((var(--sf-text-height-3) - var(--sf-c4)) / 2);
+}
+
+@media (min-width: 60rem) {
+  .sf-fab.sf-fab--size-3 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-3);
+    --sf-icon--height: var(--sf-text-height-3);
+    --sf-icon--width: var(--sf-text-height-3);
+    margin: 0;
+  }
 }
 
 .sf-fab.sf-fab.sf-fab:disabled {
