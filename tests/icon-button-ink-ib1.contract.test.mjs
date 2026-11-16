@@ -11,9 +11,10 @@ const custom = read('src/component/icon-buttons/scss/_css_icon_buttons_custom.sc
    step (-active): 0,68,145 and 147,0,10 beside 0,91,190 and 187,25,25. */
 test('RG-IB-1: the ghost glyph and cross are the scheme hue, not its pressed step', () => {
   assert.match(sheet, /:is\(\.sf-icon-button--link, \.sf-icon-button--ghost\)\.sf-icon-button--primary\.sf-icon-button--icon \{\s*--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-primary\)\);/u);
-  assert.match(sheet, /:is\(\.sf-icon-button--link, \.sf-icon-button--ghost\)\.sf-icon-button--primary\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--background-color: var\(--sf-icon-button-color, var\(--sf-primary\)\);/u);
+  // Since component.icon-buttons 1.15.0 (RG-CL-3) the close's ghost rules name every look.
+  assert.match(sheet, /:is\(\.sf-icon-button--link, \.sf-icon-button--ghost, \.sf-icon-button--default, \.sf-icon-button--tonal, \.sf-icon-button--surface, \.sf-icon-button--outline\)\.sf-icon-button--primary\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--background-color: var\(--sf-icon-button-color, var\(--sf-primary\)\);/u);
   assert.doesNotMatch(sheet, /var\(--sf-place--ink, var\(--sf-error-active\)\)/u);
-  assert.match(read('src/smart/button-icon/js/templates/default.css'), /:is\(\.sf-icon-button--ghost, \.sf-icon-button--link\)\.sf-icon-button--primary\.sf-icon-button--close > :is\(sf-button-close, sf-close\) > \.sf-close > \.sf-close-icon \{\n--sf-close-icon--background-color: var\(--sf-primary\);/u);
+  assert.match(read('src/smart/button-icon/js/templates/default.css'), /:is\(\.sf-icon-button--link, \.sf-icon-button--ghost, \.sf-icon-button--default, \.sf-icon-button--tonal, \.sf-icon-button--surface, \.sf-icon-button--outline\)\.sf-icon-button--primary\.sf-icon-button--close > :is\(sf-button-close, sf-close\) > \.sf-close > \.sf-close-icon \{\n--sf-close-icon--background-color: var\(--sf-primary\);/u);
 });
 
 /* RG-IB-1, RG-IB-3: under a pointer the glyph follows the label -- neutral
@@ -44,8 +45,9 @@ test('RG-IB-2: the Framework writes sf-icon-button--ghost; link and surface are 
   const journal = JSON.parse(read('contracts/changes/journal.json')).records;
   assert.ok(journal.some((record) => record.id === 'class-icon-button-link-to-ghost' && record.remove_after === '2027-01-01'));
   assert.ok(journal.some((record) => record.id === 'class-icon-button-density-c213' && record.remove_after === '2027-01-01'));
-  assert.equal(JSON.parse(read('src/component/icon-buttons/passport.json')).version, '1.14.0');
-  assert.equal(JSON.parse(read('src/smart/button-icon/component.json')).version, '1.13.0');
+  // Pinned at or above the 1.14.0 / 1.13.0 that carried RG-IB-2 (1.15.0 / 1.13.1: RG-CL-3).
+  assert.ok(['1.14.0', '1.15.0'].includes(JSON.parse(read('src/component/icon-buttons/passport.json')).version));
+  assert.ok(['1.13.0', '1.13.1'].includes(JSON.parse(read('src/smart/button-icon/component.json')).version));
 });
 
 /* RG-IB-1 b (DEV msg-98dc9215, 2026-11-16): the quiet tonal glyph read the

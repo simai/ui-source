@@ -13827,6 +13827,37 @@
       },
       "owner": "ui-source",
       "source": "src/component/icon-buttons/scss/_css_icon_buttons.scss; src/component/buttons/js/button-checks.js; src/smart/button-icon/index.js; ui-control control/docs-review/decisions.md C213"
+    },
+    {
+      "id": "class-icon-button-close-looks-c14",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.icon-buttons 1.15.0, sf-button-icon 1.13.1 (RG-CL-3, DEV study actions-close-study.html K3; owner decision C14: a cross has no square, no outlined circle and no solid plate): sf-icon-button--close with the icon button's looks default, tonal, outline or surface drew a filled, tonal or outlined square. Until remove_after they draw exactly as ghost of the same scheme; the runtime says so once per button in the console and notes it in SF.deprecations. A close of its own is sf-button-close (ghost, plain, media); the Framework's own closes -- the class modal header, the class and Smart toast, the Smart alert, the class tag -- write sf-button-close.",
+      "items": [
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--close sf-icon-button--default|tonal|outline|surface",
+          "to": "sf-icon-button--close sf-icon-button--ghost",
+          "match": "(?<=sf-icon-button--close[^\"'<>]*)(?<![\\w-])sf-icon-button--(?:default|tonal|outline|surface)(?![\\w-])|(?<![\\w-])sf-icon-button--(?:default|tonal|outline|surface)(?=[^\"'<>]*sf-icon-button--close(?![\\w-]))"
+        },
+        {
+          "component": "sf-button-icon",
+          "from": "kind=\"close\" appearance=\"default|tonal|outline|surface\"",
+          "to": "sf-button-close",
+          "match": "<sf-button-icon\\b(?=[^>]*\\skind=[\"']close[\"'])[^>]*?\\sappearance=[\"'](?:default|tonal|outline|surface)[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the close as sf-button-close: <sf-button-close> or the class markup sf-icon-button sf-icon-button--close sf-button-close sf-button-close--ghost (or --plain, --media) sf-button-close--on-surface with the size class. Where the icon button stays, write sf-icon-button--ghost on the close.",
+      "examples": {
+        "before": "<button class=\"sf-icon-button sf-icon-button--close sf-icon-button--tonal sf-icon-button--on-surface sf-icon-button--size-1\" aria-label=\"Закрыть\">",
+        "after": "<button class=\"sf-icon-button sf-icon-button--close sf-button-close sf-button-close--ghost sf-button-close--on-surface sf-icon-button--size-1\" aria-label=\"Закрыть\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/icon-buttons/scss/_css_icon_buttons.scss; src/component/buttons/js/button-checks.js; src/smart/button-icon/js/templates/default.css; ui-control control/docs-review/decisions.md C14"
     }
   ]
 }

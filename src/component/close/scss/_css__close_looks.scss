@@ -119,7 +119,7 @@
         --sf-icon-button--background-color: color-mix(in srgb, var(--sf-black) 80%, transparent);
     }
 
-    /* Disabled (component.close 1.4.0, RG-CL-1, RG-CL-2): the cross fades in
+    /* Disabled (component.close 1.3.0, RG-CL-1, RG-CL-2): the cross fades in
        every look and ink. Ghost and plain on the surface take the theme's
        disabled ink; on a coloured place (backdrop-color) the place's ink at
        the ink step 48, as the other service marks there; over a photo the

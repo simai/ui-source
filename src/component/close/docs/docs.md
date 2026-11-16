@@ -35,7 +35,7 @@ buttons) are not close looks: on `sf-icon-button--close` they draw as ghost
 until 2027-01-01 and the runtime says so (component.icon-buttons 1.15.0,
 RG-CL-3).
 
-Disabled (component.close 1.4.0, RG-CL-1, RG-CL-2), the cross fades in every
+Disabled (component.close 1.3.0, RG-CL-1, RG-CL-2), the cross fades in every
 look: ghost and plain take `--sf-on-surface-disabled`; on a coloured place
 (`--backdrop-color`) the place's ink at the ink step 48; over a photo
 (`--media`) the white cross at 48, the same in both themes, the circle
