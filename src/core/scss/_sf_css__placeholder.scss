@@ -1420,3 +1420,16 @@
   visibility: hidden;
 }
 }
+
+/* sf-hide-show before its script (OT 27; retired by C187 (8), a dated alias
+   until 2027-01-01). The component has no sheet: its script hides the button
+   whose action is done, and it came 300 ms after the first paint, so both
+   buttons of a pair stood side by side until then. Until the root is started
+   (data-hide-show-init), the start state is read the way the script reads
+   it -- data-state="hidden", or owned content already hidden -- and the
+   button of the action already done is out of the flow. Out of any layer, as
+   the script's [hidden] is: a button's own display must not win. */
+.sf-hide-show:not([data-hide-show-init]):is([data-state="hidden"], :has(:is([data-content], .sf-hide-show-content, .hide-show-block)[hidden])) :is([data-action="hide"], .sf-hide),
+.sf-hide-show:not([data-hide-show-init]):not([data-state="hidden"], :has(:is([data-content], .sf-hide-show-content, .hide-show-block)[hidden])) :is([data-action="show"], .sf-show) {
+  display: none;
+}

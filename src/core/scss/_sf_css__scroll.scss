@@ -159,6 +159,14 @@
         scrollbar-width: thin;
       }
 
+      // The page's own bar is not drawn (core/js/scrollbars.js leaves the
+      // root to the browser), so in Firefox it keeps the one colour on a
+      // transparent track (C208 (2), OT 36): a transparent root bar left the
+      // page with no bar at all.
+      html {
+        scrollbar-color: var(--sf-scroll-bg-thumb) var(--sf-transparent);
+      }
+
       .scrollbar-hidden {
         scrollbar-width: none;
       }

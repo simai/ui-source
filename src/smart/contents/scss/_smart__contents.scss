@@ -197,6 +197,13 @@ sf-contents[data-empty] > .sf-contents {
     border-radius: var(--sf-0);
   }
 
+  /* The row is square against the line, its keyboard ring is not (C186 (4),
+     OT 31): the ring takes the control corner, as sf-outline's and a text
+     link's do. Only the ring: the row draws no fill. */
+  .sf-contents-link:focus-visible {
+    border-radius: var(--sf-radius--ui);
+  }
+
   /* line edge (C95 point 1, CT-01): the host's divider is the line -- the
      element draws none, and the current mark lies on its inline-start edge,
      over the divider's pixel, the host having put it flush against the

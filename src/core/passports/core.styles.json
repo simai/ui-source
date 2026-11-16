@@ -34,7 +34,7 @@
     "src/core/scss/mix/_mix__window-footer.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "17d67f8fb2e2eb196a088534803cddbb18e3b59117ef291cfd979a8886a77470",
+  "content_sha256": "6ab2e7d0493f3b00377f19193e2ada9f8b4bcf6ad93037ac75efd890b5b3c25f",
   "dependencies": [
     {
       "id": "font.inter",

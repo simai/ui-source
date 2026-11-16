@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1192,
-    "translated": 1191,
+    "words": 1196,
+    "translated": 1195,
     "share": 99.9
   },
   "words": {
@@ -1341,6 +1341,12 @@
       },
       "position": "{label}, {total} ішінен {position}, Delete — алып тастау",
       "position-plain": "{label}, {total} ішінен {position}"
+    },
+    "sf-theme-button": {
+      "theme": "Тақырып",
+      "theme-light": "ашық",
+      "theme-dark": "қараңғы",
+      "cycle-next": "{name}. Басыңыз — {next}"
     },
     "sf-theme-generator": {
       "advanced": "Нақты баптау",

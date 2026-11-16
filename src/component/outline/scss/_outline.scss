@@ -34,7 +34,11 @@
     list-style: none;
   }
 
+  /* One step down the column (OT 29): the nested list stands the same gap
+     below its parent link as any two rows do; it began right under it (8,
+     then 0, then 8). */
   .sf-outline__list .sf-outline__list {
+    padding-block-start: var(--sf-outline--gap);
     padding-inline-start: var(--sf-outline--indent);
   }
 
@@ -44,6 +48,11 @@
     min-inline-size: var(--sf-0);
     padding-block: var(--sf-outline--link-padding-block);
     padding-inline: var(--sf-outline--link-padding-inline);
+    /* The text stands at the list's inset (C77, C105 H4; OT 30): the former
+       indicator's transparent edge, kept for forced colours, comes out of the
+       padding, so a link's text begins 16 from the edge (12 on a phone and
+       compact), not 18. */
+    padding-inline-start: calc(var(--sf-outline--link-padding-inline) - var(--sf-outline--indicator-width));
     border: 0;
     border-inline-start: var(--sf-outline--indicator-width) solid var(--sf-transparent);
     border-radius: var(--sf-radius--ui);

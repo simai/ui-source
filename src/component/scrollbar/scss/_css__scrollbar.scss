@@ -12,6 +12,21 @@
     overflow: hidden;
   }
 
+  // The keyboard ring of the area (OT 35, R242). The viewport is the Tab
+  // stop, but its own ring was cut whole: the root clips at the viewport's
+  // box, and the edge fade's mask clips whatever the viewport paints, its
+  // outline included. The root draws the ring instead, outside its box (an
+  // element's own outline is not clipped by its own overflow), with core's
+  // ring values.
+  .sf-scrollbar__viewport:focus-visible {
+    outline: none;
+  }
+
+  .sf-scrollbar:has(> .sf-scrollbar__viewport:focus-visible) {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
   .sf-scrollbar__viewport {
     block-size: 100%;
     overflow: auto;
