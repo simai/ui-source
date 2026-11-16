@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.drop-shadow-color",
   "kind": "utility",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/drop-shadow-color/default/index.js",
@@ -18,7 +18,7 @@
     "src/utility/drop-shadow-color/hover/scss/_sf_css__filter_drop_shadow_color.scss",
     "src/utility/drop-shadow-color/hover/scss/index.scss"
   ],
-  "content_sha256": "ef1152a5806f1970b41750ad57e87f3d5d5b821562927ee70d68030edc2b6e0c",
+  "content_sha256": "4464ccba4c927fbbd3515205589bd29e74a67142413bda3b051b68f028664079",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

@@ -1,6 +1,12 @@
 // SIMAI Framework
 // https://simai.io
 
+// C212 (5), 2026-11-16: on-disable is on-surface-disabled (journal
+// class-c212-colour); disable painted the surface colour as ink, its hint is
+// on-surface-disabled (class-c212-colour-nearest); the palette classes
+// color-<hue>[-N] name the nearest role (utility-c17-legacy-palette-classes).
+// They draw until 2027-01-01.
+
 // BASE COLOR
 
 $color-base-array: (

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.stripe-color",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/stripe-color/default/index.js",
@@ -13,6 +13,6 @@
     "src/utility/stripe-color/default/scss/_sf_var__stripe_color.scss",
     "src/utility/stripe-color/default/scss/index.scss"
   ],
-  "content_sha256": "58d44cfc3fc9373221c9892ceb56629279dfe21a86af1e917eec37fd129526ae",
+  "content_sha256": "9c97ac2e21b9ba4a3458e2a349e25e9015c5ed9288ebdc92dd1031eabd4fd446",
   "dependencies": []
 }
