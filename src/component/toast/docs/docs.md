@@ -178,7 +178,9 @@ call returns `null` and warns in the console.
 - The area sits at one edge of the window in the top layer (bottom-end by
   default; `SF.notifications.configure({placement: 'top-end', max: 4})`), over
   every window: a modal dialog, a popover or a drawer opened after a message
-  does not cover it (LY-13). At
+  does not cover it (LY-13). A page's own `<dialog>` shown with `showModal()`
+  makes the rest of the page inert: the message is seen over it, and its close
+  button answers once that dialog closes. At
   most four show at once and the rest wait their turn; the same message again
   counts up (`×2`) instead of stacking twice.
 - The messages of the corner are a stack (core.runtime 1.55.0, owner decision

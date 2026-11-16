@@ -7,7 +7,10 @@
 // and 390, three loads each:
 //   - a message, then sf-modal opened: the toast is on top;
 //   - sf-modal open, then a message: the toast is on top;
-//   - a message, then a page's own <dialog> shown modal (top layer): on top;
+//   - a message, then a page's own <dialog> shown modal (top layer): drawn on
+//     top -- read in the painted pixels, since a native modal dialog makes
+//     everything outside it inert and hit testing goes to the dialog (the
+//     message is seen, its close button answers once the dialog closes);
 //   - a message, then a popover (top layer): on top;
 //   - a message, then sf-drawer: on top;
 // and a window that closes leaves the toast in place. Console clean.
@@ -58,6 +61,28 @@ const onTop = () => {
   return hit.closest('dialog, [popover], [data-sf-drawer-root], [data-sf-modal-root], .sf-modal, sf-modal')?.id || hit.closest('[id]')?.id || hit.tagName.toLowerCase();
 };
 
+// What is painted near the toast's top edge: the toast's own fill, or the
+// page dialog's grey (#888) over it. A one-pixel screenshot read in a canvas.
+const painted = async (tab) => {
+  const box = await tab.evaluate(() => {
+    const toast = document.querySelector('.sf-notifications .sf-toast');
+    if (!toast) return null;
+    const r = toast.getBoundingClientRect();
+    return {x: Math.round(r.left + r.width / 2), y: Math.round(r.top + 4)};
+  });
+  if (!box) return 'no toast';
+  const png = (await tab.screenshot({clip: {x: box.x, y: box.y, width: 1, height: 1}})).toString('base64');
+  const rgb = await tab.evaluate(async (data) => {
+    const image = new Image();
+    image.src = `data:image/png;base64,${data}`;
+    await image.decode();
+    const g = document.createElement('canvas').getContext('2d');
+    g.drawImage(image, 0, 0);
+    return [...g.getImageData(0, 0, 1, 1).data].slice(0, 3);
+  }, png);
+  return rgb.every((v) => Math.abs(v - 136) <= 4) ? 'dlg' : 'toast';
+};
+
 const failures = [];
 const rows = [];
 const browser = await chromium.launch();
@@ -96,7 +121,7 @@ try {
     await say('Диалог');
     await tab.evaluate(() => document.getElementById('dlg').showModal());
     await tab.waitForTimeout(300);
-    row.messageThenDialog = await tab.evaluate(onTop);
+    row.messageThenDialog = await painted(tab);
     await tab.evaluate(() => document.getElementById('dlg').close());
     await tab.waitForTimeout(200);
     await tab.evaluate(() => document.getElementById('pop').showPopover());
