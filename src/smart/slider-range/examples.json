@@ -81,6 +81,27 @@
       }
     },
     {
+      "name": "field",
+      "title": "Цена с полями «от» и «до»",
+      "settings": {
+        "label": "Цена",
+        "min": 0,
+        "max": 50000,
+        "step": 500,
+        "value": "5000,20000",
+        "multiple": true,
+        "suffix": " ₽",
+        "field": true,
+        "lower-label": "Цена от",
+        "upper-label": "Цена до"
+      },
+      "expect": {
+        "values": {
+          "value": "5000,20000"
+        }
+      }
+    },
+    {
       "name": "disabled",
       "title": "Недоступен",
       "settings": {
