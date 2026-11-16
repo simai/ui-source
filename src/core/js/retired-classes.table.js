@@ -207,6 +207,17 @@ export default {
       "names": {
         "sf-tabs--full": "sf-tabs"
       }
+    },
+    {
+      "journal": "class-c238-menu-default-navigation",
+      "decision": "C238",
+      "component": "sf-menu",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "The navigation look is the menu's default (C23, C30): a .sf-menu without a look modifier draws it. sf-menu--framed draws the former default's framed rows until remove_after.",
+      "names": {
+        "sf-menu--framed": "sf-menu"
+      }
     }
   ],
   "extended": {

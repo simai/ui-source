@@ -212,9 +212,26 @@ function positionHorizontalSubmenu(root) {
   submenu.style.minWidth = `${root.getBoundingClientRect().width}px`;
   submenu.style.overflowY = 'auto';
   const topLevel = isHorizontalTopLevel(root);
-  const anchor = positioning().anchor(root, submenu, {
-    side: topLevel ? 'block-end' : 'inline-end', align: 'start', offset: 0, fitHeight: true,
-  });
+  // The gap between panels is sf-menu's (C30; RG-NV 26): the first level's
+  // panel stands --sf-space-1/4 under the header's edge (or the row's), a
+  // side panel --sf-space-1/4 past the edge of the panel its row is in --
+  // its padding and border, not the row's own edge -- with its first row
+  // level with the row that opened it. Both stood flush (offset 0), a side
+  // panel over its parent's padding.
+  let options;
+  if (topLevel) {
+    options = {side: 'block-end', align: 'start', fitHeight: true,
+      offset: 'calc(var(--sf-site-header--edge, calc(var(--sf-px) * 0)) + var(--sf-space-1\\/4))'};
+  } else {
+    const outer = root.parentElement.getBoundingClientRect();
+    const box = root.getBoundingClientRect();
+    const own = getComputedStyle(submenu);
+    const gap = positioning().resolveLength('var(--sf-space-1\\/4)', root);
+    options = {side: 'inline-end', align: 'start', fitHeight: true,
+      offset: Math.max(outer.right - box.right, box.left - outer.left) + gap,
+      alignmentOffset: -((parseFloat(own.paddingTop) || 0) + (parseFloat(own.borderTopWidth) || 0))};
+  }
+  const anchor = positioning().anchor(root, submenu, options);
   submenuAnchors.set(submenu, {anchor, saved});
 }
 
@@ -250,6 +267,56 @@ function ensureElement(root, isBranch) {
   }
 
   return element;
+}
+
+// A branch that is also a page (C30 R058, C224; RG-NV 25): a plain branch
+// whose row is a link -- a.sf-menu-element[href] over a nested list -- was one
+// link that opened its list (aria-expanded on the link, the chevron inside
+// it): a press on the words opened the list instead of the page. It becomes
+// the split control sf-menu draws: the row a div.sf-menu-element, the link its
+// words (a.sf-menu-element-wrap, its href, aria-current and target kept) and
+// beside it the chevron's own button, which opens and closes the list.
+const splitRows = new WeakSet();
+
+function splitLinkRow(element) {
+  const row = document.createElement('div');
+  row.className = 'sf-menu-element';
+  splitRows.add(row);
+  for (const name of ['aria-expanded', 'aria-controls']) element.removeAttribute(name);
+  if (ownedRoles.has(element)) {
+    element.removeAttribute('role');
+    ownedRoles.delete(element);
+  }
+  if (ownedTabIndexes.has(element)) {
+    element.removeAttribute('tabindex');
+    ownedTabIndexes.delete(element);
+  }
+  for (const name of Array.from(element.classList)) {
+    if (name === 'sf-menu-element' || name === 'open' || name === 'disabled' || name.startsWith('sf-menu-element--')) element.classList.remove(name);
+  }
+  // The link holds the row's words: a wrap the runtime wrote before is
+  // unwrapped into it, the chevron it drew inside the link goes, and bare
+  // words get the text span every row has.
+  for (const trailing of element.querySelectorAll(':scope > .sf-icon-button')) trailing.remove();
+  const innerWrap = element.querySelector(':scope > .sf-menu-element-wrap');
+  if (innerWrap) innerWrap.replaceWith(...innerWrap.childNodes);
+  const words = Array.from(element.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim());
+  if (words.length > 0 && !element.querySelector('.sf-menu-element-text')) {
+    const text = document.createElement('span');
+    text.className = 'sf-menu-element-text';
+    text.textContent = words.map((node) => node.textContent || '').join(' ').replace(/\s+/g, ' ').trim();
+    words.forEach((node) => node.remove());
+    element.append(text);
+  }
+  element.classList.add('sf-menu-element-wrap');
+  element.replaceWith(row);
+  row.append(element);
+  const toggle = document.createElement('button');
+  toggle.type = 'button';
+  toggle.className = 'sf-icon-button';
+  toggle.innerHTML = '<span class="sf-icon" aria-hidden="true"></span>';
+  row.append(toggle);
+  return row;
 }
 
 function ensureWrap(element) {
@@ -363,11 +430,39 @@ function applyElementState(root, element, expanded, isBranch) {
 }
 
 // A submenu's path id and a local name (standard 1.3.8 §7.1.1,
-// simai/ui-source#41): <path>--submenu, the same in every bundle and in server
-// markup. A module counter numbered them in creation order, once per bundle.
+// simai/ui-source#41): the path of the root menu it stands in and the place
+// of its branch in that menu, <root path>--submenu-<n>[-<n>...] -- the same in
+// every bundle and in server markup. A module counter numbered them in
+// creation order, once per bundle. Each submenu took its own path once
+// (RG-NV 22): the path counts the menus that have no id, the first submenu
+// took one, and every later one read the same count -- three submenus, one
+// id, every aria-controls on the first (WCAG 4.1.2). The root's path is
+// counted among roots only, so it does not move as its submenus get theirs.
+function rootMenuOf(node) {
+  let root = node.closest('.sf-menu');
+  for (let up = root?.parentElement?.closest('.sf-menu'); up; up = up.parentElement?.closest('.sf-menu')) root = up;
+  return root;
+}
+
+function rootMenuPath(root) {
+  if (root.id) return instancePath(root, { kind: 'sf-menu' });
+  let index = 0;
+  for (const one of root.ownerDocument.querySelectorAll('.sf-menu')) {
+    if (one.id || one.parentElement?.closest('.sf-menu')) continue;
+    index += 1;
+    if (one === root) break;
+  }
+  return `class.sf-menu[${index}]`;
+}
+
 function ensureSubmenuId(submenu) {
   if (!submenu.id) {
-    submenu.id = partId(instancePath(submenu, { kind: 'sf-menu' }), 'submenu');
+    const root = rootMenuOf(submenu.parentElement) || submenu;
+    const places = [];
+    for (let item = submenu.parentElement?.closest('.sf-menu-item'); item && root.contains(item); item = item.parentElement?.closest('.sf-menu-item')) {
+      places.unshift(Array.from(item.parentElement.children).filter((one) => one.matches('.sf-menu-item')).indexOf(item) + 1);
+    }
+    submenu.id = partId(rootMenuPath(root), `submenu-${places.join('-')}`);
   }
   return submenu.id;
 }
@@ -472,7 +567,10 @@ function initMenuItem(root) {
 
   const expanded = isExpanded(root);
   const isBranch = hasSubmenu(root);
-  const element = ensureElement(root, isBranch);
+  let element = ensureElement(root, isBranch);
+  if (isBranch && element.matches('a[href]') && !element.querySelector(':scope > button.sf-icon-button')) {
+    element = splitLinkRow(element);
+  }
   const wrap = ensureWrap(element);
   const suppliedToggle = isBranch && element.querySelector(':scope > button.sf-icon-button');
   const usesRowController = isBranch && !isNativeInteractive(element) && !suppliedToggle;
@@ -572,10 +670,87 @@ function observeMenuItems() {
   });
 }
 
+// A row's branches open under a resting mouse (C30, as sf-menu's open-on
+// hover, its default; RG-NV 26): a branch the pointer rests on opens after
+// 300 ms; once the pointer has been outside a branch and its panel for
+// 500 ms the branch closes. Touch, a pen and the keyboard go through a press,
+// as before. The delays are sf-menu's (src/smart/menu: HOVER_OPEN_DELAY,
+// HOVER_CLOSE_DELAY); the Framework has no delay tokens.
+const HOVER_OPEN_DELAY = 300;
+const HOVER_CLOSE_DELAY = 500;
+const hoverTimers = new Map();
+
+function hoverRow(node) {
+  const row = node instanceof Element ? node.closest('.sf-menu.sf-menu--horizontal') : null;
+  if (!row || isOwned(row)) return null;
+  // The outermost row: a panel's list is a .sf-menu too.
+  let root = row;
+  for (let up = root.parentElement?.closest('.sf-menu.sf-menu--horizontal'); up; up = up.parentElement?.closest('.sf-menu.sf-menu--horizontal')) root = up;
+  return root;
+}
+
+// The branches a node stands in, innermost first, inside its row.
+function hoverChain(node, row) {
+  const chain = [];
+  for (let item = node instanceof Element ? node.closest('.sf-menu-item') : null; item && row.contains(item); item = item.parentElement?.closest('.sf-menu-item')) {
+    if (hasSubmenu(item)) chain.push(item);
+  }
+  return chain;
+}
+
+function clearHoverTimer(item, kind) {
+  const timer = hoverTimers.get(item);
+  if (!timer || (kind && timer.kind !== kind)) return;
+  clearTimeout(timer.id);
+  hoverTimers.delete(item);
+}
+
+function setHoverTimer(item, kind, delay, run) {
+  const timer = hoverTimers.get(item);
+  if (timer?.kind === kind) return;
+  clearHoverTimer(item);
+  hoverTimers.set(item, {kind, id: setTimeout(() => {
+    hoverTimers.delete(item);
+    if (item.isConnected) run();
+  }, delay)});
+}
+
+function onMenuPointerOver(event) {
+  if (event.pointerType !== 'mouse') return;
+  const row = hoverRow(event.target);
+  if (!row) return;
+  const chain = hoverChain(event.target, row);
+  for (const [item, timer] of [...hoverTimers]) {
+    if (!row.contains(item)) continue;
+    if ((timer.kind === 'close' && chain.includes(item)) || (timer.kind === 'open' && !chain.includes(item))) clearHoverTimer(item);
+  }
+  const [branch] = chain;
+  if (!branch || branch.classList.contains('open') || branch.classList.contains('disabled') || branch.hasAttribute('disabled')) return;
+  setHoverTimer(branch, 'open', HOVER_OPEN_DELAY, () => setMenuItemOpen(branch, true));
+}
+
+function onMenuPointerOut(event) {
+  if (event.pointerType !== 'mouse') return;
+  const row = hoverRow(event.target);
+  if (!row) return;
+  const next = event.relatedTarget instanceof Node && row.contains(event.relatedTarget) ? hoverChain(event.relatedTarget, row) : [];
+  for (const [item, timer] of [...hoverTimers]) {
+    if (timer.kind === 'open' && row.contains(item) && !next.includes(item)) clearHoverTimer(item);
+  }
+  for (const item of row.querySelectorAll('.sf-menu-item.open')) {
+    if (next.includes(item) || isGroup(item)) continue;
+    setHoverTimer(item, 'close', HOVER_CLOSE_DELAY, () => {
+      if (item.classList.contains('open')) setMenuItemOpen(item, false);
+    });
+  }
+}
+
 function bindMenuEvents() {
   if (document.body.dataset[EVENTS_BOUND_FLAG] === 'true') return;
 
   document.body.dataset[EVENTS_BOUND_FLAG] = 'true';
+  document.addEventListener('pointerover', onMenuPointerOver);
+  document.addEventListener('pointerout', onMenuPointerOut);
 
   document.addEventListener('click', (event) => {
     const target = event.target;

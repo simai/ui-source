@@ -1,3 +1,5 @@
+@use 'css__menu' as menu;
+
 // Groups (component.menu 1.2.0; sf-menu 1.3.0 draws them): a heading over a
 // list of first-level rows,
 //
@@ -47,7 +49,7 @@
   }
 
   // The navigation draws its rows without a hairline: the words move with it.
-  .sf-menu.sf-menu--navigation .sf-menu-group-heading {
+  .sf-menu#{menu.$nav} .sf-menu-group-heading {
     --sf-menu-group-heading--border-width: calc(var(--sf-px) * 0);
   }
 

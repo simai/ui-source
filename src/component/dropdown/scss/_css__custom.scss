@@ -635,6 +635,16 @@
   .sf-dropdown.sf-dropdown .sf-list .sf-list-item {
     --sf-list-item--padding-inline-start: calc(var(--sf-dropdown--inset, var(--sf-space-1)) - var(--sf-space-1\/4) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius, var(--sf-radius-1\/2)) - var(--sf-radius-1\/2)) / 2);
   }
+
+  /* The search header's icon and text stand over the rows' (C06; RG-NV 19):
+     past the panel's inset by the rows' own padding above, so at 1/2 and 2
+     -- and compact at 2 -- its text is where the options' text is. It stood
+     at the panel's inset and --sf-space-1/2 at every size: 16 over rows at
+     12 (1/2) and 20 (2). */
+  .sf-dropdown.sf-dropdown .sf-list > .sf-list-search {
+    --sf-dropdown--search-padding: calc(var(--sf-dropdown--inset, var(--sf-space-1)) - var(--sf-space-1\/4) + max(calc(var(--sf-px) * 0), var(--sf-dropdown--line-radius, var(--sf-radius-1\/2)) - var(--sf-radius-1\/2)) / 2);
+    padding-inline: calc(var(--sf-list--padding-left) + var(--sf-dropdown--search-padding)) calc(var(--sf-list--padding-right) + var(--sf-dropdown--search-padding));
+  }
 }
 
 /* C123: the field layer's action rules, for the class markup's chevron and
@@ -653,9 +663,10 @@
     outline: none;
   }
 
-  /* A disabled filled field of text shows no chevron, as before (the class
-     markup's rule above). */
+  /* A disabled filled field of text keeps its chevron in the disabled ink,
+     as the outlined field (C107 (3); RG-NV 20; the class markup's rule
+     above). It drew none. */
   .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-field-action {
-    --sf-field-action--ink: transparent;
+    --sf-field-action--ink: var(--sf-on-surface-disabled);
   }
 }

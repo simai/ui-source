@@ -168,10 +168,11 @@
         "default",
         "documentation-tree",
         "rail",
-        "navigation"
+        "navigation",
+        "framed"
       ],
       "default": "default",
-      "summary": "The class menu's presentations: default, the C30 site menu -- drawn as navigation (rows with no frame, the current page filled in a column, the 2 px line in a header row; owner decisions C23, C30); documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail)."
+      "summary": "The class menu's presentations: default, the C30 site menu -- drawn as navigation (rows with no frame, the current page filled in a column, the 2 px line in a header row; owner decisions C23, C30); documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. framed, the former default's framed rows (a 1 px frame on every row, no current mark), is a dated name until 2027-01-01 (owner decision C238: the default is the navigation look; the class sf-menu--framed it writes is noted in SF.deprecations, journal class-c238-menu-default-navigation). The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail)."
     },
     "current-from-location": {
       "type": "boolean",

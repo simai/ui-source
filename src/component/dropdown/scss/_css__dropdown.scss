@@ -168,8 +168,11 @@
   --sf-dropdown-field--border-color: var(--sf-outline-disabled);
 }
 
+/* A disabled filled field keeps its chevron, pale (C107 (3); RG-NV 20): the
+   field's service glyph says what the field is, as on the outlined field. It
+   was transparent, and the field read as a text input. */
 .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > sf-icon:not(:defined) {
-  --sf-icon--color: transparent;
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field {

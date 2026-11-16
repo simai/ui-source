@@ -43,6 +43,15 @@
     margin-inline-start: 0;
   }
 
+  // A count on the rail's icon is a quantity as in the column (C140 (3);
+  // RG-NV 28): grey tonal -- a badge that names no colour, or the neutral one
+  // -- and red only when it says so (sf-badge--error, sf-badge--danger: the
+  // item's status error). The anchored geometry drew every count red.
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge:not(.sf-badge--dot):is(.sf-badge--neutral, .sf-badge--on-surface, :not(.sf-badge--primary, .sf-badge--secondary, .sf-badge--error, .sf-badge--danger, .sf-badge--success, .sf-badge--warning, .sf-badge--info)) {
+    --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
+    --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
+  }
+
   // The rail marks the current page as the navigation column does (C23, owner
 // 2026-11-09): the row that is the current page takes the primary plate and
 // on-primary-container icon; the row whose section holds it -- the rail draws

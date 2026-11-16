@@ -83,7 +83,9 @@
   `navigation`, как и `default`, — строка или колонка по `orientation`.
   `default` рисуется так же, как `navigation` (решения C23, C30): у строк нет
   рамки, текущая страница в колонке — плашка основного цвета, в строке шапки —
-  линия 2 px. Строки в рамке остались только у классовой разметки меню.
+  линия 2 px. Прежние строки в рамке — `appearance="framed"` (класс
+  `sf-menu--framed`): старое имя до 2027-01-01, пишется в `SF.deprecations`
+  (решение C238).
   Прежнее значение `appearance="compact"` — псевдоним `rail` до 2027-01-01
   (запись в `SF.deprecations`): слово «compact» теперь означает только
   плотность (`data-sf-density`, решение C134).
@@ -483,7 +485,7 @@ count}`: слова без пробелов по краям (пусто, ког�
 | `--sf-menu-item-radius` | Скругление строки | `var(--sf-radius--ui)` |
 | `--sf-menu-submenu-background-color` | Заливка панели строки | `var(--sf-elevation-2--surface)` |
 | `--sf-menu-submenu-border-color` | Рамка панели строки | `var(--sf-outline-variant)` |
-| `--sf-menu-submenu-radius` | Скругление панели строки | `var(--sf-radius--ui)` |
+| `--sf-menu-submenu-radius` | Скругление панели строки | `var(--sf-radius--surface)` |
 | `--sf-menu-sticky-top` | Отступ от верха окна у меню со `sticky` | `0` |
 
 Наведение, открытая ветка, фокус и недоступный пункт рисуются своими цветами

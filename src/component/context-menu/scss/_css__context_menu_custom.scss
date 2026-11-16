@@ -142,4 +142,55 @@
   --sf-button--padding-inline-start: var(--sf-context-menu--item-inset-start-2);
   --sf-button--padding-inline-end: var(--sf-context-menu--item-inset-end-2);
 }
+
+/* An item written as a button is a menu row (C05, C30 R083, C105 H2 and H4,
+   C107 (1), C42 (5), C32; owner decision C240; RG-NV 13), as the
+   sf-context-menu-item row and sf-menu-context draw it: its words
+   --sf-space-1/2 inside the plate -- 16 from the panel's outer edge at every
+   size, compact and phone 12 -- the label keeping no inset of its own (the
+   button's H1 step stood it 7 / 8 / 10 further in: 23 / 24 / 26), its icon
+   --sf-space-1/2 before the words (it was the button's 7) in
+   on-surface-variant, the row's hover plate (state-select) with the words'
+   ink unchanged and the icon catching up with them, and the menu's widths
+   (10-18rem, an ellipsis past them). */
+.sf-context-menu .sf-context-menu-content > .sf-button,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button {
+  column-gap: var(--sf-space-1\/2);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button .sf-button-text-container,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button .sf-button-text-container {
+  --sf-button-text-container--padding-inline-start: 0;
+  --sf-button-text-container--padding-inline-end: 0;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button:not(.sf-button--error, .sf-button--danger) .sf-icon,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button:not(.sf-button--error, .sf-button--danger) .sf-icon {
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button.sf-button:not(:disabled, [aria-disabled="true"]):not(.disabled):hover,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  --sf-button--background-color: var(--sf-surface-state-select);
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button.sf-button.sf-button--on-surface:not(:disabled, [aria-disabled="true"]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button.sf-button--on-surface:not(:disabled, [aria-disabled="true"]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
+  --sf-button-text-container--color: var(--sf-context-menu-color, var(--sf-on-surface));
+}
+
+.sf-context-menu .sf-context-menu-content > .sf-button.sf-button:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) .sf-icon,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) .sf-icon {
+  --sf-icon--color: currentColor;
+}
+
+.sf-context-menu .sf-context-menu-content:has(> .sf-button, > sf-button) {
+  min-inline-size: var(--sf-context-menu--min-inline-size, var(--sf-popup-menu-min-width));
+  max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-popup-menu-max-width)), var(--sf-context-menu-available-inline-size, 100vw));
+}
 }

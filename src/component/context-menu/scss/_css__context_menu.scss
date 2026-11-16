@@ -258,9 +258,28 @@
   background-clip: padding-box;
 }
 
+/* A row's icon and chevron are a step paler than its words (C107 (1)) and
+   take the row's own ink where the row says (C107 (4), C164 (4); RG-NV 14,
+   15): on the current and the chosen row on-primary-container, on a disabled
+   row the disabled ink, and under the pointer or while its submenu is open
+   they catch up with the words. The row writes the ink
+   (--sf-context-menu-item--icon); the icon wrote on-surface-variant on
+   itself, which the row's own --sf-icon--color could not reach. */
 .sf-context-menu-item-icon,
 .sf-context-menu-item-chevron {
-  --sf-icon--color: var(--sf-on-surface-variant);
+  --sf-icon--color: var(--sf-context-menu-item--icon, var(--sf-on-surface-variant));
+}
+
+.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):is(:hover, :active, [aria-expanded="true"]) {
+  --sf-context-menu-item--icon: currentColor;
+}
+
+.sf-context-menu-item:is(.sf-context-menu-item--current, .sf-context-menu-item--chosen) {
+  --sf-context-menu-item--icon: var(--sf-on-primary-container);
+}
+
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) {
+  --sf-context-menu-item--icon: var(--sf-on-surface-disabled);
 }
 
 .sf-context-menu-item--danger:not(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-icon {
@@ -1213,6 +1232,26 @@
 .sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
   @include panel.scrollbar(var(--sf-context-menu-content--padding-inline-end), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
+}
+
+/* Class markup has no script to mark it (RG-NV 16): the area gives up its
+   inline-end padding whenever it scrolls -- a scroll timeline of its own is
+   active only while there is something to scroll -- so the thumb stands the
+   inset from the rows' plates there too (C07, C105): 4 and 4, not 8 and 4.
+   A browser without scroll timelines keeps the padding, as before. */
+@supports (animation-timeline: scroll()) {
+  .sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
+  .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
+    animation: sf-context-menu-scroll-room linear both;
+    animation-timeline: scroll(self block);
+  }
+}
+
+@keyframes sf-context-menu-scroll-room {
+  from,
+  to {
+    padding-inline-end: 0;
+  }
 }
 
 .sf-context-menu .sf-context-menu-content.sf-context-menu-content--scrollbar,

@@ -227,10 +227,15 @@
     cursor: default;
   }
 
+  /* A disabled row is pale whole (C164 (4), C107 (3); RG-NV 29): its icon and
+     its branch's chevron take the row's disabled ink. currentColor resolved
+     against the chevron's icon button, whose own ink is on-surface-variant,
+     so the chevron stood darker than the words. */
   .sf-menu-element.disabled .sf-icon,
   .sf-menu-element:disabled .sf-icon,
-  .sf-menu-element[aria-disabled='true'] .sf-icon {
-    --sf-icon--color: currentColor;
+  .sf-menu-element[aria-disabled='true'] .sf-icon,
+  .sf-menu-element:has(> [aria-disabled='true']) .sf-icon {
+    --sf-icon--color: var(--sf-menu-element--color);
   }
 
   /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */

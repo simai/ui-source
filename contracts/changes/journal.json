@@ -13731,6 +13731,26 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "class-c238-menu-default-navigation",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.menu 1.9.0, owner decision C238 (2026-11-16; C23, C30): a root .sf-menu with no look modifier draws the navigation look -- rows with no frame, the current page on the C23 plate, an open branch unfilled, plates 4 and words 12 from a column's edge -- as sf-menu--navigation does (which stays its name). The former default's framed rows (a 1 px frame on every row, 8 apart, an open branch filled, no current mark) are sf-menu--framed, a dated name: drawn until remove_after and noted once in SF.deprecations by the Loader. sf-menu's appearance framed writes the class (sf-menu 1.13.0), so the Loader notes it there too.",
+      "items": [
+        {
+          "component": "sf-menu",
+          "from": "sf-menu--framed",
+          "to": "sf-menu"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove sf-menu--framed (appearance=\"framed\" on sf-menu): the navigation look is the default.",
+      "owner": "ui-source",
+      "source": "src/component/menu/scss/_css__menu.scss; src/core/js/retired-classes.table.js; src/smart/menu/component.json; ui-control control/docs-review/decisions.md C238"
     }
   ]
 }

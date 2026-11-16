@@ -213,11 +213,21 @@
     margin: var(--sf-list--padding-top) var(--sf-list--padding-right) 0 var(--sf-list--padding-left);
   }
 
-  /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
-  .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
-  .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
+  /* One row hover for every list and menu (C42 (5), owner 2026-11-10) -- on
+     a row that is not chosen. The chosen row keeps its fill and takes the
+     family's next step under the pointer (C08; RG-NV 17), as sf-menu-context's
+     chosen row: the shared hover drew over it, and the chosen read as any
+     row. */
+  .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):not(.selected):hover,
+  .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):not(.selected):hover {
     --sf-list-item--background-color: var(--sf-surface-state-select);
     /* A translucent fill, as the selected row (C43 D4). */
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+
+  .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled).selected:hover,
+  .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled).selected:hover {
+    --sf-list-item--background-color: var(--sf-primary-container-hover);
     @include places.sf-place-fill(var(--sf-list-item--background-color));
   }
 
