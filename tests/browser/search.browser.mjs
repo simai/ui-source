@@ -414,6 +414,30 @@ try {
     const byKey = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), focus: document.activeElement?.id || document.activeElement?.localName}));
     expect('key-open-focus-back-to-trigger', !byKey.open && byKey.focus === 't', byKey);
 
+    // 1.10.3: a host that closes the window from a capture listener of a key
+    // lets the key reach the window's field after the portal is gone; the
+    // field neither throws nor chooses a row of the closed list (Enter).
+    await tab.evaluate(() => {
+      window.navigated = 0;
+      document.addEventListener('sf-search-navigate', () => { window.navigated += 1; });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'F2' || (event.key === 'Enter' && window.closeOnEnter)) document.querySelector('#s').close();
+      }, true);
+    });
+    await tab.click('#t');
+    await tab.waitForSelector(WINDOW);
+    await typeQuery(tab, 'таб');
+    const before = errors.length;
+    await tab.keyboard.press('F2');
+    await tab.click('#t');
+    await tab.waitForSelector(WINDOW);
+    await typeQuery(tab, 'таб');
+    await tab.evaluate(() => { window.closeOnEnter = true; });
+    await tab.keyboard.press('Enter');
+    await tab.evaluate(() => { window.closeOnEnter = false; });
+    const raced = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), navigated: window.navigated}));
+    expect('key-after-close-quiet', !raced.open && raced.navigated === 0 && errors.length === before, {...raced, errors: errors.slice(before)});
+
     expect('no-console-errors', errors.length === 0, errors);
     await tab.close();
   }

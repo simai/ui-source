@@ -448,6 +448,22 @@ class SfSearch extends SearchElement {
     return this._portal?.querySelector('.sf-search-window') ?? null;
   }
 
+  // The window is on the page: open and its portal mounted. A key, a press or
+  // an input that reaches the window's parts after it closed -- a host that
+  // closes it from a capture listener of the same key, a key typed during the
+  // close -- finds the portal gone; the window's handlers then do nothing
+  // (they neither read the removed portal nor choose a row of a closed list).
+  shown() {
+    return this.isOpen && Boolean(this._portal);
+  }
+
+  // The window's writing direction: the portal's, the host's while there is no
+  // portal.
+  rtl() {
+    const node = this._portal ?? this;
+    return node.isConnected ? getComputedStyle(node).direction === 'rtl' : false;
+  }
+
   field() {
     return this._portal?.querySelector('.sf-search-input') ?? null;
   }
@@ -489,6 +505,7 @@ class SfSearch extends SearchElement {
   // The X in the field, drawn only while there is something to clear (SW-3):
   // the words, then the operator tags; it is not a Tab stop.
   onClearPress() {
+    if (!this.shown()) return;
     if (this.query) this.setQuery('');
     else if (this.tokens.length) this.setTokens([]);
     else this.focusField();
@@ -497,12 +514,13 @@ class SfSearch extends SearchElement {
   // The arrow at the head's start: back a step, else (on a phone, where it
   // stands for the window's close) close.
   onBackPress() {
+    if (!this.shown()) return;
     if (this.steps.length) this.leaveStep();
     else this.close({reason: 'close'});
   }
 
   onTab(event) {
-    if (!this.isOpen) return;
+    if (!this.shown()) return;
     const root = this.dialog();
     // The Tab stops alone: the rows (links), the X and a row's buttons are
     // reached by the arrows, so their tabindex -1 keeps them off the cycle.
@@ -526,6 +544,7 @@ class SfSearch extends SearchElement {
   // ---------------------------------------------------------- the field
 
   onInput(event) {
+    if (!this.shown()) return;
     this.query = event.target.value;
     this.selected = 0;
     this.announcement = '';
@@ -535,7 +554,7 @@ class SfSearch extends SearchElement {
   }
 
   onFieldKeydown(event) {
-    if (event.isComposing) return;
+    if (event.isComposing || !this.shown()) return;
     const count = this._view?.rowCount ?? 0;
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
@@ -556,7 +575,7 @@ class SfSearch extends SearchElement {
       // Ctrl or Command with Enter: a page in a new tab (C175 (6)).
       if (event.ctrlKey || event.metaKey) this.openInNewTab(this.selected);
       else this.choose(this.selected);
-    } else if (event.key === (getComputedStyle(this._portal).direction === 'rtl' ? 'ArrowLeft' : 'ArrowRight')
+    } else if (event.key === (this.rtl() ? 'ArrowLeft' : 'ArrowRight')
       && this.atFieldEnd() && this.rowActions().length) {
       // To the selected row's buttons (C148 (3)), toward the row's end: →,
       // ← in a right-to-left page; the other arrow or Escape comes back.
@@ -590,10 +609,11 @@ class SfSearch extends SearchElement {
   // The arrows walk the row's buttons; ← from the first, or Escape, goes back
   // to the field.
   onRowActionsKeydown(event) {
+    if (!this.shown()) return;
     const buttons = this.rowActions();
     const at = buttons.indexOf(document.activeElement);
     if (at < 0) return;
-    const rtl = getComputedStyle(this._portal).direction === 'rtl';
+    const rtl = this.rtl();
     const next = event.key === (rtl ? 'ArrowLeft' : 'ArrowRight');
     const previous = event.key === (rtl ? 'ArrowRight' : 'ArrowLeft');
     if (!next && !previous) return;
@@ -634,6 +654,7 @@ class SfSearch extends SearchElement {
   // is «Все» again, so one tag is always chosen.
   onScopeSelect(event) {
     event.stopPropagation();
+    if (!this.shown()) return;
     // «Все» is the tag of no scope; a scope released is «Все» again.
     const {id, selected} = event.detail ?? {};
     const key = String(id ?? '');
@@ -748,6 +769,7 @@ class SfSearch extends SearchElement {
   // (C162 (5)).
   onStateAction(event) {
     event.stopPropagation();
+    if (!this.shown()) return;
     const id = event.detail?.id;
     if (id === 'all') {
       this.setScope('');
@@ -759,7 +781,7 @@ class SfSearch extends SearchElement {
   }
 
   hover(index) {
-    if (this.selected === index) return;
+    if (!this.shown() || this.selected === index) return;
     this.selected = index;
     this.renderWindow();
     this.askPreview();
@@ -805,7 +827,7 @@ class SfSearch extends SearchElement {
   // press and the middle button are the browser's (a new tab or window); the
   // window stays open behind them (C175 (6)). A plain press chooses the row.
   onRowClick(event, index) {
-    if (event.defaultPrevented) return;
+    if (event.defaultPrevented || !this.shown()) return;
     if (event.target instanceof Element && event.target.closest('.sf-search-row-actions')) return;
     const link = event.currentTarget instanceof HTMLAnchorElement && event.currentTarget.href;
     if (link && (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0)) return;
