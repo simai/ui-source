@@ -27,7 +27,7 @@ test('sf-list-attention: the heading is a card title, semibold', () => {
   const heading = rule(sheet, '.sf-list-attention-heading');
   assert.match(heading, /font-size: var\(--sf-list-attention--title-size\);/u);
   assert.match(heading, /line-height: var\(--sf-list-attention--title-line\);/u);
-  assert.match(heading, /font-weight: var\(--sf-text--font-weight-6\);/u);
+  assert.match(heading, /font-weight: var\(--sf-weight--semi-bold\);/u);
   assert.doesNotMatch(heading, /font-weight-medium/u);
   // The frameless head and the phone head's two-line inset stand on the title's line.
   assert.match(rule(sheet, '.sf-list-attention--frame-none .sf-list-attention-head'), /min-block-size: var\(--sf-list-attention--title-line\);/u);
