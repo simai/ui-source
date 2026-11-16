@@ -75,3 +75,9 @@ Existing and inserted blocks initialize once. Applications can call
 The global `window.hljs` and Loader registration name `hljs` remain available for
 compatibility; direct grammar accuracy and application CSP remain outside this
 component's presentation contract.
+
+A code block keeps the rhythm of the text around it (1.6.1, plain group 3
+CB-3): it ends with a paragraph's space (`--sf-text--space-bottom`, 16 on a
+desktop and 12 on a phone) and what follows brings its own, so a heading after
+it keeps its larger top. It was a fixed `--sf-space-4` (32 / 24) on the top of
+whatever came next. A block that ends its holder adds no space after it.
