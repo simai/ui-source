@@ -1168,7 +1168,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pagination/index.js",
-        "sha256": "ad877743e746731b8a343378f5386463b9c02a0f5b71747a40384a78ef2c65a2"
+        "sha256": "4a2f607831570c6f5c74d4a9c3b89b22e31c612f12632e352c103cb05278b26e"
       }
     ],
     "generated_runtime": [
