@@ -93,8 +93,9 @@ C130 (6)): он тише текста рядом. Spinner внутри комп�
 Подпись — цвет самого spinner (`--sf-spinner-text-color` задаёт другой) и
 мелкий текст (`--sf-text-size-1/2`) при любом размере spinner.
 Ещё пять публичных переменных: `--sf-spinner-track-color`, `--sf-spinner-size`,
-`--sf-spinner-stroke-width`, `--sf-spinner-gap`, `--sf-spinner-text-color`. При `prefers-reduced-motion` дуга стоит на месте в те же 30% кольца (вид без
-движения ждёт решения владельца, C130 (7)).
+`--sf-spinner-stroke-width`, `--sf-spinner-gap`, `--sf-spinner-text-color`. При `prefers-reduced-motion` ничего не вращается и дуги нет: всё кольцо
+тонировано цветом spinner на 32 % — как остановленная полоса и кольцо прогресса
+(решение владельца C220, C131 (8)); так же внутри кнопки и поля.
 
 ## Устаревшие атрибуты
 

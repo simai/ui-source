@@ -120,12 +120,11 @@ function renderProgressScale(root) {
   const tone = normalizeProgressScaleTone(root.dataset.tone);
   const showText = normalizeBoolean(root.dataset.showText, true);
 
-  // A scale on a text line, and a level scale, lay their track and value out
-  // in a row, the value at the row's end (C185 (5)); any other scale stands
-  // its value under the track.
-  const onRow = level || /(^|\s)sf-progress-scale--line-/.test(root.className);
-  root.classList.add('sf-progress-scale', 'flex', onRow ? 'flex-row' : 'flex-col');
-  root.classList.remove(onRow ? 'flex-col' : 'flex-row');
+  // Every scale lays its track and value out in a row, the value at the
+  // row's end, as the bar's inline-end and the level (owner decision C219,
+  // with C185 (5) and C203); it stood under the track before.
+  root.classList.add('sf-progress-scale', 'flex', 'flex-row');
+  root.classList.remove('flex-col');
   root.classList.toggle('sf-progress-scale--level', level);
   syncScaleClasses(root, step, size, tone);
   root.dataset.value = String(value);
@@ -145,7 +144,10 @@ function renderProgressScale(root) {
   else root.removeAttribute('aria-valuetext');
 
   const text = ensureScaleText(root);
-  text.textContent = level ? (root.dataset.valueText || words) : `${value}%`;
+  // One spelling of a per cent across the family (C203 (3), C219): the
+  // number, a no-break space and the sign, «60 %». The core's percentText
+  // of the C203 line writes the same and takes this place when both meet.
+  text.textContent = level ? (root.dataset.valueText || words) : `${value}\u00a0%`;
   text.hidden = !showText;
   return true;
 }

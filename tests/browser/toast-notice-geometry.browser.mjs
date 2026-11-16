@@ -20,7 +20,7 @@
 //     outer edge; the block padding is --sf-space-1/2;
 //   - the action plate starts at the text edge; the icon and the close are
 //     centred on the first line; the icon is the line's size (24 / 20 / 20);
-//   - a toast with one action at 20rem of its width and more holds it in the
+//   - a toast with one action at 24rem of its width and more (C218) holds it in the
 //     row with the text (C115, L3a): centred on the text block, the action
 //     plate --sf-space-1 after the text (C105 H6, between groups);
 //   - with the actions under the text, the space under the last button equals
@@ -282,7 +282,7 @@ try {
             if (t.row) {
               // C115 (L3a): one action in the row, centred on the text block,
               // --sf-space-1 after it (C105 H6).
-              if (name !== 'stack') failures.push(`${key} ${zone}: ${name} action in the row (C115: only one action, from 20rem)`);
+              if (name !== 'stack') failures.push(`${key} ${zone}: ${name} action in the row (C115: only one action, from 24rem, C218)`);
               check(`${name} action centre - text block centre (C115)`, t.rowCentre, 0);
               check(`${name} text block to action plate (C105 H6)`, t.rowGap, at.tokens.space1);
             } else {

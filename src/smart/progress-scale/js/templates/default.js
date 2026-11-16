@@ -60,11 +60,11 @@ export function renderProgressScaleTemplate(context) {
     'sf-progress-scale',
     `sf-progress-scale--size-${size}`,
     tone ? `sf-progress-scale--${tone}` : '',
-    // On a text line the track and the value share the line, and a level's
-    // value stands at the row's end; otherwise the value stands under the
-    // track.
+    // The track and the value share one row, the value at its end (owner
+    // decision C219, with C185 (5) and C203); on a text line the row is the
+    // line's height.
     levelSteps ? 'sf-progress-scale--level' : '',
-    ...(context.line ? [`sf-progress-scale--line-${context.line}`, 'flex', 'flex-row', 'items-cross-center'] : levelSteps ? ['flex', 'flex-row'] : ['flex', 'flex-col']),
+    ...(context.line ? [`sf-progress-scale--line-${context.line}`, 'flex', 'flex-row', 'items-cross-center'] : ['flex', 'flex-row']),
     context.rootClass,
   ].filter(Boolean);
 
@@ -95,7 +95,7 @@ export function renderProgressScaleTemplate(context) {
         ${Array.from({ length: steps }, () => html`<div class="sf-progress-scale-block"></div>`)}
       </div>
       ${context.showText
-        ? html`<div class="sf-progress-scale-text">${levelSteps ? valueText : `${value}%`}</div>`
+        ? html`<div class="sf-progress-scale-text">${levelSteps ? valueText : `${value}\u00a0%`}</div>`
         : nothing}
     </div>
   `;

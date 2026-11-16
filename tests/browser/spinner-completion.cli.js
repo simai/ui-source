@@ -72,10 +72,11 @@ await page.waitForFunction(() => document.querySelector('#dynamic-spinner .sf-lo
 check('late Smart spinner upgrades through Loader', await page.locator('#dynamic-spinner .sf-loader-svg').count() === 1);
 
 await page.emulateMedia({reducedMotion: 'reduce'});
+// Reduced motion (C220): nothing turns, no arc; the whole ring at 32 % stays visible.
 check('reduced motion keeps a static visible indicator', await page.evaluate(() => {
-  const accent = document.querySelector('#ordinary-status .sf-loader-ring-accent');
-  const style = getComputedStyle(accent);
-  return style.animationName === 'none' && style.strokeDasharray !== '0px, 100px';
+  const accent = getComputedStyle(document.querySelector('#ordinary-status .sf-loader-ring-accent'));
+  const ring = getComputedStyle(document.querySelector('#ordinary-status .sf-loader-ring-filled'));
+  return accent.animationName === 'none' && accent.display === 'none' && /\/ 0\.32\)$/u.test(ring.stroke);
 }));
 
 await page.evaluate(() => document.documentElement.className = 'theme-dark');

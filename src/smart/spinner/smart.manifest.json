@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.spinner",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "title": "Spinner",
   "summary": "Indeterminate waiting indicator, one look (the arc) on the size ladder, shown after a delay (1 s by default), in the place's quiet ink, with optional polite status announcement and Framework-owned motion.",
   "kind": "smart",
@@ -300,7 +300,7 @@
       },
       {
         "path": "src/smart/spinner/docs/docs.md",
-        "sha256": "52a5ed0a92cf9395bd3a3bdc55db7bb76a13557ae8651dcbfb4b8eb2f959b94d"
+        "sha256": "1fa11c277c09a19bea757454d71f801fee25a8023b09e83bb21def4291ab7e15"
       }
     ],
     "generated_runtime": [

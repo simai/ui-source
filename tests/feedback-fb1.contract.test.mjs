@@ -126,3 +126,45 @@ test('the built sheets carry RG-PB-1, RG-SK-1, RG-PH-1 and RG-PH-2', {skip: !dis
   checkEmptyState(built(/empty-state[^/]*\.css$/u), 'built');
 });
 
+
+// Owner decisions 2026-11-16, added to this branch by the dispatcher:
+//   C219 the scale's value stands at the row's end, «60 %»;
+//   C220 under reduced motion a spinner draws the whole ring at 32 %, no arc;
+//   C218 a toast's one action joins the text row from 24rem, not 20rem.
+test('C219: every progress scale lays its value at the row end, spelt with a no-break space', () => {
+  const ordinary = read('src/component/progress-scale/js/_progress_scale.js');
+  assert.match(ordinary, /root\.classList\.add\('sf-progress-scale', 'flex', 'flex-row'\);/u);
+  assert.doesNotMatch(ordinary, /onRow \? 'flex-row' : 'flex-col'/u);
+  assert.match(ordinary, /`\$\{value\}\\u00a0%`/u);
+  const template = read('src/smart/progress-scale/js/templates/default.js');
+  assert.doesNotMatch(template, /\['flex', 'flex-col'\]/u);
+  assert.match(template, /`\$\{value\}\\u00a0%`/u);
+  const css = strip(read('src/component/progress-scale/scss/_css__progress_scale.scss')).replace(/\s+/gu, ' ');
+  assert.match(css, /\.sf-progress-scale \.sf-progress-scale-container \{ flex: 1 1 auto; min-inline-size: 0; \}/u);
+  assert.match(css, /\.sf-progress-scale \.sf-progress-scale-text \{ flex: none; white-space: nowrap; \}/u);
+});
+
+function checkSpinnerReduced(css, where) {
+  const flat = strip(css).replace(/\s+/gu, ' ');
+  const media = flat.slice(flat.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
+  assert.match(media, /\.sf-loader-container \.sf-loader-ring-accent ?\{ ?display: ?none;? ?\}/u, `${where}: no arc`);
+  assert.match(media, /\.sf-loader-container \.sf-loader-ring-filled ?\{ ?opacity: ?1; ?stroke: ?color-mix\(in srgb, ?currentColor 32%, ?transparent\)/u, `${where}: the ring at 32 %`);
+}
+
+test('C220: under reduced motion a spinner is the whole ring at 32 %, without an arc', () => {
+  checkSpinnerReduced(read('src/component/spinner/scss/_css__spinner_custom.scss'), 'source');
+});
+
+test('C218: a toast action joins the text row from 24rem of the toast', () => {
+  const css = read('src/component/toast/scss/_css__toast.scss');
+  assert.match(css, /@container sf-toast \(min-width: #\{mq\.container-step\(g2, \$frame: 2 \* 1rem\)\}\)/u);
+  assert.doesNotMatch(css, /container-step\(g0/u);
+});
+
+test('the built sheets carry C219, C220 and C218', {skip: !distribution && 'UI_CORE_ROOT not set'}, () => {
+  const scale = strip(built(/\/progress-scale[^/]*\.css$/u)).replace(/\s+/gu, ' ');
+  assert.match(scale, /\.sf-progress-scale \.sf-progress-scale-text ?\{ ?flex: ?none; ?white-space: ?nowrap;? ?\}/u);
+  checkSpinnerReduced(built(/\/spinner[^/]*\.css$/u), 'built');
+  // 24rem less the frame (2rem): the query reads the content box.
+  assert.match(built(/\/toast[^/]*\.css$/u), /@container sf-toast \(min-width: ?22rem\)/u);
+});
