@@ -31,7 +31,8 @@
 // It never fetches anything: every request leaves as an event.
 //
 // Keyboard: arrows, Home and End move between rows, Enter opens, F2 renames,
-// Shift+F10 or the menu key opens the row's actions.
+// Shift+F10 or the menu key opens the row's actions; so does a right click,
+// at the pointer (1.19.0, C164 (1)).
 //
 // From its component.json (standard simai.smart-component 1.3.8 §3, §4, §8,
 // §11, §18): the settings are attributes and properties made by
@@ -369,13 +370,17 @@ class SfList extends ListElement {
         const entries = this.menuEntries(item);
         if (!entries.length) return refused("no-actions");
         const row = this.rowFor(id);
+        // A point {x, y} in the window: where a right click was (C164 (1)).
+        const point = anchorGiven && !(anchorGiven instanceof Element)
+            && Number.isFinite(Number(anchorGiven.x)) && Number.isFinite(Number(anchorGiven.y))
+            ? {x: Number(anchorGiven.x), y: Number(anchorGiven.y)} : null;
         const anchor = anchorGiven instanceof Element ? anchorGiven : row?.closest(".sf-list__row")?.querySelector(".sf-list__actions") ?? row ?? this;
         this._menuFor = id;
         // The page's one menu (core SF.menu.open, owner decision C184 (4)),
-        // fetched by the Loader the first time: the «⋯» and Shift+F10 open the
-        // same list, and the focus goes back to the row.
+        // fetched by the Loader the first time: the «⋯», Shift+F10 and a right
+        // click open the same list, and the focus goes back to the row.
         const opening = menuOpen({
-            anchor,
+            ...(point ?? {anchor}),
             entries,
             label: this.sfWord("actions-label", {vars: {text: item.text || this.sfWord("untitled-text")}}),
             returnTo: row ?? null,
@@ -673,7 +678,27 @@ class SfList extends ListElement {
                 event.preventDefault();
                 event.stopPropagation();
             }, true);
+            // A right click on a row opens its menu at the pointer, the same
+            // list as its «⋯» (owner decision C164 (1), defect TL-2).
+            this.addEventListener("contextmenu", (event) => this.onRowContextMenu(event));
         }
+    }
+
+    // The right button on a row with a menu: the row's menu where the pointer
+    // is. Shift with it leaves the browser's own menu; a finger's long press
+    // is the long-press watch's (it has opened the menu already); the menu key
+    // and Shift+F10 are onKey's (their keydown opened it at the row's «⋯»).
+    onRowContextMenu(event) {
+        if (event.shiftKey || event.defaultPrevented) return;
+        const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
+        if (!row || !this.contains(row) || event.target.closest(".sf-list__rename")) return;
+        const id = this.idOf(row);
+        const item = this._items.find((one) => one.id === id);
+        if (!item || !this.hasMenu(item)) return;
+        event.preventDefault();
+        if (event.button !== 2 || event.pointerType === "touch") return;
+        this.moveTo(row);
+        this.openMenu(id, {x: event.clientX, y: event.clientY});
     }
 
     onDisconnected() {

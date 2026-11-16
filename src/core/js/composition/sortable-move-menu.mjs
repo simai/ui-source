@@ -13,6 +13,7 @@
 // carries the drag module and has handles of its own.
 import { pageText } from '../page-language.js';
 import { activeSortableSession, requestSortableMove } from './sortable.mjs';
+import { standardMenu as placeStandardMenu } from '../overflow-row.js';
 
 const ITEM = '[data-sf-sortable-item]';
 const HANDLE = '[data-sf-sortable-handle]';
@@ -76,7 +77,6 @@ export function createSortableMoveMenu(list) {
   let wiring = null;
   let menu = null;
   let current = null;
-  const document_ = () => globalThis.document;
 
   function prepare(only = null) {
     for (const item of only ? [only] : items(list)) {
@@ -88,17 +88,17 @@ export function createSortableMoveMenu(list) {
     }
   }
 
+  // The standard menu, placed by core's one helper (overflow-row.js
+  // standardMenu, defect TL-8), held on the list.
   async function standardMenu() {
-    if (menu?.isConnected) return menu;
-    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
-    if (!globalThis.customElements.get('sf-menu-context')) return null;
-    menu = document_().createElement('sf-menu-context');
-    menu.setAttribute('popup', '');
-    menu.addEventListener('sf-menu-context-select', onSelect);
-    menu.addEventListener('sf-menu-context-closed', () => {
-      if (current?.control) current.control.setAttribute('aria-expanded', 'false');
+    menu = await placeStandardMenu(list, '_sfMoveMenu', null, {
+      setup(surface) {
+        surface.addEventListener('sf-menu-context-select', onSelect);
+        surface.addEventListener('sf-menu-context-closed', () => {
+          if (current?.control) current.control.setAttribute('aria-expanded', 'false');
+        });
+      },
     });
-    (list.closest('dialog[open]') || document_().body).append(menu);
     return menu;
   }
 

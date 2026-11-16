@@ -312,3 +312,11 @@ test('sf-list 1.18.0: lines says the skeleton rows\' line count from the first f
   assert.equal((printed.match(/sf-avatar sf-avatar--picture sf-avatar--size-1 sf-avatar--line-1 sf-first-paint-fill sf-list__lead-skeleton/gu) || []).length, 3);
   assert.doesNotMatch(printed, /sf-list__skeleton--lead-wide|sf-list-item--two-line|sf-list__bar--supporting/u);
 });
+
+test('sf-list 1.19.0: a right click on a row opens its menu at the pointer (C164 (1), TL-2)', () => {
+  const source = readFileSync(new URL('../src/smart/list/index.js', import.meta.url), 'utf8');
+  assert.match(source, /this\.addEventListener\("contextmenu", \(event\) => this\.onRowContextMenu\(event\)\);/u);
+  assert.match(source, /onRowContextMenu\(event\) \{\s*if \(event\.shiftKey \|\| event\.defaultPrevented\) return;/u);
+  assert.match(source, /this\.openMenu\(id, \{x: event\.clientX, y: event\.clientY\}\);/u);
+  assert.match(source, /\.\.\.\(point \?\? \{anchor\}\),/u);
+});
