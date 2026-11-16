@@ -13,10 +13,13 @@ export const MENU_ORIENTATIONS = Object.freeze(['vertical', 'horizontal']);
 // and the class sf-menu--compact are its dated aliases until 2027-01-01) and the
 // header navigation (sf-menu--navigation). The tree and the rail are columns:
 // with them the menu is vertical. The navigation is a row or a column, as
-// orientation says, like the default.
-export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'rail', 'navigation']);
+// orientation says, like the default. framed is the former default's framed
+// rows (sf-menu--framed), a dated name until 2027-01-01 (owner decision C238:
+// the default is the navigation look; the Loader notes the class in
+// SF.deprecations, journal class-c238-menu-default-navigation).
+export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'rail', 'navigation', 'framed']);
 // The presentations that can stand in a row.
-export const ROW_APPEARANCES = Object.freeze(['default', 'navigation']);
+export const ROW_APPEARANCES = Object.freeze(['default', 'navigation', 'framed']);
 // When a row of links that does not fit becomes a button that opens them as a
 // column: when it does not fit, always, or never.
 // narrow: a column (or a row) that is shown as that button while the page is

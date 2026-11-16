@@ -83,6 +83,9 @@ function renderFieldVisual(context) {
   return nothing;
 }
 
+// A value's tag is the tag's own grey (owner decision C58, as
+// sf-input-lookup's chips; RG-NV 18): no active class, which drew it
+// primary-container.
 function renderTag(context, option) {
   const label = getOptionLabel(option);
   const fieldTag = FIELD_TAG[context.size] || FIELD_TAG["1"];
@@ -93,7 +96,7 @@ function renderTag(context, option) {
 
   return html`
     <div
-      class="sf-tag transition sf-tag--${tagType} sf-tag--size-${tagSize} sf-tag--inline${tagSpacing} flex flex-row flex-nowrap items-center active"
+      class="sf-tag transition sf-tag--${tagType} sf-tag--size-${tagSize} sf-tag--inline${tagSpacing} flex flex-row flex-nowrap items-center"
       data-value=${option.value}
     >
       ${option.type === "color"

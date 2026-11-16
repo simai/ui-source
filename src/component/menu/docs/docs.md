@@ -71,6 +71,34 @@ the browser dropped it, so such a section kept the plate and drew no line.
 The row's link is now found by a child combinator inside the one `:has()`.
 A current section without subsections was right and is unchanged.
 
+## The default look is navigation (1.9.0, owner decisions C238, C239, C240)
+
+A `.sf-menu` with no look modifier draws as `sf-menu--navigation` (C23,
+C30): rows with no frame, 4 apart, the current page the C23 plate with a
+medium label, the plate 4 from the column edge and the text 12 inside it
+(16 from the edge; compact and phone 12). The former default -- a 1 px
+frame on every row, 8 apart, no current fill -- is `sf-menu--framed`; the
+name is new and stays a legacy look: the loader lists it in
+`SF.deprecations` (journal `class-c238-menu-default-navigation`, until
+2027-01-01). Nested menus and the documentation tree keep their own looks.
+
+A row's panels (`sf-menu--horizontal`) round 8, `--sf-radius--surface`
+(was 4, C239), keep 4 round their rows (the border inside the inset), and
+the rows' text stands 16 from the panel edge at size 1/2 (compact and phone
+12; C240, the C105 H4 menu row). The panel opens 4 below the row and a side
+panel 4 from its parent panel; under a mouse a row opens its panel after
+300 ms and closes it 500 ms after the pointer leaves the row and the panel.
+
+Every submenu gets an id of its own (`<menu>--submenu-1-2`, the positions
+from the root), so each `aria-controls` names its panel (WCAG 4.1.2). A
+link with subsections (`a.sf-menu-element[href]` holding a submenu) is split
+on start into the link and a separate arrow button, as the Smart menu draws
+it: the link navigates, the button opens. In the documentation tree the
+current row is the plate 4 from the column edge, its text and icons
+on-primary-container, its text 16 from the edge; an open parent of the
+current page has no plate. A rail's count badge is grey unless it names a
+colour; a disabled branch's chevron is as dim as its label.
+
 ## Header navigation
 
 Add `sf-menu--navigation` to the root `sf-menu` for a site's sections as a

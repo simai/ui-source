@@ -11,7 +11,8 @@ const {doc} = registerThemeTests(test, assert, {page: 'foundation-spacing-roles.
 
 test('foundation-spacing-roles.md: six roles, each naming the token the geometry standard names first', () => {
   const roles = tableRows(section(doc, 'Roles'));
-  assert.deepEqual(roles.map((row) => row.role), ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']);
+  // C240: H4 has a menu row (the menu panel's text 16 from its edge).
+  assert.deepEqual(roles.map((row) => row.role), ['H1', 'H2', 'H3', 'H4', 'H4 menu', 'H5', 'H6']);
   const geometry = readDoc('foundation-composition-geometry.md').split('\n');
   for (const row of roles) {
     const line = geometry.find((l) => l.startsWith(`| ${row.role} |`));

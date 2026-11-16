@@ -1,5 +1,18 @@
 @use '../../../core/scss/mix/mix__places' as places;
 
+// The navigation look is the menu's default (owner decision C238,
+// 2026-11-16; C23, C30): a root .sf-menu with no look modifier draws it, as
+// sf-menu--navigation does. The rules below read $nav at the specificity
+// .sf-menu--navigation had -- the default's branch is in :where() -- so no
+// other rule's weight against them moves. A nested .sf-menu (a branch's
+// list, a row's panel, a group's list) is never a root of its own: it takes
+// the look of the root it stands in. The two other looks keep their own
+// rules: sf-menu--documentation-tree, and sf-menu--framed, the former
+// default's framed rows -- a dated name until 2027-01-01, noted in
+// SF.deprecations (core/js/retired-classes.table.js, journal
+// class-c238-menu-default-navigation).
+$nav: ":is(.sf-menu--navigation, :where(:not(.sf-menu--framed, .sf-menu--documentation-tree, .sf-menu .sf-menu)))";
+
 // The current page of a navigation menu (C23, owner 2026-11-09): a primary
 // plate of the fill family -- --sf-primary-container-active, primary at 20 in
 // the light theme and at 32 in the dark one, measured against the panel, the
@@ -234,11 +247,20 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   inline-size: max-content;
   min-inline-size: 100%;
   max-inline-size: calc(100vw - var(--sf-space-2));
-  /* The panel's geometry, read by the path's line on its border (R084). */
-  --sf-menu--inset: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/3));
+  /* The panel's geometry, read by the path's line on its border (R084).
+     The panel is every dropping panel's (C05, C105 H4; RG-NV 27): a row's
+     plate stands --sf-space-1/4 from the panel's outer edge on every side,
+     its 1 px border inside that inset across (as sf-menu-context), so a
+     row's words stand 16 from the outer edge (compact and phone 12, C240).
+     It stood --sf-space-1/3 inside the border: plates 9 from the edge, words
+     25. The corner is a popup's, --sf-radius--surface (owner decision C239,
+     2026-11-16), as the row's region, sf-menu-context and the dropdown's
+     list; it was --sf-radius--ui (4). */
+  --sf-menu--inset: var(--sf-menu-horizontal-submenu--padding, calc(var(--sf-space-1\/4) - var(--sf-px)));
   --sf-menu--border-width: var(--sf-px);
-  --sf-menu--radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--ui)));
-  padding: var(--sf-menu--inset);
+  --sf-menu--radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--surface)));
+  padding-block: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/4));
+  padding-inline: var(--sf-menu--inset);
   border: var(--sf-menu--border-width) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
   border-radius: var(--sf-menu--radius);
   background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
@@ -256,10 +278,14 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   inset-inline-start: 100%;
 }
 
+/* A panel's row: its words --sf-space-1/2 inside its plate (C30 R083, C240),
+   12, compact and phone 8 -- 16 and 12 from the panel's outer edge. It was
+   --sf-space-1 at the start and the row's own 16 at the end. */
 .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-element {
   inline-size: 100%;
   max-inline-size: 100%;
-  --sf-menu-element--padding-inline-start: var(--sf-space-1);
+  --sf-menu-element--padding-inline-start: var(--sf-space-1\/2);
+  --sf-menu-element--padding-inline-end: var(--sf-space-1\/2);
 }
 
 /* A row's deeper branch opens a panel to the side (C30): its chevron is ›
@@ -399,13 +425,13 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    label, and a 2px line on the border of a box that has one. Height, size of
    type, radius and the focus ring stay the class row's: the size 1 control
    height, text size 1, the ui radius. */
-.sf-menu.sf-menu--navigation {
+.sf-menu#{$nav} {
   --sf-menu--gap: var(--sf-menu-gap, var(--sf-space-1\/4));
 }
 
 /* A zero length, not the unitless --sf-0: the row's padding subtracts the
    border width from a length, and a unitless 0 would void the calc. */
-.sf-menu.sf-menu--navigation .sf-menu-element {
+.sf-menu#{$nav} .sf-menu-element {
   --sf-menu-element--border-width: calc(var(--sf-px) * 0);
   --sf-menu-element--border-color: var(--sf-transparent);
   --sf-menu-element--background-color: var(--sf-menu-item-background-color, var(--sf-transparent));
@@ -413,24 +439,24 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 
 /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
    select state, 8, where the navigation look had the hover state, 4. */
-.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+.sf-menu#{$nav} .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
   --sf-menu-element--background-color: var(--sf-surface-state-select);
   /* A translucent fill, as the current row (C43 D4). */
   @include places.sf-place-fill(var(--sf-menu-element--background-color));
   --sf-menu-element--border-color: var(--sf-transparent);
 }
 
-.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+.sf-menu#{$nav} .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
   --sf-menu-element--background-color: var(--sf-surface-state-active);
   /* A translucent fill, as the current row (C43 D4). */
   @include places.sf-place-fill(var(--sf-menu-element--background-color));
 }
 
-.sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+.sf-menu#{$nav} .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
   @include current-plate;
 }
 
-.sf-menu.sf-menu--navigation .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) .sf-menu-element-icon {
+.sf-menu#{$nav} .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) .sf-menu-element-icon {
   --sf-icon--color: var(--sf-on-primary-container);
 }
 
@@ -442,29 +468,29 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    its scrollbar takes room (sf-menu writes sf-menu--scrollbar), the end padding
    gives the scrollbar's own gap back, so the plate stands as far from the
    thumb as from the start edge. */
-.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) {
+.sf-menu#{$nav}:not(.sf-menu--horizontal) {
   --sf-menu--row-padding: var(--sf-space-1\/2);
 }
 
-.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
+.sf-menu#{$nav}:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
   --sf-menu--inset: var(--sf-space-1\/4);
   --sf-menu--border-width: calc(var(--sf-px) * 0);
   box-sizing: border-box;
   padding-inline: var(--sf-menu--inset);
 }
 
-.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu).sf-menu--scrollbar {
+.sf-menu#{$nav}:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu).sf-menu--scrollbar {
   padding-inline-end: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--inset) - var(--sf-scroll-thumb-inset, var(--sf-a4))));
 }
 
-.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) .sf-menu-element {
+.sf-menu#{$nav}:not(.sf-menu--horizontal) .sf-menu-element {
   --sf-menu-element--padding-inline-end: var(--sf-menu--row-padding);
 }
 
 /* A column's path (R065 a): a closed branch that holds the current page has
    a medium label and no bar -- a column without a border of its own has
    nothing for a line to lie on. */
-.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) {
+.sf-menu#{$nav}:not(.sf-menu--horizontal) {
   @include path-weight($path-closed);
 }
 
@@ -472,7 +498,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    panel -- a hairline of outline-variant, the surface radius -- the plates
    the same inset from it on every side, and the path's 2px line on its
    start border. */
-.sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
+.sf-menu#{$nav}.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
   --sf-menu--border-width: var(--sf-px);
   --sf-menu--radius: var(--sf-radius--surface);
   padding-block: var(--sf-menu--inset);
@@ -483,7 +509,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 
 /* A column's group headings (R070): the rows' size and weight of type in
    on-surface-variant, a row's height, the words on the first level's line. */
-.sf-menu.sf-menu--navigation:not(.sf-menu--horizontal) .sf-menu-group-heading {
+.sf-menu#{$nav}:not(.sf-menu--horizontal) .sf-menu-group-heading {
   min-block-size: var(--sf-ui-1--control-height);
   padding-inline: var(--sf-menu--row-padding);
   font-size: var(--sf-menu-element--font-size, var(--sf-text-size-1));
@@ -494,7 +520,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 /* A row: an open branch -- the first level and a panel's row -- takes the
    neutral select plate of the alpha scale, never primary, so open and
    current cannot look alike (C30, R060); its first-level chevron is ⌃. */
-.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+.sf-menu#{$nav}.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
   --sf-menu-element--background-color: var(--sf-surface-state-select);
   /* A translucent fill, as the current row (C43 D4). */
   @include places.sf-place-fill(var(--sf-menu-element--background-color));
@@ -502,24 +528,24 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 
 /* A row's panels (R084): every level of the path has a medium label and the
    2px line on the panel's start border; the › stays neutral. */
-.sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
+.sf-menu#{$nav}.sf-menu--horizontal .sf-menu {
   @include path-weight($path-any);
   @include path-line($path-any);
 }
 
 /* A header row's current section (C30): the line on the header's edge, or
    with sf-menu--indicator-fill the C23 plate. The mixins are above the layer. */
-.sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill) {
+.sf-menu#{$nav}.sf-menu--horizontal:not(.sf-menu--indicator-fill) {
   @include row-current-line;
 }
 
-.sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill {
+.sf-menu#{$nav}.sf-menu--horizontal.sf-menu--indicator-fill {
   @include row-current-fill;
 }
 
-.sf-menu.sf-menu--navigation .sf-menu-element:disabled,
-.sf-menu.sf-menu--navigation .sf-menu-element.disabled,
-.sf-menu.sf-menu--navigation .sf-menu-element[aria-disabled='true'] {
+.sf-menu#{$nav} .sf-menu-element:disabled,
+.sf-menu#{$nav} .sf-menu-element.disabled,
+.sf-menu#{$nav} .sf-menu-element[aria-disabled='true'] {
   --sf-menu-element--background-color: var(--sf-transparent);
 }
 
@@ -527,7 +553,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    system's text colour instead, and the padding gives up its width as it does
    for the default row. The bar keeps its place in the system's highlight. */
 @media (forced-colors: active) {
-  .sf-menu.sf-menu--navigation .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+  .sf-menu#{$nav} .sf-menu-element:is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
     --sf-menu-element--border-width: var(--sf-px);
     --sf-menu-element--border-color: CanvasText;
   }
@@ -540,6 +566,17 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   list-style: none;
   margin: var(--sf-0);
   padding: var(--sf-0);
+}
+
+/* The tree that navigates is a menu's column (C129; C30 R083, C05; RG-NV 23):
+   its plates stand --sf-space-1/4 from the column's edge on both sides and
+   its words --sf-space-1/2 inside the plate -- 4 and 12, compact and phone 4
+   and 8 -- so the first level's words stay 16 (12) from the column's edge,
+   where they stood when the plate ran to the edge with the words 16 in. */
+.sf-menu.sf-menu--documentation-tree:not(.sf-menu .sf-menu) {
+  --sf-menu--inset: var(--sf-space-1\/4);
+  --sf-menu--border-width: calc(var(--sf-px) * 0);
+  padding-inline: var(--sf-menu--inset);
 }
 
 .sf-menu.sf-menu--documentation-tree .sf-menu-element {
@@ -562,7 +599,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
      wrap that takes the row's padding into its own box (sf-menu's split link)
      takes this padding too. */
   --sf-menu--wrap-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-menu-element--line-height, var(--sf-text-height-1))) / 2);
-  --sf-menu--wrap-padding-inline: var(--sf-space-1);
+  --sf-menu--wrap-padding-inline: var(--sf-space-1\/2);
   min-width: var(--sf-0);
 }
 
@@ -599,8 +636,26 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 /* The documentation tree marks its current page as navigation does (C23): the
    primary plate, on-primary-container words, a medium label; an open branch
    is not filled, and a closed branch that holds the current page has a
-   medium label (C30 amended, R065 a: no bar). */
-.sf-menu.sf-menu--documentation-tree [aria-current="page"] {
+   medium label (C30 amended, R065 a: no bar). The plate is the row's: a
+   section that is a page and has subsections -- its link inside the row
+   beside the chevron's button -- is filled across the whole row, chevron
+   included, and its words and chevron take on-primary-container (RG-NV 24;
+   the plate stood on the link alone, 216 of 256, with on-surface words). A
+   current link that is not a row's (a page's own markup) keeps the plate on
+   itself. */
+.sf-menu.sf-menu--documentation-tree .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], :has(> [aria-current='page'])) {
+  @include current-plate;
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element:is([aria-current='page'], :has(> [aria-current='page'])) :is(.sf-menu-element-icon, .sf-icon-button .sf-icon) {
+  --sf-icon--color: var(--sf-on-primary-container);
+}
+
+.sf-menu.sf-menu--documentation-tree .sf-menu-element > [aria-current='page'] {
+  color: inherit;
+}
+
+.sf-menu.sf-menu--documentation-tree [aria-current="page"]:not(.sf-menu-element, .sf-menu-element > *) {
   background: var(--sf-primary-container-active);
   color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
@@ -608,11 +663,7 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   @include places.sf-place-fill(var(--sf-primary-container-active));
 }
 
-.sf-menu.sf-menu--documentation-tree [aria-current="page"] .sf-menu-element-icon {
-  --sf-icon--color: var(--sf-on-primary-container);
-}
-
-.sf-menu.sf-menu--documentation-tree .sf-menu-element:is(.open, [aria-expanded='true']) {
+.sf-menu.sf-menu--documentation-tree .sf-menu-element:is(.open, [aria-expanded='true']):not([aria-current='page'], :has(> [aria-current='page'])) {
   --sf-menu-element--background-color: var(--sf-transparent);
 }
 
@@ -624,4 +675,75 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--inset);
 }
+}
+
+/* A section that is a page and has subsections, in a column or a panel (C30
+   R058, C224): the row (div.sf-menu-element) holds its link
+   (a.sf-menu-element-wrap) and the chevron's button side by side. sf-menu
+   draws it, and the class runtime makes it of a plain branch whose row is a
+   link (RG-NV 25). These rules lived in sf-menu's own sheet, so a plain menu
+   drew the pair without them. */
+@layer sf.components {
+  // A branch that is also a destination: its link is the row's words, drawn as
+  // the row draws them, and takes the row's focus ring inside its own box; the
+  // disclosure button beside it mirrors its glyph in RTL as the row's does.
+  .sf-menu .sf-menu-element > a.sf-menu-element-wrap {
+    color: inherit;
+    text-decoration: none;
+    border-radius: inherit;
+  }
+
+  .sf-menu .sf-menu-element > a.sf-menu-element-wrap:focus {
+    outline: none;
+  }
+
+  .sf-menu .sf-menu-element > a.sf-menu-element-wrap:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+
+  .sf-menu .sf-menu-element > button.sf-icon-button[aria-expanded='false']:dir(rtl) .sf-icon {
+    transform: scaleX(-1);
+  }
+
+  @media (forced-colors: active) {
+    .sf-menu .sf-menu-element > a.sf-menu-element-wrap:focus-visible {
+      outline: var(--sf-focus-outline-width) solid currentColor;
+    }
+  }
+
+  // The split control's link is the row's height (R179 D2): it takes the
+  // row's block padding into its own box, as the chevron beside it does, so
+  // a press anywhere on the row's line before the chevron is the link's --
+  // in the phone's drawer 44 tall, not the 20 of its words. It reaches the
+  // row's start edge the same way. The row's look does not move: the link
+  // draws no plate of its own. A look that draws the row's step inside the
+  // words' box (the documentation tree: --sf-menu--wrap-padding-*) keeps that
+  // padding too, so the split row stands on the step its plain rows stand on
+  // (C01, C18): it stood 24 among 40s, compact 20 among 32s.
+  .sf-menu .sf-menu-element:has(> a.sf-menu-element-wrap + button.sf-icon-button) > a.sf-menu-element-wrap {
+    align-self: stretch;
+    margin-block: calc(-1 * var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width))))) calc(-1 * var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))));
+    padding-block: calc(var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0))) calc(var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0)));
+    margin-inline-start: calc(-1 * var(--sf-menu-element--padding-inline-start, var(--sf-space-1)));
+    padding-inline-start: calc(var(--sf-menu-element--padding-inline-start, var(--sf-space-1)) + var(--sf-menu--wrap-padding-inline, calc(var(--sf-px) * 0)));
+  }
+
+  // Under a coarse pointer the split control's chevron in a column is a
+  // square of the row's height (44 x 44 in the phone's drawer, R179 D2; WCAG
+  // 2.5.8). It reaches the row's inner end edge and grows toward the link,
+  // its glyph kept where it stood (at the row's end padding, over the plain
+  // branches' glyphs), and the link keeps its room: the margins give back
+  // what the box grew. A row and its panels keep the class menu's own coarse
+  // width.
+  @media (pointer: coarse) {
+    .sf-menu.sf-menu:not(.sf-menu--horizontal):not(.sf-menu--horizontal .sf-menu) > .sf-menu-item > .sf-menu-element > a.sf-menu-element-wrap + button.sf-icon-button {
+      --sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + var(--sf-menu-element--padding-top, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + var(--sf-menu-element--padding-bottom, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width)))) + 2 * var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0)) + 2 * var(--sf-menu-element--border-width, var(--sf-px)));
+      --sf-menu--split-end: var(--sf-menu-element--padding-right, var(--sf-menu-element--padding-inline-end, var(--sf-space-1)));
+      text-align: end;
+      min-inline-size: var(--sf-menu--split-toggle);
+      padding-inline-end: var(--sf-menu--split-end);
+      margin-inline: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) - var(--sf-menu--split-toggle) + var(--sf-menu--split-end)) calc(-1 * var(--sf-menu--split-end));
+    }
+  }
 }

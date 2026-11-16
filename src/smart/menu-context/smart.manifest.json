@@ -1039,11 +1039,11 @@
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu.scss",
-        "sha256": "68f68787d5850081f754aebfd4af6a719e5ca1ddbfc27833a4bbdaf3cd64a4df"
+        "sha256": "b6294e567b3b658b2e1af297999e6bf44fcb6468e410938717ac841b9a0825b9"
       },
       {
         "path": "src/component/context-menu/scss/_css__context_menu_custom.scss",
-        "sha256": "b7f11bc99b50dd47f204947cf61be997ca3dacf739626738c173b33cc6acf479"
+        "sha256": "a12d3afed0d958931f3bfd7fff32d9058f0edf09a124e29b38ccca471c41b92b"
       }
     ],
     "generated_runtime": [

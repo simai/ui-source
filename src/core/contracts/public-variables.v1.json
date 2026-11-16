@@ -1556,7 +1556,7 @@
           "name": "--sf-menu-submenu-radius",
           "role": "radius",
           "summary": "A horizontal menu's panel corner radius.",
-          "default": "var(--sf-radius--ui)",
+          "default": "var(--sf-radius--surface)",
           "since": "2026-10-25",
           "varies_with": [
             "orientation"

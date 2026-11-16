@@ -75,7 +75,8 @@ test('menu composition: the documentation tree puts every row on the size 1 step
   const row = css.slice(css.indexOf('.sf-menu.sf-menu--documentation-tree .sf-menu-element {'));
   const rowBody = row.slice(0, row.indexOf('}'));
   assert.ok(rowBody.includes('--sf-menu--wrap-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-menu-element--line-height, var(--sf-text-height-1))) / 2);'));
-  assert.ok(rowBody.includes('--sf-menu--wrap-padding-inline: var(--sf-space-1);'));
+  // RG-NV 23 (C129, C30 R083): the plate stands 4 in, the text 12 inside it (16 from the edge).
+  assert.ok(rowBody.includes('--sf-menu--wrap-padding-inline: var(--sf-space-1\\/2);'));
   const wrap = css.slice(css.indexOf('.sf-menu.sf-menu--documentation-tree .sf-menu-element-wrap {'));
   const wrapBody = wrap.slice(0, wrap.indexOf('}'));
   assert.ok(wrapBody.includes('padding-block: var(--sf-menu--wrap-padding-block);'));

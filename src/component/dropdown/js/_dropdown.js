@@ -242,7 +242,10 @@ function createTagNode(root, item) {
   const tagType = isColorItem ? "color" : isAvatarItem ? "avatar" : "icon";
 
   const tag = document.createElement("div");
-  tag.className = `sf-tag transition sf-tag--${tagType} sf-tag--size-${tagSize} sf-tag--inline${tagSpacing} flex flex-row flex-nowrap items-center active`;
+  // A value's tag is the tag's own grey (owner decision C58: as
+  // sf-input-lookup's chips; RG-NV 18), not a pressed one: the active class
+  // drew it primary-container in both looks of the field.
+  tag.className = `sf-tag transition sf-tag--${tagType} sf-tag--size-${tagSize} sf-tag--inline${tagSpacing} flex flex-row flex-nowrap items-center`;
   tag.dataset.value = value;
   if (isDisabled) {
     tag.classList.add("disabled");
