@@ -21,6 +21,8 @@ states belong to `sf-view-table` (SIMAI Pro), not to these classes.
 | `.table-border` | Lines between the columns too. |
 | `.table-fixed`, `.table-auto` | `table-layout`. |
 | `.table-numeric` (inside `.table`) | The number column type: end aligned in the head and the cells, tabular digits, no wrap. |
+| `.table-key` (inside `.table`) | A key cell of a table with row actions (C259): on a phone (below 44rem) such a table keeps its check box, «≡» and the cells marked `.table-key` only, and stands outside `.table-frame`. Put it on the column's `<th>` and every `<td>`, as `.table-numeric`: the name, the status, the sum. |
+| `.table-key-line` (inside a `.table-key` cell) | The key cell's second line (C259): what the hidden columns say of the record, under its name (the client under an order), quiet and cut with an ellipsis. Shown only where the table keeps its key cells alone (on a phone); elsewhere that is a column of its own and the line is hidden. |
 
 ## The look (owner decision C146)
 
@@ -33,11 +35,12 @@ plain table and `sf-view-table`. What the classes draw:
 | (2) A quiet head | The head cells: the row's text, the medium weight, `--sf-on-surface-variant`, no fill of their own, the row's line under them. |
 | (3) The number column type | `.table-numeric` on the column's `<th>` and `<td>`s: end aligned, `tabular-nums`, `white-space: nowrap`. The unit goes in the head (`Сумма, ₽`). |
 | (4) Lines, hover and selected; zebra by choice | Lines between rows (`--sf-outline-variant`); the row under the pointer on the hover layer; a selected row (`.table-active`) on the select layer, also under the pointer; `.table-stripe` only when the author asks for it. |
-| (5) Row actions, variant В | The check box and the row menu «≡» stand in cells of their own at the row's start, each as narrow as its control; the main field (the name) is a plain `<a href>` that opens the record (a middle click and a new tab work), the link colour at rest, underlined under the pointer and on keyboard focus. The right button, the menu key / Shift+F10 and a long press open the same menu as «≡» (the page wires it, see Row actions). No quick buttons under the pointer; the same on a phone. |
+| (5) Row actions, variant В | The check box and the row menu «≡» stand in cells of their own at the row's start, each as narrow as its control; the main field (the name) is a plain `<a href>` that opens the record (a middle click and a new tab work), the link colour at rest, underlined under the pointer and on keyboard focus. The right button, the menu key / Shift+F10 and a long press open the same menu as «≡» (the page wires it, see Row actions). No quick buttons under the pointer; on a phone the row keeps its key cells (C259, below). |
 | (6) The sort mark only on the sorted column | The classes draw no sort mark. A table that sorts puts `aria-sort` and the mark on the sorted column's head only (see Sorting). |
 | (7) A name up to two lines, then an ellipsis and a tooltip | `.line-clamp-2` around the name in its cell, and the whole name in `title` (below). |
 | (8) A table with actions is a grid | Not in the classes: a plain table has no keys of its own. |
 | (9) On a phone a plain table scrolls in its frame, the first column still | `.table-frame` scrolls sideways and its first column (head and body) stands still. A table that can be wider than a phone stands in `.table-frame`. |
+| C259 (2026-11-16, variant Б): on a phone a table with row actions leaves the frame | Below 44rem (the md breakpoint, where the row menu is the sheet at the bottom, C164 (6)) a table whose body rows hold «≡» and that marks its key cells (`.table-key`) keeps the check box, «≡» and the key cells only: the name with its second line (`.table-key-line`), the status, the sum; every other cell, in the head and the body, goes, and the record shows it. A `.table-frame` around it draws nothing there: no border, no scroll, no gridlines, no still column. All actions stay in the one row menu (also the right button, the menu key and a long press). A plain table, and a table with actions that marks no key cell, keep every column (in the frame, scrolling: C146 (9)). |
 
 Badges in cells are tonal (C140): `<sf-badge appearance="tonal" scheme="success" text="Оплачен">`.
 
@@ -92,6 +95,7 @@ decision C18); the row's 1 px line is the one length taken off.
 | `.table` | size 1: 40 at 1440, 32 compact, 36 on a phone | the two-line rung, size 2: 48, 40, 44 | `--sf-space-1`: 16, 12 compact and phone (C77) | `--sf-space-1` (C105 H6), half on each cell |
 | `.table-sm` | size 1/2: 32, 28, 28 | two lines and the line: 48, 40, 40 | `max(--sf-space-1/2, --sf-b2)`: 12 (C77) | `--sf-space-1/2`, half on each cell |
 | `.table-frame` row and head | size 1: 40, 32, 36 | a wrapped reference text keeps the step's padding | `--sf-space-1` with the frame's border inside: 16, 12 | `--sf-space-1` on each cell, a gridline between |
+| `.table` with row actions on a phone (C259) | size 1: 36 | a name with its `.table-key-line`: the two-line rung, 44 | `--sf-space-1`: 12 | `--sf-space-1`, half on each cell |
 
 A `.table` row stands on its step: the step's control height is the cells'
 least height (`block-size`) and the content stands in the middle of the row
@@ -115,7 +119,12 @@ and its cells start at the top. The frame's public variables
 (`--sf-table-frame-head-padding-block`, `--sf-table-frame-cell-padding-block`,
 `--sf-table-frame-cell-padding-inline`, `--sf-table-frame-head-background`
 and the rest) default to the values above; a page sets them instead of writing
-rules.
+rules. A control cell (one check box or one icon button) and a head cell that
+holds only a name for a screen reader are as narrow as their content in the
+frame too, with the frame's cell padding around it (the frame's least cell
+width, `--sf-table-frame-cell-min-inline-size`, is for words): at 1440 the
+check box and «≡» columns are 56 and 65, at 390 44 and 53 (they were 80 and
+80).
 
 A bare `.table` is as wide as its columns: on a phone a table with a number
 column (which never wraps) can be wider than the screen. Put any table that
@@ -185,7 +194,7 @@ menu «≡» stands at the start of the row, after the check box, in the same
 place at any number of columns; the main field (the name) is a link that opens
 the record to view or edit it; the right button opens the same menu as «≡».
 There are no quick buttons under the pointer: opening is the link, the rest is
-in the menu. The same on a phone.
+in the menu. On a phone the row keeps its key cells (C259, below).
 
 What the classes do: a cell that holds one check box or one icon button and
 nothing else is as narrow as its control (low in weight, so a column width the
@@ -205,43 +214,59 @@ The markup:
   `.table-sm` `size="1/2" height="low"`); the head cell above it holds the
   column's name for a screen reader only (`<span class="sr-only">Действия</span>`);
 - the name: a plain `<a href>` to the record, so a middle click and «open in a
-  new tab» work.
+  new tab» work;
+- the row: `aria-selected="false"` on every body `<tr>` (a row that can be
+  selected), `"true"` while its check box is on;
+- the key cells (C259): `.table-key` on the head and body cells of the columns
+  a phone keeps (the name, the status, the sum), and under the name a
+  `<span class="table-key-line">` with what the hidden columns say of the
+  record (the client). A table that marks no key cell keeps every column on a
+  phone.
 
 Tab goes check box, «≡», name in each row. A table that needs keys across the
 cells (one Tab stop, arrows, C146 (8)) is `sf-view-table`.
 
 ```html
-<table class="table" id="orders">
-  <caption class="sr-only">Заказы</caption>
-  <thead><tr>
-    <th scope="col"><sf-checkbox aria-label="Выбрать все"></sf-checkbox></th>
-    <th scope="col"><span class="sr-only">Действия</span></th>
-    <th scope="col">Заказ</th>
-    <th scope="col">Статус</th>
-    <th scope="col" class="table-numeric">Сумма, ₽</th>
-  </tr></thead>
-  <tbody>
-    <tr>
-      <td><sf-checkbox aria-label="Выбрать № 1001"></sf-checkbox></td>
-      <td><sf-button-icon icon="menu" height="low" appearance="ghost" scheme="on-surface-variant" aria-label="Действия: № 1001"></sf-button-icon></td>
-      <td><a href="/orders/1001">№ 1001</a></td>
-      <td><sf-badge appearance="tonal" status="success" text="Оплачен"></sf-badge></td>
-      <td class="table-numeric">12 400,00</td>
-    </tr>
-  </tbody>
-</table>
-<sf-menu-context id="orders-menu" popup aria-label="Действия с заказом"></sf-menu-context>
+<div class="table-frame">
+  <table class="table" id="orders">
+    <caption class="sr-only">Заказы</caption>
+    <thead><tr>
+      <th scope="col"><sf-checkbox aria-label="Выбрать все"></sf-checkbox></th>
+      <th scope="col"><span class="sr-only">Действия</span></th>
+      <th scope="col" class="table-key">Заказ</th>
+      <th scope="col">Клиент</th>
+      <th scope="col">Дата</th>
+      <th scope="col" class="table-key">Статус</th>
+      <th scope="col" class="table-key table-numeric">Сумма, ₽</th>
+    </tr></thead>
+    <tbody>
+      <tr aria-selected="false">
+        <td><sf-checkbox aria-label="Выбрать № 1001"></sf-checkbox></td>
+        <td><sf-button-icon icon="menu" height="low" appearance="ghost" scheme="on-surface-variant" aria-label="Действия: № 1001"></sf-button-icon></td>
+        <td class="table-key"><a href="/orders/1001">№ 1001</a><span class="table-key-line">ООО «Северный ветер»</span></td>
+        <td>ООО «Северный ветер»</td>
+        <td>14.11.2026</td>
+        <td class="table-key"><sf-badge appearance="tonal" status="success" text="Оплачен"></sf-badge></td>
+        <td class="table-key table-numeric">12 400,00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<sf-menu-context id="orders-menu" popup for="orders" aria-label="Действия с заказом"></sf-menu-context>
 ```
 
-The menu is one `sf-menu-context` for the table, opened at the row's «≡» by
-every way in (C164 (1), (2)): «≡» itself, the right button, the menu key and
-Shift+F10 on a control of the row, and a long press on a touch screen. The
-link and the check box keep the browser's own menu, and so does Shift with the
-right button. On a selected row the menu acts on every selected row («Выбрано
-N»); on another row it first selects that row alone (C164 (3)). «Удалить» is
-last, after a line, in the danger colour, and asks before it deletes (C164
-(5), C13, C25); an action that cannot be done stays in the list, dimmed, with
-its reason (C164 (4)).
+The menu is one `sf-menu-context` for the table, the page's menu of the
+table's rows: its `for` names the table, so the right button, the menu key and
+Shift+F10 on a control of the row, and a long press on a touch screen open it
+at the row (C164 (1)); «≡» opens the same menu with `toggleFor()`, and one
+`sf-menu-context-open` listener gives the entries for every way in (C164 (2)).
+The link and the check box keep the browser's own menu, and so does Shift with
+the right button. On a selected row the menu acts on every selected row
+(«Выбрано N»); on another row it first selects that row alone (C164 (3)), and
+the page sets the check boxes to match. «Удалить» is last, after a line, in
+the danger colour, and asks before it deletes (C164 (5), C13, C25); an action
+that cannot be done stays in the list, dimmed, with its reason (C164 (4)). On
+a phone the menu is the sheet at the bottom (C164 (6)).
 
 ```js
 customElements.whenDefined('sf-menu-context').then(() => {
@@ -249,73 +274,48 @@ customElements.whenDefined('sf-menu-context').then(() => {
   const menu = document.getElementById('orders-menu');
   const rows = () => [...table.tBodies[0].rows];
   const check = (tr) => tr.querySelector('sf-checkbox');
-  const select = (tr, on) => { check(tr).checked = on; tr.classList.toggle('table-active', on); };
   const name = (tr) => tr.querySelector('a[href]').textContent.trim();
-  // C164 (3): a selected row acts for every selected row; another row is selected alone.
-  const target = (tr) => {
-    if (check(tr).checked) return rows().filter((row) => check(row).checked);
-    for (const row of rows()) select(row, row === tr);
-    return [tr];
-  };
-  const entries = (list) => [
-    {type: 'heading', text: list.length > 1 ? `Выбрано ${list.length}` : `Заказ ${name(list[0])}`},
-    ...(list.length > 1 ? [] : [{id: 'edit', text: 'Изменить', icon: 'edit'}]),
-    {id: 'copy', text: 'Дублировать', icon: 'content_copy'},
-    {type: 'separator'},
-    {id: 'delete', text: 'Удалить', icon: 'delete', danger: true},
-  ];
-  const open = (tr, toggle = false) => {
-    const more = tr.querySelector('sf-button-icon[icon="menu"]');
-    const anchor = more.querySelector('button') || more;
-    menu.entries = entries(target(tr));
-    return toggle ? menu.toggleFor(anchor) : menu.openFor(anchor);
-  };
-  const own = (node) => node.closest('a[href], input, sf-checkbox'); // the browser's menu stays there
-  let press = null;
+  // One list for «≡», the right button, the menu key and a long press (C164 (2)).
+  menu.addEventListener('sf-menu-context-open', (event) => {
+    const {targets} = event.detail;
+    if (!targets.length) return;
+    // C164 (3): the menu selects an unselected row alone; the check boxes follow.
+    for (const row of rows()) check(row).checked = targets.includes(row);
+    menu.entries = [
+      {type: 'heading', text: targets.length > 1 ? `Выбрано ${targets.length}` : `Заказ ${name(targets[0])}`},
+      ...(targets.length > 1 ? [] : [{id: 'edit', text: 'Изменить', icon: 'edit'}]),
+      {id: 'copy', text: 'Дублировать', icon: 'content_copy'},
+      {type: 'separator'},
+      {id: 'delete', text: 'Удалить', icon: 'delete', danger: true},
+    ];
+  });
   table.addEventListener('click', (event) => {
-    if (press?.fired) { event.preventDefault(); press = null; return; }
-    const tr = event.target.closest('sf-button-icon[icon="menu"]')?.closest('tbody tr');
-    if (tr) open(tr, true);
+    const more = event.target.closest('sf-button-icon[icon="menu"]');
+    if (more?.closest('tbody tr')) menu.toggleFor(more.querySelector('button') ?? more);
   });
-  table.addEventListener('contextmenu', (event) => {
-    const tr = event.target.closest('tbody tr');
-    if (press?.fired) { event.preventDefault(); return; }
-    if (!tr || event.shiftKey || own(event.target)) return;
-    event.preventDefault();
-    open(tr);
-  });
-  table.addEventListener('keydown', (event) => {
-    if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return;
-    const tr = event.target.closest('tbody tr');
-    if (!tr || own(event.target)) return;
-    event.preventDefault();
-    open(tr);
-  });
-  // A long press (500 ms, the finger still): not every phone browser turns it into contextmenu.
-  table.addEventListener('pointerdown', (event) => {
-    const tr = event.target.closest('tbody tr');
-    if (event.pointerType !== 'touch' || !tr || own(event.target)) return;
-    press = {x: event.clientX, y: event.clientY, fired: false};
-    press.timer = setTimeout(() => { press.fired = true; open(tr); }, 500);
-  });
-  table.addEventListener('pointermove', (event) => {
-    if (press && !press.fired && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 10) { clearTimeout(press.timer); press = null; }
-  });
-  for (const type of ['pointerup', 'pointercancel']) {
-    table.addEventListener(type, () => { if (press && !press.fired) { clearTimeout(press.timer); press = null; } });
-  }
   table.addEventListener('change', (event) => {
-    const tr = event.target.closest('tr');
-    const on = Boolean(event.target.closest('sf-checkbox')?.checked);
-    if (tr?.parentElement === table.tBodies[0]) tr.classList.toggle('table-active', on);
-    else if (tr) for (const row of rows()) select(row, on);
+    const box = event.target.closest('sf-checkbox');
+    if (!box) return;
+    const tr = box.closest('tr');
+    if (tr.parentElement === table.tBodies[0]) tr.setAttribute('aria-selected', String(box.checked));
+    else for (const row of rows()) { check(row).checked = box.checked; row.setAttribute('aria-selected', String(box.checked)); }
   });
 });
 ```
 
-Keep a table with row actions as `.table`, not in `.table-frame`: the frame is
-a reading table, its first column (here the check box) is the one that stands
-still, and its gridlines would stand between the check box and «≡».
+#### On a phone: the key cells (C259)
+
+Below 44rem a table with row actions that marks its key cells keeps the check
+box, «≡» and the `.table-key` cells, head and body alike; the other cells go,
+and the record, opened from the name, shows them. The name takes the width the
+others leave and ends in an ellipsis, its `.table-key-line` quiet under it, and
+with that line the row stands on the two-line rung (44). A `.table-frame`
+around such a table draws nothing on a phone (no border, no scroll, no
+gridlines, no still column), so the same markup is framed on a desktop and
+plain on a phone; at 390 the table is as wide as its place and the page does
+not scroll sideways. A table with actions that marks no key cell keeps every
+column and, in a frame, scrolls as a plain table does (C146 (9)); in the frame
+its check box and «≡» columns are as narrow as their controls.
 
 ### Sorting
 

@@ -17,7 +17,9 @@
 // the numbers once, from the ladder, and a page that needs other ones sets the
 // public variables instead of writing rules.
 
-    .table-frame {
+    // The frame's rules, laid twice below: on every frame but one of a table
+    // with row actions on a phone, and on that one from the md width up.
+    @mixin frame {
         /* The public variables of .table-frame; the head fill,
            --sf-table-frame-head-background, defaults on the head cells to
            the frame's own background: no fill of its own. */
@@ -67,6 +69,17 @@
                 border-block-end: var(--sf-px) solid var(--sf-table-frame-border-color);
                 text-align: start;
                 vertical-align: top;
+            }
+
+            // A control cell (the row's check box, its «≡») is as narrow as
+            // its control with the frame's own cell room around it, and so
+            // is a head cell that holds only a name for a screen reader (the
+            // «Действия» column's): the frame's least cell width is for
+            // words, not controls (it held both columns at 80, DEV
+            // msg-85307787).
+            > :not(caption) > * > #{$table-control-cell},
+            > :not(caption) > * > :has(> .sr-only:only-child) {
+                min-inline-size: var(--sf-0);
             }
 
             // The frame's border is inside the table's edge inset (C77,
@@ -140,6 +153,22 @@
                 font-weight: var(--sf-weight--medium);
                 vertical-align: bottom;
             }
+        }
+    }
+
+    // A table with row actions leaves the frame on a phone (owner decision
+    // C259): below the md width a frame around such a table
+    // ($table-frame-keyed-actions: its rows hold «≡» and it names its key cells)
+    // draws nothing, and the table stands as the class .table draws it, its
+    // key cells alone (utility.table). Both conditions are weightless
+    // (:where), so a rule that reaches the frame weighs what it did.
+    .table-frame:not(:where(#{$table-frame-keyed-actions})) {
+        @include frame;
+    }
+
+    @media (min-width: $table-phone-min) {
+        .table-frame:where(#{$table-frame-keyed-actions}) {
+            @include frame;
         }
     }
 }
