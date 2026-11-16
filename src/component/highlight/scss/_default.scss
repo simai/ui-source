@@ -7,8 +7,19 @@
     display: block;
   }
 
+  /* A row carries the block's side room (the inset of the code surface,
+     --sf-space-1: 16 on a desktop, 12 on a phone), not the scroller, so a
+     row's fill -- a changed or a marked line -- reaches the block's edges
+     (study F3, 2026-11-16). The scroller of a block with rows keeps its top
+     and bottom room only. */
   .sf-code-line {
     display: flex;
+    padding-inline: var(--sf-space-1);
+  }
+
+  :is(.sf-highlight__wrap, .sf--highlight-wrap) > .sf-scrollbar__viewport:has(> code > .sf-code-lines),
+  .sf-code-surface__scroll:has(> code > .sf-code-lines) {
+    padding-inline: 0;
   }
 
   .sf-code-line__number {
@@ -24,6 +35,87 @@
     flex: 1 1 auto;
     min-inline-size: 0;
     white-space: pre;
+  }
+
+  /* A wrapped line keeps its number, sign and prompt on its first line. */
+  :is(.sf-code-line__number, .sf-code-line__sign, .sf-code-line__prompt) {
+    align-self: flex-start;
+  }
+
+  /* Changed lines (owner decision C255): the row's tint and a sign, two
+     cues, colour and shape (C12). The tints are the roles the diff language
+     already paints with (success and error containers, 12 / 24 %), the code
+     on them holds 4.5:1; the sign stands in a column of its own two
+     characters wide, drawn by the stylesheet so it is neither copied nor
+     selected, and a screen reader hears the word before the line instead. */
+  .sf-code-line__sign {
+    flex: none;
+    inline-size: 2ch;
+    user-select: none;
+  }
+
+  .sf-code-line[data-line-diff='add'] {
+    background: var(--sf-highlight-addition-background);
+  }
+
+  .sf-code-line[data-line-diff='remove'] {
+    background: var(--sf-highlight-deletion-background);
+  }
+
+  .sf-code-line[data-line-diff='add'] > .sf-code-line__sign::before {
+    content: '+' / '';
+    color: var(--sf-success);
+  }
+
+  .sf-code-line[data-line-diff='remove'] > .sf-code-line__sign::before {
+    content: '\2212' / '';
+    color: var(--sf-error);
+  }
+
+  /* Marked and focused lines (C256): a light fill, the primary container
+     (12 % light, 24 % dark), and a 2 px bar at the line's start in primary
+     -- a second cue that leaves the code's contrast alone. Focus is drawn
+     the same: the other lines are neither dimmed nor blurred. */
+  .sf-code-line:is([data-line-mark], [data-line-focus]) {
+    /* The bar is a background layer, not an inset shadow (a shadow is the
+       retired focus ring's tool); code runs left to right here (direction:
+       ltr on the scroller), so its start is the left edge. */
+    background:
+      linear-gradient(var(--sf-primary), var(--sf-primary)) left / calc(2 * var(--sf-px)) 100% no-repeat,
+      var(--sf-primary-container);
+  }
+
+  /* A terminal (C257): the frame is the code block of the site's theme; a
+     command's prompt is the stylesheet's, in a column of its own, so copy
+     takes the command alone, and the output is in the place's dim ink. */
+  .sf-code-line__prompt {
+    flex: none;
+    inline-size: 2ch;
+    color: var(--sf-highlight--punctuation, var(--sf-on-surface-variant));
+    user-select: none;
+  }
+
+  .sf-code-line__prompt::before {
+    content: '$' / '';
+  }
+
+  .sf-code-line[data-line-output] > .sf-code-line__content {
+    padding-inline-start: 2ch;
+    color: var(--sf-highlight--comment, var(--sf-on-surface-variant));
+
+    * {
+      color: inherit;
+    }
+  }
+
+  .sf-highlight--terminal .sf-highlight__language {
+    display: inline-flex;
+    align-items: center;
+    column-gap: var(--sf-space-1\/3);
+
+    .sf-icon {
+      color: var(--sf-on-surface-icon, var(--sf-on-surface-variant));
+    }
   }
 
   .sf {
@@ -79,6 +171,7 @@
 
   /* The copy status is read aloud and never shown; hidden here for the same
      reason, not through the optional sr-only utility. */
+  .sf-code-line__state,
   .sf-highlight__status {
     position: absolute;
     inline-size: var(--sf-px);
@@ -201,7 +294,10 @@
     vertical-align: top;
 
     div {
-      border-inline-end: var(--sf-px) solid var(--sf-highlight-line-divider);
+      /* --sf-highlight-line-divider is read here only, as an alias of the
+         edge colour until 2027-01-01: the quiet number column (C254) has no
+         line, and the role is no longer declared. */
+      border-inline-end: var(--sf-px) solid var(--sf-highlight-line-divider, var(--sf-outline-variant));
       padding-inline-end: var(--sf-a5);
     }
 

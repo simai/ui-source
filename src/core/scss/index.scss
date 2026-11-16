@@ -34,6 +34,8 @@
 // after the ladder: a region's density re-declares its steps
 @use 'sf_css__density';
 @use 'sf_css__link';
+// the code palette (roles of component.highlight, read at first paint)
+@use 'sf_css__code_palette';
 // fix bottom
 @use 'sf_css__breakpoint';
 // fix bottom

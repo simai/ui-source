@@ -40,19 +40,26 @@ test('places declare the three hooks; the page declares none', async () => {
 
 test('every highlight role is read through a place hook, falling back to the page role', async () => {
   const theme = await read('src/component/highlight/scss/_theme.scss');
-  const own = block(theme, ':is(.sf-code-surface, .hljs) {');
+  // The roles and their place hooks are core's since 1.7.0 (DEV msg-75ee8dec),
+  // so pre-coloured code reads them with core.css alone.
+  const palette = await read('src/core/scss/_sf_css__code_palette.scss');
+  const own = block(palette, ':is(.sf-code-surface, .hljs) {');
   assert.match(own, /--sf-highlight--text: var\(--sf-place--ink, var\(--sf-highlight-text\)\);/u);
   for (const role of ['comment', 'punctuation', 'line-number']) {
     assert.match(own, new RegExp(`--sf-highlight--${role}: var\\(--sf-place--ink-variant, var\\(--sf-highlight-${role}\\)\\);`, 'u'));
   }
-  for (const role of ['keyword', 'title', 'attribute', 'string', 'built-in', 'tag', 'section', 'bullet', 'addition', 'deletion']) {
+  for (const role of ['keyword', 'title', 'attribute', 'number', 'property', 'operator', 'variable', 'string', 'built-in', 'tag', 'section', 'bullet', 'addition', 'deletion']) {
     assert.match(own, new RegExp(`--sf-highlight--${role}: var\\(--sf-place--ink, var\\(--sf-highlight-${role}\\)\\);`, 'u'));
     assert.match(theme, new RegExp(`color: var\\(--sf-highlight--${role}\\);`, 'u'));
   }
   // No token is painted from a root-resolved role any more.
   assert.doesNotMatch(theme, /color: var\(--sf-highlight-(text|comment|keyword|title|attribute|string|built-in|tag|section|bullet|punctuation|addition|deletion)\);/u);
   // The page roles stay on the theme root, as a project overrides them.
-  assert.match(theme, /--sf-highlight-comment: var\(--sf-on-surface-variant\);/u);
+  assert.match(palette, /--sf-highlight-comment: var\(--sf-on-surface-variant\);/u);
+  // The new token roles are aliases of the attribute role, no new hue.
+  for (const role of ['number', 'property', 'operator', 'variable']) {
+    assert.match(palette, new RegExp(`--sf-highlight-${role}: var\\(--sf-highlight-attribute\\);`, 'u'));
+  }
   const surface = await read('src/component/highlight/scss/_default.scss');
   assert.match(surface, /background: var\(--sf-highlight-background-color, var\(--sf-place--fill-surface, var\(--sf-surface-container\)\)\);/u);
   assert.match(surface, /color: var\(--sf-highlight--line-number\);/u);

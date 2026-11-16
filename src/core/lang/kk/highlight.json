@@ -9,15 +9,18 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 3,
-    "translated": 3,
+    "words": 6,
+    "translated": 6,
     "share": 100
   },
   "words": {
     "sf-highlight": {
       "copy": "Кодты көшіру",
       "copied": "Код көшірілді",
-      "wrap": "Жолдарды тасымалдау"
+      "wrap": "Жолдарды тасымалдау",
+      "added": "қосылды",
+      "removed": "жойылды",
+      "terminal": "Терминал"
     }
   }
 }
