@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.transform-rotate",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/transform-rotate/default/index.js",
@@ -18,7 +18,7 @@
     "src/utility/transform-rotate/hover/scss/_sf_css__transform_rotate.scss",
     "src/utility/transform-rotate/hover/scss/index.scss"
   ],
-  "content_sha256": "dd6d964d1a024db9a86e3f188b5dde604b01bfaa89ea0abaeebe88e6ee2f61fb",
+  "content_sha256": "f0b2c8d6c2706d38fe046f649c084fcfe91135022c5dd1f8be468cd379fb3e6d",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
