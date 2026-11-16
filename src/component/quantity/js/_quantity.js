@@ -339,6 +339,25 @@ function syncDisabledState(root) {
   };
   limit(minusButton, Number.isFinite(value) && Number.isFinite(min) && value <= min);
   limit(plusButton, Number.isFinite(value) && Number.isFinite(max) && value >= max);
+  syncSpinbutton(input, value, min, max);
+}
+
+// The number is a spin button, as sf-input-quantity draws it
+// (smart/input-quantity/js/templates/default.js): role, its limits, the value
+// as a number and as the words shown. C19: the class field owns this, the
+// Smart field only repeats it. A native number input is a spin button by
+// itself and keeps its own role.
+function syncSpinbutton(input, value, min, max) {
+  if (input.type !== 'number') input.setAttribute('role', 'spinbutton');
+  const set = (name, present, text) => {
+    if (present) input.setAttribute(name, text);
+    else input.removeAttribute(name);
+  };
+  set('aria-valuemin', Number.isFinite(min), String(min));
+  set('aria-valuemax', Number.isFinite(max), String(max));
+  set('aria-valuenow', Number.isFinite(value), String(value));
+  const shown = input.value.trim();
+  set('aria-valuetext', Number.isFinite(value) && shown !== '' && shown !== String(value), shown);
 }
 
 function adjustValue(root, deltaSign) {
@@ -385,11 +404,19 @@ function bindQuantity(root) {
   const input = root.querySelector('.sf-quantity-wrap input');
   if (!input) return;
 
+  // The help or error line under the box is tied to the number for a screen
+  // reader, as sf-input's and sf-textarea's are (C55): aria-describedby, and
+  // aria-errormessage while the line is an error.
+  const messageNode = root.querySelector('.sf-quantity-hint-text-wrap');
   syncFieldContract(root, input, {
     prefix: 'sf-quantity',
     labelNode: root.querySelector('.sf-quantity-text'),
     required: input.required || Boolean(root.querySelector('.sf-quantity-required')),
     invalid: root.classList.contains('error') || input.classList.contains('error'),
+    messageNode,
+    errorMessage: messageNode?.dataset.fieldMessage === 'error'
+      ? messageNode.textContent?.trim() || ''
+      : '',
   });
 
   const { minusButton, plusButton } = getButtons(root);
@@ -510,8 +537,15 @@ function bindQuantity(root) {
   const pointerFocusHandler = () => {
     root.classList.add('sf-quantity--pointer-focus');
   };
-  const keyboardFocusHandler = () => {
+  const keyboardFocusHandler = (event) => {
     root.classList.remove('sf-quantity--pointer-focus');
+    // A spin button steps with the arrow keys (RG-QT-2), as sf-input-quantity
+    // does: Up adds the step, Down takes it away, within min and max.
+    if (event?.target !== input || event.altKey || event.ctrlKey || event.metaKey) return;
+    const direction = event.key === 'ArrowUp' ? 1 : event.key === 'ArrowDown' ? -1 : 0;
+    if (!direction) return;
+    event.preventDefault();
+    adjustValue(root, direction);
   };
   const focusOutHandler = (event) => {
     if (event.relatedTarget) {
@@ -561,7 +595,7 @@ function bindQuantity(root) {
   });
   root.__sfQuantityControlObserver = new MutationObserver(() => syncDisabledState(root));
   root.__sfQuantityControlObserver.observe(input, {
-    attributes: true, attributeFilter: ['disabled', 'readonly'],
+    attributes: true, attributeFilter: ['disabled', 'readonly', 'min', 'max'],
   });
   root.dataset[BOUND_FLAG] = '1';
 

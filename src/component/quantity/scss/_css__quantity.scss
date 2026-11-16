@@ -175,19 +175,20 @@
 .sf-quantity.sf-quantity--size-1 .sf-quantity-wrap {
   --sf-quantity-wrap--block-size: var(--sf-ui-1--control-height);
   --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-quantity--number-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-quantity--number-height)) / 2 - var(--sf-px)));
   --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
 }
 
 /* The stepper is the control one rung below the field and its glyph the
    field's own icon, as sf-input draws its icon at the same size (QT-03): the
-   padding is what the rung leaves around that glyph. */
+   padding is what the rung leaves around that glyph. The rung is the
+   stepper's height, --sf-quantity--number-height (below). */
 .sf-quantity.sf-quantity--size-1 .sf-quantity-count {
-  --sf-icon-button--padding-bottom: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
-  --sf-icon-button--padding-inline-end: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
-  --sf-icon-button--padding-inline-start: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
-  --sf-icon-button--padding-top: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-bottom: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-inline-end: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-inline-start: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-top: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
 }
 
 .sf-quantity.sf-quantity--size-1 .sf-icon {
@@ -488,7 +489,12 @@
     transition-timing-function: var(--sf-animation);
   }
 
-  .sf-quantity.sf-quantity--size-1 { --sf-quantity--number-height: var(--sf-ui-1\/2--control-height); }
+  /* Size 1's stepper is the field less 4 on each side (--sf-space-1/4): 32 in
+     a 40 field, 28 in a phone's 36 -- the 1/2 control, as before. In a
+     compact region C79 brings the field down to 32 and the 1/2 control to 28,
+     which left 2 to the frame; the stepper is 24 there, as plain 1/2's of
+     the same 32 height (RG-QT-4). */
+  .sf-quantity.sf-quantity--size-1 { --sf-quantity--number-height: calc(var(--sf-ui-1--control-height) - 2 * var(--sf-space-1\/4)); }
   .sf-quantity.sf-quantity--size-2 { --sf-quantity--number-height: var(--sf-ui-1--control-height); }
   .sf-quantity.sf-quantity--size-1\/2 { --sf-quantity--number-height: var(--sf-icon-size-3); }
 
@@ -530,19 +536,23 @@
     text-align: start;
   }
 
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1 .sf-quantity-row > .sf-quantity-wrap {
-    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x) - var(--sf-space-1\/4)));
-    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x) - var(--sf-space-1\/4)));
+  /* The number starts where sf-input's value does (C77, C153 (7)): the
+     step's inset from the outer edge, the border counted inside it, with
+     the same corner correction (field-ladder.inset; 12 / 16 / 20, compact
+     12 / 12 / 16, phone 12). The box's border and the number's own 4
+     (--sf-space-1/4) come off it. It stood at the step's space-x plus its
+     text step: 25 at 1, 21 on a phone. */
+  @each $size in ladder.$sizes {
+    .sf-quantity.sf-quantity--steppers-none.#{ladder.size-class('sf-quantity', $size)} {
+      --sf-quantity--line-radius: min(var(--sf-quantity-radius, var(--sf-radius--ui)), #{ladder.height($size)} / 2);
+      @include ladder.inset(--sf-quantity--inset, $size);
+    }
   }
 
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-2 .sf-quantity-row > .sf-quantity-wrap {
-    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x) - var(--sf-space-1\/4)));
-    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x) - var(--sf-space-1\/4)));
-  }
-
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1\/2 .sf-quantity-row > .sf-quantity-wrap {
-    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x) - var(--sf-space-1\/4)));
-    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x) - var(--sf-space-1\/4)));
+  .sf-quantity.sf-quantity--steppers-none:is(.sf-quantity--size-1\/3, .sf-quantity--size-1\/2, .sf-quantity--size-1, .sf-quantity--size-2, .sf-quantity--size-3) .sf-quantity-row > .sf-quantity-wrap {
+    --sf-quantity--value-inset: calc(var(--sf-quantity--inset) + max(calc(var(--sf-px) * 0), var(--sf-quantity--line-radius) - var(--sf-radius-1\/2)) / 2);
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-quantity--value-inset) - var(--sf-px) - var(--sf-space-1\/4)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-quantity--value-inset) - var(--sf-px) - var(--sf-space-1\/4)));
   }
 
   /* The inherited marker and reset stand after the box, on its row (F3):
@@ -665,13 +675,24 @@
       --sf-icon-button--padding-inline-end: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
       --sf-icon-button--padding-inline-start: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
       --sf-icon-button--padding-top: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
+
+      // The phone's icon at 3 is the icon ladder's 28 (field-ladder.icon), not
+      // the 24 text line: the stepper keeps its height round the larger glyph.
+      @if $size == '3' {
+        @media not all and (min-width: 60rem) {
+          --sf-icon-button--padding-bottom: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+          --sf-icon-button--padding-inline-end: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+          --sf-icon-button--padding-inline-start: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+          --sf-icon-button--padding-top: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+        }
+      }
     }
 
+    /* The icon of the step, a step down on a phone (field-ladder.icon,
+       C151): 28 at 3 there, not the 24 of the text line. */
     .sf-quantity.#{$class} .sf-icon,
     .sf-quantity.#{$class} .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
-      --sf-icon--font-size: #{ladder.text-height($size)};
-      --sf-icon--height: #{ladder.text-height($size)};
-      --sf-icon--width: #{ladder.text-height($size)};
+      @include ladder.icon($size);
     }
 
     .sf-quantity.#{$class} input {
@@ -688,10 +709,6 @@
       --sf-quantity-wrap--border-color: var(--sf-primary-active);
     }
 
-    .sf-quantity.sf-quantity--steppers-none.#{$class} .sf-quantity-wrap {
-      --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(#{ladder.ui($size, space-x)} + #{ladder.ui($size, text-space-x)} - var(--sf-space-1\/4)));
-      --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(#{ladder.ui($size, space-x)} + #{ladder.ui($size, text-space-x)} - var(--sf-space-1\/4)));
-    }
   }
 }
 

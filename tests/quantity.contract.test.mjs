@@ -222,7 +222,9 @@ test('quantity: the public variables wrap the values the class sheet drew before
   // control's, not a stepper's).
   // The glyph is the field's own icon, as sf-input draws it at the same size
   // (QT-03): the stepper padding is what its box leaves around that glyph.
-  const stepperBox = {'1/2': ['var(--sf-icon-size-3)']};
+  // Size 1's stepper is the field less 4 a side (--sf-quantity--number-height),
+  // so a compact region keeps the 4 too (fields IN-1, RG-QT-4).
+  const stepperBox = {'1/2': ['var(--sf-icon-size-3)'], '1': ['var(--sf-quantity--number-height)']};
   for (const [size, down] of [['1', '1\\/2'], ['2', '1'], ['1\\/2', '1\\/3']]) {
     const [inner] = stepperBox[size.replace('\\', '')] || [`var(--sf-ui-${down}--control-height)`];
     const pad = `calc((${inner} - var(--sf-text-height-${size})) / 2)`;
@@ -253,7 +255,7 @@ test('quantity: read-only is sf-input\'s read-only look and changes nothing (C16
   // The same rule and tokens as sf-input's read-only field: no fill, the
   // region line (outline-variant) for the edge, the value in full ink.
   const inputSheet = read('src/component/inputs/scss/_css__inputs.scss');
-  const inputRule = inputSheet.slice(inputSheet.indexOf('.sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {')).split('}')[0];
+  const inputRule = inputSheet.slice(inputSheet.indexOf('.sf-input:not(.error):is(.sf-input--bordered, .sf-input--filled):has(input:read-only:not(:disabled)) .sf-input-field {')).split('}')[0];
   assert.ok(inputRule.includes('--sf-input-field--background-color: var(--sf-transparent);'));
   assert.ok(inputRule.includes('--sf-input-field--border-color: var(--sf-outline-variant);'));
   // The read-only ground is set on the internal name, after the base rule, so
@@ -288,7 +290,7 @@ test('quantity: read-only is sf-input\'s read-only look and changes nothing (C16
   // read-only, and a step or a typed character does nothing.
   assert.match(classSource, /const isDisabled = Boolean\(input\.disabled \|\| input\.readOnly\);/u);
   assert.match(classSource, /function adjustValue\(root, deltaSign\) \{\n  const input = root\.querySelector\('\.sf-quantity-wrap input'\);\n  if \(!input \|\| input\.disabled \|\| input\.readOnly\) return;/u);
-  assert.match(classSource, /attributeFilter: \['disabled', 'readonly'\]/u);
+  assert.match(classSource, /attributeFilter: \['disabled', 'readonly', 'min', 'max'\]/u);
   // The documentation says so.
   const docs = read('src/component/quantity/docs/docs.md');
   assert.match(docs, /no fill \(`--sf-transparent`, also over\n`--sf-quantity-background-color`/u);

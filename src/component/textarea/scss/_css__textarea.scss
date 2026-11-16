@@ -352,9 +352,13 @@
   outline-offset: var(--sf-focus--inset);
 }
 
-.sf-textarea:not(.error).sf-textarea--bordered:has(textarea:read-only:not(:disabled)) textarea {
+/* A read-only field is not filled (C16): no plate, the line of a region for
+   its edge, in both looks -- the filled one drops its plate and its bottom
+   line too, as sf-input's. */
+.sf-textarea:not(.error):is(.sf-textarea--bordered, .sf-textarea--filled):has(textarea:read-only:not(:disabled)) textarea {
   --sf-textarea-textarea--background-color: var(--sf-transparent);
   --sf-textarea-textarea--border-color: var(--sf-outline-variant);
+  --sf-textarea-textarea--line-color: var(--sf-outline-variant);
 }
 
 /* Flush: the field inside a composite control -- a chat composer, say -- whose
@@ -458,9 +462,11 @@
     --sf-textarea--value-inset: calc(var(--sf-textarea--inset) + max(calc(var(--sf-px) * 0), var(--sf-textarea--radius) - var(--sf-radius-1\/2)) / 2);
   }
 
+  /* Size 2 reads the shared ladder (C77, C141): 20 on a desktop, compact 16,
+     12 on a phone as sf-input -- --sf-space-2 alone left 16 there. */
   .sf-textarea.sf-textarea--size-2 {
-    --sf-textarea--inset: var(--sf-space-2);
     --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-2--control-height) / 2);
+    @include ladder.inset(--sf-textarea--inset, '2');
   }
 
   /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact

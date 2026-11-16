@@ -408,7 +408,10 @@
     --sf-input-field--line-color: var(--sf-input-field--border-color);
   }
 
-  .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left .sf-icon {
+  /* Every picture of a disabled field goes quiet with its text: the hint's,
+     the start part's, and an icon set straight in the frame
+     (.sf-input-field > .sf-icon, the documentation's leading icon). */
+  .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-icon {
     --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
@@ -456,10 +459,13 @@
   }
 
   /* A read-only field is not filled (a fill reads as a control to press,
-     C16): no plate, and the line of a region for its edge. */
-  .sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {
+     C16): no plate, and the line of a region for its edge -- in both looks.
+     The filled look drops its plate and its bottom line too, so a read-only
+     field looks the same whichever look it was given. */
+  .sf-input:not(.error):is(.sf-input--bordered, .sf-input--filled):has(input:read-only:not(:disabled)) .sf-input-field {
     --sf-input-field--background-color: var(--sf-transparent);
     --sf-input-field--border-color: var(--sf-outline-variant);
+    --sf-input-field--line-color: var(--sf-outline-variant);
   }
 }
 
