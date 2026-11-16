@@ -13731,6 +13731,29 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "class-page-number-circle-retired",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.pagination 1.5.0 (owner decision C237, 2026-11-16; navigation study, pagination): a page number has one shape, the square of the button it draws as (C224: the plain component looks as sf-pagination, which has no round numbers). sf-page-number--circle draws the square until remove_after, and the Loader notes it once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "pagination",
+          "from": "sf-page-number--circle",
+          "to": "sf-page-number--square"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-page-number sf-page-number--circle\" type=\"button\">2</button>",
+        "after": "<button class=\"sf-page-number sf-page-number--square\" type=\"button\">2</button>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/pagination/scss/_css__page_number.scss; src/core/js/retired-classes.table.js; ui-control prototypes/navigation-pagination-study.html#q-pg-circle; control/docs-review/decisions.md C237"
     }
   ]
 }

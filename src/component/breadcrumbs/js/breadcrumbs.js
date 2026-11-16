@@ -162,13 +162,15 @@ function createEllipsis(root, hiddenItems) {
   ellipsis.dataset.sfBreadcrumbIndex = 'ellipsis';
   ellipsis.setAttribute('aria-label', getExpandLabel(root));
   ellipsis.setAttribute('aria-expanded', 'false');
-  // With sf-menu-context on the page «…» opens its crumbs as a menu (owner
-  // decision C93 item 1); a page without it opens the trail in place.
-  if (menuReady()) ellipsis.setAttribute('aria-haspopup', 'menu');
+  // «…» opens its crumbs as a menu (owner decision C93 item 1; RG-NV 3): the
+  // Loader brings sf-menu-context when the trail first folds (requestMenu).
+  // Only a page with neither the element nor the Loader opens the trail in
+  // place.
+  if (menuReady() || menuReachable()) ellipsis.setAttribute('aria-haspopup', 'menu');
   ellipsis.innerHTML =
     '<span class="sf-breadcrumbs-item-container"><span aria-hidden="true">…</span></span>';
 
-  ellipsis.addEventListener('click', (event) => {
+  ellipsis.addEventListener('click', async (event) => {
     const clickEvent = new CustomEvent('sf-breadcrumb-click', {
       bubbles: true,
       composed: true,
@@ -192,8 +194,8 @@ function createEllipsis(root, hiddenItems) {
       return;
     }
 
-    if (menuReady()) {
-      openHiddenMenu(root, ellipsis, hiddenItems);
+    if (menuReady() || (await requestMenu())) {
+      if (ellipsis.isConnected) openHiddenMenu(root, ellipsis, hiddenItems);
       return;
     }
 
@@ -205,6 +207,30 @@ function createEllipsis(root, hiddenItems) {
 
 function menuReady() {
   return Boolean(globalThis.customElements?.get?.('sf-menu-context'));
+}
+
+// Whether the Loader can bring sf-menu-context (SF.Loader.ensure: asked for,
+// waited for up to 3 s, never thrown), as the row engine's «Ещё» asks for it
+// (core/js/overflow-row.js standardMenu).
+function menuReachable() {
+  return typeof globalThis.SF?.Loader?.ensure === 'function';
+}
+
+// Asks the Loader for sf-menu-context; true once the element is defined.
+// Asked when a trail folds, so the menu is there by the time «…» is pressed.
+let menuRequest = null;
+function requestMenu() {
+  if (menuReady()) return Promise.resolve(true);
+  if (!menuReachable()) return Promise.resolve(false);
+  menuRequest ||= Promise.resolve()
+    .then(() => globalThis.SF.Loader.ensure(['sf-menu-context']))
+    .catch(() => null)
+    .then(() => {
+      const ready = menuReady();
+      if (!ready) menuRequest = null;
+      return ready;
+    });
+  return menuRequest;
 }
 
 // A hidden crumb as a menu entry: its words and its address.
@@ -228,6 +254,57 @@ function openHiddenMenu(root, anchor, hiddenItems) {
   menu.setAttribute('aria-label', getExpandLabel(root));
   menu.entries = menuEntries(hiddenItems.map(crumbOf));
   menu.toggleFor?.(anchor, { align: 'start' });
+}
+
+// A crumb's name is a <span> in its container (RG-NV 1): the sheet cuts a
+// long ancestor with an ellipsis (C93 item 6), keeps the page's name on one
+// cut line on the phone (C93 item 2) and underlines a link's words under the
+// pointer (C186 (1)) on that <span>. Markup that prints the name straight
+// into the container (the docs' examples did) wrapped to two lines and lost
+// all three; the runtime wraps such bare words, so both spellings draw alike.
+const LABEL_MARK = 'sfBreadcrumbsLabel';
+
+function wrapLabels(root) {
+  root.querySelectorAll(`${ITEM_SELECTOR} > .sf-breadcrumbs-item-container`).forEach((container) => {
+    const runs = [];
+    let run = [];
+    container.childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        run.push(node);
+        return;
+      }
+      if (run.length) runs.push(run);
+      run = [];
+    });
+    if (run.length) runs.push(run);
+    runs.forEach((nodes) => {
+      const text = nodes.map((node) => node.nodeValue).join('');
+      if (!text.trim()) return;
+      const label = document.createElement('span');
+      label.dataset[LABEL_MARK] = '';
+      nodes[0].before(label);
+      nodes.forEach((node) => label.append(node));
+      if (label.firstChild?.nodeType === Node.TEXT_NODE) {
+        label.firstChild.nodeValue = label.firstChild.nodeValue.replace(/^\s+/u, '');
+      }
+      if (label.lastChild?.nodeType === Node.TEXT_NODE) {
+        label.lastChild.nodeValue = label.lastChild.nodeValue.replace(/\s+$/u, '');
+      }
+    });
+  });
+}
+
+// The runtime's own wrapping (a bare name put in a <span>) is no change of
+// the trail: it does not fold the trail again.
+function isLabelWrap(mutation) {
+  if (mutation.type !== 'childList') return false;
+  if (!mutation.target?.classList?.contains?.('sf-breadcrumbs-item-container')) return false;
+  const added = Array.from(mutation.addedNodes);
+  const removed = Array.from(mutation.removedNodes);
+  return (
+    added.every((node) => node instanceof HTMLElement && LABEL_MARK in node.dataset) &&
+    removed.every((node) => node.nodeType === Node.TEXT_NODE)
+  );
 }
 
 // A name cut with an ellipsis (C93 item 6) has its whole text as the
@@ -286,6 +363,7 @@ function applyRange(root, items, range) {
   const list = getList(root);
   const firstHidden = hiddenItems[0];
   const ellipsis = createEllipsis(root, hiddenItems);
+  requestMenu();
 
   if (list) {
     // One entry for «…», with the separator before it unless it opens the trail.
@@ -319,6 +397,7 @@ function collapseBreadcrumbs(root) {
   const maxItems = getMaxItems(root);
   const items = getContentItems(root);
 
+  wrapLabels(root);
   clearGenerated(root);
   setCollapsedState(root, []);
 
@@ -425,6 +504,8 @@ if (document.readyState === 'loading') {
 if (typeof MutationObserver !== 'undefined') {
   new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
+      if (isLabelWrap(mutation)) return;
+
       if (mutation.type === 'attributes') {
         const root = mutation.target;
 

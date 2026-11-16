@@ -207,6 +207,17 @@ export default {
       "names": {
         "sf-tabs--full": "sf-tabs"
       }
+    },
+    {
+      "journal": "class-page-number-circle-retired",
+      "decision": "C237",
+      "component": "pagination",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One shape for a page number, the square of the button (sf-pagination has no round numbers, and the plain component follows it, C224); the dots and the picture counter belong to sf-gallery and sf-slider (C97 (7)). sf-page-number--circle draws the square until the date.",
+      "names": {
+        "sf-page-number--circle": "sf-page-number--square"
+      }
     }
   ],
   "extended": {
