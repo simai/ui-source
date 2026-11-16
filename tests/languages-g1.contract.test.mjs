@@ -61,9 +61,9 @@ test('#86 pagination: «[3] из 12» is one word with the field in it ({page})'
 test('#86 confirm: «Чтобы подтвердить, введите DELETE» is one word with the name in it', () => {
   for (const code of LANGS) assert.match(runtime('src/smart/confirm', code)['require-text'], /\{name\}/u, code);
   const parts = exported('src/smart/confirm/index.js', 'requireParts');
-  assert.deepEqual(parts('Чтобы подтвердить, введите {name}', 'DELETE'), {before: 'Чтобы подтвердить, введите ', after: ''});
-  assert.deepEqual(parts('Растау үшін {name} деп енгізіңіз', 'DELETE'), {before: 'Растау үшін ', after: ' деп енгізіңіз'});
-  assert.deepEqual(parts('To confirm, type', 'DELETE'), {before: 'To confirm, type ', after: ''});
+  assert.deepEqual(parts('Чтобы подтвердить, введите {name}'), {before: 'Чтобы подтвердить, введите ', after: ''});
+  assert.deepEqual(parts('Растау үшін {name} деп енгізіңіз'), {before: 'Растау үшін ', after: ' деп енгізіңіз'});
+  assert.deepEqual(parts('To confirm, type'), {before: 'To confirm, type ', after: ''});
   const template = read('src/smart/confirm/js/templates/default.js');
   assert.doesNotMatch(template, /\$\{context\.requireText\} /u);
   assert.match(template, /aria-label=\$\{context\.requireText\}/u);

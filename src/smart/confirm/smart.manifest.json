@@ -334,7 +334,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "43e6f41788a75f357d134ca19b6affe9309946264c4aa8abf0b2d4a1cd0c82de"
+        "sha256": "a2c5b387aee07020bb48cf42e2029e47d35e5fa43c1fb9ba04fdf422a274fcef"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
