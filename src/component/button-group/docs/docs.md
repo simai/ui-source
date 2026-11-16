@@ -32,6 +32,25 @@ A segmented track is as wide as its labels (owner decision C47 A, 1.3.0): in ful
 
 A segment is a step tighter than a button of its size, on the sides as well as above and below (R191 HS-11, 1.3.1): its side padding is the button's less the track's padding, so a 32 px segment of a size-1 track has the side padding of a 32 px button (letters 20 from the segment, 24 from the track; before, 24 and 28 with the 40 px button's 16). An icon-only segment stays square.
 
+## Кнопки-значки в группе (1.5.0)
+
+Прямые дети группы — `sf-button`, `.sf-button`, кнопки-значки `.sf-icon-button`
+и `sf-button-icon` — соединяются одинаково (RG-BG-1): группа даёт им позиции
+segment-start/middle/end, на стыке одна линия, внутренние углы прямые, снаружи
+радиус кнопок, общий контур группы, кольцо фокуса внутрь. Так собирают панель
+форматирования (жирный · курсив · подчёркнутый) и смешанную группу.
+
+## Группа, которая не помещается по ширине (1.5.0)
+
+Если группа шире своего контейнера, она сама встаёт в столбец на всю ширину и
+рисуется как вертикальная группа: общий контур, одна линия на стыке, радиус
+только снаружи (решение владельца C215). Когда места снова хватает, группа
+возвращается в ряд. Вбок группа не прокручивается. Состояние пишет скрипт в
+`data-sf-stacked`; `data-orientation`, заданную автором, он не меняет и такую
+группу не переставляет. Сегментный переключатель
+(`sf-button-group--segmented`, `sf-segmented`) сохраняет свою прокрутку, а
+группа с `overflow="more"` — свой ряд с «Ещё».
+
 ## «Ещё» для ряда, который не помещается (1.4.0)
 
 Атрибут `overflow="more"` у горизонтальной группы (решение владельца C155):
@@ -42,8 +61,8 @@ A segment is a step tighter than a button of its size, on the sides as well as a
 раньше уходит, кнопка без него уходит первой; `priority="pin"` не уходит
 никогда. Главная (залитая) и нажатая кнопки тоже не уходят. ⋯ открывает
 стандартное меню со значками и названиями ушедших кнопок, нажатая отмечена
-галочкой; пункт меню нажимает саму кнопку. Без атрибута группа, как раньше,
-прокручивается вбок.
+галочкой; пункт меню нажимает саму кнопку. Без атрибута группа, которая не
+помещается, встаёт в столбец (C215).
 
 ```html
 <div class="sf-button-group" role="group" aria-label="Вид" overflow="more">
