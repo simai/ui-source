@@ -232,3 +232,52 @@ build it was taken from.
   element reads the attribute first, so it draws the same label.
 - Component packages (ui-pro's `pro`) are drawn when `--config` declares
   them, as for `snapshot-first-paint.mjs --config`.
+
+## A bare data tag: the host holds it (C253)
+
+Core holds the box of a bare tag only from what its attributes and its
+markup say (`tests/fixtures/first-paint/box-from-attributes.json` lists the
+components it does this for; gate 24b fails them when they move). Data given
+as a list or an object -- an accordion's `items`, a list's `items`, a form's
+`fields` in a JSON island or set later from script -- cannot be counted by a
+sheet, and no attribute declares its size: there is no `rows` attribute
+(owner decision C253, 2026-11-16). For such a tag the host holds the box,
+one of two ways:
+
+- **Print it.** Print the example's first paint (`print.mjs` above, or the
+  snapshot the pair ships in `distr/smart/<folder>/static/`) with its sheets
+  in `<head>`. A component whose data comes after the page also has a
+  skeleton snapshot (`<example>.skeleton.html`) that holds the data's place
+  until it arrives.
+- **Size it.** Give the element the box the loaded data will take,
+  `style="--sf-skeleton-block-size: 320px"` or a class that sets it; the
+  element keeps that floor until it draws.
+
+## The «Первая отрисовка» data (C252)
+
+`scripts/first-paint-docs.mjs` writes `src/core/contracts/first-paint-docs.v1.json`
+(shipped as `distr/core/contracts/first-paint-docs.v1.json`), the data of the
+«Первая отрисовка» section of every Smart component page. One entry per
+component (by folder): `tag`, `version`; `skeleton` (`needed` -- the component
+has late data, `late` -- its late settings, `snapshots` -- how many skeleton
+snapshots it prints); `before_code` (`held_by: "core"` with what the core rule
+holds and reads, or `held_by: "host"` -- print or size, above); and per
+example `snapshot` and `skeleton` (paths under `distr/smart/<folder>/static/`,
+`skeleton` null when the example gives no late data; its sheets are that
+folder's `sheets.json`), and `box` at 1440 and 390: `printed` (the snapshot
+with its sheets, drawn), `skeleton` (the skeleton snapshot), `bare` (`held`
+before the code, `drawn` after, `holds`). Sizes are `[width, height]` in px.
+
+```sh
+# boxes from a gate 24 report of the build
+FIRST_PAINT_REPORT=/tmp/fp.json FIRST_PAINT_WIDTHS=1440,390 node tests/browser/first-paint-gate.browser.mjs <out>
+node scripts/first-paint-docs.mjs --report=/tmp/fp.json
+node scripts/first-paint-docs.mjs --check   # snapshots, skeletons and late settings match the repository
+```
+
+A documentation site renders the section from the file of the pair it pins:
+the snapshot beside the drawn component, «скелет: да / не нужен», the box at
+1440 and 390, and the late-data skeleton. The same file answers the reference
+row «До прихода кода»: `skeleton.needed` and `skeleton.snapshots`, not the
+manifest's `presentation.skeleton`, which says only what core shape a server
+may name with `data-sf-skeleton`.

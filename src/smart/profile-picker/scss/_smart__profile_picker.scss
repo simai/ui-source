@@ -375,14 +375,31 @@ sf-profile-picker {
 @layer sf.components {
 /* The skeleton (skeleton.html, standard 1.3.8 §5.4): the folded trigger with
    a bar where the profile's name will stand, the same box before the host's
-   profiles arrive. */
+   profiles arrive. The bar is a text bar of core's rule (owner decision C136
+   (1)): the capitals' height of the trigger's text, 0.727 em rounded to an
+   even pixel -- 12 on the 16 px text, not the text size (19 px on 16 / 24,
+   FP-7 of the first-paint status R222) -- in the middle of the line, with the
+   skeleton fill and pulse of every first-paint bar (C130 (4)). */
 .sf-profile-picker-skeleton-bar {
   display: inline-block;
   vertical-align: middle;
   inline-size: var(--sf-e6);
   max-inline-size: 100%;
-  block-size: var(--sf-profile-picker--text);
+  block-size: calc(0.727em);
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-surface-container);
+  background: var(--sf-skeleton-base, var(--sf-surface-container));
+  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
+}
+
+@supports (block-size: round(nearest, 1em, 1em)) {
+  .sf-profile-picker-skeleton-bar {
+    block-size: round(nearest, 0.727em, var(--sf-a2));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-profile-picker-skeleton-bar {
+    animation: none;
+  }
 }
 }

@@ -61,6 +61,7 @@
     "src/core/contracts/content-spacing.docs.v1.json",
     "src/core/contracts/dimension-policy.v1.json",
     "src/core/contracts/effect.v1.schema.json",
+    "src/core/contracts/first-paint-docs.v1.json",
     "src/core/contracts/icon-meanings.v1.json",
     "src/core/contracts/icon-names.v1.json",
     "src/core/contracts/interface-fragment.v1.schema.json",
@@ -247,7 +248,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "a6e1642a05aea27cff9ce859aada05aed3ff2a276e20b7144c217247251c9d30",
+  "content_sha256": "b18ac31f3ca98726e2bb171577d48c35c3f6b094db882463fe4f53bae06b20d6",
   "dependencies": [
     {
       "id": "core.styles",
