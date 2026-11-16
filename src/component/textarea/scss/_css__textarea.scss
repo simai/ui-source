@@ -9,7 +9,6 @@
   gap: var(--sf-textarea--gap, var(--sf-space-1\/4));
 }
 
-/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-textarea .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--background-color: transparent;
   background-color: var(--sf-textarea-hint-text-wrap--background-color);

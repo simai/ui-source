@@ -1,5 +1,6 @@
 import registerComponent from '../../register-helper';
 import { instancePath, partId } from '../../../core/js/instance-path.js';
+import { noteDeprecated } from '../../../core/js/deprecations.js';
 
 const ROOT_SELECTOR = '.sf-tab';
 const ACTIVE_CLASS = 'active';
@@ -156,7 +157,26 @@ sfTab.componentName = 'sfTab';
 
 window.sfTab = sfTab;
 window.SF = window.SF || {};
-window.SF.Tab = window.SF.Tab || {init, activate};
+// SF.Tab is deprecated (owner decision C263, 2026-11-16; journal
+// global-sf-tab-to-sf-tabs): sf-tabs replaces the single legacy tab. It keeps
+// working until remove_after, and a read is noted once in SF.deprecations (the
+// console prints it when the page opts in). This file binds its own roots
+// through init, not through SF.Tab, so only a page's read is noted.
+const SF_TAB_ALIAS = Object.freeze({since: '2026-11-16', remove_after: '2027-01-01'});
+if (!Object.prototype.hasOwnProperty.call(window.SF, 'Tab')) {
+  const api = Object.freeze({init, activate});
+  Object.defineProperty(window.SF, 'Tab', {
+    configurable: true,
+    enumerable: true,
+    get() {
+      noteDeprecated({component: 'tab', kind: 'global', from: 'SF.Tab', to: 'sf-tabs', ...SF_TAB_ALIAS});
+      return api;
+    },
+    set(value) {
+      Object.defineProperty(window.SF, 'Tab', {configurable: true, enumerable: true, writable: true, value});
+    },
+  });
+}
 registerComponent('sfTab', sfTab);
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init());

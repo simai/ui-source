@@ -77,7 +77,11 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-card--radius);
     // At rest a card is the flat place (C20): no shadow, its edge is the line.
-    box-shadow: var(--sf-shadow-flat);
+    // A shadow-* or ring-* utility on the card still shows (RG-UT-V (18)):
+    // they live in the utilities layer under this one and set box-shadow,
+    // which this rule replaced; they also write --sf-place-shadow and
+    // --sf-ring-shadow (registered not to inherit), and the card draws them.
+    box-shadow: var(--sf-ring-shadow, 0 0 transparent), var(--sf-place-shadow, 0 0 transparent);
     overflow-wrap: break-word;
     // A narrow card (three on a phone) breaks a long word at a hyphen where
     // the language allows it; overflow-wrap breaks it anywhere only when no
@@ -98,7 +102,7 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
 
   .sf-card:is(a[href], button):not(.sf-card--plain):hover {
     background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-raised)));
-    box-shadow: var(--sf-shadow-raised);
+    box-shadow: var(--sf-ring-shadow, 0 0 transparent), var(--sf-place-shadow, var(--sf-shadow-raised));
   }
 
   // A card in a card is its outline only (C16, surfaces research 4.2: page,
@@ -117,20 +121,23 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
   // it is 4 at every width; it was the card's own 8, too round inside the
   // frame. A plain card has no frame and no inset, so what it holds keeps its
   // own corner. The card's and the figure's own variables still win.
+  // The inset is the role --sf-inset--panel (C173, the step --sf-space-2):
+  // the nested-radius formula of --sf-radius--inner over the card's own inset
+  // (RT-10), the same value at every width and density.
   :where(.sf-card:not(.sf-card--plain)) .sf-card:not(.sf-card--plain) {
-    --sf-card--radius: var(--sf-card-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    --sf-card--radius: var(--sf-card-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
   }
 
   // The figure's picture and a caption laid over it take the same corner;
   // a page's --sf-figure-radius still wins (the Framework sets no public
   // variable, it reads it).
   :where(.sf-card:not(.sf-card--plain)) .sf-figure > .sf-figure-media {
-    border-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    border-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
   }
 
   :where(.sf-card:not(.sf-card--plain)) .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media + .sf-figure-caption {
-    border-end-start-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
-    border-end-end-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    border-end-start-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
+    border-end-end-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
   }
 
   // A picture as the card's first block (owner decision C188 (2)): an

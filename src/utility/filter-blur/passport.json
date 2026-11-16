@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.filter-blur",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/filter-blur/default/index.js",
@@ -18,7 +18,7 @@
     "src/utility/filter-blur/hover/scss/_sf_css__filter_blur.scss",
     "src/utility/filter-blur/hover/scss/index.scss"
   ],
-  "content_sha256": "f48686cc934e440ec505445c1e75893fa5a63b58dfa73740a3f424a286ad7300",
+  "content_sha256": "e93987f5706a5b441399e36a17a628d10a04420b3b0647cb38ae7208874783fd",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

@@ -3,6 +3,10 @@
 > Retired (owner decision C187 (8), 2026-11-14): `.sf-tab` joins `sf-tabs`. It keeps
 > working until 2027-01-01, and the Loader notes it in `SF.deprecations`; write `.sf-tabs`
 > (or `<sf-tabs>`) instead.
+>
+> Deprecated (owner decision C263, 2026-11-16): the script API `SF.Tab` is a dated
+> alias until 2027-01-01 too, and each read is noted in `SF.deprecations` (journal
+> `global-sf-tab-to-sf-tabs`). `sf-tabs` replaces the whole component.
 
 Legacy low-level adapter for projects that render two visual representations
 inside each tab item. New interfaces should use the `Tabs` component.

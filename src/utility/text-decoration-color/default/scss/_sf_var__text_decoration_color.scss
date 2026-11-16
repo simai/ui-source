@@ -6,13 +6,19 @@
 // Text Decoration Color
 $text-decoration-color-array:(
     'inherit' : 'inherit',
-    'current' : 'currentColor',
+    // --sf-current is the core's name for currentColor; --sf-currentColor is
+    // declared nowhere, so the value fell to the initial colour by chance
+    // (RG-UT-V TXF-1).
+    'current' : 'current',
     'transparent' : 'transparent',
-    'primary': 'primary-outline',
-    'secondary': 'secondary-outline',
-    'tertiary': 'tertiary-outline',
-    'error': 'error-outline',
-    'warning': 'warning-outline',
-    'success': 'success-outline',
-    'info': 'info-outline',
+    // An accent names its role, as text-*, fill-* and bg-* do (C212 (5);
+    // RG-UT-V TXF-2): decoration-primary drew the frame tone primary-outline
+    // (tone 50/60), a second «primary» beside the text's.
+    'primary': 'primary',
+    'secondary': 'secondary',
+    'tertiary': 'tertiary',
+    'error': 'error',
+    'warning': 'warning',
+    'success': 'success',
+    'info': 'info',
 );

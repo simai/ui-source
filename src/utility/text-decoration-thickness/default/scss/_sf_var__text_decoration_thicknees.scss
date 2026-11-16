@@ -8,8 +8,11 @@ $text-decoration-thickness-array:(
     auto : auto,
     font : from-font,
     0 : var(--sf-a0),
-    1 : var(--sf-a1),
-    2 : var(--sf-a2),
+    // Widths 1 and 2 are the line roles (C173 (6); RG-UT-V (3)): 1 and 2 px
+    // at every text size, as a component's own line. They read the rem steps
+    // a1 and a2, which grew with the root text size (2 px at 200 %).
+    1 : var(--sf-line--border),
+    2 : var(--sf-line--indicator),
     3 : var(--sf-a3),
     4 : var(--sf-a4),
     //5 : var(--sf-a5),

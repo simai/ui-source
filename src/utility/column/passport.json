@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.column",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/column/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/column/xxl/scss/_sf_css__column.scss",
     "src/utility/column/xxl/scss/index.scss"
   ],
-  "content_sha256": "7cddf31c8fb9f706820f31a44fc813a4ce28bab763f1dbadcf195ce548cb3101",
+  "content_sha256": "e798d545a0eff70e7ce5f0d4e3a02fee4905fc94bdc303e0598eddb3918bfdbf",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

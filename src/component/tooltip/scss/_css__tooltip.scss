@@ -1,6 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
 .sf-tooltip {
   background-color: var(--sf-tooltip--background-color, transparent);
 }

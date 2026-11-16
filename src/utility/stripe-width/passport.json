@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.stripe-width",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/stripe-width/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/stripe-width/xxl/scss/_sf_css__stripe.scss",
     "src/utility/stripe-width/xxl/scss/index.scss"
   ],
-  "content_sha256": "66e8d879c8dcb7ef5761f2e2c298ae915711eeb9ba3056e0ff725f83cc1dbb8d",
+  "content_sha256": "8747db6733e4af2113bf5efc272ddc4b4fd80ccf46efd0a0d32cf089cbc17828",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

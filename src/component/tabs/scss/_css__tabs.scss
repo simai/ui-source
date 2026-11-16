@@ -854,19 +854,19 @@
   // it: the class .disabled wears the same values here. The buttons' own
   // pointer states already leave .disabled out.
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled:is(.sf-button--default, .sf-button--tonal) {
-    --sf-button--background-color: var(--sf-disable);
+    --sf-button--background-color: var(--sf-surface-disabled);
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled:is(.sf-button--default, .sf-button--tonal, .sf-button--outline, .sf-button--ghost, .sf-button--link) :is(.sf-button-text-container, .sf-button-shortcut) {
-    --sf-button-text-container--color: var(--sf-on-disable);
+    --sf-button-text-container--color: var(--sf-on-surface-disabled);
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled .sf-icon {
-    --sf-icon--color: var(--sf-on-disable);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.disabled.sf-button--outline.sf-button--primary {
-    --sf-button--border-color: var(--sf-outline-disable);
+    --sf-button--border-color: var(--sf-outline-disabled);
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.disabled:is(.sf-icon-button--default, .sf-icon-button--tonal) {

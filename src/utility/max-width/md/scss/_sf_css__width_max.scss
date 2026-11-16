@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '../../../../core/scss/vars/sf_var__breakpoint' as *;
 @use '../../../../core/scss/mix/mix__breakpoint' as *;
 @use '../../default/scss/sf_var__width_max' as *;
@@ -22,7 +23,7 @@
         @each $breakpoint-name, $breakpoint-value in $breakpoint-array {
             @if $breakpoint-value != 0 {
                 .#{$infix}max-w-#{$breakpoint-name} {
-                    max-width: #{$breakpoint-value};
+                    max-width: var(--sf-#{map.get($with-max-breakpoint-steps, $breakpoint-name)});
                 }
             }
         }

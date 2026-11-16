@@ -18,6 +18,14 @@ $infix: xs;
             .#{$infix}rotate-#{$transform-rotate-name} {
                 transform: rotate(#{$transform-rotate-value}deg);
             }
+            // The other way round (RG-UT-V TRF-3): -rotate-90 turns a chevron
+            // that points to the end so it points up, as -m-* takes a margin
+            // away; it was the one turn the utilities could not write.
+            @if $transform-rotate-value != 0 {
+                .-#{$infix}rotate-#{$transform-rotate-name} {
+                    transform: rotate(-#{$transform-rotate-value}deg);
+                }
+            }
         }
     }
 // }

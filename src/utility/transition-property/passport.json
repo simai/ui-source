@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.transition-property",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/transition-property/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/transition-property/xxl/scss/_sf_css__transition_property.scss",
     "src/utility/transition-property/xxl/scss/index.scss"
   ],
-  "content_sha256": "52cd6458388cd509f1191459e08b87ba8cbd0c54f3f707962ab957b847fb8ca0",
+  "content_sha256": "f92d177d0419259097f37768ee7164910593384cf989d42ffec20632a02bf8ec",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

@@ -151,10 +151,13 @@ export function mapTailwindBaseClass(className) {
     'not-italic': 'italic-none',
     'normal-case': 'normalcase',
     'no-underline': 'decoration-none',
-    'text-ellipsis': 't-ellipsis',
-    'text-clip': 't-clip',
+    // The current names, not the retired ones (C186 (8): t-ellipsis and
+    // t-clip are truncate, wrap-none is text-nowrap; RG-UT-V TYP-2): a
+    // converted page took a SF.deprecations entry for a name it never wrote.
+    'text-ellipsis': 'truncate',
+    'text-clip': 'truncate',
     'bg-no-repeat': 'bg-repeat-none',
-    'whitespace-nowrap': 'wrap-none',
+    'whitespace-nowrap': 'text-nowrap',
     'whitespace-pre': 'pre',
     'whitespace-pre-line': 'pre-line',
     'whitespace-pre-wrap': 'pre-wrap',
@@ -371,6 +374,9 @@ export function mapTailwindBaseClass(className) {
     return `object-${side}${pos}`;
   }
 
+  // mask-* positions convert into utility/mask-position, a sheet retired
+  // until 2027-01-01 (C187 (5)); this conversion leaves with that sheet
+  // (RG-UT-V MSK-3).
   const maskPositionMatch = base.match(/^mask-(left|right)(?:-(top|bottom))?$/);
   if (maskPositionMatch) {
     const side =

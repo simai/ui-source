@@ -14,11 +14,15 @@
     "src/core/figma_variables/figma_opacity.scss",
     "src/core/scss/_sf_css__opacity.scss"
   ],
-  "content_sha256": "1b67297a1996e3f226b19b0d9df46fc6def0d0349a4484f606c39bae88d21211",
+  "content_sha256": "4e592d4117ea62202e0231324407772b9ed4fcb31cd12864612ed36b2b0b8a61",
   "dependencies": [
     {
       "id": "tokens.colour",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.1.1"
     }
   ]
 }

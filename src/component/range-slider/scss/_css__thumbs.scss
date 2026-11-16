@@ -1,5 +1,4 @@
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-thumb {
   background-color: var(--sf-thumb--background-color, transparent);
   gap: var(--sf-thumb--gap, var(--sf-space-1\/4));

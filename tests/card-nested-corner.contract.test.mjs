@@ -9,7 +9,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 // own 8 at an inset of 20 (plain group 1, 2026-11-14).
 test('Card gives a card and a figure inside it the nested corner', async () => {
   const css = await read('src/component/card/scss/_css__card.scss');
-  const formula = 'max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2)))';
+  const formula = 'max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel)))';
   const nested = css.match(/:where\(\.sf-card:not\(\.sf-card--plain\)\) \.sf-card:not\(\.sf-card--plain\) \{[^}]*\}/u)?.[0] || '';
   const figure = css.match(/:where\(\.sf-card:not\(\.sf-card--plain\)\) \.sf-figure > \.sf-figure-media \{[^}]*\}/u)?.[0] || '';
   const caption = css.match(/> \.sf-figure-media \+ \.sf-figure-caption \{[^}]*\}/u)?.[0] || '';

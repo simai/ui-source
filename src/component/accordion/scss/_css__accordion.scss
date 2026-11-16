@@ -1,5 +1,4 @@
 @use 'var__accordion' as *;
-/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-accordion {
   /* The public variables (src/core/contracts/public-variables.v1.json) wrap
      the values the accordion drew before them, so a page that sets none sees

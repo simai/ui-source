@@ -5,6 +5,9 @@
 
 $filter-blur-array:(
     '-small': 'small',
+    // The bare name is a dated alias of -medium until 2027-01-01 (C212: one
+    // name per job; RG-UT-V FLT-3; journal class-ut1-blur), noted in
+    // SF.deprecations; it draws the same 4 px.
     '': 'medium',
     '-medium': 'medium',
     '-large': 'large',

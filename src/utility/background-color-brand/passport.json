@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.background-color-brand",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/background-color-brand/default/index.js",
@@ -19,6 +19,6 @@
     "src/utility/background-color-brand/hover/scss/_sf_var__background_color_brand.scss",
     "src/utility/background-color-brand/hover/scss/index.scss"
   ],
-  "content_sha256": "d628e1de9f45440225abc4d0a1c4584429ad10a73df783ef7114ec2670622c55",
+  "content_sha256": "9026ff0af21c6693bfd315c25add4caca65de8a1905d950cb5ebe7389613f4ee",
   "dependencies": []
 }

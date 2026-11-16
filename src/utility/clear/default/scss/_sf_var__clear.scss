@@ -3,9 +3,13 @@
 
 // CLEAR
 
+// clear-inline-start/-end write the logical sides, as float-inline-start/-end
+// do: under dir="rtl" the wrap clears the side the float stands on (RG-UT-L
+// LY-9; they wrote left/right). The build adds the left/right fallback for a
+// browser without the logical values.
 $clear-array:(
-  inline-start:left,
-  inline-end:right,
+  inline-start:inline-start,
+  inline-end:inline-end,
   both:both,
   none:none
 );

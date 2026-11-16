@@ -34,11 +34,13 @@ test('motion: the transition utility takes its duration and curve from the scale
 });
 
 /* Everything else that moves says how long in a token too. Zero is exempt:
-   that is how motion is switched off, not a duration. The exception is
-   named, so adding a second has to be a decision rather than a slip. */
+   that is how motion is switched off, not a duration. So is 0.01ms, the same
+   switch that still fires animationend / transitionend («Остановить движение»
+   C196, the reduced-motion blocks of the motion utilities RG-UT-V ANIM-5).
+   The exception is named, so adding a second has to be a decision rather
+   than a slip. */
 const EXEMPT = new Set([
   'core/scss/_sf_css__loader.scss',              // бесконечный отскок 2.2s, шкала так далеко не идёт
-  'core/scss/_sf_css__display.scss',             // «Остановить движение» (C196): 0.01ms, so transitionend still fires
 ]);
 test('motion: no new literal duration appears outside the named exceptions', async () => {
   const found = [];
@@ -49,7 +51,7 @@ test('motion: no new literal duration appears outside the named exceptions', asy
       const value = match[1];
       if (/var\(--sf-/.test(value)) continue;
       const literal = value.match(/\b\d*\.?\d+m?s\b/);
-      if (literal && !/^0m?s$/.test(literal[0])) found.push(`${name(url)}: ${literal[0]}`);
+      if (literal && !/^0(?:\.01)?m?s$/.test(literal[0])) found.push(`${name(url)}: ${literal[0]}`);
     }
   }
   assert.deepEqual(found, []);

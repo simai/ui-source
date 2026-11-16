@@ -198,6 +198,34 @@ export default {
       }
     },
     {
+      "journal": "class-c187-doc-to-docara",
+      "decision": "C187 (8)",
+      "component": "doc",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "The documentation helpers (sample frame, pair, source, lead, code, checkerboard and stripes) belong to the documentation site: Docara draws them (D20 already holds the example frame). The Framework keeps the sheet until the date.",
+      "names": {
+        "sf-doc-example": null,
+        "sf-doc-pair": null,
+        "sf-doc-source": null,
+        "sf-doc-lead": null,
+        "sf-doc-code": null,
+        "sf-doc-checkerboard": null,
+        "sf-doc-stripes": null
+      }
+    },
+    {
+      "journal": "class-editor-utility-retired",
+      "decision": "C170",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "src/utility/editor held one rule, .editor--default.active on the popover layer, and no Loader rule or build ever shipped it. An editor's layers belong to sf-editor-overlay (C170); the folder leaves after the date.",
+      "names": {
+        "editor--default": "sf-editor-overlay"
+      }
+    },
+    {
       "journal": "class-c96-tabs-looks",
       "decision": "C96 (1)",
       "component": "sf-tabs",
@@ -219,6 +247,127 @@ export default {
         "scroll-slider-color": null,
         "scroll-slider-width": null,
         "scroll-backdrop-width": null
+      }
+    },
+    {
+      "journal": "class-c212-hide-print",
+      "decision": "C212 (6)",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One set to hide: hidden, invisible, sr-only (in the core sheet) and on paper print-hidden, print-only, print-invisible. print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table hid an element on screen and set its display on paper: print-only hides it on screen and leaves the display its own classes give it on paper. print-visible-none is print-invisible (invisible on paper, its room kept). print-hidden removes the element on paper (display: none); use print-invisible to keep the space. The old names keep drawing what they drew until remove_after.",
+      "names": {
+        "print-block": "print-only",
+        "print-inline": "print-only",
+        "print-inline-block": "print-only",
+        "print-flex": "print-only",
+        "print-inline-flex": "print-only",
+        "print-table": "print-only",
+        "print-visible-none": "print-invisible"
+      }
+    },
+    {
+      "journal": "class-ut1-layout-col-auto",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "layout-col-auto wrote column-count: auto; without a column width, which no utility gives, a block with it is always one column, so the class did nothing. Write layout-col-<n> for n columns. It keeps drawing what it drew until remove_after.",
+      "names": {
+        "layout-col-auto": null
+      }
+    },
+    {
+      "journal": "class-ut1-grid-row",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One set per job (C212): rows are row-*, as columns are col-*. grid-row-auto and grid-row-span-* were one rule with row-auto and row-span-*. They keep drawing until remove_after.",
+      "names": {
+        "grid-row-auto": "row-auto",
+        "grid-row-span-1": "row-span-1",
+        "grid-row-span-2": "row-span-2",
+        "grid-row-span-3": "row-span-3",
+        "grid-row-span-4": "row-span-4",
+        "grid-row-span-5": "row-span-5",
+        "grid-row-span-6": "row-span-6",
+        "grid-row-span-full": "row-span-full"
+      }
+    },
+    {
+      "journal": "class-ut1-negative-auto",
+      "decision": "IN-4 (RG-UT-L)",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "A negative margin takes a step away; auto has none. -m-auto, -m-top-auto and the other negative auto classes wrote calc(0rem - auto), which the browser drops, so they drew nothing; the sheets no longer write them (utility.margin 1.1.0). Remove the class, or write m-*-auto for an auto margin.",
+      "names": {
+        "-m-auto": null,
+        "-m-top-auto": null,
+        "-m-bottom-auto": null,
+        "-m-inline-start-auto": null,
+        "-m-inline-end-auto": null,
+        "-m-inline-auto": null,
+        "-m-block-auto": null
+      }
+    },
+    {
+      "journal": "class-ut1-bg-position",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One set per job (C212): the background position is written with the logical sides, bg-inline-start* and bg-inline-end*, which follow dir=\"rtl\" (utility.background-position 1.1.0). bg-left, bg-right and their -top/-bottom forms keep drawing their physical side until remove_after; the Loader's Tailwind conversion already writes the logical names.",
+      "names": {
+        "bg-left": "bg-inline-start",
+        "bg-left-top": "bg-inline-start-top",
+        "bg-left-bottom": "bg-inline-start-bottom",
+        "bg-right": "bg-inline-end",
+        "bg-right-top": "bg-inline-end-top",
+        "bg-right-bottom": "bg-inline-end-bottom"
+      }
+    },
+    {
+      "journal": "class-ut1-blur",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One name per job (C212): blur and backdrop-blur drew the same 4 px as blur-medium and backdrop-blur-medium. They keep drawing until remove_after.",
+      "names": {
+        "blur": "blur-medium",
+        "backdrop-blur": "backdrop-blur-medium"
+      }
+    },
+    {
+      "journal": "class-ut1-radius-square",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One name per job (C212): radius-square and its side forms drew the same 0 as radius-0 (--sf-radius-square is 0). They keep drawing until remove_after.",
+      "names": {
+        "radius-square": "radius-0",
+        "radius-top-square": "radius-top-0",
+        "radius-bottom-square": "radius-bottom-0",
+        "radius-inline-start-square": "radius-inline-start-0",
+        "radius-inline-end-square": "radius-inline-end-0",
+        "radius-top-inline-start-square": "radius-top-inline-start-0",
+        "radius-top-inline-end-square": "radius-top-inline-end-0",
+        "radius-bottom-inline-start-square": "radius-bottom-inline-start-0",
+        "radius-bottom-inline-end-square": "radius-bottom-inline-end-0"
+      }
+    },
+    {
+      "journal": "class-ut1-tracking",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "tracking-normal is the name of the default letter spacing; tracking-no-tracking repeated the word and keeps drawing the same value until remove_after.",
+      "names": {
+        "tracking-no-tracking": "tracking-normal"
       }
     }
   ],

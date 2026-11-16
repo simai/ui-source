@@ -1,0 +1,48 @@
+// SIMAI Framework
+// https://simai.io
+
+// HIDE AND SHOW (owner decision C212 (6), 2026-11-16; research ui-control
+// control/research/2026-11-15-utilities-sprawl.md, section 6)
+//
+// The set: hidden (display), invisible (visibility), sr-only (out of sight,
+// read by a screen reader) with not-sr-only, and on paper print-hidden,
+// print-only, print-invisible (utility/display-print).
+//
+// sr-only lives in the core sheet so a component or a page has it at the first
+// paint without asking the Loader for it; that is why 25 components wrote their
+// own copy. The copies go when each component is next changed. The rules are
+// the ones utility/sr-only has drawn (that sheet stays for utility.full.css and
+// pages that load utilities alone), in the same layer.
+@layer sf.utilities {
+  // Out of sight, read by a screen reader (RG-UT-L IA-2, IA-3). Each
+  // declaration is !important: a hidden label sits inside components whose
+  // own rules (sf.components, after this layer) set position or size on their
+  // children -- .sf-button > * gave it position: relative and left a word-wide
+  // gap. An important declaration of an earlier layer wins over every later
+  // one, so the class hides in any component; not-sr-only is important too, so
+  // focus:not-sr-only still shows it. The box is cut with clip-path:
+  // inset(50%), the spelling the components' copies use (the clip property
+  // with rect() is deprecated).
+  .sr-only {
+    position: absolute !important;
+    width: var(--sf-px) !important;
+    height: var(--sf-px) !important;
+    padding: 0 !important;
+    margin: calc(-1 * var(--sf-px)) !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+    border-width: 0 !important;
+  }
+
+  .not-sr-only {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    clip-path: none !important;
+    white-space: normal !important;
+  }
+}

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.outline-width",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/outline-width/default/index.js",
@@ -23,7 +23,7 @@
     "src/utility/outline-width/focus/scss/_sf_css__outline_width.scss",
     "src/utility/outline-width/focus/scss/index.scss"
   ],
-  "content_sha256": "2600787adfb82cb989ab1f4ac8e4f17435a6eb65fc9fa5811cbec9c29290df36",
+  "content_sha256": "16d40dc82df297f3da0e88f4556b399a9a8c041da92ab8d2fdd1b6a694165cbd",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

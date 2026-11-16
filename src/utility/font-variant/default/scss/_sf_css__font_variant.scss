@@ -14,7 +14,7 @@
         //
         @each $variant-name, $variant-value in $font-variant-array {
             .#{$infix}small-caps#{$variant-name} {
-                font-variant: #{$variant-value};
+                font-variant-caps: #{$variant-value};
             }
         }
     }

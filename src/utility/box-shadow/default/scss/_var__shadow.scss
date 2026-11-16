@@ -17,3 +17,17 @@ $shadow-array: (
   4: modal,
   5: modal
 );
+
+// The place shadow and the ring are the element's own: they do not inherit,
+// so a component that draws them (sf-card, RG-UT-V (18)) does not take its
+// parent's. utility/ring-width registers the same two; the hover
+// sheet reads this file too.
+@property --sf-place-shadow {
+    syntax: "*";
+    inherits: false;
+}
+
+@property --sf-ring-shadow {
+    syntax: "*";
+    inherits: false;
+}
