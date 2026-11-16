@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__card_title' as card-title;
 // SIMAI Framework
 // https://simai.io
 
@@ -28,12 +29,10 @@
 // sheet sets the bare h1..h6 sizes it replaces, and a class above them
 // whatever order the sheets load in; the card's own variables are the way
 // to change it.
+// Core draws the same rule for the first frame (core/scss/mix/
+// _mix__card_title.scss, #261 N3).
 @layer sf.utilities {
-  .sf-card > :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
-    line-height: var(--sf-title--height-card);
-    font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
-  }
+  @include card-title.card-title;
 }
 
 // The places above a card (C42, owner 2026-11-10): a window, a drawer over
