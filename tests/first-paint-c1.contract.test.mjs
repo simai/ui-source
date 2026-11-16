@@ -48,8 +48,12 @@ test('RG-S2-7: a 1/2 site bar with a size-1 control in its row holds the size-1 
   assert.match(core, /\[size="1\/2"\]\[collapse="none"\]:where\(:has\(#\{\$sf-site-header-wide-row\}\)\)/u);
 });
 
-test('open item 10: the drawn «+N» replaces a printed one', () => {
-  const fit = group.slice(group.indexOf('  fit() {'), group.indexOf('  moreElement('));
-  assert.match(fit, /this\.querySelectorAll\(`:scope > \[\$\{MORE\}\]`\)/u);
-  assert.match(fit, /if \(node !== this\._more\) node\.remove\(\);/u);
+test('open item 10: the drawn «+N» replaces a printed one once it has drawn', () => {
+  const fit = group.slice(group.indexOf('  fit() {'), group.indexOf('  replacePrintedMore() {'));
+  assert.match(fit, /if \(!this\.replacePrintedMore\(\)\) return;/u);
+  const replace = group.slice(group.indexOf('  replacePrintedMore() {'), group.indexOf('  moreElement('));
+  assert.match(replace, /this\.querySelectorAll\(`:scope > \[\$\{MORE\}\]`\)\]\.filter\(\(node\) => node !== this\._more\)/u);
+  // Held until the row's own trigger has a box: the printed row stands meanwhile.
+  assert.match(replace, /if \(!trigger\.isRendered\) \{[\s\S]*more\.hidden = true;[\s\S]*return false;/u);
+  assert.match(replace, /for \(const node of printed\) node\.remove\(\);\s*more\.hidden = false;/u);
 });
