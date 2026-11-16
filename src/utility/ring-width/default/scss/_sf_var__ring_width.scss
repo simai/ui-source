@@ -27,6 +27,12 @@ $ring-width-array: (
 // 2027-01-01 (journal token-ring-alpha-spelling), so a page that sets it draws
 // as before. Neither is declared on the root: an inherited root value would
 // hide the former name a page sets.
+//
+// The ring's colour is a ring-<colour> class (--sf-ring-color); without one
+// it is the focus role, --sf-focus--color, read where the ring is drawn, so a
+// place that sets its own focus colour rings in it. Core declared
+// --sf-ring-color empty on the root, which the fallback never replaced, and a
+// bare ring-2 drew nothing (the colour-mix() was invalid).
 @mixin ring-box-shadow($width-value) {
     --sf-ring-width: var(--sf-#{$width-value});
     --sf-ring-shadow:
@@ -35,7 +41,7 @@ $ring-width-array: (
         color-mix(
             in srgb,
             transparent,
-            var(--sf-ring-color, currentColor)
+            var(--sf-ring-color, var(--sf-focus--color, var(--sf-focus)))
             calc(var(--sf-ring--alpha, var(--sf-ring--alfa, 1)) * 100%)
         ),
         0 0 0 var(--sf-ring-offset-width, 0px)

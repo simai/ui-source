@@ -10,7 +10,8 @@
     --sf-outline--alfa: 1;
     --sf-bg--alfa: 1;
     --sf-stripe--alfa: 1;
-    --sf-ring-color: ;
+    // No --sf-ring-color here: it was declared empty, and the ring utilities'
+    // fallback to the focus role never applied (utility/ring-width).
     --sf-gradient--angle: 90deg;
     --sf-gradient--alfa-1: 1;
     --sf-gradient--alfa-2: 1;
