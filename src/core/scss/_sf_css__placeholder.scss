@@ -667,6 +667,17 @@
   padding-inline-start: calc(var(--sf-text-height-1) + var(--sf-a4));
 }
 
+/* The record's number follows the name after a space; a link that opens a
+   new tab ends with its sign, the icon's 4 px gap and the line's height. */
+:where(sf-reference-link[appearance="inline"][label][text]:not([text=""]):not(:defined)):not(:has(> [data-sf-static]))::before {
+  content: attr(label) " " attr(text);
+  font-variant-numeric: tabular-nums; /* the number's figures, as its sheet draws them */
+}
+
+:where(sf-reference-link[appearance="inline"][target="_blank"][href]:not([href=""]):not([disabled]:not([disabled="false"])):not([state]:not([state=""])):not(:defined)):not(:has(> [data-sf-static])) {
+  padding-inline-end: calc(var(--sf-text-height-1) + var(--sf-a4));
+}
+
 :where(sf-reference-link[appearance="inline"][label][state="missing"]:not(:defined)):not(:has(> [data-sf-static]))::before { content: attr(label) " · удалена"; }
 :where(sf-reference-link[appearance="inline"][label][state="forbidden"]:not(:defined)):not(:has(> [data-sf-static]))::before { content: attr(label) " · нет доступа"; }
 :where(sf-reference-link[appearance="inline"][label][state="missing"]:lang(en):not(:defined)):not(:has(> [data-sf-static]))::before { content: attr(label) " · deleted"; }
