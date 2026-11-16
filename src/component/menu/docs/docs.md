@@ -78,7 +78,7 @@ header draws them, with or without `sf-menu--horizontal`: rows with no border
 and no fill at rest, `--sf-on-surface` words, and the ordinary row's size 1
 height, `space-1` side padding, text size 1, `--sf-radius--ui` and focus ring.
 A pointer lays the state family of the alpha scale over a row
-(`--sf-surface-transparent-hover`, `-active` on press); an open branch is not
+(`--sf-surface-state-hover`, `-active` on press); an open branch is not
 filled, its open list shows it is open. The current page (`aria-current="page"`
 or `"true"` on the row or on the link inside it; decision C23) is a primary
 plate of the fill family, `--sf-primary-container-active` (primary at 20 in
@@ -134,7 +134,7 @@ the two-level limit of C24). In a horizontal navigation row (C30, R057-R060):
   0 elsewhere); with `sf-menu--indicator-fill` on the root it takes the C23
   plate instead, for a header with no bottom border;
 - an open branch, on the first level and in a panel, has the neutral
-  `--sf-surface-transparent-select` plate, never primary;
+  `--sf-surface-state-select` plate, never primary;
 - in a panel, every row on the path to the current page has a medium label
   and the 2 px line on the panel's start border; the › stays neutral.
 

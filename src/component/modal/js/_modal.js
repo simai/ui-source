@@ -396,7 +396,7 @@ class Modal extends ComponentObserver {
         ? this.hasCustomBlurType
           ? this.getBlurClasses().join(' ')
           : 'bg-surface-overlay'
-        : 'bg-black opacity-6',
+        : 'bg-scrim',
       params.overlayClass,
     );
     overlay.setAttribute('data-sf-modal-overlay', '');
@@ -434,8 +434,8 @@ class Modal extends ComponentObserver {
     const surface = document.createElement('div');
     surface.className = joinClasses(
       isInline
-        ? 'bg-surface border border-outline-variant radius-surface flex flex-col gap-1 min-w-0'
-        : 'bg-surface border border-outline-variant radius-surface shadow-modal flex flex-col gap-1 min-w-0',
+        ? 'bg-surface-area border border-outline-variant radius-surface flex flex-col gap-1 min-w-0'
+        : 'bg-surface-area border border-outline-variant radius-surface shadow-modal flex flex-col gap-1 min-w-0',
       params.surfaceClass,
     );
     surface.setAttribute('data-sf-modal-surface', '');

@@ -195,7 +195,7 @@ test('T9: a disabled tab is focusable, says aria-disabled, and tells why in a to
   assert.ok(manifest.relations.some((relation) => relation.name === 'tooltip' && relation.lazy === true));
   // The tabs' sheet gives .disabled the buttons' disabled values.
   const sheet = read('src/component/tabs/scss/_css__tabs.scss');
-  assert.match(sheet, /\.sf-tabs-top \.sf-button\.disabled:is\(\.sf-button--default, \.sf-button--tonal\) \{\s*--sf-button--background-color: var\(--sf-disable\);/u);
+  assert.match(sheet, /\.sf-tabs-top \.sf-button\.disabled:is\(\.sf-button--default, \.sf-button--tonal\) \{\s*--sf-button--background-color: var\(--sf-surface-disabled\);/u);
   assert.match(sheet, /\.sf-tabs-top \.sf-icon-button\.disabled:is\(\.sf-icon-button--default, \.sf-icon-button--tonal\) \{\s*--sf-icon-button--background-color: var\(--sf-surface-disabled\);/u);
   // The arrows reach it; a press selects nothing (activate and selectTab refuse).
   assert.match(source, /const enabledItems = this\.displayItems\.filter\(\(item\) => !overflowed\.has\(item\.index\)\);/u);

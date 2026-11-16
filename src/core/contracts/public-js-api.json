@@ -1608,7 +1608,13 @@
       "doc": "components/navigation/tab#javascript",
       "kind": "object",
       "loaded_by": "component/tab",
-      "summary": "The Tab component's script API, loaded with the component (component/tab); its methods are the component's documentation.",
+      "summary": "The legacy Tab component's script API, loaded with the component (component/tab): a dated alias until 2027-01-01, every read noted in SF.deprecations (journal global-sf-tab-to-sf-tabs, owner decision C263). Write sf-tabs.",
+      "deprecated": {
+        "since": "2026-11-16",
+        "remove_after": "2027-01-01",
+        "journal": "global-sf-tab-to-sf-tabs",
+        "to": "sf-tabs"
+      },
       "members": [
         "init",
         "activate"

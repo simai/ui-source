@@ -198,6 +198,34 @@ export default {
       }
     },
     {
+      "journal": "class-c187-doc-to-docara",
+      "decision": "C187 (8)",
+      "component": "doc",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "The documentation helpers (sample frame, pair, source, lead, code, checkerboard and stripes) belong to the documentation site: Docara draws them (D20 already holds the example frame). The Framework keeps the sheet until the date.",
+      "names": {
+        "sf-doc-example": null,
+        "sf-doc-pair": null,
+        "sf-doc-source": null,
+        "sf-doc-lead": null,
+        "sf-doc-code": null,
+        "sf-doc-checkerboard": null,
+        "sf-doc-stripes": null
+      }
+    },
+    {
+      "journal": "class-editor-utility-retired",
+      "decision": "C170",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "src/utility/editor held one rule, .editor--default.active on the popover layer, and no Loader rule or build ever shipped it. An editor's layers belong to sf-editor-overlay (C170); the folder leaves after the date.",
+      "names": {
+        "editor--default": "sf-editor-overlay"
+      }
+    },
+    {
       "journal": "class-c96-tabs-looks",
       "decision": "C96 (1)",
       "component": "sf-tabs",

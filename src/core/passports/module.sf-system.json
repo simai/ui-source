@@ -37,7 +37,7 @@
     "src/component/sf-system/js/search/_search.js",
     "src/component/sf-system/js/topZIndex/topZIndex.js"
   ],
-  "content_sha256": "d594a9c0f2ef287771cd312afe063f7c455ca47f743b52922c0f5a7f0e71ee16",
+  "content_sha256": "4786c11a5df197b4b9a6500bd97609ee2dc7692896f9687dc42a613a4d4fe797",
   "dependencies": [
     {
       "id": "core.runtime",

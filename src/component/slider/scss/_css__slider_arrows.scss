@@ -2,7 +2,6 @@
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-slider-arrows {
   background-color: var(--sf-slider-arrows--background-color, transparent);
   box-shadow: var(--sf-slider-arrows--box-shadow);
