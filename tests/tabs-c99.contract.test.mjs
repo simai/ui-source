@@ -56,7 +56,7 @@ test('TS-4: the selected line is 2 px under the letters, not the tab border', ()
   assert.match(line, /border-block-end: var\(--sf-tabs-indicator-width, calc\(var\(--sf-tabs--border-width, var\(--sf-px\)\) \* 2\)\) solid var\(--sf-tabs-indicator-color, var\(--sf-primary\)\)/u);
   assert.match(sheet, /--sf-tabs--line-drop: var\(--sf-button--padding-bottom\)/u);
   // The shortened current tab clips its label; its line is drawn by the tab.
-  assert.match(sheet, /\.sf-tabs-squeezed > \.sf-button > \.sf-button-text-container \{\s*position: static;/u);
+  assert.match(sheet, /\.sf-tabs-squeezed > \.sf-button > \.sf-button-text-container,?[^{]*\{\s*position: static;/u);
 });
 
 test('TS-5: the first tab has no start padding, the last no end padding, outside fit', () => {

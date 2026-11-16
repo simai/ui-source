@@ -24,10 +24,10 @@ const rule = (css, selector) => {
   return css.slice(at, css.indexOf('}', at));
 };
 
-test('versions: smart.steps 1.4.3, component.step 1.3.3', () => {
+test('versions: smart.steps 1.4.3, component.step 1.4.0', () => {
   assert.equal(component.version, '1.4.3');
   assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.3');
-  assert.equal(json('src/component/step/passport.json').version, '1.3.3'); // docs batch B, FW-B-8: size 1 named; above C61's 1.3.2
+  assert.equal(json('src/component/step/passport.json').version, '1.4.0'); // RG-NV 30 (the 1.2.0 markup as a dated alias) and C241; above 1.3.5 on origin/fix/scrollbar-system-c210
 });
 
 test('C101 (1) role: an ordered process of a person; a server job is sf-progress-run, tasks in any order are not steps', () => {
@@ -40,7 +40,10 @@ test('C101 (1) role: an ordered process of a person; a server job is sf-progress
 
 test('C101 (2) look: marker, label, line -- 2 px progress behind current, 1 px outline-variant after; no pills, no separator glyph', () => {
   assert.doesNotMatch(template, /sf-steps-separator|chevron_right|separatorIcon/);
-  assert.doesNotMatch(stepsCss + stepCss, /\.sf-steps-separator|primary-container/);
+  // The retired 1.2.0 markup (RG-NV 30) keeps its separator class until
+  // 2027-01-01 and draws it as the line: outside that block, none.
+  const current = stepCss.slice(0, stepCss.indexOf('/* The 1.2.0 markup')) + stepCss.slice(stepCss.indexOf('@layer sf.states'));
+  assert.doesNotMatch(stepsCss + current, /\.sf-steps-separator|primary-container/);
   const line = rule(stepsCss, '.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step:not(:last-child)::after');
   assert.match(line, /block-size: var\(--sf-px\);/);
   assert.match(line, /background-color: var\(--sf-steps-separator-color, var\(--sf-outline-variant\)\);/);

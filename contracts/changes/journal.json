@@ -13744,7 +13744,7 @@
         {"component": "step", "from": "sf-step--stage-error", "to": "sf-step--state-error"},
         {"component": "step", "from": "sf-steps-separator--directional", "to": null}
       ],
-      "deprecated_on": "2026-11-16",
+      "deprecated_on": "2026-11-14",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
       "examples": {
