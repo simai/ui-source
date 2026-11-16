@@ -112,13 +112,17 @@ test('the plain download parts are noted as deprecated; the journal records them
 });
 
 const distribution = process.env.UI_CORE_ROOT ? resolve(process.env.UI_CORE_ROOT, 'distr') : null;
-const sheets = (folder) => readdirSync(folder).flatMap((name) => {
+// The readable sheets, or the minified ones where a distribution ships only
+// those (the published npm pair does).
+const sheets = (folder, min = false) => readdirSync(folder).flatMap((name) => {
   const path = join(folder, name);
-  return statSync(path).isDirectory() ? sheets(path) : name.endsWith('.css') && !name.endsWith('.min.css') ? [path] : [];
+  return statSync(path).isDirectory() ? sheets(path, min) : name.endsWith('.css') && name.endsWith('.min.css') === min ? [path] : [];
 });
 const built = (unit) => {
   const folder = join(distribution, 'components', unit);
-  const roots = existsSync(folder) ? sheets(folder) : sheets(distribution).filter((path) => path.includes(`/${unit}/`));
+  const find = (min) => (existsSync(folder) ? sheets(folder, min) : sheets(distribution, min).filter((path) => path.includes(`/${unit}/`)));
+  const readable = find(false);
+  const roots = readable.length ? readable : find(true);
   assert.ok(roots.length, `the build ships a ${unit} sheet`);
   return roots.map((path) => readFileSync(path, 'utf8')).join('\n');
 };
