@@ -136,6 +136,26 @@ function fieldMessage(control, word) {
   return word('invalid');
 }
 
+// A plain control (no Framework field around it) shows the browser's own
+// bubble; the wizard gives that bubble the Framework's words through the
+// control's custom validity (C153 (3), study WZ-6) and marks what it set, so
+// the next check and the person's edit take it off again. A custom error the
+// page set itself is never touched.
+const OWN_WORDS = 'data-sf-wizard-words';
+
+function sayInWords(control, message) {
+  if (!message || typeof control?.setCustomValidity !== 'function') return;
+  if (control.validity?.customError && !control.hasAttribute(OWN_WORDS)) return;
+  control.setCustomValidity(message);
+  control.setAttribute(OWN_WORDS, '');
+}
+
+function dropWords(control) {
+  if (!control?.hasAttribute?.(OWN_WORDS)) return;
+  control.removeAttribute(OWN_WORDS);
+  control.setCustomValidity?.('');
+}
+
 function hiddenWithin(node, root) {
   const hidden = node.parentElement?.closest('[hidden]');
   return Boolean(hidden && hidden !== root && root.contains(hidden));
@@ -554,6 +574,9 @@ class SfWizard extends WizardElement {
       if (['input', 'select', 'textarea'].includes(node.localName)) return node.willValidate !== false;
       return node.constructor?.formAssociated === true && node.willValidate;
     });
+    // The words the last check gave plain controls go first: the browser
+    // checks the value as it is now.
+    controls.forEach(dropWords);
     // checkValidity fires the native invalid events this wizard listens to:
     // the wizard's own check speaks once, below.
     this._validating = true;
@@ -603,6 +626,8 @@ class SfWizard extends WizardElement {
       }
       this._marked.add(field);
     } else {
+      // A plain control: the browser's bubble, in the Framework's words.
+      sayInWords(control, fieldMessage(control, (key) => this.sfWord(key)));
       control.setAttribute('aria-invalid', 'true');
       control.setAttribute('data-sf-wizard-invalid', '');
       this._marked.add(control);
@@ -624,6 +649,7 @@ class SfWizard extends WizardElement {
         }
       } else {
         node.removeAttribute('aria-invalid');
+        dropWords(node);
       }
     }
   }
@@ -772,6 +798,9 @@ class SfWizard extends WizardElement {
           if (href) this.follow(next && !last ? next.name : step.name, href, event);
           return;
         }
+        // The browser checks the post: the words the last check gave plain
+        // controls go first, it sees the value as it is now.
+        step.element?.querySelectorAll(`[${OWN_WORDS}]`).forEach(dropWords);
         if (which === 'skip') {
           // Skip posts without validation: the browser reads novalidate on
           // the form when the press's default action runs, after this.
