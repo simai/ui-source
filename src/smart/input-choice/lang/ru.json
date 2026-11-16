@@ -1,6 +1,7 @@
 {
   "title": "Выбор",
   "runtime": {
-    "value-missing": "Выберите вариант."
+    "value-missing": "Выберите вариант.",
+    "help": "Подробнее: {label}"
   }
 }

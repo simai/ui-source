@@ -21,7 +21,11 @@ export function elementBadge(element) {
     }, element);
     // The sheet that places it comes with the badges component; an element
     // whose rule fetches it lazily asks for it when there is a badge to show.
-    if (state.visible) globalThis.SF?.Loader?.ensurePlugin?.('badges');
+    if (state.visible) {
+        globalThis.SF?.Loader?.ensurePlugin?.('badges');
+        // The dot it draws is the Framework's one dot (C185 (8)): its sheet.
+        globalThis.SF?.Loader?.ensurePlugin?.('dot');
+    }
     return state;
 }
 
@@ -31,13 +35,18 @@ export function hasBadge(badge) {
 }
 
 /** The badge itself: the digits and the dot hidden from assistive technology. */
+// The dot is the Framework's one dot (owner decision C185 (8)): an .sf-dot
+// stands in every anchored badge after the digits, and the badge sheet shows
+// it wherever the badge is a dot -- asked for, or a count on an anchor too
+// small for figures --, in the badge's colour and the step's point size; the
+// badge keeps the place and the ring that cuts it out.
 export function renderAnchoredBadge(badge) {
     if (!badge?.visible) return nothing;
     return html`<span
         class="sf-badge sf-badge--anchored${badge.dot ? ' sf-badge--dot' : ''}"
         aria-hidden="true"
         title=${badge.phrase || nothing}
-    >${badge.text}</span>`;
+    >${badge.text}<span class="sf-dot"><span class="sf-dot-item"></span></span></span>`;
 }
 
 /** The phrase for a name read from content, out of sight. */

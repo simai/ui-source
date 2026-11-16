@@ -24,6 +24,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import {propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {renderFormTemplate} from './js/templates/default';
+import {isListChoice, renderChoiceList} from './js/choice-list.js';
 import manifest from './component.json';
 import enFile from './lang/en.json';
 import ruFile from './lang/ru.json';
@@ -539,8 +540,9 @@ class SfForm extends FormElement {
   fieldContext(field, {editing, instant, id}) {
     const value = this._values[field.key];
     const host = this.hostOf(field);
+    // A short choice is a ready group of radios or checks (C165 (1)).
     const control = editing
-      ? renderEditField(field, value, host, this.renderOptions())
+      ? (isListChoice(field) ? renderChoiceList(field, value, host) : renderEditField(field, value, host, this.renderOptions()))
       : renderViewField(field, value, host);
     // A required yes/no under apply submit is a checkbox, which carries its
     // label beside the box (C165 (4)): no label row over it.

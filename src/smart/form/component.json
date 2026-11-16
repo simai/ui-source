@@ -2,7 +2,7 @@
   "$comment": "The source of sf-form's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C182 (2026-11-14; study control/research/2026-11-14-form.md, prototype prototypes/form-study.html), a form drawn from field descriptions over the Framework's field renderers.",
   "id": "smart.form",
   "tag": "sf-form",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "form",
   "settings": {
@@ -309,7 +309,8 @@
     "footer (C182 (7), C159 (4), C157 (3), C105 H5): the buttons under the last field, 24 under it (--sf-space-3), «Сохранить» first at the start and «Отмена» after it, --sf-space-1/3 apart (8; 4 compact). «Сохранить» is never disabled. After the first change a polite status «Есть несохранённые изменения» stands under the buttons, 8 under them. footer=\"sticky\" keeps them in a bar at the bottom of the scrolling place, on the place's solid surface over a line.",
     "view (C182 (8)): mode view draws every value as text with renderViewField, the label row above it, and «Изменить» (an outline button) under them; disabled fields are not used for read-only. «Изменить» opens edit with the focus on the first field; «Сохранить» (not cancelled) and «Отмена» return to view with the focus on «Изменить».",
     "apply (C182 (9)): one component. submit -- a native form (novalidate), Enter in a one-line field submits it; instant -- no buttons and no required note, change {key, value} per field.",
-    "spacing (C52, C105, C144): between fields --sf-space-1, between groups and before the buttons --sf-space-3, the group line on the outline-variant role, label to control --sf-space-1/4; values only from the space system."
+    "spacing (C52, C105, C144): between fields --sf-space-1, between groups and before the buttons --sf-space-3, the group line on the outline-variant role, label to control --sf-space-1/4; values only from the space system.",
+    "version 1.1.0 (2026-11-15, owner decision C165 (1), (3); research ui-control control/research/2026-11-14-checks.md, prototype prototypes/checks-study.html): a minor. A short choice field -- an editable choice or choices of at most five options without variant buttons, select or checklist (js/choice-list.js LIST_MOST) -- is drawn through sf-input-choice appearance=\"list\" (sf-input-choice 1.5.0): a column of radios for a choice of one, of checks for a choice of several, up to three short options in a row (flow auto). Before, both were a dropdown. The form keeps its label row (label, «*», «?») and its hint; the group is named by the label and says its error under its last row. The value is written back in the option's own type, the list in the options' order. A longer list, a read-only field and a field that names its own variant are drawn as before."
   ],
   "x-registry": {
     "capabilities": [

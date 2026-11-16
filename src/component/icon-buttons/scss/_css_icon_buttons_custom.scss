@@ -299,3 +299,71 @@
     cursor: default;
   }
 }
+
+/* The plain look, sf-icon-button--plain (1.11.0, owner decision C201,
+   2026-11-15; study icon-button-plain-study.html#q-icon-plain, variant B1;
+   the name is the owner's, D11e). An icon inside another element -- a field's
+   actions, the help mark at a heading, copy in a code block, the plain copy
+   component -- with no plate in any state: only the glyph's ink moves, at rest
+   --sf-on-surface-variant, under the pointer --sf-on-surface, on a press
+   --sf-primary. The focus ring is every button's (the base rule in sf.states),
+   the hit area is the icon button's of the same size (the size classes above).
+   A plain icon button is neutral whatever the scheme or the status say: a
+   destructive or coloured action stays a ghost or an outline. Panels and
+   toolbars keep the looks with a plate (C15, C116); the ghost look, drawn by
+   sf-icon-button--link, is unchanged. The ink is a variable of the button, as
+   every look sets it, so the copy result's ink and a page's
+   --sf-icon-button-color at rest still reach the glyph. */
+@layer sf.components {
+  .sf-icon-button.sf-icon-button--plain {
+    --sf-icon-button--background-color: transparent;
+    --sf-icon-button--border-color: transparent;
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+
+  .sf-icon-button.sf-icon-button--plain.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon,
+  .sf-icon-button.sf-icon-button--plain.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+}
+
+/* The states. No plate in any state, a pressed toggle included -- its cues
+   are the primary ink and the filled glyph: the fill, the image and the edge
+   are written as properties, which no other state rule writes on an icon
+   button except over a tonal or surface fill and in forced colours (the
+   pressed toggle's Highlight edge stays there), so the pressed toggle's
+   variables, however specific, never reach the paint. The ink rules repeat
+   the class to stand over the scheme rules that also move the ink under a
+   pointer (the on-surface catch-up above) and the pressed toggle's ink. */
+@layer sf.states {
+  .sf-icon-button.sf-icon-button--plain {
+    --sf-icon-button--focus-ink: transparent;
+    background-color: transparent;
+    background-image: none;
+    border-color: transparent;
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--plain:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--plain:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active, .sf-icon-button--pressed, [aria-pressed="true"]) {
+    --sf-icon--color: var(--sf-primary);
+  }
+
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--plain:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-icon-button.sf-icon-button--plain:not(:disabled, [aria-disabled="true"]):not(.disabled):hover .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface);
+  }
+
+  .sf-icon-button.sf-icon-button--plain:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-primary);
+  }
+
+  .sf-icon-button.sf-icon-button--plain:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface-disabled);
+  }
+}

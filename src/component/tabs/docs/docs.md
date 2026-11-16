@@ -66,7 +66,11 @@ edge to edge (`--sf-tabs-gap`, default `--sf-space-0`); each tab has the button
 padding of its size (`--sf-ui-<size>--space-x`, or `--sf-tabs-padding-inline`),
 the label none, the first tab none at its start and the last none at its end
 (kept in a shared `fit` row), and the selected line is drawn under the label's
-letters, not as the tab's border. Vertical rows stand `--sf-space-1/4` apart
+letters, not as the tab's border. The row of a `--overflow-more` list is a container
+(`sf-tabs-row`): below the h1 step of its own width (44rem, owner decision C181
+(2)) two to four tabs share it in the sheet, so a printed row is the row the
+script lays; the script marks a narrow row whose tabs keep their own widths
+with `data-sf-tabs-own` (`fit="never"`, a row that does not fit). Vertical rows stand `--sf-space-1/4` apart
 with `--sf-space-1` padding. A tab's icon stands the button's icon gap from
 its label in every look (owner decision C105 H1: `--sf-ui-<size>--text-space-x`,
 7 / 8 / 10 at 1440, one step down in compact density, 6 / 6 / 8 on a phone);

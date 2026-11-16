@@ -131,6 +131,7 @@
         "smart.button-icon",
         "smart.dropdown",
         "smart.editor-inline",
+        "smart.empty-state",
         "smart.icon",
         "smart.input",
         "smart.menu-context",

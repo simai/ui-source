@@ -70,7 +70,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.9.0');
+  assert.equal(contract.version, '1.9.1');
   // 1.7.0 (C40): the values are sf-change's list, which it fetches.
   assert.ok(contract.relations.some(({name}) => name === 'cl-change'));
   assert.match(read('src/smart/confirm-change/js/templates/default.js'), /<sf-change class="sf-confirm-change__list sf-change-confirm__list" layout="list" \.changes=/u);
@@ -99,7 +99,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.3.7');
+  assert.equal(contract.version, '1.3.8'); // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
@@ -148,4 +148,17 @@ test('C166 (4), R245: every question puts its answers first, at the start, 8 apa
   // On a phone the answers share the row in halves in every form, measured.
   assert.match(css, /\.sf-confirm__actions > sf-button > button \{\s*inline-size: 100%;/u);
   assert.match(read('src/smart/confirm/index.js'), /const actions = this\.querySelector\("\.sf-confirm__actions"\);/u);
+});
+
+test('sf-confirm-change 1.9.1 (RG-DP-1): expires-at names the event the card fires, not its former name', () => {
+  const summary = json('src/smart/confirm-change/component.json').settings['expires-at'].summary;
+  assert.match(summary, /says so once with sf-confirm-change-expired\./u);
+  assert.doesNotMatch(summary, /sf-change-confirm-expired/u);
+  const manifest = json('src/smart/confirm-change/smart.manifest.json');
+  assert.equal(manifest.version, '1.9.1');
+  assert.equal(manifest.inputs.properties['expires-at'].description, summary);
+  // The former names stay dated aliases until their date (the aliases are unchanged).
+  const events = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'event');
+  assert.ok(events.some((row) => row.from === 'sf-change-confirm-expired'));
+  assert.ok(events.some((row) => row.to === 'sf-change-confirm-expired'));
 });

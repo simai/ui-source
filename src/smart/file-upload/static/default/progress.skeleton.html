@@ -15,34 +15,38 @@
 </div>
 <input type="file" class="sf-file-upload-input" hidden tabindex="-1" aria-hidden="true"></div>
 <div class="sf-file-upload-message" role="status" hidden data-sf-static aria-hidden="true"></div>
-<div class="sf-file-upload-files grid grid-col-1 gap-1 w-full" data-sf-static aria-hidden="true">
+<div class="sf-file-upload-files grid grid-col-1 gap-1/2 w-full" role="list" data-sf-static aria-hidden="true">
 
-<div class="sf-upload-progress sf-upload-progress--size-1 sf-upload-progress--process flex items-main-start items-cross-start" data-index="0">
-<i class="sf-icon" aria-hidden="true">picture_as_pdf</i>
-<div class="sf-upload-progress-content flex flex-col flex-1">
-<div class="sf-upload-progress-top flex content-main-between">
-<div class="sf-upload-progress-left flex flex-col">
-<div class="sf-upload-progress-name"><span class="sf-first-paint-bar" aria-hidden="true">report.pdf</span></div>
-<div class="sf-upload-progress-text"><span class="sf-first-paint-bar" aria-hidden="true">1.2MB</span></div>
-</div>
-
-<button type="button" data-action="remove" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 flex items-cross-center content-main-center self-cross-start" aria-label="Удалить report.pdf">
-<i class="sf-icon" aria-hidden="true">delete</i>
-</button>
-</div>
-
-
-<sf-progress-bar text-position="inline-end" size="1" value="40" style="display: contents;" data-sf-size-relative label="Загрузка report.pdf" data-sf-upload-label="Загрузка report.pdf">
-<div aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1 flex flex-row items-cross-center" data-value="40" data-position="inline-end" role="progressbar" aria-valuenow="40" data-sf-progress-bar-bound="1" data-label="Загрузка report.pdf" aria-label="Загрузка report.pdf" data-sf-static aria-hidden="true">
+<div class="sf-file-upload-item" role="listitem" data-index="0">
+<sf-file-preview file-name="report.pdf" file-size="1.2MB" state="uploading" value="40" download-action="false" style="display: contents;">
+<div data-render-managed="1" class="sf-file-preview sf-file-preview--row sf-file-preview--uploading" role="group" aria-label="report.pdf" aria-busy="true" data-sf-static aria-hidden="true">
+<span class="sf-file-preview-holder"><i class="sf-icon" aria-hidden="true">picture_as_pdf</i></span>
+<span class="sf-file-preview-main">
+<span class="sf-file-preview-name" title="report.pdf" data-lines="2"><span class="sf-file-preview-full" aria-hidden="true"><span class="sf-first-paint-bar" aria-hidden="true">report.pdf</span></span><span class="sf-file-preview-fit" aria-hidden="true"></span><span class="sf-file-preview-said"><span class="sf-first-paint-bar" aria-hidden="true">report.pdf</span><span class="sf-first-paint-bar" aria-hidden="true">, PDF</span></span></span>
+<sf-progress-bar class="sf-file-preview-progress" size="1/2" text-position="inline-end" value="40" label="Загрузка report.pdf" data-sf-size-relative style="display: contents;">
+<div aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1/2 flex flex-row items-cross-center" data-value="40" data-position="inline-end" data-label="Загрузка report.pdf" data-value-text="40&nbsp;%" role="progressbar" aria-label="Загрузка report.pdf" aria-valuenow="40" aria-valuetext="40&nbsp;%" data-sf-progress-bar-bound="1" data-sf-static aria-hidden="true">
 
 <div class="sf-progress-bar-main">
 <div class="sf-progress-bar-progress transition" style="width: 40%;"></div>
 </div>
-<div class="sf-progress-bar-text" aria-hidden="true"><span class="sf-first-paint-bar" aria-hidden="true">40%</span></div>
+<div class="sf-progress-bar-text" aria-hidden="true"><span class="sf-first-paint-bar" aria-hidden="true">40&nbsp;%</span></div>
 </div>
 </sf-progress-bar>
+</span>
+
+<span class="sf-file-preview-actions">
+
+
+
+<button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1" data-action="remove" aria-label="Убрать report.pdf">
+<i class="sf-icon" aria-hidden="true">close</i>
+</button>
+
+</span>
+
 
 </div>
+</sf-file-preview>
 </div>
 
 </div>

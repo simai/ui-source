@@ -159,7 +159,7 @@ class SfTileMetric extends TileMetricElement {
     const statusWord = status === 'neutral' ? '' : this.words(`status-${status}`);
     return {
       value: this.valueText || '000 000',
-      change: promised || !limited ? '+00,0 %' : '',
+      change: promised || !limited ? '+00,0\u00a0%' : '',
       limit: limited ? (this.limitText || this.words('limit', {value: '00', max: this.say(max)})) : '',
       status: this.hint || statusWord,
     };

@@ -99,7 +99,13 @@ export function renderInputTemplate(context) {
   const showClear = editable && (clearable || inputType === 'search');
   const nativeType = isPassword && revealed ? 'text' : inputType;
   const clearWord = context.component?.sfWord?.('clear') || 'Clear';
-  const revealWord = context.component?.sfWord?.('reveal') || 'Show password';
+  // The reveal's name says what a press does next (C12 (3), C123 (4)): «Показать
+  // пароль» while the password is hidden, «Скрыть пароль» while it shows. A
+  // name that changes carries no aria-pressed -- the field-renderers' password
+  // eye said it so, and since TI-7 it is this one.
+  const revealWord = revealed
+    ? context.component?.sfWord?.('conceal') || 'Hide password'
+    : context.component?.sfWord?.('reveal') || 'Show password';
   // C191 (3): while the focused password field types with Caps Lock on, a line
   // in the hint's place and type says so; a polite live region after the
   // label says it to assistive technology (the line itself is not read twice).
@@ -128,7 +134,6 @@ export function renderInputTemplate(context) {
           class="sf-field-action sf-input-reveal"
           data-action="reveal"
           aria-label=${revealWord}
-          aria-pressed=${revealed ? 'true' : 'false'}
           @click=${(event) => context.component?.toggleReveal?.(event)}
         ><sf-icon icon=${revealed ? 'visibility_off' : 'visibility'} aria-hidden="true"></sf-icon></button>`
       : nothing}

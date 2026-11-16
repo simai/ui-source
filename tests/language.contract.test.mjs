@@ -16,7 +16,7 @@ const template = read('src/smart/language/js/templates/default.js');
 test('the manifest: a leaf of family language, a form field with one cancellable change and select', () => {
   assert.equal(manifest.tag, 'sf-language');
   assert.equal(manifest.family, 'language');
-  assert.equal(manifest.version, '1.4.3'); // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2)
+  assert.equal(manifest.version, '1.4.4'); // fix/returns-gb67: TT-11, the trigger's name is the Framework tooltip // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2)
   assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'missing', 'home', 'mode', 'inline-max', 'search-from', 'labels', 'size', 'apply', 'remember', 'label', 'name', 'disabled']);
   assert.deepEqual(manifest.settings.mode.values, ['auto', 'inline', 'menu', 'search', 'field']);
   assert.deepEqual(manifest.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
@@ -28,7 +28,7 @@ test('the manifest: a leaf of family language, a form field with one cancellable
   assert.deepEqual(Object.keys(manifest.events.change.carries), ['value', 'previous', 'href', 'dir', 'reason']);
   assert.deepEqual(Object.keys(manifest.actions), ['select']);
   assert.equal(manifest.form.value, 'value');
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button', 'cl-icon', 'cl-menu-context', 'cl-dropdown']);
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button', 'cl-icon', 'cl-menu-context', 'cl-dropdown', 'tooltip']); // tooltip: the trigger's name tooltip, TT-11
   assert.equal(manifest['css-variables'], undefined, 'no sheet of its own');
 });
 

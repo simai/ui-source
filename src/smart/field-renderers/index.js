@@ -752,13 +752,23 @@ function renderDateCell(field, value, host) {
     return defaultDateText(field, value, host);
 }
 
+// A share of a limit (owner decision C203 (5), IM-8): the `meter` variant of a
+// number 0..100 is the inline sf-progress-bar meter -- a 64 track, the number
+// «72 %» before it -- named by the field's label. The scale stays for levels
+// («4 из 5», C185 (5)). Out of range it is left as text, as the scale is.
+function meterProps(field, number) {
+    const name = typeof field.label === 'string' ? field.label : (field.key || '');
+    return {inline: true, meter: true, value: String(number), ...(name ? {label: name} : {})};
+}
+
 function renderNumericCell(field, value, host) {
     const variant = field.variant || field.filter?.variant;
     const number = Number(scalarValue(value));
-    if (variant !== 'scale' || !Number.isFinite(number)) {
+    if ((variant !== 'scale' && variant !== 'meter') || !Number.isFinite(number)) {
         return renderHostFormattedCell(field, value, host);
     }
     if (number < 0 || number > 100) return null;
+    if (variant === 'meter') return {component: {type: 'progress-bar', props: meterProps(field, number)}};
 
     return {
         component: {
@@ -2356,6 +2366,10 @@ function renderNumberView(field, value, host) {
 
     if (variant === 'scale' && Number.isFinite(number) && number >= 0 && number <= 100) {
         return html`<sf-progress-scale size="1" value=${String(number)}></sf-progress-scale>`;
+    }
+    if (variant === 'meter' && Number.isFinite(number) && number >= 0 && number <= 100) {
+        const {label} = meterProps(field, number);
+        return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing}></sf-progress-bar>`;
     }
 
     const text = viewText(field, value, host);

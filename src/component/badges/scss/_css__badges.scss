@@ -129,7 +129,15 @@
   white-space: nowrap;
 }
 
+/* A badge that names no size is the 1/3 badge (24 high), and so is its
+   icon: the text's size 1/3 (12), as .sf-badge--size-1/3 gives it. The icon
+   sizes lived in the size classes alone, so an unsized badge's icon took the
+   icon's own 24 and the badge drew 32 high, 28 on the phone (RG-BD-1). The
+   size classes below override these. */
 .sf-badge .sf-icon {
+  --sf-icon--font-size: var(--sf-badge--font-size);
+  --sf-icon--height: var(--sf-text-size-1\/3);
+  --sf-icon--width: var(--sf-text-size-1\/3);
   color: var(--sf-icon--color);
   font-size: var(--sf-icon--font-size);
   height: var(--sf-icon--height);

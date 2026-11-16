@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-bar's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/progress-bar (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.progress-bar",
   "tag": "sf-progress-bar",
-  "version": "1.4.1",
+  "version": "1.5.2",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -68,12 +68,17 @@
     "paused": {
       "type": "boolean",
       "default": false,
-      "summary": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
+      "summary": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35\u00a0%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
     },
     "meter": {
       "type": "boolean",
       "default": false,
       "summary": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
+    },
+    "inline": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The row-end look of a meter (owner decision C203, 2026-11-15): a settings row, a table cell, the end of a list row. The track has its own width, 64 (--sf-progress-bar-track-size sets another), which the number does not take; it is 4 thick at every size, density and width; the number stands before it, always shown, «72 %», and takes the status colour at a threshold. text-position does not apply. Use it with meter; full-width bars keep C131."
     },
     "label": {
       "type": "string",
@@ -150,6 +155,10 @@
       "state": "default"
     },
     "--sf-progress-bar-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-progress-bar-track-size": {
       "type": "length",
       "state": "default"
     }
@@ -255,7 +264,10 @@
     "version 1.3.2 (2026-11-10, pair-next candidate sweep): a patch, nothing drawn or done differently. The template context carried the drawn status and the spoken value text under status and valueText, the names of the settings, so a paused bar's context said warning and «0%, paused» where the settings said nothing (template-context probe). They are drawnStatus and spokenValueText now; the settings keep their getters and manifest defaults.",
     "version 1.3.3 (2026-11-13, PG-16 of control/research/2026-11-13-progress-family.md, component.progress-bar 1.2.1): under reduced motion an indeterminate bar draws no segment; the whole track is tinted with the fill at 32 % (the top of the fill family), where a segment standing at the start read as 30 % done. Interim until the owner picks the look (#q-motion). Paused keeps its segment at the start (its look waits with #q-motion). Settings, values, events and keys unchanged.",
     "version 1.4.0 (2026-11-13, owner decision C131, component.progress-bar 1.3.0): no status (empty, the new default) draws the theme's primary and neutral is grey, as in sf-dot and sf-badge (primary is the former word for the default); the track is the family's one neutral fill (12 % with C113); the bar is 4 / 4 / 8 / 8 / 12 px at 1/3...3 with round ends, the same on a phone, 8 by default; the text stands only on top (label at the start, value at the end) or at inline-end -- bottom and right are former words until 2027-01-01; meter gives role meter (as on sf-progress-ring; the name is final by owner decision C138, 2026-11-14); reduced motion tints the whole track 32 % for indeterminate (C131 (8)).",
-    "version 1.4.1 (2026-11-15, group build 6; numbered above 1.4.0 on refs/remotes/origin/fix/accordion-c154): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); its Kazakh words ride lang/kk.json (C177 (7) pilot draft, fix/languages-c177)."
+    "version 1.4.1 (2026-11-15, group build 6; numbered above 1.4.0 on refs/remotes/origin/fix/accordion-c154): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); its Kazakh words ride lang/kk.json (C177 (7) pilot draft, fix/languages-c177).",
+    "version 1.5.0 (2026-11-15, owner decision C203, control/research/2026-11-15-inline-meter.md, prototypes/inline-meter-study.html; component.progress-bar 1.4.0; above 1.4.1 of group build 6): a minor. inline (boolean, off) draws the row-end look of a meter: a track of its own width 64 (--sf-d6; the new public variable --sf-progress-bar-track-size sets another) that the number does not take (IM-1: no collapse to 0 in a settings row's auto column, no stretch over a list row; IM-2), 4 thick at every size, density and width (C203 (2)), the number before the track, always shown, end-aligned in one box width so a column of bars lines up (C203 (3)), and the number in the warning or error colour at a threshold (C203 (4), IM-7); text-position does not apply to it. For every bar: the per cent is written «72 %» -- the number in the page's language, a no-break space (U+00A0) and the sign, in every language (C203 (3), IM-3; DEV msg-913fd9e4: one spelling), and a screen reader hears the same text as aria-valuetext when the page gives no value-text (it heard «72»); the paused words carry the no-break space too. Size 1/3 writes its number at the text step 1/3, 12, where it was 10 (IM-5). A compact region moves the thickness a whole step down with the text (C79, C131 (3), IM-4): size 1 is 4, size 3 is 8. Events and keys unchanged.",
+    "version 1.5.1 (2026-11-15, RG-R-53; numbered above 1.5.0 on refs/remotes/origin/fix/progress-meter-inline-c203; component.progress-bar 1.4.1): a patch, nothing drawn differently. Every change is drawn by the template: the bar no longer patches value, label, position, status, indeterminate, paused or meter into its drawn markup through the class, whose textContent took out Lit's marker and text node, so the next drawing (a language change, a size) failed with «Cannot set properties of null (setting 'data')» (three bars of sf-file-upload in the file-upload recipe, 1 load in 10 on ui-994f9db407fa; every load under 6x CPU throttling). Settings, values, events and keys unchanged.",
+    "version 1.5.2 (2026-11-15, DEV return MR-2 of the GB6+GB7 intent acceptance; numbered above 1.5.1 on origin/fix/progress-bar-text-part-r53): a patch: the threshold logic (thresholdStatus, effectiveStatus, still exported here) moved to src/component/progress-threshold.js, the one source with sf-progress-scale and the class scale (C131 (7)); an empty warning-at or error-at is no threshold (it read 0 before)."
   ],
   "x-registry": {
     "capabilities": [

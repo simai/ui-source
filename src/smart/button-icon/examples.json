@@ -76,6 +76,21 @@
       }
     },
     {
+      "name": "plain",
+      "title": "Значок внутри элемента: без подложки",
+      "settings": {
+        "size": "1/2",
+        "icon": "info",
+        "appearance": "plain"
+      },
+      "attributes": {
+        "aria-label": "Подробнее"
+      },
+      "expect": {
+        "appearance": "plain"
+      }
+    },
+    {
       "name": "link",
       "title": "Ссылка: скачать файл из строки",
       "settings": {

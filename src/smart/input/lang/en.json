@@ -16,7 +16,8 @@
     "bad-input": "Enter a number",
     "count-text": "{count} / {max}",
     "help": "More about: {label}",
-    "caps-lock": "Caps Lock is on"
+    "caps-lock": "Caps Lock is on",
+    "conceal": "Hide password"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

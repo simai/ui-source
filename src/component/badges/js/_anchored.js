@@ -47,6 +47,35 @@ function isElement(value) {
     return typeof Element !== 'undefined' && value instanceof Element;
 }
 
+// What the badge holds: its digits and, on an anchor or as a dot, the
+// Framework's one dot (owner decision C185 (8)) -- an .sf-dot after the
+// digits, which the badge sheet shows wherever the badge is a dot and hides
+// beside a count. Written only when it differs, so the observer's own write
+// ends the round.
+function dotOf(badge) {
+    return [...badge.children].find((child) => child.classList.contains('sf-dot')) || null;
+}
+
+function writeContent(badge, text, withDot) {
+    const dot = dotOf(badge);
+    const nodes = [...badge.childNodes];
+    const digits = nodes.filter((node) => node !== dot).map((node) => node.textContent).join('');
+    const tidy = nodes.every((node) => node === dot || node.nodeType === 3);
+    const dotAtEnd = withDot ? dot !== null && badge.lastChild === dot : dot === null;
+    if (digits === text && tidy && dotAtEnd) return;
+    if (!withDot) {
+        badge.textContent = text;
+        return;
+    }
+    const next = dot || badge.ownerDocument.createElement('span');
+    if (!dot) {
+        next.className = 'sf-dot';
+        next.append(badge.ownerDocument.createElement('span'));
+        next.firstChild.className = 'sf-dot-item';
+    }
+    badge.replaceChildren(...(text ? [text] : []), next);
+}
+
 function stateOf(badge) {
     return anchoredBadgeState({
         count: badge.getAttribute('data-count'),
@@ -157,7 +186,7 @@ function createRuntime() {
 
         if (badge.hidden !== !state.visible) badge.hidden = !state.visible;
         if (badge.classList.contains('sf-badge--dot') !== explicitDot) badge.classList.toggle('sf-badge--dot', explicitDot);
-        if (badge.textContent !== state.text) badge.textContent = state.text;
+        writeContent(badge, state.text, explicitDot || badge.classList.contains('sf-badge--anchored'));
         if (badge.getAttribute('aria-hidden') !== 'true') badge.setAttribute('aria-hidden', 'true');
         const title = state.visible && state.phrase ? state.phrase : null;
         if (badge.getAttribute('title') !== title) {

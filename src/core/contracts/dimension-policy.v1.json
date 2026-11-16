@@ -257,6 +257,15 @@
       "reason": "Sized from the text around them by decision: inline code's room (C10, R024: .2em by .4em), an underline's offset, the new-tab sign of a link at the size of its text (C186 (3)). No ladder step is a fixed share of every text size."
     },
     {
+      "id": "progress-bar-number-box",
+      "category": "style-review",
+      "filePattern": "^component/progress-bar/scss/_css__progressbar\\.scss$",
+      "contextPattern": "^\\s*min-inline-size: calc\\(3ch \\+ 1\\.4em\\);$",
+      "textPattern": "^1\\.4em$",
+      "status": "accepted-owner-decision",
+      "reason": "The inline meter's number box holds its widest value, «100 %» (C203 (3)): three tabular figures (3ch) and the no-break space with the per cent sign, 1.26em in Inter and 1.31em in Inter Fallback. It follows the number's own size; no ladder step is a fixed share of every text size."
+    },
+    {
       "id": "text-bar-capital-height",
       "category": "style-review",
       "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss|component/modal/scss/_css__modal_custom\\.scss)$",

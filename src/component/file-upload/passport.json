@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.file-upload",
   "kind": "component",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/file-upload/docs/docs.md",
@@ -19,7 +19,7 @@
     "src/component/file-upload/scss/_css__upload_progress.scss",
     "src/component/file-upload/scss/index.scss"
   ],
-  "content_sha256": "aeb722a6fe2705ffe39349e60e8ab3f9dc390218e15c45e67d502a109b2c1f82",
+  "content_sha256": "a9d0da88aa26846446b91e2a8b942e0d7e6c948b1837992278f9040c81453a78",
   "dependencies": [
     {
       "id": "core.runtime",

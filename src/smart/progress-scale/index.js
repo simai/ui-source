@@ -3,6 +3,7 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { fieldSize } from '../../component/field-size';
 import { setProgressScaleState } from '../../component/progress-scale/js/_progress_scale';
+import { effectiveStatus, readThreshold } from '../../component/progress-threshold';
 import { renderProgressScaleTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -44,16 +45,6 @@ const ProgressScaleElement = elementFromManifest(manifest, {
     },
   },
 });
-
-// The threshold the value reached (C131 (7)); unset thresholds are none.
-const RANK = { warning: 1, error: 2 };
-function thresholdReached(value, warningAt, errorAt) {
-  const number = Number(value);
-  if (!Number.isFinite(number)) return '';
-  if (Number.isFinite(errorAt) && number >= errorAt) return 'error';
-  if (Number.isFinite(warningAt) && number >= warningAt) return 'warning';
-  return '';
-}
 
 class SfProgressScale extends ProgressScaleElement {
   static get props() {
@@ -108,16 +99,13 @@ class SfProgressScale extends ProgressScaleElement {
 
   // A threshold holds only where the page set it.
   threshold(attribute) {
-    if (!this.hasAttribute(attribute)) return null;
-    const number = Number(this.getAttribute(attribute));
-    return Number.isFinite(number) ? number : null;
+    return readThreshold(this.getAttribute(attribute));
   }
 
   // The status drawn (C131 (7), as sf-progress-bar): the more serious of the
   // page's status and the threshold the value reached.
   get drawnStatus() {
-    const reached = thresholdReached(this.value, this.threshold('warning-at'), this.threshold('error-at'));
-    return (RANK[reached] ?? 0) > (RANK[this.status] ?? 0) ? reached : this.status;
+    return effectiveStatus(this.status, this.value, this.threshold('warning-at'), this.threshold('error-at'));
   }
 
   // The accessible name: label, else the host's aria-label (§3.1, §4.8).

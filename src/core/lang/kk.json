@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1192,
-    "translated": 1191,
+    "words": 1196,
+    "translated": 1195,
     "share": 99.9
   },
   "words": {
@@ -322,6 +322,7 @@
       "variant-integer-stepper": "«−» және «+» батырмаларымен",
       "type-number": "Сан",
       "variant-number-scale": "0–100 шкаласы",
+      "variant-number-meter": "Шек үлесі",
       "variant-number-stepper": "«−» және «+» батырмаларымен",
       "type-date": "Күн",
       "type-datetime": "Күн мен уақыт",
@@ -411,7 +412,7 @@
       "reject-size": "«{name}» — {size}, шегі — {max}",
       "reject-total": "«{name}» қосылмады: барлық файлдар бірге {max} аспауы керек",
       "reject-type": "«{name}» сәйкес келмейді: рұқсат етілгені — {formats}",
-      "remove": "Жою",
+      "remove": "Алып тастау",
       "remove-failed": "Қатесі бар файлдарды алып тастаңыз немесе қайталаңыз",
       "retry": "Қайталау",
       "text": "немесе осында сүйреп әкеліңіз",
@@ -419,6 +420,8 @@
       "value-missing": "Файл қосыңыз",
       "value-missing-many": "Кемінде бір файл қосыңыз",
       "wait-for-uploads": "Файлдар жүктелгенше күтіңіз",
+      "file-removed": "Файл алып тасталды",
+      "undo": "Қайтару",
       "uploading-name": "{name} жүктелуде",
       "linkText": "Файлды таңдаңыз"
     },
@@ -509,10 +512,12 @@
       "bad-input": "Сан енгізіңіз",
       "count-text": "{count} / {max}",
       "help": "Толығырақ: {label}",
-      "caps-lock": "Caps Lock қосулы"
+      "caps-lock": "Caps Lock қосулы",
+      "conceal": "Құпиясөзді жасыру"
     },
     "sf-input-choice": {
-      "value-missing": "Нұсқаны таңдаңыз."
+      "value-missing": "Нұсқаны таңдаңыз.",
+      "help": "Толығырақ: {label}"
     },
     "sf-input-code": {
       "character": "{n}-таңба, барлығы {m}",
@@ -547,11 +552,10 @@
       "eyedropper": "Экраннан түс алу",
       "eyedropper-missing": "Тамызғыш тек компьютердегі Chrome мен Edge-де бар",
       "code": "Түс коды",
-      "code-in": "Түс коды, {format}",
-      "format": "Код түрі",
-      "format-current": "Код түрі: {format}",
+      "copy": "Кодты көшіру",
+      "apply": "Қолдану",
       "opacity": "Мөлдірсіздік, пайыз",
-      "not-a-colour": "Бұл {format} түріндегі түске ұқсамайды",
+      "not-a-colour": "Бұл түске ұқсамайды",
       "hue-red": "Қызыл",
       "hue-orange": "Сарғылт",
       "hue-amber": "Кәріптас",

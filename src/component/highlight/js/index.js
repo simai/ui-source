@@ -137,7 +137,9 @@ function ensureCopyButton(block, root, head) {
   }
   button = block.ownerDocument.createElement('button');
   button.type = 'button';
-  button.className = 'sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center';
+  // The plain look (owner decision C201): copy is an icon inside the block,
+  // so it has no plate in any state; only its ink moves.
+  button.className = 'sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--plain sf-icon-button--on-surface flex items-cross-center';
   // The clipboard component's attribute route (decision C48): the block's
   // code is copied whole, without its line numbers; the class sf-clipboard
   // and data-target it used are deprecated until 2027-01-01.

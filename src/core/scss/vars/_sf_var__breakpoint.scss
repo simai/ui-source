@@ -36,9 +36,10 @@ $breakpoint-device-array: (
 // its own place with @container, at a step of this one ladder; a query on the
 // screen's width is for the page frame (and the size system's one density
 // breakpoint, lg). Every step is a step of the size scale and is named by it:
-// the component steps 20 · 24 · 30 · 36 · 40 · 48 rem (g0, g2, g5, g8, h0,
-// h2) -- the owner's own steps among them: 36 and 48 for a notice's actions
-// (C115), 30 for three choice tiles to a row (C28) -- and the four screen
+// the component steps 20 · 24 · 26 · 30 · 36 · 40 · 48 rem (g0, g2, g3, g5,
+// g8, h0, h2) -- the owner's own steps among them: 36 and 48 for a notice's
+// actions (C115), 30 for three choice tiles to a row (C28), 26 for the
+// from/to field of a range slider (C202, 2026-11-15) -- and the four screen
 // breakpoints sm · md · lg · xl (g6, h1, h5, h8), which the cq-*
 // utilities read as container conditions -- one ladder for both. A container
 // condition cannot read a custom property, so the steps are Sass constants,
@@ -49,6 +50,7 @@ $breakpoint-device-array: (
 $container-step-array: (
 	g0: map.get(size.$size-array, g, 0), // 20rem, 320 px
 	g2: map.get(size.$size-array, g, 2), // 24rem, 384 px
+	g3: map.get(size.$size-array, g, 3), // 26rem, 416 px: sf-slider-range's from/to field beside its track (C202)
 	g5: map.get(size.$size-array, g, 5), // 30rem, 480 px
 	g6: map.get(size.$size-array, g, 6), // 32rem, 512 px, sm
 	g8: map.get(size.$size-array, g, 8), // 36rem, 576 px

@@ -1,4 +1,5 @@
 import { html, nothing } from 'lit';
+import { percentText } from '../../../../core/js/format-number.js';
 
 // The avatar's ladder (owner decision C131 (5)).
 const SIZES = ['1/4', '1/3', '1/2', '1', '2', '3'];
@@ -34,7 +35,7 @@ export function renderProgressRingTemplate(context) {
   // Below size 1 no percentage is shown (PG-10, C131 (5)): the box leaves
   // 8 px letters, below the text ladder. The value stays the ring's
   // (aria-valuenow), so a screen reader still says it; the eye reads the arc.
-  const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? `${value}%` : '';
+  const text = on(context.showText) && !unknown && !TEXTLESS.has(size) ? percentText(value, context.component ?? null) : '';
   const content = context.content && context.content !== nothing ? context.content : null;
   // A ring around a picture is about something of the person's own -- a
   // profile filled in, a photo being sent (owner decision C191 (4)). At 100 %
@@ -62,7 +63,7 @@ export function renderProgressRingTemplate(context) {
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow=${unknown ? nothing : String(value)}
-        aria-valuetext=${unknown ? nothing : (context.valueText || nothing)}
+        aria-valuetext=${unknown ? nothing : (context.valueText || percentText(value, context.component ?? null))}
       ></span>`}
       ${content
         ? html`<span class="sf-progress-ring-content">${content}</span>`

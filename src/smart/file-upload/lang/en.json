@@ -28,6 +28,8 @@
     "uploading": "Uploading",
     "value-missing": "Add a file",
     "value-missing-many": "Add at least one file",
-    "wait-for-uploads": "Wait until the files are uploaded"
+    "wait-for-uploads": "Wait until the files are uploaded",
+    "file-removed": "File removed",
+    "undo": "Undo"
   }
 }

@@ -2,6 +2,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { renderTooltipTemplate } from './js/templates/default';
+import { surfaceShortcut, writeTriggerKeyShortcuts } from '../../component/tooltip/js/_keyshortcuts';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import enFile from './lang/en.json';
@@ -50,6 +51,22 @@ class SfTooltip extends TooltipElement {
 
   template() {
     return renderTooltipTemplate(this.templateContext());
+  }
+
+  // The shortcut the tooltip shows is said on its trigger (KB-4):
+  // aria-keyshortcuts on every [data-tooltip] naming this tooltip, written
+  // again when the shortcut changes and taken back when it goes. The
+  // tooltip controller writes it as it links a trigger, a later one too.
+  afterRender(callback) {
+    const result = super.afterRender(callback);
+    if (typeof callback !== 'function' && this.id && this.isConnected) {
+      const shortcut = surfaceShortcut(this);
+      const escaped = globalThis.CSS?.escape ? CSS.escape(this.id) : this.id.replace(/"/g, '\\"');
+      this.ownerDocument.querySelectorAll(`[data-tooltip="${escaped}"]`).forEach((trigger) => {
+        writeTriggerKeyShortcuts(trigger, shortcut);
+      });
+    }
+    return result;
   }
 }
 

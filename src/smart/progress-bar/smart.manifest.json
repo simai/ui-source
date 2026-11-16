@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-bar",
-  "version": "1.4.1",
+  "version": "1.5.2",
   "title": "Progress Bar",
   "summary": "Continuous determinate progress with normalized value, accessible range semantics and explicit semantic tone.",
   "kind": "smart",
@@ -108,12 +108,17 @@
       "paused": {
         "type": "boolean",
         "default": false,
-        "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35%, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
+        "description": "The work is paused: the bar is a warning (unless its status or a threshold says error) and says so to a screen reader: the value text reads «35 %, на паузе» / «35 %, paused» when the page gives no value-text (C34). The page sets it where the work really stopped."
       },
       "meter": {
         "type": "boolean",
         "default": false,
         "description": "The value is an amount within a known range (a quota used, a disk filled), not a task's progress: role meter instead of progressbar (owner decision C131 (7)). A meter always has a value, so it is never indeterminate. The look does not change. The name is final (owner decision C138)"
+      },
+      "inline": {
+        "type": "boolean",
+        "default": false,
+        "description": "The row-end look of a meter (owner decision C203, 2026-11-15): a settings row, a table cell, the end of a list row. The track has its own width, 64 (--sf-progress-bar-track-size sets another), which the number does not take; it is 4 thick at every size, density and width; the number stands before it, always shown, «72 %», and takes the status colour at a threshold. text-position does not apply. Use it with meter; full-width bars keep C131."
       },
       "label": {
         "type": "string",
@@ -318,11 +323,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-bar/index.js",
-        "sha256": "036ac355af8eabb583a14b526c87dd23757ca173fa0bf31f08f636b5edc78c4a"
+        "sha256": "7a683fa5d10ee24fde13171bb7055d0b66c7d9e3a94819acaed5d1ffe6cfc3fd"
       },
       {
         "path": "src/smart/progress-bar/js/templates/default.js",
-        "sha256": "58c0c8261f8cf0da140c212fe3ed712236e178e63b5f98231ad67a1676155fa6"
+        "sha256": "95bc22beb6d499de7ee1d2e5c720fccd7111e7811cac9dd00b2a10c31e460230"
       },
       {
         "path": "src/smart/progress-bar/rule.js",
@@ -330,7 +335,7 @@
       },
       {
         "path": "src/smart/progress-bar/docs/docs.md",
-        "sha256": "5021fa7bf9bd261c44e69aa0a9835f7f4ace2818ae45c455c16bedf546245bf8"
+        "sha256": "f1044568c444f31af94bf656d0e86bce1cd10e84255ca91c08b61b5365f12897"
       }
     ],
     "generated_runtime": [

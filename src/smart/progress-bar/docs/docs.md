@@ -28,6 +28,15 @@ cancellation.
 - `meter` (1.4.0) — the bar shows an amount within a known
   range (a quota used, a disk filled), not a task's progress: role `meter`.
   A meter always has a value, so it is never indeterminate.
+- `inline` (1.5.0, owner decision C203) — the row-end look of a meter: a
+  settings row, a table cell, the end of a list row. The track has its own
+  width, 64 (`--sf-progress-bar-track-size` sets another), which the number
+  does not take; it is 4 thick at every size, density and width. The number
+  stands before the track and is always shown, end-aligned so a column of
+  bars lines up; at a threshold it takes the bar's warning or error colour.
+  `text-position` does not apply. Use it with `meter`:
+  `<sf-progress-bar inline meter label="Контекст" value="72" warning-at="80" error-at="95">`.
+  Full-width bars stay as above.
 - `warning-at`, `error-at` (1.2.0) — thresholds in per cent, set by the page:
   from `warning-at` on the bar is a warning by itself, from `error-at` an
   error. A meter of a disk, a quota or licence seats turns its tone when it
@@ -44,10 +53,18 @@ cancellation.
   Class markup: `sf-progress-bar--indeterminate`.
 - `paused` (1.3.0) — the work stopped and will go on. The bar is a warning
   (an error from `status` or a threshold stays an error) and a screen reader
-  hears it: the value text reads «35 %, на паузе» / «35%, paused» unless the
+  hears it: the value text reads «35 %, на паузе» / «35 %, paused» unless the
   page gives `value-text`. Set it only where the work really stopped. An
   indeterminate bar that is paused stands still (1.3.1): its segment stops at
   the start of the track. Class markup: `sf-progress-bar--paused`.
+
+The percentage is written «72 %» in every language (1.5.0): the number in
+the page's language, a no-break space and the sign. A screen reader hears the
+same text (`aria-valuetext`) when the page gives no `value-text`.
+
+In a compact region (desktop) the bar moves a whole step down with its text
+(1.5.0, C79): size 1 is 4 px thick, size 3 is 8. Size 1/3 writes its number at
+12, the smallest page step.
 
 The component is not interactive, does not receive focus and does not create an
 assertive live region. Shared `root-class` and `root-style` settings apply only

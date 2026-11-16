@@ -50,7 +50,7 @@ test('C191 (7): the ring stays at 100 for a meter, an unknown value and a ring w
   assert.equal(indicator(ring({value: 100})), 1, 'the empty state\'s share and a toolbar\'s job keep the ring');
   const status = ring({value: 100, status: 'success', showText: true});
   assert.equal(indicator(status), 1);
-  assert.match(status, />100%</);
+  assert.match(status, />100\u00a0%</u); // C203 (3): number, no-break space, sign
 });
 
 test('C191 (8): a photo upload is indeterminate around the avatar while the size is unknown', () => {
@@ -64,7 +64,7 @@ test('C191 (8): a photo upload is indeterminate around the avatar while the size
 
 test('C191 (4), (6)-(8): the ring\'s examples are completeness, upload and done, no quota around an avatar', () => {
   const manifest = json('src/smart/progress-ring/component.json');
-  assert.equal(manifest.version, '1.4.1'); // group build 7: the integrated number (the branch wrote 1.4.0)
+  assert.equal(manifest.version, '1.5.0'); // group build 7: 1.4.1 (the branch wrote 1.4.0); 1.5.0 the unslotted-avatar note (AR-4)
   const examples = Object.fromEntries(json('src/smart/progress-ring/examples.json').examples.map((example) => [example.name, example]));
   assert.equal(examples.avatar.settings.label, 'Профиль заполнен на 70 %');
   assert.equal(examples.avatar.settings.meter, undefined);
@@ -103,10 +103,10 @@ test('C191 (4)-(6): sf-menu-context 1.24.0 draws a meter row over sf-progress-ba
 
 test('C191 (4): the meter row is declared, styled from the systems, documented and loads the bar lazily', () => {
   const manifest = json('src/smart/menu-context/component.json');
-  assert.equal(manifest.version, '1.25.3'); // group build 7: the integrated number (the branch wrote 1.24.0)
+  assert.ok(['1.25.3', '1.25.4'].includes(manifest.version), manifest.version); // group build 7: the integrated number (the branch wrote 1.24.0); 1.25.4: TT-11 (fix/returns-gb67)
   assert.ok(manifest['x-registry'].item_contract.kinds.meter.fields.valueText);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-progress-bar' && relation.lazy === true));
-  assert.equal(json('src/component/context-menu/passport.json').version, '1.16.0');
+  assert.equal(json('src/component/context-menu/passport.json').version, '1.16.1'); // group build 8: C208's patch
   const sheet = read('src/component/context-menu/scss/_css__context_menu.scss');
   const block = sheet.slice(sheet.indexOf('.sf-context-menu-meter {'), sheet.indexOf('/* The search is the panel\'s header'));
   assert.match(block, /gap: var\(--sf-space-1\\\/4\);/);

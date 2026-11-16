@@ -26,6 +26,16 @@ import {repeat} from 'lit/directives/repeat.js';
 // described by its description, price and term. While the host is the form
 // control they stay out of the page's form (§17.1 item 6).
 
+// The «?» after the heading or the label (help; C153 (8), C165 (1)): a step
+// below the line it stands on, 1/3, as beside the checkable rows' text of
+// size 1 (helpers/checkable-row.js CHECKABLE_HELP_SIZE); each sheet holds it
+// to that line, so the line keeps its height.
+function renderHelp(context) {
+  if (!context.help) return nothing;
+  return html`<sf-help-mark class="sf-choice-help" size="1/3" text=${context.help} label=${context.helpLabel || nothing}
+                            @click=${(event) => event.stopPropagation()}></sf-help-mark>`;
+}
+
 const joinClasses = (...tokens) => tokens.flat().filter(Boolean).join(' ');
 
 // The control on the name line: the markup of the class radio or checkbox,
@@ -93,14 +103,103 @@ function renderCard(context, item, index) {
   </label>`;
 }
 
+// ---------------------------------------------------------------- list
+//
+// appearance="list" (owner decision C165 (1), (3); research ui-control
+// control/research/2026-11-14-checks.md, prototype checks-study.html#q-group
+// and #q-inline): the ready group of checks or radios.
+//
+//   div.sf-choice[data-appearance=list][data-flow=row|column]
+//     div.sf-choice-heading           the heading (text 1, medium), «*», «?»
+//     span.sf-choice-hint             the hint under the heading
+//     div.sf-choice-options           role radiogroup (single) or group (multiple)
+//       label.sf-radio-button | label.sf-checkbox   one row per option: the
+//                                     class markup sf-radio and sf-checkbox
+//                                     draw (size 1), the native input in its
+//                                     box, the name and the description; a row
+//                                     of the step, as the C63 rows
+//     span.sf-choice-message          the error under the last row, its icon first
+//
+// The group is named by the heading and described by the hint and the error.
+// While invalid every row's control takes the error colour, as an invalid
+// sf-radio or sf-checkbox.
+
+function renderRow(context, item, index) {
+  const checked = context.chosen.has(item.value);
+  const disabled = context.fieldDisabled || item.disabled;
+  const n = index + 1;
+  const titleId = `${context.id}--title-${n}`;
+  const captionId = `${context.id}--caption-${n}`;
+  const input = html`<input class="sf-choice-input" type=${context.multiple ? 'checkbox' : 'radio'}
+           name=${context.controlName || nothing} form=${context.innerForm || nothing}
+           value=${item.value} .checked=${checked} ?disabled=${disabled}
+           aria-labelledby=${titleId} aria-describedby=${item.caption ? captionId : nothing}
+           aria-invalid=${context.invalid ? 'true' : nothing}>`;
+  const error = context.invalid ? 'error' : '';
+  if (context.multiple) {
+    return html`<label class=${joinClasses('sf-checkbox', 'sf-checkbox--size-1', 'flex', 'sf-choice-row', disabled ? '' : 'cursor-pointer', error)}>
+      <span class="sf-checkbox-box flex">${input}${checked
+        ? html`<span class="sf-icon" aria-hidden="true">check</span>`
+        : nothing}</span>
+      <span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-top flex"><span class="sf-checkbox-label" id=${titleId}>${item.label}</span></span>${item.caption
+        ? html`<span class="sf-checkbox-description" id=${captionId}>${item.caption}</span>`
+        : nothing}</span>
+    </label>`;
+  }
+  return html`<label class=${joinClasses('sf-radio-button', 'sf-radio-button--size-1', 'flex', 'sf-choice-row', disabled ? '' : 'cursor-pointer', error)}>
+    <span class="sf-radio-button-box flex items-cross-center content-main-center">${input}<span class="sf-radio-button-mark" aria-hidden="true"></span></span>
+    <span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-top flex"><span class="sf-radio-button-text" id=${titleId}>${item.label}</span></span>${item.caption
+      ? html`<span class="sf-radio-button-description" id=${captionId}>${item.caption}</span>`
+      : nothing}</span>
+  </label>`;
+}
+
+function renderListTemplate(context) {
+  const labelId = `${context.id}--label`;
+  const hintId = `${context.id}--hint`;
+  const messageId = `${context.id}--message`;
+  const error = context.invalid && context.errorMessage ? context.errorMessage : '';
+  const described = [context.hint ? hintId : '', error ? messageId : ''].filter(Boolean).join(' ');
+  return html`<div class=${joinClasses('sf-choice', 'sf-choice--list', context.multiple ? 'sf-choice--multiple' : '', context.invalid ? 'sf-choice--invalid' : '', context.fieldDisabled ? 'sf-choice--disabled' : '', context.rootClass)}
+                   style=${context.rootStyle || nothing} data-appearance="list" data-flow=${context.flow}>
+    ${context.label
+      ? html`<div class="sf-choice-heading"><span class="sf-choice-heading-text" id=${labelId}>${context.label}${context.required
+        ? html`<span class="sf-choice-required" aria-hidden="true">*</span>`
+        : nothing}</span>${renderHelp(context)}</div>`
+      : nothing}
+    ${context.hint ? html`<span class="sf-choice-hint" id=${hintId}>${context.hint}</span>` : nothing}
+    <div class="sf-choice-options" role=${context.multiple ? 'group' : 'radiogroup'}
+         aria-labelledby=${context.label ? labelId : nothing}
+         aria-label=${!context.label && context.ariaLabel ? context.ariaLabel : nothing}
+         aria-describedby=${described || nothing}
+         aria-required=${context.required && !context.multiple ? 'true' : nothing}
+         aria-invalid=${context.invalid && !context.multiple ? 'true' : nothing}
+         aria-disabled=${context.fieldDisabled ? 'true' : nothing}>
+      ${repeat(context.items, (item) => item.value, (item, index) => renderRow(context, item, index))}
+    </div>
+    ${error
+      ? html`<span class="sf-choice-message" id=${messageId} data-field-message="error"><span class="sf-icon sf-choice-message-icon" aria-hidden="true">error</span><span class="sf-choice-message-text">${error}</span></span>`
+      : nothing}
+  </div>`;
+}
+
+// The cards' label row: the label, then with help its «?» beside it in one
+// row (the mark is the label's sibling, so the group's name is the label alone).
+function renderLabel(context, labelId) {
+  const label = html`<span class="sf-choice-label" id=${labelId}>${context.label}${context.required ? html`<span class="sf-choice-required" aria-hidden="true">*</span>` : nothing}</span>`;
+  if (!context.help) return label;
+  return html`<div class="sf-choice-label-row">${label}${renderHelp(context)}</div>`;
+}
+
 export function renderChoiceTemplate(context) {
+  if (context.appearance === 'list') return renderListTemplate(context);
   const labelId = `${context.id}--label`;
   const messageId = `${context.id}--message`;
   const message = context.invalid && context.errorMessage ? context.errorMessage : context.hint;
   return html`<div class=${joinClasses('sf-choice', context.multiple ? 'sf-choice--multiple' : '', context.invalid ? 'sf-choice--invalid' : '', context.fieldDisabled ? 'sf-choice--disabled' : '', context.rootClass)}
                    style=${context.rootStyle || nothing} data-layout=${context.layout} data-columns=${context.columns}>
     ${context.label
-      ? html`<span class="sf-choice-label" id=${labelId}>${context.label}${context.required ? html`<span class="sf-choice-required" aria-hidden="true">*</span>` : nothing}</span>`
+      ? renderLabel(context, labelId)
       : nothing}
     <div class="sf-choice-grid" role=${context.multiple ? 'group' : 'radiogroup'}
          aria-labelledby=${context.label ? labelId : nothing}

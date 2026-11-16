@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.list-timeline",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "title": "Timeline",
-  "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming, a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
+  "summary": "An activity timeline (C40): events on a vertical line, each a .sf-featured-icon marker toned by status (or a dot), the actor as sf-avatar and a bold name, the title, a field change through sf-change, one quiet line «sf-time · text», a comment in an outline; grouped by day under block list's heading, runs folded into «Ещё N», steps done/current/upcoming drawn with sf-steps' line, sub-events folded under a disclosure row, host content under an event (slot), a «Показать ещё» button and a quiet line when there are none. Density from the page, sizes 1/2, 1 and 2.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -143,7 +143,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The events in the order to show them (newest first, as a history reads, or oldest first, as a log does), each {id, title, time?, text?, actor?, status?, icon?, href?, kind?, state?, change?, changes?}. time is an ISO 8601 date-time (with its offset) or milliseconds, drawn by sf-time. actor is a name or {name, avatar?, hue?, system?}: sf-avatar line and the name in bold at the start of the sentence (a system actor: the name only). status (success, warning, error, info; neutral by default) tones the marker: error, warning and success colour it, info is said in words. icon is the glyph on the marker (.sf-featured-icon), else the kind's (comment chat_bubble, sms phone_iphone), else a dot. kind comment puts text in an outline under the meta line. state (done, current, upcoming) draws the events as steps, current is aria-current=step. change {label, before, after} (or changes, a list) is drawn by sf-change. href makes the title a link. A property, or the JSON island a server prints; the host appends the next page to it. An item without an id or a title, or with an id seen before, is left out"
+        "description": "The events in the order to show them (newest first, as a history reads, or oldest first, as a log does), each {id, title, time?, text?, actor?, status?, icon?, href?, kind?, state?, change?, changes?, items?, summary?, slot?}. time is an ISO 8601 date-time (with its offset) or milliseconds, drawn by sf-time. actor is a name or {name, avatar?, hue?, system?}: sf-avatar line and the name in bold at the start of the sentence (a system actor: the name only). status (success, warning, error, info; neutral by default) tones the marker: error, warning and success colour it, info is said in words. icon is the glyph on the marker (.sf-featured-icon), else the kind's (comment chat_bubble, sms phone_iphone), else a dot. kind comment puts text in an outline under the meta line. state (done, current, upcoming) draws the events as steps, current is aria-current=step. change {label, before, after} (or changes, a list) is drawn by sf-change. href makes the title a link. items are the event's own sub-events (the same fields; ids unique across the list; up to three levels): folded under a quiet disclosure row that says summary, else «Ещё N событий», and drawn in place a rung smaller when pressed -- a route's stops, a parcel's moves, the middle of a long log. slot names a slot of the element: the host's content placed under the event's meta line (a courier card, buttons). A property, or the JSON island a server prints; the host appends the next page to it. An item without an id or a title, or with an id seen before, is left out"
       }
     },
     "additionalProperties": false
@@ -318,11 +318,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-timeline/index.js",
-        "sha256": "1802e5f060743f19ef79124b388605d7e6999d2b0b62a5a38eb65170ce6ba3d6"
+        "sha256": "2af2f7c26afab27b6322f279affaf89492ab93edb7e69c70ffa2747256d14e92"
       },
       {
         "path": "src/smart/list-timeline/js/templates/default.js",
-        "sha256": "453b92287c8e0ad6d7ebd083179323f347792125a21746951dbbc1e01698b0e0"
+        "sha256": "887b33db6b85035d9ef9a7d4efc045a826e861bf07cb5299bd010e686991c0b3"
       },
       {
         "path": "src/smart/list-timeline/js/fold-runs.mjs",
@@ -330,7 +330,7 @@
       },
       {
         "path": "src/smart/list-timeline/scss/_smart__list-timeline.scss",
-        "sha256": "79cb12fd274e6d53335d3b350f9b7a7cfcdc57df79fc561132caba77ae9daf77"
+        "sha256": "1dceae41f5d00ab813d4177dbeebd227c0a4bc0fc5ed1fb89b73de446f4db550"
       },
       {
         "path": "src/smart/list-timeline/rule.js",
@@ -338,7 +338,7 @@
       },
       {
         "path": "src/smart/list-timeline/docs.md",
-        "sha256": "f4debc78913e60a7cf2d4da33d42c276cbd618a96ff543fe87dadbcd1dc73743"
+        "sha256": "4378ea2e20e3387618ef3b3a0b6b44f2d3af9fe8b4363d3447efc5b00431480d"
       }
     ],
     "generated_runtime": []

@@ -59,6 +59,13 @@ $thumb: var(--sf-scroll-thumb-width);
     background-color: var(--sf-scroll-bg-thumb);
   }
 
+  // C208 (1): the one hover rule of every bar -- the place's text under the
+  // pointer and while dragged (core's --sf-scroll--thumb-hover).
+  &::-webkit-scrollbar-thumb:hover,
+  &::-webkit-scrollbar-thumb:active {
+    background-color: var(--sf-scroll--thumb-hover);
+  }
+
   @supports not selector(::-webkit-scrollbar) {
     scrollbar-width: thin;
   }

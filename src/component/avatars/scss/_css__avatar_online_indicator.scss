@@ -107,6 +107,22 @@
   box-shadow: inset 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-on-surface-variant), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place, transparent), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place-ground, transparent);
 }
 
+// The point is the Framework's one dot (owner decision C185 (8)): sf-avatar
+// writes an .sf-dot inside the indicator -- online the solid success dot,
+// away the hollow neutral one -- and the dot draws the disc at the point's
+// size with the point's line. The indicator only places it and cuts it out:
+// the place's colour under it and the ring of the place outside. Markup
+// written without the .sf-dot keeps the indicator's own drawing above.
+.sf-online-indicator > .sf-dot {
+  --sf-dot-item--size: var(--sf-online-indicator--width);
+  --sf-dot-item--ring: var(--sf-online-indicator--ring-width);
+}
+
+.sf-online-indicator:has(> .sf-dot) {
+  --sf-online-indicator--background-color: var(--sf-surface-place, transparent);
+  box-shadow: 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place, transparent), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place-ground, transparent);
+}
+
 // Forced colours drop box shadows: the ring is the outline on the same band,
 // in the page's colour, as the anchored badge's.
 @media (forced-colors: active) {
@@ -116,6 +132,11 @@
 
   .sf-online-indicator--away {
     border: var(--sf-online-indicator--ring-width) solid CanvasText;
+  }
+
+  // The dot draws its own forced-colour ring.
+  .sf-online-indicator:has(> .sf-dot) {
+    border: 0;
   }
 }
 }

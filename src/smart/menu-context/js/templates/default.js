@@ -155,12 +155,13 @@ function renderMeter(entry) {
 }
 
 // The text of a row: its label, the value under it where the row shows one (a
-// drilling row), and the caption. A long label wraps and a long value is cut
-// with the whole of it in `title`, so neither widens the panel.
+// drilling row), and the caption. A long label wraps and a long value is cut,
+// so neither widens the panel; a cut value is the row's Framework tooltip
+// (the element's syncValueTooltip, C160 (1)), never a browser title.
 function renderItemText(entry, under = "") {
     return html`<span class="sf-context-menu-item-text">
             <span class="sf-context-menu-item-label">${entry.text ?? ""}</span>
-            ${under ? html`<span class="sf-context-menu-item-under" title=${under}>${under}</span>` : nothing}
+            ${under ? html`<span class="sf-context-menu-item-under">${under}</span>` : nothing}
             ${entry.caption ? html`<span class="sf-context-menu-item-caption">${entry.caption}</span>` : nothing}
         </span>`;
 }

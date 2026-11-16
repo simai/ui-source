@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.language-kk",
   "kind": "module",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "owner": "simai/ui-source",
   "summary": "The Kazakh language pack of the SIMAI Framework (owner decision C177 pilot): every component's lang/kk.json and the pack built from them, core/lang/kk.json. A draft until a native speaker reviews it.",
   "includes": [
@@ -204,6 +204,6 @@
     "src/smart/tree/lang/kk.json",
     "src/smart/wizard/lang/kk.json"
   ],
-  "content_sha256": "b0ba2804e320104f59879caf696e9e4bfd39d7fa619d5445fcc92b20176f142c",
+  "content_sha256": "a3282dcdbcbcac772c99c3a8b6467ece6409dcaef433568740cfdb27957fd9c9",
   "dependencies": []
 }

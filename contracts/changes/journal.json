@@ -13731,6 +13731,39 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "utility-c208-scrollbar-retired-sheets",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C208 (2), (3): the scrollbar has no palette and no thickness of its own. The thumb takes the colours of the place it is in -- the boundary (--sf-outline) at rest, the text (--sf-on-surface) under the pointer and while dragged -- and the bar is track 14, thumb 6 at every density and on the phone. The thumb colour utilities (scroll-primary, scroll-secondary, scroll-tertiary, scroll-surface, scroll-current, scroll-transparent and their scroll-thumb-* spellings), the thumb width utilities (scroll-0 ... scroll-4, scroll-thumb-0 ... scroll-thumb-4) and the track width utilities (scroll-bg-1 ... scroll-bg-4) keep drawing what they drew until remove_after (the sheets stay, utility.full.css keeps them), and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "scroll-slider-color",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|humb-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|ransparent))|ransparent)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-slider-width",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-(?:0|1|2|3|4|thumb-(?:0|1|2|3|4)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-backdrop-width",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-bg-(?:1|2|3|4))(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class: the bar takes the place's colours and the one thickness by itself. A quieter bar is scroll-subtle; a bar shown only while the pointer is over the area is scroll-hover.",
+      "owner": "ui-source",
+      "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
     }
   ]
 }

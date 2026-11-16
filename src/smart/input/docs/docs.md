@@ -181,8 +181,10 @@ that colours the border (hover, press) colours the line with it.
 
 Since 1.9.0 (owner decision C123) the actions inside the field are glyphs
 without a plate, the field layer's `.sf-field-action` (component.inputs): quiet
-(`--sf-on-surface-variant`) at rest, the text's ink under the pointer and on a
-press, the keyboard ring round the glyph inside the field. The glyph is the
+(`--sf-on-surface-variant`) at rest, the text's ink under the pointer, the
+primary colour on a press (1.13.1, owner decision C201: the ink of the icon
+button's plain look, `sf-icon-button--plain`), the keyboard ring round the
+glyph inside the field. The glyph is the
 leading icon's size (24 / 20 / 28 at sizes 1, 1/2, 2 on a desktop), its end on
 the field's inset; the hit area is invisible, the field's height and never under
 24. From the text to the edge: the clear, then the action (the password reveal,
@@ -196,16 +198,17 @@ two hit areas then overlap, each still 24 wide (component.inputs 1.7.1).
   value and can be changed. A press empties the field with `input` and `change`
   and gives the focus back to it. `input-type="search"` has it without the
   setting, in place of the browser's own.
-- `input-type="password"` draws the reveal: a toggle button «Показать пароль»
-  («Show password») with `aria-pressed`; the eye, crossed out while the password
-  shows. `form.reset()` and sending the form (the submit button, Enter,
-  `requestSubmit()`) hide the password again, before the page's own submit
-  handler runs. On a touch screen (`pointer: coarse`) the eye's hit area is a
-  square of the field's inner height; the glyph keeps its size. While the field
-  has the focus and Caps Lock is on, «Включён Caps Lock» («Caps Lock is on»)
-  stands under the field in the hint's place and type, and is said once through
-  a polite live region; it goes when the field loses the focus or Caps Lock is
-  turned off.
+- `input-type="password"` draws the reveal: a button named by what a press does
+  next, «Показать пароль» («Show password») while the password is hidden and
+  «Скрыть пароль» («Hide password») while it shows, without `aria-pressed`
+  (C12 (3)); the eye, crossed out while the password shows. `form.reset()` and
+  sending the form (the submit button, Enter, `requestSubmit()`) hide the
+  password again, before the page's own submit handler runs. On a touch screen
+  (`pointer: coarse`) the eye's hit area is a square of the field's inner
+  height; the glyph keeps its size. While the field has the focus and Caps Lock
+  is on, «Включён Caps Lock» («Caps Lock is on») stands under the field in the
+  hint's place and type, and is said once through a polite live region; it goes
+  when the field loses the focus or Caps Lock is turned off.
 - An `sf-button-copy` placed in the field (the `end` slot or the class markup's
   `.sf-input-field`) draws the same glyph and shows its check after a copy.
 

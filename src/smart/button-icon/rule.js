@@ -12,6 +12,8 @@ SF.RuleLoader['cl-button-icon'] = {
     { name: 'pointer-events/default' },
     // The badge sheet places a count or a dot on the button (simai/ui-source#12).
     { name: 'badges' },
+    // A badge's dot is the Framework's one dot, .sf-dot (owner decision C185 (8)): the dot sheet.
+    { name: 'dot' },
     // The spinner a loading icon button shows, fetched after the page is ready.
     { name: 'spinner', lazy: true },
     // The tooltip controller and sheet the button's own name tooltip uses (C160 (1)), fetched on the first hover, focus or long press.

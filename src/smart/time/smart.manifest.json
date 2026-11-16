@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.time",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "title": "Time",
   "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», tomorrow «завтра, 10:00», then the date, relative within the first hour («только что» under a minute), with the full date, time and zone in a tooltip on hover and keyboard focus, inside a time element; in a list or a feed no Tab stop, the moment in the row's text. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
   "kind": "smart",
@@ -85,7 +85,7 @@
       "tooltip": {
         "type": "string",
         "default": "auto",
-        "description": "auto: when the text is not the full moment, the full date and time with the zone named («13 ноября 2026 г. в 19:40, Москва (UTC+3)») show in a tooltip on hover and on keyboard focus (Escape hides it). The element is a Tab stop when it stands alone; inside a link, a button, a list item or a feed it is not, and the full moment is then a visually hidden part of the row's text, so a screen reader hears it with the row (owner decision C183 (2)); none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)",
+        "description": "auto: when the text is not the full moment, the full date and time with the zone named («13 ноября 2026 г. в 19:40, Москва (UTC+3)») show in a tooltip on hover and on keyboard focus (Escape hides it). The element is a Tab stop when it stands alone; inside a link, a button, a list item, a feed or a table cell it is not, and the full moment is then a visually hidden part of the row's text, so a screen reader hears it with the row (owner decision C183 (2)); none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)",
         "enum": [
           "auto",
           "none"
@@ -200,7 +200,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/time/index.js",
-        "sha256": "9a63b3864b9bae65e9f69c2eea5c3db81171f01b44f34e386de1588ad58fd5bd"
+        "sha256": "5e043b3b16c6be4d0bb6384befcc62f33b8a5106f9a665507e88933cae585de3"
       },
       {
         "path": "src/smart/time/js/templates/default.js",
@@ -216,7 +216,7 @@
       },
       {
         "path": "src/smart/time/docs.md",
-        "sha256": "68ef0d1672c8a2b6ecc5320e82e11dd6674f8c83e628a13619b26ea23e29a625"
+        "sha256": "48a4f14453accaba87a95d4d754dec3a0f5d3b9b90edcbd7bb2f000362b2584c"
       }
     ],
     "generated_runtime": []

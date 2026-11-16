@@ -50,11 +50,39 @@ The shared ordinary binder also owns keyboard focus and disabled controls. Tab
 reaches the enabled drop zone, Enter/Space opens the picker, and nested file-action
 keys do not open it. disabled updates native controls and aria-disabled without
 discarding items; re-enabling restores prior tab/action settings. Remove and
-Retry buttons receive file-specific localized names («Удалить Скан.pdf»,
+Retry buttons receive file-specific localized names («Убрать Скан.pdf»,
 «Повторить Скан.pdf») unless the author supplied an ARIA name; every glyph is
-aria-hidden, so a reader hears the words, not «upload_file» or «check_circle»;
-the row's state line says «загружен» / «Не загрузился: …» in words; files left
-out are said in the polite status line under the area.
+aria-hidden, so a reader hears the words, not «upload_file»; the row's line
+says «Не загрузился: …» in words; files left out are said in the polite
+status line under the area.
+
+## The rows: one file family (C81, C149)
+
+Each listed file is drawn by `sf-file-preview` (`appearance="row"`), the row
+of every file in the Framework, so a file looks the same in the upload area,
+in a record and in a download list (owner decision C81: one family, one row
+height). The upload states map onto the row's:
+
+| Entry `state` | Row |
+|---|---|
+| `ready` (chosen, not sent) | the file: picture or type glyph, the name, type · size; «×» |
+| `process` | `uploading`: the name, the bar with its per cent (no `progress`: the bar runs); «×» stops it |
+| `done` | the file; with `href` the name is a link and the download button shows |
+| `error` | the name, «Не загрузился: <errorMessage>», «Повторить» and «×» |
+
+A chosen photo (PNG, JPEG, GIF, WebP, AVIF, BMP, SVG) shows its own picture;
+any file shows the host's `imageUrl` (a video's frame, a PDF's page: the
+component never draws them, C149 (4)); every other file shows the glyph of its
+type and the type word.
+
+Remove is «×» «Убрать <имя>» (C149 (8)): the file leaves the list at once, the
+notice says «Файл убран» with «Вернуть» (C25), which puts it back where it was
+(a file that was on its way comes back `ready`; the `uploader` sends it again,
+and `change` tells a page that sends files itself). An entry with
+`stored: true` is a file whose removal erases it (a media library): its button
+is the trash «Удалить <имя>», the row asks «Удалить «<имя>»?» first, and
+nothing is given back. `detach` carries `action`: `remove` or `delete`. The
+focus goes to the row that took the removed file's place, else to the area.
 Focus uses :focus-visible with a real outline in forced colors. These rules are
 shared, not template-specific overrides.
 
@@ -118,12 +146,15 @@ and keeps the `File` object on each.
 |---|---|
 | `id` | The item's identity across `setItems()` calls, which is how state transitions become `file-error`, `file-complete` and `complete` events. A selection uses `<name>-<size>-<lastModified>`. Without an `id`, the name and position identify the item. |
 | `name` (or `fileName`) | The file name shown. `File` is shown when neither is set. |
-| `fileSize` (or `sizeText`) | The size as text, already formatted ("348KB"). The component does not format a number here. |
+| `fileSize` (or `sizeText`) | The size as text, already formatted («348 КБ»), for an entry without a `File` or a byte `size`. The row writes the `File`'s bytes, or `size` in bytes, in the page's language and units (C25). |
 | `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. `null`: the share is not known yet, and the bar runs without a number (a retry before its first report). Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
 | `state` (or `status`) | `ready` (chosen, not sent: no bar), `process` (the bar), `done` (the check), `error` (the retry button). A choice or a drop lists its files `ready`; the host (or the `uploader`) moves them to `process`. Missing or anything else reads `process`, for the row and for the events alike. |
 | `errorMessage` (or `error`) | Why an `error` item did not go, on its own line in the error colour: «Не загрузился: <message>». It was the retry button's label before 1.2.0, so the reason was the control a person pressed to send the same file again. |
-| `retryText` | The retry button's label; the component's own «Повторить» / «Try again» when not set. |
-| `icon` | The glyph on the row. When not set: the file's kind by its type or extension (`picture_as_pdf`, `image`, `movie`, `table_chart`, `folder_zip`, `description`, … ; `draft` for any other), `error` on an error row. |
+| `retryText` | The retry button's label in a class row; a Smart row says «Повторить <имя>». |
+| `icon` | The glyph on a class row. When not set: the file's kind by its type or extension (`picture_as_pdf`, `image`, `movie`, `table_chart`, `folder_zip`, `description`, … ; `draft` for any other), `error` on an error row. A Smart row takes the glyph of the file's type from `sf-file-preview`. |
+| `imageUrl` | The row's picture for any file (a thumbnail, a video's frame, a PDF's page). A chosen photo shows its own picture without it. |
+| `stored` | `true`: removing the file erases it; the trash «Удалить <имя>», asked first, and `detach` with `action: "delete"`. |
+| `href` | A sent (`done`) file's address: the name is a link and the row offers the download. |
 | `file` | The `File` itself, for the consumer's own transport. The component never reads it. |
 
 Transport, progress and server validation belong to the consumer: it sets the

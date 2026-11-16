@@ -363,11 +363,18 @@ class ScrollbarController {
       : this.viewport.scrollHeight;
     const maxScroll = Math.max(0, contentSize - viewportSize);
     const hasOverflow = maxScroll > 1;
-    const requestedThumbSize = hasOverflow
-      ? Math.round((viewportSize * viewportSize) / contentSize)
-      : viewportSize;
-
     this.root.dataset.sfScrollbarOverflow = String(hasOverflow);
+    // The thumb runs along the track, which a horizontal strip insets to the
+    // content's inset (owner decision C208 (5)); the area's own length only
+    // where the track is not laid out yet.
+    const trackLength = this.axis === 'horizontal'
+      ? this.track.clientWidth
+      : this.track.clientHeight;
+    const trackSize = trackLength > 0 ? trackLength : viewportSize;
+    const requestedThumbSize = hasOverflow
+      ? Math.round((trackSize * viewportSize) / contentSize)
+      : trackSize;
+
     if (this.axis === 'horizontal') {
       this.thumb.style.inlineSize = `${requestedThumbSize}px`;
     } else {
@@ -377,7 +384,7 @@ class ScrollbarController {
     const thumbSize = this.axis === 'horizontal'
       ? this.thumb.offsetWidth
       : this.thumb.offsetHeight;
-    const maxThumbOffset = Math.max(0, viewportSize - thumbSize);
+    const maxThumbOffset = Math.max(0, trackSize - thumbSize);
     const position = maxScroll ? this.getLogicalScrollPosition(maxScroll) : 0;
     const ratio = maxScroll ? position / maxScroll : 0;
 

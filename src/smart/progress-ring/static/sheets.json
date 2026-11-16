@@ -8,6 +8,7 @@
   "sheets": [
     "component/avatars/css/avatars.min.css",
     "component/badges/css/badges.min.css",
+    "component/dot/css/dot.min.css",
     "component/icons/css/icons.min.css",
     "component/progress-ring/css/progress-ring.min.css",
     "core/css/core.css",
@@ -38,6 +39,7 @@
     "avatar": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "component/progress-ring/css/progress-ring.min.css",
       "core/css/core.css",
@@ -61,6 +63,7 @@
     "avatar-done": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "component/progress-ring/css/progress-ring.min.css",
       "core/css/core.css",
@@ -83,6 +86,7 @@
     "avatar-upload": [
       "component/avatars/css/avatars.min.css",
       "component/badges/css/badges.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "component/progress-ring/css/progress-ring.min.css",
       "core/css/core.css",

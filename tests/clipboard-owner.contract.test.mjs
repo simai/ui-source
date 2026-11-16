@@ -31,7 +31,12 @@ test('Clipboard loads only its visual primitives while Highlight owns the revers
 
 test('constructor inputs are bounded to existing Button and Icon Button variants', () => {
   assert.match(js, /const COPY_SIZES = new Set\(\['1\/3', '1\/2', '1', '2', '3'\]\)/);
-  assert.match(js, /const COPY_TYPES = new Set\(\['default', 'tonal', 'outline', 'link'\]\)/);
+  // plain (component.clipboard 1.3.0, owner decision C201): an icon-only copy
+  // takes the icon button's plain look by default; a copy with text is a
+  // button and draws plain as link.
+  assert.match(js, /const COPY_TYPES = new Set\(\['default', 'tonal', 'outline', 'link', 'plain'\]\)/);
+  assert.match(js, /normalizeChoice\(type, COPY_TYPES, hasText \? 'link' : 'plain'\)/);
+  assert.match(js, /hasText && chosenType === 'plain' \? 'link' : chosenType/);
   assert.match(js, /const COPY_SCHEMES = new Set\(\['primary', 'secondary', 'on-surface'\]\)/);
   assert.match(js, /normalizeChoice\(size, COPY_SIZES, '1'\)/);
   assert.match(js, /'flex',[\s\S]*'items-cross-center'/);

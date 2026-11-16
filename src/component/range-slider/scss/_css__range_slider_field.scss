@@ -1,3 +1,5 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+
 @layer sf.components {
 // The field around a Smart slider (C78): the visible name above, as every
 // field's label (sf-input-quantity's: the variant ink, regular, one text step
@@ -362,8 +364,118 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sf-range-slider-field {
+  .sf-range-slider-field,
+  .sf-range-slider-field-box {
     transition: none;
+  }
+}
+
+// The from/to field in a narrow place (owner decision C202, refines C80;
+// ui-control control/research/2026-11-15-range-filter.md, prototype
+// prototypes/range-filter-study.html, #q-rf-auto and #q-rf-under). A slider
+// with the field picks its layout by its own width: from 26rem (container step
+// g3) the field stays in the track's line as C80 draws it; narrower -- a filter
+// column, a drawer, a phone -- the field goes under the track as two boxes
+// «от …» «до …», equal halves of the whole width, each a field of the step,
+// and the unit moves out of the boxes into the name («Цена, ₽»). The words and
+// the name's unit are in the markup, hidden in the wide layout, so a printed
+// first frame is the same in both (no script measures the width).
+.sf-range-slider-group--field {
+  container: sf-range-slider / inline-size;
+}
+
+.sf-range-slider-field-word,
+.sf-range-slider-name-unit {
+  display: none;
+}
+
+@container sf-range-slider (inline-size < #{mq.container-step(g3)}) {
+  .sf-range-slider-group--field .sf-range-slider-name-unit {
+    display: inline;
+  }
+
+  .sf-range-slider-group--field .sf-range-slider-line {
+    align-items: stretch;
+    flex-direction: column;
+    gap: var(--sf-space-1\/4);
+  }
+
+  .sf-range-slider-group--field .sf-range-slider-track-column {
+    flex: none;
+  }
+
+  // The field is the row of boxes: no edge, no ring of its own.
+  .sf-range-slider-group--field .sf-range-slider-field,
+  .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field:is(:hover, :focus-within),
+  .sf-range-slider-group--field .sf-range-slider-field:has(.sf-range-slider-field-input:focus-visible) {
+    block-size: auto;
+    border: 0;
+    display: grid;
+    gap: var(--sf-space-1\/3);
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    inline-size: 100%;
+    outline: none;
+    padding: 0;
+  }
+
+  .sf-range-slider-group--field .sf-range-slider-field-dash,
+  .sf-range-slider-group--field .sf-range-slider-field-unit {
+    display: none;
+  }
+
+  // Each box is a field of the step: sf-input's edge, radius and inline space.
+  .sf-range-slider-group--field .sf-range-slider-field-box {
+    align-items: center;
+    block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
+    border: var(--sf-px) solid var(--sf-outline);
+    border-radius: var(--sf-radius--ui);
+    box-sizing: border-box;
+    display: grid;
+    gap: var(--sf-space-1\/4);
+    grid-template-columns: auto minmax(0, 1fr);
+    min-inline-size: 0;
+    padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
+    transition: border-color var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-range-slider-group--field .sf-range-slider-field-box > * {
+    grid-area: 1 / 2;
+  }
+
+  .sf-range-slider-group--field .sf-range-slider-field-box > .sf-range-slider-field-word {
+    color: var(--sf-on-surface-variant);
+    display: block;
+    grid-area: 1 / 1;
+  }
+
+  .sf-range-slider-group--field .sf-range-slider-field .sf-range-slider-field-input[data-handle] {
+    text-align: start;
+  }
+
+  .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field-box:hover {
+    border-color: var(--sf-primary-hover);
+  }
+
+  .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field-box:focus-within {
+    border-color: var(--sf-primary);
+  }
+
+  .sf-range-slider-group--field .sf-range-slider-field-box:has(.sf-range-slider-field-input:focus-visible) {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  .sf-range-slider-group--field.readonly .sf-range-slider-field-box {
+    border-color: var(--sf-outline-variant);
+  }
+
+  .sf-range-slider-group--field.disabled .sf-range-slider-field-box {
+    border-color: var(--sf-outline-disabled);
+  }
+
+  .sf-range-slider-group--field.disabled .sf-range-slider-field-word {
+    color: var(--sf-on-surface-disabled);
   }
 }
 }

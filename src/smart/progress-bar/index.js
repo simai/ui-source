@@ -1,12 +1,13 @@
 import {
   bindProgressBar,
-  setProgressBarState,
   unbindProgressBar,
 } from '../../component/progress-bar/js/_progressbar';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { renderProgressBarTemplate } from './js/templates/default';
+import { percentText } from '../../core/js/format-number.js';
+import { STATUS_RANK as RANK, effectiveStatus, readThreshold, thresholdStatus } from '../../component/progress-threshold';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import enFile from './lang/en.json';
@@ -50,22 +51,10 @@ export function showChunk(element, done, total) {
 }
 
 // The status the bar draws (1.2.0): the more serious of the page's status and
-// the threshold the value reached. The thresholds are the page's, in per cent
-// like the value; unset (null) is no threshold. neutral, info and success rank
-// below warning, warning below error.
-const RANK = { warning: 1, error: 2 };
-export function thresholdStatus(value, warningAt, errorAt) {
-  const number = Number(value);
-  if (!Number.isFinite(number)) return '';
-  if (Number.isFinite(errorAt) && number >= errorAt) return 'error';
-  if (Number.isFinite(warningAt) && number >= warningAt) return 'warning';
-  return '';
-}
-
-export function effectiveStatus(status, value, warningAt, errorAt) {
-  const reached = thresholdStatus(value, warningAt, errorAt);
-  return (RANK[reached] ?? 0) > (RANK[status] ?? 0) ? reached : status;
-}
+// the threshold the value reached -- one source with sf-progress-scale and the
+// class scale (component/progress-threshold.js); kept exported here for the
+// modules that import it from the bar.
+export { effectiveStatus, thresholdStatus };
 
 // Paused (1.3.0, C34): at least a warning; an error stays an error.
 export function pausedStatus(status, paused) {
@@ -102,11 +91,10 @@ class SfProgressBar extends ProgressBarElement {
     return this.getProp('status');
   }
 
-  // A threshold holds only where the page set it: an unset number reads 0.
+  // A threshold holds only where the page set it a number: unset or empty is
+  // none (Number('') would read 0).
   threshold(attribute) {
-    if (!this.hasAttribute(attribute)) return null;
-    const number = Number(this.getAttribute(attribute));
-    return Number.isFinite(number) ? number : null;
+    return readThreshold(this.getAttribute(attribute));
   }
 
   // The status drawn: the page's, or the threshold the value reached; a
@@ -116,12 +104,15 @@ class SfProgressBar extends ProgressBarElement {
   }
 
   // What a screen reader hears beside the value: the page's value text, else
-  // for a paused bar the value with the word paused (C34).
+  // for a paused bar the value with the word paused (C34), else the per cent
+  // the bar shows, «72 %» (owner decision C203 (3)); nothing while the size of
+  // the work is not known.
   get spokenValueText() {
     if (this.valueText) return this.valueText;
-    if (!this.paused) return '';
-    if (this.indeterminate) return this.sfWord('paused');
+    const unknown = this.indeterminate && !this.meter;
     const value = Math.max(0, Math.min(100, Number(this.value) || 0));
+    if (!this.paused) return unknown ? '' : percentText(value, this);
+    if (unknown) return this.sfWord('paused');
     return this.sfWord('paused-value').replace('{value}', String(Math.round(value * 100) / 100));
   }
 
@@ -147,6 +138,7 @@ class SfProgressBar extends ProgressBarElement {
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
       meter: Boolean(this.meter),
+      inline: Boolean(this.inline),
       component: this,
     });
   }
@@ -167,6 +159,7 @@ class SfProgressBar extends ProgressBarElement {
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
       meter: Boolean(this.meter),
+      inline: Boolean(this.inline),
     };
   }
 
@@ -183,34 +176,13 @@ class SfProgressBar extends ProgressBarElement {
     return this;
   }
 
-  resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label', 'indeterminate', 'paused', 'meter'];
-    if (
-      changedAttributes.length > 0 &&
-      changedAttributes.every((attr) => directPatchAttributes.includes(attr))
-    ) {
-      return 'dom';
-    }
-
-    return 'lit';
-  }
-
-  updateDom() {
-    const root = this.querySelector('.sf-progress-bar');
-    if (!root) return false;
-    const status = this.drawnStatus;
-    this.sfHostState('data-status', status);
-    return setProgressBarState(root, {
-      value: this.value,
-      textPosition: this.textPosition,
-      tone: status,
-      label: this.accessibleLabel,
-      valueText: this.spokenValueText,
-      indeterminate: Boolean(this.indeterminate),
-      paused: Boolean(this.paused),
-      meter: Boolean(this.meter),
-    });
-  }
+  // Every change is drawn by the template (RG-R-53). The bar patched value,
+  // label, position, status and the rest straight into the drawn markup
+  // through the class (setProgressBarState), so Lit's text and parts no longer
+  // matched the page: its next drawing wrote into a removed text node, and a
+  // part the class added (the value text, the head) stood beside Lit's own.
+  // A drawing is one small template; afterRender hands the root to the class,
+  // which only sets the fill's width and checks what the template wrote.
 
   afterRender() {
     if (this._boundRoot) {

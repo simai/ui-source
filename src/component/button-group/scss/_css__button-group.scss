@@ -7,7 +7,10 @@
     overflow-x: auto;
     overflow-y: hidden;
     isolation: isolate;
-    scrollbar-width: thin;
+    // No scrollbar-width here: Chrome 121 and later drop the drawn
+    // ::-webkit-scrollbar of an element that sets it, and showed the
+    // platform's bar (SB-7). Core draws the one bar (C208); Firefox takes its
+    // thin bar from core's support query.
   }
 
   /* A segmented track clips its own segments (it scrolls sideways), so a

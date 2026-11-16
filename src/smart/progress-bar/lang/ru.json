@@ -1,7 +1,7 @@
 {
   "title": "Прогресс",
   "runtime": {
-    "paused-value": "{value} %, на паузе",
+    "paused-value": "{value}\u00a0%, на паузе",
     "paused": "на паузе"
   }
 }

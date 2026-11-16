@@ -7,6 +7,7 @@
   ],
   "sheets": [
     "component/avatars/css/avatars.min.css",
+    "component/dot/css/dot.min.css",
     "component/icons/css/icons.min.css",
     "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
@@ -26,6 +27,7 @@
   "examples": {
     "group": [
       "component/avatars/css/avatars.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -39,6 +41,7 @@
     ],
     "group-list": [
       "component/avatars/css/avatars.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
@@ -55,6 +58,7 @@
     ],
     "online": [
       "component/avatars/css/avatars.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -69,6 +73,7 @@
     ],
     "profile": [
       "component/avatars/css/avatars.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -84,6 +89,7 @@
     ],
     "reference": [
       "component/avatars/css/avatars.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
@@ -97,6 +103,7 @@
     ],
     "user": [
       "component/avatars/css/avatars.min.css",
+      "component/dot/css/dot.min.css",
       "component/icons/css/icons.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",

@@ -40,7 +40,11 @@ const LEGACY_TARGETS = ['data-target', 'data-clipboard-target'];
 const BOUND_FLAG = 'sfCopyBound';
 const ICON_SELECTOR = 'sf-icon, .sf-icon';
 const COPY_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
-const COPY_TYPES = new Set(['default', 'tonal', 'outline', 'link']);
+// The looks of the button the constructor draws. plain (owner decision C201)
+// is an icon button's look only: an icon-only copy takes it by default, as an
+// icon inside another element; a copy with text is a button and draws plain as
+// link, the button's look without a plate.
+const COPY_TYPES = new Set(['default', 'tonal', 'outline', 'link', 'plain']);
 const COPY_SCHEMES = new Set(['primary', 'secondary', 'on-surface']);
 const SOURCE_ERROR_CODES = new Set([
   'ambiguous_source',
@@ -395,11 +399,10 @@ class Copy extends ComponentObserver {
   constructor(props) {
     super(props);
     const {
-      size = '1', type = 'link', scheme = 'on-surface', text = '', copy = text,
+      size = '1', type = '', scheme = 'on-surface', text = '', copy = text,
       done = '', error = '', label = '',
     } = this.params || {};
     const normalizedSize = normalizeChoice(size, COPY_SIZES, '1');
-    const normalizedType = normalizeChoice(type, COPY_TYPES, 'link');
     const normalizedScheme = normalizeChoice(scheme, COPY_SCHEMES, 'on-surface');
     const button = document.createElement('button');
     button.type = 'button';
@@ -408,6 +411,8 @@ class Copy extends ComponentObserver {
     if (done) button.dataset.success = done;
     if (error) button.dataset.error = error;
     const hasText = Boolean(String(text).trim());
+    const chosenType = normalizeChoice(type, COPY_TYPES, hasText ? 'link' : 'plain');
+    const normalizedType = hasText && chosenType === 'plain' ? 'link' : chosenType;
     const accessibleLabel = String(this.attrs['aria-label'] || label || '').trim();
     if (accessibleLabel) button.setAttribute('aria-label', accessibleLabel);
     else if (!hasText) button.disabled = true;
