@@ -10,72 +10,6 @@
   initial-value: 0;
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-drawer-overlay {
-    /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20), the
-       drawer's own variables first. */
-    background: var(--sf-drawer-overlay-background, var(--sf-scrim-color, var(--sf-black--alfa-64)));
-  }
-  .sf-drawer-panel {
-    color: var(--sf-drawer-color, var(--sf-on-surface));
-  }
-  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-panel {
-    background: var(--sf-drawer-background, var(--sf-surface-popup));
-    @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
-  }
-  .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-panel {
-    border-right-color: var(--sf-outline-variant);
-  }
-  .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-panel {
-    border-left-color: var(--sf-outline-variant);
-  }
-  .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-panel {
-    border-inline-end-color: var(--sf-outline-variant);
-  }
-  .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-panel {
-    border-inline-start-color: var(--sf-outline-variant);
-  }
-  .sf-drawer-head {
-    background: inherit;
-  }
-  .sf-drawer-title {
-    color: var(--sf-on-surface);
-  }
-  .sf-drawer-foot {
-    background: inherit;
-  }
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge {
-    @include places.sf-place-glass-accent;
-    --sf-on-surface: var(--sf-on-surface-media);
-    --sf-on-surface-icon: var(--sf-on-surface-media);
-    --sf-on-surface-hover: var(--sf-on-surface-media);
-    --sf-on-surface-active: var(--sf-on-surface-media);
-    --sf-on-surface-variant: var(--sf-on-surface-media);
-  }
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
-    color: var(--sf-on-surface-media);
-  }
-  .sf-drawer[data-sf-drawer-column='true'] .sf-drawer-panel {
-    background: var(--sf-drawer-background, var(--sf-surface-area));
-    @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-area)));
-  }
-  .sf-drawer[data-sf-drawer-placement='bottom'] .sf-drawer-panel {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  .sf-drawer-handle {
-    border: 0;
-    background: inherit;
-  }
-  .sf-drawer-handle-bar {
-    @include sheet.sheet-bar;
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   /* The panels start under an app bar when the page says how tall it is
@@ -829,6 +763,72 @@
     .sf-drawer:not(.is-open) .sf-drawer-panel {
       transition: none;
     }
+  }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-drawer-overlay {
+    /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20), the
+       drawer's own variables first. */
+    background: var(--sf-drawer-overlay-background, var(--sf-scrim-color, var(--sf-black--alfa-64)));
+  }
+  .sf-drawer-panel {
+    color: var(--sf-drawer-color, var(--sf-on-surface));
+  }
+  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-panel {
+    background: var(--sf-drawer-background, var(--sf-surface-popup));
+    @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+  }
+  .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-panel {
+    border-right-color: var(--sf-outline-variant);
+  }
+  .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-panel {
+    border-left-color: var(--sf-outline-variant);
+  }
+  .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-panel {
+    border-inline-end-color: var(--sf-outline-variant);
+  }
+  .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-panel {
+    border-inline-start-color: var(--sf-outline-variant);
+  }
+  .sf-drawer-head {
+    background: inherit;
+  }
+  .sf-drawer-title {
+    color: var(--sf-on-surface);
+  }
+  .sf-drawer-foot {
+    background: inherit;
+  }
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge {
+    @include places.sf-place-glass-accent;
+    --sf-on-surface: var(--sf-on-surface-media);
+    --sf-on-surface-icon: var(--sf-on-surface-media);
+    --sf-on-surface-hover: var(--sf-on-surface-media);
+    --sf-on-surface-active: var(--sf-on-surface-media);
+    --sf-on-surface-variant: var(--sf-on-surface-media);
+  }
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
+    color: var(--sf-on-surface-media);
+  }
+  .sf-drawer[data-sf-drawer-column='true'] .sf-drawer-panel {
+    background: var(--sf-drawer-background, var(--sf-surface-area));
+    @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-area)));
+  }
+  .sf-drawer[data-sf-drawer-placement='bottom'] .sf-drawer-panel {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-drawer-handle {
+    border: 0;
+    background: inherit;
+  }
+  .sf-drawer-handle-bar {
+    @include sheet.sheet-bar;
   }
   @include paint.part(all);
 }

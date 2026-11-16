@@ -17,24 +17,6 @@
   @return map.get(bp.$breakpoint-array, md);
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-tabs {
-    background-color: var(--sf-tabs--background-color, transparent);
-  }
-  .sf-tabs-top {
-    border-color: var(--sf-tabs-top--border-color, transparent);
-  }
-  .sf-tabs-top-container {
-    border-color: var(--sf-tabs-top-container--border-color, var(--sf-tabs-border-color, var(--sf-outline-variant)));
-  }
-  .sf-tabs.sf-tabs--sticky > .sf-tabs-top-container {
-    background-color: var(--sf-surface-page);
-  }
-}
-
 @layer sf.components {
   .sf-tabs {
     min-inline-size: 0;
@@ -162,6 +144,24 @@
 
   .sf-tabs.sf-tabs--sticky.sf-tabs--vertical > .sf-tabs-top-container {
     align-self: flex-start;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-tabs {
+    background-color: var(--sf-tabs--background-color, transparent);
+  }
+  .sf-tabs-top {
+    border-color: var(--sf-tabs-top--border-color, transparent);
+  }
+  .sf-tabs-top-container {
+    border-color: var(--sf-tabs-top-container--border-color, var(--sf-tabs-border-color, var(--sf-outline-variant)));
+  }
+  .sf-tabs.sf-tabs--sticky > .sf-tabs-top-container {
+    background-color: var(--sf-surface-page);
   }
 }
 

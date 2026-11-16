@@ -498,7 +498,7 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "7d797241e482bcfa2eaefefab98e501766aa62f1a61dce98dd95ec0640c46ab4"
+        "sha256": "5a7833b7bfd5f7a6c03df55d456527506ac4c0e42b0a552e03817c341060a00f"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
@@ -506,7 +506,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "4746cd03f2f82e5c96ce2b7fa4c56e9c3ad14d3b384bce5a15711bdd036afa6a"
+        "sha256": "1db5b90ef0022b25a865e9f792771b7d19e2704e429bffcebdc7898fcbbf9a1a"
       }
     ],
     "generated_runtime": []

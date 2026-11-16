@@ -359,7 +359,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "a774284923d9965f56c34aee4eb80c2ee61d15a470db2716a747b3426438da6d"
+        "sha256": "42c901d981e03df99f8502f23c63047c6b25b8806e40fd239f60759aff778116"
       },
       {
         "path": "src/smart/input-choice/rule.js",

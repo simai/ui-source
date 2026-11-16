@@ -1,26 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-reference-link {
-    color: var(--sf-on-surface);
-    background-color: var(--sf-reference-link--background-color);
-    border-color: var(--sf-reference-link--border-color);
-  }
-  .sf-reference-link :where(.sf-reference-link__main, .sf-reference-link-left) {
-    color: var(--sf-on-surface);
-  }
-  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a) {
-    color: var(--sf-reference-link-link-color, var(--sf-reference-link--link));
-  }
-  .sf-reference-link :where(.sf-reference-link__icon, .sf-reference-link-left > .sf-icon) {
-    color: var(--sf-reference-link--accent);
-  }
-  .sf-reference-link :where(.sf-reference-link__meta, .sf-reference-link-text) {
-    color: var(--sf-on-surface-variant);
-  }
-}
-
 @layer sf.components {
   .sf-reference-link {
     /* The card sits on whatever surface holds it; hover and press add the
@@ -158,8 +135,22 @@
 // sf.paint, under the utilities, so bg-*, border-* and color-* on them
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
-  .sf-reference-link.sf-reference-link--plain {
-    border: 0;
+  .sf-reference-link {
+    color: var(--sf-on-surface);
+    background-color: var(--sf-reference-link--background-color);
+    border-color: var(--sf-reference-link--border-color);
+  }
+  .sf-reference-link :where(.sf-reference-link__main, .sf-reference-link-left) {
+    color: var(--sf-on-surface);
+  }
+  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a) {
+    color: var(--sf-reference-link-link-color, var(--sf-reference-link--link));
+  }
+  .sf-reference-link :where(.sf-reference-link__icon, .sf-reference-link-left > .sf-icon) {
+    color: var(--sf-reference-link--accent);
+  }
+  .sf-reference-link :where(.sf-reference-link__meta, .sf-reference-link-text) {
+    color: var(--sf-on-surface-variant);
   }
 }
 
@@ -176,6 +167,15 @@
     inline-size: auto;
     border: 0;
     border-color: revert-layer;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-reference-link.sf-reference-link--plain {
+    border: 0;
   }
 }
 
@@ -391,20 +391,6 @@
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-reference-link :where(.sf-reference-link__tab) {
-    color: inherit;
-  }
-  /* A target that is gone (C147 (6)): no link, so no link ink -- the words
-     and the broken-link icon in the dim ink, the reason after the name. */
-  .sf-reference-link.sf-reference-link--gone :where(.sf-reference-link__main, .sf-reference-link__link, .sf-reference-link__label, .sf-reference-link__icon, .sf-reference-link__reason) {
-    color: var(--sf-on-surface-variant);
-  }
-}
-
 @layer sf.components {
   /* A new tab (C147 (4), as C25 for a file opened to view): the sign after
      the words, H3 of C105 (--sf-space-1/4, 4) from them, the size of the
@@ -458,25 +444,13 @@
 // sf.paint, under the utilities, so bg-*, border-* and color-* on them
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
-  .sf-reference-link.sf-reference-link--inline {
-    color: inherit;
-    background-color: transparent;
-    border: 0;
-  }
-  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__link) {
-    color: var(--sf-reference-link-link-color, var(--sf-link));
-  }
-  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon, .sf-reference-link__tab) {
+  .sf-reference-link :where(.sf-reference-link__tab) {
     color: inherit;
   }
-  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__number) {
+  /* A target that is gone (C147 (6)): no link, so no link ink -- the words
+     and the broken-link icon in the dim ink, the reason after the name. */
+  .sf-reference-link.sf-reference-link--gone :where(.sf-reference-link__main, .sf-reference-link__link, .sf-reference-link__label, .sf-reference-link__icon, .sf-reference-link__reason) {
     color: var(--sf-on-surface-variant);
-  }
-  .sf-reference-link.sf-reference-link--inline.sf-reference-link--gone :where(.sf-reference-link__link) {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-reference-link.sf-reference-link--inline.disabled :where(.sf-reference-link__link, .sf-reference-link__icon, .sf-reference-link__number) {
-    color: var(--sf-on-surface-disabled);
   }
 }
 
@@ -539,6 +513,32 @@
 
   .sf-reference-link.sf-reference-link--inline:is(.disabled, .sf-reference-link--gone) :where(.sf-reference-link__label) {
     text-decoration-line: none;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-reference-link.sf-reference-link--inline {
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+  }
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__link) {
+    color: var(--sf-reference-link-link-color, var(--sf-link));
+  }
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon, .sf-reference-link__tab) {
+    color: inherit;
+  }
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__number) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-reference-link.sf-reference-link--inline.sf-reference-link--gone :where(.sf-reference-link__link) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-reference-link.sf-reference-link--inline.disabled :where(.sf-reference-link__link, .sf-reference-link__icon, .sf-reference-link__number) {
+    color: var(--sf-on-surface-disabled);
   }
 }
 

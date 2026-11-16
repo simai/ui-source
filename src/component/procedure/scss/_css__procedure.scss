@@ -21,39 +21,6 @@
 // the line. content.steps renders with it. sf-steps, the indicator of where
 // a person is in a process, is another component.
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-procedure-step::before {
-    color: var(--sf-procedure-marker-color, var(--sf-on-surface));
-    // No fill: an empty circle, as the sf-steps marker of a step ahead.
-    background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, transparent));
-    border-color: var(--sf-outline);
-  }
-  .sf-procedure-step:not(:last-child)::after {
-    background-color: var(--sf-procedure-line-color, var(--sf-outline-variant));
-  }
-  .sf-procedure-step--complete::before {
-    color: var(--sf-on-primary);
-    background-color: var(--sf-primary);
-    border-color: var(--sf-primary);
-  }
-  .sf-procedure-step--current::before {
-    color: var(--sf-on-primary-container);
-    background-color: var(--sf-primary-container);
-    border-color: var(--sf-primary);
-  }
-  @media (forced-colors: active) {
-    .sf-procedure-step::before {
-      border-color: CanvasText;
-    }
-    .sf-procedure-step:not(:last-child)::after {
-      background-color: CanvasText;
-    }
-  }
-}
-
 @layer sf.components {
   .sf-procedure {
     --sf-procedure--marker-size: var(--sf-text-height-1);
@@ -151,5 +118,38 @@
 
   .sf-procedure--list > .sf-procedure-step::after {
     content: none;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-procedure-step::before {
+    color: var(--sf-procedure-marker-color, var(--sf-on-surface));
+    // No fill: an empty circle, as the sf-steps marker of a step ahead.
+    background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, transparent));
+    border-color: var(--sf-outline);
+  }
+  .sf-procedure-step:not(:last-child)::after {
+    background-color: var(--sf-procedure-line-color, var(--sf-outline-variant));
+  }
+  .sf-procedure-step--complete::before {
+    color: var(--sf-on-primary);
+    background-color: var(--sf-primary);
+    border-color: var(--sf-primary);
+  }
+  .sf-procedure-step--current::before {
+    color: var(--sf-on-primary-container);
+    background-color: var(--sf-primary-container);
+    border-color: var(--sf-primary);
+  }
+  @media (forced-colors: active) {
+    .sf-procedure-step::before {
+      border-color: CanvasText;
+    }
+    .sf-procedure-step:not(:last-child)::after {
+      background-color: CanvasText;
+    }
   }
 }

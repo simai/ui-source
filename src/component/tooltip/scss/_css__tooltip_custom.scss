@@ -1,17 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-tooltip .sf-tooltip-content {
-    border-color: var(--sf-tooltip-border-color, var(--sf-outline-variant));
-  }
-  @media (forced-colors: active) {
-    .sf-tooltip .sf-tooltip-content {
-      border-color: CanvasText;
-    }
-  }
-}
-
 @layer sf.components {
 .sf-tooltip {
   --sf-tooltip-tail-size: var(--sf-b2);
@@ -276,4 +262,18 @@
     border-style: solid;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-tooltip .sf-tooltip-content {
+    border-color: var(--sf-tooltip-border-color, var(--sf-outline-variant));
+  }
+  @media (forced-colors: active) {
+    .sf-tooltip .sf-tooltip-content {
+      border-color: CanvasText;
+    }
+  }
 }

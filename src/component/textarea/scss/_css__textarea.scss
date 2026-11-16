@@ -1,44 +1,5 @@
 @use '../../inputs/scss/field-ladder' as ladder;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-textarea {
-    background-color: var(--sf-textarea--background-color, transparent);
-  }
-  .sf-textarea .sf-textarea-hint-text-wrap {
-    background-color: var(--sf-textarea-hint-text-wrap--background-color);
-    color: var(--sf-textarea-hint-text-wrap--color);
-  }
-  .sf-textarea .sf-textarea-label {
-    background-color: var(--sf-textarea-label--background-color);
-  }
-  .sf-textarea .sf-textarea-required {
-    color: var(--sf-textarea-required--color);
-  }
-  .sf-textarea .sf-textarea-text {
-    color: var(--sf-textarea-text--color);
-  }
-  .sf-textarea textarea {
-    background-color: var(--sf-textarea-textarea--background-color);
-    border: var(--sf-textarea-textarea--border);
-    border-color: var(--sf-textarea-textarea--border-color, transparent);
-    border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
-    color: var(--sf-textarea-textarea--color);
-  }
-  .sf-textarea textarea::placeholder {
-    color: var(--sf-textarea-placeholder--color);
-  }
-  .sf-textarea.sf-textarea--filled textarea {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-textarea.sf-textarea--flush textarea {
-    background-color: transparent;
-    border: 0;
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-textarea {
@@ -439,6 +400,45 @@
 }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-textarea {
+    background-color: var(--sf-textarea--background-color, transparent);
+  }
+  .sf-textarea .sf-textarea-hint-text-wrap {
+    background-color: var(--sf-textarea-hint-text-wrap--background-color);
+    color: var(--sf-textarea-hint-text-wrap--color);
+  }
+  .sf-textarea .sf-textarea-label {
+    background-color: var(--sf-textarea-label--background-color);
+  }
+  .sf-textarea .sf-textarea-required {
+    color: var(--sf-textarea-required--color);
+  }
+  .sf-textarea .sf-textarea-text {
+    color: var(--sf-textarea-text--color);
+  }
+  .sf-textarea textarea {
+    background-color: var(--sf-textarea-textarea--background-color);
+    border: var(--sf-textarea-textarea--border);
+    border-color: var(--sf-textarea-textarea--border-color, transparent);
+    border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
+    color: var(--sf-textarea-textarea--color);
+  }
+  .sf-textarea textarea::placeholder {
+    color: var(--sf-textarea-placeholder--color);
+  }
+  .sf-textarea.sf-textarea--filled textarea {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-textarea.sf-textarea--flush textarea {
+    background-color: transparent;
+    border: 0;
+  }
+}
+
 @layer sf.states {
   @media (prefers-reduced-motion: reduce) {
     .sf-textarea textarea {
@@ -598,21 +598,6 @@
    frame). The polite line that speaks a threshold is read, not seen. (8) Code:
    the code font of the type system, the line as typed -- no wrapping, the
    field scrolls sideways inside. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-textarea .sf-textarea-count {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-textarea.sf-textarea--over .sf-textarea-count {
-    color: var(--sf-error);
-  }
-  .sf-textarea-count-said {
-    border: 0;
-  }
-}
-
 @layer sf.components {
   @media not all and (pointer: coarse) {
     .sf-textarea.sf-textarea--resize:not(.sf-textarea--auto-grow):not(.sf-textarea--flush) textarea {
@@ -665,6 +650,21 @@
     white-space: pre;
     overflow-wrap: normal;
     overflow-x: auto;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-textarea .sf-textarea-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-textarea.sf-textarea--over .sf-textarea-count {
+    color: var(--sf-error);
+  }
+  .sf-textarea-count-said {
+    border: 0;
   }
 }
 

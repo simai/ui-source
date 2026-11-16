@@ -406,7 +406,7 @@
       },
       {
         "path": "src/smart/editor-inline/scss/_smart__inline-editor.scss",
-        "sha256": "5210a1208df39ef5eb8b62f7d66516c339c4a8012139dd30552683339504e1a8"
+        "sha256": "520745278c8824a3c7d8b86ad15547bf96b2f67ccfc3578843a6ac2b121f3022"
       },
       {
         "path": "src/smart/editor-inline/rule.js",

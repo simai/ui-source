@@ -1,34 +1,6 @@
 @use 'var__slider' as *;
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-slider-dots {
-    background-color: var(--sf-slider-dots--background-color);
-  }
-  .sf-slider-dots .sf-slider-dots-dot {
-    background-color: var(--sf-slider-dots-dot--background-color);
-    color: var(--sf-slider-dots-dot--color);
-    border-color: currentColor;
-  }
-  .sf-slider-dots .sf-slider-dots-dot.active {
-    color: var(--sf-slider-dots-dot--active-color, var(--sf-slider-dots-dot--color));
-  }
-  @media (forced-colors: active) {
-    .sf-slider-dots .sf-slider-dots-dot {
-      color: ButtonText;
-      border-color: ButtonText;
-      background-color: ButtonFace;
-    }
-    .sf-slider-dots .sf-slider-dots-dot.active {
-      border-color: Highlight;
-      background-color: Highlight;
-    }
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-slider-dots {
@@ -247,4 +219,32 @@
   padding-inline-start: 0;
   padding-inline-end: 0;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-slider-dots {
+    background-color: var(--sf-slider-dots--background-color);
+  }
+  .sf-slider-dots .sf-slider-dots-dot {
+    background-color: var(--sf-slider-dots-dot--background-color);
+    color: var(--sf-slider-dots-dot--color);
+    border-color: currentColor;
+  }
+  .sf-slider-dots .sf-slider-dots-dot.active {
+    color: var(--sf-slider-dots-dot--active-color, var(--sf-slider-dots-dot--color));
+  }
+  @media (forced-colors: active) {
+    .sf-slider-dots .sf-slider-dots-dot {
+      color: ButtonText;
+      border-color: ButtonText;
+      background-color: ButtonFace;
+    }
+    .sf-slider-dots .sf-slider-dots-dot.active {
+      border-color: Highlight;
+      background-color: Highlight;
+    }
+  }
 }

@@ -13,29 +13,6 @@
 // pointer and the shared focus ring. A row's status is the class dot
 // (.sf-dot) at its end, before the counter, and its word a
 // .sf-menu-element-status out of sight.
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-menu-group-heading {
-    border: var(--sf-0);
-    background: var(--sf-transparent);
-    color: var(--sf-on-surface-variant);
-  }
-  button.sf-menu-group-heading:not(:disabled):hover {
-    background: var(--sf-surface-state-hover);
-  }
-  button.sf-menu-group-heading:not(:disabled):active {
-    background: var(--sf-surface-state-active);
-  }
-  button.sf-menu-group-heading:disabled {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-menu-element-status {
-    border: var(--sf-0);
-  }
-}
-
 @layer sf.components {
   .sf-menu .sf-menu-item--group {
     --sf-menu-item--gap: var(--sf-space-1\/4);
@@ -146,5 +123,28 @@
     button.sf-menu-group-heading:focus-visible {
       outline: var(--sf-focus-outline-width) solid currentColor;
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-menu-group-heading {
+    border: var(--sf-0);
+    background: var(--sf-transparent);
+    color: var(--sf-on-surface-variant);
+  }
+  button.sf-menu-group-heading:not(:disabled):hover {
+    background: var(--sf-surface-state-hover);
+  }
+  button.sf-menu-group-heading:not(:disabled):active {
+    background: var(--sf-surface-state-active);
+  }
+  button.sf-menu-group-heading:disabled {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-menu-element-status {
+    border: var(--sf-0);
   }
 }

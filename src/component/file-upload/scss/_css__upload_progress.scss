@@ -1,33 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-upload-progress {
-    background-color: var(--sf-upload-progress--background-color, transparent);
-  }
-  .sf-upload-progress .sf-upload-progress-content {
-    background-color: var(--sf-upload-progress-content--background-color);
-  }
-  .sf-upload-progress .sf-upload-progress-top {
-    background-color: var(--sf-upload-progress-top--background-color);
-  }
-  .sf-upload-progress .sf-upload-progress-left {
-    background-color: var(--sf-upload-progress-left--background-color);
-  }
-  .sf-upload-progress .sf-upload-progress-name {
-    color: var(--sf-upload-progress-name--color);
-  }
-  .sf-upload-progress .sf-upload-progress-text {
-    color: var(--sf-upload-progress-text--color);
-  }
-  .sf-upload-progress .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-upload-progress .sf-upload-progress-repeat {
-    color: var(--sf-upload-progress-repeat--color);
-  }
-}
-
 @layer sf.components {
   .sf-upload-progress-repeat:not(:disabled):focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
@@ -277,4 +247,34 @@
   /* The size line's weight: bold made the retry read as a second file name. */
   --sf-upload-progress-repeat--font-weight: var(--sf-font-weight-regular);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-upload-progress {
+    background-color: var(--sf-upload-progress--background-color, transparent);
+  }
+  .sf-upload-progress .sf-upload-progress-content {
+    background-color: var(--sf-upload-progress-content--background-color);
+  }
+  .sf-upload-progress .sf-upload-progress-top {
+    background-color: var(--sf-upload-progress-top--background-color);
+  }
+  .sf-upload-progress .sf-upload-progress-left {
+    background-color: var(--sf-upload-progress-left--background-color);
+  }
+  .sf-upload-progress .sf-upload-progress-name {
+    color: var(--sf-upload-progress-name--color);
+  }
+  .sf-upload-progress .sf-upload-progress-text {
+    color: var(--sf-upload-progress-text--color);
+  }
+  .sf-upload-progress .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-upload-progress .sf-upload-progress-repeat {
+    color: var(--sf-upload-progress-repeat--color);
+  }
 }

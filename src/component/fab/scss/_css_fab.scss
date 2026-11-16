@@ -1,18 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-fab {
-    background-color: var(--sf-fab--background-color);
-  }
-  .sf-fab .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-fab.sf-fab--tonal.sf-fab--on-surface {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-fab {
@@ -173,4 +158,19 @@
     --sf-fab--box-shadow: none;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-fab {
+    background-color: var(--sf-fab--background-color);
+  }
+  .sf-fab .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-fab.sf-fab--tonal.sf-fab--on-surface {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
 }

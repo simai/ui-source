@@ -1,78 +1,6 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-wizard {
-    border-color: var(--sf-wizard--border-color);
-    background-color: var(--sf-wizard--background);
-    color: var(--sf-on-surface);
-  }
-  .sf-wizard.sf-wizard--window {
-    border: 0;
-    background-color: transparent;
-  }
-  .sf-wizard-heading {
-    color: var(--sf-on-surface);
-  }
-  .sf-wizard-position {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-wizard-compact-label {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-wizard-list-step {
-    border: 0;
-    background: transparent;
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-wizard-list-step:not(:disabled):hover {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    background-color: var(--sf-surface-container);
-  }
-  .sf-wizard-list-step[aria-current="step"] {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    background-color: var(--sf-surface-container);
-    color: var(--sf-on-surface);
-  }
-  .sf-wizard-list-step:disabled {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-wizard-list-number {
-    border-color: currentColor;
-  }
-  .sf-wizard-title {
-    color: var(--sf-on-surface);
-  }
-  .sf-wizard-why {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-wizard-running .sf-loader--text {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-wizard-plan > li + li {
-    border-block-start-color: var(--sf-wizard--border-color);
-  }
-  .sf-wizard-footer {
-    border-block-start-color: var(--sf-wizard--border-color);
-  }
-  .sf-wizard-saved {
-    color: var(--sf-on-surface-variant);
-  }
-  @container sf-wizard (width < #{mq.container-step(g5)}) {
-    .sf-wizard--window .sf-wizard-footer {
-      background-color: var(--sf-modal-surface-bg, var(--sf-surface-popup));
-    }
-  }
-  @container sf-wizard (min-width: #{mq.container-step(h0)}) {
-    .sf-wizard--progress-column .sf-wizard-column {
-      border-inline-end-color: var(--sf-wizard--border-color);
-    }
-  }
-}
-
 @layer sf.components {
 /* sf-wizard (standard simai.smart-component 1.3.14 §6). One rung of the
    ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 with
@@ -672,6 +600,78 @@
     flex-basis: 100%;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-wizard {
+    border-color: var(--sf-wizard--border-color);
+    background-color: var(--sf-wizard--background);
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard.sf-wizard--window {
+    border: 0;
+    background-color: transparent;
+  }
+  .sf-wizard-heading {
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard-position {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-compact-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-list-step {
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-list-step:not(:disabled):hover {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background-color: var(--sf-surface-container);
+  }
+  .sf-wizard-list-step[aria-current="step"] {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background-color: var(--sf-surface-container);
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard-list-step:disabled {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-wizard-list-number {
+    border-color: currentColor;
+  }
+  .sf-wizard-title {
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard-why {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-running .sf-loader--text {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-plan > li + li {
+    border-block-start-color: var(--sf-wizard--border-color);
+  }
+  .sf-wizard-footer {
+    border-block-start-color: var(--sf-wizard--border-color);
+  }
+  .sf-wizard-saved {
+    color: var(--sf-on-surface-variant);
+  }
+  @container sf-wizard (width < #{mq.container-step(g5)}) {
+    .sf-wizard--window .sf-wizard-footer {
+      background-color: var(--sf-modal-surface-bg, var(--sf-surface-popup));
+    }
+  }
+  @container sf-wizard (min-width: #{mq.container-step(h0)}) {
+    .sf-wizard--progress-column .sf-wizard-column {
+      border-inline-end-color: var(--sf-wizard--border-color);
+    }
+  }
 }
 
 /* A touch target of at least 44px under a coarse pointer (WCAG 2.5.5, the

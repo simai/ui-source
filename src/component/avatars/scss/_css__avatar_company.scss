@@ -1,12 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-avatar-badge {
-    background-color: var(--sf-avatar-badge--background-color, transparent);
-  }
-}
-
 @layer sf.components {
   /* A badge is a square drawing in the avatar's corner (docs precheck AV-01):
      its height is its width, so a badge without its drawing -- a letter --
@@ -48,5 +39,14 @@
 
   .sf-avatar-badge--size-1\/2 {
     --sf-avatar-badge--width: var(--sf-micro--badge-1\/2);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-avatar-badge {
+    background-color: var(--sf-avatar-badge--background-color, transparent);
   }
 }

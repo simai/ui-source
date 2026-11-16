@@ -23,51 +23,6 @@
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-list-description {
-    color: var(--sf-list-description-value-color, var(--sf-on-surface));
-  }
-  .sf-list-description--dividers .sf-list-description-row + .sf-list-description-row {
-    border-block-start-color: var(--sf-list-description--divider);
-  }
-  .sf-list-description-label {
-    color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
-  }
-  .sf-list-description-title {
-    color: var(--sf-list-description-value-color, var(--sf-on-surface));
-  }
-  .sf-list-description--dividers .sf-list-description-head + .sf-list-description-part > .sf-list-description-row:first-child {
-    border-block-start-color: var(--sf-list-description--divider);
-  }
-  .sf-list-description-link {
-    color: var(--sf-link);
-  }
-  .sf-list-description-empty {
-    color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
-  }
-  .sf-list-description-icon--success {
-    color: var(--sf-success);
-  }
-  .sf-list-description-icon--warning {
-    color: var(--sf-warning);
-  }
-  .sf-list-description-icon--error {
-    color: var(--sf-error);
-  }
-  .sf-list-description-icon--info {
-    color: var(--sf-info);
-  }
-  .sf-list-description-hint {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-list-description--layout-grid.sf-list-description--dividers .sf-list-description-row {
-    border-block-start: 0;
-  }
-}
-
 @layer sf.components {
 /* sf-list-description (standard simai.smart-component 1.3.14 §6). One rung S
    of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
@@ -434,4 +389,49 @@ sf-list-description {
 @media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
   @include list-description-stacked-auto;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-description {
+    color: var(--sf-list-description-value-color, var(--sf-on-surface));
+  }
+  .sf-list-description--dividers .sf-list-description-row + .sf-list-description-row {
+    border-block-start-color: var(--sf-list-description--divider);
+  }
+  .sf-list-description-label {
+    color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-description-title {
+    color: var(--sf-list-description-value-color, var(--sf-on-surface));
+  }
+  .sf-list-description--dividers .sf-list-description-head + .sf-list-description-part > .sf-list-description-row:first-child {
+    border-block-start-color: var(--sf-list-description--divider);
+  }
+  .sf-list-description-link {
+    color: var(--sf-link);
+  }
+  .sf-list-description-empty {
+    color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-description-icon--success {
+    color: var(--sf-success);
+  }
+  .sf-list-description-icon--warning {
+    color: var(--sf-warning);
+  }
+  .sf-list-description-icon--error {
+    color: var(--sf-error);
+  }
+  .sf-list-description-icon--info {
+    color: var(--sf-info);
+  }
+  .sf-list-description-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-description--layout-grid.sf-list-description--dividers .sf-list-description-row {
+    border-block-start: 0;
+  }
 }

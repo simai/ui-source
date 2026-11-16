@@ -1,86 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-step {
-    color: var(--sf-on-surface);
-  }
-  .sf-step .sf-step-body {
-    color: inherit;
-  }
-  .sf-step .sf-step-control {
-    border: 0;
-    background: none;
-    color: inherit;
-  }
-  .sf-step .sf-step-marker {
-    color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
-  }
-  .sf-step .sf-step-marker .sf-icon {
-    color: currentColor;
-  }
-  .sf-steps--marker-number .sf-step .sf-step-marker {
-    border-color: var(--sf-steps-step-border-color, var(--sf-outline));
-  }
-  .sf-steps--marker-number .sf-step--state-done .sf-step-marker,
-.sf-steps--marker-number .sf-step--state-current .sf-step-marker {
-    border-color: var(--sf-step--progress);
-    background-color: var(--sf-step--progress);
-    color: var(--sf-on-primary);
-  }
-  .sf-steps--marker-number .sf-step--state-error .sf-step-marker {
-    border-color: var(--sf-error);
-    background-color: var(--sf-error);
-    color: var(--sf-on-error);
-  }
-  .sf-steps--marker-dot .sf-step .sf-step-marker::before {
-    border-color: var(--sf-steps-step-border-color, var(--sf-outline));
-  }
-  .sf-steps--marker-dot .sf-step--state-done .sf-step-marker::before,
-.sf-steps--marker-dot .sf-step--state-current .sf-step-marker::before {
-    border-color: var(--sf-step--progress);
-    background-color: var(--sf-step--progress);
-  }
-  .sf-steps--marker-dot .sf-step--state-error .sf-step-marker::before {
-    border-color: var(--sf-error);
-    background-color: var(--sf-error);
-  }
-  .sf-steps .sf-step--state-running .sf-step-marker {
-    border: 0;
-    background: none;
-    color: var(--sf-step--progress);
-  }
-  .sf-step .sf-step-marker sf-spinner,
-.sf-step .sf-step-marker .sf-loader-container {
-    color: inherit;
-  }
-  .sf-step .sf-step-container {
-    color: var(--sf-on-surface);
-  }
-  .sf-step .sf-step-text {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-step.sf-step--state-ahead .sf-step-container,
-.sf-step.sf-step--state-skipped .sf-step-container {
-    color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
-  }
-  .sf-step.sf-step--state-error .sf-step-container,
-.sf-step.sf-step--state-error .sf-step-text {
-    color: var(--sf-error);
-  }
-  /* A disabled step: everything on the disabled roles, whatever its state. */
-  .sf-step.sf-step--disabled .sf-step-container,
-.sf-step.sf-step--disabled .sf-step-text,
-.sf-step.sf-step--disabled .sf-step-marker {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-steps--marker-number .sf-step.sf-step--disabled .sf-step-marker,
-.sf-steps--marker-dot .sf-step.sf-step--disabled .sf-step-marker::before {
-    border-color: var(--sf-outline-disabled);
-    background-color: transparent;
-  }
-}
-
 @layer sf.components {
 /* One step of sf-steps (owner decision C101, 2026-11-12; R185 steps study):
    a marker, the label in whole words, an optional second line, and the line
@@ -274,6 +191,89 @@
 .sf-step.sf-step--state-running .sf-step-container {
   font-weight: var(--sf-font-weight-medium);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-step {
+    color: var(--sf-on-surface);
+  }
+  .sf-step .sf-step-body {
+    color: inherit;
+  }
+  .sf-step .sf-step-control {
+    border: 0;
+    background: none;
+    color: inherit;
+  }
+  .sf-step .sf-step-marker {
+    color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
+  }
+  .sf-step .sf-step-marker .sf-icon {
+    color: currentColor;
+  }
+  .sf-steps--marker-number .sf-step .sf-step-marker {
+    border-color: var(--sf-steps-step-border-color, var(--sf-outline));
+  }
+  .sf-steps--marker-number .sf-step--state-done .sf-step-marker,
+.sf-steps--marker-number .sf-step--state-current .sf-step-marker {
+    border-color: var(--sf-step--progress);
+    background-color: var(--sf-step--progress);
+    color: var(--sf-on-primary);
+  }
+  .sf-steps--marker-number .sf-step--state-error .sf-step-marker {
+    border-color: var(--sf-error);
+    background-color: var(--sf-error);
+    color: var(--sf-on-error);
+  }
+  .sf-steps--marker-dot .sf-step .sf-step-marker::before {
+    border-color: var(--sf-steps-step-border-color, var(--sf-outline));
+  }
+  .sf-steps--marker-dot .sf-step--state-done .sf-step-marker::before,
+.sf-steps--marker-dot .sf-step--state-current .sf-step-marker::before {
+    border-color: var(--sf-step--progress);
+    background-color: var(--sf-step--progress);
+  }
+  .sf-steps--marker-dot .sf-step--state-error .sf-step-marker::before {
+    border-color: var(--sf-error);
+    background-color: var(--sf-error);
+  }
+  .sf-steps .sf-step--state-running .sf-step-marker {
+    border: 0;
+    background: none;
+    color: var(--sf-step--progress);
+  }
+  .sf-step .sf-step-marker sf-spinner,
+.sf-step .sf-step-marker .sf-loader-container {
+    color: inherit;
+  }
+  .sf-step .sf-step-container {
+    color: var(--sf-on-surface);
+  }
+  .sf-step .sf-step-text {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-step.sf-step--state-ahead .sf-step-container,
+.sf-step.sf-step--state-skipped .sf-step-container {
+    color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
+  }
+  .sf-step.sf-step--state-error .sf-step-container,
+.sf-step.sf-step--state-error .sf-step-text {
+    color: var(--sf-error);
+  }
+  /* A disabled step: everything on the disabled roles, whatever its state. */
+  .sf-step.sf-step--disabled .sf-step-container,
+.sf-step.sf-step--disabled .sf-step-text,
+.sf-step.sf-step--disabled .sf-step-marker {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-steps--marker-number .sf-step.sf-step--disabled .sf-step-marker,
+.sf-steps--marker-dot .sf-step.sf-step--disabled .sf-step-marker::before {
+    border-color: var(--sf-outline-disabled);
+    background-color: transparent;
+  }
 }
 
 @layer sf.states {

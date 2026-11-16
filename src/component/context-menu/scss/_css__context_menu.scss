@@ -3,216 +3,6 @@
 @use '../../../core/scss/mix/mix__sheet' as sheet;
 @use '../../../core/scss/mix/mix__paint' as paint;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-context-menu {
-    background-color: var(--sf-context-menu--background-color, transparent);
-  }
-  .sf-context-menu .sf-context-menu-content {
-    @include places.sf-place(var(--sf-context-menu-content--background-color), var(--sf-on-surface-popup-variant));
-    border-color: var(--sf-context-menu-border-color, var(--sf-outline-variant));
-    background-color: var(--sf-context-menu-content--background-color);
-  }
-  .sf-context-menu[popover] {
-    border: 0;
-    background: transparent;
-    color: inherit;
-  }
-  .sf-context-menu-item {
-    border: 0;
-    background: none;
-    color: var(--sf-context-menu-color, var(--sf-on-surface));
-  }
-  .sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover,
-.sf-context-menu-item[aria-expanded="true"] {
-    /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
-       select state, 8. It was the plate's hover, 20 before C41. A translucent
-       fill, as the current row: a tonal badge keeps its tone and an anchored
-       badge's ring is the row's colour (C43 D4). */
-    background-color: var(--sf-surface-state-select);
-    @include places.sf-place-fill(var(--sf-surface-state-select));
-  }
-  .sf-context-menu-item--current {
-    background-color: var(--sf-primary-container);
-    color: var(--sf-on-primary-container);
-    @include places.sf-place-fill(var(--sf-primary-container));
-  }
-  .sf-context-menu-item--chosen {
-    background-color: var(--sf-primary-container);
-    color: var(--sf-on-primary-container);
-    @include places.sf-place-fill(var(--sf-primary-container));
-  }
-  .sf-context-menu-item--chosen:not(:disabled, .sf-context-menu-item--disabled):hover {
-    background-color: var(--sf-primary-container-hover);
-    @include places.sf-place-fill(var(--sf-primary-container-hover));
-  }
-  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-context-menu-item--danger:not(:disabled, .sf-context-menu-item--disabled) {
-    color: var(--sf-error);
-  }
-  .sf-context-menu-item-swatch {
-    border-color: var(--sf-outline-variant);
-    background-color: var(--sf-context-menu-swatch, transparent);
-  }
-  .sf-context-menu-item-caption,
-.sf-context-menu-item-value {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-caption,
-.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-value {
-    color: inherit;
-  }
-  .sf-context-menu-item-under {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-under {
-    color: inherit;
-  }
-  .sf-context-menu-separator {
-    background-color: var(--sf-outline-variant);
-  }
-  .sf-context-menu-header-caption {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-value-row {
-    color: var(--sf-context-menu-color, var(--sf-on-surface));
-  }
-  .sf-context-menu-choice-option.sf-context-menu-item {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-choice-option.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
-    color: var(--sf-on-surface);
-    background-color: var(--sf-surface-state-select);
-    @include places.sf-place-fill(var(--sf-surface-state-select));
-  }
-  .sf-context-menu-choice-option[aria-checked="true"] {
-    background-color: var(--sf-primary-container);
-    @include places.sf-place-fill(var(--sf-primary-container));
-    color: var(--sf-on-primary-container);
-  }
-  .sf-context-menu-choice--band {
-    border-color: var(--sf-outline-variant);
-  }
-  .sf-context-menu-choice--band .sf-context-menu-choice-option.sf-context-menu-item {
-    color: var(--sf-context-menu-color, var(--sf-on-surface));
-  }
-  .sf-context-menu-choice--band .sf-context-menu-choice-option ~ .sf-context-menu-choice-option {
-    border-inline-start-color: var(--sf-outline-variant);
-  }
-  .sf-context-menu-item-switch {
-    border-color: var(--sf-outline);
-    background-color: var(--sf-surface-page);
-  }
-  .sf-context-menu-item-switch-thumb {
-    background-color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-item[aria-checked="true"] > .sf-context-menu-item-switch {
-    background-color: var(--sf-primary);
-    border-color: var(--sf-primary);
-  }
-  .sf-context-menu-item[aria-checked="true"] .sf-context-menu-item-switch-thumb {
-    background-color: var(--sf-on-primary);
-  }
-  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) > .sf-context-menu-item-switch {
-    border-color: var(--sf-outline-disabled);
-    background-color: transparent;
-  }
-  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-switch-thumb {
-    background-color: var(--sf-on-surface-disabled);
-  }
-  .sf-context-menu-range-value {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-tile.sf-context-menu-item {
-    background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-tile.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
-    background-color: var(--sf-surface-container-hover);
-    @include places.sf-place-fill(var(--sf-surface-container-hover));
-  }
-  .sf-context-menu-tile-name {
-    color: var(--sf-on-surface);
-  }
-  .sf-context-menu-tile--on.sf-context-menu-item {
-    background-color: var(--sf-primary-container);
-    @include places.sf-place-fill(var(--sf-primary-container));
-    color: var(--sf-on-primary-container);
-  }
-  .sf-context-menu-tile--on.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
-    background-color: var(--sf-primary-container-hover);
-    @include places.sf-place-fill(var(--sf-primary-container-hover));
-  }
-  .sf-context-menu-tile--on .sf-context-menu-tile-icon,
-.sf-context-menu-tile--on .sf-context-menu-tile-name {
-    color: var(--sf-on-primary-container);
-  }
-  .sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-icon,
-.sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-name {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-context-menu-note {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-meter-value {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-search {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-context-menu-search-input {
-    @include panel.search-input;
-  }
-  .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-search {
-    @include panel.search-header(
-    var(--sf-context-menu--row-height),
-    var(--sf-context-menu-content--padding-top),
-    var(--sf-context-menu-content--padding-bottom),
-    var(--sf-context-menu-content--edge-inline-start),
-    var(--sf-context-menu-content--edge-inline-end)
-  );
-  }
-  .sf-context-menu-heading {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-context-menu-footer {
-    border-block-start-color: var(--sf-outline-variant);
-    background-color: var(--sf-context-menu-content--background-color);
-  }
-  .sf-context-menu[data-sf-sheet] {
-    background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
-    border-block-start-color: var(--sf-context-menu-border-color, var(--sf-outline-variant));
-  }
-  .sf-context-menu[data-sf-sheet]::before {
-    @include sheet.sheet-bar-row;
-  }
-  .sf-context-menu[data-sf-sheet]::backdrop {
-    background-color: var(--sf-scrim-color);
-  }
-  .sf-context-menu[data-sf-sheet] .sf-context-menu-content > .sf-context-menu-heading:first-child,
-.sf-context-menu[data-sf-sheet] .sf-context-menu-list > .sf-context-menu-heading:first-child {
-    border-block-end-color: var(--sf-outline-variant);
-    color: var(--sf-on-surface);
-  }
-  .sf-context-menu-head {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-context-menu--panel .sf-context-menu-body {
-    @include panel.scrollbar(var(--sf-space-1\/4), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
-  }
-  .sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
-.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
-    @include panel.scrollbar(var(--sf-context-menu-content--padding-inline-end), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -1379,6 +1169,216 @@
 .sf-context-menu .sf-context-menu-content > .sf-button {
   white-space: nowrap;
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-context-menu {
+    background-color: var(--sf-context-menu--background-color, transparent);
+  }
+  .sf-context-menu .sf-context-menu-content {
+    @include places.sf-place(var(--sf-context-menu-content--background-color), var(--sf-on-surface-popup-variant));
+    border-color: var(--sf-context-menu-border-color, var(--sf-outline-variant));
+    background-color: var(--sf-context-menu-content--background-color);
+  }
+  .sf-context-menu[popover] {
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+  .sf-context-menu-item {
+    border: 0;
+    background: none;
+    color: var(--sf-context-menu-color, var(--sf-on-surface));
+  }
+  .sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover,
+.sf-context-menu-item[aria-expanded="true"] {
+    /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
+       select state, 8. It was the plate's hover, 20 before C41. A translucent
+       fill, as the current row: a tonal badge keeps its tone and an anchored
+       badge's ring is the row's colour (C43 D4). */
+    background-color: var(--sf-surface-state-select);
+    @include places.sf-place-fill(var(--sf-surface-state-select));
+  }
+  .sf-context-menu-item--current {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+  }
+  .sf-context-menu-item--chosen {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+  }
+  .sf-context-menu-item--chosen:not(:disabled, .sf-context-menu-item--disabled):hover {
+    background-color: var(--sf-primary-container-hover);
+    @include places.sf-place-fill(var(--sf-primary-container-hover));
+  }
+  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-context-menu-item--danger:not(:disabled, .sf-context-menu-item--disabled) {
+    color: var(--sf-error);
+  }
+  .sf-context-menu-item-swatch {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-context-menu-swatch, transparent);
+  }
+  .sf-context-menu-item-caption,
+.sf-context-menu-item-value {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-caption,
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-value {
+    color: inherit;
+  }
+  .sf-context-menu-item-under {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-under {
+    color: inherit;
+  }
+  .sf-context-menu-separator {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-context-menu-header-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-value-row {
+    color: var(--sf-context-menu-color, var(--sf-on-surface));
+  }
+  .sf-context-menu-choice-option.sf-context-menu-item {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-choice-option.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
+    color: var(--sf-on-surface);
+    background-color: var(--sf-surface-state-select);
+    @include places.sf-place-fill(var(--sf-surface-state-select));
+  }
+  .sf-context-menu-choice-option[aria-checked="true"] {
+    background-color: var(--sf-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+    color: var(--sf-on-primary-container);
+  }
+  .sf-context-menu-choice--band {
+    border-color: var(--sf-outline-variant);
+  }
+  .sf-context-menu-choice--band .sf-context-menu-choice-option.sf-context-menu-item {
+    color: var(--sf-context-menu-color, var(--sf-on-surface));
+  }
+  .sf-context-menu-choice--band .sf-context-menu-choice-option ~ .sf-context-menu-choice-option {
+    border-inline-start-color: var(--sf-outline-variant);
+  }
+  .sf-context-menu-item-switch {
+    border-color: var(--sf-outline);
+    background-color: var(--sf-surface-page);
+  }
+  .sf-context-menu-item-switch-thumb {
+    background-color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-item[aria-checked="true"] > .sf-context-menu-item-switch {
+    background-color: var(--sf-primary);
+    border-color: var(--sf-primary);
+  }
+  .sf-context-menu-item[aria-checked="true"] .sf-context-menu-item-switch-thumb {
+    background-color: var(--sf-on-primary);
+  }
+  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) > .sf-context-menu-item-switch {
+    border-color: var(--sf-outline-disabled);
+    background-color: transparent;
+  }
+  .sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-switch-thumb {
+    background-color: var(--sf-on-surface-disabled);
+  }
+  .sf-context-menu-range-value {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-tile.sf-context-menu-item {
+    background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-tile.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
+    background-color: var(--sf-surface-container-hover);
+    @include places.sf-place-fill(var(--sf-surface-container-hover));
+  }
+  .sf-context-menu-tile-name {
+    color: var(--sf-on-surface);
+  }
+  .sf-context-menu-tile--on.sf-context-menu-item {
+    background-color: var(--sf-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+    color: var(--sf-on-primary-container);
+  }
+  .sf-context-menu-tile--on.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
+    background-color: var(--sf-primary-container-hover);
+    @include places.sf-place-fill(var(--sf-primary-container-hover));
+  }
+  .sf-context-menu-tile--on .sf-context-menu-tile-icon,
+.sf-context-menu-tile--on .sf-context-menu-tile-name {
+    color: var(--sf-on-primary-container);
+  }
+  .sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-icon,
+.sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-name {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-context-menu-note {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-meter-value {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-search {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-context-menu-search-input {
+    @include panel.search-input;
+  }
+  .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-search {
+    @include panel.search-header(
+    var(--sf-context-menu--row-height),
+    var(--sf-context-menu-content--padding-top),
+    var(--sf-context-menu-content--padding-bottom),
+    var(--sf-context-menu-content--edge-inline-start),
+    var(--sf-context-menu-content--edge-inline-end)
+  );
+  }
+  .sf-context-menu-heading {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-context-menu-footer {
+    border-block-start-color: var(--sf-outline-variant);
+    background-color: var(--sf-context-menu-content--background-color);
+  }
+  .sf-context-menu[data-sf-sheet] {
+    background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
+    border-block-start-color: var(--sf-context-menu-border-color, var(--sf-outline-variant));
+  }
+  .sf-context-menu[data-sf-sheet]::before {
+    @include sheet.sheet-bar-row;
+  }
+  .sf-context-menu[data-sf-sheet]::backdrop {
+    background-color: var(--sf-scrim-color);
+  }
+  .sf-context-menu[data-sf-sheet] .sf-context-menu-content > .sf-context-menu-heading:first-child,
+.sf-context-menu[data-sf-sheet] .sf-context-menu-list > .sf-context-menu-heading:first-child {
+    border-block-end-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface);
+  }
+  .sf-context-menu-head {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-context-menu--panel .sf-context-menu-body {
+    @include panel.scrollbar(var(--sf-space-1\/4), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
+  }
+  .sf-context-menu:not(.sf-context-menu--panel) .sf-context-menu-content,
+.sf-context-menu .sf-context-menu-content--search > .sf-context-menu-list {
+    @include panel.scrollbar(var(--sf-context-menu-content--padding-inline-end), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
+  }
   @include paint.part(all);
 }
 

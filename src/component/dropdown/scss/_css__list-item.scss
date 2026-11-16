@@ -12,46 +12,6 @@
   initial-value: 0;
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-list-item {
-    background-color: var(--sf-list-item--background-color);
-    border-color: var(--sf-list-item--border-color, transparent);
-  }
-  .sf-list-item .sf-list-item-wrap {
-    background-color: var(--sf-list-item-wrap--background-color);
-  }
-  .sf-list-item .sf-list-item-container {
-    background-color: var(--sf-list-item-container--background-color);
-    color: var(--sf-list-item-container--color);
-  }
-  .sf-list-item .sf-tag {
-    background-color: var(--sf-tag--background-color);
-  }
-  .sf-list-item .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-list-item .sf-avatar-label-group-title {
-    color: var(--sf-avatar-label-group-title--color);
-  }
-  .sf-list-item .sf-list-item-selected-item {
-    background-color: var(--sf-list-item-selected-item--background-color);
-  }
-  .sf-list-item .sf-checkbox-box {
-    border-color: var(--sf-checkbox-box--border-color, transparent);
-  }
-  .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
-    @include places.sf-place-fill(var(--sf-list-item--background-color));
-  }
-  .sf-list-item.selected {
-    @include places.sf-place-fill(var(--sf-list-item--background-color));
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* The row's public variables (standard 1.3.8 §6, sf-list-item): its fill and
@@ -426,6 +386,46 @@
   @include paint.part(all);
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-list-item {
+    background-color: var(--sf-list-item--background-color);
+    border-color: var(--sf-list-item--border-color, transparent);
+  }
+  .sf-list-item .sf-list-item-wrap {
+    background-color: var(--sf-list-item-wrap--background-color);
+  }
+  .sf-list-item .sf-list-item-container {
+    background-color: var(--sf-list-item-container--background-color);
+    color: var(--sf-list-item-container--color);
+  }
+  .sf-list-item .sf-tag {
+    background-color: var(--sf-tag--background-color);
+  }
+  .sf-list-item .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item .sf-avatar-label-group-title {
+    color: var(--sf-avatar-label-group-title--color);
+  }
+  .sf-list-item .sf-list-item-selected-item {
+    background-color: var(--sf-list-item-selected-item--background-color);
+  }
+  .sf-list-item .sf-checkbox-box {
+    border-color: var(--sf-checkbox-box--border-color, transparent);
+  }
+  .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  .sf-list-item.selected {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  @include paint.part(all);
+}
+
 @layer sf.states {
 /* A colour option is a dot and a label, like an icon option, not a tag inside
    an option: the tag markup it is written with keeps no fill, no padding and
@@ -555,24 +555,6 @@
    row that keeps the handle's slot empty. A one-line row is the control height
    of its size; a two-line row is that plus one line of the step below, which
    is the supporting line's own step. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-list-item--two-line .sf-list-item-supporting {
-    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
-  }
-  .sf-list-item.disabled .sf-list-item-supporting {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-list-item-handle {
-    color: var(--sf-list-item-handle-color, var(--sf-on-surface-variant));
-  }
-  .sf-list-item-handle .sf-icon {
-    color: var(--sf-icon--color);
-  }
-}
-
 @layer sf.components {
 .sf-list-item--two-line .sf-list-item-container {
   display: flex;
@@ -778,6 +760,24 @@
 }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-item--two-line .sf-list-item-supporting {
+    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item.disabled .sf-list-item-supporting {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-list-item-handle {
+    color: var(--sf-list-item-handle-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item-handle .sf-icon {
+    color: var(--sf-icon--color);
+  }
+}
+
 @layer sf.states {
   /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
   .sf-list-item:is(.sf-list-item--interactive, .sf-list-item--sortable):not(.disabled):not(.selected):hover {
@@ -814,21 +814,6 @@
    2026-11-14): the row's end column, its one line, the inset line of
    `divided`. A row of a page or of sf-list, never a dropdown's option, which
    keeps its own layout. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-list-item.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]):not(:has(:is(button, a[href], input, select, textarea, sf-button, :is(sf-button-icon, sf-icon-button), [role="button"]))) {
-    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
-  }
-  .sf-list-item.disabled.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]) {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
-    background-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
-  }
-}
-
 @layer sf.components {
 /* The title's line of each size: where the end column puts its first line. */
 .sf-list-item--size-1\/3 { --sf-list-item--title-line: var(--sf-text-height-1\/3); }
@@ -948,4 +933,19 @@
     min-inline-size: var(--sf-d1);
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-item.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]):not(:has(:is(button, a[href], input, select, textarea, sf-button, :is(sf-button-icon, sf-icon-button), [role="button"]))) {
+    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item.disabled.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]) {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
+    background-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
+  }
 }

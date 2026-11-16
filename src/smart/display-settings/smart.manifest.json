@@ -237,7 +237,7 @@
       },
       {
         "path": "src/smart/display-settings/scss/_smart__display_settings.scss",
-        "sha256": "bd2b0ad9b020abdf0c6915700fd16bf207234c52f2ec76adeabeeed0a6da44da"
+        "sha256": "55ea1f75be40c8203c723155a96466e7e3958af2044b06eef96a537b299c2133"
       },
       {
         "path": "src/smart/display-settings/rule.js",

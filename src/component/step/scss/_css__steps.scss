@@ -1,33 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-steps {
-    background-color: var(--sf-steps--background-color, transparent);
-  }
-  .sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step:not(:last-child)::after {
-    background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
-  }
-  .sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::after {
-    background-color: var(--sf-step--progress);
-  }
-  .sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step:not(:last-child)::before {
-    background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
-  }
-  .sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::before {
-    background-color: var(--sf-step--progress);
-  }
-  .sf-steps .sf-steps-count-line {
-    color: var(--sf-on-surface);
-  }
-  .sf-steps .sf-steps-count-position {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-steps .sf-steps-count-label.sf-step--state-error {
-    color: var(--sf-error);
-  }
-}
-
 @layer sf.components {
 /* The list of sf-steps and its three layouts (owner decision C101): a row
    (marker and label beside it, a line to the next step), a column (a rail of
@@ -226,4 +196,34 @@
 .sf-steps .sf-steps-count-label {
   font-weight: var(--sf-font-weight-medium);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-steps {
+    background-color: var(--sf-steps--background-color, transparent);
+  }
+  .sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step:not(:last-child)::after {
+    background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
+  }
+  .sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::after {
+    background-color: var(--sf-step--progress);
+  }
+  .sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step:not(:last-child)::before {
+    background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
+  }
+  .sf-steps.sf-steps--layout-column:not([data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::before {
+    background-color: var(--sf-step--progress);
+  }
+  .sf-steps .sf-steps-count-line {
+    color: var(--sf-on-surface);
+  }
+  .sf-steps .sf-steps-count-position {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-steps .sf-steps-count-label.sf-step--state-error {
+    color: var(--sf-error);
+  }
 }

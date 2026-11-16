@@ -1,76 +1,5 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-progress-run {
-    background: var(--sf-progress-run-background-color, var(--sf-progress-run-background, transparent));
-    color: var(--sf-on-surface);
-  }
-  .sf-progress-run-caption {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-eta {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-counts {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-count + .sf-progress-run-count::before {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-count-link {
-    color: var(--sf-error);
-  }
-  .sf-progress-run-error {
-    border-block-start-color: var(--sf-progress-run--divider);
-  }
-  .sf-progress-run-error-where {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-steps:not(:first-child) {
-    border-block-start-color: var(--sf-progress-run--divider);
-  }
-  .sf-progress-run-step + .sf-progress-run-step {
-    border-block-start-color: var(--sf-progress-run--divider);
-  }
-  .sf-progress-run-step--waiting .sf-progress-run-step-title,
-.sf-progress-run-step--skipped .sf-progress-run-step-title {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-step-toggle {
-    border: 0;
-    background: none;
-    color: inherit;
-  }
-  .sf-progress-run-step-log {
-    border-color: var(--sf-outline-variant);
-    background: var(--sf-progress-run-output-background-color, var(--sf-progress-run-output-background, var(--sf-surface-area)));
-    color: var(--sf-progress-run-output-color, var(--sf-on-surface));
-  }
-  .sf-progress-run-step-supporting,
-.sf-progress-run-time {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-output {
-    border-color: var(--sf-outline-variant);
-    background: var(--sf-progress-run-output-background-color, var(--sf-progress-run-output-background, var(--sf-surface-area)));
-    color: var(--sf-progress-run-output-color, var(--sf-on-surface));
-  }
-  .sf-progress-run-figures-short {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-progress-run-notice-figures {
-    color: var(--sf-on-surface-variant);
-  }
-  @media (forced-colors: active) {
-    .sf-progress-run-output {
-      border-color: CanvasText;
-    }
-  }
-}
-
 @layer sf.components {
 /* sf-progress-run (standard simai.smart-component 1.3.14 §6). One rung S of
    the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
@@ -658,4 +587,75 @@ sf-progress-run {
   line-height: var(--sf-progress-run--below-line);
   font-variant-numeric: tabular-nums;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-progress-run {
+    background: var(--sf-progress-run-background-color, var(--sf-progress-run-background, transparent));
+    color: var(--sf-on-surface);
+  }
+  .sf-progress-run-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-eta {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-counts {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-count + .sf-progress-run-count::before {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-count-link {
+    color: var(--sf-error);
+  }
+  .sf-progress-run-error {
+    border-block-start-color: var(--sf-progress-run--divider);
+  }
+  .sf-progress-run-error-where {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-steps:not(:first-child) {
+    border-block-start-color: var(--sf-progress-run--divider);
+  }
+  .sf-progress-run-step + .sf-progress-run-step {
+    border-block-start-color: var(--sf-progress-run--divider);
+  }
+  .sf-progress-run-step--waiting .sf-progress-run-step-title,
+.sf-progress-run-step--skipped .sf-progress-run-step-title {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-step-toggle {
+    border: 0;
+    background: none;
+    color: inherit;
+  }
+  .sf-progress-run-step-log {
+    border-color: var(--sf-outline-variant);
+    background: var(--sf-progress-run-output-background-color, var(--sf-progress-run-output-background, var(--sf-surface-area)));
+    color: var(--sf-progress-run-output-color, var(--sf-on-surface));
+  }
+  .sf-progress-run-step-supporting,
+.sf-progress-run-time {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-output {
+    border-color: var(--sf-outline-variant);
+    background: var(--sf-progress-run-output-background-color, var(--sf-progress-run-output-background, var(--sf-surface-area)));
+    color: var(--sf-progress-run-output-color, var(--sf-on-surface));
+  }
+  .sf-progress-run-figures-short {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-progress-run-notice-figures {
+    color: var(--sf-on-surface-variant);
+  }
+  @media (forced-colors: active) {
+    .sf-progress-run-output {
+      border-color: CanvasText;
+    }
+  }
 }

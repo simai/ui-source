@@ -1,56 +1,5 @@
 @use 'var__contentDivider' as *;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-divider {
-    border: 0;
-    color: var(--sf-divider-content--color);
-  }
-  .sf-divider-horizontal:empty {
-    background-color: var(--sf-divider--background-color);
-  }
-  .sf-divider-horizontal:not(:empty)::before,
-  .sf-divider-horizontal:not(:empty)::after {
-    background-color: var(--sf-divider--background-color);
-  }
-  .sf-divider-vertical {
-    background-color: var(--sf-divider--background-color);
-  }
-  .sf-divider-borders::after {
-    border-block-color: var(--sf-divider--border-color);
-  }
-  .sf-divider-content {
-    background-color: var(--sf-divider-content--background-color);
-    color: var(--sf-divider-content--color);
-  }
-  .sf-divider-content-border {
-    border: 0;
-  }
-  .sf-divider-content--small {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-divider-button {
-    border-color: var(--sf-outline);
-    background-color: var(--sf-surface-place, var(--sf-surface-page));
-    color: var(--sf-on-surface);
-  }
-  @media (forced-colors: active) {
-    .sf-divider-horizontal:empty,
-    .sf-divider-horizontal:not(:empty)::before,
-    .sf-divider-horizontal:not(:empty)::after,
-    .sf-divider-vertical {
-      background-color: CanvasText;
-    }
-    .sf-divider-borders::after,
-    .sf-divider-content-border,
-    .sf-divider-button {
-      border-color: CanvasText;
-    }
-  }
-}
-
 @layer sf.components {
   .sf-divider {
     --sf-divider--background-color: var(--sf-outline-variant);
@@ -253,6 +202,57 @@
       outline: var(--sf-focus-outline-width) solid Highlight;
       outline-offset: calc(-1 * var(--sf-focus-outline-width));
       box-shadow: none;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-divider {
+    border: 0;
+    color: var(--sf-divider-content--color);
+  }
+  .sf-divider-horizontal:empty {
+    background-color: var(--sf-divider--background-color);
+  }
+  .sf-divider-horizontal:not(:empty)::before,
+  .sf-divider-horizontal:not(:empty)::after {
+    background-color: var(--sf-divider--background-color);
+  }
+  .sf-divider-vertical {
+    background-color: var(--sf-divider--background-color);
+  }
+  .sf-divider-borders::after {
+    border-block-color: var(--sf-divider--border-color);
+  }
+  .sf-divider-content {
+    background-color: var(--sf-divider-content--background-color);
+    color: var(--sf-divider-content--color);
+  }
+  .sf-divider-content-border {
+    border: 0;
+  }
+  .sf-divider-content--small {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-divider-button {
+    border-color: var(--sf-outline);
+    background-color: var(--sf-surface-place, var(--sf-surface-page));
+    color: var(--sf-on-surface);
+  }
+  @media (forced-colors: active) {
+    .sf-divider-horizontal:empty,
+    .sf-divider-horizontal:not(:empty)::before,
+    .sf-divider-horizontal:not(:empty)::after,
+    .sf-divider-vertical {
+      background-color: CanvasText;
+    }
+    .sf-divider-borders::after,
+    .sf-divider-content-border,
+    .sf-divider-button {
+      border-color: CanvasText;
     }
   }
 }

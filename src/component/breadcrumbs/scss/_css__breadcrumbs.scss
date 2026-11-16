@@ -1,13 +1,4 @@
 @use 'var__breadcrumbs' as *;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-breadcrumbs {
-    background-color: var(--sf-breadcrumbs--background-color, transparent);
-  }
-}
-
 @layer sf.components {
   /* The trail draws with this sheet alone (R177 BC-07): its row and its
      crumbs' boxes are declared here, so printed class markup needs no utility
@@ -198,5 +189,14 @@
   [dir="rtl"] .sf-breadcrumbs .sf-breadcrumbs-item--separator .sf-icon,
   .sf-breadcrumbs[dir="rtl"] .sf-breadcrumbs-item--separator .sf-icon {
     transform: scaleX(-1);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-breadcrumbs {
+    background-color: var(--sf-breadcrumbs--background-color, transparent);
   }
 }

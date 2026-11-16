@@ -1,88 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__paint' as paint;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-country-code {
-    background-color: var(--sf-country-code--background-color, transparent);
-  }
-  .sf-country-code .sf-country-code-label {
-    background-color: var(--sf-country-code-label--background-color);
-  }
-  .sf-country-code .sf-country-code-text {
-    color: var(--sf-country-code-text--color);
-  }
-  .sf-country-code .sf-country-code-required {
-    color: var(--sf-country-code-required--color);
-  }
-  .sf-country-code .sf-country-code-field {
-    background-color: var(--sf-country-code-field--background-color);
-    border: var(--sf-country-code-field--border);
-    border-color: var(--sf-country-code-field--border-color, transparent);
-  }
-  .sf-country-code .sf-country-code-left {
-    background-color: var(--sf-country-code-left--background-color);
-  }
-  .sf-country-code .sf-country-code-flag-icon {
-    background-color: var(--sf-country-code-flag-icon--background-color);
-  }
-  .sf-country-code .sf-country-code-field input {
-    background-color: var(--sf-country-code-input--background-color);
-    color: var(--sf-country-code-input--color);
-  }
-  .sf-country-code .sf-country-code-field input::placeholder {
-    color: var(--sf-country-code-placeholder--color);
-  }
-  .sf-country-code .sf-country-code-hint {
-    color: var(--sf-country-code-hint--color);
-  }
-  .sf-country-code .sf-country-code-list {
-    background-color: var(--sf-country-code-list--background-color);
-  }
-  .sf-country-code .sf-country-code-items {
-    background-color: var(--sf-country-code-items--background-color);
-  }
-  .sf-country-code .sf-country-code-item {
-    background-color: var(--sf-country-code-item--background-color);
-    color: var(--sf-country-code-item--color);
-  }
-  .sf-country-code .sf-country-code-flag {
-    background-color: var(--sf-country-code-flag--background-color);
-  }
-  .sf-country-code .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-country-code.open .sf-country-code-list {
-    @include places.sf-place(var(--sf-country-code-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
-  }
-  .sf-country-code.sf-country-code--unknown .sf-country-code-flag-icon {
-    border-color: var(--sf-outline);
-  }
-  .sf-country-code .sf-country-code-search {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-country-code .sf-country-code-search input {
-    border: 0;
-    background: transparent;
-    color: var(--sf-on-surface);
-  }
-  .sf-country-code .sf-country-code-search input::placeholder {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-country-code .sf-country-code-group {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-country-code .sf-country-code-empty {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-country-code .sf-country-code-item[aria-selected="true"] {
-    @include places.sf-place-fill(var(--sf-country-code-item--background-color));
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
@@ -662,6 +579,89 @@
   min-block-size: 0;
   max-block-size: none;
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-country-code {
+    background-color: var(--sf-country-code--background-color, transparent);
+  }
+  .sf-country-code .sf-country-code-label {
+    background-color: var(--sf-country-code-label--background-color);
+  }
+  .sf-country-code .sf-country-code-text {
+    color: var(--sf-country-code-text--color);
+  }
+  .sf-country-code .sf-country-code-required {
+    color: var(--sf-country-code-required--color);
+  }
+  .sf-country-code .sf-country-code-field {
+    background-color: var(--sf-country-code-field--background-color);
+    border: var(--sf-country-code-field--border);
+    border-color: var(--sf-country-code-field--border-color, transparent);
+  }
+  .sf-country-code .sf-country-code-left {
+    background-color: var(--sf-country-code-left--background-color);
+  }
+  .sf-country-code .sf-country-code-flag-icon {
+    background-color: var(--sf-country-code-flag-icon--background-color);
+  }
+  .sf-country-code .sf-country-code-field input {
+    background-color: var(--sf-country-code-input--background-color);
+    color: var(--sf-country-code-input--color);
+  }
+  .sf-country-code .sf-country-code-field input::placeholder {
+    color: var(--sf-country-code-placeholder--color);
+  }
+  .sf-country-code .sf-country-code-hint {
+    color: var(--sf-country-code-hint--color);
+  }
+  .sf-country-code .sf-country-code-list {
+    background-color: var(--sf-country-code-list--background-color);
+  }
+  .sf-country-code .sf-country-code-items {
+    background-color: var(--sf-country-code-items--background-color);
+  }
+  .sf-country-code .sf-country-code-item {
+    background-color: var(--sf-country-code-item--background-color);
+    color: var(--sf-country-code-item--color);
+  }
+  .sf-country-code .sf-country-code-flag {
+    background-color: var(--sf-country-code-flag--background-color);
+  }
+  .sf-country-code .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-country-code.open .sf-country-code-list {
+    @include places.sf-place(var(--sf-country-code-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+  }
+  .sf-country-code.sf-country-code--unknown .sf-country-code-flag-icon {
+    border-color: var(--sf-outline);
+  }
+  .sf-country-code .sf-country-code-search {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-country-code .sf-country-code-search input {
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface);
+  }
+  .sf-country-code .sf-country-code-search input::placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-country-code .sf-country-code-group {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-country-code .sf-country-code-empty {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-country-code .sf-country-code-item[aria-selected="true"] {
+    @include places.sf-place-fill(var(--sf-country-code-item--background-color));
+  }
   @include paint.part(all);
 }
 

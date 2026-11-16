@@ -1,14 +1,5 @@
 @use '../../inputs/scss/field-ladder' as ladder;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-country-code-item:hover {
-    background: var(--sf-surface-container-hover);
-  }
-}
-
 @layer sf.components {
 .sf-country-code {
   position: relative;
@@ -94,6 +85,15 @@
     outline-color: Highlight;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-country-code-item:hover {
+    background: var(--sf-surface-container-hover);
+  }
 }
 
 @layer sf.states {

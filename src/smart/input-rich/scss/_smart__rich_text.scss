@@ -1,67 +1,5 @@
 @use '../../../component/inputs/scss/field-ladder' as ladder;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  /* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
-     hint ink. */
-  .sf-rich-text .sf-rich-text-text,
-.sf-rich-text .sf-rich-text-required {
-    color: var(--sf-on-surface);
-  }
-  .sf-rich-text .sf-rich-text-hint-text-wrap {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-rich-text.error .sf-rich-text-hint-text-wrap {
-    color: var(--sf-error);
-  }
-  .sf-rich-text .sf-rich-text-frame {
-    border: var(--sf-px) solid;
-    border-color: var(--sf-rich-text--border-color, transparent);
-    border-block-end-color: var(--sf-rich-text--line-color, var(--sf-rich-text--border-color, transparent));
-    background-color: var(--sf-rich-text--background-color);
-    color: var(--sf-rich-text-color, var(--sf-on-surface));
-  }
-  .sf-rich-text.sf-rich-text--filled .sf-rich-text-frame {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-rich-text.sf-rich-text--disabled .sf-rich-text-frame {
-    color: var(--sf-on-surface-disabled);
-    --sf-on-surface-variant: var(--sf-on-surface-disabled);
-  }
-  .sf-rich-text .sf-rich-text-toolbar {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-rich-text .sf-rich-text-separator {
-    background-color: var(--sf-outline-variant);
-  }
-  .sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-disabled='true'] {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-rich-text .sf-rich-text-link-panel {
-    color: var(--sf-on-surface);
-  }
-  .sf-rich-text sf-popover.sf-rich-text-link > [slot='content'][data-sf-sheet] {
-    /* The popover's own surface, said here beside the modal shadow it stands
-       under (C20: a window is on the popup surface). */
-    background-color: var(--sf-popover-background-color, var(--sf-surface-popup));
-  }
-  .sf-rich-text .sf-rich-text-editor {
-    color: inherit;
-  }
-  .sf-rich-text .sf-rich-text-editor[data-empty]::before {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-rich-text .sf-rich-text-editor blockquote {
-    border-inline-start-color: var(--sf-outline-variant);
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-rich-text .sf-rich-text-editor a {
-    color: var(--sf-primary);
-  }
-}
-
 @layer sf.components {
 /* sf-input-rich (standard simai.smart-component 1.3.11 §6). The frame is
    sf-input-textarea's: the same hairline, radius, fill, padding and focus ring at
@@ -434,6 +372,68 @@
 }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  /* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
+     hint ink. */
+  .sf-rich-text .sf-rich-text-text,
+.sf-rich-text .sf-rich-text-required {
+    color: var(--sf-on-surface);
+  }
+  .sf-rich-text .sf-rich-text-hint-text-wrap {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text.error .sf-rich-text-hint-text-wrap {
+    color: var(--sf-error);
+  }
+  .sf-rich-text .sf-rich-text-frame {
+    border: var(--sf-px) solid;
+    border-color: var(--sf-rich-text--border-color, transparent);
+    border-block-end-color: var(--sf-rich-text--line-color, var(--sf-rich-text--border-color, transparent));
+    background-color: var(--sf-rich-text--background-color);
+    color: var(--sf-rich-text-color, var(--sf-on-surface));
+  }
+  .sf-rich-text.sf-rich-text--filled .sf-rich-text-frame {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-rich-text.sf-rich-text--disabled .sf-rich-text-frame {
+    color: var(--sf-on-surface-disabled);
+    --sf-on-surface-variant: var(--sf-on-surface-disabled);
+  }
+  .sf-rich-text .sf-rich-text-toolbar {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-rich-text .sf-rich-text-separator {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-disabled='true'] {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-rich-text .sf-rich-text-link-panel {
+    color: var(--sf-on-surface);
+  }
+  .sf-rich-text sf-popover.sf-rich-text-link > [slot='content'][data-sf-sheet] {
+    /* The popover's own surface, said here beside the modal shadow it stands
+       under (C20: a window is on the popup surface). */
+    background-color: var(--sf-popover-background-color, var(--sf-surface-popup));
+  }
+  .sf-rich-text .sf-rich-text-editor {
+    color: inherit;
+  }
+  .sf-rich-text .sf-rich-text-editor[data-empty]::before {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text .sf-rich-text-editor blockquote {
+    border-inline-start-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text .sf-rich-text-editor a {
+    color: var(--sf-primary);
+  }
+}
+
 @layer sf.states {
   /* While the link editor is open the link tool is the only one that looks
      active (R121, owner review 2026-11-11): the other tools draw at rest --
@@ -561,26 +561,6 @@
 }
 
 /* Owner decision C141 (2026-11-14; study control/research/2026-11-14-textarea-rich-text.md). */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-rich-text .sf-rich-text-toolbar {
-    background:
-      linear-gradient(var(--sf-rich-text--background-color), var(--sf-rich-text--background-color)),
-      var(--sf-surface-place-solid, var(--sf-surface-page));
-  }
-  .sf-rich-text .sf-rich-text-count {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-rich-text.sf-rich-text--over .sf-rich-text-count {
-    color: var(--sf-error);
-  }
-  .sf-rich-text .sf-rich-text-count-said {
-    border: 0;
-  }
-}
-
 @layer sf.components {
   /* (3) The toolbar stays at the top of the visible part of the field while
      the page scrolls the field past it (--sf-rich-text-sticky-top below the
@@ -654,6 +634,26 @@
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-rich-text .sf-rich-text-toolbar {
+    background:
+      linear-gradient(var(--sf-rich-text--background-color), var(--sf-rich-text--background-color)),
+      var(--sf-surface-place-solid, var(--sf-surface-page));
+  }
+  .sf-rich-text .sf-rich-text-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text.sf-rich-text--over .sf-rich-text-count {
+    color: var(--sf-error);
+  }
+  .sf-rich-text .sf-rich-text-count-said {
+    border: 0;
+  }
+}
+
 /* C153 (1), (2): a disabled field's label and mark take the disabled ink. */
 .sf-rich-text.sf-rich-text--disabled .sf-rich-text-text,
 .sf-rich-text.sf-rich-text--disabled .sf-rich-text-required {
@@ -669,15 +669,6 @@
 }
 
 /* Owner decision C155 (2026-11-14, R233; study control/research/2026-11-14-toolbar-overflow.md). */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-rich-text .sf-rich-text-levels[aria-disabled='true'] {
-    color: var(--sf-on-surface-disabled);
-  }
-}
-
 @layer sf.components {
   /* overflow="more" (the default): one row, never wrapped; until the element
      has laid it out it clips at the frame's edge, so the first frame never
@@ -714,5 +705,14 @@
   .sf-rich-text .sf-rich-text-levels[aria-disabled='true'] {
     --sf-icon--color: var(--sf-on-surface-disabled);
     cursor: default;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-rich-text .sf-rich-text-levels[aria-disabled='true'] {
+    color: var(--sf-on-surface-disabled);
   }
 }

@@ -6,37 +6,6 @@
    and component.checkbox's, loaded with the relations figure and checkbox.
    The full-screen viewer (js/viewer.js) is drawn here too. System values
    only: the space, size, radius, colour and focus tokens. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-gallery-count {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-gallery-bar {
-    background-color: var(--sf-primary-container);
-    color: var(--sf-on-primary-container);
-  }
-  .sf-gallery-viewer {
-    border: var(--sf-0);
-    background-color: var(--sf-black);
-    color: var(--sf-on-surface-media);
-  }
-  .sf-gallery-viewer::backdrop {
-    background-color: var(--sf-black);
-  }
-  .sf-gallery-viewer-name + .sf-gallery-viewer-count {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-gallery-viewer-media > iframe {
-    border: var(--sf-0);
-    background-color: var(--sf-white);
-  }
-  .sf-gallery-viewer-caption {
-    color: var(--sf-gallery-caption-color, var(--sf-on-surface-variant));
-  }
-}
-
 @layer sf.components {
   /* The rendered root is the grid or flex item (the custom host is
      display:contents): it may shrink to the room it gets. */
@@ -332,6 +301,37 @@
     .sf-gallery-viewer-media > img {
       transition: none;
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-gallery-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-gallery-bar {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+  .sf-gallery-viewer {
+    border: var(--sf-0);
+    background-color: var(--sf-black);
+    color: var(--sf-on-surface-media);
+  }
+  .sf-gallery-viewer::backdrop {
+    background-color: var(--sf-black);
+  }
+  .sf-gallery-viewer-name + .sf-gallery-viewer-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-gallery-viewer-media > iframe {
+    border: var(--sf-0);
+    background-color: var(--sf-white);
+  }
+  .sf-gallery-viewer-caption {
+    color: var(--sf-gallery-caption-color, var(--sf-on-surface-variant));
   }
 }
 

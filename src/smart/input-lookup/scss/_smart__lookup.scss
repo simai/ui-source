@@ -4,96 +4,6 @@
 @use '../../../component/inputs/scss/field-ladder' as ladder;
 @use '../../../core/scss/mix/mix__paint' as paint;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  /* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
-     hint ink. */
-  .sf-lookup .sf-lookup-text,
-.sf-lookup .sf-lookup-required {
-    color: var(--sf-on-surface);
-  }
-  .sf-lookup .sf-lookup-hint-text-wrap {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-lookup.error .sf-lookup-hint-text-wrap {
-    color: var(--sf-error);
-  }
-  .sf-lookup .sf-lookup-frame {
-    border: var(--sf-px) solid;
-    border-color: var(--sf-lookup--border-color, transparent);
-    border-block-end-color: var(--sf-lookup--line-color, var(--sf-lookup--border-color, transparent));
-    background-color: var(--sf-lookup--background-color);
-    color: var(--sf-lookup-color, var(--sf-on-surface));
-  }
-  .sf-lookup.sf-lookup--filled .sf-lookup-frame {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
-    color: var(--sf-on-surface-disabled);
-    --sf-on-surface-variant: var(--sf-on-surface-disabled);
-  }
-  .sf-lookup .sf-lookup-input {
-    border: 0;
-    background: transparent;
-    color: inherit;
-  }
-  .sf-lookup .sf-lookup-input::placeholder {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-lookup .sf-lookup-input:disabled {
-    color: inherit;
-  }
-  .sf-lookup .sf-lookup-panel {
-    border: 0;
-    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
-    @include places.sf-place(var(--sf-lookup-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
-    color: var(--sf-on-surface);
-    @include panel.scrollbar(var(--sf-lookup--panel-padding), --sf-lookup--track, var(--sf-lookup--row-height));
-  }
-  .sf-lookup .sf-lookup-option {
-    color: var(--sf-on-surface);
-  }
-  /* A search runs over the rows of the last answer (C139 (4)): they stay, a
-     step paler -- the name on on-surface-variant, the caption on
-     on-surface-disabled -- until the answer replaces them. */
-  .sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-label {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-caption {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-lookup .sf-lookup-divider {
-    background-color: var(--sf-outline-variant);
-  }
-  .sf-lookup .sf-lookup-option:hover {
-    background-color: var(--sf-surface-state-hover);
-    @include places.sf-place-fill(var(--sf-surface-state-hover));
-  }
-  .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
-    background-color: var(--sf-primary-container);
-    color: var(--sf-on-primary-container);
-    --sf-on-surface-variant: var(--sf-on-primary-container);
-    @include places.sf-place-fill(var(--sf-primary-container));
-  }
-  .sf-lookup .sf-lookup-option-caption {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-lookup .sf-lookup-state {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-lookup .sf-lookup-state.sf-lookup-state--error,
-.sf-lookup .sf-lookup-state.sf-lookup-state--refusal {
-    color: var(--sf-on-surface);
-  }
-  .sf-lookup .sf-lookup-visually-hidden {
-    border: 0;
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* sf-input-lookup (standard simai.smart-component 1.3.14 §6). The frame is
@@ -667,6 +577,96 @@
   @include paint.part(all);
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  /* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
+     hint ink. */
+  .sf-lookup .sf-lookup-text,
+.sf-lookup .sf-lookup-required {
+    color: var(--sf-on-surface);
+  }
+  .sf-lookup .sf-lookup-hint-text-wrap {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup.error .sf-lookup-hint-text-wrap {
+    color: var(--sf-error);
+  }
+  .sf-lookup .sf-lookup-frame {
+    border: var(--sf-px) solid;
+    border-color: var(--sf-lookup--border-color, transparent);
+    border-block-end-color: var(--sf-lookup--line-color, var(--sf-lookup--border-color, transparent));
+    background-color: var(--sf-lookup--background-color);
+    color: var(--sf-lookup-color, var(--sf-on-surface));
+  }
+  .sf-lookup.sf-lookup--filled .sf-lookup-frame {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
+    color: var(--sf-on-surface-disabled);
+    --sf-on-surface-variant: var(--sf-on-surface-disabled);
+  }
+  .sf-lookup .sf-lookup-input {
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+  .sf-lookup .sf-lookup-input::placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-input:disabled {
+    color: inherit;
+  }
+  .sf-lookup .sf-lookup-panel {
+    border: 0;
+    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
+    @include places.sf-place(var(--sf-lookup-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface);
+    @include panel.scrollbar(var(--sf-lookup--panel-padding), --sf-lookup--track, var(--sf-lookup--row-height));
+  }
+  .sf-lookup .sf-lookup-option {
+    color: var(--sf-on-surface);
+  }
+  /* A search runs over the rows of the last answer (C139 (4)): they stay, a
+     step paler -- the name on on-surface-variant, the caption on
+     on-surface-disabled -- until the answer replaces them. */
+  .sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-caption {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-lookup .sf-lookup-divider {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-lookup .sf-lookup-option:hover {
+    background-color: var(--sf-surface-state-hover);
+    @include places.sf-place-fill(var(--sf-surface-state-hover));
+  }
+  .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+    --sf-on-surface-variant: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+  }
+  .sf-lookup .sf-lookup-option-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-state {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-state.sf-lookup-state--error,
+.sf-lookup .sf-lookup-state.sf-lookup-state--refusal {
+    color: var(--sf-on-surface);
+  }
+  .sf-lookup .sf-lookup-visually-hidden {
+    border: 0;
+  }
+  @include paint.part(all);
+}
+
 @layer sf.states {
   /* The chip's remove box (sf-tag draws an inline tag's box its line high and
      wide): the chip high and no wider than --sf-c2, so the cross keeps its
@@ -808,16 +808,6 @@
    the back arrow («Готово») at its start and a hairline under it, the rows
    below at the panel's inset. The panel is already in the top layer; the
    shared layer stack holds the page and Tab. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-lookup .sf-lookup-sheet-head {
-    border-block-end-color: var(--sf-outline-variant);
-    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
-  }
-}
-
 @layer sf.components {
   .sf-lookup.sf-lookup--open .sf-lookup-panel.sf-lookup-panel--sheet {
     inset: 0;
@@ -853,6 +843,16 @@
   .sf-lookup .sf-lookup-sheet-head > .sf-lookup-frame {
     flex: 1 1 auto;
     inline-size: auto;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-lookup .sf-lookup-sheet-head {
+    border-block-end-color: var(--sf-outline-variant);
+    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
   }
 }
 

@@ -12,7 +12,7 @@
     "src/component/procedure/scss/_css__procedure.scss",
     "src/component/procedure/scss/index.scss"
   ],
-  "content_sha256": "8d140dd801f397740c66d25507ca4e6199a8ce980b96d58dc60eec022d1d7f24",
+  "content_sha256": "805e8f276053dcb259b85cc4d3098331101d56d48afaa4c957e9ada26345d676",
   "dependencies": [
     {
       "id": "tokens.colour",

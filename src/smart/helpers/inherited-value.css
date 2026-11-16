@@ -1,26 +1,3 @@
-/* Paint (C273): the fill, edge and place colour of these parts stand in
-   sf.paint, under the utilities, so bg-*, border-* and color-* on them
-   win; their geometry stays in sf.components, over the utilities. */
-@layer sf.paint {
-    .sf-field-inherited {
-        color: var(--sf-on-surface-variant);
-    }
-    @media (forced-colors: active) {
-        sf-input[data-inherited] .sf-input .sf-input-field input::placeholder {
-            color: CanvasText;
-        }
-        :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::placeholder {
-            color: CanvasText;
-        }
-        sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::placeholder {
-            color: CanvasText;
-        }
-        :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::placeholder {
-            color: CanvasText;
-        }
-    }
-}
-
 @layer sf.components {
   /* The inherited-value slot (simai/ui-source#28): the «inherited» marker while
      the field holds nothing of its own, the reset button once it does. Each
@@ -268,4 +245,27 @@
       --sf-quantity-placeholder--color: CanvasText;
     }
   }
+}
+
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+    .sf-field-inherited {
+        color: var(--sf-on-surface-variant);
+    }
+    @media (forced-colors: active) {
+        sf-input[data-inherited] .sf-input .sf-input-field input::placeholder {
+            color: CanvasText;
+        }
+        :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::placeholder {
+            color: CanvasText;
+        }
+        sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::placeholder {
+            color: CanvasText;
+        }
+        :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::placeholder {
+            color: CanvasText;
+        }
+    }
 }

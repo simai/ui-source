@@ -9,73 +9,6 @@
    component used before — default and primary — are matched beside it so
    existing markup and project CSS keep working. `primary` was a colour inside a
    list of statuses; here it meant info. See contracts/public-api-axes.json. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-toast {
-    border-color: var(--sf-toast-border-color, var(--sf-toast--border-color, var(--sf-outline-variant)));
-    /* A toast floats over the page, and the status containers are
-       translucent fills: painted alone they let the table under a toast read
-       through its text (owner, 2026-10-12). So the toast stands on the raised
-       surface of its step, with its shadow, and the status tints it. */
-    background-color: var(--sf-surface-popup);
-    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
-    color: var(--sf-toast--content-color, var(--sf-on-surface));
-  }
-  .sf-toast .sf-close-icon {
-    background-color: var(--sf-close-icon--background-color);
-    border-color: var(--sf-close-icon--border-color, transparent);
-  }
-  /* The status colour is the notice's own icon only (C35 acceptance A-F1): an
-     icon inside an action button keeps the button's own icon role. */
-  .sf-toast > .sf-icon,
-  .sf-toast > sf-icon > .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-toast .sf-toast-container {
-    background-color: var(--sf-toast-container--background-color);
-  }
-  .sf-toast .sf-toast-bottom {
-    background-color: var(--sf-toast-bottom--background-color);
-  }
-  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--on-surface {
-    @include places.sf-place-neutral-container;
-  }
-  .sf-toast .sf-toast-wrap {
-    background-color: var(--sf-toast-wrap--background-color);
-  }
-  .sf-toast .sf-toast-supporting-text {
-    color: var(--sf-toast-supporting-text--color);
-  }
-  .sf-toast .sf-toast-text {
-    color: var(--sf-toast-text--color);
-  }
-  :is(.sf-toast--neutral, .sf-toast--default) {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  :is(.sf-toast--info, .sf-toast--primary) {
-    @include places.sf-place-soft(info);
-  }
-  .sf-toast--error {
-    @include places.sf-place-soft(error);
-  }
-  .sf-toast--warning {
-    @include places.sf-place-soft(warning);
-  }
-  .sf-toast--success {
-    @include places.sf-place-soft(success);
-  }
-  @include notice-link.sf-notice-link('.sf-toast .sf-toast-wrap');
-  @media (forced-colors: active) {
-    .sf-toast {
-      border-color: CanvasText;
-    }
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -412,6 +345,73 @@
   @include paint.part(all);
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-toast {
+    border-color: var(--sf-toast-border-color, var(--sf-toast--border-color, var(--sf-outline-variant)));
+    /* A toast floats over the page, and the status containers are
+       translucent fills: painted alone they let the table under a toast read
+       through its text (owner, 2026-10-12). So the toast stands on the raised
+       surface of its step, with its shadow, and the status tints it. */
+    background-color: var(--sf-surface-popup);
+    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
+    color: var(--sf-toast--content-color, var(--sf-on-surface));
+  }
+  .sf-toast .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+  /* The status colour is the notice's own icon only (C35 acceptance A-F1): an
+     icon inside an action button keeps the button's own icon role. */
+  .sf-toast > .sf-icon,
+  .sf-toast > sf-icon > .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-toast .sf-toast-container {
+    background-color: var(--sf-toast-container--background-color);
+  }
+  .sf-toast .sf-toast-bottom {
+    background-color: var(--sf-toast-bottom--background-color);
+  }
+  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--on-surface {
+    @include places.sf-place-neutral-container;
+  }
+  .sf-toast .sf-toast-wrap {
+    background-color: var(--sf-toast-wrap--background-color);
+  }
+  .sf-toast .sf-toast-supporting-text {
+    color: var(--sf-toast-supporting-text--color);
+  }
+  .sf-toast .sf-toast-text {
+    color: var(--sf-toast-text--color);
+  }
+  :is(.sf-toast--neutral, .sf-toast--default) {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  :is(.sf-toast--info, .sf-toast--primary) {
+    @include places.sf-place-soft(info);
+  }
+  .sf-toast--error {
+    @include places.sf-place-soft(error);
+  }
+  .sf-toast--warning {
+    @include places.sf-place-soft(warning);
+  }
+  .sf-toast--success {
+    @include places.sf-place-soft(success);
+  }
+  @include notice-link.sf-notice-link('.sf-toast .sf-toast-wrap');
+  @media (forced-colors: active) {
+    .sf-toast {
+      border-color: CanvasText;
+    }
+  }
+  @include paint.part(all);
+}
+
 /* The action's label under the pointer in the dark theme (C113 follow-up,
    DEV overlays acceptance 2026-11-13). The toast is a popup place, lighter
    than the page in the dark theme, and the neutral tonal and ghost plates
@@ -449,24 +449,6 @@
    toasts do. A popover is otherwise a small centred box with the browser's
    own border, fill and padding. Its messages are a stack (data-layout=stack,
    the default, owner decision C50) or a list with a gap (data-layout=list). */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-notifications {
-    border: 0;
-    background: transparent;
-    color: inherit;
-  }
-  .sf-notifications > .sf-notifications-live {
-    border: 0;
-  }
-  .sf-notifications .sf-toast[data-count]::before {
-    background-color: var(--sf-on-surface);
-    color: var(--sf-surface-page);
-  }
-}
-
 @layer sf.components {
   .sf-notifications {
     position: fixed;
@@ -588,5 +570,23 @@
     .sf-notifications[data-layout="stack"] > .sf-toast > * {
       transition: none;
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-notifications {
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+  .sf-notifications > .sf-notifications-live {
+    border: 0;
+  }
+  .sf-notifications .sf-toast[data-count]::before {
+    background-color: var(--sf-on-surface);
+    color: var(--sf-surface-page);
   }
 }

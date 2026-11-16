@@ -2,72 +2,6 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__paint' as paint;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-profile-picker-panel {
-    border-color: var(--sf-outline-variant);
-    background-color: var(--sf-profile-picker-panel-background-color, var(--sf-surface-popup));
-    @include places.sf-place(var(--sf-profile-picker-panel-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
-    color: var(--sf-on-surface);
-    @include panel.scrollbar(var(--sf-profile-picker--inset), --sf-profile-picker--track, var(--sf-profile-picker--row-height));
-  }
-  .sf-profile-picker-panel.sf-profile-picker-panel--in-sheet {
-    border: 0;
-    background-color: transparent;
-  }
-  .sf-profile-picker-panel.sf-profile-picker-panel--sheet::backdrop {
-    background-color: var(--sf-scrim-color);
-  }
-  .sf-profile-picker-row:hover {
-    background-color: var(--sf-surface-container-hover);
-  }
-  /* The chosen profile: the soft fill of the chosen, as a chosen row of a
-     context menu (C16: selected is primary-container everywhere; it was
-     secondary-container through 1.3.1). The fill alone (owner decisions C08,
-     C106 (3): a single choice has no check; the check and its column went in
-     1.5.0, PP-1). */
-  .sf-profile-picker-row[aria-checked="true"] {
-    background-color: var(--sf-primary-container);
-    color: var(--sf-on-primary-container);
-  }
-  .sf-profile-picker-row[aria-checked="true"]:hover {
-    background-color: var(--sf-primary-container-hover);
-  }
-  .sf-profile-picker-caption,
-.sf-profile-picker-hint,
-.sf-profile-picker-message {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-profile-picker-message {
-    color: var(--sf-error);
-  }
-  .sf-profile-picker-separator {
-    background-color: var(--sf-outline-variant);
-  }
-  .sf-profile-picker-add {
-    color: var(--sf-primary);
-  }
-  .sf-profile-picker-form {
-    background-color: var(--sf-surface-container-hover);
-  }
-  .sf-profile-picker-confirm {
-    background-color: var(--sf-error-container);
-    color: var(--sf-on-error-container);
-  }
-  .sf-profile-picker-field {
-    border-color: var(--sf-outline);
-    background-color: transparent;
-    color: var(--sf-on-surface);
-  }
-  .sf-profile-picker-footer {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* The profile picker (owner, 2026-10-14): the standard button (sf-button ghost
@@ -370,6 +304,72 @@ sf-profile-picker {
   @include paint.part(all);
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-profile-picker-panel {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-profile-picker-panel-background-color, var(--sf-surface-popup));
+    @include places.sf-place(var(--sf-profile-picker-panel-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface);
+    @include panel.scrollbar(var(--sf-profile-picker--inset), --sf-profile-picker--track, var(--sf-profile-picker--row-height));
+  }
+  .sf-profile-picker-panel.sf-profile-picker-panel--in-sheet {
+    border: 0;
+    background-color: transparent;
+  }
+  .sf-profile-picker-panel.sf-profile-picker-panel--sheet::backdrop {
+    background-color: var(--sf-scrim-color);
+  }
+  .sf-profile-picker-row:hover {
+    background-color: var(--sf-surface-container-hover);
+  }
+  /* The chosen profile: the soft fill of the chosen, as a chosen row of a
+     context menu (C16: selected is primary-container everywhere; it was
+     secondary-container through 1.3.1). The fill alone (owner decisions C08,
+     C106 (3): a single choice has no check; the check and its column went in
+     1.5.0, PP-1). */
+  .sf-profile-picker-row[aria-checked="true"] {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+  .sf-profile-picker-row[aria-checked="true"]:hover {
+    background-color: var(--sf-primary-container-hover);
+  }
+  .sf-profile-picker-caption,
+.sf-profile-picker-hint,
+.sf-profile-picker-message {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-profile-picker-message {
+    color: var(--sf-error);
+  }
+  .sf-profile-picker-separator {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-profile-picker-add {
+    color: var(--sf-primary);
+  }
+  .sf-profile-picker-form {
+    background-color: var(--sf-surface-container-hover);
+  }
+  .sf-profile-picker-confirm {
+    background-color: var(--sf-error-container);
+    color: var(--sf-on-error-container);
+  }
+  .sf-profile-picker-field {
+    border-color: var(--sf-outline);
+    background-color: transparent;
+    color: var(--sf-on-surface);
+  }
+  .sf-profile-picker-footer {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  @include paint.part(all);
+}
+
 /* A row is a touch target under a coarse pointer, as a dropping panel's row
    is (context menu, simai/ui-source#25; G1-a follow-up, 2026-11-10): at 390
    it was 36px, under a finger. The row grows to the touch step and keeps its
@@ -402,15 +402,6 @@ sf-profile-picker {
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-profile-picker-skeleton-bar {
-    background: var(--sf-surface-container);
-  }
-}
-
 @layer sf.components {
 /* The skeleton (skeleton.html, standard 1.3.8 §5.4): the folded trigger with
    a bar where the profile's name will stand, the same box before the host's
@@ -423,4 +414,13 @@ sf-profile-picker {
   block-size: var(--sf-profile-picker--text);
   border-radius: var(--sf-radius--ui);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-profile-picker-skeleton-bar {
+    background: var(--sf-surface-container);
+  }
 }

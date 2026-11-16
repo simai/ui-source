@@ -1,47 +1,6 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-download-file {
-    color: var(--sf-download-file--accent);
-    background-color: var(--sf-download-file--background-color);
-    border-color: var(--sf-download-file--border-color);
-  }
-  .sf-download-file__reason {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-download-file :where(.sf-download-file__main, .sf-download-file-container) {
-    color: var(--sf-download-file--accent);
-  }
-  .sf-download-file :where(.sf-download-file__size, .sf-download-file-file-size) {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-download-file :where(.sf-download-file__meta) {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-download-file :where(.sf-download-file__type) {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-download-file :where(.sf-download-file__spinner) {
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
-  }
-  .sf-download-file.sf-download-file--error :where(.sf-download-file__icon, .sf-download-file__meta) {
-    color: var(--sf-error);
-  }
-  .sf-download-file.sf-download-file--offer :where(.sf-download-file__icon) {
-    color: var(--sf-success);
-  }
-  .sf-download-file:is(.sf-download-file--error, .sf-download-file--offer) :where(.sf-download-file__main, .sf-download-file__name) {
-    color: var(--sf-on-surface);
-  }
-  .sf-download-file :where(.sf-download-file__icon, .sf-icon) {
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
-  }
-}
-
 @layer sf.components {
   .sf-download-file {
     /* The public variables carry the element's name, sf-file-download
@@ -505,6 +464,47 @@
       font-size: var(--sf-text-size-1\/2);
       line-height: var(--sf-text-height-1\/2);
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-download-file {
+    color: var(--sf-download-file--accent);
+    background-color: var(--sf-download-file--background-color);
+    border-color: var(--sf-download-file--border-color);
+  }
+  .sf-download-file__reason {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__main, .sf-download-file-container) {
+    color: var(--sf-download-file--accent);
+  }
+  .sf-download-file :where(.sf-download-file__size, .sf-download-file-file-size) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__meta) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__type) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__spinner) {
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
+  }
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__icon, .sf-download-file__meta) {
+    color: var(--sf-error);
+  }
+  .sf-download-file.sf-download-file--offer :where(.sf-download-file__icon) {
+    color: var(--sf-success);
+  }
+  .sf-download-file:is(.sf-download-file--error, .sf-download-file--offer) :where(.sf-download-file__main, .sf-download-file__name) {
+    color: var(--sf-on-surface);
+  }
+  .sf-download-file :where(.sf-download-file__icon, .sf-icon) {
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
   }
 }
 

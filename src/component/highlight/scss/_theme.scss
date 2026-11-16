@@ -1,3 +1,83 @@
+@layer sf.components {
+  .theme-light,
+  .theme-dark {
+    --sf-highlight-text: var(--sf-on-surface);
+    --sf-highlight-background: transparent;
+    /* The hues of code are the static palette's (owner decision C186 (11),
+       2026-11-14; C13, C17), not the status roles: red said «error» on every
+       keyword and a string was the link's blue exactly. Keyword violet, string
+       and tag green, attribute (and number) blue, title amber, built-in teal,
+       at tone 40 on the light theme and 80 on the dark, as the link: each
+       holds 4.5:1 or more on the block's plate. The names are the same; a
+       project that set one keeps its value. */
+    --sf-highlight-keyword: light-dark(var(--sf-violet-40), var(--sf-violet-80));
+    --sf-highlight-title: light-dark(var(--sf-amber-40), var(--sf-amber-80));
+    --sf-highlight-attribute: light-dark(var(--sf-blue-40), var(--sf-blue-80));
+    --sf-highlight-string: light-dark(var(--sf-green-40), var(--sf-green-80));
+    --sf-highlight-built-in: light-dark(var(--sf-teal-40), var(--sf-teal-80));
+    --sf-highlight-comment: var(--sf-on-surface-variant);
+    --sf-highlight-tag: light-dark(var(--sf-green-40), var(--sf-green-80));
+    --sf-highlight-section: var(--sf-primary);
+    --sf-highlight-bullet: var(--sf-warning);
+    --sf-highlight-punctuation: var(--sf-on-surface-variant);
+    --sf-highlight-addition: var(--sf-on-success-container);
+    --sf-highlight-addition-background: var(--sf-success-container);
+    --sf-highlight-deletion: var(--sf-on-error-container);
+    --sf-highlight-deletion-background: var(--sf-error-container);
+    --sf-highlight-line-number: var(--sf-on-surface-variant);
+    --sf-highlight-line-divider: var(--sf-outline-variant);
+
+    // Where the code stands (DEV 2026-11-11, variant C of the code comment
+    // contrast study): the roles above are resolved on the theme root, so on
+    // a popup, a grey plate, a strong colour or the inverse the code kept the
+    // page's inks (comments 1.10-3.99:1, text 1.09:1 on the inverse). The
+    // code reads them through the place hooks (core mix/_mix__places.scss),
+    // which the page does not declare, so on the page every role is the one
+    // above, a project's override included:
+    //   the dim inks take the place's dim ink on a fill;
+    //   the text and the hues take the place's full ink where it declares one
+    //   (a strong colour, glass: coloured text there is one colour).
+    :is(.sf-code-surface, .hljs) {
+      --sf-highlight--text: var(--sf-place--ink, var(--sf-highlight-text));
+      --sf-highlight--comment: var(--sf-place--ink-variant, var(--sf-highlight-comment));
+      --sf-highlight--punctuation: var(--sf-place--ink-variant, var(--sf-highlight-punctuation));
+      --sf-highlight--line-number: var(--sf-place--ink-variant, var(--sf-highlight-line-number));
+      --sf-highlight--keyword: var(--sf-place--ink, var(--sf-highlight-keyword));
+      --sf-highlight--title: var(--sf-place--ink, var(--sf-highlight-title));
+      --sf-highlight--attribute: var(--sf-place--ink, var(--sf-highlight-attribute));
+      --sf-highlight--string: var(--sf-place--ink, var(--sf-highlight-string));
+      --sf-highlight--built-in: var(--sf-place--ink, var(--sf-highlight-built-in));
+      --sf-highlight--tag: var(--sf-place--ink, var(--sf-highlight-tag));
+      --sf-highlight--section: var(--sf-place--ink, var(--sf-highlight-section));
+      --sf-highlight--bullet: var(--sf-place--ink, var(--sf-highlight-bullet));
+      --sf-highlight--addition: var(--sf-place--ink, var(--sf-highlight-addition));
+      --sf-highlight--deletion: var(--sf-place--ink, var(--sf-highlight-deletion));
+    }
+
+    pre code.hljs {
+      display: block;
+      overflow-x: auto;
+      padding: var(--sf-space-1);
+    }
+
+    code.hljs {
+      padding: var(--sf-space-1\/3) var(--sf-space-1\/2);
+    }
+
+    .hljs-section {
+      font-weight: var(--sf-font-weight-bold);
+    }
+
+    .hljs-emphasis {
+      font-style: italic;
+    }
+
+    .hljs-strong {
+      font-weight: var(--sf-font-weight-bold);
+    }
+  }
+}
+
 // Paint (C273): the fill, edge and place colour of these parts stand in
 // sf.paint, under the utilities, so bg-*, border-* and color-* on them
 // win; their geometry stays in sf.components, over the utilities.
@@ -76,86 +156,6 @@
     }
     .hljs-punctuation {
       color: var(--sf-highlight--punctuation);
-    }
-  }
-}
-
-@layer sf.components {
-  .theme-light,
-  .theme-dark {
-    --sf-highlight-text: var(--sf-on-surface);
-    --sf-highlight-background: transparent;
-    /* The hues of code are the static palette's (owner decision C186 (11),
-       2026-11-14; C13, C17), not the status roles: red said «error» on every
-       keyword and a string was the link's blue exactly. Keyword violet, string
-       and tag green, attribute (and number) blue, title amber, built-in teal,
-       at tone 40 on the light theme and 80 on the dark, as the link: each
-       holds 4.5:1 or more on the block's plate. The names are the same; a
-       project that set one keeps its value. */
-    --sf-highlight-keyword: light-dark(var(--sf-violet-40), var(--sf-violet-80));
-    --sf-highlight-title: light-dark(var(--sf-amber-40), var(--sf-amber-80));
-    --sf-highlight-attribute: light-dark(var(--sf-blue-40), var(--sf-blue-80));
-    --sf-highlight-string: light-dark(var(--sf-green-40), var(--sf-green-80));
-    --sf-highlight-built-in: light-dark(var(--sf-teal-40), var(--sf-teal-80));
-    --sf-highlight-comment: var(--sf-on-surface-variant);
-    --sf-highlight-tag: light-dark(var(--sf-green-40), var(--sf-green-80));
-    --sf-highlight-section: var(--sf-primary);
-    --sf-highlight-bullet: var(--sf-warning);
-    --sf-highlight-punctuation: var(--sf-on-surface-variant);
-    --sf-highlight-addition: var(--sf-on-success-container);
-    --sf-highlight-addition-background: var(--sf-success-container);
-    --sf-highlight-deletion: var(--sf-on-error-container);
-    --sf-highlight-deletion-background: var(--sf-error-container);
-    --sf-highlight-line-number: var(--sf-on-surface-variant);
-    --sf-highlight-line-divider: var(--sf-outline-variant);
-
-    // Where the code stands (DEV 2026-11-11, variant C of the code comment
-    // contrast study): the roles above are resolved on the theme root, so on
-    // a popup, a grey plate, a strong colour or the inverse the code kept the
-    // page's inks (comments 1.10-3.99:1, text 1.09:1 on the inverse). The
-    // code reads them through the place hooks (core mix/_mix__places.scss),
-    // which the page does not declare, so on the page every role is the one
-    // above, a project's override included:
-    //   the dim inks take the place's dim ink on a fill;
-    //   the text and the hues take the place's full ink where it declares one
-    //   (a strong colour, glass: coloured text there is one colour).
-    :is(.sf-code-surface, .hljs) {
-      --sf-highlight--text: var(--sf-place--ink, var(--sf-highlight-text));
-      --sf-highlight--comment: var(--sf-place--ink-variant, var(--sf-highlight-comment));
-      --sf-highlight--punctuation: var(--sf-place--ink-variant, var(--sf-highlight-punctuation));
-      --sf-highlight--line-number: var(--sf-place--ink-variant, var(--sf-highlight-line-number));
-      --sf-highlight--keyword: var(--sf-place--ink, var(--sf-highlight-keyword));
-      --sf-highlight--title: var(--sf-place--ink, var(--sf-highlight-title));
-      --sf-highlight--attribute: var(--sf-place--ink, var(--sf-highlight-attribute));
-      --sf-highlight--string: var(--sf-place--ink, var(--sf-highlight-string));
-      --sf-highlight--built-in: var(--sf-place--ink, var(--sf-highlight-built-in));
-      --sf-highlight--tag: var(--sf-place--ink, var(--sf-highlight-tag));
-      --sf-highlight--section: var(--sf-place--ink, var(--sf-highlight-section));
-      --sf-highlight--bullet: var(--sf-place--ink, var(--sf-highlight-bullet));
-      --sf-highlight--addition: var(--sf-place--ink, var(--sf-highlight-addition));
-      --sf-highlight--deletion: var(--sf-place--ink, var(--sf-highlight-deletion));
-    }
-
-    pre code.hljs {
-      display: block;
-      overflow-x: auto;
-      padding: var(--sf-space-1);
-    }
-
-    code.hljs {
-      padding: var(--sf-space-1\/3) var(--sf-space-1\/2);
-    }
-
-    .hljs-section {
-      font-weight: var(--sf-font-weight-bold);
-    }
-
-    .hljs-emphasis {
-      font-style: italic;
-    }
-
-    .hljs-strong {
-      font-weight: var(--sf-font-weight-bold);
     }
   }
 }

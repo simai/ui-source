@@ -510,7 +510,7 @@
     "src/component/flag/scss/_css__flag.scss",
     "src/component/flag/scss/index.scss"
   ],
-  "content_sha256": "68d74f60626c754e322e4bf79e23c4dfc4abbabd47383d10bfc9c696b73e0f0d",
+  "content_sha256": "ec48ee8b66f01bd16f09f39ceca25bc3895e8b8e9cb44dcb001a1a4da24e87b3",
   "dependencies": [
     {
       "id": "tokens.border",

@@ -1,40 +1,6 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__paint' as paint;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-menu-element {
-    border-color: var(--sf-menu-element--border-color);
-    color: var(--sf-menu-element--color);
-    background-color: var(--sf-menu-element--background-color);
-  }
-  .sf-menu-element .sf-menu-element-wrap {
-    color: inherit;
-  }
-  @media not (pointer: coarse) {
-    .sf-menu-element > button.sf-icon-button {
-      background-color: var(--sf-transparent);
-    }
-    .sf-menu-element > button.sf-icon-button::before {
-      background-color: var(--sf-icon-button--background-color, var(--sf-transparent));
-    }
-  }
-  .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
-    @include places.sf-place-fill(var(--sf-menu-element--background-color));
-  }
-  .sf-menu-element.open,
-  .sf-menu-element[aria-expanded='true'] {
-    @include places.sf-place-fill(var(--sf-menu-element--background-color));
-  }
-  .sf-menu-element .sf-menu-element-external {
-    color: var(--sf-on-surface-variant);
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   .sf-menu-element {
@@ -373,6 +339,40 @@
   @include paint.part(all);
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-menu-element {
+    border-color: var(--sf-menu-element--border-color);
+    color: var(--sf-menu-element--color);
+    background-color: var(--sf-menu-element--background-color);
+  }
+  .sf-menu-element .sf-menu-element-wrap {
+    color: inherit;
+  }
+  @media not (pointer: coarse) {
+    .sf-menu-element > button.sf-icon-button {
+      background-color: var(--sf-transparent);
+    }
+    .sf-menu-element > button.sf-icon-button::before {
+      background-color: var(--sf-icon-button--background-color, var(--sf-transparent));
+    }
+  }
+  .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu-element.open,
+  .sf-menu-element[aria-expanded='true'] {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu-element .sf-menu-element-external {
+    color: var(--sf-on-surface-variant);
+  }
+  @include paint.part(all);
+}
+
 /* The split chevron's focus ring (R219) is the icon button's own ring, drawn
    on the square: the icon button writes its ring in sf.states, so the move is
    written there too. */
@@ -392,6 +392,9 @@
 /* The words a search matched (C30 amended, R071 a): sf-menu lays them in the
    sf-menu-match highlight (CSS Custom Highlight API), drawn with the
    Framework's mark colour; the markup is not touched. */
+@layer sf.components {
+}
+
 // Paint (C273): the fill, edge and place colour of these parts stand in
 // sf.paint, under the utilities, so bg-*, border-* and color-* on them
 // win; their geometry stays in sf.components, over the utilities.
@@ -399,7 +402,4 @@
   ::highlight(sf-menu-match) {
     background-color: var(--sf-mark--color, var(--sf-mark));
   }
-}
-
-@layer sf.components {
 }

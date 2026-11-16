@@ -1,36 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-radio-button {
-    background-color: var(--sf-radio-button--background-color, transparent);
-  }
-  .sf-radio-button > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-radio-button .sf-radio-button-box {
-    background-color: var(--sf-radio-button-box--background-color);
-    border: var(--sf-radio-button-box--border);
-    border-color: var(--sf-radio-button-box--border-color, transparent);
-  }
-  .sf-radio-button .sf-radio-button-container {
-    background-color: var(--sf-radio-button-container--background-color);
-  }
-  .sf-radio-button .sf-radio-button-description {
-    color: var(--sf-radio-button-description--color);
-  }
-  .sf-radio-button .sf-radio-button-top {
-    background-color: var(--sf-radio-button-top--background-color);
-  }
-  .sf-radio-button .sf-radio-button-text {
-    background-color: var(--sf-radio-button-text--background-color);
-    color: var(--sf-radio-button-text--color);
-  }
-  .sf-radio-button .sf-radio-button-mark {
-    background-color: var(--sf-radio-button-mark--background-color);
-  }
-}
-
 @layer sf.components {
   /* The native input of a radio drawn by the component (the font variant among
      them): kept in the form and the focus order, out of sight. */
@@ -308,6 +275,39 @@
 .sf-radio-button.error .sf-radio-button-box {
   --sf-radio-button-box--border-color: var(--sf-radio-button-invalid-border-color, var(--sf-error));
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-radio-button {
+    background-color: var(--sf-radio-button--background-color, transparent);
+  }
+  .sf-radio-button > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-radio-button .sf-radio-button-box {
+    background-color: var(--sf-radio-button-box--background-color);
+    border: var(--sf-radio-button-box--border);
+    border-color: var(--sf-radio-button-box--border-color, transparent);
+  }
+  .sf-radio-button .sf-radio-button-container {
+    background-color: var(--sf-radio-button-container--background-color);
+  }
+  .sf-radio-button .sf-radio-button-description {
+    color: var(--sf-radio-button-description--color);
+  }
+  .sf-radio-button .sf-radio-button-top {
+    background-color: var(--sf-radio-button-top--background-color);
+  }
+  .sf-radio-button .sf-radio-button-text {
+    background-color: var(--sf-radio-button-text--background-color);
+    color: var(--sf-radio-button-text--color);
+  }
+  .sf-radio-button .sf-radio-button-mark {
+    background-color: var(--sf-radio-button-mark--background-color);
+  }
 }
 
 @layer sf.states {

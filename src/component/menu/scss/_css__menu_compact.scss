@@ -11,26 +11,6 @@
 
 @include anchored.properties;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-text {
-    @include anchored.visually-hidden;
-  }
-  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge {
-    @include anchored.badge;
-  }
-  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
-    @include menu.current-plate;
-  }
-  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) {
-    @include menu.path-line('.sf-menu-element.sf-menu-element--holds-current:not([aria-current])');
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   // Beside the words, a counter stands at the row's end.
@@ -97,6 +77,26 @@
 
   .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge.sf-badge--dot {
     @include anchored.dot;
+  }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-text {
+    @include anchored.visually-hidden;
+  }
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge {
+    @include anchored.badge;
+  }
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+    @include menu.current-plate;
+  }
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) {
+    @include menu.path-line('.sf-menu-element.sf-menu-element--holds-current:not([aria-current])');
   }
   @include paint.part(all);
 }

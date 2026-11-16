@@ -1,13 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-featured-icon {
-    border-color: var(--sf-featured-icon--container);
-    background-color: var(--sf-featured-icon--background-color);
-  }
-}
-
 @layer sf.components {
   /* By default a grey circle, its glyph in the explanation's ink,
      on-surface-variant (owner decision C188 (9), C140 (1), C120 (6)): a mark
@@ -176,5 +166,15 @@
       outline: var(--sf-a1) solid CanvasText;
       outline-offset: calc(-1 * var(--sf-a1));
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-featured-icon {
+    border-color: var(--sf-featured-icon--container);
+    background-color: var(--sf-featured-icon--background-color);
   }
 }

@@ -14,7 +14,7 @@
     "src/component/skeleton/scss/_skeleton.scss",
     "src/component/skeleton/scss/index.scss"
   ],
-  "content_sha256": "7f36863df5dbbf1ffe6863592b0aa0cce07b12f677578b2b9c0139f0da5e21cb",
+  "content_sha256": "258c7c2bbe4297bcfe11274749fdaf5b5d185773b44e248df0ebf8d1aa410c2e",
   "dependencies": [
     {
       "id": "core.runtime",

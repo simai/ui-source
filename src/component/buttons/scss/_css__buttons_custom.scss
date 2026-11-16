@@ -1,15 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-button .sf-button-spinner {
-    /* The label's ink (owner decision C36): the label colour rules reach the
-       spinner too, so a loading button's spinner is the colour of its label on
-       every appearance and scheme. */
-    color: var(--sf-loader--color, var(--sf-button-text-container--color, currentColor));
-  }
-}
-
 @layer sf.components {
 /* full-width (owner decision C36): the control fills its container, as
    sf-segmented's full-width does, and its content stays in the middle;
@@ -195,6 +183,18 @@
   }
 }
 }
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-button .sf-button-spinner {
+    /* The label's ink (owner decision C36): the label colour rules reach the
+       spinner too, so a loading button's spinner is the colour of its label on
+       every appearance and scheme. */
+    color: var(--sf-loader--color, var(--sf-button-text-container--color, currentColor));
+  }
+}
 @layer sf.override {
   /* Joined segments draw one line where they meet (docs review R003,
      2026-11-06): the line at a join is the end edge of the segment before
@@ -298,15 +298,6 @@
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-button .sf-button-shortcut {
-    color: var(--sf-button-text-container--color);
-  }
-}
-
 @layer sf.components {
   /* on-surface-variant (sf-button scheme): the on-surface family one step
      quieter. The button carries sf-button--on-surface as well, so its fill,
@@ -364,6 +355,15 @@
     flex: none;
     align-items: center;
     font-size: var(--sf-button-text-container--font-size);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-button .sf-button-shortcut {
+    color: var(--sf-button-text-container--color);
   }
 }
 

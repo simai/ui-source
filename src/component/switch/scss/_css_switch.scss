@@ -1,36 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-switch {
-    background-color: var(--sf-switch--background-color, transparent);
-  }
-  .sf-switch .sf-icon:where(:not(sf-help-mark *)) {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-switch .sf-switch-container-wrap {
-    background-color: var(--sf-switch-container-wrap--background-color);
-  }
-  .sf-switch .sf-switch-description {
-    color: var(--sf-switch-description--color);
-  }
-  .sf-switch .sf-switch-top {
-    background-color: var(--sf-switch-top--background-color);
-  }
-  .sf-switch .sf-switch-container {
-    background-color: var(--sf-switch-container--background-color);
-    color: var(--sf-switch-container--color);
-  }
-  .sf-switch .sf-switch-toggler {
-    background-color: var(--sf-switch-toggler--background-color);
-    border: var(--sf-switch-toggler--border);
-    border-color: var(--sf-switch-toggler--border-color, transparent);
-  }
-  .sf-switch .sf-switch-inner {
-    background-color: var(--sf-switch-inner--background-color);
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-switch {
@@ -366,6 +333,39 @@
    press filled the track primary and the thumb white while the thumb stayed
    put, so the fill ran ahead of the travel by the length of the press. The
    colours and the travel now start together on release, on one clock. */
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-switch {
+    background-color: var(--sf-switch--background-color, transparent);
+  }
+  .sf-switch .sf-icon:where(:not(sf-help-mark *)) {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-switch .sf-switch-container-wrap {
+    background-color: var(--sf-switch-container-wrap--background-color);
+  }
+  .sf-switch .sf-switch-description {
+    color: var(--sf-switch-description--color);
+  }
+  .sf-switch .sf-switch-top {
+    background-color: var(--sf-switch-top--background-color);
+  }
+  .sf-switch .sf-switch-container {
+    background-color: var(--sf-switch-container--background-color);
+    color: var(--sf-switch-container--color);
+  }
+  .sf-switch .sf-switch-toggler {
+    background-color: var(--sf-switch-toggler--background-color);
+    border: var(--sf-switch-toggler--border);
+    border-color: var(--sf-switch-toggler--border-color, transparent);
+  }
+  .sf-switch .sf-switch-inner {
+    background-color: var(--sf-switch-inner--background-color);
+  }
 }
 
 @layer sf.states {

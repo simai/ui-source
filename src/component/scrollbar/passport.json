@@ -18,7 +18,7 @@
     "src/component/scrollbar/scss/_var__scrollbar.scss",
     "src/component/scrollbar/scss/index.scss"
   ],
-  "content_sha256": "575555abae88de91a5d8906fc38816d6ffdad3af33d8ba5d0a18597b52c41778",
+  "content_sha256": "21ae7a95235d128fa7f540a8a23d1345550afc98a1086cdcec86bde3bdc453b3",
   "dependencies": [
     {
       "id": "core.runtime",

@@ -1,25 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-placeholder {
-    color: var(--sf-placeholder--color);
-    background-color: var(--sf-placeholder--background-color);
-  }
-  .sf-placeholder > :is(.sf-placeholder__content, .sf-placeholder-right) {
-    background-color: var(--sf-placeholder-content--background-color, var(--sf-placeholder-right--background-color, var(--sf-transparent)));
-  }
-  .sf-placeholder :is(.sf-placeholder__header, .sf-placeholder-top) {
-    background-color: var(--sf-placeholder-header--background-color, var(--sf-placeholder-top--background-color, var(--sf-transparent)));
-  }
-  .sf-placeholder :is(.sf-placeholder__title, .sf-placeholder-top-text:first-child) {
-    color: var(--sf-placeholder-title--color, var(--sf-placeholder-top-text--color, var(--sf-on-surface)));
-  }
-  .sf-placeholder :is(.sf-placeholder__description, .sf-placeholder-top-text:nth-child(2)) {
-    color: var(--sf-placeholder-description--color, var(--sf-placeholder-top-text--color, var(--sf-on-surface-variant)));
-  }
-}
-
 @layer sf.components {
   .sf-placeholder {
     --sf-placeholder--background-color: var(--sf-transparent);
@@ -114,5 +92,27 @@
 
   .sf-placeholder--row .sf-placeholder__actions {
     justify-content: flex-start;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-placeholder {
+    color: var(--sf-placeholder--color);
+    background-color: var(--sf-placeholder--background-color);
+  }
+  .sf-placeholder > :is(.sf-placeholder__content, .sf-placeholder-right) {
+    background-color: var(--sf-placeholder-content--background-color, var(--sf-placeholder-right--background-color, var(--sf-transparent)));
+  }
+  .sf-placeholder :is(.sf-placeholder__header, .sf-placeholder-top) {
+    background-color: var(--sf-placeholder-header--background-color, var(--sf-placeholder-top--background-color, var(--sf-transparent)));
+  }
+  .sf-placeholder :is(.sf-placeholder__title, .sf-placeholder-top-text:first-child) {
+    color: var(--sf-placeholder-title--color, var(--sf-placeholder-top-text--color, var(--sf-on-surface)));
+  }
+  .sf-placeholder :is(.sf-placeholder__description, .sf-placeholder-top-text:nth-child(2)) {
+    color: var(--sf-placeholder-description--color, var(--sf-placeholder-top-text--color, var(--sf-on-surface-variant)));
   }
 }

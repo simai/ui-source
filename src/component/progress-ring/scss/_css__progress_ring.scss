@@ -40,26 +40,6 @@
   initial-value: 0px;
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-progress-ring {
-    color: var(--sf-progress-ring-color, var(--sf-on-surface));
-  }
-  .sf-progress-ring .sf-progress-ring-indicator {
-    background: conic-gradient(var(--sf-progress-ring--fill) calc(var(--sf-progress-ring--value) * 1%), var(--sf-progress-ring--track) 0);
-  }
-  .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
-    background: conic-gradient(var(--sf-progress-ring--fill) 0 30%, var(--sf-progress-ring--track) 0);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
-      background: color-mix(in srgb, var(--sf-progress-ring--fill) 32%, var(--sf-progress-ring--track));
-    }
-  }
-}
-
 @layer sf.components {
   .sf-progress-ring {
     --sf-progress-ring--size: var(--sf-progress-ring-size, var(--sf-progress-ring--step-size));
@@ -270,6 +250,26 @@
        with no arc. */
     .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
       animation: none;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-progress-ring {
+    color: var(--sf-progress-ring-color, var(--sf-on-surface));
+  }
+  .sf-progress-ring .sf-progress-ring-indicator {
+    background: conic-gradient(var(--sf-progress-ring--fill) calc(var(--sf-progress-ring--value) * 1%), var(--sf-progress-ring--track) 0);
+  }
+  .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
+    background: conic-gradient(var(--sf-progress-ring--fill) 0 30%, var(--sf-progress-ring--track) 0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
+      background: color-mix(in srgb, var(--sf-progress-ring--fill) 32%, var(--sf-progress-ring--track));
     }
   }
 }

@@ -1,87 +1,6 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../core/scss/mix/mix__paint' as paint;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-choice .sf-choice-label,
-.sf-choice .sf-choice-message {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-choice .sf-choice-required,
-.sf-choice.sf-choice--invalid .sf-choice-message {
-    color: var(--sf-error);
-  }
-  .sf-choice .sf-choice-card {
-    border-color: var(--sf-choice--border-color);
-    background-color: var(--sf-choice--background-color);
-    color: var(--sf-on-surface);
-  }
-  .sf-choice .sf-choice-caption {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-choice .sf-choice-term {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-choice .sf-choice-rule {
-    background-color: var(--sf-outline-variant);
-  }
-  .sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
-    border-color: var(--sf-outline);
-    background-color: var(--sf-surface-state-hover);
-    @include places.sf-place-fill(var(--sf-surface-state-hover));
-  }
-  .sf-choice .sf-choice-card--checked,
-.sf-choice .sf-choice-card--checked:hover {
-    border-color: var(--sf-choice--selected-border-color);
-    background-color: var(--sf-choice--selected-background-color);
-  }
-  .sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {
-    border-color: var(--sf-error);
-  }
-  .sf-choice .sf-choice-card--disabled {
-    border-color: var(--sf-outline-disabled);
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-choice .sf-choice-card--disabled :is(.sf-choice-caption, .sf-choice-term) {
-    color: inherit;
-  }
-  .sf-choice .sf-choice-card--disabled .sf-choice-rule {
-    background-color: var(--sf-outline-disabled);
-  }
-  /* Inside the frame a hover or a disabled row keeps the frame's line. */
-  .sf-choice[data-layout='list'] .sf-choice-card:not(.sf-choice-card--checked):hover,
-.sf-choice[data-layout='list'] .sf-choice-card--disabled {
-    border-color: var(--sf-choice--border-color);
-  }
-  .sf-choice .sf-choice-media {
-    border-block-end-color: var(--sf-outline-variant);
-    background-color: var(--sf-surface-area);
-  }
-  @container sf-choice (inline-size < #{mq.container-step(g5)}) {
-    .sf-choice[data-layout='picture'] .sf-choice-media {
-      border-block-end: 0;
-      border-inline-end-color: var(--sf-outline-variant);
-    }
-  }
-  .sf-choice--list .sf-choice-heading {
-    color: var(--sf-on-surface);
-  }
-  /* «*» in the heading's ink, hidden from assistive technology (C153 (2)). */
-  .sf-choice--list .sf-choice-heading .sf-choice-required {
-    color: inherit;
-  }
-  .sf-choice--list .sf-choice-hint {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-choice--list .sf-choice-message {
-    color: var(--sf-error);
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* sf-input-choice (standard simai.smart-component 1.3.15 §6; owner decision
@@ -638,6 +557,87 @@
   --sf-icon--height: var(--sf-text-height-1\/2);
   --sf-icon--width: var(--sf-text-height-1\/2);
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-choice .sf-choice-label,
+.sf-choice .sf-choice-message {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice .sf-choice-required,
+.sf-choice.sf-choice--invalid .sf-choice-message {
+    color: var(--sf-error);
+  }
+  .sf-choice .sf-choice-card {
+    border-color: var(--sf-choice--border-color);
+    background-color: var(--sf-choice--background-color);
+    color: var(--sf-on-surface);
+  }
+  .sf-choice .sf-choice-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice .sf-choice-term {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice .sf-choice-rule {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
+    border-color: var(--sf-outline);
+    background-color: var(--sf-surface-state-hover);
+    @include places.sf-place-fill(var(--sf-surface-state-hover));
+  }
+  .sf-choice .sf-choice-card--checked,
+.sf-choice .sf-choice-card--checked:hover {
+    border-color: var(--sf-choice--selected-border-color);
+    background-color: var(--sf-choice--selected-background-color);
+  }
+  .sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {
+    border-color: var(--sf-error);
+  }
+  .sf-choice .sf-choice-card--disabled {
+    border-color: var(--sf-outline-disabled);
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-choice .sf-choice-card--disabled :is(.sf-choice-caption, .sf-choice-term) {
+    color: inherit;
+  }
+  .sf-choice .sf-choice-card--disabled .sf-choice-rule {
+    background-color: var(--sf-outline-disabled);
+  }
+  /* Inside the frame a hover or a disabled row keeps the frame's line. */
+  .sf-choice[data-layout='list'] .sf-choice-card:not(.sf-choice-card--checked):hover,
+.sf-choice[data-layout='list'] .sf-choice-card--disabled {
+    border-color: var(--sf-choice--border-color);
+  }
+  .sf-choice .sf-choice-media {
+    border-block-end-color: var(--sf-outline-variant);
+    background-color: var(--sf-surface-area);
+  }
+  @container sf-choice (inline-size < #{mq.container-step(g5)}) {
+    .sf-choice[data-layout='picture'] .sf-choice-media {
+      border-block-end: 0;
+      border-inline-end-color: var(--sf-outline-variant);
+    }
+  }
+  .sf-choice--list .sf-choice-heading {
+    color: var(--sf-on-surface);
+  }
+  /* «*» in the heading's ink, hidden from assistive technology (C153 (2)). */
+  .sf-choice--list .sf-choice-heading .sf-choice-required {
+    color: inherit;
+  }
+  .sf-choice--list .sf-choice-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice--list .sf-choice-message {
+    color: var(--sf-error);
+  }
   @include paint.part(all);
 }
 

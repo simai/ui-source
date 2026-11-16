@@ -1,21 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-avatar-label-group {
-    background-color: var(--sf-avatar-label-group--background-color, transparent);
-  }
-  .sf-avatar-label-group .sf-avatar-label-group-container {
-    background-color: var(--sf-avatar-label-group-container--background-color, transparent);
-  }
-  .sf-avatar-label-group .sf-avatar-label-group-title {
-    color: var(--sf-avatar-label-group-title--color, var(--sf-on-surface));
-  }
-  .sf-avatar-label-group .sf-avatar-label-group-text {
-    color: var(--sf-avatar-label-group-text--color, var(--sf-on-surface-variant));
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-avatar-label-group {
@@ -119,4 +101,22 @@
 .sf-avatar-label-group--size-1\/4 {
   --sf-avatar-label-group--gap: var(--sf-space-1\/4);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-avatar-label-group {
+    background-color: var(--sf-avatar-label-group--background-color, transparent);
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-container {
+    background-color: var(--sf-avatar-label-group-container--background-color, transparent);
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-title {
+    color: var(--sf-avatar-label-group-title--color, var(--sf-on-surface));
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-text {
+    color: var(--sf-avatar-label-group-text--color, var(--sf-on-surface-variant));
+  }
 }

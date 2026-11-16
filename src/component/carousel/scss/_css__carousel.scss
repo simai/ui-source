@@ -2,43 +2,6 @@
 
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-carousel-switch,
-.sf-carousel-rotation {
-    background-color: var(--sf-carousel-control--background-color);
-    border: 0;
-    color: var(--sf-carousel-control--color);
-  }
-  .sf-carousel-pagination {
-    background-color: var(--sf-carousel-pagination--background-color);
-  }
-  .sf-carousel-pagination-item,
-button.sf-carousel-pagination-item {
-    background: transparent;
-    border: 0;
-    color: var(--sf-carousel-pagination-item--color);
-  }
-  .sf-carousel-pagination-item::after {
-    background-color: currentColor;
-  }
-  @media (forced-colors: active) {
-    .sf-carousel-switch,
-  .sf-carousel-rotation,
-  .sf-carousel-pagination {
-      border-color: ButtonText;
-    }
-    .sf-carousel-pagination-item {
-      color: ButtonText;
-    }
-    .sf-carousel-pagination-item--active {
-      color: Highlight;
-    }
-  }
-}
-
 @layer sf.components {
 .sf-carousel {
   --sf-carousel--block-size: var(--sf-g3);
@@ -338,4 +301,41 @@ button.sf-carousel-pagination-item {
     forced-color-adjust: none;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-carousel-switch,
+.sf-carousel-rotation {
+    background-color: var(--sf-carousel-control--background-color);
+    border: 0;
+    color: var(--sf-carousel-control--color);
+  }
+  .sf-carousel-pagination {
+    background-color: var(--sf-carousel-pagination--background-color);
+  }
+  .sf-carousel-pagination-item,
+button.sf-carousel-pagination-item {
+    background: transparent;
+    border: 0;
+    color: var(--sf-carousel-pagination-item--color);
+  }
+  .sf-carousel-pagination-item::after {
+    background-color: currentColor;
+  }
+  @media (forced-colors: active) {
+    .sf-carousel-switch,
+  .sf-carousel-rotation,
+  .sf-carousel-pagination {
+      border-color: ButtonText;
+    }
+    .sf-carousel-pagination-item {
+      color: ButtonText;
+    }
+    .sf-carousel-pagination-item--active {
+      color: Highlight;
+    }
+  }
 }

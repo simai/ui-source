@@ -1,28 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-online-indicator {
-    // The dot is a cut-out: what is under it (the photo, the initials) must not
-    // show through. It is drawn as before -- the ring the place colour, the fill
-    // the state colour -- with the fill as a layer over the nearest opaque place
-    // (--sf-surface-place-ground), so on a soft coloured place the dot is the
-    // soft place's own look, opaque. On the page, a card or a popup the place
-    // colour is opaque already and nothing changes; on glass the ground is
-    // black, so the dot is dark glass. Where no ground is declared the bottom is
-    // transparent: exactly the former dot.
-    background-color: var(--sf-surface-place-ground, transparent);
-  }
-  @media (forced-colors: active) {
-    .sf-online-indicator--away {
-      border-color: CanvasText;
-    }
-    .sf-online-indicator:has(> .sf-dot) {
-      border: 0;
-    }
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/block */
 // The point (owner decision C132, 2026-11-13): its coloured disc is the small
@@ -157,4 +132,29 @@
     border-color: revert-layer;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-online-indicator {
+    // The dot is a cut-out: what is under it (the photo, the initials) must not
+    // show through. It is drawn as before -- the ring the place colour, the fill
+    // the state colour -- with the fill as a layer over the nearest opaque place
+    // (--sf-surface-place-ground), so on a soft coloured place the dot is the
+    // soft place's own look, opaque. On the page, a card or a popup the place
+    // colour is opaque already and nothing changes; on glass the ground is
+    // black, so the dot is dark glass. Where no ground is declared the bottom is
+    // transparent: exactly the former dot.
+    background-color: var(--sf-surface-place-ground, transparent);
+  }
+  @media (forced-colors: active) {
+    .sf-online-indicator--away {
+      border-color: CanvasText;
+    }
+    .sf-online-indicator:has(> .sf-dot) {
+      border: 0;
+    }
+  }
 }

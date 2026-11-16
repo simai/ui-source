@@ -8,19 +8,6 @@
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
 @use 'mix/mix__breakpoint' as mq;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-composition-unknown {
-    border-color: var(--sf-outline-variant, GrayText);
-    color: var(--sf-on-surface-variant, var(--sf-on-surface, CanvasText));
-  }
-  .sf-composition-regions-grid > [data-sf-region-placement="block"][data-sf-region-sticky] {
-    background: var(--sf-surface-area, Canvas);
-  }
-}
-
 @layer sf.components {
     .sf-composition-regions {
         --sf-composition-region-side: minmax(0, var(--sf-f6));
@@ -106,6 +93,19 @@
     }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-composition-unknown {
+    border-color: var(--sf-outline-variant, GrayText);
+    color: var(--sf-on-surface-variant, var(--sf-on-surface, CanvasText));
+  }
+  .sf-composition-regions-grid > [data-sf-region-placement="block"][data-sf-region-sticky] {
+    background: var(--sf-surface-area, Canvas);
+  }
+}
+
 // The composition/layout asset (simai/ui-source#61): layout.columns draws
 // <div class="sf-composition-columns grid gap-4 grid-col-N"
 // data-composition-columns="N"> with one .sf-composition-column per child.
@@ -188,23 +188,6 @@
 // Server-rendered editor field fallback (simai.composition.editor-field-kind.v1).
 // Native controls keep keyboard and assistive technology behavior; colors come
 // from theme tokens so light and dark themes stay in contrast.
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-editor-field {
-    color: var(--sf-on-surface, CanvasText);
-  }
-  .sf-editor-field-control:not([type="checkbox"]) {
-    border-color: var(--sf-outline, GrayText);
-    background: var(--sf-surface-area, Canvas);
-    color: var(--sf-on-surface, CanvasText);
-  }
-  .sf-editor-field-help {
-    color: var(--sf-on-surface-variant, var(--sf-on-surface, CanvasText));
-  }
-}
-
 @layer sf.components {
     .sf-editor-field {
         display: grid;
@@ -251,6 +234,23 @@
     }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-editor-field {
+    color: var(--sf-on-surface, CanvasText);
+  }
+  .sf-editor-field-control:not([type="checkbox"]) {
+    border-color: var(--sf-outline, GrayText);
+    background: var(--sf-surface-area, Canvas);
+    color: var(--sf-on-surface, CanvasText);
+  }
+  .sf-editor-field-help {
+    color: var(--sf-on-surface-variant, var(--sf-on-surface, CanvasText));
+  }
+}
+
 // The workspace layout: rail, list, main and panel (2026-10-30, design
 // ui-control WORKSPACE-LAYOUT-DESIGN-2026-10-30, asked for by UI Chat). The
 // declared-region layout above for an application screen: the same size
@@ -293,30 +293,6 @@ $sf-workspace-wide-default: h6;
     .sf-workspace > * {
         padding: var(--sf-focus-room);
     }
-}
-
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-workspace > .sf-workspace-rail {
-    border-inline-end-color: var(--sf-workspace-divider-color, var(--sf-outline-variant));
-  }
-  .sf-workspace > .sf-workspace-list {
-    border-inline-end-color: var(--sf-workspace-divider-color, var(--sf-outline-variant));
-  }
-  .sf-workspace > .sf-workspace-panel {
-    border-inline-start-color: var(--sf-workspace-divider-color, var(--sf-outline-variant));
-  }
-  @each $step, $width in $sf-workspace-wide-steps {
-    $scope: sf-workspace-scope(wide, $step, $sf-workspace-wide-default);
-    @container sf-workspace (width < #{$width}) {
-      #{$scope} > .sf-workspace-panel {
-        background: var(--sf-workspace-drawer-background-color, var(--sf-workspace-drawer-background, var(--sf-surface-popup)));
-        color: var(--sf-on-surface);
-      }
-    }
-  }
 }
 
 @layer sf.components {
@@ -463,4 +439,28 @@ $sf-workspace-wide-default: h6;
             }
         }
     }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-workspace > .sf-workspace-rail {
+    border-inline-end-color: var(--sf-workspace-divider-color, var(--sf-outline-variant));
+  }
+  .sf-workspace > .sf-workspace-list {
+    border-inline-end-color: var(--sf-workspace-divider-color, var(--sf-outline-variant));
+  }
+  .sf-workspace > .sf-workspace-panel {
+    border-inline-start-color: var(--sf-workspace-divider-color, var(--sf-outline-variant));
+  }
+  @each $step, $width in $sf-workspace-wide-steps {
+    $scope: sf-workspace-scope(wide, $step, $sf-workspace-wide-default);
+    @container sf-workspace (width < #{$width}) {
+      #{$scope} > .sf-workspace-panel {
+        background: var(--sf-workspace-drawer-background-color, var(--sf-workspace-drawer-background, var(--sf-surface-popup)));
+        color: var(--sf-on-surface);
+      }
+    }
+  }
 }

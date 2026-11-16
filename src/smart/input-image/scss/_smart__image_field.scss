@@ -1,105 +1,4 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-image-field-label {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-image-field-required {
-    color: var(--sf-error);
-  }
-  .sf-image-field-well {
-    border: var(--sf-image-field-border-width, var(--sf-px)) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
-    background-color: var(--sf-image-field--background-color);
-    color: var(--sf-on-surface);
-  }
-  .sf-image-field-thumb {
-    background-color: var(--sf-image-field-thumbnail-background-color, var(--sf-surface-container));
-    /* The glyph stands on the container fill, so the dimmed role is the
-       container's own: on-surface-variant alone falls under 4.5:1 there. */
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-image-field-thumb .sf-icon {
-    color: var(--sf-icon--color);
-  }
-  :is(.sf-image-field-thumb, .sf-image-field-frame).sf-image-field-thumb--transparent,
-.sf-image-field-frame--transparent {
-    background-color: var(--sf-surface-card);
-  }
-  .sf-image-field-ring {
-    background-color: var(--sf-surface-media);
-    color: var(--sf-on-surface-media);
-  }
-  .sf-image-field-name {
-    color: var(--sf-on-surface);
-  }
-  .sf-image-field-meta {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-image-field--empty .sf-image-field-name {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-image-field-frame {
-    border-color: var(--sf-outline-variant);
-    background-color: var(--sf-surface-container);
-    /* The words and the glyph stand on the container fill, so the dimmed role
-       is the container's own, as in the thumbnail. */
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-image-field--empty .sf-image-field-frame {
-    border-color: var(--sf-image-field--border-color);
-    background-color: var(--sf-image-field--background-color);
-  }
-  .sf-image-field-frame > .sf-icon {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-image-field-stage {
-    background-color: var(--sf-surface-inverse);
-  }
-  .sf-image-field-focus-dot {
-    border-color: var(--sf-on-surface-media);
-    background-color: var(--sf-primary);
-  }
-  .sf-image-field-editor-hint {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-image-field.dragover .sf-image-field-frame {
-    border-color: var(--sf-image-field--border-color);
-    background-color: var(--sf-image-field--background-color);
-  }
-  .sf-image-field.error .sf-image-field-frame {
-    border-color: var(--sf-error);
-  }
-  .sf-image-field.disabled .sf-image-field-frame {
-    border-color: var(--sf-outline-disabled);
-  }
-  .sf-image-field.disabled .sf-image-field-name,
-.sf-image-field.disabled .sf-image-field-meta,
-.sf-image-field.disabled .sf-image-field-label {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-image-field-message {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-image-field.error .sf-image-field-message[data-field-message="error"] {
-    color: var(--sf-error);
-  }
-  /* What the field did with extra files is information, not an error. */
-  .sf-image-field-message[data-field-message="info"] {
-    color: var(--sf-on-surface-variant);
-  }
-  @media (forced-colors: active) {
-    .sf-image-field-well {
-      border-color: CanvasText;
-    }
-    .sf-image-field.dragover .sf-image-field-well {
-      border-color: Highlight;
-    }
-  }
-}
-
 @layer sf.components {
 /* sf-input-image: one image in a form -- as a row (the thumbnail, the file
    name and size, then «Заменить…» and the remove icon) or as a preview (the
@@ -557,4 +456,105 @@
     grid-template-areas: "thumb body" "thumb actions";
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-image-field-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field-required {
+    color: var(--sf-error);
+  }
+  .sf-image-field-well {
+    border: var(--sf-image-field-border-width, var(--sf-px)) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
+    background-color: var(--sf-image-field--background-color);
+    color: var(--sf-on-surface);
+  }
+  .sf-image-field-thumb {
+    background-color: var(--sf-image-field-thumbnail-background-color, var(--sf-surface-container));
+    /* The glyph stands on the container fill, so the dimmed role is the
+       container's own: on-surface-variant alone falls under 4.5:1 there. */
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-image-field-thumb .sf-icon {
+    color: var(--sf-icon--color);
+  }
+  :is(.sf-image-field-thumb, .sf-image-field-frame).sf-image-field-thumb--transparent,
+.sf-image-field-frame--transparent {
+    background-color: var(--sf-surface-card);
+  }
+  .sf-image-field-ring {
+    background-color: var(--sf-surface-media);
+    color: var(--sf-on-surface-media);
+  }
+  .sf-image-field-name {
+    color: var(--sf-on-surface);
+  }
+  .sf-image-field-meta {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field--empty .sf-image-field-name {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field-frame {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-surface-container);
+    /* The words and the glyph stand on the container fill, so the dimmed role
+       is the container's own, as in the thumbnail. */
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field--empty .sf-image-field-frame {
+    border-color: var(--sf-image-field--border-color);
+    background-color: var(--sf-image-field--background-color);
+  }
+  .sf-image-field-frame > .sf-icon {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field-stage {
+    background-color: var(--sf-surface-inverse);
+  }
+  .sf-image-field-focus-dot {
+    border-color: var(--sf-on-surface-media);
+    background-color: var(--sf-primary);
+  }
+  .sf-image-field-editor-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field.dragover .sf-image-field-frame {
+    border-color: var(--sf-image-field--border-color);
+    background-color: var(--sf-image-field--background-color);
+  }
+  .sf-image-field.error .sf-image-field-frame {
+    border-color: var(--sf-error);
+  }
+  .sf-image-field.disabled .sf-image-field-frame {
+    border-color: var(--sf-outline-disabled);
+  }
+  .sf-image-field.disabled .sf-image-field-name,
+.sf-image-field.disabled .sf-image-field-meta,
+.sf-image-field.disabled .sf-image-field-label {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-image-field-message {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field.error .sf-image-field-message[data-field-message="error"] {
+    color: var(--sf-error);
+  }
+  /* What the field did with extra files is information, not an error. */
+  .sf-image-field-message[data-field-message="info"] {
+    color: var(--sf-on-surface-variant);
+  }
+  @media (forced-colors: active) {
+    .sf-image-field-well {
+      border-color: CanvasText;
+    }
+    .sf-image-field.dragover .sf-image-field-well {
+      border-color: Highlight;
+    }
+  }
 }

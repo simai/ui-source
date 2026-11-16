@@ -7,27 +7,6 @@
 
 @include anchored.properties;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-badge.sf-badge--anchored {
-    @include anchored.badge;
-  }
-  :is(.sf-avatar--size-1\/4, .sf-avatar--size-1\/3, .sf-icon-button--size-1\/3, .sf-badge-anchor--size-1\/3, .sf-avatar--size-1\/2, .sf-icon-button--size-1\/2, .sf-badge-anchor--size-1\/2, .sf-avatar--line-1\/2, .sf-avatar--line-1, .sf-avatar--line-2) > .sf-badge--anchored,
-  .sf-badge.sf-badge--anchored.sf-badge--dot {
-    @include anchored.dot-disc;
-  }
-  .sf-badge.sf-badge--dot:not(.sf-badge--anchored):has(> .sf-dot) {
-    background-color: transparent;
-  }
-  span.sf-badge-anchored-text {
-    @include anchored.visually-hidden;
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   // An anchor holding a badge is its containing block. Zero specificity, so an
@@ -178,6 +157,27 @@
 
   // The phrase a count adds to a name read from content. The element is named
   // so that `.sf-icon-button > *` (position: relative) does not outrank it.
+  span.sf-badge-anchored-text {
+    @include anchored.visually-hidden;
+  }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-badge.sf-badge--anchored {
+    @include anchored.badge;
+  }
+  :is(.sf-avatar--size-1\/4, .sf-avatar--size-1\/3, .sf-icon-button--size-1\/3, .sf-badge-anchor--size-1\/3, .sf-avatar--size-1\/2, .sf-icon-button--size-1\/2, .sf-badge-anchor--size-1\/2, .sf-avatar--line-1\/2, .sf-avatar--line-1, .sf-avatar--line-2) > .sf-badge--anchored,
+  .sf-badge.sf-badge--anchored.sf-badge--dot {
+    @include anchored.dot-disc;
+  }
+  .sf-badge.sf-badge--dot:not(.sf-badge--anchored):has(> .sf-dot) {
+    background-color: transparent;
+  }
   span.sf-badge-anchored-text {
     @include anchored.visually-hidden;
   }

@@ -1,3 +1,26 @@
+@layer sf.components {
+.sf-range-slider .sf-range-slider-progress-line {
+  border-end-end-radius: var(--sf-range-slider-progress-line--border-end-end-radius, var(--sf-radius--ui));
+  border-end-start-radius: var(--sf-range-slider-progress-line--border-end-start-radius, var(--sf-radius--ui));
+  border-start-end-radius: var(--sf-range-slider-progress-line--border-start-end-radius, var(--sf-radius--ui));
+  border-start-start-radius: var(--sf-range-slider-progress-line--border-start-start-radius, var(--sf-radius--ui));
+  height: var(--sf-range-slider-progress-line--height, var(--sf-range-slider-track--height, var(--sf-a4)));
+}
+
+.sf-range-slider .sf-range-slider-track {
+  border-end-end-radius: var(--sf-range-slider-track--border-end-end-radius, var(--sf-radius--ui));
+  border-end-start-radius: var(--sf-range-slider-track--border-end-start-radius, var(--sf-radius--ui));
+  border-start-end-radius: var(--sf-range-slider-track--border-start-end-radius, var(--sf-radius--ui));
+  border-start-start-radius: var(--sf-range-slider-track--border-start-start-radius, var(--sf-radius--ui));
+  // Track B (owner decision C78): the outline role, about 3:1 to the place in
+  // the light theme and 4:1 in the dark, so the scale and its end are seen;
+  // surface-container gave 1.21:1.
+  // The inactive rail is a flat fill: a shadow under it read as a blur (owner, 2026-11-01).
+  box-shadow: var(--sf-range-slider-track--box-shadow, none);
+  height: var(--sf-range-slider-track--height, var(--sf-a4));
+}
+}
+
 // Paint (C273): the fill, edge and place colour of these parts stand in
 // sf.paint, under the utilities, so bg-*, border-* and color-* on them
 // win; their geometry stays in sf.components, over the utilities.
@@ -24,27 +47,4 @@
   .sf-range-slider:is([disabled], .disabled) .sf-range-slider-progress-line {
     background-color: var(--sf-on-surface-disabled);
   }
-}
-
-@layer sf.components {
-.sf-range-slider .sf-range-slider-progress-line {
-  border-end-end-radius: var(--sf-range-slider-progress-line--border-end-end-radius, var(--sf-radius--ui));
-  border-end-start-radius: var(--sf-range-slider-progress-line--border-end-start-radius, var(--sf-radius--ui));
-  border-start-end-radius: var(--sf-range-slider-progress-line--border-start-end-radius, var(--sf-radius--ui));
-  border-start-start-radius: var(--sf-range-slider-progress-line--border-start-start-radius, var(--sf-radius--ui));
-  height: var(--sf-range-slider-progress-line--height, var(--sf-range-slider-track--height, var(--sf-a4)));
-}
-
-.sf-range-slider .sf-range-slider-track {
-  border-end-end-radius: var(--sf-range-slider-track--border-end-end-radius, var(--sf-radius--ui));
-  border-end-start-radius: var(--sf-range-slider-track--border-end-start-radius, var(--sf-radius--ui));
-  border-start-end-radius: var(--sf-range-slider-track--border-start-end-radius, var(--sf-radius--ui));
-  border-start-start-radius: var(--sf-range-slider-track--border-start-start-radius, var(--sf-radius--ui));
-  // Track B (owner decision C78): the outline role, about 3:1 to the place in
-  // the light theme and 4:1 in the dark, so the scale and its end are seen;
-  // surface-container gave 1.21:1.
-  // The inactive rail is a flat fill: a shadow under it read as a blur (owner, 2026-11-01).
-  box-shadow: var(--sf-range-slider-track--box-shadow, none);
-  height: var(--sf-range-slider-track--height, var(--sf-a4));
-}
 }

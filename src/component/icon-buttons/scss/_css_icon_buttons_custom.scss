@@ -49,17 +49,6 @@
    disabled look's rules skip sf-icon-button-state-loading, unless the button
    is also disabled, which the element then marks with .disabled. The generic
    `loading` without the state class greys, as before. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-icon-button .sf-icon-button-spinner {
-    /* The icon's colour (C36 follow-up): the spinner stands where the icon
-       stood and reads the same variables the icon does. */
-    color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
-  }
-}
-
 @layer sf.components {
   .sf-icon-button {
     > * {
@@ -142,6 +131,17 @@
     display: block;
     inline-size: 100%;
     block-size: 100%;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-icon-button .sf-icon-button-spinner {
+    /* The icon's colour (C36 follow-up): the spinner stands where the icon
+       stood and reads the same variables the icon does. */
+    color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
   }
 }
 

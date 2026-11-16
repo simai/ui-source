@@ -501,7 +501,7 @@
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "cfd43233c0e04025d443d66743b971fec4e37dfe7c1c18a822fad928174c0d60"
+        "sha256": "81e71fc6733cc5f2b006e5127e8a88ac83541dd39cfb55bb4359848ac619d0a6"
       },
       {
         "path": "src/smart/confirm-change/rule.js",

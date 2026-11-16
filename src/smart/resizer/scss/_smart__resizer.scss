@@ -1,12 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  sf-resizer::after {
-    background-color: var(--sf-resizer-line-color, transparent);
-  }
-}
-
 @layer sf.components {
 /* A strip on the panel's edge, wider than it looks so a pointer finds it: the
    line it draws on hover, focus and drag is a hairline in the middle. The
@@ -117,6 +108,15 @@ html[data-sf-resizer-active] * {
   cursor: col-resize !important;
   user-select: none !important;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  sf-resizer::after {
+    background-color: var(--sf-resizer-line-color, transparent);
+  }
 }
 
 @layer sf.states {

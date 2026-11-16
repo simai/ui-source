@@ -598,56 +598,6 @@
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-contents {
-    color: var(--sf-contents--color);
-  }
-  .sf-contents-link {
-    color: inherit;
-  }
-  .sf-contents-link:hover {
-    color: var(--sf-on-surface);
-  }
-  .sf-contents-link[aria-current="location"] {
-    color: var(--sf-on-surface);
-  }
-  .sf-contents--layout-column {
-    @include column;
-  }
-  :is(.sf-contents--layout-sheet, .sf-contents--layout-compact) {
-    @include sheet;
-  }
-  .sf-contents--layout-rail {
-    @include rail;
-  }
-  .sf-contents--layout-bar {
-    @include bar;
-  }
-  @each $step in (sm, md, lg, xl) {
-    @media (min-width: map.get(bp.$breakpoint-array, $step)) {
-      .sf-contents--layout-auto.sf-contents--collapse-#{$step} {
-        @include column;
-      }
-    }
-    @media not all and (min-width: map.get(bp.$breakpoint-array, $step)) {
-      .sf-contents--layout-auto.sf-contents--collapse-#{$step} {
-        @include sheet;
-      }
-    }
-  }
-  @media (forced-colors: active) {
-    .sf-contents-link[aria-current="location"] .sf-contents-mark,
-  .sf-contents-progress-value {
-      background-color: Highlight;
-    }
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* The page's table of contents (standard simai.smart-component 1.3.11 §6):
@@ -847,5 +797,55 @@ sf-contents[data-empty] > .sf-contents {
   }
 }
 
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-contents {
+    color: var(--sf-contents--color);
+  }
+  .sf-contents-link {
+    color: inherit;
+  }
+  .sf-contents-link:hover {
+    color: var(--sf-on-surface);
+  }
+  .sf-contents-link[aria-current="location"] {
+    color: var(--sf-on-surface);
+  }
+  .sf-contents--layout-column {
+    @include column;
+  }
+  :is(.sf-contents--layout-sheet, .sf-contents--layout-compact) {
+    @include sheet;
+  }
+  .sf-contents--layout-rail {
+    @include rail;
+  }
+  .sf-contents--layout-bar {
+    @include bar;
+  }
+  @each $step in (sm, md, lg, xl) {
+    @media (min-width: map.get(bp.$breakpoint-array, $step)) {
+      .sf-contents--layout-auto.sf-contents--collapse-#{$step} {
+        @include column;
+      }
+    }
+    @media not all and (min-width: map.get(bp.$breakpoint-array, $step)) {
+      .sf-contents--layout-auto.sf-contents--collapse-#{$step} {
+        @include sheet;
+      }
+    }
+  }
+  @media (forced-colors: active) {
+    .sf-contents-link[aria-current="location"] .sf-contents-mark,
+  .sf-contents-progress-value {
+      background-color: Highlight;
+    }
+  }
   @include paint.part(all);
 }

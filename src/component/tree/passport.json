@@ -13,7 +13,7 @@
     "src/component/tree/scss/_css__tree.scss",
     "src/component/tree/scss/index.scss"
   ],
-  "content_sha256": "768e06536d4fe7829145cae859aeae4d00387dc8edf5fab7ed5997a3038991f5",
+  "content_sha256": "877f29259343d3b82d64bfcd5dd7e2add08b642edce29d6243f4608ea6e036c7",
   "dependencies": [
     {
       "id": "component.icon-buttons",

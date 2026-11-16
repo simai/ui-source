@@ -15,7 +15,7 @@
     "src/component/step/scss/_css__steps.scss",
     "src/component/step/scss/index.scss"
   ],
-  "content_sha256": "d3d635d3a28f92089a6eea0553a230a92c30c9aa9f94aa3e8111e7ebe7294e25",
+  "content_sha256": "2a715ea746bf0f253a3c506534e773423519463b4067715b12d213503e040581",
   "dependencies": [
     {
       "id": "tokens.border",

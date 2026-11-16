@@ -3,120 +3,6 @@
 @use '../../../component/context-menu/scss/panel';
 @use '../../../core/scss/mix/mix__paint' as paint;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-search-portal {
-    @include places.sf-place(var(--sf-search--surface), var(--sf-on-surface-popup-variant));
-    color: var(--sf-on-surface);
-  }
-  .sf-search-scrim {
-    /* The shared scrim (core --sf-scrim-*) unless the page sets the search's
-       own colour, which is then the whole scrim (C16, C20). */
-    background: var(--sf-search-scrim-color, var(--sf-scrim-color, var(--sf-black--alfa-64)));
-  }
-  .sf-search-window {
-    background: var(--sf-search--surface);
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-  }
-  .sf-search-head {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-search-input {
-    border: 0;
-    background: transparent;
-    color: var(--sf-on-surface);
-  }
-  .sf-search-input::placeholder {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-caption {
-    @include panel.group-heading;
-  }
-  .sf-search-caption-action {
-    border: 0;
-    background: transparent;
-    color: var(--sf-primary);
-  }
-  .sf-search-row {
-    color: var(--sf-on-surface);
-  }
-  .sf-search-row--selected {
-    /* The selected role (C16). */
-    background: var(--sf-primary-container);
-    color: var(--sf-on-primary-container);
-    --sf-on-surface-variant: var(--sf-on-primary-container);
-  }
-  .sf-search-row--more {
-    color: var(--sf-primary);
-  }
-  .sf-search-row-main {
-    color: inherit;
-  }
-  .sf-search-row-path {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-row-meta,
-.sf-search-row-next,
-.sf-search-row-keys {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-mark {
-    background: var(--sf-search-mark-color, transparent);
-    color: inherit;
-  }
-  /* A search runs over the rows of the last answer (C139 (4), C162 (4)): they
-     stay, a step paler, until the answer replaces them. */
-  .sf-search-body--stale .sf-search-row:not(.sf-search-row--selected) {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-body--stale .sf-search-row-path {
-    color: var(--sf-on-surface-disabled);
-  }
-  .sf-search-wait {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-pill {
-    border: 0;
-    background: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-pill:hover {
-    background: var(--sf-surface-container-hover);
-  }
-  .sf-search-notice {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-correction {
-    border: 0;
-    background: none;
-    color: var(--sf-primary);
-  }
-  .sf-search-correction:hover {
-    background: var(--sf-surface-container-hover);
-  }
-  .sf-search-preview {
-    border-inline-start-color: var(--sf-outline-variant);
-  }
-  .sf-search-preview-path {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-preview-text {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-message {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-search-keys {
-    border-block-start-color: var(--sf-outline-variant);
-    color: var(--sf-on-surface-variant);
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* The search window (owner decisions C162, C175; standard simai.smart-component
@@ -715,5 +601,119 @@ a.sf-search-row-main:focus-visible {
     display: none;
   }
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-search-portal {
+    @include places.sf-place(var(--sf-search--surface), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface);
+  }
+  .sf-search-scrim {
+    /* The shared scrim (core --sf-scrim-*) unless the page sets the search's
+       own colour, which is then the whole scrim (C16, C20). */
+    background: var(--sf-search-scrim-color, var(--sf-scrim-color, var(--sf-black--alfa-64)));
+  }
+  .sf-search-window {
+    background: var(--sf-search--surface);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  }
+  .sf-search-head {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-search-input {
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface);
+  }
+  .sf-search-input::placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-caption {
+    @include panel.group-heading;
+  }
+  .sf-search-caption-action {
+    border: 0;
+    background: transparent;
+    color: var(--sf-primary);
+  }
+  .sf-search-row {
+    color: var(--sf-on-surface);
+  }
+  .sf-search-row--selected {
+    /* The selected role (C16). */
+    background: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+    --sf-on-surface-variant: var(--sf-on-primary-container);
+  }
+  .sf-search-row--more {
+    color: var(--sf-primary);
+  }
+  .sf-search-row-main {
+    color: inherit;
+  }
+  .sf-search-row-path {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-row-meta,
+.sf-search-row-next,
+.sf-search-row-keys {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-mark {
+    background: var(--sf-search-mark-color, transparent);
+    color: inherit;
+  }
+  /* A search runs over the rows of the last answer (C139 (4), C162 (4)): they
+     stay, a step paler, until the answer replaces them. */
+  .sf-search-body--stale .sf-search-row:not(.sf-search-row--selected) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-body--stale .sf-search-row-path {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-search-wait {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-pill {
+    border: 0;
+    background: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-pill:hover {
+    background: var(--sf-surface-container-hover);
+  }
+  .sf-search-notice {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-correction {
+    border: 0;
+    background: none;
+    color: var(--sf-primary);
+  }
+  .sf-search-correction:hover {
+    background: var(--sf-surface-container-hover);
+  }
+  .sf-search-preview {
+    border-inline-start-color: var(--sf-outline-variant);
+  }
+  .sf-search-preview-path {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-preview-text {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-message {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-keys {
+    border-block-start-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface-variant);
+  }
   @include paint.part(all);
 }

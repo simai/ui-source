@@ -12,7 +12,7 @@
     "src/component/card/scss/_css__card.scss",
     "src/component/card/scss/index.scss"
   ],
-  "content_sha256": "37b3254ac25c5312ccf85daf72b51b179bad6f5cff2f46672075dacbcb434be1",
+  "content_sha256": "8b05dfb0f4b43efdd8edd304529fa97d06523c7b43c802bec2597f74a66c0e84",
   "dependencies": [
     {
       "id": "tokens.border",

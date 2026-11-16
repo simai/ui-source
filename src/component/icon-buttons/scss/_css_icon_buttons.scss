@@ -27,35 +27,6 @@
   initial-value: 0px;
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-icon-button {
-    /* Public variables (core/contracts/public-variables.v1.json): names with a
-       single dash after the block, never set by the Framework, read where a
-       resting look is defined -- base, size, spacing, appearance, scheme -- and
-       not by hover, focus, pressed, disabled, loading or a group's segments, so
-       states and joined groups still show. */
-    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
-    background-color: var(--sf-icon-button--background-color);
-    border-color: var(--sf-icon-button--border-color, var(--sf-icon-button-border-color, transparent));
-  }
-  .sf-icon-button .sf-close-icon {
-    background-color: var(--sf-close-icon--background-color);
-    border-color: var(--sf-close-icon--border-color, transparent);
-  }
-  .sf-icon-button .sf-icon {
-    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
-  }
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle) {
-    border-inline-end-color: var(--sf-white--alfa-24, transparent);
-  }
-}
-
 @layer sf.components {
   /* A link drawn as an icon button (sf-button-icon href, decision C51) takes
      no link underline, as a.sf-button; its ink is the icon button's own. */
@@ -534,6 +505,35 @@
     --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
     --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
     --sf-icon-button--border-inline-start-width: 0;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-icon-button {
+    /* Public variables (core/contracts/public-variables.v1.json): names with a
+       single dash after the block, never set by the Framework, read where a
+       resting look is defined -- base, size, spacing, appearance, scheme -- and
+       not by hover, focus, pressed, disabled, loading or a group's segments, so
+       states and joined groups still show. */
+    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
+    background-color: var(--sf-icon-button--background-color);
+    border-color: var(--sf-icon-button--border-color, var(--sf-icon-button-border-color, transparent));
+  }
+  .sf-icon-button .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+  .sf-icon-button .sf-icon {
+    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle) {
+    border-inline-end-color: var(--sf-white--alfa-24, transparent);
   }
 }
 

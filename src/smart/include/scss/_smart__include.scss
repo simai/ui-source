@@ -1,20 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-include-error {
-    border-color: var(--sf-include--border-color);
-    color: var(--sf-include--message-color);
-  }
-  .sf-include .sf-include-error-icon {
-    color: var(--sf-error);
-  }
-  /* The network is gone (C120 (3)): cloud_off in the warning colour. */
-  .sf-include-error--warning .sf-include-error-icon {
-    color: var(--sf-warning);
-  }
-}
-
 @layer sf.components {
 /* sf-include (standard simai.smart-component 1.3.14 §6). The region is a
    plain block: the part the server answered lays itself out inside it. While
@@ -94,4 +77,21 @@
 .sf-include-retry {
   flex: none;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-include-error {
+    border-color: var(--sf-include--border-color);
+    color: var(--sf-include--message-color);
+  }
+  .sf-include .sf-include-error-icon {
+    color: var(--sf-error);
+  }
+  /* The network is gone (C120 (3)): cloud_off in the warning colour. */
+  .sf-include-error--warning .sf-include-error-icon {
+    color: var(--sf-warning);
+  }
 }

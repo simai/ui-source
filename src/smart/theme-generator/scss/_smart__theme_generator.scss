@@ -1,34 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-theme-generator {
-    color: var(--sf-theme-generator-color, var(--sf-on-surface));
-  }
-  .sf-theme-generator-label,
-.sf-theme-generator-name {
-    color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
-  }
-  .sf-theme-generator-check {
-    color: var(--sf-theme-generator-color, var(--sf-on-surface));
-  }
-  .sf-theme-generator-check > sf-icon {
-    color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
-  }
-  .sf-theme-generator-check[data-level="warning"] > sf-icon {
-    color: var(--sf-on-warning-container-graphic);
-  }
-  .sf-theme-generator-check[data-level="error"] > sf-icon {
-    color: var(--sf-on-error-container-graphic);
-  }
-  .sf-theme-generator-swatches {
-    border-color: var(--sf-theme-generator-swatch-border-color, var(--sf-outline-variant));
-  }
-  .sf-theme-generator-swatch {
-    background-color: var(--sf-theme-generator--swatch);
-  }
-}
-
 @layer sf.components {
 /* A colour and a reset on one row, the fine tuning folded below them, and the
    palettes under that: one row each, a name and six tones. Sizes follow the
@@ -174,4 +143,35 @@ sf-theme-generator {
 .sf-theme-generator-swatch {
   block-size: var(--sf-theme-generator--control-height);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-theme-generator {
+    color: var(--sf-theme-generator-color, var(--sf-on-surface));
+  }
+  .sf-theme-generator-label,
+.sf-theme-generator-name {
+    color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-theme-generator-check {
+    color: var(--sf-theme-generator-color, var(--sf-on-surface));
+  }
+  .sf-theme-generator-check > sf-icon {
+    color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-theme-generator-check[data-level="warning"] > sf-icon {
+    color: var(--sf-on-warning-container-graphic);
+  }
+  .sf-theme-generator-check[data-level="error"] > sf-icon {
+    color: var(--sf-on-error-container-graphic);
+  }
+  .sf-theme-generator-swatches {
+    border-color: var(--sf-theme-generator-swatch-border-color, var(--sf-outline-variant));
+  }
+  .sf-theme-generator-swatch {
+    background-color: var(--sf-theme-generator--swatch);
+  }
 }

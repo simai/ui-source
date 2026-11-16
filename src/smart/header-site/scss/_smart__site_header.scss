@@ -300,35 +300,6 @@
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-site-header {
-    border-block-end-color: var(--sf-site-header-border-color, var(--sf-outline-variant));
-    background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
-    color: var(--sf-site-header-color, var(--sf-on-surface));
-  }
-  :is(sf-header-site, sf-site-header)[data-scrolled='true'] > .sf-site-header--sticky {
-    background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-raised)));
-  }
-  .sf-site-header-brand :where(a) {
-    color: inherit;
-  }
-  .sf-site-header--collapse-always {
-    @include collapsed;
-  }
-  @each $step, $container-step in (sm: g6, md: h1, lg: h5, xl: h8) {
-    @container sf-site-header (width < #{mq.container-step($container-step)}) {
-      .sf-site-header--collapse-#{$step} {
-        @include collapsed;
-      }
-    }
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* The top bar of a SIMAI site (standard simai.smart-component 1.3.11 §6).
@@ -599,5 +570,34 @@
     }
   }
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-site-header {
+    border-block-end-color: var(--sf-site-header-border-color, var(--sf-outline-variant));
+    background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
+    color: var(--sf-site-header-color, var(--sf-on-surface));
+  }
+  :is(sf-header-site, sf-site-header)[data-scrolled='true'] > .sf-site-header--sticky {
+    background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-raised)));
+  }
+  .sf-site-header-brand :where(a) {
+    color: inherit;
+  }
+  .sf-site-header--collapse-always {
+    @include collapsed;
+  }
+  @each $step, $container-step in (sm: g6, md: h1, lg: h5, xl: h8) {
+    @container sf-site-header (width < #{mq.container-step($container-step)}) {
+      .sf-site-header--collapse-#{$step} {
+        @include collapsed;
+      }
+    }
+  }
   @include paint.part(all);
 }

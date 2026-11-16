@@ -27,38 +27,6 @@
   initial-value: 0px;
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  a.sf-button {
-    color: ButtonText;
-  }
-  .sf-button {
-    background-color: var(--sf-button--background-color);
-    border-color: var(--sf-button--border-color, var(--sf-button-border-color, transparent));
-  }
-  .sf-button .sf-button-text-container {
-    background-color: var(--sf-button-text-container--background-color);
-    color: var(--sf-button-text-container--color);
-  }
-  .sf-button .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-button:not(:has(> *)) {
-    /* ...and the ink the text container would have drawn it in, the
-       appearance's on-colour, not the browser's buttontext (2026-11-11
-       acceptance D1: primary filled was white on light blue in dark). */
-    color: var(--sf-button-text-container--color);
-  }
-  .sf-button.sf-button--tonal.sf-button--on-surface {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle) {
-    border-inline-end-color: var(--sf-white--alfa-24, transparent);
-  }
-}
-
 @layer sf.components {
   /* A button drawn as a link (sf-button href, 2026-11-04) has the button's
      own ink: the browser gives a link its link colour and an underline, a
@@ -702,6 +670,38 @@
 
   .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) .sf-icon {
     --sf-icon--color: var(--sf-place--ink, var(--sf-error));
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  a.sf-button {
+    color: ButtonText;
+  }
+  .sf-button {
+    background-color: var(--sf-button--background-color);
+    border-color: var(--sf-button--border-color, var(--sf-button-border-color, transparent));
+  }
+  .sf-button .sf-button-text-container {
+    background-color: var(--sf-button-text-container--background-color);
+    color: var(--sf-button-text-container--color);
+  }
+  .sf-button .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-button:not(:has(> *)) {
+    /* ...and the ink the text container would have drawn it in, the
+       appearance's on-colour, not the browser's buttontext (2026-11-11
+       acceptance D1: primary filled was white on light blue in dark). */
+    color: var(--sf-button-text-container--color);
+  }
+  .sf-button.sf-button--tonal.sf-button--on-surface {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle) {
+    border-inline-end-color: var(--sf-white--alfa-24, transparent);
   }
 }
 

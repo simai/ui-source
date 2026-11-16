@@ -6,99 +6,6 @@
 
 @include anchored.properties;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-admin-menu-panel {
-    background-color: var(
-                    --sf-admin-menu-panel--background-color,
-                    var(--sf-surface-page)
-    );
-    border-color: var(
-                    --sf-admin-menu-panel--border-color,
-                    var(--sf-outline-variant)
-    );
-  }
-  .sf-admin-menu-head {
-    border-color: var(
-                    --sf-admin-menu-head--border-color,
-                    var(--sf-outline-variant)
-    );
-  }
-  .sf-admin-menu-head-container {
-    color: var(--sf-admin-menu-head-container--color, var(--sf-on-surface));
-  }
-  .sf-admin-menu-search-group-head {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-admin-menu-search-group-head a {
-    color: var(--sf-primary);
-  }
-  .sf-admin-menu-search-row.selected {
-    background-color: var(--sf-primary-container);
-    @include places.sf-place-fill(var(--sf-primary-container));
-  }
-  .sf-admin-menu-search-mark {
-    background-color: var(--sf-admin-menu-search-mark--background-color, var(--sf-warning-container));
-    color: inherit;
-  }
-  .sf-admin-menu-search-keys {
-    border-block-start-color: var(--sf-outline-variant);
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-admin-menu-divider span {
-    background-color: var(
-                    --sf-admin-menu-divider--background-color,
-                    var(--sf-outline-variant)
-    );
-  }
-  .sf-admin-menu-item-segment {
-    border-color: var(
-                    --sf-admin-menu-item-segment--border-color,
-                    var(--sf-outline-variant)
-    );
-    background-color: var(
-                    --sf-admin-menu-item-segment--background-color,
-                    var(--sf-transparent)
-    );
-  }
-  .sf-admin-menu-item-placeholder {
-    background-color: var(
-                    --sf-admin-menu-item-placeholder--background-color,
-                    var(--sf-outline-variant)
-    );
-  }
-  .sf-admin-menu-item {
-    background-color: var(
-                    --sf-admin-menu-item--background-color,
-                    var(--sf-transparent)
-    );
-    border-color: var(
-                    --sf-admin-menu-item--border-color,
-                    var(--sf-outline-variant)
-    );
-  }
-  .sf-admin-menu-item-container {
-    color: var(--sf-admin-menu-item-container--color, var(--sf-on-surface));
-  }
-  .sf-admin-menu-panel.small
-  .sf-admin-menu-item
-  .sf-admin-menu-item-container
-  span:not(.sf-admin-menu-item-icon, .sf-admin-menu-item-placeholder, .sf-badge) {
-    @include anchored.visually-hidden;
-  }
-  .sf-admin-menu-panel.small .sf-admin-menu-item .sf-admin-menu-item-container > .sf-badge:not([hidden]) {
-    @include anchored.badge;
-  }
-  .sf-admin-menu-panel.small .sf-admin-menu-item span.sf-badge-anchored-text,
-  .sf-admin-menu-panel.small .sf-admin-menu-item > span.sf-badge-anchored-text {
-    @include anchored.visually-hidden;
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   .sf-admin-menu-main {
@@ -728,6 +635,99 @@
 
     /* The open panel is translateX(0) at every width now, so there is nothing
        left for this breakpoint to correct. */
+  }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-admin-menu-panel {
+    background-color: var(
+                    --sf-admin-menu-panel--background-color,
+                    var(--sf-surface-page)
+    );
+    border-color: var(
+                    --sf-admin-menu-panel--border-color,
+                    var(--sf-outline-variant)
+    );
+  }
+  .sf-admin-menu-head {
+    border-color: var(
+                    --sf-admin-menu-head--border-color,
+                    var(--sf-outline-variant)
+    );
+  }
+  .sf-admin-menu-head-container {
+    color: var(--sf-admin-menu-head-container--color, var(--sf-on-surface));
+  }
+  .sf-admin-menu-search-group-head {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-admin-menu-search-group-head a {
+    color: var(--sf-primary);
+  }
+  .sf-admin-menu-search-row.selected {
+    background-color: var(--sf-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+  }
+  .sf-admin-menu-search-mark {
+    background-color: var(--sf-admin-menu-search-mark--background-color, var(--sf-warning-container));
+    color: inherit;
+  }
+  .sf-admin-menu-search-keys {
+    border-block-start-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-admin-menu-divider span {
+    background-color: var(
+                    --sf-admin-menu-divider--background-color,
+                    var(--sf-outline-variant)
+    );
+  }
+  .sf-admin-menu-item-segment {
+    border-color: var(
+                    --sf-admin-menu-item-segment--border-color,
+                    var(--sf-outline-variant)
+    );
+    background-color: var(
+                    --sf-admin-menu-item-segment--background-color,
+                    var(--sf-transparent)
+    );
+  }
+  .sf-admin-menu-item-placeholder {
+    background-color: var(
+                    --sf-admin-menu-item-placeholder--background-color,
+                    var(--sf-outline-variant)
+    );
+  }
+  .sf-admin-menu-item {
+    background-color: var(
+                    --sf-admin-menu-item--background-color,
+                    var(--sf-transparent)
+    );
+    border-color: var(
+                    --sf-admin-menu-item--border-color,
+                    var(--sf-outline-variant)
+    );
+  }
+  .sf-admin-menu-item-container {
+    color: var(--sf-admin-menu-item-container--color, var(--sf-on-surface));
+  }
+  .sf-admin-menu-panel.small
+  .sf-admin-menu-item
+  .sf-admin-menu-item-container
+  span:not(.sf-admin-menu-item-icon, .sf-admin-menu-item-placeholder, .sf-badge) {
+    @include anchored.visually-hidden;
+  }
+  .sf-admin-menu-panel.small .sf-admin-menu-item .sf-admin-menu-item-container > .sf-badge:not([hidden]) {
+    @include anchored.badge;
+  }
+  .sf-admin-menu-panel.small .sf-admin-menu-item span.sf-badge-anchored-text,
+  .sf-admin-menu-panel.small .sf-admin-menu-item > span.sf-badge-anchored-text {
+    @include anchored.visually-hidden;
   }
   @include paint.part(all);
 }

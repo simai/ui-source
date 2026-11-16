@@ -1,24 +1,4 @@
 @use 'var__breadcrumbs' as *;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-breadcrumbs-item {
-    background-color: var(--sf-breadcrumbs-item--background-color);
-  }
-  .sf-breadcrumbs-item:is(button) {
-    border: 0;
-    color: inherit;
-  }
-  .sf-breadcrumbs-item .sf-breadcrumbs-item-container {
-    background-color: var(--sf-breadcrumbs-item-container--background-color);
-    color: var(--sf-breadcrumbs-item-container--color);
-  }
-  .sf-breadcrumbs-item .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item .sf-breadcrumbs-item-container > sf-icon > .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-}
-
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-breadcrumbs-item {
@@ -119,6 +99,26 @@
   .sf-breadcrumbs-item .sf-breadcrumbs-item-container[aria-current="page"] {
     --sf-breadcrumbs-item-container--color: var(--sf-breadcrumbs-current-color, var(--sf-on-surface));
     --sf-breadcrumbs-item-container--font-weight: var(--sf-font-weight-medium);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-breadcrumbs-item {
+    background-color: var(--sf-breadcrumbs-item--background-color);
+  }
+  .sf-breadcrumbs-item:is(button) {
+    border: 0;
+    color: inherit;
+  }
+  .sf-breadcrumbs-item .sf-breadcrumbs-item-container {
+    background-color: var(--sf-breadcrumbs-item-container--background-color);
+    color: var(--sf-breadcrumbs-item-container--color);
+  }
+  .sf-breadcrumbs-item .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item .sf-breadcrumbs-item-container > sf-icon > .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
   }
 }
 

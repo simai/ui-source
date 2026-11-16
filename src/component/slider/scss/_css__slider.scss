@@ -1,18 +1,6 @@
 @use 'var__slider' as *;
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-slider-dots.sf-slider-dots--count {
-    color: var(--sf-slider-dots-dot--color);
-  }
-  .sf-slider-dots.sf-slider-dots--plate.sf-slider-dots--count {
-    color: var(--sf-on-surface);
-  }
-}
-
 @layer sf.components {
 .sf-slider {
   --sf-slider--duration: var(--sf-duration-normal);
@@ -275,6 +263,18 @@
 .sf-slider:not(.sf-slider--content):has(> .sf-slider-thumbnails) > .sf-slider-controls {
   inset-block-end: calc(var(--sf-slider-gap, var(--sf-slider--gap, var(--sf-space-1))) + var(--sf-slider-thumbnail--block-size, var(--sf-slider-thumbnail-size, var(--sf-d2))));
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-slider-dots.sf-slider-dots--count {
+    color: var(--sf-slider-dots-dot--color);
+  }
+  .sf-slider-dots.sf-slider-dots--plate.sf-slider-dots--count {
+    color: var(--sf-on-surface);
+  }
 }
 
 @layer sf.states {

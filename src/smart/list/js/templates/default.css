@@ -1,43 +1,3 @@
-/* Paint (C273): the fill, edge and place colour of these parts stand in
-   sf.paint, under the utilities, so bg-*, border-* and color-* on them
-   win; their geometry stays in sf.components, over the utilities. */
-@layer sf.paint {
-    .sf-list__frame {
-        color: var(--sf-on-surface);
-    }
-    .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
-        color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
-    }
-    .sf-list-item.disabled:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
-        color: var(--sf-on-surface-disabled);
-    }
-    .sf-list__row--unread > sf-list-item > .sf-list-item:not(.disabled) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
-        color: var(--sf-on-surface);
-    }
-    .sf-list__group > .sf-list__heading {
-        color: var(--sf-list-heading-color, var(--sf-on-surface));
-    }
-    .sf-list__row > sf-list-item > .sf-list-item {
-        background-color: transparent;
-    }
-    /* A translucent fill: a tonal badge on the open row keeps its own tone
-       (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
-    .sf-list__row--current {
-        background-color: var(--sf-list--current);
-        --sf-surface-underlay: var(--sf-surface-place-solid);
-        --sf-surface-place-fill: var(--sf-list--current);
-    }
-    .sf-list__rename {
-        border-color: var(--sf-outline);
-        /* A bordered field: no plate of its own (C16). */
-        background: var(--sf-transparent);
-        color: inherit;
-    }
-    .sf-list__lead-skeleton.sf-first-paint-fill {
-        background-color: var(--sf-skeleton-base);
-    }
-}
-
 @layer sf.components {
   /* sf-list. The host is display: contents; .sf-list__frame is what the page
      places, on the Framework's plain list surface (.sf-list: its fill, edge,
@@ -533,6 +493,46 @@
     block-size: var(--sf-list--lead-line);
     border-radius: var(--sf-radius--ui);
   }
+}
+
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+    .sf-list__frame {
+        color: var(--sf-on-surface);
+    }
+    .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+        color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+    }
+    .sf-list-item.disabled:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+        color: var(--sf-on-surface-disabled);
+    }
+    .sf-list__row--unread > sf-list-item > .sf-list-item:not(.disabled) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+        color: var(--sf-on-surface);
+    }
+    .sf-list__group > .sf-list__heading {
+        color: var(--sf-list-heading-color, var(--sf-on-surface));
+    }
+    .sf-list__row > sf-list-item > .sf-list-item {
+        background-color: transparent;
+    }
+    /* A translucent fill: a tonal badge on the open row keeps its own tone
+       (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
+    .sf-list__row--current {
+        background-color: var(--sf-list--current);
+        --sf-surface-underlay: var(--sf-surface-place-solid);
+        --sf-surface-place-fill: var(--sf-list--current);
+    }
+    .sf-list__rename {
+        border-color: var(--sf-outline);
+        /* A bordered field: no plate of its own (C16). */
+        background: var(--sf-transparent);
+        color: inherit;
+    }
+    .sf-list__lead-skeleton.sf-first-paint-fill {
+        background-color: var(--sf-skeleton-base);
+    }
 }
 
 /* Under a finger (1.2.0) every row, the rename field, the loading rows and

@@ -17,33 +17,6 @@
     }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-sortable-ghost {
-    background-color: var(--sf-surface-popup, Canvas);
-  }
-  .sf-sortable-indicator {
-    background: var(--sf-sortable-indicator-color, var(--sf-primary, Highlight));
-  }
-  .sf-sortable-column-outline {
-    border-color: var(--sf-primary-outline, var(--sf-primary, Highlight));
-    background-color: var(--sf-primary-state-select, transparent);
-  }
-  .sf-sortable-placeholder {
-    border-color: var(--sf-sortable-placeholder-border-color, var(--sf-primary-outline, var(--sf-primary, Highlight)));
-    background-color: var(--sf-primary-state-select, transparent);
-  }
-  .sf-sortable-insert::before {
-    background: var(--sf-primary, Highlight);
-  }
-  .sf-sortable-insert .sf-sortable-insert-button.sf-icon-button {
-    background-color: var(--sf-surface-raised, Canvas);
-    --sf-on-surface-variant: var(--sf-on-surface-raised-variant);
-  }
-}
-
 @layer sf.components {
     /* The public variables (standard 1.3.8 §6): the dragged item's and the
        ghost's opacity, the drop line's and the silhouette's colours, the
@@ -227,4 +200,31 @@
         cursor: grabbing;
         user-select: none;
     }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-sortable-ghost {
+    background-color: var(--sf-surface-popup, Canvas);
+  }
+  .sf-sortable-indicator {
+    background: var(--sf-sortable-indicator-color, var(--sf-primary, Highlight));
+  }
+  .sf-sortable-column-outline {
+    border-color: var(--sf-primary-outline, var(--sf-primary, Highlight));
+    background-color: var(--sf-primary-state-select, transparent);
+  }
+  .sf-sortable-placeholder {
+    border-color: var(--sf-sortable-placeholder-border-color, var(--sf-primary-outline, var(--sf-primary, Highlight)));
+    background-color: var(--sf-primary-state-select, transparent);
+  }
+  .sf-sortable-insert::before {
+    background: var(--sf-primary, Highlight);
+  }
+  .sf-sortable-insert .sf-sortable-insert-button.sf-icon-button {
+    background-color: var(--sf-surface-raised, Canvas);
+    --sf-on-surface-variant: var(--sf-on-surface-raised-variant);
+  }
 }

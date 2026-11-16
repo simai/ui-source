@@ -1,40 +1,4 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-file-preview {
-    background-color: var(--sf-file-preview--background-color);
-  }
-  .sf-file-preview--surface {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-file-preview .sf-file-preview-holder {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    color: var(--sf-file-preview-holder--color);
-    background-color: var(--sf-file-preview-holder--background-color);
-  }
-  .sf-file-preview .sf-file-preview-badge {
-    background-color: var(--sf-surface-popup);
-    color: var(--sf-on-surface);
-  }
-  .sf-file-preview .sf-file-preview-play {
-    color: var(--sf-on-surface-media);
-  }
-  .sf-file-preview.sf-file-preview--compact {
-    color: inherit;
-  }
-  .sf-file-preview .sf-file-preview-name {
-    color: var(--sf-file-preview-name--color);
-  }
-  .sf-file-preview .sf-file-preview-size {
-    color: var(--sf-file-preview-size--color);
-  }
-  .sf-file-preview .sf-file-preview-error {
-    color: var(--sf-error);
-  }
-}
-
 @layer sf.components {
   .sf-file-preview {
     --sf-file-preview--background-color: var(--sf-file-preview-background-color, transparent);
@@ -434,6 +398,42 @@
 
   .sf-file-preview.sf-file-preview--tile > .sf-file-preview-question {
     grid-column: 1 / -1;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-file-preview {
+    background-color: var(--sf-file-preview--background-color);
+  }
+  .sf-file-preview--surface {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-file-preview .sf-file-preview-holder {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-file-preview-holder--color);
+    background-color: var(--sf-file-preview-holder--background-color);
+  }
+  .sf-file-preview .sf-file-preview-badge {
+    background-color: var(--sf-surface-popup);
+    color: var(--sf-on-surface);
+  }
+  .sf-file-preview .sf-file-preview-play {
+    color: var(--sf-on-surface-media);
+  }
+  .sf-file-preview.sf-file-preview--compact {
+    color: inherit;
+  }
+  .sf-file-preview .sf-file-preview-name {
+    color: var(--sf-file-preview-name--color);
+  }
+  .sf-file-preview .sf-file-preview-size {
+    color: var(--sf-file-preview-size--color);
+  }
+  .sf-file-preview .sf-file-preview-error {
+    color: var(--sf-error);
   }
 }
 

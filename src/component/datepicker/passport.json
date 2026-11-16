@@ -14,7 +14,7 @@
     "src/component/datepicker/scss/_css_day.scss",
     "src/component/datepicker/scss/index.scss"
   ],
-  "content_sha256": "cd70a323828a6ec187c4037b8219e2d75417a63c7701afd1371b29e096e03212",
+  "content_sha256": "1991822584180147d194d65999e939939b70f3949e124d53b0cdac134316634f",
   "dependencies": [
     {
       "id": "core.styles",

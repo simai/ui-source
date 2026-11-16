@@ -9,62 +9,6 @@
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-tile-metric {
-    border-color: var(--sf-tile-metric-border-color, var(--sf-outline-variant));
-    // A tile is a card (C16): the card place, a step lighter in the dark.
-    background: var(--sf-tile-metric-background-color, var(--sf-tile-metric-background, var(--sf-surface-card)));
-    color: var(--sf-on-surface);
-  }
-  @media (hover: hover) {
-    .sf-tile-metric.sf-tile-metric--target:hover {
-      background: var(--sf-tile-metric-hover-background-color, var(--sf-tile-metric-hover-background, var(--sf-surface-container-hover)));
-    }
-  }
-  .sf-tile-metric-label,
-.sf-tile-metric-flat,
-.sf-tile-metric-period,
-.sf-tile-metric-limit,
-.sf-tile-metric-hint {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-tile-metric-value {
-    color: var(--sf-tile-metric-value-color, var(--sf-on-surface));
-  }
-  .sf-tile-metric-unit {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-tile-metric-status--success .sf-tile-metric-status-icon {
-    color: var(--sf-success);
-  }
-  .sf-tile-metric-status--info .sf-tile-metric-status-icon {
-    color: var(--sf-info);
-  }
-  .sf-tile-metric-status--warning .sf-tile-metric-status-icon {
-    color: var(--sf-warning);
-  }
-  .sf-tile-metric-status--error .sf-tile-metric-status-icon {
-    color: var(--sf-error);
-  }
-  .sf-tile-metric-chart {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-tile-metric-skeleton--shape::after {
-    background: var(--sf-surface-container);
-  }
-  @media (forced-colors: active) {
-    .sf-tile-metric {
-      border-color: CanvasText;
-    }
-    .sf-tile-metric-skeleton--shape::after {
-      background: GrayText;
-    }
-  }
-}
-
 @layer sf.components {
 /* sf-tile-metric (standard simai.smart-component 1.3.14 §6). One rung S of
    the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 or
@@ -308,4 +252,60 @@ sf-tile-metric {
     grid-column: 1 / -1;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-tile-metric {
+    border-color: var(--sf-tile-metric-border-color, var(--sf-outline-variant));
+    // A tile is a card (C16): the card place, a step lighter in the dark.
+    background: var(--sf-tile-metric-background-color, var(--sf-tile-metric-background, var(--sf-surface-card)));
+    color: var(--sf-on-surface);
+  }
+  @media (hover: hover) {
+    .sf-tile-metric.sf-tile-metric--target:hover {
+      background: var(--sf-tile-metric-hover-background-color, var(--sf-tile-metric-hover-background, var(--sf-surface-container-hover)));
+    }
+  }
+  .sf-tile-metric-label,
+.sf-tile-metric-flat,
+.sf-tile-metric-period,
+.sf-tile-metric-limit,
+.sf-tile-metric-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-tile-metric-value {
+    color: var(--sf-tile-metric-value-color, var(--sf-on-surface));
+  }
+  .sf-tile-metric-unit {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-tile-metric-status--success .sf-tile-metric-status-icon {
+    color: var(--sf-success);
+  }
+  .sf-tile-metric-status--info .sf-tile-metric-status-icon {
+    color: var(--sf-info);
+  }
+  .sf-tile-metric-status--warning .sf-tile-metric-status-icon {
+    color: var(--sf-warning);
+  }
+  .sf-tile-metric-status--error .sf-tile-metric-status-icon {
+    color: var(--sf-error);
+  }
+  .sf-tile-metric-chart {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-tile-metric-skeleton--shape::after {
+    background: var(--sf-surface-container);
+  }
+  @media (forced-colors: active) {
+    .sf-tile-metric {
+      border-color: CanvasText;
+    }
+    .sf-tile-metric-skeleton--shape::after {
+      background: GrayText;
+    }
+  }
 }

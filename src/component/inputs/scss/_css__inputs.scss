@@ -1,53 +1,6 @@
 @use "field-action";
 @use "field-ladder" as ladder;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-input {
-    background-color: var(--sf-input--background-color, transparent);
-  }
-  .sf-input .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-input .sf-input-field {
-    background-color: var(--sf-input-field--background-color);
-    border: var(--sf-input-field--border, 0 solid);
-    border-color: var(--sf-input-field--border-color, transparent);
-    border-block-end-color: var(--sf-input-field--line-color, var(--sf-input-field--border-color, transparent));
-  }
-  .sf-input .sf-input-hint {
-    background-color: var(--sf-input-hint--background-color);
-  }
-  .sf-input .sf-input-field input {
-    background-color: var(--sf-input-input--background-color);
-    color: var(--sf-input-color, var(--sf-input-input--color));
-  }
-  .sf-input .sf-input-field input::placeholder {
-    color: var(--sf-input-placeholder--color);
-  }
-  .sf-input .sf-input-left {
-    background-color: var(--sf-input-left--background-color);
-  }
-  .sf-input .sf-input-right {
-    background-color: var(--sf-input-right--background-color);
-  }
-  .sf-input .sf-input-text {
-    color: var(--sf-input-text--color);
-  }
-  .sf-input .sf-input-hint-text-wrap {
-    background-color: var(--sf-input-hint-text-wrap--background-color);
-    color: var(--sf-input-hint-text-wrap--color);
-  }
-  .sf-input .sf-input-label {
-    background-color: var(--sf-input-label--background-color);
-  }
-  .sf-input .sf-input-required {
-    color: var(--sf-input-required--color);
-  }
-}
-
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
   .sf-input {
@@ -385,6 +338,53 @@
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-input {
+    background-color: var(--sf-input--background-color, transparent);
+  }
+  .sf-input .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-input .sf-input-field {
+    background-color: var(--sf-input-field--background-color);
+    border: var(--sf-input-field--border, 0 solid);
+    border-color: var(--sf-input-field--border-color, transparent);
+    border-block-end-color: var(--sf-input-field--line-color, var(--sf-input-field--border-color, transparent));
+  }
+  .sf-input .sf-input-hint {
+    background-color: var(--sf-input-hint--background-color);
+  }
+  .sf-input .sf-input-field input {
+    background-color: var(--sf-input-input--background-color);
+    color: var(--sf-input-color, var(--sf-input-input--color));
+  }
+  .sf-input .sf-input-field input::placeholder {
+    color: var(--sf-input-placeholder--color);
+  }
+  .sf-input .sf-input-left {
+    background-color: var(--sf-input-left--background-color);
+  }
+  .sf-input .sf-input-right {
+    background-color: var(--sf-input-right--background-color);
+  }
+  .sf-input .sf-input-text {
+    color: var(--sf-input-text--color);
+  }
+  .sf-input .sf-input-hint-text-wrap {
+    background-color: var(--sf-input-hint-text-wrap--background-color);
+    color: var(--sf-input-hint-text-wrap--color);
+  }
+  .sf-input .sf-input-label {
+    background-color: var(--sf-input-label--background-color);
+  }
+  .sf-input .sf-input-required {
+    color: var(--sf-input-required--color);
+  }
+}
+
 @layer sf.states {
   /* A bordered field is its boundary on the place it stands on, no plate of
      its own (C16): on a card, a popup or a coloured place it takes that place,
@@ -655,24 +655,6 @@
 
 /* Owner decision C153 (2026-11-14; research control/research/2026-11-14-text-inputs.md,
    prototype prototypes/text-inputs-study.html). */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-input .sf-input-start {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-input .sf-input-count {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-input.sf-input--over .sf-input-count {
-    color: var(--sf-error);
-  }
-  .sf-input-count-said {
-    border: 0;
-  }
-}
-
 @layer sf.components {
   /* (1) The label is in the text ink, a step below the value; the hint keeps
      the hint ink. On a phone (below 60rem, the text tokens' own break) the
@@ -776,6 +758,24 @@
     white-space: nowrap;
     border: 0;
     border-color: revert-layer;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-input .sf-input-start {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-input .sf-input-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-input.sf-input--over .sf-input-count {
+    color: var(--sf-error);
+  }
+  .sf-input-count-said {
+    border: 0;
   }
 }
 

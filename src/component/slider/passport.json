@@ -18,7 +18,7 @@
     "src/component/slider/scss/_var__slider.scss",
     "src/component/slider/scss/index.scss"
   ],
-  "content_sha256": "019866365f2587c2bc4e3155cb92b4ee1a3cf2b0b25721c578227f874eaf5546",
+  "content_sha256": "65991406a52406cc10a2713a7c6f6f85d8ee826c7229f858409a9696549da6d9",
   "dependencies": [
     {
       "id": "component.swiper",

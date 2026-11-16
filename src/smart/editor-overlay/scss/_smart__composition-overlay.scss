@@ -7,42 +7,6 @@
 /* sf-focus-ring: editor — the editing canvas marks what is being edited in its
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-composition-overlay-frame {
-    border-color: var(--sf-composition-overlay-color);
-  }
-  .sf-composition-overlay-toolbar {
-    /* A toolbar floats over the page: step 2's surface and shadow. */
-    background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas));
-    @include places.sf-place(var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
-    color: var(--sf-on-surface, CanvasText);
-  }
-  .sf-composition-overlay-name {
-    color: var(--sf-on-surface, CanvasText);
-  }
-  .sf-composition-overlay-name .sf-icon {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-composition-overlay-separator {
-    background-color: var(--sf-outline-variant);
-  }
-  .sf-composition-overlay-insert {
-    border: 0;
-    background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% var(--sf-a2) no-repeat;
-    color: var(--sf-composition-overlay-color);
-  }
-  // The «+» under the selected block, while nothing points at its place: the
-  // button alone, so the frame's line is not doubled by a second one.
-  .sf-composition-overlay-insert[data-sf-insert-after]:not(:focus-visible) {
-    background: none;
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
     .sf-composition-overlay {
@@ -352,6 +316,42 @@
     .sf-composition-overlay[data-sf-overlay-editing] .sf-composition-overlay-frame--hover {
         display: none;
     }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-composition-overlay-frame {
+    border-color: var(--sf-composition-overlay-color);
+  }
+  .sf-composition-overlay-toolbar {
+    /* A toolbar floats over the page: step 2's surface and shadow. */
+    background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas));
+    @include places.sf-place(var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface, CanvasText);
+  }
+  .sf-composition-overlay-name {
+    color: var(--sf-on-surface, CanvasText);
+  }
+  .sf-composition-overlay-name .sf-icon {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-composition-overlay-separator {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-composition-overlay-insert {
+    border: 0;
+    background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% var(--sf-a2) no-repeat;
+    color: var(--sf-composition-overlay-color);
+  }
+  // The «+» under the selected block, while nothing points at its place: the
+  // button alone, so the frame's line is not doubled by a second one.
+  .sf-composition-overlay-insert[data-sf-insert-after]:not(:focus-visible) {
+    background: none;
+  }
   @include paint.part(all);
 }
 

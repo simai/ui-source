@@ -1,42 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button) {
-    background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    border: 0;
-    color: var(--sf-on-surface);
-  }
-  /* Hover and press fill the surface one state step up. Before, the hover
-     rule (two classes) lost to the resting fill (three), so the surface never
-     showed a hover, and nothing told a disabled one apart. A disabled
-     button -- aria-disabled="true" while it copies, or :disabled -- takes no
-     state at all. */
-  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):hover {
-    background-color: var(--sf-surface-container-hover);
-  }
-  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):active {
-    background-color: var(--sf-surface-container-active);
-  }
-  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):is([aria-disabled='true'], :disabled) {
-    background-color: var(--sf-surface-disabled);
-    color: var(--sf-on-surface-disabled);
-  }
-  /* The result's ink is the glyph's own, as sf-button-copy's. */
-  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[data-copy-state='success'] .sf-icon {
-    color: var(--sf-success);
-  }
-  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[data-copy-state='error'] .sf-icon {
-    color: var(--sf-error);
-  }
-  @media (forced-colors: active) {
-    .sf-clipboard {
-      border-color: ButtonText;
-    }
-  }
-}
-
 @layer sf.components {
   :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target]) {
     cursor: pointer;
@@ -194,6 +155,45 @@
 
     .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):focus-visible {
       outline-color: Highlight;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button) {
+    background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border: 0;
+    color: var(--sf-on-surface);
+  }
+  /* Hover and press fill the surface one state step up. Before, the hover
+     rule (two classes) lost to the resting fill (three), so the surface never
+     showed a hover, and nothing told a disabled one apart. A disabled
+     button -- aria-disabled="true" while it copies, or :disabled -- takes no
+     state at all. */
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):hover {
+    background-color: var(--sf-surface-container-hover);
+  }
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):active {
+    background-color: var(--sf-surface-container-active);
+  }
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):is([aria-disabled='true'], :disabled) {
+    background-color: var(--sf-surface-disabled);
+    color: var(--sf-on-surface-disabled);
+  }
+  /* The result's ink is the glyph's own, as sf-button-copy's. */
+  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[data-copy-state='success'] .sf-icon {
+    color: var(--sf-success);
+  }
+  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[data-copy-state='error'] .sf-icon {
+    color: var(--sf-error);
+  }
+  @media (forced-colors: active) {
+    .sf-clipboard {
+      border-color: ButtonText;
     }
   }
 }

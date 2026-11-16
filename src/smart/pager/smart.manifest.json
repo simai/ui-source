@@ -381,7 +381,7 @@
       },
       {
         "path": "src/smart/pager/scss/_smart__pager.scss",
-        "sha256": "fff1d7f5812eb949aa7e2bb69ff837b38f29b6f90a1028475f60a47f65135bc2"
+        "sha256": "c184d33861b855ecd6a27d74f0eecef45cb3c5c57ac623c8db2beba31584058c"
       },
       {
         "path": "src/smart/pager/rule.js",

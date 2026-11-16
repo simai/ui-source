@@ -218,68 +218,6 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-menu {
-    /* The public variables (src/core/contracts/public-variables.v1.json) wrap
-       the values the menu drew before them, so a page that sets none sees no
-       change. */
-    background-color: var(--sf-menu--background-color, var(--sf-menu-background-color, transparent));
-  }
-  .sf-menu .sf-menu-item {
-    background-color: var(--sf-menu-item--background-color);
-  }
-  .sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu,
-.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu {
-    border-color: var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
-    background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
-    @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
-  }
-  .sf-menu .sf-menu-region {
-    border-color: var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
-    background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
-    @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
-    color: var(--sf-on-surface);
-  }
-  .sf-menu-region-foot {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
-    @include places.sf-place-fill(var(--sf-menu-element--background-color));
-  }
-  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
-    @include places.sf-place-fill(var(--sf-menu-element--background-color));
-  }
-  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
-    @include current-plate;
-  }
-  .sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
-    border-color: var(--sf-outline-variant);
-    @include path-line($path-closed);
-  }
-  .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
-    @include places.sf-place-fill(var(--sf-menu-element--background-color));
-  }
-  .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
-    @include path-line($path-any);
-  }
-  .sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill) {
-    @include row-current-line;
-  }
-  .sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill {
-    @include row-current-fill;
-  }
-  .sf-menu.sf-menu--documentation-tree [aria-current="page"] {
-    background: var(--sf-primary-container-active);
-    color: var(--sf-on-primary-container);
-    @include places.sf-place-fill(var(--sf-primary-container-active));
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -728,5 +666,67 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: calc(var(--sf-focus--width) * -1);
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-menu {
+    /* The public variables (src/core/contracts/public-variables.v1.json) wrap
+       the values the menu drew before them, so a page that sets none sees no
+       change. */
+    background-color: var(--sf-menu--background-color, var(--sf-menu-background-color, transparent));
+  }
+  .sf-menu .sf-menu-item {
+    background-color: var(--sf-menu-item--background-color);
+  }
+  .sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu,
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu {
+    border-color: var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+    background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
+    @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
+  }
+  .sf-menu .sf-menu-region {
+    border-color: var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+    background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
+    @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface);
+  }
+  .sf-menu-region-foot {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+    @include current-plate;
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
+    border-color: var(--sf-outline-variant);
+    @include path-line($path-closed);
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
+    @include path-line($path-any);
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill) {
+    @include row-current-line;
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill {
+    @include row-current-fill;
+  }
+  .sf-menu.sf-menu--documentation-tree [aria-current="page"] {
+    background: var(--sf-primary-container-active);
+    color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container-active));
+  }
   @include paint.part(all);
 }

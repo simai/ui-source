@@ -1,48 +1,5 @@
 @use '../../inputs/scss/field-ladder' as ladder;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-quantity {
-    background-color: var(--sf-quantity--background-color, transparent);
-  }
-  .sf-quantity .sf-quantity-label {
-    background-color: var(--sf-quantity-label--background-color);
-  }
-  .sf-quantity .sf-quantity-text {
-    color: var(--sf-quantity-text--color);
-  }
-  .sf-quantity .sf-quantity-hint-text-wrap {
-    color: var(--sf-quantity-hint-text-wrap--color);
-  }
-  .sf-quantity .sf-quantity-required {
-    color: var(--sf-quantity-required--color);
-  }
-  .sf-quantity .sf-quantity-wrap {
-    background-color: var(--sf-quantity-wrap--background-color);
-    border: var(--sf-quantity-wrap--border);
-    border-color: var(--sf-quantity-wrap--border-color, transparent);
-  }
-  .sf-quantity .sf-icon-button {
-    background-color: var(--sf-icon-button--background-color);
-  }
-  .sf-quantity .sf-quantity-wrap input {
-    border: 0;
-    background-color: var(--sf-quantity-input--background-color);
-    color: var(--sf-quantity-input--color);
-  }
-  .sf-quantity .sf-quantity-wrap input::placeholder {
-    color: var(--sf-quantity-placeholder--color);
-  }
-  .sf-quantity .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-  .sf-quantity:has(input:disabled) .sf-button .sf-icon {
-    background-color: var(--sf-on-surface-disabled);
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-quantity {
@@ -450,6 +407,49 @@
 }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-quantity {
+    background-color: var(--sf-quantity--background-color, transparent);
+  }
+  .sf-quantity .sf-quantity-label {
+    background-color: var(--sf-quantity-label--background-color);
+  }
+  .sf-quantity .sf-quantity-text {
+    color: var(--sf-quantity-text--color);
+  }
+  .sf-quantity .sf-quantity-hint-text-wrap {
+    color: var(--sf-quantity-hint-text-wrap--color);
+  }
+  .sf-quantity .sf-quantity-required {
+    color: var(--sf-quantity-required--color);
+  }
+  .sf-quantity .sf-quantity-wrap {
+    background-color: var(--sf-quantity-wrap--background-color);
+    border: var(--sf-quantity-wrap--border);
+    border-color: var(--sf-quantity-wrap--border-color, transparent);
+  }
+  .sf-quantity .sf-icon-button {
+    background-color: var(--sf-icon-button--background-color);
+  }
+  .sf-quantity .sf-quantity-wrap input {
+    border: 0;
+    background-color: var(--sf-quantity-input--background-color);
+    color: var(--sf-quantity-input--color);
+  }
+  .sf-quantity .sf-quantity-wrap input::placeholder {
+    color: var(--sf-quantity-placeholder--color);
+  }
+  .sf-quantity .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-quantity:has(input:disabled) .sf-button .sf-icon {
+    background-color: var(--sf-on-surface-disabled);
+  }
+}
+
 /* Owner decision C53 (2026-11-10; research control/research/2026-11-10-number-input.md,
    prototype prototypes/number-input.html), fixes F1-F8 of R111-R115.
 
@@ -461,18 +461,6 @@
    inherited value at the field's decimals; at least 2, 6 with no upper
    bound) or the digits setting, which a column of fields sets to one
    number so the column is straight (F6). */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-quantity .sf-quantity-unit {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-quantity:has(input:disabled) .sf-quantity-unit {
-    color: var(--sf-on-surface-disabled);
-  }
-}
-
 @layer sf.components {
   /* C53 is the Smart field's look (sf-input-quantity renders the box in a
      .sf-quantity-row); the class component (label.sf-quantity with the box
@@ -611,10 +599,30 @@
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-quantity .sf-quantity-unit {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-unit {
+    color: var(--sf-on-surface-disabled);
+  }
+}
+
 /* The steppers are drawn by the script before the icon-button sheet may have
    arrived; until it does they were the browser's grey button, fading out over
    the button's transition (simai/ui-source#2). No weight here: the icon
    button's own rules win the moment they apply. */
+@layer sf.components {
+  :where(.sf-quantity .sf-quantity-count) {
+    appearance: none;
+    border: 0;
+    border-color: revert-layer;
+  }
+}
+
 // Paint (C273): the fill, edge and place colour of these parts stand in
 // sf.paint, under the utilities, so bg-*, border-* and color-* on them
 // win; their geometry stays in sf.components, over the utilities.
@@ -622,14 +630,6 @@
   :where(.sf-quantity .sf-quantity-count) {
     background-color: transparent;
     border: 0;
-  }
-}
-
-@layer sf.components {
-  :where(.sf-quantity .sf-quantity-count) {
-    appearance: none;
-    border: 0;
-    border-color: revert-layer;
   }
 }
 

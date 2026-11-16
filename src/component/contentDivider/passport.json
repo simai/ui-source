@@ -14,7 +14,7 @@
     "src/component/contentDivider/scss/_var__contentDivider.scss",
     "src/component/contentDivider/scss/index.scss"
   ],
-  "content_sha256": "b6d63e9b80169928e2840db08dfe9b12db62dd75e8ef4a9400b955cb1afc7d89",
+  "content_sha256": "f392fe6c893c883a3856cec788bf524722468dac55f0d963f6d3679a0de76a51",
   "dependencies": [
     {
       "id": "core.runtime",

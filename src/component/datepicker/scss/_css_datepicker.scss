@@ -1,73 +1,6 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../core/scss/mix/mix__paint' as paint;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-datepicker {
-    /* The whole calendar floats on step 3, not only its top band: on the plain
-       surface its body was the page's colour in the dark theme. */
-    background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup)));
-    @include places.sf-place(var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
-  }
-  .sf-datepicker .sf-datepicker-dayline {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-datepicker .sf-datepicker-dayline-date {
-    color: var(--sf-on-surface);
-  }
-  .sf-datepicker .sf-datepicker-main {
-    background-color: var(--sf-datepicker-main--background-color);
-  }
-  .sf-datepicker .sf-datepicker-row {
-    background-color: var(--sf-datepicker-row--background-color);
-  }
-  .sf-datepicker .sf-datepicker-top {
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-    background-color: var(--sf-datepicker-top--background-color);
-  }
-  .sf-datepicker .sf-datepicker-weekday {
-    color: var(--sf-datepicker-weekday--color, var(--sf-datepicker-weekday-color, var(--sf-on-surface-variant)));
-  }
-  .sf-datepicker .sf-datepicker-container > .sf-datepicker-time {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  .sf-datepicker .sf-datepicker-time-separator {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-datepicker.sf-datepicker--sheet {
-    --sf-surface-place: inherit;
-    --sf-surface-place-solid: inherit;
-    --sf-surface-place-ground: inherit;
-  }
-  .sf-datepicker .sf-datepicker-sheet-title {
-    color: var(--sf-on-surface);
-  }
-  .sf-datepicker .sf-datepicker-sheet-weekdays {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-datepicker .sf-datepicker-ribbon-title {
-    background-color: var(--sf-datepicker--background-color, var(--sf-surface-popup));
-    color: var(--sf-on-surface);
-  }
-  .sf-datepicker .sf-datepicker-sheet-foot {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  .sf-datepicker .sf-datepicker-sheet-summary {
-    color: var(--sf-on-surface);
-  }
-  .sf-datepicker .sf-datepicker-sheet-summary span {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-datepicker .sf-datepicker-context {
-    background: var(--sf-datepicker-context--background-color);
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -447,6 +380,73 @@
    z-index: var(--sf-z-index-2);
  }
 
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-datepicker {
+    /* The whole calendar floats on step 3, not only its top band: on the plain
+       surface its body was the page's colour in the dark theme. */
+    background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup)));
+    @include places.sf-place(var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
+  }
+  .sf-datepicker .sf-datepicker-dayline {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-datepicker .sf-datepicker-dayline-date {
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-main {
+    background-color: var(--sf-datepicker-main--background-color);
+  }
+  .sf-datepicker .sf-datepicker-row {
+    background-color: var(--sf-datepicker-row--background-color);
+  }
+  .sf-datepicker .sf-datepicker-top {
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    background-color: var(--sf-datepicker-top--background-color);
+  }
+  .sf-datepicker .sf-datepicker-weekday {
+    color: var(--sf-datepicker-weekday--color, var(--sf-datepicker-weekday-color, var(--sf-on-surface-variant)));
+  }
+  .sf-datepicker .sf-datepicker-container > .sf-datepicker-time {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-time-separator {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-datepicker.sf-datepicker--sheet {
+    --sf-surface-place: inherit;
+    --sf-surface-place-solid: inherit;
+    --sf-surface-place-ground: inherit;
+  }
+  .sf-datepicker .sf-datepicker-sheet-title {
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-sheet-weekdays {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-ribbon-title {
+    background-color: var(--sf-datepicker--background-color, var(--sf-surface-popup));
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-sheet-foot {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary {
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary span {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-datepicker .sf-datepicker-context {
+    background: var(--sf-datepicker-context--background-color);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  }
   @include paint.part(all);
 }
 

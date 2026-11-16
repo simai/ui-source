@@ -1,14 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @media (prefers-reduced-motion: reduce) {
-    .sf-progress-bar.sf-progress-bar--indeterminate .sf-progress-bar-progress {
-      background-color: color-mix(in srgb, var(--sf-progress-bar-progress--background-color) 32%, transparent);
-    }
-  }
-}
-
 @layer sf.components {
 .sf-progress-bar .sf-progress-bar-progress {
   height: 100%;
@@ -82,4 +71,15 @@
     animation: none;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @media (prefers-reduced-motion: reduce) {
+    .sf-progress-bar.sf-progress-bar--indeterminate .sf-progress-bar-progress {
+      background-color: color-mix(in srgb, var(--sf-progress-bar-progress--background-color) 32%, transparent);
+    }
+  }
 }

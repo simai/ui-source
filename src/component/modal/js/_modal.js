@@ -390,13 +390,13 @@ class Modal extends ComponentObserver {
     root.setAttribute('data-sf-modal-state', isInline ? 'inline' : 'closed');
 
     const overlay = document.createElement('div');
+    // The scrim's colour and opacity are the sheet's (--sf-modal-overlay-*).
+    // No paint utility here: since C273 a bg-* class beats the component's
+    // paint, so bg-black would turn the scrim solid. An overlayClass of the
+    // host still recolours it, as a utility on a component should.
     overlay.className = joinClasses(
       'absolute top-0 inline-start-0 w-full h-full',
-      this.blur
-        ? this.hasCustomBlurType
-          ? this.getBlurClasses().join(' ')
-          : 'bg-surface-overlay'
-        : 'bg-black opacity-6',
+      this.blur && this.hasCustomBlurType ? this.getBlurClasses().join(' ') : '',
       params.overlayClass,
     );
     overlay.setAttribute('data-sf-modal-overlay', '');

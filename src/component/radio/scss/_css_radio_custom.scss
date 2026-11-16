@@ -1,44 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-radio-button--type-font .sf-radio-text {
-    color: var(--sf-on-surface);
-    background-color: var(--sf-surface-place);
-    border-color: var(--sf-outline);
-  }
-  .sf-radio-button--type-font:has(input:not(:disabled):hover) .sf-radio-text {
-    border-color: var(--sf-primary-hover);
-    background-color: var(--sf-surface-container-hover);
-  }
-  .sf-radio-button--type-font .sf-radio-text.active {
-    color: var(--sf-on-primary);
-    background-color: var(--sf-primary);
-    border-color: var(--sf-primary);
-  }
-  .sf-radio-button--type-font:has(input:disabled) .sf-radio-text {
-    color: var(--sf-on-surface-disabled);
-    background-color: var(--sf-surface-place);
-    border-color: var(--sf-outline-disabled);
-  }
-  @media (forced-colors: active) {
-    .sf-radio-button--type-font .sf-radio-text {
-      color: ButtonText;
-      background-color: Canvas;
-      border-color: ButtonText;
-    }
-    .sf-radio-button--type-font .sf-radio-text.active {
-      color: HighlightText;
-      background-color: Highlight;
-      border-color: Highlight;
-    }
-    .sf-radio-button--type-font:has(input:disabled) .sf-radio-text {
-      color: GrayText;
-      border-color: GrayText;
-    }
-  }
-}
-
 @layer sf.components {
 .sf-radio-button {
   min-width: 0;
@@ -212,4 +171,45 @@
     transition-duration: 0s;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-radio-button--type-font .sf-radio-text {
+    color: var(--sf-on-surface);
+    background-color: var(--sf-surface-place);
+    border-color: var(--sf-outline);
+  }
+  .sf-radio-button--type-font:has(input:not(:disabled):hover) .sf-radio-text {
+    border-color: var(--sf-primary-hover);
+    background-color: var(--sf-surface-container-hover);
+  }
+  .sf-radio-button--type-font .sf-radio-text.active {
+    color: var(--sf-on-primary);
+    background-color: var(--sf-primary);
+    border-color: var(--sf-primary);
+  }
+  .sf-radio-button--type-font:has(input:disabled) .sf-radio-text {
+    color: var(--sf-on-surface-disabled);
+    background-color: var(--sf-surface-place);
+    border-color: var(--sf-outline-disabled);
+  }
+  @media (forced-colors: active) {
+    .sf-radio-button--type-font .sf-radio-text {
+      color: ButtonText;
+      background-color: Canvas;
+      border-color: ButtonText;
+    }
+    .sf-radio-button--type-font .sf-radio-text.active {
+      color: HighlightText;
+      background-color: Highlight;
+      border-color: Highlight;
+    }
+    .sf-radio-button--type-font:has(input:disabled) .sf-radio-text {
+      color: GrayText;
+      border-color: GrayText;
+    }
+  }
 }

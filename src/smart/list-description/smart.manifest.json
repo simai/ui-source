@@ -291,7 +291,7 @@
       },
       {
         "path": "src/smart/list-description/scss/_smart__list-description.scss",
-        "sha256": "79e59f46f49e5ec802f6124bd64afbf5f1310026177f2993cf097d934133bc62"
+        "sha256": "e319504edd7d00a9d4445a122d37c7ce8fb0a6efc4f051c02e7d244ea895eda6"
       },
       {
         "path": "src/smart/list-description/rule.js",

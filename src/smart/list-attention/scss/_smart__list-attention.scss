@@ -10,97 +10,6 @@
   }
 }
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-list-attention {
-    border-color: var(--sf-list-attention--divider);
-    background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, var(--sf-surface-card)));
-    color: var(--sf-on-surface);
-  }
-  .sf-list-attention.sf-list-attention--frame-none {
-    border: 0;
-    background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, transparent));
-  }
-  .sf-list-attention-head {
-    border-block-end-color: var(--sf-list-attention--divider);
-  }
-  .sf-list-attention--frame-none .sf-list-attention-head {
-    border-block-end: 0;
-  }
-  .sf-list-attention-heading {
-    color: var(--sf-list-attention-heading-color, var(--sf-on-surface));
-  }
-  .sf-list-attention-item + .sf-list-attention-item {
-    border-block-start-color: var(--sf-list-attention--divider);
-  }
-  .sf-list-attention-icon--error {
-    color: var(--sf-error);
-  }
-  .sf-list-attention-icon--warning {
-    color: var(--sf-warning);
-  }
-  .sf-list-attention-icon--info {
-    color: var(--sf-info);
-  }
-  .sf-list-attention-icon--success {
-    color: var(--sf-success);
-  }
-  .sf-list-attention-meta {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-list-attention-object {
-    color: var(--sf-on-surface);
-  }
-  .sf-list-attention-foot {
-    border-block-start-color: var(--sf-list-attention--divider);
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-list-attention-checked {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-list-attention-group-toggle {
-    border: 0;
-    border-block-start-color: var(--sf-list-attention--divider);
-    background: var(--sf-surface-area);
-    color: var(--sf-on-surface);
-  }
-  .sf-list-attention-group:first-child > .sf-list-attention-group-toggle {
-    border-block-start: 0;
-  }
-  .sf-list-attention-group-toggle:hover {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    background: var(--sf-surface-container);
-  }
-  .sf-list-attention .sf-list-attention-chevron {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-list-attention-group-count {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-list-attention-groups .sf-list-attention-list {
-    border-block-start-color: var(--sf-list-attention--divider);
-  }
-  .sf-list-attention-quiet {
-    color: var(--sf-on-surface-variant);
-  }
-  @container (max-width: #{mq.container-step(g5)}) {
-    .sf-list-attention-summary-line,
-  .sf-list-attention-head .sf-list-attention-checked-text {
-      color: var(--sf-on-surface-variant);
-    }
-    .sf-list-attention-quiet-title {
-      color: var(--sf-on-surface);
-    }
-  }
-  @media (forced-colors: active) {
-    .sf-list-attention-group-toggle {
-      border-color: CanvasText;
-    }
-  }
-}
-
 @layer sf.components {
 /* sf-list-attention (standard simai.smart-component 1.3.15 §6; owner
    decision C37). One rung for the whole block, and the density (C22) moves
@@ -656,4 +565,95 @@ a.sf-list-attention-object:focus-visible {
     align-self: start;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-attention {
+    border-color: var(--sf-list-attention--divider);
+    background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, var(--sf-surface-card)));
+    color: var(--sf-on-surface);
+  }
+  .sf-list-attention.sf-list-attention--frame-none {
+    border: 0;
+    background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, transparent));
+  }
+  .sf-list-attention-head {
+    border-block-end-color: var(--sf-list-attention--divider);
+  }
+  .sf-list-attention--frame-none .sf-list-attention-head {
+    border-block-end: 0;
+  }
+  .sf-list-attention-heading {
+    color: var(--sf-list-attention-heading-color, var(--sf-on-surface));
+  }
+  .sf-list-attention-item + .sf-list-attention-item {
+    border-block-start-color: var(--sf-list-attention--divider);
+  }
+  .sf-list-attention-icon--error {
+    color: var(--sf-error);
+  }
+  .sf-list-attention-icon--warning {
+    color: var(--sf-warning);
+  }
+  .sf-list-attention-icon--info {
+    color: var(--sf-info);
+  }
+  .sf-list-attention-icon--success {
+    color: var(--sf-success);
+  }
+  .sf-list-attention-meta {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-attention-object {
+    color: var(--sf-on-surface);
+  }
+  .sf-list-attention-foot {
+    border-block-start-color: var(--sf-list-attention--divider);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-attention-checked {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-attention-group-toggle {
+    border: 0;
+    border-block-start-color: var(--sf-list-attention--divider);
+    background: var(--sf-surface-area);
+    color: var(--sf-on-surface);
+  }
+  .sf-list-attention-group:first-child > .sf-list-attention-group-toggle {
+    border-block-start: 0;
+  }
+  .sf-list-attention-group-toggle:hover {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background: var(--sf-surface-container);
+  }
+  .sf-list-attention .sf-list-attention-chevron {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-attention-group-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-attention-groups .sf-list-attention-list {
+    border-block-start-color: var(--sf-list-attention--divider);
+  }
+  .sf-list-attention-quiet {
+    color: var(--sf-on-surface-variant);
+  }
+  @container (max-width: #{mq.container-step(g5)}) {
+    .sf-list-attention-summary-line,
+  .sf-list-attention-head .sf-list-attention-checked-text {
+      color: var(--sf-on-surface-variant);
+    }
+    .sf-list-attention-quiet-title {
+      color: var(--sf-on-surface);
+    }
+  }
+  @media (forced-colors: active) {
+    .sf-list-attention-group-toggle {
+      border-color: CanvasText;
+    }
+  }
 }

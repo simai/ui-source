@@ -12,7 +12,7 @@
     "src/component/group-heading/scss/_group-heading.scss",
     "src/component/group-heading/scss/index.scss"
   ],
-  "content_sha256": "07793e43bab617d5ab3e54990e606a03f0d9f1e4577c62288744c5243dd62318",
+  "content_sha256": "275011554ec12a5a95e8f021ee9561494e642848187518e2643b17943f15eb10",
   "dependencies": [
     {
       "id": "tokens.colour",

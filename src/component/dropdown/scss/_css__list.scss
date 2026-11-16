@@ -2,22 +2,6 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__paint' as paint;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-list {
-    background-color: var(--sf-list--background-color, var(--sf-transparent));
-    border-color: var(--sf-list--border-color, var(--sf-outline-variant, transparent));
-  }
-  .sf-list .sf-list-wrap {
-    background-color: var(--sf-list-wrap--background-color);
-  }
-  .sf-list .sf-list-container {
-    background-color: var(--sf-list-container--background-color);
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-end (.items-end) */
 /* A plain list has no fill (C16, DEV audit 2026-11-10 defect 1): it stands on
@@ -52,6 +36,22 @@
 }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list {
+    background-color: var(--sf-list--background-color, var(--sf-transparent));
+    border-color: var(--sf-list--border-color, var(--sf-outline-variant, transparent));
+  }
+  .sf-list .sf-list-wrap {
+    background-color: var(--sf-list-wrap--background-color);
+  }
+  .sf-list .sf-list-container {
+    background-color: var(--sf-list-container--background-color);
+  }
+}
+
 /* The popup of a dropdown is a menu surface, and it now reads like the
    context menu, which owners and users already found right. Before, its
    options borrowed the look of a list row: a divider under every option, a
@@ -71,38 +71,6 @@
    when the option is a flex row; written without the flex class, the mark
    fell under the label and the selected option stood twice as tall. A layout
    the component's own script depends on is the component's to set. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-dropdown .sf-list,
-  .sf-list--menu {
-    @include places.sf-place(var(--sf-dropdown-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
-  }
-  .sf-dropdown .sf-list > .sf-list-container-wrap,
-  .sf-list--menu > .sf-list-container-wrap {
-    @include panel.scrollbar(var(--sf-list--padding-right), --sf-list--track, var(--sf-list--row-height));
-  }
-  .sf-dropdown .sf-list > .sf-list-search,
-  .sf-list--menu > .sf-list-search {
-    @include panel.search-header(var(--sf-list--row-height), var(--sf-list--padding-top), var(--sf-list--padding-bottom), var(--sf-list--padding-left), var(--sf-list--padding-right));
-  }
-  .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
-  .sf-list--menu > .sf-list-search > .sf-list-search-input {
-    @include panel.search-input;
-  }
-  .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
-  .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
-    @include places.sf-place-fill(var(--sf-list-item--background-color));
-  }
-  .sf-dropdown .sf-list .sf-list-item.selected,
-  .sf-list--menu .sf-list-item.selected {
-    @include places.sf-place-fill(var(--sf-list-item--background-color));
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   .sf-dropdown .sf-list,
@@ -275,6 +243,38 @@
   @include paint.part(all);
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-dropdown .sf-list,
+  .sf-list--menu {
+    @include places.sf-place(var(--sf-dropdown-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+  }
+  .sf-dropdown .sf-list > .sf-list-container-wrap,
+  .sf-list--menu > .sf-list-container-wrap {
+    @include panel.scrollbar(var(--sf-list--padding-right), --sf-list--track, var(--sf-list--row-height));
+  }
+  .sf-dropdown .sf-list > .sf-list-search,
+  .sf-list--menu > .sf-list-search {
+    @include panel.search-header(var(--sf-list--row-height), var(--sf-list--padding-top), var(--sf-list--padding-bottom), var(--sf-list--padding-left), var(--sf-list--padding-right));
+  }
+  .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
+  .sf-list--menu > .sf-list-search > .sf-list-search-input {
+    @include panel.search-input;
+  }
+  .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
+  .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  .sf-dropdown .sf-list .sf-list-item.selected,
+  .sf-list--menu .sf-list-item.selected {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  @include paint.part(all);
+}
+
 @media (forced-colors: active) {
   .sf-dropdown .sf-list,
   .sf-list--menu {
@@ -302,26 +302,6 @@
    passes through it, a keyboard steps over it, and a reader is told it carries
    no choice. It stays while its stretch scrolls, because a list long enough to
    need headings is long enough to lose which one you are inside of. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-list-heading {
-    /* The surface's own colour, read from the list that sets it: `inherit`
-       would take a wrapper's transparent background and the rows would scroll
-       through the heading. */
-    /* Over moving rows a layer stacks over the solid place (C43 rule 3):
-       the place's colour, not the page's. */
-    background-color: var(--sf-list--background-color, var(--sf-surface-place));
-    @include panel.group-heading;
-  }
-  .sf-list-heading:not(:first-child) {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
   .sf-list-heading {
@@ -347,6 +327,26 @@
   .sf-list-heading-container {
     min-inline-size: 0;
     overflow-wrap: anywhere;
+  }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-list-heading {
+    /* The surface's own colour, read from the list that sets it: `inherit`
+       would take a wrapper's transparent background and the rows would scroll
+       through the heading. */
+    /* Over moving rows a layer stacks over the solid place (C43 rule 3):
+       the place's colour, not the page's. */
+    background-color: var(--sf-list--background-color, var(--sf-surface-place));
+    @include panel.group-heading;
+  }
+  .sf-list-heading:not(:first-child) {
+    border-block-start-color: var(--sf-outline-variant);
   }
   @include paint.part(all);
 }

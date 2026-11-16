@@ -241,3 +241,14 @@ test('C273: a geometry utility on a component loses to the component', {skip}, (
     if (utility) assert.ok(utility.key[0] < rank('sf.components'), `${label}: p-4 stands under the component layer`);
   }
 });
+
+// A runtime that writes a paint utility on a part its own sheet paints now
+// hands that part to the utility. The class modal wrote bg-black opacity-6 on
+// its overlay, dead while the component stood over the utilities; under C273
+// it turned the scrim solid black (docs examples, components/modal/*).
+test('C273: the modal class runtime writes no paint utility on its overlay', () => {
+  const runtime = read('src/component/modal/js/_modal.js');
+  const overlay = runtime.slice(runtime.indexOf("const overlay = document.createElement('div');"), runtime.indexOf("overlay.setAttribute('data-sf-modal-overlay', '');")).replace(/\/\/[^\n]*/gu, '');
+  assert.ok(overlay.length > 0, 'the overlay is built in _modal.js');
+  assert.doesNotMatch(overlay, /'[^']*\b(bg|color|border)-[a-z]/u, 'no bg-*, color-* or border-* utility on the overlay');
+});

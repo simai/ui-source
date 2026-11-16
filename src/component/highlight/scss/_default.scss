@@ -1,51 +1,4 @@
 @use 'theme';
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-code-line__number {
-    color: var(--sf-place--ink-variant, var(--sf-on-surface-variant));
-  }
-  .sf-highlight__head {
-    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
-  }
-  .sf-highlight__status {
-    border: 0;
-  }
-  .sf-code-surface {
-    /* On a grey plate the plate is the fill: the place hook draws none
-       (--sf-place--fill-surface, core mix/_mix__places.scss). */
-    background: var(--sf-highlight-background-color, var(--sf-place--fill-surface, var(--sf-surface-container)));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    border-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
-    color: var(--sf-highlight-color, var(--sf-on-surface));
-  }
-  .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
-    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
-  }
-  .sf-code-surface__scroll {
-    background: transparent;
-    border: 0;
-  }
-  .sf-code-surface__scroll code {
-    background: transparent;
-  }
-  .hljs-ln-numbers {
-    color: var(--sf-highlight--line-number);
-    div {
-      border-inline-end-color: var(--sf-highlight-line-divider);
-    }
-  }
-  @media (forced-colors: active) {
-    .sf-code-surface {
-      border-color: CanvasText;
-    }
-    .hljs-ln-numbers div {
-      border-color: CanvasText;
-    }
-  }
-}
-
 @layer sf.components {
   /* Line numbers (data-lines): one row per line, the number in a column of
      its own that copying leaves behind. The rows were spans with no display,
@@ -275,5 +228,52 @@
     line-height: var(--sf-text-height-1\/2);
     direction: ltr;
     text-align: start;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-code-line__number {
+    color: var(--sf-place--ink-variant, var(--sf-on-surface-variant));
+  }
+  .sf-highlight__head {
+    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+  }
+  .sf-highlight__status {
+    border: 0;
+  }
+  .sf-code-surface {
+    /* On a grey plate the plate is the fill: the place hook draws none
+       (--sf-place--fill-surface, core mix/_mix__places.scss). */
+    background: var(--sf-highlight-background-color, var(--sf-place--fill-surface, var(--sf-surface-container)));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+    color: var(--sf-highlight-color, var(--sf-on-surface));
+  }
+  .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
+    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+  }
+  .sf-code-surface__scroll {
+    background: transparent;
+    border: 0;
+  }
+  .sf-code-surface__scroll code {
+    background: transparent;
+  }
+  .hljs-ln-numbers {
+    color: var(--sf-highlight--line-number);
+    div {
+      border-inline-end-color: var(--sf-highlight-line-divider);
+    }
+  }
+  @media (forced-colors: active) {
+    .sf-code-surface {
+      border-color: CanvasText;
+    }
+    .hljs-ln-numbers div {
+      border-color: CanvasText;
+    }
   }
 }

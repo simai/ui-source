@@ -3,70 +3,6 @@
 @use '../../../core/scss/mix/mix__sheet' as sheet;
 @use '../../../core/scss/mix/mix__paint' as paint;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  .sf-settings-panel {
-    border-color: var(--sf-outline-variant);
-    background-color: var(--sf-surface-popup);
-    color: var(--sf-on-surface);
-    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
-  }
-  .sf-settings-panel-head {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-settings-panel-head .sf-tabs-top-container {
-    border-block-end: 0;
-  }
-  .sf-settings-panel-search {
-    border-block-end-color: var(--sf-outline-variant);
-  }
-  .sf-settings-panel-search-input {
-    @include panel.search-input;
-  }
-  .sf-settings-panel-body {
-    @include panel.scrollbar(var(--sf-settings-panel--inset), --sf-settings-panel--track, var(--sf-settings-panel--row-height), var(--sf-scroll-thumb-width));
-  }
-  .sf-settings-panel-section + .sf-settings-panel-section {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  .sf-settings-panel-heading,
-.sf-settings-panel-label {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-settings-panel-separator {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  .sf-settings-row-caption {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-settings-row-handle {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-settings-row-value {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-settings-row--dragging {
-    background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-settings-panel-empty {
-    color: var(--sf-on-surface-variant);
-  }
-  .sf-settings-panel-footer {
-    border-block-start-color: var(--sf-outline-variant);
-  }
-  .sf-settings-panel[data-sf-sheet]::before {
-    @include sheet.sheet-bar-row;
-  }
-  .sf-settings-panel[data-sf-sheet]::backdrop {
-    background-color: var(--sf-scrim-color);
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 /* sf-settings, the panel look (owner decision C106, 2026-11-12): a list's
@@ -458,6 +394,70 @@
   @include sheet.sheet-bar-row;
 }
 
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-settings-panel {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-surface-popup);
+    color: var(--sf-on-surface);
+    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
+  }
+  .sf-settings-panel-head {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-settings-panel-head .sf-tabs-top-container {
+    border-block-end: 0;
+  }
+  .sf-settings-panel-search {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-settings-panel-search-input {
+    @include panel.search-input;
+  }
+  .sf-settings-panel-body {
+    @include panel.scrollbar(var(--sf-settings-panel--inset), --sf-settings-panel--track, var(--sf-settings-panel--row-height), var(--sf-scroll-thumb-width));
+  }
+  .sf-settings-panel-section + .sf-settings-panel-section {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-settings-panel-heading,
+.sf-settings-panel-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-settings-panel-separator {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-settings-row-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-settings-row-handle {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-settings-row-value {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-settings-row--dragging {
+    background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-settings-panel-empty {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-settings-panel-footer {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-settings-panel[data-sf-sheet]::before {
+    @include sheet.sheet-bar-row;
+  }
+  .sf-settings-panel[data-sf-sheet]::backdrop {
+    background-color: var(--sf-scrim-color);
+  }
   @include paint.part(all);
 }
 

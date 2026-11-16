@@ -222,18 +222,6 @@
    --sf-button-group-color (a segment's ink),
    --sf-button-group-plate-background-color, --sf-button-group-plate-color and
    --sf-button-group-count-color. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-button-group.sf-button-group--segmented {
-    /* The track is a translucent container fill, so the dimmed ink on it is the
-       container's: 4.5:1 over the surfaces 0 to 3 in both themes. */
-    background-color: var(--sf-button-group-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-}
-
 @layer sf.components {
   .sf-button-group.sf-button-group--segmented {
     --sf-button-group--padding: var(--sf-button-group-padding, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-ui-1--space-y-tightness-low)));
@@ -302,6 +290,18 @@
 
   .sf-button-group--segmented.sf-button-group--radius-rounded {
     --sf-button-group--plate-radius: var(--sf-radius-rounded);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-button-group.sf-button-group--segmented {
+    /* The track is a translucent container fill, so the dimmed ink on it is the
+       container's: 4.5:1 over the surfaces 0 to 3 in both themes. */
+    background-color: var(--sf-button-group-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 }
 

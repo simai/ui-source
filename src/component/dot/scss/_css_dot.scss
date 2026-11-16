@@ -1,28 +1,5 @@
 @use '../../../core/scss/vars/sf_var__size' as size;
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-dot {
-    background-color: var(--sf-dot--background-color, var(--sf-transparent));
-  }
-  .sf-dot .sf-dot-item {
-    background-color: var(--sf-dot-item--background-color);
-  }
-  .sf-dot.sf-dot--hollow .sf-dot-item {
-    background-color: transparent;
-  }
-  @media (forced-colors: active) {
-    .sf-dot .sf-dot-item {
-      background-color: CanvasText;
-    }
-    .sf-dot.sf-dot--hollow .sf-dot-item {
-      background-color: Canvas;
-    }
-  }
-}
-
 @layer sf.components {
   /* One dot for every status mark (owner decision C185 (7), (8)): the
      coloured disc is the step (C132) with nothing around it, so the box is
@@ -156,6 +133,29 @@
       box-shadow: none;
       outline: var(--sf-dot-item--ring) solid CanvasText;
       outline-offset: calc(-1 * var(--sf-dot-item--ring));
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-dot {
+    background-color: var(--sf-dot--background-color, var(--sf-transparent));
+  }
+  .sf-dot .sf-dot-item {
+    background-color: var(--sf-dot-item--background-color);
+  }
+  .sf-dot.sf-dot--hollow .sf-dot-item {
+    background-color: transparent;
+  }
+  @media (forced-colors: active) {
+    .sf-dot .sf-dot-item {
+      background-color: CanvasText;
+    }
+    .sf-dot.sf-dot--hollow .sf-dot-item {
+      background-color: Canvas;
     }
   }
 }

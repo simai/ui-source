@@ -2,36 +2,6 @@
    component renders the canonical class, and `danger`, the word this component
    used before, is matched beside it so existing markup and project CSS keep
    working. See contracts/public-api-axes.json. */
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-badge {
-    background-color: var(--sf-badge--background-color);
-    color: var(--sf-badge--color);
-    border-color: var(--sf-badge--border-color, transparent);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-  .sf-badge .sf-badge-icon-container {
-    background-color: transparent;
-  }
-  .sf-badge .sf-badge-text-container {
-    background-color: transparent;
-  }
-  .sf-badge .sf-badge-text {
-    color: var(--sf-badge-text--color);
-  }
-  .sf-badge .sf-icon {
-    color: var(--sf-icon--color);
-  }
-  .sf-badge .sf-badge-spinner {
-    color: var(--sf-loader--color, currentColor);
-  }
-  .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--neutral, .sf-badge--on-surface) {
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  }
-}
-
 @layer sf.components {
 /* utility-hint: display/inline-flex (.inline-flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-a0) justify-content/center (.justify-center) align-items/center (.items-center) */
 /* Inline: a badge is as wide as its text, as sf-badge draws it (simai/ui-source#51). */
@@ -364,6 +334,36 @@
   --sf-badge--border-top-width: var(--sf-badge-border-width, var(--sf-px));
   --sf-badge--border-style: solid;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-badge {
+    background-color: var(--sf-badge--background-color);
+    color: var(--sf-badge--color);
+    border-color: var(--sf-badge--border-color, transparent);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-badge .sf-badge-icon-container {
+    background-color: transparent;
+  }
+  .sf-badge .sf-badge-text-container {
+    background-color: transparent;
+  }
+  .sf-badge .sf-badge-text {
+    color: var(--sf-badge-text--color);
+  }
+  .sf-badge .sf-icon {
+    color: var(--sf-icon--color);
+  }
+  .sf-badge .sf-badge-spinner {
+    color: var(--sf-loader--color, currentColor);
+  }
+  .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--neutral, .sf-badge--on-surface) {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
 }
 
 @layer sf.components {

@@ -25,43 +25,6 @@
 // .sf-hue-<c> on it or above, primary otherwise). Strict, the default, keeps
 // it flat.
 
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-figure-media {
-    // A container fill: dimmed text on it reads the container role.
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    background-color: var(--sf-figure-background-color, var(--sf-figure-background, var(--sf-surface-container)));
-    border-color: var(--sf-figure-border-color, var(--sf-outline-variant));
-  }
-  .sf-figure-caption {
-    color: var(--sf-figure-caption-color, var(--sf-on-surface-variant));
-  }
-  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
-    color: var(--sf-white);
-  }
-  // Look 5, the plate: one flat band of black 64 under the text.
-  .sf-figure.sf-figure--caption-plate > .sf-figure-caption {
-    background-color: var(--sf-black--alfa-64);
-  }
-  :is(button, a).sf-figure-media {
-    color: inherit;
-  }
-  .sf-figure-pick {
-    background-color: var(--sf-surface-popup);
-  }
-  @media (forced-colors: active) {
-    .sf-figure-media {
-      border-color: CanvasText;
-    }
-    .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
-      background-color: Canvas;
-      color: CanvasText;
-    }
-  }
-}
-
 @layer sf.components {
   // The caption stands 8 under its picture at every width (owner decision
   // C188 (5), the gallery's gap of C150 (3); 4 in compact density): it holds
@@ -386,6 +349,43 @@
 
     .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
       background-image: none;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-figure-media {
+    // A container fill: dimmed text on it reads the container role.
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background-color: var(--sf-figure-background-color, var(--sf-figure-background, var(--sf-surface-container)));
+    border-color: var(--sf-figure-border-color, var(--sf-outline-variant));
+  }
+  .sf-figure-caption {
+    color: var(--sf-figure-caption-color, var(--sf-on-surface-variant));
+  }
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+    color: var(--sf-white);
+  }
+  // Look 5, the plate: one flat band of black 64 under the text.
+  .sf-figure.sf-figure--caption-plate > .sf-figure-caption {
+    background-color: var(--sf-black--alfa-64);
+  }
+  :is(button, a).sf-figure-media {
+    color: inherit;
+  }
+  .sf-figure-pick {
+    background-color: var(--sf-surface-popup);
+  }
+  @media (forced-colors: active) {
+    .sf-figure-media {
+      border-color: CanvasText;
+    }
+    .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+      background-color: Canvas;
+      color: CanvasText;
     }
   }
 }

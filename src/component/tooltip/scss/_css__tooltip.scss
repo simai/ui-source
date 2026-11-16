@@ -1,36 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__paint' as paint;
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  @include paint.part(paint);
-  /* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
-  .sf-tooltip {
-    background-color: var(--sf-tooltip--background-color, transparent);
-  }
-  .sf-tooltip .sf-tooltip-content {
-    background-color: var(--sf-tooltip-content--background-color, var(--sf-tooltip-background-color, var(--sf-surface-inverse)));
-  }
-  .sf-tooltip .sf-tooltip-wrap {
-    background-color: var(--sf-tooltip-wrap--background-color);
-  }
-  .sf-tooltip .sf-tooltip-text {
-    color: var(--sf-tooltip-text--color, var(--sf-tooltip-color, var(--sf-on-surface-inverse)));
-  }
-  .sf-tooltip .sf-tooltip-supporting-text {
-    color: var(--sf-tooltip-supporting-text--color);
-  }
-  .sf-tooltip .sf-tooltip-tail {
-    background-color: var(--sf-tooltip-tail--background-color);
-    color: var(--sf-tooltip-tail--color);
-  }
-  .sf-tooltip--light .sf-tooltip-content {
-    @include places.sf-place(var(--sf-tooltip-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
-  }
-  @include paint.part(all);
-}
-
 @layer sf.components {
   @include paint.part(shape);
 
@@ -152,5 +121,36 @@
 .sf-tooltip--light .sf-tooltip-text {
   --sf-tooltip-text--color: var(--sf-tooltip-color, var(--sf-on-surface));
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  /* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
+  .sf-tooltip {
+    background-color: var(--sf-tooltip--background-color, transparent);
+  }
+  .sf-tooltip .sf-tooltip-content {
+    background-color: var(--sf-tooltip-content--background-color, var(--sf-tooltip-background-color, var(--sf-surface-inverse)));
+  }
+  .sf-tooltip .sf-tooltip-wrap {
+    background-color: var(--sf-tooltip-wrap--background-color);
+  }
+  .sf-tooltip .sf-tooltip-text {
+    color: var(--sf-tooltip-text--color, var(--sf-tooltip-color, var(--sf-on-surface-inverse)));
+  }
+  .sf-tooltip .sf-tooltip-supporting-text {
+    color: var(--sf-tooltip-supporting-text--color);
+  }
+  .sf-tooltip .sf-tooltip-tail {
+    background-color: var(--sf-tooltip-tail--background-color);
+    color: var(--sf-tooltip-tail--color);
+  }
+  .sf-tooltip--light .sf-tooltip-content {
+    @include places.sf-place(var(--sf-tooltip-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+  }
   @include paint.part(all);
 }

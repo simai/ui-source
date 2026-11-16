@@ -1,33 +1,3 @@
-// Paint (C273): the fill, edge and place colour of these parts stand in
-// sf.paint, under the utilities, so bg-*, border-* and color-* on them
-// win; their geometry stays in sf.components, over the utilities.
-@layer sf.paint {
-  .sf-checkbox {
-    background-color: var(--sf-checkbox--background-color, transparent);
-  }
-  .sf-checkbox .sf-checkbox-box {
-    background-color: var(--sf-checkbox-box--background-color);
-    border: var(--sf-checkbox-box--border, 0 solid);
-    border-color: var(--sf-checkbox-box--border-color, transparent);
-  }
-  .sf-checkbox .sf-checkbox-container {
-    background-color: var(--sf-checkbox-container--background-color);
-  }
-  .sf-checkbox .sf-checkbox-description {
-    color: var(--sf-checkbox-description--color);
-  }
-  .sf-checkbox .sf-checkbox-top {
-    background-color: var(--sf-checkbox-top--background-color);
-  }
-  .sf-checkbox .sf-checkbox-label {
-    background-color: var(--sf-checkbox-label--background-color);
-    color: var(--sf-checkbox-label--color);
-  }
-  .sf-checkbox .sf-icon:where(:not(sf-help-mark *)) {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
-  }
-}
-
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-checkbox {
@@ -187,6 +157,36 @@
 
   .sf-checkbox:has(input:enabled:not(:disabled):not(.disabled)) {
     cursor: pointer;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-checkbox {
+    background-color: var(--sf-checkbox--background-color, transparent);
+  }
+  .sf-checkbox .sf-checkbox-box {
+    background-color: var(--sf-checkbox-box--background-color);
+    border: var(--sf-checkbox-box--border, 0 solid);
+    border-color: var(--sf-checkbox-box--border-color, transparent);
+  }
+  .sf-checkbox .sf-checkbox-container {
+    background-color: var(--sf-checkbox-container--background-color);
+  }
+  .sf-checkbox .sf-checkbox-description {
+    color: var(--sf-checkbox-description--color);
+  }
+  .sf-checkbox .sf-checkbox-top {
+    background-color: var(--sf-checkbox-top--background-color);
+  }
+  .sf-checkbox .sf-checkbox-label {
+    background-color: var(--sf-checkbox-label--background-color);
+    color: var(--sf-checkbox-label--color);
+  }
+  .sf-checkbox .sf-icon:where(:not(sf-help-mark *)) {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
   }
 }
 
