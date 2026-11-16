@@ -14,7 +14,7 @@
     "src/component/reference-link/scss/_css__reference_link.scss",
     "src/component/reference-link/scss/index.scss"
   ],
-  "content_sha256": "72ad96389690ffde6a932b4a39eecc5963d19881bce69b4c474daacc9e6af497",
+  "content_sha256": "562b5f30d115c477251aa6b7ad75e5db9d245feee36718aec993926161135d09",
   "dependencies": [
     {
       "id": "tokens.border",

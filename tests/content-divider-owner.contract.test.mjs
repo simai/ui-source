@@ -23,14 +23,15 @@ test('Content Divider labels use the small muted roles (C188 (3)) and action pai
 
   assert.match(css, /--sf-divider-content--font-size: var\(--sf-text-size-1\\\/2\)/);
   assert.match(css, /--sf-divider-content--line-height: var\(--sf-text-height-1\\\/2\)/);
-  assert.match(css, /\.sf-divider-content--small[\s\S]*--sf-text-small--size/);
+  // C233: the small caption is an alias drawn as the plain caption.
+  assert.doesNotMatch(css, /\n  \.sf-divider-content--small \{/);
   assert.match(css, /\.sf-divider-buttons[\s\S]*gap: var\(--sf-divider-buttons--gap\)/);
   assert.match(css, /\.sf-divider-button:focus-visible/);
   assert.match(css, /forced-colors: active/);
   assert.doesNotMatch(css, /(?:\d*\.)?\d+(?:px|rem)/);
 });
 
-test('Content Divider legacy buttons keep the ladder height and the place fill', async () => {
+test('Content Divider legacy buttons keep the ladder height and no fill of their own', async () => {
   const css = await read('src/component/contentDivider/scss/_css__contentDivider.scss');
   const button = css.match(/\n  \.sf-divider-button \{[^}]*\}/)?.[0] || '';
 
@@ -38,8 +39,8 @@ test('Content Divider legacy buttons keep the ladder height and the place fill',
   assert.match(button, /box-sizing: border-box/);
   assert.match(button, /min-block-size: var\(--sf-ui-1--control-height\)/);
   assert.match(button, /padding: var\(--sf-0\) var\(--sf-space-1\)/);
-  // C16: the cut-out colour of the place the divider stands on.
-  assert.match(button, /background-color: var\(--sf-surface-place, var\(--sf-surface-page\)\)/);
+  // C16: no fill of their own, the place the divider stands on shows.
+  assert.match(button, /background-color: var\(--sf-transparent\)/);
 });
 
 test('Content Divider uses a bounded Loader signature; its script only notes the C188 aliases', async () => {

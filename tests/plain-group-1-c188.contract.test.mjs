@@ -39,7 +39,8 @@ test('C188 (3): a caption on the line is small, muted, 12 from the lines, no fra
     read('src/component/contentDivider/scss/_css__contentDivider.scss'),
     read('src/component/contentDivider/js/_contentDivider.js'),
   ]);
-  const root = block(css, '  .sf-divider');
+  // The component layer's root rule (the <hr> box reset stands in sf.base).
+  const root = block(css.slice(css.indexOf('@layer sf.components')), '  .sf-divider');
   assert.match(root, /--sf-divider--gap: var\(--sf-space-1\\\/2\)/u);
   assert.match(root, /--sf-divider-content--padding: var\(--sf-0\)/u);
   assert.match(root, /--sf-divider-content--color: var\(--sf-on-surface-variant\)/u);

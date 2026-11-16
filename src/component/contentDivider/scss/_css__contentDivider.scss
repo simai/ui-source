@@ -1,5 +1,19 @@
 @use 'var__contentDivider' as *;
 
+// The box reset of <hr> sits in sf.base, below the utilities (C19, content
+// study R2): in sf.components it outranked every spacing utility by layer
+// order, so sf-divider sf-divider-borders p-2 stood with no padding (24
+// instead of 64) and m-block-4 on a printed <hr> did nothing. A <div>
+// divider has no box of its own to reset.
+@layer sf.base {
+  .sf-divider {
+    box-sizing: border-box;
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+}
+
 @layer sf.components {
   .sf-divider {
     --sf-divider--background-color: var(--sf-outline-variant);
@@ -14,17 +28,17 @@
     // (12; 8 on a phone and compact), no frame. It was the body text in the
     // heading's ink, 16 away, 40 high.
     --sf-divider--gap: var(--sf-space-1\/2);
-    --sf-divider--length: var(--sf-d0);
+    // The least length of a vertical line is one text line (C18, content
+    // study R1): it stretches to its row, and a row of words keeps its own
+    // height (24; 20 on a phone and compact). It was --sf-d0, a control's
+    // 40, which grew a 24 row of text to 40.
+    --sf-divider--length: var(--sf-text-height-1);
     --sf-divider-content--padding: var(--sf-0);
     --sf-divider-content--background-color: var(--sf-transparent);
     --sf-divider-content--color: var(--sf-on-surface-variant);
     --sf-divider-content--font-size: var(--sf-text-size-1\/2);
     --sf-divider-content--line-height: var(--sf-text-height-1\/2);
 
-    box-sizing: border-box;
-    border: 0;
-    margin: 0;
-    padding: 0;
     color: var(--sf-divider-content--color);
     text-align: center;
   }
@@ -103,12 +117,10 @@
     border: 0;
   }
 
-  .sf-divider-content--small {
-    --sf-divider-content--font-size: var(--sf-text-small--size);
-    --sf-divider-content--line-height: var(--sf-text-small--height);
-
-    color: var(--sf-on-surface-variant);
-  }
+  /* The small caption is an alias until 2027-01-01 (owner decision C233,
+     2026-11-16): the caption on the line is already small (C188 (3)), so
+     --small draws the plain caption and the component's script notes it once
+     in SF.deprecations. It has no rule of its own. */
 
   .sf-divider-buttons {
     --sf-divider-buttons--gap: var(--sf-gap--actions);
@@ -121,6 +133,14 @@
     max-inline-size: 100%;
   }
 
+  /* The legacy pair stands joined, as it did before C188 (4): the left
+     button has no end edge and square end corners, and the right one closes
+     the pair. With the actions gap between them the left one stood open on
+     its end side (content study R3). */
+  .sf-divider-buttons:has(> .sf-divider-button) {
+    --sf-divider-buttons--gap: var(--sf-0);
+  }
+
   /* Buttons on the line (owner decision C188 (4)) are real sf-button size 1/2
      outline in .sf-divider-buttons, one group 8 apart (4 compact):
      <span class="sf-divider-buttons"><sf-button size="1/2" appearance="outline" text="Ещё 20"></sf-button>...</span>.
@@ -129,10 +149,11 @@
      class-content-divider-c188-aliases).
      The height is the button ladder's, the border drawn inside it (C01): 40
      on a desktop, 36 on a phone, 32 compact (border-box, no block padding;
-     it was 42 / 38, the border added to the height). The fill is the place
-     the divider stands on, its cut-out colour (C16): a card's on a card, the
-     page's on the page (it was always the page's, a dark patch on a card in
-     the dark theme). */
+     it was 42 / 38, the border added to the height). The fill is the place the
+     divider stands on (C16): no fill of its own, so it is a card's on a
+     card and the page's on the page (it was the page's, a dark patch on a
+     card in the dark theme; then the place's cut-out colour, which a place
+     without one still painted as the page). */
   .sf-divider-button {
     display: inline-flex;
     align-items: center;
@@ -142,7 +163,7 @@
     padding: var(--sf-0) var(--sf-space-1);
     border: var(--sf-divider--thickness) solid var(--sf-outline);
     border-inline-end-width: 0;
-    background-color: var(--sf-surface-place, var(--sf-surface-page));
+    background-color: var(--sf-transparent);
     color: var(--sf-on-surface);
     font-family: inherit;
     font-size: var(--sf-text-size-1);

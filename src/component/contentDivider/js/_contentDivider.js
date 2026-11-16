@@ -7,10 +7,17 @@ import {noteDeprecated} from '../../../core/js/deprecations.js';
 // caption as the plain one), and this notes each once in SF.deprecations (a
 // console line under data-sf-deprecations="warn", and after the date whatever
 // the page opted into). Journal: class-content-divider-c188-aliases.
-const DEPRECATED = Object.freeze({since: '2026-11-14', remove_after: '2027-01-01'});
+// Owner decision C233, 2026-11-16: the small caption is one more alias of the
+// same kind -- the caption is already small, so --small draws it as it is.
 export const CONTENT_DIVIDER_CLASS_ALIASES = Object.freeze({
   'sf-divider-content-border': 'sf-divider-content',
   'sf-divider-button': 'sf-button',
+  'sf-divider-content--small': 'sf-divider-content',
+});
+const SINCE = Object.freeze({
+  'sf-divider-content-border': '2026-11-14',
+  'sf-divider-button': '2026-11-14',
+  'sf-divider-content--small': '2026-11-16',
 });
 
 const pending = new Set(Object.keys(CONTENT_DIVIDER_CLASS_ALIASES));
@@ -31,7 +38,8 @@ function noteAliases(target = document) {
         kind: 'class',
         from: name,
         to: CONTENT_DIVIDER_CLASS_ALIASES[name],
-        ...DEPRECATED,
+        since: SINCE[name],
+        remove_after: '2027-01-01',
       });
     }
     if (pending.size === 0) break;

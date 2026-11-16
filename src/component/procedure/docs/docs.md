@@ -49,8 +49,11 @@ markers joined. `sf-procedure--list` drops the line, for a short list.
 ## State
 
 A procedure the reader goes through may say where they are:
-`sf-procedure-step--complete` fills a done step's marker with the primary role,
-and `sf-procedure-step--current` rings the current one. Mark the current step
+`sf-procedure-step--complete` fills a done step's marker with the primary role
+and draws a check in place of the number, and `sf-procedure-step--current`
+fills the current one with its number and rings it 2 px through a 2 px gap --
+the done and current marks of `sf-steps`. A step ahead keeps its number in the
+explanation's ink. In forced colours a done step shows its number. Mark the current step
 with `aria-current="step"` as well: the colour alone says nothing to a screen
 reader. Without either class every marker is an empty circle.
 
@@ -65,7 +68,7 @@ complete and it current; `props.layout`: `timeline` or `list`).
 | Variable | What | Default |
 |:---|:---|:---|
 | `--sf-procedure-marker-background-color` | the marker's fill | `transparent` (an empty circle) |
-| `--sf-procedure-marker-color` | the number | `--sf-on-surface` |
+| `--sf-procedure-marker-color` | the number of a step ahead | `--sf-on-surface-variant` |
 | `--sf-procedure-line-color` | the line between markers | `--sf-outline-variant` |
 | `--sf-procedure-line-width` | the line's width | `--sf-px` |
 | `--sf-procedure-gap` | between the steps | `--sf-content--space-related` |

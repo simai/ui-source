@@ -17,7 +17,7 @@
     "src/component/icon-buttons/scss/_css_icon_buttons_custom.scss",
     "src/component/icon-buttons/scss/index.scss"
   ],
-  "content_sha256": "6747ca1412205e9acbc86f96fcfeee925d8848fa19b6573d5d7526a6944b74e1",
+  "content_sha256": "61057f8308ceba203d59bef899e306c2496da14d22647b35a3f04f071fc5820d",
   "dependencies": [
     {
       "id": "component.buttons",

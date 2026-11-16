@@ -28,16 +28,18 @@ Since component.reference-link 1.2.0 (owner decision C147, 2026-11-14):
   with the sentence and takes its text size; no frame, padding or overlay.
 
   ```html
-  <span class="sf-reference-link sf-reference-link--inline"><a class="sf-reference-link__link" href="/tasks/4812/"><i class="sf-reference-link__icon sf-icon" aria-hidden="true">task_alt</i><span class="sf-reference-link__label">Подписать договор</span> <span class="sf-reference-link__number">№ 4812</span></a></span>
+  <span class="sf-reference-link sf-reference-link--inline"><a class="sf-reference-link__link" href="/tasks/4812/"><span class="sf-reference-link__label"><span class="sf-reference-link__start"><i class="sf-reference-link__icon sf-icon" aria-hidden="true">task_alt</i>Подписать</span> договор</span> <span class="sf-reference-link__number">№ 4812</span></a></span>
   ```
 
-  Write the parts without white space between the icon and the name. The
+  Write the parts without white space between the icon and the name, and put
+  the icon with the name's first word in `__start`: one run that does not
+  break, so on a narrow line the icon never stays alone at the line end. The
   icon is one line high (`1lh`), 4 before the name; the label (`__label`) is
   always underlined, the number (`__number`) is the dim ink and never breaks.
 - **Underline** — in a card, a size, a line and plain the link is underlined
   under the pointer and on keyboard focus only; in text always.
 - **New tab** — after the words `<i class="sf-reference-link__tab sf-icon"
-  aria-hidden="true">open_in_new</i>` and `<span
+  aria-hidden="true">arrow_outward</i>` and `<span
   class="sf-reference-link__tab-words">(откроется в новой вкладке)</span>`
   (read by a screen reader, not seen). The Smart element writes both.
 - **Visited** — `--sf-link-visited` only for `--inline` inside

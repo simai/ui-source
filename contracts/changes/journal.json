@@ -13916,6 +13916,30 @@
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
     },
     {
+      "id": "class-content-divider-small-c233",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.content-divider 1.2.0 (owner decision C233): the caption on the line is already small (C188 (3)), so the small caption modifier sf-divider-content--small draws the plain caption and is an alias until remove_after; the component's script notes it once in SF.deprecations.",
+      "items": [
+        {
+          "component": "content-divider",
+          "from": "sf-divider-content--small",
+          "to": "sf-divider-content"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Drop sf-divider-content--small from the caption: sf-divider-content alone draws the same small, muted caption.",
+      "examples": {
+        "before": "<div class=\"sf-divider sf-divider-horizontal\"><span class=\"sf-divider-content sf-divider-content--small\">или</span></div>",
+        "after": "<div class=\"sf-divider sf-divider-horizontal\"><span class=\"sf-divider-content\">или</span></div>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/contentDivider/scss/_css__contentDivider.scss; src/component/contentDivider/js/_contentDivider.js; ui-control control/docs-review/decisions.md C233"
+    },
+    {
       "id": "class-avatar-offline-point-retired",
       "recorded_on": "2026-11-16",
       "stage": "compat",

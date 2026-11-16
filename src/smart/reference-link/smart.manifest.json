@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.reference-link",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "title": "Reference Link",
   "summary": "Navigation surface that pairs a real destination with a compact reference.",
   "kind": "smart",
@@ -116,7 +116,7 @@
       "target": {
         "type": "string",
         "default": "_self",
-        "description": "Native browsing-context target. _blank adds the open_in_new sign after the words and «(откроется в новой вкладке)» / \"(opens in a new tab)\" to the accessible name, in the page's language."
+        "description": "Native browsing-context target. _blank adds the arrow_outward sign after the words and «(откроется в новой вкладке)» / \"(opens in a new tab)\" to the accessible name, in the page's language."
       },
       "text": {
         "type": "string",
@@ -145,6 +145,7 @@
         "sf-reference-link__main",
         "sf-reference-link__link",
         "sf-reference-link__label",
+        "sf-reference-link__start",
         "sf-reference-link__icon",
         "sf-reference-link__meta",
         "sf-reference-link__number",

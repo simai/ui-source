@@ -93,8 +93,12 @@
   /* A long name (C147 (9)): a card shows up to two lines, then an ellipsis;
      the element puts the whole name in a tooltip. A size, a line and plain
      keep their one line (below). */
+  /* A disabled reference has a <span> (role link) where the link stands, a
+     class-markup one a bare <span>: it is the name all the same and is cut
+     the same way (content study C2: unclamped, a disabled size-1 card grew
+     to two lines, 64 instead of 40). */
   .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]):not(.sf-reference-link--plain):where(:not(.sf-reference-link--inline))
-    :where(.sf-reference-link__link, .sf-reference-link-left > a) {
+    :where(.sf-reference-link__link, .sf-reference-link-left > a, .sf-reference-link-left > span:not(.sf-icon)) {
     display: -webkit-box;
     overflow: hidden;
     -webkit-box-orient: vertical;
@@ -133,6 +137,25 @@
     line-height: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     overflow-wrap: anywhere;
     text-align: end;
+  }
+
+  /* The card's route or number is one run (C147 (9), content study C1): it
+     broke at any letter -- the core's overflow-wrap: anywhere gave it no
+     least width -- into «/start/install» and a lone «/», and squeezed the
+     name to three lines (104 high). It keeps its line and ends in an
+     ellipsis, giving way first but not below the smaller of its own width
+     and one control height, as on a sized card; the name takes the rest and
+     is cut on its second line. Where the route stands is the owner's open
+     question; this only stops the break. */
+  .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]):not(.sf-reference-link--plain):where(:not(.sf-reference-link--inline))
+    :where(.sf-reference-link__meta, .sf-reference-link-text) {
+    flex: 0 100 auto;
+    min-inline-size: var(--sf-ui-1--control-height);
+    min-inline-size: calc-size(max-content, min(size, var(--sf-ui-1--control-height)));
+    overflow: hidden;
+    overflow-wrap: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* In the Smart element the route stands above the link's overlay (RL-11):
@@ -351,11 +374,12 @@
   }
 
   .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2, .sf-reference-link--size-1\/2, .sf-reference-link--size-1, .sf-reference-link--size-2)
-    :where(.sf-reference-link__link, .sf-reference-link-left > a, .sf-reference-link__meta, .sf-reference-link-text) {
+    :where(.sf-reference-link__link, .sf-reference-link-left > a, .sf-reference-link-left > span:not(.sf-icon), .sf-reference-link__meta, .sf-reference-link-text) {
     overflow: hidden;
     overflow-wrap: normal;
     text-overflow: ellipsis;
     white-space: nowrap;
+    min-inline-size: var(--sf-0);
   }
 
   .sf-reference-link:is(.sf-reference-link--line-1\/2, .sf-reference-link--line-1, .sf-reference-link--line-2, .sf-reference-link--size-1\/2, .sf-reference-link--size-1, .sf-reference-link--size-2)
@@ -471,8 +495,12 @@
     content: none;
   }
 
+  /* The line at rest is the link's colour at ink 48, full under the pointer
+     and on keyboard focus (C186 (1), as sf-link and core's link in text; it
+     was the full colour at rest, content study C3). */
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__label) {
     text-decoration-line: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 48%, transparent);
     text-decoration-thickness: var(--sf-px);
     text-underline-offset: var(--sf-a3);
   }
@@ -491,6 +519,14 @@
 
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon) {
     margin-inline-end: var(--sf-space-1\/4);
+  }
+
+  /* The record's icon and the name's first word are one run (content study
+     C6): on a narrow line the icon no longer stays alone at the line end.
+     Class markup does the same with
+     <span class="sf-reference-link__start">icon + first word</span>. */
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__start) {
+    white-space: nowrap;
   }
 
   /* The number is one word: «№ 4812» never breaks at its space. */
@@ -527,6 +563,10 @@
     color: var(--sf-reference-link-link-color, var(--sf-link-hover));
   }
 
+  .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:is(:hover, :active, :focus-visible) :where(.sf-reference-link__label) {
+    text-decoration-color: currentColor;
+  }
+
   .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:active {
     color: var(--sf-reference-link-link-color, var(--sf-link-active));
   }
@@ -535,11 +575,16 @@
     outline: none;
   }
 
+  /* The ring of a link in text (C186 (4), content study C4): two off the
+     letters (--sf-a2; the base offset is one) and drawn around each line of
+     a wrapped reference (clone), as core rings a link in text. */
   .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:focus-visible {
     outline-color: var(--sf-focus);
-    outline-offset: var(--sf-focus--offset);
+    outline-offset: var(--sf-a2);
     outline-style: var(--sf-focus--style);
     outline-width: var(--sf-focus--width);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   /* The card's ring is drawn on the card; in text the ring is the link's. */
