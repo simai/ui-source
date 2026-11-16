@@ -45,6 +45,10 @@ const KNOWN = {
   // error: the retry link button is height-low (32) beside the size 1 icon
   // actions (40).
   'file-preview': 1,
+  // error: the same pair as file-preview/error (retry link button 32 beside
+  // the size 1 icon actions 40); since fix/file-upload-c81-c149 the upload
+  // rows are sf-file-preview, so the defect belongs to file-preview.
+  'file-upload': 1,
 };
 
 const pageScript = readFileSync(join(repo, 'scripts', 'instance-scope-page.js'), 'utf8');
