@@ -132,6 +132,19 @@
     border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
   }
 
+  /* A code block in running text keeps the text's rhythm (CB-3, plain
+     group 3): it ends with the paragraph's space (--sf-text--space-bottom,
+     the content contract's text role, 16 on a desktop, 12 on a phone), and
+     what follows brings its own -- a heading its larger top, with which the
+     block's end collapses, as after a paragraph. It was a fixed
+     --sf-space-4 (32 / 24) on the top of whatever came next: a paragraph
+     stood twice the text's space away and a heading lost its own top. A
+     block that ends its holder adds nothing (a card, a chat bubble). After
+     the code surface's margin: 0, which this outranks. */
+  :is(.sf-highlight, .source):not(:last-child) {
+    margin-block-end: var(--sf-text--space-bottom);
+  }
+
   .sf-code-surface__scroll {
     max-width: 100%;
     margin: 0;
@@ -172,9 +185,6 @@
     padding: 0 !important;
   }
 
-  :is(.sf-highlight, .source) + * {
-    margin-top: var(--sf-space-4);
-  }
 
   .hljs-ln-numbers {
     -webkit-touch-callout: none;
