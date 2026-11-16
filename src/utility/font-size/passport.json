@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.font-size",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/font-size/default/index.js",
@@ -13,7 +13,7 @@
     "src/utility/font-size/default/scss/_sf_var__font_size.scss",
     "src/utility/font-size/default/scss/index.scss"
   ],
-  "content_sha256": "c3f921a5bd770d3e4f73c1916a49ecdb890fcb08e07cc9d9ac252185fd87aed6",
+  "content_sha256": "edb838125318f5a82395da51db46bd775179e4d593878a077dfb7e6856a8086c",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

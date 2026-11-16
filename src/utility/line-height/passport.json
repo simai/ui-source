@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.line-height",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/line-height/default/index.js",
@@ -39,7 +39,7 @@
     "src/utility/line-height/xxl/scss/_sf_css__line_height.scss",
     "src/utility/line-height/xxl/scss/index.scss"
   ],
-  "content_sha256": "b71dcaf03315ef5a16784d84657c59c983dda8e4e1b3f75bb36528d0595fde5a",
+  "content_sha256": "5fa5e93249de17531a234d4824a4ba97034720e867b02892474804e499a4b9fd",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

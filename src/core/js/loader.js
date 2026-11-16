@@ -22,7 +22,7 @@ import {
 import {html as staticHtml, unsafeStatic} from 'lit/static-html.js';
 import {installPendingTags} from './pending-tags.js';
 import {noteDeprecated} from './deprecations.js';
-import {noteRetiredUtilitySheets, noteUtilityClassAlias} from './utility-class-aliases.js';
+import {noteRetiredModifiers, noteRetiredUtilitySheets, noteUtilityClassAlias} from './utility-class-aliases.js';
 import {
   checkSetIndex,
   declarationLine,
@@ -2124,6 +2124,9 @@ SFLoaderPlugin.prototype.getAttributes = function (HtmlElement) {
           HtmlElement.setAttribute('class', converted);
           nextValue = converted;
         }
+        // A retired modifier is noted only beside the class it modifies
+        // (C212 (3): text-N heading is title-N); a bare one is the page's own.
+        noteRetiredModifiers(HtmlElement.classList);
       }
       arr.push(`${attrName}="${nextValue}"`);
     }

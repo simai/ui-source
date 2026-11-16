@@ -27,10 +27,12 @@ function entry(record, from, value) {
 const NAMES = new Map();
 const PATTERNS = [];
 const SHEETS = new Map();
+const MODIFIERS = [];
 for (const record of table.records) {
   for (const [from, value] of Object.entries(record.names || {})) NAMES.set(from, entry(record, from, value));
   for (const item of record.patterns || []) PATTERNS.push({...entry(record, item.from, item.to), re: new RegExp(item.pattern)});
   for (const [sheet, to] of Object.entries(record.sheets || {})) SHEETS.set(sheet, entry(record, sheet, to));
+  for (const [name, item] of Object.entries(record.modifiers || {})) MODIFIERS.push({...entry(record, name, item.to), name, re: new RegExp(item.with)});
 }
 
 const TEXT_FLOW = table.records.find((record) => record.journal === 'class-text-flow-utility-aliases');
@@ -105,4 +107,26 @@ export function noteRetiredUtilitySheets(token, keys, now = Date.now()) {
   const [, variants] = token.match(VARIANT);
   note(found, token, found.to ? `${variants}${found.to}` : null, now);
   return true;
+}
+
+/**
+ * Notes a retired modifier class (C212 (3): heading beside text-N, which is
+ * title-N) when `classList` holds it next to the class it modifies; returns
+ * the class to write instead, or null. A modifier alone is an author's own
+ * class (a site's .heading), not the Framework's, and is not noted.
+ * Journals class-c212-text and class-c212-text-nearest (C212 (3)).
+ */
+export function noteRetiredModifiers(classList, now = Date.now()) {
+  if (!classList || !MODIFIERS.length) return null;
+  for (const item of MODIFIERS) {
+    if (!classList.contains(item.name)) continue;
+    for (const token of classList) {
+      const match = token.match(item.re);
+      if (!match) continue;
+      const to = item.to === null ? null : token.replace(item.re, item.to);
+      note(item, `${token} ${item.name}`, to, now);
+      return to;
+    }
+  }
+  return null;
 }

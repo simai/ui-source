@@ -22,5 +22,12 @@ $infix: hover;
             font-weight: #{$font-weight-value};
         }
     }
+
+    // Font Weight Roles (C212 (3)): the public names.
+    @each $font-weight-role-name, $font-weight-role-value in $font-weight-role-array {
+        .#{$infix}\:weight-#{$font-weight-role-name}:#{$infix} {
+            font-weight: #{$font-weight-role-value};
+        }
+    }
 // }
 }

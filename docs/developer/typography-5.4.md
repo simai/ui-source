@@ -72,8 +72,38 @@ unchanged.
 
 Native H1-H6, `.sf-h-*`, Display selectors, `.label-*` and
 `.body-text-small|medium|large` resolve through their semantic role variables.
-The existing `.text*` selectors remain aliases for Body Text. A numeric
-`.text-N` utility can opt into title line height with `.heading`.
+The existing `.text*` selectors remain aliases for Body Text.
+
+## Text utilities: one way per job (C212 (3))
+
+Owner decision C212 (3), 2026-11-16. Size and line: `text-N` (step N and its
+text line) and `title-N` (step N on its title line); `line-N` for the line of
+step N alone. Width of running text: `measure`, `measure-wide`,
+`measure-narrow` (`--sf-text--measure*`). Weight: three roles on the weight
+family, `weight-regular` (`--sf-weight--regular`, 400), `weight-medium`
+(`--sf-weight--medium`, 500, the weight of headings and labels) and
+`weight-bold` (`--sf-weight--bold`, 700), at every breakpoint and `hover:`.
+
+Dated aliases until 2027-01-01 (journals `class-c212-text`,
+`class-c212-text-nearest`): they keep drawing what they drew and the Loader
+notes them in `SF.deprecations` with the name to write.
+
+| old | write | same look |
+| --- | --- | --- |
+| `text-N heading` | `title-N` | yes |
+| `max-w-prose` | `measure` | yes |
+| `regular`, `weight-4` | `weight-regular` | yes |
+| `weight-5` | `weight-medium` | yes |
+| `bold`, `weight-7` | `weight-bold` | yes |
+| `weight-1`, `weight-2`, `weight-3`, `lighter` | `weight-regular` | no: choose |
+| `weight-6` | `weight-medium` | no: choose |
+| `weight-8`, `weight-9`, `bolder` | `weight-bold` | no: choose |
+| `line-tight`, `-snug`, `-normal`, `-relaxed`, `-loose`, `-none` | `line-N` (or nothing: `text-N` and `title-N` set the line) | no: choose |
+
+The Loader's Tailwind conversion writes `weight-regular`, `weight-medium` and
+`weight-bold` for `font-normal`, `font-medium` and `font-bold`; the other
+`font-*` weights and `leading-*` keep converting to their dated alias, which
+draws the same.
 `utility/headers` remains a compatible entrypoint but consumes the same
 Heading role variables as Core; it has no separate size or line-height table.
 

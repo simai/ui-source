@@ -13733,6 +13733,154 @@
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
     },
     {
+      "id": "class-c212-text",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (3): one way per text job -- text-N (size and line of step N), title-N (the same size on its title line), line-N, measure (+ -wide, -narrow) and three weights, weight-regular, weight-medium (the weight of headings and labels) and weight-bold, new in utility/font-weight on --sf-weight--regular, --sf-weight--medium and --sf-weight--bold (at every breakpoint and hover:). These old names draw exactly what their new name draws and keep drawing until remove_after: max-w-prose is measure (65ch), regular and weight-4 are weight-regular (400), weight-5 is weight-medium (500), bold and weight-7 are weight-bold (700), and text-N heading is title-N. The Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js); the heading modifier only beside a text-N, since a bare .heading is a page's own class. The Loader's Tailwind conversion now writes the roles: font-normal -> weight-regular, font-medium -> weight-medium, font-bold -> weight-bold (RG-TW-4). utility.font-weight 1.1.0, utility.font-size 1.1.0, utility.max-width 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "max-w-prose",
+          "to": "measure"
+        },
+        {
+          "component": "utility",
+          "from": "weight-4",
+          "to": "weight-regular"
+        },
+        {
+          "component": "utility",
+          "from": "weight-5",
+          "to": "weight-medium"
+        },
+        {
+          "component": "utility",
+          "from": "weight-7",
+          "to": "weight-bold"
+        },
+        {
+          "component": "utility",
+          "from": "regular",
+          "to": "weight-regular",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*regular(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "bold",
+          "to": "weight-bold",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*bold(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "heading",
+          "to": "title-N",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])heading(?![\\w-])(?:(?<=\\bclass(?:Name)?=[\"'][^\"']*(?<![\\w-])text-(?:1[0-2]?|[2-9])\\s[^\"']*heading)|(?=[^\"']*\\stext-(?:1[0-2]?|[2-9])(?![\\w-])))"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write measure for max-w-prose and weight-4/weight-5/weight-7 as weight-regular/weight-medium/weight-bold (sf-upgrade --apply rewrites these). Write weight-regular for regular and weight-bold for bold, and title-N for text-N heading (drop the heading class); sf-upgrade reports these in class attributes for a person to rewrite.",
+      "examples": {
+        "before": "<p class=\"max-w-prose\">…</p> <h2 class=\"text-3 heading bold\">…</h2> <span class=\"weight-5\">…</span>",
+        "after": "<p class=\"measure\">…</p> <h2 class=\"title-3 weight-bold\">…</h2> <span class=\"weight-medium\">…</span>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/font-weight/default/scss/_sf_var__font_weight.scss; src/utility/font-size/default/scss/_sf_css__font_size.scss; src/utility/max-width/default/scss/_sf_var__width_max.scss; src/core/js/retired-classes.table.js; src/core/js/tailwind-map.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 3; control/docs-review/decisions.md C212"
+    },
+    {
+      "id": "class-c212-text-nearest",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (3): the text names with no exact public twin. They keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations with the nearest public name, which looks different, so a person chooses: weight-1, weight-2, weight-3 and lighter -> weight-regular; weight-6 (600) -> weight-medium; weight-8, weight-9 and bolder -> weight-bold. line-tight, line-snug, line-normal, line-relaxed, line-loose and line-none wrote a number of their own (1.25, 1.375, 1.5, 1.625, 2, 1) beside the line ladder: the line is line-N of the text's step N, which text-N and title-N already set. The Loader's Tailwind conversion keeps converting font-thin, font-extralight, font-light, font-semibold, font-extrabold, font-black and leading-* to these names, so a converted page draws as before (RG-TW-4). utility.font-weight 1.1.0, utility.line-height 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "weight-1",
+          "to": "weight-regular"
+        },
+        {
+          "component": "utility",
+          "from": "weight-2",
+          "to": "weight-regular"
+        },
+        {
+          "component": "utility",
+          "from": "weight-3",
+          "to": "weight-regular"
+        },
+        {
+          "component": "utility",
+          "from": "lighter",
+          "to": "weight-regular",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*lighter(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "weight-6",
+          "to": "weight-medium"
+        },
+        {
+          "component": "utility",
+          "from": "weight-8",
+          "to": "weight-bold"
+        },
+        {
+          "component": "utility",
+          "from": "weight-9",
+          "to": "weight-bold"
+        },
+        {
+          "component": "utility",
+          "from": "bolder",
+          "to": "weight-bold",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*bolder(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "line-tight",
+          "to": "line-N"
+        },
+        {
+          "component": "utility",
+          "from": "line-snug",
+          "to": "line-N"
+        },
+        {
+          "component": "utility",
+          "from": "line-normal",
+          "to": "line-N"
+        },
+        {
+          "component": "utility",
+          "from": "line-relaxed",
+          "to": "line-N"
+        },
+        {
+          "component": "utility",
+          "from": "line-loose",
+          "to": "line-N"
+        },
+        {
+          "component": "utility",
+          "from": "line-none",
+          "to": "line-N"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Choose the role: weight-regular, weight-medium or weight-bold (the nearest is named in SF.deprecations). For a relative line, drop line-tight ... line-none and let text-N or title-N set the line, or write line-N for the step N the text is set in.",
+      "examples": {
+        "before": "<p class=\"text-2 line-relaxed weight-6\">…</p>",
+        "after": "<p class=\"text-2 weight-medium\">…</p>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/font-weight/default/scss/_sf_var__font_weight.scss; src/utility/line-height/default/scss/_sf_css__line_height.scss; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 3; control/docs-review/decisions.md C212"
+    },
+    {
       "id": "class-c212-hide-print",
       "recorded_on": "2026-11-16",
       "stage": "compat",

@@ -38,7 +38,7 @@
     "src/utility/max-width/xxl/scss/_sf_css__width_max.scss",
     "src/utility/max-width/xxl/scss/index.scss"
   ],
-  "content_sha256": "4e596bd6ef13b3270fd490f3321c3266d7b41d4fe44a242257020ea496a01411",
+  "content_sha256": "79e96e242541a77335991b0b3381dad244258554efe4836843e325a054abe37e",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

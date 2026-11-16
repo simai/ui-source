@@ -21,7 +21,13 @@
             }
         }
 
-        // Relative line height
+        // Relative line height. Deprecated until 2027-01-01 (owner decision
+        // C212 (3)): the line is line-N, the line of the text step N (text-N
+        // and title-N set it already); line-tight, -snug, -normal, -relaxed,
+        // -loose and -none write their own numbers beside the ladder. They
+        // keep drawing what they drew until the date, and the Loader notes
+        // them (core/js/retired-classes.table.js, journal
+        // class-c212-text-nearest).
         @each $line-height-name, $line-height-value in $line-height-array {
             .#{$infix}line-#{$line-height-name} {
                 line-height: #{$line-height-value};
