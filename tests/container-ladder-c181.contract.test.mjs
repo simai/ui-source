@@ -57,11 +57,11 @@ const SCREEN_QUERIES = {
   'src/smart/confirm': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/confirm-change': 'a dialog on a narrow screen; containing its inline size would collapse a card as wide as its content',
   'src/smart/list-description': 'owner decision C180 (3): on a phone (below md, sf-drawer\'s whole-screen panel) a label is always over its value; a phone\'s list is wider than a 24rem panel\'s, so no container step tells them apart',
-  // Not moved to @container yet (C181 follow-up, 2026-11-14: pagination, pager,
-  // progress-run and search moved; these three wait for a choice).
+  'src/component/admin-menu': 'page frame: below sm the panel fills a phone screen; the root stands in the application shell, where a contained root would collapse (dispatcher decision 2026-11-15, C181 (2) follow-up)',
+  // Kept on the screen by decision (C181 (2) follow-up, dispatcher 2026-11-15;
+  // pagination, pager, progress-run and search moved 2026-11-14).
+  'src/component/download-file': 'screen rule kept: the card is as wide as its text (C51), so it cannot be its own container, and its narrow form follows a place the card does not own (dispatcher decision 2026-11-15)',
   'src/component/reference-link': 'to move: the card stacks below sm and the rule styles the card itself; class markup has no element around the card to be the container',
-  'src/component/admin-menu': 'page frame (to confirm): below sm the panel fills a phone screen; the root stands in the application shell, where a contained root would collapse',
-  'src/component/download-file': 'to move: the card is as wide as its text (C51), so it cannot be its own container; the narrow form follows a place the card does not own',
 };
 // Container conditions that are a page frame of their own: the workspace's
 // author-chosen split and wide steps (classes on the size scale), and the cq-*
@@ -151,6 +151,18 @@ test('C181: a component queries the screen only at a breakpoint, and only from t
     }
   }
   assert.deepEqual(offenders, []);
+});
+
+// The open entries are settled (dispatcher decisions 2026-11-15): admin-menu
+// is a page frame, download-file keeps its screen rule. An entry's reason
+// says what it is, not that it waits.
+const SETTLED = ['src/component/admin-menu', 'src/component/download-file'];
+
+test('C181: a settled screen-query entry no longer waits for a choice', () => {
+  const waiting = SETTLED.filter((dir) => /to confirm|to move/u.test(SCREEN_QUERIES[dir] ?? 'to move'));
+  assert.deepEqual(waiting, []);
+  assert.match(SCREEN_QUERIES['src/component/admin-menu'], /^page frame: /u);
+  assert.match(SCREEN_QUERIES['src/component/download-file'], /^screen rule kept: /u);
 });
 
 test('C181: the screen-query list names only components that still query the screen', () => {
