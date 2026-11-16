@@ -17,8 +17,9 @@ SIMAI Framework; `sf-list-feed` — его вариант-лента, колон
 - какая строка открыта (`selected`), и не только оттенком;
 - одна остановка Tab на весь список, стрелки между строками — через все группы;
 - действия строки в одном меню на весь список, переименование на месте;
-- следующая страница, когда человек долистал до конца списка, и кнопка «Показать ещё»;
-  если конец виден сразу, список ждёт кнопку или прокрутку и сам не просит;
+- продолжение списка — `sf-pagination appearance="more"` после него (решение
+  C167 (1)): кнопка «Показать ещё N», строка «Показано X из Y» и подгрузка
+  прокруткой по `load="auto"`;
 - `sf-empty-state`, когда строк нет.
 
 Он ничего не загружает и не сортирует: каждая просьба уходит событием, порядок
@@ -212,7 +213,10 @@ list.actions = [
   {id: 'copy', text: 'Копировать', icon: 'content_copy'},
   {id: 'delete', text: 'Удалить', icon: 'delete', destructive: true},
 ];
-list.setItems(await api.letters(), {hasMore: true});
+const more = document.querySelector('sf-pagination[appearance="more"]');
+const first = await api.letters();
+list.setItems(first.items);
+more.total = first.total;
 
 list.addEventListener('sf-list-open', (event) => {
   openLetter(event.detail.id);
@@ -225,12 +229,35 @@ list.addEventListener('sf-list-rename', async (event) => {
   try { await api.rename(event.detail.id, event.detail.text); }
   catch { list.upsert({...old, text: old.text}); } // не удалось — вернуть название
 });
-list.addEventListener('sf-list-load-more', async (event) => {
-  // {direction: 'after', after}: after — id последней строки
-  const page = await api.letters({after: event.detail.after});
-  list.appendItems(page.items, {hasMore: page.hasMore});
+more.addEventListener('sf-pagination-load-more', async () => {
+  more.setAttribute('show-more-busy', '');
+  const page = await api.letters({page: more.current + 1});
+  list.appendItems(page.items);
+  more.current += 1;
+  more.removeAttribute('show-more-busy');
 });
 ```
+
+## Продолжение списка
+
+Конец списка — `sf-pagination appearance="more"` сразу после него, с общим
+числом и размером страницы (решение C167 (1)):
+
+```html
+<sf-list label="Письма"></sf-list>
+<sf-pagination appearance="more" current="1" total="240" page-size="20"></sf-pagination>
+```
+
+Кнопка «Показать ещё 20» просит следующую часть событием
+`sf-pagination-load-more`; под ней строка «Показано 20 из 240». С
+`load="auto"` часть просится и тогда, когда человек долистал кнопку до
+видимой области; сама по себе при загрузке страницы — никогда. Фокус
+остаётся на кнопке, пока часть грузится, и переходит на строку «Показано»,
+когда пришла последняя.
+
+Собственная кнопка списка (`has-more`, `{hasMore}` в `setItems` и
+`appendItems`, `requestMore()`, `moreFailed()`, `sf-list-load-more`) работает
+до 2027-01-01 и отмечается в `SF.deprecations` один раз на список.
 
 ## Настройки
 
@@ -242,7 +269,7 @@ list.addEventListener('sf-list-load-more', async (event) => {
 | `groups` | `[]` | Для `group-by="key"`: `[{key, text}]` по порядку; ключ, которого нет в списке, идёт последним, заголовок — сам ключ. |
 | `actions` | `[]` | Действия строки в меню после «Переименовать»: `[{id, text, icon?, destructive?}]`. Строка сужает их полем `actions: [id…]` или убирает `actions: false`. |
 | `renamable` | `false` | Строки переименовываются на месте: F2 и пункт меню. |
-| `has-more` | `false` | Есть следующая страница: «Показать ещё» и запрос, когда человек долистал до конца. |
+| `has-more` | `false` | Устарело, до 2027-01-01: продолжение — `sf-pagination appearance="more"` после списка. Своя кнопка «Показать ещё» и запрос, когда человек долистал до конца. |
 | `loading` | `false` | Первая страница в пути: вместо строк — их скелет той же высоты (строка с подписью, пока строк не было; потом — форма показанных строк вместе с местом значка или аватара, так что название начинается там же, где начнётся), с пульсом; когда строки приходят, ничего не сдвигается. |
 | `leading` | `auto` | Место в начале строки-скелета: `auto` — как у показанных строк (до них — нет), `icon` — значок, `avatar` — аватар ступени списка, `none` — нет. Название скелета с первого кадра стоит там, где встанет название строки. Строки рисуют то, что несут их элементы. |
 | `lines` | `auto` | Число строк в строке-скелете: `auto` — как у показанных строк (до них — строка с подписью), `1` — одна строка, `2` — строка с подписью. С первого кадра скелет той же высоты, что строки, которые придут. Строки рисуют то, что несут их элементы. |
@@ -260,14 +287,14 @@ list.addEventListener('sf-list-load-more', async (event) => {
 
 | Действие | Значение |
 |:---|:---|
-| `setItems(items, {hasMore})` | Весь список и есть ли продолжение; завершает запрос страницы. |
-| `appendItems(items, {hasMore})` | Следующая страница после показанных. |
+| `setItems(items)` | Весь список. Устаревшее `{hasMore}` — до 2027-01-01. |
+| `appendItems(items)` | Следующая страница после показанных. |
 | `upsert(item)` | Новая строка в начало или изменившаяся на своём месте. |
 | `detach(id)` | Убрать строку; фокус с неё переходит к соседней. |
 | `rename(id)` | Начать переименование, как F2. Отказ `not-renamable`, `unknown`, `disabled`. |
 | `openMenu(id)` | Открыть действия строки, как «⋯» и Shift+F10. Отказ `no-actions`, `unknown`. |
-| `requestMore()` | Попросить следующую страницу. Отказ `loading`, `no-more`, `prevented`. |
-| `moreFailed()` | Страница не загрузилась: «Показать ещё» и конец списка просят снова. |
+| `requestMore()` | Устарело, до 2027-01-01. Попросить следующую страницу. Отказ `loading`, `no-more`, `prevented`. |
+| `moreFailed()` | Устарело, до 2027-01-01. Страница не загрузилась: «Показать ещё» и конец списка просят снова. |
 
 ## События
 
@@ -276,7 +303,7 @@ list.addEventListener('sf-list-load-more', async (event) => {
 | `sf-list-open` | `{id, trigger}` | Нажатие или Enter на строке; `trigger` — `pointer` или `keyboard`. |
 | `sf-list-apply` | `{action, scope: 'entry', ids}` | Выбрано действие строки. |
 | `sf-list-rename` | `{id, text}` | Строка переименована на месте; новое название видно сразу. Отмена события возвращает старое. |
-| `sf-list-load-more` | `{direction: 'after', after}` | Человек долистал до конца списка или нажал «Показать ещё». Отмена — то же, что `moreFailed()`. |
+| `sf-list-load-more` | `{direction: 'after', after}` | Устарело, до 2027-01-01 (`sf-pagination-load-more`). Человек долистал до конца списка или нажал «Показать ещё». Отмена — то же, что `moreFailed()`. |
 
 ## Клавиатура и доступность
 

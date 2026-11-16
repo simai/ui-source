@@ -13764,6 +13764,30 @@
       "manual": "Remove the class: the bar takes the place's colours and the one thickness by itself. A quieter bar is scroll-subtle; a bar shown only while the pointer is over the area is scroll-hover.",
       "owner": "ui-source",
       "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
+    },
+    {
+      "id": "attribute-list-has-more-to-pagination-more",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "Owner decision C167 (1): the end of a list is sf-pagination appearance=\"more\" after it -- its button with the count, «Показано X из Y» (shown-label) and load=button|auto. sf-list's own «Показать ещё» and its scroll request (has-more, setItems/appendItems {hasMore}, requestMore(), moreFailed(), sf-list-load-more) keep working until remove_after; the first own button an element draws is noted once in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-list",
+          "from": "has-more",
+          "to": "sf-pagination appearance=\"more\""
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-list has-more></sf-list> + sf-list-load-more -> list.appendItems(page.items, {hasMore})",
+        "after": "<sf-list></sf-list><sf-pagination appearance=\"more\" current=\"1\" total=\"240\" page-size=\"20\"></sf-pagination> + sf-pagination-load-more -> list.appendItems(page.items); pagination.current += 1"
+      },
+      "manual": "Remove has-more (and {hasMore}) from sf-list. Put sf-pagination appearance=\"more\" after the list with the total and page-size; on sf-pagination-load-more append the next page to the list, raise current and clear show-more-busy. load=\"auto\" asks when a person scrolls the button into reach.",
+      "owner": "ui-source",
+      "source": "src/smart/list/index.js ownMore; ui-control control/docs-review/decisions.md C167"
     }
   ]
 }

@@ -43,6 +43,7 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
 import {menuOpen} from "../../core/js/menu-open.js";
+import {noteDeprecated} from "../../core/js/deprecations";
 
 // Is the end within watchEdge's margin of the box that scrolls the list (or
 // of the window)? Read once, on the scroll that arms the watch.
@@ -307,6 +308,23 @@ class SfList extends ListElement {
         return applied();
     }
 
+    // The list's own «Показать ещё» and its scroll request (has-more) are
+    // retired in favour of sf-pagination appearance="more" after the list
+    // (owner decision C167 (1): the end of a list is that button, with «Показано
+    // X из Y»). They still work until 2027-01-01, noted once per element in
+    // SF.deprecations (journal attribute-list-has-more-to-pagination-more).
+    ownMore() {
+        if (!this.hasMore) return false;
+        if (!this._ownMoreNoted) {
+            this._ownMoreNoted = true;
+            noteDeprecated({
+                component: "sf-list", tag: "sf-list", kind: "attribute", from: "has-more",
+                to: "sf-pagination appearance=\"more\"", since: "2026-11-16", remove_after: "2027-01-01",
+            });
+        }
+        return true;
+    }
+
     /** The next page could not be loaded: reaching the end, or «Show more», asks again. */
     moreFailed() {
         this._loadingMore = false;
@@ -567,7 +585,7 @@ class SfList extends ListElement {
             empty,
             emptyHeading: this.emptyText,
             emptyContent: this.hasSlotContent("empty") ? this.getSlotContent("empty") : null,
-            showMore: this.hasMore && !loading,
+            showMore: this.ownMore() && !loading,
             loadingMore: this._loadingMore,
             // The label stays while the page is on its way, so the button keeps
             // its width; the wait is said by the status beside it.
