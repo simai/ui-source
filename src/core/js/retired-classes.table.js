@@ -225,14 +225,11 @@ export default {
       "component": "avatars",
       "since": "2026-11-16",
       "remove_after": "2027-01-01",
-      "note": "The group's overlap follows the avatars' own size: 4 up to size 1, 8 at 2 and 3 (component.avatars 1.11.0). The overlap modifiers keep drawing what they drew until the date.",
+      "note": "The group's overlap follows the avatars' own size: 4 up to size 1, 8 at 2 and 3 (component.avatars 1.11.0). The overlap modifiers keep drawing what they drew until the date (xs, sm and md: journal class-avatar-group-overlap-size-names).",
       "names": {
         "sf-avatar-group--size-1/4": "sf-avatar-group",
         "sf-avatar-group--size-1/3": "sf-avatar-group",
-        "sf-avatar-group--size-1/2": "sf-avatar-group",
-        "sf-avatar-group--size-xs": "sf-avatar-group",
-        "sf-avatar-group--size-sm": "sf-avatar-group",
-        "sf-avatar-group--size-md": "sf-avatar-group"
+        "sf-avatar-group--size-1/2": "sf-avatar-group"
       }
     },
     {

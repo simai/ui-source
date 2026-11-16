@@ -29,7 +29,13 @@
 // whatever order the sheets load in; the card's own variables are the way
 // to change it.
 @layer sf.utilities {
-  .sf-card > :is(h1, h2, h3, h4, h5, h6),
+  .sf-card > :is(h1, h2, h3, h4, h5, h6) {
+    font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
+    line-height: var(--sf-title--height-card);
+    font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
+  }
+
+  // The heading in the card's header (C231) is the same title.
   .sf-card > .sf-card-header > :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
     line-height: var(--sf-title--height-card);
@@ -221,7 +227,7 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
   }
 
   .sf-card-header > .sf-icon-button,
-  .sf-card-header > sf-button-icon > :is(.sf-icon-button, button, a) {
+  .sf-card-header > :is(sf-button-icon, sf-icon-button) > :is(.sf-icon-button, button, a) {
     margin-block: calc((var(--sf-title--height-card) - var(--sf-ui-1\/2--control-height)) / 2);
   }
 

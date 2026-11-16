@@ -120,8 +120,12 @@ test('C152 (6): the group shows four, «+N» a button with the list, named «У�
   assert.match(template, /role="group" aria-label=\$\{groupLabel \|\| nothing\}/u);
   // The hue of the name.
   assert.match(template, /hue: item\.hue \|\| \(name \? 'auto' : ''\)/u);
-  // Overlap 4 up to 1, 8 at 2 and 3.
-  assert.match(template, /function groupStep\(size\) \{\s*if \(size === '2' \|\| size === '3'\) return '1\/3';\s*return '1\/4';\s*\}/u);
+  // Overlap 4 up to 1, 8 at 2 and 3: the group sheet reads it from the
+  // avatars' size (component.avatars 1.11.0); the template prints no modifier.
+  assert.match(template, /\['sf-avatar-group', 'flex', 'items-cross-center'/u);
+  assert.doesNotMatch(template, /`sf-avatar-group--size-/u);
+  assert.match(sheet, /\.sf-avatar-group \.sf-avatar-group-avatars > \* \{\s*--sf-avatar-group--overlap: var\(--sf-space-1\\\/4\);/u);
+  assert.match(sheet, /:is\(\.sf-avatar--size-2, \.sf-avatar--size-3, :has\(\.sf-avatar--size-2, \.sf-avatar--size-3\)\) \{\s*--sf-avatar-group--overlap: var\(--sf-space-1\\\/3\);/u);
   assert.match(element, /group: \(count\) => this\.sfWord\('group-label', \{count\}\)/u);
   assert.equal(ru.runtime['group-label'], 'Участники: {n}');
   assert.equal(ru.runtime['more-label'].many, 'Ещё {n} участников');

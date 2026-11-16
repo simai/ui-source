@@ -8,34 +8,12 @@
       "file": "src/component/avatars/scss/_css__avatar_label_group.scss",
       "role": "H2",
       "property": "--sf-avatar-label-group--gap",
-      "step": "--sf-space-1",
-      "count": 1,
-      "status": "defect",
-      "owner": "sf-avatar-label-group (component avatars)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "C105 H2: a picture before text in a row stands --sf-space-1/2 (12 · 8 · 8); this size steps the gap with the avatar size instead -- owner component decides whether the row follows H2 or the avatar ladder is a rule of its own"
-    },
-    {
-      "file": "src/component/avatars/scss/_css__avatar_label_group.scss",
-      "role": "H2",
-      "property": "--sf-avatar-label-group--gap",
-      "step": "--sf-space-1/3",
-      "count": 1,
-      "status": "defect",
-      "owner": "sf-avatar-label-group (component avatars)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "C105 H2: a picture before text in a row stands --sf-space-1/2 (12 · 8 · 8); this size steps the gap with the avatar size instead -- owner component decides whether the row follows H2 or the avatar ladder is a rule of its own"
-    },
-    {
-      "file": "src/component/avatars/scss/_css__avatar_label_group.scss",
-      "role": "H2",
-      "property": "--sf-avatar-label-group--gap",
       "step": "--sf-space-1/4",
       "count": 1,
-      "status": "defect",
+      "status": "decided",
       "owner": "sf-avatar-label-group (component avatars)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "C105 H2: a picture before text in a row stands --sf-space-1/2 (12 · 8 · 8); this size steps the gap with the avatar size instead -- owner component decides whether the row follows H2 or the avatar ladder is a rule of its own"
+      "task": "Owner decision C229 (2026-11-16): beside the avatars 1/4 and 1/3 the gap is 4, as an icon inside text (C105 H3); the lint reads the property as H2",
+      "reason": "C229: the label row gap is H2 (12, 8 compact and phone) from size 1/2 up, and 4 beside 1/4 and 1/3; this entry is that decided 4, not a defect"
     },
     {
       "file": "src/component/context-menu/scss/_css__context_menu.scss",

@@ -13760,7 +13760,7 @@
       "recorded_on": "2026-11-16",
       "stage": "compat",
       "kind": "token",
-      "summary": "component.avatars 1.11.0: the offline point is gone (class-avatar-offline-point-retired), so its two public variables, --sf-avatar-offline-background-color and --sf-avatar-offline-overlay, are read by nothing; a page that sets them changes nothing. They stay listed in core/contracts/public-variables.v1.json as retired until remove_after.",
+      "summary": "component.avatars 1.11.0: the offline point is gone (class-avatar-offline-point-retired), so its two public variables, --sf-avatar-offline-background-color and --sf-avatar-offline-overlay, are read by nothing; a page that sets them changes nothing. They leave core/contracts/public-variables.v1.json; this record is their entry until remove_after.",
       "items": [
         {
           "from": "--sf-avatar-offline-background-color",

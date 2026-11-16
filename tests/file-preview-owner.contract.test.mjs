@@ -44,7 +44,10 @@ test('File Preview supports icon, thumbnail, surface and disabled presentation',
 
   assert.match(css, /\.sf-file-preview--surface/);
   assert.match(css, /\.sf-file-preview-thumbnail/);
-  assert.match(css, /\.sf-file-preview\.disabled/);
+  // Disabled: the words and the type glyph in --sf-on-surface-disabled, no
+  // opacity (1.2.5, C16).
+  assert.match(css, /\.sf-file-preview:is\(\.disabled, \[aria-disabled='true'\]\) \.sf-file-preview-name \{\s*--sf-file-preview-name--color: var\(--sf-on-surface-disabled\);/u);
+  assert.doesNotMatch(css, /opacity: var\(--sf-opacity-60\)/u);
   assert.match(css, /forced-colors: active/);
   assert.match(rule, /css: true/);
   assert.match(rule, /js: false/);
