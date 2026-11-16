@@ -2,9 +2,10 @@
 
 @layer sf.components {
 // The field around a Smart slider (C78): the visible name above, as every
-// field's label (sf-input-quantity's: the variant ink, regular, one text step
-// below the control, a quarter space under it), the value at the end of that
-// line when value-display="text", then the track line.
+// field's label (C153 (1), sf-input's: the text ink, regular, one text step
+// below the control -- 14 at size 1, on a phone too -- a quarter space under
+// it), the value at the end of that line when value-display="text", then the
+// track line.
 .sf-range-slider-group {
   display: flex;
   flex-direction: column;
@@ -22,7 +23,7 @@
 }
 
 .sf-range-slider-name {
-  color: var(--sf-range-slider-name--color, var(--sf-on-surface-variant));
+  color: var(--sf-range-slider-name--color, var(--sf-on-surface));
   font-family: var(--sf-text--family);
   font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
   font-weight: var(--sf-font-weight-regular);
@@ -40,6 +41,15 @@
   line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
   margin-inline-start: auto;
   white-space: nowrap;
+}
+
+// C153 (1), RG-RS-1: at size 1 the name line stays 14 on a phone (below
+// 60rem), as sf-input's label; the scale under the track keeps its step.
+@media not all and (min-width: 60rem) {
+  .sf-range-slider-group:not(.sf-range-slider-group--size-1\/2, .sf-range-slider-group--size-2) :is(.sf-range-slider-name, .sf-range-slider-output) {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
 }
 
 // The line wraps only where the from/to field and the narrowest track do not
