@@ -14,6 +14,9 @@ const generatedLabels = new WeakMap();
 // observer below does not watch, so laying the row out is not a change to
 // lay it out again.
 const OUT = 'data-sf-tabs-out';
+// The first tab the row shows when the ones before it went into «Ещё»: it
+// stands on the row's start edge as a first child does (C99, C242).
+const LEAD = 'data-sf-tabs-lead';
 const SQUEEZED = 'data-sf-tabs-squeezed';
 const ROW = 'data-sf-tabs-row';
 const ROW_STATE = '__sfTabsRow';
@@ -158,6 +161,7 @@ function clearRow(root) {
   for (const button of getTabButtons(root)) {
     setAttr(button, OUT, null);
     setAttr(button, SQUEEZED, null);
+    setAttr(button, LEAD, null);
   }
   container.querySelector(':scope > .sf-tabs-more')?.remove();
   setAttr(container, ROW, null);
@@ -181,6 +185,7 @@ function layoutRow(root) {
     for (const button of buttons) {
       setAttr(button, OUT, null);
       setAttr(button, SQUEEZED, null);
+      setAttr(button, LEAD, null);
     }
     setAttr(container, 'data-sf-tabs-more', null);
     const widths = buttons.map((button) => button.getBoundingClientRect().width);
@@ -203,6 +208,8 @@ function layoutRow(root) {
         state.out.push(button);
       }
     });
+    const lead = buttons.findIndex((button, at) => laid.kept.includes(at));
+    if (lead > 0) setAttr(buttons[lead], LEAD, '');
     if (laid.squeezed >= 0) setAttr(buttons[laid.squeezed], SQUEEZED, '');
     const text = label(state.out.length);
     setAttr(more, 'text', text);

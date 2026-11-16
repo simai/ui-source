@@ -68,10 +68,13 @@ test('RG-NV 31e: class markup that does not fit moves its tabs into «Ещё», 
   assert.match(tabs, /\.sf-tabs-top > \[data-sf-tabs-out\] \{\s*display: none !important;/u);
   // The row's own state is in data attributes the document observer does not watch.
   assert.doesNotMatch(tabsJs.match(/attributeFilter: \[[^\]]*\]/u)[0], /data-sf-tabs/u);
+  // The first tab shown after «Ещё» took the ones before it stands on the row's edge (C99).
+  assert.match(tabsJs, /setAttr\(buttons\[lead\], LEAD, ''\)/u);
+  assert.match(tabs, /\.sf-tabs-top \.sf-button\[data-sf-tabs-lead\] \{\s*--sf-button--padding-inline-start: calc\(var\(--sf-px\) \* 0\);/u);
 });
 
 test('C242: icon tabs stand on the row edges, the line as wide as the icon and under it', () => {
-  assert.match(tabs, /> \.sf-tabs-top > \.sf-icon-button:first-child \{\s*--sf-icon-button--padding-inline-start: calc\(var\(--sf-px\) \* 0\);/u);
+  assert.match(tabs, /> \.sf-tabs-top > \.sf-icon-button:first-child,\s*[^{]*\.sf-icon-button\[data-sf-tabs-lead\] \{\s*--sf-icon-button--padding-inline-start: calc\(var\(--sf-px\) \* 0\);/u);
   assert.match(tabs, /> \.sf-tabs-top > \.sf-icon-button:last-child \{\s*--sf-icon-button--padding-inline-end: calc\(var\(--sf-px\) \* 0\);/u);
   assert.match(tabs, /\.sf-icon-button\.selected:not\(:disabled\):not\(\.disabled\)::after \{\s*inset-inline: var\(--sf-icon-button--padding-inline-start, calc\(var\(--sf-px\) \* 0\)\) auto;/u);
 });
@@ -97,5 +100,6 @@ test('RG-NV 31g-31l: current glyphs, closed branch, hover, chevron span and togg
   assert.match(tree, /\.sf-tree-item-container > \.sf-tree-chevron:not\(\.sf-icon\) \{\s*display: inline-flex;/u);
   assert.match(tree, /\.sf-tree \.sf-tree-item-container > \.sf-icon-button \{[^}]*inline-size: var\(--sf-tree--column\);/u);
   assert.match(item, /\.sf-tree-item-container > \.sf-tree-chevron,\s*\.sf-tree-item-container > \.sf-icon-button > \.sf-icon \{/u);
+  assert.match(item, /> \.sf-tree-chevron:not\(\.sf-icon\) \{\s*color: var\(--sf-icon--color\);/u);
   assert.match(tree, /\.sf-tree \.sf-tree-item \{\s*display: flex;\s*flex-direction: column;/u);
 });

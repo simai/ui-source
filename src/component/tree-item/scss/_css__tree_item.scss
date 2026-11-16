@@ -39,6 +39,12 @@
   .sf-tree-item-container > .sf-icon-button > .sf-icon {
     --sf-icon--color: var(--sf-tree-item-icon-color, var(--sf-tree-item-icon--color, var(--sf-on-surface-variant)));
   }
+
+  /* The span form holds the icon; its own ink is the glyph's, so what it
+     draws and what it reports agree (C107 point 1). */
+  .sf-tree-item-container > .sf-tree-chevron:not(.sf-icon) {
+    color: var(--sf-icon--color);
+  }
 }
 
 /* A node a drag would drop on (sf-tree accept-records / accept-files): the

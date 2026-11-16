@@ -416,7 +416,9 @@
   }
 
   :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-button,
-  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child,
+  // The first tab shown after «Ещё» took the ones before it (the script marks it).
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top .sf-button[data-sf-tabs-lead] {
     --sf-button--padding-inline-start: calc(var(--sf-px) * 0);
   }
 
@@ -431,7 +433,8 @@
   // An icon tab is the last of the row while «Ещё» stands after it, so the end
   // rule reads the row's last shown tab.
   :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-icon-button,
-  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-icon-button:first-child {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-icon-button:first-child,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top .sf-icon-button[data-sf-tabs-lead] {
     --sf-icon-button--padding-inline-start: calc(var(--sf-px) * 0);
   }
 
