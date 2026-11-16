@@ -998,7 +998,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-preview/smart.manifest.json",
-      "manifest_sha256": "0c80f91675b7c8ba9c5e07d0bbf4e535f1988d794df15f76391b5cc476b84761",
+      "manifest_sha256": "85cf92222bc9a3a212a76ccc73d9a6659270f28c2a054a916eacaedecdb326e6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

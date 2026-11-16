@@ -122,6 +122,9 @@
     "display/default",
     "transition-property/default"
   ],
+  "cl-file-preview": [
+    "display/default"
+  ],
   "cl-file-upload": [
     "align-items/default",
     "cursor/default",

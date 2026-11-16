@@ -166,7 +166,7 @@ const sfFilePreviewMeta = {
         "error"
       ],
       "default": "ready",
-      "description": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row on the rung of the buttons beside it -- in a row narrower than 24rem the icon alone, named «Повторить <имя>» with «Повторить» in its tooltip (decision C260) -- and remove."
+      "description": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row on the rung of the buttons beside it -- in a row narrower than the container step g2 the icon alone, named «Повторить <имя>» with «Повторить» in its tooltip (decision C260) -- and remove."
     },
     "value": {
       "kind": "custom",
