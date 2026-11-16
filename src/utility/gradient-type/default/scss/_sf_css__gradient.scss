@@ -6,6 +6,11 @@
 // https://simai.io
 
 // GRADIENT (mixed in OKLab since C65; scss/_sf_mix__gradient.scss)
+//
+// gr-line-*, gr-radial-* and gr-conic-* (here and at every breakpoint) are
+// deprecated until 2027-01-01 (owner decision C212 (1); journal
+// class-c212-gradient-nearest): a C65 kind (utility/gradient) by default, a free
+// line as bg-gradient-to-<side> with from-, via- and to-<role>.
 
 $infix: xs;
 

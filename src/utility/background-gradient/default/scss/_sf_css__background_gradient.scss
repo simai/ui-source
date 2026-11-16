@@ -6,6 +6,9 @@
 // https://simai.io
 
 // BACKGROUND GRADIENT (mixed in OKLab since C65)
+//
+// The free gradient (owner decision C212 (1)): bg-gradient-to-<side> with
+// from-, via- and to-<role>; the six C65 kinds (utility/gradient) are the default.
 
 $stops: 'var(--sf-gradient--color-1), var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1))), var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))';
 

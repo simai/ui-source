@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.background-gradient",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/background-gradient/default/index.js",
@@ -12,7 +12,7 @@
     "src/utility/background-gradient/default/scss/_sf_css__background_gradient.scss",
     "src/utility/background-gradient/default/scss/index.scss"
   ],
-  "content_sha256": "c600fbd45790d8fcc50ed676c85b4ecde6a994f4fd3555c51da89a4a2c6afd96",
+  "content_sha256": "81d9a0253b377589047b7c34e451fc1ba17d70e077b96007fb4facd2411a233b",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

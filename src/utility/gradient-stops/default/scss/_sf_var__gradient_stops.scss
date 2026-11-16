@@ -8,6 +8,11 @@
 // surface-0, surface-1 and surface-2 stay as dated aliases (journal
 // utility-c65-gradient-names); gr1-*, gr2-* and gr3-* are the same three
 // stops by former names and keep the former list.
+//
+// C212 (1), 2026-11-16: a free gradient takes the roles and places only. The
+// stops at a palette tone (from-teal-40, to-primary-90) and surface-0/1/2 are
+// deprecated until 2027-01-01 with a hint (journals class-c212-gradient and
+// class-c212-gradient-nearest): a role stop, or a C65 kind in that hue.
 
 @use 'sass:list';
 @use 'sass:map';

@@ -13733,6 +13733,419 @@
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
     },
     {
+      "id": "class-c212-gradient",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (1): one gradient set -- the six C65 kinds (gradient-glow, -tint, -duo, -cover, -scrim, -fade with gradient-color-<c>, gradient-to-<c>, gradient-dir-<side>, gradient-strength-<n>) by default, and a free gradient only as bg-gradient-to-<side> with from-, via- and to-<role>. These old names draw exactly what their new name draws and keep drawing until remove_after; the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js): gr1-<c>, gr2-<c> and gr3-<c> are from-<c>, via-<c> and to-<c> (already dated by utility-c65-gradient-names, now noted), and from-, via-, to-surface-0 and -surface-1 are -surface-page and -surface-area. utility.gradient-color 1.3.0, utility.gradient-stops 1.4.0 (comments only).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "gr1-transparent",
+          "to": "from-transparent"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-current",
+          "to": "from-current"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-inherit",
+          "to": "from-inherit"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-surface-0",
+          "to": "from-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-surface-page",
+          "to": "from-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-surface-1",
+          "to": "from-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-surface-area",
+          "to": "from-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-on-surface",
+          "to": "from-on-surface"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-primary",
+          "to": "from-primary"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-primary-container",
+          "to": "from-primary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-secondary",
+          "to": "from-secondary"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-secondary-container",
+          "to": "from-secondary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-tertiary",
+          "to": "from-tertiary"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-tertiary-container",
+          "to": "from-tertiary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-success",
+          "to": "from-success"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-warning",
+          "to": "from-warning"
+        },
+        {
+          "component": "utility",
+          "from": "gr1-info",
+          "to": "from-info"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-transparent",
+          "to": "via-transparent"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-current",
+          "to": "via-current"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-inherit",
+          "to": "via-inherit"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-surface-0",
+          "to": "via-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-surface-page",
+          "to": "via-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-surface-1",
+          "to": "via-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-surface-area",
+          "to": "via-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-on-surface",
+          "to": "via-on-surface"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-primary",
+          "to": "via-primary"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-primary-container",
+          "to": "via-primary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-secondary",
+          "to": "via-secondary"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-secondary-container",
+          "to": "via-secondary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-tertiary",
+          "to": "via-tertiary"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-tertiary-container",
+          "to": "via-tertiary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-success",
+          "to": "via-success"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-warning",
+          "to": "via-warning"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-info",
+          "to": "via-info"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-transparent",
+          "to": "to-transparent"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-current",
+          "to": "to-current"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-inherit",
+          "to": "to-inherit"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-surface-0",
+          "to": "to-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-surface-page",
+          "to": "to-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-surface-1",
+          "to": "to-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-surface-area",
+          "to": "to-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-on-surface",
+          "to": "to-on-surface"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-primary",
+          "to": "to-primary"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-primary-container",
+          "to": "to-primary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-secondary",
+          "to": "to-secondary"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-secondary-container",
+          "to": "to-secondary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-tertiary",
+          "to": "to-tertiary"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-tertiary-container",
+          "to": "to-tertiary-container"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-success",
+          "to": "to-success"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-warning",
+          "to": "to-warning"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-info",
+          "to": "to-info"
+        },
+        {
+          "component": "utility",
+          "from": "from-surface-0",
+          "to": "from-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "from-surface-1",
+          "to": "from-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "via-surface-0",
+          "to": "via-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "via-surface-1",
+          "to": "via-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "to-surface-0",
+          "to": "to-surface-page"
+        },
+        {
+          "component": "utility",
+          "from": "to-surface-1",
+          "to": "to-surface-area"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write from-, via- and to-<colour> for gr1-, gr2- and gr3-<colour>, and surface-page / surface-area for the stop colours surface-0 / surface-1 (sf-upgrade --apply rewrites these).",
+      "examples": {
+        "before": "<div class=\"bg-gradient-to-r gr1-primary gr3-surface-0\">",
+        "after": "<div class=\"bg-gradient-to-r from-primary to-surface-page\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/gradient-color/default/scss/_sf_css__gradient.scss; src/utility/gradient-stops/default/scss/_sf_var__gradient_stops.scss; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 1; control/docs-review/decisions.md C65, C212"
+    },
+    {
+      "id": "class-c212-gradient-nearest",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (1): the gradient names with no exact twin. They keep drawing what they drew until remove_after, and the Loader notes each one once in SF.deprecations with the nearest name, which looks different, so a person chooses: gr-line-2 and gr-line-3 (a line at --sf-gradient--angle) -> bg-gradient-to-<side> with from-/via-/to-<role> (bg-gradient-to-r is the default 90deg); gr-radial-2/3 -> a C65 kind (gradient-glow); gr-conic-2/3 -> none. The stops at a palette tone (from-, via-, to-<palette>-<tone>, 1152 classes): a theme palette or a status -> its role stop (from-primary-40 -> from-primary); a static hue -> the C65 kind colour (from-teal-40 -> gradient-color-teal, to-teal-40 -> gradient-to-teal); neutral -> gray. gr1/2/3-surface-2 and from-, via-, to-surface-2 -> surface-area. utility.gradient-type 1.2.0, utility.gradient-stops 1.4.0, utility.gradient-color 1.3.0, utility.background-gradient 1.2.0 (comments only).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "gr1-surface-2",
+          "to": "from-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr2-surface-2",
+          "to": "via-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr3-surface-2",
+          "to": "to-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "from-surface-2",
+          "to": "from-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "via-surface-2",
+          "to": "via-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "to-surface-2",
+          "to": "to-surface-area"
+        },
+        {
+          "component": "utility",
+          "from": "gr-line-2",
+          "to": "bg-gradient-to-r"
+        },
+        {
+          "component": "utility",
+          "from": "gr-line-3",
+          "to": "bg-gradient-to-r"
+        },
+        {
+          "component": "utility",
+          "from": "gr-radial-2",
+          "to": "gradient-glow"
+        },
+        {
+          "component": "utility",
+          "from": "gr-radial-3",
+          "to": "gradient-glow"
+        },
+        {
+          "component": "utility",
+          "from": "gr-conic-2",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "gr-conic-3",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "from-, via-, to-<role>-<tone>",
+          "to": "from-, via-, to-<role>",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*(from|via|to)-(primary|secondary|tertiary|error|warning|success|info)-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "from-, via-<hue>-<tone>",
+          "to": "gradient-color-<hue>",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*(?:from|via)-(red|orange|amber|yellow|lime|green|teal|cyan|sky|blue|indigo|violet|purple|pink|brown|gray)-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "to-<hue>-<tone>",
+          "to": "gradient-to-<hue>",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*to-(red|orange|amber|yellow|lime|green|teal|cyan|sky|blue|indigo|violet|purple|pink|brown|gray)-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "from-, via-neutral-<tone>",
+          "to": "gradient-color-gray",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*(?:from|via)-neutral-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "to-neutral-<tone>",
+          "to": "gradient-to-gray",
+          "match": "(?<![\\w-])(?:[a-z-]+:)*to-neutral-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)(?![\\w/-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Choose a C65 kind (gradient-glow, -tint, -duo, -cover, -scrim, -fade; colour by gradient-color-<c> or .sf-hue-<c>, partner gradient-to-<c>, side gradient-dir-<side>) where one fits; for a free line write bg-gradient-to-<side> with from-, via- and to-<role> (the roles, not the palette tones). The nearest name is in SF.deprecations.",
+      "examples": {
+        "before": "<div class=\"gr-line-2 from-teal-40 to-teal-80\">",
+        "after": "<div class=\"gradient-duo gradient-color-teal\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/gradient-type; src/utility/gradient-stops/default/scss/_sf_var__gradient_stops.scss; src/utility/background-gradient; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 1; control/docs-review/decisions.md C65, C212"
+    },
+    {
       "id": "class-c212-colour",
       "recorded_on": "2026-11-16",
       "stage": "compat",
