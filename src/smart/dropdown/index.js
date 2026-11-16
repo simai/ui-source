@@ -1,6 +1,6 @@
 import SfBaseElement, { toBoolean } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
+import { ladderSize } from '../../component/field-size';
 import { renderDropdownTemplate } from './js/templates/default';
 import { createDropdownInteraction } from '../../component/dropdown/interaction';
 import { bindFormReset } from '../../component/form-reset-helper';
@@ -69,7 +69,9 @@ const DropdownElement = elementFromManifest(manifest, {
 });
 
 function normalizeSize(value) {
-  return fieldSize(value, 'sf-dropdown');
+  // The field ladder's five steps (field-size.js FIELD_LADDER; queue #70):
+  // 1/3 and 3 are the dropdown's own, as sf-input's.
+  return ladderSize(value);
 }
 
 function normalizeListItemType(value) {

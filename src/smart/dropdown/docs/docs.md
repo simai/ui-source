@@ -44,7 +44,7 @@ the search text stands over the rows' text and the icon at the header's end) and
 scroll; a scrollbar only when the rows do not fit, standing in the inline-end
 inset. The base component's documentation has the classes.
 
-All three size profiles (1/2, 1, 2) use semantic control heights as minima. Form fields have three sizes; a retired `1/3` or `3` renders as `1/2` or `2` with a console warning.
+The field stands on the whole field ladder, as sf-input does (since 1.18.0): `size` is `1/3`, `1/2`, `1`, `2` or `3`, and the field is as tall as sf-input, sf-button and sf-button-icon of the size (28 / 32 / 40 / 48 / 56 on a desktop), its value on the size's text, its label, help and message a step below, its chevron the size's leading picture, the open list's rows a control of the size. Before 1.18.0 `1/3` and `3` drew as `1/2` and `2` with a console note.
 Tag fields grow with wrapped selections, including unbroken long labels. The
 toggle has its own place in the row and does not cover the tags; tag-removal
 buttons do not shrink with their label. Option labels also wrap inside the

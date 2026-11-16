@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.16.1",
+  "version": "1.18.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -139,10 +139,13 @@
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The step of the field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field as tall as sf-input, sf-button and sf-button-icon of the size (28 / 32 / 40 / 48 / 56 on a desktop), the value on the size's text, the label, help and message a step below, the open list's rows a control of the size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "value": {
@@ -495,7 +498,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "f0839e22a9c5e0dfb666634f42a1b3eea53207444a969d07444345124412a6c1"
+        "sha256": "26ac674f014cd5286301d7aa121ad4fc56156f23fe4b259a7a8d9e72fa561acc"
       },
       {
         "path": "src/smart/dropdown/rule.js",
@@ -503,7 +506,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "ca817a016476b92ffae11801b8de781fe634e00b5a9bacb7a4d6c7d58cbbc795"
+        "sha256": "d4789a73aef3f6761bfb2969be2e531f081e0015ae4a02a109bdc26ed30095b4"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

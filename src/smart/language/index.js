@@ -461,9 +461,10 @@ class SfLanguage extends FormField(LanguageElement) {
       tipId: look === 'menu' || look === 'search' ? partId(instancePath(this, {kind: 'sf-language'}), 'tooltip') : '',
       entries: look === 'menu' || look === 'search' ? this.menuEntries(list, current, look === 'search' ? this._query : '') : [],
       search: look === 'search' ? this.searchOptions() : null,
-      // The field look (C142 (8)): sf-dropdown on its own ladder (1/2, 1, 2),
-      // its search from searchFrom languages.
-      fieldSize: size === '1/3' ? '1/2' : size === '3' ? '2' : size,
+      // The field look (C142 (8)): sf-dropdown of the same size -- it stands
+      // on the whole field ladder since sf-dropdown 1.18.0 (it drew 1/3 and 3
+      // at 1/2 and 2) -- its search from searchFrom languages.
+      fieldSize: size,
       fieldOptions: look === 'field' ? this.fieldOptions(list) : [],
       fieldSearch: look === 'field' && list.length >= (Number(this.searchFrom) || 8),
       rootClass: this.getRootClass(),

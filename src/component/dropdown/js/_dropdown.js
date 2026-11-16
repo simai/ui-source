@@ -1,8 +1,8 @@
 import { createDropdownInteraction, syncDropdownCheckbox } from '../interaction';
 import { bindFormReset } from '../../form-reset-helper';
 import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace, scrolledInside } from '../portal';
-import { retireFieldSizeClass } from '../../field-size';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
+import { ladderSize } from '../../field-size';
 
 const DROPDOWN_SELECTOR = ".sf-dropdown";
 const BOUND_FLAG = "sfDropdownBound";
@@ -14,9 +14,11 @@ const CHECKMARK_SELECTOR = ".sf-list-item-selected-item";
 // above and below) as its line. From size 1 up it was a low chip of the
 // field's own size (C27), 32 in a 40 field.
 const FIELD_TAG = Object.freeze({
+  "1/3": {size: "1/3", height: ""},
   "1/2": {size: "1/3", height: ""},
   "1": {size: "1/2", height: ""},
   "2": {size: "1", height: ""},
+  "3": {size: "2", height: ""},
 });
 
 function isTagDropdown(root) {
@@ -229,7 +231,7 @@ function syncItemCheckboxInteractivity(root) {
 function createTagNode(root, item) {
   const value = getItemValue(item);
   const label = getItemLabel(item);
-  const size = root.className.match(/sf-dropdown--size-([^\s]+)/)?.[1] || "1";
+  const size = ladderSize(root.className.match(/sf-dropdown--size-([^\s]+)/)?.[1]);
   const fieldTag = FIELD_TAG[size] || FIELD_TAG["1"];
   const tagSize = fieldTag.size;
   const tagSpacing = fieldTag.height ? ` sf-tag--height-${fieldTag.height}` : "";
@@ -721,7 +723,8 @@ function onSearchChange(event) {
 }
 
 function bindDropdown(root) {
-  retireFieldSizeClass(root, "sf-dropdown");
+  // The dropdown stands on the field ladder (field-size.js; queue #70): 1/3
+  // and 3 are its own steps, no class to move.
   if (isSmartDropdownRoot(root)) return;
   if (!root || root.dataset[BOUND_FLAG] === "1") return;
 
