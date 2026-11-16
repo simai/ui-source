@@ -895,6 +895,7 @@
         "public_parts": [],
         "uses": [
           "component.featured-icon",
+          "component.placeholder",
           "smart.button",
           "smart.icon",
           "smart.progress-ring",
@@ -910,7 +911,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/empty-state/smart.manifest.json",
-      "manifest_sha256": "bdb329d9647a4b9c27938b94fffaf48e51c9294c52bd7d686a98bee09cf8d2de",
+      "manifest_sha256": "3fc280e3fe3d22a5935f4232230e42755005a8c2dc66970db86058d4e84460fb",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
