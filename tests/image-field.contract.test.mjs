@@ -63,7 +63,7 @@ test('image field: the words are Russian and English, and the visible words begi
   const ru = JSON.parse(read('src/smart/input-image/lang/ru.json')).runtime;
   const en = JSON.parse(read('src/smart/input-image/lang/en.json')).runtime;
   assert.deepEqual(Object.keys(ru).sort(), Object.keys(en).sort());
-  for (const [key, word] of [['replace', 'Заменить…'], ['remove', 'Убрать'], ['choose', 'Выбрать…'], ['replace-name', 'Заменить изображение'], ['remove-name', 'Убрать изображение'], ['quoted', '«%s»']]) {
+  for (const [key, word] of [['replace', 'Заменить…'], ['remove', 'Убрать'], ['choose', 'Выбрать…'], ['replace-name', 'Заменить изображение'], ['remove-name', 'Убрать изображение'], ['remove-file', 'Убрать изображение «{name}»']]) {
     assert.equal(ru[key], word, key);
   }
   assert.match(source, /return this\.sfWord\(kebab\(key\)\);/u);
@@ -75,7 +75,8 @@ test('image field: buttons are real buttons named for what they act on, the thum
   assert.match(template, /<sf-button class=\$\{replace \? 'sf-image-field-replace' : 'sf-image-field-choose'\}/u);
   assert.match(template, /aria-label=\$\{replace \? names\.replace : names\.choose\}/u);
   assert.match(template, /<sf-button-icon class="sf-image-field-remove"[^>]*aria-label=\$\{names\.remove\}/u);
-  assert.match(source, /replace: fileName \? `\$\{words\.replaceName\} \$\{this\.quote\(fileName\)\}`/u);
+  // The file's name has its place in one word (C177 follow-up #86): «Заменить изображение «{name}»».
+  assert.match(source, /replace: fileName \? this\.fileWord\('replace-file', fileName\) : words\.replaceName,/u);
   // The alt is the person's description, never the file name (IF-11).
   assert.match(template, /<img class="sf-image-field-image" src=\$\{href\} alt=\$\{value\.decorative \? '' : value\.alt \|\| ''\}/u);
   // A group named by the label, described by the help or the error.
@@ -93,7 +94,7 @@ test('image field: buttons are real buttons named for what they act on, the thum
   assert.match(sheet, /\.sf-image-field-input,\n\.sf-image-field-live \{\n  position: absolute;/u);
   // State changes are said in a polite status, as sf-help-mark says its own.
   assert.match(template, /class="sf-image-field-live" role="status" aria-live="polite" aria-atomic="true"/u);
-  for (const said of ["text('chosen')", "text('removed')", "this.sfWord('uploaded')", 'this.announce(rejected.map((entry) => entry.message)']) assert.ok(source.includes(said), said);
+  for (const said of ["this.fileWord('chosen-file', file.name)", "text('removed')", "this.sfWord('uploaded')", 'this.announce(rejected.map((entry) => entry.message)']) assert.ok(source.includes(said), said);
   // After «Убрать» the focus goes to «Выбрать…», not to the page.
   assert.match(source, /this\._focusAfterRender = 'choose';/u);
   assert.match(source, /focusDelegate\(\) \{\n    return this\.querySelector\(':scope \.sf-image-field-actions button:not\(\[disabled\]\)'\);/u);

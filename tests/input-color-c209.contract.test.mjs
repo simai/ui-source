@@ -32,7 +32,7 @@ const own = template.slice(template.indexOf('function renderOwn'));
 
 test('the version and the new relations', () => {
   const manifest = json(`${base}/component.json`);
-  assert.equal(manifest.version, '1.15.0');
+  assert.equal(manifest.version, '1.17.1'); // 1.17.1: the ratio by Intl, no decimal word (C177 follow-up #86)
   for (const name of ['cl-button', 'cl-button-copy']) {
     assert.ok(manifest.relations.some((relation) => relation.name === name && relation.lazy), `${name}, lazy`);
   }

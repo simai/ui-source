@@ -99,7 +99,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.3.8'); // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch
+  assert.equal(contract.version, '1.4.0'); // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch // 1.4.0: require-text says {name} (C177 follow-up #86)
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
