@@ -92,6 +92,14 @@
       "reason": "A mask gradient reads only the alpha of its colour stops; the colour is never painted."
     },
     {
+      "id": "pattern-mask-tiles",
+      "category": "definition-review",
+      "filePattern": "^utility/pattern/default/scss/_sf_var__pattern\\.scss$",
+      "contextPattern": "^(?:tile: (?:radial|conic)-gradient\\(|'(?:none|spot|clear|down)': (?:linear|radial)-gradient\\()",
+      "status": "accepted-mask-alpha",
+      "reason": "The pattern's shape tiles and fades are mask images (C57): a mask reads only the alpha of its colour stops, so #000 says where the ink goes and is never painted; the ink is --sf-pattern--color, a palette role at an alpha step."
+    },
+    {
       "id": "first-paint-fallbacks",
       "category": "script-data-template-review",
       "filePattern": "^core/js/(?:index|loader|preloader)\\.js$",

@@ -3,13 +3,14 @@
   "schema_version": 1,
   "id": "utility.pattern",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/pattern/default/index.js",
     "src/utility/pattern/default/index.scss",
     "src/utility/pattern/default/rule.js",
     "src/utility/pattern/default/scss/_sf_css__pattern.scss",
+    "src/utility/pattern/default/scss/_sf_css__pattern_numbered.scss",
     "src/utility/pattern/default/scss/_sf_var__pattern.scss",
     "src/utility/pattern/default/scss/index.scss",
     "src/utility/pattern/lg/index.js",
@@ -38,11 +39,23 @@
     "src/utility/pattern/xxl/scss/_sf_css__pattern.scss",
     "src/utility/pattern/xxl/scss/index.scss"
   ],
-  "content_sha256": "13d8b75caa4aef3ce21d4f45dbea47b831196300bd97f390f78f73d750c6a684",
+  "content_sha256": "312e79f39a60b342b98ae38f90fbbbd3890b9b116e60e152fe82ef1c2b78b94e",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.12.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.3.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.4"
     }
   ]
 }
