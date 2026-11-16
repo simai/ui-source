@@ -13,7 +13,7 @@
     "src/utility/scroll-margin/default/scss/_sf_var__scroll_margin.scss",
     "src/utility/scroll-margin/default/scss/index.scss"
   ],
-  "content_sha256": "d5c11a1a742ad2aaac114b32a13f7473c08a030dc3771bcc5acf9aa0b6fde54c",
+  "content_sha256": "a0e1cfe48e18127bf18d949ce7a0f5dadf6b7070a0de80de6c48b894411720ce",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
