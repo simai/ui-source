@@ -40,6 +40,8 @@ $height-array: (
 	"screen-3\\/4" 	: 75vh,	
 	"min"           : min-content,
 	"max"           : max-content,
+	// content-min and content-max are dated aliases of min and max until
+	// 2027-01-01 (C212 (4); journal class-c212-length).
 	"content-min"   : min-content,
 	"content-max"   : max-content,
     "fit" 	        : fit-content,

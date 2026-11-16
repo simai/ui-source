@@ -28,6 +28,9 @@
         }
 
         // Explicit axes refine the shorthand regardless of spacing-token order.
+        // col-gap-* and row-gap-* are dated aliases of gap-x-* and gap-y-* until
+        // 2027-01-01 (C212 (4); journal class-c212-length); a cq- container
+        // condition keeps them (utility.query-layout).
         @each $size in $space-size-array {
             // Gap for X
             .#{$infix}col-gap-#{$size},

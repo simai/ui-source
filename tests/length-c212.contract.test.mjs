@@ -52,7 +52,7 @@ test('C212 (4): g-* is gap-*, the same rule of the same sheet', () => {
     for (const axis of ['', 'x-', 'y-']) assert.equal(to(`g-${axis}${step}`), `gap-${axis}${step}`);
   }
   assert.equal(to('md:g-x-1/2'), 'md:gap-x-1/2');
-  for (const kept of ['gap-2', 'gap-x-1/2', 'col-gap-2', 'row-gap-1']) assert.equal(aliases.retiredClassName(kept), null, kept);
+  for (const kept of ['gap-2', 'gap-x-1/2', 'gap-y-1']) assert.equal(aliases.retiredClassName(kept), null, kept);
   for (const name of ['g-2', 'g-x-1/2', 'gap-2']) assert.ok(ruleOf('gap').test(name), `${name} still loads`);
 });
 
@@ -157,9 +157,68 @@ test('C212 (4): the Loader notes the hint before the retired sheet, once', () =>
 });
 
 test('C212 (4): the sheets are unchanged but for comments; the versions move', () => {
-  for (const unit of ['gap', 'space', 'width', 'width-ext', 'height', 'flex-basis', 'element-position']) {
+  const versions = {gap: '1.2.0', space: '1.1.0', width: '1.1.0', 'width-ext': '1.1.0', height: '1.2.0', 'flex-basis': '1.1.0', 'flex-basis-ext': '1.1.0', 'element-position': '1.1.0'};
+  for (const [unit, version] of Object.entries(versions)) {
     const passport = JSON.parse(read(`src/utility/${unit}/passport.json`));
-    assert.equal(passport.version, '1.1.0', unit);
+    assert.equal(passport.version, version, unit);
   }
+  assert.match(read('src/utility/flex-basis-ext/default/scss/_sf_css__flex_basis.scss'), /@for \$k from 1 through 100 \{\s*\.#\{\$infix\}basis-#\{\$k\} \{\s*flex-basis: #\{\$k \+ '%'\};/u);
   assert.match(read('src/utility/width-ext/default/scss/_sf_css__width.scss'), /@for \$k from 1 through 99 \{\s*\.#\{\$infix\}w-#\{\$k\} \{\s*width: \$k \* 1%;/u);
+});
+
+// The second step (dispatcher, 2026-11-16): the other spellings of the same lengths.
+test('C212 (4): col-gap-* and row-gap-* are gap-x-* and gap-y-*, the same rule; a cq- condition keeps them', () => {
+  const sheet = read('src/utility/gap/default/scss/_sf_css__gap.scss');
+  assert.match(sheet, /\.#\{\$infix\}col-gap-#\{\$size\},\s*\.#\{\$infix\}gap-x-#\{\$size\},/u);
+  assert.match(sheet, /\.#\{\$infix\}row-gap-#\{\$size\},\s*\.#\{\$infix\}gap-y-#\{\$size\},/u);
+  for (const step of ['0', '1/4', '1/3', '1/2', '1', '4', '8']) {
+    assert.equal(to(`col-gap-${step}`), `gap-x-${step}`);
+    assert.equal(to(`row-gap-${step}`), `gap-y-${step}`);
+  }
+  assert.equal(to('md:col-gap-1/2'), 'md:gap-x-1/2');
+  assert.equal(to('lg:row-gap-3'), 'lg:gap-y-3');
+  // query-layout has row-gap-/col-gap- and no gap-x/gap-y under a container condition.
+  const query = read('src/utility/query-layout/default/scss/index.scss');
+  assert.match(query, /col-gap-#\{\$role\}/u);
+  assert.doesNotMatch(query, /gap-[xy]-/u);
+  for (const kept of ['cq-md:col-gap-2', 'cq-sm:row-gap-1', 'cq-md/sidebar:col-gap-2', 'md:cq-lg:row-gap-4']) assert.equal(aliases.retiredClassName(kept), null, kept);
+  for (const name of ['col-gap-2', 'row-gap-1/2', 'gap-x-2']) assert.ok(ruleOf('gap').test(name), `${name} still loads`);
+  const items = journal.records.find(({id}) => id === 'class-c212-length').items;
+  for (const [from, cls, cq] of [['col-gap-*', 'md:col-gap-2', 'cq-md:col-gap-2'], ['row-gap-*', 'row-gap-1/2', 'cq-md:row-gap-1/2']]) {
+    const match = new RegExp(items.find((item) => item.from === from).match, 'u');
+    assert.ok(match.test(` ${cls} `), `${from} finds ${cls}`);
+    assert.ok(!match.test(` ${cq} `), `${from} leaves ${cq}`);
+  }
+});
+
+test('C212 (4): basis-1 ... basis-100 are deprecated like w-N; a percent that is a fraction is that fraction', () => {
+  const exact = {20: '1/5', 25: '1/4', 40: '2/5', 50: '1/2', 60: '3/5', 75: '3/4', 80: '4/5', 100: 'full'};
+  const basis = fractions('src/utility/flex-basis/default/scss/_sf_var__flex_basis.scss');
+  for (let k = 1; k <= 100; k++) {
+    const hint = to(`basis-${k}`);
+    assert.match(hint, /^basis-(?:\d+\/\d+|full)$/u, `basis-${k}`);
+    if (k < 100) assert.equal(hint, `basis-${to(`w-${k}`).slice(2)}`, `basis-${k} names what w-${k} names`);
+    if (exact[k]) {
+      assert.equal(hint, `basis-${exact[k]}`);
+      if (k < 100) assert.equal(basis[exact[k]], `${k}%`, `basis-${k} draws what basis-${exact[k]} draws`);
+    }
+    assert.equal(Object.hasOwn(record('class-c212-length').names, `basis-${k}`), Boolean(exact[k]), `basis-${k} record`);
+    assert.equal(Object.hasOwn(record('class-c212-length-nearest').names, `basis-${k}`), !exact[k], `basis-${k} nearest`);
+  }
+  assert.equal(to('basis-33'), 'basis-1/3');
+  assert.equal(to('md:basis-66'), 'md:basis-2/3');
+  assert.ok(ruleOf('flex-basis-ext').test('basis-33'), 'basis-33 still loads');
+  for (const kept of ['basis-0', 'basis-auto', 'basis-1/2', 'basis-full', 'basis-px']) assert.equal(aliases.retiredClassName(kept), null, kept);
+});
+
+test('C212 (4): h-content-min and h-content-max are h-min and h-max', () => {
+  const sheet = read('src/utility/height/default/scss/_sf_var__height.scss');
+  for (const [old, now, value] of [['content-min', 'min', 'min-content'], ['content-max', 'max', 'max-content']]) {
+    assert.match(sheet, new RegExp(`"${old}"\\s*:\\s*${value},`, 'u'));
+    assert.match(sheet, new RegExp(`"${now}"\\s*:\\s*${value},`, 'u'));
+    assert.equal(to(`h-${old}`), `h-${now}`);
+    assert.equal(to(`md:h-${old}`), `md:h-${now}`);
+    assert.ok(ruleOf('height').test(`h-${old}`), `h-${old} still loads`);
+  }
+  for (const kept of ['h-min', 'h-max', 'h-fit', 'min-h-content-min']) assert.equal(aliases.retiredClassName(kept), null, kept);
 });

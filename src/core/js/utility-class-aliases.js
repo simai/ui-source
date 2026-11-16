@@ -23,7 +23,8 @@ const PATTERNS = [];
 const SHEETS = new Map();
 for (const record of table.records) {
   for (const [from, value] of Object.entries(record.names || {})) NAMES.set(from, entry(record, from, value));
-  for (const item of record.patterns || []) PATTERNS.push({...entry(record, item.from, item.to), re: new RegExp(item.pattern), values: item.values});
+  for (const item of record.patterns || []) PATTERNS.push({...entry(record, item.from, item.to), re: new RegExp(item.pattern), values: item.values,
+    except: item.variants_except ? new RegExp(item.variants_except, 'u') : null});
   for (const [sheet, to] of Object.entries(record.sheets || {})) SHEETS.set(sheet, entry(record, sheet, to));
 }
 
@@ -61,6 +62,9 @@ export function retiredClassName(token) {
   let to = found?.to;
   if (!found) {
     for (const item of PATTERNS) {
+      // variants_except names the prefixes under which the family keeps its
+      // name (C212 (4): cq-md:col-gap-2 stays, query-layout has no gap-x-*).
+      if (item.except?.test(variants)) continue;
       const match = base.match(item.re);
       if (!match) continue;
       found = item;
