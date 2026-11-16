@@ -480,26 +480,23 @@
 
   /* On a phone the type and the size go under the name, a step smaller, so
      the name keeps the row's width (decision C51). */
+  /* The facts take a line of their own (a whole-width basis in the wrapping
+     row), not a column: in a column the open_in_new sign stood on a line of
+     its own under the name too, 20 below it, and the row was 72 for 52
+     (RG-DF-2). In the row it stays beside the name, centred on its line. */
   @media (max-width: map.get(bp.$breakpoint-array, sm)) {
     .sf-download-file :where(.sf-download-file__text) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--sf-0);
+      row-gap: var(--sf-0);
     }
 
     .sf-download-file :where(.sf-download-file__name) {
-      flex: none;
       max-inline-size: 100%;
     }
 
     .sf-download-file :where(.sf-download-file__meta) {
+      flex-basis: 100%;
       font-size: var(--sf-text-size-1\/2);
       line-height: var(--sf-text-height-1\/2);
-    }
-
-    /* In the column the sign keeps the start edge, as the facts do. */
-    .sf-download-file :where(.sf-download-file__text) > :where(.sf-download-file__tab) {
-      align-self: flex-start;
     }
   }
 }
