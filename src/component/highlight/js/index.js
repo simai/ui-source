@@ -170,7 +170,7 @@ function ensureWrapButton(block, root, head) {
   root.classList.toggle('sf-highlight--wrap', wrapped);
   button = block.ownerDocument.createElement('button');
   button.type = 'button';
-  button.className = 'sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center';
+  button.className = 'sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center';
   button.setAttribute('aria-label', root.dataset.wrapLabel || pageText(HIGHLIGHT_TEXT, 'wrap', block, 'sf-highlight'));
   button.setAttribute('aria-pressed', String(wrapped));
   button.setAttribute('aria-controls', ensureCodeId(block));

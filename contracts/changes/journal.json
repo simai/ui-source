@@ -13945,6 +13945,73 @@
       "source": "src/component/buttons/scss/_css__buttons.scss; src/component/buttons/js/button-checks.js; ui-control control/docs-review/decisions.md C116 (3), (6)"
     },
     {
+      "id": "class-icon-button-link-to-ghost",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.icon-buttons 1.14.0 (RG-IB-2, study actions-icon-buttons-study.html И4): sf-icon-button--link is the former name of sf-icon-button--ghost and draws exactly as ghost in every scheme and state until remove_after; sf-icon-button--surface (journal class-icon-button-retired-looks-c15) draws exactly as tonal. The runtime says each once per button in the console and notes it in SF.deprecations; the Framework's own markup (sf-button-icon appearance=\"ghost\", the dropdown, pagination, pager, list, toast, modal, file-upload, file-preview, date-picker and code-block buttons) writes sf-icon-button--ghost, and the sheets that read link read ghost too. The IconButtons constructor maps type \"link\" and \"surface\" to ghost and tonal and notes them.",
+      "items": [
+        {
+          "component": "sf-icon-button",
+          "from": "sf-icon-button--link",
+          "to": "sf-icon-button--ghost",
+          "match": "(?<![a-z0-9-])sf-icon-button--link(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1\">",
+        "after": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/buttons/js/button-checks.js; src/component/icon-buttons/scss/_css_icon_buttons.scss; src/smart/button-icon/js/templates/default.js"
+    },
+    {
+      "id": "class-icon-button-density-c213",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.icon-buttons 1.14.0, sf-button-icon (owner decision C213, 2026-11-16): an icon button has no density. Size and height change it and keep it square; spacing-compact, spacing-comfortable, spacing-spacious on sf-icon-button (and the older tightness-low, -high, -highest, their aliases, journal class-tightness-to-spacing) moved its side padding only (32 x 40 ... 80 x 56 at size 1) and now draw nothing. The runtime says so once per button in the console and notes each class in SF.deprecations until remove_after; the IconButtons options spacing / tightness and the sf-button-icon settings spacing / tightness are read, noted and draw nothing. sf-button keeps density.",
+      "items": [
+        {
+          "component": "sf-icon-button",
+          "from": "spacing-compact",
+          "to": null,
+          "match": "(?<=sf-icon-button[^\"'<>]*)(?<![\\w-])spacing-compact(?![\\w-])|(?<![\\w-])spacing-compact(?=[^\"'<>]*sf-icon-button(?![a-z]))"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "spacing-comfortable",
+          "to": null,
+          "match": "(?<=sf-icon-button[^\"'<>]*)(?<![\\w-])spacing-comfortable(?![\\w-])|(?<![\\w-])spacing-comfortable(?=[^\"'<>]*sf-icon-button(?![a-z]))"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "spacing-spacious",
+          "to": null,
+          "match": "(?<=sf-icon-button[^\"'<>]*)(?<![\\w-])spacing-spacious(?![\\w-])|(?<![\\w-])spacing-spacious(?=[^\"'<>]*sf-icon-button(?![a-z]))"
+        },
+        {
+          "component": "sf-button-icon",
+          "from": "spacing",
+          "to": null,
+          "match": "<sf-button-icon\\b[^>]*?\\sspacing=[\"'](?!normal[\"'])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove spacing-* / tightness-* from sf-icon-button markup and the spacing / tightness setting from sf-button-icon and the IconButtons constructor. To change an icon button, change size or height (sf-icon-button--height-low|high|highest, height=\"low|high|highest\").",
+      "examples": {
+        "before": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1 spacing-compact\">",
+        "after": "<button class=\"sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/icon-buttons/scss/_css_icon_buttons.scss; src/component/buttons/js/button-checks.js; src/smart/button-icon/index.js; ui-control control/docs-review/decisions.md C213"
+    },
+    {
       "id": "class-c212-gradient",
       "recorded_on": "2026-11-16",
       "stage": "compat",

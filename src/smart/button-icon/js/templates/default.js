@@ -5,8 +5,11 @@ import {nameWithBadge, renderAnchoredBadge, renderAnchoredBadgeText} from '../..
 
 const ICON_BUTTON_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
 // The drawing class of each appearance; surface is resolved to tonal by the
-// element (C15), a value off the list draws the default.
-const ICON_BUTTON_LOOK = {default: 'default', tonal: 'tonal', outline: 'outline', ghost: 'link', link: 'link', surface: 'surface', plain: 'plain'};
+// element (C15), a value off the list draws the default. Ghost is drawn by
+// sf-icon-button--ghost (component.icon-buttons 1.14.0, RG-IB-2); plain is
+// the plate-less look (C201). The former
+// --link is an alias the runtime notes, so the element never writes it.
+const ICON_BUTTON_LOOK = {default: 'default', tonal: 'tonal', outline: 'outline', ghost: 'ghost', link: 'ghost', surface: 'tonal', plain: 'plain'};
 
 function statusClasses(status, scheme) {
     if (status === 'danger' || status === 'error') return ['sf-icon-button--danger', 'sf-icon-button--error'];
@@ -48,8 +51,8 @@ export function renderIconButtonTemplate(context) {
         // here had no rule (documentation trial 6, 2026-10-18).
         ICON_BUTTON_SIZES.has(size || '1') ? `sf-icon-button--size-${size || '1'}` : '',
         `sf-icon-button--${kind ?? variant ?? 'icon'}`,
-        // ghost is drawn by the link class, the one the sheets and their
-        // consumers select (link was ghost's twin; C15 made ghost the name).
+        // ghost is drawn by the ghost class (C15 made ghost the name; the
+        // link class is its former twin, RG-IB-2).
         `sf-icon-button--${ICON_BUTTON_LOOK[appearance || type] || 'default'}`,
         'flex',
         'items-cross-center',
@@ -61,7 +64,8 @@ export function renderIconButtonTemplate(context) {
         // danger is a control's status (C13), drawn with the error roles: the
         // class is the danger one and the error one the sheets also select.
         ...statusClasses(status, scheme),
-        tightness ? `tightness-${tightness}` : '',
+        // No density class (owner decision C213): an icon button is sized by
+        // size and height only; spacing / tightness are noted by the element.
         // The height (decisions C27, C35): the class of the size's tightness
         // step, declared after the density classes; default draws none.
         ['low', 'high', 'highest'].includes(context.height) ? `sf-icon-button--height-${context.height}` : '',

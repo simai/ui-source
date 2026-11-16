@@ -100,7 +100,7 @@ function renderCounter(context) {
   const step = size === '1/2' ? '1/2' : '1';
   return html`
     ${context.listHref
-      ? html`<a class=${`sf-pager-list sf-icon-button sf-icon-button--size-${step} sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center`}
+      ? html`<a class=${`sf-pager-list sf-icon-button sf-icon-button--size-${step} sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center`}
           href=${context.listHref} title=${words.toList} aria-label=${words.toList}>${icon('arrow_back')}</a>`
       : nothing}
     <sf-button-icon class="sf-pager-back" size=${size} appearance="ghost" scheme="on-surface" icon="chevron_left"

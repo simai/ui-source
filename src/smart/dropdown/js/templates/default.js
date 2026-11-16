@@ -108,7 +108,7 @@ function renderTag(context, option) {
       <span class="sf-tag-container">${label}</span>
       <button
         type="button"
-        class="sf-icon-button sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3"
+        class="sf-icon-button sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1/3"
         aria-label=${`Remove ${label}`}
         ?disabled=${context.disabled}
         @click=${(event) => {

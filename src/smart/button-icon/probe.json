@@ -154,7 +154,7 @@
       "covers": "settings.status danger, settings.appearance ghost, settings.scheme, aliases.json error, link, secondary; retired surface",
       "steps": [
         {
-          "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; return c('#ib-err').contains('sf-icon-button--danger') && c('#ib-err').contains('sf-icon-button--error') && c('#ib-surface').contains('sf-icon-button--tonal') && c('#ib-surface').contains('sf-icon-button--on-surface') && c('#ib-surface-err').contains('sf-icon-button--outline') && c('#ib-surface-err').contains('sf-icon-button--danger') && c('#ib-old-looks').contains('sf-icon-button--link') && c('#ib-old-looks').contains('sf-icon-button--on-surface-variant'); })()",
+          "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; return c('#ib-err').contains('sf-icon-button--danger') && c('#ib-err').contains('sf-icon-button--error') && c('#ib-surface').contains('sf-icon-button--tonal') && c('#ib-surface').contains('sf-icon-button--on-surface') && c('#ib-surface-err').contains('sf-icon-button--outline') && c('#ib-surface-err').contains('sf-icon-button--danger') && c('#ib-old-looks').contains('sf-icon-button--ghost') && c('#ib-old-looks').contains('sf-icon-button--on-surface-variant'); })()",
           "expect": {
             "values": {
               "#ib-err.status": "danger",

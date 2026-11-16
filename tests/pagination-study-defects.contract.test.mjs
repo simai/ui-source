@@ -72,7 +72,7 @@ test('PG-10: with href the arrows are links, prev and next say rel', () => {
   assert.match(markup, /<a\s[\s\S]*?href=\$\{href \|\| nothing\}[\s\S]*?aria-disabled=\$\{href \? nothing : "true"\}[\s\S]*?rel=\$\{href && \(kind === "prev" \|\| kind === "next"\) \? kind : nothing\}/u);
   assert.match(markup, /@click=\$\{\(event\) => \(href \? context\.component\.followLink\(event, page\) : event\.preventDefault\(\)\)\}/u);
   // The link wears the ghost, on-surface icon button that sf-button-icon draws.
-  assert.match(markup, /sf-icon-button sf-icon-button--size-\$\{size\} sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface/u);
+  assert.match(markup, /sf-icon-button sf-icon-button--size-\$\{size\} sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface/u);
   assert.match(sheet, /\.sf-pagination a\.sf-pagination-link \{\s*text-decoration: none;/u);
 });
 

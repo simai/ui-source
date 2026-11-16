@@ -120,6 +120,17 @@
       "remove_after": "2027-01-01",
       "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
       "note": "the element is sf-button-icon; sf-icon-button is a subclass defined beside it until the date"
+    },
+    {
+      "from": "spacing",
+      "to": null,
+      "kind": "setting",
+      "component": "sf-button-icon",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "mode": "retired",
+      "section": "owner decision C213",
+      "note": "an icon button has no density (size and height keep it square); read and noted, said once per button in the console, it draws nothing"
     }
   ]
 }

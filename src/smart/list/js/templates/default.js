@@ -196,7 +196,7 @@ const row = (context, item, group) => {
             ${menu
                 ? html`<button
                         type="button"
-                        class="sf-list__actions sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-${context.size} flex items-cross-center content-main-center flex-none"
+                        class="sf-list__actions sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-${context.size} flex items-cross-center content-main-center flex-none"
                         tabindex="-1"
                         aria-haspopup="menu"
                         aria-label=${context.actionsLabel(text)}

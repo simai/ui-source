@@ -11,7 +11,7 @@ function joinClasses(...tokens) {
 // the close a size-1 low icon button, 32 / 28 / 28, centred on the first line.
 // The same classes as the class toast (component/toast/js/_toast.js).
 const TOAST_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
-const TOAST_CLOSE_CLASSES = 'sf-icon-button sf-icon-button--close sf-icon-button--variant-close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center';
+const TOAST_CLOSE_CLASSES = 'sf-icon-button sf-icon-button--close sf-icon-button--variant-close sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center';
 
 // The actions (owner decisions C50 and C126 (1), the model of
 // SF.Toast.create): every action is a button. One light navigation action --

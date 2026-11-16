@@ -320,7 +320,7 @@ function createToastElement(options = {}) {
       'sf-icon-button--close',
       'sf-icon-button--variant-close',
       'sf-icon-button--on-surface',
-      'sf-icon-button--link',
+      'sf-icon-button--ghost',
       'sf-icon-button--size-1',
       'sf-icon-button--height-low',
       'flex',

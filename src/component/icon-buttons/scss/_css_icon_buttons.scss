@@ -151,8 +151,11 @@
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
   }
 
+  /* The ghost glyph is the ink of sf-button's ghost label of the same scheme
+     (1.14.0, RG-IB-1): --sf-primary, --sf-error. It was the pressed step
+     (-active), a darker colour than the button beside it. */
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary-active));
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary));
   }
 
   /* An icon with no text is the icon of a button with text (C107 (3), owner
@@ -165,7 +168,13 @@
 
   .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    /* No container text role here (RG-IB-1 b, 2026-11-16): the control
+       carries no text, only a glyph, and a glyph asks 3:1 (C107 (2)), not the
+       4.5:1 of text. The quiet glyph keeps the page's --sf-on-surface-variant,
+       as outline and ghost of the scheme do (one scheme, one ink): 4.17:1 and
+       more over the container fill on surfaces 0 to 3 in both themes, and
+       quieter than the neutral --sf-on-surface-icon (the container variant,
+       neutral-85, read brighter than it in the dark theme). */
   }
 
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
@@ -201,7 +210,7 @@
   }
 
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary-active));
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary));
   }
 
   .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
@@ -249,48 +258,18 @@
     --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-default));
   }
 
-  /* Density (spacing) moves the side padding only, as on sf-button: one
-     height per size whatever the look or the spacing (owner rule C01, docs
-     review R022, 2026-11-07). The block padding stays the size's default
-     step, so the button keeps the size's control height; the side padding
-     takes the tightness step, so a compact icon button is narrower than it is
-     tall and a spacious one wider. Before, the step moved all four sides and
-     a compact size 1 stood 32px, a spacious one 56px. */
-  .sf-icon-button--size-1:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-low));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-low));
-  }
-
-  .sf-icon-button--size-1:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-high));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-high));
-  }
-
-  .sf-icon-button--size-1:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-highest));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-highest));
-  }
+  /* An icon button has no density (1.14.0, owner decision C213): size and
+     height already change it and keep it square. spacing-compact,
+     -comfortable and -spacious (and the older tightness-low, -high,
+     -highest) moved the side padding only and drew 32 x 40 ... 80 x 56;
+     they draw nothing now, and the runtime notes them until 2027-01-01
+     (journal class-icon-button-density-c213). sf-button keeps density. */
 
   .sf-icon-button--size-2 {
     --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-default));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-default));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-default));
     --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-default));
-  }
-
-  .sf-icon-button--size-2:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-low));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-low));
-  }
-
-  .sf-icon-button--size-2:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-high));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-high));
-  }
-
-  .sf-icon-button--size-2:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-highest));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-highest));
   }
 
   .sf-icon-button--size-3 {
@@ -300,21 +279,6 @@
     --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-default));
   }
 
-  .sf-icon-button--size-3:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-low));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-low));
-  }
-
-  .sf-icon-button--size-3:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-high));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-high));
-  }
-
-  .sf-icon-button--size-3:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-highest));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-highest));
-  }
-
   .sf-icon-button--size-1\/2 {
     --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-default));
@@ -322,41 +286,11 @@
     --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
   }
 
-  .sf-icon-button--size-1\/2:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-low));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-low));
-  }
-
-  .sf-icon-button--size-1\/2:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-high));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-high));
-  }
-
-  .sf-icon-button--size-1\/2:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-highest));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-highest));
-  }
-
   .sf-icon-button--size-1\/3 {
     --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
     --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
     --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
-  }
-
-  .sf-icon-button--size-1\/3:is(.tightness-low, .spacing-compact) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-low));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-low));
-  }
-
-  .sf-icon-button--size-1\/3:is(.tightness-high, .spacing-comfortable) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-high));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-high));
-  }
-
-  .sf-icon-button--size-1\/3:is(.tightness-highest, .spacing-spacious) {
-    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-highest));
-    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-highest));
   }
 
   /* Height (owner decision C27, C35): as on sf-button, height picks the
@@ -673,7 +607,7 @@
   }
 
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
-    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
@@ -689,7 +623,7 @@
   }
 
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
 }

@@ -197,7 +197,7 @@
     --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
 
-  .sf-tag .sf-icon-button.sf-icon-button--link.sf-icon-button--close {
+  .sf-tag .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close {
     --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
     --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
     --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
@@ -807,11 +807,11 @@
 @layer sf.overrides {
   /* The remove cross is plain (C14): no spot, the tag's ink at the ink step
      64 at rest and full on hover and press. */
-  .sf-tag > .sf-icon-button.sf-icon-button--link.sf-icon-button--close > .sf-close > .sf-close-icon {
+  .sf-tag > .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: color-mix(in srgb, var(--sf-tag-color, var(--sf-on-surface)) 64%, transparent);
   }
 
-  .sf-tag > .sf-icon-button.sf-icon-button--link.sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
+  .sf-tag > .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-tag-color, var(--sf-on-surface));
   }
 }

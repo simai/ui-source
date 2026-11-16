@@ -119,7 +119,7 @@ const sfButtonIconMeta = {
         "spacious"
       ],
       "default": "normal",
-      "description": "Semantic internal spacing profile."
+      "description": "Retired (owner decision C213, 2026-11-16): an icon button has no density; size and height change it and keep it square. Read and noted until 2027-01-01, it draws nothing."
     },
     "radius": {
       "kind": "enum",

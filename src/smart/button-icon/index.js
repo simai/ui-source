@@ -129,6 +129,21 @@ function whenTooltipReady(run) {
 // itself and notes the use (change journal value-icon-button-looks-c15).
 const RETIRED_APPEARANCE = 'surface';
 
+// Density on an icon button (owner decision C213, 2026-11-16): size and
+// height change it and keep it square, so spacing and tightness draw nothing.
+// Read until 2027-01-01, noted in SF.deprecations and said once per button.
+function noteIconButtonDensity(element) {
+  const said = [['spacing', element.getAttribute('spacing')], ['tightness', element.getAttribute('tightness')]]
+    .filter(([, value]) => value && value !== 'normal');
+  if (!said.length) return;
+  for (const [attribute, from] of said) {
+    noteDeprecated({component: 'sf-button-icon', tag: 'sf-button-icon', kind: 'setting', attribute, from: attribute, to: null, since: '2026-11-16', remove_after: '2027-01-01'});
+  }
+  if (element.__sfDensitySaid) return;
+  element.__sfDensitySaid = true;
+  globalThis.console?.warn?.(`[SIMAI Framework] sf-button-icon: ${said.map(([a, v]) => `${a}="${v}"`).join(' ')} draws nothing: an icon button has no density (owner decision C213); size and height="low|high|highest" change it and keep it square. Remove it before 2027-01-01.`, element);
+}
+
 class SfIconButton extends IconButtonElement {
   // aria-label is the host's (§3.1), not a setting, so the manifest makes no
   // attribute of it; it is watched here, or a name changed after the first
@@ -235,6 +250,9 @@ class SfIconButton extends IconButtonElement {
     if (cycle) warnCycleToggle(this, ['pressed', 'label-pressed']);
     // success, warning, info: no such icon buttons (C13, BS-1); said once per page.
     warnUnknownControlStatus('sf-button-icon', this.getAttribute('status'));
+    // An icon button has no density (owner decision C213): spacing (and its
+    // former name tightness) draws nothing; noted, and said once per button.
+    noteIconButtonDensity(this);
     // A danger tonal or surface (C116); said once per page.
     const dangerFormer = this.dangerFormer;
     if (dangerFormer) sayButtonSetFormers('sf-button-icon', [{attribute: 'appearance', from: dangerFormer, to: 'outline', danger: true, drawn: 'appearance="outline" status="danger" (a danger icon button is filled, outline or ghost)'}]);

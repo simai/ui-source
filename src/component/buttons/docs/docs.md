@@ -76,7 +76,10 @@ the Smart `sf-button` projection.
   tonal secondary had a secondary fill and the others a secondary label. The
   secondary colour stays in the core for badges, tabs and segments. Both
   former classes are noted once in `SF.deprecations` (journal
-  `class-button-set-c116`);
+  `class-button-set-c116`). The shared check (`js/button-checks.js`, 1.18.0)
+  also says the icon button's former looks (`sf-icon-button--surface`,
+  `--link`) and its density classes (owner decision C213) once per button;
+  see Icon Buttons;
 - status: `sf-button--danger` for a destructive button, in every emphasis
   (decision C13: danger is what the control does, error is a message's
   status); `sf-button--error` is its former name on a button, the same rules,
