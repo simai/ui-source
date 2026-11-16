@@ -342,7 +342,7 @@ button.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--
 }
 
 .sf-step.sf-step--stage-default:is(.selected, [aria-current="step"]) > .sf-step-container {
-  font-weight: var(--sf-font-weight-medium);
+  font-weight: var(--sf-weight--medium);
 }
 
 .sf-step.sf-step--stage-error > .sf-step-container {

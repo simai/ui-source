@@ -55,8 +55,8 @@ test('RG-NV 31a, 31b, 31d: a tab lays out its icon and label itself', () => {
 });
 
 test('RG-NV 31c: class markup keeps only the selected label medium, with its width reserved', () => {
-  assert.match(tabs, /\.sf-tabs-top \.sf-button > \.sf-button-text-container \{\s*font-weight: var\(--sf-font-weight-regular\);/u);
-  assert.match(tabs, /\.sf-button\.selected > \.sf-button-text-container \{\s*font-weight: var\(--sf-font-weight-medium\);/u);
+  assert.match(tabs, /\.sf-tabs-top \.sf-button > \.sf-button-text-container \{\s*font-weight: var\(--sf-weight--regular\);/u);
+  assert.match(tabs, /\.sf-button\.selected > \.sf-button-text-container \{\s*font-weight: var\(--sf-weight--medium\);/u);
   assert.match(tabs, /\[data-sf-tabs-text\]::before \{\s*content: attr\(data-sf-tabs-text\) \/ "";/u);
   assert.match(tabsJs, /function syncLabelText\(label\)/u);
 });

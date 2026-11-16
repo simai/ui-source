@@ -953,11 +953,11 @@
   // the width of that copy in its medium face. A label that holds parts of
   // its own (a count, the errors) keeps the weight rule without the reserve.
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button > .sf-button-text-container {
-    font-weight: var(--sf-font-weight-regular);
+    font-weight: var(--sf-weight--regular);
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected > .sf-button-text-container {
-    font-weight: var(--sf-font-weight-medium);
+    font-weight: var(--sf-weight--medium);
   }
 
   .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button > .sf-button-text-container[data-sf-tabs-text] {
@@ -969,7 +969,7 @@
     content: attr(data-sf-tabs-text) / "";
     block-size: 0;
     visibility: hidden;
-    font-weight: var(--sf-font-weight-medium);
+    font-weight: var(--sf-weight--medium);
     white-space: nowrap;
   }
 

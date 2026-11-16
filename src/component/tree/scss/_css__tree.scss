@@ -196,7 +196,7 @@
      draws only the open rows, writes sf-tree-item--holds-current. */
   .sf-tree .sf-tree-item:not(.open):not([aria-current='page']):has(.sf-tree-item[aria-current='page']) > .sf-tree-item-container,
   .sf-tree .sf-tree-item.sf-tree-item--holds-current:not(.open):not([aria-current='page']) > .sf-tree-item-container {
-    font-weight: var(--sf-font-weight-medium);
+    font-weight: var(--sf-weight--medium);
   }
 
   // A row is flush against the rows above and below it, so the ring turns
