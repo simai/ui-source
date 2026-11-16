@@ -326,6 +326,7 @@ export function cascade(sheet, width) {
   function specified(el) {
     if (cache.has(el)) return cache.get(el);
     const winners = new Map(); // name -> {value, key}
+    const candidates = new Map(); // name -> [{value, key}], for revert-layer
     for (const rule of active) {
       let best = null;
       for (const steps of rule.parsed) {
@@ -339,7 +340,20 @@ export function cascade(sheet, width) {
       for (const [name, value] of rule.declarations) {
         const current = winners.get(name);
         if (!current || compareKeys(key, current.key) >= 0) winners.set(name, {value, key});
+        if (!candidates.has(name)) candidates.set(name, []);
+        candidates.get(name).push({value, key});
       }
+    }
+    // `revert-layer` hands the property back to the layers under the one
+    // that won: the best declaration of a lower layer wins instead (C273).
+    for (const [name, won] of winners) {
+      let current = won;
+      while (current && current.value.trim() === 'revert-layer') {
+        const layer = current.key[0];
+        current = candidates.get(name).filter((c) => c.key[0] < layer)
+          .reduce((best, c) => (!best || compareKeys(c.key, best.key) >= 0 ? c : best), null);
+      }
+      if (current) winners.set(name, current); else winners.delete(name);
     }
     cache.set(el, winners);
     return winners;
