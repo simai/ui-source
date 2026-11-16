@@ -158,7 +158,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The languages as a list, each {code, label?, short?, href?, missing?}: label replaces the shipped or browser name («Қазақша» written otherwise), short the code the trigger and labels=\"code\" show, href the address of the site in that language, missing true for a language this page has no translation of (as missing). A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
+        "description": "The languages as a list, each {code, label?, short?, href?, missing?}: label replaces the shipped or browser name («Deutsch» written otherwise), short the code the trigger and labels=\"code\" show, href the address of the site in that language, missing true for a language this page has no translation of (as missing). A property, or the JSON island a server prints; when it holds a language it is the list, and languages is not read"
       }
     },
     "additionalProperties": false

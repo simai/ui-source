@@ -54,7 +54,7 @@ test('#86 pagination: «[3] из 12» is one word with the field in it ({page})'
   for (const code of LANGS) assert.match(runtime('src/smart/pagination', code)['of-pages'], /\{page\}.*\{count\}|\{count\}.*\{page\}/u, code);
   const parts = exported('src/smart/pagination/index.js', 'ofPagesParts');
   assert.deepEqual(parts('{page} из 12'), {before: '', after: 'из 12'});
-  assert.deepEqual(parts('12 беттің {page}-і'), {before: '12 беттің', after: '-і'}, 'a language may put the count first');
+  assert.deepEqual(parts('12 oldalból {page}.'), {before: '12 oldalból', after: '.'}, 'a language may put the count first');
   assert.deepEqual(parts('из 12'), {before: '', after: 'из 12'}, "a product's word from before keeps its place");
 });
 
@@ -62,7 +62,7 @@ test('#86 confirm: «Чтобы подтвердить, введите DELETE» 
   for (const code of LANGS) assert.match(runtime('src/smart/confirm', code)['require-text'], /\{name\}/u, code);
   const parts = exported('src/smart/confirm/index.js', 'requireParts');
   assert.deepEqual(parts('Чтобы подтвердить, введите {name}'), {before: 'Чтобы подтвердить, введите ', after: ''});
-  assert.deepEqual(parts('Растау үшін {name} деп енгізіңіз'), {before: 'Растау үшін ', after: ' деп енгізіңіз'});
+  assert.deepEqual(parts('Zum Bestätigen {name} eingeben'), {before: 'Zum Bestätigen ', after: ' eingeben'});
   assert.deepEqual(parts('To confirm, type'), {before: 'To confirm, type ', after: ''});
   const template = read('src/smart/confirm/js/templates/default.js');
   assert.doesNotMatch(template, /\$\{context\.requireText\} /u);

@@ -102,7 +102,7 @@ test('the trigger\'s code slot is the width core holds before the code (C130)', 
   assert.match(placeholder, /:where\(sf-language \.sf-language-code\) \{\n  inline-size: var\(--sf-language--line\);\n  min-inline-size: var\(--sf-language--line\);\n  grid-template-columns: minmax\(0, 1fr\);\n  justify-items: center;/u);
   const narrow = new RegExp(template.match(/const NARROW_CODE = \/(.+)\/u;/u)[1], 'u');
   for (const code of ['RU', 'EN', 'DE', 'MN', 'PT', 'ΕΛ', 'ՀՅ', 'ქა', 'Ру']) assert.ok(narrow.test(code), code);
-  for (const code of ['PT-BR', '简体', '繁體', 'Қаз', '', 'ع']) assert.ok(!narrow.test(code), code);
+  for (const code of ['PT-BR', '简体', '繁體', 'Укр', '', 'ع']) assert.ok(!narrow.test(code), code);
 });
 
 test('a choice asks first, then remembers through SF.Preferences and applies or follows', () => {

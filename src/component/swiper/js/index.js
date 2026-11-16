@@ -390,8 +390,8 @@ class SimaiSlider {
       const bullet = document.createElement(options.bulletElement || 'span');
       bullet.className = options.bulletClass || 'swiper-pagination-bullet';
       if (bullet instanceof HTMLButtonElement) bullet.type = 'button';
-      // The number has its place in the word ({n}): «Go to slide 3», «3-слайдқа
-      // өту» (C177 (9)). A word registered before 2026-11-14 has none; it is put after.
+      // The number has its place in the word ({n}): «Go to slide 3», «Folie 3
+      // anzeigen» (C177 (9)). A word registered before 2026-11-14 has none; it is put after.
       const go = pageText(SWIPER_TEXT, 'goToSlide', root, 'sf-swiper');
       const number = new Intl.NumberFormat(pageLocale(root)).format(index + 1);
       bullet.setAttribute('aria-label', go.includes('{n}') ? go.replace('{n}', number) : `${go} ${number}`);
