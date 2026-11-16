@@ -14,12 +14,24 @@
        icon ladder: 20 for the rectangle (28x20), 24 for the circle. It was
        --sf-b8, 18, under the drawing and no ladder step (docs precheck FL-01,
        FL-02). The internal --sf-flag--size still works for a page that set it. */
-    --sf-flag--height: var(--sf-flag-size, var(--sf-flag--size, var(--sf-flag--default-size, var(--sf-icon-size-2))));
+    /* The default steps are the ladder's (C151 (1), C22): the rectangle the
+       line of text step 1/2 (20, and 16 on a phone and in a compact region),
+       the circle the line of step 1 (24, and 20). The old icon scale they read
+       had a compact value and no phone one, so on a phone a circle of 24 stood
+       in a row of 20 and made it 24 (content study Fl1, 2026-11-16). */
+    --sf-flag--height: var(--sf-flag-size, var(--sf-flag--size, var(--sf-flag--default-size, var(--sf-text-height-1\/2))));
     --sf-flag--outline-color: var(--sf-flag-outline-color, var(--sf-outline-variant));
     --sf-flag--outline-width: var(--sf-flag-outline-width, var(--sf-px));
     --sf-flag--radius: var(--sf-flag-radius, var(--sf-radius--ui));
     display: inline-block;
     flex: none;
+    /* In running text the flag stands on the middle of the line (as an icon,
+       C151 (5)): its baseline is its bottom edge (overflow hidden), so it is
+       lifted by the text's middle above its baseline -- half of the text
+       face's ascent less its descent, 0.3633 em for Inter (97 and 24 of 100)
+       -- less half its own height. At baseline it sat 2 px low on a desktop and 4 on a phone
+       (content study Fl3). In a flex row vertical-align does nothing. */
+    vertical-align: calc(0.3633em - var(--sf-flag--height) / 2);
     position: relative;
     overflow: hidden;
     line-height: 0;
@@ -44,7 +56,7 @@
   }
 
   .sf-flag--circle {
-    --sf-flag--default-size: var(--sf-icon-size-3);
+    --sf-flag--default-size: var(--sf-text-height-1);
     inline-size: var(--sf-flag--height);
     --sf-flag--radius: var(--sf-flag-radius, var(--sf-radius-circle));
   }

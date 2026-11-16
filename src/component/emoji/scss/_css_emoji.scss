@@ -16,7 +16,13 @@
   font-weight: normal;
   line-height: var(--sf-emoji--line-height);
   text-decoration: none;
-  vertical-align: middle;
+  // The box is the line of its step, so it stands at the line's top and its
+  // glyph is on the line's middle (C18, C21). middle put the box's middle on
+  // the middle of the lowercase letters, below the line's: the line grew
+  // 0.7-1.6 px at every step and the paragraph's rhythm broke (content study
+  // E1, 2026-11-16). A larger symbol than the line still overhangs at the
+  // bottom; inside a paragraph take the line's step.
+  vertical-align: top;
 }
 
 .sf-emoji--size-1\/3 {

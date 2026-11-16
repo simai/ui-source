@@ -78,15 +78,27 @@ function loadCatalogue(base) {
     return catalogueRequest;
 }
 
+// The shape to draw, or null when the catalogue knows the code in neither
+// shape: then nothing is asked for, the box keeps the shape the markup gave it
+// and its neutral ground (content study Fl2, 2026-11-16, after C151 (2) for
+// icons). A code the catalogue cannot say about (no catalogue, a set of the
+// author's) is tried as asked.
 function resolveShape(shape, code, known) {
     const have = known && known[shape];
     if (!have || have.has(code)) return shape;
     const other = shape === 'rect' ? 'circle' : 'rect';
     const fallback = known[other];
-    return fallback && fallback.has(code) ? other : shape;
+    if (fallback && fallback.has(code)) return other;
+    return fallback ? null : shape;
 }
 
-function paint(element, shape, code, base, triedOther = false) {
+// Back to the box the markup wrote: no picture, the asked shape, the ground.
+function clear(element, shape) {
+    element.replaceChildren();
+    for (const name of SHAPES) element.classList.toggle(`sf-flag--${name}`, name === shape);
+}
+
+function paint(element, shape, code, base, triedOther = false, asked = shape) {
     const image = document.createElement('img');
     image.src = `${base}/${shape}/${code}.svg`;
     image.alt = element.getAttribute('data-alt') || '';
@@ -100,9 +112,11 @@ function paint(element, shape, code, base, triedOther = false) {
     // while images keep loading because they are not subject to that. Falling
     // back on the error covers the case the catalogue cannot reach.
     image.addEventListener('error', () => {
-        if (triedOther) return;
+        // Neither shape has the code: the box goes back to the asked shape
+        // and its ground, not a broken picture in the other shape's box.
+        if (triedOther) { clear(element, asked); return; }
         const other = shape === 'rect' ? 'circle' : 'rect';
-        paint(element, other, code, base, true);
+        paint(element, other, code, base, true, asked);
     }, { once: true });
     element.replaceChildren(image);
     // The shape may have changed under the element; the class has to follow, or
@@ -117,7 +131,9 @@ function render(element) {
     const asked = shapeOf(element);
     loadCatalogue(base).then((known) => {
         if (normalise(element.getAttribute('data-country')) !== code) return;
-        paint(element, resolveShape(asked, code, known), code, base);
+        const shape = resolveShape(asked, code, known);
+        if (!shape) { clear(element, asked); return; }
+        paint(element, shape, code, base, false, asked);
     });
 }
 
