@@ -44,6 +44,6 @@ test('versions: component.menu 1.8.3, sf-menu 1.11.2, sf-contents 1.7.4 with the
     const component = json(`src/smart/${name}/component.json`);
     assert.equal(component.version, current);
     assert.equal(json(`src/smart/${name}/smart.manifest.json`).version, current);
-    assert.ok(component['x-decisions'].some((note) => note.startsWith(`version ${version} `) && /msg-e22e231d/u.test(note)), name);
+    assert.ok(component['x-decisions'].some((note) => (note.startsWith(`version ${version} `) || note.startsWith(`version ${current} (written on the branch as ${version};`)) && /msg-e22e231d/u.test(note)), name);
   }
 });
