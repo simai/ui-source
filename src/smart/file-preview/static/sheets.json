@@ -12,6 +12,7 @@
     "component/icons/css/icons.min.css",
     "component/kbd/css/kbd.min.css",
     "component/progress-bar/css/progress-bar.min.css",
+    "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
@@ -30,13 +31,17 @@
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
-      "core/css/core.css"
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css"
     ],
     "compact": [
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "utility/display/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
@@ -44,7 +49,9 @@
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "utility/display/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
@@ -52,7 +59,9 @@
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "utility/display/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
@@ -62,6 +71,7 @@
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
@@ -75,7 +85,9 @@
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "utility/display/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
@@ -83,13 +95,17 @@
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
-      "core/css/core.css"
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css"
     ],
     "reference": [
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
+      "utility/display/default/css/default.min.css",
       "utility/isolate/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
@@ -97,13 +113,16 @@
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
-      "core/css/core.css"
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "utility/display/default/css/default.min.css"
     ],
     "uploading": [
       "component/file-preview/css/file-preview.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/progress-bar/css/progress-bar.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
