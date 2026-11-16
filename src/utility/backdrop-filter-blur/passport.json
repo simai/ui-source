@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.backdrop-filter-blur",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/backdrop-filter-blur/default/index.js",
@@ -18,7 +18,7 @@
     "src/utility/backdrop-filter-blur/hover/scss/_sf_css__backdrop_blur.scss",
     "src/utility/backdrop-filter-blur/hover/scss/index.scss"
   ],
-  "content_sha256": "b69e93c8d8a564df95536cf094d77f05ec87de6173f3873e553dec5a0784d8d8",
+  "content_sha256": "5053d73b902ed230a76641993293ebc3848f72fb46aefb8b51d9b988c4cf9baa",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
