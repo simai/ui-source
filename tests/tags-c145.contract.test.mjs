@@ -31,7 +31,7 @@ test('C145 (3): sf-tag-group is a list of tags 4 apart', () => {
   assert.ok(JSON.stringify(names).includes('"sf-tag-group"'));
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/tag-group\/rule\.js';/u);
   const manifest = json('src/smart/tag-group/component.json');
-  assert.equal(manifest.version, '1.0.0');
+  assert.equal(manifest.version, '1.0.1');
   assert.deepEqual(manifest.settings.selection.enum ?? manifest.settings.selection.values ?? ['none', 'one', 'many'], ['none', 'one', 'many']);
   // The core holds its box before its code.
   assert.match(read('src/core/scss/_sf_css__placeholder.scss'), /:where\(sf-tag-group:not\(:defined\)\) \{[^}]*gap: var\((?:--sf-space-1\\\/4|--sf-gap--tags)\);/u);
@@ -101,7 +101,7 @@ test('C145 amendment R238: the first tag in a field stands 4 from its start edge
   assert.match(read('src/component/dropdown/scss/_css__custom.scss'), /\.sf-dropdown\.sf-dropdown\.sf-dropdown--tag > \.sf-dropdown-field\.sf-dropdown-field \{[^}]*--sf-dropdown-field--padding-inline-start: calc\(var\(--sf-space-1\\\/4\) - var\(--sf-px\)\);/u);
 });
 
-test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1 (group build 6: the integration line\'s higher numbers carry these notes)', () => {
+test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.1, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1 (group build 6: the integration line\'s higher numbers carry these notes)', () => {
   assert.equal(json('src/smart/dropdown/component.json').version, '1.16.1'); // C153 // group build 7: the integrated number (the branch wrote 1.14.0)
   assert.equal(json('src/component/dropdown/passport.json').version, '1.13.4'); // group build 7: the patch for moved files (the line had 1.13.2)
   assert.equal(json('src/smart/input-lookup/component.json').version, '1.15.3'); // group build 8: C208's patch above RG-S2's 1.15.2 (group build 7: the integrated number; the branch wrote 1.13.1)
@@ -109,5 +109,5 @@ test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropd
   assert.equal(json('src/smart/tag/component.json').version, '1.11.0'); // group build 7: the GB6 notes numbered above the released 1.9.1
   assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.0'); // group build 7
   assert.equal(json('src/component/tags/passport.json').version, '1.8.1'); // first paint R222 open item 2: the label is the tag's baseline (above 1.8.0 on feat/highlight-c254 and fix/content-glyphs-ct1)
-  assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
+  assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.1'); // first paint R222 open item 10: the printed «+N» replaced
 });
