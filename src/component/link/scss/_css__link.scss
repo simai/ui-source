@@ -64,8 +64,13 @@
   }
 
   .sf-link :where(.sf-link__icon, .sf-link-icon) {
-    /* The line's height: 24 beside text of 16/24, 20 beside 14/20 (C107 (5)). */
-    --sf-link-icon--size: 1lh;
+    /* The line's height: 24 beside text of 16/24, 20 beside 14/20 (C107 (5)).
+       In font-size, lh is the parent's line: the glyph is as tall as the line
+       of the text the link stands in, and the box is that glyph (1em). */
+    --sf-icon--font-size: 1lh;
+    --sf-icon--width: 1em;
+    --sf-icon--height: 1em;
+    --sf-link-icon--size: 1em;
 
     flex: none;
     block-size: var(--sf-link-icon--size);

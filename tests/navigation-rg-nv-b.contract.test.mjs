@@ -43,7 +43,7 @@ test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is o
   assert.match(base, /font: inherit;/u);
   assert.doesNotMatch(base, /var\(--sf-text-size-1\)|var\(--sf-text-height-1\)/u);
   assert.match(css, /\.sf-link:has\(> :is\(\.sf-link__icon, \.sf-link-icon\)\) \{\n[^}]*display: inline-flex;/u);
-  assert.match(css, /--sf-link-icon--size: 1lh;/u);
+  assert.match(css, /--sf-icon--font-size: 1lh;\n\s+--sf-icon--width: 1em;\n\s+--sf-icon--height: 1em;\n\s+--sf-link-icon--size: 1em;/u);
   assert.equal((await json('src/component/link/passport.json')).version, '1.2.0');
 });
 
