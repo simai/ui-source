@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node scripts/run-browser-probes.mjs /absolute/path/to/build/output
+// Usage: node scripts/run-browser-probes.mjs /absolute/path/to/build/output [--only <probe>,<probe>]
 //
 // Every browser probe, each with the roots it actually asks for. This exists
 // because a hand-written sweep that guesses a probe's arguments from its name got
@@ -69,8 +69,19 @@ const cliFiles = everything.filter((name) => name.endsWith('.cli.js'));
 const unaccounted = everything.filter((name) => !name.endsWith('.browser.mjs') && !name.endsWith('.cli.js'));
 const results = {passed: [], failed: [], skipped: [], unknown: []};
 
+// `--only a,b`: the probes the dependency graph's impact list names for the units
+// a pair changed (scripts/dependency-graph.mjs impact, C250). A name the
+// directory does not hold is an error, not a quiet skip.
+const onlyAt = process.argv.indexOf('--only');
+const only = onlyAt > 0 ? new Set(String(process.argv[onlyAt + 1] ?? '').split(',').filter(Boolean)) : null;
+if (only) {
+  const unknownNames = [...only].filter((name) => !files.includes(`${name}.browser.mjs`));
+  if (unknownNames.length) throw new Error(`--only names no probe: ${unknownNames.join(', ')}`);
+}
+
 for (const file of files) {
   const name = file.replace('.browser.mjs', '');
+  if (only && !only.has(name)) continue;
   if (needsLab.has(name)) {
     results.skipped.push(name);
     continue;
