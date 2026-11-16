@@ -16,7 +16,9 @@ $infix: xs;
     .#{$infix}animation {
       animation-name: sf-animation-fade;
       animation-duration: var(--sf-duration-normal);
-      animation-timing-function: var(--sf-animation);
+      // An appearance runs on the enter role (C187 (6), C18; RG-UT-V (4)); it
+      // read --sf-animation, a curve outside the motion roles.
+      animation-timing-function: var(--sf-ease-enter);
       animation-fill-mode: both;
       // Reduced motion (C66, C121, C196 (1); RG-UT-V (5)): the device's setting
       // stops what this class moves, as the display setting data-sf-motion does
