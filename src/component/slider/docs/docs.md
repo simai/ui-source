@@ -149,3 +149,12 @@ square corner and stand `--sf-slider-thumbnails--space-between` apart.
   glyph needs. A ghost or link icon button in `--light` stands on the light
   page surface, with the button's hover and press fill laid over it (as on
   `--plate`): 11.17:1 in both themes.
+
+## Loaded by the class (1.3.2)
+
+- The Loader rule reads the class token `sf-slider` (and its parts,
+  `sf-slider-*`), not the name anywhere in an element's attributes. Before,
+  `/sf-slider/` matched sf-slider-range's field label id
+  `sf-slider-range-field-1` (its `id` and `data-labelledby`), and a page with
+  a range field and no slider fetched the slider's sheet, its script and
+  swiper.
