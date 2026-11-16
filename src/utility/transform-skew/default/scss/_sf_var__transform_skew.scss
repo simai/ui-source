@@ -3,7 +3,12 @@
 
 // TRANSFORM
 
-// Transform Skew
+// Transform Skew. Retired (owner decision C272, 2026-11-17): a decorative
+// slant is no job of the interface, and no Framework part, product or example
+// used it. skew-x-* and skew-y-* keep drawing what they drew until
+// 2027-01-01, and the Loader notes them in SF.deprecations
+// (src/core/js/retired-classes.table.js, journal utility-c272-skew-retired).
+// A slant that a design needs belongs to the effects package (C57).
 $transform-skew-array: (
     0: 0,
     1: 1,
