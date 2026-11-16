@@ -30,8 +30,8 @@ const sfTagMeta = {
         "color",
         "avatar"
       ],
-      "default": "checkbox",
-      "description": "What the tag carries: a checkbox, an icon, a colour, an avatar, or nothing but its label. The compatibility input quantity is still accepted and means default."
+      "default": "default",
+      "description": "What the tag carries: nothing but its label (default, the plain tag, as the class twin starts: owner decision C280), a checkbox (the filter toggle, written explicitly), an icon, a colour or an avatar. The compatibility input quantity is still accepted and means default. Until 2027-01-01 a tag without kind that a page uses as a toggle (its change listened to, or in an sf-tag-group that selects) keeps toggling and is noted in SF.deprecations."
     },
     "status": {
       "kind": "enum",

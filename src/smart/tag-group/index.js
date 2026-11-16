@@ -8,8 +8,8 @@
 //   </sf-tag-group>
 //
 //   <sf-tag-group aria-label="Фильтры" selection="one">
-//     <sf-tag key="new" text="Новые"></sf-tag>
-//     <sf-tag key="mine" text="Мои" active></sf-tag>
+//     <sf-tag kind="checkbox" key="new" text="Новые"></sf-tag>
+//     <sf-tag kind="checkbox" key="mine" text="Мои" active></sf-tag>
 //   </sf-tag-group>
 //
 // The tags are the page's own children; the group draws none of them and

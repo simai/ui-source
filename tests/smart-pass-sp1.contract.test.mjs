@@ -214,3 +214,23 @@ test('SM-PO-2: every sf-popover example trigger is a Framework button', () => {
     assert.match(trigger, /^<sf-button\b/u, example.name);
   }
 });
+
+// ---- C280: a bare sf-tag is a plain tag; the toggle is kind="checkbox" ------
+
+test('C280: sf-tag defaults to kind default; a bare toggle is a dated deprecation', () => {
+  const manifest = json('src/smart/tag/component.json');
+  assert.equal(manifest.settings.kind.default, 'default');
+  const source = read('src/smart/tag/index.js');
+  assert.match(source, /kind: \{\n\s+default: 'default',/u);
+  assert.match(source, /const BARE_TOGGLE = \{since: '2026-11-17', remove_after: '2027-01-01'\}/u);
+  assert.match(source, /legacyType\(element, 'kind'\) \|\| \(bareToggle\(element\) \? 'checkbox' : fallback\)/u);
+  const journal = json('contracts/changes/journal.json').records.find((one) => one.id === 'value-tag-default-kind-plain');
+  assert.equal(journal?.remove_after, '2027-01-01');
+  // The Framework's own toggles say so by name.
+  assert.match(read('src/smart/search/js/templates/default.js'), /<sf-tag kind="checkbox" key=/u);
+  for (const tag of read('src/smart/tag-group/examples.json').match(/<sf-tag [^>]*key=[^>]*>/gu)) {
+    assert.match(tag, /kind=\\"checkbox\\"/u, tag);
+  }
+  const example = json('src/smart/tag/examples.json').examples.find((one) => one.name === 'checkbox');
+  assert.equal(example.settings.kind, 'checkbox');
+});

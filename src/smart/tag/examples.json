@@ -27,6 +27,7 @@
       "name": "checkbox",
       "title": "Выбранный фильтр",
       "settings": {
+        "kind": "checkbox",
         "text": "Новые",
         "active": true
       },
@@ -145,14 +146,14 @@
         "lang": "ru",
         "body": [
           "<main>",
-          "  <sf-tag id=\"t-check\" text=\"Новые\"></sf-tag>",
+          "  <sf-tag id=\"t-check\" kind=\"checkbox\" text=\"Новые\"></sf-tag>",
           "  <sf-tag id=\"t-rm\" kind=\"default\" text=\"Дизайн\" closable></sf-tag>",
           "  <sf-tag id=\"t-icon\" kind=\"icon\" icon=\"sell\" text=\"Акция\"></sf-tag>",
           "  <sf-tag id=\"t-old\" type=\"success\" text=\"Тип как статус\"></sf-tag>",
           "  <sf-tag id=\"t-qty\" kind=\"quantity\" text=\"Количество\" count=\"3\"></sf-tag>",
-          "  <sf-tag id=\"t-off\" text=\"Нельзя\" disabled></sf-tag>",
+          "  <sf-tag id=\"t-off\" kind=\"checkbox\" text=\"Нельзя\" disabled></sf-tag>",
           "  <sf-tag id=\"t-line\" kind=\"default\" text=\"Ждёт\" line=\"1\"></sf-tag>",
-          "  <sf-tag id=\"t-free\" text=\"Мои\"></sf-tag>",
+          "  <sf-tag id=\"t-free\" kind=\"checkbox\" text=\"Мои\"></sf-tag>",
           "  <sf-tag id=\"t-link\" kind=\"default\" text=\"Доступность\" href=\"/tags/a11y\" closable></sf-tag>",
           "  <sf-tag id=\"t-js\" kind=\"default\" text=\"Опасно\" href=\"javascript:alert(1)\"></sf-tag>",
           "  <sf-tag id=\"t-dot\" kind=\"color\" color=\"teal\" text=\"Клиенты\"></sf-tag>",

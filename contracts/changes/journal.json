@@ -13801,6 +13801,32 @@
       "manual": "Remove dots, filled and direction from sf-spinner: every spinner is the arc and nothing else changes.",
       "owner": "ui-source",
       "source": "src/smart/spinner/index.js DOTS_SETTINGS, src/smart/spinner/component.json aliases"
+    },
+    {
+      "id": "value-tag-default-kind-plain",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "A bare sf-tag is a plain tag (owner decision C280; Smart joint pass SM-TG-1): kind defaults to default, a label without a press, as the class twin starts; the filter toggle is written kind=\"checkbox\". It was checkbox: every bare tag was a button, a Tab stop, and turned primary-container when pressed. Until remove_after a tag without kind that a page uses as a toggle -- its change listened to on the tag, or standing in an sf-tag-group whose selection is one or many -- keeps toggling and is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "attribute": "kind",
+          "from": "(none) as a toggle",
+          "to": "checkbox",
+          "match": "<sf-tag(?![^>]*\\s(?:kind|type)=)[^>]*>"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-tag-group selection=\"one\"><sf-tag key=\"new\" text=\"Новые\"></sf-tag></sf-tag-group>",
+        "after": "<sf-tag-group selection=\"one\"><sf-tag kind=\"checkbox\" key=\"new\" text=\"Новые\"></sf-tag></sf-tag-group>"
+      },
+      "manual": "Write kind=\"checkbox\" on every sf-tag that toggles (a filter, a scope); leave a label tag without kind.",
+      "owner": "ui-source",
+      "source": "src/smart/tag/index.js bareToggle"
     }
   ]
 }

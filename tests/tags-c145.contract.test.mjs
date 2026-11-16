@@ -31,7 +31,7 @@ test('C145 (3): sf-tag-group is a list of tags 4 apart', () => {
   assert.ok(JSON.stringify(names).includes('"sf-tag-group"'));
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/tag-group\/rule\.js';/u);
   const manifest = json('src/smart/tag-group/component.json');
-  assert.equal(manifest.version, '1.0.0');
+  assert.equal(manifest.version, '1.0.3');
   assert.deepEqual(manifest.settings.selection.enum ?? manifest.settings.selection.values ?? ['none', 'one', 'many'], ['none', 'one', 'many']);
   // The core holds its box before its code.
   assert.match(read('src/core/scss/_sf_css__placeholder.scss'), /:where\(sf-tag-group:not\(:defined\)\) \{[^}]*gap: var\((?:--sf-space-1\\\/4|--sf-gap--tags)\);/u);
@@ -106,8 +106,8 @@ test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropd
   assert.equal(json('src/component/dropdown/passport.json').version, '1.13.4'); // group build 7: the patch for moved files (the line had 1.13.2)
   assert.equal(json('src/smart/input-lookup/component.json').version, '1.15.3'); // group build 8: C208's patch above RG-S2's 1.15.2 (group build 7: the integrated number; the branch wrote 1.13.1)
   assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.15.3'); // group build 8
-  assert.equal(json('src/smart/tag/component.json').version, '1.11.0'); // group build 7: the GB6 notes numbered above the released 1.9.1
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.0'); // group build 7
+  assert.equal(json('src/smart/tag/component.json').version, '1.12.0'); // C280: a bare tag is a plain tag (above 1.11.3 on fix/utilities-c264)
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.12.0'); // group build 7
   assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
-  assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
+  assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.3');
 });
