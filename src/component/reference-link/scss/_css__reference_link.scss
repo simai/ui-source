@@ -461,7 +461,8 @@
   /* The icons are one line high: 1lh of the text the reference stands in.
      The glyph's size reads its parent's line; its box then reads its own
      line, which the icon sets to its size (line-height 1), so the box is
-     that same line. */
+     that same line. It stands at the line's top (below, outside the
+     layers). */
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon, .sf-reference-link__tab) {
     color: inherit;
     --sf-icon--font-size: 1lh;
@@ -532,4 +533,15 @@
       outline-color: Highlight;
     }
   }
+}
+
+/* A reference in text: its icons are the line's height, so they stand at the
+   line's top -- the box fills the line exactly and the glyph is centred on
+   it (C151 point 5). On the middle, the icon's own alignment (the parent's
+   baseline plus half its x-height), the box stood 1.6 below the line and
+   made it 25.6 for 24, 21.2 for 20 on a phone (first paint R222 open item
+   2). Unlayered, as the icon's own vertical-align is, so it can answer it. */
+.sf-reference-link.sf-reference-link--inline .sf-reference-link__icon,
+.sf-reference-link.sf-reference-link--inline .sf-reference-link__tab {
+  vertical-align: top;
 }

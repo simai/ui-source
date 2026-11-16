@@ -209,7 +209,7 @@ Loader could not mark) syncs the icons once (core.runtime 1.54.1, probe
 
 ## A page without the Loader
 
-core.css holds every `.sf-icon` at font-size 0 until it is marked
+core.css holds every `.sf-icon` unseen until it is marked
 `sf-icon-loaded`, and only the Loader marks icons. A page that links core.css
 and the icons sheet by hand, with no Loader, therefore drew no icon. The
 Loader now writes `data-sf-loader` on `html` when it boots; without it the
@@ -218,3 +218,11 @@ icons sheet (component.icons 1.1.0) lifts the hold, and its face
 draws the glyph. core.css alone carries no icon font: a page needs the icons
 sheet to draw icons, with or without the Loader (probe
 `tests/browser/icons-without-loader.browser.mjs`).
+
+Since tokens.typography 1.8.1 (2026-11-16) the hold keeps the glyph's box:
+the name's letters are unseen (`-webkit-text-fill-color: transparent`) and
+clipped, and the box is the one the icons sheet draws the glyph in -- the same
+size variables, the line's height when none is set -- so it also stands before
+that sheet arrives. At font-size 0 an icon sized in `em` or `lh` (an inline
+reference's `1lh`, a new-tab sign's `1em`) was 0 wide until its font came, and
+a drawn line grew by its width when it did (first paint R222).
