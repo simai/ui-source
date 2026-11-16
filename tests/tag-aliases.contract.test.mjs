@@ -113,6 +113,14 @@ test('tag helpers: both names, one selector, the definition and one note per pag
     assert.equal(note?.to, 'sf-test-new');
     assert.equal(note?.count, 2, 'each element is counted in SF.deprecations');
     assert.equal(note?.remove_after, '2099-01-01');
+    assert.equal(note?.package, undefined, 'a Framework element names no package');
+    // A package's old tag (C174 NM-3: sf-table and the other old Pro names)
+    // says which package ships the new one, in the note and on the console.
+    const table = tags.listTagAliases().find((row) => row.from === 'sf-table');
+    assert.equal(table?.package, 'pro', 'the static table keeps the package of a package row');
+    tags.noteTagAlias(table);
+    assert.match(warnings.at(-1), /<sf-table> is now <sf-view-table>; the old tag works until 2027-01-01\. Write <sf-view-table> from the component package pro\./u);
+    assert.equal(listDeprecations().find((entry) => entry.kind === 'tag' && entry.from === 'sf-table')?.package, 'pro', 'SF.deprecations points to the package');
     assert.equal(typeof globalThis.SF.tags.selector, 'function', 'SF.tags for scripts that are not bundles');
   } finally {
     Object.assign(globalThis, saved);

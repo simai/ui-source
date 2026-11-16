@@ -8,17 +8,22 @@ import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import tagAliases from '../src/core/js/tag-aliases.generated.js';
-import {checkComponentNames, readFrameworkComponents} from './component-names-kit.mjs';
+import {checkComponentNames, readFrameworkComponents, splitOpen} from './component-names-kit.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const json = (relative) => JSON.parse(readFileSync(resolve(root, relative), 'utf8'));
 const framework = readFrameworkComponents(root);
+const packages = json('contracts/registry/package-tags.json');
 const problems = checkComponentNames({
   registry: json('contracts/registry/names.json'),
   framework,
-  packages: json('contracts/registry/package-tags.json'),
+  packages,
   tagAliases,
 });
-for (const line of problems) console.log(line);
-console.log(`component names: ${framework.length} Framework tags, ${problems.length} problem(s)`);
-process.exit(problems.length ? 1 : 0);
+// Listed open problems are printed too: listed, not hidden.
+const {fresh, listed, gone} = splitOpen(problems, packages.open);
+for (const line of listed) console.log(`open (listed in package-tags.json): ${line}`);
+for (const line of fresh) console.log(`NEW: ${line}`);
+for (const line of gone) console.log(`GONE (remove it from package-tags.json open): ${line}`);
+console.log(`component names: ${framework.length} Framework tags, ${listed.length} open problem(s) listed, ${fresh.length} new, ${gone.length} gone`);
+process.exit(fresh.length || gone.length ? 1 : 0);

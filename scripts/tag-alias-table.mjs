@@ -75,7 +75,9 @@ export function tagAliasRows(repositoryRoot = root) {
 }
 
 export function tableSource(rows) {
-  const body = rows.map(({from, to, since, remove_after: removeAfter}) => `  Object.freeze({from: '${from}', to: '${to}', since: '${since}', remove_after: '${removeAfter}'}),`);
+  // A package's row names its package, so the deprecation note can say where
+  // the element lives now (C174 NM-3: the old Pro tags point to package pro).
+  const body = rows.map(({from, to, since, remove_after: removeAfter, package: pkg}) => `  Object.freeze({from: '${from}', to: '${to}', since: '${since}', remove_after: '${removeAfter}'${pkg ? `, package: '${pkg}'` : ''}}),`);
   return [
     '// Generated from the `tag` rows of src/smart/*/aliases.json and the element_aliases of',
     '// src/core/contracts/packages/*.package.json by scripts/tag-alias-table.mjs; do not edit.',

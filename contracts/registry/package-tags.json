@@ -1,15 +1,15 @@
 {
   "schema": "simai.framework.package-tags",
   "schema_version": 1,
-  "summary": "The Smart tags every package other than SIMAI Framework ships, read for the naming gate (scripts/component-names-kit.mjs, tests/component-names.release-gate.test.mjs): a Framework tag may not be one of them, a package tag starts with a family its owner holds in the name registry (contracts/registry/names.json), and a tag lives in one package -- the one allowed copy is the pro bundle of a set, until the bundle ends. Read on 2026-11-14 from each repository at the revision given (ui-control control/research/2026-11-14-component-sets, data/smart-components.json, commit 13d56e0b). Refresh it when a set releases a new tag.",
-  "read_on": "2026-11-14",
+  "summary": "The Smart tags every package other than SIMAI Framework ships, read for the naming gate (scripts/component-names-kit.mjs, tests/component-names.release-gate.test.mjs): a Framework tag may not be one of them, a package tag starts with a family its owner holds in the name registry (contracts/registry/names.json), and a tag lives in one package -- the one allowed copy is the pro bundle of a set, until the bundle ends. Read on 2026-11-14 from each repository at the revision given (ui-control control/research/2026-11-14-component-sets, data/smart-components.json, commit 13d56e0b). Refresh it when a set releases a new tag. Refreshed 2026-11-16 to the latest releases of pro (pro-2ba35fabb343), view (1.8.1) and chat (1.0.0); their tags are unchanged. Since 2026-11-16 (C174, the name gate): each package carries the passport family of every tag (families, read from component.json: pro from its release asset, a set from its repository at the revision), and open lists the problems the gate knows and the package still has to fix; the gate fails on a problem not listed and on a listed one that is gone.",
+  "read_on": "2026-11-16",
   "packages": [
     {
       "id": "pro",
       "kind": "bundle",
       "repository": "simai/ui-pro",
-      "revision": "db490626ba74",
-      "release": "pro-db490626ba74",
+      "revision": "2ba35fabb343",
+      "release": "pro-2ba35fabb343",
       "bundles": [
         "admin",
         "chat",
@@ -71,14 +71,32 @@
           "remove_after": "2027-01-01",
           "record": "tag-sf-message-log-to-sf-list-feed"
         }
-      ]
+      ],
+      "families": {
+        "sf-admin-menu": "menu",
+        "sf-chat-composer": "chat",
+        "sf-chat-interlocutor": "chat",
+        "sf-chat-message": "chat",
+        "sf-chat-threads": "list",
+        "sf-chat-window": "chat",
+        "sf-editor": "editor",
+        "sf-editor-content": "editor",
+        "sf-mail-canvas": "editor",
+        "sf-mail-inspector": "form",
+        "sf-mail-letters": "list",
+        "sf-mail-library": "list",
+        "sf-mail-structure": "list",
+        "sf-view": "table",
+        "sf-view-properties": "record",
+        "sf-view-table": "table"
+      }
     },
     {
       "id": "view",
       "kind": "set",
       "repository": "simai/ui-view",
-      "revision": "2717ca437e29",
-      "release": "view 1.7.1 (view-9eff67bbf11f)",
+      "revision": "4317b8431eb5",
+      "release": "view 1.8.1 (view-69a213f6773f)",
       "tags": [
         "sf-view",
         "sf-view-flow",
@@ -101,7 +119,13 @@
           "to": "sf-view-table",
           "remove_after": "2027-01-01"
         }
-      ]
+      ],
+      "families": {
+        "sf-view": "table",
+        "sf-view-flow": "record",
+        "sf-view-properties": "record",
+        "sf-view-table": "table"
+      }
     },
     {
       "id": "editor",
@@ -112,7 +136,10 @@
       "tags": [
         "sf-editor"
       ],
-      "former_tags": []
+      "former_tags": [],
+      "families": {
+        "sf-editor": "editor"
+      }
     },
     {
       "id": "chart",
@@ -141,7 +168,28 @@
         "sf-chart-treemap",
         "sf-chart-waterfall"
       ],
-      "former_tags": []
+      "former_tags": [],
+      "families": {
+        "sf-chart-bar": "chart",
+        "sf-chart-box": "chart",
+        "sf-chart-candlestick": "chart",
+        "sf-chart-funnel": "chart",
+        "sf-chart-gauge": "chart",
+        "sf-chart-heatmap": "chart",
+        "sf-chart-line": "chart",
+        "sf-chart-map": "chart",
+        "sf-chart-metric": "chart",
+        "sf-chart-parts": "chart",
+        "sf-chart-pie": "chart",
+        "sf-chart-radar": "chart",
+        "sf-chart-sankey": "chart",
+        "sf-chart-scatter": "chart",
+        "sf-chart-sparkline": "chart",
+        "sf-chart-sunburst": "chart",
+        "sf-chart-timeline": "chart",
+        "sf-chart-treemap": "chart",
+        "sf-chart-waterfall": "chart"
+      }
     },
     {
       "id": "effects",
@@ -158,8 +206,8 @@
       "id": "chat",
       "kind": "set",
       "repository": "simai/ui-chat",
-      "revision": "9ad5cf59fe96",
-      "release": "unreleased (branch set/1.0)",
+      "revision": "1305377247fe",
+      "release": "chat 1.0.0 (chat-306c026fa81f)",
       "tags": [
         "sf-chat-composer",
         "sf-chat-interlocutor",
@@ -173,7 +221,121 @@
           "to": "sf-chat-threads",
           "remove_after": "2027-01-01"
         }
-      ]
+      ],
+      "families": {
+        "sf-chat-composer": "chat",
+        "sf-chat-interlocutor": "chat",
+        "sf-chat-message": "chat",
+        "sf-chat-threads": "list",
+        "sf-chat-window": "chat"
+      }
+    }
+  ],
+  "open": [
+    {
+      "problem": "pro sf-admin-menu: its passport names family \"menu\", the first word of the tag is \"admin\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-chat-threads: its passport names family \"list\", the first word of the tag is \"chat\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-mail-canvas: its passport names family \"editor\", the first word of the tag is \"mail\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-mail-inspector: its passport names family \"form\", the first word of the tag is \"mail\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-mail-letters: its passport names family \"list\", the first word of the tag is \"mail\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-mail-library: its passport names family \"list\", the first word of the tag is \"mail\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-mail-structure: its passport names family \"list\", the first word of the tag is \"mail\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-view: its passport names family \"table\", the first word of the tag is \"view\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-view-properties: its passport names family \"record\", the first word of the tag is \"view\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "pro sf-view-table: its passport names family \"table\", the first word of the tag is \"view\" (family first, C174)",
+      "owner": "simai/ui-pro",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "view sf-view: its passport names family \"table\", the first word of the tag is \"view\" (family first, C174)",
+      "owner": "simai/ui-view",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "view sf-view-flow: its passport names family \"record\", the first word of the tag is \"view\" (family first, C174)",
+      "owner": "simai/ui-view",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "view sf-view-properties: its passport names family \"record\", the first word of the tag is \"view\" (family first, C174)",
+      "owner": "simai/ui-view",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "view sf-view-table: its passport names family \"table\", the first word of the tag is \"view\" (family first, C174)",
+      "owner": "simai/ui-view",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
+    },
+    {
+      "problem": "chat sf-chat-threads: its passport names family \"list\", the first word of the tag is \"chat\" (family first, C174)",
+      "owner": "simai/ui-chat",
+      "gap": "NM-5",
+      "since": "2026-11-16",
+      "fix": "the passport family becomes the first word of the tag in the package, then this row goes"
     }
   ]
 }
