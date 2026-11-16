@@ -26,7 +26,7 @@
     },
     "header-site": {
       "holds": "box",
-      "reads": "size: the site header's bar of its size step, its slot content out of view until the element is defined (HD-13)"
+      "reads": "size: the site header's bar of its size step, its slot content out of view until the element is defined (HD-13); a 1/2 bar whose tools, or nav and actions above its collapse step, hold a size-1 control (a button, segmented, language or menu of size 1 or none) holds the size-1 bar (RG-S2-7, 2026-11-16)"
     },
     "input": {
       "holds": "box",
