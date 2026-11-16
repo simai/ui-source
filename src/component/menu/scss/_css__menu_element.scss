@@ -1,5 +1,16 @@
 @use '../../../core/scss/mix/mix__places' as places;
 
+/* A row's border width is registered as a length: the row's padding gives
+   the border back (calc(padding - border width)), and a unitless 0 written
+   by a host -- var(--sf-0), measured on ui-doc and ui.simai.io -- would void
+   that calc, so every row lost its padding (RG-M-2). Registered, the 0 is
+   read as 0px and the padding stays. As the button's border widths. */
+@property --sf-menu-element--border-width {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0;
+}
+
 @layer sf.components {
   .sf-menu-element {
     /* A row's public variables wrap the values it drew before them; hover,

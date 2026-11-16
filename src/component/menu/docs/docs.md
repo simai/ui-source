@@ -37,6 +37,13 @@ a vertical drawer instead of shrinking the horizontal menu into several rows.
 Use `aria-current="page"` on the current link. The documentation tree preset
 marks it with the navigation plate (C23), leaves an open branch unfilled and
 gives a closed branch that holds it a medium label (C30 amended, R065 a).
+The tree finds that branch by its list: a `.sf-menu-item` without `.open`
+whose nested `.sf-menu` holds the `aria-current` link. A host that does not
+print the closed list -- it loads the level when the branch opens -- puts
+the class `sf-menu-element--holds-current` on that branch's
+`.sf-menu-element` (the row, not the `li`), and the tree marks it the same
+way; sf-menu writes the class itself on every closed branch that holds its
+current item. The row that carries `aria-current` itself never takes it.
 Every row of the tree stands on the size 1 step -- 40, 32 compact, 36 on a
 phone -- whether it is a link, a split row or words: the tree draws the step
 inside the words' box (the wrap's padding, `--sf-menu--wrap-padding-block`),
@@ -98,6 +105,19 @@ current row is the plate 4 from the column edge, its text and icons
 on-primary-container, its text 16 from the edge; an open parent of the
 current page has no plate. A rail's count badge is grey unless it names a
 colour; a disabled branch's chevron is as dim as its label.
+
+## A row's border width is a length (1.8.3)
+
+`--sf-menu-element--border-width` takes a length: `0px`,
+`calc(var(--sf-px) * 0)`, `var(--sf-px)`. The row's padding gives the border
+back (`calc(padding - border width)`), and a unitless `0` -- `var(--sf-0)` --
+voids that `calc` in an unregistered variable, so every row lost its padding
+(measured on ui-doc and ui.simai.io: words on the row's edge). The variable
+is now registered as a `<length>` (`@property`, inherited, initial `0`), as
+the button's border widths are, so a bare `0` reads as `0px` and the padding
+stays; write a length all the same. The per-side variables
+(`--sf-menu-element--border-top-width` and the rest) only draw the border
+and take `0` as before.
 
 ## Header navigation
 
