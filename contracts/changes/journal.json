@@ -13940,6 +13940,65 @@
       },
       "owner": "ui-source",
       "source": "src/utility/column/default/scss/_sf_var__column.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-layout-break-study.html LB-2"
+    },
+    {
+      "id": "class-ut1-grid-row",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-L GR-2, by the principle of owner decision C212 (one set per job): grid-row-auto and grid-row-span-1 ... 6, grid-row-span-full are second names of row-auto and row-span-* (one rule in utility/grid-row). They keep drawing until remove_after, and the Loader notes each once in SF.deprecations. utility.grid-row 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "grid-row-auto",
+          "to": "row-auto"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-1",
+          "to": "row-span-1"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-2",
+          "to": "row-span-2"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-3",
+          "to": "row-span-3"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-4",
+          "to": "row-span-4"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-5",
+          "to": "row-span-5"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-6",
+          "to": "row-span-6"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-full",
+          "to": "row-span-full"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write row-<x> for grid-row-<x>, keeping a breakpoint prefix (md:grid-row-span-2 -> md:row-span-2); sf-upgrade --apply rewrites it.",
+      "examples": {
+        "before": "<div class=\"grid-row-span-2\">",
+        "after": "<div class=\"row-span-2\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/grid-row/default/scss/_sf_css__grid_row.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-grid-study.html GR-2"
     }
   ]
 }

@@ -13,8 +13,10 @@
 
         // Grid Row Span Utilities
         @each $grid-row-name, $grid-row-value in $grid-row-array {
-            // Колонки называются col-*, строки назывались grid-row-*. Короткое
-            // имя — основное, длинное остаётся ради совместимости.
+            // Columns are col-*, rows are row-*: the short name is the public one.
+            // grid-row-* is a dated alias until 2027-01-01 (C212: one set per
+            // job; RG-UT-L GR-2; journal class-ut1-grid-row), noted in
+            // SF.deprecations, and keeps drawing the same rule.
             .#{$infix}row-#{$grid-row-name},
             .#{$infix}grid-row-#{$grid-row-name} {
                 grid-row: #{$grid-row-value};

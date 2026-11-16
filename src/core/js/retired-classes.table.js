@@ -276,6 +276,24 @@ export default {
       "names": {
         "layout-col-auto": null
       }
+    },
+    {
+      "journal": "class-ut1-grid-row",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One set per job (C212): rows are row-*, as columns are col-*. grid-row-auto and grid-row-span-* were one rule with row-auto and row-span-*. They keep drawing until remove_after.",
+      "names": {
+        "grid-row-auto": "row-auto",
+        "grid-row-span-1": "row-span-1",
+        "grid-row-span-2": "row-span-2",
+        "grid-row-span-3": "row-span-3",
+        "grid-row-span-4": "row-span-4",
+        "grid-row-span-5": "row-span-5",
+        "grid-row-span-6": "row-span-6",
+        "grid-row-span-full": "row-span-full"
+      }
     }
   ],
   "extended": {
