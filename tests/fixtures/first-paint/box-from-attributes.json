@@ -1,5 +1,5 @@
 {
-  "$comment": "The Smart components whose bare tag keeps its box before its code from a core rule (src/core/scss/_sf_css__placeholder.scss): what the rule holds (box: width and height; height: the height and the top, the width being its text's) and the attributes it reads. Gate 24b (tests/browser/first-paint-gate.browser.mjs) fails a bare tag of these that moves when its code arrives; every other component's bare jump is reported, not failed. A component joins the list in the same change as its core rule (first-paint study R222, 2026-11-13); the ten that already held their box joined with the first-paint status of 2026-11-16 (R222/R223). A covered component is loaded FIRST_PAINT_BARE_LOADS times (3) at the first width and at 390.",
+  "$comment": "The Smart components whose bare tag keeps its box before its code from a core rule (src/core/scss/_sf_css__placeholder.scss): what the rule holds (box: width and height; height: the height and the top, the width being its text's) and the attributes it reads. Gate 24b (tests/browser/first-paint-gate.browser.mjs) fails a bare tag of these that moves when its code arrives; every other component's bare jump is reported, not failed. A component joins the list in the same change as its core rule (first-paint study R222, 2026-11-13); the ten that already held their box joined with the first-paint status of 2026-11-16 (R222/R223). A covered component is loaded FIRST_PAINT_BARE_LOADS times (3) at the first width and at 390. core_rule false: the component holds without a rule of core (no box of its own, or its children hold theirs).",
   "components": {
     "breadcrumbs": {
       "holds": "box",
@@ -7,15 +7,18 @@
     },
     "drawer": {
       "holds": "box",
-      "reads": "nothing: a closed side panel is out of the page flow before its code and after (display none until defined, DR-13), so it holds no box and moves nothing (first-paint status R222)"
+      "reads": "nothing: a closed side panel is out of the page flow before its code and after (display none until defined, DR-13), so it holds no box and moves nothing (first-paint status R222)",
+      "core_rule": false
     },
     "editor-inline": {
       "holds": "box",
-      "reads": "nothing: the inline editor draws no box of its own around the page's text it edits, before its code and after (first-paint status R222)"
+      "reads": "nothing: the inline editor draws no box of its own around the page's text it edits, before its code and after (first-paint status R222)",
+      "core_rule": false
     },
     "editor-overlay": {
       "holds": "box",
-      "reads": "nothing: the overlay editor draws no box in the page before its code and after (first-paint status R222)"
+      "reads": "nothing: the overlay editor draws no box in the page before its code and after (first-paint status R222)",
+      "core_rule": false
     },
     "header-page": {
       "holds": "box",
@@ -47,15 +50,18 @@
     },
     "sortable": {
       "holds": "box",
-      "reads": "nothing but its children: its rows are the page's list items, each holding its own box (first-paint status R222)"
+      "reads": "nothing but its children: its rows are the page's list items, each holding its own box (first-paint status R222)",
+      "core_rule": false
     },
     "tag-group": {
       "holds": "box",
-      "reads": "layout (row or wrap) and its tags: the row's box, its tags 4 apart, each tag holding its own box (C145 (3))"
+      "reads": "layout (row or wrap) and its tags: the row's box, its tags 4 apart, each tag holding its own box (C145 (3))",
+      "core_rule": false
     },
     "wizard-step": {
       "holds": "box",
-      "reads": "nothing: a step is drawn by its sf-wizard and has no box of its own before or after its code (first-paint status R222)"
+      "reads": "nothing: a step is drawn by its sf-wizard and has no box of its own before or after its code (first-paint status R222)",
+      "core_rule": false
     }
   }
 }

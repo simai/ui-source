@@ -2059,7 +2059,7 @@
         "snapshots": 0
       },
       "before_code": {
-        "held_by": "core",
+        "held_by": "none",
         "holds": "box",
         "reads": "nothing: a closed side panel is out of the page flow before its code and after (display none until defined, DR-13), so it holds no box and moves nothing (first-paint status R222)"
       },
@@ -2383,7 +2383,7 @@
         "snapshots": 0
       },
       "before_code": {
-        "held_by": "core",
+        "held_by": "none",
         "holds": "box",
         "reads": "nothing: the inline editor draws no box of its own around the page's text it edits, before its code and after (first-paint status R222)"
       },
@@ -2526,7 +2526,7 @@
         "snapshots": 0
       },
       "before_code": {
-        "held_by": "core",
+        "held_by": "none",
         "holds": "box",
         "reads": "nothing: the overlay editor draws no box in the page before its code and after (first-paint status R222)"
       },
@@ -9474,7 +9474,7 @@
         "snapshots": 0
       },
       "before_code": {
-        "held_by": "core",
+        "held_by": "none",
         "holds": "box",
         "reads": "nothing but its children: its rows are the page's list items, each holding its own box (first-paint status R222)"
       },
@@ -10179,7 +10179,7 @@
         "snapshots": 0
       },
       "before_code": {
-        "held_by": "core",
+        "held_by": "none",
         "holds": "box",
         "reads": "layout (row or wrap) and its tags: the row's box, its tags 4 apart, each tag holding its own box (C145 (3))"
       },
@@ -11658,7 +11658,7 @@
         "snapshots": 0
       },
       "before_code": {
-        "held_by": "core",
+        "held_by": "none",
         "holds": "box",
         "reads": "nothing: a step is drawn by its sf-wizard and has no box of its own before or after its code (first-paint status R222)"
       },

@@ -20,8 +20,9 @@
 //     FIRST_PAINT_REPORT=<file>);
 //   - before the code: what core holds for the bare tag (a component in
 //     tests/fixtures/first-paint/box-from-attributes.json holds its box from
-//     its attributes; the others are held by the host -- printing the snapshot
-//     or sizing the element, C253).
+//     its attributes, held_by core; one with no box of its own, or whose
+//     children hold theirs, held_by none; the others are held by the host --
+//     printing the snapshot or sizing the element, C253).
 //
 // It replaces the «До прихода кода» row the docs generated from the manifest's
 // presentation.skeleton (shape, while_loading), which said «no skeleton» for
@@ -105,7 +106,7 @@ for (const component of components()) {
       snapshots: examples.filter((one) => one.skeleton).length,
     },
     before_code: covered[component.folder]
-      ? {held_by: 'core', holds: covered[component.folder].holds, reads: covered[component.folder].reads}
+      ? {held_by: covered[component.folder].core_rule === false ? 'none' : 'core', holds: covered[component.folder].holds, reads: covered[component.folder].reads}
       : {held_by: 'host', how: 'print the snapshot with its sheets, or size the element (--sf-skeleton-block-size)'},
     examples,
   };

@@ -261,7 +261,8 @@ one of two ways:
 component (by folder): `tag`, `version`; `skeleton` (`needed` -- the component
 has late data, `late` -- its late settings, `snapshots` -- how many skeleton
 snapshots it prints); `before_code` (`held_by: "core"` with what the core rule
-holds and reads, or `held_by: "host"` -- print or size, above); and per
+holds and reads; `held_by: "none"` when the bare tag has no box of its own
+or its children hold theirs; or `held_by: "host"` -- print or size, above); and per
 example `snapshot` and `skeleton` (paths under `distr/smart/<folder>/static/`,
 `skeleton` null when the example gives no late data; its sheets are that
 folder's `sheets.json`), and `box` at 1440 and 390: `printed` (the snapshot
@@ -274,6 +275,10 @@ FIRST_PAINT_REPORT=/tmp/fp.json FIRST_PAINT_WIDTHS=1440,390 node tests/browser/f
 node scripts/first-paint-docs.mjs --report=/tmp/fp.json
 node scripts/first-paint-docs.mjs --check   # snapshots, skeletons and late settings match the repository
 ```
+
+A report names only the components it measured; the others keep the boxes
+the file has. Measure every component at a pair cut (no component list) so
+every box is of that pair.
 
 A documentation site renders the section from the file of the pair it pins:
 the snapshot beside the drawn component, «скелет: да / не нужен», the box at
