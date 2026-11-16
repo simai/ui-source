@@ -1,5 +1,5 @@
 // Retired class names (owner decisions C185 (2), C186 (8) and C187 (1), 2026-11-14;
-// C208 (2), (3), 2026-11-15; C212 (6), 2026-11-16; C208 (2), (3) and C210 (5), 2026-11-15).
+// C208 (2), (3), 2026-11-15; C212 (6), 2026-11-16; C208 (2), (3) and C210 (5), 2026-11-15; C208 (2), (3) and C210 (5), 2026-11-15; C212 (6), 2026-11-16).
 // One table, core/js/retired-classes.table.js, lists every class
 // the Framework retires: a name, a family (pattern) or a whole utility sheet.
 // A retired class keeps drawing what it drew until remove_after, and the

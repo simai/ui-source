@@ -13,24 +13,34 @@ native `.sf-theme-button` control to the Loader-owned preference API.
 - `SF.Loader.changeTheme()` retains the existing binary toggle behavior.
 - `sf-theme-change` exposes the effective `theme` and selected `preference`.
 
-A toggle (no `data-theme`) shows the theme it switches to: Framework writes
-`dark_mode` (a moon) on a light page and `light_mode` (a sun) on a dark one --
-the `icon` of an `sf-icon-button` or `sf-button` host, or the text of a native
-button's own `.sf-icon`. An icon left empty, or already one of those two, is
-written; an author's other glyph stays.
+A single theme button (no `data-theme`) is the two-theme cycle of
+`<sf-button-icon theme-cycle="light dark">` (owner decision C244, 2026-11-16):
+its glyph is the theme on screen -- `dark_mode` (a moon) on a dark page,
+`light_mode` (a sun) on a light one --, written as the `icon` of an
+`sf-icon-button` or `sf-button` host or the text of a native button's own
+`.sf-icon`. An icon left empty, or already one of those two, is written; an
+author's other glyph stays. Its name says the theme on screen ("Тема: тёмная")
+and its tooltip (`title`) what a press gives ("Тема: тёмная. Нажмите —
+светлая"), in the page's language. It has no pressed state: no `aria-pressed`
+and no `.active`.
 
 The short `data-theme="system|light|dark"` attribute turns a theme button into
 an explicit preference choice. Without it, the button keeps binary toggle
 behavior.
 
-A toggle (no `data-theme`) represents the dark-theme option with
-`aria-pressed` and keeps one name: a genuine on/off toggle, drawn pressed while
-on (rule C12). A choice (`data-theme`) is one option of a set, not a toggle: it
-carries `role="radio"` and `aria-checked`, never `aria-pressed`, and the chosen
-one keeps the chosen-segment look (`.active`). The component synchronizes these
-values without changing focus. Event delegation keeps
-buttons inserted later operable. `SF_BOOT_CONFIG.theme === false` disables all
-theme mutation.
+A choice (`data-theme`) is one option of a set, not a toggle: it carries
+`role="radio"` and `aria-checked`, never `aria-pressed`, and the chosen one
+keeps the chosen-segment look (`.active`). The component synchronizes these
+values without changing focus. Event delegation keeps buttons inserted later
+operable. `SF_BOOT_CONFIG.theme === false` disables all theme mutation.
+
+## First paint
+
+Until a theme class is on `html`, core.css follows the device
+(`prefers-color-scheme`), so a reader with a dark device sees no white first
+frame. An explicit choice saved in the `sf-theme` cookie is known before the
+first frame only to the server or to a script in the page's head: see
+`docs/developer/theme-first-paint.md`.
 
 A ready three-way switch (system, light, dark) is
 `<sf-segmented theme-switch>`: it selects the

@@ -52,6 +52,7 @@ export const LEGACY_IDS = Object.freeze({
   'component/scrollbar': 'sf-scrollbar',
   'component/spinner': 'sf-spinner',
   'component/swiper': 'sf-swiper',
+  'component/theme': 'sf-theme-button',
   'component/toast': 'sf-toast',
   'core/file-size': 'sf-file-size',
   'core/relative-day': 'sf-relative-day',

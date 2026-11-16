@@ -199,6 +199,9 @@
       "theme": [
         "sf-theme-generator"
       ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
       "tile": [
         "sf-tile-metric"
       ],
@@ -219,8 +222,8 @@
   },
   "coverage": {
     "kk": {
-      "words": 1205,
-      "translated": 1205,
+      "words": 1209,
+      "translated": 1209,
       "share": 100
     }
   }

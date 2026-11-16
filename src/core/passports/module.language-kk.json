@@ -174,6 +174,7 @@
     "src/core/lang/kk/switch.json",
     "src/core/lang/kk/tabs.json",
     "src/core/lang/kk/tag.json",
+    "src/core/lang/kk/theme-button.json",
     "src/core/lang/kk/theme.json",
     "src/core/lang/kk/tile.json",
     "src/core/lang/kk/time.json",
@@ -262,6 +263,6 @@
     "src/smart/tree/lang/kk.json",
     "src/smart/wizard/lang/kk.json"
   ],
-  "content_sha256": "985b4d82e4f8f2880ee1bf96e8ab522267ccfea640f5a188d83d17091f3170fb",
+  "content_sha256": "d2d8c3fff342940df5dd64e07d6f84f1faa4d74f54b89c4eda9759724c94f77b",
   "dependencies": []
 }

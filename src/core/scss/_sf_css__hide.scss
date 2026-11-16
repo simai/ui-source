@@ -35,6 +35,15 @@
     border-width: 0 !important;
   }
 
+  // print-only hides on screen from the first paint (OT 28): in the display-
+  // print sheet alone it showed its paper-only content until the Loader had
+  // fetched that sheet. The paper side and the breakpoint forms stay there.
+  @media not print {
+    .print-only {
+      display: none;
+    }
+  }
+
   .not-sr-only {
     position: static !important;
     width: auto !important;

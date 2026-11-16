@@ -9,6 +9,18 @@
      exactly as before: the values here are var() references, resolved after the
      branch is chosen, and a per-theme override still wins by being more
      specific. */
+  /* No theme class yet (OT 37): the first frame follows the device. The
+     theme is set by the Loader from the deferred core.js, after the page has
+     painted once; with no class the roles below were not declared at all and
+     the canvas stayed white, so a reader with a dark device saw a white
+     flash on every page. Until a class arrives the root takes the device's
+     scheme and the roles, which light-dark() resolves by it; a class, from
+     the Loader, a head script or the server (docs/developer/theme-first-paint.md),
+     wins as before: same weight, written after. */
+  :root {
+    color-scheme: light dark;
+  }
+
   .theme-light {
     color-scheme: light;
   }
@@ -33,6 +45,7 @@
     color: var(--sf-on-surface);
   }
 
+  :root,
   .theme-light,
   .theme-dark {
     --sf-neutral: light-dark(var(--sf-neutral-40), var(--sf-neutral-80));
