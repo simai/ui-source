@@ -13733,6 +13733,109 @@
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
     },
     {
+      "id": "class-c212-alignment",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C212 (2): alignment is written with the SIMAI Framework axis names -- content-main-*, content-cross-*, items-main-*, items-cross-*, self-main-*, self-cross-* and, for both axes, items-*, content-*, self-*. The Tailwind spelling justify-* (one rule with content-main-* in utility/justify-content) works through the Loader's conversion only, which rewrites it to content-main-* before the page is read (src/core/js/tailwind-map.js, unchanged); the class itself keeps drawing for pages without the Loader until remove_after. The nine two-axis classes of utility/flex-align (start-start ... end-end: main axis, then cross axis) become two classes, content-main-<main> items-cross-<cross>; they wrote flex-start and flex-end on the cross axis where items-cross-* writes start and end (the same place except under flex-wrap: wrap-reverse). The old names keep drawing what they drew until remove_after, and the Loader notes each flex-align name once in SF.deprecations (core/js/retired-classes.table.js). utility.justify-content 1.1.0, utility.flex-align 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "justify-start",
+          "to": "content-main-start"
+        },
+        {
+          "component": "utility",
+          "from": "justify-end",
+          "to": "content-main-end"
+        },
+        {
+          "component": "utility",
+          "from": "justify-center",
+          "to": "content-main-center"
+        },
+        {
+          "component": "utility",
+          "from": "justify-between",
+          "to": "content-main-between"
+        },
+        {
+          "component": "utility",
+          "from": "justify-around",
+          "to": "content-main-around"
+        },
+        {
+          "component": "utility",
+          "from": "justify-evenly",
+          "to": "content-main-evenly"
+        },
+        {
+          "component": "utility",
+          "from": "start-start",
+          "to": "content-main-start items-cross-start",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*start-start(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "start-center",
+          "to": "content-main-start items-cross-center",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*start-center(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "start-end",
+          "to": "content-main-start items-cross-end",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*start-end(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "center-start",
+          "to": "content-main-center items-cross-start",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*center-start(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "center-center",
+          "to": "content-main-center items-cross-center",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*center-center(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "center-end",
+          "to": "content-main-center items-cross-end",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*center-end(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "end-start",
+          "to": "content-main-end items-cross-start",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*end-start(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "end-center",
+          "to": "content-main-end items-cross-center",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*end-center(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "end-end",
+          "to": "content-main-end items-cross-end",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*end-end(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write content-main-<x> for justify-<x> (sf-upgrade --apply rewrites it). Write content-main-<main> items-cross-<cross> for a flex-align class <main>-<cross>, keeping a breakpoint prefix on both (md:center-end -> md:content-main-center md:items-cross-end); sf-upgrade reports these in class attributes for a person to rewrite.",
+      "examples": {
+        "before": "<div class=\"flex justify-between center-center\">",
+        "after": "<div class=\"flex content-main-between content-main-center items-cross-center\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/justify-content/default/scss/_sf_css__justify_content.scss; src/utility/flex-align/default/scss/_sf_css__align.scss; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 2; control/docs-review/decisions.md C212"
+    },
+    {
       "id": "class-c212-length",
       "recorded_on": "2026-11-16",
       "stage": "compat",

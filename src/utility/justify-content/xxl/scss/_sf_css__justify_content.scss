@@ -11,7 +11,15 @@
     @include breakpoint-media(xxl) {
         $infix: breakpoint-infix(xxl, $breakpoint-array);
 
-        // Flex Justify Content Utilities
+        // Flex Justify Content Utilities. content-main-* is the public name (owner
+
+        // decision C212 (2)); justify-* is the Tailwind spelling, deprecated until
+
+        // 2027-01-01: the Loader converts it to content-main-* (tailwind-map.js),
+
+        // and the class here keeps drawing for pages without the Loader
+
+        // (core/js/retired-classes.table.js, journal class-c212-alignment).
         @each $flex-justify-content-name, $flex-justify-content-value in $flex-justify-content-array {
             .#{$infix}justify-#{$flex-justify-content-name},
             .#{$infix}content-main-#{$flex-justify-content-name} {

@@ -9,7 +9,13 @@
     @include breakpoint-media(xxl) {
         $infix: breakpoint-infix(xxl, $breakpoint-array);
 
-        // FLEX ALIGN CONTENT
+        // FLEX ALIGN CONTENT (deprecated until 2027-01-01, owner decision C212 (2):
+
+        // write content-main-<main> items-cross-<cross>, e.g. center-center ->
+
+        // content-main-center items-cross-center; core/js/retired-classes.table.js,
+
+        // journal class-c212-alignment). The classes keep drawing what they drew.
         // First - main axis, second for cross axis
 
         // Align to start position on cross axis and start position on cross axis
