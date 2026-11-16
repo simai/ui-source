@@ -149,3 +149,21 @@ square corner and stand `--sf-slider-thumbnails--space-between` apart.
   glyph needs. A ghost or link icon button in `--light` stands on the light
   page surface, with the button's hover and press fill laid over it (as on
   `--plate`): 11.17:1 in both themes.
+
+## Joint pass 2026-11-16 (1.3.0, decisions C245, C246)
+
+- The dots are 8 px and their pill 24 x 8 without a size step: `--plate` and
+  `--bare` wrote none and drew 2 x 2 dots. They stand 8 apart
+  (`--sf-slider-dots--gap`, `--sf-space-1/3`; owner decision C246), a step of
+  16; a dot's press area is its step wide and a target high.
+- An arrow button with nowhere to go is disabled by the engine (swiper 1.2.0,
+  C245) and draws the button's disabled look once; the fade
+  (`--sf-opacity-disabled`) is only for an arrow drawn with another element.
+  Hidden slides are inert by the engine too; the slider's own guards are gone.
+- `sf-slider--content` picks 1.15 or 2.2 cards by the slider's own width, not
+  the window's: a 264 px column on a wide screen shows 1.15 cards.
+- The pause button of class markup changes its glyph with its name (pause /
+  play_arrow), as `<sf-slider>` does.
+- `bindSlider(root, parts)` takes the class names of another block; the old
+  `.sf-carousel` binds through it until 2027-01-01 (component.carousel 1.4.0,
+  C247), and `data-delay` is read as the autoplay delay there.
