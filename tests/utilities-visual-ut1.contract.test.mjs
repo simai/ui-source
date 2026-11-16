@@ -75,7 +75,10 @@ test('(4) ANIM-4 and (5) ANIM-5: .animation on the enter role; motion utilities 
 test('(6) LNK-4: a link- class is read at the start of a class name', () => {
   const link = read('src/core/scss/_sf_css__link.scss');
   assert.doesNotMatch(link, /\[class\*=link-\]\s*[,~{]/u);
-  assert.ok(link.includes(":is([class^='link-'], [class*=' link-'], [class*=':link-']) ~ a"));
+  for (const selector of ["a[class^='link-']", "a[class*=' link-']", "a[class*=':link-']", "[class^='link-'] ~ a", "[class*=' link-'] ~ a", "[class*=':link-'] ~ a"]) {
+    assert.equal(link.split(selector).length - 1, 4, selector);
+  }
+  assert.doesNotMatch(link, /:is\(\[class/u, 'a list with :is() is split by the build');
 });
 
 test('(7) TYP-2: the Tailwind conversion writes current names, never a retired one', () => {
