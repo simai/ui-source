@@ -30,7 +30,7 @@ function getter(name) {
 const words = (file) => (key, {vars = {}} = {}) => String(file.runtime[key]).replace(/\{([a-z-]+)\}/gu, (_, name) => String(vars[name]));
 
 test('C167 (1): two settings, shown-label and load (button | auto, default button)', () => {
-  assert.equal(component.version, '1.7.0');
+  assert.equal(component.version, '1.8.6'); // small fixes SF1 (C167 at 1.7.0)
   assert.deepEqual(component.settings['shown-label'], {
     type: 'string',
     'default-from': 'runtime.shown',

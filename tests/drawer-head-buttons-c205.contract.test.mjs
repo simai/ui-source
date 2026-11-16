@@ -118,8 +118,8 @@ test('C205 (1): the content headings one rung below the title, all one size, con
 });
 
 test('C205: the version, its decision and its migration step', () => {
-  assert.equal(manifest.version, '1.16.1');
-  assert.match(manifest['x-decisions'][0], /^version 1\.16\.1 \(2026-11-15, owner decision C205/u);
+  assert.equal(manifest.version, '1.16.5'); // small fixes SF1 (C205 at 1.16.1)
+  assert.ok(manifest['x-decisions'].some((line) => /^version 1\.16\.1 \(2026-11-15, owner decision C205/u.test(line)));
   const step = manifest.compatibility?.migrations?.find?.((entry) => entry.to === '1.16.1')
     ?? JSON.stringify(manifest).match(/"from":"1\.16\.0","to":"1\.16\.1"/u);
   assert.ok(step, 'a 1.16.0 -> 1.16.1 migration step');

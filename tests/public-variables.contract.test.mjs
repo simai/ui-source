@@ -117,7 +117,9 @@ const FOLDERS = {
   // Keys (2026-11-08, R030, rule C04): one look per place, in the kbd sheet.
   kbd: 'kbd',
   // The display parts of the structured-content types (2026-11-01): CSS only.
-  card: 'card',
+  // The card title rule rides the core sheet too, for the first frame (#261
+  // N3, 2026-11-17): one mixin, in core's mix folder, both sheets include.
+  card: ['card', 'src/core/scss/mix'],
   figure: 'figure',
   procedure: 'procedure',
   // The flag (2026-11-10, docs precheck FL-02): its size, corner, hairline and placeholder.
@@ -126,7 +128,7 @@ const FOLDERS = {
 
 const scss = async (folder) => {
   if (Array.isArray(folder)) return (await Promise.all(folder.map(scss))).join('\n');
-  const dir = folder === 'core' ? 'src/core/scss' : folder.endsWith('/templates') ? `src/${folder}` : folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
+  const dir = folder === 'core' ? 'src/core/scss' : folder.startsWith('src/') ? folder : folder.endsWith('/templates') ? `src/${folder}` : folder.includes('/') ? `src/${folder}/scss` : `src/component/${folder}/scss`;
   const names = (await readdir(new URL(`../${dir}`, import.meta.url))).filter((name) => /\.s?css$/u.test(name));
   return (await Promise.all(names.map((name) => read(`${dir}/${name}`)))).join('\n');
 };
