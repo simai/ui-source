@@ -64,6 +64,9 @@ test('C225: an empty growing textarea keeps its min-rows height and ellipsizes t
   const t = read('src/component/textarea/scss/_css__textarea.scss');
   assert.match(rule(t, '.sf-textarea.sf-textarea--auto-grow textarea[rows]:placeholder-shown'),
     /max-block-size: calc\(var\(--sf-textarea--min-rows, 1\) \* var\(--sf-textarea--line\) \+ var\(--sf-textarea--row-frame\)\);/u);
+  const empty = rule(t, '.sf-textarea.sf-textarea--auto-grow textarea[rows]:placeholder-shown');
+  assert.match(empty, /white-space: nowrap;/u);
+  assert.match(empty, /text-overflow: ellipsis;/u);
   const ph = rule(t, '.sf-textarea.sf-textarea--auto-grow textarea[rows]::placeholder');
   assert.match(ph, /white-space: nowrap;/u);
   assert.match(ph, /text-overflow: ellipsis;/u);
