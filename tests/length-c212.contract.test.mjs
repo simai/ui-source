@@ -123,7 +123,7 @@ test('C212 (4): space-x / space-y name gap-x / gap-y; reverse has no twin', () =
   assert.ok(ruleOf('space').test('space-x-2'), 'space-x-2 still loads');
 });
 
-test('C212 (4): a raw spacing rung names the nearest space step (desktop, 16px rem)', () => {
+test('C212 (4): a raw spacing rung names the nearest space step (desktop, default root size)', () => {
   const cases = {
     'm-a0': 'm-0', 'm-a4': 'm-1/4', 'm-a8': 'm-1/3', 'm-b2': 'm-1/2', 'm-b6': 'm-1', 'm-c0': 'm-2', 'm-c2': 'm-3',
     'm-c6': 'm-4', 'm-d0': 'm-5', 'm-d2': 'm-6', 'm-d6': 'm-7', 'm-e0': 'm-8', 'm-i9': 'm-8',

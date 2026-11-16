@@ -182,7 +182,7 @@ export default {
       "component": "utility",
       "since": "2026-11-16",
       "remove_after": "2027-01-01",
-      "note": "Lengths with no exact twin in the system steps: they keep drawing what they drew until remove_after, and the name to write is the nearest, which looks different. w-1 ... w-99 (percent) -> the nearest fraction in lowest terms (w-33 -> w-1/3). space-x-N / space-y-N (margins on every child but the first) -> gap-x-N / gap-y-N on a flex or grid parent; space-x-reverse and space-y-reverse go with them (a gap needs no reverse). The raw rungs a0 ... i9 of margin-ext, padding-ext, scroll-margin-ext and scroll-padding-ext (retired by C187 (2)) -> the space step nearest to the rung on a desktop at 16px rem (m-b6 = 16 -> m-1; a step is 4 ... 80 and follows the device, a rung does not); scroll-p-inline-start/-end -> scroll-pl/-pr; a negative scroll rung has no step.",
+      "note": "Lengths with no exact twin in the system steps: they keep drawing what they drew until remove_after, and the name to write is the nearest, which looks different. w-1 ... w-99 (percent) -> the nearest fraction in lowest terms (w-33 -> w-1/3). space-x-N / space-y-N (margins on every child but the first) -> gap-x-N / gap-y-N on a flex or grid parent; space-x-reverse and space-y-reverse go with them (a gap needs no reverse). The raw rungs a0 ... i9 of margin-ext, padding-ext, scroll-margin-ext and scroll-padding-ext (retired by C187 (2)) -> the space step nearest to the rung on a desktop at the default root size (m-b6 -> m-1; a step is 4 ... 80 and follows the device, a rung does not); scroll-p-inline-start/-end -> scroll-pl/-pr; a negative scroll rung has no step.",
       "names": {
         "w-1": "w-1/12",
         "w-2": "w-1/12",
