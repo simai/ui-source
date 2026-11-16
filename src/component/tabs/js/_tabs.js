@@ -224,7 +224,8 @@ async function openMore(root, event) {
   const buttons = getTabButtons(root);
   const entries = left.map((button) => ({
     id: String(buttons.indexOf(button)),
-    text: (button.getAttribute('aria-label') || button.textContent || '').trim(),
+    // The label alone: textContent of an icon tab holds the icon's ligature word.
+    text: (button.getAttribute('aria-label') || button.querySelector('.sf-button-text-container')?.textContent || button.textContent || '').trim(),
     icon: button.querySelector('.sf-icon')?.textContent.trim() || undefined,
     disabled: isDisabled(button) || undefined,
   })).filter((entry) => entry.text && entry.id !== '-1');
