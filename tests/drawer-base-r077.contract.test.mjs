@@ -23,8 +23,9 @@ test('drawer r-077 (1): edge controls stand outside only while there is room, el
   assert.match(source, /this\.recheckOpener\(\);\n\s+\/\/ The room beside a panel of a fixed width[^\n]*\n[^\n]*\n\s+this\.onPanelScroll\(\);/u);
   // In the head the close is ghost, not the glass plate.
   assert.match(source, /const outside = context\.closePlacement === 'outside' && !this\._edgeInHead;/u);
-  // The glass plate and the head row follow the in-head state, not «whole».
-  assert.equal((sheet.match(/:not\(\[data-sf-drawer-edge-in-head\]\) \.sf-drawer-edge/gu) || []).length, 4);
+  // The glass plate and the head row follow the in-head state, not «whole»:
+  // the place, and the scrim-control plate, hover, press, glyph and cross (VP-16, 1.16.3).
+  assert.equal((sheet.match(/:not\(\[data-sf-drawer-edge-in-head\]\) \.sf-drawer-edge/gu) || []).length, 6);
   assert.doesNotMatch(sheet, /data-sf-drawer-whole/u);
   assert.match(sheet, /\.sf-drawer\[data-sf-drawer-edge-in-head\]:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-edge \{[^}]*inset-inline: auto calc\(var\(--sf-drawer-edge-end, calc\(var\(--sf-px\) \* 0\)\) \+ var\(--sf-drawer-gutter, var\(--sf-space-2\)\)\);/u);
   assert.match(sheet, /\.sf-drawer\[data-sf-drawer-edge-in-head\]:has\(\.sf-drawer-edge:not\(:empty\)\) \.sf-drawer-head \{\s*padding-inline-end: calc\(var\(--sf-drawer--inset-end\) \+ var\(--sf-drawer-edge-room/u);
@@ -64,7 +65,8 @@ test('drawer r-077 (3): content headings start below the panel title, by role to
 });
 
 test('drawer r-077: the version and its migration step', () => {
-  assert.equal(manifest.version, '1.16.0');
+  // 1.16.3 is a patch above it (VP-16): the step to 1.16.0 stays.
+  assert.equal(manifest.version, '1.16.3');
   const steps = JSON.stringify(manifest);
   assert.match(steps, /"from":"1\.15\.0","to":"1\.16\.0"/u);
 });
