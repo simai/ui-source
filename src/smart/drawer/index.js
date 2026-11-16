@@ -5,7 +5,7 @@ import {noteDeprecated} from '../../core/js/deprecations';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {carryLayerOrigin, closeLayer, focusablesIn, isTopLayer, layerIndex, layerZIndexAt, openLayer, openLayers,
   raiseLayer, returnLayerFocus, landmarksAround, startClosedLayerContent, updateLayer} from '../../core/js/layer-stack';
-import {inHandleRow, scrollsAlong, startsOnControl, trackSwipe} from '../../core/js/sheet-swipe';
+import {scrollsAlong, startsOnControl, trackSwipe} from '../../core/js/sheet-swipe';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import enFile from './lang/en.json';

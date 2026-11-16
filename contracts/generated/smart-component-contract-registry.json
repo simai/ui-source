@@ -753,7 +753,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/drawer/smart.manifest.json",
-      "manifest_sha256": "c5f13eb2ec8bc9eb7f9e2b584c4d59ea2474a1dc25ba42e607bef4e30b18b769",
+      "manifest_sha256": "e72384e3a8722e6089610001549bc2c792d0efbe7ab94748c355a220c9632801",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
