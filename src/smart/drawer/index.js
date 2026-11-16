@@ -1306,13 +1306,16 @@ class SfDrawer extends DrawerElement {
   // The first focus of a modal panel (study DR-12, dispatcher 2026-11-14, as
   // sf-modal's initial focus does it for a window): the element the page
   // marked with `autofocus`, else the first field of the content (a text
-  // field, a list, a text area), else its first control, else the panel. The
-  // head's close and the edge do not count: they are the panel's, not the
-  // content's. The panel itself took the focus before, so a filter panel
-  // opened with its search field one Tab away. A field drawn after the panel
-  // opened (an sf-input still loading) is waited for, frame by frame for up
-  // to two seconds, while the focus is still on the panel; anything the
-  // person does in between wins.
+  // field, a list, a text area), else the panel. The head's close and the
+  // edge do not count: they are the panel's, not the content's. A form opens
+  // with its field (C159 (9)), so a filter panel opened with its search field
+  // one Tab away no longer. Content with nothing to fill in -- a record to
+  // read, values with copy buttons -- keeps the focus on the panel, which is
+  // named by its title and draws no ring: the first control took it before,
+  // and its ring and tooltip covered the value beside it (dispatcher
+  // 2026-11-16). A field drawn after the panel opened (an sf-input still
+  // loading) is waited for, frame by frame for up to two seconds, while the
+  // focus is still on the panel; anything the person does in between wins.
   focusFirst() {
     const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
     if (!panel) return;
@@ -1337,7 +1340,7 @@ class SfDrawer extends DrawerElement {
     }
     const body = panel.querySelector('[data-sf-drawer-body]');
     const stops = focusablesIn(body).filter((node) => node.tabIndex >= 0);
-    return stops.find((node) => node.matches(FIELD)) || stops[0] || null;
+    return stops.find((node) => node.matches(FIELD)) || null;
   }
 
   restoreFocus() {
