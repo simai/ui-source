@@ -1063,7 +1063,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.checkbox",
-      "version": "1.5.1"
+      "version": "1.5.2"
     },
     "sf-divider": {
       "component": "component.content-divider",

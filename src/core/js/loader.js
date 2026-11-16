@@ -779,6 +779,7 @@ SFLoaderPlugin.prototype.rulesChanged = function () {
   this.customElementRules = null;
   this.clearAttributeRuleIndex();
   this.clearRegexpScanRules();
+  this.scriptWhenRules = null;
   this.attrMatchCache.clear();
   this.regexMatchCache.clear();
   if (!this.prepareInit || typeof document === 'undefined' || !document.body) {
@@ -788,6 +789,7 @@ SFLoaderPlugin.prototype.rulesChanged = function () {
     this.scanCustomElements(document.body);
     this.scanAttributes(document.body);
     if (!this.pendingRegex) this.searchRegexp('');
+    this.loadScriptsWhen(document.body);
   });
 };
 
@@ -2874,6 +2876,16 @@ SFLoaderPlugin.prototype.search = function () {
         return;
       }
 
+      // An element a regexp rule names (a kbd, a pre > code) added later: the
+      // attribute scan below does not see a bare tag (queue item 203).
+      for (const [key, rule] of this.getRegexpScanRules()) {
+        if (this.module[key] || !this.ruleMatchesElements(rule, objHTML)) continue;
+        this.setExistCookie(key);
+        totalItemCount++;
+        newPlugins.push(key);
+      }
+      this.loadScriptsWhen(objHTML);
+
       // The root passed shouldSkipNode; the walker rejects an ignored or
       // excluded subtree below it, and only an element with an attribute a
       // rule reads is read (scanAttributes does the same).
@@ -2942,6 +2954,7 @@ SFLoaderPlugin.prototype.search = function () {
           }
           processedAttributeTargets.add(change.target);
           processedAttributeTargetsCount++;
+          this.loadScriptsWhen(change.target);
 
           const staticIconMutation = this.processStaticIconMutation(
             change.target,
@@ -4346,6 +4359,9 @@ SFLoaderPlugin.prototype.searchRegexp = function (event, html = null) {
   }
 
   const matched = [];
+  // The elements a rule names by tag are looked for in the whole scope as
+  // well: the markup above is its first 4 KB, without pre and code.
+  const scope = html ? (html.nodeType === Node.ELEMENT_NODE ? html : null) : document.body;
   for (const [key] of filteredRules) {
     const item = SF.RuleLoader[key];
     const regex = item.regex || item;
@@ -4354,6 +4370,9 @@ SFLoaderPlugin.prototype.searchRegexp = function (event, html = null) {
     if (re.global || re.sticky) re.lastIndex = 0;
     if (re.test(body)) {
       matched.push(key);
+      this.setExistCookie(key);
+    } else if (scope && this.ruleMatchesElements(item, scope)) {
+      // Not cached by the prefix: the prefix alone did not match.
       this.setExistCookie(key);
     }
   }
@@ -4430,6 +4449,88 @@ SFLoaderPlugin.prototype.getObserverFilteredHTMLPrefix = function (node, limit) 
   };
   write(node);
   return out;
+};
+
+// The element names a regexp rule writes as markup, `<kbd\b`, `<sf-tree(?=`,
+// `<pre\b[^>]*>\s*<code\b`: '' for one that names none (`<\s*i`, a class).
+const RULE_ELEMENT = /<([a-z][a-z0-9]*(?:-[a-z0-9]+)*)(?=\\b|\(\?=|\[|\\s|$)/giu;
+function ruleElementNames(rule) {
+  const regex = rule?.regex ? rule.regex : rule;
+  const source = regex instanceof RegExp ? regex.source : typeof regex === 'string' ? regex : '';
+  return [...new Set([...source.matchAll(RULE_ELEMENT)].map((match) => match[1].toLowerCase()))];
+}
+
+// The start of an element as the markup scan writes it, with its first child
+// element when only white space stands before it (`<pre><code>`).
+function elementStart(el) {
+  let out = `<${el.localName}`;
+  for (const attribute of el.attributes) out += ` ${attribute.name}="${escapeAttribute(attribute.value)}"`;
+  out += '>';
+  const child = el.firstElementChild;
+  if (!child) return out;
+  let before = '';
+  for (let node = el.firstChild; node && node !== child; node = node.nextSibling) before += node.textContent || '';
+  if (before.trim()) return out;
+  out += `<${child.localName}`;
+  for (const attribute of child.attributes) out += ` ${attribute.name}="${escapeAttribute(attribute.value)}"`;
+  return `${out}>`;
+}
+
+// A regexp rule that names an element (kbd, pre > code) matches one anywhere
+// in `scope`, not only in the first 4 KB of the page's markup the regexp scan
+// reads (simai/ui-source loader, queue item 203: a kbd low on a long page, a bare
+// pre > code, which that markup leaves out). The rule's own pattern is tested
+// on the element's start, so it matches what it matched in the markup. As in
+// the markup scan, nothing inside pre or code (a code sample), in an ignored
+// subtree or in a script or template counts.
+SFLoaderPlugin.prototype.ruleMatchesElements = function (rule, scope) {
+  if (!scope?.querySelectorAll) return false;
+  if (!this.ruleElementNamesCache) this.ruleElementNamesCache = new WeakMap();
+  const key = rule && typeof rule === 'object' ? rule : null;
+  let names = key ? this.ruleElementNamesCache.get(key) : null;
+  if (!names) {
+    names = ruleElementNames(rule);
+    if (key) this.ruleElementNamesCache.set(key, names);
+  }
+  if (!names.length) return false;
+  const regex = rule?.regex ? rule.regex : rule;
+  const re = regex instanceof RegExp ? regex : new RegExp(regex, regex?.flags || '');
+  const selector = names.join(',');
+  const candidates = scope.matches?.(selector) ? [scope, ...scope.querySelectorAll(selector)] : scope.querySelectorAll(selector);
+  for (const el of candidates) {
+    if (el.parentElement?.closest?.('pre, code')) continue;
+    if (el.closest?.(`${OBSERVER_IGNORE_SELECTOR}, script, style, template, noscript`)) continue;
+    if (re.global || re.sticky) re.lastIndex = 0;
+    if (re.test(elementStart(el))) return true;
+  }
+  return false;
+};
+
+// Rules whose script comes only where an element asks for it (`jsWhen`, a
+// selector): kbd's sheet draws every <kbd>, its script only fills
+// <kbd data-sf-shortcut> (C191), so a page of plain keys fetches no script
+// (queue item 164). Looked for in `root` (the page, an added subtree, an element
+// whose attribute changed); the script is fetched once, as loadScriptOnCall
+// fetches it.
+SFLoaderPlugin.prototype.loadScriptsWhen = function (root) {
+  if (!root?.querySelectorAll) return 0;
+  if (!this.scriptWhenRules) {
+    this.scriptWhenRules = Object.entries(this.findPlugins || {})
+        .filter(([, rule]) => rule && typeof rule.jsWhen === 'string' && rule.jsWhen.trim());
+  }
+  if (!this.scriptWhenRules.length) return 0;
+  if (!this.scriptsWhenAsked) this.scriptsWhenAsked = new Set();
+  let asked = 0;
+  for (const [name, rule] of this.scriptWhenRules) {
+    if (this.scriptsWhenAsked.has(name)) continue;
+    const found = (root.matches?.(rule.jsWhen) ? [root] : []).concat([...root.querySelectorAll(rule.jsWhen)]);
+    const real = found.some((el) => !el.parentElement?.closest?.('pre, code')
+        && !el.closest?.(`${OBSERVER_IGNORE_SELECTOR}, script, style, template, noscript`));
+    if (!real) continue;
+    this.scriptsWhenAsked.add(name);
+    if (this.loadScriptOnCall(name)) asked++;
+  }
+  return asked;
 };
 
 SFLoaderPlugin.prototype.stripIgnoredBlocks = function (html) {
@@ -5121,6 +5222,7 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
       this.searchAttr(false);
       await yieldToPage();
       this.searchRegexp('');
+      this.loadScriptsWhen(document.body);
       await this.scanAttributesInSlices(document.body);
       if (Object.keys(this.module || {}).length) {
         this.getLoader(this.module, true);
@@ -5158,6 +5260,7 @@ SFLoaderPlugin.prototype.prepareTurboEvents = function () {
     this.scanStaticIcons(newBody);
     this.scanAttributes(newBody);
     this.searchRegexp('', newBody);
+    this.loadScriptsWhen(newBody);
     this.turboFontCheck(newBody);
     this.checkTheme(newBody);
 
@@ -5831,7 +5934,7 @@ SFLoaderPlugin.prototype.ensurePlugin = function (name) {
 // constructor behind [!skeleton ...] (simai/ui-source#47).
 SFLoaderPlugin.prototype.loadScriptOnCall = function (name) {
   const rule = this.findPlugins?.[name];
-  if (!rule || rule.jsOnCall !== true || this.ComponentRegistry?.[name]) return false;
+  if (!rule || (rule.jsOnCall !== true && !rule.jsWhen) || this.ComponentRegistry?.[name]) return false;
   const type = rule.type === 'component' || rule.type === 'attribute' ? 'component' : 'utility';
   const file = this.pathPluginJs(name, false, name, type);
   if (!file) return false;

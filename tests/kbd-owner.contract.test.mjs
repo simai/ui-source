@@ -15,7 +15,8 @@ test('Kbd is a semantic primitive with a neutral chord group', async () => {
   assert.match(rule, /<kbd\\b/);
   assert.match(rule, /\\bsf-kbd\\b/);
   assert.match(rule, /css:\s*true/);
-  assert.match(rule, /js:\s*true/);
+  // The script only where a combination is written in text (queue #164).
+  assert.match(rule, /js:\s*false,\n\s*jsWhen: 'kbd\[data-sf-shortcut\]'/);
   assert.match(css, /\$key: 'kbd:not\(\.sf-kbd--group\):not\(:has\(> kbd\)\), \.sf-kbd:not\(\.sf-kbd--group\)'/);
   assert.match(css, /\$group: 'kbd:has\(> kbd\), \.sf-kbd--group'/);
   assert.match(css, /white-space:\s*nowrap/);

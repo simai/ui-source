@@ -58,7 +58,8 @@ test('The kbd script fills data-sf-shortcut through the shared helper, hides the
     read('src/component/kbd/scss/_kbd.scss'),
   ]);
   assert.match(index, /import '\.\/js\/index\.js'/u);
-  assert.match(rule, /js:\s*true/u);
+  // The script comes where a kbd[data-sf-shortcut] is (Loader jsWhen, queue #164).
+  assert.match(rule, /jsWhen: 'kbd\[data-sf-shortcut\]'/u);
   assert.match(script, /import \{isApplePlatform, shortcutView\} from '\.\/shortcut\.js'/u);
   assert.match(script, /kbd\[data-sf-shortcut\]/u);
   assert.match(script, /setAttribute\('aria-hidden', 'true'\)/u);

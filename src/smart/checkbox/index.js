@@ -1,6 +1,6 @@
 import SfBaseElement, { toBoolean } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { resolveCheckboxIcon } from '../../component/checkbox/js/_checkbox';
+import { preloadCheckboxIcons, resolveCheckboxIcon } from '../../component/checkbox/js/_checkbox';
 import { renderCheckboxTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
 import { CHECKBOX_TEXT_PARTS, linkCheckableText } from '../../component/checkable-text-helper';
@@ -42,6 +42,14 @@ class SfCheckbox extends FormField(CheckboxElement) {
     super();
     this._inputElement = null;
     this._parentWatch = null;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    // The tick and the dash are asked for before the first box draws, with
+    // the page's first icons: an unchecked box names no glyph, and its first
+    // tick waited for a second icon font.
+    preloadCheckboxIcons();
   }
 
   // The checkboxes a parent stands for (controls, owner decision C165 (2)):

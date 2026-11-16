@@ -110,6 +110,7 @@ function harness({prepared = false, declared = {}, index = null, config = {}, cu
     SFLoaderPlugin.prototype.scanCustomElements = function (root) { __scans.push(['custom', root]); };
     SFLoaderPlugin.prototype.scanAttributes = function (root) { __scans.push(['attributes', root]); };
     SFLoaderPlugin.prototype.searchRegexp = function () { __scans.push(['regexp']); };
+    SFLoaderPlugin.prototype.loadScriptsWhen = function () { __scans.push(['scripts-when']); };
     SFLoaderPlugin.prototype.ensure = function (tags) { __ensured.push(...tags); return Promise.resolve({ready: [], missing: tags}); };
     SFLoaderPlugin.prototype.addScript = function (url) {
       __scripts.push(url);
@@ -237,7 +238,7 @@ test('rules registered after the first scan reach elements already on the page',
   assert.equal(late.loader.regexpScanRules, null);
   assert.equal(late.loader.attrMatchCache.size, 0);
   assert.equal(late.loader.regexMatchCache.size, 0);
-  assert.deepEqual(late.scans.map(([kind]) => kind), ['custom', 'attributes', 'regexp']);
+  assert.deepEqual(late.scans.map(([kind]) => kind), ['custom', 'attributes', 'regexp', 'scripts-when']);
   assert.equal(late.scans[0][1], late.body);
 
   // Before the first scan there is nothing to read again: that scan reads them.
