@@ -251,8 +251,12 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
     vertical-align: baseline;
   }
 
+  // The + takes the glyphs' own line (1em, as plain keys do): with the row's
+  // line it stood 20 px tall beside 14 px keys, so Ctrl+K's group was 20 px
+  // on Windows and ⌘K's 14 px on a Mac at the same text (admin K-2 N5).
   :where(#{$plain-places}) :where(.sf-kbd-join) {
     display: inline;
+    line-height: 1;
   }
 
   :where(#{$tooltip-places}) :where(#{$key}) {
@@ -288,6 +292,7 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
 
   :where(#{said-group(plain)}) > :where(.sf-kbd-join) {
     display: inline;
+    line-height: 1;
   }
 
   :where(#{said(key)}) {
