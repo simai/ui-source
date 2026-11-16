@@ -153,10 +153,15 @@
   }
 
   /* The «Новые» line over the first unread entry (C167 (3)): block list's
-     divider, its words and hairlines in primary. */
-  .sf-list-feed__new {
-    --sf-group-heading-date-color: var(--sf-primary);
-    --sf-group-heading-line-color: var(--sf-primary);
+     divider, its words and hairlines in primary. Written on the line itself:
+     the divider's --sf-group-heading-* variables are the page's to set. */
+  .sf-list-feed__unread > .sf-list-feed__new {
+    color: var(--sf-primary);
+  }
+
+  .sf-list-feed__unread > .sf-list-feed__new::before,
+  .sf-list-feed__unread > .sf-list-feed__new::after {
+    background-color: var(--sf-primary);
   }
 
   .sf-list-feed__text {

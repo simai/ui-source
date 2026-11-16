@@ -70,9 +70,9 @@ test('(3) the first unread entry, not one\'s own, carries the line; the line is 
   assert.equal(line.getAttribute('aria-label'), 'Новые');
   assert.equal(line.text, 'Новые');
   assert.equal(kept, entry);
-  const rule = /\.sf-list-feed__new \{([^}]*)\}/u.exec(sheet)?.[1] ?? '';
-  assert.match(rule, /--sf-group-heading-date-color: var\(--sf-primary\);/u);
-  assert.match(rule, /--sf-group-heading-line-color: var\(--sf-primary\);/u);
+  assert.match(sheet, /\.sf-list-feed__unread > \.sf-list-feed__new \{\s*color: var\(--sf-primary\);/u);
+  assert.match(sheet, /\.sf-list-feed__new::after \{\s*background-color: var\(--sf-primary\);/u);
+  assert.doesNotMatch(sheet, /--sf-group-heading-[a-z-]+\s*:/u, 'the divider\'s public variables are the page\'s');
 });
 
 test('(4) the default entry reads «Автор · время»', () => {

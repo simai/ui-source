@@ -835,7 +835,7 @@
       },
       {
         "path": "src/smart/list-feed/js/templates/default.css",
-        "sha256": "8433446569c725f13a5c5bd1bed07828a25122c32ded12a9579059550b3c35b8"
+        "sha256": "348c871eeac79db1c5eb99c089734dbe0bd1476f8a084d8285aef7dcd516e275"
       },
       {
         "path": "src/smart/list-feed/rule.js",
