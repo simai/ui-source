@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.4.2'); // group build 7: the integrated number (the branch wrote 1.3.4)
+  assert.equal(manifest.version, '1.4.6'); // WZ-6 plain controls in the Framework's words, numbered above 1.4.5 (fix/utilities-focus-c212)
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'drawer', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -176,6 +176,19 @@ test('C179: footer gap, names, window sizes, the phone footer and the Framework 
   // (5), WZ-6: no browser words.
   assert.doesNotMatch(code, /: control\.validationMessage;/u);
   assert.match(source, /typeof field\?\.sfShownMessage === 'function'/u);
+  // 1.4.6, WZ-6: a plain control's bubble says the Framework's words (its
+  // custom validity), never over the page's own; taken off before each check
+  // and on the person's edit (tests/browser/wizard-words-wz6.browser.mjs).
+  assert.match(code, /sayInWords\(control, fieldMessage\(control, \(key\) => this\.sfWord\(key\)\)\);/u);
+  assert.match(code, /if \(control\.validity\?\.customError && !control\.hasAttribute\(OWN_WORDS\)\) return;/u);
+  assert.match(code, /controls\.forEach\(dropWords\);/u);
+  assert.match(code, /node\.removeAttribute\('aria-invalid'\);\n\s+dropWords\(node\);/u);
+  // The examples' patterns compile under the browser's v flag.
+  const patterns = [...read('src/smart/wizard/examples.json').matchAll(/pattern=\\"([^"\\]*(?:\\\\.[^"\\]*)*)\\"/gu)];
+  assert.ok(patterns.length >= 3, 'the examples carry the address pattern');
+  for (const pattern of patterns) {
+    assert.doesNotThrow(() => new RegExp(JSON.parse(`"${pattern[1]}"`), 'v'), pattern[1]);
+  }
 });
 
 test('progress auto: the row while it fits the wizard\'s own width, else the count (C101 (4), 1.3.4)', () => {
