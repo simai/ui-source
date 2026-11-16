@@ -21,9 +21,11 @@
       "folder": "admin-menu",
       "requires": [
         "component.admin-menu",
+        "component.avatars",
         "component.badges",
         "component.icons",
         "component.inputs",
+        "component.kbd",
         "smart.badge",
         "smart.button",
         "smart.button-icon",
@@ -34,6 +36,7 @@
         "smart.menu-context",
         "smart.profile-picker",
         "smart.resizer",
+        "smart.search",
         "smart.sortable"
       ]
     },
