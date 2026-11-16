@@ -98,9 +98,15 @@ $sf-avatar-hue-classes: ();
       + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-d1) + var(--sf-a1)) * 1000, var(--sf-a4))
       + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-d3) + var(--sf-a1)) * 1000, var(--sf-a4)));
 
-    font-size: var(--sf-icon--font-size, var(--sf-avatar--glyph-size, var(--sf-icon-size-3)));
-    height: var(--sf-icon--height, var(--sf-avatar--glyph-size, var(--sf-icon-size-3)));
-    width: var(--sf-icon--width, var(--sf-avatar--glyph-size, var(--sf-icon-size-3)));
+    /* The icon sheet sizes .sf-icon outside the layers from its own size
+       variables, so the glyph is set through them. */
+    --sf-icon--font-size: var(--sf-avatar--glyph-size, var(--sf-icon-size-3));
+    --sf-icon--height: var(--sf-avatar--glyph-size, var(--sf-icon-size-3));
+    --sf-icon--width: var(--sf-avatar--glyph-size, var(--sf-icon-size-3));
+
+    font-size: var(--sf-icon--font-size);
+    height: var(--sf-icon--height);
+    width: var(--sf-icon--width);
   }
 
   .sf-avatar .sf-avatar-badge.sf-avatar-badge--company {
