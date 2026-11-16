@@ -223,6 +223,15 @@
     --sf-download-file--icon-size: var(--sf-download-file--text-height);
   }
 
+  /* The sign stands on the middle of the name's line (C151 (5)), not on its
+     baseline: the text row aligns its words by the baseline, and the glyph,
+     as tall as the line, rose 6 px above the name there and made the line 30
+     and the row 46 at size 1 (RG-DF-2). Centred in the line it keeps the
+     line the size's text height and the row the control height (C18). */
+  .sf-download-file :where(.sf-download-file__text) > :where(.sf-download-file__tab) {
+    align-self: center;
+  }
+
   .sf-download-file :where(.sf-download-file__tab-words, .sf-download-file__said),
   .sf-download-file__live {
     position: absolute;
@@ -487,6 +496,11 @@
       font-size: var(--sf-text-size-1\/2);
       line-height: var(--sf-text-height-1\/2);
     }
+
+    /* In the column the sign keeps the start edge, as the facts do. */
+    .sf-download-file :where(.sf-download-file__text) > :where(.sf-download-file__tab) {
+      align-self: flex-start;
+    }
   }
 }
 
@@ -499,9 +513,12 @@
      primary button's label does (--sf-primary-hover / -active: dark 85 / 90,
      light 35 / 30), and the dim ink takes the one made for a fill,
      --sf-on-surface-container-variant (dark 85, 90 on a popup; light 35). */
+  /* Hover moves the fill and the inks only; the frame stays the resting
+     outline-variant (C51 sample, C118: a coloured frame belongs to the
+     destructive button and to focus). It turned primary-outline, the focus
+     ring's colour, so a hovered row read as a focused one (RG-DF-1). */
   .sf-download-file:not(:disabled):not(.disabled):not([aria-disabled='true']):not([aria-busy='true']):not(.sf-download-file--error):not(.sf-download-file--offer):hover {
     --sf-download-file--background-color: var(--sf-surface-container-hover);
-    --sf-download-file--border-color: var(--sf-primary-outline);
     --sf-download-file--accent: var(--sf-primary-hover);
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }

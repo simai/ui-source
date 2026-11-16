@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.download-file",
   "kind": "component",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/download-file/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/download-file/scss/_css_download-file.scss",
     "src/component/download-file/scss/index.scss"
   ],
-  "content_sha256": "64ed7a1eef6f2662ca096c6f2db60284409f1c163b05286d5b22e9835e83f179",
+  "content_sha256": "43f556fcd0de53640f5115aa60564d560194106ce291bd1b49c4efa7c415afde",
   "dependencies": [
     {
       "id": "core.runtime",

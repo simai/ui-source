@@ -54,8 +54,16 @@ const SOURCE_ERROR_CODES = new Set([
 ]);
 const DEPRECATED = { since: '2026-11-11', remove_after: '2027-01-01' };
 // A box no one sees and a screen reader reads; inline, so it takes no room
-// before the sheet has arrived either.
-const UNSEEN = 'position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
+// before the sheet has arrived either. It stands at the start corner of its
+// containing block (RG-CP-4): with no offsets it kept the place after the
+// button, and after a button in a scrolled table with no positioned wrapper
+// that place lay outside the scroller and widened the page.
+const UNSEEN = 'position:absolute;inset-block-start:0;inset-inline-start:0;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
+// The copy button's own look, sf-clipboard-surface, is deprecated (owner
+// decision C217, 2026-11-16): it draws as the plain icon button of its size
+// until 2027-01-01 (journal class-clipboard-surface-to-plain-icon-button).
+const SURFACE_DEPRECATED = { since: '2026-11-16', remove_after: '2027-01-01' };
+
 
 function normalizeChoice(value, choices, fallback) {
   const normalized = String(value || '').trim().toLowerCase();
@@ -99,7 +107,20 @@ function readTargetText(target) {
 
 const isLegacy = button => button.matches?.(LEGACY_SELECTOR) === true;
 
+// A surface on a button that is not a Framework button is the deprecated look;
+// on an sf-button or sf-icon-button the class draws nothing and says nothing.
+function noteSurface(button) {
+  const list = button.classList;
+  if (!list.contains('sf-clipboard-surface') || list.contains('sf-button') || list.contains('sf-icon-button')) return;
+  noteDeprecated({
+    component: 'clipboard', kind: 'class', from: 'sf-clipboard-surface',
+    to: 'sf-icon-button sf-icon-button--plain sf-icon-button--icon sf-icon-button--size-N (the same size)',
+    ...SURFACE_DEPRECATED,
+  });
+}
+
 function noteLegacy(button) {
+  noteSurface(button);
   if (!isLegacy(button)) return;
   const component = 'clipboard';
   for (const name of ['sf-clipboard', 'btn-clipboard']) {
