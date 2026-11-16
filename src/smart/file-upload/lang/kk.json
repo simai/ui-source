@@ -30,6 +30,14 @@
     "wait-for-uploads": "Файлдар жүктелгенше күтіңіз",
     "file-removed": "Файл алып тасталды",
     "undo": "Қайтару",
-    "help": "Толығырақ: {label}"
+    "help": "Толығырақ: {label}",
+    "said-added": "«{name}» қосылды",
+    "said-added-many": {
+      "one": "{n} файл қосылды",
+      "other": "{n} файл қосылды"
+    },
+    "said-done": "«{name}» жүктелді",
+    "said-error": "«{name}» жүктелмеді",
+    "said-error-line": "«{name}» жүктелмеді: {message}"
   }
 }

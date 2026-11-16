@@ -20,6 +20,28 @@ function renderAction({icon, label, disabled, action, size, onClick}) {
   `;
 }
 
+// «Повторить» as the icon alone (owner decision C260): a row too narrow for
+// the button with its words draws this one in its place -- the sheet shows
+// one of the two by the row's width -- instead of moving the words under the
+// text (C88). The same ghost primary refresh on the rung of its neighbours,
+// named «Повторить <имя>», and «Повторить» in the Framework's plain tooltip
+// on hover, keyboard focus and a long press. The anchor links the tooltip to
+// its button, so no id is written here.
+function renderRetryIcon(context, size) {
+  return html`<span class="sf-file-preview-retry-icon sf-tooltip-anchor">
+    <button
+      type="button"
+      class="sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--primary sf-icon-button--size-${size}"
+      data-action="retry"
+      data-tooltip=""
+      aria-label=${context.words.retryLabel}
+      @click=${context.onRetry}
+    ><i class="sf-icon" aria-hidden="true">refresh</i></button><span
+      class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3" aria-hidden="true" hidden><span
+      class="sf-tooltip-content"><span class="sf-tooltip-text">${context.words.retry}</span></span></span>
+  </span>`;
+}
+
 // A file name breaks between its words only (C34): spaces, and after the
 // joints names use instead of spaces -- «_», «-», «–», «—», «/», «+» -- where
 // a <wbr> lets the line end. Never inside a word, never before the extension's
@@ -173,14 +195,13 @@ export function renderFilePreviewTemplate(context) {
               ? html`<sf-button
                 class="sf-file-preview-retry"
                 size=${size}
-                height="low"
                 appearance="ghost"
                 scheme="primary"
                 icon-start="refresh"
                 text=${context.words.retry}
                 aria-label=${context.words.retryLabel}
                 @click=${context.onRetry}
-              ></sf-button>`
+              ></sf-button>${renderRetryIcon(context, size)}`
               : nothing}
             ${hasActions && download
               ? renderAction({

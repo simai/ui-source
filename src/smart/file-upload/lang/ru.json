@@ -33,6 +33,16 @@
     "wait-for-uploads": "Дождитесь, пока файлы загрузятся",
     "file-removed": "Файл убран",
     "undo": "Вернуть",
-    "help": "Подробнее: {label}"
+    "help": "Подробнее: {label}",
+    "said-added": "«{name}» добавлен",
+    "said-added-many": {
+      "one": "Добавлен {n} файл",
+      "few": "Добавлено {n} файла",
+      "many": "Добавлено {n} файлов",
+      "other": "Добавлено {n} файла"
+    },
+    "said-done": "«{name}» загружен",
+    "said-error": "«{name}» не загрузился",
+    "said-error-line": "«{name}» не загрузился: {message}"
   }
 }

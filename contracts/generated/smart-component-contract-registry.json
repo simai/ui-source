@@ -982,6 +982,7 @@
           "component.file-preview",
           "component.icon-buttons",
           "component.icons",
+          "component.tooltip",
           "smart.button",
           "smart.confirm",
           "smart.gallery",
@@ -997,7 +998,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-preview/smart.manifest.json",
-      "manifest_sha256": "be817d0c67176488f5bae6bb4aa920545986f46b27e5d208d1b61f1a0d5fc37f",
+      "manifest_sha256": "ebaafd2a4a92733d938042f40da94d468e2a233c1d82c9be22b90157115d1ddd",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1035,7 +1036,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/file-upload/smart.manifest.json",
-      "manifest_sha256": "e252ce48bdccf67448828c251279dfe0c06ae7b070d2c87209f9582cd1599696",
+      "manifest_sha256": "93b885a5803ecf4dd48fbbbd5b36ec7c19af23b580f2579063ba59e550327b78",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

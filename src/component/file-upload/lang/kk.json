@@ -26,6 +26,14 @@
     "done": "Жүктелді",
     "done-line": "{size} · жүктелді",
     "error": "Жүктелмеді",
-    "error-line": "Жүктелмеді: {message}"
+    "error-line": "Жүктелмеді: {message}",
+    "said-added": "«{name}» қосылды",
+    "said-added-many": {
+      "one": "{n} файл қосылды",
+      "other": "{n} файл қосылды"
+    },
+    "said-done": "«{name}» жүктелді",
+    "said-error": "«{name}» жүктелмеді",
+    "said-error-line": "«{name}» жүктелмеді: {message}"
   }
 }

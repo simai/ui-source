@@ -63,6 +63,16 @@
   line-height: var(--sf-file-upload-block-text--line-height);
 }
 
+/* A screen that cannot drag (a touch screen with no fine pointer at all)
+   is not asked to: the words about dragging hide, «Выберите файлы» and the
+   hint stay (owner decision C223). A tablet with a mouse or a pen keeps
+   them. */
+@media (pointer: coarse) and (not (any-pointer: fine)) {
+  .sf-file-upload .sf-file-upload-drag {
+    display: none;
+  }
+}
+
 .sf-file-upload .sf-file-upload-text {
   --sf-file-upload-text--color: var(--sf-on-surface-variant);
   --sf-file-upload-text--font-family: var(--sf-text--family);
@@ -216,6 +226,17 @@ sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disable
   display: none;
 }
 
+/* What happened to the list, for a screen reader only (RG-FU-4): a polite
+   region made with the area, never seen. */
+.sf-file-upload-status {
+  position: absolute;
+  inline-size: var(--sf-px);
+  block-size: var(--sf-px);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .sf-file-upload-message ul {
   margin: 0;
   padding-inline-start: var(--sf-space-1);
@@ -233,8 +254,8 @@ sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disable
 
 /* The list stood flush under the area (gap 0, FU-12): it keeps the rows' own
    distance from the area, and from the message when there is one. The rows
-   are the class rows (.sf-upload-progress) or a Smart area's sf-file-preview
-   rows (.sf-file-upload-item, C81). */
+   are hand-written class rows (.sf-upload-progress) or the file family's
+   rows (.sf-file-upload-item, C81) the class and the Smart area draw. */
 .sf-file-upload ~ .sf-file-upload-files:has(> .sf-upload-progress, > .sf-file-upload-item) {
   margin-block-start: var(--sf-file-upload-files--gap, var(--sf-space-1));
 }
