@@ -123,6 +123,7 @@ test('C173: the Framework rows of buttons, toolbars and tags read their role tok
     ['src/component/placeholder/scss/_css__placeholder.scss', '--sf-placeholder-actions--gap: var(--sf-gap--actions);'],
     ['src/smart/header-page/scss/_smart__page_header.scss', 'gap: var(--sf-page-header-actions-gap, var(--sf-gap--actions));'],
     ['src/smart/empty-state/scss/_smart__empty_state.scss', 'gap: var(--sf-empty-state-actions-gap, var(--sf-gap--actions));'],
+    ['src/component/file-preview/scss/_css__file_preview.scss', 'gap: var(--sf-gap--actions); /* a button group (C105 H5) */'], // «Скачать» and «Удалить» 8 apart (RG-S1-32)
     ['src/smart/confirm/js/templates/default.css', 'gap: var(--sf-gap--actions);'],
     ['src/smart/wizard/scss/_smart__wizard.scss', 'gap: var(--sf-gap--actions);'],
     ['src/smart/input-rich/scss/_smart__rich_text.scss', 'gap: var(--sf-gap--toolbar);'],
