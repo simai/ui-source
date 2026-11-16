@@ -246,3 +246,17 @@ test('C281: sf-tile-metric insets by the size step (space-x less the hairline), 
   assert.doesNotMatch(sheet, /--sf-card[a-z-]*(padding|inset)/u);
   assert.match(read('src/smart/tile-metric/docs.md'), /C281/u);
 });
+
+// ---- SM-CPY-2: on-surface-variant is one class, its glyph not held by order -
+
+test('SM-CPY-2: sf-button-icon writes one scheme class; the sheet carries on-surface-variant alone', () => {
+  const template = read('src/smart/button-icon/js/templates/default.js');
+  assert.doesNotMatch(template, /\['sf-icon-button--on-surface-variant', 'sf-icon-button--on-surface'\]/u);
+  assert.match(template, /\? \['sf-icon-button--on-surface-variant'\]/u);
+  const sheets = read('src/component/icon-buttons/scss/_css_icon_buttons.scss') + read('src/component/icon-buttons/scss/_css_icon_buttons_custom.scss');
+  // Every on-surface rule names the variant too.
+  assert.doesNotMatch(sheets, /:is\(\.sf-icon-button--on-surface, \.sf-icon-button--secondary\)/u);
+  assert.doesNotMatch(sheets, /\.sf-icon-button--on-surface\.sf-icon-button--on-surface-variant/u);
+  // The quiet glyph stands one class above the on-surface glyph rules (0,4,0).
+  assert.match(sheets, /\.sf-icon-button\.sf-icon-button:is\(\.sf-icon-button--on-surface-variant\.sf-icon-button--on-surface-variant, \.sf-icon-button--secondary\):not\(\.sf-icon-button--default\) \{\n\s+--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-on-surface-variant\)\);/u);
+});
