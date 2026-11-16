@@ -116,10 +116,10 @@ export function renderButtonTemplate(context) {
             ${overlayContent}
             ${startContent}
             ${textContent ? html`<span
-                    class="sf-button-text-container text-${textPosition} pointer-event-none${fullText ? ' flex-1' : ''}">
+                    class="sf-button-text-container text-${textPosition} pointer-events-none${fullText ? ' flex-1' : ''}">
         ${textContent}
       </span>` : ''}
-            ${endContent}${shortcutCaps.length ? html`<span class="sf-button-shortcut pointer-event-none" aria-hidden="true"><kbd class="sf-kbd--group">${shortcutCaps.map((cap, at) => html`${at && context.shortcutJoin ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${cap.square ? 'sf-kbd--square' : nothing}>${cap.text}</kbd>`)}</kbd></span>` : ''}
+            ${endContent}${shortcutCaps.length ? html`<span class="sf-button-shortcut pointer-events-none" aria-hidden="true"><kbd class="sf-kbd--group">${shortcutCaps.map((cap, at) => html`${at && context.shortcutJoin ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${cap.square ? 'sf-kbd--square' : nothing}>${cap.text}</kbd>`)}</kbd></span>` : ''}
 `;
 
     // href (1.4.0): a link with the button's look. The browser's own link

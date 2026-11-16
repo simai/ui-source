@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-page",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "title": "Page header",
   "summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
   "kind": "smart",

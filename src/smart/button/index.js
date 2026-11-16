@@ -734,7 +734,7 @@ class SfButton extends ButtonElement {
   // the filled glyph -- a FILL set by a rule drew the outlined one from it.
   createIcon(name, filled = false) {
     if (!name) return "";
-    return html`<sf-icon icon="${name}" ?filled=${filled} root-class="pointer-event-none" aria-hidden="true"></sf-icon>`;
+    return html`<sf-icon icon="${name}" ?filled=${filled} root-class="pointer-events-none" aria-hidden="true"></sf-icon>`;
   }
 
   set value(nextValue) {

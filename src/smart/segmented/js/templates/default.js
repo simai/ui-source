@@ -79,7 +79,7 @@ function renderSegment(item, context) {
   const icon = item.loading && item.icon
     ? spinner
     : item.icon
-      ? html`<sf-icon icon=${item.icon} root-class="pointer-event-none" weight="400" aria-hidden="true"></sf-icon>`
+      ? html`<sf-icon icon=${item.icon} root-class="pointer-events-none" weight="400" aria-hidden="true"></sf-icon>`
       : nothing;
   const count = item.count !== ''
     ? html`<span class="sf-button-group-count">${item.count}</span>`
@@ -99,7 +99,7 @@ function renderSegment(item, context) {
       ${icon}
       ${item.iconOnly
         ? html`<span class="sf-button-group-label--hidden">${item.label}</span>${count}`
-        : html`<span class="sf-button-text-container text-center pointer-event-none">${item.label}${count}</span>`}
+        : html`<span class="sf-button-text-container text-center pointer-events-none">${item.label}${count}</span>`}
     </button>
   `;
 }

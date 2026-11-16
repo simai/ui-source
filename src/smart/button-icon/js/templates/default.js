@@ -90,9 +90,9 @@ export function renderIconButtonTemplate(context) {
             ? context.component.getSlotContent('icon')
             : (kind ?? variant) === 'close'
                 ? html`
-                            <sf-button-close root-class="pointer-event-none" size="${size || '1'}"></sf-button-close>`
+                            <sf-button-close root-class="pointer-events-none" size="${size || '1'}"></sf-button-close>`
                 : html`
-                            <sf-icon filled="${filled || context.pressed === true || Boolean(context.cycleView?.pressedLook)}" root-class="pointer-event-none" icon="${context.cycleView?.icon || icon}" weight="400" aria-hidden="true"></sf-icon>`;
+                            <sf-icon filled="${filled || context.pressed === true || Boolean(context.cycleView?.pressedLook)}" root-class="pointer-events-none" icon="${context.cycleView?.icon || icon}" weight="400" aria-hidden="true"></sf-icon>`;
 
     // href (1.9.0, decision C51): a link with the icon button's look, as
     // sf-button's -- the quiet «Скачать <name>» of a table row. Disabled or

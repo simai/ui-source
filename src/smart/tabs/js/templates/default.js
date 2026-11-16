@@ -120,7 +120,7 @@ function renderIconLink(item, context) {
       data-sf-tab-index=${String(item.index)}
       data-tab-label=${item.label}
       data-tooltip=${item.hint ? hintId(item, context) : nothing}
-    ><sf-icon root-class="pointer-event-none" icon=${item.iconStart || item.icon || item.iconEnd || nothing}
+    ><sf-icon root-class="pointer-events-none" icon=${item.iconStart || item.icon || item.iconEnd || nothing}
       weight="400" aria-hidden="true"></sf-icon></a>`;
 }
 

@@ -1608,7 +1608,7 @@ function renderChoiceButtons(field, value, host) {
                 class="sf-field-choice-buttons"
                 appearance="track"
                 size=${size}
-                root-class=${locked ? 'flex-wrap pointer-event-none' : 'flex-wrap'}
+                root-class=${locked ? 'flex-wrap pointer-events-none' : 'flex-wrap'}
                 name=${fieldName(field)}
                 items=${JSON.stringify(items)}
                 value=${chosen || nothing}
