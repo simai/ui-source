@@ -33,18 +33,19 @@ async (page) => {
         if (overflow) failures.push({ kind, width, theme, check: 'page horizontal overflow' });
 
         if (kind === 'radio') {
-          const font = page.locator('.sf-radio-button--type-font .sf-radio-text');
-          const visual = await font.first().evaluate((element) => {
-            const style = getComputedStyle(element);
-            return { display: style.display, width: parseFloat(style.width), height: parseFloat(style.height) };
-          });
-          if (visual.display !== 'grid' || visual.width <= 0 || visual.height <= 0) failures.push({ kind, width, theme, check: 'font visual contract', visual });
+          // C222: the retired font group draws plain radios with their labels.
+          const font = page.locator('.sf-radio-wrap--type-font');
+          const visual = await font.first().evaluate((element) => ({
+            tiles: element.querySelectorAll('.sf-radio-text').length,
+            rings: element.querySelectorAll('.sf-radio-button-box .sf-radio-button-mark').length,
+            labels: [...element.querySelectorAll('.sf-radio-button-text')].map((node) => node.textContent.trim()),
+          }));
+          if (visual.tiles !== 0 || visual.rings !== 3 || visual.labels.some((label) => !label)) failures.push({ kind, width, theme, check: 'font draws plain radios', visual });
           const fontInputs = page.locator('.sf-radio-wrap--type-font input[type="radio"]');
           const names = await fontInputs.evaluateAll((nodes) => nodes.map((node) => node.getAttribute('aria-label')));
           if (names.some((name) => !name)) failures.push({ kind, width, theme, check: 'font accessible names', names });
-          await fontInputs.nth(1).click();
-          const description = await page.locator('.sf-radio-wrap--type-font .sf-radio-button-description').textContent();
-          if (description?.trim() !== 'Среднее начертание') failures.push({ kind, width, theme, check: 'font description projection', description });
+          await page.locator('.sf-radio-wrap--type-font label').nth(1).click();
+          if (!await fontInputs.nth(1).isChecked()) failures.push({ kind, width, theme, check: 'font label selects' });
         } else {
           const switches = page.locator('[data-docara-example-inline-preview] [role="switch"]');
           if (await switches.count() === 0) failures.push({ kind, width, theme, check: 'native switch role' });

@@ -59,3 +59,5 @@ sf-checkbox when it connects, asks the icon subset for `check` and `remove`
 unchecked names no glyph, so the first subset font had no «check» and the
 first tick stayed unseen until a second font arrived (the Loader draws a
 glyph only from a font it has; seen in sf-view-table, view 1.8.1).
+
+1.5.0 (DEV forms study RG-CB-1..4, owner decision C221, 2026-11-16): the class `<label class="sf-checkbox">` hugs its content as the Smart row does (C63, C19), so a press on the empty end of a full-width row toggles nothing; with the box at the end (the text column, then the box) the row keeps its full width. The label takes `--sf-on-surface` in every enabled state, so a checked label on `bg-primary` is the place's ink like an unchecked one (C42 (4)). The mark keeps its box's size in error (26 in a 28 box at size 2, 22 compact). Hover marks the frame of an unchecked box only; a checked or mixed box keeps its frame the fill's colour (as the switch, C66). Error outweighs checked: a checked or mixed box in error is filled with `--sf-error` (or `--sf-checkbox-invalid-border-color`) with an `--sf-on-error` mark, at every size and density.

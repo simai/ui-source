@@ -44,7 +44,7 @@ async (page) => {
   await page.keyboard.press('ArrowRight');
   const fontState = await fontRadios.evaluateAll((elements) => elements.map((element) => ({
     checked: element.checked,
-    active: element.closest('label').querySelector('.sf-radio-text').classList.contains('active'),
+    active: element.closest('label').classList.contains('active'),
   })));
   if (!fontState[2]?.checked || !fontState[2]?.active || fontState.filter((item) => item.active).length !== 1) {
     failures.push({ check: 'font visual state follows native radio group', fontState });
@@ -83,7 +83,8 @@ async (page) => {
   });
   if (JSON.stringify(dynamicFont.afterFirst) !== JSON.stringify([false, true])) failures.push({ check: 'dynamic font selection', dynamicFont });
   if (JSON.stringify(dynamicFont.secondUnchanged) !== JSON.stringify([false, true])) failures.push({ check: 'same-name groups stay form-scoped', dynamicFont });
-  if (dynamicFont.description !== 'Жирное начертание') failures.push({ check: 'font description follows selection', dynamicFont });
+  // C222: each option carries its own label; the shared description is gone.
+  if (dynamicFont.description !== undefined) failures.push({ check: 'font labels replace the shared description', dynamicFont });
   if (JSON.stringify(dynamicFont.reset) !== JSON.stringify([true, false])) failures.push({ check: 'font group native reset', dynamicFont });
   if (JSON.stringify(dynamicFont.names) !== JSON.stringify(['Обычное начертание', 'Жирное начертание'])) failures.push({ check: 'description-backed accessible names', dynamicFont });
 

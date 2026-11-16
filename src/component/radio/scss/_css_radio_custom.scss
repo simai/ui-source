@@ -15,6 +15,20 @@
   min-width: 0;
 }
 
+/* The hit area is the ring and its text, not the row (RG-CB-1, C63; C19: the
+   class layer, as the Smart row in src/smart/helpers/checkable-row.css): the
+   label hugs its content, so a press on the empty rest of a full-width row
+   selects nothing. With the ring at the row's end (the text column, then the
+   ring) the row is the control and keeps its full width. */
+.sf-radio-button {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+}
+
+.sf-radio-button:has(> .sf-radio-button-container + .sf-radio-button-box:last-child) {
+  inline-size: auto;
+}
+
 .sf-radio-button .sf-radio-button-box {
   position: relative;
   flex-shrink: 0;
@@ -108,6 +122,22 @@
 
 .sf-radio-button--type-font {
   position: relative;
+}
+
+/* The retired font-sample group (C222): the runtime redraws each tile as a
+   plain radio with its label (_radio.js, retireFontRadioWrap) and marks the
+   group; the group's title stands above, the options in a column, one
+   --sf-space-1/3 apart. The tile rules above draw only a page without the
+   runtime, until 2027-01-01. */
+.sf-radio-wrap--type-font[data-sf-radio-font-retired] {
+  flex-direction: column;
+  gap: var(--sf-space-1\/3);
+}
+
+.sf-radio-wrap--type-font[data-sf-radio-font-retired] > .sf-radio-group--font {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: var(--sf-space-1\/3);
 }
 
 .sf-radio-button--type-font .sf-radio-text {

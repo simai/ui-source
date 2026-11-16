@@ -3,6 +3,7 @@ import registerComponent from '../../register-helper';
 import { bindFormReset } from '../../form-reset-helper';
 import { RADIO_TEXT_PARTS, linkCheckableText } from '../../checkable-text-helper';
 import radioUtility from '../json/radio.utility.json';
+import { noteDeprecated } from '../../../core/js/deprecations.js';
 
 const RADIO_SELECTOR = 'label.sf-radio-button';
 const RADIO_BOUND_FLAG = 'sfRadioBound';
@@ -102,6 +103,93 @@ function syncRadioState(root) {
   }
 }
 
+// The font-sample tiles («Aa», type: 'font' and the sf-radio-wrap--type-font
+// markup) are retired (owner decision C222, 2026-11-16; journal
+// class-radio-type-font-to-segmented): until 2027-01-01 such a group still
+// works -- the same native radios, names, values and checked one -- but each
+// option is drawn as a plain radio with its label (the option's name: its
+// description, else its aria-label, else its value), the labels standing in a
+// column. A choice of one short value from buttons is sf-segmented (D11b). The
+// first group on a page is noted in SF.deprecations and named once on the
+// console.
+const RADIO_FONT_RETIRED_FLAG = 'sfRadioFontRetired';
+const RADIO_FONT_REMOVE_AFTER = '2027-01-01';
+
+function layoutClasses(selector) {
+  return (radioUtility[selector] || [])
+    .flatMap((hint) => (hint.match(/\(\.[^)\s]+\)/g) || []).map((match) => match.slice(2, -1)));
+}
+
+function noteFontRadioRetired() {
+  noteDeprecated({
+    component: 'sf-radio',
+    kind: 'class',
+    from: 'sf-radio-wrap--type-font',
+    to: 'sf-segmented',
+    since: '2026-11-10',
+    remove_after: RADIO_FONT_REMOVE_AFTER,
+  });
+  const root = (globalThis.SF = globalThis.SF || {});
+  if (root.__sfRadioFontWarned) return;
+  Object.defineProperty(root, '__sfRadioFontWarned', { value: true, configurable: true });
+  globalThis.console?.warn?.(`[SIMAI Framework] sf-radio: the font-sample tiles (type "font", sf-radio-wrap--type-font) are deprecated until ${RADIO_FONT_REMOVE_AFTER} and draw as plain radios with their labels; write sf-segmented for a choice of one short value (C222, D11b). See contracts/changes/journal.json (class-radio-type-font-to-segmented).`);
+}
+
+function retireFontRadioWrap(wrap) {
+  if (!(wrap instanceof Element) || wrap.dataset[RADIO_FONT_RETIRED_FLAG] === '1') return;
+  wrap.dataset[RADIO_FONT_RETIRED_FLAG] = '1';
+  noteFontRadioRetired();
+
+  const descriptions = toArray(wrap.dataset.sfRadioDescriptions || '');
+  const group = wrap.querySelector('.sf-radio-group--font');
+  const options = Array.from(wrap.querySelectorAll('label.sf-radio-button--type-font'));
+  let namedByDescriptions = options.length > 0;
+
+  options.forEach((option, index) => {
+    const input = option.querySelector('input[type="radio"]');
+    if (!input) return;
+    const fontIndex = toNumber(input.dataset.sfRadioFontIndex, index);
+    const name = descriptions[fontIndex] || input.getAttribute('aria-label') || input.value || '';
+    if (!descriptions[fontIndex]) namedByDescriptions = false;
+
+    option.classList.remove('sf-radio-button--type-font');
+    option.classList.add('sf-radio-button--type-default', ...layoutClasses('.sf-radio-button'));
+
+    const box = document.createElement('span');
+    box.classList.add('sf-radio-button-box', ...layoutClasses('.sf-radio-button .sf-radio-button-box'));
+    input.classList.remove('sr-only');
+    hideNativeRadioInput(input);
+    const mark = document.createElement('span');
+    mark.classList.add('sf-radio-button-mark');
+    mark.setAttribute('aria-hidden', 'true');
+    box.append(input, mark);
+
+    const container = document.createElement('span');
+    container.classList.add('sf-radio-button-container', ...layoutClasses('.sf-radio-button .sf-radio-button-container'));
+    const top = document.createElement('span');
+    top.classList.add('sf-radio-button-top', ...layoutClasses('.sf-radio-button .sf-radio-button-top'));
+    const text = document.createElement('span');
+    text.classList.add('sf-radio-button-text');
+    text.textContent = name;
+    top.append(text);
+    container.append(top);
+
+    option.replaceChildren(box, container);
+  });
+
+  // The shared description repeated the selected option's name; each option
+  // now carries its own, so it goes when every name came from it.
+  const shared = Array.from(wrap.children).find((node) => node.classList.contains('sf-radio-button-container'));
+  if (shared) {
+    if (namedByDescriptions) shared.querySelector('.sf-radio-button-description')?.remove();
+    if (shared.childElementCount) {
+      wrap.insertBefore(shared, group || wrap.firstChild);
+    } else {
+      shared.remove();
+    }
+  }
+}
+
 function syncFontRadioWrap(input) {
   const wrap = input?.closest?.(RADIO_FONT_WRAP_SELECTOR);
   if (!wrap) return;
@@ -169,6 +257,11 @@ function unbindRadio(root) {
 
 function initRadioTree(target) {
   if (!(target instanceof Element) && target !== document) return;
+
+  if (target instanceof Element && target.matches?.(RADIO_FONT_WRAP_SELECTOR)) {
+    retireFontRadioWrap(target);
+  }
+  target.querySelectorAll?.(RADIO_FONT_WRAP_SELECTOR).forEach(retireFontRadioWrap);
 
   if (target instanceof Element && target.matches?.(RADIO_SELECTOR)) {
     bindRadio(target);
@@ -504,6 +597,7 @@ class Radio extends ComponentObserver {
       container.append(descriptionNode);
     }
     wrap.append(group, container);
+    retireFontRadioWrap(wrap);
 
     return wrap;
   }

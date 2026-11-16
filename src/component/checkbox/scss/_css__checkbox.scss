@@ -137,12 +137,12 @@
     --sf-checkbox-label--line-height: var(--sf-text-height-1);
   }
 
-  .sf-checkbox:not(.error).sf-checkbox--size-1\/2:has(input) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox.sf-checkbox--size-1\/2:has(input) > .sf-checkbox-box .sf-icon {
     --sf-icon--height: var(--sf-text-height-1\/2);
     --sf-icon--width: var(--sf-text-height-1\/2);
   }
 
-  .sf-checkbox:not(.error).sf-checkbox--size-1:has(input) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox.sf-checkbox--size-1:has(input) > .sf-checkbox-box .sf-icon {
     --sf-icon--height: var(--sf-text-height-1);
     --sf-icon--width: var(--sf-text-height-1);
   }
@@ -176,7 +176,12 @@
 }
 
 @layer sf.states {
-  .sf-checkbox:not(.error):has(input:not(:checked)) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:checked) .sf-checkbox-label, .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):active):not(:has(sf-help-mark:active, [slot="help"]:active)):has(input:indeterminate) .sf-checkbox-label, .sf-checkbox.error:has(input:not(:checked)) .sf-checkbox-label {
+  /* The label's ink is the text's in every enabled state (RG-CB-2): the list
+     named unchecked, mixed and a few pressed states, so a checked label had
+     no ink of its own and took the page's -- on-surface on the blue of
+     bg-primary (2.7:1) while the unchecked one was white (C42 (4)). Disabled
+     greys it below. */
+  .sf-checkbox .sf-checkbox-label {
     --sf-checkbox-label--color: var(--sf-on-surface);
   }
 
@@ -188,12 +193,12 @@
     --sf-checkbox-box--border-color: var(--sf-checkbox-checked-background-color, var(--sf-primary));
   }
 
-  .sf-checkbox:not(.error).sf-checkbox--size-1\/2:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox.sf-checkbox--size-1\/2:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
     --sf-icon--height: var(--sf-text-height-1\/2);
     --sf-icon--width: var(--sf-text-height-1\/2);
   }
 
-  .sf-checkbox:not(.error).sf-checkbox--size-1:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox.sf-checkbox--size-1:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
     --sf-icon--height: var(--sf-text-height-1);
     --sf-icon--width: var(--sf-text-height-1);
   }
@@ -222,7 +227,7 @@
     --sf-checkbox-label--line-height: var(--sf-text-height-2);
   }
 
-  .sf-checkbox:not(.error).sf-checkbox--size-2:has(input) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox.sf-checkbox--size-2:has(input) > .sf-checkbox-box .sf-icon {
     --sf-icon--height: var(--sf-text-height-2);
     --sf-icon--width: var(--sf-text-height-2);
   }
@@ -231,7 +236,7 @@
     --sf-checkbox--gap: var(--sf-checkbox-gap, var(--sf-space-1\/2));
   }
 
-  .sf-checkbox:not(.error).sf-checkbox--size-2:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
+  .sf-checkbox.sf-checkbox--size-2:has(input:indeterminate) > .sf-checkbox-box .sf-icon {
     --sf-icon--height: var(--sf-text-height-2);
     --sf-icon--width: var(--sf-text-height-2);
   }
@@ -254,8 +259,24 @@
   }
 
 
-  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-checkbox-box {
+  /* The hover edge is the unchecked box's (RG-CB-4, as the switch in C66): a
+     checked or mixed box keeps its frame the fill's colour -- the hover drew a
+     darker ring (0,80,167) round the fill (0,91,190). */
+  .sf-checkbox:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:checked):not(:indeterminate):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-checkbox-box {
     --sf-checkbox-box--border-color: var(--sf-primary-hover);
+  }
+
+  /* Error outweighs checked (owner decision C221, RG-RB-1): a checked or mixed
+     box in error is filled with the error colour and its mark is on-error, at
+     every size and density; unchecked it keeps the error frame. Disabled still
+     wins below. */
+  .sf-checkbox.error:has(input:checked, input:indeterminate):not(:has(input:disabled)) .sf-checkbox-box {
+    --sf-checkbox-box--background-color: var(--sf-checkbox-invalid-border-color, var(--sf-error));
+    --sf-checkbox-box--border-color: var(--sf-checkbox-invalid-border-color, var(--sf-error));
+  }
+
+  .sf-checkbox.error:has(input:checked, input:indeterminate):not(:has(input:disabled)) > .sf-checkbox-box .sf-icon {
+    --sf-icon--color: var(--sf-on-error);
   }
 
   .sf-checkbox:has(input:not(:disabled):not(.disabled):focus-visible) .sf-checkbox-box {

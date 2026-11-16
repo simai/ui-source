@@ -3,6 +3,20 @@
   min-width: 0;
 }
 
+/* The hit area is the track and its text, not the row (RG-CB-1, C63; C19: the
+   class layer, as the Smart row in src/smart/helpers/checkable-row.css): the
+   label hugs its content, so a press on the empty rest of a full-width row
+   switches nothing. With the track at the row's end (the text column, then
+   the track) the row is the control and keeps its full width. */
+.sf-switch {
+  inline-size: fit-content;
+  max-inline-size: 100%;
+}
+
+.sf-switch:has(> .sf-switch-container-wrap + .sf-switch-toggler:last-child) {
+  inline-size: auto;
+}
+
 .sf-switch:not(.disabled):has(input:not(:disabled)) {
   cursor: pointer;
 }

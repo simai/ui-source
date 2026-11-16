@@ -238,9 +238,13 @@
 }
 
 
-.sf-radio-button:has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-radio-button-box {
+.sf-radio-button:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:checked):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-radio-button-box {
   --sf-radio-button-box--border-color: var(--sf-primary-hover);
 }
+
+/* The hover edge is the unselected ring's, as on the checkbox and the switch
+   (RG-CB-4, C66): a selected ring keeps the dot's colour, and a ring in error
+   keeps the error colour. */
 
 /* Hover shows on the ring alone, as on the checkbox: a fill behind the ring
    and its label marked the text, which no control here does (owner,
@@ -290,6 +294,18 @@
 
 .sf-radio-button.error .sf-radio-button-box {
   --sf-radio-button-box--border-color: var(--sf-radio-button-invalid-border-color, var(--sf-error));
+}
+
+/* Error outweighs selected (owner decision C221, RG-RB-1): the selected rule
+   above weighed more than the error rule, so a selected radio in error drew a
+   primary ring and dot. Now the ring and the dot take the error colour at every
+   size and density; disabled still greys both. */
+.sf-radio-button.error:has(input:checked):not(:has(input:disabled)) .sf-radio-button-box {
+  --sf-radio-button-box--border-color: var(--sf-radio-button-invalid-border-color, var(--sf-error));
+}
+
+.sf-radio-button.error:has(input:checked):not(:has(input:disabled)) .sf-radio-button-mark {
+  --sf-radio-button-mark--background-color: var(--sf-radio-button-invalid-border-color, var(--sf-error));
 }
 }
 
