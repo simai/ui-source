@@ -108,6 +108,6 @@ test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropd
   assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.15.3'); // group build 8
   assert.equal(json('src/smart/tag/component.json').version, '1.11.0'); // group build 7: the GB6 notes numbered above the released 1.9.1
   assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.0'); // group build 7
-  assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
+  assert.equal(json('src/component/tags/passport.json').version, '1.8.1'); // first paint R222 open item 2: the label is the tag's baseline (above 1.8.0 on feat/highlight-c254 and fix/content-glyphs-ct1)
   assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
 });

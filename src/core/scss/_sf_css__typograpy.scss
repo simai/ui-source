@@ -27,16 +27,38 @@
 
 @use '../figma_variables/figma_typography_styles';
 @layer sf.base {
-  /* An icon waits at font-size 0 for the Loader's sf-icon-loaded mark -- on a
+  /* An icon waits unseen for the Loader's sf-icon-loaded mark -- on a
      page the Loader runs on (data-sf-loader, set by core.js). Without it
      nothing ever marks an icon, and the icons sheet draws each one once its
      font is in; the hold then must not apply, or the sheet had to answer it
      with an important size of its own, which beat every size a page, a
      utility or the density gave the glyph (a late icon in a compact row drew
      24px in a 16px box). Before core.js runs the sheet's rule already won,
-     so the first paint of every icon is the same. */
+     so the first paint of every icon is the same.
+
+     The wait keeps the glyph's box (2026-11-16, first paint R222 open item
+     1): at font-size 0 an icon sized in em or lh (an inline reference's
+     1lh, a new-tab sign's 1em) was 0 wide until its font came, and a drawn
+     line grew 24 px when it did. The name's letters are unseen and clipped
+     instead, and the box is the one the icons sheet gives the glyph -- the
+     same size variables, the line's height when none is set -- so it stands
+     before that sheet arrives too. The sheet's own rules are unlayered and
+     replace these sizes when it is in; only the letters' ink and the clip
+     stay important, so nothing a component sets shows the name; the box
+     has no weight (:where), so any rule of a component or a utility wins. */
   :root[data-sf-loader] body .sf-icon:not(.sf-icon-loaded) {
-    font-size: 0 !important;
+    overflow: clip !important;
+    -webkit-text-fill-color: transparent !important;
+  }
+
+  :where(:root[data-sf-loader] body .sf-icon:not(.sf-icon-loaded)) {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-size: var(--sf-icon-glyph-size, var(--sf-icon--font-size, var(--sf-text-height-1)));
+    line-height: 1;
+    inline-size: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-text-height-1)));
+    block-size: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1)));
   }
 
   button {

@@ -157,6 +157,13 @@
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-tag .sf-tag-container {
     --sf-tag-container--background-color: transparent;
+    /* The tag stands on a line by its label's baseline, as its box before
+       the code does (core placeholder). Without a baseline item the row
+       took its first item's, the picture's glyph, and a tag with an icon or
+       a check mark made its line 34 for 32 (first paint R222 open item 2).
+       The label is the row's line high (the picture gives back its overhang),
+       so at the row's start it is where the centring put it. */
+    align-self: baseline;
     background-color: var(--sf-tag-container--background-color);
     color: var(--sf-tag-container--color);
     font-family: var(--sf-tag-container--font-family);

@@ -116,11 +116,19 @@ test('Icons documentation covers semantics and every public variation', {
 // icons sheet answers no hold with an important size of its own, so a page's,
 // a utility's and the density's size reach a glyph no Loader marks (a late
 // icon in a compact row drew 24px in a 16px box, 2026-11-09).
-test('only a Loader page holds an unmarked icon at 0; the icons sheet sets no important size', async () => {
+// The hold keeps the glyph's box (first paint R222 open item 1, 2026-11-16):
+// at font-size 0 an icon sized in em or lh was 0 wide until its font came and
+// a drawn line grew by its width; the letters are unseen and clipped instead.
+test('only a Loader page holds an unmarked icon, in its box; the icons sheet sets no important size', async () => {
   const {readFile} = await import('node:fs/promises');
   const core = await readFile(new URL('../src/core/scss/_sf_css__typograpy.scss', import.meta.url), 'utf8');
   const icons = await readFile(new URL('../src/component/icons/scss/_css__icons.scss', import.meta.url), 'utf8');
-  assert.match(core, /:root\[data-sf-loader\] body \.sf-icon:not\(\.sf-icon-loaded\) \{\s*font-size: 0 !important;/);
+  assert.match(core, /:root\[data-sf-loader\] body \.sf-icon:not\(\.sf-icon-loaded\) \{\s*overflow: clip !important;\s*-webkit-text-fill-color: transparent !important;\s*\}/);
+  const hold = core.slice(core.indexOf(':where(:root[data-sf-loader] body .sf-icon:not(.sf-icon-loaded))'));
+  const box = hold.slice(0, hold.indexOf('}'));
+  assert.match(box, /inline-size: var\(--sf-icon-glyph-size, var\(--sf-icon--width, var\(--sf-text-height-1\)\)\);/);
+  assert.match(box, /block-size: var\(--sf-icon-glyph-size, var\(--sf-icon--height, var\(--sf-text-height-1\)\)\);/);
+  assert.doesNotMatch(core, /font-size: 0 !important/);
   assert.doesNotMatch(core, /^\s*body \.sf-icon:not\(\.sf-icon-loaded\)/m);
   const loaderless = icons.slice(icons.indexOf(':root:not([data-sf-loader]) body .sf-icon:not(.sf-icon-loaded)'));
   assert.doesNotMatch(loaderless.slice(0, loaderless.indexOf('}')), /(^|[\s;{])font-size\s*:|!important/m);
