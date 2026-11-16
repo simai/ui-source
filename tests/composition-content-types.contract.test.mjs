@@ -117,8 +117,9 @@ test('the registry carries the first edition, each type at 1.0.0 with a builtin 
     // content.table 1.0.1 (2026-11-10): column alignment by class; 1.1.0 and
     // every other type with an inline field at 1.1.0: inline model 1.2.0;
     // 1.2.0 (content.figure 1.3.0, above a branch's 1.2.0): inline model
-    // 1.3.0, the badge atom's icon-only (C134, 2026-11-16).
-    const inlineFields = {'content.table': '1.2.0', 'content.list-item': '1.2.0', 'content.figure': '1.3.0', 'content.alert': '1.2.0', 'content.details': '1.2.0', 'content.step': '1.2.0'};
+    // 1.3.0, the badge atom's icon-only (C134, 2026-11-16); content.media 1.1.0
+    // (C230): the ratio 3/4; content.card 1.1.0 (C231): the header.
+    const inlineFields = {'content.table': '1.2.0', 'content.list-item': '1.2.0', 'content.figure': '1.3.0', 'content.alert': '1.2.0', 'content.details': '1.2.0', 'content.step': '1.2.0', 'content.media': '1.1.0', 'content.card': '1.1.0'};
     assert.equal(manifest.version, inlineFields[type] ?? '1.0.0', type);
     assert.equal(manifest.category, 'content', type);
     assert.equal(manifest.renderer.kind, ['content.diagram', 'content.math'].includes(type) ? 'registered' : 'builtin', type);

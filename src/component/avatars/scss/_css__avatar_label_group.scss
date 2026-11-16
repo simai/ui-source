@@ -33,72 +33,64 @@
   line-height: var(--sf-avatar-label-group-text--line-height);
 }
 
-.sf-avatar-label-group--size-1 .sf-avatar-label-group-title {
-  --sf-avatar-label-group-title--font-size: var(--sf-text-size-1);
-  --sf-avatar-label-group-title--line-height: var(--sf-text-height-1);
-}
-
-.sf-avatar-label-group.sf-avatar-label-group--size-2.sf-avatar-label-group--status-icon-company .sf-avatar-label-group-text, .sf-avatar-label-group--size-1 .sf-avatar-label-group-text {
-  --sf-avatar-label-group-text--font-size: var(--sf-text-size-1);
-  --sf-avatar-label-group-text--line-height: var(--sf-text-height-1);
-}
-
-.sf-avatar-label-group--size-2 .sf-avatar-label-group-title {
-  --sf-avatar-label-group-title--font-size: var(--sf-text-size-2);
-  --sf-avatar-label-group-title--line-height: var(--sf-text-height-2);
-}
-
-.sf-avatar-label-group.sf-avatar-label-group--size-2 .sf-avatar-label-group-text {
-  --sf-avatar-label-group-text--font-size: var(--sf-text-size-2);
-  --sf-avatar-label-group-text--line-height: var(--sf-text-height-2);
-}
-
+/* The name takes the text step of the avatar's size; the second line one
+   step smaller, in the explanation's ink (owner decision C229, 2026-11-16,
+   as the explanation of a list row): 3 -> 2, 2 -> 1, 1 -> 1/2, 1/2 -> 1/3,
+   1/3 -> 1/4; 1/4 is the smallest text step, both lines stay on it. The two
+   lines were one size, told apart only by colour, and stood taller than the
+   avatar. */
 .sf-avatar-label-group--size-3 .sf-avatar-label-group-title {
   --sf-avatar-label-group-title--font-size: var(--sf-text-size-3);
   --sf-avatar-label-group-title--line-height: var(--sf-text-height-3);
 }
 
-.sf-avatar-label-group--size-3 .sf-avatar-label-group-text {
-  --sf-avatar-label-group-text--font-size: var(--sf-text-size-3);
-  --sf-avatar-label-group-text--line-height: var(--sf-text-height-3);
+.sf-avatar-label-group--size-3 .sf-avatar-label-group-text,
+.sf-avatar-label-group--size-2 .sf-avatar-label-group-title {
+  --sf-avatar-label-group-text--font-size: var(--sf-text-size-2);
+  --sf-avatar-label-group-text--line-height: var(--sf-text-height-2);
+  --sf-avatar-label-group-title--font-size: var(--sf-text-size-2);
+  --sf-avatar-label-group-title--line-height: var(--sf-text-height-2);
 }
 
+.sf-avatar-label-group--size-2 .sf-avatar-label-group-text,
+.sf-avatar-label-group--size-1 .sf-avatar-label-group-title {
+  --sf-avatar-label-group-text--font-size: var(--sf-text-size-1);
+  --sf-avatar-label-group-text--line-height: var(--sf-text-height-1);
+  --sf-avatar-label-group-title--font-size: var(--sf-text-size-1);
+  --sf-avatar-label-group-title--line-height: var(--sf-text-height-1);
+}
+
+.sf-avatar-label-group--size-1 .sf-avatar-label-group-text,
 .sf-avatar-label-group--size-1\/2 .sf-avatar-label-group-title {
+  --sf-avatar-label-group-text--font-size: var(--sf-text-size-1\/2);
+  --sf-avatar-label-group-text--line-height: var(--sf-text-height-1\/2);
   --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/2);
   --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/2);
 }
 
-.sf-avatar-label-group--size-1\/2 .sf-avatar-label-group-text {
-  --sf-avatar-label-group-text--font-size: var(--sf-text-size-1\/2);
-  --sf-avatar-label-group-text--line-height: var(--sf-text-height-1\/2);
-}
-
-.sf-avatar-label-group--size-1\/3 .sf-avatar-label-group-title,
-.sf-avatar-label-group--size-1\/3 .sf-avatar-label-group-text {
-  --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/3);
-  --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/3);
+.sf-avatar-label-group--size-1\/2 .sf-avatar-label-group-text,
+.sf-avatar-label-group--size-1\/3 .sf-avatar-label-group-title {
   --sf-avatar-label-group-text--font-size: var(--sf-text-size-1\/3);
   --sf-avatar-label-group-text--line-height: var(--sf-text-height-1\/3);
+  --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/3);
+  --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/3);
 }
 
+.sf-avatar-label-group--size-1\/3 .sf-avatar-label-group-text,
 .sf-avatar-label-group--size-1\/4 .sf-avatar-label-group-title,
 .sf-avatar-label-group--size-1\/4 .sf-avatar-label-group-text {
-  --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/4);
-  --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/4);
   --sf-avatar-label-group-text--font-size: var(--sf-text-size-1\/4);
   --sf-avatar-label-group-text--line-height: var(--sf-text-height-1\/4);
+  --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/4);
+  --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/4);
 }
 
-.sf-avatar-label-group--size-1, .sf-avatar-label-group--size-2 {
+/* The gap from the avatar to its words is the icon-to-text gap of a row
+   (owner decision C229 by C105 H2): 12, and 8 in compact density and on a
+   phone (--sf-space-1/2 moves so); 4 beside the two smallest avatars, as an
+   icon inside text (H3). It grew with the step, 16 at size 3. */
+.sf-avatar-label-group {
   --sf-avatar-label-group--gap: var(--sf-space-1\/2);
-}
-
-.sf-avatar-label-group--size-3 {
-  --sf-avatar-label-group--gap: var(--sf-space-1);
-}
-
-.sf-avatar-label-group--size-1\/2 {
-  --sf-avatar-label-group--gap: var(--sf-space-1\/3);
 }
 
 .sf-avatar-label-group--size-1\/3,

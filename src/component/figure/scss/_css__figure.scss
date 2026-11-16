@@ -64,19 +64,22 @@
 
   // A named ratio: the box keeps it and the media fills it. One list for the
   // figure, the gallery and a card's picture (owner decision C188 (6)): 1:1,
-  // 4:3, 3:2, 16:9, 21:9, and auto -- no ratio class, the picture's own shape.
+  // 4:3, 3:2, 16:9, 21:9, and auto -- no ratio class, the picture's own shape;
+  // and one vertical ratio, 3:4 (owner decision C230, 2026-11-16: a portrait,
+  // the avatar card's).
   .sf-figure--ratio-1x1 { --sf-figure--ratio: 1 / 1; }
   .sf-figure--ratio-4x3 { --sf-figure--ratio: 4 / 3; }
   .sf-figure--ratio-3x2 { --sf-figure--ratio: 3 / 2; }
   .sf-figure--ratio-16x9 { --sf-figure--ratio: 16 / 9; }
   .sf-figure--ratio-21x9 { --sf-figure--ratio: 21 / 9; }
+.sf-figure--ratio-3x4 { --sf-figure--ratio: 3 / 4; }
 
-  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9) > .sf-figure-media {
+  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9, .sf-figure--ratio-3x4) > .sf-figure-media {
     aspect-ratio: var(--sf-figure--ratio);
   }
 
-  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9) > .sf-figure-media > :is(img, video, svg, canvas, iframe),
-  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9) > .sf-figure-media > picture > img {
+  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9, .sf-figure--ratio-3x4) > .sf-figure-media > :is(img, video, svg, canvas, iframe),
+  :is(.sf-figure--ratio-1x1, .sf-figure--ratio-4x3, .sf-figure--ratio-3x2, .sf-figure--ratio-16x9, .sf-figure--ratio-21x9, .sf-figure--ratio-3x4) > .sf-figure-media > picture > img {
     block-size: 100%;
     object-fit: cover;
   }
@@ -108,8 +111,20 @@
   // A caption taller than the picture (five lines on a small card) grows the
   // box rather than leaving its last lines under the scrim on the page: the
   // media stretches to the row and the picture covers it.
+  // The media is as wide as the figure's column (content study Ф1,
+  // 2026-11-16; C92): with the stretch and the ratio alone the browser took
+  // the width from the stretched height, and a caption taller than the
+  // picture pushed it out of its column (560 wide in a 224 column). The
+  // single column is the figure's width, and the ratio only sets the least
+  // height.
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media {
     align-self: stretch;
+    inline-size: 100%;
+    min-inline-size: 0;
   }
 
   .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media > :is(img, video, svg, canvas, iframe),

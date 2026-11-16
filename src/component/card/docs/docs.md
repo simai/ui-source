@@ -34,6 +34,26 @@ inset, never under 4 px. With the surface radius (8) and the card's inset (20,
 16 on a phone) that is 4 px at every width (1.6.1). A plain card has no frame,
 so what it holds keeps its own corner.
 
+## Header
+
+The card's header (owner decision C231, 1.8.0; it fulfils C188 (1)) is one
+row: the card's title and one action at its end, 8 px apart. The heading
+inside is drawn as the card's title (16/24 600, 14/20 on a phone), whatever
+its level, and wraps; the action is an `sf-icon-button` of size 1/2 (an
+`<sf-button-icon size="1/2">` or its class markup), held to the title's line,
+so the row is as tall as the title. `content.card` 1.1.0 draws it from its
+`title` and `action_icon`, `action_label`, `action_href`.
+
+```html
+<div class="sf-card">
+  <div class="sf-card-header">
+    <h4>Заказ № 1042</h4>
+    <button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1/2" aria-label="Ещё"><i class="sf-icon" aria-hidden="true">more_vert</i></button>
+  </div>
+  <p>Оплачен, передан в доставку.</p>
+</div>
+```
+
 ## Actions row
 
 A card has no footer or subtitle part (owner decision C188 (1)). Its buttons
@@ -73,10 +93,14 @@ part inside the card follows the nested corner below.
 </div>
 ```
 
+A card the page colours is that coloured place: `sf-card bg-success-container`
+draws the success container (1.8.0, C16); the card's fills stand under the
+utilities, and its variables still set them.
+
 `sf-card--plain` keeps the column and drops the surface: no fill, no edge, no
 padding. Use it inside a grid of cards that needs no frames.
 
-`content.card` renders with it (`props.variant`: `default` or `plain`), and a
+`content.card` renders with it (`props.variant`: `default` or `plain`; the header since 1.1.0), and a
 `content.grid` of cards lays them out in columns.
 
 ## Variables

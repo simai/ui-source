@@ -107,7 +107,7 @@ block('figure-size', 'Width and height go on the image.', 'content.figure', { id
 block('figure-caption', 'A caption is inline content in figcaption.', 'content.figure', { id: 'f', type: 'content.figure', data: { ...image, caption: [text('Photo by '), link('https://simai.io', text('SIMAI'))] } });
 block('figure-alt-empty', 'An empty alt marks a decorative image.', 'content.figure', { id: 'f', type: 'content.figure', data: { src: './a.png', alt: '' } });
 block('figure-alt-escaped', 'The alt is escaped as an attribute.', 'content.figure', { id: 'f', type: 'content.figure', data: { src: './a.png', alt: 'A "quoted" <scene> & more' } });
-for (const ratio of ['auto', '1/1', '4/3', '3/2', '16/9', '21/9']) block(`figure-ratio-${ratio.replace('/', 'x')}`, `ratio ${ratio}.`, 'content.figure', { id: 'f', type: 'content.figure', data: image, props: { ratio } });
+for (const ratio of ['auto', '1/1', '4/3', '3/2', '16/9', '21/9', '3/4']) block(`figure-ratio-${ratio.replace('/', 'x')}`, `ratio ${ratio}.`, 'content.figure', { id: 'f', type: 'content.figure', data: image, props: { ratio } });
 for (const fit of ['cover', 'contain']) block(`figure-fit-${fit}`, `fit ${fit}.`, 'content.figure', { id: 'f', type: 'content.figure', data: image, props: { fit } });
 
 block('alert-default', 'An alert without parameters: neutral, default, its icon, no title, no body.', 'content.alert', { id: 'w', type: 'content.alert' });
@@ -139,10 +139,12 @@ for (const gap of [0, 1, 2, 3, 4]) block(`grid-gap-${gap}`, `gap ${gap}.`, 'cont
 block('card-default', 'A card without parameters.', 'content.card', { id: 'c', type: 'content.card', slots: { default: [{ id: 'ch', type: 'content.heading', data: { level: 4, content: [text('Title')] } }, p('cp', 'Text.')] } });
 for (const variant of ['default', 'plain']) block(`card-variant-${variant}`, `variant ${variant}.`, 'content.card', { id: 'c', type: 'content.card', props: { variant }, slots: { default: [p('cp', 'Text.')] } });
 block('card-empty', 'A card may be empty.', 'content.card', { id: 'c', type: 'content.card' });
+block('card-header', 'The header (content.card 1.1.0): the title and one action at its end.', 'content.card', { id: 'c', type: 'content.card', data: { title: [text('Order 1042')], action_icon: 'more_vert', action_label: 'More', action_href: '/orders/1042' }, slots: { default: [p('cp', 'Text.')] } });
+block('card-header-title', 'A header with the title alone; an action without its link is not drawn.', 'content.card', { id: 'c', type: 'content.card', data: { title: [text('Order 1042')], action_icon: 'more_vert', action_label: 'More' } });
 
 block('media-default', 'Media without parameters: the picture on the right, 16/9.', 'content.media', { id: 'm', type: 'content.media', data: image, slots: { default: [p('mp', 'Beside.')] } });
 for (const side of ['left', 'right']) block(`media-side-${side}`, `side ${side}.`, 'content.media', { id: 'm', type: 'content.media', data: image, props: { side }, slots: { default: [p('mp', 'Beside.')] } });
-for (const ratio of ['1/1', '4/3', '3/2', '16/9', '21/9']) block(`media-ratio-${ratio.replace('/', 'x')}`, `ratio ${ratio}.`, 'content.media', { id: 'm', type: 'content.media', data: { ...image, width: 800, height: 600 }, props: { ratio } });
+for (const ratio of ['1/1', '4/3', '3/2', '16/9', '21/9', '3/4']) block(`media-ratio-${ratio.replace('/', 'x')}`, `ratio ${ratio}.`, 'content.media', { id: 'm', type: 'content.media', data: { ...image, width: 800, height: 600 }, props: { ratio } });
 
 block('file-default', 'A file with only its address: the download icon, the name from the address, no size.', 'content.file', { id: 'fl', type: 'content.file', data: { href: 'https://cdn.example/files/Price%20list.xlsx?v=2#sheet' } });
 block('file-all', 'value, href, label, mime and size: value is not drawn, the label and size are.', 'content.file', { id: 'fl', type: 'content.file', data: { value: 'file-42', href: '/files/report.pdf', label: 'Report "Q3" <2026>', mime: 'application/pdf', size: 1468006 } });

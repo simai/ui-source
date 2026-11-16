@@ -143,7 +143,10 @@ const imageData = {
   width: { type: 'integer', minimum: 1, maximum: 100000 },
   height: { type: 'integer', minimum: 1, maximum: 100000 },
 };
-export const CONTENT_RATIOS = Object.freeze(['1/1', '4/3', '3/2', '16/9', '21/9']);
+// One list for the figure, the media block and a card's picture (owner
+// decision C188 (6)); 3/4, the one vertical ratio, since content.figure and
+// content.media 1.2.0 (owner decision C230, 2026-11-16).
+export const CONTENT_RATIOS = Object.freeze(['1/1', '4/3', '3/2', '16/9', '21/9', '3/4']);
 export const CONTENT_ALERT_STATUSES = Object.freeze(['neutral', 'info', 'success', 'warning', 'error']);
 export const CONTENT_ALERT_APPEARANCES = Object.freeze(['default', 'outlined', 'flat']);
 // A media type in its lowercase form: type/subtype, no parameters.
@@ -707,6 +710,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     capabilities: ['html', 'rich-text'],
   }),
   // 1.1.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
+  // 1.2.0 (2026-11-16, owner decision C230): ratio takes 3/4.
   contentManifest('content.figure', {
     // 1.3.0 (2026-11-16): inline model 1.3.0, the badge atom's icon-only (C134; compact its alias).
     version: '1.3.0',
@@ -784,13 +788,29 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     }),
     slots: { default: contentSlot(1, 48) },
   }),
+  // 1.1.0 (2026-11-16, owner decision C231, fulfils C188 (1)): the card's
+  // header, sf-card-header -- the title (inline, drawn as the card's title)
+  // and one action at its end, an icon link of size 1/2: action_icon, its
+  // name for a screen reader action_label and action_href by the Document's
+  // URL rule; it is drawn when all three are given. All optional; a card
+  // without them is drawn as in 1.0.0.
   contentManifest('content.card', {
+    version: '1.1.0',
     mode: 'composite',
+    data_schema: closed({
+      title: inlineContentSchema,
+      action_icon: iconName,
+      action_label: plainText(120),
+      action_href: urlSchema,
+    }),
     props_schema: closed({ variant: { enum: ['default', 'plain'] } }),
     slots: { default: contentSlot(0, 100) },
-    assets: ['component/card'],
+    assets: ['component/card', 'component/icon-buttons'],
+    capabilities: ['html', 'rich-text'],
   }),
+  // 1.1.0 (2026-11-16, owner decision C230): ratio takes 3/4.
   contentManifest('content.media', {
+    version: '1.1.0',
     mode: 'composite',
     data_schema: closed({ ...imageData }, ['src', 'alt']),
     props_schema: closed({
@@ -1230,7 +1250,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   { ...contentEditor('content.figure', [
     contentField('content.figure', 'src', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
     contentField('content.figure', 'alt', 'data', 'text', { constraints: { min_length: 1, max_length: 1000 } }),
-    contentField('content.figure', 'ratio', 'props', 'choice', { choices: ['auto', '1/1', '4/3', '3/2', '16/9', '21/9'], default: 'auto' }),
+    contentField('content.figure', 'ratio', 'props', 'choice', { choices: ['auto', ...CONTENT_RATIOS], default: 'auto' }),
     contentField('content.figure', 'fit', 'props', 'choice', { choices: ['cover', 'contain'], default: 'cover' }),
   ]), type_version: '1.3.0' },
   { ...contentEditor('content.alert', [
@@ -1255,15 +1275,18 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('content.grid', 'columns', 'props', 'integer', { constraints: { min: 1, max: 4 }, default: 3 }),
     contentField('content.grid', 'gap', 'props', 'integer', { ...advanced, constraints: { min: 0, max: 4 }, default: 2 }),
   ]),
-  contentEditor('content.card', [
+  { ...contentEditor('content.card', [
     contentField('content.card', 'variant', 'props', 'choice', { choices: ['default', 'plain'], default: 'default' }),
-  ]),
-  contentEditor('content.media', [
+    contentField('content.card', 'action_icon', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 64 } }),
+    contentField('content.card', 'action_label', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 120 } }),
+    contentField('content.card', 'action_href', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 2048 } }),
+  ]), type_version: '1.1.0' },
+  { ...contentEditor('content.media', [
     contentField('content.media', 'src', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
     contentField('content.media', 'alt', 'data', 'text', { constraints: { min_length: 1, max_length: 1000 } }),
     contentField('content.media', 'side', 'props', 'choice', { choices: ['left', 'right'], default: 'right' }),
-    contentField('content.media', 'ratio', 'props', 'choice', { choices: ['1/1', '4/3', '3/2', '16/9', '21/9'], default: '16/9' }),
-  ]),
+    contentField('content.media', 'ratio', 'props', 'choice', { choices: [...CONTENT_RATIOS], default: '16/9' }),
+  ]), type_version: '1.1.0' },
   contentEditor('content.file', [
     contentField('content.file', 'label', 'data', 'text', { constraints: { min_length: 1, max_length: 300 } }),
     contentField('content.file', 'href', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),

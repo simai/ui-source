@@ -34,6 +34,13 @@
     line-height: var(--sf-title--height-card);
     font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
   }
+
+  // The heading in the card's header (C231) is the same title.
+  .sf-card > .sf-card-header > :is(h1, h2, h3, h4, h5, h6) {
+    font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
+    line-height: var(--sf-title--height-card);
+    font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
+  }
 }
 
 // The places above a card (C42, owner 2026-11-10): a window, a drawer over
@@ -50,6 +57,37 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
 @layer sf.base {
   .sf-card:not(.sf-card--plain):not(:is(#{$sf-card-above-card}) .sf-card) {
     @include places.sf-place(var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card))), var(--sf-on-surface-card-variant));
+  }
+
+  // The card's fills stand here too, under the utilities, so a card the page
+  // colours (sf-card bg-success-container) draws that fill (C16; content
+  // study К2, 2026-11-16: the components layer wrote the card surface over
+  // the utility, and the card stayed white while its roles were the coloured
+  // place's). The card's own variables still set them.
+  // The card place (C16): white in the light theme, a step lighter than the
+  // page in the dark (it was the page's own colour there).
+  .sf-card {
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card)));
+  }
+
+  // A card in a card is its outline only (C16, surfaces research 4.2: page,
+  // then area or card, then outline only): no second plate, so it does not
+  // stand a step lighter again in the dark. The same in a window, a drawer
+  // and a popover (C42, owner 2026-11-10): the edge stays
+  // --sf-outline-variant, the fill is the place's.
+  :is(#{$sf-card-above-card}) .sf-card:not(.sf-card--plain) {
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
+  }
+
+  // A card that is itself the control -- a link, a button -- rises under the
+  // pointer: the raised place (C20), in the dark theme the surface a step
+  // lighter. A card the page painted keeps its own fill.
+  .sf-card:is(a[href], button):not(.sf-card--plain):hover {
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-raised)));
+  }
+
+  .sf-card--plain {
+    background-color: var(--sf-transparent);
   }
 }
 
@@ -71,9 +109,6 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     // up to the full step, so a wide card is unchanged.
     padding-inline: var(--sf-card-padding-inline, min(var(--sf-space-2), 8%));
     color: var(--sf-card-color, var(--sf-on-surface));
-    // The card place (C16): white in the light theme, a step lighter than
-    // the page in the dark (it was the page's own colour there).
-    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card)));
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-card--radius);
     // At rest a card is the flat place (C20): no shadow, its edge is the line.
@@ -101,17 +136,7 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
   }
 
   .sf-card:is(a[href], button):not(.sf-card--plain):hover {
-    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-raised)));
     box-shadow: var(--sf-ring-shadow, 0 0 transparent), var(--sf-place-shadow, var(--sf-shadow-raised));
-  }
-
-  // A card in a card is its outline only (C16, surfaces research 4.2: page,
-  // then area or card, then outline only): no second plate, so it does not
-  // stand a step lighter again in the dark. Its own variables still win.
-  // The same in a window, a drawer and a popover (C42, owner 2026-11-10):
-  // the edge stays --sf-outline-variant, the fill is the place's.
-  :is(#{$sf-card-above-card}) .sf-card:not(.sf-card--plain) {
-    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
   }
 
   // A rounded block inside a card -- a card in a card, a figure's picture --
@@ -181,9 +206,40 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     margin-block-start: auto;
   }
 
+  // The card's header (owner decision C231, 2026-11-16; fulfils C188 (1)):
+  // one row, the card's title and one action at its end, 8 apart
+  // (--sf-space-1/3). The heading inside is the card's title (the rule at the
+  // top: 16/24 600, 14/20 on a phone, whatever its level) and takes the rest
+  // of the row, wrapping; the action is an sf-icon-button of size 1/2 (an
+  // sf-button-icon size="1/2"), held to the title's line: the row is as tall
+  // as the title, the button's extra height laid over the gap around it, so
+  // a card with a header stands as one without the button. With a long title
+  // the action stays at the first line.
+  .sf-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sf-space-1\/3);
+    min-inline-size: 0;
+  }
+
+  .sf-card-header > :is(h1, h2, h3, h4, h5, h6) {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    margin: var(--sf-0);
+  }
+
+  .sf-card-header > :not(h1, h2, h3, h4, h5, h6) {
+    flex: none;
+    margin-inline-start: auto;
+  }
+
+  .sf-card-header > .sf-icon-button,
+  .sf-card-header > :is(sf-button-icon, sf-icon-button) > :is(.sf-icon-button, button, a) {
+    margin-block: calc((var(--sf-title--height-card) - var(--sf-ui-1\/2--control-height)) / 2);
+  }
+
   .sf-card--plain {
     padding: var(--sf-0);
-    background-color: var(--sf-transparent);
     border-color: var(--sf-transparent);
     border-radius: var(--sf-0);
   }

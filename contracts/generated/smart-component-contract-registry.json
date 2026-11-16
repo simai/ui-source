@@ -190,7 +190,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/avatar-group/smart.manifest.json",
-      "manifest_sha256": "689f98dd59232be6ad1cbabd648b83e8266ec5bae5520feafb77bdb90750e7ec",
+      "manifest_sha256": "05b16aa466ba3e42c023f183f93baf77ba406bc4e460748f9fd6a5c4021e1c0e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

@@ -126,11 +126,22 @@
     --sf-file-preview-holder--size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
   }
 
+  /* The type word is one word (C186 (6): names and codes do not break;
+     C149 (3)): it never wraps. In the compact holder (32, the cell of a
+     table) it is one text step smaller with no extra tracking, so «XLSX» fits
+     its box (content study П7, 2026-11-16: «XLS / X» on two lines). */
   .sf-file-preview .sf-file-preview-extension {
     font-size: var(--sf-text-size-1\/3);
     line-height: var(--sf-text-height-1\/3);
     font-weight: 600;
     letter-spacing: var(--sf-text--tracking-wide);
+    white-space: nowrap;
+  }
+
+  .sf-file-preview.sf-file-preview--compact .sf-file-preview-extension {
+    font-size: var(--sf-text-size-1\/4);
+    line-height: var(--sf-text-height-1\/4);
+    letter-spacing: normal;
   }
 
   .sf-file-preview .sf-file-preview-main {
@@ -413,10 +424,23 @@
   }
 }
 
+/* A row that cannot be used draws its words and type glyph in the disabled
+   ink of the place, --sf-on-surface-disabled, as a field, a check box and a
+   button do (C16; content study П1, 2026-11-16). The holder and a picture
+   keep their look, and the buttons, natively disabled, are not dimmed a
+   second time. It was the whole row at 60 % opacity: the name read 4.53:1,
+   as a working one, and the buttons 1.86:1. */
 @layer sf.states {
-  .sf-file-preview.disabled,
-  .sf-file-preview[aria-disabled='true'] {
-    opacity: var(--sf-opacity-60);
+  .sf-file-preview:is(.disabled, [aria-disabled='true']) .sf-file-preview-name {
+    --sf-file-preview-name--color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-file-preview:is(.disabled, [aria-disabled='true']) .sf-file-preview-size {
+    --sf-file-preview-size--color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-file-preview:is(.disabled, [aria-disabled='true']) .sf-file-preview-holder {
+    --sf-file-preview-holder--color: var(--sf-on-surface-disabled);
   }
 }
 

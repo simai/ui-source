@@ -128,7 +128,8 @@ test('Avatar documentation uses real Framework-only examples', {
 test('Avatar card media box keeps its ratio without a photo', async () => {
   const sheet = await read('src/component/avatars/scss/_css__avatar_custom.scss');
   assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--square \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 1 \/ 1;/u);
-  assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--portrait \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 9 \/ 16;/u);
+  assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--portrait \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 3 \/ 4;/u);
+  assert.match(sheet, /\.sf-avatar-card\.sf-avatar-card--portrait-9x16 \.sf-avatar-card-image,[^{]*\{\s*aspect-ratio: 9 \/ 16;/u);
 });
 
 // C124 (owner 2026-11-13): a card without a photo draws the initials of the
