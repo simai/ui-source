@@ -3,12 +3,13 @@
   "schema_version": 1,
   "id": "component.tooltip",
   "kind": "component",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/tooltip/docs/docs.md",
     "src/component/tooltip/index.js",
     "src/component/tooltip/js/_keyshortcuts.js",
+    "src/component/tooltip/js/_name-repeat.js",
     "src/component/tooltip/js/_tooltip.js",
     "src/component/tooltip/js/index.js",
     "src/component/tooltip/rule.js",
@@ -16,7 +17,7 @@
     "src/component/tooltip/scss/_css__tooltip_custom.scss",
     "src/component/tooltip/scss/index.scss"
   ],
-  "content_sha256": "e1a92e383c61c2ef528c8514eeb0300a684ba31034fd5a642114ae2f2968c793",
+  "content_sha256": "7d9843e9ff888f9c3c7163091238a7d47b489c75b5bb1f3da2c4c8e1ee6c9c50",
   "dependencies": [
     {
       "id": "component.kbd",

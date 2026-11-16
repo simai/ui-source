@@ -3,6 +3,7 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderIconButtonTemplate } from './js/templates/default';
 import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { ANCHORED_BADGE_ATTRIBUTES, elementBadge, nameWithBadge } from '../helpers/anchored-badge';
+import { repeatsName } from '../../component/tooltip/js/_name-repeat.js';
 import { cycleState, hasCycle, parseCycle, preloadSwitchIcons, pressCycle, themeCycleFollow, warnCycleToggle } from '../helpers/cycle';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { warnUnknownControlStatus } from '../helpers/control-status';
@@ -424,9 +425,11 @@ class SfIconButton extends IconButtonElement {
     // before the tooltip is made; once made, the controller links it by
     // aria-describedby instead.
     const cycle = this.cycleState();
-    const name = String(cycle ? cycle.name : (this.pressed === true && this.labelPressed) || this.getAttribute('aria-label') || '').trim().toLowerCase();
+    // A text whose words the name already says (equal, or whole words of it)
+    // is no description: the shared rule of the tooltip controller.
+    const name = String(cycle ? cycle.name : (this.pressed === true && this.labelPressed) || this.getAttribute('aria-label') || '');
     const said = this.nameTooltipText();
-    if (!tip && said.toLowerCase() !== name) button.setAttribute('aria-description', said);
+    if (!tip && !repeatsName(name, said)) button.setAttribute('aria-description', said);
     else button.removeAttribute('aria-description');
     if (!tip) return;
     const text = tip.querySelector('.sf-tooltip-text');
