@@ -5,8 +5,11 @@
 
 // Border size use SIMAI Framework size system
 $border-width-array: (
-	1: a1,
-	2: a2,
+	// Widths 1 and 2 are the line roles (C173 (6); RG-UT-V (3)): 1 and 2 px
+	// at every text size, as a component's own line. They read the rem steps
+	// a1 and a2, which grew with the root text size (2 px at 200 %).
+	1: line--border,
+	2: line--indicator,
 	3: a3,
 	4: a4,
 	5: a5,
