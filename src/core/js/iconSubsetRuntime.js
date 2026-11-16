@@ -9,7 +9,7 @@ import {
   isRememberedIconSubsetUsable,
   normalizeIconFontLoadWeight,
 } from './icon-subset-memory.js';
-import { checkIconGlyph, markCustomGlyph, registeredIcon } from "./icon-glyphs.js";
+import { checkIconGlyph, markCustomGlyph, markMirrorGlyph, registeredIcon } from "./icon-glyphs.js";
 
 export function initIconSubsetState(loader) {
   loader.iconFontReady = false;
@@ -1154,6 +1154,7 @@ export function installIconSubsetRuntime(
       el.getAttribute("data-icon") || el.textContent || "",
     ).trim();
     markCustomGlyph(el, icon);
+    markMirrorGlyph(el, icon);
     if (!icon) return null;
 
     const attrs = {
@@ -2608,6 +2609,31 @@ export function installIconSubsetRuntime(
     });
   };
 
+  // The stylesheet a subset answer is drawn with. The service's stylesheet
+  // names every family 'Material Symbols Outlined Subset' and sets it on every
+  // .sf-icon, while its manifest says the family it sent (Rounded, Sharp): put
+  // in as it came, a rounded subset redeclared the outlined family's faces and
+  // the face the manifest names was never declared, so the check found no
+  // font, Rounded and Sharp fell back to the old Material Icons files on every
+  // load (no axes, favorite drawn filled) and outlined glyphs were judged
+  // missing (content study Z1, 2026-11-16). When the stylesheet does not
+  // declare the manifest's family, the sheet is written from the manifest, as
+  // a remembered manifest is: the family it names, scoped to its own icons.
+  SFLoaderPlugin.prototype.iconSubsetSheetText = function (
+    cssText = "",
+    manifest = null,
+  ) {
+    if (!manifest || !Array.isArray(manifest.fonts) || !manifest.fonts.length) {
+      return cssText;
+    }
+    const family = this.getIconManifestFontFamily(manifest);
+    const text = String(cssText || "");
+    if (text.includes(`'${family}'`) || text.includes(`"${family}"`)) {
+      return cssText;
+    }
+    return iconSubsetCssFromManifest(manifest).cssText || cssText;
+  };
+
   // One subset request: fetch the stylesheet, load its face, swap it in.
   // Resolves true when the subset draws, false when it was dropped (outrun
   // by a newer request, or arriving behind the full font without every name
@@ -2654,7 +2680,7 @@ export function installIconSubsetRuntime(
       manifest = this.decodeIconManifestHeader(
         response.headers.get("X-SIMAI-Font-Manifest"),
       );
-      const cssText = await response.text();
+      const cssText = this.iconSubsetSheetText(await response.text(), manifest);
       const manifestType = manifest
         ? this.getIconManifestType(manifest)
         : type;

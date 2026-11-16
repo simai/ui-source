@@ -113,6 +113,31 @@ function ensureCodeId(block) {
   return block.id;
 }
 
+// A head button's name, shown as the Framework tooltip on hover and keyboard
+// focus (C48, C217: an icon without words says what it does). The class
+// markup of the tooltip component, as the clipboard component writes it for
+// an icon-only copy; a button that already names a tooltip keeps it, and the
+// clipboard sees this one and adds none.
+function nameTooltip(button, text, base) {
+  if (!text || button.hasAttribute('data-tooltip')) return;
+  const doc = button.ownerDocument;
+  const surface = doc.createElement('span');
+  surface.className = 'sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-highlight__name';
+  surface.hidden = true;
+  let id = `${base}-${button.classList.contains('sf-highlight__copy') ? 'copy' : 'wrap'}-name`;
+  for (let index = 2; doc.getElementById(id); index++) id = id.replace(/(?:-\d+)?$/u, `-${index}`);
+  surface.id = id;
+  const content = doc.createElement('span');
+  content.className = 'sf-tooltip-content';
+  const words = doc.createElement('span');
+  words.className = 'sf-tooltip-text';
+  words.textContent = text;
+  content.append(words);
+  surface.append(content);
+  button.after(surface);
+  button.setAttribute('data-tooltip', id);
+}
+
 function localizedCopyStrings(block, root) {
   // The node the words are resolved from is `block`, not the host: a block
   // inside a region that names its own language takes that language. The host
@@ -137,7 +162,9 @@ function ensureCopyButton(block, root, head) {
   }
   button = block.ownerDocument.createElement('button');
   button.type = 'button';
-  button.className = 'sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center';
+  // The plain look (owner decision C201): copy is an icon inside the block,
+  // so it has no plate in any state; only its ink moves.
+  button.className = 'sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--plain sf-icon-button--on-surface flex items-cross-center';
   // The clipboard component's attribute route (decision C48): the block's
   // code is copied whole, without its line numbers; the class sf-clipboard
   // and data-target it used are deprecated until 2027-01-01.
@@ -151,6 +178,7 @@ function ensureCopyButton(block, root, head) {
   icon.setAttribute('aria-hidden', 'true');
   button.append(icon);
   head.append(button);
+  nameTooltip(button, strings.label, codeElementId);
   return button;
 }
 
@@ -168,8 +196,12 @@ function ensureWrapButton(block, root, head) {
   root.classList.toggle('sf-highlight--wrap', wrapped);
   button = block.ownerDocument.createElement('button');
   button.type = 'button';
-  button.className = 'sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center';
-  button.setAttribute('aria-label', root.dataset.wrapLabel || pageText(HIGHLIGHT_TEXT, 'wrap', block, 'sf-highlight'));
+  // Plain as copy beside it (owner decision C232): no plate in any state;
+  // pressed, its glyph is primary and filled -- two cues, not colour alone
+  // (C12; the icon buttons fill a pressed toggle's glyph).
+  button.className = 'sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--plain sf-icon-button--on-surface flex items-cross-center';
+  const wrapLabel = root.dataset.wrapLabel || pageText(HIGHLIGHT_TEXT, 'wrap', block, 'sf-highlight');
+  button.setAttribute('aria-label', wrapLabel);
   button.setAttribute('aria-pressed', String(wrapped));
   button.setAttribute('aria-controls', ensureCodeId(block));
   const icon = block.ownerDocument.createElement('span');
@@ -185,6 +217,7 @@ function ensureWrapButton(block, root, head) {
   });
   const copy = head.querySelector(':scope > .sf-highlight__copy');
   head.insertBefore(button, copy);
+  nameTooltip(button, wrapLabel, button.getAttribute('aria-controls'));
   return button;
 }
 

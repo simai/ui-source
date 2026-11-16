@@ -84,6 +84,49 @@ export function fillShortcut(element, apple = isApplePlatform()) {
   return true;
 }
 
+// A key of one character is a square (C38): the component decides it, not
+// the author (C04). An author wrote <kbd>S</kbd> and got a key wider than
+// its height unless the page also wrote sf-kbd--square, while the keys
+// data-sf-shortcut fills were squares (content study Kl1, 2026-11-16). A
+// key -- a <kbd> with no element inside -- whose text is one character takes
+// the class; marked here (data-sf-kbd-square), it gives the class back when
+// its text grows. A class the author wrote stays.
+const SQUARE = 'sf-kbd--square';
+const SQUARE_MARK = 'data-sf-kbd-square';
+
+function oneCharacter(text) {
+  return [...String(text || '').trim()].length === 1;
+}
+
+export function markSquareKey(element) {
+  if (!element || element.localName !== 'kbd' || element.firstElementChild) return false;
+  if (element.classList.contains('sf-kbd--group')) return false;
+  const square = oneCharacter(element.textContent);
+  const marked = element.hasAttribute(SQUARE_MARK);
+  if (square && !element.classList.contains(SQUARE)) {
+    element.classList.add(SQUARE);
+    element.setAttribute(SQUARE_MARK, '');
+    return true;
+  }
+  if (!square && marked) {
+    element.classList.remove(SQUARE);
+    element.removeAttribute(SQUARE_MARK);
+    return true;
+  }
+  return false;
+}
+
+/** Marks every one-character key in `root` (and `root` itself). */
+export function markSquareKeys(root = globalThis.document) {
+  if (!root) return 0;
+  let marked = 0;
+  if (root.localName === 'kbd' && markSquareKey(root)) marked += 1;
+  root.querySelectorAll?.('kbd').forEach((element) => {
+    if (markSquareKey(element)) marked += 1;
+  });
+  return marked;
+}
+
 /** Fills every combination in `root` (and `root` itself). */
 export function fillShortcuts(root = globalThis.document) {
   if (!root) return 0;
@@ -100,11 +143,13 @@ export function fillShortcuts(root = globalThis.document) {
 if (typeof document !== 'undefined' && !document.__sfShortcutRoute) {
   document.__sfShortcutRoute = true;
   const fillAll = () => fillShortcuts(document);
+  const squareAll = () => markSquareKeys(document);
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fillAll, {once: true});
+    document.addEventListener('DOMContentLoaded', () => { fillAll(); squareAll(); }, {once: true});
   }
   fillAll();
+  squareAll();
 
   // Added combinations, a changed value, and a changed [lang] above one. The
   // keys this writes inside a combination carry no data-sf-shortcut, so they
@@ -118,8 +163,13 @@ if (typeof document !== 'undefined' && !document.__sfShortcutRoute) {
         continue;
       }
       record.addedNodes.forEach((node) => {
-        if (node instanceof Element) fillShortcuts(node);
+        if (node instanceof Element) {
+          fillShortcuts(node);
+          markSquareKeys(node);
+        }
       });
+      // A key whose text changed: its new text nodes land in the key.
+      if (record.target instanceof Element && record.target.localName === 'kbd') markSquareKey(record.target);
     }
     if (languageChanged) fillAll();
   }).observe(document.documentElement, {
