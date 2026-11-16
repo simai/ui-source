@@ -40,7 +40,8 @@ test('RG-RS-2 (C202): a slider with the field is a size container; under 26rem t
   assert.ok(at >= 0, 'container query at step g3');
   const block = sheet.slice(at);
   assert.match(block, /\.sf-range-slider-group--field \.sf-range-slider-line \{\n {4}align-items: stretch;\n {4}flex-direction: column;/u);
-  assert.match(block, /grid-auto-columns: minmax\(0, 1fr\);\n {4}grid-auto-flow: column;/u);
+  // The boxes share the row and wrap rather than clip (C261).
+  assert.match(block, /display: flex;\n {4}flex-wrap: wrap;/u);
   assert.match(block, /\.sf-range-slider-group--field \.sf-range-slider-field-unit \{\n {4}display: none;/u);
   assert.match(block, /\.sf-range-slider-group--field \.sf-range-slider-name-unit \{\n {4}display: inline;/u);
 });
