@@ -21,7 +21,7 @@
 // The list of earlier pairs, every message whole with a gap, is a setting:
 // SF.notifications.configure({layout: 'list'}).
 import {pageText} from './page-language';
-import {closeLayer, openLayer} from './layer-stack';
+import {closeLayer, hasLayer, openLayer, openLayers, raiseLayer} from './layer-stack';
 // The device's reduced motion or the site's «остановить движение» (C196).
 import {reducedMotion} from './motion.js';
 
@@ -63,6 +63,9 @@ const state = {
   returnFocus: null,
   frame: 0,
   resize: null,
+  // The area is being put back on top (LY-13), and the toggle watch is on.
+  raising: false,
+  watchingTopLayer: false,
 };
 
 
@@ -307,14 +310,64 @@ function showRegion() {
   if (typeof area.showPopover === 'function' && !area.matches(':popover-open')) {
     try { area.showPopover(); } catch { /* not in a document yet */ }
   }
+  watchTopLayer();
   // A layer of the one document stack (standard 1.3.8 §19.1), the kind that
   // takes no keys: Escape and Tab stay with the window under it. Its height
   // counts where the browser has no top layer.
   openLayer(area, {
     kind: 'toast',
     returnTo: null,
-    place: ({zIndex}) => { area.style.zIndex = String(zIndex); },
+    place: ({zIndex, index}) => {
+      area.style.zIndex = String(zIndex);
+      keepAbove(index);
+    },
   });
+}
+
+// Messages stand over every window (LY-13; the layer roles of C181 (3):
+// window <= message). The area entered the top layer when its first message
+// came, so a window, a drawer or a popover opened after it -- a dialog
+// shown modal, a popover, a layer of the stack -- was drawn over the
+// messages, and a toast raised while a window was open stayed under it.
+// When another layer opens above the area, the area goes back on top: of the
+// stack (its z-index, where the browser has no top layer) and of the
+// browser's top layer, which a popover enters again only by being shown
+// again. Hidden and shown in one task, so no frame is drawn without it; the
+// focus inside it, if any, stays where it was.
+function keepAbove(index) {
+  if (state.raising || index === openLayers().length - 1) return;
+  state.raising = true;
+  queueMicrotask(() => {
+    state.raising = false;
+    const area = state.region;
+    if (!area?.isConnected || !hasLayer(area)) return;
+    raiseLayer(area);
+    enterTopLayerAgain(area);
+  });
+}
+
+function enterTopLayerAgain(area) {
+  if (typeof area.showPopover !== 'function' || !area.matches(':popover-open')) return;
+  const active = document.activeElement;
+  const inside = Boolean(active && active !== area && area.contains(active));
+  try {
+    area.hidePopover();
+    area.showPopover();
+  } catch { /* left the document meanwhile */ }
+  if (inside && active.isConnected) active.focus({preventScroll: true});
+}
+
+// A top-layer element the stack does not know -- a page's own <dialog>
+// shown modal, a popover of its own -- says so with a toggle event, which
+// does not bubble but passes the document on its way down.
+function watchTopLayer() {
+  if (state.watchingTopLayer) return;
+  state.watchingTopLayer = true;
+  document.addEventListener('toggle', (event) => {
+    const area = state.region;
+    if (event.newState !== 'open' || !area || event.target === area || area.contains(event.target)) return;
+    enterTopLayerAgain(area);
+  }, true);
 }
 
 function hideRegionWhenEmpty() {
