@@ -2877,7 +2877,7 @@ SFLoaderPlugin.prototype.search = function () {
       }
 
       // An element a regexp rule names (a kbd, a pre > code) added later: the
-      // attribute scan below does not see a bare tag (queue #203).
+      // attribute scan below does not see a bare tag (queue item 203).
       for (const [key, rule] of this.getRegexpScanRules()) {
         if (this.module[key] || !this.ruleMatchesElements(rule, objHTML)) continue;
         this.setExistCookie(key);
@@ -4478,7 +4478,7 @@ function elementStart(el) {
 
 // A regexp rule that names an element (kbd, pre > code) matches one anywhere
 // in `scope`, not only in the first 4 KB of the page's markup the regexp scan
-// reads (simai/ui-source loader, queue #203: a kbd low on a long page, a bare
+// reads (simai/ui-source loader, queue item 203: a kbd low on a long page, a bare
 // pre > code, which that markup leaves out). The rule's own pattern is tested
 // on the element's start, so it matches what it matched in the markup. As in
 // the markup scan, nothing inside pre or code (a code sample), in an ignored
@@ -4509,7 +4509,7 @@ SFLoaderPlugin.prototype.ruleMatchesElements = function (rule, scope) {
 // Rules whose script comes only where an element asks for it (`jsWhen`, a
 // selector): kbd's sheet draws every <kbd>, its script only fills
 // <kbd data-sf-shortcut> (C191), so a page of plain keys fetches no script
-// (queue #164). Looked for in `root` (the page, an added subtree, an element
+// (queue item 164). Looked for in `root` (the page, an added subtree, an element
 // whose attribute changed); the script is fetched once, as loadScriptOnCall
 // fetches it.
 SFLoaderPlugin.prototype.loadScriptsWhen = function (root) {
