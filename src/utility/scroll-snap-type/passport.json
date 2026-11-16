@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.scroll-snap-type",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/scroll-snap-type/default/index.js",
@@ -13,7 +13,7 @@
     "src/utility/scroll-snap-type/default/scss/_sf_var__scroll_snap_type.scss",
     "src/utility/scroll-snap-type/default/scss/index.scss"
   ],
-  "content_sha256": "3cee20f876472fef400baebbe3a85d56ffc874f1272c62ab29f783c068a2ad66",
+  "content_sha256": "14ccc96b5bb862a515fa6e216ea73e189151a540b2ed79c4868bcc015e822df0",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

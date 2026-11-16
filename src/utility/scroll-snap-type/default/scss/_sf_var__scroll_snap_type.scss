@@ -3,12 +3,18 @@
 
 // SCROLL
 
-// 
-$scroll-snap-type-array:(
+// The axis and the strictness are two classes that make one declaration
+// (RG-UT-L OS-4): snap-x, snap-y, snap-both write the axis and read the
+// strictness from --sf-snap-strictness, which snap-mandatory and
+// snap-proximity set (proximity when none is set, the browser's own
+// default). snap-mandatory and snap-proximity wrote `x mandatory` and
+// `x proximity`, so snap-y snap-mandatory snapped on the inline axis.
+$scroll-snap-axis-array:(
     x: x,
     y: y,
     both: both,
-    mandatory: x mandatory,
-    proximity: x proximity,
-    none: none
+);
+$scroll-snap-strictness-array:(
+    mandatory: mandatory,
+    proximity: proximity,
 );
