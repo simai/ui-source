@@ -333,6 +333,9 @@ function validateContentRules(root, diagnostics, { hostSources = false } = {}) {
     if (node.type === 'form.form' && typeof node.data?.action === 'string' && !validUrl(node.data.action)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.action`, 'Form address protocol is not allowed'));
     }
+    if (node.type === 'content.card' && typeof node.data?.action_href === 'string' && !validUrl(node.data.action_href)) {
+      diagnostics.push(diagnostic('unsafe_url', `${path}.data.action_href`, 'Link protocol is not allowed'));
+    }
     if (node.type === 'content.file' && typeof node.data?.href === 'string' && !validUrl(node.data.href)) {
       diagnostics.push(diagnostic('unsafe_url', `${path}.data.href`, 'File address protocol is not allowed'));
     }
@@ -709,6 +712,20 @@ function renderImage(data) {
 // sf-download-file's row, drawn as a plain link: it downloads with no script,
 // the name falls back to the address's last part, and the size reads in the
 // Document's language.
+// The card's header (content.card 1.1.0, owner decision C231): the title as
+// the card's title -- an h3, which the card draws at its title step whatever
+// the level -- and one action at its end, an icon link of size 1/2 in the
+// quiet on-surface look (component.card .sf-card-header). Nothing when the
+// card has neither.
+function renderCardHeader(node) {
+  const data = node.data || {};
+  const title = Array.isArray(data.title) && data.title.length ? `<h3>${renderInline(data.title)}</h3>` : '';
+  const action = typeof data.action_icon === 'string' && typeof data.action_label === 'string' && typeof data.action_href === 'string' && validUrl(data.action_href)
+    ? `<a class="sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1/2" href="${escapeHtml(data.action_href)}" aria-label="${escapeHtml(data.action_label)}"><i class="sf-icon" aria-hidden="true">${escapeHtml(data.action_icon)}</i></a>`
+    : '';
+  return title || action ? `<div class="sf-card-header">${title}${action}</div>` : '';
+}
+
 function renderFile(node, locale) {
   const { href, label, mime, size } = node.data;
   const name = label || fileNameFromAddress(href) || href;
@@ -1014,7 +1031,7 @@ const BUILTIN_RENDERERS = {
     const gap = Number.isInteger(node.props?.gap) ? node.props.gap : 2;
     return `<div class="grid ${columns} gap-${gap}"${id(node)}>${(slots.defaultList || []).map((child) => `<div class="min-w-0">${child}</div>`).join('')}</div>`;
   },
-  'content.card': ({ node, slots }) => `<div class="sf-card${node.props?.variant === 'plain' ? ' sf-card--plain' : ''}"${id(node)}>${slots.default || ''}</div>`,
+  'content.card': ({ node, slots }) => `<div class="sf-card${node.props?.variant === 'plain' ? ' sf-card--plain' : ''}"${id(node)}>${renderCardHeader(node)}${slots.default || ''}</div>`,
   'content.media': ({ node, slots }) => renderMedia(node, slots),
   'content.file': ({ node, locale }) => renderFile(node, locale),
   // Cleaned at render by the html@1 subset's one rule: no script, no style, no

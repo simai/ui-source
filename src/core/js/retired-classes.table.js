@@ -207,6 +207,44 @@ export default {
       "names": {
         "sf-tabs--full": "sf-tabs"
       }
+    },
+    {
+      "journal": "class-avatar-offline-point-retired",
+      "decision": "C152 (5), C185 (8)",
+      "component": "avatars",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "An avatar shows only «online» and, on request, «away»; offline is a word in the avatar's name. sf-online-indicator--offline draws nothing (component.avatars 1.11.0).",
+      "names": {
+        "sf-online-indicator--offline": null
+      }
+    },
+    {
+      "journal": "class-avatar-group-overlap-by-size",
+      "decision": "C152 (6)",
+      "component": "avatars",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "The group's overlap follows the avatars' own size: 4 up to size 1, 8 at 2 and 3 (component.avatars 1.11.0). The overlap modifiers keep drawing what they drew until the date.",
+      "names": {
+        "sf-avatar-group--size-1/4": "sf-avatar-group",
+        "sf-avatar-group--size-1/3": "sf-avatar-group",
+        "sf-avatar-group--size-1/2": "sf-avatar-group",
+        "sf-avatar-group--size-xs": "sf-avatar-group",
+        "sf-avatar-group--size-sm": "sf-avatar-group",
+        "sf-avatar-group--size-md": "sf-avatar-group"
+      }
+    },
+    {
+      "journal": "class-avatar-card-portrait-9x16",
+      "decision": "C230",
+      "component": "avatars",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "The avatar card's portrait is 3:4, the one vertical ratio of the shared list (component.avatars 1.11.0). sf-avatar-card--portrait-9x16 keeps the former 9:16 until the date.",
+      "names": {
+        "sf-avatar-card--portrait-9x16": "sf-avatar-card--portrait"
+      }
     }
   ],
   "extended": {

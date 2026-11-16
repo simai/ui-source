@@ -27,9 +27,10 @@ it. It is CSS only and draws on the native `figure` and `figcaption`.
 ## Ratio and fit
 
 One list of ratios serves the figure, the gallery and a card's picture
-(owner decision C188 (6)): 1:1 · 4:3 · 3:2 · 16:9 · 21:9 · auto.
+(owner decision C188 (6)): 1:1 · 4:3 · 3:2 · 16:9 · 21:9 · auto, and one
+vertical ratio, 3:4, for a portrait (owner decision C230, 1.6.0).
 Without a ratio (auto) the box keeps the media's own proportions. A named ratio --
-`sf-figure--ratio-1x1`, `-4x3`, `-3x2`, `-16x9` or `-21x9` -- gives the box
+`sf-figure--ratio-1x1`, `-4x3`, `-3x2`, `-16x9`, `-21x9` or `-3x4` -- gives the box
 that ratio, and the media fills it, cropped at the edges. With
 `sf-figure--contain` the media stands whole inside the box instead, and the
 rest of the box shows its fill (`--sf-surface-container`), so a logo or a
@@ -39,7 +40,7 @@ Give an image its `width` and `height`, so the page reserves its room before
 it arrives. An image that only decorates has an empty `alt`.
 
 `content.figure` renders with it (`props.ratio`: `auto`, `1/1`, `4/3`, `3/2`,
-`16/9`, `21/9`; `props.fit`: `cover` or `contain`), and `content.media` draws
+`16/9`, `21/9`, `3/4` (content.figure 1.2.0); `props.fit`: `cover` or `contain`), and `content.media` draws
 its picture with it.
 
 ## Text on a picture
@@ -59,7 +60,8 @@ When the author lays the caption on the picture:
 
 Both hold 4.5:1 on light and dark photos, one to five lines, sizes 1/2 to 2,
 both themes, 1440 and 390. A caption taller than the picture grows the box
-instead of spilling onto the page. The same two looks are the utilities
+instead of spilling onto the page; the picture keeps the column's width and
+grows down, never sideways (1.6.0). The same two looks are the utilities
 `gradient-scrim` and `gradient-scrim gradient-scrim-plate` for a recipe.
 
 ```html

@@ -116,8 +116,11 @@ test('the registry carries the first edition, each type at 1.0.0 with a builtin 
     assert.ok(manifest, type);
     // content.table 1.0.1 (2026-11-10): column alignment by class; 1.1.0 and
     // every other type with an inline field at 1.1.0: inline model 1.2.0.
-    const inlineFields = ['content.table', 'content.list-item', 'content.figure', 'content.alert', 'content.details', 'content.step'];
-    assert.equal(manifest.version, inlineFields.includes(type) ? '1.1.0' : '1.0.0', type);
+    // content.figure 1.2.0 and content.media 1.1.0 (2026-11-16, C230): the
+    // ratio 3/4; content.card 1.1.0 (C231): the header.
+    const inlineFields = ['content.table', 'content.list-item', 'content.alert', 'content.details', 'content.step', 'content.media', 'content.card'];
+    const later = {'content.figure': '1.2.0'};
+    assert.equal(manifest.version, later[type] || (inlineFields.includes(type) ? '1.1.0' : '1.0.0'), type);
     assert.equal(manifest.category, 'content', type);
     assert.equal(manifest.renderer.kind, ['content.diagram', 'content.math'].includes(type) ? 'registered' : 'builtin', type);
     assert.ok(manifest.profiles.includes(type === 'content.outlet' ? 'ui-layout' : 'structured-content'), type);

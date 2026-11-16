@@ -50,7 +50,8 @@
     "html": "<article data-sf-composition-id=\"root\"><div class=\"sf-card sf-card--plain\" data-sf-composition-id=\"c\"><p data-sf-composition-id=\"cp\">Text.</p></div></article>",
     "diagnostics": [],
     "assets": [
-      "component/card"
+      "component/card",
+      "component/icon-buttons"
     ]
   }
 }

@@ -79,10 +79,28 @@ $sf-avatar-hue-classes: ();
     border-width: var(--sf-avatar-badge--border-width, 0);
   }
 
+  /* The placeholder glyph is a share of the avatar's own box, one table on
+     every screen and density (owner decisions C124: 57-67 % of the circle,
+     and C132 (6): no 14 among the small parts; content study Ав3,
+     2026-11-16). The box steps 16 . 20 . 24 . 28 . 32 . 36 . 40 . 44 . 48 .
+     52 . 56 take the glyph 12 . 12 . 16 . 16 . 20 . 24 . 24 . 28 . 28 . 32 .
+     32: 12, and 4 more at each of the boxes 24, 32, 36, 44 and 52. Each
+     step is clamp(0, (box - threshold + 1 px) x 1000, 4): 4 from the
+     threshold on, 0 below it. It followed the icon ladder of the size name,
+     which moves with the text: a 20 circle took 14 in compact and 16 on a
+     phone, a 36 circle 20 (56 %). The desktop row is unchanged. An avatar
+     without a size step (an author's own width) keeps the size-3 icon. */
   .sf-avatar .sf-icon {
-    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
-    height: var(--sf-icon--height, var(--sf-icon-size-3));
-    width: var(--sf-icon--width, var(--sf-icon-size-3));
+    --sf-avatar--glyph-size: calc(var(--sf-b2)
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-c2) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-c6) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-c8) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-d1) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-d3) + var(--sf-a1)) * 1000, var(--sf-a4)));
+
+    font-size: var(--sf-icon--font-size, var(--sf-avatar--glyph-size, var(--sf-icon-size-3)));
+    height: var(--sf-icon--height, var(--sf-avatar--glyph-size, var(--sf-icon-size-3)));
+    width: var(--sf-icon--width, var(--sf-avatar--glyph-size, var(--sf-icon-size-3)));
   }
 
   .sf-avatar .sf-avatar-badge.sf-avatar-badge--company {
@@ -116,36 +134,6 @@ $sf-avatar-hue-classes: ();
 
   .sf-avatar-badge--verified .sf-avatar-badge-glyph {
     fill: var(--sf-on-primary);
-  }
-
-  .sf-avatar.sf-avatar--size-2 .sf-icon {
-    --sf-icon--font-size: var(--sf-icon-size-4);
-    --sf-icon--height: var(--sf-icon-size-4);
-    --sf-icon--width: var(--sf-icon-size-4);
-  }
-
-  .sf-avatar.sf-avatar--size-3 .sf-icon {
-    --sf-icon--font-size: var(--sf-icon-size-5);
-    --sf-icon--height: var(--sf-icon-size-5);
-    --sf-icon--width: var(--sf-icon-size-5);
-  }
-
-  .sf-avatar.sf-avatar--size-1\/2 .sf-icon {
-    --sf-icon--font-size: var(--sf-icon-size-2);
-    --sf-icon--height: var(--sf-icon-size-2);
-    --sf-icon--width: var(--sf-icon-size-2);
-  }
-
-  .sf-avatar.sf-avatar--size-1\/3 .sf-icon {
-    --sf-icon--font-size: var(--sf-icon-size-1);
-    --sf-icon--height: var(--sf-icon-size-1);
-    --sf-icon--width: var(--sf-icon-size-1);
-  }
-
-  .sf-avatar.sf-avatar--size-1\/4 .sf-icon {
-    --sf-icon--font-size: var(--sf-icon-size-1\/3);
-    --sf-icon--height: var(--sf-icon-size-1\/3);
-    --sf-icon--width: var(--sf-icon-size-1\/3);
   }
 
   .sf-avatar--size-1 {

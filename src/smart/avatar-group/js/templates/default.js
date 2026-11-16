@@ -35,16 +35,11 @@ function step(value, fallback = '1') {
   return SIZES.includes(named) ? named : fallback;
 }
 
-// How far the avatars of a group overlap, by the size they are drawn at: the
-// --sf-space step of the overlap, in the size names (1.2.4, docs precheck
-// AV-06; xs, sm and md before, journal class-avatar-group-overlap-size-names).
-// Owner decision C152 (6), 2026-11-14: 4 up to size 1 and 8 at 2 and 3, so the
-// next circle with its 2 px cut-out leaves the letters whole (12 at size 1
-// covered the second letter: «АБ» read «АЕ»).
-function groupStep(size) {
-  if (size === '2' || size === '3') return '1/3';
-  return '1/4';
-}
+// How far the avatars of a group overlap is the group sheet's, from the
+// avatars' own size (component.avatars 1.11.0, owner decision C152 (6): 4 up
+// to size 1, 8 at 2 and 3). The group prints no overlap modifier since 1.5.1;
+// the sf-avatar-group--size-* modifiers are dated aliases (journal
+// class-avatar-group-overlap-by-size).
 
 // Up to four people are shown; the fifth place is «+N» (C152 (6)).
 const SHOWN = 4;
@@ -193,7 +188,7 @@ function renderGroupTemplate(context) {
   }
 
   return html`
-    <div class=${['sf-avatar-group', `sf-avatar-group--size-${groupStep(size)}`, 'flex', 'items-cross-center', context.rootClass]
+    <div class=${['sf-avatar-group', 'flex', 'items-cross-center', context.rootClass]
       .filter(Boolean)
       .join(' ')} style=${context.rootStyle || nothing} role="group" aria-label=${groupLabel || nothing}>
       <div class="sf-avatar-group-avatars flex">

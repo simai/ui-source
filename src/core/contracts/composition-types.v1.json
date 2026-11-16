@@ -4495,7 +4495,8 @@
               "4/3",
               "3/2",
               "16/9",
-              "21/9"
+              "21/9",
+              "3/4"
             ]
           }
         },
@@ -4509,7 +4510,7 @@
       "schema_version": 1,
       "slots": {},
       "type": "content.figure",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "assets": [
@@ -5907,15 +5908,361 @@
     },
     {
       "assets": [
-        "component/card"
+        "component/card",
+        "component/icon-buttons"
       ],
       "capabilities": [
-        "html"
+        "html",
+        "rich-text"
       ],
       "category": "content",
       "data_schema": {
         "additionalProperties": false,
-        "properties": {},
+        "properties": {
+          "action_href": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "type": "string"
+          },
+          "action_icon": {
+            "pattern": "^[a-z0-9][a-z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "action_label": {
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": {
+            "items": {
+              "oneOf": [
+                {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
+                  "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "text"
+                    },
+                    "value": {
+                      "maxLength": 100000,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
+                  "properties": {
+                    "marks": {
+                      "items": {
+                        "enum": [
+                          "strong",
+                          "em",
+                          "code",
+                          "strike"
+                        ]
+                      },
+                      "type": "array",
+                      "uniqueItems": true
+                    },
+                    "type": {
+                      "const": "break"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
+                  "properties": {
+                    "children": {
+                      "items": {
+                        "oneOf": [
+                          {
+                            "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "text"
+                              },
+                              "value": {
+                                "maxLength": 100000,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "value"
+                            ],
+                            "type": "object"
+                          },
+                          {
+                            "additionalProperties": false,
+                            "patternProperties": {
+                              "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                            },
+                            "properties": {
+                              "marks": {
+                                "items": {
+                                  "enum": [
+                                    "strong",
+                                    "em",
+                                    "code",
+                                    "strike"
+                                  ]
+                                },
+                                "type": "array",
+                                "uniqueItems": true
+                              },
+                              "type": {
+                                "const": "break"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ],
+                            "type": "object"
+                          }
+                        ]
+                      },
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "href": {
+                      "maxLength": 2048,
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "type": {
+                      "const": "link"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "href",
+                    "children"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
+                  "properties": {
+                    "name": {
+                      "const": "badge"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "appearance": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "compact": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "scheme": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "status": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
+                  "properties": {
+                    "name": {
+                      "const": "kbd"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "text"
+                      ],
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name",
+                    "props"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
+                  "properties": {
+                    "name": {
+                      "const": "icon"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "filled": {
+                          "type": "boolean"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "label": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "icon"
+                      ],
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name",
+                    "props"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(?!on)(?!(?:type|value|marks|href|children|name|props|html|innerhtml|script|javascript|php|eval|function|expression|query|sql|graphql|class|classname|rootclass|cssclass|style|secret|password|token|cookie|authorization|request)$)[a-z][a-z0-9_.:]{0,63}$": {}
+                  },
+                  "properties": {
+                    "name": {
+                      "const": "button"
+                    },
+                    "props": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "appearance": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "icon": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "scheme": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "size": {
+                          "pattern": "^[a-z0-9][a-z0-9_/-]{0,63}$",
+                          "type": "string"
+                        },
+                        "text": {
+                          "maxLength": 1000,
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": {
+                      "const": "component"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "name"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "type": "array"
+          }
+        },
         "type": "object"
       },
       "mode": "composite",
@@ -5959,7 +6306,7 @@
         }
       },
       "type": "content.card",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [
@@ -6019,7 +6366,8 @@
               "4/3",
               "3/2",
               "16/9",
-              "21/9"
+              "21/9",
+              "3/4"
             ]
           },
           "side": {
@@ -6048,7 +6396,7 @@
         }
       },
       "type": "content.media",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "assets": [

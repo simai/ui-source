@@ -1,0 +1,65 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "card-header",
+  "summary": "The header (content.card 1.1.0): the title and one action at its end.",
+  "covers": [
+    "content.card"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "c",
+              "type": "content.card",
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Order 1042"
+                  }
+                ],
+                "action_icon": "more_vert",
+                "action_label": "More",
+                "action_href": "/orders/1042"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "cp",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Text."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><div class=\"sf-card\" data-sf-composition-id=\"c\"><div class=\"sf-card-header\"><h3>Order 1042</h3><a class=\"sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1/2\" href=\"/orders/1042\" aria-label=\"More\"><i class=\"sf-icon\" aria-hidden=\"true\">more_vert</i></a></div><p data-sf-composition-id=\"cp\">Text.</p></div></article>",
+    "diagnostics": [],
+    "assets": [
+      "component/card",
+      "component/icon-buttons"
+    ]
+  }
+}

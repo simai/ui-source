@@ -39,20 +39,27 @@ a real destination or action.
   ring of the place colour is drawn outside the disc (1 px at 1/4 and 1/3,
   2 px from 1/2 on; owner decision C132). The company and verification badge
   is a small step of the avatar's size too: 8 px at 1/4 and 1/3, 12 px at 1/2
-  and 1, 16 px at 2 and 3, on every screen. The
-  offline dot is the dim ink of the place the avatar stands on
-  (`--sf-on-surface-variant`), at least 3:1 against the place and the avatar
-  (since 2026-11-11; the disabled ink it had before was under 3:1). The dot
-  lies over the nearest opaque place (`--sf-surface-place-ground`), so a
-  photo or the initials do not show through it, and on a soft coloured place
-  (`bg-<colour>-container`) the dot is that place's colour, opaque.
-  On a row with a fill (selected, open or hovered: core mix `sf-place-fill`)
-  the dot's ring lays the row's fill (`--sf-surface-place-fill`) over the place
-  colour, so the ring is the row's colour, as the anchored badge's ring is.
-  Its two layers are public variables: `--sf-avatar-offline-background-color`
-  (default `var(--sf-on-surface-variant)`) and `--sf-avatar-offline-overlay`
-  (default `none`, a layer over the colour). For a dot of your own colour set
-  the first: `--sf-avatar-offline-background-color: #e53935`;
+  and 1, 16 px at 2 and 3, on every screen. The point lies over the nearest
+  opaque place (`--sf-surface-place-ground`), so a photo or the initials do not
+  show through it. On a row with a fill (selected, open or hovered: core mix
+  `sf-place-fill`) the point's ring lays the row's fill over the place colour.
+  Offline draws no point (1.11.0, owner decisions C152 (5), C185 (8)): say it
+  in the avatar's name. `.sf-online-indicator--offline` draws nothing until
+  2027-01-01 and is noted in SF.deprecations; its two variables,
+  `--sf-avatar-offline-background-color` and `--sf-avatar-offline-overlay`,
+  are read by nothing;
+- placeholder glyph: a share of the avatar's own box, one table on every
+  screen and density (1.11.0, C124, C132 (6)): the boxes 16 / 20 / 24 / 28 /
+  32 / 36 / 40 / 44 / 48 / 52 / 56 take the glyph 12 / 12 / 16 / 16 / 20 / 24
+  / 24 / 28 / 28 / 32 / 32;
+- label row (`.sf-avatar-label-group--size-*`, owner decision C229): the name
+  is the text step of the avatar's size and the second line one step smaller
+  in the explanation's ink; the avatar stands 12 px from them (8 in compact
+  density and on a phone), 4 beside sizes 1/4 and 1/3;
+- group (`.sf-avatar-group`): the avatars overlap by their own size, 4 px up
+  to size 1 and 8 at 2 and 3 (1.11.0, C152 (6)); the overlap modifiers
+  `--size-1/4`, `-1/3`, `-1/2` (and `xs`, `sm`, `md`) draw what they drew
+  until 2027-01-01 and are noted in SF.deprecations;
 - hue, on initials only: `.sf-avatar--text.sf-hue-<name>`, where name is a
   hue of the static palette (`red`, `orange`, `amber`, `yellow`, `lime`,
   `green`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`,
@@ -77,8 +84,13 @@ a real destination or action.
   or more takes it. Strict, the default, keeps the plate flat; the nearest
   `data-sf-style` wins.
 
-Use `.sf-avatar-card--square` and `.sf-avatar-card--portrait` for new card
-markup. The older classes without the BEM modifier separator remain compatible.
+Use `.sf-avatar-card--square` (1:1) and `.sf-avatar-card--portrait` (3:4, the
+one vertical ratio of the shared list, owner decision C230; it was 9:16) for
+new card markup. The older classes without the BEM modifier separator remain
+compatible; `.sf-avatar-card--portrait-9x16` keeps 9:16 until 2027-01-01. The
+card and its parts have no fill of their own: the page's surface and space
+utilities (`bg-surface-container p-2 radius-surface`) make it, and a `bg-*`
+class on the card wins (1.11.0).
 
 A card without a photo (owner decision C124) puts
 `.sf-avatar-card-placeholder` in `.sf-avatar-card-image`: with
@@ -95,7 +107,7 @@ in its ink, 36 % of the box width in the medium weight; with
 - A standalone informative image uses a useful `alt`.
 - Initials, placeholder icons, badges and color indicators are hidden from
   assistive technology when the surrounding content already names them.
-- Online, offline and verification state must also appear in visible text or in
+- Online, away, offline and verification state must also appear in visible text or in
   the accessible name of the native action; color alone is insufficient.
 - Focus and hover affordance belongs only to native interactive avatar roots.
 - A standalone avatar with no visible name is `role="img"` with the person's

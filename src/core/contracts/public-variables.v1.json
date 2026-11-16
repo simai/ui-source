@@ -1083,14 +1083,14 @@
         {
           "name": "--sf-avatar-offline-background-color",
           "role": "background",
-          "summary": "The colour of the offline dot: the place's dim ink (since 2026-11-11; it was the place colour under the disabled ink, under 3:1), laid over the nearest opaque place (--sf-surface-place-ground), so neither the photo nor the initials show through the dot, on a soft coloured place too.",
+          "summary": "Retired with the offline point (component.avatars 1.11.0, owner decision C152 (5), C185 (8)): read by nothing until 2027-01-01 (journal token-avatar-offline-variables-retired). It was the colour of the offline dot.",
           "default": "var(--sf-on-surface-variant)",
           "since": "2026-11-10"
         },
         {
           "name": "--sf-avatar-offline-overlay",
           "role": "overlay",
-          "summary": "A layer over that colour, none by default (it was the disabled ink until 2026-11-11). A page may lay an image or a gradient over the dot here.",
+          "summary": "Retired with the offline point (component.avatars 1.11.0): read by nothing until 2027-01-01 (journal token-avatar-offline-variables-retired). It was a layer over the offline dot's colour.",
           "default": "none",
           "since": "2026-11-10"
         }

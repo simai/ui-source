@@ -13731,6 +13731,109 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "class-avatar-offline-point-retired",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.avatars 1.11.0 (owner decision C152 (5), C185 (8); content study Ав1, 2026-11-16): an avatar shows only «online» and, on request, «away» (sf-online-indicator--away, a hollow ring); that someone is offline is a word in the avatar's name. sf-online-indicator--offline draws nothing (it drew a grey disc of the place's dim ink), and the Loader notes it once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "avatars",
+          "from": "sf-online-indicator--offline"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the offline indicator element and say «не в сети» in the avatar's name (aria-label); for «away» write sf-online-indicator--away.",
+      "examples": {
+        "before": "<span class=\"sf-online-indicator sf-online-indicator--offline sf-online-indicator--size-1\"></span>",
+        "after": "(no indicator; the avatar's name says «Иван Петров, не в сети»)"
+      },
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; src/core/js/retired-classes.table.js; ui-control prototypes/content-avatars-study.html (Ав1); control/docs-review/decisions.md C152 (5), C185 (8)"
+    },
+    {
+      "id": "token-avatar-offline-variables-retired",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "component.avatars 1.11.0: the offline point is gone (class-avatar-offline-point-retired), so its two public variables, --sf-avatar-offline-background-color and --sf-avatar-offline-overlay, are read by nothing; a page that sets them changes nothing. They stay listed in core/contracts/public-variables.v1.json as retired until remove_after.",
+      "items": [
+        {
+          "from": "--sf-avatar-offline-background-color",
+          "match": "--sf-avatar-offline-background-color(?![a-z0-9-])"
+        },
+        {
+          "from": "--sf-avatar-offline-overlay",
+          "match": "--sf-avatar-offline-overlay(?![a-z0-9-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Delete the declarations; there is no offline point to colour.",
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; src/core/contracts/public-variables.v1.json"
+    },
+    {
+      "id": "class-avatar-group-overlap-by-size",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.avatars 1.11.0 (owner decision C152 (6); content study Ав2, 2026-11-16): the avatar group's overlap follows the avatars' own size, 4 up to size 1 and 8 at 2 and 3. The overlap modifiers sf-avatar-group--size-1/4, -1/3 and -1/2 (and xs, sm and md, record class-avatar-group-overlap-size-names) chose it whatever the size; they keep drawing what they drew until remove_after, noted once by the Loader in SF.deprecations. sf-avatar-group 1.5.1 prints none.",
+      "items": [
+        {
+          "component": "avatars",
+          "from": "sf-avatar-group--size-1/4",
+          "to": "sf-avatar-group"
+        },
+        {
+          "component": "avatars",
+          "from": "sf-avatar-group--size-1/3",
+          "to": "sf-avatar-group"
+        },
+        {
+          "component": "avatars",
+          "from": "sf-avatar-group--size-1/2",
+          "to": "sf-avatar-group"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the sf-avatar-group--size-* modifier; set the avatars' size (sf-avatar--size-*) and the group overlaps them by it.",
+      "examples": {
+        "before": "<div class=\"sf-avatar-group sf-avatar-group--size-1/3\">",
+        "after": "<div class=\"sf-avatar-group\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatars_group.scss; src/smart/avatar-group/js/templates/default.js; src/core/js/retired-classes.table.js"
+    },
+    {
+      "id": "class-avatar-card-portrait-9x16",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.avatars 1.11.0 (owner decision C230, 2026-11-16): the avatar card's portrait takes 3:4, the one vertical ratio added to the shared list of C188 (6). sf-avatar-card--portrait-9x16 keeps the former 9:16 until remove_after, noted once by the Loader in SF.deprecations.",
+      "items": [
+        {
+          "component": "avatars",
+          "from": "sf-avatar-card--portrait-9x16",
+          "to": "sf-avatar-card--portrait"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<div class=\"sf-avatar-card sf-avatar-card--portrait-9x16\">",
+        "after": "<div class=\"sf-avatar-card sf-avatar-card--portrait\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatar_custom.scss; src/core/js/retired-classes.table.js; control/docs-review/decisions.md C230"
     }
   ]
 }

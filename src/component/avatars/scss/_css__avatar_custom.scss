@@ -13,10 +13,21 @@
   max-height: 100%;
   object-fit: cover;
 }
+/* The portrait is the one vertical ratio of the shared list, 3:4 (owner
+   decision C230, 2026-11-16; C188 (6) list 1:1 . 4:3 . 3:2 . 16:9 . 21:9 .
+   3:4 . auto). It was 9:16: at 224 wide a photo 184 x 327 and a card 423
+   tall. sf-avatar-card--portrait-9x16 keeps the former 9:16 until
+   2027-01-01 (journal class-avatar-card-portrait-9x16), noted once in
+   SF.deprecations. */
 .sf-avatar-card.sf-avatar-card--portrait .sf-avatar-card-image,
 .sf-avatar-card.sf-avatar-card-portrait .sf-avatar-card-image,
 .sf-avatar-card.sf-avatar-card--portrait img,
 .sf-avatar-card.sf-avatar-card-portrait img {
+  aspect-ratio: 3 / 4;
+}
+
+.sf-avatar-card.sf-avatar-card--portrait-9x16 .sf-avatar-card-image,
+.sf-avatar-card.sf-avatar-card--portrait-9x16 img {
   aspect-ratio: 9 / 16;
 }
 

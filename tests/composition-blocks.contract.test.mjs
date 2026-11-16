@@ -638,7 +638,7 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
     const entry = extendRegistry().types.get(type);
     for (const property of Object.values(entry.props_schema.properties)) for (const name of utilityClassSpace(property)) assert.ok(known(name), `${type}: ${name}`);
   }
-  assert.deepEqual(output.assets, ['component/card', 'smart/badge', 'smart/button', 'smart/button-icon', 'smart/icon']);
+  assert.deepEqual(output.assets, ['component/card', 'component/icon-buttons', 'smart/badge', 'smart/button', 'smart/button-icon', 'smart/icon']);
   // An English Document, and a value the element refuses.
   const english = await render(layout({ id: 'b2', type: 'element.button' }));
   assert.match(english.html, /<sf-button text="Button"><\/sf-button>/u);
