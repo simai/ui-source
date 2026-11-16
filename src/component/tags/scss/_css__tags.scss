@@ -197,7 +197,7 @@
     --sf-tag--padding-top: var(--sf-ui-1--space-y-tightness-default);
   }
 
-  .sf-tag .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close {
+  .sf-tag .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link, .sf-button-close).sf-icon-button--close {
     --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
     --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
     --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
@@ -813,6 +813,14 @@
 
   .sf-tag > .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-tag-color, var(--sf-on-surface));
+  }
+
+  /* The remove of the class tag is sf-button-close, plain (owner decision
+     C14, RG-CL-3), as the Smart tag's: the same ink, 64 at rest and full on
+     hover and press, with the tag's ink as its base. The ghost icon button
+     above draws it until 2027-01-01. */
+  .sf-tag > .sf-icon-button.sf-button-close.sf-button-close--plain {
+    --sf-button-close--base: var(--sf-tag-color, var(--sf-on-surface));
   }
 }
 

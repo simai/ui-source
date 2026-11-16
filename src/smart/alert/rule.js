@@ -7,7 +7,8 @@ SF.RuleLoader['cl-alert'] = {
   relation: [
     { name: 'alerts' },
     { name: 'buttons' },
-    { name: 'cl-button-icon' },
+    // The close button: sf-button-close (owner decision C14, RG-CL-3); it was sf-button-icon kind="close".
+    { name: 'cl-button-close' },
     { name: 'cl-icon' },
   ],
 };

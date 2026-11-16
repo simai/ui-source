@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "title": "Alert",
   "summary": "Persistent inline notice with semantic roles, optional actions and dismiss behavior.",
   "kind": "smart",
@@ -24,7 +24,7 @@
     "uses": [
       "component.alerts",
       "component.buttons",
-      "smart.button-icon",
+      "smart.button-close",
       "smart.icon"
     ],
     "public_parts": []

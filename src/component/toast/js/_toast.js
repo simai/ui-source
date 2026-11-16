@@ -319,8 +319,10 @@ function createToastElement(options = {}) {
       'sf-icon-button',
       'sf-icon-button--close',
       'sf-icon-button--variant-close',
-      'sf-icon-button--on-surface',
-      'sf-icon-button--ghost',
+      // sf-button-close, ghost (owner decision C14, RG-CL-3): one close.
+      'sf-button-close',
+      'sf-button-close--ghost',
+      'sf-button-close--on-surface',
       'sf-icon-button--size-1',
       'sf-icon-button--height-low',
       'flex',

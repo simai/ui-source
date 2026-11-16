@@ -65,7 +65,15 @@ decorative and uses `aria-hidden="true"`.
   sides, so the button stays square and stands at the size's line + 2 x the
   step (size 1 on desktop 32 / 40 / 48 / 56; compact 28 / 32 / 40 / 48; phone
   28 / 36 / 44 / 52); the icon keeps the size. A close takes the same heights.
+  The lowest control is 24 (1.15.0, RG-CL-4; C14, C36): on a phone a low
+  size `1/3` stands at the size's default step, 24, not 20.
   The constructor's option is `height`;
+- a close (`sf-icon-button--close`) is drawn as ghost in every look (1.15.0,
+  RG-CL-3; owner decision C14: a cross has no square and no solid plate):
+  `default`, `tonal`, `outline` and `surface` on a close draw exactly as
+  `ghost` until 2027-01-01, said once per button in the console and noted in
+  `SF.deprecations` (journal `class-icon-button-close-looks-c14`). A close of
+  its own is `sf-button-close`;
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 

@@ -119,9 +119,26 @@
         --sf-icon-button--background-color: color-mix(in srgb, var(--sf-black) 80%, transparent);
     }
 
-    .sf-icon-button.sf-button-close:is(.sf-button-close--ghost, .sf-button-close--plain, .sf-button-close--media):is(.sf-button-close--on-surface, .sf-button-close--on-surface-variant):disabled {
+    /* Disabled (component.close 1.3.0, RG-CL-1, RG-CL-2): the cross fades in
+       every look and ink. Ghost and plain on the surface take the theme's
+       disabled ink; on a coloured place (backdrop-color) the place's ink at
+       the ink step 48, as the other service marks there; over a photo the
+       white cross at the step 48, the same in both themes (C14 (3)), the
+       circle unchanged. Before, a coloured place kept its full ink (it looked
+       live) and media took the theme's grey. The repeated class lifts these
+       rules over the inks of the looks (plain on-surface-variant is four
+       classes). */
+    .sf-icon-button.sf-button-close.sf-button-close:disabled {
         --sf-button-close--ink: var(--sf-on-surface-disabled);
         cursor: default;
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close--backdrop-color:not(.sf-button-close--media):disabled {
+        --sf-button-close--ink: color-mix(in srgb, currentColor 48%, transparent);
+    }
+
+    .sf-icon-button.sf-button-close.sf-button-close.sf-button-close--media:disabled {
+        --sf-button-close--ink: color-mix(in srgb, var(--sf-white) 48%, transparent);
     }
 
     @media (forced-colors: active) {

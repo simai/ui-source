@@ -35,7 +35,9 @@ sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low`
 soft coloured place, and the action takes the theme's neutral container back),
 a second one `sf-button sf-button--ghost sf-button--on-surface
 sf-button--size-1 sf-button--height-low`. The close is `sf-icon-button
-sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with
+sf-icon-button--close sf-button-close sf-button-close--ghost
+sf-button-close--on-surface sf-icon-button--size-1 sf-icon-button--height-low`
+(sf-button-close, owner decision C14) with
 `sf-close sf-close--size-1`, the last child of `.sf-alert`; its plate hangs out
 over the inline padding. The public `--sf-alert-padding-block`,
 `--sf-alert-padding-inline` and `--sf-alert-gap` still win.

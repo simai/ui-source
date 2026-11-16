@@ -23,6 +23,12 @@ import {noteDeprecated} from '../../../core/js/deprecations.js';
 //   -comfortable, -spacious and the older tightness-low, -high, -highest draw
 //   nothing on sf-icon-button; said once per button, noted until 2027-01-01
 //   (journal class-icon-button-density-c213).
+// - a close in a look of the icon button (component.icon-buttons 1.15.0,
+//   RG-CL-3; owner decision C14: no squares, no solid plate under a cross):
+//   sf-icon-button--close with --default, --tonal, --outline or --surface is
+//   drawn as ghost until 2027-01-01, said once per button and noted in
+//   SF.deprecations (journal class-icon-button-close-looks-c14). A close of
+//   its own is sf-button-close.
 
 const DEPRECATED = Object.freeze({since: '2026-11-16', remove_after: '2027-01-01'});
 export const BUTTON_CLASS_ALIASES = Object.freeze({
@@ -35,6 +41,10 @@ export const ICON_BUTTON_CLASS_ALIASES = Object.freeze({
   'sf-icon-button--surface': 'sf-icon-button--tonal',
   'sf-icon-button--link': 'sf-icon-button--ghost',
 });
+
+export const ICON_BUTTON_CLOSE_LOOKS = Object.freeze([
+  'sf-icon-button--default', 'sf-icon-button--tonal', 'sf-icon-button--outline', 'sf-icon-button--surface',
+]);
 
 export const ICON_BUTTON_DENSITY_CLASSES = Object.freeze([
   'spacing-compact', 'spacing-comfortable', 'spacing-spacious',
@@ -113,6 +123,15 @@ export function checkButton(element, block) {
       if (!element.classList.contains(from)) continue;
       noteDeprecated({component: 'icon-buttons', kind: 'class', from, to, ...ICON_DEPRECATED});
       sayOnce(element, from, `[SIMAI Framework] ${block}: ${nameOf(element)} writes ${from}, a former look drawn exactly as ${to} until ${ICON_DEPRECATED.remove_after}; write ${to} (component.icon-buttons 1.14.0).`);
+    }
+    if (element.classList.contains('sf-icon-button--close') && !element.classList.contains('sf-button-close')) {
+      const looks = ICON_BUTTON_CLOSE_LOOKS.filter((name) => element.classList.contains(name));
+      for (const from of looks) {
+        noteDeprecated({component: 'icon-buttons', kind: 'class', from: `sf-icon-button--close ${from}`, to: 'sf-icon-button--close sf-icon-button--ghost', ...ICON_DEPRECATED});
+      }
+      if (looks.length) {
+        sayOnce(element, 'close-look', `[SIMAI Framework] ${block}: ${nameOf(element)} draws a close in ${looks.join(' ')}: a cross has no square and no solid plate (owner decision C14), so it is drawn as ghost until ${ICON_DEPRECATED.remove_after}; write sf-button-close (sf-button-close--ghost, --plain or --media) or sf-icon-button--ghost (component.icon-buttons 1.15.0).`);
+      }
     }
     const density = ICON_BUTTON_DENSITY_CLASSES.filter((name) => element.classList.contains(name));
     for (const from of density) {

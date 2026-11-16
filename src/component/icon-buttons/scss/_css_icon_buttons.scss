@@ -122,7 +122,7 @@
     width: var(--sf-icon--width, var(--sf-icon-size-3));
   }
 
-  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close {
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-primary));
   }
 
@@ -130,7 +130,7 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-primary));
   }
 
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--close {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-primary-container));
   }
 
@@ -138,7 +138,7 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-primary-container));
   }
 
-  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
     --sf-icon-button--border-color: var(--sf-icon-button-border-color, var(--sf-outline));
   }
@@ -147,7 +147,7 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary));
   }
 
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
   }
 
@@ -166,7 +166,7 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-icon));
   }
 
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-surface-container));
     /* No container text role here (RG-IB-1 b, 2026-11-16): the control
        carries no text, only a glyph, and a glyph asks 3:1 (C107 (2)), not the
@@ -177,7 +177,7 @@
        neutral-85, read brighter than it in the dark theme). */
   }
 
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-on-surface));
     /* The glyph of the plate on a place with its own ink, as on sf-button
        (component.buttons 1.14.0; inverse places IP, 2026-11-14). The plate
@@ -197,28 +197,20 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));
   }
 
-  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-primary));
-  }
-
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-primary-container));
-  }
-
-  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary));
   }
 
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary));
-  }
-
+  /* A close is drawn as ghost whatever look of the icon button it writes
+     (component.icon-buttons 1.15.0, RG-CL-3; owner decision C14: no squares,
+     no outlined circle, no solid plate under a cross). default, tonal,
+     outline and surface on sf-icon-button--close are dated aliases of ghost
+     until 2027-01-01: the ghost rules of the close name every look, the
+     filled, tonal and outlined ones no longer name the close, and the runtime
+     says it once per button (journal class-icon-button-close-looks-c14). A
+     close of its own is sf-button-close. */
   .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
-  }
-
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));
   }
 
   .sf-icon-button.sf-icon-button--size-2.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
@@ -395,6 +387,20 @@
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-low));
   }
 
+  /* The floor of the ladder (component.icon-buttons 1.15.0, RG-CL-4; C14,
+     C36): the lowest control is 24. Below 60rem the phone's low step of size
+     1/3 is 2 and drew 16 + 2 x 2 = 20; there a low 1/3 takes the size's
+     default step, 24, the phone ladder's first step. A close drawn by
+     sf-button-close stands in this box and takes it too. */
+  @media not all and (min-width: 60rem) {
+    .sf-icon-button--size-1\/3.sf-icon-button--height-low {
+      --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+      --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+      --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
+      --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
+    }
+  }
+
   .sf-icon-button--size-1\/3.sf-icon-button--height-high {
     --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
     --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
@@ -409,7 +415,9 @@
     --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-highest));
   }
 
-  .sf-icon-button--outline {
+  /* No border on a close (component.icon-buttons 1.15.0, RG-CL-3, C14): the
+     cross is drawn without a square; :where keeps the weight of the rule. */
+  .sf-icon-button--outline:where(:not(.sf-icon-button--close)) {
     --sf-icon-button--border-bottom-width: var(--sf-icon-button-border-width, var(--sf-px));
     --sf-icon-button--border-inline-end-width: var(--sf-icon-button-border-width, var(--sf-px));
     --sf-icon-button--border-inline-start-width: var(--sf-icon-button-border-width, var(--sf-px));
@@ -463,7 +471,7 @@
 }
 
 @layer sf.states {
-  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
     --sf-icon-button--background-color: var(--sf-surface-disabled);
   }
 
@@ -471,55 +479,55 @@
     --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
-  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
     --sf-icon-button--border-color: var(--sf-outline-variant);
   }
 
-  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-primary-hover);
   }
 
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-surface-container-hover);
   }
 
-  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-primary-active);
   }
 
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-surface-container-active);
   }
 
-.sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not(.disabled):focus-visible, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible {
+.sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible {
     --sf-icon-button--background-color: var(--sf-transparent-for-focus);
   }
 
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-on-surface-hover);
   }
 
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-on-surface-active);
   }
 
-  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-on-surface-disabled);
   }
 
@@ -533,7 +541,7 @@
     --sf-icon-button--focus-inset: inset 0 0 0 var(--sf-focus--offset) var(--sf-icon-button--focus-ink, transparent);
   }
 
-  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary {
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary:where(:not(.sf-icon-button--close)) {
     --sf-icon-button--focus-ink: var(--sf-on-primary);
   }
 
@@ -565,8 +573,7 @@
    as it does for every other scheme. */
 
 @layer sf.components {
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon,
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-error));
   }
 
@@ -574,8 +581,7 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-error));
   }
 
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon,
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-error-container));
   }
 
@@ -583,8 +589,7 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-error-container));
   }
 
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon,
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
     /* The danger outline's border is red at the ink family's 64 step (C118),
        as on sf-button; the other outlines keep the shared grey. */
@@ -602,7 +607,7 @@
   }
 
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon,
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {
     --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
   }
 
@@ -610,19 +615,7 @@
     --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-error));
-  }
-
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-error-container));
-  }
-
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
-  }
-
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
   }
 
@@ -632,9 +625,7 @@
   /* Tonal danger greys when disabled as every other look does (C36 follow-up:
      before, it kept its red container and ink). */
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)),
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)),
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)),
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
     --sf-icon-button--background-color: var(--sf-surface-disabled);
   }
 
@@ -645,39 +636,31 @@
     --sf-icon--color: var(--sf-on-surface-disabled);
   }
 
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)),
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) {
     --sf-icon-button--border-color: var(--sf-outline-variant);
   }
 
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover,
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-error-hover);
   }
 
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover,
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-error-container-hover);
   }
 
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover,
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):hover,
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover,
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-icon-button--background-color: var(--sf-error-container-hover);
   }
 
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active,
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-error-active);
   }
 
   .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active,
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-error-container-active);
   }
 
@@ -685,28 +668,22 @@
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active,
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled, [aria-disabled="true"]):not(.disabled).active,
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active,
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled):active,
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled, [aria-disabled="true"]):not(.disabled).active {
     --sf-icon-button--background-color: var(--sf-error-container-active);
   }
 
   .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible,
   .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible,
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible,
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible {
     --sf-icon-button--background-color: var(--sf-transparent-for-focus);
   }
 
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon,
-  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon,
-  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon,
-  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon {
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled="true"]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-on-surface-disabled);
   }
 
-  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error) {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error):where(:not(.sf-icon-button--close)) {
     --sf-icon-button--focus-ink: var(--sf-on-error);
   }
 
