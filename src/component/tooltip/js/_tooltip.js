@@ -71,17 +71,19 @@ function focusVisible(element) {
     return true;
   }
 }
-// At most two lines (owner decision C160 (2)): the sheet cuts a longer text
-// after its second line; the console says once per page which tooltip was
-// cut, so the page moves the explanation to a «?» beside the control
-// (sf-help-mark). Shared across bundles, as the group.
+// At most two lines (owner decision C160 (2)), the whole tooltip's: the
+// sheet cuts the text after its second line, or a text and its supporting
+// text after one line each; the console says once per page which tooltip
+// was cut, so the page moves the explanation to a «?» beside the control
+// (sf-help-mark). The supporting text was not counted: a line and three
+// lines under it showed four, unsaid. Shared across bundles, as the group.
 const CUT_SAID = Symbol.for('sf.tooltip.cut-said');
 function sayCut(surface, trigger) {
-  const text = surface.querySelector('.sf-tooltip-text');
-  if (!text || text.scrollHeight <= text.clientHeight + 1) return;
+  const parts = [...surface.querySelectorAll('.sf-tooltip-text, .sf-tooltip-supporting-text')];
+  if (!parts.some((part) => part.scrollHeight > part.clientHeight + 1)) return;
   if (globalThis[CUT_SAID]) return;
   globalThis[CUT_SAID] = true;
-  const words = text.textContent.replace(/\s+/gu, ' ').trim();
+  const words = parts.map((part) => part.textContent).join(' ').replace(/\s+/gu, ' ').trim();
   globalThis.console?.warn?.(`[SIMAI Framework] tooltip: «${words.slice(0, 60)}${words.length > 60 ? '…' : ''}» (${trigger.closest?.('[id]')?.id ? `#${trigger.closest('[id]').id}` : trigger.localName}) is longer than two lines and was cut. A tooltip names a control; an explanation goes to a «?» beside it (sf-help-mark), decision C160.`);
 }
 const TRIGGER_SELECTOR = '[data-tooltip]';
@@ -403,9 +405,12 @@ class SfTooltipController {
     const arrow = tail?.className.match(ARROW_CLASS)?.[1] || 'none';
     const rtl = getComputedStyle(reference).direction === 'rtl';
     const {side, align} = arrowPlacement(arrow, rtl);
+    // With a tail, the tail's point keeps --sf-space-1/4 from the trigger
+    // (--sf-tooltip--tail-gap): the half side it stood at let the point
+    // reach 2 px into the trigger.
     const offset = arrow === 'none'
       ? 'var(--sf-space-1\\/4)'
-      : positioning().resolveLength('var(--sf-tooltip-tail-half)', tail);
+      : positioning().resolveLength('var(--sf-tooltip--tail-gap)', tail);
     const translate = [box.style.getPropertyValue('translate'), box.style.getPropertyPriority('translate')];
     const tailNode = tail?.querySelector('.sf-tooltip-tail') || null;
     const tailTranslate = tailNode ? [tailNode.style.getPropertyValue('translate'), tailNode.style.getPropertyPriority('translate')] : null;

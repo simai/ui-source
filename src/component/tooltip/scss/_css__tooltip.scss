@@ -115,14 +115,17 @@
   @include places.sf-place(var(--sf-tooltip-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
 }
 
-/* Its elevation is the window's, shadow only (C59: every window only with a
-   shadow, no frame; a page may still set --sf-tooltip-border-width). The
-   shadow is drawn over the whole painted shape -- the content and the tail --
-   as --sf-shadow-overlay-filter (the two layers of --sf-shadow-overlay as
-   drop-shadows), so an arrow carries the same shadow as the window; a
-   box-shadow stopped at the content's box and left the tail flat (C59 arrow
-   rule, research 2026-11-11 §3a). */
-.sf-tooltip.sf-tooltip--light {
+/* Every tooltip's elevation is the window's, shadow only (C20: a tooltip
+   carries --sf-shadow-overlay; C59: every window only with a shadow, no
+   frame; a page may still set --sf-tooltip-border-width) -- the dark one,
+   the default and <sf-tooltip>'s, too: it stood flat, and in the dark theme,
+   where it is the light inverse surface on a dark page, plainly so (study
+   P1). The shadow is drawn over the whole painted shape -- the content and
+   the tail -- as --sf-shadow-overlay-filter (the two layers of
+   --sf-shadow-overlay as drop-shadows), so an arrow carries the same shadow
+   as the window; a box-shadow stopped at the content's box and left the tail
+   flat (C59 arrow rule, research 2026-11-11 §3a). */
+.sf-tooltip {
   filter: var(--sf-shadow-overlay-filter);
 }
 
