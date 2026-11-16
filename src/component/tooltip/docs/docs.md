@@ -5,6 +5,12 @@ The surface classes own content, skin, size and tail. The optional
 `.sf-tooltip-anchor` composition and a short `data-tooltip` reference own
 hover/focus visibility, `aria-describedby` and Escape dismissal.
 
+A tooltip whose words the trigger's accessible name already says -- equal to
+it, or whole words of it, such as «Повторить» on an icon button named
+«Повторить Отчёт.xlsx» -- is shown but not linked by `aria-describedby`, so a
+screen reader does not say it twice (component.tooltip 1.6.1). A tooltip that
+says more than the name stays the description.
+
 Do not put links, buttons or form fields inside a tooltip. Use a dialog or
 popover when the revealed surface needs interaction. Important instructions
 must remain visible outside the tooltip.

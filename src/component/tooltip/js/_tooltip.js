@@ -3,6 +3,7 @@ import registerComponent from '../../register-helper';
 import BundledPosition from '../../../core/js/position.js';
 import { partId } from '../../../core/js/instance-path.js';
 import { surfaceShortcut, writeTriggerKeyShortcuts } from './_keyshortcuts.js';
+import { repeatsName, triggerName, tooltipText } from './_name-repeat.js';
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.
 const positioning = () => globalThis.SF?.Position || BundledPosition;
@@ -159,15 +160,7 @@ class SfTooltipController {
     this.originalRole = this.surface.getAttribute('role');
     this.originalHidden = this.surface.hidden;
 
-    // A tooltip that only repeats the trigger's name -- the usual case for an
-    // icon-only button -- is not its description too, or a screen reader says
-    // the name twice (docs trial 4, 2026-10-15).
-    const squash = (text) => String(text ?? '').replace(/\s+/gu, ' ').trim().toLowerCase();
-    const name = squash(this.trigger.getAttribute('aria-label') || this.trigger.textContent);
-    const repeatsName = name !== '' && squash(this.surface.textContent) === name;
-    const descriptions = new Set(descriptionTokens(this.trigger));
-    if (!repeatsName) descriptions.add(this.surface.id);
-    if (descriptions.size) this.trigger.setAttribute('aria-describedby', [...descriptions].join(' '));
+    this.syncDescription();
     this.trigger.setAttribute('data-tooltip', this.surface.id);
     this.surface.setAttribute('role', 'tooltip');
     // A shortcut the tooltip shows is said on the trigger (KB-4).
@@ -187,6 +180,26 @@ class SfTooltipController {
     this.trigger.addEventListener('click', this.onPress);
     this.trigger.addEventListener('contextmenu', this.onContextMenu);
     tooltipInstances.set(this.trigger, this);
+  }
+
+  // A tooltip that only repeats the trigger's name -- the usual case for an
+  // icon-only button -- is not its description too, or a screen reader says
+  // the name twice (docs trial 4, 2026-10-15); nor is one whose words stand
+  // whole inside the name: «Повторить» on a button named «Повторить
+  // Отчёт.xlsx» (2026-11-16). The tooltip is still shown. Read when the link
+  // is made and again when the tooltip opens, as the name or the words may
+  // have changed since.
+  syncDescription() {
+    if (!this.trigger || !this.surface) return;
+    const descriptions = new Set(descriptionTokens(this.trigger));
+    if (repeatsName(triggerName(this.trigger, this.surface), tooltipText(this.surface))) descriptions.delete(this.surface.id);
+    else descriptions.add(this.surface.id);
+    const value = [...descriptions].join(' ');
+    if (value) {
+      if (this.trigger.getAttribute('aria-describedby') !== value) this.trigger.setAttribute('aria-describedby', value);
+    } else if (this.trigger.hasAttribute('aria-describedby')) {
+      this.trigger.removeAttribute('aria-describedby');
+    }
   }
 
   destroy() {
@@ -379,6 +392,7 @@ class SfTooltipController {
     if (!this.surface || !this.surface.hidden) return;
     clearTimeout(this.openTimer);
     this.openTimer = 0;
+    this.syncDescription();
     group().open += 1;
     this.surface.hidden = false;
     this.surface.classList.add('active');
