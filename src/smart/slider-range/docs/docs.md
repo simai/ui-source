@@ -41,8 +41,10 @@ Smart wrapper for the project-owned `range-slider` component.
   box is as wide as the wider end of the range, so the numbers stay whole and
   the track gives way. The slider picks the layout by its own width (owner
   decision C202, a container query at 26rem): narrower, the field goes under
-  the track as two boxes «от …» «до …», halves of the full width, and the unit
+  the track as two boxes «от …» «до …» sharing the full width, and the unit
   moves into the name («Цена, ₽»): a filter column, a drawer, a phone. A box
+  always holds its whole number (owner decision C261): where the two do not
+  fit one row, the second wraps to a row under the first. A box
   takes a number typed with its unit or a currency sign («12500 ₽»). The
   slider with `field` takes its width from its place, never from its content
   (it is a size container): in a flex row give its wrapper a width or `flex: 1`.

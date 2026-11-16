@@ -414,16 +414,19 @@
     flex: none;
   }
 
-  // The field is the row of boxes: no edge, no ring of its own.
+  // The field is the row of boxes: no edge, no ring of its own. The boxes
+  // share the row in equal parts while each holds its whole number; where the
+  // two do not fit one row the second wraps to a row of its own under the
+  // first, at the whole width (owner decision C261: never a clipped digit; the
+  // equal grid halves cut the last digit of a size 2 field in a 280 column).
   .sf-range-slider-group--field .sf-range-slider-field,
   .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field:is(:hover, :focus-within),
   .sf-range-slider-group--field .sf-range-slider-field:has(.sf-range-slider-field-input:focus-visible) {
     block-size: auto;
     border: 0;
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--sf-space-1\/3);
-    grid-auto-columns: minmax(0, 1fr);
-    grid-auto-flow: column;
     inline-size: 100%;
     outline: none;
     padding: 0;
@@ -435,6 +438,9 @@
   }
 
   // Each box is a field of the step: sf-input's edge, radius and inline space.
+  // It is never narrower than its word and its wider ruler (the number column
+  // starts at its ruler's width, not at 0), so the input inside shows the
+  // whole number.
   .sf-range-slider-group--field .sf-range-slider-field-box {
     align-items: center;
     block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
@@ -442,9 +448,10 @@
     border-radius: var(--sf-radius--ui);
     box-sizing: border-box;
     display: grid;
+    flex: 1 1 0;
     gap: var(--sf-space-1\/4);
-    grid-template-columns: auto minmax(0, 1fr);
-    min-inline-size: 0;
+    grid-template-columns: auto minmax(min-content, 1fr);
+    min-inline-size: min-content;
     padding-inline: calc(var(--sf-range-slider--space-x, var(--sf-ui-1--space-x)) - var(--sf-px));
     transition: border-color var(--sf-duration-fast) var(--sf-animation);
   }
