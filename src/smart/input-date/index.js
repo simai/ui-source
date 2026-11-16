@@ -1317,12 +1317,12 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         return this.getProp('ariaLabel') || '';
     }
 
-    // Read-only as the field draws it, not just the attribute: a range is always
-    // chosen on the grid (one field holding two dates has no single format to
-    // read back), so `range` alone makes the field read-only. The template reads
-    // this same value -- it once read `!this.typed`, which also counted
-    // `disabled`, so a range or disabled field drew read-only while the
-    // component said it was not.
+    // Not typed: a range is always chosen on the grid (one field holding two
+    // dates has no single format to read back), so `range` alone makes the
+    // field read-only for typing. It is not read-only to the person: the field
+    // opens its calendar and changes, so the field is drawn and named as an
+    // ordinary one (RG-DP-5) -- only `valueLocked` makes the text box
+    // read-only; a range's text box takes no typing instead (pickOnly).
     get readonly() {
         return this.range || this.getBooleanAttr('readonly', false);
     }
@@ -1344,6 +1344,26 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
     // A range is still chosen on the grid -- `readonly` already says so.
     get typed() {
         return !this.readonly && !this.disabled;
+    }
+
+    // Chosen on the grid only, and still changeable: a range that is neither
+    // locked nor disabled. Its text box is not read-only (the field drew as a
+    // read-only one, the pale edge of C80, and a screen reader said «read
+    // only» of a field that opens its calendar; RG-DP-5): it opens no
+    // on-screen keyboard (inputmode none) and takes no typing, paste or drop
+    // (handleInputBeforeInput).
+    get pickOnly() {
+        return !this.typed && !this.valueLocked && !this.disabled;
+    }
+
+    // The popup's name (RG-DP-6): the field's own label, as the phone sheet's
+    // is; it was the shown month, which the grid and the live line say
+    // already. A field without a label or aria-label: a range is the period,
+    // the time panel the time, and a single date keeps the month.
+    get dialogLabel() {
+        if (this.label || this.ariaLabel) return this.label || this.ariaLabel;
+        if (this.mode === 'time') return this.labels.time;
+        return this.range ? this.labels.period : this.calendarLabel;
     }
 
     get formattedValue() {
@@ -2326,6 +2346,12 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         this._openPanel();
     }
 
+    // A pickOnly field (a range) takes no typing, paste, drop or deletion: the
+    // value is chosen on the grid.
+    handleInputBeforeInput(event) {
+        if (this.pickOnly) event?.preventDefault?.();
+    }
+
     handleInputKeydown(event) {
         // In a field that can be typed in, Enter commits the text and the space
         // bar belongs to the text; ArrowDown still opens the grid.
@@ -2935,7 +2961,11 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
             placeholder: this.placeholder,
             label: this.label,
             ariaLabel: this.ariaLabel,
-            readonly: this.readonly,
+            // The text box is read-only only where the value is locked; a range
+            // is pickOnly (RG-DP-5).
+            readonly: this.valueLocked,
+            pickOnly: this.pickOnly,
+            dialogLabel: this.dialogLabel,
             valueLocked: this.valueLocked,
             disabled: this.disabled,
             required: this.required,
