@@ -95,6 +95,10 @@ try {
         await tab.fill('input[name=count]', '9');
         await tab.fill('input[name=code]', 'abc');
         await tab.fill('sf-input[name=domain] input', 'АБВ!');
+        // sf-input says its error on leaving the field (C153), which moves the
+        // footer: leave first, then press where the button now is.
+        await tab.keyboard.press('Tab');
+        await tab.waitForTimeout(300);
         await tab.click('#w .sf-wizard-primary button');
         await tab.waitForTimeout(400);
         const seen = await tab.evaluate(() => {
@@ -116,6 +120,8 @@ try {
         await tab.fill('input[name=code]', '12');
         await tab.fill('sf-input[name=domain] input', 'shop.ru');
         await tab.evaluate(() => document.querySelector('[name=own]').setCustomValidity(''));
+        await tab.keyboard.press('Tab');
+        await tab.waitForTimeout(300);
         await tab.click('#w .sf-wizard-primary button');
         await tab.waitForTimeout(400);
         const moved = await tab.evaluate(() => document.querySelector('#w .sf-wizard-title')?.textContent.trim());
@@ -141,6 +147,8 @@ try {
       if (!row.title || !row.close) fail.push(`window header: ${JSON.stringify(row)}`);
       await tab.fill(`${scope} sf-input[name=title] input`, 'Магазин');
       await tab.fill(`${scope} sf-input[name=domain] input`, 'Магазин!');
+      await tab.keyboard.press('Tab');
+      await tab.waitForTimeout(300);
       await tab.click(`${scope} .sf-wizard-primary button`);
       await tab.waitForTimeout(400);
       const checked = await tab.evaluate((scope) => document.querySelector(`${scope} sf-input[name=domain] input`)?.getAttribute('aria-invalid'), scope);
