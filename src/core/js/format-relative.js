@@ -10,6 +10,42 @@ function capitalise(text, locale) {
   return first ? first.toLocaleUpperCase(locale || undefined) + text.slice(first.length) : text;
 }
 
+// «сегодня», «вчера», «завтра» are the platform's words, except where the
+// platform has no words of the language: a browser without the Kazakh
+// relative-time data says «yesterday» on a Kazakh page. Then the words come
+// from core's language files (core/js/lang/relative-day, registered as
+// `sf-relative-day`), which a language pack or a product brings
+// (SF.language.register('sf-relative-day', 'kk', {today, yesterday,
+// tomorrow})). ru and en are never looked up: every platform speaks them.
+const DAY_KEYS = /* @__PURE__ */ Object.freeze({0: 'today', [-1]: 'yesterday', 1: 'tomorrow'});
+
+/** Whether Intl's relative-time words are those of the locale's language, not a fallback's. */
+export function intlSpeaks(locale) {
+  const wanted = String(locale || '').trim().toLowerCase().replace('_', '-').split('-')[0];
+  if (!wanted) return true;
+  if (wanted === 'en') return true;
+  try {
+    const own = intlFormatter('RelativeTimeFormat', locale, {numeric: 'auto'});
+    if (String(own.resolvedOptions().locale).toLowerCase().split('-')[0] !== wanted) return false;
+    // A platform may answer the locale's name over English data (a trimmed
+    // ICU): its «yesterday» is then English's.
+    return own.format(-1, 'day') !== intlFormatter('RelativeTimeFormat', 'en', {numeric: 'auto'}).format(-1, 'day');
+  } catch {
+    return false;
+  }
+}
+
+function packDayWord(offset, locale) {
+  if (intlSpeaks(locale)) return null;
+  const words = globalThis.__sfPageLanguage?.registered?.get?.('sf-relative-day');
+  const wanted = String(locale || '').trim().toLowerCase().replace('_', '-');
+  for (const code of [...new Set([wanted, wanted.split('-')[0]])]) {
+    const word = words?.get?.(code)?.[DAY_KEYS[offset]];
+    if (typeof word === 'string' && word.trim()) return word;
+  }
+  return null;
+}
+
 /**
  * The day a moment fell on, as a list says it: «сегодня», «вчера», «завтра»,
  * the weekday within the last week («понедельник»), else the date («3 ноября»,
@@ -35,7 +71,7 @@ export function formatRelativeDay(value, {now = new Date(), today, yesterday, to
   if (own) {
     text = String(own);
   } else if (offset >= -1 && offset <= 1) {
-    text = intlFormatter('RelativeTimeFormat', locale, {numeric: 'auto'}).format(offset, 'day');
+    text = packDayWord(offset, locale) ?? intlFormatter('RelativeTimeFormat', locale, {numeric: 'auto'}).format(offset, 'day');
   } else if (weekday && offset < -1 && offset > -7) {
     text = intlFormatter('DateTimeFormat', locale, {weekday: 'long', ...zone}).format(moment);
   } else {

@@ -1,0 +1,7 @@
+{
+  "runtime": {
+    "today": "today",
+    "yesterday": "yesterday",
+    "tomorrow": "tomorrow"
+  }
+}

@@ -377,12 +377,20 @@ class SfTime extends TimeElement {
     return has ? this.sfWord('just-now') : null;
   }
 
-  // A zone's own name where the component has one in the page language (the
-  // zones of Russia in ru and en), else null and the platform names it.
+  // A zone's own name where the component has one in the page language: the
+  // zones of Russia in its files (ru, en) and in any language a pack or a
+  // product gave words for (kk), else null and the platform names it. Until
+  // 1.7.1 only ru and en were read, and a pack's zone words were never said.
   zoneName(id) {
-    const shipped = {ru, en}[formatLocale({node: this}).toLowerCase().split('-')[0]];
+    if (!id) return null;
     const key = zoneWordKey(id);
-    return id && shipped?.runtime?.[key] ? this.sfWord(key) : null;
+    const wanted = formatLocale({node: this}).toLowerCase().replace('_', '-');
+    const registered = globalThis.__sfPageLanguage?.registered?.get?.('sf-time');
+    for (const code of [...new Set([wanted, wanted.split('-')[0]])]) {
+      const own = registered?.get?.(code)?.[key] ?? {ru, en}[code]?.runtime?.[key];
+      if (typeof own === 'string' && own.trim()) return this.sfWord(key);
+    }
+    return null;
   }
 
   describe() {
