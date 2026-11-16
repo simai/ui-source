@@ -14,3 +14,16 @@ $object-position-array:(
     inline-end-top: right top,
     top: top
 );
+
+// The logical sides under dir="rtl" (owner decision C265, 2026-11-17):
+// object-position has no logical keywords, so the start side is drawn on the
+// right there and the end side on the left. object-inline-start drew on the
+// left in every direction.
+$object-position-rtl-array:(
+    inline-start:right,
+    inline-start-bottom:right bottom,
+    inline-start-top:right top,
+    inline-end:left,
+    inline-end-bottom: left bottom,
+    inline-end-top: left top,
+);
