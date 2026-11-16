@@ -27,10 +27,13 @@ test('sf-alert and sf-toast: the cross is on-surface ink at 64, one rule for eve
   assert.match(toast, /:is\(:hover, :active\) > \.sf-close > \.sf-close-icon \{\n    --sf-close-icon--background-color: var\(--sf-toast--content-color, var\(--sf-on-surface\)\);/);
 });
 
-test('sf-alert-bar: the cross is the strong place\'s own ink at 64; hover catches the text ink', () => {
+test('sf-alert-bar: the cross, and an error bar\'s minimize in its place, are the strong place\'s own ink at 64; hover catches the text ink', () => {
   const bar = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
-  assert.ok(bar.includes('.sf-alert-bar#{$level} .sf-alert-bar-row > .sf-alert-bar-close > .sf-icon-button .sf-icon {\n    --sf-icon--color: #{places.sf-ink($c, 64)};'));
-  assert.ok(bar.includes('.sf-alert-bar-row > .sf-alert-bar-close > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-icon {\n  --sf-icon--color: var(--sf-alert-bar--ink);'));
+  // The minimize chevron stands where an error bar has no close: the same
+  // service glyph (C112), not the solid on-colour of the text.
+  const end = ':is(.sf-alert-bar-close, .sf-alert-bar-minimize)';
+  assert.ok(bar.includes(`.sf-alert-bar#{$level} .sf-alert-bar-row > ${end} > .sf-icon-button .sf-icon {\n    --sf-icon--color: #{places.sf-ink($c, 64)};`));
+  assert.ok(bar.includes(`.sf-alert-bar-row > ${end} > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-icon {\n  --sf-icon--color: var(--sf-alert-bar--ink);`));
 });
 
 test('sf-alert: printed with the page it is a status; the host role wins; later ones keep their level', () => {

@@ -130,7 +130,8 @@
     @include places.sf-place-strong-accent($c);
   }
 
-  /* The close cross (owner decision C112, R198): the notice's service glyph
+  /* The close cross, and the minimize chevron that takes the close's place
+     on an error bar (owner decision C112, R198): the notice's service glyph
      is the place's on-surface ink at 64 of the alpha scale's ink family
      (48/64/80), as on sf-alert and sf-toast -- here the strong place's own
      ink (sf-ink: white in the light theme, the level's tone 20 in the dark),
@@ -139,12 +140,12 @@
      icon button's own glyph colour; under a pointer it catches the text ink
      (C107 (4)) below. The glyph stays the bar's line, the size of its status
      icon (C112 (1)). */
-  .sf-alert-bar#{$level} .sf-alert-bar-row > .sf-alert-bar-close > .sf-icon-button .sf-icon {
+  .sf-alert-bar#{$level} .sf-alert-bar-row > :is(.sf-alert-bar-close, .sf-alert-bar-minimize) > .sf-icon-button .sf-icon {
     --sf-icon--color: #{places.sf-ink($c, 64)};
   }
 }
 
-.sf-alert-bar-row > .sf-alert-bar-close > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-icon {
+.sf-alert-bar-row > :is(.sf-alert-bar-close, .sf-alert-bar-minimize) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-icon {
   --sf-icon--color: var(--sf-alert-bar--ink);
 }
 

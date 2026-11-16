@@ -131,7 +131,9 @@ The close cross is the notice's service glyph (1.4.2, owner decision C112), as
 on sf-alert and sf-toast: the bar's own ink at 64 of the alpha scale's ink
 family -- white at 64 in the light theme, the level's tone 20 at 64 in the
 dark -- not the solid ink of the text; under a pointer it catches the text ink.
-Its size is the bar's line, the size of its status icon.
+Its size is the bar's line, the size of its status icon. An error bar has the
+minimize chevron in the close's place, and it is the same service glyph at 64
+(1.6.7); it was the solid text ink before.
 
 An action is always as wide as its label: it is never shrunk or cut with an
 ellipsis. When the bar is short of room, the message wraps first, down to
