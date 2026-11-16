@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.time",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "title": "Time",
   "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», tomorrow «завтра, 10:00», then the date, relative within the first hour («только что» under a minute), with the full date, time and zone in a tooltip on hover and keyboard focus, inside a time element; in a list or a feed no Tab stop, the moment in the row's text. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
   "kind": "smart",
@@ -208,7 +208,7 @@
       },
       {
         "path": "src/smart/time/scss/_smart__time.scss",
-        "sha256": "c9f0daea6c5d6b6205db04bcf818036a6302e25df7499c143d15ac4add6d5db4"
+        "sha256": "4f4ff9ecaf8728274a912f57a66f6a47d0c6fb86b77a7d852dd251a82c5444dd"
       },
       {
         "path": "src/smart/time/rule.js",

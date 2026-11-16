@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.file-preview",
   "kind": "component",
-  "version": "1.2.3",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/file-preview/index.js",

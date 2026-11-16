@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.progress-ring",
   "kind": "component",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/progress-ring/docs/docs.md",
