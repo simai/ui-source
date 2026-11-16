@@ -83,6 +83,7 @@ test('26 icons: a subset sheet without the manifest family is rebuilt from the m
   const rebuilt = loader.iconSubsetSheetText(wrong, manifest);
   assert.notEqual(rebuilt, wrong);
   assert.match(rebuilt, /font-family: 'Material Symbols Rounded Subset'/);
+  assert.match(rebuilt, /\.sf-icon:is\(\.sf-icon--rounded, \.sf-icon-rounded\) \{\s*font-family: var\(--sf-icon--font-family\);/, 'the family beats the outlined answer');
   const right = "@font-face { font-family: 'Material Symbols Rounded Subset'; }";
   assert.equal(loader.iconSubsetSheetText(right, manifest), right);
   assert.equal(loader.iconSubsetSheetText(wrong, null), wrong);
@@ -101,4 +102,21 @@ test('28-29 icons: the middle of the line and the ladder region steps', () => {
   assert.match(scss, /@property --sf-icon--text-middle \{\s*syntax: '<length>';\s*inherits: true;\s*initial-value: 0;/);
   assert.match(scss, /:where\(:has\(> \.sf-icon\)\) \{\s*--sf-icon--text-middle: var\(--sf-text--middle\);/);
   assert.match(scss, /vertical-align: calc\(var\(--sf-icon--text-middle\) - /);
+});
+
+test('26 icons: a name drawn outlined and rounded is asked for in both families', async () => {
+  globalThis.window ??= {SF_BOOT_CONFIG: {}, sfPath: '/distr'};
+  const {initIconSubsetState, installIconSubsetRuntime} = await import('../src/core/js/iconSubsetRuntime.js');
+  class Loader { constructor() { this.uniqueIcons = new Map(); this.loadedIcons = new Set(); initIconSubsetState(this); } }
+  installIconSubsetRuntime(Loader);
+  const loader = new Loader();
+  loader.isIconSubsetEnabled = () => true;
+  loader.hasConfiguredIconSubset = () => false;
+  loader.isIconCoveredByManifest = () => false;
+  loader.trackIconDescriptorOnly('favorite', {weight: '400'});
+  loader.trackIconDescriptorOnly('favorite', {weight: '400', type: 'rounded'});
+  const configs = loader.getIconSubsetRequestConfigs();
+  const byType = Object.fromEntries([...configs].map((config) => [config.defaultType, [...config.icons]]));
+  assert.deepEqual(byType.outlined, ['favorite']);
+  assert.deepEqual(byType.rounded, ['favorite']);
 });

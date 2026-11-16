@@ -19,6 +19,8 @@ test('C145 (2): a filter has no empty square; chosen, a check mark on the primar
   assert.match(template, /return context\.active\s*\? html`<sf-icon icon="check" root-class="sf-tag-icon sf-tag-check" aria-hidden="true"><\/sf-icon>`\s*: nothing;/u);
   // Important (content study T1, 2026-11-16): the icons sheet's unlayered display outranks a layer.
   assert.match(css, /\.sf-tag:not\(\.active, \[aria-pressed="true"\]\) \.sf-tag-check \{\s*display: none !important;/u);
+  // The label after a hidden mark is the first part drawn: no padding of its own (T2, C76).
+  assert.match(css, /\.sf-tag\.sf-tag:not\(\.active, \[aria-pressed="true"\]\) \.sf-tag-check:first-child \+ \.sf-tag-container \{\s*--sf-tag-container--padding-inline-start: 0;/u);
   assert.doesNotMatch(css, /\.sf-tag-check \{[^}]*border:/u);
   assert.match(tag, /if \(host\.type === 'checkbox' && !slotted\('leading'\) && !host\.href\) return \['check'\];/u);
 });

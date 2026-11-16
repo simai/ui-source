@@ -836,7 +836,12 @@ export function installIconSubsetRuntime(
       : this.uniqueIcons.get(normalizedIcon);
     let hasNewAttrs = false;
 
-    Object.entries(attrs).forEach(([key, value]) => {
+    // The family goes in as the load key has it, the default one too: a name
+    // drawn outlined and rounded on one page was held as rounded alone (an
+    // unset type added nothing to the name's families), the outlined request
+    // left it out and the outlined glyph drew its letters, reported as "no
+    // icon" (content study Z1, 2026-11-16).
+    Object.entries({ ...attrs, type: loadAttrs.type }).forEach(([key, value]) => {
       if (value == null || value === "") return;
 
       const normalizedValue = String(value).trim();
@@ -2618,7 +2623,8 @@ export function installIconSubsetRuntime(
   // load (no axes, favorite drawn filled) and outlined glyphs were judged
   // missing (content study Z1, 2026-11-16). When the stylesheet does not
   // declare the manifest's family, the sheet is written from the manifest, as
-  // a remembered manifest is: the family it names, scoped to its own icons.
+  // a remembered manifest is: the family it names, scoped to its own icons,
+  // which draw in it even under the outlined answer's .sf-icon family.
   SFLoaderPlugin.prototype.iconSubsetSheetText = function (
     cssText = "",
     manifest = null,
@@ -2631,7 +2637,17 @@ export function installIconSubsetRuntime(
     if (text.includes(`'${family}'`) || text.includes(`"${family}"`)) {
       return cssText;
     }
-    return iconSubsetCssFromManifest(manifest).cssText || cssText;
+    const rebuilt = iconSubsetCssFromManifest(manifest).cssText;
+    if (!rebuilt) return cssText;
+    // The outlined answer sets its family on every .sf-icon itself, not
+    // through --sf-icon--font-family; the family's own selector is more
+    // specific and takes the face back for its icons.
+    return (
+      rebuilt +
+      `\n${this.getIconSubsetSelector(manifest)} {\n` +
+      `  font-family: var(--sf-icon--font-family);\n` +
+      `}\n`
+    );
   };
 
   // One subset request: fetch the stylesheet, load its face, swap it in.

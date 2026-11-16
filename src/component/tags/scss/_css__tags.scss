@@ -1009,6 +1009,14 @@
   --sf-tag-container--padding-inline-start: 0;
 }
 
+/* A filter tag that is not chosen draws no mark (C145 (2)): the hidden mark
+   is still the first part in the markup, so the label is the first part
+   drawn and keeps no padding of its own -- edge | text | edge, 16 and 16 in
+   size 1, not 24 and 16 (C76; content study T2, 2026-11-16). */
+.sf-tag.sf-tag:not(.active, [aria-pressed="true"]) .sf-tag-check:first-child + .sf-tag-container {
+  --sf-tag-container--padding-inline-start: 0;
+}
+
 .sf-tag.sf-tag .sf-tag-container:last-child {
   --sf-tag-container--padding-inline-end: 0;
 }
