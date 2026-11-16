@@ -12,7 +12,8 @@ const manifest = async (name) => JSON.parse(await read(`smart/${name}/smart.mani
 test('navigation composition: page numbers are size 1 controls and tab indicators sit inside the height', async () => {
   const page = await read('component/pagination/scss/_css__page_number.scss');
   assert.match(page, /block-size: var\(--sf-page-number--height, var\(--sf-ui-1--control-height\)\);/);
-  assert.match(page, /inline-size: var\(--sf-page-number--width, var\(--sf-ui-1--control-height\)\);/);
+  // Square at least, wider by its number (RG-NV 9).
+  assert.match(page, /min-inline-size: max\(\s*var\(--sf-page-number--width, var\(--sf-ui-1--control-height\)\),/);
   const tabs = await read('component/tabs/scss/_css__tabs.scss');
   assert.match(tabs, /:is\(\.sf-tabs--underline, :where\(\.sf-tabs:not\(\.sf-tabs--pills, \.sf-tabs--vertical\)\)\) > \.sf-tabs-top-container > \.sf-tabs-top \.sf-button \{\s*padding-block-end: calc\(var\(--sf-button--padding-bottom\) - var\(--sf-button--border-bottom-width\)\);/);
   // sf-tabs--full draws the line since C96 (1): the line rule above holds it.

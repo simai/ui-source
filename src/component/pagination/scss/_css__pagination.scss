@@ -54,10 +54,31 @@
   --sf-page-number--line-height: var(--sf-text-height-1\/2);
   --sf-page-number--height: var(--sf-ui-1\/2--control-height);
   --sf-page-number--width: var(--sf-ui-1\/2--control-height);
+  --sf-page-number--space-x: var(--sf-ui-1\/2--space-x);
   --sf-pagination--control-height: var(--sf-ui-1\/2--control-height);
   --sf-pagination--text-size: var(--sf-text-size-1\/2);
   --sf-pagination--text-height: var(--sf-text-height-1\/2);
   --sf-pagination--space-x: var(--sf-ui-1\/2--space-x);
+}
+
+/* The row's size reaches the arrows too (RG-NV 10, C103: a button in a row
+   takes the row's size; C18): class markup writes its arrows
+   sf-icon-button--size-1, and in a size 1/2 row they stood 40 beside numbers
+   of 32. The arrows take the 1/2 step's glyph and padding, as
+   sf-icon-button--size-1/2 draws them; sf-pagination writes size 1/2 on its
+   arrows itself. */
+.sf-pagination.sf-pagination--size-1\/2 .sf-icon-button {
+  --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+  --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+  --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-default));
+  --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-default));
+  --sf-icon-button-spinner--size: var(--sf-text-height-1\/2);
+}
+
+.sf-pagination.sf-pagination--size-1\/2 :is(.sf-icon-button, .sf-icon-button.sf-icon-button--icon) :is(.sf-icon, sf-icon:not(:defined)) {
+  --sf-icon--font-size: var(--sf-text-height-1\/2);
+  --sf-icon--height: var(--sf-text-height-1\/2);
+  --sf-icon--width: var(--sf-text-height-1\/2);
 }
 
 /* The appearances (C97): one row of controls, gap --sf-pagination-gap. */
@@ -99,6 +120,18 @@
   inline-size: 100%;
   justify-content: center;
   text-decoration: none;
+}
+
+/* The place's width counts the button's side padding only, so the number's
+   words take no label padding of their own and never break: with the button's
+   label padding (--sf-ui-1--text-space-x, 8 a side) on top a two-digit number
+   had 4 pixels too few and stood as two lines, a 64 high button in a 40 row
+   (found with RG-NV 9; the place stays the width the formula gives, 2 digits:
+   51). The plain sf-page-number draws the same width. */
+.sf-pagination .sf-pagination-slot > .sf-pagination-page > .sf-button-text-container {
+  --sf-button-text-container--padding-inline-start: 0;
+  --sf-button-text-container--padding-inline-end: 0;
+  white-space: nowrap;
 }
 
 /* The gap is not a control: a mark of the pages left out. */
@@ -301,10 +334,9 @@
   border-start-start-radius: var(--sf-icon-button--border-start-start-radius);
 }
 
-.sf-pagination .sf-pagination-main .sf-pagination-container .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link):not(:disabled):not(.disabled) > .sf-icon {
-  --sf-icon--color: var(--sf-on-surface-variant);
-  color: var(--sf-icon--color);
-}
+/* The arrows of the row with the count keep the icon button's own ink,
+   --sf-on-surface-icon, as every other arrow of the pagination (RG-NV 11,
+   C107 (3)): a rule here forced them to --sf-on-surface-variant. */
 
 [dir="rtl"] .sf-pagination .sf-pagination-direction .sf-icon,
 [dir="rtl"] .sf-pagination .sf-pagination-direction sf-icon {

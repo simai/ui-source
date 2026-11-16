@@ -54,7 +54,10 @@ function inReach(node, root) {
   return at.top <= box.bottom + EDGE_REACH && at.bottom >= box.top - EDGE_REACH;
 }
 // Places of numbers: seven, five below the sm step of the ladder
-// (core/js/breakpoints.js, the sheets' media-breakpoint-down).
+// (core/js/breakpoints.js, the sheets' media-breakpoint-down) and wherever
+// the pagination's own box has no room for seven (RG-NV 12: a 30rem column
+// on a wide screen; the element decides by its own width, as the footer does
+// by its container, C181 (2)).
 
 // The page window of numbers (USWDS, GOV.UK; prototype pagination-study.html):
 // at most `slots` places, the first and the last page always, a gap where
@@ -687,10 +690,48 @@ class SfPagination extends PaginationElement {
     }));
   }
 
-  // Whether the screen is narrow (below the sm step): numbers then shows five
-  // places in place of seven.
+  // Whether numbers shows five places in place of seven: on a narrow screen
+  // (below the sm step, C97 (6)) and wherever its own box has no room for
+  // seven (fitPlaces).
   get narrow() {
-    return Boolean(this._sfNarrow?.matches);
+    return Boolean(this._sfNarrow?.matches) || this._sfCramped === true;
+  }
+
+  // Seven places or five by the pagination's own room (RG-NV 12). Seven
+  // places that do not fit their box fall to five, and the width seven need
+  // is kept; five go back to seven once the box is that wide again. Started
+  // at five, the width of seven is the row's own plus two places and their
+  // gaps. Read after each drawing and whenever the box changes size.
+  fitPlaces() {
+    const nav = this.querySelector(":scope > nav.sf-pagination");
+    if (nav !== this._sfFitNav) {
+      this._sfFitObserver?.disconnect();
+      this._sfFitNav = nav;
+      if (nav && typeof ResizeObserver === "function") {
+        this._sfFitObserver = new ResizeObserver(() => this.fitPlaces());
+        this._sfFitObserver.observe(nav);
+      }
+    }
+    if (!nav || this.appearance !== "numbers" || this.footer || this._sfNarrow?.matches) return;
+    const list = nav.querySelector(":scope > .sf-pagination-list");
+    const room = nav.clientWidth;
+    if (!list || !(room > 0)) return;
+    const need = list.scrollWidth;
+    let cramped = this._sfCramped === true;
+    if (!cramped && need > room + 0.5) {
+      this._sfWideNeed = need;
+      cramped = true;
+    } else if (cramped) {
+      if (!(this._sfWideNeed > 0)) {
+        const slot = list.querySelector(":scope > .sf-pagination-slot");
+        const gap = Number.parseFloat(globalThis.getComputedStyle?.(list)?.columnGap) || 0;
+        this._sfWideNeed = need + 2 * ((slot?.getBoundingClientRect().width || 0) + gap);
+      }
+      if (room >= this._sfWideNeed - 0.5) cramped = false;
+    }
+    if (cramped === (this._sfCramped === true)) return;
+    this._sfCramped = cramped;
+    this.refresh("narrow");
   }
 
   // The places of numbers: page numbers and gaps, at most seven (five on a
@@ -1017,6 +1058,11 @@ class SfPagination extends PaginationElement {
         if (this.appearance === "numbers" && !this.footer) this.refresh("narrow");
       }, { signal: this.sfScope });
     }
+    this.sfScope?.addEventListener?.("abort", () => {
+      this._sfFitObserver?.disconnect();
+      this._sfFitObserver = null;
+      this._sfFitNav = null;
+    }, { once: true });
     if (this.pageParam && globalThis.addEventListener) {
       globalThis.addEventListener("popstate", () => this.followAddress(), { signal: this.sfScope });
       // After the page's own listeners are on: a host that appends the
@@ -1041,6 +1087,7 @@ class SfPagination extends PaginationElement {
       this.noteFooterParts();
       this.keepMoreFocus();
       this.watchMore();
+      this.fitPlaces();
     }
 
     return result;

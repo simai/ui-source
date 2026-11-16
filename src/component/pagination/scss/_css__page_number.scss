@@ -1,51 +1,64 @@
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-b0) justify-content/center (.justify-center) align-items/center (.items-center) */
+/* A page number draws as the page button of sf-pagination (C224: the plain
+   component looks as its Smart twin; C19, RG-NV 7): the Smart numbers are
+   sf-button ghost on-surface, the current page tonal primary. The class keeps
+   its own name and variables and reads the same roles the button reads, so a
+   server-printed row and an <sf-pagination appearance="numbers"> are one
+   look: no plate at rest (RG-NV 8: the surface-page plate was a white square
+   on a card, C42 (2)), the button's hover and press fills, the current page
+   primary-container with on-primary-container words and no frame.
+   utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-b0) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-page-number {
   align-items: center;
   font-family: var(--sf-page-number--font-family, var(--sf-text--family));
   font-size: var(--sf-page-number--font-size, var(--sf-text-size-1));
-  font-weight: var(--sf-page-number--font-weight, var(--sf-font-weight-regular));
+  font-weight: var(--sf-page-number--font-weight, var(--sf-font-weight-medium));
   gap: var(--sf-page-number--gap, var(--sf-b0));
   /* A page number is a size 1 control, like the arrows beside it: it was a
      text-height-4 box, which on mobile is shorter than the arrows. */
   block-size: var(--sf-page-number--height, var(--sf-ui-1--control-height));
   line-height: var(--sf-page-number--line-height, var(--sf-text-height-1));
-  padding-block-end: var(--sf-page-number--padding-bottom, var(--sf-space-1\/3));
-  padding-inline-end: var(--sf-page-number--padding-right, var(--sf-space-1\/3));
-  padding-inline-start: var(--sf-page-number--padding-left, var(--sf-space-1\/3));
-  padding-block-start: var(--sf-page-number--padding-top, var(--sf-space-1\/3));
-  inline-size: var(--sf-page-number--width, var(--sf-ui-1--control-height));
-  border-start-start-radius: var(--sf-page-number--border-start-start-radius);
-  border-start-end-radius: var(--sf-page-number--border-start-end-radius);
-  border-end-start-radius: var(--sf-page-number--border-end-start-radius);
-  border-end-end-radius: var(--sf-page-number--border-end-end-radius);
+  padding-block: 0;
+  padding-inline: var(--sf-page-number--space-x, var(--sf-ui-1--space-x));
+  /* Square at least, and as wide as its number with the button's side
+     padding (RG-NV 9: «10240» spilled 3.3 past a square box). A row that
+     writes --sf-pagination--digits (the widest number it shows, as
+     sf-pagination does) gives every place that one width, so the row keeps
+     its width while a person pages. */
+  inline-size: auto;
+  min-inline-size: max(
+    var(--sf-page-number--width, var(--sf-ui-1--control-height)),
+    calc(var(--sf-pagination--digits, 1) * 1ch + 2 * var(--sf-page-number--space-x, var(--sf-ui-1--space-x)))
+  );
+  /* The button's corner (C237: one shape, the square; the circle is a
+     retired name). */
+  border-start-start-radius: var(--sf-page-number--border-start-start-radius, var(--sf-pagination-page-radius, var(--sf-radius--ui)));
+  border-start-end-radius: var(--sf-page-number--border-start-end-radius, var(--sf-pagination-page-radius, var(--sf-radius--ui)));
+  border-end-start-radius: var(--sf-page-number--border-end-start-radius, var(--sf-pagination-page-radius, var(--sf-radius--ui)));
+  border-end-end-radius: var(--sf-page-number--border-end-end-radius, var(--sf-pagination-page-radius, var(--sf-radius--ui)));
   background-color: var(--sf-page-number--background-color);
   color: var(--sf-page-number--color);
   box-shadow: var(--sf-page-number--box-shadow);
+  /* The button's frame: one pixel, transparent unless a look draws it. */
   border-color: var(--sf-page-number--border-color, transparent);
-  border-width: var(--sf-page-number--border-width, 0);
-  border-block-start-width: var(--sf-page-number--border-top-width, 0);
-  border-inline-end-width: var(--sf-page-number--border-inline-end-width, 0);
-  border-block-end-width: var(--sf-page-number--border-bottom-width, 0);
-  border-inline-start-width: var(--sf-page-number--border-inline-start-width, 0);
   border-style: var(--sf-page-number--border-style, solid);
+  border-width: var(--sf-page-number--border-width, var(--sf-px));
   box-sizing: border-box;
   display: inline-flex;
   justify-content: center;
+  font-variant-numeric: tabular-nums;
   text-decoration: none;
   white-space: nowrap;
   transition-property: background-color, border-color, box-shadow, color;
   transition-duration: var(--sf-duration-fast);
   transition-timing-function: var(--sf-animation);
-  /* sf-pagination's public variables (standard 1.3.8 §6) over the role tokens. */
-  --sf-page-number--background-color: var(--sf-pagination-page-background-color, var(--sf-surface-page));
-  --sf-page-number--color: var(--sf-pagination-page-color, var(--sf-on-surface-variant));
-  --sf-page-number--border-top-width: var(--sf-px);
-  --sf-page-number--border-bottom-width: var(--sf-px);
-  --sf-page-number--border-inline-start-width: var(--sf-px);
-  --sf-page-number--border-inline-end-width: var(--sf-px);
+  /* sf-pagination's public variables (standard 1.3.8 §6) over the role
+     tokens: ghost on-surface at rest. */
+  --sf-page-number--background-color: var(--sf-pagination-page-background-color, transparent);
+  --sf-page-number--color: var(--sf-pagination-page-color, var(--sf-on-surface));
 }
 
+/* The square is the one shape (C237); the class stays as the explicit name. */
 .sf-page-number--square {
   --sf-page-number--border-end-end-radius: var(--sf-pagination-page-radius, var(--sf-radius--ui));
   --sf-page-number--border-end-start-radius: var(--sf-pagination-page-radius, var(--sf-radius--ui));
@@ -53,53 +66,41 @@
   --sf-page-number--border-start-start-radius: var(--sf-pagination-page-radius, var(--sf-radius--ui));
 }
 
-.sf-page-number--circle {
-  --sf-page-number--border-end-end-radius: var(--sf-radius-circle);
-  --sf-page-number--border-end-start-radius: var(--sf-radius-circle);
-  --sf-page-number--border-start-end-radius: var(--sf-radius-circle);
-  --sf-page-number--border-start-start-radius: var(--sf-radius-circle);
-}
+/* sf-page-number--circle is a retired name (owner decision C237, 2026-11-16):
+   sf-pagination has no round numbers, and the plain component follows it
+   (C224); the dots and the picture counter went to sf-gallery and sf-slider
+   (C97 (7)). Until 2027-01-01 the class draws the square, and the Loader notes
+   it once in SF.deprecations (core/js/retired-classes.table.js). No rule of its
+   own: the number's square corner is the base rule's. */
 
 .sf-page-number:not(:disabled):not(.disabled):focus-visible {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
 }
 
-.sf-page-number:not(:disabled):not(.disabled):hover {
-  --sf-page-number--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  --sf-page-number--color: var(--sf-on-surface);
-}
-
-.sf-page-number:not(:disabled):not(.disabled):active, .sf-page-number.selected {
-  --sf-page-number--background-color: var(--sf-pagination-current-background-color, var(--sf-primary-container-active));
-  --sf-page-number--border-color: var(--sf-primary-active);
-  --sf-page-number--border-style: solid;
-  --sf-page-number--border-width: var(--sf-px);
-  --sf-page-number--color: var(--sf-pagination-current-color, var(--sf-primary-active));
-  --sf-page-number--font-weight: var(--sf-font-weight-medium);
-}
-
-/* The current page is the selected role (C16): primary-container at rest; a
-   press keeps the pressed step above. */
-.sf-page-number.selected:not(:active) {
+/* The current page is the selected role (C16) in the button's tonal primary
+   look, as sf-pagination draws it: primary-container, on-primary-container
+   words, no frame. */
+.sf-page-number.selected,
+.sf-page-number[aria-current="page"] {
   --sf-page-number--background-color: var(--sf-pagination-current-background-color, var(--sf-primary-container));
+  --sf-page-number--color: var(--sf-pagination-current-color, var(--sf-on-primary-container));
 }
 
 .sf-page-number--ellipsis {
   --sf-page-number--background-color: transparent;
-  --sf-page-number--border-bottom-width: 0;
-  --sf-page-number--border-inline-end-width: 0;
-  --sf-page-number--border-inline-start-width: 0;
-  --sf-page-number--border-top-width: 0;
+  --sf-page-number--border-width: 0;
+  --sf-page-number--color: var(--sf-pagination-color, var(--sf-on-surface-variant));
+  --sf-page-number--font-weight: var(--sf-font-weight-regular);
   align-items: center;
   display: inline-flex;
   justify-content: center;
 }
 
+/* Out of reach: the ghost button's disabled look, no plate. */
 .sf-page-number:disabled,
 .sf-page-number.disabled {
-  --sf-page-number--background-color: var(--sf-surface-disabled);
+  --sf-page-number--background-color: transparent;
   --sf-page-number--color: var(--sf-on-surface-disabled);
   cursor: not-allowed;
 }
@@ -110,7 +111,8 @@
     outline-offset: var(--sf-focus--offset);
   }
 
-  .sf-page-number.selected {
+  .sf-page-number.selected,
+  .sf-page-number[aria-current="page"] {
     border-color: Highlight;
   }
 }
@@ -119,5 +121,38 @@
   .sf-page-number {
     transition-duration: 0s;
   }
+}
+}
+
+@layer sf.states {
+/* Under the pointer and pressed: the ghost on-surface button's fills and
+   words (component.buttons), on a strong place the place's own steps. */
+.sf-page-number:not(:disabled):not(.disabled):not(.sf-page-number--ellipsis):not(.selected):not([aria-current="page"]):hover {
+  --sf-page-number--background-color: var(--sf-place--control-hover, var(--sf-surface-container-hover));
+  --sf-page-number--color: light-dark(var(--sf-on-surface-hover), var(--sf-on-surface));
+}
+
+.sf-page-number:not(:disabled):not(.disabled):not(.sf-page-number--ellipsis):not(.selected):not([aria-current="page"]):active {
+  --sf-page-number--background-color: var(--sf-place--control-active, var(--sf-surface-container-active));
+  --sf-page-number--color: light-dark(var(--sf-on-surface-active), var(--sf-on-surface));
+}
+
+/* The current page steps along its own container, as a tonal primary
+   button does. */
+.sf-page-number:is(.selected, [aria-current="page"]):not(:disabled):not(.disabled):hover {
+  --sf-page-number--background-color: var(--sf-pagination-current-background-color, var(--sf-primary-container-hover));
+}
+
+.sf-page-number:is(.selected, [aria-current="page"]):not(:disabled):not(.disabled):active {
+  --sf-page-number--background-color: var(--sf-pagination-current-background-color, var(--sf-primary-container-active));
+}
+
+/* The keyboard ring over no plate, as the button's. */
+.sf-page-number:not(:disabled):not(.disabled):focus-visible {
+  --sf-page-number--background-color: var(--sf-transparent-for-focus);
+}
+
+.sf-page-number:is(.selected, [aria-current="page"]):not(:disabled):not(.disabled):focus-visible {
+  --sf-page-number--background-color: var(--sf-pagination-current-background-color, var(--sf-primary-container));
 }
 }

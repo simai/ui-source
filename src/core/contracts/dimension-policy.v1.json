@@ -266,6 +266,15 @@
       "reason": "The inline meter's number box holds its widest value, «100 %» (C203 (3)): three tabular figures (3ch) and the no-break space with the per cent sign, 1.26em in Inter and 1.31em in Inter Fallback. It follows the number's own size; no ladder step is a fixed share of every text size."
     },
     {
+      "id": "link-icon-at-its-line",
+      "category": "style-review",
+      "filePattern": "^component/link/scss/_css__link\\.scss$",
+      "contextPattern": "^\\s*--sf-(?:icon--(?:width|height)|link-icon--size): 1em;",
+      "textPattern": "^1em$",
+      "status": "accepted-owner-decision",
+      "reason": "Owner decision C107 (5), RG-NV 6: a link's icon is as tall as the line of the text the link stands in (20 beside 14/20, 24 beside 16/24). Its glyph is 1lh of that line (font-size reads lh at the parent) and its box is that glyph, 1em; no ladder step follows the text around the link."
+    },
+    {
       "id": "text-bar-capital-height",
       "category": "style-review",
       "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss|component/modal/scss/_css__modal_custom\\.scss|smart/profile-picker/scss/_smart__profile_picker\\.scss)$",

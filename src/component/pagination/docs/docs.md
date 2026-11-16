@@ -12,9 +12,26 @@ An omitted range is represented by the static
 `.sf-page-number--ellipsis` indicator inside
 `.sf-pagination-item--ellipsis`. It is never a button and never receives focus.
 
-The compact square form uses `--sf-radius--ui`; the circle form uses
-`--sf-radius-circle`. Geometry, typography, color, motion and focus are driven by
-Framework semantic tokens. In RTL only directional arrows reverse. In a
+A page number draws as the page button of `<sf-pagination appearance="numbers">`
+(1.5.0; C224, the plain component looks as its Smart twin): the ghost on-surface
+button -- no plate at rest, the button's hover and press fills, words of
+`--sf-on-surface` at the medium weight -- and the current page (`selected` or
+`aria-current="page"`) the tonal primary button: `--sf-primary-container` with
+`--sf-on-primary-container` words and no frame. It was a plate of
+`--sf-surface-page` (a white square on a card, C42 (2)) and a framed current
+page. A number is square at least and as wide as its number with the button's
+side padding (`--sf-ui-1--space-x`, the 1/2 step in `sf-pagination--size-1/2`);
+a row that writes `--sf-pagination--digits` (the digits of its widest number)
+gives every place that one width. The corner is the button's,
+`--sf-radius--ui`. `sf-page-number--circle` is a retired name (owner decision
+C237): it draws the square until 2027-01-01 and the Loader notes it in
+`SF.deprecations`. Geometry, typography, color, motion and focus are driven by
+Framework semantic tokens.
+
+`sf-pagination--size-1/2` sizes the whole row (C103): the numbers and the
+arrows written as `sf-icon-button--size-1` take the 1/2 step (32, glyph 20).
+The arrows keep the icon button's ink, `--sf-on-surface-icon`, in every row
+(C107 (3); the count row forced `--sf-on-surface-variant` before 1.5.0). In RTL only directional arrows reverse. In a
 narrow place -- a footer up to the container step h1 (44rem) wide, on a
 phone or in a narrow column of a wide page (1.4.4; it read the screen's md
 step before) -- secondary labels and omitted-range indicators may be hidden,

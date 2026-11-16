@@ -37,6 +37,15 @@
     flex: none;
   }
 
+  /* A crumb that is an icon alone (the home link) is a square target as
+     «…» is (RG-NV 2, C173 (6): a tap zone of 24 at least): it was as wide as
+     its 20 glyph. The glyph stays 20 in the middle. */
+  .sf-breadcrumbs-item:is(a, button):has(> .sf-breadcrumbs-item-container > :is(.sf-icon, sf-icon):only-child) {
+    justify-content: center;
+    min-inline-size: var(--sf-breadcrumbs--target);
+    flex: none;
+  }
+
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-breadcrumbs-item-container--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-breadcrumbs-item .sf-breadcrumbs-item-container {
     display: flex;
@@ -95,6 +104,17 @@
     white-space: nowrap;
   }
 
+  /* A name printed straight into the container, with no <span> (RG-NV 1):
+     the runtime wraps it (breadcrumbs.js wrapLabels); until it runs, a
+     container of words alone cuts them itself, so the crumb is one line of
+     the target's height from the first paint, not two. */
+  .sf-breadcrumbs-item:not([aria-current]):not([aria-expanded]):not(.sf-breadcrumbs-item--separator) > .sf-breadcrumbs-item-container:not(:has(> *)) {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .sf-breadcrumbs-item.sf-breadcrumbs-item--separator .sf-breadcrumbs-item-container {
     --sf-icon--color: var(--sf-breadcrumbs-separator-color, var(--sf-on-surface-variant));
   }
@@ -117,7 +137,8 @@
 
   /* The words of a link under the pointer are underlined, as a text link's
      (C93 item 5); «…» and the siblings button only darken. */
-  a.sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(.disabled):hover > .sf-breadcrumbs-item-container > span {
+  a.sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(.disabled):hover > .sf-breadcrumbs-item-container > span,
+  a.sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(.disabled):hover > .sf-breadcrumbs-item-container:not(:has(> *)) {
     text-decoration-line: underline;
     text-decoration-color: currentColor;
     text-underline-offset: var(--sf-a3);
@@ -131,10 +152,13 @@
     --sf-breadcrumbs-item-container--color: var(--sf-breadcrumbs-link-hover-color, var(--sf-on-surface));
   }
 
+  /* A crumb is a link: its ring is a link's (C186 (4); BC-08 «as the
+     Framework's links»): 2 px --sf-focus, two pixels off, the UI's corner.
+     It stood one pixel off, as a button's (RG-NV 4). */
   .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
     --sf-breadcrumbs-item--background-color: var(--sf-transparent-for-focus);
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: var(--sf-focus--offset);
+    outline-offset: var(--sf-a2);
   }
 
   /* A disabled item takes the disabled ink, its icon too (C16; docs precheck

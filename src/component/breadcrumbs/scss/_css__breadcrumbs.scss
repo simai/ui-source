@@ -87,6 +87,11 @@
     flex: none;
   }
 
+  /* An icon-only crumb (the home link) keeps its square target too (RG-NV 2). */
+  .sf-breadcrumbs > :is(ol, ul) > li:has(> .sf-breadcrumbs-item:is(a, button) > .sf-breadcrumbs-item-container > :is(.sf-icon, sf-icon):only-child) {
+    flex: none;
+  }
+
   /* The flat form is its own row. */
   .sf-breadcrumbs:not(:has(> ol)):not(:has(> ul)) {
     align-items: flex-start;
@@ -176,6 +181,14 @@
 
     .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] > .sf-breadcrumbs-item-container > span {
       min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* The page's name without a <span> (RG-NV 1), until the runtime wraps it. */
+    .sf-breadcrumbs .sf-breadcrumbs-item[aria-current] > .sf-breadcrumbs-item-container:not(:has(> *)) {
+      display: block;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

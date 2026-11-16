@@ -1,5 +1,12 @@
 @layer sf.components {
-  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  /* A link is a run of the text it stands in (RG-NV 5, 6): it takes the
+     text's size, line, family and weight (C103: one line, one step; a link
+     of 16/24 stood among words of 14 or 20), and it is an inline box that
+     flows and wraps with the sentence (C147 (1)): as an inline-flex box a long
+     link jumped to a line of its own as one block (256 x 48 in a 16rem
+     paragraph). A page that wants a link of its own size writes the step
+     (text-1, text-1/2 ...) on it or around it. The new-tab sign core puts
+     after the last word rides the same unbroken tail (C186 (3)). */
   .sf-link {
     --sf-link--color: var(--sf-place--ink, var(--sf-link));
     --sf-link--background-color: var(--sf-transparent);
@@ -7,30 +14,32 @@
        name --sf-gap--icon-inline where C173's names are built, its step 4
        before them. */
     --sf-link--gap: var(--sf-gap--icon-inline, var(--sf-space-1\/4));
-    --sf-link--font-family: var(--sf-text--family);
-    --sf-link--font-size: var(--sf-text-size-1);
-    --sf-link--font-weight: var(--sf-font-weight-regular);
-    --sf-link--line-height: var(--sf-text-height-1);
     --sf-link--text-decoration: underline;
 
-    display: inline-flex;
-    box-sizing: border-box;
-    align-items: center;
-    gap: var(--sf-link--gap);
-    min-inline-size: var(--sf-0);
-    max-inline-size: 100%;
+    display: inline;
     color: var(--sf-link--color);
     background-color: var(--sf-link--background-color);
-    font-family: var(--sf-link--font-family);
-    font-size: var(--sf-link--font-size);
-    font-weight: var(--sf-link--font-weight);
-    line-height: var(--sf-link--line-height);
+    font: inherit;
     text-decoration-line: var(--sf-link--text-decoration);
     /* The line at rest is the link's colour at ink 48, full under the pointer
        (owner decision C186 (1)), as core draws a link in text. */
     text-decoration-color: color-mix(in srgb, currentColor var(--sf-link--underline-ink, 48%), transparent);
     text-decoration-thickness: var(--sf-link--underline-weight, var(--sf-px));
     text-underline-offset: var(--sf-a3);
+  }
+
+  /* A link with an icon part (before or after its words) is one control of
+     the line: the icon and the words side by side, 4 apart, the icon as high
+     as the line it stands in. */
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-link:has(> :is(.sf-link__icon, .sf-link-icon)) {
+    display: inline-flex;
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--sf-link--gap);
+    min-inline-size: var(--sf-0);
+    max-inline-size: 100%;
+    vertical-align: bottom;
   }
 
   /* In navigation, a menu or a table the link is the item's own word: no
@@ -50,12 +59,18 @@
   /* The new-tab sign core puts after the words (C186 (3)) stands 4 from
      them; in an sf-link without a content part it is a flex item, so the
      link's own gap is taken back from it. */
-  .sf-link > [data-sf-new-tab='mark'] {
+  .sf-link:has(> :is(.sf-link__icon, .sf-link-icon)) > [data-sf-new-tab='mark'] {
     margin-inline-start: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
   }
 
   .sf-link :where(.sf-link__icon, .sf-link-icon) {
-    --sf-link-icon--size: var(--sf-text-height-1);
+    /* The line's height: 24 beside text of 16/24, 20 beside 14/20 (C107 (5)).
+       In font-size, lh is the parent's line: the glyph is as tall as the line
+       of the text the link stands in, and the box is that glyph (1em). */
+    --sf-icon--font-size: 1lh;
+    --sf-icon--width: 1em;
+    --sf-icon--height: 1em;
+    --sf-link-icon--size: 1em;
 
     flex: none;
     block-size: var(--sf-link-icon--size);
@@ -98,6 +113,8 @@
   /* The ring of a link (C186 (4)): 2px --sf-focus, two pixels off the
      words, the UI's corner (4). */
   .sf-link:focus-visible {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
     border-radius: var(--sf-radius--ui);
     outline-color: var(--sf-focus);
     outline-offset: var(--sf-a2);
