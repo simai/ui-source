@@ -294,6 +294,23 @@ export default {
         "grid-row-span-6": "row-span-6",
         "grid-row-span-full": "row-span-full"
       }
+    },
+    {
+      "journal": "class-ut1-negative-auto",
+      "decision": "IN-4 (RG-UT-L)",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "A negative margin takes a step away; auto has none. -m-auto, -m-top-auto and the other negative auto classes wrote calc(0rem - auto), which the browser drops, so they drew nothing; the sheets no longer write them (utility.margin 1.1.0). Remove the class, or write m-*-auto for an auto margin.",
+      "names": {
+        "-m-auto": null,
+        "-m-top-auto": null,
+        "-m-bottom-auto": null,
+        "-m-inline-start-auto": null,
+        "-m-inline-end-auto": null,
+        "-m-inline-auto": null,
+        "-m-block-auto": null
+      }
     }
   ],
   "extended": {

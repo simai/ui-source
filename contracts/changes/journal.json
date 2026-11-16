@@ -13999,6 +13999,60 @@
       },
       "owner": "ui-source",
       "source": "src/utility/grid-row/default/scss/_sf_css__grid_row.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-grid-study.html GR-2"
+    },
+    {
+      "id": "class-ut1-negative-auto",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-L IN-4: the negative auto margins (-m-auto, -m-top-auto, -m-bottom-auto, -m-inline-start-auto, -m-inline-end-auto, -m-inline-auto, -m-block-auto and their breakpoint forms) wrote calc(0rem - auto), an invalid value the browser drops: they drew nothing. utility.margin 1.1.0 no longer writes them and the Loader rules no longer load a sheet for them; the Loader notes the names without a breakpoint once in SF.deprecations until remove_after. Nothing changes on a page: they drew nothing before.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "-m-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-top-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-bottom-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-inline-start-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-inline-end-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-inline-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-block-auto",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class; for an auto margin write m-auto, m-inline-auto and the other m-*-auto classes.",
+      "examples": {
+        "before": "<div class=\"-m-top-auto\">",
+        "after": "<div>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/margin/default/scss/_sf_css__margin.scss; src/utility/margin/*/rule.js; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-indents-study.html IN-4"
     }
   ]
 }
