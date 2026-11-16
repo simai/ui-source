@@ -252,9 +252,12 @@ export function mapTailwindBaseClass(className) {
   const zMatch = base.match(/^z-(\d{2,3})$/);
   if (zMatch) {
     const value = parseInt(zMatch[1], 10);
-    if (value === 0) return `${negative}z-0`;
+    if (value === 0) return 'z-0';
+    // The pair has one layer below the page, spelled z--1 (utility/z-index);
+    // -z-1 is not a class it serves (RG-TW-1, 2026-11-16).
+    if (negative) return 'z--1';
     if (value % 10 === 0 && value >= 10 && value <= 90) {
-      return `${negative}z-${Math.round(value / 10)}`;
+      return `z-${Math.round(value / 10)}`;
     }
   }
 
@@ -315,11 +318,14 @@ export function mapTailwindBaseClass(className) {
     return `self-main-${justifySelfMatch[1]}`;
   }
 
-  const alignSelfMatch = base.match(
-    /^self-(auto|start|end|center|stretch|baseline)$/,
-  );
-  if (alignSelfMatch) {
-    return `self-cross-${alignSelfMatch[1]}`;
+  // self-auto|start|end|center|stretch and content-start|end|center|between|
+  // around|evenly|stretch are the Framework's own both-axes names (utility/
+  // place-self, utility/place-content; C212 (2)). Rewriting them as Tailwind's
+  // align-self/align-content made the pair's classes unreachable and converted
+  // place-self-center twice, to self-cross-center (RG-TW-1, 2026-11-16). Only
+  // self-baseline, which the Framework does not name, is Tailwind's.
+  if (base === 'self-baseline') {
+    return 'self-cross-baseline';
   }
 
   const placeItemsMatch = base.match(
@@ -341,15 +347,6 @@ export function mapTailwindBaseClass(className) {
   );
   if (placeContentMatch) {
     return `content-${placeContentMatch[1]}`;
-  }
-
-  if (base.startsWith('content-') && !base.includes('[')) {
-    const contentMatch = base.match(
-      /^content-(start|end|center|between|around|evenly|stretch)$/,
-    );
-    if (contentMatch) {
-      return `content-cross-${contentMatch[1]}`;
-    }
   }
 
   const bgPositionMatch = base.match(
@@ -422,6 +419,12 @@ export function convertTailwindClassToken(token) {
   }
   const mapped = mapTailwindBaseClass(base);
   if (!mapped) return token;
+  // A negative value with a variant carries its sign before the variant, the
+  // way the pair spells it: md:-mt-4 is -md:m-top-4 (RG-TW-2, 2026-11-16);
+  // md:-m-top-4 is not a class the pair serves.
+  if (variants.length && mapped.startsWith('-')) {
+    return `-${variants.join(':')}:${mapped.slice(1)}`;
+  }
   parts.push(mapped);
   return parts.join(':');
 }

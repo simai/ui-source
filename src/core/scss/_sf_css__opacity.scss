@@ -10,7 +10,12 @@
     --sf-outline--alfa: 1;
     --sf-bg--alfa: 1;
     --sf-stripe--alfa: 1;
-    --sf-ring-color: ;
+    // The ring's colour when no ring-<role> names one: the element's text
+    // colour, as Tailwind's ring-N draws (RG-TW-3, 2026-11-16). An empty value
+    // here hid the currentColor fallback in utility/ring-width, and ring-2
+    // alone drew nothing. A custom property keeps currentColor as written, so
+    // each element resolves it against its own colour.
+    --sf-ring-color: currentColor;
     --sf-gradient--angle: 90deg;
     --sf-gradient--alfa-1: 1;
     --sf-gradient--alfa-2: 1;
