@@ -349,7 +349,9 @@ function renderRange(context, component) {
       @click=${() => component.requestCount("total")}
     ></sf-button>
   `;
-  const spinner = html`<sf-spinner size=${context.size} aria-label=${context.countingLabel}></sf-spinner>`;
+  // The wait is a mark beside the range, not a line of words: the spinner's
+  // label is its name and stays unseen (label-hidden, SP-07), as in lookup.
+  const spinner = html`<sf-spinner size=${context.size} label=${context.countingLabel} label-hidden></sf-spinner>`;
   const offer = context.exactCount ? nothing : context.counting ? spinner : context.canCount ? countButton : nothing;
 
   return html`
