@@ -3058,7 +3058,7 @@
           "fields",
           "groups"
         ],
-        "snapshots": 0
+        "snapshots": 5
       },
       "before_code": {
         "held_by": "host",
@@ -3069,7 +3069,7 @@
           "name": "reference",
           "title": "Две группы, «Сохранить» и «Отмена» под полями",
           "snapshot": "default/reference.html",
-          "skeleton": null,
+          "skeleton": "default/reference.skeleton.html",
           "box": {
             "390": {
               "bare": {
@@ -3099,7 +3099,7 @@
           "name": "labels-start",
           "title": "labels=\"start\": подпись сбоку от 40rem",
           "snapshot": "default/labels-start.html",
-          "skeleton": null,
+          "skeleton": "default/labels-start.skeleton.html",
           "box": {
             "390": {
               "printed": [
@@ -3129,7 +3129,7 @@
           "name": "view",
           "title": "Просмотр: значения текстом и «Изменить»",
           "snapshot": "default/view.html",
-          "skeleton": null,
+          "skeleton": "default/view.skeleton.html",
           "box": {
             "390": {
               "printed": [
@@ -3159,7 +3159,7 @@
           "name": "instant",
           "title": "apply=\"instant\": без кнопок, «да / нет» — переключатель",
           "snapshot": "default/instant.html",
-          "skeleton": null,
+          "skeleton": "default/instant.skeleton.html",
           "box": {
             "390": {
               "bare": {
@@ -3189,7 +3189,7 @@
           "name": "sticky",
           "title": "footer=\"sticky\": кнопки в полосе внизу места",
           "snapshot": "default/sticky.html",
-          "skeleton": null,
+          "skeleton": "default/sticky.skeleton.html",
           "box": {
             "390": {
               "printed": [
