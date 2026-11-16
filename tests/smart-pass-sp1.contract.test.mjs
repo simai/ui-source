@@ -79,3 +79,76 @@ test('SM-CH-2: the docs list every version up to the passport', () => {
   assert.ok(listed.includes(version), `docs list ${listed.join(', ')}, passport ${version}`);
   for (const old of ['1.0.1', '1.0.2', '1.0.3', '1.0.4', '1.0.5']) assert.ok(listed.includes(old), old);
 });
+
+// ---- SM-AV-2: the passport's photo example draws with no network ------------
+
+test('SM-AV-2: no example of sf-avatar points at an address that does not exist', () => {
+  const examples = read('src/smart/avatar/examples.json');
+  assert.doesNotMatch(examples, /example\.test/u);
+  const image = json('src/smart/avatar/examples.json').examples.find((one) => one.name === 'image');
+  assert.match(image.settings['image-url'], /^data:image\//u);
+});
+
+// ---- SM-LS-1, SM-LD-1: a list setting as a JSON attribute, one rule ---------
+
+class AttributeBase extends EventTarget {
+  static get props() { return {}; }
+  static get observedAttributes() { return []; }
+  constructor() { super(); this.localName = 'sf-x'; this.attrs = new Map(); this.children = []; }
+  getAttribute(name) { return this.attrs.has(name) ? this.attrs.get(name) : null; }
+  hasAttribute(name) { return this.attrs.has(name); }
+  setAttribute(name, value) { this.attrs.set(name, String(value)); }
+  removeAttribute(name) { this.attrs.delete(name); }
+  toggleAttribute(name, force) { if (force) this.setAttribute(name, ''); else this.removeAttribute(name); return Boolean(force); }
+  closest() { return null; }
+  requestComponentUpdate() {}
+  connectedCallback() {}
+}
+
+async function listElement(folder) {
+  const {elementFromManifest} = await import('../src/core/js/element-manifest.js');
+  return elementFromManifest(json(`src/smart/${folder}/component.json`), {base: AttributeBase, lang: {}});
+}
+
+function withWarnings(run) {
+  const warnings = [];
+  const warn = console.warn;
+  console.warn = (...args) => warnings.push(args.map(String).join(' '));
+  try { run(); } finally { console.warn = warn; }
+  return warnings;
+}
+
+for (const folder of ['list', 'list-description']) {
+  test(`SM-LS-1/SM-LD-1: sf-${folder} reads items from a JSON attribute and warns on bad JSON`, async () => {
+    const Element = await listElement(folder);
+    const rows = [{id: 'a', label: 'Адрес', text: 'Адрес', value: 'demo.test'}];
+    const good = new Element();
+    good.setAttribute('items', JSON.stringify(rows));
+    const quiet = withWarnings(() => good.sfReadListAttributes());
+    assert.deepEqual(quiet, []);
+    assert.equal(good.items.length, 1);
+    assert.equal(good.items[0].id, 'a');
+    const bad = new Element();
+    bad.setAttribute('items', '[{id: a}]');
+    const said = withWarnings(() => bad.sfReadListAttributes());
+    assert.equal(said.length, 1);
+    assert.match(said[0], /"items" attribute is not JSON/u);
+    assert.equal(bad.items.length, 0);
+    // A property given first wins over the attribute.
+    const given = new Element();
+    given.items = [{id: 'p', label: 'P', text: 'P', value: 'p'}];
+    given.setAttribute('items', JSON.stringify(rows));
+    given.sfReadListAttributes();
+    assert.equal(given.items[0].id, 'p');
+  });
+}
+
+test('SM-LS-1: a component that observes its list attribute keeps its own reading', async () => {
+  const {elementFromManifest} = await import('../src/core/js/element-manifest.js');
+  class Observing extends AttributeBase { static get observedAttributes() { return ['items']; } }
+  const Element = elementFromManifest(json('src/smart/list-description/component.json'), {base: Observing, lang: {}});
+  const element = new Element();
+  element.setAttribute('items', '[{"label": "A", "value": "1"}]');
+  element.sfReadListAttributes();
+  assert.equal(element.items.length, 0);
+});

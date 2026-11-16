@@ -236,7 +236,7 @@ list.addEventListener('sf-list-load-more', async (event) => {
 
 | Атрибут / свойство | По умолчанию | Значение |
 |:---|:---|:---|
-| `items` | `[]` | Строки в порядке хоста: `{id, text, supporting?, icon?, avatar?, date?, group?, count?, badge?, pinned?, disabled?, actions?}`. |
+| `items` | `[]` | Строки в порядке хоста: `{id, text, supporting?, icon?, avatar?, date?, group?, count?, badge?, pinned?, disabled?, actions?}`. Свойство, `setItems()`, JSON-остров или атрибут `items` в JSON (читается при подключении; неверный JSON — предупреждение в консоли). |
 | `selected` | `""` | `id` открытой строки: `aria-current` и оттенок. |
 | `group-by` | `none` | `none`, `day` (по `date`), `key` (по `group`, в порядке `groups`). |
 | `groups` | `[]` | Для `group-by="key"`: `[{key, text}]` по порядку; ключ, которого нет в списке, идёт последним, заголовок — сам ключ. |
