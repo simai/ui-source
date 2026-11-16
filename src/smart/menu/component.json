@@ -457,13 +457,17 @@
             "appearance": "navigation"
           },
           {
+            "orientation": "horizontal",
+            "appearance": "framed"
+          },
+          {
             "collapse": "always"
           },
           {
             "collapse": "narrow"
           }
         ],
-        "x-when": "any of: a row's open panel (appearance default or navigation), or the panel of the menu drawn as a button (collapse always, or narrow under the md breakpoint); a column's groups are no surface and keep Escape for the page"
+        "x-when": "any of: a row's open panel (appearance default, navigation or framed), or the panel of the menu drawn as a button (collapse always, or narrow under the md breakpoint); a column's groups are no surface and keep Escape for the page"
       }
     }
   },

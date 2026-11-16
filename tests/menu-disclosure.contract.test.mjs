@@ -69,7 +69,7 @@ test('Menu exposes one horizontal presentation with vertical flyout submenus',()
   assert.match(menuCss,/\.sf-menu\.sf-menu--horizontal \.sf-menu \.sf-menu-item > \.sf-menu \{\s*inset-block-start: 0;\s*inset-inline-start: 100%;/);
   // Open flyouts are anchored by SF.Position (flip and shift), not a flip class.
   assert.doesNotMatch(menuCss,/\.sf-menu--flip-inline/);
-  assert.match(js,/positioning\(\)\.anchor\(root, submenu, \{\s*side: topLevel \? 'block-end' : 'inline-end'/);
+  assert.match(js,/options = \{side: 'block-end', align: 'start', fitHeight: true,[\s\S]*?options = \{side: 'inline-end', align: 'start', fitHeight: true,[\s\S]*?positioning\(\)\.anchor\(root, submenu, options\)/);
   assert.match(js,/releaseHorizontalSubmenu\(root\);/);
   assert.match(js,/function closeHorizontalSiblings\(root\)/);
   assert.match(js,/function closeHorizontalDescendants\(root\)/);

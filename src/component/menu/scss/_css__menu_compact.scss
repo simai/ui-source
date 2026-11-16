@@ -49,6 +49,7 @@
   // item's status error). The anchored geometry drew every count red.
   .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge:not(.sf-badge--dot):is(.sf-badge--neutral, .sf-badge--on-surface, :not(.sf-badge--primary, .sf-badge--secondary, .sf-badge--error, .sf-badge--danger, .sf-badge--success, .sf-badge--warning, .sf-badge--info)) {
     --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
   }
 

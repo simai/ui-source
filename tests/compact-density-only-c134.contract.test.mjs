@@ -44,7 +44,7 @@ test('C134 sf-menu: appearance rail, compact a dated value alias; the rail write
   const manifest = json('src/smart/menu/component.json');
   // 1.7.1: C134; 1.8.0: the default row keeps what fits (C30, OV-4); 1.9.0: the counter's and the text badge's looks (C140); 1.10.0: the shared row engine (C155).
   assert.match(manifest.version, /^1\.(7\.[1-9]\d*|([8-9]|\d{2,})\.\d+)$/u);
-  assert.deepEqual(manifest.settings.appearance.values, ['default', 'documentation-tree', 'rail', 'navigation']);
+  assert.deepEqual(manifest.settings.appearance.values, ['default', 'documentation-tree', 'rail', 'navigation', 'framed']);
   assert.deepEqual([...MENU_APPEARANCES], manifest.settings.appearance.values);
   const row = json('src/smart/menu/aliases.json').aliases.find((alias) => alias.kind === 'value' && alias.from === 'compact');
   assert.deepEqual({to: row.to, setting: row.setting, since: row.since, remove_after: row.remove_after}, {to: 'rail', setting: 'appearance', since: '2026-11-13', remove_after: '2027-01-01'});
@@ -54,9 +54,9 @@ test('C134 sf-menu: appearance rail, compact a dated value alias; the rail write
   assert.match(template, /context\.appearance === 'rail' \? 'sf-menu--compact' : '',/u);
   const sheet = read('src/component/menu/scss/_css__menu_compact.scss');
   assert.doesNotMatch(sheet, /\.sf-menu\.sf-menu--compact/u);
-  assert.equal(sheet.match(/\.sf-menu:is\(\.sf-menu--rail, \.sf-menu--compact\)/gu).length, 12);
+  assert.equal(sheet.match(/\.sf-menu:is\(\.sf-menu--rail, \.sf-menu--compact\)/gu).length, 13); // 13: the rail count's grey (RG-NV 28)
   assert.match(read('src/component/menu/scss/_css__menu_element.scss'), /:where\(\.sf-menu:not\(\.sf-menu--rail, \.sf-menu--compact\)\)/u);
-  assert.equal(json('src/component/menu/passport.json').version, '1.8.2');
+  assert.equal(json('src/component/menu/passport.json').version, '1.9.0'); // C238-C240, RG-NV 21-29
   assert.equal(record('value-menu-appearance-compact-to-rail').rewrite, 'rename-value');
   assert.deepEqual(record('class-menu-compact-to-rail').items, [{component: 'sf-menu', from: 'sf-menu--compact', to: 'sf-menu--rail'}]);
 });

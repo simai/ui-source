@@ -106,7 +106,7 @@ test('C191 (4): the meter row is declared, styled from the systems, documented a
   assert.equal(manifest.version, '1.25.3'); // group build 7: the integrated number (the branch wrote 1.24.0)
   assert.ok(manifest['x-registry'].item_contract.kinds.meter.fields.valueText);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-progress-bar' && relation.lazy === true));
-  assert.equal(json('src/component/context-menu/passport.json').version, '1.16.0');
+  assert.equal(json('src/component/context-menu/passport.json').version, '1.17.0'); // RG-NV 13-16
   const sheet = read('src/component/context-menu/scss/_css__context_menu.scss');
   const block = sheet.slice(sheet.indexOf('.sf-context-menu-meter {'), sheet.indexOf('/* The search is the panel\'s header'));
   assert.match(block, /gap: var\(--sf-space-1\\\/4\);/);

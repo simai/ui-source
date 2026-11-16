@@ -224,13 +224,15 @@ test('smart menu R179 D1: below md a row opens its deeper levels in place, never
   for (const line of ['position: static;', 'padding: var(--sf-0);', 'border: var(--sf-0);', 'background: none;', 'box-shadow: none;', 'max-inline-size: none;', '--sf-menu--line-border: inherit;']) {
     assert.ok(body.includes(line), line);
   }
-  assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-3 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\) \* 2\);/u);
-  assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-4 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\) \* 3\);/u);
+  assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-3 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\\\/2\) \+ var\(--sf-space-1\)\);/u);
+  assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-4 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\\\/2\) \+ var\(--sf-space-1\) \* 2\);/u);
 });
 
 test('smart menu R179 D2: a split control\'s link is the row\'s height, its chevron a square under a coarse pointer', () => {
   const pad = (side) => `var(--sf-menu-element--padding-${side}, var(--sf-menu-element--padding-block, calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width))))`;
-  const link = sheet.slice(sheet.indexOf('.sf-smart-menu .sf-menu-element:has(> a.sf-menu-element-wrap + button.sf-icon-button) > a.sf-menu-element-wrap {'));
+  // RG-NV 25: the split row lives in the class menu (class markup is split too).
+  const classSheet = read('src/component/menu/scss/_css__menu.scss');
+  const link = classSheet.slice(classSheet.indexOf('.sf-menu .sf-menu-element:has(> a.sf-menu-element-wrap + button.sf-icon-button) > a.sf-menu-element-wrap {'));
   const linkBody = link.slice(0, link.indexOf('}'));
   // The row's block padding moves into the link: the link is as tall as the
   // row (44 in the drawer), the row's height unchanged.
@@ -247,8 +249,8 @@ test('smart menu R179 D2: a split control\'s link is the row\'s height, its chev
   assert.ok(classElement.includes(`margin-block-start: calc(-1 * ${pad('top')});`), 'the class chevron uses the same padding chain');
   // Coarse pointer: the column's split chevron is the row's height wide,
   // flush with the row's inner end edge.
-  const coarse = sheet.slice(sheet.indexOf('  @media (pointer: coarse) {'));
-  assert.match(coarse, /^ {2}@media \(pointer: coarse\) \{\n\s*\.sf-smart-menu \.sf-menu:not\(\.sf-menu--horizontal\):not\(\.sf-menu--horizontal \.sf-menu\) > \.sf-menu-item > \.sf-menu-element > a\.sf-menu-element-wrap \+ button\.sf-icon-button \{/u);
+  const coarse = classSheet.slice(classSheet.indexOf('  @media (pointer: coarse) {\n    .sf-menu.sf-menu:not'));
+  assert.match(coarse, /^ {2}@media \(pointer: coarse\) \{\n\s*\.sf-menu\.sf-menu:not\(\.sf-menu--horizontal\):not\(\.sf-menu--horizontal \.sf-menu\) > \.sf-menu-item > \.sf-menu-element > a\.sf-menu-element-wrap \+ button\.sf-icon-button \{/u);
   const toggle = coarse.slice(0, coarse.indexOf('}'));
   assert.ok(toggle.includes(`--sf-menu--split-toggle: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) + ${pad('top')} + ${pad('bottom')} + 2 * var(--sf-menu--wrap-padding-block, calc(var(--sf-px) * 0)) + 2 * var(--sf-menu-element--border-width, var(--sf-px)));`), 'the row height');
   assert.ok(toggle.includes('min-inline-size: var(--sf-menu--split-toggle);'));
@@ -411,18 +413,22 @@ test('smart menu: the class menu\'s public variables wrap the values it drew bef
 // classes of its own over the menu. tests/browser/menu-navigation.browser.mjs
 // measures it on the built bytes.
 test('smart menu: appearance navigation is a row or a column of frameless rows', () => {
-  assert.deepEqual([...MENU_APPEARANCES], ['default', 'documentation-tree', 'rail', 'navigation']);
-  assert.match(read('src/smart/menu/items.mjs'), /export const ROW_APPEARANCES = Object\.freeze\(\['default', 'navigation'\]\);/u);
+  // framed: the former default's framed rows, a dated legacy name (C238).
+  assert.deepEqual([...MENU_APPEARANCES], ['default', 'documentation-tree', 'rail', 'navigation', 'framed']);
+  assert.match(read('src/smart/menu/items.mjs'), /export const ROW_APPEARANCES = Object\.freeze\(\['default', 'navigation', 'framed'\]\);/u);
   assert.match(source, /return this\.orientation === 'horizontal' && ROW_APPEARANCES\.includes\(this\.appearance\);/u);
   // Escape closes a navigation row's panel as it does a default row's.
   const component = JSON.parse(read('src/smart/menu/component.json'));
   assert.deepEqual(component.accessibility.keys.Escape.when, [
     {orientation: 'horizontal', appearance: 'default'},
     {orientation: 'horizontal', appearance: 'navigation'},
+    {orientation: 'horizontal', appearance: 'framed'},
     {collapse: 'always'},
     {collapse: 'narrow'},
   ]);
-  const sheet = read('src/component/menu/scss/_css__menu.scss');
+  // C238: the preset's selector is $nav (the navigation class or no look
+  // modifier); read it as the navigation class.
+  const sheet = read('src/component/menu/scss/_css__menu.scss').replaceAll('#{$nav}', '.sf-menu--navigation');
   const block = sheet.slice(sheet.indexOf('.sf-menu.sf-menu--navigation {'), sheet.indexOf('/* Documentation navigation'));
   const rule = (selector) => {
     const at = block.indexOf(`${selector} {`);

@@ -21,8 +21,8 @@ test('C30: appearance default writes the navigation preset on the root list', ()
 });
 
 test('C23: the navigation preset frames no row and fills the current page', () => {
-  assert.match(sheet, /\.sf-menu\.sf-menu--navigation \.sf-menu-element \{\n {2}--sf-menu-element--border-width: calc\(var\(--sf-px\) \* 0\);/u);
-  assert.match(sheet, /\.sf-menu\.sf-menu--navigation \.sf-menu-element:not\(:disabled\):not\(\.disabled\):not\(\[aria-disabled='true'\]\):is\(\[aria-current='page'\], \[aria-current='true'\], :has\(> \[aria-current='page'\], > \[aria-current='true'\]\)\) \{\n {2}@include current-plate;/u);
+  // C238: the preset is $nav -- the navigation class or a menu with no look modifier.\n  assert.match(sheet, /\.sf-menu#\{\$nav\} \.sf-menu-element \{\n {2}--sf-menu-element--border-width: calc\(var\(--sf-px\) \* 0\);/u);
+  assert.match(sheet, /\.sf-menu#\{\$nav\} \.sf-menu-element:not\(:disabled\):not\(\.disabled\):not\(\[aria-disabled='true'\]\):is\(\[aria-current='page'\], \[aria-current='true'\], :has\(> \[aria-current='page'\], > \[aria-current='true'\]\)\) \{\n {2}@include current-plate;/u);
 });
 
 test('C30: default and navigation are one look in the manifest and the guide', () => {

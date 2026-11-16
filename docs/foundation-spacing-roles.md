@@ -20,7 +20,7 @@ values, so a component never sets a compact or phone gap of its own.
 | H2 | picture → text in a row (list, menu, options, field, notice, cell, tree) | `--sf-space-1/2` |
 | H3 | picture → text inside running text (crumbs, link, help mark) | `--sf-space-1/4` |
 | H4 | edge → content of a field, list or menu, border inside | `--sf-space-1/2`, `--sf-space-1`, `--sf-space-2` (sizes 1/2, 1, 2) |
-| H4 menu | edge → words of a menu row (sf-menu-context, sf-menu's column and panels), border inside | plate `--sf-space-1/4` + words `--sf-space-1/2`: 16, compact and phone 12, at 1/2 and 1 (C240) |
+| H4 menu | edge → words of a menu row (sf-menu-context, the sf-menu column and its panels), border inside | plate `--sf-space-1/4` + words `--sf-space-1/2`: 16, compact and phone 12, at 1/2 and 1 (C240) |
 | H5 | neighbours: buttons of one group; toolbar buttons, tags, plates; tabs | `--sf-space-1/3`; `--sf-space-1/4`; 0 |
 | H6 | between groups and cells; a card's or a window's inset | `--sf-space-1`; `--sf-space-2` |
 

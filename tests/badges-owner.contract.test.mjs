@@ -268,7 +268,7 @@ test('an anchored badge rings with the row it stands on, and hover rows keep a t
   assert.match(cm, /\.sf-context-menu-item\[aria-expanded="true"\] \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-state-select\)\);/u);
   assert.match(cm, /\.sf-context-menu-item--chosen:not\(:disabled, \.sf-context-menu-item--disabled\):hover \{[^}]*@include places\.sf-place-fill\(var\(--sf-primary-container-hover\)\);/u);
   assert.match(tree, /:hover > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-container-hover\)\);/u);
-  assert.match(list, /\.sf-list--menu \[role="option"\]\.sf-list-item:not\(:disabled\):not\(\.disabled\):hover \{[^}]*@include places\.sf-place-fill\(/u);
+  assert.match(list, /\.sf-list--menu \[role="option"\]\.sf-list-item:not\(:disabled\):not\(\.disabled\):not\(\.selected\):hover \{[^}]*@include places\.sf-place-fill\(/u);
   assert.match(item, /\.sf-list \[role="option"\]\.sf-list-item:not\(:disabled\):not\(\.disabled\):hover \{[^}]*@include places\.sf-place-fill\(/u);
   assert.match(menu, /\.sf-menu-element\.open:not\(:disabled\)[^{]*\{[^}]*@include places\.sf-place-fill\(var\(--sf-menu-element--background-color\)\);/u);
   assert.match(choice, /:not\(\.sf-choice-card--disabled, \.sf-choice-card--checked\):hover \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-state-hover\)\);/u);
