@@ -39,7 +39,10 @@
     min-inline-size: 0;
   }
 
+  // The ring follows the plate it is drawn on (RG-NV 31f): the item has the
+  // plate's radius, so the ring is not a square on a rounded plate.
   .sf-tab > nav > ul > li:focus-visible {
+    border-radius: var(--sf-tab--radius, var(--sf-radius--ui));
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: var(--sf-focus--inset);
   }

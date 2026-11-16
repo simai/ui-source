@@ -1,15 +1,25 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @layer sf.components {
+  /* The rows stand as the menu column's (owner decision C243, 2026-11-16;
+     C129, C77): 4 between rows -- at the top level, inside a group and
+     between a branch and its group -- and the row's inset of C77 (below,
+     --sf-tree--inset). They were 8 apart, inset 12 at every size. The tree
+     and its items lay themselves out as columns (RG-NV 31k, C224): class
+     markup without flex flex-col drew a branch flush with its group. */
   .sf-tree {
+    display: flex;
+    flex-direction: column;
     padding-inline-start: var(--sf-tree-padding-inline, var(--sf-tree--padding-inline-start, var(--sf-space-1)));
     padding-inline-end: var(--sf-tree-padding-inline, var(--sf-tree--padding-inline-end, var(--sf-space-1)));
     padding-top: var(--sf-tree--padding-top, var(--sf-space-1));
     padding-bottom: var(--sf-tree--padding-bottom, var(--sf-space-1));
-    gap: var(--sf-tree-gap, var(--sf-tree--gap, var(--sf-space-1\/3)));
+    gap: var(--sf-tree-gap, var(--sf-tree--gap, var(--sf-space-1\/4)));
   }
 
   .sf-tree .sf-tree-item {
-    gap: var(--sf-tree-item--gap, var(--sf-space-1\/3));
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-tree-item--gap, var(--sf-space-1\/4));
     border-radius: var(--sf-tree-radius, var(--sf-radius--ui));
     color: var(--sf-tree-color, var(--sf-on-surface));
     outline: none;
@@ -25,6 +35,8 @@
     --sf-tree--text-size: var(--sf-text-size-1);
     --sf-tree--text-height: var(--sf-text-height-1);
     --sf-tree--code-size: var(--sf-text-size-1\/2);
+    /* C77 (C243): 16 at size 1, 12 in compact density and on a phone. */
+    --sf-tree--inset: var(--sf-space-1);
   }
 
   .sf-tree.sf-tree--size-1\/2 {
@@ -33,6 +45,8 @@
     --sf-tree--text-size: var(--sf-text-size-1\/2);
     --sf-tree--text-height: var(--sf-text-height-1\/2);
     --sf-tree--code-size: var(--sf-text-size-1\/3);
+    /* 12 everywhere: --sf-space-1/2 is 8 in compact density and on a phone. */
+    --sf-tree--inset: max(var(--sf-space-1\/2), var(--sf-b2));
   }
 
   .sf-tree.sf-tree--size-2 {
@@ -41,6 +55,12 @@
     --sf-tree--text-size: var(--sf-text-size-2);
     --sf-tree--text-height: var(--sf-text-height-2);
     --sf-tree--code-size: var(--sf-text-size-1);
+    /* 20 on a desktop (16 compact), 12 on a phone, as a field of size 2. */
+    --sf-tree--inset: var(--sf-space-1);
+
+    @media (min-width: 60rem) {
+      --sf-tree--inset: var(--sf-space-2);
+    }
   }
 
   /* sf-tree draws its entries flat (standard 1.3.8 §18.4): a row says its
@@ -75,7 +95,7 @@
   .sf-tree .sf-tree-group {
     display: flex;
     flex-direction: column;
-    gap: var(--sf-tree-item--gap, var(--sf-space-1\/3));
+    gap: var(--sf-tree-item--gap, var(--sf-space-1\/4));
   }
 
   .sf-tree > .sf-tree-item .sf-tree-group {
@@ -94,7 +114,7 @@
        the chevron. */
     min-block-size: var(--sf-tree-item--min-block-size, var(--sf-tree--row));
     padding-block: var(--sf-tree-item--padding-block, calc((var(--sf-tree--row) - var(--sf-tree--column)) / 2));
-    padding-inline: var(--sf-tree-item--padding-inline, var(--sf-space-1\/2));
+    padding-inline: var(--sf-tree-item--padding-inline, var(--sf-tree--inset));
     border-radius: inherit;
   }
 
@@ -116,7 +136,11 @@
     cursor: pointer;
   }
 
-  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):not([aria-current='page']):hover > .sf-tree-item-container {
+  /* The pointer is on the row, not on the item with its group: a parent's
+     row stayed lit while the pointer was on its child (RG-NV 31i). A selected
+     row keeps its fill under the pointer, the state step over it (C16, C107
+     point 4), below. */
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):not([aria-current='page']):not(.active):not([aria-selected='true']) > .sf-tree-item-container:hover {
     /* The current page keeps its plate under the pointer, as the menu's
        current row does (C129: the tree and the menu behave alike). */
     background: var(--sf-surface-container-hover);
@@ -140,6 +164,14 @@
     @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container)));
   }
 
+  /* A selected row under the pointer: its fill one state step up (the fill
+     family's +4, --sf-primary-container-hover), never the grey of a resting
+     row (RG-NV 31i). */
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:is(.active, [aria-selected='true']):not([aria-disabled='true']):not([aria-current='page']) > .sf-tree-item-container:hover {
+    background: var(--sf-tree-selected-background-color, var(--sf-primary-container-hover));
+    @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container-hover)));
+  }
+
   /* The current page of a tree used as page navigation takes the navigation
      menu's mark (C23; dispatcher, applied decision on docs precheck TI-01):
      the primary plate of the fill family, on-primary-container words and a
@@ -150,7 +182,21 @@
     color: var(--sf-on-primary-container);
     font-weight: var(--sf-font-weight-medium);
     --sf-icon--color: var(--sf-on-primary-container);
+    /* Its chevron and type icon are the ink of its plate (C107 point 4,
+       RG-NV 31g): they stayed on-surface-variant. */
+    --sf-tree-item-icon--color: currentColor;
     @include places.sf-place-fill(var(--sf-primary-container-active));
+  }
+
+  /* A closed branch that holds the current page says so as the menu column's
+     does (C129; C23 as amended by C30, R065 a): a medium label, no fill, and
+     no bar -- the tree, like a column without a border of its own, has no
+     edge for a line to lie on, and the 3 px bar is retired in the menu
+     (RG-NV 31h). Class markup holds the closed branch's rows; <sf-tree>, which
+     draws only the open rows, writes sf-tree-item--holds-current. */
+  .sf-tree .sf-tree-item:not(.open):not([aria-current='page']):has(.sf-tree-item[aria-current='page']) > .sf-tree-item-container,
+  .sf-tree .sf-tree-item.sf-tree-item--holds-current:not(.open):not([aria-current='page']) > .sf-tree-item-container {
+    font-weight: var(--sf-weight--medium);
   }
 
   // A row is flush against the rows above and below it, so the ring turns
@@ -178,6 +224,17 @@
 
   .sf-tree .sf-tree-chevron {
     flex: 0 0 var(--sf-tree--column);
+  }
+
+  /* The chevron written as a span in the row, around its icon (the docs'
+     «arrow» form): a box of the column, the icon in its middle. As an inline
+     box it stood on the text line and the row came out 40.5 (RG-NV 31j). */
+  .sf-tree .sf-tree-item-container > .sf-tree-chevron:not(.sf-icon) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--sf-tree--column);
+    block-size: var(--sf-tree--column);
   }
 
   /* The chevron and the type icon are the column of the tree's size (C109
@@ -388,5 +445,24 @@
 
   .sf-tree .sf-tree-item .sf-icon-button:hover {
     --sf-icon-button--background-color: var(--sf-transparent, transparent);
+  }
+
+  /* A toggle button in the row is the chevron's column of the tree's size,
+     whatever icon-button size the markup names: the docs' size-1/3 button was
+     20 on a phone beside a 24 column, and a child stood 4 off its parent's
+     second column (RG-NV 31l, C109 points 1 and 5). */
+  .sf-tree .sf-tree-item-container > .sf-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 var(--sf-tree--column);
+    inline-size: var(--sf-tree--column);
+    block-size: var(--sf-tree--column);
+  }
+
+  .sf-tree .sf-tree-item-container > .sf-icon-button .sf-icon {
+    --sf-icon--font-size: var(--sf-tree--column);
+    --sf-icon--width: var(--sf-tree--column);
+    --sf-icon--height: var(--sf-tree--column);
   }
 }

@@ -14010,6 +14010,45 @@
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
     },
     {
+      "id": "class-steps-1-2-stages-retired",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.step 1.4.0: the sf-steps 1.2.0 markup (sf-step--stage-default, -completed, -error, the class selected with aria-current=\"step\", the «›» icon sf-steps-separator--directional) drew bare text in 1.3.x, with the current step like the rest (RG-NV 30). Until remove_after it draws the C101 look -- a numbered marker or the step's own icon, the label, the line -- and the Loader notes each name in SF.deprecations (C187 (1), C134).",
+      "items": [
+        {
+          "component": "step",
+          "from": "sf-step--stage-default",
+          "to": "sf-step--state-ahead"
+        },
+        {
+          "component": "step",
+          "from": "sf-step--stage-completed",
+          "to": "sf-step--state-done"
+        },
+        {
+          "component": "step",
+          "from": "sf-step--stage-error",
+          "to": "sf-step--state-error"
+        },
+        {
+          "component": "step",
+          "from": "sf-steps-separator--directional",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div class=\"sf-steps\"><div class=\"sf-steps-container flex items-center\" role=\"list\"><div class=\"sf-step sf-step--stage-completed\" role=\"listitem\"><i class=\"sf-icon\">check_circle</i><span class=\"sf-step-container\">Корзина</span></div><i class=\"sf-icon sf-steps-separator--directional\">chevron_right</i><div class=\"sf-step sf-step--stage-default selected\" role=\"listitem\" aria-current=\"step\"><span class=\"sf-step-container\">Доставка</span></div></div></div>",
+        "after": "<div class=\"sf-steps sf-steps--marker-number sf-steps--layout-row\"><ol class=\"sf-steps-container\" role=\"list\"><li class=\"sf-step sf-step--state-done sf-step--passed\"><span class=\"sf-step-body\"><span class=\"sf-step-marker\" aria-hidden=\"true\"><i class=\"sf-icon\">check</i></span><span class=\"sf-step-content\"><span class=\"sf-step-container\">Корзина</span></span></span></li><li class=\"sf-step sf-step--state-current\" aria-current=\"step\"><span class=\"sf-step-body\"><span class=\"sf-step-marker\" aria-hidden=\"true\">2</span><span class=\"sf-step-content\"><span class=\"sf-step-container\">Доставка</span></span></span></li></ol></div>"
+      },
+      "manual": "Use <sf-steps>, or the 1.3 class markup: sf-steps sf-steps--layout-row sf-steps--marker-number, each li.sf-step with sf-step--state-done / -current / -ahead / -error and its span.sf-step-body > span.sf-step-marker + span.sf-step-content; drop the «›» icons and the class selected (aria-current=\"step\" stays on the current step).",
+      "owner": "ui-source",
+      "source": "src/component/step/scss/_css__step.scss; src/core/js/retired-classes.table.js; ui-control control/docs-review/decisions.md C101, C134, C187; prototypes/navigation-step-study.html Ш1"
+    },
+    {
       "id": "class-page-number-circle-retired",
       "recorded_on": "2026-11-16",
       "stage": "compat",

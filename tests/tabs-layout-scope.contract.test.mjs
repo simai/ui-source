@@ -28,7 +28,7 @@ test('Tabs labels can shrink and wrap without clipping text or shrinking glyphs'
   assert.match(css, /\.sf-icon \{\n\s+flex-shrink: 0/);
   // Only the current tab left alone in a row narrower than it is shortened
   // (C54 return D1, contract call 2026-11-11): nothing else clips its words.
-  const squeezed = /\.sf-tabs-top > \.sf-tabs-squeezed \.sf-button-text-container \{[^}]*\}/;
+  const squeezed = /\.sf-tabs-top > \.sf-tabs-squeezed \.sf-button-text-container,?[^{]*\{[^}]*\}/;
   assert.match(css, squeezed);
   assert.match(css.match(squeezed)[0], /text-overflow: ellipsis/);
   assert.doesNotMatch(css.replace(squeezed, ''), /text-overflow: ellipsis|overflow: hidden/);

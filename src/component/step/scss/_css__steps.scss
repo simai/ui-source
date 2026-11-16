@@ -29,7 +29,11 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: var(--sf-steps-gap, var(--sf-space-1\/2));
+  /* The line stands 8 from the label and 8 before the next marker (owner
+     decision C241, 2026-11-16): the step's own gap (label to line, below)
+     and the list's gap (line to the next step) are one value, so the line
+     sits in the middle as in the column. It was 8 and 12. */
+  gap: var(--sf-steps-gap, var(--sf-space-1\/3));
 }
 
 .sf-steps[data-sf-measure] .sf-steps-container {

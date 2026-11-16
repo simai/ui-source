@@ -1,12 +1,32 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { instancePath, partId } from '../../../core/js/instance-path.js';
+import { pageText } from '../../../core/js/page-language';
+import { fitBesideMore, fitInOrder, rowRoom, triggerExtra } from '../../../core/js/overflow-row.js';
+import { menuOpen } from '../../../core/js/menu-open.js';
 
 const TABS_SELECTOR = '.sf-tabs';
 const TABS_BOUND_FLAG = 'sfTabsBound';
 const SELECTED_CLASS = 'selected';
 const boundTabs = new WeakSet();
 const generatedLabels = new WeakMap();
+// The row laid out with «Ещё» (C54): data attributes, which the document
+// observer below does not watch, so laying the row out is not a change to
+// lay it out again.
+const OUT = 'data-sf-tabs-out';
+// The first tab the row shows when the ones before it went into «Ещё»: it
+// stands on the row's start edge as a first child does (C99, C242).
+const LEAD = 'data-sf-tabs-lead';
+const SQUEEZED = 'data-sf-tabs-squeezed';
+const ROW = 'data-sf-tabs-row';
+const ROW_STATE = '__sfTabsRow';
+// Every word this part says. A product adds a language with
+// SF.language.register('sf-tabs', code, words).
+const WORDS = {
+  en: { more: 'More' },
+  ru: { more: 'Ещё' },
+  kk: { more: 'Тағы' },
+};
 
 function isSmartTabsRoot(root) {
   return root?.parentElement?.localName === 'sf-tabs';
@@ -38,6 +58,22 @@ function ensureId(root, element, part, index) {
   return element.id;
 }
 
+// Only the selected tab's label is medium (owner decision C96 item 3), and a
+// label keeps the width of its medium face so that selecting a tab moves no
+// neighbour: the sheet draws a hidden medium copy of data-sf-tabs-text in the
+// label (RG-NV 31c; <sf-tabs> writes .sf-tabs-name for the same). Only a label
+// of plain words is copied; one with parts of its own keeps the weights.
+function syncLabelText(label) {
+  if (!label) return;
+  const plain = Array.from(label.childNodes).every((node) => node.nodeType === Node.TEXT_NODE);
+  const text = plain ? label.textContent.trim() : '';
+  if (text) {
+    if (label.getAttribute('data-sf-tabs-text') !== text) label.setAttribute('data-sf-tabs-text', text);
+  } else if (label.hasAttribute('data-sf-tabs-text')) {
+    label.removeAttribute('data-sf-tabs-text');
+  }
+}
+
 function syncSemantics(root, buttons, panels) {
   const list = ownedMatches(root, '.sf-tabs-top')[0];
   if (!list) return;
@@ -55,6 +91,7 @@ function syncSemantics(root, buttons, panels) {
     button.setAttribute('role', 'tab');
     if (panels[index]) button.setAttribute('aria-controls', ensureId(root, panels[index], 'panel', index));
     const label = button.querySelector('.sf-button-text-container');
+    syncLabelText(label);
     const previous = generatedLabels.get(button);
     if (label && !button.hasAttribute('aria-label')
       && (!button.hasAttribute('aria-labelledby') || button.getAttribute('aria-labelledby') === previous
@@ -69,6 +106,168 @@ function syncSemantics(root, buttons, panels) {
     if (buttons[index]) panel.setAttribute('aria-labelledby', buttons[index].id);
     if (!panel.hasAttribute('tabindex')) panel.tabIndex = 0;
   });
+}
+
+// ─── «Ещё» (owner decision C54; RG-NV 31e, C224) ─────────────────────────────
+// A horizontal row of class markup that does not fit keeps its tabs in their
+// order up to the first that does not fit, each whole in the row or in
+// «Ещё (n)» after it; the selected tab always stays; nothing scrolls. The
+// arithmetic is the shared row engine <sf-tabs> uses (core/js/overflow-row.js).
+// A row the page wraps (flex-wrap, sf-tabs--overflow-wrap) and the vertical
+// look are left as they are.
+function rowWanted(root, list) {
+  if (!list || typeof ResizeObserver === 'undefined') return false;
+  if (root.classList.contains('sf-tabs--vertical') || root.classList.contains('sf-tabs--overflow-wrap')) return false;
+  return getComputedStyle(list).flexWrap !== 'wrap';
+}
+
+function tabSize(buttons) {
+  const sized = buttons.find((button) => /\bsf-(?:icon-)?button--size-/.test(button.className));
+  const match = sized?.className.match(/\bsf-(?:icon-)?button--size-(\S+)/);
+  return match ? match[1] : '1';
+}
+
+function setAttr(element, name, value) {
+  if (value === null) {
+    if (element.hasAttribute(name)) element.removeAttribute(name);
+  } else if (element.getAttribute(name) !== value) {
+    element.setAttribute(name, value);
+  }
+}
+
+function moreTrigger(root, container, buttons) {
+  let more = container.querySelector(':scope > .sf-tabs-more');
+  if (!more) {
+    more = document.createElement('sf-button');
+    more.className = 'sf-tabs-more';
+    more.setAttribute('appearance', 'ghost');
+    more.setAttribute('scheme', 'on-surface');
+    more.setAttribute('icon-end', 'expand_more');
+    more.setAttribute('aria-haspopup', 'menu');
+    more.addEventListener('click', (event) => openMore(root, event));
+    container.append(more);
+  }
+  setAttr(more, 'size', tabSize(buttons));
+  if (!container.classList.contains('sf-tabs-top-container--tools')) container.classList.add('sf-tabs-top-container--tools');
+  return more;
+}
+
+function clearRow(root) {
+  const state = root[ROW_STATE];
+  state?.observer.disconnect();
+  root[ROW_STATE] = null;
+  const container = ownedMatches(root, '.sf-tabs-top-container')[0];
+  if (!container) return;
+  for (const button of getTabButtons(root)) {
+    setAttr(button, OUT, null);
+    setAttr(button, SQUEEZED, null);
+    setAttr(button, LEAD, null);
+  }
+  container.querySelector(':scope > .sf-tabs-more')?.remove();
+  setAttr(container, ROW, null);
+  setAttr(container, 'data-sf-tabs-more', null);
+  if (state?.toolsAdded && container.classList.contains('sf-tabs-top-container--tools')) {
+    container.classList.remove('sf-tabs-top-container--tools');
+  }
+}
+
+function layoutRow(root) {
+  const state = root[ROW_STATE];
+  if (!state || state.busy || !root.isConnected) return;
+  const container = ownedMatches(root, '.sf-tabs-top-container')[0];
+  const list = ownedMatches(root, '.sf-tabs-top')[0];
+  if (!container || !list) return;
+  state.busy = true;
+  try {
+    const buttons = getTabButtons(root);
+    setAttr(container, ROW, '');
+    // Every tab at its own width, all shown, in one task (never painted).
+    for (const button of buttons) {
+      setAttr(button, OUT, null);
+      setAttr(button, SQUEEZED, null);
+      setAttr(button, LEAD, null);
+    }
+    setAttr(container, 'data-sf-tabs-more', null);
+    const widths = buttons.map((button) => button.getBoundingClientRect().width);
+    const gap = parseFloat(getComputedStyle(list).columnGap) || 0;
+    state.out = [];
+    if (!buttons.length || !fitInOrder(widths, gap, rowRoom(list))) return;
+    const more = moreTrigger(root, container, buttons);
+    setAttr(container, 'data-sf-tabs-more', '');
+    const current = buttons.findIndex((button) => button.classList.contains(SELECTED_CLASS));
+    const word = pageText(WORDS, 'more', root, 'sf-tabs');
+    const label = (count) => `${word} (${count})`;
+    const textBox = more.querySelector(':scope > button .sf-button-text-container');
+    const laid = fitBesideMore({
+      widths, gap, room: rowRoom(list), must: current >= 0 ? [current] : [], current,
+      extra: triggerExtra(textBox, label),
+    });
+    buttons.forEach((button, at) => {
+      if (!laid.kept.includes(at)) {
+        setAttr(button, OUT, '');
+        state.out.push(button);
+      }
+    });
+    const lead = buttons.findIndex((button, at) => laid.kept.includes(at));
+    if (lead > 0) setAttr(buttons[lead], LEAD, '');
+    if (laid.squeezed >= 0) setAttr(buttons[laid.squeezed], SQUEEZED, '');
+    const text = label(state.out.length);
+    setAttr(more, 'text', text);
+    setAttr(more, 'aria-label', text);
+  } finally {
+    state.busy = false;
+  }
+}
+
+async function openMore(root, event) {
+  const left = root[ROW_STATE]?.out ?? [];
+  const buttons = getTabButtons(root);
+  const entries = left.map((button) => ({
+    id: String(buttons.indexOf(button)),
+    // The label alone: textContent of an icon tab holds the icon's ligature word.
+    text: (button.getAttribute('aria-label') || button.querySelector('.sf-button-text-container')?.textContent || button.textContent || '').trim(),
+    icon: button.querySelector('.sf-icon')?.textContent.trim() || undefined,
+    disabled: isDisabled(button) || undefined,
+  })).filter((entry) => entry.text && entry.id !== '-1');
+  if (!entries.length) return;
+  const size = tabSize(buttons) === '1/2' ? '1/2' : '1';
+  const anchor = event.currentTarget?.querySelector?.(':scope > button') || event.currentTarget;
+  const choice = await menuOpen({ anchor, entries, label: pageText(WORDS, 'more', root, 'sf-tabs'), size });
+  if (choice?.id == null || !root.isConnected) return;
+  const index = Number(choice.id);
+  const chosen = getTabButtons(root)[index];
+  if (!chosen || isDisabled(chosen)) return;
+  activateTab(root, index);
+  layoutRow(root);
+  chosen.focus();
+}
+
+function bindRow(root) {
+  const list = ownedMatches(root, '.sf-tabs-top')[0];
+  const container = list?.parentElement;
+  if (isSmartTabsRoot(root) || !container?.matches('.sf-tabs-top-container')
+    || (!root[ROW_STATE] && container.querySelector(':scope > .sf-tabs-more') && !container.hasAttribute(ROW))) return;
+  if (!rowWanted(root, list)) {
+    if (root[ROW_STATE]) clearRow(root);
+    return;
+  }
+  if (!root[ROW_STATE]) {
+    // The row's room and each tab's width change when the place resizes and
+    // when a sheet or a face arrives; the callback runs before paint.
+    const observer = new ResizeObserver(() => layoutRow(root));
+    root[ROW_STATE] = {
+      observer, out: [], busy: false, watched: [],
+      toolsAdded: !container.classList.contains('sf-tabs-top-container--tools'),
+    };
+  }
+  const state = root[ROW_STATE];
+  const boxes = [container, ...getTabButtons(root)];
+  if (boxes.length !== state.watched.length || boxes.some((box, at) => box !== state.watched[at])) {
+    state.observer.disconnect();
+    for (const box of boxes) state.observer.observe(box);
+    state.watched = boxes;
+  }
+  layoutRow(root);
 }
 
 function initTabs(target) {
@@ -141,6 +340,7 @@ function bindTabs(root) {
   }
   const buttons = getTabButtons(root);
   activateTab(root, getInitialIndex(root, buttons));
+  bindRow(root);
   // Explicit init also refreshes changed markup. A copied data marker is not
   // evidence that this DOM node already owns event listeners.
   if (boundTabs.has(root)) return;
@@ -150,6 +350,7 @@ function bindTabs(root) {
     const currentButtons = getTabButtons(root), index = currentButtons.indexOf(button);
     if (index < 0 || isDisabled(button)) return;
     activateTab(root, index);
+    layoutRow(root);
   });
 
   root.addEventListener('keydown', (event) => {
@@ -167,7 +368,8 @@ function bindTabs(root) {
     const vertical = root.classList.contains('sf-tabs--vertical');
     const arrows = vertical ? ['ArrowUp', 'ArrowDown'] : ['ArrowLeft', 'ArrowRight'];
     if (!['Home', 'End', ...arrows].includes(event.key)) return;
-    const enabled = currentButtons.filter(item => !isDisabled(item));
+    // The tabs «Ещё» holds are not in the row: the arrows go round the row.
+    const enabled = currentButtons.filter(item => !isDisabled(item) && !item.hasAttribute(OUT));
     if (!enabled.length) return;
     event.preventDefault();
     let direction = event.key === arrows[0] ? -1 : 1;

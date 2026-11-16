@@ -872,6 +872,18 @@ class SfTree extends TreeElement {
     return spinner;
   }
 
+  // Whether an entry's descendants hold the current page (an entry that is
+  // active, aria-current="page").
+  holdsCurrent(entry, seen = new Set()) {
+    for (const id of entry?.childIds ?? []) {
+      if (seen.has(id)) continue;
+      seen.add(id);
+      const child = this._entries.get(id);
+      if (child?.active || this.holdsCurrent(child, seen)) return true;
+    }
+    return false;
+  }
+
   rowContext(row, tabStopId) {
     const entry = row.entry;
     if (row.placeholder) {
@@ -922,6 +934,10 @@ class SfTree extends TreeElement {
       setsize: row.setsize,
       posinset: row.posinset,
       tabStop: row.id === tabStopId,
+      // A closed branch that holds the current page: a medium label, as the
+      // menu column's (C129, R065 a; RG-NV 31h). The class markup finds it by
+      // :has; the tree draws only the open rows, so it says it.
+      itemClass: row.branch && !row.open && this.holdsCurrent(entry) ? 'sf-tree-item--holds-current' : '',
       tipId: this._cut.has(row.id) ? partId(this._tipPath, `tip-${idWord(row.id)}`) : '',
       selection: this.selection,
       onToggle: row.onToggle,

@@ -19,11 +19,23 @@ without a modifier drew filled primary buttons; that look is gone.
 tabs sharing the row in equal columns (each at least as wide as its label),
 and the Loader notes it in `SF.deprecations`.
 
-Prefer short labels. Horizontal lists scroll locally when labels do not fit;
-controls are not squeezed into columns of individual characters. A default
-control wider than the list may wrap its long label without clipping.
-Containers can shrink inside flex/grid layouts while icons keep their size.
-Wrapping/scrolling does not change keyboard navigation semantics.
+Prefer short labels. A horizontal row that does not fit keeps its tabs in
+their order up to the first that does not fit, each whole, and puts the rest
+in «Ещё (n)» after the row (owner decision C54; since component.tabs 1.4.0 the
+class's script does it for class markup as <sf-tabs> does): the selected tab
+always stays, nothing scrolls, the arrows go round the tabs in the row. A row
+the page wraps (`flex-wrap`, `.sf-tabs--overflow-wrap`) and the vertical look
+are left as they are. Controls are not squeezed into columns of individual
+characters. Containers can shrink inside flex/grid layouts while icons keep
+their size.
+
+A tab lays out its icon and label itself (no `flex items-cross-center` needed
+on the button): the selected line lies on the row's line and the icon stands a
+control's icon gap from the label. Only the selected label is medium; the
+script copies a label of plain words into `data-sf-tabs-text`, and the label
+keeps the width of its medium face, so selecting a tab moves no neighbour
+(C96 item 3). A row of icon tabs puts its first icon on the row's start edge
+and its last on the end, and the selected line is as wide as the icon (C242).
 
 The header is the tablist; panels are outside that role. The runtime assigns tab
 and panel relationships, preserves unique author IDs and allocates missing IDs.

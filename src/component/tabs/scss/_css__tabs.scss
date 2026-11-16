@@ -37,6 +37,23 @@
     flex-shrink: 0;
   }
 
+  /* A tab lays out its icon and label itself (RG-NV 31a, 31b, 31d; C224:
+     the class draws what <sf-tabs> draws). The Smart element writes flex
+     items-cross-center on its buttons; class markup without those utilities
+     left the button display: block, so the label was an inline box -- the
+     selected line stood 2-3 px above the row's line, the icon touched the
+     label (the icon gap is a column gap) and vertical labels stood centred. */
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top :is(.sf-button, .sf-icon-button) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
+    justify-content: center;
+  }
+
   .sf-tabs:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top {
     overflow-x: auto;
   }
@@ -418,13 +435,31 @@
   }
 
   :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-button,
-  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child {
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:first-child,
+  // The first tab shown after «Ещё» took the ones before it (the script marks it).
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top .sf-button[data-sf-tabs-lead] {
     --sf-button--padding-inline-start: calc(var(--sf-px) * 0);
   }
 
   :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :last-child > .sf-button,
   :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-button:last-child {
     --sf-button--padding-inline-end: calc(var(--sf-px) * 0);
+  }
+
+  // A tab of an icon alone follows the same rule (owner decision C242,
+  // 2026-11-16): the first icon stands on the row's start edge and the last on
+  // its end, as the first and last letters do (C99); the tab keeps its height.
+  // An icon tab is the last of the row while «Ещё» stands after it, so the end
+  // rule reads the row's last shown tab.
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :first-child > .sf-icon-button,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-icon-button:first-child,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top .sf-icon-button[data-sf-tabs-lead] {
+    --sf-icon-button--padding-inline-start: calc(var(--sf-px) * 0);
+  }
+
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > :last-child > .sf-icon-button,
+  :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-fit]) > .sf-tabs-top > .sf-icon-button:last-child {
+    --sf-icon-button--padding-inline-end: calc(var(--sf-px) * 0);
   }
 
   // The line of the selected tab: two pixels at every size (owner decision C96
@@ -447,15 +482,18 @@
 
   // The current tab shortened beside «Ещё» (C54 D1) clips its label: its line
   // is drawn by the tab, under its content box, which is the label.
-  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-button[data-sf-tabs-squeezed] {
     position: relative;
   }
 
-  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button > .sf-button-text-container {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button > .sf-button-text-container,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-button[data-sf-tabs-squeezed] > .sf-button-text-container {
     position: static;
   }
 
-  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after {
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-tabs-squeezed > .sf-button.selected:not(:disabled):not(.disabled) > .sf-button-text-container::after,
+  .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top > .sf-button[data-sf-tabs-squeezed].selected:not(:disabled):not(.disabled) > .sf-button-text-container::after {
     inset-inline: var(--sf-button--padding-inline-start) var(--sf-button--padding-inline-end);
     inset-block-end: 0;
   }
@@ -467,8 +505,10 @@
     position: relative;
   }
 
+  // C242: the line is as wide as the icon and stands under it, whatever the
+  // tab's padding on each side (the first and last tabs have none outside).
   .sf-tabs:is(.sf-tabs--underline, :not(.sf-tabs--pills, .sf-tabs--vertical)) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button.selected:not(:disabled):not(.disabled)::after {
-    margin-inline: auto;
+    inset-inline: var(--sf-icon-button--padding-inline-start, calc(var(--sf-px) * 0)) auto;
     inline-size: var(--sf-tabs--icon-line, var(--sf-text-height-1));
   }
 
@@ -700,8 +740,11 @@
   }
 
   // Collapsing what does not fit into «Ещё»: the row does not scroll, and a tab
-  // moved into the menu takes no room.
-  .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top {
+  // moved into the menu takes no room. Class markup gets the same from the
+  // class's script (RG-NV 31e, C54, C224): it marks the row it lays out with
+  // data-sf-tabs-row.
+  .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container > .sf-tabs-top,
+  .sf-tabs:not(.sf-tabs--vertical) > .sf-tabs-top-container[data-sf-tabs-row] > .sf-tabs-top {
     flex-wrap: nowrap;
     overflow-x: clip;
   }
@@ -716,7 +759,8 @@
   }
 
   .sf-tabs-top > .sf-tabs-overflowed,
-  .sf-tabs-top > .sf-tabs-overflowed > * {
+  .sf-tabs-top > .sf-tabs-overflowed > *,
+  .sf-tabs-top > [data-sf-tabs-out] {
     display: none !important;
   }
 
@@ -735,7 +779,14 @@
     max-inline-size: 100%;
   }
 
-  .sf-tabs-top > .sf-tabs-squeezed .sf-button-text-container {
+  .sf-tabs-top > .sf-button[data-sf-tabs-squeezed] {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-tabs-top > .sf-tabs-squeezed .sf-button-text-container,
+  .sf-tabs-top > .sf-button[data-sf-tabs-squeezed] > .sf-button-text-container {
     min-inline-size: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -954,6 +1005,32 @@
 
   .sf-tabs-top .selected .sf-tabs-name {
     font-weight: var(--sf-font-weight-medium);
+  }
+
+  // The same in class markup, which has no .sf-tabs-name (RG-NV 31c, C224):
+  // the label is regular and the selected one medium; the class's script
+  // copies a label of plain words into data-sf-tabs-text, and the label keeps
+  // the width of that copy in its medium face. A label that holds parts of
+  // its own (a count, the errors) keeps the weight rule without the reserve.
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button > .sf-button-text-container {
+    font-weight: var(--sf-weight--regular);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button.selected > .sf-button-text-container {
+    font-weight: var(--sf-weight--medium);
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button > .sf-button-text-container[data-sf-tabs-text] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sf-tabs > .sf-tabs-top-container > .sf-tabs-top .sf-button > .sf-button-text-container[data-sf-tabs-text]::before {
+    content: attr(data-sf-tabs-text) / "";
+    block-size: 0;
+    visibility: hidden;
+    font-weight: var(--sf-weight--medium);
+    white-space: nowrap;
   }
 
   // The line switches at once (owner decision C96 item 2): the buttons fade

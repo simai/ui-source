@@ -18,7 +18,7 @@ test('TR-15: the row colours only its own glyphs, never what the row holds', asy
   const override = item.match(/@layer sf\.override \{([\s\S]*?)\n\}/u)[1];
   // No rule of the row reaches every .sf-icon inside it.
   assert.doesNotMatch(item, /\.sf-tree-item \.sf-icon\s*[,{]/u);
-  assert.match(override, /\.sf-tree-item-container > \.sf-tree-node-icon,\s*\.sf-tree-item-container > \.sf-tree-toggle > \.sf-tree-chevron \{\s*--sf-icon--color: var\(--sf-tree-item-icon-color, var\(--sf-tree-item-icon--color, var\(--sf-on-surface-variant\)\)\);/u);
+  assert.match(override, /\.sf-tree-item-container > \.sf-tree-node-icon,\s*\.sf-tree-item-container > \.sf-tree-toggle > \.sf-tree-chevron,[^{]*\{\s*--sf-icon--color: var\(--sf-tree-item-icon-color, var\(--sf-tree-item-icon--color, var\(--sf-on-surface-variant\)\)\);/u);
 });
 
 test('C109 / NI-1 / NI-2: the level step is the first column and the row gap', async () => {
@@ -86,7 +86,8 @@ test('C107 / IC-1 / IC-4: the row glyphs are variant, the row ink when hovered, 
   ]);
   assert.match(item, /--sf-icon--color: var\(--sf-tree-item-icon-color, var\(--sf-tree-item-icon--color, var\(--sf-on-surface-variant\)\)\);/u);
   const states = [
-    /:hover > \.sf-tree-item-container \{[^}]*--sf-tree-item-icon--color: currentColor;/u,
+    // The pointer is on the row itself (RG-NV 31i), not on the item with its group.
+    /> \.sf-tree-item-container:hover \{[^}]*--sf-tree-item-icon--color: currentColor;/u,
     /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*--sf-tree-item-icon--color: currentColor;/u,
     /\.sf-tree-item\[aria-disabled='true'\] \{[^}]*--sf-tree-item-icon--color: currentColor;/u,
   ];
@@ -197,7 +198,7 @@ test('C102 5 (§7 item 7): static, list semantics and the .sf-tree--static class
   // Text-height rows in the code face, no pointer, no hover.
   assert.match(sheet, /\.sf-tree\.sf-tree--static \.sf-tree-item > \.sf-tree-item-container \{[^}]*min-block-size: var\(--sf-tree--text-height\);[^}]*cursor: auto;/u);
   assert.match(sheet, /\.sf-tree\.sf-tree--static \.sf-tree-item \.sf-tree-item-name \{[^}]*font-family: var\(--sf-code-font-family, var\(--sf-mono\)\);/u);
-  assert.match(sheet, /\.sf-tree:not\(\.sf-tree--static\) \.sf-tree-item:not\(\[aria-disabled='true'\]\):not\(\[aria-current='page'\]\):hover > \.sf-tree-item-container/u);
+  assert.match(sheet, /\.sf-tree:not\(\.sf-tree--static\) \.sf-tree-item:not\(\[aria-disabled='true'\]\):not\(\[aria-current='page'\]\)[^{]*> \.sf-tree-item-container:hover/u);
   // The class tree leaves static markup alone.
   assert.match(classTree, /isSmartTreeRoot\(root\) \|\|\n\s+isStaticTree\(root\)/u);
   // A static tree is never windowed.
