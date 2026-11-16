@@ -60,8 +60,10 @@ test('RG-IN-2 / RG-TA-2: read-only drops the fill in the filled look too (C16)',
 });
 
 test('RG-IN-3 / RG-QT-4: the ladder icon at 3 is the icon ladder 28 on a phone (C151), and both fields read it', () => {
-  const mixin = ladder.slice(ladder.indexOf('@mixin icon($size)'));
-  assert.match(mixin, /@if \$size == '3' \{\n\s+@media not all and \(min-width: 60rem\) \{\n\s+--sf-icon--font-size: var\(--sf-icon-size-4\);\n\s+--sf-icon--height: var\(--sf-icon-size-4\);\n\s+--sf-icon--width: var\(--sf-icon-size-4\);/u);
+  // fix/field-ladder-icons: icon($size) writes through icon-size(), which any field's own property can read.
+  assert.match(ladder, /@mixin icon\(\$size\) \{\s*@include icon-size\(\(--sf-icon--font-size, --sf-icon--height, --sf-icon--width\), \$size\);/u);
+  const mixin = ladder.slice(ladder.indexOf('@mixin icon-size('));
+  assert.match(mixin, /@if \$size == '3' \{\n\s+@media not all and \(min-width: 60rem\) \{\n\s+@each \$property in \$properties \{\n\s+#\{\$property\}: var\(--sf-icon-size-4\);/u);
   assert.match(rule(inputsCustom, '.sf-input.sf-input--size-3 > .sf-input-field > .sf-icon'), /@include ladder\.icon\('3'\);/u);
   assert.match(quantity, /sf-icon-button--icon :is\(\.sf-icon, sf-icon:not\(:defined\)\) \{\n\s+@include ladder\.icon\(\$size\);/u);
   // The stepper keeps its height round the larger glyph.

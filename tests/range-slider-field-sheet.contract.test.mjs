@@ -96,7 +96,8 @@ test('C202: the slider with the field picks its layout by its own width, at the 
   assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-field-dash,\n {2}\.sf-range-slider-group--field \.sf-range-slider-field-unit \{\n {4}display: none;/u);
   assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-name-unit \{\n {4}display: inline;/u);
   assert.match(narrow, /\.sf-range-slider-field-box > \.sf-range-slider-field-word \{[\s\S]*?display: block;/u);
-  assert.match(narrow, /\.sf-range-slider-field-box:has\(\.sf-range-slider-field-input:focus-visible\) \{\n {4}outline: var\(--sf-focus--width\)/u);
+  // C153 (4) (fix/field-ladder-icons): each box takes the field focus, mouse and keys alike.
+  assert.match(narrow, /\.sf-range-slider-field-box:has\(\.sf-range-slider-field-input:focus\) \{\n {4}outline: var\(--sf-focus--width\)/u);
   // Wide: the words and the name's unit are printed but hidden.
   assert.match(rule('.sf-range-slider-field-word,\n.sf-range-slider-name-unit'), /display: none;/u);
 });

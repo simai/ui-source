@@ -55,7 +55,7 @@ test('(6) half an inset from the value and to the next glyph; the last glyph on 
 test('the versions move with the look', () => {
   // Group build 7: the C123 notes numbered above the released pair; later notes (input-color's C123 (3),
   // the textarea and switch patch without icon-buttons, quantity's C122 names) stand above them.
-  const want = {input: ['1.13.0', '1.13.0'], 'input-textarea': ['1.12.0', '1.12.1'], dropdown: ['1.16.0', '1.16.0'], 'input-color': ['1.13.0', '1.14.0'], switch: ['1.7.0', '1.7.1'], 'input-quantity': ['1.9.0', '1.9.1']};
+  const want = {input: ['1.13.0', '1.14.0'], 'input-textarea': ['1.12.0', '1.12.1'], dropdown: ['1.16.0', '1.16.0'], 'input-color': ['1.13.0', '1.16.0'], switch: ['1.7.0', '1.7.1'], 'input-quantity': ['1.9.0', '1.9.1']};
   for (const [folder, [version, current]] of Object.entries(want)) {
     const component = JSON.parse(read(`src/smart/${folder}/component.json`));
     assert.equal(component.version, current, folder);

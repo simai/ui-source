@@ -116,7 +116,7 @@ test('the browser colour dialog is gone; the window is the Framework\'s own (C83
 
 test('the manifest declares the window\'s settings and words', () => {
     const manifest = json(`${base}/component.json`);
-    assert.equal(manifest.version, '1.14.0'); // group build 7: the integrated number (the branch wrote 1.13.0)
+    assert.equal(manifest.version, '1.16.0'); // group build 7: 1.14.0 (the branch wrote 1.13.0); field ladder icons: 1.16.0
     assert.equal(manifest.settings.palette.default, true);
     assert.equal(manifest.settings.custom.default, true);
     assert.equal(manifest.settings.alpha.default, false);

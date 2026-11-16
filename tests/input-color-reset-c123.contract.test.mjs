@@ -37,14 +37,14 @@ test('(1) the frame reset is a field action named by the variant', () => {
 
 test('(2) the field layer rules are loaded and the frame says its step', () => {
   const manifest = json('src/smart/input-color/component.json');
-  assert.equal(manifest.version, '1.14.0'); // group build 7: the integrated number (the branch wrote 1.13.0)
+  assert.equal(manifest.version, '1.16.0'); // group build 7: 1.14.0 (the branch wrote 1.13.0); field ladder icons: 1.16.0
   assert.ok(manifest.relations.some((relation) => relation.name === 'inputs'), 'relation inputs');
   assert.match(read('src/smart/input-color/rule.js'), /\{ name: 'inputs' \}/u);
   assert.ok(json('src/smart/input-color/smart.manifest.json').composition.uses.includes('component.inputs'));
   const frame = css.slice(css.indexOf('The reset is an action inside the field'));
   const vars = rule(frame, '.sf-color-frame');
   assert.match(vars, /--sf-field-action--inset: var\(--sf-color--space-x\);/u);
-  assert.match(vars, /--sf-field-action--glyph: var\(--sf-color--text-height\);/u);
+  assert.match(vars, /--sf-field-action--glyph: var\(--sf-color--icon-size, var\(--sf-color--text-height\)\);/u); // field ladder icons
   assert.match(vars, /--sf-field-action--height: var\(--sf-color--control-height\);/u);
 });
 
@@ -53,7 +53,7 @@ test('(3) half an inset round the glyph; the chevron is the glyph size', () => {
   // 1.12.1: the field layer's value step (component.inputs field-action.scss), not a copy of its formula.
   assert.match(gap, /gap: var\(--sf-field-action--value-space\);/u);
   const chevron = rule(css, '.sf-color-chevron');
-  for (const name of ['font-size', 'height', 'width']) assert.match(chevron, new RegExp(`--sf-icon--${name}: var\\(--sf-color--text-height\\);`, 'u'));
+  for (const name of ['font-size', 'height', 'width']) assert.match(chevron, new RegExp(`--sf-icon--${name}: var\\(--sf-color--icon-size, var\\(--sf-color--text-height\\)\\);`, 'u')); // field ladder icons: 28 at 3 on a phone
 });
 
 test('(4) the theme variant keeps its plated reset outside the field', () => {
