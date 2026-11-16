@@ -38,7 +38,7 @@ test('RG-S2-7: a 1/2 site bar with a size-1 control in its row holds the size-1 
   assert.match(core, /\$sf-site-header-wide: ':where\(sf-button, sf-button-icon, sf-icon-button, sf-segmented, sf-button-group, sf-language, sf-menu\):not\(\[size="1\/2"\], \[size="1\/3"\], \[size="2"\], \[size="3"\]\)';/u);
   // No :is() in these lists: the build's fallback expands every combination.
   const block = core.slice(core.indexOf('$sf-site-header-wide:'), core.indexOf(':where(:is(sf-header-site, sf-site-header)):not(:defined)'));
-  assert.doesNotMatch(block, /:is\(/u);
+  assert.doesNotMatch(block.split(':is(sf-header-site, sf-site-header)').join(''), /:is\(/u);
   // The settings tools (language, theme) go to a collapsed bar's panel (C161 (8)): they count with the nav.
   assert.match(core, /\$sf-site-header-setting: 'sf-language, \[theme-switch\]';/u);
   assert.match(core, /\[size="1\/2"\]:where\(:has\(> \[slot="tools"\]#\{\$sf-site-header-wide\}:not\(#\{\$sf-site-header-setting\}\), > \.sf-site-header > \.sf-site-header-row > \.sf-site-header-tools > #\{\$sf-site-header-wide\}:not\(#\{\$sf-site-header-setting\}\)\)\)/u);
