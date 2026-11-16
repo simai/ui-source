@@ -13731,6 +13731,45 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "deprecated_on": "2026-11-16",
+      "examples": {
+        "after": "new Modal({param: {title: 'Фильтры', blur: true}}) // side panel: <sf-drawer>",
+        "before": "new Modal({param: {title: 'Фильтры', position: 'right', blur: 'large'}})"
+      },
+      "id": "value-modal-class-window-old-names-c224",
+      "items": [
+        {
+          "component": "modal",
+          "from": "position: 'left' | 'right' | 'inline-start' | 'inline-end'",
+          "to": "sf-drawer"
+        },
+        {
+          "component": "modal",
+          "from": "position: 'bottom'",
+          "to": "sf-drawer placement=\"bottom\""
+        },
+        {
+          "component": "modal",
+          "from": "blur: 'small' | 'medium' | 'large'",
+          "to": "blur: true (overlayPreset: 'focus')"
+        },
+        {
+          "component": "modal",
+          "from": "blurType: 'small' | 'medium' | 'large'",
+          "to": "overlayPreset: 'focus'"
+        }
+      ],
+      "kind": "value",
+      "manual": "A side window or a sheet is an sf-drawer (C157 (1)); until the date the class window still draws it, framed as <sf-modal> draws it. A blurred scrim is blur: true or overlayPreset: 'focus', the scrim black 64 with the small blur, as <sf-modal overlay-preset=\"focus\">.",
+      "owner": "ui-source",
+      "recorded_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "source": "src/component/modal/js/_modal.js noteOldNames; ui-control control/docs-review/decisions.md C157 (1), C159 (7), C224; prototypes/overlays-modal-study.html Ok3, Ok6",
+      "stage": "compat",
+      "summary": "component.modal 1.6.0 (C224: the class window follows sf-modal): the side and bottom positions are sf-drawer's old names, and the blur strengths draw the one focus scrim (black 64 with the small blur; blur: true drew a 64 px blur, 'large' 8 px). Each use is noted once in SF.deprecations (modal, value position / blur / blurType) until remove_after."
     }
   ]
 }
