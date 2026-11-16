@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.progress-ring",
   "kind": "component",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/progress-ring/docs/docs.md",
@@ -12,7 +12,7 @@
     "src/component/progress-ring/scss/_css__progress_ring.scss",
     "src/component/progress-ring/scss/index.scss"
   ],
-  "content_sha256": "e48bd8b224c6ddac79538a39b6490bc45e4c2de417219b5a912db603aeb71190",
+  "content_sha256": "96ab52e60aae52f9d7b9ae825df07df9af0de9d1d8ffbd001f1b1d1f4f621249",
   "dependencies": [
     {
       "id": "tokens.colour",

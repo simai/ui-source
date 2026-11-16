@@ -35,7 +35,7 @@
       "covers": "accessibility (role, name, valuenow), settings.value, settings.show-text",
       "steps": [
         {
-          "check": "(() => { const r = document.querySelector('#r1 .sf-progress-ring-indicator'); const c = document.querySelector('#r1 .sf-progress-ring-content'); return r.getAttribute('role') === 'progressbar' && r.getAttribute('aria-label') === 'Загрузка файлов' && r.getAttribute('aria-valuenow') === '62' && r.getAttribute('aria-valuemin') === '0' && r.getAttribute('aria-valuemax') === '100' && !r.hasAttribute('tabindex') && c.textContent.trim() === '62%' && c.getAttribute('aria-hidden') === 'true'; })()",
+          "check": "(() => { const r = document.querySelector('#r1 .sf-progress-ring-indicator'); const c = document.querySelector('#r1 .sf-progress-ring-content'); return r.getAttribute('role') === 'progressbar' && r.getAttribute('aria-label') === 'Загрузка файлов' && r.getAttribute('aria-valuenow') === '62' && r.getAttribute('aria-valuemin') === '0' && r.getAttribute('aria-valuemax') === '100' && !r.hasAttribute('tabindex') && c.textContent.trim() === '62\\u00a0%' && c.getAttribute('aria-hidden') === 'true'; })()",
           "expect": {
             "values": {
               "#r1.value": 62
@@ -88,7 +88,7 @@
         {
           "script": "(document.getElementById('r1').value = 150, true)",
           "wait": 300,
-          "check": "document.querySelector('#r1 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '100' && document.querySelector('#r1 .sf-progress-ring-content').textContent.trim() === '100%'"
+          "check": "document.querySelector('#r1 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '100' && document.querySelector('#r1 .sf-progress-ring-content').textContent.trim() === '100\\u00a0%'"
         }
       ]
     },
@@ -151,11 +151,11 @@
     },
     {
       "id": "r6-size-3",
-      "title": "size 3 is the control height of 3 (the featured icon of size 3), and «100%» fits inside the line",
+      "title": "size 3 is the control height of 3 (the featured icon of size 3), and «100 %» fits inside the line",
       "covers": "settings.size (3)",
       "steps": [
         {
-          "check": "(() => { const root = document.querySelector('#r6 .sf-progress-ring'); const c = document.querySelector('#r6 .sf-progress-ring-content'); const probe = document.createElement('div'); probe.style.width = 'var(--sf-ui-3--control-height)'; document.body.append(probe); const want = probe.getBoundingClientRect().width; probe.remove(); return root.classList.contains('sf-progress-ring--size-3') && root.getBoundingClientRect().width === want && root.getBoundingClientRect().height === want && c.textContent.trim() === '100%' && c.scrollWidth <= c.clientWidth; })()"
+          "check": "(() => { const root = document.querySelector('#r6 .sf-progress-ring'); const c = document.querySelector('#r6 .sf-progress-ring-content'); const probe = document.createElement('div'); probe.style.width = 'var(--sf-ui-3--control-height)'; document.body.append(probe); const want = probe.getBoundingClientRect().width; probe.remove(); return root.classList.contains('sf-progress-ring--size-3') && root.getBoundingClientRect().width === want && root.getBoundingClientRect().height === want && c.textContent.trim() === '100\\u00a0%' && c.scrollWidth <= c.clientWidth; })()"
         }
       ]
     },

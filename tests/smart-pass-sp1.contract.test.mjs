@@ -152,3 +152,15 @@ test('SM-LS-1: a component that observes its list attribute keeps its own readin
   element.sfReadListAttributes();
   assert.equal(element.items.length, 0);
 });
+
+// ---- SM-PR-1: the ring's percentage is «62 %» on both twins -----------------
+
+test('SM-PR-1: the ring prints the number, a no-break space and «%» (C203 (3), C219), Smart and class', async () => {
+  const {percentText} = await import('../src/core/js/format-number.js');
+  assert.equal(percentText(62, null), '62 %');
+  const template = read('src/smart/progress-ring/js/templates/default.js');
+  assert.match(template, /percentText\(value/u);
+  const docs = read('src/component/progress-ring/docs/docs.md');
+  assert.doesNotMatch(docs, /\d%</u);
+  assert.match(docs, /85&nbsp;%</u);
+});

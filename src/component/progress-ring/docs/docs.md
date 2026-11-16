@@ -14,7 +14,7 @@ name in step; a page that prints the class markup itself keeps them in step.
      style="--sf-progress-ring--value: 85">
   <span class="sf-progress-ring-indicator" role="meter" aria-label="Использовано"
         aria-valuemin="0" aria-valuemax="100" aria-valuenow="85"></span>
-  <span class="sf-progress-ring-content" aria-hidden="true">85%</span>
+  <span class="sf-progress-ring-content" aria-hidden="true">85&nbsp;%</span>
 </div>
 ```
 
@@ -31,7 +31,8 @@ name in step; a page that prints the class markup itself keeps them in step.
   value.
 - `.sf-progress-ring-content` is the middle: the box less the line and a 2 px
   gap on every side. It holds the percentage (aria-hidden: the ring already
-  says the value) or a picture. An `.sf-avatar` in it is fitted to it, so the
+  says the value), written as the progress family writes it: the number, a
+  no-break space and «%», «85 %» (owner decisions C203 (3), C219), or a picture. An `.sf-avatar` in it is fitted to it, so the
   gap between the picture and the line is 2 px at every size; an avatar a step
   smaller than the ring is that box already at sizes 1 and 2. A ring wraps the
   avatar one step down from size 1/3 up on a wide screen (an avatar of 1/4,

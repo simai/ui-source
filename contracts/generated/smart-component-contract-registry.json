@@ -2528,7 +2528,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "667e8503c184be3a58f82c9209d4e6070fb8bfe4eb2ad779321fbfa193f9350b",
+      "manifest_sha256": "787f9d24240ebb890a5e9c960c78d3013cc4e1a07119eaa8c1c812e75161c209",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
