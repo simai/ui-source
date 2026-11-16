@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.background-color",
   "kind": "utility",
-  "version": "1.4.5",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/background-color/default/index.js",
@@ -13,7 +13,7 @@
     "src/utility/background-color/default/scss/_sf_var__background_color.scss",
     "src/utility/background-color/default/scss/index.scss"
   ],
-  "content_sha256": "e3b6ac10e6c753b283a30c03de8d625013cf3fa67222f64215ba2ea01fb1e2ba",
+  "content_sha256": "8728ee11829d4c652098c9fefe01fa79189c1222dc1df38de68a47c64bcaa9ff",
   "dependencies": [
     {
       "id": "tokens.colour",

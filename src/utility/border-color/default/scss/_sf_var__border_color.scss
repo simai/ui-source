@@ -1,6 +1,13 @@
 // SIMAI Framework
 // https://simai.io
 
+// C212 (5), 2026-11-16: surface, surface-0, surface-1, surface-overlay and
+// <colour>-transparent-overlay are old spellings of a role, here and in the
+// ring and ring-offset sheets that read this array (journals
+// utility-c16-colour-family-names, class-c212-colour);
+// border-<hue>[-N] name the nearest role (utility-c17-legacy-palette-classes).
+// They draw until 2027-01-01.
+
 // BORDER - BORDER COLOR
 
 $border-color-array: (

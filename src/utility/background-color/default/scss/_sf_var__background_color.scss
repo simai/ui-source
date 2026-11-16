@@ -1,6 +1,12 @@
 // SIMAI Framework
 // https://simai.io
 
+// C212 (5), 2026-11-16: surface, surface-0, surface-1, disable and the
+// <colour>-transparent-* keys are old spellings of a role (journals
+// utility-c16-background-names, class-c212-colour); the palette classes
+// bg-<hue>[-N] are old names whose hint is the nearest role
+// (utility-c17-legacy-palette-classes). They draw until 2027-01-01.
+
 // BACKGROUND
 
 $back-color-array:(

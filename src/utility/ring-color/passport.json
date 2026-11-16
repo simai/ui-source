@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.ring-color",
   "kind": "utility",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/ring-color/default/index.js",
@@ -27,7 +27,7 @@
     "src/utility/ring-color/hover/scss/_sf_css__ring_color.scss",
     "src/utility/ring-color/hover/scss/index.scss"
   ],
-  "content_sha256": "7f1e46d548737a336b18c7ba52d31533f1f9e0eaa1db10149fed058340febcd3",
+  "content_sha256": "1c1f91e3dd06151fcbc13674b6364dcde89984fb30675932582fbd6c8709fa7c",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

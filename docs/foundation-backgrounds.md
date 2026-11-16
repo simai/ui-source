@@ -347,15 +347,59 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
   re-coloured, as they are on `bg-primary-container`). Places stay the theme's
   seven colours (C16).
 - Only the container has pointer-over and pressed steps, as in the role set.
-- They succeed the legacy palette classes (`utility-c17-legacy-palette-classes`
-  in `contracts/changes/journal.json`): `color-<hue>[-N]` →
-  `sf-hue-<hue> color-hue`, `border-<hue>[-N]` → `sf-hue-<hue> border-hue`,
-  `bg-<hue>[-N]` → `sf-hue-<hue> bg-hue-container` where the class read a tint
-  (tone 70 and lighter) and `sf-hue-<hue> bg-hue` where it read a deeper tone.
-  The roles follow the theme, so the successor is the same tone as the legacy
-  class only where the numbers happen to meet (light: 34 of 264 items); where
-  the exact tone matters, write the static primitive (`var(--sf-red-50)`).
-  White and black are not hues and have no successor class.
+- They are the way to keep a hue where a legacy palette class
+  (`utility-c17-legacy-palette-classes` in `contracts/changes/journal.json`)
+  stood for one: `color-<hue>[-N]` → `sf-hue-<hue> color-hue`,
+  `border-<hue>[-N]` → `sf-hue-<hue> border-hue`, `bg-<hue>[-N]` →
+  `sf-hue-<hue> bg-hue-container` where the class read a tint (tone 70 and
+  lighter) and `sf-hue-<hue> bg-hue` where it read a deeper tone. The roles
+  follow the theme, so the successor is the same tone as the legacy class only
+  where the numbers happen to meet (light: 34 of 264 items); where the exact
+  tone matters, write the static primitive (`var(--sf-red-50)`). White and
+  black are not hues and have no successor class.
+
+## One role list for every colour property (C212 (5))
+
+Owner decision C212 (5), 2026-11-16: the colour utilities take one list of
+roles, the same words for `bg-`, `color-`, `border-`, `fill-`, `stroke-`,
+`ring-`, `ring-offset-`, `outline-`, `divide-`, `caret-`, `accent-`,
+`placeholder-`, `decoration-`, `drop-shadow-` and `stripe-`: the places
+(`surface-page`, `-area`, `-card`, `-popup`, `-inverse`, `-container`,
+`-container-strong`, `-veil`, `-disabled`), the inks (`on-surface`,
+`on-surface-variant`, `on-surface-disabled`, `on-surface-inverse`),
+`outline` and `outline-variant`, and the seven accents with `-container`,
+`-container-strong` and, where the property draws text, `on-<accent>` and
+`on-<accent>-container`; a state is `hover:`/`active:` `<role>-state`. A
+property does not take every word yet (stroke has no `info`, outline no
+containers): the missing words are a separate block, and no word outside the
+list is added.
+
+Palette tones are variables (`var(--sf-blue-40)`), not utilities. Old names
+keep drawing what they drew until 2027-01-01 and the Loader notes each one
+once in `SF.deprecations` (`src/core/js/retired-classes.table.js`):
+
+- Old spellings of a role, same look (`class-c212-colour`,
+  `utility-c16-background-names`): `surface-0` → `surface-page`, `surface-1`
+  and bare `surface` → `surface-area`, `surface-overlay` → `surface-veil`,
+  `<colour>-transparent-overlay` → `<colour>-container-strong`,
+  `<colour>-transparent-select` → `<colour>-state-select`, `hover:`/`active:`
+  `<colour>-transparent` → `<colour>-state`, `disable` → `surface-disabled`,
+  `on-disable` → `on-surface-disabled`.
+- The legacy palette classes `color-`, `bg-`, `border-<hue>[-N]`: the hint is
+  the role nearest to the class's tone in the light theme among the roles of
+  the hue's family (gray, white, black: neutral places and inks; red: error;
+  orange, yellow: warning; green: success; blue: primary; purple, pink:
+  tertiary), for example `color-red-5` → `color-error`, `bg-blue-0` →
+  `bg-primary-container`, `border-gray-2` → `border-outline-variant`. The
+  role follows the theme and the tone does not, so check the look; a colour
+  that must stay its hue takes the hue role above.
+- `color-disable` and `placeholder-disable` painted text in the disabled
+  surface colour; the hint is the disabled ink, `color-on-surface-disabled`
+  (`class-c212-colour-nearest`, a different look).
+
+The Loader's Tailwind conversion (`bg-blue-500` → `bg-blue-4`) is not
+retargeted: no role draws a static tone, so the converted class is noted with
+its role like any palette class (C214: repairs only).
 
 ## Glass over media
 
