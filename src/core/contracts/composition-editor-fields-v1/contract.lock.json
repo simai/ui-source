@@ -9,25 +9,25 @@
     "existing_fields": "the layout.section surface field and the content.heading fields unchanged; the content.heading manifest follows its type to 1.1.0 (inline atoms), and to 1.3.0 (inline model 1.2.0: the break and the mark strike; 2026-11-10), its fields unchanged",
     "field_kinds": "new simai.composition.editor-field-kind-registry.v1 in composition-editor-field-kinds.v1.json",
     "layout_columns": "the layout.columns manifest follows its type to 1.1.0: the columns field unchanged, an additive gap field (integer 0..8); dispatcher decision 2026-11-03 (one block editor, Part A)",
-    "layout_section": "the layout.section manifest follows its type to 1.1.0: the surface field unchanged, the fields of its seven parameter sets added after it (choice, integer and toggle; boolean@1 is needed for the toggles); one block editor, 2026-11-03. It follows its type to 1.2.0: the width field defaults to normal and padding_y to 8, what the section prints unset (parameter_defaults); no field added or removed; visual parity, 2026-11-04. It follows its type to 1.3.0: the background field offers accent as well (the primary fill with on-primary text, as the accent variant sets it); no field added or removed; ui-editor host, 2026-11-04",
+    "layout_section": "the layout.section manifest follows its type to 1.1.0: the surface field unchanged, the fields of its seven parameter sets added after it (choice, integer and toggle; boolean@1 is needed for the toggles); one block editor, 2026-11-03. It follows its type to 1.2.0: the width field defaults to normal and padding_y to 8, what the section prints unset (parameter_defaults); no field added or removed; visual parity, 2026-11-04. It follows its type to 1.3.0: the background field offers accent as well (the primary fill with on-primary text, as the accent variant sets it); no field added or removed; ui-editor host, 2026-11-04. It follows its type to 1.4.0: the content part prints flex flex-col gap-y-3 instead of the retired space-y-3 (C212 (4)); no field added or removed; 2026-11-16",
     "registry": "additive layout.region entry in composition-editor-manifests.v1.json"
   },
-  "contractDigest": "sha256:65eeee657e25e37bf2f5eaf21b2031b34449564f5b99312a332c587f59644a11",
+  "contractDigest": "sha256:b009234a9e59361d793d75f6ad3e1cd9e205710d82c1ecdf2b55ac93cbce9a5f",
   "manifests": {
     "editor:content.heading@1.3.0": "sha256:4b5936650c28abd5888fa31c3a9667fff42e778b79f0fcd31e5bf2461b0530d4",
     "editor:layout.columns@1.1.0": "sha256:6d59ef7e408c7cad4b5117c9594d4aa32b14c8e7197716175847996c577d10cb",
     "editor:layout.region@1.0.0": "sha256:1658fb219295d7b0f9aff109822ab1fe39269b0a4784942bcaee431e26ba8380",
-    "editor:layout.section@1.3.0": "sha256:30b1f62c5a1e91fbd79c326a4f15e613d29d4ba4e77917994ec5b3f5e7fd2c6f",
+    "editor:layout.section@1.4.0": "sha256:3d6fc61debfa1d8c0a62ac986e8a461a73850bf85083a466ed1b6b8b5c409807",
     "field-kind:choice@1": "sha256:990d5ace0ec0587d0d8c2f37fb45378f65ad338802da80a9e5ee5fef09721f72",
     "field-kind:integer@1": "sha256:bc053b0f7eef75d6a31b3cf61ce844a7557b7b7e20cb62cf975e6b43cdfff55e",
     "field-kind:text@1": "sha256:53f3599ca8a480f49eec4661eca856d809a433f08f9701f9591ef35b6363c83a",
     "field-kind:toggle@1": "sha256:c44dc5e62c2f45154497a89710fcb889670feb60c1659064fb72ef9ccca04d5c"
   },
   "normativeFiles": {
-    "README.md": "sha256:eff803d9624a76e22d3644b513917137d65fd65457006273578f2be3d4c0bf52",
-    "fixtures/field-kinds.json": "sha256:041ebfac4048351776ce200757ae8786a3326d70649472c34e36b172ff93d499"
+    "README.md": "sha256:787a555a9c4fb2db965f56167719a919d9eb9e7dc7c122ddc1d5348594707d1f",
+    "fixtures/field-kinds.json": "sha256:d4215ce4a87431953c5af3eec4185b69c73dcbc933a83f1469e130264a1ca90e"
   },
   "schema": "simai.composition.capability-contract-lock.v1",
   "status": "owner-accepted-candidate",
-  "version": "1.4.0"
+  "version": "1.4.2"
 }

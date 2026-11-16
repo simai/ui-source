@@ -184,7 +184,7 @@ test('a Document that uses none of it draws as before', async () => {
   assert.equal(before.runtime, undefined);
   // layout.section 1.2.0 (2026-11-04): unset, a section stands in the page
   // container with space above and below (its parameter defaults).
-  assert.equal(before.html, '<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content"><p data-sf-composition-id="p">Hi</p></div></div></section></main>');
+  assert.equal(before.html, '<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="flex flex-col gap-y-3" data-sf-composition-part="content"><p data-sf-composition-id="p">Hi</p></div></div></section></main>');
 });
 
 test('layout.columns 1.1.0: columns and gap per screen; a 1.0.0 Document stays valid', async () => {
@@ -422,7 +422,7 @@ test('data at render: the host gives the data, the list publishes its page, ever
   const loading = await render(document, { registry, resolveBinding: () => undefined });
   assert.match(loading.html, /data-state="loading"/u);
   const failed = await render(document, { registry, resolveBinding: () => { throw new Error('database down'); } });
-  assert.match(failed.html, /<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content"><ul data-sf-composition-id="list" data-state="error"><\/ul><nav data-sf-composition-id="pager" data-state="error"><\/nav><\/div><\/div><\/section><\/main>/u, 'the page still draws');
+  assert.match(failed.html, /<main data-sf-composition-id="root"><section class="p-y-8" data-sf-composition-id="s"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="flex flex-col gap-y-3" data-sf-composition-part="content"><ul data-sf-composition-id="list" data-state="error"><\/ul><nav data-sf-composition-id="pager" data-state="error"><\/nav><\/div><\/div><\/section><\/main>/u, 'the page still draws');
   assert.deepEqual(failed.diagnostics.map(({ code, path }) => [code, path]), [['binding_failed', 'node:list']]);
   const malformed = await render(document, { registry, resolveBinding: () => ({ items: [{ name: 'no title' }] }) });
   assert.match(malformed.html, /data-state="error"/u);
@@ -470,7 +470,7 @@ test('parameter sets: each set\'s classes are SIMAI Framework utilities, its fie
   }
   // A type that names a set gets its props through a registry; the stored manifest keeps the names.
   const section = BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'layout.section');
-  assert.equal(section.version, '1.3.0');
+  assert.equal(section.version, '1.4.0');
   assert.deepEqual(section.parameter_defaults, { width: 'normal', padding_y: 8 });
   assert.deepEqual(Object.keys(section.props_schema.properties || {}), []);
   assert.deepEqual(Object.keys(extendRegistry().types.get('layout.section').props_schema.properties).sort(), ['align', 'background', 'breakout', 'columns', 'gap', 'hidden', 'padding_x', 'padding_y', 'width']);
@@ -483,8 +483,8 @@ test('width reaches three elements; a section that sets width full and no space 
   const drawn = await render(layout(section('n', { width: 'narrow' }), section('m', { width: 'normal' }), section('w', { width: 'wide' }), section('f', { width: 'full' })));
   assert.equal(drawn.notices, undefined);
   const part = (id) => drawn.html.slice(drawn.html.lastIndexOf('<section', drawn.html.indexOf(`data-sf-composition-id="${id}"`)), drawn.html.indexOf(`data-sf-composition-id="${id}-p"`));
-  assert.match(part('n'), /<section class="p-y-8" data-sf-composition-id="n"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3 max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
-  assert.match(part('m'), /<section class="p-y-8" data-sf-composition-id="m"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content">/u);
+  assert.match(part('n'), /<section class="p-y-8" data-sf-composition-id="n"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="flex flex-col gap-y-3 max-w-prose m-inline-auto" data-sf-composition-part="content">/u);
+  assert.match(part('m'), /<section class="p-y-8" data-sf-composition-id="m"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="flex flex-col gap-y-3" data-sf-composition-part="content">/u);
   // max-container-N widens a .container that is its descendant, never one on the same element.
   assert.match(part('w'), /<section class="p-y-8 max-container-7" data-sf-composition-id="w"><div class="container m-inline-auto" data-sf-composition-part="frame">/u);
   // Full: the Document's own width wins over the type's default, no frame part.
@@ -499,7 +499,7 @@ test('width reaches three elements; a section that sets width full and no space 
   // The editor manifest follows the type with the sets' fields; width and
   // the space above and below default to what the section prints unset.
   const editor = Composition.BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'layout.section');
-  assert.equal(editor.type_version, '1.3.0');
+  assert.equal(editor.type_version, '1.4.0');
   assert.equal(editor.fields.find(({ key }) => key === 'width').default, 'normal');
   assert.equal(editor.fields.find(({ key }) => key === 'padding_y').default, 8);
   assert.deepEqual(editor.fields.map(({ key }) => key), ['surface', 'background', 'padding_y', 'padding_x', 'width', 'columns', 'gap', 'align', 'breakout', 'hidden']);
@@ -564,7 +564,8 @@ test('SF.Composition publishes the one block editor helpers', () => {
 const NEW_TYPES = ['layout.container', 'layout.grid', 'layout.spacer', 'element.button', 'element.button-icon', 'element.badge', 'element.icon'];
 const FORM_TYPES = ['form.form', 'form.input', 'form.textarea', 'form.checkbox', 'form.switch', 'form.select', 'form.button-submit'];
 // layout.grid 1.1.0 (2026-11-04): its columns hold on the phone, as the prototype's grids do.
-const VERSIONS = { 'layout.grid': '1.1.0' };
+// layout.container 1.1.0 (2026-11-16, C212 (4)): its content part is a flex column, gap-y-3.
+const VERSIONS = { 'layout.grid': '1.1.0', 'layout.container': '1.1.0' };
 
 test('every built-in type manifest, its variants and its parameter defaults pass the type check', () => {
   for (const type of BUILTIN_TYPE_MANIFESTS) assert.deepEqual(validateTypeManifest(type).diagnostics, [], type.type);
@@ -624,7 +625,7 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
   assert.deepEqual(output.diagnostics, []);
   assert.equal(output.notices, undefined);
   const html = output.html;
-  assert.match(html, /<div data-sf-composition-id="c"><div class="container m-inline-auto container-flush" data-sf-composition-part="frame"><div class="space-y-3 max-w-prose m-inline-auto" data-sf-composition-part="content">/u, 'a container in a section has no second gutter');
+  assert.match(html, /<div data-sf-composition-id="c"><div class="container m-inline-auto container-flush" data-sf-composition-part="frame"><div class="flex flex-col gap-y-3 max-w-prose m-inline-auto" data-sf-composition-part="content">/u, 'a container in a section has no second gutter');
   assert.match(html, /<div data-sf-composition-id="g"><div class="grid grid-col-3 gap-5" data-sf-composition-part="content"><div class="min-w-0"><div class="sf-card"/u, 'a grid keeps its three columns on the phone, gap 5');
   assert.match(html, /<div class="p-top-6" aria-hidden="true" data-sf-composition-id="sp"><\/div>/u);
   assert.match(html, /<div class="flex" data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
@@ -661,15 +662,18 @@ test('G-36: the phone\'s value is printed as the base once a wider screen differ
 test('blocks in a section or a container stand one rhythm apart; a nested container has no second gutter; a button can be a link', async () => {
   const section = (id, props, children) => ({ id, type: 'layout.section', ...(props ? { props } : {}), slots: { default: children } });
   const container = (id, props) => ({ id, type: 'layout.container', ...(props ? { props } : {}), slots: { default: [paragraph(`${id}-p`, 'Text')] } });
-  // The rhythm: space-3 unset, the Document's gap per screen, none with columns (the grid gap rules).
+  // The rhythm (layout.section 1.4.0, layout.container 1.1.0; C212 (4)): a flex column
+  // with gap-y-3 unset, the Document's gap per screen (the grid set's gap-*), none with
+  // columns (the grid gap rules). The retired space-y-* is never printed.
   const drawn = await render(layout(
     section('a', undefined, [paragraph('a-p', 'Text')]),
     section('b', { gap: { xs: 2, lg: 5 } }, [paragraph('b-p', 'Text')]),
     section('c', { columns: { md: 2 } }, [paragraph('c-p', 'Text')]),
   ));
-  assert.match(drawn.html, /data-sf-composition-id="a"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-3" data-sf-composition-part="content">/u);
-  assert.match(drawn.html, /data-sf-composition-id="b"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="space-y-2 lg:space-y-5 gap-2 lg:gap-5" data-sf-composition-part="content">/u);
+  assert.match(drawn.html, /data-sf-composition-id="a"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="flex flex-col gap-y-3" data-sf-composition-part="content">/u);
+  assert.match(drawn.html, /data-sf-composition-id="b"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="flex flex-col gap-2 lg:gap-5" data-sf-composition-part="content">/u);
   assert.match(drawn.html, /data-sf-composition-id="c"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="grid grid-col-1 md:grid-col-2" data-sf-composition-part="content">/u);
+  assert.doesNotMatch(drawn.html, /space-[xy]-/u, 'no retired space-x/y class');
   // A container inside a container's frame takes container-flush, at any depth; out of a breakout it keeps its gutter.
   const nested = await render(layout(
     section('s', undefined, [{ id: 'g', type: 'layout.grid', slots: { default: [container('deep')] } }]),

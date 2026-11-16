@@ -489,10 +489,14 @@ draws its text at the sheet's edge. A section that sets `width: "full"` and no
 columns draws no parts, as before; `padding_y: 0` prints `p-y-0`.
 
 The blocks in a section's or a container's content part stand one rhythm
-apart: `space-y-3` (24 px at the desktop, 16 px on the phone; the blocks' own
-margins collapse into it). A `gap` the Document sets is the rhythm, per screen
-(`{"xs": 2, "lg": 5}` prints `space-y-2 lg:space-y-5`); with `columns` the
-content is a grid and its gap rules instead. A frame that prints `container`
+apart: the part is a flex column, `flex flex-col gap-y-3` (24 px at the
+desktop, 16 px on the phone; the blocks' own block margins are cleared there,
+as in a grid). A `gap` the Document sets is the rhythm, per screen
+(`{"xs": 2, "lg": 5}` prints `flex flex-col gap-2 lg:gap-5`); with `columns`
+the content is a grid and its gap rules instead. `layout.section` 1.4.0 and
+`layout.container` 1.1.0 print it so (owner decision C212 (4): `space-y-*` is
+retired); before them the part printed `space-y-*`. The page draws the same,
+the printed HTML differs. A frame that prints `container`
 inside another container's frame, at any depth, also prints `container-flush`:
 a container in a section has no second gutter, so on the phone its text is as
 wide as the section's own. A `container-breakout` node leaves its container,
