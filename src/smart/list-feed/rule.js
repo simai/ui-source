@@ -17,5 +17,7 @@ SF.RuleLoader['cl-list-feed'] = {
     { name: 'cl-button-icon' },
     { name: 'cl-empty-state' },
     { name: 'sr-only/default' },
+    { name: 'group-heading' },
+    { name: 'cl-time' },
   ],
 };

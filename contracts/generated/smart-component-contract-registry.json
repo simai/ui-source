@@ -2052,9 +2052,11 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.group-heading",
           "smart.button",
           "smart.button-icon",
-          "smart.empty-state"
+          "smart.empty-state",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -2066,7 +2068,7 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-feed/smart.manifest.json",
-      "manifest_sha256": "55e1fdf66e80fc1afc8752ac7482a3299db68ac3c76cda0da2838bd8d1751806",
+      "manifest_sha256": "d3f6dfb4ae5ace6c016ad2c3fa563172393e83f9928cd101e25a78eea0c26712",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
