@@ -318,7 +318,7 @@
   padding-inline: 0;
 }
 
-/* One row (chips="row", PROVISIONAL name; C58: filters, tables and cards).
+/* One row (chips="row", final name, C174 (5); C58: filters, tables and cards).
    While the field is closed the chips stand in one row at their own widths;
    the component counts how many the row holds and draws «+N» after them. The
    rest stay drawn out of the flow and unseen, so they are measured but not

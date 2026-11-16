@@ -94,7 +94,7 @@ function scaleMarks(element) {
 // the locale's group marks and spaces go, its decimal mark (and the other of
 // «.» and «,» where the locale does not group with it) is a point. NaN for
 // text that is not a number.
-function parseTyped(text, locale) {
+function parseTyped(text, locale, units = []) {
   let group = ',';
   let decimal = '.';
   try {
@@ -102,7 +102,14 @@ function parseTyped(text, locale) {
     group = parts.find((part) => part.type === 'group')?.value ?? group;
     decimal = parts.find((part) => part.type === 'decimal')?.value ?? decimal;
   } catch { /* the platform's default marks */ }
-  let value = String(text ?? '').replace(/[\s\u00a0\u202f]/gu, '').replace(/[\u2212\u2013]/gu, '-');
+  // The field's own unit and any currency sign go as the spaces do (RF-1,
+  // C202): «12500 ₽», «12 500₽» and «$ 12,500» are the number the box shows.
+  let value = String(text ?? '');
+  for (const unit of units) {
+    const own = String(unit ?? '').trim();
+    if (own) value = value.split(own).join('');
+  }
+  value = value.replace(/\p{Sc}/gu, '').replace(/[\s\u00a0\u202f]/gu, '').replace(/[\u2212\u2013]/gu, '-');
   const groupMark = group.replace(/[\s\u00a0\u202f]/gu, '');
   if (groupMark && groupMark !== decimal) value = value.split(groupMark).join('');
   value = value.split(decimal).join('.');
@@ -344,6 +351,8 @@ class SfRangeSlider extends RangeSliderElement {
       scaleMarks: scaleMarks(this),
       field: this.hasAttribute('field') && this.getAttribute('field') !== 'false',
       fieldLabels: this.fieldLabels(),
+      fieldWords: [this.sfWord?.('from') || 'от', this.sfWord?.('to') || 'до'],
+      fieldUnit: [this.prefixText, this.suffix].map((unit) => String(unit ?? '').trim()).filter(Boolean).join(' '),
       fieldDecimal: String(this.step ?? '').includes('.') || Number(this.getAttribute('precision')) > 0,
       ticks: this.hasAttribute('ticks') && this.getAttribute('ticks') !== 'false',
     });
@@ -378,7 +387,13 @@ class SfRangeSlider extends RangeSliderElement {
       });
     });
     inputs.forEach((input, index) => {
-      if (document.activeElement !== input && list[index] !== undefined) input.value = formatRangeSliderNumber(root, list[index]);
+      if (document.activeElement !== input && list[index] !== undefined) {
+        const text = formatRangeSliderNumber(root, list[index]);
+        // The default value too (the value attribute): a printed first frame
+        // (static markup, RF-3) shows the numbers before any code.
+        if (input.defaultValue !== text) input.defaultValue = text;
+        input.value = text;
+      }
     });
   }
 
@@ -395,7 +410,7 @@ class SfRangeSlider extends RangeSliderElement {
     const root = this.getSliderRoot();
     const input = this.querySelectorAll('.sf-range-slider-field-input')[index];
     if (!root || !input || this.disabled || this.readonly) return;
-    const typed = parseTyped(input.value, root.getAttribute('data-locale') || root.closest('[lang]')?.getAttribute('lang'));
+    const typed = parseTyped(input.value, root.getAttribute('data-locale') || root.closest('[lang]')?.getAttribute('lang'), [this.prefixText, this.suffix]);
     const before = getRangeSliderValue(root);
     const current = Array.isArray(before) ? [...before] : [before];
     if (Number.isFinite(typed)) current[index] = typed;

@@ -57,5 +57,27 @@ export function formatNumber(value, format = 'number', {step = 0, gap = '', grou
   if (typeof number !== 'number' || !Number.isFinite(number)) return gap;
   const options = numberOptions(format, step);
   if (grouping === false) options.useGrouping = false;
-  return intlFormatter('NumberFormat', formatLocale(where), options).format(number);
+  const text = intlFormatter('NumberFormat', formatLocale(where), options).format(number);
+  return options.style === 'percent' || options.unit === 'percent' ? percentSign(text) : text;
+}
+
+/**
+ * One spelling of a per cent in every language (owner decision C203 (3), DEV
+ * msg-913fd9e4, 2026-11-15): the number, a no-break space (U+00A0) and «%» --
+ * «72 %», «12,5 %», and «72 %» in English too, where Intl writes «72%». A
+ * language that writes the sign first («%72») keeps its order.
+ */
+export function percentSign(text) {
+  return String(text).replace(/[\s\u00a0\u202f]*%$/u, '\u00a0%');
+}
+
+/**
+ * A value that already is a per cent (0..100, «72», «72.5») as the progress
+ * family shows and says it (owner decision C203 (3), IM-3): the number in the
+ * language of the node's part of the page, as many digits as it has (up to
+ * 2), a no-break space and «%» -- «72 %», «72,5 %».
+ */
+export function percentText(value, node) {
+  const number = Number(value);
+  return percentSign(`${formatNumber(Number.isFinite(number) ? number : 0, 'number', {node, grouping: false})}%`);
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider-range",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "title": "Range Slider",
   "summary": "A slider for one number or a range of two on a track, as a form field: a visible name above, drag, click or keys move a handle by step (PageUp/PageDown by ten), the value shown at the end of the name line, in a bubble while dragging, or in a from/to field beside the track; ticks and a scale on request; sizes 1/2, 1, 2; read-only and disabled.",
   "kind": "smart",
@@ -85,7 +85,7 @@
       "field": {
         "type": "boolean",
         "default": false,
-        "description": "The from/to field at the end of the track line (owner decision C80): one field «5 000 – 20 000 ₽» (or one number), the field height of the step; typing a number and Enter or leaving the box moves the handle, dragging rewrites the number. Hides the value at the end of the name line."
+        "description": "The from/to field (owner decisions C80, C202): from 26rem of the slider's own width one field «5 000 – 20 000 ₽» (or one number) at the end of the track line; narrower, two boxes «от …» «до …» under the track, halves of the full width, the unit in the name («Цена, ₽»). The field height of the step; typing a number (with or without its unit) and Enter or leaving the box moves the handle, dragging rewrites the number. Hides the value at the end of the name line."
       },
       "margin": {
         "type": "string",
@@ -670,7 +670,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider-range/index.js",
-        "sha256": "ffc10130e36b9fed1b5b118cd5b24bd8ad6f19a9caa1a13748945bbf06b144a9"
+        "sha256": "935d8e82724841668372d14575167fd65f80f717e34238569ae4fabdbe8965d9"
       }
     ],
     "generated_runtime": [

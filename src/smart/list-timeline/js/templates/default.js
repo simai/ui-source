@@ -19,12 +19,21 @@ import {html, nothing} from 'lit';
 //   sf-change list under it. Then one quiet line: sf-time · text. A comment's
 //   text stands in an outline under that line.
 // - A folded run: a button «Ещё N» on the rail, revealed in place.
+// - 1.4 (owner decision C204): an event's slot -- the host's content from the
+//   slot the event names -- stands under its meta line (a courier card,
+//   buttons). An event's sub-events (items) fold under a quiet disclosure
+//   row, an sf-button of the rung below with aria-expanded (the host's
+//   summary, else «Ещё N событий»); pressed, they are drawn in place under
+//   it as an ordered list a rung smaller, named by the event's title.
 // - has-more: an sf-button «Показать ещё» after the last event; with no
 //   events, one quiet line.
 
 // The rung below the list's: the marker, the avatar line and the button.
 const BELOW = {'1/2': '1/3', 1: '1/2', 2: '1'};
 const SIZE_CLASS = {'1/2': 'half', 1: '1', 2: '2'};
+// The rung of an event's sub-events (C204 (2)): one below the list's, 1/2 at
+// the least (the ladder's smallest list rung).
+const SUB = {'1/2': '1/2', 1: '1/2', 2: '1'};
 // A step's marker (owner decision C61, variant A; one logic with and without
 // an icon; C61 round 4: the shape shows the progress, the colour the status):
 // done the solid circle, current the same circle ringed outside through a gap,
@@ -88,9 +97,29 @@ function event(context, item) {
       ${item.changes.length > 1
         ? html`<sf-change class="sf-list-timeline-changes" layout="list" .changes=${item.changes}></sf-change>` : nothing}
       ${meta(context, item)}
-      ${item.kind === 'comment' && item.text ? html`<p class="sf-list-timeline-comment">${item.text}</p>` : nothing}
+      ${item.kind === 'comment' && item.text ? html`<p class="sf-list-timeline-comment">${item.text}</p>` : nothing}${
+        // The host's content and the sub-events follow with no text between (C204): the first-paint markup of
+        // an event without them stays what it was.
+        item.slotted ? html`<div class="sf-list-timeline-slot">${context.component.getSlotContent(item.slot)}</div>` : nothing}${
+        item.items.length ? sub(context, item) : nothing}
     </div>
   </li>`;
+}
+
+// An event's sub-events (C204 (2)): the disclosure row, and the list in
+// place when it is open.
+function sub(context, item) {
+  const size = SUB[context.size] ?? '1/2';
+  const inner = {...context, size, steps: item.subSteps};
+  return html`<div class="sf-list-timeline-fold">
+      <sf-button class="sf-list-timeline-fold-button" size=${BELOW[context.size]} appearance="ghost" scheme="on-surface-variant"
+        icon-end=${item.open ? 'expand_less' : 'expand_more'} text=${item.summaryText} expanded=${item.open ? '' : 'false'}
+        @click=${() => context.component.toggle(item)}></sf-button>
+    </div>
+    ${item.open ? html`<div class=${`sf-list-timeline-sub sf-list-timeline--size-${SIZE_CLASS[size]}`}>
+      <ol class=${`sf-list-timeline-list${item.subSteps ? ' sf-list-timeline-list--steps' : ''}`} id=${item.subId}
+        aria-label=${item.title}>${item.items.map((one) => event(inner, one))}</ol>
+    </div>` : nothing}`;
 }
 
 function fold(context, entry) {

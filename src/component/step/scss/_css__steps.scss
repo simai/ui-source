@@ -82,7 +82,9 @@
    automatic one becomes a column before that. */
 .sf-steps.sf-steps--layout-row:not(.sf-steps--auto) .sf-steps-container {
   overflow-x: auto;
-  scrollbar-width: thin;
+  /* No scrollbar-width: Chrome 121+ drops the drawn ::-webkit-scrollbar of an
+     element that sets it (SB-7); core draws the one bar (C208), Firefox's thin
+     bar comes from core's support query. */
 }
 
 /* ------------------------------------------------------------- column */

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.scroll-subtle",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/scroll-subtle/default/index.js",
@@ -12,7 +12,7 @@
     "src/utility/scroll-subtle/default/scss/_sf_css__scroll_subtle.scss",
     "src/utility/scroll-subtle/default/scss/index.scss"
   ],
-  "content_sha256": "2d1bbaf7793fb5d028d2452b8ca7cf91df8c2e5075a08f201bf8335b58d8c01f",
+  "content_sha256": "85243f59442012889a14188ae1534c544fe1e7cd79402ac85d95cea3b6723a09",
   "dependencies": [
     {
       "id": "tokens.colour",

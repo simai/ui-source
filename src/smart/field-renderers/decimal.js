@@ -8,6 +8,7 @@
 // items with its own copy of the same rules.
 
 import {intlFormatter} from '../../core/js/format-intl.js';
+import {percentSign} from '../../core/js/format-number.js';
 
 const TYPED = /^([+-]?)(\d*)(?:[.,](\d*))?$/u;
 // Spaces a person or a formatter puts between groups of digits: the plain
@@ -93,6 +94,7 @@ export function formatPercent(value, locale = 'en') {
     const decimal = decimalOf(value);
     if (decimal === null) return '';
     const digits = Math.min(20, fractionDigits(decimal));
-    return intlFormatter('NumberFormat', locale, {style: 'unit', unit: 'percent',
-        minimumFractionDigits: digits, maximumFractionDigits: digits}).format(decimal);
+    // One spelling in every language (C203 (3)): «12,5 %», «12.5 %».
+    return percentSign(intlFormatter('NumberFormat', locale, {style: 'unit', unit: 'percent',
+        minimumFractionDigits: digits, maximumFractionDigits: digits}).format(decimal));
 }

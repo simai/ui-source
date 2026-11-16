@@ -1476,8 +1476,8 @@
         {
           "name": "--sf-quantity-gap",
           "role": "gap",
-          "summary": "Space between the steppers and the number.",
-          "default": "calc(var(--sf-px) * 0)",
+          "summary": "Space between the steppers and the number. The class component's default; sf-input-quantity's is 0, the steppers hug the number (C53).",
+          "default": "var(--sf-space-2)",
           "since": "2026-10-25"
         },
         {
@@ -2427,6 +2427,16 @@
             "size"
           ],
           "since": "2026-10-27"
+        },
+        {
+          "name": "--sf-progress-bar-track-size",
+          "role": "size",
+          "summary": "The track's own width in the inline look (owner decision C203): 64 unless this is set; the number stands beside it, not in it.",
+          "default": "var(--sf-d6)",
+          "varies_with": [
+            "inline"
+          ],
+          "since": "2026-11-15"
         }
       ]
     },

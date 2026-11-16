@@ -1,6 +1,7 @@
 {
   "title": "Choice",
   "runtime": {
-    "value-missing": "Choose an option."
+    "value-missing": "Choose an option.",
+    "help": "More about: {label}"
   }
 }

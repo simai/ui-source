@@ -207,6 +207,19 @@ export default {
       "names": {
         "sf-tabs--full": "sf-tabs"
       }
+    },
+    {
+      "journal": "utility-c208-scrollbar-retired-sheets",
+      "decision": "C208 (2), (3)",
+      "component": "utility",
+      "since": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "note": "The scrollbar has no palette and no thickness of its own: the thumb takes the place's boundary at rest and its text under the pointer, track 14 and thumb 6 at every density. The thumb colour utilities (scroll-primary ..., scroll-thumb-*), the thumb width utilities (scroll-0 ... scroll-4) and the track width utilities (scroll-bg-1 ... scroll-bg-4) leave; a quieter bar is scroll-subtle.",
+      "sheets": {
+        "scroll-slider-color": null,
+        "scroll-slider-width": null,
+        "scroll-backdrop-width": null
+      }
     }
   ],
   "extended": {

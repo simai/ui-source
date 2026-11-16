@@ -85,7 +85,7 @@ test('C181: every container step is a step of the size scale, in increasing orde
   const values = Object.values(LADDER);
   assert.ok(values.length >= 5, 'the ladder is read from the source');
   assert.deepEqual(values, [...values].sort((a, b) => a - b));
-  assert.deepEqual(Object.keys(LADDER), ['g0', 'g2', 'g5', 'g6', 'g8', 'h0', 'h1', 'h2', 'h5', 'h8']);
+  assert.deepEqual(Object.keys(LADDER), ['g0', 'g2', 'g3', 'g5', 'g6', 'g8', 'h0', 'h1', 'h2', 'h5', 'h8']);
   for (const name of ['sm', 'md', 'lg', 'xl']) assert.ok(values.includes(SCREEN[name]), `screen breakpoint ${name} is a container step`);
   // The cq-* utilities read those breakpoints as container conditions.
   const profile = JSON.parse(read('src/core/contracts/container-conditions.v1.json'));

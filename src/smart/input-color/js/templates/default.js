@@ -303,15 +303,18 @@ function renderPalette(context) {
 }
 
 // «Своё», laid out as Figma's (R154): the shade area; the eyedropper left of
-// the stacked hue and alpha strips; one joined row «format ▾ | code | %».
-// Without `alpha` the alpha strip and the % field are not drawn.
+// the stacked hue and alpha strips; at the bottom one row (owner decision
+// C209, prototype colour-field-study #q-cf-simple B): the code field -- always
+// hex, any CSS colour may be typed or pasted, the copy action at its end
+// (C123), the % after it with `alpha` -- and «Применить» on its right. The
+// format menu is gone. Without `alpha` the alpha strip and the % field are
+// not drawn.
 function renderOwn(context) {
     const {component, word} = context;
     const [h, s, v] = context.hsv;
     const alpha = context.alphaValue;
     const percent = Math.round(alpha * 100);
     const solid = solidOf(context.ownColour);
-    const formatWord = context.formatWords[context.format];
     return html`
         <div class="sf-color-own">
             <div class="sf-color-area"
@@ -372,62 +375,50 @@ function renderOwn(context) {
                             : nothing}
                 </div>
             </div>
-            <div class="sf-color-code-row" role="group" aria-label=${word('code')}>
-                <button type="button"
-                        class="sf-color-format"
-                        aria-haspopup="menu"
-                        aria-expanded=${context.formatOpen ? 'true' : 'false'}
-                        aria-label=${word('format-current', {format: formatWord})}
-                        @click=${() => component.toggleFormatMenu()}>
-                    <span>${formatWord}</span>
-                    <sf-icon icon="keyboard_arrow_down" root-class="sf-color-format-chevron" aria-hidden="true"></sf-icon>
-                </button>
-                <input type="text"
-                       class="sf-color-code"
-                       spellcheck="false"
-                       autocomplete="off"
-                       aria-label=${word('code-in', {format: formatWord})}
-                       aria-invalid=${context.codeError ? 'true' : 'false'}
-                       .value=${context.codeText}
-                       @input=${(event) => component.codeOn(event, false)}
-                       @change=${(event) => component.codeOn(event, true)}
-                       @keydown=${(event) => {
-                           if (event.key !== 'Enter') return;
-                           event.preventDefault();
-                           component.codeOn(event, true);
-                       }}>
-                ${context.alpha
-                        ? html`
-                            <span class="sf-color-percent">
-                                <input type="text"
-                                       class="sf-color-alpha-input"
-                                       inputmode="numeric"
-                                       maxlength="3"
-                                       aria-label=${word('opacity')}
-                                       .value=${String(percent)}
-                                       @input=${(event) => component.alphaOn(event, false)}
-                                       @change=${(event) => component.alphaOn(event, true)}
-                                       @keydown=${(event) => component.alphaKeyOn(event)}>
-                                <span aria-hidden="true">%</span>
-                            </span>`
-                        : nothing}
+            <div class="sf-color-bottom">
+                <div class="sf-color-code-row sf-input-field" role="group" aria-label=${word('code')}>
+                    <input type="text"
+                           class="sf-color-code"
+                           spellcheck="false"
+                           autocomplete="off"
+                           aria-label=${word('code')}
+                           aria-invalid=${context.codeError ? 'true' : 'false'}
+                           .value=${context.codeText}
+                           @input=${(event) => component.codeOn(event, false)}
+                           @change=${(event) => component.codeOn(event, true)}
+                           @keydown=${(event) => {
+                               if (event.key !== 'Enter') return;
+                               event.preventDefault();
+                               component.codeOn(event, true);
+                           }}>
+                    <sf-button-copy class="sf-color-copy"
+                                    size="1/2"
+                                    value=${context.copyText}
+                                    duration=${String(context.copyShown)}
+                                    label=${word('copy')}></sf-button-copy>
+                    ${context.alpha
+                            ? html`
+                                <span class="sf-color-percent">
+                                    <input type="text"
+                                           class="sf-color-alpha-input"
+                                           inputmode="numeric"
+                                           maxlength="3"
+                                           aria-label=${word('opacity')}
+                                           .value=${String(percent)}
+                                           @input=${(event) => component.alphaOn(event, false)}
+                                           @change=${(event) => component.alphaOn(event, true)}
+                                           @keydown=${(event) => component.alphaKeyOn(event)}>
+                                    <span aria-hidden="true">%</span>
+                                </span>`
+                            : nothing}
+                </div>
+                <sf-button class="sf-color-apply"
+                           size="1/2"
+                           text=${word('apply')}
+                           data-action="apply"
+                           ?disabled=${context.disabled}
+                           @click=${() => component.applyCode()}></sf-button>
             </div>
-            ${context.formatOpen
-                    ? html`
-                        <div class="sf-color-format-menu"
-                             role="menu"
-                             aria-label=${word('format')}
-                             @keydown=${(event) => component.formatMenuKey(event)}>
-                            ${context.formats.map((format) => html`
-                                <button type="button"
-                                        role="menuitemradio"
-                                        data-format=${format}
-                                        aria-checked=${format === context.format ? 'true' : 'false'}
-                                        tabindex="-1"
-                                        @click=${() => component.setFormat(format)}>${context.formatWords[format]}</button>
-                            `)}
-                        </div>`
-                    : nothing}
             <div class="sf-color-error" aria-live="polite">${context.codeError}</div>
         </div>
     `;

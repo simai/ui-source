@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.segmented",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "title": "Segmented control",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -110,7 +110,7 @@
       "scheme": {
         "type": "string",
         "default": "primary",
-        "description": "Colour scheme for the selected button of the buttons look, and for the plate on the track when plate is scheme.",
+        "description": "Colour scheme for the selected button of the buttons look, and for the plate on the track when plate is scheme. On the buttons look secondary draws as on-surface, the sf-button name for it (C116).",
         "enum": [
           "primary",
           "secondary",

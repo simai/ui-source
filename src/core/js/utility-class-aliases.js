@@ -1,4 +1,5 @@
-// Retired class names (owner decisions C185 (2), C186 (8) and C187 (1), 2026-11-14).
+// Retired class names (owner decisions C185 (2), C186 (8) and C187 (1), 2026-11-14;
+// C208 (2), (3), 2026-11-15).
 // One table, core/js/retired-classes.table.js, lists every class
 // the Framework retires: a name, a family (pattern) or a whole utility sheet.
 // A retired class keeps drawing what it drew until remove_after, and the
@@ -6,7 +7,8 @@
 // (a console line under data-sf-deprecations="warn", and after the date
 // whatever the page opted into). Journals: class-table-sm-to-density,
 // class-text-flow-utility-aliases,
-// class-c187-retired-utilities, class-c187-retired-parts, class-c96-tabs-looks.
+// class-c187-retired-utilities, class-c187-retired-parts, class-c96-tabs-looks,
+// utility-c208-scrollbar-retired-sheets.
 import table from './retired-classes.table.js';
 import {noteDeprecated} from './deprecations.js';
 

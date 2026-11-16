@@ -89,7 +89,7 @@ const sfSegmentedMeta = {
         "on-surface"
       ],
       "default": "primary",
-      "description": "Colour scheme for the selected button of the buttons look, and for the plate on the track when plate is scheme."
+      "description": "Colour scheme for the selected button of the buttons look, and for the plate on the track when plate is scheme. On the buttons look secondary draws as on-surface, the sf-button name for it (C116)."
     },
     "appearance": {
       "kind": "enum",

@@ -141,6 +141,9 @@ const NOT_A_MANIFEST = [
   {file: 'src/core/js/composition/index.mjs', read: 'data.summary'},
   // The same field, printed as Markdown (composition F2.4, 2026-11-10).
   {file: 'src/core/js/composition/markdown.mjs', read: 'data.summary'},
+  // An sf-list-timeline event's summary, the text of its sub-events' fold row
+  // (owner decision C204 (2)): a field of the host's items, not a component.json.
+  {file: 'src/smart/list-timeline/index.js', read: 'item.summary'},
 ];
 
 /** The dropped keys a text reads: `x.<key>`, `x?.<key>`, `x['<key>']`, `x?.['<key>']`. */

@@ -411,7 +411,7 @@
         },
         {
           "id": "p6-expired",
-          "title": "an open card past expires-at reads as expired, says sf-change-confirm-expired once and the old -expire once, and offers no answer",
+          "title": "an open card past expires-at reads as expired, says sf-confirm-change-expired once and the old -expire once, and offers no answer",
           "covers": "events.expired (own verb), aliases sf-change-confirm-expire",
           "steps": [
             {

@@ -44,6 +44,7 @@
     "variant-integer-stepper": "Кнопками «−» и «+»",
     "type-number": "Число",
     "variant-number-scale": "Шкала 0–100",
+    "variant-number-meter": "Доля предела",
     "variant-number-stepper": "Кнопками «−» и «+»",
     "type-date": "Дата",
     "type-datetime": "Дата и время",

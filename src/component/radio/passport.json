@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.radio",
   "kind": "component",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/radio/docs/docs.md",
@@ -12,11 +12,12 @@
     "src/component/radio/js/index.js",
     "src/component/radio/json/radio.utility.json",
     "src/component/radio/rule.js",
+    "src/component/radio/scss/_css__utility_hint_layout.scss",
     "src/component/radio/scss/_css_radio.scss",
     "src/component/radio/scss/_css_radio_custom.scss",
     "src/component/radio/scss/index.scss"
   ],
-  "content_sha256": "f3d695b1cfba5139c5c0fb75436ea78352c7dd0c0eafb9bc690e9a0fd2d3b207",
+  "content_sha256": "54f8b2528a3075db0892cf037e20b6add41f699495a864a84c9346b2e276ff17",
   "dependencies": [
     {
       "id": "core.runtime",

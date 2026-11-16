@@ -381,7 +381,7 @@
             {
               "user": "click:#d-run button",
               "wait": 200,
-              "check": "(() => { const f = document.querySelector('#d-run'); const b = f.querySelector('button.sf-download-file'); return b.getAttribute('aria-busy') === 'true' && b.querySelector('.sf-download-file__ring .sf-progress-ring') && b.textContent.includes('45') && f.querySelector('sf-button.sf-download-file__cancel') && f.querySelector('[role=\"status\"]').textContent === 'Готовим файл «Выгрузка заказов.csv»'; })()"
+              "check": "(() => { const f = document.querySelector('#d-run'); const b = f.querySelector('button.sf-download-file'); return b.getAttribute('aria-busy') === 'true' && b.querySelector('.sf-download-file__ring .sf-progress-ring') && b.textContent.includes('45\u00a0%') && f.querySelector('sf-button.sf-download-file__cancel') && f.querySelector('[role=\"status\"]').textContent === 'Готовим файл «Выгрузка заказов.csv»'; })()"
             },
             {
               "script": "(() => { document.querySelector('#d-run .sf-download-file__cancel button').click(); return true; })()",

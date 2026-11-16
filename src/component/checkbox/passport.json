@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.checkbox",
   "kind": "component",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/checkbox/docs/docs.md",
@@ -13,10 +13,11 @@
     "src/component/checkbox/json/checkbox.utility.json",
     "src/component/checkbox/rule.js",
     "src/component/checkbox/scss/_css__checkbox.scss",
+    "src/component/checkbox/scss/_css__utility_hint_layout.scss",
     "src/component/checkbox/scss/_custom__checkbox.scss",
     "src/component/checkbox/scss/index.scss"
   ],
-  "content_sha256": "7f1a3ad6998c94d8ae0d196240b9daab009f7cbc0a765b57afaf52b32ff7b88c",
+  "content_sha256": "2f8c1a80e787c4cd30d8b0e2a6598826c33940251cf256efb90d0b7526c9ee8d",
   "dependencies": [
     {
       "id": "core.runtime",

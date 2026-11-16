@@ -109,6 +109,34 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
   --sf-badge--anchored-font-size: var(--sf-a0);
 }
 
+// The disc of a dot is the Framework's one dot (owner decision C185 (8)): the
+// .sf-dot inside the badge, at the step's point size and in the badge's
+// colour. The badge keeps its place and the ring that cuts it out, and fills
+// nothing itself. A badge written without the .sf-dot (a page's own markup
+// before the runtime has run) still fills its box, as before. Included where
+// the badge sheet draws a dot; the menus that include `dot` keep their own.
+@mixin dot-disc {
+  &:has(> .sf-dot) {
+    background-color: transparent;
+  }
+
+  & > .sf-dot {
+    --sf-dot-item--size: var(--sf-badge--anchored-dot);
+    --sf-dot-item--background-color: var(--sf-badge--background-color);
+    // Over the whole box, the disc centred: the hidden digits of a count
+    // and the badge's gap move nothing.
+    position: absolute;
+    inset: 0;
+    display: flex;
+  }
+
+  @media (forced-colors: active) {
+    & > .sf-dot > .sf-dot-item {
+      background-color: Highlight;
+    }
+  }
+}
+
 // The size table (owner decision C132, 2026-11-13): the small steps of the
 // anchor's step, from the one table in core (--sf-micro--*, generated from
 // core/scss/vars/_sf_var__size.scss). Anchors of 1/4, 1/3 and 1/2 -- rows,

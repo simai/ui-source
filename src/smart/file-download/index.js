@@ -6,7 +6,7 @@ import {
   unbindDownloadFile,
 } from '../../component/download-file/js/_download-file';
 import { noteDeprecated } from '../../core/js/deprecations';
-import { pageLocale } from '../../core/js/page-language';
+import { percentText } from '../../core/js/format-number.js';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path.js';
@@ -174,11 +174,7 @@ class SfDownloadFile extends DownloadFileElement {
   }
 
   percentText(value) {
-    try {
-      return new Intl.NumberFormat(pageLocale(this), { style: 'percent', maximumFractionDigits: 0 }).format(value / 100);
-    } catch {
-      return `${value} %`;
-    }
+    return percentText(Math.round(Number(value)), this);
   }
 
   templateContext() {

@@ -16,7 +16,8 @@
     "bad-input": "Введите число",
     "count-text": "{count} / {max}",
     "help": "Подробнее: {label}",
-    "caps-lock": "Включён Caps Lock"
+    "caps-lock": "Включён Caps Lock",
+    "conceal": "Скрыть пароль"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

@@ -34,10 +34,24 @@
     // place, research 5.2), so a scrollbar on a coloured place or glass takes
     // that place's boundary instead of a grey drawn on it.
     --sf-scroll-bg-thumb: var(--sf-outline);
+    // C208 (1): one hover rule for every bar. At rest the thumb is the place's
+    // boundary, under the pointer and while it is dragged the place's text;
+    // the width does not change. Both are roles of the place the bar is in,
+    // so a bar on a coloured place, on the inverse or on glass follows it
+    // (C208 (2): no palette of the scrollbar's own).
+    --sf-scroll--thumb-hover: var(--sf-on-surface);
+    // C208 (3): the thickness does not follow the density or the phone --
+    // track 14, thumb 6 (the a/b ladders do not change with the density).
     --sf-scroll-bg-width: var(--sf-b4);
     --sf-scroll-thumb-size: var(--sf-a6);
     --sf-scroll-thumb-width: var(--sf-scroll-thumb-size);
     --sf-scroll-thumb-inset: var(--sf-a4);
+    // The two distances around the thumb (open owner question q-sb-gaps):
+    // content to bar and bar to the area's edge. One value each, so the
+    // answer is a change of two declarations; the track stays
+    // gap + thumb + gap (4 + 6 + 4 = 14 today).
+    --sf-scroll--gap-content: var(--sf-scroll-thumb-inset);
+    --sf-scroll--gap-edge: var(--sf-scroll-thumb-inset);
     --sf-scroll-radius: var(--sf-d6);
   }
 
@@ -55,6 +69,29 @@
     background-color: var(--sf-scroll-bg-thumb);
   }
 
+  // The two distances around the thumb: the content side is the start of a
+  // vertical bar's track (its end in a right-to-left area, where the bar
+  // stands on the left) and the top of a horizontal one.
+  ::-webkit-scrollbar-thumb:vertical {
+    border-left-width: var(--sf-scroll--gap-content);
+    border-right-width: var(--sf-scroll--gap-edge);
+  }
+
+  ::-webkit-scrollbar-thumb:horizontal {
+    border-top-width: var(--sf-scroll--gap-content);
+    border-bottom-width: var(--sf-scroll--gap-edge);
+  }
+
+  :dir(rtl)::-webkit-scrollbar-thumb:vertical {
+    border-left-width: var(--sf-scroll--gap-edge);
+    border-right-width: var(--sf-scroll--gap-content);
+  }
+
+  ::-webkit-scrollbar-thumb:hover,
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--sf-scroll--thumb-hover);
+  }
+
   ::-webkit-scrollbar-corner {
     background-color: var(--sf-transparent);
   }
@@ -66,6 +103,17 @@
     background-clip: padding-box;
     border-radius: var(--sf-scroll-radius);
   }
+
+  // C208 (2), SB-3: Firefox reads no ::-webkit-scrollbar, only the standard
+  // properties; it gets the same thumb colour, the place's boundary, and its
+  // thin bar (Firefox has no exact width). Behind the support query, because
+  // Chrome 121 and later drop every ::-webkit-scrollbar rule of an element
+  // with scrollbar-color or scrollbar-width set (SB-7): Chrome and Safari keep
+  // the drawn 14 / 6 bar above.
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-color: var(--sf-scroll-bg-thumb) var(--sf-scroll-bg-track);
+      scrollbar-width: thin;
+    }
+  }
 }
-
-

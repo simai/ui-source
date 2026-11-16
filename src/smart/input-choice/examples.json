@@ -354,6 +354,100 @@
           ]
         }
       }
+    },
+    {
+      "name": "group",
+      "title": "Готовая группа",
+      "settings": {
+        "appearance": "list",
+        "label": "Способ оплаты",
+        "name": "payment",
+        "value": "card",
+        "hint": "Счёт придёт на почту.",
+        "help": "Организация платит по счёту, человек — картой.",
+        "items": [
+          {
+            "value": "card",
+            "label": "Картой"
+          },
+          {
+            "value": "invoice",
+            "label": "По счёту",
+            "caption": "Для организаций"
+          },
+          {
+            "value": "cash",
+            "label": "Наличными курьеру"
+          }
+        ]
+      },
+      "expect": {
+        "role": "radiogroup",
+        "name": "Способ оплаты",
+        "form": {
+          "payment": "card"
+        }
+      }
+    },
+    {
+      "name": "group-row",
+      "title": "Короткие варианты в строку",
+      "settings": {
+        "appearance": "list",
+        "label": "Покупатель",
+        "name": "buyer",
+        "value": "person",
+        "items": [
+          {
+            "value": "person",
+            "label": "Физлицо"
+          },
+          {
+            "value": "company",
+            "label": "Организация"
+          }
+        ]
+      },
+      "expect": {
+        "role": "radiogroup",
+        "name": "Покупатель",
+        "form": {
+          "buyer": "person"
+        }
+      }
+    },
+    {
+      "name": "group-checks",
+      "title": "Флажки с ошибкой",
+      "settings": {
+        "appearance": "list",
+        "label": "Уведомления",
+        "name": "notify",
+        "multiple": true,
+        "required": true,
+        "invalid": true,
+        "error-message": "Выберите хотя бы один способ.",
+        "flow": "column",
+        "items": [
+          {
+            "value": "mail",
+            "label": "По почте"
+          },
+          {
+            "value": "push",
+            "label": "В браузере"
+          },
+          {
+            "value": "sms",
+            "label": "СМС",
+            "caption": "Только на подтверждённый номер"
+          }
+        ]
+      },
+      "expect": {
+        "role": "group",
+        "name": "Уведомления"
+      }
     }
   ],
   "pages": [

@@ -169,7 +169,9 @@
   ],
   "cl-input-choice": [
     "align-items/default",
+    "cursor/default",
     "display/default",
+    "flex-direction/default",
     "justify-content/default",
     "transition-property/default"
   ],

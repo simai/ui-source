@@ -1,3 +1,22 @@
+@use "sass:map";
+@use "sass:meta";
+@use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+@use "../../../core/scss/mix/mix__breakpoint" as mq;
+
+/// container-step() of core's one ladder (owner decision C181 (2)) where the
+/// core has it; on a core before the ladder, the md breakpoint (the ladder's
+/// h1, 704 px at the root size: the same step).
+@function tabs-container-step($step) {
+  $ladder: map.get(meta.module-functions("mq"), "container-step");
+  @if $ladder {
+    @return meta.call($ladder, $step);
+  }
+  @if $step != h1 {
+    @error "component.tabs asks only for the h1 step before the core has the ladder.";
+  }
+  @return map.get(bp.$breakpoint-array, md);
+}
+
 @layer sf.components {
   .sf-tabs {
     background-color: var(--sf-tabs--background-color, transparent);
@@ -631,6 +650,47 @@
     flex: 1 1 0;
     min-inline-size: max-content;
     justify-content: center;
+  }
+
+  // fit auto on a narrow place (C96 item 7 by C181 (2)): the row of «Ещё» is a
+  // container, and below the h1 step of its own width (704 px at the root
+  // size) two to four tabs share it -- in the sheet, so the printed first frame shares it as the laid
+  // row does. The code says the place is narrow by reading --sf-tabs--narrow,
+  // the same condition, and writes data-sf-tabs-own on a narrow row whose tabs
+  // keep their own widths (fit never, a row that does not fit, «Ещё» shown).
+  // A printed row was laid at the snapshot's desktop width: its tabs kept
+  // their own widths there and moved when the code shared the row on a phone
+  // (CLS 0.0064 at 390).
+  .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container {
+    container: sf-tabs-row / inline-size;
+  }
+
+  @container sf-tabs-row (width < #{tabs-container-step(h1)}) {
+    .sf-tabs-top-container > .sf-tabs-top {
+      --sf-tabs--narrow: 1;
+    }
+
+    :not([fit="never"]) > .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container:not([data-sf-tabs-own]) > .sf-tabs-top:has(> :nth-child(2)):not(:has(> :nth-child(5))) {
+      flex: 1 1 auto;
+    }
+
+    :not([fit="never"]) > .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container:not([data-sf-tabs-own]) > .sf-tabs-top:has(> :nth-child(2)):not(:has(> :nth-child(5))) > * > :is(.sf-button, .sf-icon-button),
+    :not([fit="never"]) > .sf-tabs--overflow-more:not(.sf-tabs--vertical) > .sf-tabs-top-container:not([data-sf-tabs-own]) > .sf-tabs-top:has(> :nth-child(2)):not(:has(> :nth-child(5))) > :is(.sf-button, .sf-icon-button) {
+      flex: 1 1 0;
+      min-inline-size: max-content;
+      justify-content: center;
+    }
+
+    // A shared line row keeps the outer padding of its first and last tab.
+    :not([fit="never"]) > .sf-tabs--overflow-more:is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-own]) > .sf-tabs-top:has(> :nth-child(2)):not(:has(> :nth-child(5))) > :first-child > .sf-button,
+    :not([fit="never"]) > .sf-tabs--overflow-more:is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-own]) > .sf-tabs-top:has(> :nth-child(2)):not(:has(> :nth-child(5))) > .sf-button:first-child {
+      --sf-button--padding-inline-start: var(--sf-tabs--padding-inline);
+    }
+
+    :not([fit="never"]) > .sf-tabs--overflow-more:is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-own]) > .sf-tabs-top:has(> :nth-child(2)):not(:has(> :nth-child(5))) > :last-child > .sf-button,
+    :not([fit="never"]) > .sf-tabs--overflow-more:is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container:not([data-sf-tabs-own]) > .sf-tabs-top:has(> :nth-child(2)):not(:has(> :nth-child(5))) > .sf-button:last-child {
+      --sf-button--padding-inline-end: var(--sf-tabs--padding-inline);
+    }
   }
 
   // Wrapping rows instead of scrolling one.

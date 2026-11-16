@@ -6,7 +6,7 @@ import {nameWithBadge, renderAnchoredBadge, renderAnchoredBadgeText} from '../..
 const ICON_BUTTON_SIZES = new Set(['1/3', '1/2', '1', '2', '3']);
 // The drawing class of each appearance; surface is resolved to tonal by the
 // element (C15), a value off the list draws the default.
-const ICON_BUTTON_LOOK = {default: 'default', tonal: 'tonal', outline: 'outline', ghost: 'link', link: 'link', surface: 'surface'};
+const ICON_BUTTON_LOOK = {default: 'default', tonal: 'tonal', outline: 'outline', ghost: 'link', link: 'link', surface: 'surface', plain: 'plain'};
 
 function statusClasses(status, scheme) {
     if (status === 'danger' || status === 'error') return ['sf-icon-button--danger', 'sf-icon-button--error'];

@@ -8,6 +8,7 @@
   "sheets": [
     "component/badges/css/badges.min.css",
     "component/close/css/close.min.css",
+    "component/dot/css/dot.min.css",
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
     "component/inputs/css/inputs.min.css",
@@ -33,6 +34,7 @@
     "at-max": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -57,6 +59,7 @@
     "disabled": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -81,6 +84,7 @@
     "exact": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -104,6 +108,7 @@
     "inherited": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -128,6 +133,7 @@
     "invalid": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -152,6 +158,7 @@
     "price": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -176,6 +183,7 @@
     "readonly": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -200,6 +208,7 @@
     "reference": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -224,6 +233,7 @@
     "removable": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -247,6 +257,7 @@
     "size-2": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",
@@ -271,6 +282,7 @@
     "unit": [
       "component/badges/css/badges.min.css",
       "component/close/css/close.min.css",
+      "component/dot/css/dot.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
       "component/inputs/css/inputs.min.css",

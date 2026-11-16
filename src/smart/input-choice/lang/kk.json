@@ -1,5 +1,6 @@
 {
   "runtime": {
-    "value-missing": "Нұсқаны таңдаңыз."
+    "value-missing": "Нұсқаны таңдаңыз.",
+    "help": "Толығырақ: {label}"
   }
 }

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-choice's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14: choice cards, Larena's request of 2026-11-02 (Federation bus msg-993e1e39151942c19b23, item 3), named sf-input-choice in the dispatcher's plan of 2026-11-03 (msg-05e76ea0bc0746a690b8).",
   "id": "smart.input-choice",
   "tag": "sf-input-choice",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -68,6 +68,15 @@
       "default": false,
       "summary": "Several options: the cards are checkboxes in a group. Without it one option is chosen, the cards are a radio group."
     },
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "cards",
+        "list"
+      ],
+      "default": "cards",
+      "summary": "cards: the options as cards in a layout of tile, list or picture (C28). list (owner decision C165 (1)): the ready group of checks or radios -- the label as a heading (text 1, medium) with its «*» and «?», the hint under it, each option a row of the class checkbox or radio (as sf-checkbox and sf-radio draw them: 40 at size 1, 60 with a caption as its description; only the control and its words are the target), and the error under the last row with the error icon; an option's icon, badge, price, term and image are not drawn. The value, the form, the keys and the events are the same in both."
+    },
     "layout": {
       "type": "enum",
       "values": [
@@ -77,6 +86,16 @@
       ],
       "default": "tile",
       "summary": "How the cards stand (owner decision C28). tile: cards in the grid, the control at the end of the name line, name, description and price on one left edge, the price at the foot after a divider (plans, modules). list: one frame of rows divided by lines, the control at the start, price and term a column at the end of the name line (delivery, payment); columns does not apply. picture: tiles whose image runs to the edges, the caption under it and the control at the end of the caption's name line; in a field narrower than 30rem (a phone) each tile is a row, the image at its start."
+    },
+    "flow": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "row",
+        "column"
+      ],
+      "default": "auto",
+      "summary": "How the rows of appearance list stand (C165 (3)); read only under list, layout stays the cards'. auto -- a row for up to three short options (a name of at most 20 characters, no caption), else a column; row -- side by side, --sf-space-1 apart (C105 H6), wrapping where they do not fit and a column in a field narrower than 24rem (the container step g2: a phone, while a form's half column keeps the row); column -- one under another."
     },
     "columns": {
       "type": "enum",
@@ -99,6 +118,11 @@
       "type": "string",
       "default": "",
       "summary": "The line under the cards; it describes the group."
+    },
+    "help": {
+      "type": "string",
+      "default": "",
+      "summary": "The explanation behind a «?» (sf-help-mark, C133's look) after the label (C153 (8), C165 (1)): size 1/3, --sf-space-1/4 after it, held to the label's line so the line keeps its height. The mark is named by its subject («Подробнее: <label>», lang runtime help). Empty: no mark."
     },
     "name": {
       "type": "string",
@@ -207,6 +231,14 @@
         "An option's badge is sf-badge (tonal, primary, on the half line) beside its",
         "name, only when an option carries one."
       ]
+    },
+    {
+      "name": "cl-help-mark",
+      "lazy": true,
+      "$comment": [
+        "The «?» after the label or the heading (help, C153 (8), C165 (1)) is",
+        "sf-help-mark, only when help is set."
+      ]
     }
   ],
   "templates": {
@@ -306,7 +338,10 @@
     "version 1.2.0, also (2026-11-11, DEV review of the preloader round, control/evidence/2026-11-11-input-choice-preloader-accept, D1 and D2): the share of the row never makes more tracks than there are options. One or two options fit their tracks (auto-fit): the tracks no option takes collapse, so one option fills the row and two take half each at every width (base left a half-row empty for one option from 500 px and an empty third track for two from 740 px); two options in a 30rem field also give way to a half of the row; three or more are unchanged. In tile and picture a badge that does not fit beside the name drops under it and is not cut while the card holds it: on its own line it may run under the control, which stands on the first line only. Settings, values, events and keys unchanged.",
     "version 1.2.0, also (2026-11-12, owner C68 and C72, DEV C71 msg-e48114d2ff004562a03b, prototypes/input-choice-compare.html#k-title-gap and #k-icon-all, ui-control evidence 2026-11-12-input-choice-c68-c71): a quarter step (--sf-space-1/4, 4) from the name to the description, a row gap of the card body; a badge that wraps under the name keeps the same 4 above it, so it stands evenly between the name and the description. The icon before the name is as far from it as sf-button size 1 puts its text from its icon (--sf-ui-1--text-space-x), not the step between the name's parts, which fell to 4 in a compact area; the step from the name to its badge stays. The name is held to the room beside its icon, so in a narrow tile with a badge that does not fit it wraps beside the icon instead of going under it and leaving the icon alone on the first line. In a tile or a picture card a word of the name is never broken inside (DEV return of C72, ui-control evidence 2026-11-12-input-choice-c72-r2: «Бизнес» was split in a 154.7 px tile): the name wraps only between words and is never narrower than its longest word, so it stays beside the icon while that word fits there; otherwise the whole name moves to the line under the icon and may run under the control, as the badge does.",
     "version 1.4.0 (2026-11-14, owner decision C153; research ui-control control/research/2026-11-14-text-inputs.md, prototype prototypes/text-inputs-study.html; written on the branch as 1.3.0): a minor. The field shows its own errors as sf-input does (C153 (3), helpers/form-field.js): a failed check of the form shows every wrong field at once and the first takes the focus when the person submitted; afterwards, once the value was changed, leaving the field checks it; a shown error goes the moment the value is right; the words are the component's, in the page's language; the browser's bubble is cancelled.",
-    "version 1.3.1 (2026-11-14, owner decision C181 (2)): a patch, no look. The 30rem of C28 (three tiles to a row, the phone look below) is the container step g5 of the one ladder, written container-step(). Markup, settings, values, events and keys unchanged."
+    "version 1.3.1 (2026-11-14, owner decision C181 (2)): a patch, no look. The 30rem of C28 (three tiles to a row, the phone look below) is the container step g5 of the one ladder, written container-step(). Markup, settings, values, events and keys unchanged.",
+    "version 1.5.0 (2026-11-15, owner decision C165 (1), (3); research ui-control control/research/2026-11-14-checks.md, prototype prototypes/checks-study.html #q-group, #q-inline; names by the dispatcher 2026-11-14): a minor, above the group build's 1.4.0. New setting appearance: cards (the default, everything as before) or list -- the ready group of checks or radios: the label as the group's heading (text 1, medium, the text ink, «*» in its ink), the hint under it, every option a row of the class checkbox (multiple) or radio drawn as sf-checkbox and sf-radio draw them (C63: the row is the step, 40 at size 1 and 60 with a caption as the description line, the coarse-pointer target max(step, --sf-d1); only the control and its words are pressed; box to name C105 H2 from the class sheets; the name 400), and the error under the last row in the error ink with the error icon (while invalid every row's control is in the error colour, as an invalid sf-radio). The group is named by the heading and described by the hint and the error. New setting flow (C165 (3), name by the dispatcher 2026-11-15), read only under list: auto (the default) puts up to three short options (no caption, a name of at most 20 characters) in a row and the rest in a column; row is --sf-space-1 apart (C105 H6), wraps, and is a column in a field narrower than 24rem (container step g2; a phone, while a form's half column keeps the row); column. layout keeps the cards' tile, list and picture. New setting help: a «?» (sf-help-mark 1/3, named «Подробнее: <label>», lang runtime help) after the heading or, under cards, after the label, held to its line. sf-form draws its short choice fields through appearance list (sf-form 1.1.0). No loading skeleton of its own (the owner's route, msg-be707cc5: the cards and the group arrive with the server page): x-registry presentation.skeleton is shape none (it was block), so neither the Loader nor the docs promise a block; the declaration itself stays, as every Smart manifest declares what it is before its code (owner 2026-10-15, rules of the road rule 5; tests/placeholder.contract.test.mjs). The first paint is the static snapshot, as before.",
+    "appearance list, not a new tag (dispatcher 2026-11-14 by the owner's delegation of names, C165): the ready group is sf-input-choice drawn as rows, so one field family member holds one value model, one form contract and one set of keys for cards and rows alike. Its rows are the class markup of the checkbox and the radio, not sf-checkbox and sf-radio elements: the host is the one form control (ElementInternals), and inner form-associated elements would each submit and validate on their own.",
+    "flow, not layout (dispatcher 2026-11-15 by the owner's delegation of names): layout keeps one meaning, the cards' tile|list|picture since 1.0; the arrangement of the list's rows is its own setting, read only under appearance list."
   ],
   "x-registry": {
     "reuse_mode": "whole",
@@ -381,15 +416,15 @@
         "mobile"
       ],
       "skeleton": {
-        "shape": "block",
+        "shape": "none",
         "while_loading": "none"
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-input-choice to pick one or several of a few options that need words to tell apart -- a site's kind, a page type, a template, a field type, a backup target, a plan -- shown all at once as cards.",
+      "use_when": "Use sf-input-choice to pick one or several of a few options shown all at once: as cards (appearance cards) where the options need words to tell apart -- a site's kind, a page type, a template, a field type, a backup target, a plan; as a ready group of checks or radios (appearance list) for a question with a heading, a hint and one error -- a buyer's kind, notifications, a payment way.",
       "do_not": [
         "Do not use it for a long list; use sf-input-select or sf-input-lookup",
-        "Do not use it for two or three short words; use sf-button-group (segmented) or sf-radio",
+        "Do not build a group of sf-radio or sf-checkbox with a heading and an error of your own; use appearance list",
         "Do not draw cards of your own with radios inside; give the options to the field"
       ],
       "required_reads": [

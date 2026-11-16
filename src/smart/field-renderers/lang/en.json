@@ -42,6 +42,7 @@
     "variant-integer-stepper": "With steppers",
     "type-number": "Number",
     "variant-number-scale": "Scale 0–100",
+    "variant-number-meter": "Share of a limit",
     "variant-number-stepper": "With steppers",
     "type-date": "Date",
     "type-datetime": "Date and time",

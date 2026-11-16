@@ -6,7 +6,7 @@ import {InheritedValueField} from '../helpers/inherited-value';
 import {FormField, ShownValidity} from '../helpers/form-field';
 import {renderColorTemplate} from './js/templates/default';
 import {
-    PALETTE, FORMATS, clamp, darkInk, formatColour, hsvToRgb, isPaletteName, normaliseHex, parseColour,
+    PALETTE, clamp, darkInk, formatColour, hsvToRgb, isPaletteName, normaliseHex, parseColour,
     parseHex, rgbToHsv, statesAlpha, toHex,
 } from './js/color-math.js';
 import {RECENT_SHOW, onRecentChange, recentColours, rememberColour} from './js/recent.js';
@@ -29,7 +29,9 @@ const ru = {runtime: ruFile.runtime};
 // compact window, never the browser's colour dialog, which looked different in
 // every browser (R130). The window shows the static palette first («Палитра»)
 // and, unless `custom` is off, «Своё»: a shade area, an eyedropper where the
-// browser has one, the hue and alpha strips and one row «format | code | %».
+// browser has one, the hue and alpha strips and, at the bottom, one row: the
+// code with its copy action (and the % with `alpha`) and «Применить» (owner
+// decision C209, 2026-11-15: the code is always hex, the format menu is gone).
 // On a phone it is a sheet at the bottom of the screen.
 //
 // The value is a palette name (`blue`: one word in every language, painted in
@@ -67,6 +69,8 @@ const onPhone = (doc) => !doc.defaultView?.getComputedStyle(doc.documentElement)
 const THEME_DEBOUNCE = 120;
 // How long a key held on a strip or in a number field rests before it commits.
 const KEY_COMMIT = 400;
+// How long the copy action shows its check after the code is copied (C209 (4)).
+const COPY_SHOWN = 1200;
 
 // The value: a palette name, or a hex (#rgb and #rgba are read and stored long,
 // lowercase; an opaque #rrggbbff is #rrggbb). Anything else is not a colour
@@ -515,7 +519,28 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
         this.append(probe);
         const read = doc.defaultView?.getComputedStyle(probe).color || "";
         probe.remove();
-        return cssRgb(read);
+        return cssRgb(read) || this._canvasRgb(read);
+    }
+
+    // A computed colour the page keeps in its own space -- oklch(), lab(),
+    // color(display-p3 …) stay so in a computed style -- read back as sRGB
+    // through a one-pixel canvas, which clips it to the screen's gamut as the
+    // page paints it (C209 (1): oklch() typed into the code became nothing).
+    _canvasRgb(text) {
+        if (!text) return null;
+        try {
+            const canvas = this.ownerDocument.createElement("canvas");
+            canvas.width = 1;
+            canvas.height = 1;
+            const paint = canvas.getContext("2d", {willReadFrequently: true});
+            if (!paint) return null;
+            paint.fillStyle = text;
+            paint.fillRect(0, 0, 1, 1);
+            const [r, g, b, a] = paint.getImageData(0, 0, 1, 1).data;
+            return {rgb: [r, g, b], a: a / 255};
+        } catch {
+            return null;
+        }
     }
 
     // The tone the field paints (50 light, 70 dark), or with `seed` tone 50 in
@@ -569,8 +594,8 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
         if (this.disabled || this._open) return Boolean(this._open);
         const value = this.value || this.inheritedValue;
         this._seed(value);
-        this._format ??= "hex";
         this._codeError = "";
+        this._typing = false;
         this._anchor = anchor && typeof anchor.getBoundingClientRect === "function" ? anchor : null;
         const own = this.offersCustom && (!this.offersPalette || (value && !isPaletteName(value)
             && !this.swatchList.some((swatch) => swatch.value === value)));
@@ -583,14 +608,22 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
             onOutsidePress: () => this.closePicker({reason: "outside", restoreFocus: false}),
             onEscape: () => {
                 if (!isTopOpenSurface(this)) return false;
-                if (this._formatOpen) {
-                    this._closeFormatMenu(true);
-                    return true;
-                }
                 this.closePicker({reason: "escape", restoreFocus: true});
                 return true;
             },
         });
+        // CF-1: a non-modal window under its field. Tab moves through the field
+        // and the window; the focus going anywhere else closes it, as a press
+        // outside does, and stays where Tab took it (sf-input-date's calendar,
+        // sf-dropdown's list). It stayed open behind the next control. A focus
+        // that goes nowhere (the browser window losing focus, the eyedropper)
+        // keeps it.
+        this._onFocusOut ??= (event) => {
+            const next = event.relatedTarget;
+            if (!this._open || !next || this.contains(next) || this._anchor?.contains?.(next)) return;
+            this.closePicker({reason: "focus", restoreFocus: false});
+        };
+        this.addEventListener("focusout", this._onFocusOut);
         this._onViewport ??= () => {
             if (this._open && this._sheetMode !== onPhone(this.ownerDocument)) this._placeWindow(true);
         };
@@ -619,8 +652,8 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
     _closeQuietly() {
         if (!this._open) return;
         this._open = false;
-        this._formatOpen = false;
         clearTimeout(this._keyTimer);
+        this.removeEventListener("focusout", this._onFocusOut);
         if (this._pendingCommit) this._commitOwn();
         holdOpenSurfaceMark(this, false);
         globalThis.removeEventListener("resize", this._onViewport);
@@ -756,24 +789,55 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
         this._keyTimer = setTimeout(() => this._commitOwn(), KEY_COMMIT);
     }
 
-    // The code field: read in the chosen format while typed, committed on
-    // Enter or when the field is left. A colour the field cannot read says so
-    // under the row and changes nothing.
+    // The code field (C209 (1)): a hex, or any CSS colour typed or pasted --
+    // rgb(), hsl(), oklch(), a name. A colour it reads is the field's at once,
+    // as hex, while the text stays as typed; it is committed on Enter, on
+    // «Применить» or when the field is left. A colour the field cannot read
+    // says so under the row and changes nothing.
     codeOn(event, commit) {
-        const text = event.currentTarget.value;
-        const parsed = parseColour(text, this._format, (css) => this._cssColour(css));
+        return this._takeCode(event.currentTarget.value, commit);
+    }
+
+    _takeCode(text, commit) {
+        const parsed = parseColour(text, "hex", (css) => this._cssColour(css));
         this._codeDraft = text;
         this._typing = !commit || !parsed;
         if (!parsed) {
-            this._codeError = text.trim() ? this.sfWord("not-a-colour", {vars: {format: FORMAT_WORD[this._format]}}) : "";
+            this._codeError = String(text ?? "").trim() ? this.sfWord("not-a-colour") : "";
             this.requestComponentUpdate("code");
-            return;
+            return false;
         }
         const [h, s, v] = rgbToHsv(parsed.rgb);
         this._hsv = [s > 0 ? h : this._hsv[0], s, v];
         if (this.takesAlpha && statesAlpha(text)) this._alphaValue = parsed.a;
         this._moved();
         if (commit) this._commitOwn();
+        return true;
+    }
+
+    /**
+     * «Применить» (C209 (2)): the code in the field is applied and the window
+     * closes, the focus back on the field. A colour moved by the pointer is
+     * already the value, so the press only closes. A code the field cannot
+     * read keeps the window open and says so. Returns whether it closed.
+     */
+    applyCode() {
+        if (!this._open) return true;
+        const field = this.querySelector(".sf-color-code");
+        if (field && this._typing && !this._takeCode(field.value, true)) {
+            field.focus({preventScroll: true});
+            return false;
+        }
+        if (this._pendingCommit) this._commitOwn();
+        this._typing = false;
+        return this.closePicker({reason: "apply", restoreFocus: true});
+    }
+
+    // What the copy action copies (C209 (4)): the colour's code as the field
+    // shows it, upper case, with its alpha pair while the colour is
+    // translucent.
+    get copyText() {
+        return this.ownColour.toUpperCase();
     }
 
     alphaOn(event, commit) {
@@ -812,53 +876,7 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
     // colour on every key, «#1f» became «#1F0000» under the caret.
     get codeText() {
         if (this._typing) return this._codeDraft ?? "";
-        return formatColour(this._hsv || [0, 0, 0], this._format || "hex");
-    }
-
-    // The format menu under «Hex ▾»: a small nested list on the one dropdown
-    // standard -- the chosen row highlighted, menuitemradio and aria-checked.
-    toggleFormatMenu() {
-        if (this._formatOpen) {
-            this._closeFormatMenu(true);
-            return;
-        }
-        this._formatOpen = true;
-        this.requestComponentUpdate("format");
-        this.whenRendered?.(() => {
-            const menu = this.querySelector(".sf-color-format-menu");
-            const button = this.querySelector(".sf-color-format");
-            if (!menu || !button) return;
-            this._formatPlaced = position().anchor(button, menu, {side: "block-end", align: "start", fitHeight: true, autoUpdate: true});
-            menu.querySelector('[aria-checked="true"]')?.focus({preventScroll: true});
-        }, {next: true});
-    }
-
-    _closeFormatMenu(restoreFocus) {
-        this._formatOpen = false;
-        this._formatPlaced?.stop();
-        this._formatPlaced = null;
-        this.requestComponentUpdate("format");
-        if (restoreFocus) this.querySelector(".sf-color-format")?.focus({preventScroll: true});
-    }
-
-    setFormat(format) {
-        if (FORMATS.includes(format)) this._format = format;
-        this._codeError = "";
-        this._typing = false;
-        this._closeFormatMenu(true);
-    }
-
-    formatMenuKey(event) {
-        const items = [...event.currentTarget.querySelectorAll("[data-format]")];
-        const at = items.indexOf(this.ownerDocument.activeElement);
-        const step = {ArrowDown: 1, ArrowUp: -1}[event.key];
-        if (event.key === "Tab") {
-            this._closeFormatMenu(false);
-            return;
-        }
-        if (step === undefined || at < 0) return;
-        event.preventDefault();
-        items[(at + step + items.length) % items.length].focus();
+        return formatColour(this._hsv || [0, 0, 0], "hex");
     }
 
     get hasEyeDropper() {
@@ -971,10 +989,8 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
             ownColour: open ? this.ownColour : "",
             codeText: open ? this.codeText : "",
             typing: Boolean(this._typing),
-            format: this._format || "hex",
-            formatOpen: Boolean(this._formatOpen),
-            formats: FORMATS,
-            formatWords: FORMAT_WORD,
+            copyText: open ? this.copyText : "",
+            copyShown: COPY_SHOWN,
             codeError: this._codeError || "",
             hasEyeDropper: this.hasEyeDropper,
             word: (key, vars) => this.sfWord(key, vars ? {vars} : undefined),
@@ -985,8 +1001,6 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
         return renderColorTemplate(this.templateContext());
     }
 }
-
-const FORMAT_WORD = Object.freeze({hex: "Hex", rgb: "RGB", hsl: "HSL", hsb: "HSB"});
 
 // rgb(r g b / a) or rgba(r, g, b, a), as a computed style gives it.
 function cssRgb(text) {

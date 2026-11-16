@@ -571,12 +571,47 @@
       var(--sf-surface-card);
   }
 
-  /* One joined group on the field standard, size 1/2 (R154): «format ▾ | code
-     | %». */
+  /* The bottom row of «Своё» (owner decision C209, prototype
+     colour-field-study #q-cf-simple B): the code field and «Применить» on its
+     right, a field and a button of one group (C105 H5: --sf-space-1/3), both
+     size 1/2. */
+  .sf-color-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--sf-space-1\/3);
+  }
+
+  /* With `alpha` the code, its copy action and the % do not fit beside
+     «Применить» in a 304 window (the code had 44 px, 12 in the compact
+     density): the code field takes the whole row and «Применить» the next,
+     at its end. The prototype of C209 has no alpha; this is the fallback
+     until the owner chooses (evidence 2026-11-15-input-color-c209). */
+  .sf-color-code-row:has(.sf-color-percent) {
+    flex-basis: 100%;
+  }
+
+  .sf-color-apply {
+    flex: none;
+  }
+
+  /* The code field on the field standard, size 1/2 (R154): the code, the copy
+     action at its end -- the field layer's .sf-field-action, which
+     sf-button-copy draws inside a field frame (C123) -- and, with `alpha`, the
+     % after a divider. The frame says its step through the three variables
+     the field layer's rules read: the 1/2 text line, the 1/2 control height
+     and the 1/2 inset, where the code starts and the copy glyph ends. */
   .sf-color-code-row {
+    --sf-field-action--inset: var(--sf-ui-1\/2--space-x);
+    --sf-field-action--glyph: var(--sf-text-height-1\/2);
+    --sf-field-action--height: var(--sf-ui-1\/2--control-height);
     box-sizing: border-box;
     display: flex;
-    align-items: stretch;
+    flex: 1 1 0;
+    align-items: center;
+    gap: var(--sf-field-action--value-space);
+    min-inline-size: 0;
     block-size: var(--sf-ui-1\/2--control-height);
     overflow: hidden;
     border: var(--sf-px) solid var(--sf-outline);
@@ -584,40 +619,20 @@
     background-color: transparent;
   }
 
-  .sf-color-code-row:focus-within {
+  .sf-color-code-row:has(> .sf-color-copy:last-child) {
+    padding-inline-end: var(--sf-field-action--inset);
+  }
+
+  .sf-color-code-row:has(.sf-color-code:focus, .sf-color-alpha-input:focus) {
     border-color: var(--sf-primary);
   }
 
-  .sf-color-code-row > * + * {
-    border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
+  .sf-color-code-row:has(.sf-color-code[aria-invalid='true']) {
+    border-color: var(--sf-error);
   }
 
-  .sf-color-format {
-    display: inline-flex;
+  .sf-color-copy {
     flex: none;
-    align-items: center;
-    gap: var(--sf-a2);
-    padding-block: 0;
-    padding-inline: var(--sf-space-1\/2) var(--sf-space-1\/4);
-    border: 0;
-    background: transparent;
-    color: var(--sf-on-surface);
-    font: inherit;
-    cursor: pointer;
-  }
-
-  .sf-color-format:hover {
-    background-color: var(--sf-surface-state-hover);
-  }
-
-  .sf-color-format:focus-visible {
-    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(-1 * var(--sf-focus--width));
-  }
-
-  .sf-color-format-chevron {
-    color: var(--sf-on-surface-variant);
-    font-size: var(--sf-text-height-1\/2);
   }
 
   .sf-color-code,
@@ -634,15 +649,18 @@
 
   .sf-color-code {
     flex: 1 1 auto;
-    padding-inline: var(--sf-space-1\/2);
+    align-self: stretch;
+    padding-inline: var(--sf-field-action--inset) 0;
   }
 
   .sf-color-percent {
     display: inline-flex;
     flex: none;
+    align-self: stretch;
     align-items: center;
     inline-size: var(--sf-d8);
     padding-inline: var(--sf-space-1\/3) var(--sf-space-1\/2);
+    border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
     color: var(--sf-on-surface-variant);
   }
 
@@ -650,48 +668,6 @@
     inline-size: 100%;
     padding-inline: 0 var(--sf-a2);
     text-align: end;
-  }
-
-  /* The format list on the one dropdown standard: the chosen row highlighted,
-     no check (R170). Absolute until it is anchored under its button. */
-  .sf-color-format-menu {
-    position: absolute;
-    z-index: var(--sf-layer--popover);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    min-inline-size: var(--sf-e4);
-    padding: var(--sf-space-1\/4);
-    border-radius: var(--sf-radius--surface);
-    background-color: var(--sf-surface-popup-nested, var(--sf-surface-popup));
-    color: var(--sf-on-surface);
-    box-shadow: var(--sf-shadow-overlay);
-  }
-
-  .sf-color-format-menu > button {
-    display: flex;
-    align-items: center;
-    block-size: var(--sf-ui-1\/2--control-height);
-    padding-block: 0;
-    padding-inline: var(--sf-space-1\/2);
-    border: 0;
-    border-radius: var(--sf-radius--ui);
-    background: transparent;
-    color: inherit;
-    font: inherit;
-    text-align: start;
-    cursor: pointer;
-  }
-
-  .sf-color-format-menu > button:hover,
-  .sf-color-format-menu > button:focus-visible {
-    background-color: var(--sf-surface-state-hover);
-    outline: none;
-  }
-
-  .sf-color-format-menu > button[aria-checked='true'] {
-    background-color: var(--sf-surface-state-select);
-    font-weight: var(--sf-font-weight-medium);
   }
 
   .sf-color-error {

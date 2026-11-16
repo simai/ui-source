@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "title": "Form",
   "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit or instant in one component.",
   "kind": "smart",
@@ -347,15 +347,19 @@
   },
   "provenance": {
     "source_repository": "simai/ui-source",
-    "source_revision": "bec3d91dc18a1e8ca18a1e7de8fd416f621cc850",
+    "source_revision": "409385ff3cbac7fdac6df386ae472fc5a9e019fa",
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "8534375a743b58d4d5829555a69ae6800603f8af03b203e4f4a3721a3a332873"
+        "sha256": "04a2674ebc04de462e42f0b77214a2ab5b68680103a1595ac1ab0fc343df5551"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
         "sha256": "4cce2bf925e8e22286dbb7655f9aaa5fd4f3338fca52949acb9cc0b77892556e"
+      },
+      {
+        "path": "src/smart/form/js/choice-list.js",
+        "sha256": "c7f6f918b5f8dee0947d3bc504d81943298db870e9e7659143ebfafba3833a28"
       },
       {
         "path": "src/smart/form/rule.js",
@@ -363,7 +367,7 @@
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "41be4b3c8a787fac9bf1048af43316067524e0d484d29b9f08f1d7a5ddbe20bf"
+        "sha256": "6e2bfa4b64dd59718e482687bf230e489d3407d0086965b2dfcb4b51dfacc1ef"
       }
     ],
     "generated_runtime": []

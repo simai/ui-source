@@ -93,12 +93,18 @@ export function onlineIndicator(context) {
         3: "sf-online-indicator--size-3",
     };
 
+    // The point is the Framework's one dot (owner decision C185 (8)): the
+    // .sf-dot of the shared vocabulary draws the disc -- online the solid
+    // success dot, away the hollow neutral one --, and .sf-online-indicator
+    // only places it on the avatar and cuts it out with the place's ring.
+    const dot = context.status === "away" ? "sf-dot sf-dot--hollow sf-dot--neutral" : "sf-dot sf-dot--success";
+
     return html`
         <span aria-hidden="true"
                 class="sf-online-indicator sf-online-indicator--${context.status} ${sizeMap[
                         context.size
                         ] || ""} flex absolute bottom-0 inline-end-0"
-        ></span>
+        ><span class=${dot}><span class="sf-dot-item"></span></span></span>
     `;
 }
 

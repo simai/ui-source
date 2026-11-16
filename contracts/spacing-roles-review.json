@@ -126,17 +126,6 @@
       "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
     },
     {
-      "file": "src/smart/input-color/js/templates/default.css",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-a2",
-      "count": 1,
-      "status": "defect",
-      "owner": "sf-input-color (Smart)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
-    },
-    {
       "file": "src/smart/pager/scss/_smart__pager.scss",
       "role": "table",
       "property": "gap",

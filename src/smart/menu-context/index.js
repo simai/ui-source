@@ -73,6 +73,13 @@ const TYPEAHEAD_MS = 500;
 // The menus' own numbers for the ids of their icon options' tooltips.
 let menuTips = 0;
 
+// A tooltip that repeats what is in the row's name is not its description.
+function dropDescription(row, id) {
+    const rest = (row.getAttribute("aria-describedby") || "").split(/\s+/u).filter((one) => one && one !== id);
+    if (rest.length) row.setAttribute("aria-describedby", rest.join(" "));
+    else row.removeAttribute("aria-describedby");
+}
+
 // How wide a popup is by what it holds (owner decision C32, 2026-11-09): the
 // class sheet sizes each from core's --sf-popup-*-width steps, which follow
 // the density. "content" (the default) is the menu's rule.
@@ -296,6 +303,10 @@ class SfContextMenu extends ContextMenuElement {
     this.addEventListener("keydown", this.handleOwnedKeyDown);
     this.addEventListener("click", this.handleEntryClick);
     this.addEventListener("pointerover", this.handleEntryHover);
+    // A drilling row's cut value (TT-11): its tooltip, made on the first
+    // hover or keyboard focus.
+    this.addEventListener("pointerover", (event) => this.syncValueTooltip(event));
+    this.addEventListener("focusin", (event) => this.syncValueTooltip(event));
     // The objects of the areas named by `for` (C164): the page's events,
     // heard on the document while the menu is in the page.
     this._onAreaEvent = (event) => this.handleAreaEvent(event);
@@ -961,6 +972,77 @@ class SfContextMenu extends ContextMenuElement {
     // A choice ends the menu, unless the host cancelled the event to keep it
     // (a check list ticked several times) or the entry asked to stay.
     if (selected && !entry.keepOpen) this.closeAll({restoreFocus: !entry.href});
+  }
+
+  // The value under a drilling row's name (TT-11, owner decision C160 (1)):
+  // one line, cut with an ellipsis where it is long. A cut value is the row's
+  // Framework tooltip on hover, keyboard focus or a long press, not a browser
+  // title: the surface stands after the row, named by its data-tooltip, and
+  // the tooltip controller (component tooltip, asked for here) shows it. It is
+  // measured each time the row is reached, so a value that fits loses it. The
+  // value is already in the row's name, so the surface is not its
+  // description too (a screen reader would say the value twice).
+  syncValueTooltip(event) {
+    if (event.type === "pointerover" && event.pointerType === "touch") return;
+    const row = event.target?.closest?.(".sf-context-menu-item");
+    if (!row || row.closest(tagSelector("sf-menu-context")) !== this) return;
+    const under = row.querySelector(".sf-context-menu-item-under");
+    if (!under) return;
+    const next = row.nextElementSibling;
+    let tip = next?.classList?.contains("sf-context-menu-value-tooltip") ? next : null;
+    const words = (under.textContent || "").replace(/\s+/gu, " ").trim();
+    const cut = under.scrollWidth > under.clientWidth + 1;
+    if (!cut || !words) {
+      if (tip) {
+        if (row.getAttribute("data-tooltip") === tip.id) row.removeAttribute("data-tooltip");
+        tip.remove();
+      }
+      return;
+    }
+    const fresh = !tip;
+    if (!tip) {
+      const doc = this.ownerDocument;
+      tip = doc.createElement("span");
+      tip.className = "sf-tooltip sf-tooltip--dark sf-context-menu-value-tooltip";
+      tip.hidden = true;
+      const content = doc.createElement("span");
+      content.className = "sf-tooltip-content";
+      const text = doc.createElement("span");
+      text.className = "sf-tooltip-text";
+      content.append(text);
+      tip.append(content);
+      const prefix = this._tipPrefix ??= `sf-menu-tip-${++menuTips}`;
+      tip.id = `${prefix}-${String(row.dataset.sfEntry ?? "").replace(/[^\w-]/gu, "-")}-value`;
+      row.after(tip);
+    }
+    const text = tip.querySelector(".sf-tooltip-text");
+    if (text && text.textContent !== words) text.textContent = words;
+    if (row.getAttribute("data-tooltip") !== tip.id) row.setAttribute("data-tooltip", tip.id);
+    if (!fresh) {
+      dropDescription(row, tip.id);
+      return;
+    }
+    // The first time: the controller links the row on its own (its observer)
+    // and is handed the event that woke the tooltip while it still holds.
+    const kind = event.type;
+    const pointerType = event.pointerType;
+    const handOver = () => setTimeout(() => {
+      if (row.getAttribute("data-tooltip") !== tip.id) return;
+      dropDescription(row, tip.id);
+      if (kind === "pointerover" && row.matches(":hover")) {
+        row.dispatchEvent(new PointerEvent("pointerenter", {pointerType}));
+      } else if (kind === "focusin" && this.ownerDocument.activeElement === row) {
+        row.dispatchEvent(new FocusEvent("focusin"));
+      }
+    }, 0);
+    const loader = globalThis.SF?.Loader;
+    if (globalThis.SF?.ComponentRegistry?.Tooltip || loader?.ComponentRegistry?.Tooltip) {
+      handOver();
+      return;
+    }
+    loader?.ensurePlugin?.("tooltip");
+    if (typeof loader?.ready === "function") loader.ready("Tooltip", handOver);
+    else globalThis.addEventListener?.("Tooltip:ready", handOver, {once: true});
   }
 
   // A pointer resting on a row with a submenu opens it; resting on another
