@@ -257,6 +257,15 @@
       "reason": "Sized from the text around them by decision: inline code's room (C10, R024: .2em by .4em), an underline's offset, the new-tab sign of a link at the size of its text (C186 (3)). No ladder step is a fixed share of every text size."
     },
     {
+      "id": "link-icon-at-its-line",
+      "category": "style-review",
+      "filePattern": "^component/link/scss/_css__link\\.scss$",
+      "contextPattern": "^\\s*--sf-(?:icon--(?:width|height)|link-icon--size): 1em;",
+      "textPattern": "^1em$",
+      "status": "accepted-owner-decision",
+      "reason": "Owner decision C107 (5), RG-NV 6: a link's icon is as tall as the line of the text the link stands in (20 beside 14/20, 24 beside 16/24). Its glyph is 1lh of that line (font-size reads lh at the parent) and its box is that glyph, 1em; no ladder step follows the text around the link."
+    },
+    {
       "id": "text-bar-capital-height",
       "category": "style-review",
       "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss|component/modal/scss/_css__modal_custom\\.scss)$",
