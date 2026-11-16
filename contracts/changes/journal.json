@@ -14197,6 +14197,30 @@
       },
       "owner": "ui-source",
       "source": "src/utility/border-radius/default/scss/_sf_var__radius.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-border-study.html UT-BRD-4"
+    },
+    {
+      "id": "class-ut1-tracking",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V TYP-5 (C212, one name per job): tracking-normal is the public name of the default letter spacing (the Tailwind name, which drew nothing before), and tracking-no-tracking is its dated alias; both read --sf-text--tracking-no-tracking. The old name keeps drawing until remove_after, and the Loader notes it once in SF.deprecations. utility.letter-spacing 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "tracking-no-tracking",
+          "to": "tracking-normal"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write tracking-normal for tracking-no-tracking (sf-upgrade --apply rewrites it).",
+      "examples": {
+        "before": "<p class=\"tracking-no-tracking\">",
+        "after": "<p class=\"tracking-normal\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/letter-spacing/default/scss/_sf_css__letter_spacing.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-typography-study.html UT-TYP-5"
     }
   ]
 }

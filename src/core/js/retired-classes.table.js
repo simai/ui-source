@@ -358,6 +358,17 @@ export default {
         "radius-bottom-inline-start-square": "radius-bottom-inline-start-0",
         "radius-bottom-inline-end-square": "radius-bottom-inline-end-0"
       }
+    },
+    {
+      "journal": "class-ut1-tracking",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "tracking-normal is the name of the default letter spacing; tracking-no-tracking repeated the word and keeps drawing the same value until remove_after.",
+      "names": {
+        "tracking-no-tracking": "tracking-normal"
+      }
     }
   ],
   "extended": {
