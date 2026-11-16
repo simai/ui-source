@@ -3,8 +3,9 @@
   "schema_version": 1,
   "id": "component.doc",
   "kind": "component",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
+  "summary": "Retired (owner decision C187 (8), journal class-c187-doc-to-docara): the .sf-doc-* documentation helpers move to Docara; the sheet keeps drawing until 2027-01-01 and the Loader notes each name in SF.deprecations.",
   "files": [
     "src/component/doc/index.js",
     "src/component/doc/js/_doc.js",

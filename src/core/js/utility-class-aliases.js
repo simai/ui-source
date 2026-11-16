@@ -8,7 +8,8 @@
 // whatever the page opted into). Journals: class-table-sm-to-density,
 // class-text-flow-utility-aliases,
 // class-c187-retired-utilities, class-c187-retired-parts, class-c96-tabs-looks,
-// utility-c208-scrollbar-retired-sheets.
+// utility-c208-scrollbar-retired-sheets, class-c187-doc-to-docara,
+// class-editor-utility-retired.
 import table from './retired-classes.table.js';
 import {noteDeprecated} from './deprecations.js';
 
