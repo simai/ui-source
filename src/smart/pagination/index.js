@@ -170,6 +170,18 @@ const DEFAULT_ON = new Set(
     .map(([name]) => name),
 );
 
+
+// «[3] из 12»: the field stands where the word says {page} («{page} из
+// {count}»), so a language may put the count first. The text around the
+// field, trimmed: {before, after}. A word without {page} (a product's word
+// from before 1.7.x) is all after the field, as it was.
+export function ofPagesParts(word) {
+  const text = String(word ?? "");
+  const at = text.indexOf("{page}");
+  if (at < 0) return {before: "", after: text.trim()};
+  return {before: text.slice(0, at).trim(), after: text.slice(at + "{page}".length).trim()};
+}
+
 class SfPagination extends PaginationElement {
   static get props() {
     return {
@@ -812,8 +824,8 @@ class SfPagination extends PaginationElement {
       pagesLabelShown: this.hasAttribute("pages-label"),
       fieldDigits: Math.max(String(this.current).length, this.exactCount ? String(this.pageCount).length : 1, 1),
       ofPages: this.countKnown
-        ? this.sfWord("of-pages", {vars: {count: this.totalExact ? this.pageCount : `~${this.pageCount}`}})
-        : "",
+        ? ofPagesParts(this.sfWord("of-pages", {vars: {count: this.totalExact ? this.pageCount : `~${this.pageCount}`}}))
+        : null,
       pageSlots: this.appearance === "numbers" ? this.pageSlots : [],
       slotDigits: String(this.exactCount ? this.pageCount : this.current + 1).length,
       previousText: this.sfWord("previous-text"),

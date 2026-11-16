@@ -14,7 +14,7 @@
     "last-label": "Last",
     "next-label": "Next page",
     "next-text": "Next",
-    "of-pages": "of {count}",
+    "of-pages": "{page} of {count}",
     "page-field-label": "Page:",
     "page-label": "Page",
     "page-size-label": "Per page:",

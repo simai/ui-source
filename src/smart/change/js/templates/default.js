@@ -3,8 +3,8 @@ import {html, nothing} from 'lit';
 // sf-change's markup (scss/ draws it).
 //
 // - inline: [label: ] old value, then the arrow glued to the start of the new
-//   value; the values wrap. The arrow is a picture; a visually hidden
-//   word between the values says the change to a screen reader.
+//   value; the values wrap. The values and the arrow are a picture; a
+//   visually hidden phrase says the change to a screen reader.
 // - list: a dl, a term (the label) and a description (the pair) per change.
 // - folded (a long value in a sentence): the button «Показать изменения»
 //   (aria-expanded, aria-controls) and, revealed, the two values as blocks
@@ -32,11 +32,17 @@ const value = (context, text, part) => {
     : html`<span class=${`sf-change__${part}`}>${shown}</span>`;
 };
 
-// The arrow and the new value are joined by a no-break space (the hidden word
-// is out of flow and makes no break), so the arrow never ends a line alone;
-// both values wrap like any text.
-const pair = (context, change) => html`${value(context, change.before, 'before')}<span class="sf-change__pair"> <span
-  class="sf-change__arrow" aria-hidden="true">→</span><span class="sr-only"> ${context.words.to}</span>\u00a0${value(context, change.after, 'after')}</span>`;
+// The arrow and the new value are joined by a no-break space (the hidden
+// phrase is out of flow and makes no break), so the arrow never ends a line
+// alone; both values wrap like any text. The values and the arrow are a
+// picture for the eye; a screen reader hears one phrase of the language with
+// both values in it (change-text, «было {before}, стало {after}»): a word
+// glued between two values cannot be said in a language that ends the values
+// themselves (C177 follow-up).
+const said = (context, text) => (text === null ? context.words.empty : String(text).trim());
+const pair = (context, change) => html`<span aria-hidden="true">${value(context, change.before, 'before')}</span><span class="sf-change__pair"> <span
+  class="sf-change__arrow" aria-hidden="true">→</span><span class="sr-only">${context.words.change(said(context, change.before), said(context, change.after))}</span>\u00a0<span
+  aria-hidden="true">${value(context, change.after, 'after')}</span></span>`;
 
 const label = (context, change) => (context.showLabel && change.label
   ? html`<span class="sf-change__label">${change.label}${context.words.separator} </span>`

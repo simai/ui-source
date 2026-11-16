@@ -351,7 +351,7 @@ class SfRangeSlider extends RangeSliderElement {
       scaleMarks: scaleMarks(this),
       field: this.hasAttribute('field') && this.getAttribute('field') !== 'false',
       fieldLabels: this.fieldLabels(),
-      fieldWords: [this.sfWord?.('from') || 'от', this.sfWord?.('to') || 'до'],
+      fieldWords: [this.sfWord('from'), this.sfWord('to')],
       fieldUnit: [this.prefixText, this.suffix].map((unit) => String(unit ?? '').trim()).filter(Boolean).join(' '),
       fieldDecimal: String(this.step ?? '').includes('.') || Number(this.getAttribute('precision')) > 0,
       ticks: this.hasAttribute('ticks') && this.getAttribute('ticks') !== 'false',
@@ -359,12 +359,14 @@ class SfRangeSlider extends RangeSliderElement {
   }
 
   // Each number of the from/to field is named as its handle is: lower-label and
-  // upper-label, else the field's name or the host's aria-label with «от»/«до».
+  // upper-label, else one phrase of the language with the field's name or the
+  // host's aria-label in it (from-label «{name}, от»), else the word alone.
+  // The name has its place in the phrase, not glued before or after it (C177).
   fieldLabels() {
     const name = this.label || this.getAttribute('aria-label') || '';
     if (!this.multiple) return [name];
-    const words = [this.sfWord?.('from') || 'от', this.sfWord?.('to') || 'до'];
-    return [this.lowerLabel, this.upperLabel].map((own, index) => own || [words[index], name].filter(Boolean).join(' '));
+    return [[this.lowerLabel, 'from'], [this.upperLabel, 'to']].map(([own, key]) => own
+      || (name ? this.sfWord(`${key}-label`, {vars: {name}}) : this.sfWord(key)));
   }
 
   // The numbers of the from/to field follow the handles; the box being typed in

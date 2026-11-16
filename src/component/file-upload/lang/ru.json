@@ -4,6 +4,8 @@
     "uploading": "Загрузка",
     "uploading-name": "Загрузка {name}",
     "retry": "Повторить",
+    "remove-name": "Убрать {name}",
+    "retry-name": "Повторить {name}",
     "linkText": "Выберите файл",
     "text": "или перетащите его сюда",
     "not-added": "Не добавлено {n}:",

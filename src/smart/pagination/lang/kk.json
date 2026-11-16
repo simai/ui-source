@@ -13,7 +13,7 @@
     "last-label": "Соңғы",
     "next-label": "Келесі бет",
     "next-text": "Әрі қарай",
-    "of-pages": "/ {count}",
+    "of-pages": "{page} / {count}",
     "page-field-label": "Бет:",
     "page-label": "Бет",
     "page-size-label": "Бетте:",

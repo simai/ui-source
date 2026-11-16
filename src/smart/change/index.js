@@ -134,7 +134,7 @@ class SfChange extends ChangeElement {
       blocksId: `${this._uid}-blocks`,
       words: {
         empty: this.sfWord('empty-text'),
-        to: this.sfWord('to-text'),
+        change: (before, after) => this.sfWord('change-text', {vars: {before, after}}),
         separator: this.sfWord('label-separator'),
         show: this.sfWord('show-text'),
         hide: this.sfWord('hide-text'),

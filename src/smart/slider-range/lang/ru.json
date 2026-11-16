@@ -2,6 +2,8 @@
   "title": "Слайдер диапазона",
   "runtime": {
     "from": "от",
-    "to": "до"
+    "to": "до",
+    "from-label": "{name}, от",
+    "to-label": "{name}, до"
   }
 }

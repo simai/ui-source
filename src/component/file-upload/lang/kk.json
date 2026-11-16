@@ -4,6 +4,8 @@
     "uploading": "Жүктелуде",
     "uploading-name": "{name} жүктелуде",
     "retry": "Қайталау",
+    "remove-name": "{name} файлын алып тастау",
+    "retry-name": "{name} файлын қайталау",
     "linkText": "Файлды таңдаңыз",
     "text": "немесе осында сүйреп әкеліңіз",
     "not-added": "Қосылмады: {n}",

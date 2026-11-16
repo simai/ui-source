@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.3.8",
+  "version": "1.4.0",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -334,11 +334,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "e8550831c1f8614707700a8339a8fc6631b1be528dbcdd027fe6ffdba300abee"
+        "sha256": "43e6f41788a75f357d134ca19b6affe9309946264c4aa8abf0b2d4a1cd0c82de"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
-        "sha256": "36226e2893a27fd334690b8304ac6f2c87ab7c3bd237ebaef9a834029735da46"
+        "sha256": "06bc63df2b10d8a63f766ba42837d53a4ad926109d8bc729f1d40d1cca3cdc1b"
       },
       {
         "path": "src/smart/confirm/js/templates/default.css",
@@ -354,15 +354,15 @@
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "cc8f4bf75290a37cf44e8e9a4fccba5e2bfc39531cb4b6e42765b109038c5547"
+        "sha256": "cbef62745f1fc672aeed4df643fb0bd89f567021e46da29965d9f7facb167acb"
       },
       {
         "path": "src/smart/confirm/lang/en.json",
-        "sha256": "f18fa4ac4deeb5cc52ad9d19f371955c3f58d3c71ea1efad6c4a7f40610b44a7"
+        "sha256": "23259546ade65266681c2ead81630b53fd1e59a18f756a416f0309a9ed3638e3"
       },
       {
         "path": "src/smart/confirm/lang/ru.json",
-        "sha256": "e19d3fe148bc5c32d395841ad1ac58986222480519254cd8d21276e3bd07cc8d"
+        "sha256": "537c594642857bf17838552b54b85844885d490554e1a2798df3e5194f67cbc0"
       }
     ],
     "generated_runtime": []

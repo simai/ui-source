@@ -71,11 +71,11 @@ function renderConfirmWindow(context) {
                 : nothing}
             ${context.require
                 ? html`<div class="sf-confirm__require">
-                    <p class="sf-confirm__require-label" aria-hidden="true">${context.requireText} <code class="sf-confirm__name">${context.require}</code></p>
+                    <p class="sf-confirm__require-label" aria-hidden="true">${context.requireParts.before}<code class="sf-confirm__name">${context.require}</code>${context.requireParts.after}</p>
                     <sf-input
                             class="sf-confirm__field"
                             autocomplete="off"
-                            aria-label=${`${context.requireText} ${context.require}`}
+                            aria-label=${context.requireText}
                             ?invalid=${context.requireInvalid}
                             error-message=${context.requireInvalid ? context.requireError : nothing}
                             ?disabled=${context.answersLocked}

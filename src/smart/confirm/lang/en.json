@@ -9,7 +9,7 @@
     "expired-text": "The time to answer has passed",
     "question-label": "Confirmation",
     "require-error": "Type “{name}” exactly as above",
-    "require-text": "To confirm, type",
+    "require-text": "To confirm, type {name}",
     "until-text": "Answer by {time}"
   },
   "events": {

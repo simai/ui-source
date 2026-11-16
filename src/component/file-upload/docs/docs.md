@@ -96,3 +96,8 @@ keeps space-1 from the area (FU-12). An ordinary area submits nothing with a
 form; sf-file-upload does (FU-9).
 
 A chosen file's size is written by the core formatFileSize in the page's language («342 КБ», «342 KB»), not «342KB» (1.1.2, C25, FU-01). The glyphs of the zone and the rows are aria-hidden: their ligature names were read as text (FU-03).
+
+Названия кнопок строки (1.5.0, C177): «Убрать» и «Повторить» с именем файла —
+одно слово с местом для имени (`remove-name` «Убрать {name}», `retry-name`
+«Повторить {name}»), чтобы язык мог поставить имя первым (казахский: «{name}
+файлын алып тастау»).

@@ -1,6 +1,9 @@
 {
   "runtime": {
-    "count": "{count} unread",
+    "count": {
+      "one": "{count} unread",
+      "other": "{count} unread"
+    },
     "dot": "new"
   }
 }

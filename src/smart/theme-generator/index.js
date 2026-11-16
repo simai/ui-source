@@ -41,6 +41,7 @@ import ruFile from './lang/ru.json';
 const en = {runtime: enFile.runtime};
 const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
+import {formatNumber} from '../../core/js/format-number.js';
 
 // The journal record component-theme-generator-to-input-color-brand.
 const RETIRED = Object.freeze({since: '2026-11-12', remove_after: '2027-01-01'});
@@ -206,7 +207,7 @@ class SfThemeGenerator extends ThemeGeneratorElement {
     const word = (key) => this.sfWord(key);
     switch (check.code) {
       case 'contrast':
-        return this.sfWord('check-contrast', {vars: {scheme: word(`scheme-${check.scheme}`), ratio: String(check.ratio).replace('.', word('decimal'))}});
+        return this.sfWord('check-contrast', {vars: {scheme: word(`scheme-${check.scheme}`), ratio: formatNumber(check.ratio, 'number', {node: this})}});
       case 'adjusted':
         return this.sfWord(check.lighter ? 'check-adjusted-light' : 'check-adjusted-dark', {vars: {from: check.from, to: check.to}});
       case 'close-to-status':

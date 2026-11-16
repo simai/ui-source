@@ -55,7 +55,6 @@
     "check-status-success": "The colour is close to the success colour: an accent may read as «Done» or «Paid».",
     "check-status-warning": "The colour is close to the warning colour: an accent may read as «Attention».",
     "checks": "Colour check",
-    "decimal": ".",
     "scheme-dark": "dark",
     "scheme-light": "light",
     "brand": "Brand colour"

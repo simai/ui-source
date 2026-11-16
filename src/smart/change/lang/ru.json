@@ -2,7 +2,7 @@
   "title": "Изменение",
   "runtime": {
     "empty-text": "пусто",
-    "to-text": "на",
+    "change-text": "было {before}, стало {after}",
     "label-separator": ":",
     "show-text": "Показать изменения",
     "hide-text": "Скрыть изменения",

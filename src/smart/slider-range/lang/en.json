@@ -2,6 +2,8 @@
   "title": "Range Slider",
   "runtime": {
     "from": "from",
-    "to": "to"
+    "to": "to",
+    "from-label": "{name}, from",
+    "to-label": "{name}, to"
   }
 }

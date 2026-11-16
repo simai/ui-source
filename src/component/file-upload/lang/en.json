@@ -4,6 +4,8 @@
     "uploading": "Uploading",
     "uploading-name": "Uploading {name}",
     "retry": "Try again",
+    "remove-name": "Remove {name}",
+    "retry-name": "Try {name} again",
     "linkText": "Click to upload",
     "text": "or drag and drop",
     "not-added": "Not added: {n}",

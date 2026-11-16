@@ -19,7 +19,7 @@
     "last-label": "Последняя",
     "next-label": "Следующая страница",
     "next-text": "Далее",
-    "of-pages": "из {count}",
+    "of-pages": "{page} из {count}",
     "page-field-label": "Страница:",
     "page-label": "Страница",
     "page-size-label": "На странице:",

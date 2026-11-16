@@ -14,6 +14,7 @@ import manifest from './component.json';
 import aliases from './aliases.json';
 import enFile from './lang/en.json';
 import ruFile from './lang/ru.json';
+import {formatNumber} from '../../core/js/format-number.js';
 // Only the words on screen ship in the bundle; the title, settings and events
 // stay in the language files for the Studio and the docs (localization study LC-2).
 const en = {runtime: enFile.runtime};
@@ -311,7 +312,7 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
             case "contrast":
                 return this.sfWord("check-contrast", {vars: {
                     scheme: this.sfWord(`scheme-${check.scheme}`),
-                    ratio: String(check.ratio).replace(".", this.sfWord("decimal")),
+                    ratio: formatNumber(check.ratio, "number", {node: this}),
                 }});
             case "adjusted":
                 return this.sfWord(check.lighter ? "check-adjusted-light" : "check-adjusted-dark", {vars: {from: check.from, to: check.to}});
