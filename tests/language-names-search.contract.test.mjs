@@ -25,13 +25,13 @@ test('LG-7: the supported languages are named in themselves from shipped data, n
 });
 
 test('LG-8: a query matches the start of a word, in any case and without accents', () => {
-  const list = normalizeLanguages('ru en be ka ro de pt-BR fr kk', []);
+  const list = normalizeLanguages('ru en be ka ro de pt-BR fr it', []);
   const words = (language) => searchWords(language.label, language.native, language.english, nameIn(language.code, 'ru'), language.code);
   const find = (query) => list.filter((language) => matchesQuery(words(language), query)).map((language) => language.code);
   assert.deepEqual(find('ру'), ['ru', 'ro']);
   assert.deepEqual(find('РУ'), ['ru', 'ro']);
   assert.deepEqual(find('en'), ['en']);
-  assert.deepEqual(find('ка'), ['kk']);
+  assert.deepEqual(find('ит'), ['it']);
   assert.deepEqual(find('нем'), ['de']);
   assert.deepEqual(find('German'), ['de']);
   assert.deepEqual(find('francais'), ['fr']);

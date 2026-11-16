@@ -19,7 +19,7 @@ const FIELDS = {
   'input-color': 'src/smart/input-color/js/templates/default.js',
   'input-code': 'src/smart/input-code/js/templates/default.js',
 };
-const WORDS = {en: 'More about: {label}', ru: 'Подробнее: {label}', kk: 'Толығырақ: {label}'};
+const WORDS = {en: 'More about: {label}', ru: 'Подробнее: {label}'};
 
 test('field help: the file, image, colour and code fields take sf-input\'s help', async () => {
   const input = await json('src/smart/input/smart.manifest.json');

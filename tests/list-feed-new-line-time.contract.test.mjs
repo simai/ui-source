@@ -47,7 +47,7 @@ test('the contract: date and unread on entries, the word new-text, relations', (
   assert.equal(component.version, '1.4.0');
   assert.equal(component.settings.items.of.date.type, 'date');
   assert.equal(component.settings.items.of.unread.type, 'boolean');
-  for (const lang of ['ru', 'en', 'kk']) assert.ok(JSON.parse(read(`src/smart/list-feed/lang/${lang}.json`)).runtime['new-text']);
+  for (const lang of ['ru', 'en']) assert.ok(JSON.parse(read(`src/smart/list-feed/lang/${lang}.json`)).runtime['new-text']);
   assert.equal(JSON.parse(read('src/smart/list-feed/lang/ru.json')).runtime['new-text'], 'Новые');
   for (const name of ['group-heading', 'cl-time']) assert.ok(component.relations.some((one) => one.name === name), name);
 });

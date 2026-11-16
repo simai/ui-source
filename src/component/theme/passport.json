@@ -12,11 +12,10 @@
     "src/component/theme/js/index.js",
     "src/component/theme/lang/en.json",
     "src/component/theme/lang/index.mjs",
-    "src/component/theme/lang/kk.json",
     "src/component/theme/lang/ru.json",
     "src/component/theme/rule.js"
   ],
-  "content_sha256": "c59512c728343009580ec21e40bc2cb4ebf4bbaafdd64f7a837b2dcad606d7ad",
+  "content_sha256": "ddb4d093237592c575522aa4f93fee867d7ffda903e7e50d082781b03796d942",
   "dependencies": [
     {
       "id": "core.runtime",

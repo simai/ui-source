@@ -1,0 +1,120 @@
+{
+  "schema": "simai.language-registry",
+  "schema_version": 1,
+  "$comment": "The SIMAI language registry (localization standard §3, decision L4: kept in the Framework, products read it with the Framework). order is the switcher order, priority the translation order (null: ru is the language of writing). The registry declares that a language exists; a product publishes it (§4). Arabic ar added 11th by owner decision C278 (2026-11-17); languages of CIS countries other than Russian are not in the registry. Languages with a Framework pack: core/lang/index.json.",
+  "languages": [
+    {
+      "locale": "en",
+      "slug": "en",
+      "name": "English",
+      "direction": "ltr",
+      "order": 1,
+      "priority": 1,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "ru",
+      "slug": "ru",
+      "name": "Русский",
+      "direction": "ltr",
+      "order": 2,
+      "priority": null,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "zh-Hans",
+      "slug": "zh-hans",
+      "name": "简体中文",
+      "direction": "ltr",
+      "order": 3,
+      "priority": 2,
+      "plural": "intl",
+      "aliases": [
+        "zh-CN",
+        "zh-SG"
+      ]
+    },
+    {
+      "locale": "es",
+      "slug": "es",
+      "name": "Español",
+      "direction": "ltr",
+      "order": 4,
+      "priority": 3,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "pt-BR",
+      "slug": "pt-br",
+      "name": "Português (Brasil)",
+      "direction": "ltr",
+      "order": 5,
+      "priority": 4,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "de",
+      "slug": "de",
+      "name": "Deutsch",
+      "direction": "ltr",
+      "order": 6,
+      "priority": 6,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "fr",
+      "slug": "fr",
+      "name": "Français",
+      "direction": "ltr",
+      "order": 7,
+      "priority": 7,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "it",
+      "slug": "it",
+      "name": "Italiano",
+      "direction": "ltr",
+      "order": 8,
+      "priority": 8,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "ja",
+      "slug": "ja",
+      "name": "日本語",
+      "direction": "ltr",
+      "order": 9,
+      "priority": 5,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "ko",
+      "slug": "ko",
+      "name": "한국어",
+      "direction": "ltr",
+      "order": 10,
+      "priority": 9,
+      "plural": "intl",
+      "aliases": []
+    },
+    {
+      "locale": "ar",
+      "slug": "ar",
+      "name": "العربية",
+      "direction": "rtl",
+      "order": 11,
+      "priority": 10,
+      "plural": "intl",
+      "aliases": []
+    }
+  ]
+}

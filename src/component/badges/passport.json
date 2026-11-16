@@ -24,7 +24,7 @@
     "src/component/badges/scss/_css__utility_hint_layout.scss",
     "src/component/badges/scss/index.scss"
   ],
-  "content_sha256": "37eed310145f2e2b44d1789c7776029d3266903e84d8e64a68123c73c75a7f4e",
+  "content_sha256": "5fdb23d87a26e45bfde77eb3e393cf08ea5141352d512d47f5221674d25a21c1",
   "dependencies": [
     {
       "id": "core.runtime",

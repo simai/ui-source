@@ -379,7 +379,7 @@ class SfTime extends TimeElement {
 
   // A zone's own name where the component has one in the page language: the
   // zones of Russia in its files (ru, en) and in any language a pack or a
-  // product gave words for (kk), else null and the platform names it. Until
+  // product gave words for, else null and the platform names it. Until
   // 1.7.1 only ru and en were read, and a pack's zone words were never said.
   zoneName(id) {
     if (!id) return null;

@@ -1,8 +1,0 @@
-{
-  "runtime": {
-    "from": "ең аз",
-    "to": "ең көп",
-    "from-label": "{name}, ең аз",
-    "to-label": "{name}, ең көп"
-  }
-}

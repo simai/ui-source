@@ -6,7 +6,7 @@
 // component family (core/lang/<code>/<family>.json, listed with the
 // components each holds in core/lang/index.json, written by
 // scripts/build-language-packs.mjs), so a page asks only for a part that
-// exists and only for the families it shows (C177 follow-up: one Kazakh file
+// exists and only for the families it shows (C177 follow-up: one language file
 // had reached 15.2 KB gzip with half the words to come). A page fetches when
 // it speaks that language: <html lang> when core starts (core's words and the
 // families of the elements already in the document, again when the document
@@ -14,8 +14,8 @@
 // (its family's part; a part of the page with a [lang] of its own).
 // SF.language.load(code) fetches every part. A product names its own pack,
 // one file, the same way, one line:
-// SF.language.addPack('kk', '/assets/product/lang/kk.json') or
-// SF_BOOT_CONFIG.languages = {kk: '/assets/product/lang/kk.json'}.
+// SF.language.addPack('de', '/assets/product/lang/de.json') or
+// SF_BOOT_CONFIG.languages = {de: '/assets/product/lang/de.json'}.
 //
 // Only core fetches: every bundle carries page-language.js, which asks through
 // the shared store (globalThis.__sfPageLanguage.packs) and reads the words.

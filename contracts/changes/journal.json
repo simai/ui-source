@@ -17762,6 +17762,27 @@
       "owner": "ui-source",
       "source": "src/core/js/page-language.js registeredWord; sf-change changePhrase, sf-input-image fileWord, sf-input-color / sf-theme-generator _ratioText; tests/word-key-aliases-g1.contract.test.mjs",
       "manual": "Register the word under the new key: change-text with {before} and {after} in place of to-text; the -file words with {name} (quotes included) in place of quoted and chosen; drop decimal, the ratio follows the page language."
+    },
+    {
+      "id": "behaviour-kazakh-language-pack-withdrawn",
+      "recorded_on": "2026-11-17",
+      "stage": "removed",
+      "kind": "behaviour",
+      "summary": "Owner decision C278 (2026-11-17): the Kazakh interface pack (the C177 pilot, module.language-kk 0.3.0) is withdrawn: every component's lang/kk.json, core/lang/kk/<family>.json and its entry in core/lang/index.json. The Framework ships no language pack now; a page with lang=kk falls back like any language without a pack (its words in English, one console note). Country data is unchanged. A registry language (zh-Hans) takes the pilot's place later.",
+      "items": [
+        {
+          "component": "core.lang",
+          "from": "core/lang/kk/<family>.json, lang/kk.json",
+          "to": "no pack (English fallback)"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-17",
+      "rewrite": "none",
+      "manual": "A product that needs Kazakh words registers its own pack (SF.language.addPack or SF_BOOT_CONFIG.languages) in the format docs/developer/language-packs.md describes.",
+      "owner": "ui-source",
+      "source": "ui-control control/docs-review/decisions.md C278"
     }
   ]
 }

@@ -21,7 +21,7 @@
 export const TEXT_FONT_FAMILY = 'Inter Variable';
 
 // Languages written in Cyrillic (ISO 639-1), read from <html lang>.
-const CYRILLIC_LANGUAGE = /^(ru|uk|be|bg|sr|mk|kk|ky|tg|mn|ba|tt|cv|ce|os|sah|ab)(-|$)/i;
+const CYRILLIC_LANGUAGE = /^(ru|uk|be|bg|sr|mk|ky|tg|mn|ba|tt|cv|ce|os|sah|ab)(-|$)/i;
 
 const LATIN_PROBE = 0x61; // a
 const CYRILLIC_PROBE = 0x430; // а

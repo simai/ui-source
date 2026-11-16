@@ -5,12 +5,12 @@ import test from 'node:test';
 // C177 follow-ups (queue #86, #113; dispatcher area G, 2026-11-16): a word
 // that names a value has the value's place in it, so a language that ends or
 // reorders the value can say it; plural words are plural objects; numbers
-// take the page language's digits from Intl, not from a word; Kazakh day words
+// take the page language's digits from Intl, not from a word; day words
 // and zone names come from the language files where the platform has none.
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const runtime = (folder, code) => JSON.parse(read(`${folder}/lang/${code}.json`)).runtime;
-const LANGS = ['ru', 'en', 'kk'];
+const LANGS = ['ru', 'en'];
 
 // A function of a component's index.js, taken out of the file (the bundle
 // imports lit and styles Node cannot load).
@@ -84,7 +84,6 @@ test('#86 file-upload: Remove and Retry are one word with the file name in it', 
   for (const code of LANGS) {
     for (const key of ['remove-name', 'retry-name']) assert.match(runtime('src/component/file-upload', code)[key], /\{name\}/u, `${code} ${key}`);
   }
-  assert.match(runtime('src/component/file-upload', 'kk')['remove-name'], /^\{name\}/u, 'Kazakh says the name first');
 });
 
 test('#86 plurals: sf-icon and sf-badge count words are plural objects, no «|» lists', async () => {
@@ -99,7 +98,7 @@ test('#86 plurals: sf-icon and sf-badge count words are plural objects, no «|»
   const ru = runtime('src/component/badges', 'ru').count;
   assert.equal(pluralForm(ru, 21, 'ru'), '{count} непрочитанное');
   assert.equal(pluralForm(ru, 5, 'ru'), '{count} непрочитанных');
-  assert.equal(pluralForm({one: 'a', other: 'b'}, 3, 'kk'), 'b');
+  assert.equal(pluralForm({one: 'a', other: 'b'}, 3, 'de'), 'b');
   assert.equal(pluralForm('one|other', 1, 'en'), 'one', 'an author label in «|» still reads');
 });
 
@@ -117,7 +116,6 @@ test('#113 relative days: where the platform has no words of the language, core 
     const words = JSON.parse(read(`src/core/js/lang/relative-day/${code}.json`)).runtime;
     assert.deepEqual(Object.keys(words).sort(), ['today', 'tomorrow', 'yesterday'], code);
   }
-  assert.equal(JSON.parse(read('src/core/js/lang/relative-day/kk.json')).runtime.yesterday, 'кеше');
   const {formatRelativeDay, intlSpeaks} = await import('../src/core/js/format-relative.js');
   const {language} = await import('../src/core/js/page-language.js');
   const now = new Date(2026, 10, 16, 12, 0);
@@ -141,6 +139,5 @@ test('#113 sf-time: a zone is named in any language that has its word, not only 
   const source = read('src/smart/time/index.js');
   assert.match(source, /globalThis\.__sfPageLanguage\?\.registered\?\.get\?\.\('sf-time'\)/u);
   assert.doesNotMatch(source, /const shipped = \{ru, en\}\[/u);
-  const kk = runtime('src/smart/time', 'kk');
-  assert.ok(Object.keys(kk).filter((key) => key.startsWith('zone-')).length >= 20, 'Kazakh zone words exist to be said');
+  for (const code of LANGS) assert.ok(Object.keys(runtime('src/smart/time', code)).filter((key) => key.startsWith('zone-')).length >= 20, `${code} zone words exist to be said`);
 });

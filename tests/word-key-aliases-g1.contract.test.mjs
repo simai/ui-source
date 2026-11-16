@@ -22,7 +22,7 @@ test('registeredWord reads what a product registered, never the shipped words', 
   assert.equal(registeredWord('sf-change', 'to-text', null), 'на');
   assert.equal(registeredWord('sf-change', 'change-text', null), undefined);
   language.register('sf-change', 'en', {'to-text': 'to'});
-  language.use('kk');
+  language.use('zz');
   assert.equal(registeredWord('sf-change', 'to-text', null), 'to', 'the chain ends in English');
   language.forget();
 });

@@ -48,7 +48,7 @@ test('C255, C257: copy leaves removed lines and terminal output behind', () => {
   assert.match(defaults, /content: '\\2212' \/ '';/u);
   assert.match(defaults, /content: '\$' \/ '';/u);
   // The terminal head names itself in the block's language.
-  for (const code of ['ru', 'en', 'kk']) {
+  for (const code of ['ru', 'en']) {
     const words = JSON.parse(read(`src/component/highlight/lang/${code}.json`)).runtime;
     for (const key of ['added', 'removed', 'terminal']) assert.ok(words[key], `${code} ${key}`);
   }

@@ -1,8 +1,0 @@
-{
-  "runtime": {
-    "theme": "Тақырып",
-    "theme-light": "ашық",
-    "theme-dark": "қараңғы",
-    "cycle-next": "{name}. Басыңыз — {next}"
-  }
-}

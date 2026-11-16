@@ -51,7 +51,6 @@ test('RG-FAB-5: the Fab helper draws arrow_upward unturned and names itself in t
   assert.match(js, /pageText\(FAB_TEXT, 'top', document\.documentElement, 'sf-fab'\)/);
   assert.equal(JSON.parse(read('src/component/fab/lang/ru.json')).runtime.top, 'Наверх');
   assert.equal(JSON.parse(read('src/component/fab/lang/en.json')).runtime.top, 'Back to top');
-  assert.ok(JSON.parse(read('src/component/fab/lang/kk.json')).runtime.top);
 });
 
 test('C216: every kind carries the raised shadow', () => {

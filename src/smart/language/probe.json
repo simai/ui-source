@@ -17,7 +17,7 @@
       "  <sf-language id=\"url\" languages=\"ru en\" href=\"#/{code}/\" remember=\"probe\"></sf-language>",
       "  <sf-language id=\"one\" languages=\"ru\"></sf-language>",
       "  <sf-language id=\"forced\" languages=\"ru en de fr es\" mode=\"inline\" apply=\"none\"></sf-language>",
-      "  <sf-language id=\"named\" mode=\"inline\" apply=\"none\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"code\": \"kk\", \"label\": \"Қазақ тілі\"}, {\"code\": \"ru\"}]}</script></sf-language>",
+      "  <sf-language id=\"named\" mode=\"inline\" apply=\"none\"><script type=\"application/json\" data-sf-settings>{\"items\": [{\"code\": \"es\", \"label\": \"Español (España)\"}, {\"code\": \"ru\"}]}</script></sf-language>",
       "  <form id=\"settings\"><sf-language id=\"field\" name=\"language\" languages=\"ru en de fr\" value=\"de\" apply=\"none\"></sf-language></form>",
       "  <sf-language id=\"missing\" languages=\"ru en de\" href=\"#/{code}/page/\" missing=\"de\" home=\"#/{code}/\" apply=\"none\"></sf-language>",
       "  <sf-language id=\"variants\" languages=\"ru pt-BR pt-PT zh-Hans zh-Hant\" apply=\"none\"></sf-language>",
@@ -331,7 +331,7 @@
       "covers": "settings.items label",
       "steps": [
         {
-          "check": "(() => { const radios = [...document.querySelectorAll('#named button[role=\"radio\"]')]; return radios.length === 2 && radios[0].textContent.trim() === 'Қазақ тілі' && radios[0].lang === 'kk' && document.querySelector('#named').value === 'ru'; })()"
+          "check": "(() => { const radios = [...document.querySelectorAll('#named button[role=\"radio\"]')]; return radios.length === 2 && radios[0].textContent.trim() === 'Español (España)' && radios[0].lang === 'es' && document.querySelector('#named').value === 'ru'; })()"
         }
       ]
     },

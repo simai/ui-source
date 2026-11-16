@@ -11,11 +11,11 @@ function capitalise(text, locale) {
 }
 
 // «сегодня», «вчера», «завтра» are the platform's words, except where the
-// platform has no words of the language: a browser without the Kazakh
-// relative-time data says «yesterday» on a Kazakh page. Then the words come
+// platform has no words of the language: a browser without a language's
+// relative-time data says «yesterday» on a page in it. Then the words come
 // from core's language files (core/js/lang/relative-day, registered as
 // `sf-relative-day`), which a language pack or a product brings
-// (SF.language.register('sf-relative-day', 'kk', {today, yesterday,
+// (SF.language.register('sf-relative-day', 'de', {today, yesterday,
 // tomorrow})). ru and en are never looked up: every platform speaks them.
 const DAY_KEYS = /* @__PURE__ */ Object.freeze({0: 'today', [-1]: 'yesterday', 1: 'tomorrow'});
 

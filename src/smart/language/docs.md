@@ -71,7 +71,7 @@ JSON island; when it holds a language, `languages` is not read:
 ```html
 <sf-language>
   <script type="application/json" data-sf-settings>
-    {"items": [{"code": "kk", "label": "Қазақ тілі"}, {"code": "ru"}]}
+    {"items": [{"code": "es", "label": "Español (España)"}, {"code": "ru"}]}
   </script>
 </sf-language>
 ```

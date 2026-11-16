@@ -23,7 +23,7 @@ import LANG_WORDS from '../lang/index.mjs';
 
 // The words, by language. A count is a plural word, one phrase per plural
 // category of the language as Intl.PluralRules names them ({one, few, many,
-// other} in Russian, {one, other} in English and Kazakh), with {count} where
+// other} in Russian, {one, other} in English), with {count} where
 // the number goes: the form every language file and pack uses (C177). A
 // product adds a language with SF.language.register('sf-badge', code,
 // {count, dot}); a count written as «a|b|c» (an author's label, a product's

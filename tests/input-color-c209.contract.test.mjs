@@ -48,7 +48,7 @@ test('(1) the code is always hex; the format menu is gone', () => {
   assert.doesNotMatch(element, /_format|toggleFormatMenu|setFormat|FORMAT_WORD/u);
   assert.match(element, /parseColour\(text, "hex"/u);
   assert.match(element, /formatColour\(this\._hsv \|\| \[0, 0, 0\], "hex"\)/u);
-  for (const lang of ['ru', 'en', 'kk']) {
+  for (const lang of ['ru', 'en']) {
     const words = json(`${base}/lang/${lang}.json`).runtime;
     for (const gone of ['format', 'format-current', 'code-in']) assert.equal(words[gone], undefined, `${lang} ${gone}`);
     assert.doesNotMatch(words['not-a-colour'], /\{format\}/u, `${lang} not-a-colour`);

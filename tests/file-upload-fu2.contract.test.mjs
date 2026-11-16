@@ -13,8 +13,8 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = await read('src/component/file-upload/js/_file_upload.js');
 const words = source.slice(source.indexOf('const FILE_UPLOAD_ITEM_TEXT'), source.indexOf('const FILE_UPLOAD_SELECTOR'));
 const helpers = source.slice(source.indexOf('function toBoolean'), source.indexOf('function bindFileUpload'));
-const lang = Object.fromEntries(await Promise.all(['en', 'ru', 'kk'].map(async (code) => [code, JSON.parse(await read(`src/component/file-upload/lang/${code}.json`)).runtime])));
-const smartLang = Object.fromEntries(await Promise.all(['en', 'ru', 'kk'].map(async (code) => [code, JSON.parse(await read(`src/smart/file-upload/lang/${code}.json`)).runtime])));
+const lang = Object.fromEntries(await Promise.all(['en', 'ru'].map(async (code) => [code, JSON.parse(await read(`src/component/file-upload/lang/${code}.json`)).runtime])));
+const smartLang = Object.fromEntries(await Promise.all(['en', 'ru'].map(async (code) => [code, JSON.parse(await read(`src/smart/file-upload/lang/${code}.json`)).runtime])));
 
 const fill = (text, vars = {}) => String(text).replace(/\{([a-z][\w-]*)\}/giu, (whole, name) => (name in vars ? String(vars[name]) : whole));
 
@@ -151,7 +151,7 @@ test('RG-FU-4: the live regions stand with the zone and say a file added, sent a
   api.syncFileUploadStateEvents(quiet, [{name: 'Старый.pdf', state: 'done'}], []);
   assert.equal(quiet.status.textContent, '');
 
-  for (const code of ['en', 'ru', 'kk']) {
+  for (const code of ['en', 'ru']) {
     for (const key of ['said-added', 'said-added-many', 'said-done', 'said-error', 'said-error-line']) {
       assert.ok(lang[code][key], `component ${code} ${key}`);
       assert.deepEqual(smartLang[code][key], lang[code][key], `Smart ${code} ${key}`);

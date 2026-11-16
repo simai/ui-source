@@ -68,8 +68,8 @@ test('codes are canonical; an item overrides the name and carries an href; a pat
   assert.deepEqual(list.map((one) => one.code), ['ru', 'en', 'de']);
   assert.deepEqual(list.map((one) => one.href), ['/ru/', '/en/', '/de/']);
   assert.deepEqual(list.map((one) => one.short), ['RU', 'EN', 'DE']);
-  const items = normalizeLanguages('ru en', [{code: 'kk', label: 'Қазақ тілі', href: '/kz/'}, {code: 'ru'}], '/{code}/');
-  assert.deepEqual(items.map((one) => [one.code, one.label, one.href]), [['kk', 'Қазақ тілі', '/kz/'], ['ru', 'Русский', '/ru/']]);
+  const items = normalizeLanguages('ru en', [{code: 'es', label: 'Español (España)', href: '/es-es/'}, {code: 'ru'}], '/{code}/');
+  assert.deepEqual(items.map((one) => [one.code, one.label, one.href]), [['es', 'Español (España)', '/es-es/'], ['ru', 'Русский', '/ru/']]);
 });
 
 test('right to left by the language and by the script', () => {
@@ -101,7 +101,7 @@ test('the trigger\'s code slot is the width core holds before the code (C130)', 
   const placeholder = read('src/core/scss/_sf_css__placeholder.scss');
   assert.match(placeholder, /:where\(sf-language \.sf-language-code\) \{\n  inline-size: var\(--sf-language--line\);\n  min-inline-size: var\(--sf-language--line\);\n  grid-template-columns: minmax\(0, 1fr\);\n  justify-items: center;/u);
   const narrow = new RegExp(template.match(/const NARROW_CODE = \/(.+)\/u;/u)[1], 'u');
-  for (const code of ['RU', 'EN', 'KK', 'MN', 'PT', 'ΕΛ', 'ՀՅ', 'ქა', 'Ру']) assert.ok(narrow.test(code), code);
+  for (const code of ['RU', 'EN', 'DE', 'MN', 'PT', 'ΕΛ', 'ՀՅ', 'ქა', 'Ру']) assert.ok(narrow.test(code), code);
   for (const code of ['PT-BR', '简体', '繁體', 'Қаз', '', 'ع']) assert.ok(!narrow.test(code), code);
 });
 

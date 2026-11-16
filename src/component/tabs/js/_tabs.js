@@ -25,7 +25,6 @@ const ROW_STATE = '__sfTabsRow';
 const WORDS = {
   en: { more: 'More' },
   ru: { more: 'Ещё' },
-  kk: { more: 'Тағы' },
 };
 
 function isSmartTabsRoot(root) {

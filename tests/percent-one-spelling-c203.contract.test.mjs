@@ -28,7 +28,7 @@ test('core formatNumber writes every per cent as number, no-break space, sign', 
   assert.equal(formatNumber(0.725, 'percent', {locale: 'ru'}), `72,5${NBSP}%`);
   assert.equal(formatNumber(0.72, 'percent', {locale: 'en'}), `72${NBSP}%`);
   assert.equal(formatNumber(83, 'unit-percent', {locale: 'en'}), `83${NBSP}%`);
-  assert.equal(formatNumber(83, 'unit-percent', {locale: 'kk'}), `83${NBSP}%`);
+  assert.equal(formatNumber(83, 'unit-percent', {locale: 'de'}), `83${NBSP}%`);
   // A language that writes the sign first keeps its order.
   assert.equal(percentSign('%72'), '%72');
   assert.equal(percentText(72), `72${NBSP}%`);

@@ -14,13 +14,12 @@
     "src/component/fab/json/fab.utility.json",
     "src/component/fab/lang/en.json",
     "src/component/fab/lang/index.mjs",
-    "src/component/fab/lang/kk.json",
     "src/component/fab/lang/ru.json",
     "src/component/fab/rule.js",
     "src/component/fab/scss/_css_fab.scss",
     "src/component/fab/scss/index.scss"
   ],
-  "content_sha256": "2e2cf96714198037f39d25f28107066e0da221a1d2e93e3c3eb35fe9bbf0cb95",
+  "content_sha256": "269cc97368550c143488d5190447a5f6b0c60f6a696f266b0f32aff01094bc78",
   "dependencies": [
     {
       "id": "core.runtime",
