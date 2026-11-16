@@ -14,7 +14,7 @@
     "src/core/figma_variables/figma_opacity.scss",
     "src/core/scss/_sf_css__opacity.scss"
   ],
-  "content_sha256": "eaa2ef14e068438a021201006cf150ae4dd3d8369ce4e23056cafc71000d83b7",
+  "content_sha256": "4e592d4117ea62202e0231324407772b9ed4fcb31cd12864612ed36b2b0b8a61",
   "dependencies": [
     {
       "id": "tokens.colour",

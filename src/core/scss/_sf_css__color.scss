@@ -8,9 +8,9 @@
 @use 'sf_static_palette';
 @use 'sf_css__hue';
 
-// Stripes by default are the text colour at step 8 (C57: a role at
-// 8/12/16/24, no stronger than 8 under text; RG-UT-V STR-2). It was the
-// inverse surface at full strength, a dark plate under the words.
+// Stripes by default are the neutral role at step 8, --sf-surface-state-select
+// (C57: a role at 8/12/16/24, no stronger than 8 under text; RG-UT-V STR-2).
+// It was the inverse surface at full strength, a dark plate under the words.
 body {
-    --sf-stripe--color: var(--sf-alpha-8);
+    --sf-stripe--color: var(--sf-surface-state-select);
 }
