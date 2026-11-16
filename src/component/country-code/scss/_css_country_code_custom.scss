@@ -98,7 +98,7 @@
    value inset of C77 from the list's outer edge -- the name at the size's
    text step after it. The option gives back the list's inset. In the states layer, because the generated per-size
    rules mixed rungs (a size 2 row took size 1 spacing) and must not win. */
-.sf-country-code.sf-country-code--size-1\/2 .sf-country-code-item {
+.sf-country-code.sf-country-code--size-1\/2 :is(.sf-country-code-item, .sf-country-code-search) {
   --sf-country-code-item--font-size: var(--sf-text-size-1\/2);
   --sf-country-code-item--line-height: var(--sf-text-height-1\/2);
   --sf-country-code-item--gap: var(--sf-ui-1\/2--text-space-x);
@@ -114,7 +114,7 @@
   flex-shrink: 0;
 }
 
-.sf-country-code.sf-country-code--size-1 .sf-country-code-item {
+.sf-country-code.sf-country-code--size-1 :is(.sf-country-code-item, .sf-country-code-search) {
   --sf-country-code-item--font-size: var(--sf-text-size-1);
   --sf-country-code-item--line-height: var(--sf-text-height-1);
   --sf-country-code-item--gap: var(--sf-ui-1--text-space-x);
@@ -130,7 +130,7 @@
   flex-shrink: 0;
 }
 
-.sf-country-code.sf-country-code--size-2 .sf-country-code-item {
+.sf-country-code.sf-country-code--size-2 :is(.sf-country-code-item, .sf-country-code-search) {
   --sf-country-code-item--font-size: var(--sf-text-size-2);
   --sf-country-code-item--line-height: var(--sf-text-height-2);
   --sf-country-code-item--gap: var(--sf-ui-2--text-space-x);
@@ -210,7 +210,7 @@
 
 @layer sf.states {
   @each $size in ladder.$outer {
-    .sf-country-code.#{ladder.size-class('sf-country-code', $size)} .sf-country-code-item {
+    .sf-country-code.#{ladder.size-class('sf-country-code', $size)} :is(.sf-country-code-item, .sf-country-code-search) {
       --sf-country-code-item--font-size: #{ladder.text-size($size)};
       --sf-country-code-item--line-height: #{ladder.text-height($size)};
       --sf-country-code-item--font-family: var(--sf-text--family);

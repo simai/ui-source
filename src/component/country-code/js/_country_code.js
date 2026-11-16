@@ -96,7 +96,7 @@ function setCountryName(node, value) {
 }
 
 function syncCountryAccessibility(root) {
-  const { input, toggle, list, items } = getNodes(root);
+  const { input, toggle, list, itemsWrap, items } = getNodes(root);
   const config = root.__sfCountryConfig || {};
   const open = root.classList.contains('open');
   const selected = root.__sfCountrySelected;
@@ -113,7 +113,7 @@ function syncCountryAccessibility(root) {
         : `${countryName}${selected ? `: ${getCountryLabel(selected, config.locale)}` : ''}`);
       toggle.setAttribute('role', 'button');
       toggle.setAttribute('aria-haspopup', 'listbox');
-      toggle.setAttribute('aria-controls', ensureCountryId(list));
+      toggle.setAttribute('aria-controls', ensureCountryId(itemsWrap || list));
       toggle.setAttribute('aria-expanded', String(open));
     } else {
       // With one fixed country the flag and code are a picture, not a control.
@@ -132,9 +132,19 @@ function syncCountryAccessibility(root) {
       toggle.tabIndex = -1;
     }
   }
+  // The panel holds the search and the list of countries (RG-CC-4, the
+  // combobox pattern, as sf-dropdown's search): only the rows' wrap is the
+  // listbox, so it holds options alone; the search field stands before it.
+  // The panel itself has no role.
   if (list) {
-    list.setAttribute('role', 'listbox');
-    setCountryName(list, countryName);
+    if (itemsWrap && list.getAttribute('role') === 'listbox') list.removeAttribute('role');
+    if (itemsWrap && list.getAttribute('aria-label') === countryGeneratedNames.get(list)) {
+      list.removeAttribute('aria-label');
+      countryGeneratedNames.delete(list);
+    }
+    const box = itemsWrap || list;
+    box.setAttribute('role', 'listbox');
+    setCountryName(box, countryName);
     list.setAttribute('aria-hidden', String(!open));
     list.inert = !open;
   }
@@ -605,7 +615,11 @@ function bindCountryViewport(root) {
       // that counts only the list's box (DEV acceptance 2026-11-11, CC-01).
       // At least the field's width; the list with its search is the panel
       // step (C32: 20rem) where the field is narrower.
-      anchor = positioning().anchor(root, list, {
+      // The list hangs from the field itself, --sf-space-1/4 below it, as the
+      // datepicker's popup does; anchored to the root it hung under the hint
+      // (RG-CC-6).
+      const field = root.querySelector('.sf-country-code-field') || root;
+      anchor = positioning().anchor(field, list, {
         side: 'block-end', align: 'start', matchWidth: 'min', fitHeight: false,
         onPosition: () => {
           const box = root.getBoundingClientRect();
@@ -659,6 +673,7 @@ async function applyMaskForRoot(root, input, maskPattern, config = null) {
     window.SF?.Mask?.destroy?.(root.__sfCountryMask);
     delete root.__sfCountryMask;
   }
+  root.__sfCountryMaskPattern = maskPattern || '';
   if (!maskPattern) return;
   const service = await maskService();
   if (token !== root.__sfCountryMaskToken) return;
@@ -867,12 +882,14 @@ function syncDisabledState(root) {
 }
 
 // The code is locked in the text only where the person cannot choose another
-// country (fixed-country) or a country mask writes the text (use-mask); in
-// every other field the code is the start of the text the person edits
-// (owner C87, readTypedNumber).
+// country (fixed-country); in every other field, a masked one too, the code is
+// the start of the text the person edits and names the country (owner C87,
+// readTypedNumber). A masked field locked it as well, so a pasted
+// «+49 30 123456» was read as Russian digits, «+7 301 234-56», and the code
+// could not be erased and typed again (RG-CC-1).
 function getLockedPrefix(root, config) {
   if (!config?.showCode) return '';
-  if (config.multiCountry && !config.useMask) return '';
+  if (config.multiCountry) return '';
   const dialCode = String(root?.dataset?.dialCode || '').trim();
   if (!dialCode) return '';
   return `${dialCode} `;
@@ -905,6 +922,32 @@ function keepCaretAfterPrefix(input, prefix) {
 function countryTextPattern(config, country) {
   const base = !config?.useCountryMasks && config?.fixedMaskPattern ? config.fixedMaskPattern : country?.maskPattern;
   return normalizeMaskPatternByStyle(base, config?.maskStyle);
+}
+
+// Where the text names the country (a masked field with a choice of
+// countries, RG-CC-1), the mask follows the text, never the other way round:
+// the country's mask lays out the number while the number fits it; with no
+// country named (the code erased, an unknown code) or more digits than the
+// pattern holds (another country's number pasted or typed over), the mask
+// stands back and the text stays as typed -- a mask reads every digit as a
+// slot of its pattern, so it put a German number into the Russian slots and
+// cut what did not fit. Called before the mask's own input listener runs:
+// a mask dropped here does not see this input event.
+function patternSlots(pattern) {
+  return (String(pattern || '').replace(/\\./gu, '').replace(/\{[^}]*\}/gu, '').match(/0/gu) || []).length;
+}
+function syncTextMask(root, input, config, country) {
+  if (!config?.useMask) return;
+  const text = String(input.value || '').trim();
+  const digits = text.replace(/\D/gu, '');
+  const pattern = country ? countryTextPattern(config, country) : '';
+  // A text that starts with another code than the country's is not laid out
+  // by this country's pattern either.
+  const ownCode = !text.startsWith('+') || digits.startsWith(String(country?.dialCode || '').replace(/\D/gu, ''));
+  const wanted = pattern && ownCode && digits.length <= patternSlots(pattern) ? pattern : '';
+  // Asked for already: the mask is there, or on its way.
+  if (wanted === (root.__sfCountryMaskPattern || '')) return;
+  applyMaskForRoot(root, input, wanted, config);
 }
 
 // A field without a placeholder of its own hints the chosen country's code
@@ -967,7 +1010,11 @@ function applyCountrySelection(root, country, source = 'runtime') {
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
-  if (config.useMask) {
+  if (config.useMask && config.showCode && config.multiCountry) {
+    // The text names the country here: the mask lays the number out only
+    // where the number fits it, and never cuts a digit (syncTextMask).
+    syncTextMask(root, input, config, country);
+  } else if (config.useMask) {
     const basePattern = config.useCountryMasks
       ? country.maskPattern
       : config.fixedMaskPattern || country.maskPattern;
@@ -1048,9 +1095,10 @@ function ensureCountryGroups(itemsWrap) {
       head = document.createElement('span');
       head.className = 'sf-country-code-group';
       head.dataset.group = kind;
-      head.setAttribute('role', 'presentation');
       itemsWrap.append(head);
     }
+    // A heading drawn between the rows; the listbox holds options only.
+    head.setAttribute('aria-hidden', 'true');
     heads[kind] = head;
   }
   return heads;
@@ -1065,7 +1113,8 @@ function syncCountryEmpty(root, itemsWrap, search, empty) {
   if (!row) {
     row = document.createElement('span');
     row.className = 'sf-country-code-empty';
-    row.setAttribute('role', 'presentation');
+    // Read through the search field's description, not as a row of the listbox.
+    row.setAttribute('aria-hidden', 'true');
     itemsWrap.append(row);
   }
   row.textContent = pageText(COUNTRY_CODE_TEXT, 'nothingFound', root, 'sf-input-country');
@@ -1334,8 +1383,15 @@ function bindCountryCode(root, { resetCountry = false, countries, maskPattern } 
     if (!read.wait && before.trim()) {
       if (read.country) {
         if (read.country !== root.__sfCountrySelected) applyCountrySelection(root, read.country, 'text');
-        else root.classList.remove('sf-country-code--unknown');
+        else {
+          root.classList.remove('sf-country-code--unknown');
+          // A live mask keeps its length: a digit past the pattern is refused,
+          // as before. A mask that stood back comes again once the number fits.
+          if (!root.__sfCountryMask) syncTextMask(root, input, config, read.country);
+        }
       } else {
+        // No country: the mask must not put the old code back (RG-CC-1).
+        syncTextMask(root, input, config, null);
         markCountryUnknown(root);
       }
     }
@@ -1554,6 +1610,7 @@ function unbindCountryCode(root) {
   delete root.__sfCountryCodeBeforeInput;
   delete root.__sfCountryMask;
   delete root.__sfCountryMaskToken;
+  delete root.__sfCountryMaskPattern;
   delete root.__sfCountrySelected;
   delete root.__sfCountryConfig;
   delete root.__sfCountryOptions;
