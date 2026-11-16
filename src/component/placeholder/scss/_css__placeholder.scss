@@ -6,6 +6,16 @@
     --sf-placeholder-content--gap: var(--sf-placeholder-right--gap, var(--sf-space-1));
     --sf-placeholder-header--gap: var(--sf-placeholder-top--gap, var(--sf-space-1\/3));
     --sf-placeholder-actions--gap: var(--sf-gap--actions);
+    /* The title's role on the heading ladder (RG-PH-1, owner decisions C21
+       and C44): rung 2, the heading-4 role, unless its element names a level
+       (below). */
+    --sf-placeholder--title-size: var(--sf-heading-4--size);
+    --sf-placeholder--title-height: var(--sf-heading-4--height);
+    /* The sentence: the body text in the quiet ink. A composition drawn from
+       these parts (sf-empty-state) gives its own step and ink here. */
+    --sf-placeholder--description-size: var(--sf-text--size);
+    --sf-placeholder--description-height: var(--sf-text--height);
+    --sf-placeholder--description-color: var(--sf-on-surface-variant);
 
     display: flex;
     flex-flow: column nowrap;
@@ -68,21 +78,62 @@
     background-color: var(--sf-placeholder-header--background-color, var(--sf-placeholder-top--background-color, var(--sf-transparent)));
   }
 
+  /* The title holds the heading ladder (RG-PH-1, owner decisions C21 and
+     C44): its level's role, h1 to h6 -- 36 / 32 / 24 / 20 / 16 / 16 on a
+     desktop, the phone's steps on a phone, the same in a compact region --
+     and rung 2 (heading-4, 20/24) for a title that is not a heading element.
+     The weight is the state title's, medium, as sf-empty-state's, which is
+     drawn from these parts (RG-PH-2). It was the body text at the heading
+     weight (16/24 700) at every level, so h3 and h4 were the same. The
+     level rules weigh nothing, so a composition that picks the rung by its
+     own size (sf-empty-state) sets it on the title. */
   .sf-placeholder :is(.sf-placeholder__title, .sf-placeholder-top-text:first-child) {
-    color: var(--sf-placeholder-title--color, var(--sf-placeholder-top-text--color, var(--sf-on-surface)));
+    color: var(--sf-placeholder-title--color, var(--sf-placeholder-top-text--color, var(--sf-placeholder--color)));
     font-family: var(--sf-placeholder-title--font-family, var(--sf-placeholder-top-text--font-family, var(--sf-heading--family)));
-    font-size: var(--sf-placeholder-title--font-size, var(--sf-placeholder-top-text--font-size, var(--sf-text--size)));
-    font-weight: var(--sf-placeholder-title--font-weight, var(--sf-placeholder-top-text--font-weight, var(--sf-heading--weight)));
-    line-height: var(--sf-placeholder-title--line-height, var(--sf-placeholder-top-text--line-height, var(--sf-text--height)));
+    font-size: var(--sf-placeholder-title--font-size, var(--sf-placeholder-top-text--font-size, var(--sf-placeholder--title-size)));
+    font-weight: var(--sf-placeholder-title--font-weight, var(--sf-placeholder-top-text--font-weight, var(--sf-font-weight-medium)));
+    line-height: var(--sf-placeholder-title--line-height, var(--sf-placeholder-top-text--line-height, var(--sf-placeholder--title-height)));
+    margin: 0;
     overflow-wrap: anywhere;
   }
 
+  :where(.sf-placeholder) :where(h1.sf-placeholder__title, h1.sf-placeholder-top-text) {
+    --sf-placeholder--title-size: var(--sf-heading-1--size);
+    --sf-placeholder--title-height: var(--sf-heading-1--height);
+  }
+
+  :where(.sf-placeholder) :where(h2.sf-placeholder__title, h2.sf-placeholder-top-text) {
+    --sf-placeholder--title-size: var(--sf-heading-2--size);
+    --sf-placeholder--title-height: var(--sf-heading-2--height);
+  }
+
+  :where(.sf-placeholder) :where(h3.sf-placeholder__title, h3.sf-placeholder-top-text) {
+    --sf-placeholder--title-size: var(--sf-heading-3--size);
+    --sf-placeholder--title-height: var(--sf-heading-3--height);
+  }
+
+  :where(.sf-placeholder) :where(h4.sf-placeholder__title, h4.sf-placeholder-top-text) {
+    --sf-placeholder--title-size: var(--sf-heading-4--size);
+    --sf-placeholder--title-height: var(--sf-heading-4--height);
+  }
+
+  :where(.sf-placeholder) :where(h5.sf-placeholder__title, h5.sf-placeholder-top-text) {
+    --sf-placeholder--title-size: var(--sf-heading-5--size);
+    --sf-placeholder--title-height: var(--sf-heading-5--height);
+  }
+
+  :where(.sf-placeholder) :where(h6.sf-placeholder__title, h6.sf-placeholder-top-text) {
+    --sf-placeholder--title-size: var(--sf-heading-6--size);
+    --sf-placeholder--title-height: var(--sf-heading-6--height);
+  }
+
   .sf-placeholder :is(.sf-placeholder__description, .sf-placeholder-top-text:nth-child(2)) {
-    color: var(--sf-placeholder-description--color, var(--sf-placeholder-top-text--color, var(--sf-on-surface-variant)));
+    color: var(--sf-placeholder-description--color, var(--sf-placeholder-top-text--color, var(--sf-placeholder--description-color)));
     font-family: var(--sf-placeholder-description--font-family, var(--sf-placeholder-top-text--font-family, var(--sf-text--family)));
-    font-size: var(--sf-placeholder-description--font-size, var(--sf-placeholder-top-text--font-size, var(--sf-text--size)));
+    font-size: var(--sf-placeholder-description--font-size, var(--sf-placeholder-top-text--font-size, var(--sf-placeholder--description-size)));
     font-weight: var(--sf-placeholder-description--font-weight, var(--sf-placeholder-top-text--font-weight, var(--sf-font-weight-regular)));
-    line-height: var(--sf-placeholder-description--line-height, var(--sf-placeholder-top-text--line-height, var(--sf-text--height)));
+    line-height: var(--sf-placeholder-description--line-height, var(--sf-placeholder-top-text--line-height, var(--sf-placeholder--description-height)));
+    margin: 0;
     overflow-wrap: anywhere;
   }
 

@@ -54,6 +54,10 @@ function renderInline(context) {
   `;
 }
 
+// The block form is drawn from sf-placeholder's parts (RG-PH-2, C19): the
+// root, the circle as its visual, the title and the sentence in its header,
+// the buttons in its actions, all inside its content. The sf-empty-state-*
+// names stay on the same parts for pages that style or read them.
 export function renderEmptyStateTemplate(context) {
   if (context.layout === 'inline') return renderInline(context);
   const tag = unsafeStatic(`h${context.headingLevel}`);
@@ -62,21 +66,25 @@ export function renderEmptyStateTemplate(context) {
   const slotted = context.component?.hasSlotContent?.('actions') ? context.component.getSlotContent('actions') : nothing;
   const ring = context.share !== null && context.share !== undefined;
   return html`
-    <div class=${['sf-empty-state', `sf-empty-state--size-${size}`, `sf-empty-state--${context.kind}`, context.expressive ? 'sf-empty-state--expressive' : '', context.rootClass].filter(Boolean).join(' ')}
+    <div class=${['sf-placeholder', 'sf-empty-state', `sf-empty-state--size-${size}`, `sf-empty-state--${context.kind}`, context.expressive ? 'sf-empty-state--expressive' : '', context.rootClass].filter(Boolean).join(' ')}
          role=${context.liveRole ?? nothing}>
-      <span class=${`sf-featured-icon sf-featured-icon--size-${ICON_SIZE[context.size] ?? '2'} sf-featured-icon--${context.tone} sf-featured-icon--soft sf-empty-state-icon${ring ? ' sf-empty-state-icon--ring' : ''}`}
+      <span class=${`sf-placeholder__visual sf-featured-icon sf-featured-icon--size-${ICON_SIZE[context.size] ?? '2'} sf-featured-icon--${context.tone} sf-featured-icon--soft sf-empty-state-icon${ring ? ' sf-empty-state-icon--ring' : ''}`}
             aria-hidden=${ring ? nothing : 'true'}>${renderGlyph(context, ICON_SIZE[context.size] ?? '2')}</span>
-      ${staticHtml`<${tag} class="sf-empty-state-title">${context.shownTitle}</${tag}>`}
-      ${context.shownText ? html`<p class="sf-empty-state-text">${context.shownText}</p>` : nothing}
-      ${actions.length || slotted !== nothing
-        ? html`<div class="sf-empty-state-actions">
-            ${slotted}
-            ${actions.map((action) => html`<sf-button size=${BUTTON_SIZE[context.size] ?? '1'} appearance=${action.appearance ?? 'default'}
-                scheme=${action.scheme ?? (action.appearance === 'outline' ? 'on-surface' : 'primary')}
-                text=${action.text ?? ''} data-action=${String(action.id)}
-                @click=${() => context.component.act(action.id)}></sf-button>`)}
-          </div>`
-        : nothing}
+      <div class="sf-placeholder__content">
+        <div class="sf-placeholder__header">
+          ${staticHtml`<${tag} class="sf-placeholder__title sf-empty-state-title">${context.shownTitle}</${tag}>`}
+          ${context.shownText ? html`<p class="sf-placeholder__description sf-empty-state-text">${context.shownText}</p>` : nothing}
+        </div>
+        ${actions.length || slotted !== nothing
+          ? html`<div class="sf-placeholder__actions sf-empty-state-actions">
+              ${slotted}
+              ${actions.map((action) => html`<sf-button size=${BUTTON_SIZE[context.size] ?? '1'} appearance=${action.appearance ?? 'default'}
+                  scheme=${action.scheme ?? (action.appearance === 'outline' ? 'on-surface' : 'primary')}
+                  text=${action.text ?? ''} data-action=${String(action.id)}
+                  @click=${() => context.component.act(action.id)}></sf-button>`)}
+            </div>`
+          : nothing}
+      </div>
     </div>
   `;
 }

@@ -2586,7 +2586,7 @@
         {
           "name": "--sf-spinner-text-color",
           "role": "color",
-          "summary": "The words under the drawing: the ink of the place, the on-colour of the fill under the spinner.",
+          "summary": "The words under the drawing: the spinner's own ink (currentColor), so on-surface-variant for a spinner on its own (C130 (6)) and the control's ink inside a button or another control.",
           "default": "currentColor",
           "since": "2026-10-27"
         }
@@ -2646,8 +2646,8 @@
         {
           "name": "--sf-empty-state-max-inline-size",
           "role": "max-inline-size",
-          "summary": "The widest the block form grows.",
-          "default": "var(--sf-g4)",
+          "summary": "The widest the block form grows; unset, the place sets the width, as for sf-placeholder.",
+          "default": "none",
           "since": "2026-10-27"
         },
         {
@@ -2667,21 +2667,15 @@
         {
           "name": "--sf-empty-state-gap",
           "role": "gap",
-          "summary": "Space between the icon, the heading and the sentence.",
-          "default": "var(--sf-space-1/2)",
-          "varies_with": [
-            "size"
-          ],
+          "summary": "Space from the icon to the words and from the words to the actions (sf-placeholder's gaps; the heading and the sentence keep the placeholder's header gap).",
+          "default": "var(--sf-space-1)",
           "since": "2026-10-27"
         },
         {
           "name": "--sf-empty-state-padding-block",
           "role": "padding-block",
-          "summary": "Room above and below the block form.",
-          "default": "var(--sf-space-1)",
-          "varies_with": [
-            "size"
-          ],
+          "summary": "Room above and below the block form; none unless a size-2 state draws the expressive circle (--sf-space-2 then).",
+          "default": "0",
           "since": "2026-10-27"
         },
         {
