@@ -76,7 +76,9 @@ test('Clipboard presentation follows token and focus contracts', () => {
   assert.match(css, /var\(--sf-ui-1--control-height\)/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /forced-colors: active/);
-  assert.match(css, /prefers-reduced-motion: reduce/);
+  // The deprecated surface draws the plain icon button (C217): no plate, so
+  // no fill to animate and no reduced-motion rule to keep.
+  assert.doesNotMatch(css, /transition:/);
   assert.match(css, /\.sf-clipboard--overlay/);
   // The status takes no room, so a rule for an empty one is dead (acceptance note, 2026-11-11).
   assert.doesNotMatch(css, /\.sf-clipboard-status:empty/);
