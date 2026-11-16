@@ -15,7 +15,7 @@ const sheet = read('src/smart/form/scss/_smart__form.scss');
 test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, footer, the descriptor list', () => {
   assert.equal(manifest.tag, 'sf-form');
   assert.equal(manifest.family, 'form');
-  assert.equal(manifest.version, '1.1.0');
+  assert.equal(manifest.version, '1.2.1');
   assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'apply', 'labels', 'footer', 'label']);
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant']);
   assert.ok(manifest.settings.labels.values.includes('start'));

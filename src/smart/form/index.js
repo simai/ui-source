@@ -45,6 +45,17 @@ export const SPEAKING_TAGS = new Set([
   'sf-input-image', 'sf-input-lookup', 'sf-input-quantity', 'sf-input-rich', 'sf-input-textarea', 'sf-dropdown',
 ]);
 
+// The element a screen reader reads a field's description with: a group of
+// choices as a whole, else the control's own focus target, else its first
+// native control.
+function messageTarget(control) {
+  const group = control.querySelector('[role="radiogroup"], [role="group"]');
+  if (group) return group;
+  const delegate = typeof control.focusDelegate === 'function' ? control.focusDelegate() : null;
+  if (delegate && delegate !== control && control.contains(delegate)) return delegate;
+  return control.querySelector('input:not([type="hidden"]), textarea, select, button, [role="combobox"], [contenteditable="true"], [tabindex]:not([tabindex="-1"])');
+}
+
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const clone = (value) => {
@@ -142,6 +153,11 @@ class SfForm extends FormElement {
     this._onSubmit = (event) => this.onNativeSubmit(event);
     this._onFocusOut = (event) => this.onFieldLeave(event);
     this._onInput = (event) => this.onFieldInput(event);
+    // A control's own drawing may rewrite its native control's
+    // aria-describedby: the form's lines are linked again after it.
+    this._onControlDrawn = (event) => {
+      if (event.target !== this && event.target?.closest?.('.sf-form-control')) this.linkMessages();
+    };
   }
 
   onConnected() {
@@ -149,6 +165,7 @@ class SfForm extends FormElement {
     this.addEventListener('submit', this._onSubmit);
     this.addEventListener('focusout', this._onFocusOut);
     this.addEventListener('input', this._onInput);
+    this.addEventListener('sf-after-render', this._onControlDrawn);
   }
 
   onDisconnected() {
@@ -156,6 +173,7 @@ class SfForm extends FormElement {
     this.removeEventListener('submit', this._onSubmit);
     this.removeEventListener('focusout', this._onFocusOut);
     this.removeEventListener('input', this._onInput);
+    this.removeEventListener('sf-after-render', this._onControlDrawn);
   }
 
   // The ids the template writes come from the instance path (§7.1.1), never
@@ -494,6 +512,30 @@ class SfForm extends FormElement {
         if (control.getAttribute('label') !== field.label) control.setAttribute('label', field.label);
         control.toggleAttribute('invalid', Boolean(message));
       }
+    }
+    this.linkMessages();
+  }
+
+  // The hint or the error line the form draws under a control is read with
+  // that control: its id joins the aria-describedby of the control's native
+  // focus target, and leaves it once the line is gone (the error gives the
+  // hint's place back). A screen reader heard the label and the value of a
+  // field and never its hint. Ids the control set itself are kept.
+  linkMessages() {
+    for (const box of this.querySelectorAll('.sf-form-field')) {
+      const key = box.getAttribute('data-key');
+      const control = key ? this.controlOf(key) : null;
+      const target = control ? messageTarget(control) : null;
+      if (!target) continue;
+      const lines = [...box.children]
+        .filter((node) => node.matches('.sf-form-hint, .sf-form-error') && node.id)
+        .map((node) => node.id);
+      const before = String(target.getAttribute('aria-describedby') || '').split(/\s+/u).filter(Boolean);
+      const own = before.filter((id) => !id.endsWith(`--hint-${key}`) && !id.endsWith(`--error-${key}`));
+      const next = [...new Set([...own, ...lines])];
+      if (next.join(' ') === before.join(' ')) continue;
+      if (next.length) target.setAttribute('aria-describedby', next.join(' '));
+      else target.removeAttribute('aria-describedby');
     }
   }
 
