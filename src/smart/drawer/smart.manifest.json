@@ -928,7 +928,7 @@
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "5d69b2707880250763e920ac203f4df00fb04e5ae3d7460c1dca015964ecee8a"
+        "sha256": "b764a45f14835ba4666e61cb60db5dce9434330d45cac3983e5e81f9f7bfc3ee"
       },
       {
         "path": "src/smart/drawer/rule.js",

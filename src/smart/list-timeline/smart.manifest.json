@@ -330,7 +330,7 @@
       },
       {
         "path": "src/smart/list-timeline/scss/_smart__list-timeline.scss",
-        "sha256": "d9662505d181b0abea481b17269986638b587388cb3aa05f3bc2a0ab76f49483"
+        "sha256": "72ec2dc176489325c48408a37aaae4fd87ab45ccedfe7d186db3c7bcb3277f56"
       },
       {
         "path": "src/smart/list-timeline/rule.js",

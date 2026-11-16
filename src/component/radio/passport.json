@@ -17,7 +17,7 @@
     "src/component/radio/scss/_css_radio_custom.scss",
     "src/component/radio/scss/index.scss"
   ],
-  "content_sha256": "f29d84b91531e9bfd3578b665fd424b1321d5f33aeb4c13dd66c2cc0e2746172",
+  "content_sha256": "507f2c9fe2bc914c9671d7e804de1404ce1031b208a6cd1c7d6d2ccccc2a2eef",
   "dependencies": [
     {
       "id": "core.runtime",

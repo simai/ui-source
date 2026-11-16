@@ -399,7 +399,7 @@
       },
       {
         "path": "src/smart/list-attention/scss/_smart__list-attention.scss",
-        "sha256": "c98178209c60e5377673be9cd084ff98fdd33d61b8ad982566dbaf3da8970c50"
+        "sha256": "41c3433f3dba37899e09bfca7474adcd04c043debf0c1b65d0eb9e21fc3c030f"
       },
       {
         "path": "src/smart/list-attention/rule.js",

@@ -17,7 +17,7 @@
     "src/component/kbd/scss/_kbd.scss",
     "src/component/kbd/scss/index.scss"
   ],
-  "content_sha256": "4cc5e78a2da4d901faa6c2738fd0fb4833ae275f71bcebdc224c8edfd913df72",
+  "content_sha256": "722a5ac6146dd538e56cdf0335e705bdd7e6ab51cddedd3086c41b4c6f3216a6",
   "dependencies": [
     {
       "id": "core.styles",

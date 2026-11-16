@@ -12,7 +12,7 @@
     "src/component/outline/scss/_outline.scss",
     "src/component/outline/scss/index.scss"
   ],
-  "content_sha256": "0ed21c85c62e086604d0b3a11020d2514a1795c64820e91ed0a0bdc45f78aecc",
+  "content_sha256": "727450c38886112005e6edaee5a537d2fead83c0bac300a37700f6c5fbacaa34",
   "dependencies": [
     {
       "id": "tokens.border",

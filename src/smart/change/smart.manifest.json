@@ -212,7 +212,7 @@
       },
       {
         "path": "src/smart/change/scss/_smart__change.scss",
-        "sha256": "f5a4a33b28d0af1cd108d42e58338feb512bb9d55489ac56d99300978a478327"
+        "sha256": "e88f130f0972e1b31c8c7cd6fa295935beb9543ead670c62abb54a8fb5a9d2af"
       },
       {
         "path": "src/smart/change/rule.js",

@@ -88,14 +88,27 @@ function sheets(dir, out = []) {
   return out;
 }
 
-// Paint declarations written directly inside every @layer sf.components block.
+// A border shorthand without a colour still resets the colour (to
+// currentColor). In sf.components, over sf.paint, it would wipe the paint, so
+// it must hand the colour back to the layers below with a later
+// `<shorthand>-color: revert-layer` in the same rule.
+const resetsUnreverted = (declarations) => declarations.flatMap(([name, value], i) => {
+  if (!BORDER.test(name) || /!important/u.test(value) || borderWithColour(name, value)) return [];
+  const back = declarations.slice(i + 1).some(([n, v]) => n.toLowerCase() === `${name.toLowerCase()}-color` && v.trim() === 'revert-layer');
+  return back ? [] : [`${name}: ${value}`];
+});
+
+// Paint declarations written directly inside every @layer sf.components block,
+// and border shorthands there that would reset the paint's colour.
 function paintInComponentBlocks(src) {
   const found = [];
   const inBlock = (node, path) => {
+    const declarations = node.children.filter((c) => typeof c === 'string').map((c) => c.match(/^([\w-]+)\s*:\s*([\s\S]*)$/u)).filter(Boolean).map((m) => [m[1], m[2]]);
+    for (const reset of resetsUnreverted(declarations)) found.push(`${path.join(' ')} { ${reset} } resets the paint's colour`);
     for (const child of node.children) {
       if (typeof child === 'string') {
         const m = child.match(/^([\w-]+)\s*:\s*([\s\S]*)$/u);
-        if (!m || /!important/u.test(child)) continue;
+        if (!m || /!important/u.test(child) || m[2].trim() === 'revert-layer') continue;
         if (PAINT.test(m[1]) || borderWithColour(m[1], m[2])) found.push(`${path.join(' ')} { ${child} }`);
       } else if (!/^@(keyframes|-webkit-keyframes|font-face|property|function|mixin)\b/u.test(child.prelude)) {
         inBlock(child, [...path, child.prelude.replace(/\s+/gu, ' ').slice(0, 80)]);
@@ -121,9 +134,10 @@ test('C273: no component block of src/ writes a fill, an edge colour or a text c
 });
 
 test('C273: the scanner sees paint in a component block (self-check)', () => {
-  const sample = `@layer sf.components { .x { padding: 0; color: red; border: 1px solid blue; } @media (min-width: 1px) { .y { background-color: #fff; } } }
+  const sample = `@layer sf.components { .x { padding: 0; color: red; border: 1px solid blue; } @media (min-width: 1px) { .y { background-color: #fff; } }
+  .z { border: var(--sf-px) solid; } .w { border-block-end: 0; border-block-end-color: revert-layer; } }
 @layer sf.paint { .x { color: red; } }`;
-  assert.equal(paintInComponentBlocks(sample).length, 3);
+  assert.equal(paintInComponentBlocks(sample).length, 4);
 });
 
 /* ---------- built sheets ---------- */
@@ -154,9 +168,10 @@ test('C273: no built component sheet carries paint in sf.components (mixin outpu
     for (const rule of sheet.rules) {
       if (rule.layer !== 'sf.components') continue;
       for (const [name, value] of rule.declarations) {
-        if (/!important/u.test(value)) continue;
+        if (/!important/u.test(value) || value.trim() === 'revert-layer') continue;
         if (PAINT.test(name) || borderWithColour(name, value)) found.push(`${path.slice(distribution.length + 1)}: ${rule.selectors.join(', ')} { ${name} }`);
       }
+      for (const reset of resetsUnreverted(rule.declarations)) found.push(`${path.slice(distribution.length + 1)}: ${rule.selectors.join(', ')} { ${reset} } resets the paint's colour`);
     }
   }
   assert.deepEqual(found, [], found.slice(0, 20).join('\n'));

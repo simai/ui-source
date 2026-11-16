@@ -21,7 +21,7 @@
     "src/component/modal/scss/_css__modal_custom.scss",
     "src/component/modal/scss/index.scss"
   ],
-  "content_sha256": "72667b0d20f8d2083081c4988a19ecaf1d8a8bb288677e1ff7cdd0f5bfc362fb",
+  "content_sha256": "800bd1a1ebd58dc06f417e05d219aa6f4aafe9a4ff1d360bcb3c134eb4dd7b23",
   "dependencies": [
     {
       "id": "component.close",
