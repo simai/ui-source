@@ -68,3 +68,13 @@ Smart owner: `sf-dropdown`, with direct `sf-list-item` children. It shares the
 same interaction, form-reset and portal owners as the base component. List Item
 is an option-row primitive, not a standalone action: use Button or Link for an
 independent action and Checkbox/Radio for an independent choice.
+
+## Chosen option, tags, search line (1.14.0)
+
+The chosen option keeps its `--sf-primary-container` fill under the pointer
+and takes the next step (RG-NV 17). Tags in the field are the C58 grey tags;
+the script no longer writes `active` on them (RG-NV 18). The search line's
+text stands over the options' text at every size (C06, RG-NV 19). A filled
+disabled field shows its chevron in `--sf-on-surface-disabled` (C107 (3),
+RG-NV 20).
+

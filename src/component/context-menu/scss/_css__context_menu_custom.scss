@@ -184,9 +184,9 @@
   --sf-button-text-container--color: var(--sf-context-menu-color, var(--sf-on-surface));
 }
 
-.sf-context-menu .sf-context-menu-content > .sf-button.sf-button:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) .sf-icon,
-.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) .sf-icon {
-  --sf-icon--color: currentColor;
+.sf-context-menu .sf-context-menu-content > .sf-button.sf-button:not(.sf-button--error, .sf-button--danger):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) .sf-icon,
+.sf-context-menu .sf-context-menu-content > sf-button > .sf-button.sf-button:not(.sf-button--error, .sf-button--danger):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) .sf-icon {
+  --sf-icon--color: var(--sf-context-menu-color, var(--sf-on-surface));
 }
 
 .sf-context-menu .sf-context-menu-content:has(> .sf-button, > sf-button) {

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -68,12 +68,13 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "The class menu's presentations: default, the C30 site menu -- drawn as navigation (rows with no frame, the current page filled in a column, the 2 px line in a header row; owner decisions C23, C30); documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail).",
+        "description": "The class menu's presentations: default, the C30 site menu -- drawn as navigation (rows with no frame, the current page filled in a column, the 2 px line in a header row; owner decisions C23, C30); documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. framed, the former default's framed rows (a 1 px frame on every row, no current mark), is a dated name until 2027-01-01 (owner decision C238: the default is the navigation look; the class sf-menu--framed it writes is noted in SF.deprecations, journal class-c238-menu-default-navigation). The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail).",
         "enum": [
           "default",
           "documentation-tree",
           "rail",
-          "navigation"
+          "navigation",
+          "framed"
         ]
       },
       "current-from-location": {
@@ -746,7 +747,7 @@
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "fcf8f8c185eb1097c17664e898cd3520c56c31745ac2926073413bc2fa2c272d"
+        "sha256": "f156efa2f18eee7b10c579f9e6e843a08b3e98474ddb5d5faaca4cf02314ece9"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
@@ -754,7 +755,7 @@
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "2d93d1f202d71e8ac28f9f0353709e493bc3f9da4319e996ecf97f889ec3b5d1"
+        "sha256": "7de6f17fabd9c99df39cd568f5d82d77bb1ef9e81dcb3053d597c6105cb0ab15"
       },
       {
         "path": "src/smart/menu/rule.js",
@@ -762,7 +763,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "10b271ee6256359ec0732b772c1847447d4aac4b28fb5e123b50c894065de4b9"
+        "sha256": "1e4f667dfa556686edfbf8046a6900ce4142623ec4577fecf5a4bbc3df736347"
       }
     ],
     "generated_runtime": []
