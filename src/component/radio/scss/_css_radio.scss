@@ -10,6 +10,7 @@
   }
   .sf-radio-button .sf-radio-button-box {
     background-color: var(--sf-radio-button-box--background-color);
+    border: var(--sf-radio-button-box--border);
     border-color: var(--sf-radio-button-box--border-color, transparent);
   }
   .sf-radio-button .sf-radio-button-container {
@@ -92,6 +93,7 @@
   --sf-radio-button-box--border-width: var(--sf-radio-button-border-width, var(--sf-px));
   --sf-radio-button-box--gap: var(--sf-a0);
   border: var(--sf-radio-button-box--border);
+  border-color: revert-layer;
   border-end-end-radius: var(--sf-radio-button-box--border-end-end-radius);
   border-end-start-radius: var(--sf-radio-button-box--border-end-start-radius);
   border-start-end-radius: var(--sf-radio-button-box--border-start-end-radius);

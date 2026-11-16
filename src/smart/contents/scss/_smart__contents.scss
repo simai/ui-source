@@ -487,6 +487,12 @@
         flex: 1 1 auto;
         min-inline-size: 0;
         overflow-x: clip;
+      }
+      @if paint.writes-shape() {
+        border-block-end: none;
+        border-block-end-color: revert-layer;
+      }
+      @if paint.writes-paint() {
         border-block-end: none;
       }
       @if paint.writes-paint() {
@@ -577,6 +583,10 @@
   &:is(.sf-contents--line-edge, .sf-contents--line-none),
   &:is(.sf-contents--line-edge, .sf-contents--line-none) .sf-contents-list {
     @if paint.writes-shape() {
+      border-block-end: none;
+      border-block-end-color: revert-layer;
+    }
+    @if paint.writes-paint() {
       border-block-end: none;
     }
   }

@@ -18,6 +18,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   .sf-menu-group-heading {
+    border: var(--sf-0);
     background: var(--sf-transparent);
     color: var(--sf-on-surface-variant);
   }
@@ -29,6 +30,9 @@
   }
   button.sf-menu-group-heading:disabled {
     color: var(--sf-on-surface-disabled);
+  }
+  .sf-menu-element-status {
+    border: var(--sf-0);
   }
 }
 
@@ -55,6 +59,7 @@
     padding-block: var(--sf-0);
     padding-inline: calc(var(--sf-space-1) + var(--sf-menu-group-heading--border-width));
     border: var(--sf-0);
+    border-color: revert-layer;
     border-radius: var(--sf-menu-item-radius, var(--sf-radius--ui));
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1\/2);
@@ -134,6 +139,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: var(--sf-0);
+    border-color: revert-layer;
   }
 
   @media (forced-colors: active) {

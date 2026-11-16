@@ -31,6 +31,7 @@ $sf-avatar-hue-classes: ();
     border-color: var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
   }
   .sf-avatar .sf-avatar-badge {
+    border: var(--sf-avatar-badge--border, 0 solid);
     border-color: var(--sf-avatar-badge--border-color, transparent);
   }
   .sf-avatar--placeholder, .sf-avatar--text {
@@ -84,6 +85,7 @@ $sf-avatar-hue-classes: ();
 
   .sf-avatar .sf-avatar-badge {
     border: var(--sf-avatar-badge--border, 0 solid);
+    border-color: revert-layer;
     border-end-end-radius: var(--sf-avatar-badge--border-end-end-radius);
     border-end-start-radius: var(--sf-avatar-badge--border-end-start-radius);
     border-start-end-radius: var(--sf-avatar-badge--border-start-end-radius);

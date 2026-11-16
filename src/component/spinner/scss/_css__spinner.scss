@@ -20,6 +20,9 @@
        --sf-spinner-text-color still sets them apart. */
     color: var(--sf-spinner-text-color, currentColor);
   }
+  .sf-loader-container.sf-loader--label-hidden .sf-loader--text {
+    border: 0;
+  }
 }
 
 @layer sf.components {
@@ -84,6 +87,7 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+  border-color: revert-layer;
 }
 
 .sf-loader-container.sf-loader--size-1\/3 {

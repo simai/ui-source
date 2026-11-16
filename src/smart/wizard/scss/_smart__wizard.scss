@@ -11,6 +11,7 @@
     color: var(--sf-on-surface);
   }
   .sf-wizard.sf-wizard--window {
+    border: 0;
     background-color: transparent;
   }
   .sf-wizard-heading {
@@ -23,6 +24,7 @@
     color: var(--sf-on-surface-variant);
   }
   .sf-wizard-list-step {
+    border: 0;
     background: transparent;
     color: var(--sf-on-surface-variant);
   }
@@ -165,6 +167,7 @@
 .sf-wizard.sf-wizard--window {
   padding: var(--sf-wizard-padding, 0);
   border: 0;
+  border-color: revert-layer;
   border-radius: 0;
 }
 
@@ -310,6 +313,7 @@
   padding-block: calc((var(--sf-wizard--control) - var(--sf-wizard--line)) / 2);
   padding-inline: var(--sf-wizard--row-inset);
   border: 0;
+  border-color: revert-layer;
   border-radius: var(--sf-radius--ui, var(--sf-radius-1));
   font: inherit;
   text-align: start;

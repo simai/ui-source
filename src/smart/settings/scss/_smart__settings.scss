@@ -17,6 +17,9 @@
   .sf-settings-panel-head {
     border-block-end-color: var(--sf-outline-variant);
   }
+  .sf-settings-panel-head .sf-tabs-top-container {
+    border-block-end: 0;
+  }
   .sf-settings-panel-search {
     border-block-end-color: var(--sf-outline-variant);
   }
@@ -189,6 +192,7 @@
 
 .sf-settings-panel-head .sf-tabs-top-container {
   border-block-end: 0;
+  border-block-end-color: revert-layer;
 }
 
 .sf-settings-panel-close,

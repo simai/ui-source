@@ -40,6 +40,7 @@
     color: var(--sf-on-surface-variant);
   }
   .sf-progress-run-step-toggle {
+    border: 0;
     background: none;
     color: inherit;
   }
@@ -393,6 +394,7 @@ sf-progress-run {
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   border-radius: var(--sf-radius--ui);
   font: inherit;
   text-align: start;

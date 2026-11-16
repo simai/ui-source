@@ -52,6 +52,7 @@
     color: var(--sf-on-surface-variant);
   }
   .sf-tree .sf-tree-item-retry {
+    border: 0;
     background: none;
     color: var(--sf-primary);
   }
@@ -312,6 +313,7 @@
     margin: 0;
     padding: 0;
     border: 0;
+    border-color: revert-layer;
     font: inherit;
     text-decoration: underline;
     cursor: pointer;

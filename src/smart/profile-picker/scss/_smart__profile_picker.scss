@@ -15,6 +15,7 @@
     @include panel.scrollbar(var(--sf-profile-picker--inset), --sf-profile-picker--track, var(--sf-profile-picker--row-height));
   }
   .sf-profile-picker-panel.sf-profile-picker-panel--in-sheet {
+    border: 0;
     background-color: transparent;
   }
   .sf-profile-picker-panel.sf-profile-picker-panel--sheet::backdrop {
@@ -195,6 +196,7 @@ sf-profile-picker {
   margin-inline: calc(-1 * var(--sf-space-1\/2));
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   border-radius: 0;
   box-shadow: none;
   overflow: visible;

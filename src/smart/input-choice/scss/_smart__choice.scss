@@ -62,6 +62,7 @@
   }
   @container sf-choice (inline-size < #{mq.container-step(g5)}) {
     .sf-choice[data-layout='picture'] .sf-choice-media {
+      border-block-end: 0;
       border-inline-end-color: var(--sf-outline-variant);
     }
   }
@@ -512,6 +513,7 @@
     aspect-ratio: auto;
     min-block-size: var(--sf-e0);
     border-block-end: 0;
+    border-block-end-color: revert-layer;
     border-inline-end-width: var(--sf-px);
     border-inline-end-style: solid;
   }

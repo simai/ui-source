@@ -16,6 +16,9 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   @include paint.part(paint);
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-text {
+    @include anchored.visually-hidden;
+  }
   .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge {
     @include anchored.badge;
   }

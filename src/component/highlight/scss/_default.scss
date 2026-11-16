@@ -9,6 +9,9 @@
   .sf-highlight__head {
     border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
   }
+  .sf-highlight__status {
+    border: 0;
+  }
   .sf-code-surface {
     /* On a grey plate the plate is the fill: the place hook draws none
        (--sf-place--fill-surface, core mix/_mix__places.scss). */
@@ -22,6 +25,7 @@
   }
   .sf-code-surface__scroll {
     background: transparent;
+    border: 0;
   }
   .sf-code-surface__scroll code {
     background: transparent;
@@ -132,6 +136,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
   }
 
   /* The block is a column: the head, then the code taking the rest. The code
@@ -181,6 +186,7 @@
     direction: ltr;
     text-align: start;
     border: 0;
+    border-color: revert-layer;
     border-radius: 0;
     box-shadow: none;
   }

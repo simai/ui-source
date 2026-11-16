@@ -17,6 +17,9 @@
   .sf-form-summary-list a {
     color: inherit;
   }
+  .sf-form-group {
+    border: 0;
+  }
   .sf-form-group + .sf-form-group {
     border-block-start-color: var(--sf-outline-variant);
   }
@@ -129,6 +132,7 @@
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   min-inline-size: 0;
 }
 

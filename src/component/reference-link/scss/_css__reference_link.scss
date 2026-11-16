@@ -154,6 +154,15 @@
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-reference-link.sf-reference-link--plain {
+    border: 0;
+  }
+}
+
 @layer sf.components {
   /* Plain: a reference that stands inside a box of its own already -- a
      record's field, a table cell -- where the card's frame, fill and padding
@@ -166,6 +175,7 @@
 
     inline-size: auto;
     border: 0;
+    border-color: revert-layer;
   }
 }
 
@@ -451,6 +461,7 @@
   .sf-reference-link.sf-reference-link--inline {
     color: inherit;
     background-color: transparent;
+    border: 0;
   }
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__link) {
     color: var(--sf-reference-link-link-color, var(--sf-link));
@@ -485,6 +496,7 @@
     max-inline-size: none;
     padding: var(--sf-0);
     border: 0;
+    border-color: revert-layer;
     border-radius: var(--sf-radius--ui);
   }
 

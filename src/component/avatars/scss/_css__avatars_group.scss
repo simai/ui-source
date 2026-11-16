@@ -3,6 +3,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
     /* The cut-out between overlapping avatars is the place they stand on
        (C16): white in both themes drew a white ring on a dark page. */
     border-color: var(--sf-surface-place, transparent);
@@ -25,6 +26,7 @@
 
 .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
   border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+  border-color: revert-layer;
   border-style: solid;
   border-width: var(--sf-avatar-group--ring, var(--sf-px));
 }

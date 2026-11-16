@@ -83,8 +83,18 @@
   .sf-admin-menu-item-container {
     color: var(--sf-admin-menu-item-container--color, var(--sf-on-surface));
   }
+  .sf-admin-menu-panel.small
+  .sf-admin-menu-item
+  .sf-admin-menu-item-container
+  span:not(.sf-admin-menu-item-icon, .sf-admin-menu-item-placeholder, .sf-badge) {
+    @include anchored.visually-hidden;
+  }
   .sf-admin-menu-panel.small .sf-admin-menu-item .sf-admin-menu-item-container > .sf-badge:not([hidden]) {
     @include anchored.badge;
+  }
+  .sf-admin-menu-panel.small .sf-admin-menu-item span.sf-badge-anchored-text,
+  .sf-admin-menu-panel.small .sf-admin-menu-item > span.sf-badge-anchored-text {
+    @include anchored.visually-hidden;
   }
   @include paint.part(all);
 }

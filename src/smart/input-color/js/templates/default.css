@@ -24,6 +24,7 @@
         color: var(--sf-on-surface-disabled);
     }
     .sf-color-trigger {
+        border: 0;
         background: none;
         color: inherit;
     }
@@ -64,6 +65,7 @@
         color: var(--sf-on-error-container-graphic);
     }
     .sf-color-dot {
+        border: 0;
         background: transparent;
     }
     .sf-color-dot:hover:not(:disabled) {
@@ -128,6 +130,7 @@
     }
     .sf-color-code,
   .sf-color-alpha-input {
+        border: 0;
         background: transparent;
         color: var(--sf-on-surface);
     }
@@ -274,6 +277,7 @@
     min-inline-size: 0;
     padding: 0;
     border: 0;
+    border-color: revert-layer;
     font-family: var(--sf-text--family);
     font-size: var(--sf-color--text-size);
     line-height: var(--sf-color--text-height);
@@ -452,6 +456,7 @@
     block-size: var(--sf-color--control-height);
     padding: 0;
     border: 0;
+    border-color: revert-layer;
     border-radius: var(--sf-radius--ui);
     cursor: pointer;
   }
@@ -703,6 +708,7 @@
     min-inline-size: 0;
     padding-block: 0;
     border: 0;
+    border-color: revert-layer;
     font: inherit;
     font-family: var(--sf-code--font-family);
     outline: none;

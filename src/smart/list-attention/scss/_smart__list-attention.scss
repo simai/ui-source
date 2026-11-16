@@ -20,10 +20,14 @@
     color: var(--sf-on-surface);
   }
   .sf-list-attention.sf-list-attention--frame-none {
+    border: 0;
     background: var(--sf-list-attention-background-color, var(--sf-list-attention-background, transparent));
   }
   .sf-list-attention-head {
     border-block-end-color: var(--sf-list-attention--divider);
+  }
+  .sf-list-attention--frame-none .sf-list-attention-head {
+    border-block-end: 0;
   }
   .sf-list-attention-heading {
     color: var(--sf-list-attention-heading-color, var(--sf-on-surface));
@@ -57,9 +61,13 @@
     color: var(--sf-on-surface-variant);
   }
   .sf-list-attention-group-toggle {
+    border: 0;
     border-block-start-color: var(--sf-list-attention--divider);
     background: var(--sf-surface-area);
     color: var(--sf-on-surface);
+  }
+  .sf-list-attention-group:first-child > .sf-list-attention-group-toggle {
+    border-block-start: 0;
   }
   .sf-list-attention-group-toggle:hover {
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
@@ -158,6 +166,7 @@ sf-list-attention {
   --sf-list-attention--padding-end: var(--sf-list-attention-padding-inline, calc(var(--sf-px) * 0));
   overflow: visible;
   border: 0;
+  border-color: revert-layer;
   border-radius: 0;
 }
 
@@ -181,6 +190,7 @@ sf-list-attention {
   margin-block-end: var(--sf-list-attention-gap, var(--sf-list-attention--gap));
   padding-block: 0;
   border-block-end: 0;
+  border-block-end-color: revert-layer;
 }
 
 .sf-list-attention-heading {
@@ -401,6 +411,7 @@ a.sf-list-attention-object:focus-visible {
   padding-block: 0;
   padding-inline: var(--sf-list-attention--padding-start) var(--sf-list-attention--padding-end);
   border: 0;
+  border-color: revert-layer;
   border-block-start-width: var(--sf-px);
   border-block-start-style: solid;
   font: inherit;
@@ -413,6 +424,7 @@ a.sf-list-attention-object:focus-visible {
 
 .sf-list-attention-group:first-child > .sf-list-attention-group-toggle {
   border-block-start: 0;
+  border-block-start-color: revert-layer;
 }
 
 .sf-list-attention-group-toggle:focus-visible {

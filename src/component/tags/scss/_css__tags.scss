@@ -5,6 +5,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   .sf-tag {
+    border: 0;
     color: inherit;
     background-color: var(--sf-tag--background-color);
   }
@@ -58,6 +59,7 @@
        inline tag keeps the insets its host gives it. */
     appearance: none;
     border: 0;
+    border-color: revert-layer;
     border-end-end-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-tag-radius, var(--sf-radius--ui)));
     border-end-start-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-tag-radius, var(--sf-radius--ui)));
     border-start-end-radius: var(--sf-tag--border-top-right-radius, var(--sf-tag-radius, var(--sf-radius--ui)));

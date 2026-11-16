@@ -17,6 +17,7 @@
     color: var(--sf-error);
   }
   .sf-rich-text .sf-rich-text-frame {
+    border: var(--sf-px) solid;
     border-color: var(--sf-rich-text--border-color, transparent);
     border-block-end-color: var(--sf-rich-text--line-color, var(--sf-rich-text--border-color, transparent));
     background-color: var(--sf-rich-text--background-color);
@@ -149,6 +150,7 @@
   inline-size: 100%;
   min-inline-size: 0;
   border: var(--sf-px) solid;
+  border-color: revert-layer;
   border-radius: var(--sf-rich-text--radius);
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color, box-shadow, color;
@@ -574,6 +576,9 @@
   .sf-rich-text.sf-rich-text--over .sf-rich-text-count {
     color: var(--sf-error);
   }
+  .sf-rich-text .sf-rich-text-count-said {
+    border: 0;
+  }
 }
 
 @layer sf.components {
@@ -624,6 +629,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
   }
 
   /* (7) Headings in a field stand one level below the page's: h2 is the

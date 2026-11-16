@@ -23,6 +23,7 @@
     color: var(--sf-change--before);
   }
   .sf-change__toggle {
+    border: 0;
     background: none;
     color: var(--sf-link);
   }
@@ -136,6 +137,7 @@ sf-change[data-block] {
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   border-radius: var(--sf-radius--ui);
   font: inherit;
   font-size: var(--sf-text-size-1\/2);

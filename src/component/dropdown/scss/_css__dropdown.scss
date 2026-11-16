@@ -7,6 +7,7 @@
   }
   .sf-dropdown .sf-dropdown-field {
     background-color: var(--sf-dropdown-field--background-color);
+    border: var(--sf-dropdown-field--border);
     border-color: var(--sf-dropdown-field--border-color, transparent);
     border-block-end-color: var(--sf-dropdown-field--line-color, var(--sf-dropdown-field--border-color, transparent));
   }
@@ -53,6 +54,7 @@
 .sf-dropdown .sf-dropdown-field {
   --sf-dropdown-field--border: var(--sf-px) solid;
   border: var(--sf-dropdown-field--border);
+  border-color: revert-layer;
   border-end-end-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))));
   border-end-start-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))));
   border-start-end-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown-radius, var(--sf-dropdown--radius, var(--sf-radius--ui))));

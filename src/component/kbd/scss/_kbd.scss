@@ -112,6 +112,12 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   }
   @if paint.writes-shape() {
     border: none;
+    border-color: revert-layer;
+  }
+  @if paint.writes-paint() {
+    border: none;
+  }
+  @if paint.writes-shape() {
     box-shadow: none;
   }
 }
@@ -136,6 +142,12 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
   }
   @if paint.writes-shape() {
     border: none;
+    border-color: revert-layer;
+  }
+  @if paint.writes-paint() {
+    border: none;
+  }
+  @if paint.writes-shape() {
     border-radius: var(--sf-0);
     box-shadow: none;
     font-family: inherit;
@@ -184,6 +196,7 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   :where(#{$group}) {
     color: inherit;
     background: var(--sf-transparent);
+    border: none;
   }
   :where(#{$cap-places}) :where(#{$key}) {
     @include cap;
@@ -276,6 +289,7 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
     margin: var(--sf-0);
     padding: var(--sf-0);
     border: none;
+    border-color: revert-layer;
     border-radius: var(--sf-0);
     box-shadow: none;
     font: inherit;

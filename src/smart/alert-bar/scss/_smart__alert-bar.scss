@@ -30,6 +30,9 @@
   .sf-alert-bar .sf-alert-bar-icon {
     color: inherit;
   }
+  .sf-alert-bar-strip {
+    border: 0;
+  }
   @include notice-link.sf-notice-link('.sf-alert-bar :is(.sf-alert-bar-text, .sf-alert-bar-item-text)');
   .sf-alert-bar-list {
     border-block-end-color: var(--sf-outline-variant);
@@ -304,6 +307,7 @@
   padding-block: 0;
   padding-inline: var(--sf-alert-bar--padding-inline);
   border: 0;
+  border-color: revert-layer;
   font: inherit;
   font-size: var(--sf-alert-bar--strip-font-size);
   line-height: var(--sf-alert-bar--strip-line);

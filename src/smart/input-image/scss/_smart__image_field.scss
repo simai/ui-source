@@ -10,6 +10,7 @@
     color: var(--sf-error);
   }
   .sf-image-field-well {
+    border: var(--sf-image-field-border-width, var(--sf-px)) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
     background-color: var(--sf-image-field--background-color);
     color: var(--sf-on-surface);
   }
@@ -197,6 +198,7 @@
   padding-block: var(--sf-image-field-padding-block, var(--sf-image-field--inset));
   padding-inline: var(--sf-image-field-padding-inline, var(--sf-image-field--inset));
   border: var(--sf-image-field-border-width, var(--sf-px)) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
+  border-color: revert-layer;
   border-radius: var(--sf-image-field-radius, var(--sf-radius--ui));
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color;

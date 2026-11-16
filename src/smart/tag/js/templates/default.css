@@ -3,6 +3,7 @@
    win; their geometry stays in sf.components, over the utilities. */
 @layer sf.paint {
     .sf-tag .sf-tag-action {
+        border: 0;
         background: none;
         color: inherit;
     }
@@ -23,6 +24,7 @@
         margin: 0;
         padding: 0;
         border: 0;
+        border-color: revert-layer;
         font: inherit;
         gap: var(--sf-tag--gap, var(--sf-a1));
         cursor: pointer;

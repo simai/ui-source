@@ -4,6 +4,7 @@
 @layer sf.paint {
   .sf-range-slider .sf-range-slider-handle {
     background: transparent;
+    border: 0;
   }
 }
 
@@ -54,6 +55,7 @@
 
 .sf-range-slider .sf-range-slider-handle {
   border: 0;
+  border-color: revert-layer;
   box-shadow: none;
   cursor: grab;
   height: var(--sf-thumb-handle--height, var(--sf-icon-size-3));

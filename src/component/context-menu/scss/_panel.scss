@@ -55,6 +55,10 @@ $thumb: var(--sf-scroll-thumb-width);
   &::-webkit-scrollbar-track {
     @if paint.writes-shape() {
       border: 0;
+      border-color: revert-layer;
+    }
+    @if paint.writes-paint() {
+      border: 0;
     }
     @if paint.writes-paint() {
       background-color: transparent;
@@ -110,6 +114,12 @@ $thumb: var(--sf-scroll-thumb-width);
     min-block-size: calc(#{$row-height} + #{$block-start} + #{$block-end});
     padding-block: 0;
     padding-inline: calc(#{$inline-start} + #{$row-padding}) calc(#{$inline-end} + #{$row-padding});
+  }
+  @if paint.writes-shape() {
+    border: 0;
+    border-color: revert-layer;
+  }
+  @if paint.writes-paint() {
     border: 0;
   }
   @if paint.writes-shape() {
@@ -147,7 +157,15 @@ $thumb: var(--sf-scroll-thumb-width);
     min-inline-size: 0;
     margin: 0;
     padding: 0;
+  }
+  @if paint.writes-shape() {
     border: 0;
+    border-color: revert-layer;
+  }
+  @if paint.writes-paint() {
+    border: 0;
+  }
+  @if paint.writes-shape() {
     border-radius: 0;
     outline: none;
   }

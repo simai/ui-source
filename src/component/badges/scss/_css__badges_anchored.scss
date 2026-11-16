@@ -22,6 +22,9 @@
   .sf-badge.sf-badge--dot:not(.sf-badge--anchored):has(> .sf-dot) {
     background-color: transparent;
   }
+  span.sf-badge-anchored-text {
+    @include anchored.visually-hidden;
+  }
   @include paint.part(all);
 }
 

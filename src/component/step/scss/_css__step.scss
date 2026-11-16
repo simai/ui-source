@@ -9,6 +9,7 @@
     color: inherit;
   }
   .sf-step .sf-step-control {
+    border: 0;
     background: none;
     color: inherit;
   }
@@ -45,6 +46,7 @@
     background-color: var(--sf-error);
   }
   .sf-steps .sf-step--state-running .sf-step-marker {
+    border: 0;
     background: none;
     color: var(--sf-step--progress);
   }
@@ -153,6 +155,7 @@
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   font: inherit;
   text-align: start;
   cursor: pointer;
@@ -230,6 +233,7 @@
    than the marker and off centre). */
 .sf-steps .sf-step--state-running .sf-step-marker {
   border: 0;
+  border-color: revert-layer;
   outline: 0;
 }
 

@@ -7,6 +7,7 @@
   }
   .sf-checkbox .sf-checkbox-box {
     background-color: var(--sf-checkbox-box--background-color);
+    border: var(--sf-checkbox-box--border, 0 solid);
     border-color: var(--sf-checkbox-box--border-color, transparent);
   }
   .sf-checkbox .sf-checkbox-container {
@@ -53,6 +54,7 @@
     --sf-checkbox-box--border-start-end-radius: var(--sf-checkbox-radius, var(--sf-radius--ui));
     --sf-checkbox-box--border-start-start-radius: var(--sf-checkbox-radius, var(--sf-radius--ui));
     border: var(--sf-checkbox-box--border, 0 solid);
+    border-color: revert-layer;
     border-end-end-radius: var(--sf-checkbox-box--border-end-end-radius);
     border-end-start-radius: var(--sf-checkbox-box--border-end-start-radius);
     border-start-end-radius: var(--sf-checkbox-box--border-start-end-radius);

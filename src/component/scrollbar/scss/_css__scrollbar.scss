@@ -5,6 +5,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   .sf-scrollbar__thumb {
+    border: 0;
     background: transparent;
   }
   .sf-scrollbar__thumb::before {
@@ -119,6 +120,7 @@
     min-block-size: var(--sf-scrollbar-min-thumb-size);
     padding: 0;
     border: 0;
+    border-color: revert-layer;
     // Round ends, as the system bar's thumb (SB-2: they were square).
     border-radius: var(--sf-scroll-radius);
     cursor: grab;

@@ -15,6 +15,9 @@
   .sf-modal-surface {
     background-color: var(--sf-modal-surface-bg);
     @include places.sf-place(var(--sf-modal-surface-bg));
+    border: var(--sf-modal-surface-border-width)
+    var(--sf-modal-surface-border-style)
+    var(--sf-modal-surface-border-color);
   }
   .sf-modal-surface--elevated {
     @include places.sf-place(var(--sf-modal-surface-bg), var(--sf-on-surface-popup-variant));
@@ -202,6 +205,7 @@
   border: var(--sf-modal-surface-border-width)
     var(--sf-modal-surface-border-style)
     var(--sf-modal-surface-border-color);
+  border-color: revert-layer;
   border-radius: var(--sf-modal-surface-radius);
   box-shadow: var(--sf-modal-surface-shadow);
   gap: var(--sf-modal-surface-gap);

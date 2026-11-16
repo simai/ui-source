@@ -22,6 +22,7 @@
   }
   .sf-textarea textarea {
     background-color: var(--sf-textarea-textarea--background-color);
+    border: var(--sf-textarea-textarea--border);
     border-color: var(--sf-textarea-textarea--border-color, transparent);
     border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
     color: var(--sf-textarea-textarea--color);
@@ -34,6 +35,7 @@
   }
   .sf-textarea.sf-textarea--flush textarea {
     background-color: transparent;
+    border: 0;
   }
 }
 
@@ -95,6 +97,7 @@
   --sf-textarea-textarea--border-start-end-radius: var(--sf-textarea--radius);
   --sf-textarea-textarea--border-start-start-radius: var(--sf-textarea--radius);
   border: var(--sf-textarea-textarea--border);
+  border-color: revert-layer;
   border-end-end-radius: var(--sf-textarea-textarea--border-end-end-radius);
   border-end-start-radius: var(--sf-textarea-textarea--border-end-start-radius);
   border-start-end-radius: var(--sf-textarea-textarea--border-start-end-radius);
@@ -401,6 +404,7 @@
   --sf-textarea-textarea--padding-inline-start: var(--sf-textarea-padding-inline, 0px);
   --sf-textarea-textarea--padding-inline-end: var(--sf-textarea-padding-inline, 0px);
   border: 0;
+  border-color: revert-layer;
   border-radius: 0;
   box-shadow: none;
   margin: 0;
@@ -604,6 +608,9 @@
   .sf-textarea.sf-textarea--over .sf-textarea-count {
     color: var(--sf-error);
   }
+  .sf-textarea-count-said {
+    border: 0;
+  }
 }
 
 @layer sf.components {
@@ -649,6 +656,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
   }
 
   .sf-textarea.sf-textarea--code textarea {

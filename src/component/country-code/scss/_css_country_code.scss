@@ -19,6 +19,7 @@
   }
   .sf-country-code .sf-country-code-field {
     background-color: var(--sf-country-code-field--background-color);
+    border: var(--sf-country-code-field--border);
     border-color: var(--sf-country-code-field--border-color, transparent);
   }
   .sf-country-code .sf-country-code-left {
@@ -63,6 +64,7 @@
     border-block-end-color: var(--sf-outline-variant);
   }
   .sf-country-code .sf-country-code-search input {
+    border: 0;
     background: transparent;
     color: var(--sf-on-surface);
   }
@@ -127,6 +129,7 @@
   --sf-country-code-field--border-start-end-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
   --sf-country-code-field--border-start-start-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
   border: var(--sf-country-code-field--border);
+  border-color: revert-layer;
   border-end-end-radius: var(--sf-country-code-field--border-end-end-radius);
   border-end-start-radius: var(--sf-country-code-field--border-end-start-radius);
   border-start-end-radius: var(--sf-country-code-field--border-start-end-radius);
@@ -595,6 +598,7 @@
   block-size: 100%;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   outline: 0;
   font: inherit;
   font-size: var(--sf-country-code-item--font-size, var(--sf-text-size-1));

@@ -14,6 +14,7 @@
     color: var(--sf-pager--meta-color);
   }
   .sf-pager-side {
+    border: 0;
     background: none;
     color: var(--sf-pager--link-color);
   }
@@ -156,6 +157,7 @@
 .sf-pager-side {
   margin: 0;
   border: 0;
+  border-color: revert-layer;
   font: inherit;
   text-align: start;
   text-decoration: none;

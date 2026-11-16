@@ -454,8 +454,12 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   .sf-notifications {
+    border: 0;
     background: transparent;
     color: inherit;
+  }
+  .sf-notifications > .sf-notifications-live {
+    border: 0;
   }
   .sf-notifications .sf-toast[data-count]::before {
     background-color: var(--sf-on-surface);
@@ -470,6 +474,7 @@
     margin: 0;
     padding: 0;
     border: 0;
+    border-color: revert-layer;
     overflow: visible;
     display: flex;
     flex-direction: column;
@@ -506,6 +511,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
     pointer-events: none;
   }
 

@@ -5,6 +5,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   .sf-divider {
+    border: 0;
     color: var(--sf-divider-content--color);
   }
   .sf-divider-horizontal:empty {
@@ -23,6 +24,9 @@
   .sf-divider-content {
     background-color: var(--sf-divider-content--background-color);
     color: var(--sf-divider-content--color);
+  }
+  .sf-divider-content-border {
+    border: 0;
   }
   .sf-divider-content--small {
     color: var(--sf-on-surface-variant);
@@ -70,6 +74,7 @@
 
     box-sizing: border-box;
     border: 0;
+    border-color: revert-layer;
     margin: 0;
     padding: 0;
     text-align: center;
@@ -142,6 +147,7 @@
      SF.deprecations (journal class-content-divider-c188-aliases). */
   .sf-divider-content-border {
     border: 0;
+    border-color: revert-layer;
   }
 
   .sf-divider-content--small {

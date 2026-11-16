@@ -6,6 +6,7 @@
     color: var(--sf-on-surface);
   }
   .sf-outline__link {
+    border: 0;
     border-inline-start-color: var(--sf-transparent);
     color: var(--sf-outline--color);
     background-color: var(--sf-transparent);
@@ -74,6 +75,7 @@
     padding-block: var(--sf-outline--link-padding-block);
     padding-inline: var(--sf-outline--link-padding-inline);
     border: 0;
+    border-color: revert-layer;
     border-inline-start-width: var(--sf-outline--indicator-width);
     border-inline-start-style: solid;
     border-radius: var(--sf-radius--ui);

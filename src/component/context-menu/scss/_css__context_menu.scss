@@ -17,10 +17,12 @@
     background-color: var(--sf-context-menu-content--background-color);
   }
   .sf-context-menu[popover] {
+    border: 0;
     background: transparent;
     color: inherit;
   }
   .sf-context-menu-item {
+    border: 0;
     background: none;
     color: var(--sf-context-menu-color, var(--sf-on-surface));
   }
@@ -286,6 +288,7 @@
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   overflow: visible;
 }
 
@@ -341,6 +344,7 @@
   padding-block: var(--sf-a2);
   padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
   border: 0;
+  border-color: revert-layer;
   border-radius: var(--sf-context-menu--row-radius);
   font: inherit;
   text-align: start;

@@ -5,6 +5,7 @@
   .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button) {
     background-color: var(--sf-surface-container);
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border: 0;
     color: var(--sf-on-surface);
   }
   /* Hover and press fill the surface one state step up. Before, the hover
@@ -69,6 +70,7 @@
     align-items: center;
     appearance: none;
     border: 0;
+    border-color: revert-layer;
     border-radius: var(--sf-radius--ui);
     display: inline-flex;
     justify-content: center;

@@ -17,6 +17,9 @@
     .sf-online-indicator--away {
       border-color: CanvasText;
     }
+    .sf-online-indicator:has(> .sf-dot) {
+      border: 0;
+    }
   }
 }
 
@@ -151,6 +154,7 @@
   // The dot draws its own forced-colour ring.
   .sf-online-indicator:has(> .sf-dot) {
     border: 0;
+    border-color: revert-layer;
   }
 }
 }

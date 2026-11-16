@@ -67,6 +67,7 @@
     border-block-start-color: var(--sf-outline-variant);
   }
   .sf-drawer-handle {
+    border: 0;
     background: inherit;
   }
   .sf-drawer-handle-bar {
@@ -779,6 +780,7 @@
     margin: 0;
     padding: 0;
     border: 0;
+    border-color: revert-layer;
     cursor: grab;
     touch-action: none;
   }

@@ -13,6 +13,7 @@
   }
   .sf-input .sf-input-field {
     background-color: var(--sf-input-field--background-color);
+    border: var(--sf-input-field--border, 0 solid);
     border-color: var(--sf-input-field--border-color, transparent);
     border-block-end-color: var(--sf-input-field--line-color, var(--sf-input-field--border-color, transparent));
   }
@@ -70,6 +71,7 @@
     --sf-input-field--border-start-end-radius: var(--sf-input--radius);
     --sf-input-field--border-start-start-radius: var(--sf-input--radius);
     border: var(--sf-input-field--border, 0 solid);
+    border-color: revert-layer;
     border-end-end-radius: var(--sf-input-field--border-end-end-radius);
     border-end-start-radius: var(--sf-input-field--border-end-start-radius);
     border-start-end-radius: var(--sf-input-field--border-start-end-radius);
@@ -666,6 +668,9 @@
   .sf-input.sf-input--over .sf-input-count {
     color: var(--sf-error);
   }
+  .sf-input-count-said {
+    border: 0;
+  }
 }
 
 @layer sf.components {
@@ -770,6 +775,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
   }
 }
 
