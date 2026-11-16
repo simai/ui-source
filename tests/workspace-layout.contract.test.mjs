@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks, withoutPaintBlocks} from './support/paint-blocks.mjs';
 
 // The workspace layout (docs/developer/workspace-layout.md): the sheet in the
 // core sheet beside the declared-region layout, the script in core.js. The
@@ -22,8 +23,10 @@ test('the workspace is a core layout: core sheet and core script, nothing loaded
 
 test('it follows its container, never the viewport', () => {
   assert.match(sheet, /container: sf-workspace \/ inline-size;/u);
-  const queries = [...sheet.matchAll(/@container sf-workspace \(width (?:<|>=) #\{\$width\}\)/gu)];
+  // C273: the drawer's fill stands in the paint block under its own copy of the drawer query.
+  const queries = [...withoutPaintBlocks(sheet).matchAll(/@container sf-workspace \(width (?:<|>=) #\{\$width\}\)/gu)];
   assert.equal(queries.length, 4, 'narrow, split, drawer and wide');
+  assert.equal([...paintBlocks(sheet).matchAll(/@container sf-workspace \(width < #\{\$width\}\)/gu)].length, 1, 'the drawer paint');
   for (const [, query] of sheet.matchAll(/@media ([^{]+)\{/gu)) {
     assert.match(query, /prefers-reduced-motion/u, `no viewport query: ${query}`);
   }
@@ -60,7 +63,7 @@ test('the sheet is logical and respects reduced motion', () => {
 });
 
 test('no logical property inside a step: the build writes each out for both directions', () => {
-  const steps = sheet.slice(sheet.indexOf('@each $step, $width in $sf-workspace-split-steps'));
+  const steps = withoutPaintBlocks(sheet).slice(withoutPaintBlocks(sheet).indexOf('@each $step, $width in $sf-workspace-split-steps')); // C273: the paint block's colours sit outside the steps
   assert.doesNotMatch(steps, /^\s*(?:inset-|inline-size|block-size|min-inline|max-inline|border-inline|margin-inline|padding-inline)[a-z-]*\s*:/mu);
 });
 

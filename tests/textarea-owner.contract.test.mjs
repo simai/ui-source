@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {withoutPublicVariables} from './support/public-variables.mjs';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const source = (file) => readFile(new globalThis.URL(`../src/${file}`, import.meta.url), 'utf8').then(withoutPublicVariables);
 
@@ -101,7 +102,9 @@ test('Textarea flush surface draws no box and no focus of its own', async () => 
   assert.deepEqual(JSON.parse(meta.slice(meta.indexOf('= {') + 2, meta.indexOf('\n};') + 2)).attributes.appearance.values, ['bordered', 'filled', 'flush']);
   const flush = css.slice(css.indexOf('\n.sf-textarea.sf-textarea--flush textarea {', css.indexOf('/* Flush:')));
   const own = flush.slice(0, flush.indexOf('}'));
-  for (const declaration of ['background-color: transparent', 'border: 0', 'border-radius: 0', 'box-shadow: none', 'margin: 0', 'outline: none', 'resize: none']) {
+  // C273: the fill stands in the paint block; the frame's reset is reverted there and repeated.
+  assert.match(paintBlocks(css), /\.sf-textarea\.sf-textarea--flush textarea \{\s*background-color: transparent;\s*border: 0;/);
+  for (const declaration of ['border: 0', 'border-color: revert-layer', 'border-radius: 0', 'box-shadow: none', 'margin: 0', 'outline: none', 'resize: none']) {
     assert.ok(own.includes(declaration), declaration);
   }
   // Read with the public wrappers taken off: --sf-textarea-padding-inline and

@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import {URL} from 'node:url';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
@@ -96,7 +97,9 @@ test('C185 (7), (8): one dot, no box padding, the mark gap, three forms', async 
   assert.doesNotMatch(css, /padding-(top|bottom|inline)|--sf-dot--padding|line-height: 0/u);
   assert.match(css, /--sf-dot-item--ring: var\(--sf-a2\);[^}]*gap: var\(--sf-dot--gap, var\(--sf-space-1\\\/2\)\);[^}]*padding: 0;/u);
   assert.match(css, /\.sf-dot\.sf-dot--ring \.sf-dot-item \{\s*box-shadow:\s*0 0 0 var\(--sf-dot-item--ring\) var\(--sf-surface-place, var\(--sf-surface-page\)\),\s*0 0 0 calc\(2 \* var\(--sf-dot-item--ring\)\) var\(--sf-dot-item--background-color\);/u);
-  assert.match(css, /\.sf-dot\.sf-dot--hollow \.sf-dot-item \{\s*background-color: transparent;\s*box-shadow: inset 0 0 0 var\(--sf-dot-item--ring\) var\(--sf-dot-item--background-color\);/u);
+  // C273: the hollow disc's empty fill stands in the paint block, its ring in the component block.
+  assert.match(paintBlocks(css), /\.sf-dot\.sf-dot--hollow \.sf-dot-item \{\s*background-color: transparent;/u);
+  assert.match(css, /\.sf-dot\.sf-dot--hollow \.sf-dot-item \{\s*box-shadow: inset 0 0 0 var\(--sf-dot-item--ring\) var\(--sf-dot-item--background-color\);/u);
   // The hollow default grey is declared before the statuses, so a status wins.
   assert.ok(css.indexOf('.sf-dot.sf-dot--hollow {') < css.indexOf('.sf-dot.sf-dot--primary {'));
   assert.match(css, /\.sf-dot:is\(\.sf-dot--size-1\\\/4, \.sf-dot--size-1\\\/3\) \{\s*--sf-dot-item--ring: var\(--sf-a1\);/u);

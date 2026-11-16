@@ -56,12 +56,13 @@ test('the versions move with the look', () => {
   // Group build 7: the C123 notes numbered above the released pair; later notes (input-color's C123 (3),
   // the textarea and switch patch without icon-buttons, quantity's C122 names) stand above them.
   // Group build 8: the current numbers moved on (RG-S2 and C201 on input, C209 on input-color, the GB8 patches of moved units).
-  const want = {input: ['1.13.0', '1.13.2'], 'input-textarea': ['1.12.0', '1.12.2'], dropdown: ['1.16.0', '1.16.1'], 'input-color': ['1.13.0', '1.15.0'], switch: ['1.7.0', '1.7.2'], 'input-quantity': ['1.9.0', '1.9.2']};
+  // C273: the paint under the utilities moved input, input-textarea, dropdown, input-color and switch on.
+  const want = {input: ['1.13.0', '1.15.0'], 'input-textarea': ['1.12.0', '1.13.0'], dropdown: ['1.16.0', '1.19.0'], 'input-color': ['1.13.0', '1.19.0'], switch: ['1.7.0', '1.8.0'], 'input-quantity': ['1.9.0', '1.9.2']};
   for (const [folder, [version, current]] of Object.entries(want)) {
     const component = JSON.parse(read(`src/smart/${folder}/component.json`));
     assert.equal(component.version, current, folder);
     const note = new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123`, 'u');
     assert.ok(component['x-decisions'].some((line) => note.test(line)), `${folder} ${version} note`);
   }
-  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.13.0'); // 1.13.0: the anchored badge's .sf-dot (C185 (8))
+  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.14.0'); // 1.13.0: the anchored badge's .sf-dot (C185 (8)); 1.14.0: C273
 });

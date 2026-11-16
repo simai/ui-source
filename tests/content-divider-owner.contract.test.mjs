@@ -4,6 +4,7 @@ import path from 'node:path';
 import process from 'node:process';
 import test from 'node:test';
 import {URL} from 'node:url';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -39,7 +40,7 @@ test('Content Divider legacy buttons keep the ladder height and the place fill',
   assert.match(button, /min-block-size: var\(--sf-ui-1--control-height\)/);
   assert.match(button, /padding: var\(--sf-0\) var\(--sf-space-1\)/);
   // C16: the cut-out colour of the place the divider stands on.
-  assert.match(button, /background-color: var\(--sf-surface-place, var\(--sf-surface-page\)\)/);
+  assert.match(paintBlocks(css).match(/\n\s*\.sf-divider-button \{[^}]*\}/)?.[0] || '', /background-color: var\(--sf-surface-place, var\(--sf-surface-page\)\)/); // C273: paint
 });
 
 test('Content Divider uses a bounded Loader signature; its script only notes the C188 aliases', async () => {

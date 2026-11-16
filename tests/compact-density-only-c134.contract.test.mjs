@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {MENU_APPEARANCES} from '../src/smart/menu/items.mjs';
+import {withoutPaintBlocks} from './support/paint-blocks.mjs';
 
 // Owner decision C134 (ui-control control/docs-review/decisions.md; study
 // control/research/2026-11-13-navigation-density.md D5, Q1): the word compact
@@ -54,9 +55,9 @@ test('C134 sf-menu: appearance rail, compact a dated value alias; the rail write
   assert.match(template, /context\.appearance === 'rail' \? 'sf-menu--compact' : '',/u);
   const sheet = read('src/component/menu/scss/_css__menu_compact.scss');
   assert.doesNotMatch(sheet, /\.sf-menu\.sf-menu--compact/u);
-  assert.equal(sheet.match(/\.sf-menu:is\(\.sf-menu--rail, \.sf-menu--compact\)/gu).length, 12);
+  assert.equal(withoutPaintBlocks(sheet).match(/\.sf-menu:is\(\.sf-menu--rail, \.sf-menu--compact\)/gu).length, 12); // C273: the paint blocks repeat some selectors
   assert.match(read('src/component/menu/scss/_css__menu_element.scss'), /:where\(\.sf-menu:not\(\.sf-menu--rail, \.sf-menu--compact\)\)/u);
-  assert.equal(json('src/component/menu/passport.json').version, '1.8.2');
+  assert.equal(json('src/component/menu/passport.json').version, '1.10.0'); // 1.10.0: C273
   assert.equal(record('value-menu-appearance-compact-to-rail').rewrite, 'rename-value');
   assert.deepEqual(record('class-menu-compact-to-rail').items, [{component: 'sf-menu', from: 'sf-menu--compact', to: 'sf-menu--rail'}]);
 });

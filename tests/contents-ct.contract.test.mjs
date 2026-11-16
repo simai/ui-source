@@ -8,11 +8,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {fitInOrder, chooseBeside, fitBesideMore, spanOf} from '../src/core/js/overflow-row.js';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = read('src/smart/contents/index.js');
 const template = read('src/smart/contents/js/templates/default.js');
-const sheet = read('src/smart/contents/scss/_smart__contents.scss');
+// C273: the mixins' paint and shape mode blocks unfolded, as written before
+const sheet = unfoldModes(read('src/smart/contents/scss/_smart__contents.scss'));
 const manifest = JSON.parse(read('src/smart/contents/component.json'));
 const generated = JSON.parse(read('src/smart/contents/smart.manifest.json'));
 const journal = JSON.parse(read('contracts/changes/journal.json'));
@@ -24,8 +26,8 @@ const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.
 // hovered entry is a fill, tests/badges-owner.contract.test.mjs) keep every
 // 1.5.0 fix below.
 test('contents is 1.7.1 in its manifest and its generated manifest (1.7.1: the status mark writes sf-badge icon-only, C134)', () => {
-  assert.equal(manifest.version, '1.7.3');
-  assert.equal(generated.version, '1.7.3');
+  assert.equal(manifest.version, '1.8.0');
+  assert.equal(generated.version, '1.8.0');
 });
 
 test('CT-03: fewer than two sections draw nothing, by the host state and in the printed markup', () => {

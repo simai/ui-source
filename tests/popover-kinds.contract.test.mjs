@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {paintBlocks, withoutPaintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -33,7 +34,8 @@ test('no tooltip draws a frame or a flat tail: the light look takes the window s
   assert.doesNotMatch(light.slice(0, light.indexOf('}')), /border:|box-shadow:/);
   assert.match(sheet, /\.sf-tooltip\.sf-tooltip--light \{\s*filter: var\(--sf-shadow-overlay-filter\);/);
   const custom = await read('src/component/tooltip/scss/_css__tooltip_custom.scss');
-  assert.match(custom, /border: var\(--sf-tooltip-border-width, 0\)/);
+  // C273: width and style in the component block; the colour stands in the paint block.
+  assert.match(custom, /border-width: var\(--sf-tooltip-border-width, 0\);\s*border-style: solid;/);
 });
 
 test('the smart tooltip has no arrow by default and writes a shortcut through kbd', async () => {
@@ -49,7 +51,9 @@ test('the smart tooltip has no arrow by default and writes a shortcut through kb
 
 test('the «?» window has a shadow and no frame; its button keeps its target over running text', async () => {
   const sheet = await read('src/smart/help-mark/scss/_smart__help_mark.scss');
-  assert.match(sheet, /border: var\(--sf-px\) solid var\(--sf-help-mark-border-color, transparent\);/);
+  // C273: the frame's colour stands in the paint block, its width and style in the component block.
+  assert.match(paintBlocks(sheet), /border-color: var\(--sf-help-mark-border-color, transparent\);/);
+  assert.match(withoutPaintBlocks(sheet), /\.sf-help-mark-panel \{[^}]*border-width: var\(--sf-px\);[^}]*border-style: solid;/);
   assert.match(sheet, /box-shadow: var\(--sf-shadow-overlay\);/);
   assert.match(sheet, /\.sf-help-mark-button > button \{\s*position: relative;\s*z-index: 1;/);
   const docs = await read('src/smart/help-mark/docs.md');

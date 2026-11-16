@@ -16,6 +16,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {parseColour} from '../src/smart/input-color/js/color-math.js';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(read(path));
@@ -32,7 +33,7 @@ const own = template.slice(template.indexOf('function renderOwn'));
 
 test('the version and the new relations', () => {
   const manifest = json(`${base}/component.json`);
-  assert.equal(manifest.version, '1.15.0');
+  assert.equal(manifest.version, '1.19.0');
   for (const name of ['cl-button', 'cl-button-copy']) {
     assert.ok(manifest.relations.some((relation) => relation.name === name && relation.lazy), `${name}, lazy`);
   }
@@ -98,7 +99,7 @@ test('(4) the copy action is sf-button-copy in the field frame, the check for 1.
 });
 
 test('(5) the window stays on the popup surface, no hint line', () => {
-  assert.match(rule(css, '.sf-color-window'), /background-color: var\(--sf-surface-popup\);/u);
+  assert.match(rule(paintBlocks(css), '.sf-color-window'), /background-color: var\(--sf-surface-popup\);/u); // C273: paint
   assert.doesNotMatch(own, /sf-color-hint|mhint/u);
 });
 

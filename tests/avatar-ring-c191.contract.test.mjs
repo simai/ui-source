@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {nothing} from 'lit';
 import {renderProgressRingTemplate} from '../src/smart/progress-ring/js/templates/default.js';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // Owner decision C191 (4)-(8) (2026-11-15; research
 // control/research/2026-11-14-recipe-parts.md, prototype
@@ -103,15 +104,16 @@ test('C191 (4)-(6): sf-menu-context 1.24.0 draws a meter row over sf-progress-ba
 
 test('C191 (4): the meter row is declared, styled from the systems, documented and loads the bar lazily', () => {
   const manifest = json('src/smart/menu-context/component.json');
-  assert.ok(['1.25.3', '1.25.4'].includes(manifest.version), manifest.version); // group build 7: the integrated number (the branch wrote 1.24.0); 1.25.4: TT-11 (fix/returns-gb67)
+  assert.ok(['1.25.3', '1.25.4', '1.26.0'].includes(manifest.version), manifest.version); // group build 7: the integrated number (the branch wrote 1.24.0); 1.25.4: TT-11 (fix/returns-gb67); 1.26.0: C273
   assert.ok(manifest['x-registry'].item_contract.kinds.meter.fields.valueText);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-progress-bar' && relation.lazy === true));
-  assert.equal(json('src/component/context-menu/passport.json').version, '1.16.1'); // group build 8: C208's patch
+  assert.equal(json('src/component/context-menu/passport.json').version, '1.18.0'); // group build 8: C208's patch; 1.18.0: C273
   const sheet = read('src/component/context-menu/scss/_css__context_menu.scss');
   const block = sheet.slice(sheet.indexOf('.sf-context-menu-meter {'), sheet.indexOf('/* The search is the panel\'s header'));
   assert.match(block, /gap: var\(--sf-space-1\\\/4\);/);
   assert.match(block, /padding: var\(--sf-context-menu--space-y\) var\(--sf-context-menu--inset-end\) var\(--sf-context-menu--space-y\) var\(--sf-context-menu--inset-start\);/);
-  assert.match(block, /color: var\(--sf-on-surface-variant\);/);
+  // C273: the value's colour stands in the paint block after the component block
+  assert.match(paintBlocks(sheet), /\.sf-context-menu-meter-value \{\s*color: var\(--sf-on-surface-variant\);/);
   assert.doesNotMatch(block, /\d+px/, 'no magic lengths');
   const docs = read('src/smart/menu-context/docs/docs.md');
   assert.match(docs, /Строка-шкала `\{type: 'meter'\}`/u);

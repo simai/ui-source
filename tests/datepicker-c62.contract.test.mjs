@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {URL} from 'node:url';
 import {formatPlaceholder, localeDateFormat, localeWeekStart, localeWeekend, weekendDays} from '../src/smart/input-date/js/locale-calendar.js';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // Owner decision C62 (2026-11-11, ui-control control/docs-review/decisions.md):
 // the calendar and the date field. Each point of the gap analysis
@@ -184,7 +185,9 @@ test('the phone ribbon matches #lenta: one surface, focus, height, «К сего
   const popup = read('src/smart/input-date/js/templates/default.js');
   const scss = read('src/component/datepicker/scss/_css_datepicker.scss');
   // D1: the box takes the panel's place colour, not the nested popup role read inside it.
-  assert.match(scss, /--sf-surface-place: inherit;\s*--sf-surface-place-solid: inherit;\s*--sf-surface-place-ground: inherit;\s*--sf-datepicker--background-color: var\(--sf-surface-place, var\(--sf-surface-popup\)\);/u);
+  // C273: the place roles are paint (sf.paint), the box's own variable stays
+  assert.match(paintBlocks(scss), /\.sf-datepicker\.sf-datepicker--sheet \{\s*--sf-surface-place: inherit;\s*--sf-surface-place-solid: inherit;\s*--sf-surface-place-ground: inherit;/u);
+  assert.match(scss, /\.sf-datepicker\.sf-datepicker--sheet \{\s*--sf-datepicker--background-color: var\(--sf-surface-place, var\(--sf-surface-popup\)\);/u);
   assert.doesNotMatch(scss, /--sf-drawer-background/u);
   // D2: no frame-count limit; the ribbon waits for its size, and the panel's focus goes on to the day.
   assert.doesNotMatch(source, /tries < 30/u);

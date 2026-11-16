@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -47,7 +48,7 @@ test('Kbd decides its look by the place, and an appearance said outright wins', 
 });
 
 test('Kbd caps take the ink they sit in and mix their fill from it, on the alpha scale', async () => {
-  const css = await read('src/component/kbd/scss/_kbd.scss');
+  const css = unfoldModes(await read('src/component/kbd/scss/_kbd.scss')); // C273: mode blocks unfolded
   const cap = css.slice(css.indexOf('@mixin cap'), css.indexOf('@mixin plain'));
   // The ink whole (C04: the button's text), the fill a state step of it: the
   // 80 % ink of 1.1.0 fell under 4.5:1 (buttons review 2026-11-09).
@@ -55,7 +56,8 @@ test('Kbd caps take the ink they sit in and mix their fill from it, on the alpha
   assert.match(cap, /background: var\(--sf-kbd-background-color, var\(--sf-kbd-background, color-mix\(in srgb, currentColor 8%, transparent\)\)\)/u);
   assert.match(cap, /border: none/u);
   const keycap = css.slice(css.indexOf('@mixin keycap'), css.indexOf('@mixin cap'));
-  assert.match(keycap, /border: var\(--sf-px\) solid var\(--sf-kbd-border-color, var\(--sf-outline-variant\)\)/u);
+  // C273: the edge's width and style are shape, its colour paint
+  assert.match(keycap, /border-width: var\(--sf-px\);\s*border-style: solid;[\s\S]*border-color: var\(--sf-kbd-border-color, var\(--sf-outline-variant\)\)/u);
   assert.match(keycap, /box-shadow: inset 0 calc\(-1 \* var\(--sf-px\)\) 0/u);
   const plain = css.slice(css.indexOf('@mixin plain'), css.indexOf('@layer'));
   assert.match(plain, /color: var\(--sf-kbd-plain-color, var\(--sf-on-surface-variant\)\)/u);

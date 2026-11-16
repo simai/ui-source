@@ -6,6 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
+import {paintBlocks} from './support/paint-blocks.mjs';
 const read = (p) => readFile(new URL('../' + p, import.meta.url), 'utf8');
 const manifest = JSON.parse(await read('src/smart/gallery/component.json'));
 const gallery = await read('src/smart/gallery/index.js');
@@ -62,7 +63,8 @@ test('C150 (6): the first frame holds the grid, the ratio and a quiet fill; copi
 test('C150 (7): the full-screen black viewer: «3 / 12» at the start, zoom and close at the end, arrows, keys, swipe, focus back', () => {
   assert.equal(ru['viewer-count'], '{n} / {total}');
   assert.equal(ru['viewer-count-words'], '{n} из {total}');
-  assert.match(css, /\.sf-gallery-viewer \{[\s\S]*?background-color: var\(--sf-black\);[\s\S]*?color-scheme: dark;/);
+  assert.match(paintBlocks(css), /\.sf-gallery-viewer \{[^}]*background-color: var\(--sf-black\);/); // C273: paint
+  assert.match(css, /\.sf-gallery-viewer \{[\s\S]*?color-scheme: dark;/);
   assert.match(css, /\.sf-gallery-viewer-actions \{\s*display: flex;\s*flex: none;\s*align-items: center;\s*gap: var\(--sf-gap--actions\);/);
   assert.match(viewer, /<sf-button-close class="sf-gallery-viewer-control" data-sf-gallery-viewer-close appearance="media" size="1"/);
   assert.match(viewer, /ArrowRight: rtl \? -1 : 1, ArrowLeft: rtl \? 1 : -1/);

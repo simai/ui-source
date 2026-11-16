@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 // Inverse places (IP, 2026-11-14), after places states PS-A/PS-B and buttons
 // on places. An inverse place (bg-surface-inverse, bg-surface-inverse-fixed)
@@ -15,7 +16,7 @@ import {fileURLToPath} from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
-const mix = read('src/core/scss/mix/_mix__places.scss');
+const mix = unfoldModes(read('src/core/scss/mix/_mix__places.scss')); // C273: the paint mode blocks unfolded
 const icon = read('src/component/icon-buttons/scss/_css_icon_buttons.scss');
 const block = (source, head) => {
   const start = source.indexOf(head);

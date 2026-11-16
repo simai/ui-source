@@ -7,6 +7,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(read(path));
@@ -54,7 +55,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
   // The outcome is the success role on the surface, not a container's ink (C16).
   for (const folder of ['confirm', 'confirm-change']) {
     const css = read(`src/smart/${folder}/js/templates/default.css`);
-    assert.match(css, /--accepted [^{]*__status \{ color: var\(--sf-success\); \}/u, folder);
+    assert.match(paintBlocks(css), /--accepted [^{]*__status \{\s*color: var\(--sf-success\);\s*\}/u, folder); // C273: paint
     assert.doesNotMatch(css, /var\(--sf-on-success-container\)/u, folder);
   }
   for (const folder of ['confirm', 'confirm-change']) {
@@ -70,7 +71,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.9.1');
+  assert.equal(contract.version, '1.10.0');
   // 1.7.0 (C40): the values are sf-change's list, which it fetches.
   assert.ok(contract.relations.some(({name}) => name === 'cl-change'));
   assert.match(read('src/smart/confirm-change/js/templates/default.js'), /<sf-change class="sf-confirm-change__list sf-change-confirm__list" layout="list" \.changes=/u);
@@ -99,7 +100,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.3.8'); // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch
+  assert.equal(contract.version, '1.5.0'); // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
@@ -142,7 +143,7 @@ test('C166 (4), R245: every question puts its answers first, at the start, 8 apa
   }
   const css = read('src/smart/confirm/js/templates/default.css');
   const inline = css.match(/\.sf-confirm--inline \{([^}]*)\}/u)[1];
-  assert.match(inline, /background: var\(--sf-confirm-background-color, var\(--sf-surface-container\)\);/u);
+  assert.match(paintBlocks(css), /\.sf-confirm--inline \{\s*background: var\(--sf-confirm-background-color, var\(--sf-surface-container\)\);/u); // C273: paint
   assert.match(inline, /border-radius: var\(--sf-confirm-radius, var\(--sf-radius-2\)\);/u);
   assert.doesNotMatch(inline, /border:/u, 'no second frame');
   // On a phone the answers share the row in halves in every form, measured.
@@ -155,7 +156,7 @@ test('sf-confirm-change 1.9.1 (RG-DP-1): expires-at names the event the card fir
   assert.match(summary, /says so once with sf-confirm-change-expired\./u);
   assert.doesNotMatch(summary, /sf-change-confirm-expired/u);
   const manifest = json('src/smart/confirm-change/smart.manifest.json');
-  assert.equal(manifest.version, '1.9.1');
+  assert.equal(manifest.version, '1.10.0');
   assert.equal(manifest.inputs.properties['expires-at'].description, summary);
   // The former names stay dated aliases until their date (the aliases are unchanged).
   const events = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'event');

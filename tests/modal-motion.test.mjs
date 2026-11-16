@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {URL} from 'node:url';
+import {paintBlocks, withoutPaintBlocks} from './support/paint-blocks.mjs';
 const source=await readFile(new URL('../src/component/modal/js/_motion.js',import.meta.url),'utf8');
 const {modalTransitionDuration,scheduleModalClose}=await import(`data:text/javascript,${encodeURIComponent(source)}`);
 const style=(transitionProperty,transitionDuration,transitionDelay='0s')=>({transitionProperty,transitionDuration,transitionDelay,display:'block'});
@@ -46,6 +47,8 @@ test('Modal motion references Framework tokens and Close keeps forced-color mask
   assert.ok(modal.includes('var(--sf-space-1\\/2)'));
   assert.doesNotMatch(modal,/0\.24s|0\.75rem/);
   assert.match(modal,/@media \(prefers-reduced-motion: reduce\)/);
-  assert.match(close,/forced-color-adjust: none;\s+background-color: CanvasText;/);
+  // C273: the forced-colours ink stands in the paint block, its adjust in the component block.
+  assert.match(withoutPaintBlocks(close),/forced-color-adjust: none;/);
+  assert.match(paintBlocks(close),/background-color: CanvasText;/);
   assert.match(close,/background-color: GrayText;/);
 });

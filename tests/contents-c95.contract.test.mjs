@@ -7,11 +7,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {currentBranch} from '../src/smart/contents/js/templates/default.js';
+import {unfoldModes, paintBlocks, withoutPaintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = read('src/smart/contents/index.js');
 const template = read('src/smart/contents/js/templates/default.js');
-const sheet = read('src/smart/contents/scss/_smart__contents.scss');
+// C273: the mixins' paint and shape mode blocks unfolded, as written before
+const sheet = unfoldModes(read('src/smart/contents/scss/_smart__contents.scss'));
 const manifest = JSON.parse(read('src/smart/contents/component.json'));
 const generated = JSON.parse(read('src/smart/contents/smart.manifest.json'));
 const ru = JSON.parse(read('src/smart/contents/lang/ru.json'));
@@ -52,7 +54,9 @@ test('C95.1 CT-02: --sf-contents-inset-inline is public and is the text\'s inset
 });
 
 test('C95.2 CT-06: the current text is on-surface medium; primary only on the line', () => {
-  assert.match(sheet, /\.sf-contents-link\[aria-current="location"\] \{\s*color: var\(--sf-on-surface\);\s*font-weight: var\(--sf-font-weight-medium\);/u);
+  // C273: the colour in the paint block, the weight in the component block
+  assert.match(paintBlocks(sheet), /\.sf-contents-link\[aria-current="location"\] \{\s*color: var\(--sf-on-surface\);/u);
+  assert.match(withoutPaintBlocks(sheet), /\.sf-contents-link\[aria-current="location"\] \{\s*font-weight: var\(--sf-font-weight-medium\);/u);
   assert.doesNotMatch(sheet, /\[aria-current="location"\] \{\s*color: var\(--sf-contents--current\)/u);
   assert.doesNotMatch(sheet, /background-color: var\(--sf-primary-container\)/u, 'no fill in the compact list');
   assert.ok(journal.records.some((one) => one.id === 'behaviour-contents-current-line-only'));

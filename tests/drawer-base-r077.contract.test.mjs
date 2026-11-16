@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {withoutPaintBlocks} from './support/paint-blocks.mjs';
 
 // sf-drawer 1.16.0, from the live record panel (ui-admin.test record r-077,
 // study view-property-base): what the Framework base holds so a set can stand
@@ -24,7 +25,7 @@ test('drawer r-077 (1): edge controls stand outside only while there is room, el
   // In the head the close is ghost, not the glass plate.
   assert.match(source, /const outside = context\.closePlacement === 'outside' && !this\._edgeInHead;/u);
   // The glass plate and the head row follow the in-head state, not «whole».
-  assert.equal((sheet.match(/:not\(\[data-sf-drawer-edge-in-head\]\) \.sf-drawer-edge/gu) || []).length, 4);
+  assert.equal((withoutPaintBlocks(sheet).match(/:not\(\[data-sf-drawer-edge-in-head\]\) \.sf-drawer-edge/gu) || []).length, 4); // C273: the paint blocks repeat selectors
   assert.doesNotMatch(sheet, /data-sf-drawer-whole/u);
   assert.match(sheet, /\.sf-drawer\[data-sf-drawer-edge-in-head\]:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-edge \{[^}]*inset-inline: auto calc\(var\(--sf-drawer-edge-end, calc\(var\(--sf-px\) \* 0\)\) \+ var\(--sf-drawer-gutter, var\(--sf-space-2\)\)\);/u);
   assert.match(sheet, /\.sf-drawer\[data-sf-drawer-edge-in-head\]:has\(\.sf-drawer-edge:not\(:empty\)\) \.sf-drawer-head \{\s*padding-inline-end: calc\(var\(--sf-drawer--inset-end\) \+ var\(--sf-drawer-edge-room/u);
@@ -64,8 +65,9 @@ test('drawer r-077 (3): content headings start below the panel title, by role to
 });
 
 test('drawer r-077: the version and its migration step', () => {
-  // 1.16.0 or a later patch (1.16.1: owner decision C205, docs and gates only).
-  assert.match(manifest.version, /^1\.16\.\d+$/u);
+  // 1.16.0 or a later patch (1.16.1: owner decision C205, docs and gates only);
+  // 1.17.0: C273, the paint under the utilities.
+  assert.match(manifest.version, /^1\.17\.\d+$/u);
   const steps = JSON.stringify(manifest);
   assert.match(steps, /"from":"1\.15\.0","to":"1\.16\.0"/u);
 });

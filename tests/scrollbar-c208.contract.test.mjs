@@ -12,6 +12,7 @@ import {readFileSync, readdirSync, statSync} from 'node:fs';
 import {dirname, join, relative, resolve} from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -47,7 +48,7 @@ test('C208 (1): core draws one hover rule, the place text, with no width change'
   assert.match(core, /--sf-scroll-bg-thumb:\s*var\(--sf-outline\)/);
   assert.match(core, /--sf-scroll--thumb-hover:\s*var\(--sf-on-surface\)/);
   assert.match(core, /::-webkit-scrollbar-thumb:hover,\s*::-webkit-scrollbar-thumb:active\s*\{\s*background-color:\s*var\(--sf-scroll--thumb-hover\);\s*\}/);
-  const panel = read('src/component/context-menu/scss/_panel.scss');
+  const panel = unfoldModes(read('src/component/context-menu/scss/_panel.scss')); // C273: mode blocks unfolded
   assert.match(panel, /&::-webkit-scrollbar-thumb:hover,\s*&::-webkit-scrollbar-thumb:active\s*\{\s*background-color:\s*var\(--sf-scroll--thumb-hover\)/);
   assert.match(bar, /\.sf-scrollbar__track:hover \.sf-scrollbar__thumb::before,\s*\.sf-scrollbar\[data-sf-scrollbar-dragging="true"\] \.sf-scrollbar__thumb::before\s*\{\s*background:\s*var\(--sf-scrollbar--thumb-hover\)/);
 });

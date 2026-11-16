@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const root = new URL('..', import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
@@ -15,7 +16,9 @@ const source = read('src/smart/list-timeline/index.js');
 const template = read('src/smart/list-timeline/js/templates/default.js');
 
 test('C204 (1): the passed segment is 2 px primary, the dashed step line is gone', () => {
-  assert.match(scss, /\.sf-list-timeline-list--steps > \.sf-list-timeline-item\[data-state="done"\]:not\(:last-child\)::before \{\n  inset-inline-start: calc\(\(var\(--sf-list-timeline--rail\) - var\(--sf-px\) \* 2\) \/ 2\);\n  inline-size: calc\(var\(--sf-px\) \* 2\);\n  background: var\(--sf-primary\);\n\}/u);
+  assert.match(scss, /\.sf-list-timeline-list--steps > \.sf-list-timeline-item\[data-state="done"\]:not\(:last-child\)::before \{\n  inset-inline-start: calc\(\(var\(--sf-list-timeline--rail\) - var\(--sf-px\) \* 2\) \/ 2\);\n  inline-size: calc\(var\(--sf-px\) \* 2\);\n\}/u);
+  // C273: its colour is paint
+  assert.match(paintBlocks(scss), /\.sf-list-timeline-list--steps > \.sf-list-timeline-item\[data-state="done"\]:not\(:last-child\)::before \{\s*background: var\(--sf-primary\);\s*\}/u);
   assert.doesNotMatch(scss, /dashed/u);
 });
 
@@ -45,6 +48,6 @@ test('C204 (3): the slot an event names stands under its meta line', () => {
 
 test('C204: version 1.4.0 with its note', () => {
   const manifest = json('src/smart/list-timeline/component.json');
-  assert.equal(manifest.version, '1.4.0');
+  assert.equal(manifest.version, '1.5.0');
   assert.ok(manifest['x-decisions'].some((note) => note.startsWith('version 1.4.0 (2026-11-15, owner decision C204')));
 });

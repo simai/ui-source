@@ -9,6 +9,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = async (path) => JSON.parse(await read(path));
@@ -256,7 +257,9 @@ test('C102 8 and §7 items 7-8: page tree, note, mark, more, hidden', async () =
   assert.equal(ru.runtime.hidden, 'скрыта');
   assert.match(row, /row\.pageHidden && row\.hiddenWord\n\s+\? html`<span class="sf-tree-item-note sf-tree-item-hidden-word">/u);
   assert.match(sheet, /\.sf-tree \.sf-tree-item--hidden > \.sf-tree-item-container > \.sf-tree-item-name \{\s*color: var\(--sf-on-surface-variant\);/u);
-  assert.match(sheet, /\.sf-tree \.sf-tree-item-note \{[^}]*color: var\(--sf-on-surface-variant\);[^}]*font-variant-numeric: tabular-nums;/u);
+  // C273: the note's ink in the paint block, its figures in the component block.
+  assert.match(paintBlocks(sheet), /\.sf-tree \.sf-tree-item-note \{[^}]*color: var\(--sf-on-surface-variant\);/u);
+  assert.match(sheet, /\.sf-tree \.sf-tree-item-note \{[^}]*font-variant-numeric: tabular-nums;/u);
 });
 
 test('C102 §7 items 10-11: * and expand-all / collapse-all; reorder', async () => {
@@ -295,8 +298,10 @@ test('C129: the current page of a tree takes the navigation menu plate (C23) and
   // The menu's plate: the primary fill of the fill family, on-primary-container words, medium.
   assert.match(menu, /@mixin current-plate \{[^}]*--sf-primary-container-active\);[^}]*--sf-on-primary-container\);[^}]*--sf-font-weight-medium\);/u);
   const current = sheet.match(/\.sf-tree \.sf-tree-item\[aria-current='page'\] > \.sf-tree-item-container \{[^}]*\}/u)?.[0] ?? '';
-  assert.match(current, /background: var\(--sf-primary-container-active\);/u);
-  assert.match(current, /color: var\(--sf-on-primary-container\);/u);
+  // C273: the plate's fill and ink stand in the paint block under the same selector.
+  const currentPaint = paintBlocks(sheet).match(/\.sf-tree \.sf-tree-item\[aria-current='page'\] > \.sf-tree-item-container \{[^}]*\}/u)?.[0] ?? '';
+  assert.match(currentPaint, /background: var\(--sf-primary-container-active\);/u);
+  assert.match(currentPaint, /color: var\(--sf-on-primary-container\);/u);
   assert.match(current, /font-weight: var\(--sf-font-weight-medium\);/u);
   // After the selected plate, so a row that is both reads as the page.
   assert.ok(sheet.indexOf("[aria-current='page'] > .sf-tree-item-container {") > sheet.indexOf("[aria-selected='true'] > .sf-tree-item-container {"));

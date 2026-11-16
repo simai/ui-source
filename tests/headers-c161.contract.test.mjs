@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // Owner decision C161 (headers study, 2026-11-14; research ui-control
 // control/research/2026-11-14-headers.md): what sf-header-page and
@@ -44,7 +45,9 @@ test('C161 (6): the count stays for a page without a table footer', () => {
 test('C161 (7): sticky is a setting, off by default, raised and path folded while scrolled', () => {
   assert.deepEqual(page.settings.sticky, {...page.settings.sticky, type: 'boolean', default: false});
   assert.equal(page['host-states']['data-scrolled'], 'boolean');
-  assert.match(pageSheet, /\[data-scrolled='true'\] > \.sf-page-header--sticky \{\s*background-color: var\(--sf-surface-raised\);\s*box-shadow: var\(--sf-shadow-raised\);/u);
+  // C273: the fill in the paint block, the shadow in the component block
+  assert.match(paintBlocks(pageSheet), /\[data-scrolled='true'\] > \.sf-page-header--sticky \{\s*background-color: var\(--sf-surface-raised\);/u);
+  assert.match(pageSheet, /\[data-scrolled='true'\] > \.sf-page-header--sticky \{\s*box-shadow: var\(--sf-shadow-raised\);/u);
   assert.match(pageSheet, /\[data-scrolled='true'\] > \.sf-page-header--sticky > \.sf-page-header-path \{\s*display: none;/u);
 });
 

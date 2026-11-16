@@ -14,7 +14,8 @@ test('drawer design lengths use Core tokens and semantic dynamic viewport', () =
   const panelRule = withoutComments.match(/\.sf-drawer-panel \{[^}]*\}/u)?.[0] ?? '';
   assert.match(panelRule, /inset-block:\s*var\(--sf-drawer-block-start, 0\) 0;/);
   assert.doesNotMatch(panelRule, /height:\s*100vb/);
-  assert.match(source, /border-inline-(?:start|end): var\(--sf-px\) solid/);
+  // C273: the edge's width and style are the component's, its colour paint
+  assert.match(source, /border-inline-(?:start|end)-width: var\(--sf-px\);\s*border-inline-(?:start|end)-style: solid;/);
 });
 
 test('logical and physical compatibility placements retain mirrored transforms', () => {

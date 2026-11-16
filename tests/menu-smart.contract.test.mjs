@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks, withoutPaintBlocks, unfoldModes} from './support/paint-blocks.mjs';
 
 import {
   ITEM_FIELD_ALIASES,
@@ -25,7 +26,7 @@ import {
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = read('src/smart/menu/index.js');
 const template = read('src/smart/menu/js/templates/default.js');
-const sheet = read('src/smart/menu/scss/_smart__menu.scss');
+const sheet = unfoldModes(read('src/smart/menu/scss/_smart__menu.scss')); // C273: mode blocks unfolded
 const classRuntime = read('src/component/menu/js/_menu.js');
 const manifest = JSON.parse(read('src/smart/menu/smart.manifest.json'));
 
@@ -164,7 +165,7 @@ test('smart menu: the class markup, the class runtime kept off it', () => {
   // (component.menu 1.2.0, _css__menu_group.scss). The search head (C30
   // amended, R071 a) is the element's own part, which the class has not:
   // its rules select only the head, the field and the empty text.
-  const [ownAndPhone, sticky] = sheet.split('// sticky (sf-menu 1.3.0)');
+  const [ownAndPhone, sticky] = withoutPaintBlocks(sheet).split('// sticky (sf-menu 1.3.0)'); // C273: the paint blocks repeat the parts' colours
   // The phone (R179) touches only the element's own parts: the split
   // control's link and chevron, and the levels it marks in place.
   const [ownParts, phone] = ownAndPhone.split('// The phone (R179, sf-menu 1.6.2)');
@@ -221,9 +222,12 @@ test('smart menu R179 D1: below md a row opens its deeper levels in place, never
   // border (the line's border width inherited, not reset).
   const rule = sheet.slice(sheet.indexOf('.sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu[data-sf-menu-in-place] {'));
   const body = rule.slice(0, rule.indexOf('}'));
-  for (const line of ['position: static;', 'padding: var(--sf-0);', 'border: var(--sf-0);', 'background: none;', 'box-shadow: none;', 'max-inline-size: none;', '--sf-menu--line-border: inherit;']) {
+  for (const line of ['position: static;', 'padding: var(--sf-0);', 'border: var(--sf-0);', 'box-shadow: none;', 'max-inline-size: none;', '--sf-menu--line-border: inherit;']) {
     assert.ok(body.includes(line), line);
   }
+  // C273: the fill is paint
+  const paintRule = paintBlocks(sheet).slice(paintBlocks(sheet).indexOf('.sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu[data-sf-menu-in-place] {'));
+  assert.ok(paintRule.slice(0, paintRule.indexOf('}')).includes('background: none;'), 'background: none;');
   assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-3 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\) \* 2\);/u);
   assert.match(sheet, /\[data-sf-menu-in-place\] \.sf-menu-element--level-4 \{\n\s*--sf-menu-element--padding-inline-start: calc\(var\(--sf-space-1\) \* 3\);/u);
 });
@@ -260,7 +264,7 @@ test('smart menu R179 D2: a split control\'s link is the row\'s height, its chev
   assert.ok(toggle.includes('margin-inline: calc(var(--sf-menu-element--line-height, var(--sf-text-height-1)) - var(--sf-menu--split-toggle) + var(--sf-menu--split-end)) calc(-1 * var(--sf-menu--split-end));'));
   // The drawer's rows are the size 2 control height (44 on a phone): the
   // padding the chevron and the link read is that row's.
-  assert.match(read('src/smart/header-site/scss/_smart__site_header.scss'), /\.sf-site-header-nav \.sf-menu \.sf-menu-element \{\n\s*--sf-menu-element--padding-block: calc\(\(var\(--sf-ui-2--control-height\) - var\(--sf-text-height-1\)\) \/ 2/u);
+  assert.match(unfoldModes(read('src/smart/header-site/scss/_smart__site_header.scss')), /\.sf-site-header-nav \.sf-menu \.sf-menu-element \{\n\s*--sf-menu-element--padding-block: calc\(\(var\(--sf-ui-2--control-height\) - var\(--sf-text-height-1\)\) \/ 2/u);
 });
 
 test('smart menu R179 D3: open, close, toggle and close-all declare the outcome object; isOpen a boolean', () => {
@@ -422,7 +426,7 @@ test('smart menu: appearance navigation is a row or a column of frameless rows',
     {collapse: 'always'},
     {collapse: 'narrow'},
   ]);
-  const sheet = read('src/component/menu/scss/_css__menu.scss');
+  const sheet = unfoldModes(read('src/component/menu/scss/_css__menu.scss')); // C273: mode blocks unfolded
   const block = sheet.slice(sheet.indexOf('.sf-menu.sf-menu--navigation {'), sheet.indexOf('/* Documentation navigation'));
   const rule = (selector) => {
     const at = block.indexOf(`${selector} {`);
@@ -516,11 +520,12 @@ test('site header: navigation-align centres the nav without measuring', () => {
   assert.equal(setting.default, 'start');
   assert.match(read('src/smart/header-site/index.js'), /navigationAlign: this\.navigationAlign,/u);
   assert.match(read('src/smart/header-site/js/templates/default.js'), /navigationAlign === 'center' \? 'sf-site-header--navigation-center' : ''/u);
-  const headerSheet = read('src/smart/header-site/scss/_smart__site_header.scss');
+  const headerSheet = unfoldModes(read('src/smart/header-site/scss/_smart__site_header.scss')); // C273: mode blocks unfolded
   assert.match(headerSheet, /\.sf-site-header--navigation-center \.sf-site-header-row:where\(:not\(:has\(\.sf-site-header-actions\)\)\) \{\n  display: grid;\n  grid-template-columns: minmax\(max-content, 1fr\) minmax\(0, max-content\) minmax\(max-content, 1fr\);/u);
   // Collapsed, the bar is a row again whatever the setting says.
   const collapsed = headerSheet.slice(headerSheet.indexOf('@mixin collapsed {'));
   assert.match(collapsed, /^@mixin collapsed \{\n[^\n]*\n  \.sf-site-header-row \{\n    display: flex;\n  \}/u);
-  assert.ok(headerSheet.indexOf('@mixin collapsed {') > headerSheet.indexOf('.sf-site-header--navigation-center'));
+  // C273: the mixins stand above the layer blocks; the include comes after the centred rule.
+  assert.ok(headerSheet.indexOf('@include collapsed;') > headerSheet.indexOf('.sf-site-header--navigation-center'));
   assert.match(read('src/smart/header-site/docs.md'), /navigation-align="center"/u);
 });

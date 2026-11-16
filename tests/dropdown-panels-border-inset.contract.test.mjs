@@ -18,7 +18,7 @@ test('profile picker panel: the border is inside the inline inset, the block ins
   const body = rule(read('src/smart/profile-picker/scss/_smart__profile_picker.scss'), '.sf-profile-picker-panel');
   assert.match(body, /--sf-profile-picker-panel--inset-inline:\s*calc\(var\(--sf-profile-picker--inset\) - var\(--sf-px\)\);/);
   assert.match(body, /\n\s*padding:\s*var\(--sf-profile-picker--inset\) var\(--sf-profile-picker-panel--inset-inline\);/);
-  assert.match(body, /border:\s*var\(--sf-px\) solid/);
+  assert.match(body, /border-width:\s*var\(--sf-px\);\s*border-style: solid;/); // C273: the colour is paint
   assert.match(body, /@include panel\.scrollbar\(var\(--sf-profile-picker--inset\),/);
 });
 

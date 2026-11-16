@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(read(path));
@@ -71,7 +72,9 @@ test('TG-8 (C139 (6)): closable tags in a field are one Tab stop with the lookup
 test('TG-10: disabled and selected reads disabled', () => {
   assert.match(css, /\.sf-tag\.sf-tag\.sf-tag\.disabled\.active \{\s*--sf-tag--background-color: var\(--sf-surface-disabled\);/u);
   // C145 (2): the check square is gone; a chosen disabled tag's mark takes the disabled ink.
-  assert.match(css, /\.sf-tag\.active:is\(\.disabled, :disabled\) \.sf-tag-check \{\s*--sf-icon--color: var\(--sf-on-surface-disabled\);\s*color: var\(--sf-on-surface-disabled\);/u);
+  // C273: the role in the component block, the ink in the paint block.
+  assert.match(css, /\.sf-tag\.active:is\(\.disabled, :disabled\) \.sf-tag-check \{\s*--sf-icon--color: var\(--sf-on-surface-disabled\);/u);
+  assert.match(paintBlocks(css), /\.sf-tag\.active:is\(\.disabled, :disabled\) \.sf-tag-check \{\s*color: var\(--sf-on-surface-disabled\);/u);
 });
 
 test('TG-15: core holds a bare sf-tag\'s box from its attributes before its code', () => {
