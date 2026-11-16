@@ -149,6 +149,24 @@
     font-weight: var(--sf-font-weight-medium);
   }
 
+  /* «Автор · время» (C167 (4)): the time quiet and regular after the name. */
+  .sf-list-feed__time {
+    color: var(--sf-on-surface-variant);
+    font-weight: var(--sf-weight--regular);
+  }
+
+  /* The «Новые» line over the first unread entry (C167 (3)): block list's
+     divider, its words and hairlines in primary. Written on the line itself:
+     the divider's --sf-group-heading-* variables are the page's to set. */
+  .sf-list-feed__unread > .sf-list-feed__new {
+    color: var(--sf-primary);
+  }
+
+  .sf-list-feed__unread > .sf-list-feed__new::before,
+  .sf-list-feed__unread > .sf-list-feed__new::after {
+    background-color: var(--sf-primary);
+  }
+
   .sf-list-feed__text {
     margin: 0;
     white-space: pre-wrap;

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.18.3",
+  "version": "1.20.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -86,7 +86,7 @@
       "has-more": {
         "type": "boolean",
         "default": false,
-        "description": "A next page exists: «Показать ещё» shows, and the end brought into reach by a person's scroll asks for it (an end in reach on load waits for the button or the first scroll)."
+        "description": "Deprecated until 2027-01-01 (owner decision C167 (1)): the end of a list is sf-pagination appearance=\"more\" after it (its button, «Показано X из Y», load=button|auto, sf-pagination-load-more); noted once per element in SF.deprecations, journal attribute-list-has-more-to-pagination-more. A next page exists: «Показать ещё» shows, and the end brought into reach by a person's scroll asks for it (an end in reach on load waits for the button or the first scroll)."
       },
       "loading": {
         "type": "boolean",
@@ -578,7 +578,7 @@
       }
     },
     "requestMore": {
-      "summary": "Ask for the next page, as reaching the end and «Показать ещё» do; nothing while a request is out.",
+      "summary": "Deprecated until 2027-01-01 (owner decision C167 (1)): the end of a list is sf-pagination appearance=\"more\" after it (its button, «Показано X из Y», load=button|auto, sf-pagination-load-more); noted once per element in SF.deprecations, journal attribute-list-has-more-to-pagination-more. Ask for the next page, as reaching the end and «Показать ещё» do; nothing while a request is out.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -586,7 +586,7 @@
       }
     },
     "moreFailed": {
-      "summary": "The next page could not be loaded: «Показать ещё» and the end ask again.",
+      "summary": "Deprecated until 2027-01-01 (owner decision C167 (1)): the end of a list is sf-pagination appearance=\"more\" after it (its button, «Показано X из Y», load=button|auto, sf-pagination-load-more); noted once per element in SF.deprecations, journal attribute-list-has-more-to-pagination-more. The next page could not be loaded: «Показать ещё» and the end ask again.",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -661,7 +661,7 @@
       }
     },
     "sf-list-load-more": {
-      "summary": "The next page is asked for: a person's scroll brought the end into reach, or «Показать ещё»: {direction: after, after}. Never on load by itself. Cancelling it is moreFailed().",
+      "summary": "Deprecated until 2027-01-01 (owner decision C167 (1)): the end of a list is sf-pagination appearance=\"more\" after it (its button, «Показано X из Y», load=button|auto, sf-pagination-load-more); noted once per element in SF.deprecations, journal attribute-list-has-more-to-pagination-more. The next page is asked for: a person's scroll brought the end into reach, or «Показать ещё»: {direction: after, after}. Never on load by itself. Cancelling it is moreFailed().",
       "payload": {
         "type": "object",
         "required": [
@@ -795,7 +795,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "8bbd0ecb81e9004891d1d3e43d98eb5bf808810e9389356b1d0cca58a6e75b71"
+        "sha256": "c5f6ee98aea9c84dbf2cb2fc4d20495373aa26f18a199d2acf9db56d42af3838"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
@@ -811,11 +811,11 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "9fca4e970e0a2f62176f8473e872ff9c1bcd3842d23a620ebfc6762c739fc050"
+        "sha256": "1f0d4e73653388a898ae2eab8729690dfef9ca0b5fe5f3f4cfa1f045ff74b57b"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "99c211ab7db2857677a8bb6c95c757ea2c88b6b1d933ef6c41e84716aa3fa1e7"
+        "sha256": "c76b94c6151e3f7bf34e135d657e40fe651fd6cac9ece2b28ed65aad3212cca0"
       },
       {
         "path": "src/smart/list/lang/en.json",

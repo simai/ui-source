@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 86,
-    "translated": 86,
+    "words": 87,
+    "translated": 87,
     "share": 100
   },
   "words": {
@@ -104,6 +104,7 @@
       "empty-text": "Әзірге жазбалар жоқ",
       "latest-label": "Соңғы жазбаға",
       "loading-earlier-text": "Алдыңғы жазбалар жүктелуде",
+      "new-text": "Жаңа",
       "log-label": "Жазбалар",
       "region-label": "Лента",
       "you-text": "Сіз"

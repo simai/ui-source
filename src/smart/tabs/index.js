@@ -4,7 +4,7 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { instancePath, partId } from '../../core/js/instance-path';
 import { isTag } from '../../core/js/tag-aliases.js';
 import { followDensity, RELATIVE } from '../../core/js/density.js';
-import { breakpointMedia } from '../../core/js/breakpoints.js';
+import { BREAKPOINTS, breakpointMedia } from '../../core/js/breakpoints.js';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra } from '../../core/js/overflow-row.js';
 import { menuOpen } from '../../core/js/menu-open.js';
@@ -57,6 +57,16 @@ const FOCUSABLE = [
 
 // Which item a tab in the list draws. An sf-button moves its data attributes
 // to the button inside it, so the index is read wherever it landed.
+// A panel with something to read or to show: an element, or words. The
+// drawing's comment marks and white space are nothing.
+function panelHasContent(panel) {
+  for (const node of panel.childNodes) {
+    if (node.nodeType === 1) return true;
+    if (node.nodeType === 3 && node.textContent.trim()) return true;
+  }
+  return false;
+}
+
 function tabIndexOf(element) {
   const own = element?.dataset?.sfTabIndex ?? element?.querySelector?.(':scope > [data-sf-tab-index]')?.dataset?.sfTabIndex;
   const index = Number(own);
@@ -297,6 +307,7 @@ class SfTabs extends TabsElement {
     }
     this.syncTabSemantics();
     this.syncPanelFocus();
+    this.followPlace();
     // The box that has a size: sf-tabs is display:contents, so observing the
     // element itself never fired and «Ещё» was laid out once, wrong after any
     // resize (docs trial 4, 2026-10-15).
@@ -400,20 +411,22 @@ class SfTabs extends TabsElement {
   }
 
   connectedCallback() {
-    // The phone's width (core/js/breakpoints, md): vertical tabs become a row
-    // with «Ещё» (C96 item 5). fit auto reads the row's own width instead
-    // (narrowPlace).
+    // Vertical tabs become a row with «Ещё» (C96 item 5) on a narrow place:
+    // below the h1 step (md, 44rem) of the width they stand in, not of the
+    // screen (C181 (2)) -- a vertical column in a 30rem panel of a wide page
+    // stayed a column beside a squeezed panel, one in a wide frame of a phone
+    // preview folded. The window's step is left only for a place with no
+    // width yet. fit auto reads the row's own width (narrowPlace).
     if (!this._narrowMedia) {
       this._narrowMedia = breakpointMedia('md', { below: true });
-      this._narrow = this._narrowMedia?.matches === true;
-      this._onNarrow = () => {
-        const narrow = this._narrowMedia?.matches === true;
-        if (narrow === this._narrow) return;
-        this._narrow = narrow;
-        this.requestComponentUpdate('narrow');
-      };
+      this._onNarrow = () => this.followPlace();
       this._narrowMedia?.addEventListener?.('change', this._onNarrow);
     }
+    this._narrow = this.readNarrow();
+    if (!this._placeObserver && typeof ResizeObserver === 'function') {
+      this._placeObserver = new ResizeObserver(() => this.followPlace());
+    }
+    this.watchPlace();
     super.connectedCallback?.();
     // The address is read again when it changes (Back, Forward, a link to
     // #<id> on the page); the listener answers only with hash on.
@@ -427,6 +440,8 @@ class SfTabs extends TabsElement {
   disconnectedCallback() {
     this._narrowMedia?.removeEventListener?.('change', this._onNarrow);
     this._narrowMedia = null;
+    this._placeObserver?.disconnect();
+    this._watchedPlace = null;
     if (this._addressListener) {
       globalThis.removeEventListener?.('hashchange', this._addressListener);
       globalThis.removeEventListener?.('popstate', this._addressListener);
@@ -441,6 +456,8 @@ class SfTabs extends TabsElement {
       this._fontsListener = null;
     }
     this._panelObserver?.disconnect();
+    this._panelContentObserver?.disconnect();
+    this._panelContentWatched = null;
     this._moreMenu?.close?.({restoreFocus: false});
     this._moreMenu?.remove?.();
     this._settingsMenu?.close?.({restoreFocus: false});
@@ -819,8 +836,51 @@ class SfTabs extends TabsElement {
     else this.setAttribute('selected', String(value));
   }
 
+  // The width the vertical look folds on (C181 (2)): the tabs' own block,
+  // which is as wide as their place in either look (sf-tabs itself is
+  // display: contents); before the first drawing, the parent's content box.
+  placeWidth() {
+    const root = this.querySelector(':scope > .sf-tabs');
+    if (root) return root.getBoundingClientRect().width;
+    const parent = this.parentElement;
+    if (!parent) return 0;
+    const style = globalThis.getComputedStyle?.(parent);
+    const inset = (Number.parseFloat(style?.paddingInlineStart) || 0) + (Number.parseFloat(style?.paddingInlineEnd) || 0);
+    return Math.max(0, parent.getBoundingClientRect().width - inset);
+  }
+
+  readNarrow() {
+    if (this.getAttribute('type') !== 'vertical') return false;
+    const width = this.placeWidth();
+    if (width > 0) {
+      const rem = Number.parseFloat(globalThis.getComputedStyle?.(document.documentElement).fontSize) || 16;
+      return width < Number.parseFloat(BREAKPOINTS.md) * rem;
+    }
+    return this._narrowMedia?.matches === true;
+  }
+
+  followPlace() {
+    this.watchPlace();
+    const narrow = this.readNarrow();
+    if (narrow === this._narrow) return;
+    this._narrow = narrow;
+    this.requestComponentUpdate('narrow');
+  }
+
+  // Only vertical tabs fold, so only they watch their place.
+  watchPlace() {
+    if (!this._placeObserver) return;
+    const place = this.getAttribute('type') === 'vertical'
+      ? (this.querySelector(':scope > .sf-tabs') || this.parentElement)
+      : null;
+    if (place === this._watchedPlace) return;
+    this._placeObserver.disconnect();
+    this._watchedPlace = place;
+    if (place) this._placeObserver.observe(place);
+  }
+
   // The look drawn (C96 item 1): line unless pills or vertical; vertical on a
-  // phone is the line with «Ещё» (item 5). type="full" is the line with fit
+  // narrow place is the line with «Ещё» (item 5). type="full" is the line with fit
   // always; no type and the scheme fills draw the line.
   get look() {
     const type = this.getAttribute('type');
@@ -924,13 +984,31 @@ class SfTabs extends TabsElement {
 
   // A panel is a tab stop of its own only when nothing in it takes the focus
   // (APG tabs; R184 T8: every panel was, even one that starts with a field).
+  // An empty panel is no stop either: tabs that drive the host's content
+  // elsewhere (sf-view-properties' vertical tabs) drew a stop with nothing to
+  // read. A panel the host fills later becomes one then (watched below).
   // A page's panel written with a tabindex keeps it.
   syncPanelFocus() {
     const links = this.links;
-    for (const panel of this.drawnPanels()) {
+    const panels = this.drawnPanels();
+    for (const panel of panels) {
       if (this._authoredPanelFocus.has(panel)) continue;
-      if (links || panel.querySelector(FOCUSABLE)) panel.removeAttribute('tabindex');
+      if (links || !panelHasContent(panel) || panel.querySelector(FOCUSABLE)) panel.removeAttribute('tabindex');
       else panel.setAttribute('tabindex', '0');
+    }
+    this.watchPanelContent(panels);
+  }
+
+  // The words or parts a host writes into a drawn panel after the drawing
+  // decide its stop again.
+  watchPanelContent(panels) {
+    if (typeof MutationObserver !== 'function') return;
+    this._panelContentObserver ||= new MutationObserver(() => this.schedulePanelFocus());
+    this._panelContentWatched ||= new WeakSet();
+    for (const panel of panels) {
+      if (this._panelContentWatched.has(panel)) continue;
+      this._panelContentWatched.add(panel);
+      this._panelContentObserver.observe(panel, { childList: true, subtree: true, characterData: true });
     }
   }
 

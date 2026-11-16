@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-feed",
-  "version": "1.3.4",
+  "version": "1.4.0",
   "title": "Feed",
   "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
   "kind": "composite",
@@ -27,9 +27,11 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.group-heading",
       "smart.button",
       "smart.button-icon",
-      "smart.empty-state"
+      "smart.empty-state",
+      "smart.time"
     ],
     "public_parts": []
   },
@@ -825,7 +827,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-feed/index.js",
-        "sha256": "01c6ea214c1e52da8e4c8e3e81623e13bcdfda3a334d27ed73dbba60f2afe155"
+        "sha256": "380f546a923c644b9c61a0a7d3069ad103699a2f4ba45a743bfb3241c21ab304"
       },
       {
         "path": "src/smart/list-feed/js/templates/default.js",
@@ -833,27 +835,27 @@
       },
       {
         "path": "src/smart/list-feed/js/templates/default.css",
-        "sha256": "841b8e7f05eb1e1d646912045125073d8f6d678bd17cdeb2a0ffc3fefc75b010"
+        "sha256": "98e48cc4eb98ed312cb5ff030f467e011f8f3365d3a4158bebe85da7eadbda3c"
       },
       {
         "path": "src/smart/list-feed/rule.js",
-        "sha256": "31aa7d64a962c7b728b0841dcabe0604f86a4aa4a8771e9a24f404d421f8ec64"
+        "sha256": "841172d7941710c50e9c66f074bf1fbc6f8194e372ad6dbbe187fddc064e9684"
       },
       {
         "path": "src/smart/list-feed/docs.md",
-        "sha256": "9d9988b310c8fccff684d9e8fbb5606de5dc19fd736cc91ab97caf204890a133"
+        "sha256": "26f4900f6f59b885d43614aa3a6582b6d46967167b521cf59e024cb4cff7237e"
       },
       {
         "path": "src/smart/list-feed/component.json",
-        "sha256": "f359edefb5c613e6f6e74202b20b13589bc489f6ccfaf235adf1a1a6ecedad32"
+        "sha256": "f8eb4f489af42bd821d65987ed2a23848853a11f297432495fc231213571f1e0"
       },
       {
         "path": "src/smart/list-feed/lang/en.json",
-        "sha256": "036ae45889cb6b5a4406710262d0aba6c46038e45f068b1ce6dee97c2a753d0a"
+        "sha256": "4a1341766a3b02ac67f134a8f5c9988097f9e6223cc81678b8c8dab2ead599c0"
       },
       {
         "path": "src/smart/list-feed/lang/ru.json",
-        "sha256": "d56521a10e04949be49a8970b88b0f684a81775bb94661c2785b8988c8509ae6"
+        "sha256": "1f2c119337304f1077de3f21abd4f8cb07d4c1d638b458f0796a0dcc347e44ba"
       }
     ],
     "generated_runtime": []

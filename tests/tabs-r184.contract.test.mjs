@@ -47,8 +47,8 @@ test('T14: a tab without a label is named in the page language', () => {
   assert.deepEqual(words, [['tab', 1]]);
 });
 
-test('sf-tabs 1.3.x names the R184 work in its decisions', () => {
-  assert.match(manifest.version, /^1\.3\.\d+$/u);
+test('sf-tabs 1.3.x and later names the R184 work in its decisions', () => {
+  assert.match(manifest.version, /^1\.(?:[3-9]|\d{2,})\.\d+$/u);
   assert.ok(manifest['x-decisions'].some((one) => /^version: 1\.2\.0 → 1\.3\.0, a minor \(R184/u.test(one)));
 });
 
@@ -156,13 +156,14 @@ test('T8: lazy panels are drawn when first opened and kept; a panel is a tab sto
   // written with its own tabindex keeps it.
   assert.doesNotMatch(template, /tabindex="0"\s*\n\s*data-sf-tab-panel/u);
   assert.doesNotMatch(template, /panel\.setAttribute\('tabindex', '0'\)/u);
-  const focus = new Function('FOCUSABLE', `return function () {${method('syncPanelFocus')}}`)('input, button');
-  const panel = (focusable) => ({attrs: new Map(), querySelector: () => (focusable ? {} : null),
+  const hasContent = (panel) => panel.childNodes.some((node) => node.nodeType === 1 || (node.nodeType === 3 && node.textContent.trim()));
+  const focus = new Function('FOCUSABLE', 'panelHasContent', `return function () {${method('syncPanelFocus')}}`)('input, button', hasContent);
+  const panel = (focusable) => ({attrs: new Map(), childNodes: [{nodeType: 3, textContent: 'Текст'}], querySelector: () => (focusable ? {} : null),
     setAttribute(name, value) { this.attrs.set(name, value); }, removeAttribute(name) { this.attrs.delete(name); }});
   const withField = panel(true), withText = panel(false), authored = panel(false);
   withField.attrs.set('tabindex', '0');
   authored.attrs.set('tabindex', '-1');
-  focus.call({drawnPanels: () => [withField, withText, authored], _authoredPanelFocus: new WeakSet([authored])});
+  focus.call({drawnPanels: () => [withField, withText, authored], _authoredPanelFocus: new WeakSet([authored]), watchPanelContent() {}});
   assert.equal(withField.attrs.has('tabindex'), false);
   assert.equal(withText.attrs.get('tabindex'), '0');
   assert.equal(authored.attrs.get('tabindex'), '-1');

@@ -1938,7 +1938,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "b88b354d756e6d4ea385cb2cb8062aa47d229a5c6d51621bfccf611359c94b25",
+      "manifest_sha256": "26cbfdbbe6a63dd415e04c2c4536bc12f349410163c66774e81572661028d1e3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2057,9 +2057,11 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.group-heading",
           "smart.button",
           "smart.button-icon",
-          "smart.empty-state"
+          "smart.empty-state",
+          "smart.time"
         ]
       },
       "contract_schema": {
@@ -2071,7 +2073,7 @@
       "kind": "composite",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list-feed/smart.manifest.json",
-      "manifest_sha256": "64c6e8a471f794f709998c021d2a3d71a5e89c6624b6f0fd6597593dabc0096f",
+      "manifest_sha256": "07e5b2fd2821c4b286dff2be22fb6ef4ddfe9f3333b3cf4d4850701a257ed86f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2384,7 +2386,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pagination/smart.manifest.json",
-      "manifest_sha256": "3b20ee3dfb94175401fb88489c90d3ddafff52cc5d94948364b7aa7ab7e20cf7",
+      "manifest_sha256": "9a4b1db1fd4f572eb5e3968cc14cab6096da7def82f7e304155e3ba8de0fec1b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3183,7 +3185,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/tabs/smart.manifest.json",
-      "manifest_sha256": "f27d47263b4480992831cc9e24ec9b44321ff26d64c6ea7735a8511e4541565f",
+      "manifest_sha256": "e4ad58d5ce68017a05530769a9829a49e82cdb5456d101d0b86ef1b63cfe382b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
