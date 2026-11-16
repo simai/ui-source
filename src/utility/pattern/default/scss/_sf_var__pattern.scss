@@ -18,8 +18,8 @@
 // dots     a 1 px dot (2 px across) in each cell, centred on the cell
 // grid     1 px lines; the tile is vector, crisp at fractional scaling
 // cross    a 1 px "+" in each cell, its arms 3/16 of the step
-// grain    noise over a soft colour spot (the spot is the class's own
-//          ::after): grain on a flat colour reads as dirt, so never alone.
+// grain    noise over a soft colour spot (the spot is the class's
+//          ::before, the noise its ::after): grain on a flat colour reads as dirt, so never alone.
 //          Its tile is the noise image at its own 180 px, not a ladder step.
 // hatch    45-degree lines 1.25 px wide: forecast, no data, unavailable,
 //          reserved. A sign, not decoration.

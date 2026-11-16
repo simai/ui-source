@@ -88,9 +88,21 @@ test('the cell is a step of the space ladder, and a fade clears text', () => {
 
 test('a layer under the content: the element keeps its background', () => {
   assert.match(sheet, /:where\(#\{\$hosts\}\) \{\n    position: relative;\n    isolation: isolate;\n\}/u, 'the host is a context, at zero specificity');
-  assert.match(sheet, /:is\(#\{\$hosts\}\)::before \{[^}]*z-index: -1;[^}]*pointer-events: none;[^}]*mask-image: var\(--sf-pattern--tile\), var\(--sf-pattern--fade\);[^}]*mask-composite: intersect;/u);
-  assert.match(sheet, /\.pattern-grain::after \{[^}]*z-index: -2;[^}]*var\(--sf-pattern--glow\)[^}]*var\(--sf-pattern--glow-weak\)/u, 'grain only with its colour spot');
+  assert.match(sheet, /:is\(#\{\$hosts\}\)::before,\n\.pattern-grain::after \{[^}]*position: absolute;[^}]*z-index: -1;[^}]*pointer-events: none;/u, 'both parts on the base layer');
+  assert.match(sheet, /:is\(#\{\$layer-hosts\}\)::before,\n\.pattern-grain::after \{[^}]*background-color: var\(--sf-pattern--color\);[^}]*mask-image: var\(--sf-pattern--tile\), var\(--sf-pattern--fade\);[^}]*mask-composite: intersect;/u, 'the shape on ::before, grain on ::after');
+  assert.match(sheet, /@if \$shape != 'grain' \{\n\s+\$layer-hosts: list\.append/u, 'grain is the only host whose ::before is not the shape');
+  assert.match(sheet, /\.pattern-grain::before \{[^}]*var\(--sf-pattern--glow\)[^}]*var\(--sf-pattern--glow-weak\)[^}]*mask-image: var\(--sf-pattern--fade\);/u, 'grain only with its colour spot, painted first');
   assert.doesNotMatch(sheet, /^\s*background:/mu, 'no background shorthand');
+});
+
+// Owner decision C181 (3) and the C178 lint: a part keeps its local stacking
+// within -1..2. Both pattern parts stand on -1 (dispatcher, GB9): the grain
+// stays over its spot by tree order (::after is painted after ::before), not
+// by a lower number.
+test('C181 (3): every pattern part stands on -1, nothing lower', () => {
+  const numbers = [...sheet.matchAll(/z-index:\s*(-?\d+)/gu)].map((match) => Number(match[1]));
+  assert.ok(numbers.length > 0);
+  assert.deepEqual(numbers.filter((value) => value !== -1), [], 'only z-index -1 in the pattern sheet');
 });
 
 test('the rule loads every class, and the numbered tiles until their removal', () => {

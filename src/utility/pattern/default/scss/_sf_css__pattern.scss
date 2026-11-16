@@ -14,7 +14,8 @@
 //   pattern-size-<step>          a step of the space ladder, 1/4 ... 8
 //   pattern-fade-<fade>          none | spot | clear | down
 //
-// The pattern is a layer under the element's content (::before), so the
+// The pattern is a layer under the element's content (::before; grain's
+// colour spot is ::before and its noise ::after), so the
 // element keeps its own background (the former pattern-1...9 replaced it).
 // Its shape is a mask; its ink is --sf-pattern--color, a role or a hue at an
 // alpha step; its cell is --sf-pattern--size. A component sets either
@@ -61,14 +62,31 @@ $hosts: ();
     }
 }
 
-// The layer.
-:is(#{$hosts})::before {
+// The layers. Both pseudo-elements stand on the base layer of C181 (3)
+// (z-index -1, nothing lower) in the host's own stacking context, so they
+// sit above the element's background and under its content; between the two,
+// tree order decides: ::before is painted first, ::after over it.
+$layer-hosts: ();
+@each $shape in $shapes {
+    @if $shape != 'grain' {
+        $layer-hosts: list.append($layer-hosts, '.pattern-#{$shape}', comma);
+    }
+}
+
+:is(#{$hosts})::before,
+.pattern-grain::after {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
     pointer-events: none;
     border-radius: inherit;
+}
+
+// The pattern: the shape's mask in the pattern's ink. Every shape draws it on
+// ::before; grain draws it on ::after, over its colour spot.
+:is(#{$layer-hosts})::before,
+.pattern-grain::after {
     background-color: var(--sf-pattern--color);
     mask-image: var(--sf-pattern--tile), var(--sf-pattern--fade);
     mask-size: var(--sf-pattern--size) var(--sf-pattern--size), 100% 100%;
@@ -80,15 +98,9 @@ $hosts: ();
     mask-composite: intersect;
 }
 
-// Grain lies over a soft colour spot; its noise image keeps its own size
-// (--sf-pattern--size is auto).
-.pattern-grain::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    pointer-events: none;
-    border-radius: inherit;
+// Grain lies over a soft colour spot (::before, painted first); its noise
+// image keeps its own size (--sf-pattern--size is auto).
+.pattern-grain::before {
     background-image:
         radial-gradient(120% 90% at 15% 0%, var(--sf-pattern--glow), transparent 60%),
         radial-gradient(90% 80% at 100% 100%, var(--sf-pattern--glow-weak), transparent 55%);
