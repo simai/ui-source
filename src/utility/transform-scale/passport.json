@@ -18,7 +18,7 @@
     "src/utility/transform-scale/hover/scss/_sf_css__transform_scale.scss",
     "src/utility/transform-scale/hover/scss/index.scss"
   ],
-  "content_sha256": "69c7a548736e8f69a0b36544cdba04a0905cbc40112978b181127bb27aa20982",
+  "content_sha256": "5ddf4dadd7f3c0b23f7f42a52404967a241c217c06269a2a21bea4a51880a0b2",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

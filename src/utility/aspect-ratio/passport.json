@@ -38,7 +38,7 @@
     "src/utility/aspect-ratio/xxl/scss/_css__aspect_ratio.scss",
     "src/utility/aspect-ratio/xxl/scss/index.scss"
   ],
-  "content_sha256": "ff2dd462115ce85700dfc47dddb034a38be08474a1f9f7fe5f4a5e12627eea01",
+  "content_sha256": "5fe8186048702d58fa4e3fb956ecafd4160a5cb6ce796f564f94c9e789ca499e",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

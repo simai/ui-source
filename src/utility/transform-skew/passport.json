@@ -18,7 +18,7 @@
     "src/utility/transform-skew/hover/scss/_sf_css__transform_skew.scss",
     "src/utility/transform-skew/hover/scss/index.scss"
   ],
-  "content_sha256": "1ed0e8620b77cdb2657e1b9e689ea73867ca74ed022d7fa99c73547e373b4b8b",
+  "content_sha256": "fc4ab44a6df441bdca67a70e46e075bdf66d34a595034f15cc50de4dacde4be3",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

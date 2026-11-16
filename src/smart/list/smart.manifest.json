@@ -815,7 +815,7 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "b2391e715363b08aeb5ffb813fc0e06ada608acdc8c4fe8e9db00895bb17a572"
+        "sha256": "809e745b545b7817c990a2cf1e162ebb02f4777f304acd69f87e59e04bca68fa"
       },
       {
         "path": "src/smart/list/lang/en.json",

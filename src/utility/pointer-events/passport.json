@@ -13,7 +13,7 @@
     "src/utility/pointer-events/default/scss/_sf_var__pointer_events.scss",
     "src/utility/pointer-events/default/scss/index.scss"
   ],
-  "content_sha256": "4d75294d2ecc156e60f6dfd1eb4f58fd81817dc867643f633241ecae45667926",
+  "content_sha256": "79fbb45e56540e3cfa79f05e74ad18aed5c47f53f423fa0ccbc97b392929d1c2",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

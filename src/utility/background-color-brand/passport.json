@@ -19,6 +19,11 @@
     "src/utility/background-color-brand/hover/scss/_sf_var__background_color_brand.scss",
     "src/utility/background-color-brand/hover/scss/index.scss"
   ],
-  "content_sha256": "9026ff0af21c6693bfd315c25add4caca65de8a1905d950cb5ebe7389613f4ee",
-  "dependencies": []
+  "content_sha256": "1fda8f566b37daa5cf0830e61be58f987b4e237759a7fc55b5405b18ea6b1bd7",
+  "dependencies": [
+    {
+      "id": "tokens.colour",
+      "range": "^1.17.0"
+    }
+  ]
 }

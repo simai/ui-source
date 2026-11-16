@@ -38,7 +38,7 @@
     "src/utility/object-position/xxl/scss/_sf_css__object.scss",
     "src/utility/object-position/xxl/scss/index.scss"
   ],
-  "content_sha256": "d0b05c96ea40c3340387f4a173e89a62102c297245f647034f6505c06fccd2fe",
+  "content_sha256": "795161fe965caf5dc89012ad36a55e669073b214e74bb28a25925168305c921e",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
