@@ -1,10 +1,11 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-import {fieldSize} from '../../../../component/field-size';
+import {ladderSize} from '../../../../component/field-size';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import {describeUploadItem} from '../../../../component/file-upload/js/_file_upload';
 
 function normalizeSize(value) {
-    return fieldSize(value, 'sf-file-upload');
+    return ladderSize(value);
 }
 
 // A row is the family's file row, sf-file-preview (owner decisions C81 and
@@ -72,7 +73,21 @@ export function renderFileUploadTemplate(context) {
         'sf-featured-icon--neutral',
     ].join(' ');
 
+    // The label above the area, as every field of the family has it (C153 (1),
+    // (2), (8)): the text ink a step below the area's text, the required «*»
+    // in its ink, the «?» of help after them (helpers/field-help.js). It
+    // names the area unless the page gave the area an aria-label.
+    const label = context.label
+        ? html`<span class=${`sf-file-upload-label sf-file-upload-label--size-${size}`} id=${context.labelId}>
+              <span class="sf-file-upload-label-text">${context.label}</span>
+              ${context.required ? html`<span class="sf-file-upload-required" aria-hidden="true">*</span>` : nothing}
+              ${renderFieldHelp({help: context.help, label: context.label, size, className: 'sf-file-upload-help', component: context.component})}
+          </span>`
+        : nothing;
+    const labelledBy = context.label && !context.ariaLabel ? context.labelId : '';
+
     return html`
+        ${label}
         <div
                 class=${rootClasses.join(' ')}
                 style=${context.rootStyle || nothing}
@@ -86,6 +101,7 @@ export function renderFileUploadTemplate(context) {
                 ?multiple=${context.multiple}
                 ?disabled=${context.disabled}
                 aria-label=${context.ariaLabel || nothing}
+                aria-labelledby=${labelledBy || nothing}
         >
             <div class=${featuredIconClasses}>
                 <i class="sf-icon" aria-hidden="true">${context.icon}</i>

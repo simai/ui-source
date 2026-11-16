@@ -15,13 +15,14 @@ const read = (path) => readFile(new URL(path, ROOT), 'utf8').then(withoutPublicV
    search and a hero search stand beside buttons of 1/3 and 3. The fields
    ladder (2026-11-14) puts lookup, quantity, date, code, colour and phone on
    the same five steps (field-size.js FIELD_LADDER), then the textarea and
-   the rich text, then the dropdown (queue #70); the rest keep three. */
+   the rich text, then the dropdown and the file upload area (queue #70);
+   a file's row keeps the file family's three sizes. */
 const INPUT_SIZES = ['1/3', '1/2', '1', '2', '3'];
 const FIELDS = {
   'file-upload': 'file-upload',
 };
-const RETIRED_CLASS = /\.sf-(file-upload|upload-progress)--size-(1\\\/3|3)(?![\w\\/-])/;
-const LADDER_FIELDS = ['input', 'input-lookup', 'input-quantity', 'input-date', 'input-code', 'input-color', 'input-country', 'input-textarea', 'input-rich', 'dropdown'];
+const RETIRED_CLASS = /\.sf-(upload-progress)--size-(1\\\/3|3)(?![\w\\/-])/;
+const LADDER_FIELDS = ['input', 'input-lookup', 'input-quantity', 'input-date', 'input-code', 'input-color', 'input-country', 'input-textarea', 'input-rich', 'dropdown', 'file-upload'];
 
 test('field sizes: the scale is 1/2, 1 and 2, and a retired size maps to its neighbour', () => {
   assert.deepEqual([...FIELD_SIZES], ['1/2', '1', '2']);
@@ -80,11 +81,10 @@ test('field sizes: sf-input stands on the whole control ladder', async () => {
   assert.deepEqual(manifest.inputs.properties.radius.enum, ['', 'default', 'square', 'rounded']);
 });
 
-test('field sizes: Smart manifests offer the three sizes and nothing else', async () => {
-  for (const name of ['file-upload']) {
-    const manifest = JSON.parse(await read(`src/smart/${name}/smart.manifest.json`));
-    assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES], name);
-  }
+test('field sizes: a file row under a file upload area keeps the three sizes', async () => {
+  const source = await read('src/component/file-upload/js/_file_upload.js');
+  assert.match(source, /function createUploadProgressItem\(item, size = '1', owner = null\) \{\n  const normalizedSize = nearestFieldSize\(size\);/);
+  assert.match(source, /function normalizeSize\(value\) \{\n  return ladderSize\(value\);/);
 });
 
 test('field sizes: the fields of the field ladder offer its five steps', async () => {
@@ -96,7 +96,7 @@ test('field sizes: the fields of the field ladder offer its five steps', async (
   }
   const datepicker = JSON.parse(await read('src/smart/input-date/smart.manifest.json'));
   assert.deepEqual(datepicker.inputs.properties['input-size'].enum, INPUT_SIZES, 'datepicker input-size');
-  for (const name of [...LADDER_FIELDS.slice(1, 6).filter((n) => n !== 'input-color'), 'input-textarea', 'input-rich', 'dropdown']) {
+  for (const name of [...LADDER_FIELDS.slice(1, 6).filter((n) => n !== 'input-color'), 'input-textarea', 'input-rich', 'dropdown', 'file-upload']) {
     assert.match(await read(`src/smart/${name}/index.js`), /ladderSize\(/, `${name} reads its size on the ladder`);
   }
 });
@@ -110,6 +110,7 @@ test('field sizes: the ladder fields size their outer steps from the shared ladd
     'src/component/textarea/scss/_css__textarea.scss': 'sf-textarea',
     'src/smart/input-rich/scss/_smart__rich_text.scss': 'sf-rich-text',
     'src/component/dropdown/scss/_css__custom.scss': 'sf-dropdown',
+    'src/component/file-upload/scss/_css__file_upload_ladder.scss': 'sf-file-upload',
   };
   for (const [path, block] of Object.entries(sheets)) {
     const sheet = await read(path);

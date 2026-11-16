@@ -1,6 +1,6 @@
 ﻿import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
-import { fieldSize, retireFieldSizeClass } from '../../field-size';
+import { ladderSize, nearestFieldSize } from '../../field-size';
 import { pageText, pageWord } from '../../../core/js/page-language';
 import { formatFileSize } from '../../../core/js/format-file-size.js';
 import { fileIcon } from '../../../core/js/composition/file-size.mjs';
@@ -25,8 +25,12 @@ function toBoolean(value, fallback = false) {
   );
 }
 
+// The area stands on the field ladder's five steps (field-size.js
+// FIELD_LADDER; queue #70). A file's row is the file family's row
+// (sf-file-preview's), which keeps the three field sizes: at 1/3 and 3 the
+// rows take the nearest, 1/2 and 2.
 function normalizeSize(value) {
-  return fieldSize(value, 'sf-file-upload');
+  return ladderSize(value);
 }
 
 
@@ -281,7 +285,7 @@ function uploadItemIcon(item, state) {
 }
 
 function createUploadProgressItem(item, size = '1', owner = null) {
-  const normalizedSize = normalizeSize(size);
+  const normalizedSize = nearestFieldSize(size);
   const row = describeUploadItem(item, owner, 'done');
   const {state, progress} = row;
 
@@ -750,7 +754,8 @@ function takeFiles(root, files = [], source = 'input') {
 }
 
 function bindFileUpload(root) {
-  retireFieldSizeClass(root, 'sf-file-upload');
+  // The area stands on the field ladder: 1/3 and 3 are its own steps, no
+  // class to move.
   if (!root) return;
 
   const input = ensureInput(root);
