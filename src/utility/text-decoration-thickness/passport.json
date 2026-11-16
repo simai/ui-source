@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.text-decoration-thickness",
   "kind": "utility",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/text-decoration-thickness/default/index.js",
