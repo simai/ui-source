@@ -166,7 +166,10 @@ test('whatever paints itself with a raised surface carries the matching text rol
 // sf-icon-button's tonal plate carries a glyph and no text: the glyph asks
 // 3:1 (C107 (2)) and keeps the page's quiet role, as outline and ghost do
 // (RG-IB-1 b, 2026-11-16; measured in icon-button-ink-ib1.contract.test.mjs).
-const CONTAINER_TRACKS = ['spinner/', 'progress-bar/', 'progress-ring/', 'progress-scale/', 'range-slider/', 'slider/', 'toggle/', 'flag/', 'admin-menu/', 'pager/', 'icon-buttons/'];
+// sf-fab is the same: a glyph alone on its tonal plate, --sf-on-surface-icon
+// as on the icon button, and no role re-declared on the button (C107, C18;
+// RG-FAB-2, fab-c113-fab1.contract.test.mjs).
+const CONTAINER_TRACKS = ['spinner/', 'progress-bar/', 'progress-ring/', 'progress-scale/', 'range-slider/', 'slider/', 'toggle/', 'flag/', 'admin-menu/', 'pager/', 'icon-buttons/', 'fab/'];
 
 test('whatever lays a container fill under text carries the container text role', () => {
   const offenders = [];

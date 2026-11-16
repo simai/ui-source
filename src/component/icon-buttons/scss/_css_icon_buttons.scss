@@ -219,10 +219,27 @@
     --sf-icon--width: var(--sf-text-height-2);
   }
 
+  /* Size 3 is 36 on the icon ladder (C151 (1)) and one step down, 28, on a
+     phone, where the text line of size 3 is 24 like size 2's (1.15.1,
+     RG-FAB-3). On a desktop the text line of size 3 is that step, in a
+     compact region too. */
   .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
-    --sf-icon--font-size: var(--sf-text-height-3);
-    --sf-icon--height: var(--sf-text-height-3);
-    --sf-icon--width: var(--sf-text-height-3);
+    --sf-icon--font-size: var(--sf-c4);
+    --sf-icon--height: var(--sf-c4);
+    --sf-icon--width: var(--sf-c4);
+    /* The control keeps its ladder height (52 on a phone): the larger glyph
+       takes its two extra pixels a side from the padding, so it sits in the
+       middle with 12 around it and every height variant keeps its size. */
+    margin: calc((var(--sf-text-height-3) - var(--sf-c4)) / 2);
+  }
+
+  @media (min-width: 60rem) {
+    .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+      --sf-icon--font-size: var(--sf-text-height-3);
+      --sf-icon--height: var(--sf-text-height-3);
+      --sf-icon--width: var(--sf-text-height-3);
+      margin: 0;
+    }
   }
 
   .sf-icon-button.sf-icon-button--size-1\/2.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {

@@ -69,6 +69,9 @@
       "empty": [
         "sf-empty-state"
       ],
+      "fab": [
+        "sf-fab"
+      ],
       "field-renderers": [
         "sf-field-renderers"
       ],
@@ -222,8 +225,8 @@
   },
   "coverage": {
     "kk": {
-      "words": 1209,
-      "translated": 1209,
+      "words": 1210,
+      "translated": 1210,
       "share": 100
     }
   }

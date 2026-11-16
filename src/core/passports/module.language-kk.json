@@ -139,6 +139,7 @@
     "src/core/lang/kk/dropdown.json",
     "src/core/lang/kk/editor.json",
     "src/core/lang/kk/empty.json",
+    "src/core/lang/kk/fab.json",
     "src/core/lang/kk/field-renderers.json",
     "src/core/lang/kk/file.json",
     "src/core/lang/kk/form.json",
@@ -263,6 +264,6 @@
     "src/smart/tree/lang/kk.json",
     "src/smart/wizard/lang/kk.json"
   ],
-  "content_sha256": "d2d8c3fff342940df5dd64e07d6f84f1faa4d74f54b89c4eda9759724c94f77b",
+  "content_sha256": "1be0b7bb3b35b3173c6f56fde424a2c91a2be7801df84a979ff9d7ec4b80dfae",
   "dependencies": []
 }

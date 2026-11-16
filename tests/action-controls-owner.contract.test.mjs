@@ -67,7 +67,7 @@ test('FAB constructor keeps generic action attributes and explicit legacy scroll
   assert.match(css, /sf-fab--default\.sf-fab--primary[^{]*:active[\s\S]*--sf-fab--background-color: var\(--sf-primary-active\)/);
   assert.doesNotMatch(css, /\.sf-fab\.sf-fab--default\s*\{/);
   assert.doesNotMatch(css, /\.sf-fab\.sf-fab--tonal\s*\{/);
-  assert.match(css, /\.sf-fab\.sf-fab--default\.sf-fab--on-surface\s*\{/);
+  assert.match(css, /\.sf-fab\.sf-fab--default:is\(\.sf-fab--on-surface, \.sf-fab--secondary\)\s*\{/);
   assert.match(css, /\.sf-fab\.sf-fab--tonal\.sf-fab--on-surface\s*\{/);
 });
 

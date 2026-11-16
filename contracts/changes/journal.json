@@ -14012,6 +14012,30 @@
       "source": "src/component/icon-buttons/scss/_css_icon_buttons.scss; src/component/buttons/js/button-checks.js; src/smart/button-icon/index.js; ui-control control/docs-review/decisions.md C213"
     },
     {
+      "id": "class-fab-default-secondary-c116",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.fab 1.2.0 (owner decision C116 (3), RG-FAB-4): sf-fab--default sf-fab--secondary was no pair and drew a transparent, invisible button with no warning. The set's former secondary is the grey: the pair draws exactly as sf-fab--default sf-fab--on-surface in every state until remove_after; the component's script says it once per button and notes it in SF.deprecations. sf-fab--tonal sf-fab--secondary keeps its own record (class-fab-tonal-secondary-to-primary).",
+      "items": [
+        {
+          "component": "sf-fab",
+          "from": "sf-fab--default sf-fab--secondary",
+          "to": "sf-fab--default sf-fab--on-surface"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "On a default floating button replace sf-fab--secondary with sf-fab--on-surface; on a tonal one with sf-fab--primary.",
+      "examples": {
+        "before": "<button class=\"sf-fab sf-fab--default sf-fab--secondary sf-fab--size-1\">",
+        "after": "<button class=\"sf-fab sf-fab--default sf-fab--on-surface sf-fab--size-1\">"
+      },
+      "owner": "ui-source",
+      "source": "src/component/fab/scss/_css_fab.scss; src/component/fab/js/_fab-checks.js; ui-control control/docs-review/decisions.md C116 (3)"
+    },
+    {
       "id": "class-icon-button-close-looks-c14",
       "recorded_on": "2026-11-16",
       "stage": "compat",
