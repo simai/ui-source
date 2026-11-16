@@ -225,7 +225,11 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     // 1.3.0 (2026-11-04): the accent variant is the primary role's own fill
     // with on-primary text (background accent), as the prototype draws it,
     // not the primary container's light tint.
-    version: '1.3.0',
+    // 1.4.0 (2026-11-16, owner decision C212 (4)): the content part's blocks
+    // stand in a flex column one gap apart (flex flex-col gap-y-3, a gap the
+    // Document sets as gap-*), no longer space-y-*, a retired class. The page
+    // draws the same; the printed HTML differs.
+    version: '1.4.0',
     category: 'layout',
     mode: 'composite',
     profiles: ['ui-layout'],
@@ -453,6 +457,9 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   // equal cells, and an empty space. Each prints SIMAI Framework utilities
   // only, through its parameter sets and props.
   layoutManifest('layout.container', {
+    // 1.1.0 (2026-11-16, owner decision C212 (4)): the content part is a flex
+    // column, its blocks gap-y-3 apart, no longer space-y-3 (retired).
+    version: '1.1.0',
     parameter_sets: ['width', 'spacing', 'background', 'visibility'],
     parameter_defaults: CONTAINER_DEFAULTS,
     slots: { default: { min: 0, max: 500, categories: ['layout', 'content', 'smart'] } },
@@ -993,7 +1000,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...schemaFields('simai.composition.editor-manifest', 1),
     type: 'layout.section',
-    type_version: '1.3.0',
+    type_version: '1.4.0',
     fields: [
       {
         key: 'surface',
@@ -1148,7 +1155,7 @@ export const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   ]),
   // The layout and element types of the one block editor (2026-11-04).
   { ...contentEditor('content.paragraph', parameterSetFields({ parameter_sets: TEXT_SETS })), type_version: '1.5.0' },
-  contentEditor('layout.container', parameterSetFields({ parameter_sets: ['width', 'spacing', 'background', 'visibility'], parameter_defaults: CONTAINER_DEFAULTS })),
+  { ...contentEditor('layout.container', parameterSetFields({ parameter_sets: ['width', 'spacing', 'background', 'visibility'], parameter_defaults: CONTAINER_DEFAULTS })), type_version: '1.1.0' },
   { ...contentEditor('layout.grid', parameterSetFields({ parameter_sets: ['grid', 'visibility'], parameter_defaults: GRID_DEFAULTS })), type_version: '1.1.0' },
   contentEditor('layout.spacer', [
     contentField('layout.spacer', 'size', 'props', 'integer', { constraints: { min: 1, max: 8 }, default: 6 }),

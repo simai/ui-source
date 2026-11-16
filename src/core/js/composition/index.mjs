@@ -816,22 +816,19 @@ const elementBlock = (node, html) => (html ? `<div class="flex"${id(node)}>${htm
 
 // The space between the blocks of a section or a container (visual parity,
 // 2026-11-04): the prototype's 24 px at the desktop, space-3 of the SIMAI
-// Framework ladder (16 px on the phone). Blocks in a column stand one rhythm
-// apart (space-y-*, their own margins collapse into it); a gap the Document
-// sets is the rhythm, per screen. Columns make the content a grid, whose gap
-// the grid set prints: no rhythm then.
+// Framework ladder (16 px on the phone). The content part is a flex column
+// and the blocks stand one gap apart (layout.section 1.4.0, layout.container
+// 1.1.0; owner decision C212 (4): lengths only in system steps, space-x/y
+// retired for gap-x/y on a flex or grid parent); core.styles clears the
+// blocks' own block margins there, as in a grid. A gap the Document sets is
+// the rhythm, per screen: the grid set prints it (gap-*), so the rhythm adds
+// no second one. Columns make the content a grid, whose gap the grid set
+// prints: no rhythm then.
 const BLOCK_RHYTHM = 3;
 function rhythm(props) {
   if (props.columns !== undefined) return '';
-  const values = valuesByBreakpoint(props.gap ?? BLOCK_RHYTHM);
-  const classes = [];
-  let previous;
-  UTILITY_BREAKPOINTS.forEach((breakpoint) => {
-    const value = values[breakpoint];
-    if (value !== previous && Number.isInteger(value)) classes.push(`${breakpoint === 'xs' ? '' : `${breakpoint}:`}space-y-${value}`);
-    previous = value;
-  });
-  return classes.length ? ` class="${classes.join(' ')}"` : '';
+  const gap = props.gap === undefined ? ` gap-y-${BLOCK_RHYTHM}` : '';
+  return ` class="flex flex-col${gap}"`;
 }
 
 const BUILTIN_RENDERERS = {

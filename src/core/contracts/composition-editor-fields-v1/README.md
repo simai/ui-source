@@ -34,6 +34,12 @@ follows its type to `layout.section@1.3.0`. No field is added or removed; the
 the primary role's fill with on-primary text), the value the section's accent
 variant now sets.
 
+1.4.2 (2026-11-16, owner decision C212 (4)): the `layout.section` editor
+manifest follows its type to `layout.section@1.4.0`. No field is added or
+removed and no default changes; the type now prints its content part as a
+flex column one gap apart (`flex flex-col gap-y-3`, a Document's own gap as
+`gap-*`) instead of the retired `space-y-*`.
+
 ## Файлы
 
 - README.md — этот текст, нормативный.
