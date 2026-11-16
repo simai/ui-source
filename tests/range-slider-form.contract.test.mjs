@@ -41,3 +41,15 @@ test('the from/to field reads numbers typed the page\'s way (C80)', () => {
   assert.equal(context.parseTyped('12,500', 'en'), 12500);
   assert.ok(Number.isNaN(context.parseTyped('abc', 'ru')));
 });
+
+test('RF-1 (C202): a number typed with the field\'s own unit or a currency sign is the number', () => {
+  const context = vm.createContext({Intl});
+  vm.runInContext(source.slice(source.indexOf('function parseTyped'), source.indexOf('function getSliderHandleCount')) + '\nglobalThis.parseTyped=parseTyped;', context);
+  for (const typed of ['12500 ₽', '12500₽', '12 500 ₽', '12\u00a0500\u00a0₽', '12\u202f500 ₽', '₽ 12500']) {
+    assert.equal(context.parseTyped(typed, 'ru', ['', ' ₽']), 12500, typed);
+  }
+  assert.equal(context.parseTyped('$12,500', 'en', ['$', '']), 12500);
+  assert.equal(context.parseTyped('40 %', 'ru', ['', ' %']), 40);
+  assert.equal(context.parseTyped('от 20', 'ru', ['от ', ' %']), 20);
+  assert.ok(Number.isNaN(context.parseTyped('₽', 'ru', ['', ' ₽'])));
+});

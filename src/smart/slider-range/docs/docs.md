@@ -39,8 +39,13 @@ Smart wrapper for the project-owned `range-slider` component.
 - `field` — one from/to field «5 000 – 20 000 ₽» at the end of the track line;
   Enter or leaving the box moves the handle (owner decision C80). Each number
   box is as wide as the wider end of the range, so the numbers stay whole and
-  the track gives way; where the track would be narrower than a finger's
-  target (a size-2 field in a narrow column) the field stands under the track.
+  the track gives way. The slider picks the layout by its own width (owner
+  decision C202, a container query at 26rem): narrower, the field goes under
+  the track as two boxes «от …» «до …», halves of the full width, and the unit
+  moves into the name («Цена, ₽»): a filter column, a drawer, a phone. A box
+  takes a number typed with its unit or a currency sign («12500 ₽»). The
+  slider with `field` takes its width from its place, never from its content
+  (it is a size container): in a flex row give its wrapper a width or `flex: 1`.
   The host is `display: contents`, so a grid placement (a `class` spanning two
   columns) goes on a wrapper element, not on `<sf-slider-range>`.
 - `ticks` — a dot per step (at most twenty) cut out of the track.

@@ -20,7 +20,12 @@ function renderHead(context) {
     return html`
         <div class="sf-range-slider-head">
             ${showName
-                ? html`<span class="sf-range-slider-name" id=${context.nameId}>${context.name}</span>`
+                // The unit of the from/to field joins the name when the field
+                // stands under the track (C202): «Цена, ₽». Hidden in the wide
+                // layout, where the field writes it; the handles say it anyway.
+                ? html`<span class="sf-range-slider-name" id=${context.nameId}>${context.name}${context.field && context.fieldUnit
+                    ? html`<span class="sf-range-slider-name-unit" aria-hidden="true">, ${context.fieldUnit}</span>`
+                    : nothing}</span>`
                 : nothing}
             ${showOutput
                 // Each handle reads its own value out (aria-valuetext); this is the sighted copy.
@@ -64,8 +69,10 @@ function renderField(context) {
     // of the range, written by the host: the cell is as wide as the wider end
     // in the box's own font, and follows a late web font, a size or a density
     // by layout alone. The box fills the cell (acceptance R2: 8ch clipped).
+    // Under the track (C202) a range's boxes say «от» and «до» before the
+    // number; the words are hidden while the field stands in the track's line.
     const input = (index) => html`<span class="sf-range-slider-field-box"
-        ><span class="sf-range-slider-field-ruler" aria-hidden="true"></span
+        >${context.multiple ? html`<span class="sf-range-slider-field-word" aria-hidden="true">${context.fieldWords[index]}</span>` : nothing}<span class="sf-range-slider-field-ruler" aria-hidden="true"></span
         ><span class="sf-range-slider-field-ruler" aria-hidden="true"></span
         ><input
             type="text"
@@ -99,6 +106,7 @@ export function renderRangeSliderTemplate(context) {
     const groupClasses = joinClasses(
         'sf-range-slider-group',
         `sf-range-slider-group--size-${context.size}`,
+        context.field ? 'sf-range-slider-group--field' : '',
         context.disabled ? 'disabled' : '',
         context.readonly && !context.disabled ? 'readonly' : '',
     );
