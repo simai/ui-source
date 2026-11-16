@@ -263,6 +263,13 @@ class SfTagGroup extends GroupElement {
   }
 
   fit() {
+    // A printed first paint (static/<example>.html) carries its own «+N» item;
+    // the row's own one replaces it, so the page never shows two (first-paint
+    // status R222 open item 10: the gate found the printed one left beside the
+    // drawn row).
+    for (const node of this.querySelectorAll(`:scope > [${MORE}]`)) {
+      if (node !== this._more) node.remove();
+    }
     const tags = this.tags;
     for (const tag of tags) {
       setAttr(tag, OVER, false);
