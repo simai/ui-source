@@ -42,13 +42,9 @@ const KNOWN = {
   // progress: the cancel link button is height-low (32) beside the size 1
   // download button (40).
   'file-download': 1,
-  // error: the retry link button is height-low (32) beside the size 1 icon
-  // actions (40).
-  'file-preview': 1,
-  // error: the same pair as file-preview/error (retry link button 32 beside
-  // the size 1 icon actions 40); since fix/file-upload-c81-c149 the upload
-  // rows are sf-file-preview, so the defect belongs to file-preview.
-  'file-upload': 1,
+  // file-preview/error and file-upload/error (the retry button 32 beside the
+  // icon actions 40) left the list with owner decision C260 (sf-file-preview
+  // 1.5.0): «Повторить» stands on the rung of its neighbours.
 };
 
 const pageScript = readFileSync(join(repo, 'scripts', 'instance-scope-page.js'), 'utf8');

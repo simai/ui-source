@@ -190,7 +190,7 @@ function syncFileUploadInteraction(root) {
     if (!button.hasAttribute('aria-labelledby') && (!currentLabel || currentLabel === previous.label)) {
       const name = button.closest(CLASS_ROW)?.querySelector(CLASS_ROW_NAME)?.textContent?.trim() || '';
       const word = button.dataset.action === 'retry'
-        ? (button.querySelector?.('.sf-button-text-container') || button).textContent.trim() || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
+        ? (button.dataset.word || (button.querySelector?.('.sf-button-text-container') || button).textContent).trim() || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
         : pageText(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload');
       const label = `${word} ${name}`.trim();
       if (currentLabel !== label) button.setAttribute('aria-label', label);
@@ -330,6 +330,40 @@ function releaseRowPictures(root, items = []) {
 // and at every zone size: the class row stacked the bar and the retry under
 // the text, so a list of four files was 44 / 68 / 44 / 84 and jumped at each
 // change of state (RG-FU-1).
+// «Повторить» as the icon alone, the Smart row's (owner decision C260): the
+// sheet draws it in place of the button with words in a row too narrow for
+// them (sf-file-preview, the container step g2). Named «Повторить <имя>» by
+// the list's labelling, «Повторить» in the Framework's plain tooltip, which
+// the anchor links to the button.
+function createRetryIcon(word) {
+  const anchor = document.createElement('span');
+  anchor.className = 'sf-file-preview-retry-icon sf-tooltip-anchor';
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--primary sf-icon-button--size-1';
+  button.dataset.action = 'retry';
+  button.dataset.tooltip = '';
+  button.dataset.word = word;
+  const glyph = document.createElement('i');
+  glyph.className = 'sf-icon';
+  glyph.setAttribute('aria-hidden', 'true');
+  glyph.textContent = 'refresh';
+  button.append(glyph);
+  const tip = document.createElement('span');
+  tip.className = 'sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3';
+  tip.setAttribute('aria-hidden', 'true');
+  tip.hidden = true;
+  const content = document.createElement('span');
+  content.className = 'sf-tooltip-content';
+  const text = document.createElement('span');
+  text.className = 'sf-tooltip-text';
+  text.textContent = word;
+  content.append(text);
+  tip.append(content);
+  anchor.append(button, tip);
+  return anchor;
+}
+
 function createUploadProgressItem(item, owner = null) {
   const row = describeUploadItem(item, owner, 'done');
   const {state, progress} = row;
@@ -420,12 +454,13 @@ function createUploadProgressItem(item, owner = null) {
   actions.className = 'sf-file-preview-actions';
   if (state === 'error') {
     // «Повторить» ends the row, first of its buttons (C88), the button the
-    // Smart row draws: ghost, primary, size 1, low.
+    // Smart row draws: ghost, primary, size 1, on the rung of «×» beside it
+    // (C103; it was the low button, 32 beside 40).
     const retryHost = document.createElement('span');
     retryHost.className = 'sf-file-preview-retry';
     const retry = document.createElement('button');
     retry.type = 'button';
-    retry.className = 'sf-button sf-button--size-1 sf-button--ghost sf-button--link sf-button--primary flex items-cross-center sf-button--height-low';
+    retry.className = 'sf-button sf-button--size-1 sf-button--ghost sf-button--link sf-button--primary flex items-cross-center';
     retry.dataset.action = 'retry';
     const retryIcon = document.createElement('i');
     retryIcon.className = 'sf-icon pointer-event-none';
@@ -436,7 +471,7 @@ function createUploadProgressItem(item, owner = null) {
     retryText.textContent = row.retryText;
     retry.append(retryIcon, retryText);
     retryHost.append(retry);
-    actions.append(retryHost);
+    actions.append(retryHost, createRetryIcon(row.retryText));
   }
   // Every state can be taken out of the list: «×» «Убрать <имя>», nothing is
   // erased (C149 (8)); the trash is a stored file's, in sf-file-preview.
@@ -471,8 +506,11 @@ function restoreListFocus(root, container, held) {
   if (!held) return;
   const rows = container.querySelectorAll(':scope > [data-index]');
   const row = rows[Math.min(held.index, rows.length - 1)];
-  const target = (held.action && row?.querySelector(`button[data-action="${held.action}"]:not(:disabled)`))
-    || row?.querySelector('button[data-action="remove"]:not(:disabled)')
+  // A failed row holds «Повторить» twice, with words and as the icon alone;
+  // the sheet draws one of them (C260): the focus goes to the drawn one.
+  const drawn = (selector) => [...(row?.querySelectorAll(selector) || [])].find((button) => button.getClientRects().length > 0);
+  const target = (held.action && drawn(`button[data-action="${held.action}"]:not(:disabled)`))
+    || drawn('button[data-action="remove"]:not(:disabled)')
     || root;
   target?.focus?.({preventScroll: true});
 }

@@ -12,6 +12,8 @@ SF.RuleLoader['cl-file-preview'] = {
     { name: 'cl-progress-bar', lazy: true },
     // «Повторить» in a row that did not upload (state error), the C88 retry button.
     { name: 'cl-button', lazy: true },
+    // «Повторить» drawn as the icon alone in a narrow failed row (decision C260): its word in the Framework's plain tooltip, shown on hover, keyboard focus and a long press.
+    { name: 'tooltip' },
     // The page's full-screen viewer, SF.Gallery.view, asked for when a picture, a PDF or a video is opened (decision C149 (6)).
     { name: 'cl-gallery', lazy: true },
     // «Удалить «<имя>»?» before a stored file is erased (decision C149 (8)).

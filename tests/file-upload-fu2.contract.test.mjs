@@ -100,10 +100,14 @@ test('RG-FU-3: a row taken out gives the focus to the next row, the previous whe
   assert.equal(typeof api.restoreListFocus, 'function', 'the list keeps its focus');
   assert.doesNotMatch(source, /container\.innerHTML = ''/u);
   const focused = [];
-  const button = (row, action) => ({focus: () => focused.push(`${row}:${action}`)});
+  const button = (row, action, shown = true) => ({focus: () => focused.push(`${row}:${action}`), getClientRects: () => (shown ? [{}] : [])});
+  // A failed row holds «Повторить» twice (C260): the focus goes to the one
+  // the sheet draws.
   const list = (count) => ({
     querySelectorAll: () => Array.from({length: count}, (_, index) => ({
-      querySelector: (selector) => (selector.includes('"retry"') ? null : button(index, 'remove')),
+      querySelectorAll: (selector) => (selector.includes('"retry"')
+        ? [button(index, 'retry-words', false), button(index, 'retry-icon')]
+        : [button(index, 'remove')]),
     })),
   });
   const zone = {focus: () => focused.push('zone')};
@@ -111,7 +115,8 @@ test('RG-FU-3: a row taken out gives the focus to the next row, the previous whe
   api.restoreListFocus(zone, list(2), {index: 2, action: 'remove'}); // the last of 3 left
   api.restoreListFocus(zone, list(0), {index: 0, action: 'remove'}); // the only one left
   api.restoreListFocus(zone, list(2), null); // the focus was not in the list
-  assert.deepEqual(focused, ['1:remove', '1:remove', 'zone']);
+  api.restoreListFocus(zone, list(2), {index: 0, action: 'retry'}); // a narrow row's icon
+  assert.deepEqual(focused, ['1:remove', '1:remove', 'zone', '0:retry-icon']);
   const render = source.slice(source.indexOf('function renderFileUploadItems'), source.indexOf('function emitFileUploadItemAdd'));
   assert.match(render, /const held = listFocus\(container\);[\s\S]*restoreListFocus\(root, container, held\);/u);
 });
