@@ -4,6 +4,13 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-slider-arrows {
+  /* The two arrows are buttons of one group (C105 H5): 8 apart wherever the
+     pair stands in a row of its own -- they touched (0) outside a slider, in
+     the class docs' examples. Over a picture each is placed at its edge, and
+     under cards the controls row says the same gap. */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
   background-color: var(--sf-slider-arrows--background-color, transparent);
   box-shadow: var(--sf-slider-arrows--box-shadow);
   backdrop-filter: var(--sf-slider-arrows--backdrop-filter);
