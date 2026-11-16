@@ -674,6 +674,13 @@ test('blocks in a section or a container stand one rhythm apart; a nested contai
   assert.match(drawn.html, /data-sf-composition-id="b"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="flex flex-col gap-2 lg:gap-5" data-sf-composition-part="content">/u);
   assert.match(drawn.html, /data-sf-composition-id="c"><div class="container m-inline-auto" data-sf-composition-part="frame"><div class="grid grid-col-1 md:grid-col-2" data-sf-composition-part="content">/u);
   assert.doesNotMatch(drawn.html, /space-[xy]-/u, 'no retired space-x/y class');
+  // The sheet: the flex column clears its blocks' margins above a component's
+  // own rule for them (0,2,0), a boxless quote or HTML block keeps no inner end
+  // margin, and a page with core.css alone still gets the column (sf.base).
+  const sheet = readFileSync(new URL('../src/core/scss/_sf_css__composition.scss', import.meta.url), 'utf8');
+  assert.match(sheet, /\n {4}\[data-sf-composition-part="content"\]:is\(\.grid, \.flex\) > \* \{\s*margin-block: 0;/u);
+  assert.match(sheet, /> :where\(blockquote, div:not\(\[class\]\)\) > :last-child > :last-child > :last-child \{\s*margin-block-end: 0;/u);
+  assert.match(sheet, /:where\(\[data-sf-composition-part="content"\]\.flex\.flex-col\) \{\s*display: flex;\s*flex-direction: column;\s*row-gap: var\(--sf-space-3\);/u);
   // A container inside a container's frame takes container-flush, at any depth; out of a breakout it keeps its gutter.
   const nested = await render(layout(
     section('s', undefined, [{ id: 'g', type: 'layout.grid', slots: { default: [container('deep')] } }]),
