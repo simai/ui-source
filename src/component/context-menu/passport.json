@@ -14,7 +14,7 @@
     "src/component/context-menu/scss/_panel.scss",
     "src/component/context-menu/scss/index.scss"
   ],
-  "content_sha256": "6112c1c6a0167cb2c420c1b7ce1bfc1553d25c3fedcb51685421eab428562a04",
+  "content_sha256": "4e0ab939b8f43af33ae6661ee07a6052e7ae2a5538768a2407f2a69d4706c8e3",
   "dependencies": [
     {
       "id": "core.styles",

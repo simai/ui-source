@@ -18,22 +18,14 @@
     "src/component/scrollbar/scss/_var__scrollbar.scss",
     "src/component/scrollbar/scss/index.scss"
   ],
-  "content_sha256": "b5299ac12cedd7e80ff51f496b5550712cabf864aac94bd2449b91b319e19ca4",
+  "content_sha256": "ab00a66ec8cde8684e64867c3cefd6c1e79ea42156e0e031e63b977d80c88b09",
   "dependencies": [
     {
       "id": "core.runtime",
       "range": "^1.0.0"
     },
     {
-      "id": "tokens.border",
-      "range": "^1.0.0"
-    },
-    {
       "id": "tokens.colour",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.motion",
       "range": "^1.0.0"
     },
     {

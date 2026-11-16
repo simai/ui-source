@@ -1,5 +1,5 @@
 // Retired class names (owner decisions C185 (2), C186 (8) and C187 (1), 2026-11-14;
-// C208 (2), (3), 2026-11-15; C212 (6), 2026-11-16).
+// C208 (2), (3), 2026-11-15; C212 (6), 2026-11-16; C208 (2), (3) and C210 (5), 2026-11-15).
 // One table, core/js/retired-classes.table.js, lists every class
 // the Framework retires: a name, a family (pattern) or a whole utility sheet.
 // A retired class keeps drawing what it drew until remove_after, and the
@@ -12,7 +12,8 @@
 // class-editor-utility-retired, class-c212-hide-print,
 // class-ut1-layout-col-auto, class-ut1-grid-row, class-ut1-negative-auto,
 // class-ut1-bg-position, class-ut1-blur, class-ut1-radius-square,
-// class-ut1-tracking.
+// class-ut1-tracking, utility-c210-scrollbar-retired-sheets,
+// class-c210-scrollbar-class.
 import table from './retired-classes.table.js';
 import {noteDeprecated} from './deprecations.js';
 

@@ -1,3 +1,8 @@
+// sf-scrollbar since owner decision C210 (2026-11-15): a wrapper around one
+// scrolling area whose bar is the Framework's one bar, drawn by core
+// (core/js/scrollbars.js). The component gives the area its keyboard stop and
+// name, the edge fade (C91) and turns data-mode words into the bar's modifier
+// classes; the C208 modes are dated aliases (tests/scrollbar-c210.contract.test.mjs).
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,82 +15,47 @@ const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'u
 const cssPath = 'src/component/scrollbar/scss/_css__scrollbar.scss';
 const jsPath = 'src/component/scrollbar/js/_scrollbar.js';
 
-test('scrollbar component exposes the four preset contract', () => {
-  const css = read(cssPath);
+test('scrollbar component reads data-mode, data-axis and their legacy spellings', () => {
   const runtime = read(jsPath);
-
-  for (const preset of ['overlay', 'standard', 'persistent', 'hidden']) {
-    assert.match(css, new RegExp(`data-mode="${preset}"`));
-    assert.match(runtime, new RegExp(`['"]${preset}['"]`));
-  }
 
   assert.match(runtime, /getAttribute\('data-mode'\)/);
   assert.match(runtime, /getAttribute\('data-sf-scrollbar'\)/);
   assert.match(runtime, /getAttribute\('data-axis'\)/);
   assert.match(runtime, /getAttribute\('data-sf-scrollbar-axis'\)/);
-  assert.match(runtime, /const IDLE_DELAY = 900/);
-  assert.match(css, /--sf-scrollbar-rest-size:\s*var\(--sf-a2\)/);
-  assert.match(css, /--sf-scrollbar-active-size:\s*var\(--sf-a6\)/);
-  assert.match(css, /--sf-scrollbar-hit-size:\s*var\(--sf-b6\)/);
-  assert.match(css, /--sf-scrollbar-min-thumb-size:\s*var\(--sf-d1\)/);
-  assert.match(css, /--sf-scrollbar-keyboard-step:\s*var\(--sf-d0\)/);
-  assert.doesNotMatch(runtime, /Math\.max\(44/);
-  assert.doesNotMatch(runtime, /const line = 40/);
+  assert.match(runtime, /SF\?\.scrollbars\?\.refresh\?\.\(this\.viewport\)/);
 });
 
-test('managed presets support activity, drag, keyboard and cleanup', () => {
+test('the area is the keyboard stop and a named region; the component follows its life', () => {
   const runtime = read(jsPath);
 
-  assert.match(runtime, /addEventListener\(type, listener, options\)/);
-  assert.match(runtime, /'scroll'/);
-  assert.match(runtime, /'pointerdown'/);
-  assert.match(runtime, /setPointerCapture/);
-  assert.match(runtime, /ArrowUp/);
-  assert.match(runtime, /PageDown/);
+  assert.match(runtime, /viewport\.tabIndex = 0/);
+  assert.match(runtime, /setAttribute\('role', 'region'\)/);
+  assert.match(runtime, /pageText\(SCROLLBAR_TEXT, 'scroll'/);
   assert.match(runtime, /ResizeObserver/);
   assert.match(runtime, /MutationObserver/);
   assert.match(runtime, /removedNodes/);
-  assert.match(runtime, /clearTimeout/);
   assert.doesNotMatch(runtime, /setInterval/);
 });
 
 test('scrollbar presentation preserves accessibility fallbacks', () => {
   const css = read(cssPath);
-  const runtime = read(jsPath);
+  const core = read('src/core/scss/_sf_css__scroll.scss');
 
   assert.match(css, /@media\s*\(forced-colors:\s*active\)/);
   assert.match(css, /scrollbar-color:\s*auto/);
-  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
-  assert.match(css, /@media\s*\(pointer:\s*coarse\)/);
-  assert.match(runtime, /role', 'scrollbar'/);
-  assert.match(runtime, /aria-controls/);
-  assert.match(runtime, /aria-valuenow/);
-  assert.doesNotMatch(runtime, /track\.setAttribute\('aria-hidden'/);
-  assert.match(runtime, /!VALID_PRESETS\.has\(requestedPreset\)/);
+  assert.match(core, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(core, /\(pointer:\s*coarse\)/);
 });
 
-test('scrollbar supports a horizontal managed axis without reserving native space', () => {
+test('scrollbar supports a horizontal axis and normalises the RTL position for the fade', () => {
   const css = read(cssPath);
   const runtime = read(jsPath);
 
-  assert.match(runtime, /data-axis/);
   assert.match(runtime, /VALID_AXES = new Set\(\['vertical', 'horizontal'\]\)/);
-  assert.match(runtime, /aria-orientation', axis/);
   assert.match(runtime, /scrollLeft/);
   assert.match(runtime, /scrollWidth/);
-  assert.match(css, /sf-scrollbar__track--horizontal/);
-  assert.match(css, /sf-scrollbar__thumb--horizontal/);
-  assert.match(css, /transform:\s*translateX\(var\(--sf-scrollbar-thumb-offset/);
-});
-
-test('horizontal scrollbar normalizes logical position in RTL', () => {
-  const runtime = read(jsPath);
-
-  assert.match(runtime, /isHorizontalRtl\(\)/);
-  assert.match(runtime, /-this\.viewport\.scrollLeft/);
-  assert.match(runtime, /this\.isHorizontalRtl\(\)\s*\?\s*1 - thumbOffset \/ maxThumbOffset/);
-  assert.match(runtime, /this\.isHorizontalRtl\(\)\s*\?\s*-boundedPosition/);
-  assert.match(runtime, /this\.isHorizontalRtl\(\) \? -1 : 1/);
+  assert.match(runtime, /direction === 'rtl' \? -raw : raw/);
+  assert.match(css, /--sf-scrollbar--fade-direction:\s*to left/);
 });
 
 test('scrollbar contains only its managed axis and preserves cross-axis page scrolling', () => {

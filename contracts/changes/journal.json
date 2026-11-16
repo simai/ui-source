@@ -16772,6 +16772,111 @@
       "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
     },
     {
+      "id": "utility-c210-scrollbar-retired-sheets",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C210 (5): one bar everywhere -- a strip of 14 (gap 4, thumb 6, 4 to the edge), the place's boundary, round ends, shown while the area scrolls, while the pointer is at its strip, while the focus is inside and once when it appears, hidden 1 s after; its room stays. The utilities that tuned the old bars leave: scroll-hover (now the default), scroll-subtle (the bar has one colour), the track colours scroll-bg-<colour>, the track roundings scroll-bg-radius-1 ... 4 and the thumb roundings scroll-radius-1 ... 4, scroll-thumb-radius-1 ... 4. They keep drawing what they set until remove_after (the drawn bar reads their variables), and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "scroll-hover",
+          "to": null,
+          "match": "(?<![\\w-])scroll-hover(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-subtle",
+          "to": null,
+          "match": "(?<![\\w-])scroll-subtle(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-backdrop-color",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-bg-(?:current|error|info|primary|s(?:econdary|u(?:ccess|rface))|t(?:ertiary|ransparent)|warning))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-backdrop-radius",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-bg-radius-(?:1|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-slider-radius",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-(?:radius-(?:1|2|3|4)|thumb-radius-(?:1|2|3|4)))(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove scroll-hover: the bar hides by itself. Remove scroll-subtle and scroll-bg-<colour>: the bar takes the colours of the place it is in. Remove scroll-radius-*, scroll-thumb-radius-* and scroll-bg-radius-*: the ends are round; write scrollbar-square for a bar without rounding. For a bar shown at rest write scrollbar-always; a thin one, scrollbar-thin; one at the very edge, scrollbar-flush; none, scrollbar-hidden.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210"
+    },
+    {
+      "id": "class-c210-scrollbar-class",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C210 (5): the legacy .scrollbar class of the scrollbar component sheet (an 8 strip, named in no document) leaves; every scrolling area has the one bar without a class. It keeps its 8 strip until remove_after, and the Loader notes it once in SF.deprecations.",
+      "items": [
+        {
+          "component": "scrollbar",
+          "from": "scrollbar",
+          "to": null,
+          "match": "class=[\"'](?:[^\"']*\\s)?scrollbar(?:\\s[^\"']*)?[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class scrollbar: the area draws the one bar by itself.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210"
+    },
+    {
+      "id": "component-c210-scrollbar-modes",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-scrollbar 1.4.0 (owner decision C210 (4), (5)): data-mode takes the one bar's modifier words -- always, thin, flush, square, hidden, in any combination (data-mode=\"thin flush\") -- and the component turns them into the classes scrollbar-always ... scrollbar-hidden on its viewport; the bar itself is core's. The modes overlay and standard are the default now, persistent is always, and the attribute data-sf-scrollbar is data-mode; each keeps working until remove_after and is noted once in SF.deprecations. hidden keeps its meaning.",
+      "items": [
+        {
+          "component": "sf-scrollbar",
+          "from": "data-mode=\"overlay\"",
+          "to": null,
+          "match": "data-(?:mode|sf-scrollbar)=[\"']overlay[\"']"
+        },
+        {
+          "component": "sf-scrollbar",
+          "from": "data-mode=\"standard\"",
+          "to": null,
+          "match": "data-(?:mode|sf-scrollbar)=[\"']standard[\"']"
+        },
+        {
+          "component": "sf-scrollbar",
+          "from": "data-mode=\"persistent\"",
+          "to": "data-mode=\"always\"",
+          "match": "data-(?:mode|sf-scrollbar)=[\"']persistent[\"']"
+        },
+        {
+          "component": "sf-scrollbar",
+          "from": "data-sf-scrollbar",
+          "to": "data-mode",
+          "match": "\\bdata-sf-scrollbar=[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove data-mode=\"overlay\" and data-mode=\"standard\" (the bar shows while the area is used and hides 1 s after). Write data-mode=\"always\" for persistent, and data-mode for data-sf-scrollbar.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210; src/component/scrollbar/js/_scrollbar.js"
+    },
+    {
       "id": "global-sf-tab-to-sf-tabs",
       "recorded_on": "2026-11-16",
       "stage": "compat",

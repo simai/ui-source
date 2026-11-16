@@ -39,9 +39,10 @@ test('the scroll-edge fade is on by default, a mask, at the edges the content go
   const script = read('src/component/scrollbar/js/_scrollbar.js');
   assert.match(script, /const more = before && after \? 'both' : before \? 'start' : after \? 'end' : '';/u);
   assert.match(script, /delete this\.root\.dataset\.sfScrollbarMore;/u);
-  assert.match(sheet, /\.sf-scrollbar\[data-sf-scrollbar-more\]:not\(\[data-mode="standard"\], :not\(\[data-mode\]\)\[data-sf-scrollbar="standard"\]\) \.sf-scrollbar__viewport \{\n {4}mask-image: linear-gradient\(/u);
+  // C210: the standard mode left (it is the default now); every sf-scrollbar fades.
+  assert.match(sheet, /\.sf-scrollbar\[data-sf-scrollbar-more\] \.sf-scrollbar__viewport \{\n {4}mask-image: linear-gradient\(/u);
   assert.match(sheet, /--sf-scrollbar--fade-end: var\(--sf-scrollbar-fade-size, var\(--sf-space-2\)\);/u);
-  assert.doesNotMatch(sheet.slice(sheet.indexOf('The scroll-edge fade'), sheet.indexOf('.sf-scrollbar__thumb:focus-visible')), /background/u, 'a mask, never a paint');
+  assert.doesNotMatch(sheet.slice(sheet.indexOf('The scroll-edge fade'), sheet.indexOf('The legacy .scrollbar class')), /background/u, 'a mask, never a paint');
 });
 
 test('level 2 is off unless the component or the nearest data-sf-style says expressive', () => {

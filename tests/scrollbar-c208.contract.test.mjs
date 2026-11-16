@@ -6,7 +6,8 @@
 // overlay bar 2 -> 6, the width and colour utilities retire; (4) the bar takes its
 // room except in strips and media; (5) a strip's track runs inside the content's
 // inset, --sf-space-1/4 under the items, round ends. Defects SB-2, SB-3, SB-5,
-// SB-7, SB-8 of the study.
+// SB-7, SB-8 of the study. C210 (2026-11-15) replaces (1), (3), (4), (5) and the
+// gaps; what stands of C208 is below, C210 in tests/scrollbar-c210.contract.test.mjs.
 import assert from 'node:assert/strict';
 import {readFileSync, readdirSync, statSync} from 'node:fs';
 import {dirname, join, relative, resolve} from 'node:path';
@@ -15,9 +16,6 @@ import {fileURLToPath} from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
-const core = read('src/core/scss/_sf_css__scroll.scss');
-const bar = read('src/component/scrollbar/scss/_css__scrollbar.scss');
-const runtime = read('src/component/scrollbar/js/_scrollbar.js');
 
 function scss(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -43,19 +41,6 @@ function without(text, opener) {
   }
 }
 
-test('C208 (1): core draws one hover rule, the place text, with no width change', () => {
-  assert.match(core, /--sf-scroll-bg-thumb:\s*var\(--sf-outline\)/);
-  assert.match(core, /--sf-scroll--thumb-hover:\s*var\(--sf-on-surface\)/);
-  assert.match(core, /::-webkit-scrollbar-thumb:hover,\s*::-webkit-scrollbar-thumb:active\s*\{\s*background-color:\s*var\(--sf-scroll--thumb-hover\);\s*\}/);
-  const panel = read('src/component/context-menu/scss/_panel.scss');
-  assert.match(panel, /&::-webkit-scrollbar-thumb:hover,\s*&::-webkit-scrollbar-thumb:active\s*\{\s*background-color:\s*var\(--sf-scroll--thumb-hover\)/);
-  assert.match(bar, /\.sf-scrollbar__track:hover \.sf-scrollbar__thumb::before,\s*\.sf-scrollbar\[data-sf-scrollbar-dragging="true"\] \.sf-scrollbar__thumb::before\s*\{\s*background:\s*var\(--sf-scrollbar--thumb-hover\)/);
-});
-
-test('C208 (2), SB-3: Firefox gets the same colour behind the support query', () => {
-  assert.match(core, /@supports not selector\(::-webkit-scrollbar\)\s*\{\s*\*\s*\{\s*scrollbar-color:\s*var\(--sf-scroll-bg-thumb\) var\(--sf-scroll-bg-track\);\s*scrollbar-width:\s*thin;/);
-});
-
 test('SB-7: no sheet sets scrollbar-color or a thin/auto scrollbar-width outside the Firefox query or forced colours', () => {
   const offenders = [];
   for (const file of scss(resolve(root, 'src'))) {
@@ -64,18 +49,6 @@ test('SB-7: no sheet sets scrollbar-color or a thin/auto scrollbar-width outside
     if (/scrollbar-color:\s*(?!auto)|scrollbar-width:\s*(?:thin|auto)/.test(stripped)) offenders.push(relative(root, file));
   }
   assert.deepEqual(offenders, []);
-});
-
-test('C208 (3): track 14 and thumb 6 from the a/b ladders; the gaps are two hooks (q-sb-gaps)', () => {
-  assert.match(core, /--sf-scroll-bg-width:\s*var\(--sf-b4\)/);
-  assert.match(core, /--sf-scroll-thumb-size:\s*var\(--sf-a6\)/);
-  assert.match(core, /--sf-scroll--gap-content:\s*var\(--sf-scroll-thumb-inset\)/);
-  assert.match(core, /--sf-scroll--gap-edge:\s*var\(--sf-scroll-thumb-inset\)/);
-  assert.match(core, /::-webkit-scrollbar-thumb:vertical\s*\{\s*border-left-width:\s*var\(--sf-scroll--gap-content\);\s*border-right-width:\s*var\(--sf-scroll--gap-edge\)/);
-  assert.match(core, /::-webkit-scrollbar-thumb:horizontal\s*\{\s*border-top-width:\s*var\(--sf-scroll--gap-content\);\s*border-bottom-width:\s*var\(--sf-scroll--gap-edge\)/);
-  assert.doesNotMatch(read('src/core/scss/_sf_css__density.scss'), /--sf-scroll/);
-  assert.match(bar, /--sf-scrollbar-rest-size:\s*var\(--sf-a2\)/);
-  assert.match(bar, /--sf-scrollbar-active-size:\s*var\(--sf-a6\)/);
 });
 
 test('C208 (2), (3): the colour and width utilities retire through the one table', async () => {
@@ -89,36 +62,10 @@ test('C208 (2), (3): the colour and width utilities retire through the one table
   assert.equal(noteRetiredUtilitySheets('scroll-primary', ['scroll-slider-color/default']), true);
   assert.equal(noteRetiredUtilitySheets('scroll-2', ['scroll-slider-width/default']), true);
   assert.equal(noteRetiredUtilitySheets('scroll-bg-3', ['scroll-backdrop-width/default']), true);
-  assert.equal(noteRetiredUtilitySheets('scroll-bg-primary', ['scroll-backdrop-color/default']), false, 'the track colour stays');
-  assert.deepEqual(listDeprecations().map(({from, remove_after: date}) => `${from} ${date}`), ['scroll-primary 2027-01-01', 'scroll-2 2027-01-01', 'scroll-bg-3 2027-01-01']);
+  // C210 (5) retires the track colour too (utility-c210-scrollbar-retired-sheets).
+  assert.equal(noteRetiredUtilitySheets('scroll-bg-primary', ['scroll-backdrop-color/default']), true);
+  assert.deepEqual(listDeprecations().map(({from, remove_after: date}) => `${from} ${date}`), ['scroll-primary 2027-01-01', 'scroll-2 2027-01-01', 'scroll-bg-3 2027-01-01', 'scroll-bg-primary 2027-01-01']);
   clearDeprecations();
-});
-
-test('SB-2: the drawn thumb has round ends', () => {
-  assert.match(bar, /\.sf-scrollbar__thumb\s*\{[^}]*border-radius:\s*var\(--sf-scroll-radius\)/);
-  assert.match(bar, /\.sf-scrollbar__thumb::before\s*\{[^}]*border-radius:\s*var\(--sf-scroll-radius\)/);
-});
-
-test('C208 (4): the standard mode is the system bar; a persistent bar takes its room while the content overflows', () => {
-  assert.doesNotMatch(bar, /data-mode="standard"[^{]*\{[^}]*scrollbar-(?:color|width)/);
-  assert.match(bar, /\.sf-scrollbar:not\(\[data-sf-scrollbar-overflow="false"\]\):is\(\s*\[data-mode="persistent"\][^{]*\.sf-scrollbar__viewport\s*\{\s*padding-inline-end:\s*calc\(var\(--sf-scrollbar--gap-content\) \+ var\(--sf-scrollbar-active-size\) \+ var\(--sf-scrollbar--gap-edge\)\)/);
-  assert.match(bar, /padding-block-end:\s*calc\(var\(--sf-scrollbar--gap-content\) \+ var\(--sf-scrollbar-active-size\) \+ var\(--sf-scrollbar--gap-edge\)\)/);
-});
-
-test('C208 (5), SB-5: a strip track runs inside the content inset, --sf-space-1/4 under the items', () => {
-  assert.match(bar, /--sf-scrollbar--inset-inline:\s*var\(--sf-space-1\\\/2\)/);
-  assert.match(bar, /--sf-scrollbar--gap-content:\s*var\(--sf-space-1\\\/4\)/);
-  assert.match(bar, /\.sf-scrollbar__track--horizontal\s*\{[^}]*inset-inline:\s*var\(--sf-scrollbar--inset-inline\)/);
-  assert.match(bar, /\.sf-scrollbar__thumb--horizontal::before\s*\{[^}]*inset-block:\s*auto var\(--sf-scrollbar--gap-edge\)/);
-  // The thumb runs along the track, not along the area.
-  assert.match(runtime, /const trackSize = trackLength > 0 \? trackLength : viewportSize;/);
-  assert.match(runtime, /const maxThumbOffset = Math\.max\(0, trackSize - thumbSize\);/);
-});
-
-test('SB-8: on a touch screen the sizes are the variables, so 4 in 8 wins over persistent, hover and drag', () => {
-  const coarse = bar.match(/@media \(pointer: coarse\)\s*\{([\s\S]*?)\n  \}/)[1];
-  assert.match(coarse, /\.sf-scrollbar\s*\{\s*--sf-scrollbar-hit-size:\s*var\(--sf-a8\);\s*--sf-scrollbar-rest-size:\s*var\(--sf-a4\);\s*--sf-scrollbar-active-size:\s*var\(--sf-a4\);/);
-  assert.doesNotMatch(coarse, /inline-size:\s*var\(--sf-a/);
 });
 
 test('the inverse place gives its text the other theme ink', () => {

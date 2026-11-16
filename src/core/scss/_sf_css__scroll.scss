@@ -2,10 +2,35 @@
 // https://simai.io
 
 // SCROLLBAR
-
-// Set scrollbar settings
-// @include layer-priority(base,default) {
-/* width */
+//
+// One bar everywhere (owner decision C210, 2026-11-15; research
+// ui-control control/research/2026-11-15-scrollbar-system.md, prototype
+// prototypes/scrollbar-system-study.html). It replaces C208 (1) and (3).
+//
+// - The look: a strip of 14 -- the gap to the content 4, the thumb 6, 4 to
+//   the area's edge -- a transparent track, round ends, the track's ends kept
+//   off the area's rounded corners.
+// - The colour, one rule for every bar: the boundary of the place the bar is
+//   in (--sf-outline, or the same role of a dark or coloured place); the
+//   pointer over it does not change it; a held thumb takes one quiet step,
+//   the place's secondary text (--sf-on-surface-variant), never its text.
+// - By default the bar shows while the area scrolls, while the pointer is at
+//   its strip, while the focus is inside and once when the area appears, and
+//   hides 1 s after the last of these; its room stays, so the text never
+//   moves. Modifiers: scrollbar-always, scrollbar-thin, scrollbar-flush,
+//   scrollbar-square, scrollbar-hidden.
+// - Motion: appears in 0.12 s, hides in 0.3 s, a thin bar grows 2 -> 6 and
+//   back in 0.15 s, the colour changes in 0.15 s; none under reduced motion.
+//
+// A native bar cannot do this: Chrome repaints ::-webkit-scrollbar only on
+// its own events, so it neither fades nor grows. The native bar therefore
+// stays as a transparent spacer -- it keeps the room on both axes from CSS
+// alone, so the first paint is the same with or without the script -- and
+// core/js/scrollbars.js lays a drawn track and thumb over that room (the way
+// sf-scrollbar always drew its thumb). A touch screen and forced colours keep
+// the system's own bar. The page's own bar is the one exception: nothing a
+// page paints reaches the window's scrollbar room, so the root keeps a native
+// thumb of the same look, shown at rest.
 @layer sf.base {
   html {
     scrollbar-gutter: auto;
@@ -24,96 +49,229 @@
   }
 
   * {
-    // --sf-scroll-bg-track: var(--sf-surface-overlay); - Р·Р°РјРµРЅРёР» РЅР° container С‚.Рє. РїСЂРё СЂР°Р·РЅС‹С… bg-primary,secondary Рё С‚Рґ СЃРєСЂРѕР»Р»Р±Р°СЂ РІРѕРѕР±С‰Рµ РЅРµ РІРёРґРµРЅ
-    --sf-scroll-bg-track: var(--sf-transparent);
-    // Every page's own scrollbar. The thumb was --sf-surface-1: 1.05:1 over the
-    // page and exactly 1.00:1 on a surface-1 panel, where it is not visible at
-    // all. The graphic role is opaque neutral-50/60 and clears 3:1 on every
-    // step of the surface ladder in both themes (measured 2026-10-22).
-    // C16: the thumb is the boundary role, --sf-outline (3:1 and above on every
-    // place, research 5.2), so a scrollbar on a coloured place or glass takes
-    // that place's boundary instead of a grey drawn on it.
-    --sf-scroll-bg-thumb: var(--sf-outline);
-    // C208 (1): one hover rule for every bar. At rest the thumb is the place's
-    // boundary, under the pointer and while it is dragged the place's text;
-    // the width does not change. Both are roles of the place the bar is in,
-    // so a bar on a coloured place, on the inverse or on glass follows it
-    // (C208 (2): no palette of the scrollbar's own).
-    --sf-scroll--thumb-hover: var(--sf-on-surface);
-    // C208 (3): the thickness does not follow the density or the phone --
-    // track 14, thumb 6 (the a/b ladders do not change with the density).
+    // The strip: the room the native bar keeps, 14 at every density and on
+    // the phone (the a/b ladders do not follow the density).
     --sf-scroll-bg-width: var(--sf-b4);
+    // The thumb, 6, and the two distances around it: to the content and to
+    // the area's edge (4 each). The drawn thumb is the strip less the two.
     --sf-scroll-thumb-size: var(--sf-a6);
     --sf-scroll-thumb-width: var(--sf-scroll-thumb-size);
     --sf-scroll-thumb-inset: var(--sf-a4);
-    // The two distances around the thumb (open owner question q-sb-gaps):
-    // content to bar and bar to the area's edge. One value each, so the
-    // answer is a change of two declarations; the track stays
-    // gap + thumb + gap (4 + 6 + 4 = 14 today).
     --sf-scroll--gap-content: var(--sf-scroll-thumb-inset);
     --sf-scroll--gap-edge: var(--sf-scroll-thumb-inset);
+    // The thumb as drawn at rest: the thumb itself; scrollbar-thin draws 2
+    // and grows to the thumb at the strip.
+    --sf-scroll--rest: var(--sf-scroll-thumb-size);
+    // The shortest thumb.
+    --sf-scroll--thumb-min: var(--sf-c2);
+    // Round ends (half the thumb at most); scrollbar-square draws none.
     --sf-scroll-radius: var(--sf-d6);
+    // The colours: the place's boundary, and its secondary text while held.
+    // Both are roles of the place the area stands in, so a bar on a
+    // coloured, inverse or glass place follows it.
+    --sf-scroll-bg-thumb: var(--sf-outline);
+    --sf-scroll--thumb-held: var(--sf-on-surface-variant);
+    --sf-scroll-bg-track: var(--sf-transparent);
+    // The motion of C210 (3): the hide is the system's normal duration; the
+    // appearance and the growth are the owner's 0.12 s and 0.15 s.
+    --sf-scroll--appear: 0.12s;
+    --sf-scroll--hide: var(--sf-duration-normal);
+    --sf-scroll--grow: 0.15s;
   }
 
-  ::-webkit-scrollbar {
-    width: var(--sf-scroll-bg-width);
-    height: var(--sf-scroll-bg-width);
+  // The modifiers (C210 (4), #q-sb-names); sf-scrollbar takes the same words
+  // in data-mode. They combine.
+  // scrollbar-always: shown at rest too -- tables, logs, code, long feeds.
+  // scrollbar-thin: 2, growing to 6 at the strip -- side navigation.
+  .scrollbar-thin {
+    --sf-scroll--rest: var(--sf-a2);
   }
 
-  ::-webkit-scrollbar-thumb {
-    min-height: var(--sf-scroll-thumb-size, var(--sf-scroll-thumb-width));
-    min-width: var(--sf-scroll-thumb-size, var(--sf-scroll-thumb-width));
-    border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
-    background-clip: padding-box;
-    border-radius: var(--sf-scroll-radius);
-    background-color: var(--sf-scroll-bg-thumb);
+  // scrollbar-flush: no gap to the edge -- an area with no frame at the
+  // window's or the panel's edge. The strip is the gap and the thumb.
+  .scrollbar-flush {
+    --sf-scroll--gap-edge: var(--sf-a0);
+    --sf-scroll-bg-width: calc(var(--sf-scroll--gap-content) + var(--sf-scroll-thumb-size));
   }
 
-  // The two distances around the thumb: the content side is the start of a
-  // vertical bar's track (its end in a right-to-left area, where the bar
-  // stands on the left) and the top of a horizontal one.
-  ::-webkit-scrollbar-thumb:vertical {
-    border-left-width: var(--sf-scroll--gap-content);
-    border-right-width: var(--sf-scroll--gap-edge);
+  // scrollbar-square: no rounding -- square areas, media.
+  .scrollbar-square {
+    --sf-scroll-radius: var(--sf-a0);
   }
 
-  ::-webkit-scrollbar-thumb:horizontal {
-    border-top-width: var(--sf-scroll--gap-content);
-    border-bottom-width: var(--sf-scroll--gap-edge);
+  // scrollbar-hidden: no bar at all -- rows of chips and tabs that have an
+  // edge fade or arrows. The area still scrolls by wheel, keys and touch.
+  .scrollbar-hidden {
+    scrollbar-width: none;
   }
 
-  :dir(rtl)::-webkit-scrollbar-thumb:vertical {
-    border-left-width: var(--sf-scroll--gap-edge);
-    border-right-width: var(--sf-scroll--gap-content);
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
   }
 
-  ::-webkit-scrollbar-thumb:hover,
-  ::-webkit-scrollbar-thumb:active {
-    background-color: var(--sf-scroll--thumb-hover);
+  // The native bar: the spacer that keeps the room. A pointer that cannot
+  // hover (a touch screen) and forced colours keep the system's bar.
+  @media not ((pointer: coarse) or (forced-colors: active)) {
+    ::-webkit-scrollbar {
+      width: var(--sf-scroll-bg-width);
+      height: var(--sf-scroll-bg-width);
+    }
+
+    ::-webkit-scrollbar-thumb,
+    ::-webkit-scrollbar-track,
+    ::-webkit-scrollbar-corner {
+      background: var(--sf-transparent);
+    }
+
+    // The page's own bar: nothing a page paints reaches the window's
+    // scrollbar room, so the root keeps a native thumb in the one look --
+    // 6 between the two gaps, round ends, the place's boundary, its
+    // secondary text while held -- shown at rest (it cannot fade).
+    html::-webkit-scrollbar-thumb {
+      border: var(--sf-scroll--gap-edge) solid var(--sf-transparent);
+      border-left-width: var(--sf-scroll--gap-content);
+      border-radius: var(--sf-scroll-radius);
+      background: var(--sf-scroll-bg-thumb) padding-box;
+    }
+
+    html::-webkit-scrollbar-thumb:horizontal {
+      border-left-width: var(--sf-scroll--gap-edge);
+      border-top-width: var(--sf-scroll--gap-content);
+    }
+
+    html:dir(rtl)::-webkit-scrollbar-thumb:vertical {
+      border-left-width: var(--sf-scroll--gap-edge);
+      border-right-width: var(--sf-scroll--gap-content);
+    }
+
+    html::-webkit-scrollbar-thumb:active {
+      background-color: var(--sf-scroll--thumb-held);
+    }
+
+    // Firefox reads no ::-webkit-scrollbar, only the standard properties: its
+    // thin bar keeps the room and the drawn bar lies over it. Behind the
+    // support query, because Chrome 121 and later drop every
+    // ::-webkit-scrollbar rule of an element with scrollbar-color or
+    // scrollbar-width set (SB-7).
+    @supports not selector(::-webkit-scrollbar) {
+      * {
+        scrollbar-color: var(--sf-transparent) var(--sf-transparent);
+        scrollbar-width: thin;
+      }
+
+      .scrollbar-hidden {
+        scrollbar-width: none;
+      }
+    }
   }
 
-  ::-webkit-scrollbar-corner {
-    background-color: var(--sf-transparent);
+  // The drawn bar (core/js/scrollbars.js): a track per axis laid over the
+  // room, beside the area in the page. The
+  // script writes its place, its length and the place's values it reads off
+  // the area (--sf-scroll--*); nothing here draws until it does.
+  .sf-scrollbar__track {
+    position: absolute;
+    z-index: 1;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-radius: var(--sf-scroll--radius, var(--sf-d6));
+    background: var(--sf-scroll--track, var(--sf-transparent));
+    opacity: 0;
+    pointer-events: none;
+    touch-action: none;
+    transition: opacity var(--sf-scroll--hide) var(--sf-ease-exit);
+    // The thumb is the room less the two gaps; at rest it is drawn at the
+    // area's rest size (scrollbar-thin: 2), never wider than the thumb.
+    --sf-scroll--size: calc(var(--sf-scroll--room) - var(--sf-scroll--gap) - var(--sf-scroll--edge));
+    --sf-scroll--rest-size: min(var(--sf-scroll--rest-at), var(--sf-scroll--size));
+    --sf-scroll--shown: var(--sf-scroll--rest-size);
   }
 
-
-  ::-webkit-scrollbar-track {
-    background-color: var(--sf-scroll-bg-track);
-    border: var(--sf-scroll-thumb-inset) solid var(--sf-transparent);
-    background-clip: padding-box;
-    border-radius: var(--sf-scroll-radius);
+  .sf-scrollbar__track[data-sf-scrollbar-on] {
+    opacity: 1;
+    pointer-events: auto;
+    transition-duration: var(--sf-scroll--appear);
+    transition-timing-function: var(--sf-ease-enter);
   }
 
-  // C208 (2), SB-3: Firefox reads no ::-webkit-scrollbar, only the standard
-  // properties; it gets the same thumb colour, the place's boundary, and its
-  // thin bar (Firefox has no exact width). Behind the support query, because
-  // Chrome 121 and later drop every ::-webkit-scrollbar rule of an element
-  // with scrollbar-color or scrollbar-width set (SB-7): Chrome and Safari keep
-  // the drawn 14 / 6 bar above.
-  @supports not selector(::-webkit-scrollbar) {
-    * {
-      scrollbar-color: var(--sf-scroll-bg-thumb) var(--sf-scroll-bg-track);
-      scrollbar-width: thin;
+  // An axis that does not scroll: kept in place (its box tells the other
+  // track where it stands) but neither drawn nor hit.
+  .sf-scrollbar__track[data-sf-scrollbar-off] {
+    visibility: hidden;
+  }
+
+  .sf-scrollbar__thumb {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    cursor: default;
+    will-change: transform;
+  }
+
+  .sf-scrollbar__track--vertical > .sf-scrollbar__thumb {
+    left: 0;
+    right: 0;
+  }
+
+  .sf-scrollbar__track--horizontal > .sf-scrollbar__thumb {
+    top: 0;
+    bottom: 0;
+  }
+
+  .sf-scrollbar__thumb::before {
+    position: absolute;
+    border-radius: min(var(--sf-scroll--radius, var(--sf-d6)), calc(var(--sf-scroll--size) / 2));
+    background-color: var(--sf-scroll--rest-colour);
+    content: "";
+    transition:
+      width var(--sf-scroll--grow) var(--sf-ease-move),
+      height var(--sf-scroll--grow) var(--sf-ease-move),
+      background-color var(--sf-scroll--grow) var(--sf-ease-move);
+  }
+
+  // The thumb sits --sf-scroll--edge from the area's edge: the right edge, or
+  // the left where the bar stands on the left (a right-to-left area).
+  .sf-scrollbar__track--vertical > .sf-scrollbar__thumb::before {
+    top: 0;
+    bottom: 0;
+    right: var(--sf-scroll--edge);
+    width: var(--sf-scroll--shown);
+  }
+
+  .sf-scrollbar__track--vertical[data-sf-scrollbar-side="left"] > .sf-scrollbar__thumb::before {
+    right: auto;
+    left: var(--sf-scroll--edge);
+  }
+
+  .sf-scrollbar__track--horizontal > .sf-scrollbar__thumb::before {
+    left: 0;
+    right: 0;
+    bottom: var(--sf-scroll--edge);
+    height: var(--sf-scroll--shown);
+  }
+
+  // A thin bar grows to the thumb at the strip and while held; the colour
+  // stays (C210 (2)): only a held thumb takes the quiet step.
+  .sf-scrollbar__track:hover,
+  .sf-scrollbar__track[data-sf-scrollbar-held] {
+    --sf-scroll--shown: var(--sf-scroll--size);
+  }
+
+  .sf-scrollbar__track[data-sf-scrollbar-held] > .sf-scrollbar__thumb::before {
+    background-color: var(--sf-scroll--held-colour);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-scrollbar__track,
+    .sf-scrollbar__thumb::before {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .sf-scrollbar__track {
+      display: none;
     }
   }
 }

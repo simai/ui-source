@@ -548,10 +548,12 @@
      squeeze it; above that the body and the footer decide the height. The
      column stretches to the body's height and its list scrolls inside, out of
      the flow (absolute), so 30 steps beside a short body leave the frame six
-     rows tall. The scroller is an sf-scrollbar in standard mode, the kit's
-     look of a native scroll area; the wizard keeps the current step in view
-     in it (afterRender), keyboard focus does the same natively. */
+     rows tall. The scroller is an sf-scrollbar with the Framework's one bar
+     (owner decision C210; it was the retired standard mode) and, as that
+     mode had, no edge fade; the wizard keeps the current step in view in it
+     (afterRender), keyboard focus does the same natively. */
   .sf-wizard--progress-column .sf-wizard-column {
+    --sf-scrollbar-fade-size: 0px;
     display: block;
     position: relative;
     flex: none;

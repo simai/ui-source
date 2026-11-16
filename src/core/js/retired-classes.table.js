@@ -1445,6 +1445,32 @@ export default {
         "scroll-slider-width": null,
         "scroll-backdrop-width": null
       }
+    },
+    {
+      "journal": "utility-c210-scrollbar-retired-sheets",
+      "decision": "C210 (5)",
+      "component": "utility",
+      "since": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "note": "One bar everywhere: it hides 1 s after it stops by itself, keeps its room, takes the place's boundary and rounds its ends. scroll-hover is the default now (remove it); scroll-subtle, the track colours scroll-bg-<colour> and the track and thumb roundings scroll-bg-radius-1 ... 4, scroll-radius-1 ... 4 and scroll-thumb-radius-1 ... 4 leave (remove them; a square bar is scrollbar-square). The modifiers are scrollbar-always, scrollbar-thin, scrollbar-flush, scrollbar-square, scrollbar-hidden.",
+      "sheets": {
+        "scroll-hover": null,
+        "scroll-subtle": null,
+        "scroll-backdrop-color": null,
+        "scroll-backdrop-radius": null,
+        "scroll-slider-radius": null
+      }
+    },
+    {
+      "journal": "class-c210-scrollbar-class",
+      "decision": "C210 (5)",
+      "component": "scrollbar",
+      "since": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "note": "The legacy .scrollbar class (an 8 strip, named in no document) leaves: every scrolling area has the one bar without a class.",
+      "names": {
+        "scrollbar": null
+      }
     }
   ],
   "extended": {
