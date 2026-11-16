@@ -150,12 +150,21 @@ cart.addEventListener('sf-input-quantity-remove', (event) => {
 });
 ```
 
+## Вид
+
+Поле с заливкой и без рамки, как остальные поля формы с заливкой
+(`sf-input--filled`): заливка контейнера и нижняя линия; при наведении заливка
+темнее и рамка цветом текста, пока вводят — рамка обычного поля без заливки
+(решение владельца C224, 1.10.0). Поле с рамкой — класс `sf-quantity--bordered`
+на корне (`root-class="sf-quantity--bordered"`), как у `sf-input`.
+
 ## Атрибуты
 
 - `label` — подпись над полем, она же его имя; слот `label` — разметкой.
 - `hint` — подсказка под полем; слот `hint` — разметкой.
-- `error`, `invalid`, `error-message` — ошибка: рамка и текст красятся в цвет
-  ошибки, текст ошибки встаёт вместо подсказки; слот `error` — разметкой.
+- `error`, `invalid`, `error-message` — ошибка: поле заливается тоном ошибки
+  (с рамкой — `sf-quantity--bordered` — красится рамка), текст ошибки встаёт
+  вместо подсказки цветом ошибки; слот `error` — разметкой.
   Метод `setError('…')` делает то же из кода, `setError()` снимает ошибку.
 - `required` — пустое поле не даст отправить форму.
 - `disabled` — поле видно, но не меняется и не отправляется.
@@ -215,8 +224,8 @@ cart.addEventListener('sf-input-quantity-remove', (event) => {
 
 | Переменная | Что задаёт | По умолчанию |
 |:---|:---|:---|
-| `--sf-quantity-background-color` | Заливка поля в покое; у ошибки — своя. | `var(--sf-transparent)` |
-| `--sf-quantity-border-color` | Цвет рамки в покое; у наведения, нажатия, ошибки и недоступного поля — свой. | `var(--sf-outline)` |
+| `--sf-quantity-background-color` | Заливка поля в покое; у наведения, ошибки и недоступного поля — своя. | `var(--sf-surface-container)` (с рамкой — `var(--sf-transparent)`) |
+| `--sf-quantity-border-color` | Цвет рамки в покое (у поля с заливкой — и нижней линии); у наведения, нажатия, ошибки и недоступного поля — свой. | у поля с заливкой рамки нет, нижняя линия `var(--sf-outline)`; с рамкой — `var(--sf-outline)` |
 | `--sf-quantity-border-width` | Толщина рамки со всех сторон. | `var(--sf-px)` |
 | `--sf-quantity-radius` | Скругление углов поля. | `var(--sf-radius--ui)` |
 | `--sf-quantity-color` | Цвет числа; у недоступного поля — свой. | `var(--sf-on-surface)` |
@@ -224,7 +233,7 @@ cart.addEventListener('sf-input-quantity-remove', (event) => {
 | `--sf-quantity-padding-block` | Отступ внутри поля сверху и снизу. | `calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px))`; зависит от размера |
 | `--sf-quantity-gap` | Промежуток между кнопками и числом; у самого места числа отступ `--sf-space-1/4` с каждой стороны. | `0` |
 | `--sf-quantity-stepper-radius` | Скругление углов «−» и «+». | `var(--sf-radius-1\/2)` |
-| `--sf-quantity-invalid-border-color` | Рамка поля в состоянии ошибки. | `var(--sf-error)` |
+| `--sf-quantity-invalid-border-color` | Рамка поля с рамкой (`sf-quantity--bordered`) в состоянии ошибки. | `var(--sf-error)` |
 
 ```css
 .order-form .sf-quantity {

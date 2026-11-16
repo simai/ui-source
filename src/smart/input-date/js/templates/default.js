@@ -269,7 +269,9 @@ function renderTime(context) {
 function renderDatepickerPanel(context) {
     const rootClasses = joinClasses('sf-datepicker inline-flex', context.input ? '' : 'sf-datepicker--inline',
         context.presetItems.length ? 'sf-datepicker--presets' : '',
-        context.mode !== 'date' ? `sf-datepicker--${context.mode}` : '', context.rootClass);
+        context.mode !== 'date' ? `sf-datepicker--${context.mode}` : '',
+        // A period's popup (C227): its days keep the control height on a phone.
+        context.range ? 'sf-datepicker--range' : '', context.rootClass);
 
     if (context.mode === 'time') {
         return html`

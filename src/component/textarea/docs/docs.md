@@ -37,6 +37,11 @@ value set from code, on form reset and on a width change, and waits for an IME
 composition to end. An auto-growing field is not resizable by hand, and Enter
 stays a newline.
 
+An empty growing field keeps its first height -- one row, or `data-min-rows` --
+whatever its placeholder: the placeholder stands on one line and ends in «…», and
+the field grows only from typed text, so it does not jump at the first letter
+(1.8.0, owner decision C225).
+
 ## Flush
 
 `sf-textarea--flush` is the field inside a composite control -- a chat composer,

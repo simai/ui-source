@@ -335,6 +335,28 @@
   resize: none;
 }
 
+/* C225 (owner 2026-11-16; prototypes/forms-textarea-study.html
+   #q-ta-grow-placeholder): an empty growing field keeps its first height --
+   one row, or min-rows -- whatever its placeholder. field-sizing measured the
+   placeholder as text, so «Напишите сообщение для команды» in a narrow phone
+   field made it two rows (56 beside a 36 button) and the first letter took it
+   back to one. The placeholder stands on one line and ends in «…»; the field
+   grows only from typed text. The cap is the min-rows height itself. The
+   ellipsis needs the line rules on the empty field as well as on its
+   ::placeholder: Chrome draws «…» only with both (one alone clips). */
+.sf-textarea.sf-textarea--auto-grow textarea[rows]:placeholder-shown {
+  max-block-size: calc(var(--sf-textarea--min-rows, 1) * var(--sf-textarea--line) + var(--sf-textarea--row-frame));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sf-textarea.sf-textarea--auto-grow textarea[rows]::placeholder {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sf-textarea:has(textarea:disabled) textarea::placeholder {
   --sf-textarea-placeholder--color: var(--sf-on-surface-disabled);
 }

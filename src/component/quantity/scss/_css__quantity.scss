@@ -87,6 +87,9 @@
   background-color: var(--sf-quantity-wrap--background-color);
   border: var(--sf-quantity-wrap--border);
   border-color: var(--sf-quantity-wrap--border-color, transparent);
+  /* The filled look's bottom line (C52, C224): the bordered look has none of
+     its own, so the line is the border. */
+  border-block-end-color: var(--sf-quantity-wrap--line-color, var(--sf-quantity-wrap--border-color, transparent));
   border-end-end-radius: var(--sf-quantity-wrap--border-end-end-radius);
   border-end-start-radius: var(--sf-quantity-wrap--border-end-start-radius);
   border-start-end-radius: var(--sf-quantity-wrap--border-start-end-radius);
@@ -730,4 +733,71 @@
 
 .sf-quantity:has(input:disabled) .sf-quantity-text {
   --sf-quantity-text--color: var(--sf-on-surface-disabled);
+}
+
+/* The look (owner decision C224, 2026-11-16; prototypes/forms-quantity-study.html
+   #q-qty-filled): a plain sf-quantity looks as the Smart quantity field and
+   the other fields of a form do -- filled, no border: sf-input--filled's and
+   sf-textarea--filled's box (C52, C113). The bordered box stays a choice by
+   the same name as sf-input's, sf-quantity--bordered (sf-quantity--filled
+   names the default). The public variables keep their meaning:
+   --sf-quantity-background-color is the fill, --sf-quantity-border-color the
+   edge and the bottom line. Read-only (QT-08), the focus edge and the
+   steppers are the same in both looks. */
+@layer sf.components {
+  /* The place's dim ink, kept above the box, which re-declares it as the ink
+     on a fill: the placeholder stays the place's dim ink, as sf-input's. */
+  .sf-quantity:not(.sf-quantity--bordered) {
+    --sf-quantity--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+  }
+
+  .sf-quantity:not(.sf-quantity--bordered):not(.error) .sf-quantity-wrap input:enabled::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-quantity--place-variant);
+  }
+
+  /* At rest: the container fill, a transparent edge a state colours, the
+     bottom line in --sf-outline. */
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:read-only)) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    --sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-transparent-for-focus));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-border-color, var(--sf-outline));
+  }
+
+  /* While someone types in it, the ordinary field: no fill and the region's
+     line for its edge. Lighter than the hover rule, so hover still colours
+     the edge; later than the rest, as specific. */
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:not(:read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-outline);
+  }
+
+  /* Under the pointer the hover step of the fill, the dim ink made for a fill
+     and the edge in one colour (C113, C153 (4)). */
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-surface-container-hover);
+    --sf-quantity--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+  }
+
+  /* Disabled: the disabled fill and no edge, as sf-input--filled. */
+  .sf-quantity:not(.sf-quantity--bordered):has(input:disabled) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-surface-disabled);
+    --sf-quantity-wrap--border-color: var(--sf-transparent-for-focus);
+  }
+
+  /* Invalid: the error container fill, as sf-input--filled and
+     sf-textarea--filled; the message under the box takes the error colour. */
+  .sf-quantity.error:not(.sf-quantity--bordered) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-error-container);
+    --sf-quantity-wrap--border-color: var(--sf-transparent-for-focus);
+  }
 }

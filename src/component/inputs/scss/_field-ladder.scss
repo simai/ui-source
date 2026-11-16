@@ -10,7 +10,12 @@
 //   size     1/3   1/2   1     2     3
 //   height   28    32    40    48    56     (--sf-ui-<S>--control-height, desktop)
 //   value    1/3   1/2   1     2     3      (--sf-text-size / -height-<S>)
-//   label    1/4   1/3   1/2   1     2      (help and error lines too)
+//   label    1/3   1/3   1/2   1     2      (help and error lines too)
+//
+// The label is a step below the value but never below 12 px (owner decision
+// C226, refining C153 (1)): at 1/3 the step below, 1/4, is 10, so the label
+// stays on 1/3 -- 12 on every ladder (desktop, phone, compact), the same 12
+// the compact and phone 1/2 field already gave it. One field, one label.
 //
 // sf-input wrote the outer steps first (inputs/scss/_css__custom.scss); the
 // other fields drew 1/3 and 3 at the neighbouring kept size (32 / 48) or at
@@ -29,9 +34,23 @@ $-below: ('1/3': '1/4', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2');
   @return map.get($-escaped, $size);
 }
 
-// The step a label, a help line or an error line stands on.
+// The step below the size: the label's, unless that is under the floor.
 @function below($size) {
   @return map.get($-below, $size);
+}
+
+// The lowest step a label, a help line or an error line stands on (C226):
+// 1/3, the 12 px text on every ladder. 1/4 (10) is never a label.
+$label-floor: '1/3';
+
+// The step a label, a help line or an error line stands on: a step below the
+// value, at least $label-floor.
+@function label-step($size) {
+  $step: below($size);
+  @if $step == '1/4' {
+    @return $label-floor;
+  }
+  @return $step;
 }
 
 // `--sf-ui-<S>--<part>` of the size: control-height, space-x, text-space-x,
@@ -53,11 +72,11 @@ $-below: ('1/3': '1/4', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2');
 }
 
 @function label-size($size) {
-  @return text-size(below($size));
+  @return text-size(label-step($size));
 }
 
 @function label-height($size) {
-  @return text-height(below($size));
+  @return text-height(label-step($size));
 }
 
 // A field's pictures (C151 (1)): the icon of the step is its value's text
