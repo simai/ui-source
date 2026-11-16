@@ -75,6 +75,7 @@
     "value-missing": "Choose an image.",
     "wait-for-upload": "Wait until the image is uploaded",
     "zoom-in": "Zoom in",
-    "zoom-out": "Zoom out"
+    "zoom-out": "Zoom out",
+    "help": "More about: {label}"
   }
 }

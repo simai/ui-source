@@ -1,12 +1,14 @@
 import {html, nothing} from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 
 // The buttons are one rung below the field, as a field's own trailing controls
-// are: a size 1 field (a 40px control row) carries size 1/2 buttons.
-const BUTTON_SIZE = {'1/2': '1/3', '1': '1/2', '2': '1'};
+// are: a size 1 field (a 40px control row) carries size 1/2 buttons. 1/3 has
+// no rung below it: its buttons are the ladder's smallest, 1/3.
+const BUTTON_SIZE = {'1/3': '1/3', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2'};
 // The ring over a thumbnail is the smallest; over a preview one rung up.
 const RING_SIZE = {row: '1/2', preview: '1'};
 // The inner fields (description, address) are the field's own size, at most 1.
-const INNER_SIZE = {'1/2': '1/2', '1': '1', '2': '1'};
+const INNER_SIZE = {'1/3': '1/3', '1/2': '1/2', '1': '1', '2': '1', '3': '1'};
 
 // What stands in the thumbnail when there is no picture to show: an invitation
 // while the field is empty, a broken image when the address did not load, and
@@ -345,6 +347,7 @@ export function renderImageFieldTemplate(context) {
           <span class="sf-image-field-label" id=${labelId}>
             <span class="sf-image-field-label-text">${context.label}</span>
             ${field.required ? html`<span class="sf-image-field-required">*</span>` : nothing}
+            ${renderFieldHelp({help: context.help, label: context.label, size: context.size, className: 'sf-image-field-help', component})}
           </span>`
         : nothing}
 

@@ -1625,6 +1625,7 @@
         "uses": [
           "smart.button",
           "smart.button-icon",
+          "smart.help-mark",
           "smart.icon",
           "smart.input",
           "smart.menu-context",
@@ -1642,7 +1643,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-image/smart.manifest.json",
-      "manifest_sha256": "1e636078bf8449818d83a7acf1b4fe31eaad0e16512a08ca7c45ede22f35841b",
+      "manifest_sha256": "3a5d6d00788162c4c265ccd9b98b2bacb676af283a81b4a3f7679ad24c65a1f3",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
