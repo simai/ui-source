@@ -29,15 +29,10 @@ a real destination or action.
   `data-sf-loaded="error"` (sf-avatar sets both, C152 (2)). Initials are in the
   medium weight;
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
-  `.sf-avatar-card`; the label group's heading and text wrap, a word longer
-  than the line included (1.10.1, register RG-S1-24): a printed name is read
-  whole (owner decision C152 (7));
+  `.sf-avatar-card`;
 - state: online indicator (`.sf-online-indicator--online`), away
   (`.sf-online-indicator--away`, a hollow ring of the place's dim ink, owner
-  decision C152 (5); sf-avatar draws no point for offline, and the class
-  `.sf-online-indicator--offline` is retired: written by hand it keeps drawing
-  the point below until 2027-01-01 and the Loader notes it in SF.deprecations;
-  remove the span and keep «не в сети» in the avatar's name), and
+  decision C152 (5); sf-avatar draws no point for offline), and
   company/verification badge. The
   indicator's coloured disc is the small step of the avatar's size, 6 / 6 / 8 /
   12 / 12 / 16 px at 1/4 to 3, the same as the anchored badge's dot, and its
@@ -49,24 +44,12 @@ a real destination or action.
   class="sf-dot sf-dot--success"><span class="sf-dot-item"></span></span></span>`, away
   `sf-dot sf-dot--hollow sf-dot--neutral`; the dot draws the disc, the indicator places it and cuts
   it out. An indicator without the `.sf-dot` still draws its own disc. The
-  offline dot is the dim ink of the place the avatar stands on
-  (`--sf-on-surface-variant`), at least 3:1 against the place and the avatar
-  (since 2026-11-11; the disabled ink it had before was under 3:1). The dot
-  lies over the nearest opaque place (`--sf-surface-place-ground`), so a
+  point lies over the nearest opaque place (`--sf-surface-place-ground`), so a
   photo or the initials do not show through it, and on a soft coloured place
-  (`bg-<colour>-container`) the dot is that place's colour, opaque.
+  (`bg-<colour>-container`) the point is that place's colour, opaque.
   On a row with a fill (selected, open or hovered: core mix `sf-place-fill`)
-  the dot's ring lays the row's fill (`--sf-surface-place-fill`) over the place
-  colour, so the ring is the row's colour, as the anchored badge's ring is.
-  Its two layers are public variables: `--sf-avatar-offline-background-color`
-  (default `var(--sf-on-surface-variant)`) and `--sf-avatar-offline-overlay`
-  (default `none`, a layer over the colour). For a dot of your own colour set
-  the first: `--sf-avatar-offline-background-color: #e53935`;
-
-  and 1, 16 px at 2 and 3, on every screen. The point lies over the nearest
-  opaque place (`--sf-surface-place-ground`), so a photo or the initials do not
-  show through it. On a row with a fill (selected, open or hovered: core mix
-  `sf-place-fill`) the point's ring lays the row's fill over the place colour.
+  the point's ring lays the row's fill (`--sf-surface-place-fill`) over the
+  place colour, so the ring is the row's colour, as the anchored badge's ring is.
   Offline draws no point (1.11.0, owner decisions C152 (5), C185 (8)): say it
   in the avatar's name. `.sf-online-indicator--offline` draws nothing until
   2027-01-01 and is noted in SF.deprecations; its two variables,
@@ -84,9 +67,6 @@ a real destination or action.
   to size 1 and 8 at 2 and 3 (1.11.0, C152 (6)); the overlap modifiers
   `--size-1/4`, `-1/3`, `-1/2` (and `xs`, `sm`, `md`) draw what they drew
   until 2027-01-01 and are noted in SF.deprecations;
-
-  the first: `--sf-avatar-offline-background-color: #e53935`. Both leave
-  with the retired class after 2027-01-01;
 - hue, on initials only: `.sf-avatar--text.sf-hue-<name>`, where name is a
   hue of the static palette (`red`, `orange`, `amber`, `yellow`, `lime`,
   `green`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`,
