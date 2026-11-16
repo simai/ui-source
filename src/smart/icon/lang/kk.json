@@ -1,6 +1,9 @@
 {
   "runtime": {
-    "count": "{count} оқылмаған",
+    "count": {
+      "one": "{count} оқылмаған",
+      "other": "{count} оқылмаған"
+    },
     "dot": "жаңасы бар"
   }
 }

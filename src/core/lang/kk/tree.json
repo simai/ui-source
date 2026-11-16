@@ -1,0 +1,28 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 6,
+    "translated": 6,
+    "share": 100
+  },
+  "words": {
+    "sf-tree": {
+      "loading": "Жүктелуде…",
+      "load-error": "Жүктеу мүмкін болмады",
+      "retry": "Қайталау",
+      "hidden": "жасырын"
+    },
+    "sf-tree-item": {
+      "open-label": "Ашу",
+      "close-label": "Жию"
+    }
+  }
+}

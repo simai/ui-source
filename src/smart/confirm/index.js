@@ -47,6 +47,17 @@ const ConfirmSurface = confirmSurface(ConfirmElement, {
     answerId: "confirmId",
 });
 
+
+// The label «Чтобы подтвердить, введите DELETE»: the text before and after
+// {name} in the word, the name drawn between them. A word without {name} (a
+// product's word from before 1.4.0) is followed by the name, as it was.
+export function requireParts(word) {
+    const text = String(word ?? "");
+    const at = text.indexOf("{name}");
+    if (at < 0) return {before: `${text.trim()} `, after: ""};
+    return {before: text.slice(0, at), after: text.slice(at + "{name}".length)};
+}
+
 class SfConfirm extends ConfirmSurface {
     static get props() {
         return {
@@ -111,7 +122,11 @@ class SfConfirm extends ConfirmSurface {
             hasOptions: this.appearance === "window" && this.hasSlotContent("options"),
             optionsContent: this.appearance === "window" && this.hasSlotContent("options") ? this.getSlotContent("options") : null,
             require: this.requiredName,
-            requireText: this.sfWord("require-text"),
+            // One phrase with the name in it ({name}): the label draws the name
+            // as code where the phrase says it (C177 follow-up), the field's
+            // name is the same phrase as text.
+            requireText: this.sfWord("require-text", {vars: {name: this.requiredName}}),
+            requireParts: requireParts(this.sfWord("require-text")),
             requireError: this.sfWord("require-error", {vars: {name: this.requiredName}}),
             requireInvalid: this._requireShown,
         };

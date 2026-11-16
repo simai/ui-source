@@ -146,15 +146,17 @@ const last = (context, component) => (context.canJumpToLast
   : nothing);
 
 // field: |‹ ‹ [3] из 12 › ›|. «из 12» only for an exact count; an estimate
-// reads «из ~23», and no count says nothing after the field.
+// reads «из ~23», and no count says nothing after the field. The word
+// of-pages places the field ({page}): the text before it and after it.
 function renderField(context, component) {
   return html`
     <ol class="sf-pagination-list flex items-cross-center">
       ${first(context, component)}
       ${previous(context, component)}
       <li class="sf-pagination-item sf-pagination-item-field flex items-cross-center">
+        ${context.ofPages?.before ? html`<span class="sf-pagination-of" aria-hidden="true">${context.ofPages.before}</span>` : nothing}
         ${renderPageField(context, component)}
-        ${context.ofPages ? html`<span class="sf-pagination-of" aria-hidden="true">${context.ofPages}</span>` : nothing}
+        ${context.ofPages?.after ? html`<span class="sf-pagination-of" aria-hidden="true">${context.ofPages.after}</span>` : nothing}
       </li>
       ${next(context, component)}
       ${last(context, component)}

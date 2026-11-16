@@ -47,7 +47,7 @@ const words = (self, file = ru) => (key, {vars = {}} = {}) => String(file.runtim
 const show = (places) => places.map((place) => (place === 'gap' ? '…' : place)).join(' ');
 
 test('C97 point 1: five appearances, field the default; no appearance is the compatible footer', () => {
-  assert.equal(component.version, '1.7.0');
+  assert.equal(component.version, '1.8.0'); // 1.8.0: of-pages says {page} (C177 follow-up #86)
   assert.deepEqual(component.settings.appearance.values, ['field', 'numbers', 'arrows', 'cursor', 'more']);
   assert.equal(component.settings.appearance.default, 'field');
   assert.match(source, /get footer\(\) \{\s*return !this\.hasAttribute\("appearance"\);/u);
@@ -113,10 +113,12 @@ test('C97 point 4: the ends are disabled, not removed, in every appearance', () 
 });
 
 test('C97 field: «из 12» after the field, «из ~23» for an estimate, nothing without a count', () => {
-  assert.equal(ru.runtime['of-pages'], 'из {count}');
-  assert.equal(en.runtime['of-pages'], 'of {count}');
-  assert.match(source, /ofPages: this\.countKnown\s*\? this\.sfWord\("of-pages", \{vars: \{count: this\.totalExact \? this\.pageCount : `~\$\{this\.pageCount\}`\}\}\)\s*: "",/u);
-  assert.match(markup, /context\.ofPages \? html`<span class="sf-pagination-of" aria-hidden="true">\$\{context\.ofPages\}<\/span>`/u);
+  // C177 follow-up: one word with the field's place in it, {page}.
+  assert.equal(ru.runtime['of-pages'], '{page} из {count}');
+  assert.equal(en.runtime['of-pages'], '{page} of {count}');
+  assert.match(source, /ofPages: this\.countKnown\s*\? ofPagesParts\(this\.sfWord\("of-pages", \{vars: \{count: this\.totalExact \? this\.pageCount : `~\$\{this\.pageCount\}`\}\}\)\)\s*: null,/u);
+  assert.match(markup, /context\.ofPages\?\.before \? html`<span class="sf-pagination-of" aria-hidden="true">\$\{context\.ofPages\.before\}<\/span>`/u);
+  assert.match(markup, /context\.ofPages\?\.after \? html`<span class="sf-pagination-of" aria-hidden="true">\$\{context\.ofPages\.after\}<\/span>`/u);
 });
 
 test('C97 arrows and cursor: «Назад · Страница 3 · Далее», «В начало · Дальше», never a last page', () => {

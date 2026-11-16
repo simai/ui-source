@@ -37,7 +37,7 @@ test('(1) the frame reset is a field action named by the variant', () => {
 
 test('(2) the field layer rules are loaded and the frame says its step', () => {
   const manifest = json('src/smart/input-color/component.json');
-  assert.equal(manifest.version, '1.15.0'); // C209 (fix/input-color-c209), above group build 7's 1.14.0
+  assert.equal(manifest.version, '1.17.1'); // C209 (fix/input-color-c209), above group build 7's 1.14.0
   assert.ok(manifest.relations.some((relation) => relation.name === 'inputs'), 'relation inputs');
   assert.match(read('src/smart/input-color/rule.js'), /\{ name: 'inputs' \}/u);
   assert.ok(json('src/smart/input-color/smart.manifest.json').composition.uses.includes('component.inputs'));

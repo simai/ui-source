@@ -21,10 +21,13 @@ import {pageLocale, pageText} from '../../../core/js/page-language.js';
 // one place for every language, as the Smart components keep them.
 import LANG_WORDS from '../lang/index.mjs';
 
-// The words, by language. A count is one phrase per plural form, separated by
-// «|» in the order of CLDR's categories -- one|few|many|other in Russian,
-// one|other in English -- with {count} where the number goes. A product adds a
-// language with SF.language.register('sf-badge', code, {count, dot}).
+// The words, by language. A count is a plural word, one phrase per plural
+// category of the language as Intl.PluralRules names them ({one, few, many,
+// other} in Russian, {one, other} in English and Kazakh), with {count} where
+// the number goes: the form every language file and pack uses (C177). A
+// product adds a language with SF.language.register('sf-badge', code,
+// {count, dot}); a count written as «a|b|c» (an author's label, a product's
+// word from before) still reads in the order of the categories.
 export const ANCHORED_BADGE_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 export const ANCHORED_BADGE_COMPONENT = 'sf-badge';
@@ -55,11 +58,22 @@ export function badgeFlag(value) {
 }
 
 /**
- * The form of `forms` ("a|b|c") for `count` in `locale`. One form is used for
- * every number; with several, the n-th form answers the n-th plural category
- * the language has, and a category past the last form takes the last one.
+ * The form of `forms` for `count` in `locale`. A plural word
+ * ({one, few, many, other}) answers the category Intl.PluralRules gives,
+ * else its `other`. A string "a|b|c": one form is used for every number; with
+ * several, the n-th form answers the n-th plural category the language has,
+ * and a category past the last form takes the last one.
  */
 export function pluralForm(forms, count, locale = 'en') {
+    if (forms && typeof forms === 'object') {
+        let category = 'other';
+        try {
+            category = new Intl.PluralRules(locale).select(count);
+        } catch {
+            category = 'other';
+        }
+        return String(forms[category] ?? forms.other ?? '');
+    }
     const list = String(forms ?? '').split('|');
     if (list.length === 1) return list[0];
     try {

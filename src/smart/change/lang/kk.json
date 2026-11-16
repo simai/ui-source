@@ -1,6 +1,7 @@
 {
   "runtime": {
     "empty-text": "бос",
+    "change-text": "бұрын {before}, енді {after}",
     "label-separator": ":",
     "show-text": "Өзгерістерді көрсету",
     "hide-text": "Өзгерістерді жасыру",

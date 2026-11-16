@@ -2,7 +2,7 @@
   "title": "Change",
   "runtime": {
     "empty-text": "empty",
-    "to-text": "to",
+    "change-text": "was {before}, now {after}",
     "label-separator": ":",
     "show-text": "Show changes",
     "hide-text": "Hide changes",

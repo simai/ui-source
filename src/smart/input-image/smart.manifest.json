@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-image",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "title": "Image field",
   "summary": "A form field for one image: a row (thumbnail, name and size, the buttons) or a preview (the picture in its frame, the row under it); a file chosen, dropped or pasted, or a picture from the page's library or an address; the upload core's checks with the reason under the field; the description and «Декоративная» inside the field, the frame and the focal point in a window over the page; label, help, error, required, disabled and read-only as every field has them. It raises the chosen File, or sends it through the page's uploader.",
   "kind": "smart",
@@ -755,7 +755,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-image/index.js",
-        "sha256": "8f17423c0ee48bdb98a82b3e8f154a710e500a7e52f461f00d1fc6cee591eb2f"
+        "sha256": "e0cf27c3894c47c8e79d70b2d6f3e36e3efd9a08c1f0fabe2c31a3cff5ca7ada"
       },
       {
         "path": "src/smart/input-image/value.mjs",

@@ -1,0 +1,36 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 16,
+    "translated": 16,
+    "share": 100
+  },
+  "words": {
+    "sf-pager": {
+      "label": "Көрші беттер",
+      "prev": "Артқа",
+      "next": "Әрі қарай",
+      "done": "Дайын",
+      "step": "Қадам {n} / {count}",
+      "lesson": "Сабақ {n} / {count}",
+      "position": "{n} / {count}",
+      "next-lesson": "Келесі сабақ",
+      "last-lesson": "Соңғы сабақ",
+      "start": "Бастау",
+      "finished": "Курс аяқталды",
+      "restart": "Басынан бастау",
+      "prev-item": "Алдыңғы жазба",
+      "next-item": "Келесі жазба",
+      "position-many": "{n} / көп",
+      "to-list": "Тізімге"
+    }
+  }
+}

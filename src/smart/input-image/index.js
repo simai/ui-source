@@ -65,8 +65,8 @@ const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
 
 // Every word this component says is lang/<locale>.json runtime (standard
-// 1.3.8 §11). `quoted` wraps a file name the way the language quotes: «…» in
-// Russian, “…” in English.
+// 1.3.8 §11). A word that names a file says where the name goes and how the
+// language quotes it: «{name}» in Russian, “{name}” in English.
 const WORD_KEYS = Object.keys(en.runtime).filter((key) => typeof en.runtime[key] === 'string');
 const camel = (key) => key.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
 const kebab = (key) => key.replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
@@ -385,8 +385,10 @@ class SfImageField extends FormField(ImageFieldElement) {
     return this.sfWord(kebab(key));
   }
 
-  quote(name) {
-    return this.text('quoted').replace('%s', name);
+  // A word that names the file: the name has its place in the word ({name},
+  // quotes and all), so a language may put it first (C177 follow-up).
+  fileWord(key, name) {
+    return this.sfWord(key, {vars: {name}});
   }
 
   // A size as people read it, in the page's language: «2 КБ», «1,4 МБ». Text
@@ -552,7 +554,7 @@ class SfImageField extends FormField(ImageFieldElement) {
     this._missingShown = false;
     this._urlOpen = false;
     this._editor = null;
-    this.announce(`${this.text('chosen')} ${this.quote(file.name)}`);
+    this.announce(this.fileWord('chosen-file', file.name));
     this.requestComponentUpdate('value');
     this._emitValue({value, file, source});
     this.sfEmit('attach', {files: [file], file, source, value, name: this.name});
@@ -1172,11 +1174,11 @@ class SfImageField extends FormField(ImageFieldElement) {
       names: {
         group: this.label || this.ariaLabel || words.group,
         choose: words.chooseName,
-        replace: fileName ? `${words.replaceName} ${this.quote(fileName)}` : words.replaceName,
-        remove: fileName ? `${words.removeName} ${this.quote(fileName)}` : words.removeName,
-        edit: fileName ? `${words.editName} ${this.quote(fileName)}` : words.editName,
-        cancel: fileName ? `${words.cancelUploadName} ${this.quote(fileName)}` : words.cancelUploadName,
-        retry: fileName ? `${words.retryName} ${this.quote(fileName)}` : words.retryName,
+        replace: fileName ? this.fileWord('replace-file', fileName) : words.replaceName,
+        remove: fileName ? this.fileWord('remove-file', fileName) : words.removeName,
+        edit: fileName ? this.fileWord('edit-file', fileName) : words.editName,
+        cancel: fileName ? this.fileWord('cancel-upload-file', fileName) : words.cancelUploadName,
+        retry: fileName ? this.fileWord('retry-file', fileName) : words.retryName,
         upload: this.sfWord('upload-name', {vars: {name: fileName || words.group}}),
       },
       rootClass: this.getRootClass(),

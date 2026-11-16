@@ -176,10 +176,19 @@ function syncFileUploadInteraction(root) {
     const currentLabel = button.getAttribute('aria-label');
     if (!button.hasAttribute('aria-labelledby') && (!currentLabel || currentLabel === previous.label)) {
       const name = button.closest('.sf-upload-progress')?.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
-      const word = button.dataset.action === 'retry'
-        ? button.textContent.trim() || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
+      // The name has its place in the word ({name}, remove-name / retry-name),
+      // so a language that puts it first can (C177 follow-up). A retry button
+      // the author wrote another word on keeps that word before the name.
+      const retry = button.dataset.action === 'retry';
+      const word = retry
+        ? pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
         : pageText(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload');
-      const label = `${word} ${name}`.trim();
+      const named = retry
+        ? pageText(FILE_UPLOAD_ITEM_TEXT, 'retry-name', root, 'sf-file-upload')
+        : pageText(FILE_UPLOAD_ITEM_TEXT, 'remove-name', root, 'sf-file-upload');
+      const text = retry ? button.textContent.trim() : '';
+      const own = text && text !== word ? text : '';
+      const label = own ? `${own} ${name}`.trim() : name ? named.replace('{name}', name) : word;
       if (currentLabel !== label) button.setAttribute('aria-label', label);
       previous.label = label;
     }

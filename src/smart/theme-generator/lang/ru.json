@@ -13,7 +13,6 @@
     "chroma": "Насыщенность",
     "chroma-hint": "От 0 до 150",
     "color": "Основной цвет",
-    "decimal": ",",
     "hue": "Тон",
     "hue-hint": "От 0 до 360",
     "inherited": "цвет SIMAI Framework",
