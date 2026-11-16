@@ -13764,6 +13764,43 @@
       "manual": "Remove the class: the bar takes the place's colours and the one thickness by itself. A quieter bar is scroll-subtle; a bar shown only while the pointer is over the area is scroll-hover.",
       "owner": "ui-source",
       "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
+    },
+    {
+      "id": "attribute-spinner-dots-settings-retired",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-spinner's dots, filled and direction are retired with the dots look (owner decision C130 (5), one look, the arc; Smart joint pass SM-SP-3). The arc has no dots, so they drew nothing while the passport listed them as working settings. They leave the settings; an sf-spinner that still writes one is drawn as before (the arc) and noted in SF.deprecations until remove_after.",
+      "items": [
+        {
+          "component": "sf-spinner",
+          "from": "dots",
+          "to": null,
+          "match": "<sf-spinner[^>]*\\sdots="
+        },
+        {
+          "component": "sf-spinner",
+          "from": "filled",
+          "to": null,
+          "match": "<sf-spinner[^>]*\\sfilled="
+        },
+        {
+          "component": "sf-spinner",
+          "from": "direction",
+          "to": null,
+          "match": "<sf-spinner[^>]*\\sdirection="
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-spinner dots=\"8\" filled=\"3\" direction=\"counterclockwise\"></sf-spinner>",
+        "after": "<sf-spinner></sf-spinner>"
+      },
+      "manual": "Remove dots, filled and direction from sf-spinner: every spinner is the arc and nothing else changes.",
+      "owner": "ui-source",
+      "source": "src/smart/spinner/index.js DOTS_SETTINGS, src/smart/spinner/component.json aliases"
     }
   ]
 }

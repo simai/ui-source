@@ -56,22 +56,6 @@
       ]
     },
     {
-      "id": "p4-numbers",
-      "title": "dots and filled are numbers",
-      "covers": "settings.dots, settings.filled (§16 item 29)",
-      "steps": [
-        {
-          "script": "(() => { const el = document.getElementById('s2'); el.setAttribute('dots', '6'); return [el.dots, el.filled]; })()",
-          "expect": {
-            "returns": [
-              6,
-              3
-            ]
-          }
-        }
-      ]
-    },
-    {
       "id": "p5-aliases",
       "title": "variant answers as kind; getSpinnerRoot is kept and noted",
       "covers": "aliases.json",

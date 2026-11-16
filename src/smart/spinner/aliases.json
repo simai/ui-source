@@ -100,6 +100,39 @@
       "remove_after": "2027-01-01",
       "section": "owner decision C130 (5)",
       "note": "journal value-spinner-one-look: one look, the arc; the former look draws the arc until the date"
+    },
+    {
+      "from": "dots",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-spinner",
+      "since": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "mode": "retired",
+      "section": "owner decision C130 (5); Smart joint pass SM-SP-3",
+      "note": "journal attribute-spinner-dots-settings-retired: the number of dots of the dots look; the look is gone (one look, the arc), so it draws nothing; accepted and noted in SF.deprecations until the date"
+    },
+    {
+      "from": "filled",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-spinner",
+      "since": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "mode": "retired",
+      "section": "owner decision C130 (5); Smart joint pass SM-SP-3",
+      "note": "journal attribute-spinner-dots-settings-retired: the lit dots of the dots look; the look is gone (one look, the arc), so it draws nothing; accepted and noted in SF.deprecations until the date"
+    },
+    {
+      "from": "direction",
+      "to": null,
+      "kind": "attribute",
+      "component": "sf-spinner",
+      "since": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "mode": "retired",
+      "section": "owner decision C130 (5); Smart joint pass SM-SP-3",
+      "note": "journal attribute-spinner-dots-settings-retired: the order the dots light in; the look is gone (one look, the arc), so it draws nothing; accepted and noted in SF.deprecations until the date"
     }
   ]
 }

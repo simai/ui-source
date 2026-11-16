@@ -63,18 +63,6 @@ const sfSpinnerMeta = {
       "default": "",
       "description": "One look, the arc (owner decision C130 (5)). breathing, comet and dots are former values until 2027-01-01 and draw the arc; so does a page's data-sf-spinner."
     },
-    "dots": {
-      "kind": "custom",
-      "valueType": "integer",
-      "default": 8,
-      "minimum": 1
-    },
-    "filled": {
-      "kind": "custom",
-      "valueType": "integer",
-      "default": 3,
-      "minimum": 0
-    },
     "infinite": {
       "kind": "boolean",
       "values": [
@@ -90,14 +78,6 @@ const sfSpinnerMeta = {
         "false"
       ],
       "default": "false"
-    },
-    "direction": {
-      "kind": "enum",
-      "values": [
-        "clockwise",
-        "counterclockwise"
-      ],
-      "default": "clockwise"
     },
     "variant": {
       "kind": "enum",

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.spinner",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "title": "Spinner",
   "summary": "Indeterminate waiting indicator, one look (the arc) on the size ladder, shown after a delay (1 s by default), in the place's quiet ink, with optional polite status announcement and Framework-owned motion.",
   "kind": "smart",
@@ -82,18 +82,6 @@
           "arc"
         ]
       },
-      "dots": {
-        "type": "integer",
-        "default": 8,
-        "minimum": 1,
-        "pattern": "^(?:[3-9]|[12][0-9]|3[0-2])$"
-      },
-      "filled": {
-        "type": "integer",
-        "default": 3,
-        "minimum": 0,
-        "pattern": "^(?:[1-9]|[12][0-9]|3[0-2])$"
-      },
       "infinite": {
         "type": "boolean",
         "default": false
@@ -101,14 +89,6 @@
       "announce": {
         "type": "boolean",
         "default": false
-      },
-      "direction": {
-        "type": "string",
-        "default": "clockwise",
-        "enum": [
-          "clockwise",
-          "counterclockwise"
-        ]
       },
       "variant": {
         "type": "string",
@@ -288,11 +268,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/spinner/index.js",
-        "sha256": "df5e59db13133cfdc24c54aad2ce36c84214a139f8de236dbe85929491451421"
+        "sha256": "8d00c517e2e162146d9e9a07aa4f4d7359ff06394d5d0c39d53dcc47e03c9d24"
       },
       {
         "path": "src/smart/spinner/js/templates/default.js",
-        "sha256": "480ba124d3174a3ede8bfe5d26909325fb5b26167c38a90e11a6049a82e2db5f"
+        "sha256": "90ef93c677bede3b1df83f2eddf5c51c09e76fc2f15eb631c8a8f35105aeb734"
       },
       {
         "path": "src/smart/spinner/rule.js",
@@ -300,7 +280,7 @@
       },
       {
         "path": "src/smart/spinner/docs/docs.md",
-        "sha256": "52a5ed0a92cf9395bd3a3bdc55db7bb76a13557ae8651dcbfb4b8eb2f959b94d"
+        "sha256": "b918bf9f0c67de07bcac311fb30658b256747eee8152712999cdbc1b3a8d8ae7"
       }
     ],
     "generated_runtime": [

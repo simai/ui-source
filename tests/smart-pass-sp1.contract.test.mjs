@@ -164,3 +164,22 @@ test('SM-PR-1: the ring prints the number, a no-break space and «%» (C203 (3),
   assert.doesNotMatch(docs, /\d%</u);
   assert.match(docs, /85&nbsp;%</u);
 });
+
+// ---- SM-SP-3: the dots look's settings are retired, dated, noted ------------
+
+test('SM-SP-3: sf-spinner lists no dots, filled or direction; each is a dated retired attribute, noted', () => {
+  const manifest = json('src/smart/spinner/component.json');
+  for (const name of ['dots', 'filled', 'direction']) {
+    assert.equal(manifest.settings[name], undefined, name);
+    const row = manifest.aliases.rows.find((one) => one.from === name && one.kind === 'attribute');
+    assert.ok(row, name);
+    assert.equal(row.mode, 'retired');
+    assert.equal(row.remove_after, '2027-01-01');
+  }
+  const source = read('src/smart/spinner/index.js');
+  assert.match(source, /const DOTS_SETTINGS = \['dots', 'filled', 'direction'\]/u);
+  assert.match(source, /noteDeprecated\(\{ component: 'sf-spinner'[^}]*from: name/u);
+  const journal = json('contracts/changes/journal.json').records.find((one) => one.id === 'attribute-spinner-dots-settings-retired');
+  assert.equal(journal?.remove_after, '2027-01-01');
+  assert.doesNotMatch(read('src/smart/spinner/docs/docs.md'), /`dots` — от 3 до 32/u);
+});
