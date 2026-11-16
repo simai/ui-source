@@ -117,20 +117,23 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
   // it is 4 at every width; it was the card's own 8, too round inside the
   // frame. A plain card has no frame and no inset, so what it holds keeps its
   // own corner. The card's and the figure's own variables still win.
+  // The inset is the role --sf-inset--panel (C173, the step --sf-space-2):
+  // the nested-radius formula of --sf-radius--inner over the card's own inset
+  // (RT-10), the same value at every width and density.
   :where(.sf-card:not(.sf-card--plain)) .sf-card:not(.sf-card--plain) {
-    --sf-card--radius: var(--sf-card-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    --sf-card--radius: var(--sf-card-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
   }
 
   // The figure's picture and a caption laid over it take the same corner;
   // a page's --sf-figure-radius still wins (the Framework sets no public
   // variable, it reads it).
   :where(.sf-card:not(.sf-card--plain)) .sf-figure > .sf-figure-media {
-    border-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    border-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
   }
 
   :where(.sf-card:not(.sf-card--plain)) .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media + .sf-figure-caption {
-    border-end-start-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
-    border-end-end-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    border-end-start-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
+    border-end-end-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--panel))));
   }
 
   // A picture as the card's first block (owner decision C188 (2)): an

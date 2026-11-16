@@ -754,7 +754,7 @@
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "2d93d1f202d71e8ac28f9f0353709e493bc3f9da4319e996ecf97f889ec3b5d1"
+        "sha256": "203c93c3727c6efd9d8fbfe3a3e8e64e805cee6ffede2a77c58d652120db3b59"
       },
       {
         "path": "src/smart/menu/rule.js",
