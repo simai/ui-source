@@ -40,6 +40,16 @@
     inline-size: 100%;
   }
 
+  /* Until the script has measured (it writes data-orientation when it binds),
+     a row that does not fit wraps instead of running out of its box: the
+     sheet can arrive a frame before the script, and a clipped 40 px row then
+     grew into a 120 px column (C215 first paint). A row that fits is not
+     touched; an author's orientation, the track and sf-segmented's own group
+     are left alone. */
+  .sf-button-group:not([data-orientation], [aria-orientation], .sf-button-group--segmented, [overflow]):not(:is(sf-segmented, sf-button-group) > *) {
+    flex-wrap: wrap;
+  }
+
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > sf-button,
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(sf-button, sf-button-icon, sf-icon-button) > :is(.sf-button, .sf-icon-button),
   .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(.sf-button, .sf-icon-button) {
