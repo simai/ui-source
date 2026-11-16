@@ -37,7 +37,8 @@ test('C187 (1): one table, every record dated to 2027-01-01 and recorded in the 
   const journal = JSON.parse(read('contracts/changes/journal.json'));
   for (const record of table.records) {
     assert.equal(record.remove_after, '2027-01-01', record.journal);
-    assert.equal(record.since, '2026-11-14', record.journal);
+    // C187's own records are dated 2026-11-14; later retirements (C237, 2026-11-16) keep their own day.
+    assert.ok(record.since >= '2026-11-14', record.journal);
     const entry = journal.records.find(({id}) => id === record.journal);
     assert.ok(entry, `${record.journal} is in the journal`);
     assert.equal(entry.remove_after, record.remove_after);

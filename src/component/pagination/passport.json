@@ -17,7 +17,7 @@
     "src/component/pagination/scss/_var__pagination.scss",
     "src/component/pagination/scss/index.scss"
   ],
-  "content_sha256": "e89d3152940f6a2c68e46200d2dfb3f2e7f42ba6a199c0ead9a4bfbe50efdfad",
+  "content_sha256": "d499bb1b8cd6061c405fc75f113b3ddc8b06406a05606a1121fdc0e5f91f0173",
   "dependencies": [
     {
       "id": "tokens.border",
@@ -33,10 +33,6 @@
     },
     {
       "id": "tokens.motion",
-      "range": "^1.0.0"
-    },
-    {
-      "id": "tokens.radius",
       "range": "^1.0.0"
     },
     {

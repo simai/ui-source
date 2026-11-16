@@ -11,7 +11,8 @@ for (const [owner, file] of [['step', '_css__step.scss'], ['breadcrumbs', '_css_
     // The ring is the shared outline now, so it no longer travels through the
     // shadow property and cannot be confused with elevation.
     assert.match(css, /outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/);
-    assert.match(css, /outline-offset: var\(--sf-focus--offset\)/);
+    // A crumb is a link: its ring stands two pixels off as a link's (C186 (4), RG-NV 4).
+    assert.match(css, owner === 'step' ? /outline-offset: var\(--sf-focus--offset\)/ : /outline-offset: var\(--sf-a2\)/);
     assert.doesNotMatch(css, /--sf-ui-focus\b/);
     assert.match(css, /@media \(forced-colors: active\)/);
     assert.match(css, /outline: var\(--sf-focus-outline-width\) solid currentColor/);

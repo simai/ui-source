@@ -15,7 +15,7 @@ test('C105 H3 (RG-B-1): an icon in a link stands 4 from the words', async () => 
   assert.match(css, /--sf-link--gap: var\(--sf-gap--icon-inline, var\(--sf-space-1\\\/4\)\);/);
   assert.doesNotMatch(css, /--sf-link--gap: var\(--sf-space-1\\\/3\)/);
   assert.match(css, /gap\/var\(--sf-space-1\\\/4\)/);
-  assert.equal((await json('src/component/link/passport.json')).version, '1.1.1');
+  assert.equal((await json('src/component/link/passport.json')).version, '1.2.0'); // RG-NV 5, 6
 });
 
 test('C105 H5 (RG-B-11): the pagination list spaces its numbers without the container', async () => {
@@ -24,7 +24,7 @@ test('C105 H5 (RG-B-11): the pagination list spaces its numbers without the cont
   assert.match(rule, /gap: var\(--sf-pagination-container--gap, var\(--sf-pagination-gap, var\(--sf-space-1\\\/3\)\)\);/);
   // The container keeps the same step, so a list inside it reads the same.
   assert.match(css, /--sf-pagination-container--gap: var\(--sf-pagination-gap, var\(--sf-space-1\\\/3\)\);/);
-  assert.equal((await json('src/component/pagination/passport.json')).version, '1.4.5'); // group build 7: the integrated number (the branch wrote 1.4.4)
+  assert.equal((await json('src/component/pagination/passport.json')).version, '1.5.0'); // group build 7: the integrated number (the branch wrote 1.4.4)
 });
 
 test('RG-B-50: a reference card draws one ring, the link inside none', async () => {
