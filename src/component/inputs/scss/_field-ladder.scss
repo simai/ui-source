@@ -60,6 +60,26 @@ $-below: ('1/3': '1/4', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2');
   @return text-height(below($size));
 }
 
+// A field's pictures (C151 (1)): the icon of the step is its value's text
+// line -- 16 / 20 / 24 / 28 / 36 on a desktop -- and on a phone the icon a
+// step down. The text lines agree with that at every step but 3: on a phone
+// the line of 3 is 24, the line of 2, while the icon a step below 3 is 28,
+// the icon ladder's own rung (--sf-icon-size-4). Writes the three icon
+// variables a field's .sf-icon reads.
+@mixin icon($size) {
+  --sf-icon--font-size: #{text-height($size)};
+  --sf-icon--height: #{text-height($size)};
+  --sf-icon--width: #{text-height($size)};
+
+  @if $size == '3' {
+    @media not all and (min-width: 60rem) {
+      --sf-icon--font-size: var(--sf-icon-size-4);
+      --sf-icon--height: var(--sf-icon-size-4);
+      --sf-icon--width: var(--sf-icon-size-4);
+    }
+  }
+}
+
 // The block padding inside a frame of the size with a 1 px border: what makes a
 // one-line frame its control height.
 @function padding-block($size) {

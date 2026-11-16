@@ -8,7 +8,9 @@ for(const [family,name] of [['inputs','Input'],['textarea','Textarea'],['quantit
     const source=await readFile(new URL(`../src/component/${family}/js/_${family}.js`,import.meta.url),'utf8');
     const pending=[],destroyed=[];
     const native={value:'12',defaultValue:'12',min:'',max:'',step:'1',dataset:{mask:'true',maskPattern:'0000'},
-      required:false,classList:{contains:()=>false},addEventListener(){},removeEventListener(){},dispatchEvent(){}};
+      required:false,classList:{contains:()=>false},addEventListener(){},removeEventListener(){},dispatchEvent(){},
+      // The quantity number is a spin button (RG-QT-2): it writes its attributes.
+      setAttribute(){},removeAttribute(){}};
     const root={dataset:{},classList:{contains:()=>false,add(){},remove(){}},addEventListener(){},removeEventListener(){},querySelector:selector=>[
       '.sf-input-field input, input','textarea','.sf-quantity-wrap input',
     ].includes(selector)?native:null,querySelectorAll:()=>[]};

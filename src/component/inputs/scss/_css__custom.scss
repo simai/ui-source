@@ -1,3 +1,5 @@
+@use "field-ladder" as ladder;
+
 @layer sf.components {
   .sf-input .sf-input-field input {
     flex: 1 1 auto;
@@ -142,10 +144,10 @@
     --sf-input-right--padding-inline-start: var(--sf-ui-3--text-space-x);
   }
 
+  /* The icon of the step, a step down on a phone (field-ladder.icon, C151):
+     28 at 3 there, not the 24 of the text line. */
   .sf-input.sf-input--size-3 > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input.sf-input--size-3 > .sf-input-field > .sf-input-left .sf-icon, .sf-input.sf-input--size-3 > .sf-input-field > .sf-icon {
-    --sf-icon--font-size: var(--sf-text-height-3);
-    --sf-icon--height: var(--sf-text-height-3);
-    --sf-icon--width: var(--sf-text-height-3);
+    @include ladder.icon('3');
   }
 
   /* The field's corners (sf-input radius): the kept rounded square of
