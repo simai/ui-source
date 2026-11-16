@@ -26,6 +26,9 @@ export function renderCopyButtonTemplate(context) {
     appearance: context.appearance === 'link' ? 'ghost' : context.appearance,
     scheme: 'on-surface-variant',
   };
+  // plain (C201) is the icon button's look: a copy with text has no plain
+  // button and draws ghost, as the clipboard constructor's copy with text does.
+  const buttonAppearance = common.appearance === 'plain' ? 'ghost' : common.appearance;
   const showResult = context.phase === 'error' && Boolean(context.message);
   // The root style is the control's: the wrapper only frames the control and
   // its status, so a host styling the button reaches it.
@@ -42,7 +45,7 @@ export function renderCopyButtonTemplate(context) {
                  aria-disabled=${context.phase === 'pending' ? 'true' : nothing}
                  @click=${() => context.component.copy()}><sf-icon icon=${icon} aria-hidden="true"></sf-icon></button>`
         : context.text
-        ? html`<sf-button size=${common.size} appearance=${common.appearance} scheme=${common.scheme}
+        ? html`<sf-button size=${common.size} appearance=${buttonAppearance} scheme=${common.scheme}
                  icon-start=${icon} text=${context.text} aria-label=${context.name}
                  root-style=${context.rootStyle || nothing}
                  aria-disabled=${context.phase === 'pending' ? 'true' : nothing}

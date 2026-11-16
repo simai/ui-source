@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-copy",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -84,11 +84,12 @@
       "appearance": {
         "type": "string",
         "default": "ghost",
-        "description": "ghost (default): no fill, a fill under the pointer; outline; tonal. link is ghost's former name (decision C15), read as ghost until 2027-01-01.",
+        "description": "ghost (default): no fill, a fill under the pointer; outline; tonal; plain: the plain icon button (decision C201) -- no plate in any state, the glyph on-surface-variant, on-surface under the pointer, primary on a press -- for a copy inside another element (a code block, a value row); a copy with text has no plain button and draws ghost. link is ghost's former name (decision C15), read as ghost until 2027-01-01.",
         "enum": [
           "ghost",
           "outline",
-          "tonal"
+          "tonal",
+          "plain"
         ]
       },
       "icon": {
@@ -358,7 +359,7 @@
       },
       {
         "path": "src/smart/button-copy/js/templates/default.js",
-        "sha256": "28aa25ea777762f55cd7b38e2c44257de2c77b9005b4473500b8991d8abaf204"
+        "sha256": "1d276be71003d8516fa4b39bfa8ba2bd616f333c68508e0920e1f67f3f2fe3b2"
       },
       {
         "path": "src/smart/button-copy/scss/_smart__copy_button.scss",
@@ -370,7 +371,7 @@
       },
       {
         "path": "src/smart/button-copy/docs.md",
-        "sha256": "705fe368aa9c39da50460ad5e7534de21172bd836891014548de8cad49d15ea0"
+        "sha256": "12dcc5fb294a1abda64f886a247bff4366e5bb9b4423242302f288b6ba0dc8a8"
       }
     ],
     "generated_runtime": []
