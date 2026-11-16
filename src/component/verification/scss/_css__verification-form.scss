@@ -9,10 +9,11 @@
 }
 
 /* One field label look for every field (docs pre-check 2026-11-10 FB-10, CI-04):
-   the label of sf-input -- regular weight, on-surface-variant, one text step
-   below the field's text (14 at size 1). It was 16/500 on-surface. */
+   the label of sf-input -- regular weight, one text step below the field's
+   text (14 at size 1), in the text ink (owner decision C153 (1), RG-VR-4); the
+   hint keeps the hint ink. */
 .sf-verification-form-label {
-  color: var(--sf-on-surface-variant);
+  color: var(--sf-on-surface);
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1\/2);
   font-weight: var(--sf-font-weight-regular);
@@ -27,6 +28,17 @@
 .sf-verification-form--size-2 .sf-verification-form-label {
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
+}
+
+/* On a phone (below 60rem, the text tokens' own break) the label of size 1
+   stays 14, the step of the value there, not the 12 of a step below it, as
+   sf-input (C153 (1)). */
+@media not all and (min-width: 60rem) {
+  .sf-verification-form--size-1 .sf-verification-form-label,
+  .sf-verification-form:not([class*="sf-verification-form--size-"]) .sf-verification-form-label {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
 }
 
 .sf-verification-form:has(input:disabled) .sf-verification-form-label {

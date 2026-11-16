@@ -41,8 +41,8 @@ test('the wrapper still draws its own ring', () => {
     ['src/component/inputs/scss/_css__inputs.scss', '.sf-input:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-input-field'],
     ['src/component/country-code/scss/_css_country_code.scss', '.sf-country-code:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-country-code-field'],
     ['src/component/quantity/scss/_css__quantity.scss', '.sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap'],
-    // The active cell's ring, not the row's (K1, owner R136).
-    ['src/component/verification/scss/_css__verification.scss', '.sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current'],
+    // The current cell's, not the row's (K1, owner R136), inside (C153 (4)).
+    ['src/component/verification/scss/_css__verification.scss', '.sf-verification:has(.sf-verification-input:enabled:focus) .sf-verification-cell.current'],
     ['src/smart/input-lookup/scss/_smart__lookup.scss', '.sf-lookup:has(.sf-lookup-input:focus) .sf-lookup-frame'],
     ['src/smart/input-rich/scss/_smart__rich_text.scss', '.sf-rich-text:has(.sf-rich-text-editor:focus) .sf-rich-text-frame'],
   ];
