@@ -130,13 +130,18 @@ export function mapTailwindBaseClass(className) {
     'float-right': 'float-inline-end',
     'clear-left': 'clear-inline-start',
     'clear-right': 'clear-inline-end',
+    // RG-TW-4 (C212 (3)): a weight converts to a public role where it is the
+    // same weight (font-normal 400, font-medium 500, font-bold 700). Thin,
+    // light, semibold, extrabold and black have no role of their weight:
+    // they keep their dated alias weight-1..9 (it draws the same weight) and
+    // the Loader notes it with the role to write.
     'font-thin': 'weight-1',
     'font-extralight': 'weight-2',
     'font-light': 'weight-3',
-    'font-normal': 'regular',
-    'font-medium': 'weight-5',
+    'font-normal': 'weight-regular',
+    'font-medium': 'weight-medium',
     'font-semibold': 'weight-6',
-    'font-bold': 'bold',
+    'font-bold': 'weight-bold',
     'font-extrabold': 'weight-8',
     'font-black': 'weight-9',
     'font-sans': 'sans',
@@ -268,6 +273,10 @@ export function mapTailwindBaseClass(className) {
     return `bg-clip-${bgClipMatch[1]}`;
   }
 
+  // RG-TW-4 (C212 (3)): leading-* keeps its target line-* (a dated alias).
+  // A relative line has no public twin -- line-N is the fixed line of the
+  // text step N -- so converting it to one would change the line; the Loader
+  // notes line-* with the name to write.
   const leadingMatch = base.match(
     /^leading-(tight|snug|relaxed|loose|none|normal)$/,
   );

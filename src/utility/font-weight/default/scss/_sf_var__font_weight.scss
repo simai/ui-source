@@ -23,3 +23,16 @@ $font-weight-array:(
     8: 800,
     9: 900			
 );
+
+// Font Weight Roles (owner decision C212 (3), 2026-11-16): the three weights
+// of running text, read from the weight family (--sf-weight--*,
+// core/figma_variables/figma_typography_styles.scss). weight-medium is the
+// weight the headings and labels are set in. weight-1..9, regular, bold,
+// lighter and bolder are dated aliases until 2027-01-01
+// (core/js/retired-classes.table.js, journals class-c212-text and
+// class-c212-text-nearest).
+$font-weight-role-array:(
+    regular: var(--sf-weight--regular),
+    medium:  var(--sf-weight--medium),
+    bold:    var(--sf-weight--bold)
+);

@@ -23,7 +23,11 @@
         }
 
         // The heading modifier changes only the line-height family. Size stays
-        // owned by the selected text utility.
+        // owned by the selected text utility. Deprecated until 2027-01-01
+        // (owner decision C212 (3)): text-N heading is title-N, which writes
+        // the same size and line; the Loader notes the modifier beside a
+        // text-N (core/js/retired-classes.table.js, journal
+        // class-c212-text).
         @each $size in $title-array {
             .#{$infix}text-#{$size}.heading {
                 line-height: var(--sf-title--height-#{$size});

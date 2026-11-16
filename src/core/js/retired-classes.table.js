@@ -5,7 +5,7 @@
 export default {
   "schema": "simai.framework.retired-classes",
   "schema_version": 1,
-  "summary": "The one table of retired class names (owner decision C187 (1), 2026-11-14). A retired class keeps drawing what it drew until remove_after: its sheet stays in the distribution and in utility.full.css, and the Loader notes the first use of each name on a page in SF.deprecations (src/core/js/utility-class-aliases.js reads this table). Each record names its change-journal entry (contracts/changes/journal.json) and retires names (an exact class), patterns (a family of classes; to may refer to the pattern's groups as $1) or sheets (every class of a utility folder, at every breakpoint and state). A variant prefix (md:, hover:, focus-visible:) is kept on both sides. to is the name to write instead, or null where the job leaves the utilities (the record's note says where it went). extended lists the names that stay but are documented on one «extended» page instead of a page each. Nothing here is deleted before remove_after, and nothing is deleted without checking the built sheets, the ui-doc examples, the products and the Loader's Tailwind-name conversion.",
+  "summary": "The one table of retired class names (owner decision C187 (1), 2026-11-14). A retired class keeps drawing what it drew until remove_after: its sheet stays in the distribution and in utility.full.css, and the Loader notes the first use of each name on a page in SF.deprecations (src/core/js/utility-class-aliases.js reads this table). Each record names its change-journal entry (contracts/changes/journal.json) and retires names (an exact class), patterns (a family of classes; to may refer to the pattern's groups as $1) or sheets (every class of a utility folder, at every breakpoint and state), or modifiers (a class that means something only beside another one: with is the pattern of that other class on the same element, and to may refer to its groups as $1). A variant prefix (md:, hover:, focus-visible:) is kept on both sides. to is the name to write instead, or null where the job leaves the utilities (the record's note says where it went). extended lists the names that stay but are documented on one «extended» page instead of a page each. Nothing here is deleted before remove_after, and nothing is deleted without checking the built sheets, the ui-doc examples, the products and the Loader's Tailwind-name conversion.",
   "records": [
     {
       "journal": "class-table-sm-to-density",
@@ -32,6 +32,52 @@ export default {
         "text-break-all": "text-break",
         "t-ellipsis": "truncate",
         "t-clip": "truncate"
+      }
+    },
+    {
+      "journal": "class-c212-text",
+      "decision": "C212 (3)",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One way per text job: text-N (size and line of step N), title-N (the same size on its title line), line-N, measure (+ -wide, -narrow) and three weights, weight-regular, weight-medium (the weight of headings and labels) and weight-bold on --sf-weight--*. These old names draw exactly what their new name draws: max-w-prose is measure (65ch), regular and weight-4 are weight-regular (400), weight-5 is weight-medium (500), bold and weight-7 are weight-bold (700), and the heading modifier beside text-N is title-N. They keep drawing until remove_after.",
+      "names": {
+        "max-w-prose": "measure",
+        "regular": "weight-regular",
+        "weight-4": "weight-regular",
+        "weight-5": "weight-medium",
+        "bold": "weight-bold",
+        "weight-7": "weight-bold"
+      },
+      "modifiers": {
+        "heading": {
+          "with": "^text-(1[0-2]?|[2-9])$",
+          "to": "title-$1"
+        }
+      }
+    },
+    {
+      "journal": "class-c212-text-nearest",
+      "decision": "C212 (3)",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "Names with no exact public twin: they keep drawing what they drew until remove_after, and the name to write is the nearest role, which looks different. weight-1, weight-2, weight-3 and lighter -> weight-regular; weight-6 -> weight-medium; weight-8, weight-9 and bolder -> weight-bold. line-tight, -snug, -normal, -relaxed, -loose and -none wrote a number of their own (1.25, 1.375, 1.5, 1.625, 2, 1) beside the line ladder: the line is line-N of the text's step N, which text-N and title-N already set.",
+      "names": {
+        "weight-1": "weight-regular",
+        "weight-2": "weight-regular",
+        "weight-3": "weight-regular",
+        "lighter": "weight-regular",
+        "weight-6": "weight-medium",
+        "weight-8": "weight-bold",
+        "weight-9": "weight-bold",
+        "bolder": "weight-bold",
+        "line-tight": "line-N",
+        "line-snug": "line-N",
+        "line-normal": "line-N",
+        "line-relaxed": "line-N",
+        "line-loose": "line-N",
+        "line-none": "line-N"
       }
     },
     {

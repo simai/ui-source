@@ -10,6 +10,9 @@ $with-max-array: (
 	min : min-content,
 	max : max-content,
 	fit : fit-content,
+    // max-w-prose is a dated alias of measure until 2027-01-01 (owner
+    // decision C212 (3); the same 65ch, --sf-text--measure; journal
+    // class-c212-text).
     prose : 65ch,
 	0 : 0,
 	none : none,
