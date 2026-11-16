@@ -479,7 +479,12 @@
     inset-block-start: var(--sf-space-1);
     display: flex;
     flex-direction: column;
-    gap: var(--sf-space-1);
+    /* The edge's controls are one group, a button group's gap apart (the
+       role --sf-gap--actions, C105 H5, C173 (3): 8, compact 4), centred on
+       one axis: stretched to the column, the 28 close drew as a 40 x 28 pill
+       beside a 40 round button, 16 apart (study VP-16). */
+    align-items: center;
+    gap: var(--sf-gap--actions);
     pointer-events: auto;
     z-index: 1;
   }
@@ -527,39 +532,23 @@
   }
 
   /* Controls on the scrim (study VP-16): what stands on the edge beside a
-     floating panel stands on the scrim, black at 64 over any page. It takes
-     the core glass role a control over a picture has (C14 (3), C16): a dark
-     round plate (--sf-surface-media, black 48; hover 64, press 80) and a
-     white glyph (--sf-on-surface-media), the same in both themes, and the
-     glass's white focus ring, which the theme's blue was not on black. The
-     close there is sf-button-close appearance="media"; a page's own icon
-     buttons in the edge slot («Открыть полностью») take the same plate. In
-     the theme's grey the close stood on the scrim at about 1:1. A column of
-     the page has no scrim: its edge keeps the page's look; nor has a panel
-     whose edge stands in its head (data-sf-drawer-edge-in-head). */
+     floating panel stands on the scrim, black at 64 over any page. The edge
+     is a place of the core glass roles a control over a picture has (C14 (3),
+     C16, C70): white ink and the glass's white focus ring, which the theme's
+     blue was not on black. Its controls -- the close (sf-button-close
+     appearance="media") and a page's icon buttons in the edge slot («Открыть
+     полностью») -- take the core role of a control on the scrim, the same in
+     both themes (--sf-scrim-control, layer sf.states below). In the theme's
+     grey the close stood on the scrim at about 1:1. A column of the page has
+     no scrim: its edge keeps the page's look; nor has a panel whose edge
+     stands in its head (data-sf-drawer-edge-in-head). */
   .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge {
     @include places.sf-place-glass-accent;
-    --sf-on-surface: var(--sf-on-surface-media);
-    --sf-on-surface-icon: var(--sf-on-surface-media);
-    --sf-on-surface-hover: var(--sf-on-surface-media);
-    --sf-on-surface-active: var(--sf-on-surface-media);
-    --sf-on-surface-variant: var(--sf-on-surface-media);
-  }
-
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
-    --sf-icon-button--radius: var(--sf-radius-rounded);
-    --sf-icon-button--background-color: var(--sf-surface-media);
-    --sf-icon-button--border-color: transparent;
-    --sf-icon--color: var(--sf-on-surface-media);
-    color: var(--sf-on-surface-media);
-  }
-
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):hover {
-    --sf-icon-button--background-color: var(--sf-surface-media-hover);
-  }
-
-  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):active {
-    --sf-icon-button--background-color: var(--sf-surface-media-active);
+    --sf-on-surface: var(--sf-on-scrim-control);
+    --sf-on-surface-icon: var(--sf-on-scrim-control);
+    --sf-on-surface-hover: var(--sf-on-scrim-control);
+    --sf-on-surface-active: var(--sf-on-scrim-control);
+    --sf-on-surface-variant: var(--sf-on-scrim-control);
   }
 
   /* A phone (below md, where the forms in popups are sheets, C32): a side
@@ -772,5 +761,42 @@
     .sf-drawer:not(.is-open) .sf-drawer-panel {
       transition: none;
     }
+  }
+}
+
+/* A control on the scrim (study VP-16, C14 (3)): the round plate of the core
+   role --sf-scrim-control (glass, black at 64), a white glyph
+   (--sf-on-scrim-control), hover and press as the state family's white over
+   the plate (--sf-scrim-control-state-hover / -active, 8 and 12), whatever
+   appearance the page gave its edge button. In sf.states, as the plate and
+   the glyph are drawn properties: the icon button's states re-declare its own
+   variables there (a filled button turned neutral 95 under the pointer, its
+   white glyph lost on it), and none of them sets these properties. Over 64
+   the white glyph reads 13-21:1 on the plate and 6.7-20:1 on the scrim; the
+   white ring 6.7-20:1 on the scrim (light and dark, measured). */
+@layer sf.states {
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button {
+    --sf-drawer--edge-state: transparent;
+    background-color: var(--sf-scrim-control);
+    background-image: linear-gradient(var(--sf-drawer--edge-state), var(--sf-drawer--edge-state));
+    border-color: transparent;
+    border-radius: var(--sf-radius-rounded);
+    color: var(--sf-on-scrim-control);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(:disabled, [aria-disabled='true']):hover {
+    --sf-drawer--edge-state: var(--sf-scrim-control-state-hover);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(:disabled, [aria-disabled='true']):is(:active, .active) {
+    --sf-drawer--edge-state: var(--sf-scrim-control-state-active);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(:disabled, [aria-disabled='true']) .sf-icon {
+    color: var(--sf-on-scrim-control);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(:disabled, [aria-disabled='true']) .sf-close-icon {
+    background-color: var(--sf-on-scrim-control);
   }
 }

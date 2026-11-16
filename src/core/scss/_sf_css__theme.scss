@@ -223,6 +223,17 @@
        --sf-scrim-opacity still dims the colour further. */
     --sf-scrim-color: var(--sf-black--alfa-64);
     --sf-scrim-opacity: 1;
+    /* A control on the scrim (study VP-16, C14 (3)): the outside close and
+       «Открыть полностью» beside a floating panel. A round plate of the
+       glass (black at 64, --sf-surface-media; 80 under reduced transparency),
+       a white glyph, the same in both themes as the scrim is. Hover and press
+       lay the state family's white over the plate, 8 and 12: the plate stands
+       on black, where a darker plate step (80) or the 4 step does not show in
+       the dark theme (1.01:1, measured). */
+    --sf-scrim-control: var(--sf-surface-media);
+    --sf-scrim-control-state-hover: var(--sf-white--alfa-8);
+    --sf-scrim-control-state-active: var(--sf-white--alfa-12);
+    --sf-on-scrim-control: var(--sf-on-surface-media);
     --sf-surface-2: light-dark(var(--sf-neutral-95), var(--sf-neutral-15));
     --sf-surface-3: light-dark(var(--sf-neutral-90), var(--sf-neutral-20));
     --sf-surface-4: light-dark(var(--sf-neutral-85), var(--sf-neutral-25));

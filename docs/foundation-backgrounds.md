@@ -369,6 +369,13 @@ disabled plate 8, line 24, boundary 64, dim ink 80. An icon keeps its four roles
 `--sf-on-surface-icon` is the glass's ink there, because the alpha scale has no
 half step between white and white at 80.
 
+A control on the scrim (the outside close and the edge controls of
+`sf-drawer`, study VP-16) is glass on black: `--sf-scrim-control` (the glass,
+`--sf-surface-media`) under `--sf-on-scrim-control` (white). Its hover and
+press lay the state family's white over the plate, `--sf-scrim-control-state-hover`
+(8) and `--sf-scrim-control-state-active` (12): over the scrim in the dark
+theme the plate's next ink step (80) and the 4 state do not show (1.01:1).
+
 The accent on glass is the glass's own white ink (C70, owner 2026-11-11,
 `prototypes/glass-accent.html` variant B), as on a strong coloured place
 (C42.4). On the children of `.sf-surface-media`, `--sf-primary` is white
