@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.7.0",
+  "version": "1.8.6",
   "title": "Pagination",
   "summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
   "kind": "smart",
@@ -1181,7 +1181,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pagination/index.js",
-        "sha256": "db0416ab0766b055e2a9cae922c824e5efcd0150c0497544c3dd356ece73c0e1"
+        "sha256": "1580e1652154f22a865833582daded58fbdcc1c3c82b294415742b1b8c6db122"
       }
     ],
     "generated_runtime": [

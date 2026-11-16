@@ -176,7 +176,9 @@ A string is the message's text: `SF.notify('Saved')`. With nothing to show the
 call returns `null` and warns in the console.
 
 - The area sits at one edge of the window in the top layer (bottom-end by
-  default; `SF.notifications.configure({placement: 'top-end', max: 4})`). At
+  default; `SF.notifications.configure({placement: 'top-end', max: 4})`), over
+  every window: a modal dialog, a popover or a drawer opened after a message
+  does not cover it (LY-13). At
   most four show at once and the rest wait their turn; the same message again
   counts up (`×2`) instead of stacking twice.
 - The messages of the corner are a stack (core.runtime 1.55.0, owner decision

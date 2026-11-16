@@ -191,7 +191,7 @@ name where the table says so:
 
 | Setting | Block |
 | --- | --- |
-| `scopes` | Filters: an `sf-tag-group` of one choice -- all, then one per result group, with counts; the chosen has a check (C145, C175 (4)) |
+| `scopes` | Filters: an `sf-tag-group` of one choice -- all, then one per result group, with counts; the chosen has a check (C145, C175 (4)). Chosen with a pointer, the focus goes back to the field; from the keyboard it stays on the tag (1.10.6) |
 | `recent` | Up to 5 recent queries and 3 pages opened from the window, each with a remove button, and «Очистить», which clears both (C162 (6)) |
 | `popular` | Popular queries on an empty field and under an empty result |
 | `actions` | Results that run a command, with their keys |

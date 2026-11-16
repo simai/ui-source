@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.typography",
   "kind": "tokens",
-  "version": "1.8.0",
+  "version": "1.8.3",
   "owner": "simai/ui-source",
   "summary": "Text sizes, line heights, the typography roles and styles, and links.",
   "includes": [
@@ -14,7 +14,8 @@
     "src/core/figma_variables/figma_typography_styles.scss",
     "src/core/scss/_sf_css__typograpy.scss",
     "src/core/scss/_sf_css__link.scss",
-    "src/core/scss/vars/_sf_var__link.scss"
+    "src/core/scss/vars/_sf_var__link.scss",
+    "src/core/scss/mix/_mix__card_title.scss"
   ],
   "files": [
     "src/core/figma_variables/figma_text_body_text_height.scss",
@@ -24,9 +25,10 @@
     "src/core/figma_variables/figma_typography_styles.scss",
     "src/core/scss/_sf_css__link.scss",
     "src/core/scss/_sf_css__typograpy.scss",
+    "src/core/scss/mix/_mix__card_title.scss",
     "src/core/scss/vars/_sf_var__link.scss"
   ],
-  "content_sha256": "e9f7f083e8bdd174fb77f78a24926b63c939ed1ecb8a0f2a65d8013d87dd85b0",
+  "content_sha256": "5adfbd7b226215465fc8418d1151fe3dd9a38c5f9df28ff7a723cd4c9f8e375d",
   "dependencies": [
     {
       "id": "font.inter",

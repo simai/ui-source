@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.ring-width",
   "kind": "utility",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/ring-width/default/index.js",
@@ -28,15 +28,19 @@
     "src/utility/ring-width/hover/scss/_sf_css__ring_width.scss",
     "src/utility/ring-width/hover/scss/index.scss"
   ],
-  "content_sha256": "3a4853778e9c2b3cb615dc259963b78a79a3a8e98b482b513cc7e71f121ec6dd",
+  "content_sha256": "2d1fd8d9ac069c15cce0627005af7cc163a59e04e32f239fca780cb5bc959df0",
   "dependencies": [
+    {
+      "id": "tokens.border",
+      "range": "^1.2.2"
+    },
     {
       "id": "tokens.breakpoint",
       "range": "^1.0.0"
     },
     {
-      "id": "tokens.opacity",
-      "range": "^1.0.0"
+      "id": "tokens.colour",
+      "range": "^1.17.0"
     }
   ]
 }
