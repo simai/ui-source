@@ -7,6 +7,7 @@ import { pageText, pageWord } from '../../../core/js/page-language';
 // one place for every language, as the Smart components keep them.
 import LANG_WORDS from '../lang/index.mjs';
 const pick = (words, keys) => Object.fromEntries(keys.map((key) => [key, words[key]]));
+import { noteDeprecated } from '../../../core/js/deprecations.js';
 
 const DOWNLOAD_FILE_SELECTOR = '.sf-download-file';
 const DOWNLOAD_FILE_BOUND_FLAG = 'sfDownloadFileBound';
@@ -239,8 +240,31 @@ function emitDownloadFileClick(root, href, fileName, download) {
 // sends its own cancelable `sf-download-file-download` (standard 1.3.8 §8,
 // vocabulary 1.1.5 §5.1), and the old `sf-download-file:click` follows it as a
 // dated alias. Answering false cancels the download.
+// The plain markup's parts the class does not build (the docs taught them:
+// sf-download-file-wrap, -container, -file-name, -file-size with no BEM part
+// beside them) are deprecated until 2027-01-01 (dispatcher decision
+// 2026-11-16, journal class-download-file-plain-parts): they keep their look,
+// but the type and the size never go under the name and a screen reader hears
+// the name and the size run together. The class markup carries both names.
+const PLAIN_PARTS = [
+  ['sf-download-file-wrap', 'sf-download-file__body'],
+  ['sf-download-file-container', 'sf-download-file__main'],
+  ['sf-download-file-file-name', 'sf-download-file__name'],
+  ['sf-download-file-file-size', 'sf-download-file__size'],
+];
+const PLAIN_PARTS_DEPRECATED = { since: '2026-11-16', remove_after: '2027-01-01' };
+
+function notePlainParts(root) {
+  for (const [from, to] of PLAIN_PARTS) {
+    if (root.querySelector?.(`.${from}:not(.${to})`)) {
+      noteDeprecated({ component: 'download-file', kind: 'class', from, to: `${to} (the DownloadFile class markup)`, ...PLAIN_PARTS_DEPRECATED });
+    }
+  }
+}
+
 function bindDownloadFile(root, {onActivate, onSize} = {}) {
   if (!root || root.dataset[DOWNLOAD_FILE_BOUND_FLAG] === '1' || !isPressableRoot(root)) return;
+  notePlainParts(root);
 
   const handleClick = (event) => {
     // A file being prepared (aria-busy) takes no second press: the first one

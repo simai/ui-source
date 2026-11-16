@@ -27,49 +27,66 @@
     z-index: var(--sf-z-index-2);
   }
 
+  /* sf-clipboard-surface is deprecated until 2027-01-01 (owner decision
+     C217, 2026-11-16; study actions-clipboard-study.html, question 1, variant
+     B): a copy button is an icon button, and an icon inside another element is
+     the plain one, sf-icon-button sf-icon-button--plain (C201). Until then
+     the class draws exactly that look at the same size: no plate in any
+     state, only the glyph's ink moves -- --sf-on-surface-variant at rest,
+     --sf-on-surface under the pointer, --sf-primary on a press,
+     --sf-on-surface-disabled when disabled -- the ring every button draws,
+     the icon button's box and glyph of the size. The copy behaviour, the
+     name tooltip and the status stay; the script notes the class in
+     SF.deprecations (journal class-clipboard-surface-to-plain-icon-button).
+     Before, the class drew its own grey plate with the on-surface ink (RG-CP-1),
+     three sizes where an icon button has five (RG-CP-2), and lost its edge in
+     forced colours (RG-CP-3); the plain icon button has no plate to lose. */
   .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button) {
+    --sf-icon--color: var(--sf-on-surface-variant);
     align-items: center;
     appearance: none;
-    background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background-color: transparent;
+    background-image: none;
+    block-size: var(--sf-clipboard--box, var(--sf-ui-1--control-height));
     border: 0;
     border-radius: var(--sf-radius--ui);
-    color: var(--sf-on-surface);
+    box-sizing: border-box;
+    color: var(--sf-on-surface-variant);
     display: inline-flex;
     justify-content: center;
-    min-block-size: var(--sf-ui-1--control-height);
-    min-inline-size: var(--sf-ui-1--control-height);
-    padding: var(--sf-ui-1--space-y);
-    transition: background-color var(--sf-duration-fast) var(--sf-animation);
+    min-block-size: var(--sf-clipboard--box, var(--sf-ui-1--control-height));
+    min-inline-size: var(--sf-clipboard--box, var(--sf-ui-1--control-height));
+    padding: 0;
   }
 
-  /* Hover and press fill the surface one state step up. Before, the hover
-     rule (two classes) lost to the resting fill (three), so the surface never
-     showed a hover, and nothing told a disabled one apart. A disabled
-     button -- aria-disabled="true" while it copies, or :disabled -- takes no
-     state at all. */
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button) > :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-clipboard--icon, var(--sf-text-height-1));
+    --sf-icon--height: var(--sf-clipboard--icon, var(--sf-text-height-1));
+    --sf-icon--width: var(--sf-clipboard--icon, var(--sf-text-height-1));
+  }
+
   .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):hover {
-    background-color: var(--sf-surface-container-hover);
+    --sf-icon--color: var(--sf-on-surface);
+    color: var(--sf-on-surface);
   }
 
   .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):active {
-    background-color: var(--sf-surface-container-active);
+    --sf-icon--color: var(--sf-primary);
+    color: var(--sf-primary);
   }
 
   .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: var(--sf-focus--inset);
+    outline-offset: var(--sf-focus--offset);
   }
 
   /* Disabled -- aria-disabled="true" while it copies (it keeps focus), or
      :disabled -- reads as disabled, not as busy (owner remark 2026-11-15):
      the arrow, not the wait cursor; no state on hover or press; the pointer
-     passes through. The surface takes the disabled fill and ink, the glyph's
-     third role (on-surface-disabled, never an opacity), as a disabled tonal
-     icon button draws it. Before: the wait cursor and opacity 60 over the
-     resting look. An sf-button or sf-icon-button route draws its own
-     disabled look, which reads aria-disabled too (component.buttons,
-     component.icon-buttons). */
+     passes through; the glyph takes the disabled ink, never an opacity, as a
+     disabled plain icon button draws it. An sf-button or sf-icon-button
+     route draws its own disabled look, which reads aria-disabled too
+     (component.buttons, component.icon-buttons). */
   :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target]):is([aria-disabled='true'], :disabled) {
     cursor: default;
     pointer-events: none;
@@ -77,24 +94,25 @@
 
   .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):is([aria-disabled='true'], :disabled) {
     --sf-icon--color: var(--sf-on-surface-disabled);
-    background-color: var(--sf-surface-disabled);
     color: var(--sf-on-surface-disabled);
   }
 
-  /* The three sizes are the control ladder's 1/3, 1 and 2 (C18; docs
-     pre-check 2026-11-10, navigation item 7): the box is the size's control
-     height, square, on a desktop and on a phone, and the icon is the size's
-     text line, as an icon button draws it. The box was a minimum under the
-     size 1 padding and the 24px icon, so the smallest stood 40 on a desktop
-     (as tall as the middle one) and 32 on a phone. The classes carry the size
-     names, as every sized component's do (sf-icon-button--size-1/3; CP-03,
-     component.clipboard 1.1.0): sf-clipboard--size-1/3, --size-1, --size-2.
-     sf-clipboard-1/2/3 are their former names, read until 2027-01-01
-     (journal class-clipboard-size-names). */
+  /* The sizes are the icon button's five (C18, C103; RG-CP-2): the box is the
+     size's control height, square, and the glyph the size's text line, on a
+     desktop, in a compact area and on a phone alike. A class with no size is
+     size 1. sf-clipboard--size-1/2 and --size-3 drew nothing before; the
+     overlay places itself by the same two values. sf-clipboard-1/2/3 are the
+     former names of 1/3, 1 and 2, read until 2027-01-01 (journal
+     class-clipboard-size-names). */
   .sf-clipboard--size-1\/3:not(.sf-button):not(.sf-icon-button),
   .sf-clipboard-1:not(.sf-button):not(.sf-icon-button) {
     --sf-clipboard--box: var(--sf-ui-1\/3--control-height);
     --sf-clipboard--icon: var(--sf-text-height-1\/3);
+  }
+
+  .sf-clipboard--size-1\/2:not(.sf-button):not(.sf-icon-button) {
+    --sf-clipboard--box: var(--sf-ui-1\/2--control-height);
+    --sf-clipboard--icon: var(--sf-text-height-1\/2);
   }
 
   .sf-clipboard--size-1:not(.sf-button):not(.sf-icon-button),
@@ -109,27 +127,26 @@
     --sf-clipboard--icon: var(--sf-text-height-2);
   }
 
-  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):is(.sf-clipboard--size-1\/3, .sf-clipboard--size-1, .sf-clipboard--size-2, .sf-clipboard-1, .sf-clipboard-2, .sf-clipboard-3) {
-    box-sizing: border-box;
-    block-size: var(--sf-clipboard--box);
-    min-block-size: var(--sf-clipboard--box);
-    min-inline-size: var(--sf-clipboard--box);
-    padding: 0;
-  }
-
-  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):is(.sf-clipboard--size-1\/3, .sf-clipboard--size-1, .sf-clipboard--size-2, .sf-clipboard-1, .sf-clipboard-2, .sf-clipboard-3) > .sf-icon {
-    --sf-icon--font-size: var(--sf-clipboard--icon);
-    --sf-icon--height: var(--sf-clipboard--icon);
-    --sf-icon--width: var(--sf-clipboard--icon);
+  .sf-clipboard--size-3:not(.sf-button):not(.sf-icon-button) {
+    --sf-clipboard--box: var(--sf-ui-3--control-height);
+    --sf-clipboard--icon: var(--sf-text-height-3);
   }
 
   /* The status a screen reader hears takes no room (decision C48): the words
-     a person reads stand above the button as a tooltip, so nothing moves. */
+     a person reads stand above the button as a tooltip, so nothing moves. It
+     stands at the start corner of its containing block, never at the place
+     the button left it (RG-CP-4): with no offsets an absolute box keeps its
+     static place, and after a button in a scrolled table with no positioned
+     wrapper that place lay outside the scroller -- it widened the page by
+     1927 px at 1440 and 2475 at 390. At the corner it lies inside whatever
+     box contains it. */
   .sf-clipboard-status,
   .sf-clipboard-holder {
     block-size: var(--sf-px);
     clip-path: inset(50%);
     inline-size: var(--sf-px);
+    inset-block-start: 0;
+    inset-inline-start: 0;
     overflow: hidden;
     position: absolute;
     white-space: nowrap;
@@ -166,20 +183,18 @@
     position: fixed;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button) {
-      transition: none;
-    }
-  }
-
   @media (forced-colors: active) {
-    .sf-clipboard {
+    /* The former block, a class with no look of its own (C48), keeps its
+       edge. The deprecated surface is the plain icon button in forced colours
+       too: no edge, the glyph in ButtonText, the ring in the glyph's ink. */
+    .sf-clipboard:not(.sf-clipboard-surface) {
       border: var(--sf-focus--width) solid ButtonText;
       forced-color-adjust: none;
     }
 
     .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):focus-visible {
-      outline-color: Highlight;
+      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline-offset: calc(var(--sf-focus-outline-width) * -1);
     }
   }
 }
