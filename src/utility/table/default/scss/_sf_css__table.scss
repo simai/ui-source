@@ -10,12 +10,17 @@ $prefix: --sf-table-;
 
 // @include layer-priority(utility,default) {
 
-    table {
+    // Only a .table and its parts (RG-UT-L TB-6): these were bare type
+    // rules, so once a .table on the page loaded this sheet every other
+    // table on it took a bottom caption, collapsed borders and lost its
+    // cell borders. :where keeps them as light as the type selectors were,
+    // so a utility (border-separate) or an author's rule still wins.
+    :where(.table) {
         caption-side: bottom;
         border-collapse: collapse;
     }
 
-    tbody, td, tfoot, th, thead, tr {
+    :where(.table) :where(tbody, td, tfoot, th, thead, tr) {
         border-color: inherit;
         border-style: solid;
         border-width: 0;
