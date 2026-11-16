@@ -1,7 +1,10 @@
 import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
-import { focusModalInitial, trapModalFocus } from './_focus';
+import { focusModalInitial, trapModalFocus, windowFields } from './_focus';
+import { noteDeprecated } from '../../../core/js/deprecations.js';
+import { breakpointMedia } from '../../../core/js/breakpoints.js';
+import { inHandleRow, startsOnControl, trackSwipe } from '../../../core/js/sheet-swipe';
 import { freezeModalContent } from './_closing';
 import { scheduleModalClose, scheduleModalFrame } from './_motion';
 import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
@@ -13,7 +16,7 @@ const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-containe
 import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from './_stack';
-import { layerZIndexAt, lockPageScroll } from '../../../core/js/layer-stack';
+import { layerZIndexAt, lockPageScroll, openLayers } from '../../../core/js/layer-stack';
 // The words live in the component's language files (localization study LC-4):
 // one place for every language, as the Smart components keep them.
 import LANG_WORDS from '../lang/index.mjs';
@@ -38,6 +41,23 @@ function normalizePosition(value = 'center') {
     ? normalized
     : 'center';
 }
+
+// The window's size by name (owner decision C159 (1), followed by the class
+// window under C224): question 28rem, form 36rem, wide 48rem, full the whole
+// screen; no size, `auto` or anything else is a form, as on <sf-modal>.
+const SIZES = ['question', 'form', 'wide', 'full'];
+
+function normalizeSize(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  return SIZES.includes(normalized) ? normalized : 'form';
+}
+
+// A side window or a sheet is sf-drawer's (owner decision C157 (1)): these
+// positions are its old names until this date, noted once per value, as
+// <sf-modal> notes them.
+const EDGE_POSITIONS = ['inline-start', 'inline-end', 'left', 'right', 'bottom'];
+const OLD_NAMES_UNTIL = '2027-01-01';
+const OLD_NAMES_SINCE = '2026-11-16';
 
 function normalizeBlurType(value = 'medium') {
   const normalized = String(value || 'medium')
@@ -172,6 +192,7 @@ class Modal extends ComponentObserver {
     this.preserveScrollGap = this.toBoolean(params.preserveScrollGap, true);
     this.autoload = this.toBoolean(params.autoload, false);
     this.position = normalizePosition(params.position);
+    this.size = normalizeSize(params.size);
     this.fullscreen = this.toBoolean(params.fullscreen, false);
     this.mode = normalizeMode(params.mode);
     this.display = normalizeDisplay(params.display);
@@ -191,8 +212,19 @@ class Modal extends ComponentObserver {
     this.blurType = normalizeBlurType(
       params.blurType || (isBlurTypeValue(params.blur) ? params.blur : ''),
     );
+    // The scrim, as <sf-modal> draws it (C224): default, the shared black 64;
+    // focus, the same with the small backdrop blur (C159 (7), C157 (6): one
+    // scrim). `blur` -- true or a strength -- is the focus scrim: blur: true
+    // laid the overlay surface with a 64 px blur and 'large' 8 px, weaker
+    // than true (study Ok6). The strengths and blurType are old names until
+    // 2027-01-01.
+    this.overlayPreset = String(params.overlayPreset || '').trim().toLowerCase() === 'focus' || this.blur
+      ? 'focus'
+      : 'default';
+    this.noteOldNames(params);
 
     this.onOverlayClick = this.onOverlayClick.bind(this);
+    this.onSheetPointerDown = this.onSheetPointerDown.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this._modalState = 'closed';
     this._stackIndex = -1;
@@ -361,6 +393,105 @@ class Modal extends ComponentObserver {
     return this.hasCustomBlurType ? [getBlurClass(this.blurType)] : [];
   }
 
+  // The scrim's classes: the preset's marker, and the focus preset's small
+  // blur (the Smart template's overlayClasses). Its colour is the sheet's
+  // shared scrim (--sf-scrim-color), not a utility, so the window over
+  // another lays none (C159 (7)).
+  overlayClasses() {
+    return joinClasses(
+      `sf-modal-overlay--${this.overlayPreset}`,
+      this.overlayPreset === 'focus' ? getBlurClass('small') : '',
+    );
+  }
+
+  // The names the class window keeps for a while (SF.deprecations): a side
+  // or bottom position (sf-drawer's, C157 (1)), and the blur strengths.
+  noteOldNames(params = {}) {
+    const dated = { tag: 'sf-modal', since: OLD_NAMES_SINCE, remove_after: OLD_NAMES_UNTIL };
+    if (EDGE_POSITIONS.includes(this.position)) {
+      noteDeprecated({
+        component: 'modal', kind: 'value', attribute: 'position', from: this.position,
+        to: this.position === 'bottom' ? 'sf-drawer placement="bottom"' : 'sf-drawer', ...dated,
+      });
+    }
+    if (isBlurTypeValue(params.blur)) {
+      noteDeprecated({ component: 'modal', kind: 'value', attribute: 'blur', from: String(params.blur).trim().toLowerCase(), to: "blur: true (overlayPreset: 'focus')", ...dated });
+    }
+    if (isBlurTypeValue(params.blurType)) {
+      noteDeprecated({ component: 'modal', kind: 'value', attribute: 'blurType', from: String(params.blurType).trim().toLowerCase(), to: "overlayPreset: 'focus'", ...dated });
+    }
+  }
+
+  // On a phone (below sm, owner decision C159 (2)) a window left at the
+  // centre is a sheet at the bottom, the screen's width, its answers sharing
+  // the row; a wide or full window and a form of more than three fields take
+  // the whole screen. The class window stayed a card the width of its text
+  // (332 of 390, study Ok2). The same rule as <sf-modal> (C224).
+  get onPhone() {
+    return this.display !== 'inline' && Boolean(this._phoneQuery?.matches);
+  }
+
+  contentFields() {
+    const body = this.template?.querySelector('[data-sf-modal-body-scroll]');
+    return body ? windowFields(body) : [];
+  }
+
+  get phoneFullScreen() {
+    if (!this.onPhone || this.position !== 'center') return false;
+    return this.size === 'wide' || this.size === 'full' || (this.size === 'form' && this.contentFields().length > 3);
+  }
+
+  get shownPosition() {
+    if (this.position === 'center' && this.onPhone && !this.phoneFullScreen) return 'bottom';
+    return this.position;
+  }
+
+  get shownFullscreen() {
+    return Boolean(this.fullscreen) || this.size === 'full' || this.phoneFullScreen;
+  }
+
+  // Writes where the window stands now: its position (with the old misspelt
+  // alias class) and whether it takes the whole screen.
+  applyPlacement() {
+    const root = this.template;
+    if (!root) return;
+    const position = this.display === 'inline' ? this.position : this.shownPosition;
+    for (const name of [...root.classList]) {
+      if (/^sf-modal--posit(?:i)?on-/.test(name)) root.classList.remove(name);
+    }
+    root.classList.add(`sf-modal--position-${position}`, `sf-modal--positon-${position}`);
+    root.setAttribute('data-sf-modal-position', position);
+    root.setAttribute('data-sf-modal-fullscreen', String(this.display === 'inline' ? this.fullscreen : this.shownFullscreen));
+  }
+
+  watchPhone() {
+    if (this.display === 'inline' || this._phoneQuery) return;
+    const query = breakpointMedia('sm', { below: true });
+    if (!query) return;
+    this._phoneQuery = query;
+    this._onPhoneChange = () => this.applyPlacement();
+    query.addEventListener?.('change', this._onPhoneChange);
+  }
+
+  // A window at the bottom is the one sheet (C157 (5)): a swipe down from its
+  // handle row closes it as the x does. The class window drew the grab bar
+  // and did not follow the finger.
+  onSheetPointerDown(event) {
+    if (event.button !== 0 || !this.isOpen || this.shownPosition !== 'bottom' || this.shownFullscreen) return;
+    const surface = this.template?.querySelector('[data-sf-modal-surface]');
+    const panel = this.template?.querySelector('[data-sf-modal-panel]');
+    if (!surface || !panel || !surface.contains(event.target) || startsOnControl(event.target)) return;
+    if (!inHandleRow(event, surface)) return;
+    trackSwipe(event, {
+      surface: panel,
+      direction: 'down',
+      variable: '--sf-sheet--drag',
+      onEnd: ({ dismiss }) => {
+        if (dismiss && !this.unclose) this.close();
+      },
+    });
+  }
+
   setOverlay(nextValue) {
     this.overlay = this.toBoolean(nextValue, true);
 
@@ -380,26 +511,25 @@ class Modal extends ComponentObserver {
     // sf-modal--positon-* is the legacy misspelt alias of sf-modal--position-*,
     // written beside it until contracts/changes/journal.json removes it.
     root.className = isInline
-      ? `sf-modal sf-modal--inline sf-modal--position-${this.position} sf-modal--positon-${this.position} inline-block w-full`
-      : `sf-modal sf-modal--position-${this.position} sf-modal--positon-${this.position} hidden fixed top-0 inline-start-0 w-full h-full z-9 p-3 items-cross-center content-main-center`;
+      ? `sf-modal sf-modal--size-${this.size} sf-modal--inline sf-modal--position-${this.position} sf-modal--positon-${this.position} inline-block w-full`
+      : `sf-modal sf-modal--size-${this.size} sf-modal--position-${this.position} sf-modal--positon-${this.position} hidden fixed top-0 inline-start-0 w-full h-full z-9 p-3 items-cross-center content-main-center`;
     root.setAttribute('role', isInline ? 'region' : 'dialog');
     root.setAttribute('aria-modal', isInline ? 'false' : 'true');
     root.setAttribute('data-sf-modal-position', this.position);
-    root.setAttribute('data-sf-modal-fullscreen', String(this.fullscreen));
+    root.setAttribute('data-sf-modal-size', this.size);
+    root.setAttribute('data-sf-modal-fullscreen', String(this.fullscreen || this.size === 'full'));
     root.setAttribute('data-sf-modal-display', this.display);
+    root.setAttribute('data-sf-modal-overlay-preset', this.overlayPreset);
     root.setAttribute('data-sf-modal-state', isInline ? 'inline' : 'closed');
 
     const overlay = document.createElement('div');
     overlay.className = joinClasses(
       'absolute top-0 inline-start-0 w-full h-full',
-      this.blur
-        ? this.hasCustomBlurType
-          ? this.getBlurClasses().join(' ')
-          : 'bg-surface-overlay'
-        : 'bg-scrim',
+      this.overlayClasses(),
       params.overlayClass,
     );
     overlay.setAttribute('data-sf-modal-overlay', '');
+    overlay.setAttribute('data-sf-modal-overlay-preset', this.overlayPreset);
     if (!this.overlay || isInline) {
       overlay.classList.add('hidden');
     }
@@ -431,11 +561,15 @@ class Modal extends ComponentObserver {
     // title --sf-space-1 above the content, no line under the header, and the
     // close button on the frame's corner, the title centred on its line. The
     // frame was --sf-space-2 with a line under the header.
+    // The surface is <sf-modal>'s (C224): the modal surface, and over the
+    // page the elevated one -- the popup place with the modal shadow (C16,
+    // C20). It was the bg-surface utility, in the dark theme 26·27·31 next
+    // to a 15·17·21 page (study Ok4), and its frame variables were the Smart
+    // surface's alone, so a side window lost its frame (Ok3).
     const surface = document.createElement('div');
     surface.className = joinClasses(
-      isInline
-        ? 'bg-surface-area border border-outline-variant radius-surface flex flex-col gap-1 min-w-0'
-        : 'bg-surface-area border border-outline-variant radius-surface shadow-modal flex flex-col gap-1 min-w-0',
+      'sf-modal-surface flex flex-col min-w-0',
+      !isInline && 'sf-modal-surface--elevated',
       params.surfaceClass,
     );
     surface.setAttribute('data-sf-modal-surface', '');
@@ -463,12 +597,14 @@ class Modal extends ComponentObserver {
       header.append(title);
 
       if (this.showClose) {
+        // The close button is sf-button-close's class markup (C14, C15), as
+        // <sf-modal> draws it: it was the icon button's old link look.
         const closeButton = document.createElement('button');
         closeButton.type = 'button';
         closeButton.className = joinClasses(
           // The close is sf-button-close, ghost (owner decision C14, RG-CL-3):
           // the class markup of the Smart window's header close.
-          'sf-icon-button sf-modal-header-action sf-modal-close-button sf-icon-button--close sf-button-close sf-button-close--ghost sf-button-close--on-surface sf-icon-button--size-1/3 m-0',
+          'sf-icon-button sf-icon-button--size-1/3 sf-icon-button--close sf-button-close sf-button-close--ghost sf-button-close--on-surface flex items-cross-center sf-modal-header-action sf-modal-close-button sf-modal-close-button--inline-end m-0',
           params.closeClass,
         );
         // The page language's word, as the Smart window has; the glyph inside is
@@ -476,7 +612,7 @@ class Modal extends ComponentObserver {
         closeButton.setAttribute('aria-label', pageText(UNTITLED, 'close', closeButton.isConnected ? closeButton : document.documentElement, 'sf-modal'));
         closeButton.setAttribute('data-sf-modal-close', this.modalId);
         closeButton.innerHTML = '            <span\n' +
-            '              class="sf-close sf-close--size-1/3 flex justify-center items-center"\n' +
+            '              class="sf-close sf-close--size-1/3 flex content-main-center items-center pointer-event-none"\n' +
             '              aria-hidden="true"\n' +
             '            >\n' +
             '              <span class="sf-close-icon"></span>\n' +
@@ -856,6 +992,9 @@ class Modal extends ComponentObserver {
 
     // Escape and Tab come through the document layer stack, to the top layer.
     this.template.addEventListener('click', this.onOverlayClick);
+    this.template.addEventListener('pointerdown', this.onSheetPointerDown);
+    this.watchPhone();
+    this.applyPlacement();
 
     Modal.registry.set(this.modalId, this);
     Modal.bindGlobalEvents();
@@ -889,6 +1028,9 @@ class Modal extends ComponentObserver {
     }
     Modal.removeFromStack(this);
     this.template.removeEventListener('click', this.onOverlayClick);
+    this.template.removeEventListener('pointerdown', this.onSheetPointerDown);
+    this._phoneQuery?.removeEventListener?.('change', this._onPhoneChange);
+    this._phoneQuery = null;
     Modal.registry.delete(this.modalId);
   }
 
@@ -955,11 +1097,18 @@ class Modal extends ComponentObserver {
     if (index < 0) {
       this.template.style.removeProperty('z-index');
       this.template.style.removeProperty('--sf-modal-stack-index');
+      this.template.removeAttribute('data-sf-modal-stacked');
       return this;
     }
 
     this.template.style.setProperty('--sf-modal-stack-index', String(index));
     this.template.style.zIndex = String(layerZIndexAt(index));
+    // One scrim (owner decision C159 (7)), as <sf-modal> keeps it: a window
+    // over another open window -- a class one or a Smart one, the document's
+    // one stack -- lays none of its own. Two class windows laid two, the page
+    // at about 87 % (study Ok5).
+    const windows = openLayers('modal');
+    this.template.toggleAttribute('data-sf-modal-stacked', windows.indexOf(this) > 0);
     return this;
   }
 
@@ -1013,6 +1162,9 @@ class Modal extends ComponentObserver {
       this.placeIn(this.overlayHomeFor(this.lastActive));
     }
     this.cancelCloseTransition();
+    // Where it stands now: a sheet or the whole screen on a phone (C159 (2)),
+    // read as it opens, since the fields that decide may have come since.
+    this.applyPlacement();
     this.template.classList.remove('hidden');
     this.template.classList.add('flex');
     this.template.setAttribute('aria-hidden', 'false');

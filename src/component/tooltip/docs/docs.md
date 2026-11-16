@@ -48,9 +48,13 @@ Timing (the tooltip kind of C59, owner decision 2026-11-11):
   ordinary press.
 
 No tail by default: write a `sf-tooltip--arrow-*` class only where a tail is
-wanted. A light tooltip has no frame: its elevation is the window's shadow,
-drawn over the content and the tail together (`--sf-shadow-overlay-filter`),
-so a tail carries the same shadow as the window.
+wanted. A tooltip has no frame: its elevation is the window's shadow, drawn
+over the content and the tail together (`--sf-shadow-overlay-filter`), so a
+tail carries the same shadow as the window -- the dark tooltip as well as the
+light one since 1.6.0 (C20, C59). With a tail the tooltip stands so far from
+its control that the tail's point keeps 4 px (`--sf-space-1/4`) from it
+(`--sf-tooltip--tail-gap`, 1.6.0): it stood at the half side, and the point
+reached 2 px into the control.
 
 ## Surface variants
 
@@ -66,9 +70,11 @@ so a tail carries the same shadow as the window.
 - one size (owner decision C160 (3), 1.4.0): text 12/16 (`--sf-text--size-1/3`),
   padding 4 x 8; the former `sf-tooltip--size-*` classes draw nothing of their
   own and are kept in markup harmlessly;
-- at most two lines (C160 (2)): longer text is cut after the second line and a
-  linked tooltip says so once per page in the console -- an explanation that
-  long belongs in a «?» (sf-help-mark) beside the control;
+- at most two lines (C160 (2)), the whole tooltip's: a text alone or a
+  supporting text alone is cut after its second line, a text with a supporting
+  text under it after one line each (1.6.0; the supporting text was not
+  counted), and a linked tooltip says so once per page in the console -- an
+  explanation that long belongs in a «?» (sf-help-mark) beside the control;
 - placement (C160 (4)): a linked tooltip with no tail stands below its control
   (4 px away) and flips above at the bottom edge of the window;
 - logical tails: `none`, `top-center`, `bottom-center`,

@@ -3,12 +3,13 @@
   "schema_version": 1,
   "id": "component.icon-buttons",
   "kind": "component",
-  "version": "1.15.1",
+  "version": "1.16.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/icon-buttons/docs/docs.md",
     "src/component/icon-buttons/index.js",
     "src/component/icon-buttons/js/_icon-buttons.js",
+    "src/component/icon-buttons/js/_name-tooltip.js",
     "src/component/icon-buttons/js/index.js",
     "src/component/icon-buttons/json/icon-button.utility.json",
     "src/component/icon-buttons/rule.js",
@@ -17,7 +18,7 @@
     "src/component/icon-buttons/scss/_css_icon_buttons_custom.scss",
     "src/component/icon-buttons/scss/index.scss"
   ],
-  "content_sha256": "61057f8308ceba203d59bef899e306c2496da14d22647b35a3f04f071fc5820d",
+  "content_sha256": "dc042f70573c67916617db20891afc19e1c980a212a3c2dffeb3f7b46f306570",
   "dependencies": [
     {
       "id": "component.buttons",

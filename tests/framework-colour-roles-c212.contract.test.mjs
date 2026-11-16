@@ -30,9 +30,14 @@ test('no Framework script writes a palette colour class', () => {
 
 test('the class modal lays the scrim role and the area place', () => {
   const modal = readFileSync(resolve(root, 'src/component/modal/js/_modal.js'), 'utf8');
-  assert.match(modal, /: 'bg-scrim',/u);
+  // C224 (fix/ot-modal-tooltip-ot1): the window's sheet lays the roles, the
+  // script writes the sheet's classes.
+  assert.match(modal, /this\.overlayClasses\(\)/u);
   assert.doesNotMatch(modal, /'bg-surface /u, 'the bare surface word is the C212 former spelling of surface-area');
-  assert.equal(modal.match(/'bg-surface-area border border-outline-variant radius-surface/gu)?.length, 2);
+  assert.match(modal, /'sf-modal-surface flex flex-col min-w-0'/u);
+  const sheet = readFileSync(resolve(root, 'src/component/modal/scss/_css__modal_custom.scss'), 'utf8');
+  assert.match(sheet, /--sf-modal-overlay-background: var\(--sf-scrim-color\);/u);
+  assert.match(sheet, /--sf-modal-surface-bg: var\(--sf-modal-background-color, var\(--sf-surface-area\)\);/u);
   const search = readFileSync(resolve(root, 'src/component/sf-system/js/search/_search.js'), 'utf8');
   assert.match(search, /radius-3 border-outline-variant'/u);
   assert.match(search, /before:bg-surface-inverse'/u);

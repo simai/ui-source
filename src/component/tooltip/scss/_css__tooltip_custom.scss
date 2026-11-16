@@ -3,6 +3,14 @@
   --sf-tooltip-tail-size: var(--sf-b2);
   --sf-tooltip-tail-half: calc(var(--sf-tooltip-tail-size) / 2);
   --sf-tooltip-tail-corner-offset: var(--sf-b6);
+  /* How far a tooltip with a tail stands from its trigger: the tail is a
+     square turned 45 degrees on the tooltip's edge, so its point reaches half
+     its diagonal (the half side times the square root of two, 8.5 for the
+     12 tail) past the edge, and the tooltip keeps the same --sf-space-1/4
+     between that point and the trigger as a tooltip without a tail keeps
+     from its own edge (C59, C160 (4)). It stood the half side (6) away, and
+     the point reached 2 into the trigger (study P3). */
+  --sf-tooltip--tail-gap: calc(var(--sf-tooltip-tail-half) * 1.4142 + var(--sf-space-1\/4));
   inline-size: fit-content;
   max-inline-size: 100%;
   min-inline-size: 0;
@@ -51,6 +59,24 @@
   overflow: hidden;
 }
 
+/* The two lines are the whole tooltip's (C160 (2)), its supporting text
+   counted: a line of text with a supporting text under it keeps one line
+   each, a supporting text alone two. A text of one line and three lines of
+   supporting text drew four, uncut and unsaid (study P2). */
+.sf-tooltip .sf-tooltip-supporting-text {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.sf-tooltip .sf-tooltip-text:has(+ .sf-tooltip-supporting-text):not(:has(> .sf-tooltip-shortcut)),
+.sf-tooltip .sf-tooltip-text + .sf-tooltip-supporting-text {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
 /* A tooltip a controller shows (role="tooltip"), wherever it stands -- in a
    .sf-tooltip-anchor or not, as the one sf-button-icon makes for its name
    (C160 (1)) -- is as wide as its text up to the tooltip's cap, 20rem and
@@ -85,7 +111,7 @@
   .sf-tooltip--arrow-bottom-center,
   sf-tooltip[arrow='bottom-center']
 ) {
-  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-block-end: calc(100% + var(--sf-tooltip--tail-gap));
   inset-inline-start: 50%;
   translate: -50% 0;
 }
@@ -94,7 +120,7 @@
   .sf-tooltip--arrow-top-center,
   sf-tooltip[arrow='top-center']
 ) {
-  inset-block-start: calc(100% + var(--sf-tooltip-tail-half));
+  inset-block-start: calc(100% + var(--sf-tooltip--tail-gap));
   inset-inline-start: 50%;
   translate: -50% 0;
 }
@@ -104,7 +130,7 @@
   sf-tooltip[arrow='inline-end']
 ) {
   inset-block-start: 50%;
-  inset-inline-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-inline-end: calc(100% + var(--sf-tooltip--tail-gap));
   translate: 0 -50%;
 }
 
@@ -113,7 +139,7 @@
   sf-tooltip[arrow='inline-start']
 ) {
   inset-block-start: 50%;
-  inset-inline-start: calc(100% + var(--sf-tooltip-tail-half));
+  inset-inline-start: calc(100% + var(--sf-tooltip--tail-gap));
   translate: 0 -50%;
 }
 
@@ -121,7 +147,7 @@
   .sf-tooltip--arrow-bottom-inline-start,
   sf-tooltip[arrow='bottom-inline-start']
 ) {
-  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-block-end: calc(100% + var(--sf-tooltip--tail-gap));
   inset-inline-start: 0;
 }
 
@@ -129,7 +155,7 @@
   .sf-tooltip--arrow-bottom-inline-end,
   sf-tooltip[arrow='bottom-inline-end']
 ) {
-  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-block-end: calc(100% + var(--sf-tooltip--tail-gap));
   inset-inline-end: 0;
 }
 
@@ -144,24 +170,24 @@
 }
 
 .sf-tooltip-anchor > .sf-tooltip--arrow-bottom-left {
-  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-block-end: calc(100% + var(--sf-tooltip--tail-gap));
   left: 0;
 }
 
 .sf-tooltip-anchor > .sf-tooltip--arrow-bottom-right {
-  inset-block-end: calc(100% + var(--sf-tooltip-tail-half));
+  inset-block-end: calc(100% + var(--sf-tooltip--tail-gap));
   right: 0;
 }
 
 .sf-tooltip-anchor > .sf-tooltip--arrow-left {
   inset-block-start: 50%;
-  left: calc(100% + var(--sf-tooltip-tail-half));
+  left: calc(100% + var(--sf-tooltip--tail-gap));
   translate: 0 -50%;
 }
 
 .sf-tooltip-anchor > .sf-tooltip--arrow-right {
   inset-block-start: 50%;
-  right: calc(100% + var(--sf-tooltip-tail-half));
+  right: calc(100% + var(--sf-tooltip--tail-gap));
   translate: 0 -50%;
 }
 

@@ -7,4 +7,6 @@
             */
 
             import './_icon-buttons';
+            // The name tooltip of a class icon button (C248).
+            import './_name-tooltip';
 

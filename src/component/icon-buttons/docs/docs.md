@@ -106,6 +106,29 @@ A link drawn as an icon button, `<a class="sf-icon-button" href>` (what
 `sf-button-icon` draws for its `href`, decision C51), takes no link underline,
 as `a.sf-button` does; its ink is the icon button's own (1.6.1).
 
+## Name tooltip
+
+A class icon button with an `aria-label` and no visible words shows that name
+as the Framework's tooltip by itself (owner decision C248, 1.16.0), as
+`<sf-button-icon>` does (C160 (1)): after 0.5 s of hover, its neighbours at
+once, keyboard focus at once, a long press on a touch screen, below the
+button and flipped above at the bottom edge. Nothing is drawn or fetched
+before the first hover, focus or long press; then a `.sf-tooltip` is made
+beside the button, linked by `data-tooltip`, and the tooltip controller is
+loaded. `data-tooltip="off"` turns it off; a `data-tooltip` naming the page's
+own tooltip wins. Never a second tooltip: a button with a `title`, its own
+or a host's around it (the browser's tooltip the page chose, or a hint a
+component wrote there, as the plain theme button does, C244 -- drop the title
+to get the Framework's), is left alone, as is a close
+button (`sf-button-close`, C14), a disabled or hidden button, and the button
+inside `<sf-button-icon>`, which shows its own.
+
+```html
+<button type="button" class="sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1" aria-label="Курсив">
+  <i class="sf-icon" aria-hidden="true">format_italic</i>
+</button>
+```
+
 ## States
 
 Native `disabled` is the source of truth for an unavailable action. Loading

@@ -462,6 +462,24 @@
   border-end-start-radius: 0;
 }
 
+/* A window at the top edge stands flush to the screen's top and sides, as a
+   side panel stands to its edge (C56): the panel spans the screen's width,
+   so its top and side corners are square and it draws no edge there; the
+   bottom corners keep the window's radius and the bottom its edge. The
+   frame on the sides without an edge is the whole step (C105 H6). It
+   rounded its corners and drew its edge along the screen (study Ok3). */
+.sf-modal[data-sf-modal-position='top'] > [data-sf-modal-panel] > [data-sf-modal-surface] {
+  border-block-start-width: 0;
+  border-inline-width: 0;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.sf-modal[data-sf-modal-position='top'] > [data-sf-modal-panel] > [data-sf-modal-surface]:not([data-sf-modal-own-padding]) {
+  padding-block-start: var(--sf-modal-padding-block, var(--sf-modal--frame));
+  padding-inline: var(--sf-modal-padding-inline, var(--sf-modal--frame));
+}
+
 /* On a phone (below md, where the forms in popups are sheets, C32) a side
    panel is the whole screen: no inner side, so no radius and no border. */
 @media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
@@ -576,13 +594,16 @@
    (26, 32, 44rem: core --sf-popup--window-*-width, moved by the density
    like C32's popups); no size is a form. A window grew with its text (294 to
    1043 px of 1440). A page's width still wins; a side panel keeps its own
-   (side windows are sf-drawer's). */
-.sf-modal--size-form:not([data-sf-modal-position='left'], [data-sf-modal-position='right'], [data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end']) [data-sf-modal-panel] {
+   (side windows are sf-drawer's). The page's width and a window that takes
+   the whole screen (fullscreen, or a phone's wide window) are left alone:
+   the named width came later in the sheet with the same weight and drew a
+   fullscreen window 576 wide and a width="40rem" one at the form's 36rem. */
+.sf-modal--size-form:not([data-sf-modal-position='left'], [data-sf-modal-position='right'], [data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end'], [data-sf-modal-fullscreen='true']) [data-sf-modal-panel]:not([data-sf-modal-has-width]) {
   inline-size: var(--sf-popup--window-form-width);
   max-inline-size: 100%;
 }
 
-.sf-modal--size-wide:not([data-sf-modal-position='left'], [data-sf-modal-position='right'], [data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end']) [data-sf-modal-panel] {
+.sf-modal--size-wide:not([data-sf-modal-position='left'], [data-sf-modal-position='right'], [data-sf-modal-position='inline-start'], [data-sf-modal-position='inline-end'], [data-sf-modal-fullscreen='true']) [data-sf-modal-panel]:not([data-sf-modal-has-width]) {
   inline-size: var(--sf-popup--window-wide-width);
   max-inline-size: 100%;
 }
