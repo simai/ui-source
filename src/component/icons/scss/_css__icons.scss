@@ -200,27 +200,27 @@ $sf-icon-ladder-optical: (
 
 // The glyph on the middle of its text line, exactly (C151 point 5). Its box
 // clips (overflow), so its baseline is its bottom edge; the middle of a text
-// line stands above the text's baseline by half of the face's ascent less its
-// descent -- 0.3633 of the text size for Inter (97 and 24 of 100), whatever
-// the line height. So the glyph's bottom is lifted by that less half its own
-// height. The text size is the parent's: the parent of a glyph publishes its
-// 1em as a length (a registered property, computed where it is declared, so
-// the glyph inherits the parent's pixels, not its own size). A browser
+// line stands above the text's baseline by --sf-text--middle (half of the
+// face's ascent less its descent, whatever the line height). So the glyph's
+// bottom is lifted by that less half its own height. The text is the
+// parent's: the parent of a glyph publishes its middle as a length (a
+// registered property, computed where it is declared, so the glyph inherits
+// the parent's pixels, not its own em). A browser
 // without :has keeps middle above. An icon taller than the line still grows
 // it, evenly above and below.
-@property --sf-icon--text-size {
+@property --sf-icon--text-middle {
   syntax: '<length>';
   inherits: true;
-  initial-value: 0px;
+  initial-value: 0;
 }
 
 @supports selector(:has(*)) {
   :where(:has(> .sf-icon)) {
-    --sf-icon--text-size: 1em;
+    --sf-icon--text-middle: var(--sf-text--middle);
   }
 
   .sf-icon {
-    vertical-align: calc(0.3633 * var(--sf-icon--text-size) - var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1))) / 2);
+    vertical-align: calc(var(--sf-icon--text-middle) - var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1))) / 2);
   }
 }
 

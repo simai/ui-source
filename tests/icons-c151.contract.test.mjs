@@ -19,10 +19,15 @@ const meanings = JSON.parse(read('src/core/contracts/icon-meanings.v1.json'));
 
 test('C151 point 1: ladder size names in a ladder region, the old scale elsewhere until 2027-01-01', () => {
   const styles = read('src/component/icons/scss/_css__icons.scss');
-  for (const step of ['1\\/3', '1\\/2', '1', '2', '3']) {
-    const key = step.replace('\\', '');
-    assert.ok(styles.includes(`'${key}': (var(--sf-text-height-${step}), var(--sf-text-height-${step}))`), step);
+  // The ladder region's own steps (content study Z4, 2026-11-16): one step down on a phone and in
+  // a compact region, never two names for one size.
+  const steps = {'1/3': ['b2', 'b6'], '1/2': ['b6', 'c0'], '1': ['c0', 'c2'], '2': ['c2', 'c4'], '3': ['c4', 'c8']};
+  for (const [key, [down, desktop]] of Object.entries(steps)) {
+    assert.ok(styles.includes(`'${key}': (var(--sf-${down}), var(--sf-${desktop}))`), key);
+    const step = key.replace('/', '\\/');
+    assert.ok(styles.includes(`'${key}': (var(--sf-icon--ladder-${step}), var(--sf-icon--ladder-${step}))`), key);
   }
+  assert.match(styles, /\[data-sf-density='compact'\] \[data-sf-icon-scale='ladder'\],/);
   assert.match(styles, /\[data-sf-icon-scale='ladder'\] \.sf-icon--size-#\{icon-step-class\(\$size\)\}/);
   assert.match(styles, /sf-icon\[data-sf-icon-scale='ladder'\]\[size="#\{\$size\}"\]:not\(:defined\)/);
   const source = read('src/smart/icon/index.js');

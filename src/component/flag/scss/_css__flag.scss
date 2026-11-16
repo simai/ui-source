@@ -27,11 +27,10 @@
     flex: none;
     /* In running text the flag stands on the middle of the line (as an icon,
        C151 (5)): its baseline is its bottom edge (overflow hidden), so it is
-       lifted by the text's middle above its baseline -- half of the text
-       face's ascent less its descent, 0.3633 em for Inter (97 and 24 of 100)
-       -- less half its own height. At baseline it sat 2 px low on a desktop and 4 on a phone
+       lifted by the text's middle above its baseline (--sf-text--middle, in
+       the flag's own em, which is its text's) less half its own height. At baseline it sat 2 px low on a desktop and 4 on a phone
        (content study Fl3). In a flex row vertical-align does nothing. */
-    vertical-align: calc(0.3633em - var(--sf-flag--height) / 2);
+    vertical-align: calc(var(--sf-text--middle) - var(--sf-flag--height) / 2);
     position: relative;
     overflow: hidden;
     line-height: 0;

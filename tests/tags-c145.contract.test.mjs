@@ -17,7 +17,8 @@ const groupCss = read('src/smart/tag-group/js/templates/default.css');
 
 test('C145 (2): a filter has no empty square; chosen, a check mark on the primary container', () => {
   assert.match(template, /return context\.active\s*\? html`<sf-icon icon="check" root-class="sf-tag-icon sf-tag-check" aria-hidden="true"><\/sf-icon>`\s*: nothing;/u);
-  assert.match(css, /\.sf-tag:not\(\.active\) \.sf-tag-check \{\s*display: none;/u);
+  // Important (content study T1, 2026-11-16): the icons sheet's unlayered display outranks a layer.
+  assert.match(css, /\.sf-tag:not\(\.active, \[aria-pressed="true"\]\) \.sf-tag-check \{\s*display: none !important;/u);
   assert.doesNotMatch(css, /\.sf-tag-check \{[^}]*border:/u);
   assert.match(tag, /if \(host\.type === 'checkbox' && !slotted\('leading'\) && !host\.href\) return \['check'\];/u);
 });
@@ -74,8 +75,10 @@ test('C145 (7): a data colour is an 8 px palette dot on a neutral tag', () => {
 });
 
 test('C145 (1): a tag in a field is the field less 8; its cross follows its height', () => {
-  // Outside a field a 1/2 tag on a desktop is 32: its cross is 12, as a compact 1 of the same 32.
-  assert.match(css, /\.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),[^{]*\{\s*--sf-tag--close-size: var\(--sf-micro--cross-1\);/u);
+  // A chip on a field's line at 1/2 on a desktop is 32: its cross is 12, as a compact 1 of the same 32.
+  // Outside a field a 1/2 tag takes C132's 8 (content study T3, 2026-11-16).
+  assert.match(css, /\.sf-tag\.sf-tag--inline\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),[^{]*\{\s*--sf-tag--close-size: var\(--sf-micro--cross-1\);/u);
+  assert.doesNotMatch(css, /\n\s*\.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),/u);
   // A remove button without the close class reaches 24 too.
   assert.match(css, /\.sf-tag > button\.sf-icon-button:has\(> \.sf-close\):not\(\.sf-icon-button--close\)::after/u);
   // sf-input-lookup: the chip tag's own cross, an avatar of at least 16.
@@ -108,6 +111,6 @@ test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropd
   assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.15.1'); // group build 7
   assert.equal(json('src/smart/tag/component.json').version, '1.11.0'); // group build 7: the GB6 notes numbered above the released 1.9.1
   assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.0'); // group build 7
-  assert.equal(json('src/component/tags/passport.json').version, '1.7.0');
+  assert.equal(json('src/component/tags/passport.json').version, '1.8.0'); // content glyphs CT-1 (T1, T3)
   assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
 });
