@@ -74,7 +74,4 @@ a defect (`tools/lint-raw-values.mjs` reads px and stacking numbers).
 | Width of a text column (C18, C212 (3)) | `--sf-text--measure`, `--sf-text--measure-narrow`, `--sf-text--measure-wide` (core typography); the `measure*` utilities; `max-w-prose` until 2027-01-01 | 65ch, 45ch, 80ch | A line length is counted in characters of the text's own font; no ladder step follows the font. |
 | A line of one or two pixels (C18, C173 (6)) | `--sf-px`, `--sf-line--border`, `--sf-line--indicator`; widths 1 and 2 of `border-*`, `outline-*`, `ring-*`, `divide-*`, `stroke-*`, `decoration-*` | 1 px, 2 px | A hairline stays one device line at any text size. |
 | Media (C18) | an image's or a video's own size and ratio | the file's | The picture brings its size; the layout around it uses the systems. |
-
-Pending an owner decision, not listed yet: the brand colours of
-`bg-<brand>` and `fill-<brand>` (raw hex outside the palette; utilities study
-UT-BG-9, UT-SVG-5).
+| Brand colours (C18, C269) | `bg-<brand>` (27 brands, `utility/background-color-brand`) and `fill-<brand>` (24, `utility/fill-brand`): Facebook, Messenger, YouTube, WhatsApp, Instagram, WeChat, TikTok, Sina Weibo, QQ, Telegram, Snapchat, Kuaishou, Qzone, Pinterest, Twitter, Reddit, Quora, Skype, Microsoft Teams, LinkedIn, VK, Viber, Vimeo, OK, Tumblr, Behance, SoundCloud | each brand's own hex (and the gradients of Messenger, Instagram and Skype) | A brand's mark is someone else's sign; its colour is not the Framework's choice. The black brands (TikTok, QQ, Tumblr) get a one-line `--sf-outline-variant` edge inside the box in the dark theme. |

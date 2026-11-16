@@ -13,5 +13,15 @@
             background-color: #{$bg-color-brand-value};
         }
     }
+
+    // The black brands' edge in the dark theme (C269): an outline drawn
+    // inside the box, so nothing moves, and left to the focus ring while the
+    // element shows focus.
+    @each $bg-color-brand-name in $bg-color-brand-dark-edge {
+        .#{$infix}bg-#{$bg-color-brand-name}:not(:focus-visible) {
+            outline: var(--sf-line--border) solid light-dark(transparent, var(--sf-outline-variant));
+            outline-offset: calc(-1 * var(--sf-line--border));
+        }
+    }
 // }
 }
