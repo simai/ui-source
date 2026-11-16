@@ -11,6 +11,10 @@ $absolute-side-array:(
     inline-start,
 );
 
+// Fractions are written in lowest terms (owner decision C212 (4), 2026-11-16):
+// a reducible fraction (2/4, 3/6, 6/12, 2/6, 4/12 ...) and 1/1 keep drawing
+// until 2027-01-01 as dated aliases of 1/2, 1/3 ... and full, noted in
+// SF.deprecations (core/js/retired-classes.table.js, journal class-c212-length).
 $absolute-value-array:(
     0: 0,
 	auto		: auto,

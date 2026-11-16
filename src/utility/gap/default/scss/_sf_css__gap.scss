@@ -11,6 +11,8 @@
     @include breakpoint-media(xs) {
         $infix: breakpoint-infix(xs, $breakpoint-array);
 
+        // g-*, g-x-*, g-y-* are dated aliases of gap-*, gap-x-*, gap-y-* until
+        // 2027-01-01 (owner decision C212 (4); journal class-c212-length).
         // Gap Size
         // For size use text size variables
         // Atention! Text variables have different size for mobile and destop devices
@@ -26,6 +28,9 @@
         }
 
         // Explicit axes refine the shorthand regardless of spacing-token order.
+        // col-gap-* and row-gap-* are dated aliases of gap-x-* and gap-y-* until
+        // 2027-01-01 (C212 (4); journal class-c212-length); a cq- container
+        // condition keeps them (utility.query-layout).
         @each $size in $space-size-array {
             // Gap for X
             .#{$infix}col-gap-#{$size},

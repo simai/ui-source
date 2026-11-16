@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.width-ext",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/width-ext/default/index.js",
@@ -37,7 +37,7 @@
     "src/utility/width-ext/xxl/scss/_sf_css__width.scss",
     "src/utility/width-ext/xxl/scss/index.scss"
   ],
-  "content_sha256": "c4237b459bd25eda96e6481c972524ec434bc6a80e240931dd862264cf91295d",
+  "content_sha256": "f85ccd21e65a934f95095b712be5d2e400bd19df518563a4d6fa65dd093dfd7a",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

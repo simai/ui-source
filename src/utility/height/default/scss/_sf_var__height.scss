@@ -6,6 +6,10 @@
 @use '../../../../core/scss/vars/sf_var__size' as size;
 
 // Height Array
+// Fractions are written in lowest terms (owner decision C212 (4), 2026-11-16):
+// a reducible fraction (2/4, 3/6, 6/12, 2/6, 4/12 ...) and 1/1 keep drawing
+// until 2027-01-01 as dated aliases of 1/2, 1/3 ... and full, noted in
+// SF.deprecations (core/js/retired-classes.table.js, journal class-c212-length).
 $height-array: (
 	auto			: auto,
 	"1\\/2" 		: 50%,
@@ -36,6 +40,8 @@ $height-array: (
 	"screen-3\\/4" 	: 75vh,	
 	"min"           : min-content,
 	"max"           : max-content,
+	// content-min and content-max are dated aliases of min and max until
+	// 2027-01-01 (C212 (4); journal class-c212-length).
 	"content-min"   : min-content,
 	"content-max"   : max-content,
     "fit" 	        : fit-content,

@@ -10,6 +10,9 @@
     @include breakpoint-media(xs) {
         $infix: breakpoint-infix(xs, $breakpoint-array);
         
+        // Deprecated until 2027-01-01 (owner decision C212 (4); journal
+        // class-c212-length-nearest): write gap-x-N / gap-y-N on a flex or grid
+        // parent. The classes keep drawing what they drew.
         // Margin and padding size
         // For size use text size variables
         // Atention! Text variables have different size for mobile and destop devices

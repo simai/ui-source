@@ -30,7 +30,8 @@ const SHEETS = new Map();
 const MODIFIERS = [];
 for (const record of table.records) {
   for (const [from, value] of Object.entries(record.names || {})) NAMES.set(from, entry(record, from, value));
-  for (const item of record.patterns || []) PATTERNS.push({...entry(record, item.from, item.to), re: new RegExp(item.pattern)});
+  for (const item of record.patterns || []) PATTERNS.push({...entry(record, item.from, item.to), re: new RegExp(item.pattern), values: item.values,
+    except: item.variants_except ? new RegExp(item.variants_except, 'u') : null});
   for (const [sheet, to] of Object.entries(record.sheets || {})) SHEETS.set(sheet, entry(record, sheet, to));
   for (const [name, item] of Object.entries(record.modifiers || {})) MODIFIERS.push({...entry(record, name, item.to), name, re: new RegExp(item.with)});
 }
@@ -69,10 +70,18 @@ export function retiredClassName(token) {
   let to = found?.to;
   if (!found) {
     for (const item of PATTERNS) {
+      // variants_except names the prefixes under which the family keeps its
+      // name (C212 (4): cq-md:col-gap-2 stays, query-layout has no gap-x-*).
+      if (item.except?.test(variants)) continue;
       const match = base.match(item.re);
       if (!match) continue;
       found = item;
-      to = item.to === null ? null : base.replace(item.re, item.to);
+      // values maps a group to the name it stands for in `to` (C212 (4): the
+      // rung m-b6 is written m-1, its nearest space step; journal
+      // class-c212-length-nearest).
+      to = item.to === null ? null : base.replace(item.re, item.values
+        ? (...groups) => item.to.replace(/\$(\d)/gu, (ref, n) => item.values[n]?.[groups[n]] ?? groups[n])
+        : item.to);
       break;
     }
   }

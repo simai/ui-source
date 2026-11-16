@@ -12,6 +12,10 @@
         $infix: breakpoint-infix(xs, $breakpoint-array);
 
         // Fixed Basic Additional Utilities
+        // basis-1 ... basis-100 (percent) are deprecated until 2027-01-01 (owner
+        // decision C212 (4); journals class-c212-length, class-c212-length-nearest):
+        // write a fraction in lowest terms (basis-50 is basis-1/2, basis-100 is
+        // basis-full; basis-33 -> basis-1/3, the nearest).
         @for $k from 1 through 100 {
             .#{$infix}basis-#{$k} {
                 flex-basis: #{$k + '%'};

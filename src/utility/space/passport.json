@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.space",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/space/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/space/xxl/scss/_sf_css__space.scss",
     "src/utility/space/xxl/scss/index.scss"
   ],
-  "content_sha256": "6f657bc08d40b6bb6e92f9d1024a5931a6c7a6dd96dbef6ac98ac22179c64a50",
+  "content_sha256": "4e7bd9ecf1c132d42bd999d85dd8e638904084cb6f737aa199fed50788816c9b",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

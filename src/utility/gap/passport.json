@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.gap",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/gap/default/index.js",
@@ -37,7 +37,7 @@
     "src/utility/gap/xxl/scss/_sf_css__gap.scss",
     "src/utility/gap/xxl/scss/index.scss"
   ],
-  "content_sha256": "993278e83f592f512096a5ceb1dddd8dfca1cb57fdc7c4d5d1c12e7549e0abc1",
+  "content_sha256": "6b906eb9306aa8879804fbd000ce9ec0074502dd9b9e6e25d35ce9002a5a9a02",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

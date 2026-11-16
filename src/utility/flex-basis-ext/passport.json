@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.flex-basis-ext",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/flex-basis-ext/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/flex-basis-ext/xxl/scss/_sf_css__flex_basis.scss",
     "src/utility/flex-basis-ext/xxl/scss/index.scss"
   ],
-  "content_sha256": "c862a6807a56019a84e1c1788262c05b9758aa28286b8ed60b9048b0e7380f8e",
+  "content_sha256": "60bc479c0baac5cfc845c4dcc9df01c83d5fa0507bf099ff6022c16483a8a3ee",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

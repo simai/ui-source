@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.height",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/height/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/height/xxl/scss/_sf_css__height.scss",
     "src/utility/height/xxl/scss/index.scss"
   ],
-  "content_sha256": "2da64dbb388b46174dfa1666a879dd1763c4128ffb37b7d16ee5bb81166afb51",
+  "content_sha256": "4ca9cff6b266bd5b32cb8e6b27c06922b678bb77257ab570e0b17acfbaade4aa",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
