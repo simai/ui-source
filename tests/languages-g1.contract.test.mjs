@@ -38,7 +38,7 @@ test('#86 sf-change: one phrase with both values for a screen reader, not a word
   const template = read('src/smart/change/js/templates/default.js');
   assert.doesNotMatch(template, /words\.to\b/u);
   assert.match(template, /<span class="sr-only">\$\{context\.words\.change\(said\(context, change\.before\), said\(context, change\.after\)\)\}<\/span>/u);
-  assert.match(read('src/smart/change/index.js'), /change: \(before, after\) => this\.sfWord\('change-text', \{vars: \{before, after\}\}\)/u);
+  assert.match(read('src/smart/change/index.js'), /return this\.sfWord\('change-text', \{vars: \{before, after\}\}\)/u);
 });
 
 test('#86 slider-range: no Russian words in code; each box is named by one phrase with the name in it', () => {
@@ -108,7 +108,7 @@ test('#86 decimal sign: a contrast ratio is written by Intl in the page language
     for (const code of LANGS) assert.equal(runtime(folder, code).decimal, undefined, `${folder} ${code}`);
     const source = read(`${folder}/index.js`);
     assert.doesNotMatch(source, /sfWord\(["']decimal["']\)|word\(["']decimal["']\)/u);
-    assert.match(source, /ratio: formatNumber\(check\.ratio, ["']number["'], \{node: this\}\)/u);
+    assert.match(source, /formatNumber\(ratio, ["']number["'], \{node: this\}\)/u);
   }
 });
 

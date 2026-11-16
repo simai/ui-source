@@ -13122,100 +13122,6 @@
       "source": "src/smart/tag/js/templates/default.js; ui-control control/docs-review/decisions.md C140"
     },
     {
-      "id": "class-clipboard-surface-to-plain-icon-button",
-      "recorded_on": "2026-11-16",
-      "stage": "compat",
-      "kind": "class",
-      "summary": "component.clipboard 1.4.0 (owner decision C217, 2026-11-16; study actions-clipboard-study.html, question 1, variant B): the copy button's own look sf-clipboard-surface is deprecated. A copy button is an icon button, and an icon inside another element is the plain one (C201): sf-icon-button sf-icon-button--plain of the same size. Until remove_after the class draws exactly that look -- no plate in any state, the glyph on-surface-variant at rest, on-surface under the pointer, primary on a press, on-surface-disabled when disabled, the ring every button draws -- at the icon button's five sizes (sf-clipboard--size-1/3, -1/2, -1, -2, -3; no size class is size 1), keeps the copy behaviour, the name tooltip and the status, and is noted once in SF.deprecations. This replaces RG-CP-1 (ink), RG-CP-2 (sizes 1/2 and 3) and RG-CP-3 (forced-colours edge).",
-      "items": [
-        {
-          "component": "clipboard",
-          "from": "sf-clipboard-surface",
-          "to": "sf-icon-button sf-icon-button--plain sf-icon-button--icon",
-          "match": "(?<![\\w.-])sf-clipboard-surface(?![\\w-])"
-        },
-        {
-          "component": "clipboard",
-          "from": "sf-clipboard--size-1/3",
-          "to": "sf-icon-button--size-1/3",
-          "match": "(?<![\\w.-])sf-clipboard--size-1/3(?![\\w/-])"
-        },
-        {
-          "component": "clipboard",
-          "from": "sf-clipboard--size-1/2",
-          "to": "sf-icon-button--size-1/2",
-          "match": "(?<![\\w.-])sf-clipboard--size-1/2(?![\\w/-])"
-        },
-        {
-          "component": "clipboard",
-          "from": "sf-clipboard--size-1",
-          "to": "sf-icon-button--size-1",
-          "match": "(?<![\\w.-])sf-clipboard--size-1(?![\\w/-])"
-        },
-        {
-          "component": "clipboard",
-          "from": "sf-clipboard--size-2",
-          "to": "sf-icon-button--size-2",
-          "match": "(?<![\\w.-])sf-clipboard--size-2(?![\\w/-])"
-        },
-        {
-          "component": "clipboard",
-          "from": "sf-clipboard--size-3",
-          "to": "sf-icon-button--size-3",
-          "match": "(?<![\\w.-])sf-clipboard--size-3(?![\\w/-])"
-        }
-      ],
-      "deprecated_on": "2026-11-16",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Replace sf-clipboard-surface with sf-icon-button sf-icon-button--plain sf-icon-button--icon and its size class sf-clipboard--size-N (or the former sf-clipboard-1/-2/-3: 1/3, 1, 2) with sf-icon-button--size-N; a button with no size class takes sf-icon-button--size-1. The copy attributes (data-sf-copy, data-sf-copy-target, data-success, data-error, data-duration, data-status) and aria-label stay. An overlay copy keeps sf-clipboard--overlay.",
-      "examples": {
-        "before": "<button class=\"sf-clipboard-surface sf-clipboard--size-1\" data-sf-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\"><i class=\"sf-icon\" aria-hidden=\"true\">content_copy</i></button>",
-        "after": "<button class=\"sf-icon-button sf-icon-button--plain sf-icon-button--icon sf-icon-button--size-1\" data-sf-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\"><i class=\"sf-icon\" aria-hidden=\"true\">content_copy</i></button>"
-      },
-      "owner": "ui-source",
-      "source": "src/component/clipboard/scss/_sf_copy.scss; src/component/clipboard/js/index.js noteSurface; ui-control control/docs-review/decisions.md C217, C201"
-    },
-    {
-      "id": "class-download-file-plain-parts",
-      "recorded_on": "2026-11-16",
-      "stage": "compat",
-      "kind": "class",
-      "summary": "component.download-file 1.6.0 (dispatcher decision 2026-11-16, study actions-download-file-study.html D1): the plain markup's parts that the DownloadFile class does not build -- sf-download-file-wrap, sf-download-file-container, sf-download-file-file-name and sf-download-file-file-size with no BEM part beside them -- are deprecated. They keep their current look until remove_after, but the type and the size never go under the name and a screen reader hears the name and the size run together (decision C51 holds only in the class markup). The script notes each one once in SF.deprecations. The class markup, which carries both names, is not affected.",
-      "items": [
-        {
-          "component": "download-file",
-          "from": "sf-download-file-wrap",
-          "to": "sf-download-file__body"
-        },
-        {
-          "component": "download-file",
-          "from": "sf-download-file-container",
-          "to": "sf-download-file__main"
-        },
-        {
-          "component": "download-file",
-          "from": "sf-download-file-file-name",
-          "to": "sf-download-file__name"
-        },
-        {
-          "component": "download-file",
-          "from": "sf-download-file-file-size",
-          "to": "sf-download-file__size"
-        }
-      ],
-      "deprecated_on": "2026-11-16",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Write the row the DownloadFile class builds (or let the class build it from data-sf-component-params): the body, the main part with the icon and the text, the name with the words a screen reader hears (sf-download-file__said), and the facts sf-download-file__meta with sf-download-file__type and sf-download-file__size. The former part names may stay beside the BEM ones.",
-      "examples": {
-        "before": "<a class=\"sf-download-file\" href=\"/report.pdf\" download><span class=\"sf-download-file-wrap\"><span class=\"sf-download-file-container\"><i class=\"sf-icon\" aria-hidden=\"true\">download</i><span class=\"sf-download-file-file-name\">report.pdf</span></span><span class=\"sf-download-file-file-size\">2,4 МБ</span></span></a>",
-        "after": "<a class=\"sf-download-file\" href=\"/report.pdf\" download><span class=\"sf-download-file__body\"><span class=\"sf-download-file__main\"><i class=\"sf-download-file__icon sf-icon\" aria-hidden=\"true\">download</i><span class=\"sf-download-file__text\"><span class=\"sf-download-file__name\">report.pdf<span class=\"sf-download-file__said\">, PDF, 2,4 мегабайта</span></span><span class=\"sf-download-file__meta\" aria-hidden=\"true\"><span class=\"sf-download-file__type\">PDF</span><span class=\"sf-download-file__size\">2,4 МБ</span></span></span></span></span></a>"
-      },
-      "owner": "ui-source",
-      "source": "src/component/download-file/js/_download-file.js notePlainParts; ui-control actions-download-file-study.html D1"
-    },
-    {
       "id": "behaviour-field-renderers-required-boolean-checkbox",
       "recorded_on": "2026-11-14",
       "stage": "compat",
@@ -14008,6 +13914,238 @@
       },
       "owner": "ui-source",
       "source": "src/utility/ring-width/default/scss/_sf_var__ring_width.scss; src/utility/ring-opacity"
+    },
+    {
+      "id": "utility-c208-scrollbar-retired-sheets",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C208 (2), (3): the scrollbar has no palette and no thickness of its own. The thumb takes the colours of the place it is in -- the boundary (--sf-outline) at rest, the text (--sf-on-surface) under the pointer and while dragged -- and the bar is track 14, thumb 6 at every density and on the phone. The thumb colour utilities (scroll-primary, scroll-secondary, scroll-tertiary, scroll-surface, scroll-current, scroll-transparent and their scroll-thumb-* spellings), the thumb width utilities (scroll-0 ... scroll-4, scroll-thumb-0 ... scroll-thumb-4) and the track width utilities (scroll-bg-1 ... scroll-bg-4) keep drawing what they drew until remove_after (the sheets stay, utility.full.css keeps them), and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "scroll-slider-color",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|humb-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|ransparent))|ransparent)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-slider-width",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-(?:0|1|2|3|4|thumb-(?:0|1|2|3|4)))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-backdrop-width",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-bg-(?:1|2|3|4))(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class: the bar takes the place's colours and the one thickness by itself. A quieter bar is scroll-subtle; a bar shown only while the pointer is over the area is scroll-hover.",
+      "owner": "ui-source",
+      "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
+    },
+    {
+      "id": "utility-c210-scrollbar-retired-sheets",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C210 (5): one bar everywhere -- a strip of 14 (gap 4, thumb 6, 4 to the edge), the place's boundary, round ends, shown while the area scrolls, while the pointer is at its strip, while the focus is inside and once when it appears, hidden 1 s after; its room stays. The utilities that tuned the old bars leave: scroll-hover (now the default), scroll-subtle (the bar has one colour), the track colours scroll-bg-<colour>, the track roundings scroll-bg-radius-1 ... 4 and the thumb roundings scroll-radius-1 ... 4, scroll-thumb-radius-1 ... 4. They keep drawing what they set until remove_after (the drawn bar reads their variables), and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "scroll-hover",
+          "to": null,
+          "match": "(?<![\\w-])scroll-hover(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-subtle",
+          "to": null,
+          "match": "(?<![\\w-])scroll-subtle(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-backdrop-color",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-bg-(?:current|error|info|primary|s(?:econdary|u(?:ccess|rface))|t(?:ertiary|ransparent)|warning))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-backdrop-radius",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-bg-radius-(?:1|2|3|4))(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-slider-radius",
+          "to": null,
+          "match": "(?<![\\w-])(?:scroll-(?:radius-(?:1|2|3|4)|thumb-radius-(?:1|2|3|4)))(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove scroll-hover: the bar hides by itself. Remove scroll-subtle and scroll-bg-<colour>: the bar takes the colours of the place it is in. Remove scroll-radius-*, scroll-thumb-radius-* and scroll-bg-radius-*: the ends are round; write scrollbar-square for a bar without rounding. For a bar shown at rest write scrollbar-always; a thin one, scrollbar-thin; one at the very edge, scrollbar-flush; none, scrollbar-hidden.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210"
+    },
+    {
+      "id": "class-c210-scrollbar-class",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C210 (5): the legacy .scrollbar class of the scrollbar component sheet (an 8 strip, named in no document) leaves; every scrolling area has the one bar without a class. It keeps its 8 strip until remove_after, and the Loader notes it once in SF.deprecations.",
+      "items": [
+        {
+          "component": "scrollbar",
+          "from": "scrollbar",
+          "to": null,
+          "match": "class=[\"'](?:[^\"']*\\s)?scrollbar(?:\\s[^\"']*)?[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class scrollbar: the area draws the one bar by itself.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210"
+    },
+    {
+      "id": "component-c210-scrollbar-modes",
+      "recorded_on": "2026-11-15",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "sf-scrollbar 1.4.0 (owner decision C210 (4), (5)): data-mode takes the one bar's modifier words -- always, thin, flush, square, hidden, in any combination (data-mode=\"thin flush\") -- and the component turns them into the classes scrollbar-always ... scrollbar-hidden on its viewport; the bar itself is core's. The modes overlay and standard are the default now, persistent is always, and the attribute data-sf-scrollbar is data-mode; each keeps working until remove_after and is noted once in SF.deprecations. hidden keeps its meaning.",
+      "items": [
+        {
+          "component": "sf-scrollbar",
+          "from": "data-mode=\"overlay\"",
+          "to": null,
+          "match": "data-(?:mode|sf-scrollbar)=[\"']overlay[\"']"
+        },
+        {
+          "component": "sf-scrollbar",
+          "from": "data-mode=\"standard\"",
+          "to": null,
+          "match": "data-(?:mode|sf-scrollbar)=[\"']standard[\"']"
+        },
+        {
+          "component": "sf-scrollbar",
+          "from": "data-mode=\"persistent\"",
+          "to": "data-mode=\"always\"",
+          "match": "data-(?:mode|sf-scrollbar)=[\"']persistent[\"']"
+        },
+        {
+          "component": "sf-scrollbar",
+          "from": "data-sf-scrollbar",
+          "to": "data-mode",
+          "match": "\\bdata-sf-scrollbar=[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-15",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove data-mode=\"overlay\" and data-mode=\"standard\" (the bar shows while the area is used and hides 1 s after). Write data-mode=\"always\" for persistent, and data-mode for data-sf-scrollbar.",
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210; src/component/scrollbar/js/_scrollbar.js"
+    },
+    {
+      "id": "class-clipboard-surface-to-plain-icon-button",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.clipboard 1.4.0 (owner decision C217, 2026-11-16; study actions-clipboard-study.html, question 1, variant B): the copy button's own look sf-clipboard-surface is deprecated. A copy button is an icon button, and an icon inside another element is the plain one (C201): sf-icon-button sf-icon-button--plain of the same size. Until remove_after the class draws exactly that look -- no plate in any state, the glyph on-surface-variant at rest, on-surface under the pointer, primary on a press, on-surface-disabled when disabled, the ring every button draws -- at the icon button's five sizes (sf-clipboard--size-1/3, -1/2, -1, -2, -3; no size class is size 1), keeps the copy behaviour, the name tooltip and the status, and is noted once in SF.deprecations. This replaces RG-CP-1 (ink), RG-CP-2 (sizes 1/2 and 3) and RG-CP-3 (forced-colours edge).",
+      "items": [
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard-surface",
+          "to": "sf-icon-button sf-icon-button--plain sf-icon-button--icon",
+          "match": "(?<![\\w.-])sf-clipboard-surface(?![\\w-])"
+        },
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard--size-1/3",
+          "to": "sf-icon-button--size-1/3",
+          "match": "(?<![\\w.-])sf-clipboard--size-1/3(?![\\w/-])"
+        },
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard--size-1/2",
+          "to": "sf-icon-button--size-1/2",
+          "match": "(?<![\\w.-])sf-clipboard--size-1/2(?![\\w/-])"
+        },
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard--size-1",
+          "to": "sf-icon-button--size-1",
+          "match": "(?<![\\w.-])sf-clipboard--size-1(?![\\w/-])"
+        },
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard--size-2",
+          "to": "sf-icon-button--size-2",
+          "match": "(?<![\\w.-])sf-clipboard--size-2(?![\\w/-])"
+        },
+        {
+          "component": "clipboard",
+          "from": "sf-clipboard--size-3",
+          "to": "sf-icon-button--size-3",
+          "match": "(?<![\\w.-])sf-clipboard--size-3(?![\\w/-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Replace sf-clipboard-surface with sf-icon-button sf-icon-button--plain sf-icon-button--icon and its size class sf-clipboard--size-N (or the former sf-clipboard-1/-2/-3: 1/3, 1, 2) with sf-icon-button--size-N; a button with no size class takes sf-icon-button--size-1. The copy attributes (data-sf-copy, data-sf-copy-target, data-success, data-error, data-duration, data-status) and aria-label stay. An overlay copy keeps sf-clipboard--overlay.",
+      "examples": {
+        "before": "<button class=\"sf-clipboard-surface sf-clipboard--size-1\" data-sf-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\"><i class=\"sf-icon\" aria-hidden=\"true\">content_copy</i></button>",
+        "after": "<button class=\"sf-icon-button sf-icon-button--plain sf-icon-button--icon sf-icon-button--size-1\" data-sf-copy=\"npm i @simai-studio/ui\" aria-label=\"Копировать команду\"><i class=\"sf-icon\" aria-hidden=\"true\">content_copy</i></button>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/clipboard/scss/_sf_copy.scss; src/component/clipboard/js/index.js noteSurface; ui-control control/docs-review/decisions.md C217, C201"
+    },
+    {
+      "id": "class-download-file-plain-parts",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.download-file 1.6.0 (dispatcher decision 2026-11-16, study actions-download-file-study.html D1): the plain markup's parts that the DownloadFile class does not build -- sf-download-file-wrap, sf-download-file-container, sf-download-file-file-name and sf-download-file-file-size with no BEM part beside them -- are deprecated. They keep their current look until remove_after, but the type and the size never go under the name and a screen reader hears the name and the size run together (decision C51 holds only in the class markup). The script notes each one once in SF.deprecations. The class markup, which carries both names, is not affected.",
+      "items": [
+        {
+          "component": "download-file",
+          "from": "sf-download-file-wrap",
+          "to": "sf-download-file__body"
+        },
+        {
+          "component": "download-file",
+          "from": "sf-download-file-container",
+          "to": "sf-download-file__main"
+        },
+        {
+          "component": "download-file",
+          "from": "sf-download-file-file-name",
+          "to": "sf-download-file__name"
+        },
+        {
+          "component": "download-file",
+          "from": "sf-download-file-file-size",
+          "to": "sf-download-file__size"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the row the DownloadFile class builds (or let the class build it from data-sf-component-params): the body, the main part with the icon and the text, the name with the words a screen reader hears (sf-download-file__said), and the facts sf-download-file__meta with sf-download-file__type and sf-download-file__size. The former part names may stay beside the BEM ones.",
+      "examples": {
+        "before": "<a class=\"sf-download-file\" href=\"/report.pdf\" download><span class=\"sf-download-file-wrap\"><span class=\"sf-download-file-container\"><i class=\"sf-icon\" aria-hidden=\"true\">download</i><span class=\"sf-download-file-file-name\">report.pdf</span></span><span class=\"sf-download-file-file-size\">2,4 МБ</span></span></a>",
+        "after": "<a class=\"sf-download-file\" href=\"/report.pdf\" download><span class=\"sf-download-file__body\"><span class=\"sf-download-file__main\"><i class=\"sf-download-file__icon sf-icon\" aria-hidden=\"true\">download</i><span class=\"sf-download-file__text\"><span class=\"sf-download-file__name\">report.pdf<span class=\"sf-download-file__said\">, PDF, 2,4 мегабайта</span></span><span class=\"sf-download-file__meta\" aria-hidden=\"true\"><span class=\"sf-download-file__type\">PDF</span><span class=\"sf-download-file__size\">2,4 МБ</span></span></span></span></span></a>"
+      },
+      "owner": "ui-source",
+      "source": "src/component/download-file/js/_download-file.js notePlainParts; ui-control actions-download-file-study.html D1"
     },
     {
       "deprecated_on": "2026-11-16",
@@ -17415,39 +17553,6 @@
       "source": "src/utility/letter-spacing/default/scss/_sf_css__letter_spacing.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-typography-study.html UT-TYP-5"
     },
     {
-      "id": "utility-c208-scrollbar-retired-sheets",
-      "recorded_on": "2026-11-15",
-      "stage": "compat",
-      "kind": "utility",
-      "summary": "Owner decision C208 (2), (3): the scrollbar has no palette and no thickness of its own. The thumb takes the colours of the place it is in -- the boundary (--sf-outline) at rest, the text (--sf-on-surface) under the pointer and while dragged -- and the bar is track 14, thumb 6 at every density and on the phone. The thumb colour utilities (scroll-primary, scroll-secondary, scroll-tertiary, scroll-surface, scroll-current, scroll-transparent and their scroll-thumb-* spellings), the thumb width utilities (scroll-0 ... scroll-4, scroll-thumb-0 ... scroll-thumb-4) and the track width utilities (scroll-bg-1 ... scroll-bg-4) keep drawing what they drew until remove_after (the sheets stay, utility.full.css keeps them), and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js).",
-      "items": [
-        {
-          "component": "utility",
-          "from": "scroll-slider-color",
-          "to": null,
-          "match": "(?<![\\w-])(?:scroll-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|humb-(?:current|primary|s(?:econdary|urface)|t(?:ertiary|ransparent))|ransparent)))(?![\\w-])"
-        },
-        {
-          "component": "utility",
-          "from": "scroll-slider-width",
-          "to": null,
-          "match": "(?<![\\w-])(?:scroll-(?:0|1|2|3|4|thumb-(?:0|1|2|3|4)))(?![\\w-])"
-        },
-        {
-          "component": "utility",
-          "from": "scroll-backdrop-width",
-          "to": null,
-          "match": "(?<![\\w-])(?:scroll-bg-(?:1|2|3|4))(?![\\w-])"
-        }
-      ],
-      "deprecated_on": "2026-11-15",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Remove the class: the bar takes the place's colours and the one thickness by itself. A quieter bar is scroll-subtle; a bar shown only while the pointer is over the area is scroll-hover.",
-      "owner": "ui-source",
-      "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
-    },
-    {
       "id": "attribute-list-has-more-to-pagination-more",
       "recorded_on": "2026-11-16",
       "stage": "compat",
@@ -17494,111 +17599,6 @@
       },
       "manual": "Write appearance=\"bordered\" for appearance=\"outlined\" (and type=\"outlined\", the axis's old name) on sf-dropdown, or leave the attribute out: bordered is the default. Class markup keeps .sf-dropdown--outlined.",
       "source": "src/smart/dropdown/aliases.json; src/smart/dropdown/index.js"
-    },
-    {
-      "id": "utility-c210-scrollbar-retired-sheets",
-      "recorded_on": "2026-11-15",
-      "stage": "compat",
-      "kind": "utility",
-      "summary": "Owner decision C210 (5): one bar everywhere -- a strip of 14 (gap 4, thumb 6, 4 to the edge), the place's boundary, round ends, shown while the area scrolls, while the pointer is at its strip, while the focus is inside and once when it appears, hidden 1 s after; its room stays. The utilities that tuned the old bars leave: scroll-hover (now the default), scroll-subtle (the bar has one colour), the track colours scroll-bg-<colour>, the track roundings scroll-bg-radius-1 ... 4 and the thumb roundings scroll-radius-1 ... 4, scroll-thumb-radius-1 ... 4. They keep drawing what they set until remove_after (the drawn bar reads their variables), and the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js).",
-      "items": [
-        {
-          "component": "utility",
-          "from": "scroll-hover",
-          "to": null,
-          "match": "(?<![\\w-])scroll-hover(?![\\w-])"
-        },
-        {
-          "component": "utility",
-          "from": "scroll-subtle",
-          "to": null,
-          "match": "(?<![\\w-])scroll-subtle(?![\\w-])"
-        },
-        {
-          "component": "utility",
-          "from": "scroll-backdrop-color",
-          "to": null,
-          "match": "(?<![\\w-])(?:scroll-bg-(?:current|error|info|primary|s(?:econdary|u(?:ccess|rface))|t(?:ertiary|ransparent)|warning))(?![\\w-])"
-        },
-        {
-          "component": "utility",
-          "from": "scroll-backdrop-radius",
-          "to": null,
-          "match": "(?<![\\w-])(?:scroll-bg-radius-(?:1|2|3|4))(?![\\w-])"
-        },
-        {
-          "component": "utility",
-          "from": "scroll-slider-radius",
-          "to": null,
-          "match": "(?<![\\w-])(?:scroll-(?:radius-(?:1|2|3|4)|thumb-radius-(?:1|2|3|4)))(?![\\w-])"
-        }
-      ],
-      "deprecated_on": "2026-11-15",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Remove scroll-hover: the bar hides by itself. Remove scroll-subtle and scroll-bg-<colour>: the bar takes the colours of the place it is in. Remove scroll-radius-*, scroll-thumb-radius-* and scroll-bg-radius-*: the ends are round; write scrollbar-square for a bar without rounding. For a bar shown at rest write scrollbar-always; a thin one, scrollbar-thin; one at the very edge, scrollbar-flush; none, scrollbar-hidden.",
-      "owner": "ui-source",
-      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210"
-    },
-    {
-      "id": "class-c210-scrollbar-class",
-      "recorded_on": "2026-11-15",
-      "stage": "compat",
-      "kind": "class",
-      "summary": "Owner decision C210 (5): the legacy .scrollbar class of the scrollbar component sheet (an 8 strip, named in no document) leaves; every scrolling area has the one bar without a class. It keeps its 8 strip until remove_after, and the Loader notes it once in SF.deprecations.",
-      "items": [
-        {
-          "component": "scrollbar",
-          "from": "scrollbar",
-          "to": null,
-          "match": "class=[\"'](?:[^\"']*\\s)?scrollbar(?:\\s[^\"']*)?[\"']"
-        }
-      ],
-      "deprecated_on": "2026-11-15",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Remove the class scrollbar: the area draws the one bar by itself.",
-      "owner": "ui-source",
-      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210"
-    },
-    {
-      "id": "component-c210-scrollbar-modes",
-      "recorded_on": "2026-11-15",
-      "stage": "compat",
-      "kind": "value",
-      "summary": "sf-scrollbar 1.4.0 (owner decision C210 (4), (5)): data-mode takes the one bar's modifier words -- always, thin, flush, square, hidden, in any combination (data-mode=\"thin flush\") -- and the component turns them into the classes scrollbar-always ... scrollbar-hidden on its viewport; the bar itself is core's. The modes overlay and standard are the default now, persistent is always, and the attribute data-sf-scrollbar is data-mode; each keeps working until remove_after and is noted once in SF.deprecations. hidden keeps its meaning.",
-      "items": [
-        {
-          "component": "sf-scrollbar",
-          "from": "data-mode=\"overlay\"",
-          "to": null,
-          "match": "data-(?:mode|sf-scrollbar)=[\"']overlay[\"']"
-        },
-        {
-          "component": "sf-scrollbar",
-          "from": "data-mode=\"standard\"",
-          "to": null,
-          "match": "data-(?:mode|sf-scrollbar)=[\"']standard[\"']"
-        },
-        {
-          "component": "sf-scrollbar",
-          "from": "data-mode=\"persistent\"",
-          "to": "data-mode=\"always\"",
-          "match": "data-(?:mode|sf-scrollbar)=[\"']persistent[\"']"
-        },
-        {
-          "component": "sf-scrollbar",
-          "from": "data-sf-scrollbar",
-          "to": "data-mode",
-          "match": "\\bdata-sf-scrollbar=[\"']"
-        }
-      ],
-      "deprecated_on": "2026-11-15",
-      "remove_after": "2027-01-01",
-      "rewrite": "manual",
-      "manual": "Remove data-mode=\"overlay\" and data-mode=\"standard\" (the bar shows while the area is used and hides 1 s after). Write data-mode=\"always\" for persistent, and data-mode for data-sf-scrollbar.",
-      "owner": "ui-source",
-      "source": "src/core/scss/_sf_css__scroll.scss; src/core/js/scrollbars.js; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-scrollbar-system.md; prototypes/scrollbar-system-study.html; control/docs-review/decisions.md C210; src/component/scrollbar/js/_scrollbar.js"
     },
     {
       "id": "global-sf-tab-to-sf-tabs",
@@ -17717,6 +17717,51 @@
       },
       "owner": "ui-source",
       "source": "src/core/js/composition/inline-model.mjs INLINE_PROP_ALIASES; contracts/conformance/structured-content/cases/inline-atom-badge-compact-alias.json; ui-control control/docs-review/decisions.md C134"
+    },
+    {
+      "id": "option-word-keys-removed-languages-g1",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "Languages (C177 follow-ups, fix/languages-g1): a word that names a value has the value's place in it, so four word keys glued around a value are gone: sf-change to-text (now change-text «было {before}, стало {after}»), sf-input-image quoted and chosen (now chosen-file, replace-file, remove-file, edit-file, cancel-upload-file, retry-file with {name}), sf-input-color and sf-theme-generator decimal (the ratio is written by Intl.NumberFormat). A product that registered a word under an old key through SF.language.register keeps the old phrase until remove_after, while it registers none under the new key for that language; the old key is noted once in SF.deprecations (kind word).",
+      "items": [
+        {
+          "component": "sf-change",
+          "from": "to-text",
+          "to": "change-text",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bto-text['\"]?\\s*:"
+        },
+        {
+          "component": "sf-input-image",
+          "from": "quoted",
+          "to": "chosen-file, replace-file, remove-file, edit-file, cancel-upload-file, retry-file",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bquoted['\"]?\\s*:"
+        },
+        {
+          "component": "sf-input-image",
+          "from": "chosen",
+          "to": "chosen-file",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bchosen['\"]?\\s*:"
+        },
+        {
+          "component": "sf-input-color",
+          "from": "decimal",
+          "to": "Intl.NumberFormat",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bdecimal['\"]?\\s*:"
+        },
+        {
+          "component": "sf-theme-generator",
+          "from": "decimal",
+          "to": "Intl.NumberFormat",
+          "match": "\\bSF\\.language\\.register(?:All)?\\([^;]{0,600}?['\"]?\\bdecimal['\"]?\\s*:"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "owner": "ui-source",
+      "source": "src/core/js/page-language.js registeredWord; sf-change changePhrase, sf-input-image fileWord, sf-input-color / sf-theme-generator _ratioText; tests/word-key-aliases-g1.contract.test.mjs",
+      "manual": "Register the word under the new key: change-text with {before} and {after} in place of to-text; the -file words with {name} (quotes included) in place of quoted and chosen; drop decimal, the ratio follows the page language."
     }
   ]
 }

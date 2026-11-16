@@ -15,6 +15,8 @@ import aliases from './aliases.json';
 import enFile from './lang/en.json';
 import ruFile from './lang/ru.json';
 import {formatNumber} from '../../core/js/format-number.js';
+import {registeredWord} from '../../core/js/page-language.js';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 // Only the words on screen ship in the bundle; the title, settings and events
 // stay in the language files for the Studio and the docs (localization study LC-2).
 const en = {runtime: enFile.runtime};
@@ -307,12 +309,22 @@ class SfColor extends ShownValidity(FormField(ColorElement)) {
         return this.checks.map((check) => ({...check, text: this._checkText(check)}));
     }
 
+    // The contrast ratio in the page's language (Intl). decimal, the word once
+    // put for the decimal point, is a dated alias until 2027-01-01
+    // (languages-g1): a product that registered it keeps its sign, noted once.
+    _ratioText(ratio) {
+        const decimal = registeredWord(this.localName, "decimal", this);
+        if (decimal === undefined) return formatNumber(ratio, "number", {node: this});
+        noteDeprecated({component: this.localName, tag: this.localName, kind: "word", from: "decimal", to: "Intl.NumberFormat", since: "2026-11-16", remove_after: "2027-01-01"});
+        return String(ratio).replace(".", decimal);
+    }
+
     _checkText(check) {
         switch (check.code) {
             case "contrast":
                 return this.sfWord("check-contrast", {vars: {
                     scheme: this.sfWord(`scheme-${check.scheme}`),
-                    ratio: formatNumber(check.ratio, "number", {node: this}),
+                    ratio: this._ratioText(check.ratio),
                 }});
             case "adjusted":
                 return this.sfWord(check.lighter ? "check-adjusted-light" : "check-adjusted-dark", {vars: {from: check.from, to: check.to}});

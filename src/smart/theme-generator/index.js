@@ -42,6 +42,7 @@ const en = {runtime: enFile.runtime};
 const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
 import {formatNumber} from '../../core/js/format-number.js';
+import {registeredWord} from '../../core/js/page-language.js';
 
 // The journal record component-theme-generator-to-input-color-brand.
 const RETIRED = Object.freeze({since: '2026-11-12', remove_after: '2027-01-01'});
@@ -202,12 +203,22 @@ class SfThemeGenerator extends ThemeGeneratorElement {
     return themeChecks(this._currentTheme());
   }
 
+  // The contrast ratio in the page's language (Intl). decimal, the word once
+  // put for the decimal point, is a dated alias until 2027-01-01
+  // (languages-g1): a product that registered it keeps its sign, noted once.
+  _ratioText(ratio) {
+    const decimal = registeredWord(this.localName, 'decimal', this);
+    if (decimal === undefined) return formatNumber(ratio, 'number', {node: this});
+    noteDeprecated({component: this.localName, tag: this.localName, kind: 'word', from: 'decimal', to: 'Intl.NumberFormat', since: '2026-11-16', remove_after: '2027-01-01'});
+    return String(ratio).replace('.', decimal);
+  }
+
   // A check in words: the language file's check-<code>, with its numbers.
   _checkText(check) {
     const word = (key) => this.sfWord(key);
     switch (check.code) {
       case 'contrast':
-        return this.sfWord('check-contrast', {vars: {scheme: word(`scheme-${check.scheme}`), ratio: formatNumber(check.ratio, 'number', {node: this})}});
+        return this.sfWord('check-contrast', {vars: {scheme: word(`scheme-${check.scheme}`), ratio: this._ratioText(check.ratio)}});
       case 'adjusted':
         return this.sfWord(check.lighter ? 'check-adjusted-light' : 'check-adjusted-dark', {vars: {from: check.from, to: check.to}});
       case 'close-to-status':

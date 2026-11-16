@@ -379,6 +379,23 @@ export function pageWord(dictionary, key, node, {component, source = '', count, 
   return key;
 }
 
+/**
+ * The word a product registered (SF.language.register, or a product pack)
+ * under `key` for the node's language, its base language or English; the
+ * words a component ships are not read. Undefined when none is registered.
+ * A removed word key kept as a dated alias reads this: the old phrase is
+ * said only while a product still writes the old key.
+ */
+export function registeredWord(component, key, node) {
+  const byLanguage = wordsOf(component ?? componentOf(node));
+  if (!byLanguage) return undefined;
+  for (const candidate of chain(pageLocale(node))) {
+    const word = byLanguage.get(candidate)?.[key];
+    if (word !== undefined && word !== null) return word;
+  }
+  return undefined;
+}
+
 export const language = {
   /** What the page resolves to for this node, region and all. */
   current(node = globalThis.document?.documentElement ?? null) {

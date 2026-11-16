@@ -14,6 +14,8 @@
 // the language files'.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {registeredWord} from '../../core/js/page-language.js';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderChangeTemplate} from './js/templates/default';
 import manifest from './component.json';
 import enFile from './lang/en.json';
@@ -134,7 +136,7 @@ class SfChange extends ChangeElement {
       blocksId: `${this._uid}-blocks`,
       words: {
         empty: this.sfWord('empty-text'),
-        change: (before, after) => this.sfWord('change-text', {vars: {before, after}}),
+        change: (before, after) => this.changePhrase(before, after),
         separator: this.sfWord('label-separator'),
         show: this.sfWord('show-text'),
         hide: this.sfWord('hide-text'),
@@ -143,6 +145,18 @@ class SfChange extends ChangeElement {
       },
       rootClass: this.getRootClass(),
     });
+  }
+
+  // The phrase a screen reader hears. to-text, the word once glued between
+  // the values, is a dated alias until 2027-01-01 (languages-g1): a product
+  // that registered it and not change-text keeps «A to B», noted once.
+  changePhrase(before, after) {
+    const to = registeredWord(this.localName, 'to-text', this);
+    if (to === undefined || registeredWord(this.localName, 'change-text', this) !== undefined) {
+      return this.sfWord('change-text', {vars: {before, after}});
+    }
+    noteDeprecated({component: this.localName, tag: this.localName, kind: 'word', from: 'to-text', to: 'change-text', since: '2026-11-16', remove_after: '2027-01-01'});
+    return `${before} ${to} ${after}`;
   }
 
   template() {

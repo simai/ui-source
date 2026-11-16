@@ -33,6 +33,8 @@
 // field reads, sizes and announces itself as sf-input and sf-textarea do.
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {registeredWord} from '../../core/js/page-language.js';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
@@ -148,6 +150,17 @@ const ImageFieldElement = elementFromManifest(manifest, {
     },
   },
 });
+
+// The word each file word was built from before languages-g1 (the
+// quoted / chosen aliases, fileWord).
+const FORMER_FILE_LEADS = {
+  'chosen-file': 'chosen-file',
+  'replace-file': 'replace-name',
+  'remove-file': 'remove-name',
+  'edit-file': 'edit-name',
+  'cancel-upload-file': 'cancel-upload-name',
+  'retry-file': 'retry-name',
+};
 
 class SfImageField extends FormField(ImageFieldElement) {
   static get props() {
@@ -388,7 +401,26 @@ class SfImageField extends FormField(ImageFieldElement) {
 
   // A word that names the file: the name has its place in the word ({name},
   // quotes and all), so a language may put it first (C177 follow-up).
+  //
+  // quoted («%s») and chosen, the words once glued around the name, are dated
+  // aliases until 2027-01-01 (languages-g1): a product that registered them
+  // and not the new key keeps the old phrase («Заменить «logo.png»»), noted
+  // once in SF.deprecations.
   fileWord(key, name) {
+    const lead = FORMER_FILE_LEADS[key];
+    if (lead && registeredWord(this.localName, key, this) === undefined) {
+      const quoted = registeredWord(this.localName, 'quoted', this);
+      const chosen = key === 'chosen-file' ? registeredWord(this.localName, 'chosen', this) : undefined;
+      if (chosen !== undefined || (quoted !== undefined && key !== 'chosen-file')) {
+        for (const [from, word] of [['quoted', quoted], ['chosen', chosen]]) {
+          if (word !== undefined) {
+            noteDeprecated({component: this.localName, tag: this.localName, kind: 'word', from, to: key, since: '2026-11-16', remove_after: '2027-01-01'});
+          }
+        }
+        const shown = quoted !== undefined ? String(quoted).replace('%s', name) : `«${name}»`;
+        return `${chosen ?? this.sfWord(lead)} ${shown}`;
+      }
+    }
     return this.sfWord(key, {vars: {name}});
   }
 
