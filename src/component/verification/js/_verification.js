@@ -38,31 +38,80 @@ function legacyInputs(root) {
   return Array.from(root?.querySelectorAll?.(`${CONTROL_SELECTOR} input`) || []);
 }
 
-function renderCanonical(root, state) {
-  const value = normalize(state.input.value, state.mode, state.length);
-  if (state.input.value !== value) state.input.value = value;
-  // The caret is drawn in the cell the next character goes to while the
-  // field has the focus (K3): the input is transparent and draws none.
-  const focused = state.input.ownerDocument?.activeElement === state.input && !state.input.readOnly;
-  const current = Math.min(value.length, state.length - 1);
+// The cells draw the real caret and selection of the input (C82, RG-VR-1/2):
+// it was drawn after the last character whatever the caret did, so after
+// Left Left a 9 went in at 1 while cell 4 blinked. While the field has the
+// focus the cell is the one at selectionStart; a selection of more than one
+// character paints its cells `selected`. At rest the current cell is the one
+// the next character goes to; the sheet shows it only with the focus.
+function caretCell(input, value, length, focused) {
+  const at = focused ? (input.selectionStart ?? value.length) : value.length;
+  return Math.max(0, Math.min(at, length - 1));
+}
+
+// `fromUser`: verification:complete answers what the person typed or pasted
+// only; a field that loads, resets or is set already holding a whole code
+// says nothing (it fired on page load before).
+function renderCanonical(root, state, fromUser = false) {
+  const { input } = state;
+  const value = normalize(input.value, state.mode, state.length);
+  if (input.value !== value) input.value = value;
+  const focused = input.ownerDocument?.activeElement === input;
+  const start = focused ? (input.selectionStart ?? value.length) : value.length;
+  const end = focused ? (input.selectionEnd ?? start) : start;
+  const one = end - start <= 1;
+  const current = caretCell(input, value, state.length, focused);
+  // The caret is drawn in its cell while the field has the focus (K3): the
+  // input is transparent and draws none. A whole code puts it after the last
+  // character (caret-end).
+  const bare = focused && start === end && !input.readOnly;
   state.cells.forEach((cell, index) => {
-    cell.textContent = value[index] || '';
+    const character = value[index] || '';
+    if (cell.textContent !== character) cell.textContent = character;
     cell.classList.toggle('active', index < value.length);
-    cell.classList.toggle('current', index === current);
-    cell.classList.toggle('caret', focused && index === current);
-    cell.classList.toggle('caret-end', focused && index === current && value.length >= state.length);
+    cell.classList.toggle('current', one && index === current);
+    const selected = focused && !one && index >= start && index < end;
+    cell.classList.toggle('selected', selected);
+    // Hover marks the one cell under the pointer, never over the current
+    // cell's mark or a selection (K4, RG-VR-3).
+    cell.classList.toggle('hover', index === state.hover && !selected && !(focused && one && index === current));
+    cell.classList.toggle('caret', bare && index === current);
+    cell.classList.toggle('caret-end', bare && index === current && start >= state.length);
   });
   root.classList.toggle('active', Boolean(value));
 
-  if (value.length === state.length && state.completedValue !== value) {
-    state.completedValue = value;
-    root.dispatchEvent(new CustomEvent('verification:complete', {
-      bubbles: true,
-      detail: { value },
-    }));
-  } else if (value.length < state.length) {
+  if (value.length === state.length) {
+    if (state.completedValue !== value) {
+      state.completedValue = value;
+      if (fromUser) {
+        root.dispatchEvent(new CustomEvent('verification:complete', {
+          bubbles: true,
+          detail: { value },
+        }));
+      }
+    }
+  } else {
     state.completedValue = '';
   }
+}
+
+// A bare caret inside the code becomes a one-cell selection (sf-input-code's
+// rule, K3): what is marked is what typing replaces and Backspace or Delete
+// clears. A caret after the last character stays bare: the next character
+// goes there.
+function markCell(state) {
+  const { input } = state;
+  if (input.ownerDocument?.activeElement !== input || state.dragFrom >= 0) return;
+  const start = input.selectionStart;
+  if (start === null || start !== input.selectionEnd || start >= input.value.length) return;
+  input.setSelectionRange(start, start + 1, 'forward');
+}
+
+// The cell under a point: the input lies transparent over the cells and its
+// own caret position knows nothing of them.
+function cellAt(state, x) {
+  const index = state.cells.findIndex((cell) => x < cell.getBoundingClientRect().right);
+  return index === -1 ? state.cells.length - 1 : Math.max(index, 0);
 }
 
 function bindCanonical(root, input) {
@@ -90,11 +139,25 @@ function bindCanonical(root, input) {
     return cell;
   });
 
-  const state = { input, cells, length, mode, completedValue: '' };
+  // A field that loads holding a whole code is not completed by anyone.
+  const loaded = normalize(input.value, mode, length);
+  const state = {
+    input, cells, length, mode,
+    completedValue: loaded.length === length ? loaded : '',
+    hover: -1,
+    dragFrom: -1,
+    mousePressed: false,
+  };
+  const sync = () => renderCanonical(root, state);
+  const onCaret = () => {
+    markCell(state);
+    sync();
+  };
   const onInput = () => {
     root.classList.remove('error');
     input.removeAttribute('aria-invalid');
-    renderCanonical(root, state);
+    markCell(state);
+    renderCanonical(root, state, true);
   };
   const onPaste = (event) => {
     const value = normalize(event.clipboardData?.getData('text'), mode, length);
@@ -103,31 +166,136 @@ function bindCanonical(root, input) {
     input.value = value;
     onInput();
   };
-  const onReset = () => requestAnimationFrame(() => renderCanonical(root, state));
-  // A pointer focus rings no cell, only marks the current one (K1), until the
-  // focus leaves, as sf-input's .sf-input--pointer-focus.
-  const onPointerDown = () => control.classList.add('sf-verification--pointer-focus');
-  const onFocus = () => renderCanonical(root, state);
+  const onReset = () => requestAnimationFrame(() => {
+    state.completedValue = '';
+    sync();
+  });
+  // The arrows move a cell at a time (a native arrow only collapses the
+  // one-cell mark, and the mark would come back on the same cell), Shift with
+  // them grows the selection by a cell; Home and End go to the first cell and
+  // past the last character on every platform. The caret's cell is read once
+  // the key has done its work.
+  const onKeydown = (event) => {
+    const plain = !event.altKey && !event.ctrlKey && !event.metaKey;
+    const start = input.selectionStart ?? 0;
+    const end = input.selectionEnd ?? start;
+    const size = input.value.length;
+    if ((event.key === 'Home' || event.key === 'End') && plain) {
+      event.preventDefault();
+      const at = event.key === 'Home' ? 0 : size;
+      if (event.shiftKey) input.setSelectionRange(Math.min(at, start), Math.max(at, end), at < start ? 'backward' : 'forward');
+      else input.setSelectionRange(at, at);
+      onCaret();
+    } else if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && plain) {
+      event.preventDefault();
+      const back = event.key === 'ArrowLeft';
+      if (event.shiftKey) {
+        if (back) input.setSelectionRange(Math.max(0, start - 1), end, 'backward');
+        else input.setSelectionRange(start, Math.min(size, end + 1), 'forward');
+      } else {
+        const at = back ? Math.max(0, start - 1) : Math.min(size, start + 1);
+        input.setSelectionRange(at, at);
+      }
+      onCaret();
+    }
+    setTimeout(onCaret, 0);
+  };
+  // A mouse press puts the caret in the cell under it and a drag selects the
+  // cells it crosses (K2): the browser's own selection would follow the
+  // transparent text, not the cells. A touch is left to the browser (its
+  // caret, long-press menu and paste), then the click puts the caret in the
+  // cell. The focus by pointer and by keys is one look (C153 (4)); the class
+  // stays for a page that reads it.
+  const onPointerDown = (event) => {
+    control.classList.add('sf-verification--pointer-focus');
+    state.mousePressed = false;
+    if (event.pointerType !== 'mouse' || event.button !== 0 || input.disabled) return;
+    event.preventDefault();
+    state.mousePressed = true;
+    if (input.ownerDocument?.activeElement !== input) input.focus({ preventScroll: true });
+    const at = Math.min(cellAt(state, event.clientX), input.value.length);
+    state.dragFrom = -1;
+    input.setSelectionRange(at, at);
+    markCell(state);
+    state.dragFrom = at;
+    try { input.setPointerCapture(event.pointerId); } catch { /* a synthetic press */ }
+    sync();
+  };
+  const onPointerMove = (event) => {
+    const at = cellAt(state, event.clientX);
+    if (event.pointerType === 'mouse') {
+      const hover = input.disabled ? -1 : at;
+      if (hover !== state.hover) {
+        state.hover = hover;
+        sync();
+      }
+    }
+    if (state.dragFrom < 0 || !(event.buttons & 1)) return;
+    const from = Math.min(state.dragFrom, at);
+    const to = Math.min(Math.max(state.dragFrom, at) + 1, input.value.length);
+    if (to > from && (input.selectionStart !== from || input.selectionEnd !== to)) {
+      input.setSelectionRange(from, to, at < state.dragFrom ? 'backward' : 'forward');
+      sync();
+    }
+  };
+  const onPointerLeave = () => {
+    if (state.hover === -1) return;
+    state.hover = -1;
+    sync();
+  };
+  const onPointerUp = () => {
+    if (state.dragFrom < 0) return;
+    state.dragFrom = -1;
+    onCaret();
+  };
+  // A click (a touch's) lands in the cell under it; a mouse press placed the
+  // caret already, and its click must not collapse a drag's selection.
+  const onClick = (event) => {
+    if (input.disabled) return;
+    if (state.mousePressed) {
+      state.mousePressed = false;
+      return;
+    }
+    if ((input.selectionEnd ?? 0) - (input.selectionStart ?? 0) > 1) return;
+    const at = Math.min(cellAt(state, event.clientX), input.value.length);
+    input.setSelectionRange(at, at);
+    onCaret();
+  };
+  // A double click selects the whole code, as a word in a field.
+  const onDoubleClick = () => {
+    if (input.disabled) return;
+    state.dragFrom = -1;
+    input.setSelectionRange(0, input.value.length, 'forward');
+    sync();
+  };
+  const onFocus = () => setTimeout(onCaret, 0);
   const onBlur = () => {
     control.classList.remove('sf-verification--pointer-focus');
-    renderCanonical(root, state);
+    sync();
   };
-  input.addEventListener('input', onInput);
-  input.addEventListener('paste', onPaste);
-  input.addEventListener('pointerdown', onPointerDown);
-  input.addEventListener('focus', onFocus);
-  input.addEventListener('blur', onBlur);
+  const listeners = [
+    ['input', onInput],
+    ['paste', onPaste],
+    ['keydown', onKeydown],
+    ['select', sync],
+    ['selectionchange', sync],
+    ['pointerdown', onPointerDown],
+    ['pointermove', onPointerMove],
+    ['pointerleave', onPointerLeave],
+    ['pointerup', onPointerUp],
+    ['click', onClick],
+    ['dblclick', onDoubleClick],
+    ['focus', onFocus],
+    ['blur', onBlur],
+  ];
+  listeners.forEach(([type, listener]) => input.addEventListener(type, listener));
   input.form?.addEventListener('reset', onReset);
   state.destroy = () => {
-    input.removeEventListener('input', onInput);
-    input.removeEventListener('paste', onPaste);
-    input.removeEventListener('pointerdown', onPointerDown);
-    input.removeEventListener('focus', onFocus);
-    input.removeEventListener('blur', onBlur);
+    listeners.forEach(([type, listener]) => input.removeEventListener(type, listener));
     input.form?.removeEventListener('reset', onReset);
     control.classList.remove('sf-verification--pointer-focus');
   };
-  renderCanonical(root, state);
+  sync();
   return state;
 }
 

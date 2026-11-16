@@ -215,13 +215,15 @@ test('code input: input and change are the native input\'s, complete once per co
     assert.match(source, new RegExp(`\\n  ${method}\\(\\) \\{`, 'u'), method);
   }
   assert.match(source, /focusDelegate\(\) \{\n    return this\.getInputElement\(\);/u);
-  // K1: a pointer focus rings no cell (the sheet rings the current cell for a
-  // keyboard focus only), as sf-input's .sf-input--pointer-focus.
+  // K1 and C153 (4) (RG-VR-5): the focus is the current cell's, by mouse and
+  // keys alike, a 2 px edge inside the cell; the pointer-focus class stays
+  // set for a page that reads it but no longer changes the look.
   assert.match(source, /classList\.add\('sf-verification--pointer-focus'\)/u);
   assert.match(source, /classList\.remove\('sf-verification--pointer-focus'\)/u);
   assert.match(classRuntime, /control\.classList\.add\('sf-verification--pointer-focus'\)/u);
-  assert.match(classSheet, /\.sf-verification:not\(\.sf-verification--pointer-focus\):has\(\.sf-verification-input:focus-visible\) \.sf-verification-cell\.current,/u);
-  assert.doesNotMatch(classSheet, /^\.sf-verification:has\(\.sf-verification-input:focus-visible\)/mu, 'no ring on the row');
+  assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.current,\n[^{]*\{\n  outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n  outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/u);
+  assert.doesNotMatch(classSheet, /sf-verification--pointer-focus\)/u, 'one focus look');
+  assert.doesNotMatch(classSheet, /^\.sf-verification:has\(\.sf-verification-input:[a-z-]*focus[a-z-]*\) \{/mu, 'no ring on the row');
   // K3: a bare caret inside the code becomes a one-cell selection; the caret
   // is drawn in its cell, blinking unless motion is reduced.
   assert.match(source, /input\.setSelectionRange\(start, start \+ 1, 'forward'\);/u);
@@ -239,9 +241,9 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.doesNotMatch(inputRule, /opacity/u);
   assert.match(inputRule, /-webkit-text-fill-color: var\(--sf-transparent\);/u);
   assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.selected \{[^}]*background: var\(--sf-primary-container\);/u);
-  // K4: hover marks one cell, never the group.
+  // K4: hover marks one cell, never the group, in the text ink (C153 (4)).
   assert.doesNotMatch(classSheet, /\.sf-verification:hover \.sf-verification-cell/u);
-  assert.match(classSheet, /\.sf-verification-cell\.hover,\n\.sf-verification-form-wrap \.sf-verification:hover \{ border-color: var\(--sf-primary-hover\); \}/u);
+  assert.match(classSheet, /\.sf-verification-cell\.hover,\n\.sf-verification-form-wrap \.sf-verification:hover \{ border-color: var\(--sf-on-surface\); \}/u);
   assert.match(classSheet, /\.sf-verification--filled \.sf-verification-cell\.hover \{[^}]*background: var\(--sf-surface-container-hover\);/u);
   assert.match(source, /cell\.classList\.toggle\('hover', index === this\._hover && !selected && !\(focused && one && index === current\)\);/u);
   // K6: the current cell only while the field has the focus.

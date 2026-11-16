@@ -86,18 +86,18 @@
    2026-11-01). */
 .sf-verification-input:focus { outline: 0 !important; }
 
-/* The focus ring is the active cell's, not the row's (K1, owner R136), and
-   only when the focus came from the keyboard: a text input matches
-   :focus-visible after a click too, so the runtime that owns the field
-   (sf-input-code, or the class runtime) marks a pointer focus with
-   .sf-verification--pointer-focus until the field loses the focus, as
-   sf-input does with .sf-input--pointer-focus; a pointer focus keeps the
-   primary border of the current cell only. The retired one-input-per-cell
-   markup rings its focused cell, which is already one cell. */
-.sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
-.sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
+/* The focus is the current cell's, not the row's (K1, owner R136), and it is
+   the text field's focus look (owner decision C153 (4), newer than C82): by
+   mouse and by keys alike, a 2 px edge of the focus colour inside the cell,
+   over its own border -- the outline at minus its width, as sf-input. No ring
+   outside, so nothing next to the cells is covered and nothing moves
+   (RG-VR-5). .sf-verification--pointer-focus no longer changes the look. The
+   retired one-input-per-cell markup draws it on its focused cell, which is
+   already one cell. */
+.sf-verification:has(.sf-verification-input:enabled:focus) .sf-verification-cell.current,
+.sf-verification-form-wrap .sf-verification:has(input:enabled:focus) {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-focus--offset);
+  outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
 /* The cell the next character goes to is marked only while the field has the
@@ -153,11 +153,12 @@
 
 /* Hover marks the one cell under the pointer, set by the runtime that owns the
    field (.hover); the whole group lit up before and hid the current cell's
-   mark (K4, owner R139). A filled cell takes the fill's hover step, without a
+   mark (K4, owner R139). Its border is the text ink, as a hovered sf-input
+   (C153 (4)): the primary edge is the focus's alone. A filled cell takes the fill's hover step, without a
    border, as a filled sf-input. The retired one-input-per-cell markup hovers
    its cell, which is already one. */
 .sf-verification-cell.hover,
-.sf-verification-form-wrap .sf-verification:hover { border-color: var(--sf-primary-hover); }
+.sf-verification-form-wrap .sf-verification:hover { border-color: var(--sf-on-surface); }
 
 .sf-verification--filled .sf-verification-cell.hover {
   border-color: var(--sf-transparent);
@@ -200,10 +201,10 @@
     background: Highlight;
     color: HighlightText;
   }
-  .sf-verification:not(.sf-verification--pointer-focus):has(.sf-verification-input:focus-visible) .sf-verification-cell.current,
-  .sf-verification-form-wrap .sf-verification:has(input:focus-visible) {
-    outline: var(--sf-px) solid Highlight;
-    outline-offset: var(--sf-focus--offset);
+  .sf-verification:has(.sf-verification-input:enabled:focus) .sf-verification-cell.current,
+  .sf-verification-form-wrap .sf-verification:has(input:enabled:focus) {
+    outline: var(--sf-focus--width) solid Highlight;
+    outline-offset: var(--sf-focus--inset);
   }
 }
 }
@@ -231,7 +232,7 @@
 /* A filled field with the focus is drawn bordered, and hovers as one. */
 @layer sf.components {
   .sf-verification--filled:not(.error):has(.sf-verification-input:enabled:focus) .sf-verification-cell.hover {
-    border-color: var(--sf-primary-hover);
+    border-color: var(--sf-on-surface);
   }
 }
 
