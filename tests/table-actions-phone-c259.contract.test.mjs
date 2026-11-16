@@ -22,7 +22,12 @@ test('C259: the phone is below the md breakpoint, the condition one function for
   assert.match(vars, /\$table-phone-min: map\.get\(bp\.\$breakpoint-array, md\);/u);
   // A table with row actions: its body rows hold «≡» alone in a cell; and it
   // names its key cells. Without key cells nothing changes.
-  assert.match(vars, /@function table-keyed-actions\(\$table: ''\) \{\s*@return ":has\(#\{\$table\}> tbody > tr > \* > :is\(sf-button-icon, sf-icon-button\)\[icon='menu'\]:only-child\):has\(#\{\$table\}> :not\(caption\) > tr > \.table-key\)";/u);
+  assert.match(vars, /@function table-keyed-actions\(\$table: ''\) \{\s*@return ":has\(#\{\$table\}> tbody > tr > \* > sf-button-icon\[icon='menu'\]:only-child, #\{\$table\}> tbody > tr > \* > sf-icon-button\[icon='menu'\]:only-child\):has\(#\{\$table\}> :not\(caption\) > tr > \.table-key\)";/u);
+  // No :is() in the conditions: the build lays an :is() as one rule per part,
+  // and inside :not() that is a different selector (it hid the check box and
+  // kept the frame on the first build of this branch).
+  const conditions = vars.slice(vars.indexOf('$table-control-cell'));
+  assert.doesNotMatch(conditions, /:is\(/u);
   assert.match(vars, /\$table-keyed-actions: table-keyed-actions\(\);/u);
   assert.match(vars, /\$table-frame-keyed-actions: table-keyed-actions\('> \.table '\);/u);
 });

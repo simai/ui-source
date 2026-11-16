@@ -162,12 +162,14 @@ test('the .table row actions: narrow control cells and the name link', () => {
   // A cell that holds one check box or one icon button and nothing else is as
   // narrow as its control, low in weight so an author's column width wins.
   const vars = read('src/utility/table/default/scss/_sf_var__table.scss');
-  assert.match(vars, /\$table-control-cell: ":has\(> :is\(sf-checkbox, sf-button-icon, sf-icon-button, input\[type='checkbox'\]\):only-child\)";/u);
+  // A :has() list, not :is(): the build's :is() fallback lays one rule per
+  // part, which inside :not() (C259) hid the check box by the button's rule.
+  assert.match(vars, /\$table-control-cell: ":has\(> sf-checkbox:only-child, > sf-button-icon:only-child, > sf-icon-button:only-child, > input\[type='checkbox'\]:only-child\)";/u);
   assert.match(css, /> :not\(caption\) > \* > :where\(#\{\$table-control-cell\}\) \{\s*inline-size: 0;\s*white-space: nowrap;/u);
   // In the frame too (DEV msg-85307787: 80 and 80 at 390): the frame's least
   // cell width is for words; a control cell and a head cell holding only a
   // screen reader's name drop it.
-  assert.match(read(stylePath), /> :not\(caption\) > \* > :is\(#\{\$table-control-cell\}, :has\(> \.sr-only:only-child\)\) \{\s*min-inline-size: var\(--sf-0\);/u);
+  assert.match(read(stylePath), /> :not\(caption\) > \* > #\{\$table-control-cell\},\s*> :not\(caption\) > \* > :has\(> \.sr-only:only-child\) \{\s*min-inline-size: var\(--sf-0\);/u);
   // The name link keeps the link colour (visited too), underlined under the
   // pointer and on keyboard focus; a link drawn as a button keeps its look.
   assert.match(css, /> tbody > tr > \* > a:where\(\[href\]:not\(\.sf-button\)\) \{\s*color: var\(--sf-link\);/u);

@@ -76,7 +76,11 @@ $table-array-layout: (
 // Row actions (C146 (5), C164): a cell that holds one check box or one icon
 // button and nothing else is a control cell, as narrow as its control, in
 // the table and in .table-frame alike.
-$table-control-cell: ":has(> :is(sf-checkbox, sf-button-icon, sf-icon-button, input[type='checkbox']):only-child)";
+// No :is() here or in the conditions below: the build's :is() fallback lays a
+// rule for each of its parts, which inside :not() turns "none of them" into
+// "not this one" and hid the check box with the icon button's rule. A :has()
+// list says the same and is laid as written.
+$table-control-cell: ":has(> sf-checkbox:only-child, > sf-button-icon:only-child, > sf-icon-button:only-child, > input[type='checkbox']:only-child)";
 
 // A table with row actions on a phone (owner decision C259, 2026-11-16,
 // variant Б): a table whose body rows hold the row menu «≡» (C146 (5)) and
@@ -91,7 +95,7 @@ $table-phone-min: map.get(bp.$breakpoint-array, md);
 // $table-keyed-actions on the table; $table-frame-keyed-actions on the frame
 // that holds it.
 @function table-keyed-actions($table: '') {
-    @return ":has(#{$table}> tbody > tr > * > :is(sf-button-icon, sf-icon-button)[icon='menu']:only-child):has(#{$table}> :not(caption) > tr > .table-key)";
+    @return ":has(#{$table}> tbody > tr > * > sf-button-icon[icon='menu']:only-child, #{$table}> tbody > tr > * > sf-icon-button[icon='menu']:only-child):has(#{$table}> :not(caption) > tr > .table-key)";
 }
 $table-keyed-actions: table-keyed-actions();
 $table-frame-keyed-actions: table-keyed-actions('> .table ');

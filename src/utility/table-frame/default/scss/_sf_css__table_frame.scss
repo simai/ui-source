@@ -77,7 +77,8 @@
             // «Действия» column's): the frame's least cell width is for
             // words, not controls (it held both columns at 80, DEV
             // msg-85307787).
-            > :not(caption) > * > :is(#{$table-control-cell}, :has(> .sr-only:only-child)) {
+            > :not(caption) > * > #{$table-control-cell},
+            > :not(caption) > * > :has(> .sr-only:only-child) {
                 min-inline-size: var(--sf-0);
             }
 
