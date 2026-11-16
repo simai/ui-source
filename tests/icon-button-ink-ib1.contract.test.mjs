@@ -12,9 +12,9 @@ const custom = read('src/component/icon-buttons/scss/_css_icon_buttons_custom.sc
 test('RG-IB-1: the ghost glyph and cross are the scheme hue, not its pressed step', () => {
   assert.match(sheet, /:is\(\.sf-icon-button--link, \.sf-icon-button--ghost\)\.sf-icon-button--primary\.sf-icon-button--icon \{\s*--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-primary\)\);/u);
   // Since component.icon-buttons 1.15.0 (RG-CL-3) the close's ghost rules name every look.
-  assert.match(sheet, /:is\(\.sf-icon-button--link, \.sf-icon-button--ghost, \.sf-icon-button--default, \.sf-icon-button--tonal, \.sf-icon-button--surface, \.sf-icon-button--outline\)\.sf-icon-button--primary\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--background-color: var\(--sf-icon-button-color, var\(--sf-primary\)\);/u);
+  assert.match(sheet, /:is\(:is\(\.sf-icon-button--link, \.sf-icon-button--ghost\), \.sf-icon-button--default, \.sf-icon-button--tonal, \.sf-icon-button--surface, \.sf-icon-button--outline\)\.sf-icon-button--primary\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--background-color: var\(--sf-icon-button-color, var\(--sf-primary\)\);/u);
   assert.doesNotMatch(sheet, /var\(--sf-place--ink, var\(--sf-error-active\)\)/u);
-  assert.match(read('src/smart/button-icon/js/templates/default.css'), /:is\(\.sf-icon-button--link, \.sf-icon-button--ghost, \.sf-icon-button--default, \.sf-icon-button--tonal, \.sf-icon-button--surface, \.sf-icon-button--outline\)\.sf-icon-button--primary\.sf-icon-button--close > :is\(sf-button-close, sf-close\) > \.sf-close > \.sf-close-icon \{\n--sf-close-icon--background-color: var\(--sf-primary\);/u);
+  assert.match(read('src/smart/button-icon/js/templates/default.css'), /:is\(:is\(\.sf-icon-button--link, \.sf-icon-button--ghost\), \.sf-icon-button--default, \.sf-icon-button--tonal, \.sf-icon-button--surface, \.sf-icon-button--outline\)\.sf-icon-button--primary\.sf-icon-button--close > :is\(sf-button-close, sf-close\) > \.sf-close > \.sf-close-icon \{\n--sf-close-icon--background-color: var\(--sf-primary\);/u);
 });
 
 /* RG-IB-1, RG-IB-3: under a pointer the glyph follows the label -- neutral

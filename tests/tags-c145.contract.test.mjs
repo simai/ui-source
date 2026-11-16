@@ -108,6 +108,6 @@ test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.0, sf-dropd
   assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.15.1'); // group build 7
   assert.equal(json('src/smart/tag/component.json').version, '1.11.2'); // fix/icon-button-ink-ib1; // group build 7: the GB6 notes numbered above the released 1.9.1
   assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.2'); // fix/icon-button-ink-ib1; // group build 7
-  assert.equal(json('src/component/tags/passport.json').version, '1.7.2'); // fix/icon-button-ink-ib1
+  assert.equal(json('src/component/tags/passport.json').version, '1.7.3'); // fix/close-c14-cl1 (sf-button-close in the tag); fix/icon-button-ink-ib1
   assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.0');
 });

@@ -43,7 +43,8 @@ test('IP: an inverse place keeps what it found, for an opaque place on it to tak
 test('IP: a filled neutral icon button reads the place accent label only where the place has an ink', () => {
   assert.ok(icon.includes('--sf-icon-button--on-place-ink: color-mix(in srgb, var(--sf-on-primary), var(--sf-place--ink) 0%);'));
   assert.ok(icon.includes('--sf-icon--color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));'));
-  assert.ok(icon.includes('--sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));'));
+  // fix/close-c14-cl1 (C14): a close in a filled look draws as ghost, so no filled close reads the inverse ink.
+  assert.doesNotMatch(icon, /--sf-icon-button--default[^{]*\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\s*--sf-close-icon--background-color: var\(--sf-icon-button-color, var\(--sf-icon-button--on-place-ink/u);
   assert.doesNotMatch(icon, /var\(--sf-icon-button-color, var\(--sf-on-surface-inverse\)\)/u, 'no bare inverse ink left');
 });
 

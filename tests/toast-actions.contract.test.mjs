@@ -30,7 +30,7 @@ const buttons = (html) => (html.match(/data-toast-action=/g) ?? []).length - lin
 
 test('the manifest declares the action model (sf-toast 1.4.0)', () => {
   const manifest = json('src/smart/toast/component.json');
-  assert.equal(manifest.version, '1.4.4'); // fix/icon-button-ink-ib1 (RG-IB-1, RG-IB-2, C213); // group build 5 patch // group build 7: the patch for moved files (the line had 1.4.1)
+  assert.equal(manifest.version, '1.4.5'); // fix/close-c14-cl1 (close classes); fix/icon-button-ink-ib1 (RG-IB-1, RG-IB-2, C213); // group build 5 patch // group build 7: the patch for moved files (the line had 1.4.1)
   assert.deepEqual(manifest.settings['action-href'], {...manifest.settings['action-href'], type: 'string', default: ''});
   assert.equal(manifest.settings['secondary-action-text'].default, '');
   assert.equal(manifest.settings['secondary-action'].default, 'secondary');

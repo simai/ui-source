@@ -46,7 +46,7 @@ test('RG-CL-1, RG-CL-2: the disabled cross fades on a coloured place and over a 
    filled, tonal or outlined look unless it is a ghost rule that names them
    all; the outline's border skips the close. */
 test('RG-CL-3: a close in any icon-button look is drawn as ghost', () => {
-  const all = ':is(.sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline)';
+  const all = ':is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline)';
   for (const css of [sheet, custom, read('src/smart/button-icon/js/templates/default.css')]) {
     for (const item of items(css)) {
       // Skipped: items that keep the close out, or name it as one alternative
@@ -83,7 +83,7 @@ test('RG-CL-3: the modal, toast, alert and tag closes are sf-button-close', () =
   assert.doesNotMatch(alert, /kind="close"/u);
   assert.ok(JSON.parse(read('src/smart/alert/component.json')).relations.some((r) => r.name === 'cl-button-close'));
   assert.match(read('src/component/toast/scss/_css__toast.scss'), /@layer sf\.overrides \{[\s\S]*\.sf-toast > \.sf-icon-button\.sf-button-close \{\s*--sf-button-close--ink: light-dark\(var\(--sf-black--alfa-64\), var\(--sf-white--alfa-64\)\);/u);
-  assert.match(read('src/component/alerts/scss/_css__alerts.scss'), /:is\(sf-button-icon, sf-icon-button, sf-button-close\) > \.sf-icon-button:not\(:disabled\):is\(:hover, :active\)/u);
+  assert.match(read('src/component/alerts/scss/_css__alerts.scss'), /:is\(:is\(sf-button-icon, sf-icon-button\), :is\(sf-button-close, sf-close\)\) > \.sf-icon-button:not\(:disabled\):is\(:hover, :active\)/u);
   assert.match(read('src/component/tags/scss/_css__tags.scss'), /\.sf-tag > \.sf-icon-button\.sf-button-close\.sf-button-close--plain \{\s*--sf-button-close--base: var\(--sf-tag-color, var\(--sf-on-surface\)\);/u);
 });
 

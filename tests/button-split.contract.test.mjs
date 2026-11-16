@@ -83,9 +83,9 @@ test('danger outline border: red at 64 % on the button and the icon button; the 
   const greyButton = buttons.slice(buttons.indexOf('.sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))) {'));
   assert.ok(greyButton.slice(0, 450).includes('--sf-button--border-color: var(--sf-button-border-color, var(--sf-outline));'));
   const icons = read('src/component/icon-buttons/scss/_css_icon_buttons.scss');
-  const dangerIcon = icons.slice(icons.indexOf('.sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {'));
+  const dangerIcon = icons.slice(icons.indexOf('.sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {')); // fix/close-c14-cl1: a close draws as ghost (C14), the glyph button carries the outline
   assert.ok(dangerIcon.slice(0, 700).includes(`--sf-icon-button--border-color: var(--sf-icon-button-border-color, ${red});`));
-  assert.match(icons, /\.sf-icon-button--outline:is\(\.sf-icon-button--on-surface, \.sf-icon-button--secondary\)\.sf-icon-button--close \{\s+--sf-icon-button--background-color: var\(--sf-icon-button-background-color, transparent\);\s+--sf-icon-button--border-color: var\(--sf-icon-button-border-color, var\(--sf-outline\)\);/u);
+  assert.match(icons, /\.sf-icon-button\.sf-icon-button--outline:is\(\.sf-icon-button--on-surface, \.sf-icon-button--secondary\)\.sf-icon-button--icon \{\s+--sf-icon-button--background-color: var\(--sf-icon-button-background-color, transparent\);\s+--sf-icon-button--border-color: var\(--sf-icon-button-border-color, var\(--sf-outline\)\);/u); // fix/close-c14-cl1: the close is ghost
   // A disabled danger outline greys as the others do.
   assert.match(buttons, /\.sf-button\.sf-button--outline:is\(\.sf-button--danger, \.sf-button--error\):is\(:disabled, \[aria-disabled="true"\]\):not\(\.sf-button-state-loading:not\(\.disabled\)\) \{\s+--sf-button--border-color: var\(--sf-outline-disabled\);/u);
 });
