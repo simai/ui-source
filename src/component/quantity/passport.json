@@ -20,7 +20,7 @@
     "src/component/quantity/scss/_css__utility_hint_layout.scss",
     "src/component/quantity/scss/index.scss"
   ],
-  "content_sha256": "8efc2f1e6418e8406bb30fcbe3d275fff141a4a21ed4157f47771bf6cac620db",
+  "content_sha256": "4bcff716e001ea8fb37c5ba322d6adf4744a60fb50bfe0dadfa35f93414941c6",
   "dependencies": [
     {
       "id": "component.icon-buttons",
