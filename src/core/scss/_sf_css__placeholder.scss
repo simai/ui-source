@@ -270,25 +270,27 @@
    stay in the bar at every width; the nav and the actions only above the
    collapse step, read here on the window (the bar's own width is a container
    condition of its sheet; a site bar is the window's width). Before the
-   element is defined they are its children; once it has drawn, its row's. */
-$sf-site-header-wide: ':is(sf-button, sf-button-icon, sf-icon-button, sf-segmented, sf-button-group, sf-language, sf-menu):is([size="1"], [size=""], :not([size]))';
+   element is defined they are its children; once it has drawn, its row's.
+   :where and :not only: the build's :is() fallback writes out every
+   combination, and these lists multiplied past what a string holds. */
+$sf-site-header-wide: ':where(sf-button, sf-button-icon, sf-icon-button, sf-segmented, sf-button-group, sf-language, sf-menu):not([size="1/2"], [size="1/3"], [size="2"], [size="3"])';
 $sf-site-header-box-1: 'var(--sf-site-header-block-size, calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1) + var(--sf-px)))';
 
-:where(:is(sf-header-site, sf-site-header))[size="1/2"]:where(:has(> [slot="tools"]#{$sf-site-header-wide}, > .sf-site-header > .sf-site-header-row > .sf-site-header-tools > #{$sf-site-header-wide})) {
+:where(sf-header-site, sf-site-header)[size="1/2"]:where(:has(> [slot="tools"]#{$sf-site-header-wide}, > .sf-site-header > .sf-site-header-row > .sf-site-header-tools > #{$sf-site-header-wide})) {
   --sf-site-header--box: #{$sf-site-header-box-1};
 }
 
 $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot="actions"]#{$sf-site-header-wide}, > .sf-site-header > .sf-site-header-row .sf-site-header-nav > #{$sf-site-header-wide}, > .sf-site-header > .sf-site-header-row .sf-site-header-actions > #{$sf-site-header-wide}';
 
-:where(:is(sf-header-site, sf-site-header))[size="1/2"][collapse="none"]:where(:has(#{$sf-site-header-wide-row})) {
+:where(sf-header-site, sf-site-header)[size="1/2"][collapse="none"]:where(:has(#{$sf-site-header-wide-row})) {
   --sf-site-header--box: #{$sf-site-header-box-1};
 }
 
 @each $collapse, $step in (sm: g6, md: h1, lg: h5, xl: h8) {
-  $named: if($collapse == lg, ':is([collapse="lg"], [collapse=""], :not([collapse]))', '[collapse="#{$collapse}"]');
+  $named: if($collapse == lg, ':not([collapse="none"], [collapse="sm"], [collapse="md"], [collapse="xl"], [collapse="always"])', '[collapse="#{$collapse}"]');
 
   @media (min-width: #{bpMixin.container-step($step)}) {
-    :where(:is(sf-header-site, sf-site-header))[size="1/2"]#{$named}:where(:has(#{$sf-site-header-wide-row})) {
+    :where(sf-header-site, sf-site-header)[size="1/2"]#{$named}:where(:has(#{$sf-site-header-wide-row})) {
       --sf-site-header--box: #{$sf-site-header-box-1};
     }
   }
