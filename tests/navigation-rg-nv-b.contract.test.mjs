@@ -59,7 +59,7 @@ test('RG-NV 7, 8, 9: a page number is the ghost page button, no plate, as wide a
   assert.match(css, /--sf-page-number--background-color: var\(--sf-pagination-current-background-color, var\(--sf-primary-container\)\);\n\s+--sf-page-number--color: var\(--sf-pagination-current-color, var\(--sf-on-primary-container\)\);/u);
   assert.match(css, /--sf-page-number--background-color: var\(--sf-place--control-hover, var\(--sf-surface-container-hover\)\);/u);
   assert.match(css, /inline-size: auto;\n\s+min-inline-size: max\(/u);
-  assert.equal((await json('src/component/pagination/passport.json')).version, '1.5.0');
+  assert.equal((await json('src/component/pagination/passport.json')).version, '1.5.1'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch
 });
 
 test('RG-NV 10, 11: the row size reaches the arrows; the count row keeps the icon ink; a Smart number never breaks', async () => {
@@ -73,8 +73,8 @@ test('RG-NV 12: sf-pagination numbers fit seven or five places by its own room',
   const source = await read('src/smart/pagination/index.js');
   assert.match(source, /return Boolean\(this\._sfNarrow\?\.matches\) \|\| this\._sfCramped === true;/u);
   assert.match(source, /fitPlaces\(\) \{/u);
-  assert.match(source, /this\.noteFooterParts\(\);\n\s+this\.fitPlaces\(\);/u);
-  assert.equal((await json('src/smart/pagination/component.json')).version, '1.7.2');
+  assert.match(source, /this\.noteFooterParts\(\);\n(?:\s+this\.\w+\(\);\n)*\s+this\.fitPlaces\(\);/u);
+  assert.equal((await json('src/smart/pagination/component.json')).version, '1.8.4'); // group build 9: 1.7.2 moved on by the merged branches or a GB9 patch
 });
 
 test('C237: sf-page-number--circle is a retired name that draws the square', async () => {

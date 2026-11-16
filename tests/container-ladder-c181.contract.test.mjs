@@ -170,8 +170,9 @@ test('C181: no screen-query entry waits for a choice', () => {
 // screen rule is left to class markup and the Smart plain form.
 test('C181: the Smart reference card stacks by its host container, class markup by the screen', () => {
   const sheet = uncomment(read('src/component/reference-link/scss/_css__reference_link.scss'));
-  assert.match(sheet, /@container sf-reference-link \(width < #\{mq\.container-step\(g6\)\}\) \{\s*@include card-stacks\(':where\(sf-reference-link > \*\)'\);/u);
-  assert.match(sheet, /@media \(width < map\.get\(bp\.\$breakpoint-array, sm\)\) \{\s*@include card-stacks\(':where\(:not\(sf-reference-link > \.sf-reference-link:not\(\.sf-reference-link--plain\)\)\)'\);/u);
+  // group build 9: C236 (variant B) puts the card's route under the name at every width; no stack rule is left.
+  assert.doesNotMatch(sheet, /@include card-stacks\(/u);
+  assert.match(sheet, /\.sf-reference-link:not\(\[class\*="sf-reference-link--size-"\]\):not\(\[class\*="sf-reference-link--line-"\]\):not\(\.sf-reference-link--plain\):where\(:not\(\.sf-reference-link--inline\)\) \{\s*flex-direction: column;/u);
   assert.equal(preludes(sheet, 'media').filter((prelude) => /width/u.test(prelude)).length, 1, 'one screen rule, for class markup');
   const host = sheet.match(/sf-reference-link:has\(> \.sf-reference-link:not\(([^{]*)\)\) \{([^}]*)\}/u);
   assert.ok(host, 'the card\'s host rule');

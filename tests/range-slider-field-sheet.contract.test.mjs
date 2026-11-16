@@ -108,7 +108,7 @@ test('C261: the from/to boxes always hold the whole number; two that do not fit 
   const narrow = sheet.slice(at);
   // The row of boxes wraps; the equal grid halves (minmax(0, 1fr)) are gone.
   assert.doesNotMatch(narrow, /grid-auto-columns: minmax\(0, 1fr\)/u);
-  assert.match(narrow, /\.sf-range-slider-field:has\(\.sf-range-slider-field-input:focus-visible\) \{\n {4}block-size: auto;\n {4}border: 0;\n {4}display: flex;\n {4}flex-wrap: wrap;/u);
+  assert.match(narrow, /\.sf-range-slider-field:has\(\.sf-range-slider-field-input:focus\) \{\n {4}block-size: auto;\n {4}border: 0;\n {4}display: flex;\n {4}flex-wrap: wrap;/u);
   // Each box grows to share the row and never shrinks below its word and its
   // wider ruler: the number column starts at the ruler's width.
   const box = narrow.match(/\.sf-range-slider-group--field \.sf-range-slider-field-box \{[^}]*\}/u)?.[0] || '';

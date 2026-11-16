@@ -73,7 +73,7 @@ test('RG-CL-3: a close in any icon-button look is drawn as ghost', () => {
    component): the class modal header, the class and Smart toast, the Smart
    alert; the class tag reads the plain close beside its former ghost one. */
 test('RG-CL-3: the modal, toast, alert and tag closes are sf-button-close', () => {
-  assert.match(read('src/component/modal/js/_modal.js'), /'sf-icon-button sf-modal-header-action sf-modal-close-button sf-icon-button--close sf-button-close sf-button-close--ghost sf-button-close--on-surface sf-icon-button--size-1\/3 m-0'/u);
+  assert.match(read('src/component/modal/js/_modal.js'), /'sf-icon-button sf-icon-button--size-1\/3 sf-icon-button--close sf-button-close sf-button-close--ghost sf-button-close--on-surface flex items-cross-center sf-modal-header-action sf-modal-close-button sf-modal-close-button--inline-end m-0'/u);
   const toast = read('src/component/toast/js/_toast.js');
   assert.match(toast, /'sf-button-close',\s*'sf-button-close--ghost',\s*'sf-button-close--on-surface',/u);
   assert.doesNotMatch(toast, /'sf-icon-button--ghost'/u);

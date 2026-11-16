@@ -84,7 +84,7 @@ test('field sizes: sf-input stands on the whole control ladder', async () => {
 
 test('field sizes: a file row under a file upload area keeps the three sizes', async () => {
   const source = await read('src/component/file-upload/js/_file_upload.js');
-  assert.match(source, /function createUploadProgressItem\(item, size = '1', owner = null\) \{\n  const normalizedSize = nearestFieldSize\(size\);/);
+  assert.match(source, /function createUploadProgressItem\(item, owner = null\) \{/); // group build 9: fu2's row is one height at every zone size (RG-FU-1, C260)
   assert.match(source, /function normalizeSize\(value\) \{\n  return ladderSize\(value\);/);
 });
 

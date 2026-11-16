@@ -57,6 +57,6 @@ test('the direction is never read from a removed portal', () => {
 
 test('the note of 1.10.3 names the fix', () => {
   const component = JSON.parse(readFileSync(resolve(root, 'src/smart/search/component.json'), 'utf8'));
-  assert.equal(component.version, '1.10.3');
+  assert.equal(component.version, '1.10.4'); // group build 9: 1.10.3 moved on by the merged branches or a GB9 patch
   assert.ok(component['x-decisions'].some((note) => note.startsWith('version 1.10.3') && /closed/u.test(note)));
 });

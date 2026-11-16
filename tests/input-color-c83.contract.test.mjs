@@ -117,7 +117,7 @@ test('the browser colour dialog is gone; the window is the Framework\'s own (C83
 
 test('the manifest declares the window\'s settings and words', () => {
     const manifest = json(`${base}/component.json`);
-    assert.equal(manifest.version, '1.17.1'); // C209 (fix/input-color-c209), above group build 7's 1.14.0
+    assert.equal(manifest.version, '1.18.1'); // C209 (fix/input-color-c209), above group build 7's 1.14.0 // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch
     assert.equal(manifest.settings.palette.default, true);
     assert.equal(manifest.settings.custom.default, true);
     assert.equal(manifest.settings.alpha.default, false);

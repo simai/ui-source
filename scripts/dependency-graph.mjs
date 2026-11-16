@@ -218,6 +218,8 @@ export function buildGraph(tree, {revision = null, release = null, units = null,
     }
     for (const m of t.matchAll(/(^|[^a-z0-9<\/@-])(sf-[a-z0-9-]*[a-z0-9])(?![a-z0-9:-])/gu)) {
       if (tagLits.has(m.index + m[1].length)) continue;
+      // A tag followed by an attribute is markup written as words (a note's `to`), not a class.
+      if (/^\s+[a-z][a-z-]*=/u.test(t.slice(m.index + m[0].length, m.index + m[0].length + 40))) continue;
       if (smartByTag.has(m[2]) && !plainClassRoots.has(m[2]) && m[1] !== '.') { tags.add(m[2]); continue; }
       if (EVENT_SUFFIX.test(m[2])) continue;
       if (/(?:CustomEvent|EventListener|dispatch\w*|emit\w*|fire\w*|on)\(\s*['"`]$/u.test(t.slice(Math.max(0, m.index - 30), m.index + 1))) continue;
@@ -330,6 +332,11 @@ export function buildGraph(tree, {revision = null, release = null, units = null,
       for (const m of text(p).matchAll(/\.sf-[a-z0-9-]+?--([a-z0-9-]+(?:\\\/[0-9]+)?)/gu)) {
         const v = m[1].replace(/\\\//gu, '/');
         if (kind === 'size') { const s = v.match(/^size-([0-9/]+)$/u); if (s) vals.add(s[1]); } else vals.add(v);
+      }
+      // Sizes written through the field ladder (ladder.size-class in @each over ladder.$outer or $sizes).
+      if (kind === 'size' && /ladder\.size-class\(/u.test(text(p))) {
+        const lists = {outer: ['1/3', '3'], sizes: ['1/3', '1/2', '1', '2', '3']};
+        for (const m of text(p).matchAll(/@each \$size in ladder\.\$(outer|sizes)\b/gu)) for (const v of lists[m[1]]) vals.add(v);
       }
     }
     return vals;

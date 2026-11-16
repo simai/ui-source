@@ -50,5 +50,5 @@ test('RG-RS-2 (C202): the boxes carry the words from the language file, the name
   assert.match(template, /sf-range-slider-field-word" aria-hidden="true">\$\{context\.fieldWords\[index\]\}/u);
   assert.match(template, /sf-range-slider-name-unit" aria-hidden="true">, \$\{context\.fieldUnit\}/u);
   assert.match(template, /context\.field \? 'sf-range-slider-group--field' : ''/u);
-  assert.match(host, /fieldWords: \[this\.sfWord\?\.\('from'\) \|\| 'от', this\.sfWord\?\.\('to'\) \|\| 'до'\]/u);
+  assert.match(host, /fieldWords: \[this\.sfWord\('from'\), this\.sfWord\('to'\)\]/u);
 });

@@ -201,7 +201,8 @@
         "pageLocale",
         "pageText",
         "pageWord",
-        "refreshLanguage"
+        "refreshLanguage",
+        "registeredWord"
       ]
     },
     "position": {

@@ -51,8 +51,8 @@ test('Smart sf-input (and sf-input-date in it): no own size 3 icon rule over the
 
 test('range slider from/to field: hover in the text ink, focus 2 px inside for mouse and keys (C153 (4))', () => {
   assert.match(slider, /\.sf-range-slider-group:not\(\.disabled\):not\(\.readonly\) \.sf-range-slider-field:hover \{\s*border-color: var\(--sf-on-surface\);/u);
-  assert.match(slider, /\.sf-range-slider-group:not\(\.disabled\) \.sf-range-slider-field:has\(\.sf-range-slider-field-input:focus\) \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/u);
-  assert.match(slider, /\.sf-range-slider-group--field:not\(\.disabled\) \.sf-range-slider-field-box:has\(\.sf-range-slider-field-input:focus\) \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/u);
+  assert.match(slider, /\.sf-range-slider-group:not\(\.disabled\) \.sf-range-slider-field:has\(\.sf-range-slider-field-input:focus\) \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: var\(--sf-focus--inset\);/u);
+  assert.match(slider, /\.sf-range-slider-group--field:not\(\.disabled\) \.sf-range-slider-field-box:has\(\.sf-range-slider-field-input:focus\) \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: var\(--sf-focus--inset\);/u);
   assert.doesNotMatch(slider, /outline-offset: var\(--sf-focus--offset\)/u);
   assert.doesNotMatch(slider, /border-color: var\(--sf-primary-hover\)/u);
 });

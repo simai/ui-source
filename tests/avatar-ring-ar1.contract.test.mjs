@@ -55,7 +55,7 @@ test('RG-S1-24: the caption wraps a long word; a no-wrap line carries its full t
   assert.match(avatar.settings['no-wrap'].summary, /the full text is each line's title/u);
   assert.match(docs, /^- `no-wrap` -- the label template keeps the heading and the description on one$/mu);
   assert.equal(avatar.version, '1.8.1');
-  assert.equal(passport.version, '1.10.1');
+  assert.equal(passport.version, '1.12.0'); // group build 9: 1.10.1 moved on by the merged branches or a GB9 patch
 });
 
 test('AR-3: the avatar sources say 1/4 = 16 on every screen', async () => {

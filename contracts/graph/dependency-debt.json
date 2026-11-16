@@ -383,12 +383,6 @@
       "evidence": "import js/templates/default.js"
     },
     {
-      "smart": "smart.menu-context",
-      "unit": "smart.settings",
-      "since": "2026-11-16",
-      "evidence": "<sf-settings> index.js"
-    },
-    {
       "smart": "smart.modal",
       "unit": "component.buttons",
       "since": "2026-11-16",

@@ -39,7 +39,7 @@
   .sf-card > .sf-card-header > :is(h1, h2, h3, h4, h5, h6) {
     font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
     line-height: var(--sf-title--height-card);
-    font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
+    font-weight: var(--sf-card-title-weight, var(--sf-weight--semi-bold));
   }
 }
 

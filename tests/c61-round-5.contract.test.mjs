@@ -61,6 +61,6 @@ test('versions: sf-list-timeline 1.4.0 (C204; 1.3.2 for C61 round 5), sf-steps 1
   assert.equal(json('src/smart/list-timeline/component.json').version, '1.4.0');
   assert.equal(json('src/smart/list-timeline/smart.manifest.json').version, '1.4.0');
   assert.equal(json('src/smart/steps/component.json').version, '1.4.3');
-  assert.equal(json('src/component/step/passport.json').version, '1.3.4'); // group build 7: the integrated number (the branch wrote 1.3.2)
+  assert.equal(json('src/component/step/passport.json').version, '1.4.0'); // group build 7: the integrated number (the branch wrote 1.3.2) // group build 9: 1.3.4 moved on by the merged branches or a GB9 patch
   assert.ok(json('src/smart/list-timeline/component.json')['x-decisions'].some((note) => /^version 1\.3\.2 /u.test(note)));
 });

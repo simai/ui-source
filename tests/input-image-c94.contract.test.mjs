@@ -73,6 +73,8 @@ function host(attributes = {}, {sizes = new Map(), coarse = false} = {}) {
     createFieldContract: (component, options) => ({...options, messageId: 'm', controlId: 'c'}),
     words: ru,
     fill,
+    registeredWord: () => undefined,
+    noteDeprecated: () => {},
   });
   vm.runInContext(`
     ${helpers}

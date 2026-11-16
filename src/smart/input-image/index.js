@@ -102,6 +102,15 @@ function readDimensions(href) {
   });
 }
 
+const FORMER_FILE_LEADS = {
+  'chosen-file': 'chosen-file',
+  'replace-file': 'replace-name',
+  'remove-file': 'remove-name',
+  'edit-file': 'edit-name',
+  'cancel-upload-file': 'cancel-upload-name',
+  'retry-file': 'retry-name',
+};
+
 // sf-input-image from its component.json (standard simai.smart-component
 // 1.3.8 §3, §4, §4.4, §8, §16.20, §17.1, §17.2): the settings are attributes
 // and properties made by core/js/element-manifest.js, the actions answer an
@@ -153,14 +162,6 @@ const ImageFieldElement = elementFromManifest(manifest, {
 
 // The word each file word was built from before languages-g1 (the
 // quoted / chosen aliases, fileWord).
-const FORMER_FILE_LEADS = {
-  'chosen-file': 'chosen-file',
-  'replace-file': 'replace-name',
-  'remove-file': 'remove-name',
-  'edit-file': 'edit-name',
-  'cancel-upload-file': 'cancel-upload-name',
-  'retry-file': 'retry-name',
-};
 
 class SfImageField extends FormField(ImageFieldElement) {
   static get props() {

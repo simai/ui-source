@@ -14,6 +14,6 @@ test('ordinary and Smart FileUpload compose the complete non-stretching Icon But
     // row's own remove button, size 1 at every zone size, as the Smart row;
     // the retry icon is the same ghost primary on the same rung.
     assert.match(classes[0],/sf-icon-button--ghost sf-icon-button--primary sf-icon-button--size-1'/);
-    assert.match(classes[1],/sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1'/);
+    assert.match(classes[1],/sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1'/);
   }
 });

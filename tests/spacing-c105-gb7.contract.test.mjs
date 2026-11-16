@@ -26,7 +26,7 @@ test('(1) the pagination list is one group of buttons: --sf-space-1/3 behind the
   const list = rule(css, '.sf-pagination .sf-pagination-list');
   assert.match(list, /gap: var\(--sf-pagination-container--gap, var\(--sf-pagination-gap, var\(--sf-space-1\\\/3\)\)\);/u);
   assert.equal(json('src/component/pagination/passport.json').version, '1.5.1');
-  assert.equal(json('src/smart/pagination/component.json').version, '1.7.3'); // group build 8: fix/pagination-more-c167's 1.7.0 (group build 7: 1.6.2, the branch wrote 1.6.1)
+  assert.equal(json('src/smart/pagination/component.json').version, '1.8.4'); // group build 8: fix/pagination-more-c167's 1.7.0 (group build 7: 1.6.2, the branch wrote 1.6.1) // group build 9: 1.7.3 moved on by the merged branches or a GB9 patch
 });
 
 test('(2) the colour frame spaces its value and its glyphs by C123, not by the icon-to-text space', () => {
@@ -38,7 +38,7 @@ test('(2) the colour frame spaces its value and its glyphs by C123, not by the i
   // 1.13.0: without an action the value -> chevron step is half the inset too
   // (C123 (3), (6)), no longer H5's --sf-space-1/3.
   assert.match(frame, /gap: calc\(var\(--sf-color--space-x\) \/ 2\);/u);
-  assert.equal(json('src/smart/input-color/component.json').version, '1.17.1'); // C209 (fix/input-color-c209), above group build 7's 1.14.0
+  assert.equal(json('src/smart/input-color/component.json').version, '1.18.1'); // C209 (fix/input-color-c209), above group build 7's 1.14.0 // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch
 });
 
 test('(3) the brand clear has words of its own; the field keeps the inherited ones', () => {

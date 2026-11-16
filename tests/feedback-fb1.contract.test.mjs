@@ -140,10 +140,10 @@ test('C219: every progress scale lays its value at the row end, spelt with a no-
   const ordinary = read('src/component/progress-scale/js/_progress_scale.js');
   assert.match(ordinary, /root\.classList\.add\('sf-progress-scale', 'flex', 'flex-row'\);/u);
   assert.doesNotMatch(ordinary, /onRow \? 'flex-row' : 'flex-col'/u);
-  assert.match(ordinary, /`\$\{value\}\\u00a0%`/u);
+  assert.match(ordinary, /percentText\(value, root\)/u); // group build 9: the percent is format-number's percentText (no-break space)
   const template = read('src/smart/progress-scale/js/templates/default.js');
   assert.doesNotMatch(template, /\['flex', 'flex-col'\]/u);
-  assert.match(template, /`\$\{value\}\\u00a0%`/u);
+  assert.match(template, /percentText\(value, context\.component \?\? null\)/u);
   const css = strip(read('src/component/progress-scale/scss/_css__progress_scale.scss')).replace(/\s+/gu, ' ');
   assert.match(css, /\.sf-progress-scale \.sf-progress-scale-container \{ flex: 1 1 auto; min-inline-size: 0; \}/u);
   assert.match(css, /\.sf-progress-scale \.sf-progress-scale-text \{ flex: none; white-space: nowrap; \}/u);

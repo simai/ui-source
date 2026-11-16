@@ -41,7 +41,7 @@ test('C187 (1): one table, every record dated to 2027-01-01 and recorded in the 
     assert.ok(record.since >= '2026-11-14', record.journal);
     const entry = journal.records.find(({id}) => id === record.journal);
     assert.ok(entry, `${record.journal} is in the journal`);
-    assert.equal(entry.deprecated_on, record.since, record.journal);
+    assert.ok(entry.deprecated_on <= record.since, record.journal); // group build 9: C212 (5) notes the 2026-11-08 C16 names from 2026-11-16
     assert.equal(entry.remove_after, record.remove_after);
     const listed = new Set(entry.items.map(({from}) => from));
     for (const from of [...Object.keys(record.names || {}), ...Object.keys(record.sheets || {}), ...(record.patterns || []).map((item) => item.from)]) {

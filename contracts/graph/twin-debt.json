@@ -81,11 +81,9 @@
       "smart": "smart.input-country",
       "since": "2026-11-16",
       "codes": [
-        "size-ladder",
         "default-look"
       ],
       "notes": [
-        "sizes only in Smart: 3; only in plain: -",
         "plain default draws an outline border; Smart has no appearance setting"
       ]
     },

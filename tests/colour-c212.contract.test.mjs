@@ -157,10 +157,11 @@ test('C212 (5): the colour arrays hold role words only, or a dated old spelling'
 
 test('C212 (5): no-twin names name the disabled ink; the roles and the hue roles stay', () => {
   assert.equal(to('color-disable'), 'color-on-surface-disabled');
+  assert.equal(to('gr1-surface-page'), 'from-surface-page'); // C212 (1): every gr1-* stop is retired
   assert.equal(to('focus:placeholder-disable'), 'focus:placeholder-on-surface-disabled');
   for (const kept of ['bg-surface-page', 'bg-surface-area', 'bg-surface-2', 'bg-scrim', 'bg-primary-container-strong', 'hover:bg-primary-state',
     'color-on-surface-disabled', 'border-outline-variant', 'ring-surface-veil', 'color-hue', 'bg-hue-container', 'sf-hue-red', 'bg-telegram',
-    'scroll-surface', 'fill-surface-disabled', 'gr1-surface-page']) {
+    'scroll-surface', 'fill-surface-disabled']) {
     assert.equal(aliases.retiredClassName(kept), null, kept);
   }
 });
