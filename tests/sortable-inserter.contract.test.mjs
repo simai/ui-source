@@ -131,12 +131,15 @@ test('a choice is reported, cancelable, and never creates the item', async () =>
 });
 
 test('the inserter is the standard menu, and Escape is its layer alone', async () => {
-  const [source, menu] = await Promise.all([
+  const [source, menu, helper] = await Promise.all([
     read('src/core/js/composition/sortable-inserter.mjs'),
     read('src/smart/menu-context/index.js'),
+    read('src/core/js/overflow-row.js'),
   ]);
-  assert.match(source, /createElement\('sf-menu-context'\)/);
-  assert.match(source, /Loader\?\.ensure\?\.\(\['sf-menu-context'\]\)/);
+  // Placed by core's one standard-menu helper (TL-8), which asks the Loader.
+  assert.match(source, /placeStandardMenu\(list, '_sfInserterMenu'/);
+  assert.match(helper, /createElement\('sf-menu-context'\)/);
+  assert.match(helper, /Loader\?\.ensure\?\.\(\['sf-menu-context'\]\)/);
   assert.match(source, /surface\.search = \{ placeholder: text\('search'\), empty: text\('empty'\) \};/);
   assert.match(source, /surface\.openFor\(button,/);
   // No Escape of its own on the document: the menu owns it and holds the

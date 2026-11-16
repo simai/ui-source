@@ -19,6 +19,7 @@
 // the element is extended here (withSortableInserter).
 import { pageText } from '../page-language.js';
 import { activeSortableSession } from './sortable.mjs';
+import { standardMenu as placeStandardMenu } from '../overflow-row.js';
 
 export const SORTABLE_INSERT_EVENT = 'sf-sortable-insert';
 
@@ -296,24 +297,23 @@ export function createSortableInserter(list) {
     open(point);
   }
 
+  // The standard menu, placed by core's one helper (overflow-row.js
+  // standardMenu, defect TL-8), held on the list.
   async function standardMenu() {
-    if (menu?.isConnected) return menu;
-    const registry = globalThis.customElements;
-    await globalThis.SF?.Loader?.ensure?.(['sf-menu-context']);
-    if (!registry.get('sf-menu-context')) return null;
-    menu = document_().createElement('sf-menu-context');
-    menu.setAttribute('popup', '');
-    menu.addEventListener('sf-menu-context-select', onSelect);
-    menu.addEventListener('sf-menu-context-closed', () => { button?.setAttribute('aria-expanded', 'false'); place(); });
-    // Enter in the search takes the first row it left: whoever typed the name
-    // of what they want has chosen it. The menu's own Enter is a row's.
-    menu.addEventListener('keydown', (event) => {
-      if (event.key !== 'Enter' || event.defaultPrevented || event.target !== menu.searchField?.()) return;
-      event.preventDefault();
-      menu.syncMenuItems?.();
-      menu.availableMenuItems?.()[0]?.click();
+    menu = await placeStandardMenu(list, '_sfInserterMenu', null, {
+      setup(surface) {
+        surface.addEventListener('sf-menu-context-select', onSelect);
+        surface.addEventListener('sf-menu-context-closed', () => { button?.setAttribute('aria-expanded', 'false'); place(); });
+        // Enter in the search takes the first row it left: whoever typed the name
+        // of what they want has chosen it. The menu's own Enter is a row's.
+        surface.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' || event.defaultPrevented || event.target !== surface.searchField?.()) return;
+          event.preventDefault();
+          surface.syncMenuItems?.();
+          surface.availableMenuItems?.()[0]?.click();
+        });
+      },
     });
-    (list.closest('dialog[open]') || document_().body).append(menu);
     return menu;
   }
 

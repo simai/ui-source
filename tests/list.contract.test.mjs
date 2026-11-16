@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.18.0'], ['list-feed', 'sf-list-feed', '1.3.1']]) { // group build 7: list-feed's patch for moved files
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.19.0'], ['list-feed', 'sf-list-feed', '1.3.1']]) { // group build 7: list-feed's patch for moved files
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -311,4 +311,12 @@ test('sf-list 1.18.0: lines says the skeleton rows\' line count from the first f
   assert.match(printed, /lines="1"/u);
   assert.equal((printed.match(/sf-avatar sf-avatar--picture sf-avatar--size-1 sf-avatar--line-1 sf-first-paint-fill sf-list__lead-skeleton/gu) || []).length, 3);
   assert.doesNotMatch(printed, /sf-list__skeleton--lead-wide|sf-list-item--two-line|sf-list__bar--supporting/u);
+});
+
+test('sf-list 1.19.0: a right click on a row opens its menu at the pointer (C164 (1), TL-2)', () => {
+  const source = readFileSync(new URL('../src/smart/list/index.js', import.meta.url), 'utf8');
+  assert.match(source, /this\.addEventListener\("contextmenu", \(event\) => this\.onRowContextMenu\(event\)\);/u);
+  assert.match(source, /onRowContextMenu\(event\) \{\s*if \(event\.shiftKey \|\| event\.defaultPrevented\) return;/u);
+  assert.match(source, /this\.openMenu\(id, \{x: event\.clientX, y: event\.clientY\}\);/u);
+  assert.match(source, /\.\.\.\(point \?\? \{anchor\}\),/u);
 });

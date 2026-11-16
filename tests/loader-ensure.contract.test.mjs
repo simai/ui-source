@@ -161,9 +161,20 @@ test('a parent not defined yet is read again when it turns out to hold nothing',
 
 test('the components ask through SF.Loader.ensure, not a race of their own', () => {
   const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-  for (const path of ['src/smart/tabs/index.js', 'src/core/js/effects.js', 'src/core/js/composition/sortable-inserter.mjs']) {
+  // The sortable inserter and move menu place theirs through core's one
+  // standardMenu (overflow-row.js, TL-8), which asks the Loader.
+  for (const path of ['src/smart/tabs/index.js', 'src/core/js/effects.js', 'src/core/js/overflow-row.js']) {
     const text = read(path);
     assert.match(text, /SF\?\.Loader\?\.ensure\?\.\(/u, path);
     assert.doesNotMatch(text, /Promise\.race\(\[[^\]]*whenDefined/u, path);
+  }
+});
+
+test('core places the standard menu in one place (TL-8)', () => {
+  const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+  for (const path of ['src/core/js/composition/sortable-inserter.mjs', 'src/core/js/composition/sortable-move-menu.mjs']) {
+    const text = read(path);
+    assert.match(text, /from '\.\.\/overflow-row\.js'/u, path);
+    assert.doesNotMatch(text, /createElement\('sf-menu-context'\)/u, path);
   }
 });

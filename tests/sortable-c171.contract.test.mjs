@@ -22,8 +22,10 @@ test('C171 (1): the handle opens «Выше · Ниже · В начало · В
     read('src/smart/sortable/lang/ru.json').then(JSON.parse),
     read('src/smart/sortable/lang/en.json').then(JSON.parse),
   ]);
-  // The standard menu, and the very request a drag ends with.
-  assert.match(menu, /createElement\('sf-menu-context'\)/);
+  // The standard menu (placed by core's one helper, TL-8), and the very request a drag ends with.
+  assert.match(menu, /import \{ standardMenu as placeStandardMenu \} from '\.\.\/overflow-row\.js';/);
+  assert.match(menu, /placeStandardMenu\(list, '_sfMoveMenu'/);
+  assert.doesNotMatch(menu, /createElement\('sf-menu-context'\)/);
   assert.match(menu, /requestSortableMove\(list, chosen\.item, moveMenuTarget\(id, index, all\.length\)\)/);
   assert.match(core, /export function requestSortableMove\(list, item, index\) \{[\s\S]{0,500}emitIntent\(list, \{ item: id, from: name, to: name, index, mode: 'move' \}\);/);
   // A drop is not a press: the click a pointer drag ends with is swallowed.
