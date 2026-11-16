@@ -58,7 +58,8 @@ test('class icon button: its aria-label is a Framework tooltip, data-tooltip="of
   assert.match(entry, /import '\.\/_name-tooltip';/u);
   // The page's own link or opt-out, a title, a close, a disabled button and
   // <sf-button-icon> (which shows its own) are left alone.
-  assert.match(tip, /if \(button\.hasAttribute\('data-tooltip'\) \|\| \(button\.getAttribute\('title'\) \|\| ''\)\.trim\(\)\) return null;/u);
+  assert.match(tip, /if \(button\.hasAttribute\('data-tooltip'\) \|\| hasTitle\(button\)\) return null;/u);
+  assert.match(tip, /for \(let node = button; node && node\.nodeType === 1; node = node\.parentElement\)/u);
   assert.match(tip, /\.sf-button-close, \.sf-icon-button--close, :disabled/u);
   assert.match(tip, /const SKIP_HOSTS = 'sf-button-icon, /u);
   // Lazily: nothing before the first hover, focus or long press.

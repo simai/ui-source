@@ -14,8 +14,10 @@
 // once the controller has linked the button.
 //
 // Left alone: data-tooltip="off" (the page's opt-out) and any data-tooltip of
-// the page's own (its own link is stronger); a button with a title (the page
-// chose the browser's tooltip; drop the title for the Framework's); a button
+// the page's own (its own link is stronger); a button with a title, its own
+// or a host's around it (the page chose the browser's tooltip, or a component
+// wrote its hint there -- the plain theme button, C244; drop the title for
+// the Framework's): never a second tooltip; a button
 // with visible words; a close button (sf-button-close, C14: it carries no
 // name tooltip, as the Smart one does not); a button inside <sf-button-icon>,
 // which shows its own; a disabled or hidden one.
@@ -24,7 +26,17 @@ const NAME_TIP = 'sf-icon-button-tooltip';
 // What draws a glyph, not words: the icon (a ligature is text), the cross,
 // an SVG, the loading spinner.
 const GLYPHS = '.sf-icon, sf-icon, i, svg, .sf-close, sf-button-close, .sf-icon-button-spinner, [class*="sf-loader"]';
-const SKIP_HOSTS = 'sf-button-icon, .sf-tooltip-anchor, [aria-hidden="true"], [inert]';
+const SKIP_HOSTS = 'sf-button-icon, sf-icon-button, .sf-tooltip-anchor, [aria-hidden="true"], [inert]';
+
+// A title on the button or on a host around it (the theme button writes its
+// next-theme hint there, C244) is a tooltip of the page's own: the browser
+// would draw it beside ours, so the button is left alone.
+function hasTitle(button) {
+  for (let node = button; node && node.nodeType === 1; node = node.parentElement) {
+    if ((node.getAttribute('title') || '').trim()) return true;
+  }
+  return false;
+}
 let made = 0;
 
 function tooltipController() {
@@ -64,7 +76,7 @@ function nameTarget(node) {
   const button = node instanceof Element ? node.closest('.sf-icon-button') : null;
   if (!button || !nameOf(button)) return null;
   if (!(button.localName === 'button' || (button.localName === 'a' && button.hasAttribute('href')) || button.getAttribute('role') === 'button')) return null;
-  if (button.hasAttribute('data-tooltip') || (button.getAttribute('title') || '').trim()) return null;
+  if (button.hasAttribute('data-tooltip') || hasTitle(button)) return null;
   if (button.matches('.sf-button-close, .sf-icon-button--close, :disabled, [aria-disabled="true"]')) return null;
   if (button.parentElement?.closest(SKIP_HOSTS) || button.matches(SKIP_HOSTS)) return null;
   if (hasVisibleLabel(button)) return null;

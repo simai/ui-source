@@ -80,8 +80,10 @@ button and flipped above at the bottom edge. Nothing is drawn or fetched
 before the first hover, focus or long press; then a `.sf-tooltip` is made
 beside the button, linked by `data-tooltip`, and the tooltip controller is
 loaded. `data-tooltip="off"` turns it off; a `data-tooltip` naming the page's
-own tooltip wins. Left alone as well: a button with a `title` (the browser's
-tooltip the page chose -- drop the title to get the Framework's), a close
+own tooltip wins. Never a second tooltip: a button with a `title`, its own
+or a host's around it (the browser's tooltip the page chose, or a hint a
+component wrote there, as the plain theme button does, C244 -- drop the title
+to get the Framework's), is left alone, as is a close
 button (`sf-button-close`, C14), a disabled or hidden button, and the button
 inside `<sf-button-icon>`, which shows its own.
 
