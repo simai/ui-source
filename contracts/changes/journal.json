@@ -14133,6 +14133,70 @@
       },
       "owner": "ui-source",
       "source": "src/utility/filter-blur/default/scss/_sf_var__filter_blur.scss; src/utility/backdrop-filter-blur/default/scss/_sf_var__backdrop_blur.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-filters-study.html UT-FLT-3"
+    },
+    {
+      "id": "class-ut1-radius-square",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V BRD-4, by the principle of owner decision C212 (one name per job): radius-square and radius-<side>-square are second names of radius-0 and radius-<side>-0. They keep drawing until remove_after, and the Loader notes each once in SF.deprecations. utility.border-radius 1.2.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "radius-square",
+          "to": "radius-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-top-square",
+          "to": "radius-top-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-bottom-square",
+          "to": "radius-bottom-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-inline-start-square",
+          "to": "radius-inline-start-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-inline-end-square",
+          "to": "radius-inline-end-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-top-inline-start-square",
+          "to": "radius-top-inline-start-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-top-inline-end-square",
+          "to": "radius-top-inline-end-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-bottom-inline-start-square",
+          "to": "radius-bottom-inline-start-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-bottom-inline-end-square",
+          "to": "radius-bottom-inline-end-0"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write radius-0 for radius-square (radius-top-0 for radius-top-square, and so on); sf-upgrade --apply rewrites it.",
+      "examples": {
+        "before": "<div class=\"radius-square\">",
+        "after": "<div class=\"radius-0\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/border-radius/default/scss/_sf_var__radius.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-border-study.html UT-BRD-4"
     }
   ]
 }

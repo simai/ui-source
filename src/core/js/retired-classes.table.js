@@ -339,6 +339,25 @@ export default {
         "blur": "blur-medium",
         "backdrop-blur": "backdrop-blur-medium"
       }
+    },
+    {
+      "journal": "class-ut1-radius-square",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "One name per job (C212): radius-square and its side forms drew the same 0 as radius-0 (--sf-radius-square is 0). They keep drawing until remove_after.",
+      "names": {
+        "radius-square": "radius-0",
+        "radius-top-square": "radius-top-0",
+        "radius-bottom-square": "radius-bottom-0",
+        "radius-inline-start-square": "radius-inline-start-0",
+        "radius-inline-end-square": "radius-inline-end-0",
+        "radius-top-inline-start-square": "radius-top-inline-start-0",
+        "radius-top-inline-end-square": "radius-top-inline-end-0",
+        "radius-bottom-inline-start-square": "radius-bottom-inline-start-0",
+        "radius-bottom-inline-end-square": "radius-bottom-inline-end-0"
+      }
     }
   ],
   "extended": {

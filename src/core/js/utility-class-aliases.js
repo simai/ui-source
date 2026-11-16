@@ -11,7 +11,7 @@
 // utility-c208-scrollbar-retired-sheets, class-c187-doc-to-docara,
 // class-editor-utility-retired, class-c212-hide-print, class-ut1-layout-col-auto,
 // class-ut1-grid-row, class-ut1-negative-auto, class-ut1-bg-position,
-// class-ut1-blur.
+// class-ut1-blur, class-ut1-radius-square.
 import table from './retired-classes.table.js';
 import {noteDeprecated} from './deprecations.js';
 
