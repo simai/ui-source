@@ -26,7 +26,7 @@ test('versions above every origin branch', () => {
   assert.equal(json('src/component/step/passport.json').version, '1.4.0');
   assert.equal(json('src/component/tabs/passport.json').version, '1.4.1'); // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch
   assert.equal(json('src/component/tab/passport.json').version, '1.1.0'); // group build 9: 1.0.3 moved on by the merged branches or a GB9 patch
-  assert.equal(json('src/component/tree/passport.json').version, '1.5.0');
+  assert.equal(json('src/component/tree/passport.json').version, '1.5.1'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch
   assert.equal(json('src/component/tree-item/passport.json').version, '1.1.2');
   assert.equal(json('src/smart/tree/component.json').version, '2.4.0');
 });

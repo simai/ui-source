@@ -57,5 +57,5 @@ test('versions: procedure 1.3.1, reference-link 1.3.0, sf-reference-link 1.2.3',
   assert.equal(json('src/component/procedure/passport.json').version, '1.3.1');
   assert.equal(json('src/component/reference-link/passport.json').version, '1.3.2'); // group build 9: 1.3.0 moved on by the merged branches or a GB9 patch
   assert.equal(json('src/smart/reference-link/component.json').version, '1.3.2'); // group build 9: 1.2.3 moved on by the merged branches or a GB9 patch
-  assert.equal(json('src/smart/reference-link/smart.manifest.json').version, '1.2.3');
+  assert.equal(json('src/smart/reference-link/smart.manifest.json').version, '1.3.2'); // group build 9: 1.2.3 moved on by the merged branches or a GB9 patch
 });

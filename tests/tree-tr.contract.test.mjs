@@ -93,5 +93,5 @@ test('tree versions: sf-tree 2.4.0, sf-tree-item 1.3.2 (C243 and RG-NV 31g-31l o
   assert.equal(tree.version, '2.4.0');
   assert.equal(item.version, '1.3.3'); // group build 9: 1.3.2 moved on by the merged branches or a GB9 patch
   assert.equal(treeManifest.version, '2.4.0');
-  assert.equal(itemManifest.version, '1.3.2');
+  assert.equal(itemManifest.version, '1.3.3'); // group build 9: 1.3.2 moved on by the merged branches or a GB9 patch
 });
