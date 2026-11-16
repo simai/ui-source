@@ -13,7 +13,7 @@
 // class-ut1-layout-col-auto, class-ut1-grid-row, class-ut1-negative-auto,
 // class-ut1-bg-position, class-ut1-blur, class-ut1-radius-square,
 // class-ut1-tracking, utility-c210-scrollbar-retired-sheets,
-// class-c210-scrollbar-class.
+// class-c210-scrollbar-class, class-avatar-offline-point-retired.
 import table from './retired-classes.table.js';
 import {noteDeprecated} from './deprecations.js';
 

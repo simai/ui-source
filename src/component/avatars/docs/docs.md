@@ -34,7 +34,10 @@ a real destination or action.
   whole (owner decision C152 (7));
 - state: online indicator (`.sf-online-indicator--online`), away
   (`.sf-online-indicator--away`, a hollow ring of the place's dim ink, owner
-  decision C152 (5); sf-avatar draws no point for offline), and
+  decision C152 (5); sf-avatar draws no point for offline, and the class
+  `.sf-online-indicator--offline` is retired: written by hand it keeps drawing
+  the point below until 2027-01-01 and the Loader notes it in SF.deprecations;
+  remove the span and keep «не в сети» in the avatar's name), and
   company/verification badge. The
   indicator's coloured disc is the small step of the avatar's size, 6 / 6 / 8 /
   12 / 12 / 16 px at 1/4 to 3, the same as the anchored badge's dot, and its
@@ -81,6 +84,9 @@ a real destination or action.
   to size 1 and 8 at 2 and 3 (1.11.0, C152 (6)); the overlap modifiers
   `--size-1/4`, `-1/3`, `-1/2` (and `xs`, `sm`, `md`) draw what they drew
   until 2027-01-01 and are noted in SF.deprecations;
+
+  the first: `--sf-avatar-offline-background-color: #e53935`. Both leave
+  with the retired class after 2027-01-01;
 - hue, on initials only: `.sf-avatar--text.sf-hue-<name>`, where name is a
   hue of the static palette (`red`, `orange`, `amber`, `yellow`, `lime`,
   `green`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `pink`,

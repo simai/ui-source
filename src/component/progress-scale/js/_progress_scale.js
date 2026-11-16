@@ -254,6 +254,8 @@ function getProgressScaleState(target) {
     valueText: root.getAttribute('aria-valuetext') || '',
     meter: root.dataset.meter === 'true',
     steps: root.dataset.steps ? normalizeProgressScaleSteps(root.dataset.steps) : null,
+    warningAt: readThreshold(root.dataset.warningAt),
+    errorAt: readThreshold(root.dataset.errorAt),
   };
 }
 
