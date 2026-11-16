@@ -43,8 +43,12 @@ the number at the small text size.
 - `.sf-procedure-content` holds the step's blocks in one column with the text
   gap between them; their own outer margins are taken off.
 
-The line ends where the next step begins, so a step of any height keeps its
-markers joined. `sf-procedure--list` drops the line, for a short list.
+The number stands 12 before the title at every width and density, the
+marker-to-label step of `sf-steps` (C234). The line ends where the next step
+begins, so a step of any height keeps its markers joined. It stays the neutral
+`--sf-outline-variant` between done steps too (C235): a procedure is text to
+read, not a progress bar. `sf-procedure--list` drops the line, for a short
+list.
 
 ## State
 
@@ -72,6 +76,6 @@ complete and it current; `props.layout`: `timeline` or `list`).
 | `--sf-procedure-line-color` | the line between markers | `--sf-outline-variant` |
 | `--sf-procedure-line-width` | the line's width | `--sf-px` |
 | `--sf-procedure-gap` | between the steps | `--sf-content--space-related` |
-| `--sf-procedure-indent` | between the marker and the content | `--sf-space-1` |
+| `--sf-procedure-indent` | between the marker and the content | 12 at every width and density, as `sf-steps` (C234) |
 
 In forced colours the markers' edges and the line are drawn in `CanvasText`.

@@ -3801,8 +3801,8 @@
         {
           "name": "--sf-procedure-indent",
           "role": "gap",
-          "summary": "The space between a marker and its step's content.",
-          "default": "var(--sf-space-1)",
+          "summary": "The space between a marker and its step's content: 12 at every width and density, the sf-steps marker-to-label step (C234).",
+          "default": "calc(var(--sf-a8) + var(--sf-procedure--ring) * 2)",
           "since": "2026-11-01"
         }
       ]
