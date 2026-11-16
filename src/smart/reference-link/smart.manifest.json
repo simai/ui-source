@@ -145,6 +145,7 @@
         "sf-reference-link__main",
         "sf-reference-link__link",
         "sf-reference-link__label",
+        "sf-reference-link__start",
         "sf-reference-link__icon",
         "sf-reference-link__meta",
         "sf-reference-link__number",

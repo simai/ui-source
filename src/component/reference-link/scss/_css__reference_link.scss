@@ -501,6 +501,14 @@
     margin-inline-end: var(--sf-space-1\/4);
   }
 
+  /* The record's icon and the name's first word are one run (content study
+     C6): on a narrow line the icon no longer stays alone at the line end.
+     Class markup does the same with
+     <span class="sf-reference-link__start">icon + first word</span>. */
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__start) {
+    white-space: nowrap;
+  }
+
   /* The number is one word: «№ 4812» never breaks at its space. */
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__number) {
     color: var(--sf-on-surface-variant);

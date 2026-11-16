@@ -120,8 +120,9 @@ test('reference C3/C4: the line in text at ink 48, the ring 2 off and cloned (C1
   assert.match(ring, /box-decoration-break: clone/u);
 });
 
-test('reference C5/C6: the new-tab sign is arrow_outward; a word joiner binds the icon to the name', () => {
+test('reference C5/C6: the new-tab sign is arrow_outward; the icon and the first word are one run', () => {
   assert.match(template, /aria-hidden="true">arrow_outward<\/i>/u);
   assert.doesNotMatch(template, />open_in_new</u);
-  assert.match(template, /\$\{iconPart\}\$\{joiner\}<span class="sf-reference-link__label">/u);
+  assert.match(template, /<span class="sf-reference-link__start">\$\{iconPart\}\$\{split\[1\]\}<\/span>/u);
+  assert.match(reference, /:where\(\.sf-reference-link__start\) \{\s*white-space: nowrap;/u);
 });

@@ -21,10 +21,11 @@ test('two looks: inline in text beside the card; three settings added (C147 (1),
   assert.match(css, /\.sf-reference-link\.sf-reference-link--inline \{\s*display: inline;/u);
   assert.match(css, /\.sf-reference-link--inline :where\(\.sf-reference-link__link\)::after \{\s*content: none;/u);
   // The icon never parts from the name: no white space between them in the
-  // template, and a word joiner after the icon (an atomic inline the browser
-  // may break after; content study C6).
-  assert.match(template, /\$\{iconPart\}\$\{joiner\}<span class="sf-reference-link__label">/u);
-  assert.match(template, /const joiner = shownIcon \? '\\u2060' : nothing;/u);
+  // template, and the icon with the first word in one unbroken run (an atomic
+  // inline the browser breaks after; content study C6).
+  assert.match(template, /\$\{iconPart\}<span class="sf-reference-link__label">/u);
+  assert.match(template, /<span class="sf-reference-link__start">\$\{iconPart\}\$\{split\[1\]\}<\/span>/u);
+  assert.match(css, /--inline :where\(\.sf-reference-link__start\) \{\s*white-space: nowrap;/u);
 });
 
 test('a record in text: type icon one line high, 4 before the name, the number quiet and whole (C147 (2))', () => {

@@ -64,15 +64,22 @@ export function renderReferenceLinkTemplate(context) {
   if (inline) {
     // In text (C147 (1), (2)): one inline run that wraps with the sentence --
     // the type icon, the name, the record's number in a quiet ink, the new
-    // tab sign. No white space between the parts, and a word joiner after
-    // the icon: the icon is an atomic inline, which the browser may break
-    // after even with no space, so on a narrow line it stood alone at the
-    // line end with the name on the next (content study C6).
+    // tab sign. The icon is an atomic inline, which the browser breaks after
+    // even with no space between (a word joiner does not hold it): on a
+    // narrow line it stood alone at the line end with the name on the next
+    // (content study C6). So the icon and the name's first word stand in one
+    // run that does not break, inside the label (the icon is a box, so the
+    // name's underline does not run under it).
     const numberPart = textContent
       ? html` <span class="sf-reference-link__number">${textContent}</span>`
       : nothing;
-    const joiner = shownIcon ? '\u2060' : nothing;
-    const body = html`${iconPart}${joiner}<span class="sf-reference-link__label">${labelContent}</span>${numberPart}${reasonPart}${tabPart}`;
+    const split = shownIcon && typeof labelContent === 'string'
+      ? labelContent.match(/^(\s*\S+)([\s\S]*)$/u)
+      : null;
+    const labelPart = split
+      ? html`<span class="sf-reference-link__label"><span class="sf-reference-link__start">${iconPart}${split[1]}</span>${split[2]}</span>`
+      : html`${iconPart}<span class="sf-reference-link__label">${labelContent}</span>`;
+    const body = html`${labelPart}${numberPart}${reasonPart}${tabPart}`;
     const run = href && !disabled && !gone
       ? html`<a class="sf-reference-link__link"
           href=${href}
