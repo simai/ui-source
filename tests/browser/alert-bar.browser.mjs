@@ -5,16 +5,17 @@
 // sf-alert-bar on the built bytes with the real Loader, above a mock admin
 // header, at 1440 and 390 px, light and dark: one warning, three items (the
 // error colour, no paging arrows (C114 (3)), two lines narrow) and a
-// minimized error bar. Measured on the ladder (rung 1/2): the text the rung's
+// minimized error bar (sf-alert-bar 1.6). Measured on the ladder (rung 1/2): the text the rung's
 // line, the icon that line, every button the rung's low control height H
 // (C117: height low, L + 2 × the rung's low tightness step), the bar's
 // block inset (H − L) / 2 and its inline inset the edge, --sf-space-1 (C105;
 // an admin bar's page column is the whole width); wide, the icon, the text
 // and the buttons on one centre; narrow, the icon, the text's first line and
 // the close on one line with the actions under the text from its start
-// (AA-17) and «Все 3» at the end; the strip the control height of the rung below. The
+// (AA-17) and «Ещё 2» at the end; the strip the control height of the rung below. The
 // fills are the theme's status roles with their on- ink, at least 4.5:1, and
-// the list of all opens under the bar. No sideways scroll, no page errors.
+// «Ещё 2» (1.6.0, C114 (3): it counts the others, not the shown item) opens
+// the list of the others under the bar. No sideways scroll, no page errors.
 // With a screenshot folder, each case is saved there as a PNG.
 import {createServer} from 'node:http';
 import {existsSync, mkdirSync, readFileSync, statSync} from 'node:fs';
@@ -103,16 +104,27 @@ async function open(name, {width, theme}) {
 
 // The ladder of a rung, measured from its tokens: control is the rung's
 // default control height (the strip's), low its low step (the bar's buttons,
-// C117).
+// C117). Each length is resolved on a probe of its own, content-box with no
+// padding: one probe holding the line as its block size beside a padding and a
+// minimum read back the padding or the minimum once core sets border-box.
 const LADDER = (rung) => {
   const r = rung.replace('/', '\\/');
-  const probe = document.createElement('div');
-  probe.style.cssText = `position:absolute;inline-size:var(--sf-ui-${r}--control-height);block-size:var(--sf-text-height-${r});padding-inline:var(--sf-ui-${r}--space-x);padding-block:var(--sf-space-1);column-gap:var(--sf-ui-${r}--text-space-x);min-block-size:calc(var(--sf-text-height-${r}) + 2 * var(--sf-ui-${r}--space-y-tightness-low))`;
-  document.body.append(probe);
-  const s = getComputedStyle(probe);
-  const value = {control: parseFloat(s.inlineSize), line: parseFloat(s.blockSize), spaceX: parseFloat(s.paddingLeft), textSpaceX: parseFloat(s.columnGap), edge: parseFloat(s.paddingTop), low: parseFloat(s.minBlockSize)};
-  probe.remove();
-  return value;
+  const length = (value) => {
+    const probe = document.createElement('div');
+    probe.style.cssText = `position:absolute;box-sizing:content-box;padding:0;border:0;inline-size:${value}`;
+    document.body.append(probe);
+    const px = parseFloat(getComputedStyle(probe).inlineSize);
+    probe.remove();
+    return px;
+  };
+  return {
+    control: length(`var(--sf-ui-${r}--control-height)`),
+    line: length(`var(--sf-text-height-${r})`),
+    spaceX: length(`var(--sf-ui-${r}--space-x)`),
+    textSpaceX: length(`var(--sf-ui-${r}--text-space-x)`),
+    edge: length('var(--sf-space-1)'),
+    low: length(`calc(var(--sf-text-height-${r}) + 2 * var(--sf-ui-${r}--space-y-tightness-low))`),
+  };
 };
 
 // WCAG contrast of two rgb() colours.
@@ -152,6 +164,7 @@ for (const theme of ['light', 'dark']) {
           line: message ? parseFloat(getComputedStyle(message).lineHeight) : null,
           messageTop: message ? r(message).top : null,
           controls: controls.map((el) => ({cls: el.closest('sf-button, sf-button-icon').className, h: r(el).height, mid: r(el).top + r(el).height / 2, top: r(el).top, left: r(el).left, right: r(el).right})),
+          more: host.querySelector('.sf-alert-bar-all')?.textContent.replace(/\s+/gu, ' ').trim() ?? null,
           pager: host.querySelector('.sf-alert-bar-pager') ? getComputedStyle(host.querySelector('.sf-alert-bar-pager')).display : null,
           position: host.querySelector('.sf-alert-bar-position')?.textContent.trim() ?? null,
           text: host.querySelector('.sf-alert-bar-text') && r(host.querySelector('.sf-alert-bar-text')),
@@ -179,11 +192,12 @@ for (const theme of ['light', 'dark']) {
           ok(`${label}: narrow, icon, text and close on the first line, the actions under the text`, end && near(end.mid, g.icon[2], 1) && g.actions.top >= g.text.bottom - 0.5 && near(g.messageTop + ladder.line / 2, g.icon[2], 1), JSON.stringify({end, icon: g.icon, text: g.text, actions: g.actions, messageTop: g.messageTop}));
           const first = g.controls.find((c) => /sf-alert-bar-action\b/u.test(c.cls));
           ok(`${label}: narrow, the actions start at the text start (AA-17)`, first && near(first.left, g.text.left, 1), JSON.stringify({first, text: g.text}));
-          if (name === 'three') ok(`${label}: narrow, no arrows, «Все 3» at the line's end`, g.pager === null && all && near(all.right, g.bar.right - g.padLeft, 1), JSON.stringify({pager: g.pager, all, bar: g.bar}));
+          if (name === 'three') ok(`${label}: narrow, no arrows, «Ещё 2» at the line's end`, g.pager === null && all && near(all.right, g.bar.right - g.padLeft, 1), JSON.stringify({pager: g.pager, all, bar: g.bar}));
         }
       }
       if (shots) await tab.screenshot({path: join(shots, `alert-bar-${name}-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: 260}});
       if (name === 'three') {
+        ok(`${label}: the toggle counts the others, «Ещё 2» (1.6.0, C114 (3))`, g.more === 'Ещё 2', JSON.stringify(g.more));
         await tab.click('#bar .sf-alert-bar-all :is(button, a)');
         await tab.waitForTimeout(300);
         const list = await tab.evaluate(() => {
@@ -191,7 +205,7 @@ for (const theme of ['light', 'dark']) {
           const items = [...(element?.querySelectorAll(':scope > li') ?? [])];
           return {count: items.length, levels: items.map((li) => li.dataset.level), top: element?.getBoundingClientRect().top, bar: document.querySelector('#bar .sf-alert-bar-row').getBoundingClientRect().bottom, overflow: document.documentElement.scrollWidth > innerWidth};
         });
-        ok(`${label}: «Все 3» opens the list under the bar, error first`, list.count === 3 && list.levels.join(',') === 'error,warning,info' && near(list.top, list.bar, 1) && !list.overflow, JSON.stringify(list));
+        ok(`${label}: «Ещё 2» opens the list of the others under the bar, by level`, list.count === 2 && list.levels.join(',') === 'warning,info' && near(list.top, list.bar, 1) && !list.overflow, JSON.stringify(list));
         if (shots) await tab.screenshot({path: join(shots, `alert-bar-three-list-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: width < 600 ? 640 : 420}});
       }
       ok(`${label}: no page errors`, !errors.length, errors.join(' | '));

@@ -115,7 +115,10 @@ together. A row is the UI ladder's rung 3 control height: 56 on a desktop,
 48 compact, 52 on a phone; title (text 1) and meta line (text 1/2) fill it
 exactly, a one-line row centres in it. The status icon is `--sf-icon-size-3`
 (24, 20 compact) on the title's line. The action and the «⋯» are size 1/2
-controls centred on the row. The card's text edge is `--sf-space-1` in from
+controls centred on the row. The heading is a card title (1.3.7): the card
+title's size and line, semibold (16/24 on a desktop, 14/20 on a phone), held in
+a compact region as a card's title is, so it matches an `sf-card` heading and
+`sf-progress-run`'s title beside it. The card's text edge is `--sf-space-1` in from
 its border, and the head, the rows and the foot start on it.
 
 The rows are one grid: the actions (and in group mode the affected counts)
@@ -155,6 +158,10 @@ otherwise: a host that wants a new problem read out announces it itself.
 
 ## Changes
 
+- 1.3.7 (2026-11-16, R082 notes N1 and N2, decisions C34 and C44) — the
+  heading is a card title: semibold (it was medium), the card title's size
+  and line, held in compact density (it dropped to 14/20 there while a card
+  title stays 16/24). Nothing else moves.
 - 1.3.0 (2026-11-11, owner decision C45) — the phone look: in a column
   narrower than 30rem the summary is one line of text under the heading
   (the group page too, with the time of the checks under it), and the empty

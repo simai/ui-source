@@ -246,8 +246,13 @@ Before Inter is available, Framework uses a local `Inter Fallback` face: Arial
 with metric overrides. It keeps the natural font-driven geometry of controls
 and text while preventing the webfont swap from moving the header, navigation,
 or page columns. Inter uses `font-display: optional`: a cold page keeps the
-metric fallback for that document instead of swapping late, while cached
-visits use Inter immediately. Projects do not need to preload the font or
+metric fallback for that document instead of swapping late. A later visit gets
+Inter on the first paint only when the files are still in the browser's memory
+cache, as on a second navigation in the same tab; in Chrome a new tab whose
+files come from the HTTP cache keeps the fallback for that document too
+(measured 2026-11-12). A host that wants Inter on those first paints preloads
+the faces it needs (`<link rel="preload" as="font" crossorigin>`), as Docara
+does for Latin and, on a Cyrillic page, Cyrillic. Projects do not need to
 reserve fixed heights, and custom font-family overrides continue to work as
 before. The stack ends in the system fonts for an environment without Arial.
 

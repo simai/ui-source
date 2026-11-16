@@ -16,7 +16,7 @@ const sheet = read('src/smart/alert-bar/scss/_smart__alert-bar.scss');
 test('the manifest: a leaf of block alert with items, four events and the close action', () => {
   assert.equal(manifest.tag, 'sf-alert-bar');
   assert.equal(manifest.family, 'alert');
-  assert.equal(manifest.version, '1.6.5'); // group build 8: 1.6.4 moved on by the merged branches or a GB8 patch
+  assert.equal(manifest.version, '1.6.7'); // the error bar's minimize at the C112 ink 64
   assert.deepEqual(Object.keys(manifest.settings), ['items', 'size', 'label']);
   assert.deepEqual(manifest.settings.items.schema.items.properties.level.enum, ['error', 'warning', 'info']);
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'level', 'text']);

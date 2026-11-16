@@ -9,7 +9,8 @@
 //     error count coloured and it is a link;
 //   - spacing: between groups --sf-space-1, bar to figures --sf-space-1/3,
 //     result to counts --sf-space-1/4, a divider before the steps, the badge on
-//     the first title line; the title at the run's text line (16/24 → 14/20);
+//     the first title line; the title a card title (16/24 on a desktop, held
+//     in compact as a card's title is, 14/20 on a phone: R082 N1, 1.4.6);
 //   - density reaches the inner buttons;
 //   - keyboard: the error link (Enter) sends report and moves focus to the
 //     list; Pause then Continue by two presses of Space, focus kept on the
@@ -222,7 +223,8 @@ try {
           check(near(facts.resultToCounts, facts.tokens.space14), `${label}: result to counts ${facts.resultToCounts}, wanted --sf-space-1/4 ${facts.tokens.space14}`);
           check(facts.divider !== '0px' && facts.divider !== null, `${label}: no divider before the steps (${facts.divider})`);
           check(facts.badgeOnFirstLine === true, `${label}: the badge is not on the first title line`);
-          const small = device === 'phone' || density === 'compact';
+          // A card title (1.4.6, R082 N1, C44): compact density does not move it.
+          const small = device === 'phone';
           check(facts.title?.tag === 'H3' && facts.title.size === (small ? 14 : 16) && facts.title.line === (small ? 20 : 24) && Number(facts.title.weight) >= 600,
             `${label}: title ${JSON.stringify(facts.title)}, wanted H3 ${small ? '14/20' : '16/24'} semibold`);
           check(facts.logInside === true, `${label}: the failed step's log runs past the card`);

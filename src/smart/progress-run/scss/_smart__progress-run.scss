@@ -31,6 +31,10 @@ sf-progress-run {
   /* The rung: 1. */
   --sf-progress-run--line: var(--sf-text-height-1);
   --sf-progress-run--font-size: var(--sf-text-size-1);
+  /* The title is a card title at rung 1 (R082 N1, C34, C44): the card
+     title's size and line, held in a compact region as a card's is. */
+  --sf-progress-run--title-size: var(--sf-heading-6--size);
+  --sf-progress-run--title-line: var(--sf-title--height-card);
   --sf-progress-run--below-line: var(--sf-text-height-1\/2);
   --sf-progress-run--below-font-size: var(--sf-text-size-1\/2);
   --sf-progress-run--control: var(--sf-ui-1--control-height);
@@ -57,6 +61,8 @@ sf-progress-run {
 .sf-progress-run.sf-progress-run--size-half {
   --sf-progress-run--line: var(--sf-text-height-1\/2);
   --sf-progress-run--font-size: var(--sf-text-size-1\/2);
+  --sf-progress-run--title-size: var(--sf-text-size-1\/2);
+  --sf-progress-run--title-line: var(--sf-text-height-1\/2);
   --sf-progress-run--below-line: var(--sf-text-height-1\/3);
   --sf-progress-run--below-font-size: var(--sf-text-size-1\/3);
   --sf-progress-run--control: var(--sf-ui-1\/2--control-height);
@@ -65,7 +71,8 @@ sf-progress-run {
   --sf-progress-run--below-text-space-x: var(--sf-ui-1\/3--text-space-x);
 }
 
-/* The head: the title at the rung's text line, semibold, whatever its
+/* The head: the title a card title (at rung 1 the card title's size and
+   line, held in compact; at 1/2 the rung's text line), semibold, whatever its
    heading level (R082: a component title, not a page heading), the badge on
    its first line, the caption under it touching. Words wrap at spaces only,
    so a file name moves to the next line whole. */
@@ -83,8 +90,8 @@ sf-progress-run {
   min-inline-size: 0;
   margin: 0;
   padding: 0;
-  font-size: var(--sf-progress-run--font-size);
-  line-height: var(--sf-progress-run--line);
+  font-size: var(--sf-progress-run--title-size);
+  line-height: var(--sf-progress-run--title-line);
   font-weight: var(--sf-text--font-weight-6, 600);
   overflow-wrap: break-word;
 }
@@ -94,7 +101,7 @@ sf-progress-run {
   grid-column: 2;
   grid-row: 1;
   align-items: center;
-  min-block-size: var(--sf-progress-run--line);
+  min-block-size: var(--sf-progress-run--title-line);
   white-space: nowrap;
 }
 

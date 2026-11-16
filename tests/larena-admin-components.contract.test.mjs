@@ -110,7 +110,8 @@ test('sf-list-attention: ordered by severity, nothing when empty, navigate and a
   assert.match(source, /summaryLine: STATUSES\.filter\(\(one\) => counts\[one\]\)\.map\(\(one\) => this\.sfWord\(`summary-\$\{one\}`, \{count: counts\[one\]\}\)\)\.join\(' · '\)/u);
   const narrow = sheet.slice(sheet.indexOf('@container (max-width: #{mq.container-step(g5)})'), sheet.indexOf('@container (max-width: #{mq.container-step(h0)})'));
   assert.match(narrow, /\.sf-list-attention-head \.sf-list-attention-summary,\s*\.sf-list-attention-head \.sf-list-attention-spacer \{\s*display: none;/u);
-  assert.match(narrow, /padding-block: calc\(\(var\(--sf-list-attention--row\) - var\(--sf-list-attention--line\) - var\(--sf-list-attention--meta-line\)\) \/ 2\);/u);
+  // The head's two lines are the heading (a card title, 1.3.7) and the meta line.
+  assert.match(narrow, /padding-block: calc\(\(var\(--sf-list-attention--row\) - var\(--sf-list-attention--title-line\) - var\(--sf-list-attention--meta-line\)\) \/ 2\);/u);
   assert.match(narrow, /\.sf-list-attention-quiet-line,\s*\.sf-list-attention-recheck-text,\s*\.sf-list-attention-recheck-text > \* \{\s*display: none;/u);
   assert.doesNotMatch(narrow, /sf-list-attention-action[^{]*\{[^}]*display: none/u);
   // sf-button-icon's host is display: contents: the wide column hides the
