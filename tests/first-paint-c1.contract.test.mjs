@@ -36,7 +36,10 @@ test('RG-S2-7: a 1/2 site bar with a size-1 control in its row holds the size-1 
   // No :is() in these lists: the build's fallback expands every combination.
   const block = core.slice(core.indexOf('$sf-site-header-wide:'), core.indexOf(':where(:is(sf-header-site, sf-site-header)):not(:defined)'));
   assert.doesNotMatch(block, /:is\(/u);
-  assert.match(core, /\[size="1\/2"\]:where\(:has\(> \[slot="tools"\]#\{\$sf-site-header-wide\}, > \.sf-site-header > \.sf-site-header-row > \.sf-site-header-tools > #\{\$sf-site-header-wide\}\)\)/u);
+  // The settings tools (language, theme) go to a collapsed bar's panel (C161 (8)): they count with the nav.
+  assert.match(core, /\$sf-site-header-setting: 'sf-language, \[theme-switch\]';/u);
+  assert.match(core, /\[size="1\/2"\]:where\(:has\(> \[slot="tools"\]#\{\$sf-site-header-wide\}:not\(#\{\$sf-site-header-setting\}\), > \.sf-site-header > \.sf-site-header-row > \.sf-site-header-tools > #\{\$sf-site-header-wide\}:not\(#\{\$sf-site-header-setting\}\)\)\)/u);
+  assert.match(core, /> \[slot="tools"\]:where\(#\{\$sf-site-header-setting\}\)#\{\$sf-site-header-wide\}/u);
   // The nav and the actions count only above the collapse step, the sheet's own.
   assert.match(core, /@each \$collapse, \$step in \(sm: g6, md: h1, lg: h5, xl: h8\)/u);
   assert.match(core, /\[size="1\/2"\]\[collapse="none"\]:where\(:has\(#\{\$sf-site-header-wide-row\}\)\)/u);
