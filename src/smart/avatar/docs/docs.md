@@ -12,7 +12,9 @@ Loading model:
 ## Attributes
 
 - `template`: `default | label | card`
-- `size`: `1/4 | 1/3 | 1/2 | 1 | 2 | 3`
+- `size`: `1/4 | 1/3 | 1/2 | 1 | 2 | 3` -- 16 / 24 / 32 / 40 / 48 / 56 px on a
+  desktop, 16 / 20 / 28 / 36 / 44 / 52 on a phone, 16 / 20 / 24 / 32 / 40 / 48
+  in a compact region; 1/4 is 16 on every screen (owner decision C132)
 - `shape`: `circle | square` -- circle for a person; square for an
   organisation, a project, a group or a channel, a bot or an app. The
   square's corner grows with the step: 4 px at 1/4 and 1/3, 8 at 1/2 and 1,
@@ -50,6 +52,10 @@ Loading model:
   dated alias until 2026-12-01 (`title` is a property of every element,
   standard 1.3.8 §3.1)
 - `description`
+- `no-wrap` -- the label template keeps the heading and the description on one
+  line each, cut with an ellipsis, the full text as each line's title; without
+  it they wrap, a word longer than the line included (C152 (7): a printed name
+  is read whole; register RG-S1-24)
 - `meta`
 - `meta-icon`
 - `card-variant`: `square | portrait`

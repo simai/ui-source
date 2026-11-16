@@ -88,10 +88,30 @@ class SfProgressRing extends ProgressRingElement {
     return [...new Set([...super.observedAttributes, 'aria-label'])];
   }
 
-  // An avatar put in the ring without slot="content" is not the ring's
-  // content: it stands beside the ring (AR-4, recipe C152 (8)). It is said
-  // once a page -- one console warning, wherever the ring is -- and each
-  // ring is listed in SF.deprecations, so a person or a probe finds it.
+  // A lone avatar child is the ring's content (owner decision C152 (8), DEV
+  // AR-4, fix/avatar-ring-ar1 2026-11-16): the recipe is a ring holding an
+  // avatar, and a page that left out slot="content" got the avatar beside
+  // the ring, 60 px off its middle. The ring names the slot for it when the
+  // avatar (sf-avatar or a class .sf-avatar) is its only element child and
+  // no child names the content slot; a printed first paint (data-sf-static)
+  // is a picture of the ring, not a child.
+  captureSlotTemplates() {
+    if (!this._slotTemplatesCaptured && !this.querySelector(':scope > [slot="content"]')) {
+      const children = [...this.children].filter((child) => !child.hasAttribute('data-sf-static'));
+      const [only] = children;
+      if (children.length === 1 && !only.hasAttribute('slot')
+        && (only.localName === 'sf-avatar' || only.classList?.contains('sf-avatar'))) {
+        only.setAttribute('slot', 'content');
+      }
+    }
+    super.captureSlotTemplates();
+  }
+
+  // An avatar the ring cannot take as its content -- beside other children,
+  // or under a content slot already named -- stands beside the ring (AR-4,
+  // recipe C152 (8)). It is said once a page -- one console warning,
+  // wherever the ring is -- and each ring is listed in SF.deprecations, so a
+  // person or a probe finds it.
   noteUnslottedAvatar() {
     if (this._unslottedNoted) return;
     const stray = [...this.children].find((child) => (child.localName === 'sf-avatar' || child.classList?.contains('sf-avatar'))
@@ -102,7 +122,7 @@ class SfProgressRing extends ProgressRingElement {
     const root = globalThis.SF = globalThis.SF || {};
     if (root.__progressRingAvatarWarned) return;
     Object.defineProperty(root, '__progressRingAvatarWarned', {value: true, configurable: true});
-    globalThis.console?.warn?.(`[SIMAI Framework] sf-progress-ring${this.id ? ` #${this.id}` : ''}: an sf-avatar inside the ring without slot="content" is drawn beside the ring, not in it. Give the sf-avatar slot="content" (decision C152 (8)).`);
+    globalThis.console?.warn?.(`[SIMAI Framework] sf-progress-ring${this.id ? ` #${this.id}` : ''}: an sf-avatar inside the ring beside other content is drawn beside the ring, not in it. Give the sf-avatar slot="content" (decision C152 (8)).`);
   }
 
   templateContext() {

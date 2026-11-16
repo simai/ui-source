@@ -66,20 +66,28 @@ take their size from it: at most half the box, the avatar's own size where the
 box is as large as its step (a size 1/3 avatar in a ring of 1/2 has 8 px
 letters in a compact region, where the middle is 16 px).
 
-The avatar must say `slot="content"`. An sf-avatar put inside the ring without
-it is not the ring's content: it is drawn beside the ring. The ring says so
-once a page in the console and lists each such ring in `SF.deprecations.list()`
+The avatar says `slot="content"`. A lone sf-avatar child written without it
+is taken as the content too (1.6.0): the ring names the slot for it. An avatar
+the ring cannot take -- beside other children, or with another child already
+in the content slot -- is drawn beside the ring; the ring says so once a page
+in the console and lists each such ring in `SF.deprecations.list()`
 (`kind: "markup"`, `from: "sf-avatar without slot"`, `to: 'slot="content"'`).
 
 ```html
-<!-- right -->
+<!-- the recipe -->
 <sf-progress-ring value="70" label="Профиль заполнен на 70 %">
   <sf-avatar slot="content" size="1/2" heading="Анна Ким"></sf-avatar>
 </sf-progress-ring>
 
-<!-- wrong: drawn beside the ring, with a warning -->
+<!-- the same ring: a lone avatar is the content -->
 <sf-progress-ring value="70" label="Профиль заполнен на 70 %">
   <sf-avatar size="1/2" heading="Анна Ким"></sf-avatar>
+</sf-progress-ring>
+
+<!-- wrong: two children, the avatar is drawn beside the ring, with a warning -->
+<sf-progress-ring value="70" label="Профиль заполнен на 70 %">
+  <sf-avatar size="1/2" heading="Анна Ким"></sf-avatar>
+  <span>70 %</span>
 </sf-progress-ring>
 ```
 

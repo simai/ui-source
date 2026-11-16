@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.avatars",
   "kind": "component",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/avatars/docs/docs.md",
@@ -23,7 +23,7 @@
     "src/component/avatars/scss/_css__avatars_group.scss",
     "src/component/avatars/scss/index.scss"
   ],
-  "content_sha256": "b40c60c710a2b15cc3d50fdabd2cd472c95c1f5427d82f16d4702312266119a5",
+  "content_sha256": "52d26fb6c5b4ed139b9bf784909dcf2ca2270a21cc1def80a44050ca973cb564",
   "dependencies": [
     {
       "id": "tokens.border",

@@ -15,6 +15,13 @@
 .sf-avatar-label-group .sf-avatar-label-group-container {
   background-color: var(--sf-avatar-label-group-container--background-color, transparent);
   min-inline-size: 0;
+  /* The name and the role wrap inside the group (owner decision C152 (7):
+     the name is printed, so it is read whole, not cut): a word longer than
+     the line -- a long surname, an address -- breaks rather than running out
+     of the container (register RG-S1-24, 2026-11-16: 144 px past a 300 px
+     frame). no-wrap lines still end in an ellipsis and carry the full text
+     as their title. */
+  overflow-wrap: break-word;
 }
 
 .sf-avatar-label-group .sf-avatar-label-group-title {

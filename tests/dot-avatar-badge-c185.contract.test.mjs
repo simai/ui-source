@@ -86,11 +86,13 @@ test('KB-4: the controller and sf-tooltip both write it', async () => {
   assert.match(element, /querySelectorAll\(`\[data-tooltip="\$\{escaped\}"\]`\)\.forEach\(\(trigger\) => \{\s*writeTriggerKeyShortcuts\(trigger, shortcut\);/u);
 });
 
-test('AR-4: an avatar in a ring without slot="content" is said once', async () => {
+// fix/avatar-ring-ar1 takes a lone unslotted avatar as the content
+// (tests/avatar-ring-ar1.contract.test.mjs); one the ring cannot take is said.
+test('AR-4: an avatar the ring cannot take as its content is said once', async () => {
   const [ring, docs] = await Promise.all([read('src/smart/progress-ring/index.js'), read('src/smart/progress-ring/docs.md')]);
   assert.match(ring, /noteDeprecated\(\{component: 'sf-progress-ring', tag: 'sf-progress-ring', kind: 'markup', attribute: 'slot', from: 'sf-avatar without slot', to: 'slot="content"'\}\)/u);
   assert.match(ring, /__progressRingAvatarWarned/u);
-  assert.match(docs, /The avatar must say `slot="content"`/u);
+  assert.match(docs, /The avatar says `slot="content"`\. A lone sf-avatar child written without it\nis taken as the content too/u);
 });
 
 test('AR-3: the avatar size words say 1/4 = 16 on a desktop and a phone', async () => {
