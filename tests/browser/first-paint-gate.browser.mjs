@@ -38,7 +38,7 @@
 // Widths: 1440, 1280 and 390 (FIRST_PAINT_WIDTHS, comma separated, narrows a
 // run); the 1440 desktop was added by the first-paint study R222.
 //
-// Two more checks (first-paint study R222, standard §13 items 24b and 24d):
+// Three more checks (first-paint study R222, standard §13 items 24b, 24c and 24d):
 //
 //   24b. Box from attributes. The bare tag -- the example written as a page
 //        writes it (its attributes, JSON island and children, built by
@@ -53,6 +53,15 @@
 //        component the jump is reported under bare.report, not failed.
 //        FIRST_PAINT_BARE=off skips the kind, =covered measures only the
 //        covered components.
+//        The bare kind runs at the first width and at 390 always, and a
+//        covered component's tag is loaded FIRST_PAINT_BARE_LOADS times (3).
+//   24c. Text bars (owner decision C136 (1)). Every text bar the first
+//        paint shows and the drawn element shows before its data -- core's
+//        .sf-first-paint-bar (its painted band, the mask's band layer), a
+//        line of sf-skeleton, a component's own *skeleton-bar -- is the
+//        capitals' height of its text, 0.727 em rounded to an even pixel
+//        (8 / 10 / 12 / 14 / 18 / 26 on 12 / 14 / 16 / 20 / 24 / 36), within
+//        0.5 px, and stands inside its line box.
 //   24d. Sheets listed. A printed snapshot with the sheets of its sheets.json
 //        in <head> gets no other sheet from the Loader before the element has
 //        drawn: a sheet the list lacks is a sheet a host printing the list
@@ -67,9 +76,15 @@ const out = resolve(process.argv[2]);
 const only = process.argv.slice(3).filter((one) => !one.startsWith('--'));
 const SCRIPT_DELAY = Number(process.env.SCRIPT_DELAY || 400);
 const WIDTHS = (process.env.FIRST_PAINT_WIDTHS || '1440,1280,390').split(',').map(Number);
-// The bare kind (24b) at the widest and the phone width only.
-const BARE_WIDTHS = WIDTHS.filter((width, i) => i === 0 || i === WIDTHS.length - 1);
+// The bare kind (24b) at the widest width and at the phone's 390 always
+// (first-paint status R222, FP-1: sf-input moved 4 px at 390 and no run
+// measured it there): a run narrowed to desktop widths still measures 390.
+const BARE_WIDTHS = [...new Set([WIDTHS[0], 390])];
 const BARE = process.env.FIRST_PAINT_BARE || 'all';
+// A covered component's bare tag is loaded this many times per width and
+// must hold in every load (FP-1 moved in 9 of 22 loads; one load proves
+// little): FIRST_PAINT_BARE_LOADS, 3 by default.
+const BARE_LOADS = Math.max(1, Number(process.env.FIRST_PAINT_BARE_LOADS || 3));
 const boxFile = new URL('../fixtures/first-paint/box-from-attributes.json', import.meta.url);
 const COVERED_HOLDS = new Map(Object.entries(existsSync(boxFile) ? JSON.parse(readFileSync(boxFile, 'utf8')).components ?? {} : {}).map(([folder, one]) => [folder, one.holds]));
 const COVERED = new Set(COVERED_HOLDS.keys());
@@ -106,6 +121,70 @@ const WATCH = `(() => {
   window.__fpBox = () => {
     const host = document.querySelector('#stage ' + window.__fpTag);
     return host ? boxOf(host) : null;
+  };
+  // 24c: every text bar in the element (a first-paint bar of core, a line of
+  // sf-skeleton, a component's own skeleton bar): its painted band, the text
+  // size it stands for and the line box it stands in. A first-paint bar is
+  // painted through its mask, so the band is the mask's band layer (the
+  // fifth); any other bar is its box. Its line box is the line the run sets
+  // (a run's fragment with the line height around it, equal half-leading),
+  // or for a bar that is a box of its own, the line of its parent.
+  const px = (value) => Number.parseFloat(value) || 0;
+  const layer = (value, i) => String(value).split(/,(?![^(]*\\))/u)[i]?.trim().split(/\\s+(?![^(]*\\))/u) ?? [];
+  // A custom property's value, resolved: read from the property where it is
+  // a length; otherwise measured by a probe -- only before the code, while no
+  // observer of the element can see it.
+  const sizeOf = (el, expression, name) => {
+    const own = getComputedStyle(el).getPropertyValue(name).trim();
+    if (/^-?[\\d.]+px$/u.test(own)) return px(own);
+    if (/^-?[\\d.]+r?em$/u.test(own)) return px(own) * px(getComputedStyle(own.endsWith('rem') ? document.documentElement : el).fontSize);
+    if (el.closest(':defined')) return NaN;
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;visibility:hidden;inline-size:0;block-size:' + expression;
+    el.append(probe);
+    const size = probe.getBoundingClientRect().height;
+    probe.remove();
+    return size;
+  };
+  window.__fpBars = () => {
+    const host = document.querySelector('#stage ' + window.__fpTag);
+    if (!host) return [];
+    const bars = [...host.querySelectorAll('.sf-first-paint-bar, [class*="skeleton-bar"], .sf-skeleton-text:not(.sf-skeleton-circle, .sf-skeleton-square, .sf-skeleton-rounded, .sf-skeleton-icon, [style*="block-size"])')];
+    return bars.map((el) => {
+      const style = getComputedStyle(el);
+      const rect = el.getClientRects()[0] ?? el.getBoundingClientRect();
+      if (style.display === 'none' || style.visibility === 'hidden' || !rect.width) return null;
+      const name = String(el.className).split(' ').find((one) => /bar|skeleton-text/u.test(one)) ?? el.localName;
+      let band; let text; let line;
+      if (el.classList.contains('sf-first-paint-bar')) {
+        const size = layer(style.webkitMaskSize || style.maskSize, 4);
+        const position = layer(style.webkitMaskPosition || style.maskPosition, 4);
+        const height = px(size[1]);
+        const top = rect.top + px(position[1]);
+        band = [top, top + height];
+        text = px(style.fontSize);
+        const lh = style.lineHeight === 'normal' ? rect.height : px(style.lineHeight);
+        const middle = rect.top + rect.height / 2;
+        line = [middle - lh / 2, middle + lh / 2];
+      } else {
+        band = [rect.top, rect.bottom];
+        text = el.classList.contains('sf-skeleton-text') ? sizeOf(el, 'var(--sf-skeleton-text--height, 1em)', '--sf-skeleton-text--height') : px(style.fontSize);
+        const parent = el.parentElement;
+        const ps = parent ? getComputedStyle(parent) : style;
+        const pr = parent ? parent.getBoundingClientRect() : rect;
+        if (el.classList.contains('sf-skeleton-text')) {
+          const room = rect.height + px(style.marginBlockStart) + px(style.marginBlockEnd);
+          const middle = rect.top + rect.height / 2;
+          line = [middle - room / 2, middle + room / 2];
+        } else {
+          const lh = ps.lineHeight === 'normal' ? pr.height : px(ps.lineHeight);
+          const lines = Math.max(1, Math.round(pr.height / lh));
+          const row = Math.min(lines - 1, Math.max(0, Math.floor((rect.top + rect.height / 2 - pr.top) / lh)));
+          line = [pr.top + row * lh, pr.top + (row + 1) * lh];
+        }
+      }
+      return {bar: name, text: Math.round(text * 100) / 100, band: band.map((n) => Math.round(n * 100) / 100), line: line.map((n) => Math.round(n * 100) / 100)};
+    }).filter(Boolean);
   };
   const sheetsIn = () => [...document.querySelectorAll('link[rel=stylesheet]')].every((link) => link.sheet);
   const round = (n) => Math.round(n * 10) / 10;
@@ -162,6 +241,10 @@ const WATCH = `(() => {
       const drawn = (el) => el.matches(':defined') && ((window.__fpOverlay && el.hasAttribute('data-sf-started')) || !('isRendered' in el) || el.isRendered || el.sfAwaitingData?.() === true);
       const parts = window.__fpRoles ? [...host.querySelectorAll('[data-sf-role]')] : [];
       if (fp.drawnAt === null && drawn(host) && parts.every(drawn) && (!window.__fpRoles || parts.length)) fp.drawnAt = performance.now();
+      // 24c: the text bars as the first paint shows them (the last frame
+      // before the code) and as the drawn element shows them before its data.
+      if (fp.sheetsAt !== null && !host.matches(':defined')) fp.barsBefore = window.__fpBars();
+      if (fp.drawnAt !== null && !fp.barsDrawn && fp.dataAt === null) fp.barsDrawn = window.__fpBars();
       if (fp.sheetsAt !== null) {
         const box = window.__fpBox();
         const after = document.getElementById('after');
@@ -215,10 +298,10 @@ function placed(example, tag, host) {
 const box4 = (box) => (box ? box.map((n) => n.toFixed(1)).join(' ') : 'none');
 const same = (a, b) => Boolean(a && b) && a.every((n, i) => Math.abs(n - b[i]) <= TOLERANCE);
 
-async function measure({component, example, file, kind, width, sheets, layout = null}) {
+async function measure({component, example, file, kind, width, sheets, layout = null, load = 1}) {
   const assembly = kind === 'assembly';
-  const id = `${component.folder}/${layout ? `${layout}/` : ''}${example.name}${kind === 'skeleton' ? ' (skeleton)' : ''} @${width}`;
-  const path = `/gate/${component.folder}/${layout ?? ''}/${example.name}/${kind}/${width}`;
+  const id = `${component.folder}/${layout ? `${layout}/` : ''}${example.name}${kind === 'skeleton' ? ' (skeleton)' : ''}${load > 1 ? ` (load ${load})` : ''} @${width}`;
+  const path = `/gate/${component.folder}/${layout ?? ''}/${example.name}/${kind}/${width}/${load}`;
   const html = strip(readFileSync(file, 'utf8'));
   const bare = kind === 'bare';
   // 24b: the bare tag, with core.css alone; the printed children are taken
@@ -332,19 +415,36 @@ ${assembly ? assemblyModule(component) : ''}
       if (empty.length) problems.push(`${empty.length} frame(s) without the element's box`);
     }
     if (errors.length) problems.push(`page errors: ${errors.slice(0, 2).join('; ')}`);
+    // 24c: each text bar is the capitals' height of its text, 0.727 em rounded
+    // to an even pixel (C136 (1): 8 / 10 / 12 / 14 / 18 / 26 on 12 / 14 / 16 /
+    // 20 / 24 / 36), within 0.5 px, and stands inside its line box.
+    const bars = bare ? [] : [...(fp.barsBefore ?? []).map((one) => ({...one, at: 'first paint'})), ...(fp.barsDrawn ?? []).map((one) => ({...one, at: 'drawn'}))];
+    const barProblems = [];
+    for (const one of bars) {
+      if (!Number.isFinite(one.text) || !one.text) continue;
+      const height = one.band[1] - one.band[0];
+      const want = Math.round((0.727 * one.text) / 2) * 2;
+      const inside = one.band[0] >= one.line[0] - TOLERANCE && one.band[1] <= one.line[1] + TOLERANCE;
+      if (Math.abs(height - want) > TOLERANCE) barProblems.push(`24c: ${one.at} ${one.bar} ${height.toFixed(1)} px on ${one.text} px text, C136 ${want}`);
+      else if (!inside) barProblems.push(`24c: ${one.at} ${one.bar} band ${one.band.map((n) => n.toFixed(1)).join('..')} outside its line ${one.line.map((n) => n.toFixed(1)).join('..')}`);
+    }
+    problems.push(...new Set(barProblems));
     if (bare) {
       // 24b reads one thing: the box before the code is the settled box.
       const jump = first && settled ? [settled.box?.[2] - first.box?.[2], settled.box?.[3] - first.box?.[3]].map((n) => Math.round((n || 0) * 10) / 10) : null;
       // A rule that holds the height only (a label's width is its text's):
       // the top and the height must hold, the width may grow.
       const heightOnly = COVERED_HOLDS.get(component.folder) === 'height';
-      const held = (a, b) => (heightOnly ? same([a[1], a[3]], [b[1], b[3]]) : same(a, b));
+      // An element with no box before and after (display: contents over
+      // nothing, a layer's content out of the flow) holds whatever its top.
+      const none = (box) => !box[2] && !box[3];
+      const held = (a, b) => (none(a) && none(b)) || (heightOnly ? same([a[1], a[3]], [b[1], b[3]]) : same(a, b));
       const holds = Boolean(first?.box && settled?.box && held(first.box, settled.box)) && afters.length <= 1;
       const bareProblems = holds ? [] : [first ? `bare tag: box before the code ${box4(first.box)} -> drawn ${box4(settled?.box)}${afters.length > 1 ? `, the text below moved ${afters.join(' -> ')}` : ''}` : 'bare tag: no frame before the code'];
-      return {id, folder: component.folder, example: example.name, kind, width, covered: COVERED.has(component.folder), jump, holds,
+      return {id, folder: component.folder, example: example.name, kind, width, load, covered: COVERED.has(component.folder), jump, holds, held: first?.box ?? null, drawn: settled?.box ?? null,
         problems: COVERED.has(component.folder) ? bareProblems : [], report: bareProblems};
     }
-    return {id, folder: component.folder, example: example.name, kind, width, phases: Object.fromEntries(Object.entries(phases).map(([k, v]) => [k, box4(v)])), ...(assembly ? {parts} : {}), cls, ...(fontShift ? {fontShift} : {}), frames: frames.length, problems,
+    return {id, folder: component.folder, example: example.name, kind, width, phases: Object.fromEntries(Object.entries(phases).map(([k, v]) => [k, box4(v)])), ...(assembly ? {parts} : {}), cls, ...(fontShift ? {fontShift} : {}), frames: frames.length, ...(bars.length ? {bars: bars.length} : {}), problems,
       ...(process.env.FIRST_PAINT_FRAMES ? {trace: {sheetsAt: fp.sheetsAt, definedAt: fp.definedAt, drawnAt: fp.drawnAt, dataAt: fp.dataAt, shifts: fp.shifts, frames}} : {})};
   } finally {
     await context.close();
@@ -369,7 +469,8 @@ for (const component of components(undefined, only)) {
     if (existsSync(skeleton)) for (const width of WIDTHS) jobs.push({component, example, file: skeleton, kind: 'skeleton', width, sheets: exampleSheets});
     // 24b: the bare tag of every example (a closed layer's too: its trigger).
     const bareWanted = BARE === 'all' || (BARE === 'covered' && COVERED.has(component.folder));
-    if (existsSync(html) && bareWanted) for (const width of BARE_WIDTHS) jobs.push({component, example, file: html, kind: 'bare', width, sheets: exampleSheets});
+    const loads = COVERED.has(component.folder) ? BARE_LOADS : 1;
+    if (existsSync(html) && bareWanted) for (const width of BARE_WIDTHS) for (let load = 1; load <= loads; load += 1) jobs.push({component, example, file: html, kind: 'bare', width, load, sheets: exampleSheets});
   }
 }
 
@@ -411,7 +512,7 @@ results.sort((a, b) => a.id.localeCompare(b.id));
 // that no longer fails is reported too, to be taken out.
 const knownFile = new URL('../fixtures/first-paint/gate-known.json', import.meta.url);
 const known = existsSync(knownFile) ? JSON.parse(readFileSync(knownFile, 'utf8')).known ?? {} : {};
-const keyOf = (one) => one.id.replace(/ @\d+$/u, '');
+const keyOf = (one) => one.id.replace(/ @\d+$/u, '').replace(/ \(load \d+\)$/u, '');
 const failing = results.filter((one) => one.problems.length);
 // 24b, reported: per component not yet covered, how many bare loads jumped
 // and the worst jump (width, height).
@@ -430,7 +531,7 @@ const failed = failing.filter((one) => !known[keyOf(one)]);
 const excused = failing.filter((one) => known[keyOf(one)]);
 const cleared = Object.keys(known).filter((key) => !failing.some((one) => keyOf(one) === key) && results.some((one) => keyOf(one) === key));
 const report = {
-  gate: 'first paint (standard simai.smart-component 1.3.8 gate 24, with 24b and 24d)',
+  gate: 'first paint (standard simai.smart-component 1.3.8 gate 24, with 24b, 24c and 24d)',
   widths: WIDTHS,
   bare: BARE === 'off' ? 'off' : {
     widths: BARE_WIDTHS,

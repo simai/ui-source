@@ -1,6 +1,33 @@
 {
-  "$comment": "The Smart components whose bare tag keeps its box before its code from a core rule (src/core/scss/_sf_css__placeholder.scss): what the rule holds (box: width and height; height: the height and the top, the width being its text's) and the attributes it reads. Gate 24b (tests/browser/first-paint-gate.browser.mjs) fails a bare tag of these that moves when its code arrives; every other component's bare jump is reported, not failed. A component joins the list in the same change as its core rule (first-paint study R222, 2026-11-13).",
+  "$comment": "The Smart components whose bare tag keeps its box before its code from a core rule (src/core/scss/_sf_css__placeholder.scss): what the rule holds (box: width and height; height: the height and the top, the width being its text's) and the attributes it reads. Gate 24b (tests/browser/first-paint-gate.browser.mjs) fails a bare tag of these that moves when its code arrives; every other component's bare jump is reported, not failed. A component joins the list in the same change as its core rule (first-paint study R222, 2026-11-13); the ten that already held their box joined with the first-paint status of 2026-11-16 (R222/R223). A covered component is loaded FIRST_PAINT_BARE_LOADS times (3) at the first width and at 390. core_rule false: the component holds without a rule of core (no box of its own, or its children hold theirs).",
   "components": {
+    "breadcrumbs": {
+      "holds": "box",
+      "reads": "nothing but its items written inside: until the element is defined the host holds the trail's one line at the 1/3 control height, its items out of view (RG-S2-5, 2026-11-15; joined the gate with the first-paint status R222, 2026-11-16)"
+    },
+    "drawer": {
+      "holds": "box",
+      "reads": "nothing: a closed side panel is out of the page flow before its code and after (display none until defined, DR-13), so it holds no box and moves nothing (first-paint status R222)",
+      "core_rule": false
+    },
+    "editor-inline": {
+      "holds": "box",
+      "reads": "nothing: the inline editor draws no box of its own around the page's text it edits, before its code and after (first-paint status R222)",
+      "core_rule": false
+    },
+    "editor-overlay": {
+      "holds": "box",
+      "reads": "nothing: the overlay editor draws no box in the page before its code and after (first-paint status R222)",
+      "core_rule": false
+    },
+    "header-page": {
+      "holds": "box",
+      "reads": "the slots the page gives (path, actions and their sizes, tabs) and expressive: the one-line head at every width, the path row, the tabs row (RG-S2-5, 2026-11-15); a heading too long for its row beside the kept actions at 320 is gate-known.json's"
+    },
+    "header-site": {
+      "holds": "box",
+      "reads": "size: the site header's bar of its size step, its slot content out of view until the element is defined (HD-13)"
+    },
     "input": {
       "holds": "box",
       "reads": "size (1/3, 1/2, 1, 2, 3), label, hint, invalid with error-message, appearance=hidden: one control of the size step as wide as its container, plus one line of the text a step below and the field's gap for a label and for a message (pilot of R222, 2026-11-13)"
@@ -9,9 +36,32 @@
       "holds": "height",
       "reads": "size and mode: one control of the size step high; as wide as high only for mode menu and search, the switch and auto take the width of their labels (Docara, 2026-11-07)"
     },
+    "list-item": {
+      "holds": "box",
+      "reads": "size, kind, supporting, lines, sortable-item and pinned, and its list's leading kind: the row's control height, its supporting line and its leading room (LI-6, 2026-11-14)"
+    },
+    "profile-picker": {
+      "holds": "box",
+      "reads": "size (1/2, 1): the folded trigger, one control of its size as wide as the line (first-paint status R222, FP-7)"
+    },
     "reference-link": {
       "holds": "box",
       "reads": "appearance, size (1/2, 1, 2; retired 1/3 and 3 as their kept steps), line and text: as wide as its container; a card one control of size 3, a size one control of its step, a line or plain one line of its text; on a phone a card stacks to the label line, the card gap and a route line when text is set, with the card's padding and border (RL-18, 2026-11-14); appearance=inline is no box: inline, its label written in the link's ink until the element draws (C147, 2026-11-14)"
+    },
+    "sortable": {
+      "holds": "box",
+      "reads": "nothing but its children: its rows are the page's list items, each holding its own box (first-paint status R222)",
+      "core_rule": false
+    },
+    "tag-group": {
+      "holds": "box",
+      "reads": "layout (row or wrap) and its tags: the row's box, its tags 4 apart, each tag holding its own box (C145 (3))",
+      "core_rule": false
+    },
+    "wizard-step": {
+      "holds": "box",
+      "reads": "nothing: a step is drawn by its sf-wizard and has no box of its own before or after its code (first-paint status R222)",
+      "core_rule": false
     }
   }
 }

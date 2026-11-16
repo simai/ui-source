@@ -284,10 +284,14 @@
    field's gap. Until the element is defined it holds that box itself.
    Static markup printed inside (data-sf-static) is its own box, so nothing
    is reserved then; a hidden field (appearance="hidden") has no box. A hint
-   that wraps is the one thing the attributes cannot tell. */
+   that wraps is the one thing the attributes cannot tell. Below the desktop
+   breakpoint a field of size 1 sets its label in the body text, 16 so iOS
+   does not zoom, on its line (sf-input's sheet, FP-1 of the first-paint
+   status R222: 56 held, 60 drawn at 390); its message keeps the step below. */
 :where(sf-input:not(:defined)) {
   --sf-input--box-control: var(--sf-ui-1--control-height);
   --sf-input--box-line: var(--sf-text-height-1\/2);
+  --sf-input--box-label-line: var(--sf-input--box-line);
   --sf-input--box-gap: var(--sf-input--gap, var(--sf-space-1\/4));
   --sf-input--box-label: 0;
   --sf-input--box-message: 0;
@@ -303,8 +307,39 @@
 :where(sf-input:not(:defined):not([appearance="hidden"])):not(:has(> [data-sf-static])) {
   display: block;
   block-size: calc(var(--sf-input--box-control)
-    + (var(--sf-input--box-label) + var(--sf-input--box-message))
-    * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
+    + var(--sf-input--box-label) * (var(--sf-input--box-label-line) + var(--sf-input--box-gap))
+    + var(--sf-input--box-message) * (var(--sf-input--box-line) + var(--sf-input--box-gap)));
+}
+
+@media not all and (min-width: 60rem) {
+  :where(sf-input:not([size="1/3"], [size="1/2"], [size="2"], [size="3"]):not(:defined)) { --sf-input--box-label-line: var(--sf-text-height-1); }
+}
+
+/* sf-profile-picker before it draws (first-paint status R222: a bare tag was
+   0 px until its code, then the folded trigger pushed the page down by 40,
+   36 on a phone). The trigger is one sf-button of the picker's size, 1 by
+   default, as wide as the line (the element is a block): until the element is
+   defined it holds that control's height. Printed markup (data-sf-static) is
+   its own box. */
+:where(sf-profile-picker:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+  block-size: var(--sf-ui-1--control-height);
+}
+
+:where(sf-profile-picker[size="1/2"]:not(:defined)):not(:has(> [data-sf-static])) {
+  block-size: var(--sf-ui-1\/2--control-height);
+}
+
+/* sf-search before it draws (FP-6 of the first-paint status R222): the
+   element is its trigger, the button or icon button the page writes inside
+   it, as wide as its words. Until the element is defined the host holds the
+   trigger at that width on the top of its line, where the inline host let
+   the trigger's block stretch across the whole line (1440 x 40 held, 40 x 40
+   drawn). */
+:where(sf-search:not(:defined)) {
+  display: inline-flex;
+  vertical-align: top;
+  max-inline-size: 100%;
 }
 
 /* sf-tile-metric before it draws (tile study TM-3, owner decision C130 (2):
@@ -354,6 +389,10 @@
   :where(sf-tile-metric[size="2"]:not(:defined)) { --sf-tile-metric--box-badge: calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-low)); }
 }
 
+/* A tile with no value and not loading is the empty tile: the label and the
+   dash, no change line (FP-5 of the first-paint status R222: 110 held, 79
+   drawn at size 1/2). The change line comes back with what promises it. */
+:where(sf-tile-metric:not([value]:not([value=""])):not([loading]:not([loading="false"])):not(:defined)) { --sf-tile-metric--box-change: 0; }
 :where(sf-tile-metric[max]:not([max=""]):not(:defined)) { --sf-tile-metric--box-change: 0; --sf-tile-metric--box-meter: 1; }
 :where(sf-tile-metric:is([previous]:not([previous=""]), [delta]:not([delta=""]), [period-text]:not([period-text=""])):not(:defined)) { --sf-tile-metric--box-change: 1; }
 :where(sf-tile-metric:is([status]:not([status=""], [status="neutral"]), [hint]:not([hint=""])):not(:defined)) { --sf-tile-metric--box-status: 1; }
@@ -388,6 +427,7 @@
   --sf-tag--box-line: var(--sf-text-height-1\/2);
   --sf-tag--box-lead-on: 0;
   --sf-tag--box-cross-on: 0;
+  --sf-tag--box-pull: calc(var(--sf-px) * 0);
 }
 
 :where(sf-tag[size="1/3"]:not(:defined)) { --sf-tag--box-control: var(--sf-ui-1\/3--control-height); --sf-tag--box-text: var(--sf-text-size-1\/3); --sf-tag--box-edge: var(--sf-a8); --sf-tag--box-gap: var(--sf-ui-1\/3--text-space-x); --sf-tag--box-cross: var(--sf-micro--cross-1\/3); --sf-tag--box-lead: var(--sf-text-height-1\/3); --sf-tag--box-line: var(--sf-text-height-1\/3); }
@@ -405,6 +445,12 @@
 :where(sf-tag:is([kind="color"], [type="color"])[size="1"]:not(:defined)) { --sf-tag--box-lead: var(--sf-micro--point-1); }
 :where(sf-tag:is([kind="color"], [type="color"])[size="2"]:not(:defined)) { --sf-tag--box-lead: var(--sf-micro--point-2); }
 :where(sf-tag:is([kind="color"], [type="color"])[size="3"]:not(:defined)) { --sf-tag--box-lead: var(--sf-micro--point-3); }
+/* The picture's optical pull (the tag sheet): a Material Symbols glyph's box
+   moves out by a twelfth of its size on both sides, an avatar or a colour dot
+   by a sixteenth at the start, so the lead takes that much less room (FP-5 of
+   the first-paint status R222: a chosen filter tag held 4 px too wide). */
+:where(sf-tag:is([kind="icon"], [type="icon"], :not([kind]):not([type])[active]:not([active="false"]), [kind="checkbox"][active]:not([active="false"]), [type="checkbox"][active]:not([active="false"])):not(:defined)) { --sf-tag--box-pull: calc(var(--sf-tag--box-lead) / 6); }
+:where(sf-tag:is([kind="avatar"], [type="avatar"], [kind="color"], [type="color"]):not(:defined)) { --sf-tag--box-pull: calc(var(--sf-tag--box-lead) / 16); }
 :where(sf-tag[closable]:not([closable="false"]):not(:defined)) { --sf-tag--box-cross-on: 1; }
 :where(sf-tag[closable="false"]:not(:defined)) { --sf-tag--box-cross-on: 0; }
 /* A link has no check mark and no cross (C145 (6)). */
@@ -423,7 +469,7 @@
 
 /* On a text line (line="..."): the tag is that line high, one size down, with
    the small inline step at its ends and its picture the line (LK-06). */
-:where(sf-tag[line]:not([line=""]):not(:defined)) { --sf-tag--box-edge: var(--sf-space-1\/3); --sf-tag--box-gap: var(--sf-space-1\/3); }
+:where(sf-tag[line]:not([line=""]):not(:defined)) { --sf-tag--box-edge: var(--sf-space-1\/3); --sf-tag--box-gap: var(--sf-space-1\/3); --sf-tag--box-pull: calc(var(--sf-px) * 0); }
 :where(sf-tag[line="1/2"]:not(:defined)) { --sf-tag--box-control: var(--sf-text-height-1\/2); --sf-tag--box-line: var(--sf-text-height-1\/2); --sf-tag--box-text: var(--sf-text-size-1\/3); --sf-tag--box-lead: var(--sf-text-height-1\/2); }
 :where(sf-tag[line="1"]:not(:defined)) { --sf-tag--box-control: var(--sf-text-height-1); --sf-tag--box-line: var(--sf-text-height-1); --sf-tag--box-text: var(--sf-text-size-1\/2); --sf-tag--box-lead: var(--sf-text-height-1); }
 :where(sf-tag[line="2"]:not(:defined)) { --sf-tag--box-control: var(--sf-text-height-2); --sf-tag--box-line: var(--sf-text-height-2); --sf-tag--box-text: var(--sf-text-size-1); --sf-tag--box-lead: var(--sf-text-height-2); }
@@ -445,7 +491,7 @@
      label's baseline, as the drawn tag does. */
   padding-block: calc((var(--sf-tag--box-control) - var(--sf-tag--box-line)) / 2);
   max-inline-size: min(var(--sf-g0), 100%);
-  padding-inline-start: calc(var(--sf-tag--box-edge) + var(--sf-tag--box-lead-on) * (var(--sf-tag--box-lead) + var(--sf-tag--box-gap)));
+  padding-inline-start: calc(var(--sf-tag--box-edge) + var(--sf-tag--box-lead-on) * (var(--sf-tag--box-lead) - var(--sf-tag--box-pull) + var(--sf-tag--box-gap)));
   padding-inline-end: calc(var(--sf-tag--box-edge) + var(--sf-tag--box-cross-on) * (var(--sf-tag--box-cross) + var(--sf-tag--box-gap)));
 }
 
@@ -456,6 +502,22 @@
   line-height: var(--sf-tag--box-line);
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A count stands after the label at the part gap, in the label's text (FP-5
+   of the first-paint status R222: a tag with a count held 18 px narrow). */
+:where(sf-tag[count]:not([count=""]):not(:defined)):not(:has(> [data-sf-static])) {
+  display: inline-flex;
+  vertical-align: top;
+}
+
+:where(sf-tag[count]:not([count=""]):not(:defined)):not(:has(> [data-sf-static]))::after {
+  content: attr(count);
+  display: block;
+  margin-inline-start: var(--sf-tag--box-gap);
+  font-size: var(--sf-tag--box-text);
+  line-height: var(--sf-tag--box-line);
   white-space: nowrap;
 }
 
@@ -480,9 +542,13 @@
      «Развернуть все» over them: the button's height and a group's step
      (C154 (7)).
 
-   Sections given as data (items) cannot be counted by a sheet; for them a
-   host prints the first paint (standard §5.4). Static markup printed inside
-   (data-sf-static) is its own box, so nothing is reserved then. */
+   Sections given as data (items) cannot be counted by a sheet, nor which of
+   them are open: for them the host holds the box, printing the first paint
+   (standard §5.4) or sizing the element (--sf-skeleton-block-size); there is
+   no attribute that declares the rows (owner decision C253, 2026-11-16; the
+   held 56 against 128-332 drawn of FP-3 of the first-paint status R222 are
+   such examples). Static markup printed inside (data-sf-static) is its own
+   box, so nothing is reserved then. */
 :where(sf-accordion:not(:defined)) {
   --sf-accordion--box-header: var(--sf-ui-3--control-height);
   --sf-accordion--box-inset: var(--sf-space-3);
@@ -592,6 +658,31 @@
   text-decoration-line: none;
 }
 
+/* Its picture and a gone record's reason (FP-6 of the first-paint status
+   R222: a missing record held 61, drew 167). An icon, or the broken link a
+   gone record shows, stands before the name: the line's height and the
+   icon's 4 px gap. The reason follows the name after « · », in the words of
+   the page's language (the element's lang files). */
+:where(sf-reference-link[appearance="inline"]:is([icon]:not([icon=""]), [state="missing"], [state="forbidden"]):not(:defined)):not(:has(> [data-sf-static])) {
+  padding-inline-start: calc(var(--sf-text-height-1) + var(--sf-a4));
+}
+
+/* The record's number follows the name after a space; a link that opens a
+   new tab ends with its sign, the icon's 4 px gap and the line's height. */
+:where(sf-reference-link[appearance="inline"][label][text]:not([text=""]):not(:defined)):not(:has(> [data-sf-static]))::before {
+  content: attr(label) " " attr(text);
+  font-variant-numeric: tabular-nums; /* the number's figures, as its sheet draws them */
+}
+
+:where(sf-reference-link[appearance="inline"][target="_blank"][href]:not([href=""]):not([disabled]:not([disabled="false"])):not([state]:not([state=""])):not(:defined)):not(:has(> [data-sf-static])) {
+  padding-inline-end: calc(var(--sf-text-height-1) + var(--sf-a4));
+}
+
+:where(sf-reference-link[appearance="inline"][label][state="missing"]:not(:defined)):not(:has(> [data-sf-static]))::before { content: attr(label) " · удалена"; }
+:where(sf-reference-link[appearance="inline"][label][state="forbidden"]:not(:defined)):not(:has(> [data-sf-static]))::before { content: attr(label) " · нет доступа"; }
+:where(sf-reference-link[appearance="inline"][label][state="missing"]:lang(en):not(:defined)):not(:has(> [data-sf-static]))::before { content: attr(label) " · deleted"; }
+:where(sf-reference-link[appearance="inline"][label][state="forbidden"]:lang(en):not(:defined)):not(:has(> [data-sf-static]))::before { content: attr(label) " · no access"; }
+
 @media (width < map.get(bp.$breakpoint-array, sm)) { // below sm: the card stacks, as its sheet draws it
   :where(sf-reference-link:not(:defined):not([appearance="inline"]):not([line]:not([line=""])):not([size]:not([size=""]))):not(:has(> [data-sf-static])) {
     block-size: calc(var(--sf-reference-link--box-pad) + var(--sf-reference-link--box-line)
@@ -603,7 +694,7 @@
    0 px for about 100 ms, then 48, and the list under it jumped). Its row is
    known from its attributes and the ladder its sheet draws with: the holder,
    a size 2 control high (48 on a desktop, 44 on a phone); on a fill
-   (surface) a size 3 control; compact is the small tile alone. A name long
+   (surface) a size 3 control; compact is a row as high as the small tile. A name long
    enough to wrap is the one thing the attributes cannot tell. */
 :where(sf-file-preview:not(:defined)):not(:has(> [data-sf-static])) {
   display: block;
@@ -615,13 +706,30 @@
 }
 
 /* The chip and the tile (decision C149 (1)): a chip is 48 high and at most
-   --sf-f8 (288) wide in the line of attachments; a tile is its 4:3 picture, the
-   one-line name and the meta line beside its size 1/2 buttons. */
+   --sf-f8 (288) wide in the line of attachments, as wide as its name: the
+   inset, the 1/2 holder and the inset again before the name, the inset, the
+   1/2 «×» and the inset after it (the chip's inset is the size 2 control less
+   the 1/2 holder, halved), the name one line a step smaller (FP-5 of the
+   first-paint status R222: 288 held, 248 drawn). A tile is its 4:3 picture,
+   the one-line name and the meta line beside its size 1/2 buttons. */
 :where(sf-file-preview[appearance="chip"]:not(:defined)):not(:has(> [data-sf-static])) {
   display: inline-block;
   vertical-align: middle;
-  inline-size: min(100%, var(--sf-f8));
+  box-sizing: border-box;
+  max-inline-size: min(100%, var(--sf-f8));
   block-size: var(--sf-ui-2--control-height);
+  padding-inline: var(--sf-ui-2--control-height);
+}
+
+:where(sf-file-preview[appearance="chip"][file-name]:not(:defined)):not(:has(> [data-sf-static]))::before {
+  content: attr(file-name);
+  display: block;
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  visibility: hidden;
 }
 
 :where(sf-file-preview[appearance="tile"]:not(:defined)):not(:has(> [data-sf-static])) {
@@ -636,9 +744,7 @@
 }
 
 :where(sf-file-preview[compact]:not([compact="false"]):not(:defined)):not(:has(> [data-sf-static])) {
-  display: inline-block;
-  vertical-align: middle;
-  inline-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
+  display: block;
   block-size: calc(var(--sf-icon-size-2) + 2 * var(--sf-a6));
 }
 
@@ -651,7 +757,7 @@
    text line of a form size with line; the label template holds its
    height (below), its width being its text's. Only the box: nothing is
    drawn in it, so a photo that arrives is not preceded by a plate it does
-   not have. The card template's box is its container's. Static markup
+   not have. The card template holds its picture and lines (below). Static markup
    printed inside (data-sf-static) is its own box. Here, not in the avatars
    sheet, because core.css is the one sheet a page links before any code. */
 :where(sf-avatar:not(:defined)) {
@@ -679,6 +785,34 @@
   vertical-align: middle;
   inline-size: var(--sf-avatar--box);
   block-size: var(--sf-avatar--box);
+}
+
+/* The card template (FP-5 of the first-paint status R222: the host was 0 x 0
+   before its code, then 1426 x 2591 at 1440): as wide as its container, its
+   picture box in the card's ratio (square 1 / 1 by default, portrait 9 / 16,
+   avatars sheet), the card's gap, then a line of the body text for the
+   heading and one for the meta or the description when they are set. */
+:where(sf-avatar[template="card"]:not(:defined)) {
+  --sf-avatar--card-heading: 0;
+  --sf-avatar--card-row: 0;
+}
+
+:where(sf-avatar[template="card"][heading]:not([heading=""]):not(:defined)) { --sf-avatar--card-heading: 1; }
+:where(sf-avatar[template="card"]:is([meta]:not([meta=""]), [description]:not([description=""])):not(:defined)) { --sf-avatar--card-row: 1; }
+
+:where(sf-avatar[template="card"]:not(:defined)):not(:has(> [data-sf-static])) {
+  display: block;
+  padding-block-end: calc(var(--sf-space-1\/3) + (var(--sf-avatar--card-heading) + var(--sf-avatar--card-row)) * var(--sf-text-height-1));
+}
+
+:where(sf-avatar[template="card"]:not(:defined)):not(:has(> [data-sf-static]))::before {
+  content: "";
+  display: block;
+  aspect-ratio: 1 / 1;
+}
+
+:where(sf-avatar[template="card"][card-variant="portrait"]:not(:defined)):not(:has(> [data-sf-static]))::before {
+  aspect-ratio: 9 / 16;
 }
 
 /* The label template: the avatar beside its heading and description, each one
@@ -733,6 +867,15 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   visibility: hidden;
+}
+
+/* format="datetime" writes the date and the time (FP-6 of the first-paint
+   status R222: «00:00» held 46, «9 ноября 2026 г. в 14:32» drew 196): on a
+   Russian page the held words are that shape, a one-digit day and a month
+   of six letters (a day or month of other length moves by a few px);
+   relative words stay the server's to print. */
+:where(sf-time[datetime]:not([datetime=""])[format="datetime"]:lang(ru):not(:defined)):empty::before {
+  content: "0 ноября 0000 г. в 00:00";
 }
 
 /* Its menu waits for its own code in the parts the element drew: an empty
@@ -850,6 +993,12 @@
   object-fit: cover;
   border-radius: var(--sf-radius--surface);
   background-color: var(--sf-surface-container);
+  /* A picture not yet in (or missing) shows its alt text, and that text set
+     its minimum height above the tile's ratio: 112 held, 103.4 drawn in a
+     tile of size s (FP-5 of the first-paint status R222). The tile's shape
+     holds, as the drawn tile's does. */
+  overflow: hidden;
+  min-block-size: 0;
 }
 /* One ratio for every tile; ratio="auto" and the masonry look keep each
    picture's own, which its width and height give before it arrives. */

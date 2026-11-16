@@ -71,9 +71,11 @@ test('late data is declared, the old shape hints are gone', () => {
   }
   const late = Object.fromEntries(all.filter((one) => one.late.length).map((one) => [one.folder, one.late]));
   // The list-fed data components declare their lists late too (first-paint
-  // study R222, 2026-11-13): the build derives their skeletons.
+  // study R222, 2026-11-13): the build derives their skeletons. sf-form
+  // declares its fields and groups (R222 FP-8, 2026-11-16).
   assert.deepEqual(late, {
     'avatar-group': ['avatars'], change: ['changes'], 'confirm-change': ['changes'], 'file-upload': ['items'],
+    form: ['fields', 'groups'],
     list: ['items'], 'list-attention': ['items'], 'list-description': ['items'], 'list-feed': ['items'], 'list-timeline': ['items'],
     menu: ['items'], 'profile-picker': ['profiles'], 'progress-run': ['steps', 'counters'], tree: ['items'],
   });

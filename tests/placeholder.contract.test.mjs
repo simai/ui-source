@@ -49,10 +49,13 @@ test('every component the gate holds to a box from attributes has its core rule 
   const covered = JSON.parse(readFileSync(join(root, 'tests/fixtures/first-paint/box-from-attributes.json'), 'utf8')).components;
   assert.ok(Object.keys(covered).length > 0);
   const rules = sheet.replace(/\/\*[\s\S]*?\*\//gu, '');
-  for (const [folder, {holds, reads}] of Object.entries(covered)) {
+  for (const [folder, {holds, reads, core_rule: coreRule}] of Object.entries(covered)) {
     assert.ok(existsSync(join(root, 'src/smart', folder, 'component.json')), `${folder}: a Smart component`);
     assert.ok(['box', 'height'].includes(holds), `${folder}: holds the box or the height`);
     assert.ok(String(reads ?? '').trim(), `${folder}: says which attributes the rule reads`);
+    // A component with no box of its own (a closed panel, an editor over the
+    // page's text) or whose children hold theirs needs no rule (R222).
+    if (coreRule === false) continue;
     assert.match(rules, new RegExp(`sf-${folder}[^{]*(:not\\(:defined\\)|:not\\(\\[data-look\\]\\))[^{]*\\{[^}]*block-size`, 'u'), `${folder}: core keeps its box before its code`);
   }
 });

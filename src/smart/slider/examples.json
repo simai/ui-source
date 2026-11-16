@@ -8,8 +8,8 @@
         "arrows": true
       },
       "children": [
-        "<div>Первый слайд</div>",
-        "<div>Второй слайд</div>"
+        "<div slot=\"slide\">Первый слайд</div>",
+        "<div slot=\"slide\">Второй слайд</div>"
       ],
       "expect": {
         "slides": 2
@@ -52,9 +52,9 @@
         "arrows": true
       },
       "children": [
-        "<div>Один</div>",
-        "<div>Два</div>",
-        "<div>Три</div>"
+        "<div slot=\"slide\">Один</div>",
+        "<div slot=\"slide\">Два</div>",
+        "<div slot=\"slide\">Три</div>"
       ],
       "script": [
         {
@@ -80,8 +80,8 @@
         "dots": false
       },
       "children": [
-        "<img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt=\"Один\">",
-        "<img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt=\"Два\">"
+        "<img slot=\"slide\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt=\"Один\">",
+        "<img slot=\"slide\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\" alt=\"Два\">"
       ],
       "expect": {
         "slides": 2
@@ -96,8 +96,8 @@
         "space-between": 8
       },
       "children": [
-        "<div>А</div>",
-        "<div>Б</div>"
+        "<div slot=\"slide\">А</div>",
+        "<div slot=\"slide\">Б</div>"
       ],
       "expect": {
         "slides": 2
