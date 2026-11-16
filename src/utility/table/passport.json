@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.table",
   "kind": "utility",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/table/default/index.js",
@@ -13,8 +13,12 @@
     "src/utility/table/default/scss/_sf_var__table.scss",
     "src/utility/table/default/scss/index.scss"
   ],
-  "content_sha256": "a99452b14af6517edc6ecda658a99c23d9262c35b6ec1f9bcbe3e4a06a39a5bc",
+  "content_sha256": "f83b43af1a9f50be7c2a0173a218d44d54bcfc9496ddace9552c244e52862467",
   "dependencies": [
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.2.0"
+    },
     {
       "id": "tokens.colour",
       "range": "^1.0.0"

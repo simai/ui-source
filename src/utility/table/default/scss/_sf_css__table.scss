@@ -129,9 +129,17 @@ $prefix: --sf-table-;
         // table goes to the data and «≡» stays at the start of the row at any
         // number of columns. Low in weight (:where), so a width the author
         // gives a column still wins.
-        > :not(caption) > * > :where(:has(> :is(sf-checkbox, :is(sf-button-icon, sf-icon-button), input[type='checkbox']):only-child)) {
+        > :not(caption) > * > :where(#{$table-control-cell}) {
             inline-size: 0;
             white-space: nowrap;
+        }
+
+        // A key cell's second line (C259): what the hidden columns would say
+        // of the record, under its name -- the client under an order. Shown
+        // only where the table keeps its key cells alone (on a phone, below);
+        // at every other width that is a column of its own.
+        .table-key-line {
+            display: none;
         }
 
         // The row's main field (the record's name) is a plain link that opens
@@ -182,6 +190,46 @@ $prefix: --sf-table-;
             font-variant-numeric: tabular-nums;
             text-align: end;
             white-space: nowrap;
+        }
+    }
+
+    // A table with row actions on a phone (owner decision C259, variant Б;
+    // the condition is $table-keyed-actions): the row keeps its check box,
+    // «≡» and its key cells (.table-key: the name with its second line, the
+    // status, the sum); every other cell goes, in the head and the body
+    // alike, and the record shows them. A control cell stays, and so does a
+    // head cell that holds only a name for a screen reader (the «Действия»
+    // column's). The name takes the width the others leave and ends in an
+    // ellipsis, its second line quiet under it; with that line the row
+    // stands on the two-line rung (C146 (1), (7): 44 on a phone).
+    @media not all and (min-width: $table-phone-min) {
+        .table:where(#{$table-keyed-actions}) {
+            > :not(caption) > tr > :not(.table-key, #{$table-control-cell}, :has(> .sr-only:only-child)) {
+                display: none;
+            }
+
+            > :not(caption) > tr > .table-key:has(> .table-key-line) {
+                inline-size: 100%;
+                max-inline-size: 0;
+                block-size: var(--sf-ui-2--control-height);
+
+                > a[href] {
+                    display: block;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+
+            .table-key-line {
+                display: block;
+                overflow: hidden;
+                color: var(--sf-on-surface-variant);
+                font-size: var(--sf-text-size-1\/2);
+                line-height: var(--sf-text-height-1\/2);
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
     }
 

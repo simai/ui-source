@@ -185,6 +185,58 @@ try {
   check('the name link keeps the link colour, no underline at rest', act.linkColor === act.linkInk && act.linkLine === 'none', {actions: act});
 
   await page.close();
+
+  // C259 (variant Б): a table with row actions that marks its key cells
+  // leaves .table-frame on a phone and keeps the check box, «≡» and the key
+  // cells; at 1440 the same markup stands in its frame with every column. An
+  // action table that marks none stays in the frame, its control columns as
+  // narrow as their controls (DEV msg-85307787: 80 and 80).
+  const keyedRow = (keyed) => {
+    const k = keyed ? ' class="table-key"' : '';
+    return `<tr aria-selected="false"><td data-c="check"><input type="checkbox" style="inline-size:20px;margin:0" aria-label="Выбрать № 1001"></td><td data-c="menu"><sf-button-icon icon="menu" aria-label="Действия: № 1001"></sf-button-icon></td>`
+      + `<td${k} data-c="name"><a href="#o-1001">№ 1001</a>${keyed ? '<span class="table-key-line">ООО «Северный ветер»</span>' : ''}</td><td>ООО «Северный ветер»</td><td>14.11.2026</td><td${k}>Ждёт оплаты</td><td>Транспортная компания</td><td>Анна Ким</td><td${keyed ? ' class="table-key table-numeric"' : ' class="table-numeric"'}>148 200,00</td></tr>`;
+  };
+  const keyedTable = (keyed) => `<table class="table"><thead><tr><th><input type="checkbox" aria-label="Выбрать все"></th><th><span class="sr-only">Действия</span></th><th${keyed ? ' class="table-key"' : ''}>Заказ</th><th>Клиент</th><th>Дата</th><th${keyed ? ' class="table-key"' : ''}>Статус</th><th>Доставка</th><th>Менеджер</th><th class="${keyed ? 'table-key ' : ''}table-numeric">Сумма, ₽</th></tr></thead><tbody>${keyedRow(keyed)}</tbody></table>`;
+  const phoneHtml = `<div class="table-frame" data-probe="keyed">${keyedTable(true)}</div><div class="table-frame" data-probe="unkeyed">${keyedTable(false)}</div>`;
+  for (const width of [390, 1440]) {
+    const phone = await browser.newPage({viewport: {width, height: 800}});
+    await phone.setContent(`<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"></head><body style="margin:16px">${phoneHtml}</body></html>`);
+    for (const sheet of SHEETS) await phone.addStyleTag({path: join(out, sheet)});
+    const seen = await phone.evaluate(() => {
+      const scene = (key) => {
+        const frame = document.querySelector(`[data-probe="${key}"]`);
+        const table = frame.querySelector('table');
+        const shown = (row) => [...row.cells].filter((cell) => getComputedStyle(cell).display !== 'none').length;
+        const at = (name) => frame.querySelector(`[data-c="${name}"]`).getBoundingClientRect().width;
+        const line = frame.querySelector('.table-key-line');
+        return {border: getComputedStyle(frame).borderTopWidth, overflow: getComputedStyle(frame).overflowX,
+          head: shown(table.tHead.rows[0]), body: shown(table.tBodies[0].rows[0]), cells: table.tBodies[0].rows[0].cells.length,
+          table: table.getBoundingClientRect().width, place: frame.getBoundingClientRect().width,
+          row: table.tBodies[0].rows[0].getBoundingClientRect().height, line: line ? getComputedStyle(line).display : null,
+          check: at('check'), menu: at('menu')};
+      };
+      const probe = document.createElement('div');
+      probe.style.cssText = 'position:absolute;visibility:hidden;block-size:var(--sf-ui-2--control-height)';
+      document.body.append(probe);
+      const rung = probe.getBoundingClientRect().height;
+      probe.remove();
+      return {keyed: scene('keyed'), unkeyed: scene('unkeyed'), rung, pageScroll: document.documentElement.scrollWidth - document.documentElement.clientWidth};
+    });
+    evidence[`c259_${width}`] = seen;
+    const {keyed, unkeyed} = seen;
+    if (width === 390) {
+      check('C259: on a phone the action table leaves its frame', px(keyed.border) === 0 && keyed.overflow === 'visible', keyed);
+      check('C259: on a phone the row keeps the check box, «≡» and the three key cells', keyed.head === 5 && keyed.body === 5, keyed);
+      check('C259: on a phone the table fits its place and the page does not scroll', keyed.table <= keyed.place + 0.5 && seen.pageScroll <= 0, seen);
+      check('C259: the name with its second line stands on the two-line rung', keyed.line === 'block' && near(keyed.row, seen.rung, 1), seen);
+      check('C259: an action table that marks no key cell stays in the frame with every column', px(unkeyed.border) === 1 && unkeyed.body === unkeyed.cells, unkeyed);
+    } else {
+      check('C259: at 1440 the same table stands in its frame with every column', px(keyed.border) === 1 && keyed.body === keyed.cells && keyed.line === 'none', keyed);
+    }
+    // In the frame the control columns drop the frame's least cell width (80).
+    check(`the check box and «≡» columns in the frame are narrower than a word column (${width})`, unkeyed.check < 60 && unkeyed.menu < 60, unkeyed);
+    await phone.close();
+  }
 } finally {
   await browser.close();
 }

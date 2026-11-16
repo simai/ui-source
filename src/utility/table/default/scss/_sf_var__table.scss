@@ -1,3 +1,5 @@
+@use 'sass:map';
+@use '../../../../core/scss/vars/sf_var__breakpoint' as bp;
 // SIMAI Framework
 // https://simai.io
 
@@ -71,3 +73,25 @@ $table-array-layout: (
     auto: auto,
     fixed: fixed
 );
+// Row actions (C146 (5), C164): a cell that holds one check box or one icon
+// button and nothing else is a control cell, as narrow as its control, in
+// the table and in .table-frame alike.
+$table-control-cell: ":has(> :is(sf-checkbox, sf-button-icon, sf-icon-button, input[type='checkbox']):only-child)";
+
+// A table with row actions on a phone (owner decision C259, 2026-11-16,
+// variant Б): a table whose body rows hold the row menu «≡» (C146 (5)) and
+// that names its key cells (.table-key) keeps on a phone the check box,
+// «≡» and its key cells only -- the name with its second line
+// (.table-key-line), the status, the sum -- and stands outside .table-frame:
+// the rest is in the record, every action in the one row menu. The phone is
+// the screen below the md breakpoint (44rem), where the row menu is the sheet
+// at the bottom (C164 (6)). A plain table, and an action table that names no
+// key cell, keep every column (in a frame: scrolling, C146 (9)).
+$table-phone-min: map.get(bp.$breakpoint-array, md);
+// $table-keyed-actions on the table; $table-frame-keyed-actions on the frame
+// that holds it.
+@function table-keyed-actions($table: '') {
+    @return ":has(#{$table}> tbody > tr > * > :is(sf-button-icon, sf-icon-button)[icon='menu']:only-child):has(#{$table}> :not(caption) > tr > .table-key)";
+}
+$table-keyed-actions: table-keyed-actions();
+$table-frame-keyed-actions: table-keyed-actions('> .table ');
