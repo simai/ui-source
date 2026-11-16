@@ -4,6 +4,21 @@
     min-width: 0;
   }
 
+  /* The hit area is the box and its text, not the row (RG-CB-1, C63; C19:
+     the class layer, which the Smart row in src/smart/helpers/checkable-row.css
+     already followed): the label hugs its content, so a press on the empty
+     rest of a full-width row toggles nothing. With the box at the row's end
+     (position end: the text column, then the box) the row is the control and
+     keeps its full width. */
+  .sf-checkbox {
+    inline-size: fit-content;
+    max-inline-size: 100%;
+  }
+
+  .sf-checkbox:has(> .sf-checkbox-container + .sf-checkbox-box:last-child) {
+    inline-size: auto;
+  }
+
   .sf-checkbox .sf-checkbox-label,
   .sf-checkbox .sf-checkbox-description {
     overflow-wrap: anywhere;

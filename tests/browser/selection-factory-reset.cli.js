@@ -7,7 +7,8 @@ async (page) => {
     name: e.name, value: e.value, checked: e.checked, defaultChecked: e.defaultChecked,
     active: e.closest('label').classList.contains('active'),
     checkboxIcon: e.closest('label').querySelector('.sf-checkbox-box .sf-icon')?.textContent,
-    fontActive: e.closest('label').querySelector('.sf-radio-text')?.classList.contains('active'),
+    // C222: a font group draws plain radios (a ring and its dot), no tiles.
+    fontActive: e.closest('label').querySelector('.sf-radio-button-mark') ? e.closest('label').classList.contains('active') : undefined,
   })));
   const initial = await read();
   if (initial.length !== 10 || initial.filter(e => e.checked).length !== 7) throw new Error('Constructor fixture incomplete');

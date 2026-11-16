@@ -10089,7 +10089,7 @@
       "recorded_on": "2026-11-10",
       "stage": "compat",
       "kind": "class",
-      "summary": "The radio's font-sample variant (sf-radio-wrap--type-font with sf-radio-group--font and sf-radio-button--type-font tiles, the constructor's type: \"font\") is deprecated: choosing one value from buttons is sf-segmented (DEV decision D11a/b, docs pre-check 2026-11-10 CRB-01, where the «Aa» tiles stood 24 high with doubled borders). The variant keeps drawing and submitting as before until remove_after; there is no automatic rewrite, a page moves the choice to an sf-segmented of the same values.",
+      "summary": "The radio's font-sample variant (sf-radio-wrap--type-font with sf-radio-group--font and sf-radio-button--type-font tiles, the constructor's type: \"font\") is deprecated: choosing one value from buttons is sf-segmented (DEV decision D11a/b, docs pre-check 2026-11-10 CRB-01, where the «Aa» tiles stood 24 high with doubled borders). Since component.radio 1.5.0 (owner decision C222, 2026-11-16) the tiles are no longer drawn: until remove_after the class runtime redraws each option as a plain radio with its label (the option's description, else its aria-label, else its value), the same native radios, name, values and checked one, notes the first group in SF.deprecations and names it once on the console. There is no automatic rewrite to sf-segmented; a page moves the choice to an sf-segmented of the same values.",
       "items": [
         {
           "component": "sf-radio",

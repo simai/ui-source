@@ -50,3 +50,5 @@ A Smart element with text is a row of its step (C63 W5): (control height − lin
 The label stands `--sf-space-1/2` from the track at every size, on either side of it (C105 H2, 1.3.1): 12 at 1440, 8 compact and on the phone, the row gap of a list row and of a checkbox or radio (C63). `--sf-switch-gap` sets it.
 
 Motion (C66, 1.3.0): a press paints no on look; after the release the colours and the thumb travel run on one clock, 200 ms on `--sf-ease-move` (`calc(var(--sf-duration-fast) * 2)` until the scale has a 200 ms step); `--sf-switch--duration` and `--sf-switch--easing` set it; reduced motion is 0.
+
+1.4.0 (DEV forms study RG-CB-1, 2026-11-16): the class `<label class="sf-switch">` hugs its content as the Smart row does (C63, C19), so a press on the empty end of a full-width row switches nothing; with the track at the end (the text column, then the track) the row keeps its full width.
