@@ -63,6 +63,16 @@
   line-height: var(--sf-file-upload-block-text--line-height);
 }
 
+/* A screen that cannot drag (a touch screen with no fine pointer at all)
+   is not asked to: the words about dragging hide, «Выберите файлы» and the
+   hint stay (owner decision C223). A tablet with a mouse or a pen keeps
+   them. */
+@media (pointer: coarse) and (not (any-pointer: fine)) {
+  .sf-file-upload .sf-file-upload-drag {
+    display: none;
+  }
+}
+
 .sf-file-upload .sf-file-upload-text {
   --sf-file-upload-text--color: var(--sf-on-surface-variant);
   --sf-file-upload-text--font-family: var(--sf-text--family);

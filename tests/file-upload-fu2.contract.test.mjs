@@ -151,3 +151,13 @@ test('RG-FU-4: the live regions stand with the zone and say a file added, sent a
     }
   }
 });
+
+test('C223: on a screen that cannot drag the zone does not ask to drag', async () => {
+  const css = await read('src/component/file-upload/scss/_css__file_upload.scss');
+  assert.match(css, /@media \(pointer: coarse\) and \(not \(any-pointer: fine\)\) \{\s*\.sf-file-upload \.sf-file-upload-drag \{\s*display: none;/u);
+  const template = await read('src/smart/file-upload/js/templates/default.js');
+  assert.match(template, /<span class="sf-file-upload-link">\$\{context\.linkText\}<\/span>\s*\$\{context\.text \? html` <span class="sf-file-upload-drag">\$\{context\.text\}<\/span>`/u);
+  assert.match(source, /drag\.className = 'sf-file-upload-drag';\s*drag\.textContent = text \?\?/u, 'the class draws the part');
+  const bind = source.slice(source.indexOf('function bindFileUpload'), source.indexOf('function unbindFileUpload'));
+  assert.match(bind, /if \(!isManagedRenderRoot\(root\)\) wrapDragWords\(root\);/u, 'the author\'s bare words are wrapped when bound');
+});

@@ -888,6 +888,28 @@ function takeFiles(root, files = [], source = 'input') {
   return accepted.length ? applySelectedFiles(root, accepted, source) : [];
 }
 
+// The words about dragging («или перетащите их сюда») are a part of their
+// own, so a screen that cannot drag hides them (owner decision C223): the
+// author's markup wrote them as bare text after the link; they are put in
+// .sf-file-upload-drag when the zone is bound.
+function wrapDragWords(root) {
+  const block = root?.querySelector?.('.sf-file-upload-block-text');
+  if (!block || block.querySelector('.sf-file-upload-drag')) return;
+  // Only the words after the link: without a link the text is the zone's
+  // whole call and stays.
+  const link = block.querySelector('.sf-file-upload-link');
+  if (!link) return;
+  const loose = Array.from(block.childNodes).filter((node) => node.nodeType === 3
+    && node.textContent.trim()
+    && (link.compareDocumentPosition(node) & 4));
+  if (!loose.length) return;
+  const drag = document.createElement('span');
+  drag.className = 'sf-file-upload-drag';
+  drag.textContent = loose.map((node) => node.textContent).join('').trim();
+  loose[0].before(' ', drag);
+  loose.forEach((node) => node.remove());
+}
+
 function bindFileUpload(root) {
   retireFieldSizeClass(root, 'sf-file-upload');
   if (!root) return;
@@ -911,6 +933,7 @@ function bindFileUpload(root) {
   }
   // The live regions stand from the start (RG-FU-4).
   getStatus(root, true);
+  if (!isManagedRenderRoot(root)) wrapDragWords(root);
 
   const openInput = () => {
     if (isDisabledRoot(root)) return;
@@ -1159,7 +1182,10 @@ class FileUpload extends ComponentObserver {
     const link = document.createElement('span');
     link.className = 'sf-file-upload-link';
     link.textContent = linkText ?? pageText(FILE_UPLOAD_ITEM_TEXT, 'linkText', root, 'sf-file-upload');
-    blockText.append(link, ` ${text ?? pageText(FILE_UPLOAD_ITEM_TEXT, 'text', root, 'sf-file-upload')}`);
+    const drag = document.createElement('span');
+    drag.className = 'sf-file-upload-drag';
+    drag.textContent = text ?? pageText(FILE_UPLOAD_ITEM_TEXT, 'text', root, 'sf-file-upload');
+    blockText.append(link, ' ', drag);
     block.append(blockText);
     bottom.append(block);
     if (supportingText) {

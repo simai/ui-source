@@ -95,7 +95,7 @@ export function renderFileUploadTemplate(context) {
                 <div class="sf-file-upload-block flex">
                     <div class="sf-file-upload-block-text">
                         <span class="sf-file-upload-link">${context.linkText}</span>
-                        ${context.text ? html` ${context.text}` : nothing}
+                        ${context.text ? html` <span class="sf-file-upload-drag">${context.text}</span>` : nothing}
                     </div>
                 </div>
 
