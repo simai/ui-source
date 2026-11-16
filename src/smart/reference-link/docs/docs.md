@@ -45,8 +45,10 @@ The interface is `component.json` (standard 1.3.8); examples are
   `<sf-reference-link appearance="inline" icon="task_alt" label="Подписать
   договор" text="№ 4812" href="/tasks/4812/">`. The icon is one line high and
   stands 4 before the name (C105 H3); the number never breaks.
-- **Card** (default): the name (up to two lines, then an ellipsis) and the
-  route at the far end; on a phone the route goes under the name.
+- **Card** (default): the name (up to two lines, then an ellipsis) and,
+  under it, the route or the record's number (`text`) in one line at the 1/2
+  step, starting where the name starts (owner decision C236). A sized
+  reference (`size`) keeps the route at the row's end.
 
 The underline is always on in text; in a card, a field and a table (`line`,
 `size`, `plain`) the link is underlined under the pointer and on keyboard

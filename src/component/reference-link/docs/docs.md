@@ -52,4 +52,11 @@ Since component.reference-link 1.2.0 (owner decision C147, 2026-11-14):
   class="sf-reference-link__copy sf-icon-button …" data-sf-copy="…">` inside
   it: the button stands at the inline end above the overlay, the card keeps
   its height.
-- **Long name** — the card's link shows two lines, then an ellipsis.
+- **Card route** (since 1.3.0, owner decision C236) — a card (no size, no
+  line, not plain) puts its route or record number (`__meta`) under the name
+  at every width, one line at the 1/2 step in the dim ink, starting where the
+  name starts; an empty `__meta` takes no line. A card with a route keeps
+  `--sf-space-1` above and below, one without it the size 3 control height.
+  A sized reference keeps the route at the row's end.
+- **Long name** — the card's link shows two lines, then an ellipsis; the icon
+  stands on the first line.
