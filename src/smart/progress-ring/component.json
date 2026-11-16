@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
   "id": "smart.progress-ring",
   "tag": "sf-progress-ring",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -104,6 +104,16 @@
   "relations": [
     {
       "name": "progress-ring"
+    },
+    {
+      "name": "avatars",
+      "lazy": true,
+      "$comment": ["An avatar in the ring's content (slot=\"content\", C152 (8)): the ring sheet sizes .sf-avatar from the avatar's own variables, and the element warns about an sf-avatar put in without the slot (C250: declared, fetched after the page is ready)."]
+    },
+    {
+      "name": "cl-avatar",
+      "lazy": true,
+      "$comment": ["The sf-avatar element the ring holds or warns about (C250)."]
     }
   ],
   "templates": {
@@ -190,7 +200,8 @@
     "version 1.4.1 (2026-11-15, owner decision C152 (8), DEV GB5 answers; component.progress-ring 1.5.1; numbered above fix/avatar-ring-c191's 1.4.0): a patch, a look. A slotted avatar's box is the middle box at every size and density: its least width is no longer its letters', and its initials are at most half the box (font-size min(own, box / 2), line-height min(own, box)), as a line avatar's. A size 1/3 avatar in a ring of 1/2 was 20.52 px wide in a 16 px compact middle and in a 20 px phone middle, so its letters spilled over the line and the presence point, placed from the avatar's edge, stood 4.7 px (compact) and 0.4 px (phone) off the line's middle; it stands on it now (within 0.05 px). Where the box is as large as the avatar's step nothing changes. Settings, values, events and keys unchanged.",
     "version 1.4.2 (2026-11-15, owner decision C203 (3), DEV msg-913fd9e4; numbered above 1.4.1 of fix/gb5-answers): a patch. The percentage in the middle is written «72 %» -- the number in the page's language, a no-break space (U+00A0) and the sign, in every language (core formatNumber's percentText) -- where it was «72%», and a screen reader hears the same text as aria-valuetext when the page gives no value-text (it heard the bare number). Settings, events and keys unchanged.",
     "version 1.5.0 (2026-11-15, fix/dot-avatar-badge-c185, AR-4 of control/research/2026-11-14-recipe-parts.md; numbered above 1.4.2 of fix/progress-meter-inline-c203): a minor. An sf-avatar put in the ring without slot=\"content\" is drawn beside the ring, as before, and is now said: one console warning a page and an SF.deprecations record per ring (kind markup, from «sf-avatar without slot», to slot=\"content\"). The docs show the right and the wrong markup. Nothing drawn differently; settings, values, events and keys unchanged.",
-    "version 1.6.1 (2026-11-17, Smart joint pass SM-PR-1; numbered above 1.6.0 of group build 9): a patch, nothing drawn differently. The ring prints its percentage as the progress family does since core.runtime's percentText (C203 (3), C219): «62 %», a no-break space before the sign. Three probe checks still read «62%» and «100%»; they read the spelling drawn now. The class twin's docs (component.progress-ring 1.5.2) write «85 %» in their anatomy, which wrote «85%». Settings, values, events and keys unchanged."
+    "version 1.6.1 (2026-11-17, Smart joint pass SM-PR-1; numbered above 1.6.0 of group build 9): a patch, nothing drawn differently. The ring prints its percentage as the progress family does since core.runtime's percentText (C203 (3), C219): «62 %», a no-break space before the sign. Three probe checks still read «62%» and «100%»; they read the spelling drawn now. The class twin's docs (component.progress-ring 1.5.2) write «85 %» in their anatomy, which wrote «85%». Settings, values, events and keys unchanged.",
+    "1.6.2: the avatars sheet and sf-avatar are declared lazy relations (C250): the ring's sheet sizes an avatar in its content and the element warns about one without the slot, and neither was declared."
   ],
   "x-registry": {
     "capabilities": [

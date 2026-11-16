@@ -278,3 +278,29 @@ test('SM-PN-1: below the sm step a numbers place takes the tightness, so five pl
   assert.ok(2 * control + 5 * control + 6 * gap <= 326);
   assert.equal(json('src/component/pagination/passport.json').version, '1.5.2');
 });
+
+// ---- SM-DL-2: the class row puts the size under the name on a phone --------
+
+test('SM-DL-2: below sm the hand-written class row stacks the size under the name, as the Smart row', () => {
+  const sheet = read('src/component/download-file/scss/_css_download-file.scss');
+  const at = sheet.indexOf('@media (max-width: map.get(bp.$breakpoint-array, sm))');
+  assert.ok(at > 0, 'the phone block');
+  const block = sheet.slice(at, sheet.indexOf('\n  }\n', at));
+  assert.match(block, /\.sf-download-file-wrap:has\(> \.sf-download-file-file-size\)\) \{\s*flex-direction: column;/u);
+  assert.match(block, /\.sf-download-file-wrap > \.sf-download-file-file-size\) \{\s*margin-inline-start: calc\(var\(--sf-file-download-icon-size[^;]*--sf-download-file--gap\)\)\)\);\s*font-size: var\(--sf-text-size-1\\\/2\);/u);
+  assert.equal(json('src/component/download-file/passport.json').version, '1.6.1');
+});
+
+// ---- C250: sf-progress-ring declares the avatar it holds -------------------
+
+test('C250: sf-progress-ring declares component.avatars and smart.avatar (lazy relations)', async () => {
+  const {usesOf} = await import('../scripts/generate-component-files.mjs');
+  const component = json('src/smart/progress-ring/component.json');
+  const uses = usesOf(component);
+  for (const id of ['component.avatars', 'smart.avatar', 'component.progress-ring']) assert.ok(uses.includes(id), `declares ${id}`);
+  for (const name of ['avatars', 'cl-avatar']) assert.equal(component.relations.find((r) => r.name === name)?.lazy, true, `${name} is lazy: the ring draws no avatar itself`);
+  assert.deepEqual(json('src/smart/progress-ring/smart.manifest.json').composition.uses, uses);
+  // The code that makes the use: the ring sheet sizes an avatar, the element warns about a stray one.
+  assert.match(read('src/component/progress-ring/scss/_css__progress_ring.scss'), /\.sf-progress-ring-content > \.sf-avatar/u);
+  assert.match(read('src/smart/progress-ring/index.js'), /'sf-avatar'/u);
+});

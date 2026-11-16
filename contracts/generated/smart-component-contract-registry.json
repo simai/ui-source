@@ -2516,7 +2516,9 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "component.progress-ring"
+          "component.avatars",
+          "component.progress-ring",
+          "smart.avatar"
         ]
       },
       "contract_schema": {
@@ -2528,7 +2530,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/progress-ring/smart.manifest.json",
-      "manifest_sha256": "787f9d24240ebb890a5e9c960c78d3013cc4e1a07119eaa8c1c812e75161c209",
+      "manifest_sha256": "fb6f131f217780c2d3d89e7a5137a3e4d4c39a808460da025d66e68694414334",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
