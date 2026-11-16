@@ -19,6 +19,21 @@ the Smart `sf-button` projection.
   keeps its width and is transparent over the fill, so the height of the size
   does not move) and the icons filled (`FILL 1`): two cues, not colour alone,
   the same roles in both themes. Hover and press over it step the container;
+  a tonal toggle (1.10.2, TB-3), whose resting plate is already the container,
+  takes the container's pressed step when pressed (`--sf-primary-container-active`,
+  20 % light / 32 % dark) so the fill differs from its unpressed plate, and
+  hover and press over it lay the surface's state layer
+  (`--sf-surface-state-hover` / `-active`) on that fill. A tonal on-surface
+  toggle rests on the neutral fill, which the dark theme draws as a light
+  tone, so the pressed container alone barely differs from it: pressed, it
+  also carries the selected state's layer (`--sf-surface-state-select`, 8);
+  hover over it takes the press layer (12) and press adds the hover layer
+  (12 and 4). The label of a tonal, outline, ghost or link on-surface or
+  secondary button keeps `--sf-on-surface` under the pointer in the dark
+  theme (the light theme keeps `--sf-on-surface-hover` / `-active`): the
+  stepped ink fell to 3.89:1 pressed on a popup. Secondary outline, surface,
+  ghost and link labels step along the secondary's ladder under the pointer
+  (`--sf-secondary-hover` / `-active`), as primary's do;
   focus draws the ring; disabled wears the disabled look and keeps the filled
   icon. `sf-button--pressed` draws the same look without `aria-pressed`.
   With the Loader's icon subset, give the icon of a pressed toggle
@@ -59,7 +74,22 @@ the Smart `sf-button` projection.
   (decision C13: danger is what the control does, error is a message's
   status); `sf-button--error` is its former name on a button, the same rules,
   until 2027-01-01 (journal class-c13-control-error-to-danger). sf-button
-  writes both, and calls `--link` the ghost appearance (C15);
+  writes both, and calls `--link` the ghost appearance (C15). Only the danger
+  outline has a coloured border (1.12.0, owner decision C118): the error role
+  at the ink family's 64 step, 3.4:1 light and 5.1:1 dark on the page, the
+  same red as its hover plate; the primary and on-surface outlines keep the
+  shared grey `--sf-outline`, and a disabled danger outline greys as they do;
+- on a place with its own ink (1.14.0, places states 2026-11-14) -- a strong
+  coloured place (`bg-primary` ... `bg-error`, a strong alert bar), the duo
+  gradient, glass (`sf-surface-media`) or an inverse place: the `outline`,
+  `surface` and `ghost` secondary and danger buttons write their label and
+  icons in the place's ink in every state (the hue read 1.00:1 on a colour);
+  the fill and the danger edge keep their hue. A filled `on-surface` button
+  there is the place's ink with the place's accent label (`--sf-on-primary`:
+  the place's colour, black on glass), not `--sf-on-surface-inverse`, which
+  read 1.29:1 on the white. A card or a popup on such a place takes the
+  theme's look back. A pressed filled secondary takes `--sf-secondary-active`
+  (it took primary's pressed step before);
 - size: `size-1\/3`, `size-1\/2`, `size-1`, `size-2`, `size-3`;
 - density (deprecated, decision C27, until 2027-01-01; journal
   class-c27-button-spacing-to-height): the default, `spacing-compact`,
@@ -90,6 +120,16 @@ radius class; it stays for the Smart `radius="default"` value. The utility
 class of that name and the `--sf-radius-default` token were removed on
 2026-11-02 (journal `token-radius-default`).
 
+A split button (1.12.0, owner decision C119): `<span class="sf-button-split">`
+holding an `.sf-button` (the label part, the action) and an `.sf-icon-button`
+of the same size and height with `expand_more` (the arrow part, square, which
+opens a menu: `aria-haspopup="menu"`, `aria-expanded`). They join as a button
+group: inner corners square and a 1 px seam -- the page between two filled
+parts, one shared border between two outlined ones; the focused part stands
+above its neighbour. `sf-button-split--full-width` with a full-width label
+part fills the row. The main (default primary) and the regular (outline) look
+only. The Smart form is `sf-button` with `menu` and `split`.
+
 Joined positions `segment-start`, `segment-middle` and `segment-end` square
 the corners two neighbours share and draw one line at each join: the end edge
 of the segment before it (a segment that follows another has no start edge).
@@ -104,7 +144,10 @@ scheme:
   tints with the primary container role; `tonal secondary` is kept, but the
   secondary palette is close to neutral, so it reads almost like
   `tonal on-surface`;
-- `outline` — a secondary action such as Cancel or Back;
+- `outline` — a second weighted action such as Export, Filters or Back, in
+  `on-surface` (decision C116); «Отмена» / Cancel is never outlined, it is the
+  quiet `ghost on-surface`; `outline primary` is only the second call to
+  action of a site's hero;
 - `surface` — an action that needs its own plate on a coloured background or
   an image: a faint fill from the neutral alpha ramp and a hairline boundary,
   the same in both themes;
@@ -126,6 +169,13 @@ resting button's. One that is disabled as well adds the `disabled` class and
 wears the disabled look; the constructor does that for `loading` with
 `disabled`. Markup with the bare `loading` class and no state class keeps the
 disabled look.
+
+`aria-disabled="true"` is disabled for the look as well (1.15.0, owner remark
+2026-11-15 on the copy button): a button that keeps its focus while it cannot
+act wears the disabled look, takes no hover or press fill and shows the arrow
+cursor; it still takes focus and draws the ring, and the page decides what a
+press does. Before, only native `disabled` and `.disabled` turned the states
+off, so an `aria-disabled` button lit up on hover as a working one.
 
 A loading button shows the spinner, the Framework's one loading indicator, at
 the size of its icon (simai/ui-source#10):

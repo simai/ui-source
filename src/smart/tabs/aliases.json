@@ -15,6 +15,17 @@
       "cancelable": false,
       "section": "§8, §16 item 42",
       "note": "the old detail adds component, tagName and template, which §8 takes out of the new one: the element's detail adapter makes it"
+    },
+    {
+      "from": "data-tab",
+      "to": "data-sf-tab-index",
+      "kind": "attribute",
+      "component": "sf-tabs",
+      "since": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "mode": "retired",
+      "section": "§3.1 (a name the component writes carries its prefix); R193 DP-11",
+      "note": "written beside data-sf-tab-index on each tab for one minor (1.2.x) and dropped in 1.3.0: a page selector [data-tab] caught the tabs' own buttons (the dropdown-panels prototype hid tab 0 with pane 0); read data-sf-tab-index"
     }
   ]
 }

@@ -9,7 +9,6 @@ SF.RuleLoader['cl-alert-bar'] = {
     { name: 'cl-time' },
     { name: 'cl-button' },
     { name: 'cl-button-icon' },
-    { name: 'cl-badge' },
     { name: 'cl-icon' },
   ],
 };

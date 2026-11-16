@@ -40,4 +40,12 @@
   opacity: 0;
   position: absolute;
 }
+
+/* The help mark («?», sf-help-mark) is the help's own button: it stands above
+   the native control's hit area, so a press on it is never a press on the
+   switch. */
+.sf-switch .sf-switch-top .sf-help-mark {
+  position: relative;
+  z-index: var(--sf-z-index-1);
+}
 }

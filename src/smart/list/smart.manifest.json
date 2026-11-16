@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.5.1",
+  "version": "1.18.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -86,12 +86,33 @@
       "has-more": {
         "type": "boolean",
         "default": false,
-        "description": "A next page exists: «Показать ещё» shows, and the end coming into reach asks for it."
+        "description": "A next page exists: «Показать ещё» shows, and the end brought into reach by a person's scroll asks for it (an end in reach on load waits for the button or the first scroll)."
       },
       "loading": {
         "type": "boolean",
         "default": false,
-        "description": "The first page is on its way: the rows' shape instead of words."
+        "description": "The first page is on its way: three skeleton rows of the list's size, each as tall as the row that replaces it (the caption row until rows were shown, then the shape of the rows shown, their leading icon or avatar place included, so the title starts where it will), their words core's pulsing first-paint bars (C130, C136, C148 (1))."
+      },
+      "leading": {
+        "type": "string",
+        "default": "auto",
+        "description": "The leading place the skeleton rows keep while loading, from the first frame: auto takes the shape of the rows the list has shown (none until it has shown any); icon keeps the icon place (the row's line square, the control radius); avatar keeps sf-avatar's own box of the list's step (the control height while the rows have a second line, else the row's line), a circle (square when the rows shown were); none keeps no place. So a list whose rows will carry icons or avatars has its title bar start on the first frame where the title will. It shapes the skeleton alone: the rows draw what their items carry (C130, C148 (1)).",
+        "enum": [
+          "auto",
+          "none",
+          "icon",
+          "avatar"
+        ]
+      },
+      "lines": {
+        "type": "string",
+        "default": "auto",
+        "description": "The line count of the skeleton rows while loading, from the first frame: auto takes the rows the list has shown (the caption row until it has shown any); 1 keeps one-line rows (the row's height, an avatar of the row's line); 2 keeps rows with a second line (the caption row, an avatar of the control height). So a one-line list's first skeleton row is as tall as its rows and its title bar where the title will be, whatever leading says. It shapes the skeleton alone: the rows draw what their items carry (C130).",
+        "enum": [
+          "auto",
+          "1",
+          "2"
+        ]
       },
       "size": {
         "type": "string",
@@ -106,7 +127,23 @@
       "no-wrap": {
         "type": "boolean",
         "default": false,
-        "description": "Every row's title and its second line stay one line each, cut at the end with an ellipsis; the whole text stays in the row for a screen reader and is the row's tooltip (title). Off: the title of a one-line row wraps."
+        "description": "Every row's whole text is its tooltip (title), cut or not. A row's title and its second line are one line each, cut at the end with an ellipsis, with or without it (owner decision C148 (5)); a cut row says its whole text in its tooltip by itself, and the whole text stays in the row for a screen reader. Kept for the lists that set it."
+      },
+      "divided": {
+        "type": "boolean",
+        "default": false,
+        "description": "An inset line under every row but the last of its group, from the row's text to the list's edge under the «⋯» (sf-list-item divided, owner decision C148 (4)); off, the rows have no lines and the groups are told apart by their headings (C40)"
+      },
+      "time-format": {
+        "type": "string",
+        "default": "none",
+        "description": "The row's time at its end, from the item's date, drawn by sf-time (C40) without a tooltip or a Tab stop of its own (the row is the list's one stop): on the title's line of a two-line row, above the count and the badge (sf-list-item's end column, C148 (2)), in the caption's type and dim ink, the main ink on an unread row. none (the default): no time. auto: under a day heading (group-by day) the clock time («11:20»), since the heading names the day; elsewhere -- ungrouped, by key, the pinned group -- sf-time auto («28 минут назад», «11:20», «вчера, 19:40», «5 ноября»). relative: always relative. exact: the clock time under a day heading, the date and time elsewhere. The values are sf-list-timeline's time-format, plus none.",
+        "enum": [
+          "none",
+          "auto",
+          "relative",
+          "exact"
+        ]
       },
       "label": {
         "type": "string",
@@ -213,6 +250,10 @@
         "count": {
           "type": "number",
           "description": "A count at the row's end (unread); 0 draws nothing, above 99 «99+»."
+        },
+        "unread": {
+          "type": "boolean",
+          "description": "Unread without a count: the title semibold and the word «не прочитано» for a screen reader."
         },
         "badge": {
           "type": "object",
@@ -620,7 +661,7 @@
       }
     },
     "sf-list-load-more": {
-      "summary": "The next page is asked for: the end came into reach, or «Показать ещё»: {direction: after, after}. Cancelling it is moreFailed().",
+      "summary": "The next page is asked for: a person's scroll brought the end into reach, or «Показать ещё»: {direction: after, after}. Never on load by itself. Cancelling it is moreFailed().",
       "payload": {
         "type": "object",
         "required": [
@@ -754,15 +795,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "4a5a962ed9023232a2e4b81c8a29842d82de605e52657f4e01cb45cad046aafd"
+        "sha256": "8bbd0ecb81e9004891d1d3e43d98eb5bf808810e9389356b1d0cca58a6e75b71"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "68610ad42cd0c07ca28906105cd2ad9d569754f51255449ba1a3282ccbc74b76"
+        "sha256": "ab6f7829588f2239b629825cb2ef669e12bb7c9e03b0af944e33663729e082c6"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "ed8cae65373329c9c06a4e32390b118f27aa3a329f50935795f552942cac2bb4"
+        "sha256": "1dc6088f576fd262a32cd0e9e89c640c5d970772b664e8dec6c052483a810289"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -770,19 +811,19 @@
       },
       {
         "path": "src/smart/list/docs.md",
-        "sha256": "cdfd1341a4c25e8ba87b02875caf4ac2b390bfaf6c29b2d14f04aa8663c8828c"
+        "sha256": "9fca4e970e0a2f62176f8473e872ff9c1bcd3842d23a620ebfc6762c739fc050"
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "1d7d55998345d093c998199facc7880bcd1bdd2c64c785affe4c29ee3a9c4bf9"
+        "sha256": "7789304aa02d3c233ba0ef0069ee7081633bb4f7863cb7ace1290e1fc7b5dce6"
       },
       {
         "path": "src/smart/list/lang/en.json",
-        "sha256": "e415f13db35686dbd53b9f663292479f53816f451473c6f524678d4dc65cbb47"
+        "sha256": "ee058b8d31d3dfebbc992d2fea9a9b3b586367eb2e07bbf9c82db08c8a9e615c"
       },
       {
         "path": "src/smart/list/lang/ru.json",
-        "sha256": "ca074425d5bd25ad7293f7ec3de83743db738cd51e2e806fc0c32fc33f6cf123"
+        "sha256": "ad87273e42a7d86a8c2a3d98bac2f7932ff196c525662e413eb99754fdf79454"
       }
     ],
     "generated_runtime": []

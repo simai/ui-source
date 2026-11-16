@@ -14,6 +14,9 @@ import { getTopModalLayer, getModalLayerIndex, updateModalLayers, addModalLayer,
   removeModalLayer, raiseModalLayer, captureModalFocusAncestors, restoreModalLayerFocus,
   isTopModalLayer } from './_stack';
 import { layerZIndexAt, lockPageScroll } from '../../../core/js/layer-stack';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
 function joinClasses(...parts) {
   return parts.filter(Boolean).join(' ').trim();
@@ -82,26 +85,11 @@ function normalizeDisplay(value) {
 // The loading state and its failure speak the page's language too: they said
 // "Loading..." and "Failed to load content" on every page (simai/ui-source#11
 // follow-up). The words are sf-modal's, so one registration covers both.
-const UNTITLED = {
-  en: {
-    title: 'Dialog',
-    close: 'Close',
-    loading: 'Loading…',
-    loadFailed: 'Failed to load content',
-    frameFailed: 'Failed to load iframe content',
-  },
-  ru: {
-    title: 'Окно',
-    close: 'Закрыть',
-    loading: 'Загрузка…',
-    loadFailed: 'Не удалось загрузить содержимое',
-    frameFailed: 'Не удалось загрузить встроенную страницу',
-  },
-};
+const UNTITLED = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 // The node the words are looked up from: the modal once it is on the page,
 // else the document, which is where a modal not yet attached will be.
 const modalText = (key, node) => pageText(UNTITLED, key, node?.isConnected ? node : document.documentElement, 'sf-modal');
-const untitled = (root) => pageText(UNTITLED, 'title', root);
+const untitled = (root) => pageText(UNTITLED, 'title', root, 'sf-modal');
 
 class Modal extends ComponentObserver {
   static componentName = 'Modal';
@@ -437,15 +425,17 @@ class Modal extends ComponentObserver {
     }
 
     // The window's frame is the question window's (decision C39; dispatcher
-    // decision d, docs pre-check 2026-11-10): the frame --sf-space-3, the
+    // decision d, docs pre-check 2026-11-10): the frame -- since C105 a
+    // window's inset, --sf-space-2 with the edge inside it, drawn by the
+    // sheet (sf.base, so a surfaceClass padding utility still wins) -- the
     // title --sf-space-1 above the content, no line under the header, and the
     // close button on the frame's corner, the title centred on its line. The
     // frame was --sf-space-2 with a line under the header.
     const surface = document.createElement('div');
     surface.className = joinClasses(
       isInline
-        ? 'bg-surface border border-outline-variant radius-surface p-3 flex flex-col gap-1 min-w-0'
-        : 'bg-surface border border-outline-variant radius-surface shadow-modal p-3 flex flex-col gap-1 min-w-0',
+        ? 'bg-surface border border-outline-variant radius-surface flex flex-col gap-1 min-w-0'
+        : 'bg-surface border border-outline-variant radius-surface shadow-modal flex flex-col gap-1 min-w-0',
       params.surfaceClass,
     );
     surface.setAttribute('data-sf-modal-surface', '');
@@ -481,7 +471,7 @@ class Modal extends ComponentObserver {
         );
         // The page language's word, as the Smart window has; the glyph inside is
         // decoration and carries no name of its own.
-        closeButton.setAttribute('aria-label', pageText(UNTITLED, 'close', closeButton.isConnected ? closeButton : document.documentElement));
+        closeButton.setAttribute('aria-label', pageText(UNTITLED, 'close', closeButton.isConnected ? closeButton : document.documentElement, 'sf-modal'));
         closeButton.setAttribute('data-sf-modal-close', this.modalId);
         closeButton.innerHTML = '            <span\n' +
             '              class="sf-close sf-close--size-1/3 flex justify-center items-center"\n' +
@@ -505,7 +495,7 @@ class Modal extends ComponentObserver {
 
     const bodyScroll = document.createElement('div');
     bodyScroll.className = joinClasses(
-      'sf-modal-body-scroll h-full min-w-0 overflow-y-auto flex flex-col gap-1 p-1/4',
+      'sf-modal-body-scroll h-full min-w-0 overflow-y-auto flex flex-col gap-1',
       params.bodyClass,
     );
     bodyScroll.setAttribute('data-sf-modal-body-scroll', '');
@@ -696,7 +686,7 @@ class Modal extends ComponentObserver {
         if (!this._fetchController || this._fetchController === controller) {
           this._finishLoading();
         }
-        return; // Загрузка отменена — не показываем ошибку
+        return; // The load was cancelled: no error is shown
       }
       this._contentError = error.message;
       this._finishLoading();

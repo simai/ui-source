@@ -20,7 +20,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "string"
         },
         "appearance": {
-          "default": "main",
+          "default": "tonal",
           "enum": [
             "main",
             "tonal",
@@ -32,10 +32,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
-        "compact": {
-          "default": false,
-          "type": "boolean"
-        },
         "icon": {
           "default": "",
           "type": "string"
@@ -43,6 +39,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "icon-end": {
           "default": "",
           "type": "string"
+        },
+        "icon-only": {
+          "default": false,
+          "type": "boolean"
         },
         "icon-position": {
           "default": "start",
@@ -62,7 +62,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "",
             "1/2",
             "1",
-            "2"
+            "2",
+            "text"
           ],
           "type": "string"
         },
@@ -110,7 +111,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.badge",
-    "version": "1.4.0"
+    "version": "1.6.1"
   },
   "sf-button": {
     "inputs": {
@@ -122,8 +123,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "default",
             "tonal",
             "outline",
-            "ghost",
-            "surface"
+            "ghost"
           ],
           "type": "string"
         },
@@ -220,7 +220,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "primary",
           "enum": [
             "primary",
-            "secondary",
             "on-surface",
             "on-surface-variant"
           ],
@@ -265,6 +264,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           ],
           "type": "string"
         },
+        "split": {
+          "default": false,
+          "type": "boolean"
+        },
         "status": {
           "default": "",
           "enum": [
@@ -308,7 +311,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.13.0"
+    "version": "1.16.1"
   },
   "sf-button-icon": {
     "inputs": {
@@ -349,6 +352,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "download": {
+          "default": "",
+          "type": "string"
+        },
         "filled": {
           "default": false,
           "type": "boolean"
@@ -361,6 +368,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "high",
             "highest"
           ],
+          "type": "string"
+        },
+        "href": {
+          "default": "",
           "type": "string"
         },
         "icon": {
@@ -404,6 +415,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "square",
             "rounded"
           ],
+          "type": "string"
+        },
+        "rel": {
+          "default": "",
           "type": "string"
         },
         "scheme": {
@@ -454,7 +469,15 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           ],
           "type": "string"
         },
+        "target": {
+          "default": "",
+          "type": "string"
+        },
         "theme-cycle": {
+          "default": "",
+          "type": "string"
+        },
+        "tooltip": {
           "default": "",
           "type": "string"
         },
@@ -467,7 +490,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.8.3"
+    "version": "1.11.0"
   },
   "sf-checkbox": {
     "inputs": {
@@ -480,6 +503,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "checked": {
           "default": false,
           "type": "boolean"
+        },
+        "controls": {
+          "default": "",
+          "type": "string"
         },
         "description": {
           "default": "",
@@ -535,7 +562,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.1.7"
+    "version": "1.5.0"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -579,6 +606,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "error-message": {
+          "default": "",
+          "type": "string"
+        },
+        "help": {
+          "default": "",
+          "type": "string"
+        },
         "inherited-text": {
           "default": "",
           "type": "string"
@@ -586,6 +621,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "inherited-value": {
           "default": "",
           "type": "string"
+        },
+        "invalid": {
+          "default": false,
+          "type": "boolean"
         },
         "label": {
           "default": "",
@@ -658,7 +697,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.8.1"
+    "version": "1.16.0"
   },
   "sf-icon": {
     "inputs": {
@@ -699,6 +738,15 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "mirror": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "on",
+            "off"
+          ],
+          "type": "string"
+        },
         "optical-size": {
           "default": 24,
           "maximum": 48,
@@ -726,9 +774,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "enum": [
             "",
-            "outlined",
-            "rounded",
-            "sharp"
+            "outlined"
           ],
           "type": "string"
         },
@@ -743,7 +789,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.icon",
-    "version": "1.1.7"
+    "version": "1.3.1"
   },
   "sf-input": {
     "inputs": {
@@ -766,6 +812,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "clearable": {
+          "default": false,
+          "type": "boolean"
+        },
+        "counter": {
+          "default": false,
+          "type": "boolean"
+        },
         "default-value": {
           "default": "",
           "type": "string"
@@ -775,6 +829,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "boolean"
         },
         "error-message": {
+          "default": "",
+          "type": "string"
+        },
+        "help": {
           "default": "",
           "type": "string"
         },
@@ -927,6 +985,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "text-start": {
+          "default": "",
+          "type": "string"
+        },
         "value": {
           "default": "",
           "type": "string"
@@ -936,7 +998,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.7.1"
+    "version": "1.13.0"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -960,18 +1022,26 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "string"
         },
         "auto-grow": {
-          "default": false,
+          "default": true,
           "type": "boolean"
         },
         "autocomplete": {
           "default": "",
           "type": "string"
         },
+        "counter": {
+          "default": false,
+          "type": "boolean"
+        },
         "disabled": {
           "default": false,
           "type": "boolean"
         },
         "error-message": {
+          "default": "",
+          "type": "string"
+        },
+        "help": {
           "default": "",
           "type": "string"
         },
@@ -1023,13 +1093,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "type": "string"
         },
         "max-rows": {
+          "default": 10,
           "type": "number"
         },
         "maxlength": {
           "type": "number"
         },
         "min-rows": {
-          "default": 1,
+          "default": 3,
           "type": "number"
         },
         "minlength": {
@@ -1055,6 +1126,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "resize": {
+          "default": false,
+          "type": "boolean"
+        },
         "rows": {
           "default": 3,
           "type": "number"
@@ -1062,15 +1137,25 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "size": {
           "default": "1",
           "enum": [
+            "1/3",
             "1/2",
             "1",
-            "2"
+            "2",
+            "3"
           ],
           "type": "string"
         },
         "spell-check": {
           "default": true,
           "type": "boolean"
+        },
+        "text": {
+          "default": "plain",
+          "enum": [
+            "plain",
+            "code"
+          ],
+          "type": "string"
         },
         "value": {
           "default": "",
@@ -1089,7 +1174,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.7.5"
+    "version": "1.12.1"
   },
   "sf-switch": {
     "inputs": {
@@ -1157,6 +1242,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.4.0"
+    "version": "1.7.1"
   }
 });

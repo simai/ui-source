@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "heading": "Галерея",
+    "open-picture": "{total} ішінен {n}-суретті ашу",
+    "open-picture-named": "{total} ішінен {n}-суретті ашу: {alt}",
+    "show-picture": "{n}-суретті көрсету",
+    "show-picture-named": "{n}-суретті көрсету: {alt}",
+    "pick-picture": "{n}-суретті таңдау",
+    "pick-picture-named": "{n}-суретті таңдау: {alt}",
+    "count": "{n} / {total}",
+    "selection": "Таңдау",
+    "selected-count": "Таңдалды: {count}",
+    "clear-selection": "Таңдауды алып тастау",
+    "viewer-label": "Қарау",
+    "viewer-count": "{n} / {total}",
+    "viewer-count-words": "{total} ішінен {n}",
+    "viewer-zoom-in": "Үлкейту",
+    "viewer-zoom-out": "Кішірейту",
+    "viewer-close": "Жабу",
+    "viewer-previous": "Алдыңғы сурет",
+    "viewer-next": "Келесі сурет",
+    "viewer-download": "{name} жүктеп алу",
+    "viewer-open-tab": "Жаңа қойындыда ашу",
+    "viewer-document": "Құжат"
+  }
+}

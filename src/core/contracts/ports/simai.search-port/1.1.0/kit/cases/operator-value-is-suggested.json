@@ -1,0 +1,30 @@
+{
+  "id": "operator-value-is-suggested",
+  "intent": "query.change",
+  "capability": "operators",
+  "summary": "While an operator's value is typed, the host that suggests for it answers the suggestions as results; choosing one makes the tag.",
+  "given": {
+    "capabilities": [
+      "operators"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 9,
+      "query": "",
+      "operator": {
+        "id": "from",
+        "value": "ив"
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "The people for from: the suggestion's id is the tag's value and its title the tag's words."
+  }
+}

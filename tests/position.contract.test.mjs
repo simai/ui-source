@@ -52,10 +52,19 @@ test('stylesheet max-width is read before inline writes and stays the width cap'
 
 test('a panel may reach the viewport edge its field reaches, and no further in', async () => {
   const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
-  assert.match(source, /left: Math\.min\(padding, Math\.max\(0, box\.left\)\)/);
-  assert.match(source, /right: Math\.min\(padding, Math\.max\(0, clientWidth - box\.right\)\)/);
+  assert.match(source, /left: atPoint \? padding : Math\.min\(padding, Math\.max\(0, box\.left\)\)/);
+  assert.match(source, /right: atPoint \? padding : Math\.min\(padding, Math\.max\(0, clientWidth - box\.right\)\)/);
   assert.match(source, /shift\(\{padding: edges, crossAxis: false\}\)/);
   assert.match(source, /size\(\{\s*padding: edges,/);
+});
+
+// C164 (1): a menu at a point (a zero-size reference that is drawn: a fixed
+// span where a right-click was) flips across the point on both axes; a box
+// flips its side only. Browser: tests/browser/context-menu-point-flip.browser.mjs.
+test('a point flips across itself on both axes, a box on its side only', async () => {
+  const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  assert.match(source, /const atPoint = pointBox\.width === 0 && pointBox\.height === 0 && reference\.getClientRects\(\)\.length > 0;/);
+  assert.match(source, /flip\(\{padding, crossAxis: atPoint\}\)/);
 });
 
 test('an anchored surface is lifted into the top layer, unless it is already there', async () => {
@@ -65,9 +74,11 @@ test('an anchored surface is lifted into the top layer, unless it is already the
   assert.match(source, /const lower = settings\.topLayer \? liftToTopLayer\(floating\) : null;/);
   assert.match(source, /lower\?\.\(\);/);
   assert.match(source, /const Position = Object\.freeze\(\{anchor, anchorReference, referenceRect, liftToTopLayer,/);
-  // A surface the component lifted, or one in a lifted or modal layer, is left as it is.
-  assert.match(source, /if \(floating\.hasAttribute\('popover'\) \|\| inTopLayer\(floating\)\) return false;/);
-  assert.match(source, /for \(let node = floating\.parentElement; node; node = node\.parentElement\) if \(inTopLayer\(node\)\) return false;/);
+  // A surface the component lifted is left as it is; one inside a lifted or
+  // modal layer is lifted too, so it stands above its parent (C59 S1 D1).
+  assert.match(source, /return !floating\.hasAttribute\('popover'\) && !inTopLayer\(floating\);/);
+  const liftable = source.slice(source.indexOf('function liftable(floating)'), source.indexOf('export function liftToTopLayer'));
+  assert.doesNotMatch(liftable, /parentElement/, 'an ancestor in the top layer does not stop the lift');
   assert.match(source, /floating\.setAttribute\('popover', 'manual'\);/);
   // The lift is measured before the caps are read, so caps come from the lifted box.
   assert.ok(source.indexOf('liftToTopLayer(floating) : null') < source.indexOf('const floatingStyle = getComputedStyle(floating);'));
@@ -89,4 +100,32 @@ test('a container query box is asked whether it contains fixed panels, not assum
   assert.match(source, /css\.containerType !== 'normal' && probesFixedOrigin\(element\)/);
   assert.doesNotMatch(source, /\|\| \(Boolean\(css\.containerType\) && css\.containerType !== 'normal'\);/);
   assert.match(source, /probe\.style\.cssText = 'position:fixed;left:0;top:0;/);
+});
+
+test('a density switch restates the gap while open (C59 S1 acceptance M1)', async () => {
+  const source = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  // The length cache is keyed by the window's size and by the computed values
+  // of the tokens the lengths are written with, so a density switch misses it.
+  assert.match(source, /const key = `\$\{window\.innerWidth\}x\$\{window\.innerHeight\}\|\$\{values\}`;/);
+  assert.match(source, /getComputedStyle\(context\)\.getPropertyValue\(name\)/);
+  // A switch that moves no box still asks for a full fit.
+  assert.match(source, /attributeFilter: \['data-sf-density'\]/);
+  assert.match(source, /\.\.\.\(tokens\.length \? \[watchDensity\(floating\.ownerDocument, controller\.update\)\] : \[\]\)/);
+  // Behaviour: tests/browser/float-anchor-nested.browser.mjs (nested overlays, 390 start/end, density).
+});
+
+test('measuring the natural height puts back what was scrolled inside the panel (R171)', async () => {
+  const position = await readFile(new URL('../src/core/js/position.js', import.meta.url), 'utf8');
+  // The cap comes off to measure; a list scrolling inside the panel would be
+  // thrown back to its start on every reposition. Only a fit that measures
+  // (full, or the first) takes the cap off; a light fit keeps it.
+  assert.match(position, /let scrolled = settings\.fitHeight && \(full \|\| !measures\) \? scrollOffsets\(floating\) : null;/);
+  assert.match(position, /return await place\(full, putBack\);\s*\} finally \{\s*putBack\(\);/);
+  // Put back before onPosition: sf-menu scrolls its panel there (syncScroll).
+  assert.match(position, /putBack\(\);\s*settings\.onPosition\?\.\(/);
+  assert.match(position, /function scrollOffsets\(floating\) \{[\s\S]*?floating\.querySelectorAll\('\*'\)/);
+  // At once, never through the sheet's smooth scrolling (R171 follow-up):
+  // an assigned scrollTop glided from 0 and a reposition kept a value short.
+  assert.match(position, /if \(element\.scrollTop !== top \|\| element\.scrollLeft !== left\) element\.scrollTo\(\{top, left, behavior: 'instant'\}\);/);
+  assert.doesNotMatch(position, /element\.scrollTop = top;/);
 });

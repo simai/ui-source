@@ -135,7 +135,7 @@ const RECORD = () => {
     const r = node.getBoundingClientRect();
     return [r.x, r.y, r.width, r.height].map((v) => Math.round(v * 10) / 10).join(',');
   };
-  const chevron = (field) => field?.querySelector('.sf-icon-button i.sf-icon') ?? null;
+  const chevron = (field) => field?.querySelector(':is(.sf-icon-button, .sf-field-action) i.sf-icon') ?? null;
   const tick = () => {
     const row = {t: Math.round(performance.now())};
     for (const host of document.querySelectorAll('sf-dropdown')) {
@@ -170,7 +170,7 @@ const GLYPHS = (ids) => {
     const host = document.getElementById(id);
     const list = host._list ?? host.querySelector('.sf-list');
     out[id] = {
-      chevron: read(host.querySelector('.sf-dropdown-field .sf-icon-button i.sf-icon')),
+      chevron: read(host.querySelector('.sf-dropdown-field :is(.sf-icon-button, .sf-field-action) i.sf-icon')),
       search: read(list?.querySelector('.sf-list-search i.sf-icon')),
       options: [...(list?.querySelectorAll('.sf-list-item-wrap i.sf-icon') ?? [])].map(read),
     };
@@ -198,7 +198,7 @@ try {
     const loadedAt = await tab.waitForFunction((ids) => ids.every((id) => {
       const host = document.getElementById(id);
       const list = host._list ?? host.querySelector('.sf-list');
-      const glyphs = [host.querySelector('.sf-dropdown-field .sf-icon-button i.sf-icon'), ...(list?.querySelectorAll('.sf-list-search i.sf-icon, .sf-list-item-wrap i.sf-icon') ?? [])];
+      const glyphs = [host.querySelector('.sf-dropdown-field :is(.sf-icon-button, .sf-field-action) i.sf-icon'), ...(list?.querySelectorAll('.sf-list-search i.sf-icon, .sf-list-item-wrap i.sf-icon') ?? [])];
       return glyphs.length >= 5 && glyphs.every((g) => g?.classList.contains('sf-icon-loaded'));
     }) && Math.round(performance.now()), IDS, {timeout: 8000}).then((h) => h.jsonValue()).catch(() => null);
     await tab.evaluate(() => document.fonts.ready);

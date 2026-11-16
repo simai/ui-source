@@ -3,8 +3,9 @@ import {mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import test from 'node:test';
-import {components, assemblies, exampleFiles, givesLateData, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput, sizeProblem, SNAPSHOT_MAX_BYTES, clockOf, FIRST_PAINT_NOW} from '../scripts/first-paint-lib.mjs';
+import {components, assemblies, exampleFiles, givesLateData, lateGiven, lateHeld, measuredFonts, portOf, FAKE_PORT, readConfig, serveOutput, sizeProblem, SNAPSHOT_MAX_BYTES, clockOf, FIRST_PAINT_NOW} from '../scripts/first-paint-lib.mjs';
 import {fillSkeleton, repeatCount} from '../scripts/first-paint-skeleton.mjs';
+import {HOST_RUNTIME_MARKS} from '../src/core/js/host-runtime-marks.js';
 
 // The first-paint tools themselves (scripts/first-paint-*.mjs,
 // scripts/snapshot-first-paint.mjs, tests/browser/first-paint-gate.browser.mjs):
@@ -81,6 +82,51 @@ test('3. an explicitly empty list is data: the skeleton leaves, and no skeleton 
   }
   const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
   assert.match(page, /hasOwnProperty\.call\(store, name\)/u, 'the assembly composer reads late data as the element does');
+});
+
+test('3b. each late list holds on its own: a skeleton waits only for the lists it names', () => {
+  const Late = elementFromManifest({id: 'smart.late-two', tag: 'sf-late-two', version: '1.0.0', kind: 'leaf',
+    settings: {steps: {type: 'list', default: []}, counters: {type: 'list', default: []}},
+    presentation: {skeleton: {late: ['steps', 'counters']}}}, {base: FakeBase});
+  const printed = (named) => {
+    const one = new Late();
+    one.setAttribute('data-sf-first-paint', 'skeleton');
+    if (named !== undefined) one.setAttribute('data-sf-late', named);
+    return one;
+  };
+  // A skeleton that names none holds every late list, as before.
+  const old = printed();
+  assert.deepEqual(old.sfLateHeld(), ['steps', 'counters']);
+  old.counters = [{id: 'a', label: 'A'}];
+  assert.deepEqual(old.sfLateHeld(), ['steps']);
+  assert.equal(old.sfAwaitingData(), true);
+  // A counters-only job: it holds its counters alone, never steps.
+  const counters = printed('counters');
+  assert.deepEqual(counters.sfLateHeld(), ['counters']);
+  assert.equal(counters.sfAwaitingData(), true);
+  counters.counters = [{id: 'a', label: 'A'}];
+  assert.equal(counters.sfAwaitingData(), false, 'its one list arrived: it draws, no steps awaited');
+  // Both named: each list releases its own hold, the first render waits for both.
+  const both = printed('steps counters');
+  both.steps = [{id: 's', title: 'S'}];
+  assert.deepEqual(both.sfLateHeld(), ['counters'], 'steps released, counters still held');
+  assert.equal(both.sfAwaitingData(), true);
+  both.counters = [];
+  assert.equal(both.sfAwaitingData(), false, 'an empty list is data: released');
+  // A name it does not declare is no hold; no skeleton, no hold.
+  assert.equal(printed('items').sfAwaitingData(), false);
+  const drawn = new Late();
+  drawn.setAttribute('data-sf-late', 'steps');
+  assert.equal(drawn.sfAwaitingData(), false);
+
+  // The build names them only for a component with more than one late list.
+  assert.deepEqual(lateHeld({late: ['steps', 'counters']}, ['counters']), ['counters']);
+  assert.deepEqual(lateHeld({late: ['steps', 'counters']}, ['counters', 'steps']), ['steps', 'counters']);
+  assert.deepEqual(lateHeld({late: ['items']}, ['items']), []);
+  assert.deepEqual(lateGiven({late: ['steps', 'counters']}, {settings: {steps: [], counters: [1]}}), ['counters']);
+  assert.ok(HOST_RUNTIME_MARKS.has('data-sf-late'), 'a runtime mark, never the author\'s data');
+  const base = readFileSync(join(root, 'src/core/js/smart-base.js'), 'utf8');
+  assert.match(base, /removeAttribute\("data-sf-late"\)/u, 'the first paint ends with its mark');
 });
 
 test('4a. a package declares its output and its base; the server serves it after the free output', async () => {
@@ -179,7 +225,13 @@ test('6. the text faces: optional on a page, block on the snapshot server only',
   assert.equal(measuredFonts('@font-face{font-family:"Inter Variable";font-display:optional}'), '@font-face{font-family:"Inter Variable";font-display: block}');
   assert.equal(measuredFonts('@font-face{font-family:"Inter Fallback";src:local(Arial)}'), '@font-face{font-family:"Inter Fallback";src:local(Arial)}');
   const snapshot = readFileSync(join(root, 'scripts/snapshot-first-paint.mjs'), 'utf8');
-  assert.equal((snapshot.match(/await page\.evaluate\(fontsReady\)/gu) ?? []).length, 2, 'every snapshot page waits for Inter');
+  // A component's page waits in serializeSettled (shared with
+  // tools/first-paint/print.mjs), an assembly's page here.
+  const lib = readFileSync(join(root, 'scripts/first-paint-lib.mjs'), 'utf8');
+  const settled = lib.slice(lib.indexOf('export async function serializeSettled'));
+  assert.match(settled.slice(0, settled.indexOf('\n}\n')), /await page\.evaluate\(fontsReady\)/u, 'serializeSettled waits for Inter');
+  assert.equal((snapshot.match(/await serializeSettled\(/gu) ?? []).length, 1, 'a component\'s page settles there');
+  assert.equal((snapshot.match(/await page\.evaluate\(fontsReady\)/gu) ?? []).length, 1, 'an assembly\'s page waits for Inter');
 });
 
 test('7. a closed surface prints closed, and a snapshot keeps to its size', () => {
@@ -281,5 +333,24 @@ test('10. a foreign subtree prints without comments, as an HTML one does', () =>
     for (const [subtree] of html.matchAll(/<(svg|math)\b[\s\S]*?<\/\1>/gu)) {
       assert.doesNotMatch(subtree, /<!--/u, `${file}: a comment inside a foreign subtree`);
     }
+  }
+});
+
+test('11. only ASCII white space is indentation: a node of only &nbsp; keeps its no-break space', () => {
+  // String.prototype.trim() also strips U+00A0, so text() took a node of
+  // only &nbsp; for the template's indentation and printed a plain space.
+  const page = readFileSync(join(root, 'scripts/first-paint-page.js'), 'utf8');
+  const declared = page.match(/const indentation = (\(data\) => [^\n]+);/u);
+  assert.ok(declared, 'first-paint-page.js declares indentation()');
+  const indentation = new Function(`return ${declared[1]};`)();
+  for (const blank of ['', ' ', '\n', '\n    ', '\t\r\f ']) assert.equal(indentation(blank), true, JSON.stringify(blank));
+  for (const kept of [' ', '   ', '\n \n', ' ', '　', 'a']) assert.equal(indentation(kept), false, JSON.stringify(kept));
+  const body = page.slice(page.indexOf('function text(node, mode) {'), page.indexOf('return escText(data);'));
+  assert.match(body, /if \(indentation\(data\) && collapses\(node\)\)/u, 'text() collapses indentation only');
+  assert.doesNotMatch(body, /if \(!data\.trim\(\) && collapses/u, 'trim() is not the indentation test');
+  // Every no-break space a snapshot keeps is printed as &nbsp; (escText),
+  // never as a raw U+00A0 (sf-change's separators, list-timeline's cells).
+  for (const file of snapshots()) {
+    assert.doesNotMatch(readFileSync(file, 'utf8'), / /u, `${file}: an unescaped no-break space`);
   }
 });

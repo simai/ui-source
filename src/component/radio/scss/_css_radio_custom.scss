@@ -20,6 +20,38 @@
   flex-shrink: 0;
 }
 
+/* One clock for the ring and the dot, the switch's (owner decisions C66,
+   C121): 200 ms on the move curve. The scale has no 200 ms step (fast 100,
+   normal 300), so it is twice fast until one exists. Internal: a project
+   that wants it otherwise moves this, not three transitions. */
+.sf-radio-button {
+  --sf-radio-button--duration: calc(var(--sf-duration-fast) * 2);
+  --sf-radio-button--easing: var(--sf-ease-move);
+}
+
+/* The ring's own clock (CR-4). It used to come from the `.transition` utility
+   the template wrote on the box, so the component's sheet did not know the
+   ring moved and its reduced-motion rule never reached it (CR-5). The timing
+   lives here and the markup carries no utility. */
+.sf-radio-button .sf-radio-button-box {
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: var(--sf-radio-button--duration);
+  transition-timing-function: var(--sf-radio-button--easing);
+}
+
+/* The dot grows from the centre (C121, CR-6): it keeps its size -- half the
+   ring -- and scales from nothing, on the ring's clock. It used to jump from
+   0 to its size in one frame. */
+.sf-radio-button .sf-radio-button-mark {
+  transform: scale(0);
+  transition: transform var(--sf-radio-button--duration) var(--sf-radio-button--easing),
+              background-color var(--sf-radio-button--duration) var(--sf-radio-button--easing);
+}
+
+.sf-radio-button:has(input:checked) .sf-radio-button-mark {
+  transform: scale(1);
+}
+
 /* The native control is the hit area. It covers the mark and reaches at
    least 24px on each axis (WCAG 2.2, 2.5.8) where the mark is smaller: a size
    1/2 mark is 16px on mobile, a size 1 mark 20. The inset only goes negative,
@@ -33,6 +65,25 @@
   margin: 0;
   opacity: 0;
   cursor: inherit;
+}
+
+/* A box at the row's end (the box after the text column) has no room past
+   it: a hit area that grew evenly stood 2px past the row on a 20 box (4 on
+   a 16), and a radio at the end of a full-width line made the page scroll
+   sideways at 390 (docs batch B, FW-B-4). There the hit area keeps its 24px
+   but grows towards the text: its end stays on the box's outer edge. The
+   inline axis only; logical, so RTL needs nothing. */
+.sf-radio-button > .sf-radio-button-container + .sf-radio-button-box:last-child > input[type='radio'] {
+  inset-inline-start: auto;
+  inset-inline-end: max(calc(-1 * var(--sf-radio-button-box--border-width, var(--sf-px))), min(0px, calc((100% - var(--sf-c2)) / 2)));
+}
+
+/* The help mark («?», sf-help-mark) is the help's own button: it stands above
+   the native control's hit area, so a press on it is never a press on the
+   box. */
+.sf-radio-button .sf-radio-button-top .sf-help-mark {
+  position: relative;
+  z-index: var(--sf-z-index-1);
 }
 
 .sf-radio-button .sf-radio-button-text {
@@ -144,6 +195,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Reduced motion: the ring, the dot and the plate change in one frame
+     (CR-5, C121). */
+  .sf-radio-button .sf-radio-button-box,
+  .sf-radio-button .sf-radio-button-mark,
   .sf-radio-button--type-font .sf-radio-text {
     transition-duration: 0s;
   }

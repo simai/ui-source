@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.4.6",
+  "version": "1.11.0",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -36,6 +36,7 @@
       "component.datepicker",
       "smart.button",
       "smart.button-icon",
+      "smart.drawer",
       "smart.icon",
       "smart.input"
     ],
@@ -142,6 +143,11 @@
         "minimum": 0,
         "maximum": 6
       },
+      "weekend": {
+        "type": "string",
+        "default": "",
+        "description": "The days drawn as days off (red, and «выходной» in the day's name). Empty: the locale's (Intl week info; Saturday and Sunday where it does not say, Friday and Saturday in ar-EG). none: no day off, for a product whose weekends are working days. Or the days, comma separated, 0 or 7 Sunday to 6 Saturday: 6,7 or 5,6."
+      },
       "locale": {
         "type": "string",
         "default": "",
@@ -149,8 +155,8 @@
       },
       "format": {
         "type": "string",
-        "default": "DD.MM.YYYY",
-        "description": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. The default follows the mode: DD.MM.YYYY, DD.MM.YYYY HH:mm, HH:mm; a date format given to datetime mode gets « HH:mm». The value stays ISO."
+        "default": "",
+        "description": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. Empty: the locale's order of day, month and year and the signs between them (Intl formatToParts: DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE); datetime adds « HH:mm», time is HH:mm. A date format given to datetime mode gets « HH:mm». The value stays ISO."
       },
       "close-on-select": {
         "type": "boolean",
@@ -175,11 +181,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "Form size of the field.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field is an sf-input of this size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "input-size": {
@@ -187,9 +195,11 @@
         "default": "1",
         "description": "Legacy name for size, still honoured; size wins when both are set. See contracts/public-api-axes.json.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "input-name": {
@@ -200,7 +210,7 @@
       "placeholder": {
         "type": "string",
         "default": "",
-        "description": "The field's placeholder text."
+        "description": "The field's placeholder text. Empty, in a field a date is typed in: the format in the letters of the locale's names for the parts (ДД.ММ.ГГГГ in ru, MM/DD/YYYY in en-US, TT.MM.JJJJ in de); a range or a read-only field has none."
       },
       "label": {
         "type": "string",
@@ -232,14 +242,19 @@
         "default": "",
         "description": "The helper text under the field, read to the control as its description, as on sf-input. An error-message takes its place while the field is invalid and it comes back when invalid is removed."
       },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
+      },
       "icon-start": {
         "type": "string",
-        "default": "calendar_today",
-        "description": "The icon at the start of the field; the canonical name for left-icon. Defaults to calendar_today, schedule in time mode."
+        "default": "",
+        "description": "An icon at the start of the field that says what the date is (a meaning icon, as search is for a search field); the canonical name for left-icon. None by default: the calendar (a clock in time mode) is the field's indicator at its end, after clear (owner decision C197)."
       },
       "left-icon": {
         "type": "string",
-        "default": "calendar_today",
+        "default": "",
         "description": "Legacy name for icon-start, still honoured; icon-start wins when both are set."
       },
       "hint-icon": {
@@ -259,8 +274,8 @@
       },
       "mask-pattern": {
         "type": "string",
-        "default": "00.00.0000",
-        "description": "Input mask; when not set it is derived from format, so the default format DD.MM.YYYY gives 00.00.0000."
+        "default": "",
+        "description": "Input mask; when not set it is derived from format, every letter a digit: DD.MM.YYYY gives 00.00.0000, the en-US MM/DD/YYYY 00/00/0000."
       },
       "mask-lazy": {
         "type": "boolean",
@@ -290,7 +305,7 @@
       "readonly": {
         "type": "boolean",
         "default": false,
-        "description": "Keeps the field read-only: the date is chosen on the grid only. A single date can be typed by default; a range is always chosen on the grid."
+        "description": "The value is shown and submitted but not changed: the field cannot be typed in and opens no calendar, and an inline calendar (input=false) takes no choice on its grid (owner decision C62). A single date can be typed by default; a range is always chosen on the grid, which does not make it read-only."
       },
       "value": {
         "type": [
@@ -318,6 +333,11 @@
         "type": "array",
         "default": [],
         "description": "Quick ranges, range mode only; the attribute keeps its comma list of built-in ids"
+      },
+      "holidays": {
+        "type": "array",
+        "default": [],
+        "description": "The site's special days (owner decision C198): a list of {date: 'YYYY-MM-DD', kind, name?}, the property or JSON in the attribute. holiday and day-off (a moved day off) take the day-off ink, working-day (a moved working Saturday) the weekday's; each listed day gets a dot under its number, its name joins the day's accessible name, and a line under the grid names the day under the pointer, with the focus or chosen. Empty: plain weekends, as before. The Framework ships no country calendar."
       }
     },
     "additionalProperties": false
@@ -737,19 +757,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-date/index.js",
-        "sha256": "b8f378ae86f62d94072c81939e02233b1ade55f11b82e44e5f7b72bad1f9bc19"
+        "sha256": "31de2949a1a2af673ca0b580e99654b47c6677fe1b0318aa54df0bf6bd76b714"
       },
       {
         "path": "src/smart/input-date/js/templates/default.js",
-        "sha256": "591070ea8d35cfdca7d0f16ab68898247dfc1be1508d0b42f56327fe9612606e"
+        "sha256": "cfb5bc450c1eb101b3c23d96b409e356f701898a34cc334d40d91a8e70b660d0"
       },
       {
         "path": "src/smart/input-date/rule.js",
-        "sha256": "7d163d5b9a341a6055b174ea308f358858e7a92c668e6840b791e6cc5ef42bc7"
+        "sha256": "a5aad8677a5cdd5f5548e0e44d01aefcb17693275b8da55c1d161d2e5ca80b43"
       },
       {
         "path": "src/smart/input-date/docs/smart-datepicker-guide.md",
-        "sha256": "8adebf92a752bf3bc15c78928c7661681eacfd76d694189a5776231b8023deb7"
+        "sha256": "79777d9100abf7f881c9f70713c5b83070b0c253146d6304dd1d64c59a07f824"
       }
     ],
     "generated_runtime": [

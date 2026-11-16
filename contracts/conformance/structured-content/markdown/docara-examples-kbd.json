@@ -1,0 +1,114 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-kbd",
+  "input": "docara-examples-kbd.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Нажмите "
+                  },
+                  {
+                    "type": "component",
+                    "name": "kbd",
+                    "props": {
+                      "text": "Esc"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": ", чтобы закрыть окно."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m2",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "component",
+                    "name": "kbd",
+                    "props": {
+                      "text": "Ctrl"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Откройте поиск сочетанием "
+                  },
+                  {
+                    "type": "component",
+                    "name": "kbd",
+                    "props": {
+                      "text": "⌘"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": " + "
+                  },
+                  {
+                    "type": "component",
+                    "name": "kbd",
+                    "props": {
+                      "text": "K"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": ", затем нажмите "
+                  },
+                  {
+                    "type": "component",
+                    "name": "kbd",
+                    "props": {
+                      "text": "Enter"
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": "."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

@@ -6,13 +6,47 @@ function joinClasses(...tokens) {
 
 // The notice's action and close (owner decision C35): the action is an
 // unsized (size 1) low button -- 32, compact and phone 28 -- whose label is
-// the notice's text size, tonal primary, its plate starting at the text edge;
+// the notice's text size, tonal surface (C110 variant E: tonal on-surface),
+// its plate starting at the text edge;
 // the close a size-1 low icon button, 32 / 28 / 28, centred on the first line.
 // The same classes as the class toast (component/toast/js/_toast.js).
-const TOAST_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
+const TOAST_ACTION_CLASSES = 'sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
 const TOAST_CLOSE_CLASSES = 'sf-icon-button sf-icon-button--close sf-icon-button--variant-close sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 sf-icon-button--height-low flex items-cross-center';
 
+// The actions (owner decisions C50 and C126 (1), the model of
+// SF.Toast.create): every action is a button. One light navigation action --
+// action-text with action-href and no secondary action -- is the one action
+// button drawn as a link, an <a href> in the button's classes, in the action's
+// place (C115); undo, retry, extend and two actions are buttons (C35, C46).
+// A link in the text leads to help only (C126; the notice-link rule).
+export function toastActions(context) {
+  const first = String(context.actionText ?? '').trim();
+  const second = String(context.secondaryActionText ?? '').trim();
+  const href = String(context.actionHref ?? '').trim();
+  const buttons = [];
+  if (first) buttons.push({ text: first, action: context.action || 'action', href: href && !second ? href : '' });
+  if (second) buttons.push({ text: second, action: context.secondaryAction || 'secondary', href: '' });
+  return { buttons };
+}
+
+function renderAction(button) {
+  return button.href
+    ? html`<a
+        class=${TOAST_ACTION_CLASSES}
+        href=${button.href}
+        data-action=${button.action}
+        data-toast-action=${button.action}
+      ><span class="sf-button-text-container">${button.text}</span></a>`
+    : html`<button
+        type="button"
+        class=${TOAST_ACTION_CLASSES}
+        data-action=${button.action}
+        data-toast-action=${button.action}
+      ><span class="sf-button-text-container">${button.text}</span></button>`;
+}
+
 export function renderToastTemplate(context) {
+  const { buttons } = toastActions(context);
   const rootClasses = joinClasses(
     'sf-toast',
     // The component normalises the legacy words, so the template sees only the
@@ -20,6 +54,9 @@ export function renderToastTemplate(context) {
     `sf-toast--${['neutral', 'info', 'success', 'warning', 'error'].includes(context.status ?? context.type)
       ? (context.status ?? context.type)
       : 'neutral'}`,
+    // The author's switch (owner 2026-11-13, #q-layout-override): the action
+    // under the text at every width; auto (and any other word) is layout L3a.
+    context.actionsLayout === 'under' ? 'sf-toast--actions-under' : '',
     'flex',
     'items-cross-start',
     context.rootClass,
@@ -51,17 +88,10 @@ export function renderToastTemplate(context) {
             : nothing}
         </div>
 
-        ${context.actionText
+        ${buttons.length
           ? html`
               <div class="sf-toast-bottom flex items-center">
-                <button
-                  type="button"
-                  class=${TOAST_ACTION_CLASSES}
-                  data-action=${context.action || 'action'}
-                  data-toast-action=${context.action || 'action'}
-                >
-                  <span class="sf-button-text-container">${context.actionText}</span>
-                </button>
+                ${buttons.map(renderAction)}
               </div>
             `
           : nothing}

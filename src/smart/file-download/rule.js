@@ -8,9 +8,15 @@ SF.RuleLoader['cl-file-download'] = {
     { name: 'download-file' },
     { name: 'icons' },
     { name: 'cl-icon' },
-    // The notice under a file that could not be prepared (state error, decision C25).
-    { name: 'cl-alert' },
+    // «Повторить» in a row that could not be made, «Отменить» beside one being made, «Скачать» beside one ready (decision C51).
+    { name: 'cl-button' },
+    // «Повторить» as the icon alone in a failed row whose column has no room for its words even under the text (decision C88).
+    { name: 'cl-button-icon', lazy: true },
+    // The whole name of a failed row, cut after two lines, and the name of «Повторить» drawn as the icon alone (decision C88): the Framework's plain tooltip, shown on hover and keyboard focus.
+    { name: 'tooltip' },
     // The spinner in the sign's place while the file is prepared: its box is the class sheet's, the motion the spinner sheet's.
     { name: 'spinner', lazy: true },
+    // The progress ring in the sign's place while the file is prepared with value (decision C51): its box is the class sheet's, the ring the progress-ring sheet's.
+    { name: 'progress-ring', lazy: true },
   ],
 };

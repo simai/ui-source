@@ -1,3 +1,6 @@
+@use "field-action";
+@use "field-ladder" as ladder;
+
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
   .sf-input {
@@ -25,6 +28,7 @@
     background-color: var(--sf-input-field--background-color);
     border: var(--sf-input-field--border, 0 solid);
     border-color: var(--sf-input-field--border-color, transparent);
+    border-block-end-color: var(--sf-input-field--line-color, var(--sf-input-field--border-color, transparent));
     border-end-end-radius: var(--sf-input-field--border-end-end-radius);
     border-end-start-radius: var(--sf-input-field--border-end-start-radius);
     border-start-end-radius: var(--sf-input-field--border-start-end-radius);
@@ -79,8 +83,9 @@
   // The filled placeholder is the place's dim ink, as the bordered one is
   // (forms batch round 2, item C, with C41; dispatcher 2026-11-10): the field
   // re-declares --sf-on-surface-variant as the ink on a fill, so the place's
-  // value is kept on the field's host, above it. On the 8 % fill (C41) the
-  // dark 70 holds 4.65:1 on surface-3 and stands 1.77 from the value; the full
+  // value is kept on the field's host, above it. On the 12 % fill (C113) the
+  // dark placeholder holds 4.79:1 at rest on a card and on a popup (4.25 and
+  // 4.32 under the pointer, C113 acceptance); the full
   // ink (on-surface) gave the value's own tone. A strong coloured place keeps
   // its full ink there (--sf-place--fill-placeholder): its dim ink over the
   // fill stays under 4.5:1.
@@ -136,8 +141,10 @@
     gap: var(--sf-input-label--gap);
   }
 
+  /* The required mark is in the label's ink (owner decision C153 (2)): red
+     says «wrong», not «needed» (C13). */
   .sf-input .sf-input-required {
-    --sf-input-required--color: var(--sf-error);
+    --sf-input-required--color: var(--sf-on-surface);
     --sf-input-required--font-family: var(--sf-text--family);
     --sf-input-required--font-weight: var(--sf-font-weight-regular);
     color: var(--sf-input-required--color);
@@ -371,18 +378,35 @@
     --sf-input-field--background-color: var(--sf-surface-disabled);
   }
 
+  /* The filled field's bottom line (C52, owner 2026-11-10): with the fill at 12 %
+     (C113) the fill alone stands 1.15 to 1.39 from its place, so at rest the
+     field also draws its bottom edge in --sf-outline, the bordered field's
+     boundary. Only the bottom: the other edges stay the transparent border
+     that a state colours. A state that colours the border (hover, press)
+     takes the line with it, so the edge is one colour. */
   .sf-input:not(.error).sf-input--filled:not(:has(input:disabled)) .sf-input-field {
     --sf-input-field--background-color: var(--sf-input-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-input-field--border-color: var(--sf-input-border-color, var(--sf-transparent-for-focus));
+    --sf-input-field--line-color: var(--sf-input-border-color, var(--sf-outline));
   }
 
+  /* Under the pointer the plate is the hover step (16), and in the dark theme
+     the place's dim ink lost 4.5:1 on it: 4.25 on a card, 4.32 on a popup
+     (C113 acceptance). The placeholder then takes the dim ink made for a
+     fill, --sf-on-surface-container-variant, as the dropdown's and lookup's
+     filled fields do (dark 85 on a page or card, 90 on a popup, 95 on a
+     nested one; light 35): 6.59 on a card, 5.70 on a popup, 5.57 nested.
+     A strong coloured place keeps its full ink. */
   .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-input-field {
     --sf-input-field--background-color: var(--sf-surface-container-hover);
+    --sf-input--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
+    --sf-input-field--line-color: var(--sf-input-field--border-color);
   }
 
   .sf-input:not(.error).sf-input--filled:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-input-field {
     --sf-input-field--border-color: var(--sf-primary-active);
+    --sf-input-field--line-color: var(--sf-input-field--border-color);
   }
 
   .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left .sf-icon {
@@ -397,15 +421,21 @@
     --sf-input-text--color: var(--sf-on-surface-disabled);
   }
 
+  /* Hover darkens the border to the text ink (owner decision C153 (4)): the
+     primary edge is focus's alone, so hover and focus never look alike. */
   .sf-input:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-input-field {
-    --sf-input-field--border-color: var(--sf-primary-hover);
+    --sf-input-field--border-color: var(--sf-on-surface);
   }
 
   /* The ring belongs to the field the person sees, not to the bare control
      inside it. An outline keeps the field's own shadow free for state. */
-  .sf-input:not(.sf-input--pointer-focus):has(input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-input-field {
+  /* Focus by mouse or keys is one look (owner decision C153 (4)): a 2 px
+     edge of the focus colour inside the field, over its own border -- the
+     outline at minus its width. No ring outside, so a scrolling container
+     never cuts it (R242), and nothing moves. */
+  .sf-input:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-input-field {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: var(--sf-focus--offset);
+    outline-offset: calc(-1 * var(--sf-focus--width));
   }
 
   /* The global :focus-visible rule paints the ring on whatever holds the focus.
@@ -444,9 +474,9 @@
 
 @layer sf.states {
   @media (forced-colors: active) {
-    .sf-input:not(.sf-input--pointer-focus):has(input:not(:disabled):not(.disabled):focus-visible) .sf-input-field {
+    .sf-input:has(input:not(:disabled):not(.disabled):focus) .sf-input-field {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline-offset: calc(-1 * var(--sf-focus--width));
       --sf-input-field--box-shadow: none;
     }
   }
@@ -473,5 +503,255 @@
      hover still colours it. */
   .sf-input:not(.error).sf-input--filled:has(input:focus-within) .sf-input-field {
     --sf-input-field--border-color: var(--sf-outline);
+  }
+}
+
+/* C77 (owner 2026-11-11; prototypes/field-inset.html, field-inset-pill.html):
+   one value inset per size, the border counted inside it. A value with no
+   picture before it starts --sf-space-1/2, --sf-space-1 or --sf-space-2 from
+   the field's outer edge (size 1/2, 1, 2; size 1/2 keeps 12 on a phone, where
+   --sf-space-1/2 is 8). The text box no longer adds the picture-to-label step
+   (--sf-ui-<S>--text-space-x) on its own: the step stands only after a
+   picture. A rounder corner moves the value in by half of what it adds over
+   the control radius, the corner counted as drawn (at most half the
+   single-line height); a picture stays at the plain inset. */
+@layer sf.components {
+  .sf-input {
+    --sf-input--line-radius: min(var(--sf-input--radius), var(--sf-ui-1--control-height) / 2);
+    --sf-input--value-inset: calc(var(--sf-input--inset) + max(calc(var(--sf-px) * 0), var(--sf-input--line-radius) - var(--sf-radius-1\/2)) / 2);
+    @include ladder.inset(--sf-input--inset, '1');
+  }
+
+  /* Each step's inset (field-ladder.inset): 1/3 and 1/2 never go below 12
+     (--sf-b2) -- on a phone, and in a compact region, where C79 brings 1/2
+     down a step to 28 and --sf-space-1/2 is 8; compact 1 is 12, compact 2
+     (40) keeps 16 (intent acceptance 2026-11-12), compact 3 is 20. On a
+     phone every step is 12. 1/3 and 3 stood at the step's padding plus the
+     border plus the text step (19 / 37) until the text inputs study (TI-2):
+     they read the same rule now. */
+  @each $size in ladder.$sizes {
+    @if $size != '1' {
+      .sf-input.#{ladder.size-class('sf-input', $size)} {
+        @include ladder.inset(--sf-input--inset, $size);
+        --sf-input--line-radius: min(var(--sf-input--radius), #{ladder.height($size)} / 2);
+      }
+    }
+  }
+
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, calc(var(--sf-input--value-inset) - var(--sf-px)));
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, calc(var(--sf-input--value-inset) - var(--sf-px)));
+  }
+
+  /* A picture at either end stands at the plain inset, its step after it. */
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field:where(:has(> .sf-input-left, > .sf-icon:first-child)) {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
+  }
+
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field:where(:has(> input ~ :is(.sf-input-right, .sf-input-hint, .sf-icon, .sf-field-action, :is(sf-button-copy, sf-copy-button)))) {
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
+  }
+
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field input {
+    --sf-input-input--padding-inline-start: calc(var(--sf-px) * 0);
+    --sf-input-input--padding-inline-end: calc(var(--sf-px) * 0);
+  }
+
+  /* A field is a row (owner C105, role H2): its leading picture stands
+     --sf-space-1/2 before the value -- 12, 8 in a compact region and on a
+     phone -- at every size, the step its options keep from their pictures,
+     so the value and an option's text start on one axis. It was the button's
+     picture-to-label step (--sf-ui-<S>--text-space-x, H1): 7, 8, 10. */
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field > :is(.sf-input-left, .sf-icon) ~ input { --sf-input-input--padding-inline-start: var(--sf-space-1\/2); }
+  .sf-input.sf-input--size-1\/3 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1\/3--text-space-x); }
+  .sf-input.sf-input--size-1\/2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x); }
+  .sf-input.sf-input--size-1 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-1--text-space-x); }
+  .sf-input.sf-input--size-2 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-2--text-space-x); }
+  .sf-input.sf-input--size-3 .sf-input-field > input:has(~ :is(.sf-input-right, .sf-input-hint, .sf-icon)) { --sf-input-input--padding-inline-end: var(--sf-ui-3--text-space-x); }
+}
+
+/* C123 (owner 2026-11-13; prototypes/field-icon-actions.html, variant A): the
+   actions inside a field -- clear, the password reveal, a copy button standing
+   in the field -- are glyphs without a plate (field-action.scss). The field
+   says its step: the glyph is its leading icon's size (the text line of the
+   step, 24 / 20 / 28 at 1, 1/2, 2), the hit area its height, the glyph's end
+   its plain inset (C77). The value keeps half an inset to the first glyph:
+   what the hit area stands out past the glyph (a quarter inset, more where
+   the 24 floor widens it) and the rest of its own, the layer's
+   --sf-field-action--value-space. sf-input-color's frame is a field frame of
+   this layer too (the colour field loads component.inputs): it reads the same
+   steps. The browser's own search clear gives way to the Framework's. */
+@include field-action.rules('.sf-input-field, .sf-color-frame');
+
+@layer sf.components {
+  .sf-input {
+    --sf-field-action--inset: var(--sf-input--inset);
+    --sf-field-action--glyph: var(--sf-text-height-1);
+    --sf-field-action--height: var(--sf-ui-1--control-height);
+  }
+
+  .sf-input.sf-input--size-1\/3 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/3);
+    --sf-field-action--height: var(--sf-ui-1\/3--control-height);
+  }
+
+  .sf-input.sf-input--size-1\/2 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/2);
+    --sf-field-action--height: var(--sf-ui-1\/2--control-height);
+  }
+
+  .sf-input.sf-input--size-2 {
+    --sf-field-action--glyph: var(--sf-text-height-2);
+    --sf-field-action--height: var(--sf-ui-2--control-height);
+  }
+
+  .sf-input.sf-input--size-3 {
+    --sf-field-action--glyph: var(--sf-text-height-3);
+    --sf-field-action--height: var(--sf-ui-3--control-height);
+  }
+
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field > input:has(+ :is(.sf-field-action, :is(sf-button-copy, sf-copy-button))) {
+    --sf-input-input--padding-inline-end: var(--sf-field-action--value-space);
+  }
+
+  .sf-input .sf-input-field input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+  }
+}
+
+/* Owner decision C153 (2026-11-14; research control/research/2026-11-14-text-inputs.md,
+   prototype prototypes/text-inputs-study.html). */
+@layer sf.components {
+  /* (1) The label is in the text ink, a step below the value; the hint keeps
+     the hint ink. On a phone (below 60rem, the text tokens' own break) the
+     label of size 1 stays 14, the step of the value there (--sf-text-size-1),
+     not the 12 of a step below it: the value is 16 there so iOS does not zoom. */
+  .sf-input .sf-input-label .sf-input-text {
+    --sf-input-text--color: var(--sf-on-surface);
+  }
+
+  @media not all and (min-width: 60rem) {
+    .sf-input.sf-input--size-1 .sf-input-label .sf-input-text,
+    .sf-input.sf-input--size-1 .sf-input-required {
+      --sf-input-text--font-size: var(--sf-text-size-1);
+      --sf-input-text--line-height: var(--sf-text-height-1);
+      --sf-input-required--font-size: var(--sf-text-size-1);
+      --sf-input-required--line-height: var(--sf-text-height-1);
+    }
+
+    .sf-input.sf-input--size-1 .sf-input-label {
+      --sf-input-label--line: var(--sf-text-height-1);
+    }
+  }
+
+  /* (9) The start text, the twin of the end text: the hint's ink, the value's
+     size, at the plain inset; the value stands the size's text step after it. */
+  .sf-input .sf-input-start {
+    flex: none;
+    display: flex;
+    align-items: center;
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-weight--regular);
+    white-space: nowrap;
+  }
+
+  @each $size in ladder.$sizes {
+    .sf-input.#{ladder.size-class('sf-input', $size)} .sf-input-start {
+      font-size: #{ladder.text-size($size)};
+      line-height: #{ladder.text-height($size)};
+    }
+
+    .sf-input.#{ladder.size-class('sf-input', $size)} .sf-input-field > .sf-input-start ~ input {
+      --sf-input-input--padding-inline-start: #{ladder.ui($size, text-space-x)};
+    }
+  }
+
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field:where(:has(> .sf-input-start:first-child)) {
+    --sf-input-field--padding-inline-start: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
+  }
+
+  /* (7) A number field: no browser arrows, digits of one width. */
+  .sf-input .sf-input-field input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sf-input .sf-input-field input[type="number"]::-webkit-inner-spin-button,
+  .sf-input .sf-input-field input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+
+  /* (10) The count stands at the end of the message line, in the message's
+     type with digits of one width; past the limit it is the error colour
+     (the frame is the field's error frame). The polite line is read, not seen. */
+  .sf-input .sf-input-message {
+    align-items: flex-start;
+    gap: var(--sf-space-1\/2);
+  }
+
+  .sf-input .sf-input-message .sf-input-hint-text-wrap {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-input .sf-input-count {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-weight--regular);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  @each $size in ladder.$sizes {
+    .sf-input.#{ladder.size-class('sf-input', $size)} .sf-input-count {
+      font-size: #{ladder.label-size($size)};
+      line-height: #{ladder.label-height($size)};
+    }
+  }
+
+  .sf-input.sf-input--over .sf-input-count {
+    color: var(--sf-error);
+  }
+
+  .sf-input-count-said {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(-1 * var(--sf-px));
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@layer sf.states {
+  /* (2) A disabled field's mark takes the disabled ink with its label. */
+  .sf-input:has(input:disabled) .sf-input-required {
+    --sf-input-required--color: var(--sf-on-surface-disabled);
+  }
+
+  /* (5) A field the browser filled is tinted whole -- frame and inset -- in
+     the primary select state, over whatever plate it has; the value keeps
+     the text ink in both themes. The browser's own box on the bare input
+     (an !important of its own sheet) is held off by a transition that never
+     ends, and its text colour by the fill colour of the text. */
+  .sf-input .sf-input-field:has(> input:is(:autofill, :-webkit-autofill)) {
+    background-image: linear-gradient(var(--sf-primary-state-select), var(--sf-primary-state-select));
+  }
+
+  .sf-input .sf-input-field > input:is(:autofill, :-webkit-autofill) {
+    -webkit-text-fill-color: var(--sf-input-color, var(--sf-input-input--color));
+    caret-color: var(--sf-input-color, var(--sf-input-input--color));
+    transition: background-color 0s 2147483647s, color 0s 2147483647s;
   }
 }

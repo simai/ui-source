@@ -13,13 +13,15 @@ validateContract();
 
 const escapedRole = role => role.replaceAll("/", "\\/");
 const aliasValue = alias => alias === "zero" ? "0" : `var(--sf-${alias})`;
+// A named step (the card title line, C89) sorts after every numbered rung.
 const roleNumber = role => {
+    if (!/^[0-9/]+$/u.test(role)) return Number.POSITIVE_INFINITY;
     if (!role.includes("/")) return Number(role);
     const [numerator, denominator] = role.split("/").map(Number);
     return numerator / denominator;
 };
 const orderedEntries = aliases => Object.entries(aliases).sort(
-    ([left], [right]) => roleNumber(left) - roleNumber(right),
+    ([left], [right]) => (roleNumber(left) - roleNumber(right)) || 0,
 );
 // The desktop threshold is written in rem, as every breakpoint of the size
 // ladder is (src/core/scss/vars/_sf_var__breakpoint.scss, lg: 60rem).
@@ -48,7 +50,9 @@ function renderAliasProjection(variablePrefix, aliases, compatibilityPrefix = nu
         );
         const compatibility = compatibilityPrefix === null
             ? []
-            : orderedEntries(aliases).map(([role]) => {
+            : orderedEntries(aliases).filter(
+                ([role]) => Number.isFinite(roleNumber(role)),
+            ).map(([role]) => {
                 const escaped = escapedRole(role);
                 return `${indentation}--sf-${compatibilityPrefix}-${escaped}: var(--sf-${variablePrefix}-${escaped});`;
             });
@@ -74,6 +78,7 @@ ${declarations("desktop", "      ")}
 function renderSemanticRoles()
 {
     const declarations = [];
+    const desktop = [];
     const roleTokenPrefix = {
         body: "text",
         display: "display",
@@ -99,10 +104,20 @@ function renderSemanticRoles()
             const heightFamily = ["heading", "display"].includes(group)
                 ? "title--height"
                 : "text--height";
+            // A role with a phone line of its own (mobileHeight) takes it at
+            // the root and its own line from the desktop up.
+            const narrowHeight = definition.mobileHeight ?? definition.height;
             declarations.push(
+                ...renderNote(definition.note ?? [], "    "),
                 `    --sf-${prefix}-${role}--size: var(--sf-text--size-${escapedRole(definition.size)});`,
-                `    --sf-${prefix}-${role}--height: var(--sf-${heightFamily}-${escapedRole(definition.height)});`,
+                `    --sf-${prefix}-${role}--height: var(--sf-${heightFamily}-${escapedRole(narrowHeight)});`,
             );
+            if (narrowHeight !== definition.height)
+            {
+                desktop.push(
+                    `      --sf-${prefix}-${role}--height: var(--sf-${heightFamily}-${escapedRole(definition.height)});`,
+                );
+            }
         }
     }
 
@@ -120,11 +135,21 @@ function renderSemanticRoles()
         "    --sf-heading--margin: var(--sf-heading--space-top);",
     );
 
+    const desktopBlock = desktop.length
+        ? `
+
+  ${desktopMedia} {
+    :root {
+${desktop.join("\n")}
+    }
+  }`
+        : "";
+
     return `${header}
 @layer sf.base {
   :root {
 ${declarations.join("\n")}
-  }
+  }${desktopBlock}
 }
 `;
 }

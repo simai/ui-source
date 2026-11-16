@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "Phone number",
+    "phoneRequired": "Enter a phone number.",
+    "countryLabel": "Country code",
+    "countryUnknown": "Country code not recognised. Choose a country",
+    "searchPlaceholder": "Country or code",
+    "frequent": "Frequently chosen",
+    "allCountries": "All countries",
+    "nothingFound": "Nothing found"
+  }
+}

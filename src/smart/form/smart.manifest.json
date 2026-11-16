@@ -1,0 +1,390 @@
+{
+  "schema_version": 2,
+  "id": "smart.form",
+  "version": "1.0.0",
+  "title": "Form",
+  "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit or instant in one component.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "form",
+    "fields",
+    "properties",
+    "settings",
+    "edit",
+    "validation",
+    "errors"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-form",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.help-mark"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "apply": {
+        "type": "string",
+        "default": "submit",
+        "description": "submit: the form is saved with its button -- «Сохранить» and «Отмена» under the fields, a required yes/no is a checkbox (C165 (4)), «Есть несохранённые изменения» under the buttons after a change. instant: every change acts at once -- no buttons, a change event per field, a required yes/no is a switch (a settings panel, a block's parameters)",
+        "enum": [
+          "submit",
+          "instant"
+        ]
+      },
+      "labels": {
+        "type": "string",
+        "default": "top",
+        "description": "top: the label above its field (the default). start: from 40rem of the form's own width the label stands beside its field in a third of the row, the field in the rest -- the row of a settings page and of an admin card; narrower, above. The value name top is a working name (name to confirm)",
+        "enum": [
+          "top",
+          "start"
+        ]
+      },
+      "footer": {
+        "type": "string",
+        "default": "static",
+        "description": "static: the buttons under the last field, the main one first at the start. sticky: the same buttons in a bar that sticks to the bottom of the scrolling place while the form is longer than it -- a settings page (C166 (3)). The value name static is a working name (name to confirm)",
+        "enum": [
+          "static",
+          "sticky"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "default": "",
+        "description": "The form's accessible name (the native form's aria-label), so a screen reader announces it as a form landmark; best the heading the form stands under. Working name (name to confirm)"
+      },
+      "mode": {
+        "type": "string",
+        "default": "edit",
+        "description": "edit: the fields. view: the values as text (the field renderers' view, as a record card shows them) with «Изменить» under them; «Изменить» opens edit, and «Сохранить» or «Отмена» return to view. Working name (name to confirm)",
+        "enum": [
+          "edit",
+          "view"
+        ]
+      },
+      "fields": {
+        "type": "array",
+        "default": [],
+        "description": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type and its parameters (propertyType, variant, required, readonly, placeholder, options, min, max, step, unit … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width s (8rem), m (16rem) or full; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
+      },
+      "groups": {
+        "type": "array",
+        "default": [],
+        "description": "The groups the fields' group keys name, in order: {key, label}. With two or more, each is a fieldset with its label as the legend, 24 apart over a line. A field without a group, or with a group not listed, stands in one group of its own after the listed ones"
+      },
+      "value": {
+        "type": "object",
+        "default": {},
+        "description": "The values by field key: {text: \"Подробнее\", tone: \"accent\"}. Set from code it is the saved state: the form shows it, forgets the errors and is not dirty; read, it is what the fields hold now. A value the person never set is absent"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "checkValidity": {
+      "summary": "Checks every field it shows and shows every error, as «Сохранить» does but without submit: applied when right, refused {reason: invalid} otherwise (§17.4). Moves no focus",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "reset": {
+      "summary": "Every field returns to the saved state, without events; the errors and the summary are gone (§17.4)",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "setErrors": {
+      "summary": "The host's answer to a submit: {key: message} -- each named field shows the message as its error until the person changes it, from two a summary takes the focus as after «Сохранить»; an empty object clears them. A form in view opens edit. refused {reason: missing} when no key names a field it shows. Working name (name to confirm)",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "errors": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "errors"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "events": {
+    "sf-form-input": {
+      "summary": "A field's value changed by the person: its key and the new value (undefined when the field withdrew an incomplete text). Sent as sf-form-input, not input: the fields' own native input events bubble through the form unchanged",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key",
+          "value"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-form-change": {
+      "summary": "apply instant only: a field's value is applied (§8, one per commit of the field). Sent as sf-form-change, not change: the fields' own native change events bubble through the form unchanged",
+      "payload": {
+        "type": "object",
+        "required": [
+          "key",
+          "value"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-form-submit": {
+      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every field's value by key. Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-form-invalid": {
+      "summary": "A submit or check-validity found wrong fields: their keys in order. Every one shows its error at the field; from two errors a summary with a link to each stands over the form and takes the focus",
+      "payload": {
+        "type": "object",
+        "required": [
+          "fields"
+        ],
+        "properties": {
+          "fields": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-form-cancel": {
+      "summary": "«Отмена»: the fields went back to the saved state (value), the errors are gone; a form opened from view returns to view",
+      "payload": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "form": [
+        "clean",
+        "dirty",
+        "invalid",
+        "view"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "error",
+      "saving"
+    ]
+  },
+  "persistence": {
+    "mode": "external-host",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "saving the values (the host hears submit or change and saves them)",
+      "checking a value against the server's rules (the host answers with set-errors)",
+      "deciding who may change a field (the host sends readonly)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "props"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "form",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab walks the fields in order, then «Сохранить» and «Отмена» (or «Изменить» in view)",
+      "Enter in a one-line field submits the form",
+      "After a submit with two errors or more the focus is on the summary; Tab reaches its links, and Enter on a link moves the focus to that field"
+    ],
+    "focus": "A submit with one error moves the focus to that field, with two or more to the summary. «Изменить» moves it to the first field; returning to view moves it to «Изменить»."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "bec3d91dc18a1e8ca18a1e7de8fd416f621cc850",
+    "source_artifacts": [
+      {
+        "path": "src/smart/form/index.js",
+        "sha256": "8534375a743b58d4d5829555a69ae6800603f8af03b203e4f4a3721a3a332873"
+      },
+      {
+        "path": "src/smart/form/js/templates/default.js",
+        "sha256": "4cce2bf925e8e22286dbb7655f9aaa5fd4f3338fca52949acb9cc0b77892556e"
+      },
+      {
+        "path": "src/smart/form/rule.js",
+        "sha256": "7d9c458e8d8a177c79b13e2119cfc731a5a5e41b4e432c6b0e9a03c8018ee2f1"
+      },
+      {
+        "path": "src/smart/form/docs.md",
+        "sha256": "41be4b3c8a787fac9bf1048af43316067524e0d484d29b9f08f1d7a5ddbe20bf"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-form for a form drawn from a list of field descriptions: a record's edit, a settings page, a block's parameters (apply instant), a sign-up or a request on a site.",
+    "do_not": [
+      "Do not draw the label, the «*», the hint or the error beside a field by hand; give them in the descriptor",
+      "Do not disable «Сохранить» until the form is right; the form says what is wrong",
+      "Do not show read-only values as disabled fields; use mode view",
+      "Do not put two columns by hand; the form pairs fields from 44rem of its own width"
+    ],
+    "required_reads": [
+      "inputs",
+      "events",
+      "accessibility"
+    ],
+    "minimal_example": "<sf-form label=\"Кнопка\"><script type=\"application/json\" data-sf-settings>{\"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true}], \"value\": {\"text\": \"Подробнее\"}}</script></sf-form>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

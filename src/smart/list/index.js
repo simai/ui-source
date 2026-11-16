@@ -41,11 +41,27 @@
 import SfBaseElement from "../../core/js/smart-base";
 import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
-import {scrollerOf, watchEdge} from "../../core/js/reading-position.js";
+import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
+import {menuOpen} from "../../core/js/menu-open.js";
+
+// Is the end within watchEdge's margin of the box that scrolls the list (or
+// of the window)? Read once, on the scroll that arms the watch.
+const EDGE_REACH = parseFloat(EDGE_MARGIN) || 0;
+function endInReach(sentinel, root) {
+    const end = sentinel.getBoundingClientRect();
+    const view = sentinel.ownerDocument.defaultView;
+    const box = root ? root.getBoundingClientRect() : {top: 0, bottom: view?.innerHeight ?? 0};
+    return end.top <= box.bottom + EDGE_REACH && end.bottom >= box.top - EDGE_REACH;
+}
 import {renderListTemplate} from "./js/templates/default.js";
+import {watchLongPress} from "../list-item/js/long-press.js";
 import manifest from "./component.json";
-import en from "./lang/en.json";
-import ru from "./lang/ru.json";
+import enFile from "./lang/en.json";
+import ruFile from "./lang/ru.json";
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // A text longer than this is not a name; the rename field stops there, as the
 // server that stores it most likely does.
@@ -59,6 +75,10 @@ const normalItem = (item) => ({...item, id: String(item.id)});
 
 const word = (value) => (typeof value === "string" ? value.trim() : "");
 const SHAPES = new Set(["circle", "square"]);
+// The skeleton's leading place by the setting leading (1.17.0).
+const LEADING = new Set(["auto", "none", "icon", "avatar"]);
+// The skeleton rows' line count by the setting lines (1.18.0).
+const LINES = new Set(["auto", "1", "2"]);
 // The badge's tone is a word of the Framework's status set
 // (contracts/public-api-axes.json status_vocabulary); neutral is no status.
 const TONES = new Set(["neutral", "info", "success", "warning", "error"]);
@@ -73,6 +93,11 @@ const NARROW_REM = 20;
 // long badge on a 366 px phone column left the title 55 px, «Порта…»).
 const TITLE_MIN_REM = 10;
 const NARROW = "data-sf-list-narrow";
+// 1.14.0: a frame in a shrink-to-fit place, taken out of the container query.
+const FIT = "data-sf-list-fit";
+
+// The frame's content box width: what the container query reads.
+const contentWidth = (frame, style) => frame.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
 
 /**
  * The item's picture, or null: {image-url?, text?, shape?, icon?}. A sign
@@ -97,6 +122,24 @@ function avatarOf(item) {
 function countOf(item) {
     const count = Number(item?.count);
     return Number.isFinite(count) && count >= 1 ? Math.floor(count) : 0;
+}
+
+/**
+ * Is the row unread? A count says so (owner decision C167 (3)); a letter
+ * without one says it with unread: true (1.15.0, C189 (8)). A number above 0
+ * is read as true -- sf-chat-threads spells its unread count unread -- and
+ * draws no number: the number is count's.
+ */
+function unreadOf(item) {
+    if (countOf(item)) return true;
+    const unread = item?.unread;
+    return unread === true || (typeof unread === "number" && unread > 0);
+}
+
+/** The item's date as an ISO moment for sf-time, or "" when it has none. */
+function momentOf(item) {
+    const moment = item?.date == null || item.date === "" ? null : toDate(item.date);
+    return moment && Number.isFinite(moment.getTime()) ? moment.toISOString() : "";
 }
 
 /** The item's badge, {text, tone}, or null: a badge with no text draws nothing. */
@@ -133,6 +176,8 @@ class SfList extends ListElement {
     constructor() {
         super();
         this._items = [];
+        // The shape of the rows last shown, for the skeleton (skeletonShape()).
+        this._shownShape = null;
         this._actions = [];
         this._groups = [];
         this._loadingMore = false;
@@ -302,25 +347,34 @@ class SfList extends ListElement {
     openMenu(params, anchorGiven = null) {
         const id = String(params?.id ?? params ?? "");
         const item = this._items.find((one) => one.id === id);
-        const menu = this.menu;
-        if (!item || !menu) return refused("unknown");
+        if (!item) return refused("unknown");
         const entries = this.menuEntries(item);
         if (!entries.length) return refused("no-actions");
         const row = this.rowFor(id);
         const anchor = anchorGiven instanceof Element ? anchorGiven : row?.closest(".sf-list__row")?.querySelector(".sf-list__actions") ?? row ?? this;
         this._menuFor = id;
-        menu.setAttribute("aria-label", this.sfWord("actions-label", {vars: {text: item.text || this.sfWord("untitled-text")}}));
-        menu.entries = entries;
-        // The Loader brings sf-menu-context when it is first needed (a lazy
-        // relation); a press before that waits for it.
-        customElements.whenDefined("sf-menu-context").then(() => menu.toggleFor(anchor));
+        // The page's one menu (core SF.menu.open, owner decision C184 (4)),
+        // fetched by the Loader the first time: the «⋯» and Shift+F10 open the
+        // same list, and the focus goes back to the row.
+        const opening = menuOpen({
+            anchor,
+            entries,
+            label: this.sfWord("actions-label", {vars: {text: item.text || this.sfWord("untitled-text")}}),
+            returnTo: row ?? null,
+        });
+        this._menuOpening = opening;
+        opening.then((choice) => {
+            if (this._menuOpening === opening) this._menuOpening = null;
+            if (choice) this.onMenu({id: choice.id, entry: choice.entry}, id);
+        });
         return applied();
     }
 
     // ── words and what is drawn ──────────────────────────────────────────────
 
+    // The page's one menu while it holds this list's actions (C184 (4)).
     get menu() {
-        return this.querySelector(":scope > .sf-list__frame > .sf-list__menu");
+        return this.ownerDocument.querySelector("[data-sf-menu-shared]");
     }
 
     // The menu of one row: «Rename» when the list renames, then the host's
@@ -398,14 +452,82 @@ class SfList extends ListElement {
         return list;
     }
 
-    // The leading place of the rows: none when no item has an avatar. When one
-    // has, every row keeps it, so the titles start at one line; a row without
-    // an avatar shows its icon there, or nothing. Its width is the avatar of a
+    // The leading place of the rows: none when no item has an avatar and the
+    // rows are all with an icon or all without. When one has an avatar, every
+    // row keeps the place, so the titles start at one line; a row without an
+    // avatar shows its icon there, or nothing. Its width is the avatar of a
     // two-line row when any row of the list has a second line, else the row's
-    // line: a one-line row keeps its control height.
-    leading() {
-        if (!this._items.some((item) => avatarOf(item))) return null;
-        return {wide: this._items.some((item) => Boolean(item.supporting))};
+    // line: a one-line row keeps its control height. A row without an icon
+    // among rows with one keeps the icon's place too (owner C105), at the
+    // row's line. (1.17.0: named leadingPlace(), the setting leading is the
+    // skeleton's.)
+    leadingPlace() {
+        if (this._items.some((item) => avatarOf(item))) {
+            return {wide: this._items.some((item) => Boolean(item.supporting))};
+        }
+        const icon = (item) => typeof item?.icon === "string" && item.icon.trim() !== "";
+        if (this._items.some(icon) && !this._items.every(icon)) return {wide: false};
+        return null;
+    }
+
+    // The format of a row's time (1.15.0), as sf-list-timeline's time-format
+    // reads: under a day heading the clock time, since the heading names the
+    // day; elsewhere -- ungrouped, by key, the pinned group -- the moment in
+    // full. null: time-format none, no time.
+    timeFormatFor(group) {
+        const asked = this.timeFormat;
+        if (asked !== "auto" && asked !== "relative" && asked !== "exact") return null;
+        if (asked === "relative") return "relative";
+        const underDay = this.groupBy === "day" && typeof group?.key === "string" && group.key.startsWith("day:");
+        if (asked === "exact") return underDay ? "time" : "datetime";
+        return underDay ? "time" : "auto";
+    }
+
+    // The shape of the skeleton rows (1.16.0, C130, C148 (1)): the shape of
+    // the rows the list has shown -- one line or the caption row, and the
+    // leading place they draw: an avatar's (wide when a row has a second
+    // line, its shape), an icon's, or none. It is kept when the rows are
+    // taken away for a reload (items = [] and loading), so the rows that come
+    // back find their place; until the list has shown rows it is the caption
+    // row with no leading place -- the list does not guess one.
+    //
+    // 1.17.0: the setting leading says the place instead of the rows shown
+    // (C130, C148 (1)): icon, avatar or none hold from the first frame, so a
+    // list whose rows will carry icons or avatars has its title bar start
+    // where the title will before it has shown any; auto is the shape of the
+    // rows shown. The line count, and an avatar's shape and width, still
+    // come from the rows shown; before any, the caption row's: an avatar of
+    // the control height, a circle.
+    //
+    // 1.18.0: the setting lines says the line count instead of the rows shown
+    // (C130): 1 or 2 hold from the first frame, so a one-line list's first
+    // skeleton row is as tall as its rows (40, not the caption row's 48 at
+    // 1440) and an avatar's box is the one-line box; auto is the line count
+    // of the rows shown, the caption row before any. A declared count also
+    // gives the avatar its width: the control height with a second line,
+    // else the row's line.
+    skeletonShape() {
+        const items = this._items;
+        if (items.length) {
+            const avatar = items.map((item) => avatarOf(item)).find(Boolean);
+            const icon = items.some((item) => typeof item?.icon === "string" && item.icon.trim() !== "");
+            this._shownShape = {
+                twoLine: items.some((item) => Boolean(item.supporting)),
+                lead: avatar
+                    ? {kind: "avatar", wide: items.some((item) => Boolean(item.supporting)), shape: avatar.shape}
+                    : icon ? {kind: "icon"} : null,
+            };
+        }
+        const shown = this._shownShape ?? {twoLine: true, lead: null};
+        const lines = LINES.has(this.lines) ? this.lines : "auto";
+        const twoLine = lines === "auto" ? shown.twoLine : lines === "2";
+        const declared = LEADING.has(this.leading) ? this.leading : "auto";
+        const learned = shown.lead?.kind === "avatar" ? shown.lead : null;
+        const wide = learned && lines === "auto" ? learned.wide : twoLine;
+        if (declared === "none") return {twoLine, lead: null};
+        if (declared === "icon") return {twoLine, lead: {kind: "icon"}};
+        if (declared === "auto") return {twoLine, lead: learned ? {...learned, wide} : shown.lead};
+        return {twoLine, lead: {kind: "avatar", wide, shape: learned ? learned.shape : "circle"}};
     }
 
     templateContext() {
@@ -419,10 +541,17 @@ class SfList extends ListElement {
             stickyHeadings: this.stickyHeadings === true,
             size: this.size,
             noWrap: this.noWrap === true,
+            divided: this.divided === true,
             sections: this.arranged(),
-            leading: this.leading(),
+            leading: this.leadingPlace(),
             avatarOf,
             countOf,
+            unreadOf,
+            momentOf,
+            // The row's time (1.15.0): sf-time's format for the rows of a
+            // group, or null when the list draws no time (timeFormatFor).
+            timeFormat: (group) => this.timeFormatFor(group),
+            unreadText: this.sfWord("unread-text"),
             badgeOf,
             countCap: COUNT_CAP,
             countLabel: (count) => this.sfWord("count-label", {count}),
@@ -430,6 +559,10 @@ class SfList extends ListElement {
             selected: this.selected,
             editing: this._editing,
             loading,
+            // The skeleton's rows take the shape of the rows the list has
+            // shown, else the caption row with no leading place (template
+            // skeleton()).
+            skeleton: this.skeletonShape(),
             loadingText: this.sfWord("loading-text"),
             empty,
             emptyHeading: this.emptyText,
@@ -500,12 +633,37 @@ class SfList extends ListElement {
     onConnected() {
         super.onConnected?.();
         this.watchDay();
+        // A long press on a row under a finger opens its menu, as its «⋯»
+        // does (owner decision C148 (6)); the click its release sends opens
+        // nothing. No swipe.
+        if (!this._longPress) {
+            this._longPress = watchLongPress(this, {
+                accepts: (event) => {
+                    const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
+                    if (!row || !this.contains(row) || event.target.closest(".sf-list__actions, .sf-list__rename")) return false;
+                    const item = this._items.find((one) => one.id === this.idOf(row));
+                    return Boolean(item) && this.hasMenu(item);
+                },
+                press: (event) => {
+                    const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
+                    const id = this.idOf(row);
+                    if (id != null) this.openMenu(id);
+                },
+            });
+            this.addEventListener("click", (event) => {
+                if (!this._longPress.swallowed()) return;
+                event.preventDefault();
+                event.stopPropagation();
+            }, true);
+        }
     }
 
     onDisconnected() {
         this.unwatchEnd();
         this._widthObserver?.disconnect();
         this._widthObserver = null;
+        cancelAnimationFrame(this._fitFrame);
+        this._fitFrame = 0;
         this._widthFrame = null;
         this._widthMetas = null;
         clearTimeout(this._dayTimer);
@@ -526,20 +684,25 @@ class SfList extends ListElement {
     }
 
     // A narrow list (owner decision C47, 2026-11-10): below 20rem of its own
-    // width the list marks its frame, and a row's badge and count go under
-    // its second line, at the text's start, so the title keeps the row's
-    // width and the badge stays whole. A wider list is narrow too when, laid
-    // out on one line, a row's title would keep less than half of the row's
-    // text column or less than 10rem (a long badge in a phone column). The
-    // list measures itself: no page breakpoint and no setting. A
-    // ResizeObserver, not a container query: an inline-size container takes
-    // no width from its rows, and a list in a shrink-to-fit place (a popover,
-    // an auto-width flex item) would fold to nothing. It watches the frame's
+    // width a row's badge and count go under its second line, at the text's
+    // start, so the title keeps the row's width and the badge stays whole. A
+    // wider list is narrow too when, laid out on one line, a row's title would
+    // keep less than half of the row's text column or less than 10rem (a long
+    // badge in a phone column). No page breakpoint and no setting.
+    // 1.14.0: the 20rem is a container query on the frame (the sheet's
+    // container sf-list), so a printed first paint is narrow before any
+    // script (DEV, ui-chat chat-threads at 390: CLS 0.09 when the code
+    // adopted). The code marks the frame (data-sf-list-narrow) only for what
+    // the sheet cannot know: a squeezed title; and, for a frame in a
+    // shrink-to-fit place (a popover, an auto-width flex item), whose
+    // inline-size container would take no width from its rows and fold to
+    // nothing, it takes the frame out of the query (data-sf-list-fit) and
+    // marks it below 20rem by measuring, as before. It watches the frame's
     // width and every row's badge and count, and is started as soon as the
     // rows are drawn, before the list's sheet is in: the observer reports
     // before the frame is painted, so the frame painted with the sheet is
-    // already laid out narrow or wide. The mark is an attribute the template
-    // does not bind, so a redraw keeps it.
+    // already laid out narrow or wide. The marks are attributes the template
+    // does not bind, so a redraw keeps them.
     // 1.5.1: the frame's width is read from .sf-list__width, a box of no
     // height across the frame, not from the frame. The narrow layout changes
     // the frame's height; a frame observed itself then changed size inside the
@@ -587,26 +750,61 @@ class SfList extends ListElement {
     // would keep less than half of its text column (or 10rem) beside its
     // badge and count. The one-line layout is measured with the mark taken
     // off and put back in the same task, so nothing of it is painted and the
-    // answer does not depend on the layout it chooses.
+    // answer does not depend on the layout it chooses. Below 20rem the
+    // sheet's container query lays the rows out narrow; the mark is written
+    // only where the query does not answer (no sheet yet, or a fitted frame).
     measureNarrow() {
         const frame = this._widthFrame;
         if (!frame?.isConnected) return;
+        this.checkFit(frame);
         const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
         const style = getComputedStyle(frame);
-        const width = frame.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+        const width = contentWidth(frame, style);
         if (!(width > 0)) {
             frame.removeAttribute(NARROW);
             return;
         }
+        const queried = style.containerType === "inline-size";
         let narrow = width < NARROW_REM * rem;
+        if (narrow && queried) {
+            frame.removeAttribute(NARROW);
+            return;
+        }
         if (!narrow) {
             const was = frame.hasAttribute(NARROW);
             if (was) frame.removeAttribute(NARROW);
-            narrow = [...frame.querySelectorAll(".sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty)")]
+            // A two-line row keeps its badge and count in its end column
+            // (owner decision C148 (2)): only one-line rows are measured.
+            narrow = [...frame.querySelectorAll(".sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta:not(:empty)")]
                 .some((meta) => this.titleSqueezed(meta, rem));
             if (was && !narrow) return;
         }
         frame.toggleAttribute(NARROW, narrow);
+    }
+
+    // A frame whose inline-size container folds it: in a shrink-to-fit place
+    // the contained frame is narrower than its rows would make it (no content
+    // width at all), and it is taken out of the query. Measured with the mark
+    // flipped and put back in the same task, so the observer's callback ends
+    // on the layout it began with (a size changed inside it would be a
+    // ResizeObserver loop); the change itself is made in the next frame.
+    checkFit(frame) {
+        const had = frame.hasAttribute(FIT);
+        const style = getComputedStyle(frame);
+        if (!had && (style.containerType !== "inline-size" || contentWidth(frame, style) >= 1)) return;
+        const now = frame.getBoundingClientRect().width;
+        frame.toggleAttribute(FIT, !had);
+        const other = frame.getBoundingClientRect().width;
+        frame.toggleAttribute(FIT, had);
+        const fit = (had ? now : other) > (had ? other : now) + 0.5;
+        if (fit === had) return;
+        cancelAnimationFrame(this._fitFrame);
+        this._fitFrame = requestAnimationFrame(() => {
+            this._fitFrame = 0;
+            if (!frame.isConnected || frame !== this._widthFrame) return;
+            frame.toggleAttribute(FIT, fit);
+            this.measureNarrow();
+        });
     }
 
     // On one line: the title's room is what the badge and count leave of the
@@ -622,6 +820,8 @@ class SfList extends ListElement {
         const box = wrap.getBoundingClientRect();
         const textBox = text.getBoundingClientRect();
         const metaBox = meta.getBoundingClientRect();
+        // An end part with only the screen-reader word takes no place (1.15.0).
+        if (!(metaBox.width > 0)) return false;
         const gap = parseFloat(wrapStyle.columnGap) || 0;
         const inset = (parseFloat(textStyle.paddingLeft) || 0) + (parseFloat(textStyle.paddingRight) || 0);
         const end = rtl
@@ -633,8 +833,15 @@ class SfList extends ListElement {
         return title < Math.max(column / 2, TITLE_MIN_REM * rem);
     }
 
-    // The end of the list asks for the next page when it comes within reach,
-    // never from a scroll handler (core/js/reading-position.js watchEdge).
+    // The end of the list asks for the next page when a person brings it
+    // within reach (core/js/reading-position.js watchEdge), not when it is
+    // there already: a list whose end shows on load waits for «Show more» or
+    // for the first scroll (list and feed study LF-8: the next page was asked
+    // for on load, with «Show more» on screen as well -- two answers to one
+    // question). The first scroll of the box that scrolls the list, after a
+    // page is drawn, arms the watch; if the end is in reach then, that scroll
+    // brought it there. The scroll is listened to once, to arm, never to
+    // measure the edge on every move.
     watchEnd() {
         const sentinel = this.querySelector(":scope > .sf-list__frame .sf-list__end");
         if (!this.hasMore || this.loading || !sentinel) {
@@ -645,7 +852,29 @@ class SfList extends ListElement {
         this.unwatchEnd();
         this._edge = sentinel;
         // Inside the box that scrolls the list, so the margin reaches ahead there.
-        this._stopEdge = watchEdge(sentinel, () => this.requestMore(), {root: scrollerOf(sentinel)});
+        // watchEdge reports the end coming into reach; its first report, before
+        // any scroll, says only that it is there already (reached). The first
+        // scroll then asks if the end is still in reach -- no new report comes
+        // for an end that never left; an end that comes into reach later is
+        // the watch's own report, asked once.
+        const root = scrollerOf(sentinel);
+        const scroller = root ?? this.ownerDocument;
+        let moved = false;
+        let reached = false;
+        const onScroll = () => {
+            moved = true;
+            scroller.removeEventListener("scroll", onScroll);
+            if (reached && endInReach(sentinel, root)) this.requestMore();
+        };
+        scroller.addEventListener("scroll", onScroll, {passive: true});
+        const stopEdge = watchEdge(sentinel, () => {
+            if (moved) this.requestMore();
+            else reached = true;
+        }, {root});
+        this._stopEdge = () => {
+            stopEdge();
+            scroller.removeEventListener("scroll", onScroll);
+        };
     }
 
     unwatchEnd() {
@@ -691,8 +920,34 @@ class SfList extends ListElement {
     }
 
     onKey(event) {
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+        // The «⋯» of a row is reached from the row (owner decision C148 (3),
+        // as the APG layout grid): ArrowRight (ArrowLeft right to left) from
+        // the row to it, the other arrow, Escape, ArrowUp or ArrowDown back.
+        // It is no Tab stop of its own.
+        const rtl = getComputedStyle(this.querySelector(":scope > .sf-list__frame") ?? this).direction === "rtl";
+        const forward = rtl ? "ArrowLeft" : "ArrowRight";
+        const actions = event.target.closest?.(".sf-list__actions");
+        if (actions) {
+            if (event.shiftKey || ![rtl ? "ArrowRight" : "ArrowLeft", "Escape", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+            const back = actions.closest(".sf-list__row")?.querySelector(".sf-list-item[data-sf-list-roving]");
+            if (!back) return;
+            event.preventDefault();
+            // The Escape is the row's: a panel around the list stays open.
+            event.stopPropagation();
+            back.focus();
+            return;
+        }
         const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
-        if (!row || event.target !== row || event.defaultPrevented) return;
+        if (!row || event.target !== row) return;
+        if (event.key === forward && !event.shiftKey) {
+            const button = row.closest(".sf-list__row")?.querySelector(":scope > .sf-list__actions");
+            if (button) {
+                event.preventDefault();
+                button.focus();
+            }
+            return;
+        }
         const id = this.idOf(row);
         const item = this._items.find((one) => one.id === id);
         if (!item) return;
@@ -706,8 +961,8 @@ class SfList extends ListElement {
         }
     }
 
-    onMenu(detail = {}) {
-        const id = this._menuFor;
+    onMenu(detail = {}, forId = null) {
+        const id = forId ?? this._menuFor;
         const choice = String(detail.id ?? detail.entry?.id ?? "");
         if (!id || !choice) return;
         if (choice === "rename") setTimeout(() => this.rename(id), 0);
@@ -717,7 +972,7 @@ class SfList extends ListElement {
 
     closeMenu() {
         const menu = this.menu;
-        if (menu?.isOpen) menu.close({restoreFocus: false, reason: "api"});
+        if (this._menuOpening && menu?.isOpen) menu.close({restoreFocus: false, reason: "api"});
     }
 
     finishRename(keep, input) {

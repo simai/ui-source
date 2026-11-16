@@ -54,6 +54,7 @@
 // Members the runtime adds start with `sf`, which no manifest name may
 // (§3.1), so a generated setting or action never collides with them.
 
+import { watchIgnoredGlyphs } from './ignored-glyphs.js';
 import { dispatchAliased } from './aliases.js';
 import { pageWord } from './page-language.js';
 import { noteDeprecated } from './deprecations.js';
@@ -523,6 +524,38 @@ function isShown(element) {
   return true;
 }
 
+// A label's activation of a form-associated host (§17.1, RD-1). A <label>
+// around a Smart form control, or one `for` its id, takes the host as its
+// labeled control: the host is the first labelable element inside it. The
+// platform then clicks the host, which has no activation of its own, and the
+// native control drawn inside stays as it was. The host passes that press on
+// as a native label would: the control takes the focus, and a checkbox or a
+// radio is clicked (it toggles and sends its own input and change).
+// Only a click addressed to the host itself is passed on; a press on the
+// control, its own text or a part inside reaches them as before and is not
+// handled twice. A checkable's host click goes no further: its ancestors hear
+// the control's click instead, one click for one press, as with a native one.
+const LABEL_CONTROLS = 'input:not([type="hidden"]), select, textarea';
+const CHECKABLE = new Set(['checkbox', 'radio']);
+const nearestFormHost = (node) => {
+  for (let element = node.parentElement; element; element = element.parentElement) {
+    if (element.constructor?.formAssociated === true) return element;
+  }
+  return null;
+};
+function activateFromLabel(event) {
+  if (event.target !== this || event.defaultPrevented) return;
+  const control = this.sfLabelControl?.();
+  if (!control || control === this || !this.contains(control) || control.matches?.(':disabled')) return;
+  // A person's press moves the focus to the control first, as a label does;
+  // a script's host.click() leaves the focus where it is.
+  if (event.isTrusted) control.focus?.({focusVisible: false});
+  if (control.localName === 'input' && CHECKABLE.has(String(control.type).toLowerCase())) {
+    event.stopPropagation();
+    control.click();
+  }
+}
+
 /**
  * The class a component extends: its manifest's plumbing over `base`.
  *
@@ -580,6 +613,24 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
       completeOwnAccessors(new.target, ManifestElement.prototype, read.members);
       takeObjectForms(new.target, ManifestElement.prototype, read.actions, positionalActions);
       this.sfInternals = formAssociated && typeof this.attachInternals === 'function' ? this.attachInternals() : null;
+      if (formAssociated) this.addEventListener('click', activateFromLabel);
+    }
+
+    /**
+     * The control a label's activation reaches (§17.1): a form-associated
+     * host is labelable, so a <label> around it (or for its id) clicks the
+     * host itself, and the native control drawn inside never hears it. This
+     * is that control: the component's own `getInputElement()`, else its
+     * first native control that is not a nested form host's. A component
+     * overrides it; null leaves the activation as it is.
+     */
+    sfLabelControl() {
+      const own = typeof this.getInputElement === 'function' ? this.getInputElement() : undefined;
+      if (own !== undefined) return own || null;
+      for (const control of this.querySelectorAll(LABEL_CONTROLS)) {
+        if (nearestFormHost(control) === this) return control;
+      }
+      return null;
     }
 
     connectedCallback() {
@@ -587,6 +638,18 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
       super.connectedCallback();
       // A leaf outside an assembly starts with the page (§7.2.1 `now`).
       this.toggleAttribute('data-sf-started', true);
+      // An element on the Smart base hands its glyphs over after each drawing;
+      // one on a plain base is watched while it sits in an ignored region.
+      if (typeof this.adoptIgnoredGlyphs !== 'function') {
+        this.__sfGlyphWatch?.disconnect();
+        this.__sfGlyphWatch = watchIgnoredGlyphs(this);
+      }
+    }
+
+    disconnectedCallback() {
+      super.disconnectedCallback?.();
+      this.__sfGlyphWatch?.disconnect();
+      this.__sfGlyphWatch = null;
     }
 
     /**
@@ -621,18 +684,22 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
     }
 
     /**
-     * Whether the element keeps its printed skeleton (§5.4, §7.3 phase 3):
-     * the host was printed with data-sf-first-paint="skeleton" and a setting
-     * declared late (presentation.skeleton.late) has not arrived. The first
-     * render waits for it, so the skeleton turns into content in one frame.
-     * A list given explicitly, even empty, has arrived: an empty list is
-     * data (the empty state), not data still to come. Only a list nobody set
-     * -- its default -- keeps the skeleton waiting.
-     * A component whose data comes another way (a port) overrides this.
+     * The late lists a printed skeleton still holds (§5.4, §7.3 phase 3).
+     * A skeleton names the late lists it stands for in data-sf-late (printed
+     * when a component declares more than one): a job printed without steps
+     * holds only its counters, and never waits for steps that are not
+     * coming. A skeleton that names none holds every declared late list, as
+     * before. Each list releases its own hold when it arrives: a list given
+     * explicitly, even empty, has arrived -- an empty list is data (the empty
+     * state), not data still to come. Only a list nobody set -- its default
+     * -- is still held.
      */
-    sfAwaitingData() {
-      if (!late.length || this.getAttribute('data-sf-first-paint') !== 'skeleton') return false;
-      return late.some((member) => {
+    sfLateHeld() {
+      if (!late.length || this.getAttribute('data-sf-first-paint') !== 'skeleton') return [];
+      const named = this.getAttribute('data-sf-late');
+      const words = named === null ? null : named.split(/\s+/u).filter(Boolean);
+      const held = words ? late.filter((member) => words.includes(member.name)) : late;
+      return held.filter((member) => {
         if (member.attribute && this.hasAttribute(member.attribute)) return false;
         const store = this.__sfManifestData;
         if (!member.attribute && store && Object.prototype.hasOwnProperty.call(store, member.name)) {
@@ -642,7 +709,18 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
         // Read through the property: a component may keep the setting itself.
         const value = this[member.property];
         return value === undefined || value === null || (Array.isArray(value) && !value.length);
-      });
+      }).map((member) => member.name);
+    }
+
+    /**
+     * Whether the element keeps its printed skeleton (§5.4, §7.3 phase 3):
+     * the host was printed with data-sf-first-paint="skeleton" and a late
+     * list it holds (sfLateHeld) has not arrived. The first render waits for
+     * every one, so the skeleton turns into content in one frame.
+     * A component whose data comes another way (a port) overrides this.
+     */
+    sfAwaitingData() {
+      return this.sfLateHeld().length > 0;
     }
 
     /** §4.1: the element has a box in an opened container. */

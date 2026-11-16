@@ -1,5 +1,21 @@
 import {html, nothing} from "lit";
 import {renderAnchoredBadge} from "../../../helpers/anchored-badge";
+import {avatarClasses as pictureClasses, avatarContent} from "../picture";
+
+// sf-avatar's box in utility classes, as its templates have always written
+// it (their words stay here, where the Loader's template-utilities table
+// reads them); a host's picture takes the same box from the avatars sheet.
+const AVATAR_LAYOUT = Object.freeze({
+    box: "transition flex-none",
+    inline: "inline-flex",
+    center: "items-cross-center content-main-center",
+    anchor: "relative",
+});
+
+/** The classes of sf-avatar's own picture: the sheet's and its utilities. */
+export function avatarClasses(context, options = {}) {
+    return pictureClasses(context, {...options, layout: AVATAR_LAYOUT});
+}
 
 function getCompanyBadge(context) {
     return html`<span aria-hidden="true"
@@ -51,80 +67,20 @@ function getVerifiedBadge(context) {
     `;
 }
 
-export function avatarClasses(context, options = {}) {
-    const includeRootClass = options.includeRootClass !== false;
-    const classes = [
-        "sf-avatar",
-        "transition",
-        'flex-none',
-        `sf-avatar--size-${context.size}`,
-        context.line ? `sf-avatar--line-${context.line}` : "",
-        "inline-flex",
-    ].filter(Boolean);
-
-    if (context.isImage) {
-        classes.push("items-cross-center", "content-main-center");
-    }
-
-    if (context.isText) {
-        classes.push(
-            "sf-avatar--text",
-            "items-cross-center",
-            "content-main-center",
-        );
-
-        // The hue's role set (core .sf-hue-<name>, C17); the class sheet
-        // draws the plate and the ink from it.
-        if (context.resolvedHue) {
-            classes.push(`sf-hue-${context.resolvedHue}`);
-        }
-    }
-
-    if (!context.isImage && !context.isText) {
-        classes.push(
-            "sf-avatar--placeholder",
-            "items-cross-center",
-            "content-main-center",
-        );
-    }
-
-    if (context.status !== "none") {
-        classes.push("relative");
-    }
-
-    if (context.shape === "square") {
-        classes.push("sf-avatar--square");
-    }
-
-    if (context.status === "online") {
-        classes.push("sf-avatar--status-icon-online-indicator");
-    }
-
-    if (includeRootClass && context.rootClass) {
-        classes.push(context.rootClass);
-    }
-
-    return classes.join(" ");
-}
-
-export function avatarContent(context) {
-    if (context.isText) {
-        return html`<span class="sf-avatar-text">${context.text}</span>`;
-    }
-
-    if (context.isImage) {
-        return html`<img class="sf-avatar-image" src=${context.imageUrl} alt="" />`;
-    }
-
-    return html`<i class="sf-icon" aria-hidden="true">person</i>`;
-}
+// The picture's classes and content are the one avatar drawing every host
+// shares (js/picture.js, avatar study AV-8).
+export {avatarContent};
 
 export function onlineIndicator(context) {
     if (context.component?.hasSlotContent?.("online-indicator")) {
         return context.component.getSlotContent("online-indicator");
     }
 
-    if (!["online", "offline"].includes(context.status)) {
+    // Only «online» is drawn, and «away» as a hollow ring when the host
+    // asks for it (owner decision C152 (5), 2026-11-14): grey offline dots in
+    // a long list read as «something here». Offline draws nothing; its word
+    // still joins the name (index.js presenceWord).
+    if (!["online", "away"].includes(context.status)) {
         return nothing;
     }
 
@@ -165,16 +121,65 @@ export function statusBadge(context) {
     }
 }
 
+// The name in a tooltip where no name is visible (owner decision C152 (7)):
+// the Framework's tooltip composition (component.tooltip) -- an anchor holding
+// the avatar (data-tooltip naming the surface) and a dark tooltip of size 1/3
+// with its tail pointing down. The controller shows it on hover and keyboard
+// focus and hides it on Escape and a press. The surface is hidden in the
+// markup and only the controller shows it, so a redraw never fights it.
+export function withNameTooltip(trigger, tipText, tipId) {
+    if (!tipText || !tipId) return trigger;
+    return html`<span class="sf-avatar-anchor sf-tooltip-anchor">${trigger}<span
+        class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tooltip--arrow-bottom-center sf-avatar-tooltip"
+        id=${tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${tipText}</span><span
+        class="sf-tooltip-tail" aria-hidden="true"></span></span></span></span>`;
+}
+
+// What the avatar is (owner decision C152 (1), 2026-11-14): a picture by
+// default -- role img named by the person, no Tab stop, no hover ring --,
+// a link with href, a button only where it has an action of its own (the
+// trigger of a menu: slot="trigger" or aria-haspopup on the host). Beside
+// a printed name (options.nameShown) the picture is hidden from assistive
+// technology: the name is read once, from the text.
 export function avatarButton(context, options = {}) {
-    return html`
+    const style = options.includeRootStyle === false ? "" : context.rootStyle || "";
+    const label = context.buttonLabel ?? context.ariaLabel;
+    const inner = html`${avatarContent(context)} ${statusBadge(context)} ${renderAnchoredBadge(context.badge)}`;
+    const mode = context.mode || "button";
+
+    if (mode === "link") {
+        const link = html`<a
+                class="${avatarClasses(context, {...options, disabled: context.disabled})}"
+                style=${style || nothing}
+                href=${context.disabled ? nothing : context.href}
+                aria-disabled=${context.disabled ? "true" : nothing}
+                aria-label=${label}
+                data-tooltip=${context.tipId && context.tipText ? context.tipId : nothing}
+        >${inner}</a>`;
+        return withNameTooltip(link, context.tipText, context.tipId);
+    }
+
+    if (mode === "picture") {
+        return html`<span
+                class="${avatarClasses(context, {...options, disabled: context.disabled})}"
+                style=${style || nothing}
+                role=${options.nameShown ? nothing : "img"}
+                aria-label=${options.nameShown ? nothing : label}
+                aria-hidden=${options.nameShown ? "true" : nothing}
+        >${inner}</span>`;
+    }
+
+    const button = html`
         <button
                 class="${avatarClasses(context, options)}"
-                style=${options.includeRootStyle === false ? "" : context.rootStyle || ""}
-                aria-label=${context.buttonLabel ?? context.ariaLabel}
+                style=${style}
+                aria-label=${label}
                 ?disabled=${context.disabled}
                 type="button"
+                data-tooltip=${context.tipId && context.tipText ? context.tipId : nothing}
         >
-            ${avatarContent(context)} ${statusBadge(context)} ${renderAnchoredBadge(context.badge)}
+            ${inner}
         </button>
     `;
+    return withNameTooltip(button, context.tipText, context.tipId);
 }

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The main member of block list (duplication audit 2026-11-03 A-7): rows from data drawn as sf-list-item; sf-list-feed is the block's feed variant.",
   "id": "smart.list",
   "tag": "sf-list",
-  "version": "1.5.1",
+  "version": "1.18.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -50,7 +50,12 @@
           "integer": true,
           "min": 0,
           "optional": true,
-          "summary": "A count at the row's end (unread), drawn as sf-badge primary; 0 or none draws nothing, above 99 it reads «99+»; its words are count-label («3 непрочитанных»)."
+          "summary": "A count at the row's end (unread), a quantity drawn as sf-badge tonal, grey (owner decision C140 (3)); 0 or none draws nothing, above 99 it reads «99+»; its words are count-label («3 непрочитанных»). A row with a count is unread: its title is semibold (owner decision C167 (3))."
+        },
+        "unread": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "The row is unread without a count (a letter): its title semibold, as a row with a count is (owner decisions C167 (3), C189 (8)), the row's time in the main ink, and for a screen reader the word unread-text («не прочитано») at the row's end. A count says unread already; unread: false does not take it back. A number above 0 (sf-chat-threads' spelling of an unread count) is read as true and draws no number: the count is count."
         },
         "badge": {
           "type": "object",
@@ -120,12 +125,33 @@
     "has-more": {
       "type": "boolean",
       "default": false,
-      "summary": "A next page exists: «Показать ещё» shows, and the end coming into reach asks for it."
+      "summary": "A next page exists: «Показать ещё» shows, and the end brought into reach by a person's scroll asks for it (an end in reach on load waits for the button or the first scroll)."
     },
     "loading": {
       "type": "boolean",
       "default": false,
-      "summary": "The first page is on its way: the rows' shape instead of words."
+      "summary": "The first page is on its way: three skeleton rows of the list's size, each as tall as the row that replaces it (the caption row until rows were shown, then the shape of the rows shown, their leading icon or avatar place included, so the title starts where it will), their words core's pulsing first-paint bars (C130, C136, C148 (1))."
+    },
+    "leading": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "none",
+        "icon",
+        "avatar"
+      ],
+      "default": "auto",
+      "summary": "The leading place the skeleton rows keep while loading, from the first frame: auto takes the shape of the rows the list has shown (none until it has shown any); icon keeps the icon place (the row's line square, the control radius); avatar keeps sf-avatar's own box of the list's step (the control height while the rows have a second line, else the row's line), a circle (square when the rows shown were); none keeps no place. So a list whose rows will carry icons or avatars has its title bar start on the first frame where the title will. It shapes the skeleton alone: the rows draw what their items carry (C130, C148 (1))."
+    },
+    "lines": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "1",
+        "2"
+      ],
+      "default": "auto",
+      "summary": "The line count of the skeleton rows while loading, from the first frame: auto takes the rows the list has shown (the caption row until it has shown any); 1 keeps one-line rows (the row's height, an avatar of the row's line); 2 keeps rows with a second line (the caption row, an avatar of the control height). So a one-line list's first skeleton row is as tall as its rows and its title bar where the title will be, whatever leading says. It shapes the skeleton alone: the rows draw what their items carry (C130)."
     },
     "size": {
       "type": "enum",
@@ -140,7 +166,23 @@
     "no-wrap": {
       "type": "boolean",
       "default": false,
-      "summary": "Every row's title and its second line stay one line each, cut at the end with an ellipsis; the whole text stays in the row for a screen reader and is the row's tooltip (title). Off: the title of a one-line row wraps."
+      "summary": "Every row's whole text is its tooltip (title), cut or not. A row's title and its second line are one line each, cut at the end with an ellipsis, with or without it (owner decision C148 (5)); a cut row says its whole text in its tooltip by itself, and the whole text stays in the row for a screen reader. Kept for the lists that set it."
+    },
+    "divided": {
+      "type": "boolean",
+      "default": false,
+      "summary": "An inset line under every row but the last of its group, from the row's text to the list's edge under the «⋯» (sf-list-item divided, owner decision C148 (4)); off, the rows have no lines and the groups are told apart by their headings (C40)"
+    },
+    "time-format": {
+      "type": "enum",
+      "values": [
+        "none",
+        "auto",
+        "relative",
+        "exact"
+      ],
+      "default": "none",
+      "summary": "The row's time at its end, from the item's date, drawn by sf-time (C40) without a tooltip or a Tab stop of its own (the row is the list's one stop): on the title's line of a two-line row, above the count and the badge (sf-list-item's end column, C148 (2)), in the caption's type and dim ink, the main ink on an unread row. none (the default): no time. auto: under a day heading (group-by day) the clock time («11:20»), since the heading names the day; elsewhere -- ungrouped, by key, the pinned group -- sf-time auto («28 минут назад», «11:20», «вчера, 19:40», «5 ноября»). relative: always relative. exact: the clock time under a day heading, the date and time elsewhere. The values are sf-list-timeline's time-format, plus none."
     },
     "label": {
       "type": "string",
@@ -230,7 +272,7 @@
         }
       },
       "cancelable": true,
-      "summary": "The next page is asked for: the end came into reach, or «Показать ещё»: {direction: after, after}. Cancelling it is moreFailed()."
+      "summary": "The next page is asked for: a person's scroll brought the end into reach, or «Показать ещё»: {direction: after, after}. Never on load by itself. Cancelling it is moreFailed()."
     }
   },
   "actions": {
@@ -634,7 +676,20 @@
     "version 1.4.0 (owner decision C40, 2026-11-09): a group's heading is block list's shared heading (component group-heading, .sf-group-heading): the words at the list's text size (text 1), medium, on-surface (--sf-list-heading-color's default moves from on-surface-variant), --sf-space-3 above a group after the first (the gap between groups included) and --sf-space-1/2 below, on the rows' text edge; for today and yesterday the date beside the words, quiet, in sf-time format date tooltip none. New setting sticky-headings (the heading's sticky look). The day words stay core's formatRelativeDay. Additions and the heading's look; rows unchanged.",
     "version 1.5.0 (2026-11-11, owner decision C47, 2026-11-10; prototype ui-control prototypes/list-row-badge-narrow.html, option A): a narrow list keeps its titles. Below 20rem of its own width the list marks its frame (data-sf-list-narrow, set by a ResizeObserver on the frame: no page breakpoint and no setting; not a container query, because an inline-size container takes no width from its rows and would fold a list in a shrink-to-fit place), and a row with a badge or a count lays out as picture | text with the badge and count under its second line, at the text's start. The title takes the row's width (on a 320 phone 61-74 px became 162 px) and the badge stays whole. The row grows by whole bands (geometry standard, multi-line rows, C18): the band step --sf-space-1/4 and the badge's height, the row's line, so 52 + 4 + 20 = 76 on a phone and 60 + 4 + 24 = 88 on a desktop at size 1. Rows without a badge or count keep their layout and height; above 20rem nothing changes. The list is narrow too when, laid out on one line, a row's title would keep less than half of the row's text column or less than 10rem (DEV msg-d5839852): on a 390 phone a 366 px list with a long badge left the title 55 px («Порта…»), now it goes narrow. The one-line layout is measured with the mark taken off and put back in the same task, so the answer does not depend on the layout it chooses. The observer watches the frame and every row's badge and count, and starts as soon as the rows are drawn, before the list's sheet is in, so with a late sheet no frame of a squeezed title is painted first. (Numbered 1.5.0: 1.4.0 is C40's on the integration line.) Settings, values, events and keys as they were.",
     "version 1.5.0, also (2026-11-11, written as 1.4.0 on fix/c43-rows, C43 D3 and D4): the open row declares its fill, --sf-surface-place-fill, beside --sf-surface-underlay, so an anchored badge's ring on it is the row's colour; the row under the pointer is a translucent fill too (underlay and fill), so a tonal badge on it keeps its tone. Settings, values, events and keys unchanged.",
-    "version 1.5.1 (2026-11-11, pair blocker D1 of the C47 acceptance): the narrow rule's ResizeObserver watches .sf-list__width, a box of no height across the frame, out of the flow, instead of the frame. Marking the frame narrow changed the observed frame's height inside the observer's callback, and the browser raised the window error «ResizeObserver loop completed with undelivered notifications» on every load of a page with a narrow list. The narrow and wide decisions, the same-task measurement and the first paint with a late sheet are as in 1.5.0; the frame is position: relative to hold the box. Settings, values, events and keys unchanged."
+    "version 1.5.1 (2026-11-11, pair blocker D1 of the C47 acceptance): the narrow rule's ResizeObserver watches .sf-list__width, a box of no height across the frame, out of the flow, instead of the frame. Marking the frame narrow changed the observed frame's height inside the observer's callback, and the browser raised the window error «ResizeObserver loop completed with undelivered notifications» on every load of a page with a narrow list. The narrow and wide decisions, the same-task measurement and the first paint with a late sheet are as in 1.5.0; the frame is position: relative to hold the box. Settings, values, events and keys unchanged.",
+    "version 1.7.0 (2026-11-14, owner decision C140 (3), badges study control/research/2026-11-14-badges.md BG-2, BG-5): a minor, a look. A row's count is the unread items, the attention count, and draws as the one filled badge, sf-badge appearance=\"main\" status=\"error\" (red): it was sf-badge scheme primary, the blue count, one of three colours a count had (blue here, red on anchors and the Pro menu, dark grey in sf-menu). A quantity at a row's end is item.badge, which is tonal (grey without a tone). Size, line, tight side room, the cap «99+» and the words count-label unchanged; settings, values, events and keys unchanged.",
+    "version 1.8.0 (2026-11-14, avatar study AV-8, 2026-11-14; control/research/2026-11-14-avatar.md; above the unreleased 1.7.0 of fix/badges-g4): a patch-sized minor. A sign is sf-avatar's placeholder drawn by the one avatar renderer (smart avatar js/picture.js) with the sign's glyph; the same classes and glyph as before. Settings, events and keys unchanged.",
+    "version 1.9.0 (2026-11-14, list item study control/research/2026-11-14-list-item.md, LI-7, LI-8, LI-10; above 1.8.0 of fix/avatar-defects-g4 and 1.7.0 of fix/badges-g4): a minor, a look. A row's avatar is a picture, sf-avatar's one drawing (smart avatar js/picture.js) hidden from assistive technology, not an sf-avatar element: sf-avatar draws a button, so a list of conversations was a Tab stop per avatar beside the list's one. The open row's fill is the selected role's primary-container, 12 light and 24 dark (owner decision C31, C16), as a standalone selected row; it was the pressed step, 20 / 32 (--sf-list-current-background-color still overrides it). The count is a quantity, sf-badge tonal, grey (owner decision C140 (3)); it was the filled blue scheme primary. Settings, values, events and keys unchanged.",
+    "version 1.10.0 (2026-11-14, owner decision C148, list item study; above 1.9.0 of fix/list-item-g4): a minor, a setting and the keyboard. divided (boolean, off) passes sf-list-item's inset line to every row, the line running on under the row's «⋯»; none under the last row of a group. A two-line row's badge and count stand in sf-list-item's end column, on the caption's line (sf-badge line text), so the row keeps its height and its title its width; the narrow layout (C47) is the one-line rows' alone. ArrowRight (ArrowLeft in RTL) goes from a row to its «⋯», the other arrow, Escape, ArrowUp and ArrowDown back; the «⋯» stays no Tab stop. Under a finger a long press (0.5 s) on a row with actions opens its menu, as the «⋯» and Shift+F10 do, and its release does not open the row. A row's title and second line are one line each whatever no-wrap says (C148 (5)); no-wrap keeps the whole text as the row's tooltip. Events unchanged.",
+    "version 1.11.0 (2026-11-14, owner decision C167 (3), list and feed study control/research/2026-11-14-list-feed.md, prototype prototypes/list-feed-study.html#q-unread; above 1.10.0 of fix/list-item-c148): a minor, a look. An unread row -- a row with a count, the item's count being its unread (count-label «3 непрочитанных») -- has its title semibold (--sf-text--font-weight-6) beside the grey tonal count (C140 (3)); the second line stays regular. Points (1) (the end of the list as sf-pagination appearance more with «Показано X из Y», loading by itself only by a setting) and (5) (several rows chosen by the C150 (9) rule) wait for their names: the list knows no total and no page size, and selected is the open row. Settings, values, events and keys unchanged.",
+    "version 1.12.0 (2026-11-14, list and feed study control/research/2026-11-14-list-feed.md LF-2, LF-8; owner decisions C130 (2)-(4), C136): a minor, a look and a fix. Loading draws three rows of the list itself, sf-list-item of the list's size, so a skeleton row is exactly as tall as the row that replaces it -- the caption row (C49: 48, compact 44, 60 under a finger) until the list has shown rows, then the shape of the rows shown; their words are core's first-paint bars (.sf-first-paint-bar: as tall as the capitals in the middle of the line, the control radius at the ends, the 12 % skeleton fill, the pulse; still under reduced motion). They were three 40 / 44 px slabs 4 apart without a pulse: the list jumped 8 to 40 px when the rows came. The next page is asked for when a person's scroll brings the end into reach: a list whose end showed on load asked for its second page at once with «Показать ещё» on screen as well; now the first scroll after a page arms the watch, and «Показать ещё» stays the way without a scroll. Settings, values, events and keys unchanged.",
+    "version 1.14.0 (2026-11-14, first paint of C47; DEV msg-e5f5f6524 from ui-chat; above 1.13.0 of fix/toolbar-menu-c184): a minor, no new look. The narrow layout below 20rem of the list's own width is a container query on the frame (container sf-list, inline-size < 20rem, the size step g0), not the code's mark, so a printed first paint is laid out narrow before any script: ui-chat's chat-threads at 390 (a 316 px list) printed its badge rows 52 px high and grew them to 76 when the code adopted, CLS 0.09; now 76 from the first frame. data-sf-list-narrow stays for what the sheet cannot know (a row's title squeezed by a long badge, measured as before), and written by hand it still makes the list narrow; below 20rem the code no longer writes it. A frame in a shrink-to-fit place (a popover, an auto-width flex item or grid track), which an inline-size container would fold to nothing, is found by the code and taken out of the query (data-sf-list-fit, the measured rule of 1.5.0 then marks it). Settings, values, events and keys unchanged.",
+    "version 1.14.1 (2026-11-14, owner decision C184 (4), (5); written on the branch as 1.13.0): a minor, above fix/*'s 1.12.0. The row actions open in the page's one menu, core SF.menu.open (fetched by the Loader the first time), not in an sf-menu-context of the list's own: two lists on a page share one menu, the «⋯» and Shift+F10 or the menu key open the same entries, a second press on «⋯» closes it, and the focus goes back to the row. The list holds no sf-menu-context in its markup any more; the list stays one Tab stop with ↑ ↓ between rows. Settings, values, events and keys unchanged; open-menu answers as before.",
+    "version 1.14.2 (2026-11-15, register smart-2 RG-S2-34, owner decisions C49, C47, C77, C105; above 1.14.0 of fix/first-paint-fp; written on the branch as 1.14.1): a patch. A narrow list's row with a caption and its badge or count under its text keeps its caption row's padding (the C49 floor drawn as padding, in this sheet's narrow rule) and adds whole lines (C18 multi-line rows): 72 at 1/2 on a desktop (was 64), 84 under a finger (was 64), 80 on a phone under a finger (was 60, its text on the row's edges). Every other row is unchanged. The browser suites list-row-parts and list-touch-ellipsis read the rows by the decisions: the picture and the end parts at the list's value inset from its outer edge (C77: 12 / 16 / 20, a phone 12 / 12 / 16), a text row among icon rows keeping the picture's place (C105, LI-17), a caption row at the next step's control height and never under the C49 floor (48, 44 compact, 60 under a finger).",
+    "version 1.15.0 (2026-11-15, owner decisions C189 (8) and C167 (3), recipe «mail-chat-list» prototypes/recipe-mail-chat-list.html#q-mail-chat-list-unread, names by the dispatcher; above 1.14.1 of fix/register-smart-2 and 1.14.0 of fix/first-paint-fp): a minor, additions. New item field unread (boolean): a letter unread without a count has its title semibold, as a row with a count has since 1.11.0, and the screen-reader word unread-text («не прочитано», «unread») at its end; a row with a count stays unread as before, its count saying it. New setting time-format (none|auto|relative|exact, default none): the row's time from its date, drawn by sf-time in the row's end part -- in a two-line row on the title's line above the count and the badge (sf-list-item's end column, C148 (2)), in the caption's type and dim ink, the main ink on an unread row; under a day heading the clock time, elsewhere sf-time auto. sf-time draws without a tooltip, so the row stays the list's one Tab stop (C148 (3)). A fix: a one-line unread row (a count, or unread) now has its title semibold too -- a one-line row has no title element, so the 1.11.0 rule reached two-line rows only. A list without the new field and setting draws as 1.12.0 otherwise.",
+    "version 1.16.0 (2026-11-15, recipe first-paint gap; owner decisions C130, C136, C148 (1); above 1.15.0 of fix/list-unread-time-c189, 1.14.1 of fix/register-smart-2, 1.14.0 of fix/first-paint-fp and 1.13.0 of fix/toolbar-menu-c184): a minor, a fix. A skeleton row keeps the leading place of the rows it stands for, so its title bar starts where the title will: an icon place (the row's line square, the control radius) in a list whose rows have icons, sf-avatar's own box and shape of the step the rows give it (the control height with a second line, else the row's line) in a list with avatars or signs, none in a list with neither. The skeleton rows had no leading place: the title bar stood at 16 px and jumped to 52 when rows with icons came (1440; 12 to 40 at 390). The shape is the shape of the rows the list has shown, kept when the rows are taken away for a reload (items = [] and loading); until rows were shown the list keeps no place (it does not guess one; a printed first paint carries the rows' own picture). Settings, values, events and keys unchanged.",
+    "version 1.17.0 (2026-11-15, recipe first-paint gap, follow-up of 1.16.0; owner decisions C130, C136, C148 (1); dispatcher decision on the name, delegated by the owner; above 1.16.0 of fix/list-skeleton-media-c130, 1.15.0 of fix/list-unread-time-c189, 1.14.1 of fix/register-smart-2, 1.14.0 of fix/first-paint-fp): a minor, a setting. leading (auto | none | icon | avatar, default auto) says the leading place of the skeleton rows: a list's very first loading frame, before it has shown any rows, did not know its rows would carry icons or avatars, so its title bar stood at 16 px and jumped to 52 when rows with icons came (1440; 12 to 40 at 390, 16 to 68 with avatars). icon keeps the icon place, avatar sf-avatar's own box of the list's step (the control height while the rows have a second line, else the row's line), a circle unless the rows shown were square; none keeps no place; auto is 1.16.0's behaviour (the shape of the rows shown, no place before). The declared kind holds after rows were shown too; the line count and the avatar's shape still come from the rows shown. The rows draw what their items carry whatever leading says. Values, events and keys unchanged.",
+    "version 1.18.0 (2026-11-15, recipe first-paint gap, follow-up of 1.17.0; owner decision C130; dispatcher decision on the name, delegated by the owner; above 1.17.0 of fix/list-leading-c130 and of group build 7, 1.16.0 of fix/list-skeleton-media-c130, 1.15.0 of fix/list-unread-time-c189): a minor, a setting. lines (auto | 1 | 2, default auto) says the line count of the skeleton rows: a one-line list's very first loading frame, before it has shown any rows, drew the caption row, so its rows were 48 px and shrank to 40 when the rows came (1440; 44 to 32 compact, 60 to 44 under a finger), and with leading avatar its avatar's box was the two-line one (the title bar at 68, the title at 52). 1 keeps one-line rows and the one-line avatar box, 2 the caption row and the control-height box; auto is 1.17.0's behaviour (the rows shown, the caption row before any). The declared count holds after rows were shown too, and gives an avatar's place its width. The rows draw what their items carry whatever lines says. Values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [
@@ -745,6 +800,10 @@
           "count": {
             "type": "number",
             "description": "A count at the row's end (unread); 0 draws nothing, above 99 «99+»."
+          },
+          "unread": {
+            "type": "boolean",
+            "description": "Unread without a count: the title semibold and the word «не прочитано» for a screen reader."
           },
           "badge": {
             "type": "object",

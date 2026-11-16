@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-rich",
-  "version": "1.3.1",
+  "version": "1.8.1",
   "title": "Rich text",
   "summary": "A form field for formatted text: paragraphs, headings 2 to 4, bold, italic, links, bulleted and numbered lists and quotes, with a toolbar, undo and redo. Its value is HTML of that subset and nothing else: the value it is given, every paste and drop and every edit are cleaned to it.",
   "kind": "smart",
@@ -32,10 +32,13 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.buttons",
       "component.icon-buttons",
       "component.icons",
       "smart.button",
+      "smart.help-mark",
       "smart.input",
+      "smart.menu-context",
       "smart.popover"
     ],
     "public_parts": []
@@ -61,11 +64,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The field ladder, as sf-textarea's: the frame, the padding and the text of the same size; the toolbar's buttons a rung below.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the frame, the padding and the text of the same size; the toolbar's buttons a rung below (1/3 at 1/3).",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "appearance": {
@@ -75,6 +80,15 @@
         "enum": [
           "bordered",
           "filled"
+        ]
+      },
+      "overflow": {
+        "type": "string",
+        "default": "more",
+        "description": "What the toolbar does when its tools do not fit one row (owner decision C155, R233): more (the default) keeps one row and puts whole groups, with their separator, under ⋯ «Ещё» at its end -- undo and redo first, then the lists and the quote; the text levels and bold, italic, link stay; wrap lets the row wrap as before 1.6.0.",
+        "enum": [
+          "more",
+          "wrap"
         ]
       },
       "label": {
@@ -97,6 +111,11 @@
         "default": "",
         "description": "The line under the field; it describes the editing surface."
       },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
+      },
       "name": {
         "type": "string",
         "default": "",
@@ -110,6 +129,15 @@
       "max-rows": {
         "type": "number",
         "description": "The most lines before the text scrolls inside. Unset means no cap; a value below rows is rows."
+      },
+      "maxlength": {
+        "type": "number",
+        "description": "The most characters the text should have, its markup not counted (C141 (1), sf-input-textarea's rule). The count shows from 80 % of it; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut. Unset: no limit, no count."
+      },
+      "counter": {
+        "type": "boolean",
+        "default": false,
+        "description": "With maxlength: the count shows always, not only from 80 % of the limit (C141 (1))."
       },
       "disabled": {
         "type": "boolean",
@@ -321,11 +349,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-rich/index.js",
-        "sha256": "dede7e1b1ba8413417c85e98237f68a311ba250b25f5cc6bbeb7f05deff285d7"
+        "sha256": "f0319c0a42266ba2d12b371c23e05265fe11499da7fef7d7f2450cebe3e777e4"
       },
       {
         "path": "src/smart/input-rich/js/templates/default.js",
-        "sha256": "f38ff5a45934eecda496a22a19e11858beb531bcd7b9b11792af5668982b7021"
+        "sha256": "212f5a17b2462439c63de29f869394927bfeae147b024458103d059e6989f298"
       },
       {
         "path": "src/smart/input-rich/js/rich-text-html.mjs",
@@ -333,19 +361,19 @@
       },
       {
         "path": "src/core/js/composition/html-subset.mjs",
-        "sha256": "20d9de5be17653b2d2ade6c38f9c4f92447d14ab20694eb003659d271be42405"
+        "sha256": "39c5d4f3595e02a959d389a0663c4648b3c87cc96bc8113d2b0902397a07b3aa"
       },
       {
         "path": "src/smart/input-rich/scss/_smart__rich_text.scss",
-        "sha256": "97f2fcb0a688b2a74b47234650ddce0cf1d0b13aa9941ba87c2ebd9e01cbd8b4"
+        "sha256": "45fc913740b4bb558fe79d4c60e91982875b145dd0dc35c7c9d5fddded7ddad9"
       },
       {
         "path": "src/smart/input-rich/rule.js",
-        "sha256": "2085d412b36c30cbef4d13ac7a713ae26b5f027af0a1ed611912ce384e3edc82"
+        "sha256": "52c46678bb1b3b3c12957e99e29b1d675c3ca05056d6d3f3c40d8ed50017f073"
       },
       {
         "path": "src/smart/input-rich/docs.md",
-        "sha256": "6e79f7b229959209b0f9a3813335a4aeddead91a4fcc5ecd27fd0cf21bdfb734"
+        "sha256": "288292a4c95cff1bbd1b7ba40f13e0cc004a7cb3461f7c1cccc024fd4aa47773"
       }
     ],
     "generated_runtime": []

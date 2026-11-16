@@ -7,6 +7,62 @@
   justify-content: center;
 }
 
+/* The split button (owner decision C119; ui-control research
+   2026-11-13-buttons-system R206): a label part, an ordinary .sf-button, and a
+   square arrow part, an .sf-icon-button of the same size and height (the icon
+   button is square on every rung, so both parts stand on the ladder height),
+   joined as a button group joins: inner corners square, a 1 px seam. Between
+   two filled parts the seam is the page (a gap of --sf-px); two outlined parts
+   share one border (the arrow steps back over it). Two tab stops; the focused
+   part stands above its neighbour so the ring is never under it. sf-button
+   draws it with menu and split; the class form is the same markup. */
+.sf-button-split {
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--sf-px);
+  max-inline-size: 100%;
+  vertical-align: middle;
+  isolation: isolate;
+}
+
+.sf-button-split:has(> .sf-button--outline) {
+  gap: 0;
+}
+
+.sf-button-split > .sf-button {
+  min-inline-size: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.sf-button-split > .sf-icon-button,
+.sf-button-split > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
+  flex: 0 0 auto;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.sf-button-split:has(> .sf-button--outline) > .sf-icon-button,
+.sf-button-split:has(> .sf-button--outline) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
+  margin-inline-start: calc(var(--sf-px) * -1);
+}
+
+.sf-button-split > :focus-visible,
+.sf-button-split > :is(sf-button-icon, sf-icon-button) > :focus-visible {
+  position: relative;
+  z-index: 1;
+}
+
+/* full-width (C36) on a split button: the label part takes the room. */
+.sf-button-split.sf-button-split--full-width {
+  display: flex;
+  inline-size: 100%;
+}
+
+.sf-button-split.sf-button-split--full-width > .sf-button {
+  flex: 1 1 auto;
+}
+
 .sf-button,
 .sf-icon-button {
   transition-duration: var(--sf-duration-fast);
@@ -198,8 +254,8 @@
 @layer sf.states {
   /* A disabled button's spinner (disabled and loading) takes the disabled
      ink, the ink of its label -- unless --sf-loader--color is set. */
-  .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
-    color: var(--sf-loader--color, var(--sf-on-disable));
+  .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), [aria-disabled="true"]:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
   }
 
   /* The label under an overlaid spinner: in its place and in the accessibility
@@ -211,13 +267,28 @@
 
   /* Secondary outline, surface and link keep the secondary ink when hovered
      or pressed: the fill steps as on-surface's do, the label does not turn
-     grey. Same weight as the on-surface state rules, later in the layer. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
-    --sf-button-text-container--color: var(--sf-secondary);
+     grey. Same weight as the on-surface state rules, later in the layer.
+     The ink steps along the secondary's own ladder with the plate
+     (--sf-secondary-hover / -active: dark 85 / 90, light 35 / 30), as an
+     outline primary's does: on the neutral fill's 16 and 20, which the dark
+     theme lightens, the resting secondary (80) fell to 4.30 hovered and 3.88
+     pressed on a popup (C113 follow-up). */
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):hover:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-secondary-hover));
   }
 
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled):not(.disabled):is(:hover, :active, .active) .sf-icon {
-    --sf-icon--color: var(--sf-secondary);
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-place--ink, var(--sf-secondary-hover));
+  }
+
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-secondary-active));
+  }
+
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:disabled, [aria-disabled="true"]):not(.disabled):is(:active, .active) .sf-icon {
+    --sf-icon--color: var(--sf-place--ink, var(--sf-secondary-active));
   }
 }
 
@@ -229,7 +300,8 @@
      its container's variant). A filled (default) button keeps on-surface's
      inverse ink: on a dark fill there is no quieter step. Hover, press and
      disabled are the states' (sf.states), as for on-surface. */
-  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
+  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--on-surface.sf-button--on-surface-variant:not(.sf-button--default):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface-variant));
   }
 
@@ -245,12 +317,23 @@
      pressed. Before, these three looks of secondary had no rule at all: no
      padding, shorter than the size's control height, the browser's text colour. Filled
      (default) and tonal secondary are unchanged. */
-  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner) {
-    --sf-button-text-container--color: var(--sf-button-color, var(--sf-secondary));
+  /* On a place with its own ink -- a strong coloured place, the duo
+     gradient, glass, an inverse place, which declare it as --sf-place--ink --
+     the label and the icons are that ink in every state, as the status
+     containers' ink is there (places states, 2026-11-14): a hue on a colour
+     is that colour or near it (secondary and error read 1.00-2.05:1 on the
+     strong places and the inverse, 1.74-1.95 on glass over a light picture;
+     only the duo gradient's dark secondary and glass over a dark picture
+     passed 4.5, so no place keeps a hue in every theme and picture). The
+     page and every opaque place (initial) keep the hue and its steps. The
+     fill and the edge keep their hue. */
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-secondary)));
   }
 
   .sf-button:is(.sf-button--outline, .sf-button--surface, .sf-button--ghost, .sf-button--link).sf-button--secondary .sf-icon {
-    --sf-icon--color: var(--sf-secondary);
+    --sf-icon--color: var(--sf-place--ink, var(--sf-secondary));
   }
 
   /* A shortcut (sf-button shortcut): the keys at the end of the button, in a
@@ -288,35 +371,82 @@
    ring; disabled wears the disabled look. The selectors repeat the block class
    to stand over every appearance's state rule in this layer. */
 @layer sf.states {
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
     --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container));
     --sf-button--border-color: transparent;
     --sf-button--focus-ink: transparent;
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):hover {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
     --sf-button--background-color: var(--sf-primary-container-hover);
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):active {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
     --sf-button--background-color: var(--sf-primary-container-active);
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut) {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):not(:has(> *)),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible):not(:has(> *)) {
     --sf-button-text-container--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
   }
 
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) .sf-icon,
-  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled):is(:hover, :active, :focus-visible) .sf-icon {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) .sf-icon,
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active, :focus-visible) .sf-icon {
     --sf-icon--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+
+  /* A tonal toggle (TB-3, rule C12). Its resting plate is already a container
+     at the first fill step (12 light / 24 dark), so the pressed container at
+     the same step left primary with the very plate it had unpressed, and
+     secondary and error with a change of hue alone -- colour alone, one cue
+     beside the filled glyph. Pressed, a tonal button takes the container's
+     pressed step instead: two fill steps over rest (20 / 32, the
+     container's -active), whatever its scheme. The fill family stops at 32,
+     so hover and press over it do not step the container further: they lay
+     the surface's state layer on it (4 and 12 of the state family, the
+     place's own ink on a coloured place). */
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled),
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):is(:hover, :active) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container-active));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  /* The neutral toggle (C12, after C113). An on-surface tonal rests on the
+     neutral fill at 12, which in the dark theme is a light tone over the
+     place; the pressed container (primary 50 at 32) is a dark tone and came
+     out barely apart from it: 1.08 / 1.01 / 1.06 on a dark page, card and
+     popup. The fill family ends at 32, so the pressed toggle carries the
+     selected state's layer over the fill (--sf-surface-state-select, 8):
+     1.33 / 1.23 / 1.13 from the unpressed plate (light 1.24). Over it, hover
+     takes the press layer (12) and press adds the hover layer to that (12 and
+     4), one state step each, so the label keeps 4.5:1 on a popup. Coloured
+     tonal toggles rest on their own container and keep TB-3's look. */
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+    background-image: linear-gradient(var(--sf-surface-state-select), var(--sf-surface-state-select));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):hover {
+    background-image: linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--tonal.sf-button--on-surface:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled):active {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover)), linear-gradient(var(--sf-surface-state-active), var(--sf-surface-state-active));
   }
 
   /* Forced colours paint every fill ButtonFace, so the fill cannot say it:
      the edge does, in Highlight, inside the control height. The filled icon
      still says it too. */
   @media (forced-colors: active) {
-    .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled):not(.disabled) {
+    .sf-button.sf-button.sf-button.sf-button:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
       --sf-button--border-top-width: var(--sf-px);
       --sf-button--border-bottom-width: var(--sf-px);
       --sf-button--border-inline-start-width: var(--sf-px);
@@ -333,4 +463,17 @@
    page's --sf-icon-fill still wins, as everywhere. */
 .sf-button:is(.sf-button--pressed, [aria-pressed="true"]) .sf-icon {
   --sf-icon--fill: 1;
+}
+
+/* aria-disabled="true" is disabled for the look and the pointer (owner remark
+   2026-11-15, the copy button): a button that keeps its focus while it cannot
+   act -- a copy at work, a step not yet open -- draws the disabled look, takes
+   no hover or press, and shows the arrow. The state rules read
+   :not(:disabled, [aria-disabled="true"]) and the disabled look
+   :is(:disabled, [aria-disabled="true"]), at the specificity they had. It
+   still takes focus and its ring, and the page decides what a press does. */
+@layer sf.components {
+  .sf-button[aria-disabled="true"] {
+    cursor: default;
+  }
 }

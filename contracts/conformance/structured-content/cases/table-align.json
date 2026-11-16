@@ -108,7 +108,7 @@
   },
   "expect": {
     "valid": true,
-    "html": "<article data-sf-composition-id=\"root\"><div class=\"table-frame\" data-sf-composition-id=\"t\"><table class=\"table\"><thead><tr><th scope=\"col\">Name</th><th scope=\"col\" style=\"text-align: center\">Size</th><th scope=\"col\" style=\"text-align: end\">Note</th></tr></thead><tbody><tr><td>A</td><td style=\"text-align: center\">1</td><td style=\"text-align: end\"><em>first</em></td></tr><tr><td>B</td><td style=\"text-align: center\">2</td><td style=\"text-align: end\"><a href=\"/b\">second</a></td></tr></tbody></table></div></article>",
+    "html": "<article data-sf-composition-id=\"root\"><div class=\"table-frame\" data-sf-composition-id=\"t\"><table class=\"table\"><thead><tr><th scope=\"col\">Name</th><th scope=\"col\" class=\"text-center\">Size</th><th scope=\"col\" class=\"text-end\">Note</th></tr></thead><tbody><tr><td>A</td><td class=\"text-center\">1</td><td class=\"text-end\"><em>first</em></td></tr><tr><td>B</td><td class=\"text-center\">2</td><td class=\"text-end\"><a href=\"/b\">second</a></td></tr></tbody></table></div></article>",
     "diagnostics": [],
     "assets": [
       "utility/table-frame"

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-copy",
-  "version": "1.4.0",
+  "version": "1.5.2",
   "title": "Copy button",
   "summary": "Copies a value or a target's text, confirms with a check and a polite announcement, and selects the text for Ctrl+C when the browser refuses the clipboard.",
   "kind": "smart",
@@ -72,7 +72,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The control ladder's step: 1 by default, the step of a field and a button beside it (decision C22). A compact region (data-sf-density=\"compact\") moves it down a step by itself; never a smaller size by hand.",
+        "description": "The control ladder's step: 1 by default, the step of a field and a button beside it (decision C22). Beside a value in a line of text, give it the line's step (size=\"1/2\" beside text 1/2: 32, icon 20; size 1 beside text 1: 40, icon 24); in a row of buttons or a field it takes their size; density moves it with the row (decision C103).",
         "enum": [
           "1/3",
           "1/2",
@@ -354,15 +354,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-copy/index.js",
-        "sha256": "b6f999f2f88c203fbb75d00d1f743c19caf9b6325aa667fa7d891df263e20b7a"
+        "sha256": "9deb90bf21c31ac41b4c9294d394aec62c81ca409aa7cb7b91a07994060e5976"
       },
       {
         "path": "src/smart/button-copy/js/templates/default.js",
-        "sha256": "2942661889a05a3e207605da2b8f21bd44289b537411c1bc09083305ab2ee2b9"
+        "sha256": "28aa25ea777762f55cd7b38e2c44257de2c77b9005b4473500b8991d8abaf204"
       },
       {
         "path": "src/smart/button-copy/scss/_smart__copy_button.scss",
-        "sha256": "18f0a1c6cdec509d89d5bac957a93a7971e4db704a5e1e914ff629b8d45ece5d"
+        "sha256": "323b766bedeecaa8bfc4d9fd94f6135d68219e3045991b2c695d2803047f86e0"
       },
       {
         "path": "src/smart/button-copy/rule.js",
@@ -370,7 +370,7 @@
       },
       {
         "path": "src/smart/button-copy/docs.md",
-        "sha256": "ee4bd5d86b656867c1ff760dd0cc4b2438b0b702af30a7ad1129be5ff80fb234"
+        "sha256": "705fe368aa9c39da50460ad5e7534de21172bd836891014548de8cad49d15ea0"
       }
     ],
     "generated_runtime": []

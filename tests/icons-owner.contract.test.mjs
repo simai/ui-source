@@ -14,11 +14,25 @@ const readUiDoc = path => readFile(new URL(path, uiDocRoot), 'utf8');
 test('ordinary Icons has valid semantic defaults and token geometry', async () => {
   const styles = await read('src/component/icons/scss/_css__icons.scss');
 
-  assert.match(styles, /--sf-icon--weight: var\(--sf-weight--regular\)/);
-  assert.match(styles, /--sf-icon--optical-size: 24/);
+  // Unset weight inherits the label's (C151 point 4); grade and optical size
+  // are inherited variables with the font's defaults as fallbacks.
+  assert.doesNotMatch(styles, /--sf-icon--weight: var\(--sf-weight--regular\)/);
+  assert.match(styles, /:root \.sf-icon \{\n  font-weight: var\(--sf-icon-weight, var\(--sf-icon--weight, inherit\)\);/);
+  assert.match(styles, /'opsz' var\(--sf-icon--optical-size, 24\)/);
+  assert.match(styles, /'GRAD' var\(--sf-icon--grade, 0\)/);
+  assert.match(styles, /\.theme-dark \{\n  --sf-icon--grade: -25;/);
   assert.match(styles, /--sf-icon--line-height: 1/);
   assert.match(styles, /color: var\(--sf-icon--color, var\(--sf-icon-color, currentColor\)\)/);
-  assert.match(styles, /font-size: var\(--sf-icon-glyph-size, var\(--sf-icon--font-size, var\(--sf-icon-size-3\)\)\)/);
+  // Without a size the glyph is a size-1 button's icon (24, phone and compact
+  // 20; icons study IC-2).
+  assert.match(styles, /font-size: var\(--sf-icon-glyph-size, var\(--sf-icon--font-size, var\(--sf-text-height-1\)\)\)/);
+  // The steps a button draws read its icon step; the others go one icon step
+  // down on a phone (IC-2, C01/C18).
+  for (const [size, step] of [['1', '1\\/3'], ['2', '1\\/2'], ['3', '1'], ['4', '2']]) {
+    assert.ok(styles.includes(`'${size}': (var(--sf-text-height-${step}), var(--sf-text-height-${step}))`), size);
+  }
+  assert.match(styles, /'5': \(var\(--sf-icon-size-4\), var\(--sf-icon-size-5\)\)/);
+  assert.match(styles, /@media \(min-width: bp\.\$breakpoint-desktop\)/);
   assert.doesNotMatch(styles, /--sf-icon--optical-size:\s*inherit/);
   assert.doesNotMatch(styles, /(?<![-\w])\d+(?:\.\d+)?(?:px|rem|em)(?![-\w])/);
 });
@@ -60,10 +74,11 @@ test('Smart Icons projects the canonical ordinary vocabulary', async () => {
     read('src/smart/icon/js/templates/default.js'),
   ]);
 
-  assert.match(source, /sharp: this\.iconType === "sharp"/);
+  // sf-icon draws one family (1.2.0, IC-4); the class markup keeps the
+  // family modifiers for hosts that ship their fonts (Docara).
+  assert.match(source, /get iconType\(\) \{\n    return "outlined";/);
   assert.match(template, /sf-icon--weight-\$\{weightClass\}/);
-  assert.match(template, /sf-icon--rounded/);
-  assert.match(template, /sf-icon--sharp/);
+  assert.doesNotMatch(template, /sf-icon--rounded|sf-icon--sharp/);
   assert.match(template, /sf-icon--filled/);
 });
 

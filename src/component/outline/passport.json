@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.outline",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/outline/docs/docs.md",
@@ -12,7 +12,7 @@
     "src/component/outline/scss/_outline.scss",
     "src/component/outline/scss/index.scss"
   ],
-  "content_sha256": "4fead1ad4de07f2b5136355be1ed25ff8c5ff77e40cf190c379fffd4251fbeaf",
+  "content_sha256": "a8f9db858fceb727241f825e5bbb5cb58fe21a1a152d5c81e3c4a144a8f2ed6f",
   "dependencies": [
     {
       "id": "tokens.border",

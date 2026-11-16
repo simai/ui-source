@@ -1,0 +1,139 @@
+{
+  "examples": [
+    {
+      "name": "reference",
+      "title": "Кнопка «Настройки отображения» и панель под ней",
+      "settings": {}
+    },
+    {
+      "name": "russian",
+      "title": "Российский сайт: «Версия для слабовидящих», панель открыта",
+      "settings": {
+        "label": "Версия для слабовидящих",
+        "open": true
+      },
+      "studio": {
+        "title": "display-settings russian",
+        "scenario": {
+          "assertions": [
+            "upgraded",
+            "no-console-error",
+            "no-network"
+          ]
+        }
+      },
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "the panel is open: five groups of choices (sixteen buttons, the pressed one marked) print before any code, so the panel keeps its height and the page does not move when the runtime arrives"
+      }
+    },
+    {
+      "name": "panel",
+      "title": "Панель на месте, со шрифтом и подчёркиванием ссылок (включает автор)",
+      "settings": {
+        "layout": "panel",
+        "show-font": true,
+        "show-links": true
+      },
+      "first-paint": {
+        "max-bytes": 15360,
+        "why": "the panel stands on the page with the author's font and link groups: seven groups of choices print before any code, so the panel keeps its height and the page does not move when the runtime arrives"
+      }
+    }
+  ],
+  "pages": [
+    {
+      "name": "conformance",
+      "title": "sf-display-settings against component.json (standard simai.smart-component 1.3.15 §12, gate 20)",
+      "page": {
+        "lang": "ru",
+        "body": [
+          "<main id=\"content\" style=\"inline-size: 60rem\">",
+          "  <p><sf-display-settings id=\"disclosure\" label=\"Версия для слабовидящих\"></sf-display-settings></p>",
+          "  <sf-display-settings id=\"panel\" layout=\"panel\" show-font show-links></sf-display-settings>",
+          "  <sf-display-settings id=\"plain\" layout=\"panel\"></sf-display-settings>",
+          "  <p>Запись открыта до 30 ноября. <a id=\"link\" href=\"#content\">Правила записи</a></p>",
+          "  <p><img id=\"pic\" alt=\"Читальный зал после ремонта\" width=\"40\" height=\"28\" src=\"data:image/gif;base64,R0lGODlhAQABAAAAACw=\"></p>",
+          "</main>"
+        ]
+      },
+      "checks": [
+        {
+          "id": "p1-disclosure",
+          "title": "disclosure: the trigger is a button named by the label with aria-expanded and aria-controls; it opens the panel in place, Escape closes it and gives the focus back",
+          "covers": "settings.label, settings.layout disclosure, settings.open, keyboard.host, accessibility",
+          "steps": [
+            {
+              "check": "(() => { const el = document.querySelector('#disclosure'); const b = el.querySelector('.sf-display-settings__trigger button'); const panel = el.querySelector('.sf-display-settings__panel'); return b.textContent.trim() === 'Версия для слабовидящих' && b.getAttribute('aria-expanded') === 'false' && b.getAttribute('aria-controls') === panel.id && panel.hidden && !el.hasAttribute('data-open'); })()"
+            },
+            {
+              "user": "click:#disclosure .sf-display-settings__trigger button",
+              "wait": 150,
+              "check": "(() => { const el = document.querySelector('#disclosure'); const b = el.querySelector('.sf-display-settings__trigger button'); const panel = el.querySelector('.sf-display-settings__panel'); return b.getAttribute('aria-expanded') === 'true' && !panel.hidden && el.open === true && el.hasAttribute('data-open') && panel.getAttribute('aria-label') === 'Версия для слабовидящих'; })()"
+            },
+            {
+              "user": "press:Escape",
+              "wait": 150,
+              "check": "(() => { const el = document.querySelector('#disclosure'); return el.open === false && el.querySelector('.sf-display-settings__panel').hidden && el.contains(document.activeElement); })()"
+            }
+          ]
+        },
+        {
+          "id": "p2-scheme",
+          "title": "a scheme is a pressed toggle in the group «Цвет»; the root takes data-sf-scheme, the page its ground and text, links are underlined; the choice is in localStorage and in no cookie",
+          "covers": "values.settings, events.change, scheme",
+          "steps": [
+            {
+              "script": "(window.__cookie = document.cookie, window.__changes = [], document.querySelector('#plain').addEventListener('sf-display-settings-change', (e) => window.__changes.push(e.detail.setting)), true)",
+              "user": "click:#plain sf-button[data-value='yellow-on-black'] button",
+              "wait": 150,
+              "check": "(() => { const root = document.documentElement; const b = document.querySelector(\"#plain sf-button[data-value='yellow-on-black'] button\"); const group = b.closest('[role=group][data-group=scheme]'); const label = document.getElementById(group.getAttribute('aria-labelledby')); const kept = JSON.parse(localStorage.getItem('sf-display-settings') || '{}'); return root.getAttribute('data-sf-scheme') === 'yellow-on-black' && b.getAttribute('aria-pressed') === 'true' && label.textContent === 'Цвет' && kept.scheme === 'yellow-on-black' && document.cookie === window.__cookie && getComputedStyle(document.querySelector('#link')).textDecorationLine === 'underline' && getComputedStyle(document.body).backgroundColor === 'rgb(0, 0, 0)' && window.__changes.join() === 'scheme' && document.querySelector('#panel').settings.scheme === 'yellow-on-black'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p3-text",
+          "title": "«А+» twice: the root is 150 % of the browser's size and says so in a live region; «Обычная версия» takes everything back and forgets the choice",
+          "covers": "text scale, actions.reset",
+          "steps": [
+            {
+              "script": "(window.__base = parseFloat(getComputedStyle(document.documentElement).fontSize) / (Number(document.documentElement.getAttribute('data-sf-text-scale') || 100) / 100), true)",
+              "user": "click:#plain sf-button[data-setting='textScale'][data-value='1'] button",
+              "wait": 120
+            },
+            {
+              "user": "click:#plain sf-button[data-setting='textScale'][data-value='1'] button",
+              "wait": 150,
+              "check": "(() => { const root = document.documentElement; const value = document.querySelector('#plain .sf-display-settings__value'); return root.getAttribute('data-sf-text-scale') === '150' && Math.abs(parseFloat(getComputedStyle(root).fontSize) - window.__base * 1.5) < 0.5 && value.textContent.trim() === '150 %' && value.getAttribute('aria-live') === 'polite'; })()"
+            },
+            {
+              "user": "click:#plain .sf-display-settings__reset button",
+              "wait": 150,
+              "check": "(() => { const root = document.documentElement; return !root.hasAttribute('data-sf-text-scale') && !root.hasAttribute('data-sf-scheme') && localStorage.getItem('sf-display-settings') === null; })()"
+            }
+          ]
+        },
+        {
+          "id": "p4-author-options",
+          "title": "the font and links groups only where the author turns them on; images hidden leave the text alternative in place",
+          "covers": "settings.show-font, settings.show-links, images",
+          "steps": [
+            {
+              "check": "(() => { const has = (id, g) => Boolean(document.querySelector(`#${id} [data-group=${g}]`)); return has('panel', 'font') && has('panel', 'links') && !has('plain', 'font') && !has('plain', 'links'); })()"
+            },
+            {
+              "user": "click:#plain sf-button[data-value='hide'] button",
+              "wait": 200,
+              "check": "(() => { const pic = document.querySelector('#pic'); const caption = pic.nextElementSibling; return document.documentElement.getAttribute('data-sf-images') === 'hide' && getComputedStyle(pic).display === 'none' && caption.classList.contains('sf-image-caption') && caption.textContent === 'Читальный зал после ремонта' && getComputedStyle(caption).display === 'block'; })()"
+            },
+            {
+              "script": "(document.querySelector('#plain').reset(), true)",
+              "wait": 120,
+              "check": "!document.documentElement.hasAttribute('data-sf-images') && getComputedStyle(document.querySelector('#pic').nextElementSibling).display === 'none'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu",
-  "version": "1.6.0",
+  "version": "1.11.1",
   "title": "Menu",
   "summary": "Site navigation built from data -- nested sections, the current page, groups that open and close -- or from a nested list of links in the markup, drawn as the class menu: a column whose branches open in place, or a row whose branches open as panels placed by SF.Position, which becomes a button opening the same links when it does not fit. The WAI-ARIA disclosure navigation pattern, not an application menu.",
   "kind": "smart",
@@ -68,11 +68,11 @@
       "appearance": {
         "type": "string",
         "default": "default",
-        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; compact, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says.",
+        "description": "The class menu's presentations: default; documentation-tree, the tree with no borders and an indent per level; rail, a rail of first-level icons whose words stay in the link's name and whose branches do not open (both columns); navigation, a site header's sections -- rows with no frame and no fill at rest, a state-layer fill under the pointer and a plate on the current page -- a row or a column as orientation says. The old value compact is a dated alias of rail until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-menu-appearance-compact-to-rail).",
         "enum": [
           "default",
           "documentation-tree",
-          "compact",
+          "rail",
           "navigation"
         ]
       },
@@ -95,7 +95,7 @@
       "overflow": {
         "type": "string",
         "default": "collapse",
-        "description": "What a row does when its first level does not fit (the values of sf-tabs' overflow where they mean the same): more, priority+ -- the items that do not fit leave the row from its end for a trailing «Ещё» branch (more-label), the section that holds the current page stays while it fits beside it, and with no item left «Ещё» reads «Меню» (toggle-label); collapse, the row becomes the button (collapse auto); none, the row stays whole. sf-menu-overflow says which items left.",
+        "description": "What a row does when its first level does not fit (the values of sf-tabs' overflow where they mean the same): more, priority+ -- the items that do not fit leave the row from its end for a trailing «Ещё» branch (more-label), the section that holds the current page stays while it fits beside it, and with no item left «Ещё» reads «Меню» (toggle-label); collapse (the default), the same «Ещё» above md and the «Меню» button below md, a phone (collapse auto); none, the row stays whole. sf-menu-overflow says which items left.",
         "enum": [
           "more",
           "collapse",
@@ -260,7 +260,7 @@
             },
             "open": {
               "type": "boolean",
-              "description": "A column's branch is open at first; a row's panels open only when asked."
+              "description": "A column's branch is open at first; in a row the first flagged branch of each level opens its panel at first."
             },
             "children": {
               "type": "array",
@@ -331,7 +331,7 @@
       },
       "open": {
         "type": "boolean",
-        "description": "A column's branch is open at first; a row's panels open only when asked."
+        "description": "A column's branch is open at first; in a row the first flagged branch of each level opens its panel at first."
       },
       "children": {
         "type": "array",
@@ -354,7 +354,7 @@
       },
       "group": {
         "type": "boolean",
-        "description": "A first-level item that is a group: a heading over its items, never a destination. A row and the compact rail draw the items in the group's place, without the heading."
+        "description": "A first-level item that is a group: a heading over its items, never a destination. A row and the rail draw the items in the group's place, without the heading."
       },
       "collapsible": {
         "type": "boolean",
@@ -407,7 +407,8 @@
         }
       ],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "close": {
@@ -429,7 +430,8 @@
         }
       ],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "toggle": {
@@ -451,14 +453,16 @@
         }
       ],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "closeAll": {
-      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Returns whether anything changed.",
+      "summary": "Close a row's open panels and the panel of the button a collapsed menu is; a column's groups keep their state. Answers an outcome: applied when anything closed, else refused with already.",
       "arguments": [],
       "returns": {
-        "type": "boolean"
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
       }
     },
     "isOpen": {
@@ -477,7 +481,7 @@
   },
   "events": {
     "sf-menu-navigate": {
-      "summary": "navigate (vocabulary).",
+      "summary": "A link of the menu is pressed to go to its page in the same tab: id, href and item of the link. Cancel it to route the page yourself; the browser then does not go. A press that opens another tab or window does not fire it.",
       "payload": {
         "type": "object",
         "required": [
@@ -499,7 +503,7 @@
       "canonical": true
     },
     "sf-menu-toggle": {
-      "summary": "toggle (vocabulary).",
+      "summary": "A branch opened or closed: id and item of the branch (null for the panel of a collapsed menu's button), open, and source -- user for a press, a key, the pointer resting or leaving, or focus leaving the menu; method for open, close, toggle and close-all. Fires once for each branch that changed.",
       "payload": {
         "type": "object",
         "required": [
@@ -725,7 +729,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "appearance=compact"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": []
@@ -736,19 +742,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu/index.js",
-        "sha256": "4a2a948fa333b6cb677fee2c61dd54c87e93d03bd97f019b41c39a955f354fe6"
+        "sha256": "ac7fa498ffb1ae7f7e44c236f98cf1ffeeb63d9a87af54e7c4ef0370fc23b1a9"
       },
       {
         "path": "src/smart/menu/items.mjs",
-        "sha256": "291327b87089fe8c2bc35090ccdc2877fe0f941cb2554154919762552a583343"
+        "sha256": "fcf8f8c185eb1097c17664e898cd3520c56c31745ac2926073413bc2fa2c272d"
       },
       {
         "path": "src/smart/menu/js/templates/default.js",
-        "sha256": "1c9f83cec51c7e79e8b3532e3714eafb8b269d120581e41857ad3de57a9efdc5"
+        "sha256": "8e61d8b5afb3941c09bd2e9676734fd1ca39b8741ece9d4be214a1e353e8d7f7"
       },
       {
         "path": "src/smart/menu/scss/_smart__menu.scss",
-        "sha256": "a611eeda93c2d73e9a391ebf5eb0bd81ea47bc5d9a9cab6fcd131f15cdc51c4c"
+        "sha256": "2d93d1f202d71e8ac28f9f0353709e493bc3f9da4319e996ecf97f889ec3b5d1"
       },
       {
         "path": "src/smart/menu/rule.js",
@@ -756,7 +762,7 @@
       },
       {
         "path": "src/smart/menu/docs.md",
-        "sha256": "647b336526fea97b91ee78ff9ebb0bcc487b7b2f556ad788ac22d236946d22bc"
+        "sha256": "8f9e375560de740406242c32eb14d797b61340956edc370eb23bc886cb12095e"
       }
     ],
     "generated_runtime": []

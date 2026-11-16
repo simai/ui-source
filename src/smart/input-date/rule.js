@@ -10,5 +10,8 @@ SF.RuleLoader['cl-input-date'] = {
     { name: 'cl-button' },
     { name: 'cl-button-icon' },
     { name: 'cl-icon' },
+    // On a phone (below 60rem) a range opens a ribbon of months in the
+    // Framework's bottom sheet, sf-drawer placement=bottom (owner decision C62).
+    { name: 'cl-drawer', lazy: true },
   ],
 };

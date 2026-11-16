@@ -1,0 +1,21 @@
+// SIMAI Framework
+// https://simai.io
+
+// A row of buttons of one group (owner decision C173 point 3, C156): a dialog
+// or window footer, a confirmation, a wizard footer, a page header's actions.
+// The gap is the role --sf-gap--actions (8; 4 in the compact density), so a
+// row written by hand stands as the Framework's own rows do. In the base
+// layer: a utility on the same element (.justify-between, .gap-*) wins.
+@layer sf.base {
+  .sf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sf-gap--actions);
+  }
+
+  // The same row pushed to the end of its line (a footer's Cancel and Save).
+  .sf-actions--end {
+    justify-content: flex-end;
+  }
+}

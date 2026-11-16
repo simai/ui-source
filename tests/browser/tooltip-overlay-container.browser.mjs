@@ -91,6 +91,8 @@ try {
       await page.mouse.move(5, 5);
       await page.waitForTimeout(150);
       await page.hover(`#${id}`);
+      // C59: the first tooltip opens after 0.5 s of hover, the next ones at once.
+      await page.waitForFunction((key) => !document.getElementById(`${key}-tip`).hidden, id, {timeout: 2000}).catch(() => {});
       // The first frame the tooltip shows, then after it settles.
       const read = () => page.evaluate((key) => {
         const button = document.getElementById(key).getBoundingClientRect();

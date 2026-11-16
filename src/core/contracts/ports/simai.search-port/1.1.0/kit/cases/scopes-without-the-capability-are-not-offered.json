@@ -1,0 +1,26 @@
+{
+  "id": "scopes-without-the-capability-are-not-offered",
+  "intent": "query.change",
+  "capability": "scopes",
+  "summary": "A host that groups nothing announces no scopes, and the panel draws no pills -- not even an «All» of one.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 8,
+      "query": "tab",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "scopes in the answer is ignored where the capability is absent, and a result's group is drawn as nothing: one ungrouped list, no captions, no pills. A row of pills with one pill in it is the dead control the rule forbids."
+  }
+}

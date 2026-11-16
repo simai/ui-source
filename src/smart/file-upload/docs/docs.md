@@ -18,23 +18,43 @@ selection events. A clone of the default rendered host starts with its own empty
 items and one picker, not a second copy of the old render. DOM cloning is not a
 File-state copy API. Smart owns binding after render and cleanup on disconnect;
 ordinary automatic discovery does not also bind its internal drop zone.
-The component does not upload to a server: transport, progress updates and server
-validation belong to the consumer. Native accept is a picker hint, not a security
-check. No native form-submission or persistence contract is implied.
+The component sends no bytes by itself: the page's `uploader` does, or the
+consumer drives the rows. Native accept is a picker hint, not a security check.
+
+## In a form
+
+With `name`, sf-file-upload is a form control (ElementInternals): the form
+gets one entry per file under that name -- the `File` of a chosen (`ready`)
+file, sent with the form as multipart, and the stored id (`value`) of a sent
+(`done`) one. `required` keeps the form from submitting while nothing is
+listed («Добавьте файл»); a file still in `process` («Дождитесь, пока файлы
+загрузятся») and a failed one («Уберите или повторите файлы с ошибкой») do
+too, and the browser points at the area. `value` is the list in the
+sf-input-image shape (`{value, label, mime, size, href}`); written, or given
+as the `value` attribute (JSON or addresses), it lists stored files as done
+rows, and `form.reset()` returns to it. The inner native input carries no
+name, so nothing is sent twice.
 
 The neutral default icon is upload_file. The error glyph is reserved for an
 actual failed item rather than the idle picker state.
 
-Dynamic accept/multiple props project to the shared native picker. Every new
-non-empty selection replaces the list; empty selection keeps it. Without multiple
-only the first dropped file is retained. Text/link drags are ignored. Disabled
+Dynamic accept/multiple props project to the shared native picker. A multiple
+area adds each choice to its list (a file once); a single area replaces its
+file. Files left out -- a type accept does not name (on a pick too), a second
+file on a single area, a file already listed, an empty one, one past
+`max-size`, `min-size`, `max-files` or `max-total-size` -- are said under the
+area and in `rejected` with their reason. Text/link drags are ignored. Disabled
 file drops are cancelled without accepting files or firing selection events.
 
 The shared ordinary binder also owns keyboard focus and disabled controls. Tab
 reaches the enabled drop zone, Enter/Space opens the picker, and nested file-action
 keys do not open it. disabled updates native controls and aria-disabled without
-discarding items; re-enabling restores prior tab/action settings. Remove buttons
-receive file-specific localized names unless the author supplied an ARIA name.
+discarding items; re-enabling restores prior tab/action settings. Remove and
+Retry buttons receive file-specific localized names («Удалить Скан.pdf»,
+«Повторить Скан.pdf») unless the author supplied an ARIA name; every glyph is
+aria-hidden, so a reader hears the words, not «upload_file» or «check_circle»;
+the row's state line says «загружен» / «Не загрузился: …» in words; files left
+out are said in the polite status line under the area.
 Focus uses :focus-visible with a real outline in forced colors. These rules are
 shared, not template-specific overrides.
 
@@ -99,10 +119,11 @@ and keeps the `File` object on each.
 | `id` | The item's identity across `setItems()` calls, which is how state transitions become `file-error`, `file-complete` and `complete` events. A selection uses `<name>-<size>-<lastModified>`. Without an `id`, the name and position identify the item. |
 | `name` (or `fileName`) | The file name shown. `File` is shown when neither is set. |
 | `fileSize` (or `sizeText`) | The size as text, already formatted ("348KB"). The component does not format a number here. |
-| `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
-| `state` (or `status`) | `process` (the bar), `done` (the check), `error` (the retry button). Missing or anything else reads `process`, for the row and for the events alike. |
-| `errorMessage` (or `retryText`) | The label of the retry button on an `error` item. The component's own "Повторить"/"Try again" when not set. |
-| `icon` | The glyph on the row; `cloud_upload` when not set. |
+| `progress` | `0`–`100`: a fraction is kept, a value outside is clamped, and a value that is not a number reads 0. `null`: the share is not known yet, and the bar runs without a number (a retry before its first report). Reaching 100 does not make an item `done`. Without it, a `done` item reads 100 and any other 0. |
+| `state` (or `status`) | `ready` (chosen, not sent: no bar), `process` (the bar), `done` (the check), `error` (the retry button). A choice or a drop lists its files `ready`; the host (or the `uploader`) moves them to `process`. Missing or anything else reads `process`, for the row and for the events alike. |
+| `errorMessage` (or `error`) | Why an `error` item did not go, on its own line in the error colour: «Не загрузился: <message>». It was the retry button's label before 1.2.0, so the reason was the control a person pressed to send the same file again. |
+| `retryText` | The retry button's label; the component's own «Повторить» / «Try again» when not set. |
+| `icon` | The glyph on the row. When not set: the file's kind by its type or extension (`picture_as_pdf`, `image`, `movie`, `table_chart`, `folder_zip`, `description`, … ; `draft` for any other), `error` on an error row. |
 | `file` | The `File` itself, for the consumer's own transport. The component never reads it. |
 
 Transport, progress and server validation belong to the consumer: it sets the
@@ -127,7 +148,27 @@ Event names: `sf-file-upload:file-add`, `:file-error`, `:file-complete`,
 `:remove`, `:retry`, `:complete` — removal and retry are `sf-file-upload:remove`
 and `sf-file-upload:retry`, not `:file-remove` / `:file-retry`. Their detail is
 `{item, index, items}`: the removed item, or the retried one already back at
-`state: 'process'` and `progress: 0`, and the list after the change.
+`state: 'process'` and `progress: null` (the bar runs without a number until a
+share is reported), and the list after the change.
+
+## Sending the files: `uploader`
+
+Give the element the page's transfer and it sends the files itself:
+
+```js
+const upload = document.querySelector('sf-file-upload');
+upload.uploader = async (file, {signal, onProgress}) => {
+  const answer = await send('/upload', file, {signal, onProgress}); // XHR for progress
+  return {value: answer.id, href: answer.url};                      // or just the id
+};
+```
+
+Each listed file -- chosen, dropped or retried -- goes to `process` with its
+share unknown, then follows `onProgress(done, total)`; the answer makes it
+`done` and keeps `value` (and `href`) on the item; a thrown error makes it
+`error` with the error's `message` and `reason`. «Повторить» sends the file
+again; Remove aborts the transfer through `signal`. Without an `uploader` the
+page drives the rows through `items`, as below, and answers `retry`.
 
 ## A browser-only import: select → validate → store → retry
 
@@ -163,8 +204,9 @@ async function store(item) {
 }
 ```
 
-The retry button carries `errorMessage`, so the message and the action are the
-same control: the person reads why it failed and presses it to try again.
+The row says `errorMessage` on its own line and offers «Повторить» beside it:
+the person reads why it failed, and retries only when that helps. A sent
+(`done`) file keeps Remove, so a wrong file can be taken out after it went.
 
 ## Example
 

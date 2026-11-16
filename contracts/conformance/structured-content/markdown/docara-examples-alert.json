@@ -1,0 +1,341 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-alert",
+  "input": "docara-examples-alert.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.alert",
+              "props": {
+                "status": "info"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Полезная информация"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m3",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Продолжайте работу в обычном порядке."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.alert",
+              "props": {
+                "status": "warning"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Короткий заголовок ситуации"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m6",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Что произошло и что делать дальше."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.alert",
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "К сведению"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m9",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Это сообщение не требует действия."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m10",
+              "type": "content.alert",
+              "props": {
+                "status": "info"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Полезная информация"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m12",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Продолжайте работу в обычном порядке."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.alert",
+              "props": {
+                "status": "success"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Готово"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m15",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Сборка успешно прошла проверку."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.alert",
+              "props": {
+                "status": "warning"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Обратите внимание"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m18",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Проверьте параметры перед публикацией."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.alert",
+              "props": {
+                "status": "error"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Требуется исправление"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m21",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Конфигурация не прошла проверку."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m22",
+              "type": "content.alert",
+              "props": {
+                "status": "info",
+                "appearance": "default"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "С заливкой"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m24",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Подходит для большинства уведомлений."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m25",
+              "type": "content.alert",
+              "props": {
+                "status": "info",
+                "appearance": "flat"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "Без тени"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m27",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Для спокойного сообщения."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m28",
+              "type": "content.alert",
+              "props": {
+                "status": "info",
+                "appearance": "outlined"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "В рамке"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m30",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Когда нужен менее плотный акцент."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

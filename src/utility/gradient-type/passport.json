@@ -3,13 +3,14 @@
   "schema_version": 1,
   "id": "utility.gradient-type",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/gradient-type/default/index.js",
     "src/utility/gradient-type/default/index.scss",
     "src/utility/gradient-type/default/rule.js",
     "src/utility/gradient-type/default/scss/_sf_css__gradient.scss",
+    "src/utility/gradient-type/default/scss/_sf_mix__gradient.scss",
     "src/utility/gradient-type/default/scss/index.scss",
     "src/utility/gradient-type/lg/index.js",
     "src/utility/gradient-type/lg/index.scss",
@@ -37,7 +38,7 @@
     "src/utility/gradient-type/xxl/scss/_sf_css__gradient.scss",
     "src/utility/gradient-type/xxl/scss/index.scss"
   ],
-  "content_sha256": "2e68cfa97f7fbf0d4205198c0cbb6e0ea5af40cb94d2f3ed9d8efb725f41d77f",
+  "content_sha256": "a099ee2e43f73bef57fc0630fe49c94ab2cc598ce66b1b0ad57258cf7d32d269",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

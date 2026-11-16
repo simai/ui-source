@@ -1,12 +1,16 @@
 @use '../../../../core/scss/vars/sf_var__breakpoint' as *;
 @use '../../../../core/scss/mix/mix__breakpoint' as *;
+@use '../../default/scss/sf_mix__gradient' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
 
-// GRADIENT
+// GRADIENT (mixed in OKLab since C65; scss/_sf_mix__gradient.scss)
 
 $infix: xxl;
+
+$two: 'var(--sf-gradient--color-1), var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1)))';
+$three: 'var(--sf-gradient--color-1), var(--sf-gradient--color-2, var(--sf-gradient--color-1)), var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))';
 
 // @include layer-priority(utility,$infix) {
     @include breakpoint-media($infix) {
@@ -14,39 +18,16 @@ $infix: xxl;
 
         // Gradient Type Width Color Count
         // Line Gradient
-        .#{$infix}gr-line-2{background-image: linear-gradient(
-            var(--sf-gradient--angle),
-            var(--sf-gradient--color-1),
-            var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1)))
-        );}
-        .#{$infix}gr-line-3{background-image: linear-gradient(
-            var(--sf-gradient--angle),
-            var(--sf-gradient--color-1),
-            var(--sf-gradient--color-2, var(--sf-gradient--color-1)),
-            var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
-        );}
+        .#{$infix}gr-line-2 { @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', $two); }
+        .#{$infix}gr-line-3 { @include sf-gradient-image(linear-gradient, 'var(--sf-gradient--angle)', $three); }
 
         // Radial Gradient
-        .#{$infix}gr-radial-2{background-image: radial-gradient(
-            var(--sf-gradient--color-1),
-            var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1)))
-        );}
-        .#{$infix}gr-radial-3{background-image: radial-gradient(
-            var(--sf-gradient--color-1),
-            var(--sf-gradient--color-2, var(--sf-gradient--color-1)),
-            var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
-        );}
+        .#{$infix}gr-radial-2 { @include sf-gradient-image(radial-gradient, null, $two); }
+        .#{$infix}gr-radial-3 { @include sf-gradient-image(radial-gradient, null, $three); }
 
         // Conic Gradient
-        .#{$infix}gr-conic-2{background-image: conic-gradient(
-            var(--sf-gradient--color-1),
-            var(--sf-gradient--color-2, var(--sf-gradient--color-3, var(--sf-gradient--color-1)))
-        );}
-        .#{$infix}gr-conic-3{background-image: conic-gradient(
-            var(--sf-gradient--color-1),
-            var(--sf-gradient--color-2, var(--sf-gradient--color-1)),
-            var(--sf-gradient--color-3, var(--sf-gradient--color-2, var(--sf-gradient--color-1)))
-        );}
+        .#{$infix}gr-conic-2 { @include sf-gradient-image(conic-gradient, null, $two); }
+        .#{$infix}gr-conic-3 { @include sf-gradient-image(conic-gradient, null, $three); }
 
     }
 // }

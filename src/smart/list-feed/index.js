@@ -46,8 +46,12 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {readingPosition} from "../../core/js/reading-position.js";
 import {renderListFeedTemplate} from "./js/templates/default.js";
 import manifest from "./component.json";
-import en from "./lang/en.json";
-import ru from "./lang/ru.json";
+import enFile from "./lang/en.json";
+import ruFile from "./lang/ru.json";
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // A finished entry is announced whole only up to this length; a screen
 // reader reading a long answer in one breath is not a summary of it.
@@ -238,12 +242,26 @@ class SfListFeed extends FeedElement {
             hasMore: this.hasMore,
             loadingEarlier: this._loadingEarlier,
             empty: this._items.size === 0,
-            emptyContent: this.hasSlotContent("empty") ? this.getSlotContent("empty") : null,
+            ...this.emptyState(),
         };
     }
 
     template() {
         return renderListFeedTemplate(this.templateContext());
+    }
+
+    // The empty feed (owner decision C120 (3), study LF-5): the empty state
+    // of the Framework, sf-empty-state no-data. The page's empty slot wins:
+    // markup with an element inside is its own state, drawn whole; words alone
+    // (a <p> of text) are the heading of the feed's state, so a slot written
+    // as plain words is not drawn as bare text at the start of the box.
+    emptyState() {
+        if (!this.hasSlotContent("empty")) return {emptyContent: null, emptyHeading: this.sfWord("empty-text")};
+        const content = this.getSlotContent("empty");
+        const nodes = (Array.isArray(content) ? content : [content]).filter((node) => node && typeof node === "object" && "nodeType" in node);
+        const wordsOnly = nodes.length > 0 && nodes.every((node) => node.nodeType === 3 || (node.nodeType === 1 && node.childElementCount === 0));
+        const words = wordsOnly ? nodes.map((node) => node.textContent).join(" ").replace(/\s+/gu, " ").trim() : "";
+        return words ? {emptyContent: null, emptyHeading: words} : {emptyContent: content, emptyHeading: ""};
     }
 
     afterRender(changed) {
@@ -639,16 +657,20 @@ class SfListFeed extends FeedElement {
         else item.node.replaceChildren(node);
     }
 
-    // Without a renderer an entry is its author and its text: enough for a
-    // feed of people, and the shape a renderer replaces. Text only; a host
-    // that has markup draws it itself, with its own sanitiser.
+    // Without a renderer an entry is a comment (owner decision C167 (4),
+    // 2026-11-14; C40): its author over the first entry of a run -- one's own
+    // too, as «Вы» -- and the text under it, with no fill, at the column's
+    // start: comments on a task, a record's history, a journal. Capsules are
+    // a conversation's look, the host's renderer (SIMAI Pro sf-chat-message).
+    // Text only; a host that has markup draws it itself, with its own
+    // sanitiser.
     renderDefault(entry, {first, own}) {
         const doc = this.ownerDocument;
         const article = doc.createElement("article");
         article.className = "sf-list-feed__entry";
         const name = own ? this.sfWord("you-text") : authorName(entry);
         if (name) article.setAttribute("aria-label", name);
-        if (first && name && !own) {
+        if (first && name) {
             const author = doc.createElement("p");
             author.className = "sf-list-feed__author";
             author.textContent = name;

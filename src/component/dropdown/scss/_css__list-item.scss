@@ -30,7 +30,12 @@
      everywhere -- a band 1.36 darker in a dark popup. */
   --sf-list-item--background-color: var(--sf-list-item-background-color, var(--sf-transparent));
   --sf-list-item--border-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
-  --sf-list-item--border-bottom-width: var(--sf-px);
+  /* No line between rows (owner decision C148 (4), list item study LI-9):
+     rows are told apart by their space and their hover, as sf-list's rows and
+     a menu's are; groups by their headings (C40). A standalone row drew a
+     line under itself at every size, darker when disabled. An inset line
+     from the text is the `divided` setting (below). */
+  --sf-list-item--border-bottom-width: 0;
   --sf-list-item--border-style: solid;
   min-inline-size: 0;
   transition-property: background-color, border-color, box-shadow, color;
@@ -100,8 +105,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-1--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-1--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-1);
   --sf-list-item-container--line-height: var(--sf-text-height-1);
 }
@@ -149,8 +154,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-2--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-2--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-2);
   --sf-list-item-container--line-height: var(--sf-text-height-2);
 }
@@ -178,8 +183,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-3--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-3--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-3);
   --sf-list-item-container--line-height: var(--sf-text-height-3);
 }
@@ -212,8 +217,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-1\/2);
   --sf-list-item-container--line-height: var(--sf-text-height-1\/2);
 }
@@ -247,8 +252,8 @@
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 .sf-list-item-container {
-  --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
-  --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--padding-inline-start: 0;
   --sf-list-item-container--font-size: var(--sf-text-size-1\/3);
   --sf-list-item-container--line-height: var(--sf-text-height-1\/3);
 }
@@ -353,10 +358,47 @@
   flex-shrink: 0;
 }
 
+/* A row's picture and its text (owner C105, role H2; R191 HS-1, HS-5): the
+   picture stands --sf-space-1/2 before the text -- 12, 8 in a compact region
+   and on a phone -- at every size, and the text block keeps no start inset of
+   its own after it. The step was the layout class gap-2 of the template
+   (--sf-space-2, 20) plus the text block's --sf-ui-<S>--text-space-x: 28 at
+   size 1. The same step stands before a row's trailing part (an avatar or a
+   colour row's mark). After the size rules above, which set the text block's
+   inset at the same weight. */
+.sf-list-item:is(.sf-list-item--icon, .sf-list-item--checkbox, .sf-list-item--avatar, .sf-list-item--color) .sf-list-item-wrap {
+  column-gap: var(--sf-space-1\/2);
+}
+
+.sf-list-item:is(.sf-list-item--icon, .sf-list-item--checkbox) .sf-list-item-wrap .sf-list-item-container {
+  --sf-list-item-container--padding-inline-start: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sf-list-item {
     transition-duration: 0s;
   }
+}
+
+/* C77 (owner 2026-11-11, prototypes/field-inset.html): a row's text without
+   a picture starts at the size's inset from the row's edge -- --sf-space-1/2,
+   --sf-space-1 or --sf-space-2: 12 / 16 / 20 at 1/2, 1, 2; 12 / 12 / 16 in a
+   compact region and on a phone, size 1/2 never below 12 (--sf-b2) -- and a
+   row's picture stands at the same place, its C105 H2 step after it. The text
+   block keeps no --sf-ui-<S>--text-space-x of its own at either end (the size
+   rules above): a text-only row stood 21 / 24 / 30 from its edge (compact
+   18 / 21 / 24, phone 18 / 20 / 26; docs precheck smart content LI-02). The
+   same inset as sf-dropdown's value and options and sf-list's rows. Sizes 1/3
+   and 3, which C77 does not name, keep the size's space-x. A list or a
+   dropdown that sets the row's inset itself still wins (sf-list's frame rule,
+   the dropdown's states-layer rule). */
+.sf-list-item.sf-list-item--size-1\/2 { --sf-list-item--inset: max(var(--sf-space-1\/2), var(--sf-b2)); }
+.sf-list-item.sf-list-item--size-1 { --sf-list-item--inset: var(--sf-space-1); }
+.sf-list-item.sf-list-item--size-2 { --sf-list-item--inset: var(--sf-space-2); }
+
+.sf-list-item:is(.sf-list-item--size-1\/2, .sf-list-item--size-1, .sf-list-item--size-2) {
+  --sf-list-item--padding-inline-start: var(--sf-list-item--inset);
+  --sf-list-item--padding-inline-end: var(--sf-list-item--inset);
 }
 }
 
@@ -391,45 +433,45 @@
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-1\/3--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-1\/3--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-1\/2 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-1\/2--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-1\/2--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-1 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-1--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-1--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-2 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-2--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-2--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 .sf-list-item.sf-list-item--color.sf-list-item--size-3 .sf-tag.sf-tag {
   --sf-tag--background-color: transparent;
   --sf-tag--block: 0;
   --sf-tag--inline-start: 0;
   --sf-tag--inline-end: 0;
-  --sf-tag--label-start: var(--sf-ui-3--text-space-x);
+  --sf-tag--label-start: 0;
   --sf-tag--label-end: var(--sf-ui-3--text-space-x);
-  gap: 0;
+  gap: var(--sf-space-1\/2);
 }
 }
 
@@ -466,6 +508,20 @@
   --sf-avatar--width: var(--sf-text-height-3);
   --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-3) / 2));
   --sf-avatar--line-height: var(--sf-text-height-3);
+}
+}
+
+/* A row's text starts at one place whatever its picture (docs precheck smart
+   content LI-02): the avatar's label and the colour mark's text stand the row's
+   own gap from the picture, as an icon row's and a checkbox row's do -- the
+   C105 H2 step, --sf-space-1/2 (12; 8 compact and on a phone). The colour
+   row's text stood 0 from its dot. The colour row's gap is set with its other
+   tag resets in the states layer above (its gap 0 there outranked a gap set
+   here; acceptance 2026-11-11 D3), and its label loses the tag's own start
+   space, so the text stands one gap from the dot as an icon row's does. */
+@layer sf.components {
+.sf-list-item.sf-list-item--avatar .sf-avatar-label-group {
+  column-gap: var(--sf-space-1\/2);
 }
 }
 
@@ -516,6 +572,78 @@
   --sf-list-item-supporting--line-height: var(--sf-text-height-2);
 }
 
+/* A two-line row is a step of the height ladder (docs precheck smart content
+   LI-03, LS-02; the answer of C31): the next size's control height -- 48 at
+   size 1 on a desktop, 44 on a phone; 40 at 1/2, 56 at 2 -- with the two lines
+   centred in it. It was the one-line row plus a line, 60 and 72 on a desktop.
+   Size 3 has no step above it and keeps its padding at zero over the lines.
+   Doubled class: the one-line block padding of sizes 1/2 and 1/3 (three
+   classes, four when disabled) outranked these rules, so a two-line 1/2 row
+   was its own padding over the lines -- 48 on a desktop, the same as size 1,
+   and 44 against size 1's 40 in a compact region (intent acceptance
+   2026-11-13, content-5). Now 40 / 48 / 56 at 1/2, 1, 2 (compact 32 / 40 /
+   48, phone 36 / 44 / 52), each the next size's control height. */
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-1\/3 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1\/3) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-1\/2 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1\/2) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-1 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-2 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-3--control-height) - var(--sf-text-height-2) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line.sf-list-item--size-3 {
+  --sf-list-item--two-line-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-3--control-height) - var(--sf-text-height-3) - var(--sf-list-item-supporting--line-height)) / 2));
+  --sf-list-item--padding-top: var(--sf-list-item--two-line-block);
+  --sf-list-item--padding-bottom: var(--sf-list-item--two-line-block);
+}
+
+/* A row with a caption is never lower than a menu row with a caption (owner
+   decision C49; list item study LI-1, dispatcher ruling 2026-11-14): one
+   control of step 1/2 and the caption's line under it -- 48 = 32 + 16 on a
+   desktop, 44 = 28 + 16 in a compact region, 60 = 44 + 16 under a finger,
+   where the step is the touch target (--sf-d1), as sf-menu-context's caption
+   rows are. A taller step keeps the next size's control height above
+   (56 at size 2). Group build 3 drew size 1 at 48 / compact 40 / phone 44 and
+   size 1/2 at 36 on a phone, under the 44 a finger needs. Every term is a
+   token of the ladder; the two lines stand centred in the row. Size 1/3 has
+   no caption step under it and keeps its own. */
+.sf-list-item.sf-list-item--two-line.sf-list-item--two-line:is(.sf-list-item--size-1\/2, .sf-list-item--size-1, .sf-list-item--size-2, .sf-list-item--size-3) {
+  --sf-list-item--caption-step: var(--sf-ui-1\/2--control-height);
+  align-items: center;
+  min-block-size: calc(var(--sf-list-item--caption-step) + var(--sf-text-height-1\/3));
+}
+
+@media (pointer: coarse) {
+  .sf-list-item.sf-list-item--two-line.sf-list-item--two-line:is(.sf-list-item--size-1\/2, .sf-list-item--size-1, .sf-list-item--size-2, .sf-list-item--size-3) {
+    --sf-list-item--caption-step: max(var(--sf-ui-1\/2--control-height), var(--sf-d1));
+  }
+}
+
+/* Where the two lines fill the step (size 1/2 in a compact region: 16 + 16
+   in a 32 row) the bottom padding has nothing to give the divider back from,
+   and the row stood a pixel off the ladder (33). The lines then give it back:
+   the wrap ends the divider's width early, inside the supporting line's
+   leading, so the row is the step's height with its divider inside (C01). */
+.sf-list-item--two-line .sf-list-item-wrap {
+  margin-block-end: min(calc(var(--sf-px) * 0), calc(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)) - var(--sf-list-item--border-bottom-width)));
+}
+
 .sf-list-item.disabled .sf-list-item-supporting {
   color: var(--sf-on-surface-disabled);
 }
@@ -540,6 +668,51 @@
 .sf-list-item--size-1 { --sf-list-item-handle--size: var(--sf-text-height-1); }
 .sf-list-item--size-2 { --sf-list-item-handle--size: var(--sf-text-height-2); }
 .sf-list-item--size-3 { --sf-list-item-handle--size: var(--sf-text-height-3); }
+
+/* The picture place of a row: an icon or an avatar takes the row's line. */
+.sf-list-item--size-1\/3 { --sf-list-item--picture: var(--sf-text-height-1\/3); }
+.sf-list-item--size-1\/2 { --sf-list-item--picture: var(--sf-text-height-1\/2); }
+.sf-list-item--size-1 { --sf-list-item--picture: var(--sf-text-height-1); }
+.sf-list-item--size-2 { --sf-list-item--picture: var(--sf-text-height-2); }
+.sf-list-item--size-3 { --sf-list-item--picture: var(--sf-text-height-3); }
+
+/* A row without a picture among rows with one keeps the picture's place
+   (owner decision C105; list item study LI-17): its text starts where its
+   neighbours' text does, the picture's line and the H2 step after it. A
+   pinned text row of an sf-sortable list started its text at 40 beside icon
+   rows at 76. The list is the row's own: sf-sortable, a list or listbox role,
+   or sf-list's body; a dropdown's options keep their own layout. */
+:is(sf-sortable, [role="list"], [role="listbox"], [data-sf-list]):has(.sf-list-item:is(.sf-list-item--icon, .sf-list-item--avatar)) .sf-list-item.sf-list-item--text:not([role="option"]) > .sf-list-item-wrap {
+  padding-inline-start: calc(var(--sf-list-item--picture) + var(--sf-space-1\/2));
+}
+
+/* A row's text block takes the row's free width, so its trailing part -- a
+   «⋯», a count, a time -- stands at the row's end edge, not right after the
+   text (list item study LI-16: 211 px from the end of a 384 row). An option
+   keeps its layout: its mark already stands at the end. */
+.sf-list-item:not([role="option"]) > .sf-list-item-wrap > .sf-list-item-container {
+  flex: 1 1 auto;
+}
+
+/* An avatar row's text block (list item study LI-5): the title and its
+   supporting line, as an icon row's, on the row's text steps and inks. */
+.sf-list-item.sf-list-item--avatar .sf-list-item-container {
+  --sf-list-item-container--padding-inline-start: 0;
+  --sf-list-item-container--padding-inline-end: 0;
+  --sf-list-item-container--font-family: var(--sf-text--family);
+  --sf-list-item-container--font-weight: var(--sf-font-weight-regular);
+  --sf-list-item-container--color: var(--sf-list-item-color, var(--sf-on-surface));
+}
+
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-1\/3); --sf-list-item-container--line-height: var(--sf-text-height-1\/3); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/2 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-1\/2); --sf-list-item-container--line-height: var(--sf-text-height-1\/2); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-1 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-1); --sf-list-item-container--line-height: var(--sf-text-height-1); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-2 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-2); --sf-list-item-container--line-height: var(--sf-text-height-2); }
+.sf-list-item.sf-list-item--avatar.sf-list-item--size-3 .sf-list-item-container { --sf-list-item-container--font-size: var(--sf-text-size-3); --sf-list-item-container--line-height: var(--sf-text-height-3); }
+
+.sf-list-item.disabled.sf-list-item--avatar .sf-list-item-container {
+  --sf-list-item-container--color: var(--sf-on-surface-disabled);
+}
 
 .sf-list-item-handle .sf-icon {
   color: var(--sf-icon--color);
@@ -603,4 +776,135 @@
       border-inline-start: var(--sf-px) solid Highlight;
     }
   }
+}
+
+/* Owner decision C148 (list item study, prototypes/list-item-study.html,
+   2026-11-14): the row's end column, its one line, the inset line of
+   `divided`. A row of a page or of sf-list, never a dropdown's option, which
+   keeps its own layout. */
+@layer sf.components {
+/* The title's line of each size: where the end column puts its first line. */
+.sf-list-item--size-1\/3 { --sf-list-item--title-line: var(--sf-text-height-1\/3); }
+.sf-list-item--size-1\/2 { --sf-list-item--title-line: var(--sf-text-height-1\/2); }
+.sf-list-item--size-1 { --sf-list-item--title-line: var(--sf-text-height-1); }
+.sf-list-item--size-2 { --sf-list-item--title-line: var(--sf-text-height-2); }
+.sf-list-item--size-3 { --sf-list-item--title-line: var(--sf-text-height-3); }
+
+/* The step before the row's end part is the row's H2 step (C105), in a text
+   row as in a row with a picture: --sf-space-1/2, 12 (8 compact and on a
+   phone). */
+.sf-list-item:not([role="option"]) > .sf-list-item-wrap {
+  column-gap: var(--sf-space-1\/2);
+}
+
+/* C148 (5): a title is one line, cut at its end with an ellipsis; the whole
+   title is the row's tooltip when it is cut (index.js). A one-line row's
+   text wrapped onto as many lines as it took. */
+.sf-list-item:not([role="option"]):not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list-item-container {
+  overflow: hidden;
+  overflow-wrap: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* lines="2": the title takes up to two lines, then the ellipsis -- for
+   records and documents whose names differ at the end. The caption stays one
+   line. The row grows by the title's second line; a row whose title fits one
+   line keeps its height. */
+.sf-list-item.sf-list-item--lines-2:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list-item-container,
+.sf-list-item.sf-list-item--lines-2.sf-list-item--two-line > .sf-list-item-wrap > .sf-list-item-container > .sf-list-item-title {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* The row's end part, when the page gave loose nodes (template): a box at
+   the row's end, its buttons one group apart (C105, --sf-space-1/3). */
+.sf-list-item:not([role="option"]) > .sf-list-item-wrap > .sf-list-item-trailing {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sf-space-1\/3);
+}
+
+/* C148 (2): a two-line row's end part is a column -- its first line on the
+   title's line (a time), its second on the caption's (a grey count or a
+   badge, C140) -- so the row keeps its height and its title its width. The
+   caption's type and dim ink, figures of one width. A part of buttons stays a
+   row of buttons, centred on the row (C148 (3)). */
+.sf-list-item.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]):not(:has(:is(button, a[href], input, select, textarea, sf-button, :is(sf-button-icon, sf-icon-button), [role="button"]))) {
+  display: grid;
+  flex: none;
+  grid-template-rows: var(--sf-list-item--title-line) var(--sf-list-item-supporting--line-height);
+  align-items: center;
+  align-self: center;
+  justify-content: end;
+  justify-items: end;
+  /* No step between the two lines: they are the title's and the caption's. */
+  gap: 0 var(--sf-space-1\/4);
+  color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+  font-size: var(--sf-list-item-supporting--font-size);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--sf-list-item-supporting--line-height);
+  white-space: nowrap;
+}
+
+.sf-list-item.disabled.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]) {
+  color: var(--sf-on-surface-disabled);
+}
+
+/* C148 (4), divided: a line under the row from its text to its end edge, as
+   a list of settings or of people draws it; none under the last row of its
+   list. The line is inside the row's height. It starts where the text block
+   does (the line is its child, placed from the row's bottom at the text's own
+   start) and runs past the row's end, where the row cuts it. */
+.sf-list-item.sf-list-item--divided {
+  position: relative;
+  overflow: clip;
+}
+
+.sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
+  content: "";
+  /* Block: an inline box's static place would be after the text. */
+  display: block;
+  position: absolute;
+  inset-block-end: 0;
+  inline-size: 100vmax;
+  block-size: var(--sf-px);
+  background-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
+  pointer-events: none;
+}
+
+/* None under the last row of the list. In sf-list every sf-list-item is
+   alone in its li.sf-list__row (or beside its «⋯»), so it is the last child
+   of every row: the last row there is the item in the last li. A bare item
+   outside an li is last when it is its parent's last child. */
+:is(:not(li) > sf-list-item:last-child, li:last-child > sf-list-item) > .sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
+  content: none;
+}
+
+/* C148 (6): a long press on a row under a finger opens its menu (index.js),
+   so the press does not select the row's words or raise the browser's own
+   menu over it. */
+@media (pointer: coarse) {
+  .sf-list-item.sf-list-item--interactive {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* The row's «⋯» and its other buttons are a finger's target, --sf-d1 (44),
+     as sf-list's «⋯» is (C148 (6)), in a row with a caption, which is 60
+     under a finger and holds them. */
+  .sf-list-item.sf-list-item--interactive.sf-list-item--two-line > .sf-list-item-wrap > button[slot="trailing"],
+  .sf-list-item.sf-list-item--interactive.sf-list-item--two-line > .sf-list-item-wrap > [slot="trailing"] button,
+  .sf-list-item.sf-list-item--interactive.sf-list-item--two-line > .sf-list-item-wrap > .sf-list-item-trailing button {
+    min-block-size: var(--sf-d1);
+    min-inline-size: var(--sf-d1);
+  }
+}
 }

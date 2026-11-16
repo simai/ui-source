@@ -57,7 +57,9 @@ test('sf-list-description: a dl of label and value, the columns a subgrid, stack
   assert.match(sheet, /grid-template-columns: subgrid;/u);
   assert.match(sheet, /\.sf-list-description-part \{\s*display: grid;\s*grid-column: 1 \/ -1;\s*grid-template-columns: subgrid;/u);
   assert.match(sheet, /font-variant-numeric: tabular-nums;/u);
-  assert.match(sheet, /@container \(max-width: 24rem\)/u);
+  assert.match(sheet, /@container \(max-width: #\{mq\.container-step\(g0\)\}\)/u);
+  // C180 (3): beside from a list wider than 20rem (a 24rem side panel); a phone always stacks.
+  assert.match(sheet, /@media not all and \(min-width: map\.get\(bp\.\$breakpoint-array, md\)\)/u);
   // A one-line row is the rung's control height: the block inset is (H - L) / 2.
   assert.match(sheet, /--sf-list-description--padding-block: calc\(\(var\(--sf-list-description--control\) - var\(--sf-list-description--line\)\) \/ 2\);/u);
   const source = code('src/smart/list-description/index.js');
@@ -72,7 +74,7 @@ test('sf-list-description: a dl of label and value, the columns a subgrid, stack
 
 test('sf-list-timeline: the host\'s order, runs of one day, the shared parts (C40), the connector, load-more after', () => {
   const manifest = json('src/smart/list-timeline/component.json');
-  assert.equal(manifest.version, '1.1.1');
+  assert.equal(manifest.version, '1.3.2'); // C61 round 5
   assert.deepEqual(manifest.settings.items.schema.items.required, ['id', 'title']);
   assert.deepEqual(manifest.settings.group.values, ['day', 'none']);
   assert.deepEqual(manifest.settings['time-format'].values, ['auto', 'relative', 'exact']);

@@ -13,7 +13,7 @@
 //   - the same under the pointer, for underline, full and outline tabs;
 //   - an underline tab's colour is --sf-on-surface-variant at rest and
 //     --sf-on-surface when selected, resolved in the theme, and the selected
-//     tab's line is --sf-primary, at least 2px; no text tab
+//     tab's line (under its letters, C99) is --sf-primary, at least 2px; no text tab
 //     computes the browser's ButtonText.
 //
 // Pills (owner, effects.simai.io, 2026-11-01): the selected pill is the only
@@ -107,7 +107,11 @@ try {
     const READ = `(tab) => {
       const label = tab.querySelector('.sf-button-text-container') || tab.querySelector('.sf-icon');
       const style = getComputedStyle(tab);
-      return {tab: style.color, label: getComputedStyle(label).color, line: style.borderBottomColor, lineWidth: style.borderBottomWidth};
+      // An underline tab's line is drawn under its letters (owner decision C99),
+      // the border of its label's ::after (an icon tab's own), not the tab's border.
+      const under = getComputedStyle(tab.matches('.sf-icon-button') ? tab : label, '::after');
+      return {tab: style.color, label: getComputedStyle(label).color, line: style.borderBottomColor, lineWidth: style.borderBottomWidth,
+        underLine: under.borderBottomColor, underWidth: under.borderBottomWidth};
     }`;
     const roles = await page.evaluate(() => Object.fromEntries(['--sf-on-surface', '--sf-on-surface-variant', '--sf-primary'].map((name) => {
       const probe = document.getElementById('role');
@@ -133,7 +137,7 @@ try {
         const role = row.selected ? '--sf-on-surface' : '--sf-on-surface-variant';
         check(`${at}: an underline tab takes ${role}`, row.tab === roles[role], {...row, expected: roles[role]});
         if (row.selected) check(`${at}: the selected underline tab's line is --sf-primary, at least 2px`,
-          row.line === roles['--sf-primary'] && parseFloat(row.lineWidth) >= 2, {...row, expected: roles['--sf-primary']});
+          row.underLine === roles['--sf-primary'] && parseFloat(row.underWidth) >= 2, {...row, expected: roles['--sf-primary']});
       }
     }
 

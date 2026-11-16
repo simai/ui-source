@@ -5,7 +5,8 @@
 // 1280 px, layout auto (a column): the h2 and h3 of the target are collected in
 // order, the h3 a level deeper; the first section is current at the top
 // (aria-current="location"); scrolling makes the section under the top of the
-// window current, sends sf-contents-change and writes the hash; at the end of
+// window current and sends sf-contents-change, and leaves the address alone
+// (hash choose, the default since 1.5.0, CT-10); at the end of
 // the page the last section is current; a chosen link scrolls (smoothly, and
 // instantly under reduced motion), focuses its section and marks it; Tab
 // reaches the links; the column stays in view (sticky). Geometry: each row is
@@ -118,7 +119,12 @@ try {
     await tab.evaluate(() => document.fonts.ready);
     await settle(tab);
     const collected = await tab.evaluate(() => ({
-      label: document.querySelector('#toc nav')?.getAttribute('aria-label'),
+      // The nav is named by its heading (1.5.0, CT-09): role heading, level 2.
+      label: (() => {
+        const nav = document.querySelector('#toc nav');
+        const heading = nav && document.getElementById(nav.getAttribute('aria-labelledby'));
+        return heading?.getAttribute('role') === 'heading' && heading.getAttribute('aria-level') === '2' ? heading.textContent.trim() : null;
+      })(),
       navs: document.querySelectorAll('#toc nav').length,
       links: Array.from(document.querySelectorAll('#toc .sf-contents-link')).map((a) => [a.getAttribute('href'), a.textContent.trim(), a.closest('li').dataset.depth]),
       head: document.querySelector('#toc .sf-contents-head')?.getClientRects().length ?? -1,
@@ -161,6 +167,12 @@ try {
         mark: [mark.left, mark.width, mark.height, links[0].getBoundingClientRect().height],
         markColour: getComputedStyle(nav.querySelector('[aria-current] .sf-contents-mark')).backgroundColor,
         currentColour: getComputedStyle(nav.querySelector('[aria-current]')).color,
+        currentWeight: getComputedStyle(nav.querySelector('[aria-current] .sf-contents-text') || nav.querySelector('[aria-current]')).fontWeight,
+        otherWeight: getComputedStyle(nav.querySelector('.sf-contents-link:not([aria-current]) .sf-contents-text') || nav.querySelector('.sf-contents-link:not([aria-current])')).fontWeight,
+        role: (() => {
+          const ink = (name, property) => { const probe = document.createElement('span'); probe.style[property] = `var(${name})`; nav.append(probe); const value = getComputedStyle(probe)[property]; probe.remove(); return value; };
+          return {primary: ink('--sf-primary', 'backgroundColor'), onSurface: ink('--sf-on-surface', 'color')};
+        })(),
       };
     });
     seen.column = geometry;
@@ -168,7 +180,12 @@ try {
     if (!near(geometry.labelStart, geometry.topStart)) failures.push(`1280: the label starts at ${geometry.labelStart}, the links at ${geometry.topStart}`);
     if (!(geometry.deepStart > geometry.topStart + 1)) failures.push('1280: a deeper level is not indented');
     if (geometry.lineWidth !== '1px' || !near(geometry.mark[0], geometry.listLeft) || !near(geometry.mark[1], 2) || !near(geometry.mark[2], geometry.mark[3])) failures.push(`1280: the line or the current bar is off: ${JSON.stringify(geometry)}`);
-    if (geometry.markColour !== geometry.currentColour) failures.push('1280: the current bar and the current link differ in colour');
+    // Owner decision C95 (2): the theme's colour is on the 2 px line only; the
+    // current text is the ordinary ink at the medium weight (as the menu
+    // column and the tabs), the others regular. It was the bar's colour.
+    if (geometry.markColour !== geometry.role.primary) failures.push(`1280: the current bar is ${geometry.markColour}, not the primary ${geometry.role.primary}`);
+    if (geometry.currentColour !== geometry.role.onSurface) failures.push(`1280: the current link is ${geometry.currentColour}, not the on-surface ink ${geometry.role.onSurface} (C95 (2))`);
+    if (Number(geometry.currentWeight) !== 500 || Number(geometry.otherWeight) !== 400) failures.push(`1280: the current link weighs ${geometry.currentWeight} and the others ${geometry.otherWeight}, not 500 and 400 (C95 (2))`);
 
     // Scrolling.
     await tab.evaluate(() => {
@@ -182,7 +199,7 @@ try {
     seen.scrolled = scrolled;
     if (scrolled.value !== 'settings' || JSON.stringify(scrolled.marked) !== '["#settings"]') failures.push(`1280: scrolled to Настройки, the current is ${JSON.stringify(scrolled)}`);
     if (!scrolled.changes.length || scrolled.changes.at(-1).id !== 'settings') failures.push(`1280: no sf-contents-change for settings: ${JSON.stringify(scrolled.changes)}`);
-    if (scrolled.hash !== '#settings') failures.push(`1280: the address shows ${scrolled.hash}`);
+    if (scrolled.hash !== '') failures.push(`1280: scrolling wrote the address ${scrolled.hash} (hash choose writes it on choose only)`);
     if (scrolled.sticky !== 16) failures.push(`1280: the column stands at ${scrolled.sticky}px, not the sticky 16px`);
     await tab.evaluate(() => window.scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'}));
     await settle(tab);
@@ -201,6 +218,8 @@ try {
     const landed = await tab.evaluate(() => Math.round(document.getElementById('cdn').getBoundingClientRect().top));
     seen.chosen = {...chosen, landed, behaviours: await tab.evaluate(() => window.__behaviours)};
     if (chosen.value !== 'cdn' || chosen.focus !== 'cdn') failures.push(`1280: a chosen link: ${JSON.stringify(chosen)}`);
+    const chosenHash = await tab.evaluate(() => location.hash);
+    if (chosenHash !== '#cdn') failures.push(`1280: a chosen link wrote the address ${chosenHash}, not #cdn`);
     if (Math.abs(landed) > 1) failures.push(`1280: the chosen section landed at ${landed}px`);
     if (seen.chosen.behaviours[0] !== 'smooth') failures.push(`1280: the scroll was ${seen.chosen.behaviours[0]}, not smooth`);
     const after = await current(tab);
@@ -361,7 +380,10 @@ try {
     seen.compactSticky = stuck;
     if (stuck.position !== 'sticky' || stuck.top !== stuck.stops || !stuck.shown) failures.push(`375: the scrolled compact button is ${JSON.stringify(stuck)}`);
     if (!/^rgb\(/u.test(stuck.fill)) failures.push(`375: the sticky button's band is ${stuck.fill}, not an opaque fill`);
-    if (stuck.width < stuck.headWidth || stuck.covers < 4) failures.push(`375: the band does not cover the head: ${JSON.stringify(stuck)}`);
+    // Owner decision C95 (4): the «read» line lies on the button's bottom
+    // edge, with no detached track and no underlay below it -- the band ends
+    // with the button (it reached 4 px or more below it before).
+    if (stuck.width < stuck.headWidth || Math.abs(stuck.covers) > 0.5) failures.push(`375: the band is not the button's own: ${JSON.stringify(stuck)}`);
     // Without it the button scrolls away, as 1.0.0 drew it.
     await tab.evaluate(() => document.querySelector('#toc').setAttribute('sticky', 'false'));
     await settle(tab);

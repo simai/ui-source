@@ -69,7 +69,10 @@ test('Smart Textarea reads live text while its template records reset default', 
   native.value = ''; assert.equal(subject.value, '');
   subject.querySelector = () => null; assert.equal(subject.value, 'initial');
   const template = await read('smart/input-textarea/js/templates/default.js');
-  assert.match(template, /\.value=\$\{value\}\s+\.defaultValue=\$\{value\}/);
+  // The reset default is the declared value, never the live one: a render
+  // while typing made the typed text the default (C55 acceptance F1 R2, D2).
+  assert.match(template, /\.value=\$\{value\}\s+\.defaultValue=\$\{defaultValue\}/);
+  assert.match(source, /defaultValue: props\.value \?\? '',/);
 });
 
 test('Smart text setters synchronize native/masked values immediately without synthetic input', async () => {

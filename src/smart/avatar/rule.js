@@ -7,6 +7,10 @@ SF.RuleLoader['cl-avatar'] = {
   relation: [
     { name: 'avatars' },
     { name: 'badges' },
+    // The placeholder's glyph is an sf-icon element, so its name reaches the icon font request (avatar study AV-8).
+    { name: 'cl-icon' },
+    // The name over a link or button avatar (C152 (7)): the tooltip composition, fetched when such an avatar draws.
+    { name: 'tooltip', lazy: true },
   ],
 };
 

@@ -24,8 +24,12 @@ import {noteDeprecated} from "../../core/js/deprecations";
 import {matchesBreakpoint} from "../../core/js/breakpoints.js";
 import {renderConfirmTemplate} from "./js/templates/default.js";
 import manifest from "./component.json";
-import en from "./lang/en.json";
-import ru from "./lang/ru.json";
+import enFile from "./lang/en.json";
+import ruFile from "./lang/ru.json";
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 const ConfirmElement = elementFromManifest(manifest, {
     base: SfBaseElement,
@@ -167,10 +171,10 @@ class SfConfirm extends ConfirmSurface {
         this.watchAnswers();
     }
 
-    // The window form's answers on a phone: two equal halves while each label
-    // fits its half, one under the other when one does not.
+    // The answers on a phone, in every form (C166, R245): two equal halves
+    // while each label fits its half, one under the other when one does not.
     watchAnswers() {
-        const actions = this.appearance === "window" ? this.querySelector(".sf-confirm__actions") : null;
+        const actions = this.querySelector(".sf-confirm__actions");
         if (actions === this._watchedActions) return;
         this._answersObserver?.disconnect();
         this._watchedActions = actions;

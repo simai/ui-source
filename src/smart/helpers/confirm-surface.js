@@ -361,38 +361,54 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
 // two answers. `block` is the drawn surface's class; `acceptStatus` "danger"
 // marks a destructive acceptance (a delete, decision C13).
 //
-// The answers (decision C25): a plain question offers two outlined answers of
-// one weight. A dangerous one fills the accepting answer with the danger
-// colour and leaves the declining one quiet (ghost, no frame), so the two are
-// told apart by more than the red of a word. Both stand on the element's size
+// The answers (decision C25): a dangerous question fills its accepting answer
+// with the danger colour; a plain one draws it as the template asks
+// (`acceptAppearance`, outlined by default; sf-confirm 1.3.6 asks for the
+// filled primary main answer, owner decision C183 and C176 by DEV's answer
+// msg-68999d65). The declining answer, the
+// question's «Отмена», is always the quiet one, ghost on-surface (decision
+// C116, #q-cancel: «Отмена» is quiet everywhere), so the two are told apart by
+// more than the red of a word. A surface whose declining answer is a decision
+// of its own weight rather than a cancel asks for `declineAppearance:
+// "outline"`; a surface whose accepting answer is the main one (sf-confirm-change
+// 1.9.0, owner decision C183 (6): «Подтвердить» filled primary, «Отклонить»
+// quiet) for `acceptAppearance: "default"`. Both stand on the element's size
 // (context.size, 1 unless the page gives one); a size a template gives is
 // relative, so a compact region (data-sf-density, C22) moves them down a step.
 //
-// In a window (sf-confirm appearance="window", decision C39) the declining
-// answer of a dangerous question is tonal, the window's quiet answer beside
-// the filled one, and the answers come before the status line, at the start.
-export function renderConfirmFooter(context, block, {acceptStatus = "", window = false} = {}) {
+// In a window (sf-confirm appearance="window", decision C39) the answers come
+// before the status line, at the start; the declining one is ghost there too
+// (C116; it was tonal, the window's quiet answer).
+// `formerBlock` writes a renamed surface's former class beside each part's;
+// `statusLast` puts the status line after the answers in the markup as well
+// as on screen (the deadline under the answers, C183 (6)).
+export function renderConfirmFooter(context, block, {acceptStatus = "", window = false, acceptAppearance = "outline", declineAppearance = "ghost", formerBlock = "", statusLast = false} = {}) {
     const {component} = context;
+    // A surface whose class was renamed writes its former block beside the
+    // new one until the alias date, so a page selector that reached it still
+    // does (sf-confirm-change 1.8.0: .sf-change-confirm__* until 2027-01-01).
+    const part = (name) => (formerBlock ? `${block}__${name} ${formerBlock}__${name}` : `${block}__${name}`);
     const danger = acceptStatus === "danger" || acceptStatus === "error";
-    const quiet = window ? "tonal" : "ghost";
     const size = context.size || "1";
-    return html`
-            <footer class="${block}__footer">
-                <!-- Always in the page, empty while there is nothing to say: a live
-                     region that appears together with its words is not heard. -->
-                <p class="${block}__status" role="status" tabindex="-1">
+    // Always in the page, empty while there is nothing to say: a live region
+    // that appears together with its words is not heard. With statusLast it
+    // follows the answers in the markup too (sf-confirm-change 1.9.0: the
+    // deadline under the answers, an sf-time that may take a Tab after them).
+    const status = html`
+                <p class=${part("status")} role="status" tabindex="-1">
                     ${context.statusText
                         ? html`<sf-icon icon=${context.statusIcon} size="1" aria-hidden="true"></sf-icon>
                             <span>${context.statusText}</span>`
                         : nothing}
-                </p>
-                <!-- While the answer is applied (pending) the answers stay where they
-                     were: the pressed one busy, with the button's own spinner and
-                     aria-busy, the other disabled, so the card does not jump and
-                     the person sees which answer is on its way. -->
-                <div class="${block}__actions" ?hidden=${!context.open && !context.pending}>
+                </p>`;
+    // While the answer is applied (pending) the answers stay where they were:
+    // the pressed one busy, with the button's own spinner and aria-busy, the
+    // other disabled, so the card does not jump and the person sees which
+    // answer is on its way.
+    const actions = html`
+                <div class=${part("actions")} ?hidden=${!context.open && !context.pending}>
                     <sf-button
-                            appearance=${danger ? "default" : "outline"}
+                            appearance=${danger ? "default" : acceptAppearance}
                             scheme="primary"
                             status=${danger ? "danger" : nothing}
                             size=${size}
@@ -403,7 +419,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                             @click=${() => component.confirm()}
                     ></sf-button>
                     <sf-button
-                            appearance=${danger ? quiet : "outline"}
+                            appearance=${declineAppearance}
                             scheme="on-surface"
                             size=${size}
                             text=${context.declineText}
@@ -412,6 +428,8 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                             ?disabled=${context.answersLocked && context.pressed !== false}
                             @click=${() => component.cancel()}
                     ></sf-button>
-                </div>
+                </div>`;
+    return html`
+            <footer class=${part("footer")}>${statusLast ? html`${actions}${status}` : html`${status}${actions}`}
             </footer>`;
 }

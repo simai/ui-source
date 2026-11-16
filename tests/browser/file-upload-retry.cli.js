@@ -12,7 +12,7 @@ async page => {
       document.querySelector('main').innerHTML=`<section id="ordinary"><div class="sf-file-upload sf-file-upload--size-${size}">Выбрать</div><div class="sf-file-upload-files grid gap-2"></div></section><section id="smart"><sf-file-upload size="${size}"></sf-file-upload></section>`;
     },{size,theme,dir});
     await page.waitForFunction(()=>document.querySelectorAll('.sf-file-upload-input').length===2);
-    await page.evaluate(()=>{const items=['Повторить','Повторить '+ 'Сообщение'.repeat(14)].map(errorMessage=>({name:'example.txt',state:'error',fileSize:'100 KB',errorMessage}));SF.FileUpload.setItems(document.querySelector('#ordinary .sf-file-upload'),items);document.querySelector('sf-file-upload').items=items;});
+    await page.evaluate(()=>{const items=['Повторить','Повторить '+ 'Сообщение'.repeat(14)].map(retryText=>({name:'example.txt',state:'error',fileSize:'100 KB',retryText}));SF.FileUpload.setItems(document.querySelector('#ordinary .sf-file-upload'),items);document.querySelector('sf-file-upload').items=items;});
     await page.waitForFunction(()=>document.querySelectorAll('[data-action=retry]').length===4);
     await page.evaluate(async()=>{document.body.getBoundingClientRect();await document.fonts.ready;});
     const measure=()=>page.evaluate(async()=>{

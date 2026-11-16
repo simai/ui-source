@@ -15,7 +15,20 @@ decorative and uses `aria-hidden="true"`.
   `on-surface`); `secondary` is kept for older markup;
 - status: `sf-icon-button--danger` for a destructive control, in every
   emphasis (decision C13); `sf-icon-button--error` is its former name, the
-  same rules, until 2027-01-01 (journal class-c13-control-error-to-danger);
+  same rules, until 2027-01-01 (journal class-c13-control-error-to-danger).
+  The danger outline's border is red, the error role at the ink family's 64
+  step (1.8.0, owner decision C118, as on the buttons); the other outlines
+  keep the shared grey `--sf-outline`;
+- on a place with its own ink (1.9.0, inverse places 2026-11-14) -- a strong
+  coloured place (`bg-primary` ... `bg-error`, a strong alert bar), the duo
+  gradient, glass (`sf-surface-media`) or an inverse place: a filled
+  `on-surface` (or `secondary`) icon button is the place's ink with the
+  place's accent label as its glyph (`--sf-on-primary`: the place's colour,
+  black on glass), not `--sf-on-surface-inverse`, which read 1.29:1 on the
+  white, as on `sf-button` (component.buttons 1.14.0); an `outline` or ghost
+  danger icon button draws its glyph in the place's ink (red read 1.22-2.05:1
+  there), its edge and state fills keep their hue. A card or a popup on such
+  a place takes the theme's look back;
 - size: `1/3`, `1/2`, `1`, `2`, or `3`;
 - density: default, `spacing-compact`, `spacing-comfortable`, or
   `spacing-spacious`; `tightness-low`, `tightness-high` and `tightness-highest`
@@ -33,6 +46,12 @@ decorative and uses `aria-hidden="true"`.
 - radius: the normal control radius `--sf-radius--ui`, or explicit
   `radius-square` and `radius-rounded` overrides.
 
+The glyph inside an icon button keeps the bottom alignment (1.9.1, owner
+decision C151): an icon in running text sits on the middle of the line, but
+inside a button the glyph is the whole content. A button laid out without flex
+-- `sf-file-preview`'s actions, class markup without `.flex` -- stays on its
+ladder height (28 at size 1/2 compact and on a phone, not 28.55).
+
 `surface` takes its colour from the neutral alpha ramp instead of a scheme, so a
 toolbar or a row action reads the same on any background and in both themes: a
 faint fill and a hairline boundary. `tonal primary` tints with the primary
@@ -46,6 +65,10 @@ class of that name and the `--sf-radius-default` token were removed on
 `segment-start`, `segment-middle`, and `segment-end` belong to Button Group
 composition and use an inset keyboard focus ring. A join is one line, the end
 edge of the segment before it, as on the button.
+
+A link drawn as an icon button, `<a class="sf-icon-button" href>` (what
+`sf-button-icon` draws for its `href`, decision C51), takes no link underline,
+as `a.sf-button` does; its ink is the icon button's own (1.6.1).
 
 ## States
 
@@ -63,7 +86,10 @@ fill family of the alpha scale; `--sf-spinner-track-color` wins). A button that
 is disabled and loading at once adds `.disabled` and wears the disabled look,
 the spinner in the disabled ink; the constructor does that for `loading` with
 `disabled`. Markup with the bare `loading` class and no state class keeps the
-disabled look. Tonal danger greys when disabled, as every other look does. The stripes are gone;
+disabled look. Tonal danger greys when disabled, as every other look does.
+`aria-disabled="true"` is disabled for the look as well (1.10.0, owner remark
+2026-11-15 on the copy button): the disabled look, no hover or press fill, the
+arrow cursor; focus and its ring stay. The stripes are gone;
 `--sf-icon-button-loading-stripe` is read until 2026-12-01 (journal
 `token-button-loading-stripe`). A two-state action -- bold in an editor's
 toolbar, wrap lines in a code block -- keeps one name and says its state with
@@ -72,7 +98,17 @@ toolbar, wrap lines in a code block -- keeps one name and says its state with
 fill, the icon in `--sf-on-primary-container` and filled (`FILL 1`) -- two
 cues, not colour alone -- and no visible edge (the border keeps its width and
 is transparent over the fill, so the height does not move). Hover and press
-step the container; focus draws the ring; disabled wears the disabled look.
+step the container. A tonal (or surface) toggle (1.6.1, TB-3), whose resting
+plate is already a container, takes the container's pressed step when pressed
+(`--sf-primary-container-active`, 20 % light / 32 % dark), so the fill differs
+from its unpressed plate; hover and press over it lay the surface's state
+layer (`--sf-surface-state-hover` / `-active`) on that fill. A neutral
+toggle (tonal or surface, on-surface or secondary) rests on the neutral fill,
+which the dark theme draws as a light tone, so the pressed container alone
+barely differs from it: pressed, it also carries the selected state's layer
+(`--sf-surface-state-select`, 8); hover over it takes the press layer (12)
+and press adds the hover layer (12 and 4). Focus draws the
+ring; disabled wears the disabled look.
 `sf-icon-button--pressed` draws the same look without `aria-pressed`, for an
 action whose name changes with the state («Добавить в избранное» → «Убрать из
 избранного»): its name says the state, so it carries no `aria-pressed`

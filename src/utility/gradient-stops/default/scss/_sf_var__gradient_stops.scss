@@ -1,0 +1,39 @@
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT STOPS: the colours of from-*, via-* and to-* (owner decision C65,
+// 2026-11-11). The former list ($gradient-color-array, gradient-color) and,
+// beside it, the whole palette: every palette at every tone (from-teal-40,
+// to-primary-90), error, white and black, and the C16 place names.
+// surface-0, surface-1 and surface-2 stay as dated aliases (journal
+// utility-c65-gradient-names); gr1-*, gr2-* and gr3-* are the same three
+// stops by former names and keep the former list.
+
+@use 'sass:list';
+@use 'sass:map';
+@use '../../../../core/scss/vars/sf_var__hue' as hue;
+@use '../../../gradient-color/default/scss/sf_var__gradient' as former;
+
+$gradient-stop-palettes: list.join(('primary', 'secondary', 'tertiary', 'neutral', 'error', 'warning', 'success', 'info'), hue.$sf-static-hues);
+$gradient-stop-tones: (5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 85, 90, 95, 98);
+
+@function gradient-stop-array() {
+    $stops: former.$gradient-color-array;
+    $stops: map.merge($stops, (
+        'error': 'error',
+        'white': 'white',
+        'black': 'black',
+        'surface-card': 'surface-card',
+        'surface-popup': 'surface-popup',
+        'surface-popup-nested': 'surface-popup-nested',
+        'surface-inverse': 'surface-inverse',
+    ));
+    @each $palette in $gradient-stop-palettes {
+        @each $tone in $gradient-stop-tones {
+            $stops: map.set($stops, '#{$palette}-#{$tone}', '#{$palette}-#{$tone}');
+        }
+    }
+    @return $stops;
+}
+
+$gradient-stop-array: gradient-stop-array();

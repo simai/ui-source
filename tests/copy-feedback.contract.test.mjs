@@ -55,6 +55,43 @@ test('a refusal selects the source and says which keys copy it', async () => {
   feedback.cancel();
 });
 
+test('a refusal gives the focus back to the pressed control (acceptance M2)', async () => {
+  const {feedback} = recorder();
+  const denied = Object.assign(new Error('denied'), {name: 'NotAllowedError'});
+  const focused = [];
+  const body = {};
+  const button = {isConnected: true, focus: (options) => { focused.push(options); doc.activeElement = button; }};
+  const doc = {...page(async () => { throw denied; }), body, activeElement: button};
+  await feedback.run({
+    read: () => 'sk_test',
+    // Selecting the source takes the focus to the page, as a selection outside the control does.
+    element: () => { doc.activeElement = body; return null; },
+    document: doc,
+    words: (key) => key,
+  });
+  assert.deepEqual(focused, [{preventScroll: true}]);
+  assert.equal(doc.activeElement, button);
+  feedback.cancel();
+});
+
+test('one result at a time on the page (acceptance L4)', async () => {
+  const first = recorder(5000);
+  const second = recorder(5000);
+  await first.feedback.run({read: () => 'a', document: page(async () => {}), words: (key) => key});
+  await second.feedback.run({read: () => 'b', document: page(async () => {}), words: (key) => key});
+  assert.deepEqual(first.phases.at(-1), ['idle', ''], 'the first result goes when the second shows');
+  assert.deepEqual(second.phases.at(-1), ['success', 'copied']);
+  assert.equal(globalThis.SF.__copyResult !== null, true);
+  second.feedback.cancel();
+  assert.equal(globalThis.SF.__copyResult, null);
+});
+
+test('the keys copy the button\'s text, not the drawn one (acceptance L3)', async () => {
+  const source = await read('src/core/js/copy-feedback.js');
+  assert.match(source, /keepCopyText\(doc, range, element \? readCopyText\(element\) : text\)/);
+  assert.match(source, /event\.clipboardData\?\.setData\('text\/plain', held\.text\)/);
+});
+
 test('a source error is the failed words, and nothing is selected', async () => {
   const {phases, feedback} = recorder();
   let asked = 0;

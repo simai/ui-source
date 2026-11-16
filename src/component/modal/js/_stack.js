@@ -4,6 +4,12 @@
 // modal opened from a drawer is above it, takes Escape and Tab while it is,
 // and gives focus back into the drawer when it closes (simai/ui-source#36,
 // #37). Registries, public instance APIs and rendering stay separate.
+//
+// The bundle carries the whole of core/js/layer-stack.js, so its bytes move
+// with that module even where this one does not: component.modal 1.3.1 is the
+// C79 change of densityOf there (an explicit size follows its region). The
+// class modal does not call carryLayerOrigin, so nothing it draws or does
+// changes; sf-modal's portal is the one that takes the region's density.
 import { syncModalFocusGuards } from './_focus';
 import { closeLayer, hasLayer, isTopLayer, landmarksAround, layerIndex, openLayers,
   openLayer, raiseLayer, returnLayerFocus, topLayer } from '../../../core/js/layer-stack';

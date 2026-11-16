@@ -13,8 +13,12 @@
 export {FILE_SIZE_UNITS, fileSizeUnits, formatFileSize} from '../format.js';
 
 // The last part of an address, decoded, without its query and fragment: the
-// name a file is shown under when it has no label.
+// name a file is shown under when it has no label. A data: or blob: address
+// has no name in it -- the last «/» of `data:image/svg+xml,<svg …>` falls
+// inside the content, and the name read «>» (image field study IF-14) -- so it
+// gives none, and the caller says what the file is instead.
 export function fileNameFromAddress(href) {
+  if (/^\s*(?:data|blob):/iu.test(String(href ?? ''))) return '';
   const tail = String(href).split(/[?#]/u)[0].split('/').pop() || '';
   try {
     return decodeURIComponent(tail);

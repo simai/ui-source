@@ -9,11 +9,13 @@ Compact labels for categories, filters, selected values and statuses.
   `sf-tag--color`, `sf-tag--avatar`, `sf-tag--success`, `sf-tag--warning`,
   `sf-tag--error`;
 - sizes: `sf-tag--size-1/2`, `sf-tag--size-1`;
-- elements: `sf-tag-container`, `sf-tag-count`, `sf-tag-color-icon`,
-  `sf-tag-check`;
+- elements: `sf-tag-container`, `sf-tag-count`, `sf-tag-color-icon`
+  (with `sf-tag-color-icon--hue` and a hue class `sf-hue-<name>`: the dot of a
+  palette hue), `sf-tag-check` (the check mark of a chosen filter);
+- a link: `sf-tag--link` on an `<a class="sf-tag" href>`;
 - states: `active`, `disabled`;
 - behavior markers: `sf-tag--interactive`, `sf-tag--removable`;
-- appearance: `sf-tag--appearance-surface`, `sf-tag--appearance-ghost`.
+- appearance: `sf-tag--appearance-outline`, `sf-tag--appearance-ghost`; `sf-tag--appearance-surface` is the former name of outline until 2027-01-01 (journal `value-tag-appearance-surface-to-outline`).
 
 The appearance axis is separate from the type. `surface` and `ghost` take their
 colour from the neutral alpha ramp rather than from a role, so a tag used as a
@@ -21,9 +23,38 @@ filter or a quiet label reads the same on any background and in both themes.
 Because a tag is built without a border, both draw their boundary as an inset
 line, which keeps a tag exactly as tall as its neighbours.
 
-A picture before the label is the label's line high. On another control's text
+Height: `sf-tag--height-low`, `sf-tag--height-high` and
+`sf-tag--height-highest` move a tag of any size to its neighbouring steps of
+the height ladder (C27, as `sf-button--height-*`); the default needs no class.
+`spacing-compact`, `spacing-comfortable` and `spacing-spacious` are their former
+names until 2027-01-01 (journal `class-tag-spacing-to-height`).
+
+A picture before the label (avatar, icon) is the tag less 4 above and below
+(owner decision C58: 24 in a 32 tag, 20 in 28, 16 in 24, 32 in 40).
+
+A filter tag (`sf-tag--checkbox`) shows no mark until it is chosen (owner
+decision C145 (2)): there is no empty square. Chosen (`active`), a check mark
+stands before the label on the primary container fill — the icon `check`, a
+picture of the tag's size: `<i class="sf-icon sf-tag-check"
+aria-hidden="true">check</i>`. A `sf-tag-check` of a tag that is not chosen
+is not drawn.
+
+A colour from data is a dot before the label, the tag itself stays neutral
+(owner decision C145 (7)): `<span class="sf-tag-color-icon
+sf-tag-color-icon--hue sf-hue-teal" aria-hidden="true"></span>` takes the
+hue's strong fill, light and dark. The dot is the point step of the tag's size
+(C132): 6 px at 1/3, 8 px at 1/2, 12 px at 1 and 2, 16 px at 3.
+
+A tag that leads to a page is a link (owner decision C145 (6)): `<a
+class="sf-tag sf-tag--default sf-tag--link sf-tag--size-1/2" href="…">` with
+its label, no check mark and no cross; the label underlines on hover. On another control's text
 line (`sf-tag--inline`, `line` on `sf-tag`) an avatar is that line, as the remove
 button is, so a chip in a field and the field's list rows show one avatar step.
+
+The small parts take the small steps of the tag's size (owner decision C132):
+the remove cross is half the tag's text line rounded down to a small step, 8 px at 1/3 and 1/2, 12 px at 1 and 2,
+16 px at 3 on a desktop and 12 px at 3 in compact and on a phone (a chip in a field is a tag and takes the same);
+the status dot is 6 px at 1/3 and 1/2, 8 px at 1 and 2 and 12 px at 3.
 
 ## Semantic ownership
 
@@ -35,7 +66,14 @@ button is, so a chip in a field and the field's list rows show one avatar step.
   remove button;
 - icon, color, avatar, dot and check visuals are decorative when the visible
   text already supplies the accessible name;
-- a group owns wrapping and spacing through Framework flex and gap utilities.
+- a group owns wrapping and spacing through Framework flex and gap utilities:
+  tags stand `gap-1/4` (4 px) apart, between their rows too (C105 H5, C58);
+- a long name ends in an ellipsis; a tag is at most 20rem and its container,
+  and never shrinks to give its width to a neighbour (C58);
+- a colour from data is a palette step through `--sf-tag-background-color`,
+  for example `var(--sf-teal-50--alfa-24)`: the step is translucent, so the
+  label keeps its contrast in a light and in a dark theme; an author hex is
+  not (C140 BG-7; a light hex reads 1.04:1 in the dark theme).
 
 Tag is a compact UI control and therefore uses `--sf-radius--ui`. Geometry,
 typography, role colors, focus and motion use Framework semantic tokens. A

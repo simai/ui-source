@@ -23,6 +23,9 @@ test('Slide normalization retains legacy non-Node template values; consumers own
   finally{if(old===undefined)delete globalThis.Node;else globalThis.Node=old;}
 });
 test('Gallery projections clone slot content and retain framework runtime metadata',()=>{
-  assert.match(gallery,/const content = slide\.cloneNode\(true\);\s*this\.copyRuntimeData\(slide, content\);\s*wrapper\.append\(content\)/);
-  assert.doesNotMatch(gallery,/wrapper\.append\(slide\)/);
+  // A copy of the picture for a tile, never the page's own node; made from the
+  // markup so a lazy picture stays lazy (GL-10, C150 (6)).
+  assert.match(gallery,/copies\[name\] = copyPicture\(read\.picture, eager\);\s*if \(copies\[name\]\) this\.copyRuntimeData\(read\.picture, copies\[name\]\);/);
+  assert.match(gallery,/function copyPicture\(node, eager = false\) \{[\s\S]*document\.importNode\(inert, true\)/);
+  assert.doesNotMatch(gallery,/\.append\(read\.picture\)|\.append\(slide\)/);
 });

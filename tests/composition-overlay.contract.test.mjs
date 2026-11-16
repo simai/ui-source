@@ -53,7 +53,7 @@ test('editor surfaces are Smart components, not part of Core', async () => {
     // Each over the class its component.json makes (standard 1.3.8,
     // core/js/composition/manifest-host.mjs).
     'editor-overlay': ['sf-editor-overlay', /defineCompositionOverlay\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
-    sortable: ['sf-sortable', /defineSortable\(inserterRegistry\(\), \{base: manifestHost\(manifest/u],
+    sortable: ['sf-sortable', /defineSortable\(moveMenuRegistry\(inserterRegistry\(\)\), \{base: manifestHost\(manifest/u],
     'editor-inline': ['sf-editor-inline', /defineInlineEditor\(globalThis\.customElements, \{base: manifestHost\(manifest/u],
   };
   for (const [name, [tag, define]] of Object.entries(entries)) {

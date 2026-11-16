@@ -71,7 +71,7 @@
     {
       "name": "apply",
       "title": "Тема на части страницы",
-      "markup": "<div class=\"site-main theme-light\">Содержимое</div>",
+      "markup": "<div class=\"site-main\">Содержимое</div>",
       "settings": {
         "value": "#6a1b9a",
         "apply": true,

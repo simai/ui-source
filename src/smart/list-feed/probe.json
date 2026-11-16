@@ -7,6 +7,7 @@
     "body": [
       "<main>",
       "  <div id=\"box\" style=\"display: flex; flex-direction: column; block-size: 420px; inline-size: 640px\"><sf-list-feed id=\"log\"></sf-list-feed></div>",
+      "  <div id=\"plain-box\" style=\"display: flex; flex-direction: column; block-size: 320px; inline-size: 640px\"><sf-list-feed id=\"plain\" label=\"Комментарии\"></sf-list-feed></div>",
       "</main>",
       "<script>customElements.whenDefined('sf-list-feed').then(() => {const log = document.querySelector('#log');log.renderItem = (message) => { const node = document.createElement('article'); node.className = 'host-message'; node.textContent = message.text; const button = document.createElement('button'); button.type = 'button'; button.className = 'copy'; button.textContent = 'Копировать'; node.append(' ', button); return node; };log.setItems([{\"id\": \"m1\", \"author\": \"anna\", \"author-name\": \"Анна\", \"text\": \"Добрый день!\"}, {\"id\": \"m2\", \"author\": \"anna\", \"author-name\": \"Анна\", \"text\": \"Отчёт готов?\"}, {\"id\": \"m3\", \"author\": \"me\", \"own\": true, \"text\": \"Да, отправил утром.\"}], {hasMore: true});});</script>"
     ]
@@ -356,6 +357,18 @@
           "expect": {
             "returns": true
           }
+        }
+      ]
+    },
+    {
+      "id": "p8-default-comment",
+      "title": "without a renderer an entry is a comment: the author over the first entry of a run, one's own too as «Вы», the text with no fill from the column's start across it (C167 (4))",
+      "covers": "properties.renderItem unset, runtime.you-text",
+      "steps": [
+        {
+          "script": "(document.querySelector('#plain').setItems([{id: 'c1', author: 'anna', 'author-name': 'Анна', text: 'Макет готов.'}, {id: 'c2', author: 'anna', 'author-name': 'Анна', text: 'Посмотрите фильтры.'}, {id: 'c3', author: 'me', own: true, text: 'Посмотрел.'}], {hasMore: false}), true)",
+          "wait": 200,
+          "check": "(() => { const feed = document.querySelector('#plain'); const col = feed.querySelector('.sf-list-feed__column'); const cs = getComputedStyle(col); const start = col.getBoundingClientRect().left + parseFloat(cs.paddingLeft); const width = col.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); const item = (id) => feed.querySelector('.sf-list-feed__item[data-id=\"' + id + '\"]'); const author = (id) => item(id).querySelector('.sf-list-feed__author')?.textContent ?? null; const texts = [...feed.querySelectorAll('.sf-list-feed__text')]; const clear = (c) => c === 'rgba(0, 0, 0, 0)' || c === 'transparent'; return author('c1') === 'Анна' && author('c2') === null && author('c3') === 'Вы' && texts.length === 3 && texts.every((t) => clear(getComputedStyle(t).backgroundColor) && Math.abs(t.getBoundingClientRect().left - start) < 1 && Math.abs(t.getBoundingClientRect().width - width) < 1); })()"
         }
       ]
     }

@@ -197,7 +197,7 @@ export function attributesOf(component, lang = {}) {
     out['aria-label'] = {kind: 'custom', valueType: 'string', default: ''};
   }
   for (const row of aliasRows(component)) {
-    if (!settingAlias(row)) continue;
+    if (!attributeAlias(component, row)) continue;
     const target = settings[row.to];
     if (!target) continue;
     const attribute = attributeOf(target);
@@ -223,6 +223,14 @@ export function attributesOf(component, lang = {}) {
 
 // A dated alias of a setting: a setting row, or an attribute row (the
 // attribute alone is renamed) that is neither a host attribute nor retired.
+// An alias row that names an attribute of its own in the description: a
+// setting alias whose old name is not still a setting. A row like
+// multi-country (value "false") -> fixed-country records a value form of a
+// setting that stays; the setting describes the attribute, the row does not.
+export function attributeAlias(component, row) {
+  return settingAlias(row) && !Object.hasOwn(component.settings ?? {}, row.from);
+}
+
 export function settingAlias(row) {
   if (!row.to) return false;
   if (row.kind === 'setting') return true;
@@ -381,6 +389,9 @@ export function domEvent(component, verb) {
   return `${component.tag}-${verb}`;
 }
 const valueAliases = (rows) => rows.filter((row) => row.kind === 'value' && row.setting);
+// The version a value alias came with: its own row's since-version where the
+// row says one (a later alias beside older ones), else the block's.
+const authoredSinceVersion = (component, row) => component.aliases?.rows?.find((r) => r.kind === 'value' && r.setting === row.setting && r.from === row.from)?.['since-version'];
 
 // A carried field or a parameter as JSON Schema: §4.2 types, values, nullable,
 // and the field's words (summary) and extra constraints (schema).
@@ -575,7 +586,7 @@ export function genManifest(component, lang, stamp = {}) {
       aliases: [...(reg.compatibility?.aliases ?? []), ...valueAliases(aliases).map((row) => `${row.setting}=${row.from}`), ...tagAliasesOf(component).map((row) => `<${row.from}>`)],
       // A deprecation names the component version the alias came with: only
       // when component.json says it (aliases["since-version"]).
-      deprecations: [...(reg.compatibility?.deprecations ?? []), ...(component.aliases?.['since-version'] ? valueAliases(aliases).map((row) => ({path: `${row.setting}=${row.from}`, since: component.aliases['since-version'], replacement: `${row.setting}=${row.to}`})) : []),
+      deprecations: [...(reg.compatibility?.deprecations ?? []), ...(component.aliases?.['since-version'] ? valueAliases(aliases).map((row) => ({path: `${row.setting}=${row.from}`, since: authoredSinceVersion(component, row) ?? component.aliases['since-version'], replacement: `${row.setting}=${row.to}`})) : []),
         ...tagAliasesOf(component).map((row) => ({path: `<${row.from}>`, since: row['since-version'] ?? component.version, replacement: `<${row.to}>`}))],
       replacement: reg.compatibility?.replacement ?? null,
       migrations: reg.compatibility?.migrations ?? [],
@@ -592,7 +603,7 @@ export function genManifest(component, lang, stamp = {}) {
 function declarativeOf(component, carried, lang) {
   const out = {...carried};
   const attributes = attributesOf(component, lang);
-  const aliasNames = new Set(aliasRows(component).filter(settingAlias).map((row) => row.from));
+  const aliasNames = new Set(aliasRows(component).filter((row) => attributeAlias(component, row)).map((row) => row.from));
   // A document sets the interface, never arbitrary classes or styles: the base
   // settings root-class and root-style stay out of the props a document holds.
   if ('props' in carried) out.props = Object.keys(attributes).filter((name) => !aliasNames.has(name) && !['root-class', 'root-style'].includes(name));

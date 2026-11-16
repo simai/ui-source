@@ -1,10 +1,14 @@
 import {html, nothing} from "lit";
-import {getInitials} from "../../../helpers/text";
+import {avatarPicture} from "../../../avatar/js/picture";
 import {shortcutView} from "../../../../component/kbd/js/shortcut";
+import {warnUnknownControlStatus} from "../../../helpers/control-status";
 
 // A destructive row: danger: true, or status "danger" as every control writes
-// it (C13), with "error" read as its alias.
+// it (C13), with "error" read as its alias. Any other status (success,
+// warning, info) draws a plain row and is said once per page (BS-1).
+const ITEM_STATUSES = Object.freeze(["", "danger", "error"]);
 function isDestructive(entry) {
+    warnUnknownControlStatus("sf-menu-context", entry.status, {allowed: ITEM_STATUSES, label: "item status"});
     return Boolean(entry.danger) || entry.status === "danger" || entry.status === "error";
 }
 
@@ -63,6 +67,21 @@ function icon(name, className) {
     return html`<i class="sf-icon ${className}" aria-hidden="true">${name}</i>`;
 }
 
+// A colour the row stands for -- a colour row of sf-settings (C85), a label's
+// colour -- drawn as a circle in the place of an icon. `swatch` is a CSS
+// colour (a code, var() of a token, light-dark() of two); anything that could
+// close the declaration is not drawn.
+const SWATCH = /^[#\w\s(),.%/-]+$/u;
+const hasSwatch = (entry) => typeof entry?.swatch === "string" && SWATCH.test(entry.swatch);
+function swatch(value) {
+    return html`<span class="sf-context-menu-item-swatch" style=${`--sf-context-menu-swatch: ${value}`} aria-hidden="true"></span>`;
+}
+
+// The pictures of a row and of the header are sf-avatar's own drawing
+// (avatar js/picture.js, avatar study AV-8): the photo an <img>, the initials
+// on the neutral plate, the person glyph without either; the context menu's
+// sheet gives them the row's line and the header's step only. They were the
+// menu's own classes on the secondary container, in the medium weight.
 // What leads a row: an icon, or a picture of the thing itself -- a site's logo,
 // a person -- with its initials when there is no picture. A row ticked on and
 // off (kind: "check") leads with its check, in the column and at the width of
@@ -70,8 +89,8 @@ function icon(name, className) {
 // Unticked, it shows its own icon, if it has one.
 function renderLead(entry) {
     if (entry.kind === "check" && entry.type !== "switch" && entry.checked) return icon("check", "sf-context-menu-item-check");
-    if (entry.avatar) return html`<img class="sf-context-menu-item-avatar" src=${entry.avatar} alt="">`;
-    if (entry.initials) return html`<span class="sf-context-menu-item-avatar" aria-hidden="true">${entry.initials}</span>`;
+    if (entry.avatar || entry.initials) return avatarPicture({imageUrl: entry.avatar, text: entry.initials, shape: "square", extraClass: "sf-context-menu-item-avatar"});
+    if (hasSwatch(entry)) return swatch(entry.swatch);
     return entry.icon ? icon(entry.icon, "sf-context-menu-item-icon") : nothing;
 }
 
@@ -88,9 +107,12 @@ function renderLeadPlace(entry, lead) {
 // getInitials; reuse audit 2026-11-02, finding 10): the copy here took
 // word[0], half a letter outside the basic plane, and kept «по» as a word.
 function renderHeader(entry) {
-    const picture = entry.avatar
-        ? html`<img class="sf-context-menu-header-avatar" src=${entry.avatar} alt="">`
-        : html`<span class="sf-context-menu-header-avatar" aria-hidden="true">${entry.initials ?? getInitials(entry.text ?? "")}</span>`;
+    const picture = avatarPicture({
+        imageUrl: entry.avatar,
+        text: entry.initials,
+        name: entry.text,
+        extraClass: "sf-context-menu-header-avatar",
+    });
     const lines = Array.isArray(entry.caption) ? entry.caption : [entry.caption].filter(Boolean);
     return html`<div class="sf-context-menu-header" role="presentation">
         ${picture}
@@ -98,6 +120,37 @@ function renderHeader(entry) {
             <span class="sf-context-menu-header-name">${entry.text ?? ""}</span>
             ${lines.map((line) => html`<span class="sf-context-menu-header-caption">${line}</span>`)}
         </span>
+    </div>`;
+}
+
+// A meter row (owner decision C191 (4)-(6)): an amount within a known range,
+// such as the account's tariff remainder in a person menu -- read, not
+// chosen, so it is a block between rows, not a row. The bar is
+// sf-progress-bar's meter and shows the share used, so the page's thresholds
+// fire (warning-at, error-at; C131 (7)); the words over it are the page's
+// value-text (the remainder: «Осталось 1,7 из 10 ГБ»), else the percentage,
+// on one line with the name as the bar's own «top» text (C131 (4)). That line
+// is aria-hidden: the bar says the name and the words once.
+function renderMeter(entry) {
+    const number = Number(entry.value);
+    const value = Number.isFinite(number) ? Math.max(0, Math.min(100, number)) : 0;
+    const words = entry.valueText ?? entry["value-text"] ?? "";
+    const warningAt = entry.warningAt ?? entry["warning-at"];
+    const errorAt = entry.errorAt ?? entry["error-at"];
+    return html`<div class="sf-context-menu-meter" role="none">
+        <div class="sf-context-menu-meter-head" aria-hidden="true">
+            <span class="sf-context-menu-meter-name">${entry.text ?? ""}</span>
+            <span class="sf-context-menu-meter-value">${words || `${value}%`}</span>
+        </div>
+        <sf-progress-bar
+                class="sf-context-menu-meter-bar"
+                meter
+                value=${String(value)}
+                label=${entry.text || nothing}
+                value-text=${words || nothing}
+                warning-at=${warningAt ?? nothing}
+                error-at=${errorAt ?? nothing}
+        ></sf-progress-bar>
     </div>`;
 }
 
@@ -113,19 +166,27 @@ function renderItemText(entry, under = "") {
 }
 
 // The options of a choice, side by side. Each is a menuitemradio of the menu,
-// so the arrows walk through them as through any row.
-function renderChoiceOptions(entry, path, iconsOnly) {
+// so the arrows walk through them as through any row. An option drawn as an
+// icon alone shows its name as the Framework's tooltip (owner decision C160
+// (1), C176 defect SM-6), not a browser title: the tooltip's surface stands
+// beside it, named by data-tooltip, and the tooltip controller (component
+// tooltip, loaded by the menu when it draws one) shows it on hover, focus or
+// a long press.
+function renderChoiceOptions(entry, path, iconsOnly, context) {
+    const tip = (at) => `${context?.tipPrefix ?? "sf-menu-tip"}-${String(path).replace(/[^\w-]/gu, "-")}-${at}`;
     return (entry.options ?? []).map((option, at) => html`<button
             type="button"
             class="sf-context-menu-item sf-context-menu-choice-option"
             role="menuitemradio"
             data-sf-entry=${path}
             data-sf-option=${at}
+            data-tooltip=${iconsOnly && option.text ? tip(at) : nothing}
             aria-checked=${String(Boolean(option.checked))}
             aria-label=${option.text ?? nothing}
-            title=${iconsOnly ? option.text ?? nothing : nothing}
             ?disabled=${Boolean(option.disabled)}
-    >${option.icon ? icon(option.icon, "") : option.text ?? ""}</button>`);
+    >${hasSwatch(option) ? swatch(option.swatch) : option.icon ? icon(option.icon, "") : option.text ?? ""}</button>${iconsOnly && option.text
+        ? html`<span class="sf-tooltip sf-tooltip--dark sf-context-menu-choice-tooltip" id=${tip(at)} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${option.text}</span></span></span>`
+        : nothing}`);
 }
 
 // A choice of a few options -- the theme in a profile menu, a setting in a
@@ -163,7 +224,7 @@ function renderChoiceDrill(entry, path, lead) {
 function renderLevelOptions(choice, context) {
     const {entry, path} = choice;
     const options = entry.options ?? [];
-    const lead = options.some((option) => option.icon);
+    const lead = options.some((option) => option.icon || hasSwatch(option));
     const query = String(context.query ?? "").trim().toLowerCase();
     const shown = options.map((option, at) => [option, at])
         .filter(([option]) => !query || String(option.text ?? "").toLowerCase().includes(query));
@@ -176,20 +237,20 @@ function renderLevelOptions(choice, context) {
             aria-checked=${String(Boolean(option.checked))}
             ?disabled=${Boolean(option.disabled)}
     >
-        ${lead ? html`<span class="sf-context-menu-item-lead">${option.icon ? icon(option.icon, "sf-context-menu-item-icon") : nothing}</span>` : nothing}
+        ${lead ? html`<span class="sf-context-menu-item-lead">${hasSwatch(option) ? swatch(option.swatch) : option.icon ? icon(option.icon, "sf-context-menu-item-icon") : nothing}</span>` : nothing}
         ${renderItemText(option)}
     </button>`);
 }
 
 function renderChoice(entry, path, lead, context) {
     const options = entry.options ?? [];
-    const iconsOnly = options.length > 0 && options.every((option) => option.icon);
+    const iconsOnly = options.length > 0 && options.every((option) => option.icon || hasSwatch(option));
     if (context?.drill && entry.view === "drill" && options.length > 0) {
         return renderChoiceDrill(entry, path, lead);
     }
     if (entry.view === "band") {
         return html`<div class="sf-context-menu-choice sf-context-menu-choice--band" role="group" aria-label=${entry.text ?? nothing}>
-            ${renderChoiceOptions(entry, path, iconsOnly)}
+            ${renderChoiceOptions(entry, path, iconsOnly, context)}
         </div>`;
     }
     return html`<div class="sf-context-menu-value-row sf-context-menu-value-row--choice">
@@ -197,7 +258,7 @@ function renderChoice(entry, path, lead, context) {
         ${renderItemText(entry)}
         <span class=${joinClasses("sf-context-menu-choice", iconsOnly ? "sf-context-menu-choice--icons" : "")}
                 role="group" aria-label=${entry.text ?? nothing}>
-            ${renderChoiceOptions(entry, path, iconsOnly)}
+            ${renderChoiceOptions(entry, path, iconsOnly, context)}
         </span>
     </div>`;
 }
@@ -309,6 +370,7 @@ function renderEntry(entry, path, lead, context, query) {
     if (entry?.type === "note") {
         return html`<p class="sf-context-menu-note">${entry.text ?? ""}</p>`;
     }
+    if (entry?.type === "meter") return renderMeter(entry);
     if (entry?.type === "separator") {
         return html`<div class="sf-context-menu-separator" role="separator"></div>`;
     }
@@ -328,9 +390,13 @@ function renderEntry(entry, path, lead, context, query) {
     // A drilling row shows its value under the name, where a long one is cut
     // instead of pushing the row's end about (owner, 2026-10-30).
     const under = context?.drill && submenu ? entry.value ?? "" : "";
+    // A disabled row is dimmed but stays in the walk with its reason, the
+    // caption (owner decision C164 (4)): aria-disabled, never disabled.
+    const dimmed = Boolean(entry.disabled);
     const classes = joinClasses(
         "sf-context-menu-item",
         toggle ? "sf-context-menu-item--switch" : "",
+        dimmed ? "sf-context-menu-item--disabled" : "",
         isDestructive(entry) ? "sf-context-menu-item--danger" : "",
         entry.current ? "sf-context-menu-item--current" : "",
         chosen ? "sf-context-menu-item--chosen" : "",
@@ -355,22 +421,41 @@ function renderEntry(entry, path, lead, context, query) {
             aria-checked=${toggle ? String(Boolean(entry.value)) : checkable ? String(Boolean(entry.checked)) : nothing}
             aria-haspopup=${submenu ? "menu" : nothing}
             aria-expanded=${submenu ? "false" : nothing}
-            ?disabled=${Boolean(entry.disabled)}
+            aria-disabled=${dimmed ? "true" : nothing}
     >${body}</button>`;
+}
+
+// The order a level's rows are drawn in (owner decision C164 (5)): a
+// destructive row -- «Удалить» -- is always last, after a line, whatever
+// place the host gave it. A line left at either end, or doubled where a row
+// moved away, is not drawn. Each row keeps its own path.
+function actionOrder(shown) {
+    const destructive = (entry) => ROWS(entry) && entry.type !== "group"
+        && (Boolean(entry.danger) || entry.status === "danger" || entry.status === "error");
+    const danger = shown.filter(([entry]) => destructive(entry));
+    if (!danger.length) return shown;
+    const separator = (pair) => pair[0]?.type === "separator";
+    const rest = [];
+    for (const pair of shown.filter((one) => !danger.includes(one))) {
+        if (separator(pair) && (!rest.length || separator(rest[rest.length - 1]))) continue;
+        rest.push(pair);
+    }
+    while (rest.length && separator(rest[rest.length - 1])) rest.pop();
+    return rest.length ? [...rest, [{type: "separator"}, -1], ...danger] : danger;
 }
 
 // What is not a row: the blocks that stand between rows. A choice row is a
 // row since 1.5.0 (the quiet form, owner 2026-10-30): it has a lead, a label
 // and a value of its own, so it keeps the level's leading column and a search
 // narrows to it. A group holds rows, so it counts as rows.
-const BLOCKS = new Set(["separator", "heading", "header", "note"]);
+const BLOCKS = new Set(["separator", "heading", "header", "note", "meter"]);
 
 const ROWS = (entry) => entry && !BLOCKS.has(entry.type);
 
 // A row that keeps the level's leading column: one with an icon or a picture,
 // and one that can be ticked, whose check stands there.
 function leads(entry) {
-    return Boolean(entry.icon || entry.avatar || entry.initials || (entry.kind === "check" && entry.type !== "switch"));
+    return Boolean(entry.icon || entry.avatar || entry.initials || hasSwatch(entry) || (entry.kind === "check" && entry.type !== "switch"));
 }
 
 // What a search narrows to: the rows whose label or caption holds the query. A
@@ -439,11 +524,16 @@ function renderEntries(context) {
     // rows has found nothing, whatever the field holds -- an answer to an older
     // query can arrive after the field was cleared -- so its note shows then too.
     const remote = Boolean(context.search?.remote);
-    const shown = entries.map((entry, index) => [entry, index]).filter(([entry]) => remote || matches(entry, query));
+    let shown = actionOrder(entries.map((entry, index) => [entry, index]).filter(([entry]) => remote || matches(entry, query)));
+    // On a selection the top level says how many rows it acts on, «Выбрано N»,
+    // in place of a heading the host gave the one object (C164 (3)).
+    const selection = level.depth === 0 && context.selectionLabel;
+    if (selection && shown[0]?.[0]?.type === "heading") shown = shown.slice(1);
     return html`
         ${level.depth > 0 ? renderDrillHead(context) : nothing}
         ${context.search ? renderSearch(context) : nothing}
         ${searchList(context, html`
+            ${selection ? html`<div class="sf-context-menu-heading sf-context-menu-heading--selection" role="presentation">${context.selectionLabel}</div>` : nothing}
             ${shown.map(([entry, index]) => renderEntry(entry, `${prefix}${index}`, lead, context, remote ? "" : query))}
             ${context.search && (query || remote) && !shown.some(([entry]) => ROWS(entry)) ? html`<p class="sf-context-menu-note" role="status">${context.search.empty ?? ""}</p>` : nothing}
         `)}
@@ -495,17 +585,21 @@ function renderFooter(context) {
 }
 
 // A panel's head: the tabs, and the way out at its end. It never scrolls --
-// the body under it does (owner, 2026-10-15).
+// the body under it does (owner, 2026-10-15). The tab is chosen on sf-tabs'
+// current event, sf-tabs-change; its former name sf-tab-change, which sf-tabs
+// still sends after it until 2026-12-01, is only kept inside the menu (both
+// stop here, the menu is not a tab strip). Remove that stopper with the alias.
 function renderPanelHead(context) {
     const active = context.activeTab;
     return html`<div class="sf-context-menu-head">
         <sf-tabs class="sf-context-menu-tabs" type="underline" size=${context.size === "1" ? "1" : "1/2"}
                 items=${context.tabs.map((tab) => tab.label).join("|")}
                 active-index=${String(active?.index ?? 0)}
-                @sf-tab-change=${(event) => {
+                @sf-tabs-change=${(event) => {
                     event.stopPropagation();
                     context.component.chooseTab(Number(event.detail?.current ?? 0));
-                }}></sf-tabs>
+                }}
+                @sf-tab-change=${(event) => event.stopPropagation()}></sf-tabs>
         ${context.closable ? html`<sf-button-icon class="sf-context-menu-close" appearance="ghost" scheme="on-surface"
                 size=${context.size === "1" ? "1" : "1/2"} icon="close"
                 aria-label=${context.closeLabel} title=${context.closeLabel}
@@ -549,7 +643,9 @@ export function renderContextMenuTemplate(context) {
                 class=${rootClasses}
                 style=${context.rootStyle || nothing}
                 role=${context.role || "menu"}
-                aria-label=${context.ariaLabel || nothing}
+                aria-label=${(context.selectionLabel
+                    ? [context.ariaLabel || context.component?.getAttribute?.("aria-label"), context.selectionLabel].filter(Boolean).join(", ")
+                    : context.ariaLabel) || nothing}
         >
             <div class="sf-context-menu-frame">
                 ${renderTooltip(context)}

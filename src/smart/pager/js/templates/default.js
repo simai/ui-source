@@ -1,7 +1,8 @@
 import { html, nothing } from 'lit';
 
 // sf-pager's markup, one <nav> per appearance (scss/ draws them on the one
-// ladder). cards and row are plain links from string settings, so the build
+// ladder): cards, row and counter (decision C97); steps and course draw until
+// 2027-01-01. cards and row are plain links from string settings, so the build
 // snapshot of them is the markup a server prints and it works without the
 // script; a side with no address is a button that moves in items. steps,
 // course and counter are drawn with sf-button and sf-icon-button of the
@@ -91,14 +92,22 @@ function renderCourse(context) {
   `;
 }
 
+// counter: «‹ 3 из 240 ›» in a record card (C97 point 7), with the way back
+// to the list before it when list-href is given. The arrows are the quiet
+// icon buttons of a record head; at an end the arrow is disabled.
 function renderCounter(context) {
-  const {component, list: items, at: current, size, placeText: place, words} = context;
+  const {component, at: current, size, placeText: place, words} = context;
+  const step = size === '1/2' ? '1/2' : '1';
   return html`
-    <sf-button-icon class="sf-pager-back" size=${size} appearance="outline" scheme="on-surface" icon="chevron_left"
-      aria-label=${words.prevItem} ?disabled=${current <= 0} @click=${() => component.press('prev')}></sf-button-icon>
+    ${context.listHref
+      ? html`<a class=${`sf-pager-list sf-icon-button sf-icon-button--size-${step} sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center`}
+          href=${context.listHref} title=${words.toList} aria-label=${words.toList}>${icon('arrow_back')}</a>`
+      : nothing}
+    <sf-button-icon class="sf-pager-back" size=${size} appearance="ghost" scheme="on-surface" icon="chevron_left"
+      aria-label=${words.prevItem} title=${`${words.prevItem}  [`} ?disabled=${current <= 0} @click=${() => component.press('prev')}></sf-button-icon>
     <span class="sf-pager-place" role="status">${place}</span>
-    <sf-button-icon class="sf-pager-forward" size=${size} appearance="outline" scheme="on-surface" icon="chevron_right"
-      aria-label=${words.nextItem} ?disabled=${current >= items.length - 1} @click=${() => component.press('next')}></sf-button-icon>
+    <sf-button-icon class="sf-pager-forward" size=${size} appearance="ghost" scheme="on-surface" icon="chevron_right"
+      aria-label=${words.nextItem} title=${`${words.nextItem}  ]`} ?disabled=${!context.hasNextRecord} @click=${() => component.press('next')}></sf-button-icon>
   `;
 }
 

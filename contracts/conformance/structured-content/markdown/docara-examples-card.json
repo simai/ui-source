@@ -1,0 +1,166 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-card",
+  "input": "docara-examples-card.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.card",
+              "slots": {
+                "default": [
+                  {
+                    "id": "m2",
+                    "type": "content.heading",
+                    "data": {
+                      "level": 3,
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Переносимый проект"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m3",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Markdown и JSON можно хранить рядом с кодом и проверять через Git."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.card",
+              "slots": {
+                "default": [
+                  {
+                    "id": "m5",
+                    "type": "content.heading",
+                    "data": {
+                      "level": 3,
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Понятный заголовок"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m6",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Короткое связанное содержимое."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.card",
+              "slots": {
+                "default": [
+                  {
+                    "id": "m8",
+                    "type": "content.heading",
+                    "data": {
+                      "level": 3,
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "С оформлением"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m9",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Поверхность, рамка и внутренние отступы."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m10",
+              "type": "content.card",
+              "props": {
+                "variant": "plain"
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "m11",
+                    "type": "content.heading",
+                    "data": {
+                      "level": 3,
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Без оформления"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Только содержимое, без своей поверхности."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

@@ -10,15 +10,17 @@
 //     size); inherited text is the compact body, 14 (buttons, icon buttons, input, dropdown,
 //     list rows, context-menu rows, tabs, badge, switch, checkbox, segmented,
 //     tag, pagination, navigation menu rows);
-//   - an explicit size wins: compact with size = the default draws as the
-//     normal page unsized;
-//   - data-sf-density="normal" inside a compact region is the normal page;
+//   - an explicit size follows the region (owner decision C79, 2026-11-12,
+//     changing C22): compact with size = the default draws as compact
+//     unsized, and a lower explicit size comes one step below it too;
+//   - data-sf-density="normal" inside a compact region is the normal page,
+//     an explicit size in that island too;
 //   - the ladder itself: compact control 32, icon 20, text 14 on desktop
 //     (normal 40, 24, 16); a size 1/3 component stays 1/3 (the floor);
 //   - a size that is a width, not a ladder step (sf-drawer size, manifest
 //     x-scale; sf-modal has no size setting) does not take the normal ladder
 //     back: a compact drawer and window with a size draw their content one
-//     step down, and an explicit size inside them still wins;
+//     step down, an explicit size inside them too (C79);
 //   - the phone ladder (< 60rem) is not moved: compact = normal there.
 //
 // --report prints the measurements and exits 0 whatever they say.
@@ -67,6 +69,7 @@ const body = () => SUBJECTS.map(([name, size, markup]) => `<section class="row" 
   ${cell(`${name}--explicit`, 'compact', markup(attr(size)))}
   ${cell(`${name}--explicit-lower`, 'compact', markup(attr(LOWER[size])))}
   <div class="cell" data-sf-density="compact"><div class="cell" id="${name}--back" data-sf-density="normal">${markup('')}</div></div>
+  <div class="cell" data-sf-density="compact"><div class="cell" id="${name}--island" data-sf-density="normal">${markup(attr(size))}</div></div>
 </section>`).join('\n') + `
 <section class="row" data-name="menu">
   <div class="cell" id="menu--normal" style="inline-size:240px"><sf-menu aria-label="Разделы" items='${items}'></sf-menu></div>
@@ -121,7 +124,7 @@ const MEASURE = (subjects) => {
   const result = {};
   for (const [name, , , box, text] of subjects) {
     result[name] = {};
-    for (const cellId of ['normal', 'lower', 'compact', 'explicit', 'explicit-lower', 'back']) {
+    for (const cellId of ['normal', 'lower', 'compact', 'explicit', 'explicit-lower', 'back', 'island']) {
       const root = document.getElementById(`${name}--${cellId}`);
       result[name][cellId] = root ? measure(root, box, text) : null;
     }
@@ -189,16 +192,17 @@ try {
           if (mode === 'desktop') {
             if (!stepDown(row.compact, row.normal, row.lower)) failures.push(`${label} ${name}: compact ${JSON.stringify(row.compact)} is not one step below ${JSON.stringify(row.normal)} (next size ${JSON.stringify(row.lower)})`);
             if (row.normal.h > 24 && !(row.compact.h < row.normal.h)) failures.push(`${label} ${name}: compact did not move (${row.compact.h} vs ${row.normal.h})`);
-            if (!same(row.explicit, row.normal)) failures.push(`${label} ${name}: explicit size in compact ${JSON.stringify(row.explicit)} is not the normal ${JSON.stringify(row.normal)}`);
-            if (!same(row['explicit-lower'], row.lower)) failures.push(`${label} ${name}: explicit lower size in compact ${JSON.stringify(row['explicit-lower'])} is not ${JSON.stringify(row.lower)}`);
+            if (!same(row.explicit, row.compact)) failures.push(`${label} ${name}: explicit size in compact ${JSON.stringify(row.explicit)} is not compact unsized ${JSON.stringify(row.compact)} (C79)`);
+            if (row.lower.h > 24 && !(row['explicit-lower'].h < row.lower.h)) failures.push(`${label} ${name}: explicit lower size in compact ${JSON.stringify(row['explicit-lower'])} did not come below ${JSON.stringify(row.lower)} (C79)`);
           } else if (!same(row.compact, row.normal)) {
             failures.push(`${label} ${name}: the phone ladder moved in compact ${JSON.stringify(row.compact)} vs ${JSON.stringify(row.normal)}`);
           }
           if (!same(row.back, row.normal)) failures.push(`${label} ${name}: density normal inside compact ${JSON.stringify(row.back)} is not normal ${JSON.stringify(row.normal)}`);
+          if (!same(row.island, row.normal)) failures.push(`${label} ${name}: explicit size in a normal island ${JSON.stringify(row.island)} is not normal ${JSON.stringify(row.normal)}`);
           if (row.normal?.h === null) failures.push(`${label} ${name}: nothing measured`);
         }
         if (load === 1) report[`${mode}/${theme}`].layers = layers;
-        const wantLayers = mode === 'desktop' ? [32, 40] : [36, 36];
+        const wantLayers = mode === 'desktop' ? [32, 32] : [36, 36];
         for (const [id, heights] of Object.entries(layers)) {
           if (JSON.stringify(heights) !== JSON.stringify(wantLayers)) failures.push(`${label} ${id}: buttons ${JSON.stringify(heights)}, want unsized and size 1 ${JSON.stringify(wantLayers)}`);
         }

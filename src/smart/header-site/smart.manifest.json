@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.8.3",
+  "version": "1.11.1",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -29,6 +29,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "smart.button-close",
       "smart.button-icon",
       "smart.icon"
     ],
@@ -55,7 +56,7 @@
       "collapse": {
         "type": "string",
         "default": "lg",
-        "description": "Below this Framework breakpoint (sm 32rem, md 44rem, lg 60rem, xl 72rem) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A media rule, so the first paint is right without the script",
+        "description": "Below this step of the bar's own width (sm 32rem, md 44rem, lg 60rem, xl 72rem: the screen breakpoints' places on the container ladder, C181) the nav and the actions leave the bar for the side panel and the menu button appears; always: the panel at every width; none: never. A container condition of the sheet, so the first paint is right without the script, and a bar narrower than the window collapses with its nav",
         "enum": [
           "none",
           "sm",
@@ -63,6 +64,15 @@
           "lg",
           "xl",
           "always"
+        ]
+      },
+      "menu-placement": {
+        "type": "string",
+        "default": "inline-start",
+        "description": "The side of the collapsed bar's menu button and of its side panel (C104): inline-start, the button first in the bar and the panel from the start edge; inline-end, the button last, after the tools, and the panel from the end edge. The two always share a side; a right-to-left page mirrors both",
+        "enum": [
+          "inline-start",
+          "inline-end"
         ]
       },
       "sticky": {
@@ -357,29 +367,29 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "df2b46f5832edce6b3e8c99f9367e7d0c7b9844529a1223ffcfdfc54a184cfe6"
+        "sha256": "37b8ec5bbfd04d550e54c469636155603e55685760cb7a0e3ec3406d8c8ed752"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
-        "sha256": "99f489890f88bb5bf6de00da38e1a35ac327bdac4f710fc8d64c25216341e3ee"
+        "sha256": "3000d65e830ea948a1f7ab6f70edc6df42a91a90bc351a2c61022b890006f6aa"
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "04e7520163a05b603ebcce83bb732a3c66f536b4a2bde1f6e69cdf90856e33d5"
+        "sha256": "20139f0fd239dec1a3c981add2a9250a80f79583d3e3d0018f091b6eea75393e"
       },
       {
         "path": "src/smart/header-site/rule.js",
-        "sha256": "4a1c878751674ecb6698b52cc5f96c4bd25481ae98a75550a39f3ef2422d99db"
+        "sha256": "d9cd4f35e29ce83a01f887263bf8f51db04442a07d0a8458260a350133c25472"
       },
       {
         "path": "src/smart/header-site/docs.md",
-        "sha256": "cf81155a8e39a6e4e80c14af232d99ebc059657540be5d26f10d56959bcde439"
+        "sha256": "268e991e8ab6e9909a59fc7d367fe16069b8cbe20027f9f9a644c0cfeb76bc1b"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-header-site as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen.",
+    "use_when": "Use sf-header-site as the top bar of every public SIMAI site: brand, navigation, actions and tools, with a side panel on a narrow screen. An app with a side menu (admin, SIMAI Pro, mail) has no top bar: its pages use sf-header-page.",
     "do_not": [
       "Do not draw a header of your own on a SIMAI site",
       "Do not set the bar's colours, height or gutters per site; a product sets --sf-container-gutter once for the page",

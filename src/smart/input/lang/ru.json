@@ -1,5 +1,23 @@
 {
   "title": "Текстовые поля",
+  "runtime": {
+    "value-missing": "Заполните поле",
+    "clear": "Очистить",
+    "reveal": "Показать пароль",
+    "type-mismatch": "Проверьте значение",
+    "type-mismatch-email": "Введите адрес целиком, например ivan@clinic.ru",
+    "type-mismatch-url": "Введите адрес целиком, например https://clinic.ru",
+    "pattern-mismatch": "Проверьте формат",
+    "too-short": "Не меньше {min} знаков",
+    "too-long": "Не больше {max} знаков",
+    "range-underflow": "Не меньше {min}",
+    "range-overflow": "Не больше {max}",
+    "step-mismatch": "Шаг значения — {step}",
+    "bad-input": "Введите число",
+    "count-text": "{count} / {max}",
+    "help": "Подробнее: {label}",
+    "caps-lock": "Включён Caps Lock"
+  },
   "x-trait-words": {
     "trait": "field-inherit@1",
     "words": {

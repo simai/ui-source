@@ -2,6 +2,7 @@
   "title": "Include",
   "runtime": {
     "failed": "Could not load this part of the page.",
+    "offline": "No connection. It loads by itself when the network is back.",
     "retry": "Retry"
   },
   "events": {

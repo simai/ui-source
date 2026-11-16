@@ -8,16 +8,32 @@
   --sf-accordion--border-width: var(--sf-accordion-border-width, var(--sf-px));
   --sf-accordion--border-color: var(--sf-accordion-border-color, var(--sf-outline-variant));
   --sf-accordion--background-color: var(--sf-accordion-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
-  --sf-accordion--trigger-padding-block: var(--sf-space-2);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-accordion--trigger-padding-inline: var(--sf-space-3);
-  --sf-accordion--content-padding: var(--sf-space-3);
+  /* The content stands its header's inset from every edge (accordion study
+     AC-14): the text starts under the title and as far below the header's
+     line as from the side -- at sizes it sat 6 / 8 / 10 under the line, the
+     size's block tightness. Resolved here, on the section, so a size rule
+     that moves the inset moves the content with it. */
+  --sf-accordion--content-padding: var(--sf-accordion--trigger-padding-inline);
   /* Text, icon and the trigger's least height. Declared on every accordion, so
      a nested one does not inherit its parent's size. */
   --sf-accordion--text-size: var(--sf-text--size);
   --sf-accordion--text-height: var(--sf-text--height);
   --sf-accordion--icon-size: var(--sf-text-height-1);
-  --sf-accordion--trigger-min-block-size: auto;
+  /* The roomy default header is the top step of the height ladder, the
+     control height of size 3: 56 on a desktop, 52 on a phone. It was the
+     line plus --sf-space-2 above and below, 64 and 52: 64 is no desktop step
+     (C18, docs precheck AC-01). The block padding centres the line in it, so
+     a title that wraps grows the header by whole lines. */
+  --sf-accordion--trigger-min-block-size: var(--sf-ui-3--control-height);
+  --sf-accordion--trigger-padding-block: max(calc(var(--sf-px) * 0), calc((var(--sf-ui-3--control-height) - var(--sf-accordion--text-height)) / 2));
+  /* One clock for the section's height and its marker (owner decision
+     C154 (4)): the 200 ms of the toggle and the check box (C66, C121; the
+     scale has no 200 ms step, so twice --sf-duration-fast) on
+     --sf-ease-move. The runtime reads it from the transition below. */
+  --sf-accordion--duration: calc(var(--sf-duration-fast) * 2);
+  --sf-accordion--easing: var(--sf-ease-move);
 
   border-end-end-radius: var(--sf-accordion--radius);
   border-end-start-radius: var(--sf-accordion--radius);
@@ -26,6 +42,11 @@
   overflow: hidden;
   overflow: clip;
   background-color: var(--sf-accordion--background-color);
+  /* The clock of the height motion (C154 (4)). Nothing gives a section's
+     block-size a value, so this transition never runs by itself: the
+     runtimes read its duration and curve and move the section with them
+     (component/accordion/js/motion.js). */
+  transition: block-size var(--sf-accordion--duration) var(--sf-accordion--easing);
 }
 
 /* Sizes on the control ladder (simai/ui-source#19). A sized header is a
@@ -33,14 +54,18 @@
    is a line tall, and the block padding is the size's default tightness, so
    the header is exactly --sf-ui-N--control-height -- the height of an sf-input
    or an sf-button of the same size -- and never shorter. The inline padding is
-   the size's space-x, and the content takes the same inline padding, so its
-   text starts under the title. Without a size class the accordion keeps its
-   roomy default. */
+   the value inset of an sf-input of the same size (owner C77, C105 H4;
+   accordion study AC-5): --sf-space-1/2 (never below 12, --sf-b2), --sf-space-1
+   and --sf-space-2 at 1/2, 1 and 2 -- 12 / 16 / 20, and 12 / 12 / 16 in a
+   compact region and on a phone -- so a section's title and text start where
+   the value of the field beside it starts (size 1/2 stood at 14, the
+   button's space-x). Sizes 1/3 and 3, which C77 does not name, keep the
+   size's space-x. The content takes the same inset (above). Without a size
+   class the accordion keeps its roomy default. */
 .sf-accordion.sf-accordion--size-1\/3 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-1\/3--space-y-tightness-default);
   --sf-accordion--trigger-padding-inline: var(--sf-ui-1\/3--space-x);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-1\/3--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-1\/3--space-y-tightness-default) var(--sf-ui-1\/3--space-x);
   --sf-accordion--text-size: var(--sf-text-size-1\/3);
   --sf-accordion--text-height: var(--sf-text-height-1\/3);
   --sf-accordion--icon-size: var(--sf-text-height-1\/3);
@@ -48,9 +73,8 @@
 
 .sf-accordion.sf-accordion--size-1\/2 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-1\/2--space-y-tightness-default);
-  --sf-accordion--trigger-padding-inline: var(--sf-ui-1\/2--space-x);
+  --sf-accordion--trigger-padding-inline: max(var(--sf-space-1\/2), var(--sf-b2));
   --sf-accordion--trigger-min-block-size: var(--sf-ui-1\/2--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-1\/2--space-y-tightness-default) var(--sf-ui-1\/2--space-x);
   --sf-accordion--text-size: var(--sf-text-size-1\/2);
   --sf-accordion--text-height: var(--sf-text-height-1\/2);
   --sf-accordion--icon-size: var(--sf-text-height-1\/2);
@@ -58,9 +82,8 @@
 
 .sf-accordion.sf-accordion--size-1 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-1--space-y-tightness-default);
-  --sf-accordion--trigger-padding-inline: var(--sf-ui-1--space-x);
+  --sf-accordion--trigger-padding-inline: var(--sf-space-1);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-1--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-1--space-y-tightness-default) var(--sf-ui-1--space-x);
   --sf-accordion--text-size: var(--sf-text-size-1);
   --sf-accordion--text-height: var(--sf-text-height-1);
   --sf-accordion--icon-size: var(--sf-text-height-1);
@@ -68,9 +91,8 @@
 
 .sf-accordion.sf-accordion--size-2 {
   --sf-accordion--trigger-padding-block: var(--sf-ui-2--space-y-tightness-default);
-  --sf-accordion--trigger-padding-inline: var(--sf-ui-2--space-x);
+  --sf-accordion--trigger-padding-inline: var(--sf-space-2);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-2--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-2--space-y-tightness-default) var(--sf-ui-2--space-x);
   --sf-accordion--text-size: var(--sf-text-size-2);
   --sf-accordion--text-height: var(--sf-text-height-2);
   --sf-accordion--icon-size: var(--sf-text-height-2);
@@ -80,13 +102,18 @@
   --sf-accordion--trigger-padding-block: var(--sf-ui-3--space-y-tightness-default);
   --sf-accordion--trigger-padding-inline: var(--sf-ui-3--space-x);
   --sf-accordion--trigger-min-block-size: var(--sf-ui-3--control-height);
-  --sf-accordion--content-padding: var(--sf-ui-3--space-y-tightness-default) var(--sf-ui-3--space-x);
   --sf-accordion--text-size: var(--sf-text-size-3);
   --sf-accordion--text-height: var(--sf-text-height-3);
   --sf-accordion--icon-size: var(--sf-text-height-3);
 }
 
+/* The frame stands inside the header's height (docs precheck smart content
+   AC-02): the outline's two edges and the flush divider are taken from the
+   header, so every look's closed section is the size's control height -- the
+   outline was 2 px taller, the flush 1 px. */
 .sf-accordion.sf-accordion--outline {
+  --sf-accordion--frame-block: calc(var(--sf-accordion--border-width) * 2);
+
   border: var(--sf-accordion--border-width) solid
     var(--sf-accordion--border-color);
   background-color: transparent;
@@ -94,10 +121,31 @@
 
 .sf-accordion.sf-accordion--flush {
   --sf-accordion--radius: var(--sf-radius-square);
+  --sf-accordion--frame-block: var(--sf-accordion--border-width);
 
   border-block-end: var(--sf-accordion--border-width) solid
     var(--sf-accordion--border-color);
   background-color: transparent;
+}
+
+/* An accordion inside a section (owner decision C154 (8), C109): only lines,
+   whatever look it was given -- no plate in a plate, no frame in a frame --
+   and its titles and text start under the outer section's text, where the
+   outer content starts: no inset of its own at the sides. One level: deeper
+   is a tree (sf-tree), not an accordion. */
+.sf-accordion .sf-accordion-content .sf-accordion {
+  --sf-accordion--radius: var(--sf-radius-square);
+  --sf-accordion--frame-block: var(--sf-accordion--border-width);
+
+  border: 0;
+  border-block-end: var(--sf-accordion--border-width) solid
+    var(--sf-accordion--border-color);
+  background-color: transparent;
+}
+
+.sf-accordion .sf-accordion-content .sf-accordion > .sf-accordion-heading > .sf-accordion-trigger,
+.sf-accordion .sf-accordion-content .sf-accordion > .sf-accordion-content {
+  padding-inline: 0;
 }
 
 .sf-accordion-heading {
@@ -109,11 +157,14 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--sf-space-1);
+  /* Icon → title → badge → marker: a row's step, role H2 of the horizontal
+     spacing standard (owner C105; accordion study AC-4): --sf-space-1/2, 12,
+     and 8 in a compact region and on a phone. It was --sf-space-1, 16 / 12. */
+  gap: var(--sf-space-1\/2);
   width: 100%;
   margin: 0;
-  min-block-size: var(--sf-accordion--trigger-min-block-size);
-  padding: var(--sf-accordion--trigger-padding-block)
+  min-block-size: calc(var(--sf-accordion--trigger-min-block-size) - var(--sf-accordion--frame-block, calc(var(--sf-px) * 0)));
+  padding: max(calc(var(--sf-px) * 0), calc(var(--sf-accordion--trigger-padding-block) - var(--sf-accordion--frame-block, calc(var(--sf-px) * 0)) / 2))
     var(--sf-accordion--trigger-padding-inline);
   border: 0;
   box-sizing: border-box;
@@ -121,6 +172,11 @@
   color: var(--sf-accordion-title--color, var(--sf-accordion-title-color, var(--sf-on-surface)));
   background-color: transparent;
   font: inherit;
+  /* The row sits on the accordion's own text line, so parts drawn on the
+     inherited line (a badge with line="text") match the title; a 16/24
+     page line grew the size 1/2 header to 36. */
+  font-size: var(--sf-accordion--text-size);
+  line-height: var(--sf-accordion--text-height);
   text-align: start;
   cursor: pointer;
   transition: background-color var(--sf-duration-fast) var(--sf-animation);
@@ -167,6 +223,24 @@
   line-height: var(--sf-accordion--text-height);
 }
 
+/* A short summary at the end of the header, before the marker (owner
+   decision C154 (3)): «Выбрано 2», «Курьер» -- what a filter or a group of
+   settings holds, read without opening it. The hint's colour and the
+   regular weight, one line; a long one ends in an ellipsis, the title keeps
+   its room. */
+.sf-accordion .sf-accordion-trigger .sf-accordion-summary {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--sf-on-surface-variant);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-accordion--text-size);
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-accordion--text-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .sf-accordion .sf-icon {
   flex: 0 0 auto;
   color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-variant)));
@@ -175,34 +249,78 @@
   width: var(--sf-accordion--icon-size);
   transform: rotate(0deg);
   transform-origin: center;
-  transition: transform var(--sf-duration-fast) var(--sf-animation);
+  transition: transform var(--sf-accordion--duration) var(--sf-accordion--easing);
 }
 
-.sf-accordion-trigger[aria-expanded='true'] .sf-icon,
-.sf-accordion--legacy[aria-expanded='true'] > .sf-icon {
+/* The icon before the title is not the marker: it never turns. */
+.sf-accordion .sf-accordion-trigger .sf-icon.sf-accordion-lead {
+  transform: none;
+}
+
+/* The header is a control, so its icons -- the one before the title and the
+   marker -- take the icon role of a control (owner C107 (1)-(3); accordion
+   study AC-6): --sf-on-surface-icon, half a step lighter than the title. The
+   section's own redefinition of --sf-on-surface-variant (the container's
+   variant) no longer reaches them. Hover and press bring them to the title's
+   colour (C107 (4)). A page's --sf-icon--color or --sf-accordion-icon-color
+   still wins. */
+.sf-accordion .sf-accordion-trigger .sf-icon {
+  color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-icon)));
+}
+
+.sf-accordion .sf-accordion-trigger:is(:hover, :active) .sf-icon {
+  color: var(--sf-icon--color, var(--sf-accordion-icon-color, currentColor));
+}
+
+.sf-accordion.sf-accordion--static .sf-accordion-trigger:is(:hover, :active) .sf-icon {
+  color: var(--sf-icon--color, var(--sf-accordion-icon-color, var(--sf-on-surface-icon)));
+}
+
+/* The marker at the end of the header points down when the section is
+   closed and up when it is open (owner decision C154 (1)); «right», at the
+   start, is the tree's (C102). The glyph is chevron_right, a quarter turn
+   each way, so the open and the close turn half round on the section's
+   clock. Down and up read the same in a right-to-left page. */
+.sf-accordion .sf-accordion-trigger .sf-icon:not(.sf-accordion-lead),
+.sf-accordion.sf-accordion--legacy > .sf-icon {
   transform: rotate(90deg);
 }
 
-[dir='rtl'] .sf-accordion-trigger[aria-expanded='false'] .sf-icon,
-[dir='rtl'] .sf-accordion--legacy[aria-expanded='false'] > .sf-icon {
-  transform: rotate(180deg);
+.sf-accordion .sf-accordion-trigger[aria-expanded='true'] .sf-icon:not(.sf-accordion-lead),
+.sf-accordion.sf-accordion--legacy[aria-expanded='true'] > .sf-icon {
+  transform: rotate(-90deg);
 }
 
-.sf-accordion.sf-accordion--plus-minus .sf-accordion-trigger .sf-icon,
-[dir='rtl']
-  .sf-accordion.sf-accordion--plus-minus
-  .sf-accordion-trigger
-  .sf-icon {
+.sf-accordion.sf-accordion--plus-minus .sf-accordion-trigger .sf-icon:not(.sf-accordion-lead),
+.sf-accordion.sf-accordion--plus-minus .sf-accordion-trigger[aria-expanded] .sf-icon:not(.sf-accordion-lead) {
   transform: none;
 }
 
 .sf-accordion .sf-accordion-content {
   padding: var(--sf-accordion--content-padding);
-  color: var(--sf-accordion-content--color, var(--sf-accordion-content-color, var(--sf-on-surface-variant)));
+  /* Body text, not the muted colour of a hint (accordion study AC-14): a
+     section's content is what the reader opened it for. */
+  color: var(--sf-accordion-content--color, var(--sf-accordion-content-color, var(--sf-on-surface)));
   font-family: var(--sf-text--family);
   font-size: var(--sf-accordion--text-size);
   font-weight: var(--sf-font-weight-regular);
   line-height: var(--sf-accordion--text-height);
+}
+
+/* A closed panel is findable (hidden="until-found", C154 (6), AC-8): it
+   keeps its box for the browser's search but shows nothing -- no padding, so
+   the closed section is its header alone, as with the hidden attribute. */
+.sf-accordion .sf-accordion-content[hidden='until-found'] {
+  padding-block: 0;
+}
+
+/* While a section shrinks to its header (C154 (4)) its closed panel is still
+   drawn, clipped by the section, so the text leaves with the motion instead
+   of vanishing before it. */
+.sf-accordion[data-sf-accordion-closing]:not(.sf-accordion--legacy) > .sf-accordion-content[hidden='until-found'] {
+  display: block;
+  padding-block: var(--sf-accordion--content-padding);
+  content-visibility: visible;
 }
 
 /* A single section (simai/ui-source#19): the heading is a heading, not a
@@ -260,7 +378,10 @@
   padding: 0;
 }
 
+/* Reduced motion: the section opens and closes at once and the marker
+   flips without turning (C154 (4), C66, C121). */
 @media (prefers-reduced-motion: reduce) {
+  .sf-accordion,
   .sf-accordion-trigger,
   .sf-accordion .sf-icon {
     transition: none;

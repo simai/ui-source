@@ -40,7 +40,7 @@ const sfButtonIconMeta = {
         "3"
       ],
       "default": "1",
-      "description": "Icon button size token."
+      "description": "The icon size and the control's step on the ladder: 1 by default. Beside a value in a line of text, give it the line's step (size=\"1/2\" beside text 1/2: 32, icon 20; size 1 beside text 1: 40, icon 24); in a row of buttons or a field it takes their size; density moves it with the row (decision C103)."
     },
     "height": {
       "kind": "enum",
@@ -62,7 +62,7 @@ const sfButtonIconMeta = {
         "ghost"
       ],
       "default": "default",
-      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme."
+      "description": "How the icon button looks, one ladder from the strongest (rule C15): default (filled), tonal, outline, ghost (no fill or edge until a pointer or the keyboard reaches it). link is ghost's former name; surface was retired and is drawn as tonal with the on-surface scheme. A danger icon button is default, outline or ghost (rule C116): tonal and surface with status danger draw as outline until 2027-01-01, with one console warning."
     },
     "scheme": {
       "kind": "enum",
@@ -81,7 +81,7 @@ const sfButtonIconMeta = {
         "danger"
       ],
       "default": "",
-      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control."
+      "description": "What the control is about (rule C13): danger, a control that deletes, discards or cannot be undone. It paints with the error roles -- the red of an error -- and behaves exactly like a primary control. error is its former name on a control. danger is the only status of an icon button (rule C116): there are no success, warning or info icon buttons; another word draws no status and warns once per page."
     },
     "segment": {
       "kind": "enum",
@@ -159,6 +159,30 @@ const sfButtonIconMeta = {
       "default": "button",
       "description": "Native button type attribute."
     },
+    "href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "An address: the icon button draws a link (an <a href>) with its look, as sf-button's href (decision C51: the quiet «Скачать <name>» at the end of a table row is a real link to the file). A relative address, a fragment, http(s), mailto or tel; any other scheme draws a button. native-type, pressed and a cycle do not apply; disabled or loading, the link has no href and says aria-disabled. The name is the aria-label, as on the button."
+    },
+    "target": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Where a link (href) opens, as an <a target>: _blank opens a new tab. Not written on a button."
+    },
+    "rel": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The link's relation, as an <a rel>. A link that opens in a new tab (target _blank) with no rel says noopener noreferrer. Not written on a button."
+    },
+    "download": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A link (href) that downloads its file, as an <a download>: the name it is saved under, or present and empty for the server's name. Not written on a button."
+    },
     "badge-count": {
       "kind": "custom",
       "valueType": "string",
@@ -201,6 +225,12 @@ const sfButtonIconMeta = {
       "valueType": "string",
       "default": "",
       "description": "The accessible name while the toggle is on, for a toggle whose name changes («Добавить в избранное» → «Убрать из избранного»). Set, the name says the state and aria-pressed is not written; the pressed look still follows pressed. Empty: aria-label stays the name and aria-pressed says the state"
+    },
+    "tooltip": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The icon button shows its name as a Framework tooltip by itself (owner decision C160 (1)): under a resting pointer after 0.5 s, at once on keyboard focus, on a long press by touch, below the button and flipping above at the window's bottom edge; Escape and a press hide it. The text is the name (aria-label, the pressed name of a toggle, a cycle's current and next value) or, when the page wrote one, the host's title, which then draws no browser tooltip of its own. The tooltip is made on the first hover, focus or long press, not before; a button whose page linked a tooltip of its own (data-tooltip) keeps that one. \"off\": no tooltip -- for a button whose name stands next to it, or one that opens its own explanation (the «?» of sf-help-mark)."
     },
     "theme-cycle": {
       "kind": "custom",

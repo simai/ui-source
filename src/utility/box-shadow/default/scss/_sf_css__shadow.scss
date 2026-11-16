@@ -10,11 +10,20 @@
 // shadow is drawn from the geometry on this element, so a key or an ambient
 // colour set here (the coloured utilities, until 2027-01-01) reaches it.
 
+
+// A place shadow beside a ring (C187 (3), UT-4): the shadow is written to
+// --sf-place-shadow as well, and drawn behind --sf-ring-shadow, which the
+// ring utilities (utility/ring-width) set. A card with shadow-raised and a
+// selection ring-2 shows both, whichever sheet comes last; without a ring
+// the element draws the shadow as before. Both variables are internal to the
+// two utilities.
 @mixin place-shadow($place) {
     @if $place == flat {
-        box-shadow: var(--sf-shadow-flat);
+        --sf-place-shadow: 0 0 transparent;
+        box-shadow: var(--sf-ring-shadow, var(--sf-shadow-flat));
     } @else {
-        box-shadow: shadow.sf-shadow($place);
+        --sf-place-shadow: #{shadow.sf-shadow($place)};
+        box-shadow: var(--sf-ring-shadow, 0 0 transparent), var(--sf-place-shadow);
     }
 }
 

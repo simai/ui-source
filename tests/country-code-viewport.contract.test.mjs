@@ -32,7 +32,7 @@ test('Country list uses shared positioning while open and restores author styles
   // (CC-01, DEV acceptance 2026-11-11: 9.8k px, or 16 px with no row).
   assert.match(source,/import BundledPosition from '\.\.\/\.\.\/\.\.\/core\/js\/position\.js';/);
   assert.match(source,/globalThis\.SF\?\.Position \|\| BundledPosition/);
-  assert.match(source,/positioning\(\)\.anchor\(root, list, \{\s*side: 'block-end', align: 'start', matchWidth: true, fitHeight: false,/);
+  assert.match(source,/positioning\(\)\.anchor\(root, list, \{\s*side: 'block-end', align: 'start', matchWidth: 'min', fitHeight: false,/);
   assert.doesNotMatch(source,/fitHeight: true/);
   assert.match(source,/Object\.assign\(list\.style, \{display: 'flex', flexDirection: 'column', overflow: 'hidden'\}\)/);
   assert.match(source,/anchor\.stop\(\);/);

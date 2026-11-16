@@ -6,12 +6,18 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { inputSize } from '../../component/field-size';
 import { InheritedValueField } from '../helpers/inherited-value';
-import { FormField, innerControlName } from '../helpers/form-field';
+import { FormField, ShownValidity, innerControlName, syncFieldValidity } from '../helpers/form-field';
+import { charCount, countAnnouncement } from '../helpers/char-count';
 import { renderInputTemplate } from './js/templates/default';
+import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-input from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4, §17, §20). The settings are made by core/js/element-manifest.js; the
@@ -20,6 +26,7 @@ import ru from './lang/ru.json';
 // and so is the trait's old event sf-field:reset (sf-field-reset). The host is
 // the form control through ElementInternals: it submits the text, reports the
 // native input's validity, and the native input carries no name (§17.1).
+
 const InputElement = elementFromManifest(manifest, {
   base: InheritedValueField(SfBaseElement),
   lang: { en, ru },
@@ -27,7 +34,7 @@ const InputElement = elementFromManifest(manifest, {
   aliases,
 });
 
-class SfInput extends FormField(InputElement) {
+class SfInput extends ShownValidity(FormField(InputElement)) {
   static get props() {
     return {
       ...super.props,
@@ -45,6 +52,159 @@ class SfInput extends FormField(InputElement) {
   constructor() {
     super();
     this._boundRoot = null;
+    // The password reveal (C123 (5)): the field's own state, not a setting.
+    this._revealed = false;
+    // The clear shows while the field holds a value: typing, a paste or the
+    // page's own input event say so (C123 (6)).
+    this.addEventListener('input', () => {
+      this.syncClearAction();
+      // The count follows the text (C153 (10), C141 (1)): every edit of a
+      // field with a limit redraws the count and, at a threshold, the frame.
+      if (this.countLimit !== null) this.requestComponentUpdate?.('count');
+    });
+    // Escape empties a field that can be cleared -- clearable, or a search
+    // field -- when it holds a value (C153 (6)): the clear glyph is no Tab
+    // stop, so the key is the keyboard's way to it. An empty field lets the
+    // key go on (a window closes, a list folds).
+    this.addEventListener('keydown', (event) => this.clearFromKey(event));
+    this._countLevel = '';
+    this._countSaid = '';
+    // The Caps Lock hint of a password field (C191 (3)): every key, on its way
+    // down and up, and a click in the field say whether Caps Lock is on
+    // (getModifierState); leaving the field takes the hint away.
+    this._capsLock = false;
+    const capsFrom = (event) => this.syncCapsLock(event);
+    this.addEventListener('keydown', capsFrom);
+    this.addEventListener('keyup', capsFrom);
+    this.addEventListener('click', capsFrom);
+    this.addEventListener('focusout', (event) => {
+      if (event.target === this.getInputElement()) this.setCapsLock(false);
+    });
+    // A revealed password hides again when its form is sent (C191 (1)),
+    // whether the page lets the browser send it or sends it itself.
+    this._hideOnSubmit = (event) => this.hideRevealOnSubmit(event);
+  }
+
+  clearFromKey(event) {
+    if (event.key !== 'Escape' || event.defaultPrevented || event.isComposing) return;
+    if (event.target !== this.getInputElement()) return;
+    if (this.disabled || this.readonly) return;
+    if (!(this.clearable || this.inputType === 'search')) return;
+    if (!(this.getInputElement()?.value || '')) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.clearOwnValue();
+    this.syncClearAction();
+  }
+
+  // The limit the field counts against (C153 (10)): maxlength, counted and
+  // never cut, as sf-input-textarea's (C141 (1)). A masked field keeps the
+  // native limit: the mask decides its length.
+  get countLimit() {
+    if (this.mask) return null;
+    const value = Math.trunc(Number(this.getAttribute('maxlength')));
+    return Number.isFinite(value) && value > 0 ? value : null;
+  }
+
+  sfCount() {
+    return charCount((this.getInputElement()?.value ?? this.getAttribute('value') ?? '').length, this.countLimit, { always: Boolean(this.counter) });
+  }
+
+  // What the template draws of the count, and the polite line, which changes
+  // only when a threshold is crossed.
+  sfCountView() {
+    const count = this.sfCount();
+    const words = (state) => this.sfWord('count-text', { vars: { count: state.length, max: state.limit } });
+    const said = countAnnouncement(count, this._countLevel, this._countSaid, (state) => (
+      state.over ? this.sfTooLongMessage(state) : words(state)
+    ));
+    this._countLevel = said.level;
+    this._countSaid = said.said;
+    return { over: count.over, text: count.shown ? words(count) : '', said: said.said };
+  }
+
+  sfTooLongMessage(count) {
+    return this.sfWord('too-long', { vars: { max: count.limit } });
+  }
+
+  get maxlength() {
+    return this.countLimit;
+  }
+
+  // The native input's validity, and too-long past the counted limit: the
+  // native maxlength would cut the text, so the field counts itself.
+  sfSyncValidity() {
+    const anchor = this.sfValidityAnchor();
+    const count = this.sfCount();
+    const message = count.over ? this.sfTooLongMessage(count) : '';
+    if (!this.sfInternals && anchor?.setCustomValidity) anchor.setCustomValidity(message);
+    syncFieldValidity(this, anchor, count.over ? { tooLong: message } : {});
+  }
+
+  onConnected() {
+    super.onConnected?.();
+    // Captured on the document: the form owner may be named by the form
+    // attribute, and the page's own submit handler may stop the event.
+    document.addEventListener('submit', this._hideOnSubmit, true);
+  }
+
+  // The clear (C123 (6)): empties the field the way a reset does -- input,
+  // then change, from the native input -- and gives the focus back to it, as
+  // the button that had it is gone.
+  clearFromButton(event) {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    if (this.disabled || this.readonly) return;
+    this.clearOwnValue();
+    this.syncClearAction();
+    this.getInputElement()?.focus?.();
+  }
+
+  // The password reveal (C123 (5)): a toggle button, aria-pressed, the eye
+  // crossed out while the password shows. The native input's type follows;
+  // the focus stays on the button.
+  toggleReveal(event) {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    if (this.disabled) return;
+    this._revealed = !this._revealed;
+    this.requestComponentUpdate('revealed');
+  }
+
+  // C191 (1): the form this field belongs to is being sent -- the password
+  // goes back to dots before the browser takes the page (and a password
+  // manager reads the field), so the type changes at once, not at the next
+  // drawing.
+  hideRevealOnSubmit(event) {
+    if (!this._revealed) return;
+    const form = this.sfInternals?.form || this.closest('form');
+    if (!form || event.target !== form) return;
+    this._revealed = false;
+    const input = this.getInputElement();
+    if (input && input.type !== 'password') input.type = 'password';
+    this.requestComponentUpdate('revealed');
+  }
+
+  // C191 (3): Caps Lock while a password is typed. Only the native input's
+  // own events count, so the hint is there only while the field has the focus.
+  syncCapsLock(event) {
+    const input = this.getInputElement();
+    if (!input || event.target !== input || typeof event.getModifierState !== 'function') return;
+    this.setCapsLock(event.getModifierState('CapsLock'));
+  }
+
+  setCapsLock(on) {
+    const next = Boolean(on) && this.inputType === 'password' && !this.disabled;
+    if (next === this._capsLock) return;
+    this._capsLock = next;
+    this.requestComponentUpdate('capsLock');
+  }
+
+  syncClearAction() {
+    const clear = this.querySelector(':scope .sf-input-clear');
+    if (!clear) return;
+    const empty = !(this.getInputElement()?.value || '');
+    if (clear.hidden !== empty) clear.hidden = empty;
   }
 
   // sf-input keeps the ladder's outer steps (1/3 and 3) that the other
@@ -74,6 +234,7 @@ class SfInput extends FormField(InputElement) {
     const mask = this.querySelector('.sf-input')?.__sfInputMask;
     if (mask) mask.value = normalizedValue;
     else if (input && input.value !== normalizedValue) input.value = normalizedValue;
+    this.syncClearAction?.();
     this.sfSyncFormState?.();
   }
 
@@ -96,6 +257,10 @@ class SfInput extends FormField(InputElement) {
 
   get textEnd() {
     return this.getAttribute('text-end') ?? '';
+  }
+
+  get textStart() {
+    return this.getAttribute('text-start') ?? '';
   }
 
   get maskLazy() {
@@ -137,6 +302,19 @@ class SfInput extends FormField(InputElement) {
     input?.dispatchEvent(new Event('change', {bubbles: true}));
   }
 
+  // A form reset puts the default text back without an input event, a task
+  // later for a masked field: the clear follows it, and a revealed password
+  // is hidden again.
+  formResetCallback() {
+    super.formResetCallback?.();
+    if (this._revealed) {
+      this._revealed = false;
+      this.requestComponentUpdate('revealed');
+    }
+    Promise.resolve().then(() => this.syncClearAction());
+    setTimeout(() => this.syncClearAction(), 0);
+  }
+
   // The browser's restore of a form (back, reload) gives the text back.
   formStateRestoreCallback(state) {
     if (typeof state === 'string') this.value = state;
@@ -146,6 +324,7 @@ class SfInput extends FormField(InputElement) {
     const props = this.getPropsContext();
     const hasControlledValue = this.hasAttribute('value');
     const input = this.getInputElement();
+    const count = this.sfCountView();
 
     return this.createTemplateContext({
       ...props,
@@ -159,6 +338,11 @@ class SfInput extends FormField(InputElement) {
       textEnd: this.textEnd,
       type: this.appearance,
       maskLazy: this.maskLazy,
+      // The page's error, or the required one a failed form check shows
+      // (ShownRequired, C55 acceptance F1: as sf-dropdown 1.9.0).
+      invalid: this.sfShownInvalid(props.invalid || props.error) || count.over,
+      error: false,
+      errorMessage: this.sfShownMessage(props.invalid || props.error, props.errorMessage),
       // The host is the form control where the browser has ElementInternals,
       // so the native input carries no name (§17.1 item 6).
       controlName: innerControlName(this, props.name),
@@ -168,11 +352,24 @@ class SfInput extends FormField(InputElement) {
       inheritedValue: this.inheritedValue,
       inheritedText: this.inheritedText,
       resetLabel: this.resetLabel,
+      revealed: this._revealed && props.inputType === 'password',
+      // The «?» after the label (C153 (8), helpers/field-help.js).
+      help: props.help || '',
+      textStart: this.textStart || '',
+      // The count (C153 (10)): its words when shown, over the limit (the
+      // error frame), the polite line.
+      countable: this.countLimit !== null,
+      count: count.text,
+      countOver: count.over,
+      countSaid: count.said,
+      capsLock: this._capsLock && props.inputType === 'password' && !props.disabled,
       component: this,
     });
   }
 
   onDisconnected() {
+    document.removeEventListener('submit', this._hideOnSubmit, true);
+    this._capsLock = false;
     if (this._boundRoot) {
       unbindInput(this._boundRoot);
       this._boundRoot = null;
@@ -194,12 +391,16 @@ class SfInput extends FormField(InputElement) {
       // cleared the message while the red border and aria-invalid="true" came
       // back (Larena acceptance, 2026-10-22: the datetime's time field after
       // «Укажите время» and then 10:30).
-      const invalid = this.invalid;
+      const invalid = this.sfShownInvalid(this.invalid) || this.sfCount().over;
       this._boundRoot.classList.toggle('error', invalid);
       this.getInputElement()?.classList.toggle('error', invalid);
       bindInput(this._boundRoot);
     }
+    // The reveal's other glyph is asked for with the first drawing, so the
+    // crossed eye is there on the first press (as sf-button-copy's check).
+    if (this.querySelector(':scope .sf-input-reveal')) preloadControlIcons(this, ['visibility', 'visibility_off']);
     this.syncInheritedState();
+    this.syncClearAction();
     this.sfSyncFormState();
   }
 

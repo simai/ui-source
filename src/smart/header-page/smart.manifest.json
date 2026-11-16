@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.header-page",
-  "version": "1.2.6",
+  "version": "1.8.1",
   "title": "Page header",
-  "summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
+  "summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -27,7 +27,8 @@
     "uses": [
       "smart.badge",
       "smart.button-icon",
-      "smart.icon"
+      "smart.icon",
+      "smart.menu-context"
     ],
     "public_parts": []
   },
@@ -52,12 +53,12 @@
       "heading": {
         "type": "string",
         "default": "",
-        "description": "The page heading, drawn as the fourth heading step"
+        "description": "The page heading, drawn as the fourth heading step (20/24): a work page of an app titles itself there, an exception to C21's h1 at step 6 (owner decision C161 (2)); a page of a site keeps its own h1"
       },
       "count": {
         "type": "string",
         "default": "",
-        "description": "How many records the page holds, as the host writes it (448, ~1 200); empty draws no count"
+        "description": "How many records the page holds, as the host writes it (448, ~1 200), for a page without a table footer (a folder, a settings section); a list page shows no count here, its table footer gives the total (owner decision C161 (6)). Empty draws no count"
       },
       "level": {
         "type": "string",
@@ -67,6 +68,25 @@
           "site",
           "install"
         ]
+      },
+      "expressive": {
+        "type": "boolean",
+        "default": false,
+        "description": "The decorative level (owner decision C91, level 2): a tinted head, primary tone 50 at 16 (dark 24) fading down to nothing, in a padded rounded field; a head narrower than 30rem (the g5 step) stays plain. Off by default; data-sf-style=\"expressive\" on the root or a container turns it on for every head under it, data-sf-style=\"strict\" turns it off again."
+      },
+      "overflow": {
+        "type": "string",
+        "default": "more",
+        "description": "What the actions do when they do not fit their line (owner decision C155 (7), C161 (4)): more (the default) keeps one row and puts what does not fit under ⋯ «Ещё» at its end -- from the end, by an action's priority attribute where the page gives one (1 the most important; pin never leaves), the main (filled) action and a pressed toggle never; wrap lets the row wrap onto further rows of its own (OV-2).",
+        "enum": [
+          "more",
+          "wrap"
+        ]
+      },
+      "sticky": {
+        "type": "boolean",
+        "default": false,
+        "description": "The header stays at the top of the work area that scrolls it (the nearest box that scrolls, else the window), a half step of room above and below its line; flat while the area is at its top, it takes the raised place of C20 and folds the path away while content runs under it (host state data-scrolled). Off by default (owner decision C161 (7))"
       },
       "star": {
         "type": "boolean",
@@ -227,11 +247,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "b13c0023ea8f771f33768ab0f4e7356c08407bfe501f1ea7778010d12ac812a1"
+        "sha256": "4c957ca939f4922a471deb29c76d7d96f91e95d4472774528bc2720dc7664422"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "e75e174ed9f65c9cd98ea3b713e6834dd67ec21d92f90dfae62d8dbdc113ff64"
+        "sha256": "43d484124179fb4277c87ea12116f8dbd8cb22ebfb8d0694c7f49f05e5186063"
       }
     ],
     "generated_runtime": [
@@ -244,18 +264,19 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-header-page at the top of every admin page: it is the only place a page states its path, heading, count, favourite and main action once the admin top bar is gone.",
+    "use_when": "Use sf-header-page at the top of every work page of an app (admin, SIMAI Pro, mail): an app with a side menu has no top bar, so this header states the page's path, heading, favourite, actions and views; a site uses sf-header-site instead.",
     "do_not": [
-      "Do not keep favourites in the component; answer sf-page-header-star from the host",
-      "Do not put totals in the menu; they belong here",
-      "Do not style the heading yourself; it is the fourth heading step"
+      "Do not keep favourites in the component; answer sf-header-page-toggle from the host",
+      "Do not put a list's total in the header; the table footer gives it (C161 (6))",
+      "Do not style the heading yourself; it is the fourth heading step",
+      "Do not draw a head of your own above a work page or place tabs under the header yourself; use the start and tabs slots"
     ],
     "required_reads": [
       "inputs",
       "events",
       "ownership"
     ],
-    "minimal_example": "<sf-header-page heading=\"Каталог решений\" count=\"448\" star=\"off\"><sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\">Создать</sf-button></sf-header-page>",
+    "minimal_example": "<sf-header-page heading=\"Каталог решений\" star=\"off\"><sf-breadcrumbs slot=\"path\" items='[{\"label\":\"Администрирование\",\"href\":\"/admin/\"},{\"label\":\"Данные\",\"href\":\"/admin/data/\"}]'></sf-breadcrumbs><sf-button slot=\"actions\" appearance=\"outline\" icon-start=\"download\" text=\"Экспорт\"></sf-button><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button></sf-header-page>",
     "owner_commands": [
       "npm run contract:verify",
       "npm test"

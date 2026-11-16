@@ -1,4 +1,7 @@
 import './public-path';
+// The text faces the page needs, started before anything else runs, so a
+// quick network brings Inter in before the first frame (core/js/text-fonts.js).
+import './text-fonts.js';
 import './internal.js';
 import './core-modules.js';
 import './aliases.js';
@@ -8,9 +11,21 @@ import './tag-aliases.js';
 import './rule';
 import './mask';
 import './composition/index.mjs';
+// The composition editor words are a chunk of their own, fetched by
+// SF.Composition.loadEditorWords() on a page that draws an editor form, not
+// part of every page (localization study LC-1, 2026-11-14).
+import {setEditorWordsLoader} from './composition/editor-words-runtime.mjs';
+setEditorWordsLoader(() => import(/* webpackChunkName: "core-editor-words" */ './composition/editor-words.mjs'));
+// Every language but ru and en is a pack of its own, fetched only by a page
+// that speaks it (owner decision C177, 2026-11-14): core/js/language-packs.js.
+import {installLanguagePacks} from './language-packs.js';
+installLanguagePacks();
 import './assembly/index.mjs';
 import './position.js';
 import './preferences.js';
+// What a person asked this site to look like (owner decision C196): the root
+// attributes, the motion mark and the skip link, before anything draws.
+import './display-settings.js';
 import './region-navigation.js';
 import './workspace.js';
 import './effects.js';
@@ -34,12 +49,20 @@ import './copy-feedback.js';
 // Copy on click for code in running text, where a container opts in with
 // data-sf-code-copy (owner, 2026-11-07, R024): SF.codeCopy.
 import './code-copy.js';
+// A link that opens a new tab shows arrow_outward and says «(откроется в
+// новой вкладке)» to a screen reader (owner decision C186 (3)): SF.newTabLink.
+import './new-tab-link.js';
+// The page's one menu of actions (owner decision C184 (4)): SF.menu.open.
+import {publishMenu} from './menu-open.js';
 // The reading position of a scrolling column (duplication audit 2026-11-03,
 // A-6): SF.readingPosition, which sf-list-feed and sf-list keep a place by.
 import './reading-position.js';
 // The glyphs a person chooses from (duplication audit 2026-11-03, A-1):
 // SF.icons.choices.
 import './icon-choices.js';
+// Registered glyphs, mirroring and the unknown-name check every icon slot
+// shares (owner decision C151): SF.icons.register.
+import './icon-glyphs.js';
 import {installReady} from './ready.js';
 import {applyRememberedIconSubset} from './icon-subset-memory.js';
 import pageStorage from './page-storage.js';
@@ -51,13 +74,16 @@ import {
   DEFAULT_PRELOADER,
   getPreloaderBackground,
   getPreloaderColor,
-  pageHasFirstPaint,
+  pageHasPreloadedModules,
+  pageShowsContent,
   startPreloaderMotion,
   stopPreloaderMotion,
+  watchForContent,
 } from './preloader';
 
 // SF.format, before anything below can be asked to format.
 publishFormat();
+publishMenu();
 
 // The shared Smart runtime: core/js/smart-base.js, a script of its own beside
 // core.js, holding the modules the Smart bundles are built against (they carry
@@ -67,6 +93,11 @@ publishFormat();
 if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
   const SF = window.SF;
+  // SF.deprecations.warn, the console switch for old names (a page sets it
+  // to true): there and false from the start, unless the page set it first.
+  // Core alone writes it, so the bundles' own copies of deprecations.js stay
+  // as they are.
+  if (SF.deprecations && !('warn' in SF.deprecations)) SF.deprecations.warn = false;
   // SF.ready, before the Loader chunk is even asked for (simai/ui-source#16).
   installReady(window);
   // The ports declared on elements (data-sf-port islands): their first calls
@@ -153,6 +184,25 @@ if (typeof window !== 'undefined') {
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startEarly, {once: true});
     else startEarly();
+    // A Smart bundle the page included itself before core.js found no
+    // SF.runtimeModule and waits for sf-runtime-ready (ui-builder
+    // libs/sharedRuntime.js); the runtime runs when something asks for it.
+    // The Loader asks when it queues a part, and its scan passes a
+    // data-sf-observer="ignore" region by, so a page whose parts all stand in
+    // such regions -- a documentation example, a loader wrap -- had its own
+    // bundles wait for good and its elements never defined (2026-11-11,
+    // acceptance of fix/bare-glyphs-tail N4). The page asked for those
+    // elements by including their code, so once the Loader is ready (the
+    // moment it would have asked, so the first paint is the same) a bundle
+    // still waiting has the runtime started for it. A Smart part with no
+    // bundle on the page is still not loaded from an ignored region.
+    const handBundleWaiting = () => [...document.scripts]
+      .some((script) => /\/smart\/[^/]+\/js\/[^/]+?(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
+    window.addEventListener('sf-loader-ready', () => {
+      if (SF.__internal.runtimeModules || SF.__internal.runtimeLoading) return;
+      if (!handBundleWaiting() || !smartPartWaiting()) return;
+      SF.loadRuntime().catch((error) => console.warn('[SIMAI Framework] the shared runtime did not load', error));
+    }, {once: true});
   }
 }
 
@@ -304,10 +354,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   // A page that ships its modules preloaded (SF_PRELOADED, Docara) defines
   // them at once and is left alone, as it was.
   const holdUndefinedUntilDefined = () => {
-    if (
-      window.SF_PRELOADED &&
-      Object.keys(window.SF_PRELOADED.modules || {}).length
-    ) {
+    if (pageHasPreloadedModules(window)) {
       return;
     }
     installPendingTags(window);
@@ -321,7 +368,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       background: getPreloaderBackground(),
       modifier: 'loader-default',
       tempStyles:
-        'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-0, #fff));text-align: center;',
+        'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: var(--sf-layer--window, 9000);background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;',
       color: getPreloaderColor(),
       width: DEFAULT_PRELOADER.width,
       height: DEFAULT_PRELOADER.height,
@@ -331,16 +378,25 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     };
 
     if (cfg.enabled === false || document.querySelector('.sf-loader')) return;
+    // Preloaded modules draw their elements before this runs: nothing is
+    // left for a preloader to stand in for (input-choice audit 2026-11-11).
+    if (pageHasPreloadedModules(window)) return;
 
     const svgContent = cfg.content || createPreloaderContent(cfg);
     let wrap = null;
     let preloaderWrap = null;
     let preloaderRun = false;
     let delayTimer = null;
+    let stopWatch = null;
 
+    // Gone in the same frame: display:none on the element itself, so no
+    // transition or late sheet keeps it over the page (R216).
     const hide = () => {
+      stopWatch?.();
+      stopWatch = null;
       if (wrap) {
         wrap.classList.add('hidden');
+        wrap.style.display = 'none';
       }
     };
     const stopAnimation = () => {
@@ -352,9 +408,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const buildPreloader = () => {
       if (preloaderRun || document.querySelector('.sf-loader')) return;
       // A page with static markup or skeletons shows them, never the
-      // preloader over them (§5.4). Read when the preloader would show, after
-      // its delay, when the server's markup has been parsed.
-      if (pageHasFirstPaint(document)) return;
+      // preloader over them (§5.4), nor over Smart elements already drawn.
+      // Read when the preloader would show, after its delay, when the
+      // server's markup has been parsed.
+      if (pageShowsContent(document) || pageHasPreloadedModules(window)) return;
 
       wrap = document.createElement('div');
       const inner = document.createElement('div');
@@ -382,6 +439,17 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       };
 
       startPreloaderMotion(preloaderWrap, () => preloaderRun, cfg);
+
+      // Up, it leaves at once when a component draws under it: never a
+      // preloader over drawn content (R216, any site).
+      stopWatch = watchForContent(() => {
+        preloaderRun = false;
+        stopAnimation();
+        hide();
+        if (window.SF_BOOT_CONFIG?.preloader) {
+          window.SF_BOOT_CONFIG.preloader.preloaderActive = false;
+        }
+      });
     };
 
     const cancelBuild = () => {
@@ -425,7 +493,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       document.addEventListener(
         'DOMContentLoaded',
         () => {
-          if (!pageHasFirstPaint(document)) return;
+          if (!pageShowsContent(document)) return;
           cancelBuild();
           preloaderRun = false;
           stopAnimation();

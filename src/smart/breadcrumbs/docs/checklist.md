@@ -18,14 +18,17 @@
 - [x] Поддержка иконок элементов через `icon`.
 - [x] Состояние текущего элемента через `current`.
 - [x] Ellipsis-элемент через `ellipsis`.
-- [x] Автоматическое сворачивание середины цепочки через `max-items` по умолчанию `4`.
+- [x] Сворачивание середины цепочки по месту; `max-items` — предел по числу, по умолчанию `0` (C93, R177 BC-06).
+- [x] Путь из родителей без текущей страницы: `current="none"`, `current: false` у крошки (BC-01).
+- [x] Фокус на первой открывшейся крошке после «…» (BC-02).
+- [x] Список `ol/li` (BC-09).
 - [x] Дефолтное раскрытие `ellipsis`.
 - [x] Ручной `ellipsis` через `hidden-items`.
 - [x] Переопределение раскрытия `ellipsis` через `event.preventDefault()`.
 - [x] Disabled-состояние.
 - [x] Slot overrides для элементов: `item-0`, `item-1`, и так далее.
 - [x] Slot overrides для разделителей: `separator-0`, `separator-1`, и так далее.
-- [x] Событие `sf-breadcrumb-click`.
+- [x] Событие `sf-breadcrumbs-press` (старое имя `sf-breadcrumb-click` до 2026-12-01).
 - [x] Хелпер `onItemClick(handler)`.
 - [x] Пример в playground.
 

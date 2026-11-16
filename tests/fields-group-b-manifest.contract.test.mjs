@@ -91,7 +91,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
     for (const row of table.aliases) {
       // The tag rename of 2026-11-03 (the old tag and the events named after
       // it) has its own dates.
-      if (row.since === '2026-11-03' || row.since === '2026-11-08' || row.since === '2026-11-11') {
+      if (row.since === '2026-11-03' || row.since === '2026-11-08' || row.since === '2026-11-11' || row.since === '2026-11-12') {
         assert.equal(row.remove_after, '2027-01-01', `${row.from}`);
         continue;
       }
@@ -108,7 +108,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
 
 test('sf-input-country: the host is the form control; the inner tel input carries no name and joins no form (§17.1)', () => {
   const source = read('src/smart/input-country/index.js');
-  assert.match(source, /class SfCountryCode extends FormField\(CountryCodeElement\)/u);
+  assert.match(source, /class SfCountryCode extends ShownValidity\(FormField\(CountryCodeElement\)\)/u);
   assert.match(source, /controlName: this\.sfInternals \? '' : this\.name/u);
   assert.match(source, /controlForm: this\.sfInternals \? '' : this\.getAttribute\('form'\)/u);
   const manifest = json('src/smart/input-country/component.json');
@@ -121,10 +121,11 @@ test('sf-input-color: shown is the base value; the painted colour is effective-v
   const source = read('src/smart/input-color/index.js');
   assert.doesNotMatch(source, /\n {4}get shown\(\) \{/u, 'the component no longer shadows the base value shown');
   assert.match(source, /\n {4}get effectiveValue\(\) \{/u);
-  assert.match(source, /class SfColor extends FormField\(ColorElement\)/u);
+  assert.match(source, /class SfColor extends ShownValidity\(FormField\(ColorElement\)\)/u);
   assert.match(source, /base: InheritedValueField\(SfBaseElement\)/u);
   const manifest = json('src/smart/input-color/component.json');
-  assert.deepEqual(Object.keys(manifest.values), ['value', 'effective-value']);
+  // theme and checks: the brand colour variants' theme and its checks (C84).
+  assert.deepEqual(Object.keys(manifest.values), ['value', 'effective-value', 'theme', 'checks']);
   assert.deepEqual(manifest['host-states'], {'data-inherited': 'boolean'});
   const rows = json('src/smart/input-color/aliases.json').aliases;
   assert.deepEqual(rows.map((row) => [row.from, row.to]), [['sf-field:reset', 'sf-field-reset'], ['shown', 'effective-value'], ['sf-color', 'sf-input-color']]);
@@ -149,7 +150,7 @@ test('sf-slider-range: prefix is prefix-text; step is a number or null; disabled
   assert.deepEqual(manifest.form, {value: 'value', name: 'name', default: 'value', submits: 'value', reset: 'default', disabled: 'disabled'});
   assert.match(source, /sfSyncForm\(/u);
   const {rows} = readAliasTable(json('src/smart/slider-range/aliases.json'), {tag: 'sf-slider-range'});
-  assert.deepEqual(rows.map((row) => [row.kind, row.from, row.to]), [['setting', 'prefix', 'prefix-text'], ['event', 'sf-range-slider-change', 'change'], ['event', 'onSliderChange', 'change']]);
+  assert.deepEqual(rows.map((row) => [row.kind, row.from, row.to]), [['setting', 'prefix', 'prefix-text'], ['event', 'sf-range-slider-change', 'change'], ['event', 'onSliderChange', 'change'], ['setting', 'decimals', 'precision']]);
 });
 
 test('sf-button-group: select and clear are the manifest\'s actions; change once; the host is the form control (§4.4, §8, §17.1)', () => {
@@ -189,13 +190,16 @@ test('sf-input-image: vocabulary names with dated colon aliases, error is invali
     ['sf-image-field', 'sf-input-image'],
     ['sf-image-field-attach', 'sf-input-image-attach'],
     ['sf-image-field-detach', 'sf-input-image-detach'],
+    // library is new in 1.4.0 (C94 point 5); a page still on the old tag
+    // hears it under the old name too, until the tag alias goes.
+    ['sf-image-field-library', 'sf-input-image-library'],
     ['sf-image-field-rejected', 'sf-input-image-rejected'],
   ]);
 });
 
 test('sf-file-upload: each entry is a stream (§10.8); the colon names follow the vocabulary names (vocabulary 1.1.5 §9.1)', () => {
   const source = read('src/smart/file-upload/index.js');
-  assert.match(source, /class SfFileUpload extends FileUploadElement/u);
+  assert.match(source, /class SfFileUpload extends FormField\(FileUploadElement\)/u);
   for (const verb of ['begun', 'chunk', 'cancelled']) assert.match(source, new RegExp(`this\\.sfEmit\\('${verb}', `, 'u'), verb);
   assert.match(source, /'sf-file-upload:file-complete': 'completed'/u);
   assert.match(source, /'sf-file-upload:file-error': 'failed'/u);
@@ -206,7 +210,8 @@ test('sf-file-upload: each entry is a stream (§10.8); the colon names follow th
   const manifest = json('src/smart/file-upload/component.json');
   for (const verb of ['begun', 'chunk', 'completed', 'failed', 'cancelled']) assert.ok(manifest.events[verb], verb);
   assert.deepEqual(manifest.events.failed.carries.reason, 'string');
-  assert.equal(manifest.form, undefined, 'the area submits nothing; the host uploads');
+  // 1.2.0 (FU-9): the host is a form control; the files go under name.
+  assert.equal(manifest.form.submits, 'value');
   const rows = json('src/smart/file-upload/aliases.json').aliases.filter((row) => row.to);
   assert.deepEqual(rows.map((row) => row.to.replace('sf-file-upload-', '')), ['attach', 'attached', 'detach', 'rejected', 'retry', 'completed', 'failed', 'finished']);
   assert.ok(rows.every((row) => row.from.startsWith('sf-file-upload:')), 'only the names that shipped');
@@ -216,7 +221,7 @@ test('sf-file-upload: each entry is a stream (§10.8); the colon names follow th
 
 test('sf-input-date: a leaf with outcome actions; the form gets the ISO date; the panel id from the path (§4.4, §7.1.1, §17.1)', () => {
   const source = read('src/smart/input-date/index.js');
-  assert.match(source, /class SfDatepicker extends FormField\(DatepickerElement\)/u);
+  assert.match(source, /class SfDatepicker extends ShownValidity\(FormField\(DatepickerElement\)\)/u);
   for (const method of ['openPanel', 'closePanel', 'togglePanel', 'choosePreset', 'chooseCustomRange']) {
     assert.doesNotMatch(source, new RegExp(`\\n {4}${method}\\(`, 'u'), `${method} is generated from the manifest's action`);
   }

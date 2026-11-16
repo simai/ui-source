@@ -1,12 +1,16 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {FormField} from '../helpers/form-field';
+import {FormField, ShownValidity} from '../helpers/form-field';
 import {renderChoiceTemplate} from './js/templates/default';
 import {CHOICE_COLUMNS, CHOICE_LAYOUTS, applyChoice, formatValue, normaliseItems, orderValues, parseValue} from './js/choice-model.mjs';
 import manifest from './component.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
 
 // sf-input-choice: a form field that picks one option, or several, from
@@ -37,7 +41,7 @@ const ChoiceElement = elementFromManifest(manifest, {
 // The id the inner inputs' form attribute names: no element carries it.
 const NO_FORM = 'sf-input-choice-no-form';
 
-class SfInputChoice extends FormField(ChoiceElement) {
+class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   static get props() {
     return {
       ...super.props,
@@ -211,8 +215,9 @@ class SfInputChoice extends FormField(ChoiceElement) {
       label: this.label || '',
       ariaLabel: this.getAttribute('aria-label') || '',
       hint: this.hint || '',
-      errorMessage: this.errorMessage || '',
-      invalid: Boolean(this.invalid),
+      // C153 (3): the page's error, or the one the field shows itself (ShownValidity).
+      errorMessage: this.sfShownMessage(this.invalid, this.errorMessage || ''),
+      invalid: this.sfShownInvalid(this.invalid),
       required: Boolean(this.required),
       // The field's own disabled or a disabled fieldset's (formDisabledCallback),
       // under a name of its own: the disabled getter is the setting alone.

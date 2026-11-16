@@ -1,10 +1,20 @@
 import { html, nothing } from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
+import { createFieldContract } from '../../../../component/field-contract';
 
 // A flag of the list is the browser's own lazy image: the address is written
 // with the row, and the browser fetches it when the row comes near the view (a
 // closed list fetches nothing). The class script used to set the address only
 // when a press opened the list, so a list drawn open (open) kept empty images
 // (docs pre-check 2026-11-10 CC-02). eager-flags asks for every flag at once.
+// A file that does not come draws the country's emoji in its place, as the
+// field's own flag does.
+function flagFallback(event) {
+  const img = event.currentTarget;
+  const holder = img?.parentElement;
+  if (holder && img.dataset.flagFallback) holder.textContent = img.dataset.flagFallback;
+}
+
 function flagTemplate(country, flagBase = '', lazy = true) {
   const iso2 = String(country?.iso2 || '').trim().toLowerCase();
   const fallback = country?.flagEmoji || '';
@@ -23,6 +33,7 @@ function flagTemplate(country, flagBase = '', lazy = true) {
       data-flag-src=${src}
       data-loaded="1"
       data-flag-fallback=${fallback}
+      @error=${flagFallback}
     />
   `;
 }
@@ -55,8 +66,19 @@ export function renderCountryCodeTemplate(context) {
     ariaLabel,
   } = context;
 
+  // The line under the field is sf-input's (fields ladder, 2026-11-14): the
+  // help, or the error in its place while the field is invalid and says why.
+  const field = createFieldContract(context.component, {
+    prefix: 'sf-input-country',
+    invalid: context.invalid,
+    hint,
+    errorMessage: context.errorMessage,
+  });
+  const messageIsError = Boolean(field.invalid && context.errorMessage);
+
   const rootClasses = ['sf-country-code', `sf-country-code--size-${size}`, 'flex', 'flex-col'];
   if (context.rootClass) rootClasses.push(context.rootClass);
+  if (field.invalid) rootClasses.push('error');
   if (disabled) rootClasses.push('disabled');
   if (open) rootClasses.push('open');
 
@@ -78,6 +100,7 @@ export function renderCountryCodeTemplate(context) {
       data-mask-pattern=${maskPattern || ''}
       data-flag-base=${flagBase || ''}
       data-max-items=${String(maxItems || 0)}
+      data-preferred=${context.preferred === undefined ? nothing : context.preferred}
     >
       ${label
         // No label, no label row: a lone star over a control names nothing, and
@@ -86,7 +109,8 @@ export function renderCountryCodeTemplate(context) {
         ? html`
           <span class="sf-country-code-label flex">
             <span class="sf-country-code-text">${label}</span>
-            ${required ? html`<span class="sf-country-code-required">*</span>` : ''}
+            ${required ? html`<span class="sf-country-code-required" aria-hidden="true">*</span>` : ''}
+            ${renderFieldHelp({help: context.help, label, size, className: 'sf-country-code-help', component: context.component})}
           </span>`
         : ''}
 
@@ -94,7 +118,9 @@ export function renderCountryCodeTemplate(context) {
         <span class="sf-country-code-left flex items-center">
           <div class="sf-country-code-flag-icon" aria-hidden="true"></div>
           ${multiCountry
-            ? html`<i class="sf-icon">${open ? 'expand_less' : 'expand_more'}</i>`
+            // The small caret after the flag says the flag opens the list
+            // (owner C87, variant V4 with the caret).
+            ? html`<i class="sf-icon sf-country-code-caret" aria-hidden="true">arrow_drop_down</i>`
             : ''}
         </span>
         <input
@@ -107,6 +133,8 @@ export function renderCountryCodeTemplate(context) {
           placeholder=${placeholder}
           ?disabled=${disabled}
           aria-label=${!label && ariaLabel ? ariaLabel : nothing}
+          aria-invalid=${field.invalid ? 'true' : nothing}
+          aria-errormessage=${messageIsError ? field.messageId : nothing}
         />
       </span>
 
@@ -139,7 +167,10 @@ export function renderCountryCodeTemplate(context) {
           `
         : ''}
 
-      ${hint ? html`<span class="sf-country-code-hint">${hint}</span>` : ''}
+      ${field.message
+        ? html`<span class="sf-country-code-hint" id=${field.messageId}
+                     data-field-message=${messageIsError ? 'error' : 'hint'}>${field.message}</span>`
+        : ''}
     </label>
   `;
 }

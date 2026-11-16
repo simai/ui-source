@@ -14,5 +14,9 @@ SF.RuleLoader['cl-input-quantity'] = {
     { name: 'quantity' },
     { name: 'icons' },
     { name: 'icon-buttons' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
+    // inputs: the field layer's .sf-field-action rules (owner decision C123), which the shared reset to the inherited value takes, as sf-input's clear and reveal do.
+    { name: 'inputs' },
   ],
 };

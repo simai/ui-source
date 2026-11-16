@@ -91,8 +91,11 @@ test('the disabled content role paints a fill only where the fill is the content
     // The slider's handle is the content of its rail, laid over the surface
     // so the fill does not show through (2026-11-01).
     'src/component/range-slider/scss/_css__thumbs.scss: background: linear-gradient(var(--sf-on-surface-disabled), var(--sf-on-surface-disabled)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));',
+    // The chosen part of a disabled slider's rail is content too (C78 track B):
+    // it stands on the disabled rail in the handle's own role.
+    'src/component/range-slider/scss/_css__range_slider.scss: background-color: var(--sf-on-surface-disabled);',
     'src/component/switch/scss/_css_switch.scss: --sf-switch-inner--background-color: var(--sf-on-surface-disabled);',
-    'src/smart/button-icon/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-disable);',
+    'src/smart/button-icon/js/templates/default.css: --sf-close-icon--background-color: var(--sf-on-surface-disabled);',
   ].sort());
 });
 
@@ -236,8 +239,10 @@ test('the disabled roles keep the alphas the owner chose', () => {
     const match = theme.match(new RegExp(`--sf-${name}: ([^;]+);`, 'u'));
     return match ? match[1].trim() : null;
   };
+  // The disabled plate is the state family's 8, a step under the lightest
+  // working plate (C113 item 3, TB-2; it was 12 over a resting plate of 8).
   assert.equal(value('disable'),
-    'light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12))');
+    'light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8))');
   assert.equal(value('on-disable'),
     'light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48))');
   assert.equal(value('outline-disable'),

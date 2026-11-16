@@ -1,0 +1,104 @@
+{
+  "schema": "simai.html1.break-corpus",
+  "schema_version": 1,
+  "summary": "html@1 break and edge behaviour (2026-11-10 composition review, assessment section 7 Q6): sanitizeRichText output per row in value and editor mode. value_before_2026_11_10 is the first-pass value before the idempotence fix (F1.4); every other value is the same bytes as before.",
+  "rows": [
+    {
+      "input": "<p><br>a</p>",
+      "value": "<p>a</p>",
+      "editor": "<p><br>a</p>"
+    },
+    {
+      "input": "<p>a<br></p>",
+      "value": "<p>a</p>",
+      "editor": "<p>a<br></p>"
+    },
+    {
+      "input": "<p>a<br><br></p>",
+      "value": "<p>a</p>",
+      "editor": "<p>a<br><br></p>"
+    },
+    {
+      "input": "<p>a<br><br>b</p>",
+      "value": "<p>a<br><br>b</p>",
+      "editor": "<p>a<br><br>b</p>"
+    },
+    {
+      "input": "<p><br></p>",
+      "value": "",
+      "editor": "<p><br></p>"
+    },
+    {
+      "input": "<br>",
+      "value": "",
+      "editor": "<p><br></p>"
+    },
+    {
+      "input": "<p>a</p><p><br></p><p>b</p>",
+      "value": "<p>a</p><p>b</p>",
+      "editor": "<p>a</p><p><br></p><p>b</p>"
+    },
+    {
+      "input": "<h2>a<br>b</h2>",
+      "value": "<h2>a<br>b</h2>",
+      "editor": "<h2>a<br>b</h2>"
+    },
+    {
+      "input": "<ul><li>a<br></li><li><br>b</li></ul>",
+      "value": "<ul><li>a</li><li>b</li></ul>",
+      "editor": "<ul><li>a<br></li><li><br>b</li></ul>"
+    },
+    {
+      "input": "<p><strong>a<br>b</strong></p>",
+      "value": "<p><strong>a<br>b</strong></p>",
+      "editor": "<p><strong>a<br>b</strong></p>"
+    },
+    {
+      "input": "<p><strong>a</strong><br><strong>b</strong></p>",
+      "value": "<p><strong>a</strong><br><strong>b</strong></p>",
+      "editor": "<p><strong>a</strong><br><strong>b</strong></p>"
+    },
+    {
+      "input": "<p><a href=\"/x\">a<br>b</a></p>",
+      "value": "<p><a href=\"/x\">a<br>b</a></p>",
+      "editor": "<p><a href=\"/x\">a<br>b</a></p>"
+    },
+    {
+      "input": "<p><a href=\"/x\">a<br></a>b</p>",
+      "value": "<p><a href=\"/x\">a<br></a>b</p>",
+      "editor": "<p><a href=\"/x\">a<br></a>b</p>"
+    },
+    {
+      "input": "<p><a href=\"/x\"><br>a</a></p>",
+      "value": "<p><a href=\"/x\">a</a></p>",
+      "editor": "<p><a href=\"/x\"><br>a</a></p>"
+    },
+    {
+      "input": "<p><em>a<br></em></p>",
+      "value": "<p><em>a</em></p>",
+      "editor": "<p><em>a<br></em></p>"
+    },
+    {
+      "input": "<p>a <br> b</p>",
+      "value": "<p>a<br>b</p>",
+      "editor": "<p>a<br>b</p>"
+    },
+    {
+      "input": "<pre>a\nb</pre>",
+      "value": "<p>a<br>b</p>",
+      "editor": "<p>a<br>b</p>"
+    },
+    {
+      "input": "<p>&nbsp;<br>a</p>",
+      "value": "<p>a</p>",
+      "editor": "<p>&nbsp;<br>a</p>",
+      "value_before_2026_11_10": "<p><br>a</p>"
+    },
+    {
+      "input": "<p>a<br>&nbsp;</p>",
+      "value": "<p>a</p>",
+      "editor": "<p>a<br>&nbsp;</p>",
+      "value_before_2026_11_10": "<p>a<br></p>"
+    }
+  ]
+}

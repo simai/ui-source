@@ -1,5 +1,6 @@
 import registerComponent from '../../register-helper';
 import { instancePath, partId } from '../../../core/js/instance-path.js';
+import { moveSection, sectionHeight, stopSectionMotion } from './motion.js';
 
 const accordionInstances = new WeakMap();
 const ACCORDION_GROUP_SELECTOR = '.sf-accordion-group';
@@ -11,6 +12,21 @@ const PLUS_MINUS_MODIFIER = 'sf-accordion--plus-minus';
 const SINGLE_MODIFIER = 'sf-accordion--single';
 // A group that keeps its one section a toggle says so.
 const SINGLE_TOGGLE_ATTRIBUTE = 'data-single-section';
+// Every closed panel is findable (owner decision C154 (6)): it is closed
+// with hidden="until-found", so the browser's find-in-page searches it and
+// opens it, firing beforematch first, and the section follows (aria-expanded,
+// the active mark, the marker). A panel the page closed with the hidden
+// attribute or the hidden class becomes findable when the runtime takes it;
+// the hidden class is never left on a closed panel, as its display: none
+// would take the text out of the search (accordion study AC-8). A browser
+// without until-found hides such a panel as it hides any hidden one.
+const UNTIL_FOUND = 'until-found';
+// Marks a section whose panel is closed but still drawn while the section
+// shrinks to its header (C154 (4)); the class sheet keeps it in view.
+const CLOSING_ATTRIBUTE = 'data-sf-accordion-closing';
+// The marker is the header's last icon; an icon before the title
+// (.sf-accordion-lead) is not the marker and keeps its glyph.
+const MARKER_SELECTOR = '.sf-icon:not(.sf-accordion-lead)';
 
 class SfAccordion {
   static componentName = 'Accordion';
@@ -20,12 +36,14 @@ class SfAccordion {
     this.content = el?.querySelector?.('.sf-accordion-content') || null;
     this.title = el?.querySelector?.('.sf-accordion-title') || null;
     this.trigger = el?.querySelector?.('.sf-accordion-trigger') || el;
+    const markers = this.trigger?.querySelectorAll?.(MARKER_SELECTOR);
     this.icon =
-      this.trigger?.querySelector?.('.sf-icon') ||
-      el?.querySelector?.(':scope > .sf-icon') ||
-      el?.querySelector?.('.sf-icon');
+      (markers?.length ? markers[markers.length - 1] : null) ||
+      el?.querySelector?.(`:scope > ${MARKER_SELECTOR}`) ||
+      el?.querySelector?.(MARKER_SELECTOR);
     this.onClick = this.handleClick.bind(this);
     this.onKeydown = this.handleKeydown.bind(this);
+    this.onBeforeMatch = this.handleBeforeMatch.bind(this);
   }
 
   init() {
@@ -50,12 +68,13 @@ class SfAccordion {
     // that may not have arrived yet) gets the `hidden` attribute too, so its
     // content is out of the tab order and the accessibility tree before the
     // first toggle (simai/ui-source#30).
+    // A closed panel is findable from here on: hidden="until-found".
     if (this.content && !this.isOpen()) {
-      this.content.hidden = true;
-      this.content.classList.add('hidden');
+      this.hideContent();
     }
     this.syncState();
     this.trigger.addEventListener('click', this.onClick);
+    this.content?.addEventListener('beforematch', this.onBeforeMatch);
     if (usesLegacyTrigger) {
       this.trigger.addEventListener('keydown', this.onKeydown);
     }
@@ -111,6 +130,7 @@ class SfAccordion {
     if (!this.el) return;
     this.trigger?.removeEventListener('click', this.onClick);
     this.trigger?.removeEventListener('keydown', this.onKeydown);
+    this.content?.removeEventListener('beforematch', this.onBeforeMatch);
     accordionInstances.delete(this.el);
     this.el.classList.remove('sf-accordion--legacy');
     delete this.el.dataset.sfAccordionInit;
@@ -141,6 +161,21 @@ class SfAccordion {
     this.toggle();
   }
 
+  // Find-in-page found text in a closed panel: the browser is about to show
+  // it, so the section opens as a click would open it -- aria-expanded, the
+  // active mark, the chevron, and in single mode the other section closes.
+  // The browser shows the text at once, so the section does not move.
+  handleBeforeMatch() {
+    if (this.staticHeader) return;
+    this.setOpen(true, { motion: false });
+  }
+
+  // Closes the panel: hidden="until-found", findable, never the hidden class.
+  hideContent() {
+    this.content.setAttribute('hidden', UNTIL_FOUND);
+    this.content.classList.remove('hidden');
+  }
+
   handleKeydown(event) {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
@@ -157,16 +192,26 @@ class SfAccordion {
     this.setOpen(!this.isOpen());
   }
 
-  setOpen(open) {
+  // Opens or closes the panel. The section moves to its new height on the
+  // sheet's clock (C154 (4)); a closing panel stays drawn until the section
+  // has shrunk to its header. No motion under reduced motion.
+  setOpen(open, { motion = true } = {}) {
     if (!this.content || this.staticHeader) return;
 
+    const from = sectionHeight(this.el);
+    stopSectionMotion(this.el);
+    this.el.removeAttribute(CLOSING_ATTRIBUTE);
     if (open) {
       this.closeSingleModeSiblings();
+      this.content.hidden = false;
+      this.content.classList.remove('hidden');
+    } else {
+      this.hideContent();
     }
-
-    this.content.hidden = !open;
-    this.content.classList.toggle('hidden', !open);
     this.syncState();
+    if (!motion) return;
+    const moving = moveSection(this.el, from, () => this.el.removeAttribute(CLOSING_ATTRIBUTE));
+    if (moving && !open) this.el.setAttribute(CLOSING_ATTRIBUTE, '');
   }
 
   closeSingleModeSiblings() {

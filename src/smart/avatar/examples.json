@@ -55,6 +55,30 @@
       }
     },
     {
+      "name": "link",
+      "title": "Ссылка на профиль",
+      "settings": {
+        "heading": "Борис Ильин",
+        "href": "#profile",
+        "hue": "auto"
+      },
+      "expect": {
+        "href": "#profile"
+      }
+    },
+    {
+      "name": "away",
+      "title": "Отошёл",
+      "settings": {
+        "heading": "Ольга Смирнова",
+        "status": "away",
+        "hue": "auto"
+      },
+      "expect": {
+        "status": "away"
+      }
+    },
+    {
       "name": "card",
       "title": "Карточка",
       "settings": {

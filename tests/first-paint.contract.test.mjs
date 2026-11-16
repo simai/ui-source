@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import test from 'node:test';
-import {components, assemblies, exampleFiles, givesLateData} from '../scripts/first-paint-lib.mjs';
+import {components, assemblies, exampleFiles, givesLateData, lateGiven} from '../scripts/first-paint-lib.mjs';
 
 // The first paint of every Smart component, as committed build snapshots
 // (standard simai.smart-component 1.3.8 §5.4, §7.3, gate 24; owner decision
@@ -20,8 +20,9 @@ test('every component has a snapshot per example, and the sheets it needs', () =
   // 68 with sf-confirm and sf-confirm-change, moved from ui-pro (2026-11-03, A-5); 69 with sf-alert-bar (2026-11-05);
   // 71 with sf-list and sf-list-feed, block list (2026-11-05, A-4, A-6); 72 with sf-language (2026-11-06); 73 with sf-settings (2026-11-06);
   // 75 with sf-wizard and sf-wizard-step (2026-11-06); 78 with sf-tile-metric, sf-list-attention and sf-progress-run (2026-11-07);
-  // 81 with sf-input-choice, sf-list-description and sf-list-timeline (2026-11-08); 82 with sf-time and 83 with sf-change (C40, 2026-11-10).
-  assert.equal(all.length, 83);
+  // 81 with sf-input-choice, sf-list-description and sf-list-timeline (2026-11-08); 82 with sf-time and 83 with sf-change (C40, 2026-11-10); 84 with sf-tag-group (C145, 2026-11-14);
+  // 85 with sf-form (C182, 2026-11-14); 86 with sf-display-settings (C196, 2026-11-15).
+  assert.equal(all.length, 86);
   for (const component of all) {
     const sheets = JSON.parse(readFileSync(join(component.dir, 'static', 'sheets.json'), 'utf8'));
     assert.equal(sheets.component, component.tag);
@@ -35,7 +36,15 @@ test('every component has a snapshot per example, and the sheets it needs', () =
       // A skeleton exactly where the example gives late data.
       const late = givesLateData(component, example);
       assert.equal(existsSync(files.skeleton), late, `${component.folder}/${example.name}: skeleton ${late ? 'missing' : 'not wanted'}`);
-      if (late) assert.match(readFileSync(files.skeleton, 'utf8'), /data-sf-first-paint="skeleton" aria-busy="true"/u);
+      if (late) {
+        const skeleton = readFileSync(files.skeleton, 'utf8');
+        assert.match(skeleton, /data-sf-first-paint="skeleton" aria-busy="true"/u);
+        // A component with more than one late list names the ones this
+        // skeleton holds (element-manifest.js sfLateHeld); one with a single
+        // late list names none.
+        const named = skeleton.match(/^<[\w-]+[^>]*? data-sf-late="([^"]*)"/mu)?.[1] ?? null;
+        assert.equal(named, component.late.length > 1 ? lateGiven(component, example).join(' ') : null, `${component.folder}/${example.name}: data-sf-late`);
+      }
     }
   }
 });
@@ -61,7 +70,13 @@ test('late data is declared, the old shape hints are gone', () => {
     for (const name of skeleton?.late ?? []) assert.ok(component.manifest.settings?.[name], `${component.folder}: late ${name} is a setting`);
   }
   const late = Object.fromEntries(all.filter((one) => one.late.length).map((one) => [one.folder, one.late]));
-  assert.deepEqual(late, {list: ['items'], 'list-feed': ['items'], menu: ['items'], 'profile-picker': ['profiles'], tree: ['items']});
+  // The list-fed data components declare their lists late too (first-paint
+  // study R222, 2026-11-13): the build derives their skeletons.
+  assert.deepEqual(late, {
+    'avatar-group': ['avatars'], change: ['changes'], 'confirm-change': ['changes'], 'file-upload': ['items'],
+    list: ['items'], 'list-attention': ['items'], 'list-description': ['items'], 'list-feed': ['items'], 'list-timeline': ['items'],
+    menu: ['items'], 'profile-picker': ['profiles'], 'progress-run': ['steps', 'counters'], tree: ['items'],
+  });
 });
 
 test('the element adopts its printed markup: island, late data, hand-over, held children', () => {

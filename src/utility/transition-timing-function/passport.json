@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.transition-timing-function",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/transition-timing-function/default/index.js",
@@ -13,10 +13,14 @@
     "src/utility/transition-timing-function/default/scss/_sf_var__transition_timing_function.scss",
     "src/utility/transition-timing-function/default/scss/index.scss"
   ],
-  "content_sha256": "cefc9495ccfa37fe024e8de014163ef45e54a6517bfd2b154e8104589fec7fa1",
+  "content_sha256": "797ed52f69ed35c2597eef5afbb3781750c244ae0951116bdc692881b356fb54",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
       "range": "^1.0.0"
     }
   ]

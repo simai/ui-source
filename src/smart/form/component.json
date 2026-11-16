@@ -1,0 +1,417 @@
+{
+  "$comment": "The source of sf-form's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C182 (2026-11-14; study control/research/2026-11-14-form.md, prototype prototypes/form-study.html), a form drawn from field descriptions over the Framework's field renderers.",
+  "id": "smart.form",
+  "tag": "sf-form",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "form",
+  "settings": {
+    "fields": {
+      "type": "list",
+      "schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "propertyType": {
+              "type": "string"
+            },
+            "variant": {
+              "type": "string"
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "readonly": {
+              "type": "boolean"
+            },
+            "hint": {
+              "type": "string"
+            },
+            "help": {
+              "type": "string"
+            },
+            "width": {
+              "type": "string",
+              "enum": [
+                "s",
+                "m",
+                "full"
+              ]
+            },
+            "group": {
+              "type": "string"
+            },
+            "placeholder": {
+              "type": "string"
+            },
+            "options": {
+              "type": "array"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "step": {
+              "type": "number"
+            },
+            "unit": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "label",
+            "propertyType"
+          ]
+        }
+      },
+      "default": [],
+      "summary": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type and its parameters (propertyType, variant, required, readonly, placeholder, options, min, max, step, unit … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width s (8rem), m (16rem) or full; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
+    },
+    "groups": {
+      "type": "list",
+      "schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "key"
+          ]
+        }
+      },
+      "default": [],
+      "summary": "The groups the fields' group keys name, in order: {key, label}. With two or more, each is a fieldset with its label as the legend, 24 apart over a line. A field without a group, or with a group not listed, stands in one group of its own after the listed ones"
+    },
+    "apply": {
+      "type": "enum",
+      "values": [
+        "submit",
+        "instant"
+      ],
+      "default": "submit",
+      "summary": "submit: the form is saved with its button -- «Сохранить» and «Отмена» under the fields, a required yes/no is a checkbox (C165 (4)), «Есть несохранённые изменения» under the buttons after a change. instant: every change acts at once -- no buttons, a change event per field, a required yes/no is a switch (a settings panel, a block's parameters)"
+    },
+    "labels": {
+      "type": "enum",
+      "values": [
+        "top",
+        "start"
+      ],
+      "default": "top",
+      "summary": "top: the label above its field (the default). start: from 40rem of the form's own width the label stands beside its field in a third of the row, the field in the rest -- the row of a settings page and of an admin card; narrower, above. The value name top is a working name (name to confirm)"
+    },
+    "footer": {
+      "type": "enum",
+      "values": [
+        "static",
+        "sticky"
+      ],
+      "default": "static",
+      "summary": "static: the buttons under the last field, the main one first at the start. sticky: the same buttons in a bar that sticks to the bottom of the scrolling place while the form is longer than it -- a settings page (C166 (3)). The value name static is a working name (name to confirm)"
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "summary": "The form's accessible name (the native form's aria-label), so a screen reader announces it as a form landmark; best the heading the form stands under. Working name (name to confirm)"
+    }
+  },
+  "values": {
+    "value": {
+      "type": "object",
+      "default": {},
+      "summary": "The values by field key: {text: \"Подробнее\", tone: \"accent\"}. Set from code it is the saved state: the form shows it, forgets the errors and is not dirty; read, it is what the fields hold now. A value the person never set is absent"
+    },
+    "mode": {
+      "type": "enum",
+      "values": [
+        "edit",
+        "view"
+      ],
+      "default": "edit",
+      "summary": "edit: the fields. view: the values as text (the field renderers' view, as a record card shows them) with «Изменить» under them; «Изменить» opens edit, and «Сохранить» or «Отмена» return to view. Working name (name to confirm)"
+    },
+    "valid": {
+      "type": "boolean",
+      "summary": "True when every field it shows passes its check now (required, the control's own validity, an error the host set); read-only and silent -- reading it shows no error (§17.4)"
+    },
+    "dirty": {
+      "type": "boolean",
+      "summary": "True when a value differs from the saved state (the last value set from code, or the last submit). Read-only; a host that closes a window asks «Закрыть без сохранения?» on it (C159 (6)). Working name (name to confirm)"
+    }
+  },
+  "events": {
+    "input": {
+      "carries": {
+        "key": "string",
+        "value": "any"
+      },
+      "x-native": false,
+      "summary": "A field's value changed by the person: its key and the new value (undefined when the field withdrew an incomplete text). Sent as sf-form-input, not input: the fields' own native input events bubble through the form unchanged"
+    },
+    "change": {
+      "carries": {
+        "key": "string",
+        "value": "any"
+      },
+      "x-native": false,
+      "summary": "apply instant only: a field's value is applied (§8, one per commit of the field). Sent as sf-form-change, not change: the fields' own native change events bubble through the form unchanged"
+    },
+    "submit": {
+      "carries": {
+        "value": "object"
+      },
+      "cancelable": true,
+      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every field's value by key. Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)"
+    },
+    "invalid": {
+      "carries": {
+        "fields": "list"
+      },
+      "summary": "A submit or check-validity found wrong fields: their keys in order. Every one shows its error at the field; from two errors a summary with a link to each stands over the form and takes the focus"
+    },
+    "cancel": {
+      "carries": {
+        "value": "object"
+      },
+      "summary": "«Отмена»: the fields went back to the saved state (value), the errors are gone; a form opened from view returns to view"
+    }
+  },
+  "actions": {
+    "check-validity": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Checks every field it shows and shows every error, as «Сохранить» does but without submit: applied when right, refused {reason: invalid} otherwise (§17.4). Moves no focus",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "reset": {
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Every field returns to the saved state, without events; the errors and the summary are gone (§17.4)",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "set-errors": {
+      "with": {
+        "errors": "object"
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "The host's answer to a submit: {key: message} -- each named field shows the message as its error until the person changes it, from two a summary takes the focus as after «Сохранить»; an empty object clears them. A form in view opens edit. refused {reason: missing} when no key names a field it shows. Working name (name to confirm)",
+      "x-returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "commit"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-help-mark"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16): the build does not compile template.html yet, so a second copy of the markup would only drift from the one that draws."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "A native form (role form when label names it; novalidate, the form says the errors in its own words). Each field is a label row over the control the field renderers draw; the control is named by the label (its aria-label) and a required one carries the native required, so the «*» is hidden from a screen reader. Groups are fieldsets named by their legend. The errors summary is role alert with tabindex -1: after «Сохранить» with two errors or more it takes the focus and its links each move the focus to their field. The unsaved note is a polite status.",
+    "role": "form",
+    "name": {
+      "from": [
+        "label"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "commit"
+    }
+  },
+  "host-states": {
+    "data-dirty": "boolean",
+    "data-invalid": "boolean",
+    "data-mode": "string"
+  },
+  "css-variables": {
+    "--sf-form-field-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-form-group-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-form-label-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-form-summary-background-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-form-footer-background-color": {
+      "type": "color",
+      "state": "default"
+    }
+  },
+  "x-summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit or instant in one component.",
+  "x-source": {
+    "package": "framework",
+    "folder": "form",
+    "brief": "Owner decision C182 (2026-11-14), all nine by the recommendation of the form study (control/research/2026-11-14-form.md, prototype prototypes/form-study.html): (1) a Framework Smart component over field-renderers; (2) the name sf-form (C174); (3) the descriptor is the Framework field descriptor sf-view-properties sends; (4) one column, short fields pair from 44rem of its own width (width s 8rem / m 16rem / full); (5) the label above, labels=\"start\" beside from 40rem; (6) errors at the fields and a summary with links from two errors, the focus to it; (7) the buttons under the fields, the main first at the start, «Сохранить» never disabled, «Есть несохранённые изменения» under them, footer=\"sticky\" for settings pages; (8) view mode is the values as text with «Изменить»; (9) one component, apply=\"instant|submit\""
+  },
+  "x-words": [
+    "label"
+  ],
+  "x-decisions": [
+    "name: sf-form, family form (owner decision C182 (2), naming C174: the family first). The settings apply (submit, instant), labels (start) and footer (sticky) and the field descriptor's width s, m, full are the decision's names. Working names, not given by the decision, to confirm with the owner: labels top, footer static, the settings fields, groups and label (fields and groups are the prototype's form.fields and form.groups), the values mode (edit, view) and dirty, the action set-errors and the event cancel.",
+    "descriptor (C182 (3)): the Framework field descriptor sf-view-properties sends -- the property registry's type and parameters plus key, label, hint, help, width and group -- drawn by the field renderers this bundle carries (src/smart/field-renderers, renderEditField and renderViewField; importing them also publishes SF.fieldRenderers). The form draws only the frame: the label row (label, «*», «?» as sf-help-mark), the hint, the error, the groups, the layout and the buttons. A required yes/no is a checkbox under apply submit and a switch under apply instant (field-renderers 1.12.0, C165 (4)); a checkbox carries its label itself, beside the box. A JSON Schema reader is a later helper (C182 (3)).",
+    "layout (C182 (4)): one column; from 44rem of the form's own width (a container query on its root) the fields without width pair in two columns, 32 apart (--sf-space-2); s, m and full fields take a row of their own, s and m with the control at most 8rem and 16rem wide; the group's legend spans the row. Narrower everything is one column.",
+    "labels (C182 (5), C153 (1), (2)): the label above its field, 14 on its line (--sf-text-size-1/2) in the text colour, 14 on a phone too, 4 over the control (--sf-space-1/4); «*» after a required field's label in the label's colour, hidden from a screen reader (the control is required), and «* — обязательные поля» over a form that has one; help is an sf-help-mark after the label. labels=\"start\" from 40rem: the label in the first third, the control, the hint and the error in the rest, 32 apart, the label on the control's line.",
+    "errors (C182 (6), C153 (3), C55): a field shows its error under itself after a submit, after the person left a field they changed, and loses it the moment the value is right. The words are the form's, naming the field («Заполните поле «Текст»») for a missing value, the control's own for any other failure, or the host's (set-errors, a field renderer's setFieldError). A control of the field family (sf-input and its kin, sf-dropdown) is given invalid and error-message and says it in its own message line, linked to its native control; for any other control the form draws the line under it. The error takes the hint's place. From two errors after a submit a summary stands over the form: the quiet error container, «Исправьте N поля» and a link per error; it is role alert, takes the focus, and each link moves the focus to its field. One error: the focus goes to that field.",
+    "footer (C182 (7), C159 (4), C157 (3), C105 H5): the buttons under the last field, 24 under it (--sf-space-3), «Сохранить» first at the start and «Отмена» after it, --sf-space-1/3 apart (8; 4 compact). «Сохранить» is never disabled. After the first change a polite status «Есть несохранённые изменения» stands under the buttons, 8 under them. footer=\"sticky\" keeps them in a bar at the bottom of the scrolling place, on the place's solid surface over a line.",
+    "view (C182 (8)): mode view draws every value as text with renderViewField, the label row above it, and «Изменить» (an outline button) under them; disabled fields are not used for read-only. «Изменить» opens edit with the focus on the first field; «Сохранить» (not cancelled) and «Отмена» return to view with the focus on «Изменить».",
+    "apply (C182 (9)): one component. submit -- a native form (novalidate), Enter in a one-line field submits it; instant -- no buttons and no required note, change {key, value} per field.",
+    "spacing (C52, C105, C144): between fields --sf-space-1, between groups and before the buttons --sf-space-3, the group line on the outline-variant role, label to control --sf-space-1/4; values only from the space system."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "i18n",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "external-host",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "form",
+      "fields",
+      "properties",
+      "settings",
+      "edit",
+      "validation",
+      "errors"
+    ],
+    "state": {
+      "machines": {
+        "form": [
+          "clean",
+          "dirty",
+          "invalid",
+          "view"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "error",
+        "saving"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "saving the values (the host hears submit or change and saves them)",
+        "checking a value against the server's rules (the host answers with set-errors)",
+        "deciding who may change a field (the host sends readonly)"
+      ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-form for a form drawn from a list of field descriptions: a record's edit, a settings page, a block's parameters (apply instant), a sign-up or a request on a site.",
+      "do_not": [
+        "Do not draw the label, the «*», the hint or the error beside a field by hand; give them in the descriptor",
+        "Do not disable «Сохранить» until the form is right; the form says what is wrong",
+        "Do not show read-only values as disabled fields; use mode view",
+        "Do not put two columns by hand; the form pairs fields from 44rem of its own width"
+      ],
+      "required_reads": [
+        "inputs",
+        "events",
+        "accessibility"
+      ],
+      "minimal_example": "<sf-form label=\"Кнопка\"><script type=\"application/json\" data-sf-settings>{\"fields\": [{\"key\": \"text\", \"label\": \"Текст\", \"propertyType\": \"string\", \"required\": true}], \"value\": {\"text\": \"Подробнее\"}}</script></sf-form>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "recommended",
+      "keyboard": [
+        "Tab walks the fields in order, then «Сохранить» and «Отмена» (or «Изменить» in view)",
+        "Enter in a one-line field submits the form",
+        "After a submit with two errors or more the focus is on the summary; Tab reaches its links, and Enter on a link moves the focus to that field"
+      ],
+      "focus": "A submit with one error moves the focus to that field, with two or more to the summary. «Изменить» moves it to the first field; returning to view moves it to «Изменить»."
+    }
+  }
+}

@@ -11,6 +11,10 @@
       "  <sf-empty-state id=\"e3\" kind=\"no-data\" heading=\"Нет проектов\"></sf-empty-state>",
       "  <sf-empty-state id=\"e4\" kind=\"error\" live=\"alert\"></sf-empty-state>",
       "  <sf-empty-state id=\"e-old\" title=\"Старое имя\"></sf-empty-state>",
+      "  <sf-empty-state id=\"e5\" kind=\"processing\" heading=\"Расшифровка готовится\"></sf-empty-state>",
+      "  <sf-empty-state id=\"e6\" kind=\"first-use\" icon=\"widgets\"></sf-empty-state>",
+      "  <sf-empty-state id=\"e7\" kind=\"offline\"></sf-empty-state>",
+      "  <sf-empty-state id=\"e8\" kind=\"processing\" size=\"2\" value=\"40\" heading=\"Расшифровка готовится\"></sf-empty-state>",
       "</main>"
     ]
   },
@@ -94,6 +98,87 @@
       "steps": [
         {
           "check": "document.getElementById('e-old').getAttribute('heading') === 'Старое имя' && document.querySelector('#e-old .sf-empty-state-title').textContent.trim() === 'Старое имя'"
+        }
+      ]
+    },
+    {
+      "id": "p6-processing",
+      "title": "processing: a spinner in the soft neutral circle, no glyph, a polite status with the heading and the promise, no action",
+      "covers": "settings.kind processing, accessibility (role when)",
+      "steps": [
+        {
+          "wait": 400,
+          "check": "(() => { const r = document.querySelector('#e5 .sf-empty-state'); const c = r.querySelector('.sf-featured-icon.sf-featured-icon--neutral.sf-featured-icon--soft'); return r.getAttribute('role') === 'status' && c && c.querySelector('sf-spinner') && !c.querySelector('.sf-icon') && r.querySelector('.sf-empty-state-title').textContent.trim() === 'Расшифровка готовится' && r.querySelector('.sf-empty-state-text').textContent.trim().length > 0 && !r.querySelector('.sf-empty-state-actions'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p7-first-use",
+      "title": "first-use: the section's icon in the primary role and a primary «Создать» sending action {id: create}",
+      "covers": "settings.kind first-use, settings.icon, events.action",
+      "steps": [
+        {
+          "check": "(() => { const r = document.querySelector('#e6 .sf-empty-state'); const c = r.querySelector('.sf-featured-icon'); return c.classList.contains('sf-featured-icon--primary') && c.textContent.trim() === 'widgets' && !r.hasAttribute('role') && r.querySelector('.sf-empty-state-actions sf-button').getAttribute('scheme') === 'primary'; })()"
+        },
+        {
+          "user": "click:#e6 .sf-empty-state-actions button",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-empty-state-action",
+                "count": 1,
+                "detail": {
+                  "id": "create"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p8-offline",
+      "title": "offline: cloud_off in the warning role, a polite status, «Повторить»; the window's online event sends action {id: retry, auto: true}",
+      "covers": "settings.kind offline, events.action (auto)",
+      "steps": [
+        {
+          "check": "(() => { const r = document.querySelector('#e7 .sf-empty-state'); const c = r.querySelector('.sf-featured-icon'); return c.classList.contains('sf-featured-icon--warning') && c.textContent.trim() === 'cloud_off' && r.getAttribute('role') === 'status'; })()"
+        },
+        {
+          "script": "(window.dispatchEvent(new Event('online')), true)",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-empty-state-action",
+                "count": 1,
+                "detail": {
+                  "id": "retry",
+                  "auto": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "p9-processing-share",
+      "title": "processing with value: an sf-progress-ring of the circle's size step (3 at size 2) is the circle, its box the circle's, the percentage in it, a progressbar named «Готово» with the share; a new value moves the ring only",
+      "covers": "settings.value, accessibility (processing ring)",
+      "steps": [
+        {
+          "wait": 400,
+          "check": "(() => { const r = document.querySelector('#e8 .sf-empty-state'); const c = r.querySelector('.sf-featured-icon.sf-featured-icon--neutral.sf-featured-icon--soft.sf-empty-state-icon--ring'); const ring = c && c.querySelector('sf-progress-ring'); const box = ring && ring.querySelector('.sf-progress-ring'); const bar = box && box.querySelector('.sf-progress-ring-indicator'); if (!bar) return false; const a = c.getBoundingClientRect(); const b = box.getBoundingClientRect(); return r.getAttribute('role') === 'status' && !c.hasAttribute('aria-hidden') && ring.getAttribute('size') === '3' && !c.querySelector('sf-spinner') && Math.abs(a.width - b.width) < 0.5 && Math.abs(a.height - b.height) < 0.5 && bar.getAttribute('role') === 'progressbar' && bar.getAttribute('aria-label') === 'Готово' && bar.getAttribute('aria-valuenow') === '40' && box.querySelector('.sf-progress-ring-content').textContent.trim() === '40%'; })()"
+        },
+        {
+          "script": "(document.getElementById('e8').value = 72.4, true)",
+          "wait": 400,
+          "check": "document.querySelector('#e8 .sf-progress-ring-indicator').getAttribute('aria-valuenow') === '72' && document.querySelector('#e8 .sf-empty-state-title').textContent.trim() === 'Расшифровка готовится'"
+        },
+        {
+          "script": "(document.getElementById('e8').value = null, true)",
+          "wait": 400,
+          "check": "!!document.querySelector('#e8 sf-spinner') && !document.querySelector('#e8 sf-progress-ring')"
         }
       ]
     }

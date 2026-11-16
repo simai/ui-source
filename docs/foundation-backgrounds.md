@@ -18,7 +18,7 @@ on any place.
 | area | `--sf-surface-area` | neutral-98 | neutral-10 | `--sf-surface-1` |
 | card | `--sf-surface-card` | white | surface-2 | `--sf-elevation-1--surface` |
 | popup | `--sf-surface-popup` | white | surface-4 | `--sf-elevation-3--surface` |
-| nested popup | `--sf-surface-popup-nested` | white | surface-5 | `--sf-elevation-4--surface` |
+| nested popup | `--sf-surface-popup-nested` | white | surface-4 (C178) | `--sf-elevation-4--surface` |
 | inverse | `--sf-surface-inverse` | neutral-20 | neutral-90 | (unchanged) |
 
 Each place has its dim ink: `--sf-on-surface-card-variant`,
@@ -32,15 +32,78 @@ in. The `bg-surface-page/-area/-card/-popup/-popup-nested` utilities declare
 it and the place's dim ink; the cards and popups declare it themselves in a
 later stage.
 
-Translucent roles on a place: the fill `--sf-surface-container` (8/12/16 since
-C41), the state layers `--sf-surface-state-hover/-select/-active` (4/8/12), the
+Translucent roles on a place: the fill `--sf-surface-container` (12/16/20 since
+C113), the state layers `--sf-surface-state-hover/-select/-active` (4/8/12), the
 stronger fill `--sf-surface-container-strong` (24 since C41), the veil
 `--sf-surface-veil` (glass under a sticky header), disabled
-`--sf-surface-disabled` / `--sf-on-surface-disabled` / `--sf-outline-disabled`.
+`--sf-surface-disabled` (8 since C113) / `--sf-on-surface-disabled` /
+`--sf-outline-disabled`.
 Each colour has the same family: `--sf-<colour>-state-*`,
 `--sf-<colour>-container-strong`, `--sf-<colour>-outline`. Information has its
 state layers now (`--sf-info-state-*`, `--sf-info-container-strong`); it had
 none.
+
+### What changed with docs batch B (2026-11-15)
+
+The example contrast gate of the documentation (owner decision C192) and the
+contrast matrix (C178) found where a correct role and a correct place gave an
+unreadable pair. `tests/browser/contrast-markup-cases.mjs` holds each case;
+the matrix runs them over the built sheets in both themes.
+
+- **The on-colour a child names (FW-B-1).** A strong place's accent (C42 (4))
+  re-declares `--sf-on-primary` as the place's colour on its children, so a
+  filled button there is white with a label in the place's colour. A child
+  that names the role itself (`color-on-primary`, and its `hover:`, `focus:`,
+  `active:` forms) drew blue on blue on `bg-primary` (1:1, both themes) and
+  the plate's colour on every other strong place (1:1). On such a child the
+  role is the on-primary the place found, white in the light theme and tone
+  20 in the dark (6.43-6.49:1 light, 7.68-7.72:1 dark on the seven places),
+  so `bg-primary` with `color-on-primary` -- the role pair C192 teaches --
+  works as on one element.
+
+- **A theme class takes its ink (FW-B-2).** `.theme-light` and `.theme-dark`
+  re-declare the roles, but colour is inherited as a computed value, so text
+  inside a nested theme kept the outer theme's ink: light on a white card in
+  the dark theme (1.29:1), dark on a dark card in the light one (1.14:1). The
+  class writes its own `--sf-on-surface` as `color` (11.76 and 17.21:1). The
+  ground stays the author's: a section in the other theme lays its surface
+  (`bg-surface-page`, `bg-surface-card`); without one, its text is the other
+  theme's ink on this theme's ground.
+
+- **Inline code takes its place's ink (FW-B-5, C192 (2)).** The code tokens
+  (`--sf-code--color`, `--sf-code--background`) are declared on the root, so
+  a word of code on `bg-primary` kept the page's dark ink on a grey fill over
+  blue: 2.62-2.77:1 light and 1.27-1.29:1 dark on the seven strong places,
+  1.48 and 1:1 on the inverse. Every place re-declares them from its own
+  roles (`sf-place-code`): a strong place its ink on its ink at 12 (the fill
+  family's first step on a colour; 4.87-5.42:1 light, 6.22-6.38:1 dark), a
+  soft place its paired ink `on-<c>-container` on its own container
+  (12.30-13.03:1 light, 8.52-8.98:1 dark), the inverse the other theme's ink
+  and fill (7.37 and 11.80:1), an opaque place the theme's again (code in a
+  card on a colour is ordinary code). A site's `--sf-code-color` and
+  `--sf-code-background` still win.
+
+### What changed with C113 (2026-11-13)
+
+- **The neutral fill weighs as much as the coloured ones.** The study of tonal
+  buttons (`ui-control` research 2026-11-12-tonal-buttons, TB-1, TB-2) found
+  the neutral plate at 8 lighter than every coloured container at 12 in the
+  light theme (1.10:1 on the page against 1.16-1.19). Two plates weigh the
+  same when they differ from the place by the same lightness: grey 50 and
+  blue 50 are equally dark, so the neutral takes the fill family's first
+  steps, `--sf-surface-container` 12, hover 16, press 20, strong 24. In the
+  dark theme the neutral is laid with grey 90, which lightens far more per
+  percent than a 50 tone, so "+12 dark" is not applied to it: 12/16/20 there
+  too. Every reader moves with the role (badges, tags, tabs, segmented
+  controls, fields, menus, tonal buttons; about 60 sheets), and every place
+  that writes the roles out (cards, popups, windows, `bg-surface-*`, the
+  popover, glass at white 12/16/20). The press state (12) now equals the
+  plate; a state is drawn over a plate, not instead of it.
+- **The disabled plate is lighter than rest.** `--sf-surface-disabled` is the
+  state family's 8 (was 12, heavier than the resting plate at 8), on a strong
+  coloured place the place's ink at 8 and on glass white 8.
+- The fills stay translucent: on a coloured place a neutral plate takes that
+  place's hue.
 
 ### What changed with C41 and C42 (2026-11-10)
 
@@ -124,22 +187,60 @@ shows through it. On solid places nothing
 changes. Glass (`.sf-surface-media`) declares `var(--sf-black)`, the opaque
 base of its tone: the dot there is solid dark glass, not the photo.
 
+### What a component reads on a place: three hooks (2026-11-11)
+
+A component that keeps its own value on the page but must follow a place
+reads three hooks. The page declares none of them, so
+`var(--sf-place--<hook>, <the component's own value>)` is unchanged on the page.
+
+- `--sf-place--ink-variant` is the dim ink on a fill on this place. Every
+  place declares it: an opaque place (a card, a popup, `bg-surface-*`) as its
+  `--sf-on-surface-container-variant`, a strong place (`bg-<colour>`) as its
+  full ink `on-<colour>` (its dim ink 80 over a fill stays under 4.5:1), glass
+  as white at 80. The grey plate (`bg-surface-container`) declares it too.
+- `--sf-place--ink` is the ink that stands in for a hue: a strong place and
+  glass declare their full ink, so coloured text there is one colour; an
+  opaque place takes it back (initial).
+- `--sf-place--fill-surface` is what a block that would lay the container
+  fill lays instead: nothing (`transparent`) on the grey plate, which is the
+  fill already, and on a popup in the dark theme, a raised step on which a
+  fill took coloured text under 4.5:1. Every other place takes it back.
+
+The code highlight reads all three: its comment, punctuation and line numbers
+take `--sf-place--ink-variant`, its text and every hue `--sf-place--ink`, and
+the code surface `--sf-place--fill-surface`. On the page it is drawn as before.
+
 ### The fill of a row (2026-11-11)
 
 `--sf-surface-place-fill` is the translucent fill a row lays over its place.
 The core mix `sf-place-fill($fill)` declares it with `--sf-surface-underlay`
 on a selected, open, current or hovered row, `$fill` being the row's
-background in that rule. It is read only together with the underlay, so where
-the underlay is initial (a soft coloured place, glass, a place nested in the
-row) it does nothing and needs no taking back.
+background in that rule. Every place takes it back (initial): the page, every
+opaque place through the theme roles it re-declares, the soft and strong
+coloured places, glass and the popover (C43 later, 2026-11-12). So it is read
+on its own: on a row of any place, a soft one too, it is that row's fill, and a
+popup or a place opened from the row does not inherit it.
 
-- **The anchored badge's ring** lays the fill over the place colour, so on a
-  row the ring is the row's own colour, not a halo of the place around the
-  badge (C43 D3). Off a row it is the place colour, as before.
+- **The anchored badge's ring** lays the fill over the place colour, and both
+  over the nearest opaque place (`--sf-surface-place-ground`), so on a row the
+  ring is the row's own colour, not a halo of the place around the badge
+  (C43 D3). Off a row it is the place colour; on a soft place that is the soft
+  tone over its ground, the place's own look, and on glass the glass tone over
+  black, as under the avatar's status dot.
 - **Hovered and open rows** of the list, the dropdown, the context menu, the
   tree, the menu, the admin menu, sf-list and the choice card include the mix
   as their selected rows do (C43 D4): a tonal badge on them keeps its tone,
   where it took the hover's alpha under its own before.
+- **Panel rows, lookup options, contents entries** (2026-11-13). A context
+  menu's panel row under the pointer, checked, and checked under the pointer;
+  sf-input-lookup's option under the pointer and the chosen one; the compact
+  sf-contents list's entry under the pointer: each includes the mix with its
+  own fill, as the rows above do.
+- **Table rows.** The cells of a striped, a hovered and an active row
+  (`table-stripe`, `table-stripe-col`, `table-hover`, `table-active`) include
+  the mix with the cell's accent (2026-11-12): a tonal badge in such a cell
+  keeps its tone and an anchored badge rings with the cell. A cell at rest
+  declares nothing, so it is exactly as before.
 
 ### What changed with C43 (2026-11-10)
 
@@ -164,12 +265,41 @@ row) it does nothing and needs no taking back.
 - **Muted is disabled.** `--sf-on-surface-muted` is
   `var(--sf-on-surface-disabled)` and is deprecated
   (`token-c43-muted-is-disabled`, remove after 2027-01-01): it follows the
-  place it stands on. A disabled tree item and the offline dot of an avatar
-  read the disabled ink.
+  place it stands on. A disabled tree item reads the disabled ink; the
+  offline dot of an avatar read it too until 2026-11-11 and is now the dim
+  ink `--sf-on-surface-variant` (the disabled ink was under 3:1 for a status
+  mark).
 - **Boundary on the light grey steps.** On `bg-surface-2/3/4` the resting
   boundary `--sf-outline` is opaque neutral-50 in the light theme (3.94, 3.47
   and 3.03 : 1 against the block), so a checkbox, a switch or a field keeps
   3:1. The inside of a control stays the block's colour. Dark unchanged.
+- **Boundary on a container fill (contrast lows, 2026-11-11).**
+  `bg-surface-container` takes the same boundary on a neutral place: opaque
+  neutral-50 in the light theme (4.07 : 1 over the page, 3.61 over
+  surface-2, 3.20 over surface-3; was 2.90 to 2.44), the theme's in the dark.
+  On a coloured place it keeps the place's boundary (the place hands it down
+  as `--sf-place--container-outline`; an opaque place takes it back).
+- **The accent on bg-surface-4 (contrast lows).** On the children of
+  `bg-surface-4`, light theme, the accent moves one step along its own
+  ladder: rest reads `--sf-primary-hover`, hover `--sf-primary-active`, and
+  press one step beyond, tone 25 (theme: 35 / 30 / 25; press stays a step
+  beyond hover, as C16's states do), so a primary label or a text link holds
+  4.5 (5.26 : 1; 40 gave 4.39); a text link moves along the link's ladder the
+  same way (a visited link, 4.40, has no darker role and stays). Rest and
+  hover are read from the roles, so a project's brand stays.
+  The step stops at a place: a card, a popup, a popover's content, a soft
+  container or a `bg-<colour>` inside `bg-surface-4` takes back the accent
+  the step found (`--sf-place--found-*`), so the brand tone there is the
+  page's. A step inside a step moves the accent once. Dark unchanged.
+- **Hover and press in a container on a strong place (contrast lows).** In
+  the light theme a hovered or pressed control in `bg-surface-container` on
+  `bg-<colour>` keeps the theme's ink (4.01 / 3.74; the place's white gave
+  3.78 / 3.52); the dark half is the place's ink.
+- **Hovered and pressed ink on a strong place and glass (contrast lows).**
+  `bg-<colour>`, the alert bar's levels and `.sf-surface-media` declare
+  `--sf-on-surface-hover` and `--sf-on-surface-active` as their ink; every
+  opaque place takes the theme's back. A pressed outline or link button on a
+  danger bar read neutral 20 / 80 on red (2.80 light, 1.44 dark).
 
 ## Hue roles: a colour that is not a place
 
@@ -194,9 +324,9 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 | `color-hue` | `--sf-hue` | 40 | 80 |
 | `color-on-hue` | `--sf-on-hue` | white | 20 |
 | `color-on-hue-container` | `--sf-on-hue-container` | 10 | 90 |
-| `color-on-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
+| `color-on-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 70 |
 | `border-hue` | `--sf-hue-outline` | 50 | 60 |
-| `fill-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 60 |
+| `fill-hue-container-graphic` | `--sf-on-hue-container-graphic` | 50 | 70 |
 
 - The pairs are the status roles' pairs: `bg-hue` with `color-on-hue`,
   `bg-hue-container` with `color-on-hue-container`. `color-hue` is coloured
@@ -229,13 +359,29 @@ primary, secondary or tertiary. The hue role utilities (R087 item 1, option A,
 
 ## Glass over media
 
-`--sf-surface-media` is black at 48 (hover 64, pressed 80:
+`--sf-surface-media` is black at 64 (hover and pressed 80, C178:
 `--sf-surface-media-hover`, `--sf-surface-media-active`) under
 `--sf-on-surface-media` (white), the same in both themes because a picture
 does not change with the theme. The class `.sf-surface-media` paints the glass
 with a blur (`--sf-blur-large`) and re-declares the roles a control on it
-reads from white on the alpha scale: states 4/8/12, fill 8/12/16, line 24,
-boundary 64, dim ink 80. An icon keeps its three roles.
+reads from white on the alpha scale: states 4/8/12, fill 12/16/20 (C113),
+disabled plate 8, line 24, boundary 64, dim ink 80. An icon keeps its four roles (C107): the icon role
+`--sf-on-surface-icon` is the glass's ink there, because the alpha scale has no
+half step between white and white at 80.
+
+The accent on glass is the glass's own white ink (C70, owner 2026-11-11,
+`prototypes/glass-accent.html` variant B), as on a strong coloured place
+(C42.4). On the children of `.sf-surface-media`, `--sf-primary` is white
+(hover `--sf-neutral-95`, press `--sf-neutral-90`) and `--sf-on-primary` black,
+the glass's opaque base; the tonal accent is white 12 under white, its hover
+and press going down to 8 and 4 (as on a strong place in the light theme, D2b:
+more white under a darkening label lost it). The
+link (`--sf-link`, hover and press as the accent; visited white at 80) and the
+focus ring (`--sf-focus`, with `--sf-focus--color`, which resolves at the
+root) are white too: the theme's blue read 1.16-1.75 under
+a primary label on glass in the light theme. An opaque place on glass (a card,
+a popup, a popover's content) takes back the accent, the link and the ring the
+page had there.
 
 Coloured places (a header in the brand colour, a status banner) are held for
 the owner's answer: the proposal is that the `bg-<role>` and
@@ -249,8 +395,9 @@ layer adds white 4/12/16/20/64/80 (white had 8 and 24), black 48/64/80 and the
 missing information steps (info-50 at 4/8, info-90 at 4/8/12/24); the theme
 generator writes the information steps for any theme colour. Two rules hold in
 `tests/alpha-scale.contract.test.mjs`: an ink step (48 and above) is a fill
-only for glass and the scrim; and the neutral fill family is 8/12/16 with the
-strong step 24 (C41), above every state but the press.
+only for glass and the scrim; and the neutral fill family is 12/16/20 with the
+strong step 24 (C113; 8/12/16 under C41), the plate at the press state's step
+and above every other state.
 
 The generator (`src/core/js/theme-palette.js`) also gives the greys no more
 chroma than the colour they come from (`min(5, source chroma)`): a near-grey

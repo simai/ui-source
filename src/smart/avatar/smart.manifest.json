@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.3.2",
+  "version": "1.7.1",
   "title": "Avatar",
-  "summary": "Shows a person or organisation as a photo or initials, with an optional availability or verification mark. The default and label templates render a native button whose aria-label names its action; the card template is static and adds a title, description and meta line.",
+  "summary": "Shows a person or organisation as a photo or initials, with an optional presence point or verification mark. By default a picture (role img with the name); a link with href, a native button as a menu's trigger; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -25,7 +25,9 @@
   "composition": {
     "uses": [
       "component.avatars",
-      "component.badges"
+      "component.badges",
+      "component.tooltip",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -50,6 +52,7 @@
       "size": {
         "type": "string",
         "default": "1",
+        "description": "The avatar's size on the ladder: 1/4 and 1/3 for a mark beside small text, 1 the default, 2 and 3 for a profile. On a desktop 20 / 24 / 32 / 40 / 48 / 56 px for 1/4 to 3; in a compact region (data-sf-density=\"compact\") every step moves one down the avatar's ladder, 16 / 20 / 24 / 32 / 40 / 48; the phone ladder is 20 / 20 / 28 / 36 / 44 / 52. Initials are two letters from 1/3 up and one at 1/4 (owner decision C152 (3)).",
         "enum": [
           "1/4",
           "1/3",
@@ -73,31 +76,46 @@
       "shape": {
         "type": "string",
         "default": "circle",
+        "description": "circle (the default) for a person; square for an organisation, a project, a group or a channel, a bot or an app (owner decision C152 (4)). The square's corner grows with the step: 4 px at 1/4 and 1/3, 8 at 1/2 and 1, 12 at 2 and 3.",
         "enum": [
           "circle",
           "square"
         ]
       },
+      "href": {
+        "type": "string",
+        "default": "",
+        "description": "Makes the avatar a link to this address (a profile): one Tab stop, named by the person (owner decision C152 (1)). Without it the avatar is a picture -- role img with the name, no Tab stop, no hover ring -- unless it has an action of its own: the trigger of a menu or a popover (slot=\"trigger\", or aria-haspopup on the host) is a button."
+      },
       "image-url": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The picture's address. The initials of text (or of heading), else the placeholder glyph, stand under it: the photo fades in over them when it has come and is dropped when it fails (owner decision C152 (2)). Empty: the initials, else the glyph (icon, person by default)."
       },
       "image-alt": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The picture's alternative text, when the picture says something the visible name does not."
       },
       "no-wrap": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Keeps heading and description on one line each in the label and card templates, cut with an ellipsis when the place is narrower."
       },
       "text": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The initials drawn when there is no picture, and under a picture until it comes; empty takes them from heading (legal forms, titles and name particles skipped; an address gives the first letter before «@»). At size 1/4 one letter is drawn."
+      },
+      "icon": {
+        "type": "string",
+        "default": "",
+        "description": "The placeholder's glyph (a Material Symbols name) for a bot, a system or a service: shown when there is no picture and no text, in place of the initials of the name, which still names the avatar. Empty: the initials of the name, else person. Drawn on the neutral plate, as the person glyph is."
       },
       "hue": {
         "type": "string",
         "default": "",
-        "description": "The hue of the static palette the initials are drawn in (owner decision C17): the plate is the hue's container, the ink its on-container. Empty: the neutral look. auto: one of eight hues (pink, amber, lime, green, teal, sky, indigo, purple) picked from the name (heading, else aria-label, else text) by a fixed hash, the same in every browser and on a server; no name, the neutral look. Only initials take a hue: an image and the placeholder stay as they are. --sf-avatar-background-color and --sf-avatar-color still win.",
+        "description": "The hue of the static palette the initials are drawn in (owner decision C17): the plate is the hue's container, the ink its on-container. Empty: the neutral look. auto: one of eight hues (pink, amber, lime, green, teal, sky, indigo, purple) picked from the name (heading, else aria-label, else text) by a fixed hash, the same in every browser and on a server; no name, the neutral look. Only initials take a hue: an image and the placeholder stay as they are. The card template without a photo draws the initials on the hue too, auto when hue is empty (owner decision C124). --sf-avatar-background-color and --sf-avatar-color still win.",
         "enum": [
           "",
           "auto",
@@ -119,6 +137,11 @@
           "gray"
         ]
       },
+      "expressive": {
+        "type": "boolean",
+        "default": false,
+        "description": "The decorative level (owner decision C91, level 2): initials with a hue on an avatar of 64 px or more (C65: covers only on placeholders from 64) stand on a cover of that hue -- the plate stepping into a second container step towards the far corner -- under the same ink. The size ladder ends at size 3 (56 px), so its avatars stay flat; an avatar sized to 64 px or more takes the cover. A photo, the placeholder and the neutral look stay flat. Off by default; data-sf-style=\"expressive\" on the root or a container turns it on for every avatar under it, data-sf-style=\"strict\" turns it off again."
+      },
       "tone": {
         "type": "string",
         "default": "",
@@ -139,9 +162,11 @@
       "status": {
         "type": "string",
         "default": "none",
+        "description": "A mark at the corner: online is a point; away a hollow ring, drawn when the host asks for it; offline draws nothing (owner decision C152 (5): grey dots in a long list read as «something here»); company and verified their badges; none nothing. Online, away and offline join the accessible name in the page's language («в сети», «отошёл», «не в сети»).",
         "enum": [
           "none",
           "online",
+          "away",
           "offline",
           "company",
           "verified"
@@ -149,23 +174,28 @@
       },
       "heading": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The person's name: printed in the label and card templates, the source of the initials, and the avatar's accessible name when aria-label is not given."
       },
       "description": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The line under the name in the label and card templates: a role, a team."
       },
       "meta": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "A short fact in the card template, such as a city, with meta-icon before it."
       },
       "meta-icon": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The glyph before meta in the card template (a Material Symbols name)."
       },
       "card-variant": {
         "type": "string",
         "default": "square",
+        "description": "The card template's picture: square (the default) or portrait, a tall picture over the text.",
         "enum": [
           "square",
           "portrait"
@@ -173,7 +203,8 @@
       },
       "disabled": {
         "type": "boolean",
-        "default": false
+        "default": false,
+        "description": "Draws the avatar unavailable and, where it is a button, makes it inert."
       },
       "badge-count": {
         "type": "string",
@@ -199,7 +230,7 @@
       "aria-label": {
         "type": "string",
         "default": "",
-        "description": "Empty: the text of the page's language (\"Avatar\" in English)."
+        "description": "Empty: the heading, else the text, else the word of the page's language (\"Avatar\" in English)."
       },
       "title": {
         "type": "string",
@@ -244,7 +275,7 @@
     "network_policy": "deny"
   },
   "accessibility": {
-    "role": "button",
+    "role": "img",
     "accessible_name": "recommended",
     "keyboard": [
       "Tab"
@@ -311,7 +342,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "c56c875a5181010be49fed6edf346b3edf525482a125bd74b276f03fa93b22f1"
+        "sha256": "ac61b09fbfb1842a444065b495b8c2ec50b0b164835eb275e4dc3916e26c0d1f"
       }
     ],
     "generated_runtime": [

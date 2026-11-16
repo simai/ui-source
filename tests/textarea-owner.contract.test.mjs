@@ -13,7 +13,8 @@ test('Textarea presentation uses UI, hairline, motion and safe resize contracts'
   assert.match(css, /transition-property:\s*background-color, border-color, box-shadow, color/);
   assert.match(css, /transition-duration:\s*var\(--sf-duration-fast\)/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
-  assert.match(css, /\.sf-textarea:not\(\.sf-textarea--pointer-focus\):has\(/);
+  // C153 (4), R242: mouse and keys alike, a 2 px edge inside the field.
+  assert.match(css, /\.sf-textarea:has\(textarea:enabled:not\(:disabled\):not\(\.disabled\):focus\) textarea \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/);
   assert.doesNotMatch(css, /--sf-ui-radius-default/);
   assert.doesNotMatch(css, /(?:^|[\s:])1px(?:[\s;]|$)/m);
   const resizeUtility = await source('utility/resize/default/scss/_sf_css__resize.scss');
@@ -23,7 +24,7 @@ test('Textarea presentation uses UI, hairline, motion and safe resize contracts'
 
 test('Textarea constructor projects bounded native multiline metadata', async () => {
   const javascript = await source('component/textarea/js/_textarea.js');
-  assert.match(javascript, /fieldSize\(size, 'sf-textarea'\)/);
+  assert.match(javascript, /ladderSize\(size\)/);
   assert.match(javascript, /const TEXTAREA_VARIANTS = new Set\(\[/);
   assert.match(javascript, /textarea\.autocomplete = String\(autocomplete\)/);
   assert.match(javascript, /textarea\.inputMode = normalizeInputMode\(inputMode\)/);
@@ -51,8 +52,8 @@ test('Smart Textarea projects native metadata and closed visual axes', async () 
     assert.ok(declared.settings[name], name);
   }
   // Generated from the Loader relations (standard 1.4): the reset button's sheets too.
-  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.textarea']);
-  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
+  assert.deepEqual(manifest.composition.uses, ['component.icons', 'component.inputs', 'component.textarea', 'smart.help-mark']);
+  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'flush']);
   assert.deepEqual(manifest.inputs.properties.appearance.enum, ['bordered', 'filled', 'flush']);
   assert.deepEqual(manifest.inputs.properties.inputmode.enum, ['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);
@@ -110,7 +111,7 @@ test('Textarea flush surface draws no box and no focus of its own', async () => 
     assert.ok(css.includes(`.sf-textarea.sf-textarea--flush.sf-textarea--size-${size} textarea {\n  --sf-textarea-textarea--padding-top: var(--sf-ui-${size}--space-y-tightness-default);`), size);
   }
   assert.match(css, /\.sf-textarea\.sf-textarea--flush\.sf-textarea--auto-grow textarea\[rows\] \{\n  --sf-textarea--row-frame: calc\(var\(--sf-textarea-textarea--padding-top\) \+ var\(--sf-textarea-textarea--padding-bottom\)\);/);
-  assert.match(css, /\.sf-textarea\.sf-textarea--flush:not\(\.sf-textarea--pointer-focus\):has\(textarea:enabled:not\(:disabled\):not\(\.disabled\):focus-visible\) textarea \{\n  outline: none;/);
+  assert.match(css, /\.sf-textarea\.sf-textarea--flush:has\(textarea:enabled:not\(:disabled\):not\(\.disabled\):focus\) textarea \{\n  outline: none;/);
   // The text is on the ladder at every size: the shared font rules name flush too.
   for (const size of ['1', '2', '1\\/2']) assert.ok(css.includes(`.sf-textarea.sf-textarea--size-${size}.sf-textarea--flush textarea`), size);
   assert.match(docs, /## Flush/);

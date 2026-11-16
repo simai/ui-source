@@ -1,0 +1,185 @@
+{
+  "schema": "simai.framework.spacing-roles-review",
+  "schema_version": 1,
+  "recorded": "2026-11-14",
+  "why": "The horizontal distances in the component and Smart sources that scripts/lint-spacing-roles.mjs finds off the role table of the geometry standard (C105, C144; C178 every general rule checked in the pair build), on group build 4 (09cf1b0f). Each is a found defect with the component that owns it; a fixed one leaves this list (the lint reports a stale entry), a new one fails tests/spacing-roles.contract.test.mjs. Keys: file, role (table = any step of the role table; H2/H3/H6 = the role the rule names), property, step it resolves to, count. An entry marked optional is found only once a change it waits for lands (it is not stale before).",
+  "reviewed": [
+    {
+      "file": "src/component/avatars/scss/_css__avatar_label_group.scss",
+      "role": "H2",
+      "property": "--sf-avatar-label-group--gap",
+      "step": "--sf-space-1",
+      "count": 1,
+      "status": "defect",
+      "owner": "sf-avatar-label-group (component avatars)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "C105 H2: a picture before text in a row stands --sf-space-1/2 (12 · 8 · 8); this size steps the gap with the avatar size instead -- owner component decides whether the row follows H2 or the avatar ladder is a rule of its own"
+    },
+    {
+      "file": "src/component/avatars/scss/_css__avatar_label_group.scss",
+      "role": "H2",
+      "property": "--sf-avatar-label-group--gap",
+      "step": "--sf-space-1/3",
+      "count": 1,
+      "status": "defect",
+      "owner": "sf-avatar-label-group (component avatars)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "C105 H2: a picture before text in a row stands --sf-space-1/2 (12 · 8 · 8); this size steps the gap with the avatar size instead -- owner component decides whether the row follows H2 or the avatar ladder is a rule of its own"
+    },
+    {
+      "file": "src/component/avatars/scss/_css__avatar_label_group.scss",
+      "role": "H2",
+      "property": "--sf-avatar-label-group--gap",
+      "step": "--sf-space-1/4",
+      "count": 1,
+      "status": "defect",
+      "owner": "sf-avatar-label-group (component avatars)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "C105 H2: a picture before text in a row stands --sf-space-1/2 (12 · 8 · 8); this size steps the gap with the avatar size instead -- owner component decides whether the row follows H2 or the avatar ladder is a rule of its own"
+    },
+    {
+      "file": "src/component/context-menu/scss/_css__context_menu.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-d4",
+      "count": 1,
+      "status": "defect",
+      "owner": "context-menu (component)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 56 has no space step"
+    },
+    {
+      "file": "src/component/context-menu/scss/_css__context_menu.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-a4",
+      "count": 2,
+      "status": "defect",
+      "owner": "context-menu (component)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 4 is --sf-space-1/4 (H5 plates)"
+    },
+    {
+      "file": "src/component/inputs/scss/_css__inputs.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-b0",
+      "count": 1,
+      "status": "defect",
+      "owner": "inputs (component, field hint)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 10 has no space step (H2 12, H5 8)"
+    },
+    {
+      "file": "src/component/kbd/scss/_kbd.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-a2",
+      "count": 2,
+      "status": "defect",
+      "owner": "kbd (component)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
+    },
+    {
+      "file": "src/component/pagination/scss/_css__page_number.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-b0",
+      "count": 1,
+      "status": "defect",
+      "owner": "pagination (component)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 10 has no space step (H2 12, H5 8)"
+    },
+    {
+      "file": "src/component/pagination/scss/_css__pagination.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-b0",
+      "count": 1,
+      "status": "defect",
+      "owner": "pagination (component)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 10 has no space step (H2 12, H5 8)"
+    },
+    {
+      "file": "src/component/progress-ring/scss/_css__progress_ring.scss",
+      "role": "table",
+      "property": "--sf-progress-ring--gap",
+      "step": "--sf-a2",
+      "count": 1,
+      "status": "defect",
+      "owner": "progress-ring (component)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
+    },
+    {
+      "file": "src/component/progress-scale/scss/_css__progress_scale.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-a2",
+      "count": 1,
+      "status": "defect",
+      "owner": "progress-scale (component)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
+    },
+    {
+      "file": "src/smart/input-color/js/templates/default.css",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-a2",
+      "count": 1,
+      "status": "defect",
+      "owner": "sf-input-color (Smart)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
+    },
+    {
+      "file": "src/smart/pager/scss/_smart__pager.scss",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-a4",
+      "count": 2,
+      "status": "defect",
+      "owner": "sf-pager (Smart)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 4 is --sf-space-1/4 (H5 plates)"
+    },
+    {
+      "file": "src/smart/tag/js/templates/default.css",
+      "role": "table",
+      "property": "gap",
+      "step": "--sf-a1",
+      "count": 1,
+      "status": "defect",
+      "owner": "sf-tag (Smart)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 1 has no space step (H1 inside a tag is --sf-ui-S--text-space-x)"
+    },
+    {
+      "file": "src/smart/wizard/scss/_smart__wizard.scss",
+      "role": "table",
+      "property": "--sf-wizard--gap",
+      "step": "--sf-space-3",
+      "count": 1,
+      "optional": true,
+      "status": "defect",
+      "owner": "sf-wizard (Smart)",
+      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "reason": "24 is no step of the role table: C105 (corrected 2026-11-12) puts a surface's inset and the gap between groups at --sf-space-2 / --sf-space-1. The geometry standard's H6 row still named --sf-space-3 (the typo C105 corrected) until fix/role-tokens-c173 rewrites the row; from then this is found."
+    },
+    {
+      "file": "src/smart/form/scss/_smart__form.scss",
+      "role": "table",
+      "property": "--sf-form--group-gap",
+      "step": "--sf-space-3",
+      "count": 1,
+      "status": "defect",
+      "owner": "sf-form (fix/form-c182)",
+      "task": "group build 6: listed by the integrator; the sf-form owner moves to the role step or the owner keeps C52 at acceptance",
+      "reason": "24 is no step of the role table: C105 (corrected 2026-11-12) puts the gap between groups at --sf-space-2 / --sf-space-1 (--sf-gap--groups). fix/form-c182 took --sf-space-3 from C52 (a group over a line before the buttons), as sf-wizard did; the sf-form owner decides"
+    }
+  ]
+}

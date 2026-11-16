@@ -8,13 +8,18 @@
       var(--sf-outline-variant)
     );
     --sf-divider--thickness: var(--sf-px);
-    --sf-divider--gap: var(--sf-space-1);
+    // A caption on the line is small and muted (owner decision C188 (3)):
+    // the small text step (14/20 on a desktop, 12/16 on a phone and
+    // compact) in the explanation's ink, the lines one step away from it
+    // (12; 8 on a phone and compact), no frame. It was the body text in the
+    // heading's ink, 16 away, 40 high.
+    --sf-divider--gap: var(--sf-space-1\/2);
     --sf-divider--length: var(--sf-d0);
-    --sf-divider-content--padding: var(--sf-space-1\/3) 0;
+    --sf-divider-content--padding: var(--sf-0);
     --sf-divider-content--background-color: var(--sf-transparent);
-    --sf-divider-content--color: var(--sf-on-surface);
-    --sf-divider-content--font-size: var(--sf-text--size);
-    --sf-divider-content--line-height: var(--sf-text--height);
+    --sf-divider-content--color: var(--sf-on-surface-variant);
+    --sf-divider-content--font-size: var(--sf-text-size-1\/2);
+    --sf-divider-content--line-height: var(--sf-text-height-1\/2);
 
     box-sizing: border-box;
     border: 0;
@@ -91,13 +96,11 @@
     font-weight: var(--sf-font-weight-bold);
   }
 
+  /* The caption in a frame is an alias until 2027-01-01 (C188 (3)): it draws
+     the plain caption, no frame, and the component's script notes it once in
+     SF.deprecations (journal class-content-divider-c188-aliases). */
   .sf-divider-content-border {
-    --sf-divider-content--padding: var(--sf-space-1\/3) var(--sf-space-1);
-    --sf-divider-content--font-size: var(--sf-text-small--size);
-    --sf-divider-content--line-height: var(--sf-text-small--height);
-
-    border: var(--sf-divider--thickness) solid var(--sf-outline);
-    border-radius: var(--sf-radius--ui);
+    border: 0;
   }
 
   .sf-divider-content--small {
@@ -108,7 +111,7 @@
   }
 
   .sf-divider-buttons {
-    --sf-divider-buttons--gap: var(--sf-space-1\/2);
+    --sf-divider-buttons--gap: var(--sf-gap--actions);
 
     position: relative;
     z-index: 2;
@@ -118,17 +121,28 @@
     max-inline-size: 100%;
   }
 
-  /* Legacy action paint remains source-compatible. New markup composes the
-     regular Button or Icon Button component inside sf-divider-buttons. */
+  /* Buttons on the line (owner decision C188 (4)) are real sf-button size 1/2
+     outline in .sf-divider-buttons, one group 8 apart (4 compact):
+     <span class="sf-divider-buttons"><sf-button size="1/2" appearance="outline" text="Ещё 20"></sf-button>...</span>.
+     The divider's own button paint below is an alias until 2027-01-01,
+     drawn as before and noted once in SF.deprecations (journal
+     class-content-divider-c188-aliases).
+     The height is the button ladder's, the border drawn inside it (C01): 40
+     on a desktop, 36 on a phone, 32 compact (border-box, no block padding;
+     it was 42 / 38, the border added to the height). The fill is the place
+     the divider stands on, its cut-out colour (C16): a card's on a card, the
+     page's on the page (it was always the page's, a dark patch on a card in
+     the dark theme). */
   .sf-divider-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     min-block-size: var(--sf-ui-1--control-height);
-    padding: var(--sf-space-1\/3) var(--sf-space-1);
+    padding: var(--sf-0) var(--sf-space-1);
     border: var(--sf-divider--thickness) solid var(--sf-outline);
     border-inline-end-width: 0;
-    background-color: var(--sf-surface-page);
+    background-color: var(--sf-surface-place, var(--sf-surface-page));
     color: var(--sf-on-surface);
     font-family: inherit;
     font-size: var(--sf-text-size-1);

@@ -2,9 +2,12 @@
   "title": "Шаги",
   "runtime": {
     "aria-label": "Шаги",
-    "completed-label": "Завершено",
+    "completed-label": "Пройден",
+    "current-label": "Текущий",
+    "ahead-label": "Впереди",
     "error-label": "Ошибка",
     "skipped-label": "Пропущен",
-    "running-label": "Выполняется"
+    "running-label": "Выполняется",
+    "count-label": "Шаг {n} из {count}"
   }
 }

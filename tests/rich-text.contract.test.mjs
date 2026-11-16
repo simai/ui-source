@@ -177,24 +177,27 @@ test('nothing off the subset survives any vector', () => {
   }
 });
 
-test('the manifest: a form field of the field family, its settings, events and words', () => {
+test('the manifest: a form field of the input family, its settings, events and words', () => {
   const component = json('src/smart/input-rich/component.json');
   const manifest = json('src/smart/input-rich/smart.manifest.json');
   const en = json('src/smart/input-rich/lang/en.json');
   const ru = json('src/smart/input-rich/lang/ru.json');
   assert.equal(component.tag, 'sf-input-rich');
   assert.equal(component.id, 'smart.input-rich');
-  assert.equal(component.family, 'field');
+  assert.equal(component.family, 'input', 'the family is the first word of the tag (C174, NM-5)');
   assert.deepEqual(Object.keys(component.settings).sort(), [
-    'appearance', 'disabled', 'error-message', 'hint', 'invalid', 'label', 'max-rows', 'name', 'placeholder', 'readonly', 'required', 'rows', 'size',
+    'appearance', 'counter', 'disabled', 'error-message', 'help', 'hint', 'invalid', 'label', 'max-rows', 'maxlength', 'name', 'overflow', 'placeholder', 'readonly', 'required', 'rows', 'size',
   ]);
-  assert.deepEqual(component.settings.size.values, ['1/2', '1', '2']);
+  // C155: the toolbar keeps one row by default, what does not fit under ⋯ «Ещё».
+  assert.deepEqual(component.settings.overflow.values, ['more', 'wrap']);
+  assert.equal(component.settings.overflow.default, 'more');
+  assert.deepEqual(component.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(component.values.value, {...component.values.value, type: 'string', default: ''});
   assert.deepEqual(Object.keys(component.events).sort(), ['change', 'input']);
   for (const event of Object.values(component.events)) assert.equal(event.carries, 'native');
   assert.equal(component.form.value, 'value');
   assert.equal(component.form.reset, 'default');
-  assert.deepEqual(component.form.validity, ['value-missing', 'custom-error']);
+  assert.deepEqual(component.form.validity, ['value-missing', 'too-long', 'custom-error']);
   assert.equal(component.accessibility.role, 'textbox');
   for (const key of ['Mod+B', 'Mod+I', 'Mod+K', 'Mod+Z', 'Mod+Shift+Z', 'Mod+Y']) assert.ok(component.keyboard.host[key], key);
   // The generated registry entry says the same.
@@ -205,7 +208,7 @@ test('the manifest: a form field of the field family, its settings, events and w
   // The words: one key set in both languages, every toolbar word among them.
   assert.deepEqual(Object.keys(ru.runtime).sort(), Object.keys(en.runtime).sort());
   for (const key of ['toolbar', 'paragraph', 'heading-2', 'heading-3', 'heading-4', 'bold', 'italic', 'link', 'bulleted-list',
-    'numbered-list', 'quote', 'undo', 'redo', 'link-address', 'link-invalid', 'link-apply', 'link-remove', 'value-missing']) {
+    'numbered-list', 'quote', 'undo', 'redo', 'link-address', 'link-invalid', 'link-apply', 'link-remove', 'value-missing', 'text-level', 'more']) {
     assert.ok(en.runtime[key] && ru.runtime[key] && en.runtime[key] !== ru.runtime[key], key);
   }
   // The rule is registered and the bundle has its own sheet.
@@ -223,6 +226,7 @@ test('the element makes no server call and puts no string on the page uncleaned'
   // Every innerHTML written is the cleaner's output or a history entry of it.
   const writes = [...source.matchAll(/innerHTML = ([^;]+);/gu)].map((match) => match[1].trim());
   assert.deepEqual(writes, [
+    "sanitizeRichText(source, {mode: 'value'})",
     "sanitizeRichText(String(html ?? ''), {mode: 'editor'})",
     'clean',
     'clean',
@@ -258,13 +262,29 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   }
   assert.match(source, /--sf-breakpoint-md/u);
   assert.match(source, /SF\?\.Position\?\.liftToTopLayer\?\.\(surface\)/u);
-  // R121: the link form is one rung (field, its hint and the buttons) and one spacing step.
+  // R121, C141 (6): the link form is one rung (field, its hint and the buttons) and one spacing step,
+  // the dropping panel's.
   for (const part of ['sf-rich-text-link-input', 'sf-rich-text-link-apply', 'sf-rich-text-link-remove']) {
     assert.match(template, new RegExp(`class="${part}" size=\\$\\{linkSize\\}`, 'u'), part);
   }
   const panel = sheet.match(/\.sf-rich-text \.sf-rich-text-link-panel \{([^}]*)\}/u)[1];
-  assert.match(panel, /gap: var\(--sf-space-1\);/u);
-  assert.match(panel, /padding: var\(--sf-space-1\);/u);
+  assert.match(panel, /gap: var\(--sf-space-1\\\/2\);/u);
+  assert.match(panel, /padding: var\(--sf-space-1\\\/2\);/u);
+  const actions = sheet.match(/\.sf-rich-text \.sf-rich-text-link-actions \{([^}]*)\}/u)[1];
+  assert.match(actions, /flex-wrap: nowrap;/u);
+  assert.match(actions, /justify-content: flex-start;/u);
+  // C105 H5: the two buttons are one group, --sf-space-1/3 apart (C173: its role token).
+  assert.match(actions, /gap: var\(--sf-gap--actions\);/u);
+  // OV-11 (C144): toolbar icon buttons of one group stand --sf-space-1/4 apart, not edge to edge.
+  const group = sheet.match(/\.sf-rich-text \.sf-rich-text-group \{([^}]*)\}/u)[1];
+  assert.match(group, /gap: var\(--sf-space-1\\\/4\);/u);
+  // C141 (6) (owner 2026-11-14): the field and both buttons are size 1/2 at every field size,
+  // «Применить» first.
+  assert.match(template, /const linkSize = '1\/2';/u);
+  assert.ok(template.indexOf('sf-rich-text-link-apply') < template.indexOf('sf-rich-text-link-remove'));
+  // While the link editor is open only the link tool looks active: the others rest, glyph unfilled.
+  assert.match(sheet, /:has\(sf-popover\.sf-rich-text-link\[data-open='true'\]\) \.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-rich-text-tool:not\(\[data-sf-tool='link'\]\)[^{]*\{\s*--sf-icon-button--background-color: transparent;/u);
+  assert.match(sheet, /\[aria-pressed='true'\] \.sf-icon \{\s*--sf-icon--fill: 0;/u);
 });
 
 test('Bold and Italic say the marks only: a heading, bold by its type, is not a mark', () => {
@@ -280,4 +300,52 @@ test('Bold and Italic say the marks only: a heading, bold by its type, is not a 
   assert.equal(editor('<p><em>a<span style="font-style: normal">b</span></em></p>'), '<p><em>a</em>b</p>');
   // A caret's pending marks go to the typed text and are forgotten when the caret moves.
   assert.match(source, /case 'insertText':\n\s+if \(this\._pending && event\.data\) this\._typePending\(event\);/u);
+  // Composed text (an IME) takes the marks pending when the composition started.
+  assert.match(source, /on\('compositionstart', \(\) => this\._onCompositionStart\(\)\);/u);
+  assert.match(source, /_onCompositionStart\(\) \{\n\s+this\._composing = this\._pendingMarks\(\);\n\s+this\._inComposition = true;/u);
+  assert.match(source, /on\('compositionend', \(event\) => this\._onCompositionEnd\(event\)\);/u);
+  // M1, M2: a composition moves the caret, the pending marks stand until it ends (Bold stays pressed);
+  // a cancelled composition (no text, caret back) keeps them.
+  assert.match(source, /if \(this\._inComposition\) return this\._pending;/u);
+  assert.match(source, /if \(pending && !text && collapsed && end\.start === pending\.at\) this\._pending = pending;/u);
+  // M3: one input that is not composing after every composition that changed the text, unless the browser said it.
+  assert.equal((source.match(/this\._sayComposed\(before\);/gu) || []).length, 3);
+  assert.match(source, /if \(this\._composedSay\) this\._composedSay\.said = true;/u);
+  assert.doesNotMatch(source, /this\._say\('insertCompositionText'\);\n\s+\}\n\n\s+_onInput/u);
+  // M4: plain-text paste takes the pending marks, rich paste keeps its own.
+  assert.match(source, /const marks = data\?\.getData\?\.\('text\/html'\) \? null : this\._pendingMarks\(\);/u);
+  // E1: a caret on a mark's end edge reads (and types) in the mark.
+  assert.match(source, /if \(!this\._inComposition\) this\._caretIntoMark\(range\);/u);
+});
+
+// html@1 breaks and edges (2026-11-10 composition review, Q6; F1.4): every
+// row's value and editor output is pinned, and cleaning a value again never
+// changes it. Only the rows that carry value_before_2026_11_10 changed: a
+// white-space-only run beside an edge break hid the break from the first pass.
+test('the html@1 break corpus: pinned outputs, and value cleaning is idempotent', () => {
+  const corpus = json('tests/fixtures/html1-break-corpus.json');
+  assert.equal(corpus.rows.length, 19);
+  for (const row of corpus.rows) {
+    const value = sanitizeRichText(row.input, {mode: 'value', document: null});
+    assert.equal(value, row.value, `value: ${row.input}`);
+    assert.equal(sanitizeRichText(row.input, {mode: 'editor', document: null}), row.editor, `editor: ${row.input}`);
+    assert.equal(sanitizeRichText(value, {mode: 'value', document: null}), value, `idempotent: ${row.input}`);
+  }
+  assert.deepEqual(corpus.rows.filter((row) => 'value_before_2026_11_10' in row).map(({input}) => input), ['<p>&nbsp;<br>a</p>', '<p>a<br>&nbsp;</p>']);
+});
+
+test('value cleaning is idempotent for generated values with nbsp, spaces and breaks at block edges', () => {
+  let seed = 20261110;
+  const random = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+  const parts = ['&nbsp;', ' ', '  ', ' ', '<br>', 'a', 'b', '<strong>', '</strong>', '<em>', '</em>', '<a href="/x">', '</a>', '<p>', '</p>', '<ul><li>', '</li></ul>', '<h2>', '</h2>', '<blockquote>', '</blockquote>'];
+  let changed = 0;
+  for (let index = 0; index < 5000; index += 1) {
+    let input = '';
+    for (let count = 1 + Math.floor(random() * 8); count > 0; count -= 1) input += parts[Math.floor(random() * parts.length)];
+    if (random() < 0.5) input = `<p>${input}</p>`;
+    const value = sanitizeRichText(input, {mode: 'value', document: null});
+    assert.equal(sanitizeRichText(value, {mode: 'value', document: null}), value, input);
+    if (value !== input) changed += 1;
+  }
+  assert.ok(changed > 1000, 'the generator reaches values the cleaner changes');
 });

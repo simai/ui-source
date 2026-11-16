@@ -18,7 +18,7 @@
           "href": "#backups"
         },
         "acknowledge": {
-          "label": "Отметить, что видели"
+          "label": "Прочитано"
         }
       }
     ],

@@ -70,7 +70,7 @@ test('the page is never hidden: Core holds undefined elements, not the body', ()
   // SF_PRELOADED pages define their modules at once and are left as they were.
   assert.match(
     index,
-    /const holdUndefinedUntilDefined = \(\) => \{\s*if \(\s*window\.SF_PRELOADED &&\s*Object\.keys\(window\.SF_PRELOADED\.modules \|\| \{\}\)\.length\s*\) \{\s*return;\s*\}\s*installPendingTags\(window\);\s*holdUndefinedElements\(window\);\s*\};\s*holdUndefinedUntilDefined\(\);/u,
+    /const holdUndefinedUntilDefined = \(\) => \{\s*if \(pageHasPreloadedModules\(window\)\) \{\s*return;\s*\}\s*installPendingTags\(window\);\s*holdUndefinedElements\(window\);\s*\};\s*holdUndefinedUntilDefined\(\);/u,
   );
 });
 
@@ -399,16 +399,101 @@ test('the skeleton class fetches its sheet alone; the script comes with the API 
 });
 
 // ---------- the boot preloader (§5.4) ----------
-test('the boot preloader never covers a page with static markup or skeletons; a bare page keeps it', async () => {
-  const {pageHasFirstPaint, FIRST_PAINT_SELECTOR} = await import('../src/core/js/preloader.js');
+test('the boot preloader never covers a page with static markup, skeletons, preloaded modules or drawn Smart elements; a bare page keeps it', async () => {
+  const {pageHasFirstPaint, pageHasPreloadedModules, pageHasRenderedSmart, pageShowsContent, FIRST_PAINT_SELECTOR} = await import('../src/core/js/preloader.js');
   assert.equal(FIRST_PAINT_SELECTOR, '[data-sf-static], [data-sf-skeleton]');
   const doc = (found) => ({querySelector: (selector) => (selector === FIRST_PAINT_SELECTOR && found ? {} : null)});
   assert.equal(pageHasFirstPaint(doc(true)), true);
   assert.equal(pageHasFirstPaint(doc(false)), false);
   assert.equal(pageHasFirstPaint(null), false);
+  // Preloaded modules (SF_PRELOADED, Docara's example frames): input-choice audit 2026-11-11.
+  assert.equal(pageHasPreloadedModules({SF_PRELOADED: {modules: {'smart/input-choice': {}}}}), true);
+  assert.equal(pageHasPreloadedModules({SF_PRELOADED: {modules: {}}}), false);
+  assert.equal(pageHasPreloadedModules({}), false);
+  // A drawn Smart element: marked by the style gate, or isRendered without it.
+  const tree = (nodes, marked = false) => ({
+    body: {},
+    querySelector: (selector) => (selector === '[data-sf-style-ready]' && marked ? {} : null),
+    createTreeWalker: () => { let i = -1; return {nextNode: () => (++i < nodes.length), get currentNode() { return nodes[i]; }}; },
+  });
+  assert.equal(pageHasRenderedSmart(tree([], true)), true);
+  assert.equal(pageHasRenderedSmart(tree([{localName: 'div'}, {localName: 'sf-input-choice', isRendered: true}])), true);
+  assert.equal(pageHasRenderedSmart(tree([{localName: 'sf-input-choice', isRendered: false}, {localName: 'div', isRendered: true}])), false);
+  assert.equal(pageHasRenderedSmart(null), false);
+  assert.equal(pageShowsContent(tree([{localName: 'sf-button', isRendered: true}])), true);
+  assert.equal(pageShowsContent(tree([])), false);
   const index = read('src/core/js/index.js');
   const build = slice(index, 'const buildPreloader = () => {', 'wrap = document.createElement');
-  assert.match(build, /if \(pageHasFirstPaint\(document\)\) return;/, 'checked when the preloader would show');
+  assert.match(build, /if \(pageShowsContent\(document\) \|\| pageHasPreloadedModules\(window\)\) return;/, 'checked when the preloader would show');
+  assert.match(index, /if \(cfg\.enabled === false \|\| document\.querySelector\('\.sf-loader'\)\) return;\s*(?:\/\/[^\n]*\n\s*)*if \(pageHasPreloadedModules\(window\)\) return;/, 'a page with preloaded modules mounts none');
   assert.match(index, /if \(cfg\.enabled === false \|\| document\.querySelector\('\.sf-loader'\)\) return;/, 'SF_BOOT_CONFIG.preloader.enabled = false still turns it off');
-  assert.match(index, /'DOMContentLoaded',\s*\(\) => \{\s*if \(!pageHasFirstPaint\(document\)\) return;\s*cancelBuild\(\);/, 'an early preloader gives way to a parsed first paint');
+  assert.match(index, /'DOMContentLoaded',\s*\(\) => \{\s*if \(!pageShowsContent\(document\)\) return;\s*cancelBuild\(\);/, 'an early preloader gives way to a parsed first paint');
+});
+
+test('an up preloader leaves at once when a component draws under it (R216)', async () => {
+  const {watchForContent, DRAWN_CONTENT_SELECTOR} = await import('../src/core/js/preloader.js');
+  assert.equal(DRAWN_CONTENT_SELECTOR, '[data-sf-static], [data-sf-skeleton], [data-sf-style-ready]');
+  const fake = () => {
+    const listeners = new Map();
+    let observer = null;
+    const win = {
+      addEventListener: (type, fn, capture) => { assert.equal(capture, true, 'captured: the event need not bubble'); listeners.set(type, fn); },
+      removeEventListener: (type) => listeners.delete(type),
+      MutationObserver: class {
+        constructor(callback) { this.callback = callback; observer = this; }
+        observe(root, options) { this.root = root; this.options = options; }
+        disconnect() { this.disconnected = true; }
+      },
+    };
+    const doc = {documentElement: {}};
+    return {win, doc, listeners, get observer() { return observer; }};
+  };
+  const element = (name, {matches = false, inside = false, attrs = []} = {}) => ({
+    nodeType: 1, localName: name,
+    matches: () => matches, querySelector: () => (inside ? {} : null),
+    hasAttribute: (attr) => attrs.includes(attr),
+  });
+
+  // The style gate marks a host drawn.
+  let f = fake(); let calls = 0;
+  watchForContent(() => { calls += 1; }, f);
+  assert.deepEqual(f.observer.options.attributeFilter, ['data-sf-style-ready', 'data-sf-static', 'data-sf-skeleton']);
+  assert.equal(f.observer.options.subtree, true);
+  f.observer.callback([{type: 'attributes', attributeName: 'data-sf-style-ready', target: element('sf-input-choice', {attrs: []})}]);
+  assert.equal(calls, 0, 'a mark taken away is not a drawing');
+  f.observer.callback([{type: 'attributes', attributeName: 'data-sf-style-ready', target: element('sf-input-choice', {attrs: ['data-sf-style-ready']})}]);
+  f.observer.callback([{type: 'attributes', attributeName: 'data-sf-style-ready', target: element('sf-button', {attrs: ['data-sf-style-ready']})}]);
+  assert.equal(calls, 1, 'once');
+  assert.equal(f.observer.disconnected, true);
+  assert.equal(f.listeners.size, 0);
+
+  // A host drawn without the gate: sf-after-render from an sf- element.
+  f = fake(); calls = 0;
+  watchForContent(() => { calls += 1; }, f);
+  f.listeners.get('sf-after-render')({target: {localName: 'div'}});
+  assert.equal(calls, 0);
+  f.listeners.get('sf-after-render')({target: {localName: 'sf-popover'}});
+  assert.equal(calls, 1);
+
+  // A first paint added later, itself or inside an added node; plain nodes are not.
+  f = fake(); calls = 0;
+  watchForContent(() => { calls += 1; }, f);
+  f.observer.callback([{type: 'childList', addedNodes: [{nodeType: 3}, element('p')]}]);
+  assert.equal(calls, 0);
+  f.observer.callback([{type: 'childList', addedNodes: [element('section', {inside: true})]}]);
+  assert.equal(calls, 1);
+
+  // Stopped (sf-loader-ready came first): nothing more.
+  f = fake(); calls = 0;
+  const stop = watchForContent(() => { calls += 1; }, f);
+  stop();
+  f.observer.callback([{type: 'childList', addedNodes: [element('div', {matches: true})]}]);
+  assert.equal(calls, 0);
+
+  const index = read('src/core/js/index.js');
+  const build = slice(index, 'const buildPreloader = () => {', 'const cancelBuild = () => {');
+  assert.match(build, /stopWatch = watchForContent\(\(\) => \{\s*preloaderRun = false;\s*stopAnimation\(\);\s*hide\(\);/, 'the preloader, once up, watches and leaves');
+  const hide = slice(index, 'const hide = () => {', 'const stopAnimation = () => {');
+  assert.match(hide, /stopWatch\?\.\(\);/, 'hidden by the Loader: the watch stops');
+  assert.match(hide, /wrap\.style\.display = 'none';/, 'gone in the same frame, no transition, no sheet needed');
 });

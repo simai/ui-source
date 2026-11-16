@@ -1,16 +1,65 @@
 // Pure operations on the Composition inline content model used by
-// content.heading and content.paragraph: text runs with strong, em and code
-// marks, links whose children are text runs, and inline component atoms
+// content.heading and content.paragraph: text runs with strong, em, code and
+// strike marks, soft line breaks ({type: 'break', marks?}), links whose
+// children are text runs and breaks, and inline component atoms
 // ({type: 'component', name, props}). No DOM access here.
+//
+// Inline model 1.2.0 (2026-11-10): the break and the mark strike. A break is
+// one unit of offset, like a character: it takes marks and stands inside a
+// link, and no operation removes one except a deletion of its own range.
 //
 // Every other entry -- a node from a newer producer, or an atom this model
 // does not know -- is opaque: it holds one caret stop, takes no marks, and
 // comes back out of every operation exactly as it went in. toSegments used
 // to drop such entries, so an edit next to them lost them silently.
+//
+// Extension keys (2026-11-11, owner rule: no silent data loss): a key a
+// newer producer adds to a known entry -- a text run's `lang`, a link's
+// `title`, any other -- rides with that entry through every operation
+// (normalize, typing, marks, links, slice, split, join, copy). Runs merge
+// only when their extension keys are the same. Validation accepts a key as
+// extension data when its name matches INLINE_EXTENSION_KEY (lowercase,
+// not one of the model's own names, not on*, not a forbidden name such as
+// style or class); render never draws one.
 
-export const INLINE_MARKS = Object.freeze(['strong', 'em', 'code']);
+export const INLINE_MARKS = Object.freeze(['strong', 'em', 'code', 'strike']);
+export const INLINE_MODEL_VERSION = '1.2.0';
 const MARK_ORDER = new Map(INLINE_MARKS.map((mark, index) => [mark, index]));
 const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+
+// The keys each known entry defines; any other key is extension data.
+const OWN_KEYS = Object.freeze({ text: ['type', 'value', 'marks'], break: ['type', 'marks'], link: ['type', 'href', 'children'], component: ['type', 'name', 'props'] });
+// Names an extension key may not take: the model's own (on any entry), an
+// event handler (on*), and the Document's forbidden names (validation's
+// FORBIDDEN_KEYS: executable, styling or secret data, F1.6).
+export const INLINE_RESERVED_KEYS = Object.freeze(['type', 'value', 'marks', 'href', 'children', 'name', 'props']);
+export const INLINE_FORBIDDEN_KEYS = Object.freeze([
+  'html', 'innerhtml', 'script', 'javascript', 'php', 'eval', 'function',
+  'expression', 'query', 'sql', 'graphql', 'class', 'classname', 'rootclass',
+  'cssclass', 'style', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
+]);
+/** The name rule of an extension key, as a JSON Schema pattern (patternProperties). */
+export const INLINE_EXTENSION_KEY = `^(?!on)(?!(?:${[...INLINE_RESERVED_KEYS, ...INLINE_FORBIDDEN_KEYS].join('|')})$)[a-z][a-z0-9_.:]{0,63}$`;
+const EXTENSION_PATTERN = new RegExp(INLINE_EXTENSION_KEY, 'u');
+/** Whether a key is accepted as extension data on a known inline entry. */
+export const isInlineExtensionKey = (key) => EXTENSION_PATTERN.test(key);
+
+// The extension keys of an entry: every key its type does not define, as it came.
+function extensionsOf(entry, kind) {
+  const own = OWN_KEYS[kind];
+  const out = {};
+  for (const [key, value] of Object.entries(entry)) if (!own.includes(key)) out[key] = clone(value);
+  return Object.keys(out).length ? out : null;
+}
+/** The extension keys of a known entry (text, break, link, component), or null. */
+export function inlineExtensions(entry) {
+  return isPlainEntry(entry) && Object.hasOwn(OWN_KEYS, entry.type) ? extensionsOf(entry, entry.type) : null;
+}
+// Extension keys compare by value: key order does not count, at any depth
+// ({lang, title} and {title, lang} are the same keys, so their runs merge).
+const sortedKeys = (value) => (Array.isArray(value) ? value.map(sortedKeys)
+  : value !== null && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortedKeys(value[key])])) : value);
+const sameExtra = (left, right) => JSON.stringify(sortedKeys(left ?? null)) === JSON.stringify(sortedKeys(right ?? null));
 export const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLength: 2048, maxPropLength: 1000 });
 
 // The closed list of inline atoms. Each name draws one element; its props
@@ -35,6 +84,7 @@ export function inlineComponentSchemas() {
     type: 'object',
     required: ['type', 'name', ...(entry.required.length ? ['props'] : [])],
     additionalProperties: false,
+    patternProperties: { [INLINE_EXTENSION_KEY]: {} },
     properties: {
       type: { const: 'component' },
       name: { const: name },
@@ -52,7 +102,7 @@ export function inlineComponentSchemas() {
 export function isInlineComponent(node) {
   const entry = node?.type === 'component' && Object.hasOwn(INLINE_COMPONENTS, node.name) ? INLINE_COMPONENTS[node.name] : null;
   if (!entry) return false;
-  if (Object.keys(node).some((key) => !['type', 'name', 'props'].includes(key))) return false;
+  if (Object.keys(node).some((key) => !['type', 'name', 'props'].includes(key) && !isInlineExtensionKey(key))) return false;
   const props = node.props ?? {};
   if (!props || typeof props !== 'object' || Array.isArray(props)) return false;
   if (entry.required.some((key) => !(key in props))) return false;
@@ -76,7 +126,16 @@ export function inlineComponentView(node) {
 }
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
-const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link';
+const isAtom = (entry) => entry?.type === 'component';
+const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link' && !isBreak(entry);
+// A break as the model knows it: type break, marks (if any) a list; any
+// other key is its extension data.
+const isBreak = (entry) => entry?.type === 'break' && (entry.marks === undefined || Array.isArray(entry.marks));
+
+/** The segment of one soft line break: one unit, with the marks and link of its place. */
+export function breakSegment(marks = [], href = null, extra = null) {
+  return { text: INLINE_OBJECT, marks: [...marks], href, break: true, ...(extra ? { extra } : {}) };
+}
 
 /** Same link rule as Document validation: relative, fragment or http(s)/mailto/tel. */
 export function safeHref(value) {
@@ -90,69 +149,101 @@ export function safeHref(value) {
   }
 }
 
+// Known marks in their canonical order, then any mark this model does not
+// know (a newer producer's), in the order it came: an edit never drops a mark
+// it cannot draw. Validation still refuses an unknown mark; render draws none.
 function sortMarks(marks) {
-  return [...new Set(marks)].filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
+  const unique = [...new Set(marks)].filter((mark) => typeof mark === 'string' && mark);
+  const known = unique.filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
+  return [...known, ...unique.filter((mark) => !MARK_ORDER.has(mark))];
 }
 
 /**
  * Flat segments: {text, marks: string[], href: string|null}. An atom or an
  * opaque node is one segment {text: INLINE_OBJECT, marks: [], href, node}
- * that carries the entry unchanged; inside a link it keeps the link's href.
+ * that carries the entry unchanged. An atom ({type: 'component'}) never
+ * carries a link's href: a link holds no atom, so one that held an atom is
+ * split around it. An opaque node from a newer producer keeps its link.
  */
 export function toSegments(content) {
   const segments = [];
-  const push = (run, href) => {
+  const push = (run, href, linkExtra) => {
+    const link = href && linkExtra ? { linkExtra } : {};
+    if (isBreak(run)) {
+      segments.push({ ...breakSegment(sortMarks(run.marks || []), href, extensionsOf(run, 'break')), ...link });
+      return;
+    }
     if (isObjectEntry(run)) {
-      segments.push({ text: INLINE_OBJECT, marks: [], href, node: clone(run) });
+      segments.push({ text: INLINE_OBJECT, marks: [], href: isAtom(run) ? null : href, node: clone(run), ...(isAtom(run) ? {} : link) });
       return;
     }
     if (run?.type !== 'text' || typeof run.value !== 'string' || !run.value) return;
-    segments.push({ text: run.value, marks: sortMarks(Array.isArray(run.marks) ? run.marks : []), href });
+    const extra = extensionsOf(run, 'text');
+    segments.push({ text: run.value, marks: sortMarks(Array.isArray(run.marks) ? run.marks : []), href, ...(extra ? { extra } : {}), ...link });
   };
   for (const entry of Array.isArray(content) ? content : []) {
     if (entry?.type === 'link') {
+      // An unsafe link is dropped by design (its href and its extension keys); its text stays.
       const href = safeHref(entry.href) ? entry.href : null;
-      for (const child of Array.isArray(entry.children) ? entry.children : []) push(child, href);
-    } else push(entry, null);
+      const linkExtra = isPlainEntry(entry) ? extensionsOf(entry, 'link') : null;
+      for (const child of Array.isArray(entry.children) ? entry.children : []) push(child, href, linkExtra);
+    } else push(entry, null, null);
   }
   return segments;
 }
 
-const sameStyle = (left, right) => !left.node && !right.node && left.href === right.href && left.marks.join() === right.marks.join();
+const isPlainEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry);
+const sameStyle = (left, right) => !left.node && !right.node && !left.break && !right.break && left.href === right.href && left.marks.join() === right.marks.join()
+  && sameExtra(left.extra, right.extra) && sameExtra(left.linkExtra, right.linkExtra);
 
 /** Builds normalized content: merged runs, canonical marks, no empty parts. */
 export function fromSegments(segments) {
   const merged = [];
   for (const segment of segments) {
+    // A link's extension keys go only where the link goes.
+    const linked = (href) => (href && segment.linkExtra ? { linkExtra: segment.linkExtra } : {});
     if (segment.node) {
-      merged.push({ text: INLINE_OBJECT, marks: [], href: segment.href && safeHref(segment.href) ? segment.href : null, node: segment.node });
+      // An atom is never inside a link: the link stops before it and starts again after.
+      const href = !isAtom(segment.node) && segment.href && safeHref(segment.href) ? segment.href : null;
+      merged.push({ text: INLINE_OBJECT, marks: [], href, node: segment.node, ...linked(href) });
+      continue;
+    }
+    if (segment.break) {
+      const href = segment.href && safeHref(segment.href) ? segment.href : null;
+      merged.push({ ...breakSegment(sortMarks(segment.marks || []), href, segment.extra || null), ...linked(href) });
       continue;
     }
     if (!segment.text) continue;
-    const clean = { text: segment.text, marks: sortMarks(segment.marks || []), href: segment.href && safeHref(segment.href) ? segment.href : null };
+    const cleanHref = segment.href && safeHref(segment.href) ? segment.href : null;
+    const clean = { text: segment.text, marks: sortMarks(segment.marks || []), href: cleanHref, ...(segment.extra ? { extra: segment.extra } : {}), ...linked(cleanHref) };
     const previous = merged.at(-1);
     if (previous && sameStyle(previous, clean)) previous.text += clean.text;
     else merged.push(clean);
   }
   const content = [];
   for (const segment of merged) {
-    const run = segment.node ? clone(segment.node) : { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}) };
+    const extra = segment.extra ? clone(segment.extra) : {};
+    const run = segment.node ? clone(segment.node)
+      : segment.break ? { type: 'break', ...(segment.marks.length ? { marks: segment.marks } : {}), ...extra }
+        : { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}), ...extra };
     const previous = content.at(-1);
     if (segment.href) {
-      if (previous?.type === 'link' && previous.href === segment.href) previous.children.push(run);
-      else content.push({ type: 'link', href: segment.href, children: [run] });
+      if (previous?.type === 'link' && previous.href === segment.href && sameExtra(linkExtraOf(previous), segment.linkExtra)) previous.children.push(run);
+      else content.push({ type: 'link', href: segment.href, ...(segment.linkExtra ? clone(segment.linkExtra) : {}), children: [run] });
     } else content.push(run);
   }
   return content;
 }
 
+const linkExtraOf = (link) => extensionsOf(link, 'link');
+
 export function normalizeInline(content) {
   return fromSegments(toSegments(content));
 }
 
-/** The text of the text runs; atoms and opaque nodes add nothing. */
+/** The text of the text runs, a line feed for each break; atoms and opaque nodes add nothing. */
 export function inlineText(content) {
-  return toSegments(content).filter(({ node }) => !node).map(({ text }) => text).join('');
+  return toSegments(content).filter(({ node }) => !node).map((segment) => (segment.break ? '\n' : segment.text)).join('');
 }
 
 /** Length in segment offsets: characters, plus one for each atom or opaque node. */
@@ -244,4 +335,4 @@ export function replaceRange(content, start, end, inserted) {
   return fromSegments([...before, ...inserted, ...after]);
 }
 
-export default { INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineComponentSchemas, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark };
+export default { INLINE_EXTENSION_KEY, INLINE_FORBIDDEN_KEYS, INLINE_RESERVED_KEYS, inlineExtensions, isInlineExtensionKey, INLINE_COMPONENTS, INLINE_MARKS, INLINE_MODEL_VERSION, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentSchemas, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark };

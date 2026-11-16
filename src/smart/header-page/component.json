@@ -2,19 +2,19 @@
   "$comment": "The source of sf-header-page's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/page-header (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.header-page",
   "tag": "sf-header-page",
-  "version": "1.2.6",
+  "version": "1.8.1",
   "kind": "leaf",
   "family": "header",
   "settings": {
     "heading": {
       "type": "string",
       "default": "",
-      "summary": "The page heading, drawn as the fourth heading step"
+      "summary": "The page heading, drawn as the fourth heading step (20/24): a work page of an app titles itself there, an exception to C21's h1 at step 6 (owner decision C161 (2)); a page of a site keeps its own h1"
     },
     "count": {
       "type": "string",
       "default": "",
-      "summary": "How many records the page holds, as the host writes it (448, ~1 200); empty draws no count"
+      "summary": "How many records the page holds, as the host writes it (448, ~1 200), for a page without a table footer (a folder, a settings section); a list page shows no count here, its table footer gives the total (owner decision C161 (6)). Empty draws no count"
     },
     "level": {
       "type": "enum",
@@ -24,6 +24,25 @@
       ],
       "default": "site",
       "summary": "install marks a page shared by every site"
+    },
+    "expressive": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The decorative level (owner decision C91, level 2): a tinted head, primary tone 50 at 16 (dark 24) fading down to nothing, in a padded rounded field; a head narrower than 30rem (the g5 step) stays plain. Off by default; data-sf-style=\"expressive\" on the root or a container turns it on for every head under it, data-sf-style=\"strict\" turns it off again."
+    },
+    "overflow": {
+      "type": "enum",
+      "values": [
+        "more",
+        "wrap"
+      ],
+      "default": "more",
+      "summary": "What the actions do when they do not fit their line (owner decision C155 (7), C161 (4)): more (the default) keeps one row and puts what does not fit under ⋯ «Ещё» at its end -- from the end, by an action's priority attribute where the page gives one (1 the most important; pin never leaves), the main (filled) action and a pressed toggle never; wrap lets the row wrap onto further rows of its own (OV-2)."
+    },
+    "sticky": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The header stays at the top of the work area that scrolls it (the nearest box that scrolls, else the window), a half step of room above and below its line; flat while the area is at its top, it takes the raised place of C20 and folds the path away while content runs under it (host state data-scrolled). Off by default (owner decision C161 (7))"
     },
     "star": {
       "type": "boolean",
@@ -44,8 +63,21 @@
   "actions": {},
   "slots": {
     "path": {},
-    "start": {},
-    "actions": {}
+    "start": {
+      "$comment": [
+        "The start of the line, before the heading: «назад» (an sf-button-icon arrow_back, ghost on-surface) on the head of a page an app opens from a list -- a conversation, a letter, a record -- or a phone's menu button (owner decision C161 (1))."
+      ]
+    },
+    "actions": {
+      "$comment": [
+        "The page's actions. The header places the main one (a filled sf-button) last, at the end of the line, and the outlined and quiet ones before it in the page's order (owner decision C161 (3)); a window or a panel keeps its own order (C157 (3), C159 (4)). Each may carry priority=\"1\"... (a bigger number leaves for «Ещё» sooner; without one it leaves first, the last first) or priority=\"pin\" (never leaves) -- owner decision C155 (3), (8)."
+      ]
+    },
+    "tabs": {
+      "$comment": [
+        "The page's views (an sf-tabs, type underline) ending the header (owner decision C161 (5)): the header's gap below the line, and the tabs' own line is the header's lower edge."
+      ]
+    }
   },
   "keyboard": {
     "host": {
@@ -63,6 +95,13 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true,
+      "$comment": [
+        "⋯ «Ещё» opens the standard menu with the actions that left the row (core/js/overflow-row.js, owner decision C155)."
+      ]
     }
   ],
   "templates": {
@@ -87,6 +126,9 @@
       "Enter": "toggle:star",
       "Space": "toggle:star"
     }
+  },
+  "host-states": {
+    "data-scrolled": "boolean"
   },
   "css-variables": {
     "--sf-page-header-gap": {
@@ -147,7 +189,7 @@
       }
     ]
   },
-  "x-summary": "The head of an admin page: path, heading, count, favourite star, install mark and main action. Replaces the admin top bar together with sf-admin-menu.",
+  "x-summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
   "x-source": {
     "package": "framework",
     "folder": "page-header",
@@ -184,7 +226,20 @@
     "version 1.2.3 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint sheet list names the kbd sheet (component.kbd 1.1.0, docs review R030): sf-button 1.8.0 draws a shortcut's keys with it, and every component that draws an sf-button asks for it before the first paint. Settings, values, events and keys unchanged.",
     "version 1.2.4 (2026-11-08): a patch, nothing drawn differently by this element. Its first-paint snapshots follow the actions block (docs review R031, R032; decisions C13-C15): the sf-button and sf-button-icon it draws ask for the screen-reader-only utility sheet (sf-button 1.9.0, sf-button-icon 1.7.0), an sf-button-close it draws asks for its own sheet (C14), and sf-input's classes follow its outer sizes (sf-input 1.6.0). Settings, values, events and keys unchanged.",
     "version 1.2.5: the first-paint snapshot is retaken: a nested sized component now carries data-sf-size-relative at first paint (density C22, core.runtime 1.45.0); nothing it draws changes.",
-    "version 1.2.6 (2026-11-10): a patch. A child naming a slot (path, start, actions) that the page adds after the header has connected joins that slot, after what the slot holds, and the header draws again: the base takes the slot children once, at connect, so an action added later (a «Создать» the person's rights allow, once the list has loaded) stood after the drawn header, outside it (ui-doc «Рецепты», 2026-11-10). One MutationObserver on the host's own children, ended when it is removed. Settings, values, events, keys and the drawing unchanged; tests/browser/header-page-late-slot.browser.mjs."
+    "version 1.2.6 (2026-11-10): a patch. A child naming a slot (path, start, actions) that the page adds after the header has connected joins that slot, after what the slot holds, and the header draws again: the base takes the slot children once, at connect, so an action added later (a «Создать» the person's rights allow, once the list has loaded) stood after the drawn header, outside it (ui-doc «Рецепты», 2026-11-10). One MutationObserver on the host's own children, ended when it is removed. Settings, values, events, keys and the drawing unchanged; tests/browser/header-page-late-slot.browser.mjs.",
+    "version 1.2.7 (2026-11-12, owner decision C79, changing C22; change journal behaviour-explicit-size-follows-density): a patch, nothing drawn or done differently by this element. The comment on the page's slot content now says that a size the page gives follows the region like any size (C79); the density itself is core's. Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-12, owner decisions C91 level 2 and C65 round 2, R164 variant C): the expressive setting draws sf-page-header--expressive, a tinted head -- primary tone 50 at 16 (dark 24) fading to nothing by the head's foot and never past six space-4, padding space-1 / space-1 / space-2, the surface radius -- and none on a head narrower than the g6 step (32rem; R164 said 30rem, which is not a step of the size scale). Off by default; the theme's data-sf-style=\"expressive\" turns it on without the setting; off is the former head to the pixel. Nothing else changes.",
+    "version 1.3.1 (2026-11-13, C91/C65 acceptance; one number above the unreleased 1.3.0 it joins): a patch. The tint's narrow threshold is the decided 30rem of R164 variant C, the g5 step of the size scale (1.3.0 had taken the g6 step, 32rem, on the belief that 30rem was not a step). A head between 30rem and 32rem wide now takes the tint under the expressive setting; nothing else changes.",
+    "version 1.3.2 (2026-11-14, toolbar overflow study OV-2 and OV-11, owner decision C105 H5): a patch. The actions stand --sf-space-1/3 apart (8; compact 4), buttons of one group, instead of --sf-space-1/2 (12); the line keeps --sf-space-1 (16) between the heading and the actions (H6). The actions row wraps and may be narrower than its content: a row wider than the line moves to a line of its own and wraps there, so four actions at 390 no longer push the page 133 px sideways. The shared «Ещё» for action rows waits for the owner (q-actions); settings, events, keys and markup unchanged.",
+    "version 1.5.1 (2026-11-14, owner decision C173; numbered above 1.5.0 on an open branch): a patch; nothing this element draws or reads changed. Its actions read --sf-page-header-actions-gap, defaulting to the role token --sf-gap--actions (C173) instead of the step --sf-space-1/3 it names (8; 4 compact). Settings, values, events and keys unchanged.",
+    "version 1.5.2 (2026-11-14, headers study HD-11, HD-12; research ui-control control/research/2026-11-14-headers.md; written on the branch as 1.3.3): a patch. (1) HD-12: a long heading ends in its ellipsis on one line as the docs say, instead of taking the line and pushing the count and the actions under it (1440: 750 px heading, header 124 -> 80). The heading, the count, the install mark and the star are one title group (.sf-page-header-title): for the line's wrapping it counts as no wider than the g0 step (20rem) or its words when shorter (flex 1 1 var(--sf-g0), max-inline-size max-content), so the actions keep the line while the title has that room; the marks keep their size and stay right after the words. (2) HD-11: the actions stand at the end of the line also when they move to a line of their own or wrap there (margin-inline-start auto, justify-content flex-end); OV-2's wrapped rows jumped to the line's start. Four actions at 390: no sideways scroll, every row ends at the line's end. The grow spacer is gone (the actions' auto margin does its work). Settings, values, slots, events and keys unchanged.",
+    "version 1.6.0 (2026-11-14, owner decision C155 (7), (8) with C161 (4); study ui-control control/research/2026-11-14-toolbar-overflow.md, R233; written on the branch as 1.4.0): a minor. New setting overflow, more by default: the actions stay on one row and what does not fit leaves for ⋯ at its end, an sf-button-icon more_horiz on the actions' rung (the first action's size), ghost on-surface, named and titled «Ещё» / «More» (lang more), aria-haspopup menu. The actions leave from the end; an action's priority attribute orders them (1 the most important, a bigger number leaves sooner, none leaves first) and priority=\"pin\" keeps one; the main action (a filled sf-button) and a pressed toggle never leave. The row keeps the line beside the title while the title has its room (its words, at most the g0 step, HD-12) and takes a line of its own only when the actions that must stay do not fit there. ⋯ opens the standard sf-menu-context (lazy) listing the actions that left with their icons and words, a pressed toggle checked; a row presses the action's own button or link. The arithmetic is the shared row engine (core/js/overflow-row.js fitByPriority, layoutActionRow), the one sf-tabs, sf-contents, sf-menu, sf-input-rich and .sf-button-group use. Until the row is laid out it does not wrap and clips at the line's edge; the layout runs in a resize observer before paint, so no frame draws every action. overflow=\"wrap\" keeps 1.3.3's wrapping row. At 390 four actions (Импорт, Экспорт, Настроить, Создать) stand as Создать and ⋯ beside the heading where they wrapped onto two rows. Values, slots, events and keys unchanged.",
+    "version 1.6.1 (2026-11-14, owner decision C161, all eight points by recommendation; research ui-control control/research/2026-11-14-headers.md, prototype prototypes/headers-study.html; written on the branch as 1.5.0): a minor, additions. (1) Boundary: a site shows sf-header-site; an app with a side menu has no top bar, and each page's head is this header in the work area (the main region of .sf-workspace), slot start holding «назад» -- SIMAI Pro's conversation head and ui-mail's column heads included; the docs say so. (2) The heading stays the fourth heading step (20/24, phone 16/18) as an exception to C21 for work pages; a site page keeps its h1 at step 6. (3) The header places the actions with the main one -- the filled sf-button -- last, at the end of the line, and the outlined and quiet ones before it in the page's order: authored main-first, the row read Создать, Импорт, Экспорт and now reads Импорт, Экспорт, Создать; the nodes are placed, never copied, so the reading and Tab order follow what is seen. Windows and panels keep main-first (C157 (3), C159 (4)); C39 stays for confirm windows. (4) A phone keeps the main action and puts the rest under «Ещё»: overflow more, the default since 1.4.0 (C155), unchanged. (5) New slot tabs: the page's views end the header the header's gap (--sf-space-1/2, 12; compact 8) below the line and the tabs' own line is the header's lower edge (no foot padding under it, the decorative level's included); HD-14, where every page put its own 0 or gap-2. (6) The count stays for a page without a table footer; a list page shows none, its footer gives the total (ui-admin 2026-10-12): the summary, the docs and the examples say so, the catalogue examples drop it. (7) New setting sticky, off by default: the drawn header is position sticky at the top of the nearest box that scrolls it (else the window), z-index --sf-z-index-1, --sf-space-1/2 above and below its line on the page's surface; while content runs under it the host says data-scrolled (a passive scroll listener on that box while sticky is on) and the header takes --sf-surface-raised and --sf-shadow-raised (C20, as sf-header-site) and folds its path away. (8) is sf-header-site's. Values, events and keys unchanged; tags not renamed (the naming study decides).",
+    "version 1.6.2 (2026-11-15, register smart-2 RG-S2-5; above 1.5.1 of fix/role-layers-c173 and fix/role-tokens-c173; written on the branch as 1.5.2): a patch, the first paint without printed markup. The head holds its final height from the first frame: core.css (placeholder, sf.base) gives the undefined host, and then the drawn but unstyled head, the height its attributes and slots tell -- the path row (the trail's 1/3 control height and the path gap), the line (the fourth heading's line, never under the star's 1/2 control) or the actions' control height (size 1 unless every action says 1/2, 2 when one does), the expressive padding; below the sm step the actions on a line of their own under the heading -- clipped, its rows out of view, until this sheet arrives and lets both go. While an action has no code yet the line holds the actions' control height (on a phone their own line under the heading). sf-breadcrumbs holds its one row before its code and its sheet (core.css, component.breadcrumbs 1.1.7). 1440: 80 throughout (was 0 -> 44 -> 52 -> 80 with the trail's code late); 390: 108 (was 0 -> 36 -> 84 -> 108). Printed markup (data-sf-static) is untouched. The look, settings, slots and events are unchanged. A phone head whose heading and actions fit on one line (a short heading, one small action) is drawn a line taller until the actions have drawn: the attributes cannot tell their width.",
+    "version 1.7.0 (2026-11-15, rule C103 one row, one rung; the row-rung gate of group build 7; one minor above the 1.6.2 of integration/pair-next-9): the favourite star stands on its row's rung. While the actions keep the line beside the title it takes their size, the size the page gave its first action (1 when it gave none), as the ⋯ «Ещё» does; else the size of the start slot's control («назад», a phone's menu button) beside it; alone with the heading -- no actions, or a phone's actions on a line of their own under the heading -- the half step it has always had (32). Whether the actions keep the line is the line's arithmetic (the room beside the title, the star counted at the actions' rung, against the row's width), not where they stand at the moment, so the star's size never moves the row and never swings; the room for placing the actions counts the star the same way. The size is set once the line has its sheet and the actions have drawn (syncStarRung, after the actions are placed). The row's resize observer now also watches the title, and overflow=\"wrap\" keeps it on the line and the title: a heading that took its face after the first layout left a phone's row laid for the wider fallback, on a line of its own under the heading (path-and-action at 390: 108 high with Экспорт and Создать under the heading; now Создать and ⋯ beside it, 68, as C161 (4) and 1.4.0 say). path-and-action: the star was 32 beside two size 1 buttons (40) at 1440 and 28 beside 32 at 1440 compact; it is now 40 and 32. Settings, values, events, keys and words unchanged.",
+    "version 1.7.1 (2026-11-15, the first frame of group build 7 at 390; a patch, nothing drawn differently once the head is laid): a line whose actions are printed (their markup inside them, data-sf-static) is no longer held for actions whose code has not come: the printed buttons are their own boxes and stand where the line's wrap puts them, beside the heading when they fit, as the code lays them. The hold of register smart-2 (RG-S2-5: the line kept the actions' control height, on a phone below the sm step a line of their own under the heading, as core's placeholder box does) read every undefined action, printed or not, so the back and tabs examples were drawn 76 and 120 high at 390 until their buttons' code came, then 36 and 80. The hold stays for an action without printed markup, which has no box until its code comes. Settings, values, events, keys and words unchanged.",
+    "version 1.8.0 (2026-11-15, the phone relayout of group build 7; owner decisions C155 (7), C161 (4) and C181 (2); a minor): the head is laid again when an action draws, and folds on a narrow line in print as the code does. (1) An action is watched by the box it draws, and sf-button draws a new <button> in place of its printed one when its code comes; the row's resize observer still watched the old one, so a printed head adopted by the code was laid once, while its buttons were pictures held out of view (every width 0, everything fits), and never again: at 390 path-and-action stood 116 high with Экспорт and Создать under the heading, at 320 back stood 84 with Участники under it. The row's children and their markup are now watched too: the new box is observed and the row laid again at once (a toggle pressed or a look changed also moves an action in or out of what must stay), and a row laid before the header's own sheet applied is laid again once it has. (2) Below the g6 step of the line's own width (32rem, C181 (2): the line is a container, sf-page-header-line) the head folds as C155 (7) and C161 (4) say for a phone: the main action, a pressed toggle and priority=\"pin\" stay and every other action is in ⋯, whatever room is left; the row then stands beside the heading or on a line of its own as the line's wrap puts it. The sheet says so to the code (--sf-page-header--fold: 1 on the row), so the two cannot disagree. (3) The actions that must stay carry sf-page-header-pin, so a printed head (data-sf-static, a snapshot laid wide) folds the same way by the same marks before its code comes: the first frame is the head the code lays. Settings, values, events, keys and words unchanged.",
+    "version 1.8.1 (2026-11-15, the bare tag's first frame; dispatcher decision; a patch): the line of actions whose code has not come and that have no printed markup is held at the one-line head at every width, as core's placeholder box now holds the bare tag. Below the sm step the hold of register smart-2 put those actions on a line of their own under the heading (the heading's line, the line gap, the actions' control height), a screen query mirroring core's guess for a phone; since C161 (4), C103 and the narrow fold of 1.8.0 a phone keeps its actions beside the heading, so the guess was wrong for every head with actions at 390 and 320, and the head shrank by a line when its buttons drew. With it the header has no screen query left (C181 (2)). Where the heading's words and the kept actions do not fit one line, the head is a line taller once it draws: the words' widths are not in the attributes. The tabs slot is counted too: core's box gives a head with tabs the header's gap and the strip of the tabs' size (the expressive level its top padding only, the strip being the lower edge), and the tabs row holds that strip while tabs without printed markup have no code; before, the bare tabs head grew 40 -> 52 -> 92 at 1440. Settings, values, events, keys and words unchanged."
   ],
   "x-rule": {
     "$comment": [
@@ -254,18 +309,19 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-header-page at the top of every admin page: it is the only place a page states its path, heading, count, favourite and main action once the admin top bar is gone.",
+      "use_when": "Use sf-header-page at the top of every work page of an app (admin, SIMAI Pro, mail): an app with a side menu has no top bar, so this header states the page's path, heading, favourite, actions and views; a site uses sf-header-site instead.",
       "do_not": [
-        "Do not keep favourites in the component; answer sf-page-header-star from the host",
-        "Do not put totals in the menu; they belong here",
-        "Do not style the heading yourself; it is the fourth heading step"
+        "Do not keep favourites in the component; answer sf-header-page-toggle from the host",
+        "Do not put a list's total in the header; the table footer gives it (C161 (6))",
+        "Do not style the heading yourself; it is the fourth heading step",
+        "Do not draw a head of your own above a work page or place tabs under the header yourself; use the start and tabs slots"
       ],
       "required_reads": [
         "inputs",
         "events",
         "ownership"
       ],
-      "minimal_example": "<sf-header-page heading=\"Каталог решений\" count=\"448\" star=\"off\"><sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\">Создать</sf-button></sf-header-page>",
+      "minimal_example": "<sf-header-page heading=\"Каталог решений\" star=\"off\"><sf-breadcrumbs slot=\"path\" items='[{\"label\":\"Администрирование\",\"href\":\"/admin/\"},{\"label\":\"Данные\",\"href\":\"/admin/data/\"}]'></sf-breadcrumbs><sf-button slot=\"actions\" appearance=\"outline\" icon-start=\"download\" text=\"Экспорт\"></sf-button><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button></sf-header-page>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"

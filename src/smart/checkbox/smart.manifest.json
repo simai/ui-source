@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.checkbox",
-  "version": "1.1.7",
+  "version": "1.5.0",
   "title": "Checkbox",
   "summary": "A native checkbox with a label, Framework presentation and checked, indeterminate and disabled states kept in step between the host attributes and the inner input.",
   "kind": "smart",
@@ -23,6 +23,7 @@
   "composition": {
     "uses": [
       "component.checkbox",
+      "smart.help-mark",
       "smart.icon"
     ],
     "public_parts": []
@@ -65,7 +66,8 @@
       },
       "help": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The explanation behind a «?» button (sf-help-mark) after the label text: --sf-space-1/4 after the label's last word, on its last line when the label wraps (position end too); a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
       },
       "position": {
         "type": "string",
@@ -75,6 +77,11 @@
           "start",
           "end"
         ]
+      },
+      "controls": {
+        "type": "string",
+        "default": "",
+        "description": "A parent checkbox (owner decision C165 (2)): the ids of the checkboxes it stands for, space-separated (as aria-controls). It computes its own state from them -- checked when all are, indeterminate when some are, unchecked when none are -- and follows them as they change; a press on it checks them all, or unchecks them all when all were checked, and each changed one sends its change as a press would. A disabled one is counted in the state and left as it is: a press checks the ones that can change, or unchecks them when all of those were checked. The inner input says aria-controls. Empty: an ordinary checkbox."
       },
       "disabled": {
         "type": "boolean",
@@ -413,7 +420,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/checkbox/index.js",
-        "sha256": "2c7124755a19544c131fdfec31eddc173317706888f782e9322f5941d00f68f9"
+        "sha256": "13fb4f3dac2a23434cf7b448f4b190b6f6ca9da45506b5ad87d7952539b873f4"
       }
     ],
     "generated_runtime": [

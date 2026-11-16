@@ -3,10 +3,12 @@
 // Build output root is required: the directory holding core/, smart/, component/, utility/.
 //
 // sf-settings on the built bytes with the real Loader, at 1440 and 390 px,
-// light and dark: the three looks inline (drill, rows, tiles), a popup opened
-// from its trigger and the drill look at size 1. Measured: the panel is
-// 288 px in every look (the menu ceiling, C32 addendum); the rows are the menu's rung (32 px at 1/2, 40 px at
-// 1, less on a phone where the ladder is tighter); a long name wraps and a
+// light and dark: the looks inline (drill, rows, the former tiles name that
+// draws drill since C176), a popup opened from its trigger and the rows look
+// at size 1/2. Measured: the panel is 288 px inline (the menu ceiling, C32
+// addendum) and a popup on a phone is a bottom sheet of the window width
+// (C176, C157); the one-line rows are the menu's rung (40 px at the default
+// size 1, 32 px at 1/2, less on a phone where the ladder is tighter); a long name wraps and a
 // long value ends in an ellipsis with the whole of it in title; the row
 // glyphs are the on-surface or on-surface-variant role; the panel stays in
 // the window. The keyboard: a popup opens on Enter with the focus on its
@@ -70,20 +72,20 @@ const island = (items) => `<script type="application/json" data-sf-settings>${JS
 const CASES = {
   drill: {look: 'drill', items: READER},
   rows: {look: 'rows', items: TABLE},
-  tiles: {look: 'tiles', items: QUICK},
+  tiles: {look: 'drill', items: QUICK, former: 'tiles'},
   popup: {look: 'drill', items: READER, popup: true},
-  large: {look: 'rows', items: TABLE, size: '1'},
+  small: {look: 'rows', items: TABLE, size: '1/2'},
 };
 
 const shell = (name, theme) => {
-  const {look, items, popup, size} = CASES[name];
-  const trigger = popup ? '<sf-button-icon id="trigger" icon="tune" appearance="link" scheme="on-surface" size="1/2" aria-label="Настройки"></sf-button-icon>' : '';
+  const {look, items, popup, size, former} = CASES[name];
+  const trigger = popup ? '<sf-button-icon id="trigger" icon="tune" appearance="ghost" scheme="on-surface" aria-label="Настройки"></sf-button-icon>' : '';
   return `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css"><script src="/distr/core/js/core.js"></script>
 <style>body{margin:0;background:var(--sf-surface);color:var(--sf-on-surface);font-family:var(--sf-font-family, system-ui)}main{padding:16px;display:flex;flex-direction:column;gap:16px;align-items:flex-start;max-inline-size:100%;box-sizing:border-box}</style></head>
 <body><main>
-  <sf-settings id="settings" look="${look}"${size ? ` size="${size}"` : ''} label="Настройки">${trigger}${island(items)}</sf-settings>
+  <sf-settings id="settings" look="${former || look}"${size ? ` size="${size}"` : ''} label="Настройки">${trigger}${island(items)}</sf-settings>
   <p id="after">После панели</p>
 </main></body></html>`;
 };
@@ -139,7 +141,7 @@ const MEASURE = () => {
     glyphs: [...new Set(glyphs)], withIcons,
     under: under && {cut: under.scrollWidth > under.clientWidth + 0.5, title: under.getAttribute('title'), text: under.textContent.trim()},
     wrapped: longLabel ? longLabel.getClientRects().length > 1 || r(longLabel).height > parseFloat(getComputedStyle(longLabel).lineHeight) * 1.5 : null,
-    tiles: el.querySelectorAll('.sf-context-menu-tile').length, drillHead: Boolean(el.querySelector('.sf-context-menu-drill-head')),
+    tiles: el.querySelectorAll('.sf-context-menu-tile').length, switches: el.querySelectorAll('[role="menuitemcheckbox"]').length, bottom: content && r(content).bottom, drillHead: Boolean(el.querySelector('.sf-context-menu-drill-head')),
     overflow: document.documentElement.scrollWidth > innerWidth,
   };
 };
@@ -149,7 +151,7 @@ for (const theme of ['light', 'dark']) {
     for (const name of Object.keys(CASES)) {
       const label = `${name} ${width} ${theme}`;
       const {tab, context, errors} = await open(name, {width, theme});
-      const {popup, size = '1/2'} = CASES[name];
+      const {popup, size = '1'} = CASES[name];
       if (popup) {
         const closed = await tab.evaluate(() => { const button = document.querySelector('#trigger button'); const menu = document.querySelector('#settings sf-menu-context'); return {haspopup: button.getAttribute('aria-haspopup'), expanded: button.getAttribute('aria-expanded'), shown: menu.querySelector('.sf-context-menu').getBoundingClientRect().height}; });
         ok(`${label}: closed, the trigger says it opens a menu and the panel takes no room`, closed.haspopup === 'menu' && closed.expanded === 'false' && closed.shown === 0, JSON.stringify(closed));
@@ -162,23 +164,25 @@ for (const theme of ['light', 'dark']) {
       const m = await tab.evaluate(MEASURE);
       const row = await tab.evaluate(rung(size));
       ok(`${label}: the look is ${CASES[name].look}`, m.look === CASES[name].look, m.look);
-      ok(`${label}: the panel is 288 px (the menu's ceiling, C32) and stays in the window`, near(m.width, 288) && m.left >= -0.5 && m.right <= width + 0.5 && !m.overflow, JSON.stringify({width: m.width, left: m.left, right: m.right, overflow: m.overflow}));
+      const sheet = popup && width < 600;
+      if (sheet) ok(`${label}: on a phone the popup is a bottom sheet of the window width (C176, C157)`, near(m.width, width) && near(m.bottom, 760, 1) && !m.overflow, JSON.stringify({width: m.width, bottom: m.bottom, overflow: m.overflow}));
+      else ok(`${label}: the panel is 288 px (the menu's ceiling, C32) and stays in the window`, near(m.width, 288) && m.left >= -0.5 && m.right <= width + 0.5 && !m.overflow, JSON.stringify({width: m.width, left: m.left, right: m.right, overflow: m.overflow}));
       ok(`${label}: one-line rows are the menu's rung ${size} (${row} px)`, m.heights.length === 1 && near(m.heights[0], row) && (width < 600 || near(row, size === '1' ? 40 : 32)), JSON.stringify({heights: m.heights, row}));
       const roles = await tab.evaluate(`[${colour('--sf-on-surface')}, ${colour('--sf-on-surface-variant')}]`);
       ok(`${label}: the glyphs are the on-surface or on-surface-variant role`, m.withIcons === (m.glyphs.length > 0) && m.glyphs.every((one) => roles.includes(one)), JSON.stringify({glyphs: m.glyphs, roles}));
-      if (CASES[name].look === 'drill') {
+      if (CASES[name].look === 'drill' && !CASES[name].former) {
         ok(`${label}: a long name wraps to a second line`, m.wrapped === true, JSON.stringify(m));
         const digest = await tab.evaluate(() => { const under = [...document.querySelectorAll('#settings .sf-context-menu-item-under')].find((one) => one.textContent.includes('Раз в неделю')); return under && {cut: under.scrollWidth > under.clientWidth + 0.5, title: under.getAttribute('title')}; });
         ok(`${label}: the long value ends in an ellipsis, whole in its title`, digest?.cut && digest.title === 'Раз в неделю, в понедельник утром, со всеми задачами', JSON.stringify(digest));
       }
-      if (CASES[name].look === 'tiles') ok(`${label}: three tiles on top`, m.tiles === 3, String(m.tiles));
+      if (CASES[name].former) ok(`${label}: the former look=tiles draws drill, its switches are rows, no tiles (C176)`, m.tiles === 0 && m.switches === 3, JSON.stringify({tiles: m.tiles, switches: m.switches}));
       if (shots) await tab.screenshot({path: join(shots, `settings-${name}-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: 560}});
 
       // The keyboard and a change, once per case on the desktop light run.
       if (width === 1440 && theme === 'light') {
         await tab.evaluate(() => { window.__events = []; for (const verb of ['change', 'changed']) document.querySelector('#settings').addEventListener(`sf-settings-${verb}`, (event) => window.__events.push([verb, event.detail.id, event.detail.value])); });
         if (!popup) await tab.focus('#settings .sf-context-menu-item');
-        if (CASES[name].look === 'drill') {
+        if (CASES[name].look === 'drill' && !CASES[name].former) {
           await tab.keyboard.press('Enter');
           await tab.waitForTimeout(300);
           const level = await tab.evaluate(() => ({head: Boolean(document.querySelector('#settings .sf-context-menu-drill-head')), focus: document.activeElement?.getAttribute('role'), rows: document.querySelectorAll('#settings [role="menuitemradio"]').length}));

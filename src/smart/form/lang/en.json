@@ -1,0 +1,24 @@
+{
+  "title": "Form",
+  "runtime": {
+    "required-note": "* — required fields",
+    "submit": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "unsaved": "You have unsaved changes",
+    "errors-title": {
+      "one": "Fix {n} field",
+      "other": "Fix {n} fields"
+    },
+    "value-missing": "Fill in the field “{label}”",
+    "help-label": "More about {label}"
+  },
+  "events": {
+    "submit": {
+      "label": "Save"
+    },
+    "cancel": {
+      "label": "Cancel"
+    }
+  }
+}

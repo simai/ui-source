@@ -1,13 +1,19 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @layer sf.components {
 /* sf-wizard (standard simai.smart-component 1.3.14 §6). One rung of the
    ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2 with
    size="1/2": the progress, the buttons and the texts are that rung; the
-   step's title is heading-4 (heading-5 at 1/2); the frame's inset is the
-   space ladder (space-3, space-2 at 1/2). The public variables are read with
+   step's title is heading-4 (heading-5 at 1/2); the frame's inset is a
+   window's, role H6 of the horizontal-spacing standard (owner decision C105):
+   --sf-space-2, 20 on a desktop and 16 in compact density and on a phone,
+   its 1 px edge counted inside it (it was --sf-space-3 outside the edge,
+   25 · 21 · 17; spacing audit W3). The public variables are read with
    the role token as their fallback and never set here. */
 .sf-wizard {
   --sf-wizard--gap: var(--sf-wizard-gap, var(--sf-space-3));
-  --sf-wizard--padding: var(--sf-wizard-padding, var(--sf-space-3));
+  --sf-wizard--padding: var(--sf-wizard-padding, calc(var(--sf-space-2) - var(--sf-px)));
   --sf-wizard--background: var(--sf-wizard-background-color, var(--sf-wizard-background, var(--sf-surface-area)));
   --sf-wizard--border-color: var(--sf-wizard-border-color, var(--sf-outline-variant));
   --sf-wizard--radius: var(--sf-wizard-radius, var(--sf-radius--surface));
@@ -17,14 +23,31 @@
   --sf-wizard--font-size: var(--sf-text-size-1);
   --sf-wizard--small-line: var(--sf-text-height-1\/2);
   --sf-wizard--small-font-size: var(--sf-text-size-1\/2);
-  /* Rung 3, the step the heading-4 role held before the content heading
-     ladder moved it to the body size (R022). */
-  --sf-wizard--title-size: var(--sf-text--size-3);
-  --sf-wizard--title-line: var(--sf-title--height-3);
+  /* The names (owner decision C179 (2)): the wizard's name is the page's or
+     the window's title, the h4 step (20 on 24, 16 on a phone; C159 (5),
+     C161 (2)); the step's title one step under it, h5 (16) in medium. A
+     window draws the name in its own header. Headings do not follow the
+     density (C44). */
+  --sf-wizard--name-size: var(--sf-heading-4--size);
+  --sf-wizard--name-line: var(--sf-heading-4--height);
+  --sf-wizard--title-size: var(--sf-heading-5--size);
+  --sf-wizard--title-line: var(--sf-heading-5--height);
   --sf-wizard--control: var(--sf-ui-1--control-height);
   --sf-wizard--space-x: var(--sf-ui-1--space-x);
   --sf-wizard--text-space-x: var(--sf-ui-1--text-space-x);
   --sf-wizard--related: var(--sf-space-1);
+  /* The footer's buttons are one group (owner decisions C105 H5, C173 (2)):
+     the C173 role --sf-gap--actions (--sf-space-1/3), 8 and 4 in compact density, the gap of the shared window
+     footer (core mix/_mix__window-footer.scss) -- not the button's space-x
+     (16, 14 on a phone; study WZ-1). */
+  --sf-wizard--actions-gap: var(--sf-gap--actions);
+  /* A step of the list (the column, or the list under the head) is a row,
+     not a control (C105): its mark stands H2 before its label (--sf-space-1/2,
+     12 · 8 · 8) and the row's edge H4 before its mark, the list inset of C77
+     (--sf-space-1 at size 1, 16 · 12 · 12; size 1/2 keeps 12). It read the
+     button's space-x and text-space-x (16 / 8, compact 14 / 7; audit W1, W2). */
+  --sf-wizard--row-gap: var(--sf-space-1\/2);
+  --sf-wizard--row-inset: var(--sf-space-1);
   /* The column of steps: eleven lines of the rung, a label of two or three
      words beside its mark. */
   --sf-wizard--column: calc(var(--sf-wizard--line) * 11);
@@ -52,21 +75,25 @@
 
 .sf-wizard.sf-wizard--size-half {
   --sf-wizard--gap: var(--sf-wizard-gap, var(--sf-space-2));
-  --sf-wizard--padding: var(--sf-wizard-padding, var(--sf-space-2));
+  --sf-wizard--padding: var(--sf-wizard-padding, calc(var(--sf-space-2) - var(--sf-px)));
   --sf-wizard--line: var(--sf-text-height-1\/2);
   --sf-wizard--font-size: var(--sf-text-size-1\/2);
   --sf-wizard--small-line: var(--sf-text-height-1\/3);
   --sf-wizard--small-font-size: var(--sf-text-size-1\/3);
-  --sf-wizard--title-size: var(--sf-heading-5--size);
-  --sf-wizard--title-line: var(--sf-heading-5--height);
+  /* One step down at 1/2: the name h5, the step's title the rung's text. */
+  --sf-wizard--name-size: var(--sf-heading-5--size);
+  --sf-wizard--name-line: var(--sf-heading-5--height);
+  --sf-wizard--title-size: var(--sf-text-size-1);
+  --sf-wizard--title-line: var(--sf-text-height-1);
   --sf-wizard--control: var(--sf-ui-1\/2--control-height);
   --sf-wizard--space-x: var(--sf-ui-1\/2--space-x);
   --sf-wizard--text-space-x: var(--sf-ui-1\/2--text-space-x);
+  --sf-wizard--row-inset: max(var(--sf-space-1\/2), var(--sf-b2));
 }
 
-/* In a window the frame is the window's surface: no edge, no fill and no
-   inset of its own (the window's padding is the inset). */
-.sf-wizard.sf-wizard--place-modal {
+/* In a window or a side panel the frame is its surface: no edge, no fill and
+   no inset of its own (the window's padding is the inset). */
+.sf-wizard.sf-wizard--window {
   padding: var(--sf-wizard-padding, 0);
   border: 0;
   border-radius: 0;
@@ -95,9 +122,9 @@
   flex: 1 1 auto;
   margin: 0;
   color: var(--sf-on-surface);
-  font-size: var(--sf-wizard--font-size);
-  font-weight: 600;
-  line-height: var(--sf-wizard--line);
+  font-size: var(--sf-wizard--name-size);
+  font-weight: var(--sf-weight--bold);
+  line-height: var(--sf-wizard--name-line);
 }
 
 .sf-wizard-position {
@@ -151,6 +178,37 @@
   display: none;
 }
 
+/* A top line with neither a name nor «Продолжить позже» (in a window the
+   name is the window's title, C179 (2)) holds only the position; where the
+   compact line says it, the empty line goes, not a control's height of
+   nothing. */
+.sf-wizard--progress-count .sf-wizard-top--bare {
+  display: none;
+}
+
+/* progress auto where the row does not fit the wizard's own width (owner
+   decision C101 (4)): the count line instead -- the wizard measures
+   (index.js fitProgress) and marks the frame data-sf-progress-fit="count".
+   The row stays in the markup out of view, so a wider wizard measures it
+   again; while it measures, data-sf-measure shows the row for a moment, in
+   the same task, never painted. */
+.sf-wizard[data-sf-progress-fit="count"]:not([data-sf-measure]) .sf-wizard-steps > .sf-steps {
+  display: none;
+}
+
+.sf-wizard[data-sf-progress-fit="count"] .sf-wizard-compact {
+  display: flex;
+}
+
+.sf-wizard[data-sf-progress-fit="count"] .sf-wizard-top .sf-wizard-position,
+.sf-wizard[data-sf-progress-fit="count"] .sf-wizard-top--bare {
+  display: none;
+}
+
+.sf-wizard[data-sf-measure] .sf-wizard-steps > .sf-steps {
+  display: block;
+}
+
 .sf-wizard-compact-line {
   display: flex;
   align-items: center;
@@ -178,12 +236,12 @@
 .sf-wizard-list-step {
   display: flex;
   align-items: center;
-  gap: var(--sf-wizard--text-space-x);
+  gap: var(--sf-wizard--row-gap);
   box-sizing: border-box;
   inline-size: 100%;
   min-block-size: var(--sf-wizard--control);
   padding-block: calc((var(--sf-wizard--control) - var(--sf-wizard--line)) / 2);
-  padding-inline: var(--sf-wizard--space-x);
+  padding-inline: var(--sf-wizard--row-inset);
   border: 0;
   border-radius: var(--sf-radius--ui, var(--sf-radius-1));
   background: transparent;
@@ -194,19 +252,19 @@
 }
 
 .sf-wizard-list-step:not(:disabled):hover {
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   background-color: var(--sf-surface-container);
 }
 
 .sf-wizard-list-step[aria-current="step"] {
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   background-color: var(--sf-surface-container);
   color: var(--sf-on-surface);
   font-weight: 600;
 }
 
 .sf-wizard-list-step:disabled {
-  color: var(--sf-on-disable);
+  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -238,7 +296,7 @@
 }
 
 .sf-wizard-list-step:disabled .sf-icon {
-  --sf-icon--color: var(--sf-on-disable);
+  --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-wizard-list-number {
@@ -291,7 +349,7 @@
   margin: 0;
   color: var(--sf-on-surface);
   font-size: var(--sf-wizard--title-size);
-  font-weight: 600;
+  font-weight: var(--sf-weight--medium);
   line-height: var(--sf-wizard--title-line);
   outline: none;
 }
@@ -376,11 +434,14 @@
 
 /* ---------------------------------------------------------------- footer */
 
+/* Back · (Skip) · the primary: one button group, --sf-space-1/3 apart (C105
+   H5, C144; 8 and 4 compact). It was the button's space-x (16, 12 at 1/2). */
+
 .sf-wizard-footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sf-wizard--space-x);
+  gap: var(--sf-wizard--actions-gap);
   padding-block-start: var(--sf-wizard--gap);
   border-block-start: var(--sf-px) solid var(--sf-wizard--border-color);
 }
@@ -390,14 +451,96 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--sf-wizard--space-x);
+  gap: var(--sf-wizard--actions-gap);
   margin-inline-start: auto;
+}
+
+/* The draft is kept (C179 (6)): a quiet line under the footer, the rung's
+   small text, its picture the line's height. */
+.sf-wizard-saved {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+  margin: 0;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-wizard--small-font-size);
+  line-height: var(--sf-wizard--small-line);
+}
+
+.sf-wizard-saved .sf-icon {
+  --sf-icon--font-size: var(--sf-wizard--small-line);
+  --sf-icon--width: var(--sf-wizard--small-line);
+  --sf-icon--height: var(--sf-wizard--small-line);
+  --sf-icon--color: var(--sf-on-surface-variant);
+}
+
+/* A window or a side panel on a phone takes the whole screen (C159 (2),
+   C157 (4), C179 (4)): the window's size, a page frame the wizard picks in
+   script (size full below sm, index.js). The frame then fills it: its holder
+   (the window's content box) and the frame grow, so a short step leaves the
+   footer at the window's bottom. These rules hold in every window: where the
+   window is as tall as its content (form and wide sizes) there is no room to
+   grow into and nothing moves; only the step's body below takes the room. */
+:where(.sf-modal-content):has(> .sf-wizard-window) {
+  flex: 1 1 auto;
+}
+
+.sf-wizard-window:has(> .sf-wizard--window) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-block-size: 100%;
+}
+
+.sf-wizard--window {
+  flex: 1 1 auto;
+}
+
+/* A narrow frame in a window (below the container step g5, 30rem of its own
+   width; C181 (2)): the step's body takes the room and the footer stays at
+   the window's bottom while the step scrolls: it sticks to the end of the
+   window's scroll box on the window's surface. Back keeps the start and the
+   main the end (C179 (1)); the two halves share the row (C179 (4)). It read
+   the screen's sm step (32rem) before. A phone's window is the screen less
+   its frame, 16 px each side: below sm the frame is below 32rem less 2rem,
+   g5, so every phone draws it as before. Now a narrow window on a wide screen
+   draws it too, and a frame of 30rem or more on a phone-wide screen (a window
+   in a wide overlay container) does not. */
+@container sf-wizard (width < #{mq.container-step(g5)}) {
+  .sf-wizard--window > .sf-wizard-main {
+    flex: 1 1 auto;
+  }
+
+  .sf-wizard--window .sf-wizard-footer {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 1;
+    flex-wrap: nowrap;
+    padding-block-end: var(--sf-focus-room);
+    background-color: var(--sf-modal-surface-bg, var(--sf-surface-popup));
+  }
+
+  .sf-wizard--window .sf-wizard-footer-end {
+    flex: 1 1 0;
+    flex-wrap: nowrap;
+  }
+
+  .sf-wizard--window .sf-wizard-footer > .sf-wizard-back,
+  .sf-wizard--window .sf-wizard-footer > .sf-wizard-back > :is(button, a) {
+    flex: 1 1 0;
+  }
+
+  .sf-wizard--window .sf-wizard-footer-end > sf-button,
+  .sf-wizard--window .sf-wizard-footer-end > sf-button > :is(button, a) {
+    flex: 1 1 0;
+    min-inline-size: 0;
+  }
 }
 
 /* ---------------------------------------------------------------- widths */
 
 /* Wide (40rem of the wizard's own width and more): the column, when asked. */
-@container sf-wizard (min-width: 40rem) {
+@container sf-wizard (min-width: #{mq.container-step(h0)}) {
   /* The column never sets the wizard's height beyond six of its rows (owner,
      2026-11-07): it is at least six rows tall, so a short step does not
      squeeze it; above that the body and the footer decide the height. The
@@ -439,12 +582,18 @@
   .sf-wizard--progress-column .sf-wizard-head > .sf-wizard-list {
     display: none;
   }
+
+  /* A row that does not fit draws the count line, and its «Все шаги» opens
+     the list as in the count progress. */
+  .sf-wizard--progress-row[data-sf-progress-fit="count"] .sf-wizard-head > .sf-wizard-list {
+    display: flex;
+  }
 }
 
 /* Narrow (under 40rem): always the compact head -- the step's label and the
    bar, never the row and never a column. The footer's primary takes the
    line's end, Back its start. */
-@container sf-wizard (max-width: 39.99rem) {
+@container sf-wizard (width < #{mq.container-step(h0)}) {
   /* sf-steps' host draws as its children (display: contents): its root
      is what goes. */
   .sf-wizard .sf-wizard-steps > .sf-steps {
@@ -456,6 +605,10 @@
   }
 
   .sf-wizard .sf-wizard-top .sf-wizard-position {
+    display: none;
+  }
+
+  .sf-wizard .sf-wizard-top--bare {
     display: none;
   }
 

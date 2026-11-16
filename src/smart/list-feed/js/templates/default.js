@@ -13,6 +13,9 @@ import "./default.css";
 // places it once and leaves it alone, so prepending history and redrawing an
 // entry never move the scroll anchor.
 //
+// An empty feed shows the empty slot, or sf-empty-state no-data (C120):
+// index.js emptyState() decides which.
+//
 // The two buttons sit in wrappers that are hidden instead of the buttons: a
 // Smart button's host is display: contents, and `hidden` on it does nothing.
 export function renderListFeedTemplate(context) {
@@ -37,8 +40,10 @@ export function renderListFeedTemplate(context) {
                         @click=${() => component.requestEarlier()}
                 ></sf-button>
             </div>
-            <div class="sf-list-feed__empty" ?hidden=${!context.empty || !context.emptyContent}>
-                ${context.emptyContent ?? nothing}
+            <div class="sf-list-feed__empty" ?hidden=${!context.empty}>
+                ${context.emptyContent ?? (context.empty
+                    ? html`<sf-empty-state kind="no-data" size="1/2" heading=${context.emptyHeading}></sf-empty-state>`
+                    : nothing)}
             </div>
             ${context.column}
             <div class="sf-list-feed__jump" hidden>

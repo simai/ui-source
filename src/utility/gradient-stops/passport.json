@@ -3,20 +3,25 @@
   "schema_version": 1,
   "id": "utility.gradient-stops",
   "kind": "utility",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/gradient-stops/default/index.js",
     "src/utility/gradient-stops/default/index.scss",
     "src/utility/gradient-stops/default/rule.js",
     "src/utility/gradient-stops/default/scss/_sf_css__gradient_stops.scss",
+    "src/utility/gradient-stops/default/scss/_sf_var__gradient_stops.scss",
     "src/utility/gradient-stops/default/scss/index.scss"
   ],
-  "content_sha256": "b52a3b63c4215938473a1519ddd8c77b1ca79405cb6cfb1d352dca0551565968",
+  "content_sha256": "645c1158980f2e9f456d01cd649e6fe0b23ce3569c37e8942ad886a0dc1a231e",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.colour",
+      "range": "^1.12.0"
     },
     {
       "id": "utility.gradient-color",

@@ -4,8 +4,12 @@ import { dismissAlertElement } from '../../component/alerts/dismiss';
 import { renderAlertTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-alert from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4, §4.8, §8): its settings are attributes and properties made by
@@ -23,6 +27,33 @@ const AlertElement = elementFromManifest(manifest, {
 // The live region a status speaks through (§4.8, §7.4.1): polite for news,
 // assertive for a warning or an error.
 const ASSERTIVE = new Set(['warning', 'error']);
+
+// A notice printed with the page is not news (NS-1, notices study
+// 2026-11-12; WAI-ARIA APG alert: an alert present before the page has loaded
+// is not announced and must not interrupt). So an alert the page had before
+// its load event -- or whose server-printed first paint is in it -- is a
+// polite status at every level; an alert put in the page after the load, or
+// put back after it was taken out, speaks with its level's role. The host's
+// own role attribute, status or alert (§3.1, as on sf-toast), is the author's
+// choice and always wins.
+// The page is settled at its load event and, on a page the Loader drives,
+// once the Loader has sent sf-loader-ready ("all components loaded"): a page's
+// own Smart modules can arrive after the load event, and their elements are
+// defined in a batch on a later frame, so the alerts in the page at that
+// moment are noted then. A module that arrives after the page settled was
+// asked for by an alert put in later, which speaks.
+const loaderPending = () => typeof window !== 'undefined' && Boolean(window.SF?.Loader) && !window.SF.Loader.eventSend;
+let pageLoaded = typeof document === 'undefined' || (document.readyState === 'complete' && !loaderPending());
+const inPageAtLoad = new WeakSet();
+if (!pageLoaded) {
+  const settle = () => {
+    if (pageLoaded || document.readyState !== 'complete' || loaderPending()) return;
+    document.querySelectorAll('sf-alert').forEach((element) => inPageAtLoad.add(element));
+    pageLoaded = true;
+  };
+  window.addEventListener('load', settle, {once: true});
+  window.addEventListener('sf-loader-ready', () => setTimeout(settle, 0), {once: true});
+}
 
 class SfAlert extends AlertElement {
   static get props() {
@@ -48,6 +79,19 @@ class SfAlert extends AlertElement {
   constructor() {
     super();
     this._boundRoot = null;
+    // In the page before the load, or carrying its server-printed first paint.
+    this._printedWithPage = !pageLoaded || inPageAtLoad.has(this)
+      || Boolean(this.querySelector?.(':scope > [data-sf-static]'));
+    this._connectedBefore = false;
+  }
+
+  onConnected() {
+    super.onConnected?.();
+    // Taken out and put back after the load: it is revealed, so it speaks.
+    if (this._connectedBefore && pageLoaded && this._printedWithPage) {
+      this._printedWithPage = false;
+    }
+    this._connectedBefore = true;
   }
 
   get status() {
@@ -69,6 +113,9 @@ class SfAlert extends AlertElement {
   }
 
   get liveRole() {
+    const own = this.getAttribute('role');
+    if (own === 'status' || own === 'alert') return own;
+    if (this._printedWithPage) return 'status';
     return ASSERTIVE.has(this.status) ? 'alert' : 'status';
   }
 

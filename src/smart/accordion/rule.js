@@ -14,5 +14,6 @@ SF.RuleLoader['cl-accordion'] = {
     { name: 'accordion' },
     { name: 'icons' },
     { name: 'cl-badge', lazy: true },
+    { name: 'cl-button', lazy: true },
   ],
 };

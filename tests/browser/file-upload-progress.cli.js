@@ -21,14 +21,14 @@ async page => {
     },mode);
     if(order==='upload-first')await progress();
     await page.waitForFunction(()=>document.querySelector('.sf-progress-bar')?.dataset.sfProgressBarBound==='1');
-    const measure=()=>page.evaluate(()=>{const p=document.querySelector('.sf-progress-bar');return p?{value:Number(p.dataset.value),text:p.querySelector('.sf-progress-bar-text')?.textContent,width:p.querySelector('.sf-progress-bar-progress').style.width,position:p.dataset.textPosition}:null;});
+    const measure=()=>page.evaluate(()=>{const p=document.querySelector('.sf-progress-bar');return p?{value:Number(p.dataset.value),text:p.querySelector('.sf-progress-bar-text')?.textContent,width:p.querySelector('.sf-progress-bar-progress').style.width,position:p.dataset.textPosition,indeterminate:p.classList.contains('sf-progress-bar--indeterminate')||p.dataset.indeterminate==='true'||!!p.closest('sf-progress-bar')?.hasAttribute('indeterminate')}:null;});
     const initial=await measure(),steps=[];
     for(const value of [0,37.5,100,-10,150]){
       await page.evaluate(value=>updateUpload({state:'process',progress:value}),value);
       await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
       steps.push({requested:value,...await measure()});
     }
-    await page.evaluate(()=>updateUpload({state:'error',progress:37.5,errorMessage:'Повторить'}));
+    await page.evaluate(()=>updateUpload({state:'error',progress:37.5,retryText:'Повторить'}));
     await page.locator('[data-action=retry]').click();
     await page.waitForFunction(()=>document.querySelector('.sf-progress-bar'));
     const retried=await measure();
@@ -40,7 +40,7 @@ async page => {
     const events=await page.evaluate(()=>progressEvents);
     const valid=(r,value)=>r&&r.value===value&&r.text===`${value}%`&&r.width===`${value}%`&&r.position==='inline-end';
     const row={mode,order,dir,initial,steps,retried,done,events};results.push(row);
-    if(!valid(initial,30)||steps.some(s=>!valid(s,Math.max(0,Math.min(100,s.requested))))||!valid(retried,0)||!valid(done,100)||JSON.stringify(events)!==JSON.stringify(['error','file-complete','complete']))failures.push(row);
+    if(!valid(initial,30)||steps.some(s=>!valid(s,Math.max(0,Math.min(100,s.requested))))||!(retried&&retried.indeterminate)||done!==null||JSON.stringify(events)!==JSON.stringify(['error','file-complete','complete']))failures.push(row);
   }
   return{status:failures.length||errors.length?'failed':'passed',cases:results.length,failures,errors,results};
 }

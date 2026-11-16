@@ -1,20 +1,27 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output [--report] [--json <file>]
 //
-// One notice, one ink (C35 acceptance finding F1): the close's cross and the
-// status icon of a notice are drawn in the same colour whichever notice draws
-// them -- the Smart alert (sf-alert, its close inside an sf-button-icon host),
+// One notice, one ink (C35 acceptance finding F1, the cross refined by owner
+// decision C112): the close's cross and the status icon of a notice are drawn
+// in the same colour whichever notice draws them -- the Smart alert (sf-alert, its close inside an sf-button-icon host),
 // the class alert (.sf-alert) and the toast (sf-toast and the class toast) --
 // for every status (neutral, info, success, warning, error), in the light and
 // the dark theme, at 1440 and 390, three loads each.
 //
-//   - the cross is the notice's text ink: the status container's ink
-//     (--sf-on-<status>-container) on a filled or flat notice, --sf-on-surface
-//     on a neutral one and on an outlined one, whose text stands on the page;
+//   - the cross is a service glyph in translucent ink (C112 (2)): the
+//     on-surface ink at 64 of the alpha scale's ink family, black at 64 in the
+//     light theme and white at 64 in the dark (#000000a3 / #ffffffa3), one
+//     colour on every status, look and notice -- never the solid text ink, a
+//     status container's ink or a grey role;
+//   - under a pointer and on press the cross catches the notice's text ink
+//     (C107 (4)): the status container's ink (--sf-on-<status>-container) on a
+//     filled or flat notice, --sf-on-surface on a neutral one and on an
+//     outlined one, whose text stands on the page;
 //   - the status icon is the status's role (--sf-<status>), the quiet
 //     --sf-on-surface-variant of its place when neutral (alert-role-colors), on every appearance of the alert (the container's graphic
 //     tone the toast had read 2.86-3.04:1 in the dark theme);
-//   - the cross reads 3:1 against the notice's fill, and so does the icon.
+//   - the cross, composited over the notice's fill, reads 3:1 against it,
+//     and so does the icon.
 //
 // --report prints the colours and exits 0 whatever they say.
 import {createServer} from 'node:http';
@@ -103,6 +110,17 @@ const MEASURE = (levels) => {
     probe.remove();
     return value;
   };
+  // C112: on-surface ink at 64 -- the alpha scale's ink step, read from the
+  // tokens the sheets declare and checked against the literal it must be.
+  const paint = (css) => {
+    const probe = document.createElement('i');
+    probe.style.color = css;
+    document.body.append(probe);
+    const value = hex(rgba(getComputedStyle(probe).color));
+    probe.remove();
+    return value;
+  };
+  const ink = paint('light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64))');
   const want = {};
   for (const level of levels) {
     const container = level === 'neutral' ? null : level;
@@ -137,12 +155,28 @@ const MEASURE = (levels) => {
     const under = fill(root);
     seen[key] = {
       cross: cross ? hex(rgba(getComputedStyle(cross).backgroundColor)) : null,
+      crossOnFill: cross ? hex(over(rgba(getComputedStyle(cross).backgroundColor), under)) : null,
       icon: icon ? hex(rgba(getComputedStyle(icon).color)) : null,
       text: text ? hex(rgba(getComputedStyle(text).color)) : null,
       fill: hex(under),
     };
   }
-  return {want, seen};
+  return {ink, want, seen};
+};
+
+// The cross and the text of one notice while its close is under the pointer.
+const UNDER_POINTER = (key) => {
+  const host = document.querySelector(`[data-k="${key}"]`);
+  const root = host.matches('.sf-alert, .sf-toast') ? host : host.querySelector('.sf-alert, .sf-toast');
+  const read = (node, property) => {
+    const canvas = new OffscreenCanvas(1, 1).getContext('2d', {willReadFrequently: true});
+    canvas.fillStyle = '#000';
+    canvas.fillStyle = getComputedStyle(node)[property];
+    canvas.fillRect(0, 0, 1, 1);
+    const [r, g, b, a] = canvas.getImageData(0, 0, 1, 1).data;
+    return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}${a === 255 ? '' : a.toString(16).padStart(2, '0')}`;
+  };
+  return {cross: read(root.querySelector('.sf-close-icon'), 'backgroundColor'), text: read(root.querySelector('.sf-alert-text, .sf-toast-text'), 'color')};
 };
 
 const luminance = (value) => {
@@ -172,28 +206,51 @@ try {
         await tab.waitForFunction((n) => [...document.querySelectorAll('[data-k]')].filter((node) => node.querySelector('.sf-close-icon')).length === n, expected, {timeout: 30000})
           .catch(() => failures.push(`${label}-${theme} load ${load}: the page never drew its ${expected} notices with a close`));
         await tab.waitForTimeout(300);
-        loads.push(await tab.evaluate(MEASURE, LEVELS));
+        const measured = await tab.evaluate(MEASURE, LEVELS);
+        // C107 (4): hover, then press (released away from the close, so the
+        // notice stays), each close in turn.
+        measured.pointer = {};
+        for (const key of Object.keys(measured.seen)) {
+          const close = tab.locator(`[data-k="${key}"] button:has(.sf-close-icon)`).first();
+          await close.hover();
+          const hover = await tab.evaluate(UNDER_POINTER, key);
+          await tab.mouse.down();
+          const press = await tab.evaluate(UNDER_POINTER, key);
+          await tab.mouse.move(1, 1);
+          await tab.mouse.up();
+          measured.pointer[key] = {hover, press};
+        }
+        loads.push(measured);
         if (errors.length) failures.push(`${label}-${theme} load ${load}: console ${JSON.stringify(errors)}`);
         await tab.close();
       }
       if (new Set(loads.map((one) => JSON.stringify(one))).size !== 1) failures.push(`${label}-${theme}: the three loads disagree`);
-      const {want, seen} = loads[0];
+      const {ink, want, seen, pointer} = loads[0];
+      const literal = theme === 'dark' ? '#ffffffa3' : '#000000a3';
+      if (ink !== literal) failures.push(`${label}-${theme}: the ink 64 tokens resolve to ${ink}, want ${literal} (C112)`);
       for (const level of LEVELS) {
         const kinds = [...APPEARANCES.map((a) => `smart-alert-${level}-${a}`), ...APPEARANCES.map((a) => `class-alert-${level}-${a}`), `smart-toast-${level}`, `class-toast-${level}`];
         for (const key of kinds) {
           const got = seen[key];
           if (!got || got.missing) { failures.push(`${label}-${theme} ${key}: not drawn`); continue; }
           const onPage = key.endsWith('-outlined');
-          const cross = onPage ? want[level].page : want[level].cross;
+          const text = onPage ? want[level].page : want[level].cross;
           // Neutral: the quiet icon role of the notice's place -- its container's
           // variant on a filled notice, the page's on an outlined alert.
           const icon = onPage ? want[level].pageIcon : want[level].icon;
-          const row = {view: label, theme, key, cross: got.cross, wantCross: cross, icon: got.icon, wantIcon: icon, text: got.text, fill: got.fill,
-            crossContrast: got.cross ? contrast(got.cross.slice(0, 7), got.fill) : null, iconContrast: got.icon ? contrast(got.icon.slice(0, 7), got.fill) : null};
+          const under = pointer[key];
+          const row = {view: label, theme, key, cross: got.cross, wantCross: literal, crossOnFill: got.crossOnFill, hoverCross: under?.hover.cross, pressCross: under?.press.cross,
+            icon: got.icon, wantIcon: icon, text: got.text, wantText: text, fill: got.fill,
+            crossContrast: got.crossOnFill ? contrast(got.crossOnFill, got.fill) : null, iconContrast: got.icon ? contrast(got.icon.slice(0, 7), got.fill) : null};
           report.push(row);
-          if (got.cross !== cross) failures.push(`${label}-${theme} ${key}: cross ${got.cross}, want ${cross}`);
+          if (got.cross !== literal) failures.push(`${label}-${theme} ${key}: cross ${got.cross}, want the ink 64 ${literal} (C112)`);
+          if (got.text !== text) failures.push(`${label}-${theme} ${key}: text ${got.text}, want ${text}`);
           if (got.icon !== icon) failures.push(`${label}-${theme} ${key}: icon ${got.icon}, want ${icon}`);
-          if (got.cross !== got.text) failures.push(`${label}-${theme} ${key}: cross ${got.cross} is not the text's ink ${got.text}`);
+          for (const state of ['hover', 'press']) {
+            const at = under?.[state];
+            if (!at) { failures.push(`${label}-${theme} ${key}: no ${state} reading`); continue; }
+            if (at.cross !== text || at.text !== text) failures.push(`${label}-${theme} ${key}: ${state} cross ${at.cross} does not catch the text ink ${text} (C107 (4))`);
+          }
           if (row.crossContrast < 3) failures.push(`${label}-${theme} ${key}: cross ${row.crossContrast}:1 on its fill`);
           if (row.iconContrast < 3) failures.push(`${label}-${theme} ${key}: icon ${row.iconContrast}:1 on its fill`);
         }
@@ -207,7 +264,7 @@ try {
 
 if (jsonFile) writeFileSync(jsonFile, `${JSON.stringify(report, null, 2)}\n`);
 if (reportOnly) {
-  for (const row of report.filter((one) => one.view === 'desktop')) console.log(`${row.theme.padEnd(5)} ${row.key.padEnd(28)} cross ${row.cross} (${row.crossContrast}) icon ${row.icon} (${row.iconContrast}) text ${row.text}`);
+  for (const row of report.filter((one) => one.view === 'desktop')) console.log(`${row.theme.padEnd(5)} ${row.key.padEnd(28)} cross ${row.cross} (${row.crossContrast}) hover ${row.hoverCross} press ${row.pressCross} icon ${row.icon} (${row.iconContrast}) text ${row.text}`);
   if (failures.length) console.log(`${failures.length} differences`);
   process.exit(0);
 }

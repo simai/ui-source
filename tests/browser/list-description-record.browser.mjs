@@ -20,7 +20,8 @@
 //   - an empty value says its words («Не указан», «Не назначена»), draws no
 //     status (the defect: the icon before «—»), and carries its action
 //     («Указать: Владелец»); a press asks apply {action, scope, ids, id, kind};
-//   - the copy buttons are visible without a pointer over the row;
+//   - the copy buttons are visible without a pointer over the row, each the
+//     row's own rung: the control height, its icon the value's line (C103);
 //   - Tab walks the record in reading order: the section's action, the help
 //     mark, links, copy buttons, the item's action, top to bottom, start to
 //     end in a row;
@@ -104,7 +105,8 @@ const MEASURE = () => {
         status: Boolean(row.querySelector('.sf-list-description-icon')) || Boolean(row.querySelector('.sr-only')),
         badge: badge ? {height: round(box(badge).height), top: round(box(badge).top - box(dd).top)} : null,
         action: action ? {name: action.getAttribute('aria-label'), text: action.textContent.trim(), shown: shown(action)} : null,
-        copies: [...row.querySelectorAll('sf-button-copy button')].map((button) => ({shown: shown(button), name: button.getAttribute('aria-label')})),
+        copies: [...row.querySelectorAll('sf-button-copy button')].map((button) => ({shown: shown(button), name: button.getAttribute('aria-label'),
+          height: round(box(button).height), icon: round(box(button.querySelector('.sf-icon') ?? button).height)})),
         numeric: text ? getComputedStyle(text).fontVariantNumeric : '',
         help: Boolean(row.querySelector('dt sf-help-mark')),
         // From the label's text to the help mark's box (--sf-space-1/4) and to its glyph.
@@ -196,6 +198,13 @@ try {
             for (const row of list.rows) {
               if (row.badge && !(row.badge.height <= list.line + 0.5)) fail(`${row.id}: badge ${row.badge.height} taller than the line ${list.line}`);
               for (const copy of row.copies) if (!copy.shown) fail(`${row.id}: copy button hidden without a pointer`);
+              // C103 (one row, one rung; docs precheck LD-05, register smart-2
+              // RG-S2-38): the copy button is the row's own rung -- the
+              // control height, its icon the value's line -- never the rung below.
+              for (const copy of row.copies) {
+                if (!near(copy.height, list.control)) fail(`C103 ${row.id}: copy button ${copy.height}, the row's rung is ${list.control}`);
+                if (!near(copy.icon, list.line)) fail(`C103 ${row.id}: copy icon ${copy.icon}, the value's line is ${list.line}`);
+              }
             }
           }
 

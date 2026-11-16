@@ -9,8 +9,12 @@ import { noteDeprecated } from '../../core/js/deprecations';
 import { renderProgressBarTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-progress-bar from its component.json (standard simai.smart-component
 // 1.3.8 §3, §4, §4.4): its settings are attributes and properties made by
@@ -81,7 +85,11 @@ class SfProgressBar extends ProgressBarElement {
       ...super.props,
       // The axis is called status, and speaks the shared vocabulary. `tone`
       // and its value `primary` keep working: see contracts/public-api-axes.json.
-      status: {default: 'neutral', values: ['neutral', 'info', 'success', 'warning', 'error'], aliases: ['tone'], valueAliases: {neutral: ['primary']}},
+      // No status (empty) is the theme's primary; neutral is grey (C131 (1)).
+      status: {default: '', values: ['', 'neutral', 'info', 'success', 'warning', 'error'], aliases: ['tone'], valueAliases: {'': ['primary']}},
+      // top | inline-end | none (C131 (4)); bottom and right are the former
+      // words until 2027-01-01 (journal value-progress-text-position).
+      textPosition: {default: 'none', values: ['none', 'top', 'inline-end'], attribute: 'text-position', valueAliases: {top: ['bottom'], 'inline-end': ['right']}},
     };
   }
 
@@ -138,6 +146,7 @@ class SfProgressBar extends ProgressBarElement {
       spokenValueText: this.spokenValueText,
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
+      meter: Boolean(this.meter),
       component: this,
     });
   }
@@ -157,6 +166,7 @@ class SfProgressBar extends ProgressBarElement {
       valueText: this.valueText,
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
+      meter: Boolean(this.meter),
     };
   }
 
@@ -174,7 +184,7 @@ class SfProgressBar extends ProgressBarElement {
   }
 
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label', 'indeterminate', 'paused'];
+    const directPatchAttributes = ['value', 'text-position', 'status', 'tone', 'warning-at', 'error-at', 'label', 'value-text', 'aria-label', 'indeterminate', 'paused', 'meter'];
     if (
       changedAttributes.length > 0 &&
       changedAttributes.every((attr) => directPatchAttributes.includes(attr))
@@ -198,6 +208,7 @@ class SfProgressBar extends ProgressBarElement {
       valueText: this.spokenValueText,
       indeterminate: Boolean(this.indeterminate),
       paused: Boolean(this.paused),
+      meter: Boolean(this.meter),
     });
   }
 

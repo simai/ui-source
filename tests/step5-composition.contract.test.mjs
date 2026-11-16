@@ -14,8 +14,9 @@ test('navigation composition: page numbers are size 1 controls and tab indicator
   assert.match(page, /block-size: var\(--sf-page-number--height, var\(--sf-ui-1--control-height\)\);/);
   assert.match(page, /inline-size: var\(--sf-page-number--width, var\(--sf-ui-1--control-height\)\);/);
   const tabs = await read('component/tabs/scss/_css__tabs.scss');
-  assert.match(tabs, /\.sf-tabs--underline > \.sf-tabs-top-container > \.sf-tabs-top \.sf-button \{\s*padding-block-end: calc\(var\(--sf-button--padding-bottom\) - var\(--sf-button--border-bottom-width\)\);/);
-  assert.match(tabs, /\.sf-tabs\.sf-tabs--full > \.sf-tabs-top-container > \.sf-tabs-top \.sf-button \{\s*padding-block-start: calc\(var\(--sf-button--padding-top\) - var\(--sf-button--border-top-width\)\);/);
+  assert.match(tabs, /:is\(\.sf-tabs--underline, :where\(\.sf-tabs:not\(\.sf-tabs--pills, \.sf-tabs--vertical\)\)\) > \.sf-tabs-top-container > \.sf-tabs-top \.sf-button \{\s*padding-block-end: calc\(var\(--sf-button--padding-bottom\) - var\(--sf-button--border-bottom-width\)\);/);
+  // sf-tabs--full draws the line since C96 (1): the line rule above holds it.
+  assert.doesNotMatch(tabs, /\.sf-tabs\.sf-tabs--full > \.sf-tabs-top-container > \.sf-tabs-top \.sf-button \{\s*padding-block-start/);
 });
 
 /* The field renderer set addresses these components by type, so the inputs it
@@ -23,7 +24,7 @@ test('navigation composition: page numbers are size 1 controls and tab indicator
    name that looks like the ladder but is not says so. */
 test('renderer inputs: datepicker size, reference size, avatar line, file-preview file size', async () => {
   const datepicker = await manifest('input-date');
-  assert.deepEqual(datepicker.inputs.properties.size.enum, ['1/2', '1', '2']);
+  assert.deepEqual(datepicker.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.match(datepicker.inputs.properties['input-size'].description, /Legacy name for size/);
   const runtime = await read('smart/input-date/index.js');
   assert.match(runtime, /this\.getAttribute\('size'\) \|\| this\.getAttribute\('input-size'\)/);

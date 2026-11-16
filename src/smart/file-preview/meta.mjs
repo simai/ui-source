@@ -24,23 +24,32 @@ const sfFilePreviewMeta = {
     "file-name": {
       "kind": "custom",
       "valueType": "string",
-      "default": "File"
+      "default": "File",
+      "description": "The file's name, shown as the title of the row and used as its accessible name and as the download's file name."
     },
     "file-size": {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "The file's size as text, for example 12 KB."
+      "description": "The file's size: a number of bytes (2457600), drawn in the page's language and units by the core's size format (2,3 МБ; decision C25) and said with the unit as a word (2,3 мегабайта; C51); text a host already wrote (12 KB) is drawn as written."
+    },
+    "file-date": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The file's date when the page has one (ISO 8601, 2026-11-12, or a time stamp): drawn after the type and the size, «12 нояб.», with the year when it is not this year, in the page's language (decision C149 (7)). Empty: no date."
     },
     "icon": {
       "kind": "custom",
       "valueType": "string",
-      "default": "description"
+      "default": "description",
+      "description": "The glyph in the holder when no picture is shown (a Material Symbols name). Unset: the glyph of the file's type -- from mime-type, else from the name's extension (PDF, a sheet, slides, an archive, ... each its own; decision C81), else description."
     },
     "href": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "The file's address: the name is a link to it (decision C51; it downloads in the same tab, or opens in target when download is false) and the download action fetches it. Empty: the name is text and the download action does nothing."
     },
     "kind": {
       "kind": "enum",
@@ -55,12 +64,20 @@ const sfFilePreviewMeta = {
     "mime-type": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "The file's MIME type, which helps kind=\"auto\" tell an image from another file."
     },
     "image-url": {
       "kind": "custom",
       "valueType": "string",
-      "default": ""
+      "default": "",
+      "description": "A picture for the holder, for any file (decision C149 (4)): a photo's thumbnail, a PDF's first page or a video's frame the server made; the component never draws a PDF itself. Over the picture of a file that is not an image the type stands in a corner badge; a video adds the play sign and its duration. Empty: an image shows its own href."
+    },
+    "duration": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A video's length: seconds (84), drawn as 1:24 in the picture's corner badge beside the play sign, or text as written (decision C149 (4))."
     },
     "surface": {
       "kind": "boolean",
@@ -68,7 +85,18 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "false"
+      "default": "false",
+      "description": "Draws the row on a fill, as a block of its own: the size 3 control height around the holder (56 on a desktop, 52 on a phone)."
+    },
+    "appearance": {
+      "kind": "enum",
+      "values": [
+        "row",
+        "chip",
+        "tile"
+      ],
+      "default": "row",
+      "description": "The look (decision C149 (1); the decision's word view is reserved by standard §3.1, so the look is the appearance axis, as sf-confirm's inline | card | window). row: the 48 holder, the name in two lines, type · size · date under it, the actions at the end (records, lists). chip: a message attachment, 48 high and at most --sf-f8 (288) wide, the 32 holder, the name in one line, type · size, «×» only. tile: a media library's tile, the picture 4:3 on top, the name in one line, the meta beside its buttons under it. compact stays the table cell's tile."
     },
     "download": {
       "kind": "boolean",
@@ -76,12 +104,14 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "true (the default): the download action saves the file under file-name, in the same tab. false: it opens the file instead, in target -- the same tab unless a target is given (C25)."
     },
     "target": {
       "kind": "custom",
       "valueType": "string",
-      "default": "_blank"
+      "default": "",
+      "description": "Where an opened file goes when download is false and where the name link goes: empty (the default) is the same tab, as C25 asks for a file link; _blank opens a new tab and the action shows the new-tab sign."
     },
     "actions": {
       "kind": "boolean",
@@ -89,7 +119,8 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "Shows the action buttons at the row's end (download and remove, as download-action and remove-action allow)."
     },
     "download-action": {
       "kind": "boolean",
@@ -97,7 +128,8 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "Shows the download action among the actions."
     },
     "remove-action": {
       "kind": "boolean",
@@ -105,7 +137,17 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "true"
+      "default": "true",
+      "description": "Shows the remove action among the actions; it asks the page to detach the file (the detach event). «×» «Убрать <имя>» takes a file out of a draft or a form field at once, the page offering «Вернуть» in its notice (C25); with stored the trash «Удалить <имя>» asks first (decision C149 (8))."
+    },
+    "stored": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The file is stored (a media library): its remove action is the trash «Удалить <имя>», which asks «Удалить «<имя>»?» in the row (sf-confirm, the danger answer) and only on yes asks the page to erase it (detach with action delete). Without it the action is «×» «Убрать <имя>», at once (decision C149 (8), C25)."
     },
     "disabled": {
       "kind": "boolean",
@@ -113,17 +155,41 @@ const sfFilePreviewMeta = {
         "true",
         "false"
       ],
-      "default": "false"
+      "default": "false",
+      "description": "Makes the row unavailable: the actions do nothing and the row takes the disabled look."
+    },
+    "state": {
+      "kind": "enum",
+      "values": [
+        "ready",
+        "uploading",
+        "error"
+      ],
+      "default": "ready",
+      "description": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row -- under the text in a narrow row, where decision C88 places it -- and remove."
+    },
+    "value": {
+      "kind": "custom",
+      "valueType": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "While uploading: the share sent, per cent (0 to 100, clamped), drawn by the bar and its per cent. Absent: the bar runs without a share."
+    },
+    "error-text": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Why the file did not upload, after «Не загрузился:» in a failed row (state error)."
     },
     "download-label": {
       "kind": "custom",
       "valueType": "string",
-      "description": "Empty: the text of the page's language (\"Download file\" in English)."
+      "description": "Empty: the text of the page's language with the file's name («Скачать Отчёт.pdf», \"Download Report.pdf\" in English; decision C51)."
     },
     "remove-label": {
       "kind": "custom",
       "valueType": "string",
-      "description": "Empty: the text of the page's language (\"Remove file\" in English)."
+      "description": "Empty: the text of the page's language with the file's name, «Убрать Отчёт.pdf» (\"Remove Report.pdf\"), or for a stored file «Удалить Отчёт.pdf» (\"Delete Report.pdf\"); decisions C51, C149 (8)."
     },
     "compact": {
       "kind": "boolean",

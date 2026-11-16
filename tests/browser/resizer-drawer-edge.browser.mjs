@@ -2,8 +2,9 @@
 // Usage: node this-file /absolute/path/to/output
 //
 // sf-resizer in sf-drawer stands on the panel's real edge (simai/ui-source#59).
-// .sf-drawer-panel scrolls (overflow: hidden auto) and keeps a scrollbar's
-// room on both sides (scrollbar-gutter: stable both-edges). The handle is
+// .sf-drawer-panel scrolls (overflow: hidden auto) and kept a scrollbar's
+// room on both sides (scrollbar-gutter: stable both-edges; since C105 the
+// scrollbar takes its room only while the panel scrolls). The handle is
 // positioned against the panel's padding box, which stops that room short of
 // each edge, and moves with what scrolls: with classic scrollbars a 320px
 // panel had its handle centred at 305px, its line a second line beside the
@@ -106,20 +107,27 @@ try {
         await page.screenshot({path: join(process.env.SF_PROBE_SHOTS, `resizer-${id}-${theme}.png`)});
         await page.mouse.move(640, 690);
       }
-      // The content keeps the inset it has in a drawer without a handle: the
-      // scrollbar's room on both sides plus the gutter.
+      // The content keeps the inset it has in a drawer without a handle (the
+      // window inset of C105, the edge inside it).
       const plain = await page.evaluate((key) => {
         const panel = document.getElementById(`${key}-handle`).closest('.sf-drawer-panel');
         const handle = document.getElementById(`${key}-handle`);
         const parent = handle.parentElement;
         handle.remove();
         const p = panel.getBoundingClientRect();
+        // Without a handle the panel scrolls itself, and since C105 its
+        // scrollbar takes its room at the end side only while it scrolls (no
+        // stable gutter): it moves the head's close by that room, where a
+        // handle's scrolling body leaves the head alone. The text stands
+        // beside a scrollbar in both cases.
+        const cs = getComputedStyle(panel);
+        const bar = panel.offsetWidth - panel.clientWidth - (parseFloat(cs.borderLeftWidth) || 0) - (parseFloat(cs.borderRightWidth) || 0);
         const row = panel.querySelector('.sf-drawer-body p').getBoundingClientRect();
         const text = Math.round(key === 'start' ? row.left - p.left : p.right - row.right);
         const title = Math.round(panel.querySelector('.sf-drawer-title').getBoundingClientRect().left - p.left);
         const close = panel.querySelector('.sf-drawer-close')?.getBoundingClientRect();
         parent.append(handle);
-        return {text, title, close: close ? Math.round(p.right - close.right) : null};
+        return {text, title, close: close ? Math.round(p.right - close.right - bar) : null};
       }, id);
       await page.waitForTimeout(200);
       for (const key of ['text', 'title', 'close']) {

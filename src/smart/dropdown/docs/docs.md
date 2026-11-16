@@ -61,7 +61,10 @@ beside every option that has no picture of its own, because a class and
 The actual toggle button is the primary Tab stop. It controls a named listbox;
 the optional searchbox is separate from its options. ArrowDown opens search
 (or the first available option); ArrowUp opens the last available option.
-Arrow keys and Home/End move option focus without changing selection. Enter or
+Arrow keys, Home/End, PageDown/PageUp (by what the list shows) and typed
+letters (type-ahead: a prefix typed within half a second, the same letter again
+for the next match) move option focus without changing selection; the focused
+option is brought into view at once, as far as it needs. Enter or
 Space selects; Escape closes without changing selection and restores the
 button. Tab closes and continues native page traversal. Home/End in search
 remain native editing keys. Independent tag-removal buttons remain reachable.
@@ -110,7 +113,9 @@ remain explicit overrides. Dropdown field defaults use var() fallbacks so an
 inherited --sf-dropdown--radius is not shadowed by a child default declaration.
 
 Positioning uses the shared `SF.Position` contract (Floating UI) and is on by
-default; `portal="false"` keeps the in-flow list. With Popover API support,
+default; `portal="false"` keeps the in-flow list, which opens below the field
+with the positioned list's height: the larger room the screen gives above or
+below the field, and its rows scroll beyond it. With Popover API support,
 portal panels use the native manual top layer. DOM
 ancestry, inherited theme/tokens and Lit-owned nodes remain intact. Without that
 API, the same panel is projected into a temporary context containing its
@@ -136,6 +141,14 @@ normal DOM position. Base Dropdown watches both portal and data-portal and binds
 projected-list pointer handlers only while they are needed. Each selection still
 emits one change event, including after repeated mode switches.
 
+## The chevron
+
+The chevron is the field's indicator (owner decision C123, 1.10.0): a glyph
+without a plate, the size of the field's leading picture (24 / 20 / 28 at 1,
+1/2, 2), quiet at rest and the text's ink while the field is under the pointer.
+The whole field opens the list. The chevron stays the button that holds the
+focus and `aria-expanded`, the field's one Tab stop; the field draws its ring.
+
 ## Inherited value
 
 `inherited-value` is the option value (values joined by commas when several may
@@ -145,6 +158,8 @@ options' labels as its placeholder, in the placeholder's ink, with a
 value stays empty. Once something is chosen, the marker gives way to a reset
 button in the same place; the chevron keeps its axis. Select mode; a tag-mode
 field does not draw it.
+
+The reset is the field's own action (owner decision C123), as a clear is: a glyph without a plate in any state, in the hint's ink at rest and the text's ink under the pointer, the size of the field's text line, with an invisible hit area never under 24 px; the keyboard ring goes round the glyph.
 
 ```html
 <sf-dropdown name="font" label="Font" inherited-value="inter">
@@ -181,6 +196,49 @@ sf-switch (`src/smart/helpers/inherited-value.js`), so a field reads and resets
 the same way whichever control it is. The marker and the reset are one step
 down the size ladder and sit inside the field's box with the same gap above,
 below and after them.
+
+## In a form: required, errors and validity
+
+Since 1.9.0 the host is the form control through ElementInternals, as
+`sf-input` is (owner decision C55). It submits `value` under `name`;
+`form.elements[name]` is the `sf-dropdown`. The hidden input is still drawn
+and holds the value, but carries no name while the host submits. A browser
+without ElementInternals submits through the named hidden input, as before.
+
+- `required` is a constraint: an empty field is `value-missing`, so the form
+  does not submit. On the attempt the browser focuses the field's trigger and
+  the field shows «Выберите вариант» under it («Choose an option»). An
+  inherited value does not count as a value.
+- `invalid` and `error-message` show the page's error: the error outline (on
+  `appearance="filled"` the error fill) and the message under the field, in
+  sf-input's field-message type, at the field's own gap. No error icon is
+  drawn, as sf-input draws none.
+- `setError({message})` (the action `set-error`) writes both and sets a
+  custom error the form will not submit over; an empty message clears them.
+- A person's choice that leaves a value clears the shown error, the page's
+  included. Form reset clears the required error.
+- The trigger carries `aria-invalid="true"` and names the message in
+  `aria-describedby` and `aria-errormessage`.
+- `checkValidity()`, `reportValidity()`, `validity`, `validationMessage` and
+  `setCustomValidity()` are the host's.
+- The focus ring shows on the field when focus comes from the keyboard and
+  also when code moves it there after a pointer press elsewhere (the browser
+  going to the first invalid field after a click on submit).
+
+```html
+<form>
+  <sf-dropdown name="city" label="Город" required>
+    <sf-list-item text="Казань" value="kazan"></sf-list-item>
+    <sf-list-item text="Москва" value="moscow"></sf-list-item>
+  </sf-dropdown>
+  <sf-button native-type="submit" text="Отправить"></sf-button>
+</form>
+<script>
+  // A server's answer: the error under the field until the person chooses.
+  document.querySelector('sf-dropdown[name="city"]')
+    .setError({message: 'Доставка в этот город недоступна'});
+</script>
+```
 
 ## The change event
 
@@ -223,6 +281,8 @@ Main attributes:
 - `multiple`
 - `label`
 - `required`
+- `invalid`
+- `error-message`
 - `placeholder`
 - `search`
 - `disabled`
@@ -247,3 +307,13 @@ Example:
   <sf-list-item kind="text" size="1/2" text="Value 3" selected></sf-list-item>
 </sf-dropdown>
 ```
+
+## Label, help, errors and focus (C153)
+
+Since 1.14.0 (owner decision C153) sf-dropdown follows sf-input: `help` draws a «?» (`sf-help-mark`) after the label and its «*», a step below the value, the label row keeping its height, named «Подробнее: <label>». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
+ink; hover draws the border in the text ink and focus a 2 px primary edge
+inside the field, with no ring outside it.

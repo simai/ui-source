@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-textarea",
-  "version": "1.7.5",
+  "version": "1.12.1",
   "title": "Text area",
   "summary": "A native multiline form control with Framework presentation, validation messaging and safe vertical resizing.",
   "kind": "smart",
@@ -22,9 +22,10 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.icon-buttons",
       "component.icons",
-      "component.textarea"
+      "component.inputs",
+      "component.textarea",
+      "smart.help-mark"
     ],
     "public_parts": [
       "native-textarea",
@@ -53,11 +54,13 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The step of the control ladder the field stands on: the text size, the side padding and the height of one row are those of sf-input of the same size.",
+        "description": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the text size, the side padding and the height of one row are those of sf-input of the same size.",
         "enum": [
+          "1/3",
           "1/2",
           "1",
-          "2"
+          "2",
+          "3"
         ]
       },
       "appearance": {
@@ -112,7 +115,12 @@
       },
       "maxlength": {
         "type": "number",
-        "description": "The most characters the text may have, as the native maxlength: the field takes no more. Unset: no limit."
+        "description": "The most characters the text should have (C141 (1)). The count shows from 80 % of it; past it the count and the frame turn to the error colour and the field is invalid (too-long), so the form is not sent. The text is never cut, as the native maxlength would. Unset: no limit, no count."
+      },
+      "counter": {
+        "type": "boolean",
+        "default": false,
+        "description": "With maxlength: the count shows always, not only from 80 % of the limit (C141 (1))."
       },
       "spell-check": {
         "type": "boolean",
@@ -128,10 +136,24 @@
           "hard"
         ]
       },
+      "text": {
+        "type": "string",
+        "default": "plain",
+        "description": "What kind of text the field holds (C141 (8)). plain: words. code: a snippet of code or configuration (a counter's script, robots.txt, JSON) -- the code font of the type system, no spelling check, no autocorrection, and the lines as typed: no wrapping, the field scrolls sideways inside. Not a code editor: no highlighting or completion.",
+        "enum": [
+          "plain",
+          "code"
+        ]
+      },
       "hint": {
         "type": "string",
         "default": "",
         "description": "The help line under the field; on an error the error message takes its place."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "name": {
         "type": "string",
@@ -141,21 +163,27 @@
       "rows": {
         "type": "number",
         "default": 3,
-        "description": "How many lines of text the field shows; longer text scrolls inside. Ignored with auto-grow."
+        "description": "How many lines a field of fixed height shows; longer text scrolls inside. Given without auto-grow it fixes the height (no growing); given with auto-grow it is the fewest rows when min-rows is not."
       },
       "auto-grow": {
         "type": "boolean",
-        "default": false,
-        "description": "The field follows its text between min-rows and max-rows and scrolls inside past max-rows. CSS field-sizing where supported, a script fallback elsewhere; rows is then ignored."
+        "default": true,
+        "description": "The field follows its text between min-rows and max-rows and scrolls inside past max-rows (C141 (2): a form field grows from 3 to 10 rows). On unless auto-grow=\"false\", or rows is given without auto-grow (a fixed height), or the field is flush (a composite sizes it: then it grows only with auto-grow, from 1 row and uncapped unless min-rows and max-rows say). CSS field-sizing where supported, a script fallback elsewhere."
       },
       "min-rows": {
         "type": "number",
-        "default": 1,
-        "description": "With auto-grow: the fewest rows the field shows. One row is the height of an input of the same size."
+        "default": 3,
+        "description": "The fewest rows a growing field shows: unset, rows when given, else 3 (a flush field 1). One row is the height of an input of the same size."
       },
       "max-rows": {
         "type": "number",
-        "description": "With auto-grow: the most rows before the field scrolls inside. Unset means no cap; a value below min-rows is min-rows."
+        "default": 10,
+        "description": "The most rows a growing field shows before it scrolls inside: unset, 10 (a flush field no cap); a value below min-rows is min-rows."
+      },
+      "resize": {
+        "type": "boolean",
+        "default": false,
+        "description": "Draws the browser's grip that changes the height, on a field of fixed height (rows, or auto-grow=\"false\"). Off by default (C141 (2)); never drawn on a touch screen, and a growing field has none."
       },
       "disabled": {
         "type": "boolean",
@@ -483,23 +511,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-textarea/index.js",
-        "sha256": "8aee6f68994d29a60fef929c814146d8febffc7c582b7b3f18a90d4e81de7753"
+        "sha256": "412cb8beef9f512e278e8e63515eeaace222b53e9dfa70fc5a6d150283fd20ed"
       },
       {
         "path": "src/smart/input-textarea/rule.js",
-        "sha256": "53361350a98629446cb8e162ac08e171592a85342efa3b4254096ae601e49ba3"
+        "sha256": "a0cb83199a8673b76af3791194f739882c94953387aef0ca26a04b1ac51b6c0c"
       },
       {
         "path": "src/smart/input-textarea/js/templates/default.js",
-        "sha256": "a8232c0d6f93295422e59c06e0c47bf0a34ce5133b933f681d3d7968fc0ad65f"
+        "sha256": "d7cc3eca1f30bed4eb2d26f6e9a5d55af464857bc667ad69b7e83b2e081437dc"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "311549a390cbb399282967b2506ed5875d23e127542960f207386ba3c3191d68"
+        "sha256": "29b76e2813fea297a7c6e3ddda0c4eb36826206a7a32c7765247aa4bcf379e21"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "742bb92a4cd39b2882da5038aa5d3c364b0b30c2cdf10a8e211e251ff62b7d37"
+        "sha256": "02a3d017c309094057bfb19f94ef588ee6ae2c6e3c0758cda318dfc857436452"
       }
     ],
     "generated_runtime": [

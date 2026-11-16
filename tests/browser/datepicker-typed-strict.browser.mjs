@@ -108,10 +108,10 @@ try {
     const formatted = {start: node.startDate?.getFullYear(), end: node.endDate?.getDate(), field: node.querySelector('input').value};
     return {two, glued, formatted};
   });
-  check('a range shows its two dates', range.two.field === '20.11.2026 - 30.11.2026', range);
+  check('a range shows its two dates', range.two.field === '20.11.2026 – 30.11.2026', range);
   check('a glued start is not a date', range.glued.start === null && range.glued.field === '', range);
   check('a range in the display format keeps its two dates', range.formatted.start === 2026 && range.formatted.end === 30
-    && range.formatted.field === '20.11.2026 - 30.11.2026', range);
+    && range.formatted.field === '20.11.2026 – 30.11.2026', range);
 } finally {
   await browser.close();
 }

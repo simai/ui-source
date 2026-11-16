@@ -35,20 +35,43 @@
         touch-action: none;
     }
 
+    /* A row without a handle is taken whole: by a finger after a long press,
+       so the page still scrolls over it, and the press brings up no text
+       selection or callout of its own (owner C171 (2)). */
+    @media (pointer: coarse) {
+        [data-sf-sortable-item][data-sf-sortable-whole] {
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+    }
+
+    /* The copy under the pointer is whole (owner C171 (3)): no transparency
+       of its own and none copied from the dimmed item. It stands over the
+       page -- the overlay place (C20): the popup surface under the copy and
+       the overlay shadow, no value of its own. */
     .sf-sortable-ghost {
         position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-layer--popover, 90));
+        box-sizing: border-box;
         margin: 0;
         pointer-events: none;
-        opacity: var(--sf-sortable-ghost-opacity, .9);
-        /* The dragged copy stands over the page: the overlay place (C20), no
-           value of its own. */
+        opacity: var(--sf-sortable-ghost-opacity, 1);
+        background-color: var(--sf-surface-popup, Canvas);
         box-shadow: var(--sf-shadow-overlay);
     }
 
+    .sf-sortable-ghost > .sf-sortable-ghost-item {
+        opacity: 1;
+    }
+
+    /* The drop line (owner C171 (4)): one line, two pixels thick
+       (SORTABLE_DROP_LINE in the drag module draws its box), for a list, a
+       grid, the column mode's line preview and the editor overlay's seams --
+       the overlay loads this sheet through its rule and draws with this
+       class. */
     .sf-sortable-indicator {
         position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-layer--popover, 90));
         border-radius: var(--sf-radius-1\/3);
         background: var(--sf-sortable-indicator-color, var(--sf-primary, Highlight));
         pointer-events: none;
@@ -69,11 +92,11 @@
        column being moved is dimmed in every row. */
     .sf-sortable-column-outline {
         position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
+        z-index: var(--sf-sortable-ghost-z-index, var(--sf-layer--popover, 90));
         box-sizing: border-box;
-        border: var(--sf-px) dashed var(--sf-outline-primary, var(--sf-primary, Highlight));
+        border: var(--sf-px) dashed var(--sf-primary-outline, var(--sf-primary, Highlight));
         border-radius: var(--sf-radius--ui);
-        background-color: var(--sf-primary-transparent-select, transparent);
+        background-color: var(--sf-primary-state-select, transparent);
         pointer-events: none;
     }
 
@@ -84,9 +107,9 @@
     .sf-sortable-placeholder {
         box-sizing: border-box;
         flex: none;
-        border: var(--sf-px) dashed var(--sf-sortable-placeholder-border-color, var(--sf-outline-primary, var(--sf-primary, Highlight)));
+        border: var(--sf-px) dashed var(--sf-sortable-placeholder-border-color, var(--sf-primary-outline, var(--sf-primary, Highlight)));
         border-radius: var(--sf-radius--ui);
-        background-color: var(--sf-primary-transparent-select, transparent);
+        background-color: var(--sf-primary-state-select, transparent);
         pointer-events: none;
     }
 
@@ -161,6 +184,16 @@
         --sf-on-surface-variant: var(--sf-on-surface-raised-variant);
         background-image: linear-gradient(var(--sf-icon-button--background-color, transparent), var(--sf-icon-button--background-color, transparent));
         --sf-icon-button--box-shadow: var(--sf-shadow-raised);
+    }
+
+    /* Under a finger the "+" answers on the touch target (44, --sf-d1)
+       around its own box; the loading mark keeps ::after. */
+    @media (pointer: coarse) {
+        .sf-sortable-insert .sf-sortable-insert-button.sf-icon-button::before {
+            content: "";
+            position: absolute;
+            inset: min(0px, calc((100% - var(--sf-d1)) / 2));
+        }
     }
 
     html[data-sf-sortable-active] .sf-sortable-insert {

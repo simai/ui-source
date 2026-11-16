@@ -4,26 +4,68 @@ import { fieldSize } from '../../component/field-size';
 import { renderDropdownTemplate } from './js/templates/default';
 import { createDropdownInteraction } from '../../component/dropdown/interaction';
 import { bindFormReset } from '../../component/form-reset-helper';
-import { openDropdownPortal, closeDropdownPortal, alignDropdownInPlace } from '../../component/dropdown/portal';
+import { openDropdownPortal, closeDropdownPortal, alignDropdownInPlace, scrolledInside } from '../../component/dropdown/portal';
 import { holdOpenSurfaceMark } from '../../core/js/open-surface-mark';
 import { PanelScrollbar } from '../../component/panel-scrollbar';
 import { InheritedValueField } from '../helpers/inherited-value';
+import { FormField, innerControlName, ownInvalid } from '../helpers/form-field';
+import { instancePath, partId } from '../../core/js/instance-path.js';
+import { iconWords } from '../../core/js/icon-choices.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-dropdown from its component.json (standard simai.smart-component 1.3.8
-// §3, §4, §8, §19): its settings are attributes and properties made by
+// §3, §4, §8, §17, §19): its settings are attributes and properties made by
 // core/js/element-manifest.js, its words are lang/<locale>.json, and the old
-// names -- type, sf-dropdown:change -- are dated aliases. It still submits
-// through its hidden input (§16 item 11); the manifest keeps the form contract
-// as x-form until the field family's ElementInternals mixin takes it.
+// names -- type, sf-dropdown:change -- are dated aliases. Since 1.9.0 the
+// host is the form control through ElementInternals (FormField): it submits
+// the value, reports value-missing and the page's custom error, and the
+// hidden input it still draws for the reset binding carries no name then
+// (§17.1 item 6). Owner decision C55: it shows an error as sf-input does.
+
+// The last pointer press on the page, wherever it was. A focus that arrives
+// on the trigger from code right after a press elsewhere -- the browser moving
+// to the first invalid field after a click on «Отправить» -- is not the
+// keyboard's, so :focus-visible does not match and the field showed no ring
+// (sf-input's text box always matches it). A press inside the dropdown or its
+// list is the person's own focus and keeps the ring off, as before.
+let lastPointerTarget = null;
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', (event) => {
+    lastPointerTarget = event.composedPath?.()[0] || event.target;
+  }, true);
+}
+
+// The action (§4.4) answers an outcome and is not a person's change, so it
+// sends no event. As sf-input-quantity's: the message shown under the field
+// and a custom error the form will not submit over; an empty message clears
+// both.
+const actions = {
+  'set-error'({ message } = {}) {
+    const text = String(message ?? '');
+    if (text) {
+      this.setAttribute('error-message', text);
+      this.setAttribute('invalid', '');
+    } else {
+      this.removeAttribute('error-message');
+      this.removeAttribute('invalid');
+    }
+    this.setCustomValidity(text);
+  },
+};
+
 const DropdownElement = elementFromManifest(manifest, {
   base: InheritedValueField(SfBaseElement),
   lang: { en, ru },
   source: 'ru',
   aliases,
+  actions,
 });
 
 function normalizeSize(value) {
@@ -124,7 +166,7 @@ function getOptionLabel(option = {}) {
   return option.text || option.avatarTitle || option.value || '';
 }
 
-class SfDropdown extends DropdownElement {
+class SfDropdown extends FormField(DropdownElement) {
   constructor() {
     super();
     this._options = [];
@@ -136,7 +178,27 @@ class SfDropdown extends DropdownElement {
     this._dropdownRoot = null;
     this._list = null;
     this._documentClickHandler = this.handleDocumentClick.bind(this);
-    this._viewportHandler = this.positionPortalList.bind(this);
+    // The page's scroll moves the field, so the list follows it; the list's
+    // own scroll moves nothing, and placing the panel for it only interrupts
+    // the wheel (owner R171).
+    this._viewportHandler = (event) => {
+      if (scrolledInside(this._list, event)) return;
+      this.positionPortalList();
+    };
+    // value-missing, shown: set when the form's check fails on this field
+    // (a submit attempt, checkValidity(), reportValidity()), gone once it
+    // holds a value or the form is reset.
+    this._missingShown = false;
+    this._messageRef = '';
+    // C153 (3): never the browser's bubble; the first wrong field of a
+    // submit takes the focus (helpers/form-field.js ownInvalid).
+    ownInvalid(this, () => {
+      if (!this.validity?.valueMissing || this._missingShown) return;
+      this._missingShown = true;
+      this.requestComponentUpdate('invalid');
+    });
+    this.addEventListener('focusin', (event) => this.markFocusRing(event));
+    this.addEventListener('focusout', (event) => this.markFocusRing(event, false));
   }
 
   // The manifest's settings, and what the dropdown reads more closely (the
@@ -333,6 +395,89 @@ class SfDropdown extends DropdownElement {
     return this.selectedValues.join(',');
   }
 
+  // The error the field shows: the page's (invalid, error-message, set-error)
+  // or, while it holds nothing, the required one the form's check found.
+  get shownMissing() {
+    return this._missingShown && !this.hiddenValue;
+  }
+
+  get shownInvalid() {
+    return Boolean(this.invalid) || this.shownMissing;
+  }
+
+  get shownMessage() {
+    if (this.invalid) return this.errorMessage || '';
+    return this.shownMissing ? this.sfWord('value-missing') : '';
+  }
+
+  // The trigger is the control: focus(), the browser's pointer at the first
+  // invalid field and the error's aria all go to it.
+  triggerElement() {
+    return this.querySelector('.sf-dropdown-field > button');
+  }
+
+  focusDelegate() {
+    return this.triggerElement();
+  }
+
+  // §17.2: value-missing while required and empty (an inherited value does
+  // not count), with the trigger as the place the browser points at.
+  fieldValidity() {
+    const required = this.hasAttribute('required') && this.getAttribute('required') !== 'false';
+    const valueMissing = required && !this.disabled && !this.hiddenValue;
+    return {
+      valueMissing,
+      message: valueMissing ? this.sfWord('value-missing') : '',
+      anchor: this.triggerElement(),
+    };
+  }
+
+  // The browser's restore of a form (back, reload) gives the value back.
+  fieldRestore(state) {
+    if (typeof state === 'string') this.value = state;
+  }
+
+  // A person's choice that leaves a value clears the error shown, the page's
+  // as well (C55: «ошибка снимается при выборе»).
+  clearShownError() {
+    this._missingShown = false;
+    if (this.invalid || this.hasAttribute('error-message')) {
+      this.removeAttribute('error-message');
+      this.removeAttribute('invalid');
+      this.setCustomValidity('');
+    }
+  }
+
+  // The ring on the field for a focus from code after a press elsewhere.
+  markFocusRing(event, entering = true) {
+    const trigger = this.triggerElement();
+    if (!trigger || event.target !== trigger) return;
+    const own = lastPointerTarget instanceof Node
+      && (this.contains(lastPointerTarget) || Boolean(this._list?.contains(lastPointerTarget)));
+    trigger.toggleAttribute('data-sf-focus-ring', entering && !own);
+  }
+
+  // aria-invalid and the message on the trigger. The interaction keeps its own
+  // description (the chosen labels) in aria-describedby; only this message's
+  // id is added and taken out here.
+  syncErrorState() {
+    const trigger = this.triggerElement();
+    if (!trigger) return;
+    const message = this.querySelector('.sf-dropdown-message');
+    const id = message?.id || '';
+    const refs = (trigger.getAttribute('aria-describedby') || '')
+      .split(/\s+/u)
+      .filter((ref) => ref && ref !== this._messageRef && ref !== id);
+    if (id) refs.push(id);
+    this._messageRef = id;
+    if (refs.length) trigger.setAttribute('aria-describedby', refs.join(' '));
+    else trigger.removeAttribute('aria-describedby');
+    if (this.shownInvalid) trigger.setAttribute('aria-invalid', 'true');
+    else trigger.removeAttribute('aria-invalid');
+    if (this.shownInvalid && id) trigger.setAttribute('aria-errormessage', id);
+    else trigger.removeAttribute('aria-errormessage');
+  }
+
   captureOptions() {
     if (this._optionsFromData) {
       return;
@@ -401,9 +546,16 @@ class SfDropdown extends DropdownElement {
       return this.options;
     }
 
-    return this.options.filter((option) =>
-      getOptionLabel(option).toLowerCase().includes(query),
-    );
+    // An icon option is found by its glyph's words too, in Russian and in
+    // English (owner decision C151 point 8, SF.icons.choices.words): a
+    // product's chooser labels its options with the glyph name, and «папка»
+    // found nothing in a grid of folder_open, topic and folder.
+    return this.options.filter((option) => {
+      if (getOptionLabel(option).toLowerCase().includes(query)) return true;
+      if (!option.icon) return false;
+      const words = iconWords(option.icon);
+      return [...words.ru, ...words.en].some((word) => word.toLowerCase().includes(query));
+    });
   }
 
   templateContext() {
@@ -415,6 +567,12 @@ class SfDropdown extends DropdownElement {
       open: this._open,
       multiple: this.multiple,
       value: this.hiddenValue,
+      // The host is the form control where the browser has ElementInternals:
+      // the hidden input carries no name then (§17.1 item 6).
+      controlName: innerControlName(this, this.name),
+      invalid: this.shownInvalid,
+      message: this.shownMessage,
+      messageId: partId(instancePath(this, { kind: 'sf-dropdown' }), 'message'),
       triggerText: this.triggerText,
       searchValue: this._searchValue,
       searchPlaceholder: this.searchPlaceholder,
@@ -501,6 +659,8 @@ class SfDropdown extends DropdownElement {
     }
     this._interaction?.refresh();
     this.syncInheritedState();
+    this.syncErrorState();
+    this.sfSyncFormState();
     const resetControl = this.querySelector('.sf-dropdown-hidden-input') ||
       this.querySelector('.sf-dropdown-field > button');
     if (this._resetControl !== resetControl) {
@@ -512,6 +672,7 @@ class SfDropdown extends DropdownElement {
         this.setAttributeValue('value', serializeValues(this._selectedValues));
         this._open = false;
         this._searchValue = '';
+        this._missingShown = false;
         // Native reset may change the display even when Lit's cached value has
         // not changed. The component owns this property synchronization.
         const display = this.querySelector('.sf-dropdown-field input:not([type="hidden"])');
@@ -654,6 +815,7 @@ class SfDropdown extends DropdownElement {
   // The person's change (§8): `change` on the host with data only, then its old
   // name sf-dropdown:change with root added, through the alias table.
   dispatchDropdownChange(option = null, values = this.selectedValues) {
+    if (values.length) this.clearShownError();
     this.sfEmit('change', {
       value: option?.value || '',
       label: option ? getOptionLabel(option) : '',

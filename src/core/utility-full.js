@@ -91,6 +91,7 @@ import '../utility/font-variant/default/index.scss';
 import '../utility/font-variant-numeric/default/index.scss';
 import '../utility/font-weight/default/index.scss';
 import '../utility/gap/default/index.scss';
+import '../utility/gradient/default/index.scss';
 import '../utility/gradient-color/default/index.scss';
 import '../utility/gradient-stops/default/index.scss';
 import '../utility/gradient-type/default/index.scss';

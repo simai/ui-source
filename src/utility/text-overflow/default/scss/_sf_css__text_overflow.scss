@@ -12,6 +12,10 @@
         $infix: breakpoint-infix(xs, $breakpoint-array);
 
         // Text Overflow
+        // t-ellipsis and t-clip are former names (owner decision C186 (8),
+        // 2026-11-14): one cut is truncate, one line with an ellipsis. They
+        // keep drawing what they drew until 2027-01-01; the Loader notes them
+        // in SF.deprecations (journal class-text-flow-utility-aliases).
         @each $text-overflow-name,$text-overflow-value in $text-overflow-array {
             .#{$infix}t-#{$text-overflow-name} {
                 text-overflow: #{$text-overflow-value};

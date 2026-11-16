@@ -1,0 +1,829 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-badge",
+  "input": "docara-page-badge.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: \"Как добавить в текст короткую метку статуса, версии или категории: вид, цвет и размер бейджа.\"\n---",
+                "hash": "sha256:033b47a2e4bd63dae4ab2e46f7414e688aff17dee7259e4c603f1276f863cd87"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Бейдж"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Бейдж — короткая метка внутри строки: статус, версия, категория. Выбирайте его\nдля одного-двух слов, которые читатель должен заметить сразу."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Бейдж\"}\n```markdown\nКомпонент готов к работе :badge[Новое]{variant=tonal scheme=primary size=1}\n```\n:::",
+                "hash": "sha256:16e979286d8ff43076b41ad80f5f745db9cde451f03b91342ec50c5faedd8a4c"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":badge[Текст метки]{scheme=success}"
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "В квадратных скобках — текст метки, в фигурных — параметры. Все параметры\nнеобязательные."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Бейдж ставится внутри строки: в абзаце, пункте списка, ячейке таблицы,\nзаголовке."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m14",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Бейдж построен на бейдже SIMAI Framework ("
+                  },
+                  {
+                    "type": "text",
+                    "value": "sf-badge",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ")."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Вид"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "variant",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " задаёт, насколько заметно бейдж выделяется."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Вид бейджа\"}\n```markdown\n:badge[С заливкой]{variant=main size=1}\n:badge[Мягкий фон]{variant=tonal size=1}\n:badge[Рамка]{variant=outline size=1}\n```\n:::",
+                "hash": "sha256:339a29f7e2e9445efd8eea3129880058a97bb9b2d1f87ac131ee0a2dda16ec10"
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Цвет"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m20",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "scheme",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " выбирает цвет из палитры SIMAI Framework: основной, дополнительные,\nнейтральный или цвет статуса."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m21",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Цвета бейджа\"}\n```markdown\n:badge[Основной]{scheme=primary size=1}\n:badge[Вторичный]{scheme=secondary size=1}\n:badge[Третичный]{scheme=tertiary size=1}\n:badge[Нейтральный]{scheme=neutral size=1}\n:badge[Информация]{scheme=info size=1}\n:badge[Успех]{scheme=success size=1}\n:badge[Предупреждение]{scheme=warning size=1}\n:badge[Ошибка]{scheme=danger size=1}\n:badge[На поверхности]{variant=main scheme=on-surface size=1}\n```\n:::",
+                "hash": "sha256:e477399b12f324acdfa9fb539084d97ca1120e2d1a57f6adcebb3be0d1dfede8"
+              }
+            },
+            {
+              "id": "m22",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Размер"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m23",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "size",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " выбирает ступень из шкалы SIMAI Framework. По умолчанию бейдж\nмаленький, чтобы не выбиваться из строки текста."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m24",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Размеры бейджа\"}\n```markdown\n:badge[1/3]{size=1/3}\n:badge[1/2]{size=1/2}\n:badge[1]{size=1}\n```\n:::",
+                "hash": "sha256:f4d59995f0b9330847ff520200103a694bf80a516886ccea9e446160c6edacdf"
+              }
+            },
+            {
+              "id": "m25",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m32",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m27",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Бейдж — обычный текст: программы экранного доступа читают его вместе со\nстрокой. Пишите метку так, чтобы она была понятна и без цвета."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m29",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Цвет дополняет смысл, но не заменяет его: «Ошибка» на красном фоне, а не\nпросто красная точка."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m31",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Бейдж не кликается. Для перехода используйте "
+                        },
+                        {
+                          "type": "link",
+                          "href": "../button/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "кнопку-ссылку"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m33",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m34",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m35",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "variant",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "main",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "tonal",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "outline",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "tonal",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Вид: "
+                      },
+                      {
+                        "type": "text",
+                        "value": "main",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — заливка основным цветом, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "tonal",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — мягкий фон, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "outline",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — только рамка. Старое имя "
+                      },
+                      {
+                        "type": "text",
+                        "value": "type",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " принимается с предупреждением."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "scheme",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "primary",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "secondary",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "tertiary",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "neutral",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "info",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "success",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "warning",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "danger",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "on-surface",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "primary",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Цвет из палитры SIMAI Framework: основной, дополнительные, нейтральный или цвет статуса."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "size",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "1/3",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "1/2",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "1",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "1/3",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Ступень размера бейджа."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m36",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m37",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m44",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m39",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../button/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Кнопка-ссылка"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m41",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../icon/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Значок"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m43",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../kbd/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Клавиатурный ввод"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[12]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[15]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[18]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[22]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[24]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

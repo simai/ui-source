@@ -1,15 +1,16 @@
 @layer sf.components {
 /* utility-hint: display/block */
+// The point (owner decision C132, 2026-11-13): its coloured disc is the small
+// step of the avatar's size, from the shared table in core
+// (--sf-micro--point-*: 6 / 6 / 8 / 12 / 12 / 16 at 1/4 ... 3), the same as the
+// «something new» dot of an anchored badge; the place-coloured ring is drawn
+// OUTSIDE the disc with the anchored badge's ring width (--sf-micro--ring-*:
+// 1 px at 1/4 and 1/3, 2 px from 1/2 on), so the coloured diameter is the
+// step. It was a 1 px border inside the size: a 6 px point showed 4 px of
+// colour beside a 6 px red dot (the study's «Сейчас» screenshot).
 .sf-online-indicator {
-  border-bottom-width: var(--sf-px);
-  border-color: var(--sf-surface-place, transparent);
-  border-end-end-radius: var(--sf-radius-circle);
-  border-end-start-radius: var(--sf-radius-circle);
-  border-inline-end-width: var(--sf-px);
-  border-inline-start-width: var(--sf-px);
-  border-start-end-radius: var(--sf-radius-circle);
-  border-start-start-radius: var(--sf-radius-circle);
-  border-top-width: var(--sf-px);
+  box-sizing: border-box;
+  border-radius: var(--sf-radius-circle);
   width: var(--sf-online-indicator--width);
   height: var(--sf-online-indicator--height);
   // The dot is a cut-out: what is under it (the photo, the initials) must not
@@ -22,55 +23,99 @@
   // transparent: exactly the former dot.
   background-color: var(--sf-surface-place-ground, transparent);
   background-image: linear-gradient(var(--sf-online-indicator--background-color) 0 0);
-  --sf-online-indicator--height: var(--sf-b6);
-  --sf-online-indicator--width: var(--sf-b6);
+  // The ring: the place colour over the nearest opaque place, as the anchored
+  // badge's ring.
+  box-shadow: 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place, transparent), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place-ground, transparent);
+  // On a translucent fill (a selected, open or hovered row, core mix
+  // sf-place-fill) the place under the dot is the row: its fill over the place
+  // colour (C43 D3, 2026-11-11, as the anchored badge's ring). The fill is laid
+  // over the ring as an outline on the ring's own band. It is read only
+  // where the underlay is set (100% fill, 0% underlay: invalid where the
+  // underlay is initial), so off a row, on a soft place and on glass the
+  // outline is transparent and the ring is exactly the place colour.
+  --sf-online-indicator--ring-fill: color-mix(in srgb, var(--sf-surface-place-fill) 100%, var(--sf-surface-underlay) 0%);
+  outline: var(--sf-online-indicator--ring-width) solid var(--sf-online-indicator--ring-fill, transparent);
+  outline-offset: 0;
+  --sf-online-indicator--height: var(--sf-micro--point-2);
+  --sf-online-indicator--width: var(--sf-micro--point-2);
+  --sf-online-indicator--ring-width: var(--sf-micro--ring-2);
 }
 
 .sf-online-indicator--size-1 {
-  --sf-online-indicator--height: var(--sf-b2);
-  --sf-online-indicator--width: var(--sf-b2);
+  --sf-online-indicator--height: var(--sf-micro--point-1);
+  --sf-online-indicator--width: var(--sf-micro--point-1);
+  --sf-online-indicator--ring-width: var(--sf-micro--ring-1);
 }
 
 .sf-online-indicator--size-2 {
-  --sf-online-indicator--height: var(--sf-b6);
-  --sf-online-indicator--width: var(--sf-b6);
+  --sf-online-indicator--height: var(--sf-micro--point-2);
+  --sf-online-indicator--width: var(--sf-micro--point-2);
+  --sf-online-indicator--ring-width: var(--sf-micro--ring-2);
 }
 
 .sf-online-indicator--size-3 {
-  --sf-online-indicator--height: var(--sf-c0);
-  --sf-online-indicator--width: var(--sf-c0);
+  --sf-online-indicator--height: var(--sf-micro--point-3);
+  --sf-online-indicator--width: var(--sf-micro--point-3);
+  --sf-online-indicator--ring-width: var(--sf-micro--ring-3);
 }
 
 .sf-online-indicator--size-1\/4 {
-  --sf-online-indicator--height: var(--sf-a6);
-  --sf-online-indicator--width: var(--sf-a6);
+  --sf-online-indicator--height: var(--sf-micro--point-1\/4);
+  --sf-online-indicator--width: var(--sf-micro--point-1\/4);
+  --sf-online-indicator--ring-width: var(--sf-micro--ring-1\/4);
 }
 
 .sf-online-indicator--size-1\/3 {
-  --sf-online-indicator--height: var(--sf-a8);
-  --sf-online-indicator--width: var(--sf-a8);
+  --sf-online-indicator--height: var(--sf-micro--point-1\/3);
+  --sf-online-indicator--width: var(--sf-micro--point-1\/3);
+  --sf-online-indicator--ring-width: var(--sf-micro--ring-1\/3);
 }
 
 .sf-online-indicator--size-1\/2 {
-  --sf-online-indicator--height: var(--sf-b0);
-  --sf-online-indicator--width: var(--sf-b0);
+  --sf-online-indicator--height: var(--sf-micro--point-1\/2);
+  --sf-online-indicator--width: var(--sf-micro--point-1\/2);
+  --sf-online-indicator--ring-width: var(--sf-micro--ring-1\/2);
 }
 
-// Offline is the disabled ink (C43: the muted role is the disabled one).
-// That ink is an alpha and the dot stands on the avatar, not on the place, so
-// the photo or the initials would show through it (a green photo read as
-// online). It stacks over the place's colour instead, as C43 lays every alpha
-// over the solid place: the dot is the disabled ink on the place it is on.
-// Both lie over the nearest opaque place, as the fill does.
-// Both layers are public (core/contracts/public-variables.v1.json): a page
-// that wants a colour of its own sets the background colour variable and
-// the overlay variable to none, and gets exactly that colour.
+// Offline is the place's dim ink, --sf-on-surface-variant, read on the dot so
+// it follows the place (defect fix 2026-11-11). The disabled ink over the
+// place (C43) stayed under 3:1 for a status mark: light 3.10 against the
+// page and 2.56 against the avatar, the grey plate 2.56 / 2.15, the dark
+// plate 2.48 / 1.67. The dim ink gives 7.79 / 6.44 on the page and at least
+// 6.44 / 4.43 on every place (ui-control prototypes/avatar-offline.html).
+// It is a layer over the nearest opaque place, as the fill is, so the photo
+// or the initials never show through it.
+// Both layers stay public (core/contracts/public-variables.v1.json): the
+// background colour variable is the dot's colour, and the overlay, none by
+// default, is a layer a page may lay over it.
 .sf-online-indicator--offline {
-  --sf-online-indicator--background-color: var(--sf-avatar-offline-background-color, var(--sf-surface-place));
-  background-image: var(--sf-avatar-offline-overlay, linear-gradient(var(--sf-on-surface-disabled) 0 0)), linear-gradient(var(--sf-online-indicator--background-color) 0 0);
+  --sf-online-indicator--background-color: var(--sf-avatar-offline-background-color, var(--sf-on-surface-variant));
+  background-image: var(--sf-avatar-offline-overlay, none), linear-gradient(var(--sf-online-indicator--background-color) 0 0);
 }
 
 .sf-online-indicator--online {
   --sf-online-indicator--background-color: var(--sf-success);
+}
+
+// Away, when the host asks for it (owner decision C152 (5), 2026-11-14): a
+// hollow ring -- the place colour inside, a ring of the place's dim ink as
+// wide as the point's own ring (1 px at 1/4 and 1/3, 2 px from 1/2) -- under
+// the same outer ring, so it reads as «not here now» and never as a second
+// colour. Offline draws no point at all (sf-avatar 1.7.0).
+.sf-online-indicator--away {
+  --sf-online-indicator--background-color: var(--sf-surface-place, transparent);
+  box-shadow: inset 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-on-surface-variant), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place, transparent), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place-ground, transparent);
+}
+
+// Forced colours drop box shadows: the ring is the outline on the same band,
+// in the page's colour, as the anchored badge's.
+@media (forced-colors: active) {
+  .sf-online-indicator {
+    outline: var(--sf-online-indicator--ring-width) solid Canvas;
+  }
+
+  .sf-online-indicator--away {
+    border: var(--sf-online-indicator--ring-width) solid CanvasText;
+  }
 }
 }

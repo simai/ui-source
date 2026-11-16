@@ -21,10 +21,9 @@
     "state-skipped": "Skipped",
     "state-running": "In progress",
     "state-error": "Error",
-    "close-question": "Close the wizard? What you entered on this step will not be saved.",
-    "close-accept": "Close",
-    "close-decline": "Stay",
-    "required": "Fill in this field."
+    "required": "Fill in this field",
+    "invalid": "Check the value",
+    "saved": "Draft saved at {time}"
   },
   "events": {
     "close": {

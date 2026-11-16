@@ -1,4 +1,8 @@
+@use 'sass:map';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__window-footer' as window-footer;
+@use '../../../core/scss/mix/mix__sheet' as sheet;
 @property --sf-drawer-stack-offset {
   syntax: "<length>";
   inherits: true;
@@ -15,7 +19,7 @@
     position: fixed;
     inset: 0;
     inset-block-start: var(--sf-drawer-block-start, 0);
-    z-index: var(--sf-drawer-z-index, var(--sf-z-index-layer, 9000));
+    z-index: var(--sf-drawer-z-index, var(--sf-layer--window, 9000));
     pointer-events: none;
   }
 
@@ -46,10 +50,31 @@
     display: none !important;
   }
 
+  /* One scrim (C16, C20; study DR-8): under a modal drawer opened above this
+     one, this one's scrim fades out as the top one's fades in, so a nested
+     panel stands over one scrim at 64, not two (about 87). */
+  .sf-drawer[data-sf-drawer-covered] .sf-drawer-overlay {
+    opacity: var(--sf-0);
+    pointer-events: none;
+  }
+
   /* A stacked drawer stands depth × offset in from its edge, so the drawer below
      shows past it. Registered as a length so a unitless 0 still multiplies. */
   .sf-drawer-panel {
     --sf-drawer-stack-inset: calc(var(--sf-drawer-stack-depth, 0) * var(--sf-drawer-stack-offset));
+    /* The window inset, role H6 of the horizontal-spacing standard (owner
+       decision C105): --sf-space-2, 20 on a desktop and 16 in compact density
+       and on a phone, from the panel's outer edge -- its 1 px edge on the
+       page's side counted inside it (the placements below say which side has
+       one). It stood 31 · 27 · 27 (spacing audit D2): the gutter
+       --sf-space-1, the edge, and the 14 px of a stable scrollbar gutter on
+       both sides, which the panel no longer keeps (below). */
+    --sf-drawer--inset: var(--sf-drawer-gutter, var(--sf-space-2));
+    /* A length, not the unitless --sf-0: it is subtracted in calc(). */
+    --sf-drawer--edge-start: calc(var(--sf-px) * 0);
+    --sf-drawer--edge-end: calc(var(--sf-px) * 0);
+    --sf-drawer--inset-start: calc(var(--sf-drawer--inset) - var(--sf-drawer--edge-start));
+    --sf-drawer--inset-end: calc(var(--sf-drawer--inset) - var(--sf-drawer--edge-end));
     position: fixed;
     inset-block: var(--sf-drawer-block-start, 0) 0;
     display: flex;
@@ -67,10 +92,13 @@
        one panel had two different margins. Here the bar sits at the panel's own
        edge, outside the padding head, body and foot all share. */
     overflow: hidden auto;
-    /* The scrollbar takes its room from both sides, so the panel has the same
-       margin on each. Taken from one side only it left a strip on the right that
-       nothing explained. */
-    scrollbar-gutter: stable both-edges;
+    /* No stable gutter (the scroll-area rule of C106): a scrollbar takes its
+       room only while the panel scrolls, at the end side, beside the content's
+       inset. A stable gutter on both edges kept an empty 14 px on each side of
+       every panel and stood the content 15 px past the window inset. */
+    scrollbar-gutter: auto;
+    /* Keyboard focus stops core's ring room short of the clip edge (R242). */
+    scroll-padding: var(--sf-focus-room);
     pointer-events: auto;
     border-radius: var(--sf-drawer-radius, var(--sf-radius--surface));
     color: var(--sf-drawer-color, var(--sf-on-surface));
@@ -87,8 +115,8 @@
      that scrolls, the handle stood inside the scrollbar's room the panel keeps
      on both sides (15px in from the edge of a 320px panel with classic
      scrollbars), moved with the scrolled rows, and the panel clipped its outer
-     half (simai/ui-source#59). The body takes the scroll and the same room on
-     both sides, the head that room too, so the content stands where it stood; the panel clips nothing,
+     half (simai/ui-source#59). The body takes the scroll, with no stable
+     gutter, as the panel has none (C105, C106); the panel clips nothing,
      and the handle -- positioned against the panel -- stands on its edge. */
   .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) {
     overflow: visible;
@@ -97,14 +125,8 @@
 
   .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) > .sf-drawer-body {
     overflow: hidden auto;
-    scrollbar-gutter: stable both-edges;
-  }
-
-  /* The head keeps the same room, so its title and close stand over the
-     content as they did (overflow: hidden takes a gutter and scrolls nothing). */
-  .sf-drawer-panel:has(> .sf-drawer-body > sf-resizer) > .sf-drawer-head {
-    overflow: hidden;
-    scrollbar-gutter: stable both-edges;
+    scrollbar-gutter: auto;
+    scroll-padding: var(--sf-focus-room);
   }
 
   /* A floating panel is the modal place (C20): the popup surface, the modal
@@ -131,6 +153,7 @@
 
   /* Physical values remain compatibility aliases. */
   .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-panel {
+    --sf-drawer--edge-end: var(--sf-px);
     left: var(--sf-drawer-stack-inset);
     border-right: var(--sf-px) solid var(--sf-outline-variant);
     border-top-left-radius: var(--sf-0);
@@ -139,6 +162,7 @@
   }
 
   .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-panel {
+    --sf-drawer--edge-start: var(--sf-px);
     right: var(--sf-drawer-stack-inset);
     border-left: var(--sf-px) solid var(--sf-outline-variant);
     border-top-right-radius: var(--sf-0);
@@ -146,7 +170,20 @@
     transform: translateX(100%);
   }
 
+  /* The physical placements keep their edge on a physical side: in a
+     right-to-left page that side is the other end of the line. */
+  .sf-drawer[data-sf-drawer-placement='left']:dir(rtl) .sf-drawer-panel {
+    --sf-drawer--edge-start: var(--sf-px);
+    --sf-drawer--edge-end: calc(var(--sf-px) * 0);
+  }
+
+  .sf-drawer[data-sf-drawer-placement='right']:dir(rtl) .sf-drawer-panel {
+    --sf-drawer--edge-start: calc(var(--sf-px) * 0);
+    --sf-drawer--edge-end: var(--sf-px);
+  }
+
   .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-panel {
+    --sf-drawer--edge-end: var(--sf-px);
     inset-inline-start: var(--sf-drawer-stack-inset);
     border-inline-end: var(--sf-px) solid var(--sf-outline-variant);
     border-start-start-radius: var(--sf-0);
@@ -161,6 +198,7 @@
   }
 
   .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-panel {
+    --sf-drawer--edge-start: var(--sf-px);
     inset-inline-end: var(--sf-drawer-stack-inset);
     border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
     border-start-end-radius: var(--sf-0);
@@ -177,6 +215,8 @@
   .sf-drawer.is-open .sf-drawer-panel {
     transition-timing-function: var(--sf-ease-enter);
     transform: translateX(var(--sf-0));
+    /* A finger pushing the panel toward its edge (C157 (4)): it follows. */
+    translate: var(--sf-drawer-swipe, var(--sf-0)) 0;
   }
 
   /* A closed panel is not drawn once it has slid out. Moved by its own width
@@ -210,18 +250,62 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--sf-space-1);
+    /* The head's buttons -- «Назад», the action, the close -- are one group,
+       a button group's gap apart (C105 H5, C173 (2): 8, compact 4); the title
+       grows between them. */
+    gap: var(--sf-space-1\/3);
     min-height: var(--sf-ui-2--control-height);
-    padding: var(--sf-space-1) var(--sf-drawer-gutter, var(--sf-space-1)) var(--sf-space-1\/2);
+    padding-block: var(--sf-space-1) var(--sf-space-1\/2);
+    padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
   }
 
+  /* The close on the axis of the switch that opened the panel (owner decision
+     C104 (4), as sf-header-site's): the switch's side of the head, the head's
+     padding there measured to the switch's axis (--sf-drawer--close-axis,
+     placeCloseOnAxis in index.js). The close is drawn first in the head when
+     that side is its start, so the title follows it. Without a measure the
+     padding is the window inset, as before. */
+  /* The head's one action (slot header-action; study view-property-base VB-4),
+     before the close. Nothing asked for it: no box. */
+  .sf-drawer-action {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+  }
+
+  .sf-drawer-action:empty {
+    display: none;
+  }
+
+  /* Under a finger the head's buttons answer a press across the touch area,
+     44 (C173 (6), C49): the close and «Назад» stay the 1/3 step in sight
+     (24 on a phone) and press wider round it (study VB-1: 24 was all). */
+  @media (pointer: coarse) {
+    :is(.sf-drawer-head, .sf-drawer-edge) :is(:is(sf-button-close, sf-close), :is(sf-button-icon, sf-icon-button)) button {
+      position: relative;
+    }
+
+    :is(.sf-drawer-head, .sf-drawer-edge) :is(:is(sf-button-close, sf-close), :is(sf-button-icon, sf-icon-button)) button::after {
+      content: '';
+      position: absolute;
+      inset: calc((100% - var(--sf-d1)) / 2);
+    }
+  }
+
+  /* The panel's title is the window's (owner decision C157 (7) = C159 (5),
+     2026-11-14): the h4 step, 20 on 24 on a desktop and 16 on a phone, in
+     bold -- the question window's step (C39). It was heading 6 (16), smaller
+     than the question window's and sf-modal's. Headings do not follow
+     density (C44): a compact panel keeps it. */
   .sf-drawer-title {
+    flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
     color: var(--sf-on-surface);
-    font-size: var(--sf-heading-6--size);
-    line-height: var(--sf-heading-6--height);
-    font-weight: var(--sf-heading--weight);
+    font-size: var(--sf-heading-4--size);
+    line-height: var(--sf-heading-4--height);
+    font-weight: var(--sf-weight--bold);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -239,7 +323,37 @@
     min-block-size: 0;
     display: flex;
     flex-direction: column;
-    padding: var(--sf-space-1\/2) var(--sf-drawer-gutter, var(--sf-space-1)) var(--sf-space-3);
+    padding-block: var(--sf-space-1\/2) var(--sf-space-3);
+    padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
+  }
+
+  /* The panel's title is the top heading of the panel (C157 (7), the h4
+     step): the headings of its content start below it, so none outranks it
+     -- a rich-text h1 in a property view drew 32 under a title of 20
+     (ui-admin.test record r-077). The heading roles shift down the ladder
+     inside the body and the foot: h1 takes the h5 step, h2 to h4 the h6
+     step, h5 and h6 keep theirs. Only the sizes move; the levels stay the
+     page's, as a screen reader reads them. */
+  .sf-drawer-body,
+  .sf-drawer-foot {
+    --sf-heading-1--size: var(--sf-heading-5--size);
+    --sf-heading-1--height: var(--sf-heading-5--height);
+    --sf-heading-2--size: var(--sf-heading-6--size);
+    --sf-heading-2--height: var(--sf-heading-6--height);
+    --sf-heading-3--size: var(--sf-heading-6--size);
+    --sf-heading-3--height: var(--sf-heading-6--height);
+    --sf-heading-4--size: var(--sf-heading-6--size);
+    --sf-heading-4--height: var(--sf-heading-6--height);
+  }
+
+  /* In the panel the body keeps its content's height (it still grows to pin a
+     foot): shrunk below it, the panel scrolled the content flush to its end,
+     so the body's end padding and the ring of the last control lay outside
+     the scroll range (owner report R242, DEV's audit 2026-11-14). Content that
+     owns its own scroller inside a drawer gives it a block size of its own.
+     Not where the body is the scroller (a panel with a resizer, below). */
+  .sf-drawer-panel:not(:has(> .sf-drawer-body > sf-resizer)) > .sf-drawer-body {
+    flex-shrink: 0;
   }
 
   /* One child fills it; several keep the order they were written in. */
@@ -252,16 +366,99 @@
     min-block-size: 0;
   }
 
+  /* The foot (owner decision C157 (3), 2026-11-14): pinned under the body
+     while the panel scrolls, the actions at its start, the main one first,
+     a button group's gap between them (8, compact 4: C105 H5, C144) -- the
+     footer of every window and panel (core mix/_mix__window-footer.scss,
+     shared with sf-modal); a filter writes «Применить (N)», then
+     «Сбросить». The panel's frame around it. A page wrote its own bar
+     before (Pro, Larena, ui-mail; study DR-4). Without slot="footer" it
+     takes no room. */
+  .sf-drawer-foot {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 1;
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    background: inherit;
+    padding-block: var(--sf-space-1) var(--sf-drawer--inset);
+    padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
+  }
+
+  .sf-drawer-foot:empty {
+    display: none;
+  }
+
+  @include window-footer.window-footer('.sf-drawer-foot', var(--sf-space-1\/3));
+
+  /* A wrapper the page writes around its buttons (<div slot="footer">) draws
+     no box: its buttons are the foot's items, so the gap, the order and the
+     halves on a phone are the foot's. */
+  .sf-drawer-foot > :not(sf-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close), button, a) {
+    display: contents;
+  }
+
+  .sf-drawer-foot > * > :is([data-apart], [data-apart] > :is(button, a)) {
+    margin-inline-start: auto;
+  }
+
+  @media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+    .sf-drawer-foot > :not(sf-button, :is(sf-button-icon, sf-icon-button), :is(sf-button-close, sf-close), button, a) > :not(button, a) > :is(button, a) {
+      flex: 1 1 0;
+      min-inline-size: max-content;
+    }
+
+    .sf-drawer-foot > * > :is([data-apart], [data-apart] > :is(button, a)) {
+      margin-inline-start: 0;
+    }
+  }
+
+
+  /* The body's end padding is the gap to the foot when there is one. */
+  .sf-drawer-panel:has(> .sf-drawer-foot:not(:empty)) > .sf-drawer-body {
+    padding-block-end: var(--sf-space-1);
+  }
+
+  /* The body's edges (as sf-modal's, C159 (3)): a hairline under the head
+     only while content is above it, over the foot only while content is
+     below it; the drawer marks which. */
+  .sf-drawer[data-sf-drawer-more-start] .sf-drawer-head {
+    box-shadow: 0 var(--sf-px) 0 var(--sf-outline-variant);
+  }
+
+  .sf-drawer[data-sf-drawer-more-end] .sf-drawer-foot {
+    box-shadow: 0 calc(-1 * var(--sf-px)) 0 var(--sf-outline-variant);
+  }
+
+  /* «Назад» in the head of a nested panel (C157 (6)) points to the start of
+     the line: in a right-to-left page the arrow turns. */
+  .sf-drawer-back:dir(rtl) .sf-icon {
+    transform: scaleX(-1);
+  }
+
+  /* One panel at an edge (C157 (6)): a drawer opened from a floating panel
+     at the same edge is drawn inside it. The panel under it hides at once
+     while it is open (no slide, its edge controls with it) and shows again
+     when it closes; the nested one comes and goes at once, so the content
+     of the one panel changes in place. */
+  .sf-drawer[data-sf-drawer-under] :is(.sf-drawer-panel, .sf-drawer-edge) {
+    visibility: hidden;
+    transition: none;
+  }
+
+  .sf-drawer[data-sf-drawer-nested] .sf-drawer-panel {
+    transition: none;
+  }
+
   /* With no head above it the body's own small top padding is the whole top of
      the panel, and the panel then has a narrower margin above its content than
      beside it. It takes the gutter there instead, so one panel has one frame. */
-  /* The panel keeps the scrollbar's room on both of its inline edges, so what a
-     person sees beside the content is the gutter plus that room. The block edges
-     have no scrollbar, so they take the same two together -- otherwise the frame
-     is narrower above the content than beside it, which is what the owner
-     measured. The width is the Framework's own scrollbar token, not a guess. */
+  /* The block edges take the same window inset as the inline ones, so one
+     panel has one frame (the owner measured a narrower frame above the
+     content than beside it). */
   .sf-drawer-panel:not(:has(.sf-drawer-head)) .sf-drawer-body {
-    padding-block: calc(var(--sf-drawer-gutter, var(--sf-space-1)) + var(--sf-scroll-bg-width));
+    padding-block: var(--sf-drawer--inset);
   }
 
   /* The outer edge of the panel: a column of controls standing beside it, not in
@@ -291,6 +488,16 @@
     display: none;
   }
 
+  /* A closed drawer's edge is not drawn, as its panel is not: the edge stands
+     on the root, which a closed drawer keeps on the page, so its controls --
+     an outside close, «Открыть полностью» -- stood over the page with no
+     panel beside them (the glass plate of VP-16 made them plain to see). It
+     hides when the slide ends and shows at once when it opens. */
+  .sf-drawer:not(.is-open) .sf-drawer-edge {
+    visibility: hidden;
+    transition: visibility 0s var(--sf-duration-normal);
+  }
+
   /* A panel filling the screen has no outside, so the edge comes inside it and
      lies along the top. Placing it outside there put every control at a negative
      inline start -- a drawer opened on a phone could not be closed. */
@@ -317,6 +524,115 @@
 
   .sf-drawer-close--outside {
     position: static;
+  }
+
+  /* Controls on the scrim (study VP-16): what stands on the edge beside a
+     floating panel stands on the scrim, black at 64 over any page. It takes
+     the core glass role a control over a picture has (C14 (3), C16): a dark
+     round plate (--sf-surface-media, black 48; hover 64, press 80) and a
+     white glyph (--sf-on-surface-media), the same in both themes, and the
+     glass's white focus ring, which the theme's blue was not on black. The
+     close there is sf-button-close appearance="media"; a page's own icon
+     buttons in the edge slot («Открыть полностью») take the same plate. In
+     the theme's grey the close stood on the scrim at about 1:1. A column of
+     the page has no scrim: its edge keeps the page's look; nor has a panel
+     whose edge stands in its head (data-sf-drawer-edge-in-head). */
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge {
+    @include places.sf-place-glass-accent;
+    --sf-on-surface: var(--sf-on-surface-media);
+    --sf-on-surface-icon: var(--sf-on-surface-media);
+    --sf-on-surface-hover: var(--sf-on-surface-media);
+    --sf-on-surface-active: var(--sf-on-surface-media);
+    --sf-on-surface-variant: var(--sf-on-surface-media);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close) {
+    --sf-icon-button--radius: var(--sf-radius-rounded);
+    --sf-icon-button--background-color: var(--sf-surface-media);
+    --sf-icon-button--border-color: transparent;
+    --sf-icon--color: var(--sf-on-surface-media);
+    color: var(--sf-on-surface-media);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):hover {
+    --sf-icon-button--background-color: var(--sf-surface-media-hover);
+  }
+
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge .sf-icon-button:not(.sf-button-close):not(:disabled):active {
+    --sf-icon-button--background-color: var(--sf-surface-media-active);
+  }
+
+  /* A phone (below md, where the forms in popups are sheets, C32): a side
+     panel is the whole screen, without a radius and without a border
+     (owner decision C56, as sf-modal's side panel; study DR-5). Every step
+     of the ladder stood a strip of page beside it (size 1 was 384 of 390,
+     radius 8). A docked panel without the room floats, and is the same. Its
+     edge controls come inside, along the top, as at size full. */
+  @media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
+    .sf-drawer:not([data-sf-drawer-placement='bottom']):not([data-sf-drawer-column='true']) .sf-drawer-panel {
+      --sf-drawer-width: 100%;
+      --sf-drawer--edge-start: calc(var(--sf-px) * 0);
+      --sf-drawer--edge-end: calc(var(--sf-px) * 0);
+      inline-size: 100%;
+      max-inline-size: 100%;
+      border-width: 0;
+      border-radius: 0;
+    }
+
+    .sf-drawer:not([data-sf-drawer-placement='bottom']):not([data-sf-drawer-column='true']) .sf-drawer-edge {
+      inset-inline: var(--sf-space-1) auto;
+      flex-direction: row;
+    }
+
+    /* A swipe toward the panel's edge closes it (C157 (4)): the browser
+       keeps the vertical scroll and hands the sideways drag to the drawer. */
+    .sf-drawer:not([data-sf-drawer-placement='bottom']):not([data-sf-drawer-column='true']) .sf-drawer-panel {
+      touch-action: pan-y;
+    }
+  }
+
+  .sf-drawer[data-sf-drawer-size='full']:not([data-sf-drawer-placement='bottom']) .sf-drawer-panel {
+    touch-action: pan-y;
+  }
+
+  /* A panel filling the screen (a phone, size full) has no outside, and a
+     panel with less room beside it than its edge controls take has none to
+     speak of (data-sf-drawer-edge-in-head, measured by the drawer): its edge
+     controls stand in the head's row at its end, a button group's gap apart,
+     the close last, and the head keeps their room (--sf-drawer-edge-room), so
+     the title never runs under them. */
+  .sf-drawer[data-sf-drawer-edge-in-head]:not([data-sf-drawer-column='true']) .sf-drawer-edge {
+    /* The panel's gutter from the panel's inline end (the edge is the panel's
+       sibling, so it reads the gutter, not the panel's own inset); the end is
+       the root's unless the panel stops short of it (--sf-drawer-edge-end). */
+    inset-inline: auto calc(var(--sf-drawer-edge-end, calc(var(--sf-px) * 0)) + var(--sf-drawer-gutter, var(--sf-space-2)));
+    /* The head's content box: its row less its block padding, so the
+       controls stand on the title's centre line. */
+    inset-block-start: var(--sf-space-1);
+    block-size: calc(var(--sf-ui-2--control-height) - var(--sf-space-1) - var(--sf-space-1\/2));
+    flex-direction: row;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+  }
+
+  .sf-drawer[data-sf-drawer-edge-in-head]:has(.sf-drawer-edge:not(:empty)) .sf-drawer-head {
+    padding-inline-end: calc(var(--sf-drawer--inset-end) + var(--sf-drawer-edge-room, calc(var(--sf-px) * 0)) + var(--sf-space-1\/3));
+  }
+
+  /* The close on the axis of the switch that opened the panel (owner decision
+     C104 (4), as sf-header-site's): the switch's side of the head, the head's
+     padding there measured to the switch's axis (--sf-drawer--close-axis,
+     placeCloseOnAxis in index.js). The close is drawn first in the head when
+     that side is its start, so the title follows it. Without a measure the
+     padding is the window inset, as before. At the end it outranks the room a
+     full-screen panel keeps for its edge controls while the edge holds none
+     (the drawer does not place the close at the end beside edge controls). */
+  .sf-drawer[data-sf-drawer-close-axis='start'] .sf-drawer-panel > .sf-drawer-head {
+    padding-inline-start: var(--sf-drawer--close-axis, var(--sf-drawer--inset-start));
+  }
+
+  .sf-drawer[data-sf-drawer-close-axis='end']:not(:has(.sf-drawer-edge > *)) .sf-drawer-panel > .sf-drawer-head {
+    padding-inline-end: var(--sf-drawer--close-axis, var(--sf-drawer--inset-end));
   }
 
   /* Docked drawers are modeless page columns: no scrim, square edges. One
@@ -356,7 +672,11 @@
     inset-block: auto 0;
     inset-inline: 0;
     width: 100%;
-    max-width: 100%;
+    /* The sheet's width stops at 44rem (--sf-h1, the md step), centred, as
+       sf-settings' phone sheet (C106 (8), C32); on a desktop it stretched to
+       the window's width (study DR-10). The screen's width below that. */
+    max-width: var(--sf-h1);
+    margin-inline: auto;
     max-block-size: calc(var(--sf-drawer-sheet-room) - var(--sf-space-3));
     border-block-start: var(--sf-px) solid var(--sf-outline-variant);
     border-end-start-radius: var(--sf-0);
@@ -408,11 +728,11 @@
     touch-action: none;
   }
 
+  /* The one sheet's grab bar (C157 (5), core mix/_mix__sheet.scss): 24 x 4
+     on every screen in the quiet ink. It was the outline's colour, and 16
+     wide on a phone (the space ladder's step). */
   .sf-drawer-handle-bar {
-    inline-size: var(--sf-space-3);
-    block-size: var(--sf-space-1\/4);
-    border-radius: var(--sf-radius-rounded);
-    background: var(--sf-outline);
+    @include sheet.sheet-bar;
   }
 
   .sf-drawer-handle:focus-visible {

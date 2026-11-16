@@ -18,7 +18,7 @@ must remain visible outside the tooltip.
     <i class="sf-icon" aria-hidden="true">save</i>
   </button>
   <span id="save-description" class="sf-tooltip sf-tooltip--dark
-    sf-tooltip--size-1/3 sf-tooltip--arrow-bottom-center" hidden>
+    sf-tooltip--size-1/3" hidden>
     <span class="sf-tooltip-content">
       <span class="sf-tooltip-text">Сохранить изменения</span>
       <span class="sf-tooltip-tail" aria-hidden="true"></span>
@@ -34,6 +34,24 @@ over the anchor or surface. It opens on hover and on keyboard focus
 a press on the trigger -- a pointer, or Enter or Space -- hides it until the
 pointer leaves and the focus goes.
 
+Timing (the tooltip kind of C59, owner decision 2026-11-11):
+
+- a pointer resting on the trigger opens the tooltip after 0.5 s, so a pointer
+  crossing a toolbar does not open one on every button;
+- once a tooltip shows, its neighbours open at once: while one is open and for
+  0.3 s after the last one closed;
+- keyboard focus opens it at once;
+- on a touch screen nothing hovers: a long press (held 0.5 s) shows the
+  tooltip, it stays while the finger is down and 1.5 s after; the release of a
+  long press is not a press of the trigger (its click is not sent), and the
+  browser's own long-press menu does not open over it; a short tap is an
+  ordinary press.
+
+No tail by default: write a `sf-tooltip--arrow-*` class only where a tail is
+wanted. A light tooltip has no frame: its elevation is the window's shadow,
+drawn over the content and the tail together (`--sf-shadow-overlay-filter`),
+so a tail carries the same shadow as the window.
+
 ## Surface variants
 
 - skins: `dark`, the inverse surface (`--sf-surface-inverse`, light in a dark
@@ -45,7 +63,14 @@ pointer leaves and the focus goes.
 - a shortcut after the words: a `<kbd class="sf-kbd--group
   sf-tooltip-shortcut">` with a `<kbd>` per key inside `.sf-tooltip-text`,
   drawn plain and quiet by the kbd component;
-- sizes: `1/3`, `1/2`, `1`, `2`, `3`;
+- one size (owner decision C160 (3), 1.4.0): text 12/16 (`--sf-text--size-1/3`),
+  padding 4 x 8; the former `sf-tooltip--size-*` classes draw nothing of their
+  own and are kept in markup harmlessly;
+- at most two lines (C160 (2)): longer text is cut after the second line and a
+  linked tooltip says so once per page in the console -- an explanation that
+  long belongs in a «?» (sf-help-mark) beside the control;
+- placement (C160 (4)): a linked tooltip with no tail stands below its control
+  (4 px away) and flips above at the bottom edge of the window;
 - logical tails: `none`, `top-center`, `bottom-center`,
   `inline-start`, `inline-end`, `bottom-inline-start`,
   `bottom-inline-end`.

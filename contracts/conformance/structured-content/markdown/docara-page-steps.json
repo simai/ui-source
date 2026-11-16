@@ -1,0 +1,681 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-steps",
+  "input": "docara-page-steps.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: \"Как записать шаги инструкции: нумерованный список или временная линия с текущим состоянием процесса.\"\n---",
+                "hash": "sha256:67effa1703b205e5030db9e58dd9f29d191e0c183ab559aab7293b0e7564402b"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Шаги"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Шаги показывают короткую последовательность действий. Временная линия\nотмечает выполненные, текущий и будущие шаги; простой список подходит для\nинструкции без состояния."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Шаги\"}\n```markdown\n:::steps {current=2}\n1. Создайте проект.\n2. Добавьте страницы.\n3. Опубликуйте сайт.\n:::\n```\n:::",
+                "hash": "sha256:01f15f656b74e66b17e9f4cc0187f3c8145dd2b346e82b1b6fceb35fd661c50c"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::steps\n1. Короткое действие.\n2. Следующее действие.\n3. Последнее действие.\n:::"
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Внутри — ровно один нумерованный список. Другой список или его отсутствие\nостанавливает сборку."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Пишите шаги коротко и в одном стиле: «Создайте…», «Добавьте…». Заголовок\nвнутри шага оформляйте "
+                        },
+                        {
+                          "type": "text",
+                          "value": "жирным",
+                          "marks": [
+                            "strong"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ", а не заголовком "
+                        },
+                        {
+                          "type": "text",
+                          "value": "###",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m14",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Шаги можно поставить внутрь "
+                        },
+                        {
+                          "type": "link",
+                          "href": "../surface/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "оформленной полосы"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ", чтобы\nотделить их от основного текста."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Вид"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "layout=timeline",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " — шаги на вертикальной линии с отметками состояния.\n"
+                  },
+                  {
+                    "type": "text",
+                    "value": "layout=list",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " — компактный нумерованный список без отметок."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Список без отметок\"}\n```markdown\n:::steps {layout=list}\n1. Подготовьте Markdown.\n2. Проверьте JSON.\n3. Соберите статический сайт.\n:::\n```\n:::",
+                "hash": "sha256:affaa4e6645c082ea06363cad082acefab919b900837bdd5bf0fa05690aa415e"
+              }
+            },
+            {
+              "id": "m20",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Состояния"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m21",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Текущий шаг"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m22",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "current",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " — номер текущего шага, начиная с "
+                  },
+                  {
+                    "type": "text",
+                    "value": "1",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ". Шаги до него отмечаются\nгалочкой как выполненные, шаги после него — как будущие."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m23",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Третий шаг текущий\"}\n```markdown\n:::steps {current=3}\n1. Структура готова.\n2. Страницы добавлены.\n3. Проверьте результат.\n:::\n```\n:::",
+                "hash": "sha256:bfe228a94a150fb6c949a6947d2effa1df9e9e16ff9d192ac04b2d01e86fc05a"
+              }
+            },
+            {
+              "id": "m24",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m31",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m26",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Шаги — обычный нумерованный список: программы экранного доступа читают\nномер и текст каждого шага."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m28",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Если задан "
+                        },
+                        {
+                          "type": "text",
+                          "value": "current",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ", текущий шаг отмечен для программ экранного доступа\n("
+                        },
+                        {
+                          "type": "text",
+                          "value": "aria-current=\"step\"",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "): читатель услышит, где он находится. Галочка\n«выполнено» видна только глазами — если это важно, скажите об этом в тексте\nшага."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m30",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Маркер и текст стоят в отдельных колонках, поэтому крупный шрифт не\nнаслаивает их друг на друга."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m32",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m33",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m34",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "layout",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "timeline",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "list",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "timeline",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "timeline",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — шаги на линии с отметкой состояния, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "list",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — простой нумерованный список. Старое имя "
+                      },
+                      {
+                        "type": "text",
+                        "value": "view",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " принимается с предупреждением."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "current",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "целое число"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "1",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Номер текущего шага: предыдущие отмечаются выполненными."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m35",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m36",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m43",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m38",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../tabs/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Вкладки"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — для равноценных вариантов"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m40",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "/ru/authoring/markdown/#списки-и-цитаты",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Списки и цитаты"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m42",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../details/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Раскрывающийся блок"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[11]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[15]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[19]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[21]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

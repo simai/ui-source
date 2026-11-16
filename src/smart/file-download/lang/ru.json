@@ -3,13 +3,29 @@
   "runtime": {
     "file": "Файл",
     "preparing-text": "Готовим файл…",
-    "error-heading": "Не удалось подготовить файл",
+    "preparing-value-text": "Готовим… {percent}",
+    "failed-text": "Не удалось собрать",
     "retry-text": "Повторить",
-    "new-tab-text": "(откроется в новой вкладке)"
+    "retry-label": "Повторить: {name}",
+    "cancel-text": "Отменить",
+    "cancel-label": "Отменить: {name}",
+    "ready-text": "Готово",
+    "get-text": "Скачать",
+    "get-label": "Скачать {name}",
+    "new-tab-text": "(откроется в новой вкладке)",
+    "said-preparing": "Готовим файл «{name}»",
+    "said-ready": "Файл готов: «{name}»{said}",
+    "said-fetched": "Файл готов и скачан: «{name}»{said}",
+    "said-offer": "Файл готов: «{name}»{said}. Кнопка «Скачать»",
+    "said-cancelled": "Подготовка отменена: «{name}»",
+    "said-failed": "Ошибка: не удалось собрать «{name}»."
   },
   "events": {
     "retry": {
       "label": "Повторить"
+    },
+    "cancel": {
+      "label": "Отменить"
     }
   }
 }

@@ -1,0 +1,236 @@
+{
+  "format": "standard-contract",
+  "formatVersion": "1.0",
+  "id": "simai.composition",
+  "version": "1.0.0",
+  "title": "SIMAI Composition",
+  "appliesTo": [
+    "simai.composition.document",
+    "simai.composition.converter",
+    "simai.composition.renderer",
+    "simai.composition.editor"
+  ],
+  "requirements": [
+    {
+      "id": "json-is-canonical",
+      "level": "must",
+      "text": "A page and its content are one simai.composition.document (schema_version 1) in JSON. The JSON Document is the canonical form and the only reversible exchange form; HTML, Markdown and Editor.js are conversions of it.",
+      "verification": "manual",
+      "guidance": "One standard, one document format, one version and one conformance kit (owner decision 2026-11-10). Canonical form and digest: normalize() in src/core/js/composition/index.mjs."
+    },
+    {
+      "id": "three-type-sets",
+      "level": "must",
+      "text": "Types come in three sets. Layout is the set of the type registry; Content is the profile structured-content (the content.* types); Page is the profile ui-layout, which holds layout and content types together. The stored profile names stay ui-layout and structured-content in schema_version 1; a page profile named page waits for a schema_version 2.",
+      "verification": "manual",
+      "guidance": "Owner decision Q1 (2026-11-10): no migration; the reader name of ui-layout is the Page set."
+    },
+    {
+      "id": "unknown-profile-one-diagnostic",
+      "level": "must",
+      "text": "A Document of a profile the reader does not know gives one diagnostic, profile_unknown, whatever its size; checks of a node against its profile run only for a known profile.",
+      "verification": "manual"
+    },
+    {
+      "id": "model-is-the-source",
+      "level": "must",
+      "text": "While a Document is edited, the model is the source of truth: a view never removes what it cannot draw, and a node it cannot edit stays where it is, held by its id. The editing operations and the behaviour of such nodes (islands) are not part of this edition.",
+      "verification": "manual",
+      "guidance": "They are fixed after the sf-input-rich prototype (assessment section 7, Q4 and Q5; assignment F3)."
+    },
+    {
+      "id": "inline-entries",
+      "level": "must",
+      "text": "Inline content (inline model 1.2.0) is an array of entries: text runs with marks; links, which hold text runs and breaks; the break; and inline components from a closed list (badge, kbd, icon, button), never inside a link. Marks are a closed list (strong, em, code, strike) in any combination and a canonical order; a mark is never a style.",
+      "verification": "manual"
+    },
+    {
+      "id": "inline-normalisation",
+      "level": "must",
+      "text": "Normalising inline content merges equal neighbouring runs, sorts the known marks and keeps unknown ones after them, drops empty runs, joins neighbouring links of one address and splits a link around an inline component. The model never removes a break; the html@1 value projection applies the html@1 edge rule, which is idempotent.",
+      "verification": "manual",
+      "guidance": "inline-model.mjs normalizeInline; html-subset.mjs value mode (idempotent since 2026-11-10)."
+    },
+    {
+      "id": "unknown-survives",
+      "level": "must",
+      "text": "An unknown node, inline entry or mark survives every edit and every conversion: editing one part of a Document never changes another part, validation reports what it does not know, and a renderer draws nothing for it.",
+      "verification": "manual",
+      "guidance": "Assessment Q7; test plan items 2 and 2b."
+    },
+    {
+      "id": "soft-line-break",
+      "level": "must",
+      "text": "A break is a soft line break inside a block: {\"type\": \"break\", \"marks\"?: [...]}. HTML writes <br>; Markdown writes a backslash before the line end, and <br> in headings and table cells; an editor inserts one with Shift+Enter, declared in its keyboard map as the key effect break. A valid html@1 value converted to the model and back is the same bytes, and cleaning a stored html@1 value again leaves it unchanged.",
+      "verification": "manual",
+      "guidance": "html-value.mjs: toHtml(fromHtml(v).value).value === v for every valid stored value v."
+    },
+    {
+      "id": "foreign-block",
+      "level": "must",
+      "text": "A block of another source the model cannot hold is content.foreign {source: markdown|editorjs|html, raw, hash}. raw is the exact source slice for markdown and html and the block value for editorjs; hash is sha256: of raw as UTF-8, written by normalize and every adapter. It is kept, never dropped (C75): an editor shows it as an inert plate; a public page draws nothing of it and render returns the notice preserved_not_shown for it, so a site build warns; raw is never parsed into markup. It goes back only to its own source format, and there as it came only while it reads back as itself beside its neighbours; otherwise, and in any other format, in a reported carrier that nothing beside it can join (in Markdown :::preserved {source=...} around one fenced block, no other spelling); a block whose hash does not match (foreign_hash_mismatch) is kept, not drawn and not written.",
+      "verification": "manual"
+    },
+    {
+      "id": "losses-are-reported",
+      "level": "must",
+      "text": "Every converter returns {value, losses: [{code, path, what}]}; nothing is lost silently. The guarantee table of this standard (extension simai.composition, conversions) is normative.",
+      "verification": "manual",
+      "guidance": "Codes: not_expressible, form_normalized, docara_alert_title_required, foreign_hash_mismatch."
+    },
+    {
+      "id": "markdown-is-a-projection",
+      "level": "must",
+      "text": "Markdown is a projection of structured content and of a single text area, not of a page: CommonMark with GFM tables and strike, and the Docara directives. Node ids are written only on directive blocks; elsewhere they belong to the source-preserving adapter's map. Layout has no standard Markdown form; a page is exchanged as JSON.",
+      "verification": "manual",
+      "guidance": "Owner decision Q2 (2026-11-10). Module: src/core/js/composition/markdown.mjs."
+    },
+    {
+      "id": "framework-vocabulary",
+      "level": "must",
+      "text": "A Document uses the Framework's names (status, appearance, neutral, error). A format with names of its own is mapped by its adapter, and what the other side requires and the Document lacks is reported, not invented.",
+      "verification": "manual",
+      "guidance": "Docara alert: type <-> status, variant <-> appearance, clear <-> neutral, danger <-> error, the first heading <-> data.title; a title-less alert is docara_alert_title_required."
+    },
+    {
+      "id": "props-and-presentation",
+      "level": "must",
+      "text": "props are the parameters a type declares; presentation is a view, a preset and modifiers from registered lists, printed as utility classes. No style and no class name stands anywhere in a Document.",
+      "verification": "manual",
+      "guidance": "style is a forbidden key since 2026-11-10 (kit 2.0.0)."
+    },
+    {
+      "id": "versioning",
+      "level": "must",
+      "text": "A Document carries schema_version; every type manifest carries its version. A minor version only adds; a breaking change is a new type name or a new schema_version.",
+      "verification": "manual"
+    },
+    {
+      "id": "emit-to-knowing-hosts",
+      "level": "must",
+      "text": "A producer writes a new inline entry or type only to hosts whose Framework pair knows it; an older editor keeps it opaque and an older validator refuses it.",
+      "verification": "manual"
+    },
+    {
+      "id": "publishing-fails-closed",
+      "level": "must",
+      "text": "Publishing fails closed: by default a renderer refuses a Document it cannot fully validate and draws nothing, so a host keeps its last valid version; a placeholder for what it does not know is for an editor's canvas only.",
+      "verification": "manual",
+      "guidance": "render(document, {options: {unknown: 'refuse' | 'placeholder'}}); assessment Q7."
+    },
+    {
+      "id": "one-conformance-kit",
+      "level": "must",
+      "text": "A renderer of structured content passes the conformance kit (contracts/conformance/structured-content), its cases and its converter fixtures; a second renderer, in another language, passes the same kit.",
+      "verification": "manual",
+      "guidance": "Kit 2.1.0 is pinned by this edition."
+    }
+  ],
+  "uses": [
+    {
+      "id": "simai.framework.composition-recipe",
+      "version": "1.1.0",
+      "path": "../../pinned/composition-recipe-1.1.0.contract.lock.json",
+      "sha256": "271b0d8ac3f7eef42410269eb1ee1a64e7925610b591b425419f771d2e7768ed",
+      "description": "The Recipe contract: a page's layout, its regions and their inherit, replace and clear. Unchanged by this standard."
+    },
+    {
+      "id": "simai.framework.composition-type-manifest",
+      "version": "1.6.0",
+      "path": "../../pinned/composition-type-manifest-1.6.0.schema.json",
+      "sha256": "53f603377124a90a2340ce42453998f65642e0e28b046a4d9c7b5328024389b0",
+      "description": "The type manifest: a type's version, profiles, slots, data and props schemas, and presentation."
+    },
+    {
+      "id": "simai.composition.structured-content-conformance",
+      "version": "2.1.0",
+      "path": "../../pinned/structured-content-conformance-2.1.0.manifest.json",
+      "sha256": "8acccde1ca55a1524bf65fca50df386b92c4099b2a6d127af3fc0561e1c404b1",
+      "description": "The conformance kit of structured content: its manifest names every case and converter fixture and the type versions it was written for."
+    }
+  ],
+  "references": [
+    {
+      "id": "simai.composition.document",
+      "version": "1.0.0",
+      "description": "The Document format, schema_version 1: src/core/contracts/composition-document.v1.schema.json."
+    },
+    {
+      "id": "simai.linkage",
+      "version": "1.0.1",
+      "description": "How a consumer reads which Framework pair carries this edition."
+    }
+  ],
+  "specification": {
+    "id": "standard-contract.spec",
+    "version": "1.0.0",
+    "path": "../../standard-contract-1.0.schema.json",
+    "sha256": "ab535794e04b62cf10fca1915a91132b275fe121f3966a571b4882f927de2fb8",
+    "description": "Envelope schema, copied from ai-first standard-contract 1.0 at revision 8ed3d48efdb2435f1dd4142ab3339b00f5340fb1."
+  },
+  "extensions": {
+    "simai.ownership": {
+      "owner": "simai/ui-source",
+      "publication": "ui-doc",
+      "origin": "The external review of simai.composition (2026-11-10) and its assessment (ui-control control/research/2026-11-10-composition-review-assessment.md, sections 3 and 7), with the owner decisions of 2026-11-10.",
+      "scope_note": "The editing architecture (operations, history, islands, block clipboard) is not in 1.0.0; it follows the sf-input-rich prototype and the owner's yes."
+    },
+    "simai.composition": {
+      "type_sets": {
+        "layout": "the type registry",
+        "content": "profile structured-content",
+        "page": "profile ui-layout"
+      },
+      "inline_model": "1.2.0",
+      "loss_codes": [
+        "not_expressible",
+        "form_normalized",
+        "docara_alert_title_required",
+        "foreign_hash_mismatch"
+      ],
+      "conversions": [
+        {
+          "pair": "JSON <-> JSON",
+          "guarantee": "canonical form, lossless, digest stable",
+          "ids": "kept",
+          "unknown": "kept (opaque)"
+        },
+        {
+          "pair": "JSON -> HTML",
+          "guarantee": "render, one way",
+          "ids": "data-sf-composition-id",
+          "unknown": "placeholder or refused, by mode"
+        },
+        {
+          "pair": "HTML -> JSON",
+          "guarantee": "lossless for html@1; anything else cleaned away and reported",
+          "ids": "new",
+          "unknown": "none in html@1"
+        },
+        {
+          "pair": "html@1 value <-> JSON",
+          "guarantee": "toHtml(fromHtml(v)) === v for every valid value",
+          "ids": "not in an html value",
+          "unknown": "marks code and strike, inline components, other types: not_expressible"
+        },
+        {
+          "pair": "JSON <-> Markdown",
+          "guarantee": "content set and single text areas; lossless but for node ids of blocks without a directive, presentation, bindings, extensions, figure size, table header column/both/none and caption; a block the model cannot hold is content.foreign with its source text",
+          "ids": "directive blocks {#id}",
+          "unknown": ":::preserved {source=...} carrier (C75); others not_expressible"
+        },
+        {
+          "pair": "JSON <-> Editor.js",
+          "guarantee": "SIMAI -> Editor.js -> SIMAI equal including ids (sf-<type> tools); Editor.js -> SIMAI -> Editor.js the same value for the standard tools and foreign blocks; inline HTML outside the mapped tags reported",
+          "ids": "Editor.js block id",
+          "unknown": "content.foreign {source: editorjs}"
+        }
+      ],
+      "modules": [
+        "src/core/js/composition/html-value.mjs",
+        "src/core/js/composition/markdown.mjs",
+        "src/core/js/composition/editorjs.mjs"
+      ]
+    }
+  }
+}

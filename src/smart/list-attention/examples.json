@@ -390,8 +390,8 @@
         ]
       },
       "first-paint": {
-        "max-bytes": 32768,
-        "why": "The full checks page: three open groups of eight rows with their affected counts, actions and «⋯», and the closed «Пройдено» group of six."
+        "max-bytes": 34816,
+        "why": "The full checks page: three open groups of eight rows with their affected counts, actions and «⋯», and the closed «Пройдено» group of six; the derived skeleton of its late data (a bar around every text) is the larger file of the two."
       }
     }
   ],

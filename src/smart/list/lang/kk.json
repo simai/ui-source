@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "actions-label": "Әрекеттер: {text}",
+    "count-label": {
+      "one": "{n} оқылмаған",
+      "other": "{n} оқылмаған"
+    },
+    "empty-text": "Әзірге бос",
+    "label": "Тізім",
+    "loading-more-text": "Жүктелуде…",
+    "loading-text": "Тізім жүктелуде",
+    "more-text": "Тағы көрсету",
+    "pinned-text": "Бекітілгендер",
+    "rename-label": "Жаңа атау",
+    "rename-text": "Атын өзгерту",
+    "undated-text": "Күні жоқ",
+    "ungrouped-text": "Басқа",
+    "unread-text": "оқылмаған",
+    "untitled-text": "Атаусыз"
+  }
+}

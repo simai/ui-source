@@ -2,6 +2,7 @@ import countriesData from '../../component/country-code/data/countries.json';
 import { pageLanguage } from '../../core/js/page-language';
 import {
   bindCountryCode,
+  countryFormValue,
   normalizeCountriesList,
   normalizeIso2,
   resolveDefaultFlagBase,
@@ -10,14 +11,18 @@ import {
 } from '../../component/country-code/js/_country_code';
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
-import { FormField } from '../helpers/form-field';
+import {ladderSize} from '../../component/field-size';
+import { FormField, ShownValidity } from '../helpers/form-field';
 import { noteDeprecated } from '../../core/js/deprecations.js';
 import { renderCountryCodeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-input-country from its component.json (standard simai.smart-component
 // 1.3.8 §3, §4, §11, §16.20, §17.1): the settings are attributes and properties
@@ -34,7 +39,7 @@ const CountryCodeElement = elementFromManifest(manifest, {
 const COUNTRY_CODE_SELECTOR = '.sf-country-code';
 const COUNTRY_ITEMS = Array.isArray(countriesData?.items) ? countriesData.items : [];
 
-class SfCountryCode extends FormField(CountryCodeElement) {
+class SfCountryCode extends ShownValidity(FormField(CountryCodeElement)) {
   static get props() {
     return {
       ...super.props,
@@ -48,12 +53,12 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     this._countries = null;
     this._boundRoot = null;
     this._renderAttributes = new Set();
-    // The tel text is the value the form gets: every keystroke and every
-    // country chosen tells the form (§17.1) -- FormField listens for them.
+    // The number in E.164 is the value the form gets: every keystroke and
+    // every country chosen tells the form (§17.1) -- FormField listens for them.
   }
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-country');
+    return ladderSize(this.getAttribute('size'));
   }
 
   // A telephone inside a field that is already labelled -- a record panel draws
@@ -83,11 +88,13 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return this.querySelector(':scope .sf-country-code-field input') || null;
   }
 
-  // What the form gets (§17.1): the tel text as the person sees it, nothing
-  // while disabled.
+  // What the form gets (§17.1 item 2, the form format): the number in E.164,
+  // `+79031234567` for the `+7 903 123-45-67` the person sees; nothing for the
+  // code alone, nothing while disabled.
   sfFormValue() {
     if (this.disabled) return null;
-    return this.value;
+    const dial = this.querySelector(':scope .sf-country-code')?.dataset?.dialCode || '';
+    return countryFormValue(this.value, dial);
   }
 
   // §17.2: a required phone has digits after the dial code; the dial code
@@ -116,10 +123,9 @@ class SfCountryCode extends FormField(CountryCodeElement) {
 
   get locale() {
     // The country names and the field's own words follow the page unless a
-    // locale is given: Russian on a Russian page, English otherwise.
-    return String(this.getAttribute('locale') || pageLanguage(this)).toLowerCase() === 'ru'
-      ? 'ru'
-      : 'en';
+    // locale is given: ru and en from the country table, any other language
+    // through Intl (C177 (9): a third language was English).
+    return String(this.getAttribute('locale') || pageLanguage(this)).toLowerCase().split('-')[0] || 'en';
   }
 
   get useMask() {
@@ -187,6 +193,12 @@ class SfCountryCode extends FormField(CountryCodeElement) {
     return String(this.getAttribute('mask-placeholder-char') || '_');
   }
 
+  // The countries on top of the list (owner C87): "RU,KZ,BY". Optional:
+  // without the attribute no group at all; an empty one, recent choices alone.
+  get preferred() {
+    return this.hasAttribute('preferred') ? String(this.getAttribute('preferred') || '') : undefined;
+  }
+
   get maxItems() {
     return Math.trunc(this.getNumberAttr('max-items', 0));
   }
@@ -208,6 +220,9 @@ class SfCountryCode extends FormField(CountryCodeElement) {
 
     return this.createTemplateContext({
       ...props,
+      // C153 (3): the page's error, or the one the field shows itself (ShownValidity).
+      invalid: this.sfShownInvalid(props.invalid),
+      errorMessage: this.sfShownMessage(props.invalid, props.errorMessage),
       open: preserveOpen ? root.classList.contains('open') : this.open,
       disabled: preserveDisabled ? !!root.querySelector('input')?.disabled || root.classList.contains('disabled') : this.disabled,
       countries: this.countries.length
@@ -222,6 +237,7 @@ class SfCountryCode extends FormField(CountryCodeElement) {
       iso2: this.iso2,
       flagBase: this.flagBase,
       maxItems: this.maxItems,
+      preferred: this.preferred,
       // The host is the form control where the browser has ElementInternals,
       // so the inner tel input carries no name (§17.1 item 6); elsewhere it is
       // named and joins the form the host names, as before.

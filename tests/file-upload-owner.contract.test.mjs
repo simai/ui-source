@@ -27,7 +27,7 @@ const examplePath = (id) => SMART_EXAMPLES[id] ?? `components/file-upload/${id}`
 test('FileUpload keeps File objects for application transport and clears the picker for reselection', async () => {
   const source = await read('src/component/file-upload/js/_file_upload.js');
   assert.match(source, /file,\s*\}\)\);/);
-  assert.match(source, /applySelectedFiles\(root, files, 'input'\);\s*event\.target\.value = '';/);
+  assert.match(source, /takeFiles\(root, files, 'input'\);\s*event\.target\.value = '';/);
   assert.doesNotMatch(source, /new FormData|fetch\(|XMLHttpRequest/);
 });
 
@@ -80,8 +80,8 @@ test('FileUpload documents the item it exchanges, the two text attributes and bi
   for (const key of ['id', 'name', 'fileName', 'fileSize', 'sizeText', 'progress', 'state', 'status', 'errorMessage', 'retryText', 'icon', 'file']) {
     assert.ok(docs.includes(`\`${key}\``), `the item's ${key} is documented`);
   }
-  assert.match(ordinary, /\['process', 'done', 'error'\]\.includes\(state\)/);
-  assert.match(docs, /`process` \(the bar\), `done` \(the check\), `error` \(the retry button\)/);
+  assert.match(ordinary, /ITEM_STATES = Object\.freeze\(\['ready', 'process', 'done', 'error'\]\)/);
+  assert.match(docs, /`ready` \(chosen, not sent: no bar\), `process` \(the bar\), `done` \(the check\), `error` \(the retry button\)/);
 
   // text is the words after the link, not the whole prompt.
   // Its default is the language file's word (standard 1.3.8 §11, §16 item 44).

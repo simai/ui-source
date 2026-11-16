@@ -1,45 +1,81 @@
+@use '../../../core/scss/vars/sf_var__size' as size;
+
 @layer sf.components {
+  /* One dot for every status mark (owner decision C185 (7), (8)): the
+     coloured disc is the step (C132) with nothing around it, so the box is
+     the disc and every gap and alignment reads from the disc's edge. A word
+     written inside .sf-dot, after the disc, stands at the gap of a mark in a
+     row (C105 H2, --sf-space-1/2: 12, 8 in a compact area and on a phone). */
   .sf-dot {
     --sf-dot-item--background-color: var(--sf-primary);
-    --sf-dot-item--size: var(--sf-a8);
+    --sf-dot-item--size: #{size.small-step(8)};
+    // The ring of the current form, drawn outside the disc (C132 #q-micro):
+    // a line of the step's ring table, 1 px on the smallest steps, 2 from
+    // 1/2 on, standing off the disc by the same line.
+    --sf-dot-item--ring: var(--sf-a2);
     display: inline-flex;
     flex: none;
     align-items: center;
     justify-content: center;
     vertical-align: middle;
     background-color: var(--sf-dot--background-color, var(--sf-transparent));
-    gap: var(--sf-dot--gap, var(--sf-space-1));
-    line-height: 0;
-    padding-bottom: var(--sf-dot--padding-bottom, var(--sf-a1));
-    padding-inline-end: var(--sf-dot--padding-right, var(--sf-a1));
-    padding-inline-start: var(--sf-dot--padding-left, var(--sf-a1));
-    padding-top: var(--sf-dot--padding-top, var(--sf-a1));
+    gap: var(--sf-dot--gap, var(--sf-space-1\/2));
+    padding: 0;
   }
 
   .sf-dot .sf-dot-item {
     --sf-dot-item--border-radius: var(--sf-radius-circle);
     display: block;
     flex: 0 0 auto;
+    box-sizing: border-box;
     background-color: var(--sf-dot-item--background-color);
     border-radius: var(--sf-dot-item--border-radius);
     block-size: var(--sf-dot-item--height, var(--sf-dot-item--size));
     inline-size: var(--sf-dot-item--width, var(--sf-dot-item--size));
   }
 
+  /* The sizes are small steps (owner decision C132, 2026-11-13): 6 / 6 / 6 /
+     8 / 12 / 16 at 1/4, 1/3, 1/2, 1, 2 and 3 (were 4 / 6 / 8 / 10, and an
+     unknown 1/4 or 3 drew 8). A coloured dot is never under 6; 4 is left to
+     ticks and separators. */
   .sf-dot.sf-dot--size-1 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-a8);
+    --sf-dot-item--size: #{size.small-step(8)};
   }
 
   .sf-dot.sf-dot--size-2 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-b0);
+    --sf-dot-item--size: #{size.small-step(12)};
+  }
+
+  .sf-dot.sf-dot--size-3 .sf-dot-item {
+    --sf-dot-item--size: #{size.small-step(16)};
+  }
+
+  .sf-dot.sf-dot--size-1\/4 .sf-dot-item {
+    --sf-dot-item--size: #{size.small-step(6)};
   }
 
   .sf-dot.sf-dot--size-1\/3 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-a4);
+    --sf-dot-item--size: #{size.small-step(6)};
   }
 
   .sf-dot.sf-dot--size-1\/2 .sf-dot-item {
-    --sf-dot-item--size: var(--sf-a6);
+    --sf-dot-item--size: #{size.small-step(6)};
+  }
+
+  .sf-dot:is(.sf-dot--size-1\/4, .sf-dot--size-1\/3) {
+    --sf-dot-item--ring: var(--sf-a1);
+  }
+
+  /* Three forms (C185 (8), C61, C73): a state is told by the shape as well
+     as the colour. Solid is the default (done, on, a status). The ring is the
+     current one: the solid disc with a ring of its colour outside, through a
+     gap of the place under it. Hollow is the one ahead, or away (C152 (5)):
+     no fill, a ring of the line's width inside the disc's edge, so the disc
+     keeps its size. Without a status the hollow dot is the outline's grey; a
+     status keeps the shape and colours it (an error ahead is an empty error
+     ring). Declared before the colours, so a status class wins. */
+  .sf-dot.sf-dot--hollow {
+    --sf-dot-item--background-color: var(--sf-outline);
   }
 
   .sf-dot.sf-dot--primary {
@@ -66,10 +102,42 @@
     --sf-dot-item--background-color: var(--sf-on-surface-variant);
   }
 
+  .sf-dot.sf-dot--ring .sf-dot-item {
+    box-shadow:
+      0 0 0 var(--sf-dot-item--ring) var(--sf-surface-place, var(--sf-surface-page)),
+      0 0 0 calc(2 * var(--sf-dot-item--ring)) var(--sf-dot-item--background-color);
+  }
+
+  .sf-dot.sf-dot--hollow .sf-dot-item {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 var(--sf-dot-item--ring) var(--sf-dot-item--background-color);
+  }
+
+  /* The ring stands outside the disc, so the box keeps the disc's size; a
+     word after a ringed dot keeps the mark gap from the ring, not the disc. */
+  .sf-dot.sf-dot--ring {
+    gap: var(--sf-dot--gap, calc(var(--sf-space-1\/2) + 2 * var(--sf-dot-item--ring)));
+  }
+
   @media (forced-colors: active) {
     .sf-dot .sf-dot-item {
+      forced-color-adjust: none;
       --sf-dot-item--background-color: CanvasText;
-      outline: var(--sf-a1) solid Canvas;
+      background-color: CanvasText;
+      box-shadow: none;
+    }
+
+    .sf-dot.sf-dot--ring .sf-dot-item {
+      box-shadow: none;
+      outline: var(--sf-dot-item--ring) solid CanvasText;
+      outline-offset: var(--sf-dot-item--ring);
+    }
+
+    .sf-dot.sf-dot--hollow .sf-dot-item {
+      background-color: Canvas;
+      box-shadow: none;
+      outline: var(--sf-dot-item--ring) solid CanvasText;
+      outline-offset: calc(-1 * var(--sf-dot-item--ring));
     }
   }
 }

@@ -32,7 +32,7 @@ test('modal on* helpers keep only their own modal events', () => {
 });
 
 test('Gallery and SF.create handlers ignore nested modal events', () => {
-    assert.match(gallery, /_handleModalAfterOpen\(event\) \{\s*\/\/[^\n]*\n\s*if \(event\?\.target && event\.target !== this\._modal\) return;/);
-    assert.match(gallery, /_handleModalAfterClose\(event\) \{\s*if \(event\?\.target && event\.target !== this\._modal\) return;/);
+    // sf-gallery 1.3.0 (C150) draws no sf-modal: its viewer is a dialog of its own.
+    assert.doesNotMatch(gallery, /<sf-modal|_handleModalAfter|getModal\(\) \{[^}]*return this\._modal/);
     assert.match(loader, /\/\^\(modal\|drawer\):\/\.test\(eventName\)\s*\? \(event\) => \{ if \(event\.target === element\) value\.call\(element, event\); \}/);
 });

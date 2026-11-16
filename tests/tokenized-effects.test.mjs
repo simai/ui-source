@@ -17,7 +17,8 @@ test('stripe, loading and loader motion geometry use system primitives',()=>{
 
 test('tabs and screen-reader clipping use the fixed pixel primitive consistently',()=>{
   const tabs=read('component/tabs/scss/_css__tabs.scss');
-  assert.match(tabs,/border-bottom-width: calc\(var\(--sf-tabs--border-width, var\(--sf-px\)\) \* 2\)/);
+  // The selected line is a border under the letters (owner decision C99).
+  assert.match(tabs,/border-block-end: calc\(var\(--sf-tabs--border-width, var\(--sf-px\)\) \* 2\) solid/);
   assert.doesNotMatch(tabs,/(?:1|2|0)px/);
   const sr=read('utility/sr-only/default/scss/_sf_css__sr_only.scss');
   assert.equal((sr.match(/var\(--sf-px\)/g)||[]).length,3);

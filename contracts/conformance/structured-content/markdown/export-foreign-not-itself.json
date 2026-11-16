@@ -1,0 +1,76 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown-export",
+  "schema_version": 1,
+  "id": "export-foreign-not-itself",
+  "summary": "A foreign Markdown raw that would read back as model blocks (two paragraphs, plain text) goes in the carrier; a carriage return inside raw is reported, since Markdown line ends are LF.",
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "f1",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "a\n\nb"
+              }
+            },
+            {
+              "id": "f2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "plain"
+              }
+            },
+            {
+              "id": "f3",
+              "type": "content.foreign",
+              "data": {
+                "source": "html",
+                "raw": "<p>a</p>\r\n<p>b</p>"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "markdown": ":::preserved {source=markdown}\n```markdown\na\n\nb\n```\n:::\n\n:::preserved {source=markdown}\n```markdown\nplain\n```\n:::\n\n:::preserved {source=html}\n```html\n<p>a</p>\r\n<p>b</p>\n```\n:::\n",
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "foreign markdown block, written in a :::preserved carrier"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[1]",
+        "what": "foreign markdown block, written in a :::preserved carrier"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[2].data.raw",
+        "what": "a carriage return in a foreign block: Markdown line ends are LF"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[2]",
+        "what": "foreign html block, written in a :::preserved carrier"
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "runtime": {
+    "decrement": "Decrease value",
+    "increment": "Increase value"
+  }
+}

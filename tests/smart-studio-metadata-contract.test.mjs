@@ -15,14 +15,14 @@ test('button Studio contract preserves closed choices and open icon examples', a
   ]);
   const properties = manifest.inputs.properties;
 
-  // The list stays closed, and it carries the surface appearance built on the
-  // neutral alpha ramp; link reads as ghost since sf-button 1.9.0 (decision
-  // C15, a dated value alias listed in compatibility.aliases). Studio offers
-  // exactly the types the button CSS styles.
-  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'ghost', 'surface']);
+  // The list stays closed; link reads as ghost since sf-button 1.9.0 (decision
+  // C15, a dated value alias listed in compatibility.aliases). surface and the
+  // scheme secondary are former names since sf-button 1.14.0 (decision C116),
+  // drawn as tonal on-surface and on-surface, so Studio no longer offers them.
+  assert.deepEqual(properties.type.enum, ['default', 'tonal', 'outline', 'ghost']);
   assert.ok(manifest.compatibility.aliases.includes('appearance=link'));
   // on-surface-variant: the on-surface family one step quieter (sf-button 1.2.0).
-  assert.deepEqual(properties.scheme.enum, ['primary', 'secondary', 'on-surface', 'on-surface-variant']);
+  assert.deepEqual(properties.scheme.enum, ['primary', 'on-surface', 'on-surface-variant']);
   assert.deepEqual(properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(properties['icon-position'].enum, ['start', 'end']);
   assert.equal(properties['root-class'].type, 'string');
@@ -85,6 +85,7 @@ test('all owner reference fixtures use declared component inputs and meaningful 
   // 66 with sf-confirm and sf-confirm-change (block confirm, 2026-11-03); 67 with sf-alert-bar (2026-11-05);
   // 69 with sf-list and sf-list-feed (block list, 2026-11-05); 70 with sf-language (2026-11-06); 71 with sf-settings (2026-11-06);
   // 73 with sf-wizard and sf-wizard-step (2026-11-06); 76 with sf-tile-metric, sf-list-attention and sf-progress-run (2026-11-07);
-  // 79 with sf-input-choice, sf-list-description and sf-list-timeline (2026-11-08); 80 with sf-time and 81 with sf-change (C40, 2026-11-10).
-  assert.equal(fixtureCount, 81);
+  // 79 with sf-input-choice, sf-list-description and sf-list-timeline (2026-11-08); 80 with sf-time and 81 with sf-change (C40, 2026-11-10); 82 with sf-tag-group (C145, 2026-11-14);
+  // 83 with sf-form (C182, 2026-11-14); 84 with sf-display-settings (C196, 2026-11-15).
+  assert.equal(fixtureCount, 84);
 });

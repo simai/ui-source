@@ -1,6 +1,6 @@
 import { createDropdownInteraction, syncDropdownCheckbox } from '../interaction';
 import { bindFormReset } from '../../form-reset-helper';
-import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace } from '../portal';
+import { openDropdownPortal, positionDropdownPortal, closeDropdownPortal, alignDropdownInPlace, scrolledInside } from '../portal';
 import { retireFieldSizeClass } from '../../field-size';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 
@@ -8,14 +8,15 @@ const DROPDOWN_SELECTOR = ".sf-dropdown";
 const BOUND_FLAG = "sfDropdownBound";
 const CHECKMARK_SELECTOR = ".sf-list-item-selected-item";
 
-// From size 1 up the field has room for a compact tag of its own size, with the
-// field's own text. Size 1/2 does not (one pixel would be left), so its tag
-// goes one size down onto the field line, rendered inline: its label is one
-// text step down and it takes no block padding.
+// A tag in the field is part of the field (owner decision C145 (1), variant
+// A): inline, one size below the field, so its label is one text step under
+// the field's; the field gives it its height (the field less --sf-space-1/4
+// above and below) as its line. From size 1 up it was a low chip of the
+// field's own size (C27), 32 in a 40 field.
 const FIELD_TAG = Object.freeze({
-  "1/2": {size: "1/3", spacing: ""},
-  "1": {size: "1", spacing: "compact"},
-  "2": {size: "2", spacing: "compact"},
+  "1/2": {size: "1/3", height: ""},
+  "1": {size: "1/2", height: ""},
+  "2": {size: "1", height: ""},
 });
 
 function isTagDropdown(root) {
@@ -98,7 +99,7 @@ function getHiddenInput(root) {
 }
 
 function getToggleIcon(root) {
-  return root.querySelector(".sf-dropdown-field .sf-icon-button .sf-icon");
+  return root.querySelector(".sf-dropdown-field :is(.sf-icon-button, .sf-field-action) .sf-icon");
 }
 
 function getListWrap(root) {
@@ -136,7 +137,9 @@ function ensurePortalList(root) {
     list.addEventListener('keydown',onRootKeydown);
   }
   if (!root.__sfDropdownPortalOnViewportChange) {
-    root.__sfDropdownPortalOnViewportChange=()=>{
+    root.__sfDropdownPortalOnViewportChange=(event)=>{
+      // The list's own scroll moves nothing (owner R171).
+      if(scrolledInside(getList(root),event))return;
       if(root.classList.contains('sf-dropdown--open'))positionPortalList(root);
     };
   }
@@ -229,7 +232,7 @@ function createTagNode(root, item) {
   const size = root.className.match(/sf-dropdown--size-([^\s]+)/)?.[1] || "1";
   const fieldTag = FIELD_TAG[size] || FIELD_TAG["1"];
   const tagSize = fieldTag.size;
-  const tagSpacing = fieldTag.spacing ? ` spacing-${fieldTag.spacing}` : "";
+  const tagSpacing = fieldTag.height ? ` sf-tag--height-${fieldTag.height}` : "";
   const isIconItem = item.classList.contains("sf-list-item--icon");
   const isAvatarItem = item.classList.contains("sf-list-item--avatar");
   const isColorItem = item.classList.contains("sf-list-item--color");
@@ -506,7 +509,7 @@ function syncDisabledState(root) {
   const field = getField(root);
   const triggerInput = getTriggerInput(root);
   const searchInput = getSearchInput(root);
-  const toggleButton = root.querySelector(".sf-dropdown-field .sf-icon-button");
+  const toggleButton = root.querySelector(".sf-dropdown-field > :is(.sf-icon-button, .sf-field-action)");
 
   root.removeAttribute("aria-disabled");
   // A native button trigger says it is disabled through its own attribute.

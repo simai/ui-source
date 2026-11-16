@@ -31,7 +31,11 @@ Main attributes:
 
 - `template`
 - `kind="icon|close"`
-- `size`
+- `size` — the icon and the control's step on the ladder, `1` by default.
+  Beside a value in a line of text, give it the line's step (decision C103):
+  `size="1/2"` beside text 1/2 (32, icon 20), `size="1"` beside text 1 (40,
+  icon 24). In a row of buttons or a field it takes their size; density moves
+  it with the row.
 - `height="low|default|high|highest"` (1.8.0, decisions C27 and C35) — the
   control height separate from the size, as on `sf-button`: the size's
   tightness steps on the UI height ladder, the icon keeping the size. The
@@ -55,12 +59,31 @@ Main attributes:
   on a dark fill there is no quieter step.
 - `status="danger"` — what the control is about. The destructive one, for a
   control that deletes, discards or cannot be undone (decision C13: controls
-  say `danger`, fields and messages `error`; `error` is read as `danger`). In
-  every appearance it paints with the error
-  family's twin of every primary role, so it behaves exactly like a primary
-  control and only its colour says what it does. A status wins over the scheme,
-  because the two cannot both colour the control.
+  say `danger`, fields and messages `error`; `error` is read as `danger`). It
+  paints with the error family's twin of every primary role, so it behaves
+  exactly like a primary control and only its colour says what it does. A
+  status wins over the scheme, because the two cannot both colour the control.
+  `danger` is the only status of an icon button (decision C116): there are no
+  success, warning or info icon buttons; another word draws no status and
+  warns once in the console. A danger icon button is `default`, `outline` or,
+  in a row, `ghost`; `tonal` (and the retired `surface`) with
+  `status="danger"` draws as `outline` until 2027-01-01, with one warning.
 - `icon`
+- `href`, `target`, `rel`, `download` (1.9.0, decision C51) — with an `href`
+  the icon button is a native link (`<a class="sf-icon-button">`) with its
+  look: the quiet «Скачать <name>» at the end of a table row is a real link to
+  the file, so the browser's link keys, context menu and download work. The
+  address takes `sf-button`'s rule (a relative address, a fragment, http(s),
+  mailto, tel; any other scheme draws a button); `target="_blank"` with no
+  `rel` says `noopener noreferrer`; `download` is the `<a download>` name.
+  Disabled or loading, the link has no `href`, says `aria-disabled` and is not
+  followed. `native-type`, `pressed` and a cycle do not apply to a link. The
+  name is the `aria-label`, as on the button.
+
+  ```html
+  <sf-button-icon size="1/2" appearance="ghost" scheme="on-surface-variant" icon="download"
+    href="/files/invoice-1043.pdf" download="Счёт 1043.pdf" aria-label="Скачать Счёт 1043.pdf"></sf-button-icon>
+  ```
 - `spacing="compact|normal|comfortable|spacious"`
 - `radius="default|square|rounded"`
 - `root-class`
@@ -161,10 +184,31 @@ Close variant:
 ></sf-button-icon>
 ```
 
+## Name tooltip
+
+An icon button shows its own name as a tooltip (owner decision C160 (1),
+1.11.0): hover for 0.5 s, keyboard focus at once, a long press on touch. The
+text is the host's `title` if one is written, else the cycle's tooltip, else
+the pressed label, else `aria-label`. The native `title` tooltip is not drawn
+(the button carries `title=""`), and the text describes the button
+(`aria-describedby`) when it differs from its name. The tooltip is the shared
+one (`data-tooltip`, component tooltip), made on the first hover or focus: it
+stands below the button and flips above at the bottom edge.
+
+- `tooltip="off"` -- no name tooltip; a written `title` stays the native one.
+- A page that links its own tooltip (`data-tooltip` on the host) keeps it.
+
+```html
+<sf-button-icon icon="format_bold" aria-label="Полужирный"></sf-button-icon>
+<sf-button-icon icon="close" aria-label="Закрыть" title="Закрыть без сохранения"></sf-button-icon>
+<sf-button-icon icon="help" aria-label="Справка" tooltip="off"></sf-button-icon>
+```
+
 ## Host attributes
 
 Attributes the component does not own are copied to the native `<button>` it
-renders, so an author's `aria-*` or `title` reach the real control.
+renders, so an author's `aria-*` reach the real control (`title` and `tooltip`
+are the name tooltip's, above).
 
 A `data-*` is **moved, not copied** — the same rule as `<sf-button>`. It ends
 up on the native button, which is the one element that has a box, paints, takes

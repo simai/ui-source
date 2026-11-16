@@ -19,12 +19,15 @@
 // - On the Framework's translucent rows -- a selected list option, a current
 //   context-menu item in its panel, the navigation menu's and the
 //   documentation tree's current page, a selected tree item, the admin menu's
-//   selected search row, a checked choice card, a selected row on a strong
+//   selected search row, a selected row on a strong
 //   coloured place -- and on a row that declares the role with its own fill (a table
 //   row, an open record, as a set writes it), a tonal badge's fill is the
 //   same pixel as on the place the row stands on (each channel within 1), and
 //   its text keeps 4.5:1 (or, on a strong place, what it has on the place). A main or an outline badge is untouched.
 // - A place inside such a row (a popup) takes the role back: no image there.
+// - A checked choice card declares no underlay (input-choice audit
+//   2026-11-11): its tonal badge stacks over the card's fill, the step above
+//   it, so the plate shows (C28).
 // - A row that does not declare the role is drawn as before (no image), and so
 //   is a selected row on a soft coloured place, which has no solid colour.
 // Each pixel is the mean of a 4 x 4 block (Chrome dithers gradients by one
@@ -79,7 +82,7 @@ const CONTEXTS = [
   {id: 'tree', kind: 'fill', on: 'page', html: (b) => `<div class="sf-tree"><div class="sf-tree-item" aria-selected="true"><div class="sf-tree-item-container ctx" id="tree">${b}</div></div></div>`},
   {id: 'docs-tree', kind: 'fill', on: 'page', html: (b) => `<nav class="sf-menu sf-menu--documentation-tree"><a class="sf-menu-element ctx" aria-current="page" href="#" id="docs-tree">${b}</a></nav>`},
   {id: 'admin-search', kind: 'fill', on: 'page', html: (b) => `<div class="sf-admin-menu"><div class="sf-admin-menu-search-row selected ctx" id="admin-search">${b}</div></div>`},
-  {id: 'choice', kind: 'fill', on: 'page', html: (b) => `<div class="sf-choice"><div class="sf-choice-card sf-choice-card--checked ctx" id="choice">${b}</div></div>`},
+  {id: 'choice', kind: 'undeclared', on: 'page', html: (b) => `<div class="sf-choice"><div class="sf-choice-card sf-choice-card--checked ctx" id="choice">${b}</div></div>`},
   {id: 'strong-row', kind: 'fill', on: 'strong', html: (b) => `<div class="bg-primary color-on-primary ctx-wrap"><div class="sf-list" role="listbox"><div class="sf-list-item selected ctx" role="option" aria-selected="true" id="strong-row">${b}</div></div></div>`},
   // A soft coloured place is translucent: it has no solid colour, so a row on
   // it leaves the role off and its badges are drawn as on the base (DEV D1).

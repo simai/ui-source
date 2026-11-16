@@ -3,7 +3,10 @@
 // animation utility's classes and `animation-on-view` holds its animation at
 // the first frame until it enters the viewport, then plays it once:
 //
-//   <div class="animation animation-from-bottom animation-on-view">...</div>
+//   <div class="animation animation-on-view">...</div>
+//
+// (animation-from-left, -right and -bottom are former names until 2027-01-01,
+// owner decision C187 (6); the Loader notes them in SF.deprecations.)
 //
 // Core marks such an element data-sf-on-view="waiting" -- the utility's sheet
 // pauses the animation there, so the element keeps its from-state and never
@@ -22,6 +25,9 @@
 // its own: the Loader's scan is debounced and runs after the element may
 // already have painted, while a mutation callback marks it before the first
 // frame (the same reason effects.js watches its declarations itself).
+
+// The device's reduced motion or the site's «остановить движение» (C196).
+import {reducedMotion, watchMotion} from './motion.js';
 
 export const ON_VIEW_CLASS = 'animation-on-view';
 export const ON_VIEW_STATE = 'data-sf-on-view';
@@ -46,7 +52,7 @@ export function installOnView(win = globalThis) {
   if (win.__sfOnView?.document === doc) return win.__sfOnView;
   const Sight = win.IntersectionObserver;
   const Changes = win.MutationObserver;
-  const motion = win.matchMedia?.('(prefers-reduced-motion: reduce)') ?? null;
+  const still = () => reducedMotion(doc.documentElement, win);
   let sight = null;
   let waiting = 0;
 
@@ -65,7 +71,7 @@ export function installOnView(win = globalThis) {
     return sight;
   };
   const mark = (element) => {
-    if (typeof Sight !== 'function' || motion?.matches) return;
+    if (typeof Sight !== 'function' || still()) return;
     element.setAttribute(ON_VIEW_STATE, 'waiting');
     waiting += 1;
     observer().observe(element);
@@ -97,8 +103,8 @@ export function installOnView(win = globalThis) {
     }
   }) : null;
   changes?.observe(doc.documentElement, {childList: true, subtree: true});
-  const onMotion = () => { if (motion.matches) showAll(); };
-  motion?.addEventListener?.('change', onMotion);
+  const onMotion = () => { if (still()) showAll(); };
+  const stopMotion = watchMotion(onMotion, win);
 
   const handle = Object.freeze({
     document: doc,
@@ -107,7 +113,7 @@ export function installOnView(win = globalThis) {
     stop() {
       changes?.disconnect();
       sight?.disconnect();
-      motion?.removeEventListener?.('change', onMotion);
+      stopMotion();
       if (win.__sfOnView === handle) delete win.__sfOnView;
     },
   });

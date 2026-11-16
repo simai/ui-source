@@ -16,6 +16,11 @@
 //   - default and tonal secondary keep their own fill (--sf-secondary and
 //     --sf-secondary-container): nothing else of secondary changed.
 //
+// Since sf-button 1.14.0 (owner decision C116) secondary is a former name of
+// the Smart button: it draws as on-surface, label and icon included, and the
+// filled and tonal ones lose the secondary fill. The plain class buttons keep
+// the secondary ink above (component.buttons is unchanged).
+//
 // --report prints the measurements and exits 0 whatever they say.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
@@ -157,8 +162,8 @@ try {
           for (const property of ['h', 'block', 'side', 'textSide', 'border', 'fill', 'font']) {
             if (base[property] !== secondary[property]) failures.push(`${theme} size ${size} ${kind} ${look}: secondary ${property} ${secondary[property]}, on-surface ${base[property]}`);
           }
-          if (secondary.label !== ink) failures.push(`${theme} size ${size} ${kind} ${look}: secondary label ${secondary.label}, --sf-secondary ${ink}`);
-          if (kind === 'smart' && secondary.icon !== ink) failures.push(`${theme} size ${size} ${kind} ${look}: secondary icon ${secondary.icon}, --sf-secondary ${ink}`);
+          if (kind === 'plain' && secondary.label !== ink) failures.push(`${theme} size ${size} ${kind} ${look}: secondary label ${secondary.label}, --sf-secondary ${ink}`);
+          if (kind === 'smart' && (secondary.label !== base.label || secondary.icon !== base.icon)) failures.push(`${theme} size ${size} ${kind} ${look}: secondary label ${secondary.label} icon ${secondary.icon}, on-surface ${base.label} ${base.icon} (C116)`);
         }
       }
       // One height per size: every cell of the row, Smart and plain, stands as tall.
@@ -166,15 +171,15 @@ try {
       if (heights.size !== 1) failures.push(`${theme} size ${size}: buttons of different heights (${[...heights].join(', ')})`);
       const filled = cells['smart default secondary'];
       const tonal = cells['smart tonal secondary'];
-      if (!filled || filled.fill !== ink) failures.push(`${theme} size ${size}: default secondary fill ${filled?.fill}, --sf-secondary ${ink}`);
-      if (!tonal || tonal.fill !== fillTonal) failures.push(`${theme} size ${size}: tonal secondary fill ${tonal?.fill}, --sf-secondary-container ${fillTonal}`);
+      if (!filled || filled.fill === ink) failures.push(`${theme} size ${size}: default secondary fill ${filled?.fill} is still --sf-secondary (C116: on-surface)`);
+      if (!tonal || tonal.fill === fillTonal) failures.push(`${theme} size ${size}: tonal secondary fill ${tonal?.fill} is still --sf-secondary-container (C116: on-surface)`);
       if (filled && cells['smart outline on-surface'] && filled.h !== cells['smart outline on-surface'].h) failures.push(`${theme} size ${size}: default secondary ${filled.h}px, outline on-surface ${cells['smart outline on-surface'].h}px`);
     }
     for (const look of ['outline', 'link', 'surface']) {
       const base = hover[`${look} on-surface`];
       const secondary = hover[`${look} secondary`];
       if (base.fill !== secondary.fill) failures.push(`${theme} hovered ${look}: secondary fill ${secondary.fill}, on-surface ${base.fill}`);
-      if (secondary.label !== ink || secondary.icon !== ink) failures.push(`${theme} hovered ${look}: secondary label ${secondary.label} icon ${secondary.icon}, --sf-secondary ${ink}`);
+      if (secondary.label !== base.label || secondary.icon !== base.icon) failures.push(`${theme} hovered ${look}: secondary label ${secondary.label} icon ${secondary.icon}, on-surface ${base.label} ${base.icon} (C116)`);
     }
   }
 } finally {

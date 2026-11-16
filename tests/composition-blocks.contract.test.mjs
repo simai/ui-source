@@ -4,6 +4,7 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 import { BREAKPOINTS } from '../src/core/js/breakpoints.js';
+import { editorFieldMessages } from '../src/core/js/composition/editor-words.mjs';
 import {
   BUILTIN_CATALOGUE,
   BUILTIN_EDITOR_MANIFESTS,
@@ -464,7 +465,7 @@ test('parameter sets: each set\'s classes are SIMAI Framework utilities, its fie
     }
     const fields = parameterSetFields({ parameter_sets: [name] });
     assert.equal(fields.length, set.fields.length);
-    const words = Composition.editorFieldMessages({ fields });
+    const words = editorFieldMessages({ fields });
     for (const field of fields) assert.notEqual(words[field.label_key], undefined, field.label_key);
   }
   // A type that names a set gets its props through a registry; the stored manifest keeps the names.
@@ -628,7 +629,8 @@ test('the Elements and Layout types draw SIMAI Framework utilities and smart ele
   assert.match(html, /<div class="p-top-6" aria-hidden="true" data-sf-composition-id="sp"><\/div>/u);
   assert.match(html, /<div class="flex" data-sf-composition-id="b"><sf-button icon="arrow_forward" icon-position="end" text="Подробнее"><\/sf-button><\/div>/u);
   assert.match(html, /<div class="flex" data-sf-composition-id="bi"><sf-button-icon appearance="tonal" aria-label="Нравится" icon="favorite"><\/sf-button-icon><\/div>/u);
-  assert.match(html, /<div class="flex" data-sf-composition-id="bd"><sf-badge appearance="tonal" scheme="primary" size="1\/2" text="Метка"><\/sf-badge><\/div>/u, 'unset, the badge reads its word in the Document\'s language');
+  // tonal is sf-badge's default since 1.6.0 (C140 (1)): a default is not printed.
+  assert.match(html, /<div class="flex" data-sf-composition-id="bd"><sf-badge scheme="primary" size="1\/2" text="Метка"><\/sf-badge><\/div>/u, 'unset, the badge reads its word in the Document\'s language');
   assert.match(html, /<div class="flex" data-sf-composition-id="i"><sf-icon icon="star" size="4"><\/sf-icon><\/div>/u);
   assert.deepEqual(checkPrintedElements(html), []);
   assert.doesNotMatch(html, /style=/u);
@@ -719,7 +721,7 @@ test('G-39: a paragraph\'s lead and muted modifiers print the SIMAI Framework te
   assert.ok(known('color-on-surface-variant'));
   assert.match(readFileSync(new URL('../src/core/scss/_sf_css__typograpy.scss', import.meta.url), 'utf8'), /\.text-large\b/u, 'text-large is the core sheet\'s large body text role');
   const paragraph = extendRegistry().types.get('content.paragraph');
-  assert.equal(paragraph.version, '1.3.0');
+  assert.equal(paragraph.version, '1.4.0');
   const broken = { ...paragraph, presentation: { ...paragraph.presentation, modifier_utilities: { loud: ['text-5'], lead: ['Bad Class'] } } };
   assert.deepEqual(codes(validateTypeManifest(broken)).filter((code) => code.startsWith('modifier_utilities')).sort(), ['modifier_utilities_invalid', 'modifier_utilities_unknown']);
 });

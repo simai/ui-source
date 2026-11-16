@@ -2,7 +2,7 @@
   "$comment": "The source of sf-alert's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/alert (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.alert",
   "tag": "sf-alert",
-  "version": "1.2.1",
+  "version": "1.4.3",
   "kind": "leaf",
   "family": "alert",
   "settings": {
@@ -26,7 +26,7 @@
         "flat"
       ],
       "default": "default",
-      "summary": "How the alert looks: a filled surface, an outline, or flat."
+      "summary": "How the alert looks, one of the three notice looks (owner decision C110): default the border and the status fill, outlined the border only, flat the status fill without a border, lifted by the card's shadow."
     },
     "icon": {
       "type": "icon",
@@ -61,6 +61,15 @@
       "type": "string",
       "default": "secondary",
       "summary": "Stable secondary action value emitted in sf-alert-action."
+    },
+    "actions-layout": {
+      "type": "enum",
+      "values": [
+        "auto",
+        "under"
+      ],
+      "default": "auto",
+      "summary": "Where the actions stand: auto puts them in the row with the text while the alert is wide enough and under the text when narrower (layout L3a); under keeps them under the text at every width, for a long text. Any other word is auto."
     },
     "closable": {
       "type": "boolean",
@@ -114,6 +123,11 @@
       }
     }
   },
+  "slots": {
+    "supporting-text": {
+      "x-summary": "The supporting text with markup, in place of the supporting-text setting: a help link at its end (owner decision C126, «Узнать больше»). Text and a link only; an action is a button (action-text, secondary-action-text)."
+    }
+  },
   "keyboard": {
     "host": {
       "Tab": "reach"
@@ -161,7 +175,7 @@
     "keys": {
       "Tab": "reach"
     },
-    "$comment": "The root is a live region (§4.8, §7.4.1): role status (polite) for neutral, info and success, role alert (assertive) for warning and error. Its name is the heading, else the host's aria-label. Tab reaches its action and close buttons."
+    "$comment": "The root is a live region (§4.8, §7.4.1): role status (polite) for neutral, info and success, role alert (assertive) for warning and error -- for an alert put in the page after its load event. An alert printed with the page (in it at the load, or carrying its server-printed first paint) is role status at every level: it is not news and must not interrupt (NS-1). The host's own role attribute, status or alert, is the author's choice and always wins (§3.1, as on sf-toast). Its name is the heading, else the host's aria-label. Tab reaches its action and close buttons."
   },
   "css-variables": {
     "--sf-alert-background-color": {
@@ -285,7 +299,7 @@
   "x-decisions": [
     "own-verb-words: action is a verb of the alert alone (the person pressed one of its two action buttons; detail.action names which); its word is lang events.action.label. It is a report, not a request the alert waits on, so it is not cancelable.",
     "version: 1.0.0 → 1.1.0: title, type, variant and dismiss are dated aliases, close becomes a cancelable request with a reason; a minor while the aliases hold (§4.10).",
-    "a11y-role: one live region on the root (§4.8, §7.4.1): status (polite) for neutral, info and success, alert (assertive) for warning and error, written with when on status. The name is the heading, else the host's aria-label (§3.1).",
+    "a11y-role: one live region on the root (§4.8, §7.4.1): status (polite) for neutral, info and success, alert (assertive) for warning and error, written with when on status. The name is the heading, else the host's aria-label (§3.1). Since 1.2.2 (NS-1) the level's role is for an alert put in the page after its load; one printed with the page is status, and a host role of status or alert wins.",
     "events: close is the request the alert sends before it leaves (cancelable, reason close from its own button or api from close()); a page that prevents it keeps the alert and close() answers refused. The detail carries data only (§8): the element alert leaves it.",
     "x-target text, tone and press (stand 24's record panel note): not added. text and tone would be second names of supporting-text and status, which §4 does not give one setting; a rule binds settings.supporting-text and writes status. press is the alert's action event (action), not a press of the alert.",
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
@@ -299,7 +313,14 @@
     "version 1.1.10 (one number above the two unreleased 1.1.9 it joins; its first-paint sheet list follows the merged buttons): the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.1.11: the first-paint snapshot is retaken: a nested sized component now carries data-sf-size-relative at first paint (density C22, core.runtime 1.45.0); nothing it draws changes.",
     "version 1.2.0: the notice's geometry and actions, the toast's numbers (decision C35; DEV acceptance D3 extends it to every notice). The actions are unsized low buttons (32, compact and phone 28) whose label is the notice's text size, the first tonal primary and the second ghost on-surface (before: size 1/2 filled and outline on-surface); the close is sf-button-icon kind close height low (32 / 28 / 28, before 40 / 32 / 36), centred on the first line; title to text 0 (before 12 / 8), text to actions --sf-space-1/2 (before --sf-space-1), padding and icon gap as the toast (component.alerts 1.1.0).",
-    "version 1.2.1 (2026-11-11, CB-01, decision C15): the second action writes sf-button--ghost beside sf-button--link, its former name (journal class-button-link-to-ghost, until 2027-01-01). Nothing is drawn differently. Settings, values, events and keys unchanged."
+    "version 1.2.1 (2026-11-11, CB-01, decision C15): the second action writes sf-button--ghost beside sf-button--link, its former name (journal class-button-link-to-ghost, until 2027-01-01). Nothing is drawn differently. Settings, values, events and keys unchanged.",
+    "version 1.2.2 (2026-11-12, NS-1 of the notices study; with C110 variant E): an alert printed with the page -- in it at the load event, or carrying its server-printed first paint -- is role status at every level, so a warning or an error already on the page is not announced as an interruption. An alert put in the page after the load, or put back after it was taken out, keeps its level's role (alert for warning and error). The host's role attribute, status or alert, is the author's explicit choice and wins (as on sf-toast). Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-13, owner decisions C114 and C115; component.alerts 1.2.0): a minor. The job is the state of this page or section (C114 (1)); the docs name its neighbours (sf-alert-bar the whole product, sf-toast a short reply to an action, the notification centre the history, sf-confirm a decision). Where the actions stand is layout L3a (C115): in the row with the text from 36rem of the alert's own width with one action and from 48rem with two (a size container query on the alert, the step its whole width), centred on the text block, the label on the title line with a one-line text; narrower, under the text from its start. Under the text, the bottom inset is even with the top (C114 (5), NS-9). The callout is a recipe of this element (C114 (7)): status info, appearance outlined, no close, no actions. Events and keys unchanged. A new setting actions-layout (owner 2026-11-13, #q-layout-override): auto (the default) is L3a, under keeps the actions under the text at every width with the same gap and the even bottom (a long text in the row is taller than under it, 174 against 146 at 800); the template adds the class form sf-alert--actions-under; any other word is auto, as every enum setting; no alias.",
+    "version 1.3.1 (2026-11-13, owner decision C126; component.alerts 1.2.1): a patch. A link in the alert's text is help only («Узнать больше»), every action a button; the link is the text's own ink (on-surface, or on-<status>-container on a status container), not the theme's link blue, underlined at the link weight, the line doubled under the pointer, its keyboard ring the same ink -- 4.5:1 and more for the link and 3:1 and more for the ring on every status and look, light and dark (the sheet, core mix/_mix__notice-link.scss shared with sf-toast and sf-alert-bar). The supporting-text slot the template already read is declared, and the example help-link shows it. No saturated look: the three looks stay, the action stays tonal surface (C110 E). Settings, values, events and keys unchanged.",
+    "version 1.4.0 (2026-11-13, owner decision C110 as amended 2026-11-12, look (в); component.alerts 1.3.0): a minor. The three notice looks are the three appearances: outlined (а) the border only, default (б) the border and the status fill, flat (в) the status fill without a border, now with the card's shadow (--sf-shadow-raised, the raised place of the four shadow places); only flat casts a shadow. New example flat-shadow. Settings, values, events and keys unchanged.",
+    "version 1.4.1 (2026-11-13, owner decision C105 H4/H6, spacing audit A1; component.alerts 1.3.1): a patch. The 1 px border stands inside the inline inset, as the fields' C77 inset: the padding is --sf-space-1 less the border, so the status icon, the letters and the cross stand 16 from the outer edge (compact and phone 12), not 17 (13). The action thresholds of C115 stay the whole width (36rem and 48rem). Settings, values, events and keys unchanged.",
+    "version 1.4.2 (2026-11-14, owner decision C181 (2); component.alerts 1.3.3): a patch, no look. The two action steps of C115 are steps of the one container ladder (36rem g8, 48rem h2), written container-step() less the notice's frame; the built condition is 34rem and 46rem as before. Markup, settings, values, events and keys unchanged.",
+    "version 1.4.3 (2026-11-15, group build 7; numbered above 1.4.2 on origin/fix/checkbox-hit-b4): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); its Kazakh words ride lang/kk.json (C177 (7) pilot draft, fix/languages-c177-kk and the group build 7 words)."
   ],
   "x-registry": {
     "contracts": {

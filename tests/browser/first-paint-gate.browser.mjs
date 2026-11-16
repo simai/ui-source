@@ -34,16 +34,45 @@
 // and every printed part host is adopted: the live part is the element the
 // page printed, never one drawn anew beside or instead of it (stand 24 F2: a
 // printed sf-button whose role had moved to its <button> was drawn again).
+//
+// Widths: 1440, 1280 and 390 (FIRST_PAINT_WIDTHS, comma separated, narrows a
+// run); the 1440 desktop was added by the first-paint study R222.
+//
+// Two more checks (first-paint study R222, standard §13 items 24b and 24d):
+//
+//   24b. Box from attributes. The bare tag -- the example written as a page
+//        writes it (its attributes, JSON island and children, built by
+//        scripts/first-paint-page.js before any code; not the snapshot with its
+//        markup taken out, whose host keeps what the element set while it drew,
+//        such as style="display: contents" and data-look), core.css alone in
+//        <head> -- watched the same way: the
+//        last frame before the code must have the settled box (±0.5 px; its
+//        top and height for a rule that holds the height only) for
+//        every component core keeps a box for before its code
+//        (tests/fixtures/first-paint/box-from-attributes.json); for every other
+//        component the jump is reported under bare.report, not failed.
+//        FIRST_PAINT_BARE=off skips the kind, =covered measures only the
+//        covered components.
+//   24d. Sheets listed. A printed snapshot with the sheets of its sheets.json
+//        in <head> gets no other sheet from the Loader before the element has
+//        drawn: a sheet the list lacks is a sheet a host printing the list
+//        would fetch late, and the first paint would move when it lands.
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import {chromium} from 'playwright';
-import {components, assemblies, serveOutput, head, coreScript, staticDir, assemblyModule, givesLateData, portOf, FAKE_PORT, freezeClock} from '../../scripts/first-paint-lib.mjs';
+import {components, assemblies, serveOutput, head, coreScript, staticDir, assemblyModule, givesLateData, portOf, FAKE_PORT, freezeClock, hostSpec} from '../../scripts/first-paint-lib.mjs';
 
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const only = process.argv.slice(3).filter((one) => !one.startsWith('--'));
 const SCRIPT_DELAY = Number(process.env.SCRIPT_DELAY || 400);
-const WIDTHS = [1280, 390];
+const WIDTHS = (process.env.FIRST_PAINT_WIDTHS || '1440,1280,390').split(',').map(Number);
+// The bare kind (24b) at the widest and the phone width only.
+const BARE_WIDTHS = WIDTHS.filter((width, i) => i === 0 || i === WIDTHS.length - 1);
+const BARE = process.env.FIRST_PAINT_BARE || 'all';
+const boxFile = new URL('../fixtures/first-paint/box-from-attributes.json', import.meta.url);
+const COVERED_HOLDS = new Map(Object.entries(existsSync(boxFile) ? JSON.parse(readFileSync(boxFile, 'utf8')).components ?? {} : {}).map(([folder, one]) => [folder, one.holds]));
+const COVERED = new Set(COVERED_HOLDS.keys());
 const TOLERANCE = 0.5;
 const concurrency = Number(process.env.FIRST_PAINT_CONCURRENCY || 6);
 
@@ -149,7 +178,7 @@ const WATCH = `(() => {
   requestAnimationFrame(tick);
 })();`;
 
-const pages = new Map([['/first-paint-watch.js', WATCH]]);
+const pages = new Map([['/first-paint-watch.js', WATCH], ['/first-paint-page.js', readFileSync(new URL('../../scripts/first-paint-page.js', import.meta.url), 'utf8')]]);
 // Core is in <head>, as a page prints it; the components' code is what comes
 // late, so it is what is held back.
 const site = await serveOutput(out, {pages, delay: (path) => (/\.m?js$/u.test(path) && path.startsWith('/distr/') && !path.startsWith('/distr/core/') ? SCRIPT_DELAY : 0)});
@@ -191,8 +220,13 @@ async function measure({component, example, file, kind, width, sheets, layout = 
   const id = `${component.folder}/${layout ? `${layout}/` : ''}${example.name}${kind === 'skeleton' ? ' (skeleton)' : ''} @${width}`;
   const path = `/gate/${component.folder}/${layout ?? ''}/${example.name}/${kind}/${width}`;
   const html = strip(readFileSync(file, 'utf8'));
-  pages.set(path, `${head({title: id, sheets: ['/distr/core/css/core.css', ...sheets.map((one) => `/distr/${one}`)], extra: `<script>window.__fpTag=${JSON.stringify(component.tag)};window.__fpRoles=${assembly};window.__fpOverlay=${Boolean(component.overlay)};</script><script src="/first-paint-watch.js"></script>${coreScript}`})}<body>
-<main id="stage">${assembly ? html : placed(example, component.tag, html)}</main>
+  const bare = kind === 'bare';
+  // 24b: the bare tag, with core.css alone; the printed children are taken
+  // out before the first frame, so what is left is the tag a page writes.
+  const headSheets = bare ? ['/distr/core/css/core.css'] : ['/distr/core/css/core.css', ...sheets.map((one) => `/distr/${one}`)];
+  const written = bare ? `<script src="/first-paint-page.js"></script><script>window.__sfFirstPaintBuild(${JSON.stringify(hostSpec(component, example)).replace(/</g, '\\u003c')});</script>` : '';
+  pages.set(path, `${head({title: id, sheets: headSheets, extra: `<script>window.__fpTag=${JSON.stringify(component.tag)};window.__fpRoles=${assembly};window.__fpOverlay=${Boolean(component.overlay)};</script><script src="/first-paint-watch.js"></script>${coreScript}`})}<body>
+<main id="stage">${bare ? '' : assembly ? html : placed(example, component.tag, html)}</main>${written}
 ${assembly ? `<script>window.__fpPrinted = [...document.querySelectorAll('#stage [data-sf-role]')];</script>` : ''}
 <p id="after">Текст под элементом</p>
 ${assembly ? assemblyModule(component) : ''}
@@ -231,6 +265,14 @@ ${assembly ? assemblyModule(component) : ''}
     }
     await page.evaluate(() => new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle))));
     const fp = await page.evaluate(() => window.__fp);
+    // 24d: the sheets the Loader fetched before the element drew that the
+    // page did not link (a printed snapshot only; the bare kind links core.css
+    // alone on purpose).
+    const unlisted = bare ? [] : await page.evaluate(({linked, drawnAt}) => [...new Set(performance.getEntriesByType('resource')
+      .filter((entry) => /\.css(\?|$)/u.test(entry.name) && (drawnAt === null || entry.startTime < drawnAt))
+      .map((entry) => new URL(entry.name).pathname)
+      .filter((path) => !linked.includes(path)))], {linked: headSheets, drawnAt: fp.drawnAt});
+    if (unlisted.length) problems.push(`sheet(s) fetched by the Loader before the element drew, not in sheets.json: ${unlisted.map((one) => one.replace(/^\/distr\//u, '')).join(', ')}`);
     if (assembly) {
       // Every printed part is adopted: the live part host is the printed one.
       const anew = await page.evaluate((tag) => {
@@ -290,6 +332,18 @@ ${assembly ? assemblyModule(component) : ''}
       if (empty.length) problems.push(`${empty.length} frame(s) without the element's box`);
     }
     if (errors.length) problems.push(`page errors: ${errors.slice(0, 2).join('; ')}`);
+    if (bare) {
+      // 24b reads one thing: the box before the code is the settled box.
+      const jump = first && settled ? [settled.box?.[2] - first.box?.[2], settled.box?.[3] - first.box?.[3]].map((n) => Math.round((n || 0) * 10) / 10) : null;
+      // A rule that holds the height only (a label's width is its text's):
+      // the top and the height must hold, the width may grow.
+      const heightOnly = COVERED_HOLDS.get(component.folder) === 'height';
+      const held = (a, b) => (heightOnly ? same([a[1], a[3]], [b[1], b[3]]) : same(a, b));
+      const holds = Boolean(first?.box && settled?.box && held(first.box, settled.box)) && afters.length <= 1;
+      const bareProblems = holds ? [] : [first ? `bare tag: box before the code ${box4(first.box)} -> drawn ${box4(settled?.box)}${afters.length > 1 ? `, the text below moved ${afters.join(' -> ')}` : ''}` : 'bare tag: no frame before the code'];
+      return {id, folder: component.folder, example: example.name, kind, width, covered: COVERED.has(component.folder), jump, holds,
+        problems: COVERED.has(component.folder) ? bareProblems : [], report: bareProblems};
+    }
     return {id, folder: component.folder, example: example.name, kind, width, phases: Object.fromEntries(Object.entries(phases).map(([k, v]) => [k, box4(v)])), ...(assembly ? {parts} : {}), cls, ...(fontShift ? {fontShift} : {}), frames: frames.length, problems,
       ...(process.env.FIRST_PAINT_FRAMES ? {trace: {sheetsAt: fp.sheetsAt, definedAt: fp.definedAt, drawnAt: fp.drawnAt, dataAt: fp.dataAt, shifts: fp.shifts, frames}} : {})};
   } finally {
@@ -313,6 +367,9 @@ for (const component of components(undefined, only)) {
     const exampleSheets = sheets.examples?.[example.name] ?? sheets.sheets;
     if (existsSync(html)) for (const width of WIDTHS) jobs.push({component, example, file: html, kind: 'static', width, sheets: exampleSheets});
     if (existsSync(skeleton)) for (const width of WIDTHS) jobs.push({component, example, file: skeleton, kind: 'skeleton', width, sheets: exampleSheets});
+    // 24b: the bare tag of every example (a closed layer's too: its trigger).
+    const bareWanted = BARE === 'all' || (BARE === 'covered' && COVERED.has(component.folder));
+    if (existsSync(html) && bareWanted) for (const width of BARE_WIDTHS) jobs.push({component, example, file: html, kind: 'bare', width, sheets: exampleSheets});
   }
 }
 
@@ -356,12 +413,34 @@ const knownFile = new URL('../fixtures/first-paint/gate-known.json', import.meta
 const known = existsSync(knownFile) ? JSON.parse(readFileSync(knownFile, 'utf8')).known ?? {} : {};
 const keyOf = (one) => one.id.replace(/ @\d+$/u, '');
 const failing = results.filter((one) => one.problems.length);
+// 24b, reported: per component not yet covered, how many bare loads jumped
+// and the worst jump (width, height).
+const bareRuns = results.filter((one) => one.kind === 'bare');
+const bareBy = new Map();
+for (const one of bareRuns) {
+  const entry = bareBy.get(one.folder) ?? {covered: one.covered, loads: 0, jumped: 0, worst: [0, 0]};
+  entry.loads += 1;
+  if (!one.holds) entry.jumped += 1;
+  if (one.jump) entry.worst = entry.worst.map((n, i) => (Math.abs(one.jump[i]) > Math.abs(n) ? one.jump[i] : n));
+  bareBy.set(one.folder, entry);
+}
+const unknownCovered = [...COVERED].filter((folder) => !components(undefined, []).some((one) => one.folder === folder));
+if (unknownCovered.length) failing.push({id: 'box-from-attributes.json', problems: [`names no Smart component: ${unknownCovered.join(', ')}`]});
 const failed = failing.filter((one) => !known[keyOf(one)]);
 const excused = failing.filter((one) => known[keyOf(one)]);
 const cleared = Object.keys(known).filter((key) => !failing.some((one) => keyOf(one) === key) && results.some((one) => keyOf(one) === key));
 const report = {
-  gate: 'first paint (standard simai.smart-component 1.3.8 gate 24)',
+  gate: 'first paint (standard simai.smart-component 1.3.8 gate 24, with 24b and 24d)',
   widths: WIDTHS,
+  bare: BARE === 'off' ? 'off' : {
+    widths: BARE_WIDTHS,
+    covered: [...COVERED],
+    measured: bareRuns.length,
+    holding: bareRuns.filter((one) => one.holds).length,
+    components: bareBy.size,
+    componentsJumping: [...bareBy.values()].filter((one) => one.jumped).length,
+    report: Object.fromEntries([...bareBy.entries()].filter(([, one]) => one.jumped && !one.covered).sort()),
+  },
   scriptDelayMs: SCRIPT_DELAY,
   measured: results.length,
   components: new Set(results.map((one) => one.folder)).size,

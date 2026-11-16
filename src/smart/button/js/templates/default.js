@@ -28,7 +28,7 @@ export function renderButtonTemplate(context) {
     const normalizedIconPosition = String(iconPosition || 'start').toLowerCase();
     const isIconEnd = ['right', 'end'].includes(normalizedIconPosition);
     const leftIconName = context.cycleView?.icon || (context.iconStart ?? (iconLeft || (icon && !isIconEnd ? icon : '')));
-    const rightIconName = context.iconEnd ?? (iconRight || (icon && isIconEnd ? icon : ''));
+    const rightIconName = context.menuArrow || (context.iconEnd ?? (iconRight || (icon && isIconEnd ? icon : '')));
     const component = context.component;
     const leftIconContent =
         component?.hasSlotContent?.('icon-start')
@@ -145,7 +145,7 @@ export function renderButtonTemplate(context) {
     `;
     }
 
-    return html`
+    const button = html`
         <button
                 type=${nativeType}
                 form=${context.formId || nothing}
@@ -157,8 +157,60 @@ export function renderButtonTemplate(context) {
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
                 aria-expanded=${context.expanded === undefined ? nothing : String(Boolean(context.expanded))}
+                aria-haspopup=${context.hasPopup || nothing}
+                @keydown=${context.menuMode === 'menu' ? (event) => component.onMenuKey(event) : nothing}
                 aria-pressed=${announcesPressed ? String(Boolean(context.pressed)) : nothing}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
         >${content}</button>${context.cycleView ? html`<span class="sf-button-announce sr-only" role="status" aria-live="polite" aria-atomic="true">${context.cycleView.announcement}</span>` : nothing}
     `;
+
+    if (!context.menuMode) return button;
+    return html`${context.menuMode === 'split' ? renderSplit(context, button) : button}${renderMenu(context)}`;
+}
+
+const stop = (event) => event.stopPropagation();
+
+// The split button (1.15.0, owner decision C119): the label part is the button
+// above; the arrow part is an sf-button-icon of the same size, height, look and
+// radius -- square, so it is as tall as the label part on every size, height
+// and density -- with expand_more. The buttons sheet joins them like a button
+// group (sf-button-split): inner corners square, a 1 px seam (the page between
+// two filled parts, one shared border between two outlined ones). Its press
+// opens the menu and stays inside: the page hears sf-button-press from the
+// label part and sf-button-select from the menu.
+function renderSplit(context, button) {
+    const {component} = context;
+    const off = Boolean(context.disabled || context.loading);
+    return html`<span class=${['sf-button-split', context.fullWidth ? 'sf-button-split--full-width' : ''].filter(Boolean).join(' ')}>${button}<sf-button-icon
+            class="sf-button-split-arrow"
+            icon="expand_more"
+            appearance=${context.appearance}
+            scheme=${context.scheme}
+            size=${context.size}
+            height=${context.height && context.height !== 'default' ? context.height : nothing}
+            radius=${context.radius || nothing}
+            ?disabled=${off}
+            aria-label=${context.splitLabel}
+            title=${context.splitLabel}
+            aria-haspopup="menu"
+            aria-expanded="false"
+            @click=${() => component.toggleMenu()}
+            @keydown=${(event) => component.onMenuKey(event)}
+            @sf-button-icon-press=${stop}
+        ></sf-button-icon></span>`;
+}
+
+// The menu is the Framework's sf-menu-context, a popup opened under the
+// control (end-aligned under a split button's arrow). Its own events stay
+// inside: the page hears sf-button-select.
+function renderMenu(context) {
+    const {component} = context;
+    return html`<sf-menu-context
+            popup
+            size=${context.size === '1/3' || context.size === '1/2' ? '1/2' : '1'}
+            aria-label=${context.text || context.ariaLabel || nothing}
+            .entries=${context.menuEntries}
+            @sf-menu-context-select=${(event) => component.onMenuSelect(event)}
+            @sf-context-menu-select=${stop}
+        ></sf-menu-context>`;
 }

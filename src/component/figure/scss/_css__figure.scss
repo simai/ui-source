@@ -9,12 +9,31 @@
 // (cover) or stands whole inside it (sf-figure--contain), the rest of the box
 // filled with the container role. The caption is the small text of the page.
 // content.figure renders with it, and content.media draws its picture with it.
+//
+// Text on a picture (owner decisions C91 level 1 and C92): only three looks.
+// By default the caption stands under the media, on the page, no overlay
+// (look 8). sf-figure--caption-over lays it on the media's lower edge over the
+// long soft scrim (look 3): black 64 under the text, a long ramp of alpha
+// steps above it, white ink. sf-figure--caption-plate lays it on one flat band
+// of black 64 (look 5), for long captions and busy photos. Both hold 4.5:1 on
+// light and dark photos (measured, control/evidence 2026-11-12-gradients-c91-c92).
+//
+// A media box with no picture in it is a placeholder. Under the decorative
+// level (C91 level 2: sf-figure--expressive, or data-sf-style="expressive" on
+// the root or a container) it is a cover: its hue's container stepping into
+// the next container step, corner to corner, over the place's solid colour (an
+// .sf-hue-<c> on it or above, primary otherwise). Strict, the default, keeps
+// it flat.
 
 @layer sf.components {
+  // The caption stands 8 under its picture at every width (owner decision
+  // C188 (5), the gallery's gap of C150 (3); 4 in compact density): it holds
+  // to its own picture. It was 12 on a desktop. A credit follows in the same
+  // line after « · ».
   .sf-figure {
     display: flex;
     flex-direction: column;
-    gap: var(--sf-figure-gap, var(--sf-space-1\/2));
+    gap: var(--sf-figure-gap, var(--sf-space-1\/3));
     box-sizing: border-box;
     min-inline-size: 0;
     margin: var(--sf-0);
@@ -25,7 +44,7 @@
     box-sizing: border-box;
     overflow: hidden;
     // A container fill: dimmed text on it reads the container role.
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     background-color: var(--sf-figure-background-color, var(--sf-figure-background, var(--sf-surface-container)));
     border: var(--sf-figure-border-width, var(--sf-0)) solid var(--sf-figure-border-color, var(--sf-outline-variant));
     border-radius: var(--sf-figure-radius, var(--sf-radius--surface));
@@ -43,7 +62,9 @@
     display: contents;
   }
 
-  // A named ratio: the box keeps it and the media fills it.
+  // A named ratio: the box keeps it and the media fills it. One list for the
+  // figure, the gallery and a card's picture (owner decision C188 (6)): 1:1,
+  // 4:3, 3:2, 16:9, 21:9, and auto -- no ratio class, the picture's own shape.
   .sf-figure--ratio-1x1 { --sf-figure--ratio: 1 / 1; }
   .sf-figure--ratio-4x3 { --sf-figure--ratio: 4 / 3; }
   .sf-figure--ratio-3x2 { --sf-figure--ratio: 3 / 2; }
@@ -73,9 +94,275 @@
     overflow-wrap: break-word;
   }
 
+  // ── Text on a picture: the caption over the media's lower edge ──
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) {
+    display: grid;
+    grid-template-areas: "media";
+    gap: var(--sf-0);
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > :is(.sf-figure-media, .sf-figure-caption) {
+    grid-area: media;
+  }
+
+  // A caption taller than the picture (five lines on a small card) grows the
+  // box rather than leaving its last lines under the scrim on the page: the
+  // media stretches to the row and the picture covers it.
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media {
+    align-self: stretch;
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media > :is(img, video, svg, canvas, iframe),
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media > picture > img {
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+    position: relative;
+    align-self: end;
+    padding: var(--sf-space-1\/2);
+    border-end-start-radius: var(--sf-figure-radius, var(--sf-radius--surface));
+    border-end-end-radius: var(--sf-figure-radius, var(--sf-radius--surface));
+    color: var(--sf-white);
+    pointer-events: none;
+  }
+
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption :is(a, button) {
+    pointer-events: auto;
+  }
+
+  // Look 3, long and soft: the same steps as the gradient-scrim utility. The
+  // top padding is the ramp, so no line of text stands in it; under the text
+  // the scrim holds black 64.
+  .sf-figure.sf-figure--caption-over > .sf-figure-caption {
+    --sf-figure--ramp: calc(var(--sf-space-4) * 4);
+    padding-block-start: var(--sf-figure--ramp);
+    background-image: linear-gradient(0deg, var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - var(--sf-figure--ramp)), var(--sf-black--alfa-48) calc(100% - var(--sf-figure--ramp) * 0.85), var(--sf-black--alfa-28) calc(100% - var(--sf-figure--ramp) * 0.7), var(--sf-black--alfa-16) calc(100% - var(--sf-figure--ramp) * 0.45), var(--sf-black--alfa-8) calc(100% - var(--sf-figure--ramp) * 0.25), transparent 100%);
+    background-image: linear-gradient(0deg in oklab, var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - var(--sf-figure--ramp)), var(--sf-black--alfa-48) calc(100% - var(--sf-figure--ramp) * 0.85), var(--sf-black--alfa-28) calc(100% - var(--sf-figure--ramp) * 0.7), var(--sf-black--alfa-16) calc(100% - var(--sf-figure--ramp) * 0.45), var(--sf-black--alfa-8) calc(100% - var(--sf-figure--ramp) * 0.25), transparent 100%);
+  }
+
+  // Look 5, the plate: one flat band of black 64 under the text.
+  .sf-figure.sf-figure--caption-plate > .sf-figure-caption {
+    background-color: var(--sf-black--alfa-64);
+  }
+
+  // ── The decorative level (C91 level 2): a placeholder is a cover ──
+  // The style switch: the nearest data-sf-style wins; strict is the default.
+  :where([data-sf-style="expressive"]) {
+    --sf-style--expressive: 1;
+  }
+
+  :where([data-sf-style="strict"]) {
+    --sf-style--expressive: 0;
+  }
+
+  .sf-figure.sf-figure--expressive {
+    --sf-style--expressive: 1;
+  }
+
+  // The cover: the hue's container stepping into a second container step,
+  // corner to corner, laid over the place's solid colour -- roles only, so it
+  // follows the theme and the hue. The switch is a number the layers' size
+  // multiplies: off, they have no size and the flat container fill shows.
+  .sf-figure-media:not(:has(> :is(img, video, svg, canvas, iframe, picture))) {
+    --sf-figure--on: var(--sf-style--expressive, 0);
+    background-image:
+      linear-gradient(135deg in oklab, var(--sf-hue-container, var(--sf-primary-container)), var(--sf-hue-container-active, var(--sf-primary-container-active))),
+      linear-gradient(var(--sf-surface-place-solid), var(--sf-surface-place-solid));
+    background-repeat: no-repeat;
+    background-size: calc(100% * var(--sf-figure--on)) calc(100% * var(--sf-figure--on));
+  }
+
+  // ── The picture tile (owner decision C150, 2026-11-14) ──
+  // One tile for every set of pictures (C150 (10)): sf-gallery, the file
+  // upload's gallery look (C81), ui-mail's «Изображения» and SIMAI Pro's chat
+  // previews. A figure with sf-figure--tile: one ratio for all the tiles of a
+  // set, 1:1 unless a ratio class names another (C150 (4); sf-figure--ratio-auto
+  // keeps each picture's own), the picture covering the box around its focus
+  // point -- the image field's focus {x, y} written as the picture's
+  // object-position (C94 (3)) -- a quiet fill and the surface radius from the
+  // first frame, so nothing moves when the picture arrives (C150 (6), C130).
+  // The media box may be a button or a link: it opens the viewer.
+  :where(.sf-figure--tile) {
+    --sf-figure--ratio: 1 / 1;
+  }
+
+  .sf-figure.sf-figure--tile {
+    position: relative;
+    gap: var(--sf-figure-gap, var(--sf-space-1\/4));
+  }
+
+  .sf-figure--tile > .sf-figure-media {
+    aspect-ratio: var(--sf-figure--ratio);
+  }
+
+  .sf-figure--tile > .sf-figure-media > :is(img, video, svg, canvas),
+  .sf-figure--tile > .sf-figure-media > picture > img {
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .sf-figure--tile.sf-figure--ratio-auto > .sf-figure-media {
+    aspect-ratio: auto;
+  }
+
+  .sf-figure--tile.sf-figure--ratio-auto > .sf-figure-media > :is(img, video, svg, canvas),
+  .sf-figure--tile.sf-figure--ratio-auto > .sf-figure-media > picture > img {
+    block-size: auto;
+  }
+
+  // The media box as the tile's button or link.
+  :is(button, a).sf-figure-media {
+    display: block;
+    inline-size: 100%;
+    margin: var(--sf-0);
+    padding: var(--sf-0);
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    text-decoration: none;
+    appearance: none;
+    cursor: zoom-in;
+  }
+
+  :is(button, a).sf-figure-media:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+
+  // Chosen (C150 (9)): a primary ring inside the box, the picture a step in.
+  .sf-figure--tile.sf-figure--selected > .sf-figure-media {
+    outline: var(--sf-focus--width) solid var(--sf-primary);
+    outline-offset: calc(-1 * var(--sf-focus--width));
+  }
+
+  .sf-figure--tile > .sf-figure-media > :is(img, video, svg, canvas),
+  .sf-figure--tile > .sf-figure-media > picture > img {
+    transition: transform var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-figure--tile.sf-figure--selected > .sf-figure-media > :is(img, video, svg, canvas),
+  .sf-figure--tile.sf-figure--selected > .sf-figure-media > picture > img {
+    transform: scale(0.92);
+    border-radius: var(--sf-radius--ui);
+  }
+
+  // The check box in the tile's start corner, on a popup plate (C150 (9)):
+  // shown on hover and focus, on every tile once anything is chosen.
+  .sf-figure-pick {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: var(--sf-space-1\/4);
+    inset-inline-start: var(--sf-space-1\/4);
+    display: flex;
+    padding: var(--sf-a2);
+    border-radius: var(--sf-radius--ui);
+    background-color: var(--sf-surface-popup);
+    box-shadow: var(--sf-shadow-overlay);
+    opacity: 0;
+    transition: opacity var(--sf-duration-fast) var(--sf-animation);
+  }
+
+  .sf-figure--tile:is(:hover, :focus-within) > .sf-figure-pick,
+  .sf-figure--tile.sf-figure--selected > .sf-figure-pick,
+  .sf-figure-grid--selecting .sf-figure-pick {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sf-figure--tile > .sf-figure-media > :is(img, video, svg, canvas),
+    .sf-figure--tile > .sf-figure-media > picture > img,
+    .sf-figure-pick {
+      transition: none;
+    }
+  }
+
+  // ── The grid of tiles (C150 (2), (3)) ──
+  // As many columns as fit at the tile's minimum -- S 6rem (96), M 10rem (160,
+  // the default), L 15rem (240) -- and never fewer than S 3, M 2, L 1, so a
+  // phone keeps a grid; one group's gap, --sf-space-1/3 (8; 4 in compact
+  // density, C105 H5, C144).
+  .sf-figure-grid {
+    --sf-figure-grid--tile: var(--sf-f0);
+    --sf-figure-grid--columns: 2;
+    --sf-figure-grid--gap: var(--sf-space-1\/3);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--sf-figure-grid--tile), calc((100% - (var(--sf-figure-grid--columns) - 1) * var(--sf-figure-grid--gap)) / var(--sf-figure-grid--columns))), 1fr));
+    gap: var(--sf-figure-grid--gap);
+    min-inline-size: 0;
+    margin: var(--sf-0);
+    padding: var(--sf-0);
+    list-style: none;
+  }
+
+  .sf-figure-grid--s {
+    --sf-figure-grid--tile: var(--sf-e2);
+    --sf-figure-grid--columns: 3;
+  }
+
+  .sf-figure-grid--l {
+    --sf-figure-grid--tile: var(--sf-f5);
+    --sf-figure-grid--columns: 1;
+  }
+
+  // ── Masonry (owner decision C150 (11), 2026-11-14) ──
+  // The grid's third look: the same columns and gap, every picture in its own
+  // shape (tiles with sf-figure--ratio-auto; a picture without width and
+  // height holds a square until it arrives), each tile, in order, put into
+  // the shortest column -- so reading and Tab go by rows, left to right and
+  // only down. Never fewer than two columns: a phone keeps two. A browser
+  // with display: grid-lanes lays it out itself (tolerance 0: the shortest
+  // column, a tie to the start one). Elsewhere the tiles stand as the grid,
+  // each at the top of its row, until the set's script places them
+  // (data-sf-masonry="placed": each tile's column --sf-figure-grid--lane and
+  // block offset, the grid's height); the columns stay the grid's, so RTL
+  // mirrors them.
+  .sf-figure-grid--masonry {
+    align-items: start;
+  }
+
+  .sf-figure-grid--masonry.sf-figure-grid--l {
+    --sf-figure-grid--columns: 2;
+  }
+
+  .sf-figure-grid--masonry .sf-figure--tile > .sf-figure-media > img:not([width][height]),
+  .sf-figure-grid--masonry .sf-figure--tile > .sf-figure-media > picture > img:not([width][height]) {
+    aspect-ratio: auto 1 / 1;
+  }
+
+  .sf-figure-grid--masonry[data-sf-masonry="placed"] {
+    position: relative;
+  }
+
+  .sf-figure-grid--masonry[data-sf-masonry="placed"] > * {
+    position: absolute;
+    inset-inline: var(--sf-0);
+    grid-column: var(--sf-figure-grid--lane, 1) / span 1;
+  }
+
+  @supports (display: grid-lanes) {
+    .sf-figure-grid--masonry {
+      display: grid-lanes;
+      flow-tolerance: 0;
+      item-tolerance: 0;
+    }
+  }
+
   @media (forced-colors: active) {
     .sf-figure-media {
       border-color: CanvasText;
+      background-image: none;
+    }
+
+    .sf-figure--tile.sf-figure--selected > .sf-figure-media {
+      outline-color: Highlight;
+    }
+
+    .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+      background-image: none;
+      background-color: Canvas;
+      color: CanvasText;
     }
   }
 }

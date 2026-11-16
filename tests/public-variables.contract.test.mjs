@@ -77,10 +77,10 @@ const FOLDERS = {
   // sf-include (2026-11-02): a sheet of its own, the placeholder's height and the error row.
   include: 'smart/include',
   // sf-confirm and sf-confirm-change (2026-11-03, block confirm): each a sheet
-  // beside its Lit template; sf-confirm-change's variables keep the stem of its
-  // former tag, sf-change-confirm (rename plan R2), so its entry does too.
+  // beside its Lit template; sf-confirm-change's variables carry its own name
+  // since 1.8.0 (CT-13), the former stem sf-change-confirm read under them.
   confirm: 'smart/confirm/js/templates',
-  'change-confirm': 'smart/confirm-change/js/templates',
+  'confirm-change': 'smart/confirm-change/js/templates',
   // sf-alert-bar (2026-11-05): a sheet of its own, the level fills, the inset and the list.
   'alert-bar': 'smart/alert-bar',
   // The Larena admin screens' tile, attention list and run progress (2026-11-07): sheets of their own.
@@ -100,8 +100,12 @@ const FOLDERS = {
   'list-timeline': 'smart/list-timeline',
   // The moment with its tooltip (2026-11-10, C40): a sheet of its own.
   time: 'smart/time',
+  // The form from field descriptions (2026-11-14, C182): a sheet of its own.
+  form: 'smart/form',
   // «before → after» as text (2026-11-10, C40): a sheet of its own.
   change: 'smart/change',
+  // Display settings (2026-11-15, C196): a sheet of its own.
+  'display-settings': 'smart/display-settings',
   // The group heading of block list (2026-11-10, C40): a class, CSS only.
   'group-heading': 'group-heading',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.
@@ -116,6 +120,8 @@ const FOLDERS = {
   card: 'card',
   figure: 'figure',
   procedure: 'procedure',
+  // The flag (2026-11-10, docs precheck FL-02): its size, corner, hairline and placeholder.
+  flag: 'flag',
 };
 
 const scss = async (folder) => {
@@ -156,11 +162,18 @@ test('every public variable is read by its component\'s stylesheet', async () =>
   }
 });
 
+// One named exception (owner decision C140 (2), badges study BG-7): a colour
+// that comes from data -- a choice option's colour in a table cell or a filter
+// -- is the author's colour, and it reaches the badge through the badge's
+// public colour variables, as a palette step only (helpers/option-badge.js).
+const DATA_COLOUR = {'src/smart/helpers/option-badge.js': ['--sf-badge-background-color', '--sf-badge-color']};
+
 test('the Framework never sets a public variable', async () => {
   const names = contract.components.flatMap((entry) => entry.variables.map((variable) => variable.name));
   for (const file of await walk('src')) {
     const source = await read(file);
     for (const name of names) {
+      if (DATA_COLOUR[file]?.includes(name)) continue;
       assert.doesNotMatch(source, new RegExp(`(^|[;{\\s])${name}\\s*:`, 'mu'), `${file} sets ${name}`);
     }
   }

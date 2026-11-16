@@ -18,25 +18,61 @@ that has that size:
 | control height `H` | `--sf-ui-S--control-height` |
 | icon, avatar, colour dot, checkbox, chevron, check | `L` |
 | flag (rectangular picture) | `3/4 · L`, the optical size of an icon's glyph |
-| step from a picture to its label | `--sf-ui-S--text-space-x` |
-| inline padding | `--sf-ui-S--space-x` |
+| step from a picture to its label in a control (H1, §5) | `--sf-ui-S--text-space-x` |
+| inline padding of a control | `--sf-ui-S--space-x` |
 
 At size 1 on desktop that is a 24px line and 24px pictures in a 40px control.
 A part never takes a size of its own to fit: if the ladder size does not fit,
 the padding is wrong, not the part.
 
-### Indicator sizes
+### Small steps below the ladder (indicators and marks)
 
 A non-interactive indicator is not a control: nothing is pressed, so it has
-no control height and may stand below the ladder's lowest rung. Its sizes are
-still steps of the size scale, never raw lengths, and they are listed here so
-the exception has one place (DEV decision on the docs pre-check, 2026-11-10):
+no control height and may stand below the ladder's lowest rung. Below 24 a
+mark takes one of five **small steps, 4 · 6 · 8 · 12 · 16** (owner decision
+C132, 2026-11-13), the same on a desktop, on a phone and in a compact region.
+Nothing is drawn below 4; 4 is only for ticks and separators, and a coloured
+mark is never under 6. 16 is the main ladder's step 1/4 (avatar 1/4); 4 to 12
+have no public name. The author sets only the host's size: the component
+derives each mark from its host's step through one table in core
+(`src/core/scss/vars/_sf_var__size.scss`, emitted as the internal
+`--sf-micro--*` properties, not public):
 
-| Indicator | Sizes | Why it is below the ladder |
-| --- | --- | --- |
-| status dot `sf-dot` | 4 / 6 / 8 / 10 (`--sf-a4`, `--sf-a6`, `--sf-a8`, `--sf-b0`) at sizes 1/3, 1/2, 1, 2; the same on a phone | a mark beside a label, read by its colour, not a picture of the row |
-| inline or anchored badge (`sf-badge--line-1/2`, a counter on an icon or an avatar) | `sf-badge--line-1/2` 20 on a desktop, 16 on a phone; an anchored counter 16 or 20 | it sits inside a text line or on the corner of another part and must not raise it |
-| progress tracks: `sf-progress-bar`, `sf-progress-scale` | the track is `--sf-text-size-1/7` … `--sf-text-size-1/3`; with the value line the block is the track plus that line | a track is a rule, not a control; only its value line is text of the ladder |
+| Mark | 1/4 | 1/3 | 1/2 | 1 | 2 | 3 |
+| --- | --- | --- | --- | --- | --- | --- |
+| status point on an avatar, «something new» dot (one table) | 6 | 6 | 8 | 12 | 12 | 16 |
+| count on an avatar or an icon button | — | dot | dot | 16 | 16 | 16 |
+| dot: `sf-dot`, a status tag, a timeline step | — | 6 | 6 | 8 | 8 | 12 |
+| remove cross of a tag or a chip | — | 8 | 8 | 12 | 12 | 16 (12 in compact and on a phone) |
+| company / «verified» badge on an avatar | 8 | 8 | 12 | 12 | 16 | 16 |
+| tick, separator | 4 | 4 | 4 | 4 | 4 | 4 |
+
+The surface ring of a point is drawn outside its coloured disc (1 px on 1/4
+and 1/3, 2 px from 1/2), so the coloured diameter is the step. The tag cross
+is half the tag's text line rounded down to a small step. A badge with text
+(`sf-badge`, `sf-badge--line-1/2`) is not a mark: it stays on the main ladder.
+A progress track (`sf-progress-bar`, `sf-progress-scale`) is a rule, not a
+mark; only its value line is text of the ladder.
+
+**Outside the small steps** (C132 #q-icons, C18). These parts below 24 belong
+to the icon row or to the internals of a control, not to marks, and keep their
+own sizes until the icon-row study. Nothing else below 24 may take a size off
+4 · 6 · 8 · 12 · 16 or a main-ladder step:
+
+| Part | Sizes below 24 |
+| --- | --- |
+| icon row `sf-icon` (and a glyph a control takes from it) | 14 at 1/2, 20 at 2; 18 / 22 glyphs in controls |
+| spinner | 20 / 28 / 36 |
+| checkbox | box 20 / 28; check glyph 14 / 18 / 22 |
+| radio button | dot 10 / 14 |
+| slider | thumb inner 10 / 14 |
+| switch | knob |
+| close button cross (`sf-button-close`, an icon button's close, alert, toast) | 14 / 16 / 18 / 20, the glyph of its icon-button step |
+| «?» of `sf-help-mark` | glyph 20 at 1/2 (an icon) |
+
+A tag's remove cross is a mark, not a close button: it takes the table above.
+A box of the main ladder (20 on a phone or in a compact region) is a ladder
+step, not a small step.
 
 A colour dot that stands for a picture inside a control (a list row's colour,
 a swatch in a field) is a part of that control and takes `L`, as in the table
@@ -104,7 +140,132 @@ one meta line (52 + 16 = 68 on a phone), and a row whose action stands
 under its text adds a control band (52 + 8 + 28 = 88). A menu row with a
 caption under its name is the same rule (C49).
 
-## 5. Verification
+## 5. Horizontal spacing: six roles (C105)
+
+Every horizontal distance between two parts is one of six roles, each on an
+existing token (owner decision C105, 2026-11-12; research
+ui-control `control/research/2026-11-12-horizontal-spacing.md`). A token is
+one name with three numbers: a compact region (`data-sf-density`, C22/C79) and
+the phone move it themselves. Where a role has a role token (owner decision
+C173, 2026-11-14, which replaces C105's «no new variable names»; §5.1), a
+component reads the role token through its own variable; acceptance measures
+it.
+
+| Role | Between | Where | Token | normal · compact · phone |
+| --- | --- | --- | --- | --- |
+| H1 | picture → label inside a **control** | sf-button, tag, tab, segment, button link | `--sf-ui-S--text-space-x` (the button's own step, C76) | 1/2: 7 · 6 · 6; 1: 8 · 7 · 6; 2: 10 · 8 · 8 |
+| H2 | picture → text in a **row** | list, menu column, dropdown options, field with a picture, notice, table cell, card row, tree row | `--sf-space-1/2` = `--sf-gap--icon-text` | 12 · 8 · 8 |
+| H3 | picture → text **inside running text** | breadcrumbs, link with an icon, help mark | `--sf-space-1/4` = `--sf-gap--icon-inline` | 4 · 4 · 4 |
+| H4 | edge → content of a **value container** | field, dropdown and its options, list, menu, contents | C77: 1/2 `--sf-space-1/2` (never below 12), 1 `--sf-space-1`, 2 `--sf-space-2`, the border inside; in a panel a plate `--sf-space-1/4` + the row's inset less 4 | 1/2: 12 · 12 · 12; 1: 16 · 12 · 12; 2: 20 · 16 · 16 |
+| H5 | between **neighbours** | buttons of one group; toolbar buttons; tags and plates; tabs | buttons `--sf-space-1/3` = `--sf-gap--actions`; toolbar `--sf-space-1/4` = `--sf-gap--toolbar` (C144); tags and plates `--sf-space-1/4` = `--sf-gap--tags`; tabs 0, edge to edge (C99) | 8 · 4 · 8; 4; 4; 0 |
+| H6 | between **groups**; a **surface's** inset | group ↔ group, field ↔ button; notice, table cell; card, dialog | groups and cells `--sf-space-1` = `--sf-gap--groups`; card, window and notice padding `--sf-space-2` = `--sf-inset--panel` (C105 as corrected 2026-11-12) | 16 · 12 · 12; 20 · 16 · 16 |
+
+A **control** is one compact object a person presses (button, tag, tab,
+segment, icon button); a **row** is a line of content in a container (list,
+menu column, options, a field, a notice, a cell, a tree row). A field is a
+row, because it lines up with its own list.
+
+Rules that go with the roles:
+
+1. A field and its list share the axis: picture over picture, text over text
+   (§3).
+2. A group heading in a list stands over the row pictures (H4 from the
+   frame's edge), not over their text.
+3. In a list where any row has a picture, a row without one keeps the
+   picture's place empty, so every text starts on one vertical.
+4. A control with a picture starts it at `--sf-ui-S--space-x`; without one,
+   its label starts at space-x + text-space-x (the button as it is).
+5. A component never uses a layout utility (`gap-2`, `p-2`) for its own
+   geometry; it reads the role's token through its own variable. Layout
+   utilities are for pages.
+6. A nested row steps its child in by its first column and the row gap: the
+   child's first column stands under the parent's text (C109; a menu with
+   icons on every level). A text-only nested list steps by its H4.
+7. A picture with text in a table cell or a card row (HS-14) is one inline
+   row with the H2 gap, never a space character (a space is about 4–5 px and
+   follows the font):
+
+       <td><span class="inline-flex items-cross-center gap-1/2"><i class="sf-icon" aria-hidden="true">description</i><span>Report.pdf</span></span></td>
+
+### 5.1 Role tokens (C173)
+
+A role token is a name for a role, `--sf-<area>--<role>` like
+`--sf-radius--ui`, and its value is a reference to an existing step, never a
+number of its own (owner decision C173, 2026-11-14, refining C156; research
+ui-control `control/research/2026-11-14-role-tokens.md`). People and AI pick a
+role by its name instead of guessing a step, and a role changes in one place.
+The list, its values and the cap are `src/core/contracts/role-tokens.v1.json`;
+`scripts/generate-role-tokens.mjs` writes `src/core/figma_variables/figma_role_tokens.scss`.
+
+| Token | Role | Step | normal · compact · phone |
+| --- | --- | --- | --- |
+| `--sf-gap--actions` | buttons of one group (a footer, a confirmation, a page header's actions) | `--sf-space-1/3` | 8 · 4 · 8 |
+| `--sf-gap--toolbar` | toolbar buttons; a toolbar separator's margins (C144) | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-gap--tags` | tags and chips side by side | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-gap--groups` | between groups and cells | `--sf-space-1` | 16 · 12 · 12 |
+| `--sf-gap--icon-text` | picture → text in a row (H2) | `--sf-space-1/2` | 12 · 8 · 8 |
+| `--sf-gap--icon-inline` | icon inside running text (H3) | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-inset--panel` | padding of a card, window, drawer, notice | `--sf-space-2` | 20 · 16 · 16 |
+| `--sf-inset--plate` | underlay of a popup panel or scroll area | `--sf-space-1/4` | 4 · 4 · 4 |
+| `--sf-radius--inner` | corner inside a host: host corner − inset, never below 4 | formula | 4 (surface host, plate) |
+| `--sf-line--border` | frames, dividers | `--sf-px` | 1 |
+| `--sf-line--indicator` | the chosen tab's line, a chosen frame (C99) | 2 × `--sf-px` | 2 |
+| `--sf-hit--min` | the smallest press area (C76, WCAG 2.5.8) | `--sf-c2` | 24 |
+| `--sf-hit--touch` | the press area on a touch screen (C49) | `--sf-d1` | 44 |
+| `--sf-layer--base` | the page itself | `--sf-z-index-0` | 0 |
+| `--sf-layer--sticky` | parts that stay while the page scrolls: a site header, sticky tabs, a table of contents, a table's action band, a pane splitter | `--sf-z-index-5` | 50 |
+| `--sf-layer--popover` | a panel dropping from its trigger: a list at a field, a menu, a calendar, a colour panel, a popover's surface out of the top layer, editor frames, a dragged copy | `--sf-z-index-9` | 90 |
+| `--sf-layer--window` | what covers the page: a window, a drawer, a bottom sheet and its veil, the loading screen; the layer stack's base | `--sf-z-index-layer` | 9000 |
+| `--sf-layer--message` | a tooltip, a value bubble, a copy status, the notification area | `--sf-z-index-layer` | 9000 |
+
+`--sf-radius--ui` (4) and `--sf-radius--surface` (8) stay. The five layer
+roles (C173 point 7; names and order owner decision C181 (3)) keep the order
+base < sticky < popover < window <= message; a window and a message start at
+the layer stack's base, and above the page the stack (`core/js/layer-stack.js`)
+orders them by opening. A component takes the layer of its role, never a
+numbered step: the numbered steps `--sf-z-index--1` ... `--sf-z-index-9` stay
+declared as aliases until 2027-01-01 (built sheets, ui-doc and ui-pro still
+read them). A part that stands over its own siblings inside a component keeps
+a local number (-1 to 2, or `--sf-z-index-1`/`-2` until then); any other
+stacking number is the raw-value lint's (`tools/lint-raw-values.mjs`, C178).
+Control heights, icon sizes, shadows, motion and focus do not get role names:
+the ladder, the host (C151) and the existing names are the roles there. At most
+18 role names in all (the owner raised the cap from 17 on 2026-11-14: 13 names
+and 5 layers).
+
+Rules:
+
+1. A row of buttons of one group is `.sf-actions` (flex, wrapping, centred,
+   gap `--sf-gap--actions`); `.sf-actions--end` pushes it to the end.
+2. A role token is declared by the core only. A custom property resolves
+   where it is declared, so the core declares each step-dependent role again
+   in every scope that redefines the steps (both density regions); a role on
+   `:root` alone would keep the root's step in a compact region (RT-15).
+3. `--sf-radius--inner` is one formula, `max(var(--sf-a4), calc(<host corner>
+   - <inset>))`; the root value is for a surface host with a plate underlay, a
+   host with another corner or inset declares the same formula on itself.
+4. A component variable that names a role keeps its name and defaults to the
+   role token (`--sf-modal-footer-gap`, `--sf-page-header-actions-gap`,
+   `--sf-alert-buttons--gap` …), so a page can still move one component.
+5. `node scripts/check-role-tokens.mjs` checks the sources: the names, the
+   density scopes, that a gap of a row of buttons, a toolbar or a row of tags
+   reads its role token and never a step (known departures in
+   `src/core/contracts/role-tokens.baseline.v1.json`, each with its defect),
+   and that a scrim reads `--sf-scrim-color`.
+
+## 6. One row, one rung (C103)
+
+A label, its value and a button beside them (copy, an icon action, an icon
+link) that stand in one row stand on one rung of the ladder (owner decision
+C103, 2026-11-12): text 1/2 → the button is `size="1/2"` (32, icon 20); text
+1 → `size="1"` (40, icon 24). The label is not smaller than the value in such
+a row; a smaller label stands only above its value (like a field's label). A
+button in a row of buttons or in a field takes the size of that row or field.
+Density moves the whole row together (C22, C79). Acceptance measures it: the
+button's height equals the control height of the row's text rung, its icon the
+text line.
+
+## 7. Verification
 
 - A contract test holds each mechanism (the rule that produces the geometry).
 - A browser probe measures the result for every kind, size and look at a

@@ -1,6 +1,7 @@
 @use 'sass:map';
-@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use '../../../utility/container/default/scss/sf_var__container' as container;
 
 @layer sf.components {
 /* The top bar of a SIMAI site (standard simai.smart-component 1.3.11 §6).
@@ -17,7 +18,33 @@
   position: relative;
   display: block;
   box-sizing: border-box;
+  /* The row's gutter, the .container ladder read from the utility's own
+     steps, for the side panel's head (its close button on the menu button's
+     axis). */
+  --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-1));
+  /* How far the row's container stands in from the page's edge when the page
+     is wider than the container's step (its max-width is the step's
+     breakpoint, centred): half the difference. The page's width is the one
+     the container's breakout reads, --sf-container-breakout-page when a
+     product sets it, else the window. Zero below the first step. */
+  --sf-site-header--centring: calc(var(--sf-px) * 0);
+  /* The open panel's width, read by the panel and by its head: the side
+     panel's step 1/2, 20rem (owner decision C157 (2): the three steps 20 ·
+     24 · 30rem, and 22rem moves to a step; it was --sf-g1, 22rem). */
+  --sf-site-header--sheet-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g0)));
+  /* The bar collapses at a step of its own width (C181 (2), C104): it is the
+     container its parts query, so a bar narrower than the window -- a
+     column, a card, an example frame -- collapses as its nav and actions run
+     out of room, not when the window does. A block in the flow, its width is
+     never its content's. The containment makes no containing block: the
+     open panel stays fixed to the window. */
+  container: sf-site-header / inline-size;
   min-block-size: var(--sf-site-header--block-size);
+  /* core.css holds the drawn bar at its height and clips it until this sheet
+     arrives (HD-13, the first paint without printed markup); with the sheet
+     the bar is as tall as its row. */
+  block-size: auto;
+  overflow: visible;
   border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
   background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
   color: var(--sf-site-header-color, var(--sf-on-surface));
@@ -31,7 +58,7 @@
 .sf-site-header--sticky {
   position: sticky;
   inset-block-start: 0;
-  z-index: var(--sf-site-header-z-index, var(--sf-z-index-5));
+  z-index: var(--sf-site-header-z-index, var(--sf-layer--sticky));
   /* The flat place at the top of the page; the raised one while content runs
      under it (C20): the host says data-scrolled, the bar takes the raised
      shadow and, in the dark theme, the raised surface, a step lighter. A
@@ -51,14 +78,18 @@
   box-shadow: var(--sf-shadow-raised);
 }
 
-/* The row: brand · nav … actions · tools, on one centre line. */
+/* The row: brand · nav … actions · tools, on one centre line. Its parts are
+   groups, --sf-space-1 apart (C105 H6: 16, a phone 12). */
 .sf-site-header-row {
   display: flex;
   align-items: center;
-  gap: var(--sf-site-header-gap, var(--sf-space-2));
+  gap: var(--sf-site-header-gap, var(--sf-space-1));
   box-sizing: border-box;
   min-block-size: calc(var(--sf-site-header--block-size) - var(--sf-px));
   padding-block: var(--sf-space-1);
+  /* Shown again once this sheet is in (core.css keeps it out of view before,
+     HD-13). */
+  visibility: inherit;
 }
 
 .sf-site-header-brand {
@@ -103,6 +134,7 @@
 .sf-site-header-panel-head,
 .sf-site-header-scrim,
 .sf-site-header-sheet,
+.sf-site-header-settings,
 .sf-site-header-menu-button > button {
   display: none;
 }
@@ -129,7 +161,12 @@
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--sf-space-1);
+}
+
+/* The actions (a link, a button) are neighbours of one group: 8 apart, 4 in
+   a compact region (C105 H5, --sf-space-1/3). */
+.sf-site-header-actions {
+  gap: var(--sf-gap--actions);
 }
 
 /* The tools are a toolbar of icon-sized controls: one even step between them,
@@ -172,9 +209,10 @@
   justify-content: flex-end;
 }
 
-/* Collapsed: the menu button first, the brand, then the tools at the end; the
-   panel is shown only while open, as a side panel at the inline start over a
-   scrim. Height and focus come from the layer stack (core/js/layer-stack.js),
+/* Collapsed: the menu button first, the brand, then the tools at the end (or
+   the brand, the tools and the menu button last, menu-placement inline-end);
+   the panel is shown only while open, as a side panel from the button's edge
+   over a scrim. Height and focus come from the layer stack (core/js/layer-stack.js),
    which lifts the whole header to the layer's z-index while it is open. */
 @mixin collapsed {
   /* A row again whatever navigation-align says: the nav is in the panel. */
@@ -191,6 +229,17 @@
     margin-inline-start: auto;
   }
 
+  /* menu-placement inline-end (C104): the button is drawn last, after the
+     tools, and stands at the end of the bar; behind the tools it follows them
+     at the row's gap. */
+  &.sf-site-header--menu-inline-end .sf-site-header-menu-button > button {
+    margin-inline-start: auto;
+  }
+
+  &.sf-site-header--menu-inline-end .sf-site-header-tools ~ .sf-site-header-menu-button > button {
+    margin-inline-start: 0;
+  }
+
   /* The brand gives way, the tools stay whole: a bar narrower than the menu
      button, the brand and the tools shrinks the brand (its text ends in the
      page's own ellipsis) instead of scrolling the page sideways. */
@@ -198,13 +247,46 @@
     flex: 0 1 auto;
   }
 
+  /* ... and its words end in an ellipsis of the bar's own (HD-10: the brand
+     box shrank, but its text ran on under the tools). A link fits the brand
+     and its words close down: the link itself when it holds only words,
+     else the words beside its picture. The picture keeps its size. :where
+     keeps the rules at the brand's weight, so a page's own brand CSS stays in
+     charge. */
+  .sf-site-header-brand :where(a) {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .sf-site-header-brand :where(a:not(:has(img, svg))),
+  .sf-site-header-brand :where(a:has(img, svg) > :not(img, svg)),
+  .sf-site-header-brand > :where(:not(a, img, svg):not(:has(a, img, svg))) {
+    display: block;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .sf-site-header-panel {
     display: none;
+  }
+
+  /* While open, the scrim and the panel stand above everything in the bar
+     (C104, MP-6): the header is the layer's stacking context (place() in
+     index.js), the scrim and the panel take the first step of the z-index
+     scale inside it, and the bar's own parts are isolated, so a z-index in
+     them (sf-button's text, z-index 1; a page's switch in the tools) stays
+     under the scrim. Closed, nothing is isolated: a menu that drops from the
+     tools is not capped by the bar. */
+  &.sf-site-header--open :is(.sf-site-header-brand, .sf-site-header-tools, .sf-site-header-menu-button > button) {
+    isolation: isolate;
   }
 
   &.sf-site-header--open .sf-site-header-scrim {
     display: block;
     position: fixed;
+    z-index: var(--sf-z-index-1);
     inset: 0;
     /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20). */
     background: var(--sf-scrim-color, var(--sf-black--alfa-64));
@@ -213,12 +295,13 @@
 
   &.sf-site-header--open .sf-site-header-panel {
     position: fixed;
+    z-index: var(--sf-z-index-1);
     inset-block: 0;
     inset-inline-start: 0;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    inline-size: var(--sf-site-header-sheet-inline-size, min(90vw, var(--sf-g1)));
+    inline-size: var(--sf-site-header--sheet-size);
     block-size: 100dvh;
     overflow: auto;
     overscroll-behavior: contain;
@@ -229,24 +312,59 @@
   }
 
   /* The panel's head is as tall as the bar, its close button on the axis of
-     the menu button. */
+     the menu button (R189 MP-3): first in the head, at the bar's own gutter
+     (the .container inset of the row, --sf-container-gutter when a product
+     sets it), so the close stands where the menu button stood and the heading
+     follows it. The DOM keeps the heading first: the close is the head's only
+     focusable part, and a reader still hears the panel's name before it. */
+  /* menu-placement inline-end: the panel comes from the end edge. */
+  &.sf-site-header--menu-inline-end.sf-site-header--open .sf-site-header-panel {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+  }
+
   &.sf-site-header--open .sf-site-header-panel-head {
+    /* The menu button's axis from the panel's edge: the row's gutter and the
+       container's centring offset, held inside the panel (the button and a
+       gutter beyond it) when the window is so wide that the axis lies past
+       the panel. */
+    --sf-site-header--axis-inset: min(
+      calc(var(--sf-site-header--gutter) + var(--sf-site-header--centring)),
+      calc(var(--sf-site-header--sheet-size) - var(--sf-site-header--control-height) - var(--sf-site-header--gutter))
+    );
     display: flex;
     flex: none;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: var(--sf-space-2);
     box-sizing: border-box;
     min-block-size: var(--sf-site-header--block-size);
     padding-block: var(--sf-space-1);
-    padding-inline: var(--sf-space-2) var(--sf-space-1);
+    padding-inline: var(--sf-site-header--axis-inset);
     border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
+  }
+
+  /* On the button: the sf-button-icon host is display: contents. */
+  .sf-site-header-close-button > button {
+    order: -1;
+  }
+
+  /* menu-placement inline-end: the close stands at the end of the head, on
+     the button's axis there, and the heading keeps the start at the panel's
+     own inset, in line with its rows. */
+  &.sf-site-header--menu-inline-end.sf-site-header--open .sf-site-header-panel-head {
+    justify-content: space-between;
+    padding-inline: var(--sf-space-2) var(--sf-site-header--axis-inset);
+  }
+
+  &.sf-site-header--menu-inline-end .sf-site-header-close-button > button {
+    order: 0;
   }
 
   .sf-site-header-panel-heading {
     font-size: var(--sf-text-medium--size);
     line-height: var(--sf-text-medium--height);
-    font-weight: 700;
+    font-weight: var(--sf-heading--weight);
   }
 
   &.sf-site-header--open .sf-site-header-nav,
@@ -263,6 +381,35 @@
   &.sf-site-header--open .sf-site-header-actions,
   &.sf-site-header--open .sf-site-header-sheet {
     border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  /* The settings group (C161 (8)): the language and the theme the bar's
+     tools held on a wide screen, under the sections as a group of the panel
+     -- its padding, gap and top line -- headed «Настройки» in the quiet
+     small words, each setting a row of its word and its control at the
+     row's end. */
+  &.sf-site-header--open .sf-site-header-settings {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sf-space-1);
+    padding: var(--sf-space-2);
+    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  }
+
+  .sf-site-header-settings-heading {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    color: var(--sf-on-surface-variant);
+  }
+
+  .sf-site-header-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-space-1);
+    min-inline-size: 0;
   }
 
   /* The panel is the phone's menu (C30): its rows are touch rows, the size 2
@@ -282,12 +429,67 @@
 
 .sf-site-header--collapse-always {
   @include collapsed;
+
+  .sf-site-header-row {
+    --sf-site-header--collapsed: 1;
+  }
 }
 
-@each $step in (sm, md, lg, xl) {
-  @media not all and (min-width: map.get(bp.$breakpoint-array, $step)) {
+@each $step, $space in container.$container-array {
+  @include mq.breakpoint-media($step) {
+    .sf-site-header {
+      --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-#{$space}));
+      --sf-site-header--centring: max(calc(var(--sf-px) * 0), calc((var(--sf-container-breakout-page, 100vw) - var(--sf-breakpoint-#{$step})) / 2));
+    }
+  }
+}
+
+/* The row's gutter on the bar's own width (C104, C181 (2)): below the xl
+   step the .container inset is the step the bar is at, not the window's --
+   a bar in a 512 px column of a 1440 window had the window's xl gutter and
+   ran its parts over each other. --sf-container--inset is the utility's own
+   per-element inset (it does not inherit), --sf-container-gutter a product's
+   setting, kept first. From xl up nothing is set: the window's steps (xl,
+   xxl) draw the gutter as before, and a full-width bar under xl is at the
+   window's own step, so it is unchanged. The steps are the screen
+   breakpoints' places on the container ladder. */
+.sf-site-header-row {
+  --sf-container--inset: var(--sf-container-gutter, var(--sf-space-1));
+  --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-1));
+}
+
+@each $from, $to, $step in (g6 h1 sm, h1 h5 md, h5 h8 lg) {
+  $space: map.get(container.$container-array, $step);
+
+  @container sf-site-header (width >= #{mq.container-step($from)}) and (width < #{mq.container-step($to)}) {
+    .sf-site-header-row {
+      --sf-container--inset: var(--sf-container-gutter, var(--sf-space-#{$space}));
+      --sf-site-header--gutter: var(--sf-container-gutter, var(--sf-space-#{$space}));
+    }
+  }
+}
+
+@container sf-site-header (width >= #{mq.container-step(h8)}) {
+  .sf-site-header-row {
+    --sf-container--inset: initial;
+    --sf-site-header--gutter: inherit;
+  }
+}
+
+/* collapse <step>: below that step of the bar's own width. The steps are the
+   screen breakpoints' places on the one container ladder (C181 (2)): sm g6
+   32rem, md h1 44rem, lg h5 60rem, xl h8 72rem. A full-width bar reads the
+   window's width less a classic scrollbar, so it collapses as before. The row
+   publishes the answer (--sf-site-header--collapsed: 1), and index.js reads it
+   from there: the script and the sheet cannot disagree. */
+@each $step, $container-step in (sm: g6, md: h1, lg: h5, xl: h8) {
+  @container sf-site-header (width < #{mq.container-step($container-step)}) {
     .sf-site-header--collapse-#{$step} {
       @include collapsed;
+
+      .sf-site-header-row {
+        --sf-site-header--collapsed: 1;
+      }
     }
   }
 }

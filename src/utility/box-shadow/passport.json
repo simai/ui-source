@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.box-shadow",
   "kind": "utility",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/box-shadow/default/index.js",
@@ -18,7 +18,7 @@
     "src/utility/box-shadow/hover/scss/_sf_css__shadow.scss",
     "src/utility/box-shadow/hover/scss/index.scss"
   ],
-  "content_sha256": "3a4eae00efd55ff0e014b63d3d70b86da19d594a0c17839b94cbb12003850f3e",
+  "content_sha256": "ee53346825e5372e6956ffac3a9ef45c14ad1c43abec9c7a65f2b5e1f31ca2c1",
   "dependencies": [
     {
       "id": "tokens.colour",

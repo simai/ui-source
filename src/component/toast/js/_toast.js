@@ -2,8 +2,11 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { dismissToastElement } from '../dismiss';
 import { pageText } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
-const TOAST_TEXT = { en: { close: 'Close message' }, ru: { close: 'Закрыть сообщение' } };
+const TOAST_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 const TOAST_SELECTOR = '.sf-toast';
 const TOAST_BOUND_FLAG = 'sfToastBound';
@@ -23,7 +26,17 @@ function normalizeType(value) {
   return TOAST_TYPES.has(status) ? status : 'neutral';
 }
 
+// An error or a warning never leaves by itself (owner decision C114 (6),
+// NS-2; WCAG 2.2.1): it stays until a person closes it, whatever data-duration
+// it carries. A success, an info and a neutral message keep their time.
+const STAYING_TOAST_TYPES = new Set(['warning', 'error']);
+
+function staysUntilClosed(root) {
+  return [...STAYING_TOAST_TYPES].some((status) => root.classList?.contains(`sf-toast--${status}`));
+}
+
 function readDuration(root) {
+  if (staysUntilClosed(root)) return 0;
   const duration = Number(root.getAttribute('data-duration'));
   return Number.isFinite(duration) && duration > 0 ? duration : 0;
 }
@@ -52,8 +65,11 @@ function pauseToastTimer(root, reason) {
   clearToastTimer(root);
 }
 
+// A reason that was not standing changes nothing: started again, the timer
+// would run its whole remainder from now (an open stack lays out on every
+// change and resumes every message it does not stand).
 function resumeToastTimer(root, reason) {
-  root.__sfToastPauseReasons?.delete(reason);
+  if (!root.__sfToastPauseReasons?.delete(reason)) return;
   startToastTimer(root);
 }
 
@@ -76,6 +92,9 @@ function bindToast(root, removalTarget = root) {
       return;
     }
 
+    // A link action without an address is the page's to answer, not a jump
+    // to the top.
+    if (trigger.matches('a[href="#"]')) event.preventDefault();
     root.dispatchEvent(
       new CustomEvent('sf-toast-action', {
         bubbles: true,
@@ -114,7 +133,26 @@ function bindToast(root, removalTarget = root) {
   root.__sfToastPauseReasons = new Set();
   root.__sfToastRemaining = readDuration(root);
   root.dataset[TOAST_BOUND_FLAG] = '1';
+  watchPageVisibility();
+  // A message raised while the page is out of sight waits for it.
+  if (document.hidden) root.__sfToastPauseReasons.add('page-hidden');
   startToastTimer(root);
+}
+
+// A message's time runs only while the page is in sight: hidden (another tab,
+// a minimised window) every timer stands and resumes with what was left (C50
+// call). One listener for the document.
+let pageVisibilityWatched = false;
+function watchPageVisibility() {
+  if (pageVisibilityWatched || typeof document === 'undefined') return;
+  pageVisibilityWatched = true;
+  document.addEventListener('visibilitychange', () => {
+    for (const root of document.querySelectorAll(TOAST_SELECTOR)) {
+      if (root.dataset[TOAST_BOUND_FLAG] !== '1') continue;
+      if (document.hidden) pauseToastTimer(root, 'page-hidden');
+      else resumeToastTimer(root, 'page-hidden');
+    }
+  });
 }
 
 function unbindToast(root) {
@@ -176,20 +214,26 @@ function createToastElement(options = {}) {
     supportingText = '',
     actionText = '',
     action = '',
+    actions = null,
+    link = null,
     closable = true,
-    closeLabel = pageText(TOAST_TEXT, 'close', document.documentElement),
+    closeLabel = pageText(TOAST_TEXT, 'close', document.documentElement, 'sf-toast'),
     duration = 0,
     role = '',
+    actionsLayout = 'auto',
   } = options;
 
   const root = document.createElement('div');
   root.className = joinClasses(
     'sf-toast',
     `sf-toast--${normalizeType(status ?? type)}`,
+    // The author's switch (owner 2026-11-13): the action under the text at
+    // every width; auto is layout L3a (C115).
+    actionsLayout === 'under' ? 'sf-toast--actions-under' : '',
     'flex',
     'items-cross-start',
   );
-  if (Number.isFinite(Number(duration)) && Number(duration) > 0) {
+  if (!STAYING_TOAST_TYPES.has(normalizeType(status ?? type)) && Number.isFinite(Number(duration)) && Number(duration) > 0) {
     root.dataset.duration = String(Number(duration));
   }
   if (role === 'status' || role === 'alert') root.setAttribute('role', role);
@@ -215,6 +259,12 @@ function createToastElement(options = {}) {
     wrap.append(titleNode);
   }
 
+  // Every action is a button (owner decision C126 (1)): one light
+  // navigation action (C50, `link`) is the one action button drawn as a link,
+  // an <a href> in the button's classes, in the action's place (C115). Undo,
+  // retry, extend and two actions are buttons (C35, C46). With `link` the
+  // other actions do not apply.
+  const linkText = String(link?.text ?? '').trim();
   if (supportingText) {
     const supportingTextNode = document.createElement('div');
     supportingTextNode.className = 'sf-toast-supporting-text';
@@ -224,24 +274,37 @@ function createToastElement(options = {}) {
 
   container.append(wrap);
 
-  if (actionText) {
+  const buttons = linkText
+    ? [{ text: linkText, action: link.action || 'action', href: link.href || '#', target: link.target }]
+    : (Array.isArray(actions) ? actions : [{ text: actionText, action }])
+      .filter((one) => String(one?.text ?? '').trim())
+      .slice(0, 2);
+  if (buttons.length) {
     const bottom = document.createElement('div');
     bottom.className = 'sf-toast-bottom flex items-center';
 
-    const actionButton = document.createElement('button');
-    actionButton.type = 'button';
-    // The notice's action (owner decision C35): an unsized low button, tonal
-    // primary, its label the notice's text size (as the Smart sf-toast).
-    actionButton.className = 'sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center';
-    actionButton.setAttribute('data-action', action || 'action');
-    actionButton.setAttribute('data-toast-action', action || 'action');
+    buttons.forEach((one) => {
+      const actionButton = document.createElement(one.href ? 'a' : 'button');
+      if (one.href) {
+        actionButton.href = one.href;
+        if (one.target) actionButton.target = one.target;
+      } else {
+        actionButton.type = 'button';
+      }
+      // The notice's action (owner decision C35; C110 variant E): an unsized
+      // low button, tonal surface (tonal on-surface), its label the notice's
+      // text size (as the Smart sf-toast).
+      actionButton.className = 'sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center';
+      actionButton.setAttribute('data-action', one.action || 'action');
+      actionButton.setAttribute('data-toast-action', one.action || 'action');
 
-    const actionTextNode = document.createElement('span');
-    actionTextNode.className = 'sf-button-text-container';
-    actionTextNode.textContent = actionText;
+      const actionTextNode = document.createElement('span');
+      actionTextNode.className = 'sf-button-text-container';
+      actionTextNode.textContent = String(one.text).trim();
 
-    actionButton.append(actionTextNode);
-    bottom.append(actionButton);
+      actionButton.append(actionTextNode);
+      bottom.append(actionButton);
+    });
     container.append(bottom);
   }
 
@@ -319,6 +382,8 @@ class Toast extends ComponentObserver {
       supportingText = '',
       actionText = '',
       action = '',
+      actions = null,
+      link = null,
       closable = true,
     } = this.params || {};
 
@@ -330,6 +395,8 @@ class Toast extends ComponentObserver {
       supportingText,
       actionText,
       action,
+      actions,
+      link,
       closable,
       closeLabel: this.params?.closeLabel,
       duration: this.params?.duration,
@@ -361,6 +428,10 @@ if (typeof window !== 'undefined') {
   window.SF.Toast.dismiss = dismissToast;
   window.SF.Toast.create = createToastElement;
   window.SF.Toast.show = showToast;
+  // A timer stands for as long as any reason holds it (pointer, focus, or the
+  // page's own: SF.notify stands every message of an open stack).
+  window.SF.Toast.pause = (root, reason = 'page') => root instanceof HTMLElement && pauseToastTimer(root, String(reason));
+  window.SF.Toast.resume = (root, reason = 'page') => root instanceof HTMLElement && resumeToastTimer(root, String(reason));
 }
 
 if (document.readyState === 'loading') {

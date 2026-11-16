@@ -1,3 +1,6 @@
 {
-  "title": "Radio buttons"
+  "title": "Radio buttons",
+  "runtime": {
+    "help": "More about: {label}"
+  }
 }

@@ -25,7 +25,8 @@ test('the open-surface mark is one counted holder in core', async () => {
 test('sf-popover holds the shared mark and writes no mark of its own', async () => {
   const source = await read('src/smart/popover/index.js');
   assert.ok(source.includes("import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark'"));
-  assert.ok(source.includes('holdOpenSurfaceMark(this, true)'));
+  // The layer it declares may carry place() (C59: it steps down under a window).
+  assert.match(source, /holdOpenSurfaceMark\(this, true[,)]/u);
   assert.ok(source.includes('holdOpenSurfaceMark(this, false)'));
   assert.doesNotMatch(source, /dataset\[OPEN_MARK\]/);
   assert.doesNotMatch(source, /function markOpen/);

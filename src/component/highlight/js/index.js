@@ -2,21 +2,13 @@ import { initLineNumbers } from './line_numbers';
 import { AVAILABLE_LANGUAGES, LANGUAGE_ALIASES } from './languages';
 import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-highlight', code, words); a ternary on «ru» allowed two
 // and no more.
-const HIGHLIGHT_TEXT = {
-  en: {
-    copy: 'Copy code',
-    copied: 'Code copied',
-    wrap: 'Wrap lines',
-  },
-  ru: {
-    copy: 'Копировать код',
-    copied: 'Код скопирован',
-    wrap: 'Переносить строки',
-  },
-};
+const HIGHLIGHT_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 
 const CODE_SELECTOR = 'pre code';

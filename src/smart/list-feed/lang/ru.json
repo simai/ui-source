@@ -2,6 +2,7 @@
   "title": "Лента",
   "runtime": {
     "earlier-text": "Показать предыдущие",
+    "empty-text": "Записей пока нет",
     "latest-label": "К последней записи",
     "loading-earlier-text": "Загружаю предыдущие записи",
     "log-label": "Записи",

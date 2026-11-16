@@ -43,17 +43,18 @@ const sfTagMeta = {
         "error"
       ],
       "default": "",
-      "description": "What the tag reports, in the shared status vocabulary. Leave it empty for a tag that reports nothing."
+      "description": "What the tag reports, in the shared status vocabulary, for a tag a person presses or removes (interactive or closable): the same hue as the badge of that status. On a tag that is neither, the status draws the tonal badge of that status instead (owner decision C140 (6)). Leave it empty for a tag that reports nothing."
     },
     "appearance": {
       "kind": "enum",
       "values": [
         "default",
-        "surface",
-        "ghost"
+        "outline",
+        "ghost",
+        "surface"
       ],
       "default": "default",
-      "description": "Visual appearance, read from the neutral alpha ramp and separate from type: surface keeps a faint fill and a boundary, ghost keeps nothing until it is hovered. Only the neutral types take it, because a status tag carries its meaning in its colour."
+      "description": "Visual appearance, read from the neutral alpha ramp and separate from kind: outline keeps a faint fill and a hairline edge, ghost keeps nothing until it is hovered. surface is outline's former name until 2027-01-01 (journal value-tag-appearance-surface-to-outline; C15 retired the word) and draws the same. Only the neutral kinds take it, because a status tag carries its meaning in its colour."
     },
     "size": {
       "kind": "enum",
@@ -78,6 +79,17 @@ const sfTagMeta = {
       "default": "",
       "description": "Takes the text line of this form size as an inline tag one size down, for a table cell, so the row keeps its control height. Overrides size and inline."
     },
+    "height": {
+      "kind": "enum",
+      "values": [
+        "low",
+        "default",
+        "high",
+        "highest"
+      ],
+      "default": "default",
+      "description": "The tag's height (owner decision C27, as sf-button): the size's tightness steps -- low, default, high, highest, the size's usual step and its neighbours on the height ladder -- through the class sf-tag--height-<height> of component.tags (none for default). A value outside the list reads as default."
+    },
     "spacing": {
       "kind": "enum",
       "values": [
@@ -87,7 +99,7 @@ const sfTagMeta = {
         "spacious"
       ],
       "default": "normal",
-      "description": "Block padding of a free-standing tag, with the names the buttons use."
+      "description": "Deprecated until 2027-01-01 (journal attribute-tag-spacing-to-height): the former name of height. compact, comfortable and spacious draw as low, high and highest; height wins when both are given."
     },
     "inline": {
       "kind": "boolean",
@@ -103,6 +115,18 @@ const sfTagMeta = {
       "valueType": "string",
       "default": "",
       "description": "Visible tag label."
+    },
+    "href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The address the tag leads to: the tag is one native link, with no check mark and no cross, its label underlined on hover (owner decision C145 (6)). A relative address is kept; with a scheme only http, https, mailto and tel"
+    },
+    "key": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The tag's id in sf-tag-group (its selected and selected-ids); empty: the tag's text"
     },
     "count": {
       "kind": "custom",
@@ -121,6 +145,12 @@ const sfTagMeta = {
       "valueType": "string",
       "default": "",
       "description": "Framework semantic background utility for the color marker."
+    },
+    "color": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "A colour from data for kind color: a hue of the static palette by name (red, teal, violet...) or a hex colour, drawn in the palette hue nearest it, never as the raw colour. The tag shows it as a dot of the point step before the label (8 on the default 1/2 tag) and stays neutral (owner decision C145 (7))"
     },
     "avatar-image-url": {
       "kind": "custom",

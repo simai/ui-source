@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "remove": "Remove",
+    "uploading": "Uploading",
+    "uploading-name": "Uploading {name}",
+    "retry": "Try again",
+    "linkText": "Click to upload",
+    "text": "or drag and drop",
+    "not-added": "Not added: {n}",
+    "reject-type": "“{name}” is not accepted: allowed {formats}",
+    "reject-one": "“{name}” was not added: this field takes one file",
+    "reject-duplicate": "“{name}” is already in the list",
+    "reject-empty": "“{name}” is empty",
+    "reject-size": "“{name}” is {size}; the limit is {max}",
+    "reject-min-size": "“{name}” is {size}; it must be at least {min}",
+    "reject-count": {
+      "one": "“{name}” was not added: up to {n} file",
+      "other": "“{name}” was not added: up to {n} files"
+    },
+    "reject-total": "“{name}” was not added: all files together up to {max}",
+    "formats-image": "images",
+    "formats-video": "video",
+    "formats-audio": "audio",
+    "done": "Uploaded",
+    "done-line": "{size} · uploaded",
+    "error": "Not uploaded",
+    "error-line": "Not uploaded: {message}"
+  }
+}

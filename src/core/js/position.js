@@ -9,10 +9,19 @@ function isRtl(element) {
   return getComputedStyle(element).direction === 'rtl';
 }
 
-/** Resolves a number or CSS length (tokens included) to pixels in context. */
+// A plain pixel length needs no probe.
+const PIXELS = /^\s*(-?(?:\d+\.?\d*|\.\d+))(?:px)?\s*$/u;
+
+/**
+ * Resolves a number or CSS length (tokens included) to pixels in context.
+ * Anything but a number or a plain pixel length is measured by a probe span,
+ * which restyles the document: call it once per anchor, never per frame.
+ */
 export function resolveLength(value, context = document.body) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
   if (typeof value !== 'string' || value.trim() === '') return 0;
+  const plain = PIXELS.exec(value);
+  if (plain && (value.includes('px') || Number(plain[1]) === 0)) return parseFloat(plain[1]) || 0;
   const probe = document.createElement('span');
   probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;block-size:0;padding:0;border:0';
   probe.style.inlineSize = value;
@@ -95,9 +104,15 @@ function inTopLayer(element) {
 // the host's variables, theme, lang, dir and density by plain inheritance --
 // what a body portal has to carry by hand (carryLayerOrigin). A surface the
 // component already lifted (sf-menu-context, sf-help-mark, sf-profile-picker,
-// sf-input-lookup, dropdown lists) or that stands in a modal dialog's top
-// layer is left as it is; a browser without popovers keeps the fixed panel in
-// place, placed against its containing block.
+// sf-input-lookup, dropdown lists) is left as it is; a browser without
+// popovers keeps the fixed panel in place, placed against its containing block.
+//
+// A surface inside another top-layer surface -- a tooltip, a dropdown or a
+// nested popover in an open sf-popover, a modal dialog -- is lifted too, and
+// so stands above its parent. Left inside it, it was a fixed box in the
+// parent's stacking context, painted under the parent's later content: a
+// tooltip in an open popover hid under the next field's label (C59 S1
+// acceptance D1). Shown after its parent, it is drawn over it.
 //
 // The user-agent popover rule (inset 0, margin auto, a border, padding, Canvas
 // and CanvasText, overflow auto) is taken back by a rule of no specificity in
@@ -129,9 +144,7 @@ function adoptLiftedRule(floating) {
 
 function liftable(floating) {
   if (typeof floating.showPopover !== 'function' || !floating.isConnected) return false;
-  if (floating.hasAttribute('popover') || inTopLayer(floating)) return false;
-  for (let node = floating.parentElement; node; node = node.parentElement) if (inTopLayer(node)) return false;
-  return true;
+  return !floating.hasAttribute('popover') && !inTopLayer(floating);
 }
 
 /** Lifts a floating surface into the top layer; returns a function that puts it back, or null. */
@@ -156,6 +169,31 @@ export function liftToTopLayer(floating) {
       floating.removeAttribute(LIFTED);
     }
   };
+}
+
+// The scroll positions inside a floating surface (the surface itself and every
+// box in it that is scrolled), to be put back after a measurement that lifted
+// its height cap. Only boxes away from their start are kept.
+function scrollOffsets(floating) {
+  const found = [];
+  const keep = (element) => {
+    if (element.scrollTop || element.scrollLeft) found.push([element, element.scrollTop, element.scrollLeft]);
+  };
+  keep(floating);
+  for (const element of floating.querySelectorAll('*')) keep(element);
+  return found;
+}
+
+// Put back at once: the Framework sheet makes every box scroll smoothly
+// (* {scroll-behavior: smooth}, core scroll), and an assigned scrollTop glided
+// from the start the measurement threw it to. After a page scroll the list ran
+// 0 -> 800 over half a second and read 784 when the probe looked; a reposition
+// during the glide kept the value it had reached (R171 follow-up, 2026-11-12).
+function restoreScrollOffsets(found) {
+  for (const [element, top, left] of found) {
+    if (!element.isConnected) continue;
+    if (element.scrollTop !== top || element.scrollLeft !== left) element.scrollTo({top, left, behavior: 'instant'});
+  }
 }
 
 function fixedContainingBlock(element) {
@@ -190,6 +228,16 @@ export function anchorReference(element) {
       return boxesOf(element)[0] || element.parentElement || element;
     },
   };
+}
+
+// data-sf-density on the root or on a region restates the space tokens; one
+// attribute filter, so nothing else on the page wakes it.
+function watchDensity(doc, run) {
+  const view = doc?.defaultView;
+  if (typeof view?.MutationObserver !== 'function') return () => {};
+  const observer = new view.MutationObserver(() => run());
+  observer.observe(doc.documentElement, {attributes: true, subtree: true, attributeFilter: ['data-sf-density']});
+  return () => observer.disconnect();
 }
 
 /**
@@ -233,22 +281,112 @@ export function anchor(reference, floating, options = {}) {
   };
   const heightCap = cap(floatingStyle.maxHeight, document.documentElement.clientHeight);
   const widthCap = cap(floatingStyle.maxWidth, document.documentElement.clientWidth);
+  // A point -- a reference that draws a box of no size: a fixed span where a
+  // right-click or a long press was (sf-menu-context, C164 (1)) -- is not a
+  // control the panel hangs from but a corner, as system menus open: the panel
+  // flips to the other side of the point on both axes when it does not fit,
+  // left of it at the right edge (right of it in RTL), above it at the bottom.
+  // Shifted, it covered the point and stood 36 px off it on a phone (ui-view
+  // K1 follow-ups, 2026-11-15). Only when it fits on neither side is it
+  // shifted, to the viewport's edge less the padding (--sf-space-1/2), on the
+  // side with more room. A box of any size keeps its alignment and is shifted.
+  const pointBox = reference.getBoundingClientRect();
+  const atPoint = pointBox.width === 0 && pointBox.height === 0 && reference.getClientRects().length > 0;
   const controller = {side: settings.side, stopped: false};
   let running = null;
   let pending = false;
+  let pendingFull = false;
 
-  const run = async () => {
+  // The cost of a position (datepicker audit P1/P2, 2026-11-11). Each
+  // resolveLength of a token inserts a probe span and restyles the whole
+  // document (about 9 ms on a docs page), and resetting max-height to read
+  // the natural height forces another; per scroll event that made 800 px of
+  // scrolling with a panel open cost 1.8-2.3 s of style recalculation. So:
+  // - the lengths (offset, padding, alignmentOffset) are resolved once per
+  //   anchor, and again only when the window's size changed;
+  // - a full fit -- the first, a resize, the panel or its reference changing
+  //   size, or update() from the component -- measures as before: direction,
+  //   viewport width, containing block, natural height;
+  // - a scroll or a layout shift asks for a light fit, at most once per
+  //   frame: it reuses those measurements and only places the panel again.
+  //   Flip, shift and the size caps run exactly as in a full fit; flipping
+  //   compares the natural height measured by the last full fit (the panel's
+  //   content does not change by scrolling; when it does, its size changes
+  //   and that is a full fit), and max-height is not reset to read it.
+  // - Inline styles and data-sf-side are written only when they change.
+  // A density change (data-sf-density on the root or a region) restates
+  // the space tokens without resizing the window, and the gap stayed the old
+  // one until the panel was opened again (C59 S1 acceptance M1). The key also
+  // carries the computed values of the tokens the lengths are written with: a
+  // read of a clean style, no probe and no restyle.
+  const tokens = [...new Set([settings.offset, settings.padding, settings.alignmentOffset]
+    .filter((value) => typeof value === 'string')
+    .flatMap((value) => [...value.matchAll(/var\(\s*(--(?:\\.|[^\s,)\\])+)/gu)].map((match) => match[1].replace(/\\(.)/gu, '$1'))))];
+  let lengths = null;
+  const lengthsNow = () => {
+    const context = reference.parentElement;
+    const values = tokens.length && context?.isConnected
+      ? tokens.map((name) => getComputedStyle(context).getPropertyValue(name).trim()).join('|') : '';
+    const key = `${window.innerWidth}x${window.innerHeight}|${values}`;
+    if (!lengths || lengths.key !== key) {
+      lengths = {
+        key,
+        gap: resolveLength(settings.offset, context),
+        padding: resolveLength(settings.padding, context),
+        alignment: resolveLength(settings.alignmentOffset, context),
+      };
+    }
+    return lengths;
+  };
+  let measures = null;
+  const put = (style, name, value) => {
+    if (style[name] !== value) style[name] = value;
+  };
+
+  const run = async (full) => {
+    // Measuring the natural height takes the cap off for a moment: a list
+    // that scrolls inside the panel stops overflowing, and the browser puts
+    // its scroll back to the start. Every reposition that measured -- one per
+    // wheel step for a dropdown that follows the page's scroll in capture --
+    // threw the list back to its top, so it never moved and shook in place
+    // (owner R171, 2026-11-12), and a list scrolled to a keyboard-focused
+    // option jumped back to its first row (keyboard reveal). Only a fit that
+    // takes the cap off (a full fit, or the first) can clamp the scroll; a
+    // light fit keeps the cap and needs nothing put back. What was scrolled
+    // is put back once the cap is, and before onPosition, so a component that
+    // scrolls there has the last word.
+    let scrolled = settings.fitHeight && (full || !measures) ? scrollOffsets(floating) : null;
+    const putBack = () => {
+      if (scrolled) restoreScrollOffsets(scrolled);
+      scrolled = null;
+    };
+    try {
+      return await place(full, putBack);
+    } finally {
+      putBack();
+    }
+  };
+
+  const place = async (full, putBack) => {
     // The panel is fixed before it is measured, so it is measured in the box
     // it will be placed in: left absolute by the stylesheet (a tooltip in its
     // anchor), its first position was taken from the anchor and written as
     // the viewport's.
     if (floating.style.position !== 'fixed') floating.style.position = 'fixed';
-    const rtl = isRtl(reference);
-    const gap = resolveLength(settings.offset, reference.parentElement);
-    const padding = resolveLength(settings.padding, reference.parentElement);
-    // Measure the natural size so flipping compares the real panel height.
-    if (settings.fitHeight) floating.style.maxHeight = authored.maxHeight || '';
-    const natural = settings.fitHeight ? floating.getBoundingClientRect().height : 0;
+    if (full || !measures) {
+      measures = {rtl: isRtl(reference), clientWidth: document.documentElement.clientWidth, container: null, natural: 0};
+      // Measure the natural size so flipping compares the real panel height.
+      if (settings.fitHeight) {
+        put(floating.style, 'maxHeight', authored.maxHeight || '');
+        measures.natural = floating.getBoundingClientRect().height;
+      }
+    }
+    const {rtl, clientWidth, natural} = measures;
+    const {gap, padding, alignment} = lengthsNow();
+    // A light fit starts from the natural height, as a full fit does after
+    // its reset; once the size middleware has written the cap, the panel is
+    // measured as it is (Floating UI's own second pass).
+    let naturalPass = !full && settings.fitHeight;
     // alignmentOffset moves a start/end-aligned panel along its edge (mirrored
     // for end), e.g. so a tail points at the middle of a small trigger.
     // The panel keeps its distance from the viewport's inline edges, but never
@@ -258,27 +396,30 @@ export function anchor(reference, floating, options = {}) {
     // hanging past the field on the other side. The edge a field reaches is an
     // edge its own panel may reach too.
     const box = referenceRect(reference);
-    const clientWidth = document.documentElement.clientWidth;
+    // A point is not a field at a frame's edge: it keeps the whole padding.
     const edges = {
       top: padding,
       bottom: padding,
-      left: Math.min(padding, Math.max(0, box.left)),
-      right: Math.min(padding, Math.max(0, clientWidth - box.right)),
+      left: atPoint ? padding : Math.min(padding, Math.max(0, box.left)),
+      right: atPoint ? padding : Math.min(padding, Math.max(0, clientWidth - box.right)),
     };
-    const middleware = [offset({mainAxis: gap, alignmentAxis: resolveLength(settings.alignmentOffset, reference.parentElement)})];
-    if (settings.flip) middleware.push(flip({padding, crossAxis: false}));
+    const middleware = [offset({mainAxis: gap, alignmentAxis: alignment})];
+    // crossAxis: a point also flips its alignment (start <-> end) when the
+    // panel overflows the inline edge; a box only flips its side.
+    if (settings.flip) middleware.push(flip({padding, crossAxis: atPoint}));
     // Shift before size: a panel near the inline edge moves inside the viewport
     // instead of being squeezed to the space left of its field.
     if (settings.shift) middleware.push(shift({padding: edges, crossAxis: false}));
     middleware.push(size({
       padding: edges,
       apply({availableWidth, availableHeight, rects, elements}) {
+        naturalPass = false;
         if (controller.stopped) return;
         const viewportWidth = clientWidth - edges.left - edges.right;
         const fieldWidth = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
-        if (settings.matchWidth === 'min') elements.floating.style.minWidth = fieldWidth;
-        else if (settings.matchWidth) elements.floating.style.width = fieldWidth;
-        elements.floating.style.maxWidth = `${Math.max(0, Math.min(availableWidth, viewportWidth, widthCap))}px`;
+        if (settings.matchWidth === 'min') put(elements.floating.style, 'minWidth', fieldWidth);
+        else if (settings.matchWidth) put(elements.floating.style, 'width', fieldWidth);
+        put(elements.floating.style, 'maxWidth', `${Math.max(0, Math.min(availableWidth, viewportWidth, widthCap))}px`);
         if (settings.fitHeight) {
           // A panel that misses its room by less than the edge's padding takes
           // its whole height, rounded up, and stands that much nearer the edge:
@@ -288,7 +429,7 @@ export function anchor(reference, floating, options = {}) {
           const room = Math.min(availableHeight, heightCap);
           const whole = Math.ceil(natural);
           const fits = whole > room && whole <= availableHeight + padding && whole <= heightCap;
-          elements.floating.style.maxHeight = `${Math.max(0, fits ? whole : room)}px`;
+          put(elements.floating.style, 'maxHeight', `${Math.max(0, fits ? whole : room)}px`);
         }
       },
     }));
@@ -298,8 +439,12 @@ export function anchor(reference, floating, options = {}) {
       platform: {
         ...platform,
         getOffsetParent: (element, polyfill) => (element === floating
-          ? fixedContainingBlock(floating)
+          ? (measures.container ??= fixedContainingBlock(floating))
           : platform.getOffsetParent(element, polyfill)),
+        getDimensions: (element) => {
+          const dimensions = platform.getDimensions(element);
+          return element === floating && naturalPass ? {...dimensions, height: natural} : dimensions;
+        },
       },
       placement: physicalPlacement(settings.side, settings.align, rtl),
       middleware,
@@ -307,33 +452,62 @@ export function anchor(reference, floating, options = {}) {
     if (controller.stopped) return result;
     // right/bottom are cleared so logical insets from the component stylesheet
     // (for example inset-inline-start in RTL) cannot over-constrain the box.
-    Object.assign(floating.style, {position: 'fixed', left: `${result.x}px`, top: `${result.y}px`, right: 'auto', bottom: 'auto', margin: '0'});
+    const placed = {position: 'fixed', left: `${result.x}px`, top: `${result.y}px`, right: 'auto', bottom: 'auto', margin: '0px'};
+    for (const [name, value] of Object.entries(placed)) put(floating.style, name, value);
     controller.side = logicalSide(result.placement, rtl);
-    floating.dataset.sfSide = controller.side;
+    if (floating.dataset.sfSide !== controller.side) floating.dataset.sfSide = controller.side;
+    putBack();
     settings.onPosition?.({side: controller.side, placement: result.placement, x: result.x, y: result.y});
     return result;
   };
 
-  // Coalesce bursts (scroll, resize, observers) into one computation at a time.
-  controller.update = () => {
+  // Coalesce bursts (scroll, resize, observers) into one computation at a
+  // time; a full fit asked for while one runs is not lost to a light one.
+  const request = (full) => {
     if (controller.stopped) return Promise.resolve(null);
     if (running) {
       pending = true;
+      pendingFull ||= full;
       return running;
     }
-    running = run().finally(() => {
+    running = run(full).finally(() => {
       running = null;
       if (pending && !controller.stopped) {
+        const again = pendingFull;
         pending = false;
-        controller.update();
+        pendingFull = false;
+        request(again);
       }
     });
     return running;
   };
-  const cleanup = settings.autoUpdate ? autoUpdate(measured, floating, controller.update) : null;
+  /** A full fit: measures again (the component calls it after it changed the panel). */
+  controller.update = () => request(true);
+  // Scroll and layout shift: a light fit, at most once per frame.
+  let frame = 0;
+  let armed = false;
+  const follow = () => {
+    if (!armed || frame || controller.stopped) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      request(false);
+    });
+  };
+  const cleanups = settings.autoUpdate ? [
+    // Resize of the window or an overflow ancestor, and of the panel or its
+    // reference: a full fit (also the first one).
+    autoUpdate(measured, floating, controller.update, {ancestorScroll: false, layoutShift: false}),
+    // Scroll of any overflow ancestor and a moved reference: a light fit.
+    autoUpdate(measured, floating, follow, {ancestorResize: false, elementResize: false}),
+    // A density switch that moves no box still restates the gap: a full fit.
+    ...(tokens.length ? [watchDensity(floating.ownerDocument, controller.update)] : []),
+  ] : [];
+  armed = true;
   controller.stop = () => {
     controller.stopped = true;
-    cleanup?.();
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
+    for (const cleanup of cleanups) cleanup();
     delete floating.dataset.sfSide;
     lower?.();
     for (const [name, value, priority] of saved) {

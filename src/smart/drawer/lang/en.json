@@ -2,6 +2,7 @@
   "title": "Drawer",
   "runtime": {
     "close-label": "Close drawer",
-    "handle-label": "Resize the panel"
+    "handle-label": "Resize the panel",
+    "back-label": "Back"
   }
 }

@@ -52,6 +52,9 @@ test('native clipboard has a checked fallback and explicit result events', () =>
   assert.match(js, /sf:copy-success/);
   assert.match(js, /sf:copy-error/);
   assert.match(js, /NotAllowedError'[\s\S]*copy_denied/);
+  // One refusal code on the attribute route, sf-button-copy's; the class route keeps its three until 2027-01-01 (L5).
+  assert.match(js, /if \(!legacy\) return 'denied';/);
+  assert.match(js, /normalizeCopyError\(result\.error, isLegacy\(button\)\)/);
   assert.match(js, /detail: \{ code \}/);
   // The pending mark goes with the phase (the helper's finally ends the copy).
   assert.match(js, /if \(phase === 'pending'\) \{[\s\S]*?return;\n  \}\n  button\.removeAttribute\('aria-disabled'\)/);
@@ -70,7 +73,8 @@ test('Clipboard presentation follows token and focus contracts', () => {
   assert.match(css, /forced-colors: active/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.match(css, /\.sf-clipboard--overlay/);
-  assert.match(css, /\.sf-clipboard-status:empty/);
+  // The status takes no room, so a rule for an empty one is dead (acceptance note, 2026-11-11).
+  assert.doesNotMatch(css, /\.sf-clipboard-status:empty/);
   // No layout shift (decision C48): the status takes no room.
   assert.match(css, /\.sf-clipboard-status,\n  \.sf-clipboard-holder \{[^}]*clip-path: inset\(50%\);[^}]*position: absolute;/);
   assert.doesNotMatch(css, /outline:\s*none\s*!important|\.3s/);

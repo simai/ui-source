@@ -21,10 +21,9 @@
     "state-skipped": "Пропущен",
     "state-running": "Выполняется",
     "state-error": "Ошибка",
-    "close-question": "Закрыть мастер? Введённое на этом шаге не сохранится.",
-    "close-accept": "Закрыть",
-    "close-decline": "Остаться",
-    "required": "Заполните это поле."
+    "required": "Заполните поле",
+    "invalid": "Проверьте значение",
+    "saved": "Черновик сохранён в {time}"
   },
   "events": {
     "close": {

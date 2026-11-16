@@ -1,6 +1,8 @@
 @use 'sass:map';
 @use 'sass:string';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__notice-link' as notice-link;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 /* The status words are the shared vocabulary: neutral, info, success, warning,
    error. The component renders the canonical class, and the two words this
    component used before — default and primary — are matched beside it so
@@ -10,8 +12,11 @@
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   /* The notice's geometry (owner decision C35, remarks R066 and R079), in
      tokens, so a compact region (data-sf-density) moves every step itself:
-     - one inline padding on both sides, --sf-space-1 (16; compact and phone
-       12); the block padding --sf-space-1/2 (12; compact and phone 8);
+     - one inline inset on both sides, --sf-space-1 (16; compact and phone
+       12) with the 1 px border inside it (owner decision C105 H4/H6, as the
+       fields' C77 inset: the padding is the step less the border, so the
+       icon and the letters stand 16 from the outer edge, not 17); the block
+       padding --sf-space-1/2 (12; compact and phone 8);
      - the first line stands in the box of a low size-1 control (the line +
        2 x --sf-ui-1--space-y-tightness-low: 32; compact and phone 28), the
        status icon, the text's first line and the close centred in it; the
@@ -35,8 +40,8 @@
     border-start-start-radius: var(--sf-toast-radius, var(--sf-toast--border-top-left-radius, var(--sf-radius--surface)));
     gap: var(--sf-toast-gap, var(--sf-toast--gap, var(--sf-space-1\/2)));
     padding-bottom: var(--sf-toast-padding-block, var(--sf-toast--padding-bottom, var(--sf-space-1\/2)));
-    padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, var(--sf-space-1)));
-    padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, var(--sf-space-1)));
+    padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
+    padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
     padding-top: var(--sf-toast-padding-block, var(--sf-toast--padding-top, var(--sf-space-1\/2)));
     /* A toast floats over the page, and the status containers are
        translucent fills: painted alone they let the table under a toast read
@@ -116,8 +121,51 @@
     padding-block: var(--sf-toast--lead);
   }
 
+  /* Even bottom (owner decision C193, refining C114 (5), NS-10): with the
+     action under the text, the space under it is the space above the status
+     icon's ink -- the lead and a quarter of the room around the capitals
+     inside the line, (line - 1cap) / 4. 1cap is the font's own cap height; the
+     container takes the text's font so 1cap is the text's. */
   .sf-toast .sf-toast-container:has(> .sf-toast-bottom) {
-    padding-block-end: 0;
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    padding-block-end: calc(var(--sf-toast--lead) + (var(--sf-text-height-1) - 1cap) / 4);
+  }
+
+  /* Where the action stands (owner decision C115, layout L3a; AA-7, AA-8): a
+     toast with one action puts it in the row with the text from 20rem of the
+     toast's own width (every toast of the notification area, 28rem), centred
+     on the text block, its plate overhanging the line by the low button's
+     block padding, as the close does (C35); narrower, or with two actions,
+     under the text from its start. The toast with an action is the query
+     container; the step is the toast's whole width, so the query (which reads
+     the content box) takes off its frame: two inline insets (--sf-space-1,
+     16, the border inside them). The author's switch (owner 2026-11-13,
+     #q-layout-override): the modifier .sf-toast--actions-under (sf-toast
+     actions-layout="under") keeps the action under the text at every width,
+     with the same gap and the even bottom. */
+  .sf-toast:has(> .sf-toast-container > .sf-toast-bottom) {
+    container: sf-toast / inline-size;
+  }
+
+  @container sf-toast (min-width: #{mq.container-step(g0, $frame: 2 * 1rem)}) {
+    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
+      flex-direction: row;
+      align-items: center;
+      column-gap: var(--sf-gap--groups);
+      padding-block-end: 0;
+    }
+
+    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-wrap {
+      flex: 1 1 0;
+      min-inline-size: var(--sf-0);
+    }
+
+    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-bottom {
+      flex: none;
+      flex-wrap: nowrap;
+      margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+    }
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -128,15 +176,14 @@
     gap: var(--sf-space-1\/3);
   }
 
-  /* The tonal action on a notice of any level is a solid light plate (owner
-     decision C46, 2026-11-10, option D of the C35 acceptance): its translucent
-     fill, --sf-primary-container and its states, is laid over the solid colour
-     of the toast's own place, its popup plate (--sf-surface-place-solid, the
-     C43 rule), not over the level's tint. So the plate is the same on every level and the
-     level's tone does not show through it. The second action stays ghost
-     on-surface (C35). A loading button keeps its own stripes. */
-  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--primary:not(.sf-button-state-loading) {
-    background-image: linear-gradient(var(--sf-button--background-color), var(--sf-button--background-color)), linear-gradient(var(--sf-surface-place-solid), var(--sf-surface-place-solid));
+  /* The action is tonal surface on a toast of any level (owner decision
+     C110 as amended 2026-11-12, variant E; replaces C46): the theme's neutral
+     tonal plate, the same on every level, as on sf-alert. A toast of a level
+     is a soft coloured place (below), which re-declares the surface container
+     as the level's container, so the action takes the theme's neutral
+     container back on itself. */
+  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--on-surface {
+    @include places.sf-place-neutral-container;
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-toast-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -174,6 +221,25 @@
     overflow-wrap: anywhere;
   }
 
+  /* The cross is a service glyph of the notice (owner decision C112, R198,
+     AA-13; it refines C107 (1) for service glyphs on coloured places): the
+     on-surface ink at 64 of the alpha scale's ink family (48/64/80), black in
+     the light theme and white in the dark, on every level and on a neutral
+     toast alike -- translucent, so it reads as one tone over the popup and
+     any status tint. 64 holds 3:1 on every toast and on the strong alert bar
+     that shares the rule; 48 does not on the bar. Before it was the place's
+     --sf-on-surface-variant (C107 (1)), and before that the text ink (14.71:1
+     light). The glyph stays the size-1 close (16 in the 24 box of the status
+     icon, C103 and C112 (1)). Under a pointer it catches the text ink (C107
+     (4), as the quiet icon button does, C15). */
+  .sf-toast > .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+  }
+
+  .sf-toast > .sf-icon-button.sf-icon-button--close:not(:disabled):is(:hover, :active) > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-toast--content-color, var(--sf-on-surface));
+  }
+
   /* The quiet icon role, as on the alert (C35 acceptance F1): the theme's
      dim ink on a fill, the alert's #515257 / #d4d4d9. Not the place's
      --sf-on-surface-container-variant: a toast is a popup place, where C43
@@ -197,10 +263,6 @@
     --sf-icon--color: var(--sf-info);
   }
 
-  .sf-toast:is(.sf-toast--info, .sf-toast--primary) > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-info-container);
-  }
-
   .sf-toast:is(.sf-toast--info, .sf-toast--primary) .sf-toast-supporting-text {
     --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-info-container));
   }
@@ -212,10 +274,6 @@
   .sf-toast.sf-toast--error > .sf-icon,
   .sf-toast.sf-toast--error > sf-icon > .sf-icon {
     --sf-icon--color: var(--sf-error);
-  }
-
-  .sf-toast.sf-toast--error > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast.sf-toast--error .sf-toast-supporting-text {
@@ -231,10 +289,6 @@
     --sf-icon--color: var(--sf-warning);
   }
 
-  .sf-toast.sf-toast--warning > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-warning-container);
-  }
-
   .sf-toast.sf-toast--warning .sf-toast-supporting-text {
     --sf-toast-supporting-text--color: var(--sf-toast-color, var(--sf-on-warning-container));
   }
@@ -246,10 +300,6 @@
   .sf-toast.sf-toast--success > .sf-icon,
   .sf-toast.sf-toast--success > sf-icon > .sf-icon {
     --sf-icon--color: var(--sf-success);
-  }
-
-  .sf-toast.sf-toast--success > .sf-icon-button.sf-icon-button--link > .sf-close > .sf-close-icon {
-    --sf-close-icon--background-color: var(--sf-on-success-container);
   }
 
   .sf-toast.sf-toast--success .sf-toast-supporting-text {
@@ -265,38 +315,47 @@
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-surface));
-    --sf-close-icon--background-color: var(--sf-on-surface);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
+  /* A toast of a level is a soft coloured place over its popup plate (R190
+     AA-3, C16, C19): sf-place-soft(<level>), as bg-<c>-container and the
+     alert bar's soft levels, so a neutral outline button on it takes the
+     level's outline and state layers, not the theme's grey ones. The popup
+     stays its ground (--sf-surface-place-ground). */
   /* info is the information palette's, as success, warning and error are
      theirs (C17 info parity, dispatcher 2026-11-09); it read the brand's
      primary container before, and under a theme of another colour an info
      toast took that colour. */
   :is(.sf-toast--info, .sf-toast--primary) {
+    @include places.sf-place-soft(info);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-info-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-info-container));
-    --sf-close-icon--background-color: var(--sf-on-info-container);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
   .sf-toast--error {
+    @include places.sf-place-soft(error);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-error-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-error-container));
-    --sf-close-icon--background-color: var(--sf-on-error-container);
   }
 
   .sf-toast--warning {
+    @include places.sf-place-soft(warning);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-warning-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-warning-container));
-    --sf-close-icon--background-color: var(--sf-on-warning-container);
   }
 
   .sf-toast--success {
+    @include places.sf-place-soft(success);
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-success-container));
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-success-container));
-    --sf-close-icon--background-color: var(--sf-on-success-container);
   }
+
+  /* A link in the toast's text is help only, in the text's ink, underlined
+     (owner decision C126; core mix/_mix__notice-link.scss). The action is a
+     button. */
+  @include notice-link.sf-notice-link('.sf-toast .sf-toast-wrap');
 
   @media (prefers-reduced-motion: reduce) {
     .sf-toast {
@@ -308,6 +367,38 @@
     .sf-toast {
       border-color: CanvasText;
     }
+  }
+}
+
+/* The action's label under the pointer in the dark theme (C113 follow-up,
+   DEV overlays acceptance 2026-11-13). The toast is a popup place, lighter
+   than the page in the dark theme, and the neutral tonal and ghost plates
+   step up the fill family over it (12 / 16 / 20, C113 (2)), so the dark
+   theme's label, --sf-on-surface (neutral 90, kept under the pointer by the
+   buttons' own rule), fell to 4.38:1 hovered and 4.01:1 pressed on a neutral
+   toast and to 4.43-4.72 pressed on the levels. Under the pointer the label
+   and its icon take the ink family's full step, the alpha scale's base
+   (--sf-alpha-base: white in the dark theme; the 48 / 64 / 80 inks and the
+   cross's 64, C112, are its steps), so the plates keep C113's steps and the
+   label holds 4.5:1 in every state and level: tonal 5.64-6.71 hovered and
+   5.16-6.08 pressed, ghost 5.65-8.06 and 5.17-7.77. The light theme keeps the
+   buttons' stepped inks (--sf-on-surface-hover / -active). In sf.states, as
+   the buttons' rule. */
+@layer sf.states {
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-hover), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):hover .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-hover), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):is(:active, .active) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-active), var(--sf-alpha-base));
+  }
+
+  .sf-toast .sf-toast-bottom .sf-button:is(.sf-button--tonal, .sf-button--ghost, .sf-button--link).sf-button--on-surface:not(:disabled):not(.disabled):is(:active, .active) .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-active), var(--sf-alpha-base));
   }
 }
 
@@ -331,7 +422,7 @@
     inline-size: min(var(--sf-g4), calc(100vw - 2 * var(--sf-space-1)));
     max-block-size: calc(100vh - 2 * var(--sf-space-1));
     pointer-events: none;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--message);
   }
   .sf-notifications:not(:popover-open)[popover] {
     display: none;

@@ -1,12 +1,19 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
-import {fieldSize} from '../../component/field-size';
-import {FormField} from '../helpers/form-field';
+import {ladderSize} from '../../component/field-size';
+import {FormField, ShownRequired} from '../helpers/form-field';
+import {charCount, countAnnouncement} from '../helpers/char-count';
+import {layoutActionRow, openRowMenu} from '../../core/js/overflow-row.js';
+import {roving} from '../../core/js/roving.js';
 import {renderRichTextTemplate} from './js/templates/default';
 import {richTextFromPlainText, richTextHref, sanitizeRichText} from './js/rich-text-html.mjs';
 import manifest from './component.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
 
 // The marks the toolbar sets: the elements that say them, and the style of
@@ -19,6 +26,17 @@ const markElement = (doc, tag, on) => {
   const element = doc.createElement(on ? tag : 'span');
   if (!on) element.style[MARKS[tag].off[0]] = MARKS[tag].off[1];
   return element;
+};
+// Content inside the pending marks ({strong?, em?}), strong outside em.
+const wrapMarks = (doc, marks, content) => {
+  let wrap = content;
+  for (const tag of Object.keys(MARKS)) {
+    if (marks[tag] === undefined) continue;
+    const element = markElement(doc, tag, marks[tag]);
+    element.append(wrap);
+    wrap = element;
+  }
+  return wrap;
 };
 
 // On a phone -- below the md breakpoint, where core declares
@@ -56,7 +74,9 @@ const HISTORY_LIMIT = 100;
 const TYPING_GROUP_MS = 1000;
 
 // The toolbar, in its order. `pressed` names the state that presses it;
-// `unavailable` greys it out (aria-disabled, still reachable by the arrows).
+// `unavailable` greys it out (aria-disabled, still reachable by the arrows)
+// and `reason` is the word that says why, as its tooltip (owner decision
+// C184 (2)).
 //
 // The four block levels are drawn as text, not glyphs: the Framework's icon
 // font is Material Icons, which has no paragraph or heading-level icon
@@ -64,18 +84,18 @@ const TYPING_GROUP_MS = 1000;
 // missing ligature prints its own name on the button. P, H2, H3 and H4 are
 // read in both page languages; the button's name is the word, as everywhere.
 const TOOLS = Object.freeze([
-  {id: 'paragraph', word: 'paragraph', text: 'P', pressed: 'p', unavailable: (state) => state.inList},
-  {id: 'heading-2', word: 'heading-2', text: 'H2', pressed: 'h2', unavailable: (state) => state.inList},
-  {id: 'heading-3', word: 'heading-3', text: 'H3', pressed: 'h3', unavailable: (state) => state.inList},
-  {id: 'heading-4', word: 'heading-4', text: 'H4', pressed: 'h4', unavailable: (state) => state.inList},
+  {id: 'paragraph', word: 'paragraph', text: 'P', pressed: 'p', unavailable: (state) => state.inList, reason: 'not-in-list'},
+  {id: 'heading-2', word: 'heading-2', text: 'H2', pressed: 'h2', unavailable: (state) => state.inList, reason: 'not-in-list'},
+  {id: 'heading-3', word: 'heading-3', text: 'H3', pressed: 'h3', unavailable: (state) => state.inList, reason: 'not-in-list'},
+  {id: 'heading-4', word: 'heading-4', text: 'H4', pressed: 'h4', unavailable: (state) => state.inList, reason: 'not-in-list'},
   {id: 'bold', word: 'bold', icon: 'format_bold', pressed: 'strong', key: 'B', shortcut: 'Control+B Meta+B'},
   {id: 'italic', word: 'italic', icon: 'format_italic', pressed: 'em', key: 'I', shortcut: 'Control+I Meta+I'},
   {id: 'link', word: 'link', icon: 'link', pressed: 'link', key: 'K', shortcut: 'Control+K Meta+K', popup: 'dialog'},
   {id: 'bulleted-list', word: 'bulleted-list', icon: 'format_list_bulleted', pressed: 'ul'},
   {id: 'numbered-list', word: 'numbered-list', icon: 'format_list_numbered', pressed: 'ol'},
   {id: 'quote', word: 'quote', icon: 'format_quote', pressed: 'blockquote'},
-  {id: 'undo', word: 'undo', icon: 'undo', key: 'Z', shortcut: 'Control+Z Meta+Z', unavailable: (state) => !state.canUndo},
-  {id: 'redo', word: 'redo', icon: 'redo', key: 'Shift+Z', shortcut: 'Control+Shift+Z Meta+Shift+Z Control+Y', unavailable: (state) => !state.canRedo},
+  {id: 'undo', word: 'undo', icon: 'undo', key: 'Z', shortcut: 'Control+Z Meta+Z', unavailable: (state) => !state.canUndo, reason: 'nothing-to-undo'},
+  {id: 'redo', word: 'redo', icon: 'redo', key: 'Shift+Z', shortcut: 'Control+Shift+Z Meta+Shift+Z Control+Y', unavailable: (state) => !state.canRedo, reason: 'nothing-to-redo'},
 ]);
 
 // ------------------------------------------------------------ the caret
@@ -168,7 +188,7 @@ function pointAt(root, target) {
 
 // ------------------------------------------------------------ the element
 
-class SfRichText extends FormField(RichTextElement) {
+class SfRichText extends ShownRequired(FormField(RichTextElement)) {
   static get props() {
     return {
       ...super.props,
@@ -185,19 +205,29 @@ class SfRichText extends FormField(RichTextElement) {
     this._lastTyping = 0;
     this._muted = false;
     this._dispatching = false;
-    this._roving = 'paragraph';
+    this._roving = 'levels';
+    this._toolsOut = [];
     this._state = {canUndo: false, canRedo: false};
     this._lastSelection = null;
     this._committed = '';
     this._link = {value: '', error: '', existing: false, selection: null, pending: null, placement: 'bottom-start'};
     this._dragFromSelf = false;
     this._sheet = null;
+    this._countLevel = '';
+    this._countSaid = '';
+    this._countDrawn = null;
+    // The count follows the text (C141 (1)): with a limit, an edit redraws
+    // the count and, at a threshold, the frame. The editing surface is never
+    // drawn by the template, so the redraw leaves the text and the caret.
+    this.addEventListener('input', () => {
+      if (this.maxlength) this.requestComponentUpdate('count');
+    });
   }
 
   // ---------------------------------------------------------- settings
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-input-rich');
+    return ladderSize(this.getAttribute('size'));
   }
 
   get effectiveDisabled() {
@@ -231,7 +261,35 @@ class SfRichText extends FormField(RichTextElement) {
 
   fieldValidity() {
     const missing = Boolean(this.required) && !this.effectiveDisabled && this.value === '';
-    return {valueMissing: missing, message: missing ? this.sfWord('value-missing') : '', anchor: this.editor};
+    // Past the limit the field is too long (C141 (1)): the form is not sent,
+    // and the text is kept whole.
+    const count = this.sfCount();
+    const over = !missing && count.over && !this.effectiveDisabled;
+    const message = missing ? this.sfWord('value-missing') : over ? this.sfTooLongMessage(count) : '';
+    return {valueMissing: missing, tooLong: over, message, anchor: this.editor};
+  }
+
+  // ---------------------------------------------------------- the count
+
+  /** The characters of the text a person reads: the value without its markup. */
+  textLength() {
+    const editor = this.editor;
+    if (editor && this._loaded) return editor.textContent.length;
+    const source = this.getAttribute('value') || '';
+    if (!source) return 0;
+    const template = this.ownerDocument.createElement('template');
+    template.innerHTML = sanitizeRichText(source, {mode: 'value'});
+    return template.content.textContent.length;
+  }
+
+  // The count against maxlength (helpers/char-count.js, sf-chat-composer's
+  // rule): shown from 80 % of the limit or always with `counter`.
+  sfCount() {
+    return charCount(this.textLength(), this.maxlength, {always: Boolean(this.counter)});
+  }
+
+  sfTooLongMessage(count) {
+    return this.sfWord('too-long', {vars: {max: count.limit}});
   }
 
   // form.reset(): the default back, without events.
@@ -247,6 +305,13 @@ class SfRichText extends FormField(RichTextElement) {
 
   templateContext() {
     const props = this.getPropsContext();
+    const count = this.sfCount();
+    this._countDrawn = count.length;
+    const said = countAnnouncement(count, this._countLevel, this._countSaid, (state) => (
+      state.over ? this.sfTooLongMessage(state) : this.sfWord('count-text', {vars: {count: state.length, max: state.limit}})
+    ));
+    this._countLevel = said.level;
+    this._countSaid = said.said;
     return this.createTemplateContext({
       ...props,
       size: this.size,
@@ -257,17 +322,26 @@ class SfRichText extends FormField(RichTextElement) {
       value: this.value,
       readonly: Boolean(this.readonly),
       required: Boolean(this.required),
-      invalid: Boolean(this.invalid),
+      // The page's error, or the required one a failed form check shows
+      // (ShownRequired, C55 F1 / TR-15: as sf-input-textarea 1.8.0).
+      invalid: this.sfShownInvalid(this.invalid) || count.over,
+      errorMessage: this.sfShownMessage(this.invalid, props.errorMessage),
       rows: this.rows,
       maxRows: this.maxRows,
       tools: this.toolList(),
       state: this._state,
+      overflow: this.overflowMore ? 'more' : 'wrap',
+      level: Object.keys(BLOCK_TAGS).find((id) => this._state[BLOCK_TAGS[id]]) || 'paragraph',
       roving: this._roving,
       linkValue: this._link.value,
       linkError: this._link.error,
       linkExisting: this._link.existing,
       linkPlacement: this._link.placement,
       ariaLabel: this.getAttribute('aria-label') || '',
+      count: count.shown ? this.sfWord('count-text', {vars: {count: count.length, max: count.limit}}) : '',
+      countOver: count.over,
+      countSaid: this._countSaid,
+      counted: Boolean(count.limit),
       component: this,
     });
   }
@@ -307,9 +381,102 @@ class SfRichText extends FormField(RichTextElement) {
 
   onDisconnected() {
     this._lowerLinkPanel();
+    this._toolbarObserver?.disconnect();
+    this._toolbarObserver = null;
+    this._toolbarObserved = null;
+  }
+
+  // ─── «Ещё» (owner decision C155, R233) ────────────────────────────────────
+  // overflow="more" (the default): the toolbar keeps one row and its groups
+  // leave for ⋯ at its end when they do not fit -- whole, with their
+  // separator, the highest data-sf-priority first (undo and redo, then the
+  // lists and the quote); the text levels and bold, italic, link stay. ⋯
+  // lists the tools that left with their icons, names and shortcuts, a
+  // pressed one checked (C155 (6)); ⋯ itself is never pressed.
+  get overflowMore() {
+    return this.getAttribute('overflow') !== 'wrap';
+  }
+
+  _observeToolbar(bar) {
+    if (!bar || !this.overflowMore || typeof ResizeObserver === 'undefined') {
+      this._toolbarObserver?.disconnect();
+      this._toolbarObserved = null;
+      return;
+    }
+    if (this._toolbarObserved === bar) return;
+    this._toolbarObserver ??= new ResizeObserver(() => this._layoutToolbar());
+    this._toolbarObserver.disconnect();
+    // The frame's width is the row's room; the groups' boxes widen when the
+    // icon face or the sheet arrives later.
+    this._toolbarObserver.observe(bar.parentElement);
+    for (const group of bar.querySelectorAll(':scope > .sf-rich-text-group')) this._toolbarObserver.observe(group);
+    this._toolbarObserved = bar;
+  }
+
+  _layoutToolbar() {
+    const bar = this.querySelector('.sf-rich-text-toolbar');
+    const more = bar?.querySelector(':scope > .sf-rich-text-more');
+    if (!bar || !more) return;
+    const groups = [...bar.querySelectorAll(':scope > .sf-rich-text-group')];
+    const separators = [...bar.querySelectorAll(':scope > .sf-rich-text-separator:not(.sf-rich-text-more-separator)')];
+    const units = groups.map((element, at) => {
+      const rank = Number(element.dataset.sfPriority) || at + 1;
+      return {element, rank, pin: rank <= 1, group: at};
+    });
+    const {out} = layoutActionRow({
+      row: bar,
+      units,
+      more,
+      moreSeparator: bar.querySelector(':scope > .sf-rich-text-more-separator'),
+      separators: separators.map((element, at) => ({element, after: at})),
+      outClass: 'sf-rich-text-out',
+    });
+    this._toolsOut = out.flatMap((at) => [...groups[at].querySelectorAll('button.sf-rich-text-tool')].map((button) => button.dataset.sfTool));
+    bar.setAttribute('data-sf-row-laid', '');
+    // The roving stop stays on a tool the row shows.
+    const shown = this._tools();
+    if (!shown.some((button) => button.dataset.sfTool === this._roving)) this._setRoving(shown[0]);
+  }
+
+  // A menu button of the toolbar (the levels, ⋯): the standard menu under it.
+  _openToolMenu(button) {
+    const id = button.dataset.sfTool;
+    const state = this._state;
+    const size = ({'1/3': '1/2', '1/2': '1/2'})[this.size] || '1';
+    if (id === 'levels') {
+      const current = Object.keys(BLOCK_TAGS).find((level) => state[BLOCK_TAGS[level]]) || 'paragraph';
+      const entries = Object.keys(BLOCK_TAGS).map((level) => ({
+        id: level, text: this.sfWord(level), kind: 'radio', checked: level === current, disabled: Boolean(state.inList) || undefined,
+      }));
+      return openRowMenu(this, {anchor: button, entries, label: this.sfWord('text-level'), size, select: (level) => this.runCommand(level)});
+    }
+    const tools = this.toolList();
+    const entries = [];
+    let lastGroup = null;
+    for (const toolId of this._toolsOut) {
+      const tool = tools.find((one) => one.id === toolId);
+      const element = this.querySelector(`.sf-rich-text-toolbar button.sf-rich-text-tool[data-sf-tool="${toolId}"]`);
+      if (!tool || !element) continue;
+      const group = element.closest('.sf-rich-text-group');
+      if (lastGroup && group !== lastGroup) entries.push({type: 'separator'});
+      lastGroup = group;
+      const entry = {id: tool.id, text: this.sfWord(tool.word), icon: tool.icon};
+      if (tool.key) entry.shortcut = `mod+${tool.key.toLowerCase()}`;
+      if (tool.pressed) {
+        entry.kind = 'check';
+        entry.checked = Boolean(state[tool.pressed]);
+      }
+      if (tool.unavailable?.(state)) entry.disabled = true;
+      entries.push(entry);
+    }
+    return openRowMenu(this, {anchor: button, entries, label: this.sfWord('more'), size, select: (toolId) => this.runCommand(toolId)});
   }
 
   afterRender() {
+    const bar = this.querySelector('.sf-rich-text-toolbar');
+    this._observeToolbar(bar);
+    if (bar && this.overflowMore) this._layoutToolbar();
+    this._toolbarKeys()?.refresh();
     const editor = this.editor;
     if (!editor) return;
     if (editor.__sfRichText !== this) this._bindEditor(editor);
@@ -325,7 +492,8 @@ class SfRichText extends FormField(RichTextElement) {
     const on = (type, handler) => editor.addEventListener(type, handler, {signal});
     on('beforeinput', (event) => this._onBeforeInput(event));
     on('input', (event) => this._onInput(event));
-    on('compositionend', () => this._afterTyping('insertCompositionText'));
+    on('compositionstart', () => this._onCompositionStart());
+    on('compositionend', (event) => this._onCompositionEnd(event));
     on('keydown', (event) => this._onKeydown(event));
     on('paste', (event) => this._onPaste(event));
     on('dragstart', () => { this._dragFromSelf = true; });
@@ -357,6 +525,8 @@ class SfRichText extends FormField(RichTextElement) {
     this._committed = this.value;
     this._syncEmpty();
     this._updateState();
+    // A value from code or a reset says no input: the count follows it here.
+    if (this.maxlength && this._countDrawn !== editor.textContent.length) this.requestComponentUpdate('count');
   }
 
   _syncEmpty() {
@@ -401,9 +571,36 @@ class SfRichText extends FormField(RichTextElement) {
   }
 
   _onSelectionChange() {
-    if (!this._range()) return;
+    const range = this._range();
+    if (!range) return;
+    if (!this._inComposition) this._caretIntoMark(range);
     this._lastSelection = this._saveSelection();
     this._updateState();
+  }
+
+  // A caret on a mark's end edge -- at the block's level right after a bold
+  // run, or at the start of the text after it -- is a place the browser types
+  // into the mark, while the state read there said plain (E1; C12: the state
+  // is the one aria-pressed says). It is put at the end of the mark's text,
+  // the same character, so Bold reads the place the text goes.
+  _caretIntoMark(range) {
+    if (!range.collapsed) return;
+    const {startContainer: node, startOffset: offset} = range;
+    let before = null;
+    if (node.nodeType === 1) before = node.childNodes[offset - 1] ?? null;
+    else if (node.nodeType === 3 && offset === 0) before = node.previousSibling;
+    if (!before || before.nodeType !== 1 || !before.matches?.('strong, b, em, i, span')) return;
+    const doc = this.ownerDocument;
+    const walker = doc.createTreeWalker(before, 4);
+    let last = null;
+    for (let text = walker.nextNode(); text; text = walker.nextNode()) last = text;
+    if (!last?.data.length) return;
+    const caret = doc.createRange();
+    caret.setStart(last, last.data.length);
+    caret.collapse(true);
+    const selection = doc.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(caret);
   }
 
   _within(node, selector) {
@@ -466,6 +663,9 @@ class SfRichText extends FormField(RichTextElement) {
   // pressed ({at, strong?, em?}); forgotten once the caret moves.
   _pendingMarks(range = this._range()) {
     if (!this._pending) return null;
+    // A composition moves the caret with its text: the marks stand until it
+    // ends, and Bold and Italic stay pressed meanwhile (M1, M2).
+    if (this._inComposition) return this._pending;
     if (!range?.collapsed || this._saveSelection()?.start !== this._pending.at) {
       this._pending = null;
       return null;
@@ -606,14 +806,7 @@ class SfRichText extends FormField(RichTextElement) {
     event.preventDefault();
     const doc = this.ownerDocument;
     const text = doc.createTextNode(event.data);
-    let wrap = text;
-    for (const tag of Object.keys(MARKS)) {
-      if (pending[tag] === undefined) continue;
-      const element = markElement(doc, tag, pending[tag]);
-      element.append(wrap);
-      wrap = element;
-    }
-    range.insertNode(wrap);
+    range.insertNode(wrapMarks(doc, pending, text));
     const caret = doc.createRange();
     caret.setStart(text, text.data.length);
     caret.collapse(true);
@@ -622,6 +815,70 @@ class SfRichText extends FormField(RichTextElement) {
     selection.addRange(caret);
     this._afterTyping('insertText');
     this._say('insertText');
+  }
+
+  _onCompositionStart() {
+    this._composing = this._pendingMarks();
+    this._inComposition = true;
+    this._composedFrom = this.editor?.innerHTML ?? '';
+  }
+
+  // Composed text (an IME) cannot be inserted by hand: the browser writes
+  // it. The marks pending when the composition started go round it once it
+  // ends, as typed text takes them; a composition that did not end at the
+  // pending caret plus its text keeps the text plain. A cancelled one (no
+  // text, the caret back where it began) keeps the marks pending (M1).
+  _onCompositionEnd(event) {
+    const pending = this._composing;
+    const before = this._composedFrom;
+    this._composing = null;
+    this._inComposition = false;
+    this._composedFrom = null;
+    this._pending = null;
+    const text = String(event.data ?? '');
+    const editor = this.editor;
+    const end = this._saveSelection();
+    const collapsed = Boolean(end && end.start === end.end);
+    if (pending && !text && collapsed && end.start === pending.at) this._pending = pending;
+    if (!pending || !text || !editor || !collapsed || end.start - text.length !== pending.at) {
+      this._afterTyping('insertCompositionText');
+      this._sayComposed(before);
+      return;
+    }
+    const doc = this.ownerDocument;
+    const range = doc.createRange();
+    const [startNode, startOffset] = pointAt(editor, pending.at);
+    const [endNode, endOffset] = pointAt(editor, end.start);
+    range.setStart(startNode, startOffset);
+    range.setEnd(endNode, endOffset);
+    if (range.toString() !== text) {
+      this._afterTyping('insertCompositionText');
+      this._sayComposed(before);
+      return;
+    }
+    range.insertNode(wrapMarks(doc, pending, range.extractContents()));
+    this._clean(end);
+    this._restoreSelection(end);
+    this._afterTyping('insertCompositionText');
+    this._sayComposed(before);
+  }
+
+  // One input that is not composing after every composition that changed
+  // the text, marks or none (M3): a listener that skips composing inputs, as
+  // many do, still hears an IME's edit. It waits one task: a browser that
+  // says the commit itself after compositionend (WebKit) is that input, and
+  // the component's is not sent. A cancel that left the text as it was says
+  // nothing, as nothing changed.
+  _sayComposed(before) {
+    const editor = this.editor;
+    if (!editor || editor.innerHTML === before) return;
+    const turn = {said: false};
+    this._composedSay = turn;
+    setTimeout(() => {
+      if (this._composedSay !== turn) return;
+      this._composedSay = null;
+      if (!turn.said) this._say('insertCompositionText');
+    }, 0);
   }
 
   _onInput(event) {
@@ -633,6 +890,7 @@ class SfRichText extends FormField(RichTextElement) {
     }
     if (this._dispatching) return;
     if (event.isComposing) return;
+    if (this._composedSay) this._composedSay.said = true;
     this._afterTyping(event.inputType);
   }
 
@@ -669,7 +927,7 @@ class SfRichText extends FormField(RichTextElement) {
   // Cleaned HTML in place of the selection: the first paragraph joins the
   // text at the caret, what follows stands as blocks (the cleaner splits the
   // paragraph around them, so the text after the caret follows the last).
-  _insertClean(clean, inputType) {
+  _insertClean(clean, inputType, marks = null) {
     if (!clean) return;
     this._edit(() => {
       const range = this._range();
@@ -686,6 +944,16 @@ class SfRichText extends FormField(RichTextElement) {
       const template = doc.createElement('template');
       // The string is the subset's own output: nothing in it runs or loads.
       template.innerHTML = clean;
+      // Plain text pasted at a caret with pending marks takes them, as typed
+      // text does (M4): each paragraph's text inside the marks.
+      if (marks) {
+        for (const block of [...template.content.children]) {
+          if (block.localName !== 'p' || !block.firstChild) continue;
+          const content = doc.createDocumentFragment();
+          content.append(...block.childNodes);
+          block.append(wrapMarks(doc, marks, content));
+        }
+      }
       const nodes = [...template.content.childNodes];
       const fragment = doc.createDocumentFragment();
       nodes.forEach((node, index) => {
@@ -707,7 +975,10 @@ class SfRichText extends FormField(RichTextElement) {
   _onPaste(event) {
     event.preventDefault();
     if (this.effectiveDisabled || this.readonly) return;
-    this._insertClean(this._cleanTransfer(event.clipboardData), 'insertFromPaste');
+    const data = event.clipboardData;
+    // Rich paste keeps its own marks; plain text takes the pending ones.
+    const marks = data?.getData?.('text/html') ? null : this._pendingMarks();
+    this._insertClean(this._cleanTransfer(data), 'insertFromPaste', marks);
   }
 
   _onDrop(event) {
@@ -1121,38 +1392,37 @@ class SfRichText extends FormField(RichTextElement) {
 
   // ---------------------------------------------------------- toolbar
 
+  // The tools a person reaches: not disabled, not out of the row (C155).
   _tools() {
-    return [...this.querySelectorAll('.sf-rich-text-toolbar button.sf-rich-text-tool:not([disabled])')];
+    return [...this.querySelectorAll('.sf-rich-text-toolbar button.sf-rich-text-tool:not([disabled])')]
+      .filter((button) => !button.closest('.sf-rich-text-out'));
+  }
+
+  // The toolbar's keys are core's roving helper (owner decision C184 (1)-(3)):
+  // one Tab stop that comes back to the tool the person left, the arrows in
+  // the row's direction (right-to-left too), Home and End, the walk wrapping;
+  // an unavailable tool stays in the walk with its reason.
+  _toolbarKeys() {
+    const bar = this.querySelector('.sf-rich-text-toolbar');
+    if (!bar) return null;
+    if (this._toolbarRow?.bar !== bar) {
+      this._toolbarRow?.keys.destroy();
+      const keys = roving(bar, {
+        items: 'button.sf-rich-text-tool',
+        out: '.sf-rich-text-out, [hidden], [inert]',
+        onMove: (button) => { this._roving = button.dataset.sfTool; },
+      });
+      const remembered = bar.querySelector(`button.sf-rich-text-tool[data-sf-tool="${this._roving}"]`);
+      if (remembered && !remembered.disabled) keys.set(remembered);
+      this._toolbarRow = {bar, keys};
+    }
+    return this._toolbarRow.keys;
   }
 
   _setRoving(button) {
     if (!button) return;
     this._roving = button.dataset.sfTool;
-    for (const other of this.querySelectorAll('.sf-rich-text-toolbar button.sf-rich-text-tool')) {
-      other.setAttribute('tabindex', other === button ? '0' : '-1');
-    }
-  }
-
-  onToolbarKeydown(event) {
-    const button = event.target?.closest?.('button.sf-rich-text-tool');
-    if (!button) return;
-    const tools = this._tools();
-    const index = tools.indexOf(button);
-    if (index < 0) return;
-    let next = null;
-    if (event.key === 'ArrowRight') next = tools[(index + 1) % tools.length];
-    else if (event.key === 'ArrowLeft') next = tools[(index - 1 + tools.length) % tools.length];
-    else if (event.key === 'Home') next = tools[0];
-    else if (event.key === 'End') next = tools[tools.length - 1];
-    if (!next) return;
-    event.preventDefault();
-    this._setRoving(next);
-    next.focus();
-  }
-
-  onToolbarFocusIn(event) {
-    const button = event.target?.closest?.('button.sf-rich-text-tool');
-    if (button) this._setRoving(button);
+    this._toolbarKeys()?.set(button);
   }
 
   // A press on a tool keeps the caret and the selection in the text.
@@ -1168,6 +1438,10 @@ class SfRichText extends FormField(RichTextElement) {
     // The link button is the popover's trigger: the popover opens itself.
     if (id === 'link') return;
     if (button.getAttribute('aria-disabled') === 'true') return;
+    if (id === 'levels' || id === 'more') {
+      this._openToolMenu(button);
+      return;
+    }
     this.runCommand(id);
   }
 

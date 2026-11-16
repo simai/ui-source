@@ -377,6 +377,11 @@ class SfBaseElement extends HTMLElement {
   static externalTemplateCssMisses = new Set();
   static waitForStylesBeforeRenderReady = true;
   static styleReadyTimeout = 3000;
+  // How long a box of the element's own outside the host (a window's
+  // portal) stays out of view waiting for its sheets (holdPortalUntilStyled):
+  // longer than the host's gate, since a box shown before its sheets is a
+  // whole window drawn as a card in the page flow, not a few lines of text.
+  static portalStyleTimeout = 15000;
   // A component that takes the page's children into its markup can keep
   // them where the page wrote them until it draws, instead of taking them out
   // when it connects (holdSlotNode, releaseHeldSlotNodes). Between the two the
@@ -1432,6 +1437,13 @@ class SfBaseElement extends HTMLElement {
         ? loader.ensureStylesReady(this, { autoLoad })
         : true,
     );
+    // The sheets applied, without the time limit (holdPortalUntilStyled).
+    if (autoLoad) {
+      this._styleAppliedPromise = readiness.then(
+        () => { this._styleApplied = true; },
+        () => {},
+      );
+    }
     const timeout = Number(this.constructor.styleReadyTimeout ?? 3000);
     // The time limit is cleared once the sheets are in: a timer left behind
     // per element was a leak of its own (gate 36).
@@ -1790,7 +1802,21 @@ class SfBaseElement extends HTMLElement {
     const target = this.focusDelegate?.();
 
     if (target && typeof target.focus === "function") {
+      const activeWhenAsked = this.ownerDocument?.activeElement || null;
       target.focus(options);
+      // A host still drawing has its control in place but not shown until its
+      // sheets apply (the style gate): the control takes no focus yet, and the
+      // focus stayed where it was (sf-file-download's «Повторить», probe
+      // 2026-11-11). Focus it once it is drawn -- only if nothing else took
+      // the focus meanwhile.
+      if (!this.isRendered && (this.ownerDocument?.activeElement || null) === activeWhenAsked && activeWhenAsked !== target) {
+        this.whenRendered(() => {
+          const ready = this.focusDelegate?.();
+          if (!ready || typeof ready.focus !== "function") return;
+          if ((this.ownerDocument?.activeElement || null) !== activeWhenAsked) return;
+          ready.focus(options);
+        });
+      }
       return;
     }
 
@@ -2498,8 +2524,10 @@ class SfBaseElement extends HTMLElement {
 
     this._slotTemplatesCaptured = true;
 
+    // Any element names a slot: an <svg slot="chart"> is an SVGElement, not an
+    // HTMLElement, and was left outside the drawing (tile TM-11, 2026-11-14).
     Array.from(this.children).forEach((child) => {
-      if (!(child instanceof HTMLElement)) {
+      if (!(child instanceof Element)) {
         return;
       }
 
@@ -2527,14 +2555,29 @@ class SfBaseElement extends HTMLElement {
         this._liveSlotNodes.set(slotName, []);
       }
 
+      // A plain wrapper that only names the slot (<div slot="content">) gives
+      // the slot its children. A custom element is the content itself: it is
+      // never unwrapped. Counting its attributes alone made the answer depend
+      // on the upgrade order -- <sf-breadcrumbs slot="path"> carries only
+      // `slot` until its own class connects and writes style/data-sf-started,
+      // so a sf-header-page that upgraded first kept the bare items and
+      // dropped the trail (3 of 72 loads, 2026-11-12; every load when the
+      // header's script arrives first). A figure is one piece too, and so is
+      // a picture or anything holding a figcaption: unwrapped, a
+      // <figure slot="slide"> with its caption became two slides, the image
+      // and the caption (gallery GL evidence, 2026-11-14).
       const shouldUnwrapSlotHost =
+        !child.localName.includes("-") &&
+        child.localName !== "figure" && child.localName !== "picture" &&
+        !Array.from(child.children ?? []).some((node) => node.localName === "figcaption") &&
         child.getAttributeNames().length === 1 && child.hasAttribute("slot");
       const slotNodes = shouldUnwrapSlotHost
         ? Array.from(child.childNodes)
         : [child];
 
       this._liveSlotNodes.get(slotName).push(...slotNodes);
-      // The page's content: a size it gives stays explicit (density, C22).
+      // The page's content: a size it gives stays the page's (density, C22; it
+      // follows the region like any size since C79).
       noteAuthored(slotNodes);
       this.holdSlotNode(child);
     });
@@ -2661,16 +2704,32 @@ class SfBaseElement extends HTMLElement {
   // the page flow, and a closed drawer's panel stood in view beside the page
   // (ui-control evidence 2026-11-11-modal-followups, N2). Call it before the
   // drawing; `shown` runs once the box shows.
+  //
+  // The host's gate gives up after styleReadyTimeout (3 s); the box waits for
+  // the sheets themselves, at the latest portalStyleTimeout: under sheets
+  // that came after 3 s the window showed as a card for a few frames (DEV's
+  // acceptance 2026-11-11, L2: 5 of 72 hostile loads).
   holdPortalUntilStyled(target, shown) {
-    if (this._styleReady || !target || target === this) return;
-    const styles = this.stylesReadiness();
+    if (this._styleApplied || !target || target === this) return;
+    // After the host's gate gave up the sheets may still be on their way.
+    const styles = this.stylesReadiness() ?? this._styleAppliedPromise;
     if (!styles) return;
     target.setAttribute("data-sf-style-pending", "");
     (this._styleHeldTargets ??= new Set()).add(target);
     if (shown) (this._styleHeldShown ??= new Set()).add(shown);
     if (this._styleHeldWait) return;
-    this._styleHeldWait = styles.then(() => {
+    const guard = Number(this.constructor.portalStyleTimeout ?? 15000);
+    let timer = null;
+    const applied = Promise.race([
+      this._styleAppliedPromise || styles,
+      new Promise((resolve) => {
+        timer = setTimeout(resolve, guard > 0 ? guard : 0);
+      }),
+    ]).finally(() => clearTimeout(timer));
+    this._styleHeldWait = Promise.all([styles, applied]).then(() => {
       this._styleReady = true;
+      // Applied or given up: later boxes do not wait again.
+      this._styleApplied = true;
       this._styleHeldTargets.forEach((one) => one.removeAttribute("data-sf-style-pending"));
       this._styleHeldTargets.clear();
       this._styleHeldWait = null;
@@ -2687,7 +2746,7 @@ class SfBaseElement extends HTMLElement {
   }
 
   // A copy of captured page content is the page's as well (density, C22): a
-  // size in it stays explicit.
+  // size in it stays unmarked (it follows the region like any size, C79).
   authoredCopy(node) {
     const copy = node.cloneNode(true);
     const authored = globalThis.SF?.__internal?.density?.authored;
@@ -3104,6 +3163,7 @@ class SfBaseElement extends HTMLElement {
       this.removeAttribute("aria-busy");
     }
     this.removeAttribute("data-sf-first-paint");
+    this.removeAttribute("data-sf-late");
     Array.from(this.children).forEach((child) => child.removeAttribute("data-sf-held"));
     // A host printed as a static node of another's picture and adopted live
     // (sf-view takes its printed sf-view-table and sf-pagination as its

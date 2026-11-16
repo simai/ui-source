@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Свойства записи в панели — sf-list-description в sf-drawer</title>
+<!--
+  The base property view (owner decision C180, 2026-11-14; ui-control
+  control/research/2026-11-14-view-property-base.md, prototypes/
+  view-property-base-study.html): sf-list-description in sf-drawer and
+  sf-modal, no component of its own. ?theme=dark, ?density=compact.
+  Served by tests/browser/property-base-c180.browser.mjs with the build at
+  /distr/.
+-->
+<script>
+(function () {
+  var query = new URLSearchParams(location.search);
+  var root = document.documentElement;
+  if (query.get('theme') === 'dark') { root.classList.remove('theme-light'); root.classList.add('theme-dark'); }
+  if (query.get('density') === 'compact') root.setAttribute('data-sf-density', 'compact');
+  window.sfPath = '/distr/';
+  window.sfSmartPath = '/distr/';
+})();
+</script>
+<link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/js/core.js"></script>
+<style>
+  body { margin: 0; background: var(--sf-surface-1); color: var(--sf-on-surface); font-family: var(--sf-text--family); }
+  main { padding: var(--sf-space-2); }
+</style>
+</head>
+<body>
+<main>
+  <p>Свойства записи</p>
+  <sf-drawer id="d-half" size="1/2" heading="Поле «Название»"><sf-list-description data-items="help"></sf-list-description></sf-drawer>
+  <sf-drawer id="d-one" size="1" heading="отчёт-2026.pdf">
+    <sf-button-icon slot="header-action" icon="download" size="1/3" appearance="ghost" scheme="on-surface" aria-label="Скачать"></sf-button-icon>
+    <sf-list-description data-items="file"></sf-list-description>
+  </sf-drawer>
+  <sf-drawer id="d-two" size="2" heading="Заказ № 1042">
+    <sf-list-description data-items="order"></sf-list-description>
+    <div slot="footer"><sf-button text="Открыть заказ"></sf-button><sf-button text="Закрыть" appearance="ghost" scheme="on-surface"></sf-button></div>
+  </sf-drawer>
+  <sf-drawer id="d-long" size="1" heading="Длинные значения">
+    <sf-list-description id="l-wrap" data-items="long"></sf-list-description>
+    <sf-list-description id="l-cut" overflow="truncate" data-items="long"></sf-list-description>
+  </sf-drawer>
+</main>
+<script>
+  var ITEMS = {
+    file: [{id: 'type', label: 'Тип', value: 'PDF-документ'}, {id: 'size', label: 'Размер', value: '2,4 МБ', numeric: true},
+      {id: 'changed', label: 'Изменён', value: '12 ноября 2026, 14:05'}, {id: 'owner', label: 'Владелец', value: 'Анна Смирнова', href: '#owner'},
+      {id: 'path', label: 'Путь', value: '/var/www/sites/demo/upload/iblock/2f3/otchet-2026-final-version-for-board.pdf', mono: true, copy: true},
+      {id: 'access', label: 'Доступ', badge: {text: 'Опубликован', status: 'success'}}, {id: 'note', label: 'Описание', value: ''}],
+    order: [{id: 'number', label: 'Номер', value: '1042', mono: true, copy: true}, {id: 'sum', label: 'Сумма', value: '48 350 ₽', numeric: true},
+      {id: 'client', label: 'Покупатель', value: 'ООО «Северный ветер»', href: '#client'},
+      {id: 'delivery', label: 'Доставка', value: 'Курьером, 18 ноября, Москва, ул. Большая Садовая, д. 10, офис 34'}],
+    help: [{id: 'where', label: 'Где видно', value: 'Карточка товара, поиск'}, {id: 'length', label: 'Длина', value: 'До 255 знаков', numeric: true}],
+    long: [{id: 'path', label: 'Путь', value: '/var/www/sites/demo/upload/iblock/2f3/otchet-2026-final-version-for-board-of-directors-signed.pdf', mono: true, copy: true},
+      {id: 'key', label: 'Ключ', value: 'sha256:9f0bedad5b4919fe0d8f335e4bb657b91444f0fcb5e1e64d0cd2b24a7a8e5a33', mono: true},
+      {id: 'address', label: 'Доставка', value: 'Курьером, 18 ноября, Москва, ул. Большая Садовая, д. 10, офис 34, домофон 34, позвонить за час'}]
+  };
+  customElements.whenDefined('sf-list-description').then(function () {
+    document.querySelectorAll('sf-list-description[data-items]').forEach(function (list) { list.items = ITEMS[list.dataset.items]; });
+  });
+</script>
+</body>
+</html>

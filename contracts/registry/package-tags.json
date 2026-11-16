@@ -1,0 +1,179 @@
+{
+  "schema": "simai.framework.package-tags",
+  "schema_version": 1,
+  "summary": "The Smart tags every package other than SIMAI Framework ships, read for the naming gate (scripts/component-names-kit.mjs, tests/component-names.release-gate.test.mjs): a Framework tag may not be one of them, a package tag starts with a family its owner holds in the name registry (contracts/registry/names.json), and a tag lives in one package -- the one allowed copy is the pro bundle of a set, until the bundle ends. Read on 2026-11-14 from each repository at the revision given (ui-control control/research/2026-11-14-component-sets, data/smart-components.json, commit 13d56e0b). Refresh it when a set releases a new tag.",
+  "read_on": "2026-11-14",
+  "packages": [
+    {
+      "id": "pro",
+      "kind": "bundle",
+      "repository": "simai/ui-pro",
+      "revision": "db490626ba74",
+      "release": "pro-db490626ba74",
+      "bundles": [
+        "admin",
+        "chat",
+        "editor",
+        "mail",
+        "view"
+      ],
+      "bundle_until": "2027-03-01",
+      "tags": [
+        "sf-admin-menu",
+        "sf-chat-composer",
+        "sf-chat-interlocutor",
+        "sf-chat-message",
+        "sf-chat-threads",
+        "sf-chat-window",
+        "sf-editor",
+        "sf-editor-content",
+        "sf-mail-canvas",
+        "sf-mail-inspector",
+        "sf-mail-letters",
+        "sf-mail-library",
+        "sf-mail-structure",
+        "sf-view",
+        "sf-view-properties",
+        "sf-view-table"
+      ],
+      "former_tags": [
+        {
+          "from": "sf-content-editor",
+          "to": "sf-editor-content",
+          "remove_after": "2027-01-01"
+        },
+        {
+          "from": "sf-data-view",
+          "to": "sf-view",
+          "remove_after": "2027-01-01"
+        },
+        {
+          "from": "sf-property-view",
+          "to": "sf-view-properties",
+          "remove_after": "2027-01-01"
+        },
+        {
+          "from": "sf-table",
+          "to": "sf-view-table",
+          "remove_after": "2027-01-01"
+        },
+        {
+          "from": "sf-thread-list",
+          "to": "sf-chat-threads",
+          "remove_after": "2027-01-01"
+        }
+      ],
+      "alias_elements": [
+        {
+          "element": "sf-message-log",
+          "of": "sf-list-feed",
+          "owner": "framework",
+          "remove_after": "2027-01-01",
+          "record": "tag-sf-message-log-to-sf-list-feed"
+        }
+      ]
+    },
+    {
+      "id": "view",
+      "kind": "set",
+      "repository": "simai/ui-view",
+      "revision": "2717ca437e29",
+      "release": "view 1.7.1 (view-9eff67bbf11f)",
+      "tags": [
+        "sf-view",
+        "sf-view-flow",
+        "sf-view-properties",
+        "sf-view-table"
+      ],
+      "former_tags": [
+        {
+          "from": "sf-data-view",
+          "to": "sf-view",
+          "remove_after": "2027-01-01"
+        },
+        {
+          "from": "sf-property-view",
+          "to": "sf-view-properties",
+          "remove_after": "2027-01-01"
+        },
+        {
+          "from": "sf-table",
+          "to": "sf-view-table",
+          "remove_after": "2027-01-01"
+        }
+      ]
+    },
+    {
+      "id": "editor",
+      "kind": "set",
+      "repository": "simai/ui-editor",
+      "revision": "f4e8f230d96b",
+      "release": "editor 1.1.1 (editor-6b1736f863ee)",
+      "tags": [
+        "sf-editor"
+      ],
+      "former_tags": []
+    },
+    {
+      "id": "chart",
+      "kind": "set",
+      "repository": "simai/ui-chart",
+      "revision": "a89dd6eb054f",
+      "release": "chart 1.1.0 (chart-58ba480db497)",
+      "tags": [
+        "sf-chart-bar",
+        "sf-chart-box",
+        "sf-chart-candlestick",
+        "sf-chart-funnel",
+        "sf-chart-gauge",
+        "sf-chart-heatmap",
+        "sf-chart-line",
+        "sf-chart-map",
+        "sf-chart-metric",
+        "sf-chart-parts",
+        "sf-chart-pie",
+        "sf-chart-radar",
+        "sf-chart-sankey",
+        "sf-chart-scatter",
+        "sf-chart-sparkline",
+        "sf-chart-sunburst",
+        "sf-chart-timeline",
+        "sf-chart-treemap",
+        "sf-chart-waterfall"
+      ],
+      "former_tags": []
+    },
+    {
+      "id": "effects",
+      "kind": "set",
+      "repository": "simai/ui-effects",
+      "revision": "82efb3118a35",
+      "release": "effects 1.0.0",
+      "tags": [
+        "sf-effect"
+      ],
+      "former_tags": []
+    },
+    {
+      "id": "chat",
+      "kind": "set",
+      "repository": "simai/ui-chat",
+      "revision": "9ad5cf59fe96",
+      "release": "unreleased (branch set/1.0)",
+      "tags": [
+        "sf-chat-composer",
+        "sf-chat-interlocutor",
+        "sf-chat-message",
+        "sf-chat-threads",
+        "sf-chat-window"
+      ],
+      "former_tags": [
+        {
+          "from": "sf-thread-list",
+          "to": "sf-chat-threads",
+          "remove_after": "2027-01-01"
+        }
+      ]
+    }
+  ]
+}

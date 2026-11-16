@@ -38,3 +38,26 @@ test('caption typography uses inheritable semantic text roles',async()=>{
   assert.ok(style.includes('var(--sf-thumb-text--line-height, var(--sf-text-small--height))'));
   assert.doesNotMatch(style,/--sf-thumb-text--font-size:/);
 });
+
+test('C78: label is the visible name, value-display shows the value; the former words still work',async()=>{
+  const smart=await readFile(new URL('../src/smart/slider-range/index.js',import.meta.url),'utf8');
+  const template=await readFile(new URL('../src/smart/slider-range/js/templates/default.js',import.meta.url),'utf8');
+  const manifest=JSON.parse(await readFile(new URL('../src/smart/slider-range/component.json',import.meta.url),'utf8'));
+  assert.equal(manifest.settings.label.type,'string');
+  assert.deepEqual(manifest.settings['value-display'].values,['none','text','tooltip']);
+  assert.match(smart,/const VALUE_DISPLAYS = \['none', 'text', 'tooltip'\];/);
+  assert.match(smart,/from: `label="\$\{legacy\}"`, to: `value-display="\$\{legacy\}"`/);
+  assert.match(template,/class="sf-range-slider-name" id=\$\{context\.nameId\}/);
+  assert.match(template,/data-labelledby=\$\{context\.name \? context\.nameId : nothing\}/);
+  assert.ok(source.includes("const visibleName = root.getAttribute('data-labelledby');"));
+});
+// Acceptance R4: the host rewrites the value line and the scale numbers as the
+// handles move. Written as text parts, that rewrite took lit's markers with it,
+// and the next render (prefix set after the first, through its alias) threw on
+// insertBefore and never reached the root's data-prefix.
+test('texts the host rewrites are property bindings, not text parts',async()=>{
+  const template=await readFile(new URL('../src/smart/slider-range/js/templates/default.js',import.meta.url),'utf8');
+  assert.match(template,/<span class="sf-range-slider-output" aria-hidden="true" \.textContent=\$\{context\.outputText \?\? ''\}><\/span>/u);
+  assert.match(template,/\.textContent=\$\{mark\.text \?\? ''\}\n\s*><\/span>/u);
+  assert.doesNotMatch(template,/sf-range-slider-output"[^>]*>\$\{/u);
+});

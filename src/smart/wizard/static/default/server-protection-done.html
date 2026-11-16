@@ -15,59 +15,10 @@
 </a>
 </sf-button>
 </div>
-<sf-steps class="sf-wizard-steps" size="1" current="2" aria-label="Шаги" items="[{&quot;label&quot;:&quot;Адрес панели&quot;,&quot;state&quot;:&quot;completed&quot;},{&quot;label&quot;:&quot;Уведомления&quot;,&quot;state&quot;:&quot;skipped&quot;},{&quot;label&quot;:&quot;Защита&quot;,&quot;state&quot;:&quot;completed&quot;},{&quot;label&quot;:&quot;Копии&quot;,&quot;state&quot;:&quot;default&quot;},{&quot;label&quot;:&quot;Проверка&quot;,&quot;state&quot;:&quot;default&quot;,&quot;disabled&quot;:true},{&quot;label&quot;:&quot;Готово&quot;,&quot;state&quot;:&quot;default&quot;,&quot;disabled&quot;:true}]" style="display: contents;" data-sf-size-relative>
-<div role="group" class="sf-steps sf-steps--size-1 flex flex-col" aria-label="Шаги" data-sf-static>
-<div class="sf-steps-container flex items-center">
+<sf-steps class="sf-wizard-steps" layout="row" navigation="free" size="1" current="2" aria-label="Шаги" items="[{&quot;label&quot;:&quot;Адрес панели&quot;,&quot;state&quot;:&quot;done&quot;},{&quot;label&quot;:&quot;Уведомления&quot;,&quot;state&quot;:&quot;skipped&quot;},{&quot;label&quot;:&quot;Защита&quot;,&quot;state&quot;:&quot;done&quot;},{&quot;label&quot;:&quot;Копии&quot;,&quot;state&quot;:&quot;ahead&quot;},{&quot;label&quot;:&quot;Проверка&quot;,&quot;state&quot;:&quot;ahead&quot;,&quot;disabled&quot;:true},{&quot;label&quot;:&quot;Готово&quot;,&quot;state&quot;:&quot;ahead&quot;,&quot;disabled&quot;:true}]" style="display: contents;" data-sf-size-relative>
+<div class="sf-steps sf-steps--size-1 sf-steps--marker-number sf-steps--layout-row" data-sf-static>
+<ol class="sf-steps-container" role="list" aria-label="Шаги"><li class="sf-step sf-step--size-1 sf-step--state-done sf-step--passed" data-step-index="0"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true"><i class="sf-icon">check</i></span><span class="sf-step-content"><span class="sf-step-container">Адрес панели</span><span class="sr-only">, Пройден</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-skipped sf-step--passed" data-step-index="1"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true">2</span><span class="sf-step-content"><span class="sf-step-container">Уведомления</span><span class="sr-only">, Пропущен</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-current" data-step-index="2" aria-current="step"><span class="sf-step-body"><span class="sf-step-marker" aria-hidden="true">3</span><span class="sf-step-content"><span class="sf-step-container">Защита</span><span class="sr-only">, Текущий</span></span></span></li><li class="sf-step sf-step--size-1 sf-step--state-ahead" data-step-index="3"><button type="button" class="sf-step-body sf-step-control"><span class="sf-step-marker" aria-hidden="true">4</span><span class="sf-step-content"><span class="sf-step-container">Копии</span><span class="sr-only">, Впереди</span></span></button></li><li class="sf-step sf-step--size-1 sf-step--state-ahead sf-step--disabled" data-step-index="4"><span class="sf-step-body"><span class="sf-step-marker" aria-hidden="true">5</span><span class="sf-step-content"><span class="sf-step-container">Проверка</span><span class="sr-only">, Впереди</span></span></span></li><li class="sf-step sf-step--size-1 sf-step--state-ahead sf-step--disabled" data-step-index="5"><span class="sf-step-body"><span class="sf-step-marker" aria-hidden="true">6</span><span class="sf-step-content"><span class="sf-step-container">Готово</span><span class="sr-only">, Впереди</span></span></span></li></ol>
 
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-completed flex items-center content-main-center cursor-pointer" data-step-index="0" aria-label="Адрес панели, Завершено">
-<i class="sf-icon" aria-hidden="true">check_circle</i>
-<div class="sf-step-container flex items-center content-main-center">Адрес панели</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-skipped flex items-center content-main-center cursor-pointer" data-step-index="1" aria-label="Уведомления, Пропущен">
-<i class="sf-icon" aria-hidden="true">do_not_disturb_on</i>
-<div class="sf-step-container flex items-center content-main-center">Уведомления</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-completed flex items-center content-main-center selected cursor-pointer" data-step-index="2" aria-current="step" aria-label="Защита, Завершено">
-<i class="sf-icon" aria-hidden="true">check_circle</i>
-<div class="sf-step-container flex items-center content-main-center">Защита</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-default flex items-center content-main-center cursor-pointer" data-step-index="3">
-
-<div class="sf-step-container flex items-center content-main-center">Копии</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-default flex items-center content-main-center disabled" data-step-index="4" disabled>
-
-<div class="sf-step-container flex items-center content-main-center">Проверка</div>
-</button>
-
-<i aria-hidden="true" class="sf-icon sf-steps-separator sf-steps-separator--directional">chevron_right</i>
-
-
-<button type="button" class="sf-step sf-step--size-1 sf-step--stage-default flex items-center content-main-center disabled" data-step-index="5" disabled>
-
-<div class="sf-step-container flex items-center content-main-center">Готово</div>
-</button>
-
-
-
-</div>
 </div>
 </sf-steps>
 <div class="sf-wizard-compact">
@@ -84,8 +35,9 @@
 </button>
 </sf-button>
 </div>
-<sf-progress-bar class="sf-wizard-bar" size="1/3" value="50" label="Ход мастера" value-text="Шаг 3 из 6" style="display: contents;" data-sf-size-relative data-status="neutral">
-<div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1/3 sf-progress-bar--neutral flex" data-value="50" data-position="none" data-label="Ход мастера" data-value-text="Шаг 3 из 6" aria-label="Ход мастера" aria-valuenow="50" aria-valuetext="Шаг 3 из 6" data-sf-progress-bar-bound="1" data-sf-static>
+<sf-progress-bar class="sf-wizard-bar" size="1/3" value="50" label="Ход мастера" value-text="Шаг 3 из 6" style="display: contents;" data-sf-size-relative>
+<div aria-valuemin="0" aria-valuemax="100" class="sf-progress-bar sf-progress-bar--size-1/3 flex" data-value="50" data-position="none" data-label="Ход мастера" data-value-text="Шаг 3 из 6" role="progressbar" aria-label="Ход мастера" aria-valuenow="50" aria-valuetext="Шаг 3 из 6" data-sf-progress-bar-bound="1" data-sf-static>
+
 <div class="sf-progress-bar-main">
 <div class="sf-progress-bar-progress transition" style="width: 50%;"></div>
 </div>
@@ -105,7 +57,7 @@
 
 <sf-alert class="sf-wizard-result" status="success" supporting-text="Сертификат выпущен, действует до 4 февраля 2027 года." style="display: contents;">
 <div class="sf-alert sf-alert--success sf-alert--default flex items-start" role="status" data-sf-static>
-<sf-icon aria-hidden="true" icon="check_circle" style="display: contents;"><i class="sf-icon sf-icon--weight-regular" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>check_circle</i></sf-icon>
+<sf-icon aria-hidden="true" icon="check_circle" style="display: contents;"><i class="sf-icon" aria-hidden="true" data-sf-static>check_circle</i></sf-icon>
 <div class="sf-alert-wrap flex flex-col flex-1">
 <div class="sf-alert-content flex flex-col flex-1">
 
@@ -117,14 +69,13 @@
 </div>
 </sf-alert>
 <div class="sf-wizard-live" data-sf-live><sf-wizard-step name="address" label="Адрес панели" type="form" href="?step=address" state="done" description="По этому адресу вы будете открывать панель. Нужен домен, который указывает на этот сервер." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="notify" label="Уведомления" type="form" optional href="?step=notify" state="skipped" description="Куда присылать письма об ошибках, копиях и обновлениях. Можно настроить позже." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="protection" label="Защита" type="action" href="?step=protection" state="done" action-text="Выпустить сертификат" message="Сертификат выпущен, действует до 4 февраля 2027 года." description="Сертификат Let’s Encrypt для адреса панели: без него браузер покажет предупреждение." style="display: contents;"><form method="post" action="?step=protection" id="sf-wizard-server-protection-done-2"><p>Адрес: <b>panel.example.ru</b>. Выпуск занимает до минуты; страницу закрывать не нужно.</p><input type="hidden" name="host" value="panel.example.ru"></form></sf-wizard-step><sf-wizard-step name="backups" label="Копии" type="form" href="?step=backups" description="Как часто сохранять копии сайтов и сколько их хранить." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="check" label="Проверка" type="review" href="?step=check" action-text="Применить" description="Что панель изменит на сервере. Проверьте и примените." style="display: contents;" hidden></sf-wizard-step><sf-wizard-step name="finish" label="Готово" type="result" href="?step=finish" description="Сервер настроен." style="display: contents;" hidden></sf-wizard-step></div>
-
 </div>
 </div>
 <div class="sf-wizard-footer">
 <sf-button class="sf-wizard-back" appearance="outline" scheme="on-surface" icon-start="arrow_back" size="1" text="Назад" href="?step=notify" style="display: contents;" data-sf-size-relative>
 <a href="?step=notify" class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center" data-sf-static>
 
-<sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" icon="arrow_back" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>arrow_back</i></sf-icon>
+<sf-icon root-class="pointer-event-none" aria-hidden="true" icon="arrow_back" style="display: contents;"><i class="sf-icon pointer-event-none" data-sf-icon-mirror aria-hidden="true" data-sf-static>arrow_back</i></sf-icon>
 <span class="sf-button-text-container text-center pointer-event-none">
 Назад
 </span>
@@ -145,5 +96,6 @@
 </sf-button>
 </span>
 </div>
+
 <div class="sf-wizard-announce sr-only" role="status"></div>
 </div></sf-wizard>

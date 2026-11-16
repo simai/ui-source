@@ -1,0 +1,28 @@
+{
+  "runtime": {
+    "empty-text": "Әзірге оқиға жоқ",
+    "more": "Тағы көрсету",
+    "loading": "Жүктелуде…",
+    "today": "Бүгін",
+    "yesterday": "Кеше",
+    "tomorrow": "Ертең",
+    "status-success": "Дайын",
+    "status-warning": "Ескерту",
+    "status-error": "Қате",
+    "status-info": "Мәлімет",
+    "state-done": "Өтті",
+    "state-current": "Қазір",
+    "state-upcoming": "Алда",
+    "step-status-success": "сәтті",
+    "step-status-warning": "ескертумен",
+    "step-status-error": "қатемен",
+    "run-changes": {
+      "one": "Тағы {n} өзгеріс",
+      "other": "Тағы {n} өзгеріс"
+    },
+    "run-events": {
+      "one": "Тағы {n} оқиға",
+      "other": "Тағы {n} оқиға"
+    }
+  }
+}

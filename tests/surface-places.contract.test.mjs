@@ -44,10 +44,12 @@ test('no coloured-place class is declared: the bg- utilities are the places', ()
   assert.doesNotMatch(places, /\.sf-surface-(primary|secondary|tertiary|error|warning|success|info)\b/u);
 });
 
-test('glass is black 48, 64, 80 under white ink in both themes, and the place defaults to the page', () => {
+// C178 (owner 2026-11-14): black 64 at rest, so white text over a white
+// picture holds 4.5:1 (48 gave 3.69); hover and press take 80, the top step.
+test('glass is black 64, 80, 80 under white ink in both themes, and the place defaults to the page', () => {
   const value = (role) => (theme.match(new RegExp(`${role}: ([^;]+);`, 'u')) ?? [])[1];
-  assert.equal(value('--sf-surface-media'), 'var(--sf-black--alfa-48)');
-  assert.equal(value('--sf-surface-media-hover'), 'var(--sf-black--alfa-64)');
+  assert.equal(value('--sf-surface-media'), 'var(--sf-black--alfa-64)');
+  assert.equal(value('--sf-surface-media-hover'), 'var(--sf-black--alfa-80)');
   assert.equal(value('--sf-surface-media-active'), 'var(--sf-black--alfa-80)');
   assert.equal(value('--sf-on-surface-media'), 'var(--sf-white)');
   assert.match(value('--sf-surface-place'), /^var\(--sf-surface-(0|page)\)$/u);
@@ -66,7 +68,7 @@ const COLOURS = ['primary', 'secondary', 'tertiary', 'info', 'success', 'warning
 const mapOf = (name) => mix.slice(mix.indexOf(`$${name}: (`), mix.indexOf(');', mix.indexOf(`$${name}: (`)));
 
 test("an opaque place takes back exactly the theme's values", () => {
-  const map = ['sf-place-theme-roles', 'sf-place-colour-roles', 'sf-place-accent-roles'].map(mapOf).join('\n');
+  const map = ['sf-place-theme-roles', 'sf-place-colour-roles', 'sf-place-accent-roles', 'sf-place-glass-link-roles', 'sf-place-container-ink-roles'].map(mapOf).join('\n');
   const entries = [...map.matchAll(/'([a-z0-9-]+)': '([^']+)'/gu)];
   assert.ok(entries.length >= 12, `${entries.length} roles read`);
   const wrong = [];
@@ -78,7 +80,10 @@ test("an opaque place takes back exactly the theme's values", () => {
   // Every role a coloured place re-declares is one an opaque place takes back.
   const strong = mix.slice(mix.indexOf('@mixin sf-place-strong'));
   const set = new Set(entries.map(([, role]) => role));
-  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && role !== 'surface-place-solid' && role !== 'surface-place-ground' && !role.startsWith('place--') && !set.has(role));
+  // The ring's own colour (--sf-focus--color) is not a theme role: glass
+  // re-declares it and takes it back by name (tests/glass-accent.contract.test.mjs).
+  const ring = new Set(['focus--color']);
+  const missed = [...strong.matchAll(/--sf-([a-z0-9-]+):/gu)].map(([, role]) => role).filter((role) => role !== 'surface-place' && role !== 'surface-place-solid' && role !== 'surface-place-ground' && !role.startsWith('place--') && !ring.has(role) && !set.has(role));
   assert.deepEqual(missed, []);
 });
 
@@ -112,6 +117,13 @@ test('the popover, a sheet that is not Sass, writes the place out as the mixin d
       assert.match(popover, /sf-popover > \[slot='content'\] > \* \{[^}]*--sf-surface-popup: var\(--sf-surface-popup-nested\);[^}]*--sf-place--popup-container-variant: light-dark\(var\(--sf-neutral-35\), var\(--sf-neutral-95\)\);/u);
       continue;
     }
+    // A popup reads its boundary through --sf-place--popup-outline, and a
+    // popup opened from it draws the nested edge (contrast R3b, 2026-11-11).
+    if (role === 'outline') {
+      assert.ok(popover.includes(`--sf-outline: var(--sf-place--popup-outline, ${value});`), 'popover outline');
+      assert.match(popover, /sf-popover > \[slot='content'\] > \* \{[^}]*--sf-place--popup-outline: light-dark\(var\(--sf-neutral-50--alfa-80\), var\(--sf-neutral-70\)\);/u);
+      continue;
+    }
     assert.ok(popover.includes(`--sf-${role}: ${value};`), `popover --sf-${role}`);
   }
   assert.match(popover, /--sf-surface-place: var\(--sf-popover-background-color, var\(--sf-surface-popup\)\);/u);
@@ -139,4 +151,15 @@ test('places own the accent and the boundary line only on a coloured place (D1, 
   assert.doesNotMatch(main, /--sf-(primary|on-primary|outline-variant):/u);
   assert.match(popover, /:where\(\.bg-primary, [^{]*\.sf-surface-media\) sf-popover > \[slot='content'\] \{\s*--sf-outline-variant: /u);
   assert.match(popover, /--sf-primary: var\(--sf-place--outer-primary, light-dark\(var\(--sf-primary-40\), var\(--sf-primary-80\)\)\);/u);
+});
+
+test('bg-surface-4 nests a popup inside it, and a nested popup draws the nested edge (contrast R3b, DEV 2026-11-11)', () => {
+  // R3-1: bg-surface-4 passes its own ink, so it says it is a popup step.
+  assert.match(utility, /places\.\$sf-place-step4-container-variant, \$popup: true\)/u);
+  assert.match(mix, /\$sf-place-step4-container-variant: 'light-dark\(var\(--sf-neutral-30\), var\(--sf-place--popup-container-variant, var\(--sf-neutral-90\)\)\)'/u);
+  // R3-2: the children of a popup carry the nested boundary, which a popup place reads.
+  const children = mix.slice(mix.indexOf('@mixin sf-place-popup-children'), mix.indexOf('\n}\n', mix.indexOf('@mixin sf-place-popup-children')));
+  assert.match(children, /--sf-place--popup-outline: #\{\$sf-place-popup-nested-outline\};/u);
+  assert.match(mix, /\$sf-place-popup-outline: 'var\(--sf-place--popup-outline, light-dark\(var\(--sf-neutral-50--alfa-80\), var\(--sf-neutral-90--alfa-48\)\)\)'/u);
+  assert.match(mix, /\$sf-place-popup-nested-outline: 'light-dark\(var\(--sf-neutral-50--alfa-80\), var\(--sf-neutral-70\)\)'/u);
 });

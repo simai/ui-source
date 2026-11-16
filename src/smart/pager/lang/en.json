@@ -14,6 +14,8 @@
     "finished": "Course complete",
     "restart": "Start over",
     "prev-item": "Previous record",
-    "next-item": "Next record"
+    "next-item": "Next record",
+    "position-many": "{n} of many",
+    "to-list": "Back to the list"
   }
 }

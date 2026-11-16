@@ -38,7 +38,7 @@ sf-empty-state {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--sf-empty-state-actions-gap, var(--sf-space-1\/3));
+  gap: var(--sf-empty-state-actions-gap, var(--sf-gap--actions));
   margin-block-start: var(--sf-a4);
 }
 
@@ -77,6 +77,77 @@ sf-empty-state {
   line-height: var(--sf-text-large--height);
 }
 
+/* The decorative level (owner decision C91, level 2; C65 round 2, R160): one
+   circle of primary tone 50 behind the icon, 12 in the light theme and 20 in
+   the dark one (the fill steps), straight to nothing at twice the icon box,
+   centred on it, never reaching under the title. Only the state of a whole
+   page (size 2, a first run): in a list, a table or a card an empty state is
+   not an event (R160). Only no-data and nothing-found: no-access and error are
+   statuses, a colour and an icon. Off unless the expressive
+   setting or data-sf-style="expressive" above it says so; the nearest
+   data-sf-style wins, strict being the default. The switch is a number the
+   image's size multiplies, so off is the same box with no paint. */
+:where([data-sf-style="expressive"]) {
+  --sf-style--expressive: 1;
+}
+
+:where([data-sf-style="strict"]) {
+  --sf-style--expressive: 0;
+}
+
+.sf-empty-state.sf-empty-state--expressive {
+  --sf-style--expressive: 1;
+}
+
+.sf-empty-state.sf-empty-state--size-2:is(.sf-empty-state--no-data, .sf-empty-state--nothing-found):not(.sf-empty-state--inline) {
+  --sf-empty-state--icon-box: var(--sf-ui-3--control-height);
+  --sf-empty-state--spot-y: calc(var(--sf-empty-state-padding-block, var(--sf-space-2)) + var(--sf-empty-state--icon-box) / 2);
+  background-image: radial-gradient(circle var(--sf-empty-state--icon-box) at 50% var(--sf-empty-state--spot-y) in oklab,
+    light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-20)) 0%,
+    transparent 100%);
+  background-repeat: no-repeat;
+  background-size: calc(100% * var(--sf-style--expressive, 0)) calc(100% * var(--sf-style--expressive, 0));
+}
+
+@media (forced-colors: active) {
+  .sf-empty-state {
+    background-image: none;
+  }
+}
+
+/* processing (owner decision C120): a spinner in the icon's circle, in the
+   glyph's ink (the spinner draws in its current colour), at the featured
+   icon's size step (the template), so the circle, its tone and its size stay
+   those of every other reason. */
+.sf-empty-state-spinner {
+  display: inline-flex;
+  line-height: 0;
+  color: var(--sf-featured-icon--foreground-color);
+}
+
+/* processing with a known share (owner decision C120 (2)): an
+   sf-progress-ring at the featured icon's size step (the template), whose
+   box is the circle's (both --sf-ui-<step>--control-height), so the circle
+   loses its padding and the ring is the circle. The track is the circle's own
+   fill, the arc and the percentage the glyph's ink -- the spinner's ink --
+   so the share reads as the same grey circle as every other reason. Only the
+   ring's internal roles are given (the Framework sets no public variable); a
+   page's --sf-progress-ring-* still wins. */
+.sf-empty-state .sf-empty-state-icon--ring {
+  padding: 0;
+}
+
+.sf-empty-state-ring {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.sf-empty-state-icon--ring .sf-progress-ring {
+  --sf-progress-ring--track: var(--sf-progress-ring-track-color, var(--sf-featured-icon--container));
+  --sf-progress-ring--fill: var(--sf-progress-ring-fill-color, var(--sf-featured-icon--foreground-color));
+  color: var(--sf-progress-ring-color, var(--sf-featured-icon--foreground-color));
+}
+
 /* The inline form: one line at a list row's height and inset, so it sits in
    a menu, a dropdown or a search without a frame of its own. The icon is the
    text's size, in the muted icon role; the words are muted ink. */
@@ -100,6 +171,10 @@ sf-empty-state {
   flex: none;
   color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-small--height);
+}
+
+.sf-empty-state--inline .sf-empty-state-spinner {
+  color: var(--sf-on-surface-variant);
 }
 
 .sf-empty-state--inline .sf-empty-state-line {

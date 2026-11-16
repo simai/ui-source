@@ -1,0 +1,1290 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-code",
+  "input": "docara-page-code.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: Блок кода в Docara: язык и имя файла в заголовке, подсветка синтаксиса, номера и выделение строк, изменения, фокус, терминал, копирование и перенос строк.\n---",
+                "hash": "sha256:d571a0297923f88c93ea939dca417e98c1a4e3a4d9d4b6fd3d3612fb84739265"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Код"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Любой фрагмент между тремя обратными кавычками Docara оформляет как блок кода:\nHTML, PHP, JSON, команду терминала, конфигурацию или обычный текст. Блок\nничего не выполняет: он сохраняет пробелы и переносы, подсвечивает синтаксис\nи даёт скопировать содержимое."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Блок кода\"}\n````markdown\n```php {title=\"config/app.php\"}\nreturn [\n    'name' => 'Docara',\n];\n```\n````\n:::",
+                "hash": "sha256:140c133b491e2bad0d5e7cde4af6055fd6b4b660ec96cd0cffffed3667e7f2f6"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": "```php {title=\"install.php\" highlight=2 numbers}\n<?php\necho 'Готово';\n```"
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Язык пишется сразу после открывающих кавычек: он выбирает подсветку и\nпоявляется в заголовке. Без языка в заголовке стоит нейтральное "
+                        },
+                        {
+                          "type": "text",
+                          "value": "Code",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Параметры — в фигурных скобках после языка, в любом порядке. Параметр без\nзначения, например "
+                        },
+                        {
+                          "type": "text",
+                          "value": "numbers",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ", означает «включить»."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m14",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Строки считаются от первой строки блока, с единицы. Номер больше числа\nстрок или диапазон наоборот останавливают сборку с кодом\n"
+                        },
+                        {
+                          "type": "text",
+                          "value": "MARKDOWN_CODE_RANGE_INVALID",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Запись совместима с привычными инструментами. Как в MkDocs Material,\nпараметры пишутся словами после языка, только в фигурных скобках. Как в\nVitePress, метки изменений пишутся комментарием "
+                  },
+                  {
+                    "type": "text",
+                    "value": "[!code ++]",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", а короткая\nзапись "
+                  },
+                  {
+                    "type": "text",
+                    "value": "```js{1,4-6}",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " выделяет строки."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Блок построен на подсветке кода SIMAI Framework ("
+                  },
+                  {
+                    "type": "text",
+                    "value": "sf-highlight",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ")."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Выделение и номера строк"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m20",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "highlight",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " выделяет строки, "
+                  },
+                  {
+                    "type": "text",
+                    "value": "numbers",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " нумерует их. Счёт можно начать с любого\nчисла, например с номера строки в файле: "
+                  },
+                  {
+                    "type": "text",
+                    "value": "numbers=42",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": "."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m21",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Выделенные строки с номерами\"}\n````markdown\n```php {highlight=\"2-3\" numbers}\n$site = new Site('docs');\n$site->theme('light');\n$site->build();\necho 'Готово';\n```\n````\n:::",
+                "hash": "sha256:5c5aba4117beb33a27b371b72ac5872d488d010ce14ed973c28e45efe3b8aad8"
+              }
+            },
+            {
+              "id": "m22",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Изменения в коде"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m23",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Чтобы показать добавленное и удалённое, допишите в конце строки\nкомментарий-метку так, как в языке пишутся комментарии: "
+                  },
+                  {
+                    "type": "text",
+                    "value": "// [!code ++]",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ",\n"
+                  },
+                  {
+                    "type": "text",
+                    "value": "# [!code --]",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " или "
+                  },
+                  {
+                    "type": "text",
+                    "value": "<!-- [!code ++] -->",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ". Docara убирает метку из\nпоказанного кода."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m24",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Метка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что означает"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "[!code ++]",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Строка добавлена"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "[!code --]",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Строка удалена"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "[!code focus]",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Строка в фокусе"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "[!code highlight]",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Строка выделена"
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m25",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Добавленная и удалённая строка\"}\n````markdown\n```js\nconst site = createSite();\nsite.build(); // [!code --]\nawait site.build(); // [!code ++]\n```\n````\n:::",
+                "hash": "sha256:648b4b7e5495b18466d3daf79939cfb7be2d319445aae41972162d1b5dbe31d9"
+              }
+            },
+            {
+              "id": "m26",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Чтобы показать саму метку как текст, напишите два восклицательных знака:\n"
+                  },
+                  {
+                    "type": "text",
+                    "value": "[!!code ++]",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " выводится как "
+                  },
+                  {
+                    "type": "text",
+                    "value": "[!code ++]",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ". В блоках "
+                  },
+                  {
+                    "type": "text",
+                    "value": "markdown",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " метки не\nобрабатываются, чтобы пример разметки показывался как есть."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m27",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Фокус"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m28",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "focus",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " оставляет в фокусе указанные строки, остальные приглушает. Наведите\nуказатель на блок или перейдите в него клавиатурой — все строки снова видны."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m29",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Фокус на одной строке\"}\n````markdown\n```js {focus=2}\nconst site = createSite();\nsite.theme('dark');\nsite.build();\n```\n````\n:::",
+                "hash": "sha256:f47b4e92ecc3d28fecb7b56c02b1e7d4fd4fe91a3aeeb9df7907077cdabae811"
+              }
+            },
+            {
+              "id": "m30",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Терминал"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m31",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "layout=terminal",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " оформляет блок как окно терминала. Строка, которая\nначинается с "
+                  },
+                  {
+                    "type": "text",
+                    "value": "$ ",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", — команда: знак "
+                  },
+                  {
+                    "type": "text",
+                    "value": "$",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " показан отдельно и не копируется.\nОстальные строки — вывод команды."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m32",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Команды и вывод в терминале\"}\n````markdown\n```bash {layout=terminal}\n$ composer require simai/docara\nUsing version ^3.9 for simai/docara\n$ php vendor/bin/docara build\nBuilt 12 page(s) into build_local.\n```\n````\n:::",
+                "hash": "sha256:d0f9775d210a24a4884d587b54513e2cb39691abba5bf9a01e9e1962650c47d8"
+              }
+            },
+            {
+              "id": "m33",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Состояния"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m34",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Перенос длинных строк"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m35",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "По умолчанию длинная строка прокручивается внутри блока и не растягивает\nстраницу. Кнопка «Переносить длинные строки» включает визуальный перенос;\nисходный текст, отступы и копирование не меняются. Выбор сохраняется в\nбраузере и применяется ко всем блокам кода на странице."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m36",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Кнопку можно отключить для сайта, раздела или страницы настройкой "
+                  },
+                  {
+                    "type": "text",
+                    "value": "code.wrap",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ":"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m37",
+              "type": "content.code",
+              "props": {
+                "lang": "json"
+              },
+              "data": {
+                "code": "{\n  \"code\": {\n    \"wrap\": false\n  }\n}"
+              }
+            },
+            {
+              "id": "m38",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Копирование"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m39",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Кнопка «Скопировать» копирует только код, который нужно перенести к себе:"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m46",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m41",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "без номеров строк, знаков «+» и «−» и меток "
+                        },
+                        {
+                          "type": "text",
+                          "value": "[!code …]",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ";"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m43",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "без удалённых строк — копируется код после изменения;"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m45",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "в терминале — только команды, без знака "
+                        },
+                        {
+                          "type": "text",
+                          "value": "$",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " и без вывода."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m47",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m54",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m49",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Кнопки копирования и переноса получают фокус клавишей Tab; рамка фокуса\nвидна при работе с клавиатуры."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m51",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Добавленные строки отмечены знаком «+» и зелёным фоном, удалённые — знаком\n«−» и красным, поэтому разница видна не только по цвету. Программа\nэкранного доступа перед такой строкой произносит «добавлено» или\n«удалено»; слова меняются в "
+                        },
+                        {
+                          "type": "text",
+                          "value": "lang.json",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " ключами "
+                        },
+                        {
+                          "type": "text",
+                          "value": "code.added",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " и\n"
+                        },
+                        {
+                          "type": "text",
+                          "value": "code.removed",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m53",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Не помещайте в пример пароли, токены и другие секреты. Если код нужно\nзапустить, отдельно объясните окружение и ожидаемый результат."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m55",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m56",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m57",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "title",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "строка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "—"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Подпись над кодом, например имя файла. Без неё показывается язык."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "highlight",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "строка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "—"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Строки, которые нужно выделить: номера и диапазоны через запятую, например "
+                      },
+                      {
+                        "type": "text",
+                        "value": "1,4-6",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": "."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "numbers",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "строка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "false",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Показывать номера строк: "
+                      },
+                      {
+                        "type": "text",
+                        "value": "true",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " или номер первой строки."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "focus",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "строка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "—"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Строки в фокусе: остальные приглушаются. Запись как у "
+                      },
+                      {
+                        "type": "text",
+                        "value": "highlight",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": "."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "layout",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "terminal",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "terminal",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " оформляет блок как окно терминала с приглашением "
+                      },
+                      {
+                        "type": "text",
+                        "value": "$",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " перед командами."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m58",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m59",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m66",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m61",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../code-from-file/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Код из файла"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — фрагмент файла проекта с теми же параметрами"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m63",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "/ru/authoring/markdown/#код",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Код в Markdown"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m65",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../example/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Интерактивный пример"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[6]",
+        "what": "Markdown form"
+      },
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[8]",
+        "what": "Markdown form"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[13]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[17]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[21]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[24]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[36]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[38]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": false,
+    "printed": "---\ndescription: Блок кода в Docara: язык и имя файла в заголовке, подсветка синтаксиса, номера и выделение строк, изменения, фокус, терминал, копирование и перенос строк.\n---\n\n# Код\n\nЛюбой фрагмент между тремя обратными кавычками Docara оформляет как блок кода:\nHTML, PHP, JSON, команду терминала, конфигурацию или обычный текст. Блок\nничего не выполняет: он сохраняет пробелы и переносы, подсвечивает синтаксис\nи даёт скопировать содержимое.\n\n## Пример\n\n:::example {label=\"Блок кода\"}\n````markdown\n```php {title=\"config/app.php\"}\nreturn [\n    'name' => 'Docara',\n];\n```\n````\n:::\n\n## Разметка\n\n````markdown\n```php {title=\"install.php\" highlight=2 numbers}\n<?php\necho 'Готово';\n```\n````\n\n- Язык пишется сразу после открывающих кавычек: он выбирает подсветку и\n  появляется в заголовке. Без языка в заголовке стоит нейтральное `Code`.\n- Параметры — в фигурных скобках после языка, в любом порядке. Параметр без\n  значения, например `numbers`, означает «включить».\n- Строки считаются от первой строки блока, с единицы. Номер больше числа\n  строк или диапазон наоборот останавливают сборку с кодом\n  `MARKDOWN_CODE_RANGE_INVALID`.\n\nЗапись совместима с привычными инструментами. Как в MkDocs Material,\nпараметры пишутся словами после языка, только в фигурных скобках. Как в\nVitePress, метки изменений пишутся комментарием `[!code ++]`, а короткая\nзапись ```` ```js{1,4-6} ```` выделяет строки.\n\nБлок построен на подсветке кода SIMAI Framework (`sf-highlight`).\n\n## Варианты\n\n### Выделение и номера строк\n\n`highlight` выделяет строки, `numbers` нумерует их. Счёт можно начать с любого\nчисла, например с номера строки в файле: `numbers=42`.\n\n:::example {label=\"Выделенные строки с номерами\"}\n````markdown\n```php {highlight=\"2-3\" numbers}\n$site = new Site('docs');\n$site->theme('light');\n$site->build();\necho 'Готово';\n```\n````\n:::\n\n### Изменения в коде\n\nЧтобы показать добавленное и удалённое, допишите в конце строки\nкомментарий-метку так, как в языке пишутся комментарии: `// [!code ++]`,\n`# [!code --]` или `<!-- [!code ++] -->`. Docara убирает метку из\nпоказанного кода.\n\n| Метка | Что означает |\n| --- | --- |\n| `[!code ++]` | Строка добавлена |\n| `[!code --]` | Строка удалена |\n| `[!code focus]` | Строка в фокусе |\n| `[!code highlight]` | Строка выделена |\n\n:::example {label=\"Добавленная и удалённая строка\"}\n````markdown\n```js\nconst site = createSite();\nsite.build(); // [!code --]\nawait site.build(); // [!code ++]\n```\n````\n:::\n\nЧтобы показать саму метку как текст, напишите два восклицательных знака:\n`[!!code ++]` выводится как `[!code ++]`. В блоках `markdown` метки не\nобрабатываются, чтобы пример разметки показывался как есть.\n\n### Фокус\n\n`focus` оставляет в фокусе указанные строки, остальные приглушает. Наведите\nуказатель на блок или перейдите в него клавиатурой — все строки снова видны.\n\n:::example {label=\"Фокус на одной строке\"}\n````markdown\n```js {focus=2}\nconst site = createSite();\nsite.theme('dark');\nsite.build();\n```\n````\n:::\n\n### Терминал\n\n`layout=terminal` оформляет блок как окно терминала. Строка, которая\nначинается с `$ `, — команда: знак `$` показан отдельно и не копируется.\nОстальные строки — вывод команды.\n\n:::example {label=\"Команды и вывод в терминале\"}\n````markdown\n```bash {layout=terminal}\n$ composer require simai/docara\nUsing version ^3.9 for simai/docara\n$ php vendor/bin/docara build\nBuilt 12 page(s) into build_local.\n```\n````\n:::\n\n## Состояния\n\n### Перенос длинных строк\n\nПо умолчанию длинная строка прокручивается внутри блока и не растягивает\nстраницу. Кнопка «Переносить длинные строки» включает визуальный перенос;\nисходный текст, отступы и копирование не меняются. Выбор сохраняется в\nбраузере и применяется ко всем блокам кода на странице.\n\nКнопку можно отключить для сайта, раздела или страницы настройкой `code.wrap`:\n\n```json\n{\n  \"code\": {\n    \"wrap\": false\n  }\n}\n```\n\n### Копирование\n\nКнопка «Скопировать» копирует только код, который нужно перенести к себе:\n\n- без номеров строк, знаков «+» и «−» и меток `[!code …]`;\n- без удалённых строк — копируется код после изменения;\n- в терминале — только команды, без знака `$` и без вывода.\n\n## Доступность\n\n- Кнопки копирования и переноса получают фокус клавишей Tab; рамка фокуса\n  видна при работе с клавиатуры.\n- Добавленные строки отмечены знаком «+» и зелёным фоном, удалённые — знаком\n  «−» и красным, поэтому разница видна не только по цвету. Программа\n  экранного доступа перед такой строкой произносит «добавлено» или\n  «удалено»; слова меняются в `lang.json` ключами `code.added` и\n  `code.removed`.\n- Не помещайте в пример пароли, токены и другие секреты. Если код нужно\n  запустить, отдельно объясните окружение и ожидаемый результат.\n\n## Параметры\n\n<!-- docara:component-parameters:start -->\n\n| Параметр | Значения | По умолчанию | Что задаёт |\n| --- | --- | --- | --- |\n| `title` | строка | — | Подпись над кодом, например имя файла. Без неё показывается язык. |\n| `highlight` | строка | — | Строки, которые нужно выделить: номера и диапазоны через запятую, например `1,4-6`. |\n| `numbers` | строка | `false` | Показывать номера строк: `true` или номер первой строки. |\n| `focus` | строка | — | Строки в фокусе: остальные приглушаются. Запись как у `highlight`. |\n| `layout` | `default`, `terminal` | `default` | `terminal` оформляет блок как окно терминала с приглашением `$` перед командами. |\n\n<!-- docara:component-parameters:end -->\n\n## См. также\n\n- [Код из файла](../code-from-file/) — фрагмент файла проекта с теми же параметрами\n- [Код в Markdown](/ru/authoring/markdown/#код)\n- [Интерактивный пример](../example/)\n",
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

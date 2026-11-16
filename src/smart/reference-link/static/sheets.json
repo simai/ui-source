@@ -6,23 +6,70 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/buttons/css/buttons.min.css",
+    "component/clipboard/css/clipboard.min.css",
+    "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
     "component/reference-link/css/reference-link.min.css",
+    "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "utility/align-items/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
+    "utility/flex-direction/default/css/default.min.css",
     "utility/font-weight/default/css/default.min.css",
+    "utility/justify-content/default/css/default.min.css",
+    "utility/place-items/default/css/default.min.css",
     "utility/position/default/css/default.min.css"
   ],
   "examples": {
+    "copy": [
+      "component/buttons/css/buttons.min.css",
+      "component/clipboard/css/clipboard.min.css",
+      "component/icon-buttons/css/icon-buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/reference-link/css/reference-link.min.css",
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css"
+    ],
     "disabled": [
       "component/icons/css/icons.min.css",
       "component/reference-link/css/reference-link.min.css",
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
+    ],
+    "forbidden": [
+      "component/icons/css/icons.min.css",
+      "component/reference-link/css/reference-link.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css"
+    ],
+    "inline": [
+      "component/icons/css/icons.min.css",
+      "component/reference-link/css/reference-link.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css"
     ],
     "label": [
       "component/icons/css/icons.min.css",
@@ -30,7 +77,10 @@
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
     "line": [
@@ -39,8 +89,33 @@
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
+    ],
+    "missing": [
+      "component/icons/css/icons.min.css",
+      "component/reference-link/css/reference-link.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css"
+    ],
+    "new-tab": [
+      "component/icons/css/icons.min.css",
+      "component/reference-link/css/reference-link.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css"
     ],
     "no-icon": [
       "component/icons/css/icons.min.css",
@@ -48,7 +123,10 @@
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
     "plain": [
@@ -57,8 +135,22 @@
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
+    ],
+    "record": [
+      "component/icons/css/icons.min.css",
+      "component/reference-link/css/reference-link.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css"
     ],
     "reference": [
       "component/icons/css/icons.min.css",
@@ -66,7 +158,10 @@
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ],
     "size": [
@@ -75,7 +170,10 @@
       "core/css/core.css",
       "utility/align-items/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
+      "utility/flex-direction/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
+      "utility/justify-content/default/css/default.min.css",
+      "utility/place-items/default/css/default.min.css",
       "utility/position/default/css/default.min.css"
     ]
   }

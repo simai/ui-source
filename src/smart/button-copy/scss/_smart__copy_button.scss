@@ -40,11 +40,27 @@
    set --sf-icon--color on their root, nearer the glyph than this wrapper, so a
    variable set here never reached it and the check stayed in the resting ink
    (found by tests/browser/public-variables, 2026-10-27). */
-.sf-copy-button--success :is(.sf-icon-button, .sf-button) .sf-icon {
+.sf-copy-button--success :is(.sf-icon-button, .sf-button, .sf-field-action) .sf-icon {
   color: var(--sf-copy-button-success-color, var(--sf-success));
 }
 
-.sf-copy-button--error :is(.sf-icon-button, .sf-button) .sf-icon {
+.sf-copy-button--error :is(.sf-icon-button, .sf-button, .sf-field-action) .sf-icon {
   color: var(--sf-copy-button-error-color, var(--sf-error));
 }
+}
+
+/* Inside a field an icon-only copy is the field's action since 1.5.0 (C123:
+   the field layer's .sf-field-action, its ring round the glyph). A copy with
+   text in a field is still a button, the field's height (R214 FA-2): its own ring,
+   2 px round the box with the 1 px offset, stood 3 px out of the field top and
+   bottom. Inside a field the ring turns inwards and keeps to the field's inner
+   box -- the focus width plus the field's 1 px border in from the button's
+   edge, the same inward ring sf-input-quantity's step buttons draw -- so it
+   never leaves the field and never paints over its border. The focus system's
+   width and the field's border are the only values. In the states layer, where
+   the button's own ring is. Outside a field the ring is unchanged. */
+@layer sf.states {
+  .sf-input-field .sf-copy-button :is(.sf-icon-button, .sf-button):not(:disabled):not(.disabled):focus-visible {
+    outline-offset: calc(-1 * (var(--sf-focus--width) + var(--sf-px)));
+  }
 }

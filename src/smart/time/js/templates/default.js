@@ -6,13 +6,19 @@ import {html, nothing} from 'lit';
 //   format gives. Nothing for a value that is no date.
 // - With a tooltip: the Framework's tooltip composition -- an anchor holding
 //   the time element (the trigger, data-tooltip naming the surface) and the
-//   surface, a dark tooltip of size 1/3 with its tail pointing down at the
-//   time. The tooltip controller (component.tooltip) links them: hover and
+//   surface, the dark tooltip without a tail: it opens below the time and
+//   flips above at the window's bottom edge, one size whatever the density
+//   (owner decision C160 (3), (4); C59: no arrow by default). The tooltip
+//   controller (component.tooltip) links them: hover and
 //   keyboard focus show it, Escape and a press hide it, aria-describedby
 //   names it. The surface is hidden in the markup and only the controller
 //   shows it, so a redraw never fights it.
-// - The time element is a Tab stop only with a tooltip and outside a link
-//   or a button (index.js focusable).
+// - The time element is a Tab stop only with a tooltip, outside a link or a
+//   button and outside a list or a feed (index.js focusable; owner decision
+//   C183 (2)). Where it is no stop, the full moment with its zone is a
+//   visually hidden line after it (spoken), so the row's text carries it.
+// - The tooltip names the zone: «13 ноября 2026 г. в 19:40, Москва (UTC+3)»
+//   (said.tip, C183 (3)).
 
 export function renderTimeTemplate(context) {
   const {said} = context;
@@ -23,7 +29,7 @@ export function renderTimeTemplate(context) {
   }
   return html`<span class="sf-time-anchor sf-tooltip-anchor"><time class=${classes} datetime=${said.iso}
       tabindex=${context.focusable ? '0' : nothing} data-tooltip=${context.tipId}>${said.shown}</time><span
-      class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-tooltip--arrow-bottom-center sf-time-tooltip"
-      id=${context.tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${said.full}</span><span
-      class="sf-tooltip-tail" aria-hidden="true"></span></span></span></span>`;
+      class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-time-tooltip"
+      id=${context.tipId} hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${said.tip}</span></span></span>${context.spoken
+      ? html`<span class="sr-only">, ${said.tip}</span>` : nothing}</span>`;
 }

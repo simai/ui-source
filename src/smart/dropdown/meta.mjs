@@ -44,10 +44,31 @@ const sfDropdownMeta = {
       ],
       "default": "false"
     },
+    "error-message": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The text shown under the field while it is invalid, in the error colour, in the field-message style; it is the trigger's error message for assistive technology (aria-describedby, aria-errormessage)."
+    },
+    "invalid": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "Marks the choice as wrong: the error border (filled: the error fill), aria-invalid on the trigger and error-message under the field. No error icon is drawn."
+    },
     "label": {
       "kind": "custom",
       "valueType": "string",
       "default": ""
+    },
+    "help": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
     },
     "layout": {
       "kind": "enum",

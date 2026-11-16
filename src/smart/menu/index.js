@@ -19,7 +19,8 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import BundledPosition from '../../core/js/position.js';
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
-import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {BREAKPOINTS, breakpointMedia} from '../../core/js/breakpoints.js';
+import {rowRoom} from '../../core/js/overflow-row.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderMenuTemplate} from './js/templates/default';
 import {
@@ -55,8 +56,12 @@ onItemAlias((from, to) => noteDeprecated({component: 'sf-menu', kind: 'property'
 import './scss/index.scss';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.
 const positioning = () => globalThis.SF?.Position || BundledPosition;
@@ -186,15 +191,27 @@ class SfSmartMenu extends MenuElement {
     window.addEventListener('popstate', this._onLocation);
     window.addEventListener('hashchange', this._onLocation);
     // The phone's width, as the sheets switch on it (core/js/breakpoints).
+    // Inside sf-header-site the bar's own width stands for the window's (see
+    // readNarrow), so the bar and its row read one width (C104, C181 (2)).
     this._narrowMedia = breakpointMedia('md', {below: true});
-    this._narrow = this._narrowMedia?.matches === true;
+    this._narrow = this.readNarrow();
     this._onNarrow = () => {
-      const narrow = this._narrowMedia?.matches === true;
+      const narrow = this.readNarrow();
       if (narrow === this._narrow) return;
       this._narrow = narrow;
       if (this.collapse === 'narrow') this.requestComponentUpdate('narrow');
+      // A row's deeper levels open in place below md and to the side above
+      // it: the open chain is placed again for the width it now has.
+      else if (this.flyouts) this.syncAnchors();
+      // The default row (collapse auto, overflow collapse) is «Ещё» above md
+      // and the «Меню» button below it: crossing md it is measured anew.
+      if (this.collapseOnPhone) {
+        this._autoCollapsed = false;
+        this.requestComponentUpdate('narrow');
+      }
     };
     this._narrowMedia?.addEventListener?.('change', this._onNarrow);
+    this.watchFrame();
     // The words of a row change their width when the font arrives: «Ещё» is
     // measured again then.
     this._onFonts = () => this.measureFit();
@@ -208,6 +225,9 @@ class SfSmartMenu extends MenuElement {
     window.removeEventListener('hashchange', this._onLocation);
     this._narrowMedia?.removeEventListener?.('change', this._onNarrow);
     this._narrowMedia = null;
+    this._frameObserver?.disconnect();
+    this._frameObserver = null;
+    this._frame = null;
     document.fonts?.removeEventListener?.('loadingdone', this._onFonts);
     for (const timer of this._hoverTimers.values()) clearTimeout(timer);
     this._hoverTimers.clear();
@@ -242,7 +262,15 @@ class SfSmartMenu extends MenuElement {
   // A row with overflow more: the items that left the row stand under the
   // trailing «Ещё» branch.
   get moreActive() {
-    return this.overflow === 'more' && this.flyouts;
+    return (this.overflow === 'more' || (this.collapseOnPhone && !this._narrow)) && this.flyouts;
+  }
+
+  // The default row (collapse auto, overflow collapse; C30, OV-4): above md
+  // the items that do not fit leave for «Ещё» as with overflow more, the ones
+  // that fit stay; below md (a phone) the whole row that does not fit becomes
+  // the «Меню» button, as before.
+  get collapseOnPhone() {
+    return this.collapse === 'auto' && this.overflow === 'collapse' && this.horizontal;
   }
 
   // The tree the open panels, the current path and the keys walk: the items,
@@ -273,7 +301,7 @@ class SfSmartMenu extends MenuElement {
   // orientation, appearance, collapse, current-from-location and the words are
   // the manifest's accessors (attribute and property).
 
-  // The documentation tree and the compact rail are columns; the default and
+  // The documentation tree and the rail are columns; the default and
   // the navigation can be a row.
   get horizontal() {
     return this.orientation === 'horizontal' && ROW_APPEARANCES.includes(this.appearance);
@@ -283,7 +311,7 @@ class SfSmartMenu extends MenuElement {
   get collapsed() {
     if (this.collapse === 'always') return true;
     if (this.collapse === 'narrow') return this._narrow;
-    return this.collapse === 'auto' && this.overflow === 'collapse' && this.horizontal && this._autoCollapsed;
+    return this.collapseOnPhone && this._narrow && this._autoCollapsed;
   }
 
   // Branches open as panels beside the row: a row that is shown as a row.
@@ -291,10 +319,10 @@ class SfSmartMenu extends MenuElement {
     return this.horizontal && !this.collapsed;
   }
 
-  // Groups are drawn with their headings in a column; a row and the compact
+  // Groups are drawn with their headings in a column; a row and the
   // rail draw their items in the group's place.
   get groupsDrawn() {
-    return !this.flyouts && this.appearance !== 'compact';
+    return !this.flyouts && this.appearance !== 'rail';
   }
 
   get panelOpen() {
@@ -354,11 +382,12 @@ class SfSmartMenu extends MenuElement {
   // that is not above it, closing one closes the panels inside it. A column's
   // groups open and close each on its own. A disabled branch is not opened or
   // closed by the person. Answers an outcome: applied, or refused with
-  // unknown (no such branch), compact (no groups), disabled or already.
+  // unknown (no such branch), compact (the rail: no groups; the reason keeps
+  // its name, an outcome is not an attribute value), disabled or already.
   setOpen(id, open, source = 'method') {
     const item = this.item(id);
     if (!item || !item.children.length) return {outcome: 'refused', reason: 'unknown'};
-    if (this.appearance === 'compact') return {outcome: 'refused', reason: 'compact'};
+    if (this.appearance === 'rail') return {outcome: 'refused', reason: 'compact'};
     // A group that is not collapsible, or a group a row does not draw, stays
     // as it is.
     if (item.group && (!item.collapsible || !this.groupsDrawn)) return {outcome: 'refused', reason: 'fixed'};
@@ -775,7 +804,7 @@ class SfSmartMenu extends MenuElement {
   // search (C30 amended 2026-11-09, R071 a): a column only -- a row keeps a
   // search button in its header.
   get searchActive() {
-    return Boolean(this.search) && !this.flyouts && this.appearance !== 'compact';
+    return Boolean(this.search) && !this.flyouts && this.appearance !== 'rail';
   }
 
   get searchQuery() {
@@ -945,13 +974,26 @@ class SfSmartMenu extends MenuElement {
   // A row's panels are placed by the Framework's geometry, as the class menu
   // places them: the first level below its item, deeper ones to the inline
   // end; both flip and shift inside the viewport instead of overflowing it.
+  // Below md (a phone, R179) a row has no room for side panels: the levels
+  // under the first panel open in place inside it, as a column's do (C30:
+  // the phone's tree, no drill-in), so nothing stands outside the viewport
+  // or over its own chain.
   syncAnchors() {
     const wanted = new Set();
+    const inPlace = this._narrow;
     if (this.flyouts) {
       for (const id of this.openIds) {
         const row = this.querySelector(`[data-sf-menu-item="${CSS.escape(id)}"]`);
         const submenu = row?.querySelector(':scope > ul.sf-menu, :scope > .sf-menu-region');
         if (!submenu || submenu.hidden) continue;
+        const side = row.dataset.sfMenuLevel !== '1' && !submenu.matches('.sf-menu-region');
+        if (side && inPlace) {
+          if (this._anchors.has(submenu)) this.releaseAnchor(submenu);
+          submenu.setAttribute('data-sf-menu-in-place', '');
+          delete submenu.dataset.sfSide;
+          continue;
+        }
+        submenu.removeAttribute('data-sf-menu-in-place');
         wanted.add(submenu);
         const current = this._anchors.get(submenu);
         if (current) {
@@ -1019,6 +1061,9 @@ class SfSmartMenu extends MenuElement {
       }
     }
     for (const submenu of [...this._anchors.keys()]) if (!wanted.has(submenu)) this.releaseAnchor(submenu);
+    if (!inPlace || !this.flyouts) {
+      for (const submenu of this.querySelectorAll('ul.sf-menu[data-sf-menu-in-place]')) submenu.removeAttribute('data-sf-menu-in-place');
+    }
   }
 
   releaseAnchor(submenu) {
@@ -1034,7 +1079,38 @@ class SfSmartMenu extends MenuElement {
 
   // A row that does not fit the width it is given becomes the button; it is
   // a row again once the width it needed is there.
+  // The width the phone's step is read on. A row in sf-header-site reads the
+  // bar's own width: the bar collapses on it (a container condition), and a
+  // row that read the window instead stayed a wide row of «Ещё» in a bar
+  // narrower than the window -- a column, a card, an example frame -- where
+  // its «Меню» branch ran over the bar's actions (C104). Elsewhere the window.
+  readNarrow() {
+    const frame = this.closest?.('.sf-site-header');
+    const width = frame?.getBoundingClientRect?.().width;
+    if (frame && width > 0) {
+      const rem = Number.parseFloat(globalThis.getComputedStyle?.(document.documentElement).fontSize) || 16;
+      return width < Number.parseFloat(BREAKPOINTS.md) * rem;
+    }
+    return this._narrowMedia?.matches === true;
+  }
+
+  // The bar the row stands in, watched while it is there: the menu is placed
+  // into the bar's nav after the bar draws, so each drawing looks again.
+  watchFrame() {
+    const frame = this.closest?.('.sf-site-header') || null;
+    if (frame === this._frame) return;
+    this._frameObserver?.disconnect();
+    this._frameObserver = null;
+    this._frame = frame;
+    if (frame && typeof ResizeObserver !== 'undefined') {
+      this._frameObserver = new ResizeObserver(() => this._onNarrow?.());
+      this._frameObserver.observe(frame);
+    }
+    this._onNarrow?.();
+  }
+
   observeWidth() {
+    this.watchFrame();
     const nav = this.querySelector(':scope > nav.sf-smart-menu');
     if (!nav || typeof ResizeObserver === 'undefined') return;
     if (this._observed !== nav) {
@@ -1054,7 +1130,7 @@ class SfSmartMenu extends MenuElement {
       return;
     }
     if (this._overflowHidden.length) this.setOverflowHidden([]);
-    if (this.collapse !== 'auto' || this.overflow !== 'collapse' || !this.horizontal) {
+    if (!this.collapseOnPhone || !this._narrow) {
       if (this._autoCollapsed) {
         this._autoCollapsed = false;
         this.requestComponentUpdate('collapse');
@@ -1099,7 +1175,11 @@ class SfSmartMenu extends MenuElement {
     const currentId = this.currentId;
     const above = currentId ? [currentId, ...(pathTo(this.menuItems, currentId) || [])] : [];
     const keep = ids.findIndex((id) => above.includes(id));
-    const stays = new Set(fitRow(widths, moreWidth, nav.clientWidth, gap, keep));
+    // The room in fractional pixels (the row engine's rowRoom; clientWidth
+    // is a whole pixel, the C54 return), the arithmetic the shared engine's
+    // (fitRow, owner decision C155 (1)).
+    const room = rowRoom(nav);
+    const stays = new Set(fitRow(widths, moreWidth, room, gap, keep));
     this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)), nav.clientWidth);
   }
 
@@ -1189,7 +1269,7 @@ class SfSmartMenu extends MenuElement {
       flyouts: this.flyouts,
       collapsed: this.collapsed,
       panelOpen: this.panelOpen,
-      compact: this.appearance === 'compact',
+      rail: this.appearance === 'rail',
       appearance: this.appearance,
       label: this.getAttribute('aria-label') || this.getProp('label') || this._childLabel,
       toggleLabel: this.getAttribute('toggle-label') || this.sfWord('toggle-label'),

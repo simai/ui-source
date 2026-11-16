@@ -18,7 +18,11 @@
     --sf-list--row-radius: var(--sf-list-radius, var(--sf-radius--ui));
     /* One row hover for every list and menu (C42 (5), owner 2026-11-10). */
     --sf-list--hover: var(--sf-list-hover-background-color, var(--sf-surface-state-select));
-    --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container-active));
+    /* The open row is the selected role's one fill, primary-container: 12 in
+       the light theme, 24 in the dark (owner decision C31, C16; list item
+       study LI-7). It was the pressed step, 20 / 32, beside the standalone
+       row's 12 / 24: two fills for one state. */
+    --sf-list--current: var(--sf-list-current-background-color, var(--sf-primary-container));
     --sf-list--group-gap: var(--sf-list-gap, var(--sf-space-1\/3));
 
     position: relative;
@@ -48,7 +52,6 @@
   .sf-list--size-1\/2 {
     --sf-list--row-height: var(--sf-ui-1\/2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x));
-    --sf-list--text-step: var(--sf-ui-1\/2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1\/2);
     --sf-list--line-height: var(--sf-text-height-1\/2);
     --sf-list--lead-line: var(--sf-text-height-1\/2);
@@ -58,7 +61,6 @@
   .sf-list--size-1 {
     --sf-list--row-height: var(--sf-ui-1--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x));
-    --sf-list--text-step: var(--sf-ui-1--text-space-x);
     --sf-list--font-size: var(--sf-text-size-1);
     --sf-list--line-height: var(--sf-text-height-1);
     --sf-list--lead-line: var(--sf-text-height-1);
@@ -68,7 +70,6 @@
   .sf-list--size-2 {
     --sf-list--row-height: var(--sf-ui-2--control-height);
     --sf-list--text-inset: calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x));
-    --sf-list--text-step: var(--sf-ui-2--text-space-x);
     --sf-list--font-size: var(--sf-text-size-2);
     --sf-list--line-height: var(--sf-text-height-2);
     --sf-list--lead-line: var(--sf-text-height-2);
@@ -124,8 +125,9 @@
 
   /* The count and the badge stand at the row's end, centred on the row: one
      line of the row, two lines of a two-line row. The title gives way to
-     them. The least gap before them is the row's own between its icon and
-     its text (sf-list-item's gap-2), also in a row with no icon. */
+     them. The least gap before them is the row's own between its picture and
+     its text (C105 H2, --sf-space-1/2, sf-list-item's wrap), also in a row
+     with no picture. */
   .sf-list__meta {
     display: inline-flex;
     flex: none;
@@ -136,38 +138,160 @@
 
   .sf-list__meta:empty { display: none; }
 
-  .sf-list-item--text .sf-list__meta { padding-inline-start: var(--sf-space-2); }
+  /* 1.15.0: the end part of an unread row with nothing else at its end holds
+     only the screen-reader word (unread-text): it takes no place, so the row
+     lays out as a row with no end part. */
+  .sf-list__meta:not(:empty):not(:has(> :not(.sr-only))) { display: contents; }
 
-  /* A narrow list (owner decision C47, 2026-11-10, option A; the list sets
-     data-sf-list-narrow on its frame below 20rem of its own width): a row
-     with a badge or a count lays out as «picture | text», and the meta goes
-     under the second line, at the text's start, so the title keeps the
-     row's width and the badge stays whole. The row grows by whole bands
-     (geometry standard, multi-line rows): the band step --sf-space-1/4 and
-     the badge's own height, the row's line -- 52 + 4 + 20 = 76 on a phone at
-     size 1. Rows without a meta keep their layout and their height; the
-     picture place is one width in every row, so all titles start on one
-     line. */
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+  /* The row's time (1.15.0, time-format; owner decision C189 (8)): sf-time,
+     inline in the end part. On a one-line row it stands centred on the row,
+     in the caption's type and dim ink, before the badge and the count; on a
+     two-line row the end column (below) gives it the caption's type and ink
+     and the title's line. An unread row's time takes the main ink, as its
+     title is semibold; a disabled row's stays the disabled ink. */
+  .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+    font-size: var(--sf-list-item-supporting--font-size);
+    line-height: var(--sf-list-item-supporting--line-height);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .sf-list-item.disabled:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+    color: var(--sf-on-surface-disabled);
+  }
+
+  .sf-list__row--unread > sf-list-item > .sf-list-item:not(.disabled) > .sf-list-item-wrap > .sf-list__meta > .sf-list__time {
+    color: var(--sf-on-surface);
+  }
+
+  /* A two-line row's meta is sf-list-item's end column (owner decision C148
+     (2)): the badge and the count on the caption's line, under the title's
+     line, so the row keeps its height and its title its width. The step
+     before it is the row's own (sf-list-item's wrap, C105 H2), in a text row
+     too. sf-badge's host is display: contents: its badge is the column's
+     item. */
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > *,
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > sf-badge > * { grid-row: 2; }
+
+  /* The time is the column's first line, the title's (C148 (2)), at the
+     column's end, above the badge and the count. sf-time's host may be
+     display: contents: its time element is then the column's item. The
+     column has no declared tracks, so a line of a badge and a count -- two
+     tracks -- is spanned by name of its parts. */
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time,
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta > .sf-list__time > * {
+    grid-row: 1;
+    grid-column: 1;
+    justify-self: end;
+  }
+
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta:has(> .sf-list__badge):has(> .sf-list__count) > .sf-list__time,
+  .sf-list-item--two-line > .sf-list-item-wrap > .sf-list__meta:has(> .sf-list__badge):has(> .sf-list__count) > .sf-list__time > * {
+    grid-column: 1 / span 2;
+  }
+
+  /* A narrow list (owner decision C47, 2026-11-10, option A): a row with a
+     badge or a count lays out as «picture | text», and the meta goes under
+     the second line, at the text's start, so the title keeps the row's width
+     and the badge stays whole. The row grows by whole bands (geometry
+     standard, multi-line rows): the band step --sf-space-1/4 and the badge's
+     own height, the row's line -- 52 + 4 + 20 = 76 on a phone at size 1.
+     Rows without a meta keep their layout and their height; the picture
+     place is one width in every row, so all titles start on one line.
+     1.14.0: the list is narrow below 20rem of its frame's own width by a
+     container query (the frame is the container sf-list), not by the code,
+     so a printed first paint lays out narrow before any script (ui-chat's
+     chat-threads at 390: rows 52 -> 76 when the code adopted, CLS 0.09).
+     20rem is the size step g0, the C47 width; the condition cannot read a
+     variable. The frame keeps data-sf-list-narrow for what CSS cannot know
+     (a row's title squeezed by a long badge, measured by the code, index.js
+     measureNarrow), and the same mark written by hand still makes it
+     narrow. A two-line row keeps its badge and count in its end column
+     (owner decision C148 (2), sf-list 1.10.0), in the query and by the
+     mark alike. */
+  .sf-list__frame {
+    container: sf-list / inline-size;
+  }
+
+  /* A frame in a shrink-to-fit place (a popover, an auto-width flex item or
+     grid track) takes its width from its rows, which an inline-size
+     container cannot give: the code finds that and takes the frame out of
+     the query (data-sf-list-fit), and decides narrow by measuring, as
+     before 1.14.0. */
+  .sf-list__frame[data-sf-list-fit] {
+    container-type: normal;
+  }
+
+  /* As strong as the marked rules below (the frame's two classes). */
+  @container sf-list (inline-size < 20rem) {
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      row-gap: var(--sf-space-1\/4);
+    }
+
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item--text:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* The picture: the leading place, or sf-icon's own glyph (its host is
+       display: contents). */
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
+      grid-column: 1;
+      grid-row: 1;
+      align-self: center;
+    }
+
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+      grid-column: -2;
+      grid-row: 1;
+      justify-self: stretch;
+      min-inline-size: 0;
+      max-inline-size: 100%;
+      margin: 0;
+    }
+
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+      grid-column: -2;
+      grid-row: 2;
+      justify-self: start;
+      /* The text's start: the title has no inset of its own (C77, C105 H2),
+         so the meta stands on the title's first letter. */
+      margin-inline-start: 0;
+      padding-inline-start: 0;
+    }
+
+    /* A narrow row with a caption keeps its caption row's padding (register smart-2
+       RG-S2-34), as the marked rule below says. */
+    .sf-list__frame.sf-list .sf-list__row .sf-list-item.sf-list-item--two-line:has(> .sf-list-item-wrap > .sf-list__meta:not(:empty)) {
+      --sf-list--caption-block: calc((var(--sf-list-item--caption-step, var(--sf-ui-1\/2--control-height)) + var(--sf-text-height-1\/3) - var(--sf-list--line-height) - var(--sf-list-item-supporting--line-height, var(--sf-text-height-1\/3))) / 2);
+      --sf-list-item--padding-top: max(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)), var(--sf-list--caption-block));
+      --sf-list-item--padding-bottom: max(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)), var(--sf-list--caption-block));
+    }
+  }
+
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     row-gap: var(--sf-space-1\/4);
   }
 
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item--text:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) {
     grid-template-columns: minmax(0, 1fr);
   }
 
   /* The picture: the leading place, or sf-icon's own glyph (its host is
      display: contents). */
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > :first-child:not(.sf-list-item-container, sf-icon),
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > sf-icon:first-child > * {
     grid-column: 1;
     grid-row: 1;
     align-self: center;
   }
 
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap:has(> .sf-list__meta:not(:empty)) > .sf-list-item-container {
     grid-column: -2;
     grid-row: 1;
     justify-self: stretch;
@@ -176,13 +300,27 @@
     margin: 0;
   }
 
-  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item-wrap > .sf-list__meta:not(:empty) {
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list__meta:not(:empty) {
     grid-column: -2;
     grid-row: 2;
     justify-self: start;
-    /* The text's start: the row's text step, the title's own inset. */
-    margin-inline-start: var(--sf-list--text-step);
+    /* The text's start: the title has no inset of its own (C77, C105 H2),
+       so the meta stands on the title's first letter. */
+    margin-inline-start: 0;
     padding-inline-start: 0;
+  }
+
+  /* A narrow row with a caption keeps its caption row's padding and adds the
+     band and the meta as whole lines (register smart-2 RG-S2-34; C49, C18
+     multi-line rows): its caption row is the C49 floor -- the 1/2 step
+     (--sf-d1 under a finger) and a 1/3 line -- drawn as padding, not as a
+     least height the grown row passes. It fell back to the next step's
+     padding: 64 against 72 at 1/2, 60 against 80 under a finger on a phone,
+     its words on the row's edges. */
+  .sf-list__frame[data-sf-list-narrow] .sf-list__row .sf-list-item.sf-list-item--two-line:has(> .sf-list-item-wrap > .sf-list__meta:not(:empty)) {
+    --sf-list--caption-block: calc((var(--sf-list-item--caption-step, var(--sf-ui-1\/2--control-height)) + var(--sf-text-height-1\/3) - var(--sf-list--line-height) - var(--sf-list-item-supporting--line-height, var(--sf-text-height-1\/3))) / 2);
+    --sf-list-item--padding-top: max(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)), var(--sf-list--caption-block));
+    --sf-list-item--padding-bottom: max(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)), var(--sf-list--caption-block));
   }
 
   .sf-list__body,
@@ -243,6 +381,21 @@
   /* A translucent fill: a tonal badge on the open row keeps its own tone
      (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
   .sf-list__row--current { background-color: var(--sf-list--current); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--current); }
+
+  /* An unread row (owner decision C167 (3), 2026-11-14): a row with a count
+     -- the item's count is its unread (count-label «3 непрочитанных») -- has
+     its title semibold beside the grey count (C140 (3)), so unread is read
+     before the number. The second line stays regular. */
+  .sf-list__row--unread > sf-list-item > .sf-list-item .sf-list-item-title {
+    font-weight: var(--sf-weight--semi-bold);
+  }
+
+  /* 1.15.0: a one-line row has no title element of its own -- its text is
+     the container (sf-list-item) -- so its unread title was regular: the
+     container takes the weight there. */
+  .sf-list__row--unread > sf-list-item > .sf-list-item:not(.sf-list-item--two-line) > .sf-list-item-wrap > .sf-list-item-container {
+    font-weight: var(--sf-weight--semi-bold);
+  }
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
@@ -309,17 +462,55 @@
     text-overflow: ellipsis;
   }
 
-  .sf-list__skeleton {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sf-space-1\/4);
+  /* The rows on their way (C130, LF-2): rows of the list, so each is as tall
+     as the row that comes; a bar is core's first-paint bar (.sf-first-paint-bar:
+     the skeleton fill, the pulse, the capitals' height in the middle of the
+     line, C136) drawn as a box of its own width: a box as tall as the face's
+     glyph box (line-height normal), so the bar stands where the words' band
+     would, on the line's baseline. The title's bar is shorter than the
+     caption's (C136 (4): even lines, the last one short). */
+  .sf-list__bar {
+    display: inline-block;
+    max-inline-size: 100%;
+    line-height: normal;
+    vertical-align: baseline;
   }
 
-  .sf-list__skeleton > span {
+  .sf-list__bar--title { inline-size: 40%; }
+
+  .sf-list__bar--supporting { inline-size: 70%; }
+
+  /* Skeleton rows take no pointer, so the row hover never reaches them. */
+  .sf-list__row--skeleton { pointer-events: none; }
+
+  /* 1.16.0 (C130, C148 (1)): the skeleton row's leading place is the place
+     its rows draw, so the title bar starts where the title will. A list with
+     avatars and a second line keeps the avatar's control height, as
+     .sf-list--lead-wide does for the rows; the skeleton says it itself, since
+     the rows it stands for may have been taken away for the reload. */
+  .sf-list__skeleton--lead-wide { --sf-list--lead-size: var(--sf-list--lead-block); }
+
+  /* The place's shape, drawn in the skeleton fill with its pulse: an
+     avatar's box is sf-avatar's own (its size or line class and its shape,
+     from the avatars sheet); an icon's is the row's line square with the
+     control radius (C130 (1)). */
+  .sf-list__lead-skeleton {
+    flex: none;
+  }
+
+  /* The fill is core's (.sf-first-paint-fill, in sf.base); the avatars
+     sheet's .sf-avatar paints its own plate in sf.components, so the place
+     says the skeleton fill again here, above it. */
+  .sf-list__lead-skeleton.sf-first-paint-fill {
+    background-color: var(--sf-skeleton-base);
+    animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
+  }
+
+  .sf-list__lead-skeleton--icon {
     display: block;
-    block-size: var(--sf-list--row-height);
-    border-radius: var(--sf-list--row-radius);
-    background: var(--sf-surface-container);
+    inline-size: var(--sf-list--lead-line);
+    block-size: var(--sf-list--lead-line);
+    border-radius: var(--sf-radius--ui);
   }
 }
 
@@ -336,8 +527,7 @@
 
     .sf-list__row > sf-list-item > .sf-list-item { min-block-size: var(--sf-list--touch-height); }
 
-    .sf-list__rename,
-    .sf-list__skeleton > span { block-size: var(--sf-list--touch-height); }
+    .sf-list__rename { block-size: var(--sf-list--touch-height); }
 
     .sf-list__actions {
       min-block-size: var(--sf-d1);
@@ -356,5 +546,70 @@
      by the system highlight at its start. */
   @media (forced-colors: active) {
     .sf-list__row--current { border-inline-start: var(--sf-px) solid Highlight; }
+  }
+}
+
+/* C77 (owner 2026-11-11; prototypes/field-inset.html): a row's text stands
+   where a field's value does in the same column -- --sf-space-1/2,
+   --sf-space-1 or --sf-space-2 from the list's outer edge, its border counted
+   inside (size 1/2 keeps 12 on a phone) -- and a row's picture at the same
+   place, its step after it. The row's highlight stands --sf-space-1/4 in from
+   the frame, as a menu's does (C30); a text row adds no picture-to-label step
+   of its own. The group headings and the rename field keep the rows' text
+   edge. */
+@layer sf.components {
+  .sf-list__frame {
+    --sf-list--padding-left: var(--sf-space-1\/4);
+    --sf-list--padding-right: var(--sf-space-1\/4);
+    --sf-list--edge: var(--sf-list--border-width, var(--sf-px));
+  }
+
+  .sf-list__frame.sf-list--size-1 { --sf-list--inset: var(--sf-space-1); }
+  .sf-list__frame.sf-list--size-2 { --sf-list--inset: var(--sf-space-2); }
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-list__frame.sf-list--size-1\/2 { --sf-list--inset: max(var(--sf-space-1\/2), var(--sf-b2)); }
+
+  .sf-list__frame:is(.sf-list--size-1, .sf-list--size-2, .sf-list--size-1\/2) {
+    --sf-list--text-inset: calc(var(--sf-list--inset) - var(--sf-space-1\/4) - var(--sf-list--edge));
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item {
+    --sf-list-item--padding-inline-start: var(--sf-list--text-inset);
+    --sf-list-item--padding-inline-end: var(--sf-list--text-inset);
+  }
+
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--text .sf-list-item-container {
+    padding-inline-start: 0;
+  }
+
+  /* The text block's end stands at the row's inset too (R191 HS-2): its
+     --sf-ui-<S>--text-space-x at the end is gone in every row. The step after
+     a picture is the row's H2 (C105, sf-list-item's wrap): 12, compact and
+     phone 8. */
+  .sf-list__frame .sf-list__row > sf-list-item > .sf-list-item .sf-list-item-container {
+    padding-inline-end: 0;
+  }
+}
+
+/* divided (owner decision C148 (4)): sf-list-item's inset line runs on under
+   the row's «⋯» to the row's own end, where the row cuts it: the list's row,
+   not the inner sf-list-item, is where the line is placed and clipped. */
+@layer sf.components {
+  .sf-list__row:has(> sf-list-item > .sf-list-item--divided) { position: relative; }
+
+  .sf-list__row > sf-list-item > .sf-list-item.sf-list-item--divided {
+    position: static;
+    overflow: visible;
+  }
+}
+
+/* The leading place's pulse stops with the bars' under reduced motion (core
+   .sf-first-paint-bar). */
+@media (prefers-reduced-motion: reduce) {
+  @layer sf.components {
+    .sf-list__lead-skeleton.sf-first-paint-fill { animation: none; }
   }
 }

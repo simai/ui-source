@@ -2,7 +2,7 @@
   "$comment": "The source of sf-editor-inline's interface (core/js/element-manifest.js over core/js/composition/manifest-host.mjs). Taken from simai/ui-control control/smart-architecture/migration/out/inline-editor (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.editor-inline",
   "tag": "sf-editor-inline",
-  "version": "1.6.3",
+  "version": "1.11.1",
   "kind": "leaf",
   "family": "editor",
   "settings": {},
@@ -44,7 +44,7 @@
         }
       },
       "x-native": false,
-      "summary": "The edit was committed (Enter, or the focus left): the content to save; sent on the edited element"
+      "summary": "The edit was committed (Enter, or the focus left): the content to save; sent on the edited element. With enter: 'new-block' Enter commits the text before the caret and the detail also holds next, the text after it, for the host's next block"
     },
     "cancel": {
       "carries": {
@@ -63,13 +63,14 @@
         "options": "object"
       },
       "x-returns": "the session {element, commit(), cancel(), value()}",
-      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages, toolbar (session: the bar for the whole edit, over the element, the default; selection: only while text is selected, over the selection)"
+      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages, toolbar (selection: only while text is selected, over the selection, the default; session: the bar for the whole edit, over the element), enter (save: Enter commits, the default; new-block: Enter commits the text before the caret and sends the rest as next, a block editor's «Enter — новый блок»). On a phone the toolbar is a strip of icons above the screen keyboard for the whole edit"
     }
   },
   "keyboard": {
     "host": {
       "Enter": "commit",
       "Escape": "revert",
+      "Shift+Enter": "break",
       "Mod+B": "toggle:strong",
       "Mod+I": "toggle:em",
       "Mod+E": "toggle:code",
@@ -79,18 +80,47 @@
       "Mod+Y": "step:+1"
     }
   },
-  "relations": [],
+  "relations": [
+    {
+      "name": "icon-buttons",
+      "$comment": [
+        "The toolbar is the class markup of ghost icon buttons (C141 (4), C144)."
+      ]
+    },
+    {
+      "name": "icons"
+    },
+    {
+      "name": "cl-input",
+      "$comment": [
+        "The link window's address field (C141 (6), C172 (4))."
+      ]
+    },
+    {
+      "name": "cl-button",
+      "$comment": [
+        "The link window's «Применить» and «Убрать ссылку»."
+      ]
+    },
+    {
+      "name": "cl-menu-context",
+      "lazy": true,
+      "$comment": [
+        "⋯ «Ещё» opens the standard menu (core/js/overflow-row.js, C155)."
+      ]
+    }
+  ],
   "templates": {
     "default": {
       "file": "../../core/js/composition/inline-editor.mjs",
-      "$comment": "The carrier draws nothing: the edited element and the formatting toolbar are drawn by the composition module (core/js/composition/inline-editor.mjs) while an edit lasts."
+      "$comment": "The carrier draws nothing: the edited element, the formatting toolbar and the link window are drawn by the composition module (core/js/composition/inline-editor.mjs) while an edit lasts."
     }
   },
   "examples": "examples.json",
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "The carrier is hidden and has no role. While an edit lasts the edited element is role textbox (aria-multiline false) named from the edit's label with the language file's runtime.editing («{label}: редактирование. Enter — сохранить, Escape — отменить.»), and the toolbar is role toolbar with aria-pressed buttons.",
+    "$comment": "The carrier is hidden and has no role. While an edit lasts the edited element is role textbox (aria-multiline false) named from the edit's label with the language file's runtime.editing («{label}: редактирование. Enter — сохранить, Escape — отменить.»; with enter: 'new-block' runtime.editing-block), the toolbar is role toolbar of role group parts with aria-pressed icon buttons named by aria-label (Left/Right/Home/End move between them, Escape goes back to the text), and the link window is role dialog: an sf-input with its label and hint, the refused address's reason in the hint's place and said once through role alert.",
     "role": "none",
     "name": {
       "from": [
@@ -100,6 +130,7 @@
     "keys": {
       "Enter": "commit",
       "Escape": "revert",
+      "Shift+Enter": "break",
       "Mod+B": "toggle:strong",
       "Mod+I": "toggle:em",
       "Mod+E": "toggle:code",
@@ -244,7 +275,13 @@
     "version 1.5.3: the size rule C18 (2026-11-09): the toolbar, its buttons and the link row read --sf-space-*, --sf-radius-1 with no raw rem fallbacks (the fallbacks disagreed with the tokens, which are always defined; nothing moves). Also: the error line (.sf-inline-editor-error) reads --sf-error with no raw fallback (owner decision C18, 2026-11-08: the raw fallback was a Material red, never reached under core.css). Also: the toolbar stands over the page: the overlay place (C20, the shadow system, owner 2026-11-08), --sf-shadow-overlay on --sf-surface-popup. Nothing else changes. Also: a patch, nothing drawn or done differently, and its reference unchanged: edit(element, options) stays positional, as the element's method takes it (core/js/composition/inline-editor.mjs), now said in x-registry.action-calls (positional) where the generator writes every other action in its object form. Settings, values, events and keys unchanged. Also: a patch, nothing drawn differently. edit takes the object form of its action too (standard §4.4): edit({element, options}) is edit(element, options), which stays. The runtime gives the class-written method that form (elementFromManifest's positional through manifestHost, core.runtime 1.43.0); the reference gives it one object argument (x-registry.action-calls is gone). Settings, values, events and keys unchanged.",
     "version 1.6.1 (2026-11-09): the toolbar declares a popup place (C16, the background system, owner 2026-11-08): what stands on it reads the theme's roles even inside a coloured block.",
     "version 1.6.2 (2026-11-10): a patch; nothing in the component changed. Its built sheet is a place (sf-place) and, with C43 (component.badges 1.5.0, tokens.colour 1.8.0), takes back the core role --sf-surface-underlay with one line, --sf-surface-underlay: initial, so a tonal badge inside it lays its tone over its own surface and not over a row further out. Nothing is drawn differently outside a selected row. Settings, values, events and keys unchanged.",
-    "version 1.6.3 (2026-11-10, C16 leftovers; written as a note on 1.6.2, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged."
+    "version 1.6.3 (2026-11-10, C16 leftovers; written as a note on 1.6.2, which is released): a patch; nothing draws differently. Its sheet reads the C16 role name --sf-surface-area where it read the former --sf-surface-1 (an alias of it until 2027-01-01, token-c16-theme-role-names), so a page that sets the new name reaches it; the value is the same in both themes and on every place. Settings, values, events and keys unchanged.",
+    "version 1.7.0 (2026-11-10, composition review F2.1): inline model 1.2.0. Shift+Enter inserts a soft line break {type: break}, with the marks and link of the character before it; the editor draws a break as <br> (data-sf-inline-break when it carries marks), reads <br> back as a break instead of a space, and copies it as a line end in plain text. The mark strike is known: kept, read from s, strike and del, drawn as s; the toolbar offers it only when the field's marks name it. Breaks in a row, at an edge, inside marks and inside a link are kept. Settings, values and events unchanged; Shift+Enter is the one new key, mapped to the key effect break (the closed list gains break, dispatcher 2026-11-11).",
+    "version 1.7.0, also (2026-11-10, composition review F1; written as 1.6.3, which is released with the C16 leftovers): A mark the inline model does not know (a newer producer's) survives an edit: it is drawn as a span carrying data-sf-inline-mark and read back from it, never as an element of that name, and the field's marks limit only the known ones. An atom is never inside a link: one pasted inside an <a> stands beside the link, which is split around it. Settings, values, events and keys unchanged.",
+    "version 1.10.0 (2026-11-14, localization study LC-1; written on the branch as 1.8.0): a minor. The composition editor words (sf-composition, ru + en) are no longer part of every page's core.min.js; they are the core chunk core-editor-words, and the editor fetches it once when it is defined (SF.Composition.loadEditorWords()), so SF.Composition.editorFieldMessages() answers in full on an editor page. The bundle carries only the runtime words of its language files (LC-2). Settings, values, events and keys unchanged.",
+    "version 1.9.1 (2026-11-14, owner decisions C173 point 7 and C181 (3), the layer roles): a patch. The toolbar reads the popover layer (var(--sf-composition-overlay-z-index, var(--sf-layer--popover, 90))); was --sf-z-index-8 (80). Settings, values, events and keys unchanged.",
+    "version 1.11.0 (2026-11-14, owner decision C172; 1.8.0 is the language-file version on fix/localization-lc, C177; research ui-control control/research/2026-11-14-inline-editor.md, prototype inline-editor-study.html; IE-1..IE-7; written on the branch as 1.9.0): (1) the toolbar shows only while text is selected, over it: the edit option toolbar defaults to selection (session stays for a host that asks for it). (2) Enter saves, as before; the new edit option enter: 'new-block' (a block editor's «Enter — новый блок», name to confirm) commits the text before the caret and gives the text after it as next in the change detail (sf-editor-inline-change and sf-inline-editor-change; the former sf-inline-edit-commit detail stays {node_id, content}); focus leaving saves; the edited element's name says the key (runtime.editing-block). (3) Below the md breakpoint the toolbar is a strip of icon buttons on rung 2 above the screen keyboard (placed from visualViewport) for the whole edit, and the link window a sheet standing on the keyboard over the scrim (C32); a press outside closes the sheet and keeps the edit. (4) The link window is a panel of its own (C141 (6), as sf-input-rich's): an sf-input 1/2 with its label and the hint under it, «Применить» and, on a link, «Убрать ссылку» (outline) in a row from the start, 8 apart; a refused address names its reason in the hint's place (empty, spaces, a scheme other than https/http/mailto/tel, no start, a double slash or a backslash, too long; SF.InlineEditor.linkProblem) and the reason goes as the address changes; Mod+K with no selection links the word under the caret, and with no word the address becomes the link's text. Toolbar: ghost icon buttons 1/2 (format_bold, format_italic, code, strikethrough_s when offered, link) in two groups, 4 apart, a 1 px separator with 4 each side (C144; RT-4: the gap was 16, the buttons 58 high), ⋯ «Ещё» from the row engine (core/js/overflow-row.js, C155: the link group leaves first, the marks stay); Left/Right/Home/End move inside the toolbar, Escape goes back to the text. The toolbar's radius is --sf-radius--ui, the public variables keep their names (gap default 4, padding 4). New words in the language files only: link-hint, link-empty, link-scheme, link-start, link-spaces, link-slashes, link-long, more, editing-block.",
+    "version 1.11.1 (2026-11-14, owner decision C184 (1)-(3), TL-4; written on the branch as 1.10.0): a minor, above fix/inline-editor-c172's 1.9.x. The formatting toolbar (core/js/composition/inline-editor.mjs) had role toolbar and no arrow keys, every button a Tab stop; now core's roving helper (core/js/roving.js) makes it one Tab stop that comes back to the tool the person left, ← → move between the tools in the row's direction, Home and End go to the ends, the walk wraps; the link form's own field and buttons keep their keys. Settings, values, events unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -279,7 +316,7 @@
     "contracts": {
       "start": {
         "type": "object",
-        "description": "SF.Composition.startInlineEdit(element, {content, nodeId, label, marks, links, messages}) or element.edit(target, options) returns {element, commit(), cancel(), value()}. Before the component is loaded startInlineEdit throws inline_editor_not_loaded. Also exposed as SF.InlineEditor {INLINE_EVENTS, readInlineDom, renderInlineDom, startInlineEdit, textOffset}.",
+        "description": "SF.Composition.startInlineEdit(element, {content, nodeId, label, marks, links, messages, toolbar, enter}) or element.edit(target, options) returns {element, commit(), cancel(), value()}. Before the component is loaded startInlineEdit throws inline_editor_not_loaded. Also exposed as SF.InlineEditor {INLINE_EVENTS, INLINE_TOOLBAR_MODES, INLINE_ENTER_MODES, linkProblem, readInlineDom, renderInlineDom, startInlineEdit, textOffset}.",
         "properties": {
           "marks": {
             "type": "array",
@@ -294,6 +331,20 @@
           "links": {
             "type": "boolean",
             "default": true
+          },
+          "toolbar": {
+            "enum": [
+              "selection",
+              "session"
+            ],
+            "default": "selection"
+          },
+          "enter": {
+            "enum": [
+              "save",
+              "new-block"
+            ],
+            "default": "save"
           }
         }
       },
@@ -387,9 +438,10 @@
         "Mod+Shift+Z",
         "Mod+Y",
         "Enter",
+        "Shift+Enter",
         "Escape"
       ],
-      "focus": "The sf-inline-editor carrier is hidden and has no role. While editing, the edited element becomes a labelled role=textbox with a visible outline; the formatting toolbar has aria-pressed states and aria-keyshortcuts. Enter commits, Escape cancels, focus leaving commits; IME composition is never interrupted."
+      "focus": "The sf-editor-inline carrier is hidden and has no role. While editing, the edited element becomes a labelled role=textbox with a visible outline; the formatting toolbar (role toolbar) shows over the selected text while text is selected -- on a phone a strip above the screen keyboard for the whole edit -- with aria-pressed icon buttons and aria-keyshortcuts. Enter commits (with enter: 'new-block' the text after the caret goes to the next block), Shift+Enter puts a soft line break, Escape cancels, focus leaving commits; IME composition is never interrupted. Mod+K with no selection takes the word under the caret; the link window names the reason a refused address is refused."
     },
     "alias-events": {
       "sf-inline-edit-input": {

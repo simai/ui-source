@@ -40,11 +40,20 @@ test('sf-tag draws its remove button in the Smart markup', async () => {
 
 test('sf-tag draws its remove cross from the cross ladder, plain (C14)', async () => {
   const tags = await read('component/tags/scss/_css__tags.scss');
-  for (const [size, step] of [['1\\/3', '1\\/4'], ['1\\/2', '1\\/4'], ['1', '1\\/3'], ['2', '1\\/2'], ['3', '1']]) {
+  // Core's cross table (C132, newer than C76 below 24): 8 / 8 / 12 / 12 at
+  // 1/3 ... 2, 16 at 3 on a desktop and 12 in compact and on a phone.
+  for (const size of ['1\\/3', '1\\/2', '1', '2', '3']) {
     const start = tags.indexOf(`.sf-tag.sf-tag--size-${size} {\n    --sf-tag--font-size:`);
     assert.ok(start >= 0, size);
-    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-text-size-${step});`), size);
+    assert.ok(tags.slice(start, tags.indexOf('}', start)).includes(`--sf-tag--close-size: var(--sf-micro--cross-${size});`), size);
   }
+  // Every 8 cross is drawn with a 1.5 line (C76; group build 3): 1/3, and 1/2
+  // where it is 28 (a phone, a compact region). A 1/2 tag on a desktop is 32
+  // and takes 12 with the 2 px line (C145 (1): the cross follows the height).
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/3 > :is\(sf-button-close, sf-close\) > \.sf-icon-button\.sf-icon-button--close > \.sf-close > \.sf-close-icon \{\n  --sf-close-icon--mask-image: url\("data:image\/svg\+xml,[^"]*stroke-width=%271\.5%27/u, 'the 8 cross is drawn with a 1.5 line (C76)');
+  assert.match(tags, /@media not all and \(min-width: #\{bp\.\$breakpoint-desktop\}\) \{\n  \.sf-tag\.sf-tag--size-1\\\/2 > \.sf-icon-button/u, 'phone 1/2: 1.5 line');
+  assert.match(tags, /\[data-sf-density="compact"\] \.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="normal"\] \*\) > \.sf-icon-button/u, 'compact 1/2: 1.5 line');
+  assert.match(tags, /\.sf-tag\.sf-tag--size-1\\\/2:not\(\[data-sf-density="compact"\] \*\),[^{]*\{\s*--sf-tag--close-size: var\(--sf-micro--cross-1\);/u, 'desktop 1/2: 12');
   assert.doesNotMatch(tags, /\* 0\.7\)/u, 'no cross scaled from the label');
   const css = await read('smart/tag/js/templates/default.css');
   assert.match(css, /--sf-close-icon--background-color: color-mix\(in srgb, var\(--sf-tag-color, var\(--sf-on-surface\)\) 64%, transparent\);/u);

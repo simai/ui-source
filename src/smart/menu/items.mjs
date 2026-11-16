@@ -3,16 +3,18 @@
 // which item is the current page, and which branches lead to it. Kept apart
 // from the element so the contract tests can run them in Node, as
 // sf-accordion's sections.mjs is.
+import {chooseBeside, fitInOrder, spanOf} from '../../core/js/overflow-row.js';
 
 // The class menu's orientations: a column for a side panel, a row for a page
 // header (sf-menu--horizontal, the first level only).
 export const MENU_ORIENTATIONS = Object.freeze(['vertical', 'horizontal']);
 // The class menu's presentations by name: default, the documentation tree
-// (sf-menu--documentation-tree), the compact rail (sf-menu--compact) and the
+// (sf-menu--documentation-tree), the rail (sf-menu--rail; appearance compact
+// and the class sf-menu--compact are its dated aliases until 2027-01-01) and the
 // header navigation (sf-menu--navigation). The tree and the rail are columns:
 // with them the menu is vertical. The navigation is a row or a column, as
 // orientation says, like the default.
-export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'compact', 'navigation']);
+export const MENU_APPEARANCES = Object.freeze(['default', 'documentation-tree', 'rail', 'navigation']);
 // The presentations that can stand in a row.
 export const ROW_APPEARANCES = Object.freeze(['default', 'navigation']);
 // When a row of links that does not fit becomes a button that opens them as a
@@ -213,13 +215,25 @@ export function currentItemId(items, {current = '', pathname = '', hash = '', ba
   return flagged;
 }
 
-// Which branches are open: what the person or the host set, else -- in a
-// column -- what the item says, and the branches above the current page, so
-// it can be seen. A row's panels open only when asked: none is open when the
-// page starts. A group that cannot be collapsed is always open; a row draws
-// no group (its items stand in the row), so none is open there.
+// Which branches are open: what the person or the host set, else what the
+// item says -- in a column also the branches above the current page, so it
+// can be seen. A row's panels are one chain, so there an item's open flag
+// opens the first flagged branch of the row and, inside its panel, the first
+// flagged branch of each level (owner remark 2026-11-11: «Каталог» with
+// open: true drew no panel); the current page alone opens nothing in a row.
+// A group that cannot be collapsed is always open; a row draws no group (its
+// items stand in the row), so none is open there.
 export function openBranches(items, overrides = new Map(), currentId = null, inColumn = true) {
   const reveal = new Set(inColumn && currentId ? pathTo(items, currentId) || [] : []);
+  const rowChain = new Set();
+  if (!inColumn) {
+    for (let level = withoutGroups(items); level.length;) {
+      const flagged = level.find((item) => item.open && item.children.length && !item.disabled);
+      if (!flagged) break;
+      rowChain.add(flagged.id);
+      level = flagged.children;
+    }
+  }
   const open = new Set();
   walkItems(items, (item) => {
     if (!item.children.length) return;
@@ -227,7 +241,7 @@ export function openBranches(items, overrides = new Map(), currentId = null, inC
       if (inColumn) open.add(item.id);
       return;
     }
-    const fallback = inColumn && (item.open || reveal.has(item.id));
+    const fallback = inColumn ? Boolean(item.open || reveal.has(item.id)) : rowChain.has(item.id);
     const state = overrides.has(item.id) ? overrides.get(item.id) : fallback;
     if (state) open.add(item.id);
   });
@@ -295,7 +309,7 @@ export function itemsFromList(list) {
     });
 }
 
-// The items as a row or a compact rail draws them: a group gives its items
+// The items as a row or the rail draws them: a group gives its items
 // to the first level, in its place, and draws no heading.
 export function withoutGroups(items) {
   return items.flatMap((item) => (item.group ? item.children : [item]));
@@ -307,23 +321,17 @@ export function withoutGroups(items) {
 // holds the current page) first of all -- unless it does not fit beside the
 // button either. Widths are each item's own, `gap` the row's gap. Answers the
 // indexes that stay, in order; none means the button alone, then «Меню».
+// Since sf-menu 1.10.0 (owner decision C155 (1)) this is the Framework's one
+// row engine (core/js/overflow-row.js), the rule sf-tabs and sf-contents lay
+// their rows out by: the items in order up to the first that does not fit,
+// the current section put back in while the last others give way to it.
 export function fitRow(widths, moreWidth, available, gap = 0, keep = -1) {
-  const count = widths.length;
-  const all = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, count - 1);
-  if (all <= available + 0.5) return widths.map((_, index) => index);
-  const stays = [];
-  let used = moreWidth;
-  if (keep >= 0 && keep < count && used + gap + widths[keep] <= available + 0.5) {
-    used += gap + widths[keep];
-    stays.push(keep);
-  }
-  for (let index = 0; index < count; index += 1) {
-    if (index === keep) continue;
-    if (used + gap + widths[index] > available + 0.5) break;
-    used += gap + widths[index];
-    stays.push(index);
-  }
-  return stays.sort((a, b) => a - b);
+  if (!fitInOrder(widths, gap, available)) return widths.map((_, index) => index);
+  const room = available - moreWidth - (widths.length ? gap : 0);
+  // The current section stays only while it fits beside «Ещё» itself; when
+  // it does not, the row is the items that fit in order.
+  const must = keep >= 0 && keep < widths.length && spanOf(widths, gap, [keep]) <= room + 0.5 ? [keep] : [];
+  return chooseBeside({widths, gap, available: room, must, current: -1});
 }
 
 // Search in a column (C30 amended 2026-11-09, R071 a). Words are compared

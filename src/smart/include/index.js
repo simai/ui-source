@@ -21,9 +21,16 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {whenClosedLayerOpens} from '../../core/js/layer-stack';
 import {renderIncludeTemplate} from './js/templates/default';
 import manifest from './component.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
+
+// The error row's glyphs (js/templates/default.js REASONS), asked for early.
+const REASON_ICONS = [{icon: 'error'}, {icon: 'cloud_off'}];
 
 // How near the viewport a load="view" part starts loading.
 export const VIEW_MARGIN = '200px';
@@ -103,6 +110,13 @@ class SfInclude extends IncludeElement {
     this._connected = false;
     // The opening of the closed layer the first load waits for, if any.
     this._layerWait = null;
+    // Why the last load failed: error, or offline (the network was gone).
+    this._reason = 'error';
+    // The network came back (owner decision C120 (5)): a part that failed
+    // because it was gone loads again by itself.
+    this._online = () => {
+      if (this._phase === 'error' && this._reason === 'offline') void this.retry();
+    };
   }
 
   get address() {
@@ -117,11 +131,16 @@ class SfInclude extends IncludeElement {
     if (this._phase === 'loading' && !this._request) this._phase = 'idle';
     this.sfHostState('data-loading', this._phase === 'loading');
     this.sfHostState('data-failed', this._phase === 'error');
+    globalThis.addEventListener?.('online', this._online);
+    // The reasons' glyphs join the page's first icon request: a part that
+    // fails because the network is gone could not fetch cloud_off then.
+    globalThis.SF?.Loader?.preloadIcons?.(REASON_ICONS);
     this.arm();
   }
 
   onDisconnected() {
     super.onDisconnected?.();
+    globalThis.removeEventListener?.('online', this._online);
     this.unwatch();
   }
 
@@ -256,6 +275,9 @@ class SfInclude extends IncludeElement {
     if (run !== this._run || request.signal.aborted) return {outcome: 'cancelled'};
     this._settled = true;
     if (failure) {
+      // A request that never reached the server while the browser says it is
+      // offline is the network's, not the part's (C120 (5)).
+      this._reason = failure.reason === 'network' && globalThis.navigator?.onLine === false ? 'offline' : 'error';
       this.setPhase('error');
       await this.drawn(scope);
       if (run !== this._run) return {outcome: 'cancelled'};
@@ -308,8 +330,10 @@ class SfInclude extends IncludeElement {
       part: this._part,
       lines: lineCount(this.lines),
       ownPlaceholder: this.getSlotContent('placeholder'),
+      reason: this._reason,
       words: {
         failed: this.sfWord('failed'),
+        offline: this.sfWord('offline'),
         retry: this.sfWord('retry'),
       },
       rootClass: this.getRootClass(),

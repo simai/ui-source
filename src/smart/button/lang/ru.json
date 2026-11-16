@@ -6,6 +6,7 @@
     "theme-light": "светлая",
     "theme-dark": "тёмная",
     "theme-system-now": "как в системе (сейчас {theme})",
-    "cycle-next": "{name}. Нажмите — {next}"
+    "cycle-next": "{name}. Нажмите — {next}",
+    "split-more": "Другие варианты: {label}"
   }
 }

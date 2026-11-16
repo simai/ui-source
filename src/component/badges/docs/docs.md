@@ -6,7 +6,10 @@ control when the element performs an action.
 
 ## Public contract
 
-- emphasis: `main`, `tonal`, `outline` (`appearance`; `type` is its former name);
+- emphasis: `tonal` (the default, also the class with no look), `outline`
+  (a mark beside a title), `main` (the attention count alone, with `error`;
+  `sf-badge--main` with any other colour draws tonal until 2027-01-01, owner
+  decision C140) (`appearance`; `type` is its former name);
 - scheme: `neutral`, `primary`, `secondary`, `tertiary`, `info`, `success`,
   `warning`, `error`, `on-surface` (a status may also be given as `status`).
   `danger`, the former name of `error`, still draws the error badge and is
@@ -14,8 +17,8 @@ control when the element performs an action.
 - size: `1/3`, `1/2`, `1`;
 - optional text and decorative icon at the logical start or end.
 
-`tonal + on-surface` is not a designed pair and normalizes to
-`main + on-surface`. Unknown values normalize to the safe neutral defaults.
+`tonal + on-surface` draws the grey tonal badge. Unknown values normalize to
+the safe defaults, tonal and neutral.
 
 ## Semantics
 
@@ -44,15 +47,35 @@ padding, so `main`, `tonal` and `outline` badges standing side by side line up.
 On a `line-*` size, which has no block padding, the text line gives up the
 border instead.
 
+Indicator sizes: a badge is a non-interactive indicator, not a control, so its
+heights may stand below the control ladder (C18): a `line-*` badge is its text
+line, 16 at `line-1/2` on a phone. Sizes `1/3`, `1/2`, `1` are 24, 28, 32 on
+a desktop and on a phone (C140 (5); the phone text stays 12, 12, 14), 24, 24,
+28 in a compact region; nothing in a badge is a target to press. A badge that opens or removes
+something is a button or a tag, and takes the control ladder (DEV, docs
+precheck BG-01, 2026-11-10).
+
 Side room: by default the text sits `--sf-space-1/2` from the badge's edges at
-every size (owner decision 2026-11-07). `sf-badge--tight` keeps the size's own text inset
-(`--sf-ui-*--text-space-x`, the room badges had before 2026-11-07) for dense
-places -- a table, a counter, a chip in a row. `sf-badge--figure` marks a badge
-of one character, a single-figure count: it keeps the tight room, so it stays
-round (as wide as it is high) whatever the default. `sf-badge` sets it on its
-own; class markup adds it. `sf-badge--compact` (the icon alone) is unchanged,
-and so are anchored counts, which have a geometry of their own. Probe:
+every size (owner decision 2026-11-07). `sf-badge--tight` takes the space step
+under it, `--sf-space-1/3` (8 px, 4 in a compact region, 8 on the phone), for
+dense places -- a table, a counter, a chip in a row; until 1.8.0 it took the
+button's text inset (6 / 7 / 8, 5 / 6 on the phone), which is off the space
+ladder. `sf-badge--figure` marks a badge of one character, a single-figure
+count: it takes `--sf-space-1/4` at the sides, so it stays round (as wide as it
+is high) whatever the default; a class counter (`[data-count]`) takes the same.
+`sf-badge` sets it on its own; class markup adds it. `sf-badge--icon-only` (the
+icon alone; `sf-badge--compact`, its former name, draws the same until
+2027-01-01, owner decision C134) is unchanged, and so are anchored counts, which
+have a geometry of their own. Probe:
 `tests/browser/badge-geometry.browser.mjs`.
+
+On the line of a text: `sf-badge--line-text` (`sf-badge line="text"`, owner
+decision C95 point 6, 2026-11-12) sizes a badge by the text it stands beside --
+a count or a mark in a contents entry, a tab or a list row. Its height is that
+text's line (`1lh`), its number the text's own size (inherited), no block
+padding and `--sf-space-1/4` at the sides, so one figure is a circle the line
+high; it stands on the top of the line box, so it lies on the line with no
+offset, and a flex row centres it. The size class is not read for the height.
 
 Disabled: `sf-badge--disabled` gives a badge the disable roles (`--sf-surface-disabled`
 fill, `--sf-on-surface-disabled` text, `--sf-outline-disabled` edge) whatever its look,
@@ -120,7 +143,7 @@ Smart-элементы: у `sf-avatar`, `sf-icon` и `sf-icon-button` есть �
 | Якорь | `.sf-avatar`, `.sf-icon-button` или `.sf-badge-anchor` |
 | Шаг якоря-обёртки | `sf-badge-anchor--size-1/3\|1/2\|1\|2\|3`, без класса — `1` |
 | Форма якоря-обёртки | `sf-badge-anchor--round`, `--rounded` (радиус `--sf-radius--ui`), `--square` (по умолчанию) |
-| Цвет | по умолчанию роль ошибки (`--sf-error` / `--sf-on-error`); `sf-badge--main sf-badge--primary` и другие схемы бейджа меняют его; публичные `--sf-badge-background-color`, `--sf-badge-color` |
+| Цвет | роль ошибки (`--sf-error` / `--sf-on-error`): число на якоре — внимание (C140); публичные `--sf-badge-background-color`, `--sf-badge-color` |
 | Кольцо | `--sf-badge-ring-color` — цвет поверхности под якорем |
 
 Скрипт компонента (`SF.AnchoredBadge`) держит бейджи с `data-count` и
@@ -150,18 +173,22 @@ Smart-элементы: у `sf-avatar`, `sf-icon` и `sf-icon-button` есть �
 
 ### Размер: шаг якоря решает
 
-Размер не выбирается свободно — его задаёт шаг якоря на лестнице. Якоря `1/3` и
+Размер не выбирается свободно — его задаёт шаг якоря на лестнице, через одну
+таблицу мелких ступеней 4 · 6 · 8 · 12 · 16 (решение C132). Якоря `1/4`, `1/3` и
 `1/2` (строки, списки, строки текста) несут только точку: число на них рисуется
-точкой, а само число уходит в доступное имя и подсказку. Размеры не зависят от
-ширины экрана; значения в px — при 1rem = 16px.
+точкой, а само число уходит в доступное имя и подсказку. Счёт — 16 на любом
+якоре `1`, `2`, `3`. Точка та же, что точка присутствия на аватаре того же
+шага. Кольцо рисуется снаружи цветного круга, поэтому цветной диаметр равен
+ступени. Размеры не зависят от ширины экрана и плотности; значения в px — при
+1rem = 16px.
 
 | Шаг якоря | Счёт: высота | Цифры | Внутренний отступ | Точка | Кольцо |
 | --- | --- | --- | --- | --- | --- |
-| `1/3` | только точка | — | — | `--sf-a6` (6px) | `--sf-a1` (1px) |
-| `1/2` | только точка | — | — | `--sf-a8` (8px) | `--sf-a2` (2px) |
-| `1` | `--sf-b6` (16px) | `--sf-text-size-1/4` | `--sf-a4` | `--sf-b0` (10px) | `--sf-a2` |
-| `2` | `--sf-c0` (20px) | `--sf-text-size-1/3` | `--sf-a5` | `--sf-b2` (12px) | `--sf-a2` |
-| `3` | `--sf-c2` (24px) | `--sf-text-size-1/2` | `--sf-a6` | `--sf-b4` (14px) | `--sf-a2` |
+| `1/3` | только точка | — | — | 6px | 1px |
+| `1/2` | только точка | — | — | 8px | 2px |
+| `1` | 16px | `--sf-text-size-1/4` | `--sf-a4` | 12px | 2px |
+| `2` | 16px | `--sf-text-size-1/4` | `--sf-a4` | 12px | 2px |
+| `3` | 16px | `--sf-text-size-1/4` | `--sf-a4` | 16px | 2px |
 
 Какой шаг у якоря:
 
@@ -197,9 +224,15 @@ Smart-элементы: у `sf-avatar`, `sf-icon` и `sf-icon-button` есть �
 полупрозрачная заливка поверх цвета места. Строка объявляет заливку ролью
 `--sf-surface-place-fill`, и кольцо кладёт её поверх цвета места, поэтому
 кольцо совпадает со строкой, а не светится вокруг бейджа цветом места (C43 D3,
-2026-11-11). Заливку кольцо читает только там, где задана
-`--sf-surface-underlay`: на мягком цветном месте, на стекле и в месте внутри
-строки кольцо — ровно цвет места, как раньше.
+2026-11-11). Каждое место сбрасывает эту роль, мягкое цветное и стекло тоже,
+поэтому на строке мягкого места кольцо тоже цвета строки, а у поповера или
+места, открытого из выбранной строки, заливки строки нет.
+
+Под кольцом лежит ближайшее непрозрачное место (`--sf-surface-place-ground`).
+На мягком цветном месте кольцо — его тон поверх этой основы, то есть ровно
+вид самого места, а не тон, положенный дважды. На стекле основа чёрная, как
+под точкой статуса аватара. На сплошном месте кольцо непрозрачно, и основы не
+видно. `--sf-badge-ring-color` — само кольцо, поэтому в покое видно его.
 
 ### Доступность
 
@@ -223,16 +256,17 @@ Smart-элементы: у `sf-avatar`, `sf-icon` и `sf-icon-button` есть �
 непрочитанных». Другой язык добавляется так:
 `SF.language.register('sf-badge', 'de', {count: '{count} ungelesen', dot: 'neu'})`.
 
-### Компактное меню
+### Узкая колонка (рельс)
 
-`sf-menu sf-menu--compact` — рельс разделов первого уровня: в строке видна
+`sf-menu sf-menu--rail` — рельс разделов первого уровня: в строке видна
 только иконка или аватар, слова строки скрыты, но остаются в её имени. Счётчик
 строки — `.sf-badge` с `data-count` внутри `.sf-menu-element-wrap` — переходит
-на иконку с той же геометрией, размером шага `1` и кольцом. Ветки в компактном
-меню не раскрываются. В развёрнутом меню тот же счётчик стоит в конце строки.
+на иконку с той же геометрией, размером шага `1` и кольцом. Ветки в рельсе не
+раскрываются. Прежний класс `sf-menu--compact` работает так же до 2027-01-01:
+слово «compact» означает только плотность (решение C134). В развёрнутом меню тот же счётчик стоит в конце строки.
 
 ```html
-<ul class="sf-menu sf-menu--compact">
+<ul class="sf-menu sf-menu--rail">
   <li class="sf-menu-item">
     <a href="/inbox" class="sf-menu-element sf-menu-element--level-1">
       <span class="sf-menu-element-wrap">

@@ -27,6 +27,16 @@ sf-list-timeline {
   min-inline-size: 0;
 }
 
+/* Steps: the marker's ink stands 8 before the text at every width and
+   density (C61 round 5: icon to text is a role, H2, not a screen step). The
+   current step's ring reaches past the marker, so the column is that reach
+   plus 8 -- 12 everywhere; it was --sf-space-1/2, which leaves the ring 4
+   from the text on a phone and in compact density (8 - 4). The «Показать
+   ещё» button reads the same column, so it keeps the text's axis. */
+.sf-list-timeline:has(> .sf-list-timeline-list--steps, > .sf-list-timeline-group > .sf-list-timeline-list--steps) {
+  --sf-list-timeline--column-gap: calc(var(--sf-a8) + var(--sf-list-timeline--ring-reach));
+}
+
 .sf-list-timeline {
   /* The rung: 1. */
   --sf-list-timeline--line: var(--sf-text-height-1);
@@ -36,9 +46,13 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--control: var(--sf-ui-1--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/2--control-height);
-  /* The status dot: the dot component's size of the rung (.sf-dot size 1). */
-  --sf-list-timeline--dot: var(--sf-a8);
+  /* The status dot: core's dot table by the rung (C132): 8 at 1. */
+  --sf-list-timeline--dot: var(--sf-micro--dot-1);
   --sf-list-timeline--column-gap: var(--sf-space-1\/2);
+  /* The current step's ring: a 2 px gap in the list's ground and a 2 px
+     ring in the tone, outside the marker; it reaches 4 px past it. */
+  --sf-list-timeline--ring-gap: calc(var(--sf-px) * 2);
+  --sf-list-timeline--ring-reach: calc(var(--sf-px) * 4);
   --sf-list-timeline--row-gap: var(--sf-list-timeline-gap, var(--sf-space-3));
   --sf-list-timeline--padding-inline: var(--sf-list-timeline-padding-inline, calc(var(--sf-px) * 0));
   --sf-list-timeline--line-color: var(--sf-list-timeline-line-color, var(--sf-outline-variant));
@@ -63,7 +77,7 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1\/3--control-height);
   --sf-list-timeline--control: var(--sf-ui-1\/2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1\/3--control-height);
-  --sf-list-timeline--dot: var(--sf-a6);
+  --sf-list-timeline--dot: var(--sf-micro--dot-1\/2);
 }
 
 .sf-list-timeline.sf-list-timeline--size-2 {
@@ -74,7 +88,7 @@ sf-list-timeline {
   --sf-list-timeline--rail: var(--sf-ui-1--control-height);
   --sf-list-timeline--control: var(--sf-ui-2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1--control-height);
-  --sf-list-timeline--dot: var(--sf-b0);
+  --sf-list-timeline--dot: var(--sf-micro--dot-2);
 }
 
 /* A day: block list's heading (.sf-group-heading) carries the type and the
@@ -168,16 +182,26 @@ sf-list-timeline {
   --sf-featured-icon--foreground-color: var(--sf-link);
 }
 
-/* Steps (list-timeline.html scene B): the current one ringed, an upcoming
-   one empty with a quiet ring. */
+/* Steps with an icon (owner decision C61, variant A; the same logic as the
+   dot below). The shape shows the progress, the colour the status (C61
+   round 4): the template gives the circle the primary tone, or the status
+   tone (error, warning, success) when the step has one. Done the solid
+   circle; current the same circle ringed through a gap -- outside the
+   circle, as on a dot (a 2 px gap in the list's ground, a 2 px ring in the
+   tone); upcoming an empty circle, the glyph and a 2 px ring in the tone
+   (--sf-on-surface-variant when the step has no status). */
 .sf-list-timeline-marker--current .sf-featured-icon {
-  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-primary);
+  box-shadow: 0 0 0 var(--sf-list-timeline--ring-gap) var(--sf-list-timeline--ground), 0 0 0 var(--sf-list-timeline--ring-reach) var(--sf-featured-icon--tone);
 }
 
 .sf-list-timeline-marker--upcoming .sf-featured-icon {
   --sf-featured-icon--background-color: var(--sf-list-timeline--ground);
+  --sf-featured-icon--foreground-color: var(--sf-featured-icon--tone);
+  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-featured-icon--foreground-color);
+}
+
+.sf-list-timeline-marker--upcoming .sf-featured-icon--neutral {
   --sf-featured-icon--foreground-color: var(--sf-on-surface-variant);
-  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-outline-variant);
 }
 
 .sf-list-timeline-item[data-state="current"] .sf-list-timeline-title {
@@ -194,8 +218,8 @@ sf-list-timeline {
   --sf-icon--height: var(--sf-featured-icon--icon-size);
 }
 
-/* An event with no icon: a dot in the status colour, the size the dot
-   component (.sf-dot) gives the rung: a8 for 1, a6 for 1/2, b0 for 2. */
+/* An event with no icon: a dot in the status colour, core's dot table by the
+   rung (owner decision C132): 8 for 1, 6 for 1/2, 8 for 2 (it was 10). */
 .sf-list-timeline-marker--dot {
   inline-size: var(--sf-list-timeline--line);
   block-size: var(--sf-list-timeline--line);
@@ -215,21 +239,23 @@ sf-list-timeline {
 
 /* A step without an icon (owner decision C61, variant A of
    prototypes/timeline-stage-dot-state.html): the state is told by the shape,
-   one logic with the icon steps -- done a solid dot in the primary colour,
-   current the same dot ringed through a gap, upcoming an empty dot with a
-   quiet ring (--sf-on-surface-variant: --sf-outline-variant, the line's 24 %,
-   is lost on a dot this small). A status tone still wins. */
+   one logic with the icon steps -- done a solid dot, current the same dot
+   ringed outside through a gap, upcoming an empty dot with a ring. The
+   colour is the status (C61 round 4): the primary colour (an upcoming one:
+   --sf-on-surface-variant; --sf-outline-variant, the line's 24 %, is lost on
+   a dot this small), or the status colour (success, warning, error), which
+   keeps the shape: an upcoming step with an error is an empty error ring. */
 .sf-list-timeline-item:is([data-state="done"], [data-state="current"]) .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) {
   color: var(--sf-primary);
 }
 
-.sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
-  box-shadow: 0 0 0 calc(var(--sf-px) * 2) var(--sf-list-timeline--ground), 0 0 0 calc(var(--sf-px) * 4) var(--sf-primary);
+.sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+  box-shadow: 0 0 0 var(--sf-list-timeline--ring-gap) var(--sf-list-timeline--ground), 0 0 0 var(--sf-list-timeline--ring-reach) currentColor;
 }
 
-.sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) .sf-list-timeline-dot {
+.sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
   background: var(--sf-list-timeline--ground);
-  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) var(--sf-on-surface-variant);
+  box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) currentColor;
 }
 
 .sf-list-timeline-body {
@@ -363,6 +389,53 @@ sf-list-timeline {
 @media (forced-colors: active) {
   .sf-list-timeline-item:not(:last-child)::before {
     background: CanvasText;
+  }
+
+  /* High contrast drops shadows and forces fills: a step keeps its shape in
+     the system colours, whatever its status (the status is said in words) --
+     done filled, current filled and ringed outside through a gap (an
+     outline), upcoming empty with a ring. A dot is filled text colour, as a
+     plain event's is. forced-color-adjust: none keeps the normal-mode
+     shadows, so every marker drops them here: the rings are outlines in
+     system colours, the gap is the Canvas behind. */
+  .sf-list-timeline-dot {
+    forced-color-adjust: none;
+    background: CanvasText;
+    box-shadow: none;
+  }
+
+  .sf-list-timeline-item[data-state="current"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+    box-shadow: none;
+    outline: calc(var(--sf-px) * 2) solid CanvasText;
+    outline-offset: calc(var(--sf-px) * 2);
+  }
+
+  .sf-list-timeline-item[data-state="upcoming"] .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+    background: Canvas;
+    box-shadow: none;
+    outline: calc(var(--sf-px) * 2) solid CanvasText;
+    outline-offset: calc(var(--sf-px) * -2);
+  }
+
+  .sf-list-timeline-marker:is(.sf-list-timeline-marker--done, .sf-list-timeline-marker--current) .sf-featured-icon {
+    forced-color-adjust: none;
+    --sf-featured-icon--background-color: CanvasText;
+    --sf-featured-icon--foreground-color: Canvas;
+    box-shadow: none;
+  }
+
+  .sf-list-timeline-marker--current .sf-featured-icon {
+    box-shadow: none;
+    outline: calc(var(--sf-px) * 2) solid CanvasText;
+    outline-offset: calc(var(--sf-px) * 2);
+  }
+
+  .sf-list-timeline-marker--upcoming .sf-featured-icon {
+    --sf-featured-icon--background-color: Canvas;
+    --sf-featured-icon--foreground-color: CanvasText;
+    box-shadow: none;
+    outline-width: calc(var(--sf-px) * 2);
+    outline-offset: calc(var(--sf-px) * -2);
   }
 }
 }

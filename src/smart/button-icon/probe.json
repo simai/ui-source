@@ -18,6 +18,7 @@
       "  <sf-button-icon id=\"ib-old-looks\" icon=\"share\" appearance=\"link\" scheme=\"secondary\" aria-label=\"Поделиться\"></sf-button-icon>",
       "  <sf-button-icon id=\"ib-cyc\" aria-label=\"Повтор\" value=\"off\" label-pressed=\"Не так\" cycle='[{\"value\":\"off\",\"label\":\"выключен\",\"icon\":\"repeat\"},{\"value\":\"all\",\"label\":\"весь список\",\"icon\":\"repeat\",\"pressed\":true},{\"value\":\"one\",\"label\":\"один трек\",\"icon\":\"repeat_one\",\"pressed\":true}]'></sf-button-icon>",
       "  <sf-button-icon id=\"ib-theme\" theme-cycle></sf-button-icon>",
+      "  <sf-button-icon id=\"b-link\" icon=\"download\" href=\"/fixture/report\" download=\"Отчёт.pdf\" aria-label=\"Скачать Отчёт.pdf\"></sf-button-icon><sf-button-icon id=\"b-link-off\" icon=\"download\" href=\"/fixture/report\" disabled aria-label=\"Скачать Отчёт.pdf\"></sf-button-icon><sf-button-icon id=\"b-link-bad\" icon=\"download\" href=\"javascript:alert(1)\" aria-label=\"Скачать\"></sf-button-icon>",
       "</main>"
     ]
   },
@@ -149,11 +150,11 @@
     },
     {
       "id": "p8-danger-looks",
-      "title": "error reads as danger, link as ghost, secondary as on-surface-variant, surface as tonal on-surface; surface with danger is red, not grey",
+      "title": "error reads as danger, link as ghost, secondary as on-surface-variant, surface as tonal on-surface; surface with danger is a red outline (C116), not grey",
       "covers": "settings.status danger, settings.appearance ghost, settings.scheme, aliases.json error, link, secondary; retired surface",
       "steps": [
         {
-          "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; return c('#ib-err').contains('sf-icon-button--danger') && c('#ib-err').contains('sf-icon-button--error') && c('#ib-surface').contains('sf-icon-button--tonal') && c('#ib-surface').contains('sf-icon-button--on-surface') && c('#ib-surface-err').contains('sf-icon-button--tonal') && c('#ib-surface-err').contains('sf-icon-button--danger') && c('#ib-old-looks').contains('sf-icon-button--link') && c('#ib-old-looks').contains('sf-icon-button--on-surface-variant'); })()",
+          "check": "(() => { const c = (id) => document.querySelector(id + ' button').classList; return c('#ib-err').contains('sf-icon-button--danger') && c('#ib-err').contains('sf-icon-button--error') && c('#ib-surface').contains('sf-icon-button--tonal') && c('#ib-surface').contains('sf-icon-button--on-surface') && c('#ib-surface-err').contains('sf-icon-button--outline') && c('#ib-surface-err').contains('sf-icon-button--danger') && c('#ib-old-looks').contains('sf-icon-button--link') && c('#ib-old-looks').contains('sf-icon-button--on-surface-variant'); })()",
           "expect": {
             "values": {
               "#ib-err.status": "danger",
@@ -165,10 +166,10 @@
           }
         },
         {
-          "check": "(() => { const b = document.querySelector('#ib-surface-err button'); const fill = getComputedStyle(b).backgroundColor; const probe = document.createElement('i'); probe.style.color = 'var(--sf-error-container)'; document.body.append(probe); const want = getComputedStyle(probe).color; probe.remove(); return fill === want; })()"
+          "check": "(() => { const b = document.querySelector('#ib-surface-err button'); const fill = getComputedStyle(b).backgroundColor; const probe = document.createElement('i'); probe.style.color = 'var(--sf-error-container)'; document.body.append(probe); const want = getComputedStyle(probe).color; probe.remove(); return fill !== want; })()"
         },
         {
-          "check": "['error', 'link', 'secondary', 'surface'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2027-01-01'))"
+          "check": "['error', 'link', 'secondary', 'surface', 'surface (status danger)'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2027-01-01'))"
         }
       ]
     },
@@ -215,6 +216,16 @@
       "steps": [
         {
           "check": "(() => { const b = document.querySelector('#ib-theme button'); const pref = SF.Loader?.themePreference || 'system'; const icon = b.querySelector('sf-icon').getAttribute('icon'); const want = {system: 'contrast', light: 'light_mode', dark: 'dark_mode'}[pref]; return icon === want && b.getAttribute('aria-label').startsWith('Тема: ') && b.title.includes('Нажмите'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p11-href-link",
+      "title": "href draws a native link with the icon button's look and its name; disabled takes the href away and says aria-disabled; an address off the rule draws a button (1.9.0, decision C51)",
+      "covers": "settings.href, settings.download, settings.disabled",
+      "steps": [
+        {
+          "check": "(() => { const a = document.querySelector('#b-link a.sf-icon-button'); const off = document.querySelector('#b-link-off a.sf-icon-button'); const bad = document.querySelector('#b-link-bad'); return a && a.getAttribute('href') === '/fixture/report' && a.getAttribute('download') === 'Отчёт.pdf' && a.getAttribute('aria-label') === 'Скачать Отчёт.pdf' && getComputedStyle(a).textDecorationLine === 'none' && off && !off.hasAttribute('href') && off.getAttribute('aria-disabled') === 'true' && !bad.querySelector('a') && bad.querySelector('button.sf-icon-button'); })()"
         }
       ]
     }

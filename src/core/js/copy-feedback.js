@@ -36,6 +36,51 @@ export const SOURCE_ERRORS = new Set(['ambiguous_source', 'empty_source', 'missi
 
 const HOLDER_STYLE = 'position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
 
+const isField = (element, View) => Boolean(element) && ((View.HTMLInputElement && element instanceof View.HTMLInputElement)
+  || (View.HTMLTextAreaElement && element instanceof View.HTMLTextAreaElement));
+
+// The keys copy what the button would have copied (acceptance L3,
+// 2026-11-11): a selected element gives the browser its drawn text, and a
+// numbered code block draws an empty line as a space, so the keys copied a
+// space where the button copies an empty line. While the selection is the
+// one made here, the copy event is given the text instead. One listener per
+// document, on the document itself, so every bundle's copy of this module
+// shares it.
+function keepCopyText(doc, range, text) {
+  doc.__sfCopySelection = {range, text};
+  if (doc.__sfCopyListener) return;
+  doc.__sfCopyListener = (event) => {
+    const held = doc.__sfCopySelection;
+    const selection = doc.defaultView?.getSelection?.();
+    if (!held || !selection?.rangeCount) return;
+    const now = selection.getRangeAt(0);
+    const same = now.startContainer === held.range.startContainer && now.startOffset === held.range.startOffset
+      && now.endContainer === held.range.endContainer && now.endOffset === held.range.endOffset;
+    if (!same) {
+      doc.__sfCopySelection = null;
+      return;
+    }
+    event.clipboardData?.setData('text/plain', held.text);
+    event.preventDefault();
+  };
+  doc.addEventListener('copy', doc.__sfCopyListener, true);
+}
+
+// One result at a time on the page (acceptance L4): two neighbouring controls
+// that fail within the result's two seconds drew their words on top of each
+// other, both held to the window's edge. A control that shows a result tells
+// the one before it to stop. On the page's SF, so every bundle shares it.
+function takeResult(owner) {
+  const SF = (globalThis.SF = globalThis.SF || {});
+  const before = SF.__copyResult;
+  SF.__copyResult = owner;
+  if (before && before !== owner) before.reset();
+}
+
+function leaveResult(owner) {
+  if (globalThis.SF?.__copyResult === owner) globalThis.SF.__copyResult = null;
+}
+
 /** The keys that copy a selection on this platform. */
 export function copyKeys() {
   return /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '') ? '⌘C' : 'Ctrl+C';
@@ -69,8 +114,7 @@ export function readCopyText(element) {
  */
 export function selectCopySource(element, {text = '', host = null, holderClass = 'sf-copy-holder', document: doc = element?.ownerDocument ?? host?.ownerDocument ?? globalThis.document} = {}) {
   const View = doc?.defaultView ?? globalThis;
-  if (element && ((View.HTMLInputElement && element instanceof View.HTMLInputElement)
-    || (View.HTMLTextAreaElement && element instanceof View.HTMLTextAreaElement))) {
+  if (isField(element, View)) {
     element.focus();
     element.select();
     return element;
@@ -93,6 +137,7 @@ export function selectCopySource(element, {text = '', host = null, holderClass =
   const range = doc.createRange();
   range.selectNodeContents(node);
   selection.addRange(range);
+  keepCopyText(doc, range, element ? readCopyText(element) : text);
   return node;
 }
 
@@ -106,6 +151,7 @@ export function selectCopySource(element, {text = '', host = null, holderClass =
 export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {}) {
   let timer = null;
   let pending = false;
+  let api = null;
   const lasting = () => {
     const value = Number(typeof duration === 'function' ? duration() : duration);
     return Number.isFinite(value) && value >= 0 ? value : DURATION;
@@ -113,15 +159,18 @@ export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {
   const set = (phase, message = '') => {
     clearTimeout(timer);
     timer = null;
+    if (phase === 'success' || phase === 'error') takeResult(api);
+    else if (phase === 'idle') leaveResult(api);
     onPhase(phase, message);
     if (phase === 'success' || phase === 'error') {
       timer = setTimeout(() => {
         timer = null;
+        leaveResult(api);
         onPhase('idle', '');
       }, lasting());
     }
   };
-  return {
+  api = {
     get pending() { return pending; },
     /**
      * `read()` answers the text (or throws a SOURCE_ERRORS code); `element()`
@@ -134,6 +183,11 @@ export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {
       if (pending) return {outcome: 'refused', reason: 'busy'};
       pending = true;
       const say = words || ((key, vars) => copyWord(key, node, vars));
+      // The control the press came from: a refusal selects the source, and a
+      // selection outside the focused control took the focus to the page, so
+      // the next Tab started again at the top (acceptance M2).
+      const page = doc ?? node?.ownerDocument ?? host?.ownerDocument ?? globalThis.document;
+      const pressed = page?.activeElement && page.activeElement !== page.body ? page.activeElement : null;
       set('pending', '');
       let text = '';
       try {
@@ -148,7 +202,11 @@ export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {
           return {outcome: 'refused', reason: error.message, error};
         }
         // Refused by the browser: the source is selected, so the keys copy it.
-        selectCopySource(element?.() ?? null, {text, host, holderClass, document: doc});
+        const selected = selectCopySource(element?.() ?? null, {text, host, holderClass, document: doc});
+        // A field takes the focus to be copied from; anything else gives it
+        // back to the control, the selection staying (the keys still copy it).
+        const View = page?.defaultView ?? globalThis;
+        if (pressed?.isConnected && !isField(selected, View) && page.activeElement !== pressed) pressed.focus({preventScroll: true});
         set('error', say('selected', {keys: copyKeys()}));
         return {outcome: 'refused', reason: 'denied', error};
       } finally {
@@ -161,8 +219,10 @@ export function createCopyFeedback({onPhase = () => {}, duration = DURATION} = {
     cancel() {
       clearTimeout(timer);
       timer = null;
+      leaveResult(api);
     },
   };
+  return api;
 }
 
 export const copyFeedback = {create: createCopyFeedback, readText: readCopyText, select: selectCopySource, words: copyWord};

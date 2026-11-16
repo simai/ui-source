@@ -2,7 +2,7 @@
   "$comment": "The source of sf-avatar-group's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/avatars (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.avatar-group",
   "tag": "sf-avatar-group",
-  "version": "1.2.4",
+  "version": "1.4.1",
   "kind": "leaf",
   "family": "avatar",
   "settings": {
@@ -18,66 +18,82 @@
     },
     "image-url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The picture of the default, user and profile templates."
     },
     "avatar-url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The picture of the label template."
     },
     "avatar-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The avatar's size step in the default and user templates (1/4 ... 3; the former words tiny, small, big and extra_big still read)."
     },
     "check": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Draws the verified badge on the default template's avatar."
     },
     "name": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The person's name in the user template."
     },
     "source": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The line under the name in the user template, with a link glyph: where the person comes from."
     },
     "label-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The title of the label template."
     },
     "label-second-text": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The line under the title in the label template."
     },
     "avatars": {
       "type": "list",
       "of": {
         "image-url": "string",
-        "text": "string"
+        "text": "string",
+        "name": "string",
+        "status": "string",
+        "hue": "string"
       },
       "default": [],
-      "summary": "The group's avatars: an image, else its text (initials); the attribute takes the list as JSON text too"
+      "summary": "The group's people (owner decision C152 (6)): each an image (over its initials), its initials (text), its name -- which names the avatar, gives the initials and the hue of the name and shows in a tooltip -- a presence status (online, away) and a named hue. Up to four are shown; with more than four the fifth place is «+N», a button that opens the list of everyone. The attribute takes the list as JSON text too."
     },
     "avatars-more": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The people the group stands for beyond the avatars list: a number adds to «+N» (and to the group's name «Участники: N»); with no list behind it «+N» is text. A short text instead of a number is drawn as is."
     },
     "round-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The avatars' size step in the group template (and in the default one when given). The avatars overlap by 4 px up to size 1 and 8 px at 2 and 3; the cut-out between them is the presence point's ring, 2 px from 1/2 (C132)."
     },
     "label-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The avatar's size step in the label template."
     },
     "profile-size": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The profile template's avatar size step: 2 or 3 (the former words small and big still read)."
     }
   },
   "values": {
     "active": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Draws the online badge on the default template's avatar; check (verified) wins when both are set."
     }
   },
   "events": {},
@@ -88,6 +104,26 @@
     },
     {
       "name": "icons"
+    },
+    {
+      "name": "cl-icon",
+      "$comment": [
+        "The placeholder's glyph is an sf-icon element (avatar study AV-8)."
+      ]
+    },
+    {
+      "name": "cl-popover",
+      "lazy": true,
+      "$comment": [
+        "«+N» opens the list of everyone in an sf-popover (C152 (6)), fetched when a group has one."
+      ]
+    },
+    {
+      "name": "tooltip",
+      "lazy": true,
+      "$comment": [
+        "A member's name in a tooltip (C152 (7)), fetched when a group draws names."
+      ]
     }
   ],
   "templates": {
@@ -112,13 +148,25 @@
       "$comment": "The profile combination of the one Lit template in JavaScript (§5.2 migration form), chosen by template=\"profile\"."
     }
   },
+  "presentation": {
+    "skeleton": {
+      "$comment": "The people arrive as avatars after the first paint when the host loads them: the derived skeleton (static/default/<example>.skeleton.html) holds their box until they do (standard 1.3.8 §5.4; first-paint study R222).",
+      "late": [
+        "avatars"
+      ]
+    }
+  },
   "examples": "examples.json",
   "docs": "docs.md",
   "lang": "lang/",
   "accessibility": {
-    "$comment": "Pictures beside visible text: each avatar is a span whose image has alt=\"\" and is hidden from assistive technology; the visible text (name, label, the remainder) names the person or the group. Nothing takes focus.",
-    "role": "none",
-    "name": "none"
+    "$comment": "The group template is a group named «Участники: N» (owner decision C152 (6)); each member a picture, role img named by the person (name, else initials), with the name in a tooltip on hover (C152 (7)); «+N» with the list behind it a native button named «Ещё N участников» that opens the list in an sf-popover, without a list text. The other templates draw pictures beside visible text: the image has alt=\"\" and the visible text names the person. Nothing else takes focus.",
+    "role": "group",
+    "name": {
+      "from": [
+        "lang:group-label"
+      ]
+    }
   },
   "css-variables": {
     "--sf-avatar-background-color": {
@@ -204,7 +252,14 @@
     "version 1.2.1: the profile example's first-paint snapshot is retaken after sf-avatar 1.2.3 (the verified badge plate and glyph are classes the class sheet paints from the palette); nothing of the group changes.",
     "version 1.2.2 (2026-11-10): the offline dot of a member is the disabled ink laid over the place it stands on (C43, owner 2026-11-10; avatars 1.3.5): it read the muted ink, which became the translucent disabled ink in avatars 1.3.4 and let the photo show through. The bundle's sheet carries the avatars sheet, so this version records the change. Settings, values, events and keys unchanged.",
     "version 1.2.3 (2026-11-10): the offline dot's two layers are public variables of the avatar sheet, --sf-avatar-offline-background-color (the place) and --sf-avatar-offline-overlay (the disabled ink over it; avatars 1.3.6): a page that sets the colour and the overlay none gets exactly that colour. The default look is unchanged. css-variables lists both. Settings, values, events and keys unchanged.",
-    "version 1.2.4 (2026-11-11, audit of dead Smart sheets): a patch, nothing drawn differently. The bundle no longer imports the avatars class sheet: its rule has no css, so the copy in smart/avatar-group/css/avatar-group.css never reached a page (force-linking it changed nothing on any snapshot, 1440 light/dark, 390); the avatars sheet comes by the rule's relation as before. Settings, values, events and keys unchanged."
+    "version 1.2.4 (2026-11-11, audit of dead Smart sheets): a patch, nothing drawn differently. The bundle no longer imports the avatars class sheet: its rule has no css, so the copy in smart/avatar-group/css/avatar-group.css never reached a page (force-linking it changed nothing on any snapshot, 1440 light/dark, 390); the avatars sheet comes by the rule's relation as before. Settings, values, events and keys unchanged.",
+    "version 1.2.5 (2026-11-12, avatar offline dot): a patch. A member's offline dot is the place's dim ink, not the disabled ink (avatars 1.3.7, the avatar sheet's defect fix, journal value-avatar-offline-dot-dim-ink).",
+    "version 1.2.6 (written on fix/content-precheck as 1.2.4; 2026-11-10, docs precheck AV-06): a patch. The group prints its overlap in the size names, sf-avatar-group--size-1/4, -1/3 and -1/2 (the --sf-space step of the overlap), in place of xs, sm and md, which stay dated aliases in component.avatars 1.4.0 until 2027-01-01 (journal class-avatar-group-overlap-size-names). Every setting has its summary. Every template draws sf-avatar's own parts (docs precheck smart content AG-01 measured on this pair: default 48, group 40, label 48, profile 56, user 40, all round). Drawn the same; settings, values, events and keys unchanged.",
+    "version 1.2.7 (2026-11-13, docs precheck smart content SC-S02): a patch, nothing drawn differently. active has its summary.",
+    "version 1.2.8 (2026-11-13, first-paint study R222, integration-fix/first-paint-5 af52cd76; the note is written by group build 3, the branch moved the number without one): a patch, nothing drawn differently once the data is in. avatars often arrives from the host after the first paint, so the component declares it late (presentation.skeleton.late) and the build derives its skeletons (static/default/<example>.skeleton.html), which hold the box until the data comes (standard 1.3.8 §5.4). Settings, values, events and keys unchanged.",
+    "version 1.3.0 (2026-11-14, avatar study AV-6 ring, AV-8, AV-9; control/research/2026-11-14-avatar.md): a minor. The avatars are js/picture.js of sf-avatar, the one avatar drawing; the placeholder's glyph is an sf-icon element (cl-icon relation). The cut-out between the avatars of a group is the presence point's ring of their size (component.avatars 1.8.0, owner decision C132 «одинаковая обводка»: 1 px at 1/4 and 1/3, 2 px from 1/2), not 1 px at every size. The examples draw no picture in a raw colour (owner decisions C124, C18): the reference, user, profile and online examples show the person placeholder, the group's third avatar its initials.",
+    "version 1.4.0 (2026-11-14, owner decision C152 (6), (7)): the group template. Up to four avatars, the fifth place «+N» with the exact number of the others: with more than four people in avatars it is a native button of the avatars' size and shape opening the list of everyone (picture and name) in an sf-popover; with only avatars-more it stays text. The group is role group named «Участники: N» («Members: N»), the button «Ещё N участников» («N more members», plural forms in the language files). A member takes name, status and hue in the list: the name names it (role img), gives its initials and the hue of the name (hue auto, C17) and shows in the Framework's tooltip on hover. The overlap is 4 up to size 1 and 8 at 2 and 3 (was 4/4/8/12/12: 12 at size 1 covered the second letter); the cut-out stays the point's ring (1.3.0). Photos stand over their initials and fade in (sf-avatar 1.7.0's drawing). Relations cl-popover and tooltip, both lazy.",
+    "version 1.4.1 (2026-11-15, group build 7; numbered above 1.4.0 on origin/fix/avatar-c152): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); its Kazakh words ride lang/kk.json (C177 (7) pilot draft, fix/languages-c177-kk and the group build 7 words)."
   ],
   "x-rule": {
     "regex": "/<sf-avatar-group\\b/i"

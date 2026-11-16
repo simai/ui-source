@@ -1,5 +1,6 @@
 @use 'panel';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__sheet' as sheet;
 
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
@@ -36,12 +37,21 @@
   --sf-context-menu-content--padding-inline-end: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
   --sf-context-menu-content--padding-inline-start: var(--sf-context-menu-padding-inline, var(--sf-space-1\/4));
   --sf-context-menu-content--padding-top: var(--sf-context-menu-padding-block, var(--sf-space-1\/4));
+  /* The 1 px border is inside the inline inset (owner decision C105 H4, as
+     the fields' C77 inset; spacing audit C2): what stands at the inset --
+     the rows' plates, a search header, a drilling head, a footer, a panel's
+     body -- starts the inset less the border from the border's inner edge,
+     so a row's icon or text is 16 from the panel's outer edge (compact and
+     phone 12), not 17 (13). The scrollbar's gap on either side of its thumb
+     is the whole inset (C07, C106). */
+  --sf-context-menu-content--edge-inline-start: calc(var(--sf-context-menu-content--padding-inline-start) - var(--sf-context-menu-border-width, var(--sf-px)));
+  --sf-context-menu-content--edge-inline-end: calc(var(--sf-context-menu-content--padding-inline-end) - var(--sf-context-menu-border-width, var(--sf-px)));
   --sf-context-menu-content--border-radius: var(--sf-context-menu-radius, var(--sf-radius--surface));
   border-radius: var(--sf-context-menu-content--border-radius);
   background-color: var(--sf-context-menu-content--background-color);
   padding-bottom: var(--sf-context-menu-content--padding-bottom);
-  padding-inline-end: var(--sf-context-menu-content--padding-inline-end);
-  padding-inline-start: var(--sf-context-menu-content--padding-inline-start);
+  padding-inline-end: var(--sf-context-menu-content--edge-inline-end);
+  padding-inline-start: var(--sf-context-menu-content--edge-inline-start);
   padding-top: var(--sf-context-menu-content--padding-top);
   min-inline-size: 0;
   min-block-size: 0;
@@ -70,6 +80,17 @@
   background: transparent;
   color: inherit;
   overflow: visible;
+}
+
+/* The point a menu opened at the pointer hangs from (sf-menu-context
+   openAt(), owner decision C164): a zero box fixed to the screen, which
+   nothing sees or presses; the menu sets where it stands. */
+.sf-context-menu-point {
+  position: fixed;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 /* ─── entries: the standard rows ───────────────────────────────────────── */
@@ -140,7 +161,19 @@
   padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
 }
 
-.sf-context-menu-item:not(:disabled):hover,
+/* The same rows at the ordinary size (owner decision C49: 48 normal, 44
+   compact; C176 defect SM-2): its line is 24 (20 compact) over a 16 value
+   line, so the one-line rule's (40 - 24) / 2 made a value row 56 (compact 48).
+   With a mouse such a row keeps --sf-a4 above and below its two lines; under
+   a coarse pointer the touch step's rule above stands (60). */
+@media (pointer: fine) {
+  .sf-context-menu--size-1 .sf-context-menu-item:where(:has(.sf-context-menu-item-caption, .sf-context-menu-item-under)),
+  .sf-context-menu--size-1 .sf-context-menu-value-row:where(:has(.sf-context-menu-item-caption)) {
+    padding-block: var(--sf-a4);
+  }
+}
+
+.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover,
 .sf-context-menu-item[aria-expanded="true"] {
   /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
      select state, 8. It was the plate's hover, 20 before C41. A translucent
@@ -174,18 +207,18 @@
   @include places.sf-place-fill(var(--sf-primary-container));
 }
 
-.sf-context-menu-item--chosen:not(:disabled):hover {
+.sf-context-menu-item--chosen:not(:disabled, .sf-context-menu-item--disabled):hover {
   background-color: var(--sf-primary-container-hover);
   @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
 
-.sf-context-menu-item:disabled {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) {
   color: var(--sf-on-surface-disabled);
   --sf-icon--color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
-.sf-context-menu-item--danger:not(:disabled) {
+.sf-context-menu-item--danger:not(:disabled, .sf-context-menu-item--disabled) {
   color: var(--sf-error);
   --sf-icon--color: var(--sf-error);
 }
@@ -197,21 +230,32 @@
   inline-size: var(--sf-context-menu--line);
 }
 
-/* A picture in the lead: a site's logo or a person, the icon's size, with
-   its initials on the secondary tone when there is no picture. */
-.sf-context-menu-item-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-context-menu--line);
-  block-size: var(--sf-context-menu--line);
-  border-radius: var(--sf-radius--ui);
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  font-size: var(--sf-text-size-1\/4);
-  font-weight: var(--sf-font-weight-medium);
-  line-height: 1;
-  object-fit: cover;
+/* A picture in the lead: a site's logo or a person, the icon's size. It is
+   sf-avatar's drawing (the avatars sheet: the photo, the initials on the
+   neutral plate, the person glyph; square, as the row drew it); the menu
+   gives it the row's line only (avatar study AV-8, 2026-11-14). It was the
+   menu's own picture on the secondary container in the medium weight. */
+.sf-avatar.sf-context-menu-item-avatar {
+  --sf-avatar--width: var(--sf-context-menu--line);
+  --sf-avatar--height: var(--sf-context-menu--line);
+  --sf-avatar--font-size: var(--sf-text-size-1\/4);
+  --sf-avatar--line-height: 1;
+}
+
+/* A colour in the lead (sf-settings' colour rows, C85): a circle of the
+   text's square less a quarter step, as an icon's glyph sits in its line, on
+   the hairline every colour swatch has (sf-input-color, R169). */
+.sf-context-menu-item-swatch {
+  box-sizing: border-box;
+  display: block;
+  flex: none;
+  inline-size: calc(var(--sf-context-menu--line) - var(--sf-space-1\/4));
+  block-size: calc(var(--sf-context-menu--line) - var(--sf-space-1\/4));
+  margin: calc(var(--sf-space-1\/4) / 2);
+  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-radius: var(--sf-radius-circle);
+  background-color: var(--sf-context-menu-swatch, transparent);
+  background-clip: padding-box;
 }
 
 .sf-context-menu-item-icon,
@@ -219,7 +263,7 @@
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
-.sf-context-menu-item--danger:not(:disabled) .sf-context-menu-item-icon {
+.sf-context-menu-item--danger:not(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-icon {
   --sf-icon--color: var(--sf-error);
 }
 
@@ -258,8 +302,8 @@
   line-height: var(--sf-text-height-1\/3);
 }
 
-.sf-context-menu-item:disabled .sf-context-menu-item-caption,
-.sf-context-menu-item:disabled .sf-context-menu-item-value {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-caption,
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-value {
   color: inherit;
 }
 
@@ -314,7 +358,7 @@
   text-overflow: ellipsis;
 }
 
-.sf-context-menu-item:disabled .sf-context-menu-item-under {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-under {
   color: inherit;
 }
 
@@ -339,11 +383,14 @@
   white-space: normal;
 }
 
+/* Names wrap between words (C32); a word breaks only when it alone is wider
+   than the row. anywhere let a row with a value at its end squeeze the name
+   mid-word («Плотнос / ть», docs precheck SE-01). */
 .sf-context-menu--drill .sf-context-menu-item-label,
 .sf-context-menu--drill .sf-context-menu-item-caption,
 .sf-context-menu-value-row .sf-context-menu-item-label,
 .sf-context-menu-value-row .sf-context-menu-item-caption {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* What leads a row stands on the row's centre line, a two-line row too. */
@@ -363,7 +410,7 @@
 
 .sf-context-menu-item--switch .sf-context-menu-item-label,
 .sf-context-menu-item--switch .sf-context-menu-item-caption {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 /* A row's shortcut is the kbd component's: plain glyphs in the muted ink,
@@ -386,19 +433,13 @@
   padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-context-menu--space-y) var(--sf-context-menu--inset-start);
 }
 
-.sf-context-menu-header-avatar {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--sf-d0);
-  block-size: var(--sf-d0);
-  border-radius: 50%;
-  background-color: var(--sf-secondary-container);
-  color: var(--sf-on-secondary-container);
-  font-size: var(--sf-text-size-1\/3);
-  font-weight: var(--sf-font-weight-medium);
-  object-fit: cover;
+/* The header's picture: sf-avatar's drawing at the d0 step (the avatars
+   sheet; avatar study AV-8), the menu giving it the step only. */
+.sf-avatar.sf-context-menu-header-avatar {
+  --sf-avatar--width: var(--sf-d0);
+  --sf-avatar--height: var(--sf-d0);
+  --sf-avatar--font-size: var(--sf-text-size-1\/3);
+  --sf-avatar--line-height: 1;
 }
 
 .sf-context-menu-header-text {
@@ -477,7 +518,7 @@
   --sf-icon--height: var(--sf-context-menu--inner-line);
 }
 
-.sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
+.sf-context-menu-choice-option.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
   color: var(--sf-on-surface);
   background-color: var(--sf-surface-state-select);
   @include places.sf-place-fill(var(--sf-surface-state-select));
@@ -517,7 +558,7 @@
   --sf-icon--height: var(--sf-context-menu--line);
 }
 
-.sf-context-menu-choice--band .sf-context-menu-choice-option + .sf-context-menu-choice-option {
+.sf-context-menu-choice--band .sf-context-menu-choice-option ~ .sf-context-menu-choice-option {
   border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
 }
 
@@ -571,12 +612,12 @@
   --sf-context-menu-switch--direction: -1;
 }
 
-.sf-context-menu-item:disabled > .sf-context-menu-item-switch {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) > .sf-context-menu-item-switch {
   border-color: var(--sf-outline-disabled);
   background-color: transparent;
 }
 
-.sf-context-menu-item:disabled .sf-context-menu-item-switch-thumb {
+.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-item-switch-thumb {
   background-color: var(--sf-on-surface-disabled);
 }
 
@@ -657,12 +698,18 @@
   white-space: normal;
 }
 
-.sf-context-menu-tile.sf-context-menu-item:not(:disabled):hover {
+.sf-context-menu-tile.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
   background-color: var(--sf-surface-container-hover);
   @include places.sf-place-fill(var(--sf-surface-container-hover));
 }
 
+/* A tile is a control: its icon is half a step paler than its name (C107,
+   owner 2026-11-12), and takes the name's colour under a pointer. */
 .sf-context-menu-tile-icon {
+  --sf-icon--color: var(--sf-on-surface-icon);
+}
+
+.sf-context-menu-tile.sf-context-menu-item:not(.sf-context-menu-tile--on):not(:disabled):is(:hover, :active) .sf-context-menu-tile-icon {
   --sf-icon--color: var(--sf-on-surface);
 }
 
@@ -687,7 +734,7 @@
   color: var(--sf-on-primary-container);
 }
 
-.sf-context-menu-tile--on.sf-context-menu-item:not(:disabled):hover {
+.sf-context-menu-tile--on.sf-context-menu-item:not(:disabled, .sf-context-menu-item--disabled):hover {
   background-color: var(--sf-primary-container-hover);
   @include places.sf-place-fill(var(--sf-primary-container-hover));
 }
@@ -698,8 +745,8 @@
   --sf-icon--color: var(--sf-on-primary-container);
 }
 
-.sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-icon,
-.sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-name {
+.sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-icon,
+.sf-context-menu-tile.sf-context-menu-item:is(:disabled, .sf-context-menu-item--disabled) .sf-context-menu-tile-name {
   color: var(--sf-on-surface-disabled);
   --sf-icon--color: var(--sf-on-surface-disabled);
 }
@@ -711,6 +758,42 @@
   font-size: var(--sf-text-size-1\/3);
   line-height: var(--sf-text-height-1\/3);
   white-space: normal;
+}
+
+/* A meter row (owner decision C191 (4)): the tariff's remainder in a person
+   menu. The name and the words on one line over the bar, as the bar's own
+   «top» text (C131 (4)): the name in the rows' ink, the words in the quiet
+   ink with tabular figures; 4 between the line and the bar, as the bar's.
+   The insets are the note's and the header's, so the text stands on the
+   rows' axis. */
+.sf-context-menu-meter {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  padding: var(--sf-context-menu--space-y) var(--sf-context-menu--inset-end) var(--sf-context-menu--space-y) var(--sf-context-menu--inset-start);
+}
+
+.sf-context-menu-meter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sf-space-1\/2);
+  min-inline-size: 0;
+}
+
+.sf-context-menu-meter-name {
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sf-context-menu-meter-value {
+  flex: none;
+  color: var(--sf-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* The search is the panel's header, not a boxed field (owner C06, R029): no
@@ -763,8 +846,8 @@
     var(--sf-context-menu--row-height),
     var(--sf-context-menu-content--padding-top),
     var(--sf-context-menu-content--padding-bottom),
-    var(--sf-context-menu-content--padding-inline-start),
-    var(--sf-context-menu-content--padding-inline-end)
+    var(--sf-context-menu-content--edge-inline-start),
+    var(--sf-context-menu-content--edge-inline-end)
   );
 }
 
@@ -775,7 +858,7 @@
   gap: var(--sf-context-menu-gap, var(--sf-px));
   min-block-size: 0;
   padding-block: var(--sf-context-menu-content--padding-top) var(--sf-context-menu-content--padding-bottom);
-  padding-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
+  padding-inline: var(--sf-context-menu-content--edge-inline-start) var(--sf-context-menu-content--edge-inline-end);
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -791,7 +874,7 @@
 .sf-context-menu .sf-context-menu-content--search > .sf-context-menu-drill-head {
   flex: none;
   margin-block-start: var(--sf-context-menu-content--padding-top);
-  margin-inline: var(--sf-context-menu-content--padding-inline-start) var(--sf-context-menu-content--padding-inline-end);
+  margin-inline: var(--sf-context-menu-content--edge-inline-start) var(--sf-context-menu-content--edge-inline-end);
 }
 
 /* The content has no padding of its own to reach past: the footer stands
@@ -800,7 +883,7 @@
   position: static;
   margin-block-end: 0;
   padding-block-end: var(--sf-context-menu--block-space);
-  padding-inline: calc(var(--sf-context-menu-content--padding-inline-start) + var(--sf-context-menu--inset-start)) calc(var(--sf-context-menu-content--padding-inline-end) + var(--sf-context-menu--inset-end));
+  padding-inline: calc(var(--sf-context-menu-content--edge-inline-start) + var(--sf-context-menu--inset-start)) calc(var(--sf-context-menu-content--edge-inline-end) + var(--sf-context-menu--inset-end));
 }
 
 .sf-context-menu-heading {
@@ -820,7 +903,7 @@
 .sf-context-menu-footer {
   display: flex;
   flex: none;
-  gap: var(--sf-space-1\/3);
+  gap: var(--sf-gap--actions);
   padding: var(--sf-context-menu--block-space) var(--sf-context-menu--inset-end) var(--sf-context-menu--block-space) var(--sf-context-menu--inset-start);
 }
 
@@ -909,7 +992,7 @@
 }
 
 .sf-context-menu .sf-context-menu-content[data-sf-width="list"] :is(.sf-context-menu-item-label, .sf-context-menu-item-caption) {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .sf-context-menu .sf-context-menu-content[data-sf-width="list"] :is(.sf-context-menu-item-lead, .sf-context-menu-item-check) {
@@ -944,16 +1027,30 @@
    of the shadow system (C20: --sf-shadow-modal, the scrim at black 64).
    sf-menu-context marks the surface data-sf-sheet and does not anchor it.
    The content keeps clear of a phone's home indicator (safe area). */
+/* The one sheet (owner decision C157 (5), core mix/_mix__sheet.scss): the
+   sheet's box, and its grab bar (24 x 4 in the quiet ink) in a handle row on
+   the sheet's own surface above the content; a swipe down from that row
+   closes it (sf-menu-context reads it). The form had no bar. */
 .sf-context-menu[data-sf-sheet] {
   --sf-context-menu--box-shadow: var(--sf-shadow-modal);
-  position: fixed;
-  inset: auto 0 0;
-  inline-size: 100%;
-  max-inline-size: var(--sf-h1);
-  margin-inline: auto;
-  max-block-size: calc(100dvh - var(--sf-space-4));
-  border-end-end-radius: 0;
-  border-end-start-radius: 0;
+  @include sheet.sheet-surface;
+  display: flex;
+  flex-direction: column;
+  /* The handle row stands right on the content: the menu's own gap (--sf-d4,
+     56) stood between the grab bar and the first row (C164 probe). */
+  gap: 0;
+  overflow: hidden;
+  background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
+  border-block-start: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
+  touch-action: none;
+}
+
+.sf-context-menu[data-sf-sheet].is-dragging {
+  transition: none;
+}
+
+.sf-context-menu[data-sf-sheet]::before {
+  @include sheet.sheet-bar-row;
 }
 
 .sf-context-menu[data-sf-sheet]::backdrop {
@@ -966,15 +1063,33 @@
   min-inline-size: 0;
 }
 
+/* On a phone the menu of an object (owner decision C164 (6)) and a drilling
+   menu (C176, SM-3) are the one sheet, its rows the whole width, as a form's
+   are; a drilling menu's fixed 18rem is the popup's. */
+.sf-context-menu[data-sf-sheet] .sf-context-menu-content,
+.sf-context-menu.sf-context-menu--drill[data-sf-sheet] .sf-context-menu-content,
 .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width] {
   inline-size: 100%;
   max-inline-size: none;
-  max-block-size: calc(100dvh - var(--sf-space-4));
-  border-end-end-radius: 0;
-  border-end-start-radius: 0;
-  border-block-end-width: 0;
-  border-inline-width: 0;
+  max-block-size: calc(100dvh - var(--sf-space-4) - var(--sf-ui-1\/2--control-height));
+  border-radius: 0;
+  border-width: 0;
   padding-bottom: calc(var(--sf-context-menu-content--padding-bottom) + env(safe-area-inset-bottom, var(--sf-a0)));
+}
+
+/* On the sheet the heading on top names the object the menu acts on, or
+   «Выбрано N» (C164 (6), study #q-phone B): the sheet's text and ink, a row's
+   height (44 under a finger), a line under it as a head has. */
+.sf-context-menu[data-sf-sheet] .sf-context-menu-content > .sf-context-menu-heading:first-child,
+.sf-context-menu[data-sf-sheet] .sf-context-menu-list > .sf-context-menu-heading:first-child {
+  padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-context-menu--text-size);
+  line-height: var(--sf-context-menu--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* The head is a row of its own, as tall as a control and a step of space
@@ -1010,32 +1125,77 @@
   display: none;
 }
 
+/* The body is the panel's scroll area (the scroll-area inset rule, owner
+   C106 addendum to C105, 2026-11-12): one inset I = --sf-space-1/4 on every
+   side of the rows' plates, from the panel's edge; while its scrollbar takes
+   room the body gives up its inline-end padding and the track is I, the
+   thumb, I (14, --sf-scroll-bg-width). sf-menu-context marks it
+   sf-context-menu-body--scrollbar. It kept a stable gutter before: an empty
+   14 beside rows that did not scroll, and 18 from a plate to the edge when
+   they did. The content gives its inline padding to the body; the head and
+   the footer keep their places. */
+.sf-context-menu.sf-context-menu--panel .sf-context-menu-content {
+  padding-inline: 0;
+}
+
 .sf-context-menu--panel .sf-context-menu-body {
-  padding-block: var(--sf-space-1\/4);
-  scrollbar-gutter: stable;
+  padding: var(--sf-space-1\/4);
+  /* The border inside the inline inset, as the content's (C105 H4). */
+  padding-inline: calc(var(--sf-space-1\/4) - var(--sf-context-menu-border-width, var(--sf-px)));
   overflow-x: hidden;
+  @include panel.scrollbar(var(--sf-space-1\/4), --sf-context-menu--track, var(--sf-context-menu--row-height), var(--sf-context-menu--thumb));
+}
+
+.sf-context-menu--panel .sf-context-menu-body.sf-context-menu-body--scrollbar {
+  padding-inline-end: 0;
+}
+
+.sf-context-menu--panel :is(.sf-context-menu-head, .sf-context-menu-top, .sf-context-menu-footer) {
+  margin-inline: var(--sf-context-menu-content--edge-inline-start) var(--sf-context-menu-content--edge-inline-end);
 }
 
 /* A row of a panel holds anything -- a handle, a label, a checkbox, a pin --
-   on one line: what leads, the text that takes the rest and gives way with an
-   ellipsis, what ends it. A row as tall as a menu item of the panel's size. */
+   on one line, placed by role and not by count (R193, DP-1): what stands
+   before the text leads (a handle), the text takes the rest of the row and
+   gives way with an ellipsis, and what follows it -- the mark, a pin -- ends
+   the row at its inline end. A row with no handle starts with its text, and
+   its mark still stands at the end: three positional columns put the mark in
+   the text's place then, right after a label of any length (55-141 px from
+   the row start on the docs page). A row as tall as a menu item of the
+   panel's size. */
 .sf-context-menu-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
   gap: var(--sf-space-1\/3);
   min-block-size: var(--sf-ui-1\/2--control-height);
   padding-inline: var(--sf-context-menu--inset-start) var(--sf-context-menu--inset-end);
 }
 
+.sf-context-menu-row > * {
+  flex: none;
+}
+
 .sf-context-menu--size-1 .sf-context-menu-row {
   min-block-size: var(--sf-ui-1--control-height);
+}
+
+.sf-context-menu-row > .sf-context-menu-row-text {
+  flex: 1 1 0;
+  min-inline-size: 0;
 }
 
 .sf-context-menu-row-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* A panel row is a plate (C05, R193 DP-3): rounded as a control, the hover
+   plate under the pointer, and a chosen row -- its checkbox or radio checked --
+   the theme's light fill (owner decision C106 (2)). The plate stands the
+   inset from the panel's edge (the body's padding). */
+.sf-context-menu-row {
+  border-radius: var(--sf-context-menu--row-radius);
 }
 
 /* ─── the scrollbar: only when the rows do not fit, in the inset ───────── */
@@ -1076,6 +1236,27 @@
      line in the primary colour (Highlight in forced colours). */
   .sf-context-menu-search {
     @include panel.search-focus;
+  }
+
+  /* A panel row (R193 DP-3, C05, owner decision C106 (2)): the hover plate
+     under the pointer; checked, the theme's light fill, and its own hover.
+     Each is a translucent fill, as an item's (C43 D3, D4): a tonal badge on
+     the row keeps its own tone and an anchored badge's ring is the row's
+     colour. */
+  .sf-context-menu-row:hover {
+    background-color: var(--sf-surface-state-select);
+    @include places.sf-place-fill(var(--sf-surface-state-select));
+  }
+
+  .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked) {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+  }
+
+  .sf-context-menu-row:has(> :is(sf-checkbox, sf-radio, input) :checked, > input:checked):hover {
+    background-color: var(--sf-primary-container-hover);
+    @include places.sf-place-fill(var(--sf-primary-container-hover));
   }
 
   .sf-context-menu-item:focus-visible,

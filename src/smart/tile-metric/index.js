@@ -20,8 +20,12 @@ import {elementFromManifest} from '../../core/js/element-manifest';
 import {formatNumber} from '../../core/js/format-number.js';
 import {renderTileMetricTemplate} from './js/templates/default';
 import manifest from './component.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
 
 // The label's id, one per tile on the page (the same on every render, so a
@@ -35,6 +39,20 @@ export const ICONS = {success: 'check_circle', info: 'info', warning: 'warning',
 // The change's tone as an sf-badge status: better is success, worse is error.
 const BADGE = {positive: 'success', negative: 'error', neutral: ''};
 const ARROWS = {up: 'arrow_upward', down: 'arrow_downward', flat: 'remove'};
+
+/**
+ * The format word the tile writes with (owner C168 (2), 2026-11-14): money on
+ * a tile is whole by default -- «currency-RUB» is «1 111 111 ₽» -- and keeps
+ * its kopecks only when the page asks with a precision word
+ * («currency-RUB decimal-2»); «currency-RUB compact» writes «1,1 млн ₽» for a
+ * narrow 1/2 tile. Every other word is core's as given.
+ */
+export function tileFormat(format = 'number') {
+  const words = String(format || 'number').trim().split(/\s+/u).filter(Boolean);
+  const money = words.some((one) => /^currency-[A-Z]{3}$/u.test(one));
+  const precise = words.some((one) => /^(?:integer|compact|decimal-\d{1,2})$/u.test(one));
+  return money && !precise ? [...words, 'integer'].join(' ') : words.join(' ') || 'number';
+}
 
 /** The threshold a share of the limit reached, in per cent: '', warning or error. */
 export function thresholdStatus(percent, warningAt, errorAt) {
@@ -90,7 +108,7 @@ class SfTileMetric extends TileMetricElement {
   }
 
   say(value) {
-    return formatNumber(value, this.format, {node: this, gap: this.words('no-value')});
+    return formatNumber(value, tileFormat(this.format), {node: this, gap: this.words('no-value')});
   }
 
   change(value) {
@@ -126,6 +144,27 @@ class SfTileMetric extends TileMetricElement {
     this.sfEmit('open', {id: this.id || ''});
   }
 
+  // The lines a loading tile keeps (owner decision C130 (2): a skeleton takes
+  // exactly the data's place; tile study TM-1): those its settings promise.
+  // The change line when the page gave what it is worked out from (previous,
+  // delta) or what it is against (period-text), or when the tile has no limit
+  // -- a plain number comes with its change; a limit tile with max set
+  // shows its meter and the meter's words instead. The status line when the
+  // page states one (status, hint). The words are fillers of the right
+  // length: the bars stand for them.
+  skeleton(status) {
+    const max = this.given('max');
+    const promised = this.given('previous') !== null || this.given('delta') !== null || Boolean(this.periodText);
+    const limited = max !== null && max > 0;
+    const statusWord = status === 'neutral' ? '' : this.words(`status-${status}`);
+    return {
+      value: this.valueText || '000 000',
+      change: promised || !limited ? '+00,0 %' : '',
+      limit: limited ? (this.limitText || this.words('limit', {value: '00', max: this.say(max)})) : '',
+      status: this.hint || statusWord,
+    };
+  }
+
   templateContext() {
     const loading = Boolean(this.loading);
     const value = loading ? null : this.given('value');
@@ -158,6 +197,7 @@ class SfTileMetric extends TileMetricElement {
       hint: this.hint,
       hasChart,
       chart: hasChart ? this.getSlotContent('chart') : null,
+      skeleton: loading ? this.skeleton(status) : null,
       loadingWord: this.words('loading'),
       rootClass: this.getRootClass(),
     });

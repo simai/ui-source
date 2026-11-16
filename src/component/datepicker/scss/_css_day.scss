@@ -59,6 +59,32 @@
     align-items: center;
     justify-content: center;
   }
+
+  /* A special day of the site (owner decision C198, 2026-11-15, prototype
+     calendar-holidays-and-more-study.html#q-cal-holidays, variant C): a dot
+     under the number, in the number's ink, so a holiday is told from a plain
+     weekend, a moved day off from a working day and a working Saturday from a
+     day off -- and so the mark stays inside a chosen range, where the days
+     take the range's ink. Drawn only for a day the site listed: without the
+     list the calendar is its plain weekends. Its size and its gap are the
+     space ladder's (1/4 and a hairline). */
+  .sf-datepicker-day.sf-datepicker-day-special .sf-datepicker-day-date {
+    position: relative;
+  }
+
+  .sf-datepicker-day.sf-datepicker-day-special .sf-datepicker-day-date::after {
+    --sf-datepicker-day-special--size: var(--sf-space-1\/4);
+    content: "";
+    position: absolute;
+    inset-block-start: calc(100% + var(--sf-px));
+    inset-inline-start: 50%;
+    inline-size: var(--sf-datepicker-day-special--size);
+    block-size: var(--sf-datepicker-day-special--size);
+    margin-inline-start: calc(var(--sf-datepicker-day-special--size) / -2);
+    border-radius: var(--sf-radius-circle);
+    background-color: currentColor;
+    pointer-events: none;
+  }
 }
 
 @layer sf.states {

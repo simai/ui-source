@@ -71,7 +71,7 @@ try {
         await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
         for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
         await page.waitForFunction(() => [...document.querySelectorAll('sf-theme-generator')].every((host) =>
-          host.querySelector('[data-palette="primary"] [data-tone="40"]') && host.querySelector('sf-input-color .sf-color-input')
+          host.querySelector('[data-palette="primary"] [data-tone="40"]') && host.querySelector('sf-input-color .sf-color-trigger')
           && host.querySelector('sf-button > button')), null, {timeout: 10000});
         // Every <details> open, so the fine-tuning fields are measured too.
         await page.evaluate(() => document.querySelectorAll('sf-theme-generator details').forEach((node) => { node.open = true; }));

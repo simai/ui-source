@@ -16,6 +16,7 @@ version, in the `standard-contract` envelope:
 | `simai.ai-development` | 1.0.0 | how an AI agent develops on and with the Framework: the contracts read first, the public surface only, generated output never edited, exact pins, upgrades by the journal, names without versions, ports by their kit, what a person sees measured in a browser, evidence over report, one writer per repository, the owner's decisions asked, content as data |
 | `simai.linkage` | 1.0.1 | what is current and what to change, for every system that uses the Framework: a passport per unit (id, version, owner, files, one content hash over the committed files, dependencies with ranges), a version that moves with the hash, an inventory per release that compares to a change report, a usage record per consumer and one reconcile; formats simai.framework.unit-passport, unit-inventory and unit-change-report; scripts/linkage.mjs |
 | `simai.component-set` | 1.3.0 | everything outside the free Framework in sets (draft): one repository per set with its components, Docara site and demos; a passport (set.json: id = repository without ui-, licence simai-pro or framework, Framework pair, required sets at most two levels deep, owned name families, docs site, every component); the Framework holds no per-set reference; one shared name registry (contracts/registry/names.json) with one owner per family under sf-; the Pro gates for every set; one release route (`<set>-<12 hex>` asset and npm `@simai-studio/<set>`) and one compatibility index; an unchanged release re-receipted over a newer pair (`pair-receipt-<pair>.json`, the row's `pairs`) instead of a new version (1.1.0); a pair range per release over a free pair (`pair-range.json`, the row's `range`: the runtime interface the released bytes take from the pair, by which a consumer may accept them over another pair) (1.2.0); a set's scripted API listed in set.json `exports` in the entry shape of public-js-api and held against `SF.package('<set>')` by `scripts/set-exports-kit.mjs` (1.3.0); a one-line connection through the Loader; one site per set from one Docara template (Overview, Connection, Components, Demos, Changes); what is universal belongs to the Framework, reviewed for every component entering a set. Supersedes `simai.component-package` for sets by reference: its package-folder rules hold, `own-element-prefix` and `delivered-in-owners-distribution` are replaced |
+| `simai.composition` | 1.0.0 | one Document format for pages and their content (2026-11-10): the JSON Document canonical and the only reversible exchange, HTML, Markdown and Editor.js conversions; three type sets (Layout = the registry, Content = `structured-content`, Page = `ui-layout`); one diagnostic for an unknown profile; inline model 1.2.0 (text, links, the break, a closed list of inline components; marks strong, em, code, strike); unknown content survives; `content.foreign` with source, raw and hash; every converter returns `{value, losses}` under a normative guarantee table; Markdown a projection of content and single text areas in Docara's form; Framework vocabulary with mapping adapters; props and presentation, never a style; versioning; publishing fails closed; one conformance kit. Pins the Recipe lock 1.1.0, the type manifest schema 1.6.0 and the structured-content kit 2.1.0. The editing architecture is not in this edition |
 
 A standard stays at the level of principles that survive a change of library,
 browser or view type: 15 to 20 requirements. Event names, CSS classes and
@@ -83,3 +84,15 @@ bytes never change, and the name is the repository's former one.
 
 The published, reader-facing form of both standards lives in ui-doc; the
 machine-readable form is this directory.
+
+`simai.composition` 1.0.0 (2026-11-10) carries the decisions of the external
+review of the composition and its assessment (ui-control
+`control/research/2026-11-10-composition-review-assessment.md`, sections 3
+and 7) as 17 requirements. It pins frozen copies of the type manifest schema
+(`pinned/composition-type-manifest-1.6.0.schema.json`, equal to the live
+schema at the time) and of the structured-content conformance kit manifest
+(`pinned/structured-content-conformance-2.1.0.manifest.json`), and the Recipe
+lock 1.1.0 already frozen here. The Document schema declares no version of its
+own, so it is named by `references` (schema_version 1), not pinned by digest.
+The editing operations and the behaviour of non-editable nodes wait for the
+`sf-input-rich` prototype and are not in this edition.

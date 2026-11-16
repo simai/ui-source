@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "remove": "Жою",
+    "uploading": "Жүктелуде",
+    "uploading-name": "{name} жүктелуде",
+    "retry": "Қайталау",
+    "linkText": "Файлды таңдаңыз",
+    "text": "немесе осында сүйреп әкеліңіз",
+    "not-added": "Қосылмады: {n}",
+    "reject-type": "«{name}» сәйкес келмейді: рұқсат етілгені — {formats}",
+    "reject-one": "«{name}» қосылмады: мұнда тек бір файл болады",
+    "reject-duplicate": "«{name}» тізімде бар",
+    "reject-empty": "«{name}» бос — онда дерек жоқ",
+    "reject-size": "«{name}» — {size}, шегі — {max}",
+    "reject-min-size": "«{name}» — {size}, кемінде {min} болуы керек",
+    "reject-count": {
+      "one": "«{name}» қосылмады: {n} файлдан артық болмайды",
+      "other": "«{name}» қосылмады: {n} файлдан артық болмайды"
+    },
+    "reject-total": "«{name}» қосылмады: барлық файлдар бірге {max} аспауы керек",
+    "formats-image": "суреттер",
+    "formats-video": "бейне",
+    "formats-audio": "аудио",
+    "done": "Жүктелді",
+    "done-line": "{size} · жүктелді",
+    "error": "Жүктелмеді",
+    "error-line": "Жүктелмеді: {message}"
+  }
+}

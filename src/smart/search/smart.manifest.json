@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.search",
-  "version": "1.7.3",
+  "version": "1.10.1",
   "title": "Site search",
   "summary": "Site search in a window: a large rounded field and a separate results card under it over the shared scrim, opened by a trigger or a key (Command/Control+K, /), a full-screen sheet on a phone. The panel asks a host through simai.search-port and draws what the host announces it can answer: grouped results, scopes, recent and popular queries, commands, a correction and a preview beside the list. Each block is also a setting, so the capability says what is possible and the setting says what is wanted. A page with no host of its own gets the built-in ones: a static JSON index (index) or a provider function.",
   "kind": "smart",
@@ -32,7 +32,15 @@
     "uses": [
       "component.icons",
       "component.kbd",
-      "smart.button-icon"
+      "smart.avatar",
+      "smart.badge",
+      "smart.button-icon",
+      "smart.empty-state",
+      "smart.icon",
+      "smart.spinner",
+      "smart.tag",
+      "smart.tag-group",
+      "smart.time"
     ],
     "public_parts": []
   },
@@ -80,12 +88,12 @@
       "scopes": {
         "type": "boolean",
         "default": true,
-        "description": "Filter pills over the results once there is a query: all, then one per result group, each with its count. A want over the capability scopes: where the host does not announce it the pills are absent, and a setting cannot turn on what the host cannot do"
+        "description": "Filters over the results once there is a query: an sf-tag-group of one choice -- all, then one per result group, each with its count (one Tab stop, ←/→ inside, a check on the chosen). A want over the capability scopes: where the host does not announce it the filters are absent, and a setting cannot turn on what the host cannot do"
       },
       "recent": {
         "type": "boolean",
         "default": true,
-        "description": "Recent queries on an empty field, each with a remove button, and a clear button (recent.forget, recent.clear). A want over the capability recent: the queries are the host's data, so where the host does not announce it the block is absent"
+        "description": "Recent queries (up to 5) and pages opened from the window (up to 3) on an empty field, each with a remove button, and a clear button that clears both (recent.forget, recent.clear). A want over the capability recent: the queries are the host's data, so where the host does not announce it the block is absent"
       },
       "recent-key": {
         "type": "string",
@@ -110,7 +118,7 @@
       "keys": {
         "type": "boolean",
         "default": true,
-        "description": "A footer with the keys: arrows to select, Enter to open, Escape to clear or close. The panel's own setting: the keys are the panel's, so no capability stands behind it"
+        "description": "Key hints at the window's foot: none until the first ↑ or ↓ in the window, then three at most on one line (select, then Enter's and Escape's meaning in this state), the third hidden in a narrow window, none under a finger. The panel's own setting: the keys are the panel's, so no capability stands behind it"
       },
       "provider": {
         "type": "object",
@@ -408,23 +416,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "c19e91b5e687ee39f75dcb9e21750bc841775b61f997de9ce8207de87ed939a7"
+        "sha256": "2c9536356e6ff79535147a78783952038feb9148b151d7ca7ab0847eabe06384"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
-        "sha256": "8f9ef934195776ccc64c354d725d767b35db27fc37995b5eeb3a9a8f315e5f2e"
+        "sha256": "9dc439b7c847edc12a9cd6645439f2416b50106fd6a881ed03435e5b5d854d47"
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "86e96de785c9b01462daeb1ad2cc689bd7d3075c63c2b89dc4f85a3d01728ff3"
+        "sha256": "cf66804b499d71b9f2b0562dba8a39a5ef1491fb919825e6027310d5bc928cf3"
       },
       {
         "path": "src/smart/search/rule.js",
-        "sha256": "52ed9d3dad88d61c6d1a14cc96e98a2663221c8a364d2c491a0c70820dd9f1b6"
+        "sha256": "636e6a18a7ae3da500bb73ac3c62a6609ee6eed0e66d4ea8d628525262e1530a"
       },
       {
         "path": "src/smart/search/docs.md",
-        "sha256": "34168216650d5c951db28301403cdf54589b110fad56867e5a6cda49bbeba41a"
+        "sha256": "6950c735615ddf38596f8b3a2c32a15ecbf3b1791df5bb05b9fd6f383676af67"
       }
     ],
     "generated_runtime": []

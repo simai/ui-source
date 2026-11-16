@@ -3,6 +3,9 @@
   "runtime": {
     "label": "Menu",
     "menu-label": "Open menu",
-    "close-label": "Close menu"
+    "close-label": "Close menu",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Theme"
   }
 }

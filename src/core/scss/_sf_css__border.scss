@@ -42,11 +42,20 @@
 	// stay 2px and 1px whatever the root font size (owner, 2026-10-10).
 	--sf-focus--offset: var(--sf-px);
 	--sf-focus--style: solid;
-	// One width, two names. The ring reads `--sf-focus--width`; the Figma export
-	// declares `--sf-focus-outline-width` and the forced-colours fallbacks still
-	// name it, so the ring derives from the export instead of repeating its value.
-	--sf-focus--width: var(--sf-focus-outline-width);
-	--sf-ui-focus-inset: inset 0 0 0 var(--sf-focus-outline-width) var(--sf-focus);
+	// One width, one name (owner decision C178, 2026-11-14): the focus family
+	// is --sf-focus--color/offset/style/width, the name the docs promise, and
+	// the export declares the value under it (figma_focus.scss). The former
+	// name --sf-focus-outline-width reads it until 2027-01-01
+	// (src/core/contracts/token-aliases.v1.json, families).
+	--sf-focus-outline-width: var(--sf-focus--width);
+	// The room a ring needs inside a box that clips: the ring stands 2 + 1 = 3 px
+	// out of its control, rounded up to the system step (4 px in every density).
+	// Every Framework scroll or clip container keeps it inside its clip edge and
+	// scrolls with scroll-padding of it (owner report R242, 2026-11-14: in a
+	// window the ring of «Сохранить» was cut at its bottom and end, a field's at
+	// its sides; DEV's audit found 27 of 149 component x container pairs cut).
+	--sf-focus-room: var(--sf-space-1\/4);
+	--sf-ui-focus-inset: inset 0 0 0 var(--sf-focus--width) var(--sf-focus);
 	// ------------------------------------------------
 	// Замена на переменные из figma - самые актуальные
 	// ------------------------------------------------

@@ -2,9 +2,9 @@
   "$comment": "The source of sf-input-color's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/color (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/color/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-color",
   "tag": "sf-input-color",
-  "version": "1.6.0",
+  "version": "1.14.0",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "traits": [
     "field-inherit@1"
   ],
@@ -12,12 +12,14 @@
     "size": {
       "type": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
       "default": "1",
-      "summary": "The size ladder step, so a colour beside a text field lines up with it."
+      "summary": "The field ladder step, as sf-input's (1/3, 1/2, 1, 2, 3), so a colour beside a text field lines up with it."
     },
     "appearance": {
       "type": "enum",
@@ -27,21 +29,42 @@
         "plain"
       ],
       "default": "bordered",
-      "summary": "How the swatch is bounded."
+      "summary": "How the swatch in the field is bounded: bordered (the hairline of outline-variant), outlined (the field's stronger outline) or plain (no border). The paint stays inside the border, so the three looks differ (CO-06)."
     },
     "variant": {
       "type": "enum",
       "values": [
         "field",
-        "theme"
+        "theme",
+        "brand"
       ],
       "default": "field",
-      "summary": "What the control is. field: the swatch, the hex and the presets, a colour that is a value of something. theme: one icon-only primary button (icon palette) that opens the platform picker and rebuilds the page theme from the colour while it moves (SF.ThemePalette on <html>), committing it on the picker's change."
+      "summary": "What the control is. field: a field of the control ladder -- the swatch, the value and a chevron -- that opens the Framework's own colour window. theme: only a circle of the current colour, as a site header holds it (C84); it opens the same window at its normal size, with no text and no theme row. brand: the field, for a settings screen («Оформление», C84), with what a person should know about the colour as lines under it (core themeChecks). theme and brand are the brand colour: they rebuild the theme from the colour while it moves (SF.ThemePalette: the four dynamic palettes, never a status, and the brand fill --sf-brand, --sf-on-brand of a header and a cover) on target, committing it when a colour is chosen. Their value is always a code and takes no alpha."
+    },
+    "target": {
+      "type": "string",
+      "default": "",
+      "summary": "variant theme or brand: a CSS selector of the element the theme is put on, as inline variables (a settings screen's preview, so the admin keeps its own colours); empty, the document's root. A selector that names nothing puts the theme nowhere."
     },
     "swatches": {
       "type": "string",
       "default": "",
-      "summary": "The colours a product already has, comma separated, each #hex or #hex|Name; a name may hold spaces. A piece without a name may list several colours by spaces. A person picks the brand colour rather than matching a hex by eye."
+      "summary": "The colours a product already has, comma separated, each #hex, #hex|Name or a palette name (blue|Name); a name may hold spaces. A piece without a name may list several colours by spaces. They are the first row of the window's palette view, so a person picks the brand colour rather than matching a hex by eye."
+    },
+    "palette": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Whether the window's palette view shows the sixteen hues of the static palette (C17). A hue is stored by its name (blue), the same in every language; the field shows the translated word and the theme picks the tone (50 light, 70 dark). palette=\"false\": only the product's swatches, or «Своё» alone."
+    },
+    "custom": {
+      "type": "boolean",
+      "default": true,
+      "summary": "Whether the window offers «Своё», an own colour: the shade area, the eyedropper where the browser has one, the hue strip and the code row «format | code». custom=\"false\" keeps the palette only (task labels, chart series). Without a palette «Своё» is always offered."
+    },
+    "alpha": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Whether an own colour may be translucent: the alpha strip and the % field are drawn and the value may be #rrggbbaa. Without it a translucent code keeps its colour and drops the alpha, and translucent recent colours are not shown."
     },
     "clearable": {
       "type": "boolean",
@@ -62,6 +85,21 @@
       "default": "",
       "summary": "The field's label, drawn above the row as sf-input's label and naming the colour input (1.6.0). For a name without a visible label, write aria-label."
     },
+    "hint": {
+      "type": "string",
+      "default": "",
+      "summary": "Help text under the field, as sf-input's: the label's type, a step below the field's text."
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The error state: the frame's edge and the line under the field take the error colour."
+    },
+    "error-message": {
+      "type": "string",
+      "default": "",
+      "summary": "The error shown under the field in place of the hint while the field is invalid."
+    },
     "choose-label": {
       "type": "string",
       "default-from": "runtime.choose",
@@ -70,34 +108,50 @@
     "clear-label": {
       "type": "string",
       "default-from": "runtime.clear",
-      "summary": "The words on the control that returns to the inherited colour. Unset, it follows the page's language; with variant theme the default is the theme words (\"Use the original theme colour\")."
+      "summary": "The words on the control that returns to the inherited colour. Unset, it follows the page's language; with variant theme the default is the theme words (\"Use the original theme colour\"), with variant brand the brand words (\"Restore SIMAI colour\", «Вернуть цвет SIMAI»)."
     }
   },
   "values": {
     "value": {
       "type": "string",
       "default": "",
-      "summary": "The colour, as #rgb, #rrggbb or #rrggbbaa. Empty means nothing is chosen and the inherited colour applies."
+      "summary": "The colour: a palette name (red, orange, amber, yellow, lime, green, teal, cyan, sky, blue, indigo, violet, purple, pink, brown, gray), stored the same in every language, or the code of an own colour, #rrggbb (or #rrggbbaa with alpha; #rgb and #rgba are read and stored long, lowercase). Empty means nothing is chosen and the inherited colour applies. variants theme and brand store a code."
     },
     "effective-value": {
       "type": "string",
       "summary": "What is painted: the value when there is one, the inherited colour when there is not (§4.3); it was the getter `shown`, which the base value shown (§4.1) now names"
+    },
+    "theme": {
+      "type": "object",
+      "summary": "variants theme and brand: the theme the colour makes now (simai.framework.theme), or null before SF.ThemePalette has loaded; a field without a value makes the inherited or the Framework's own colour's theme"
+    },
+    "checks": {
+      "type": "list",
+      "summary": "variants theme and brand: what a person should know about the colour (core themeChecks): [{code, level, ...}] -- contrast, adjusted, close-to-status, grey; empty when there is nothing to say. The brand field draws them as lines under itself."
     }
   },
   "events": {
     "change": {
       "carries": {
         "value": "string",
-        "name": "string"
+        "name": "string",
+        "theme": "object",
+        "variables": "object",
+        "css": "string",
+        "checks": "list"
       },
-      "summary": "A colour was committed: once when the platform picker closes or a swatch or clear is pressed, not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again. The picker's own change does not leave the host."
+      "summary": "A colour was committed: once when a swatch is chosen, a drag across the shade area or a strip is released, the code field is left or Enter pressed, a key on a strip rests, or clear is pressed -- not on every step of a drag. Carries the value and the form name; an empty value means the inherited colour applies again. With variant theme or brand and a value, it also carries the theme, its variables (the four palettes and the brand fill), its CSS as a :root rule and its checks -- the names sf-theme-generator's events carried."
     },
     "input": {
       "carries": {
         "value": "string",
-        "name": "string"
+        "name": "string",
+        "theme": "object",
+        "variables": "object",
+        "css": "string",
+        "checks": "list"
       },
-      "summary": "The colour moved, on every step of a drag across the platform picker and before each change. Carries the value and the form name."
+      "summary": "The colour moved: on every step of a drag across the shade area or a strip, on each key in the code field that reads as a colour, and before each change. Carries the value and the form name. With variant theme or brand, the theme, variables, css and checks as change carries them."
     },
     "field-reset": {
       "shared": "field-inherit@1",
@@ -149,8 +203,19 @@
   "keyboard": {
     "host": {
       "Tab": "reach",
+      "Enter": "open",
+      "Space": "open"
+    },
+    "window": {
+      "Escape": "close",
       "Enter": "select",
-      "Space": "select"
+      "Space": "select",
+      "ArrowRight": "move",
+      "ArrowLeft": "move",
+      "ArrowDown": "move",
+      "ArrowUp": "move",
+      "Home": "move",
+      "End": "move"
     }
   },
   "relations": [
@@ -158,7 +223,23 @@
       "name": "icons"
     },
     {
+      "name": "inputs",
+      "$comment": [
+        "inputs: the field layer's .sf-field-action rules (owner decision C123), which the reset inside the frame takes, as sf-input's clear and reveal do."
+      ]
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
       "name": "cl-button-icon"
+    },
+    {
+      "name": "cl-segmented",
+      "lazy": true,
+      "$comment": [
+        "cl-segmented: the window's «Палитра / Своё» switch, drawn only once the window opens, fetched after the page is ready."
+      ]
     }
   ],
   "templates": {
@@ -179,8 +260,9 @@
     },
     "keys": {
       "Tab": "reach",
-      "Enter": "select",
-      "Space": "select"
+      "Enter": "open",
+      "Space": "open",
+      "Escape": "close"
     }
   },
   "host-states": {
@@ -239,7 +321,7 @@
       }
     ]
   },
-  "x-summary": "A colour control: a swatch that opens the platform picker, the colours a product already has as presets, and a way back to an inherited colour. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
+  "x-summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a code in Hex, RGB, HSL or HSB) -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "x-source": {
     "package": "framework",
     "folder": "color",
@@ -273,13 +355,26 @@
     "version 1.5.2: the sf-button and sf-button-icon it draws are asked for their current names (appearance ghost for link, status danger for error; actions block, decisions C13 and C15), so the template uses no dated alias; nothing it draws changes.",
     "version 1.5.5 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
     "version 1.5.4: the size rule C18 (2026-11-09): the presets' gap reads --sf-space-1/2 with no raw fallback (the fallback said 4px, the token is 8/12 and always defined; nothing moves). Also: the row wraps (flex-wrap: wrap): the chip, the value, the swatches and the inherited slot no longer stand past a narrow container -- inside sf-theme-generator the row was 314px wide in a 288px column at 320px and the reported 17px at a 390px screen; a row that fits is drawn as before.",
-    "version 1.6.0 (2026-11-11): one field label look for every field (dispatcher decision a, docs pre-check 2026-11-10 FB-10, CO-04): `label` is drawn above the row as sf-input's label (14 regular on-surface-variant at size 1) and still names the colour input; a colour with a name and no visible label takes the host's aria-label (the field renderers and the site header's tools now pass aria-label). The product colours are controls of the row's size, as tall as the chip and the reset (C01, CO-03; they were one rung down). The theme variant is unchanged."
+    "version 1.6.0 (2026-11-11): one field label look for every field (dispatcher decision a, docs pre-check 2026-11-10 FB-10, CO-04): `label` is drawn above the row as sf-input's label (14 regular on-surface-variant at size 1) and still names the colour input; a colour with a name and no visible label takes the host's aria-label (the field renderers and the site header's tools now pass aria-label). The product colours are controls of the row's size, as tall as the chip and the reset (C01, CO-03; they were one rung down). The theme variant is unchanged.",
+    "version 1.6.1 (2026-11-11): a patch, nothing drawn differently. The sheet reads the C16 roles by their current names where it read the former ones, which are var() of them wherever they are declared (src/core/contracts/token-aliases.v1.json, sf-role-aliases): --sf-on-disable → --sf-on-surface-disabled. Settings, values, events and keys unchanged.",
+    "version 1.7.0 (2026-11-12, owner decisions C83 and C86, round 4 R167-R170, C84; defects CO-03, CO-06, CO-07): a minor. The field is a field of the control ladder -- a swatch (the text's square on the C77 inset), the value and a chevron in one frame of the size's control height -- that opens the Framework's own compact window, never the browser's colour dialog (R130). The window is 304 wide (eight 1/3-rung swatches, 8 apart, 12 inside), anchored under the field by core's positioning (flip, shift, never taller than its room) in the top layer, and a sheet at the bottom of the screen below 44rem. «Палитра / Своё» is the standard sf-segmented; «Палитра» holds the product's swatches, the sixteen static hues (C17) and, after a divider, the recent own colours; «Своё» holds the shade area, the eyedropper (only where window.EyeDropper exists; disabled with its reason elsewhere), the hue strip, the alpha strip and one joined row «format | code | %» (Hex, RGB, HSL, HSB; any CSS colour may be pasted). New settings palette (default true), custom (default true) and alpha (default false). The value is a palette name (one in every language, painted 50 light / 70 dark) or a code; #rrggbbaa only with alpha. Recent own colours: one list per site, a view preference (SF.Preferences key sf-color-recent), 16 kept, 8 shown, own colours only, translucent ones hidden in a field without alpha (R168). Every swatch has one painter: the paint is clipped inside its 1 px border (R169) and a translucent colour is drawn split -- the left half without alpha, the right half as it is over the checkerboard (C86). CO-03: one height in the row (the product colours moved into the window). CO-06: bordered, outlined and plain now differ (the paint no longer runs under the border; plain has none). CO-07: the inherited colour shows in the value's place, the marker at the frame's end. variant theme (C84): only a circle of the current colour that opens the same window at its normal size; its value is always a code (a palette hue is stored as its tone's code); the native colour input and the uncommitted-colour watch are gone (the window commits each choice). New methods openPicker({anchor, view}) and closePicker(). Words: the hue names, the window's labels.",
+    "version 1.7.0, also (2026-11-12, owner decision C84: the brand colour is a mode of this field, sf-theme-generator leaves with a dated alias): variant brand -- the field of a settings screen, with the colour's checks (core themeChecks: contrast, adjusted, close-to-status, grey) as lines in a polite status region under it, the words sf-theme-generator had. Variants theme and brand put the theme -- the four dynamic palettes, never a status (TG-01; info stays sky under every brand, C90) -- and the brand fill of a header and a cover (--sf-brand, --sf-on-brand, core brandVariables: a light colour as it is with black or white text, any other the primary role) on target (new setting: a selector, empty the document's root); change and input of these variants carry theme, variables, css and checks, as the generator's events did. Values theme and checks. Neither takes alpha.",
+    "version 1.7.1 (2026-11-13, C83 acceptance; one number above the unreleased 1.7.0 it joins): a patch. The field holds its control's height from the first paint: .sf-color-field > .sf-color takes the size's control height as its least height, so a printed snapshot or a host that has not upgraded yet no longer draws a shorter row (40 px against the field's 56) and the page does not move when the element takes over. The upgraded field is the same to the pixel. Settings, values, events and keys unchanged.",
+    "version 1.8.0 (2026-11-14, fields ladder; R222 groundwork): a minor. The field has the frame parts of sf-input: new settings hint (a help line under the field), invalid and error-message (the error line, the error border, aria-invalid and aria-errormessage), the line described by the trigger (aria-describedby; component/field-contract.js). size takes the field ladder's five steps, 1/3, 1/2, 1, 2, 3, as sf-input: at 1/3 and 3 the field is 28 / 56 high at 1440 (24 / 48 compact, 24 / 52 on a phone); it drew both at size 1 (40). The label, help and error a step below the field's text. 1/2, 1 and 2 unchanged apart from the new lines; values, events and keys unchanged.",
+    "version 1.10.0 (2026-11-14, owner decision C153; research ui-control control/research/2026-11-14-text-inputs.md, prototype prototypes/text-inputs-study.html; written on the branch as 1.9.0): a minor. The field shows its own errors as sf-input does (C153 (3), helpers/form-field.js): a failed check of the form shows every wrong field at once and the first takes the focus when the person submitted; afterwards, once the value was changed, leaving the field checks it; a shown error goes the moment the value is right; the words are the component's, in the page's language; the browser's bubble is cancelled.",
+    "version 1.9.1 (2026-11-14, owner decisions C173 point 7 and C181 (3), the layer roles): a patch. The open panel reads the popover layer (--sf-layer--popover, 90, as before). Settings, values, events and keys unchanged.",
+    "version 1.11.0 (2026-11-14, owner decision C84, register RG-S3-31; one number above 1.9.1 on fix/role-layers-c173; written on the branch as 1.10.0): a minor. Variants brand and theme put the theme through core SF.ThemePalette.applyTheme: a target below the page takes the scheme it stands in as a theme class (theme-light / theme-dark: its nearest themed ancestor's, else the system's) and follows a switch of the page, a section or the system while the colour is on, so a preview on a dark page has the dark theme's roles (the tonal button's ink was 1.1 : 1, now 8.6 : 1 and more for green, blue, red, yellow, a very dark and a very light colour). Taking the colour off gives the target its own classes back. The brand fill (--sf-brand, --sf-on-brand) is written beside it as before. Settings, values, events and keys unchanged.",
+    "version 1.11.1 (2026-11-15, C105 H5; DEV recipe brand-theme; one number above the unreleased 1.10.0 of fix/area-theme-dark-c84 and 1.9.x it does not carry; written on the branch as 1.10.1): a patch. (1) The value and the buttons in the frame beside it (the reset of the inherited colour, the restore of the brand colour) are buttons of one group (C105 H5): the frame's gap is --sf-space-1/3 (8; 4 in the compact density of a desktop), not the button's icon-to-text space (H1), which put them 6-7 apart at the half size, in the compact density and on a phone. The clear is still an sf-button-icon ghost with its plate; it has not taken C123's field-action look, so H5, not C123's half inset between glyphs, is its role. (2) The brand field's clear says «Вернуть цвет SIMAI» / «Restore SIMAI colour» (new runtime word brand-reset), not the inherited words: a brand colour left empty is SIMAI's own, not an inherited one. clear-label still names it; the field variant keeps «Вернуть унаследованный», the theme variant its theme-reset words.",
+    "version 1.12.0 (2026-11-15, owner decision C123 (1), (2), (6); R214; DEV question on C105 H5 for group build 7; one number above the 1.10.1 it builds on; written on the branch as 1.11.0): a minor, a look. The reset inside the frame -- the restore of the brand colour, the reset to the inherited colour -- is the field layer's action (component.inputs, .sf-field-action, the glyph sf-input's clear and reveal draw) in place of a ghost sf-button-icon with its plate: no plate in any state, on-surface-variant at rest and on-surface under the pointer and on a press, the keyboard ring round the glyph inside the frame; the glyph is the field's text line, the swatch's size (16 / 20 / 24 / 28 / 36 at sizes 1/3, 1/2, 1, 2, 3 on a desktop; it was 16 / 20 / 20 / 24 / 28 in a 28 / 32 / 32 / 40 / 48 plate); its hit area is invisible, the frame's inner height and the glyph plus half the inset wide, never under 24. Between the value and the glyph and between the glyph and the chevron, half the frame's plain inset (C123 (6): 6 / 7 / 8 / 10 / 12 at those sizes on a desktop, 7 at size 1 in the compact density and on a phone; it was 14 to 18 to the plate's glyph), not the C105 H5 group gap of 1.10.1. The chevron is the same glyph (C123 (3)): it read the text line through font-size and box size only, which the icon's own size overrode, so it drew 24 (20 compact and on a phone) at every step; it now names the icon's size variables. Its name is unchanged: «Вернуть цвет SIMAI» / «Restore SIMAI colour» in the brand variant, «Вернуть унаследованный» / «Use the inherited colour» in the field variant (aria-label and title). New relation inputs (the field layer's rules). The theme variant's reset beside the circle stands outside a field and keeps its plate (C123 (7)). Settings, values, events and keys unchanged.",
+    "version 1.13.0 (2026-11-15, owner decision C123 (1), (2), (6); R214; one number above the unreleased 1.11.0 of fix/input-color-reset-c123 it builds on; written on the branch as 1.12.0): a minor, a look. The reset to the inherited value (the shared inherited-value slot, src/smart/helpers/inherited-value.js) is the field layer's action (component.inputs, .sf-field-action, the glyph sf-input's clear and reveal draw) in place of a link icon button of the step below: no plate in any state, on-surface-variant at rest and on-surface under the pointer and on a press, the keyboard ring round the glyph; the glyph is the field's text line (the leading icon's size: 16 / 20 / 24 / 28 / 36 at sizes 1/3, 1/2, 1, 2, 3 on a desktop; it was the step-below button's 16-24 glyph in a 28-40 button); the hit area is invisible and never under 24. In the frame the hit area is the frame's inner height; value -> glyph and glyph -> chevron are half the frame's inset, the steps the frame's own clear took in 1.11.0 (C123 (6)). Its name is unchanged: «Сбросить к наследуемому» / «Reset to inherited» (reset-label), aria-label and title; Tab reaches it after the value. The «наследуется» marker is unchanged. Settings, values, events and keys unchanged.",
+    "version 1.13.1 (2026-11-15, owner decision C123 (6); above 1.12.0 of fix/inherited-reset-c123, the highest on any branch; written on the branch as 1.12.1): a patch, no change on screen. The frame's gap while it holds an action (the reset of the inherited colour, or of clearable) is the field layer's --sf-field-action--value-space (component.inputs 1.7.1, field-action.scss: half the inset less what the hit area stands out past the glyph, the 24 floor counted in), in place of the same formula written here; sf-input-color's frame is one of the layer's field frames. Value -> glyph and glyph -> chevron read the same at every size, density and on a phone (control/evidence/2026-11-15-field-action-gaps-c123).",
+    "version 1.14.0 (2026-11-15, owner decision C123 (3), (6); above 1.12.1 of fix/field-action-gaps-c123, the highest on any branch; written on the branch as 1.13.0): a minor, a look. Without an action in the frame the value -> chevron step is half the frame's inset, `calc(var(--sf-color--space-x) / 2)`: 6 / 7 / 8 / 10 / 12 at 1/3, 1/2, 1, 2, 3 on a desktop (compact and phone by their insets), the step C123 (6) gives from a field's text to its first glyph; the chevron is the field's indicator glyph (C123 (3)). It stood the C105 H5 group gap (--sf-space-1/3: 8, 4 in the compact density), which matched half an inset at size 1 on a desktop only. While the frame holds an action the gap stays the field layer's --sf-field-action--value-space (1.12.1). Nothing else changes."
   ],
   "x-rule": {
     "$comment": [
-      "The colour control loads on demand like any other Smart element. Its relation is",
-      "the icon button it uses to return to an inherited colour; the native picker it",
-      "opens is the platform's and brings nothing."
+      "The colour control loads on demand like any other Smart element. Its relations are",
+      "the icons, the icon button of the reset and the eyedropper, and the segmented",
+      "switch of its own window (lazy: drawn only once the window opens)."
     ]
   },
   "x-registry": {
@@ -290,11 +385,23 @@
       "property"
     ],
     "public-parts": [
-      "swatch",
+      "field",
+      "trigger",
       "chip",
       "text",
-      "swatches",
-      "preset"
+      "window",
+      "views",
+      "palette",
+      "options",
+      "option",
+      "recent",
+      "own",
+      "area",
+      "strip",
+      "code-row",
+      "format",
+      "format-menu",
+      "dot"
     ],
     "state": {
       "machines": {
@@ -349,10 +456,11 @@
       }
     },
     "ai_guidance": {
-      "use_when": "Use sf-input-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one.",
+      "use_when": "Use sf-input-color wherever a colour is set -- a theme, a site look, a label, a chart series -- and especially when the colour may be left unset to inherit one. For labels and chart series keep the palette name (custom=\"false\"), so the colour follows the dark theme.",
       "do_not": [
         "Do not draw the inherited colour as the value: pass it as inherited-value so «not set» stays distinguishable",
         "Do not listen to input for saving; save on change, which fires once per committed colour",
+        "Do not turn a palette name into a hex before storing it: the name follows the theme, the hex does not",
         "Do not copy generated ui-smart code",
         "Do not move host data or access decisions into the component"
       ],
@@ -363,14 +471,14 @@
         "ownership",
         "provenance"
       ],
-      "minimal_example": "<sf-input-color label=\"Brand colour\" clearable inherited-value=\"#1f6feb\" swatches=\"#1f6feb|Brand blue, #e5534b|Alert\"></sf-input-color>",
+      "minimal_example": "<sf-input-color label=\"Brand colour\" clearable inherited-value=\"blue\" swatches=\"#1f6feb|Brand blue, red|Alert\"></sf-input-color>",
       "owner_commands": [
         "npm run contract:verify",
         "npm test"
       ]
     },
     "accessibility": {
-      "focus": "The platform colour input, each swatch and the clear button take focus in order and keep a visible focus ring. Swatches say whether they are the chosen colour by aria-pressed. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+      "focus": "The field's trigger takes focus and keeps a visible focus ring on the frame; it names the field and the colour («Цвет метки: Синий») and says aria-haspopup dialog and aria-expanded. The window is a labelled dialog: focus goes to the chosen swatch (or the shade area in «Своё»), each swatch group is a radio group with one tab stop and arrow keys, the shade area and the strips are sliders with aria-valuetext, Escape closes the window and focus returns to the trigger. After a reset back to the inherited value, focus returns to the trigger; while the value is inherited, the trigger carries it as aria-description and the visible marker is aria-hidden."
     },
     "alias-events": {
       "sf-field:reset": {
@@ -414,6 +522,32 @@
         "returns": {
           "type": "boolean",
           "description": "Whether the field was reset."
+        }
+      },
+      "openPicker": {
+        "summary": "Opens the colour window on the view the value comes from, or on {view: 'palette' | 'own'}. {anchor} places it against an element of the page and gives focus back to it on close (a settings menu row, C85), instead of the field. Returns whether it is open (false while disabled).",
+        "arguments": [
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "boolean"
+        }
+      },
+      "closePicker": {
+        "summary": "Closes the colour window and returns focus to the trigger unless {restoreFocus: false}. Returns true.",
+        "arguments": [
+          {
+            "name": "options",
+            "type": "object",
+            "required": false
+          }
+        ],
+        "returns": {
+          "type": "boolean"
         }
       }
     },

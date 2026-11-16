@@ -2,7 +2,7 @@
   "$comment": "The source of sf-resizer's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/resizer (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.resizer",
   "tag": "sf-resizer",
-  "version": "1.1.5",
+  "version": "1.3.3",
   "kind": "leaf",
   "family": "resizer",
   "settings": {
@@ -46,7 +46,7 @@
     "storage-key": {
       "type": "string",
       "default": "",
-      "summary": "Remembers the width in this browser as the view preference sf-resizer/<key> (SF.Preferences); a double click forgets it."
+      "summary": "Remembers the width (and a fold) in this browser as the view preference sf-resizer/<key> (SF.Preferences); a double click forgets it."
     },
     "label": {
       "type": "string",
@@ -57,12 +57,17 @@
       "type": "boolean",
       "default": false
     },
+    "collapsible": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The panel folds to its edge when dragged past min by half of min, and Enter folds it and gives back the width it had; a «Show» button on the edge brings it back. Off by default."
+    },
     "value": {
       "type": "number",
       "nullable": true,
       "default": null,
-      "x-summary": "A width the host keeps for the person, in pixels; it wins over this browser's memory",
-      "summary": "A width in pixels the host keeps (a person's settings); it wins over the browser's memory."
+      "x-summary": "A width the host keeps for the person, in pixels (0: folded); it wins over this browser's memory",
+      "summary": "A width in pixels the host keeps (a person's settings); it wins over the browser's memory. With collapsible, 0 is a folded panel."
     }
   },
   "values": {},
@@ -93,8 +98,7 @@
       "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max",
-      "Enter": "revert",
-      "Space": "revert"
+      "Enter": "toggle:folded"
     }
   },
   "relations": [],
@@ -124,10 +128,9 @@
       "PageDown": "step:-page",
       "Home": "to:min",
       "End": "to:max",
-      "Enter": "revert",
-      "Space": "revert"
+      "Enter": "toggle:folded"
     },
-    "$comment": "The host is a focusable separator (aria-orientation vertical by its role) with aria-valuenow the width in pixels between aria-valuemin and aria-valuemax; its description (title) says how to use it. ArrowLeft and ArrowRight follow the writing direction and the edge."
+    "$comment": "The host is a focusable separator (aria-orientation vertical by its role) that controls its panel (aria-controls); aria-valuenow is the share of the way from min to max, 0-100 (0: the narrowest, or folded), with the words in aria-valuetext («27 %», «Свёрнуто»); its description (title) says how to use it. ArrowLeft and ArrowRight follow the writing direction and the edge. Enter folds and restores a collapsible panel and restores the default width of one that is not; Space does nothing. A disabled handle and one below the layout's split step are out of the Tab order."
   },
   "css-variables": {
     "--sf-resizer-hit-size": {
@@ -182,6 +185,7 @@
     "settings.step: a numeral → number (§16 item 29); value: a width in pixels → number, nullable"
   ],
   "x-decisions": [
+    "version 1.3.0 (owner decision C158, resizer study control/research/2026-11-14-resizer.md, prototype prototypes/resizer-study.html): a minor. (1) The strip of 1.2.0 (24, 44 under a finger, centred on the edge; the panel's own border is the line at rest, the 2 px line after --sf-duration-normal, a focus ring around the strip) is the accepted look. (2) collapsible (boolean, off by default): a drag past min by half of min folds the panel to its edge -- data-folded on the panel (the prototype's name), its width written 0, its content hidden -- and back over that line opens it again; Enter folds and gives back the width it had (APG window splitter), a double click is the default width (and open), Space does nothing (it reverted before); an arrow that widens opens a folded panel at min; a «Показать» (Show) sf-button-icon stands on the folded panel's edge (data-sf-resizer-unfold), its glyph the side the panel opens from (left_panel_open / right_panel_open). A fold is kept with the width ({v:1, width, folded:true}); a host keeps it as value 0, and resize says width 0. Without collapsible Enter still restores the default. (3) aria-valuenow is the share of the way from min to max, 0-100, aria-valuemin 0, aria-valuemax 100, aria-valuetext the words («27 %», «Свёрнуто»; lang value and folded), aria-controls the panel (an id is given to a panel without one); SF.Resizer.attach edges say the same (their caller may pass its own text). (4) Below the layout's split step -- the container's width under 40rem (--sf-h0), or a .sf-workspace region whose layout is narrow -- the handle is not there (data-sf-resizer-narrow, display none) and a fold is not drawn; the width and the fold the person chose wait for a wide screen. (5) Table column edges: SF.Resizer.attach leaves Enter and Escape on edges it does not own (options.handles) to their component, which takes focus back to the header; a double click calls the caller's reset, which for a column is the fit to content; the edge's Tab order is the caller's (one Tab stop for the table, C146(8)). The header menu (Изменить ширину · По содержимому · По умолчанию) and its words are sf-view-table's (SIMAI Pro). (6) .sf-workspace regions with data-sf-workspace-resize get their edge from core (workspace.js places an sf-resizer, collapsible on the list) -- the width in the region's variable (--sf-workspace-list, --sf-workspace-panel), kept as sf-resizer/<key>, written before the first paint by core.",
     "number-type: min and max are CSS lengths with tokens (12rem, var(--sf-g3)), resolved in the target's context, so they stay strings; step is a number of pixels from 1; value is a number of pixels, nullable (no width kept).",
     "own-verb-words: resize is a verb of the resizer alone (vocabulary §5 has none for a width); its word is lang events.resize.label. It reports, it does not ask: not cancelable.",
     "version: 1.0.0 → 1.1.0: sf-resize is a dated alias of sf-resizer-resize, step and value are numbers; a minor while the alias holds (§4.10).",
@@ -194,7 +198,11 @@
     "skeleton: none; the handle has no data of its own: the target's width is the page's first paint, restored after layout.",
     "side-effects: none outside its target: it writes the width (inline-size or the named custom property) on the panel it stands in, which is its job, and marks html[data-sf-resizer-active] while dragging.",
     "css-variables: five public variables read by its own sheet (src/core/contracts/public-variables.v1.json).",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0 (resizer study control/research/2026-11-14-resizer.md, dispatcher ruling): (RS-1, C76/C58, D21) the strip a pointer finds is 24 (--sf-c2), 44 under a coarse pointer (--sf-d1), centred on the edge; the line it draws is unchanged; --sf-resizer-hit-size still overrides both. (RS-2) a target that clips its overflow (overflow other than visible: a scrolling panel, every .sf-workspace region) cut the strip in half and scrolled it away; the handle now stands outside the clip, positioned against an ancestor of the target (the target is no longer made relative) or, when the page positioned the target itself, against the viewport, at the target's edge as measured (data-sf-resizer-outside absolute|fixed, private --sf-resizer--x/--y/--h), followed on resize and scroll; a target that clips nothing is as before. (RS-5) ArrowLeft and ArrowRight move the edge the way they point in both writing directions: the engine applied the writing direction twice, so an RTL page ran its arrows against the edge (SF.Resizer.attach callers get the same fix: direction() is applied once). (RS-6) a disabled handle leaves the Tab order (its own tabindex is removed; a tabindex the page wrote becomes -1 and comes back on enable) and says aria-disabled. (RS-7) keyboard focus is the system ring around the strip, turned inwards, with the line in the focus colour; the hover line waits --sf-duration-normal before it shows (a pointer crossing the edge no longer flashes it), at once while dragging and on focus. (RS-8) the kept width (value, then SF.Preferences) is written while the element connects, not a frame later: the handle never shows a frame of the old width after it is defined; with the bundle on the page before the first paint the first frame has the kept width (a lazily loaded bundle still arrives after it). (RS-9) max also stops where the in-flow content beside the panel (a sibling on the same row) would be left narrower than min: the handle never takes the content's width; a stylesheet or page width over that room is narrowed while it lasts and given back when the room returns, never remembered. A page-written width is read as a length (16rem was read as 16 px when clamped).",
+    "version 1.3.1 (2026-11-14, owner decisions C173 point 7 and C181 (3), the layer roles): a patch. The splitter reads the sticky layer (var(--sf-resizer-z-index, var(--sf-layer--sticky, 50))); was --sf-z-index-7 (70). Settings, values, events and keys unchanged.",
+    "version 1.3.2 (2026-11-15, owner decisions C158 (4) and C181 (2), DEV GB5 answers): a patch. The split step (40rem) is read on the width of the columns' place, not of a wrapper that takes its width from the columns: the panel's parent, unless it is an item of a flex row that does not grow, an inline box or a float, then the box it stands in (a container-type box is a place of its own). Two resizable columns in one wrapper on a wide page (an admin menu's) keep their handles; before, the wrapper was as wide as the columns (31rem) and hid both. A narrow place and a phone still hide them. Markup, settings, values, events and keys unchanged.",
+    "version 1.3.3 (2026-11-15, owner decision C158 (4); ui-pro release over ui-141822273efe, probe admin-navigation-resize): a patch. The split step (40rem, --sf-h0) is read on the width of the split the panel stands in, not on a wrapper of the panel: the nearest box around the panel whose width does not come from the panels it holds. A box that only wraps them is passed -- display contents, an inline-level box, a float, a width of max-content, min-content or fit-content (read through Typed OM where the browser has it), a flex item (its layout parent found past display contents) that does not grow and takes its basis and width from its content -- and the box it stands in is read, and so on up; a container-type box is a split of its own; a flex item with a length (flex: 0 0 18rem, inline-size 18rem) is one too where Typed OM says so. sf-admin-menu (ui-pro): its host is display contents and .sf-admin-nav is max-content, a flex item of the page row; 1.3.1 read .sf-admin-nav (about 31rem) and hid both column handles at 1400 px in every admin; now the page row is read, the handles stand at 1400 and are hidden at 390. The split is observed for size changes. Supersedes 1.3.2 of fix/gb5-answers (its columnsPlace stopped at .sf-admin-nav: a max-content flex box under a display contents host); its browser test passes on this reading."
   ],
   "x-registry": {
     "capabilities": [
@@ -216,6 +224,14 @@
             "type": "integer",
             "description": "The width the person dragged to, in CSS pixels, clamped to min and max when it is applied.",
             "seed": true,
+            "written_by": [
+              "sf-resizer"
+            ]
+          },
+          "folded": {
+            "type": "boolean",
+            "description": "The panel was folded (collapsible); width is the width it comes back to.",
+            "seed": false,
             "written_by": [
               "sf-resizer"
             ]
@@ -243,7 +259,7 @@
     "contracts": {
       "attach": {
         "type": "object",
-        "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value."
+        "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}, text}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value (share 0-100 with words); Enter and Escape on edges of options.handles are the caller's."
       }
     },
     "state": {
@@ -324,10 +340,9 @@
         "End",
         "PageUp",
         "PageDown",
-        "Enter",
-        "Space"
+        "Enter"
       ],
-      "focus": "The handle is in the tab order with role separator, aria-orientation vertical and aria-valuenow/min/max in pixels. Arrows change the width by a step (Shift: four), Home and End set a limit, Enter, Space and a double click restore the stylesheet's width."
+      "focus": "The handle (unless disabled, or below the layout's split step) is in the tab order with role separator, aria-orientation vertical, aria-controls its panel, aria-valuenow the share of the way from min to max (0-100) and aria-valuetext its words. Arrows move the edge the way they point by a step (Shift: four), Home and End set a limit, Enter folds and restores a collapsible panel (otherwise restores the default), a double click restores the stylesheet's width; Space does nothing."
     },
     "alias-events": {
       "sf-resize": {

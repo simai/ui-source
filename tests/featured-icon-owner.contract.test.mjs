@@ -49,7 +49,40 @@ test('Featured Icon legacy names are aliases and Smart File Upload consumes cano
   assert.doesNotMatch(featuredClasses, /sf-featured-icon--(?:light|clear)|'flex'|'transition'/);
   assert.match(rule, /class\\s\*=\\s\*/);
   assert.match(rule, /css: true/);
-  assert.match(rule, /js: false/);
+  // The script only notes the aliases in SF.deprecations (IR-2, 2026-11-14).
+  assert.match(rule, /js: true/);
+});
+
+test('Featured Icon keeps one name per look, the others dated aliases noted once', async () => {
+  const [css, script, journal] = await Promise.all([
+    read('src/component/featured-icon/scss/_css_featured-icon.scss'),
+    read('src/component/featured-icon/js/_featured-icon.js'),
+    read('contracts/changes/journal.json'),
+  ]);
+  // C188 (8): medium and elevated draw tonal (soft) and are aliases too.
+  const pairs = {light: 'soft', medium: 'soft', mid: 'soft', elevated: 'soft', modern: 'soft', dark: 'solid', clear: 'neutral'};
+  for (const [alias, name] of Object.entries(pairs)) {
+    assert.ok(script.includes(`${alias}: '${name}'`), `${alias} -> ${name}`);
+    assert.ok(css.includes(`sf-featured-icon--${name}`));
+  }
+  assert.match(script, /remove_after: '2027-01-01'/);
+  assert.match(script, /kind: 'class'/);
+  const record = JSON.parse(journal).records.find((entry) => entry.id === 'class-featured-icon-look-aliases');
+  assert.ok(record, 'journal record');
+  assert.equal(record.remove_after, '2027-01-01');
+  assert.equal(record.items.length, 7);
+});
+
+test('Featured Icon size 3 and elevated follow the ladders and C20', async () => {
+  const css = await read('src/component/featured-icon/scss/_css_featured-icon.scss');
+  const size3 = css.match(/\.sf-featured-icon--size-3 \{[^}]*\}/)?.[0] || '';
+  assert.match(size3, /--sf-featured-icon--icon-size: calc\(var\(--sf-text-height-2\) \+ var\(--sf-a4\)\)/);
+  assert.match(size3, /var\(--sf-ui-3--control-height\)/);
+  // C188 (8): elevated retires and draws the tonal look, no shadow at all.
+  const tonal = css.match(/\.sf-featured-icon--soft,[^{]*\{[^}]*\}/)?.[0] || '';
+  assert.match(tonal, /\.sf-featured-icon--elevated/);
+  assert.match(tonal, /\.sf-featured-icon--modern/);
+  assert.doesNotMatch(css, /shadow-raised|shadow-flat/);
 });
 
 test('Featured Icon documentation covers all axes and accessible naming', {

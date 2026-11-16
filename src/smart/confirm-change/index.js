@@ -28,7 +28,10 @@
 // core/js/element-manifest.js, its words are lang/<locale>.json, the actions
 // answer outcomes, and the person's answer is the vocabulary's `answer {id,
 // accepted}`; the old names sf-change-confirm-accept, -decline and -expire
-// follow until 2026-12-01 (aliases.json). It is a confirm surface in the §19.4
+// follow until 2026-12-01 (aliases.json). Since 1.8.0 its classes carry its
+// own name, .sf-confirm-change__*, and its public variables
+// --sf-confirm-change-*; the former .sf-change-confirm* classes are written
+// beside them and the former variables read under them until 2027-01-01. It is a confirm surface in the §19.4
 // sense: an assembly's `ask` opens it and waits for the answer.
 //
 // It renders into its own light DOM, like every Smart component: a document
@@ -38,10 +41,16 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {noteDeprecated} from "../../core/js/deprecations";
 import {confirmSurface} from "../helpers/confirm-surface.js";
 import {renderChangeConfirmTemplate} from "./js/templates/default.js";
+import {calendarDayOffset} from "../../core/js/format-date.js";
+import {html} from "lit";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
-import en from "./lang/en.json";
-import ru from "./lang/ru.json";
+import enFile from "./lang/en.json";
+import ruFile from "./lang/ru.json";
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 const ChangeConfirmElement = elementFromManifest(manifest, {
     base: SfBaseElement,
@@ -52,7 +61,7 @@ const ChangeConfirmElement = elementFromManifest(manifest, {
 
 const ConfirmSurface = confirmSurface(ChangeConfirmElement, {
     kind: "sf-confirm-change",
-    block: "sf-change-confirm",
+    block: "sf-confirm-change",
     answerId: "changeId",
 });
 
@@ -99,11 +108,29 @@ class SfChangeConfirm extends ConfirmSurface {
             beforeText: this.sfWord("before-text"),
             afterText: this.sfWord("after-text"),
             emptyValueText: this.sfWord("empty-value-text"),
+            // What the acceptance does (decision C25, DEV change-time study
+            // CT-4): status="danger" for a delete or anything that cannot be
+            // undone, as sf-confirm's setting.
+            danger: this.getAttribute("status") === "danger",
         };
     }
 
     template() {
         return renderChangeConfirmTemplate(this.templateContext());
+    }
+
+    // The deadline is an sf-time (DEV change-time study CT-12; owner decision
+    // C183 (4)): «Подтвердить можно до 23:30» today, «… до завтра, 10:00»,
+    // «… до 17 ноября, 10:00» later, with the exact moment and its zone in
+    // the tooltip. The words around the time are the language file's
+    // until-text; the time stands where its {time} is.
+    statusText(shown) {
+        const until = this.getAttribute("expires-at");
+        if (shown !== "open" || !until || !Number.isFinite(Date.parse(until))) return super.statusText(shown);
+        const [before, after = ""] = this.sfWord("until-text", {vars: {time: "\u0000"}}).split("\u0000");
+        const today = calendarDayOffset(until) === 0;
+        return html`${before}<sf-time class="sf-confirm-change__until" datetime=${until}
+            format=${today ? "time" : "auto"} threshold="PT0S"></sf-time>${after}`;
     }
 
     // answer("accept") and answer("decline") were the 1.0 form; read until the

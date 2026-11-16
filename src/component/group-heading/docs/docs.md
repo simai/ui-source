@@ -15,6 +15,8 @@
 <div class="sf-group-heading sf-group-heading--sticky" role="heading" aria-level="3">Вчера</div>
 
 <div class="sf-group-heading sf-group-heading--divider" role="separator" aria-label="Вчера">Вчера</div>
+
+<div class="sf-group-heading sf-group-heading--divider sf-group-heading--sticky" role="separator" aria-label="Сегодня">Сегодня</div>
 ```
 
 ## Виды
@@ -28,9 +30,11 @@
   или текст 2 (дата 1). `sf-list-timeline` ставит класс по своему `size`.
 - **Прилипающий** `.sf-group-heading--sticky` — тот же заголовок остаётся на виду
   при прокрутке, под ним — сплошной цвет места (`--sf-surface-place-solid`).
-- **Разделитель** `.sf-group-heading--divider` — для переписки: слова тихо по
-  центру между двумя линиями; разметка — `role="separator"` со словами в
-  `aria-label`.
+- **Разделитель** `.sf-group-heading--divider` — новый день в переписке
+  (решение владельца C167 (2)): слова по центру тонкой линии, тихим цветом,
+  средним начертанием, текстом 1/2; сверху `--sf-space-1/2`, снизу
+  `--sf-space-1/4`; разметка — `role="separator"` со словами в `aria-label`.
+  С `.sf-group-heading--sticky` прилипает к верху ленты при прокрутке.
 
 Слова — `SF.format.relativeDay` ядра с заглавной: «Сегодня», «Вчера», день
 недели в пределах недели, дальше дата («27 октября»).

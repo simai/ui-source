@@ -57,18 +57,49 @@ again with the same subset: a request can be written by anyone.
 - `hint` -- the line under the field; `invalid` with `error-message` shows
   the message in its place.
 - `required` -- the form is not sent while the value is `""`
-  (`value-missing`).
+  (`value-missing`); after a failed form check the field shows the required
+  error as sf-input-textarea does (red frame, «Заполните поле» under it),
+  gone once there is text.
 - `disabled`, `readonly` -- as on sf-textarea: a disabled field is not
-  focusable and not sent; a read-only one is read and selected, its toolbar
-  disabled, its value sent.
-- `size="1/2|1|2"` -- the field ladder; the frame, padding and text are
-  sf-textarea's of the same size, the toolbar's buttons a rung below
+  focusable and not sent; a read-only one is read and selected in the
+  read-only frame with no toolbar (C141 (5)), its value sent. A record card
+  shows a read-only value as text on the page, without a frame
+  (module.smart-field-renderers).
+- `maxlength`, `counter` -- the limit of the text a person reads (markup not
+  counted), with sf-input-textarea's rule (C141 (1)): the count «131 / 160» at
+  the end of the message line from 80 % of the limit (always with `counter`);
+  past it the count and the frame are the error colour and the field is
+  invalid (`too-long`), so the form is not sent. The text is never cut.
+- `size="1/3|1/2|1|2|3"` -- the field ladder, as sf-input's; the frame,
+  padding and text are sf-input-textarea's of the same size and the text
+  starts where the textarea's does (C77: 12 / 16 / 20 from the outer edge,
+  12 in a compact region and on a phone), the toolbar's buttons a rung below
+  (1/3 at 1/3)
   (ghost on-surface icon buttons; the block levels P, H2, H3, H4 in the same
-  square). Headings in the text climb the text ladder from the field's
-  text: h4 is the field's text, h3 a rung above, h2 two rungs above, all
-  bold, so no heading is smaller than the text. The link editor is one
-  rung: its address field, hint and buttons are the field's size (at most 1).
-- `appearance="bordered|filled"` -- sf-textarea's two boxes.
+  square). Headings in the text stand one level below the page's (C141 (7)):
+  h2 is the page's h3, h3 its h4, h4 its h5, all bold, and never below the
+  field's climb from its text (h4 the text, h3 a rung above, h2 two), so no
+  heading is smaller than the text. On a touch phone the text and the
+  headings are at least 16px, on at least the size-1 line, so iOS does not
+  zoom in. The link editor is size 1/2 at every field size (C141 (6)): the
+  address field and «Применить», then «Убрать ссылку» for an existing link,
+  in one row from the start edge, `--sf-space-1/3` apart (C105 H5), the
+  dropping panel's inset.
+- The toolbar stays at the top of the visible part of the field while the
+  page scrolls a long text (C141 (3)). Its groups stand in the order of
+  importance (`data-sf-priority`: text levels, bold, italic, link first). The
+  text levels are one button with the current level, «Абзац ▾», first in the
+  row: it opens a menu where one level is chosen (C155 (5)). The toolbar is
+  always one row (`overflow="more"`, the default since 1.6.0, C155, R233):
+  what does not fit leaves for ⋯ «Ещё» at its end — whole groups with their
+  separator, undo and redo first, then the lists and the quote; the levels and
+  bold, italic, link stay. ⋯ opens a menu with the tools that left, each with
+  its icon, name and shortcut, a pressed one checked; ⋯ itself is never
+  pressed. `overflow="wrap"` lets the row wrap as before. Icon buttons of one
+  group stand `--sf-space-1/4` apart, with the same step on each side of a
+  group's separator line (C105 H5, C144).
+- `appearance="bordered|filled"` -- sf-textarea's two boxes (filled with its
+  bottom line in `--sf-outline`, C52).
 - `rows` -- the fewest lines shown (6); the field grows with its text.
   `max-rows` -- the most before the text scrolls inside.
 
@@ -95,17 +126,30 @@ nothing.
 ## Keyboard
 
 - Tab reaches the toolbar (one stop) and then the text; Tab in the text
-  leaves the field and never inserts a tab.
-- In the toolbar, ArrowLeft and ArrowRight move between the buttons, Home
-  and End go to the first and the last; Enter or Space presses one.
+  leaves the field and never inserts a tab. Shift+Tab back into the toolbar
+  comes to the tool the person left (owner decision C184 (3)).
+- In the toolbar, ArrowLeft and ArrowRight move between the buttons in the
+  page's direction (in a right-to-left page ArrowLeft moves forward), Home
+  and End go to the first and the last, and the walk wraps; Enter or Space
+  presses one. The keys are core's roving helper (core/js/roving.js), the
+  same for every toolbar of the Framework.
+- A tool that cannot be used now (Undo with nothing to undo, a text level
+  inside a list) is dimmed but the arrows stop on it, and its tooltip and
+  description say why: «Нечего отменять», «Нечего повторять», «Недоступно в
+  списке» (C184 (2)).
+- On «Абзац ▾» and ⋯ Enter, Space or ArrowDown open the menu; Escape
+  closes it and gives the focus back.
 - Ctrl+B / Cmd+B bold, Ctrl+I / Cmd+I italic, Ctrl+K / Cmd+K the link
   editor, Ctrl+Z / Cmd+Z undo, Ctrl+Shift+Z / Cmd+Shift+Z and Ctrl+Y redo.
 - Bold and Italic say the marks of the text, not how it looks: a heading is
   bold by its type, so Bold is pressed in it only on a bold mark. At a caret
-  the mark goes to the text typed next.
+  the mark goes to the text typed next, composed with an IME, or pasted
+  as plain text (pasted rich text keeps its own marks); a cancelled
+  composition keeps it.
 - In the link editor Enter applies and Escape closes; the caret goes back to
   the text. The link editor is a popup form of the form's width; on a phone
-  it is a sheet at the bottom of the screen.
+  it is a sheet at the bottom of the screen. Its field and buttons are the
+  toolbar's size, and while it is open only the link tool looks active.
 
 ## Accessibility
 
@@ -124,4 +168,15 @@ Colours are role tokens, in light and dark.
 `--sf-rich-text-color`, `--sf-rich-text-radius`,
 `--sf-rich-text-padding-inline`, `--sf-rich-text-padding-block`,
 `--sf-rich-text-invalid-border-color` -- sf-textarea's set under this
-component's name.
+component's name. `--sf-rich-text-sticky-top` -- how far below the top of
+the view the toolbar sticks (a page with a fixed header); 0 by default.
+
+## Label, help, errors and focus (C153)
+
+Since 1.5.0 (owner decision C153) sf-input-rich follows sf-input: `help` draws a «?» (`sf-help-mark`) after the label and its «*», a step below the value, the label row keeping its height, named «Подробнее: <label>». The field
+shows its own errors in the page's language -- a failed submit shows every
+wrong field and focuses the first, a changed field is checked on leaving, a
+shown error goes the moment the value is right -- and the browser's bubble
+never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
+ink; hover draws the border in the text ink and focus a 2 px primary edge
+inside the field, with no ring outside it.

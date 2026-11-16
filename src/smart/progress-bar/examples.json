@@ -145,6 +145,11 @@
           "  <sf-progress-bar id=\"p8\" label=\"Подсчёт\" indeterminate value=\"30\" text-position=\"inline-end\"></sf-progress-bar>",
           "  <sf-progress-bar id=\"p9\" label=\"Копия\" value=\"35\" paused></sf-progress-bar>",
           "  <sf-progress-bar id=\"p10\" label=\"Квота\" value=\"40\" status=\"error\" paused></sf-progress-bar>",
+          "  <sf-progress-bar id=\"p11\" label=\"Загрузка\" value=\"42\" text-position=\"top\"></sf-progress-bar>",
+          "  <sf-progress-bar id=\"p12\" label=\"Старое слово\" value=\"42\" text-position=\"bottom\"></sf-progress-bar>",
+          "  <sf-progress-bar id=\"p13\" label=\"Место\" value=\"74\" meter text-position=\"inline-end\"></sf-progress-bar>",
+          "  <sf-progress-bar id=\"p14\" label=\"Нейтральная\" value=\"50\" status=\"neutral\"></sf-progress-bar>",
+          "  <sf-progress-bar id=\"p15\" label=\"Прежнее\" value=\"50\" status=\"primary\"></sf-progress-bar>",
           "</main>"
         ]
       },
@@ -276,7 +281,7 @@
             {
               "script": "(document.querySelector('#p6').value = 30, true)",
               "wait": 100,
-              "check": "(() => { const a = document.querySelector('#p6'); return a.getAttribute('data-status') === 'neutral' && !a.querySelector('.sf-progress-bar').classList.contains('sf-progress-bar--warning'); })()"
+              "check": "(() => { const a = document.querySelector('#p6'); return !a.hasAttribute('data-status') && !a.querySelector('.sf-progress-bar').classList.contains('sf-progress-bar--warning'); })()"
             }
           ]
         },
@@ -306,7 +311,42 @@
             {
               "script": "(() => { document.querySelector('#p9').paused = false; return true; })()",
               "wait": 100,
-              "check": "(() => { const a = document.querySelector('#p9'); return a.getAttribute('data-status') === 'neutral' && !a.querySelector('.sf-progress-bar').hasAttribute('aria-valuetext'); })()"
+              "check": "(() => { const a = document.querySelector('#p9'); return !a.hasAttribute('data-status') && !a.querySelector('.sf-progress-bar').hasAttribute('aria-valuetext'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p11-top",
+          "title": "text-position top: one line over the bar, the label at the start and the value at the end, aria-hidden; bottom is read as top (C131 (4))",
+          "covers": "settings.text-position, aliases value bottom",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#p11 .sf-progress-bar'); const h = r.firstElementChild; const o = document.querySelector('#p12 .sf-progress-bar'); return r.dataset.position === 'top' && h.classList.contains('sf-progress-bar-head') && h.getAttribute('aria-hidden') === 'true' && h.querySelector('.sf-progress-bar-label').textContent.trim() === 'Загрузка' && h.querySelector('.sf-progress-bar-text').textContent.trim() === '42%' && h.nextElementSibling.classList.contains('sf-progress-bar-main') && o.dataset.position === 'top' && o.querySelector('.sf-progress-bar-head'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p13-meter",
+          "title": "meter gives role meter with the value (C131 (7))",
+          "covers": "settings.meter, accessibility.role",
+          "steps": [
+            {
+              "check": "(() => { const r = document.querySelector('#p13 .sf-progress-bar'); return r.getAttribute('role') === 'meter' && r.getAttribute('aria-valuenow') === '74' && r.getAttribute('aria-label') === 'Место'; })()"
+            },
+            {
+              "script": "(() => { document.querySelector('#p13').indeterminate = true; return true; })()",
+              "wait": 100,
+              "check": "(() => { const r = document.querySelector('#p13 .sf-progress-bar'); return r.getAttribute('role') === 'meter' && r.getAttribute('aria-valuenow') === '74' && !r.classList.contains('sf-progress-bar--indeterminate'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p14-status-default",
+          "title": "no status carries no class and draws primary; neutral is its own grey class; primary is read as the default (C131 (1))",
+          "covers": "settings.status",
+          "steps": [
+            {
+              "check": "(() => { const a = document.querySelector('#p1 .sf-progress-bar'); const n = document.querySelector('#p14 .sf-progress-bar'); const o = document.querySelector('#p15 .sf-progress-bar'); const none = (r) => !/sf-progress-bar--(neutral|primary|info|success|warning|error)/.test(r.className); return none(a) && none(o) && n.classList.contains('sf-progress-bar--neutral') && document.querySelector('#p14').getAttribute('data-status') === 'neutral' && !document.querySelector('#p1').hasAttribute('data-status'); })()"
             }
           ]
         }

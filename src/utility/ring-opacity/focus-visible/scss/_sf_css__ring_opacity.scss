@@ -1,4 +1,4 @@
-@use '../../../opacity/default/scss/sf_var__opacity' as *;
+@use '../../default/scss/sf_var__ring_opacity' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -8,9 +8,9 @@
 $infix: focus-visible;
 
 // @include layer-priority(utility,$infix) {
-    @each $opacity-name, $opacity-value in $opacity-array {
+    @each $opacity-name, $opacity-value in $ring-opacity-array {
         .#{$infix}\:ring-opacity-#{$opacity-name}:#{$infix} {
-            --sf-ring--alfa: #{$opacity-value};
+            --sf-ring--alpha: #{$opacity-value};
         }
     }
 // }

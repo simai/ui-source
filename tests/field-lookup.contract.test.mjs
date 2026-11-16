@@ -62,6 +62,27 @@ test('a lookup reads as its label and opens nothing', () => {
   assert.match(view, /<span class="sf-field-view">\$\{items\[0\]\.label\}<\/span>/u);
   assert.match(body('renderLookupCell'), /items\.map\(\(item\) => item\.label\)\.join\(', '\)/u);
   for (const key of ['pickFromList']) {
-    assert.equal((source.match(new RegExp(`^        ${key}: '`, 'gmu')) ?? []).length, 2, `${key} in en and ru`);
+    // The set's words are its language files (localization study LC-5).
+    for (const code of ['en', 'ru']) assert.equal(typeof JSON.parse(readFileSync(new URL(`../src/smart/field-renderers/lang/${code}.json`, import.meta.url), 'utf8')).runtime[key], 'string', `${key} in ${code}`);
   }
+});
+
+test('C139 (1): a paged lookup, a user, a relation and a record are chosen in sf-input-lookup', () => {
+  assert.match(source, /\n    record: renderRecordLookup,\n    relation: renderRecordLookup,\n    user: renderRecordLookup,\n/u);
+  const edit = body('renderLookupEdit');
+  assert.match(edit, /if \(!inline && !dropdownPicker\(\)\) \{/u);
+  assert.match(edit, /return renderHostLookup\(field, value, host,/u);
+  const lookup = body('renderHostLookup');
+  assert.match(lookup, /<sf-input-lookup/u);
+  assert.match(lookup, /\.provider=/u);
+  assert.match(lookup, /suggest/u);
+  // A short list given whole stays the dropdown's.
+  assert.match(edit, /<sf-dropdown/u);
+});
+
+test('C139 (1): the old dropdown path is an alias until 2027-01-01, said once as deprecated', () => {
+  assert.match(source, /const DROPDOWN_PICKER_UNTIL = '2027-01-01';/u);
+  const picker = body('dropdownPicker');
+  assert.match(picker, /noteDeprecated\(/u);
+  assert.match(source, /EDIT_PICKER = options\?\.picker === 'dropdown' \? 'dropdown' : '';/u);
 });

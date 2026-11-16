@@ -132,7 +132,11 @@ test('sf-dropdown: change carries data only; sf-dropdown:change keeps root throu
   assert.equal(manifest.events['field-reset'].shared, 'field-inherit@1');
   // The generated registry describes that detail (standard 1.4).
   assert.deepEqual(Object.keys(json('src/smart/dropdown/smart.manifest.json').events.change.payload.properties), ['value', 'label', 'values', 'item', 'multiple']);
-  assert.ok(!('form' in manifest) && manifest['x-form'], 'the hidden input submits until the FormField mixin (§16 item 11)');
+  // Since 1.9.0 the host is the form control (FormField, owner C55): the
+  // form contract is `form`, with value-missing and the custom error.
+  assert.ok(manifest.form && !('x-form' in manifest), 'the host submits through ElementInternals (§17.1)');
+  assert.deepEqual(manifest.form.validity, ['value-missing', 'custom-error']);
+  assert.ok(manifest.actions['set-error'] && manifest.settings.invalid && manifest.settings['error-message']);
   const source = read('src/smart/dropdown/index.js');
   assert.match(source, /return \{ 'sf-dropdown:change': \(detail\) => \(\{ \.\.\.detail, root: this \}\) \};/);
   assert.doesNotMatch(source, /new CustomEvent\('sf-dropdown:change'/);

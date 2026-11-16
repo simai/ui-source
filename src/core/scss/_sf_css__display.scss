@@ -1,0 +1,384 @@
+// SIMAI Framework
+// https://simai.io
+
+// DISPLAY SETTINGS (owner decision C196, 2026-11-15; research ui-control
+// control/research/2026-11-15-accessibility-worldwide.md)
+//
+// What a person sets about how a site is shown, as root attributes core reads
+// on every page, with or without the sf-display-settings panel (a site may
+// set one itself, a server may print it):
+//
+//   data-sf-scheme         a colour scheme beside the light and dark themes:
+//                          black-on-white, white-on-black, yellow-on-black,
+//                          blue-on-sky, brown-on-cream;
+//   data-sf-text-scale     125, 150, 175 or 200: the root text size as a share
+//                          of the browser's own, so the steps multiply what
+//                          the person set in the browser, never replace it;
+//   data-sf-text-spacing   wide: the WCAG 1.4.12 values;
+//   data-sf-images         grey, or hide (the text alternative is shown in
+//                          the picture's place, core/js/display-settings.js);
+//   data-sf-motion         reduce: animations and transitions stop, as under
+//                          prefers-reduced-motion;
+//   data-sf-font           sans or serif (an option the site's author turns on);
+//   data-sf-links          underline (an option the site's author turns on;
+//                          always on inside a scheme).
+//
+// And what core answers on every site from the device itself:
+// prefers-contrast: more and prefers-reduced-transparency: reduce, beside the
+// forced-colors and prefers-reduced-motion rules the components carry.
+//
+// A scheme is a theme: it maps the eight theme families of the palette to
+// its two tones where the roles are derived (the document root), and the
+// roles that read white, black or a fixed hue directly to its tones. Every
+// role -- the icon and focus roles, the places' own dim ink -- then follows,
+// and a component keeps its shapes, states and focus ring. No component
+// background or edge is reset (the legacy .sf-special sheet reset them all
+// with !important and lost buttons and focus rings; SP-1, SP-7).
+
+@use 'sass:list';
+@use 'sass:map';
+@use 'mix/mix__role_aliases' as aliases;
+
+@layer sf.base {
+  // ---------------------------------------------------------------------
+  // Colour schemes
+  // ---------------------------------------------------------------------
+
+  // Name, ground, text, link, polarity. Palette tones only (C17, C18).
+  // Measured on white/black/sky-90/yellow-95 grounds: text 21.0 / 21.0 /
+  // 14.2 / 13.3 / 15.1, links 9.4 / 14.2 / 21.0 / 7.2 / 8.3 (study page).
+  $schemes: (
+    'black-on-white': ('ground': '--sf-white', 'text': '--sf-black', 'link': '--sf-blue-30', 'polarity': 'light'),
+    'white-on-black': ('ground': '--sf-black', 'text': '--sf-white', 'link': '--sf-sky-85', 'polarity': 'dark'),
+    'yellow-on-black': ('ground': '--sf-black', 'text': '--sf-yellow-85', 'link': '--sf-white', 'polarity': 'dark'),
+    'blue-on-sky': ('ground': '--sf-sky-90', 'text': '--sf-blue-10', 'link': '--sf-blue-30', 'polarity': 'light'),
+    'brown-on-cream': ('ground': '--sf-yellow-95', 'text': '--sf-brown-10', 'link': '--sf-blue-30', 'polarity': 'light'),
+  );
+
+  // The eight theme families and their steps (_sf_figma_colors_variables.scss).
+  $families: ('neutral', 'primary', 'secondary', 'tertiary', 'error', 'warning', 'success', 'info');
+  $tones: (98, 95, 90, 85, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5);
+  // The translucent steps, as <tone>--alfa-<step>.
+  $neutral-alpha: ('90': (4, 8, 12, 16, 20, 24, 32, 48), '60': (48, 64), '80': (48), '50': (4, 8, 12, 16, 20, 24, 32, 48, 80));
+  $family-alpha: ('90': (4, 8, 12, 24), '50': (4, 8, 12, 16, 20, 24, 28, 32), '20': (4, 8, 12, 16, 20, 24, 64, 80));
+  // The tone-container roles that read a fixed hue (C40 tones).
+  $tone-roles: ('rose', 'amber', 'lime', 'green', 'teal', 'sky', 'indigo', 'violet');
+
+  // The text tone at a step of the alpha scale, as --sf-alpha-N is built.
+  @function scheme-alpha($step) {
+    @return color-mix(in srgb, var(--sf-transparent), var(--sf-scheme-text) #{$step + '%'});
+  }
+
+  // A family's tones on the scheme: the ink side of the polarity takes the
+  // text, the surface side the ground.
+  @mixin scheme-family($family, $polarity) {
+    @each $tone in $tones {
+      $ink: $tone >= 50;
+      @if $polarity == 'light' {
+        $ink: $tone <= 50;
+      }
+      @if $ink {
+        --sf-#{$family}-#{$tone}: var(--sf-scheme-text);
+      } @else {
+        --sf-#{$family}-#{$tone}: var(--sf-scheme-ground);
+      }
+    }
+  }
+
+  // Every translucent step of a family is the text's, in either polarity.
+  @mixin scheme-family-alpha($family) {
+    $alpha: $family-alpha;
+    @if $family == 'neutral' {
+      $alpha: $neutral-alpha;
+    }
+    @each $tone, $steps in $alpha {
+      @each $step in $steps {
+        --sf-#{$family}-#{$tone}--alfa-#{$step}: #{scheme-alpha($step)};
+      }
+    }
+  }
+
+  // The roles that read white, black or a fixed hue, and the ones a scheme
+  // draws its own way: links in the link tone (always underlined below), the
+  // focus ring in the link tone, every edge in the text tone.
+  @mixin scheme-roles {
+    --sf-surface-page: var(--sf-scheme-ground);
+    // The former name travels with the role (C16; tests/token-aliases.contract.test.mjs).
+    @include aliases.sf-role-aliases(('surface-page',));
+    --sf-paper: var(--sf-scheme-ground);
+    --sf-on-paper: var(--sf-scheme-text);
+    --sf-paper-primary: var(--sf-scheme-text);
+    --sf-alpha-base: var(--sf-scheme-text);
+    @each $family in $families {
+      --sf-on-#{$family}: var(--sf-scheme-ground);
+    }
+    --sf-outline: var(--sf-scheme-text);
+    --sf-outline-variant: var(--sf-scheme-text);
+    --sf-link: var(--sf-scheme-link);
+    --sf-link-hover: var(--sf-scheme-link);
+    --sf-link-active: var(--sf-scheme-link);
+    --sf-link-visited: var(--sf-scheme-link);
+    --sf-focus: var(--sf-scheme-link);
+    --sf-focus--color: var(--sf-scheme-link);
+    --sf-mark: #{scheme-alpha(24)};
+    @each $tone in $tone-roles {
+      --sf-tone-#{$tone}-container: #{scheme-alpha(12)};
+      --sf-on-tone-#{$tone}-container: var(--sf-scheme-text);
+    }
+  }
+
+  // Each scheme: its three tones and its polarity, on the root and on a
+  // region in the other theme (a dark header on a light page).
+  @each $name, $scheme in $schemes {
+    :root[data-sf-scheme='#{$name}'] {
+      --sf-scheme-ground: var(#{map.get($scheme, 'ground')});
+      --sf-scheme-text: var(#{map.get($scheme, 'text')});
+      --sf-scheme-link: var(#{map.get($scheme, 'link')});
+    }
+
+    :root[data-sf-scheme='#{$name}'],
+    :root[data-sf-scheme='#{$name}'] .theme-light,
+    :root[data-sf-scheme='#{$name}'] .theme-dark {
+      color-scheme: #{map.get($scheme, 'polarity')};
+    }
+  }
+
+  // The families by polarity, declared once for the schemes that share it
+  // (a plain selector list: the build splits :is() into one rule per name).
+  @each $polarity in ('light', 'dark') {
+    $names: ();
+    @each $name, $scheme in $schemes {
+      @if map.get($scheme, 'polarity') == $polarity {
+        $names: list.append($names, ':root[data-sf-scheme="#{$name}"]', $separator: comma);
+      }
+    }
+    #{$names} {
+      @each $family in $families {
+        @include scheme-family($family, $polarity);
+      }
+    }
+  }
+
+  // Only the five names: an attribute with any other value (a typo, a name
+  // from an older panel) leaves the page as it is.
+  $roots: ();
+  $regions: ();
+  $bodies: ();
+  $links: ();
+  $plain-links: "a[href]:not([class*='sf-button'], [role='button'], [role='tab'], [role='menuitem'], .sf-skip-link)";
+  @each $name, $scheme in $schemes {
+    $root: ":root[data-sf-scheme='#{$name}']";
+    $roots: list.append($roots, $root, $separator: comma);
+    $regions: list.join($regions, ($root, '#{$root} .theme-light', '#{$root} .theme-dark'), $separator: comma);
+    $bodies: list.join($bodies, ($root, '#{$root} body'), $separator: comma);
+    $links: list.append($links, '#{$root} #{$plain-links}', $separator: comma);
+  }
+
+  #{$roots} {
+    @each $family in $families {
+      @include scheme-family-alpha($family);
+    }
+  }
+
+  // The roles, where the theme declares them: the root and every region in
+  // the other theme.
+  #{$regions} {
+    @include scheme-roles;
+  }
+
+  // The page itself stands on the ground and reads in the text tone.
+  #{$bodies} {
+    background-color: var(--sf-surface-page);
+    color: var(--sf-on-surface);
+  }
+
+  // ---------------------------------------------------------------------
+  // Text size, spacing, font, links
+  // ---------------------------------------------------------------------
+
+  @each $step in (125, 150, 175, 200) {
+    :root[data-sf-text-scale='#{$step}'] {
+      font-size: #{$step + '%'};
+    }
+  }
+
+  // Larger text reflows (WCAG 1.4.10): a line of code that cannot wrap
+  // scrolls in its own box, never the page.
+  @each $step in (125, 150, 175, 200) {
+    :root[data-sf-text-scale='#{$step}'] pre {
+      max-inline-size: 100%;
+      overflow-x: auto;
+    }
+  }
+
+  // WCAG 1.4.12: line height 1.5, paragraphs 2 apart, letters 0.12 and words
+  // 0.16 of the text size.
+  :root[data-sf-text-spacing='wide'] body {
+    letter-spacing: 0.12em;
+    word-spacing: 0.16em;
+  }
+
+  $spaced: ();
+  @each $tag in (p, li, dd, dt, blockquote, figcaption, td, th, label) {
+    $spaced: list.append($spaced, ":root[data-sf-text-spacing='wide'] #{$tag}", $separator: comma);
+  }
+  #{$spaced} {
+    line-height: 1.5;
+  }
+
+  :root[data-sf-text-spacing='wide'] p {
+    margin-block-end: 2em;
+  }
+
+  :root[data-sf-font='sans'] {
+    --sf-text--family: var(--sf-sans);
+    --sf-heading--family: var(--sf-sans);
+    --sf-display--family: var(--sf-sans);
+  }
+
+  :root[data-sf-font='serif'] {
+    --sf-text--family: var(--sf-serif);
+    --sf-heading--family: var(--sf-serif);
+    --sf-display--family: var(--sf-serif);
+  }
+
+  // A link that looks like a button, a tab or a menu entry keeps its look.
+  :root[data-sf-links='underline'] #{$plain-links},
+  #{$links} {
+    text-decoration-line: underline;
+  }
+
+  // ---------------------------------------------------------------------
+  // Pictures
+  // ---------------------------------------------------------------------
+
+  $pictures: (img, picture, video, iframe, canvas, 'svg[role="img"]', '[data-bg]');
+  $grey: ();
+  $hidden: ();
+  @each $picture in $pictures {
+    $grey: list.append($grey, ":root[data-sf-images='grey'] #{$picture}", $separator: comma);
+    $hidden: list.append($hidden, ":root[data-sf-images='hide'] #{$picture}", $separator: comma);
+  }
+
+  #{$grey} {
+    filter: grayscale(1);
+  }
+
+  // Hidden, a picture leaves its text alternative in its place (the caption
+  // core writes after an image with an alt); a decorative one leaves nothing.
+  #{$hidden} {
+    display: none;
+  }
+
+  .sf-image-caption {
+    display: none;
+  }
+
+  :root[data-sf-images='hide'] .sf-image-caption {
+    display: block;
+    box-sizing: border-box;
+    max-inline-size: 100%;
+    padding: var(--sf-space-1\/4) var(--sf-space-1\/3);
+    border: var(--sf-px) dashed var(--sf-outline);
+    border-radius: var(--sf-radius--ui);
+    color: var(--sf-on-surface);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
+  // ---------------------------------------------------------------------
+  // Motion
+  // ---------------------------------------------------------------------
+
+  // «Остановить движение»: what prefers-reduced-motion does, for a person who
+  // never found the device's switch. Core's own scripts read the same mark
+  // (SF.displaySettings.reducedMotion()).
+  :root[data-sf-motion='reduce'],
+  :root[data-sf-motion='reduce'] *,
+  :root[data-sf-motion='reduce'] ::before,
+  :root[data-sf-motion='reduce'] ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  // ---------------------------------------------------------------------
+  // The device first: more contrast, less transparency (all sites)
+  // ---------------------------------------------------------------------
+
+  // prefers-contrast: more -- quiet text and quiet edges go to full ink; the
+  // brand colour stays (a person asking for a bit more contrast does not get
+  // a different site).
+  @media (prefers-contrast: more) {
+    :root:not([data-sf-scheme]),
+    :root:not([data-sf-scheme]) .theme-light,
+    :root:not([data-sf-scheme]) .theme-dark {
+      --sf-on-surface-variant: var(--sf-on-surface);
+      --sf-on-surface-container-variant: var(--sf-on-surface);
+      --sf-on-surface-card-variant: var(--sf-on-surface);
+      --sf-on-surface-raised-variant: var(--sf-on-surface);
+      --sf-on-surface-popup-variant: var(--sf-on-surface);
+      --sf-on-surface-popup-nested-variant: var(--sf-on-surface);
+      --sf-on-surface-icon: var(--sf-on-surface);
+      --sf-outline: light-dark(var(--sf-neutral-40), var(--sf-neutral-70));
+      --sf-outline-variant: light-dark(var(--sf-neutral-50), var(--sf-neutral-60));
+      @include aliases.sf-role-aliases(('on-surface-container-variant', 'on-surface-card-variant', 'on-surface-popup-variant', 'on-surface-popup-nested-variant'));
+    }
+  }
+
+  // prefers-reduced-transparency: reduce -- glass and blur become solid.
+  @media (prefers-reduced-transparency: reduce) {
+    :root {
+      --sf-blur-small: var(--sf-blur-none);
+      --sf-blur-medium: var(--sf-blur-none);
+      --sf-blur-large: var(--sf-blur-none);
+      --sf-surface-overlay--blur: var(--sf-blur-none);
+    }
+
+    :root,
+    :root .theme-light,
+    :root .theme-dark {
+      --sf-surface-media: var(--sf-black--alfa-80);
+      --sf-surface-media-hover: var(--sf-black);
+      --sf-surface-media-active: var(--sf-black);
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // «Перейти к содержимому»
+  // ---------------------------------------------------------------------
+
+  // Core writes the link first in <body> when the page has a main region and
+  // no link of its own (core/js/display-settings.js); an author's
+  // <a class="sf-skip-link" href="#main"> takes the same look. Out of sight
+  // until the keyboard reaches it.
+  .sf-skip-link:not(:focus) {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sf-skip-link:focus {
+    position: fixed;
+    inset-block-start: var(--sf-space-1\/2);
+    inset-inline-start: var(--sf-space-1\/2);
+    z-index: calc(var(--sf-z-index-layer, 9000) + 1000);
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-block-size: var(--sf-ui-1--control-height);
+    padding-inline: var(--sf-space-1\/2);
+    border-radius: var(--sf-radius--ui);
+    background-color: var(--sf-primary);
+    color: var(--sf-on-primary);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    font-weight: var(--sf-weight--medium);
+    text-decoration: none;
+  }
+}

@@ -47,13 +47,37 @@ const STORE = (() => {
 const LISTENERS = STORE.listeners;
 const REGISTERED = STORE.registered;
 
+// Language packs (owner decision C177, 2026-11-14): every language but the two
+// built in is one file per language and delivery, fetched only by a page that
+// speaks it. A pack's words go into the same registry as words registered one
+// by one -- so a bundle built before packs existed reads them too -- a
+// Framework pack's beneath what is there, any other pack's over it: a product
+// overrides a Framework word whichever arrived first. The fetching is core's
+// (core/js/language-packs.js); each bundle only asks for a language. A STORE
+// made by an older bundle has no packs yet: they are added here.
+const PACKS = (STORE.packs ??= {
+  loaded: new Map(), pending: new Map(), request: null,
+});
+const isBuiltIn = (code) => code === 'ru' || code === 'en';
+
+/** Ask core for the pack of a language this page speaks (nothing for ru and en). */
+function needPack(code) {
+  const wanted = normalise(code);
+  const base = wanted.split('-')[0];
+  if (!base || isBuiltIn(base) || typeof PACKS.request !== 'function') return;
+  PACKS.request(base);
+  if (wanted !== base) PACKS.request(wanted);
+}
+
 // Words are kept under a component's current tag: a product that registered
 // them for a renamed tag (sf-datepicker, now sf-input-date) keeps its words
 // while the old tag is a dated alias, whichever name the element was written
 // with (core/js/tag-aliases.js).
 const wordsOf = (component) => REGISTERED.get(canonicalTag(component));
 
-const normalise = (value) => String(value ?? '').trim().toLowerCase().replace('_', '-');
+function normalise(value) {
+  return String(value ?? '').trim().toLowerCase().replace('_', '-');
+}
 
 /** The languages to try, most specific first, English last. */
 const chain = (language) => {
@@ -195,6 +219,15 @@ function within(target, node) {
   return false;
 }
 
+/**
+ * Tell the page's components that words changed without a registration: the
+ * composition editor words arrive in a chunk of their own (LC-1) and the
+ * forms drawn before them draw again.
+ */
+export function refreshLanguage() {
+  announce();
+}
+
 export function isRussianPage(node) {
   return pageLanguage(node) === 'ru';
 }
@@ -217,13 +250,42 @@ export function pageText(dictionary, key, node, component) {
  * the language without its region and English -- and the key last.
  */
 export function localeText(dictionary, key, locale, component) {
-  for (const candidate of chain(locale || 'en')) {
+  const order = chain(locale || 'en');
+  needPack(order[0]);
+  for (const candidate of order) {
     const added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
-    if (added !== undefined) return added;
+    if (added !== undefined) {
+      if (candidate === 'en' && added !== '') warnFallback(order, component, key);
+      return added;
+    }
     const shipped = dictionary?.[candidate]?.[key];
-    if (shipped !== undefined) return shipped;
+    if (shipped !== undefined) {
+      if (candidate === 'en' && shipped !== '') warnFallback(order, component, key);
+      return shipped;
+    }
   }
   return key;
+}
+
+// A language the Framework does not ship (owner decision C177 (4)) may come
+// partly translated: a word it lacks is said in the fallback language,
+// English, and that is shown, not silent (localization study LC-6). One
+// warning per page and language (de-AT and de are one), naming the first word
+// missed; every word missed is kept by language for SF.language.missing(),
+// and the language files' coverage is scripts/language-coverage.mjs. Kept on
+// the shared global, because every bundle carries this module.
+function warnFallback(order, owner, key) {
+  const wanted = String(order[0] || '').split('-')[0];
+  // While its pack is on its way the English is a moment, not a gap.
+  if (!wanted || wanted === 'en' || PACKS.pending.has(wanted)) return;
+  const root = globalThis;
+  if (!(root.__sfMissingWords instanceof Map)) root.__sfMissingWords = new Map();
+  const seen = root.__sfMissingWords;
+  if (!seen.has(wanted)) {
+    seen.set(wanted, new Set());
+    root.console?.warn?.(`[SIMAI Framework] "${wanted}": words missing, said in English (first: ${owner || 'component'} "${key}"); SF.language.missing('${wanted}') lists them`);
+  }
+  seen.get(wanted).add(`${owner || 'component'}|${key}`);
 }
 
 // Missing words are said once per component, word and language: a page that
@@ -277,6 +339,7 @@ export function pageWord(dictionary, key, node, {component, source = '', count, 
   const sourceLanguage = normalise(source);
   if (sourceLanguage && !order.includes(sourceLanguage)) order.push(sourceLanguage);
   const formerKeys = former === undefined || former === null ? [] : [].concat(former);
+  needPack(locale);
   for (const candidate of order) {
     const registered = owner ? wordsOf(owner)?.get(candidate) : undefined;
     let added = registered?.[key];
@@ -290,6 +353,7 @@ export function pageWord(dictionary, key, node, {component, source = '', count, 
     const word = added !== undefined ? added : dictionary?.[candidate]?.[key];
     if (word === undefined || word === null) continue;
     if (candidate === sourceLanguage && !chain(locale).includes(candidate)) warnWord(owner, key, locale, candidate);
+    if (candidate === 'en' && word !== '') warnFallback(chain(locale), owner, key);
     if (typeof word === 'object') {
       let form = 'other';
       if (count !== undefined) {
@@ -324,6 +388,7 @@ export const language = {
     const next = value === null || value === undefined ? null : normalise(value);
     if (next === STORE.chosen) return STORE.chosen;
     STORE.chosen = next;
+    if (next) needPack(next);
     // The choice is the page's language: <html lang> says it too (§11.1), so
     // the browser, a screen reader and CSS :lang() agree with the words.
     // use(null) gives the markup's own language back.
@@ -361,6 +426,56 @@ export const language = {
     return this;
   },
 
+  /**
+   * A language pack (schema simai.language-pack, schema_version 1; schema
+   * core/contracts/language-pack.v1.schema.json): every word of one language
+   * for one delivery, by component. A Framework pack's words go beneath the
+   * words already registered, any other pack's over them, as register() does.
+   * The page draws again once. Answers what was taken, or null for something
+   * that is not a pack.
+   */
+  registerPack(pack, url = null) {
+    const code = normalise(pack?.lang);
+    if (pack?.schema !== 'simai.language-pack' || pack.schema_version !== 1 || !code || !pack.words || typeof pack.words !== 'object') {
+      globalThis.console?.warn?.(`[SIMAI Framework] not a language pack (simai.language-pack, schema_version 1)${url ? `: ${url}` : ''}`);
+      return null;
+    }
+    const under = (pack.delivery ?? 'framework') === 'framework';
+    let words = 0;
+    for (const [component, byKey] of Object.entries(pack.words)) {
+      if (!byKey || typeof byKey !== 'object') continue;
+      const name = canonicalTag(component);
+      if (!REGISTERED.has(name)) REGISTERED.set(name, new Map());
+      const byLanguage = REGISTERED.get(name);
+      const now = byLanguage.get(code) ?? {};
+      byLanguage.set(code, under ? { ...byKey, ...now } : { ...now, ...byKey });
+      words += Object.keys(byKey).length;
+    }
+    const info = { lang: code, delivery: pack.delivery ?? 'framework', status: pack.status ?? null, coverage: pack.coverage ?? null, words, url };
+    PACKS.loaded.set(code, [...(PACKS.loaded.get(code) ?? []), info]);
+    announce();
+    return info;
+  },
+
+  /**
+   * Name a pack file to fetch when the page needs its language: one line for
+   * a product or a page (also SF_BOOT_CONFIG.languages = {code: url}). Core
+   * fetches it once, with the Framework's own pack of that language.
+   */
+  addPack(value, url) {
+    return PACKS.add ? PACKS.add(normalise(value), url) : false;
+  },
+
+  /** Fetch the packs of a language now; resolves when they are registered. */
+  load(value) {
+    return PACKS.load ? PACKS.load(normalise(value)) : Promise.resolve([]);
+  },
+
+  /** The packs on the page: {code: [{lang, delivery, status, coverage, words, url}]}. */
+  packs() {
+    return Object.fromEntries([...PACKS.loaded].map(([code, list]) => [code, list.map((info) => ({ ...info }))]));
+  },
+
   /** One language across many components: `{ 'sf-input-date': {...}, ... }`. */
   registerAll(value, byComponent = {}) {
     for (const [component, words] of Object.entries(byComponent)) {
@@ -372,6 +487,17 @@ export const language = {
   /** The languages something has registered words for. */
   known(component) {
     return [...(wordsOf(component ?? '')?.keys() ?? [])];
+  },
+
+  /**
+   * The words the page has said in English so far for want of one in
+   * `value` (C177 (4): a language may ship partly; what it lacks is visible).
+   * `['sf-pagination|pages-label', ...]`; every language's when none is named.
+   */
+  missing(value) {
+    const seen = globalThis.__sfMissingWords instanceof Map ? globalThis.__sfMissingWords : new Map();
+    if (value === undefined) return Object.fromEntries([...seen].map(([code, words]) => [code, [...words]]));
+    return [...(seen.get(normalise(value).split('-')[0]) ?? [])];
   },
 
   /** Every component something has been registered for. */
@@ -392,6 +518,7 @@ export const language = {
   /** Everything registered is forgotten. For tests, and for a product reset. */
   forget() {
     REGISTERED.clear();
+    PACKS.loaded.clear();
     STORE.chosen = null;
     announce();
     return this;
@@ -404,7 +531,24 @@ export const language = {
 // composing its own elements gets the same rule here.
 if (typeof window !== 'undefined') {
     window.SF = window.SF || {};
-    window.SF.language = language;
+    // Every bundle publishes its copy; they share one store, so any copy
+    // answers alike -- except that a bundle built before language packs
+    // (an older package on the page) has no registerPack, addPack, load or
+    // packs. Once a copy with them is published, an older one does not
+    // replace it (C177).
+    const holder = window.SF;
+    if (!Object.getOwnPropertyDescriptor(holder, 'language')?.set) {
+      let published = holder.language;
+      Object.defineProperty(holder, 'language', {
+        configurable: true,
+        enumerable: true,
+        get: () => published,
+        set: (value) => {
+          if (typeof value?.registerPack === 'function' || typeof published?.registerPack !== 'function') published = value;
+        },
+      });
+    }
+    holder.language = language;
     window.SF.pageLanguage = pageLanguage;
     window.SF.pageText = pageText;
 }

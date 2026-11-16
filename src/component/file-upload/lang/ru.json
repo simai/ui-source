@@ -1,0 +1,31 @@
+{
+  "runtime": {
+    "remove": "Удалить",
+    "uploading": "Загрузка",
+    "uploading-name": "Загрузка {name}",
+    "retry": "Повторить",
+    "linkText": "Выберите файл",
+    "text": "или перетащите его сюда",
+    "not-added": "Не добавлено {n}:",
+    "reject-type": "«{name}» не подходит: можно {formats}",
+    "reject-one": "«{name}» не добавлен: сюда можно только один файл",
+    "reject-duplicate": "«{name}» уже добавлен",
+    "reject-empty": "«{name}» пустой — в нём нет данных",
+    "reject-size": "«{name}» — {size}, а можно до {max}",
+    "reject-min-size": "«{name}» — {size}, а нужно от {min}",
+    "reject-count": {
+      "one": "«{name}» не добавлен: можно не больше {n} файла",
+      "few": "«{name}» не добавлен: можно не больше {n} файлов",
+      "many": "«{name}» не добавлен: можно не больше {n} файлов",
+      "other": "«{name}» не добавлен: можно не больше {n} файла"
+    },
+    "reject-total": "«{name}» не добавлен: все файлы вместе — до {max}",
+    "formats-image": "изображения",
+    "formats-video": "видео",
+    "formats-audio": "аудио",
+    "done": "Загружен",
+    "done-line": "{size} · загружен",
+    "error": "Не загрузился",
+    "error-line": "Не загрузился: {message}"
+  }
+}

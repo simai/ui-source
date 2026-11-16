@@ -6,6 +6,7 @@
     "theme-light": "light",
     "theme-dark": "dark",
     "theme-system-now": "system (now {theme})",
-    "cycle-next": "{name}. Press for {next}"
+    "cycle-next": "{name}. Press for {next}",
+    "split-more": "More options: {label}"
   }
 }

@@ -48,8 +48,8 @@ function syncSemantics(root, buttons, panels) {
   for (const name of ['aria-label', 'aria-labelledby']) {
     if (!list.hasAttribute(name) && root.hasAttribute(name)) list.setAttribute(name, root.getAttribute(name));
   }
-  setIndex(buttons);
-  setIndex(panels);
+  // No unprefixed data-tab is written on the buttons and panels (R193 DP-11):
+  // a page's own [data-tab] selector caught them, and nothing read it.
   buttons.forEach((button, index) => {
     ensureId(root, button, 'tab', index);
     button.setAttribute('role', 'tab');
@@ -79,13 +79,6 @@ function initTabs(target) {
   }
 
   target.querySelectorAll?.(TABS_SELECTOR).forEach(bindTabs);
-}
-
-function setIndex(items) {
-  let i = 0;
-  for (const item of items) {
-    item.dataset.tab = i++;
-  }
 }
 
 function normalizeIndex(index, total) {

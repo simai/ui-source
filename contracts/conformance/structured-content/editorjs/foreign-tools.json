@@ -1,0 +1,163 @@
+{
+  "schema": "simai.composition.structured-content-conformance-editorjs",
+  "schema_version": 1,
+  "id": "foreign-tools",
+  "summary": "A tool the adapter does not map, a block with tunes, an image with a border: each kept as content.foreign and given back as the same value.",
+  "input": {
+    "blocks": [
+      {
+        "id": "x1",
+        "type": "checklist",
+        "data": {
+          "items": [
+            {
+              "text": "a",
+              "checked": true
+            }
+          ]
+        }
+      },
+      {
+        "id": "x2",
+        "type": "paragraph",
+        "data": {
+          "text": "with a tune"
+        },
+        "tunes": {
+          "anchor": "x"
+        }
+      },
+      {
+        "id": "x3",
+        "type": "image",
+        "data": {
+          "file": {
+            "url": "/a.png"
+          },
+          "caption": "",
+          "withBorder": true,
+          "stretched": false,
+          "withBackground": false
+        }
+      },
+      {
+        "id": "x4",
+        "type": "embed",
+        "data": {
+          "service": "youtube",
+          "source": "https://youtu.be/x",
+          "embed": "https://www.youtube.com/embed/x",
+          "width": 580,
+          "height": 320,
+          "caption": ""
+        }
+      }
+    ]
+  },
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "x1",
+              "type": "content.foreign",
+              "data": {
+                "source": "editorjs",
+                "raw": "{\"id\":\"x1\",\"type\":\"checklist\",\"data\":{\"items\":[{\"text\":\"a\",\"checked\":true}]}}",
+                "hash": "sha256:9b046fb52958d6d4c72b022eb36d869a28bf7aafc2e5060d58bef05c6605b5fb"
+              }
+            },
+            {
+              "id": "x2",
+              "type": "content.foreign",
+              "data": {
+                "source": "editorjs",
+                "raw": "{\"id\":\"x2\",\"type\":\"paragraph\",\"data\":{\"text\":\"with a tune\"},\"tunes\":{\"anchor\":\"x\"}}",
+                "hash": "sha256:8377d59cd01fade01e07a786a6daf7736c87b5039af69e88ddc88207eeb51c89"
+              }
+            },
+            {
+              "id": "x3",
+              "type": "content.foreign",
+              "data": {
+                "source": "editorjs",
+                "raw": "{\"id\":\"x3\",\"type\":\"image\",\"data\":{\"file\":{\"url\":\"/a.png\"},\"caption\":\"\",\"withBorder\":true,\"stretched\":false,\"withBackground\":false}}",
+                "hash": "sha256:f9fea00278d51eeff33f127a8a634ca18e8c15386c87164a10d9c28e102d17f0"
+              }
+            },
+            {
+              "id": "x4",
+              "type": "content.foreign",
+              "data": {
+                "source": "editorjs",
+                "raw": "{\"id\":\"x4\",\"type\":\"embed\",\"data\":{\"service\":\"youtube\",\"source\":\"https://youtu.be/x\",\"embed\":\"https://www.youtube.com/embed/x\",\"width\":580,\"height\":320,\"caption\":\"\"}}",
+                "hash": "sha256:ac3f984cb6ee60d6eec70d71754cb3e4f69462bfea5b389ec9f96d45307104db"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "back": {
+      "blocks": [
+        {
+          "id": "x1",
+          "type": "checklist",
+          "data": {
+            "items": [
+              {
+                "text": "a",
+                "checked": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "x2",
+          "type": "paragraph",
+          "data": {
+            "text": "with a tune"
+          },
+          "tunes": {
+            "anchor": "x"
+          }
+        },
+        {
+          "id": "x3",
+          "type": "image",
+          "data": {
+            "file": {
+              "url": "/a.png"
+            },
+            "caption": "",
+            "withBorder": true,
+            "stretched": false,
+            "withBackground": false
+          }
+        },
+        {
+          "id": "x4",
+          "type": "embed",
+          "data": {
+            "service": "youtube",
+            "source": "https://youtu.be/x",
+            "embed": "https://www.youtube.com/embed/x",
+            "width": 580,
+            "height": 320,
+            "caption": ""
+          }
+        }
+      ]
+    },
+    "back_losses": [],
+    "value_equal": true
+  }
+}

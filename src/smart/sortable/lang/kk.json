@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "cancelled": "Жылжыту болдырылмады.",
+    "dropped": "Қойылды: {item}, «{list}» ішіндегі орны {index}.",
+    "empty": "Ештеңе табылмады",
+    "hint": "Плюс — кейін кірістіру.",
+    "inserted": "Кірістірілді: {item}, «{list}» ішіндегі орны {index}.",
+    "instructions": "Бос орын немесе Enter — алу, бағыт пернелері — жылжыту, Бос орын немесе Enter — қою, Escape — болдырмау.",
+    "menu": "Кірістіру",
+    "move-down": "Төменірек",
+    "move-first": "Басына",
+    "move-last": "Соңына",
+    "move-menu": "«{item}» жылжыту",
+    "move-up": "Жоғарырақ",
+    "moved": "«{list}» ішінде {total} ішінен {index}-орын.",
+    "picked": "Алынды: {item}. «{list}» ішінде {total} ішінен {index}-орын.",
+    "point": "Кірістіру: {total} ішінен {index}-орын",
+    "roledescription": "жылжытылатын",
+    "search": "Табу",
+    "target": "Мақсат: {target}."
+  }
+}

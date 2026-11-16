@@ -30,7 +30,8 @@ test('the page scan runs once the document is parsed, not at the window load', (
     'changes met during the scan are read when it ends');
 });
 
-test('the boot splash lifts on sf-loader-ready only, with no time limit', () => {
+// R216: it also lifts at once when a component draws under it (core-first-paint).
+test('the boot splash lifts on sf-loader-ready or a drawn component, with no time limit', () => {
   // A ceiling (1500 ms, an earlier R078 fix) lifted the splash on a slow page
   // at 5.5 s while its controls came in at 9-11 s: an empty page, then a jump.
   // The scan at DOMContentLoaded and the remembered font off the load are

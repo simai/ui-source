@@ -11,10 +11,17 @@ the `.sf-tabs-main-container` is its sibling. Skin selectors target that owned
 header, so a nested Tabs inside a panel keeps its own skin. Do not place another
 interactive Tabs inside a tab control. The Smart template uses the same shape.
 
+Two looks (owner decision C96 (1)): the line, which `.sf-tabs` draws without a
+look modifier (`.sf-tabs--underline` names it explicitly), and the plate,
+`.sf-tabs--pills`; `.sf-tabs--vertical` is the menu column. Before, `.sf-tabs`
+without a modifier drew filled primary buttons; that look is gone.
+`.sf-tabs--full` is a former name until 2027-01-01: it draws the line with the
+tabs sharing the row in equal columns (each at least as wide as its label),
+and the Loader notes it in `SF.deprecations`.
+
 Prefer short labels. Horizontal lists scroll locally when labels do not fit;
 controls are not squeezed into columns of individual characters. A default
-control wider than the list may wrap its long label without clipping. Full
-controls share available space while keeping a content-based minimum width.
+control wider than the list may wrap its long label without clipping.
 Containers can shrink inside flex/grid layouts while icons keep their size.
 Wrapping/scrolling does not change keyboard navigation semantics.
 
@@ -54,8 +61,20 @@ keyboard focus, 12 % pressed -- in the light and dark themes alike.
 
 Tabs controls use `--sf-radius--ui`; pills remain explicitly rounded. Borders
 use `--sf-tabs--border-width` with `--sf-px` fallback, including the double-width
-underline and its alignment offset. Vertical spacing uses `--sf-tabs--gap` with
-`--sf-space-2` fallback. Typography comes from the base button profile and the
+underline and its alignment offset. Underline tabs (owner decision C99) stand
+edge to edge (`--sf-tabs-gap`, default `--sf-space-0`); each tab has the button
+padding of its size (`--sf-ui-<size>--space-x`, or `--sf-tabs-padding-inline`),
+the label none, the first tab none at its start and the last none at its end
+(kept in a shared `fit` row), and the selected line is drawn under the label's
+letters, not as the tab's border. Vertical rows stand `--sf-space-1/4` apart
+with `--sf-space-1` padding. A tab's icon stands the button's icon gap from
+its label in every look (owner decision C105 H1: `--sf-ui-<size>--text-space-x`,
+7 / 8 / 10 at 1440, one step down in compact density, 6 / 6 / 8 on a phone);
+in the line and vertical looks it is the tab's `column-gap`, so the label and
+its line keep no padding. Plates stand `--sf-space-1/4` apart (C105 H5, as tags
+and segments). With errors, «Ещё» puts its badge a quarter step after the
+label and the chevron the icon gap after the badge. The panel spacing beside a vertical row uses
+`--sf-tabs--gap` with `--sf-space-2` fallback. Typography comes from the base button profile and the
 surrounding text for panels; Tabs does not introduce another text-size scale.
 
 Keyboard focus is an inset ring whose foreground role follows the tab's painted

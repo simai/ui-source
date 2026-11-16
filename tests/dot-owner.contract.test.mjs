@@ -17,7 +17,13 @@ test('Dot owns visible inline geometry without utility classes', async () => {
   assert.match(css, /display: inline-flex/);
   assert.match(css, /display: block/);
   assert.match(css, /flex: 0 0 auto/);
-  assert.match(css, /--sf-dot-item--size: var\(--sf-a8\)/);
+  // The sizes are core's small steps (C132): 8 by default and at 1, 6 at 1/4,
+  // 1/3 and 1/2, 12 at 2, 16 at 3 (C185 (8)).
+  assert.match(css, /\.sf-dot \{[^}]*--sf-dot-item--size: #\{size\.small-step\(8\)\};/u);
+  for (const [size, step] of [['1\\/4', 6], ['1\\/3', 6], ['1\\/2', 6], ['1', 8], ['2', 12], ['3', 16]]) {
+    assert.ok(css.includes(`.sf-dot.sf-dot--size-${size} .sf-dot-item {\n    --sf-dot-item--size: #{size.small-step(${step})};`), `size ${size}`);
+  }
+  assert.doesNotMatch(css, /var\(--sf-a4\)|var\(--sf-b0\)/u);
   assert.match(css, /block-size: var\(--sf-dot-item--height, var\(--sf-dot-item--size\)\)/);
   assert.match(css, /inline-size: var\(--sf-dot-item--width, var\(--sf-dot-item--size\)\)/);
   assert.doesNotMatch(css, /utility-hint/);
@@ -26,7 +32,7 @@ test('Dot owns visible inline geometry without utility classes', async () => {
 test('Dot publishes a closed semantic size and tone matrix', async () => {
   const css = await read('src/component/dot/scss/_css_dot.scss');
 
-  for (const size of ['1\\/3', '1\\/2', '1', '2']) {
+  for (const size of ['1\\/4', '1\\/3', '1\\/2', '1', '2', '3']) {
     assert.ok(css.includes(`sf-dot--size-${size}`));
   }
   for (const [tone, token] of [

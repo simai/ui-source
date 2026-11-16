@@ -8,8 +8,12 @@ import { FormField } from '../helpers/form-field';
 import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // The theme switch's own words -- the three Loader preferences, and the
 // group's name when the page gives none -- are lang/<locale>.json runtime.
@@ -284,6 +288,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     this._fitObserver = null;
     this._plateFor = null;
     clearTimeout(this._plateTimer);
+    cancelAnimationFrame(this._plateShow);
+    this._plateShow = 0;
     this._releaseReset?.();
     this._releaseReset = null;
     this._resetInput = null;
@@ -445,6 +451,11 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
   // that arrives or the first placement move it at once. Without a selected,
   // enabled option the option paints itself (data-plate is removed), as it
   // does in the printed first paint.
+  // 1.6.1: the plate's first placement (no data-plate yet: the first render,
+  // the printed first paint taken over) is measured at once and shown a frame
+  // later, at its place: shown in the frame it was first moved, the browser
+  // counted it as a layout shift (0.0009 at 1440, 0.0035 at 390 on every
+  // hydration). Until then the option paints the plate itself, the same fill.
   placePlate() {
     const root = this.querySelector(':scope > .sf-button-group');
     const plate = root?.querySelector(':scope > .sf-button-group-plate');
@@ -456,6 +467,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     }
     const active = root.querySelector(':scope > .sf-button-group-segment.active');
     if (!active || active.disabled) {
+      cancelAnimationFrame(this._plateShow);
+      this._plateShow = 0;
       root.removeAttribute('data-plate');
       this._plateFor = null;
       return;
@@ -493,7 +506,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     // A render that follows the choice (the value echoed back, a form sync)
     // measures again while the plate slides: it keeps the slide and its timer.
     const sliding = !moving && root.getAttribute('data-plate') === 'moving';
-    if (!sliding) {
+    const first = !root.hasAttribute('data-plate');
+    if (!sliding && !first) {
       clearTimeout(this._plateTimer);
       root.setAttribute('data-plate', moving ? 'moving' : 'placed');
     }
@@ -501,6 +515,13 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     plate.style.setProperty('--sf-button-group--plate-y', `${y}px`);
     plate.style.setProperty('--sf-button-group--plate-inline-size', `${rect.width}px`);
     plate.style.setProperty('--sf-button-group--plate-block-size', `${rect.height}px`);
+    if (first) {
+      cancelAnimationFrame(this._plateShow);
+      this._plateShow = requestAnimationFrame(() => {
+        this._plateShow = 0;
+        if (root.isConnected && !root.hasAttribute('data-plate') && root.querySelector(':scope > .sf-button-group-segment.active')) root.setAttribute('data-plate', 'placed');
+      });
+    }
     if (moving) {
       this._plateTimer = setTimeout(() => {
         if (root.getAttribute('data-plate') === 'moving') root.setAttribute('data-plate', 'placed');

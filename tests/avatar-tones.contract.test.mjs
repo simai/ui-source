@@ -123,10 +123,15 @@ test('a hue adds no raw colour to the component sheet; the former tone roles hol
 
 test('the element takes a hue only for initials, and the default draws no hue class', () => {
   const element = read('src/smart/avatar/index.js');
-  const shared = read('src/smart/avatar/js/templates/shared.js');
-  assert.match(element, /if \(!this\.isText\) \{\s*return "";/u);
+  // The picture's classes are the one avatar drawing (js/picture.js, AV-8).
+  const shared = read('src/smart/avatar/js/picture.js');
+  // The initials drawn alone or under a photo take the hue (C152 (2)).
+  assert.match(element, /if \(!this\.drawnText\) \{\s*return "";/u);
   assert.match(element, /resolvedHue: this\.resolvedHue/u);
-  assert.match(element, /resolveAvatarHue\(\s*this\.hue,\s*this\.heading \|\| this\.getAttribute\("aria-label"\) \|\| this\.text,\s*this\.tone,?\s*\)/u);
+  // The card without a photo takes auto when no hue is set (C124); the round
+  // avatar's default stays neutral.
+  assert.match(element, /const cardDefault =\s*this\.templateName === "card" && !this\.hue && !this\.tone \? "auto" : "";/u);
+  assert.match(element, /resolveAvatarHue\(\s*this\.hue \|\| cardDefault,\s*this\.heading \|\| this\.getAttribute\("aria-label"\) \|\| this\.text,\s*this\.tone,?\s*\)/u);
   assert.match(shared, /if \(context\.resolvedHue\) \{\s*classes\.push\(`sf-hue-\$\{context\.resolvedHue\}`\)/u);
   assert.equal([...shared.matchAll(/sf-avatar--tone-/gu)].length, 0);
 });

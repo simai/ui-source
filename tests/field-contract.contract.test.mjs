@@ -39,7 +39,8 @@ test('input and textarea Smart templates expose the same native field semantics'
   for (const source of [inputTemplate, textareaTemplate]) {
     assert.match(source, /\?required=\$\{field\.required\}/);
     assert.match(source, /aria-invalid=\$\{field\.invalid/);
-    assert.match(source, /aria-describedby=\$\{messageContent/);
+    // The textarea names its count beside the message (C141 (1)): describedBy = the message id, then the count's.
+    assert.match(source, /aria-describedby=\$\{(?:messageContent|describedBy)/);
     assert.match(source, /aria-errormessage=\$\{field\.invalid && errorContent/);
     assert.match(source, /createFieldContract\(context\.component/);
     assert.match(source, /data-field-message=\$\{field\.invalid && errorContent/);
@@ -65,7 +66,10 @@ test('Smart input forwards the declared native input security and validation con
   const source = await text('src/smart/input/js/templates/default.js');
 
   assert.doesNotMatch(source, /type="text"/);
-  assert.equal((source.match(/type=\$\{inputType\}/g) || []).length, 2);
+  // The password reveal (C123) shows a password as text; every other type is
+  // forwarded as declared.
+  assert.match(source, /const nativeType = isPassword && revealed \? 'text' : inputType;/);
+  assert.equal((source.match(/type=\$\{nativeType\}/g) || []).length, 2);
   for (const attribute of ['autocomplete', 'inputmode', 'minlength', 'maxlength', 'pattern']) {
     assert.equal(
       (source.match(new RegExp(`\\n\\s+${attribute}=\\$\\{`, 'g')) || []).length,

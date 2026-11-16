@@ -5,14 +5,18 @@
 `js/templates/row.js`). Отдельно узел рисует свою строку и, раскрытый, —
 вложенные узлы.
 
-Индикатор вправо/вниз сообщает состояние ветви, а иконка папки или файла — тип
-узла. `selected` обозначает выбор, `active` — текущий маршрут, `open` — только
+Индикатор вправо/вниз сообщает состояние ветви, а значок — тип узла: папка у
+ветви, у листа — его тип (`draft`, если тип неизвестен). `selected` обозначает выбор, `active` — текущий маршрут, `open` — только
 раскрытие. Иконки строки — классовая разметка шрифта иконок
 (`<i class="sf-icon">`), не элементы `sf-icon`.
 
 Атрибуты: `label` (прежнее `text` — псевдоним до 2026-12-01), `value`, `href`,
-`target`, `rel`, `kind` (`folder` | `file`; прежнее `type` — псевдоним),
-`open`, `selected`, `active`, `disabled`, `icon` (`false` убирает значок),
+`target`, `rel`, `kind` (одно из двенадцати слов карты типов Framework:
+`folder`, `file`, `page`, `document`, `image`, `code`, `data`, `table`,
+`archive`, `video`, `audio`, `link`; без него узел с детьми — папка, без
+детей — лист, тип которого говорит расширение имени; прежнее `type` —
+псевдоним), `open`, `selected`, `active`, `disabled`, `icon` (имя значка;
+`false` убирает значок; без него значок выбирают `kind`, расширение и место),
 `open-icon`, `closed-icon`, `chevron-open-icon`, `chevron-closed-icon`,
 `open-label`, `close-label` (по умолчанию «Развернуть» и «Свернуть» из файлов
 языка), `item-class`, `container-class`, `name-class`. Свойство `itemsData` —

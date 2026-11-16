@@ -8,5 +8,6 @@ SF.RuleLoader['cl-breadcrumbs'] = {
     { name: 'breadcrumbs' },
     { name: 'icons' },
     { name: 'cl-icon' },
+    { name: 'cl-menu-context', lazy: true },
   ],
 };

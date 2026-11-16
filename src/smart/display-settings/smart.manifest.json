@@ -1,0 +1,271 @@
+{
+  "schema_version": 2,
+  "id": "smart.display-settings",
+  "version": "1.0.0",
+  "title": "Display settings",
+  "summary": "How a person wants the site shown -- text 100–200 %, a colour scheme, wider spacing, images in colour, grey or hidden with their text, motion stopped, «Обычная версия» -- kept in this browser only and applied by core on every page. Replaces the legacy low-vision version (.sf-special). Promises no conformance.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "accessibility",
+    "display",
+    "low-vision",
+    "contrast",
+    "text-size",
+    "settings",
+    "preferences"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-display-settings",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "label": {
+        "type": "string",
+        "description": "The trigger's text and the panel's name. Not set: «Настройки отображения» («Display settings»). A Russian site that is asked for the button by name writes «Версия для слабовидящих»"
+      },
+      "layout": {
+        "type": "string",
+        "default": "disclosure",
+        "description": "disclosure: a button that opens the panel in place under it (aria-expanded), Escape closes it and the focus goes back to the button; panel: the panel stands open, with no button (a page of its own, a footer)",
+        "enum": [
+          "disclosure",
+          "panel"
+        ]
+      },
+      "open": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether the panel of layout disclosure is open; the button turns it, Escape closes it"
+      },
+      "show-font": {
+        "type": "boolean",
+        "default": false,
+        "description": "Offer the font group: the site's font, sans serif or serif (the system's --sf-sans and --sf-serif). Off by default: the site's author turns it on"
+      },
+      "show-links": {
+        "type": "boolean",
+        "default": false,
+        "description": "Offer «Подчёркивать ссылки». Off by default: the site's author turns it on. Inside a colour scheme links are always underlined"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "reset": {
+      "summary": "«Обычная версия»: every setting back to the site's own look, the kept choice removed; sends change with setting reset. refused {reason: unchanged} when nothing was changed",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    }
+  },
+  "events": {
+    "sf-display-settings-change": {
+      "summary": "A person changed a setting or chose «Обычная версия»: the fact, sent after the root shows it and the browser keeps it. Nothing is sent anywhere; a page that wants to know listens here",
+      "payload": {
+        "type": "object",
+        "required": [
+          "settings",
+          "previous",
+          "setting"
+        ],
+        "properties": {
+          "settings": {
+            "type": "object",
+            "description": "The settings now."
+          },
+          "previous": {
+            "type": "object",
+            "description": "The settings before."
+          },
+          "setting": {
+            "type": "string",
+            "description": "The field that moved (scheme, textScale, textSpacing, images, motion, font, links), or reset."
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "panel": [
+        "closed",
+        "open"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open",
+      "disabled"
+    ]
+  },
+  "persistence": {
+    "mode": "hybrid",
+    "source_of_truth": "component",
+    "network_owner": "none",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "component",
+    "effects": "component",
+    "forbidden_client_responsibilities": [
+      "claiming that the site meets an accessibility standard",
+      "sending the person's choice to a server",
+      "reading aloud, fixing markup or guessing alt text"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "storage"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "group",
+    "accessible_name": "required",
+    "keyboard": [
+      "Tab reaches the trigger and every button of the panel; Enter or Space presses it",
+      "Escape in an open disclosure panel closes it and returns the focus to the trigger"
+    ],
+    "focus": "The trigger keeps the focus when it opens the panel; Escape returns the focus to it. A pressed choice keeps the focus."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "09cf1b0f4e22af6f1d48d8ffdef496ba07f0d894",
+    "source_artifacts": [
+      {
+        "path": "src/smart/display-settings/index.js",
+        "sha256": "b8f04f0db8f65d4e42858c9779708447778b4b943316261cbe1b0541a0003e21"
+      },
+      {
+        "path": "src/smart/display-settings/js/templates/default.js",
+        "sha256": "70a62b071001127a5d620139b2bc6519f5875afd2498a8a329ee75ee57e35d35"
+      },
+      {
+        "path": "src/smart/display-settings/scss/_smart__display_settings.scss",
+        "sha256": "5bec3f8cf86532027a6e591add647c72f8b1017c002f51f0bb63c45a368d1893"
+      },
+      {
+        "path": "src/smart/display-settings/rule.js",
+        "sha256": "6acd0a4ff76c9da9d873912649212511f261a97cba08d87950971534fe4810b0"
+      },
+      {
+        "path": "src/smart/display-settings/docs.md",
+        "sha256": "52685988ff28516d00794ca420702a82816d8c521a74b74be298ca74d39ffc51"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-display-settings where a site offers its visitors display settings -- a school, a municipal or a public site that is asked for «версия для слабовидящих», or any site that wants a text size and contrast switch for people who do not know the browser's.",
+    "do_not": [
+      "Do not say the site is accessible or compliant next to it; the panel is a comfort, the main site must meet WCAG itself",
+      "Do not add read-aloud, a dyslexia font or disability profiles around it",
+      "Do not keep the choice in a cookie or send it to a server; core keeps it in this browser"
+    ],
+    "required_reads": [
+      "inputs",
+      "accessibility",
+      "ownership"
+    ],
+    "minimal_example": "<sf-display-settings label=\"Версия для слабовидящих\"></sf-display-settings>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

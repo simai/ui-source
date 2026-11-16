@@ -2,16 +2,16 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import quantityUtility from '../json/quantity.utility.json';
 import { syncFieldContract } from '../../field-contract';
-import { fieldSize, retireFieldSizeClass } from '../../field-size';
+import { ladderSize } from '../../field-size';
 import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 import { pageLocale, pageText } from '../../../core/js/page-language';
 import { tagSelector } from '../../../core/js/tag-aliases.js';
+// The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+import LANG_WORDS from '../lang/index.mjs';
 
-const QUANTITY_TEXT = {
-  en: { decrement: 'Decrease value', increment: 'Increase value' },
-  ru: { decrement: 'Уменьшить значение', increment: 'Увеличить значение' },
-};
+const QUANTITY_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
 
 const QUANTITY_SELECTOR = '.sf-quantity';
 const BOUND_FLAG = 'sfQuantityBound';
@@ -379,7 +379,8 @@ function adjustValue(root, deltaSign) {
 }
 
 function bindQuantity(root) {
-  retireFieldSizeClass(root, 'sf-quantity');
+  // The quantity field stands on the field ladder (field-size.js): 1/3 and 3
+  // are its own steps, no class to move.
   if (!root || root.dataset[BOUND_FLAG] === '1') return;
   const input = root.querySelector('.sf-quantity-wrap input');
   if (!input) return;
@@ -670,13 +671,13 @@ class Quantity extends ComponentObserver {
       disabled = false,
       readonly = false,
       placeholder = '',
-      decrementLabel = pageText(QUANTITY_TEXT, 'decrement', document.documentElement),
-      incrementLabel = pageText(QUANTITY_TEXT, 'increment', document.documentElement),
+      decrementLabel = pageText(QUANTITY_TEXT, 'decrement', document.documentElement, 'sf-quantity'),
+      incrementLabel = pageText(QUANTITY_TEXT, 'increment', document.documentElement, 'sf-quantity'),
       decrementIcon = 'remove',
       incrementIcon = 'add',
     } = this.params || {};
 
-    const normalizedSize = fieldSize(size, 'sf-quantity');
+    const normalizedSize = ladderSize(size);
 
     const className = this.attrs.class || this.attrs.className;
 

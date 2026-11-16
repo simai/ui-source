@@ -15,7 +15,9 @@ for(const [family,name] of [['inputs','Input'],['textarea','Textarea'],['quantit
     // The number's locale comes from the page's language now, not the
     // browser's, so the sandbox carries the rule: a slice of real source
     // without it would be testing a function the component does not have.
-    const context=vm.createContext({console,Event,navigator:{language:'en-US'},
+    // A family whose words are its language files (LC-4) reads them as the bundle does.
+    const langWords=Object.fromEntries(await Promise.all(['en','ru'].map(async(code)=>[code,await readFile(new URL(`../src/component/${family}/lang/${code}.json`,import.meta.url),'utf8').then((text)=>JSON.parse(text).runtime,()=>({}))])));
+    const context=vm.createContext({console,Event,navigator:{language:'en-US'},LANG_WORDS:langWords,
       pageLocale:()=>'en-US',
       // The fields ask component/mask-service for SF.Mask, which waits for a
       // Core that runs after them; here Core is already there.

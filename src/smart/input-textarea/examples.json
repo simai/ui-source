@@ -33,12 +33,6 @@
             {
               "type": "native-attribute",
               "target": "textarea",
-              "name": "maxlength",
-              "value": "500"
-            },
-            {
-              "type": "native-attribute",
-              "target": "textarea",
               "name": "spellcheck",
               "value": "true"
             },
@@ -84,6 +78,32 @@
       },
       "expect": {
         "auto-grow": true
+      }
+    },
+    {
+      "name": "limit",
+      "title": "Предел знаков",
+      "settings": {
+        "label": "Описание для поисковиков",
+        "hint": "Поисковики показывают около 160 знаков",
+        "maxlength": 160,
+        "value": "Кресло для кабинета и гостиной: мягкая спинка, дубовые ножки, гарантия три года. Доставка по Москве за один день, сборка бесплатно."
+      },
+      "expect": {
+        "maxlength": 160
+      }
+    },
+    {
+      "name": "code",
+      "title": "Код",
+      "settings": {
+        "label": "Код счётчика",
+        "text": "code",
+        "rows": 4,
+        "value": "<script async src=\"https://mc.example/tag.js\"></script>\n<noscript><img src=\"https://mc.example/watch/1\" alt=\"\"></noscript>"
+      },
+      "expect": {
+        "text": "code"
       }
     },
     {

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.group-heading",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/group-heading/docs/docs.md",
@@ -12,7 +12,7 @@
     "src/component/group-heading/scss/_group-heading.scss",
     "src/component/group-heading/scss/index.scss"
   ],
-  "content_sha256": "b6f767b3f47d16c1ab1c4924e0fdc53dfa1d5904ca81b8d4fcb2768627a000d5",
+  "content_sha256": "d1b3e11ed925e29e936679acfcac79e0947abed1f137a5beb1690f4d31e74d3a",
   "dependencies": [
     {
       "id": "tokens.colour",

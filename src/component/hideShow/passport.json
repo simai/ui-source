@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.hide-show",
   "kind": "component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/hideShow/docs/docs.md",
@@ -14,7 +14,7 @@
     "src/component/hideShow/scss/_css__hide_show.scss",
     "src/component/hideShow/scss/index.scss"
   ],
-  "content_sha256": "72454de4238c4499e4cc90fe2a2017a558534373657cf535f9a7f17a565d03e1",
+  "content_sha256": "b07178cbaee01116b90f4ba8d61db44ecea8ba7d85a03530e1d910df4009fc16",
   "dependencies": [
     {
       "id": "module.component-shared",

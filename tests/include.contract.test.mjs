@@ -13,7 +13,7 @@ const source = read('src/smart/include/index.js');
 
 test('the manifest: a leaf that fetches, two facts and the refresh action', () => {
   assert.equal(manifest.tag, 'sf-include');
-  assert.equal(manifest.version, '1.0.5');
+  assert.equal(manifest.version, '1.1.1'); // group build 7: the patch for moved files (the line had 1.1.0)
   assert.deepEqual(manifest['side-effects'], ['network']);
   assert.deepEqual(Object.keys(manifest.settings), ['src', 'load', 'lines']);
   assert.deepEqual(manifest.settings.load.values, ['now', 'view']);
@@ -35,7 +35,7 @@ test('sf-fragment stays the core boundary\'s name', () => {
 test('the words are the language files\', the same keys in Russian and English', () => {
   const ru = json('src/smart/include/lang/ru.json');
   const en = json('src/smart/include/lang/en.json');
-  assert.deepEqual(Object.keys(ru.runtime).sort(), ['failed', 'retry']);
+  assert.deepEqual(Object.keys(ru.runtime).sort(), ['failed', 'offline', 'retry']);
   assert.deepEqual(Object.keys(en.runtime).sort(), Object.keys(ru.runtime).sort());
   assert.deepEqual(Object.keys(en.events).sort(), Object.keys(manifest.events).sort());
   assert.equal(ru.runtime.retry, 'Повторить');

@@ -54,13 +54,40 @@ const sfToastMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "Visible label of the one optional action."
+      "description": "Visible label of the first optional action, always a button (owner decision C126 (1)): with action-href and no secondary action the button is a link to that address (owner decision C50)."
     },
     "action": {
       "kind": "custom",
       "valueType": "string",
       "default": "action",
       "description": "Stable action value emitted in sf-toast-action."
+    },
+    "action-href": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, the action button is a link to it (an <a> in the button's classes, in the action's place), followed as a link and reported in sf-toast-action (owner decisions C50, C126 (1): every action is a button; a link in the text is help only)."
+    },
+    "secondary-action-text": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "Visible label of a second action: both actions are buttons under the text, and action-href does not apply (C46, C50)."
+    },
+    "secondary-action": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "secondary",
+      "description": "Stable secondary action value emitted in sf-toast-action."
+    },
+    "actions-layout": {
+      "kind": "enum",
+      "values": [
+        "auto",
+        "under"
+      ],
+      "default": "auto",
+      "description": "Where the action stands: auto puts it in the row with the text while the toast is wide enough and under the text when narrower (layout L3a); under keeps it under the text at every width, for a long text. Any other word is auto."
     },
     "closable": {
       "kind": "boolean",

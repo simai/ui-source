@@ -1,0 +1,39 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "foreign-editorjs",
+  "summary": "An Editor.js block, its JSON as raw: nothing drawn.",
+  "covers": [
+    "content.foreign"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "fx",
+              "type": "content.foreign",
+              "data": {
+                "source": "editorjs",
+                "raw": "{\"id\":\"x1\",\"type\":\"checklist\",\"data\":{\"items\":[{\"text\":\"a\",\"checked\":true}]}}"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"></article>",
+    "diagnostics": [],
+    "assets": []
+  }
+}

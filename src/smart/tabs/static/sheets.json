@@ -20,6 +20,7 @@
     "utility/container/default/css/default.min.css",
     "utility/display/default/css/default.min.css",
     "utility/flex-direction/default/css/default.min.css",
+    "utility/flex-wrap/default/css/default.min.css",
     "utility/flex/default/css/default.min.css",
     "utility/font-weight/default/css/default.min.css",
     "utility/justify-content/default/css/default.min.css",
@@ -29,6 +30,7 @@
     "utility/resize/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
+    "utility/text-decoration/default/css/default.min.css",
     "utility/visibility/default/css/default.min.css"
   ],
   "examples": {
@@ -47,6 +49,7 @@
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
@@ -56,6 +59,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-decoration/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "go-to": [
@@ -73,6 +77,7 @@
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
@@ -82,6 +87,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-decoration/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "more": [
@@ -99,6 +105,7 @@
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
@@ -108,6 +115,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-decoration/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "reference": [
@@ -125,6 +133,7 @@
       "utility/container/default/css/default.min.css",
       "utility/display/default/css/default.min.css",
       "utility/flex-direction/default/css/default.min.css",
+      "utility/flex-wrap/default/css/default.min.css",
       "utility/flex/default/css/default.min.css",
       "utility/font-weight/default/css/default.min.css",
       "utility/justify-content/default/css/default.min.css",
@@ -134,6 +143,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-decoration/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ]
   }

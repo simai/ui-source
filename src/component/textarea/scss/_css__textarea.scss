@@ -1,3 +1,5 @@
+@use '../../inputs/scss/field-ladder' as ladder;
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-textarea {
@@ -27,7 +29,8 @@
 }
 
 .sf-textarea .sf-textarea-required {
-  --sf-textarea-required--color: var(--sf-error);
+  /* C153 (2): the mark in the label's ink. */
+  --sf-textarea-required--color: var(--sf-on-surface);
   --sf-textarea-required--font-family: var(--sf-text--family);
   --sf-textarea-required--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-textarea-required--color);
@@ -38,7 +41,8 @@
 }
 
 .sf-textarea .sf-textarea-text {
-  --sf-textarea-text--color: var(--sf-on-surface-variant);
+  /* C153 (1): the label in the text ink; the hint keeps the hint ink. */
+  --sf-textarea-text--color: var(--sf-on-surface);
   --sf-textarea-text--font-family: var(--sf-text--family);
   --sf-textarea-text--font-weight: var(--sf-font-weight-regular);
   color: var(--sf-textarea-text--color);
@@ -51,6 +55,9 @@
 .sf-textarea textarea {
   inline-size: 100%;
   min-inline-size: 0;
+  /* The line the text is drawn on: the size's, or on a touch phone at least
+     the touch line (below), so the auto-grow rows count the same line. */
+  --sf-textarea--line: max(var(--sf-textarea-textarea--line-height), var(--sf-textarea--touch-line, var(--sf-textarea-textarea--line-height)));
   --sf-textarea-textarea--border: var(--sf-px) solid;
   --sf-textarea-textarea--border-end-end-radius: var(--sf-textarea--radius);
   --sf-textarea-textarea--border-end-start-radius: var(--sf-textarea--radius);
@@ -59,6 +66,7 @@
   background-color: var(--sf-textarea-textarea--background-color);
   border: var(--sf-textarea-textarea--border);
   border-color: var(--sf-textarea-textarea--border-color, transparent);
+  border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
   border-end-end-radius: var(--sf-textarea-textarea--border-end-end-radius);
   border-end-start-radius: var(--sf-textarea-textarea--border-end-start-radius);
   border-start-end-radius: var(--sf-textarea-textarea--border-start-end-radius);
@@ -68,12 +76,13 @@
   font-family: var(--sf-textarea-textarea--font-family);
   font-size: var(--sf-textarea-textarea--font-size);
   font-weight: var(--sf-textarea-textarea--font-weight);
-  line-height: var(--sf-textarea-textarea--line-height);
+  line-height: var(--sf-textarea--line);
   padding-bottom: var(--sf-textarea-textarea--padding-bottom);
   padding-inline-end: var(--sf-textarea-textarea--padding-inline-end);
   padding-inline-start: var(--sf-textarea-textarea--padding-inline-start);
   padding-top: var(--sf-textarea-textarea--padding-top);
-  resize: var(--sf-resize, vertical);
+  /* C141 (2): no grip unless the field asks for one (.sf-textarea--resize). */
+  resize: var(--sf-resize, none);
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color, box-shadow, color;
   transition-timing-function: var(--sf-animation);
@@ -179,12 +188,32 @@
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
+/* The filled field's bottom line (C52, owner 2026-11-10): with the fill at 12 %
+   (C113) the fill alone stands 1.15 to 1.39 from its place, so at rest the
+   field also draws its bottom edge in --sf-outline, the bordered field's
+   boundary. Only the bottom: the other edges stay the transparent border
+   that a state colours. A state that colours the border (hover, press)
+   takes the line with it, so the edge is one colour. */
+.sf-textarea:not(.error).sf-textarea--filled:not(:has(textarea:disabled)) textarea {
+  --sf-textarea-textarea--line-color: var(--sf-textarea-border-color, var(--sf-outline));
+}
+
+/* Under the pointer the plate is the hover step (16), and in the dark theme
+   the place's dim ink lost 4.5:1 on it: 4.25 on a card, 4.32 on a popup
+   (C113 acceptance). The placeholder then takes the dim ink made for a
+   fill, --sf-on-surface-container-variant, as the dropdown's and lookup's
+   filled fields do (dark 85 on a page or card, 90 on a popup, 95 on a
+   nested one; light 35): 6.59 on a card, 5.70 on a popup, 5.57 nested.
+   A strong coloured place keeps its full ink. */
 .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {
   --sf-textarea-textarea--background-color: var(--sf-surface-container-hover);
+  --sf-textarea--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
+  --sf-textarea-textarea--line-color: var(--sf-textarea-textarea--border-color);
 }
 
 .sf-textarea:not(.error).sf-textarea--filled:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):active) textarea {
   --sf-textarea-textarea--border-color: var(--sf-primary-active);
+  --sf-textarea-textarea--line-color: var(--sf-textarea-textarea--border-color);
 }
 
 .sf-textarea.error.sf-textarea--filled textarea {
@@ -301,8 +330,8 @@
   --sf-textarea--row-frame: calc(var(--sf-textarea-textarea--padding-top) + var(--sf-textarea-textarea--padding-bottom) + 2 * var(--sf-px));
   block-size: auto;
   field-sizing: content;
-  min-block-size: calc(var(--sf-textarea--min-rows, 1) * var(--sf-textarea-textarea--line-height) + var(--sf-textarea--row-frame));
-  max-block-size: calc(var(--sf-textarea--max-rows) * var(--sf-textarea-textarea--line-height) + var(--sf-textarea--row-frame));
+  min-block-size: calc(var(--sf-textarea--min-rows, 1) * var(--sf-textarea--line) + var(--sf-textarea--row-frame));
+  max-block-size: calc(var(--sf-textarea--max-rows) * var(--sf-textarea--line) + var(--sf-textarea--row-frame));
   overflow-y: auto;
   resize: none;
 }
@@ -312,20 +341,16 @@
 }
 
 .sf-textarea:not(.error):has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):hover) textarea {
-  --sf-textarea-textarea--border-color: var(--sf-primary-hover);
+  /* C153 (4): hover darkens the border to the text ink. */
+  --sf-textarea-textarea--border-color: var(--sf-on-surface);
 }
 
-.sf-textarea:not(.sf-textarea--pointer-focus):has(textarea:enabled:not(:disabled):not(.disabled):focus-visible) textarea {
+/* C153 (4), R242: focus by mouse or keys draws a 2 px edge of the focus colour
+   inside the field, over its border; no ring outside (a scrolling container
+   cut it), nothing moves. */
+.sf-textarea:has(textarea:enabled:not(:disabled):not(.disabled):focus) textarea {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-focus--offset);
-}
-
-/* Here the control is the part the person sees, so the ring stays on it. What
-   has to go is the ring after a click: the global :focus-visible rule paints one
-   even when this component has decided not to, and then the textarea is the only
-   text control in the set that rings on a mouse click. */
-.sf-textarea.sf-textarea--pointer-focus textarea:focus-visible {
-  outline: none;
+  outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
 .sf-textarea:not(.error).sf-textarea--bordered:has(textarea:read-only:not(:disabled)) textarea {
@@ -381,7 +406,7 @@
 
 /* The keyboard ring is the composite's to draw; as specific as the rule that
    draws it on the other surfaces, and later. */
-.sf-textarea.sf-textarea--flush:not(.sf-textarea--pointer-focus):has(textarea:enabled:not(:disabled):not(.disabled):focus-visible) textarea {
+.sf-textarea.sf-textarea--flush:has(textarea:enabled:not(:disabled):not(.disabled):focus) textarea {
   outline: none;
 }
 }
@@ -394,9 +419,9 @@
   }
 
   @media (forced-colors: active) {
-    .sf-textarea:not(.sf-textarea--pointer-focus) textarea:not(:disabled):not(.disabled):focus-visible {
+    .sf-textarea textarea:not(:disabled):not(.disabled):focus {
       outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline-offset: calc(-1 * var(--sf-focus--width));
       --sf-textarea-textarea--box-shadow: none;
     }
   }
@@ -417,4 +442,218 @@
   .sf-textarea:not(.error).sf-textarea--filled:has(textarea:focus-within) textarea {
     --sf-textarea-textarea--border-color: var(--sf-outline);
   }
+}
+
+/* C77 (owner 2026-11-11): the value inset of sf-input. The text starts
+   --sf-space-1/2, --sf-space-1 or --sf-space-2 from the outer edge, the border
+   counted inside it (size 1/2 keeps 12 on a phone); the text box adds no
+   picture-to-label step. The multi-line box takes the corner of its
+   single-line field (at most half the single-line height: a full corner on a
+   two-line box swallows the first line), and a rounder corner moves the text
+   in by half of what it adds over the control radius. Flush keeps no
+   padding of its own. */
+@layer sf.components {
+  .sf-textarea {
+    --sf-textarea--inset: var(--sf-space-1);
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-1--control-height) / 2);
+    --sf-textarea--value-inset: calc(var(--sf-textarea--inset) + max(calc(var(--sf-px) * 0), var(--sf-textarea--radius) - var(--sf-radius-1\/2)) / 2);
+  }
+
+  .sf-textarea.sf-textarea--size-2 {
+    --sf-textarea--inset: var(--sf-space-2);
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-2--control-height) / 2);
+  }
+
+  /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact
+     region, where C79 brings it down a step to 28 and --sf-space-1/2 is 8.
+     The inset follows the field's step with that floor: compact 1/2 and 1
+     are 12, compact 2 (40) keeps 16 (intent acceptance 2026-11-12). */
+  .sf-textarea.sf-textarea--size-1\/2 {
+    --sf-textarea--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+    --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-1\/2--control-height) / 2);
+  }
+
+  .sf-textarea:is(.sf-textarea--size-1\/3, .sf-textarea--size-1\/2, .sf-textarea--size-1, .sf-textarea--size-2, .sf-textarea--size-3):not(.sf-textarea--flush) textarea {
+    --sf-textarea-textarea--padding-inline-start: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
+    --sf-textarea-textarea--padding-inline-end: var(--sf-textarea-padding-inline, calc(var(--sf-textarea--value-inset) - var(--sf-px)));
+  }
+}
+
+/* The outer steps of the field ladder (inputs/scss/_field-ladder.scss, as
+   sf-input and the six fields of the fields ladder): at 1/3 and 3 one row is
+   as tall as sf-input of the size (28 / 56 on a desktop), the text is the
+   size's, the label, the hint and the error a step below. The value starts
+   where sf-input's does at those steps (field-ladder.inset: C77 at every
+   step, fields ladder TI-2/TI-3), with the corner correction of the kept sizes; the corner is at most half the
+   one-row height. The textarea drew 1/3 and 3 at 1/2 and 2 before. */
+@layer sf.components {
+  @each $size in ladder.$outer {
+    $class: ladder.size-class('sf-textarea', $size);
+
+    .sf-textarea.#{$class} {
+      @include ladder.inset(--sf-textarea--inset, $size);
+      --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), #{ladder.height($size)} / 2);
+    }
+
+    .sf-textarea.#{$class} .sf-textarea-hint-text-wrap {
+      --sf-textarea-hint-text-wrap--font-family: var(--sf-text--family);
+      --sf-textarea-hint-text-wrap--font-weight: var(--sf-font-weight-regular);
+      --sf-textarea-hint-text-wrap--font-size: #{ladder.label-size($size)};
+      --sf-textarea-hint-text-wrap--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-textarea.#{$class} .sf-textarea-required {
+      --sf-textarea-required--font-size: #{ladder.label-size($size)};
+      --sf-textarea-required--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-textarea.#{$class} .sf-textarea-text {
+      --sf-textarea-text--font-size: #{ladder.label-size($size)};
+      --sf-textarea-text--line-height: #{ladder.label-height($size)};
+    }
+
+    .sf-textarea.#{$class} textarea {
+      --sf-textarea-textarea--font-family: var(--sf-text--family);
+      --sf-textarea-textarea--font-weight: var(--sf-font-weight-regular);
+      --sf-textarea-textarea--font-size: #{ladder.text-size($size)};
+      --sf-textarea-textarea--line-height: #{ladder.text-height($size)};
+      --sf-textarea-textarea--padding-bottom: var(--sf-textarea-padding-block, #{ladder.padding-block($size)});
+      --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, #{ladder.padding-block($size)});
+    }
+
+    .sf-textarea.#{$class} textarea[rows="1"] {
+      block-size: #{ladder.height($size)};
+    }
+
+    .sf-textarea.#{$class} textarea::placeholder {
+      --sf-textarea-placeholder--font-size: #{ladder.text-size($size)};
+      --sf-textarea-placeholder--line-height: #{ladder.text-height($size)};
+    }
+
+    .sf-textarea:not(.error).#{$class}.sf-textarea--bordered:has(textarea:enabled:not(:disabled):not(.disabled):not(:read-only):active) textarea {
+      --sf-textarea-textarea--border-color: var(--sf-primary-active);
+    }
+
+    .sf-textarea.sf-textarea--flush.#{$class} textarea {
+      --sf-textarea-textarea--padding-top: var(--sf-textarea-padding-block, #{ladder.ui($size, space-y-tightness-default)});
+      --sf-textarea-textarea--padding-bottom: var(--sf-textarea-padding-block, #{ladder.ui($size, space-y-tightness-default)});
+    }
+  }
+}
+
+/* TR-2: on a touch phone the core lifts a field's text to 16px so iOS does
+   not zoom into it (core/scss/_sf_css__touch_fields.scss, same query), and
+   keeps the size's line: right for a one-line field, but the 1/2 textarea
+   then drew 16px text on a 16px line and its lines touched. Its lines stand
+   on at least the text line of size 1 (20 on a phone), the line the phone
+   ladder gives that text. A fixed one-row field (rows="1", not growing) is
+   the one-line field's box and keeps the size's line inside its control
+   height; size 3 is not lifted and keeps its own line. */
+@media (hover: none) and (pointer: coarse) {
+  @media not all and (min-width: 60rem) {
+    @layer sf.components {
+      .sf-textarea:not(.sf-textarea--size-3):not(.sf-textarea--auto-grow) textarea:not([rows="1"]),
+      .sf-textarea.sf-textarea--auto-grow:not(.sf-textarea--size-3) textarea {
+        --sf-textarea--touch-line: var(--sf-text-height-1);
+      }
+    }
+  }
+}
+
+/* C141 (owner 2026-11-14; study control/research/2026-11-14-textarea-rich-text.md).
+   (2) The grip only on request: .sf-textarea--resize (sf-input-textarea's
+   `resize`) draws the browser's vertical grip on a field of fixed height;
+   a growing field has none, and a touch screen never has one -- a finger
+   cannot hold a corner of a few pixels. (1) The count stands at the end of
+   the message line, in the message's text and colour, digits of one width;
+   past the limit it is the error colour (the frame is the field's error
+   frame). The polite line that speaks a threshold is read, not seen. (8) Code:
+   the code font of the type system, the line as typed -- no wrapping, the
+   field scrolls sideways inside. */
+@layer sf.components {
+  @media not all and (pointer: coarse) {
+    .sf-textarea.sf-textarea--resize:not(.sf-textarea--auto-grow):not(.sf-textarea--flush) textarea {
+      resize: var(--sf-resize, vertical);
+    }
+  }
+
+  .sf-textarea .sf-textarea-message {
+    align-items: flex-start;
+    gap: var(--sf-space-1\/2);
+  }
+
+  .sf-textarea .sf-textarea-message .sf-textarea-hint-text-wrap {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .sf-textarea .sf-textarea-count {
+    flex: none;
+    margin-inline-start: auto;
+    color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-font-weight-regular);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  @each $size in ladder.$sizes {
+    .sf-textarea.#{ladder.size-class('sf-textarea', $size)} .sf-textarea-count {
+      font-size: #{ladder.label-size($size)};
+      line-height: #{ladder.label-height($size)};
+    }
+  }
+
+  .sf-textarea.sf-textarea--over .sf-textarea-count {
+    color: var(--sf-error);
+  }
+
+  .sf-textarea-count-said {
+    position: absolute;
+    inline-size: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(-1 * var(--sf-px));
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sf-textarea.sf-textarea--code textarea {
+    font-family: var(--sf-code-font-family, var(--sf-code--font-family));
+    font-variant-ligatures: none;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: auto;
+  }
+}
+
+@media (pointer: coarse) {
+  @layer sf.components {
+    .sf-textarea.sf-textarea textarea {
+      resize: none;
+    }
+  }
+}
+
+/* C153 (1): at size 1 the label stays 14 on a phone (below 60rem), the step of
+   the value there, as sf-input's. (2) A disabled field's label and mark take
+   the disabled ink together. */
+@media not all and (min-width: 60rem) {
+  .sf-textarea.sf-textarea.sf-textarea--size-1 .sf-textarea-text,
+  .sf-textarea.sf-textarea.sf-textarea--size-1 .sf-textarea-required {
+    --sf-textarea-text--font-size: var(--sf-text-size-1);
+    --sf-textarea-text--line-height: var(--sf-text-height-1);
+    --sf-textarea-required--font-size: var(--sf-text-size-1);
+    --sf-textarea-required--line-height: var(--sf-text-height-1);
+  }
+}
+
+.sf-textarea:has(textarea:disabled) .sf-textarea-text {
+  --sf-textarea-text--color: var(--sf-on-surface-disabled);
+}
+
+.sf-textarea:has(textarea:disabled) .sf-textarea-required {
+  --sf-textarea-required--color: var(--sf-on-surface-disabled);
 }

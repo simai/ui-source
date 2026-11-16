@@ -28,6 +28,9 @@
 @use 'sf_css__max_container';
 // fix bottom
 @use 'sf_css__typograpy';
+// role tokens (C173): aliases of the steps above, before the density regions declare them again
+@use "../figma_variables/figma_role_tokens";
+@use 'sf_css__actions';
 // after the ladder: a region's density re-declares its steps
 @use 'sf_css__density';
 @use 'sf_css__link';
@@ -44,3 +47,6 @@
 @use 'sf_css__composition';
 @use 'sf_css__placeholder';
 @use 'sf_css__touch_fields';
+// Display settings and the device's contrast and transparency (C196): last,
+// so a scheme re-declares the roles every partial above declares.
+@use 'sf_css__display';

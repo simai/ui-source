@@ -3,10 +3,26 @@
     cursor: pointer;
   }
 
+  /* The overlay stands on the first line of its host's content (owner remark
+     2026-11-15): centred on that line, and its glyph's end on the content's
+     end. It was pinned 4 from the top and the end, so in a one-line box with
+     padding 16 it stood 5 from the top and 33 from the bottom. The host's
+     padding is --sf-clipboard-overlay-inset (public; the space system's
+     step 2 by default, the padding p-2 gives); the line is the host's line
+     height (1lh, the button inherits it). Top: the padding, then half of what
+     the line and the box differ by. End: the padding less the button's own
+     room around the glyph. The box and the glyph are the size's (the control
+     ladder's height and the text line, as the sizes below set them); a
+     button with no size class is size 1. A multi-line block keeps it on the
+     first line. */
   .sf-clipboard--overlay,
   .btn-clipboard.sf-clipboard-surface:not(.sf-clipboard--inline) {
-    inset-block-start: var(--sf-space-1\/4);
-    inset-inline-end: var(--sf-space-1\/4);
+    --sf-clipboard--overlay-inset: var(--sf-clipboard-overlay-inset, var(--sf-space-2));
+    --sf-clipboard--overlay-box: var(--sf-clipboard--box, var(--sf-ui-1--control-height));
+    --sf-clipboard--overlay-glyph: var(--sf-clipboard--icon, var(--sf-text-height-1));
+    inset-block-start: calc(var(--sf-clipboard--overlay-inset) + (1lh - var(--sf-clipboard--overlay-box)) / 2);
+    inset-inline-end: calc(var(--sf-clipboard--overlay-inset) - (var(--sf-clipboard--overlay-box) - var(--sf-clipboard--overlay-glyph)) / 2);
+    line-height: inherit;
     position: absolute;
     z-index: var(--sf-z-index-2);
   }
@@ -27,8 +43,17 @@
     transition: background-color var(--sf-duration-fast) var(--sf-animation);
   }
 
-  .sf-clipboard-surface:hover {
+  /* Hover and press fill the surface one state step up. Before, the hover
+     rule (two classes) lost to the resting fill (three), so the surface never
+     showed a hover, and nothing told a disabled one apart. A disabled
+     button -- aria-disabled="true" while it copies, or :disabled -- takes no
+     state at all. */
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):hover {
     background-color: var(--sf-surface-container-hover);
+  }
+
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):not(:disabled, [aria-disabled='true']):active {
+    background-color: var(--sf-surface-container-active);
   }
 
   .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):focus-visible {
@@ -36,9 +61,24 @@
     outline-offset: calc(var(--sf-focus--width) * -1);
   }
 
-  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target])[aria-disabled='true'] {
-    cursor: wait;
-    opacity: var(--sf-opacity-60);
+  /* Disabled -- aria-disabled="true" while it copies (it keeps focus), or
+     :disabled -- reads as disabled, not as busy (owner remark 2026-11-15):
+     the arrow, not the wait cursor; no state on hover or press; the pointer
+     passes through. The surface takes the disabled fill and ink, the glyph's
+     third role (on-surface-disabled, never an opacity), as a disabled tonal
+     icon button draws it. Before: the wait cursor and opacity 60 over the
+     resting look. An sf-button or sf-icon-button route draws its own
+     disabled look, which reads aria-disabled too (component.buttons,
+     component.icon-buttons). */
+  :is(.sf-clipboard, [data-sf-copy], [data-sf-copy-target]):is([aria-disabled='true'], :disabled) {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .sf-clipboard-surface:not(.sf-button):not(.sf-icon-button):is([aria-disabled='true'], :disabled) {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+    background-color: var(--sf-surface-disabled);
+    color: var(--sf-on-surface-disabled);
   }
 
   /* The three sizes are the control ladder's 1/3, 1 and 2 (C18; docs
@@ -95,10 +135,6 @@
     white-space: nowrap;
   }
 
-  .sf-clipboard-status:empty {
-    margin-block-start: 0;
-  }
-
   /* The name and the result: the Framework tooltip, placed over the page by
      SF.Position (fixed), outside an .sf-tooltip-anchor. */
   .sf-clipboard-name,
@@ -109,7 +145,7 @@
       calc(100vw - var(--sf-space-2))
     );
     pointer-events: none;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--message);
   }
 
   /* The result's ink is the glyph's own, as sf-button-copy's. */

@@ -1,0 +1,68 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "inline-extension-keys",
+  "summary": "Extension keys on a text run, a link, its child, a break and an atom are valid and draw nothing.",
+  "covers": [
+    "inline"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "p",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Bonjour",
+                    "lang": "fr"
+                  },
+                  {
+                    "type": "link",
+                    "href": "/doc",
+                    "title": "Docs",
+                    "children": [
+                      {
+                        "type": "text",
+                        "value": "docs",
+                        "data_ref": "r1"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "break",
+                    "kind": "soft"
+                  },
+                  {
+                    "type": "component",
+                    "name": "kbd",
+                    "props": {
+                      "text": "K"
+                    },
+                    "lang": "en"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><p data-sf-composition-id=\"p\">Bonjour<a href=\"/doc\">docs</a><br><kbd>K</kbd></p></article>",
+    "diagnostics": [],
+    "assets": []
+  }
+}

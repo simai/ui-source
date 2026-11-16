@@ -1,0 +1,251 @@
+{
+  "schema_version": 2,
+  "id": "smart.tag-group",
+  "version": "1.0.0",
+  "title": "Tag group",
+  "summary": "A row of tags: 4 apart, a list to a screen reader, one Tab stop with arrows and Delete, one line with «+N» that opens the hidden tags in a popover, and single or multiple choice for filter tags.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "tag",
+    "tags",
+    "group",
+    "chips",
+    "filters",
+    "overflow"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "theme",
+    "i18n",
+    "responsive",
+    "accessibility"
+  ],
+  "custom_element": "sf-tag-group",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.popover",
+      "smart.tag"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "layout": {
+        "type": "string",
+        "default": "row",
+        "description": "row: one line -- filters, a table cell, a card: the tags that do not fit leave it and «+N» opens them in a popover (C58, C145 (5)); wrap: the row wraps, every tag in view (a form)",
+        "enum": [
+          "row",
+          "wrap"
+        ]
+      },
+      "selection": {
+        "type": "string",
+        "default": "none",
+        "description": "For filter tags (kind checkbox): none leaves each tag its own; one keeps a single tag chosen (choosing one clears the others; it can be cleared); many lets each be chosen. With one or many the group reports select",
+        "enum": [
+          "none",
+          "one",
+          "many"
+        ]
+      },
+      "aria-label": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {},
+  "events": {
+    "sf-tag-group-select": {
+      "summary": "A person chose or cleared a filter tag of the row (selection one or many): ids is the whole selection, id the tag pressed and selected whether it is now chosen (vocabulary §5 select)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "ids",
+          "id",
+          "selected"
+        ],
+        "properties": {
+          "ids": {
+            "type": "array"
+          },
+          "id": {},
+          "selected": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "more": [
+        "closed",
+        "open"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "open",
+      "selected"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "none",
+    "forbidden_client_responsibilities": [
+      "removing a tag (the page removes the element on sf-tag-close)"
+    ]
+  },
+  "security": {
+    "permissions_owner": "none",
+    "untrusted_inputs": [
+      "props",
+      "children"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "list",
+    "accessible_name": "recommended",
+    "keyboard": [
+      "Tab reaches the row once; ArrowLeft and ArrowRight walk the tags and «+N», Home and End go to the ends",
+      "Delete or Backspace removes the removable tag stood on; the focus goes to its neighbour",
+      "Enter or Space on «+N» opens the hidden tags; Escape closes them"
+    ],
+    "focus": "One tag of the row is in the Tab order at a time: the one last stood on."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "a0deac27234c934d0bf707f16008d50f70284f97",
+    "source_artifacts": [
+      {
+        "path": "src/smart/tag-group/index.js",
+        "sha256": "e7ff10506b13f7033fbc089bbb62e044bc219ca8cd2b50ef61a7938f8c88845f"
+      },
+      {
+        "path": "src/smart/tag-group/js/templates/default.js",
+        "sha256": "c1ae55d05b87d0d347a17343fdb5aab17f41e286ec623c31ee16daad3c61aeda"
+      },
+      {
+        "path": "src/smart/tag-group/js/templates/default.css",
+        "sha256": "1a3f353d7fdbaa240dceab136f2621ae581538d6b5e7672f0bf98980d018bd79"
+      },
+      {
+        "path": "src/smart/tag-group/rule.js",
+        "sha256": "fa3a898b62ce3caa309ed7eb12fb70a0dffeb6c30159e753bc6629d99cf134db"
+      },
+      {
+        "path": "src/smart/tag-group/docs.md",
+        "sha256": "91a19b991ae7a2d89f9fee6c5c0dfa689dc8bcd3d116012682891e4d28953bd8"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-tag-group for any row of tags: chosen values to remove, filter chips above a list, a table cell's tags, an article's tag links.",
+    "do_not": [
+      "Do not write the row's gap, «+N» or keys by hand; the group owns them",
+      "Do not use it for buttons (sf-button-group) or a 2-5 option switch (sf-segmented)",
+      "Do not remove a tag in the group yourself before sf-tag-close: the cross and Delete ask, the page removes"
+    ],
+    "required_reads": [
+      "inputs",
+      "accessibility"
+    ],
+    "minimal_example": "<sf-tag-group aria-label=\"Города\"><sf-tag kind=\"default\" closable text=\"Москва\"></sf-tag><sf-tag kind=\"default\" closable text=\"Казань\"></sf-tag></sf-tag-group>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

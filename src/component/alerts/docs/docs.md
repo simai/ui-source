@@ -1,8 +1,11 @@
 # Alerts
 
-Alert is a persistent inline notice inside the page flow. Choose its semantic
-type from the message meaning: `clear`, `info`, `warning`, `danger` or
-`success`. Use Toast for transient overlay feedback.
+Alert is a persistent inline notice inside the page flow: the state of this
+page or section (owner decision C114 (1)). Choose its status from the message
+meaning: `neutral`, `info`, `success`, `warning` or `error` (`clear` and
+`danger` are still read). The state of the whole product is `sf-alert-bar`, a
+short reply to an action is a toast (`SF.notify`), a decision is
+`sf-confirm`.
 
 ## Anatomy
 
@@ -27,7 +30,9 @@ compact and phone 20) and stands with the first line of text and the close in
 the box of a low size-1 control (32, compact and phone 28). The title and its
 text (`.sf-alert-content`) are one block (no gap); `.sf-alert-buttons` follow
 at `--sf-space-1/2`, `--sf-space-1/3` apart. Actions: `sf-button
-sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low`,
+sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low`
+(tonal surface, the same neutral plate on every status: a status alert is a
+soft coloured place, and the action takes the theme's neutral container back),
 a second one `sf-button sf-button--ghost sf-button--on-surface
 sf-button--size-1 sf-button--height-low`. The close is `sf-icon-button
 sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with
@@ -35,15 +40,101 @@ sf-icon-button--close sf-icon-button--size-1 sf-icon-button--height-low` with
 over the inline padding. The public `--sf-alert-padding-block`,
 `--sf-alert-padding-inline` and `--sf-alert-gap` still win.
 
+Since 1.3.1 (owner decision C105 H4/H6, as the fields' C77 inset) the 1 px
+border is inside the inline inset: the padding is `--sf-space-1` less
+`--sf-alert-border-width`, so the icon and the letters stand 16 from the outer
+edge (compact and phone 12), on every look; before they stood 17 (13).
+
+## Where the actions stand (1.2.0, owner decision C115)
+
+The actions stand in the row with the text while the notice is wide enough,
+else under the text from its start (layout L3a):
+
+| Actions | In the row from the notice's own width |
+|---|---|
+| one | 36rem (576 px) |
+| two | 48rem (768 px) |
+
+The notice with actions is a size query container (`container: sf-alert`).
+The step is the notice's whole width, its padding and border included. In the
+row the actions are centred on the text block and their plate overhangs the
+line by the low button's block padding, as the close does: with a one-line
+text the button's label stands on the title line, with the icon and the close.
+Under the text they follow at `--sf-space-1/2` (12, phone 8).
+
+The modifier `.sf-alert--actions-under` (1.2.0, owner 2026-11-13,
+#q-layout-override; on `sf-alert` the setting `actions-layout="under"`) keeps
+the actions under the text at every width, with the same gap and the even
+bottom below. The sheet cannot count the text's lines: in the row a three-line
+text with two actions is taller than under it (174 against 146 at 800), so a
+long text is the author's call.
+
+```html
+<div class="sf-alert sf-alert--warning sf-alert--default sf-alert--actions-under flex items-start">
+  …
+</div>
+```
+
+With the actions under the text, the space under the last button equals the
+space above the status icon's ink (1.3.4, owner decision C193, refining
+C114 (5), NS-9): `.sf-alert-wrap` ends with
+`--sf-alert--lead + (--sf-text-height-1 - 1cap) / 4` under the buttons. The
+icon's ink starts above the capitals, so the half room of 1.3.0 (`/ 2`, under
+the button as much as above the capitals) left the bottom deeper than the top
+the eye reads. Measured inside the border at 1440: 19 above the icon's ink,
+19.1 under the button (it was 22.2); compact and on a phone 14.5 and 14.5 (it
+was 16.9).
+
+## Help link (1.2.1, owner decision C126)
+
+A link inside `.sf-alert-content` leads to help only («Узнать больше»); every
+action is a button in `.sf-alert-buttons`. Any `a[href]` in the text takes the
+text's own ink (`--sf-alert-color`, else the status's on-container role or
+on-surface), not `--sf-link`; it is underlined at `--sf-link--underline-weight`
+with `--sf-a3` offset, the line doubles on hover and press, and the keyboard
+ring is the same ink. The rule is shared by the notice family (core
+`mix/_mix__notice-link.scss`: sf-alert, sf-toast, sf-alert-bar).
+
+```html
+<div class="sf-alert-supporting-text">Открыть страницу сможет любой, у кого
+  есть ссылка. <a href="/help/sharing">Узнать больше</a></div>
+```
+
+## Callout: a recipe, not a component
+
+Guidance before an action («changing the address affects every letter») is an
+ordinary info alert (owner decision C114 (7)): `sf-alert--info
+sf-alert--outlined`, the border only, without the close and without actions.
+
+```html
+<div class="sf-alert sf-alert--info sf-alert--outlined flex items-start">
+  <i class="sf-icon" aria-hidden="true">info</i>
+  <div class="sf-alert-wrap flex flex-col flex-1">
+    <div class="sf-alert-content flex flex-col flex-1">
+      <div class="sf-alert-supporting-text">Новый адрес получат все письма сайта.</div>
+    </div>
+  </div>
+</div>
+```
+
 ## Ink (1.1.1, C35 acceptance F1)
 
-One notice draws one ink, as sf-toast does: the close's cross is the notice's
-text ink -- `--sf-on-<status>-container` on a default or flat alert,
-`--sf-on-surface` when neutral and on an outlined alert, whose text stands on
-the page -- and the status icon is the status's role `--sf-<status>`
-(neutral: the quiet `--sf-on-surface-variant` of its place), which reads 5.2:1 or more on its container in
-the light theme and 7.7:1 or more in the dark one. The cross is reached inside any close host,
-so the Smart alert's close (an `sf-button-icon`) takes it too.
+One notice draws one ink, as sf-toast does: the status icon is the status's
+role `--sf-<status>` (neutral: the quiet `--sf-on-surface-variant` of its
+place), which reads 5.2:1 or more on its container in the light theme and
+7.7:1 or more in the dark one.
+
+The close's cross is a service glyph (1.1.4, owner decision C112, AA-12; it
+refines C107 for service glyphs on coloured places): the on-surface ink at 64
+of the alpha scale's ink family (48/64/80) --
+`light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64))` -- the same
+translucent tone on every status and look, so it reads evenly on the neutral
+container, a status container and the page under an outlined alert. Its size
+is the size-1 close, 16 in the 24 box of the status icon (C103, C112). Under a
+pointer it catches the text ink. Earlier it painted the text ink (two to three
+times darker than the status icon), then `--sf-on-surface-variant`. The cross
+is reached inside any close host, so the Smart alert's close (an
+`sf-button-icon`) takes it too.
 
 The status colour is the alert's own icon only (1.1.2, C35 acceptance A-F1):
 `.sf-alert > .sf-icon` and `.sf-alert > sf-icon > .sf-icon`. An icon inside an
@@ -55,6 +146,17 @@ on its plate.
 Combine one semantic type with `default`, `outlined` or `flat`. Default and flat
 semantic surfaces use their matching `on-*-container` text role. Outlined keeps
 the page text role and a semantic border/icon.
+
+The three looks (owner decision C110 as amended 2026-11-12; 1.3.0):
+
+| Look | Class | Border | Fill | Shadow |
+|---|---|---|---|---|
+| (а) border only | `sf-alert--outlined` | status outline | none (the page) | none |
+| (б) border and fill | `sf-alert--default` | status outline | status container | none |
+| (в) fill and shadow | `sf-alert--flat` | none | status container | `--sf-shadow-raised` |
+
+Only the flat look casts a shadow: the raised place's shadow, the card's (a soft key and ambient shade in the light theme, the key shade
+alone in the dark). Before 1.3.0 the flat look had no shadow.
 
 ## Behavior
 
@@ -76,3 +178,11 @@ Smart Alert keeps ownership of its own root without duplicate events.
 The line-size rule for icons reaches only the alert's own status icon, as its
 status colour does: an icon button inside the alert keeps its own glyph size
 (review R-N1, 2026-11-11).
+
+## Version notes (1.3.4, owner decision C193)
+
+- With the actions under the text, the wrap ends with a quarter of the room
+  around the capitals instead of a half: the space under the last button is the
+  space above the status icon's ink, 19 at 1440 and 14.5 compact and on a phone
+  (22.2 and 16.9 before). Nothing else moves; the row with the actions beside
+  the text keeps no inset under them.

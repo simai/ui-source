@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.toast",
-  "version": "1.2.1",
+  "version": "1.4.2",
   "title": "Toast",
   "summary": "Transient overlay feedback with semantic roles, optional action, pause-safe lifetime and dismiss behavior.",
   "kind": "smart",
@@ -77,12 +77,36 @@
       "action-text": {
         "type": "string",
         "default": "",
-        "description": "Visible label of the one optional action."
+        "description": "Visible label of the first optional action, always a button (owner decision C126 (1)): with action-href and no secondary action the button is a link to that address (owner decision C50)."
       },
       "action": {
         "type": "string",
         "default": "action",
         "description": "Stable action value emitted in sf-toast-action."
+      },
+      "action-href": {
+        "type": "string",
+        "default": "",
+        "description": "An address for the one light navigation action («Открыть», «Посмотреть», «Подробнее»): with it and without a secondary action, the action button is a link to it (an <a> in the button's classes, in the action's place), followed as a link and reported in sf-toast-action (owner decisions C50, C126 (1): every action is a button; a link in the text is help only)."
+      },
+      "secondary-action-text": {
+        "type": "string",
+        "default": "",
+        "description": "Visible label of a second action: both actions are buttons under the text, and action-href does not apply (C46, C50)."
+      },
+      "secondary-action": {
+        "type": "string",
+        "default": "secondary",
+        "description": "Stable secondary action value emitted in sf-toast-action."
+      },
+      "actions-layout": {
+        "type": "string",
+        "default": "auto",
+        "description": "Where the action stands: auto puts it in the row with the text while the toast is wide enough and under the text when narrower (layout L3a); under keeps it under the text at every width, for a long text. Any other word is auto.",
+        "enum": [
+          "auto",
+          "under"
+        ]
       },
       "closable": {
         "type": "boolean",
@@ -417,7 +441,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/toast/index.js",
-        "sha256": "6815fe75db74440a65b4d3d2ca2b7a0606172ddaaf96dffbc1662fcb4821f9e0"
+        "sha256": "3bca1b37306a3ce3a92c41b0aec46c86404bdc9bb442d2084874bd1f2e644191"
       }
     ],
     "generated_runtime": [

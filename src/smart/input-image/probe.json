@@ -129,7 +129,7 @@
       "id": "remove-detaches",
       "covers": "events.detach, then the old sf-image-field:remove (dated); the form gets nothing",
       "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-input-image>",
-      "user": "click:sf-button.sf-image-field-remove button",
+      "user": "click:sf-button-icon.sf-image-field-remove button",
       "expect": {
         "value": null,
         "events": [
@@ -288,7 +288,7 @@
       "field": "<sf-input-image label=\"Логотип\" name=\"logo\" value=\"{&quot;value&quot;:&quot;42&quot;,&quot;label&quot;:&quot;logo.png&quot;,&quot;mime&quot;:&quot;image/png&quot;,&quot;size&quot;:2048,&quot;href&quot;:&quot;/upload/logo.png&quot;}\"></sf-input-image>",
       "given": [
         {
-          "user": "click:sf-button.sf-image-field-remove button"
+          "user": "click:sf-button-icon.sf-image-field-remove button"
         }
       ],
       "form": "reset",

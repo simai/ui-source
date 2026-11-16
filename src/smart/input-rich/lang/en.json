@@ -14,12 +14,20 @@
     "quote": "Quote",
     "undo": "Undo",
     "redo": "Redo",
+    "not-in-list": "Not available in a list",
+    "nothing-to-undo": "Nothing to undo",
+    "nothing-to-redo": "Nothing to redo",
     "link-dialog": "Link",
     "link-address": "Link address",
     "link-hint": "https://…, mailto:, tel: or a path on this site such as /about",
     "link-invalid": "Use an https:, mailto: or tel: address, or a path on this site that starts with /.",
     "link-apply": "Apply",
     "link-remove": "Remove link",
-    "value-missing": "Enter some text."
+    "value-missing": "Fill in this field",
+    "count-text": "{count} / {max}",
+    "too-long": "At most {max} characters",
+    "help": "More about: {label}",
+    "text-level": "Text level",
+    "more": "More"
   }
 }

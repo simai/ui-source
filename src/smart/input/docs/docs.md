@@ -24,7 +24,9 @@ Main attributes:
 - `required`
 - `placeholder`
 - `input-type` — `text`, `email`, `password`, `search`, `tel`, `url` or
-  `number`
+  `number`; a number field draws no browser arrows and shows tabular digits
+  (1.10.0) — a number the person steps through takes
+  `sf-input-quantity steppers="none"` or with its steppers instead
 - `min`, `max`, `step` — the range and step of a number field
 - `autocomplete`
 - `inputmode`
@@ -32,11 +34,22 @@ Main attributes:
 - `maxlength`
 - `pattern`
 - `hint`
+- `help` — the explanation behind a «?» (`sf-help-mark`) after the label and
+  its «*» (1.10.0, owner decision C153 (8)); the mark is a step below the value
+  as the label is, the label row keeps its height, and the mark is named
+  «Подробнее: <label>» («More about: <label>»). The whole field family has it
+- `maxlength` draws the count «32 / 40» at the end of the message row from 80 %
+  of the limit (C141 (1)); past the limit the count and the border turn to the
+  error and the field says «Не больше 40 знаков». `counter` shows the count
+  always
 - `value`
 - `inherited-value`, `inherited-text`, `reset-label` — see «Inherited value»
 - `default-value`
 - `name`
 - `icon-start`
+- `text-start` — a fixed text at the field's start, before the value
+  (`https://`, `+7`), in the hint's ink; screen readers hear it with the
+  field (1.10.0, owner decision C153 (9))
 - `text-end`
 - `shortcut` — a key combination drawn at the end of the field as kbd keys
   (`mod+k` reads ⌘K on a Mac, Ctrl K elsewhere) and written as
@@ -46,6 +59,8 @@ Main attributes:
 - `hint-icon`
 - `root-class`
 - `root-style`
+- `clearable` — a clear (×) at the field's end while it holds a value (1.9.0); a
+  search field has it without the setting
 - `disabled`
 - `error`
 - `invalid`
@@ -105,6 +120,8 @@ The reset is a native button named by `reset-label` («Сбросить к на�
 fires `sf-field-reset` on the host -- bubbling, composed and **cancellable** --
 before anything changes:
 
+The reset is the field's own action (owner decision C123), as a clear is: a glyph without a plate in any state, in the hint's ink at rest and the text's ink under the pointer, the size of the field's text line, with an invisible hit area never under 24 px; the keyboard ring goes round the glyph.
+
 ```js
 field.addEventListener('sf-field-reset', (event) => {
   const {value, inheritedValue, name} = event.detail; // value: the own value being dropped
@@ -150,10 +167,97 @@ Quantity (`sf-input-quantity`).
 <sf-input name="limit" label="Лимит" input-type="number" min="1" max="100" step="1" inputmode="numeric" value="10"></sf-input>
 ```
 
-`size` is limited to `1/3`, `1/2`, `1`, `2` and `3` (the other fields keep
-`1/2`, `1` and `2`). Visible presentation is
+`size` is limited to `1/3`, `1/2`, `1`, `2` and `3`, the field ladder
+sf-input-lookup, -quantity, -date, -code, -color and -country share (the
+textarea, the dropdown and the file fields keep `1/2`, `1` and `2`). Visible presentation is
 `bordered` or `filled`. `hidden` is preserved for compatibility but is not a
 visible control and should not replace a native hidden field in new markup.
+Bordered is the default on every place. Filled is for a search or filter field
+over a table or a list, on the page, a card or a popup (C52): at rest it draws
+a thin bottom line in `--sf-outline` under its 8 % fill (C41), and a state
+that colours the border (hover, press) colours the line with it.
+
+## Actions inside the field
+
+Since 1.9.0 (owner decision C123) the actions inside the field are glyphs
+without a plate, the field layer's `.sf-field-action` (component.inputs): quiet
+(`--sf-on-surface-variant`) at rest, the text's ink under the pointer and on a
+press, the keyboard ring round the glyph inside the field. The glyph is the
+leading icon's size (24 / 20 / 28 at sizes 1, 1/2, 2 on a desktop), its end on
+the field's inset; the hit area is invisible, the field's height and never under
+24. From the text to the edge: the clear, then the action (the password reveal,
+a copy button), then an indicator (a dropdown's chevron). The value keeps half
+the field's inset to the first glyph and two glyphs stand half an inset apart
+at every size (C123 (6)), also where the 24 floor makes the hit area wider than
+the glyph (1/3, and 1/2 in the compact density and on a phone: 6, not 7 and 8);
+two hit areas then overlap, each still 24 wide (component.inputs 1.7.1).
+
+- `clearable` draws the clear, «Очистить» («Clear»), while the field holds a
+  value and can be changed. A press empties the field with `input` and `change`
+  and gives the focus back to it. `input-type="search"` has it without the
+  setting, in place of the browser's own.
+- `input-type="password"` draws the reveal: a toggle button «Показать пароль»
+  («Show password») with `aria-pressed`; the eye, crossed out while the password
+  shows. `form.reset()` and sending the form (the submit button, Enter,
+  `requestSubmit()`) hide the password again, before the page's own submit
+  handler runs. On a touch screen (`pointer: coarse`) the eye's hit area is a
+  square of the field's inner height; the glyph keeps its size. While the field
+  has the focus and Caps Lock is on, «Включён Caps Lock» («Caps Lock is on»)
+  stands under the field in the hint's place and type, and is said once through
+  a polite live region; it goes when the field loses the focus or Caps Lock is
+  turned off.
+- An `sf-button-copy` placed in the field (the `end` slot or the class markup's
+  `.sf-input-field`) draws the same glyph and shows its check after a copy.
+
+Buttons outside fields (toolbars, table rows, window headers) keep their plates.
+
+## Label, required mark and the required line
+
+Since 1.10.0 (owner decision C153) the label is in the text ink, one step
+below the value (14 at size 1, on a phone too). The required «*» is in the
+label's ink, not the error colour, and assistive technology does not read it:
+the native `required` says it. A form with required fields says once, above
+or below them, «* — обязательные поля» («* — required fields»); this line is
+the form's own text, written by the author. A form whose fields are mostly
+required may mark the others «необязательно» («optional») in their label
+instead.
+
+## Errors the field shows itself
+
+Since 1.10.0 (owner decision C153 (3)) every field of the family (sf-input,
+sf-input-textarea, -lookup, -quantity, -rich, -date, -country, -color,
+-choice, -code, -image and sf-dropdown) shows its own errors, and the
+browser's bubble never shows:
+
+- a submit attempt that fails shows every wrong field at once and moves the
+  focus to the first of them; `checkValidity()` / `reportValidity()` from a
+  script shows them without moving the focus;
+- afterwards, and on any field whose value the person changed, leaving the
+  field checks it;
+- a shown error goes the moment the value is right, while the person types;
+- the words are the component's, in the page's language (`lang/ru.json`,
+  `lang/en.json`: «Заполните поле», «Введите адрес целиком, например
+  ivan@clinic.ru», «Проверьте формат», «Не меньше {min}», …); a script's
+  `setCustomValidity()` text is shown as given;
+- `form.reset()` clears every shown error.
+
+The error is the error outline (on `appearance="filled"` the error fill), the
+words under the field in the field-message type, and `aria-invalid` /
+`aria-errormessage` on the control. The page's `invalid` with `error-message`
+wins over it.
+
+## Hover, focus and autofill
+
+Hover draws the border in the text ink. Focus, by mouse or keys, draws a 2 px
+primary edge inside the field: no ring outside it, nothing moves, and a
+scrolling container never cuts it. A field the browser filled is tinted in the
+primary select state, its text in the text ink, in both themes.
+
+## Keys
+
+The clear (×) is not a Tab stop: Escape empties a `clearable` or search field
+that holds a value (with `input` and `change`; the focus stays). The password
+reveal is a Tab stop.
 
 ## Value and native form reset
 
@@ -180,8 +284,8 @@ The host element dispatches bubbling custom events from `SfBaseElement`:
 ## External project templates
 
 Base Input supplies readable secondary label/hint roles. Bordered placeholder
-uses on-surface-variant; filled placeholder uses on-surface to remain readable
-on its interactive tonal surface. Explicit disabled overrides are separate.
+uses on-surface-variant; the filled placeholder is the place's dim ink too
+(on a strong coloured place, the place's full ink). Explicit disabled overrides are separate.
 
 The default visible and hidden input roots consume the shared rootStyle context;
 the visible root also consumes rootClass. Author CSSOM token edits and root-style

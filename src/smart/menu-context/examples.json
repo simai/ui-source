@@ -87,6 +87,48 @@
       "from": "studio.scenario.json"
     },
     {
+      "name": "right-click",
+      "title": "Правая кнопка, клавиша меню и долгое нажатие",
+      "markup": "<div class=\"flex flex-col gap-1/4\" id=\"files-right-click\" role=\"list\" aria-label=\"Файлы\"><div role=\"listitem\" tabindex=\"0\" class=\"p-1/2 radius-1\">Отчёт за ноябрь.pdf</div><div role=\"listitem\" tabindex=\"0\" class=\"p-1/2 radius-1\">Договор № 77.docx</div></div>",
+      "settings": {
+        "popup": true,
+        "for": "files-right-click",
+        "aria-label": "Действия с файлом",
+        "entries": [
+          {
+            "id": "open",
+            "text": "Открыть",
+            "icon": "open_in_new"
+          },
+          {
+            "id": "rename",
+            "text": "Переименовать",
+            "shortcut": "f2"
+          },
+          {
+            "id": "copy",
+            "text": "Копировать",
+            "icon": "content_copy",
+            "shortcut": "mod+c"
+          },
+          {
+            "type": "separator"
+          },
+          {
+            "id": "delete",
+            "text": "Удалить",
+            "icon": "delete",
+            "shortcut": "delete",
+            "danger": true
+          }
+        ]
+      },
+      "expect": {
+        "name": "Действия с файлом"
+      },
+      "x-note": "The rows of the area named by for open the menu by the right button, the menu key (Shift+F10) and a long press (owner decision C164 (1)): the corner at the pointer, under the row's start from the keyboard, the density of the row, the focus back to the row; «Удалить» last after a line (C164 (5)); on a phone the sheet at the bottom (C164 (6))."
+    },
+    {
       "name": "checks",
       "title": "Флажки",
       "settings": {
@@ -138,19 +180,6 @@
       },
       "expect": {
         "name": "Вставить"
-      }
-    },
-    {
-      "name": "panel",
-      "title": "Панель с вкладками",
-      "settings": {
-        "aria-label": "Настройки",
-        "tabs": "Вид|Колонки",
-        "closable": true,
-        "size": "1"
-      },
-      "expect": {
-        "name": "Настройки"
       }
     },
     {
@@ -299,6 +328,47 @@
       },
       "expect": {
         "name": "Вид"
+      }
+    },
+    {
+      "name": "profile-meter",
+      "title": "Меню человека с остатком тарифа",
+      "settings": {
+        "aria-label": "Анна Белова",
+        "entries": [
+          {
+            "type": "header",
+            "text": "Анна Белова",
+            "caption": [
+              "anna@example.com",
+              "Тариф «Команда»"
+            ]
+          },
+          {
+            "type": "meter",
+            "text": "Место",
+            "value": 83,
+            "valueText": "Осталось 1,7 из 10 ГБ",
+            "warningAt": 80,
+            "errorAt": 95
+          },
+          {
+            "type": "separator"
+          },
+          {
+            "id": "profile",
+            "text": "Профиль",
+            "icon": "person"
+          },
+          {
+            "id": "sign-out",
+            "text": "Выйти",
+            "icon": "logout"
+          }
+        ]
+      },
+      "expect": {
+        "name": "Анна Белова"
       }
     }
   ],

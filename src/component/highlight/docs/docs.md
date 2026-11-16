@@ -33,6 +33,15 @@ surface (in the dark theme plain identifiers were invisible). The Doc source
 rules do not paint a highlighted block (`.sf-code-surface` or its scroller). The large code surface uses the default surface radius while generated
 controls retain their UI radius. Spacing, typography, borders and syntax colors
 come from semantic Framework tokens.
+The syntax colours follow the place the block stands on (1.3.0): the roles
+`--sf-highlight-*` are the page's, and the code reads them through the place
+hooks (`docs/foundation-backgrounds.md`). On a card, a popup or the grey plate
+the comment, the punctuation and the line numbers take the place's dim ink on
+a fill. On a strong colour (`bg-primary`) and on glass the text and every hue
+take the place's ink, one colour, because a hue over a colour is that colour or
+near it. On the grey plate, and on a popup in the dark theme, the block lays no
+fill of its own. Every role then holds 4.5:1. On the page nothing changes, a
+project's override of a role included.
 The head lays itself out in the component's own rule -- the language at the
 start, the wrap toggle and copy at the end, on one axis -- so it needs no
 utility sheet. Its height is the control height of ladder step 1
@@ -42,6 +51,17 @@ block, such as a chat bubble, sets it to follow its own corner),
 `--sf-highlight-background-color`, `--sf-highlight-color`,
 `--sf-highlight-border-color` and `--sf-highlight-border-width`. Code direction remains LTR inside an RTL
 document and long lines scroll locally.
+
+Code in a block is one step below the text (1.4.0, owner decision C186 (10)):
+step 1/2 (`--sf-text-size-1/2` on `--sf-text-height-1/2`), 14/20 on a
+desktop and 12/16 on a phone, in the system mono (`--sf-code--font-family`,
+`--sf-mono`; it fell to the browser's monospace, Courier with its Cyrillic in
+Times). The hues are the static palette's, not the status roles (C186 (11)):
+keyword violet, string and tag green, attribute and number blue, title amber,
+built-in teal, tone 40 on the light theme and 80 on the dark, each 4.5:1 or
+more on the block. The `--sf-highlight-*` names are unchanged; a project that
+set one keeps its value. Long lines scroll, and the head's wrap button wraps
+them (C186 (12)).
 
 Existing and inserted blocks initialize once. Applications can call
 `SF.Highlight.highlight(block)` or `SF.Highlight.refresh(block, nextSource)`.

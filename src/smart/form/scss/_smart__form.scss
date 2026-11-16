@@ -1,0 +1,263 @@
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+
+@layer sf.components {
+/* sf-form (standard simai.smart-component 1.3.15 §6; owner decision C182,
+   prototype prototypes/form-study.html). The frame around the controls the
+   field renderers draw; every value comes from the systems (space, type,
+   colour roles, radius), nothing of its own:
+
+     between fields                --sf-space-1 (C52)
+     between groups, before the
+     buttons                       --sf-space-3 (C52), a group over a line
+     label to control              --sf-space-1/4
+     two columns, labels beside    --sf-space-2 apart
+     buttons of the footer         --sf-space-1/3 (8, 4 compact; C105 H5,
+                                   C173 (2), one group)
+     label, hint, error            the 1/2 text step (14), 14 on a phone
+                                   too (C153 (1))
+
+   The host is display: contents; the native form is the root and the
+   container its own width is read from (C182 (4), (5)): two columns from
+   44rem, the label beside from 40rem.
+
+   The public variables are read with the role token as their fallback and
+   never set here:
+     --sf-form-field-gap                 between fields
+     --sf-form-group-gap                 between groups and before the buttons
+     --sf-form-label-color               the label and «*»
+     --sf-form-summary-background-color  the errors summary's fill
+     --sf-form-footer-background-color   the sticky footer's fill */
+.sf-form {
+  --sf-form--field-gap: var(--sf-form-field-gap, var(--sf-space-1));
+  --sf-form--group-gap: var(--sf-form-group-gap, var(--sf-space-3));
+  --sf-form--label-color: var(--sf-form-label-color, var(--sf-on-surface));
+  --sf-form--summary-background: var(--sf-form-summary-background-color, var(--sf-error-container));
+  --sf-form--footer-background: var(--sf-form-footer-background-color, var(--sf-surface-place-solid, var(--sf-surface-page)));
+  --sf-form--small-size: var(--sf-text-size-1\/2);
+  --sf-form--small-line: var(--sf-text-height-1\/2);
+  --sf-form--label-size: var(--sf-form--small-size);
+  --sf-form--label-line: var(--sf-form--small-line);
+  container-type: inline-size;
+  display: block;
+  margin: 0;
+  min-inline-size: 0;
+  color: var(--sf-on-surface);
+}
+
+.sf-form-note {
+  margin: 0 0 var(--sf-form--field-gap);
+  color: var(--sf-form--label-color);
+  font-size: var(--sf-form--small-size);
+  line-height: var(--sf-form--small-line);
+}
+
+/* The errors summary (C182 (6)): the quiet error container over the form. */
+.sf-form-summary {
+  margin: 0 0 var(--sf-form--field-gap);
+  padding: var(--sf-space-1\/2) var(--sf-space-1);
+  border-radius: var(--sf-radius--ui);
+  background: var(--sf-form--summary-background);
+  color: var(--sf-on-error-container);
+  font-size: var(--sf-form--small-size);
+  line-height: var(--sf-form--small-line);
+}
+
+.sf-form-summary:focus {
+  outline: none;
+}
+
+.sf-form-summary:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
+.sf-form-summary-title {
+  margin: 0;
+  font-weight: var(--sf-weight--medium);
+}
+
+.sf-form-summary-list {
+  margin: var(--sf-space-1\/4) 0 0;
+  padding-inline-start: var(--sf-space-1);
+}
+
+.sf-form-summary-list a {
+  color: inherit;
+}
+
+.sf-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-form--group-gap);
+  min-inline-size: 0;
+}
+
+.sf-form-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
+.sf-form-group + .sf-form-group {
+  padding-block-start: var(--sf-form--group-gap);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+}
+
+.sf-form-legend {
+  /* Floated, the legend stands inside its group under the group's line
+     instead of on it, and the fields follow it as one more row. */
+  float: inline-start;
+  inline-size: 100%;
+  margin: 0;
+  padding: 0 0 var(--sf-form--field-gap);
+  color: var(--sf-on-surface);
+  font-size: var(--sf-text-size-1);
+  font-weight: var(--sf-weight--medium);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-form-fields {
+  clear: both;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--sf-form--field-gap);
+  min-inline-size: 0;
+}
+
+.sf-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+}
+
+.sf-form-field[data-width="s"] > .sf-form-control {
+  max-inline-size: 8rem;
+}
+
+.sf-form-field[data-width="m"] > .sf-form-control {
+  max-inline-size: 16rem;
+}
+
+/* C153 (1), (2): the label in the text colour, one step under the value
+   (14), 14 on a phone too (below 60rem the 1 step, as sf-input's label);
+   «*» in the label's colour. */
+.sf-form-label {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+  color: var(--sf-form--label-color);
+  font-size: var(--sf-form--label-size);
+  line-height: var(--sf-form--label-line);
+}
+
+@media not all and (min-width: 60rem) {
+  .sf-form {
+    --sf-form--label-size: var(--sf-text-size-1);
+    --sf-form--label-line: var(--sf-text-height-1);
+  }
+}
+
+.sf-form-label-text {
+  cursor: default;
+}
+
+.sf-form-required {
+  margin-inline-start: var(--sf-space-1\/4);
+}
+
+.sf-form-control {
+  min-inline-size: 0;
+}
+
+.sf-form-hint,
+.sf-form-error {
+  margin: 0;
+  font-size: var(--sf-form--small-size);
+  line-height: var(--sf-form--small-line);
+}
+
+.sf-form-hint {
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-form-error {
+  color: var(--sf-error);
+}
+
+/* C182 (4): from 44rem of the form's own width the fields without a width
+   pair; s, m and full take a row of their own. */
+@container (min-width: #{mq.container-step(h1)}) {
+  .sf-form:not([data-labels="start"]) .sf-form-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--sf-space-2);
+  }
+
+  .sf-form:not([data-labels="start"]) .sf-form-field[data-width] {
+    grid-column: 1 / -1;
+  }
+}
+
+/* C182 (5): labels="start" from 40rem (its rows do not pair: the label
+   takes the room a second column would) -- the label in a third of the row,
+   on the control's line; the control, the hint and the error in the rest. */
+@container (min-width: #{mq.container-step(h0)}) {
+  .sf-form[data-labels="start"] .sf-form-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: var(--sf-space-2);
+    row-gap: var(--sf-space-1\/4);
+    align-items: start;
+  }
+
+  .sf-form[data-labels="start"] .sf-form-field > .sf-form-label {
+    grid-row: 1 / span 3;
+    padding-block-start: calc((var(--sf-ui-1--control-height) - var(--sf-form--label-line)) / 2);
+  }
+
+  .sf-form[data-labels="start"] .sf-form-field > :not(.sf-form-label) {
+    grid-column: 2;
+  }
+}
+
+/* C182 (7): the buttons under the fields, the main one first at the start,
+   one group (8, 4 compact); the unsaved note under them. */
+.sf-form-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-block-start: var(--sf-form--group-gap);
+}
+
+.sf-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-gap--actions);
+}
+
+.sf-form-state {
+  margin: 0;
+  color: var(--sf-on-surface-variant);
+  font-size: var(--sf-form--small-size);
+  line-height: var(--sf-form--small-line);
+}
+
+/* The status stays in the page while empty, so the note is announced when
+   it appears; empty it takes no room. */
+.sf-form-state:not(:empty) {
+  margin-block-start: var(--sf-space-1\/3);
+}
+
+/* footer="sticky" (C166 (3)): the bar at the bottom of the scrolling place. */
+.sf-form-footer[data-sticky] {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--sf-layer--sticky, 1);
+  padding-block: var(--sf-space-1\/2);
+  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  background: var(--sf-form--footer-background);
+}
+}

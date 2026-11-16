@@ -25,16 +25,26 @@ import {html, nothing} from 'lit';
 // The rung below the list's: the marker, the avatar line and the button.
 const BELOW = {'1/2': '1/3', 1: '1/2', 2: '1'};
 const SIZE_CLASS = {'1/2': 'half', 1: '1', 2: '2'};
-// A step's marker: done is the solid primary circle, current the soft one
-// with its ring, upcoming an empty one (list-timeline.html scene B).
-const STEP_TONE = {done: 'primary sf-featured-icon--solid', current: 'primary sf-featured-icon--soft', upcoming: 'neutral sf-featured-icon--soft'};
+// A step's marker (owner decision C61, variant A; one logic with and without
+// an icon; C61 round 4: the shape shows the progress, the colour the status):
+// done the solid circle, current the same circle ringed outside through a gap,
+// upcoming an empty circle with a ring (scss/ draws the rings). The colour is
+// primary (an upcoming one: quiet), or the status tone (error, warning,
+// success) when the step has one: an upcoming step with an error stays empty.
+const STEP_FILL = {done: 'solid', current: 'solid', upcoming: 'soft'};
+
+function stepTone(item) {
+  if (item.tone !== 'neutral') return item.tone;
+  return item.state === 'upcoming' ? 'neutral' : 'primary';
+}
 
 function marker(context, item) {
   if (!item.icon) {
     return html`<span class=${`sf-list-timeline-marker sf-list-timeline-marker--dot sf-list-timeline-marker--${item.status}`}><span class="sf-list-timeline-dot"></span></span>`;
   }
-  const tone = item.state ? STEP_TONE[item.state] : `${item.tone} sf-featured-icon--soft`;
-  return html`<span class=${`sf-list-timeline-marker sf-list-timeline-marker--${item.state || item.tone}`}><span
+  const step = STEP_FILL[item.state] ? item.state : '';
+  const tone = step ? `${stepTone(item)} sf-featured-icon--${STEP_FILL[step]}` : `${item.tone} sf-featured-icon--soft`;
+  return html`<span class=${`sf-list-timeline-marker sf-list-timeline-marker--${step || item.tone}`}><span
     class=${`sf-featured-icon sf-featured-icon--circle sf-featured-icon--size-${BELOW[context.size]} sf-featured-icon--${tone}`}><i
     class="sf-icon sf-list-timeline-icon">${item.icon}</i></span></span>`;
 }

@@ -6,8 +6,9 @@ SF.RuleLoader['cl-input-lookup'] = {
   js: true,
   css: true,
   relation: [
-    // The chosen items are sf-tag chips on the field's text line, each with
-    // a remove button named Remove <label>.
+    // The chosen items are sf-tag chips, the field less --sf-space-1/4 above
+    // and below (C58), each with a remove button named Remove <label>; with
+    // chips="row" a «+N» sf-tag stands for the chips past the row.
     { name: 'cl-tag' },
     // A row's picture is the class markup of an avatar (.sf-avatar): a
     // photo or initials, drawn by the avatars sheet without an element per row.
@@ -17,8 +18,13 @@ SF.RuleLoader['cl-input-lookup'] = {
     { name: 'cl-spinner' },
     // Retry after an error and Show more when the answer has a next cursor.
     { name: 'cl-button' },
-    // The clear button of a single field holding a value: sf-button-close,
-    // plain (owner decision C14, a field's clear).
-    { name: 'cl-button-close' },
+    // The clear of a single field holding a value: the field layer's action
+    // (owner decision C123), an sf-icon glyph without a plate.
+    { name: 'cl-icon' },
+    // The sheet under lg: its back arrow, named «Готово» (C139 (7)),
+    // as sf-search's sheet on a phone.
+    { name: 'cl-button-icon' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

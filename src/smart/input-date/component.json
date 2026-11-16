@@ -2,9 +2,9 @@
   "$comment": "The source of sf-input-date's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-date",
   "tag": "sf-input-date",
-  "version": "1.4.6",
+  "version": "1.11.0",
   "kind": "leaf",
-  "family": "field",
+  "family": "input",
   "settings": {
     "date": {
       "type": "string",
@@ -96,6 +96,11 @@
       "max": 6,
       "summary": "The first day of the week, 0 Sunday to 6 Saturday (1 Monday). Without the attribute it follows the page's language (ru: Monday, en-US: Sunday, ar-EG: Saturday)."
     },
+    "weekend": {
+      "type": "string",
+      "default": "",
+      "summary": "The days drawn as days off (red, and «выходной» in the day's name). Empty: the locale's (Intl week info; Saturday and Sunday where it does not say, Friday and Saturday in ar-EG). none: no day off, for a product whose weekends are working days. Or the days, comma separated, 0 or 7 Sunday to 6 Saturday: 6,7 or 5,6."
+    },
     "locale": {
       "type": "string",
       "default": "",
@@ -103,8 +108,8 @@
     },
     "format": {
       "type": "string",
-      "default": "DD.MM.YYYY",
-      "summary": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. The default follows the mode: DD.MM.YYYY, DD.MM.YYYY HH:mm, HH:mm; a date format given to datetime mode gets « HH:mm». The value stays ISO."
+      "default": "",
+      "summary": "How the value is shown in the field and read when typed, e.g. DD.MM.YYYY: the whole text one value, a four-digit year from 1000 to 9999, HH hours (00-23) and mm minutes. Empty: the locale's order of day, month and year and the signs between them (Intl formatToParts: DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE); datetime adds « HH:mm», time is HH:mm. A date format given to datetime mode gets « HH:mm». The value stays ISO."
     },
     "close-on-select": {
       "type": "boolean",
@@ -129,19 +134,23 @@
     "size": {
       "type": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
       "default": "1",
-      "summary": "Form size of the field."
+      "summary": "The field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field is an sf-input of this size."
     },
     "input-size": {
       "type": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
       "default": "1",
       "summary": "Legacy name for size, still honoured; size wins when both are set. See contracts/public-api-axes.json."
@@ -154,7 +163,7 @@
     "placeholder": {
       "type": "string",
       "default": "",
-      "summary": "The field's placeholder text."
+      "summary": "The field's placeholder text. Empty, in a field a date is typed in: the format in the letters of the locale's names for the parts (ДД.ММ.ГГГГ in ru, MM/DD/YYYY in en-US, TT.MM.JJJJ in de); a range or a read-only field has none."
     },
     "label": {
       "type": "string",
@@ -186,14 +195,19 @@
       "default": "",
       "summary": "The helper text under the field, read to the control as its description, as on sf-input. An error-message takes its place while the field is invalid and it comes back when invalid is removed."
     },
+    "help": {
+      "type": "string",
+      "default": "",
+      "summary": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
+    },
     "icon-start": {
       "type": "icon",
-      "default": "calendar_today",
-      "summary": "The icon at the start of the field; the canonical name for left-icon. Defaults to calendar_today, schedule in time mode."
+      "default": "",
+      "summary": "An icon at the start of the field that says what the date is (a meaning icon, as search is for a search field); the canonical name for left-icon. None by default: the calendar (a clock in time mode) is the field's indicator at its end, after clear (owner decision C197)."
     },
     "left-icon": {
       "type": "icon",
-      "default": "calendar_today",
+      "default": "",
       "summary": "Legacy name for icon-start, still honoured; icon-start wins when both are set."
     },
     "hint-icon": {
@@ -213,8 +227,8 @@
     },
     "mask-pattern": {
       "type": "string",
-      "default": "00.00.0000",
-      "summary": "Input mask; when not set it is derived from format, so the default format DD.MM.YYYY gives 00.00.0000."
+      "default": "",
+      "summary": "Input mask; when not set it is derived from format, every letter a digit: DD.MM.YYYY gives 00.00.0000, the en-US MM/DD/YYYY 00/00/0000."
     },
     "mask-lazy": {
       "type": "boolean",
@@ -244,7 +258,7 @@
     "readonly": {
       "type": "boolean",
       "default": false,
-      "summary": "Keeps the field read-only: the date is chosen on the grid only. A single date can be typed by default; a range is always chosen on the grid."
+      "summary": "The value is shown and submitted but not changed: the field cannot be typed in and opens no calendar, and an inline calendar (input=false) takes no choice on its grid (owner decision C62). A single date can be typed by default; a range is always chosen on the grid, which does not make it read-only."
     },
     "presets": {
       "type": "list",
@@ -274,6 +288,26 @@
         }
       },
       "summary": "Quick ranges, range mode only; the attribute keeps its comma list of built-in ids"
+    },
+    "holidays": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "date": "string",
+        "kind": {
+          "type": "enum",
+          "values": [
+            "holiday",
+            "day-off",
+            "working-day"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "summary": "The site's special days (owner decision C198): a list of {date: 'YYYY-MM-DD', kind, name?}, the property or JSON in the attribute. holiday and day-off (a moved day off) take the day-off ink, working-day (a moved working Saturday) the weekday's; each listed day gets a dot under its number, its name joins the day's accessible name, and a line under the grid names the day under the pointer, with the focus or chosen. Empty: plain weekends, as before. The Framework ships no country calendar."
     }
   },
   "values": {
@@ -386,6 +420,8 @@
       "End": "focus:last",
       "PageUp": "step:-page",
       "PageDown": "step:+page",
+      "Shift+PageUp": "step:-page",
+      "Shift+PageDown": "step:+page",
       "Enter": "select",
       "Space": "select",
       "Escape": "close"
@@ -406,6 +442,14 @@
     },
     {
       "name": "cl-icon"
+    },
+    {
+      "name": "cl-drawer",
+      "lazy": true,
+      "$comment": [
+        "On a phone (below 60rem) a range opens a ribbon of months in the",
+        "Framework's bottom sheet, sf-drawer placement=bottom (owner decision C62)."
+      ]
     }
   ],
   "templates": {
@@ -436,9 +480,12 @@
       "End": "focus:last",
       "PageUp": "step:-page",
       "PageDown": "step:+page",
+      "Shift+PageUp": "step:-page",
+      "Shift+PageDown": "step:+page",
       "Enter": "select",
       "Space": "select"
-    }
+    },
+    "x-keys": "Shift+PageUp and Shift+PageDown step a year (twelve month pages, the APG date picker's keys), held to min-date and max-date; the closed list of effects (standard 1.3.15 §4.8) has no year step, so they are declared as a page step"
   },
   "css-variables": {
     "--sf-datepicker-background-color": {
@@ -462,6 +509,10 @@
       "state": "in-range"
     },
     "--sf-datepicker-weekday-color": {
+      "type": "color",
+      "state": "rest"
+    },
+    "--sf-datepicker-day-off": {
       "type": "color",
       "state": "rest"
     }
@@ -533,7 +584,7 @@
     "item-shape: value is the date in the ISO form (YYYY-MM-DD); in range mode the property is [start-value, end-value] and the form submits start/end (ISO 8601 interval); the host owns the stored value",
     "template: the default template stays the Lit module js/templates/default.js, the migration form §5.2 allows; template.html follows when the build compiles HTML templates",
     "examples: examples.json from studio.fixture.json and the docs",
-    "css-variables: six public variables read by the class sheets with the role as fallback (§6)",
+    "css-variables: seven public variables read by the class sheets with the role as fallback (§6); --sf-datepicker-day-off (1.6.0) is the calendar's day-off role (C67 H2)",
     "side-effects: none -- with portal the panel is positioned as fixed in place; it is never moved to the end of body",
     "form: the host is the form control through ElementInternals (§17.1): the ISO date (a range as start/end), never the display text; nothing while disabled; read-only submits; form.reset() returns the written value without events. The inner sf-input carries no name. value-missing while required and empty",
     "actions: open-panel, close-panel, toggle-panel, choose-preset {item} and choose-custom-range answer outcomes (§4.4)",
@@ -552,7 +603,18 @@
     "version 1.4.4 (2026-11-09): a patch, nothing drawn or done differently. The generated reference gives each action's method its one object argument, openPanel({options}), closePanel({options}), choosePreset({item}), where it read the parameters one by one (standard §4.4: the parameters arrive as one object). Settings, values, events and keys unchanged.",
     "version 1.4.5 (2026-11-09): a patch; nothing in the component changed. The sf-input it draws asks for the kbd sheet since sf-input 1.7.0 (C38, the shortcut setting; component.kbd 1.3.0), so its first-paint snapshots name that sheet and carry one more empty line where the field's shortcut would stand; the component takes a patch with them. Settings, values, events and keys unchanged.",
     "version 1.4.6 (2026-11-11): the calendar drawn without a field is the flat place of C20 (no overlay shadow, an outline-variant hairline; component.datepicker 1.3.4, docs pre-check 2026-11-10 DP-06): the panel carries sf-datepicker--inline. The popup is unchanged. The field wrapper is top-aligned (component.datepicker 1.3.4): on the text baseline its height followed the calendar icon held at font-size 0 before the icon font, 49 held and 48 loaded at 390. A day off of the next or previous month takes the same ink as one of this month (component.datepicker 1.3.4; days off stay in the error red, the DP-02 colour being on hold), and a day off says «выходной» (en «day off») after its date in its name, a new word day-off in ru and en.",
-    "version 1.4.6, also (2026-11-11): the sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged."
+    "version 1.4.6, also (2026-11-11): the sf-button it draws writes sf-button--ghost beside the dated sf-button--link since sf-button 1.13.0 (CB-01), so the first-paint snapshots follow; the component takes a patch with them. Settings, values, events and keys unchanged.",
+    "version 1.5.0 (2026-11-11): a minor; the datepicker audit's defects (control/evidence/2026-11-11-datepicker-audit). Keyboard and screen reader: the days are an ARIA grid (role grid, a row per week, column headers with the weekdays' full names, each day a gridcell with aria-selected, where it said aria-pressed); the shown month is said when it changes (a polite live region); Shift+PageUp and Shift+PageDown move a year; Home and End stop at min-date and max-date instead of doing nothing; the month and year lists are one tab stop each, the arrows move in their three columns, the list that opens takes the focus on its chosen item and gives it back to its toggle when it closes or a month or year is chosen (the focus fell to the page); the focus leaving the field and the panel by Tab closes the panel, as a click outside does (it stayed open behind the next field). Cost: the panel is placed when it opens and SF.Position follows it from then on (it was updated after every render: 50-180 ms per arrow key or month); one Intl.DateTimeFormat per locale and options (63 were made per render). Drawn: the header's arrows are size 1/2 like the month and year toggles, the header one control height of size 1 (component.datepicker 1.4.0). Settings, values and events unchanged.",
+    "version 1.6.0 (2026-11-12): a minor; owner decision C62 (control/docs-review/decisions.md). The day-off ink is the calendar's own role --sf-datepicker-day-off, from the palette red (red 40 light, red 80 dark: the tones the error role had, so the look is the same), not the error role (C67 H2; component.datepicker 1.5.0). The days off follow the locale (Intl week info: Saturday and Sunday in ru, de and en-US, Friday and Saturday in ar-EG), and a product sets them with the new setting weekend: none for working weekends, or a list of days 0-7; they were Saturday and Sunday everywhere. A period is one field «с – по»: the two dates with an en dash between spaces (01.09.2026 – 07.09.2026), where a hyphen stood; the field's mask and the change detail's formattedValue follow. Two fields (check-in and check-out) are a recipe in the guide, not a component. Typing follows the locale: without format the date's format is the locale's order of day, month and year and the signs between them (Intl formatToParts: DD.MM.YYYY in ru and de, MM/DD/YYYY in en-US, YYYY-MM-DD in sv-SE; a sign before the first or after the last part is left out), so the field shows, reads and masks the date as the page's country writes it; an explicit format still wins. An empty field a date is typed in shows the format in the letters of the locale's names for the parts (Intl.DisplayNames: ДД.ММ.ГГГГ, MM/DD/YYYY, TT.MM.JJJJ) unless the host gives a placeholder. The defaults of format and mask-pattern are therefore empty. A read-only field does not open the calendar: readonly meant «chosen on the grid only», and the calendar opened and changed a value the page had made read-only. A click, ArrowDown, Enter and Space open nothing, open-panel and toggle-panel answer refused (readonly), a host's open is not honoured, and the field names no popup (no aria-haspopup, aria-expanded, aria-controls). An inline calendar that is read-only takes no choice (aria-readonly on the grid; days, quick ranges and the time row change nothing) and can still be walked through. A range is still only not typed, and opens its calendar. On a phone (below 60rem) a range with a typed input opens a ribbon of months in the Framework's bottom sheet (sf-drawer placement=bottom, a lazy relation) instead of the popup: the weekday row pinned at the top, the months one under another with sticky names, the period chosen (Intl formatRange, the length in days) and «Готово» pinned at the bottom. The ribbon opens on the start's month, grows by six months at either end within min-date and max-date, keeps the grid's keys, and is a draft until «Готово», which fires one change; any other close keeps the value. A page without sf-drawer keeps the popup.",
+    "version 1.6.0, also (2026-11-12, group build 2026-11-12): nothing drawn or done differently. The ribbon's switch reads the breakpoint lg from core/js/breakpoints.js (matchesBreakpoint('lg', {below: true})) where it wrote 60rem by hand (C18 dimension gate), and the template's period line is context.periodSummary, not context.summary, a key a Smart bundle drops from its component.json (shared-runtime contract).",
+    "version 1.6.1 (2026-11-12): a patch; the phone ribbon as agreed in prototypes/datepicker.html#lenta (ui-control intent acceptance 2026-11-12, items D1-D5; component.datepicker 1.5.1). The sheet is one surface in the dark theme: the ribbon box takes the place the drawer's panel declares, where it painted the nested popup step inside it (69,71,75 inside 58,59,64). The first open focuses the start day: the ribbon waits for its own size (a ResizeObserver) instead of thirty frames, which ran out while the drawer held its panel until its sheet came, and the panel taking the focus hands it on to the day. The sheet stops a step 1 under the field (at least half the screen), the drawer resting at its content's height (snap auto), where it covered the whole screen (snap full). The sheet's head is the ribbon's own: the title, «К сегодня» (today's month to the top, smoothly unless reduced motion; today becomes the tab stop) and a close button that keeps the value; the drawer draws no head (show-close false, label for the dialog's name). New words go-to-today and close. The weekday headers of the days off take the day-off ink, in the popup and in the ribbon (sf-datepicker-weekday-off). Settings, values and events unchanged.",
+    "version 1.7.0 (2026-11-14, fields ladder; R222 groundwork): a minor. size (and input-size) take the field ladder's five steps, 1/3, 1/2, 1, 2, 3, as sf-input: at 1/3 and 3 the field is 28 / 56 high at 1440 (24 / 48 compact, 24 / 52 on a phone); it drew them at 32 / 48. The field is sf-input's, so its label, help and error follow. 1/2, 1 and 2 unchanged; settings, values, events and keys unchanged.",
+    "version 1.9.0 (2026-11-14, owner decision C153; research ui-control control/research/2026-11-14-text-inputs.md, prototype prototypes/text-inputs-study.html; written on the branch as 1.8.0): a minor. The field shows its own errors as sf-input does (C153 (3), helpers/form-field.js): a failed check of the form shows every wrong field at once and the first takes the focus when the person submitted; afterwards, once the value was changed, leaving the field checks it; a shown error goes the moment the value is right; the words are the component's, in the page's language; the browser's bubble is cancelled. New setting help (C153 (8)): passed to the date field's sf-input, which draws sf-help-mark after the label.",
+    "version 1.8.1 (2026-11-14, owner decisions C173 point 7 and C181 (3), the layer roles): a patch. The open calendar reads the popover layer (--sf-layer--popover, 90, as before). Settings, values, events and keys unchanged.",
+    "version 1.8.2 (2026-11-14, owner decision C181 (2); component.datepicker 1.5.2): a patch. The list of presets stands as a row above the grid below 30rem of the picker's own width, the container step g5 of the one ladder; it was 28rem (g4, 448 px, no step), so between 448 and 480 px the list now stands above the grid instead of beside it (beside, it needs 488 px on a desktop). Markup, settings, values, events and keys unchanged.",
+    "version 1.9.1 (2026-11-15, owner decision C105 H5, DEV GB5 answers; component.datepicker 1.5.3; written on the branch as 1.8.3): a patch, a look. The month and the year at the top of the calendar are two buttons of one group, the actions role --sf-gap--actions apart (8, 4 compact); they stood 4 apart (the template's gap-1/4, the step of tags and toolbars; spacing gate H5 buttons on sf-input-date). The gap is the datepicker sheet's now, not a utility in the template. Settings, values, events and keys unchanged.",
+    "version 1.10.0 (2026-11-15, owner decision C189 (9), recipe report-period; component.datepicker 1.6.0; written on the branch as 1.9.0): a minor, a look and its behaviour. The phone ribbon sheet shows the quick ranges: the popup's list, its buttons and «Свой период», on one row between the sheet's head and the weekdays (the popup's narrow row: buttons a control of size 1/2 tall, 4 apart), scrolled sideways when it is wider than the sheet; the pressed one is scrolled into view when the sheet opens. A range is the value at once and the change is said once, as in the popup; the sheet closes with it unless close-on-select is off, and then the ribbon shows the range on its start month. A day tapped on the ribbon lets the range go. «Свой период» clears the draft only and gives the ribbon the focus: the value changes by «Готово», the sheet's rule (C62). The list is one tab stop with the popup's keys (arrows, Home, End; mirrored in RTL), role group named by the presets word («Быстрый выбор»), aria-pressed. The action choose-custom-range acts on the sheet's draft while the sheet is open. Settings, values, events and the popup unchanged; single dates have no quick ranges, as before.",
+    "version 1.11.0 (2026-11-15, owner decision C197, prototype date-icon-place.html#q-date-icon variant B; component.datepicker 1.7.0; numbered above group build 7's 1.10.0): a minor. The calendar (a clock in time mode) moves to the field's end, after sf-input's clear, by the C123 (6) order text -> clear -> action: the field's indicator, the field layer's .sf-field-action glyph as sf-dropdown's chevron is (C123 (3)) -- the leading icon's size, its glyph ending on the inset, half an inset from a glyph before it, a hit area the field's inner height and never under 24, quiet ink at rest, the text's ink while the field is under the pointer, the disabled ink on a disabled field. The whole field opens the panel as before, so the glyph is no Tab stop and is hidden from a screen reader. The hint marker (hint-icon) stands before it. icon-start and left-icon now default to none: the start of the field is for an icon that says what the date is; a page that set one keeps it there. The printed first paint draws the new place (snapshots retaken). And owner decision C198 (prototype calendar-holidays-and-more-study.html#q-cal-holidays, variant C; closes the open part of C62): the setting holidays, a list of {date, kind: holiday | day-off | working-day, name?} as the property or JSON in the attribute. A holiday and a moved day off take the day-off ink, a working day (a moved working Saturday) the weekday's, in the popup grid and the phone ribbon alike; a listed day wins over weekend. The dot under the number (--sf-space-1/4, the number's ink) and the line under the grid (two lines of the small text, the name of the day under the pointer, with the focus or chosen) are drawn only when the site gave the list; without it the calendar is its plain weekends, as before. The day's name joins its accessible name; the line is hidden from a screen reader. An added setting behind no rename: a minor (§4.10). Example holidays."
   ],
   "x-registry": {
     "kind": "composite",

@@ -55,3 +55,13 @@ test('a list heading is told it is not a choice', () => {
   assert.match(css, /\.sf-list-heading \{/);
   assert.match(css, /position: sticky;/);
 });
+
+// R211: a grid cell is as tall as a field of the dropdown's size (owner,
+// 2026-10-14). Columns stretched to the list made four cells of 125 px under a
+// 32rem field; every path now has columns one cell wide, standing at the start.
+test('Dropdown grid columns are one cell wide on every path', () => {
+  const grid = css.match(/\n  \.sf-list-container--grid \{([^}]*)\}/u)?.[1] ?? '';
+  assert.match(grid, /grid-template-columns: repeat\(var\(--sf-list-container--columns, 6\), var\(--sf-list--cell, var\(--sf-ui-1--control-height\)\)\);/u);
+  assert.match(grid, /justify-content: start;/u);
+  assert.doesNotMatch(css, /--sf-list-container--columns, 6\), minmax\(0, 1fr\)/u);
+});

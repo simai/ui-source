@@ -1,10 +1,18 @@
 {
   "title": "Country Code",
   "runtime": {
+    "all-countries": "All countries",
     "country-label": "Country code",
+    "country-unknown": "Country code not recognised. Choose a country",
+    "frequent": "Frequently chosen",
+    "nothing-found": "Nothing found",
     "phone-label": "Phone number",
     "phone-required": "Enter a phone number.",
-    "placeholder": "+7(___)___-__-__",
-    "value-missing": "Enter a phone number."
+    "placeholder": "",
+    "search-placeholder": "Country or code",
+    "value-missing": "Enter a phone number.",
+    "pattern-mismatch": "Enter the whole number",
+    "too-short": "Enter the whole number",
+    "help": "More about: {label}"
   }
 }

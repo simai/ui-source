@@ -9,9 +9,15 @@
      a project that changes --sf-radius--ui gets flags that follow, and the edge
      that keeps a white flag off a white page follows the theme. */
   .sf-flag {
-    --sf-flag--height: var(--sf-flag--size, var(--sf-b8));
-    --sf-flag--outline-color: var(--sf-outline-variant);
-    --sf-flag--radius: var(--sf-radius--ui);
+    /* The height, from the public --sf-flag-size (C18: a ladder step, such as
+       var(--sf-icon-size-3)). By default the shape's own drawing size, on the
+       icon ladder: 20 for the rectangle (28x20), 24 for the circle. It was
+       --sf-b8, 18, under the drawing and no ladder step (docs precheck FL-01,
+       FL-02). The internal --sf-flag--size still works for a page that set it. */
+    --sf-flag--height: var(--sf-flag-size, var(--sf-flag--size, var(--sf-flag--default-size, var(--sf-icon-size-2))));
+    --sf-flag--outline-color: var(--sf-flag-outline-color, var(--sf-outline-variant));
+    --sf-flag--outline-width: var(--sf-flag-outline-width, var(--sf-px));
+    --sf-flag--radius: var(--sf-flag-radius, var(--sf-radius--ui));
     display: inline-block;
     flex: none;
     position: relative;
@@ -21,8 +27,8 @@
     border-radius: var(--sf-flag--radius);
     /* An outline rather than a border: a border would eat into the picture at
        these sizes, where every pixel of the flag counts. */
-    outline: var(--sf-px) solid var(--sf-flag--outline-color);
-    outline-offset: calc(var(--sf-px) * -1);
+    outline: var(--sf-flag--outline-width) solid var(--sf-flag--outline-color);
+    outline-offset: calc(var(--sf-flag--outline-width) * -1);
   }
 
   .sf-flag img,
@@ -38,13 +44,14 @@
   }
 
   .sf-flag--circle {
+    --sf-flag--default-size: var(--sf-icon-size-3);
     inline-size: var(--sf-flag--height);
-    --sf-flag--radius: var(--sf-radius-circle);
+    --sf-flag--radius: var(--sf-flag-radius, var(--sf-radius-circle));
   }
 
   /* While the file is still coming, the box holds its place instead of letting
      the line jump. */
   .sf-flag:not(:has(img, svg)) {
-    background-color: var(--sf-surface-container);
+    background-color: var(--sf-flag-placeholder-color, var(--sf-surface-container));
   }
 }

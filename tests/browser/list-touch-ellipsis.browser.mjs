@@ -8,8 +8,10 @@
 // coarse pointer (hasTouch: the page's (pointer: coarse) is checked, not
 // assumed), light and dark, at each step of the ladder (1/2, 1, 2):
 // - a fine pointer keeps the ladder: a one-line row is the control height of
-//   its step, a two-line row the control height and one line of the step
-//   below (as 1.1.1 drew them), the «⋯» the icon button of the step;
+//   its step, a two-line row the next step's control height (C31, LI-03) and
+//   never lower than a menu row with a caption (owner decision C49: the 1/2
+//   step and a 1/3 line, 48, 44 compact, 60 under a finger), the «⋯» the
+//   icon button of the step;
 // - a coarse pointer: every row is at least --sf-d1 (44px), a step whose
 //   control height is taller keeps it; the row's content stays on its centre
 //   line; the «⋯» is at least 44 x 44 and inside its row; the rename field and
@@ -22,10 +24,11 @@
 //   avatar, the count, the badge and the «⋯» stay whole, inside the row; a
 //   short title is not cut; a row's height is the same as without no-wrap
 //   for a text that fits;
-// - without no-wrap a long one-line title wraps as in 1.1 and carries no
-//   tooltip;
+// - without no-wrap a long title is one line too (owner decision C148 (5),
+//   sf-list-item 1.6.0) and the host carries no tooltip of the list's;
 // - a narrow list (sf-list 1.5.0, owner decision C47; the 280px column is
-//   below 20rem): a row with a badge or a count puts them under its text, at
+//   below 20rem): a one-line row with a badge or a count (a two-line row keeps
+//   them in its end column, C148 (2)) puts them under its text, at
 //   the text's start; the row grows by the band step and their height
 //   (geometry standard, multi-line rows);
 // - the geometry is the same in light and dark; no sideways scroll, no page error.
@@ -115,7 +118,7 @@ try {
             for (const [id, items] of Object.entries(data)) document.getElementById(id).setItems(items);
             for (const list of document.querySelectorAll('sf-list:not(#wait)')) list.actions = [{id: 'archive', text: 'В архив', icon: 'archive'}];
           }, {data, size});
-          await tab.waitForFunction(() => customElements.get('sf-avatar') && customElements.get('sf-badge')
+          await tab.waitForFunction(() => customElements.get('sf-badge')
             && document.querySelectorAll('#cut .sf-list__actions').length === 3
             && document.querySelectorAll('#cut sf-badge > *').length >= 2, null, {timeout: 20000});
           await tab.evaluate(() => document.fonts.ready);
@@ -126,6 +129,7 @@ try {
           const got = await tab.evaluate(({size}) => {
             const esc = size.replace('/', '\\/');
             const below = {'1/2': '1\\/3', 1: '1\\/2', 2: '1'}[size];
+            const above = {'1/2': '1', 1: '2', 2: '3'}[size];
             const probe = document.createElement('div');
             document.body.append(probe);
             const length = (value) => { probe.style.width = value; return parseFloat(getComputedStyle(probe).width); };
@@ -133,8 +137,14 @@ try {
               control: length(`var(--sf-ui-${esc}--control-height)`),
               line: length(`var(--sf-text-height-${esc})`),
               lineBelow: length(`var(--sf-text-height-${below})`),
+              // C31 / LI-03: a two-line row is the next step's control height.
+              controlAbove: length(`var(--sf-ui-${above}--control-height)`),
               d1: length('var(--sf-d1)'),
               band: length('var(--sf-space-1\\/4)'),
+              // C49: a name + caption row is at least the 1/2 control step
+              // (44 under a coarse pointer) and a caption line (1/3).
+              captionStep: length('var(--sf-ui-1\\/2--control-height)'),
+              captionLine: length('var(--sf-text-height-1\\/3)'),
             };
             probe.remove();
             const box = (node) => { const r = node.getBoundingClientRect(); return {x: r.x, y: r.y, w: r.width, h: r.height, right: r.right, bottom: r.bottom, cy: r.y + r.height / 2}; };
@@ -153,7 +163,7 @@ try {
               const title = row.querySelector('.sf-list-item-title');
               const container = row.querySelector('.sf-list-item-container');
               const meta = row.querySelector('.sf-list__meta');
-              const parts = [drawn(row.querySelector('.sf-list__lead sf-avatar')) || row.querySelector('.sf-list__sign') || row.querySelector('.sf-list__glyph'),
+              const parts = [row.querySelector('.sf-list__lead .sf-avatar:not(.sf-list__sign)') || row.querySelector('.sf-list__sign') || row.querySelector('.sf-list__glyph'),
                 drawn(row.querySelector('sf-badge.sf-list__count')), drawn(row.querySelector('sf-badge.sf-list__badge'))].filter(Boolean);
               return {
                 id: row.dataset.id,
@@ -169,7 +179,10 @@ try {
                 colour: getComputedStyle(container).color,
                 // C47 (sf-list 1.5.0): a narrow list puts the badge and count
                 // under the text; the row grows by the band step and their height.
-                under: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow') && Boolean(meta && meta.children.length),
+                // 1.14.0: below 20rem by the container query, the mark only
+                // for a squeezed title. A two-line row keeps them in its end
+                // column (owner decision C148 (2), sf-list 1.10.0).
+                under: ((frame) => { const s = getComputedStyle(frame); return frame.hasAttribute('data-sf-list-narrow') || (s.containerType === 'inline-size' && frame.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight) < 20 * parseFloat(getComputedStyle(document.documentElement).fontSize)); })(row.closest('.sf-list__frame')) && Boolean(meta && meta.children.length) && !item.classList.contains('sf-list-item--two-line'),
                 meta: meta && meta.children.length ? box(meta) : null,
                 // Where the title's text starts: a one-line row's text is the
                 // container's own, after its inline padding.
@@ -183,7 +196,7 @@ try {
               cut: rows('cut'),
               wrap: rows('wrap'),
               flat: rows('flat'),
-              skeleton: [...document.querySelectorAll('#wait .sf-list__skeleton > span')].map(box),
+              skeleton: [...document.querySelectorAll('#wait .sf-list__skeleton > .sf-list__row')].map(box),
               scroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
               background: getComputedStyle(document.body).backgroundColor,
             };
@@ -192,23 +205,23 @@ try {
           const {tokens} = got;
           const touch = pointer === 'coarse';
           const one = touch ? Math.max(tokens.control, tokens.d1) : tokens.control;
-          const two = tokens.control + tokens.lineBelow;
+          // C49: the next step's control height, never under the caption row
+          // (the 1/2 step, --sf-d1 under a finger, and a 1/3 line). A row that
+          // grows (a narrow row's badge under its text) keeps that row's
+          // padding and adds whole lines (C18, C47).
+          const two = Math.max(tokens.controlAbove,
+            (touch ? Math.max(tokens.captionStep, tokens.d1) : tokens.captionStep) + tokens.captionLine);
           ok(`${label}: the page's pointer is ${pointer}`, got.coarse === touch, got.coarse);
           ok(`${label}: --sf-d1 is 44px`, near(tokens.d1, 44), tokens);
           for (const [name, list] of [['cut', got.cut], ['wrap', got.wrap], ['flat', got.flat]]) {
             for (const row of list) {
               const where = `${label}: #${name} row ${row.id}`;
-              // Without no-wrap a long one-line title wraps (1.1); a two-line
-              // row's title and second line were already one line each
-              // (sf-list-item's own two-line rule).
-              const fits = !(row.title.content === LONG && name === 'wrap' && !row.twoLine);
-              if (fits) {
-                const lines = row.twoLine ? two : tokens.control;
-                const want = row.under ? Math.max(lines + tokens.band + row.meta.h, touch ? tokens.d1 : 0) : row.twoLine ? (touch ? Math.max(two, tokens.d1) : two) : one;
-                ok(`${where} is ${want}px high`, near(row.row.h, want), {h: row.row.h, want, tokens});
-              } else {
-                ok(`${where}: a long title wraps without no-wrap`, row.title.h > row.title.lineHeight * 1.5 && row.row.h > (row.twoLine ? two : one), {title: row.title, row: row.row});
-              }
+              // A title is one line with or without no-wrap (owner decision
+              // C148 (5), sf-list-item 1.6.0): a long one-line title no longer
+              // wraps, it is cut.
+              const lines = row.twoLine ? two : tokens.control;
+              const want = row.under ? Math.max(lines + tokens.band + row.meta.h, touch ? tokens.d1 : 0) : row.twoLine ? (touch ? Math.max(two, tokens.d1) : two) : one;
+              ok(`${where} is ${want}px high`, near(row.row.h, want), {h: row.row.h, want, tokens});
               if (touch) ok(`${where} is at least 44px under a finger`, row.row.h >= 44 - 0.5, row.row.h);
               ok(`${where}: its content on the row's centre line`, near(row.content.cy, row.row.cy), {content: row.content, row: row.row});
               ok(`${where}: «⋯» shown without a hover`, row.dots && row.dots.opacity === '1' && row.dots.visibility === 'visible' && row.dots.display !== 'none' && row.dots.w > 0, row.dots);
@@ -238,7 +251,8 @@ try {
             ok(`${where}: the whole text is the tooltip`, row.tip === want, {tip: row.tip, want});
           }
           for (const row of got.wrap) ok(`${label}: without no-wrap row ${row.id} has no tooltip`, row.tip === null, row.tip);
-          ok(`${label}: the loading rows are as tall as a row`, got.skeleton.length === 3 && got.skeleton.every((span) => near(span.h, one)), {skeleton: got.skeleton, one});
+          // A list that has shown no rows yet waits in caption rows (1.12.0, C130).
+          ok(`${label}: the loading rows are as tall as a caption row`, got.skeleton.length === 3 && got.skeleton.every((span) => near(span.h, touch ? Math.max(two, tokens.d1) : two)), {skeleton: got.skeleton, two});
           ok(`${label}: no sideways scroll`, got.scroll <= 0, got.scroll);
           ok(`${label}: the text has its colour on the surface`, got.cut[0].colour !== got.background, {colour: got.cut[0].colour, background: got.background});
 
@@ -259,10 +273,8 @@ try {
           const key = `${width} ${pointer} ${size}`;
           // Heights and the «⋯» exactly; a title's width to the pixel (the
           // dark theme's text antialiasing moves a glyph run by half a pixel).
-          // A title that wraps (#wrap c, without no-wrap) is left out: its
-          // line breaks follow that half pixel, in 1.1.1 as well.
+          // Every title is one line since C148 (5), so none is left out.
           const shape = ([got.cut, got.wrap, got.flat].map((list) => list
-            .filter((row) => !(list === got.wrap && row.title.content === LONG && !row.twoLine))
             .map((row) => [row.row.h, row.title.w, row.dots.w, row.dots.h])));
           geometry[key] = geometry[key] ?? {};
           geometry[key][theme] = shape;

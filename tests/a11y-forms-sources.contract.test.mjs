@@ -30,13 +30,16 @@ test('accordion, popover and the colour field carry their docs in the source (#3
 });
 
 test('sf-switch names its input by the label row and describes it by the description (#44 item 1)', () => {
-  const source = read('src/component/switch/js/_switch.js');
-  assert.match(source, /function linkSwitchText\(root\)/u);
+  // Since C63 W9 the switch reads the binding sf-checkbox and sf-radio read.
+  const own = read('src/component/switch/js/_switch.js');
+  assert.match(own, /function linkSwitchText\(root\) \{\s*linkCheckableText\(root, SWITCH_TEXT_PARTS\);/u);
+  const source = read('src/component/checkable-text-helper.js');
+  assert.match(source, /export const SWITCH_TEXT_PARTS = Object\.freeze\(\{[^}]*text: '\.sf-switch-container'/u);
   assert.match(source, /setAttribute\('aria-labelledby', label\.id\)/u);
   assert.match(source, /setAttribute\('aria-describedby'/u);
   // Ids from the instance path, never a counter (#41).
   assert.match(source, /partId\(path, 'label'\)/u);
-  assert.doesNotMatch(source.slice(source.indexOf('function linkSwitchText')), /\+\+/u);
+  assert.doesNotMatch(source.slice(source.indexOf('export function linkCheckableText')), /\+\+/u);
   // The manifest says the same: the name from the label or aria-label.
   const component = json('src/smart/switch/component.json');
   assert.deepEqual(component.accessibility.name.from.slice(0, 2), ['label', 'aria-label']);
@@ -54,7 +57,12 @@ test('sf-input-textarea forwards the host aria-label and aria-labelledby (#30 it
 test('the class accordion hides a closed panel with the attribute from the first paint (#30 item 2)', () => {
   const source = read('src/component/accordion/js/_accordion.js');
   const init = source.slice(source.indexOf('  init() {'), source.indexOf('  isSingle() {'));
-  assert.match(init, /this\.content\.hidden = true;/u);
+  assert.match(init, /this\.hideContent\(\);/u);
+  // Every closed panel gets the attribute, hidden="until-found" (owner
+  // decision C154 (6)): hidden from the eye, the tab order and the
+  // accessibility tree, and still found by the browser's find-in-page.
+  const hide = source.slice(source.indexOf('  hideContent() {'), source.indexOf('  handleKeydown(event) {'));
+  assert.match(hide, /this\.content\.setAttribute\('hidden', UNTIL_FOUND\);/u);
 });
 
 test('the field renderers read a date in the page\'s language and a phone by its dial code (#34)', () => {

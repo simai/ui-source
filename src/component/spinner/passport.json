@@ -3,20 +3,23 @@
   "schema_version": 1,
   "id": "component.spinner",
   "kind": "component",
-  "version": "1.2.0",
+  "version": "1.3.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/spinner/index.js",
     "src/component/spinner/js/_spinner-draw.js",
     "src/component/spinner/js/_spinner.js",
     "src/component/spinner/js/index.js",
+    "src/component/spinner/lang/en.json",
+    "src/component/spinner/lang/index.mjs",
+    "src/component/spinner/lang/ru.json",
     "src/component/spinner/rule.js",
     "src/component/spinner/scss/_css__spinner.scss",
     "src/component/spinner/scss/_css__spinner_custom.scss",
     "src/component/spinner/scss/_var__spinner.scss",
     "src/component/spinner/scss/index.scss"
   ],
-  "content_sha256": "d0126b1622871760e16745d597a527c43455b0a4558e51b080f6e0c3ec4f5802",
+  "content_sha256": "d4dd27024c281234e2a3cd5c6bb6fdaec95c73ef4aa0a4c5422c026b6f85a6a1",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -27,8 +30,8 @@
       "range": "^1.0.0"
     },
     {
-      "id": "tokens.motion",
-      "range": "^1.0.0"
+      "id": "tokens.colour",
+      "range": "^1.12.1"
     },
     {
       "id": "tokens.opacity",

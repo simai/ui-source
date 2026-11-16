@@ -22,6 +22,7 @@ import {
 import {html as staticHtml, unsafeStatic} from 'lit/static-html.js';
 import {installPendingTags} from './pending-tags.js';
 import {noteDeprecated} from './deprecations.js';
+import {noteRetiredUtilitySheets, noteUtilityClassAlias} from './utility-class-aliases.js';
 import {
   checkSetIndex,
   declarationLine,
@@ -293,7 +294,7 @@ function SFLoaderPlugin(params) {
       ? params.backgroundPreloader
       : getPreloaderBackground();
   this.tempLoaderStyles =
-      'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-0, #fff));text-align: center;';
+      'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: var(--sf-layer--window, 9000);background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;';
   this.modifierPreloader = params.modifierPreloader
       ? params.modifierPreloader
       : 'loader-default';
@@ -326,6 +327,9 @@ function SFLoaderPlugin(params) {
   this.searchEnd = false;
   this.packages = Object.create(null);
   this.packageWarnings = new Set();
+  this.packageOrder = 0;
+  this.packageConflicts = new Map();
+  this.packageRulesSettled = false;
   this.installPackageApi();
   // A set named on the core script (data-sf-sets) is declared like one in
   // SF_BOOT_CONFIG.packages; the configuration wins over the attribute.
@@ -442,8 +446,16 @@ SFLoaderPlugin.prototype.declarePackages = function (declared) {
     }
     const base = read?.base
       || (read?.version ? npmBase(name, read.version, this.setNpmRoot()) : '');
+    // The page's order of declaration decides which package keeps a rule two
+    // of them define (registerPackage): data-sf-sets first, then
+    // SF_BOOT_CONFIG.packages, then the constructor's packages, each in the
+    // order written. A name declared twice keeps its first place.
+    const order = this.packages[name]?.declared
+      ? this.packages[name].order
+      : (this.packageOrder = (this.packageOrder || 0) + 1);
     this.packages[name] = {
       name,
+      order,
       base,
       rule: read?.rule || (base ? `${base}/rule.js` : ''),
       version: read?.version || '',
@@ -495,6 +507,17 @@ SFLoaderPlugin.prototype.resolveIndexedPackages = function () {
 };
 
 SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
+  // Once every declared rule file has answered, a rule two packages define
+  // has its final owner, and each pair of packages that met is said once.
+  const settle = (value) => {
+    this.packageRulesSettled = true;
+    this.reportPackageConflicts();
+    return value;
+  };
+  const loadAll = () => {
+    const loading = load();
+    return loading ? loading.then(settle) : settle(null);
+  };
   const load = () => {
     const loads = Object.values(this.packages)
         .filter((pkg) => pkg.declared && pkg.rule)
@@ -516,7 +539,7 @@ SFLoaderPlugin.prototype.loadDeclaredPackageRules = function () {
     return loads.length ? Promise.all(loads) : null;
   };
   const indexed = this.resolveIndexedPackages();
-  this.packageRulesReady = indexed ? indexed.then(load) : load();
+  this.packageRulesReady = indexed ? indexed.then(loadAll) : loadAll();
   return this.packageRulesReady;
 };
 
@@ -671,12 +694,20 @@ SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
     }
     const current = this.findPlugins[key];
     if (current?.package && current.package !== packageName) {
-      this.warnPackage(`owner:${packageName}:${key}`,
-          `rule "${key}" already belongs to package "${current.package}"; `
-          + `package "${packageName}" cannot take it`);
-      return;
-    }
-    if (current && (this.module[key] || this.loadedPlugins[key])) {
+      // Two packages define one rule (pro bundles the sets, so a page that
+      // declares pro and a set it bundles gets two copies). The rule files
+      // arrive in network order, so the first to arrive must not decide: the
+      // package the page declared first keeps the rule, every load the same.
+      // A rule already loaded stays with its holder (an element cannot be
+      // defined twice). The pair is said once, as an error, when the
+      // declared rule files have all answered.
+      const holder = this.packages[current.package];
+      const loaded = Boolean(this.module[key] || this.loadedPlugins[key]);
+      const takes = !loaded && packageRank(pkg) < packageRank(holder);
+      this.notePackageConflict(current.package, packageName, key, current,
+          takes ? packageName : current.package, loaded ? 'loaded' : 'order');
+      if (!takes) return;
+    } else if (current && (this.module[key] || this.loadedPlugins[key])) {
       this.warnPackage(`loaded:${packageName}:${key}`,
           `rule "${key}" is already loaded from `
           + `${current.package ? `package "${current.package}"` : 'the Smart base'}; `
@@ -688,7 +719,56 @@ SFLoaderPlugin.prototype.registerPackage = function (name, options = {}) {
   });
 
   if (added.length) this.rulesChanged();
+  if (this.packageRulesSettled) this.reportPackageConflicts();
   return added;
+};
+
+// The place a package holds in the page's declaration; a package the page did
+// not declare (registered by a script of its own) comes after every declared
+// one, and among those the first registered keeps what it registered.
+function packageRank(pkg) {
+  return pkg?.declared && Number.isFinite(pkg.order) ? pkg.order : Number.POSITIVE_INFINITY;
+}
+
+SFLoaderPlugin.prototype.notePackageConflict = function (holderName, comerName, key, rule, winner, why) {
+  const [first, second] = packageRank(this.packages[holderName]) <= packageRank(this.packages[comerName])
+    ? [holderName, comerName]
+    : [comerName, holderName];
+  const pair = `${first}|${second}`;
+  if (!this.packageConflicts) this.packageConflicts = new Map();
+  if (!this.packageConflicts.has(pair)) {
+    this.packageConflicts.set(pair, {first, second, winner, why, rules: new Set(), tags: new Set(), said: false});
+  }
+  const row = this.packageConflicts.get(pair);
+  if (!row.rules.has(key)) row.said = false;
+  row.rules.add(key);
+  (Array.isArray(rule?.tags) && rule.tags.length ? [rule.tags[0]] : [key]).forEach((tag) => row.tags.add(tag));
+  if (why === 'loaded') {
+    row.winner = winner;
+    row.why = why;
+  }
+};
+
+// One console error per pair of packages that define the same components:
+// both names, the components, which package the page gets and why.
+SFLoaderPlugin.prototype.reportPackageConflicts = function () {
+  (this.packageConflicts || new Map()).forEach((row) => {
+    if (row.said) return;
+    row.said = true;
+    const loser = row.winner === row.first ? row.second : row.first;
+    const winnerPackage = this.packages[row.winner];
+    const reason = row.why === 'loaded'
+      ? 'its copy had already loaded'
+      : (winnerPackage?.declared
+        ? 'the page declares it first'
+        : 'it registered first and neither is declared');
+    const tags = [...row.tags].sort();
+    console.error(`SFLoader: packages "${row.first}" and "${row.second}" both define `
+        + `${tags.map((tag) => `<${tag}>`).join(', ')}; `
+        + `this page uses package "${row.winner}" (${reason}), and the copies in `
+        + `package "${loser}" are not loaded. A page declares pro or the sets it `
+        + 'bundles, never both: remove one of them from its declaration.');
+  });
 };
 
 // Everything the Loader derived from the rule map, dropped so the next read
@@ -1908,6 +1988,10 @@ SFLoaderPlugin.prototype.getTokenRuleKeys = function (token) {
   if (!this.tokenRuleMatches) this.tokenRuleMatches = new Map();
   const known = this.tokenRuleMatches.get(token);
   if (known) return known;
+  // A retired class name or family (C185 (2), C186 (8), C187 (1); the one
+  // table src/core/js/retired-classes.table.js) is noted once in
+  // SF.deprecations; it still loads and draws as before until its date.
+  noteUtilityClassAlias(token);
   const keys = [];
   const {tokenRulesByFirst, tokenRulesAlways} = this.getAttributeRuleIndex();
   const rules = [...(tokenRulesByFirst.get(token[0]) || []), ...tokenRulesAlways];
@@ -1919,6 +2003,8 @@ SFLoaderPlugin.prototype.getTokenRuleKeys = function (token) {
     if (re.global || re.sticky) re.lastIndex = 0;
     if (re.test(token)) keys.push(key);
   }
+  // A class of a retired utility sheet (C187 (1)) is noted the same way.
+  noteRetiredUtilitySheets(token, keys);
   this.tokenRuleMatches.set(token, keys);
   return keys;
 };
@@ -2943,8 +3029,15 @@ SFLoaderPlugin.prototype.search = function () {
       }
     });
 
+    // One record at a time: a page that draws hundreds of components in one
+    // task hands over hundreds of thousands of records, and spread into
+    // push() as arguments they ran past the call stack (RangeError: Maximum
+    // call stack size exceeded, once a load on the 470-row sf-tabs page, C54
+    // D4) and that whole batch of changes was lost.
+    const keep = (into) => { for (const change of relevantChanges) into.push(change); };
+
     if (_this.searchEnd) {
-      mutationBuffer.push(...relevantChanges);
+      keep(mutationBuffer);
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         const bufferedChanges = [...mutationBuffer];
@@ -2952,7 +3045,7 @@ SFLoaderPlugin.prototype.search = function () {
         queueChanges(bufferedChanges);
       }, DEBOUNCE_MS);
     } else {
-      _this.observeElements.push(...relevantChanges);
+      keep(_this.observeElements);
     }
   };
 
@@ -4720,12 +4813,45 @@ SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
     this.pendingStyleLinks.push(style);
     if (this.pendingStyleLinks.length === 1) {
       Promise.resolve().then(() => {
-        const links = this.pendingStyleLinks.splice(0);
-        head.append(...links);
+        // One by one, so a sheet of this batch is also placed against the
+        // ones before it; the browser still recalculates once, after the task.
+        for (const link of this.pendingStyleLinks.splice(0)) {
+          if (!placeBeforeLaterPoint(head, link)) head.append(link);
+        }
       });
     }
   });
 };
+
+// A utility's sheets per point, in the order their rules must stand: the base
+// sheet first, then the breakpoints from narrow to wide, then the states.
+// Each pass of the Loader asks for its sheets in this order, but a later pass
+// appended its sheets after an earlier pass's: a base sheet that came second
+// stood after md, so grid-col-1 beat md:grid-col-2 and a wide page drew one
+// column (2026-11-10 review, P9). A sheet now goes before the first sheet of
+// the same utility already in <head> whose point comes after its own.
+const UTILITY_SHEET_POINTS = ['default', 'sm', 'md', 'lg', 'xl', 'xxl', 'hover', 'focus', 'focus-visible', 'active'];
+const UTILITY_SHEET = /\/utility\/([^/?#]+)\/([^/?#]+)\/css\/\2(?:\.min)?\.css(?:[?#]|$)/u;
+
+function utilitySheetPoint(href) {
+  const match = UTILITY_SHEET.exec(String(href || ''));
+  if (!match) return null;
+  const rank = UTILITY_SHEET_POINTS.indexOf(match[2]);
+  return rank < 0 ? null : {utility: match[1], rank};
+}
+
+function placeBeforeLaterPoint(head, link) {
+  const own = utilitySheetPoint(link.getAttribute?.('href') ?? link.href);
+  if (!own || typeof head.querySelectorAll !== 'function') return false;
+  for (const other of head.querySelectorAll('link[rel="stylesheet"]')) {
+    const point = utilitySheetPoint(other.getAttribute('href'));
+    if (point && point.utility === own.utility && point.rank > own.rank) {
+      head.insertBefore(link, other);
+      return true;
+    }
+  }
+  return false;
+}
 
 // One insertion per asset URL, shared by every Loader on the page
 // (simai/ui-source#12 follow-up). A dependency named by several plugins --
@@ -5300,7 +5426,7 @@ const props = {
 
   findPlugins: SF.RuleLoader,
   backgroundPreloader:
-      'var(--sf-color--surface-highest, var(--sf-surface-0, #fff))',
+      'var(--sf-color--surface-highest, var(--sf-surface-page, #fff))',
   modifierPreloader: 'loader-default',
   contentPreloaderText: 'LOADING',
 };

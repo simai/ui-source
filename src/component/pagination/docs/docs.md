@@ -14,9 +14,16 @@ An omitted range is represented by the static
 
 The compact square form uses `--sf-radius--ui`; the circle form uses
 `--sf-radius-circle`. Geometry, typography, color, motion and focus are driven by
-Framework semantic tokens. In RTL only directional arrows reverse. On narrow
-screens secondary labels and omitted-range indicators may be hidden, but the
-page controls remain on one line.
+Framework semantic tokens. In RTL only directional arrows reverse. In a
+narrow place -- a footer up to the container step h1 (44rem) wide, on a
+phone or in a narrow column of a wide page (1.4.4; it read the screen's md
+step before) -- secondary labels and omitted-range indicators may be hidden,
+but the page controls remain on one line.
+
+The controls of one row are one group of buttons (C105 H5): they stand
+`--sf-space-1/3` apart -- 8, 4 in the compact density of a desktop (1.4.5;
+outside the compatible footer the row had no gap before and its edge buttons
+touched their neighbours). `--sf-pagination-gap` still sets it.
 
 ## The row's box
 

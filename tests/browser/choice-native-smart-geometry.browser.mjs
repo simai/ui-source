@@ -15,9 +15,16 @@
 //   - Native and Smart draw the same box, mark, gap and row height;
 //   - the box is as tall as the label's line (VISUAL-DECISIONS 2026-10-05: one
 //     ladder, the mark is the line height);
-//   - checkbox: the help mark is the line; the checked and mixed marks fill
-//     the box inside its border (the line less the two border widths), the
-//     same in Native and Smart -- the size-2 Smart marks were 16px;
+//   - checkbox: the checked and mixed marks fill the box inside its border
+//     (the line less the two border widths), the same in Native and Smart --
+//     the size-2 Smart marks were 16px;
+//   - checkbox help: the two are different parts since sf-checkbox 1.2.0
+//     (audit 2026-11-11 W1, C59). The Native constructor's help is an icon
+//     name drawn as a decorative glyph, and that glyph is the line. The Smart
+//     help is the explanation behind a «?» button, an sf-help-mark of size
+//     1/3 beside sizes 1/2 and 1 and 1/2 beside size 2 (component.json 1.2.0):
+//     its glyph and button equal a standalone sf-help-mark of that size, and
+//     the button is centred on the label's first line (within 0.5px);
 //   - radio: the ring is the box (wider than its border), the selected mark is
 //     wider than 0.
 import {createServer} from 'node:http';
@@ -89,6 +96,8 @@ await new Promise((done) => server.listen(0, '127.0.0.1', done));
 const origin = `http://127.0.0.1:${server.address().port}`;
 
 const SIZES = ['1/2', '1', '2'];
+// sf-checkbox 1.2.0 (src/smart/checkbox/js/templates/default.js): the help mark's size beside each checkbox size.
+const HELP_SIZE = {'1/2': '1/3', 1: '1/3', 2: '1/2'};
 const WIDTHS = [1000, 390];
 const failures = [];
 const rows = [];
@@ -134,9 +143,17 @@ try {
         d.innerHTML = `<sf-radio size="${size}" label="Monthly plan" description="Billed every month" name="s${id}" checked></sf-radio>`;
         stand.append(c, d);
       }
+      // The standalone help marks the Smart checkbox's help must equal.
+      for (const helpSize of ['1/3', '1/2']) {
+        const e = Object.assign(document.createElement('div'), {className: 'help-ref', id: `help-ref-${helpSize.replace('/', '-')}`});
+        e.innerHTML = `<sf-help-mark size="${helpSize}" text="help"></sf-help-mark>`;
+        stand.append(e);
+      }
     }, SIZES);
     await tab.waitForFunction((n) => document.querySelectorAll('sf-checkbox .sf-checkbox-box, sf-radio .sf-radio-button-box').length === n,
       SIZES.length * 3, {timeout: 15000});
+    await tab.waitForFunction((n) => document.querySelectorAll('sf-help-mark button').length === n,
+      SIZES.length * 2 + 2, {timeout: 15000});
     // Utility sheets arrive after the classes do: wait until every Native root
     // is laid out as its hint says (or give up and measure what is drawn).
     await tab.waitForFunction(() => [...document.querySelectorAll('.row')].every((row) => {
@@ -164,6 +181,7 @@ try {
           ? row.querySelector('.sf-checkbox-box .sf-icon')
           : row.querySelector('.sf-radio-button-mark');
         const help = kind === 'checkbox' ? row.querySelector('.sf-checkbox-top .sf-icon') : null;
+        const helpButton = kind === 'checkbox' && impl === 'smart' ? row.querySelector('sf-help-mark button') : null;
         const boxStyle = getComputedStyle(box);
         const markStyle = mark ? getComputedStyle(mark) : null;
         return {
@@ -177,11 +195,21 @@ try {
           // A glyph clipped by its box: the declared size is larger than drawn.
           markDeclared: markStyle ? [parseFloat(markStyle.width), parseFloat(markStyle.height)] : null,
           help: help ? [r(help).w, r(help).h] : null,
+          helpButton: helpButton ? [r(helpButton).w, r(helpButton).h] : null,
+          helpCentreOffset: helpButton && text
+            ? Math.round(Math.abs((r(helpButton).top + r(helpButton).h / 2) - (r(label).top + parseFloat(getComputedStyle(label).lineHeight) / 2)) * 100) / 100
+            : null,
           gap: Math.round((text.left - r(box).right) * 100) / 100,
         };
       });
     });
-    for (const m of measured) rows.push({width, ...m});
+    const helpRefs = await tab.evaluate(() => Object.fromEntries([...document.querySelectorAll('.help-ref')].map((ref) => {
+      const glyph = ref.querySelector('sf-help-mark .sf-icon')?.getBoundingClientRect();
+      const button = ref.querySelector('sf-help-mark button')?.getBoundingClientRect();
+      const two = (b) => (b ? [Math.round(b.width * 100) / 100, Math.round(b.height * 100) / 100] : null);
+      return [ref.id.replace('help-ref-', '').replace('-', '/'), {glyph: two(glyph), button: two(button)}];
+    })));
+    for (const m of measured) rows.push({width, helpRefs, ...m});
     await context.close();
   }
 } finally {
@@ -198,7 +226,7 @@ for (const width of WIDTHS) {
       const s = pick('smart');
       const where = `${width}px ${kind} ${state} size ${size}`;
       if (!n || !s) { failures.push(`${where}: not drawn`); continue; }
-      for (const key of ['display', 'row', 'box', 'gap', 'mark', 'help']) {
+      for (const key of ['display', 'row', 'box', 'gap', 'mark']) {
         if (!same(n[key], s[key])) failures.push(`${where}: ${key} Native ${JSON.stringify(n[key])} vs Smart ${JSON.stringify(s[key])}`);
       }
       for (const m of [n, s]) {
@@ -210,8 +238,20 @@ for (const width of WIDTHS) {
         // The selected mark is half its ring at every size (it was 12px at all three).
         if (kind === 'radio' && Math.abs(m.mark[0] - m.box[0] / 2) > 0.5) failures.push(`${where} ${m.impl}: selected mark ${m.mark[0]}px, ring ${m.box[0]}px`);
         if (kind === 'checkbox') {
-          // The help mark is the line; the box mark fills the box inside its border.
-          if (m.help?.[1] !== m.line) failures.push(`${where} ${m.impl}: help ${JSON.stringify(m.help)} vs line ${m.line}`);
+          if (m.impl === 'native') {
+            // The Native help glyph is the line.
+            if (m.help?.[1] !== m.line) failures.push(`${where} native: help ${JSON.stringify(m.help)} vs line ${m.line}`);
+          } else {
+            // The Smart help is the standalone sf-help-mark of its size, centred on the first line.
+            const ref = m.helpRefs[HELP_SIZE[size]];
+            if (!ref?.glyph || !ref?.button) failures.push(`${where} smart: no standalone sf-help-mark ${HELP_SIZE[size]} drawn`);
+            else {
+              if (!same(m.help, ref.glyph)) failures.push(`${where} smart: help glyph ${JSON.stringify(m.help)} vs sf-help-mark ${HELP_SIZE[size]} ${JSON.stringify(ref.glyph)}`);
+              if (!same(m.helpButton, ref.button)) failures.push(`${where} smart: help button ${JSON.stringify(m.helpButton)} vs sf-help-mark ${HELP_SIZE[size]} ${JSON.stringify(ref.button)}`);
+            }
+            if (!(m.helpCentreOffset <= 0.5)) failures.push(`${where} smart: help button centre ${m.helpCentreOffset}px off the first line`);
+          }
+          // The box mark fills the box inside its border.
           const inner = m.box[1] - 2 * m.border;
           if (m.mark[1] !== inner) failures.push(`${where} ${m.impl}: mark ${JSON.stringify(m.mark)} vs box inside ${inner}`);
         }
@@ -220,11 +260,11 @@ for (const width of WIDTHS) {
   }
 }
 
-const table = rows.map((m) => `${m.width} ${m.kind.padEnd(8)} ${m.impl.padEnd(6)} ${m.state.padEnd(7)} ${m.size.padEnd(3)} display=${m.display} row=${m.row} line=${m.line} box=${m.box.join('x')} mark=${m.mark?.join('x')} declared=${m.markDeclared?.join('x')} help=${m.help?.join('x') ?? '-'} gap=${m.gap}`);
+const table = rows.map((m) => `${m.width} ${m.kind.padEnd(8)} ${m.impl.padEnd(6)} ${m.state.padEnd(7)} ${m.size.padEnd(3)} display=${m.display} row=${m.row} line=${m.line} box=${m.box.join('x')} mark=${m.mark?.join('x')} declared=${m.markDeclared?.join('x')} help=${m.help?.join('x') ?? '-'}${m.helpButton ? ` helpButton=${m.helpButton.join('x')} centre=${m.helpCentreOffset}` : ''} gap=${m.gap}`);
 process.stdout.write(`${table.join('\n')}\n`);
 if (reportPath) await writeFile(reportPath, JSON.stringify({rows, failures}, null, 2));
 if (failures.length) {
   process.stdout.write(`${failures.length} failure(s):\n${failures.map((f) => `  ${typeof f === 'string' ? f : JSON.stringify(f)}`).join('\n')}\n`);
   process.exit(1);
 }
-process.stdout.write(`Choice geometry: PASS — ${rows.length} controls, Native and Smart equal at sizes ${SIZES.join(', ')} on ${WIDTHS.join(' and ')}px\n`);
+process.stdout.write(`Choice geometry: PASS — ${rows.length} controls, Native and Smart equal (help: Native the line, Smart the sf-help-mark of its size) at sizes ${SIZES.join(', ')} on ${WIDTHS.join(' and ')}px\n`);

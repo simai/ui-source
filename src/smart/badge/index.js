@@ -2,15 +2,22 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { fieldSize } from '../../component/field-size';
 import {
+  BADGE_MAIN_TONAL,
   BADGE_SCHEMES,
   BADGE_SIZES,
+  isRetiredMain,
   normalizeBadgeContract,
 } from '../../component/badges/js/contract';
+import { noteDeprecated } from '../../core/js/deprecations.js';
 import { renderBadgeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 
 const BADGE_COLOUR_ROLES = ['neutral', 'primary', 'secondary', 'tertiary', 'on-surface'];
@@ -94,12 +101,23 @@ class SfBadge extends BadgeElement {
   }
 
   // In a row or a table cell the element takes the text line of a form size,
-  // so the row keeps its control height.
+  // so the row keeps its control height; text takes the line of the text it
+  // stands beside, its size and line inherited (C95 point 6).
   get line() {
-    const line = this.getAttribute('line') || '';
+    const line = (this.getAttribute('line') || '').trim().toLowerCase();
+    if (line === 'text') return 'text';
     return line ? fieldSize(line, 'sf-badge line') : '';
   }
 
+
+  // appearance="main" is the attention count's (owner decision C140 (4)): with
+  // any colour but error it draws tonal, and the spelling is noted once per
+  // badge until 2027-01-01 (journal value-badge-appearance-main-to-tonal).
+  noteRetiredMain() {
+    if (this._sfMainNoted || !isRetiredMain({type: this.getProp('appearance'), scheme: this.paintedScheme})) return;
+    this._sfMainNoted = true;
+    noteDeprecated({component: 'sf-badge', tag: 'sf-badge', kind: 'value', attribute: 'appearance', from: 'main', to: 'tonal', ...BADGE_MAIN_TONAL});
+  }
 
   get appearance() {
     return normalizeBadgeContract({
@@ -165,6 +183,7 @@ class SfBadge extends BadgeElement {
   }
 
   templateContext() {
+    this.noteRetiredMain();
     const props = this.getPropsContext();
     const variant = normalizeBadgeContract(props);
 
@@ -198,7 +217,7 @@ class SfBadge extends BadgeElement {
       scheme: this.scheme,
       status: this.status,
       activity: this.activity,
-      compact: this.compact,
+      iconOnly: this.iconOnly,
       tight: this.tight,
       text: this.text,
       icon: this.icon,

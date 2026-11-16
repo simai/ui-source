@@ -28,6 +28,10 @@ const KEY_CAPS = {
   up: '↑', down: '↓', left: '←', right: '→', arrowup: '↑', arrowdown: '↓', arrowleft: '←', arrowright: '→',
   home: 'Home', end: 'End', pageup: 'PgUp', pagedown: 'PgDn',
 };
+// An Apple keyboard's own signs where they differ (component.kbd 1.3.3, CM-9
+// of ui-control research 2026-11-14-context-menu): forward delete is ⌦, as
+// macOS menus print it; Del is a Windows word.
+const MAC_KEY_CAPS = {delete: '⌦'};
 // The names of KeyboardEvent.key for the words above.
 const KEY_NAMES = {
   enter: 'Enter', return: 'Enter', escape: 'Escape', esc: 'Escape', tab: 'Tab', space: ' ', backspace: 'Backspace',
@@ -72,7 +76,7 @@ export function shortcutCaps(parsed, apple = isApplePlatform()) {
     if (modifiers.includes(caps[name])) continue;
     modifiers.push(caps[name]);
   }
-  const key = KEY_CAPS[parsed.key] ?? (parsed.key.length === 1 ? parsed.key.toUpperCase() : parsed.key.charAt(0).toUpperCase() + parsed.key.slice(1));
+  const key = (apple ? MAC_KEY_CAPS[parsed.key] : undefined) ?? KEY_CAPS[parsed.key] ?? (parsed.key.length === 1 ? parsed.key.toUpperCase() : parsed.key.charAt(0).toUpperCase() + parsed.key.slice(1));
   return [...modifiers, key].map((text) => ({text, square: [...text].length === 1}));
 }
 

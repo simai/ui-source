@@ -24,8 +24,8 @@ const source = raw
   .replace(/^import '\.\/scss\/index\.scss';$/mu, '')
   .replace(/^import manifest from '\.\/component\.json';$/mu, await inline('manifest', 'component.json'))
   .replace(/^import aliases from '\.\/aliases\.json';$/mu, await inline('aliases', 'aliases.json'))
-  .replace(/^import en from '\.\/lang\/en\.json';$/mu, await inline('en', 'lang/en.json'))
-  .replace(/^import ru from '\.\/lang\/ru\.json';$/mu, await inline('ru', 'lang/ru.json'))
+  .replace(/^import enFile from '\.\/lang\/en\.json';$/mu, await inline('enFile', 'lang/en.json'))
+  .replace(/^import ruFile from '\.\/lang\/ru\.json';$/mu, await inline('ruFile', 'lang/ru.json'))
   .replace("'./engine.mjs'", JSON.stringify(here('../src/smart/resizer/engine.mjs').href))
   .replace("'../../core/js/page-language'", JSON.stringify(here('../src/core/js/page-language.js').href))
   .replace("'../../core/js/element-manifest'", JSON.stringify(here('../src/core/js/element-manifest.js').href))
@@ -127,7 +127,8 @@ test('sf-resizer: a handle taken out of the page stops listening', (t) => {
 test('sf-resizer: no private reading of the page language is left in the source', () => {
   assert.doesNotMatch(raw, /function pageLanguage\(/u, 'a private reading of [lang]');
   assert.doesNotMatch(raw, /documentElement\.lang/u, 'the page language is the shared reader\'s to resolve');
-  assert.match(raw, /import \{language\} from '\.\.\/\.\.\/core\/js\/page-language'/u);
+  // pageWord: the words of the value for SF.Resizer.attach edges (C158 (3)).
+  assert.match(raw, /import \{language(?:, pageWord)?\} from '\.\.\/\.\.\/core\/js\/page-language'/u);
   // The words are its language files, read by the shared reader (sfWord).
   assert.match(raw, /this\.sfWord\('label'\)/u);
   assert.match(raw, /lang: \{en, ru\}/u);

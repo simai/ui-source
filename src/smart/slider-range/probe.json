@@ -147,6 +147,102 @@
       }
     },
     {
+      "id": "page-keys-move-ten-steps",
+      "covers": "keyboard.host PageUp step:+page, PageDown step:-page; Shift+ArrowRight moves the same large step (S4)",
+      "field": "<sf-slider-range aria-label=\"Цена\" min=\"0\" max=\"50000\" step=\"500\" value=\"5000\"></sf-slider-range>",
+      "given": [
+        {
+          "user": "focus:[role=slider]"
+        }
+      ],
+      "user": [
+        "keyboard:PageUp",
+        "keyboard:PageUp",
+        "keyboard:PageDown",
+        "keyboard:Shift+ArrowRight"
+      ],
+      "expect": {
+        "value": "15000",
+        "evaluate": {
+          "el.querySelector('[role=slider]').getAttribute('aria-valuenow')": "15000"
+        }
+      }
+    },
+    {
+      "id": "readonly-keys-change-nothing",
+      "covers": "settings.readonly (C80 R2): the handle stays focusable and carries aria-readonly; ArrowRight changes nothing and sends no change",
+      "field": "<sf-slider-range aria-label=\"Громкость\" min=\"0\" max=\"100\" value=\"40\" readonly></sf-slider-range>",
+      "given": [
+        {
+          "user": "focus:[role=slider]"
+        }
+      ],
+      "user": "keyboard:ArrowRight",
+      "expect": {
+        "value": "40",
+        "events": [],
+        "evaluate": {
+          "el.querySelector('[role=slider]').getAttribute('aria-readonly')": "true"
+        }
+      }
+    },
+    {
+      "id": "field-enter-moves-the-handle",
+      "covers": "settings.field (C80): typing a number in the from/to field and Enter moves its handle; one change, then the dated sf-range-slider-change and onSliderChange with its detail",
+      "field": "<sf-slider-range label=\"Цена\" name=\"price\" min=\"0\" max=\"50000\" step=\"500\" value=\"5000,20000\" suffix=\" ₽\" field></sf-slider-range>",
+      "given": [
+        {
+          "user": "focus:.sf-range-slider-field-input[data-handle='1']"
+        }
+      ],
+      "user": [
+        "type:12500",
+        "keyboard:Enter"
+      ],
+      "expect": {
+        "value": "5000,12500",
+        "events": [
+          {
+            "type": "change",
+            "value": [
+              5000,
+              12500
+            ],
+            "handle": 1
+          },
+          {
+            "type": "sf-range-slider-change",
+            "value": [
+              5000,
+              12500
+            ],
+            "handle": 1
+          },
+          {
+            "type": "onSliderChange",
+            "value": [
+              5000,
+              12500
+            ],
+            "handle": 1
+          }
+        ],
+        "evaluate": {
+          "el.querySelectorAll('[role=slider]')[1].getAttribute('aria-valuenow')": "12500"
+        }
+      }
+    },
+    {
+      "id": "range-submits-two-entries",
+      "covers": "form (S3): a range with a name submits two entries under it",
+      "field": "<sf-slider-range label=\"Цена\" name=\"price\" min=\"0\" max=\"50000\" step=\"500\" value=\"5000,20000\"></sf-slider-range>",
+      "expect": {
+        "evaluate": {
+          "JSON.stringify([...new FormData(document.getElementById('f'))])": "[[\"price\",\"5000\"],[\"price\",\"20000\"]]"
+        }
+      }
+    },
+    {
       "id": "value-from-code-is-silent",
       "covers": "§8: a value set from outside is not reported back, under no name",
       "field": "<sf-slider-range aria-label=\"Громкость\" value=\"50\"></sf-slider-range>",
@@ -162,7 +258,7 @@
     {
       "id": "prefix-is-prefix-text",
       "covers": "aliases.json setting prefix -> prefix-text (§3.1, §16 item 26)",
-      "field": "<sf-slider-range aria-label=\"Цена\" value=\"50\" label=\"text\"></sf-slider-range>",
+      "field": "<sf-slider-range aria-label=\"Цена\" value=\"50\" value-display=\"text\"></sf-slider-range>",
       "setting": {
         "name": "prefix",
         "value": "от "

@@ -180,21 +180,23 @@
           "  <button id=\"opener-old\" data-sf-modal-open=\"m-old\">Старое имя</button>",
           "  <button id=\"opener-locked\" data-sf-action=\"m-locked.open\">Обязательное</button>",
           "  <button id=\"drawer-opener\" data-sf-drawer-open=\"d1\">Панель</button>",
+          "  <button id=\"opener-info\" data-sf-action=\"m4.open\">Сведения</button>",
           "  <t-ask id=\"a1\"></t-ask>",
           "</main>",
           "<div id=\"area\"><sf-modal id=\"m1\" heading=\"Письмо\" minimizable>",
           "  <div slot=\"content\"><input id=\"m1-field\" aria-label=\"Тема\"><button id=\"m1-open-second\" data-sf-action=\"m2.open\">Ещё окно</button></div>",
-          "  <button slot=\"footer\" id=\"m1-cancel\" data-sf-modal-close=\"m1\">Отмена</button>",
           "  <button slot=\"footer\" id=\"m1-ok\" data-sf-action=\"m1.confirm\">Готово</button>",
+          "  <button slot=\"footer\" id=\"m1-cancel\" data-sf-modal-close=\"m1\">Отмена</button>",
           "</sf-modal></div>",
-          "<sf-modal id=\"m2\" heading=\"Второе окно\"><p slot=\"content\">Поверх первого</p></sf-modal>",
+          "<sf-modal id=\"m2\" heading=\"Второе окно\" size=\"question\"><p slot=\"content\">Поверх первого</p></sf-modal>",
           "<sf-modal id=\"m-old\" modal-id=\"m-old\" title=\"Старое окно\" blur=\"small\" hide><p slot=\"content\">Старые имена</p></sf-modal>",
           "<sf-modal id=\"m-locked\" heading=\"Решите\" dismissible=\"false\" unsaved><p slot=\"content\">Без закрытия</p><button slot=\"footer\" id=\"locked-ok\" data-sf-action=\"m-locked.close\">Понятно</button></sf-modal>",
           "<sf-drawer id=\"d1\" label=\"Панель\"><button id=\"d1-open-modal\" data-sf-action=\"m3.open\">Окно из панели</button></sf-drawer>",
           "<sf-modal id=\"m3\" heading=\"Над панелью\"><p slot=\"content\">Окно над панелью</p></sf-modal>",
+          "<sf-modal id=\"m4\" heading=\"Сведения\"><p slot=\"content\">Окно без полей</p></sf-modal>",
           "<script>",
           "  // An assembly that asks a person (§19.4): its rule opens the confirm layer and waits for the answer. Defined once sf-modal is, so the part's interface is there.",
-          "  customElements.whenDefined('sf-modal').then(() => SF.Assembly.define({tag: 't-ask', kind: 'assembly', values: {answer: {type: 'object', value: 'answer'}}, actions: {ask: {}}, keys: {answer: {type: 'object', writer: 'logic', initial: null}}, roles: {dialog: {part: 'sf-modal', settings: {heading: 'Удалить запись?'}}}, rules: [{id: 'r-ask', on: 'outside.ask', steps: [{ask: 'dialog.open', answer: 'answer'}]}]}, {layouts: {default: '<x-role name=\"dialog\"><p slot=\"content\">Запись удалится.</p><button slot=\"footer\" id=\"ask-no\" data-sf-modal-close>Отмена</button><button slot=\"footer\" id=\"ask-yes\" data-sf-action=\"page/a1/dialog.confirm\">Удалить</button></x-role>'}}));",
+          "  customElements.whenDefined('sf-modal').then(() => SF.Assembly.define({tag: 't-ask', kind: 'assembly', values: {answer: {type: 'object', value: 'answer'}}, actions: {ask: {}}, keys: {answer: {type: 'object', writer: 'logic', initial: null}}, roles: {dialog: {part: 'sf-modal', settings: {heading: 'Удалить запись?'}}}, rules: [{id: 'r-ask', on: 'outside.ask', steps: [{ask: 'dialog.open', answer: 'answer'}]}]}, {layouts: {default: '<x-role name=\"dialog\"><p slot=\"content\">Запись удалится.</p><button slot=\"footer\" id=\"ask-yes\" data-sf-action=\"page/a1/dialog.confirm\">Удалить</button><button slot=\"footer\" id=\"ask-no\" data-sf-modal-close>Отмена</button></x-role>'}}));",
           "</script>"
         ]
       },
@@ -276,14 +278,14 @@
         },
         {
           "id": "p3-outside-reason",
-          "title": "a press on the overlay closes with reason outside",
+          "title": "a press on the overlay of a window without fields closes it with reason outside (a window with fields stays: p17)",
           "covers": "§19.3 outside",
           "steps": [
             {
-              "user": "click:#opener"
+              "user": "click:#opener-info"
             },
             {
-              "user": "click:[data-sf-modal-portal=\"m1\"] [data-sf-modal-overlay]",
+              "user": "click:[data-sf-modal-portal=\"m4\"] [data-sf-modal-overlay]",
               "expect": {
                 "events": [
                   {
@@ -295,7 +297,7 @@
                   }
                 ],
                 "values": {
-                  "#m1.open": false
+                  "#m4.open": false
                 }
               }
             }
@@ -491,7 +493,7 @@
         },
         {
           "id": "p8-two-modals-stack",
-          "title": "a modal over a modal: higher z-index, Escape closes only the top, focus goes back into the first",
+          "title": "a question over a window (C159 (7)): higher z-index, no second scrim, Escape closes only the top, focus goes back into the first",
           "covers": "§19.1 one stack",
           "steps": [
             {
@@ -508,6 +510,9 @@
             },
             {
               "check": "Number(document.querySelector('[data-sf-modal-portal=\"m2\"] .sf-modal').style.zIndex) > Number(document.querySelector('[data-sf-modal-portal=\"m1\"] .sf-modal').style.zIndex)"
+            },
+            {
+              "check": "getComputedStyle(document.querySelector('[data-sf-modal-portal=\"m2\"] [data-sf-modal-overlay]')).backgroundColor === 'rgba(0, 0, 0, 0)'"
             },
             {
               "user": "keyboard:Escape",
@@ -818,6 +823,56 @@
             },
             {
               "check": "document.querySelector('[data-sf-modal-portal=\"m1\"]').style.getPropertyValue('--sf-modal-radius') === '3px' && document.querySelector('[data-sf-modal-portal=\"m1\"]').getAttribute('lang') === 'ru'"
+            }
+          ]
+        },
+        {
+          "id": "p17-form-scrim-stays",
+          "title": "a window with fields does not close on a press of its scrim (C159 (6))",
+          "covers": "§19.3 outside; owner decision C159 (6)",
+          "steps": [
+            {
+              "user": "click:#opener"
+            },
+            {
+              "user": "click:[data-sf-modal-portal=\"m1\"] [data-sf-modal-overlay]",
+              "expect": {
+                "events": [
+                  {
+                    "name": "sf-modal-closed",
+                    "count": 0
+                  }
+                ],
+                "values": {
+                  "#m1.open": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "p18-second-only-question",
+          "title": "over an open window a second that is not a question is refused (C159 (7))",
+          "covers": "§19.1 one stack; owner decision C159 (7)",
+          "steps": [
+            {
+              "user": "click:#opener"
+            },
+            {
+              "action": {
+                "name": "open"
+              },
+              "target": "#m4",
+              "expect": {
+                "returns": {
+                  "outcome": "refused",
+                  "reason": "stacked"
+                },
+                "values": {
+                  "#m4.open": false,
+                  "#m1.open": true
+                }
+              }
             }
           ]
         }

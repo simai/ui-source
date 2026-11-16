@@ -14,9 +14,9 @@
   max-inline-size: 100%;
 }
 
-/* Every look reads the border variables; the dark (default) one draws none
-   until a page sets a width. The light look's hairline and the forced-colours
-   border below come later and win. */
+/* Every look reads the border variables and draws none until a page sets a
+   width (C59: windows have a shadow, no frame; the light look lost its
+   hairline). The forced-colours border below comes later and wins. */
 .sf-tooltip .sf-tooltip-content {
   border: var(--sf-tooltip-border-width, 0) solid var(--sf-tooltip-border-color, var(--sf-outline-variant));
 }
@@ -26,6 +26,42 @@
   min-inline-size: 0;
   max-inline-size: 100%;
   overflow-wrap: anywhere;
+}
+
+/* The content is a column whatever the markup wrote (the Smart template adds
+   flex flex-col; class markup often did not, and its inline content drew 27
+   high where the Smart one drew 24): one box, so one size (C160 (3)) and the
+   two-line text below lays out as a block. */
+.sf-tooltip .sf-tooltip-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* At most two lines (owner decision C160 (2)): a tooltip names a control or
+   says a cut text in full; an explanation that needs more is a «?» beside
+   the control (sf-help-mark), which works by touch and keeps links. The text
+   stops after its second line with an ellipsis, and the controller says once
+   per page, in the console, which tooltip was cut. A line with a shortcut
+   keeps its own row layout (one line). */
+.sf-tooltip .sf-tooltip-text:not(:has(> .sf-tooltip-shortcut)) {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+/* A tooltip a controller shows (role="tooltip"), wherever it stands -- in a
+   .sf-tooltip-anchor or not, as the one sf-button-icon makes for its name
+   (C160 (1)) -- is as wide as its text up to the tooltip's cap, 20rem and
+   never wider than the window less --sf-space-1 a side. */
+.sf-tooltip[role='tooltip'],
+[role='tooltip'] > .sf-tooltip {
+  inline-size: max-content;
+  max-inline-size: min(
+    var(--sf-tooltip--max-inline-size, var(--sf-g0)),
+    calc(100vw - var(--sf-space-2))
+  );
 }
 
 .sf-tooltip-anchor {
@@ -42,7 +78,7 @@
     calc(100vw - var(--sf-space-2))
   );
   position: absolute;
-  z-index: var(--sf-z-index-9);
+  z-index: var(--sf-layer--message);
 }
 
 .sf-tooltip-anchor > :is(

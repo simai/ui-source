@@ -10,11 +10,14 @@
 //   - plate: a pixel of the plate's padding (no glyph), against a pixel of the
 //     toast beside it (no content); the WCAG contrast of the two, which is what
 //     a non-text edge needs (1.4.11, 3:1);
-//   - label: the label's ink (computed, opaque) over the plate pixel (1.4.3).
+//   - label: the label's ink (computed, opaque) over the plate pixel (1.4.3),
+//     at rest, under the pointer and pressed.
 //
-// It reports the numbers; it fails only on a page error or on loads that
-// disagree. The plate's tone rule is the toast's, so the numbers are what the
-// stylesheet gives.
+// It fails on a page error, on loads that disagree, and on a label under
+// 4.5:1 in any state (DEV overlays acceptance 2026-11-13: the dark theme's
+// label read 4.38 hovered and 4.01 pressed on a neutral toast over the
+// C113 plates). The plate's tone rule is the toast's, so the numbers are what
+// the stylesheet gives.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync, writeFileSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -115,10 +118,30 @@ try {
       const points = await tab.evaluate(POINTS, STATUSES);
       const png = (await tab.screenshot({fullPage: true})).toString('base64');
       const read = await tab.evaluate(READ, {png, points});
+      // Hover, then press (released away from the plate), one toast at a time;
+      // with reduced motion, so the plate is read at its state, not on the way.
+      await tab.emulateMedia({reducedMotion: 'reduce'});
+      const states = {};
+      for (const point of points) {
+        if (point.missing) continue;
+        states[point.status] = {};
+        for (const state of ['hover', 'press']) {
+          await tab.mouse.move(point.plate.x + 8, point.plate.y);
+          if (state === 'press') await tab.mouse.down();
+          await tab.waitForTimeout(60);
+          const [now] = await tab.evaluate(POINTS, [point.status]);
+          const shot = (await tab.screenshot({fullPage: true})).toString('base64');
+          const [one] = await tab.evaluate(READ, {png: shot, points: [now]});
+          states[point.status][state] = one.inkRgba ? contrast(over(one.inkRgba, one.plateRgb), one.plateRgb) : null;
+          await tab.mouse.move(1, 1);
+          await tab.mouse.up();
+        }
+      }
       if (errors.length) failures.push({case: `${theme} load ${load}: no page errors`, got: errors});
       loads.push(read.map((one) => one.missing ? one : ({status: one.status, plate: hex(one.plateRgb), toast: hex(one.toastRgb),
         plateToToast: contrast(one.plateRgb, one.toastRgb),
-        labelOnPlate: one.inkRgba ? contrast(over(one.inkRgba, one.plateRgb), one.plateRgb) : null})));
+        labelOnPlate: one.inkRgba ? contrast(over(one.inkRgba, one.plateRgb), one.plateRgb) : null,
+        labelHover: states[one.status].hover, labelPress: states[one.status].press})));
       await tab.close();
     }
     const seen = new Set(loads.map((one) => JSON.stringify(one)));
@@ -131,12 +154,15 @@ try {
 }
 
 for (const row of rows) {
-  if (row.missing) failures.push({case: `${row.theme} ${row.status}: a toast with an action is drawn`, got: row});
+  if (row.missing) { failures.push({case: `${row.theme} ${row.status}: a toast with an action is drawn`, got: row}); continue; }
+  for (const key of ['labelOnPlate', 'labelHover', 'labelPress']) {
+    if (!(row[key] >= 4.5)) failures.push({case: `${row.theme} ${row.status}: ${key} at least 4.5:1`, got: row[key]});
+  }
 }
-console.log('theme  status   plate    toast    plate:toast  label:plate');
+console.log('theme  status   plate    toast    plate:toast  label:plate  hover  press');
 for (const row of rows) {
   if (row.missing) continue;
-  console.log(`${row.theme.padEnd(6)} ${row.status.padEnd(8)} ${row.plate}  ${row.toast}  ${String(row.plateToToast).padStart(6)}       ${String(row.labelOnPlate).padStart(6)}`);
+  console.log(`${row.theme.padEnd(6)} ${row.status.padEnd(8)} ${row.plate}  ${row.toast}  ${String(row.plateToToast).padStart(6)}       ${String(row.labelOnPlate).padStart(6)}  ${String(row.labelHover).padStart(5)}  ${String(row.labelPress).padStart(5)}`);
 }
 if (jsonFile) writeFileSync(jsonFile, `${JSON.stringify(rows, null, 2)}\n`);
 if (failures.length) { console.error(JSON.stringify(failures, null, 2)); process.exit(1); }

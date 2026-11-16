@@ -9,7 +9,7 @@
       "type": "invoke",
       "method": "goToStep",
       "arguments": [
-        2
+        3
       ]
     }
   ],
@@ -20,7 +20,7 @@
     {
       "type": "attribute",
       "name": "current",
-      "value": "2"
+      "value": "3"
     },
     {
       "type": "no-console-error"

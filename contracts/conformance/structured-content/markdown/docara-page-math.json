@@ -1,0 +1,613 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-math",
+  "input": "docara-page-math.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: Как записать математическую формулу в TeX внутри строки или отдельным блоком, с подписью для экранного доступа.\n---",
+                "hash": "sha256:0c6383a8663ee53c08c6be103cababbae92f8a5d1ea6e19e541e8f06f2706d63"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Математическая формула"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Блок показывает формулу, записанную в TeX. Выбирайте его для коротких\nвыражений и самостоятельных формул; длинные выводы лучше разбивать на\nнесколько блоков с пояснениями между ними."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Формула\"}\n```markdown\n:::math {label=\"Теорема Пифагора\"}\na^2 + b^2 = c^2\n:::\n```\n:::",
+                "hash": "sha256:fedc6fdbc44a829e1cbb2dffc411ad07a1ead34143d2edbeca43c34ad7925f3f"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::math {label=\"Площадь круга\"}\nS = \\pi r^2\n:::"
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Внутри — только формула TeX, без ограждающих "
+                        },
+                        {
+                          "type": "text",
+                          "value": "$",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Пустой блок останавливает сборку с ошибкой "
+                        },
+                        {
+                          "type": "text",
+                          "value": "MARKDOWN_MATH_SOURCE_REQUIRED",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m14",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Сборка не разбирает TeX: она сохраняет исходный текст формулы в странице. В\nбраузере формулу рисует библиотека KaTeX. Она входит в пакет Docara и\nподключается только к страницам с формулами, поэтому сеть не нужна."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Отображение"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "display=block",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " показывает формулу отдельной строкой, "
+                  },
+                  {
+                    "type": "text",
+                    "value": "display=inline",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " —\nкомпактно, как часть текста."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Строчная и блочная формулы\"}\n```markdown\n:::math {display=inline label=\"Теорема Пифагора\"}\na^2 + b^2 = c^2\n:::\n\n:::math {display=block label=\"Интеграл от нуля до бесконечности\"}\n\\int_0^\\infty e^{-x}\\,dx = 1\n:::\n```\n:::",
+                "hash": "sha256:b020a3fce8bd7b0fb200276d1bc72ca1eecec564b31e61673089698352256fb2"
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Состояния"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m20",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Без JavaScript"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m21",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Если скрипты выключены, читатель видит исходный текст TeX моноширинным\nшрифтом."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m22",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m29",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m24",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Формула — элемент с ролью "
+                        },
+                        {
+                          "type": "text",
+                          "value": "math",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " и подписью из "
+                        },
+                        {
+                          "type": "text",
+                          "value": "label",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ": программа\nэкранного доступа читает подпись."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m26",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Подпись называет смысл выражения: «Теорема Пифагора», а не «a в квадрате\nплюс b в квадрате»."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m28",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Без "
+                        },
+                        {
+                          "type": "text",
+                          "value": "label",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " подпись общая: «Математическая формула» на русской странице,\n«Mathematical formula» на странице на другом языке. Задавайте свою подпись\nу каждой формулы."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m30",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m31",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m32",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "display",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "inline",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "block",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "block",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "block",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — формула отдельной строкой, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "inline",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — внутри текста."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "label",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "строка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Mathematical formula",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Описание формулы для программ экранного доступа."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m33",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m34",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m39",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m36",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../diagram/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Диаграмма"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m38",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../code/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Код"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[12]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[19]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[21]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

@@ -28,8 +28,12 @@ test('Checkbox geometry, colour and motion use Framework tokens', async () => {
   const css = await source('src/component/checkbox/scss/_css__checkbox.scss');
   assert.match(css, /--sf-checkbox-box--border: var\(--sf-px\) solid/);
   assert.match(css, /var\(--sf-radius--ui\)/);
-  assert.match(css, /transition-duration: var\(--sf-duration-fast\)/);
-  assert.match(css, /transition-timing-function: var\(--sf-animation\)/);
+  // The switch's clock (C66, C121): 200 ms on the move curve, one variable
+  // for the box and the tick.
+  assert.match(css, /--sf-checkbox--duration: calc\(var\(--sf-duration-fast\) \* 2\)/);
+  assert.match(css, /--sf-checkbox--easing: var\(--sf-ease-move\)/);
+  assert.match(css, /transition-duration: var\(--sf-checkbox--duration\)/);
+  assert.match(css, /transition-timing-function: var\(--sf-checkbox--easing\)/);
   assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(css, /(?:^|[\s:,])(#[0-9a-f]{3,8}|rgba?\(|[1-9][0-9.]*px|[0-9.]+rem)\b/im);
 });

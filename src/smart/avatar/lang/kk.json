@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "aria-label": "Аватар",
+    "status-online": "желіде",
+    "status-away": "уақытша жоқ",
+    "status-offline": "желіде емес"
+  }
+}

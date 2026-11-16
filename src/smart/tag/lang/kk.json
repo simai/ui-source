@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "remove": "Жою",
+    "more": {
+      "one": "Тағы {n}: {names}",
+      "other": "Тағы {n}: {names}"
+    },
+    "position": "{label}, {total} ішінен {position}, Delete — алып тастау"
+  }
+}

@@ -18,6 +18,7 @@
       "content.document": null,
       "content.figure": "media",
       "content.file": "media",
+      "content.foreign": null,
       "content.grid": "layout",
       "content.heading": "text",
       "content.html": "media",
@@ -519,7 +520,7 @@
             "type": "string"
           },
           "appearance": {
-            "default": "main",
+            "default": "tonal",
             "enum": [
               "main",
               "tonal",
@@ -531,10 +532,6 @@
             "default": "",
             "type": "string"
           },
-          "compact": {
-            "default": false,
-            "type": "boolean"
-          },
           "icon": {
             "default": "",
             "type": "string"
@@ -542,6 +539,10 @@
           "icon-end": {
             "default": "",
             "type": "string"
+          },
+          "icon-only": {
+            "default": false,
+            "type": "boolean"
           },
           "icon-position": {
             "default": "start",
@@ -561,7 +562,8 @@
               "",
               "1/2",
               "1",
-              "2"
+              "2",
+              "text"
             ],
             "type": "string"
           },
@@ -609,7 +611,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.badge",
-      "version": "1.4.0"
+      "version": "1.6.1"
     },
     "sf-button": {
       "inputs": {
@@ -621,8 +623,7 @@
               "default",
               "tonal",
               "outline",
-              "ghost",
-              "surface"
+              "ghost"
             ],
             "type": "string"
           },
@@ -719,7 +720,6 @@
             "default": "primary",
             "enum": [
               "primary",
-              "secondary",
               "on-surface",
               "on-surface-variant"
             ],
@@ -764,6 +764,10 @@
             ],
             "type": "string"
           },
+          "split": {
+            "default": false,
+            "type": "boolean"
+          },
           "status": {
             "default": "",
             "enum": [
@@ -807,7 +811,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.13.0"
+      "version": "1.16.1"
     },
     "sf-button-icon": {
       "inputs": {
@@ -848,6 +852,10 @@
             "default": false,
             "type": "boolean"
           },
+          "download": {
+            "default": "",
+            "type": "string"
+          },
           "filled": {
             "default": false,
             "type": "boolean"
@@ -860,6 +868,10 @@
               "high",
               "highest"
             ],
+            "type": "string"
+          },
+          "href": {
+            "default": "",
             "type": "string"
           },
           "icon": {
@@ -903,6 +915,10 @@
               "square",
               "rounded"
             ],
+            "type": "string"
+          },
+          "rel": {
+            "default": "",
             "type": "string"
           },
           "scheme": {
@@ -953,7 +969,15 @@
             ],
             "type": "string"
           },
+          "target": {
+            "default": "",
+            "type": "string"
+          },
           "theme-cycle": {
+            "default": "",
+            "type": "string"
+          },
+          "tooltip": {
             "default": "",
             "type": "string"
           },
@@ -966,7 +990,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.8.3"
+      "version": "1.11.0"
     },
     "sf-checkbox": {
       "inputs": {
@@ -979,6 +1003,10 @@
           "checked": {
             "default": false,
             "type": "boolean"
+          },
+          "controls": {
+            "default": "",
+            "type": "string"
           },
           "description": {
             "default": "",
@@ -1034,7 +1062,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.checkbox",
-      "version": "1.1.7"
+      "version": "1.5.0"
     },
     "sf-divider": {
       "component": "component.content-divider",
@@ -1078,6 +1106,14 @@
             "default": false,
             "type": "boolean"
           },
+          "error-message": {
+            "default": "",
+            "type": "string"
+          },
+          "help": {
+            "default": "",
+            "type": "string"
+          },
           "inherited-text": {
             "default": "",
             "type": "string"
@@ -1085,6 +1121,10 @@
           "inherited-value": {
             "default": "",
             "type": "string"
+          },
+          "invalid": {
+            "default": false,
+            "type": "boolean"
           },
           "label": {
             "default": "",
@@ -1157,7 +1197,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.dropdown",
-      "version": "1.8.1"
+      "version": "1.16.0"
     },
     "sf-icon": {
       "inputs": {
@@ -1198,6 +1238,15 @@
             "default": "",
             "type": "string"
           },
+          "mirror": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "on",
+              "off"
+            ],
+            "type": "string"
+          },
           "optical-size": {
             "default": 24,
             "maximum": 48,
@@ -1225,9 +1274,7 @@
             "default": "",
             "enum": [
               "",
-              "outlined",
-              "rounded",
-              "sharp"
+              "outlined"
             ],
             "type": "string"
           },
@@ -1242,7 +1289,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.icon",
-      "version": "1.1.7"
+      "version": "1.3.1"
     },
     "sf-input": {
       "inputs": {
@@ -1265,6 +1312,14 @@
             "default": "",
             "type": "string"
           },
+          "clearable": {
+            "default": false,
+            "type": "boolean"
+          },
+          "counter": {
+            "default": false,
+            "type": "boolean"
+          },
           "default-value": {
             "default": "",
             "type": "string"
@@ -1274,6 +1329,10 @@
             "type": "boolean"
           },
           "error-message": {
+            "default": "",
+            "type": "string"
+          },
+          "help": {
             "default": "",
             "type": "string"
           },
@@ -1426,6 +1485,10 @@
             "default": "",
             "type": "string"
           },
+          "text-start": {
+            "default": "",
+            "type": "string"
+          },
           "value": {
             "default": "",
             "type": "string"
@@ -1435,7 +1498,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input",
-      "version": "1.7.1"
+      "version": "1.13.0"
     },
     "sf-input-textarea": {
       "inputs": {
@@ -1459,18 +1522,26 @@
             "type": "string"
           },
           "auto-grow": {
-            "default": false,
+            "default": true,
             "type": "boolean"
           },
           "autocomplete": {
             "default": "",
             "type": "string"
           },
+          "counter": {
+            "default": false,
+            "type": "boolean"
+          },
           "disabled": {
             "default": false,
             "type": "boolean"
           },
           "error-message": {
+            "default": "",
+            "type": "string"
+          },
+          "help": {
             "default": "",
             "type": "string"
           },
@@ -1522,13 +1593,14 @@
             "type": "string"
           },
           "max-rows": {
+            "default": 10,
             "type": "number"
           },
           "maxlength": {
             "type": "number"
           },
           "min-rows": {
-            "default": 1,
+            "default": 3,
             "type": "number"
           },
           "minlength": {
@@ -1554,6 +1626,10 @@
             "default": "",
             "type": "string"
           },
+          "resize": {
+            "default": false,
+            "type": "boolean"
+          },
           "rows": {
             "default": 3,
             "type": "number"
@@ -1561,15 +1637,25 @@
           "size": {
             "default": "1",
             "enum": [
+              "1/3",
               "1/2",
               "1",
-              "2"
+              "2",
+              "3"
             ],
             "type": "string"
           },
           "spell-check": {
             "default": true,
             "type": "boolean"
+          },
+          "text": {
+            "default": "plain",
+            "enum": [
+              "plain",
+              "code"
+            ],
+            "type": "string"
           },
           "value": {
             "default": "",
@@ -1588,7 +1674,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.input-textarea",
-      "version": "1.7.5"
+      "version": "1.12.1"
     },
     "sf-switch": {
       "inputs": {
@@ -1656,7 +1742,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.switch",
-      "version": "1.4.0"
+      "version": "1.7.1"
     }
   },
   "parameter_sets": {

@@ -12,5 +12,6 @@ SF.RuleLoader['cl-confirm-change'] = {
     { name: 'cl-button' },
     { name: 'cl-icon' },
     { name: 'cl-change' },
+    { name: 'cl-time' },
   ],
 };

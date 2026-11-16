@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 
 /* A card frame is a place (C16), as sf-card is: its colour for a cut-out, its
    dim ink and the theme's roles back, so the list's badges and buttons on a
@@ -356,7 +357,7 @@ a.sf-list-attention-object:focus-visible {
 }
 
 .sf-list-attention-group-toggle:hover {
-  --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   background: var(--sf-surface-container);
 }
 
@@ -424,7 +425,7 @@ a.sf-list-attention-object:focus-visible {
    text's start; the «⋯» stays at the row's end, on the title's line. The
    foot stacks, every line on the text edge: the link's own inline padding
    is taken back so its text, not its box, starts there. */
-@container (max-width: 30rem) {
+@container (max-width: #{mq.container-step(g5)}) {
   .sf-list-attention-item {
     row-gap: var(--sf-space-1\/3);
     padding-block: var(--sf-space-1\/2);
@@ -557,7 +558,7 @@ a.sf-list-attention-object:focus-visible {
 
 /* Group mode below 40rem: the affected count moves into the meta line, the
    action under the text. */
-@container (max-width: 40rem) {
+@container (max-width: #{mq.container-step(h0)}) {
   .sf-list-attention--group .sf-list-attention-affected,
   .sf-list-attention--group .sf-list-attention-affected > * {
     display: none;

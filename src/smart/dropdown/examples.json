@@ -180,6 +180,7 @@
           "  <form id=\"f\"><div id=\"area\"><sf-dropdown id=\"dd\" name=\"city\" label=\"Город\" search=\"false\"><sf-list-item value=\"kazan\" text=\"Казань\"></sf-list-item><sf-list-item value=\"moscow\" text=\"Москва\"></sf-list-item><sf-list-item value=\"spb\" text=\"Петербург\"></sf-list-item></sf-dropdown></div><button id=\"after\" type=\"button\">Дальше</button></form>",
           "  <sf-dropdown id=\"dd-old\" label=\"Старое имя\" type=\"filled\"><sf-list-item value=\"a\" text=\"Альфа\"></sf-list-item></sf-dropdown>",
           "  <sf-dropdown id=\"dd-inh\" name=\"town\" label=\"Наследуемый город\" search=\"false\" value=\"moscow\" inherited-value=\"kazan\"><sf-list-item value=\"kazan\" text=\"Казань\"></sf-list-item><sf-list-item value=\"moscow\" text=\"Москва\"></sf-list-item></sf-dropdown>",
+          "  <form id=\"freq\" onsubmit=\"window.__reqSubmitted = true; return false;\"><sf-dropdown id=\"dd-req\" name=\"town2\" label=\"Обязательный город\" required search=\"false\"><sf-list-item value=\"kazan\" text=\"Казань\"></sf-list-item><sf-list-item value=\"moscow\" text=\"Москва\"></sf-list-item></sf-dropdown><button id=\"req-go\" type=\"submit\">Отправить</button></form>",
           "</main>"
         ]
       },
@@ -418,6 +419,97 @@
                   }
                 ]
               }
+            }
+          ]
+        },
+        {
+          "id": "p10-required-stops-submit",
+          "title": "a required field left empty stops the submit: the browser focuses its trigger, the ring shows after the mouse click, «Выберите вариант» is under the field and named on the trigger (owner C55)",
+          "covers": "form.required, form.validity value-missing, settings.invalid, lang runtime value-missing (1.9.0)",
+          "steps": [
+            {
+              "check": "document.getElementById('dd-req').validity.valueMissing === true && document.getElementById('dd-req').form === document.getElementById('freq')"
+            },
+            {
+              "user": "click:#req-go",
+              "wait": 400,
+              "check": "(() => { const b = document.querySelector('#dd-req .sf-dropdown-field > button'); const m = document.querySelector('#dd-req .sf-dropdown-message'); const field = document.querySelector('#dd-req .sf-dropdown-field'); return !window.__reqSubmitted && document.activeElement === b && b.hasAttribute('data-sf-focus-ring') && getComputedStyle(field).outlineStyle !== 'none' && b.getAttribute('aria-invalid') === 'true' && m?.textContent.trim() === 'Выберите вариант' && (b.getAttribute('aria-describedby') || '').split(' ').includes(m.id) && b.getAttribute('aria-errormessage') === m.id && document.querySelector('#dd-req .sf-dropdown').classList.contains('error'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p11-choice-clears-the-error",
+          "title": "a person's choice clears the shown error and the field is valid",
+          "covers": "C55 the error clears on choosing a value",
+          "steps": [
+            {
+              "user": "click:#req-go",
+              "wait": 300
+            },
+            {
+              "script": "(document.getElementById('dd-req').selectValue('moscow'), true)",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('dd-req'); const b = document.querySelector('#dd-req .sf-dropdown-field > button'); return el.validity.valid && !document.querySelector('#dd-req .sf-dropdown-message') && !b.hasAttribute('aria-invalid') && !b.hasAttribute('aria-errormessage') && !document.querySelector('#dd-req .sf-dropdown').classList.contains('error') && el.value === 'moscow'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p12-set-error",
+          "title": "set-error shows the page's message and a custom error; an empty message clears both; a choice clears it too",
+          "covers": "actions.set-error, form.validity custom-error, settings.error-message",
+          "steps": [
+            {
+              "script": "(document.getElementById('dd-req').value = 'kazan', true)",
+              "wait": 120
+            },
+            {
+              "action": {
+                "name": "set-error",
+                "with": {
+                  "message": "Нет доставки"
+                }
+              },
+              "target": "#dd-req",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('dd-req'); return el.validity.customError && el.invalid && document.querySelector('#dd-req .sf-dropdown-message')?.textContent.trim() === 'Нет доставки' && document.querySelector('#dd-req .sf-dropdown-field > button').getAttribute('aria-invalid') === 'true'; })()"
+            },
+            {
+              "action": {
+                "name": "set-error",
+                "with": {
+                  "message": ""
+                }
+              },
+              "target": "#dd-req",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('dd-req'); return el.validity.valid && !el.invalid && !document.querySelector('#dd-req .sf-dropdown-message'); })()"
+            },
+            {
+              "action": {
+                "name": "set-error",
+                "with": {
+                  "message": "Нет доставки"
+                }
+              },
+              "target": "#dd-req",
+              "wait": 120
+            },
+            {
+              "script": "(document.getElementById('dd-req').selectValue('moscow'), true)",
+              "wait": 200,
+              "check": "(() => { const el = document.getElementById('dd-req'); return el.validity.valid && !el.invalid && !el.hasAttribute('error-message') && !document.querySelector('#dd-req .sf-dropdown-message'); })()"
+            }
+          ]
+        },
+        {
+          "id": "p13-host-submits",
+          "title": "the host submits its value under its name; the hidden input has no name",
+          "covers": "form.submits, §17.1 item 6",
+          "steps": [
+            {
+              "script": "(document.getElementById('dd-req').selectValue('kazan'), true)",
+              "wait": 150,
+              "check": "(() => { const fd = new FormData(document.getElementById('freq')); return fd.getAll('town2').length === 1 && fd.get('town2') === 'kazan' && !document.querySelector('#dd-req .sf-dropdown-hidden-input').hasAttribute('name') && document.getElementById('freq').elements.town2 === document.getElementById('dd-req'); })()"
             }
           ]
         }

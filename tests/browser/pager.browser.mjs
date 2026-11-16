@@ -5,8 +5,9 @@
 // sf-pager on the built bytes, at a desktop and a phone width:
 // - every appearance draws (cards, row, steps, course, counter) and sits on
 //   the ladder: the buttons are as tall as an sf-button / sf-button-icon of
-//   the same size, a picture is the text line it stands on, the parts of a
-//   row share one centre line, a missing card keeps its column;
+//   the same size, a picture is the text line it stands on (a row's on its
+//   whole title's first line), a missing card keeps its column; on the phone
+//   the cards and the row's links stand one under the other (C97 (7));
 // - Next and Back move (sf-pager-navigate, then sf-pager-change), a page that
 //   cancels the request keeps the step, the last step says «Готово» and
 //   finishes the walk, focus never falls to the page;
@@ -90,7 +91,7 @@ const measure = (tab) => tab.evaluate(() => {
   const box = (node) => {
     if (!node) return null;
     const r = node.getBoundingClientRect();
-    return {x: r.x, y: r.y, w: r.width, h: r.height, cy: r.y + r.height / 2, right: r.right};
+    return {x: r.x, y: r.y, w: r.width, h: r.height, cy: r.y + r.height / 2, right: r.right, bottom: r.bottom};
   };
   const q = (s) => document.querySelector(s);
   const all = (s) => Array.from(document.querySelectorAll(s));
@@ -156,7 +157,12 @@ try {
     if (!m.cards.prev || !m.cards.next) at('cards: a link is missing');
     else {
       if (!near(m.cards.prev.h, m.cards.next.h)) at(`cards: the two cards are ${m.cards.prev.h} and ${m.cards.next.h} tall`);
-      if (!near(m.cards.prev.y, m.cards.next.y)) at('cards: the two cards do not stand on one line');
+      // Owner decision C97 (7): on the phone the cards stand one under the
+      // other, each the row's width; on a wider screen side by side.
+      if (width === 375) {
+        if (m.cards.prev.bottom > m.cards.next.y + 0.5) at('cards: on the phone the cards do not stand one under the other (C97 (7))');
+        if (!near(m.cards.prev.w, m.cards.nav.w) || !near(m.cards.next.w, m.cards.nav.w)) at('cards: on the phone a card is not the row\'s width');
+      } else if (!near(m.cards.prev.y, m.cards.next.y)) at('cards: the two cards do not stand on one line');
       if (!near(m.cards.next.right, m.cards.nav.right)) at('cards: the next card does not end at the inline end');
       if (!near(m.cards.icon?.h, m.cards.direction)) at(`cards: the direction picture is ${m.cards.icon?.h}px on a ${m.cards.direction}px line`);
     }
@@ -165,12 +171,24 @@ try {
     // row
     if (!m.row.prev || !m.row.next) at('row: a link is missing');
     else {
-      if (!near(m.row.prev.x, m.row.nav.x) || !near(m.row.next.right, m.row.nav.right)) at('row: the links do not hold the two ends');
       if (m.row.icons.some((icon) => !near(icon.h, m.row.line))) at(`row: a picture is not the ${m.row.line}px line: ${m.row.icons.map((icon) => icon.h)}`);
-      if (!near(m.row.icons[0].cy, m.row.titles[0].cy) || !near(m.row.titles[0].cy, m.row.titles[1].cy)) at('row: pictures and titles are not on one centre line');
-      if (m.row.prev.right > m.row.next.x) at('row: the links overlap');
+      // Owner decision C97 (7): the row shows the whole titles, never cut, and
+      // on the phone its links stand one under the other (the earlier rule cut
+      // the titles with an ellipsis at 375 and kept the two ends on one line).
+      if (m.row.truncated.some(Boolean)) at('row: a title is cut (C97 (7): the whole title)');
+      if (width === 375) {
+        if (m.row.prev.bottom > m.row.next.y + 0.5) at('row: on the phone the links do not stand one under the other (C97 (7))');
+        if (!near(m.row.prev.x, m.row.nav.x) || !near(m.row.next.right, m.row.nav.right)) at('row: the stacked links do not hold the row\'s width');
+      } else {
+        if (!near(m.row.prev.x, m.row.nav.x) || !near(m.row.next.right, m.row.nav.right)) at('row: the links do not hold the two ends');
+        if (!near(m.row.titles[0].y, m.row.titles[1].y)) at('row: the two titles do not start on one line');
+        if (m.row.prev.right > m.row.next.x) at('row: the links overlap');
+      }
+      // A whole title may take two lines (C97 (7)); its picture is the line
+      // and stands on the title's first line (it was the centre of a cut
+      // one-line title).
+      if (m.row.icons.some((icon, index) => !near(icon.y, m.row.titles[index]?.y))) at('row: a picture does not stand on its title\'s first line');
     }
-    if (width === 375 && !m.row.truncated.every(Boolean)) at('row: long titles are not cut with an ellipsis at 375');
     // steps
     if (!near(m.steps.back?.h, m.ref.b1?.h) || !near(m.steps.forward?.h, m.ref.b1?.h)) at(`steps: buttons ${m.steps.back?.h}/${m.steps.forward?.h}, an sf-button of size 1 is ${m.ref.b1?.h}`);
     if (!near(m.steps.back?.cy, m.steps.middle?.cy) || !near(m.steps.forward?.cy, m.steps.middle?.cy)) at('steps: Back, the place and Next are not on one centre line');

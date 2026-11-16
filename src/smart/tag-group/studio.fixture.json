@@ -1,0 +1,41 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.tag-group",
+  "title": "tag group reference",
+  "summary": "Deterministic reference fixture for sf-tag-group.",
+  "locale": "ru",
+  "props": {
+    "aria-label": "Города"
+  },
+  "children": [
+    {
+      "element": "sf-tag",
+      "props": {
+        "kind": "default",
+        "closable": true,
+        "text": "Москва"
+      },
+      "children": []
+    },
+    {
+      "element": "sf-tag",
+      "props": {
+        "kind": "default",
+        "closable": true,
+        "text": "Казань"
+      },
+      "children": []
+    },
+    {
+      "element": "sf-tag",
+      "props": {
+        "kind": "default",
+        "closable": true,
+        "text": "Тверь"
+      },
+      "children": []
+    }
+  ],
+  "state": "default"
+}

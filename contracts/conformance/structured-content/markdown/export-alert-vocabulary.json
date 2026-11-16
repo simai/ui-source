@@ -1,0 +1,191 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown-export",
+  "schema_version": 1,
+  "id": "export-alert-vocabulary",
+  "summary": "Every status and appearance in Docara's words: neutral is clear, error is danger.",
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "w0",
+              "type": "content.alert",
+              "props": {
+                "appearance": "default"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "neutral"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "b0",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Body."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "w1",
+              "type": "content.alert",
+              "props": {
+                "status": "info",
+                "appearance": "outlined"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "info"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "b1",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Body."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "w2",
+              "type": "content.alert",
+              "props": {
+                "status": "success",
+                "appearance": "flat"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "success"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "b2",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Body."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "w3",
+              "type": "content.alert",
+              "props": {
+                "status": "warning",
+                "appearance": "default"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "warning"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "b3",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Body."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "w4",
+              "type": "content.alert",
+              "props": {
+                "status": "error",
+                "appearance": "outlined"
+              },
+              "data": {
+                "title": [
+                  {
+                    "type": "text",
+                    "value": "error"
+                  }
+                ]
+              },
+              "slots": {
+                "default": [
+                  {
+                    "id": "b4",
+                    "type": "content.paragraph",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Body."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "markdown": ":::alert {type=clear variant=default}\n#### neutral\n\nBody.\n:::\n\n:::alert {type=info variant=outlined}\n#### info\n\nBody.\n:::\n\n:::alert {type=success variant=flat}\n#### success\n\nBody.\n:::\n\n:::alert {type=warning variant=default}\n#### warning\n\nBody.\n:::\n\n:::alert {type=danger variant=outlined}\n#### error\n\nBody.\n:::\n",
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

@@ -16,6 +16,22 @@
       }
     },
     {
+      "name": "palette",
+      "title": "Цвет палитры",
+      "settings": {
+        "label": "Цвет метки",
+        "name": "label-color",
+        "value": "blue",
+        "custom": false
+      },
+      "expect": {
+        "values": {
+          "value": "blue",
+          "effective-value": "blue"
+        }
+      }
+    },
+    {
       "name": "inherited",
       "title": "Цвет наследуется",
       "settings": {
@@ -38,7 +54,7 @@
       "title": "Цвета продукта",
       "settings": {
         "label": "Цвет метки",
-        "swatches": "#1f6feb|Синий, #d1242f|Красный, #1a7f37|Зелёный"
+        "swatches": "#1f6feb|Фирменный синий, red|Тревога, #1a7f37|Зелёный"
       },
       "expect": {
         "values": {
@@ -57,6 +73,20 @@
       "expect": {
         "values": {
           "value": "#1a7f37"
+        }
+      }
+    },
+    {
+      "name": "alpha",
+      "title": "С прозрачностью",
+      "settings": {
+        "label": "Цвет свечения",
+        "value": "#1f6feb80",
+        "alpha": true
+      },
+      "expect": {
+        "values": {
+          "value": "#1f6feb80"
         }
       }
     },
@@ -86,13 +116,27 @@
           "value": ""
         }
       }
+    },
+    {
+      "name": "brand",
+      "title": "Фирменный цвет",
+      "settings": {
+        "variant": "brand",
+        "label": "Фирменный цвет",
+        "swatches": "#e8a33d|Логотип"
+      },
+      "expect": {
+        "values": {
+          "value": ""
+        }
+      }
     }
   ],
   "pages": [
     {
       "name": "conformance",
       "x-probe": {
-        "probe": "sf-color against component.json (standard simai.smart-component 1.3.8 §4.1, §4.3, §4.4, §8, §16.20, §17.1, §20.2)",
+        "probe": "sf-input-color against component.json (standard simai.smart-component 1.3.8 §4.1, §4.3, §4.4, §8, §16.20, §17.1, §20.2; owner decision C83: the window)",
         "component": "sf-input-color",
         "page": {
           "lang": "ru",
@@ -108,9 +152,14 @@
         "checks": [
           {
             "id": "swatch-press-commits",
-            "covers": "events.input, events.change {value, name}, form.submits",
+            "covers": "events.input, events.change {value, name}, form.submits; a press on a swatch of the window commits and closes it",
             "field": "<sf-input-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-input-color>",
-            "user": "click:.sf-color-preset[aria-label='Красный']",
+            "given": [
+              {
+                "user": "click:.sf-color-trigger"
+              }
+            ],
+            "user": "click:.sf-color-option[aria-label='Красный']",
             "expect": {
               "value": "#d1242f",
               "events": [
@@ -130,17 +179,21 @@
               },
               "evaluate": {
                 "el.querySelector('input[type=hidden]')": null,
-                "[...form.elements].includes(el)": true
+                "[...form.elements].includes(el)": true,
+                "el.querySelector('.sf-color-window')": null
               }
             }
           },
           {
             "id": "enter-on-a-swatch-selects",
-            "covers": "keyboard.host Enter select",
+            "covers": "keyboard.window Enter select",
             "field": "<sf-input-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-input-color>",
             "given": [
               {
-                "user": "focus:.sf-color-preset[aria-label='Синий']"
+                "user": "click:.sf-color-trigger"
+              },
+              {
+                "user": "focus:.sf-color-option[aria-label='Синий']"
               }
             ],
             "user": "keyboard:Enter",
@@ -153,11 +206,14 @@
           },
           {
             "id": "space-on-a-swatch-selects",
-            "covers": "keyboard.host Space select",
+            "covers": "keyboard.window Space select",
             "field": "<sf-input-color name=\"accent\" label=\"Цвет\" swatches=\"#1f6feb|Синий, #d1242f|Красный\"></sf-input-color>",
             "given": [
               {
-                "user": "focus:.sf-color-preset[aria-label='Красный']"
+                "user": "click:.sf-color-trigger"
+              },
+              {
+                "user": "focus:.sf-color-option[aria-label='Красный']"
               }
             ],
             "user": "keyboard:Space",
@@ -309,7 +365,10 @@
             "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"#1a7f37\" swatches=\"#d1242f|Красный\"></sf-input-color>",
             "given": [
               {
-                "user": "click:.sf-color-preset"
+                "user": "click:.sf-color-trigger"
+              },
+              {
+                "user": "click:.sf-color-option[aria-label='Красный']"
               }
             ],
             "form": "reset",
@@ -333,6 +392,162 @@
                   "customError": true,
                   "valid": false
                 }
+              }
+            }
+          },
+          {
+            "id": "enter-on-the-field-opens-the-window",
+            "covers": "keyboard.host Enter open: the trigger opens the window, aria-expanded true, focus inside on the chosen swatch",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"blue\"></sf-input-color>",
+            "given": [
+              {
+                "user": "focus:.sf-color-trigger"
+              }
+            ],
+            "user": "keyboard:Enter",
+            "expect": {
+              "evaluate": {
+                "Boolean(el.querySelector('.sf-color-window'))": true,
+                "el.querySelector('.sf-color-trigger').getAttribute('aria-expanded')": "true"
+              },
+              "focus": ".sf-color-option[aria-checked='true']",
+              "events": []
+            }
+          },
+          {
+            "id": "space-on-the-field-opens-the-window",
+            "covers": "keyboard.host Space open",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\"></sf-input-color>",
+            "given": [
+              {
+                "user": "focus:.sf-color-trigger"
+              }
+            ],
+            "user": "keyboard:Space",
+            "expect": {
+              "evaluate": {
+                "Boolean(el.querySelector('.sf-color-window'))": true
+              },
+              "events": []
+            }
+          },
+          {
+            "id": "escape-closes-the-window",
+            "covers": "keyboard.window Escape close: the window closes and focus returns to the trigger, nothing changes",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"blue\"></sf-input-color>",
+            "given": [
+              {
+                "user": "click:.sf-color-trigger"
+              }
+            ],
+            "user": "keyboard:Escape",
+            "expect": {
+              "value": "blue",
+              "events": [],
+              "evaluate": {
+                "el.querySelector('.sf-color-window')": null
+              },
+              "focus": ".sf-color-trigger"
+            }
+          },
+          {
+            "id": "arrow-moves-the-palette-choice",
+            "covers": "keyboard.window ArrowRight move: the palette is a radio group, an arrow chooses the next hue and keeps the window open; the value is the hue's name (C83)",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"blue\"></sf-input-color>",
+            "given": [
+              {
+                "user": "click:.sf-color-trigger"
+              }
+            ],
+            "user": "keyboard:ArrowRight",
+            "expect": {
+              "value": "indigo",
+              "events": [
+                {
+                  "type": "input",
+                  "value": "indigo",
+                  "name": "accent"
+                },
+                {
+                  "type": "change",
+                  "value": "indigo",
+                  "name": "accent"
+                }
+              ],
+              "formData": {
+                "accent": "indigo"
+              },
+              "evaluate": {
+                "Boolean(el.querySelector('.sf-color-window'))": true
+              }
+            }
+          },
+          {
+            "id": "arrows-walk-the-grid",
+            "covers": "keyboard.window ArrowLeft, ArrowDown, ArrowUp, Home, End move: eight columns, the ends clamp",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" value=\"blue\"></sf-input-color>",
+            "given": [
+              {
+                "user": "click:.sf-color-trigger"
+              }
+            ],
+            "user": [
+              "keyboard:ArrowLeft",
+              "keyboard:ArrowDown",
+              "keyboard:ArrowUp",
+              "keyboard:Home",
+              "keyboard:End"
+            ],
+            "expect": {
+              "value": "gray"
+            }
+          },
+          {
+            "id": "palette-name-from-code",
+            "covers": "values.value: a palette name is stored as written in every language, lowercase",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\"></sf-input-color>",
+            "property": {
+              "name": "value",
+              "value": "Blue"
+            },
+            "expect": {
+              "value": "blue",
+              "events": [],
+              "formData": {
+                "accent": "blue"
+              },
+              "texts": {
+                ".sf-color-text": "Синий"
+              }
+            }
+          },
+          {
+            "id": "alpha-off-drops-the-alpha",
+            "covers": "settings.alpha: without alpha a translucent code keeps its colour",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\"></sf-input-color>",
+            "property": {
+              "name": "value",
+              "value": "#1f6feb80"
+            },
+            "expect": {
+              "value": "#1f6feb",
+              "formData": {
+                "accent": "#1f6feb"
+              }
+            }
+          },
+          {
+            "id": "alpha-on-keeps-the-alpha",
+            "covers": "settings.alpha: with alpha the value may be #rrggbbaa, the swatch is split (C86)",
+            "field": "<sf-input-color name=\"accent\" label=\"Цвет\" alpha></sf-input-color>",
+            "property": {
+              "name": "value",
+              "value": "#1F6FEB80"
+            },
+            "expect": {
+              "value": "#1f6feb80",
+              "evaluate": {
+                "el.querySelector('.sf-color-chip').hasAttribute('data-alpha')": true
               }
             }
           }

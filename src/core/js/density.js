@@ -1,14 +1,15 @@
 // Density (owner decision C22, 2026-11-09). data-sf-density="compact" on the
 // root or on a container moves every component one ladder step down; the CSS
 // does it (core/scss/_sf_css__density.scss): each step variable holds the step
-// below, and an element with an explicit size takes the normal ladder back.
+// below. An explicit size is a step on the region's ladder (owner decision
+// C79, 2026-11-12, changing C22): it comes down with the region, and only
+// data-sf-density="normal" takes the normal ladder back.
 //
-// "Explicit" is a size the page gave. A size a component's template gives an
-// element it draws (sf-input's clear button, a pager's buttons, a submenu) is
-// relative to the component's own size: under a compact sf-input its button
-// has to come down with it, not stand at the normal ladder. Those are marked
-// data-sf-size-relative here, once the component has drawn; the CSS leaves
-// them in the region's ladder.
+// A size a component's template gives an element it draws (sf-input's clear
+// button, a pager's buttons, a submenu) is relative to the component's own
+// size; those are still marked data-sf-size-relative once the component has
+// drawn. Since C79 the density CSS treats both alike; the mark stays a
+// published runtime mark (host-runtime-marks) for hosts that read it.
 //
 // What a component holds of the page's own (captured slot content, children
 // left in place) keeps its size explicit. The store is on the shared global:
@@ -80,12 +81,44 @@ export function followDensity(element, from) {
   return element;
 }
 
-// The density an element stands in: the nearest region's, or "normal" under an
-// explicit size (where the ladder is the normal one again); null outside any.
+// The density an element stands in: the nearest region's (an explicit size
+// follows its region since C79); null outside any.
 export function densityOf(from) {
   for (let node = from; node?.nodeType === 1; node = node.parentElement) {
     if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
-    if (node.hasAttribute('size') && !node.hasAttribute(RELATIVE) && !node.hasAttribute('data-sf-size-scale') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
   }
   return null;
+}
+
+// The size step of the control a popup opens from (owner remark 2026-11-15:
+// the row menu of a table of size 1 opened at 1/2). A popup a component
+// builds outside itself -- a menu on <body> or in the open dialog -- stood on
+// the default step whatever opened it. The step is the first size written
+// from the opener up: the opener's own (a row's «⋯», the native button an
+// sf-button draws), else its component's, else the Smart component that
+// holds it (sf-view-table size="1"). A size a template gave a part it draws
+// (data-sf-size-relative) follows its host, so the walk goes on past it. It
+// ends on the default step (null) at the second custom element without a
+// size: the opener's own component may stand on its default, the host
+// holding it decides.
+export function sizeOf(from) {
+  let own = true;
+  for (let node = from; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute('size')) {
+      if (!node.hasAttribute(RELATIVE)) return node.getAttribute('size');
+      continue;
+    }
+    if (!node.localName.includes('-')) continue;
+    if (!own) return null;
+    own = false;
+  }
+  return null;
+}
+
+// A size step as a number of the ladder ("1/2" is 0.5, "2" is 2); NaN for
+// anything else.
+export function sizeStep(size) {
+  const [top, bottom = '1'] = String(size ?? '').trim().split('/');
+  const step = Number(top) / Number(bottom);
+  return top !== '' && Number.isFinite(step) && step > 0 ? step : Number.NaN;
 }

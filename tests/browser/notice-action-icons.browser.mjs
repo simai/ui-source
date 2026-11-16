@@ -14,7 +14,9 @@
 //     place, a neutral filled notice moves --sf-on-surface-variant to its
 //     container's): the button's own icon role, never the status tone;
 //   - the notice's own icon still takes its status role and its cross stays
-//     the notice's text ink (the notice-ink probe holds the full table);
+//     the translucent on-surface ink at 64 (owner decision C112: #000000a3
+//     light, #ffffffa3 dark), never the status tone or the solid text ink
+//     (the notice-ink probe holds the full table, hover and press included);
 //   - the console is clean and the three loads agree.
 //
 // --report prints the colours and exits 0 whatever they say.
@@ -214,7 +216,8 @@ try {
         const place = notice.twin;
         if (!notice.own || notice.own === notice.text) failures.push(`${label}-${theme} ${key}: own icon ${notice.own} is not the status tone`);
         if (notice.own && notice.own !== notice.tone) failures.push(`${label}-${theme} ${key}: own icon ${notice.own}, want ${notice.tone}`);
-        if (notice.cross !== notice.text) failures.push(`${label}-${theme} ${key}: cross ${notice.cross} is not the text's ink ${notice.text}`);
+        const ink = theme === 'dark' ? '#ffffffa3' : '#000000a3';
+        if (notice.cross !== ink) failures.push(`${label}-${theme} ${key}: cross ${notice.cross}, want the ink 64 ${ink} (C112)`);
         for (const kind of KINDS) {
           const got = notice.buttons[kind];
           const want = place[kind];

@@ -147,6 +147,51 @@
       }
     },
     {
+      "name": "inbox",
+      "title": "Письма: время в конце строки, непрочитанные",
+      "settings": {
+        "label": "Входящие",
+        "items": [
+          {
+            "id": "m1",
+            "text": "Анна Белова",
+            "supporting": "Договор поставки на декабрь — пришлю после обеда",
+            "avatar": {
+              "text": "АБ"
+            },
+            "count": 3,
+            "date": "2026-10-27T11:20:00+03:00"
+          },
+          {
+            "id": "m2",
+            "text": "Ассистент Pro",
+            "supporting": "Нужен ответ по заявке № 4417",
+            "avatar": {
+              "icon": "smart_toy"
+            },
+            "unread": true,
+            "date": "2026-10-27T09:05:00+03:00"
+          },
+          {
+            "id": "m3",
+            "text": "ООО «Аквабур»",
+            "supporting": "Счёт № 1182 за ноябрь",
+            "avatar": {
+              "text": "АБ",
+              "shape": "square"
+            },
+            "date": "2026-10-26T10:15:00+03:00"
+          }
+        ],
+        "group-by": "day",
+        "time-format": "auto",
+        "no-wrap": true
+      },
+      "expect": {
+        "name": "Входящие"
+      }
+    },
+    {
       "name": "sidebar",
       "title": "Узкая колонка: одна строка, многоточие",
       "settings": {
@@ -256,6 +301,31 @@
       },
       "expect": {
         "name": "Версии"
+      }
+    },
+    {
+      "name": "loading-avatar",
+      "title": "Загрузка: место аватара с первого кадра",
+      "settings": {
+        "label": "Беседы",
+        "loading": true,
+        "leading": "avatar"
+      },
+      "expect": {
+        "name": "Беседы"
+      }
+    },
+    {
+      "name": "loading-one-line",
+      "title": "Загрузка: строки в одну строку с первого кадра",
+      "settings": {
+        "label": "Беседы",
+        "loading": true,
+        "leading": "avatar",
+        "lines": "1"
+      },
+      "expect": {
+        "name": "Беседы"
       }
     },
     {
@@ -378,10 +448,10 @@
             {
               "user": "keyboard:Shift+F10",
               "wait": 400,
-              "check": "document.querySelector('#l .sf-list__menu').isOpen === true && document.querySelector('#l .sf-list__menu').entries.map((entry) => entry.id).join(',') === 'rename,action:delete'"
+              "check": "document.querySelector('[data-sf-menu-shared]').isOpen === true && document.querySelector('[data-sf-menu-shared]').entries.map((entry) => entry.id).join(',') === 'rename,action:delete'"
             },
             {
-              "script": "(document.querySelector('#l .sf-list__menu').dispatchEvent(new CustomEvent('sf-menu-context-select', {bubbles: true, detail: {id: 'action:delete'}})), document.querySelector('#l .sf-list__menu').close({restoreFocus: true}), true)",
+              "script": "(document.querySelector('[data-sf-menu-shared]').dispatchEvent(new CustomEvent('sf-menu-context-select', {bubbles: true, detail: {id: 'action:delete'}})), document.querySelector('[data-sf-menu-shared]').close({restoreFocus: true}), true)",
               "expect": {
                 "events": [
                   {
@@ -482,6 +552,35 @@
               "script": "(document.querySelector('#l').noWrap = false, true)",
               "wait": 200,
               "check": "!document.querySelector('#l .sf-list--no-wrap') && !document.querySelector('#l .sf-list__row[data-id=\"w1\"] sf-list-item')?.hasAttribute('title')"
+            }
+          ]
+        },
+        {
+          "id": "p7-unread-title",
+          "title": "a row with a count is unread: its title semibold beside the grey count, its second line regular; a row without one regular (C167 (3))",
+          "covers": "settings.items count",
+          "steps": [
+            {
+              "script": "(document.querySelector('#l').setItems([{id: 'u1', text: 'Анна Белова', supporting: 'Пришлю договор', count: 3}, {id: 'u2', text: 'Новости', supporting: 'Отчёт за октябрь'}], {hasMore: false}), true)",
+              "wait": 200,
+              "check": "(() => { const row = (id) => document.querySelector('#l .sf-list__row[data-id=\"' + id + '\"]'); const w = (el) => getComputedStyle(el).fontWeight; const a = row('u1'); const b = row('u2'); return a && b && a.classList.contains('sf-list__row--unread') && w(a.querySelector('.sf-list-item-title')) === '600' && w(a.querySelector('.sf-list-item-supporting')) === '400' && a.querySelector('.sf-list__count') && !b.classList.contains('sf-list__row--unread') && w(b.querySelector('.sf-list-item-title')) === '400'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-unread-and-time",
+          "title": "unread: true marks a letter without a count: its title semibold, the screen-reader word «не прочитано» at its end; time-format auto draws the row's time with sf-time under a day heading as the clock time, on the title's line, the count under it, a long title cut before it; no tooltip and no Tab stop of its own; an unread row's time takes the main ink (C189 (8), C167 (3))",
+          "covers": "settings.items unread, settings.time-format",
+          "steps": [
+            {
+              "script": "(document.querySelector('#l').setItems([{id: 'r1', text: 'Анна Белова', supporting: 'Пришлю договор', count: 3, date: new Date().toISOString()}, {id: 'r2', text: 'Письмо с очень длинным именем отправителя, которому не хватит места в строке', supporting: 'Счёт за ноябрь', unread: true, date: new Date().toISOString()}, {id: 'r3', text: 'Новости', supporting: 'Отчёт за октябрь', date: new Date().toISOString()}], {hasMore: false}), document.querySelector('#l').timeFormat = 'auto', document.querySelector('#l').noWrap = true, true)",
+              "wait": 300,
+              "check": "(() => { const row = (id) => document.querySelector('#l .sf-list__row[data-id=\"' + id + '\"]'); const w = (el) => getComputedStyle(el).fontWeight; const a = row('r1'); const b = row('r2'); const c = row('r3'); if (!a || !b || !c) return false; const tb = b.querySelector('.sf-list-item-title'); const time = b.querySelector('.sf-list__time time'); const tc = c.querySelector('.sf-list__time time'); const unreadWord = b.querySelector('.sf-list__unread'); const title = tb.getBoundingClientRect(); const t = time && time.getBoundingClientRect(); return b.classList.contains('sf-list__row--unread') && w(tb) === '600' && w(b.querySelector('.sf-list-item-supporting')) === '400' && !c.classList.contains('sf-list__row--unread') && w(c.querySelector('.sf-list-item-title')) === '400' && Boolean(unreadWord) && unreadWord.textContent.trim() === 'не прочитано' && !a.querySelector('.sf-list__unread') && !c.querySelector('.sf-list__unread') && Boolean(time) && /^\\d{1,2}:\\d{2}$/.test(time.textContent.trim()) && Boolean(time.getAttribute('datetime')) && time.tabIndex < 0 && !b.querySelector('.sf-list__time [data-tooltip]') && tb.scrollWidth > tb.clientWidth && title.right <= t.left + 0.5 && Math.abs((title.top + title.bottom) / 2 - (t.top + t.bottom) / 2) <= 1.5 && getComputedStyle(time).color === getComputedStyle(tb).color && getComputedStyle(tc).color === getComputedStyle(c.querySelector('.sf-list-item-supporting')).color && a.querySelector('.sf-list__count > *').getBoundingClientRect().top >= a.querySelector('.sf-list__time time').getBoundingClientRect().bottom - 0.5; })()"
+            },
+            {
+              "script": "(document.querySelector('#l').timeFormat = 'none', document.querySelector('#l').noWrap = false, true)",
+              "wait": 200,
+              "check": "!document.querySelector('#l .sf-list__time') && Boolean(document.querySelector('#l .sf-list__row[data-id=\"r2\"].sf-list__row--unread'))"
             }
           ]
         }

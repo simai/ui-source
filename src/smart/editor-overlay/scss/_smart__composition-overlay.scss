@@ -14,7 +14,7 @@
         --sf-composition-overlay-color: var(--sf-composition-overlay-frame-color, var(--sf-primary, Highlight));
         position: fixed;
         inset: 0;
-        z-index: var(--sf-composition-overlay-z-index, var(--sf-z-index-8, 80));
+        z-index: var(--sf-composition-overlay-z-index, var(--sf-layer--popover, 90));
         pointer-events: none;
     }
 
@@ -52,45 +52,31 @@
         position: absolute;
     }
 
-    // Hover is a 1px frame and selection a 2px frame: no fill, no tint, so the
-    // content looks as it will. They go where the block is, at once.
+    // The selected block is a 2 px line 2 px clear of its content, the hover a
+    // thin line as far out (owner decision C170 (2b), CO-7, CO-8): no fill, no
+    // tint, so the content looks as it will and text never touches the line.
+    // The frame keeps the block's box as its content box; the clear room and
+    // the line lie outside it. They go where the block is, at once.
     .sf-composition-overlay-frame {
         position: fixed;
-        box-sizing: border-box;
-        border: 1px solid var(--sf-composition-overlay-color);
+        box-sizing: content-box;
+        margin: calc(-1 * (var(--sf-a2) + var(--sf-px)));
+        padding: var(--sf-a2);
+        border: var(--sf-px) solid var(--sf-composition-overlay-color);
     }
 
     .sf-composition-overlay-frame--selected {
-        border-style: solid;
-        border-width: 2px;
+        margin: calc(-2 * var(--sf-a2));
+        border-width: var(--sf-a2);
     }
 
     .sf-composition-overlay[data-sf-overlay-focus] .sf-composition-overlay-frame--selected {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-composition-overlay-color);
-        outline-offset: 2px;
+        outline-offset: var(--sf-a2);
     }
 
     .sf-composition-overlay-frame[hidden] {
         display: none;
-    }
-
-    .sf-composition-overlay-label {
-        position: absolute;
-        inset-block-end: 100%;
-        inset-inline-start: -1px;
-        max-inline-size: 100%;
-        overflow: hidden;
-        padding: 0 var(--sf-space-1);
-        border-radius: var(--sf-radius-1) var(--sf-radius-1) 0 0;
-        background: var(--sf-composition-overlay-color);
-        color: var(--sf-on-primary, HighlightText);
-        /* 12 on a 20 line at every width: the size ladder's b2 and c0 (the
-           names read before, --sf-text-1--size and --sf-text-1--height, never
-           existed, so these were always the drawn values). */
-        font-size: var(--sf-b2);
-        line-height: var(--sf-c0);
-        white-space: nowrap;
-        text-overflow: ellipsis;
     }
 
     // The rail is the toolbar's range in the scrolled content; the toolbar sticks
@@ -122,7 +108,10 @@
         position: fixed;
         z-index: 2;
         display: flex;
-        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-space-1\/4));
+        align-items: center;
+        box-sizing: border-box;
+        min-inline-size: 0;
+        gap: var(--sf-composition-overlay-toolbar-gap, var(--sf-gap--toolbar));
         margin-block-end: var(--sf-space-1\/4);
         padding: var(--sf-space-1\/4);
         border-radius: var(--sf-composition-overlay-toolbar-radius, var(--sf-radius-1));
@@ -138,29 +127,86 @@
         display: none;
     }
 
-    .sf-composition-overlay-action,
     .sf-composition-overlay-insert {
         font: inherit;
         cursor: pointer;
     }
 
-    // A text action stands on the same ladder as an icon one: the control height
-    // of size 1/2 (28 mobile, 32 desktop), so the toolbar is 36 / 40.
-    .sf-composition-overlay-action {
-        box-sizing: border-box;
-        min-block-size: var(--sf-ui-1\/2--control-height);
-        padding: 0 var(--sf-space-1\/2);
-        border: 1px solid var(--sf-outline, GrayText);
-        border-radius: var(--sf-radius-1);
-        background: var(--sf-surface-area, Canvas);
+    // The start of the toolbar (owner decision C170 (2a)): the kind's icon and
+    // the block's name, the name ellipsised before the row would overflow; it
+    // gives way first, down to its icon.
+    .sf-composition-overlay-name {
+        display: inline-flex;
+        flex: 0 1 auto;
+        align-items: center;
+        gap: var(--sf-space-1\/4);
+        min-inline-size: calc(2 * var(--sf-space-1\/3) + var(--sf-text-size-1));
+        overflow: hidden;
+        padding-inline: var(--sf-space-1\/3);
         color: var(--sf-on-surface, CanvasText);
+        font-size: var(--sf-text-size-1\/2);
+        font-weight: var(--sf-weight--medium);
+        line-height: var(--sf-text-height-1\/2);
+        white-space: nowrap;
     }
 
-    // An unavailable action dims in place; its neighbours do not move.
-    .sf-composition-overlay-action:disabled {
-        border-color: var(--sf-outline-disable, GrayText);
-        color: var(--sf-on-disable, GrayText);
-        cursor: default;
+    .sf-composition-overlay-name .sf-icon {
+        flex: none;
+        color: var(--sf-on-surface-variant);
+        font-size: var(--sf-text-size-1);
+    }
+
+    .sf-composition-overlay-name .sf-icon[hidden] {
+        display: none;
+    }
+
+    .sf-composition-overlay-name-text {
+        min-inline-size: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    // Groups of icon actions (C144): buttons 4 apart, a group ends at a 1 px
+    // separator with 4 on each side (the row's gap) (CO-2).
+    .sf-composition-overlay-group {
+        display: flex;
+        flex: none;
+        align-items: center;
+        gap: var(--sf-space-1\/4);
+    }
+
+    .sf-composition-overlay-separator {
+        flex: none;
+        align-self: stretch;
+        inline-size: var(--sf-px);
+        margin-block: var(--sf-space-1\/4);
+        background-color: var(--sf-outline-variant);
+    }
+
+    .sf-composition-overlay[data-sf-overlay-side] .sf-composition-overlay-group {
+        flex-direction: column;
+    }
+
+    // Beside the block the column keeps the kind's icon; the name is the tree's.
+    .sf-composition-overlay[data-sf-overlay-side] .sf-composition-overlay-name-text {
+        display: none;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-side] .sf-composition-overlay-name {
+        justify-content: center;
+        padding-inline: 0;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-side] .sf-composition-overlay-separator {
+        inline-size: auto;
+        block-size: var(--sf-px);
+        margin-block: 0;
+        margin-inline: var(--sf-space-1\/4);
+    }
+
+    // What left the row for «⋯» (C155), and «⋯» while nothing left.
+    .sf-composition-overlay-toolbar .sf-composition-overlay-out {
+        display: none !important;
     }
 
     // An icon action is sf-button-icon at 1/2; the box holds its size until the
@@ -169,6 +215,31 @@
         flex: none;
         min-inline-size: var(--sf-ui-1\/2--control-height);
         min-block-size: var(--sf-ui-1\/2--control-height);
+    }
+
+    // A phone (below sm): the toolbar is a bar at the bottom of the screen, its
+    // buttons 44 (size 2), the «+» in it and no grip (owner decision C170 (4)).
+    .sf-composition-overlay[data-sf-overlay-phone] .sf-composition-overlay-toolbar {
+        position: fixed;
+        inset: auto 0 0;
+        margin: 0;
+        padding: var(--sf-space-1\/4) var(--sf-space-1\/2);
+        border-radius: 0;
+        inline-size: auto;
+        max-inline-size: none !important;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-phone] .sf-composition-overlay-tool {
+        min-inline-size: var(--sf-ui-2--control-height);
+        min-block-size: var(--sf-ui-2--control-height);
+    }
+
+    .sf-composition-overlay[data-sf-overlay-phone] [data-sf-overlay-add] {
+        margin-inline-start: auto;
+    }
+
+    .sf-composition-overlay[data-sf-overlay-phone] .sf-composition-overlay-more-separator {
+        display: none;
     }
 
     .sf-composition-overlay-tool[data-sf-overlay-grip] .sf-icon-button:not(:disabled) {
@@ -180,20 +251,21 @@
         cursor: grabbing;
     }
 
-    // One place to add: a thin line and a 24px round "+", shown only at the seam
-    // under the pointer. Only the mark takes the pointer, so blocks under the line
-    // stay clickable. The place kept for the keyboard shows when it takes focus.
+    // A place to add: a line and the round icon button "+" above it, under the
+    // selected block at all times and at the seam under the pointer (owner
+    // decision C170 (3)). Only the mark takes the pointer, so blocks under the
+    // line stay clickable.
     .sf-composition-overlay-insert {
         position: fixed;
         z-index: 1;
         display: grid;
         place-items: center;
         box-sizing: border-box;
-        block-size: var(--sf-c2);
-        margin-block-start: calc(var(--sf-c2) / -2);
+        block-size: var(--sf-ui-1\/3--control-height);
+        margin-block-start: calc(var(--sf-ui-1\/3--control-height) / -2);
         padding: 0;
         border: 0;
-        background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% 2px no-repeat;
+        background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% var(--sf-a2) no-repeat;
         color: var(--sf-composition-overlay-color);
         opacity: 0;
         pointer-events: none;
@@ -204,14 +276,14 @@
         opacity: 1;
     }
 
-    .sf-composition-overlay-insert-mark {
-        inline-size: var(--sf-c2);
-        block-size: var(--sf-c2);
+    // The icon button's default look at 1/3, round, ringed with the page's
+    // surface 4 wide so the line never cuts the "+" (owner R246).
+    .sf-composition-overlay-insert-mark.sf-icon-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 50%;
-        background:
-            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / var(--sf-b2) 2px no-repeat,
-            linear-gradient(var(--sf-on-primary, HighlightText), var(--sf-on-primary, HighlightText)) center / 2px var(--sf-b2) no-repeat,
-            var(--sf-composition-overlay-color);
+        box-shadow: 0 0 0 var(--sf-space-1\/4) var(--sf-surface-page, Canvas);
     }
 
     .sf-composition-overlay-insert[data-sf-insert-shown] .sf-composition-overlay-insert-mark,
@@ -219,14 +291,19 @@
         pointer-events: auto;
     }
 
+    // The «+» under the selected block, while nothing points at its place: the
+    // button alone, so the frame's line is not doubled by a second one.
+    .sf-composition-overlay-insert[data-sf-insert-after]:not(:focus-visible) {
+        background: none;
+    }
+
     .sf-composition-overlay-insert[aria-pressed="true"] {
         background-size: 100% var(--sf-a3);
     }
 
-    .sf-composition-overlay-action:focus-visible,
     .sf-composition-overlay-insert:focus-visible {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-composition-overlay-color);
-        outline-offset: 2px;
+        outline-offset: var(--sf-a2);
     }
 
     // The navigation tree is for assistive technology and keyboard focus only.
@@ -241,23 +318,9 @@
         pointer-events: auto;
     }
 
-    .sf-composition-overlay-drop {
-        position: fixed;
-        z-index: var(--sf-sortable-ghost-z-index, var(--sf-z-index-9, 90));
-        border-radius: var(--sf-radius-1\/3);
-        background: var(--sf-primary, Highlight);
-        pointer-events: none;
-    }
-
-    .sf-composition-overlay-drop[hidden] {
-        display: none;
-    }
-
-    .sf-composition-overlay-frame--selected .sf-composition-overlay-label {
-        cursor: grab;
-        pointer-events: auto;
-        touch-action: none;
-    }
+    // The drop line is the drag module's one line (.sf-sortable-indicator, owner
+    // decision C171 (4)), drawn by sf-sortable's sheet; only its place in the
+    // scrolled content is the overlay's (above).
 
     // While a node's text is edited in the frame, the hover frame stands back.
     .sf-composition-overlay[data-sf-overlay-editing] .sf-composition-overlay-frame--hover {
@@ -269,9 +332,5 @@
 @layer sf.states {
     .sf-composition-overlay-tool[data-tone="danger"] .sf-icon-button:not(:disabled):hover {
         --sf-icon--color: var(--sf-error-active);
-    }
-
-    .sf-composition-overlay-action[data-tone="danger"]:not(:disabled):hover {
-        color: var(--sf-error-active);
     }
 }

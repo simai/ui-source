@@ -1,0 +1,6 @@
+{
+  "schema": "simai.framework.role-tokens-baseline",
+  "schema_version": 1,
+  "summary": "Known role gaps that do not read their role token yet (scripts/check-role-tokens.mjs, RT-ROLE-STEP). Each names its defect and the work that fixes it. An entry that no longer matches fails the check: the fix removes its entry. No new entry without a defect.",
+  "entries": []
+}

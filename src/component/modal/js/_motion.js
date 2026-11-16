@@ -46,18 +46,42 @@ export function modalTransitionDuration(style) {
 // Measure after the Smart projection has applied the closing state. A bounded
 // timer also completes when no transitionend fires (unchanged or hidden panel).
 // Never finish on the first property/descendant transitionend.
+// The closing state's own transition is the one to wait for (a window closes
+// faster than it opens, decision C159 (8)): while the drawn root does not show
+// the closing state yet -- the Smart window projects it a little later -- the
+// measure waits a frame, a few at most.
+const STATE_FRAMES = 4;
+
 export function scheduleModalClose(getRoot, finalize, view = window) {
-  let timer = null, cancelled = false;
-  const cancelFrame = scheduleModalFrame(() => {
+  let timer = null, cancelled = false, frames = 0, cancelFrame = () => {};
+  const measure = () => {
     if (cancelled) return;
     const root = getRoot();
+    const state = root?.getAttribute?.('data-sf-modal-state');
+    if (state && state !== 'closing' && frames++ < STATE_FRAMES) {
+      // A frame or 50 ms, whichever comes first -- not a microtask, which runs
+      // before the projection does.
+      let done = false;
+      const next = () => {
+        if (done) return;
+        done = true;
+        view.cancelAnimationFrame(frame);
+        view.clearTimeout(fallback);
+        measure();
+      };
+      const frame = view.requestAnimationFrame(next);
+      const fallback = view.setTimeout(next, 50);
+      cancelFrame = () => { done = true; view.cancelAnimationFrame(frame); view.clearTimeout(fallback); };
+      return;
+    }
     const nodes = root?.querySelectorAll('[data-sf-modal-panel], [data-sf-modal-overlay]') || [];
     const duration = Math.max(0, ...Array.from(nodes, node => {
       const style = view.getComputedStyle(node);
       return style.display === 'none' ? 0 : modalTransitionDuration(style);
     }));
     timer = view.setTimeout(() => { if (!cancelled) finalize(); }, duration);
-  }, view);
+  };
+  cancelFrame = scheduleModalFrame(measure, view);
   return () => {
     cancelled = true;
     cancelFrame();

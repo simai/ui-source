@@ -1,0 +1,25 @@
+{
+  "id": "action-run-without-the-capability-is-unavailable",
+  "intent": "action.run",
+  "capability": "actions",
+  "summary": "A host that does not announce actions is never asked to run one; asked anyway, it answers unavailable and the panel says so in words.",
+  "given": {
+    "capabilities": [
+      "scopes"
+    ]
+  },
+  "when": {
+    "intent": "action.run",
+    "payload": {
+      "id": "theme",
+      "query": "the"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason is capability-not-provided. The panel draws no command rows for a host without actions, so it never raises the intent; a result of kind action in such an answer is dropped with the page results that carry no url."
+  }
+}

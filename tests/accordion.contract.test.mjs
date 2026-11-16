@@ -85,10 +85,11 @@ test('accordion keeps interaction states neutral and keyboard-visible', async ()
   assert.match(styles, /prefers-reduced-motion: reduce/);
   assert.match(styles, /var\(--sf-duration-fast\) var\(--sf-animation\)/);
   assert.match(styles, /\.sf-accordion\.sf-accordion--legacy/);
-  assert.match(styles, /\[aria-expanded='true'\] \.sf-icon/);
+  // C154 (1): closed down, open up; down and up need no right-to-left turn.
+  assert.match(styles, /\[aria-expanded='true'\] \.sf-icon:not\(\.sf-accordion-lead\)/);
   assert.match(styles, /transform: rotate\(90deg\)/);
-  assert.match(styles, /\[dir='rtl'\].*\[aria-expanded='false'\]/s);
-  assert.match(styles, /transform: rotate\(180deg\)/);
+  assert.match(styles, /transform: rotate\(-90deg\)/);
+  assert.doesNotMatch(styles, /\[dir='rtl'\]/);
   assert.match(styles, /\.sf-accordion\.sf-accordion--plus-minus/);
   assert.match(styles, /transform: none/);
   assert.doesNotMatch(styles, /--sf-primary-container|--sf-on-primary/);
@@ -99,7 +100,9 @@ test('accordion keeps interaction states neutral and keyboard-visible', async ()
 test('accordion sizes are the control ladder', async () => {
   const styles = await sheet();
 
-  assert.match(styles, /min-block-size: var\(--sf-accordion--trigger-min-block-size\)/);
+  // The frame (outline edges, flush divider) stands inside the height (docs precheck smart content AC-02).
+  assert.match(styles, /min-block-size: calc\(var\(--sf-accordion--trigger-min-block-size\) - var\(--sf-accordion--frame-block, calc\(var\(--sf-px\) \* 0\)\)\);/);
+  assert.match(styles, /\.sf-accordion\.sf-accordion--outline \{\s*--sf-accordion--frame-block: calc\(var\(--sf-accordion--border-width\) \* 2\);/);
   for (const step of ['1\\/3', '1\\/2', '1', '2', '3']) {
     const rule = styles.match(new RegExp(`\\.sf-accordion\\.sf-accordion--size-${step.replace('\\', '\\\\')} \\{([^}]*)\\}`));
     assert.ok(rule, `size ${step} has its rule`);

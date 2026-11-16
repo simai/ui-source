@@ -38,8 +38,25 @@ test('the public variables are in the contract, read first, and default to the s
   }
 });
 
-test('a name never parts at a hyphen', () => {
-  assert.match(rule, /white-space:\s*nowrap;/u);
+test('code wraps as text: inline, no nowrap, a run longer than the line breaks (C10)', () => {
+  // Inline keeps the no-break with the punctuation around it and the line's
+  // height; break-word (not anywhere) keeps a table's columns at whole words.
+  assert.doesNotMatch(rule, /display:/u);
+  assert.doesNotMatch(rule, /white-space:\s*nowrap;/u);
+  assert.match(rule, /overflow-wrap:\s*break-word;/u);
+  // The code's line box stays inside the text line (no 24 -> 25 line).
+  assert.match(rule, /line-height:\s*1;/u);
+  // In a table cell a long value breaks anywhere, so it never widens the
+  // table (C10 variant A, owner 2026-11-11); no nowrap in a cell either.
+  assert.match(sheet, /:where\(td, th\) code:where\(:not\([^{]+\{\s*overflow-wrap:\s*anywhere;\s*\}/u);
+  assert.doesNotMatch(sheet, /:where\(td, th\)[^{]*\{[^}]*white-space:\s*nowrap/u);
+  // A table breaks a long run anywhere (C186 (7), 2026-11-14, over C10's
+  // break-word), so a long value lowers its column and the table does not
+  // widen; the rule is on the table and the cells inherit it, so a
+  // .table-frame that keeps every word whole is not beaten by a rule on its
+  // cells (pair-next-3 table-frame probe).
+  assert.match(sheet, /\n\s*table \{\s*word-break:\s*normal;\s*overflow-wrap:\s*anywhere;\s*\}/u);
+  assert.doesNotMatch(sheet, /:where\(td, th\) \{[^}]*(word-break|overflow-wrap)/u);
 });
 
 test('the tones come from existing roles only: no palette of their own', () => {

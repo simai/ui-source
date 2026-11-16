@@ -1,4 +1,6 @@
 {
   "$comment": "Gate 24 measurements (tests/browser/first-paint-gate.browser.mjs) that fail for a reason outside the first paint, each with that reason. Reported by every run, not counted; an entry that passes again is reported under knownNowPassing and is taken out.",
-  "known": {}
+  "known": {
+    "header-page/path-and-action": "Fails at 320 only (1440, 1280 and 390 hold): a heading too long for its row beside the kept actions cannot be known before the code. At 320 «Каталог решений» with its star, ⋯ and «Создать» do not fit one line, so the folded row takes a line of its own under the heading when the code lays it (printed 116 -> 108). Whether they fit is the words' widths against the line, not a step of any width, and the host cannot query its own width before its code (ui-control control/evidence/2026-11-15-header-bare-tag, residual case; dispatcher decision for the GB7 refresh)."
+  }
 }

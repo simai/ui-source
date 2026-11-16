@@ -4,13 +4,19 @@ Smart Switch проецирует обычный `.sf-switch` поверх на�
 `role="switch"`. Используйте его для бинарной настройки, которая применяется
 сразу; для отложенного выбора в форме используйте Checkbox.
 
+В форме, которую сохраняет кнопка («Сохранить»), выбор — это Checkbox, а не
+Switch (решение владельца C165 (4)). Switch внутри `<form>` с кнопкой отправки
+пишет одно предупреждение разработчику в консоль на страницу. `help` — это
+объяснение, которое открывает «?»: пишите фразу; одно слово строчными
+(`help="info"`) тоже даёт предупреждение.
+
 ## Базовое использование
 
 ```html
 <sf-switch
   label="Default switch"
   description="Description text"
-  help="info"
+  help="Short explanation shown by the «?» button"
 ></sf-switch>
 ```
 
@@ -19,7 +25,11 @@ Smart Switch проецирует обычный `.sf-switch` поверх на�
 - `size`
 - `label`
 - `description`
-- `help`
+- `help` — the explanation: a «?» button (sf-help-mark) after the label opens
+  it; a press on it never flips the switch. The «?» stands 4 px (`--sf-space-1/4`)
+  after the label's last word: when the label wraps, at the end of its last
+  line, not of the first. The `help` slot takes an
+  sf-help-mark of your own (links, a heading).
 - `checked`
 - `disabled`
 - `name`
@@ -62,6 +72,8 @@ The reset is a native button named by `reset-label` («Сбросить к на�
 "inherited"). Both follow the page's language when unset. Pressing the reset
 fires `sf-field-reset` on the host -- bubbling, composed and **cancellable** --
 before anything changes:
+
+The reset is the field's own action (owner decision C123), as a clear is: a glyph without a plate in any state, in the hint's ink at rest and the text's ink under the pointer, the size of the field's text line, with an invisible hit area never under 24 px; the keyboard ring goes round the glyph.
 
 ```js
 field.addEventListener('sf-field-reset', (event) => {

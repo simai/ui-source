@@ -6,8 +6,12 @@ import { bindCheckableReset } from '../helpers/checkableReset';
 import { InheritedValueField } from '../helpers/inherited-value';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // The first component whose element plumbing comes from its component.json
 // (standard simai.smart-component 1.3.8 §3, §4): the settings size, label,
@@ -21,6 +25,23 @@ const SwitchElement = elementFromManifest(manifest, {
   source: 'ru',
   aliases,
 });
+
+// A switch acts at once; in a form that is saved by a button the choice is
+// a checkbox (owner decision C165 (4)). The development warning says so once
+// per page, naming the first such switch; it reads only the form the switch
+// stands in, so it costs one closest() and one querySelector() per draw.
+const FORM_SWITCH_SAID = Symbol.for('sf.switch.form-switch-said');
+const SUBMIT_CONTROL = 'button:not([type]), button[type="submit"], input[type="submit"], input[type="image"], [type="submit"]';
+
+function sayFormSwitch(host) {
+  const global = globalThis;
+  if (global[FORM_SWITCH_SAID]) return;
+  const form = host.closest('form');
+  if (!form || !form.querySelector(SUBMIT_CONTROL)) return;
+  global[FORM_SWITCH_SAID] = true;
+  const name = host.id ? `#${host.id}` : (host.getAttribute('name') ? `[name="${host.getAttribute('name')}"]` : 'sf-switch');
+  console.warn(`SIMAI Framework: ${name} is a switch in a form saved by a button. A switch acts at once; in a form with a save button use sf-checkbox (owner decision C165 (4)).`);
+}
 
 class SfSwitch extends SwitchElement {
   static get props() {
@@ -121,6 +142,8 @@ class SfSwitch extends SwitchElement {
       // 6); elsewhere the checkbox is named, and not while inherited.
       checked: inherited ? this.inheritedOn : props.checked,
       checkboxName: this.sfInternals || inherited ? '' : props.name,
+      // The help button is named by its subject («Подробнее: Синхронизация»).
+      helpLabel: props.help && props.label ? this.sfWord('help', { vars: { label: props.label } }) : '',
       component: this,
     });
   }
@@ -153,6 +176,7 @@ class SfSwitch extends SwitchElement {
     }
     this.syncInheritedState();
     this.sfSyncForm();
+    sayFormSwitch(this);
   }
 
   onDisconnected() {

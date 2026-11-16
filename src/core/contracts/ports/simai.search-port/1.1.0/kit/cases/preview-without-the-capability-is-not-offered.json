@@ -1,0 +1,23 @@
+{
+  "id": "preview-without-the-capability-is-not-offered",
+  "intent": "result.preview",
+  "capability": "preview",
+  "summary": "A host that does not announce preview is never asked for one, and the panel draws no pane for it.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "result.preview",
+    "payload": {
+      "sequence": 2,
+      "id": "buttons"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason is capability-not-provided. An empty pane beside the list is the dead control the rule forbids: the panel gives the list the whole card instead. A result's own snippet is a field of the result, not this capability, so a host may answer snippets and no preview."
+  }
+}

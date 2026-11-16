@@ -2,12 +2,18 @@ import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { noteDeprecated } from '../../core/js/deprecations';
 import { bindSpinner, renderSpinner, unbindSpinner } from '../../component/spinner/js/_spinner';
-import { SPINNER_LOOKS } from '../../component/spinner/js/_spinner-draw';
+
+// The kind values: the arc (or none, which is the arc).
+const SPINNER_KINDS = ['', 'arc'];
 import { renderSpinnerTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-spinner from its component.json (standard simai.smart-component 1.3.8
 // §3, §4, §4.8): its settings are attributes and properties made by
@@ -38,10 +44,10 @@ class SfSpinner extends SpinnerElement {
     return {
       ...super.props,
       // The axis is called kind, because that is the question it answers.
-      // `variant` keeps working: see contracts/public-api-axes.json. Unset, the
-      // spinner takes the page's look (data-sf-spinner on html, body or any
-      // block; simai/ui-source#11), the arc when the page names none.
-      kind: {default: '', values: ['', ...SPINNER_LOOKS], aliases: ['variant']},
+      // `variant` keeps working: see contracts/public-api-axes.json. One look,
+      // the arc (owner decision C130 (5)): breathing, comet and dots are dated
+      // value aliases of arc (aliases.json) and draw the arc.
+      kind: {default: '', values: SPINNER_KINDS, aliases: ['variant']},
       rootClass: { default: '' },
     };
   }

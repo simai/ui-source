@@ -46,8 +46,11 @@ test('every navigation component is made from its component.json, language files
     const table = json(`src/smart/${folder}/aliases.json`);
     const {rows} = readAliasTable(table, {tag: manifest.tag});
     for (const row of rows) {
-      assert.equal(row.since, '2026-10-27', `${folder}: ${row.from}`);
-      assert.equal(row.remove_after, '2026-12-01', `${folder}: ${row.from}`);
+      // C134 (2026-11-13): compact means density only; the renamed values
+      // (sf-menu appearance, sf-contents layout) are dated until 2027-01-01.
+      const c134 = row.kind === 'value' && row.from === 'compact';
+      assert.equal(row.since, c134 ? '2026-11-13' : '2026-10-27', `${folder}: ${row.from}`);
+      assert.equal(row.remove_after, c134 ? '2027-01-01' : '2026-12-01', `${folder}: ${row.from}`);
     }
     // Every event row names the DOM name the element sends now (§8).
     const names = Object.values(readManifest(manifest).events).map((event) => event.name);
@@ -105,7 +108,7 @@ test('sf-menu: navigate and toggle by vocabulary 1.1.5, Escape declared where it
   assert.equal(events.navigate.cancelable, true);
   assert.equal(events.toggle.name, 'sf-menu-toggle');
   const {rows} = readAliasTable(json('src/smart/menu/aliases.json'), {tag: 'sf-menu'});
-  assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-menu:navigate', 'sf-menu-navigate', 'same-detail'], ['sf-menu:toggle', 'sf-menu-toggle', 'same-detail']]);
+  assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-menu:navigate', 'sf-menu-navigate', 'same-detail'], ['sf-menu:toggle', 'sf-menu-toggle', 'same-detail'], ['compact', 'rail', undefined]]);
   // simai/ui-source#44 item 2: Escape is a panel's key; in accessibility.keys it says when.
   // C30 adds the APG disclosure-navigation arrows to a panel and to the row.
   assert.deepEqual(manifest.keyboard.panel, {Escape: 'close', ArrowDown: 'next', ArrowUp: 'previous', Home: 'first', End: 'last', ArrowRight: 'open', ArrowLeft: 'close'});
@@ -124,7 +127,8 @@ test('sf-tabs: sf-tabs-change with data only, manual activation over deferred pa
   assert.equal(events.change.name, 'sf-tabs-change');
   assert.equal(events['settings-change'].name, 'sf-tabs-settings-change', 'the DOM name it always had');
   assert.equal(manifest.settings.items.type, 'list');
-  assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'label', 'icon', 'count', 'href', 'disabled', 'pinned']);
+  // hint: sf-tabs 1.3.0 (R184 T9); errors: C96 item 6.
+  assert.deepEqual(Object.keys(manifest.settings.items.of), ['id', 'label', 'icon', 'count', 'errors', 'href', 'disabled', 'hint', 'pinned']);
   assert.equal(manifest.values.selected.type, 'id');
   const {rows} = readAliasTable(json('src/smart/tabs/aliases.json'), {tag: 'sf-tabs'});
   assert.deepEqual(rows.map((row) => [row.from, row.to, row.mode]), [['sf-tab-change', 'sf-tabs-change', 'split']]);

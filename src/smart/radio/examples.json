@@ -33,11 +33,11 @@
     },
     {
       "name": "description",
-      "title": "С пояснением и значком",
+      "title": "С пояснением и подсказкой",
       "settings": {
         "label": "Доставка",
         "description": "Курьером до двери",
-        "help": "info",
+        "help": "Курьер позвонит за час до приезда.",
         "value": "courier"
       },
       "expect": {

@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.profile-picker",
-  "version": "1.4.1",
-  "title": "Profile picker",
-  "summary": "One way to choose, make, rename, remove and reset a profile: a field-like button naming the profile in use, and a panel where every act happens inline. The profiles and the rights are the host's; the component says what was asked.",
+  "version": "1.7.1",
+  "title": "Settings profiles",
+  "summary": "Settings profiles: one way to choose, make, rename, remove and reset a named set of settings -- an admin menu's rows, a record's view, a table's columns -- never an account or an organisation. The standard button names the profile in use, and a panel (a bottom sheet on a phone) is where every act happens. The profiles and the rights are the host's; the component says what was asked.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -25,7 +25,11 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.icon"
+      "smart.button-icon",
+      "smart.drawer",
+      "smart.icon",
+      "smart.menu-context",
+      "smart.segmented"
     ],
     "public_parts": []
   },
@@ -53,7 +57,8 @@
       },
       "size": {
         "type": "string",
-        "default": "1/2",
+        "default": "1",
+        "description": "The step of the trigger, the rows and the panel: 1 by default, so a compact admin gets its smaller step from data-sf-density and a phone from the ladder (owner decision C22: no hand-written 1/2 for compactness); 1/2 is still drawn as asked.",
         "enum": [
           "1/2",
           "1"
@@ -395,7 +400,7 @@
       "Delete",
       "Escape"
     ],
-    "focus": "The trigger is a button with aria-haspopup=menu; the panel's rows are menuitemradio, the current one checked. Arrows, Home and End move between rows, Enter chooses, F2 renames, Delete asks to remove, Escape closes the form and then the panel, returning focus to the trigger."
+    "focus": "The trigger is sf-button with aria-haspopup=menu and aria-expanded; the panel's rows are menuitemradio, the current one checked. Arrows, Home and End move between rows, Enter chooses, F2 renames, Delete asks to remove, Shift+F10 or the context-menu key opens the row's «⋯» menu, Escape closes the form and then the panel, returning focus to the trigger."
   },
   "presentation": {
     "themes": [
@@ -463,33 +468,34 @@
     "source_artifacts": [
       {
         "path": "src/smart/profile-picker/index.js",
-        "sha256": "b7fb349765dd96f2d5a7bde40c630b57515523345083dcb309188305881dc952"
+        "sha256": "a6cd78ac55fa86a55e82b6ef39d2b27365ad8ac16feae61e02133baa67ae6e97"
       },
       {
         "path": "src/smart/profile-picker/js/templates/default.js",
-        "sha256": "5729bae083d72c4a81bf3274706cdfef649961e1f481fb021649d0ee14948b5a"
+        "sha256": "b1a669155a5a7403accccb91fe1c8900515b535f18b62c155dd2265f28f99656"
       },
       {
         "path": "src/smart/profile-picker/scss/_smart__profile_picker.scss",
-        "sha256": "68eaa7fdf6c907170a2e88d6bf7d17d50f060429ae41f1dceef63a0812c4d421"
+        "sha256": "4016cd5f124af9754dd6d3693a279e3e891690e1edc4fb4e63d5a1a5d32b4a3e"
       },
       {
         "path": "src/smart/profile-picker/rule.js",
-        "sha256": "1a0e0d695df15469a4f21444ec1fc20efc7fc1fa7ece452bea071845144e42a4"
+        "sha256": "c8b201548af6bc405f9427f1999e16c2a8e582d5cbae598c65962d309904405f"
       },
       {
         "path": "src/smart/profile-picker/docs.md",
-        "sha256": "967f39cf2b99c6f1a13974942a546583ad9c78463f35e6d3ce25fe31b0e258bd"
+        "sha256": "281c388b395c48170cccdb3df211c618c16486a1f8cc0a43025a07f6031d25ec"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-profile-picker wherever a person chooses between profiles or views of something and may make, rename or remove them: the admin menu's profiles, a record's views.",
+    "use_when": "Use sf-profile-picker wherever a person chooses between settings profiles -- named sets of menu rows, record views or table columns, personal or shared -- and may make, rename or remove them. Switching the signed-in account, the organisation or the site is not a profile: it is a plain sf-menu-context (the person menu, organisations as square avatars; owner decision C163 (5)).",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not let the component change its own list; answer its events by setting profiles and current",
-      "Do not build a second profile switcher"
+      "Do not build a second profile switcher",
+      "Do not use it to switch accounts, organisations or sites"
     ],
     "required_reads": [
       "inputs",

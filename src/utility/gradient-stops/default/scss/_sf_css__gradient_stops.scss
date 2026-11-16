@@ -1,6 +1,6 @@
 @use '../../../../core/scss/vars/sf_var__breakpoint' as *;
 @use '../../../../core/scss/mix/mix__breakpoint' as *;
-@use '../../../gradient-color/default/scss/sf_var__gradient' as *;
+@use 'sf_var__gradient_stops' as *;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -13,7 +13,7 @@ $infix: xs;
     @include breakpoint-media($infix) {
         $infix: breakpoint-infix($infix, $breakpoint-array);
 
-        @each $gradient-color-name, $gradient-color-value in $gradient-color-array {
+        @each $gradient-color-name, $gradient-color-value in $gradient-stop-array {
             .#{$infix}from-#{$gradient-color-name} {
                 --sf-gradient--color-1: var(--sf-#{$gradient-color-value});
             }

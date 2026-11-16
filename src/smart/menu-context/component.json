@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu-context's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu-context",
   "tag": "sf-menu-context",
-  "version": "1.14.3",
+  "version": "1.25.3",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -136,7 +136,7 @@
         "status": {
           "type": "string",
           "optional": true,
-          "summary": "\"danger\" draws the row as a destructive action, as danger: true does: the status word of every control (decision C13); \"error\" is read as danger."
+          "summary": "\"danger\" draws the row as a destructive action, as danger: true does: the status word of every control (decision C13); \"error\" is read as danger. danger is the only status of an item (decision C116): there are no success, warning or info items; another word draws a plain row and warns once per page."
         },
         "current": {
           "type": "boolean",
@@ -157,6 +157,11 @@
         "search": {
           "type": "object",
           "optional": true
+        },
+        "width": {
+          "type": "string",
+          "optional": true,
+          "summary": "A submenu's width, as the menu's width setting reads it (content, list, panel, form, trigger or a length): the language rows of sf-language's app menu entry are panel (owner decision C142 (7))."
         },
         "options": {
           "type": "list",
@@ -185,6 +190,21 @@
         "view": {
           "type": "string",
           "optional": true
+        },
+        "value-text": {
+          "type": "string",
+          "optional": true,
+          "summary": "A meter row's words (type meter, owner decision C191 (5)): what the amount means as people say it, such as the remainder «Осталось 1,7 из 10 ГБ», shown over the bar and said by it; without it the percentage. Written valueText in a script."
+        },
+        "warning-at": {
+          "type": "number",
+          "optional": true,
+          "summary": "A meter row's warning threshold in per cent of the share used (C131 (7)): from it on the bar is a warning. Written warningAt in a script."
+        },
+        "error-at": {
+          "type": "number",
+          "optional": true,
+          "summary": "A meter row's error threshold in per cent of the share used (C131 (7)), above warning-at. Written errorAt in a script."
         }
       },
       "summary": "The menu as data (set as a property, or JSON in the attribute). See item_contract. When present, it replaces items and the content slot."
@@ -215,7 +235,7 @@
         "1"
       ],
       "default": "1/2",
-      "summary": "The menu's size: rows as tall as a field of that size (32px at 1/2, 40px at 1), its text, insets, search and footer. A submenu takes its parent's size."
+      "summary": "The menu's size, a step on the region's ladder (decisions C79, C134): rows as tall as a field of that size and its text, insets, search and footer. 1/2, the default, is 32px rows and 14px text on a page, 28 and 12 in a compact region, rows of at least 44 under a finger on a phone; 1 is a step above (40/16, compact 32/14). The density is the one of the control that opens the menu, or of what stands under the point it opens at. A submenu takes its parent's size."
     },
     "width": {
       "type": "string",
@@ -226,7 +246,7 @@
       "type": "string",
       "default": "",
       "x-note": "\"A|B\" in the attribute; the property also takes a list [{id, label}] (the component's own accessor), one member with one type (§4.2)",
-      "summary": "A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
+      "summary": "Deprecated (owner decision C106, 2026-11-12; a former name until 2027-01-01): a list's view settings are sf-settings look=\"panel\". A panel with tabs: labels separated by |, or [{id, label}] as a property. The head (tabs and the close button) and the footer never scroll, the body does, and the panel keeps a fixed width (a ladder step, or width) whatever a tab holds."
     },
     "active-tab": {
       "type": "string",
@@ -237,6 +257,11 @@
       "type": "boolean",
       "default": false,
       "summary": "A close button at the end of the panel's head."
+    },
+    "for": {
+      "type": "string",
+      "default": "",
+      "summary": "The id of a page area -- a list, a table, a tree -- or several separated by spaces, whose objects open this menu by the right button, the menu key (Shift+F10) and a long press on a touch screen (owner decision C164 (1)). The object is the row the event came from (a table body's row, an element with a row, option, treeitem or listitem role, a list item), or the area itself; its «⋯» opened with openFor() names the same object, so one open listener gives one list for every way in (C164 (2)). On a selected row (aria-selected=\"true\") the menu acts on every selected row of the area and says «Выбрано N»; a row that can be selected and is not is selected alone first (C164 (3)). A link, a field, selected text and the right button with Shift keep the browser's own menu. On a phone the menu of an object is the sheet at the bottom (C164 (6))."
     }
   },
   "values": {},
@@ -310,9 +335,19 @@
       "summary": "The person asked for the declared values back: the request. Cancelled, the current values stay; otherwise the menu shows the declared ones, says changed once for each row that moved, and waits for the host to persist them, as sf-tabs-settings-reset does."
     },
     "open": {
-      "carries": {},
+      "carries": {
+        "target": {
+          "type": "object",
+          "nullable": true,
+          "summary": "The object the menu is opened for (C164): the row of an area named by for that holds the anchor or the pointer, or openAt()'s target; null for a menu opened at a control alone."
+        },
+        "targets": {
+          "type": "list",
+          "summary": "The objects it acts on: every selected row when the target is selected, else the target alone (C164 (3)); empty with no target. The host gives the entries for them here, one list for the right button, the menu key, a long press and «⋯» (C164 (2))."
+        }
+      },
       "cancelable": true,
-      "summary": "Opened through openFor(). Bubbles and is composed; carries no detail."
+      "summary": "Opened through openFor() or openAt(), or by an object of an area named by for: the request, cancelable. Bubbles and is composed; carries the object and the objects the menu acts on, so the host sets the entries for them in its listener."
     },
     "opened": {
       "carries": {}
@@ -433,6 +468,47 @@
       "x-returns": {
         "type": "Promise<object>",
         "description": "Resolves to an outcome whose value says whether the menu is open afterwards: {outcome: applied, value: false} when it closed, openFor()'s outcome when it opened; refused with prevented when a listener kept it open."
+      }
+    },
+    "open-at": {
+      "with": {
+        "x": "number",
+        "y": "number",
+        "options": {
+          "type": "object",
+          "optional": true,
+          "schema": {
+            "properties": {
+              "target": {
+                "type": "object",
+                "summary": "The object the menu acts on: the open event names it, the focus goes back to it, and on a phone the menu is the sheet at the bottom."
+              },
+              "focus": {
+                "type": "string",
+                "enum": [
+                  "first",
+                  "last",
+                  "none"
+                ],
+                "default": "first"
+              }
+            }
+          }
+        }
+      },
+      "waits": true,
+      "x-outcomes": [
+        "applied",
+        "conflict",
+        "refused",
+        "unavailable",
+        "cancelled"
+      ],
+      "emits": "open",
+      "summary": "Open with the menu's corner exactly at a point of the screen -- the pointer's -- with no gap, flipping and shifting at the screen's edges (owner decision C164). The menu then owns its lifecycle as with openFor(); the focus goes back to the target given, or to where it was.",
+      "x-returns": {
+        "type": "Promise<object>",
+        "description": "openFor()'s outcome; refused with invalid when x or y is not a number."
       }
     },
     "close": {
@@ -584,6 +660,26 @@
     {
       "name": "cl-button-icon",
       "lazy": true
+    },
+    {
+      "name": "avatars",
+      "$comment": [
+        "A row's and the header's picture are sf-avatar's drawing (avatar study AV-8)."
+      ]
+    },
+    {
+      "name": "cl-icon",
+      "$comment": [
+        "The picture's placeholder glyph is an sf-icon element."
+      ]
+    },
+    {
+      "name": "cl-progress-bar",
+      "lazy": true,
+      "$comment": [
+        "A meter row (type meter, owner decision C191 (4)) is sf-progress-bar's meter: fetched after the",
+        "page is ready, as the tabs are, and only a menu with a meter draws one."
+      ]
     }
   ],
   "templates": {
@@ -801,6 +897,18 @@
         "mode": "same-detail",
         "section": "§8",
         "note": "the event name carries the tag"
+      },
+      {
+        "from": "tabs",
+        "to": null,
+        "kind": "setting",
+        "since": "2026-11-12",
+        "remove_after": "2027-01-01",
+        "since-version": "1.16.0",
+        "mode": "retired",
+        "section": "owner decision C106 (1)",
+        "note": "a list's view settings are sf-settings look=\"panel\"; the action menu's tabs are read and drawn until the date",
+        "summary": "Deprecated: tabs leave the action menu (owner decision C106, 2026-11-12); a list's view settings are sf-settings look=\"panel\". Read and drawn until 2027-01-01."
       }
     ],
     "since-version": "1.3.0"
@@ -820,10 +928,13 @@
     "events sf-context-menu-open, sf-context-menu-close: were facts sent after the state changed (close was also the placed menu's request to its host); by §19.3 and vocabulary §4 they are the cancelable requests, and the facts are sf-context-menu-opened and sf-context-menu-closed"
   ],
   "x-decisions": [
+    "version 1.25.2 (2026-11-15, owner remark on recipe-list-toolbar via DEV msg-246e6c1c; written on the branch as 1.23.0): a minor. A menu takes the size step of what opens it: at every openFor(), toggleFor(), openAt() and for= opening, a menu without a size of its own takes the first size written from the opener up -- the opener's (a row's «⋯», the native button an sf-button draws), else its component's, else the Smart component that holds it (sf-view-table size=\"1\"); a size a template gave a part it draws (data-sf-size-relative) follows its host; two unsized components up the walk ends on the default 1/2 (core density.js sizeOf). Its two steps: 1/2 for an opener below 1, 1 from 1 up, as sf-button's own menu reads its size. A size the page or a host gave the menu (attribute or SF.menu.open size) wins; the menu writes the opener's step again on every opening, so one menu opened from two tables follows each. The row menu of a size-1 table had 32 px rows and 14 px text beside 48 px rows and 16 px text. The density of the opener's area was already carried on every opening (C22, C79). The branch merges fix/context-menu-c164 (1.21.0) over fix/toolbar-menu-c184 (1.19.0); version above fix/role-layers-c173's 1.22.1 and fix/settings-menu-c176's 1.22.0.",
+    "version 1.24.0 (2026-11-14, owner decision C164; written on the branch as 1.21.0): a minor. The menu of an object: `for` binds the right button, the menu key (Shift+F10) and a long press (500 ms, the finger still within 10 px) on the rows of the named areas, openAt(x, y) opens with the corner exactly at the pointer (CM-5) and the focus goes back to the object (CM-2); the open event names the target and the targets, so «⋯» and the right button share one list; a selected row acts on every selected row with «Выбрано N», an unselected one is selected alone first; a disabled row is aria-disabled, dimmed and in the walk with its caption as the reason; a destructive row is drawn last after a line wherever the host put it; on a phone the menu of an object is the one sheet (C157 (5)) with the size-1 text and its heading as the head. The branch merges fix/context-menu-g4 (1.18.0): openAt() hangs the menu from that version's point anchor (corner at the point, the density of the row under it), and the menu of an object gives the focus back to the object itself, lent a tabindex when it takes none; the example «right-click» binds its list by for. Version above fix/drawer-c157's 1.20.0; component.context-menu 1.14.0, above fix/search-c162-c175's 1.13.0.",
+    "version 1.23.0 (2026-11-14, owner decision C157 (5); written on the branch as 1.20.0): a minor. A form on a phone is the one sheet (core mix/_mix__sheet.scss, component.context-menu 1.12.0): the grab bar 24 x 4 in on-surface-variant in a handle row on the sheet's own surface, and a swipe down from that row closes the form (reason close) -- core/js/sheet-swipe.js. Version above fix/list-item-g4's 1.19.0.",
     "own-verb-words: search (the host is told the query) and tab (a tab chosen) are verbs of the menu alone; their words are lang events.<verb>.label.",
     "version: 1.3.1 → 1.4.0: added the facts opened and closed, the close reason and the entries' shape; nothing removed.",
     "type-union: tabs is one string member (\"A|B\" in the attribute); the component's own property also takes a list [{id, label}], so the manifest declares the attribute form (§4.2).",
-    "item-shape: entries name their fields with `of` (the fields the template and the menu read: id, text, caption, icon, avatar, initials, shortcut, kind, type, value, lang, keywords, checked, disabled, danger, current, href, keep-open, submenu, search, options); items is the older list of {text, value}.",
+    "item-shape: entries name their fields with `of` (the fields the template and the menu read: id, text, caption, icon, avatar, initials, swatch, shortcut, kind, type, value, lang, keywords, checked, disabled, danger, current, href, keep-open, submenu, search, options); items is the older list of {text, value}.",
     "existing-aliases: compatibility.deprecations (position, tooltip: a menu has no tail since 1.3.0) fold into aliases.json as retired rows; both settings still answer until the date.",
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus entries with a check, a submenu, a search and a tabbed panel; probe.json drives the arrows, Home, End, Enter, Escape and Tab (gate 16).",
@@ -864,7 +975,27 @@
     "version 1.14.2 (2026-11-10, pair next integration): one number for the 1.14.1 notes above, which separate branches each claimed: the menus frame (component.context-menu without late utility links), the C32 addendum widths (a0370-accept G1) and the C43 underlay on current, chosen and checked items. They ship together in this release; 1.14.1 is never released alone. Settings, values, events and keys as the notes above say.",
     "version 1.14.3 (2026-11-10, G1-a, through component.context-menu 1.8.1): in a list at a field (width list) a row's block padding is (row step - line) / 2, the row step being the touch target (--sf-d1) under a coarse pointer, so a choice that wraps keeps the one-line row's space above and below and grows by whole lines (52 / 44 / 60 px for two lines at 1440 normal / compact / 390; was 44 / 36 / 44 with 2px). One-line rows draw where they did; a menu without a width is unchanged. The same release hashes the class sheet whose hint row reads --sf-surface-page, the current name of the page surface (C16), where it read the former --sf-surface-0, which is var() of it everywhere (pair next 2 integration: both branches claimed 1.14.3; one number). Settings, values, events and keys unchanged.",
     "version 1.14.3 also hashes the class sheet whose retired role names became the current ones (docs pre-check 2026-11-10, C16; component.context-menu 1.8.1): --sf-on-disable, --sf-outline-disable and the like are var() of the new names, so nothing is drawn differently. Settings, values, events and keys unchanged.",
-    "version 1.14.3, also (2026-11-11, written on the pair's 1.14.3, C43 D3 and D4; component.context-menu 1.8.1): the class sheet it hashes names each row's fill to core mix sf-place-fill, so an anchored badge's ring on a current, chosen or checked row is the row's colour, and the row under the pointer or open (aria-expanded) is a translucent fill too, so a tonal badge on it keeps its tone. Settings, values, events and keys unchanged."
+    "version 1.14.3, also (2026-11-11, written on the pair's 1.14.3, C43 D3 and D4; component.context-menu 1.8.1): the class sheet it hashes names each row's fill to core mix sf-place-fill, so an anchored badge's ring on a current, chosen or checked row is the row's colour, and the row under the pointer or open (aria-expanded) is a translucent fill too, so a tonal badge on it keeps its tone. Settings, values, events and keys unchanged.",
+    "version 1.14.4 (2026-11-12): a patch (owner decision C107, the icon colour; component.context-menu 1.9.0). A quick-settings tile is a control: its icon is half a step paler than its name, --sf-on-surface-icon (neutral-25 light, neutral-80 dark), where it was the name's --sf-on-surface, and takes the name's colour under the pointer; a tile that is on keeps on-primary-container. Rows keep --sf-on-surface-variant. Settings, values, events and keys unchanged.",
+    "version 1.15.0 (2026-11-12, owner decision C85, colour block): a minor. An entry, a choice and a choice's option may carry swatch, a CSS colour drawn as a circle where an icon would stand -- in the lead of a row, of a drilled level's option, or alone in a quiet row's option (component.context-menu 1.9.0: .sf-context-menu-item-swatch, the text line less a quarter step, on the outline-variant hairline). A value that could close the declaration (; or }) is not drawn. sf-settings' colour rows draw with it. Settings, values, events and keys unchanged. (fix/adaptive-size-c79 also takes 1.15.0 for C79: one number above both at the merge, rule 7.)",
+    "version 1.15.0, also (2026-11-12): a minor (owner remark R193, dropdown-panels study ui-control control/research/2026-11-12-dropdown-panels.md, defects DP-1 and DP-4; component.context-menu 1.8.2). A panel's list is one Tab stop: the .sf-context-menu-row rows of one container that each hold a checkbox or a switch (input[type=checkbox], [role=checkbox], [role=switch]), two or more of them, carry one tabindex 0 -- the mark last focused in the list, else its first -- and -1 on the rest; ArrowDown and ArrowUp walk the list (round), Home and End go to its ends, Space is the mark's own, Tab leaves the list. A mark that leaves the lists gets back the tabindex it had. One of several is a sf-radio group of one name, which the platform already makes one stop with arrows; the menu does not walk radios. tabbables() leaves out a control with tabindex -1, so a sheet's Tab wrap and a form's first focus never land on a walked mark. The row places its parts by role (class sheet): what stands before .sf-context-menu-row-text leads, the text takes the rest, what follows it ends the row -- a row without a handle keeps its mark at the end (it stood right after the label, 55-141 px from the row start). A row is a label around its text and its mark; when the mark is a form-associated host (sf-radio), the label's activation clicks the host itself and the radio inside stayed as it was, so a press on a row of the docs' «Вид» tab chose nothing (DP-2): the menu passes the host's own press on to its control (handleRowClick). Settings, values, events and the menu's own keys unchanged.",
+    "version 1.16.0 (2026-11-12, owner decision C106; R193 DP-3, DP-9 and the scroll-area inset rule): tabs is a former name until 2027-01-01 -- a list's view settings are sf-settings look=\"panel\", and the action menu keeps the actions; it is still read and drawn. A panel row is a plate: the hover plate under the pointer, a checked checkbox or radio the theme's light fill (C05, C106 (2)). The panel's body is its scroll area: the inset I on every side of the plates, a scrollbar that takes room is I + thumb + I = 14 and the body drops its inline-end padding (marked sf-context-menu-body--scrollbar); the stable gutter is gone. The menu's thumb is the page scrollbar's, --sf-scroll-thumb-width, so every menu's track is 14 (was 12). The panel's width is the C32 step --sf-popup-panel-width (DP-9, already so in the source).",
+    "version 1.16.0 also carries (2026-11-12, C106 follow-up 3): the panel head chooses its tab on sf-tabs' current event, sf-tabs-change (it listened to the former name sf-tab-change). sf-tabs still sends sf-tab-change after it until 2026-12-01, so the head stops that one too and acts on it no more; the stopper goes with the alias. Settings, values, events and keys unchanged.",
+    "version 1.16.0, also (written on the branch as 1.14.4; 2026-11-13, a patch, defect BS-1 of ui-control research 2026-11-13-button-schemes, rule C13): an item whose status is not danger (or its former name error) -- success, warning, info or any other word -- drew a plain row without a sound. It still draws so, and the console says it once per page for each word (helpers/control-status.js, shared with sf-button and sf-button-icon). Nothing drawn differently; settings, values, events and keys unchanged.",
+    "version 1.16.0, also (written on the branch as 1.15.0; 2026-11-12, owner decision C79, changing C22; change journal behaviour-explicit-size-follows-density): a minor. The panel takes the density of the control that opens it whether or not that control has a size: a sized anchor in a compact region opens a compact panel (it opened a normal one, since an explicit size took the normal ladder back), and an anchor inside a data-sf-density=\"normal\" island opens a normal one. Settings, values, events and keys unchanged.",
+    "version 1.16.2 (2026-11-13, RD-1 follow-up; group build 2 fields-2 acceptance): a patch, nothing drawn differently. The menu no longer passes a row's press on to its mark itself (handleRowClick of 1.15.0, DP-2): since RD-1 the core does it for every Smart form control (element-manifest.js, activateFromLabel) -- a label around sf-radio, sf-checkbox or sf-switch clicks the host, the host clicks its control once and its ancestors hear the control's click, so the menu's handler was never reached. A press on a panel row's text still chooses or toggles its mark once, and the radio of a one-of tab is chosen (DP-2). Settings, values, events and keys unchanged.",
+    "version 1.16.2, also (written on the branch as 1.14.4; 2026-11-13, defect BT-1): a patch, nothing drawn or done differently by this element. Its panel first-paint snapshot holds an sf-tabs whose tab buttons now ask for appearance=\"default\" scheme=\"primary\" (sf-tabs 1.1.18) where they asked for appearance=\"primary\" scheme=\"default\", two values outside sf-button's lists; the classes drawn are the same. Settings, values, events and keys unchanged.",
+    "version 1.16.2, also (written on the branch as 1.16.1; 2026-11-13, owner decision C116 #q-status-buttons): a patch, nothing drawn or done differently. The item's status says it is danger alone (owner decision C116 #q-status-buttons): no success, warning or info items; another word draws a plain row and warns once per page (BS-1). Settings, values, events and keys unchanged.",
+    "version 1.16.3 (2026-11-13, a patch; owner decision C106 (9), navigation intent acceptance on group build 2; 1.16.1 and 1.16.2 are held by other branches): the menu's page teaches actions only. The example «Панель с вкладками» (tabs=\"Вид|Колонки\") is gone with its first-paint snapshot; a list's view settings are sf-settings look=\"panel\", whose page now has the example «Панель: колонки и вид списка» (sf-settings examples columns). The docs section on the panel with tabs is a short note: tabs is a former name until 2027-01-01, still read and drawn. Nothing drawn or done differently; settings, values, events and keys unchanged.",
+    "version 1.16.4 (2026-11-13, C43 D3 and D4 follow-up, through component.context-menu 1.9.2; numbered above the 1.16.3 a navigation branch claims): a patch. The class sheet it hashes names a panel row's fill to core mix sf-place-fill: the row under the pointer, the checked row and the checked row under the pointer, so a tonal badge on such a row keeps its own tone and an anchored badge rings with the row. Settings, values, events and keys unchanged.",
+    "version 1.16.5 (2026-11-13, owner decision C105 H4, spacing audit C2; component.context-menu 1.9.3; 1.16.4 is held by another branch): a patch. The panel's 1 px border is inside its inline inset: the rows' plates, a search header, a drilling head, the footer and a panel's body start the inset less --sf-context-menu-border-width from the border's inner edge, so a row's icon or text stands 16 from the panel's outer edge (compact and phone 12), not 17 (13). The scrollbar's gap on either side of its thumb stays the whole inset (C07, C106). Settings, values, events and keys unchanged.",
+    "version 1.17.0 (2026-11-14): a minor (owner decision C142 (7), ui-control control/docs-review/decisions.md; sf-language 1.4.0). An entry with a submenu may give the submenu's width, entry.width, read as the menu's width setting (content, list, panel, form, trigger or a length): sf-language's app menu row (SfLanguage.menuEntry) opens its language rows at decision C32's panel width, so the name in the page's language beside each name is not cut (it was the content width, «английск…»). Without it a submenu is as before. Settings otherwise, values, events and keys unchanged.",
+    "version 1.18.0 (2026-11-14, owner decisions C79 and C134, ui-control research 2026-11-14-context-menu CM-2, CM-5, CM-6, CM-9; 1.17.0 is held by fix/language-g4; component.kbd 1.3.3): a minor. (1) The size default stays 1/2 (owner decision C134, newer than C22/C79; an earlier commit of this version made it 1 and was taken back): rows 32 on a page, 28 in a compact region, 44 under a finger on a phone, where the 1/2 step's text is 12. (2) An anchor of no size is a point (a right-click's pointer): the corner opens at the point itself (no --sf-space-1/4 gap; flipped up, its bottom is the point), the density is the one of the element under the point, and when nothing held the focus before, Escape and a choice give it to that element -- its nearest focusable ancestor, else the element itself lent tabindex -1 until it loses the focus. (3) An example opens the menu on a right-click over a list row. (4) The shortcut delete reads ⌦ on a Mac (component.kbd 1.3.3), Del elsewhere. Settings other than the size's default, values, events and keys unchanged.",
+    "version 1.19.0 (2026-11-14, avatar study AV-8, 2026-11-14; control/research/2026-11-14-avatar.md; above the unreleased 1.17.0 of fix/language-g4 and the context-menu work in progress): a minor, a picture change. A row's picture and the header's are sf-avatar's own drawing (smart avatar js/picture.js; avatars and cl-icon relations): the photo, the initials on the neutral plate (surface-container, its container ink, regular weight) or the person glyph; the row's stays square and the row's line, the header's the d0 circle (component.context-menu 1.11.0 keeps the geometry only). They were the menu's own classes on the secondary container in the medium weight. Settings, events and keys unchanged.",
+    "version 1.22.1 (2026-11-14, owner decisions C173 point 7 and C181 (3), the layer roles): a patch. Without popover support the open menu reads the popover layer (--sf-layer--popover, 90, as before). Settings, values, events and keys unchanged.",
+    "version 1.25.0 (2026-11-15, owner decision C164 (1), research CM): a menu opened at a point (a zero-size anchor: right-click, long press) flips to the other side of the point when it does not fit -- left of the point at the right edge (right of it in RTL), above it at the bottom edge -- so its corner stays on the point; on a phone it was shifted 36 px off the point instead. Only when it fits on neither side does it stand on the side with more room, shifted to the viewport's edge less --sf-space-1/2. The rule is core positioning's (position.js: a point flips on both axes); a menu opened at an element (the menu key, Shift+F10, a button) keeps its placement. Settings, values, events and keys unchanged.",
+    "version 1.25.1 (2026-11-14, owner decision C176, defect SM-3; C157 (5), (6); written on the branch as 1.22.0): a minor. A drilling popup (submenu=\"drill\", opened by openFor) is the one bottom sheet on a phone, as a form is: a settings menu (sf-settings) and the person menu with its settings rows; its levels open inside the same sheet with the way back in its head, a swipe down from the handle row closes it, and a window widened past the phone anchors it again. Above a phone nothing changes.",
+    "version 1.25.3 (2026-11-15, owner decision C191 (4)-(6), control/research/2026-11-14-recipe-parts.md #q-ar-where, #q-ar-direction; above 1.23.0 of fix/menu-opener-size; written on the branch as 1.24.0): a meter row, entry {type: 'meter', text, value, value-text, warning-at, error-at}: an amount within a known range, such as the account's tariff remainder in a person menu, where it stands instead of a ring on the header's avatar (4). A block between rows, not a row (no focus, not in the arrow walk, not narrowed by a search; role none): the name and the words on one line, aria-hidden, over an sf-progress-bar meter (size 1, text-position none) named by text, valued by value (the share used, clamped 0..100, so the thresholds fire, (5)) and said by value-text (the remainder in words, (5)-(6)); without value-text the line shows the percentage. Insets the note's and the header's, 4 between the line and the bar (component.context-menu 1.16.0). Relation cl-progress-bar (lazy). Other entries, settings, events and keys unchanged."
   ],
   "x-registry": {
     "item_contract": {
@@ -881,7 +1012,7 @@
             "kind": "'check' | 'radio' for a checkable row",
             "checked": "boolean",
             "danger": "boolean, a destructive action",
-            "status": "'danger' (or its alias 'error'), the same as danger: true -- the controls' status word (C13)",
+            "status": "'danger' (or its alias 'error'), the same as danger: true -- the controls' status word (C13), the only one (C116)",
             "disabled": "boolean",
             "current": "boolean, the place the person is",
             "href": "string, a link row",
@@ -891,7 +1022,8 @@
             "search": "{placeholder, empty}, a field above the submenu that narrows its rows by label, caption and keywords",
             "keywords": "string, extra words a search matches",
             "avatar": "string, a picture URL drawn in the lead (a site's logo, a person)",
-            "initials": "string, drawn in the lead when there is no picture"
+            "initials": "string, drawn in the lead when there is no picture",
+            "swatch": "string, a CSS colour drawn as a circle in the lead instead of an icon (a code, var() of a token, light-dark() of two): a colour row of sf-settings, a label's colour"
           }
         },
         "separator": {
@@ -922,7 +1054,8 @@
             "icon": "string, a Material Symbols name in the lead",
             "caption": "string, a second line under the name",
             "view": "'quiet' (the default: the options at the row's end, sized to their content, no frame and no dividers, the chosen one on a soft fill), 'band' (the framed full-width band, for a row that must show every option across the panel) or 'drill' (the chosen option under the label and a chevron; the options open as a level of the panel, a check mark on the chosen one, and choosing goes back -- for a list too long or too wordy to stand at the row's end). A drilling view needs a drilling panel: in a flyout menu the row stays the quiet one",
-            "options": "[{id, text, icon, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false"
+            "options": "[{id, text, icon, swatch, checked, disabled}], side by side; a choice is marked at once and the menu stays open unless keepOpen is false. An option's swatch is a CSS colour drawn as a circle where its icon would stand (in the drilled level's lead, or alone in a quiet row's option)",
+            "swatch": "string, a CSS colour drawn as a circle in the row's lead: the colour chosen now"
           }
         },
         "switch": {
@@ -964,6 +1097,16 @@
           "fields": {
             "type": "'note'",
             "text": "string, a line of explanation"
+          }
+        },
+        "meter": {
+          "fields": {
+            "type": "'meter'",
+            "text": "string, the amount's name («Место»), the bar's accessible name",
+            "value": "number 0..100, the share used (clamped), so the thresholds fire; the bar is sf-progress-bar's meter",
+            "valueText": "string, the words over the bar and the bar's aria-valuetext, as people say it: the remainder («Осталось 1,7 из 10 ГБ», owner decision C191 (5)); without it the percentage",
+            "warningAt": "number, per cent of the share used from which the bar is a warning (C131 (7))",
+            "errorAt": "number, per cent from which the bar is an error, above warningAt"
           }
         }
       }

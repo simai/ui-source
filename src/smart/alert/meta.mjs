@@ -41,7 +41,7 @@ const sfAlertMeta = {
         "flat"
       ],
       "default": "default",
-      "description": "How the alert looks: a filled surface, an outline, or flat."
+      "description": "How the alert looks, one of the three notice looks (owner decision C110): default the border and the status fill, outlined the border only, flat the status fill without a border, lifted by the card's shadow."
     },
     "icon": {
       "kind": "custom",
@@ -83,6 +83,15 @@ const sfAlertMeta = {
       "valueType": "string",
       "default": "secondary",
       "description": "Stable secondary action value emitted in sf-alert-action."
+    },
+    "actions-layout": {
+      "kind": "enum",
+      "values": [
+        "auto",
+        "under"
+      ],
+      "default": "auto",
+      "description": "Where the actions stand: auto puts them in the row with the text while the alert is wide enough and under the text when narrower (layout L3a); under keeps them under the text at every width, for a long text. Any other word is auto."
     },
     "closable": {
       "kind": "boolean",

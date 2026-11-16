@@ -1,0 +1,19 @@
+{
+  "$comment": "Dated aliases of sf-contents for the shim (core/js/aliases.js, standard §16 item 20).",
+  "component": "sf-contents",
+  "since": "2026-11-13",
+  "remove_after": "2027-01-01",
+  "aliases": [
+    {
+      "from": "compact",
+      "to": "sheet",
+      "kind": "value",
+      "setting": "layout",
+      "component": "sf-contents",
+      "since": "2026-11-13",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "owner decision C134 (control/research/2026-11-13-navigation-density.md D5, Q1): the word compact means density only; the button view is layout sheet and writes the class sf-contents--layout-sheet beside its former sf-contents--layout-compact until the date"
+    }
+  ]
+}

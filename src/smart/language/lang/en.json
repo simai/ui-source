@@ -4,6 +4,7 @@
     "label": "Language",
     "trigger": "{label}: {name}",
     "search": "Find a language",
-    "empty": "No language found"
+    "empty": "No language found",
+    "missing": "no translation — the home page opens"
   }
 }

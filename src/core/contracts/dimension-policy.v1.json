@@ -44,6 +44,14 @@
       "reason": "The panel offset is derived from its current rendered height."
     },
     {
+      "id": "input-date-ribbon-sheet-under-field",
+      "category": "runtime-review",
+      "filePattern": "^smart/input-date/index\\.js$",
+      "contextPattern": "max-block-size: max\\(50%, calc\\(100% - \\$\\{top\\}px - var\\(--sf-space-1\\)\\)\\)",
+      "status": "accepted-runtime-geometry",
+      "reason": "The phone ribbon's bottom sheet stops a step 1 under the field it fills (owner decision C62, prototypes/datepicker.html#lenta): the field's bottom edge is measured with getBoundingClientRect when the sheet opens, in CSS pixels, and is kept exact; the step itself is the space token."
+    },
+    {
       "id": "legacy-accessibility-font-setting",
       "category": "runtime-review",
       "filePattern": "^component/sf-system/js/04-blocks/_special\\.js$",
@@ -71,9 +79,9 @@
       "id": "smart-overlay-measured-geometry",
       "category": "runtime-review",
       "filePattern": "^smart/drawer/index\\.js$",
-      "contextPattern": "(?:Math\\.max|sides\\[side\\])",
+      "contextPattern": "(?:Math\\.max|sides\\[side\\]|\\$\\{room\\}px|\\$\\{end\\}px|\\$\\{Math\\.round\\(drawn\\)\\}px)",
       "status": "accepted-runtime-geometry",
-      "reason": "The drawer's scroll-lock gutters and its bottom sheet's drag offset are derived from the current viewport, rendered boxes and the pointer."
+      "reason": "The drawer's scroll-lock gutters, its bottom sheet's drag offset, the head's room for the edge controls of a panel without room beside it and where the panel's head ends, and the drawn width an off-ladder warning reports are derived from the current viewport, rendered boxes and the pointer."
     },
     {
       "id": "smart-drag-measured-geometry",
@@ -82,6 +90,14 @@
       "contextPattern": "(?:startRect|\\$\\{left\\}|\\$\\{top\\})",
       "status": "accepted-runtime-geometry",
       "reason": "Drag placeholders and transforms preserve the exact DOMRect and pointer position."
+    },
+    {
+      "id": "notification-stack-measured-geometry",
+      "category": "runtime-review",
+      "filePattern": "^core/js/notify\\.js$",
+      "contextPattern": "(?:\\$\\{top \\? away : -away\\}px|\\$\\{clip\\}px|\\$\\{size\\}px)",
+      "status": "accepted-runtime-geometry",
+      "reason": "The notification stack (owner decision C50) places, clips and sizes from the toasts' rendered heights and the area's computed gap (--sf-space-1/2); the browser reports them in CSS pixels."
     },
     {
       "id": "policy-self",
@@ -121,6 +137,15 @@
       "reason": "C18 lists the 1-2px line as an exception: a border, a focus offset, a visually hidden 1px box, an anti-aliasing half pixel. A hairline marks an edge and keeps its pixel width at any root size (owner, 2026-10-10)."
     },
     {
+      "id": "notice-frame-in-container-step",
+      "category": "condition-review",
+      "filePattern": "^component/(?:alerts/scss/_css__alerts|toast/scss/_css__toast)\\.scss$",
+      "contextPattern": "^\\s*@container sf-(?:alert|toast) \\(min-width: #\\{mq\\.container-step\\([a-i]\\d, \\$frame: 2 \\* ",
+      "textPattern": "^(?:1rem|2px)$",
+      "status": "accepted-size-step",
+      "reason": "Owner decision C115 (layout L3a): the notice's actions go into the row from 36 / 48 rem (a toast 20 rem) of the notice's whole width, steps of the C181 container ladder (container-step()). A container query reads the content box and cannot read a variable, so the step takes off the notice's frame as a written length: its two inline insets (1rem each, --sf-space-1, the border inside them)."
+    },
+    {
       "id": "breakpoint-and-container-steps",
       "category": "condition-review",
       "filePattern": "\\.(?:s?css)$",
@@ -150,6 +175,14 @@
       "reason": "Sass maps naming size steps by their rem value for container queries, which cannot read a variable (g6, h0, h2, h4, h6, h8, i0, i2)."
     },
     {
+      "id": "wcag-text-spacing",
+      "category": "style-review",
+      "filePattern": "^core/scss/_sf_css__display\\.scss$",
+      "contextPattern": "^\\s*(?:letter-spacing: 0\\.12em|word-spacing: 0\\.16em|margin-block-end: 2em);",
+      "status": "accepted-platform-boundary",
+      "reason": "«Шире» (C196) is WCAG 1.4.12 Text Spacing itself: letters 0.12, words 0.16 and paragraphs 2 times the text size. The criterion is stated in em of the text, so the values follow it, not the space ladder."
+    },
+    {
       "id": "touch-field-zoom-floor",
       "category": "style-review",
       "filePattern": "^core/scss/_sf_css__touch_fields\\.scss$",
@@ -157,6 +190,24 @@
       "textPattern": "^16px$",
       "status": "accepted-platform-boundary",
       "reason": "WebKit zooms the page on focus of a field under 16 CSS pixels; the floor is in CSS px by the platform's rule."
+    },
+    {
+      "id": "touch-field-zoom-floor-quantity-unit",
+      "category": "style-review",
+      "filePattern": "^component/quantity/scss/_css__quantity\\.scss$",
+      "contextPattern": "font-size: max\\(var\\(--sf-quantity-input--font-size\\), 16px\\)",
+      "textPattern": "^16px$",
+      "status": "accepted-platform-boundary",
+      "reason": "The unit beside a quantity's number takes the same touch-phone floor the core gives the number (touch-field-zoom-floor), so the two stay one size (C53 D2)."
+    },
+    {
+      "id": "touch-field-zoom-floor-rich-text",
+      "category": "style-review",
+      "filePattern": "^smart/input-rich/scss/_smart__rich_text\\.scss$",
+      "contextPattern": "font-size: max\\((?:var\\(--sf-heading-[345]--size\\), )?var\\(--sf-rich-text--(?:font|h[234])-size\\), 16px\\)",
+      "textPattern": "^16px$",
+      "status": "accepted-platform-boundary",
+      "reason": "The rich text's editing surface and its headings take the touch-phone floor the core gives input, textarea and select (touch-field-zoom-floor): the surface is none of them, and iOS zooms into it the same way (TR-3). A heading's floor also names the page heading one level down (C141 (7))."
     },
     {
       "id": "sass-unit-math",
@@ -199,11 +250,28 @@
         "style-review",
         "definition-review"
       ],
-      "filePattern": "^(?:core/scss/_sf_css__typograpy\\.scss|component/file-upload/scss/_css__upload_progress\\.scss|core/contracts/public-variables\\.v1\\.json)$",
+      "filePattern": "^(?:core/scss/_sf_css__typograpy\\.scss|core/scss/_sf_css__link\\.scss|component/file-upload/scss/_css__upload_progress\\.scss|core/contracts/public-variables\\.v1\\.json)$",
       "contextPattern": ".*",
       "textPattern": "^\\d*\\.?\\d+em$",
       "status": "accepted-owner-decision",
-      "reason": "Sized from the text around them by decision: inline code's room (C10, R024: .2em by .4em), an underline's offset. No ladder step is a fixed share of every text size."
+      "reason": "Sized from the text around them by decision: inline code's room (C10, R024: .2em by .4em), an underline's offset, the new-tab sign of a link at the size of its text (C186 (3)). No ladder step is a fixed share of every text size."
+    },
+    {
+      "id": "text-bar-capital-height",
+      "category": "style-review",
+      "filePattern": "^(?:core/scss/_sf_css__placeholder\\.scss|component/skeleton/scss/_skeleton\\.scss|component/modal/scss/_css__modal_custom\\.scss)$",
+      "contextPattern": "(?:@supports \\(block-size: round\\(nearest, 1em, 1em\\)\\)|--sf-first-paint-bar--(?:height|top):)",
+      "textPattern": "^\\d*\\.?\\d+em$",
+      "status": "accepted-owner-decision",
+      "reason": "Owner decision C136 (1): a text skeleton bar is as tall as the capitals of the text it stands for, Inter's capital height 0.727 em rounded to an even pixel with the size ladder's 2 px step, centred in the line (the glyph box's middle, 0.6055 em from its top). These are font metrics relative to the text, not sizes; the @supports test only asks whether round() parses. sf-modal's loading skeleton (C159 (9)) draws the same bar."
+    },
+    {
+      "id": "form-field-width-steps",
+      "category": "style-review",
+      "filePattern": "^smart/form/scss/_smart__form\\.scss$",
+      "contextPattern": "^\\s*max-inline-size: (?:8|16)rem;$",
+      "status": "accepted-owner-decision",
+      "reason": "C182 (4), owner 2026-11-14: a short form field's width steps are s 8rem and m 16rem of the control; the decision gives the values, no other component reads them."
     },
     {
       "id": "documentation-prose",
@@ -255,12 +323,20 @@
       "reason": "A column or panel width passed as an attribute or a documented default (a popover 20rem = g0, a modal 48rem = h2, a field grid column 14rem = f4, a resizer's 12rem and 40rem bounds = f2 and h0): steps of the size scale written in rem where an attribute value is expected."
     },
     {
+      "id": "dropdown-in-place-measured-room",
+      "category": "runtime-review",
+      "filePattern": "^component/dropdown/portal\\.js$",
+      "contextPattern": "\\$\\{Math\\.floor\\(cap\\)\\}px",
+      "status": "accepted-runtime-geometry",
+      "reason": "An in-place list (portal=\"false\") takes the anchored list's height (owner remark R171): the room above or below its field, measured with getBoundingClientRect on opening less the panel's edge padding (a space token), in CSS pixels, written as --sf-dropdown-available-block-size."
+    },
+    {
       "id": "measured-runtime-geometry",
       "category": "runtime-review",
-      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|layer-stack|position)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js)$",
+      "filePattern": "^(?:component/(?:country-code/js/_country_code|menu/js/_menu|range-slider/js/_range_slider|scrollbar/js/_scrollbar|textarea/js/_textarea|tooltip/js/_tooltip)\\.js|core/js/(?:code-copy|effects|float-anchor|layer-stack|menu-open|position|sheet-swipe|workspace)\\.js|core/js/composition/(?:inline-editor|overlay|sortable-inserter|sortable)\\.mjs|smart/(?:menu|menu-context|profile-picker|resizer|segmented)/index\\.js|smart/tree/js/templates/default\\.js|smart/gallery/js/(?:masonry|viewer)\\.js)$",
       "contextPattern": ".*",
       "status": "accepted-runtime-geometry",
-      "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."
+      "reason": "Coordinates and sizes measured from the rendered page or the pointer (a floating panel's place, a drag ghost, a sheet or side panel following a finger (C157), a virtual list's spacer, a tooltip tail); the browser reports them in CSS pixels."
     },
     {
       "id": "drawer-dock-default",
@@ -269,9 +345,9 @@
         "script-data-template-review"
       ],
       "filePattern": "^smart/drawer/index\\.js$",
-      "contextPattern": "(?:DOCK_MIN_REM|^//)",
+      "contextPattern": "(?:DOCK_MIN_REM|LADDER_WIDTHS|^//)",
       "status": "accepted-size-step",
-      "reason": "The dock threshold's default, 48rem (h2), a step of the size scale, and the comments that name it."
+      "reason": "The dock threshold's default, 48rem (h2), a step of the size scale, the width ladder's steps named in the off-ladder warning (20 · 24 · 30rem, the sheet's g0 · g2 · g5, C157 (2)), and the comments that name them."
     },
     {
       "id": "deferred-legacy-sf-system-panel",
@@ -292,6 +368,14 @@
       "contextPattern": "'font-size', '16px'",
       "status": "accepted-compatibility-boundary",
       "reason": "The low-vision panel resets its own text to 16 CSS px so the page's chosen text size (specialkegl) never scales the panel's controls."
+    },
+    {
+      "id": "accordion-section-height-motion",
+      "category": "runtime-review",
+      "filePattern": "^component/accordion/js/motion\\.js$",
+      "contextPattern": "\\{blockSize: \\[`\\$\\{from\\}px`, `\\$\\{to\\}px`\\]\\}",
+      "status": "accepted-runtime-geometry",
+      "reason": "The accordion section's height motion (owner decision C154 (4)): the section moves from the height it stood at to the one it stands at now, both measured with getBoundingClientRect in CSS pixels at the press; the clock is the class sheet's (--sf-accordion--duration, --sf-ease-move)."
     }
   ]
 }

@@ -28,7 +28,10 @@ means: it sets `value` (the tile loads nothing), says whether a rise is good
 - `value` — the number; unset, the tile says «—». `format` writes it in the
   page language (`number`, `integer`, `decimal-<n>`, `percent` for a share
   0..1, `compact`, `currency-<CODE>`, `unit-<Intl unit>` such as
-  `unit-gigabyte`); `value-text` replaces the written number when the page
+  `unit-gigabyte`); a kind and a precision join with a space. Money is
+  whole on a tile: `currency-RUB` writes «1 111 111 ₽»; `currency-RUB
+  decimal-2` keeps the kopecks, and `currency-RUB compact` writes «1,1 млн ₽»
+  for a narrow 1/2 tile. `value-text` replaces the written number when the page
   writes it itself; `unit` is a word after it for a unit Intl does not know
   («сайтов», «запросов/с»).
 - `previous` or `delta` — the change: `delta` when the page has it, else
@@ -36,7 +39,9 @@ means: it sets `value` (the tile loads nothing), says whether a rise is good
   previous value), `absolute` or `both`; `period-text` says what it is against
   («к прошлой неделе»). `better` `up` (the default), `down` (load, errors, a
   queue) or `none`: the change's tone follows its meaning, not its sign, and
-  its direction is also said in words for a reader.
+  its direction is also said in words for a reader. The change is a tonal
+  badge; no change is the words «без изменений» on the same line, with no
+  badge and no sign.
 - `max` — a limit: «45 ГБ из 100 ГБ» with a meter (`limit-text` replaces the
   words). `warning-at` and `error-at`, in per cent of `max` as on
   `sf-progress-bar`, make the meter and the tile a warning or an error by
@@ -44,20 +49,30 @@ means: it sets `value` (the tile loads nothing), says whether a rise is good
 - `status` `neutral|success|warning|error|info` and `hint` — the page's
   statement about the number, drawn as a status icon and a short line. With
   thresholds the tile draws the more serious of `status` and the threshold
-  reached; the status drawn is the host state `data-status`.
+  reached; the status drawn is the host state `data-status`. Without `hint`
+  the line is the status word («Внимание», «Ошибка», from the language
+  files), so a threshold that fired is never an icon alone.
 - `href` — the whole tile is one link. `openable` — without `href`, the whole
   tile is one button that sends `sf-tile-metric-open` `{id}` (the element's
   id). Nothing interactive belongs inside a tile.
-- `loading` — the value is on its way: the label stays, the value and the
-  change are skeleton bars, `aria-busy` is true, `data-loading` is on the host.
+- `loading` — the value is on its way: the label stays and every line that
+  waits keeps the place of the line that comes, so nothing moves when the
+  numbers arrive: the value, the change badge (with `previous`, `delta` or
+  `period-text`, or without `max`), the meter and its words (with `max`), the
+  status line (with `status` or `hint`) — pulsing skeleton bars and boxes.
+  `aria-busy` is true, `data-loading` is on the host. Before its code arrives
+  the tile already holds the same box.
 - `size` `1/2|1|2` — the rung of the ladder: 1/2 for a dense row, 2 for a
   page's headline figure.
 
 ## Chart
 
 A chart is the page's: give it as a child with `slot="chart"`, for example an
-`sf-chart-sparkline` of the chart set. The tile moves that very node under
-the numbers, so the page can feed it data later.
+`sf-chart-sparkline` of the chart set or an `svg`. The tile moves that very
+node under the numbers, so the page can feed it data later, and lays it
+across the tile's whole width, 32 high, in the hint's colour (an `svg` drawn
+with `currentColor` takes it): the change's colour is the badge's, the line
+has none of its own, and no axes or captions.
 
 ```html
 <sf-tile-metric label="Запросы" value="320" format="integer" unit="в минуту">
@@ -68,8 +83,12 @@ the numbers, so the page can feed it data later.
 ## A row of tiles
 
 The class `sf-tile-metric-grid` on the tiles' parent is a grid of columns at
-least `--sf-tile-metric-min-width` (14rem, the size step f4) wide that wraps, one column on a
-phone; tiles in a row share their height.
+least `--sf-tile-metric-min-width` (14rem, the size step f4) wide that wraps;
+tiles in a row share their height. In a narrow place (the grid narrower than
+the container step g6, 32rem: a phone, or a narrow column of a wide page) the
+tiles of size 1/2 stand two in a row and sizes 1 and 2 take the whole row; the
+grid's own width decides, not the screen's (C181 (2)). The gap is the one between cells (`--sf-space-1`: 16 on a computer, 12
+compact and on a phone).
 
 ## Geometry
 
@@ -96,6 +115,20 @@ it is its picture. The change and the status say their meaning in words
 beside the arrow and the icon, so colour is never the only sign.
 
 ## Changes
+
+- 1.5.1 (2026-11-15, C181 (2)) — the row of tiles pairs its 1/2 tiles by its
+  own width (below 32rem), not the screen's: a narrow column of a wide page
+  too.
+
+- 1.4.0 (2026-11-14, owner decision C168) — no change is the words «без
+  изменений», not a «− 0» badge; money whole by default (`decimal-2` for the
+  kopecks, `compact` for «1,1 млн ₽»); an `svg` in the chart slot is taken,
+  and the chart is the tile's width, 32 high, in the hint's colour; on a
+  phone the 1/2 tiles stand two in a row.
+
+- 1.3.0 (2026-11-13) — a status without `hint` (a threshold that fired)
+  shows its word beside the icon («Внимание», «Ошибка»), where only a screen
+  reader heard it.
 
 - 1.0.0 (2026-11-07) — the first version, for the Larena admin screens
   (Federation bus msg-993e1e39 item 1).

@@ -85,7 +85,8 @@ test('Highlight line numbers and presentation use semantic tokens', async () => 
   assert.match(lineNumbers, /setAttribute\('aria-hidden', 'true'\)/);
   assert.doesNotMatch(lineNumbers, /\d(?:\.\d+)?rem|paddingLeft/);
   assert.match(defaults, /--sf-radius--surface/);
-  assert.match(defaults, /--sf-text-medium--size/);
+  // Code in a block is one step below the text (C186 (10)).
+  assert.match(defaults, /font-size: var\(--sf-text-size-1\\\/2\)/);
   assert.match(theme, /--sf-space-1/);
   assert.doesNotMatch(`${defaults}${theme}`, /(?<![-\w])\d+(?:\.\d+)?(?:px|rem|em)(?![-\w])/);
 });

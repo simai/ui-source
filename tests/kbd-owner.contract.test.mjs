@@ -4,7 +4,9 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('Kbd is a CSS-only semantic primitive with a neutral chord group', async () => {
+// The script fills <kbd data-sf-shortcut> alone (owner decision C191, 2026-11-15);
+// a key and a group are still drawn by the sheet.
+test('Kbd is a semantic primitive with a neutral chord group', async () => {
   const [rule, css] = await Promise.all([
     read('src/component/kbd/rule.js'),
     read('src/component/kbd/scss/_kbd.scss'),
@@ -13,7 +15,7 @@ test('Kbd is a CSS-only semantic primitive with a neutral chord group', async ()
   assert.match(rule, /<kbd\\b/);
   assert.match(rule, /\\bsf-kbd\\b/);
   assert.match(rule, /css:\s*true/);
-  assert.match(rule, /js:\s*false/);
+  assert.match(rule, /js:\s*true/);
   assert.match(css, /\$key: 'kbd:not\(\.sf-kbd--group\):not\(:has\(> kbd\)\), \.sf-kbd:not\(\.sf-kbd--group\)'/);
   assert.match(css, /\$group: 'kbd:has\(> kbd\), \.sf-kbd--group'/);
   assert.match(css, /white-space:\s*nowrap/);

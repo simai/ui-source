@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.8.1",
+  "version": "1.16.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -26,6 +26,7 @@
       "component.icon-buttons",
       "component.inputs",
       "smart.button-icon",
+      "smart.help-mark",
       "smart.icon",
       "smart.input",
       "smart.list-item"
@@ -68,9 +69,24 @@
         "type": "boolean",
         "default": false
       },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The text shown under the field while it is invalid, in the error colour, in the field-message style; it is the trigger's error message for assistive technology (aria-describedby, aria-errormessage)."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "Marks the choice as wrong: the error border (filled: the error fill), aria-invalid on the trigger and error-message under the field. No error icon is drawn."
+      },
       "label": {
         "type": "string",
         "default": ""
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
       },
       "layout": {
         "type": "string",
@@ -233,6 +249,31 @@
         "description": "The element, for chaining."
       }
     },
+    "setError": {
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets the custom error the form will not submit over. Returns the element.",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
+    },
     "resetToInherited": {
       "summary": "Returns the field to its inherited value, as the reset button does: fires the cancellable sf-field-reset, then empties the own value and focuses the control. Returns whether it was reset (false without an inherited value, without an own value, while disabled or readonly, or when the event was prevented).",
       "arguments": [],
@@ -377,11 +418,13 @@
       "ArrowUp",
       "Home",
       "End",
+      "PageDown",
+      "PageUp",
       "Enter",
       "Space",
       "Escape"
     ],
-    "focus": "The toggle is the primary Tab stop. Arrow keys open and move through available options; Home and End move within the list; Enter or Space selects; Escape closes and restores the toggle; Tab closes and continues native traversal. The searchbox keeps native text-editing Home and End behavior. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+    "focus": "The toggle is the primary Tab stop. Arrow keys open and move through available options; Home and End move within the list, PageDown and PageUp by what it shows, and typed letters to the option they begin; the focused option is brought into view; Enter or Space selects; Escape closes and restores the toggle; Tab closes and continues native traversal. The searchbox keeps native text-editing Home and End behavior. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
   },
   "presentation": {
     "themes": [
@@ -452,23 +495,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "b94c84190aa7f8e774603a526c8e8d0a76286010ad3a67b86d0a0127239ca445"
+        "sha256": "f0839e22a9c5e0dfb666634f42a1b3eea53207444a969d07444345124412a6c1"
       },
       {
         "path": "src/smart/dropdown/rule.js",
-        "sha256": "2b4d4f6f7673b009586e9691819c8091a4228b0c2428a76d0421db55cdc7fe96"
+        "sha256": "a0d34f8ec653f2168e93b79a46a2c0466a42b21465187fe9c6a51f1fa7b07f2c"
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "d704efcc601e99de43ea713c72c02d520601c9669d8a768047c842a6fbad8b65"
+        "sha256": "ca817a016476b92ffae11801b8de781fe634e00b5a9bacb7a4d6c7d58cbbc795"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
-        "sha256": "311549a390cbb399282967b2506ed5875d23e127542960f207386ba3c3191d68"
+        "sha256": "29b76e2813fea297a7c6e3ddda0c4eb36826206a7a32c7765247aa4bcf379e21"
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "742bb92a4cd39b2882da5038aa5d3c364b0b30c2cdf10a8e211e251ff62b7d37"
+        "sha256": "02a3d017c309094057bfb19f94ef588ee6ae2c6e3c0758cda318dfc857436452"
       }
     ],
     "generated_runtime": [

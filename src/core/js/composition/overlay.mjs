@@ -1,8 +1,11 @@
 import { isPlainObject } from './canonical.mjs';
 import { pageText } from '../page-language.js';
 import { defineTagAliases } from '../tag-aliases.js';
-import { activeSortableSession, registerSortableDropTarget } from './sortable.mjs';
+import { activeSortableSession, registerSortableDropTarget, SORTABLE_DROP_LINE } from './sortable.mjs';
+import { drawnBox, fitByPriority, measureShown, openRowMenu, readPriority } from '../overflow-row.js';
+import { breakpointMedia } from '../breakpoints.js';
 import { holdOpenSurfaceMark, isTopOpenSurface } from '../open-surface-mark.js';
+import { roving } from '../roving.js';
 
 // Editor canvas overlay. It draws hover and selection frames, an action toolbar
 // above the selected block and one insertion point at the seam under the pointer
@@ -62,12 +65,18 @@ const LEGACY_DETAIL = {
 };
 
 const MESSAGES = {
-  ru: { picked: 'Перемещение: {label}. Стрелки выбирают место, Enter — положить, Escape — отменить.', cancelled: 'Перемещение отменено.', tree: 'Структура страницы', toolbar: 'Действия', insert: 'Вставить', insertAt: 'Вставить в «{slot}», позиция {index}', position: '{index} из {total}', selected: 'Выбрано: {label}', editing: 'Редактирование: {label}. Enter — сохранить, Escape — отменить.' },
-  en: { picked: 'Moving {label}. Arrows choose a place, Enter drops, Escape cancels.', cancelled: 'Move cancelled.', tree: 'Page structure', toolbar: 'Actions', insert: 'Insert', insertAt: 'Insert into “{slot}”, position {index}', position: '{index} of {total}', selected: 'Selected: {label}', editing: 'Editing {label}. Enter saves, Escape cancels.' },
+  ru: { picked: 'Перемещение: {label}. Стрелки выбирают место, Enter — положить, Escape — отменить.', cancelled: 'Перемещение отменено.', tree: 'Структура страницы', toolbar: 'Действия', insert: 'Вставить', insertAt: 'Вставить в «{slot}», позиция {index}', position: '{index} из {total}', selected: 'Выбрано: {label}', editing: 'Редактирование: {label}. Enter — сохранить, Escape — отменить.', more: 'Ещё', insertAfter: 'Вставить после «{label}»', dropped: 'Перемещено: {label}. {place}.' },
+  en: { picked: 'Moving {label}. Arrows choose a place, Enter drops, Escape cancels.', cancelled: 'Move cancelled.', tree: 'Page structure', toolbar: 'Actions', insert: 'Insert', insertAt: 'Insert into “{slot}”, position {index}', position: '{index} of {total}', selected: 'Selected: {label}', editing: 'Editing {label}. Enter saves, Escape cancels.', more: 'More', insertAfter: 'Insert after “{label}”', dropped: 'Moved {label}. {place}.' },
 };
 
 const ACTION_ID = /^[a-z][a-z0-9-]{0,63}$/u;
-const ACTION_KEYS = new Set(['id', 'label', 'icon', 'shortcut', 'disabled', 'tone']);
+const ACTION_KEYS = new Set(['id', 'label', 'icon', 'shortcut', 'disabled', 'tone', 'priority']);
+// The toolbar shows up to this many icon actions (owner decision C170 (1));
+// the rest, and every action without an icon, are in «⋯».
+const ROW_ICONS = 5;
+// The toolbar is a phone's bottom bar below the sm breakpoint (C170 (4)).
+const PHONE_BELOW = 'sm';
+const OUT = 'sf-composition-overlay-out';
 const ICON_NAME = /^[a-z][a-z0-9_]{0,63}$/u;
 // The action a drag starts from is the one drawn as a grip.
 const GRIP_ICON = 'drag_indicator';
@@ -111,11 +120,12 @@ export function checkOverlayActions(actions) {
     if ((action.icon !== undefined && !ICON_NAME.test(String(action.icon)))
       || (action.shortcut !== undefined && (typeof action.shortcut !== 'string' || !action.shortcut.trim()))
       || (action.disabled !== undefined && typeof action.disabled !== 'boolean')
-      || (action.tone !== undefined && action.tone !== 'danger')) {
-      throw new TypeError(`Overlay action ${action.id} has an icon name, a shortcut string, a boolean disabled and the tone "danger" at most`);
+      || (action.tone !== undefined && action.tone !== 'danger')
+      || (action.priority !== undefined && action.priority !== 'pin' && !(Number.isSafeInteger(action.priority) && action.priority >= 1))) {
+      throw new TypeError(`Overlay action ${action.id} has an icon name, a shortcut string, a boolean disabled, the tone "danger" and a priority (a whole number from 1, or "pin") at most`);
     }
     const checked = { id: action.id, label: action.label };
-    for (const key of ['icon', 'shortcut', 'disabled', 'tone']) if (action[key] !== undefined) checked[key] = action[key];
+    for (const key of ['icon', 'shortcut', 'disabled', 'tone', 'priority']) if (action[key] !== undefined) checked[key] = action[key];
     return Object.freeze(checked);
   });
 }
@@ -259,6 +269,11 @@ export function frameRectToHost(box, view) {
 
 const plainText = (element) => (element.textContent || '').replace(/\s+/gu, ' ').trim();
 const px = (value) => Number.parseFloat(value) || 0;
+// Puts children in a parent only when they differ: a focused button that is not
+// moved keeps its focus.
+function sync(parent, children) {
+  if (children.length !== parent.children.length || children.some((child, at) => child !== parent.children[at])) parent.replaceChildren(...children);
+}
 const intersect = (a, b) => ({ left: Math.max(a.left, b.left), top: Math.max(a.top, b.top), right: Math.min(a.right, b.right), bottom: Math.min(a.bottom, b.bottom) });
 const calm = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
 
@@ -336,6 +351,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.seamTimer = 0;
       this.gripDrag = null;
       this.actionParts = new Map();
+      this.groupParts = [];
+      this.toolGroups = [];
+      this.menuOnly = [];
+      this.toolsOut = new Set();
+      this.phoneQuery = null;
       // The node a first click opened, so the double click it begins opens it once.
       this.openedByClick = null;
       // Whether the selection was made by a pointer on a 'for' canvas: the
@@ -451,6 +471,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.toolbar.className = 'sf-composition-overlay-toolbar';
       this.toolbar.setAttribute('role', 'toolbar');
       this.toolbar.hidden = true;
+      this.buildToolbarParts();
       // The rail holds the toolbar's sticky range in the scrolled content.
       this.rail = doc.createElement('div');
       this.rail.className = 'sf-composition-overlay-rail';
@@ -470,14 +491,41 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const frame = globalThis.document.createElement('div');
       frame.className = `sf-composition-overlay-frame sf-composition-overlay-frame--${kind}`;
       frame.hidden = true;
-      // Hover is a bare frame; only the selection carries the move handle.
-      if (kind === 'selected') {
-        const label = globalThis.document.createElement('span');
-        label.className = 'sf-composition-overlay-label';
-        label.hidden = true;
-        frame.append(label);
-      }
+      // No label above the frame (owner decision C170 (2), revised after R253):
+      // the block's kind and name start the toolbar.
       return frame;
+    }
+
+    // The toolbar's own parts, made once: the block's kind icon and name at its
+    // start, «⋯» «Ещё» at its end with the separator before it, and on a phone
+    // the «+» that adds after the selected block (C170 (1), (2a), (4)).
+    buildToolbarParts() {
+      const doc = globalThis.document;
+      this.nameItem = doc.createElement('span');
+      this.nameItem.className = 'sf-composition-overlay-name';
+      this.nameIcon = doc.createElement('i');
+      this.nameIcon.className = 'sf-icon';
+      this.nameIcon.setAttribute('aria-hidden', 'true');
+      this.nameText = doc.createElement('span');
+      this.nameText.className = 'sf-composition-overlay-name-text';
+      this.nameItem.append(this.nameIcon, this.nameText);
+      this.nameSeparator = this.separator();
+      this.moreSeparator = this.separator();
+      this.moreSeparator.classList.add('sf-composition-overlay-more-separator', OUT);
+      this.moreTool = this.createTool({ icon: 'more_horiz', label: this.messages.more });
+      this.moreTool.root.classList.add(OUT);
+      this.moreTool.root.setAttribute('data-sf-overlay-more', '');
+      this.moreTool.button.setAttribute('aria-haspopup', 'menu');
+      this.addTool = this.createTool({ icon: 'add', label: this.messages.insert, appearance: 'default' });
+      this.addTool.root.setAttribute('data-sf-overlay-add', '');
+    }
+
+    separator() {
+      const line = globalThis.document.createElement('span');
+      line.className = 'sf-composition-overlay-separator';
+      line.setAttribute('role', 'separator');
+      line.setAttribute('aria-orientation', 'vertical');
+      return line;
     }
 
     /** Binds the overlay to a rendered canvas; the canvas is never modified. */
@@ -536,6 +584,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.tree.addEventListener('blur', () => this.removeAttribute('data-sf-overlay-focus'), options);
       this.toolbar.addEventListener('click', (event) => this.onToolbarClick(event), options);
       this.toolbar.addEventListener('keydown', (event) => this.onToolbarKey(event), options);
+      // One Tab stop that comes back to the action left, Home and End (core's
+      // roving helper, owner decision C184 (1), (3)); the arrows stay
+      // onToolbarKey's, which knows the bar's side.
+      this.toolbarKeys?.destroy();
+      this.toolbarKeys = roving(this.toolbar, { items: 'button[data-action]' });
       this.insertionLayer.addEventListener('click', (event) => this.onInsertionClick(event), options);
       this.toolbar.addEventListener('pointerdown', (event) => this.onToolbarPointerDown(event), options);
       this.insertionLayer.addEventListener('pointerover', () => this.holdSeam(), passive);
@@ -553,7 +606,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         drop: (dragSession, descriptor) => this.emit(OVERLAY_EVENTS.insert, { ...descriptor, parent: descriptor.parent_id ?? null, item: dragSession.item, from: dragSession.from, mode: dragSession.mode }),
         leave: () => this.showDropHint(null),
       });
-      this.selectedFrame.firstChild.addEventListener('pointerdown', (event) => this.onHandleDown(event), options);
+      this.phoneQuery = breakpointMedia(PHONE_BELOW, { below: true });
+      this.phoneQuery?.addEventListener?.('change', () => this.applyPhone(), options);
+      this.applyPhone();
       this.setAttribute('data-sf-overlay', 'connected');
       this.renderTree();
       if (this.iframe) this.bindFrameDocument();
@@ -781,7 +836,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
           const descriptor = { parent_id: parent, slot, index };
           if (!this.dropFilter(descriptor, moving ? { node_id: moving } : activeSortableSession())) continue;
           const rect = this.placeRect(parent, slot, index, remaining);
-          if (rect) places.push({ descriptor, rect, label: format(this.messages.insertAt, { slot, index: index + 1 }) });
+          if (rect) places.push({ descriptor, rect, label: format(this.messages.insertAt, { slot: this.placeName(parent, slot), index: index + 1 }) });
         }
       }
       return places;
@@ -804,7 +859,9 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const box = before || this.nodeBox(children[index - 1]) || this.nodeBox(parentId);
       if (!box) return null;
       const y = before ? box.top : box.bottom;
-      return { left: box.left, top: y - 1, width: box.width, height: 3 };
+      // The one drop line of the kit (owner decision C171 (4)): the drag module's
+      // thickness, centred on the seam.
+      return { left: box.left, top: y - SORTABLE_DROP_LINE / 2, width: box.width, height: SORTABLE_DROP_LINE };
     }
 
     resolveDrop(x, y, moving) {
@@ -833,7 +890,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
           if (remaining.length === 0 && allowed(descriptor)) {
             const rect = this.placeRect(node.id, slot, 0, remaining);
             this.showDropHint(rect);
-            return { descriptor, rect, label: format(this.messages.insertAt, { slot, index: 1 }) };
+            return { descriptor, rect, label: format(this.messages.insertAt, { slot: this.placeName(node.id, slot), index: 1 }) };
           }
         }
         if (!node.parent) break;
@@ -848,7 +905,7 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
           if (allowed(descriptor)) {
             const rect = this.placeRect(node.parent, node.slot, index, remaining);
             this.showDropHint(rect);
-            return { descriptor, rect, label: format(this.messages.insertAt, { slot: node.slot, index: index + 1 }) };
+            return { descriptor, rect, label: format(this.messages.insertAt, { slot: this.placeName(node.parent, node.slot), index: index + 1 }) };
           }
         }
         id = node.parent;
@@ -860,7 +917,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     showDropHint(rect) {
       if (!this.dropHint) {
         this.dropHint = globalThis.document.createElement('div');
-        this.dropHint.className = 'sf-composition-overlay-drop';
+        // The drag module's line, drawn by its sheet (a relation of this rule);
+        // the overlay owns this one, so the drag module never takes it over.
+        this.dropHint.className = 'sf-composition-overlay-drop sf-sortable-indicator';
+        this.dropHint.setAttribute('data-sf-drop-line-owner', 'overlay');
         this.layer?.append(this.dropHint);
       }
       this.dropHint.hidden = !rect;
@@ -948,47 +1008,23 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       if (drop && drag.started && drag.place && !drag.place.own) this.emit(OVERLAY_EVENTS.move, moveDetail(drag.id, drag.place.descriptor));
     }
 
-    // Moving a canvas node: pointer via the selected label, keyboard via the tree.
-    onHandleDown(event) {
-      if (this.iframe || this.isPassive()) return;
-      if (event.button !== 0 || !this.selectedId || !this.byId.get(this.selectedId)?.parent) return;
-      event.preventDefault();
-      const moving = this.selectedId;
-      this.pointerDrag?.abort();
-      const pending = new AbortController();
-      this.pointerDrag = pending;
-      let place = null;
-      globalThis.addEventListener('keydown', (keyEvent) => {
-        if (keyEvent.key !== 'Escape') return;
-        keyEvent.preventDefault();
-        pending.abort();
-        this.showDropHint(null);
-      }, { signal: pending.signal, capture: true });
-      globalThis.addEventListener('pointermove', (moveEvent) => {
-        place = this.resolveDrop(moveEvent.clientX, moveEvent.clientY, moving);
-      }, { signal: pending.signal });
-      globalThis.addEventListener('pointerup', () => {
-        pending.abort();
-        this.showDropHint(null);
-        if (place) this.emit(OVERLAY_EVENTS.move, moveDetail(moving, place.descriptor));
-      }, { signal: pending.signal });
-      globalThis.addEventListener('pointercancel', () => { pending.abort(); this.showDropHint(null); }, { signal: pending.signal });
-    }
-
+    // Moving a canvas node: by the grip action, or from the keyboard via the tree
+    // (C170 (5)); the label it was once dragged by is gone with the label (C170 (2)).
     startKeyboardMove() {
       const node = this.byId.get(this.selectedId);
       if (!node?.parent) return;
       const places = this.dropTargets(node.id);
       if (!places.length) return;
       this.moving = { node: node.id, places, index: 0 };
-      this.live.textContent = format(this.messages.picked, { label: this.info(node).label });
-      this.showKeyboardPlace();
+      // Picked and the first place in one message: a second write at once would
+      // replace the first before it is read (CO-6).
+      this.showKeyboardPlace(format(this.messages.picked, { label: this.info(node).label }));
     }
 
-    showKeyboardPlace() {
+    showKeyboardPlace(lead = '') {
       const place = this.moving.places[this.moving.index];
       this.showDropHint(place.rect);
-      this.live.textContent = place.label;
+      this.live.textContent = lead ? `${lead} ${place.label}` : place.label;
     }
 
     onMoveKey(event) {
@@ -1005,6 +1041,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
         const place = moving.places[moving.index];
         this.moving = null;
         this.showDropHint(null);
+        const node = this.byId.get(moving.node);
+        if (node) this.live.textContent = format(this.messages.dropped, { label: this.info(node).label, place: place.label });
         this.emit(OVERLAY_EVENTS.move, moveDetail(moving.node, place.descriptor));
         return true;
       }
@@ -1042,7 +1080,31 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const described = this.describe(node) || {};
       const label = typeof described.label === 'string' && described.label.trim() ? described.label : node.id;
       const badges = Array.isArray(described.badges) ? described.badges.filter((badge) => typeof badge === 'string' && badge.trim()).slice(0, 4) : [];
-      return { label, badges };
+      // The kind's icon the toolbar starts with (C170 (2a)): a Material Symbols name.
+      const icon = typeof described.icon === 'string' && ICON_NAME.test(described.icon) ? described.icon : null;
+      return { label, badges, icon };
+    }
+
+    // A list of places by the words a person knows: its parent block's name, the
+    // slot's id only beside it when the block has more than one (CO-6).
+    placeName(parentId, slot) {
+      const parent = parentId ? this.byId.get(parentId) : null;
+      if (!parent) return this.getAttribute('label') || this.messages.tree;
+      const { label } = this.info(parent);
+      return Object.keys(parent.slots).length > 1 ? `${label} · ${slot}` : label;
+    }
+
+    // The place after the selected block: where its «+» adds (C170 (3), (4)).
+    afterSelected() {
+      const selected = this.selectedId && !this.isPassive() ? this.byId.get(this.selectedId) : null;
+      if (!selected) return null;
+      const parent = selected.parent ?? (selected.flat ? '' : null);
+      if (parent !== null) {
+        const place = { parent_id: parent, slot: selected.slot, index: selected.index + 1 };
+        return this.placeAllowed(place) ? place : null;
+      }
+      const [slot, children] = Object.entries(selected.slots)[0] ?? [];
+      return slot === undefined ? null : { parent_id: selected.id, slot, index: children.length };
     }
 
     select(id, { focus = false, emit = true } = {}) {
@@ -1323,7 +1385,8 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     onToolbarKey(event) {
-      const buttons = [...this.toolbar.querySelectorAll('button:not(:disabled)')];
+      // Only what the row shows: a group that left for «⋯» is out of the arrows' way.
+      const buttons = [...this.toolbar.querySelectorAll('button:not(:disabled)')].filter((button) => !button.closest(`.${OUT}`));
       const index = buttons.indexOf(globalThis.document.activeElement);
       // Enter and Space press the button in focus; the other shortcuts work here too.
       if (event.key !== 'Enter' && event.key !== ' ' && this.runShortcut(event)) return;
@@ -1341,7 +1404,17 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     onToolbarClick(event) {
-      const button = event.target instanceof globalThis.Element ? event.target.closest('button[data-action]') : null;
+      const target = event.target instanceof globalThis.Element ? event.target : null;
+      if (target?.closest('[data-sf-overlay-more]')) {
+        this.openMore();
+        return;
+      }
+      if (target?.closest('[data-sf-overlay-add]')) {
+        const place = this.afterSelected();
+        if (place) this.insertAt(place);
+        return;
+      }
+      const button = target ? target.closest('button[data-action]') : null;
       if (!button || !this.selectedId) return;
       // The grip is pressed to drag; a click from the keyboard still reaches the host.
       if (event.detail > 0 && this.actions.find((entry) => entry.id === button.dataset.action)?.icon === GRIP_ICON) return;
@@ -1351,10 +1424,61 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     onInsertionClick(event) {
       const button = event.target instanceof globalThis.Element ? event.target.closest('button[data-parent]') : null;
       if (!button) return;
-      const target = { parent_id: button.dataset.parent, slot: button.dataset.slot, index: Number(button.dataset.index) };
+      this.insertAt({ parent_id: button.dataset.parent, slot: button.dataset.slot, index: Number(button.dataset.index) });
+    }
+
+    insertAt(target) {
       this.setInsertionTarget(target);
       this.positionInsertions();
       this.emit(OVERLAY_EVENTS.insert, { ...target, parent: target.parent_id });
+    }
+
+    // «⋯» lists what the row does not show, in the actions' order, a separator
+    // between groups: the groups that left, the icons past the fifth and every
+    // action without an icon (C170 (1), C155; CO-1). A choice is an action.
+    openMore() {
+      if (!this.selectedId) return null;
+      const entries = [];
+      let last = null;
+      for (const action of this.actions) {
+        const group = this.toolGroups.find((entry) => entry.ids.includes(action.id));
+        const out = !group || this.toolsOut.has(group);
+        // A phone has no drag: the grip is neither in its bar nor in «⋯» (C170 (4)).
+        if (!out || (group?.grip && this.isPhone())) continue;
+        // One priority, one group of rows: a separator only where it changes.
+        const key = group ? group.key : `p:${action.priority ?? ''}`;
+        if (last !== null && key !== last) entries.push({ type: 'separator' });
+        last = key;
+        const entry = { id: action.id, text: action.label };
+        if (action.icon) entry.icon = action.icon;
+        if (action.shortcut) entry.shortcut = action.shortcut;
+        if (action.disabled) entry.disabled = true;
+        if (action.tone === 'danger') entry.danger = true;
+        entries.push(entry);
+      }
+      const anchor = this.moreTool.button.querySelector?.('button') || this.moreTool.button;
+      return openRowMenu(this, {
+        anchor,
+        entries,
+        label: this.messages.more,
+        size: this.isPhone() ? '1' : '1/2',
+        select: (id) => {
+          if (id && this.selectedId) this.sendRenamed('action', { action: id, scope: 'entry', ids: [this.selectedId] });
+        },
+      });
+    }
+
+    isPhone() {
+      return this.hasAttribute('data-sf-overlay-phone');
+    }
+
+    applyPhone() {
+      const phone = Boolean(this.phoneQuery?.matches);
+      if (phone === this.isPhone() && this.phoneApplied) return;
+      this.phoneApplied = true;
+      this.toggleAttribute('data-sf-overlay-phone', phone);
+      this.renderToolbar();
+      this.schedule();
     }
 
     renderTree() {
@@ -1387,6 +1511,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       else this.tree?.removeAttribute('aria-activedescendant');
     }
 
+    // The toolbar (owner decision C170 (1), (2a); C144; C155): the block's kind
+    // icon and name, a separator, then the icon actions in groups -- neighbours
+    // of one priority are a group, the grip is a group of its own -- 4 apart
+    // with a separator between groups, and «⋯» last. Up to five icons stand in
+    // the row; the rest, and every action without an icon, are in «⋯» (CO-1).
     // Buttons stay where they are: each is kept by its action's id, updated in
     // place, and an unavailable one dims, so focus and neighbours never move.
     renderToolbar() {
@@ -1394,40 +1523,90 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       this.toolbar.setAttribute('aria-label', this.messages.toolbar);
       const active = globalThis.document.activeElement;
       const focused = this.toolbar.contains(active) ? active : null;
+      const phone = this.isPhone();
       const previous = this.actionParts;
       this.actionParts = new Map();
+      this.menuOnly = [];
+      const groups = [];
+      let icons = 0;
       for (const action of this.actions) {
-        const kept = previous.get(action.id);
-        const parts = kept && Boolean(kept.action.icon) === Boolean(action.icon) ? kept : this.createAction(action);
-        this.updateAction(parts, action);
+        if (!action.icon || icons >= ROW_ICONS) {
+          this.menuOnly.push(action);
+          continue;
+        }
+        icons += 1;
+        const parts = previous.get(action.id) || this.createTool(action);
+        this.updateAction(parts, action, phone);
         this.actionParts.set(action.id, parts);
+        const grip = action.icon === GRIP_ICON;
+        const key = grip ? 'grip' : `p:${action.priority ?? ''}`;
+        const last = groups[groups.length - 1];
+        if (last && last.key === key && !grip) last.parts.push(parts);
+        else groups.push({ key, grip, priority: grip ? 'pin' : action.priority, parts: [parts] });
       }
-      const roots = [...this.actionParts.values()].map((parts) => parts.root);
-      if (roots.length !== this.toolbar.children.length || roots.some((root, index) => root !== this.toolbar.children[index])) this.toolbar.replaceChildren(...roots);
+      // Group boxes are kept by their place, so a stable row moves nothing.
+      this.groupParts.length = Math.min(this.groupParts.length, groups.length);
+      this.toolGroups = groups.map((group, at) => {
+        let parts = this.groupParts[at];
+        if (!parts) {
+          const element = globalThis.document.createElement('span');
+          element.className = 'sf-composition-overlay-group';
+          parts = { element, separator: this.separator() };
+          this.groupParts[at] = parts;
+        }
+        sync(parts.element, group.parts.map((tool) => tool.root));
+        parts.element.toggleAttribute('data-sf-overlay-grip-group', group.grip);
+        parts.separator.toggleAttribute('data-sf-overlay-grip-group', group.grip);
+        return { ...group, element: parts.element, separator: parts.separator, ids: group.parts.map((tool) => tool.action.id) };
+      });
+      this.toolsOut = new Set();
+      this.updateName();
+      this.updateTool(this.moreTool, { icon: 'more_horiz', label: this.messages.more }, phone);
+      const after = this.afterSelected();
+      this.updateTool(this.addTool, { icon: 'add', label: format(this.messages.insertAfter, { label: this.selectedId ? this.info(this.byId.get(this.selectedId)).label : '' }), appearance: 'default' }, phone);
+      this.addTool.button.toggleAttribute('disabled', !after);
+      const roots = [this.nameItem, this.nameSeparator];
+      this.toolGroups.forEach((group, at) => {
+        roots.push(group.element);
+        if (at < this.toolGroups.length - 1) roots.push(group.separator);
+      });
+      if (phone) roots.push(this.addTool.root);
+      roots.push(this.moreSeparator, this.moreTool.root);
+      sync(this.toolbar, roots);
+      // Until it is laid out the row shows every group and no «⋯».
+      this.moreTool.root.classList.toggle(OUT, this.menuOnly.length === 0);
+      this.moreSeparator.classList.toggle(OUT, this.menuOnly.length === 0 || this.toolGroups.length === 0);
+      this.rowKey = '';
       if (focused && (!focused.isConnected || focused.disabled)) (this.toolbar.querySelector('button:not(:disabled)') || this.tree)?.focus();
+      this.toolbarKeys?.refresh();
       if (!this.selectedId || this.actions.length === 0) this.toolbar.hidden = true;
     }
 
-    // With an icon: sf-icon-button at size 1/2, its label the name, and sf-tooltip
-    // holding the label and the shortcut (its shortcut setting: the kbd
-    // component's quiet keys). The tooltip is the plain one, its defaults. In the DOM from setActions on, so both
-    // load before the first selection needs them.
-    createAction(action) {
+    // The start of the toolbar: what the host's describe() calls the block, with
+    // the icon of its kind (C170 (2a)).
+    updateName() {
+      const node = this.selectedId ? this.byId.get(this.selectedId) : null;
+      const { label = '', icon = null } = node ? this.info(node) : {};
+      if (this.nameText.textContent !== label) this.nameText.textContent = label;
+      this.nameIcon.textContent = icon || '';
+      this.nameIcon.hidden = !icon;
+      this.nameItem.title = label;
+    }
+
+    // An icon action: sf-button-icon at size 1/2 (2 on a phone, 44), its label
+    // the name, and sf-tooltip holding the label and the shortcut (its shortcut
+    // setting: the kbd component's quiet keys). The tooltip is the plain one,
+    // its defaults. In the DOM from setActions on, so both load before the
+    // first selection needs them.
+    createTool(action) {
       const doc = globalThis.document;
-      if (!action.icon) {
-        const button = doc.createElement('button');
-        button.type = 'button';
-        button.className = 'sf-composition-overlay-action';
-        button.dataset.action = action.id;
-        return { root: button, button, action };
-      }
       const root = doc.createElement('span');
       root.className = 'sf-composition-overlay-tool sf-tooltip-anchor';
       const button = doc.createElement('sf-button-icon');
       button.setAttribute('size', '1/2');
-      button.setAttribute('appearance', 'ghost');
-      button.setAttribute('scheme', 'on-surface-variant');
-      button.setAttribute('data-action', action.id);
+      button.setAttribute('appearance', action.appearance || 'ghost');
+      if (!action.appearance) button.setAttribute('scheme', 'on-surface-variant');
+      if (action.id) button.setAttribute('data-action', action.id);
       button.setAttribute('data-tooltip', '');
       const tooltip = doc.createElement('sf-tooltip');
       tooltip.setAttribute('arrow', 'bottom-center');
@@ -1436,22 +1615,76 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       return { root, button, tooltip, action };
     }
 
-    updateAction(parts, action) {
-      const { root, button, tooltip } = parts;
-      parts.action = action;
-      if (action.tone) root.dataset.tone = action.tone;
-      else delete root.dataset.tone;
-      button.toggleAttribute('disabled', action.disabled === true);
-      if (!action.icon) {
-        if (button.textContent !== action.label) button.textContent = action.label;
-        return;
-      }
+    updateTool(parts, action, phone) {
+      const { button, tooltip } = parts;
+      button.setAttribute('size', phone ? '2' : '1/2');
       button.setAttribute('icon', action.icon);
       button.setAttribute('aria-label', action.label);
       tooltip.setAttribute('text', action.label);
       if (action.shortcut) tooltip.setAttribute('shortcut', action.shortcut);
       else tooltip.removeAttribute('shortcut');
+    }
+
+    updateAction(parts, action, phone = this.isPhone()) {
+      const { root, button } = parts;
+      parts.action = action;
+      if (action.tone) root.dataset.tone = action.tone;
+      else delete root.dataset.tone;
+      button.toggleAttribute('disabled', action.disabled === true);
+      this.updateTool(parts, action, phone);
       root.toggleAttribute('data-sf-overlay-grip', action.icon === GRIP_ICON);
+    }
+
+    // The row in the room it has (C155's engine): whole groups leave for «⋯»,
+    // the biggest priority number first, the grip never; the name gives way
+    // first, down to its icon, so the toolbar is never wider than its port (CO-3).
+    layoutToolbar(width) {
+      const phone = this.isPhone();
+      const key = `${Math.round(width)}|${phone}|${this.actions.length}|${this.toolGroups.length}`;
+      this.toolbar.style.maxInlineSize = `${width / this.layerOrigin().scaleX}px`;
+      if (key === this.rowKey) return;
+      this.rowKey = key;
+      const groups = this.toolGroups.filter((group) => !(phone && group.grip));
+      for (const group of this.toolGroups) {
+        const hide = phone && group.grip;
+        group.element.classList.toggle(OUT, hide);
+        group.separator.classList.toggle(OUT, hide);
+      }
+      const style = globalThis.getComputedStyle(this.toolbar);
+      const { scaleX } = this.layerOrigin();
+      const gap = px(style.columnGap) * scaleX;
+      const fixed = (px(style.paddingInlineStart) + px(style.paddingInlineEnd) + px(globalThis.getComputedStyle(this.nameItem).minInlineSize)) * scaleX
+        + gap + drawnBox(this.nameSeparator).width + gap
+        + (phone ? drawnBox(this.addTool.root).width + gap : 0);
+      const units = groups.map((group, at) => {
+        const { rank, pin } = readPriority(group.priority);
+        return { element: group.element, rank, pin, group: at };
+      });
+      const separators = groups.slice(0, -1).map((group) => group.separator);
+      // C155's engine (fitByPriority) over the row's measures, as layoutActionRow
+      // does it, with one difference: «⋯» may stand for good, when actions live
+      // in it whatever the room (the icons past the fifth, those without one).
+      const widths = measureShown([...units.map((unit) => unit.element), this.moreTool.root, this.moreSeparator, ...separators], OUT);
+      const separator = Math.max(0, ...widths.slice(units.length + 1));
+      const moreSpan = widths[units.length] + gap + (phone ? 0 : separator + gap);
+      const always = this.menuOnly.length > 0;
+      const { out } = fitByPriority({
+        units: units.map((unit, at) => ({ ...unit, width: widths[at] })),
+        gap,
+        separator,
+        room: width - fixed - (always ? moreSpan : 0),
+        more: always ? 0 : moreSpan,
+      });
+      const gone = new Set(out);
+      units.forEach((unit, at) => unit.element.classList.toggle(OUT, gone.has(at)));
+      // A separator stands between two groups that both keep something.
+      const keeps = (at) => !gone.has(at);
+      separators.forEach((element, at) => element.classList.toggle(OUT, !(keeps(at) && units.some((_, later) => later > at && keeps(later)))));
+      const more = always || out.length > 0;
+      this.moreTool.root.classList.toggle(OUT, !more);
+      this.moreSeparator.classList.toggle(OUT, !more || gone.size === units.length);
+      this.toolsOut = new Set(out.map((at) => groups[at]));
+      for (const group of this.toolGroups) if (phone && group.grip) this.toolsOut.add(group);
     }
 
     schedule() {
@@ -1494,13 +1727,6 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       }
       frame.hidden = false;
       Object.assign(frame.style, this.onLayer(box));
-      const label = frame.firstChild;
-      if (label) {
-        // The label is the move handle of a canvas whose host gives no grip.
-        label.hidden = Boolean(this.iframe) || this.isPassive() || this.actions.some((action) => action.icon === GRIP_ICON);
-        const { label: text, badges } = this.info(this.byId.get(id));
-        label.textContent = badges.length ? `${text} · ${badges.join(' · ')}` : text;
-      }
       return box;
     }
 
@@ -1574,6 +1800,15 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       else if (this.isPassive() || !this.toolbar.contains(globalThis.document.activeElement)) this.toolbar.hidden = true;
       if (!visible || this.toolbar.hidden) return;
       const port = travels ? this.scrollPort() : this.followPort();
+      if (this.isPhone()) {
+        // A phone's bottom bar, the screen's width (C170 (4)): placed by the sheet.
+        this.toolbar.setAttribute('aria-orientation', 'horizontal');
+        this.toggleAttribute('data-sf-overlay-side', false);
+        Object.assign(this.toolbar.style, { left: '', top: '' });
+        this.layoutToolbar(globalThis.document.documentElement.clientWidth);
+        return;
+      }
+      this.layoutToolbar(port.right - port.left);
       // The side only where the room for it is; otherwise above, as the docs say.
       const wantsSide = this.getAttribute('placement') === 'side';
       this.toggleAttribute('data-sf-overlay-side', wantsSide);
@@ -1663,12 +1898,10 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
       const target = this.isPassive() ? null : this.insertionTarget;
       if (this.seam && !this.isPassive()) add(this.seam.parent, this.seam.slot, this.seam.index, true);
       if (target) add(target.parent_id, target.slot, target.index, true);
-      const selected = this.selectedId && !this.isPassive() ? this.byId.get(this.selectedId) : null;
-      if (selected) {
-        const parent = selected.parent ?? (selected.flat ? '' : null);
-        if (parent !== null && this.placeAllowed({ parent_id: parent, slot: selected.slot, index: selected.index + 1 })) add(parent, selected.slot, selected.index + 1, false);
-        else if (parent === null) for (const [slot, children] of Object.entries(selected.slots)) add(selected.id, slot, children.length, false);
-      }
+      // The «+» stands under the selected block at all times (C170 (3)); on a
+      // phone it is in the bottom bar, and the place stays for the keyboard.
+      const after = this.afterSelected();
+      if (after) add(after.parent_id, after.slot, after.index, !this.isPhone());
       // Buttons are reused by key so keyboard focus and marks survive repositioning.
       const existing = new Map([...this.insertionLayer.children].map((button) => [button.dataset.key, button]));
       const keep = new Set();
@@ -1687,16 +1920,25 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
           button.dataset.parent = point.parent;
           button.dataset.slot = point.slot;
           button.dataset.index = String(point.index);
+          // The icon button's own look, round, above the line (owner R246).
           const mark = globalThis.document.createElement('span');
-          mark.className = 'sf-composition-overlay-insert-mark';
+          mark.className = 'sf-composition-overlay-insert-mark sf-icon-button sf-icon-button--icon sf-icon-button--default sf-icon-button--primary sf-icon-button--size-1/3';
           mark.setAttribute('aria-hidden', 'true');
+          const icon = globalThis.document.createElement('i');
+          icon.className = 'sf-icon';
+          icon.textContent = 'add';
+          mark.append(icon);
           button.append(mark);
           this.insertionLayer.append(button);
         }
         const marked = Boolean(target && target.parent_id === point.parent && target.slot === point.slot && target.index === point.index);
         button.setAttribute('aria-pressed', marked ? 'true' : 'false');
-        button.setAttribute('aria-label', format(this.messages.insertAt, { slot: point.slot, index: point.index + 1 }));
+        button.setAttribute('aria-label', format(this.messages.insertAt, { slot: this.placeName(point.parent, point.slot), index: point.index + 1 }));
         button.toggleAttribute('data-sf-insert-shown', point.shown);
+        // Under the selected block the «+» stands alone on the frame's edge; the
+        // line is drawn where a place is pointed at, marked or focused.
+        const own = Boolean(after && after.parent_id === point.parent && after.slot === point.slot && after.index === point.index);
+        button.toggleAttribute('data-sf-insert-after', own && !marked && !(this.seam && this.seam.parent === point.parent && this.seam.slot === point.slot && this.seam.index === point.index));
         Object.assign(button.style, this.onLayer(line));
       }
       for (const [key, button] of existing) if (!keep.has(key)) button.remove();

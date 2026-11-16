@@ -9,6 +9,8 @@ import {
   isRememberedIconSubsetUsable,
   normalizeIconFontLoadWeight,
 } from './icon-subset-memory.js';
+import { checkIconGlyph, markCustomGlyph, registeredIcon } from "./icon-glyphs.js";
+
 export function initIconSubsetState(loader) {
   loader.iconFontReady = false;
   loader.iconSubsetPending = false;
@@ -74,6 +76,20 @@ export function installIconSubsetRuntime(
     ["sf-icon-bold", "700"],
   ]);
   const defaultIconWeight = "400";
+  // An icon without a weight of its own draws at the weight of the label
+  // beside it (owner decision C151 point 4: the icons sheet lets it inherit
+  // font-weight): regular text and medium labels (buttons, tabs, headings).
+  // The medium face comes in the same request as the regular one, so an icon
+  // by a medium label never waits for a second font. A heavier label draws
+  // the nearest face, medium.
+  const labelIconWeight = "500";
+  const withLabelWeight = (weights) => {
+    const list = [...weights].map(String);
+    if (list.includes(defaultIconWeight) && !list.includes(labelIconWeight)) {
+      list.push(labelIconWeight);
+    }
+    return list;
+  };
   const iconTypeClassMap = new Map([
     ["sf-icon--rounded", "rounded"],
     ["sf-icon-rounded", "rounded"],
@@ -202,6 +218,103 @@ export function installIconSubsetRuntime(
 
     this.waitForLocalIconFont(normalizedType);
     return false;
+  };
+
+  // An icon drawn in a face the page brought itself. A Docara example frame
+  // (data-docara-example-frame) runs the Loader with the subset off and gets
+  // its icon faces from the shell -- its own subset family ("Material Symbols
+  // Outlined Subset 1923885bcfbd"), "Material Symbols Outlined Full", the
+  // catalogue families, Rounded and Sharp -- and marks the icons it draws
+  // sf-icon-loaded. The Loader knew only the faces of the plain family (subset
+  // off) or of its own subset requests (subset on), so it took the class away
+  // on every scan and Docara put it back (about every 104 ms; decision with
+  // Docara 2026-11-11, core.runtime 1.54.1). An icon is loaded when the first family of its computed
+  // font-family has a loaded face in document.fonts and is not a subset
+  // family of the Loader's own: those draw only the names their manifest
+  // lists, and the manifest path answers for them. A full face of the icon
+  // family the Loader left in document.fonts after a fallback does not count
+  // while the icon is drawn in the subset family.
+  // Only a family of the icon fonts counts ("Material Symbols Outlined",
+  // "Material Symbols Outlined Full", "Docara Symbols Rounded Filled …"):
+  // an icon whose own stylesheet is not in yet inherits the text font, and a
+  // loaded Inter face must not mark it loaded -- it would spell its name.
+  const iconFacePattern = /\bSymbols (Outlined|Rounded|Sharp)\b/;
+  const iconFamilyName = (value) =>
+    String(value || "")
+      .split(",")[0]
+      .replace(/["']/g, "")
+      .trim();
+
+  SFLoaderPlugin.prototype.getLoaderIconSubsetFamilies = function () {
+    const families = new Set(
+      Object.values(localIconFontFamilies).map((family) => `${family} Subset`),
+    );
+    document
+      .querySelectorAll?.("style[data-sf-icons-subset-family]")
+      ?.forEach?.((style) => {
+        const text = style.textContent || "";
+        const pattern = /font-family:\s*(["'])([^"']+)\1/g;
+        let match = pattern.exec(text);
+        while (match) {
+          families.add(match[2].trim());
+          match = pattern.exec(text);
+        }
+      });
+    return families;
+  };
+
+  // The families with a loaded face that are not the Loader's subset
+  // families; read once per task, every icon of a scan shares it.
+  SFLoaderPlugin.prototype.getPageIconFaceFamilies = function () {
+    if (this.pageIconFaceFamilies) return this.pageIconFaceFamilies;
+    const fonts = globalThis.document?.fonts;
+    const families = new Set();
+    if (fonts?.forEach) {
+      const own = this.getLoaderIconSubsetFamilies();
+      fonts.forEach((face) => {
+        if (face.status !== "loaded") return;
+        const family = iconFamilyName(face.family);
+        if (iconFacePattern.test(family) && !own.has(family)) {
+          families.add(family);
+        }
+      });
+    }
+    this.pageIconFaceFamilies = families;
+    const forget = () => {
+      this.pageIconFaceFamilies = null;
+    };
+    if (typeof queueMicrotask === "function") queueMicrotask(forget);
+    else Promise.resolve().then(forget);
+    return families;
+  };
+
+  SFLoaderPlugin.prototype.isIconDrawnByPageFace = function (el) {
+    if (!el || typeof globalThis.getComputedStyle !== "function") return false;
+    const families = this.getPageIconFaceFamilies();
+    if (!families.size) return false;
+    const family = iconFamilyName(globalThis.getComputedStyle(el).fontFamily);
+    return Boolean(family) && families.has(family);
+  };
+
+  // Once: when a page face loads later (loadingdone), or is
+  // added already loaded (no font event; looked for every 100 ms for 10 s),
+  // the static icons are synced, so an icon drawn in it gets the class once
+  // and keeps it. A sync runs only when the set of page faces grew.
+  SFLoaderPlugin.prototype.watchPageIconFaces = function () {
+    const fonts = globalThis.document?.fonts;
+    if (!fonts?.forEach || this.pageIconFaceWatch) return;
+    this.pageIconFaceWatch = true;
+    let seen = this.getPageIconFaceFamilies().size;
+    const check = () => {
+      this.pageIconFaceFamilies = null;
+      const size = this.getPageIconFaceFamilies().size;
+      if (size <= seen) return;
+      seen = size;
+      this.syncStaticIconLoadedState();
+    };
+    fonts.addEventListener?.("loadingdone", check);
+    const poll = setInterval(check, 100);
+    setTimeout(() => clearInterval(poll), 10000);
   };
 
   SFLoaderPlugin.prototype.waitForLocalIconFont = function (type = "") {
@@ -691,6 +804,9 @@ export function installIconSubsetRuntime(
 
     const normalizedIcon = String(icon || "").trim();
     if (!normalizedIcon) return 0;
+    // A registered glyph (SF.icons.register, C151 point 6) is drawn from its
+    // SVG; its name never goes to the font.
+    if (registeredIcon(normalizedIcon)) return 0;
 
     const loadAttrs = this.getIconLoadAttrs(attrs);
     const descriptorKey = this.getLoadedIconDescriptorKey(
@@ -909,20 +1025,32 @@ export function installIconSubsetRuntime(
     return [...keys];
   };
 
-  SFLoaderPlugin.prototype.isTrackedIconLoaded = function (tracked) {
+  SFLoaderPlugin.prototype.isTrackedIconLoaded = function (tracked, el = null) {
     if (!tracked?.icon) {
       return false;
     }
+    if (registeredIcon(tracked.icon)) return true;
 
     const loadAttrs = this.getIconLoadAttrs(tracked.attrs);
 
+    // An icon drawn in a face the page brought itself (a Docara example
+    // frame) is loaded once that face is: see isIconDrawnByPageFace.
     if (!this.isIconSubsetEnabled()) {
-      return this.isLocalIconFontReady(loadAttrs.type);
+      if (this.isLocalIconFontReady(loadAttrs.type)) return true;
+      if (!el) return false;
+      if (this.isIconDrawnByPageFace(el)) return true;
+      this.watchPageIconFaces();
+      return false;
     }
 
     if (this.isIconCoveredByManifest(tracked.icon, loadAttrs)) {
       return true;
     }
+
+    if (el && this.isIconDrawnByPageFace(el)) {
+      return true;
+    }
+    if (el) this.watchPageIconFaces();
 
     const descriptorKey = this.getLoadedIconDescriptorKey(
       tracked.icon,
@@ -956,7 +1084,7 @@ export function installIconSubsetRuntime(
 
     return (
       el.classList.contains("sf-icon-loaded") ===
-      this.isTrackedIconLoaded(tracked)
+      this.isTrackedIconLoaded(tracked, el)
     );
   };
 
@@ -973,7 +1101,7 @@ export function installIconSubsetRuntime(
 
     const prevKey = this.staticIconDescriptorKeys.get(el);
 
-    if (prevKey && prevKey !== nextKey && !this.isTrackedIconLoaded(tracked)) {
+    if (prevKey && prevKey !== nextKey && !this.isTrackedIconLoaded(tracked, el)) {
       el.classList.remove("sf-icon-loaded");
     }
 
@@ -1002,9 +1130,17 @@ export function installIconSubsetRuntime(
       }
     }
 
-    attrs.type = this.normalizeIconType(
-      attrs.type || this.getDefaultIconType(),
-    );
+    // sf-icon draws one family, outlined (smart.icon 1.2.0, icons study IC-4):
+    // its type rounded and sharp are dated aliases of outlined, and the page
+    // is scanned before the element upgrades and rewrites the attribute. Asked
+    // for here, those families had no font to load and fell back to the old
+    // Material Icons font with a console warning on every load. The class
+    // markup families (.sf-icon-rounded, .sf-icon-shape) are untouched: a host
+    // that ships their fonts (Docara) still draws them.
+    attrs.type =
+      el.localName === "sf-icon"
+        ? "outlined"
+        : this.normalizeIconType(attrs.type || this.getDefaultIconType());
 
     return { icon, attrs };
   };
@@ -1017,6 +1153,7 @@ export function installIconSubsetRuntime(
     const icon = String(
       el.getAttribute("data-icon") || el.textContent || "",
     ).trim();
+    markCustomGlyph(el, icon);
     if (!icon) return null;
 
     const attrs = {
@@ -1141,7 +1278,7 @@ export function installIconSubsetRuntime(
     const el = this.getStaticIconElement(node);
     if (!el || !el.classList.contains("sf-icon-loaded")) return;
     const tracked = this.getTrackedStaticIconAttrs(el);
-    if (!tracked || !this.isTrackedIconLoaded(tracked)) {
+    if (!tracked || !this.isTrackedIconLoaded(tracked, el)) {
       el.classList.remove("sf-icon-loaded");
     }
   };
@@ -1158,6 +1295,7 @@ export function installIconSubsetRuntime(
 
       if (shouldBeLoaded) {
         el.classList.add("sf-icon-loaded");
+        checkIconGlyph(el);
       } else {
         el.classList.remove("sf-icon-loaded");
       }
@@ -1175,7 +1313,7 @@ export function installIconSubsetRuntime(
         return;
       }
 
-      updateLoadedClass(el, this.isTrackedIconLoaded(tracked));
+      updateLoadedClass(el, this.isTrackedIconLoaded(tracked, el));
     };
 
     this.isSyncingStaticIconState = true;
@@ -1229,8 +1367,9 @@ export function installIconSubsetRuntime(
             this.adoptedIconsPending.delete(el);
             return;
           }
-          if (this.isTrackedIconLoaded(tracked)) {
+          if (this.isTrackedIconLoaded(tracked, el)) {
             el.classList.add("sf-icon-loaded");
+            checkIconGlyph(el);
             this.adoptedIconsPending.delete(el);
           }
         });
@@ -1249,8 +1388,9 @@ export function installIconSubsetRuntime(
       if (this.isIconSubsetEnabled()) {
         added += this.trackIconDescriptor(tracked.icon, tracked.attrs);
       }
-      if (this.isTrackedIconLoaded(tracked)) {
+      if (this.isTrackedIconLoaded(tracked, el)) {
         el.classList.add("sf-icon-loaded");
+        checkIconGlyph(el);
         this.adoptedIconsPending.delete(el);
       } else {
         // A glyph whose new name the font in place does not draw waits
@@ -1551,7 +1691,6 @@ export function installIconSubsetRuntime(
       `  font-feature-settings: 'liga';\n` +
       `  font-variation-settings: ` +
       `'FILL' var(--sf-icon--fill, 0), ` +
-      `'wght' var(--sf-icon--weight, 400), ` +
       `'GRAD' var(--sf-icon--grade, 0), ` +
       `'opsz' var(--sf-icon--optical-size, 24);\n` +
       `}\n`
@@ -2483,8 +2622,9 @@ export function installIconSubsetRuntime(
       icon_names: icons.join(","),
       type,
     });
-    if (requestConfig.weights.size) {
-      query.set("weight", [...requestConfig.weights].sort().join(","));
+    const requestWeights = withLabelWeight(requestConfig.weights);
+    if (requestWeights.length) {
+      query.set("weight", requestWeights.sort().join(","));
     }
     if (requestConfig.fill) query.set("fill", "1");
     if (requestConfig.grade) query.set("grade", requestConfig.grade);

@@ -17,6 +17,9 @@ function environment() {
   const listeners = [];
   const doc = { addEventListener(type, callback, capture) {
     assert.equal(type, 'reset'); assert.equal(capture, true); listeners.push(callback);
+  }, removeEventListener(type, callback, capture) {
+    assert.equal(type, 'reset'); assert.equal(capture, true);
+    const at = listeners.indexOf(callback); if (at !== -1) listeners.splice(at, 1);
   } };
   const form = { tagName: 'FORM', elements: [] };
   const input = { ownerDocument: doc, form, isConnected: true, checked: true };
@@ -63,6 +66,30 @@ test('one delegated listener per document, reset only touches its own form', asy
   assert.equal(env.listeners.length, 1);
   env.reset(); await settle();
   assert.equal(first, 1); assert.equal(second, 0);
+});
+
+test('the document listener lives while a control is bound, shared by every bundle copy (gate 36)', async () => {
+  // Each bundle carries its own copy of the helper: a second copy of the module.
+  const { bindFormReset: bindFromOtherBundle } = await import(moduleUrl(`${resetSource}\n// another bundle`));
+  const env = environment(); let first = 0, second = 0;
+  const other = { ...env.input };
+  env.form.elements.push(other);
+  const releaseFirst = bindFormReset(env.input, () => first++);
+  const releaseSecond = bindFromOtherBundle(other, () => second++);
+  assert.equal(env.listeners.length, 1, 'one listener for both copies');
+  env.reset(); await settle();
+  assert.equal(first, 1); assert.equal(second, 1);
+  assert.equal(releaseFirst(), true);
+  assert.equal(releaseFirst(), false, 'a second release changes nothing');
+  assert.equal(env.listeners.length, 1, 'kept while a control is bound');
+  releaseSecond();
+  assert.equal(env.listeners.length, 0, 'the last release takes it away');
+  const releaseAgain = bindFormReset(env.input, () => first++);
+  assert.equal(env.listeners.length, 1, 'bound again, listening again');
+  env.reset(); await settle();
+  assert.equal(first, 2);
+  releaseAgain();
+  assert.equal(env.listeners.length, 0);
 });
 
 test('Smart reset keeps initial default across current-state rerenders', async () => {
@@ -124,4 +151,21 @@ test('JS constructors preserve initial checked defaults; setState only changes l
     // Builders may follow a setter, so inspect only the setter body prefix.
     assert.doesNotMatch(setter.split('\nfunction build')[0], /defaultChecked/);
   }
+});
+
+test('a class field taken out of the page lets its reset subscription go (gate 36)', async () => {
+  // The inputs bundle binds every label.sf-input it sees added; one bound that
+  // way and then removed (a Smart field moved by a window's portal and later
+  // taken out) kept its subscription, so the document listener stayed.
+  const inputs = await read('component/inputs/js/_inputs.js');
+  const observer = inputs.slice(inputs.indexOf('const inputObserver'));
+  assert.match(observer, /mutation\.removedNodes\.forEach\(releaseRemovedInputs\)/);
+  // A node added and removed before the observer ran is not bound (it was, detached, for good).
+  assert.match(observer, /!\(node instanceof Element\) \|\| !node\.isConnected\) return/);
+  const release = inputs.slice(inputs.indexOf('function releaseRemovedInputs'), inputs.indexOf('const inputObserver'));
+  assert.match(release, /node\.isConnected\) return/);
+  assert.match(release, /unbindInput\(node\)/);
+  assert.match(release, /querySelectorAll\?\.\(INPUT_SELECTOR\)\.forEach\(\(root\) => unbindInput\(root\)\)/);
+  const unbind = inputs.slice(inputs.indexOf('function unbindInput'), inputs.indexOf('function initExistingInputs'));
+  assert.match(unbind, /__sfInputReleaseReset\?\.\(\)/);
 });

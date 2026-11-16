@@ -86,7 +86,8 @@ try {
     const away = async () => { await page.mouse.move(1, 1); await page.focus('#away'); await tick(); };
     const probe = async (id) => {
       await away();
-      await page.hover(`#${id}`); await tick();
+      // C59: a hover opens the tooltip after 0.5 s.
+      await page.hover(`#${id}`); await page.waitForTimeout(650); await tick();
       const hover = await shown();
       await away();
       await page.focus(`#${id}`); await tick();

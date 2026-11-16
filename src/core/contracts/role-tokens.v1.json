@@ -1,0 +1,174 @@
+{
+  "schema": "simai.framework.role-tokens",
+  "schema_version": 1,
+  "decision": "C173",
+  "refines": ["C156", "C105", "C144"],
+  "summary": "Role tokens (owner decision C173, 2026-11-14, refining C156): a few named values above the scales, each an alias of an existing step, easier for people and AI to pick than a bare step and changed at once in one place. Names follow --sf-<area>--<role>, the form of --sf-radius--ui. A role is a reference, never a number of its own, so the width ladder and the compact density move it by themselves; because a custom property resolves where it is declared, the step-dependent roles are declared again in every scope that redefines the steps (the density regions, written by scripts/generate-density.mjs from this list's SCSS), or they would freeze on the root's step (RT-15). Heights, icon sizes, shadows, motion and focus do not become role names (C173 point 8): the source check guards their raw values instead. The five layer roles (point 7; names and order by owner decision C181 (3), 2026-11-14) replace the numbered z-index steps in components: base < sticky < popover < window <= message, each reading a step of the existing scale; above the page the layer stack (core/js/layer-stack.js) orders windows and messages by opening. The numbered steps --sf-z-index--1 ... 9 stay declared as aliases until 2027-01-01. The owner raised the cap from 17 to 18 on 2026-11-14 (13 names + 5 layers). The C105 line «no new variable names» is replaced by this decision.",
+  "cap": 18,
+  "naming": "^--sf-(gap|inset|radius|line|hit|layer)--[a-z]+(?:-[a-z]+)*$",
+  "scss": "src/core/figma_variables/figma_role_tokens.scss",
+  "tokens": [
+    {
+      "name": "--sf-gap--actions",
+      "role": "Buttons of one group: a dialog or window footer, a confirmation, a wizard footer, a page header's actions, a notice's buttons (C105 H5, C144, C156).",
+      "value": "var(--sf-space-1\\/3)",
+      "step": "--sf-space-1/3",
+      "density": true,
+      "px": {"desktop": 8, "compact": 4, "phone": 8}
+    },
+    {
+      "name": "--sf-gap--toolbar",
+      "role": "Icon buttons inside one toolbar group and the margins of a toolbar separator (C144).",
+      "value": "var(--sf-space-1\\/4)",
+      "step": "--sf-space-1/4",
+      "density": true,
+      "px": {"desktop": 4, "compact": 4, "phone": 4}
+    },
+    {
+      "name": "--sf-gap--tags",
+      "role": "Tags and chips side by side, in a field or a row (C105 H5, C58, C145).",
+      "value": "var(--sf-space-1\\/4)",
+      "step": "--sf-space-1/4",
+      "density": true,
+      "px": {"desktop": 4, "compact": 4, "phone": 4}
+    },
+    {
+      "name": "--sf-gap--groups",
+      "role": "Between groups and between cells (C105 H6).",
+      "value": "var(--sf-space-1)",
+      "step": "--sf-space-1",
+      "density": true,
+      "px": {"desktop": 16, "compact": 12, "phone": 12}
+    },
+    {
+      "name": "--sf-gap--icon-text",
+      "role": "A picture (icon, avatar, check) to the text of a row: list, menu, choice, field, notice, cell (C105 H2).",
+      "value": "var(--sf-space-1\\/2)",
+      "step": "--sf-space-1/2",
+      "density": true,
+      "px": {"desktop": 12, "compact": 8, "phone": 8}
+    },
+    {
+      "name": "--sf-gap--icon-inline",
+      "role": "An icon inside running text: a breadcrumb, a link (C105 H3).",
+      "value": "var(--sf-space-1\\/4)",
+      "step": "--sf-space-1/4",
+      "density": true,
+      "px": {"desktop": 4, "compact": 4, "phone": 4}
+    },
+    {
+      "name": "--sf-inset--panel",
+      "role": "The padding of a card, a window, a drawer, a notice: the frame is part of it (C105 H6).",
+      "value": "var(--sf-space-2)",
+      "step": "--sf-space-2",
+      "density": true,
+      "px": {"desktop": 20, "compact": 16, "phone": 16}
+    },
+    {
+      "name": "--sf-inset--plate",
+      "role": "The underlay of a popup panel or a scroll area around its row plates (C105, C106).",
+      "value": "var(--sf-space-1\\/4)",
+      "step": "--sf-space-1/4",
+      "density": true,
+      "px": {"desktop": 4, "compact": 4, "phone": 4}
+    },
+    {
+      "name": "--sf-radius--inner",
+      "role": "The corner of a part inside a host: the host's corner minus the inset between them, never below 4 (C77, C145, C173 point 5). The root value is for a surface host with a plate underlay; a host with another corner or inset declares the same formula on itself, because a formula resolves where it is declared.",
+      "value": "max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-inset--plate)))",
+      "formula": "max(var(--sf-a4), calc(<host corner> - <inset>))",
+      "density": false,
+      "px": {"desktop": 4, "compact": 4, "phone": 4}
+    },
+    {
+      "name": "--sf-line--border",
+      "role": "Frames and dividers.",
+      "value": "var(--sf-px)",
+      "density": false,
+      "px": {"desktop": 1, "compact": 1, "phone": 1}
+    },
+    {
+      "name": "--sf-line--indicator",
+      "role": "An indicator line: the chosen tab's line, a chosen frame (C99).",
+      "value": "calc(2 * var(--sf-px))",
+      "density": false,
+      "px": {"desktop": 2, "compact": 2, "phone": 2}
+    },
+    {
+      "name": "--sf-hit--min",
+      "role": "The smallest press area (C76, C58; WCAG 2.5.8).",
+      "value": "var(--sf-c2)",
+      "density": false,
+      "px": {"desktop": 24, "compact": 24, "phone": 24}
+    },
+    {
+      "name": "--sf-hit--touch",
+      "role": "The press area on a touch screen (C49).",
+      "value": "var(--sf-d1)",
+      "density": false,
+      "px": {"desktop": 44, "compact": 44, "phone": 44}
+    },
+    {
+      "name": "--sf-layer--base",
+      "role": "The page itself and what lies flat in it (C181 (3)).",
+      "value": "var(--sf-z-index-0)",
+      "layer": true,
+      "density": false,
+      "z": 0
+    },
+    {
+      "name": "--sf-layer--sticky",
+      "role": "Parts that stay on screen while the page scrolls under them: a site header, sticky tabs, a table of contents, a table's floating action band, a pane splitter (C181 (3)).",
+      "value": "var(--sf-z-index-5)",
+      "layer": true,
+      "density": false,
+      "z": 50
+    },
+    {
+      "name": "--sf-layer--popover",
+      "role": "A panel that drops from its trigger over the page: a list at a field, a menu, a calendar, a colour panel, a popover's surface out of the top layer, an active editor block (C181 (3)).",
+      "value": "var(--sf-z-index-9)",
+      "layer": true,
+      "density": false,
+      "z": 90
+    },
+    {
+      "name": "--sf-layer--window",
+      "role": "What covers the page: a window, a drawer, a bottom sheet with its veil, the loading screen; the base of the layer stack, which raises each open layer by its place (C181 (3)).",
+      "value": "var(--sf-z-index-layer)",
+      "layer": true,
+      "density": false,
+      "z": 9000
+    },
+    {
+      "name": "--sf-layer--message",
+      "role": "A tooltip, a value bubble, a copy status, the notification area: over the rest around it, from the base of the layer stack, which orders it with windows by opening (C181 (3)).",
+      "value": "var(--sf-z-index-layer)",
+      "layer": true,
+      "density": false,
+      "z": 9000
+    }
+  ],
+  "layer_order": ["--sf-layer--base", "--sf-layer--sticky", "--sf-layer--popover", "--sf-layer--window", "--sf-layer--message"],
+  "existing": [
+    {"name": "--sf-radius--ui", "role": "A small control's corner.", "declared_in": "src/core/scss/_sf_css__border.scss"},
+    {"name": "--sf-radius--surface", "role": "A block's corner.", "declared_in": "src/core/scss/_sf_css__border.scss"}
+  ],
+  "deferred": [],
+  "classes": [
+    {"name": "sf-actions", "role": "A row of buttons of one group: flex, wrapping, centred, gap --sf-gap--actions (C173 point 3)."},
+    {"name": "sf-actions--end", "role": "The same row pushed to the end."}
+  ],
+  "not_role_names": ["control heights", "icon sizes", "shadows and elevation", "motion", "focus"],
+  "source_check": {
+    "script": "scripts/check-role-tokens.mjs",
+    "baseline": "src/core/contracts/role-tokens.baseline.v1.json",
+    "rules": [
+      "RT-NAMES: every role token is declared once on :root in the role SCSS with this list's value, no other --sf-<area>--<role> name of these areas is declared anywhere, and this list stays within the cap (18: 13 names and 5 layers, owner 2026-11-14).",
+      "RT-SCOPES: every role token marked density is declared again in both density regions (RT-15).",
+      "RT-ROLE-STEP: a gap of a button row, a toolbar or a row of tags in a component or Smart sheet uses its role token, never a space step, an atom or a length; known departures are listed in the baseline with their defect and fail once they are fixed (the entry must then be removed).",
+      "RT-SCRIM: a scrim reads --sf-scrim-color, never a palette black (RT-12).",
+      "RT-LAYERS: the five layer roles keep their order (base < sticky < popover < window <= message, C181 (3)) and each reads a step of the z-index scale (src/utility/z-index/default/scss/_sf_var__z_index.scss) whose value the contract records; a stacking number beyond the local -1..2 in the sources is the raw-value lint's (tools/lint-raw-values.mjs, C178), with no waiver left."
+    ]
+  }
+}

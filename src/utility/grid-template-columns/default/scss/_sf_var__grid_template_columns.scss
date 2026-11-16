@@ -19,3 +19,20 @@ $grid-template-columns-array: (
     none: none,
     subgrid: subgrid,
 );
+
+// Fluid columns (owner decision C181 (1), 2026-11-14; ui-control
+// prototypes/foundation-names-demo.html): as many columns as fit, none
+// narrower than a step of the size scale -- 12rem (f2) by default. The number
+// of columns follows the width of the grid's own place, so a row of cards needs
+// no breakpoint; a single column never overflows a place narrower than the
+// step (min(100%, ...)). auto-fit: a row with fewer cards than columns
+// stretches them across it.
+$grid-template-columns-fit-array: (
+	'fit': f2,
+	'fit-f0': f0,
+	'fit-f2': f2,
+	'fit-f6': f6,
+	'fit-g0': g0,
+	'fit-g2': g2,
+	'fit-g6': g6,
+);

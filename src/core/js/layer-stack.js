@@ -60,10 +60,17 @@ export const FOCUSABLE = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
-/** The focusable nodes inside these roots that are drawn and not inert, in order. */
+/**
+ * The focusable nodes inside these roots that are drawn and not inert, in
+ * order. A control taken out of the Tab order (tabindex -1: the other
+ * segments of a roving group such as sf-segmented, a menu's rows) is no Tab
+ * stop: counted, it was the trap's last stop that Tab never reaches, and Tab
+ * from the group's current segment left the layer (sf-header-site's panel
+ * with the theme switch in its settings group, owner decision C161 (8)).
+ */
 export function focusablesIn(...roots) {
   return roots.flatMap((root) => Array.from(root?.querySelectorAll?.(FOCUSABLE) ?? []))
-    .filter((node) => node.getClientRects().length > 0 && !node.closest('[inert]'));
+    .filter((node) => node.getClientRects().length > 0 && !node.closest('[inert]') && node.tabIndex >= 0);
 }
 
 function stack() {
@@ -478,13 +485,13 @@ const THEMES = ['theme-dark', 'theme-light'];
  * longer different is taken back, so a host moved to another area takes that
  * area's values.
  */
-// The density a host stands in (C22; core/js/density.js says the same): the
-// nearest region's, or "normal" under an explicit size. Written here, not
-// imported: this module is loaded on its own (shared runtime, tests).
+// The density a host stands in (C22, C79; core/js/density.js says the same):
+// the nearest region's -- an explicit size follows its region since C79.
+// Written here, not imported: this module is loaded on its own (shared
+// runtime, tests).
 function densityOf(from) {
   for (let node = from; node?.nodeType === 1; node = node.parentElement) {
     if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
-    if (node.hasAttribute('size') && !node.hasAttribute('data-sf-size-relative') && !node.hasAttribute('data-sf-size-scale') && !/^(input|select|textarea)$/u.test(node.localName)) return 'normal';
   }
   return null;
 }

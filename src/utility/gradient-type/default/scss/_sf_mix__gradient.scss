@@ -1,0 +1,23 @@
+// SIMAI Framework
+// https://simai.io
+
+// GRADIENT IMAGE (owner decision C65, 2026-11-11)
+//
+// A gradient mixes in OKLab (CSS Color 4): neighbouring hues keep their
+// lightness and two far hues no longer meet in the grey, darker middle of
+// sRGB. A browser that does not know the interpolation method drops the second
+// declaration and keeps the first, the plain sRGB gradient.
+//
+//   @include sf-gradient-image(linear-gradient, 'to top', $stops);
+//   -> background-image: linear-gradient(to top, <stops>);
+//      background-image: linear-gradient(to top in oklab, <stops>);
+
+@mixin sf-gradient-image($function, $lead, $stops, $property: background-image) {
+    @if $lead {
+        #{$property}: #{$function}(#{$lead}, #{$stops});
+        #{$property}: #{$function}(#{$lead} in oklab, #{$stops});
+    } @else {
+        #{$property}: #{$function}(#{$stops});
+        #{$property}: #{$function}(in oklab, #{$stops});
+    }
+}

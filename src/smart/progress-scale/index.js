@@ -6,8 +6,12 @@ import { setProgressScaleState } from '../../component/progress-scale/js/_progre
 import { renderProgressScaleTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 function normalizeProgressValue(value) {
   const parsed = Number(value);
@@ -41,13 +45,24 @@ const ProgressScaleElement = elementFromManifest(manifest, {
   },
 });
 
+// The threshold the value reached (C131 (7)); unset thresholds are none.
+const RANK = { warning: 1, error: 2 };
+function thresholdReached(value, warningAt, errorAt) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '';
+  if (Number.isFinite(errorAt) && number >= errorAt) return 'error';
+  if (Number.isFinite(warningAt) && number >= warningAt) return 'warning';
+  return '';
+}
+
 class SfProgressScale extends ProgressScaleElement {
   static get props() {
     return {
       ...super.props,
       // The axis is called status, and speaks the shared vocabulary. `tone`
       // and its value `primary` keep working: see contracts/public-api-axes.json.
-      status: {default: 'neutral', values: ['neutral', 'info', 'success', 'warning', 'error'], aliases: ['tone'], valueAliases: {neutral: ['primary']}},
+      // No status (empty) is the theme's primary; neutral is grey (C131 (1)).
+      status: {default: '', values: ['', 'neutral', 'info', 'success', 'warning', 'error'], aliases: ['tone'], valueAliases: {'': ['primary']}},
     };
   }
 
@@ -78,6 +93,33 @@ class SfProgressScale extends ProgressScaleElement {
     return this.getProp('status');
   }
 
+  // A level of N (C185 (5)): the steps the page gave, 2..10, or none (a
+  // percent scale of ten).
+  get levelSteps() {
+    if (!this.hasAttribute('steps')) return null;
+    const parsed = Math.trunc(Number(this.getAttribute('steps')));
+    return Number.isFinite(parsed) ? Math.max(2, Math.min(10, parsed)) : 10;
+  }
+
+  // «4 из 5» in the element's language.
+  levelWords(lit, steps) {
+    return this.sfWord('of-steps', {vars: {value: lit, total: steps}});
+  }
+
+  // A threshold holds only where the page set it.
+  threshold(attribute) {
+    if (!this.hasAttribute(attribute)) return null;
+    const number = Number(this.getAttribute(attribute));
+    return Number.isFinite(number) ? number : null;
+  }
+
+  // The status drawn (C131 (7), as sf-progress-bar): the more serious of the
+  // page's status and the threshold the value reached.
+  get drawnStatus() {
+    const reached = thresholdReached(this.value, this.threshold('warning-at'), this.threshold('error-at'));
+    return (RANK[reached] ?? 0) > (RANK[this.status] ?? 0) ? reached : this.status;
+  }
+
   // The accessible name: label, else the host's aria-label (§3.1, §4.8).
   get accessibleLabel() {
     return this.label || this.getAttribute('aria-label') || '';
@@ -86,12 +128,18 @@ class SfProgressScale extends ProgressScaleElement {
   templateContext() {
     const props = this.getPropsContext();
 
+    const status = this.drawnStatus;
+    this.sfHostState('data-status', status);
     return this.createTemplateContext({
       ...props,
+      drawnStatus: status,
+      meter: Boolean(this.meter),
       component: this,
       line: this.line,
       label: this.accessibleLabel,
       value: normalizeProgressValue(props.value),
+      steps: this.levelSteps,
+      levelWords: (lit, steps) => this.levelWords(lit, steps),
     });
   }
 
@@ -106,6 +154,9 @@ class SfProgressScale extends ProgressScaleElement {
       value: normalizeProgressValue(this.value),
       showText: this.showText,
       status: this.status,
+      drawnStatus: this.drawnStatus,
+      meter: Boolean(this.meter),
+      steps: this.levelSteps,
       label: this.label,
       valueText: this.valueText,
     };
@@ -119,7 +170,7 @@ class SfProgressScale extends ProgressScaleElement {
   }
 
   resolveUpdateMode(changedAttributes = []) {
-    const directPatchAttributes = ['value', 'show-text', 'status', 'tone', 'label', 'value-text', 'aria-label'];
+    const directPatchAttributes = ['value', 'show-text', 'status', 'tone', 'warning-at', 'error-at', 'meter', 'label', 'value-text', 'aria-label'];
     if (
       changedAttributes.length > 0 &&
       changedAttributes.every((attr) => directPatchAttributes.includes(attr))
@@ -133,12 +184,18 @@ class SfProgressScale extends ProgressScaleElement {
   updateDom() {
     const root = this.querySelector('.sf-progress-scale');
     if (!root) return false;
+    this.sfHostState('data-status', this.drawnStatus);
+    // A level reads in the element's own words, not the page's (C185 (5)).
+    const steps = this.levelSteps;
+    const lit = steps ? Math.floor((this.value / 100) * steps + 1e-9) : 0;
     return setProgressScaleState(root, {
       value: this.value,
       showText: this.showText,
-      tone: this.status,
+      tone: this.drawnStatus,
+      meter: Boolean(this.meter),
       label: this.accessibleLabel,
-      valueText: this.valueText,
+      valueText: this.valueText || (steps ? this.levelWords(lit, steps) : ''),
+      steps,
     });
   }
 }

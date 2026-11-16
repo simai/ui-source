@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.editor-inline",
-  "version": "1.6.3",
+  "version": "1.11.1",
   "title": "Inline editor",
   "summary": "Edits a content.heading or content.paragraph in place on the canvas -- strong, em, code, links and the inline component atoms -- and gives the host the normalised content model, never HTML.",
   "kind": "smart",
@@ -24,7 +24,13 @@
   ],
   "exported_parts": [],
   "composition": {
-    "uses": [],
+    "uses": [
+      "component.icon-buttons",
+      "component.icons",
+      "smart.button",
+      "smart.input",
+      "smart.menu-context"
+    ],
     "public_parts": []
   },
   "inputs": {
@@ -52,7 +58,7 @@
   "contracts": {
     "start": {
       "type": "object",
-      "description": "SF.Composition.startInlineEdit(element, {content, nodeId, label, marks, links, messages}) or element.edit(target, options) returns {element, commit(), cancel(), value()}. Before the component is loaded startInlineEdit throws inline_editor_not_loaded. Also exposed as SF.InlineEditor {INLINE_EVENTS, readInlineDom, renderInlineDom, startInlineEdit, textOffset}.",
+      "description": "SF.Composition.startInlineEdit(element, {content, nodeId, label, marks, links, messages, toolbar, enter}) or element.edit(target, options) returns {element, commit(), cancel(), value()}. Before the component is loaded startInlineEdit throws inline_editor_not_loaded. Also exposed as SF.InlineEditor {INLINE_EVENTS, INLINE_TOOLBAR_MODES, INLINE_ENTER_MODES, linkProblem, readInlineDom, renderInlineDom, startInlineEdit, textOffset}.",
       "properties": {
         "marks": {
           "type": "array",
@@ -67,6 +73,20 @@
         "links": {
           "type": "boolean",
           "default": true
+        },
+        "toolbar": {
+          "enum": [
+            "selection",
+            "session"
+          ],
+          "default": "selection"
+        },
+        "enter": {
+          "enum": [
+            "save",
+            "new-block"
+          ],
+          "default": "save"
         }
       }
     },
@@ -77,7 +97,7 @@
   },
   "methods": {
     "edit": {
-      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages, toolbar (session: the bar for the whole edit, over the element, the default; selection: only while text is selected, over the selection)",
+      "summary": "Starts editing an element of the canvas (SF.Composition.startInlineEdit): options content, nodeId, label, marks, links, messages, toolbar (selection: only while text is selected, over the selection, the default; session: the bar for the whole edit, over the element), enter (save: Enter commits, the default; new-block: Enter commits the text before the caret and sends the rest as next, a block editor's «Enter — новый блок»). On a phone the toolbar is a strip of icons above the screen keyboard for the whole edit",
       "arguments": [
         {
           "name": "args",
@@ -131,7 +151,7 @@
       "canonical": true
     },
     "sf-editor-inline-change": {
-      "summary": "The edit was committed (Enter, or the focus left): the content to save; sent on the edited element",
+      "summary": "The edit was committed (Enter, or the focus left): the content to save; sent on the edited element. With enter: 'new-block' Enter commits the text before the caret and the detail also holds next, the text after it, for the host's next block",
       "payload": {
         "type": "object",
         "required": [
@@ -303,9 +323,10 @@
       "Mod+Shift+Z",
       "Mod+Y",
       "Enter",
+      "Shift+Enter",
       "Escape"
     ],
-    "focus": "The sf-inline-editor carrier is hidden and has no role. While editing, the edited element becomes a labelled role=textbox with a visible outline; the formatting toolbar has aria-pressed states and aria-keyshortcuts. Enter commits, Escape cancels, focus leaving commits; IME composition is never interrupted."
+    "focus": "The sf-editor-inline carrier is hidden and has no role. While editing, the edited element becomes a labelled role=textbox with a visible outline; the formatting toolbar (role toolbar) shows over the selected text while text is selected -- on a phone a strip above the screen keyboard for the whole edit -- with aria-pressed icon buttons and aria-keyshortcuts. Enter commits (with enter: 'new-block' the text after the caret goes to the next block), Shift+Enter puts a soft line break, Escape cancels, focus leaving commits; IME composition is never interrupted. Mod+K with no selection takes the word under the caret; the link window names the reason a refused address is refused."
   },
   "presentation": {
     "themes": [
@@ -381,27 +402,27 @@
     "source_artifacts": [
       {
         "path": "src/smart/editor-inline/index.js",
-        "sha256": "5456d63f8a4b3bd980c2c884df4e30842b757e79abeea4188eb2e93bf393a936"
+        "sha256": "cc120202443249c9ff2c88fa087d78e9fcbff9c56a7294645c07d73a2d22aa0b"
       },
       {
         "path": "src/smart/editor-inline/scss/_smart__inline-editor.scss",
-        "sha256": "a93cfebb88c0fdaa0580045234a7d20a4780aa0f5e22b6b2810b70103f828df7"
+        "sha256": "752ec2724d2880ad9613501fe8c3fa8f3ace112d23e76e10e853995c72771533"
       },
       {
         "path": "src/smart/editor-inline/rule.js",
-        "sha256": "b186d6138620a9f5992b538e6a585543c57f388658701504bcfb16cf6a0f0c2d"
+        "sha256": "60a2f4957c7b8c3f3bdd2f1ff7dfca4e4ee0d9bcf406845295535a168a33751e"
       },
       {
         "path": "src/smart/editor-inline/docs.md",
-        "sha256": "b7ed02f586bc9adec87474c7dcd1e544707ec83ae01285a76b7085a790ae7681"
+        "sha256": "7f5b61160a93d55029070d24852fd120d8748f8febb68710d74cb675817f5e35"
       },
       {
         "path": "src/core/js/composition/inline-editor.mjs",
-        "sha256": "76c4e5dc10f00e4c8054539f3076e504fdbe7a6e1f2de7cfe16bfc16ffb807b6"
+        "sha256": "cd5ef28a10979c5fc845d74d8134377d7ff557dfc641aeb2f2cfa0598890f760"
       },
       {
         "path": "src/core/js/composition/inline-model.mjs",
-        "sha256": "2c723569aeab51c90311b90208f52990b3a5abd6a03ef2f2b813ad76e7544663"
+        "sha256": "90921700536834fa6863c262c15c6f1ed41925ceac19fc2b8284aef0ebc4f98f"
       }
     ],
     "generated_runtime": []

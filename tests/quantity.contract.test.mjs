@@ -13,7 +13,7 @@ import {
   roundTo,
   stepFrom,
 } from '../src/smart/input-quantity/value.mjs';
-import {FIELD_SIZES} from '../src/component/field-size.js';
+import {FIELD_LADDER} from '../src/component/field-size.js';
 
 // sf-quantity (owner, 2026-10-25): a number field with «−» and «+» over the class
 // component quantity, for the integer fields of the property and data views.
@@ -79,7 +79,7 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
   // Built from its component.json (standard 1.3.8 §4): the settings are the
   // manifest's, `error` is a dated alias of `invalid` (§17.2).
   assert.match(source, /base: InheritedValueField\(SfBaseElement\),/u);
-  assert.match(source, /class SfQuantity extends FormField\(QuantityElement\)/u);
+  assert.match(source, /class SfQuantity extends ShownValidity\(FormField\(QuantityElement\)\)/u);
   const declared = JSON.parse(read('src/smart/input-quantity/component.json'));
   for (const prop of ['label', 'hint', 'placeholder', 'required', 'disabled', 'readonly', 'invalid', 'error-message', 'min', 'max', 'step', 'precision']) {
     assert.ok(declared.settings[prop], prop);
@@ -87,15 +87,16 @@ test('quantity: it is a form field like sf-input, with the inherited value', () 
   assert.ok(JSON.parse(read('src/smart/input-quantity/aliases.json')).aliases.some((row) => row.from === 'error' && row.to === 'invalid'));
   assert.match(source, /inheritedValue: \{attribute: 'inherited-value', default: ''\}/u);
   assert.match(source, /ariaLabel: \{attribute: 'aria-label', default: ''\}/u);
-  assert.match(source, /get size\(\) \{ return fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-quantity'\); \}/u);
-  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES]);
+  assert.match(source, /get size\(\) \{ return ladderSize\(this\.getAttribute\('size'\)\); \}/u);
+  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_LADDER]);
   assert.match(source, /createFieldContract\(this, \{\n      prefix: 'sf-quantity',/u);
   // The seams the inherited-value mixin asks for.
   for (const seam of ['inheritedOwnValue()', 'inheritedDisplayValue()', 'inheritedFocusTarget()', 'clearOwnValue()']) {
     assert.ok(source.includes(`  ${seam} {`), seam);
   }
   assert.match(source, /clearOwnValue\(\) \{\n    this\.writeValue\(null, 'reset', \{change: true\}\);/u);
-  assert.match(template, /renderInheritedSlot\(component, \{size: context\.size, disabled: !context\.interactive\}\)/u);
+  // C53 F3: the marker and its reset stand after the box, never inside it.
+  assert.match(template, /renderInheritedSlot\(component, \{size: context\.size, disabled: !context\.interactive, className: 'sf-quantity-inherited'\}\)/u);
   // The form gets the number with a point from a hidden input; the box has no name.
   assert.match(template, /<input type="hidden" class="sf-quantity-value" name=\$\{context\.controlName\} value=\$\{context\.formValue\} \?disabled=\$\{context\.disabled\}>/u);
   const box = template.slice(template.indexOf('<input type="text"'), template.indexOf('${inheritedSlot}'));
@@ -111,9 +112,11 @@ test('quantity: the control is a WAI-ARIA spinbutton and the steppers are named 
   }
   assert.match(box, /inputmode=\$\{context\.precision > 0 \? 'decimal' : 'numeric'\}/u);
   const stepper = template.slice(template.indexOf('<button type="button"'), template.indexOf('</button>'));
-  assert.match(stepper, /tabindex="-1"/u);
-  assert.match(stepper, /aria-label=\$\{down \? context\.decrementLabel : context\.incrementLabel\}/u);
-  assert.match(stepper, /aria-controls=\$\{field\.controlId\}/u);
+  // Out of the tab order; only the trash of the remove mode (C122) is in it.
+  assert.match(stepper, /tabindex=\$\{trash \? '0' : '-1'\}/u);
+  assert.match(stepper, /aria-label=\$\{trash \? context\.removeLabel : down \? context\.decrementLabel : context\.incrementLabel\}/u);
+  assert.match(stepper, /aria-controls=\$\{trash \? nothing : field\.controlId\}/u);
+  assert.match(template, /const trash = down && context\.removeShown;/u);
   assert.match(stepper, /\?disabled=\$\{!context\.interactive \|\| reached\}/u);
   // The words are the class component's, in both languages, in the language
   // files (standard 1.3.8 §11); the labels default to them.
@@ -149,7 +152,7 @@ test('quantity: input and change on the host with one detail shape; the box\'s o
   assert.match(source, /this\.stepBy\(direction, 'button', \{change: false\}\)/u);
   assert.match(source, /stopHold\(\) \{[\s\S]*?this\.commitChange\('button'\);/u);
   // The manifest says the events the source sends, change canonical, in the axes table.
-  assert.deepEqual(Object.keys(manifest.events).sort(), ['change', 'input', 'sf-field-reset', 'sf-field:reset']);
+  assert.deepEqual(Object.keys(manifest.events).sort(), ['change', 'input', 'sf-field-reset', 'sf-field:reset', 'sf-input-quantity-remove', 'sf-quantity-remove']);
   assert.equal(manifest.events.change.canonical, true);
   assert.deepEqual(manifest.events.change.payload, manifest.events.input.payload);
   assert.deepEqual(Object.keys(manifest.events.change.payload.properties), ['value', 'text', 'name', 'source']);
@@ -187,7 +190,7 @@ test('quantity: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-input-quantity'\] = \{\n  tags: \['sf-input-quantity', 'sf-quantity'\],/u);
   assert.match(rule, /\{ name: 'quantity' \},\n    \{ name: 'icons' \},\n    \{ name: 'icon-buttons' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-quantity\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.quantity']);
+  assert.deepEqual(manifest.composition.uses, ['component.icon-buttons', 'component.icons', 'component.inputs', 'component.quantity', 'smart.help-mark']);
 });
 
 // The public variables (2026-10-25): nine on the class sheet, each read with the
@@ -205,7 +208,8 @@ test('quantity: the public variables wrap the values the class sheet drew before
     '--sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;',
     '--sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-outline));',
     '--sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));',
-    '--sf-quantity-wrap--gap: var(--sf-quantity-gap, var(--sf-space-2));',
+    // C53 F2: the steppers hug the number.
+    '--sf-quantity-wrap--gap: var(--sf-quantity-gap, calc(var(--sf-px) * 0));',
     '--sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));',
     '--sf-icon-button--border-start-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\\/2));',
   ]) assert.ok(sheet.includes(line), line);
@@ -242,4 +246,49 @@ test('quantity: the public variables wrap the values the class sheet drew before
   }
   const docs = read('src/smart/input-quantity/docs.md');
   for (const variable of entry.variables) assert.ok(docs.includes(`| \`${variable.name}\` |`), variable.name);
+});
+
+test('quantity: read-only is sf-input\'s read-only look and changes nothing (C16, QT-08)', () => {
+  // The same rule and tokens as sf-input's read-only field: no fill, the
+  // region line (outline-variant) for the edge, the value in full ink.
+  const inputSheet = read('src/component/inputs/scss/_css__inputs.scss');
+  const inputRule = inputSheet.slice(inputSheet.indexOf('.sf-input:not(.error).sf-input--bordered:has(input:read-only:not(:disabled)) .sf-input-field {')).split('}')[0];
+  assert.ok(inputRule.includes('--sf-input-field--background-color: var(--sf-transparent);'));
+  assert.ok(inputRule.includes('--sf-input-field--border-color: var(--sf-outline-variant);'));
+  // The read-only ground is set on the internal name, after the base rule, so
+  // it wins over --sf-quantity-background-color too (C16: a fill reads as a
+  // control to press).
+  const base = '--sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-transparent));';
+  const selector = '.sf-quantity:not(.error):has(input:read-only:not(:disabled)) .sf-quantity-wrap {';
+  assert.ok(sheet.indexOf(base) > -1 && sheet.indexOf(base) < sheet.indexOf(selector));
+  const rule = sheet.slice(sheet.indexOf(selector)).split('}')[0];
+  assert.ok(rule.includes('--sf-quantity-wrap--background-color: var(--sf-transparent);'));
+  assert.ok(rule.includes('--sf-quantity-wrap--border-color: var(--sf-outline-variant);'));
+  const ink = sheet.slice(sheet.indexOf('.sf-quantity input {')).split('}')[0];
+  assert.ok(ink.includes('--sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));'));
+  assert.doesNotMatch(sheet, /:read-only[^{]*\{[^}]*--sf-quantity-input--color/u);
+  // No hover or press state reaches a read-only box, number place or
+  // placeholder: every hover/press rule on the input skips :read-only.
+  const pressed = sheet.split('\n').filter((one) => /\.sf-quantity[^{]*:(?:hover|active)\)?[^{]*\{/u.test(one) && /\binput\b/u.test(one));
+  assert.ok(pressed.some((one) => one.includes('input::placeholder')), 'the placeholder press rule is checked');
+  for (const line of pressed) {
+    if (/\.sf-quantity-count|focus-visible/u.test(line)) continue;
+    assert.match(line, /:not\(:read-only\)/u, line);
+  }
+  // The steppers are disabled buttons, so the icon button draws no hover or
+  // press; the keys and the steppers do not step; the box stays focusable and
+  // selectable (a read-only input, not a disabled one).
+  assert.match(template, /\?disabled=\$\{!context\.interactive \|\| reached\}/u);
+  assert.match(template, /\?readonly=\$\{context\.readonly\}/u);
+  assert.match(source, /get interactive\(\) \{\n    return !this\.disabled && !this\.readonly;\n  \}/u);
+  assert.match(source, /stepBy\(count, source, \{change = true\} = \{\}\) \{\n    if \(!this\.interactive\) return false;/u);
+  assert.match(source, /onStepPointerDown\(event, direction\) \{\n(?: {4}[^\n]*\n)*? {4}if \(event\.button !== 0 \|\| !this\.interactive\) return;/u);
+  // The class component: the steppers turn disabled with the input's
+  // read-only, and a step or a typed character does nothing.
+  assert.match(classSource, /const isDisabled = Boolean\(input\.disabled \|\| input\.readOnly\);/u);
+  assert.match(classSource, /function adjustValue\(root, deltaSign\) \{\n  const input = root\.querySelector\('\.sf-quantity-wrap input'\);\n  if \(!input \|\| input\.disabled \|\| input\.readOnly\) return;/u);
+  assert.match(classSource, /attributeFilter: \['disabled', 'readonly'\]/u);
+  // The documentation says so.
+  const docs = read('src/component/quantity/docs/docs.md');
+  assert.match(docs, /no fill \(`--sf-transparent`, also over\n`--sf-quantity-background-color`/u);
 });

@@ -90,6 +90,53 @@
       "expect": {
         "name": "Есть обновление"
       }
+    },
+    {
+      "name": "actions-under",
+      "title": "Действия всегда под текстом",
+      "settings": {
+        "heading": "Есть обновление",
+        "action-text": "Обновить",
+        "action": "update",
+        "secondary-action-text": "Позже",
+        "secondary-action": "later",
+        "status": "info",
+        "actions-layout": "under"
+      },
+      "expect": {
+        "name": "Есть обновление"
+      }
+    },
+    {
+      "name": "help-link",
+      "title": "Ссылка на справку в тексте",
+      "settings": {
+        "heading": "Доступ по ссылке включён",
+        "action-text": "Скопировать ссылку",
+        "action": "copy",
+        "status": "info"
+      },
+      "slots": {
+        "supporting-text": "<span>Открыть страницу сможет любой, у кого есть ссылка. <a href=\"#help\">Узнать больше</a></span>"
+      },
+      "expect": {
+        "name": "Доступ по ссылке включён"
+      }
+    },
+    {
+      "name": "flat-shadow",
+      "title": "Заливка и тень",
+      "settings": {
+        "heading": "Есть обновление",
+        "supporting-text": "Новая версия панели уже установлена.",
+        "action-text": "Посмотреть",
+        "action": "open",
+        "status": "info",
+        "appearance": "flat"
+      },
+      "expect": {
+        "name": "Есть обновление"
+      }
     }
   ],
   "pages": [

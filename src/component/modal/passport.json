@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.modal",
   "kind": "component",
-  "version": "1.3.0",
+  "version": "1.5.3",
   "owner": "simai/ui-source",
   "files": [
     "src/component/modal/index.js",
@@ -13,12 +13,15 @@
     "src/component/modal/js/_motion.js",
     "src/component/modal/js/_stack.js",
     "src/component/modal/js/index.js",
+    "src/component/modal/lang/en.json",
+    "src/component/modal/lang/index.mjs",
+    "src/component/modal/lang/ru.json",
     "src/component/modal/rule.js",
     "src/component/modal/scss/_css__modal_buttons.scss",
     "src/component/modal/scss/_css__modal_custom.scss",
     "src/component/modal/scss/index.scss"
   ],
-  "content_sha256": "503bb374592c9f649cee2c151f00bbbe784af4c0d0ef77f77b7839ceaa8c118f",
+  "content_sha256": "2c33457bd987ab4b3a113018ad5e6b307040d512156dfaca579eb82318a89a36",
   "dependencies": [
     {
       "id": "component.close",
@@ -37,11 +40,19 @@
       "range": "^1.0.0"
     },
     {
+      "id": "core.styles",
+      "range": "^1.12.0"
+    },
+    {
       "id": "module.component-shared",
       "range": "^1.0.0"
     },
     {
       "id": "tokens.border",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
       "range": "^1.0.0"
     },
     {

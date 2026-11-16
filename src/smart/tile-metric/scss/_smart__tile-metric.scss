@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
 
 // A tile is a place (C16): a cut-out and the dim ink on it take the card's.
 // In sf.base, so a utility on the tile still wins.
@@ -93,6 +94,7 @@ sf-tile-metric {
 }
 
 .sf-tile-metric-label,
+.sf-tile-metric-flat,
 .sf-tile-metric-period,
 .sf-tile-metric-limit,
 .sf-tile-metric-hint {
@@ -193,53 +195,101 @@ sf-tile-metric {
   overflow-wrap: anywhere;
 }
 
+/* The chart under the numbers (owner C168 (3), 2026-11-14): the page's small
+   picture (an sf-chart-sparkline, an svg) across the tile's whole width, 32
+   high, in the hint's colour -- the change's colour is the badge's, the line
+   carries no meaning of its own; no axes, no captions. An svg drawn with
+   currentColor takes it. */
 .sf-tile-metric-chart {
   display: block;
   min-inline-size: 0;
+  color: var(--sf-on-surface-variant);
+}
+
+.sf-tile-metric-chart > * {
+  display: block;
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: var(--sf-c6);
+  max-inline-size: 100%;
 }
 
 .sf-tile-metric-chart[hidden] {
   display: none;
 }
 
-/* While the numbers load: a bar on each line that waits, the line's height,
-   so nothing moves when they arrive. */
-.sf-tile-metric-skeleton {
-  display: block;
+/* While the numbers load (owner decision C130; tile study TM-1): each line
+   that waits keeps its own place. A word is core's first-paint bar in the
+   line's own type (.sf-first-paint-bar, C136), so the value's line is the
+   value's; a box -- the change badge, the meter's bar -- is the real part,
+   hidden, under one fill of the skeleton colour and the control radius
+   (C130 (1)), pulsing as the bars do (C130 (3), (4)). Nothing moves when the
+   numbers arrive. */
+.sf-tile-metric-skeleton--shape {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  max-inline-size: 100%;
+}
+
+.sf-tile-metric-meter > .sf-tile-metric-skeleton--shape {
+  display: flex;
+}
+
+.sf-tile-metric-skeleton--shape > * {
+  visibility: hidden;
+}
+
+.sf-tile-metric-skeleton--shape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-skeleton-base, var(--sf-surface-container));
+  background: var(--sf-surface-container);
+  animation: sf-placeholder-pulse calc(var(--sf-duration-slow) * 3) var(--sf-animation) infinite;
 }
 
-.sf-tile-metric-skeleton--value {
-  inline-size: 60%;
-  block-size: calc(var(--sf-tile-metric--value-line) * 0.75);
-  align-self: center;
-}
-
-.sf-tile-metric-skeleton--line {
-  inline-size: 40%;
-  block-size: calc(var(--sf-tile-metric--line) * 0.75);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .sf-tile-metric--loading .sf-tile-metric-skeleton {
-    animation: sf-tile-metric-pulse calc(var(--sf-duration-slow) * 4) var(--sf-ease-move) infinite;
+@media (prefers-reduced-motion: reduce) {
+  .sf-tile-metric-skeleton--shape::after {
+    animation: none;
   }
 }
 
-@keyframes sf-tile-metric-pulse {
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* A row of tiles that wraps: columns at least min-width wide, one column on a
-   phone; the gap is the size-1 rung's space. */
+/* A row of tiles that wraps: columns at least min-width wide; the gap is the
+   one between cells (C105 H6, --sf-space-1). In a narrow place (below the
+   container step g6, 32rem, the sm step it read from the screen before) the
+   small tiles go two in a row and sizes 1 and 2 take the whole row (owner
+   C168 (4), 2026-11-14). The grid's own width decides, not the screen's
+   (C181 (2), DEV GB5 answers): tiles in a narrow column of a wide page pair
+   up too.
+   A container query cannot style its container, so the grid's columns read
+   its own width (100%) in the track size: the switch is the page header's
+   clamp(0px, (100% - step) * 1000, ...) form, a column min-width wide at
+   and above the step and half the grid less half the gap below it. The grid
+   is the container its tiles' span reads; a container takes no width from
+   its content, so it fills its place (inline-size 100%, the width a block
+   grid already had). */
 .sf-tile-metric-grid {
+  --sf-tile-metric-grid--min: var(--sf-tile-metric-min-width, var(--sf-f4));
+  --sf-tile-metric-grid--gap: var(--sf-space-1);
+  --sf-tile-metric-grid--wide: clamp(0px, (100% - #{mq.container-step(g6)}) * 1000 + var(--sf-tile-metric-grid--min), var(--sf-tile-metric-grid--min));
+  --sf-tile-metric-grid--narrow: clamp(0px, (#{mq.container-step(g6)} - 100%) * 1000, (100% - var(--sf-tile-metric-grid--gap)) / 2);
+
+  container: sf-tile-metric-grid / inline-size;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--sf-tile-metric-min-width, var(--sf-f4))), 1fr));
-  gap: var(--sf-space-1);
+  inline-size: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--sf-tile-metric-grid--wide), var(--sf-tile-metric-grid--narrow))), 1fr));
+  gap: var(--sf-tile-metric-grid--gap);
   align-items: stretch;
+}
+
+@container sf-tile-metric-grid (width < #{mq.container-step(g6)}) {
+  /* The host is display: contents once drawn: its tile is the grid item. */
+  .sf-tile-metric-grid > :not(sf-tile-metric, [size="1/2"]),
+  .sf-tile-metric-grid > sf-tile-metric:not([size="1/2"]),
+  .sf-tile-metric-grid > sf-tile-metric:not([size="1/2"]) > .sf-tile-metric {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (forced-colors: active) {
@@ -247,7 +297,7 @@ sf-tile-metric {
     border-color: CanvasText;
   }
 
-  .sf-tile-metric-skeleton {
+  .sf-tile-metric-skeleton--shape::after {
     background: GrayText;
   }
 }

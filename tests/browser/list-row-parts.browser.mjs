@@ -6,8 +6,9 @@
 // count and badge, and pinned rows, on the built bytes through the real Loader
 // (so the rule brings sf-avatar, sf-badge and their sheets), at 1280 and 390,
 // at each size of the ladder (1/2, 1, 2):
-// - no item with an avatar: no leading place at all, and the row is as tall as
-//   a 1.0 row;
+// - no item with a picture: no leading place at all, and the row is as tall as
+//   a 1.0 row; a text row among rows with a picture keeps the picture's place
+//   (owner decision C105, list item study LI-17);
 // - an avatar in a one-line list: the avatar is the row's line square (as the
 //   row's icon is), the row keeps its control height;
 // - an avatar in a list with a second line: the avatar is the control height
@@ -15,7 +16,8 @@
 //   a one-line row of the same list keeps its control height;
 // - every row of a list with an avatar keeps the leading place, so the titles
 //   start at one x (an image, initials, a sign, an icon alone, nothing);
-// - the avatar, the count and the badge stand centred on the row; the count
+// - the avatar stands centred on the row, the count and the badge too in a
+//   one-line row, on the caption's line in a two-line one (C148 (2)); the count
 //   and the badge end before the «⋯» and inside the row; «99+» above 99, the
 //   count named in plural forms; the badge carries the tone as status;
 // - pinned items lead under «Закреплённые» («Pinned») before the day groups
@@ -26,6 +28,10 @@
 //   or less than 10rem): a row with a badge or a count puts them under its
 //   text, at the text's start; the row is the control height, the band step
 //   and the badge's height; the picture stands on the title's band;
+// - the row's picture starts, and its count or badge ends, at the list's
+//   value inset from the list's outer edge, its border inside (owner decision
+//   C77, C105 H4): 12 / 16 / 20 at 1/2, 1, 2 (--sf-space-1/2 with the --sf-b2
+//   floor, --sf-space-1, --sf-space-2), 12 / 12 / 16 on a phone;
 // - a count that comes and goes keeps the row's node and the focus on it;
 // - no sideways scroll, no page error.
 import {createServer} from 'node:http';
@@ -122,9 +128,9 @@ try {
           list.setItems(items);
         }
       }, {data, size});
-      await tab.waitForFunction(() => customElements.get('sf-avatar') && customElements.get('sf-badge')
+      await tab.waitForFunction(() => customElements.get('sf-badge')
         && document.querySelectorAll('.sf-list__count .sf-badge, .sf-list__count.sf-badge, sf-badge.sf-list__count > .sf-badge').length >= 4
-        && document.querySelectorAll('#one sf-avatar > *').length >= 2, null, {timeout: 20000});
+        && document.querySelectorAll('#one .sf-list__lead .sf-avatar').length >= 2, null, {timeout: 20000});
       await tab.evaluate(() => document.fonts.ready);
       await tab.waitForTimeout(250);
 
@@ -138,6 +144,8 @@ try {
           line: length(`--sf-text-height-${esc}`),
           spaceX: length(`--sf-ui-${esc}--space-x`),
           band: length('--sf-space-1\\/4'),
+          // C77: the list's value inset per step, from the space system.
+          inset: size === '1/2' ? Math.max(length('--sf-space-1\\/2'), length('--sf-b2')) : length(size === '1' ? '--sf-space-1' : '--sf-space-2'),
         };
         probe.remove();
         const box = (node) => { const r = node.getBoundingClientRect(); return {x: r.x, y: r.y, w: r.width, h: r.height, right: r.right, cy: r.y + r.height / 2}; };
@@ -147,7 +155,7 @@ try {
           const item = row.querySelector('.sf-list-item');
           const title = row.querySelector('.sf-list-item-title') || row.querySelector('.sf-list-item-container');
           const lead = row.querySelector('.sf-list__lead');
-          const avatar = drawn(row.querySelector('.sf-list__lead sf-avatar')) || row.querySelector('.sf-list__sign');
+          const avatar = row.querySelector('.sf-list__lead .sf-avatar:not(.sf-list__sign)') || row.querySelector('.sf-list__sign');
           const count = drawn(row.querySelector('sf-badge.sf-list__count'));
           const badge = drawn(row.querySelector('sf-badge.sf-list__badge'));
           const dots = row.querySelector('.sf-list__actions');
@@ -165,10 +173,12 @@ try {
             badge: badge ? {...box(badge), status: row.querySelector('sf-badge.sf-list__badge').getAttribute('status')} : null,
             dots: dots ? box(dots) : null,
             twoLine: item.classList.contains('sf-list-item--two-line'),
+            caption: row.querySelector('.sf-list-item-supporting') ? box(row.querySelector('.sf-list-item-supporting')) : null,
             meta: meta && meta.children.length ? box(meta) : null,
             // C47 (sf-list 1.5.0): a narrow list puts a row's badge and count
-            // under its text, at the text's start.
-            narrow: row.closest('.sf-list__frame').hasAttribute('data-sf-list-narrow'),
+            // under its text, at the text's start. 1.14.0: below 20rem by the
+            // sheet's container query, the mark only for a squeezed title.
+            narrow: ((frame) => { const s = getComputedStyle(frame); return frame.hasAttribute('data-sf-list-narrow') || (s.containerType === 'inline-size' && frame.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight) < 20 * parseFloat(getComputedStyle(document.documentElement).fontSize)); })(row.closest('.sf-list__frame')),
           };
         });
         return {
@@ -182,6 +192,10 @@ try {
             date: group.querySelector('.sf-list__heading sf-time.sf-group-heading-date')?.textContent.trim() ?? '', ids: [...group.querySelectorAll('.sf-list__row')].map((row) => row.dataset.id)})),
           flatHeadings: document.querySelectorAll('#flat .sf-list__heading').length,
           leadsPlain: document.querySelectorAll('#plain .sf-list__lead').length,
+          rowsPlain: document.querySelectorAll('#plain .sf-list__row').length,
+          leadsFlat: document.querySelectorAll('#flat .sf-list__lead').length,
+          // The list's outer box, its border inside: where C77 counts from.
+          frames: Object.fromEntries(['plain', 'one'].map((id) => [id, box(document.querySelector(`#${id} .sf-list__frame`))])),
           scroll: document.documentElement.scrollWidth - document.documentElement.clientWidth,
           wide: document.querySelector('#two .sf-list__frame').classList.contains('sf-list--lead-wide'),
         };
@@ -189,7 +203,10 @@ try {
 
       const {tokens} = got;
       // No avatar: no leading place; the 1.0 row; the count and badge still drawn.
-      ok(`${label}: no avatar, no leading place`, got.leadsPlain === 0, got.leadsPlain);
+      // C105 / LI-17: no picture in the list, no leading place; a text row
+      // among rows with an icon keeps the icon's place.
+      ok(`${label}: C105 no picture in the list, no leading place`, got.leadsFlat === 0, got.leadsFlat);
+      ok(`${label}: C105 a text row among icon rows keeps the picture place`, got.leadsPlain === got.rowsPlain, {leads: got.leadsPlain, rows: got.rowsPlain});
       ok(`${label}: a one-line row without an avatar is the control height`, near(got.plain[0].row.h, tokens.control), {row: got.plain[0].row.h, tokens});
       ok(`${label}: a count without an avatar column, centred on the row`, got.plain[0].count && near(got.plain[0].count.cy, got.plain[0].row.cy), got.plain[0]);
       ok(`${label}: a badge beside an icon, centred, tone as status`, got.plain[1].badge && near(got.plain[1].badge.cy, got.plain[1].row.cy) && got.plain[1].badge.status === 'info', got.plain[1]);
@@ -211,7 +228,7 @@ try {
         if (row.avatar) {
           ok(`${label}: one-line avatar ${row.id} is the line square`, near(row.avatar.w, tokens.line) && near(row.avatar.h, tokens.line), {avatar: row.avatar, tokens});
           ok(`${label}: one-line avatar ${row.id} centred on the row`, near(row.avatar.cy, row.row.cy), {avatar: row.avatar.cy, row: row.row.cy});
-          ok(`${label}: one-line avatar ${row.id} starts at the row's inline inset`, near(row.avatar.x - row.row.x, tokens.spaceX), {x: row.avatar.x - row.row.x, tokens});
+          ok(`${label}: C77 one-line avatar ${row.id} starts at the list's value inset`, near(row.avatar.x - got.frames.one.x, tokens.inset), {x: row.avatar.x - got.frames.one.x, tokens});
         }
       }
       const titleX = got.one.map((row) => row.title.x);
@@ -222,7 +239,8 @@ try {
       ok(`${label}: above 99 the count reads 99+`, channel.count?.text === '99+' && channel.count?.label === '120 непрочитанных', channel.count);
       for (const row of [...got.plain, ...got.one]) {
         const last = row.count ?? row.badge;
-        if (last && !under(row)) ok(`${label}: the row's parts end at the row's end (${row.id})`, near(last.right, row.item.right - tokens.spaceX), {last, item: row.item, tokens});
+        const frame = got.plain.includes(row) ? got.frames.plain : got.frames.one;
+        if (last && !under(row)) ok(`${label}: C77 the row's parts end at the list's value inset (${row.id})`, near(last.right, frame.right - tokens.inset), {last, frame, tokens});
       }
       const line = under(channel) ? channel.meta.y + channel.meta.h / 2 : channel.row.cy;
       ok(`${label}: the badge before the count, both centred${under(channel) ? ' on the line under the title' : ''}, inside the row`, channel.badge && channel.count && channel.badge.right <= channel.count.x + 0.5
@@ -243,8 +261,16 @@ try {
           ok(`${label}: avatar ${row.id} centred on the row`, near(row.avatar.cy, row.row.cy), {avatar: row.avatar.cy, row: row.row.cy});
           ok(`${label}: avatar ${row.id} centred in the leading place`, near(row.avatar.x + row.avatar.w / 2, row.lead.x + row.lead.w / 2), {avatar: row.avatar, lead: row.lead});
         }
-        if (row.count) ok(`${label}: two-line count ${row.id} centred on the row`, near(row.count.cy, row.row.cy), {count: row.count.cy, row: row.row.cy});
-        if (row.badge) ok(`${label}: two-line badge ${row.id} centred on the row`, near(row.badge.cy, row.row.cy), {badge: row.badge.cy, row: row.row.cy});
+        // A two-line row's count and badge stand in its end column, on the
+        // caption's line (owner decision C148 (2), sf-list 1.10.0); a one-line
+        // row's are centred on the row.
+        if (row.twoLine) {
+          if (row.count) ok(`${label}: two-line count ${row.id} on the caption's line`, near(row.count.cy, row.caption.cy), {count: row.count.cy, caption: row.caption.cy});
+          if (row.badge) ok(`${label}: two-line badge ${row.id} on the caption's line`, near(row.badge.cy, row.caption.cy), {badge: row.badge.cy, caption: row.caption.cy});
+        } else {
+          if (row.count) ok(`${label}: one-line count ${row.id} centred on the row`, near(row.count.cy, row.row.cy), {count: row.count.cy, row: row.row.cy});
+          if (row.badge) ok(`${label}: one-line badge ${row.id} centred on the row`, near(row.badge.cy, row.row.cy), {badge: row.badge.cy, row: row.row.cy});
+        }
       }
       const titleTwo = got.two.map((row) => row.title.x);
       ok(`${label}: two-line list titles start at one x`, Math.max(...titleTwo) - Math.min(...titleTwo) <= 0.5, titleTwo);

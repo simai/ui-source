@@ -2,7 +2,7 @@
   "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.dropdown",
   "tag": "sf-dropdown",
-  "version": "1.8.1",
+  "version": "1.16.0",
   "kind": "leaf",
   "family": "dropdown",
   "traits": [
@@ -27,9 +27,24 @@
       "type": "boolean",
       "default": false
     },
+    "error-message": {
+      "type": "string",
+      "default": "",
+      "summary": "The text shown under the field while it is invalid, in the error colour, in the field-message style; it is the trigger's error message for assistive technology (aria-describedby, aria-errormessage)."
+    },
+    "invalid": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Marks the choice as wrong: the error border (filled: the error fill), aria-invalid on the trigger and error-message under the field. No error icon is drawn."
+    },
     "label": {
       "type": "string",
       "default": ""
+    },
+    "help": {
+      "type": "string",
+      "default": "",
+      "summary": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty: no mark."
     },
     "layout": {
       "type": "enum",
@@ -189,6 +204,21 @@
         "type": "object",
         "description": "The element, for chaining."
       }
+    },
+    "set-error": {
+      "with": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Show an error message and the invalid state, or clear both with an empty message. Writes error-message and invalid and sets the custom error the form will not submit over. Returns the element.",
+      "x-returns": {
+        "type": "object",
+        "description": "The element, for chaining."
+      }
     }
   },
   "layer": {
@@ -206,6 +236,8 @@
       "ArrowUp": "focus:prev",
       "Home": "focus:first",
       "End": "focus:last",
+      "PageDown": "step:+page",
+      "PageUp": "step:-page",
       "Enter": "select",
       "Space": "select",
       "Escape": "close"
@@ -236,6 +268,12 @@
         "The picture of a single choice in the field and an icon tag's icon are sf-icon elements,",
         "so their names reach the first icon font request (2026-11-09, as sf-tag 1.3.2)."
       ]
+    },
+    {
+      "name": "cl-help-mark",
+      "$comment": [
+        "The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field."
+      ]
     }
   ],
   "templates": {
@@ -263,6 +301,8 @@
       "ArrowUp": "focus:prev",
       "Home": "focus:first",
       "End": "focus:last",
+      "PageDown": "step:+page",
+      "PageUp": "step:-page",
       "Enter": "select",
       "Space": "select",
       "Escape": "close"
@@ -351,7 +391,7 @@
     "settings.type → appearance: the axis's old name (contracts/public-api-axes.json), alias dated",
     "events.sf-dropdown:change → change: vocabulary §5.1 (a value changed), the colon name a dated alias"
   ],
-  "x-form": {
+  "form": {
     "value": "value",
     "name": "name",
     "default": "value",
@@ -369,7 +409,7 @@
     "version: 1.3.0 → 1.4.0: type and sf-dropdown:change are dated aliases; change carries no element (root leaves its detail, §8).",
     "a11y-role: combobox, one role: the trigger is a read-only box that opens a listbox (the list's own role); the name is the drawn label, then what the page said of the host (aria-label, aria-labelledby, a label[for]).",
     "existing-aliases: compatibility.migrations lists the move to appearance; type folds into aliases.json as a dated setting row, sf-dropdown:change as a split event row whose old detail keeps root.",
-    "form: the dropdown still submits through its hidden input, which §16 item 11 allows until 1.4.0; the form contract of §17.1 is kept as x-form and moves in with the field family's FormField mixin (ElementInternals). Declaring `form` now would make the host a form control beside the hidden input.",
+    "form: the host is the form control through ElementInternals (FormField, helpers/form-field.js; §17.1, §17.2) since 1.9.0: it submits the value, reports value-missing while required and empty, and a custom error set with set-error or setCustomValidity(); the hidden input stays drawn for the reset binding and for pages that read it, without a name while the host submits (§17.1 item 6). Before 1.9.0 the contract was kept as x-form and the hidden input submitted (§16 item 11).",
     "template: templates.default names the Lit template js/templates/default.js, the migration form §5.2 allows.",
     "examples: examples.json from studio.fixture.json and studio.scenario.json plus multiple, tags, a grid, search and an inherited value; probe.json drives the arrows, Home, End, Enter, Space, Escape and Tab (gate 16).",
     "css-variables: five public variables read by the sheet with the role tokens as fallbacks (§6): the field's resting background and border, its radius, the gap, and the open list's background. They are not in src/core/contracts/public-variables.v1.json yet: that file and its test are shared with the field family's branches.",
@@ -388,7 +428,17 @@
     "version 1.7.4 (2026-11-09): a patch; nothing in the component changed. A shared sheet it draws with moved in the next block (src/smart/helpers/inherited-value.css, the C27 inherited-value reset), so the component takes a patch with it.",
     "version 1.7.3 (2026-11-08; one number above the two unreleased 1.7.2 it joins): a patch (C06, DEV measurement of the docs on ui-0c23f6a0af12; component.dropdown 1.2.1). When no option has a picture (icon, avatar, colour or checkbox), the search header's text stands over the rows' text and its icon at the header's end; the text stood a search icon and a gap (24-32px) right of the rows'. With pictures nothing changes: icon over icon, text over text. Settings, values, events and keys are unchanged. Its shared helper src/smart/helpers/inherited-value.js changed with the actions block (module.smart-helpers 1.3.0).",
     "version 1.8.0 (2026-11-09): a minor (owner decision C32, the popup widths; component.dropdown 1.5.0, core.runtime position). The list at a field is at least the field and as wide as its longest option up to the list's step or the field, whichever is wider: --sf-popup-list-max-width, 20rem, 18rem in compact density. It was exactly the field, so a short field cut every longer option. Anchored, the positioning gives the field's width as the list's minimum (SF.Position matchWidth \"min\"); in place (portal=\"false\") the field's box does. A list under a trigger of its own and a grid keep their widths. Settings, events and keys unchanged. In place (portal=\"false\") the list takes its options' width between the same limits and, near the screen's inline end, hangs from the field's end (data-sf-align=\"end\", measured on opening; DEV acceptance, 2026-11-09). The pictures of a choice draw on time: the single choice's icon in the field and an icon tag's icon (mode=\"tag\") printed a bare <i class=\"sf-icon\"> after the page's icon scan, so their names missed the first icon_names request and the glyph came late; both are sf-icon elements now (root-class sf-dropdown-field-visual / sf-tag-icon), cl-icon is a relation, and the field's picture rules reach the glyph inside the sf-icon (tests/browser/dropdown-icon-glyph.browser.mjs).",
-    "version 1.8.1 (2026-11-10): a patch (component.dropdown 1.5.1, sf-list-item 1.2.7). The field's chevron and the list's search glyph are sf-icon elements, as the pictures of a choice became in 1.8.0, and so are the icons of icon options (sf-list-item draws them): a bare <i class=\"sf-icon\"> printed after the page's icon scan missed the first icon_names request and its glyph came a round later. The sheets' rules that size and colour those glyphs reach the glyph inside the sf-icon (display: contents) and the sf-icon before it is defined, so the geometry is unchanged; colours stay on-surface-variant at rest and on-disable when disabled. Settings, events and keys are unchanged."
+    "version 1.8.1 (2026-11-10): a patch (component.dropdown 1.5.1, sf-list-item 1.2.7). The field's chevron and the list's search glyph are sf-icon elements, as the pictures of a choice became in 1.8.0, and so are the icons of icon options (sf-list-item draws them): a bare <i class=\"sf-icon\"> printed after the page's icon scan missed the first icon_names request and its glyph came a round later. The sheets' rules that size and colour those glyphs reach the glyph inside the sf-icon (display: contents) and the sf-icon before it is defined, so the geometry is unchanged; colours stay on-surface-variant at rest and on-disable when disabled. Settings, events and keys are unchanged.",
+    "version 1.9.0 (2026-11-11): a minor (owner decision C55, prototype dropdown-error.html variant A; component.dropdown 1.6.0). sf-dropdown is a form field as sf-input is: FormField gives validity, required, form reset and restore; invalid and error-message are settings and set-error {message} the action (as sf-input-quantity's; sf-input itself has none yet); the error look is sf-input's -- the error outline, on filled the error fill, no error icon -- and the message is under the field in sf-input's field-message type with the field's 4 px gap; the trigger carries aria-invalid and aria-describedby/aria-errormessage to the message. A required field left empty shows «Выберите вариант» (lang runtime value-missing) once the form's check fails (the host's invalid event, on a submit attempt or checkValidity/reportValidity), and the browser focuses its trigger; a person's choice that leaves a value clears the shown error, the page's set-error included. The focus ring shows on the field also when focus arrives from code after a pointer press elsewhere (the submit button): before, only keyboard focus (:focus-visible) drew it.",
+    "version 1.9.1 (2026-11-12; written on the branch as 1.8.2): a patch (owner decision C106, the scroll-area inset rule, an addendum to C105; component.dropdown 1.6.1). The shared dropping-panel partial component/context-menu/scss/_panel.scss now takes the page scrollbar's thumb, --sf-scroll-thumb-width, as its default: the track is the inset --sf-space-1/4, the thumb and the inset again, 14 (the page's --sf-scroll-bg-width; it was 12, a thumb of --sf-space-1/4). The thumb keeps a transparent border of the inset and background-clip: padding-box; a scrollbar that takes room still marks its area (component/panel-scrollbar.js) and the area gives up its inline-end padding; no scrollbar-gutter. Settings, values, events and keys unchanged; probe dropdown-panels-inset, evidence ui-control control/evidence/2026-11-12-scrollbar-14.",
+    "version 1.9.2 (2026-11-13; written on the branch fix/dropdown-wheel-r171 as 1.8.3): a patch (owner remark R171; component.dropdown 1.7.1, core.runtime 1.55.0 SF.Position). The wheel scrolls the list of a portalled dropdown again: the list's own scroll reached the dropdown's page-scroll listener (document, capture) and placed the panel anew, and placing took the height cap off for a moment to measure, so the rows' scroll area stopped overflowing and the browser threw it back to the start -- on every wheel step the list jumped back and stood still. The list's own scroll no longer places the panel, and SF.Position puts back what was scrolled inside a surface after it measures (a page scroll with the list scrolled keeps its place too). Settings, values, events and keys unchanged; evidence ui-control control/evidence/2026-11-12-dropdown-wheel-r171. Same patch, the R171 leftovers (evidence control/evidence/2026-11-12-dropdown-inplace-height): a list in place (portal=\"false\") has the anchored list's height -- the larger room the screen gives above or below the field less the panel's edge padding, measured on opening (component/dropdown/portal.js fitDropdownInPlace, --sf-dropdown-available-block-size; unmeasured, the screen less that padding) -- and only its rows scroll, with the shared panel's 14 track; before, sixty options stood 2.4k px tall and the wheel scrolled the page. SF.Position puts a scroll back at once instead of through the sheet's smooth scrolling, which glided the list from 0 after a page scroll and left it short (784 of 800) when read mid-glide. Same patch, the keyboard reveal (written on the branch fix/dropdown-keyboard-reveal as 1.8.2): The keyboard brings the focused option into view: SF.Position kept a list scrolled to the option no longer than one update (its full fit measured the panel uncapped and the browser threw the rows back to the top), the list's own scroll no longer re-fits the panel, and the reveal is instant and nearest. PageDown and PageUp move by what the rows show; typed letters move to the option they begin (type-ahead). SF.Position puts the scroll back for both remarks through one helper, and the list's own scroll is told apart through its composed path. Same patch, the grid cells (owner remark R211; owner decision 2026-10-14, a grid cell is as tall as a field of the dropdown's size): a grid under a field had columns stretched to the list (four columns under a 32rem field were cells of 125 px, two rows in the 16rem grid instead of six); the columns are now one cell wide on every path (1/2 32, 1 40, 2 48), the grid stands at the inline start, and the list stays as wide as the field (C32).",
+    "version 1.10.0 (2026-11-13, owner decision C123 (3); R214 FA-4, FA-5, FA-11): a minor, a look. The chevron is the field's indicator, the field layer's action (component.inputs 1.6.0, .sf-field-action; component.dropdown 1.8.0) in place of a link sf-icon-button with a plate: no plate in any state, the field's leading-picture size (24 / 20 / 28 at 1, 1/2, 2; it was 20 / 20 / 28), on-surface-variant at rest and on-surface while the field is under the pointer or pressed -- the whole field opens the list, as it did. It stays the button that holds the combobox's focus, names and aria-expanded (interaction.js), the field's single Tab stop, and draws no ring of its own: the field's ring is its focus. Its glyph ends on the field's inset, where an option's check ends; the value keeps half an inset before it. A disabled filled field of text still shows none. Settings, values, events and keys unchanged.",
+    "version 1.10.1 (written on fix/content-precheck as 1.8.2; 2026-11-10, docs precheck TG-02): a patch. A chosen value's tag in a field of size 1 or 2 prints sf-tag--height-low, its former spacing-compact's new name (component.tags 1.3.0, journal class-tag-spacing-to-height); drawn the same. An avatar option's picture address is a quoted url(), so an address with a space draws (docs precheck smart content LI-01). Settings, values, events and keys unchanged.",
+    "version 1.11.0 (2026-11-14, avatar study AV-8, 2026-11-14; control/research/2026-11-14-avatar.md): a minor, a picture change. An avatar option's picture in the field and in its tag is sf-avatar's own drawing (smart avatar js/picture.js): the photo an <img> (was a background image), else the initials of the option's name on the neutral plate (the tag drew an empty circle, the field nothing), else the person glyph. Settings, events and keys unchanged.",
+    "version 1.14.0 (2026-11-14, owner decision C145 (1), variant A; tags study control/research/2026-11-14-tags.md #q-height-context; one number above the 1.11.0 of fix/avatar-defects-g4; written on the branch as 1.12.0): a minor, a look. A chosen value's tag in a tag-mode field is part of the field: the field less --sf-space-1/4 above and below at every size -- 24 / 32 / 40 in fields 32 / 40 / 48, 20 / 24 / 32 in a compact region, 20 / 28 / 36 on a phone -- drawn inline one size below the field (1/3, 1/2, 1), so its label is one text step under the field's; its picture is the tag less 8 and at least 16; its cross follows its height (8 up to 28, 12 from 32) and its remove target is at least 24; tags stand --sf-space-1/4 apart in a row and between rows. It sat on the field's text line at 1/2 (20 in 32; 16 in a compact or phone 28) and was a low chip of the field's own size from 1 up. With component.dropdown 1.10.0. Settings, values, events and keys unchanged.",
+    "version 1.13.0 (2026-11-14, owner decision C151 point 8; written on fix/icons-c151 above every origin fix branch, max 1.12.0 on fix/tags-c145): a minor. Search finds an icon option by its glyph's words as well as its label, in Russian and in English (SF.icons.choices.words, core/js/icon-choices.js iconWords; a glyph outside the choice is found by its name read as words): a product's icon chooser labels its options with the glyph name, and «папка» found nothing in the grid of 120 glyphs. Options, events and drawing unchanged.",
+    "version 1.15.0 (2026-11-14, owner decision C153; research ui-control control/research/2026-11-14-text-inputs.md, prototype prototypes/text-inputs-study.html; written on the branch as 1.14.0): a minor. The label is in the text ink a step below the value (14 on a phone at size 1), the required «*» in the label's ink and hidden from assistive technology; hover draws the border in the text ink (the focus edge was already inside). The field shows its own errors as sf-input does (C153 (3), helpers/form-field.js): a failed check of the form shows every wrong field at once and the first takes the focus when the person submitted; afterwards, once the value was changed, leaving the field checks it; a shown error goes the moment the value is right; the words are the component's, in the page's language; the browser's bubble is cancelled. New setting help (C153 (8)): sf-help-mark after the label and its «*», a step below the value, held to the label's line so the row keeps its height, named «Подробнее: <label>» (lang help). (1.13.0 is taken by fix/icons-c151.)",
+    "version 1.16.0 (2026-11-15, owner decision C123 (1), (2), (6); R214; one number above the unreleased 1.14.0 of fix/form-c182 and the fields line; written on the branch as 1.15.0): a minor, a look. The reset to the inherited value (the shared inherited-value slot, src/smart/helpers/inherited-value.js) is the field layer's action (component.inputs, .sf-field-action, the glyph sf-input's clear and reveal draw) in place of a link icon button of the step below: no plate in any state, on-surface-variant at rest and on-surface under the pointer and on a press, the keyboard ring round the glyph; the glyph is the field's text line (the leading icon's size: 16 / 20 / 24 / 28 / 36 at sizes 1/3, 1/2, 1, 2, 3 on a desktop; it was the step-below button's 16-24 glyph in a 28-40 button); the hit area is invisible and never under 24. In the field box the hit area is the field's inner height; the value keeps half the field's inset to the glyph, the chevron's glyph stands half an inset after it (the field's gap is none while the reset shows) and still ends on the field's inset, as without the reset (C123 (3), (6)). Its name is unchanged: «Сбросить к наследуемому» / «Reset to inherited» (reset-label), aria-label and title; Tab reaches it after the value. The «наследуется» marker is unchanged. Settings, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [
@@ -501,7 +551,7 @@
     },
     "accessibility": {
       "accessible_name": "required",
-      "focus": "The toggle is the primary Tab stop. Arrow keys open and move through available options; Home and End move within the list; Enter or Space selects; Escape closes and restores the toggle; Tab closes and continues native traversal. The searchbox keeps native text-editing Home and End behavior. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
+      "focus": "The toggle is the primary Tab stop. Arrow keys open and move through available options; Home and End move within the list, PageDown and PageUp by what it shows, and typed letters to the option they begin; the focused option is brought into view; Enter or Space selects; Escape closes and restores the toggle; Tab closes and continues native traversal. The searchbox keeps native text-editing Home and End behavior. After a reset back to the inherited value, focus returns to the control; while the value is inherited, the control carries it as aria-description and the visible marker is aria-hidden."
     },
     "compatibility": {
       "migrations": [

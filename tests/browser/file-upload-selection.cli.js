@@ -38,15 +38,17 @@ async page => {
     await page.waitForFunction(()=>document.querySelector('.sf-file-upload-input').multiple);
     await page.locator('input[type=file]').setInputFiles(['tests/fixtures/file-upload/example.txt','tests/fixtures/file-upload/second.txt']);
     await page.waitForFunction(()=>selectionEvents.length===4);
+    // The same two files again: a multiple area lists a file once (FU-1), so
+    // nothing enters and no select is sent.
     await page.locator('input[type=file]').setInputFiles(['tests/fixtures/file-upload/example.txt','tests/fixtures/file-upload/second.txt']);
-    await page.waitForFunction(()=>selectionEvents.length===5);
+    await page.waitForTimeout(100);
     await page.locator('input[type=file]').setInputFiles([]);
     const native=await page.evaluate(async mode=>{
       await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
       const items=mode==='smart'?document.querySelector('#subject').getItems():SF.FileUpload.getItems(document.querySelector('.sf-file-upload'));
       return{count:items.length,contents:await Promise.all(items.map(i=>i.file.text())),events:selectionEvents.slice(3),totalEvents:selectionEvents.length,inputEmpty:!document.querySelector('input[type=file]').value};
     },mode);
-    const nativeOk=native.count===2&&native.contents[0].trim()==='SF5 retained file'&&native.contents[1].trim()==='Second file'&&native.totalEvents===5&&native.events.every(e=>e.source==='input'&&e.count===2&&e.multiple)&&native.inputEmpty;
+    const nativeOk=native.count===2&&native.contents[0].trim()==='SF5 retained file'&&native.contents[1].trim()==='Second file'&&native.totalEvents===4&&native.events.every(e=>e.source==='input'&&e.count===2&&e.multiple)&&native.inputEmpty;
     results.push({mode,dir,...row,native});if(!ok||!nativeOk)failures.push(results.at(-1));
   }
   return{status:failures.length||errors.length?'failed':'passed',cases:results.length,failures,errors,results};

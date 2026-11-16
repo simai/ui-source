@@ -22,9 +22,16 @@ test('ordinary Skeleton uses logical token geometry and semantic paint', async (
 
   assert.match(styles, /block-size: var\(--sf-skeleton-text--height\)/);
   assert.match(styles, /inline-size: var\(--sf-skeleton-text--height\)/);
-  assert.match(styles, /border-radius: var\(--sf-radius--ui\)/);
-  assert.match(styles, /\.sf-skeleton-rounded[\s\S]*var\(--sf-radius--ui\)/);
-  assert.match(styles, /--sf-skeleton-base: var\(--sf-surface-container\)/);
+  assert.match(styles, /border-radius: var\(--sf-skeleton-radius, var\(--sf-radius--ui\)\)/);
+  // C130 (1): square the control radius, rounded the card radius; a shape
+  // with no size of its own is the box of its step.
+  assert.match(styles, /\.sf-skeleton-square \{\n  border-radius: var\(--sf-skeleton-radius, var\(--sf-radius--ui\)\)/);
+  assert.match(styles, /\.sf-skeleton-rounded \{\n  border-radius: var\(--sf-skeleton-radius, var\(--sf-radius--surface\)\)/);
+  assert.match(styles, /\.sf-skeleton-text--size-1 \{[^}]*--sf-skeleton-text--box: var\(--sf-ui-1--control-height\)/);
+  // C130 (4): the fill is core's one rule.
+  assert.match(styles, /background: var\(--sf-skeleton-background-color, var\(--sf-skeleton-base\)\)/);
+  const core = await read('src/core/scss/_sf_css__placeholder.scss');
+  assert.match(core, /:where\(\.sf-skeleton, \.sf-first-paint-bar, \.sf-first-paint-fill, \[data-sf-region-loading\]\),\n:where\(\[data-sf-skeleton\]\):not\(:defined\) \{\n  --sf-skeleton-base: var\(--sf-surface-container\);/);
   assert.match(styles, /@media \(forced-colors: active\)/);
   assert.doesNotMatch(styles, /(?:^|[\s:(])\d+(?:\.\d+)?(?:px|rem)(?:[\s;,)])/m);
 });

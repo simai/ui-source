@@ -3,8 +3,12 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderCloseTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-button-close from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4): the close button of the SIMAI Framework (owner decision C14, 1.2.0). The
@@ -40,7 +44,7 @@ class SfClose extends CloseElement {
   // The size the box is drawn at (1.3.0, DEV D1 on C35). A page's size wins.
   // Without one, a close asked for a height is a control of its place, as an
   // unsized sf-button is: the place's step, size 1, which a compact region
-  // moves down because no size attribute holds it (C22) -- so
+  // moves down (C22; an explicit size comes down too since C79) -- so
   // <sf-button-close height="low"> is 32, compact and phone 28, the notice's
   // close. Without a size or a height it stays the default 1/3.
   get placeSize() {

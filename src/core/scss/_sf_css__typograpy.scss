@@ -3,9 +3,9 @@
 
 // TYPOGRAPHY CSS
 @use '../../utility/line-height/default/scss/sf_var__line_height' as lineHeightVars;
-@use '../../utility/font-weight/default/scss/sf_var__font_weight' as fontWeightVars;
 @use '../../utility/letter-spacing/default/scss/sf_var__letter_spacing' as letterSpacingVars;
 @use '../../utility/text-max-width/default/scss/sf_var__text_measure' as textMeasureVars;
+@use 'mix/mix__breakpoint' as mq;
 @use '../figma_variables/figma_input_floating_the_others.scss';
 @use '../figma_variables/figma_input_floating_active.scss';
 @use "../figma_variables/figma_icon_sizes";
@@ -58,10 +58,15 @@
   }
 
   :root {
-    --sf-font-weight-regular: 400;
-    --sf-font-weight-medium: 500;
-    --sf-font-weight-bold: 700;
-    --sf-font-weight-light: 300;
+    // Former names of the weight family (owner decision C178, 2026-11-14):
+    // the family is --sf-weight--thin ... --sf-weight--black, the table the
+    // typography guide promises (figma_typography_styles.scss holds the
+    // values). These read it until 2027-01-01
+    // (src/core/contracts/token-aliases.v1.json, families).
+    --sf-font-weight-regular: var(--sf-weight--regular);
+    --sf-font-weight-medium: var(--sf-weight--medium);
+    --sf-font-weight-bold: var(--sf-weight--bold);
+    --sf-font-weight-light: var(--sf-weight--light);
     --sf-space-auto: auto;
     //
     --sf-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -91,9 +96,9 @@
     // Default text variables
     --sf-text--size: var(--sf-text--size-1);
     --sf-text--height: var(--sf-text--height-1);
-    --sf-text--weight: 400; //var(--sf-text--font-weight-regular);
-    --sf-heading--weight: 700;
-    --sf-display--weight: 300;
+    --sf-text--weight: var(--sf-weight--regular);
+    --sf-heading--weight: var(--sf-weight--bold);
+    --sf-display--weight: var(--sf-weight--light);
     --sf-text--style: inherit;
     --sf-text--tracking: inherit;
     // The mark's plate is the mark role, the static yellow (C17); it read the
@@ -133,10 +138,17 @@
       --sf-text--line-height-#{$line-height-name}: #{$line-height-value};
     }
 
-    // Font weight variables
-    @each $font-weight-name, $font-weight-value in fontWeightVars.$font-weight-array {
-      --sf-text--font-weight-#{$font-weight-name}: #{$font-weight-value};
-    }
+    // Former names of the weight family, numbered 1-9 (owner decision C178,
+    // 2026-11-14): each reads its --sf-weight--* step until 2027-01-01.
+    --sf-text--font-weight-1: var(--sf-weight--thin);
+    --sf-text--font-weight-2: var(--sf-weight--extra-light);
+    --sf-text--font-weight-3: var(--sf-weight--light);
+    --sf-text--font-weight-4: var(--sf-weight--regular);
+    --sf-text--font-weight-5: var(--sf-weight--medium);
+    --sf-text--font-weight-6: var(--sf-weight--semi-bold);
+    --sf-text--font-weight-7: var(--sf-weight--bold);
+    --sf-text--font-weight-8: var(--sf-weight--extra-bold);
+    --sf-text--font-weight-9: var(--sf-weight--black);
 
     // Text tracking utilities variables
     @each $tracking-name, $tracking-value in letterSpacingVars.$letter-spacing-array {
@@ -166,16 +178,78 @@
   // every other step of the ladder.
 
   // Content settings
+  //
+  // A long run -- an address, a mail, a file name, a token -- breaks where it
+  // must and never runs out of its column (owner decision C186 (7),
+  // 2026-11-14): overflow-wrap: anywhere on paragraphs, lists and quotes. It
+  // replaces the deprecated word-break: break-word, which did the same in a
+  // block; a word that fits a line of its own is never broken.
   p,
   table,
   ol,
   ul,
   q,
   blockquote {
-    word-break: break-word;
+    overflow-wrap: anywhere;
     margin-bottom: var(
                     --sf-text--space-bottom
     ); //var(--sf-text--margin-end-default);
+  }
+
+  // A table's cells break a long run anywhere too (C186 (7)), so an address
+  // or a file name in a cell lowers the cell's min-content and the table
+  // stays inside its holder instead of widening it (a 14rem holder: 433px
+  // before, 224 = the holder after) -- what C10 asked for code in a cell.
+  // word-break stays normal: a word is broken only when it cannot fit the
+  // column it was given. Set on the table, not on its cells, so the cells
+  // inherit it and a table that keeps every word whole -- a .table-frame,
+  // whose frame scrolls instead -- says so once, on the table (the cell rule
+  // beat the frame's own and broke its words, pair-next-3).
+  table {
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+
+  // Line breaking of running text and headings (C186 (9)): a heading h1-h4
+  // balances its lines, so a two-line heading does not leave one word below;
+  // running text avoids a lone last word (pretty). A browser without either
+  // wraps as before. h5 and h6 are the size of the text and wrap as text.
+  :where(h1, h2, h3, h4, .sf-h-1, .sf-h-2, .sf-h-3, .sf-h-4) {
+    text-wrap: balance;
+  }
+
+  :where(p, li, dd, blockquote, figcaption) {
+    text-wrap: pretty;
+  }
+
+  // Hyphenation (C186 (6)): only in narrow running text -- a column, card
+  // or cell narrower than 40rem (the container step 40, C181), or a screen
+  // on the phone ladder -- and wherever the text-hyphens utility asks for
+  // it. The screen side is the ladder's one breakpoint and its exact
+  // complement (C01, C22, C36: every width has one ladder), not 40rem: a
+  // second screen width in core would be a ladder of its own. A word is
+  // hyphenated in the page's language, so a page needs the right lang
+  // (<html lang="ru">); without one nothing is hyphenated. Never in
+  // headings, code, names and addresses: those are set to manual below (a
+  // key, kbd, is the kbd component's alone and never breaks).
+  @media not all and (min-width: 60rem) {
+    :where(p, li, dd, blockquote, figcaption) {
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+  }
+
+  // 40rem is the container step h0 of the one ladder (C181; group build 6).
+  @container (max-width: #{mq.container-step(h0)}) {
+    :where(p, li, dd, blockquote, figcaption) {
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+  }
+
+  :where(h1, h2, h3, h4, h5, h6, .sf-h-1, .sf-h-2, .sf-h-3, .sf-h-4, .sf-h-5, .sf-h-6, code, samp, pre, var, address, a[href^='mailto:'], a[href^='tel:'], [translate='no']) {
+    -webkit-hyphens: manual;
+    hyphens: manual;
   }
 
   .label-small {
@@ -270,9 +344,29 @@
     color: var(--sf-code-color, var(--sf-code--color));
     font-family: var(--sf-code-font-family, var(--sf-code--font-family));
     font-size: var(--sf-code-font-size, var(--sf-code--font-size));
-    // A name is one word: sf-button-press never parts at its hyphens. The
-    // line breaks before the code instead (owner, 2026-11-07, R024).
-    white-space: nowrap;
+    // Code stays inline (a box of its own would take the line's no-break
+    // with the punctuation around it and grow the line) and wraps as text
+    // does: at its spaces and hyphens. A run that cannot fit a line of its
+    // own -- a URL, a token -- breaks where it must (C10, 2026-11-10), so it
+    // never runs out of a narrow column. break-word, not anywhere, in
+    // running text (a cell takes anywhere, below).
+    overflow-wrap: break-word;
+    // The code's own line box stays inside the text line: inheriting the
+    // text line (24px at 16px text) around the mono face's baseline, it rose
+    // a pixel above the strut whenever Inter was ready at the first layout,
+    // and every line with code grew 24 -> 25 (C10, 2026-11-11). The plate is
+    // the font's box with its padding, so this does not change how it looks.
+    line-height: 1;
+  }
+
+  // In a table cell a long value -- a JSON default, a rule address -- may
+  // break anywhere, so it lowers the cell's min-content and never widens the
+  // table; the table's auto layout gives the room to the column that needs
+  // it, and a label column keeps its words (owner decision C10, variant A,
+  // 2026-11-11). Text the Framework draws in a cell (a class of its own, a
+  // block of code) is left alone, as in running text.
+  :where(td, th) code:where(:not([class*='sf-'], [class*='sf-'] > code, pre code, .sf-highlight code, .sf-code-surface code)) {
+    overflow-wrap: anywhere;
   }
 
   // Copy on click, only where a container asks for it with
@@ -294,7 +388,7 @@
   // point, the code's top centre; empty and transparent at rest.
   .sf-code-copy-status {
     position: fixed;
-    z-index: var(--sf-z-index-9);
+    z-index: var(--sf-layer--message);
     margin-block-start: calc(-1 * var(--sf-space-1\/4));
     padding: var(--sf-space-1\/4) var(--sf-space-1\/2);
     border-radius: var(--sf-radius--ui);

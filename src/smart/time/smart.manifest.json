@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.time",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "title": "Time",
-  "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», then the date, relative within the first hour, with the full date and time in a tooltip on hover and keyboard focus, inside a time element. The words are core's SF.format; the element draws itself again while relative and at midnight.",
+  "summary": "A moment as the place needs it: today the time, yesterday «вчера, 19:40», tomorrow «завтра, 10:00», then the date, relative within the first hour («только что» under a minute), with the full date, time and zone in a tooltip on hover and keyboard focus, inside a time element; in a list or a feed no Tab stop, the moment in the row's text. The words are the platform's (Intl) in the page language; the element draws itself again when its words change, on one timer for the page.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -58,7 +58,7 @@
       "format": {
         "type": "string",
         "default": "auto",
-        "description": "auto: within threshold of now relative («28 минут назад»), today the time («14:32»), yesterday «вчера, 19:40», this year the day and month («5 ноября»), older the date with the year («30 дек. 2025 г.»); time: «14:32»; date: «9 ноября»; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative",
+        "description": "auto: within threshold of now relative («28 минут назад», «через 20 минут»; under a minute past «только что», under a minute ahead the language's «сейчас», never seconds), today the time («14:32») or, later today, «сегодня, 14:00», yesterday «вчера, 19:40», tomorrow «завтра, 10:00», a later day its date and time («17 ноября, 10:00»), this year the day and month («5 ноября»), older the date with the year («30 декабря 2025 г.»); time: «14:32»; date: «9 ноября», the year when it is not this one; datetime: the full moment («9 ноября 2026 г. в 14:32»); relative: always relative («только что» under a minute). Every word is Intl's in the page language («gestern, 19:40» on a German page) but «только что», which is the component's (ru, en, and what a product registers; another language says its own «now»)",
         "enum": [
           "auto",
           "time",
@@ -70,17 +70,22 @@
       "now": {
         "type": "string",
         "default": "",
-        "description": "The moment auto and relative count from, ISO 8601; empty: the reader's clock, and the element draws itself again each minute while it is relative and at the reader's midnight. A fixed now is for tests and documentation"
+        "description": "The moment auto and relative count from, ISO 8601; empty: the reader's clock, and the element draws itself again when its words change («1 минуту назад» → «2 минуты назад»), at its threshold and at the reader's midnight, on one timer for the whole page that waits while the page is hidden. A fixed now is for tests and documentation"
       },
       "threshold": {
         "type": "string",
         "default": "PT1H",
         "description": "For auto: how long from now the moment stays relative, an ISO 8601 duration (PT1H, PT15M, P1D). Past it auto says the time or the date"
       },
+      "time-zone": {
+        "type": "string",
+        "default": "",
+        "description": "The time zone the moment is written in, an IANA name (Europe/Moscow), for a product that knows the person's zone from their profile; empty or a name the browser does not know: the reader's own zone. The tooltip names the zone either way («…, Москва (UTC+3)»), and today, yesterday and tomorrow are that zone's days (owner decision C183 (3))"
+      },
       "tooltip": {
         "type": "string",
         "default": "auto",
-        "description": "auto: when the text is not the full moment, the full date and time show in a tooltip on hover and on keyboard focus (Escape hides it), and the element is a Tab stop unless it stands inside a link or a button; none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)",
+        "description": "auto: when the text is not the full moment, the full date and time with the zone named («13 ноября 2026 г. в 19:40, Москва (UTC+3)») show in a tooltip on hover and on keyboard focus (Escape hides it). The element is a Tab stop when it stands alone; inside a link, a button, a list item or a feed it is not, and the full moment is then a visually hidden part of the row's text, so a screen reader hears it with the row (owner decision C183 (2)); none: no tooltip and no Tab stop (a day heading's date, a place that already says the moment)",
         "enum": [
           "auto",
           "none"
@@ -195,11 +200,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/time/index.js",
-        "sha256": "a2150c59a6c5b31f1d802fc623b33b00fcea287798c52e7cbd9425cca0ca8a0e"
+        "sha256": "9a63b3864b9bae65e9f69c2eea5c3db81171f01b44f34e386de1588ad58fd5bd"
       },
       {
         "path": "src/smart/time/js/templates/default.js",
-        "sha256": "1d024f12608ece73c58b9f3c95ca99cb09f0931f6815bc68d97bc238bec37535"
+        "sha256": "75920d677c0c14242b5b6ad08ab828e28a1aa64772ee8671d2f154f608c653af"
       },
       {
         "path": "src/smart/time/scss/_smart__time.scss",
@@ -211,7 +216,7 @@
       },
       {
         "path": "src/smart/time/docs.md",
-        "sha256": "66d9335d1d35e5b348e2735ea57aae22904569381db4064e50e096b5afbf7f91"
+        "sha256": "68ef0d1672c8a2b6ecc5320e82e11dd6674f8c83e628a13619b26ea23e29a625"
       }
     ],
     "generated_runtime": []

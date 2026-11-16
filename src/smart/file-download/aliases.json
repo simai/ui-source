@@ -62,6 +62,40 @@
       "mode": "same-detail",
       "section": "§8",
       "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
+    },
+    {
+      "from": "sf-file-download-download",
+      "to": "sf-file-download-request",
+      "kind": "event",
+      "component": "sf-file-download",
+      "since": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "cancelable": true,
+      "section": "§8, vocabulary 1.1.5 §5.1",
+      "note": "the request doubled the word in its name (owner decision C51, docs pre-check DF-11); the shim sends the old name after sf-file-download-request, one detail, one cancel, and the older names after it"
+    },
+    {
+      "from": "sf-download-file-request",
+      "to": "sf-file-download-request",
+      "kind": "event",
+      "component": "sf-file-download",
+      "since": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
+    },
+    {
+      "from": "sf-download-file-cancel",
+      "to": "sf-file-download-cancel",
+      "kind": "event",
+      "component": "sf-file-download",
+      "since": "2026-11-11",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag; the former tag sf-download-file sends its own name until the tag alias goes"
     }
   ]
 }

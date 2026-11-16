@@ -94,6 +94,17 @@
       "note": "the event name carries the tag"
     },
     {
+      "from": "sf-image-field-library",
+      "to": "sf-input-image-library",
+      "kind": "event",
+      "component": "sf-input-image",
+      "since": "2026-11-12",
+      "remove_after": "2027-01-01",
+      "mode": "same-detail",
+      "section": "§8",
+      "note": "the event name carries the tag; new in 1.4.0, sent under the dated tag too so a page on sf-image-field hears it"
+    },
+    {
       "from": "sf-image-field-rejected",
       "to": "sf-input-image-rejected",
       "kind": "event",

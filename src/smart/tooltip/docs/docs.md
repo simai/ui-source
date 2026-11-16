@@ -20,9 +20,25 @@ Without the `.sf-tooltip-anchor` and `data-tooltip` composition,
 `<sf-tooltip>` remains a presentational surface. This preserves Range Slider
 and other consumers that own their own visibility and positioning.
 
-Long text wraps within the containing block without ellipsis or clipping.
-The default is the plain tooltip: `size="1/3"` (the small text step, 12/16
-on desktop), regular weight, padding `--sf-space-1/4` by `--sf-space-1/3`
+Linked to a trigger, it follows the tooltip kind of C59 (owner decision
+2026-11-11): a pointer resting on the trigger opens it after 0.5 s, its
+neighbours open at once while one shows and for 0.3 s after, keyboard focus
+opens it at once, and on a touch screen a long press (held 0.5 s) shows it for
+as long as the finger is down and 1.5 s after. The timing belongs to the
+`data-tooltip` controller (component `tooltip`), not to this element.
+
+No arrow by default (`arrow="none"`); set `arrow` only where a tail is wanted.
+The light look has no frame: its elevation is the window's shadow, drawn over
+the surface and the tail together. A shortcut is written with `shortcut`
+(`mod+s`), never as plain text in `supporting-text`: the kbd component draws
+the keys (glyphs on a Mac, words joined by «+» elsewhere).
+
+A tooltip holds at most two lines (owner decision C160 (2)): a linked tooltip
+cuts the text after the second line and says so once per page in the console;
+an explanation that long belongs in a «?» (sf-help-mark) beside the control.
+There is one size (C160 (3), 1.3.0): the small text step, 12/16 on desktop;
+`size` is a former name that changes nothing and is noted as deprecated until
+2027-01-01. The plain tooltip has regular weight, padding `--sf-space-1/4` by `--sf-space-1/3`
 (4 x 8), radius `--sf-radius--ui`, and `appearance="dark"`, the inverse
 surface (`--sf-surface-inverse`, light in a dark theme). A rich tooltip -- text
 with `supporting-text` -- keeps its first line bold as its title. Tail placement is logical
@@ -43,7 +59,7 @@ Loading model:
 Main attributes:
 
 - `template`
-- `size`
+- `size` (former name, ignored; removed after 2027-01-01)
 - `arrow`
 - `text`
 - `supporting-text`
@@ -74,7 +90,7 @@ Supported light-DOM slot names:
 Example:
 
 ```html
-<sf-tooltip arrow="bottom-center" size="1">
+<sf-tooltip>
   <span slot="text">Custom title</span>
   <span slot="supporting-text">Custom description</span>
 </sf-tooltip>
@@ -85,8 +101,7 @@ Linked example:
 ```html
 <span class="sf-tooltip-anchor">
   <button type="button" data-tooltip="help-tip">Справка</button>
-  <sf-tooltip id="help-tip" text="Короткое пояснение"
-    type="dark" arrow="bottom-center" hidden></sf-tooltip>
+  <sf-tooltip id="help-tip" text="Короткое пояснение" shortcut="mod+k" hidden></sf-tooltip>
 </span>
 ```
 

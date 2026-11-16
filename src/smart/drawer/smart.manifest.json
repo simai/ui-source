@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.drawer",
-  "version": "1.10.4",
+  "version": "1.16.0",
   "title": "Drawer",
-  "summary": "Workspace side panel that keeps the page usable: docked column or modeless panel. Modal side panels belong to sf-modal; the modal Drawer mode is deprecated.",
+  "summary": "Everything that opens from an edge (owner decision C157 (1)): a panel over the page with the one scrim (modal, the default), a modeless panel, a docked column of the page, the bottom sheet. sf-modal position=\"inline-*|bottom\" is the old name of a side panel or a sheet until 2027-01-01.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -23,7 +23,9 @@
   "composition": {
     "uses": [
       "component.close",
-      "component.icon-buttons"
+      "component.icon-buttons",
+      "smart.button-close",
+      "smart.button-icon"
     ],
     "public_parts": []
   },
@@ -75,7 +77,7 @@
       "modal": {
         "type": "boolean",
         "default": true,
-        "description": "A modal panel holds the focus, locks the page's scrolling and gives the focus back when it closes (the default, kept for compatibility); false: a modeless panel beside a page that stays usable. A docked panel is modeless while it has room."
+        "description": "A modal panel covers the page with the one scrim, holds the focus, locks the page's scrolling and gives the focus back when it closes -- the default, a setting like any other (owner decision C157 (1): everything at an edge is sf-drawer); false: a modeless panel beside a page that stays usable. A docked panel is modeless while it has room."
       },
       "docked": {
         "type": "boolean",
@@ -85,7 +87,7 @@
       "size": {
         "type": "string",
         "default": "1",
-        "description": "The panel's width step: 1/2, 1, 2 or full; width replaces it.",
+        "description": "The panel's width: three steps and the screen (owner decision C157 (2)) -- 1/2 20rem, 1 24rem (the default), 2 30rem, full the whole screen. No other widths: a panel that needs its own width carries an sf-resizer within 1/2...2. width replaces the step.",
         "enum": [
           "1/2",
           "1",
@@ -111,17 +113,17 @@
       "show-close": {
         "type": "boolean",
         "default": true,
-        "description": "Draws the close button (not while a controlled panel's outside switch is on screen)."
+        "description": "Draws the close button (not while a controlled panel's outside switch is on screen). A panel that covers the switch that opened it draws one anyway unless its content holds a close of its own (C104)."
       },
       "controlled": {
         "type": "boolean",
         "default": false,
-        "description": "An outside switch (an element naming the drawer in aria-controls) opens and closes the panel: no close button while that switch is on screen."
+        "description": "An outside switch (an element naming the drawer in aria-controls) opens and closes the panel: no close button while that switch is on screen and not under the open panel."
       },
       "close-placement": {
         "type": "string",
         "default": "inside",
-        "description": "Where the close button stands: inside the panel's head, or outside, on the panel's edge.",
+        "description": "Where the close button stands: inside the panel's head, or outside, on the scrim beside the panel's edge, where it takes the look of a control over a picture (sf-button-close appearance=\"media\": a dark round plate, a white cross, a white focus ring; study VP-16). Outside only while there is room beside the panel: a panel that fills the screen, or leaves less room than its edge controls take, draws them in its head's row as ordinary icon buttons, the close last (C14).",
         "enum": [
           "inside",
           "outside"
@@ -130,7 +132,7 @@
       "heading": {
         "type": "string",
         "default": "",
-        "description": "The panel's title in its head; the panel is labelled by it when label is empty."
+        "description": "The panel's title in its head, on the window title's step (h4: 20 on a desktop, 16 on a phone, bold; owner decision C157 (7), as sf-modal, C159 (5)); density does not change it (C44). The panel is labelled by it when label is empty."
       },
       "label": {
         "type": "string",
@@ -144,12 +146,12 @@
       "width": {
         "type": "string",
         "default": "",
-        "description": "The panel's width, a CSS length (sets --sf-drawer-width); empty: the size step's width."
+        "description": "The panel's width, a CSS length (sets --sf-drawer-width); empty: the size step's width. A width off the ladder (20 · 24 · 30rem, the whole screen; owner decision C157 (2)) is still drawn until 2027-01-01 and said once per element in the console and in SF.deprecations.list(); take a size step, and an sf-resizer within 1/2...2 for a width of its own."
       },
       "stack-offset": {
         "type": "string",
         "default": "",
-        "description": "How much of each drawer below shows past the one above it at the same edge, as a length (for example var(--sf-space-4)). A drawer stands depth × offset in from its edge, where depth counts the open, undocked drawers below it at that edge. Empty: drawers lie flush."
+        "description": "Kept for compatibility; between panels at one edge it no longer applies (owner decision C157 (6)): a panel opened from a floating panel at the same edge is drawn inside it, with «Назад» in its head. Was: how much of each drawer below showed past the one above it."
       },
       "dock-breakpoint": {
         "type": "string",
@@ -164,7 +166,7 @@
       "gutter": {
         "type": "string",
         "default": "",
-        "description": "The inline gutter the head and the body share, as a length (for example var(--sf-space-3)), so the title and the content start on one axis. Empty: the drawer's own, space-1. A theme may set --sf-drawer-gutter instead."
+        "description": "The inline gutter the head and the body share, as a length (for example var(--sf-space-3)), so the title and the content start on one axis. Empty: the window inset of C105, --sf-space-2 (20, compact and phone 16) from the panel's outer edge, its edge counted inside it. A theme may set --sf-drawer-gutter instead."
       },
       "z-index": {
         "type": "string",
@@ -836,11 +838,6 @@
         "path": "trigger.data-sf-drawer-*",
         "since": "1.0.0",
         "replacement": "data-drawer with aria-controls"
-      },
-      {
-        "path": "modal (default mode without docked or modal=false)",
-        "since": "1.2.0",
-        "replacement": "sf-modal position=\"inline-start|inline-end\""
       }
     ],
     "replacement": null,
@@ -880,6 +877,37 @@
           "modal=\"false\" on a docked drawer keeps it modeless when it floats, as before.",
           "A modal drawer's Tab cycle runs through the panel and then its edge (close, copy-link, open-full of sf-view-properties); a focus on the edge counts as inside."
         ]
+      },
+      {
+        "from": "1.12.1",
+        "to": "1.14.0",
+        "changes": [
+          "modal is a setting, not a deprecated mode: everything at an edge is sf-drawer (owner decision C157 (1)); sf-modal position=\"inline-*|bottom\" is its old name until 2027-01-01.",
+          "slot=\"footer\": a pinned foot, the actions at its start, the main one first, 8 apart (compact 4), halves on a phone (C157 (3)).",
+          "The title is on the window title's step (h4, bold), not heading 6 (C157 (7)).",
+          "A closed drawer's edge controls are hidden with its panel; a panel that fills the screen (a phone, size full) shows its outside close and edge controls in the head's row at its end, without the scrim plate.",
+          "slot=\"header-action\": one action in the head before the close; the head's buttons are 8 apart (compact 4); under a finger the close and «Назад» press across 44 (study view-property-base VB-1, VB-4).",
+          "A panel opened from a floating panel at the same edge is drawn inside it with «Назад» in its head; the panel under it hides; its close, the scrim and a swipe close the whole panel, «Назад» and Escape the top one; stack-offset no longer applies between them (C157 (6)).",
+          "On a phone a side panel closes with a swipe toward its edge (C157 (4)); the bottom sheet's grab bar is 24 x 4 in on-surface-variant on every screen (C157 (5)).",
+          "The outside close stands on the scrim as sf-button-close appearance=\"media\"; icon buttons in the edge slot take the same plate (study VP-16)."
+        ]
+      },
+      {
+        "from": "1.14.0",
+        "to": "1.15.0",
+        "changes": [
+          "The close stands on the axis of the switch that opened the panel (owner decision C104 (4)); nothing to change in a page.",
+          "A panel that covers the switch that opened it always offers a close (controlled, show-close=\"false\" without a close of the page's own)."
+        ]
+      },
+      {
+        "from": "1.15.0",
+        "to": "1.16.0",
+        "changes": [
+          "Edge controls stand outside only while there is room beside the panel; otherwise they join the head's row, the close last (C14); nothing to change in a page.",
+          "A width off the ladder warns once per element (console and SF.deprecations.list()) and is still drawn until 2027-01-01: take size=\"1/2|1|2|full\", and an sf-resizer within 1/2...2 for a width of its own (C157 (2)).",
+          "Headings inside the panel's content draw below the panel's title: h1 at the h5 step, h2 to h4 at the h6 step (C157 (7)); a page that styled its own heading sizes keeps them."
+        ]
       }
     ]
   },
@@ -889,19 +917,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/drawer/index.js",
-        "sha256": "4c31c7851db3c4b71072080d06053b3ea23ae004a496d20ca750b975e52676e1"
+        "sha256": "080863e3328efaa541af20b3f25eb4b316707fea217e9f145c41ec26f45f1553"
       },
       {
         "path": "src/smart/drawer/scss/_smart__drawer.scss",
-        "sha256": "801ceeb47b9a5f6b721db5c22a1c9e97704ce6eb30ec6a6a6785afb3dcb18b8a"
+        "sha256": "a9c7780b7605736e40b37e46f6fab7f892efbd5cbe5041e0da6e941481c1429e"
       },
       {
         "path": "src/smart/drawer/rule.js",
-        "sha256": "bf6cc989fc8821b3d1d3789fa93018894c3c0b3211eb1fdfd0cc6e3de602047c"
+        "sha256": "a4281171a5f9998525e1b9db825d5533518800e0bdea7ec3b9d1c4bf0bed6a12"
       },
       {
         "path": "src/smart/drawer/docs.md",
-        "sha256": "dbb4769912d768b5ff1424847b75ac8350b57d88af193c63f71da2274faa1fad"
+        "sha256": "baf13ced326f2b3909720a60244e0b81b8928863dd02beb41f62dd77ad30693d"
       }
     ],
     "generated_runtime": [
@@ -914,13 +942,14 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-drawer for a workspace side panel next to a page that stays usable: docked (page content shifts, both sides at once; below its dock-breakpoint it floats over the page as a modal panel) or modal=false (overlapping, no scrim, no focus trap). For a modal side panel use sf-modal with position=\"inline-start|inline-end\".",
+    "use_when": "Use sf-drawer for everything that opens from an edge (owner decision C157 (1)): a panel over the page (modal, the default), a modeless panel beside a page that stays usable, a docked column (page content shifts, both sides at once; below its dock-breakpoint it floats over the page as a modal panel), or the bottom sheet (placement=bottom). Widths 1/2 · 1 · 2 · full (20 · 24 · 30rem); actions in slot=\"footer\", the main one first; a panel opened from a panel at the same edge is drawn inside it with «Назад».",
     "do_not": [
-      "Do not use a modal sf-drawer for new interfaces; use sf-modal with a side position",
+      "Do not use sf-modal position=\"inline-*|bottom\" for new interfaces; it is the old name of an sf-drawer until 2027-01-01",
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component",
       "Do not use overlay as a substitute for modal semantics",
-      "Do not pass literal design dimensions when a standard size or Framework token exists"
+      "Do not pass literal design dimensions when a standard size or Framework token exists",
+      "Do not set widths off the three steps; a panel that needs its own width carries an sf-resizer within 1/2...2"
     ],
     "required_reads": [
       "inputs",

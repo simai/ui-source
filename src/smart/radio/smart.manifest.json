@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.radio",
-  "version": "1.1.5",
+  "version": "1.3.4",
   "title": "Radio buttons",
   "summary": "One radio option: a native radio input with a label, description and help text. Radios with the same name form a group in which checking one unchecks the others.",
   "kind": "smart",
@@ -23,7 +23,8 @@
   "composition": {
     "uses": [
       "component.icons",
-      "component.radio"
+      "component.radio",
+      "smart.help-mark"
     ],
     "public_parts": [
       "native-input",
@@ -70,7 +71,8 @@
       },
       "help": {
         "type": "string",
-        "default": ""
+        "default": "",
+        "description": "The explanation behind a «?» button (sf-help-mark) after the label text: --sf-space-1/4 after the label's last word, on its last line when the label wraps; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
       },
       "disabled": {
         "type": "boolean",
@@ -346,7 +348,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/radio/index.js",
-        "sha256": "f11f3e34ab0f00ab81697a5031b037cd800247a7093176fc9eaf2fa8cc6ca7e8"
+        "sha256": "053914bba14b7cbb8b2a451a8f5821d828ab35fe2070b2bdd53eb93699106616"
       }
     ],
     "generated_runtime": [

@@ -38,7 +38,7 @@ await new Promise((settle) => server.once('listening', settle));
 const base = `http://127.0.0.1:${server.address().port}`;
 
 const items = [
-  {id: 'swap', level: 'warning', text: 'Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.', source: 'Сервер', time: new Date(Date.now() - 300000).toISOString(), action: {label: 'Посмотреть память', href: '#memory'}, acknowledge: {label: 'Отметить, что видели'}},
+  {id: 'swap', level: 'warning', text: 'Подкачка занята на 92%: серверу не хватает памяти, сайты замедляются.', source: 'Сервер', time: new Date(Date.now() - 300000).toISOString(), action: {label: 'Посмотреть память', href: '#memory'}, acknowledge: {label: 'Прочитано'}},
   {id: 'update', level: 'info', text: 'Доступна новая версия панели 0.3.1.', source: 'Обновление', action: {label: 'Посмотреть', href: '#update'}},
 ];
 const shell = (column) => `<!doctype html><html lang="ru" class="theme-light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -87,8 +87,8 @@ try {
       const message = document.querySelector('#bar .sf-alert-bar-text').getBoundingClientRect();
       return {bar: {left: bar.left, right: bar.right}, actions, message: {width: message.width}, sideways: document.documentElement.scrollWidth > innerWidth, rows: new Set(actions.map((one) => Math.round(one.top))).size};
     });
-    const acknowledge = seen.actions.find((one) => one.text === 'Отметить, что видели');
-    ok(`${label}: «Отметить, что видели» is drawn whole`, acknowledge && !acknowledge.cut && acknowledge.lines === 1 && acknowledge.width >= acknowledge.natural - 0.5, JSON.stringify(acknowledge));
+    const acknowledge = seen.actions.find((one) => one.text === 'Прочитано');
+    ok(`${label}: «Прочитано» is drawn whole`, acknowledge && !acknowledge.cut && acknowledge.lines === 1 && acknowledge.width >= acknowledge.natural - 0.5, JSON.stringify(acknowledge));
     ok(`${label}: every action keeps its label's natural width, on one line, uncut`, seen.actions.length === 2 && seen.actions.every((one) => !one.cut && one.lines === 1 && one.width >= one.natural - 0.5), JSON.stringify(seen.actions));
     ok(`${label}: every action stands inside the bar, no sideways scroll`, seen.actions.every((one) => one.left >= seen.bar.left - 0.5 && one.right <= seen.bar.right + 0.5) && !seen.sideways, JSON.stringify({bar: seen.bar, actions: seen.actions.map(({left, right}) => [left, right]), sideways: seen.sideways}));
     if (column) ok(`${label}: the text keeps its floor and the actions wrap`, seen.message.width >= 159.5 && seen.rows >= 1, JSON.stringify(seen));

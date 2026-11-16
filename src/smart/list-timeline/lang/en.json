@@ -13,7 +13,10 @@
     "status-info": "Info",
     "state-done": "Done",
     "state-current": "Now",
-    "state-upcoming": "Next",
+    "state-upcoming": "Upcoming",
+    "step-status-success": "successful",
+    "step-status-warning": "with a warning",
+    "step-status-error": "with an error",
     "run-changes": {
       "one": "{n} more change",
       "other": "{n} more changes"

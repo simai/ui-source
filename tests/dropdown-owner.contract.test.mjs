@@ -95,8 +95,9 @@ test('options can be given as data, and data keeps the dropdown out of its paren
   assert.equal(options.type, 'array');
   assert.match(options.description, /sf-list-item children/u, 'the description says what it replaces');
 
-  // The one component that renders a dropdown from a template must use it:
-  // rows per page and the actions list are exactly the two lists that broke.
+  // The one component that renders a dropdown from a template must use it.
+  // Since 1.5.0 (decision C97 point 3) rows per page is a quiet button with an
+  // sf-menu-context, so only the band's actions list is still a dropdown.
   const template = await read('src/smart/pagination/js/templates/default.js');
   assert.doesNotMatch(
     template,
@@ -105,7 +106,7 @@ test('options can be given as data, and data keeps the dropdown out of its paren
   );
   assert.equal(
     (template.match(/\.options=\$\{/gu) || []).length,
-    2,
-    'both of its dropdowns — rows per page and the actions list — are fed as data',
+    1,
+    'its dropdown, the actions list, is fed as data',
   );
 });

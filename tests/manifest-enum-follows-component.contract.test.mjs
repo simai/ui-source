@@ -41,11 +41,12 @@ test('every enum setting of a component.json is the manifest enum, former values
   assert.deepEqual(problems, []);
 });
 
-test('sf-tree: selection none | one | many, single and multiple declared as dated former values', () => {
+test('sf-tree: selection none | one | many | check, single and multiple declared as dated former values', () => {
   const manifest = json('src/smart/tree/smart.manifest.json');
   const component = json('src/smart/tree/component.json');
-  assert.deepEqual(manifest.inputs.properties.selection.enum, ['none', 'one', 'many']);
-  assert.deepEqual(component.settings.selection.values, ['none', 'one', 'many']);
+  // check: a check box in every row (owner decision C102, sf-tree 2.3.0).
+  assert.deepEqual(manifest.inputs.properties.selection.enum, ['none', 'one', 'many', 'check']);
+  assert.deepEqual(component.settings.selection.values, ['none', 'one', 'many', 'check']);
   assert.equal(manifest.version, component.version);
   assert.deepEqual(manifest.compatibility.aliases, ['selection=single', 'selection=multiple']);
   assert.deepEqual(manifest.compatibility.deprecations, [

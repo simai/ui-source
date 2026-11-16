@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "Файл",
+    "download-label": "{name} жүктеп алу",
+    "remove-label": "Алып тастау: {name}",
+    "uploading-label": "Жүктелуде: {name}",
+    "error-text": "Жүктелмеді",
+    "error-line": "Жүктелмеді: {message}",
+    "retry-text": "Қайталау",
+    "retry-label": "Қайталау: {name}",
+    "delete-label": "Жою: {name}",
+    "delete-question": "«{name}» жойылсын ба?",
+    "delete-text": "Жою",
+    "viewer-previous": "Алдыңғы файл",
+    "viewer-next": "Келесі файл"
+  }
+}

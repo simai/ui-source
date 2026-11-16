@@ -20,6 +20,12 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css"
     ],
+    "charset": [
+      "component/verification/css/verification.min.css",
+      "core/css/core.css",
+      "smart/input-code/css/input-code.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
     "complete": [
       "component/verification/css/verification.min.css",
       "core/css/core.css",
@@ -39,6 +45,12 @@
       "core/css/core.css",
       "smart/input-code/css/input-code.min.css",
       "utility/position/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css"
+    ],
+    "groups": [
+      "component/verification/css/verification.min.css",
+      "core/css/core.css",
+      "smart/input-code/css/input-code.min.css",
       "utility/sr-only/default/css/default.min.css"
     ],
     "invalid": [

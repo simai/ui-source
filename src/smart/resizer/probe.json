@@ -9,17 +9,18 @@
       "<main>",
       "  <nav id=\"panel\"><sf-resizer id=\"r1\" min=\"200\" max=\"400\" step=\"20\"></sf-resizer></nav>",
       "  <nav id=\"panel2\"><sf-resizer id=\"r2\" min=\"200\" max=\"400\" label=\"Ширина меню\" value=\"360\"></sf-resizer></nav>",
+      "  <nav id=\"panel3\" aria-label=\"Разделы\" style=\"inline-size: 300px; block-size: 100px\"><sf-resizer id=\"r3\" min=\"200\" max=\"400\" collapsible label=\"Ширина меню\"></sf-resizer></nav>",
       "</main>"
     ]
   },
   "probes": [
     {
       "id": "p1-separator",
-      "title": "a focusable separator named by the language file, its value the width",
-      "covers": "accessibility (role, name), settings.label default-from runtime.label",
+      "title": "a focusable separator named by the language file, its value the share of the way from min to max (0-100) with its words, controlling its panel",
+      "covers": "accessibility (role, name, value, controls), settings.label default-from runtime.label",
       "steps": [
         {
-          "check": "(() => { const r = document.getElementById('r1'); return r.getAttribute('role') === 'separator' && r.getAttribute('aria-label') === 'Изменить ширину' && r.tabIndex === 0 && r.getAttribute('aria-valuenow') === '300'; })()",
+          "check": "(() => { const r = document.getElementById('r1'); return r.getAttribute('role') === 'separator' && r.getAttribute('aria-label') === 'Изменить ширину' && r.tabIndex === 0 && r.getAttribute('aria-valuenow') === '50' && r.getAttribute('aria-valuemin') === '0' && r.getAttribute('aria-valuemax') === '100' && r.getAttribute('aria-valuetext') === '50\\u00a0%' && r.getAttribute('aria-controls') === 'panel'; })()",
           "wait": 300
         }
       ]
@@ -124,6 +125,48 @@
               }
             ]
           }
+        }
+      ]
+    },
+    {
+      "id": "p5-fold",
+      "title": "collapsible: Enter folds the panel (resize width 0, value «Свёрнуто») and Enter gives the width back",
+      "covers": "settings.collapsible, accessibility.keys Enter (toggle:folded)",
+      "steps": [
+        {
+          "script": "(document.getElementById('r3').focus(), true)"
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-resizer-resize",
+                "count": 1,
+                "detail": {
+                  "width": 0,
+                  "phase": "end"
+                }
+              }
+            ]
+          },
+          "check": "document.getElementById('panel3').hasAttribute('data-folded') && document.getElementById('r3').getAttribute('aria-valuetext') === 'Свёрнуто' && document.getElementById('r3').getAttribute('aria-valuenow') === '0'"
+        },
+        {
+          "user": "keyboard:Enter",
+          "expect": {
+            "events": [
+              {
+                "name": "sf-resizer-resize",
+                "count": 1,
+                "detail": {
+                  "width": 300,
+                  "phase": "end"
+                }
+              }
+            ]
+          },
+          "check": "!document.getElementById('panel3').hasAttribute('data-folded') && Math.round(document.getElementById('panel3').getBoundingClientRect().width) === 300"
         }
       ]
     }

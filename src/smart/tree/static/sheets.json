@@ -6,8 +6,10 @@
     "theme-dark"
   ],
   "sheets": [
+    "component/checkbox/css/checkbox.min.css",
     "component/icon-buttons/css/icon-buttons.min.css",
     "component/icons/css/icons.min.css",
+    "component/tooltip/css/tooltip.min.css",
     "component/tree-item/css/tree-item.min.css",
     "component/tree/css/tree.min.css",
     "core/css/core.css",
@@ -23,8 +25,10 @@
   ],
   "examples": {
     "drop": [
+      "component/checkbox/css/checkbox.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "component/tree-item/css/tree-item.min.css",
       "component/tree/css/tree.min.css",
       "core/css/core.css",
@@ -39,8 +43,10 @@
       "utility/text-max-width/default/css/default.min.css"
     ],
     "files": [
+      "component/checkbox/css/checkbox.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "component/tree-item/css/tree-item.min.css",
       "component/tree/css/tree.min.css",
       "core/css/core.css",
@@ -55,8 +61,10 @@
       "utility/text-max-width/default/css/default.min.css"
     ],
     "links": [
+      "component/checkbox/css/checkbox.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "component/tree-item/css/tree-item.min.css",
       "component/tree/css/tree.min.css",
       "core/css/core.css",
@@ -71,8 +79,10 @@
       "utility/text-max-width/default/css/default.min.css"
     ],
     "many": [
+      "component/checkbox/css/checkbox.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "component/tree-item/css/tree-item.min.css",
       "component/tree/css/tree.min.css",
       "core/css/core.css",
@@ -87,8 +97,10 @@
       "utility/text-max-width/default/css/default.min.css"
     ],
     "one": [
+      "component/checkbox/css/checkbox.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "component/tree-item/css/tree-item.min.css",
       "component/tree/css/tree.min.css",
       "core/css/core.css",
@@ -103,8 +115,10 @@
       "utility/text-max-width/default/css/default.min.css"
     ],
     "reference": [
+      "component/checkbox/css/checkbox.min.css",
       "component/icon-buttons/css/icon-buttons.min.css",
       "component/icons/css/icons.min.css",
+      "component/tooltip/css/tooltip.min.css",
       "component/tree-item/css/tree-item.min.css",
       "component/tree/css/tree.min.css",
       "core/css/core.css",

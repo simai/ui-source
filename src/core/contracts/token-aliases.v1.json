@@ -976,24 +976,12 @@
       "why": "The top of the former skeleton gradient (--sf-ui-skeleton); the skeletons are the control fill since C16 S3. Nothing in the Framework reads it; kept for pages that wrote it until remove_after."
     },
     {
-      "name": "--sf-neutral-50--alfa-20",
-      "why": "Since C41 (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24 in both themes; the former plate hover in the light theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
-    },
-    {
-      "name": "--sf-neutral-90--alfa-20",
-      "why": "Since C41 (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24 in both themes; the former plate hover in the dark theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
-    },
-    {
       "name": "--sf-neutral-50--alfa-32",
-      "why": "Since C41 (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24 in both themes; the former strong step (surface-container-strong) in the light theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
+      "why": "Since C41 (owner 2026-11-10) the strong step is 24 and since C113 (owner 2026-11-13) the neutral fill 12/16/20, in both themes; the former strong step (surface-container-strong) in the light theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
     },
     {
       "name": "--sf-neutral-90--alfa-32",
-      "why": "Since C41 (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24 in both themes; the former strong step (surface-container-strong) in the dark theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
-    },
-    {
-      "name": "--sf-white--alfa-20",
-      "why": "Since C41 (owner 2026-11-10) the neutral fill is 8/12/16 and the strong step 24 in both themes; the former plate hover on glass over media (.sf-surface-media). Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
+      "why": "Since C41 (owner 2026-11-10) the strong step is 24 and since C113 (owner 2026-11-13) the neutral fill 12/16/20, in both themes; the former strong step (surface-container-strong) in the dark theme. Nothing in the Framework reads it now; kept for pages that wrote it until remove_after."
     }
   ],
   "palette_tokens": [
@@ -2497,5 +2485,124 @@
       "from": "border-pink-9",
       "reads": "--sf-pink-25"
     }
-  ]
+  ],
+  "families": {
+    "decision": "C178, owner 2026-11-14 (ui-control control/docs-review/decisions.md; research control/research/2026-11-14-standards-tokens-utilities.md section 2)",
+    "since": "2026-11-14",
+    "remove_after": "2027-01-01",
+    "summary": "One family per kind of value. Where two or three families named the same values, the survivor is the name the standard and the docs promise, in family-first form (--sf-<family>--<role>, as --sf-radius--ui and the C173 role tokens); it holds the value in core, and each former name is var() of it on the root until remove_after (blur: the former filter values keep blur() of the survivor, because a filter is not a length). Built sheets, the docs (ui-doc) and the products were read before calling any name former: none is dead, so none is removed. Sources that still read a former name move to the survivor at their next change; tests/token-families.contract.test.mjs holds the declarations and lets the reads in src only shrink.",
+    "families": [
+      {
+        "family": "weight",
+        "survivor": "--sf-weight--*",
+        "why": "The typography guide (ui-doc guide/size-and-type/typography) tables --sf-weight--thin ... --sf-weight--black as the weight tokens and calls --sf-font-weight-* short names; the nine steps cover what the four short names and the numbered --sf-text--font-weight-1..9 say, family-first, in the --sf-<area>--<role> form of C173.",
+        "tokens": [
+          {
+            "from": "--sf-font-weight-light",
+            "to": "--sf-weight--light"
+          },
+          {
+            "from": "--sf-font-weight-regular",
+            "to": "--sf-weight--regular"
+          },
+          {
+            "from": "--sf-font-weight-medium",
+            "to": "--sf-weight--medium"
+          },
+          {
+            "from": "--sf-font-weight-bold",
+            "to": "--sf-weight--bold"
+          },
+          {
+            "from": "--sf-text--font-weight-1",
+            "to": "--sf-weight--thin"
+          },
+          {
+            "from": "--sf-text--font-weight-2",
+            "to": "--sf-weight--extra-light"
+          },
+          {
+            "from": "--sf-text--font-weight-3",
+            "to": "--sf-weight--light"
+          },
+          {
+            "from": "--sf-text--font-weight-4",
+            "to": "--sf-weight--regular"
+          },
+          {
+            "from": "--sf-text--font-weight-5",
+            "to": "--sf-weight--medium"
+          },
+          {
+            "from": "--sf-text--font-weight-6",
+            "to": "--sf-weight--semi-bold"
+          },
+          {
+            "from": "--sf-text--font-weight-7",
+            "to": "--sf-weight--bold"
+          },
+          {
+            "from": "--sf-text--font-weight-8",
+            "to": "--sf-weight--extra-bold"
+          },
+          {
+            "from": "--sf-text--font-weight-9",
+            "to": "--sf-weight--black"
+          }
+        ]
+      },
+      {
+        "family": "focus width",
+        "survivor": "--sf-focus--width",
+        "why": "The focus guide (ui-doc guide/size-and-type/focus) names --sf-focus--width beside --sf-focus--color, --sf-focus--style and --sf-focus--offset: one family. --sf-focus-outline-width was the Figma export's name.",
+        "tokens": [
+          {
+            "from": "--sf-focus-outline-width",
+            "to": "--sf-focus--width"
+          }
+        ]
+      },
+      {
+        "family": "blur",
+        "survivor": "--sf-blur-*",
+        "why": "The blur and backdrop-blur utility pages and the components read the radius --sf-blur-none/small/medium/large; --sf-ui-blur-* were filter values built from it. A rule writes blur(var(--sf-blur-medium)).",
+        "former": [
+          {
+            "name": "--sf-ui-blur-small",
+            "value": "blur(var(--sf-blur-small))",
+            "write": "blur(var(--sf-blur-small))"
+          },
+          {
+            "name": "--sf-ui-blur-medium",
+            "value": "blur(var(--sf-blur-medium))",
+            "write": "blur(var(--sf-blur-medium))"
+          },
+          {
+            "name": "--sf-ui-blur-large",
+            "value": "blur(var(--sf-blur-large))",
+            "write": "blur(var(--sf-blur-large))"
+          },
+          {
+            "name": "--sf-ui-blur-surface-overlay",
+            "value": "blur(var(--sf-surface-overlay--blur))",
+            "write": "blur(var(--sf-surface-overlay--blur))"
+          }
+        ]
+      },
+      {
+        "family": "shadow",
+        "survivor": "--sf-shadow-flat, --sf-shadow-raised, --sf-shadow-overlay, --sf-shadow-modal",
+        "why": "Consolidated by C20 (2026-11-09): the numbered --sf-elevation-N--shadow and --sf-ui-shadow-N and the C16 place names --sf-shadow-card/-popup/-popup-nested are already var() of the four places until 2027-01-01 (the shadows section above). C178 adds nothing but the check that src reads none of them.",
+        "see": "shadows"
+      }
+    ]
+  },
+  "layers": {
+    "decision": "C181 (3), owner 2026-11-14 (ui-control control/docs-review/decisions.md; research control/research/2026-11-14-standards-tokens-utilities.md; demo prototypes/foundation-names-demo.html); names of the five C173 (7) layer roles by the dispatcher",
+    "since": "2026-11-14",
+    "remove_after": "2027-01-01",
+    "survivors": ["--sf-layer--base", "--sf-layer--sticky", "--sf-layer--popover", "--sf-layer--window", "--sf-layer--message"],
+    "former": ["--sf-z-index--1", "--sf-z-index-0", "--sf-z-index-1", "--sf-z-index-2", "--sf-z-index-3", "--sf-z-index-4", "--sf-z-index-5", "--sf-z-index-6", "--sf-z-index-7", "--sf-z-index-8", "--sf-z-index-9"],
+    "summary": "Components take a layer role, never a numbered step (src/component and src/smart read none of --sf-z-index-3 ... 9; only local stacking --sf-z-index-1/-2 remains). The numbered steps stay declared with their own values until remove_after: on 2026-11-14 the group build 4 sheets read them 400 times, ui-doc content 60 times (the z-index utility pages and the token lists), ui-pro components 10 times. They are not one-to-one aliases of the roles (eleven steps, five roles): the roles read steps 0, 5, 9 and --sf-z-index-layer, so before the numbered steps go the roles must take the scale's numbers from src/utility/z-index/default/scss/_sf_var__z_index.scss."
+  }
 }

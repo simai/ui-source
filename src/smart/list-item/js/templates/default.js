@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import { nearestFieldSize } from "../../../../component/field-size";
+import { avatarPicture } from "../../../avatar/js/picture";
 
 // The mark in a row's box is bound as a property, not as an attribute. A press
 // anywhere in the row reaches the label that holds this input and flips its live
@@ -44,6 +45,10 @@ export function renderListItemTemplate(context) {
     !isOption && context.interactive ? "sf-list-item--interactive" : "",
     handleSlot ? "sf-list-item--sortable" : "",
     !isOption && context.pinned ? "sf-list-item--pinned" : "",
+    // Owner decision C148: an inset line under the row (divided), a title
+    // of up to two lines (lines="2"). An option keeps neither.
+    !isOption && context.divided ? "sf-list-item--divided" : "",
+    !isOption && String(context.lines) === "2" ? "sf-list-item--lines-2" : "",
     context.rootClass,
   ].filter(Boolean);
 
@@ -52,19 +57,20 @@ export function renderListItemTemplate(context) {
     context.type,
   );
 
+  // The step between the picture and the text is the row's own (C105 H2,
+  // HS-5): the list item sheet sets it from the size and the density. A layout
+  // class here (gap-2, --sf-space-2) put 20 between them at every size.
   if (isDecoratedType) {
     wrapClasses.push(
       "flex",
       "flex-row",
       "flex-nowrap",
       "items-center",
-      "gap-2",
     );
   }
 
-  if (context.type === "avatar" || context.type === "color") {
-    wrapClasses.splice(wrapClasses.indexOf("gap-2"), 1);
-    wrapClasses.push("justify-between", "gap-2");
+  if ((isOption && context.type === "avatar") || context.type === "color") {
+    wrapClasses.push("justify-between");
   }
 
   const renderLeading = () => {
@@ -100,25 +106,37 @@ export function renderListItemTemplate(context) {
     }
 
     if (context.type === "avatar") {
-      const avatarClasses = [
-        "sf-avatar",
-        `sf-avatar--size-${context.sizeGroup.item === "1/3" || context.sizeGroup.item === "1/2" ? "1/3" : context.sizeGroup.item === "1" ? "1/2" : context.sizeGroup.item === "2" ? "1" : "2"}`,
-        "bg-cover",
-        context.disabled ? "disabled" : "",
-      ].filter(Boolean);
+      // sf-avatar's own drawing (js/picture.js, avatar study AV-8): the photo
+      // an <img>, else the initials of the title on the neutral plate, else
+      // the person glyph. It was a background image, and with no photo an
+      // empty circle.
+      const avatarSize = context.sizeGroup.item === "1/3" || context.sizeGroup.item === "1/2" ? "1/3" : context.sizeGroup.item === "1" ? "1/2" : context.sizeGroup.item === "2" ? "1" : "2";
+
+      // A row outside a dropdown (list item study LI-5): the picture is the
+      // row's leading part, as an icon row's glyph is, and the title and its
+      // supporting line are the row's own text block. In the label group the
+      // supporting line was dropped (a 28 row at size 1, under the ladder).
+      // An option keeps the label group sf-dropdown reads.
+      if (!isOption) {
+        return avatarPicture({
+          size: avatarSize,
+          imageUrl: context.avatarImageUrl,
+          name: context.avatarTitle,
+          disabled: context.disabled,
+        });
+      }
 
       return html`
         <div
           class="sf-avatar-label-group sf-avatar-label-group--size-${context
             .sizeGroup.avatarGroup} flex items-cross-center"
         >
-          <span
-            class=${avatarClasses.join(" ")}
-            aria-hidden="true"
-            style=${context.avatarImageUrl
-              ? `background-image: url(${context.avatarImageUrl});`
-              : nothing}
-          ></span>
+          ${avatarPicture({
+            size: avatarSize,
+            imageUrl: context.avatarImageUrl,
+            name: context.avatarTitle,
+            disabled: context.disabled,
+          })}
           <div class="sf-avatar-label-group-container flex flex-col">
             <div class="sf-avatar-label-group-title">
               ${context.avatarTitle}
@@ -154,11 +172,14 @@ export function renderListItemTemplate(context) {
 
   const renderText = () => {
     if (context.type === "color") return nothing;
-    if (context.type === "avatar") return nothing;
+    if (context.type === "avatar" && isOption) return nothing;
+    // An avatar row's title is its text, else its avatar-title (the label
+    // group showed avatar-title, which defaults to text).
+    const title = context.type === "avatar" && !textContent ? context.avatarTitle : textContent;
     if (twoLine) {
-      return html`<div class="sf-list-item-container"><span class="sf-list-item-title">${textContent}</span><span class="sf-list-item-supporting">${supportingContent}</span></div>`;
+      return html`<div class="sf-list-item-container"><span class="sf-list-item-title">${title}</span><span class="sf-list-item-supporting">${supportingContent}</span></div>`;
     }
-    return html`<div class="sf-list-item-container">${textContent}</div>`;
+    return html`<div class="sf-list-item-container">${title}</div>`;
   };
 
   // The handle stands in a slot of its own before everything else; a pinned
@@ -169,9 +190,22 @@ export function renderListItemTemplate(context) {
   };
 
   const renderTrailing = () => {
-    if (trailingContent !== nothing) return trailingContent;
+    // The row's end part is one box (owner decision C148 (2), (3)): a plain
+    // <span slot="trailing"> gives the slot its children (the base unwraps a
+    // wrapper that only names the slot), so loose nodes -- a time and a
+    // badge, two buttons -- are put back in a box of the row's own. An
+    // element the page gave keeps its own box.
+    if (trailingContent !== nothing) {
+      if (isOption || (typeof Element !== "undefined" && trailingContent instanceof Element)) return trailingContent;
+      return html`<span class="sf-list-item-trailing">${trailingContent}</span>`;
+    }
 
-    if (context.type === "avatar" || context.type === "color") {
+    // The box after a picture is a dropdown option's choice, and only where
+    // the list may hold several chosen. A row outside a dropdown has no choice
+    // to mark (docs precheck smart content LI-01: an empty checkbox stood at
+    // the end of every such row); an option of a single choice says it is
+    // chosen with its fill alone (owner C08; DEV P2, owner R143, 2026-11-12).
+    if (isOption && context.multiple && (context.type === "avatar" || context.type === "color")) {
       return html`
         <label
           class="sf-checkbox sf-checkbox--size-${context.sizeGroup
@@ -221,7 +255,7 @@ export function renderListItemTemplate(context) {
 // takes a place in a list, so it carries the listbox roles and answers a
 // pointer. The dropdown built this inline and nothing else could, which is why
 // a multi-select list outside a dropdown had to be hand-made out of checkboxes.
-export function renderListItemOption(option = {}) {
+export function renderListItemOption(option = {}, {multiple = false} = {}) {
   const size = String(option.size || "1");
 
   return renderListItemTemplate({
@@ -241,6 +275,7 @@ export function renderListItemOption(option = {}) {
     avatarImageUrl: option.avatarImageUrl,
     avatarTitle: option.avatarTitle,
     ariaLabel: option.ariaLabel,
+    multiple: Boolean(multiple),
     option: true,
   });
 }

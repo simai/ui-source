@@ -14,7 +14,7 @@ test('the physical pixel primitive has one Sass source and one CSS projection', 
 
   assert.match(sizes, /\$size-pixel:\s*1px\s*!default/);
   assert.match(projection, /--sf-px:\s*#\{size\.\$size-pixel\}/);
-  assert.match(breakpoints, /@use "vars\/sf_var__size" as size/);
+  assert.match(breakpoints, /@use "(?:\.\.\/)?vars\/sf_var__size" as size/);
   assert.match(breakpoints, /- size\.\$size-pixel/);
   assert.doesNotMatch(breakpoints, /-\s*1px/);
 });

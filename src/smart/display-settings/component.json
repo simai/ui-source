@@ -1,0 +1,254 @@
+{
+  "$comment": "The source of sf-display-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C196 (2026-11-15; research ui-control control/research/2026-11-15-accessibility-worldwide.md, prototype prototypes/accessibility-panel-study.html#q-a11y-panel).",
+  "id": "smart.display-settings",
+  "tag": "sf-display-settings",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "display",
+  "settings": {
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label-text",
+      "summary": "The trigger's text and the panel's name. Not set: «Настройки отображения» («Display settings»). A Russian site that is asked for the button by name writes «Версия для слабовидящих»"
+    },
+    "layout": {
+      "type": "enum",
+      "values": [
+        "disclosure",
+        "panel"
+      ],
+      "default": "disclosure",
+      "summary": "disclosure: a button that opens the panel in place under it (aria-expanded), Escape closes it and the focus goes back to the button; panel: the panel stands open, with no button (a page of its own, a footer)"
+    },
+    "open": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Whether the panel of layout disclosure is open; the button turns it, Escape closes it"
+    },
+    "show-font": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Offer the font group: the site's font, sans serif or serif (the system's --sf-sans and --sf-serif). Off by default: the site's author turns it on"
+    },
+    "show-links": {
+      "type": "boolean",
+      "default": false,
+      "summary": "Offer «Подчёркивать ссылки». Off by default: the site's author turns it on. Inside a colour scheme links are always underlined"
+    }
+  },
+  "values": {
+    "settings": {
+      "type": "object",
+      "summary": "What the person chose, as SF.displaySettings keeps it: {scheme, textScale, textSpacing, images, motion, font, links}. Read-only; the choice lives in this browser (localStorage sf-display-settings) and on the root attributes"
+    }
+  },
+  "events": {
+    "change": {
+      "x-native": false,
+      "carries": {
+        "settings": {
+          "type": "object",
+          "summary": "The settings now."
+        },
+        "previous": {
+          "type": "object",
+          "summary": "The settings before."
+        },
+        "setting": {
+          "type": "string",
+          "summary": "The field that moved (scheme, textScale, textSpacing, images, motion, font, links), or reset."
+        }
+      },
+      "summary": "A person changed a setting or chose «Обычная версия»: the fact, sent after the root shows it and the browser keeps it. Nothing is sent anywhere; a page that wants to know listens here"
+    }
+  },
+  "actions": {
+    "reset": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "«Обычная версия»: every setting back to the site's own look, the kept choice removed; sends change with setting reset. refused {reason: unchanged} when nothing was changed"
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "The trigger is sf-button's native button with aria-expanded and aria-controls naming the panel. The panel is a group named by label; each setting is a group named by its word («Текст», «Цвет», …) of toggle buttons with aria-pressed (one pressed per group), the text steps are «А−» / «А+» buttons named «Текст меньше» / «Текст больше» with the size in a polite live region. Under forced-colors the colour group's buttons are disabled and the group says «Цвета задаёт система». Nothing says or implies that the site meets a standard (C196 (6)).",
+    "role": "group",
+    "name": {
+      "from": [
+        "label",
+        "runtime.label-text"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-open": "boolean",
+    "data-forced-colors": "boolean"
+  },
+  "css-variables": {
+    "--sf-display-settings-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-display-settings-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-display-settings-label-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-display-settings-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-display-settings-group-gap": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "How a person wants the site shown -- text 100–200 %, a colour scheme, wider spacing, images in colour, grey or hidden with their text, motion stopped, «Обычная версия» -- kept in this browser only and applied by core on every page. Replaces the legacy low-vision version (.sf-special). Promises no conformance.",
+  "x-source": {
+    "package": "framework",
+    "folder": "display-settings",
+    "brief": "Owner decision C196 (2026-11-15, decisions.md rows C195, C196): the world set of display settings, schemes from the palette, the device first, the name sf-display-settings, the legacy special as an alias until 2027-01-01. Not doing: read aloud, a dyslexia font, a reading ruler, disability profiles, auto-fixing the site."
+  },
+  "x-words": [],
+  "x-decisions": [
+    "name: sf-display-settings («Настройки отображения»), family settings (C196 (4)); the trigger's text is the label setting, «Версия для слабовидящих» on a Russian site that is asked for it.",
+    "the set (C196 (1)): text 100/125/150/175/200 % (a step is a share of the browser's own size on <html>, so it multiplies the person's setting), colour (the site's or one of five schemes), spacing normal or wider (WCAG 1.4.12 values), images colour / greyscale / hidden with the text alternative in place, motion as on the device or stopped, «Обычная версия»; the author turns on the font (site / sans / serif) and «Подчёркивать ссылки». Not: read aloud, a dyslexia font, a reading ruler, disability profiles, auto-fixing.",
+    "the device first (C196 (3), (5)): under forced-colors the colour group is disabled and says «Цвета задаёт система»; when the device already reduces motion the motion group says so; core answers prefers-contrast and prefers-reduced-transparency on every site, with or without this panel.",
+    "storage (C196 (5)): the choice is kept in localStorage sf-display-settings only, no cookie, nothing sent; core (core/js/display-settings.js) applies it on every page of the site, so the panel is needed only where a person changes it.",
+    "look (prototype accessibility-panel-study, panel B): a card place (surface-card, outline-variant edge, surface radius, padding space-1/2); groups in a wrapping row, 16 apart (space-1), inside a group the label and the buttons 8 apart (space-1/3); every choice is an outline sf-button on-surface of size 1/2 with the pressed look (C12) on the chosen one; «Обычная версия» a ghost button, its word alone (no icon: the panel asks nothing of the icon service, so a page with it makes no request but its own). The trigger is the same outline button.",
+    "honesty (C196 (6)): no text, attribute or name of the component says that the site is accessible or meets a standard.",
+    "legacy (C196 (7)): the special module (class sf-special, SF4 panel) is kept for the Bitrix templates until 2027-01-01, its sheet replaced by an alias to the core schemes and settings (journal display-settings-replaces-special)."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "i18n",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "hybrid",
+      "source_of_truth": "component",
+      "network_owner": "none",
+      "revision_field": null
+    },
+    "tags": [
+      "accessibility",
+      "display",
+      "low-vision",
+      "contrast",
+      "text-size",
+      "settings",
+      "preferences"
+    ],
+    "state": {
+      "machines": {
+        "panel": [
+          "closed",
+          "open"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "open",
+        "disabled"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "component",
+      "effects": "component",
+      "forbidden_client_responsibilities": [
+        "claiming that the site meets an accessibility standard",
+        "sending the person's choice to a server",
+        "reading aloud, fixing markup or guessing alt text"
+      ]
+    },
+    "security": {
+      "permissions_owner": "none",
+      "untrusted_inputs": [
+        "props",
+        "storage"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-display-settings where a site offers its visitors display settings -- a school, a municipal or a public site that is asked for «версия для слабовидящих», or any site that wants a text size and contrast switch for people who do not know the browser's.",
+      "do_not": [
+        "Do not say the site is accessible or compliant next to it; the panel is a comfort, the main site must meet WCAG itself",
+        "Do not add read-aloud, a dyslexia font or disability profiles around it",
+        "Do not keep the choice in a cookie or send it to a server; core keeps it in this browser"
+      ],
+      "required_reads": [
+        "inputs",
+        "accessibility",
+        "ownership"
+      ],
+      "minimal_example": "<sf-display-settings label=\"Версия для слабовидящих\"></sf-display-settings>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Tab reaches the trigger and every button of the panel; Enter or Space presses it",
+        "Escape in an open disclosure panel closes it and returns the focus to the trigger"
+      ],
+      "focus": "The trigger keeps the focus when it opens the panel; Escape returns the focus to it. A pressed choice keeps the focus."
+    }
+  }
+}

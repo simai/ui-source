@@ -2,26 +2,34 @@
   "$comment": "The source of sf-file-preview's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/file-preview (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.file-preview",
   "tag": "sf-file-preview",
-  "version": "1.1.5",
+  "version": "1.4.2",
   "kind": "leaf",
   "family": "file",
   "settings": {
     "file-name": {
       "type": "string",
-      "default": "File"
+      "default": "File",
+      "summary": "The file's name, shown as the title of the row and used as its accessible name and as the download's file name."
     },
     "file-size": {
       "type": "string",
       "default": "",
-      "summary": "The file's size as text, for example 12 KB."
+      "summary": "The file's size: a number of bytes (2457600), drawn in the page's language and units by the core's size format (2,3 МБ; decision C25) and said with the unit as a word (2,3 мегабайта; C51); text a host already wrote (12 KB) is drawn as written."
+    },
+    "file-date": {
+      "type": "string",
+      "default": "",
+      "summary": "The file's date when the page has one (ISO 8601, 2026-11-12, or a time stamp): drawn after the type and the size, «12 нояб.», with the year when it is not this year, in the page's language (decision C149 (7)). Empty: no date."
     },
     "icon": {
       "type": "icon",
-      "default": "description"
+      "default": "description",
+      "summary": "The glyph in the holder when no picture is shown (a Material Symbols name). Unset: the glyph of the file's type -- from mime-type, else from the name's extension (PDF, a sheet, slides, an archive, ... each its own; decision C81), else description."
     },
     "href": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The file's address: the name is a link to it (decision C51; it downloads in the same tab, or opens in target when download is false) and the download action fetches it. Empty: the name is text and the download action does nothing."
     },
     "kind": {
       "type": "enum",
@@ -35,49 +43,100 @@
     },
     "mime-type": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "The file's MIME type, which helps kind=\"auto\" tell an image from another file."
     },
     "image-url": {
       "type": "string",
-      "default": ""
+      "default": "",
+      "summary": "A picture for the holder, for any file (decision C149 (4)): a photo's thumbnail, a PDF's first page or a video's frame the server made; the component never draws a PDF itself. Over the picture of a file that is not an image the type stands in a corner badge; a video adds the play sign and its duration. Empty: an image shows its own href."
+    },
+    "duration": {
+      "type": "string",
+      "default": "",
+      "summary": "A video's length: seconds (84), drawn as 1:24 in the picture's corner badge beside the play sign, or text as written (decision C149 (4))."
     },
     "surface": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Draws the row on a fill, as a block of its own: the size 3 control height around the holder (56 on a desktop, 52 on a phone)."
+    },
+    "appearance": {
+      "type": "enum",
+      "values": [
+        "row",
+        "chip",
+        "tile"
+      ],
+      "default": "row",
+      "summary": "The look (decision C149 (1); the decision's word view is reserved by standard §3.1, so the look is the appearance axis, as sf-confirm's inline | card | window). row: the 48 holder, the name in two lines, type · size · date under it, the actions at the end (records, lists). chip: a message attachment, 48 high and at most --sf-f8 (288) wide, the 32 holder, the name in one line, type · size, «×» only. tile: a media library's tile, the picture 4:3 on top, the name in one line, the meta beside its buttons under it. compact stays the table cell's tile."
     },
     "download": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "true (the default): the download action saves the file under file-name, in the same tab. false: it opens the file instead, in target -- the same tab unless a target is given (C25)."
     },
     "target": {
       "type": "string",
-      "default": "_blank"
+      "default": "",
+      "summary": "Where an opened file goes when download is false and where the name link goes: empty (the default) is the same tab, as C25 asks for a file link; _blank opens a new tab and the action shows the new-tab sign."
     },
     "actions": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Shows the action buttons at the row's end (download and remove, as download-action and remove-action allow)."
     },
     "download-action": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Shows the download action among the actions."
     },
     "remove-action": {
       "type": "boolean",
-      "default": true
+      "default": true,
+      "summary": "Shows the remove action among the actions; it asks the page to detach the file (the detach event). «×» «Убрать <имя>» takes a file out of a draft or a form field at once, the page offering «Вернуть» in its notice (C25); with stored the trash «Удалить <имя>» asks first (decision C149 (8))."
+    },
+    "stored": {
+      "type": "boolean",
+      "default": false,
+      "summary": "The file is stored (a media library): its remove action is the trash «Удалить <имя>», which asks «Удалить «<имя>»?» in the row (sf-confirm, the danger answer) and only on yes asks the page to erase it (detach with action delete). Without it the action is «×» «Убрать <имя>», at once (decision C149 (8), C25)."
     },
     "disabled": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "summary": "Makes the row unavailable: the actions do nothing and the row takes the disabled look."
+    },
+    "state": {
+      "type": "enum",
+      "values": [
+        "ready",
+        "uploading",
+        "error"
+      ],
+      "default": "ready",
+      "summary": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row -- under the text in a narrow row, where decision C88 places it -- and remove."
+    },
+    "value": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "max": 100,
+      "summary": "While uploading: the share sent, per cent (0 to 100, clamped), drawn by the bar and its per cent. Absent: the bar runs without a share."
+    },
+    "error-text": {
+      "type": "string",
+      "default": "",
+      "summary": "Why the file did not upload, after «Не загрузился:» in a failed row (state error)."
     },
     "download-label": {
       "type": "string",
       "default-from": "runtime.download-label",
-      "summary": "Empty: the text of the page's language (\"Download file\" in English)."
+      "summary": "Empty: the text of the page's language with the file's name («Скачать Отчёт.pdf», \"Download Report.pdf\" in English; decision C51)."
     },
     "remove-label": {
       "type": "string",
       "default-from": "runtime.remove-label",
-      "summary": "Empty: the text of the page's language (\"Remove file\" in English)."
+      "summary": "Empty: the text of the page's language with the file's name, «Убрать Отчёт.pdf» (\"Remove Report.pdf\"), or for a stored file «Удалить Отчёт.pdf» (\"Delete Report.pdf\"); decisions C51, C149 (8)."
     },
     "compact": {
       "type": "boolean",
@@ -102,6 +161,14 @@
         "value": "object"
       },
       "cancelable": true
+    },
+    "retry": {
+      "carries": {
+        "id": "string",
+        "action": "string",
+        "value": "object"
+      },
+      "summary": "A person pressed «Повторить» in a row that did not upload (vocabulary §5 retry): the host sends the file again and sets state."
     }
   },
   "actions": {},
@@ -119,6 +186,34 @@
     },
     {
       "name": "icon-buttons"
+    },
+    {
+      "name": "cl-progress-bar",
+      "lazy": true,
+      "$comment": [
+        "The upload row's bar under the name while the file uploads (state uploading, decision C81)."
+      ]
+    },
+    {
+      "name": "cl-button",
+      "lazy": true,
+      "$comment": [
+        "«Повторить» in a row that did not upload (state error), the C88 retry button."
+      ]
+    },
+    {
+      "name": "cl-gallery",
+      "lazy": true,
+      "$comment": [
+        "The page's full-screen viewer, SF.Gallery.view, asked for when a picture, a PDF or a video is opened (decision C149 (6))."
+      ]
+    },
+    {
+      "name": "cl-confirm",
+      "lazy": true,
+      "$comment": [
+        "«Удалить «<имя>»?» before a stored file is erased (decision C149 (8))."
+      ]
     }
   ],
   "templates": {
@@ -293,7 +388,13 @@
     "skeleton: none; the preview draws from its settings; an image that loads late keeps the holder's box (§5.4).",
     "css-variables: seven public variables read by the class sheet with the role token as fallback (src/core/contracts/public-variables.v1.json).",
     "version 1.1.1: the first-paint snapshots are retaken: the JSON island is printed once (no held copy), the icon font's state (sf-icon loaded, sf-icon-loaded) is left out, a closed surface prints closed and a size or place the code measured (a non-zero px width, height, inset, clip or transform) is left out, so a snapshot is the same on every run.",
-    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged."
+    "version 1.1.2: the bundle carries no element layer of its own -- element-manifest, aliases, the alias table, the host port, deprecations, page actions, the layer stack, the open-surface mark and the instance path come from the page's shared runtime (SF.runtimeModule, runtime ABI 1, core.runtime 1.1.0), one instance per page -- and embeds of this file only the keys the runtime reads. Behaviour unchanged.",
+    "version 1.2.0 (2026-11-10, docs precheck smart content FP-02, FP-03, FP-05): a minor. target's default is empty, the same tab (C25: a file link downloads or opens in the tab it is in; a new tab only for opening to view, with its sign): it was _blank, so download=\"false\" and the name link opened a new tab by default; with target=\"_blank\" and download false the action shows open_in_new. download and detach carry value.kind; value.type, its former name, stays beside it until 2027-01-01 (journal event-file-preview-value-type-to-kind). With component.file-preview 1.0.2 the row on a fill (surface) is 56 on a desktop and 52 on a phone (it was 72 and 60). Every setting has its summary.",
+    "version 1.2.1 (2026-11-13, docs precheck smart content FP-06, owner decision C103): a patch. The download and remove buttons are size 1 (40, icon 24) beside the size 1 name; they were 1/2 (32, icon 20).",
+    "version 1.3.0 (2026-11-14, file preview study FP-1, FP-2, FP-3, FP-6, FP-7, FP-8, FP-15; decisions C34, C88, C81, C51, C25): a minor. The name breaks only between words (C34): spaces and the joints names use instead of them (_ - – — / +) where a <wbr> lets a line end; it takes two lines at most and ends in an ellipsis, the whole name in its tooltip and for a screen reader (C88); it was overflow-wrap anywhere («верси | я_подписано.pdf»). The name is a link to the file while it is there (C51; the download request goes first and a page may refuse it). Unset icon: the glyph of the file's type from mime-type or the name's extension (picture_as_pdf, table_chart, slideshow, folder_zip, ...; C81), it was description for every file; a screen reader hears the type and the size after the name («Отчёт.pdf, PDF, 2,3 мегабайта», C51). file-size in bytes is drawn by the core's size format («2,3 МБ», C25); text stays as written. The buttons are named with the file («Скачать Отчёт.pdf», «Удалить Отчёт.pdf», C51); a page's own labels are kept. New settings state (ready, uploading, error), value and error-text: the upload core's rows (C81) -- the bar under the name while uploading, «Не загрузился: …» in the error colour and «Повторить» (event retry) after a failure. Words added: uploading-label, error-text, error-line, retry-text, retry-label; download-label and remove-label carry {name}. With component.file-preview 1.1.0; core holds the row's box before the code (FP-15).",
+    "version 1.4.0 (2026-11-14, owner decision C149, file preview study ui-control control/research/2026-11-14-file-preview.md, prototype prototypes/file-preview-study.html): a minor. (1) appearance row (default) | chip | tile (the decision's word view is reserved by standard §3.1 -- the runtime refuses it, as saved-view showed -- so the look takes the appearance axis of contracts/public-api-axes.json, as sf-confirm's inline | card | window); compact stays for a table cell. chip: 48 high (the size 2 control), at most --sf-f8 (288), the 32 holder, the name one line 14, type · size 12, «×» size 1/2. tile: the picture 4:3 on top, the name one line the tile's width, the meta beside download and remove size 1/2 under it. (2) A name that needs more lines than its view gives (two in a row, one in a chip or a tile) is cut in the middle: the longest head that fits, «…», and the last ten characters with the extension; it breaks by words as the whole (C34); the whole name stays in the tooltip and for a screen reader. (3) The glyph of the file's kind in the grey tile (the core's file icons) and the type word under the name; no colour. (4) image-url is a picture for any file; over a file that is not an image the type in a corner badge, a video the play sign and its duration (new setting duration). The component never draws a PDF. (5) The name is a link: a picture, a PDF or a video opens the viewer (a plain press; a middle or modified press is the browser's), any other file downloads after the cancelable download request; the download button stays. (6) The viewer is sf-gallery's full-screen view, SF.Gallery.view (C150 (7)), with the viewable files of the list (the nearest parent with more than one sf-file-preview), «N из M», download, open in a tab, close, arrows, keys, a swipe; Escape gives the focus to the name of the file shown. (7) Under the name type · size · date (new setting file-date: «12 нояб.», the year when not this year); a screen reader hears them after the name. (8) remove is «×» «Убрать <имя>» at once (the page's notice offers «Вернуть», C25); new setting stored: the trash «Удалить <имя>» asks «Удалить «<имя>»?» in place (sf-confirm, danger) and on yes sends detach with action delete. Words remove-label «Убрать {name}», delete-label, delete-question, delete-text, viewer-previous, viewer-next. Relations cl-gallery and cl-confirm (lazy). Action buttons of one row stay --sf-space-1/3 apart (8, 4 compact; C105 H5).",
+    "version 1.4.1 (2026-11-14, owner decision C181 (2); component.file-preview 1.2.2): a patch. «Повторить» of a failed file goes under the text in a row narrower than 24rem, the container step g2 of the one ladder; it was 22.5rem (360 px, no step), so the break moves 24 px wider. Markup, settings, values, events and keys unchanged.",
+    "version 1.4.2 (2026-11-15, DEV GB5 answers on owner decisions C149 (1), C105 and C145; component.file-preview 1.2.3): a patch, a look. The chip's inset: the room between the plate's edge and the holder is the same on every side, the chip's height less the holder's, halved (8; 6 compact), and the same room again from the holder to the name, which keeps no padding of its own. The holder stood 4 from the start edge and 8 from the top; the «×» 4 from the end. The block padding stays 4. --sf-file-preview-padding and --sf-file-preview-gap still set the chip's padding and gap. The role-token check no longer reads one chip as a row of tags, so the GB5-RT-1 baseline entry is gone. Settings, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

@@ -1,3 +1,7 @@
 {
-  "title": "Range Slider"
+  "title": "Range Slider",
+  "runtime": {
+    "from": "from",
+    "to": "to"
+  }
 }

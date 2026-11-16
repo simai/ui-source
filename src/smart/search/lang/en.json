@@ -18,6 +18,7 @@
     "loading-text": "Searching…",
     "error-text": "Search is unavailable now",
     "empty-text": "Nothing found for “{query}”",
+    "empty-advice-text": "Nothing found for “{query}”. Check the word or pick a frequent query",
     "count-text": {
       "one": "{n} result",
       "other": "{n} results"
@@ -32,6 +33,34 @@
     "action-text": "The command did not run",
     "short-text": "Type a little more",
     "forbidden-text": "You have no access to this",
-    "not-found-text": "It is no longer there"
+    "not-found-text": "It is no longer there",
+    "step-placeholder": "Choose an option",
+    "new-tab-label": "Open in a new tab (Ctrl+↵)",
+    "copy-link-label": "Copy link",
+    "copied-text": "Link copied",
+    "copy-failed-text": "Could not copy the link",
+    "remove-tag-label": "Remove tag",
+    "refine-label": "Refine",
+    "more-text": "All results: {count}",
+    "search-all-label": "Search everywhere",
+    "options-text": {
+      "one": "{n} option",
+      "other": "{n} options"
+    },
+    "key-apply-label": "apply",
+    "key-tag-label": "add tag",
+    "key-back-label": "back",
+    "operator-from": "from",
+    "operator-subject": "subject",
+    "operator-has": "has",
+    "operator-date": "date",
+    "operator-from-label": "Sender",
+    "operator-subject-label": "Subject",
+    "operator-has-label": "Has",
+    "operator-date-label": "Date",
+    "operator-from-hint": "person",
+    "operator-subject-hint": "words of the subject",
+    "operator-has-hint": "attachment",
+    "operator-date-hint": "period"
   }
 }

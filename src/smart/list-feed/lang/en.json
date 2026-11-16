@@ -2,6 +2,7 @@
   "title": "Feed",
   "runtime": {
     "earlier-text": "Show earlier",
+    "empty-text": "No entries yet",
     "latest-label": "To the latest",
     "loading-earlier-text": "Loading earlier entries",
     "log-label": "Entries",

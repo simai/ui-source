@@ -6,6 +6,11 @@ a round marker on the step's first line, and a line runs down from each marker
 to the next. It is CSS only: the numbers are a CSS counter and the line a
 pseudo-element.
 
+The marker is the number marker of `sf-steps`: one step mark across SIMAI
+Framework. It is the box of the body text line (24 px on a desktop, 20 px on a
+phone and in compact density), an empty circle with a thin outline edge, and
+the number at the small text size.
+
 ```html
 <ol class="sf-procedure">
   <li class="sf-procedure-step sf-procedure-step--complete">
@@ -31,7 +36,8 @@ pseudo-element.
 - `.sf-procedure` is the list, on a native `ol`. It drops the list's own
   markers and numbers its steps itself, from 1.
 - `.sf-procedure-step` is one step, on a native `li`: the marker in the first
-  column, the title and the content in the second.
+  column, the title and the content in the second. The marker has the size
+  and look of the `sf-steps` number marker.
 - `.sf-procedure-title` is the step's short title, centred on the marker. It
   is optional; without it the content's first line stands beside the marker.
 - `.sf-procedure-content` holds the step's blocks in one column with the text
@@ -46,7 +52,7 @@ A procedure the reader goes through may say where they are:
 `sf-procedure-step--complete` fills a done step's marker with the primary role,
 and `sf-procedure-step--current` rings the current one. Mark the current step
 with `aria-current="step"` as well: the colour alone says nothing to a screen
-reader. Without either class every marker is neutral.
+reader. Without either class every marker is an empty circle.
 
 `sf-steps` -- the indicator of where a person is in a process of screens -- is
 another component; a procedure is reading content.
@@ -58,7 +64,7 @@ complete and it current; `props.layout`: `timeline` or `list`).
 
 | Variable | What | Default |
 |:---|:---|:---|
-| `--sf-procedure-marker-background-color` | the marker's fill | `--sf-surface-container` |
+| `--sf-procedure-marker-background-color` | the marker's fill | `transparent` (an empty circle) |
 | `--sf-procedure-marker-color` | the number | `--sf-on-surface` |
 | `--sf-procedure-line-color` | the line between markers | `--sf-outline-variant` |
 | `--sf-procedure-line-width` | the line's width | `--sf-px` |

@@ -3,19 +3,22 @@
   "schema_version": 1,
   "id": "component.scrollbar",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/scrollbar/docs/docs.md",
     "src/component/scrollbar/index.js",
     "src/component/scrollbar/js/_scrollbar.js",
     "src/component/scrollbar/js/index.js",
+    "src/component/scrollbar/lang/en.json",
+    "src/component/scrollbar/lang/index.mjs",
+    "src/component/scrollbar/lang/ru.json",
     "src/component/scrollbar/rule.js",
     "src/component/scrollbar/scss/_css__scrollbar.scss",
     "src/component/scrollbar/scss/_var__scrollbar.scss",
     "src/component/scrollbar/scss/index.scss"
   ],
-  "content_sha256": "cb105a492da6781d9db233db8f5f000ef5a4d9ed92865f4dc34697c7c89147d9",
+  "content_sha256": "e719af922cf1a1d3595d4b169a0c69b8b18938c93cad538936878d3ee8e62760",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -32,6 +35,10 @@
     {
       "id": "tokens.motion",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.space",
+      "range": "^1.0.4"
     }
   ]
 }

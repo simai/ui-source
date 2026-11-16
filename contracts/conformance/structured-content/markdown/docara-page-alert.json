@@ -1,0 +1,770 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-alert",
+  "input": "docara-page-alert.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: Как показать в тексте подсказку, предупреждение или сообщение об ошибке так, чтобы читатель его не пропустил.\n---",
+                "hash": "sha256:12055c1e111aadd9afe2133b5eaf1ea43020fe09a725bca1e5c90b894e82e788"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Уведомление"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Уведомление выделяет в тексте то, что читатель не должен пропустить:\nподсказку, результат, предупреждение или ошибку."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Уведомление\"}\n```markdown\n:::alert {type=info}\n#### Полезная информация\n\nПродолжайте работу в обычном порядке.\n:::\n```\n:::",
+                "hash": "sha256:07d47b07cb43b0c3e72651129a2245a5590b32f4e155c2c9cf02a6386fae90c9"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::alert {type=warning}\n#### Короткий заголовок ситуации\n\nЧто произошло и что делать дальше.\n:::"
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Первая строка — заголовок "
+                        },
+                        {
+                          "type": "text",
+                          "value": "##",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "–"
+                        },
+                        {
+                          "type": "text",
+                          "value": "#####",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ": он кратко называет ситуацию."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "После него — пояснение или следующее действие. Уведомление без заголовка\nили без пояснения останавливает сборку."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m14",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Уведомление построено на уведомлении SIMAI Framework ("
+                  },
+                  {
+                    "type": "text",
+                    "value": "sf-alert",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ")."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Тип"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "type",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " передаёт смысл сообщения: от него зависят цвет и значок."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Типы уведомлений\"}\n```markdown\n:::alert {type=clear}\n#### К сведению\n\nЭто сообщение не требует действия.\n:::\n\n:::alert {type=info}\n#### Полезная информация\n\nПродолжайте работу в обычном порядке.\n:::\n\n:::alert {type=success}\n#### Готово\n\nСборка успешно прошла проверку.\n:::\n\n:::alert {type=warning}\n#### Обратите внимание\n\nПроверьте параметры перед публикацией.\n:::\n\n:::alert {type=danger}\n#### Требуется исправление\n\nКонфигурация не прошла проверку.\n:::\n```\n:::",
+                "hash": "sha256:d7af57210cae69378808f5da05ce69126c0e7460f699e594b4e183cc119f90b1"
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Вид"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m20",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "variant",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " меняет плотность оформления, но не смысл."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m21",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Вид уведомления\"}\n```markdown\n:::alert {type=info variant=default}\n#### С заливкой\n\nПодходит для большинства уведомлений.\n:::\n\n:::alert {type=info variant=flat}\n#### Без тени\n\nДля спокойного сообщения.\n:::\n\n:::alert {type=info variant=outlined}\n#### В рамке\n\nКогда нужен менее плотный акцент.\n:::\n```\n:::",
+                "hash": "sha256:6c3112cf69c4dabbb803da73666a8f1131a853dfcaa0a5c46610b6f338becd70"
+              }
+            },
+            {
+              "id": "m22",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m29",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m24",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Уведомление — область "
+                        },
+                        {
+                          "type": "text",
+                          "value": "status",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " с названием из заголовка: программы\nэкранного доступа объявляют его как отдельный блок."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m26",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Цвет не единственный носитель смысла: тип передают и значок, и заголовок.\nНазывайте ситуацию словами: «Обратите внимание», «Требуется исправление»."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m28",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Не ставьте несколько уведомлений подряд: читатель перестаёт их замечать."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m30",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m31",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m32",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "type",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "clear",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "info",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "success",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "warning",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "danger",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "info",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Смысл сообщения: "
+                      },
+                      {
+                        "type": "text",
+                        "value": "clear",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — нейтральное, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "info",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — сведения, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "success",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — успех, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "warning",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — предупреждение, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "danger",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — опасность или ошибка."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "variant",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "flat",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "outlined",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Вид: "
+                      },
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — с заливкой, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "flat",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — без тени, "
+                      },
+                      {
+                        "type": "text",
+                        "value": "outlined",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": " — рамка."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m33",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m34",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m41",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m36",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../banner/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Баннер"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — объявление для всей страницы"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m38",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../details/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Раскрывающийся блок"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — для дополнительных подробностей"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m40",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../smart-ui/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Компоненты SIMAI Framework ui.*"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — уведомление "
+                        },
+                        {
+                          "type": "text",
+                          "value": "ui.alert",
+                          "marks": [
+                            "code"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[12]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[15]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[19]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[21]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[23]",
+        "what": "Markdown form"
+      }
+    ],
+    "bytes_equal": false,
+    "printed": "---\ndescription: Как показать в тексте подсказку, предупреждение или сообщение об ошибке так, чтобы читатель его не пропустил.\n---\n\n# Уведомление\n\nУведомление выделяет в тексте то, что читатель не должен пропустить:\nподсказку, результат, предупреждение или ошибку.\n\n## Пример\n\n:::example {label=\"Уведомление\"}\n```markdown\n:::alert {type=info}\n#### Полезная информация\n\nПродолжайте работу в обычном порядке.\n:::\n```\n:::\n\n## Разметка\n\n```markdown\n:::alert {type=warning}\n#### Короткий заголовок ситуации\n\nЧто произошло и что делать дальше.\n:::\n```\n\n- Первая строка — заголовок `##`–`#####`: он кратко называет ситуацию.\n- После него — пояснение или следующее действие. Уведомление без заголовка\n  или без пояснения останавливает сборку.\n\nУведомление построено на уведомлении SIMAI Framework (`sf-alert`).\n\n## Варианты\n\n### Тип\n\n`type` передаёт смысл сообщения: от него зависят цвет и значок.\n\n:::example {label=\"Типы уведомлений\"}\n```markdown\n:::alert {type=clear}\n#### К сведению\n\nЭто сообщение не требует действия.\n:::\n\n:::alert {type=info}\n#### Полезная информация\n\nПродолжайте работу в обычном порядке.\n:::\n\n:::alert {type=success}\n#### Готово\n\nСборка успешно прошла проверку.\n:::\n\n:::alert {type=warning}\n#### Обратите внимание\n\nПроверьте параметры перед публикацией.\n:::\n\n:::alert {type=danger}\n#### Требуется исправление\n\nКонфигурация не прошла проверку.\n:::\n```\n:::\n\n### Вид\n\n`variant` меняет плотность оформления, но не смысл.\n\n:::example {label=\"Вид уведомления\"}\n```markdown\n:::alert {type=info variant=default}\n#### С заливкой\n\nПодходит для большинства уведомлений.\n:::\n\n:::alert {type=info variant=flat}\n#### Без тени\n\nДля спокойного сообщения.\n:::\n\n:::alert {type=info variant=outlined}\n#### В рамке\n\nКогда нужен менее плотный акцент.\n:::\n```\n:::\n\n## Доступность\n\n- Уведомление — область `status` с названием из заголовка: программы\n  экранного доступа объявляют его как отдельный блок.\n- Цвет не единственный носитель смысла: тип передают и значок, и заголовок.\n  Называйте ситуацию словами: «Обратите внимание», «Требуется исправление».\n- Не ставьте несколько уведомлений подряд: читатель перестаёт их замечать.\n\n## Параметры\n\n<!-- docara:component-parameters:start -->\n\n| Параметр | Значения | По умолчанию | Что задаёт |\n| --- | --- | --- | --- |\n| `type` | `clear`, `info`, `success`, `warning`, `danger` | `info` | Смысл сообщения: `clear` — нейтральное, `info` — сведения, `success` — успех, `warning` — предупреждение, `danger` — опасность или ошибка. |\n| `variant` | `default`, `flat`, `outlined` | `default` | Вид: `default` — с заливкой, `flat` — без тени, `outlined` — рамка. |\n\n<!-- docara:component-parameters:end -->\n\n## См. также\n\n- [Баннер](../banner/) — объявление для всей страницы\n- [Раскрывающийся блок](../details/) — для дополнительных подробностей\n- [Компоненты SIMAI Framework ui.\\*](../smart-ui/) — уведомление `ui.alert`\n",
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

@@ -1,0 +1,888 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-page-tabs",
+  "input": "docara-page-tabs.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m2",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "---\ndescription: Как разместить равноценные варианты на вкладках, между которыми читатель переключается мышью или клавиатурой.\n---",
+                "hash": "sha256:c8d84ec22fb71dd7fe4b9e33c07b89aea64bee1b275e671ee72478d284291412"
+              }
+            },
+            {
+              "id": "m3",
+              "type": "content.heading",
+              "data": {
+                "level": 1,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Вкладки"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m4",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Вкладки помещают несколько равноценных вариантов в один блок: команды для\nразных систем, способы установки, код на разных языках. Читатель переключается\nмежду ними, не покидая страницу."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m5",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Пример"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m6",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": ":::example {label=\"Вкладки\"}\n````markdown\n:::tabs {sync=install default=\"Архив\"}\n### Composer\n\n```bash\ncomposer create-project simai/docara my-docs\n```\n\n### Архив\n\nСкачайте архив и распакуйте его в пустой каталог.\n\n### Результат\n\nГотовый сайт появится в каталоге сборки.\n:::\n````\n:::",
+                "hash": "sha256:a1f65778e5fa9213460311fccfd3b5c24f230270c3b22c654086de295b858197"
+              }
+            },
+            {
+              "id": "m7",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Разметка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m8",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::tabs\n### Подпись первой вкладки\n\nСодержимое первой вкладки.\n\n### Подпись второй вкладки\n\nСодержимое второй вкладки.\n:::"
+              }
+            },
+            {
+              "id": "m13",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m10",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Каждая вкладка начинается с заголовка "
+                        },
+                        {
+                          "type": "text",
+                          "value": "###",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": ": он становится подписью\nвкладки. Делайте подписи короткими, в одно-два слова."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m12",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Нужно не меньше двух вкладок, и у каждой должно быть содержимое: обычный\nMarkdown — текст, списки, ссылки, код."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m14",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Блок построен на вкладках SIMAI Framework ("
+                  },
+                  {
+                    "type": "text",
+                    "value": "sf-tabs",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", вид с подчёркиванием)."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m15",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Какая вкладка открыта"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m16",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "По умолчанию открыта первая вкладка. Параметр "
+                  },
+                  {
+                    "type": "text",
+                    "value": "default",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " открывает другую —\nукажите её подпись или имя (подпись строчными буквами, пробелы и знаки\nзаменены на дефис):"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::tabs {default=linux}\n### macOS\n\nbrew install docara\n\n### Linux\n\napt install docara\n:::"
+              }
+            },
+            {
+              "id": "m18",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Если вкладки с таким именем нет, сборка останавливается с\n"
+                  },
+                  {
+                    "type": "text",
+                    "value": "MARKDOWN_TABS_DEFAULT_NOT_FOUND",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " и перечисляет имена вкладок блока."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m19",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Связанные вкладки"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m20",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметр "
+                  },
+                  {
+                    "type": "text",
+                    "value": "sync",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " даёт блоку имя. Блоки с одним именем переключаются вместе, и\nвыбор читателя сохраняется для следующих страниц: выбрав Linux в начале\nруководства, он видит Linux и дальше."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m21",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": ":::tabs {sync=os}\n### macOS\n\nbrew install docara\n\n### Linux\n\napt install docara\n:::"
+              }
+            },
+            {
+              "id": "m28",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m23",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Имя — строчные латинские буквы, цифры и дефис, до 32 знаков."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m25",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Вкладки сопоставляются по имени, а не по порядку: блок может перечислять\nдругой набор вкладок, и совпадающие переключатся вместе."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m27",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Выбор хранится в браузере читателя ("
+                        },
+                        {
+                          "type": "text",
+                          "value": "localStorage",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "). Без скриптов и без\nсохранённого выбора открыта вкладка из разметки."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m29",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Варианты"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m30",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "По умолчанию вкладки подчёркнуты ("
+                  },
+                  {
+                    "type": "text",
+                    "value": "variant=underline",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": "). "
+                  },
+                  {
+                    "type": "text",
+                    "value": "variant=pills",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " —\nскруглённый переключатель SIMAI Framework: так на главной странице или в\nлендинге над живыми примерами выбирают, какой показать."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m31",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Во вкладку можно положить пример, код, рисунок или предупреждение. Тогда блок\nвкладок открывается четырьмя двоеточиями "
+                  },
+                  {
+                    "type": "text",
+                    "value": "::::tabs",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " и закрывается "
+                  },
+                  {
+                    "type": "text",
+                    "value": "::::",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ",\nчтобы "
+                  },
+                  {
+                    "type": "text",
+                    "value": ":::",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": " вложенного блока его не закрывало. Пример в скрытой вкладке\nзагружается, когда её открывают."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m33",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "::::tabs {variant=pills}\n### Кнопка\n\n:::example {label=Кнопка}\n```html\n<button type=\"button\" class=\"sf-button sf-button--default sf-button--primary sf-button--size-1\"><span class=\"sf-button-text-container\">Сохранить</span></button>\n```\n:::\n\n### Текст\n\n:::example {label=Текст}\n```markdown\n**Готово.** Сайт собран и проверен.\n```\n:::\n::::",
+                "hash": "sha256:d7e854ef91a3aeb7e066bb00016a1dec9f4ffffeaccd7a1e4dd43ef585281641"
+              }
+            },
+            {
+              "id": "m34",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Исходник этого блока:"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m35",
+              "type": "content.code",
+              "props": {
+                "lang": "markdown"
+              },
+              "data": {
+                "code": "::::tabs {variant=pills}\n### Кнопка\n\n:::example {label=Кнопка}\n```html\n<button type=\"button\" class=\"sf-button sf-button--default sf-button--primary sf-button--size-1\"><span class=\"sf-button-text-container\">Сохранить</span></button>\n```\n:::\n\n### Текст\n\n:::example {label=Текст}\n```markdown\n**Готово.** Сайт собран и проверен.\n```\n:::\n::::"
+              }
+            },
+            {
+              "id": "m36",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Состояния"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m37",
+              "type": "content.heading",
+              "data": {
+                "level": 3,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Выбранная вкладка"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m38",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "При открытии страницы выбрана первая вкладка или вкладка из "
+                  },
+                  {
+                    "type": "text",
+                    "value": "default",
+                    "marks": [
+                      "code"
+                    ]
+                  },
+                  {
+                    "type": "text",
+                    "value": ", а в\nсвязанных вкладках — сохранённый выбор читателя. Содержимое выбранной вкладки\nвидно и до загрузки скриптов, поэтому важное ставьте первым."
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m39",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Доступность"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m46",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m41",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Вкладки — список вкладок ("
+                        },
+                        {
+                          "type": "text",
+                          "value": "tablist",
+                          "marks": [
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "): Tab переводит фокус на выбранную\nвкладку, стрелки влево и вправо переключают вкладки, Home и End выбирают\nпервую и последнюю."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m43",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Каждая вкладка связана со своим содержимым, а программы экранного доступа\nслышат, какая вкладка выбрана."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m45",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "text",
+                          "value": "Не кладите во вкладки шаги одного процесса: читатель увидит только один шаг.\nДля последовательности используйте "
+                        },
+                        {
+                          "type": "link",
+                          "href": "../steps/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "шаги"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": "."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m47",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "Параметры"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m48",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:start -->",
+                "hash": "sha256:860321e4de557e281dac7b89346f13310ed796026c8b3317fe1770546b1fa433"
+              }
+            },
+            {
+              "id": "m49",
+              "type": "content.table",
+              "data": {
+                "rows": [
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "Параметр"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Значения"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "По умолчанию"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Что задаёт"
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "sync",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "строка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "—"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Имя группы: блоки с одним именем переключаются вместе, а выбор читателя сохраняется для следующих страниц."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "default",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "строка"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "—"
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Какая вкладка открыта при загрузке: подпись вкладки или её имя (подпись строчными буквами, знаки заменены на дефис)."
+                      }
+                    ]
+                  ],
+                  [
+                    [
+                      {
+                        "type": "text",
+                        "value": "variant",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "underline",
+                        "marks": [
+                          "code"
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "value": ", "
+                      },
+                      {
+                        "type": "text",
+                        "value": "pills",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "underline",
+                        "marks": [
+                          "code"
+                        ]
+                      }
+                    ],
+                    [
+                      {
+                        "type": "text",
+                        "value": "Вид вкладок: подчёркнутые вкладки или скруглённый переключатель."
+                      }
+                    ]
+                  ]
+                ]
+              }
+            },
+            {
+              "id": "m50",
+              "type": "content.foreign",
+              "data": {
+                "source": "markdown",
+                "raw": "<!-- docara:component-parameters:end -->",
+                "hash": "sha256:6bd16e03b82585965bc1a8efd729644fbcad103328d6c0dc83e7a1f805b6cfef"
+              }
+            },
+            {
+              "id": "m51",
+              "type": "content.heading",
+              "data": {
+                "level": 2,
+                "content": [
+                  {
+                    "type": "text",
+                    "value": "См. также"
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m58",
+              "type": "content.list",
+              "slots": {
+                "items": [
+                  {
+                    "id": "m53",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../steps/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Шаги"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — для последовательных действий"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m55",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../code/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Код"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — блоки кода внутри вкладок"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m57",
+                    "type": "content.list-item",
+                    "data": {
+                      "content": [
+                        {
+                          "type": "link",
+                          "href": "../example/",
+                          "children": [
+                            {
+                              "type": "text",
+                              "value": "Интерактивный пример"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "value": " — результат и исходный код рядом"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[0]",
+        "what": "kept as content.foreign: setext heading"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[4]",
+        "what": "kept as content.foreign: directive example"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[20]",
+        "what": "kept as content.foreign: attribute variant"
+      },
+      {
+        "code": "form_normalized",
+        "path": "$.root.slots.default[22]",
+        "what": "Markdown form"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[29]",
+        "what": "kept as content.foreign: html block"
+      },
+      {
+        "code": "not_expressible",
+        "path": "$.root.slots.default[31]",
+        "what": "kept as content.foreign: html block"
+      }
+    ],
+    "bytes_equal": false,
+    "printed": "---\ndescription: Как разместить равноценные варианты на вкладках, между которыми читатель переключается мышью или клавиатурой.\n---\n\n# Вкладки\n\nВкладки помещают несколько равноценных вариантов в один блок: команды для\nразных систем, способы установки, код на разных языках. Читатель переключается\nмежду ними, не покидая страницу.\n\n## Пример\n\n:::example {label=\"Вкладки\"}\n````markdown\n:::tabs {sync=install default=\"Архив\"}\n### Composer\n\n```bash\ncomposer create-project simai/docara my-docs\n```\n\n### Архив\n\nСкачайте архив и распакуйте его в пустой каталог.\n\n### Результат\n\nГотовый сайт появится в каталоге сборки.\n:::\n````\n:::\n\n## Разметка\n\n```markdown\n:::tabs\n### Подпись первой вкладки\n\nСодержимое первой вкладки.\n\n### Подпись второй вкладки\n\nСодержимое второй вкладки.\n:::\n```\n\n- Каждая вкладка начинается с заголовка `###`: он становится подписью\n  вкладки. Делайте подписи короткими, в одно-два слова.\n- Нужно не меньше двух вкладок, и у каждой должно быть содержимое: обычный\n  Markdown — текст, списки, ссылки, код.\n\nБлок построен на вкладках SIMAI Framework (`sf-tabs`, вид с подчёркиванием).\n\n## Какая вкладка открыта\n\nПо умолчанию открыта первая вкладка. Параметр `default` открывает другую —\nукажите её подпись или имя (подпись строчными буквами, пробелы и знаки\nзаменены на дефис):\n\n```markdown\n:::tabs {default=linux}\n### macOS\n\nbrew install docara\n\n### Linux\n\napt install docara\n:::\n```\n\nЕсли вкладки с таким именем нет, сборка останавливается с\n`MARKDOWN_TABS_DEFAULT_NOT_FOUND` и перечисляет имена вкладок блока.\n\n## Связанные вкладки\n\nПараметр `sync` даёт блоку имя. Блоки с одним именем переключаются вместе, и\nвыбор читателя сохраняется для следующих страниц: выбрав Linux в начале\nруководства, он видит Linux и дальше.\n\n```markdown\n:::tabs {sync=os}\n### macOS\n\nbrew install docara\n\n### Linux\n\napt install docara\n:::\n```\n\n- Имя — строчные латинские буквы, цифры и дефис, до 32 знаков.\n- Вкладки сопоставляются по имени, а не по порядку: блок может перечислять\n  другой набор вкладок, и совпадающие переключатся вместе.\n- Выбор хранится в браузере читателя (`localStorage`). Без скриптов и без\n  сохранённого выбора открыта вкладка из разметки.\n\n## Варианты\n\nПо умолчанию вкладки подчёркнуты (`variant=underline`). `variant=pills` —\nскруглённый переключатель SIMAI Framework: так на главной странице или в\nлендинге над живыми примерами выбирают, какой показать.\n\nВо вкладку можно положить пример, код, рисунок или предупреждение. Тогда блок\nвкладок открывается четырьмя двоеточиями `::::tabs` и закрывается `::::`,\nчтобы `:::` вложенного блока его не закрывало. Пример в скрытой вкладке\nзагружается, когда её открывают.\n\n::::tabs {variant=pills}\n### Кнопка\n\n:::example {label=Кнопка}\n```html\n<button type=\"button\" class=\"sf-button sf-button--default sf-button--primary sf-button--size-1\"><span class=\"sf-button-text-container\">Сохранить</span></button>\n```\n:::\n\n### Текст\n\n:::example {label=Текст}\n```markdown\n**Готово.** Сайт собран и проверен.\n```\n:::\n::::\n\nИсходник этого блока:\n\n````markdown\n::::tabs {variant=pills}\n### Кнопка\n\n:::example {label=Кнопка}\n```html\n<button type=\"button\" class=\"sf-button sf-button--default sf-button--primary sf-button--size-1\"><span class=\"sf-button-text-container\">Сохранить</span></button>\n```\n:::\n\n### Текст\n\n:::example {label=Текст}\n```markdown\n**Готово.** Сайт собран и проверен.\n```\n:::\n::::\n````\n\n## Состояния\n\n### Выбранная вкладка\n\nПри открытии страницы выбрана первая вкладка или вкладка из `default`, а в\nсвязанных вкладках — сохранённый выбор читателя. Содержимое выбранной вкладки\nвидно и до загрузки скриптов, поэтому важное ставьте первым.\n\n## Доступность\n\n- Вкладки — список вкладок (`tablist`): Tab переводит фокус на выбранную\n  вкладку, стрелки влево и вправо переключают вкладки, Home и End выбирают\n  первую и последнюю.\n- Каждая вкладка связана со своим содержимым, а программы экранного доступа\n  слышат, какая вкладка выбрана.\n- Не кладите во вкладки шаги одного процесса: читатель увидит только один шаг.\n  Для последовательности используйте [шаги](../steps/).\n\n## Параметры\n\n<!-- docara:component-parameters:start -->\n\n| Параметр | Значения | По умолчанию | Что задаёт |\n| --- | --- | --- | --- |\n| `sync` | строка | — | Имя группы: блоки с одним именем переключаются вместе, а выбор читателя сохраняется для следующих страниц. |\n| `default` | строка | — | Какая вкладка открыта при загрузке: подпись вкладки или её имя (подпись строчными буквами, знаки заменены на дефис). |\n| `variant` | `underline`, `pills` | `underline` | Вид вкладок: подчёркнутые вкладки или скруглённый переключатель. |\n\n<!-- docara:component-parameters:end -->\n\n## См. также\n\n- [Шаги](../steps/) — для последовательных действий\n- [Код](../code/) — блоки кода внутри вкладок\n- [Интерактивный пример](../example/) — результат и исходный код рядом\n",
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

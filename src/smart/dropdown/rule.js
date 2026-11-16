@@ -16,5 +16,7 @@ SF.RuleLoader['cl-dropdown'] = {
     // The picture of a single choice in the field and an icon tag's icon are sf-icon elements,
     // so their names reach the first icon font request (2026-11-09, as sf-tag 1.3.2).
     { name: 'cl-icon' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

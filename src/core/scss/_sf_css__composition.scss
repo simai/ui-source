@@ -7,6 +7,7 @@
 /* sf-focus-ring: editor — the editing canvas marks what is being edited in its
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
+@use 'mix/mix__breakpoint' as mq;
 @layer sf.components {
     .sf-composition-regions {
         --sf-composition-region-side: minmax(0, var(--sf-f6));
@@ -51,7 +52,7 @@
         background: var(--sf-surface-area, Canvas);
     }
 
-    @container (min-width: 48rem) {
+    @container (min-width: #{mq.container-step(h2)}) {
         .sf-composition-regions-grid:has(> [data-sf-region-placement="start"]) {
             grid-template-columns: var(--sf-composition-region-side) minmax(0, 1fr);
         }
@@ -261,6 +262,16 @@ $sf-workspace-wide-default: h6;
 // Logical properties stand in the base rules, never inside the step loops: the
 // build writes each one out for both directions, and a dozen steps of them cost
 // 45 KB of core.css (candidate wslayout2). The steps say only what is not logical.
+// A region clips at its own edge, so it keeps core's ring room inside it: the
+// ring of a control on the region's edge was cut (owner report R242). In
+// sf.base, so a padding utility on a region (p-2) or the page's own rule still
+// sets it: in sf.components the room would win over both.
+@layer sf.base {
+    .sf-workspace > * {
+        padding: var(--sf-focus-room);
+    }
+}
+
 @layer sf.components {
     .sf-workspace {
         container: sf-workspace / inline-size;
@@ -284,6 +295,10 @@ $sf-workspace-wide-default: h6;
         min-block-size: 0;
         overflow: auto;
         overscroll-behavior: contain;
+        // Keyboard focus stops core's ring room short of the region's clip
+        // edge (owner report R242, DEV's audit 2026-11-14); the room itself
+        // is the region's padding, in sf.base above.
+        scroll-padding: var(--sf-focus-room);
     }
 
     /* sf-focus-ring: none — a region takes focus only programmatically, when
@@ -370,7 +385,7 @@ $sf-workspace-wide-default: h6;
                 position: absolute;
                 // Above anything main raises; the workspace is its own stacking
                 // context (a size container), so this stays inside it.
-                z-index: var(--sf-z-index-layer, 9000);
+                z-index: var(--sf-layer--window, 9000);
                 background: var(--sf-workspace-drawer-background-color, var(--sf-workspace-drawer-background, var(--sf-surface-popup)));
                 color: var(--sf-on-surface);
                 box-shadow: var(--sf-shadow-modal), 0 0 0 100vmax var(--sf-scrim-color, var(--sf-black--alfa-64));

@@ -1,0 +1,216 @@
+{
+  "schema": "simai.composition.structured-content-conformance-markdown",
+  "schema_version": 1,
+  "id": "docara-examples-steps",
+  "input": "docara-examples-steps.md",
+  "expect": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "m1",
+              "type": "content.steps",
+              "props": {
+                "current": 2
+              },
+              "slots": {
+                "steps": [
+                  {
+                    "id": "m3",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Создайте проект."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m5",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Добавьте страницы."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m7",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Опубликуйте сайт."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m9",
+              "type": "content.steps",
+              "slots": {
+                "steps": [
+                  {
+                    "id": "m11",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Короткое действие."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m13",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Следующее действие."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m15",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Последнее действие."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m17",
+              "type": "content.steps",
+              "props": {
+                "layout": "list"
+              },
+              "slots": {
+                "steps": [
+                  {
+                    "id": "m19",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Подготовьте Markdown."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m21",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Проверьте JSON."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m23",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Соберите статический сайт."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "m25",
+              "type": "content.steps",
+              "props": {
+                "current": 3
+              },
+              "slots": {
+                "steps": [
+                  {
+                    "id": "m27",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Структура готова."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m29",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Страницы добавлены."
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "id": "m31",
+                    "type": "content.step",
+                    "data": {
+                      "title": [
+                        {
+                          "type": "text",
+                          "value": "Проверьте результат."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "losses": [],
+    "bytes_equal": true,
+    "print_losses": [
+      {
+        "code": "not_expressible",
+        "path": "$",
+        "what": "block ids"
+      }
+    ]
+  }
+}

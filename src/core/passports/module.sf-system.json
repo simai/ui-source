@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "module.sf-system",
   "kind": "module",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "owner": "simai/ui-source",
   "summary": "The SF4-era system scripts, internal: the ready and event files core imports, SF.Ajax, SF.Param and SF.Search, and the engine the special module imports. No rule loads it; nothing documented leans on it.",
   "includes": [
@@ -37,7 +37,7 @@
     "src/component/sf-system/js/search/_search.js",
     "src/component/sf-system/js/topZIndex/topZIndex.js"
   ],
-  "content_sha256": "cc46901245445ed37aad71a3bbdfaac7fb8a5e8997563af5c18e11c0c34d5a0c",
+  "content_sha256": "9f39bfce4e29b07d49e7d4f59c0b66d40cc6720bb77e69f5fa854f3827466ee2",
   "dependencies": [
     {
       "id": "core.runtime",

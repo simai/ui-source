@@ -11,7 +11,8 @@ const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf
 test('line composition: badge and scale take the text line', async () => {
   for (const name of ['badge', 'progress-scale', 'reference-link', 'tag']) {
     const manifest = JSON.parse(await read(`smart/${name}/smart.manifest.json`));
-    assert.deepEqual(manifest.inputs.properties.line.enum, ['', '1/2', '1', '2'], name);
+    // A badge also stands on the line of the text beside it (line="text", C95 point 6).
+    assert.deepEqual(manifest.inputs.properties.line.enum, name === 'badge' ? ['', '1/2', '1', '2', 'text'] : ['', '1/2', '1', '2'], name);
   }
   const badges = await read('component/badges/scss/_css__badges.scss');
   const scale = await read('component/progress-scale/scss/_css__progress_scale.scss');
@@ -26,5 +27,7 @@ test('line composition: badge and scale take the text line', async () => {
   const tagRuntime = await read('smart/tag/index.js');
   assert.match(tagRuntime, /if \(line\) return \(\{ '1\/2': '1\/3', '1': '1\/2', '2': '1' \}\)\[line\];/);
   const core = await read('component/progress-scale/js/_progress_scale.js');
-  assert.match(core, /onLine \? 'flex-row' : 'flex-col'/);
+  // A scale on a line, and a level scale (C185 (5)), lay out in a row.
+  assert.match(core, /const onRow = level \|\| \/\(\^\|\\s\)sf-progress-scale--line-\/\.test\(root\.className\);/);
+  assert.match(core, /onRow \? 'flex-row' : 'flex-col'/);
 });

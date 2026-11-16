@@ -29,8 +29,12 @@ import {noteDeprecated} from '../../core/js/deprecations.js';
 import {renderListTimelineTemplate} from './js/templates/default';
 import {foldRuns} from './js/fold-runs.mjs';
 import manifest from './component.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 import './scss/index.scss';
 
 // The day headings' ids, one set per list on the page (stable across renders).
@@ -230,7 +234,13 @@ class SfListTimeline extends ListTimelineElement {
       ...item,
       iso: item.at ? item.at.toISOString() : '',
       tone: TONES[item.status] ?? 'neutral',
-      statusWord: item.state ? this.sfWord(`state-${item.state}`) : item.status === 'neutral' ? '' : this.sfWord(`status-${item.status}`),
+      // A step says its state, and its status when it has a tone (C61 round 4:
+      // the status is drawn by colour only, so the words carry it too). A
+      // step's status has words of its own (C61 round 5): «Пройдено, с
+      // ошибкой», never the event word «Готово» after the state.
+      statusWord: item.state
+        ? [this.sfWord(`state-${item.state}`), TONES[item.status] ? this.sfWord(`step-status-${item.status}`) : ''].filter(Boolean).join(', ')
+        : item.status === 'neutral' ? '' : this.sfWord(`status-${item.status}`),
     });
     const runs = groupByDay(list, {group, now}).map((run, at) => ({
       id: `${this._uid}-day-${at}`,

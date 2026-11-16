@@ -1,10 +1,16 @@
+@use "sass:map";
+@use "../../../core/scss/vars/sf_var__breakpoint" as bp;
+@use "../../../core/scss/mix/mix__breakpoint" as mq;
+
 @layer sf.components {
 /* sf-pager (standard simai.smart-component 1.3.13 §6). One ladder
    (docs/foundation-composition-geometry.md): at a rung S the title is the
    text line L = --sf-text-height-S, a note the line a step down, a picture
    the line it stands on, the controls --sf-ui-S--control-height. A text whose
    length is data takes one line with an ellipsis, so every box is known from
-   the settings before any data or code (§5.4). The public variables are read
+   the settings before any data or code (§5.4); the row's titles take up to
+   two lines and the steps' place line wraps (decision C97, PR-02, PR-04),
+   the first paint printing them with their data. The public variables are read
    with the role token as their fallback and never set here. */
 .sf-pager {
   --sf-pager--line: var(--sf-text-height-1);
@@ -22,7 +28,11 @@
   --sf-pager--link-color: var(--sf-pager-link-color, var(--sf-primary));
   --sf-pager--meta-color: var(--sf-pager-meta-color, var(--sf-on-surface-variant));
   --sf-pager--track-color: var(--sf-pager-track-color, var(--sf-surface-container));
-  --sf-pager--fill-color: var(--sf-pager-fill-color, var(--sf-primary));
+  // The done part of the track and the done dots report an amount, as a
+  // neutral progress bar does: the place's quiet ink, not the theme's primary
+  // (applied decision on docs precheck PB-01; acceptance 2026-11-11: the pager
+  // draws its own dots and kept the blue).
+  --sf-pager--fill-color: var(--sf-pager-fill-color, var(--sf-on-surface-variant));
   display: block;
   box-sizing: border-box;
   min-inline-size: 0;
@@ -117,7 +127,7 @@
 }
 
 .sf-pager--cards .sf-pager-side:hover {
-  border-color: var(--sf-outline-primary);
+  border-color: var(--sf-primary-outline);
 }
 
 .sf-pager--cards .sf-pager-side--prev {
@@ -149,21 +159,43 @@
   font-weight: var(--sf-font-weight-medium);
 }
 
-/* ── row: one line, the two titles at the two ends. ── */
+/* ── row: the two titles at the two ends, each whole up to two lines (PR-04,
+   decision C97: the full title). It cut each title to one line with an
+   ellipsis, one of two already in a card 440 pixels wide. The arrow stands on the
+   title's first line. Two columns stand side by side only while the row is
+   at least sm wide; a narrower row (a card, a side column, a phone) stacks, the
+   previous side first and the next one at the end of the line below it. Side by
+   side in a card 440 pixels wide each side had 199 pixels, and a title of 46
+   letters was still cut after two lines. A missing side's column folds away. ── */
 .sf-pager--row {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc((#{map.get(bp.$breakpoint-array, sm)} - var(--sf-pager--gap)) / 2)), 1fr));
+  align-items: start;
   gap: var(--sf-pager--gap);
   min-block-size: var(--sf-pager--line);
 }
 
 .sf-pager--row .sf-pager-side {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-self: start;
   gap: var(--sf-pager--text-space);
-  max-inline-size: calc(50% - var(--sf-pager--gap) / 2);
+  max-inline-size: 100%;
   min-inline-size: 0;
   padding: 0;
+}
+
+.sf-pager--row .sf-pager-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.sf-pager--row .sf-pager-side--next {
+  text-align: end;
 }
 
 .sf-pager--row .sf-pager-side:hover .sf-pager-title {
@@ -171,7 +203,8 @@
 }
 
 .sf-pager--row .sf-pager-side--next {
-  margin-inline-start: auto;
+  grid-column: -2;
+  justify-self: end;
 }
 
 .sf-pager--row .sf-pager-icon {
@@ -194,11 +227,14 @@
   min-inline-size: 0;
 }
 
+/* The place line wraps under itself rather than cutting the step's name
+   (PR-02: «Шаг 2 из 4 · Сопостав…» in a card 440 pixels wide at 1440). steps is
+   interim: decision C97 moves it to sf-wizard. */
 .sf-pager--steps .sf-pager-place {
   max-inline-size: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
 }
 
 .sf-pager-track {
@@ -303,7 +339,8 @@
   flex: none;
 }
 
-/* ── counter: ‹ 3 of 12 › ── */
+/* ── counter: «‹ 3 из 240 ›» in a record card (C97), the way back to the list
+   before it when list-href is given. ── */
 .sf-pager--counter {
   display: inline-flex;
   align-items: center;
@@ -317,6 +354,11 @@
   contain: layout;
 }
 
+.sf-pager--counter .sf-pager-list {
+  margin-inline-end: var(--sf-pager--gap);
+  text-decoration: none;
+}
+
 .sf-pager--counter .sf-pager-place {
   min-inline-size: 7ch;
   color: var(--sf-on-surface);
@@ -325,6 +367,29 @@
   font-variant-numeric: tabular-nums;
   text-align: center;
   white-space: nowrap;
+}
+
+/* A narrow place stacks cards (PR-05, decision C97): side by side at 390
+   pixels each side had about 170 pixels and the titles were cut. The previous
+   card comes first. The row stacks by its own width (above).
+   The cards' own width decides, not the screen's (C181 (2)): below the
+   container step g6 (32rem, the sm step it read from the screen before), so
+   cards in a narrow column of a wide page stack too. A container query cannot
+   style its container, so the grid keeps its two columns and each card spans
+   both: one card to a row, the previous one first, as one column drew it.
+   A container takes no width from its content, so the cards fill its place: in a
+   flex row or column it was as wide as its content and would have folded to
+   nothing (in a box as wide as its content it still does). */
+.sf-pager--cards {
+  container: sf-pager / inline-size;
+  inline-size: 100%;
+}
+
+@container sf-pager (width < #{mq.container-step(g6)}) {
+  .sf-pager--cards .sf-pager-side--prev,
+  .sf-pager--cards .sf-pager-side--next {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

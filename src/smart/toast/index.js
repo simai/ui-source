@@ -5,8 +5,12 @@ import { bindToast, dismissToast, unbindToast } from '../../component/toast/js/_
 import { renderToastTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import en from './lang/en.json';
-import ru from './lang/ru.json';
+import enFile from './lang/en.json';
+import ruFile from './lang/ru.json';
+// Only the words on screen ship in the bundle; the title, settings and events
+// stay in the language files for the Studio and the docs (localization study LC-2).
+const en = {runtime: enFile.runtime};
+const ru = {runtime: ruFile.runtime};
 
 // sf-toast from its component.json (standard simai.smart-component 1.3.8 §3,
 // §4, §8): its settings are attributes and properties made by
@@ -50,7 +54,11 @@ class SfToast extends ToastElement {
     return this.getProp('status');
   }
 
+  // An error or a warning stays until a person closes it, whatever duration
+  // it is given (owner decision C114 (6), NS-2); the class toast holds the
+  // same rule on its root.
   get duration() {
+    if (this.status === 'error' || this.status === 'warning') return 0;
     const duration = Number(this.getAttribute('duration'));
     return Number.isFinite(duration) && duration > 0 ? duration : 0;
   }
@@ -174,6 +182,9 @@ class SfToast extends ToastElement {
       supportingText: this.supportingText,
       actionText: this.actionText,
       action: this.action,
+      actionHref: this.actionHref,
+      secondaryActionText: this.secondaryActionText,
+      secondaryAction: this.secondaryAction,
       closable: this.closable,
       closeLabel: this.closeLabel,
       duration: this.duration,

@@ -45,7 +45,10 @@ test('the image field takes the field as the other controls do', () => {
   assert.match(element, /aria-label=\$\{field\.label \|\| field\.key \|\| ''\}/u);
   assert.doesNotMatch(element, /(?<!aria-)label=/u);
   assert.match(element, /\?required=\$\{Boolean\(field\.required\)\}/u);
-  assert.match(element, /\?disabled=\$\{field\.readonly === true\}/u);
+  // A read-only record field is read-only, not disabled (image field study
+  // IF-13): it is shown with the read-only line and still submits.
+  assert.match(element, /\?readonly=\$\{field\.readonly === true\}/u);
+  assert.doesNotMatch(element, /\?disabled=/u);
   // The accept filter and the quiet line under the field are the host's.
   assert.match(element, /accept=\$\{field\.accept \? String\(field\.accept\) : nothing\}/u);
   assert.match(element, /hint=\$\{field\.uploadSupportingText \|\| nothing\}/u);

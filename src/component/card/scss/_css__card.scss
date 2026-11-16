@@ -12,16 +12,26 @@
 // and drops the surface, for a card inside a grid that needs no frame.
 // content.card renders with it.
 
-// A heading inside a card is the card's title at every width: 16 on 22,
-// semibold -- the prototype's card title, the same on the desktop and at 380.
-// The fixed steps of the size ladder (b6, c1), not the text ramp, which steps
-// down to 14 on a phone. In the utilities layer, where the headers sheet
-// sets the bare h1..h6 sizes it replaces, and a class above them whatever
-// order the sheets load in; the card's own variables are the way to change it.
+// A heading inside a card is the card's title, whatever its level (R082,
+// C19): the heading step of the text ladder, semibold -- 16 on a desktop,
+// 14 on a phone, the size of sf-list-attention's and sf-progress-run's
+// titles -- on the card title line of the title ladder (C89): 24 on a
+// desktop, 20 on a phone, the line of the text under it (rung 2 gave 18 on a
+// phone, tighter than the description below the title).
+// Headings do not follow density (C44): the size is the heading-6 step,
+// which the compact block of the density generator holds at its normal
+// value, and title lines never move, so a card title is the same in a
+// compact region (on <html> or on a container) as outside one. The text
+// step itself (--sf-text-size-1, --sf-text-height-1) moves in compact. It
+// was the fixed b6 on c1 (16 on 22 at every width): a line off the ladder
+// that did not follow the phone. In the utilities layer, where the headers
+// sheet sets the bare h1..h6 sizes it replaces, and a class above them
+// whatever order the sheets load in; the card's own variables are the way
+// to change it.
 @layer sf.utilities {
   .sf-card > :is(h1, h2, h3, h4, h5, h6) {
-    font-size: var(--sf-card-title-size, var(--sf-b6));
-    line-height: var(--sf-c1);
+    font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
+    line-height: var(--sf-title--height-card);
     font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
   }
 }
@@ -45,6 +55,11 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
 
 @layer sf.components {
   .sf-card {
+    // The card's corner, read by what stands at its edge (a picture as the
+    // first block) and set again for a card in a card (C173 (5)). Private:
+    // --sf-card-radius is the page's.
+    --sf-card--radius: var(--sf-card-radius, var(--sf-radius--surface));
+
     display: flex;
     flex-direction: column;
     gap: var(--sf-card-gap, var(--sf-content--space-text));
@@ -60,7 +75,7 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     // the page in the dark (it was the page's own colour there).
     background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card)));
     border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
-    border-radius: var(--sf-card-radius, var(--sf-radius--surface));
+    border-radius: var(--sf-card--radius);
     // At rest a card is the flat place (C20): no shadow, its edge is the line.
     box-shadow: var(--sf-shadow-flat);
     overflow-wrap: break-word;
@@ -93,6 +108,70 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
   // the edge stays --sf-outline-variant, the fill is the place's.
   :is(#{$sf-card-above-card}) .sf-card:not(.sf-card--plain) {
     background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
+  }
+
+  // A rounded block inside a card -- a card in a card, a figure's picture --
+  // takes the nested corner (C173 (5)): the card's corner less its inset,
+  // never under 4 -- max(var(--sf-a4), calc(<host corner> - <inset>)). The
+  // card's corner (8) is under its inset (20, 16 on a phone and compact), so
+  // it is 4 at every width; it was the card's own 8, too round inside the
+  // frame. A plain card has no frame and no inset, so what it holds keeps its
+  // own corner. The card's and the figure's own variables still win.
+  :where(.sf-card:not(.sf-card--plain)) .sf-card:not(.sf-card--plain) {
+    --sf-card--radius: var(--sf-card-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+  }
+
+  // The figure's picture and a caption laid over it take the same corner;
+  // a page's --sf-figure-radius still wins (the Framework sets no public
+  // variable, it reads it).
+  :where(.sf-card:not(.sf-card--plain)) .sf-figure > .sf-figure-media {
+    border-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+  }
+
+  :where(.sf-card:not(.sf-card--plain)) .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media + .sf-figure-caption {
+    border-end-start-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+    border-end-end-radius: var(--sf-figure-radius, max(var(--sf-a4), calc(var(--sf-radius--surface) - var(--sf-space-2))));
+  }
+
+  // A picture as the card's first block (owner decision C188 (2)): an
+  // sf-figure goes to the card's edge -- the card's own inset taken back
+  // above and beside it -- with the card's top corners (its corner less its
+  // edge), the lower corners square. Its caption keeps the card's inset. The
+  // ratios are the figure's own list (C188 (6)): 1:1, 4:3, 3:2, 16:9, 21:9
+  // or the picture's own (no ratio class). The side inset is taken back at
+  // its full step: a narrow card, whose inset is 8 % of its column, clips
+  // the rest at its edge.
+  .sf-card:not(.sf-card--plain):has(> .sf-figure:first-child) {
+    overflow: clip;
+  }
+
+  .sf-card:not(.sf-card--plain) > .sf-figure:first-child {
+    margin-block-start: calc(-1 * var(--sf-card-padding-block, var(--sf-space-2)));
+    margin-inline: calc(-1 * var(--sf-card-padding-inline, var(--sf-space-2)));
+  }
+
+  .sf-card:not(.sf-card--plain) > .sf-figure:first-child > .sf-figure-media {
+    border-start-start-radius: calc(var(--sf-card--radius) - var(--sf-card-border-width, var(--sf-px)));
+    border-start-end-radius: calc(var(--sf-card--radius) - var(--sf-card-border-width, var(--sf-px)));
+    border-end-start-radius: var(--sf-0);
+    border-end-end-radius: var(--sf-0);
+  }
+
+  .sf-card:not(.sf-card--plain) > .sf-figure:first-child:not(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+    padding-inline: var(--sf-card-padding-inline, var(--sf-space-2));
+  }
+
+  .sf-card:not(.sf-card--plain) > .sf-figure:first-child:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-media + .sf-figure-caption {
+    border-end-start-radius: var(--sf-0);
+    border-end-end-radius: var(--sf-0);
+  }
+
+  // The actions row (owner decision C188 (1)): the core's .sf-actions as the
+  // card's last block -- its buttons 8 apart (4 compact), the main one first
+  // -- stands at the card's foot, so the rows of cards of one height in a
+  // grid line up. There is no separate footer or subtitle part.
+  .sf-card > .sf-actions:last-child {
+    margin-block-start: auto;
   }
 
   .sf-card--plain {

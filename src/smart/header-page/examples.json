@@ -5,7 +5,6 @@
       "title": "Каталог решений",
       "settings": {
         "heading": "Каталог решений",
-        "count": "448",
         "star": false
       },
       "expect": {
@@ -15,7 +14,6 @@
       "studio": {
         "props": {
           "heading": "Каталог решений",
-          "count": "448",
           "star": false
         },
         "scenario": {}
@@ -26,7 +24,6 @@
       "title": "Страница в избранном",
       "settings": {
         "heading": "Заказы",
-        "count": "~1 200",
         "star": true
       },
       "expect": {
@@ -46,11 +43,10 @@
     },
     {
       "name": "path-and-action",
-      "title": "Путь и главное действие",
-      "children": "<sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button>",
+      "title": "Путь, действия и главное последним",
+      "children": "<sf-breadcrumbs slot=\"path\"><sf-breadcrumbs-item href=\"/\">simai.ru</sf-breadcrumbs-item><sf-breadcrumbs-item href=\"/data\">Данные</sf-breadcrumbs-item></sf-breadcrumbs><sf-button slot=\"actions\" appearance=\"outline\" icon-start=\"download\" text=\"Экспорт\"></sf-button><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button>",
       "settings": {
         "heading": "Каталог решений",
-        "count": "448",
         "star": false
       },
       "expect": {
@@ -66,6 +62,43 @@
       "expect": {
         "heading": "Настройки"
       }
+    },
+    {
+      "name": "tabs",
+      "title": "Вкладки замыкают шапку",
+      "first-paint": {
+        "max-bytes": 12288,
+        "why": "the header ends with the page's tabs (C161 (5)): the tab strip with its three tabs prints under the line, so the header holds its full height and the line of the tabs stays its edge when the code arrives"
+      },
+      "children": "<sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button><sf-tabs slot=\"tabs\" type=\"underline\" items='[{\"id\":\"all\",\"label\":\"Все\",\"current\":true},{\"id\":\"pub\",\"label\":\"Опубликованные\"},{\"id\":\"draft\",\"label\":\"Черновики\"}]'></sf-tabs>",
+      "settings": {
+        "heading": "Каталог решений"
+      },
+      "expect": {
+        "heading": "Каталог решений"
+      }
+    },
+    {
+      "name": "back",
+      "title": "Голова страницы приложения с «назад»",
+      "children": "<sf-button-icon slot=\"start\" icon=\"arrow_back\" appearance=\"ghost\" scheme=\"on-surface\" aria-label=\"К разговорам\"></sf-button-icon><sf-button slot=\"actions\" appearance=\"outline\" icon-start=\"group\" text=\"Участники\"></sf-button>",
+      "settings": {
+        "heading": "Отпуск и перенос"
+      },
+      "expect": {
+        "heading": "Отпуск и перенос"
+      }
+    },
+    {
+      "name": "count",
+      "title": "Число записей на странице без подвала таблицы",
+      "settings": {
+        "heading": "Папка «Договоры»",
+        "count": "12"
+      },
+      "expect": {
+        "heading": "Папка «Договоры»"
+      }
     }
   ],
   "pages": [
@@ -80,6 +113,8 @@
           "  <sf-header-page id=\"h-on\" heading=\"Заказы\" star></sf-header-page>",
           "  <sf-header-page id=\"h-none\" heading=\"Настройки\" level=\"install\"></sf-header-page>",
           "  <div lang=\"en\"><sf-header-page id=\"h-en\" heading=\"Orders\" star=\"false\" level=\"install\"></sf-header-page></div>",
+          "  <sf-header-page id=\"h-order\" heading=\"Заказы\"><sf-button slot=\"actions\" icon-start=\"add\" text=\"Создать\"></sf-button><sf-button slot=\"actions\" appearance=\"outline\" text=\"Импорт\"></sf-button></sf-header-page>",
+          "  <sf-header-page id=\"h-tabs\" heading=\"Каталог\"><sf-tabs slot=\"tabs\" type=\"underline\" items='[{\"id\":\"all\",\"label\":\"Все\",\"current\":true}]'></sf-tabs></sf-header-page>",
           "</main>"
         ]
       },
@@ -193,6 +228,26 @@
             },
             {
               "check": "getComputedStyle(document.querySelector('#h .sf-page-header-line')).columnGap === '17px' && getComputedStyle(document.querySelector('#h h1')).color === 'rgb(1, 2, 3)'"
+            }
+          ]
+        },
+        {
+          "id": "p7-main-last",
+          "title": "the header places the main (filled) action last, the outlined one before it (C161 (3))",
+          "covers": "slots.actions",
+          "steps": [
+            {
+              "check": "(() => { const row = document.querySelector('#h-order .sf-page-header-actions'); const texts = [...row.querySelectorAll(':scope > sf-button')].map((b) => b.getAttribute('text')); return texts.join(',') === 'Импорт,Создать'; })()"
+            }
+          ]
+        },
+        {
+          "id": "p8-tabs-and-sticky",
+          "title": "the tabs slot ends the drawn header; sticky is off by default (C161 (5), (7))",
+          "covers": "slots.tabs, settings.sticky",
+          "steps": [
+            {
+              "check": "(() => { const hd = document.querySelector('#h-tabs > .sf-page-header'); return hd.lastElementChild.classList.contains('sf-page-header-tabs') && !!hd.querySelector('.sf-page-header-tabs sf-tabs') && document.querySelector('#h-tabs').sticky === false && getComputedStyle(hd).position === 'static'; })()"
             }
           ]
         }

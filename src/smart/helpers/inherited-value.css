@@ -4,10 +4,10 @@
      control that opts in imports this sheet, so the rules are the same
      everywhere the state is drawn.
 
-     Both sit one step down the ladder from the field and inside its box: the
-     slot's end inset is the space between the field's control height and the
-     button's, halved, less the field's hairline -- so the button stands with the
-     same gap above, below and after it. */
+     The marker sits one step down the ladder from the field and inside its
+     box: the slot's end inset is the space between the field's control height
+     and the step below, halved, less the field's hairline. The reset is the
+     field's own action (owner decision C123, below), not a step-down button. */
   .sf-field-inherited-slot {
     flex: none;
     gap: var(--sf-space-1\/4);
@@ -16,16 +16,6 @@
 
   .sf-field-inherited-slot--size-1\/2 {
     --sf-field-inherited-slot--inset: calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px));
-  }
-  /* At 1/2 the reset is a 1/3 icon button, whose padding is the 1/3 control
-     tightness; that grew with the 1/3 control (C27), the reset must not. It is
-     an inner part of the field: the icon ladder (24 = --sf-icon-size-3) with
-     the 1/4 space around its glyph, as the inset above reckons. */
-  .sf-field-inherited-slot--size-1\/2 > .sf-field-reset {
-    --sf-icon-button--padding-top: var(--sf-space-1\/4);
-    --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
-    --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
-    --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
   }
   .sf-field-inherited-slot--size-1 {
     --sf-field-inherited-slot--inset: calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px));
@@ -54,15 +44,36 @@
     line-height: var(--sf-text-height-1);
   }
 
-  .sf-field-inherited-slot > .sf-field-reset {
-    flex: none;
-    margin-inline-end: var(--sf-field-inherited-slot--inset, 0px);
+  /* The reset (owner decision C123, variant A; R214; prototype
+     prototypes/field-icon-actions.html): the field layer's .sf-field-action
+     (component.inputs, inputs/scss/field-action.scss), which every field that
+     draws the slot loads -- a glyph without a plate in any state,
+     on-surface-variant at rest, on-surface under the pointer and on a press,
+     the keyboard ring round the glyph, an invisible hit area the field's
+     inner height (never under 24) and the glyph plus half the inset wide. The
+     glyph is the field's leading-icon size, the field's text line. Each field
+     says its step through --sf-field-action--glyph, --height and --inset: sf-input,
+     sf-dropdown and sf-input-color in their own sheets, the three whose slot
+     stands outside a field box below. In a field box the value keeps half an
+     inset to the glyph, the next glyph (the clear, the chevron) half an inset
+     after it, and the last glyph ends on the field's inset (C123 (6)). The
+     slot holds either the marker or the reset, never both. */
+  .sf-field-inherited-slot:has(> .sf-field-action:not([hidden])) {
+    gap: 0;
   }
 
-  /* sf-input: the slot is the last thing in the field before any end text. It
-     takes the field's end padding back, so the button's gap after it is the
-     same as above and below; the marker keeps that padding as its own, so its
-     words end where the field's text would. */
+  /* Another action right after the slot (sf-dropdown's chevron, sf-input's
+     clear) stands half an inset from glyph to glyph, and the value keeps half
+     an inset to the reset's glyph, at every step: the field layer's
+     --sf-field-action--pair-space and --sf-field-action--value-space
+     (component.inputs, field-action.scss), which take the 24 floor of a 1/3
+     field, and of a 1/2 field in the compact density or on a phone, into
+     account for every action of every field. */
+
+  /* sf-input: the slot is the last thing in the field before any end text.
+     While it holds the marker it takes the field's end padding back and the
+     marker keeps that padding as its own, so its words end where the field's
+     text would. */
   .sf-input-field > .sf-field-inherited-slot {
     align-self: center;
     margin-inline-end: calc(-1 * var(--sf-input-field--padding-inline-end, 0px));
@@ -71,12 +82,30 @@
     padding-inline-end: var(--sf-input-field--padding-inline-end, 0px);
   }
 
+  /* While it holds the reset, the field stands on its plain inset (C77) as
+     with sf-input's own actions, and the value keeps a quarter inset of its
+     own before the quarter the hit area stands out past the glyph: half an
+     inset in all. The field-action rules give the last glyph's quarter back,
+     so it ends on the inset. */
+  .sf-input-field > .sf-field-inherited-slot:has(> .sf-field-action:not([hidden])) {
+    align-self: center;
+    margin-inline-end: 0;
+  }
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field:has(> .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
+  }
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field > input:has(+ .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
+    --sf-input-input--padding-inline-end: var(--sf-field-action--value-space);
+  }
+
   /* sf-dropdown: the chevron is laid over the field's end, in room the text
      keeps for it. With a slot it joins the row instead, after the slot, so
-     neither sits under the other at any width; the text stops at the slot. Its
-     glyph keeps the axis it had (the button's own padding is given back at the
-     end), and the slot and the chevron reach into the field's block padding,
-     so the field keeps its height. */
+     neither sits under the other at any width; the text stops at the slot.
+     The chevron is the field's action (C123 (3)): in the row it still gives
+     back the quarter inset its hit area stands out past the glyph, so its
+     glyph keeps the axis it had, on the field's inset; the slot and the
+     chevron reach into the field's block padding, so the field keeps its
+     height. */
   .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > input {
     --sf-dropdown-input--padding-inline-end: 0px;
     min-inline-size: 0;
@@ -87,36 +116,29 @@
     margin-block: calc(-1 * var(--sf-dropdown-field--padding-top, 0px)) calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
     margin-inline-end: calc(-1 * var(--sf-icon-button--padding-inline-end, 0px));
   }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button.sf-field-action:last-child {
+    margin-inline-end: calc((var(--sf-field-action--glyph-size) - var(--sf-field-action--hit-inline)) / 2);
+  }
   .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot {
     margin-block: calc(-1 * var(--sf-dropdown-field--padding-top, 0px)) calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
   }
   .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-inherited {
     padding-inline-end: var(--sf-space-1\/4);
   }
-  /* Every icon button in a dropdown is given a tight padding of its own -- the
-     chevron's and the tags' -- which made the reset smaller than its step. It
-     takes its step's padding back. */
-  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
-    margin-inline-end: 0;
+  /* While the slot holds the reset, the reset and the chevron are two
+     actions side by side: no field gap between them, half an inset from glyph
+     to glyph, and the value a quarter inset of its own before the reset's hit
+     area (half an inset to its glyph). */
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
+    --sf-dropdown-field--gap: calc(var(--sf-px) * 0);
   }
-  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
-    --sf-field-reset--padding: var(--sf-space-1\/4);
-  }
-  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
-    --sf-field-reset--padding: var(--sf-ui-1\/2--space-y-tightness-default);
-  }
-  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
-    --sf-field-reset--padding: var(--sf-ui-1--space-y-tightness-default);
-  }
-  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-reset {
-    --sf-icon-button--padding-top: var(--sf-field-reset--padding);
-    --sf-icon-button--padding-bottom: var(--sf-field-reset--padding);
-    --sf-icon-button--padding-inline-start: var(--sf-field-reset--padding);
-    --sf-icon-button--padding-inline-end: var(--sf-field-reset--padding);
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot > .sf-field-action:not([hidden])) > input:not([type="hidden"]) {
+    --sf-dropdown-input--padding-inline-end: var(--sf-field-action--value-space);
   }
 
   /* sf-input-textarea and sf-switch: the slot is its own row or its own cell, so it
-     needs no inset into a box. */
+     needs no inset into a box; sf-input-quantity's stands after the box, on
+     its row (C53, F3). */
   .sf-textarea-inherited,
   .sf-switch-inherited,
   .sf-color-inherited-slot {
@@ -124,6 +146,71 @@
   }
   .sf-textarea-inherited {
     justify-content: flex-end;
+  }
+
+  /* The reset outside a field box (C123 (1), (2)): sf-input-textarea's on its
+     own row under the box, sf-switch's after the label, sf-input-quantity's
+     after the box on its row. The glyph is the field's text line, as in a
+     box. Beside the quantity box the hit area is the box's inner height; under
+     the textarea and beside the switch, where no box gives a height, it is a
+     square of the glyph plus half the inset -- never under 24 either way. The
+     inset is the field's own (the textarea's) or C77's step (the quantity's
+     and the switch's: 12 at 1/3 and 1/2, 16 at 1, 20 / 24 at 2 / 3 on a
+     desktop, 12 on a phone; field-ladder.inset). Under the textarea the glyph
+     ends on the box's inset, under the end of its text. */
+  .sf-textarea-inherited {
+    --sf-field-action--inset: var(--sf-textarea--inset, var(--sf-space-1));
+  }
+  .sf-switch-inherited,
+  .sf-quantity-inherited {
+    --sf-field-action--inset: var(--sf-space-1);
+  }
+  :is(.sf-switch-inherited, .sf-quantity-inherited):is(.sf-field-inherited-slot--size-1\/3, .sf-field-inherited-slot--size-1\/2) {
+    --sf-field-action--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+  }
+  @media (min-width: 60rem) {
+    :is(.sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-2 {
+      --sf-field-action--inset: var(--sf-space-2);
+    }
+    :is(.sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-3 {
+      --sf-field-action--inset: var(--sf-space-3);
+    }
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-1\/3 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/3);
+    --sf-field-action--height: var(--sf-ui-1\/3--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-1\/2 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/2);
+    --sf-field-action--height: var(--sf-ui-1\/2--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-1 {
+    --sf-field-action--glyph: var(--sf-text-height-1);
+    --sf-field-action--height: var(--sf-ui-1--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-2 {
+    --sf-field-action--glyph: var(--sf-text-height-2);
+    --sf-field-action--height: var(--sf-ui-2--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-3 {
+    --sf-field-action--glyph: var(--sf-text-height-3);
+    --sf-field-action--height: var(--sf-ui-3--control-height);
+  }
+  .sf-textarea-inherited > .sf-field-action,
+  .sf-switch-inherited > .sf-field-action {
+    --sf-field-action--hit-block: var(--sf-field-action--hit-inline);
+  }
+  /* sf-input-quantity paints every glyph in it the quiet ink at the stepper's
+     size (.sf-quantity .sf-icon); its reset's glyph takes the field action's
+     ink and size back, so it turns to the text's ink under the pointer. */
+  .sf-quantity .sf-quantity-row > .sf-quantity-inherited.sf-field-inherited-slot > .sf-field-action.sf-field-reset .sf-icon {
+    --sf-icon--color: var(--sf-field-action--ink);
+    --sf-icon--font-size: var(--sf-field-action--glyph-size);
+    --sf-icon--height: var(--sf-field-action--glyph-size);
+    --sf-icon--width: var(--sf-field-action--glyph-size);
+  }
+  .sf-textarea-inherited > .sf-field-action {
+    margin-inline-end: calc(var(--sf-field-action--inset) - (var(--sf-field-action--hit-inline) - var(--sf-field-action--glyph-size)) / 2);
   }
 
   /* A switch drawn in its inherited state says so by its ink: the knob stands

@@ -2,7 +2,8 @@
 // Usage: node this-file /absolute/path/to/output
 //
 // scheme="on-surface-variant" on sf-button-icon, on the built bytes: the
-// on-surface family one step quieter. The glyph takes --sf-on-surface-variant
+// on-surface family one step quieter (on-surface's own glyph is the icon role,
+// --sf-on-surface-icon, C107). The glyph takes --sf-on-surface-variant
 // wherever the glyph is the control -- outline and ghost -- and a
 // close control's cross with it; a tonal control takes its container's quieter
 // role, and a filled one keeps on-surface's inverse glyph, because on a dark
@@ -35,6 +36,7 @@ const PAGE = `<!doctype html><html lang="ru" class="theme-light"><head><meta cha
      a colour and not with the light-dark() pair a variable declares. -->
 <span id="role-variant" style="color: var(--sf-on-surface-variant)"></span>
 <span id="role-surface" style="color: var(--sf-on-surface)"></span>
+<span id="role-icon" style="color: var(--sf-on-surface-icon)"></span>
 <span id="role-disable" style="color: var(--sf-on-disable)"></span>
 </body></html>`;
 
@@ -82,13 +84,15 @@ try {
     const role = (name) => colour(document.querySelector(`#role-${name}`));
     return {grid, cross: fill('#cross .sf-close-icon'), loudCross: fill('#loud-cross .sf-close-icon'),
       off: colour(document.querySelector('#off .sf-icon')),
-      roles: {variant: role('variant'), surface: role('surface'), disable: role('disable')}};
+      roles: {variant: role('variant'), surface: role('surface'), icon: role('icon'), disable: role('disable')}};
   });
   const {grid, roles} = seen;
   for (const appearance of ['outline', 'ghost']) {
     const quiet = grid[`on-surface-variant/${appearance}`];
     const loud = grid[`on-surface/${appearance}`];
-    expect(`${appearance}: the glyph is the quieter role`, quiet.glyph === roles.variant && loud.glyph === roles.surface, {quiet, loud, roles});
+    // An icon without text on on-surface is the icon role (C107 (3)), half a
+    // step lighter than the label ink; the quiet scheme stays quieter still.
+    expect(`${appearance}: the glyph is the quieter role`, quiet.glyph === roles.variant && loud.glyph === roles.icon && roles.icon !== roles.variant, {quiet, loud, roles});
     expect(`${appearance}: the fill and the box are on-surface's`, quiet.fill === loud.fill && quiet.box === loud.box, {quiet, loud});
   }
   expect('tonal: the container has its own quieter role', grid['on-surface-variant/tonal'].glyph !== grid['on-surface/tonal'].glyph

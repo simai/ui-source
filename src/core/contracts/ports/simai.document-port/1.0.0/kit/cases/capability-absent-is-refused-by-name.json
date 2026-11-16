@@ -1,0 +1,144 @@
+{
+  "id": "capability-absent-is-refused-by-name",
+  "intent": "history.list",
+  "capability": "history",
+  "summary": "An intent whose capability the host does not announce is refused capability-not-provided, so the editor hides the way to it.",
+  "given": {
+    "capabilities": [],
+    "target": {
+      "level": "page",
+      "ref": "page:/about/team/",
+      "parents": [
+        {
+          "level": "section",
+          "ref": "section:/about/"
+        },
+        {
+          "level": "site",
+          "ref": "site:s1"
+        }
+      ]
+    },
+    "languages": [
+      "ru",
+      "en"
+    ],
+    "revision": "7",
+    "at": "2026-11-11T09:00:00Z",
+    "values": {
+      "ru": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "ru",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Команда"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "en": {
+        "schema": "simai.composition.document",
+        "schema_version": 1,
+        "id": "page",
+        "profile": "ui-layout",
+        "locale": "en",
+        "root": {
+          "id": "root",
+          "type": "layout.page",
+          "slots": {
+            "default": [
+              {
+                "id": "shell",
+                "type": "layout.regions",
+                "slots": {
+                  "regions": [
+                    {
+                      "id": "r-main",
+                      "type": "layout.region",
+                      "props": {
+                        "name": "main",
+                        "landmark": "main"
+                      },
+                      "slots": {
+                        "default": [
+                          {
+                            "id": "main-1",
+                            "type": "content.paragraph",
+                            "data": {
+                              "content": [
+                                {
+                                  "text": "Team"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "limits": {
+      "max_nodes": 200,
+      "max_bytes": 262144
+    }
+  },
+  "when": {
+    "intent": "history.list",
+    "payload": {}
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "expect": [
+      {
+        "path": "reason",
+        "equals": "capability-not-provided"
+      }
+    ],
+    "note": "given.capabilities is empty: the case is run on every host, whatever it announces."
+  }
+}

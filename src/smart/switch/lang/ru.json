@@ -2,7 +2,8 @@
   "title": "Переключатель",
   "runtime": {
     "off": "выключено",
-    "on": "включено"
+    "on": "включено",
+    "help": "Подробнее: {label}"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

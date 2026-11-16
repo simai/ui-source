@@ -117,6 +117,81 @@
           ]
         }
       }
+    },
+    {
+      "name": "summary",
+      "title": "Фильтры с итогом в заголовке",
+      "settings": {
+        "size": "1",
+        "items": [
+          {
+            "id": "brand",
+            "title": "Бренд",
+            "summary": "Выбрано 2",
+            "content": "Arkos, Belis",
+            "open": true
+          },
+          {
+            "id": "price",
+            "title": "Цена",
+            "summary": "до 20 000 ₽",
+            "content": "От 0 до 20 000 ₽"
+          },
+          {
+            "id": "delivery",
+            "title": "Доставка",
+            "summary": "Курьер",
+            "content": "Курьер, самовывоз"
+          }
+        ]
+      },
+      "expect": {
+        "values": {
+          "expanded": [
+            "brand"
+          ]
+        }
+      }
+    },
+    {
+      "name": "expand-all",
+      "title": "Вопросы с кнопкой «Развернуть все»",
+      "settings": {
+        "expand-all": true,
+        "link": true,
+        "items": [
+          {
+            "id": "pay",
+            "title": "Как оплатить заказ?",
+            "content": "Картой на сайте, по счёту или курьеру."
+          },
+          {
+            "id": "time",
+            "title": "Сколько ехать заказу?",
+            "content": "Два дня по Москве, до недели по России."
+          },
+          {
+            "id": "return",
+            "title": "Как вернуть товар?",
+            "content": "В течение 14 дней в любом пункте выдачи."
+          },
+          {
+            "id": "warranty",
+            "title": "Есть ли гарантия?",
+            "content": "Год от производителя."
+          },
+          {
+            "id": "change",
+            "title": "Можно ли изменить заказ?",
+            "content": "Пока он не передан курьеру."
+          }
+        ]
+      },
+      "expect": {
+        "values": {
+          "expanded": []
+        }
+      }
     }
   ],
   "pages": [

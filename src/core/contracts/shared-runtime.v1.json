@@ -200,7 +200,8 @@
         "pageLanguage",
         "pageLocale",
         "pageText",
-        "pageWord"
+        "pageWord",
+        "refreshLanguage"
       ]
     },
     "position": {

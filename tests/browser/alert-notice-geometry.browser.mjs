@@ -8,16 +8,22 @@
 //
 //   - the actions of an sf-alert are unsized low buttons: 32 on desktop, 28
 //     compact and on a phone; their label is the notice's text size; the
-//     first is tonal primary, the second ghost on-surface;
+//     first is tonal on-surface (C110 variant E), the second ghost on-surface;
 //   - the close is sf-button-icon kind="close" height="low": 32 / 28 / 28,
 //     centred on the first line, its cross on the inline padding;
 //   - the title and its text are one block (0); text to the action plate is
 //     --sf-space-1/2 (12 / 8 / 8); two actions stand --sf-space-1/3 apart;
-//   - the inline padding is one --sf-space-1 on both sides (16 / 12 / 12): the
-//     status icon's start edge, an alert without an icon its text, and the
-//     close's cross all stand on it; the block padding is --sf-space-1/2;
+//   - the inline inset is one --sf-space-1 on both sides (16 / 12 / 12) with
+//     the 1 px border inside it (C105 H4, the C77 edge: the padding is the
+//     step less the border): the status icon's start edge, an alert without an
+//     icon its text, and the close's cross all stand 16 / 12 / 12 from the
+//     outer edge; the block padding is --sf-space-1/2;
 //   - the action plate starts at the text edge; the icon is the line's size
 //     (24 / 20 / 20) and centred on the first line;
+//   - with the actions under the text, the space under the last button equals
+//     the space above the status icon's ink, within 1 px (C193, refining
+//     C114 (5)): the ink as the decision measured it on the prototype, the
+//     icon box top + 1/8 of the box;
 //   - a one-line alert is 56 / 44 / 44 plus its border;
 //   - the class alert written as the docs write it draws the same.
 //
@@ -48,7 +54,7 @@ const block = (id) => `
     <div class="sf-alert-wrap flex flex-col flex-1">
       <div class="sf-alert-content flex flex-col flex-1"><div class="sf-alert-text">Сессия закончится</div><div class="sf-alert-supporting-text">Несохранённые изменения пропадут.</div></div>
       <div class="sf-alert-buttons flex flex-wrap items-center">
-        <button type="button" class="sf-button sf-button--tonal sf-button--primary sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="a"><span class="sf-button-text-container">Продлить</span></button>
+        <button type="button" class="sf-button sf-button--tonal sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="a"><span class="sf-button-text-container">Продлить</span></button>
         <button type="button" class="sf-button sf-button--ghost sf-button--on-surface sf-button--size-1 sf-button--height-low flex items-cross-center" data-action="b"><span class="sf-button-text-container">Выйти</span></button>
       </div>
     </div>
@@ -116,12 +122,14 @@ const MEASURE = () => {
     const result = {
       height: r(noticeBox.height), inner: r(inner.bottom - inner.top), border: r(parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)),
       padTop: r(parseFloat(style.paddingTop)), padStart: r(parseFloat(style.paddingInlineStart)), padEnd: r(parseFloat(style.paddingInlineEnd)),
+      borderStart: r(parseFloat(style.borderLeftWidth)), borderEnd: r(parseFloat(style.borderRightWidth)),
       textSize: r(parseFloat(getComputedStyle(title).fontSize)), line: r(line),
       textStart: r(titleBox.left - inner.left),
     };
     if (icon) {
       const b = box(icon);
-      Object.assign(result, {icon: r(b.height), iconStart: r(b.left - inner.left), iconToText: r(titleBox.left - b.right), iconCentre: r(centre(b) - firstLine)});
+      Object.assign(result, {icon: r(b.height), iconStart: r(b.left - inner.left), iconToText: r(titleBox.left - b.right), iconCentre: r(centre(b) - firstLine),
+        aboveInk: r(b.top - inner.top + b.height / 8)});
     }
     if (close) {
       const b = box(close);
@@ -132,8 +140,9 @@ const MEASURE = () => {
     if (actions.length) {
       const a = box(actions[0]);
       const last = text ? box(text) : titleBox;
+      const lowest = Math.max(...actions.map((one) => box(one).bottom));
       Object.assign(result, {action: r(a.height), actionLabel: r(parseFloat(getComputedStyle(actions[0].querySelector('.sf-button-text-container') ?? actions[0]).fontSize)),
-        textToAction: r(a.top - last.bottom), actionEdge: r(a.left - titleBox.left), actionToBottom: r(inner.bottom - a.bottom - parseFloat(style.paddingBottom))});
+        textToAction: r(a.top - last.bottom), actionEdge: r(a.left - titleBox.left), underActions: r(inner.bottom - lowest)});
       // ghost is the look without a fill (C15, CB-01 d584b340); sf-button--link
       // is its former name, written beside it until 2027-01-01.
       result.looks = actions.map((one) => ['tonal', 'ghost', 'link', 'default', 'outline'].find((look) => one.classList.contains(`sf-button--${look}`))
@@ -167,6 +176,7 @@ const NAMES = ['stack', 'pair', 'line', 'plain', 'outlined', 'class'];
 const failures = [];
 const report = {};
 const near = (a, b) => typeof a === 'number' && Math.abs(a - b) <= 0.5;
+const r2 = (value) => Math.round(value * 100) / 100;
 const browser = await chromium.launch();
 try {
   for (const [width, label] of [[1440, 'desktop'], [390, 'phone']]) {
@@ -208,20 +218,21 @@ try {
         for (const name of NAMES) {
           const t = at[name];
           if (!t) { failures.push(`${key} ${zone}: ${name} not drawn`); continue; }
-          check(`${name} inline padding start`, t.padStart, want.padX);
-          check(`${name} inline padding end`, t.padEnd, want.padX);
+          // C105 H4: the inset is the step with the border inside it.
+          check(`${name} inline inset start (padding + border, C105 H4)`, r2(t.padStart + t.borderStart), want.padX);
+          check(`${name} inline inset end (padding + border, C105 H4)`, r2(t.padEnd + t.borderEnd), want.padX);
           check(`${name} block padding`, t.padTop, want.padY);
           check(`${name} close`, t.close, want.close);
           check(`${name} close centre - first line centre`, t.closeCentre, 0);
-          check(`${name} cross end inset`, t.crossEnd, want.padX);
+          check(`${name} cross end inset from the outer edge (C35, C105 H4)`, r2(t.crossEnd + t.borderEnd), want.padX);
           if (t.icon !== undefined) {
             check(`${name} icon`, t.icon, want.icon);
             check(`${name} icon = line`, t.icon, t.line);
-            check(`${name} icon start inset`, t.iconStart, want.padX);
+            check(`${name} icon start inset from the outer edge (C35, C105 H4)`, r2(t.iconStart + t.borderStart), want.padX);
             check(`${name} icon to text`, t.iconToText, want.gap);
             check(`${name} icon centre - first line centre`, t.iconCentre, 0);
           } else {
-            check(`${name} text start (no icon)`, t.textStart, want.padX);
+            check(`${name} text start from the outer edge, no icon (C35, C105 H4)`, r2(t.textStart + t.borderStart), want.padX);
           }
           if (t.titleToText !== undefined) check(`${name} title to text`, t.titleToText, 0);
           if (t.action !== undefined) {
@@ -230,8 +241,9 @@ try {
             check(`${name} action label`, t.actionLabel, want.label);
             check(`${name} text to action plate`, t.textToAction, want.gap);
             check(`${name} action plate - text edge`, t.actionEdge, 0);
-            check(`${name} action to padding`, t.actionToBottom, 0);
-            if (t.looks[0] !== 'tonal/primary') failures.push(`${key} ${zone}: ${name} first action ${t.looks[0]}, expected tonal/primary`);
+            // C193 (refining C114 (5)): under the last button = above the icon ink, within 1 px.
+            if (t.aboveInk !== undefined && Math.abs(t.underActions - t.aboveInk) > 1) failures.push(`${key} ${zone}: ${name} under the last button ${t.underActions}, above the icon ink ${t.aboveInk} (C193: within 1)`);
+            if (t.looks[0] !== 'tonal/on-surface') failures.push(`${key} ${zone}: ${name} first action ${t.looks[0]}, expected tonal/on-surface`);
             if (t.looks[1] !== undefined && t.looks[1] !== 'ghost/on-surface') failures.push(`${key} ${zone}: ${name} second action ${t.looks[1]}, expected ghost/on-surface`);
           }
           if (t.betweenActions !== undefined) check(`${name} between actions`, t.betweenActions, want.between);

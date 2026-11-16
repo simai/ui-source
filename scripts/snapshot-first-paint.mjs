@@ -37,7 +37,7 @@ import {mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync, rmSync}
 import {dirname, join, relative} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {ensureLocalPlaywright} from './playwright-local.mjs';
-import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, fontsReady, sizeProblem, freezeClock} from './first-paint-lib.mjs';
+import {components, assemblies, describe, hostSpec, exampleFiles, serveOutput, head, coreScript, repo, smartRoot, partFolder, assemblyModule, givesLateData, lateGiven, lateHeld, fontsReady, sizeProblem, freezeClock, PAGE_CONTEXT, watchRequests, serializeSettled, settleSheets} from './first-paint-lib.mjs';
 import {renderSkeletonTemplate, renderPartSkeleton} from './first-paint-skeleton.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -54,36 +54,30 @@ const pageScript = readFileSync(join(here, 'first-paint-page.js'), 'utf8');
 
 const pages = new Map([['/first-paint-page.js', pageScript]]);
 const site = await serveOutput(out, {pages});
+// Every snapshot is taken on one clock: sf-time prints the zone it writes in
+// (owner decision C183 (3): «…, Москва (UTC+3)»), so a snapshot taken on a
+// machine elsewhere would differ by its zone. Moscow, as the manifest probes
+// (fix/time-probes-tz).
+const SNAPSHOT_TIME_ZONE = 'Europe/Moscow';
 const browser = await chromium.launch();
 const results = {written: [], stale: [], missing: [], failed: [], tooLarge: [], unchanged: 0, sheetDrift: []};
 
 async function snapshot(component, example) {
   const id = `${component.folder}/${example.name}`;
   const path = `/page/${id}`;
-  const spec = {...hostSpec(component, example), late: component.late};
+  const spec = {...hostSpec(component, example), late: component.late, lateHeld: lateHeld(component, lateGiven(component, example))};
   pages.set(path, `${head({title: id, extra: '<script src="/first-paint-page.js"></script>'})}<body>
 <main id="stage"></main>
 <script>window.__sfFirstPaintBuild(${JSON.stringify(spec).replace(/</g, '\\u003c')});</script>
 ${coreScript}
 </body></html>`);
-  // The sheets this page asks for: the first paint needs every one.
-  const sheets = [];
-  const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
+  const context = await browser.newContext({...PAGE_CONTEXT, timezoneId: SNAPSHOT_TIME_ZONE});
   const page = await context.newPage();
   await freezeClock(page, example);
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  let inflight = 0;
-  let last = Date.now();
-  page.on('request', (request) => {
-    inflight += 1;
-    last = Date.now();
-    const url = new URL(request.url());
-    if (url.pathname.endsWith('.css')) sheets.push(url.pathname);
-  });
-  const settle = () => { inflight -= 1; last = Date.now(); };
-  page.on('requestfinished', settle);
-  page.on('requestfailed', settle);
+  // The sheets this page asks for: the first paint needs every one.
+  const net = watchRequests(page);
   try {
     await page.goto(`${site.origin}${path}`, {waitUntil: 'load'});
     // Drawn; a closed overlay draws nothing until it opens (its first paint
@@ -95,22 +89,8 @@ ${coreScript}
       if (overlay) return host.hasAttribute('data-sf-started') || !host.constructor.manifest;
       return 'isRendered' in host ? host.isRendered === true : true;
     }, component.overlay, {timeout: 20000});
-    // Measured in Inter, never the fallback (first-paint-lib.mjs measuredFonts).
-    await page.evaluate(fontsReady);
-    const quiet = Date.now() + 15000;
-    while ((inflight > 0 || Date.now() - last < 600) && Date.now() < quiet) await new Promise((settle) => setTimeout(settle, 50));
-    // Settled: three snapshots 250 ms apart agree (a measured style, such as
-    // the composition overlay's clip-path, takes a while on a loaded machine).
     const prefix = `sf-${component.folder}-${example.name}`.replace(/[^a-z0-9-]/giu, '-');
-    let html = '';
-    let agreed = 0;
-    for (let tries = 0; tries < 16 && agreed < 2; tries += 1) {
-      await page.evaluate(() => new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle))));
-      const next = await page.evaluate((prefix) => window.__sfFirstPaintSerialize({prefix}), prefix);
-      agreed = next === html ? agreed + 1 : 0;
-      html = next;
-      await page.waitForTimeout(250);
-    }
+    const html = await serializeSettled(page, net, prefix);
     let skeleton = null;
     // A skeleton stands for data the example gives late: an example that
     // gives none of the late settings (a tree of item elements) has none, and
@@ -121,14 +101,8 @@ ${coreScript}
         ? renderSkeletonTemplate(component, example, html)
         : await page.evaluate((prefix) => window.__sfFirstPaintSerialize({skeleton: true, prefix}), prefix);
     }
-    // A sheet the Loader asks for a moment later (a utility its idle scan
-    // finds) belongs to the first paint too: the list is taken once the page
-    // has been idle and then quiet again.
-    const settled = Date.now() + 10000;
-    await page.evaluate(() => new Promise((settle) => requestIdleCallback(() => requestIdleCallback(settle, {timeout: 3000}), {timeout: 3000})));
-    await new Promise((settle) => setTimeout(settle, 400));
-    while ((inflight > 0 || Date.now() - last < 600) && Date.now() < settled) await new Promise((settle) => setTimeout(settle, 50));
-    return {html, skeleton, sheets: [...new Set(sheets)], errors};
+    await settleSheets(page, net);
+    return {html, skeleton, sheets: [...new Set(net.sheets)], errors};
   } finally {
     await context.close();
     pages.delete(path);
@@ -149,7 +123,7 @@ ${coreScript}
 ${assemblyModule(assembly)}
 </body></html>`);
   const sheets = [];
-  const context = await browser.newContext({viewport: {width: 1280, height: 800}, reducedMotion: 'reduce'});
+  const context = await browser.newContext({...PAGE_CONTEXT, timezoneId: SNAPSHOT_TIME_ZONE});
   const page = await context.newPage();
   await freezeClock(page, example);
   const errors = [];

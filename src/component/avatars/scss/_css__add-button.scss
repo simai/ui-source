@@ -1,5 +1,15 @@
 @layer sf.components {
+/* The add button draws its own dashed edge, whatever look the button has
+   (docs precheck AV-04): a ghost button has no border, so dashed alone drew
+   nothing. The button's own border variables carry it, so its padding gives the
+   edge back and the height holds. */
 .sf-add-button .sf-icon-button {
-border-style: dashed;
+  --sf-icon-button--border-top-width: var(--sf-icon-button-border-width, var(--sf-px));
+  --sf-icon-button--border-bottom-width: var(--sf-icon-button-border-width, var(--sf-px));
+  --sf-icon-button--border-inline-start-width: var(--sf-icon-button-border-width, var(--sf-px));
+  --sf-icon-button--border-inline-end-width: var(--sf-icon-button-border-width, var(--sf-px));
+  --sf-icon-button--border-width: var(--sf-icon-button-border-width, var(--sf-px));
+  --sf-icon-button--border-color: var(--sf-icon-button-border-color, var(--sf-outline));
+  border-style: dashed;
 }
 }

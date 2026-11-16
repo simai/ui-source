@@ -27,7 +27,7 @@ function identify(node, owner, local) {
 
 // Shared keyboard/name adapter; selection and rendering remain with each owner.
 export function createDropdownInteraction(root, adapter) {
-  let popup = null, pending = null, frame = null, released = false;
+  let popup = null, pending = null, frame = null, released = false, typed = '', typedAt = 0;
   const assigned = new WeakMap();
   const own = (node, name, value) => {
     const previous = assigned.get(node) || {};
@@ -50,7 +50,43 @@ export function createDropdownInteraction(root, adapter) {
   const available = () => items().filter(e=>!e.hidden&&!e.classList.contains('disabled')&&e.getAttribute('aria-disabled')!=='true'&&e.getAttribute('aria-hidden')!=='true');
   const contains = node => node && (root.contains(node)||adapter.getList()?.contains(node));
   const text = item => item.querySelector('.sf-list-item-container, .sf-avatar-label-group-title, .sf-tag-container')?.textContent?.trim() || item.dataset.value || '';
-  const focus = node => { if(node&&!node.disabled){node.focus({preventScroll:true});node.scrollIntoView({block:'nearest',inline:'nearest'});} };
+  // The focused option is brought into view at once and only as far as it
+  // needs: a smooth page scroll would leave it out of view while the next key
+  // already moves on.
+  const focus = node => { if(node&&!node.disabled){node.focus({preventScroll:true});node.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});} };
+  // PageDown/PageUp move by what the rows' scroll area shows: to the last
+  // option that still fits one viewful away, at least one option.
+  const scroller = node => {
+    for(let e=node?.parentElement;e&&e!==document.body;e=e.parentElement){
+      const y=getComputedStyle(e).overflowY;
+      if((y==='auto'||y==='scroll')&&e.scrollHeight>e.clientHeight)return e;
+    }
+    return null;
+  };
+  const page = (options,index,step) => {
+    const from=options[index],box=scroller(from);
+    if(!from||!box)return step>0?options.length-1:0;
+    const top=from.getBoundingClientRect().top,span=box.clientHeight;
+    let next=Math.max(0,Math.min(options.length-1,index+step));
+    for(let i=next+step;i>=0&&i<options.length;i+=step){
+      const r=options[i].getBoundingClientRect();
+      if((step>0?r.bottom-top:top+from.offsetHeight-r.top)>span)break;
+      next=i;
+    }
+    return next;
+  };
+  // Type-ahead: printable keys typed within half a second form a prefix; the
+  // same letter again walks the options that start with it.
+  const typeahead = (key,option) => {
+    const now=Date.now();
+    typed=now-typedAt>500?key:typed+key;typedAt=now;
+    const options=available(),query=typed.toLocaleLowerCase();
+    const repeat=[...query].every(c=>c===query[0]);
+    const start=Math.max(0,options.indexOf(option));
+    const order=[...options.slice(start+1),...options.slice(0,start+1)];
+    const starts=item=>text(item).toLocaleLowerCase().startsWith(query);
+    return (query.length>1?[options[start],...order].find(starts):null)||order.find(item=>text(item).toLocaleLowerCase().startsWith(repeat?query[0]:query));
+  };
   const resolvePending = () => {
     if (!pending) return;
     if (pending === 'trigger') { pending=null;focus(trigger());return; }
@@ -82,6 +118,11 @@ export function createDropdownInteraction(root, adapter) {
       focus(options[next]);handled=true;
     } else if(option&&inPopup&&['Home','End'].includes(event.key)){
       const options=available();focus(event.key==='Home'?options[0]:options.at(-1));handled=true;
+    } else if(option&&inPopup&&['PageDown','PageUp'].includes(event.key)){
+      const options=available(),index=Math.max(0,options.indexOf(option));
+      focus(options[page(options,index,event.key==='PageUp'?-1:1)]);handled=true;
+    } else if(option&&inPopup&&event.key.length===1&&(event.key!==' '||(typed&&Date.now()-typedAt<=500))){
+      const found=typeahead(event.key,option);if(found)focus(found);handled=true;
     } else if(option&&inPopup&&['Enter',' '].includes(event.key)){
       if(available().includes(option)){
         pending=adapter.isMultiple()?{value:option.dataset.value}:'trigger';

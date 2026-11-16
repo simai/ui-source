@@ -4,9 +4,9 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-loader-container {
-  /* The colour is the current ink unless --sf-loader--color is set on the
-     spinner or any ancestor: inside a button it is the button's ink. The
-     Framework never sets it (simai/ui-source#10; it was primary before). */
+  /* The colour: on-surface-variant on its own (C130 (6), below), the
+     control's ink inside a control; --sf-loader--color on the spinner or any
+     ancestor still sets it (simai/ui-source#10; it was primary before). */
   /* The ring under the arc is the spinner's own ink at 16 % (the fill family
      of the alpha scale), drawn whole: the variable carries the alpha, the
      ring has no opacity of its own (DEV J1/S1, 2026-11-11). It was
@@ -23,7 +23,11 @@
      regular-weight icon, which scales with the box as the icon's does. */
   --sf-loader-stroke-width: var(--sf-spinner-stroke-width, 2);
   --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/2));
-  --sf-loader-text-size: var(--sf-text-size-1);
+  /* The words are small text at every step (owner decision C130 (6)): they
+     name the wait, they are not a heading; they grew with the ring before
+     (20 px at 2, 24 px at 3). */
+  --sf-loader-text-size: var(--sf-text-size-1\/2);
+  --sf-loader-text-line: var(--sf-text-height-1\/2);
   --sf-loader-cycle-duration: calc(var(--sf-duration-slow) * 6);
   --sf-loader-dot-duration: calc(var(--sf-duration-slow) * 3);
   /* The turn of the arc (one a second, linear, simai/ui-source#13), of the
@@ -32,7 +36,13 @@
   --sf-loader-spin-duration: calc(var(--sf-duration-slow) * 4);
   --sf-loader-breath-duration: calc(var(--sf-duration-slow) * 3);
   --sf-loader-comet-duration: calc(var(--sf-duration-slow) * 2);
-  color: var(--sf-spinner-color, var(--sf-loader--color, currentColor));
+  /* A spinner on its own is the place's quiet ink, on-surface-variant (owner
+     decision C130 (6)): quieter than the text beside it, as the «готовится»
+     glyph of C120. A control that draws one (a button, an icon button, a
+     badge, a modal) sets the colour on its own spinner, so a spinner in a
+     button keeps the button's ink. --sf-spinner-color and --sf-loader--color
+     still set it. */
+  color: var(--sf-spinner-color, var(--sf-loader--color, var(--sf-on-surface-variant)));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,45 +54,76 @@
   font-family: var(--sf-text--family);
   font-weight: 400;
   font-size: var(--sf-loader-text-size);
+  line-height: var(--sf-loader-text-line);
   /* The words take the ink of the place, the on-colour of the fill under the
      spinner (DEV J1/S1): on-surface on a page, on-primary on a primary plate.
      --sf-spinner-text-color still sets them apart. */
   color: var(--sf-spinner-text-color, currentColor);
 }
 
+/* Said, not shown (SP-07): label-hidden keeps the words for a screen reader
+   and takes them from the eye. Out of the flow, so the spinner stands alone in
+   its box and the gap to the words goes with them. */
+.sf-loader-container.sf-loader--label-hidden .sf-loader--text {
+  position: absolute;
+  inline-size: var(--sf-a1);
+  block-size: var(--sf-a1);
+  margin: calc(-1 * var(--sf-a1));
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .sf-loader-container.sf-loader--size-1\/3 {
   --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1\/3));
   --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1\/3));
   --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/3));
-  --sf-loader-text-size: var(--sf-text-size-1\/3);
 }
 
 .sf-loader-container.sf-loader--size-1\/2 {
   --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1\/2));
   --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1\/2));
   --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/3));
-  --sf-loader-text-size: var(--sf-text-size-1\/2);
 }
 
 .sf-loader-container.sf-loader--size-1 {
   --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1));
   --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1));
   --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/2));
-  --sf-loader-text-size: var(--sf-text-size-1);
 }
 
 .sf-loader-container.sf-loader--size-2 {
   --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-2));
   --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-2));
   --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1));
-  --sf-loader-text-size: var(--sf-text-size-2);
 }
 
 .sf-loader-container.sf-loader--size-3 {
   --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-3));
   --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-3));
   --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-2));
-  --sf-loader-text-size: var(--sf-text-size-3);
+}
+
+/* The show delay (owner decision C130 (8)): a wait under a second shows
+   nothing, so a spinner appears only after 1 s; a skeleton shows at once. The
+   spinner holds its place and stays hidden (from a screen reader too) while
+   sf-loader-wait runs, then shows. Any sf-spinner, and class markup that
+   writes data-delay; the spinners a control draws in itself (a loading
+   button, a badge, a modal) show at once, they are the control's state.
+   --sf-loader--delay comes from the delay setting (data-delay); 0 shows at
+   once. If a page stops every animation the spinner simply shows at once. */
+sf-spinner > .sf-loader-container,
+.sf-loader-container[data-delay] {
+  animation: sf-loader-wait var(--sf-loader--delay, 1s) step-end;
+}
+
+@keyframes sf-loader-wait {
+  from,
+  to {
+    visibility: hidden;
+  }
 }
 
 /* A spinner drawn in pixels (data-width, data-height, data-stroke-width,

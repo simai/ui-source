@@ -11,12 +11,19 @@
 //     island, so no attribute says how many), a tool before it and a button
 //     after it; neither moves, from the first frame with the row to the last
 //     (the tools before it are what moved in Docara);
-//   - mode menu and search at each size of the ladder (1/3, 1/2, 1, 2, 3):
-//     before the element draws, its box is a square one control of its size
-//     high, and that is the drawn trigger's box -- the column of buttons after
-//     each never moves sideways;
-//   - mode inline and auto (two languages) at each size: the box is one
-//     control high before and after, so the row below never moves;
+//   - mode menu, search and auto (two languages) at each size of the ladder
+//     (1/3, 1/2, 1, 2, 3): before the element draws, its box is the trigger
+//     of its size (owner decision C142: «RU ▾»), made of the button ladder's
+//     variables -- side padding, glyph, text space, a code slot one text
+//     line wide, text space, glyph -- and the drawn trigger is that box
+//     (2026-11-14: the header moved 63-78 px while core held a square), so
+//     the mark after it never moves. The slot is exactly one line wide, so
+//     two capitals wider than the line (RU at the 12/16 step, MN at every
+//     step, either in the fallback face of a cold load) widen nothing: the
+//     «code» cases choose MN (2026-11-14, C130: 0.7-6 px before);
+//   - mode inline at each size: the box is one control high before and
+//     after, so the row below never moves (its width is its labels');
+//   - mode field: the label line, its gap and the field, before and after;
 //   - the frames see the element before its code (undefined, nothing drawn).
 // Light and dark, at a desktop and a phone width (the ladder has a mobile
 // step); console errors fail the run.
@@ -60,7 +67,10 @@ const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><
   <sf-language id="header" mode="menu" size="1" label="Язык" apply="none"><script type="application/json" data-sf-settings>${island}</script></sf-language>
   <span id="header-after" class="mark"></span></div>
 ${SIZES.map((size) => ['menu', 'search'].map((mode) => `<div class="row"><sf-language data-case="${mode} ${size}" mode="${mode}" size="${size}" languages="ru en de fr es" apply="none"></sf-language><span class="mark after"></span></div>`).join('')).join('')}
-${SIZES.map((size) => ['inline', 'auto'].map((mode) => `<div class="row"><sf-language data-case="${mode} ${size}" mode="${mode}" size="${size}" languages="ru en" apply="none"></sf-language></div><div class="mark below"></div>`).join('')).join('')}
+${SIZES.map((size) => `<div class="row"><sf-language data-case="auto ${size}" size="${size}" languages="ru en" apply="none"></sf-language><span class="mark after"></span></div>`).join('')}
+${SIZES.map((size) => `<div class="row"><sf-language data-case="code ${size}" size="${size}" languages="ru mn" value="mn" apply="none"></sf-language><span class="mark after"></span></div>`).join('')}
+${SIZES.map((size) => `<div class="row"><sf-language data-case="inline ${size}" mode="inline" size="${size}" languages="ru en" apply="none"></sf-language></div><div class="mark below"></div>`).join('')}
+${['1/3', '1', '3'].map((size) => `<div class="row" style="display:block;inline-size:20rem"><sf-language data-case="field ${size}" mode="field" size="${size}" label="Язык" languages="ru en de" apply="none"></sf-language></div><div class="mark below"></div>`).join('')}
 </body></html>`;
 
 // Installed before the body parses: one record per animation frame.
@@ -75,7 +85,7 @@ const WATCH = `(() => {
       for (const host of document.querySelectorAll('sf-language[data-case]')) {
         const row = host.parentElement;
         const box = host.getBoundingClientRect();
-        const drawn = host.querySelector('button, [role=radiogroup]');
+        const drawn = host.querySelector('.sf-language-parts > sf-button > button, .sf-language-parts > sf-segmented [role=radiogroup], .sf-language-parts > sf-dropdown > .sf-dropdown');
         const d = drawn ? drawn.getBoundingClientRect() : null;
         const next = row.nextElementSibling;
         record.cases[host.dataset.case] = {
@@ -130,7 +140,8 @@ try {
     tab.on('pageerror', (error) => errors.push(String(error)));
     tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
     await tab.goto(`${origin}/${theme}`);
-    await tab.waitForFunction(() => [...document.querySelectorAll('sf-language')].every((host) => host.getAttribute('data-look')), null, {timeout: 15000}).catch(() => {});
+    // Drawn: every element has its look, and a field its sf-dropdown (fetched on its own).
+    await tab.waitForFunction(() => [...document.querySelectorAll('sf-language')].every((host) => host.getAttribute('data-look') && (host.getAttribute('mode') !== 'field' || host.querySelector('.sf-dropdown'))), null, {timeout: 15000}).catch(() => {});
     await tab.waitForTimeout(600);
     const frames = await tab.evaluate(() => window.__frames);
     const last = frames.at(-1);
@@ -141,8 +152,11 @@ try {
     const headerXs = [...new Set(frames.map((frame) => frame.header.x).filter((x) => x !== null))];
     if (headerXs.length !== 1) failures.push(`${theme} ${width}: the button after the header picker moved: ${headerXs.join(' -> ')}`);
     // The tools before it are what moved in Docara: the bar ends with the picker, so it grows toward them.
+    // core.css holds the «RU ▾» trigger's width from the button ladder, and the drawn code slot is that
+    // width whatever the face, so they stay where the first frame put them.
     const beforeXs = [...new Set(frames.map((frame) => frame.header.before).filter((x) => x !== null))];
-    if (beforeXs.length !== 1) failures.push(`${theme} ${width}: the tool before the header picker moved: ${beforeXs.join(' -> ')}`);
+    summary.headerShift = beforeXs;
+    if (!near(Math.min(...beforeXs), Math.max(...beforeXs))) failures.push(`${theme} ${width}: the tool before the header picker moved: ${beforeXs.join(' -> ')}`);
     for (const [name, end] of Object.entries(last?.cases ?? {})) {
       const [mode] = name.split(' ');
       const before = frames.map((frame) => frame.cases[name]).filter((one) => one && !one.look);
@@ -150,11 +164,18 @@ try {
       summary.cases[name] = {before: first ? {box: first.box, rowHeight: first.rowHeight} : null, after: {box: end.box, drawn: end.drawn, look: end.look, rowHeight: end.rowHeight}};
       if (!first) { failures.push(`${theme} ${width} ${name}: no frame before it drew`); continue; }
       if (!end.drawn) { failures.push(`${theme} ${width} ${name}: nothing drawn`); continue; }
-      if (mode === 'menu' || mode === 'search') {
-        if (!near(first.box[0], first.box[1])) failures.push(`${theme} ${width} ${name}: the box before is not square ${first.box}`);
-        if (!near(first.box[0], end.drawn[0]) || !near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: box before ${first.box}, trigger drawn ${end.drawn}`);
-        const xs = [...new Set(frames.map((frame) => frame.cases[name]?.after).filter((x) => x !== undefined && x !== null))];
-        if (xs.length !== 1) failures.push(`${theme} ${width} ${name}: the mark after it moved ${xs.join(' -> ')}`);
+      if (mode === 'menu' || mode === 'search' || mode === 'auto' || mode === 'code') {
+        if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, trigger drawn ${end.drawn[1]}`);
+        // The code stands in a slot exactly one text line wide: two capitals wider than the line stand
+        // out of it into the text space and widen nothing.
+        if (!near(first.box[0], end.drawn[0])) failures.push(`${theme} ${width} ${name}: width before ${first.box[0]}, trigger drawn ${end.drawn[0]}`);
+        const after = [...new Set(frames.map((frame) => frame.cases[name]?.after).filter((x) => x !== undefined && x !== null))];
+        summary.cases[name].shift = after;
+        if (!near(Math.min(...after), Math.max(...after))) failures.push(`${theme} ${width} ${name}: the mark after it moved ${after.join(' -> ')}`);
+      } else if (mode === 'field') {
+        if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, field drawn ${end.drawn[1]}`);
+        const below = [...new Set(frames.map((frame) => frame.cases[name]?.below).filter((y) => y !== undefined && y !== null))];
+        if (below.length !== 1) failures.push(`${theme} ${width} ${name}: the row below moved ${below.join(' -> ')}`);
       } else {
         if (!near(first.box[1], end.drawn[1])) failures.push(`${theme} ${width} ${name}: height before ${first.box[1]}, switch drawn ${end.drawn[1]}`);
         const below = [...new Set(frames.map((frame) => frame.cases[name]?.below).filter((y) => y !== undefined && y !== null))];

@@ -618,7 +618,24 @@ const sameFormat = (a, b) => a.strong === b.strong && a.em === b.em && a.href ==
 // Inline leaves made canonical: adjacent text of one format joined, runs of
 // spaces made one, spaces at the edges and around a line break removed, a link
 // with nothing but spaces made text.
+//
+// The steps run again until a pass changes nothing (2026-11-11 acceptance,
+// M2): dropping a space or an empty run makes new neighbours, so one pass left
+// "<p>a <em><br>n</em></p>" for the next load-and-save to make
+// "<p>a<em><br>n</em></p>". The stored value is the fixed point at once.
 function tidyLeaves(leaves, mode) {
+  let current = leaves;
+  let key = null;
+  for (let pass = 0; pass < 64; pass += 1) {
+    current = tidyLeavesOnce(current, mode);
+    const next = JSON.stringify(current);
+    if (next === key) break;
+    key = next;
+  }
+  return current;
+}
+
+function tidyLeavesOnce(leaves, mode) {
   const out = [];
   for (const item of leaves) {
     if (item.kind === 'text' && !item.value) continue;
@@ -643,12 +660,21 @@ function tidyLeaves(leaves, mode) {
   }
   let kept = out.filter((item) => item.kind === 'br' || item.value);
   if (mode === 'value') {
-    while (kept[0]?.kind === 'br') kept.shift();
-    while (kept.at(-1)?.kind === 'br') kept.pop();
-    if (kept[0]?.kind === 'text') kept[0].value = kept[0].value.replace(/^[\s\u00a0]+/u, '');
-    const end = kept.at(-1);
-    if (end?.kind === 'text') end.value = end.value.replace(/[\s\u00a0]+$/u, '');
-    kept = kept.filter((item) => item.kind === 'br' || item.value);
+    // Edge breaks and edge white space go together, until neither is left: a
+    // run of only white space (&nbsp;) at an edge hid the break behind it, so
+    // the first pass kept "<p>&nbsp;<br>a</p>" as "<p><br>a</p>" and only the
+    // next load-and-save gave "<p>a</p>" (2026-11-10 review, Q6). The value is
+    // now what that second pass gave, at once, and cleaning it again keeps it.
+    let length = -1;
+    while (length !== kept.length) {
+      length = kept.length;
+      while (kept[0]?.kind === 'br') kept.shift();
+      while (kept.at(-1)?.kind === 'br') kept.pop();
+      if (kept[0]?.kind === 'text') kept[0].value = kept[0].value.replace(/^[\s\u00a0]+/u, '');
+      const end = kept.at(-1);
+      if (end?.kind === 'text') end.value = end.value.replace(/[\s\u00a0]+$/u, '');
+      kept = kept.filter((item) => item.kind === 'br' || item.value);
+    }
   }
   // A link of nothing but spaces is not a link.
   const groups = new Map();
