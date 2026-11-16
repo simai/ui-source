@@ -495,7 +495,7 @@
       },
       {
         "path": "src/smart/file-preview/js/templates/default.js",
-        "sha256": "2a3c2b97ae9b8a595abe5fefc660324bcc4826011010bf99224aac6ff7a4914e"
+        "sha256": "dab9c8f9eeccf7419a930409c0d03b718e0a6a5420dac55088d342a5dac81fcf"
       }
     ],
     "generated_runtime": []
