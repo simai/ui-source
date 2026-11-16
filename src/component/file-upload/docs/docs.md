@@ -101,3 +101,11 @@ A chosen file's size is written by the core formatFileSize in the page's languag
 одно слово с местом для имени (`remove-name` «Убрать {name}», `retry-name`
 «Повторить {name}»), чтобы язык мог поставить имя первым (казахский: «{name}
 файлын алып тастау»).
+
+## Sizes
+
+The area takes the field ladder's five size modifiers, `.sf-file-upload--size-1/3`,
+`1/2`, `1`, `2` and `3`, as `.sf-input` does (component.file-upload 1.6.0): the
+words on the size's text, the padding and gap from the space ladder, the line of
+files left out a step below. A file's row (`.sf-upload-progress`) keeps the file
+family's three sizes: `1/2` under a `1/3` area, `2` under a `3` area.

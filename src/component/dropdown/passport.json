@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.dropdown",
   "kind": "component",
-  "version": "1.13.7",
+  "version": "1.15.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/dropdown/docs/docs.md",
@@ -19,7 +19,7 @@
     "src/component/dropdown/scss/_css__list.scss",
     "src/component/dropdown/scss/index.scss"
   ],
-  "content_sha256": "b53f5bc52afb90e335bcc97e69dfc45123b40f877d30a27972d1a46421b76d3d",
+  "content_sha256": "37b963a68f6a84aef62f7f9defaa42d389273a43f0c26b9ed200fee4b7ad8826",
   "dependencies": [
     {
       "id": "component.context-menu",

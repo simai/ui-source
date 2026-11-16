@@ -69,6 +69,7 @@ right half as it is over a checkerboard (C86).
 | --- | --- | --- |
 | `label` | — | The field's label above it, as every field draws it; it also names the field. |
 | `hint` | — | A help line under the field, a step below its text. |
+| `help` | — | The «?» (`sf-help-mark`) after the label, as sf-input's `help` (since 1.18.0): a step below the value, the label row keeping its height, named «Подробнее: <label>». Without `label` there is no mark. |
 | `invalid` | `false` | Draws the error: the error border and the error line in place of the help line. |
 | `error-message` | — | The error line's text while the field is invalid. |
 | `size` | `1` | `1/3`, `1/2`, `1`, `2` or `3`: the field ladder step, as sf-input. |

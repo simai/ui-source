@@ -44,8 +44,11 @@ export function fieldSize(value, component = 'field', fallback = '1') {
 // and 3); sf-input-lookup, -quantity, -date, -code, -color and -country drew
 // 32 / 48 or 40 at 1/3 and 3 beside it, so they take the same five steps and
 // the stylesheets size their parts from the same steps
-// (component/inputs/scss/_field-ladder.scss). The other fields (textarea,
-// dropdown, file upload, image, rich text) keep the three sizes for now.
+// (component/inputs/scss/_field-ladder.scss). The textarea and the rich text
+// followed (2026-11-14), then the dropdown, the file upload area and the image
+// field (queue #70, 2026-11-16): every field of the family stands on the
+// ladder. FIELD_SIZES, fieldSize and retireFieldSizeClass stay for the lines
+// of tags, badges and avatars and for a file's row, which keep three sizes.
 export const FIELD_LADDER = Object.freeze(['1/3', ...FIELD_SIZES, '3']);
 export const INPUT_SIZES = FIELD_LADDER;
 

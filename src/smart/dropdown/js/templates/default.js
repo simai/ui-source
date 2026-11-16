@@ -44,11 +44,15 @@ function renderOptions(options = [], multiple = false) {
 // A): inline, one size below the field, so its label is one text step under
 // the field's; the field gives it its height (the field less --sf-space-1/4
 // above and below) as its line. From size 1 up it was a low chip of the
-// field's own size (C27), 32 in a 40 field.
+// field's own size (C27), 32 in a 40 field. At the field ladder's outer
+// steps the tag is sf-input-lookup's chip: 1/3 holds a 1/3 tag (the smallest
+// tag), 3 a tag of size 2.
 const FIELD_TAG = Object.freeze({
+  "1/3": {size: "1/3", height: ""},
   "1/2": {size: "1/3", height: ""},
   "1": {size: "1/2", height: ""},
   "2": {size: "1", height: ""},
+  "3": {size: "2", height: ""},
 });
 
 // A single choice shows its picture in the field as well as its label. The
@@ -128,19 +132,28 @@ function renderTag(context, option) {
 // A grid cell is as tall as a field of the dropdown's size: a size-1/2 icon
 // picker drew size-1 cells around its size-1/2 search (owner, 2026-10-14).
 const CELL = {
+  "1/3": "var(--sf-ui-1\\/3--control-height)",
   "1/2": "var(--sf-ui-1\\/2--control-height)",
   "1": "var(--sf-ui-1--control-height)",
   "2": "var(--sf-ui-2--control-height)",
+  "3": "var(--sf-ui-3--control-height)",
 };
 
+// The look's class in the base component's markup. bordered (FM-9) draws the
+// class layer's outlined modifier: .sf-dropdown--outlined stays the class
+// markup's name, so pages written in classes and the first-paint snapshots
+// keep drawing.
+const LOOK_CLASS = Object.freeze({bordered: "outlined", outlined: "outlined", filled: "filled"});
+
 export function renderDropdownTemplate(context) {
+  const look = context.appearance ?? context.type;
   const rootClasses = [
     "sf-dropdown",
     context.rootClass,
     context.open ? "open" : "",
     context.open ? "sf-dropdown--open" : "",
     `sf-dropdown--size-${context.size}`,
-    `sf-dropdown--${context.appearance ?? context.type}`,
+    `sf-dropdown--${LOOK_CLASS[look] || look}`,
     context.mode === "tag" ? "sf-dropdown--tag" : "",
     context.layout === "grid" ? "sf-dropdown--grid" : "",
     context.mode !== "tag" ? "sf-dropdown--text" : "",

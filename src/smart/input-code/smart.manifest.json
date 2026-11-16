@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-code",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "title": "Code input",
   "summary": "A one-time code -- from a message, an authenticator, an email -- as a form field with its own value, paste and errors, drawn as the class verification: one native input holds the code (autocomplete one-time-code, so autofill and WebOTP fill it whole) and the cells picture it. Typing fills the next cell, Backspace steps back and clears, a pasted code fills every cell, and each cell is announced by its place.",
   "kind": "smart",
@@ -28,7 +28,8 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.verification"
+      "component.verification",
+      "smart.help-mark"
     ],
     "public_parts": []
   },
@@ -119,6 +120,11 @@
         "type": "string",
         "default": "",
         "description": "Text under the cells: how many characters, where the code comes from."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)), as sf-input's help: a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty, or without a label: no mark."
       },
       "required": {
         "type": "boolean",
@@ -408,23 +414,23 @@
       },
       {
         "path": "src/smart/input-code/code.mjs",
-        "sha256": "d0a9fcfc56511e63a2e865a2f7609416609381b4e7505cf7b7354643b72f8eff"
+        "sha256": "79d56669132bc50478daabbfa7905cccee4b38fcba4ab7ac38657954f24d694a"
       },
       {
         "path": "src/smart/input-code/js/templates/default.js",
-        "sha256": "7771e77869259a26e9f2f7c0deeedf572c963c979029cecff4c4c01a3e411c53"
+        "sha256": "24d6cbbf9894cecc737ef163fd93691ccd30381b6b0efe76e2a7c036558361b6"
       },
       {
         "path": "src/smart/input-code/scss/_smart__code_input.scss",
-        "sha256": "7e30a6a27b2095d8c3b522800dd83896daf2b0da4cb81f620423b3ac84ade029"
+        "sha256": "a82501eaaedb9679c477ba9b6c438443b85a9241e39cc009be584e5e82b61b33"
       },
       {
         "path": "src/smart/input-code/rule.js",
-        "sha256": "11501ee190334b531ee42721bf4dfb90b682c000351360d3de9201718d11708f"
+        "sha256": "a6ef546ecf35f05c219e39b3661d4104a05e95a6e72f7f149d16c218f52a3445"
       },
       {
         "path": "src/smart/input-code/docs.md",
-        "sha256": "46cd7ecaefdf6eeef7f1867a12a2b14b8aec4d0eae82ba1d8968e4edeacf8e3a"
+        "sha256": "00bac5654739bce7ada59f210140344b15d12b706c67dd4c28fb7a9332e2cede"
       }
     ],
     "generated_runtime": []

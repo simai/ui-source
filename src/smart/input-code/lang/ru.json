@@ -5,6 +5,7 @@
     "digit": "цифра {n} из {m}",
     "group": "Код",
     "too-short": "Введите код целиком",
-    "value-missing": "Введите код"
+    "value-missing": "Введите код",
+    "help": "Подробнее: {label}"
   }
 }

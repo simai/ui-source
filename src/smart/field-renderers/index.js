@@ -106,7 +106,7 @@ function renderRangeFilterControl(field, host) {
             </div>
             <sf-dropdown
                     size=${filterSize(host)}
-                    appearance="outlined"
+                    appearance="bordered"
                     mode="select"
                     placeholder="${setText(host, 'operator')}"
                     root-class="flex-1"
@@ -189,7 +189,7 @@ function renderNumberFilterControl(field, host) {
             </div>
             <sf-dropdown
                     size=${filterSize(host)}
-                    appearance="outlined"
+                    appearance="bordered"
                     mode="select"
                     placeholder="${setText(host, 'operator')}"
                     root-class="flex-1"
@@ -243,7 +243,7 @@ function renderDateFilterControl(field, host) {
             ></sf-input-date>
             <sf-dropdown
                     size=${filterSize(host)}
-                    appearance="outlined"
+                    appearance="bordered"
                     mode="select"
                     placeholder="${setText(host, 'operator')}"
                     root-class="flex-1"
@@ -1633,7 +1633,7 @@ function renderChoiceEdit(field, value, host) {
     return html`
         <sf-dropdown
                 size=${EDIT_SIZE}
-                appearance="outlined"
+                appearance="bordered"
                 mode="select"
                 search="false"
                 name=${fieldName(field)}
@@ -1684,7 +1684,7 @@ function renderChoicesEdit(field, value, host) {
     return html`
         <sf-dropdown
                 size=${EDIT_SIZE}
-                appearance="outlined"
+                appearance="bordered"
                 mode="select"
                 multiple
                 search="false"
@@ -1906,7 +1906,7 @@ function renderRecordPicker(field, value, host) {
         <div class="sf-field-picker flex flex-col gap-1/3" data-field-picker=${field.key || nothing}>
             <sf-dropdown
                     size=${EDIT_SIZE}
-                    appearance="outlined"
+                    appearance="bordered"
                     mode="select"
                     search="true"
                     name=${fieldName(field)}
@@ -2027,7 +2027,7 @@ function renderLookupEdit(field, value, host) {
         <div class="sf-field-picker flex flex-col gap-1/3" data-field-picker=${field.key || nothing}>
             <sf-dropdown
                     size=${EDIT_SIZE}
-                    appearance="outlined"
+                    appearance="bordered"
                     mode="select"
                     ?multiple=${multiple}
                     search="true"

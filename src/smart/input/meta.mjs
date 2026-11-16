@@ -31,7 +31,7 @@ const sfInputMeta = {
         "3"
       ],
       "default": "1",
-      "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input and the fields of the field ladder (lookup, quantity, date, code, colour, phone) stand on all five steps; textarea, dropdown, file upload, image and rich text stay on 1/2, 1 and 2."
+      "description": "The step of the control ladder the field stands on, the height of sf-button and sf-button-icon of the same size. sf-input and every field of the family (lookup, quantity, date, code, colour, phone, textarea, rich text, dropdown, file upload, image) stand on all five steps."
     },
     "radius": {
       "kind": "enum",

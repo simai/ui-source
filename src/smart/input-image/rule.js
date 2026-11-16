@@ -22,5 +22,7 @@ SF.RuleLoader['cl-input-image'] = {
     { name: 'cl-switch', lazy: true },
     { name: 'cl-menu-context', lazy: true },
     { name: 'cl-modal', lazy: true },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

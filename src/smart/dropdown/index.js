@@ -1,6 +1,6 @@
 import SfBaseElement, { toBoolean } from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
-import { fieldSize } from '../../component/field-size';
+import { ladderSize } from '../../component/field-size';
 import { renderDropdownTemplate } from './js/templates/default';
 import { createDropdownInteraction } from '../../component/dropdown/interaction';
 import { bindFormReset } from '../../component/form-reset-helper';
@@ -69,7 +69,9 @@ const DropdownElement = elementFromManifest(manifest, {
 });
 
 function normalizeSize(value) {
-  return fieldSize(value, 'sf-dropdown');
+  // The field ladder's five steps (field-size.js FIELD_LADDER; queue #70):
+  // 1/3 and 3 are the dropdown's own, as sf-input's.
+  return ladderSize(value);
 }
 
 function normalizeListItemType(value) {
@@ -209,8 +211,11 @@ class SfDropdown extends FormField(DropdownElement) {
       templateName: { attribute: 'template', default: 'default' },
       size: { default: '1' },
       // The axis is called appearance, because that is the question it answers.
-      // `type` keeps working: see contracts/public-api-axes.json.
-      appearance: {default: 'outlined', values: ['filled', 'outlined'], aliases: ['type']},
+      // `type` keeps working: see contracts/public-api-axes.json. The field
+      // look is named bordered, as every field's (FM-9, 2026-11-16); outlined
+      // is its dated alias until 2027-01-01 (aliases.json, change journal
+      // value-dropdown-appearance-outlined-to-bordered).
+      appearance: {default: 'bordered', values: ['filled', 'bordered'], aliases: ['type'], valueAliases: {bordered: ['outlined']}},
       mode: { default: 'select', values: ['tag', 'select'] },
       multiple: { type: Boolean, default: false },
       portal: { type: Boolean, default: true },

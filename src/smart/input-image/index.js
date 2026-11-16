@@ -37,7 +37,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
 import {createFieldContract} from '../../component/field-contract';
-import {FIELD_SIZES, fieldSize} from '../../component/field-size';
+import {FIELD_LADDER, ladderSize} from '../../component/field-size';
 import {FormField, ownInvalid} from '../helpers/form-field';
 import {renderImageFieldTemplate} from './js/templates/default';
 import {
@@ -157,7 +157,8 @@ class SfImageField extends FormField(ImageFieldElement) {
       // The value is an object (§4.2); its attribute -- an address, or the
       // shape as JSON -- stays as the field had it.
       value: {default: ''},
-      size: {default: '1', values: FIELD_SIZES},
+      // The field ladder's five steps (field-size.js FIELD_LADDER; queue #70).
+      size: {default: '1', values: FIELD_LADDER},
       // The group's name when no label is drawn: a field renderer's panel
       // prints the label beside the field, and a second, visible one inside it
       // would say it twice (the rule tests/field-control-accessible-name holds
@@ -257,7 +258,7 @@ class SfImageField extends FormField(ImageFieldElement) {
     this._upload?.controller?.abort();
   }
 
-  get size() { return fieldSize(this.getAttribute('size') || '1', 'sf-input-image'); }
+  get size() { return ladderSize(this.getAttribute('size')); }
   get accept() { return this.hasAttribute('accept') ? this.getAttribute('accept') || '' : DEFAULT_ACCEPT; }
   get ariaLabel() { return this.getProp('ariaLabel') || ''; }
   get layoutName() { return this.getAttribute('layout') === 'preview' ? 'preview' : 'row'; }
@@ -1158,7 +1159,7 @@ class SfImageField extends FormField(ImageFieldElement) {
           : source === 'device' ? (this._coarse ? words.sourceDeviceCoarse : words.sourceDevice) : words.sourceUrl,
         icon: {device: 'upload', library: 'photo_library', url: 'link'}[source],
       })) : [],
-      menuSize: this.size === '1/2' ? '1/2' : '1',
+      menuSize: this.size === '1/2' || this.size === '1/3' ? '1/2' : '1',
       edits: this.editList,
       editor,
       editorState: this._editorState(),

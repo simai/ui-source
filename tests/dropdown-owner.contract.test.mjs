@@ -13,8 +13,11 @@ const uiDocRoot = process.env.UI_DOC_ROOT
 const readUiDoc = path => readFile(new URL(path, uiDocRoot), 'utf8');
 
 test('Dropdown machine contract describes the public source surface', () => {
-  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/2', '1', '2']);
-  assert.deepEqual(manifest.inputs.properties.type.enum, ['filled', 'outlined']);
+  // The field ladder's five steps (queue #70) and the field look named
+  // bordered, outlined its dated alias (FM-9).
+  assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
+  assert.deepEqual(manifest.inputs.properties.type.enum, ['filled', 'bordered']);
+  assert.deepEqual(manifest.inputs.properties.appearance.enum, ['filled', 'bordered']);
   assert.deepEqual(manifest.inputs.properties.mode.enum, ['tag', 'select']);
   assert.ok(manifest.composition.uses.includes('component.dropdown'));
   assert.ok(manifest.composition.uses.includes('smart.list-item'));

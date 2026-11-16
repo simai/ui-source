@@ -169,6 +169,7 @@ export const CODE_INPUT_TEXT = {
     group: 'Code',
     'too-short': 'Enter the whole code',
     'value-missing': 'Enter the code',
+    help: 'More about: {label}',
   },
   ru: {
     digit: 'цифра {n} из {m}',
@@ -176,6 +177,7 @@ export const CODE_INPUT_TEXT = {
     group: 'Код',
     'too-short': 'Введите код целиком',
     'value-missing': 'Введите код',
+    help: 'Подробнее: {label}',
   },
 };
 

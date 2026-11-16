@@ -47,7 +47,7 @@ test('the versions', () => {
   assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.13.0'); // 1.13.0: the anchored badge's .sf-dot (C185 (8))
   // input-color moved on to 1.13.0 (fix/field-action-gaps-2-c123); its 1.12.1 note stays.
   // Group build 7: the notes numbered above the released pair (1.12.1 -> 1.13.1, 1.13.2 -> 1.15.1).
-  for (const [folder, version, current] of [['input-color', '1.13.1', '1.17.1'], ['input-lookup', '1.15.1', '1.15.3']]) {
+  for (const [folder, version, current] of [['input-color', '1.13.1', '1.18.0'], ['input-lookup', '1.15.1', '1.15.3']]) {
     const component = json(`src/smart/${folder}/component.json`);
     assert.equal(component.version, current, folder);
     const note = new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123 \\(6\\)`, 'u');

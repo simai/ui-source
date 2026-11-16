@@ -25,10 +25,10 @@ const sfDropdownMeta = {
       "kind": "enum",
       "values": [
         "filled",
-        "outlined"
+        "bordered"
       ],
-      "default": "outlined",
-      "description": "How the dropdown looks: a filled field or an outlined one."
+      "default": "bordered",
+      "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, SF.deprecations)."
     },
     "columns": {
       "kind": "custom",
@@ -140,11 +140,14 @@ const sfDropdownMeta = {
     "size": {
       "kind": "enum",
       "values": [
+        "1/3",
         "1/2",
         "1",
-        "2"
+        "2",
+        "3"
       ],
-      "default": "1"
+      "default": "1",
+      "description": "The step of the field ladder, as sf-input's (1/3, 1/2, 1, 2, 3): the field as tall as sf-input, sf-button and sf-button-icon of the size (28 / 32 / 40 / 48 / 56 on a desktop), the value on the size's text, the label, help and message a step below, the open list's rows a control of the size."
     },
     "value": {
       "kind": "custom",
@@ -161,9 +164,9 @@ const sfDropdownMeta = {
       "kind": "enum",
       "values": [
         "filled",
-        "outlined"
+        "bordered"
       ],
-      "default": "outlined",
+      "default": "bordered",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
     }
   }

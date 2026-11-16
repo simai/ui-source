@@ -10,7 +10,8 @@ import {
 import SfBaseElement from '../../core/js/smart-base';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderFileUploadTemplate } from './js/templates/default';
-import { FIELD_SIZES, fieldSize } from '../../component/field-size';
+import { FIELD_LADDER, ladderSize } from '../../component/field-size';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import { FormField } from '../helpers/form-field';
 import { fileNameFromAddress, formatFileSize } from '../../core/js/composition/file-size.mjs';
 import manifest from './component.json';
@@ -118,7 +119,8 @@ class SfFileUpload extends FormField(FileUploadElement) {
     return {
       ...super.props,
       templateName: { attribute: 'template', default: 'default' },
-      size: { default: '1', values: FIELD_SIZES },
+      // The field ladder's five steps (field-size.js FIELD_LADDER; queue #70).
+      size: { default: '1', values: FIELD_LADDER },
       ariaLabel: { default: '' },
     };
   }
@@ -181,7 +183,7 @@ class SfFileUpload extends FormField(FileUploadElement) {
   }
 
   get size() {
-    return fieldSize(this.getAttribute('size') || '1', 'sf-file-upload');
+    return ladderSize(this.getAttribute('size'));
   }
 
   get formats() {
@@ -529,6 +531,9 @@ class SfFileUpload extends FormField(FileUploadElement) {
       supportingText: this.supportingText,
       items: this.items,
       keyOf: itemId,
+      // The visible label names the area (aria-labelledby) unless the page
+      // gave the area an aria-label of its own.
+      labelId: partId(instancePath(this, {kind: 'sf-file-upload'}), 'label'),
     });
   }
 

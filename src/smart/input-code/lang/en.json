@@ -5,6 +5,7 @@
     "digit": "digit {n} of {m}",
     "group": "Code",
     "too-short": "Enter the whole code",
-    "value-missing": "Enter the code"
+    "value-missing": "Enter the code",
+    "help": "More about: {label}"
   }
 }

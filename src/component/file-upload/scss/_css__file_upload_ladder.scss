@@ -1,0 +1,89 @@
+@use 'sass:map';
+@use '../../inputs/scss/field-ladder' as ladder;
+
+/* The field ladder (inputs/scss/_field-ladder.scss; queue #70, 2026-11-16):
+   the area stands on all five steps, as sf-input and the fields of the
+   fields ladder. Each step is the kept steps' rule carried one rung on: the
+   words on the step's text, the area's block padding the step's space and its
+   inline padding two space steps above it, the gap between the picture and
+   the words a step below the block padding (one at 1/2, two from 1 up), the
+   line of the files left out a step below the words. 1/3: words 1/3, padding
+   --sf-space-1/3 and --sf-space-1, gap --sf-space-1/4; 3: words 3, padding
+   --sf-space-3 and --sf-space-5, gap --sf-space-1. They drew 1/2 and 2 with
+   a console note. A file's row keeps the file family's three sizes
+   (sf-file-preview's): 1/2 under a 1/3 area, 2 under a 3 area. */
+$-space: ('1/3': ('block': '1\\/3', 'inline': '1', 'gap': '1\\/4'), '3': ('block': '3', 'inline': '5', 'gap': '1'));
+
+@layer sf.components {
+  @each $size in ladder.$outer {
+    $class: ladder.size-class('sf-file-upload', $size);
+    $space: map.get($-space, $size);
+
+    .#{$class} {
+      --sf-file-upload--gap: var(--sf-space-#{map.get($space, 'gap')});
+      --sf-file-upload--padding-bottom: var(--sf-space-#{map.get($space, 'block')});
+      --sf-file-upload--padding-inline-end: var(--sf-space-#{map.get($space, 'inline')});
+      --sf-file-upload--padding-inline-start: var(--sf-space-#{map.get($space, 'inline')});
+      --sf-file-upload--padding-top: var(--sf-space-#{map.get($space, 'block')});
+    }
+
+    .#{$class} .sf-file-upload-link {
+      --sf-file-upload-link--font-size: #{ladder.text-size($size)};
+      --sf-file-upload-link--line-height: #{ladder.text-height($size)};
+    }
+
+    .#{$class} .sf-file-upload-block-text {
+      --sf-file-upload-block-text--font-size: #{ladder.text-size($size)};
+      --sf-file-upload-block-text--line-height: #{ladder.text-height($size)};
+    }
+
+    .#{$class} .sf-file-upload-text {
+      --sf-file-upload-text--font-size: #{ladder.text-size($size)};
+      --sf-file-upload-text--line-height: #{ladder.text-height($size)};
+    }
+
+    .#{$class} + .sf-file-upload-message {
+      --sf-file-upload-message--font-size: #{ladder.label-size($size)};
+      --sf-file-upload-message--line-height: #{ladder.label-height($size)};
+    }
+  }
+
+  /* sf-file-upload's label above the area (C153 (1), (2), (8)), as every
+     field of the family draws it: the text ink a step below the area's text
+     (14 at size 1, on a phone too), the required «*» in the label's ink, the
+     «?» of help after them held to the label's line, the field's gap
+     (--sf-space-1/4) to the area. */
+  .sf-file-upload-label {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+    margin-block-end: var(--sf-space-1\/4);
+    color: var(--sf-on-surface);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-weight--regular);
+    font-size: var(--sf-file-upload-label--font-size);
+    line-height: var(--sf-file-upload-label--line-height);
+  }
+
+  .sf-file-upload-label > sf-help-mark > .sf-help-mark {
+    block-size: var(--sf-file-upload-label--line-height);
+  }
+
+  @each $size in ladder.$sizes {
+    .#{ladder.size-class('sf-file-upload-label', $size)} {
+      --sf-file-upload-label--font-size: #{ladder.label-size($size)};
+      --sf-file-upload-label--line-height: #{ladder.label-height($size)};
+    }
+  }
+
+  @media not all and (min-width: 60rem) {
+    .sf-file-upload-label.sf-file-upload-label--size-1 {
+      --sf-file-upload-label--font-size: var(--sf-text-size-1);
+      --sf-file-upload-label--line-height: var(--sf-text-height-1);
+    }
+  }
+
+  .sf-file-upload-label:has(~ .sf-file-upload:is([disabled], .disabled)) {
+    color: var(--sf-on-surface-disabled);
+  }
+}

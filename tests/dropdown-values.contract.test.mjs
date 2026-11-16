@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import vm from 'node:vm';
-import {fieldSize} from '../src/component/field-size.js';
+import {fieldSize, ladderSize} from '../src/component/field-size.js';
 
 const base=await readFile(new URL('../src/component/dropdown/js/_dropdown.js',import.meta.url),'utf8');
 const smart=await readFile(new URL('../src/smart/dropdown/index.js',import.meta.url),'utf8');
@@ -54,7 +54,7 @@ function fixture(){
     addEventListener(){}
     setCustomValidity(){}
   }
-  const runtime=vm.createContext({fieldSize,SfBaseElement:Element,DropdownElement:Element,
+  const runtime=vm.createContext({fieldSize,ladderSize,SfBaseElement:Element,DropdownElement:Element,
     // The inherited-value mixin is out of these tests' scope: it adds a state,
     // not a selection rule (simai/ui-source#28 has its own contract).
     InheritedValueField:(Base)=>Base,HTMLElement:Element,

@@ -8,3 +8,14 @@
     color: var(--sf-error);
   }
 }
+
+// The «?» of help after the label and its star (C153 (8), helpers/field-help.js):
+// with a mark the label is a row, the mark centred on the label's line and
+// --sf-space-1/4 after it, so the row keeps the label's height.
+@layer sf.components {
+  .sf-verification-form .sf-verification-form-label:has(> sf-help-mark) {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+  }
+}

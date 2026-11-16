@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 82,
-    "translated": 82,
+    "words": 83,
+    "translated": 83,
     "share": 100
   },
   "words": {
@@ -80,6 +80,7 @@
       "wait-for-uploads": "Файлдар жүктелгенше күтіңіз",
       "file-removed": "Файл алып тасталды",
       "undo": "Қайтару",
+      "help": "Толығырақ: {label}",
       "uploading-name": "{name} жүктелуде",
       "remove-name": "{name} файлын алып тастау",
       "retry-name": "{name} файлын қайталау",

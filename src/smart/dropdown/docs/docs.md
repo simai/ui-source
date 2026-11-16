@@ -44,7 +44,7 @@ the search text stands over the rows' text and the icon at the header's end) and
 scroll; a scrollbar only when the rows do not fit, standing in the inline-end
 inset. The base component's documentation has the classes.
 
-All three size profiles (1/2, 1, 2) use semantic control heights as minima. Form fields have three sizes; a retired `1/3` or `3` renders as `1/2` or `2` with a console warning.
+The field stands on the whole field ladder, as sf-input does (since 1.18.0): `size` is `1/3`, `1/2`, `1`, `2` or `3`, and the field is as tall as sf-input, sf-button and sf-button-icon of the size (28 / 32 / 40 / 48 / 56 on a desktop), its value on the size's text, its label, help and message a step below, its chevron the size's leading picture, the open list's rows a control of the size. Before 1.18.0 `1/3` and `3` drew as `1/2` and `2` with a console note.
 Tag fields grow with wrapped selections, including unbroken long labels. The
 toggle has its own place in the row and does not cover the tags; tag-removal
 buttons do not shrink with their label. Option labels also wrap inside the
@@ -297,7 +297,7 @@ Example:
 ```html
 <sf-dropdown
   size="1/2"
-  appearance="outlined"
+  appearance="bordered"
   mode="select"
   label="Label"
   placeholder="Placeholder"
@@ -317,3 +317,13 @@ shown error goes the moment the value is right -- and the browser's bubble
 never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
 ink; hover draws the border in the text ink and focus a 2 px primary edge
 inside the field, with no ring outside it.
+
+## Appearance: bordered (FM-9)
+
+Since 1.18.0 the field look is named `bordered`, as every field's
+(`sf-input`, `sf-input-textarea`, `sf-input-lookup`, `sf-input-rich`):
+`appearance` is `bordered` (the default) or `filled`. `outlined`, its former
+name, draws the same until 2027-01-01: the attribute is rewritten to
+`bordered` and the use is noted once in `SF.deprecations` with its dates
+(change journal `value-dropdown-appearance-outlined-to-bordered`). The base
+component's class markup keeps its modifier `.sf-dropdown--outlined`.

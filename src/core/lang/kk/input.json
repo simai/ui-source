@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 284,
-    "translated": 284,
+    "words": 287,
+    "translated": 287,
     "share": 100
   },
   "words": {
@@ -45,7 +45,8 @@
       "digit": "{n}-цифр, барлығы {m}",
       "group": "Код",
       "too-short": "Кодты толық енгізіңіз",
-      "value-missing": "Кодты енгізіңіз"
+      "value-missing": "Кодты енгізіңіз",
+      "help": "Толығырақ: {label}"
     },
     "sf-input-color": {
       "choose": "Түс таңдау",
@@ -104,7 +105,8 @@
       "checks": "Түсті тексеру",
       "scheme-dark": "қараңғы",
       "scheme-light": "ашық",
-      "brand": "Фирмалық түс"
+      "brand": "Фирмалық түс",
+      "help": "Толығырақ: {label}"
     },
     "sf-input-country": {
       "all-countries": "Барлық елдер",
@@ -241,7 +243,8 @@
       "value-missing": "Сурет таңдаңыз.",
       "wait-for-upload": "Сурет жүктелгенше күтіңіз",
       "zoom-in": "Үлкейту",
-      "zoom-out": "Кішірейту"
+      "zoom-out": "Кішірейту",
+      "help": "Толығырақ: {label}"
     },
     "sf-input-lookup": {
       "hint-min-length": {

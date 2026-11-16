@@ -10,5 +10,7 @@ SF.RuleLoader['cl-file-upload'] = {
     // Each file's row is sf-file-preview (owner decisions C81, C149): asked for when the first file is listed.
     { name: 'cl-file-preview', lazy: true },
     { name: 'icon-buttons' },
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
   ],
 };

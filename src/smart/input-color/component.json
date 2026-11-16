@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-color's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/color (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/color/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-color",
   "tag": "sf-input-color",
-  "version": "1.17.5",
+  "version": "1.18.0",
   "kind": "leaf",
   "family": "input",
   "traits": [
@@ -94,6 +94,11 @@
       "type": "string",
       "default": "",
       "summary": "Help text under the field, as sf-input's: the label's type, a step below the field's text."
+    },
+    "help": {
+      "type": "string",
+      "default": "",
+      "summary": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text (C153 (8)), as sf-input's help: a step below the value as the label; the label row keeps its height. The mark is named by its subject («Подробнее: <label>»). Empty, or without a label: no mark."
     },
     "invalid": {
       "type": "boolean",
@@ -224,6 +229,12 @@
     }
   },
   "relations": [
+    {
+      "name": "cl-help-mark",
+      "$comment": [
+        "The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field."
+      ]
+    },
     {
       "name": "icons"
     },
@@ -393,7 +404,8 @@
     "version 1.17.2 (written on the branch as 1.15.1; 2026-11-16, owner decision C212 (7), focus offsets from two tokens; numbered above 1.15.0 on fix/input-color-c209): a patch, nothing drawn differently: a ring drawn inside its element stands in by --sf-focus--inset (it wrote calc(var(--sf-focus--width) * -1) or a like spelling). Each spelling had the value of the token it now reads, so every ring stands where it stood (measured before and after on the built sheets). Settings, values, events and keys unchanged.",
     "version 1.17.3 (written on the branch as 1.16.0; 2026-11-16, owner decision C226, prototype forms-inputs-study.html#q-in-label-floor; numbered above 1.15.1 on fix/utilities-focus-c212): a minor, a look. The label and the help line of a size 1/3 field are 12 (the 1/3 text), the field ladder's label floor; they were 10 (the 1/4 text). Other sizes unchanged. Settings, values, events and keys unchanged.",
     "version 1.17.4 (written on the branch as 1.16.0; 2026-11-16, owner decision C151 (1); above 1.15.1 of fix/utilities-focus-c212, the highest on any branch): a look. At size 3 on a phone the field's icons -- the swatch, the chevron and the reset -- are the icon ladder's 28 (--sf-color--icon-size), not the 24 of the text line; one size for the three, 36 on a desktop as before.",
-    "version 1.17.5 (written on the branch as 1.17.0; 2026-11-16, follow-up of the colour field C83, msg-68c4b654; numbered above 1.16.0 on origin/fix/fields-c224-c227 and origin/fix/field-ladder-icons): a minor. New setting readonly, the field family's word (sf-input, sf-input-textarea, sf-input-lookup): the colour to read, not to change -- the swatch and the name or code in the text's ink, the frame on the region line (--sf-outline-variant) without the hover fill, no chevron, no window (openPicker and a press refuse), no reset; the value is a role=img «name: value», not a Tab stop of its own, and is sent with the form. module.smart-field-renderers draws a record's colour (view, cell, a read-only edit field) with it, where it drew the field disabled: the value in the disabled ink and the frame at 8 %. Other settings, values, events and keys unchanged."
+    "version 1.17.5 (written on the branch as 1.17.0; 2026-11-16, follow-up of the colour field C83, msg-68c4b654; numbered above 1.16.0 on origin/fix/fields-c224-c227 and origin/fix/field-ladder-icons): a minor. New setting readonly, the field family's word (sf-input, sf-input-textarea, sf-input-lookup): the colour to read, not to change -- the swatch and the name or code in the text's ink, the frame on the region line (--sf-outline-variant) without the hover fill, no chevron, no window (openPicker and a press refuse), no reset; the value is a role=img «name: value», not a Tab stop of its own, and is sent with the form. module.smart-field-renderers draws a record's colour (view, cell, a read-only edit field) with it, where it drew the field disabled: the value in the disabled ink and the frame at 8 %. Other settings, values, events and keys unchanged.",
+    "version 1.18.0 (2026-11-16, queue #70; above the 1.17.1 of fix/languages-g1): a minor. New setting help (C153 (8), sf-input's name): sf-help-mark after the label, a step below the value, centred on the label's line in one row with it (the label stays the hidden copy of the trigger's name; the mark stands outside it so it is reached and read), named «Подробнее: <label>» (lang help). Without help the label is drawn as before. Settings otherwise, values, events and keys unchanged."
   ],
   "x-rule": {
     "$comment": [

@@ -58,6 +58,15 @@
     line-height: var(--sf-text-height-1);
   }
 
+  /* The label and its «?» of help in one row (C153 (8)): the mark after the
+     label's last word, centred on its line, the row the label's height. */
+  .sf-color-label-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+    min-inline-size: 0;
+  }
+
   .sf-color-field:has(.sf-color-trigger:disabled) .sf-color-label {
     color: var(--sf-on-surface-disabled);
   }

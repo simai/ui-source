@@ -4,7 +4,8 @@ Base selection component for choosing one or several machine values from a
 concealed option list.
 
 The root uses `.sf-dropdown`, one of the five size modifiers `1/3`, `1/2`, `1`,
-`2`, or `3`, one appearance modifier (`outlined` or `filled`), and either the
+`2`, or `3`, one appearance modifier (`outlined` or `filled`; sf-dropdown's
+`appearance="bordered"` draws `outlined`, FM-9), and either the
 `text` or `tag` presentation. A filled field draws its bottom edge in
 `--sf-outline` (C52, as `sf-input`); focus and an open list colour the whole
 border that colour. The visible label stays separate from each

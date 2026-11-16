@@ -126,7 +126,7 @@ function renderField(context) {
   return html`<sf-dropdown
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
       mode="select"
-      appearance="outlined"
+      appearance="bordered"
       size=${context.fieldSize}
       label=${context.label}
       .options=${context.fieldOptions}

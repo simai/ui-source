@@ -38,8 +38,14 @@ test('every overlay is made from its component.json, language files and aliases'
     const table = json(`src/smart/${folder}/aliases.json`);
     const {rows} = readAliasTable(table, {tag: manifest.tag});
     for (const row of rows) {
-      assert.equal(row.since, '2026-10-27', `${folder}: ${row.from}`);
-      assert.equal(row.remove_after, '2026-12-01', `${folder}: ${row.from}`);
+      // The overlay batch's rows are dated 2026-10-27 .. 2026-12-01; a later
+      // decision's row (sf-dropdown outlined -> bordered, FM-9) carries its
+      // own dates (and its change-journal record, tests/dropdown-bordered-fm9).
+      if (row.since === '2026-10-27') {
+        assert.equal(row.remove_after, '2026-12-01', `${folder}: ${row.from}`);
+      } else {
+        assert.ok(row.since > '2026-10-27' && /^\d{4}-\d{2}-\d{2}$/u.test(row.remove_after ?? ''), `${folder}: ${row.from} dated`);
+      }
     }
   }
 });

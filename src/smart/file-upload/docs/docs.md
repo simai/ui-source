@@ -107,7 +107,17 @@ does not change the control's dimensions or paint over neighboring file text.
 
 ## Attributes
 
-- `size="1/3|1/2|1|2|3"`
+- `size="1/3|1/2|1|2|3"` — the field ladder's step, as sf-input's (since 1.5.0
+  `1/3` and `3` are the area's own steps: the words on the size's text, the
+  padding and gap from the space ladder; before, they drew `1/2` and `2`). A
+  file's row keeps the file family's three sizes, `1/2` under `1/3` and `2`
+  under `3`.
+- `label` — the visible label above the area (since 1.5.0), in the text ink a
+  step below the area's words, as every field's; it names the area unless the
+  page gives `aria-label`. With `required` it carries the «*».
+- `help` — the «?» (`sf-help-mark`) after the label and its «*» (since 1.5.0),
+  as sf-input's `help`: named «Подробнее: <label>», the label row keeping its
+  height. Without `label` there is no mark.
 - `icon` — the glyph in the drop zone; the neutral default is `upload_file`
 - `link-text` — the link words inside the zone ("Выберите файл", "Click to
   upload"); the component's own words when not set

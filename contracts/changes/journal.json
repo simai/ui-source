@@ -17327,6 +17327,30 @@
       "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
     },
     {
+      "id": "value-dropdown-appearance-outlined-to-bordered",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The field look is named bordered in every field (FM-9, dispatcher decision 2026-11-16): sf-input, sf-input-textarea, sf-input-lookup and sf-input-rich said bordered, sf-dropdown alone said outlined for the same look. sf-dropdown 1.18.0 takes appearance=\"bordered\" (the default, drawn as before) and keeps outlined as its dated alias: the attribute is rewritten to bordered and the use is noted once in SF.deprecations. The base component's class modifier .sf-dropdown--outlined is unchanged.",
+      "items": [
+        {
+          "component": "sf-dropdown",
+          "attribute": "appearance",
+          "from": "outlined",
+          "to": "bordered"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-dropdown appearance=\"outlined\" label=\"Статус\"></sf-dropdown>",
+        "after": "<sf-dropdown appearance=\"bordered\" label=\"Статус\"></sf-dropdown>"
+      },
+      "manual": "Write appearance=\"bordered\" for appearance=\"outlined\" (and type=\"outlined\", the axis's old name) on sf-dropdown, or leave the attribute out: bordered is the default. Class markup keeps .sf-dropdown--outlined.",
+      "source": "src/smart/dropdown/aliases.json; src/smart/dropdown/index.js"
+    },
+    {
       "id": "utility-c210-scrollbar-retired-sheets",
       "recorded_on": "2026-11-15",
       "stage": "compat",
