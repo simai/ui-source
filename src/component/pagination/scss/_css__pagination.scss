@@ -122,6 +122,18 @@
   text-decoration: none;
 }
 
+/* The place's width counts the button's side padding only, so the number's
+   words take no label padding of their own and never break: with the button's
+   label padding (--sf-ui-1--text-space-x, 8 a side) on top a two-digit number
+   had 4 pixels too few and stood as two lines, a 64 high button in a 40 row
+   (found with RG-NV 9; the place stays the width the formula gives, 2 digits:
+   51). The plain sf-page-number draws the same width. */
+.sf-pagination .sf-pagination-slot > .sf-pagination-page > .sf-button-text-container {
+  --sf-button-text-container--padding-inline-start: 0;
+  --sf-button-text-container--padding-inline-end: 0;
+  white-space: nowrap;
+}
+
 /* The gap is not a control: a mark of the pages left out. */
 .sf-pagination .sf-pagination-gap {
   display: inline-flex;
