@@ -737,7 +737,7 @@
 
   .sf-drawer-handle:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(var(--sf-focus--width) * -1);
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-drawer[data-sf-drawer-placement='bottom'] .sf-drawer-head {

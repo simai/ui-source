@@ -434,7 +434,7 @@
      never cuts it (R242), and nothing moves. */
   .sf-input:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-input-field {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(-1 * var(--sf-focus--width));
+    outline-offset: var(--sf-focus--inset);
   }
 
   /* The global :focus-visible rule paints the ring on whatever holds the focus.
@@ -474,8 +474,8 @@
 @layer sf.states {
   @media (forced-colors: active) {
     .sf-input:has(input:not(:disabled):not(.disabled):focus) .sf-input-field {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: calc(-1 * var(--sf-focus--width));
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
       --sf-input-field--box-shadow: none;
     }
   }

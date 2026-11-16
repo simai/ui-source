@@ -30,7 +30,7 @@ test('Outline uses Framework roles and reserves stable current geometry', async 
     '--sf-on-primary-container',
     '--sf-focus--width',
     '--sf-focus--color',
-    '--sf-focus-outline-width',
+    '--sf-focus--inset',
   ]) {
     assert.ok(css.includes(token), token);
   }

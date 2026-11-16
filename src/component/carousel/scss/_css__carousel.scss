@@ -106,7 +106,7 @@
 .sf-carousel-rotation:focus-visible,
 .sf-carousel-pagination-item:focus-visible {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: calc(var(--sf-focus--width) * -1);
+  outline-offset: var(--sf-focus--inset);
 }
 
 .sf-carousel-switch--secondary-container {
@@ -300,7 +300,7 @@ button.sf-carousel-pagination-item {
   .sf-carousel-switch,
   .sf-carousel-rotation,
   .sf-carousel-pagination {
-    border: var(--sf-focus-outline-width) solid ButtonText;
+    border: var(--sf-focus--width) solid ButtonText;
     forced-color-adjust: none;
   }
 

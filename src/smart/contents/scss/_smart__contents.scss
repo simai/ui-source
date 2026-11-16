@@ -131,7 +131,7 @@ sf-contents[data-empty] > .sf-contents {
    drawn outside. */
 .sf-contents-link:focus-visible {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: calc(-1 * var(--sf-focus--width));
+  outline-offset: var(--sf-focus--inset);
 }
 
 .sf-contents-mark {

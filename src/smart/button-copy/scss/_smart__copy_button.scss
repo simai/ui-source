@@ -61,6 +61,6 @@
    the button's own ring is. Outside a field the ring is unchanged. */
 @layer sf.states {
   .sf-input-field .sf-copy-button :is(.sf-icon-button, .sf-button):not(:disabled):not(.disabled):focus-visible {
-    outline-offset: calc(-1 * (var(--sf-focus--width) + var(--sf-px)));
+    outline-offset: calc(var(--sf-focus--inset) - var(--sf-px));
   }
 }

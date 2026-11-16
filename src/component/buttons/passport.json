@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.buttons",
   "kind": "component",
-  "version": "1.16.0",
+  "version": "1.17.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/buttons/docs/docs.md",
@@ -17,7 +17,7 @@
     "src/component/buttons/scss/_css__utility_hint_layout.scss",
     "src/component/buttons/scss/index.scss"
   ],
-  "content_sha256": "4cc3d9ca86cbd9599034977310a79ffe838b271648f610b0f3dac0a5a481c432",
+  "content_sha256": "ed452ece82328e7d496db58b68e92ed2a6e91460b473129f3b2d07f02dfb91d0",
   "dependencies": [
     {
       "id": "component.spinner",

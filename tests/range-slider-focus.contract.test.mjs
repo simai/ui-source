@@ -29,5 +29,5 @@ test('range slider uses actual handle keyboard focus and system high contrast',a
   // The handle stands free on the track, so the ring sits outside its edge.
   assert.match(styles,/outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/);
   assert.match(styles,/@media \(forced-colors: active\)/);
-  assert.match(styles,/outline: var\(--sf-focus-outline-width\) solid Highlight/);
+  assert.match(styles,/outline: var\(--sf-focus--width\) solid Highlight/);
 });

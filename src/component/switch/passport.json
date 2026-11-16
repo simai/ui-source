@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.switch",
   "kind": "component",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/switch/docs/docs.md",
@@ -15,7 +15,7 @@
     "src/component/switch/scss/_css_switch_custom.scss",
     "src/component/switch/scss/index.scss"
   ],
-  "content_sha256": "cb4f0a4c29ba65d317042c7051b46e5d1d6637444dfc5ac60b04fa4edbc91d7e",
+  "content_sha256": "403d001c4b8b4cef1fea4f7048b9f0a0f651fd450157e01500cc4e837e773d8a",
   "dependencies": [
     {
       "id": "core.runtime",

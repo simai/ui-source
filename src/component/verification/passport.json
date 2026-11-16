@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.verification",
   "kind": "component",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/verification/docs/docs.md",
@@ -18,7 +18,7 @@
     "src/component/verification/scss/_css__verification_custom.scss",
     "src/component/verification/scss/index.scss"
   ],
-  "content_sha256": "8dc5c140ed78ebe69d1934e9c50815ef5a2329e78e8a998832a24f6556eb3516",
+  "content_sha256": "6df6762e8c863a853a2bc5f9460417b52dc6c1fc86628990aae893b0a2200e2c",
   "dependencies": [
     {
       "id": "component.inputs",

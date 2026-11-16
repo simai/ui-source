@@ -17,7 +17,7 @@
     "src/component/checkbox/scss/_custom__checkbox.scss",
     "src/component/checkbox/scss/index.scss"
   ],
-  "content_sha256": "5c36294e9ca6d72b0a258dda4a0ac15c0e887ee59209d174bec1ec1cd5442cb9",
+  "content_sha256": "827daf2e40777afcf315c94ead1be46111d103c81d81a4003c994cc58a3db39a",
   "dependencies": [
     {
       "id": "core.runtime",

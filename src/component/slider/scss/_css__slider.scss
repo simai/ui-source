@@ -259,7 +259,7 @@
   border-radius: var(--sf-slider-thumbnail--border-radius, var(--sf-slider-thumbnail-radius, var(--sf-radius--ui)));
 }
 .sf-slider .sf-slider-thumbnails .swiper-slide:focus-visible {
-  outline-offset: calc(var(--sf-focus--width) * -1);
+  outline-offset: var(--sf-focus--inset);
 }
 
 /* With thumbnails the controls over a picture stand on the slides only: the

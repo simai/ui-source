@@ -14,7 +14,7 @@ test('Textarea presentation uses UI, hairline, motion and safe resize contracts'
   assert.match(css, /transition-duration:\s*var\(--sf-duration-fast\)/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   // C153 (4), R242: mouse and keys alike, a 2 px edge inside the field.
-  assert.match(css, /\.sf-textarea:has\(textarea:enabled:not\(:disabled\):not\(\.disabled\):focus\) textarea \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: calc\(-1 \* var\(--sf-focus--width\)\);/);
+  assert.match(css, /\.sf-textarea:has\(textarea:enabled:not\(:disabled\):not\(\.disabled\):focus\) textarea \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: var\(--sf-focus--inset\);/);
   assert.doesNotMatch(css, /--sf-ui-radius-default/);
   assert.doesNotMatch(css, /(?:^|[\s:])1px(?:[\s;]|$)/m);
   const resizeUtility = await source('utility/resize/default/scss/_sf_css__resize.scss');

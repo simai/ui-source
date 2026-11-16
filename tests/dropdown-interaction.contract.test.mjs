@@ -25,7 +25,7 @@ test('joined dropdown and options use keyboard-only semantic inset focus',async(
   assert.doesNotMatch(item,/--sf-list-item--background-color: var\(--sf-ui-focus\)/);
   assert.ok(custom.includes(':has(> [aria-haspopup]:focus-visible)'));
   // The ring is an outline turned inwards now, not an inset shadow.
-  assert.ok(custom.includes('outline-offset: calc(var(--sf-focus--width) * -1)'));
+  assert.ok(custom.includes('outline-offset: var(--sf-focus--inset)'));
   assert.ok(custom.includes('solid Highlight'));
   assert.match(custom,/@layer sf\.states\s*\{\s*\.sf-dropdown/);
   // Important, so a page's unlayered :focus-visible rule cannot draw a second

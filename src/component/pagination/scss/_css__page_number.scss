@@ -107,7 +107,7 @@
 @media (forced-colors: active) {
   .sf-page-number:not(:disabled):not(.disabled):focus-visible {
     outline: var(--sf-a2) solid Highlight;
-    outline-offset: var(--sf-a1);
+    outline-offset: var(--sf-focus--offset);
   }
 
   .sf-page-number.selected {

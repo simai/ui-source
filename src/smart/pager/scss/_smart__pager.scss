@@ -405,7 +405,7 @@
 
 @media (forced-colors: active) {
   .sf-pager-side:focus-visible {
-    outline: var(--sf-focus-outline-width) solid currentColor;
+    outline: var(--sf-focus--width) solid currentColor;
   }
 
   .sf-pager-segment--done,

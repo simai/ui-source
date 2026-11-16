@@ -147,8 +147,8 @@
 
   @media (forced-colors: active) {
     .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
       --sf-breadcrumbs-item--box-shadow: none;
     }
   }

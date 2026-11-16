@@ -13,7 +13,7 @@ for (const [name, file] of [
     assert.doesNotMatch(css, /:focus(?![\w-])/);
     assert.match(css, /:focus-visible/);
     assert.match(css, /@media\s*\(forced-colors:\s*active\)/);
-    assert.match(css, /outline:\s*var\(--sf-focus-outline-width\) solid currentColor/);
+    assert.match(css, /outline:\s*var\(--sf-focus--width\) solid currentColor/);
     assert.match(css, /forced-color-adjust:\s*none/);
     assert.match(css, /background-color:\s*Highlight/);
     assert.match(css, /(?:background-color|color):\s*GrayText/);

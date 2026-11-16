@@ -310,8 +310,8 @@
     }
     .sf-checkbox:has(input:disabled) .sf-checkbox-box .sf-icon { color: GrayText; }
     .sf-checkbox:has(input:not(:disabled):not(.disabled):focus-visible) .sf-checkbox-box {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
       --sf-checkbox-box--box-shadow: none;
     }
   }

@@ -398,7 +398,7 @@
    inside the field, over its border; no ring outside, nothing moves. */
 .sf-country-code:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-country-code-field {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: calc(-1 * var(--sf-focus--width));
+  outline-offset: var(--sf-focus--inset);
 }
 
 /* The global :focus-visible rule paints the ring on whatever holds the focus.

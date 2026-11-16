@@ -15,7 +15,7 @@
     "src/component/tags/scss/_var__tags.scss",
     "src/component/tags/scss/index.scss"
   ],
-  "content_sha256": "efb992f0f47dd045672d34464397b2284a4844cff1fab3adf1851b69c4555ea9",
+  "content_sha256": "e13906aa8223b2244b961d1f0b43152a1f139144625a26f2ca51f50a512d564c",
   "dependencies": [
     {
       "id": "tokens.border",

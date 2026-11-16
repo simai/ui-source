@@ -67,7 +67,7 @@ size, overflow strategy or arbitrary custom template.
 
 Inset focus uses the foreground role belonging to its control surface, rather
 than the translucent external focus halo. Its width follows
-`--sf-focus-outline-width`. `--sf-tabs--focus-color` is an optional local override
+`--sf-focus--width` and it stands inside the tab by `--sf-focus--inset`. `--sf-tabs--focus-color` is an optional local override
 for a custom surface; use a semantic role and recheck its contrast. Forced-colors
 mode retains an inset system outline. The shared base component owns this skin.
 

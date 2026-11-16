@@ -840,8 +840,8 @@
 
   @media (forced-colors: active) {
     .sf-button:not(:disabled):not(.disabled):focus-visible {
-      outline: var(--sf-focus-outline-width) solid currentColor;
-      outline-offset: var(--sf-focus-outline-width);
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
     }
 
     /* A filled button keeps an edge in forced colours (simai/ui-source#25,

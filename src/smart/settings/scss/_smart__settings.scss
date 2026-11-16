@@ -430,7 +430,7 @@
   /* The ring turns inwards: the row stands flush against its neighbours. */
   .sf-settings-row-main:focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: calc(-1 * var(--sf-focus--width));
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-settings-panel-search {

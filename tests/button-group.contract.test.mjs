@@ -89,7 +89,7 @@ test('button group keeps layout and state ownership separated', async () => {
   assert.match(styles, /focus-visible/);
   // One ring for the system: inside a seamless group it is the same outline,
   // turned inwards, instead of a second inset shadow of its own.
-  assert.match(styles, /outline-offset: calc\(var\(--sf-focus--width\) \* -1\)/);
+  assert.match(styles, /outline-offset: var\(--sf-focus--inset\)/);
   assert.doesNotMatch(styles, /--sf-ui-focus/);
   assert.match(styles, /forced-colors: active/);
   assert.match(styles, /prefers-reduced-motion: reduce/);

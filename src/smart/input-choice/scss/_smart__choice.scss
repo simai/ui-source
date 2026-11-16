@@ -280,7 +280,7 @@
 
 .sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-px);
+  outline-offset: var(--sf-focus--offset);
 }
 
 .sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
@@ -616,7 +616,7 @@
     }
 
     .sf-choice .sf-choice-card:has(.sf-choice-input:focus-visible) {
-      outline: var(--sf-focus-outline-width) solid currentColor;
+      outline: var(--sf-focus--width) solid currentColor;
     }
   }
 

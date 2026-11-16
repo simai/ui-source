@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.pagination",
   "kind": "component",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "owner": "simai/ui-source",
   "files": [
     "src/component/pagination/docs/docs.md",
@@ -17,7 +17,7 @@
     "src/component/pagination/scss/_var__pagination.scss",
     "src/component/pagination/scss/index.scss"
   ],
-  "content_sha256": "e89d3152940f6a2c68e46200d2dfb3f2e7f42ba6a199c0ead9a4bfbe50efdfad",
+  "content_sha256": "f0fc5a0bc4c920582c74fe9ac16b21e51b9ed02a62412877d28be35220d8b340",
   "dependencies": [
     {
       "id": "tokens.border",

@@ -41,6 +41,13 @@
 	// Ring and gap are in pixels, like every hairline: they mark an edge and
 	// stay 2px and 1px whatever the root font size (owner, 2026-10-10).
 	--sf-focus--offset: var(--sf-px);
+	// The other side (owner decision C212 (7), 2026-11-16): a ring drawn inside
+	// the element's edge -- a tab, a menu row, a segment, a field cell, a
+	// control that sits flush against its neighbours or inside a box that
+	// clips -- stands in by its own width. A focus rule reads one of the two,
+	// --sf-focus--offset outwards or --sf-focus--inset inwards, and writes no
+	// distance of its own (scripts/check-focus-offsets.mjs).
+	--sf-focus--inset: calc(var(--sf-focus--width) * -1);
 	--sf-focus--style: solid;
 	// One width, one name (owner decision C178, 2026-11-14): the focus family
 	// is --sf-focus--color/offset/style/width, the name the docs promise, and
