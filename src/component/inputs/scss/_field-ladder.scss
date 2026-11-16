@@ -67,15 +67,22 @@ $-below: ('1/3': '1/4', '1/2': '1/3', '1': '1/2', '2': '1', '3': '2');
 // the icon ladder's own rung (--sf-icon-size-4). Writes the three icon
 // variables a field's .sf-icon reads.
 @mixin icon($size) {
-  --sf-icon--font-size: #{text-height($size)};
-  --sf-icon--height: #{text-height($size)};
-  --sf-icon--width: #{text-height($size)};
+  @include icon-size((--sf-icon--font-size, --sf-icon--height, --sf-icon--width), $size);
+}
+
+// The same icon of the step written to the properties a field names itself:
+// a field action's glyph (--sf-field-action--glyph), or a field's own icon
+// variable its pictures read. One rung for every field of the ladder.
+@mixin icon-size($properties, $size) {
+  @each $property in $properties {
+    #{$property}: #{text-height($size)};
+  }
 
   @if $size == '3' {
     @media not all and (min-width: 60rem) {
-      --sf-icon--font-size: var(--sf-icon-size-4);
-      --sf-icon--height: var(--sf-icon-size-4);
-      --sf-icon--width: var(--sf-icon-size-4);
+      @each $property in $properties {
+        #{$property}: var(--sf-icon-size-4);
+      }
     }
   }
 }
