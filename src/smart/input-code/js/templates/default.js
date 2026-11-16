@@ -1,6 +1,7 @@
 import {html, nothing} from 'lit';
 import {live} from 'lit/directives/live.js';
 import {repeat} from 'lit/directives/repeat.js';
+import {renderFieldHelp} from '../../../helpers/field-help';
 
 function joinClasses(...tokens) {
   return tokens.flat().filter(Boolean).join(' ');
@@ -77,7 +78,7 @@ export function renderCodeInputTemplate(context) {
       ${hasLabel
         ? html`<label class="sf-verification-form-label" id=${labelId} for=${field.controlId}>${labelContent}${required
           ? html`<span class="sf-code-input-required" aria-hidden="true">*</span>`
-          : nothing}</label>`
+          : nothing}${renderFieldHelp({help: context.help, label: context.label, size, className: 'sf-code-input-help', component: context.component})}</label>`
         : nothing}
       <div class=${joinClasses('sf-verification', `sf-verification--size-${size}`, filled ? 'sf-verification--filled' : '', field.invalid ? 'error' : '')}>
         <input

@@ -10,6 +10,8 @@ SF.RuleLoader['cl-input-color'] = {
   js: true,
   css: true,
   relation: [
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
     { name: 'icons' },
     // inputs: the field layer's .sf-field-action rules (owner decision C123), which the reset inside the frame takes, as sf-input's clear and reveal do.
     { name: 'inputs' },

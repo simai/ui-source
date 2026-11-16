@@ -1438,7 +1438,8 @@
       "composition": {
         "public_parts": [],
         "uses": [
-          "component.verification"
+          "component.verification",
+          "smart.help-mark"
         ]
       },
       "contract_schema": {
@@ -1450,7 +1451,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-code/smart.manifest.json",
-      "manifest_sha256": "22c6ff82683d1a2e98ea97c116eca8c0b08a06aeeedd68bf06ab9dd6143149ac",
+      "manifest_sha256": "e2d85e9a3b654af29d3e03d65961278426acd4c923cc4e17874c04e13bfb01e6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1499,6 +1500,7 @@
           "smart.button",
           "smart.button-copy",
           "smart.button-icon",
+          "smart.help-mark",
           "smart.icon",
           "smart.segmented"
         ]
@@ -1512,7 +1514,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "b9ab803ffb616a1ce8086b2840b7f3a66230a4e03873df5555f3c92f6c497363",
+      "manifest_sha256": "69a940ce0cbf9afaca7dbbe843ec86cf474717aa11335ae5b99ea5c4d27101e0",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

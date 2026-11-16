@@ -58,6 +58,7 @@
     "decimal": ".",
     "scheme-dark": "dark",
     "scheme-light": "light",
-    "brand": "Brand colour"
+    "brand": "Brand colour",
+    "help": "More about: {label}"
   }
 }

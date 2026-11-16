@@ -1,6 +1,7 @@
 import {html, nothing} from 'lit';
 import {createFieldContract} from '../../../../component/field-contract';
 import {renderInheritedSlot} from '../../../helpers/inherited-value';
+import {renderFieldHelp} from '../../../helpers/field-help';
 import {alphaOf, isPaletteName, paletteFill, solidOf} from '../color-math.js';
 import './default.css';
 
@@ -65,7 +66,13 @@ export function renderColorTemplate(context) {
                     // One field label look for every field (FB-10, CO-04):
                     // the trigger carries the same words as its name, so the
                     // visible copy is hidden from the accessibility tree.
-                    ? html`<span class="sf-color-label" aria-hidden="true">${context.label}</span>`
+                    // The «?» of help (C153 (8), helpers/field-help.js) stands
+                    // after the label in one row, outside the hidden copy so
+                    // it is reached and read; without help the label is the
+                    // row, as before.
+                    ? (context.help
+                        ? html`<span class="sf-color-label-row"><span class="sf-color-label" aria-hidden="true">${context.label}</span>${renderFieldHelp({help: context.help, label: context.label, size, className: 'sf-color-help', component})}</span>`
+                        : html`<span class="sf-color-label" aria-hidden="true">${context.label}</span>`)
                     : nothing}
             <div class="sf-color sf-color--${appearance} sf-color--size-${size}"
                  data-set=${isSet ? 'true' : 'false'}

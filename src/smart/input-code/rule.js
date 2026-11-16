@@ -10,6 +10,8 @@ SF.RuleLoader['cl-input-code'] = {
   js: true,
   css: true,
   relation: [
+    // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
+    { name: 'cl-help-mark' },
     { name: 'verification' },
     { name: 'sr-only/default' },
   ],

@@ -57,6 +57,7 @@
     "decimal": ",",
     "scheme-dark": "қараңғы",
     "scheme-light": "ашық",
-    "brand": "Фирмалық түс"
+    "brand": "Фирмалық түс",
+    "help": "Толығырақ: {label}"
   }
 }
