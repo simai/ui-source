@@ -47,7 +47,8 @@ edge (compact and phone 12); before they stood 17 (13).
 
 ## Where the action stands (1.3.0, owner decision C115)
 
-A toast with one action puts it in the row with the text from 20rem (320 px)
+A toast with one action puts it in the row with the text from 24rem (384 px;
+20rem until owner decision C218, which left a 330 px toast's title on two lines)
 of the toast's own width -- every toast of the notification area, which is
 28rem wide -- centred on the text block; with a one-line text the label stands
 on the title line, with the icon and the close. Narrower, or with two

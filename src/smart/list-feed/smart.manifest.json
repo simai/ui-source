@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-feed",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "title": "Feed",
   "summary": "A feed: a scrolling column of entries read from the newest at the end -- a conversation, comments, an activity history, an audit log. Keeps the reading place while history is added above, follows the end only when the reader is there, «to the latest», asks once for earlier history, announces what is new once, draws a growing entry in place. The host draws each entry.",
   "kind": "composite",
@@ -847,7 +847,7 @@
       },
       {
         "path": "src/smart/list-feed/component.json",
-        "sha256": "f8eb4f489af42bd821d65987ed2a23848853a11f297432495fc231213571f1e0"
+        "sha256": "8acec3f51e8142c48a32d68eba19ba6e35df2b0b42fa551a7e0984fd4c5b192c"
       },
       {
         "path": "src/smart/list-feed/lang/en.json",

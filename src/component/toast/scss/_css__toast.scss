@@ -133,8 +133,10 @@
   }
 
   /* Where the action stands (owner decision C115, layout L3a; AA-7, AA-8): a
-     toast with one action puts it in the row with the text from 20rem of the
-     toast's own width (every toast of the notification area, 28rem), centred
+     toast with one action puts it in the row with the text from 24rem of the
+     toast's own width (owner decision C218: from 20rem a 330 px toast broke
+     its title onto two lines; every toast of the notification area, 28rem,
+     keeps the row), centred
      on the text block, its plate overhanging the line by the low button's
      block padding, as the close does (C35); narrower, or with two actions,
      under the text from its start. The toast with an action is the query
@@ -148,7 +150,7 @@
     container: sf-toast / inline-size;
   }
 
-  @container sf-toast (min-width: #{mq.container-step(g0, $frame: 2 * 1rem)}) {
+  @container sf-toast (min-width: #{mq.container-step(g2, $frame: 2 * 1rem)}) {
     .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
       flex-direction: row;
       align-items: center;

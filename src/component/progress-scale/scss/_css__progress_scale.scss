@@ -45,6 +45,23 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The value at the end of the track's row, centred on it (owner decision
+   C219, as the bar's inline-end and the level of C185 (5), C203): the
+   blocks fill the row, the value keeps its width. It stood under the track. */
+.sf-progress-scale {
+  align-items: center;
+}
+
+.sf-progress-scale .sf-progress-scale-container {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.sf-progress-scale .sf-progress-scale-text {
+  flex: none;
+  white-space: nowrap;
+}
+
 .sf-progress-scale--10 .sf-progress-scale-block:nth-child(-n + 1),
 .sf-progress-scale--20 .sf-progress-scale-block:nth-child(-n + 2),
 .sf-progress-scale--30 .sf-progress-scale-block:nth-child(-n + 3),
@@ -76,7 +93,8 @@
 }
 .sf-progress-scale--size-1 {
   --sf-progress-scale--font-size: var(--sf-text-size-1\/2);
-  --sf-progress-scale--gap: var(--sf-progress-scale-gap, var(--sf-space-1\/4));
+  /* The bar's gap at the same size (C219): 8 from the track to the value. */
+  --sf-progress-scale--gap: var(--sf-progress-scale-gap, var(--sf-space-1\/3));
   --sf-progress-scale--line-height: var(--sf-text-height-1\/2);
 }
 .sf-progress-scale--size-2 {

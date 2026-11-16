@@ -13,7 +13,7 @@
     "src/component/progress-scale/scss/_css__progress_scale.scss",
     "src/component/progress-scale/scss/index.scss"
   ],
-  "content_sha256": "320427d019f4d8a7f0a7103524b008c3e4c6e88ab30d83949891e7f31ddd8329",
+  "content_sha256": "efadb3c035adcf1e97e40b268ec9428b99e7590e7c06b2f43594c45d8aac49c9",
   "dependencies": [
     {
       "id": "core.runtime",

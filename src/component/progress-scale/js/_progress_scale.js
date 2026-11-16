@@ -130,12 +130,11 @@ function renderProgressScale(root) {
   );
   const showText = normalizeBoolean(root.dataset.showText, true);
 
-  // A scale on a text line, and a level scale, lay their track and value out
-  // in a row, the value at the row's end (C185 (5)); any other scale stands
-  // its value under the track.
-  const onRow = level || /(^|\s)sf-progress-scale--line-/.test(root.className);
-  root.classList.add('sf-progress-scale', 'flex', onRow ? 'flex-row' : 'flex-col');
-  root.classList.remove(onRow ? 'flex-col' : 'flex-row');
+  // Every scale lays its track and value out in a row, the value at the
+  // row's end, as the bar's inline-end and the level (owner decision C219,
+  // with C185 (5) and C203); it stood under the track before.
+  root.classList.add('sf-progress-scale', 'flex', 'flex-row');
+  root.classList.remove('flex-col');
   root.classList.toggle('sf-progress-scale--level', level);
   syncScaleClasses(root, step, size, drawn);
   root.dataset.value = String(value);

@@ -157,8 +157,13 @@ $sf-loader-looks: (
   }
 }
 
-/* Reduced motion: the arc stands still at its own 30 % of the ring (the
-   look under reduced motion waits for the owner, C130 (7)). */
+/* Reduced motion (owner decision C220, closes C130 (7)): nothing turns, and
+   no arc stands still either -- a 30 % arc read as an amount done. The whole
+   ring is tinted with the spinner's ink at 32 %, the top of the fill family,
+   and the arc is not drawn: the picture of the paused and reduced-motion bar
+   and ring (C131 (8)). The same in every place, as every spinner -- on its
+   own, in a button, an icon button, a field, a badge, a modal -- is this
+   drawing under this sheet. */
 @media (prefers-reduced-motion: reduce) {
   .sf-loader-container .sf-loader-svg,
   .sf-loader-container .sf-loader-ring-accent,
@@ -167,7 +172,12 @@ $sf-loader-looks: (
   }
 
   .sf-loader-container .sf-loader-ring-accent {
+    display: none;
+  }
+
+  .sf-loader-container .sf-loader-ring-filled {
     opacity: 1;
+    stroke: color-mix(in srgb, currentColor 32%, transparent);
   }
 }
 

@@ -28,6 +28,6 @@ test('line composition: badge and scale take the text line', async () => {
   assert.match(tagRuntime, /if \(line\) return \(\{ '1\/2': '1\/3', '1': '1\/2', '2': '1' \}\)\[line\];/);
   const core = await read('component/progress-scale/js/_progress_scale.js');
   // A scale on a line, and a level scale (C185 (5)), lay out in a row.
-  assert.match(core, /const onRow = level \|\| \/\(\^\|\\s\)sf-progress-scale--line-\/\.test\(root\.className\);/);
-  assert.match(core, /onRow \? 'flex-row' : 'flex-col'/);
+  // C219: every scale is a row now, the value at its end.
+  assert.match(core, /root\.classList\.add\('sf-progress-scale', 'flex', 'flex-row'\);/);
 });

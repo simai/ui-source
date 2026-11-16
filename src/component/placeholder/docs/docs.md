@@ -25,8 +25,12 @@ The default and `.sf-placeholder--column` layouts place the optional visual
 above centered content. `.sf-placeholder--row` places them side by side, aligns
 copy to inline start and wraps when the host becomes constrained.
 
-Title and description use the normal body size and line height. Weight and role
-color provide hierarchy, avoiding arbitrary component-specific text sizes.
+The title holds the heading ladder (owner decisions C21 and C44): an `h1` to
+`h6` title takes its level's role (36 / 32 / 24 / 20 / 16 / 16 on a desktop,
+the phone's steps on a phone, the same in a compact region), any other element
+the heading-4 role (20/24), at medium weight. The description is body text in
+the quiet ink. `sf-empty-state` draws its block form from these parts and picks
+the title's rung by its size.
 
 ## Compatibility
 

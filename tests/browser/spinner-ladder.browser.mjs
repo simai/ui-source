@@ -15,7 +15,8 @@
 //     SF.deprecations, under the name the page wrote; a spinner on the ladder
 //     notes nothing;
 //   - the arc turns without end when infinite (a fixed 30% of the ring,
-//     simai/ui-source#13), and under reduced motion it is the same arc, still.
+//     simai/ui-source#13); under reduced motion nothing turns and no arc is
+//     drawn, the whole ring is the ink at 32 % (owner decision C220).
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -157,7 +158,7 @@ try {
     await page.close();
   }
 
-  // 4. Reduced motion: a still arc, at every step.
+  // 4. Reduced motion (C220): no arc, the whole ring at 32 %, at every step.
   {
     const page = await open({reducedMotion: 'reduce', body: SIZES.map((size) => `<sf-spinner size="${size}" infinite label=""></sf-spinner>`).join('')});
     const still = await page.evaluate((source) => {
@@ -165,11 +166,12 @@ try {
       return [...document.querySelectorAll('sf-spinner .sf-loader-container')].map((node) => {
         const result = measure(node);
         const accent = node.querySelector('.sf-loader-ring-accent');
-        return {...result, opacity: getComputedStyle(accent).opacity};
+        const ring = getComputedStyle(node.querySelector('.sf-loader-ring-filled'));
+        return {...result, accent: getComputedStyle(accent).display, ring: ring.stroke, ringOpacity: ring.opacity};
       });
     }, MEASURE);
-    evidence.reducedMotion = still.map(({animation, spin, dash, opacity}) => ({animation, spin, dash, opacity}));
-    check('reduced motion: no animation, the arc still at 30%', still.length === 5 && still.every((row) => row.animation === 'none' && row.spin === 'none' && /^30(px)?, 70(px)?$/u.test(row.dash) && row.opacity === '1'), {still});
+    evidence.reducedMotion = still.map(({animation, spin, accent, ring, ringOpacity}) => ({animation, spin, accent, ring, ringOpacity}));
+    check('reduced motion: no animation, no arc, the ring at 32 %', still.length === 5 && still.every((row) => row.animation === 'none' && row.spin === 'none' && row.accent === 'none' && /\/ 0\.32\)$/u.test(row.ring) && row.ringOpacity === '1'), {still});
     await page.close();
   }
 } finally {

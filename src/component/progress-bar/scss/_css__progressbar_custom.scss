@@ -38,11 +38,18 @@
   animation: sf-progress-bar-run calc(var(--sf-duration-slow) * 4) var(--sf-ease-move) infinite;
 }
 
-/* Paused (C34): time stands still, so the segment stops. It stands at the
-   start of the track, as under reduced motion, not at the frame the pause
-   caught (a new drawing would restart it off the track). */
+/* Paused (C34) and reduced motion (PG-16, owner decision C131 (8), #q-motion
+   of control/research/2026-11-13-progress-family.md): with no value to show,
+   a segment standing still at the start read as 30 % done (72 of 240 px). The
+   whole track is tinted with the fill at the top of the fill family (32 %)
+   and no segment is drawn, so nothing on the bar looks like an amount. A
+   paused bar draws this in every motion mode (RG-PB-1); reduced motion draws
+   it for a running one too (below). */
 .sf-progress-bar.sf-progress-bar--indeterminate.sf-progress-bar--paused .sf-progress-bar-progress {
+  inset-inline: 0;
+  width: auto;
   animation: none;
+  background-color: color-mix(in srgb, var(--sf-progress-bar-progress--background-color) 32%, transparent);
 }
 
 @keyframes sf-progress-bar-run {
@@ -60,11 +67,8 @@
     transition-duration: 0s;
   }
 
-  /* Reduced motion (PG-16, owner decision C131 (8), #q-motion
-     of control/research/2026-11-13-progress-family.md): a segment standing
-     still at the start read as 30 % done. With no value to show, the whole
-     track is tinted with the fill at the top of the fill family (32 %) and
-     no segment is drawn, so nothing on the bar looks like an amount. */
+  /* Reduced motion (C131 (8)): the paused drawing above, whether the work
+     runs or not. */
   .sf-progress-bar.sf-progress-bar--indeterminate .sf-progress-bar-progress {
     inset-inline: 0;
     width: auto;
