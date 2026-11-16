@@ -60,7 +60,8 @@ test('drawer r-077 (3): content headings start below the panel title, by role to
   }
   assert.doesNotMatch(body, /\d+px|\d+rem/u, 'roles only, no raw numbers');
   // The title keeps the h4 step: it is in the head, outside the shift.
-  assert.match(sheet, /\.sf-drawer-title \{[^}]*font-size: var\(--sf-heading-4--size\);/u);
+  // (1.16.4, VP-5: through the panel's title step, taken above the shift.)
+  assert.match(sheet, /\.sf-drawer-title \{[^}]*font-size: var\(--sf-drawer--title-size, var\(--sf-heading-4--size\)\);/u);
   assert.match(docs, /`h1` рисуется на ступени `h5`/u);
 });
 

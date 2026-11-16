@@ -38,7 +38,7 @@ test('C180 (2): the panel head is one row -- title, one icon action, sf-button-c
   assert.match(drawerJs, /<sf-button-close/u, 'the close is sf-button-close (C14)');
   const head = rule('.sf-drawer-head', drawerSheet);
   assert.match(head, /gap: var\(--sf-space-1\\\/3\);/u, 'the head buttons are a button group apart (8, compact 4)');
-  assert.match(rule('.sf-drawer-title', drawerSheet), /font-size: var\(--sf-heading-4--size\);/u, 'the title is the window title step (C157 (7) = C159 (5))');
+  assert.match(rule('.sf-drawer-title', drawerSheet), /font-size: var\(--sf-drawer--title-size, var\(--sf-heading-4--size\)\);/u, 'the title is the window title step (C157 (7) = C159 (5))');
   const section = docs.slice(docs.indexOf('## Свойства записи в панели'));
   assert.match(section, /slot="footer"/u);
   assert.match(section, /больше одного/u);

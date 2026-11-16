@@ -75,6 +75,12 @@
     --sf-drawer--edge-end: calc(var(--sf-px) * 0);
     --sf-drawer--inset-start: calc(var(--sf-drawer--inset) - var(--sf-drawer--edge-start));
     --sf-drawer--inset-end: calc(var(--sf-drawer--inset) - var(--sf-drawer--edge-end));
+    /* The window title step (C157 (7) = C159 (5): the h4 role, 20 on 24, a
+       phone 16), taken here, above the body's heading shift below, so a head a
+       set draws inside the body (sf-view-properties) keeps the panel's title
+       step instead of the shifted h4 (VP-5). .sf-drawer-title reads it too. */
+    --sf-drawer--title-size: var(--sf-heading-4--size);
+    --sf-drawer--title-height: var(--sf-heading-4--height);
     position: fixed;
     inset-block: var(--sf-drawer-block-start, 0) 0;
     display: flex;
@@ -303,8 +309,8 @@
     min-width: 0;
     overflow: hidden;
     color: var(--sf-on-surface);
-    font-size: var(--sf-heading-4--size);
-    line-height: var(--sf-heading-4--height);
+    font-size: var(--sf-drawer--title-size, var(--sf-heading-4--size));
+    line-height: var(--sf-drawer--title-height, var(--sf-heading-4--height));
     font-weight: var(--sf-weight--bold);
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -333,7 +339,9 @@
      (ui-admin.test record r-077). The heading roles shift down the ladder
      inside the body and the foot: h1 takes the h5 step, h2 to h4 the h6
      step, h5 and h6 keep theirs. Only the sizes move; the levels stay the
-     page's, as a screen reader reads them. */
+     page's, as a screen reader reads them. A head drawn inside the body
+     reads the panel's --sf-drawer--title-size / --sf-drawer--title-height,
+     which are set on the panel before this shift. */
   .sf-drawer-body,
   .sf-drawer-foot {
     --sf-heading-1--size: var(--sf-heading-5--size);
