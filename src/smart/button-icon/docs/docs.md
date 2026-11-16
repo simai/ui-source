@@ -100,7 +100,14 @@ Main attributes:
   absent, the button is not a toggle and nothing is said. The pressed look
   (1.5.0, rule C12): the primary container fill, the icon in
   `--sf-on-primary-container` and filled, no visible edge (the height does not
-  move) -- two cues, not colour alone, in both themes
+  move) -- two cues, not colour alone, in both themes. Only a toggle wears it
+  (component.icon-buttons 1.13.0, owner decision C211 (1)): `outline` or
+  `ghost` in `on-surface` or `on-surface-variant`. A `default` or `tonal`
+  icon button, a danger or a primary one keeps its own look with `pressed`
+  (`aria-pressed` is still written) and the console says once that it is no
+  toggle; the tonal toggle looks of 1.6.1 are gone. A choice of one among
+  several -- a view, a width, a theme -- is not a row of toggles: write
+  `sf-segmented`
 - `label-pressed` — the name while the toggle is on, for a toggle whose name
   changes: `<sf-button-icon icon="star" aria-label="Добавить в избранное"
   label-pressed="Убрать из избранного" pressed="false">`. The name then says
@@ -246,7 +253,8 @@ menu.contains(document.activeElement);   // true
 D11d), as on sf-button: items `{value, label, icon, pressed}`, `value` the
 current one, `change` with `{previous, value, item}` after a press. The icon is
 the current item's; an item with `pressed` is drawn with the pressed look and a
-filled icon.
+filled icon (a toggle's look: `outline` or `ghost` in the neutral scheme, C211
+(1)).
 
 ```html
 <sf-button-icon aria-label="Повтор" value="off" cycle='[
