@@ -466,7 +466,9 @@ class Modal extends ComponentObserver {
         const closeButton = document.createElement('button');
         closeButton.type = 'button';
         closeButton.className = joinClasses(
-          'sf-icon-button sf-modal-header-action sf-modal-close-button sf-icon-button--close sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-1/3 m-0',
+          // The close is sf-button-close, ghost (owner decision C14, RG-CL-3):
+          // the class markup of the Smart window's header close.
+          'sf-icon-button sf-modal-header-action sf-modal-close-button sf-icon-button--close sf-button-close sf-button-close--ghost sf-button-close--on-surface sf-icon-button--size-1/3 m-0',
           params.closeClass,
         );
         // The page language's word, as the Smart window has; the glyph inside is

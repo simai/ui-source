@@ -61,7 +61,7 @@ covers every notice), all in tokens, so a compact region
 | text to the actions (`--sf-space-1/2`) | 12 | 8 |
 | between the actions (`--sf-space-1/3`) | 8 | 4 (phone 8) |
 | actions: size 1, `height="low"`; label = text | 32 · 16 | 28 · 14 |
-| close: `sf-button-icon kind="close" height="low"`, centred on the first line | 32 | 28 |
+| close: `sf-button-close height="low"` (ghost, C14), centred on the first line | 32 | 28 |
 | one-line alert, without the border | 56 | 44 |
 
 The first action is tonal surface (`tonal on-surface`, the theme's neutral

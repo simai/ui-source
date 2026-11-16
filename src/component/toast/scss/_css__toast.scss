@@ -452,3 +452,18 @@
     line-height: var(--sf-text-height-1\/3);
   }
 }
+
+@layer sf.overrides {
+  /* The close is sf-button-close, ghost (owner decision C14, RG-CL-3): its
+     cross takes --sf-button-close--ink, which the close looks set in this
+     layer, so the toast's service ink (C112, above) is handed to it here --
+     64 of the ink family at rest, the text ink under a pointer; disabled
+     keeps the close's own disabled ink. */
+  .sf-toast > .sf-icon-button.sf-button-close {
+    --sf-button-close--ink: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+  }
+
+  .sf-toast > .sf-icon-button.sf-button-close:not(:disabled):is(:hover, :active) {
+    --sf-button-close--ink: var(--sf-toast--content-color, var(--sf-on-surface));
+  }
+}

@@ -141,7 +141,10 @@
       "name": "buttons"
     },
     {
-      "name": "cl-button-icon"
+      "name": "cl-button-close",
+      "$comment": [
+        "The close button: sf-button-close (owner decision C14, RG-CL-3); it was sf-button-icon kind=\"close\"."
+      ]
     },
     {
       "name": "cl-icon"

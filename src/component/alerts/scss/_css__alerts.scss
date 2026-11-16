@@ -227,9 +227,10 @@
 
 /* The close on the inline padding: the plate hangs out by the room between
    it and the cross (the lead and the room around the cross in its line). The
-   Smart alert's close is an sf-button-icon, whose host is display: contents. */
+   Smart alert's close is an sf-button-close (until 1.4.4 an sf-button-icon),
+   whose host is display: contents. */
 .sf-alert > .sf-icon-button,
-.sf-alert > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
+.sf-alert > :is(sf-button-icon, sf-icon-button, sf-button-close) > .sf-icon-button {
   flex: none;
   margin-inline-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
 }
@@ -389,7 +390,7 @@
 }
 
 .sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon,
-.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon {
+.sf-alert:is(.sf-alert--default, .sf-alert--flat, .sf-alert--outlined) > :is(sf-button-icon, sf-icon-button, sf-button-close) > .sf-icon-button:not(:disabled):is(:hover, :active) .sf-close > .sf-close-icon {
   --sf-close-icon--background-color: var(--sf-alert--color);
 }
 
