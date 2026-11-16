@@ -30,6 +30,8 @@ test('sf-input (and sf-input-date through it): the field action glyph of 3 is th
 test('sf-input-lookup: its icons and its action glyph at the outer steps read the ladder icon', () => {
   assert.match(lookup, /@include ladder\.icon-size\(\(--sf-field-action--glyph, --sf-lookup--icon-size\), \$size\);/u);
   assert.match(lookup, /--sf-icon--font-size: var\(--sf-lookup--icon-size, var\(--sf-lookup--line-height\)\);/u);
+  // The larger icon stands out of the text line evenly: the frame keeps its height (52 on a phone at 3).
+  assert.match(lookup, /sf-icon\.sf-lookup-value-picture > \.sf-icon \{\s*margin-block: calc\(\(var\(--sf-lookup--line-height\) - var\(--sf-lookup--icon-size, var\(--sf-lookup--line-height\)\)\) \/ 2\);/u);
 });
 
 test('sf-input-color: swatch, chevron and reset take 28 at 3 on a phone, one size', () => {
@@ -43,6 +45,7 @@ test('Smart sf-input (and sf-input-date in it): no own size 3 icon rule over the
   // The template sheet drew the size 3 icon at the text line (24 on a phone)
   // with more weight than the class layer's field-ladder.icon rule.
   assert.doesNotMatch(smartInput, /\.sf-input\.sf-input--size-3 > \.sf-input-field > \.sf-input-(hint|left) > sf-icon > \.sf-icon/u);
+  assert.ok(read('src/component/inputs/scss/_css__custom.scss').includes('.sf-input.sf-input--size-3 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon,'), 'the class rule reaches the Smart hint icon in its host');
   assert.match(read('src/component/inputs/scss/_css__custom.scss'), /\.sf-input\.sf-input--size-3 > \.sf-input-field > \.sf-input-left \.sf-icon[^{]*\{\s*@include ladder\.icon\('3'\);/u);
 });
 

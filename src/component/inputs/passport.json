@@ -18,7 +18,7 @@
     "src/component/inputs/scss/_field-ladder.scss",
     "src/component/inputs/scss/index.scss"
   ],
-  "content_sha256": "2d902c17569757b98fe7955253499125dffdf3af9a512765701c615a4198908a",
+  "content_sha256": "6b9bba3f0ba1ea13c67732e4d8f77ec46aee674f2e7e9c6fa7482120d490e7d6",
   "dependencies": [
     {
       "id": "core.runtime",

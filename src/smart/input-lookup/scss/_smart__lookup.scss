@@ -500,8 +500,11 @@
   margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-space-1\/4));
 }
 
-/* sf-icon's host is display: contents: its margin is its glyph's. */
+/* sf-icon's host is display: contents: its margin is its glyph's. An icon
+   above the text line (28 at 3 on a phone, field-ladder.icon-size) stands
+   out of the line evenly and does not make the frame taller. */
 .sf-lookup .sf-lookup-frame > sf-icon.sf-lookup-value-picture > .sf-icon {
+  margin-block: calc((var(--sf-lookup--line-height) - var(--sf-lookup--icon-size, var(--sf-lookup--line-height))) / 2);
   margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-space-1\/4));
 }
 
