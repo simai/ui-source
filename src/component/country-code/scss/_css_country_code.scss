@@ -505,13 +505,20 @@
 .sf-country-code.open .sf-country-code-list:not([data-sf-sheet]) {
   inline-size: var(--sf-popup-panel-width);
   max-inline-size: calc(100vw - 2 * var(--sf-space-1\/2));
+  /* RG-CC-2: a popup takes the surface radius, as the datepicker's popup
+     (C16); the list drew square corners. */
+  border-radius: var(--sf-radius--surface);
 }
 
+/* RG-CC-3 (C06): the search header is laid out as a row -- the row's inset,
+   gap and type (the per-size row variables, _css_country_code_custom.scss) --
+   and its glyph stands in a box as wide as a row's flag, so the glyph is over
+   the flags and the search text over the names at every size. */
 .sf-country-code .sf-country-code-search {
   display: flex;
   align-items: center;
   flex: none;
-  gap: var(--sf-ui-1--text-space-x);
+  gap: var(--sf-country-code-item--gap, var(--sf-ui-1--text-space-x));
   block-size: var(--sf-country-code-row--block-size, var(--sf-ui-1--control-height));
   padding-inline: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
   margin-block-end: var(--sf-space-1\/4);
@@ -519,9 +526,10 @@
 }
 
 .sf-country-code .sf-country-code-search .sf-icon {
-  --sf-icon--font-size: var(--sf-text-height-1);
-  --sf-icon--height: var(--sf-text-height-1);
-  --sf-icon--width: var(--sf-country-code--flag-height);
+  --sf-icon--font-size: var(--sf-country-code-item--line-height, var(--sf-text-height-1));
+  --sf-icon--height: var(--sf-country-code-item--line-height, var(--sf-text-height-1));
+  --sf-icon--width: calc(var(--sf-country-code--flag-height) * 1.4);
+  flex: none;
   justify-content: center;
 }
 

@@ -20,10 +20,18 @@ Registration: `registerComponent('CountryCode', CountryCode)`
   query, a frequent group above all countries (`.sf-country-code-group[data-group]`).
 - Typing or pasting a number selects the country from its dial code. An erased or
   unknown code marks the root `.sf-country-code--unknown`. The prefix is locked
-  only for a fixed country or `data-use-mask="true"`: no edit reaches it. A digit
-  typed before it goes after it, select-all and a digit keep the code and replace
-  the number, select-all and Backspace or Delete clear the number and leave the
-  code; choosing another country changes it.
+  only for a fixed country (`data-multi-country="false"`): no edit reaches it. A
+  digit typed before it goes after it, select-all and a digit keep the code and
+  replace the number, select-all and Backspace or Delete clear the number and
+  leave the code; choosing another country changes it.
+- With `data-use-mask="true"` and a choice of countries the code is the person's
+  to edit as without the mask (1.9.0): pasting `+49 30 123456` selects Germany,
+  an erased code leaves the empty flag frame. The country's mask lays the number
+  out while it fits the pattern and stands back otherwise, so no digit is cut.
+- The panel (`.sf-country-code-list`) holds the search header and the listbox
+  (`.sf-country-code-items`, `role="listbox"`, options only); the toggle's
+  `aria-controls` names the listbox. The list hangs below the field itself, not
+  under the hint, and takes the surface radius.
 - A search that finds no country shows one line of plain text, "Nothing found"
   ("Ничего не найдено"), `.sf-country-code-empty`, and the search field is
   described by it.
