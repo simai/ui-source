@@ -234,10 +234,25 @@ function requestMenu() {
 }
 
 // A hidden crumb as a menu entry: its words and its address.
+// A menu row says the crumb's name: its aria-label when it has one (an
+// icon-only home crumb is named so), else its words without the icon's
+// ligature; the icon goes along as the row's icon.
 function crumbOf(entry) {
   const link = entry.matches?.('a[href]') ? entry : entry.querySelector?.('a[href]');
-  const label = entry.querySelector?.('.sf-breadcrumbs-item-container') || entry;
-  return { label: getItemLabel(label), href: link?.getAttribute('href') || '' };
+  const container = entry.querySelector?.('.sf-breadcrumbs-item-container') || entry;
+  const icon = container.querySelector?.(':scope > :is(.sf-icon, sf-icon)');
+  const named = (link || entry.querySelector?.('[aria-label]') || entry).getAttribute?.('aria-label');
+  let words = '';
+  container.childNodes.forEach((node) => {
+    if (node !== icon) words += node.textContent || '';
+  });
+  const crumb = {
+    label: String(named || '').trim() || words.trim() || getItemLabel(container),
+    href: link?.getAttribute('href') || '',
+  };
+  const glyph = String(icon?.getAttribute?.('name') || icon?.textContent || '').trim();
+  if (glyph) crumb.icon = glyph;
+  return crumb;
 }
 
 // One menu per trail, after it; the menu owns aria-expanded on «…» and gives
@@ -503,6 +518,17 @@ if (document.readyState === 'loading') {
 
 if (typeof MutationObserver !== 'undefined') {
   new MutationObserver((mutations) => {
+    // A node added and gone again before the records arrive is a measuring
+    // probe (core/js/position.js puts a span into the anchor's parent while a
+    // menu opens for «…»): it is no crumb, and folding the trail again for it
+    // took the anchor out from under the open menu.
+    const transient = new Set();
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (!node.isConnected) transient.add(node);
+      });
+    });
+
     mutations.forEach((mutation) => {
       if (isLabelWrap(mutation)) return;
 
@@ -518,7 +544,7 @@ if (typeof MutationObserver !== 'undefined') {
       }
 
       mutation.addedNodes.forEach((node) => {
-        if (!(node instanceof HTMLElement) || isGenerated(node)) {
+        if (!(node instanceof HTMLElement) || isGenerated(node) || transient.has(node)) {
           return;
         }
 
@@ -532,7 +558,7 @@ if (typeof MutationObserver !== 'undefined') {
       });
 
       const changedByRemoval = Array.from(mutation.removedNodes).some(
-        (node) => !isGenerated(node),
+        (node) => !isGenerated(node) && !transient.has(node),
       );
       const mutationRoot = mutation.target.closest?.(ROOT_SELECTOR);
 

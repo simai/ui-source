@@ -28,6 +28,10 @@ test('RG-NV 3: «…» asks the Loader for sf-menu-context and opens the menu', 
   assert.match(runtime, /globalThis\.SF\.Loader\.ensure\(\['sf-menu-context'\]\)/u);
   assert.match(runtime, /if \(menuReady\(\) \|\| \(await requestMenu\(\)\)\) \{/u);
   assert.match(runtime, /if \(menuReady\(\) \|\| menuReachable\(\)\) ellipsis\.setAttribute\('aria-haspopup', 'menu'\);/u);
+  // A measuring probe the menu puts beside «…» does not fold the trail again.
+  assert.match(runtime, /isGenerated\(node\) \|\| transient\.has\(node\)/u);
+  // An icon-only crumb is named in the menu by its aria-label, with its icon.
+  assert.match(runtime, /if \(glyph\) crumb\.icon = glyph;/u);
 });
 
 test('RG-NV 4: a crumb rings as a link, two pixels off', async () => {
