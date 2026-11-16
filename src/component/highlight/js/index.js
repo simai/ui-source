@@ -187,7 +187,37 @@ function ensureWrapButton(block, root, head) {
   });
   const copy = head.querySelector(':scope > .sf-highlight__copy');
   head.insertBefore(button, copy);
+  nameTooltip(block, head, button, `${ensureCodeId(block)}-wrap-name`);
   return button;
+}
+
+// An icon-only button shows its name as the Framework tooltip on hover and
+// keyboard focus, as copy beside it does (the clipboard component writes the
+// same surface for copy): the plain tooltip of component.tooltip, class
+// markup, linked by data-tooltip. The wrap toggle had only its aria-label, so
+// a pointer over it said nothing. The tooltip's controller (loaded for the
+// sf-tooltip class) owns showing it; the name repeats the button's label, so
+// it is not read twice. It stands hidden, so it takes no place in the row.
+function nameTooltip(block, head, button, id) {
+  if (button.hasAttribute('data-tooltip')) return;
+  const doc = block.ownerDocument;
+  let surface = doc.getElementById(id);
+  if (!surface) {
+    surface = doc.createElement('span');
+    surface.id = id;
+    surface.className = 'sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-highlight__name';
+    surface.hidden = true;
+    const content = doc.createElement('span');
+    content.className = 'sf-tooltip-content';
+    const words = doc.createElement('span');
+    words.className = 'sf-tooltip-text';
+    words.textContent = button.getAttribute('aria-label') || '';
+    content.append(words);
+    surface.append(content);
+  }
+  // At the head's end, out of the row: the toggle stays right before copy.
+  head.append(surface);
+  button.setAttribute('data-tooltip', id);
 }
 
 function ensureStructure(block) {
