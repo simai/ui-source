@@ -234,3 +234,15 @@ test('C280: sf-tag defaults to kind default; a bare toggle is a dated deprecatio
   const example = json('src/smart/tag/examples.json').examples.find((one) => one.name === 'checkbox');
   assert.equal(example.settings.kind, 'checkbox');
 });
+
+// ---- C281: a metric tile's inset follows its size step -----------------------
+
+test('C281: sf-tile-metric insets by the size step (space-x less the hairline), never the card inset', () => {
+  const sheet = read('src/smart/tile-metric/scss/_smart__tile-metric.scss');
+  assert.match(sheet, /--sf-tile-metric--padding: var\(--sf-tile-metric-padding, calc\(var\(--sf-tile-metric--space-x\) - var\(--sf-tile-metric--border\)\)\);/u);
+  assert.match(sheet, /\.sf-tile-metric \{[^}]*--sf-tile-metric--space-x: var\(--sf-ui-1--space-x\);/u);
+  assert.match(sheet, /--sf-tile-metric--space-x: var\(--sf-ui-1\\\/2--space-x\);/u);
+  assert.match(sheet, /--sf-tile-metric--space-x: var\(--sf-ui-2--space-x\);/u);
+  assert.doesNotMatch(sheet, /--sf-card[a-z-]*(padding|inset)/u);
+  assert.match(read('src/smart/tile-metric/docs.md'), /C281/u);
+});
