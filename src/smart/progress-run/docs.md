@@ -65,9 +65,10 @@ confirmation around it (a change sheet) are the page's composition.
   settings are `look` and `started-at`.)
 - `label` — the job's name: the title and the region's name.
 - `heading-level` `1–6` (3) — the title's level in the page outline. The
-  title is drawn at the run's text line, semibold, whatever the level (16/24
-  on a desktop, 14/20 on a phone and in compact density): a component title,
-  not a page heading. Words wrap at spaces only, so a file name moves to the
+  title is drawn as a card title, semibold, whatever the level (16/24 on a
+  desktop, 14/20 on a phone, held in compact density as a card's title is;
+  at `size="1/2"` the rung's text line): a component title, not a page
+  heading. Words wrap at spaces only, so a file name moves to the
   next line whole.
 - `caption` — a line under the title: where and when.
 - `value`, `total`, `unit` — how much is done of how much, and the word:
@@ -228,6 +229,10 @@ pressed one's place, so the next key goes on from there.
 
 ## Changes
 
+- 1.4.6 (2026-11-16, R082 note N1, decisions C34 and C44) — the title reads
+  the card title's size and line, so in compact density it stays 16/24 like
+  an `sf-card` heading and `sf-list-attention`'s (it dropped to 14/20). At
+  `size="1/2"` and outside compact nothing moves.
 - 1.4.2 (2026-11-14) — `counters` arrive late too, each list on its own: a
   job printed before its numbers are known keeps the counters' line in its
   skeleton until they come, and a job with counters and no steps no longer

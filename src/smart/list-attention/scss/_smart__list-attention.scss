@@ -43,6 +43,10 @@ sf-list-attention {
 .sf-list-attention {
   --sf-list-attention--row: var(--sf-ui-3--control-height);
   --sf-list-attention--line: var(--sf-text-height-1);
+  /* The heading is a card title (R082 N1, C34, C44): the card title's size
+     and line, held in a compact region as a card's is. */
+  --sf-list-attention--title-size: var(--sf-heading-6--size);
+  --sf-list-attention--title-line: var(--sf-title--height-card);
   --sf-list-attention--font-size: var(--sf-text-size-1);
   --sf-list-attention--meta-line: var(--sf-text-height-1\/2);
   --sf-list-attention--meta-font-size: var(--sf-text-size-1\/2);
@@ -95,7 +99,7 @@ sf-list-attention {
 }
 
 .sf-list-attention--frame-none .sf-list-attention-head {
-  min-block-size: var(--sf-list-attention--line);
+  min-block-size: var(--sf-list-attention--title-line);
   margin-block-end: var(--sf-list-attention-gap, var(--sf-list-attention--gap));
   padding-block: 0;
   border-block-end: 0;
@@ -106,7 +110,10 @@ sf-list-attention {
   align-items: center;
   min-inline-size: 0;
   color: var(--sf-list-attention-heading-color, var(--sf-on-surface));
-  font-weight: var(--sf-font-weight-medium);
+  font-size: var(--sf-list-attention--title-size);
+  line-height: var(--sf-list-attention--title-line);
+  /* Semibold, the card title's weight (C34; R082 N2): it was medium. */
+  font-weight: var(--sf-text--font-weight-6);
 }
 
 .sf-list-attention-heading-text {
@@ -471,8 +478,8 @@ a.sf-list-attention-object:focus-visible {
     align-content: center;
     align-items: center;
     gap: 0 var(--sf-list-attention--gap);
-    padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2);
-    padding-block-end: calc((var(--sf-list-attention--row) - var(--sf-list-attention--line) - var(--sf-list-attention--meta-line)) / 2 - var(--sf-px));
+    padding-block: calc((var(--sf-list-attention--row) - var(--sf-list-attention--title-line) - var(--sf-list-attention--meta-line)) / 2);
+    padding-block-end: calc((var(--sf-list-attention--row) - var(--sf-list-attention--title-line) - var(--sf-list-attention--meta-line)) / 2 - var(--sf-px));
   }
 
   .sf-list-attention--frame-none .sf-list-attention-head:has(.sf-list-attention-summary-line) {
