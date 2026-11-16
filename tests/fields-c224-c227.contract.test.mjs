@@ -46,18 +46,20 @@ test('C226: no field family draws a label, mark, help, count or caption on the 1
   assert.match(rule(custom, '.sf-input.sf-input--size-1\\/3 .sf-input-label'), /--sf-input-label--line: #\{ladder\.label-height\('1\/3'\)/u);
 });
 
-test('C224: a plain sf-quantity is filled with no border; sf-quantity--bordered keeps the box', () => {
+// C283 (2026-11-17) reverses the default of C224: bordered by default, filled on request (sf-quantity--filled).
+test('C224 under C283: a plain sf-quantity is bordered; sf-quantity--filled draws the filled box', () => {
   const q = read('src/component/quantity/scss/_css__quantity.scss');
   assert.match(rule(q, '.sf-quantity .sf-quantity-wrap'), /border-block-end-color: var\(--sf-quantity-wrap--line-color, var\(--sf-quantity-wrap--border-color, transparent\)\);/u);
-  const rest = rule(q, '.sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:read-only)) .sf-quantity-wrap');
+  const rest = rule(q, '.sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:read-only)) .sf-quantity-wrap');
   assert.match(rest, /--sf-quantity-wrap--background-color: var\(--sf-quantity-background-color, var\(--sf-surface-container\)\);/u);
   assert.match(rest, /--sf-quantity-wrap--border-color: var\(--sf-quantity-border-color, var\(--sf-transparent-for-focus\)\);/u);
   assert.match(rest, /--sf-quantity-wrap--line-color: var\(--sf-quantity-border-color, var\(--sf-outline\)\);/u);
-  const hover = rule(q, '.sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap');
+  const hover = rule(q, '.sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap');
   assert.match(hover, /--sf-quantity-wrap--background-color: var\(--sf-surface-container-hover\);/u);
-  assert.match(rule(q, '.sf-quantity.error:not(.sf-quantity--bordered) .sf-quantity-wrap'), /--sf-quantity-wrap--background-color: var\(--sf-error-container\);/u);
-  assert.match(rule(q, '.sf-quantity:not(.sf-quantity--bordered):has(input:disabled) .sf-quantity-wrap'), /--sf-quantity-wrap--background-color: var\(--sf-surface-disabled\);/u);
-  assert.match(read('src/component/quantity/docs/docs.md'), /`sf-quantity--bordered`/u);
+  assert.match(rule(q, '.sf-quantity.sf-quantity--filled.error .sf-quantity-wrap'), /--sf-quantity-wrap--background-color: var\(--sf-error-container\);/u);
+  assert.match(rule(q, '.sf-quantity.sf-quantity--filled:has(input:disabled) .sf-quantity-wrap'), /--sf-quantity-wrap--background-color: var\(--sf-surface-disabled\);/u);
+  assert.match(read('src/component/quantity/docs/docs.md'), /`sf-quantity--filled` draws it filled on request/u);
+  assert.doesNotMatch(q, /:not\(\.sf-quantity--bordered\)/u, 'no rule fills a quantity by default');
 });
 
 test('C225: an empty growing textarea keeps its min-rows height and ellipsizes the placeholder', () => {

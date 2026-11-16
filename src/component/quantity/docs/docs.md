@@ -75,19 +75,19 @@ Direct editing retains the browser's native `input` and `change` events.
 
 ## Look
 
-A plain `sf-quantity` is filled, as the Smart quantity field and the other
-fields of a form are: the container fill, no border, the bottom line in
-`--sf-outline` -- the look of `sf-input--filled` and `sf-textarea--filled`.
+A plain `sf-quantity` is bordered, as in the released pair (owner decision
+C283, 2026-11-17). `sf-quantity--filled` draws it filled on request: the
+container fill, no border, the bottom line in `--sf-outline` -- the look of
+`sf-input--filled` and `sf-textarea--filled`.
 Under the pointer the fill takes its hover step and the edge the text ink;
 while someone types the fill gives way to the ordinary field's edge; an invalid
-field takes the error container fill, a disabled one the disabled fill. The
-bordered box stays a choice by the same name as the Input's:
-`sf-quantity--bordered`. `sf-quantity--filled` names the default.
+field takes the error container fill, a disabled one the disabled fill.
+`sf-quantity--bordered` names the default.
 `--sf-quantity-background-color` is the fill and `--sf-quantity-border-color`
-the edge and the bottom line (1.7.0, owner decision C224).
+the edge and the bottom line (1.7.0, owner decision C224; 1.9.0, C283: filled on request).
 
 ```html
-<label class="sf-quantity sf-quantity--size-1 sf-quantity--bordered">...</label>
+<label class="sf-quantity sf-quantity--size-1 sf-quantity--filled">...</label>
 ```
 
 ## Focus and geometry
