@@ -1,6 +1,14 @@
 @use '../../../../core/scss/vars/sf_var__breakpoint' as *;
 @use '../../../../core/scss/mix/mix__breakpoint' as *;
 @use 'sf_var__scroll_snap_type' as *;
+
+// The strictness of the element's own snap-* classes: it does not inherit,
+// so a scroller inside a snap-mandatory one keeps proximity unless it says so.
+@property --sf-snap-strictness {
+    syntax: "*";
+    inherits: false;
+}
+
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -13,11 +21,22 @@ $infix: xs;
 	@include breakpoint-media($infix) {
 		$infix: breakpoint-infix($infix, $breakpoint-array);
 
-		// Resize
-		@each $snap-name, $snap-value in $scroll-snap-type-array {
+		// The axis, with the strictness the element's classes set.
+		@each $snap-name, $snap-value in $scroll-snap-axis-array {
 			.#{$infix}snap-#{$snap-name} {
-				scroll-snap-type: #{$snap-value};
+				scroll-snap-type: #{$snap-value} var(--sf-snap-strictness, proximity);
 			}
+		}
+
+		// The strictness, for whichever axis the element snaps on.
+		@each $snap-name, $snap-value in $scroll-snap-strictness-array {
+			.#{$infix}snap-#{$snap-name} {
+				--sf-snap-strictness: #{$snap-value};
+			}
+		}
+
+		.#{$infix}snap-none {
+			scroll-snap-type: none;
 		}
 	}
 // }

@@ -46,6 +46,13 @@ a {
 
 // Text Link Default Settings
 //
+// A link- class is a class whose name begins with link- (link-dotted,
+// md:link-inherit): the selectors read the start of a class name, not any
+// «link-» inside one -- [class*=link-] matched blink-row and
+// sf-reference-link-*, and every link after such an element took the link
+// look (RG-UT-V LNK-4). The lists are written flat: the build splits a list
+// holding :is() into one rule per selector.
+//
 // A link in running text is always underlined (owner decision C186 (1),
 // 2026-11-14; C147 (3) for the reference link, C126 for a notice): colour
 // alone told it from the text around it at 2.65:1 light and 1.32:1 dark,
@@ -53,8 +60,12 @@ a {
 // colour at ink 48 at rest and its full colour under the pointer, at the
 // theme's link weight (1px) and offset (--sf-a3).
 a:not([class]),
-a[class*=link-],
-[class*=link-] ~ a {
+a[class^='link-'],
+a[class*=' link-'],
+a[class*=':link-'],
+[class^='link-'] ~ a,
+[class*=' link-'] ~ a,
+[class*=':link-'] ~ a {
   // On a strong place the place's ink (C186 (5)): the theme's link blue was
   // 1.0:1 on bg-primary. The underline, not the colour, says «link» there.
   color: var(--sf-place--ink, var(--sf-link));
@@ -96,8 +107,12 @@ a[class*=link-],
 // alone, so the ink is set here.
 :where([data-sf-visited='on']) {
   a:not([class]),
-  a[class*=link-],
-  [class*=link-] ~ a {
+  a[class^='link-'],
+  a[class*=' link-'],
+  a[class*=':link-'],
+  [class^='link-'] ~ a,
+  [class*=' link-'] ~ a,
+  [class*=':link-'] ~ a {
     &:visited {
       color: var(--sf-place--ink, var(--sf-link-visited));
       text-decoration-color: color-mix(in srgb, var(--sf-place--ink, var(--sf-link-visited)) var(--sf-link--underline-ink), transparent);
@@ -115,8 +130,12 @@ a[class*=link-],
 // of a wrapped link (box-decoration-break: clone) instead of one box open at
 // the line ends.
 a:not([class]),
-a[class*=link-],
-[class*=link-] ~ a {
+a[class^='link-'],
+a[class*=' link-'],
+a[class*=':link-'],
+[class^='link-'] ~ a,
+[class*=' link-'] ~ a,
+[class*=':link-'] ~ a {
   &:focus-visible {
     outline-offset: var(--sf-a2);
     border-radius: var(--sf-radius--ui);
@@ -169,8 +188,12 @@ a [data-sf-new-tab='words'] {
   a,
   a[href],
   a:not([class]),
-  a[class*=link-],
-  [class*=link-] ~ a {
+  a[class^='link-'],
+  a[class*=' link-'],
+  a[class*=':link-'],
+  [class^='link-'] ~ a,
+  [class*=' link-'] ~ a,
+  [class*=':link-'] ~ a {
     color: inherit;
     cursor: default;
     text-decoration-color: currentColor;

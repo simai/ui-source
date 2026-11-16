@@ -8,8 +8,11 @@
 // they draw what they drew, and the Loader notes them in SF.deprecations
 // (src/core/js/retired-classes.table.js).
 $ring-width-array: (
-    1: a1,
-    2: a2,
+    // Widths 1 and 2 are the line roles (C173 (6); RG-UT-V (3)): 1 and 2 px
+    // at every text size, as a component's own line. They read the rem steps
+    // a1 and a2, which grew with the root text size (2 px at 200 %).
+    1: line--border,
+    2: line--indicator,
     3: a3,
     4: a4,
     0: 0,
@@ -41,4 +44,18 @@ $ring-width-array: (
         0 0 0 var(--sf-ring-offset-width, 0px)
         var(--sf-ring-offset-color, transparent);
     box-shadow: var(--sf-ring-shadow), var(--sf-place-shadow, 0 0 transparent);
+}
+
+// The place shadow and the ring are the element's own: they do not inherit,
+// so a component that draws them (sf-card, RG-UT-V (18)) does not take its
+// parent's. utility/box-shadow registers the same two; every ring
+// sheet reads this file.
+@property --sf-place-shadow {
+    syntax: "*";
+    inherits: false;
+}
+
+@property --sf-ring-shadow {
+    syntax: "*";
+    inherits: false;
 }

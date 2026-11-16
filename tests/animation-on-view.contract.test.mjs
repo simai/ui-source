@@ -140,5 +140,5 @@ test('the sheet pauses only a marked element; the rule loads the class; core run
   for (const name of ['animation', 'animation-on-view', 'animation-from-left', 'infinite']) assert.equal(rule.test(name), true, name);
   assert.equal(rule.test('animation-on'), false);
   assert.match(read('../src/core/js/index.js'), /^import '\.\/on-view\.js';$/mu);
-  assert.equal(JSON.parse(read('../src/utility/animation/passport.json')).version, '1.1.0');
+  assert.equal(JSON.parse(read('../src/utility/animation/passport.json')).version, '1.2.1');
 });

@@ -26,6 +26,13 @@ $infix: md;
                     // right beside it.
                     transition-timing-function: var(--sf-ease-move);
                     transition-duration: var(--sf-duration-normal);
+                    // Reduced motion (C66, C121, C196 (1); RG-UT-V (5)): the device's setting
+                    // stops what this class moves, as the display setting data-sf-motion does
+                    // (core/scss/_sf_css__display.scss) -- the same 0.01ms, so the end state
+                    // still arrives and animationend / transitionend still fire.
+                    @media (prefers-reduced-motion: reduce) {
+                        transition-duration: 0.01ms;
+                    }
                 }
             }
         }

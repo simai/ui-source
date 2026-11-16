@@ -17,6 +17,13 @@ $infix: xs;
         @each $animation-duration-name, $animation-duration-value in $animation-duration-array {
             .#{$infix}animation-duration-#{$animation-duration-name} {
                 animation-duration: var(--sf-duration-#{$animation-duration-value});
+                // Reduced motion (C66, C121, C196 (1); RG-UT-V (5)): the device's setting
+                // stops what this class moves, as the display setting data-sf-motion does
+                // (core/scss/_sf_css__display.scss) -- the same 0.01ms, so the end state
+                // still arrives and animationend / transitionend still fire.
+                @media (prefers-reduced-motion: reduce) {
+                    animation-duration: 0.01ms;
+                }
             }
         }
     }

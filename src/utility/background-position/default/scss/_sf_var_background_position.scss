@@ -8,6 +8,10 @@ $bg-position-array: (
   center: center,
   center-top: center top,
   center-bottom: center bottom,
+  // left, left-top, left-bottom, right, right-top, right-bottom are dated
+  // aliases of the inline-start / inline-end names until 2027-01-01 (C212:
+  // one set per job; RG-UT-V BG-3; journal class-ut1-bg-position), noted in
+  // SF.deprecations; they keep their physical side.
   left: left,
   left-top: left top,
   left-bottom: left bottom,
@@ -23,4 +27,18 @@ $bg-position-array: (
   inline-end-top: right top,
   inline-end-center: right center,
   top: top,
+);
+
+// The logical names under dir="rtl" (RG-UT-V BG-2): background-position has
+// no logical keywords, so the start side is drawn on the right there. They
+// stayed on the left.
+$bg-position-rtl-array: (
+  inline-start: right,
+  inline-start-bottom: right bottom,
+  inline-start-top: right top,
+  inline-start-center: right center,
+  inline-end: left,
+  inline-end-bottom: left bottom,
+  inline-end-top: left top,
+  inline-end-center: left center,
 );

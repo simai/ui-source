@@ -24,6 +24,10 @@ $infix: breakpoint-infix($infix, $breakpoint-array);
         // Blur
         @each $blur-name, $blur-value in $backdrop-filter-blur-array {
             .#{$infix}backdrop-blur#{$blur-name} {
+                // The chain of eight variables is for the backdrop filters retired
+                // until 2027-01-01 (C187 (5)): a page's former class still adds to
+                // the blur. On that date the chain becomes blur() alone, with the
+                // sheets it reads (RG-UT-V BDF-4).
                 --sf-backdrop-blur: blur(var(--sf-blur-#{$blur-value}));
                 backdrop-filter: var(--sf-backdrop-blur, ) var(--sf-backdrop-brightness, ) var(--sf-backdrop-contrast, ) var(--sf-backdrop-grayscale, ) var(--sf-backdrop-hue-rotate, ) var(--sf-backdrop-invert, ) var(--sf-backdrop-opacity, ) var(--sf-backdrop-saturate, ) var(--sf-backdrop-sepia, );
             }

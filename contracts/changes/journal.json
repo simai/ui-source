@@ -13790,6 +13790,311 @@
       "source": "src/utility/display-print/default/scss/_sf_css__display_print.scss; src/core/scss/_sf_css__hide.scss; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md; control/docs-review/decisions.md C212"
     },
     {
+      "id": "class-ut1-layout-col-auto",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-L LB-2, by the principle of owner decision C212 (one set per job): layout-col-auto wrote column-count: auto, and with no column-width (the utilities give none) the block is one column -- the class does nothing. It is deprecated, keeps drawing until remove_after, and the Loader notes it once in SF.deprecations. utility.column 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "layout-col-auto",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove layout-col-auto, or write layout-col-<n> for the number of columns wanted.",
+      "examples": {
+        "before": "<div class=\"layout-col-auto\">",
+        "after": "<div class=\"layout-col-2\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/column/default/scss/_sf_var__column.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-layout-break-study.html LB-2"
+    },
+    {
+      "id": "class-ut1-grid-row",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-L GR-2, by the principle of owner decision C212 (one set per job): grid-row-auto and grid-row-span-1 ... 6, grid-row-span-full are second names of row-auto and row-span-* (one rule in utility/grid-row). They keep drawing until remove_after, and the Loader notes each once in SF.deprecations. utility.grid-row 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "grid-row-auto",
+          "to": "row-auto"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-1",
+          "to": "row-span-1"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-2",
+          "to": "row-span-2"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-3",
+          "to": "row-span-3"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-4",
+          "to": "row-span-4"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-5",
+          "to": "row-span-5"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-6",
+          "to": "row-span-6"
+        },
+        {
+          "component": "utility",
+          "from": "grid-row-span-full",
+          "to": "row-span-full"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write row-<x> for grid-row-<x>, keeping a breakpoint prefix (md:grid-row-span-2 -> md:row-span-2); sf-upgrade --apply rewrites it.",
+      "examples": {
+        "before": "<div class=\"grid-row-span-2\">",
+        "after": "<div class=\"row-span-2\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/grid-row/default/scss/_sf_css__grid_row.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-grid-study.html GR-2"
+    },
+    {
+      "id": "class-ut1-negative-auto",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-L IN-4: the negative auto margins (-m-auto, -m-top-auto, -m-bottom-auto, -m-inline-start-auto, -m-inline-end-auto, -m-inline-auto, -m-block-auto and their breakpoint forms) wrote calc(0rem - auto), an invalid value the browser drops: they drew nothing. utility.margin 1.1.0 no longer writes them and the Loader rules no longer load a sheet for them; the Loader notes the names without a breakpoint once in SF.deprecations until remove_after. Nothing changes on a page: they drew nothing before.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "-m-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-top-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-bottom-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-inline-start-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-inline-end-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-inline-auto",
+          "to": null
+        },
+        {
+          "component": "utility",
+          "from": "-m-block-auto",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class; for an auto margin write m-auto, m-inline-auto and the other m-*-auto classes.",
+      "examples": {
+        "before": "<div class=\"-m-top-auto\">",
+        "after": "<div>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/margin/default/scss/_sf_css__margin.scss; src/utility/margin/*/rule.js; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-indents-study.html IN-4"
+    },
+    {
+      "id": "class-ut1-bg-position",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V BG-2, BG-3 (C212, one set per job): bg-inline-start* and bg-inline-end* draw the start and the end side of the line, the right under dir=\"rtl\" (they wrote left and right); bg-left, bg-left-top, bg-left-bottom, bg-right, bg-right-top, bg-right-bottom are dated aliases of them, keep drawing their physical side until remove_after, and the Loader notes each once in SF.deprecations. utility.background-position 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "bg-left",
+          "to": "bg-inline-start"
+        },
+        {
+          "component": "utility",
+          "from": "bg-left-top",
+          "to": "bg-inline-start-top"
+        },
+        {
+          "component": "utility",
+          "from": "bg-left-bottom",
+          "to": "bg-inline-start-bottom"
+        },
+        {
+          "component": "utility",
+          "from": "bg-right",
+          "to": "bg-inline-end"
+        },
+        {
+          "component": "utility",
+          "from": "bg-right-top",
+          "to": "bg-inline-end-top"
+        },
+        {
+          "component": "utility",
+          "from": "bg-right-bottom",
+          "to": "bg-inline-end-bottom"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write bg-inline-start for bg-left and bg-inline-end for bg-right (with -top/-bottom kept); in a right-to-left page the image then moves to the start side, which is the point. sf-upgrade --apply rewrites it.",
+      "examples": {
+        "before": "<div class=\"bg-left-top\">",
+        "after": "<div class=\"bg-inline-start-top\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/background-position/default/scss/_sf_var_background_position.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-background-study.html UT-BG-2, UT-BG-3"
+    },
+    {
+      "id": "class-ut1-blur",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V FLT-3, by the principle of owner decision C212 (one name per job): blur and backdrop-blur are second names of blur-medium and backdrop-blur-medium (the same --sf-blur-medium). They keep drawing until remove_after, and the Loader notes each once in SF.deprecations. utility.filter-blur and utility.backdrop-filter-blur 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "blur",
+          "to": "blur-medium",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*blur(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "backdrop-blur",
+          "to": "backdrop-blur-medium",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])(?:[a-z]+:)*backdrop-blur(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write blur-medium for blur and backdrop-blur-medium for backdrop-blur in class attributes, keeping a variant prefix (hover:blur -> hover:blur-medium); sf-upgrade reports them in class attributes only, since blur is also an event name.",
+      "examples": {
+        "before": "<div class=\"backdrop-blur\">",
+        "after": "<div class=\"backdrop-blur-medium\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/filter-blur/default/scss/_sf_var__filter_blur.scss; src/utility/backdrop-filter-blur/default/scss/_sf_var__backdrop_blur.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-filters-study.html UT-FLT-3"
+    },
+    {
+      "id": "class-ut1-radius-square",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V BRD-4, by the principle of owner decision C212 (one name per job): radius-square and radius-<side>-square are second names of radius-0 and radius-<side>-0. They keep drawing until remove_after, and the Loader notes each once in SF.deprecations. utility.border-radius 1.2.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "radius-square",
+          "to": "radius-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-top-square",
+          "to": "radius-top-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-bottom-square",
+          "to": "radius-bottom-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-inline-start-square",
+          "to": "radius-inline-start-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-inline-end-square",
+          "to": "radius-inline-end-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-top-inline-start-square",
+          "to": "radius-top-inline-start-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-top-inline-end-square",
+          "to": "radius-top-inline-end-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-bottom-inline-start-square",
+          "to": "radius-bottom-inline-start-0"
+        },
+        {
+          "component": "utility",
+          "from": "radius-bottom-inline-end-square",
+          "to": "radius-bottom-inline-end-0"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write radius-0 for radius-square (radius-top-0 for radius-top-square, and so on); sf-upgrade --apply rewrites it.",
+      "examples": {
+        "before": "<div class=\"radius-square\">",
+        "after": "<div class=\"radius-0\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/border-radius/default/scss/_sf_var__radius.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-border-study.html UT-BRD-4"
+    },
+    {
+      "id": "class-ut1-tracking",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-V TYP-5 (C212, one name per job): tracking-normal is the public name of the default letter spacing (the Tailwind name, which drew nothing before), and tracking-no-tracking is its dated alias; both read --sf-text--tracking-no-tracking. The old name keeps drawing until remove_after, and the Loader notes it once in SF.deprecations. utility.letter-spacing 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "tracking-no-tracking",
+          "to": "tracking-normal"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "manual": "Write tracking-normal for tracking-no-tracking (sf-upgrade --apply rewrites it).",
+      "examples": {
+        "before": "<p class=\"tracking-no-tracking\">",
+        "after": "<p class=\"tracking-normal\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/letter-spacing/default/scss/_sf_css__letter_spacing.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-typography-study.html UT-TYP-5"
+    },
+    {
       "id": "utility-c208-scrollbar-retired-sheets",
       "recorded_on": "2026-11-15",
       "stage": "compat",

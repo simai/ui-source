@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.grid-row",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/grid-row/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/grid-row/xxl/scss/_sf_css__grid_row.scss",
     "src/utility/grid-row/xxl/scss/index.scss"
   ],
-  "content_sha256": "6f8e6e02898386e6601704f9ec3764aad3895586c597c1356c0533a88157ed7a",
+  "content_sha256": "af41beeef435af54a425951bda627358838ff9c879a701ca9411fd8707e89e5e",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

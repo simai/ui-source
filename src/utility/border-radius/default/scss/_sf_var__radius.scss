@@ -17,6 +17,9 @@ $border-radius-array: (
 	// названы через два дефиса, потому что это роли, а не ступени шкалы.
 	'ui': '-ui',
 	'surface': '-surface',
+	// square is a dated alias of 0 until 2027-01-01 (C212: one name per job;
+	// RG-UT-V BRD-4; journal class-ut1-radius-square), noted in
+	// SF.deprecations; --sf-radius-square is 0.
 	'square': 'square',
 	'rounded': 'rounded',
 );

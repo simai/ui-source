@@ -14,3 +14,16 @@ $with-max-array: (
 	0 : 0,
 	none : none,
 );
+
+// max-w-sm ... max-w-xxl: the width thresholds as steps of the size ladder
+// (C18: values only from the systems; RG-UT-L SZ-7). They wrote the rem
+// numbers of $breakpoint-array; these are the steps --sf-breakpoint-* name
+// (core/scss/_sf_css__breakpoint.scss), read directly because
+// --sf-breakpoint-<x> is declared only from its own threshold up.
+$with-max-breakpoint-steps: (
+	sm : g6,
+	md : h1,
+	lg : h5,
+	xl : h8,
+	xxl : i0,
+);

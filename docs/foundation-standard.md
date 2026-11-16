@@ -61,3 +61,20 @@ pages link to: [foundation-composition-geometry.md](foundation-composition-geome
 [foundation-logical-sides.md](foundation-logical-sides.md),
 [foundation-modern-utilities.md](foundation-modern-utilities.md).
 `foundation-control-spacing.md` is still in Russian.
+
+## Exceptions to C18
+
+Owner decision C18: every value comes from a Framework system (palette,
+size ladder, space, radius, line and layer tokens), and an exception is
+listed by name. These are the listed ones; a value outside them in a sheet is
+a defect (`tools/lint-raw-values.mjs` reads px and stacking numbers).
+
+| Exception | Where | Values | Why |
+| --- | --- | --- | --- |
+| Width of a text column (C18, C212 (3)) | `--sf-text--measure`, `--sf-text--measure-narrow`, `--sf-text--measure-wide` (core typography); the `measure*` utilities; `max-w-prose` until 2027-01-01 | 65ch, 45ch, 80ch | A line length is counted in characters of the text's own font; no ladder step follows the font. |
+| A line of one or two pixels (C18, C173 (6)) | `--sf-px`, `--sf-line--border`, `--sf-line--indicator`; widths 1 and 2 of `border-*`, `outline-*`, `ring-*`, `divide-*`, `stroke-*`, `decoration-*` | 1 px, 2 px | A hairline stays one device line at any text size. |
+| Media (C18) | an image's or a video's own size and ratio | the file's | The picture brings its size; the layout around it uses the systems. |
+
+Pending an owner decision, not listed yet: the brand colours of
+`bg-<brand>` and `fill-<brand>` (raw hex outside the palette; utilities study
+UT-BG-9, UT-SVG-5).

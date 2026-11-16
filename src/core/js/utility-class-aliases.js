@@ -9,7 +9,10 @@
 // class-text-flow-utility-aliases,
 // class-c187-retired-utilities, class-c187-retired-parts, class-c96-tabs-looks,
 // utility-c208-scrollbar-retired-sheets, class-c187-doc-to-docara,
-// class-editor-utility-retired, class-c212-hide-print.
+// class-editor-utility-retired, class-c212-hide-print,
+// class-ut1-layout-col-auto, class-ut1-grid-row, class-ut1-negative-auto,
+// class-ut1-bg-position, class-ut1-blur, class-ut1-radius-square,
+// class-ut1-tracking.
 import table from './retired-classes.table.js';
 import {noteDeprecated} from './deprecations.js';
 

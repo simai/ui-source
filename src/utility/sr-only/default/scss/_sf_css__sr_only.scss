@@ -12,27 +12,36 @@ $infix: xs;
     @include breakpoint-media($infix) {
         $infix: breakpoint-infix($infix, $breakpoint-array);
 
+        // Out of sight, read by a screen reader (RG-UT-L IA-2, IA-3). Each
+        // declaration is !important: a hidden label sits inside components whose
+        // own rules (sf.components, after this layer) set position or size on their
+        // children -- .sf-button > * gave it position: relative and left a word-wide
+        // gap. An important declaration of an earlier layer wins over every later
+        // one, so the class hides in any component; not-sr-only is important too, so
+        // focus:not-sr-only still shows it. The box is cut with clip-path:
+        // inset(50%), the spelling the components' copies use (the clip property
+        // with rect() is deprecated).
         .#{$infix}sr-only {
-            position: absolute;
-            width: var(--sf-px);
-            height: var(--sf-px);
-            padding: 0;
-            margin: calc(-1 * var(--sf-px));
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
+            position: absolute !important;
+            width: var(--sf-px) !important;
+            height: var(--sf-px) !important;
+            padding: 0 !important;
+            margin: calc(-1 * var(--sf-px)) !important;
+            overflow: hidden !important;
+            clip-path: inset(50%) !important;
+            white-space: nowrap !important;
+            border-width: 0 !important;
         }
 
         .#{$infix}not-sr-only {
-            position: static;
-            width: auto;
-            height: auto;
-            padding: 0;
-            margin: 0;
-            overflow: visible;
-            clip: auto;
-            white-space: normal;
+            position: static !important;
+            width: auto !important;
+            height: auto !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            clip-path: none !important;
+            white-space: normal !important;
         }
     }
 // }

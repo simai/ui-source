@@ -5,8 +5,11 @@
 
 // Stroke Width
 $stroke-width-array:(
-    1: --sf-a1,
-    2: --sf-a2,
+    // Widths 1 and 2 are the line roles (C173 (6); RG-UT-V (3)): 1 and 2 px
+    // at every text size, as a component's own line. They read the rem steps
+    // a1 and a2, which grew with the root text size (2 px at 200 %).
+    1: --sf-line--border,
+    2: --sf-line--indicator,
     3: --sf-a3,
     4: --sf-a4,
     5: --sf-a5,

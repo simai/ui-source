@@ -18,6 +18,13 @@ $infix: xl;
                 background-position: #{$bg-position-value};
             }
         }
+
+        // Under dir="rtl" the logical names take the other side (RG-UT-V BG-2).
+        @each $bg-position-name, $bg-position-value in $bg-position-rtl-array {
+            .#{$infix}bg-#{$bg-position-name}:where(:dir(rtl)) {
+                background-position: #{$bg-position-value};
+            }
+        }
     }
 // }
 }

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.border-width",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/border-width/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/border-width/xxl/scss/_sf_css__border_width.scss",
     "src/utility/border-width/xxl/scss/index.scss"
   ],
-  "content_sha256": "b5353cb6e9daa20a5420fade0c62976fd1677f9b8a3447917ec0aa732445d912",
+  "content_sha256": "36231097efc7babf10ad8b14a1fcc25bc76ad09d83108ca831a75b30b313559f",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
