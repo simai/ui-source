@@ -98,7 +98,7 @@ test('C184 (4): SF.menu.open, public, one menu on the page', () => {
 test('C184 (5): a list is one Tab stop; Shift+F10 and the menu key open the same menu as «⋯»', () => {
   const list = read('src/smart/list/index.js');
   assert.match(list, /\(event\.key === "F10" && event\.shiftKey\) \|\| event\.key === "ContextMenu"/u);
-  assert.match(list, /const opening = menuOpen\(\{\s*anchor,\s*entries,/u);
+  assert.match(list, /const opening = menuOpen\(\{\s*\.\.\.\(point \?\? \{anchor\}\),\s*entries,/u);
   assert.match(list, /returnTo: row \?\? null,/u);
   const template = read('src/smart/list/js/templates/default.js');
   assert.match(template, /class="sf-list__actions[^"]*"\s+tabindex="-1"\s+aria-haspopup="menu"/u);
