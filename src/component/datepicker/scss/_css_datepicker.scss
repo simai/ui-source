@@ -477,3 +477,21 @@
     cursor: default;
   }
 }
+
+/* C227 (owner 2026-11-16; prototypes/forms-datepicker-study.html
+   #q-dp-phone-cells): on a phone the popup that picks one date draws its days
+   at the control height of size 2, 44 x 44, a finger's target as the period
+   sheet's days, the date ribbon and the slider (C78 S6); seven of them and
+   the panel's paddings are 316, inside a 390 screen. A period keeps its days
+   (the sheet has them at 44 already; a period popup, sf-datepicker--range or
+   class markup with a chosen start or end, stays at the control height), a
+   calendar drawn in the page (sf-datepicker--inline) keeps its own, and a
+   desktop is unchanged. The panel's width reads the day height, so the days
+   stay square. */
+@layer sf.components {
+  @media not all and (min-width: 60rem) {
+    .sf-datepicker:not(.sf-datepicker--inline):not(.sf-datepicker--sheet):not(.sf-datepicker--range):not(:has(.sf-datepicker-day-start, .sf-datepicker-day-end)) {
+      --sf-datepicker-day--height: var(--sf-ui-2--control-height);
+    }
+  }
+}
