@@ -35,9 +35,14 @@ test('C259: the phone is below the md breakpoint, the condition one function for
 test('C259: on a phone the table keeps the control cells, the key cells and the screen reader head', () => {
   assert.match(table, /@media not all and \(min-width: \$table-phone-min\) \{\s*\.table:where\(#\{\$table-keyed-actions\}\) \{/u);
   assert.match(table, /> :not\(caption\) > tr > :not\(\.table-key, #\{\$table-control-cell\}, :has\(> \.sr-only:only-child\)\) \{\s*display: none;/u);
+  // A key cell keeps its words whole and one line (a plain-text status broke
+  // letter by letter beside the name's 100 %); the name is what gives way.
+  assert.match(table, /\.table:where\(#\{\$table-keyed-actions\}\) \{\s*(?:\/\/[^\n]*\n\s*)*word-break: normal;\s*overflow-wrap: normal;/u);
+  assert.match(table, /> :not\(caption\) > tr > \.table-key \{\s*white-space: nowrap;/u);
   // The name takes the width the others leave, one line and an ellipsis, and
   // with its second line stands on the two-line rung (44 on a phone).
-  assert.match(table, /> :not\(caption\) > tr > \.table-key:has\(> \.table-key-line\) \{\s*inline-size: 100%;\s*max-inline-size: 0;\s*block-size: var\(--sf-ui-2--control-height\);/u);
+  assert.match(table, /> :not\(caption\) > tr > \.table-key:has\(> a\[href\]:not\(\.sf-button\), > \.table-key-line\) \{\s*inline-size: 100%;\s*max-inline-size: 0;/u);
+  assert.match(table, /> :not\(caption\) > tr > \.table-key:has\(> \.table-key-line\) \{\s*block-size: var\(--sf-ui-2--control-height\);/u);
   // The second line: hidden at every other width, quiet and cut on a phone.
   assert.match(table, /\.table-key-line \{\s*display: none;/u);
   assert.match(table, /\.table-key-line \{\s*display: block;\s*overflow: hidden;\s*color: var\(--sf-on-surface-variant\);\s*font-size: var\(--sf-text-size-1\\\/2\);\s*line-height: var\(--sf-text-height-1\\\/2\);\s*text-overflow: ellipsis;\s*white-space: nowrap;/u);

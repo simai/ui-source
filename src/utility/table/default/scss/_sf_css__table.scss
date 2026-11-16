@@ -199,19 +199,31 @@ $prefix: --sf-table-;
     // status, the sum); every other cell goes, in the head and the body
     // alike, and the record shows them. A control cell stays, and so does a
     // head cell that holds only a name for a screen reader (the «Действия»
-    // column's). The name takes the width the others leave and ends in an
-    // ellipsis, its second line quiet under it; with that line the row
-    // stands on the two-line rung (C146 (1), (7): 44 on a phone).
+    // column's). The name (the key cell with the record's link or a second
+    // line) takes the width the others leave and ends in an ellipsis, its
+    // second line quiet under it; with that line the row stands on the
+    // two-line rung (C146 (1), (7): 44 on a phone).
     @media not all and (min-width: $table-phone-min) {
         .table:where(#{$table-keyed-actions}) {
+            // A word keeps whole (the base typography lets a table break
+            // inside one): the name gives way, not the status.
+            word-break: normal;
+            overflow-wrap: normal;
+
             > :not(caption) > tr > :not(.table-key, #{$table-control-cell}, :has(> .sr-only:only-child)) {
                 display: none;
             }
 
-            > :not(caption) > tr > .table-key:has(> .table-key-line) {
+            // The status and the sum stay on one line; the name, which takes
+            // the width they leave, is the one that ends in an ellipsis.
+            > :not(caption) > tr > .table-key {
+                white-space: nowrap;
+            }
+
+            // The name: the key cell with the record's link or a second line.
+            > :not(caption) > tr > .table-key:has(> a[href]:not(.sf-button), > .table-key-line) {
                 inline-size: 100%;
                 max-inline-size: 0;
-                block-size: var(--sf-ui-2--control-height);
 
                 > a[href] {
                     display: block;
@@ -219,6 +231,10 @@ $prefix: --sf-table-;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                 }
+            }
+
+            > :not(caption) > tr > .table-key:has(> .table-key-line) {
+                block-size: var(--sf-ui-2--control-height);
             }
 
             .table-key-line {
