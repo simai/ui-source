@@ -126,6 +126,20 @@
   white-space: nowrap;
 }
 
+/* The line takes the focus when the last portion removes the button
+   (tabindex -1, never a Tab stop). Its ring is the Framework's ring of words,
+   a link's: the focus tokens, a little off the letters, the ui corner; no
+   ring on a focus the browser would not show (a pointer press). */
+.sf-pagination .sf-pagination-shown:focus {
+  outline: none;
+}
+
+.sf-pagination .sf-pagination-shown:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-a2);
+  border-radius: var(--sf-radius--ui);
+}
+
 /* The bar is as wide as eight controls of the step, or the row when it is
    narrower. */
 .sf-pagination .sf-pagination-progress {
