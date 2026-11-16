@@ -18,6 +18,13 @@ $infix: xs;
             .#{$infix}outline-#{$outline-width-name} {
                 outline-width:var(--sf-#{$outline-width-value});
             }
+            // A width alone draws a solid line, as Tailwind's outline-N does
+            // (RG-TW-3, 2026-11-16: outline-2 set a width under outline-style
+            // none and drew nothing). The style rides :where(), so any
+            // outline-<style> class wins over it whichever sheet comes last.
+            :where(.#{$infix}outline-#{$outline-width-name}) {
+                outline-style: solid;
+            }
         }
     }
 // }

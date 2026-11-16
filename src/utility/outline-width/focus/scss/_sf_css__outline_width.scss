@@ -21,6 +21,11 @@ $event: focus;
             .#{$infix}#{$event}\:outline-#{$outline-width-name}:focus-visible {
                 outline-width: var(--sf-#{$outline-width-value});
             }
+            :where(.#{$infix}#{$event}\:outline-#{$outline-width-name}:#{$event},
+            .#{$infix}#{$event}\:outline-#{$outline-width-name}:focus-within,
+            .#{$infix}#{$event}\:outline-#{$outline-width-name}:focus-visible) {
+                outline-style: solid;
+            }
         }
     }
 // }

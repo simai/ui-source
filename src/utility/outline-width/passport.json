@@ -23,7 +23,7 @@
     "src/utility/outline-width/focus/scss/_sf_css__outline_width.scss",
     "src/utility/outline-width/focus/scss/index.scss"
   ],
-  "content_sha256": "16d40dc82df297f3da0e88f4556b399a9a8c041da92ab8d2fdd1b6a694165cbd",
+  "content_sha256": "3970c993c3411437289b9f6c8e6aa1de94ac0ba11277f0e8757440ec91bbbc9c",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
