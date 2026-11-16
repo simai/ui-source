@@ -34,7 +34,11 @@ export const DURATION = 2000;
 /** The failures that are the source's, not the browser's: nothing is selected for them. */
 export const SOURCE_ERRORS = new Set(['ambiguous_source', 'empty_source', 'missing_source', 'missing_target']);
 
-const HOLDER_STYLE = 'position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
+// The hidden holder of a value stands at the corner of its containing block
+// (as sf-clipboard's status since RG-CP-4): with no offsets an absolute box
+// keeps its static place, and after a button in a scrolled table with no
+// positioned wrapper that place lies outside the scroller and widens the page.
+const HOLDER_STYLE = 'position:absolute;inset-block-start:0;inset-inline-start:0;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
 
 const isField = (element, View) => Boolean(element) && ((View.HTMLInputElement && element instanceof View.HTMLInputElement)
   || (View.HTMLTextAreaElement && element instanceof View.HTMLTextAreaElement));

@@ -406,7 +406,9 @@ class Copy extends ComponentObserver {
     const normalizedScheme = normalizeChoice(scheme, COPY_SCHEMES, 'on-surface');
     const button = document.createElement('button');
     button.type = 'button';
-    button.classList.add(`sf-clipboard-${normalizedSize}`, 'm-0');
+    // No sf-clipboard-<size>: the button is sf-button or sf-icon-button, which
+    // every sf-clipboard-1/2/3 rule leaves out; the size is the button's class.
+    button.classList.add('m-0');
     button.dataset.sfCopy = String(copy || '');
     if (done) button.dataset.success = done;
     if (error) button.dataset.error = error;
