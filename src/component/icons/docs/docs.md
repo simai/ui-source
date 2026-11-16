@@ -21,6 +21,16 @@ The ordinary primitive uses BEM modifiers:
   size-1 button's (24, phone 20);
 - `sf-icon--rotate-45` through `sf-icon--rotate-315` rotates in 45-degree steps.
 
+In running text a glyph stands on the middle of the text line and does not
+stretch it (C151 (5), 1.4.0): it reads the parent's text middle,
+`--sf-text--middle`. Inside a `data-sf-icon-scale="ladder"` region the steps
+go one step down on a phone and in a compact region with no two steps of the
+same size (C151 (1), C22). In `dir="rtl"` a directional glyph (arrows,
+chevrons, send, undo) is mirrored by the Loader (`data-sf-icon-mirror`);
+`data-mirror="off|on|auto"` on the icon overrides that (C151 (3)). Rounded
+and sharp glyphs that the icon service serves draw in their own subset font,
+not in an older Material Icons face (1.4.0).
+
 Old unseparated family, fill and weight classes remain compatibility aliases.
 The glyph inherits `currentColor`; use semantic color utilities on the icon or
 its parent. Do not set a literal color or absolute size.

@@ -19,6 +19,13 @@ the existing header without duplication. The historical
 labels follow the document language and may be overridden by `data-copy-label`
 and `data-copy-success`.
 
+The header's copy and wrap buttons are plain icon buttons (owner decisions
+C201, C232; 1.6.0): no fill at rest, the wrap toggle pressed shows the primary
+ink and the filled glyph. Each carries its name as a Framework tooltip (C48,
+C217). A `<pre><code data-lang="...">` block loads the component by the `data-lang`
+attribute: the Loader's markup scan skips the inside of `pre` and `code`, so a
+block without any other highlight hook was left unstyled before 1.6.0.
+
 Use `data-lines` for line numbers and `data-start` for a non-default first number.
 The historical `data-line-numbers="true"` and `data-ln-start-from` inputs remain
 accepted. Numbers are decorative reference aids, excluded from assistive output

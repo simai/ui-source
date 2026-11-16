@@ -37,7 +37,8 @@ decision C145 (2)): there is no empty square. Chosen (`active`), a check mark
 stands before the label on the primary container fill — the icon `check`, a
 picture of the tag's size: `<i class="sf-icon sf-tag-check"
 aria-hidden="true">check</i>`. A `sf-tag-check` of a tag that is not chosen
-is not drawn.
+(neither `active` nor `aria-pressed="true"`) is not drawn, over the icon
+sheet's own display too (1.8.0).
 
 A colour from data is a dot before the label, the tag itself stays neutral
 (owner decision C145 (7)): `<span class="sf-tag-color-icon
