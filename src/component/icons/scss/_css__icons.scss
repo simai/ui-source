@@ -268,14 +268,6 @@ sf-icon:not(:defined) {
   vertical-align: middle;
 }
 
-/* An icon with a badge draws as its badge anchor, which stands on the line's
-   bottom (component.badges, .sf-badge-anchor): before its code it stands
-   there too, or it sat 1.6 px low and the line grew by as much (FP-5 of the
-   first-paint status R222). */
-sf-icon:is([badge-count]:not([badge-count=""]), [badge-dot]:not([badge-dot="false"])):not(:defined) {
-  vertical-align: bottom;
-}
-
 @each $size, $steps in $sf-icon-steps {
   sf-icon[size="#{$size}"]:not(:defined) {
     @include icon-step($size, $steps, ('--sf-icon--width', '--sf-icon--height'));
