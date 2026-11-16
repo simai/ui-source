@@ -43,16 +43,21 @@ function checkSkeleton(css, where) {
     assert.ok(rule, `${where}: size ${step}`);
     assert.ok(rule[1].includes(`--sf-skeleton-text--icon: var(--sf-text-height-${step})`), `${where}: the icon of ${step} is the step's ladder icon`);
   }
-  assert.match(flat, /\.sf-skeleton-text\.sf-skeleton-icon:not\(\[style\*=["']?inline-size["']?\]\) ?\{ ?inline-size: ?var\(--sf-skeleton-text--icon, ?var\(--sf-skeleton-text--height\)\)/u, `${where}: icon width`);
+  assert.match(flat, /\.sf-skeleton-text\.sf-skeleton-icon:not\(\[style\*=["']?inline-size["']?\]\) ?\{[^}]*inline-size: ?var\(--sf-skeleton-text--icon, ?var\(--sf-skeleton-text--height\)\)/u, `${where}: icon width`);
+  // The built sheet may carry physical fallbacks before the logical size, so the
+  // icon rules are read as a declaration anywhere in their body.
   // A circle or square icon keeps equal sides (the shape rule leaves icons to the icon rule).
-  assert.match(flat, /\.sf-skeleton-text:is\(\.sf-skeleton-circle, ?\.sf-skeleton-square\):not\(\.sf-skeleton-icon, ?\[style\*=["']?inline-size["']?\]\)/u, `${where}: icon shapes square`);
-  assert.match(flat, /\.sf-skeleton-text\.sf-skeleton-icon:not\(\[style\*=["']?block-size["']?\]\) ?\{ ?block-size: ?var\(--sf-skeleton-text--icon/u, `${where}: icon height`);
+  // The builder spells :is()/:not() lists out, one selector per shape.
+  assert.match(flat, /\.sf-skeleton-text:is\(\.sf-skeleton-circle, ?\.sf-skeleton-square\):not\(\.sf-skeleton-icon, ?\[style\*=["']?inline-size["']?\]\)|\.sf-skeleton-text\.sf-skeleton-circle:not\(\.sf-skeleton-icon\):not\(\[style\*=["']?inline-size["']?\]\)\{/u, `${where}: icon shapes square`);
+  assert.match(flat, /\.sf-skeleton-text\.sf-skeleton-icon:not\(\[style\*=["']?block-size["']?\]\) ?\{[^}]*block-size: ?var\(--sf-skeleton-text--icon/u, `${where}: icon height`);
 }
 
 function checkPlaceholder(css, where) {
   const flat = strip(css).replace(/\s+/gu, ' ');
-  const title = flat.match(/\.sf-placeholder :is\(\.sf-placeholder__title, ?\.sf-placeholder-top-text:first-child\) ?\{([^}]*)\}/u);
+  // The builder spells the :is() out and pads the specificity it held.
+  const title = flat.match(/\.sf-placeholder :is\(\.sf-placeholder__title, ?\.sf-placeholder-top-text:first-child\) ?\{([^}]*)\}|\.sf-placeholder \.sf-placeholder__title(?::not\(\.does-not-exist\))?\{([^}]*)\}/u);
   assert.ok(title, `${where}: the title rule`);
+  title[1] = title[1] ?? title[2];
   assert.doesNotMatch(title[1], /font-size:[^;]*var\(--sf-text--size\)\)\)/u, `${where}: the title is not body text`);
   assert.match(title[1], /var\(--sf-placeholder--title-size\)/u, `${where}: the title's rung`);
   assert.match(title[1], /var\(--sf-font-weight-medium\)/u, `${where}: the state title's weight`);
