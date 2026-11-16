@@ -610,8 +610,10 @@
     --sf-field-action--height: var(--sf-ui-2--control-height);
   }
 
+  /* The glyph of 3 is the field's icon of the step (field-ladder.icon-size,
+     C151): 36, and 28 on a phone, not the 24 of the text line there. */
   .sf-input.sf-input--size-3 {
-    --sf-field-action--glyph: var(--sf-text-height-3);
+    @include ladder.icon-size(--sf-field-action--glyph, '3');
     --sf-field-action--height: var(--sf-ui-3--control-height);
   }
 

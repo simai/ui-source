@@ -147,8 +147,9 @@
   }
 
   /* The icon of the step, a step down on a phone (field-ladder.icon, C151):
-     28 at 3 there, not the 24 of the text line. */
-  .sf-input.sf-input--size-3 > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input.sf-input--size-3 > .sf-input-field > .sf-input-left .sf-icon, .sf-input.sf-input--size-3 > .sf-input-field > .sf-icon {
+     28 at 3 there, not the 24 of the text line. A hint icon of the Smart
+     sf-input stands in its sf-icon host. */
+  .sf-input.sf-input--size-3 > .sf-input-field > .sf-input-hint > .sf-icon, .sf-input.sf-input--size-3 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-3 > .sf-input-field > .sf-input-left .sf-icon, .sf-input.sf-input--size-3 > .sf-input-field > .sf-icon {
     @include ladder.icon('3');
   }
 

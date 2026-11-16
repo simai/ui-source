@@ -99,8 +99,8 @@
     --sf-lookup--text-inset: #{ladder.ui($size, text-space-x)};
     --sf-lookup--row-padding-block: #{ladder.ui($size, space-y-tightness-low)};
     --sf-lookup--row-height: #{ladder.height($size)};
-    --sf-field-action--glyph: #{ladder.text-height($size)};
     --sf-field-action--height: #{ladder.height($size)};
+    @include ladder.icon-size((--sf-field-action--glyph, --sf-lookup--icon-size), $size);
   }
 }
 
@@ -482,9 +482,9 @@
 .sf-lookup .sf-lookup-option > .sf-lookup-icon,
 .sf-lookup .sf-lookup-frame > .sf-lookup-icon {
   display: inline-flex;
-  --sf-icon--font-size: var(--sf-lookup--line-height);
-  --sf-icon--width: var(--sf-lookup--line-height);
-  --sf-icon--height: var(--sf-lookup--line-height);
+  --sf-icon--font-size: var(--sf-lookup--icon-size, var(--sf-lookup--line-height));
+  --sf-icon--width: var(--sf-lookup--icon-size, var(--sf-lookup--line-height));
+  --sf-icon--height: var(--sf-lookup--icon-size, var(--sf-lookup--line-height));
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
@@ -500,8 +500,11 @@
   margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-space-1\/4));
 }
 
-/* sf-icon's host is display: contents: its margin is its glyph's. */
+/* sf-icon's host is display: contents: its margin is its glyph's. An icon
+   above the text line (28 at 3 on a phone, field-ladder.icon-size) stands
+   out of the line evenly and does not make the frame taller. */
 .sf-lookup .sf-lookup-frame > sf-icon.sf-lookup-value-picture > .sf-icon {
+  margin-block: calc((var(--sf-lookup--line-height) - var(--sf-lookup--icon-size, var(--sf-lookup--line-height))) / 2);
   margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-space-1\/4));
 }
 
