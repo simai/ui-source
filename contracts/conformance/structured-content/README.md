@@ -146,6 +146,11 @@ The cases pin each of these; the summaries here say where to look.
   An inline node of an unknown type, an unknown atom name, an undeclared prop
   or an atom inside a link makes the Document invalid (`schema_one_of`): it is
   never drawn, and never silently dropped.
+- **Badge icon-only** (3.0.0): the badge atom's boolean that shows its icon
+  alone is `icon-only` (owner decision C134: the word compact means density
+  only); `compact` is its dated alias until 2027-01-01, accepted and drawn as
+  `icon-only`, and `icon-only` written beside it wins
+  (`inline-atom-badge-compact-alias`).
 - **Extension keys** (2.2.0): a key a known inline entry (text run, break,
   link, atom) does not define is extension data when its name is lowercase
   letters, digits, `_ . :`, starts with a letter, is not `on*`, not one of
@@ -191,6 +196,7 @@ The cases pin each of these; the summaries here say where to look.
 | 1.0.0 | first edition |
 | 2.1.0 | 2026-11-10: content.foreign and the converters |
 | 2.2.0 | 2026-11-11: extension keys on known inline entries (`inline-extension-keys`, four refusals); `inline-break-shape` now uses a break whose marks are not a list, since a break with an extension key is valid |
+| 3.0.0 | 2026-11-16: the badge atom's `icon-only`, `compact` its dated alias drawn as `icon-only` (C134; inline model 1.3.0, content.heading 1.4.0, content.paragraph 1.5.0, content.figure 1.3.0, content.list-item, content.table, content.alert, content.details and content.step 1.2.0). The expectation of `inline-atom-badge` changed (it writes `icon-only`), hence a major; new `inline-atom-badge-compact-alias` |
 | 2.0.0 | 2026-11-10: table alignment by class (`content.table` 1.0.1), `style` a forbidden key, one diagnostic for an unknown profile. Existing expectations changed (`table-align`, `table-align-short`, `invalid-profile`, `invalid-node-field`), hence a major |
 
 ## Keeping the kit current

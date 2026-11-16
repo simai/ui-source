@@ -13764,6 +13764,29 @@
       "manual": "Remove the class: the bar takes the place's colours and the one thickness by itself. A quieter bar is scroll-subtle; a bar shown only while the pointer is over the area is scroll-hover.",
       "owner": "ui-source",
       "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
+    },
+    {
+      "id": "property-inline-badge-compact-to-icon-only",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "property",
+      "summary": "Inline model 1.3.0 (core composition; content.heading 1.4.0, content.paragraph 1.5.0, content.figure 1.3.0, content.list-item, content.table, content.alert, content.details and content.step 1.2.0; conformance kit 3.0.0): the word compact means density only (owner decision C134). The badge atom of a Document that shows its icon alone has the boolean prop icon-only, as sf-badge 1.6.0; the prop compact is its dated alias, still valid, drawn as icon-only (the new prop wins when both are written) until remove_after. An atom read back from the page by sf-editor-inline is written with icon-only.",
+      "items": [
+        {
+          "component": "content inline atom badge",
+          "from": "compact",
+          "to": "icon-only"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-property",
+      "examples": {
+        "before": "{\"type\": \"component\", \"name\": \"badge\", \"props\": {\"icon\": \"star\", \"text\": \"Beta\", \"compact\": true}}",
+        "after": "{\"type\": \"component\", \"name\": \"badge\", \"props\": {\"icon\": \"star\", \"text\": \"Beta\", \"icon-only\": true}}"
+      },
+      "owner": "ui-source",
+      "source": "src/core/js/composition/inline-model.mjs INLINE_PROP_ALIASES; contracts/conformance/structured-content/cases/inline-atom-badge-compact-alias.json; ui-control control/docs-review/decisions.md C134"
     }
   ]
 }

@@ -1,0 +1,74 @@
+{
+  "schema": "simai.composition.structured-content-conformance-case",
+  "schema_version": 1,
+  "id": "inline-atom-badge-compact-alias",
+  "summary": "The badge atom's compact is the dated alias of icon-only: it is drawn as icon-only, and icon-only written beside it wins.",
+  "covers": [
+    "inline"
+  ],
+  "input": {
+    "document": {
+      "schema": "simai.composition.document",
+      "schema_version": 1,
+      "id": "page",
+      "profile": "structured-content",
+      "root": {
+        "id": "root",
+        "type": "content.document",
+        "slots": {
+          "default": [
+            {
+              "id": "p",
+              "type": "content.paragraph",
+              "data": {
+                "content": [
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "beta",
+                      "icon": "star",
+                      "compact": true
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": " "
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "on",
+                      "compact": false,
+                      "icon-only": true
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "value": " "
+                  },
+                  {
+                    "type": "component",
+                    "name": "badge",
+                    "props": {
+                      "text": "off",
+                      "compact": true,
+                      "icon-only": false
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "expect": {
+    "valid": true,
+    "html": "<article data-sf-composition-id=\"root\"><p data-sf-composition-id=\"p\"><sf-badge text=\"beta\" icon=\"star\" icon-only></sf-badge> <sf-badge text=\"on\" icon-only></sf-badge> <sf-badge text=\"off\"></sf-badge></p></article>",
+    "diagnostics": [],
+    "assets": []
+  }
+}
