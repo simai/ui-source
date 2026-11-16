@@ -20,7 +20,7 @@
     "src/component/file-upload/scss/_css__upload_progress.scss",
     "src/component/file-upload/scss/index.scss"
   ],
-  "content_sha256": "f7155ea7631cb3849b01a38d63bb70f34fd662ed30ea5ed69ce657729d1223d2",
+  "content_sha256": "66bf898d0b6412137e01282513007aa0d1136489df37bcb391d47da0687d51f9",
   "dependencies": [
     {
       "id": "component.inputs",

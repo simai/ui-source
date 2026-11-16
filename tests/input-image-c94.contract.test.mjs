@@ -66,6 +66,7 @@ function host(attributes = {}, {sizes = new Map(), coarse = false} = {}) {
     customElements: {whenDefined: () => Promise.resolve()},
     tagSelector: (tag) => tag,
     fieldSize: (size) => String(size || '1'),
+    ladderSize: (size) => String(size || '1'),
     FIELD_SIZES: ['1/2', '1', '2'],
     instancePath: () => 'x',
     partId: () => 'x',

@@ -701,7 +701,7 @@
 
     .sf-dropdown.sf-dropdown--text.#{$class} input {
       --sf-dropdown-input--font-family: var(--sf-text--family);
-      --sf-dropdown-input--font-weight: var(--sf-font-weight-regular);
+      --sf-dropdown-input--font-weight: var(--sf-weight--regular);
       --sf-dropdown-input--font-size: #{ladder.text-size($size)};
       --sf-dropdown-input--line-height: #{ladder.text-height($size)};
     }

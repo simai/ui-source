@@ -36,7 +36,7 @@ test('dropdown alignment: an option is a dropping panel row, its content --sf-sp
   // The picture, or the glyph of the sf-icon that draws it (sf-dropdown 1.8.0),
   // stands the row step before the value at every size (C105 H2), the step the
   // options keep from their pictures.
-  assert.ok(custom.includes(`.sf-dropdown:is(.sf-dropdown--size-1\\/2, .sf-dropdown--size-1, .sf-dropdown--size-2) .sf-dropdown-field > .sf-dropdown-field-visual,\n.sf-dropdown:is(.sf-dropdown--size-1\\/2, .sf-dropdown--size-1, .sf-dropdown--size-2) .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-space-1\\/2); }`), 'label step');
+  assert.ok(custom.includes(`.sf-dropdown:is(.sf-dropdown--size-1\\/3, .sf-dropdown--size-1\\/2, .sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-3) .sf-dropdown-field > .sf-dropdown-field-visual,\n.sf-dropdown:is(.sf-dropdown--size-1\\/3, .sf-dropdown--size-1\\/2, .sf-dropdown--size-1, .sf-dropdown--size-2, .sf-dropdown--size-3) .sf-dropdown-field > sf-icon > .sf-dropdown-field-visual { margin-inline-end: var(--sf-space-1\\/2); }`), 'label step');
   assert.doesNotMatch(custom, /sf-dropdown-field-visual \{ margin-inline-end: var\(--sf-ui-/u, 'no field picture keeps the button step');
   assert.match(custom, /\.sf-dropdown \.sf-dropdown-field:has\(> \.sf-dropdown-field-visual, > sf-icon > \.sf-dropdown-field-visual\) \{\s*column-gap: 0;/);
   assert.match(custom, /inset-inline-end: calc\(var\(--sf-dropdown-field--padding-inline-end\) - var\(--sf-icon-button--padding-inline-end, 0px\)\);/);

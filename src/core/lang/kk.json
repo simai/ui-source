@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1196,
-    "translated": 1195,
+    "words": 1200,
+    "translated": 1199,
     "share": 99.9
   },
   "words": {
@@ -422,6 +422,7 @@
       "wait-for-uploads": "Файлдар жүктелгенше күтіңіз",
       "file-removed": "Файл алып тасталды",
       "undo": "Қайтару",
+      "help": "Толығырақ: {label}",
       "uploading-name": "{name} жүктелуде",
       "linkText": "Файлды таңдаңыз"
     },
@@ -524,7 +525,8 @@
       "digit": "{n}-цифр, барлығы {m}",
       "group": "Код",
       "too-short": "Кодты толық енгізіңіз",
-      "value-missing": "Кодты енгізіңіз"
+      "value-missing": "Кодты енгізіңіз",
+      "help": "Толығырақ: {label}"
     },
     "sf-input-color": {
       "choose": "Түс таңдау",
@@ -584,7 +586,8 @@
       "decimal": ",",
       "scheme-dark": "қараңғы",
       "scheme-light": "ашық",
-      "brand": "Фирмалық түс"
+      "brand": "Фирмалық түс",
+      "help": "Толығырақ: {label}"
     },
     "sf-input-country": {
       "all-countries": "Барлық елдер",
@@ -717,7 +720,8 @@
       "value-missing": "Сурет таңдаңыз.",
       "wait-for-upload": "Сурет жүктелгенше күтіңіз",
       "zoom-in": "Үлкейту",
-      "zoom-out": "Кішірейту"
+      "zoom-out": "Кішірейту",
+      "help": "Толығырақ: {label}"
     },
     "sf-input-lookup": {
       "hint-min-length": {

@@ -41,7 +41,7 @@ test('FM-9: bordered draws the class markup\'s outlined look', async () => {
 });
 
 test('FM-9: the Framework writes bordered on its dropdowns', async () => {
-  for (const path of ['src/smart/field-renderers/index.js', 'src/smart/language/js/templates/default.js', 'src/smart/pagination/js/templates/default.js']) {
+  for (const path of ['src/smart/field-renderers/index.js', 'src/smart/language/js/templates/default.js', 'src/smart/pagination/js/templates/default.js', 'src/smart/segmented/js/templates/default.js']) {
     const source = await read(path);
     const dropdowns = [...source.matchAll(/<sf-dropdown\b[^>]*?>/gs)].map((match) => match[0]);
     assert.ok(dropdowns.length > 0, path);

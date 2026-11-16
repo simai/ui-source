@@ -261,7 +261,7 @@ test('code input: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-input-code'\] = \{\n  tags: \['sf-input-code', 'sf-code-input'\],/u);
   assert.match(rule, /\{ name: 'verification' \},\n    \{ name: 'sr-only\/default' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-code\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['component.verification']);
+  assert.deepEqual(manifest.composition.uses, ['component.verification', 'smart.help-mark']); // the ? mark (#70)
   assert.deepEqual(manifest.inputs.properties.mode.enum, [...CODE_MODES]);
   // A number setting is a number in the generated registry (standard 1.4).
   assert.equal(manifest.inputs.properties.length.default, CODE_LENGTH_DEFAULT);

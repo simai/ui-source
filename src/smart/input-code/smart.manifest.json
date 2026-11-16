@@ -414,7 +414,7 @@
       },
       {
         "path": "src/smart/input-code/code.mjs",
-        "sha256": "d0a9fcfc56511e63a2e865a2f7609416609381b4e7505cf7b7354643b72f8eff"
+        "sha256": "79d56669132bc50478daabbfa7905cccee4b38fcba4ab7ac38657954f24d694a"
       },
       {
         "path": "src/smart/input-code/js/templates/default.js",

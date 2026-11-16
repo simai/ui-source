@@ -113,7 +113,7 @@ function renderFolded(context) {
     <div class="sf-button-group-narrow">
       <sf-dropdown
         size=${context.foldedSize}
-        appearance="outlined"
+        appearance="bordered"
         mode="select"
         .search=${false}
         value=${context.value || nothing}

@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 import {acceptsFile, formatFileSize, normaliseImageValue} from '../src/smart/input-image/value.mjs';
-import {FIELD_SIZES} from '../src/component/field-size.js';
+import {FIELD_LADDER} from '../src/component/field-size.js';
 
 // sf-image-field (simai/ui-source#27): one image in a form -- a thumbnail with
 // its name and size, «Заменить…» and «Убрать», a file dropped on it replaces
@@ -124,8 +124,12 @@ test('image field: input and change once each per choice or removal, with the Fi
 });
 
 test('image field: sizes are the form sizes and every measure is a ladder step', () => {
-  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_SIZES]);
-  assert.match(source, /fieldSize\(this\.getAttribute\('size'\) \|\| '1', 'sf-input-image'\)/u);
+  // The field ladder's five steps (queue #70), as sf-input.
+  assert.deepEqual(manifest.inputs.properties.size.enum, [...FIELD_LADDER]);
+  assert.match(source, /get size\(\) \{ return ladderSize\(this\.getAttribute\('size'\)\); \}/u);
+  // 1/3 and 3 from the shared ladder sheet: the inset the step's padding, the
+  // thumbnail a rung up (1/2) at 1/3 and the top rung (3) at 3.
+  assert.match(sheet, /--sf-image-field--thumb: #\{if\(\$size == '1\/3', ladder\.height\('1\/2'\), ladder\.height\('3'\)\)\};/u);
   // The thumbnail is the control height one rung up; the inset the field's
   // own vertical padding; the buttons one rung down.
   const rungs = {'1\\/2': ['1\\/2', '1'], '1': ['1', '2'], '2': ['2', '3']};
@@ -134,7 +138,7 @@ test('image field: sizes are the form sizes and every measure is a ladder step',
     assert.ok(block.includes(`--sf-image-field--inset: calc(var(--sf-ui-${own}--space-y-tightness-default) - var(--sf-px));`), size);
     assert.ok(block.includes(`--sf-image-field--thumb: var(--sf-ui-${up}--control-height);`), size);
   }
-  assert.match(template, /const BUTTON_SIZE = \{'1\/2': '1\/3', '1': '1\/2', '2': '1'\};/u);
+  assert.match(template, /const BUTTON_SIZE = \{'1\/3': '1\/3', '1\/2': '1\/3', '1': '1\/2', '2': '1', '3': '2'\};/u);
   // No length written by hand: every width, height, gap and padding is a token.
   assert.doesNotMatch(sheet.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/@container[^{]*\{/u, ''), /:\s*[^;]*\b\d+(?:\.\d+)?(?:px|rem|em)\b/u);
   // The image fills its box (fit cover, IF-7) or is fitted whole (fit
@@ -148,7 +152,7 @@ test('image field: the loader knows it and asks for what it draws with', () => {
   assert.match(rule, /SF\.RuleLoader\['cl-input-image'\] = \{\n  tags: \['sf-input-image', 'sf-image-field'\],/u);
   assert.match(rule, /\{ name: 'cl-button' \},\n    \{ name: 'cl-button-icon' \},\n    \{ name: 'cl-icon' \},/u);
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/input-image\/rule\.js';/u);
-  assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.button-icon', 'smart.icon', 'smart.input', 'smart.menu-context', 'smart.modal', 'smart.progress-ring', 'smart.switch']);
+  assert.deepEqual(manifest.composition.uses, ['smart.button', 'smart.button-icon', 'smart.help-mark', 'smart.icon', 'smart.input', 'smart.menu-context', 'smart.modal', 'smart.progress-ring', 'smart.switch']);
   // The editor's window (C125) loads when it opens.
   assert.match(rule, /\{ name: 'cl-modal', lazy: true \},/u);
 });
