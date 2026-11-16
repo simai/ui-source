@@ -587,14 +587,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     "inputs": {
       "additionalProperties": false,
       "properties": {
-        "appearance": {
-          "default": "outlined",
-          "enum": [
-            "filled",
-            "outlined"
-          ],
-          "type": "string"
-        },
         "aria-label": {
           "default": "",
           "type": "string"

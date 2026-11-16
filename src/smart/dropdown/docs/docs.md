@@ -297,7 +297,7 @@ Example:
 ```html
 <sf-dropdown
   size="1/2"
-  appearance="outlined"
+  appearance="bordered"
   mode="select"
   label="Label"
   placeholder="Placeholder"
@@ -317,3 +317,13 @@ shown error goes the moment the value is right -- and the browser's bubble
 never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
 ink; hover draws the border in the text ink and focus a 2 px primary edge
 inside the field, with no ring outside it.
+
+## Appearance: bordered (FM-9)
+
+Since 1.18.0 the field look is named `bordered`, as every field's
+(`sf-input`, `sf-input-textarea`, `sf-input-lookup`, `sf-input-rich`):
+`appearance` is `bordered` (the default) or `filled`. `outlined`, its former
+name, draws the same until 2027-01-01: the attribute is rewritten to
+`bordered` and the use is noted once in `SF.deprecations` with its dates
+(change journal `value-dropdown-appearance-outlined-to-bordered`). The base
+component's class markup keeps its modifier `.sf-dropdown--outlined`.

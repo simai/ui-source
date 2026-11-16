@@ -45,6 +45,17 @@
       "mode": "same-detail",
       "section": "§8, §20.2",
       "note": "the event of the trait field-inherit@1, declared in component.json as the shared event field-reset; the field sends sf-field-reset and the shim follows it with this dated name, same detail, one cancel"
+    },
+    {
+      "from": "outlined",
+      "to": "bordered",
+      "kind": "value",
+      "setting": "appearance",
+      "component": "sf-dropdown",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "section": "§16 item 20",
+      "note": "journal value-dropdown-appearance-outlined-to-bordered (FM-9, dispatcher decision 2026-11-16): the field look is named bordered in every field; outlined drew the same"
     }
   ]
 }

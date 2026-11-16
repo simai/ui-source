@@ -1087,14 +1087,6 @@
       "inputs": {
         "additionalProperties": false,
         "properties": {
-          "appearance": {
-            "default": "outlined",
-            "enum": [
-              "filled",
-              "outlined"
-            ],
-            "type": "string"
-          },
           "aria-label": {
             "default": "",
             "type": "string"

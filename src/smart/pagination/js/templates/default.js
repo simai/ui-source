@@ -413,7 +413,7 @@ function renderBand(context, component) {
       <span class="sf-pagination-actions-separator" aria-hidden="true"></span>
       <sf-dropdown
         size=${context.size}
-        appearance="outlined"
+        appearance="bordered"
         search="false"
         mode="select"
         value=${context.action}

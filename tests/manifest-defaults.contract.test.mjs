@@ -48,5 +48,7 @@ test('manifest defaults: every exemption names a real component and a reason', (
   }
   for (const entry of contract.pending) assert.ok(entry.owner, `${entry.component}.${entry.prop}: an owner`);
   const dropdown = JSON.parse(read('src/smart/dropdown/smart.manifest.json')).inputs.properties;
-  assert.equal(dropdown.appearance.default, 'outlined', 'the dropdown draws outlined when nothing is asked');
+  // The look is named bordered since sf-dropdown 1.18.0 (FM-9); it draws as
+  // the former outlined did.
+  assert.equal(dropdown.appearance.default, 'bordered', 'the dropdown draws bordered when nothing is asked');
 });

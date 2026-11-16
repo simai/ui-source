@@ -53,11 +53,11 @@
       },
       "appearance": {
         "type": "string",
-        "default": "outlined",
-        "description": "How the dropdown looks: a filled field or an outlined one.",
+        "default": "bordered",
+        "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, SF.deprecations).",
         "enum": [
           "filled",
-          "outlined"
+          "bordered"
         ]
       },
       "columns": {
@@ -159,11 +159,11 @@
       },
       "type": {
         "type": "string",
-        "default": "outlined",
+        "default": "bordered",
         "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
         "enum": [
           "filled",
-          "outlined"
+          "bordered"
         ]
       },
       "options": {
@@ -478,7 +478,9 @@
       "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
       "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
     },
-    "aliases": [],
+    "aliases": [
+      "appearance=outlined"
+    ],
     "deprecations": [],
     "replacement": null,
     "migrations": [
@@ -498,7 +500,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "26ac674f014cd5286301d7aa121ad4fc56156f23fe4b259a7a8d9e72fa561acc"
+        "sha256": "7ff89fe4ba0ed7226a883d6676b3a421473cefd2515decc6b4b4a253478384c1"
       },
       {
         "path": "src/smart/dropdown/rule.js",
@@ -506,7 +508,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "d4789a73aef3f6761bfb2969be2e531f081e0015ae4a02a109bdc26ed30095b4"
+        "sha256": "fde23d27164206a7191a38b4c349e3c2de32b5735422f4e281b41384e56e1e4d"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

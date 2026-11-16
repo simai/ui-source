@@ -211,8 +211,11 @@ class SfDropdown extends FormField(DropdownElement) {
       templateName: { attribute: 'template', default: 'default' },
       size: { default: '1' },
       // The axis is called appearance, because that is the question it answers.
-      // `type` keeps working: see contracts/public-api-axes.json.
-      appearance: {default: 'outlined', values: ['filled', 'outlined'], aliases: ['type']},
+      // `type` keeps working: see contracts/public-api-axes.json. The field
+      // look is named bordered, as every field's (FM-9, 2026-11-16); outlined
+      // is its dated alias until 2027-01-01 (aliases.json, change journal
+      // value-dropdown-appearance-outlined-to-bordered).
+      appearance: {default: 'bordered', values: ['filled', 'bordered'], aliases: ['type'], valueAliases: {bordered: ['outlined']}},
       mode: { default: 'select', values: ['tag', 'select'] },
       multiple: { type: Boolean, default: false },
       portal: { type: Boolean, default: true },

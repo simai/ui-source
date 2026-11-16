@@ -139,14 +139,21 @@ const CELL = {
   "3": "var(--sf-ui-3--control-height)",
 };
 
+// The look's class in the base component's markup. bordered (FM-9) draws the
+// class layer's outlined modifier: .sf-dropdown--outlined stays the class
+// markup's name, so pages written in classes and the first-paint snapshots
+// keep drawing.
+const LOOK_CLASS = Object.freeze({bordered: "outlined", outlined: "outlined", filled: "filled"});
+
 export function renderDropdownTemplate(context) {
+  const look = context.appearance ?? context.type;
   const rootClasses = [
     "sf-dropdown",
     context.rootClass,
     context.open ? "open" : "",
     context.open ? "sf-dropdown--open" : "",
     `sf-dropdown--size-${context.size}`,
-    `sf-dropdown--${context.appearance ?? context.type}`,
+    `sf-dropdown--${LOOK_CLASS[look] || look}`,
     context.mode === "tag" ? "sf-dropdown--tag" : "",
     context.layout === "grid" ? "sf-dropdown--grid" : "",
     context.mode !== "tag" ? "sf-dropdown--text" : "",

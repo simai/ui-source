@@ -25,10 +25,10 @@ const sfDropdownMeta = {
       "kind": "enum",
       "values": [
         "filled",
-        "outlined"
+        "bordered"
       ],
-      "default": "outlined",
-      "description": "How the dropdown looks: a filled field or an outlined one."
+      "default": "bordered",
+      "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, SF.deprecations)."
     },
     "columns": {
       "kind": "custom",
@@ -164,9 +164,9 @@ const sfDropdownMeta = {
       "kind": "enum",
       "values": [
         "filled",
-        "outlined"
+        "bordered"
       ],
-      "default": "outlined",
+      "default": "bordered",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."
     }
   }
