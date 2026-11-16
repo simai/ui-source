@@ -21,7 +21,8 @@ const roles = read('src/core/figma_variables/figma_typography_roles.scss');
 
 test('C186 (1): a link in text is underlined at ink 48, full on hover; none in navigation and tables until hover', () => {
   assert.match(link, /--sf-link--underline-ink: 48%;/u);
-  assert.match(link, /\[class\*=link-\] ~ a \{[^}]*text-decoration-line: underline;[^}]*text-decoration-color: color-mix\(in srgb, currentColor var\(--sf-link--underline-ink\), transparent\);/su);
+  // RG-UT-V LNK-4: a link- class is read at the start of a class name.
+  assert.match(link, /:is\(\[class\^='link-'\], \[class\*=' link-'\], \[class\*=':link-'\]\) ~ a \{[^}]*text-decoration-line: underline;[^}]*text-decoration-color: color-mix\(in srgb, currentColor var\(--sf-link--underline-ink\), transparent\);/su);
   assert.match(link, /:where\(nav, menu, \[role='navigation'\][^)]*table[^)]*\) a:not\(\[class\]\) \{\s*text-decoration-line: none;\s*&:is\(:hover, :focus-visible\) \{\s*text-decoration-line: underline;/su);
   assert.match(sfLink, /text-decoration-color: color-mix\(in srgb, currentColor var\(--sf-link--underline-ink, 48%\), transparent\);/u);
   assert.match(sfLink, /\.sf-link:hover[^{]*\{[^}]*--sf-link--text-decoration: underline;/su, 'sf-link keeps its line under the pointer');
