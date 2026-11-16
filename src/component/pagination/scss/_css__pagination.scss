@@ -101,6 +101,31 @@
   text-decoration: none;
 }
 
+/* A phone shows five places (below the sm step, C97 (6)), and they have to
+   fit its column (SM-PN-1). With the button's own side padding a two-digit
+   place was 46 at the phone step: two arrows, five places and six gaps of 8
+   needed 350 in the 326 column of a 390 screen, and the row scrolled. Below
+   the sm step a place takes the arrow's side padding (the step's tightness),
+   so a two-digit place is the control height, as square as the arrows and
+   the plain sf-page-number: the same row is 300. Three digits make a place
+   of 3ch and that padding (43 at step 1). */
+@include mq.media-breakpoint-down(sm) {
+  .sf-pagination {
+    --sf-pagination--space-x: var(--sf-ui-1--space-y-tightness-default);
+  }
+
+  .sf-pagination.sf-pagination--size-1\/2 {
+    --sf-pagination--space-x: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+
+  .sf-pagination .sf-pagination-slot > .sf-pagination-page {
+    --sf-button--padding-inline-start: var(--sf-pagination--space-x);
+    --sf-button--padding-inline-end: var(--sf-pagination--space-x);
+    --sf-button-text-container--padding-inline-start: 0;
+    --sf-button-text-container--padding-inline-end: 0;
+  }
+}
+
 /* The gap is not a control: a mark of the pages left out. */
 .sf-pagination .sf-pagination-gap {
   display: inline-flex;

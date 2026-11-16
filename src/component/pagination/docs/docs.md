@@ -25,6 +25,13 @@ The controls of one row are one group of buttons (C105 H5): they stand
 outside the compatible footer the row had no gap before and its edge buttons
 touched their neighbours). `--sf-pagination-gap` still sets it.
 
+On a phone (below the sm step) the numbers row shows five places, and they fit
+its column: a place takes the arrow's side padding there (the step's
+tightness), so a two-digit place is as wide as the control is high, square like
+the arrows and the plain `sf-page-number` (1.5.2; with the button's own side
+padding two arrows and five places needed 350 in the 326 column of a 390
+screen, and the row scrolled).
+
 ## The row's box
 
 The page row's height is published on `:root`, one value per step of the size

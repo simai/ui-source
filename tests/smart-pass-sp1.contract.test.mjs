@@ -260,3 +260,21 @@ test('SM-CPY-2: sf-button-icon writes one scheme class; the sheet carries on-sur
   // The quiet glyph stands one class above the on-surface glyph rules (0,4,0).
   assert.match(sheets, /\.sf-icon-button\.sf-icon-button:is\(\.sf-icon-button--on-surface-variant\.sf-icon-button--on-surface-variant, \.sf-icon-button--secondary\):not\(\.sf-icon-button--default\) \{\n\s+--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-on-surface-variant\)\);/u);
 });
+
+// ---- SM-PN-1: five places fit a phone column -------------------------------
+
+test('SM-PN-1: below the sm step a numbers place takes the tightness, so five places fit 326', () => {
+  const sheet = read('src/component/pagination/scss/_css__pagination.scss');
+  const narrow = sheet.match(/@include mq\.media-breakpoint-down\(sm\) \{([\s\S]*?)\n\}/u);
+  assert.ok(narrow, 'the pagination sheet has a below-sm block');
+  const block = narrow[1];
+  assert.match(block, /\.sf-pagination \{\s*--sf-pagination--space-x: var\(--sf-ui-1--space-y-tightness-default\);/u);
+  assert.match(block, /\.sf-pagination\.sf-pagination--size-1\\\/2 \{\s*--sf-pagination--space-x: var\(--sf-ui-1\\\/2--space-y-tightness-default\);/u);
+  assert.match(block, /--sf-button--padding-inline-start: var\(--sf-pagination--space-x\);/u);
+  assert.match(block, /--sf-button--padding-inline-end: var\(--sf-pagination--space-x\);/u);
+  // The arithmetic the block answers: arrows and places are the control
+  // height (36 at the phone step), six gaps of 8.
+  const control = 36, gap = 8;
+  assert.ok(2 * control + 5 * control + 6 * gap <= 326);
+  assert.equal(json('src/component/pagination/passport.json').version, '1.5.2');
+});
