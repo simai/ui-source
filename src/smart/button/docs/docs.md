@@ -145,7 +145,14 @@ Main attributes:
   absent, the button is not a toggle and nothing is said. The pressed look
   (1.6.0, rule C12): the primary container fill, the label and the icons in
   `--sf-on-primary-container`, no visible edge (the height does not move) and
-  the icons filled -- two cues, not colour alone, in both themes
+  the icons filled -- two cues, not colour alone, in both themes. Only a
+  toggle wears it (component.buttons 1.17.0, owner decision C211 (1)):
+  `appearance="outline"` or `"ghost"` with `scheme="on-surface"`. A
+  `default`, `tonal` or danger button, or another scheme, keeps its own look
+  with `pressed` (`aria-pressed` is still written) and the console says once
+  that it is no toggle. A choice of one among several -- a view, a width, a
+  theme -- is not a row of toggles: write `sf-segmented` (the chosen segment
+  takes a soft fill and keeps its regular icon)
 - `text-pressed` — the label while the toggle is on, for a toggle whose label
   changes: `<sf-button text="В избранное" text-pressed="В избранном"
   icon="star" pressed="false">`. The label then says the state, so
@@ -156,11 +163,13 @@ Main attributes:
 - `shortcut-listen` — the button is pressed by its shortcut, see below
 - `aria-label` — a host attribute, passed to the native button
 
-An icon-only button (`icon` with an `aria-label` and no text) keeps the
-button's side padding, so it is wider than tall: 56 × 40 at size 1 on the
-desktop, 48 × 36 on a phone. The square button with an icon is
-`sf-button-icon` (40 × 40, 36 × 36); take it for a toolbar or a row of icons
-(owner decision C36).
+An icon-only button (`icon` with an `aria-label` and no text) is square, as
+`sf-button-icon` of the same size and height (component.buttons 1.17.0, owner
+decision C211 (2)): 40 × 40 at size 1 on the desktop, 36 × 36 on a phone; it
+was 56 × 40 and 48 × 36. The sheet squares it, so the first frame is square.
+It needs `aria-label`: without one the console says once that the button has
+no name. For a toolbar or a row of icons write `sf-button-icon` (owner
+decision C36).
 
 The old names are dated aliases until 2026-12-01 (`aliases.json`): `type` for
 `appearance`, `icon-left` and `icon-right` for `icon-start` and `icon-end`,
@@ -385,7 +394,8 @@ Example:
 
 `cycle` makes one button step through several values (1.9.0, decision D11d):
 a speed, a repeat mode, a sort order. Its items are shaped like sf-segmented's:
-`value`, `label`, `icon`, and `pressed` for an item drawn with the pressed look.
+`value`, `label`, `icon`, and `pressed` for an item drawn with the pressed look
+(a toggle's look: `outline` or `ghost` in `on-surface`, C211 (1)).
 `value` is the current item (the first by default). A press moves to the next
 item and wraps, and sends `change` with `{previous, value, item}`.
 
