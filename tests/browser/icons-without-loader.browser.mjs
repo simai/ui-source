@@ -64,8 +64,14 @@ try {
   if (!(m.glyph > 0 && Math.abs(m.glyph - m.fontSize) <= 2)) failures.push({name: 'without the Loader the ligature draws one glyph, not the name', ...m});
   await tab.goto(`http://127.0.0.1:${server.address().port}/loader`);
   await tab.evaluate(() => document.fonts.ready);
-  measured.loader = await tab.evaluate(() => ({fontSize: parseFloat(getComputedStyle(document.getElementById('star')).fontSize)}));
-  if (measured.loader.fontSize !== 0) failures.push({name: 'with the Loader an icon it has not marked loaded stays held', ...measured.loader});
+  // The hold keeps the glyph's box and hides the letters (first paint R222,
+  // 2026-11-16): it was font-size 0, and an icon sized in em or lh was 0 wide.
+  measured.loader = await tab.evaluate(() => {
+    const style = getComputedStyle(document.getElementById('star'));
+    return {fontSize: parseFloat(style.fontSize), box: document.getElementById('star').getBoundingClientRect().width, fill: style.webkitTextFillColor};
+  });
+  if (!/rgba\(0, 0, 0, 0\)|transparent/u.test(measured.loader.fill)) failures.push({name: 'with the Loader an icon it has not marked loaded stays held (unseen)', ...measured.loader});
+  if (!(measured.loader.box > 0 && Math.abs(measured.loader.box - measured.loader.fontSize) <= 1)) failures.push({name: 'with the Loader a held icon keeps its glyph box', ...measured.loader});
 } finally {
   await browser.close();
   server.close();
