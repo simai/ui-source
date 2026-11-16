@@ -24,9 +24,18 @@ const ORIENTED_ROLES = new Set([
   'tree',
 ]);
 
+// The members of a joined group: buttons and icon buttons, as classes or as
+// Smart hosts (RG-BG-1, DEV 2026-11-16: icon buttons stood apart, each with its
+// own corners). A host carries its position as the segment attribute.
+const HOSTS = 'sf-button, sf-button-icon, sf-icon-button';
+const ITEMS = `${HOSTS}, .sf-button, .sf-icon-button`;
+
 const OUT = 'sf-button-group-out';
 const MORE = 'sf-button-group-more';
 const OVERFLOW_KEY = '__sfButtonGroupOverflow';
+const STACKED = 'data-sf-stacked';
+const STACK_KEY = '__sfButtonGroupStack';
+const AUTHOR_ORIENTATION_KEY = '__sfButtonGroupAuthorOrientation';
 
 // Every word this part says (owner decision C155: «Ещё» names ⋯). A product
 // adds a language with SF.language.register('sf-button-group', code, words).
@@ -39,19 +48,19 @@ const WORDS = {
 // it shows (C155).
 function getItems(root) {
   return Array.from(root.children).filter((item) =>
-    item.matches?.('sf-button, .sf-button') && !item.classList.contains(OUT),
+    item.matches?.(ITEMS) && !item.classList.contains(OUT),
   );
 }
 
 // The group's own buttons, ⋯ aside.
 function ownItems(root) {
   return Array.from(root.children).filter((item) =>
-    item.matches?.('sf-button, .sf-button') && !item.classList.contains(MORE),
+    item.matches?.(ITEMS) && !item.classList.contains(MORE),
   );
 }
 
 function setSegment(item, segment) {
-  if (item.matches('sf-button')) {
+  if (item.matches(HOSTS)) {
     if (segment) {
       item.setAttribute('segment', segment);
     } else {
@@ -216,17 +225,128 @@ function bindOverflow(root) {
   layoutOverflow(root);
 }
 
+// A group wider than its container stacks (owner decision C215): it draws as
+// the vertical group -- one frame, one line at each join, the radius outside
+// only -- at the container's full width, and stands in a row again once the
+// row fits. It never scrolls sideways. data-sf-stacked carries the state, so
+// an author's data-orientation is never rewritten, and a group whose author
+// set an orientation keeps it. The segmented track and sf-segmented keep their
+// own answer (a scroll, a fold), and overflow="more" keeps its row.
+//
+// A container query cannot ask whether the content fits, so the group
+// measures: the row's extent against its own box, both read with the row laid
+// out. It decides synchronously when it binds and in a ResizeObserver
+// callback, both before paint, so a stacked group's first frame is a column.
+function stackWanted(root) {
+  return !root[AUTHOR_ORIENTATION_KEY]
+    && root.getAttribute('data-orientation') !== 'vertical'
+    && !root.classList.contains('sf-button-group--segmented')
+    && root.getAttribute('overflow') !== 'more'
+    && !root.parentElement?.matches('sf-segmented, sf-button-group')
+    && typeof ResizeObserver !== 'undefined';
+}
+
+// The drawn boxes of the row: a Smart host draws none (display: contents),
+// its control does.
+function drawnBoxes(element, boxes = []) {
+  for (const child of element.children) {
+    if (getComputedStyle(child).display === 'contents') {
+      drawnBoxes(child, boxes);
+      continue;
+    }
+    const box = child.getBoundingClientRect();
+    if (box.width || box.height) boxes.push(box);
+  }
+  return boxes;
+}
+
+function rowOverflows(root) {
+  if (!root.getClientRects().length) return false;
+  const boxes = drawnBoxes(root);
+  if (boxes.length < 2) return false;
+  const extent = Math.max(...boxes.map((box) => box.right)) - Math.min(...boxes.map((box) => box.left));
+  // Half a pixel of rounding, as the row engine allows.
+  return extent > rowRoom(root) + 0.5;
+}
+
+function layoutStack(root) {
+  const state = root[STACK_KEY];
+  if (!state || state.busy) return;
+  state.busy = true;
+  try {
+    const was = root.hasAttribute(STACKED);
+    // Read the row as a row; the attribute comes back in the same task, so no
+    // frame ever shows the probe.
+    if (was) root.removeAttribute(STACKED);
+    const stacked = rowOverflows(root);
+    if (stacked) root.setAttribute(STACKED, '');
+    if (stacked !== was && state.observing) {
+      // The change resizes the boxes this observer watches; it looks again
+      // from the next frame, so the change never reads as a resize loop.
+      state.observer.disconnect();
+      state.observing = false;
+      requestAnimationFrame(() => watchStack(root));
+    }
+  } finally {
+    state.busy = false;
+  }
+}
+
+function watchStack(root) {
+  const state = root[STACK_KEY];
+  if (!state || state.observing) return;
+  // The room (the parent and the group) and each button, whose box widens
+  // when its face arrives later.
+  for (const box of [root.parentElement, root, ...drawnChildren(root)].filter(Boolean)) {
+    state.observer.observe(box);
+  }
+  state.observing = true;
+}
+
+function drawnChildren(root) {
+  return getItems(root).map((item) => (item.matches(HOSTS) ? item.firstElementChild : item)).filter(Boolean);
+}
+
+function bindStack(root) {
+  const state = root[STACK_KEY];
+  if (!stackWanted(root)) {
+    if (state) {
+      state.observer.disconnect();
+      root[STACK_KEY] = null;
+    }
+    root.removeAttribute(STACKED);
+    return;
+  }
+  if (!state) {
+    root[STACK_KEY] = {
+      observer: new ResizeObserver(() => layoutStack(root)),
+      busy: false,
+      observing: false,
+    };
+  } else if (state.observing) {
+    // The buttons may have changed: watch the current ones.
+    state.observer.disconnect();
+    state.observing = false;
+  }
+  layoutStack(root);
+  watchStack(root);
+}
+
 function bindButtonGroup(root) {
   if (!(root instanceof HTMLElement) || root[OBSERVER_KEY]) {
     if (root instanceof HTMLElement && !root[OVERFLOW_KEY]?.busy) bindOverflow(root);
+    if (root instanceof HTMLElement) bindStack(root);
     return syncButtonGroup(root);
   }
 
+  // An orientation the author wrote is kept, before the group writes its own.
+  root[AUTHOR_ORIENTATION_KEY] = root.hasAttribute('data-orientation') || root.hasAttribute('aria-orientation');
   syncButtonGroup(root);
   root[OBSERVER_KEY] = new MutationObserver(() => {
     if (root[OVERFLOW_KEY]?.busy) return;
     syncButtonGroup(root);
     bindOverflow(root);
+    bindStack(root);
   });
   root[OBSERVER_KEY].observe(root, {
     childList: true,
@@ -234,6 +354,7 @@ function bindButtonGroup(root) {
     attributeFilter: ['role', 'data-orientation', 'aria-orientation', 'class', 'overflow'],
   });
   bindOverflow(root);
+  bindStack(root);
 
   return root;
 }

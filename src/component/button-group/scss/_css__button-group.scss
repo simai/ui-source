@@ -19,20 +19,30 @@
   }
 
   .sf-button-group > sf-button,
-  .sf-button-group > .sf-button {
+  .sf-button-group > .sf-button,
+  .sf-button-group > .sf-icon-button,
+  .sf-button-group > :is(sf-button, sf-button-icon, sf-icon-button) > :is(.sf-button, .sf-icon-button) {
     flex: 0 0 auto;
     min-inline-size: 0;
   }
 
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) {
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) {
     flex-direction: column;
     overflow-x: hidden;
     overflow-y: auto;
   }
 
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button,
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button > .sf-button,
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > .sf-button {
+  /* A group wider than its container stands in a column at its full width,
+     drawn as the vertical group (owner decision C215); the script decides and
+     writes data-sf-stacked, never the author's data-orientation. */
+  .sf-button-group[data-sf-stacked] {
+    display: flex;
+    inline-size: 100%;
+  }
+
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > sf-button,
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(sf-button, sf-button-icon, sf-icon-button) > :is(.sf-button, .sf-icon-button),
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(.sf-button, .sf-icon-button) {
     inline-size: 100%;
   }
 
@@ -60,6 +70,14 @@
   .sf-button-group > .sf-button:focus-visible,
   .sf-button-group > [aria-pressed='true'],
   .sf-button-group > .active {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* A Smart host draws no box (display: contents), so its control is the one
+     that stands above its neighbours, as a class button does. */
+  .sf-button-group > .sf-icon-button:focus-visible,
+  .sf-button-group > :is(sf-button, sf-button-icon, sf-icon-button) > :is(.sf-button, .sf-icon-button):is(:focus-visible, [aria-pressed='true'], .active) {
     position: relative;
     z-index: 1;
   }
@@ -116,8 +134,8 @@
   }
 
   /* A vertical group uses the same one-edge-per-join rule on the block axis. */
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment]:is([appearance], [type])[scheme] > .sf-button[class*='segment-'],
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > .sf-button[class*='segment-'] {
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > sf-button[segment]:is([appearance], [type])[scheme] > .sf-button[class*='segment-'],
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > .sf-button[class*='segment-'] {
     --sf-button--border-top-width: 0;
     --sf-button--border-bottom-width: var(--sf-px);
     --sf-button--border-inline-start-width: var(--sf-px);
@@ -127,8 +145,8 @@
     border-inline-width: var(--sf-px);
   }
 
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment]:is([appearance], [type])[scheme]:first-child > .sf-button[class*='segment-'],
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > .sf-button[class*='segment-']:first-child {
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > sf-button[segment]:is([appearance], [type])[scheme]:first-child > .sf-button[class*='segment-'],
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > .sf-button[class*='segment-']:first-child {
     --sf-button--border-top-width: var(--sf-px);
     border-block-start-width: var(--sf-px);
     border-start-start-radius: var(--sf-button--radius);
@@ -137,12 +155,57 @@
     border-end-end-radius: 0;
   }
 
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > sf-button[segment]:is([appearance], [type])[scheme]:last-child > .sf-button[class*='segment-'],
-  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical']) > .sf-button[class*='segment-']:last-child {
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > sf-button[segment]:is([appearance], [type])[scheme]:last-child > .sf-button[class*='segment-'],
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > .sf-button[class*='segment-']:last-child {
     border-start-start-radius: 0;
     border-start-end-radius: 0;
     border-end-start-radius: var(--sf-button--radius);
     border-end-end-radius: var(--sf-button--radius);
+  }
+
+  /* Icon buttons join the same way (RG-BG-1, DEV 2026-11-16): the group gives
+     them segment positions, and the one perimeter above is drawn through the
+     icon button's own edge and corner variables, so its padding still gives
+     each edge back and every look stands in the button's height. The corners
+     of a position are the icon button's own (segment-start, -middle, -end). */
+  .sf-button-group > :is(sf-button-icon, sf-icon-button)[segment] > .sf-icon-button[class*='segment-'],
+  .sf-button-group > .sf-icon-button[class*='segment-'] {
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: 0;
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+    border-block-color: var(--sf-outline);
+    border-inline-color: var(--sf-outline);
+  }
+
+  .sf-button-group > :is(sf-button-icon, sf-icon-button)[segment] > .sf-icon-button.segment-start,
+  .sf-button-group > .sf-icon-button.segment-start {
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(sf-button-icon, sf-icon-button)[segment] > .sf-icon-button[class*='segment-'],
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > .sf-icon-button[class*='segment-'] {
+    --sf-icon-button--border-top-width: 0;
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+  }
+
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(sf-button-icon, sf-icon-button)[segment] > .sf-icon-button.segment-start,
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > .sf-icon-button.segment-start {
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-top-left-radius: var(--sf-icon-button--radius);
+    --sf-icon-button--border-top-right-radius: var(--sf-icon-button--radius);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius-square);
+  }
+
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > :is(sf-button-icon, sf-icon-button)[segment] > .sf-icon-button.segment-end,
+  .sf-button-group:is([data-orientation='vertical'], [aria-orientation='vertical'], [data-sf-stacked]) > .sf-icon-button.segment-end {
+    --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-icon-button--radius);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-icon-button--radius);
   }
 
   /* A button in a seamless group draws the same ring as a standalone one, only
@@ -170,14 +233,29 @@
     --sf-button--radius: var(--sf-radius--ui);
   }
 
+  .sf-button-group.sf-button-group--radius-default:not(.sf-button-group--segmented) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button,
+  .sf-button-group.sf-button-group--radius-default:not(.sf-button-group--segmented) > .sf-icon-button {
+    --sf-icon-button--radius: var(--sf-radius--ui);
+  }
+
   .sf-button-group.sf-button-group--radius-square:not(.sf-button-group--segmented) > sf-button > .sf-button,
   .sf-button-group.sf-button-group--radius-square:not(.sf-button-group--segmented) > .sf-button {
     --sf-button--radius: var(--sf-radius-square);
   }
 
+  .sf-button-group.sf-button-group--radius-square:not(.sf-button-group--segmented) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button,
+  .sf-button-group.sf-button-group--radius-square:not(.sf-button-group--segmented) > .sf-icon-button {
+    --sf-icon-button--radius: var(--sf-radius-square);
+  }
+
   .sf-button-group.sf-button-group--radius-rounded:not(.sf-button-group--segmented) > sf-button > .sf-button,
   .sf-button-group.sf-button-group--radius-rounded:not(.sf-button-group--segmented) > .sf-button {
     --sf-button--radius: var(--sf-radius-rounded);
+  }
+
+  .sf-button-group.sf-button-group--radius-rounded:not(.sf-button-group--segmented) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button,
+  .sf-button-group.sf-button-group--radius-rounded:not(.sf-button-group--segmented) > .sf-icon-button {
+    --sf-icon-button--radius: var(--sf-radius-rounded);
   }
 
   .sf-button-group > sf-button > .sf-button,
@@ -210,8 +288,9 @@
    (radius="default|square|rounded" as sf-button reads it) and the track is
    that radius plus the padding: rounded makes both pills.
 
-   In a narrow container the track scrolls inside itself, as every button group
-   does; it never widens the page. full-width shares the width equally instead.
+   In a narrow container the track scrolls inside itself; it never widens the
+   page. full-width shares the width equally instead. (A joined group stacks
+   into a column instead, decision C215; the track keeps its scroll.)
 
    Public variables (core/contracts/public-variables.v1.json), read here and
    never set by the Framework: --sf-button-group-background-color (the track),
