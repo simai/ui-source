@@ -317,7 +317,7 @@ export function Search(e = {modal:'[sf-modal]'}, param)
             active      : false,        // Активность
             position    : 'bottom',     // Положение
             overlay     : 'absolute flex-col items-cross-start',
-            area        : 'w-full overflow-auto p-4 bg-surface-popup shadow-overlay border-1 radius-3 border-gray-3',
+            area        : 'w-full overflow-auto p-4 bg-surface-popup shadow-overlay border-1 radius-3 border-outline-variant',
             content     : 'w-full',
         },
         load :
@@ -338,7 +338,7 @@ export function Search(e = {modal:'[sf-modal]'}, param)
         hide :
         {
             active : false,
-            modifier : 'cursor-pointer absolute top-b6 inline-end-d0 w-b6 h-b6 z-1 opacity-4 transition border-0 bg-transparent before:content-empty before:absolute before:inline-start-0 before:h-a2 before:w-full before:bg-gray-9',
+            modifier : 'cursor-pointer absolute top-b6 inline-end-d0 w-b6 h-b6 z-1 opacity-4 transition border-0 bg-transparent before:content-empty before:absolute before:inline-start-0 before:h-a2 before:w-full before:bg-surface-inverse',
         },
         event:
         {
