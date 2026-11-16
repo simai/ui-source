@@ -1,3 +1,49 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-doc-lead,
+  .t-lead {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-doc-example,
+  .example {
+    background-color: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface);
+  }
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
+    background-color: var(--sf-surface-inverse);
+    color: var(--sf-on-surface-inverse);
+  }
+  // The core gives <code> the main text colour outright, which is right on a
+  // surface and wrong here: the source block is an inverse surface, and code
+  // in it stayed dark on dark, 1.3:1. Inside the block it takes the block's
+  // colour.
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) code {
+    color: inherit;
+  }
+  .sf-doc-checkerboard,
+  .bg-checkered {
+    background-color: var(--sf-surface-page);
+  }
+  @media (forced-colors: active) {
+    .sf-doc-example,
+    .example,
+    :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
+      border-color: CanvasText;
+    }
+    .sf-doc-stripes,
+    .bg-stripes,
+    .sf-doc-checkerboard,
+    .bg-checkered {
+      background: Canvas;
+      border-color: CanvasText;
+    }
+  }
+}
+
 @layer sf.components {
   code,
   .sf-doc-code,
@@ -7,7 +53,6 @@
 
   .sf-doc-lead,
   .t-lead {
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-text-large--size);
     line-height: var(--sf-text-large--height);
   }
@@ -27,11 +72,9 @@
     margin: 0;
     padding: var(--sf-space-3);
     overflow-wrap: anywhere;
-    background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-radius--surface);
-    color: var(--sf-on-surface);
   }
 
   // A highlighted source block is wrapped in the highlighter's code surface,
@@ -57,18 +100,8 @@
     max-inline-size: 100%;
     margin-block-end: var(--sf-text--space-bottom);
     overflow: auto;
-    background-color: var(--sf-surface-inverse);
     border-radius: var(--sf-radius--surface);
-    color: var(--sf-on-surface-inverse);
     tab-size: 2;
-  }
-
-  // The core gives <code> the main text colour outright, which is right on a
-  // surface and wrong here: the source block is an inverse surface, and code
-  // in it stayed dark on dark, 1.3:1. Inside the block it takes the block's
-  // colour.
-  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) code {
-    color: inherit;
   }
 
   .sf-doc-stripes,
@@ -92,7 +125,6 @@
 
   .sf-doc-checkerboard,
   .bg-checkered {
-    background-color: var(--sf-surface-page);
     background-image: conic-gradient(
       var(--sf-surface-area) 25%,
       var(--sf-transparent) 0 50%,
@@ -111,18 +143,12 @@
   }
 
   @media (forced-colors: active) {
-    .sf-doc-example,
-    .example,
-    :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
-      border-color: CanvasText;
-    }
-
     .sf-doc-stripes,
     .bg-stripes,
     .sf-doc-checkerboard,
     .bg-checkered {
-      background: Canvas;
-      border: var(--sf-px) solid CanvasText;
+      border-width: var(--sf-px);
+      border-style: solid;
     }
   }
 }

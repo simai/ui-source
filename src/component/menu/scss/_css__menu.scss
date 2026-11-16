@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
 
 // The current page of a navigation menu (C23, owner 2026-11-09): a primary
 // plate of the fill family -- --sf-primary-container-active, primary at 20 in
@@ -6,10 +7,12 @@
 // hover state and its own words (control/evidence/2026-11-09-c23-nav-current)
 // -- with on-primary-container words and a medium label. No bar.
 @mixin current-plate {
-  --sf-menu-element--background-color: var(--sf-primary-container-active);
-  --sf-menu-element--border-color: var(--sf-transparent);
-  --sf-menu-element--color: var(--sf-on-primary-container);
-  --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+  @if paint.writes-shape() {
+    --sf-menu-element--background-color: var(--sf-primary-container-active);
+    --sf-menu-element--border-color: var(--sf-transparent);
+    --sf-menu-element--color: var(--sf-on-primary-container);
+    --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+  }
   // A translucent fill: a tonal badge (a counter) on it keeps its own tone
   // (C43), an anchored counter's ring is the row's colour (C43 D3).
   @include places.sf-place-fill(var(--sf-menu-element--background-color));
@@ -45,45 +48,65 @@ $path-any: ".sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-curren
 @mixin path-line($rows) {
   // A box that scrolls clips its border area: there the line steps one pixel
   // in. Each box sets it, so a panel inside a scrolling one keeps its own.
-  --sf-menu--line-border: var(--sf-menu--border-width, var(--sf-px));
+  @if paint.writes-shape() {
+    --sf-menu--line-border: var(--sf-menu--border-width, var(--sf-px));
+  }
 
   &.sf-menu--scroll {
-    --sf-menu--line-border: calc(var(--sf-px) * 0);
+    @if paint.writes-shape() {
+      --sf-menu--line-border: calc(var(--sf-px) * 0);
+    }
   }
 
   :is(#{$rows}) {
-    position: relative;
+    @if paint.writes-shape() {
+      position: relative;
+    }
   }
 
   :is(#{$rows})::before {
-    content: '';
-    position: absolute;
-    inset-block: var(--sf-menu-path--block-start, calc(var(--sf-px) * 0)) var(--sf-menu-path--block-end, calc(var(--sf-px) * 0));
-    inset-inline-start: calc((var(--sf-menu--inset, calc(var(--sf-px) * 0)) + var(--sf-menu--line-border)) * -1);
-    inline-size: var(--sf-a2);
-    border-start-start-radius: var(--sf-0);
-    border-end-start-radius: var(--sf-0);
-    border-start-end-radius: var(--sf-a2);
-    border-end-end-radius: var(--sf-a2);
-    background-color: var(--sf-primary);
-    pointer-events: none;
+    @if paint.writes-shape() {
+      content: '';
+      position: absolute;
+      inset-block: var(--sf-menu-path--block-start, calc(var(--sf-px) * 0)) var(--sf-menu-path--block-end, calc(var(--sf-px) * 0));
+      inset-inline-start: calc((var(--sf-menu--inset, calc(var(--sf-px) * 0)) + var(--sf-menu--line-border)) * -1);
+      inline-size: var(--sf-a2);
+      border-start-start-radius: var(--sf-0);
+      border-end-start-radius: var(--sf-0);
+      border-start-end-radius: var(--sf-a2);
+      border-end-end-radius: var(--sf-a2);
+    }
+    @if paint.writes-paint() {
+      background-color: var(--sf-primary);
+    }
+    @if paint.writes-shape() {
+      pointer-events: none;
+    }
   }
 
   // The box's first and last row: the line keeps clear of the corner's curve.
   // A box whose first row is not at a corner (sf-menu with search and
   // bordered: the head is above it) sets --sf-menu--radius-block-start to 0.
   > .sf-menu-item:first-child > .sf-menu-element {
-    --sf-menu-path--block-start: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius-block-start, var(--sf-menu--radius, calc(var(--sf-px) * 0))) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+    @if paint.writes-shape() {
+      --sf-menu-path--block-start: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius-block-start, var(--sf-menu--radius, calc(var(--sf-px) * 0))) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+    }
   }
 
   > .sf-menu-item:last-child > .sf-menu-element {
-    --sf-menu-path--block-end: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius, calc(var(--sf-px) * 0)) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+    @if paint.writes-shape() {
+      --sf-menu-path--block-end: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius, calc(var(--sf-px) * 0)) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+    }
   }
 
   @media (forced-colors: active) {
     :is(#{$rows})::before {
-      forced-color-adjust: none;
-      background-color: Highlight;
+      @if paint.writes-shape() {
+        forced-color-adjust: none;
+      }
+      @if paint.writes-paint() {
+        background-color: Highlight;
+      }
     }
   }
 }
@@ -104,55 +127,77 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    drawn at this level: the line is the mark. Applied on the row's root. */
 @mixin row-current-line {
   > .sf-menu-item {
-    position: relative;
+    @if paint.writes-shape() {
+      position: relative;
+    }
   }
 
   #{$row-current} {
     > .sf-menu-element {
-      --sf-menu-element--font-weight: var(--sf-font-weight-medium);
-      --sf-menu-element--color: var(--sf-on-surface);
+      @if paint.writes-shape() {
+        --sf-menu-element--font-weight: var(--sf-font-weight-medium);
+        --sf-menu-element--color: var(--sf-on-surface);
+      }
     }
 
     // The pointer's states over a current row, as over any other; the plate
     // that the navigation look gives the current page is not drawn here.
     > .sf-menu-element:not(.open) {
-      --sf-menu-element--background-color: var(--sf-transparent);
+      @if paint.writes-shape() {
+        --sf-menu-element--background-color: var(--sf-transparent);
+      }
     }
 
     > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
-      --sf-menu-element--background-color: var(--sf-surface-state-select);
+      @if paint.writes-shape() {
+        --sf-menu-element--background-color: var(--sf-surface-state-select);
+      }
       @include places.sf-place-fill(var(--sf-menu-element--background-color));
     }
 
     > .sf-menu-element:not(.open):not(:disabled):not(.disabled):not([aria-disabled='true']):active {
-      --sf-menu-element--background-color: var(--sf-surface-state-active);
+      @if paint.writes-shape() {
+        --sf-menu-element--background-color: var(--sf-surface-state-active);
+      }
       @include places.sf-place-fill(var(--sf-menu-element--background-color));
     }
 
     > .sf-menu-element .sf-menu-element-icon {
-      --sf-icon--color: var(--sf-on-surface);
+      @if paint.writes-shape() {
+        --sf-icon--color: var(--sf-on-surface);
+      }
     }
 
     &::after {
-      content: '';
-      position: absolute;
-      /* The fallback is a zero length: a bare 0 makes the calc a number,
-         which an inset refuses. */
-      inset-block-end: calc(-1 * var(--sf-site-header--edge, calc(var(--sf-px) * 0)));
-      inset-inline: var(--sf-space-1\/4);
-      block-size: var(--sf-a2);
-      border-start-start-radius: var(--sf-a2);
-      border-start-end-radius: var(--sf-a2);
-      border-end-start-radius: var(--sf-0);
-      border-end-end-radius: var(--sf-0);
-      background-color: var(--sf-primary);
-      pointer-events: none;
+      @if paint.writes-shape() {
+        content: '';
+        position: absolute;
+        /* The fallback is a zero length: a bare 0 makes the calc a number,
+           which an inset refuses. */
+        inset-block-end: calc(-1 * var(--sf-site-header--edge, calc(var(--sf-px) * 0)));
+        inset-inline: var(--sf-space-1\/4);
+        block-size: var(--sf-a2);
+        border-start-start-radius: var(--sf-a2);
+        border-start-end-radius: var(--sf-a2);
+        border-end-start-radius: var(--sf-0);
+        border-end-end-radius: var(--sf-0);
+      }
+      @if paint.writes-paint() {
+        background-color: var(--sf-primary);
+      }
+      @if paint.writes-shape() {
+        pointer-events: none;
+      }
     }
 
     @media (forced-colors: active) {
       &::after {
-        forced-color-adjust: none;
-        background-color: Highlight;
+        @if paint.writes-shape() {
+          forced-color-adjust: none;
+        }
+        @if paint.writes-paint() {
+          background-color: Highlight;
+        }
       }
     }
   }
@@ -166,12 +211,77 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 
     .sf-menu-element-icon,
     .sf-icon-button .sf-icon {
-      --sf-icon--color: var(--sf-on-primary-container);
+      @if paint.writes-shape() {
+        --sf-icon--color: var(--sf-on-primary-container);
+      }
     }
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-menu {
+    /* The public variables (src/core/contracts/public-variables.v1.json) wrap
+       the values the menu drew before them, so a page that sets none sees no
+       change. */
+    background-color: var(--sf-menu--background-color, var(--sf-menu-background-color, transparent));
+  }
+  .sf-menu .sf-menu-item {
+    background-color: var(--sf-menu-item--background-color);
+  }
+  .sf-menu.sf-menu--horizontal > .sf-menu-item > .sf-menu,
+.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu {
+    border-color: var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+    background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
+    @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
+  }
+  .sf-menu .sf-menu-region {
+    border-color: var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+    background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
+    @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface);
+  }
+  .sf-menu-region-foot {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):hover {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):active {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu.sf-menu--navigation .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+    @include current-plate;
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
+    border-color: var(--sf-outline-variant);
+    @include path-line($path-closed);
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu-element.open:not(:disabled):not(.disabled):not([aria-disabled='true']) {
+    @include places.sf-place-fill(var(--sf-menu-element--background-color));
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal .sf-menu {
+    @include path-line($path-any);
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal:not(.sf-menu--indicator-fill) {
+    @include row-current-line;
+  }
+  .sf-menu.sf-menu--navigation.sf-menu--horizontal.sf-menu--indicator-fill {
+    @include row-current-fill;
+  }
+  .sf-menu.sf-menu--documentation-tree [aria-current="page"] {
+    background: var(--sf-primary-container-active);
+    color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container-active));
+  }
+  @include paint.part(all);
+}
+
 @layer sf.components {
+  @include paint.part(shape);
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-menu {
   display: flex;
@@ -182,10 +292,6 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   min-inline-size: var(--sf-0);
   max-width: 100%;
   max-inline-size: 100%;
-  /* The public variables (src/core/contracts/public-variables.v1.json) wrap
-     the values the menu drew before them, so a page that sets none sees no
-     change. */
-  background-color: var(--sf-menu--background-color, var(--sf-menu-background-color, transparent));
   gap: var(--sf-menu--gap, var(--sf-menu-gap, var(--sf-space-1\/3)));
 }
 
@@ -201,7 +307,6 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   min-inline-size: var(--sf-0);
   max-width: 100%;
   max-inline-size: 100%;
-  background-color: var(--sf-menu-item--background-color);
   gap: var(--sf-menu-item--gap);
 }
 
@@ -239,9 +344,9 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   --sf-menu--border-width: var(--sf-px);
   --sf-menu--radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--ui)));
   padding: var(--sf-menu--inset);
-  border: var(--sf-menu--border-width) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+  border-width: var(--sf-menu--border-width);
+  border-style: solid;
   border-radius: var(--sf-menu--radius);
-  background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
   @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-menu-horizontal-submenu--box-shadow, var(--sf-shadow-overlay));
 }
@@ -301,12 +406,11 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   gap: var(--sf-space-1);
   z-index: var(--sf-menu-horizontal-submenu--z-index, 3);
   padding: var(--sf-space-1);
-  border: var(--sf-px) solid var(--sf-menu-horizontal-submenu--border-color, var(--sf-menu-submenu-border-color, var(--sf-outline-variant)));
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--surface)));
-  background: var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup)));
   @include places.sf-place(var(--sf-menu-horizontal-submenu--background-color, var(--sf-menu-submenu-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-menu-horizontal-submenu--box-shadow, var(--sf-shadow-overlay));
-  color: var(--sf-on-surface);
   overscroll-behavior: contain;
 }
 
@@ -356,7 +460,8 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   flex-wrap: wrap;
   gap: var(--sf-space-1\/4) var(--sf-space-1);
   padding-block-start: var(--sf-space-1\/2);
-  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  border-block-start-width: var(--sf-px);
+  border-block-start-style: solid;
 }
 
 .sf-menu .sf-menu-region .sf-menu-element {
@@ -476,7 +581,8 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   --sf-menu--border-width: var(--sf-px);
   --sf-menu--radius: var(--sf-radius--surface);
   padding-block: var(--sf-menu--inset);
-  border: var(--sf-menu--border-width) solid var(--sf-outline-variant);
+  border-width: var(--sf-menu--border-width);
+  border-style: solid;
   border-radius: var(--sf-menu--radius);
   @include path-line($path-closed);
 }
@@ -601,8 +707,6 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
    is not filled, and a closed branch that holds the current page has a
    medium label (C30 amended, R065 a: no bar). */
 .sf-menu.sf-menu--documentation-tree [aria-current="page"] {
-  background: var(--sf-primary-container-active);
-  color: var(--sf-on-primary-container);
   font-weight: var(--sf-font-weight-medium);
   --sf-icon--color: var(--sf-on-primary-container);
   @include places.sf-place-fill(var(--sf-primary-container-active));
@@ -624,4 +728,5 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: calc(var(--sf-focus--width) * -1);
 }
+  @include paint.part(all);
 }

@@ -1,3 +1,42 @@
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+    .sf-confirm {
+        color: var(--sf-on-surface);
+    }
+    .sf-confirm--inline {
+        background: var(--sf-confirm-background-color, var(--sf-surface-container));
+    }
+    .sf-confirm--card {
+        border-color: var(--sf-confirm-border-color, var(--sf-outline-variant));
+        background: var(--sf-confirm-background-color, transparent);
+    }
+    .sf-confirm__description {
+        color: var(--sf-on-surface-variant);
+    }
+    .sf-confirm__status {
+        color: var(--sf-on-surface-variant);
+    }
+    /* The outcome's ink is the success role on the surface the question stands
+       on (C16): on-success-container belongs on a success container and read
+       near-black on the page in the light theme. */
+    .sf-confirm--accepted .sf-confirm__status {
+        color: var(--sf-success);
+    }
+    .sf-confirm__consequences {
+        background: var(--sf-confirm-background-color, var(--sf-surface-container));
+        color: var(--sf-on-surface);
+    }
+    .sf-confirm--window .sf-confirm__description {
+        color: inherit;
+    }
+    .sf-confirm__name {
+        background-color: var(--sf-code-background-color, var(--sf-code--background));
+        color: var(--sf-code-color, var(--sf-code--color));
+    }
+}
+
 @layer sf.components {
   /* sf-confirm. The host is display: contents; .sf-confirm is the surface the
      page places. Every value is a Framework token. The public variables
@@ -20,7 +59,6 @@
     flex-direction: column;
     gap: var(--sf-confirm--gap);
     min-inline-size: 0;
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text--size);
     line-height: var(--sf-text--height);
@@ -29,14 +67,13 @@
   .sf-confirm--inline {
     padding: var(--sf-confirm-inset, var(--sf-space-1\/2) var(--sf-space-1));
     border-radius: var(--sf-confirm-radius, var(--sf-radius-2));
-    background: var(--sf-confirm-background-color, var(--sf-surface-container));
   }
 
   .sf-confirm--card {
     padding: var(--sf-confirm-inset, var(--sf-space-1\/2) var(--sf-space-1));
-    border: var(--sf-px) solid var(--sf-confirm-border-color, var(--sf-outline-variant));
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-confirm-radius, var(--sf-radius-2));
-    background: var(--sf-confirm-background-color, transparent);
   }
 
   .sf-confirm__question {
@@ -45,7 +82,6 @@
   }
 
   .sf-confirm__description {
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-label-large--size);
     line-height: var(--sf-label-large--height);
     overflow-wrap: anywhere;
@@ -73,7 +109,6 @@
     align-items: center;
     gap: var(--sf-space-1\/4);
     margin: 0;
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-label-medium--size);
     line-height: var(--sf-label-medium--height);
   }
@@ -94,11 +129,6 @@
      back to the control that put it (DEV D2 on C35); the surface's own
      display would otherwise keep it drawn. */
   .sf-confirm[hidden] { display: none; }
-
-  /* The outcome's ink is the success role on the surface the question stands
-     on (C16): on-success-container belongs on a success container and read
-     near-black on the page in the light theme. */
-  .sf-confirm--accepted .sf-confirm__status { color: var(--sf-success); }
 
   .sf-confirm__actions {
     display: flex;
@@ -129,15 +159,12 @@
     gap: var(--sf-space-1\/3);
     padding: var(--sf-confirm-inset, var(--sf-space-1));
     border-radius: var(--sf-confirm-radius, var(--sf-radius--surface));
-    background: var(--sf-confirm-background-color, var(--sf-surface-container));
-    color: var(--sf-on-surface);
   }
 
   .sf-confirm--window .sf-confirm__description {
     display: flex;
     flex-direction: column;
     gap: var(--sf-space-1\/3);
-    color: inherit;
     font-size: inherit;
     line-height: inherit;
   }
@@ -173,8 +200,6 @@
   .sf-confirm__name {
     padding: var(--sf-code-padding, var(--sf-code--padding));
     border-radius: var(--sf-code-radius, var(--sf-code--radius));
-    background-color: var(--sf-code-background-color, var(--sf-code--background));
-    color: var(--sf-code-color, var(--sf-code--color));
     font-family: var(--sf-code-font-family, var(--sf-code--font-family));
     font-size: var(--sf-code-font-size, var(--sf-code--font-size));
     white-space: nowrap;

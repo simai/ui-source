@@ -2,8 +2,335 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../utility/container/default/scss/sf_var__container' as container;
+@use '../../../core/scss/mix/mix__paint' as paint;
+
+/* Collapsed: the menu button first, the brand, then the tools at the end (or
+   the brand, the tools and the menu button last, menu-placement inline-end);
+   the panel is shown only while open, as a side panel from the button's edge
+   over a scrim. Height and focus come from the layer stack (core/js/layer-stack.js),
+   which lifts the whole header to the layer's z-index while it is open. */
+@mixin collapsed {
+  /* A row again whatever navigation-align says: the nav is in the panel. */
+  .sf-site-header-row {
+    @if paint.writes-shape() {
+      display: flex;
+    }
+  }
+
+  /* flex, as the icon button's own utility draws it. */
+  .sf-site-header-menu-button > button {
+    @if paint.writes-shape() {
+      display: flex;
+    }
+  }
+
+  .sf-site-header-tools {
+    @if paint.writes-shape() {
+      margin-inline-start: auto;
+    }
+  }
+
+  /* menu-placement inline-end (C104): the button is drawn last, after the
+     tools, and stands at the end of the bar; behind the tools it follows them
+     at the row's gap. */
+  &.sf-site-header--menu-inline-end .sf-site-header-menu-button > button {
+    @if paint.writes-shape() {
+      margin-inline-start: auto;
+    }
+  }
+
+  &.sf-site-header--menu-inline-end .sf-site-header-tools ~ .sf-site-header-menu-button > button {
+    @if paint.writes-shape() {
+      margin-inline-start: 0;
+    }
+  }
+
+  /* The brand gives way, the tools stay whole: a bar narrower than the menu
+     button, the brand and the tools shrinks the brand (its text ends in the
+     page's own ellipsis) instead of scrolling the page sideways. */
+  .sf-site-header-brand {
+    @if paint.writes-shape() {
+      flex: 0 1 auto;
+    }
+  }
+
+  /* ... and its words end in an ellipsis of the bar's own (HD-10: the brand
+     box shrank, but its text ran on under the tools). A link fits the brand
+     and its words close down: the link itself when it holds only words,
+     else the words beside its picture. The picture keeps its size. :where
+     keeps the rules at the brand's weight, so a page's own brand CSS stays in
+     charge. */
+  .sf-site-header-brand :where(a) {
+    @if paint.writes-shape() {
+      min-inline-size: 0;
+      max-inline-size: 100%;
+    }
+  }
+
+  .sf-site-header-brand :where(a:not(:has(img, svg))),
+  .sf-site-header-brand :where(a:has(img, svg) > :not(img, svg)),
+  .sf-site-header-brand > :where(:not(a, img, svg):not(:has(a, img, svg))) {
+    @if paint.writes-shape() {
+      display: block;
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .sf-site-header-panel {
+    @if paint.writes-shape() {
+      display: none;
+    }
+  }
+
+  /* While open, the scrim and the panel stand above everything in the bar
+     (C104, MP-6): the header is the layer's stacking context (place() in
+     index.js), the scrim and the panel take the first step of the z-index
+     scale inside it, and the bar's own parts are isolated, so a z-index in
+     them (sf-button's text, z-index 1; a page's switch in the tools) stays
+     under the scrim. Closed, nothing is isolated: a menu that drops from the
+     tools is not capped by the bar. */
+  &.sf-site-header--open :is(.sf-site-header-brand, .sf-site-header-tools, .sf-site-header-menu-button > button) {
+    @if paint.writes-shape() {
+      isolation: isolate;
+    }
+  }
+
+  &.sf-site-header--open .sf-site-header-scrim {
+    @if paint.writes-shape() {
+      display: block;
+      position: fixed;
+      z-index: var(--sf-z-index-1);
+      inset: 0;
+    }
+    /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20). */
+    @if paint.writes-paint() {
+      background: var(--sf-scrim-color, var(--sf-black--alfa-64));
+    }
+    @if paint.writes-shape() {
+      opacity: var(--sf-scrim-opacity, 1);
+    }
+  }
+
+  &.sf-site-header--open .sf-site-header-panel {
+    @if paint.writes-shape() {
+      position: fixed;
+      z-index: var(--sf-z-index-1);
+      inset-block: 0;
+      inset-inline-start: 0;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      inline-size: var(--sf-site-header--sheet-size);
+      block-size: 100dvh;
+      overflow: auto;
+      overscroll-behavior: contain;
+    }
+    @if paint.writes-paint() {
+      background: var(--sf-surface-popup);
+    }
+    @if paint.writes-shape() {
+      box-shadow: var(--sf-shadow-modal);
+    }
+    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
+    @if paint.writes-paint() {
+      color: var(--sf-on-surface);
+    }
+  }
+
+  /* The panel's head is as tall as the bar, its close button on the axis of
+     the menu button (R189 MP-3): first in the head, at the bar's own gutter
+     (the .container inset of the row, --sf-container-gutter when a product
+     sets it), so the close stands where the menu button stood and the heading
+     follows it. The DOM keeps the heading first: the close is the head's only
+     focusable part, and a reader still hears the panel's name before it. */
+  /* menu-placement inline-end: the panel comes from the end edge. */
+  &.sf-site-header--menu-inline-end.sf-site-header--open .sf-site-header-panel {
+    @if paint.writes-shape() {
+      inset-inline-start: auto;
+      inset-inline-end: 0;
+    }
+  }
+
+  &.sf-site-header--open .sf-site-header-panel-head {
+    /* The menu button's axis from the panel's edge: the row's gutter and the
+       container's centring offset, held inside the panel (the button and a
+       gutter beyond it) when the window is so wide that the axis lies past
+       the panel. */
+    @if paint.writes-shape() {
+      --sf-site-header--axis-inset: min(
+        calc(var(--sf-site-header--gutter) + var(--sf-site-header--centring)),
+        calc(var(--sf-site-header--sheet-size) - var(--sf-site-header--control-height) - var(--sf-site-header--gutter))
+      );
+      display: flex;
+      flex: none;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--sf-space-2);
+      box-sizing: border-box;
+      min-block-size: var(--sf-site-header--block-size);
+      padding-block: var(--sf-space-1);
+      padding-inline: var(--sf-site-header--axis-inset);
+    }
+    @if paint.writes-shape() {
+      border-block-end-width: var(--sf-px);
+      border-block-end-style: solid;
+    }
+    @if paint.writes-paint() {
+      border-block-end-color: var(--sf-site-header-border-color, var(--sf-outline-variant));
+    }
+  }
+
+  /* On the button: the sf-button-icon host is display: contents. */
+  .sf-site-header-close-button > button {
+    @if paint.writes-shape() {
+      order: -1;
+    }
+  }
+
+  /* menu-placement inline-end: the close stands at the end of the head, on
+     the button's axis there, and the heading keeps the start at the panel's
+     own inset, in line with its rows. */
+  &.sf-site-header--menu-inline-end.sf-site-header--open .sf-site-header-panel-head {
+    @if paint.writes-shape() {
+      justify-content: space-between;
+      padding-inline: var(--sf-space-2) var(--sf-site-header--axis-inset);
+    }
+  }
+
+  &.sf-site-header--menu-inline-end .sf-site-header-close-button > button {
+    @if paint.writes-shape() {
+      order: 0;
+    }
+  }
+
+  .sf-site-header-panel-heading {
+    @if paint.writes-shape() {
+      font-size: var(--sf-text-medium--size);
+      line-height: var(--sf-text-medium--height);
+      font-weight: var(--sf-heading--weight);
+    }
+  }
+
+  &.sf-site-header--open .sf-site-header-nav,
+  &.sf-site-header--open .sf-site-header-actions,
+  &.sf-site-header--open .sf-site-header-sheet {
+    @if paint.writes-shape() {
+      display: flex;
+      flex: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--sf-space-1);
+      padding: var(--sf-space-2);
+    }
+  }
+
+  &.sf-site-header--open .sf-site-header-actions,
+  &.sf-site-header--open .sf-site-header-sheet {
+    @if paint.writes-shape() {
+      border-block-start-width: var(--sf-px);
+      border-block-start-style: solid;
+    }
+    @if paint.writes-paint() {
+      border-block-start-color: var(--sf-outline-variant);
+    }
+  }
+
+  /* The settings group (C161 (8)): the language and the theme the bar's
+     tools held on a wide screen, under the sections as a group of the panel
+     -- its padding, gap and top line -- headed «Настройки» in the quiet
+     small words, each setting a row of its word and its control at the
+     row's end. */
+  &.sf-site-header--open .sf-site-header-settings {
+    @if paint.writes-shape() {
+      display: flex;
+      flex: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--sf-space-1);
+      padding: var(--sf-space-2);
+    }
+    @if paint.writes-shape() {
+      border-block-start-width: var(--sf-px);
+      border-block-start-style: solid;
+    }
+    @if paint.writes-paint() {
+      border-block-start-color: var(--sf-outline-variant);
+    }
+  }
+
+  .sf-site-header-settings-heading {
+    @if paint.writes-shape() {
+      font-size: var(--sf-text-size-1\/2);
+      line-height: var(--sf-text-height-1\/2);
+    }
+    @if paint.writes-paint() {
+      color: var(--sf-on-surface-variant);
+    }
+  }
+
+  .sf-site-header-setting {
+    @if paint.writes-shape() {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sf-space-1);
+      min-inline-size: 0;
+    }
+  }
+
+  /* The panel is the phone's menu (C30): its rows are touch rows, the size 2
+     control height of the ladder (44 on a phone), the words still size 1. */
+  .sf-site-header-nav .sf-menu .sf-menu-element {
+    @if paint.writes-shape() {
+      --sf-menu-element--padding-block: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width, calc(var(--sf-px) * 0)));
+    }
+  }
+
+  /* A plain list of links in the nav stands as a column in the panel; an
+     sf-menu turns vertical through its own setting (index.js). */
+  .sf-site-header-nav :where(nav, ul) {
+    @if paint.writes-shape() {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-site-header {
+    border-block-end-color: var(--sf-site-header-border-color, var(--sf-outline-variant));
+    background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
+    color: var(--sf-site-header-color, var(--sf-on-surface));
+  }
+  :is(sf-header-site, sf-site-header)[data-scrolled='true'] > .sf-site-header--sticky {
+    background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-raised)));
+  }
+  .sf-site-header-brand :where(a) {
+    color: inherit;
+  }
+  .sf-site-header--collapse-always {
+    @include collapsed;
+  }
+  @each $step, $container-step in (sm: g6, md: h1, lg: h5, xl: h8) {
+    @container sf-site-header (width < #{mq.container-step($container-step)}) {
+      .sf-site-header--collapse-#{$step} {
+        @include collapsed;
+      }
+    }
+  }
+  @include paint.part(all);
+}
 
 @layer sf.components {
+  @include paint.part(shape);
 /* The top bar of a SIMAI site (standard simai.smart-component 1.3.11 §6).
    Every length is a token of the one ladder (docs/foundation-composition-
    geometry.md): the bar is the size's control height, a space-1 inset above
@@ -45,9 +372,8 @@
      the bar is as tall as its row. */
   block-size: auto;
   overflow: visible;
-  border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
-  background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-page)));
-  color: var(--sf-site-header-color, var(--sf-on-surface));
+  border-block-end-width: var(--sf-px);
+  border-block-end-style: solid;
 }
 
 .sf-site-header--size-half {
@@ -74,7 +400,6 @@
 }
 
 :is(sf-header-site, sf-site-header)[data-scrolled='true'] > .sf-site-header--sticky {
-  background: var(--sf-site-header-background-color, var(--sf-site-header-background, var(--sf-surface-raised)));
   box-shadow: var(--sf-shadow-raised);
 }
 
@@ -113,7 +438,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sf-site-header--text-space);
-  color: inherit;
   text-decoration: none;
 }
 
@@ -209,224 +533,6 @@
   justify-content: flex-end;
 }
 
-/* Collapsed: the menu button first, the brand, then the tools at the end (or
-   the brand, the tools and the menu button last, menu-placement inline-end);
-   the panel is shown only while open, as a side panel from the button's edge
-   over a scrim. Height and focus come from the layer stack (core/js/layer-stack.js),
-   which lifts the whole header to the layer's z-index while it is open. */
-@mixin collapsed {
-  /* A row again whatever navigation-align says: the nav is in the panel. */
-  .sf-site-header-row {
-    display: flex;
-  }
-
-  /* flex, as the icon button's own utility draws it. */
-  .sf-site-header-menu-button > button {
-    display: flex;
-  }
-
-  .sf-site-header-tools {
-    margin-inline-start: auto;
-  }
-
-  /* menu-placement inline-end (C104): the button is drawn last, after the
-     tools, and stands at the end of the bar; behind the tools it follows them
-     at the row's gap. */
-  &.sf-site-header--menu-inline-end .sf-site-header-menu-button > button {
-    margin-inline-start: auto;
-  }
-
-  &.sf-site-header--menu-inline-end .sf-site-header-tools ~ .sf-site-header-menu-button > button {
-    margin-inline-start: 0;
-  }
-
-  /* The brand gives way, the tools stay whole: a bar narrower than the menu
-     button, the brand and the tools shrinks the brand (its text ends in the
-     page's own ellipsis) instead of scrolling the page sideways. */
-  .sf-site-header-brand {
-    flex: 0 1 auto;
-  }
-
-  /* ... and its words end in an ellipsis of the bar's own (HD-10: the brand
-     box shrank, but its text ran on under the tools). A link fits the brand
-     and its words close down: the link itself when it holds only words,
-     else the words beside its picture. The picture keeps its size. :where
-     keeps the rules at the brand's weight, so a page's own brand CSS stays in
-     charge. */
-  .sf-site-header-brand :where(a) {
-    min-inline-size: 0;
-    max-inline-size: 100%;
-  }
-
-  .sf-site-header-brand :where(a:not(:has(img, svg))),
-  .sf-site-header-brand :where(a:has(img, svg) > :not(img, svg)),
-  .sf-site-header-brand > :where(:not(a, img, svg):not(:has(a, img, svg))) {
-    display: block;
-    min-inline-size: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .sf-site-header-panel {
-    display: none;
-  }
-
-  /* While open, the scrim and the panel stand above everything in the bar
-     (C104, MP-6): the header is the layer's stacking context (place() in
-     index.js), the scrim and the panel take the first step of the z-index
-     scale inside it, and the bar's own parts are isolated, so a z-index in
-     them (sf-button's text, z-index 1; a page's switch in the tools) stays
-     under the scrim. Closed, nothing is isolated: a menu that drops from the
-     tools is not capped by the bar. */
-  &.sf-site-header--open :is(.sf-site-header-brand, .sf-site-header-tools, .sf-site-header-menu-button > button) {
-    isolation: isolate;
-  }
-
-  &.sf-site-header--open .sf-site-header-scrim {
-    display: block;
-    position: fixed;
-    z-index: var(--sf-z-index-1);
-    inset: 0;
-    /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20). */
-    background: var(--sf-scrim-color, var(--sf-black--alfa-64));
-    opacity: var(--sf-scrim-opacity, 1);
-  }
-
-  &.sf-site-header--open .sf-site-header-panel {
-    position: fixed;
-    z-index: var(--sf-z-index-1);
-    inset-block: 0;
-    inset-inline-start: 0;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    inline-size: var(--sf-site-header--sheet-size);
-    block-size: 100dvh;
-    overflow: auto;
-    overscroll-behavior: contain;
-    background: var(--sf-surface-popup);
-    box-shadow: var(--sf-shadow-modal);
-    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
-    color: var(--sf-on-surface);
-  }
-
-  /* The panel's head is as tall as the bar, its close button on the axis of
-     the menu button (R189 MP-3): first in the head, at the bar's own gutter
-     (the .container inset of the row, --sf-container-gutter when a product
-     sets it), so the close stands where the menu button stood and the heading
-     follows it. The DOM keeps the heading first: the close is the head's only
-     focusable part, and a reader still hears the panel's name before it. */
-  /* menu-placement inline-end: the panel comes from the end edge. */
-  &.sf-site-header--menu-inline-end.sf-site-header--open .sf-site-header-panel {
-    inset-inline-start: auto;
-    inset-inline-end: 0;
-  }
-
-  &.sf-site-header--open .sf-site-header-panel-head {
-    /* The menu button's axis from the panel's edge: the row's gutter and the
-       container's centring offset, held inside the panel (the button and a
-       gutter beyond it) when the window is so wide that the axis lies past
-       the panel. */
-    --sf-site-header--axis-inset: min(
-      calc(var(--sf-site-header--gutter) + var(--sf-site-header--centring)),
-      calc(var(--sf-site-header--sheet-size) - var(--sf-site-header--control-height) - var(--sf-site-header--gutter))
-    );
-    display: flex;
-    flex: none;
-    align-items: center;
-    justify-content: flex-start;
-    gap: var(--sf-space-2);
-    box-sizing: border-box;
-    min-block-size: var(--sf-site-header--block-size);
-    padding-block: var(--sf-space-1);
-    padding-inline: var(--sf-site-header--axis-inset);
-    border-block-end: var(--sf-px) solid var(--sf-site-header-border-color, var(--sf-outline-variant));
-  }
-
-  /* On the button: the sf-button-icon host is display: contents. */
-  .sf-site-header-close-button > button {
-    order: -1;
-  }
-
-  /* menu-placement inline-end: the close stands at the end of the head, on
-     the button's axis there, and the heading keeps the start at the panel's
-     own inset, in line with its rows. */
-  &.sf-site-header--menu-inline-end.sf-site-header--open .sf-site-header-panel-head {
-    justify-content: space-between;
-    padding-inline: var(--sf-space-2) var(--sf-site-header--axis-inset);
-  }
-
-  &.sf-site-header--menu-inline-end .sf-site-header-close-button > button {
-    order: 0;
-  }
-
-  .sf-site-header-panel-heading {
-    font-size: var(--sf-text-medium--size);
-    line-height: var(--sf-text-medium--height);
-    font-weight: var(--sf-heading--weight);
-  }
-
-  &.sf-site-header--open .sf-site-header-nav,
-  &.sf-site-header--open .sf-site-header-actions,
-  &.sf-site-header--open .sf-site-header-sheet {
-    display: flex;
-    flex: none;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--sf-space-1);
-    padding: var(--sf-space-2);
-  }
-
-  &.sf-site-header--open .sf-site-header-actions,
-  &.sf-site-header--open .sf-site-header-sheet {
-    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
-  }
-
-  /* The settings group (C161 (8)): the language and the theme the bar's
-     tools held on a wide screen, under the sections as a group of the panel
-     -- its padding, gap and top line -- headed «Настройки» in the quiet
-     small words, each setting a row of its word and its control at the
-     row's end. */
-  &.sf-site-header--open .sf-site-header-settings {
-    display: flex;
-    flex: none;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--sf-space-1);
-    padding: var(--sf-space-2);
-    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
-  }
-
-  .sf-site-header-settings-heading {
-    font-size: var(--sf-text-size-1\/2);
-    line-height: var(--sf-text-height-1\/2);
-    color: var(--sf-on-surface-variant);
-  }
-
-  .sf-site-header-setting {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sf-space-1);
-    min-inline-size: 0;
-  }
-
-  /* The panel is the phone's menu (C30): its rows are touch rows, the size 2
-     control height of the ladder (44 on a phone), the words still size 1. */
-  .sf-site-header-nav .sf-menu .sf-menu-element {
-    --sf-menu-element--padding-block: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-1)) / 2 - var(--sf-menu-element--border-width, calc(var(--sf-px) * 0)));
-  }
-
-  /* A plain list of links in the nav stands as a column in the panel; an
-     sf-menu turns vertical through its own setting (index.js). */
-  .sf-site-header-nav :where(nav, ul) {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
 .sf-site-header--collapse-always {
   @include collapsed;
 
@@ -493,4 +599,5 @@
     }
   }
 }
+  @include paint.part(all);
 }

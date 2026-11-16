@@ -1,3 +1,34 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-theme-generator {
+    color: var(--sf-theme-generator-color, var(--sf-on-surface));
+  }
+  .sf-theme-generator-label,
+.sf-theme-generator-name {
+    color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-theme-generator-check {
+    color: var(--sf-theme-generator-color, var(--sf-on-surface));
+  }
+  .sf-theme-generator-check > sf-icon {
+    color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-theme-generator-check[data-level="warning"] > sf-icon {
+    color: var(--sf-on-warning-container-graphic);
+  }
+  .sf-theme-generator-check[data-level="error"] > sf-icon {
+    color: var(--sf-on-error-container-graphic);
+  }
+  .sf-theme-generator-swatches {
+    border-color: var(--sf-theme-generator-swatch-border-color, var(--sf-outline-variant));
+  }
+  .sf-theme-generator-swatch {
+    background-color: var(--sf-theme-generator--swatch);
+  }
+}
+
 @layer sf.components {
 /* A colour and a reset on one row, the fine tuning folded below them, and the
    palettes under that: one row each, a name and six tones. Sizes follow the
@@ -16,7 +47,6 @@ sf-theme-generator {
   display: flex;
   flex-direction: column;
   gap: var(--sf-theme-generator--gap);
-  color: var(--sf-theme-generator-color, var(--sf-on-surface));
 }
 
 .sf-theme-generator--size-1\/2 {
@@ -47,7 +77,6 @@ sf-theme-generator {
 .sf-theme-generator-name {
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
 }
 
 /* One reset for one action (docs pre-check 2026-11-10 TG-02): the colour
@@ -108,20 +137,10 @@ sf-theme-generator {
   gap: var(--sf-space-1\/2);
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-theme-generator-color, var(--sf-on-surface));
 }
 
 .sf-theme-generator-check > sf-icon {
   flex: none;
-  color: var(--sf-theme-generator-label-color, var(--sf-on-surface-variant));
-}
-
-.sf-theme-generator-check[data-level="warning"] > sf-icon {
-  color: var(--sf-on-warning-container-graphic);
-}
-
-.sf-theme-generator-check[data-level="error"] > sf-icon {
-  color: var(--sf-on-error-container-graphic);
 }
 
 .sf-theme-generator-preview {
@@ -146,13 +165,13 @@ sf-theme-generator {
 .sf-theme-generator-swatches {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  border: var(--sf-px) solid var(--sf-theme-generator-swatch-border-color, var(--sf-outline-variant));
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-theme-generator-swatch-radius, var(--sf-radius--ui));
   overflow: hidden;
 }
 
 .sf-theme-generator-swatch {
   block-size: var(--sf-theme-generator--control-height);
-  background-color: var(--sf-theme-generator--swatch);
 }
 }

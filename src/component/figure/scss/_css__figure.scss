@@ -25,6 +25,43 @@
 // .sf-hue-<c> on it or above, primary otherwise). Strict, the default, keeps
 // it flat.
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-figure-media {
+    // A container fill: dimmed text on it reads the container role.
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background-color: var(--sf-figure-background-color, var(--sf-figure-background, var(--sf-surface-container)));
+    border-color: var(--sf-figure-border-color, var(--sf-outline-variant));
+  }
+  .sf-figure-caption {
+    color: var(--sf-figure-caption-color, var(--sf-on-surface-variant));
+  }
+  .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+    color: var(--sf-white);
+  }
+  // Look 5, the plate: one flat band of black 64 under the text.
+  .sf-figure.sf-figure--caption-plate > .sf-figure-caption {
+    background-color: var(--sf-black--alfa-64);
+  }
+  :is(button, a).sf-figure-media {
+    color: inherit;
+  }
+  .sf-figure-pick {
+    background-color: var(--sf-surface-popup);
+  }
+  @media (forced-colors: active) {
+    .sf-figure-media {
+      border-color: CanvasText;
+    }
+    .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
+      background-color: Canvas;
+      color: CanvasText;
+    }
+  }
+}
+
 @layer sf.components {
   // The caption stands 8 under its picture at every width (owner decision
   // C188 (5), the gallery's gap of C150 (3); 4 in compact density): it holds
@@ -43,10 +80,8 @@
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
-    // A container fill: dimmed text on it reads the container role.
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    background-color: var(--sf-figure-background-color, var(--sf-figure-background, var(--sf-surface-container)));
-    border: var(--sf-figure-border-width, var(--sf-0)) solid var(--sf-figure-border-color, var(--sf-outline-variant));
+    border-width: var(--sf-figure-border-width, var(--sf-0));
+    border-style: solid;
     border-radius: var(--sf-figure-radius, var(--sf-radius--surface));
   }
 
@@ -88,7 +123,6 @@
 
   .sf-figure-caption {
     margin: var(--sf-0);
-    color: var(--sf-figure-caption-color, var(--sf-on-surface-variant));
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
     overflow-wrap: break-word;
@@ -124,7 +158,6 @@
     padding: var(--sf-space-1\/2);
     border-end-start-radius: var(--sf-figure-radius, var(--sf-radius--surface));
     border-end-end-radius: var(--sf-figure-radius, var(--sf-radius--surface));
-    color: var(--sf-white);
     pointer-events: none;
   }
 
@@ -140,11 +173,6 @@
     padding-block-start: var(--sf-figure--ramp);
     background-image: linear-gradient(0deg, var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - var(--sf-figure--ramp)), var(--sf-black--alfa-48) calc(100% - var(--sf-figure--ramp) * 0.85), var(--sf-black--alfa-28) calc(100% - var(--sf-figure--ramp) * 0.7), var(--sf-black--alfa-16) calc(100% - var(--sf-figure--ramp) * 0.45), var(--sf-black--alfa-8) calc(100% - var(--sf-figure--ramp) * 0.25), transparent 100%);
     background-image: linear-gradient(0deg in oklab, var(--sf-black--alfa-64) 0%, var(--sf-black--alfa-64) calc(100% - var(--sf-figure--ramp)), var(--sf-black--alfa-48) calc(100% - var(--sf-figure--ramp) * 0.85), var(--sf-black--alfa-28) calc(100% - var(--sf-figure--ramp) * 0.7), var(--sf-black--alfa-16) calc(100% - var(--sf-figure--ramp) * 0.45), var(--sf-black--alfa-8) calc(100% - var(--sf-figure--ramp) * 0.25), transparent 100%);
-  }
-
-  // Look 5, the plate: one flat band of black 64 under the text.
-  .sf-figure.sf-figure--caption-plate > .sf-figure-caption {
-    background-color: var(--sf-black--alfa-64);
   }
 
   // ── The decorative level (C91 level 2): a placeholder is a cover ──
@@ -218,7 +246,6 @@
     inline-size: 100%;
     margin: var(--sf-0);
     padding: var(--sf-0);
-    color: inherit;
     font: inherit;
     text-align: inherit;
     text-decoration: none;
@@ -258,7 +285,6 @@
     display: flex;
     padding: var(--sf-a2);
     border-radius: var(--sf-radius--ui);
-    background-color: var(--sf-surface-popup);
     box-shadow: var(--sf-shadow-overlay);
     opacity: 0;
     transition: opacity var(--sf-duration-fast) var(--sf-animation);
@@ -351,7 +377,6 @@
 
   @media (forced-colors: active) {
     .sf-figure-media {
-      border-color: CanvasText;
       background-image: none;
     }
 
@@ -361,8 +386,6 @@
 
     .sf-figure:is(.sf-figure--caption-over, .sf-figure--caption-plate) > .sf-figure-caption {
       background-image: none;
-      background-color: Canvas;
-      color: CanvasText;
     }
   }
 }

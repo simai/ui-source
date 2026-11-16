@@ -40,6 +40,26 @@
   initial-value: 0px;
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-progress-ring {
+    color: var(--sf-progress-ring-color, var(--sf-on-surface));
+  }
+  .sf-progress-ring .sf-progress-ring-indicator {
+    background: conic-gradient(var(--sf-progress-ring--fill) calc(var(--sf-progress-ring--value) * 1%), var(--sf-progress-ring--track) 0);
+  }
+  .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
+    background: conic-gradient(var(--sf-progress-ring--fill) 0 30%, var(--sf-progress-ring--track) 0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
+      background: color-mix(in srgb, var(--sf-progress-ring--fill) 32%, var(--sf-progress-ring--track));
+    }
+  }
+}
+
 @layer sf.components {
   .sf-progress-ring {
     --sf-progress-ring--size: var(--sf-progress-ring-size, var(--sf-progress-ring--step-size));
@@ -61,7 +81,6 @@
     inline-size: var(--sf-progress-ring--size);
     block-size: var(--sf-progress-ring--size);
     border-radius: var(--sf-radius-circle);
-    color: var(--sf-progress-ring-color, var(--sf-on-surface));
     font-family: var(--sf-text--family);
     font-size: var(--sf-progress-ring--font-size);
     font-variant-numeric: tabular-nums;
@@ -80,7 +99,6 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: conic-gradient(var(--sf-progress-ring--fill) calc(var(--sf-progress-ring--value) * 1%), var(--sf-progress-ring--track) 0);
     mask: radial-gradient(farthest-side, transparent calc(100% - var(--sf-progress-ring--line-width) - 0.5px), #000 calc(100% - var(--sf-progress-ring--line-width) + 0.5px));
     pointer-events: none;
   }
@@ -232,7 +250,6 @@
   /* Indeterminate: the spinner's arc -- a fixed 30% of the ring going round
      at one turn a second -- on the ring's own track. */
   .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
-    background: conic-gradient(var(--sf-progress-ring--fill) 0 30%, var(--sf-progress-ring--track) 0);
     animation: sf-progress-ring-turn calc(var(--sf-duration-slow) * 2) linear infinite;
   }
 
@@ -253,7 +270,6 @@
        with no arc. */
     .sf-progress-ring.sf-progress-ring--indeterminate .sf-progress-ring-indicator {
       animation: none;
-      background: color-mix(in srgb, var(--sf-progress-ring--fill) 32%, var(--sf-progress-ring--track));
     }
   }
 }

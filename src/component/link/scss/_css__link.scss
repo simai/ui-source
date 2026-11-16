@@ -1,3 +1,19 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-link {
+    color: var(--sf-link--color);
+    background-color: var(--sf-link--background-color);
+  }
+  .sf-link :where(.sf-link__content, .sf-link-content) {
+    color: inherit;
+  }
+  .sf-link :where(.sf-link__icon, .sf-link-icon) {
+    color: currentColor;
+  }
+}
+
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-link {
@@ -19,8 +35,6 @@
     gap: var(--sf-link--gap);
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
-    color: var(--sf-link--color);
-    background-color: var(--sf-link--background-color);
     font-family: var(--sf-link--font-family);
     font-size: var(--sf-link--font-size);
     font-weight: var(--sf-link--font-weight);
@@ -41,7 +55,6 @@
 
   .sf-link :where(.sf-link__content, .sf-link-content) {
     min-inline-size: var(--sf-0);
-    color: inherit;
     font: inherit;
     overflow-wrap: anywhere;
     text-decoration: inherit;
@@ -60,7 +73,6 @@
     flex: none;
     block-size: var(--sf-link-icon--size);
     inline-size: var(--sf-link-icon--size);
-    color: currentColor;
   }
 }
 

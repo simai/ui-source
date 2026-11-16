@@ -16,14 +16,19 @@
    field's line: a key sat 1-2 px low in a block box (gaps 11/9 at 40). The
    keys are muted, as the end text; their size is the kbd component's, from
    the field's size (owner decision C38). */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-input .sf-input-shortcut {
+    color: var(--sf-on-surface-variant);
+  }
+}
+
 @layer sf.components {
   .sf-input .sf-input-right {
     display: flex;
     align-items: center;
-  }
-
-  .sf-input .sf-input-shortcut {
-    color: var(--sf-on-surface-variant);
   }
 }
 

@@ -2,8 +2,94 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../component/inputs/scss/field-action';
 @use '../../../component/inputs/scss/field-ladder' as ladder;
+@use '../../../core/scss/mix/mix__paint' as paint;
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  /* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
+     hint ink. */
+  .sf-lookup .sf-lookup-text,
+.sf-lookup .sf-lookup-required {
+    color: var(--sf-on-surface);
+  }
+  .sf-lookup .sf-lookup-hint-text-wrap {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup.error .sf-lookup-hint-text-wrap {
+    color: var(--sf-error);
+  }
+  .sf-lookup .sf-lookup-frame {
+    border-color: var(--sf-lookup--border-color, transparent);
+    border-block-end-color: var(--sf-lookup--line-color, var(--sf-lookup--border-color, transparent));
+    background-color: var(--sf-lookup--background-color);
+    color: var(--sf-lookup-color, var(--sf-on-surface));
+  }
+  .sf-lookup.sf-lookup--filled .sf-lookup-frame {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
+    color: var(--sf-on-surface-disabled);
+    --sf-on-surface-variant: var(--sf-on-surface-disabled);
+  }
+  .sf-lookup .sf-lookup-input {
+    background: transparent;
+    color: inherit;
+  }
+  .sf-lookup .sf-lookup-input::placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-input:disabled {
+    color: inherit;
+  }
+  .sf-lookup .sf-lookup-panel {
+    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
+    @include places.sf-place(var(--sf-lookup-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface);
+    @include panel.scrollbar(var(--sf-lookup--panel-padding), --sf-lookup--track, var(--sf-lookup--row-height));
+  }
+  .sf-lookup .sf-lookup-option {
+    color: var(--sf-on-surface);
+  }
+  /* A search runs over the rows of the last answer (C139 (4)): they stay, a
+     step paler -- the name on on-surface-variant, the caption on
+     on-surface-disabled -- until the answer replaces them. */
+  .sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-caption {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-lookup .sf-lookup-divider {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-lookup .sf-lookup-option:hover {
+    background-color: var(--sf-surface-state-hover);
+    @include places.sf-place-fill(var(--sf-surface-state-hover));
+  }
+  .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+    --sf-on-surface-variant: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container));
+  }
+  .sf-lookup .sf-lookup-option-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-state {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-lookup .sf-lookup-state.sf-lookup-state--error,
+.sf-lookup .sf-lookup-state.sf-lookup-state--refusal {
+    color: var(--sf-on-surface);
+  }
+  @include paint.part(all);
+}
 
 @layer sf.components {
+  @include paint.part(shape);
 /* sf-input-lookup (standard simai.smart-component 1.3.14 §6). The frame is
    sf-input's: the same hairline, radius, fill, block padding, inline padding
    and text inset at each size of the ladder, read from the same tokens, so an
@@ -119,21 +205,6 @@
   line-height: var(--sf-lookup--label-height);
 }
 
-/* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
-   hint ink. */
-.sf-lookup .sf-lookup-text,
-.sf-lookup .sf-lookup-required {
-  color: var(--sf-on-surface);
-}
-
-.sf-lookup .sf-lookup-hint-text-wrap {
-  color: var(--sf-on-surface-variant);
-}
-
-.sf-lookup.error .sf-lookup-hint-text-wrap {
-  color: var(--sf-error);
-}
-
 /* The frame: what sf-input draws on .sf-input-field. */
 .sf-lookup .sf-lookup-frame {
   position: relative;
@@ -145,11 +216,7 @@
   padding-block: var(--sf-lookup--padding-block);
   padding-inline: var(--sf-lookup--padding-inline);
   border: var(--sf-px) solid;
-  border-color: var(--sf-lookup--border-color, transparent);
-  border-block-end-color: var(--sf-lookup--line-color, var(--sf-lookup--border-color, transparent));
   border-radius: var(--sf-lookup--radius);
-  background-color: var(--sf-lookup--background-color);
-  color: var(--sf-lookup-color, var(--sf-on-surface));
   cursor: text;
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color, box-shadow, color;
@@ -164,7 +231,6 @@
 .sf-lookup.sf-lookup--filled .sf-lookup-frame {
   --sf-lookup--background-color: var(--sf-lookup-background-color, var(--sf-surface-container));
   --sf-lookup--border-color: var(--sf-lookup-border-color, var(--sf-transparent-for-focus));
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-lookup:not(.error):not(.sf-lookup--disabled):not(.sf-lookup--readonly) .sf-lookup-frame:hover {
@@ -225,9 +291,7 @@
 }
 
 .sf-lookup.sf-lookup--disabled .sf-lookup-frame {
-  color: var(--sf-on-surface-disabled);
   cursor: default;
-  --sf-on-surface-variant: var(--sf-on-surface-disabled);
 }
 
 .sf-lookup.sf-lookup--disabled.sf-lookup--bordered .sf-lookup-frame {
@@ -247,8 +311,6 @@
   padding-block: 0;
   padding-inline: var(--sf-lookup--text-inset);
   border: 0;
-  background: transparent;
-  color: inherit;
   font-family: var(--sf-text--family);
   font-size: var(--sf-lookup--font-size);
   font-weight: var(--sf-font-weight-regular);
@@ -256,7 +318,6 @@
 }
 
 .sf-lookup .sf-lookup-input::placeholder {
-  color: var(--sf-on-surface-variant);
   opacity: 1;
 }
 
@@ -264,7 +325,6 @@
    remaps to on-surface-container--variant; only the value is on-surface (FA-08). */
 
 .sf-lookup .sf-lookup-input:disabled {
-  color: inherit;
   cursor: default;
 }
 
@@ -388,10 +448,8 @@
   padding: var(--sf-lookup--panel-padding);
   border: 0;
   border-radius: var(--sf-radius--surface);
-  background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
   @include places.sf-place(var(--sf-lookup-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-shadow-overlay);
-  color: var(--sf-on-surface);
   overflow: auto;
   overscroll-behavior: contain;
   // C07: the scrollbar stands in the inline-end inset while it takes room;
@@ -433,7 +491,6 @@
   padding-inline: var(--sf-lookup--row-padding-inline);
   border-radius: var(--sf-radius--ui);
   cursor: pointer;
-  color: var(--sf-on-surface);
 }
 
 /* A row with a caption is a menu's row with a caption (owner decision C49;
@@ -459,24 +516,12 @@
   font-weight: var(--sf-font-weight-medium);
 }
 
-/* A search runs over the rows of the last answer (C139 (4)): they stay, a
-   step paler -- the name on on-surface-variant, the caption on
-   on-surface-disabled -- until the answer replaces them. */
-.sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-label {
-  color: var(--sf-on-surface-variant);
-}
-
-.sf-lookup .sf-lookup-list.sf-lookup-list--stale .sf-lookup-option-caption {
-  color: var(--sf-on-surface-disabled);
-}
-
 /* The create row (C139 (2)): last, the add icon in the picture's place,
    parted from the rows above by the menu's separator. */
 .sf-lookup .sf-lookup-divider {
   flex: none;
   block-size: var(--sf-px);
   margin-block: var(--sf-a4);
-  background-color: var(--sf-outline-variant);
 }
 
 .sf-lookup .sf-lookup-option > .sf-lookup-icon,
@@ -524,16 +569,12 @@
 }
 
 .sf-lookup .sf-lookup-option:hover {
-  background-color: var(--sf-surface-state-hover);
   /* A translucent fill, as a menu's row (C43 D3, D4): the badge on the
      option's line keeps its own tone, hovered or chosen. */
   @include places.sf-place-fill(var(--sf-surface-state-hover));
 }
 
 .sf-lookup .sf-lookup-option.sf-lookup-option--chosen {
-  background-color: var(--sf-primary-container);
-  color: var(--sf-on-primary-container);
-  --sf-on-surface-variant: var(--sf-on-primary-container);
   @include places.sf-place-fill(var(--sf-primary-container));
 }
 
@@ -565,7 +606,6 @@
 .sf-lookup .sf-lookup-option-caption {
   font-size: var(--sf-lookup--caption-size);
   line-height: var(--sf-lookup--caption-height);
-  color: var(--sf-on-surface-variant);
 }
 
 /* One line under the rows: the hint, Searching..., Nothing found, the
@@ -577,7 +617,6 @@
   font-weight: var(--sf-font-weight-regular);
   font-size: var(--sf-lookup--caption-size);
   line-height: var(--sf-lookup--caption-height);
-  color: var(--sf-on-surface-variant);
 }
 
 .sf-lookup .sf-lookup-status {
@@ -599,11 +638,6 @@
   min-block-size: var(--sf-lookup--row-height);
 }
 
-.sf-lookup .sf-lookup-state.sf-lookup-state--error,
-.sf-lookup .sf-lookup-state.sf-lookup-state--refusal {
-  color: var(--sf-on-surface);
-}
-
 .sf-lookup .sf-lookup-actions {
   padding-inline: var(--sf-lookup--row-padding-inline);
   padding-block: var(--sf-space-1\/4);
@@ -620,6 +654,7 @@
   white-space: nowrap;
   border: 0;
 }
+  @include paint.part(all);
 }
 
 @layer sf.states {
@@ -763,6 +798,16 @@
    the back arrow («Готово») at its start and a hairline under it, the rows
    below at the panel's inset. The panel is already in the top layer; the
    shared layer stack holds the page and Tab. */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-lookup .sf-lookup-sheet-head {
+    border-block-end-color: var(--sf-outline-variant);
+    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
+  }
+}
+
 @layer sf.components {
   .sf-lookup.sf-lookup--open .sf-lookup-panel.sf-lookup-panel--sheet {
     inset: 0;
@@ -791,8 +836,8 @@
     flex: none;
     gap: var(--sf-space-1\/2);
     padding: var(--sf-space-1\/2);
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
-    background-color: var(--sf-lookup-list-background-color, var(--sf-surface-popup));
+    border-block-end-width: var(--sf-px);
+    border-block-end-style: solid;
   }
 
   .sf-lookup .sf-lookup-sheet-head > .sf-lookup-frame {

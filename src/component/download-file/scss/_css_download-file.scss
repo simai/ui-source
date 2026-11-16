@@ -1,6 +1,47 @@
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-download-file {
+    color: var(--sf-download-file--accent);
+    background-color: var(--sf-download-file--background-color);
+    border-color: var(--sf-download-file--border-color);
+  }
+  .sf-download-file__reason {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__main, .sf-download-file-container) {
+    color: var(--sf-download-file--accent);
+  }
+  .sf-download-file :where(.sf-download-file__size, .sf-download-file-file-size) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__meta) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__type) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-download-file :where(.sf-download-file__spinner) {
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
+  }
+  .sf-download-file.sf-download-file--error :where(.sf-download-file__icon, .sf-download-file__meta) {
+    color: var(--sf-error);
+  }
+  .sf-download-file.sf-download-file--offer :where(.sf-download-file__icon) {
+    color: var(--sf-success);
+  }
+  .sf-download-file:is(.sf-download-file--error, .sf-download-file--offer) :where(.sf-download-file__main, .sf-download-file__name) {
+    color: var(--sf-on-surface);
+  }
+  .sf-download-file :where(.sf-download-file__icon, .sf-icon) {
+    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
+  }
+}
+
 @layer sf.components {
   .sf-download-file {
     /* The public variables carry the element's name, sf-file-download
@@ -51,9 +92,8 @@
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
     padding: var(--sf-file-download-padding, var(--sf-download-file-padding, calc(var(--sf-download-file--padding-block) - var(--sf-download-file--border-width)) calc(var(--sf-download-file--padding-inline) - var(--sf-download-file--border-width))));
-    color: var(--sf-download-file--accent);
-    background-color: var(--sf-download-file--background-color);
-    border: var(--sf-px) solid var(--sf-download-file--border-color);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-file-download-radius, var(--sf-download-file-radius, var(--sf-radius--ui)));
     font-family: var(--sf-text--family);
     font-size: var(--sf-download-file--text-size);
@@ -116,7 +156,6 @@
   .sf-download-file__reason {
     display: block;
     margin: var(--sf-0);
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-size: var(--sf-download-file--note-size, var(--sf-text-size-1\/2));
     line-height: var(--sf-download-file--note-height, var(--sf-text-height-1\/2));
@@ -137,7 +176,6 @@
     align-items: center;
     gap: var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--gap)));
     min-inline-size: var(--sf-0);
-    color: var(--sf-download-file--accent);
     font: inherit;
   }
 
@@ -172,7 +210,6 @@
 
   .sf-download-file :where(.sf-download-file__size, .sf-download-file-file-size) {
     flex: none;
-    color: var(--sf-on-surface-variant);
     font: inherit;
     white-space: nowrap;
   }
@@ -186,7 +223,6 @@
     align-items: baseline;
     min-inline-size: var(--sf-0);
     gap: var(--sf-space-1\/4);
-    color: var(--sf-on-surface-variant);
     white-space: nowrap;
   }
 
@@ -205,10 +241,6 @@
     flex: 0 1 auto;
     min-inline-size: var(--sf-0);
     white-space: normal;
-  }
-
-  .sf-download-file :where(.sf-download-file__type) {
-    color: var(--sf-on-surface-variant);
   }
 
   .sf-download-file :where(.sf-download-file__type + .sf-download-file__size:not(:empty))::before {
@@ -242,7 +274,6 @@
     flex: none;
     inline-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     block-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
   }
 
   .sf-download-file :where(.sf-download-file__spinner) :is(.sf-loader--loading-indicator, .sf-loader-svg) {
@@ -386,29 +417,16 @@
     display: none;
   }
 
-  .sf-download-file.sf-download-file--error :where(.sf-download-file__icon, .sf-download-file__meta) {
-    color: var(--sf-error);
-  }
-
   /* Ready after a long wait (decision C51): the success sign, «Готово · CSV ·
      2,4 МБ» and «Скачать» beside it -- the download is a fresh press. */
   .sf-download-file.sf-download-file--offer {
     cursor: default;
   }
 
-  .sf-download-file.sf-download-file--offer :where(.sf-download-file__icon) {
-    color: var(--sf-success);
-  }
-
-  .sf-download-file:is(.sf-download-file--error, .sf-download-file--offer) :where(.sf-download-file__main, .sf-download-file__name) {
-    color: var(--sf-on-surface);
-  }
-
   .sf-download-file :where(.sf-download-file__icon, .sf-icon) {
     flex: none;
     block-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     inline-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
-    color: var(--sf-file-download-icon-color, var(--sf-download-file-icon-color, var(--sf-download-file--accent)));
     font-size: var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size)));
     /* The glyph's own sheet is unlayered and sizes .sf-icon from these, so the
        size reaches it (as in reference-link). */

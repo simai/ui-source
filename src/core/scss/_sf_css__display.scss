@@ -38,6 +38,7 @@
 @use 'sass:list';
 @use 'sass:map';
 @use 'mix/mix__role_aliases' as aliases;
+@use './mix/mix__paint' as paint;
 
 @layer sf.base {
   // ---------------------------------------------------------------------
@@ -102,28 +103,40 @@
   // draws its own way: links in the link tone (always underlined below), the
   // focus ring in the link tone, every edge in the text tone.
   @mixin scheme-roles {
-    --sf-surface-page: var(--sf-scheme-ground);
+    @if paint.writes-shape() {
+      --sf-surface-page: var(--sf-scheme-ground);
+    }
     // The former name travels with the role (C16; tests/token-aliases.contract.test.mjs).
     @include aliases.sf-role-aliases(('surface-page',));
-    --sf-paper: var(--sf-scheme-ground);
-    --sf-on-paper: var(--sf-scheme-text);
-    --sf-paper-primary: var(--sf-scheme-text);
-    --sf-alpha-base: var(--sf-scheme-text);
-    @each $family in $families {
-      --sf-on-#{$family}: var(--sf-scheme-ground);
+    @if paint.writes-shape() {
+      --sf-paper: var(--sf-scheme-ground);
+      --sf-on-paper: var(--sf-scheme-text);
+      --sf-paper-primary: var(--sf-scheme-text);
+      --sf-alpha-base: var(--sf-scheme-text);
     }
-    --sf-outline: var(--sf-scheme-text);
-    --sf-outline-variant: var(--sf-scheme-text);
-    --sf-link: var(--sf-scheme-link);
-    --sf-link-hover: var(--sf-scheme-link);
-    --sf-link-active: var(--sf-scheme-link);
-    --sf-link-visited: var(--sf-scheme-link);
-    --sf-focus: var(--sf-scheme-link);
-    --sf-focus--color: var(--sf-scheme-link);
-    --sf-mark: #{scheme-alpha(24)};
+    @each $family in $families {
+      @if paint.writes-shape() {
+        --sf-on-#{$family}: var(--sf-scheme-ground);
+      }
+    }
+    @if paint.writes-paint() {
+      --sf-outline: var(--sf-scheme-text);
+      --sf-outline-variant: var(--sf-scheme-text);
+      --sf-link: var(--sf-scheme-link);
+      --sf-link-hover: var(--sf-scheme-link);
+      --sf-link-active: var(--sf-scheme-link);
+      --sf-link-visited: var(--sf-scheme-link);
+      --sf-focus: var(--sf-scheme-link);
+      --sf-focus--color: var(--sf-scheme-link);
+    }
+    @if paint.writes-shape() {
+      --sf-mark: #{scheme-alpha(24)};
+    }
     @each $tone in $tone-roles {
-      --sf-tone-#{$tone}-container: #{scheme-alpha(12)};
-      --sf-on-tone-#{$tone}-container: var(--sf-scheme-text);
+      @if paint.writes-shape() {
+        --sf-tone-#{$tone}-container: #{scheme-alpha(12)};
+        --sf-on-tone-#{$tone}-container: var(--sf-scheme-text);
+      }
     }
   }
 

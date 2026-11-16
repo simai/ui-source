@@ -1,3 +1,9 @@
 // The first layer declaration establishes order; a trailing declaration cannot
 // reorder layers already emitted by other modules. Keep this dependency first.
-@layer sf.reset, sf.tokens, sf.base, sf.utilities, sf.components, sf.overrides, sf.states;
+//
+// sf.paint (C273, owner 2026-11-17) holds a component's paint -- its fill,
+// edge colour, text colour and the place roles it declares -- under the
+// utilities, so `sf-card bg-success-container` is a green card; its shape
+// (size, padding, radius, height) stays in sf.components, over them, so `p-4`
+// does not move a button off the height ladder. See mix/_mix__paint.scss.
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;

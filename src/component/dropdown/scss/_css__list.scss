@@ -1,5 +1,22 @@
 @use '../../context-menu/scss/panel';
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list {
+    background-color: var(--sf-list--background-color, var(--sf-transparent));
+    border-color: var(--sf-list--border-color, var(--sf-outline-variant, transparent));
+  }
+  .sf-list .sf-list-wrap {
+    background-color: var(--sf-list-wrap--background-color);
+  }
+  .sf-list .sf-list-container {
+    background-color: var(--sf-list-container--background-color);
+  }
+}
 
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-end (.items-end) */
@@ -7,10 +24,8 @@
    its place. It painted the page on every place -- a hole on a dark card or
    popup, white on white on bg-primary. A popup list sets its own. */
 .sf-list {
-  background-color: var(--sf-list--background-color, var(--sf-transparent));
   border-width: var(--sf-list--border-width, var(--sf-px));
   border-bottom-width: var(--sf-list--border-bottom-width, var(--sf-list--border-width, var(--sf-px)));
-  border-color: var(--sf-list--border-color, var(--sf-outline-variant, transparent));
   border-end-end-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
   border-end-start-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
   border-inline-end-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
@@ -29,13 +44,11 @@
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) */
 .sf-list .sf-list-wrap {
   --sf-list-wrap--background-color: transparent;
-  background-color: var(--sf-list-wrap--background-color);
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-list .sf-list-container {
   --sf-list-container--background-color: transparent;
-  background-color: var(--sf-list-container--background-color);
 }
 }
 
@@ -58,7 +71,40 @@
    when the option is a flex row; written without the flex class, the mark
    fell under the label and the selected option stood twice as tall. A layout
    the component's own script depends on is the component's to set. */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-dropdown .sf-list,
+  .sf-list--menu {
+    @include places.sf-place(var(--sf-dropdown-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+  }
+  .sf-dropdown .sf-list > .sf-list-container-wrap,
+  .sf-list--menu > .sf-list-container-wrap {
+    @include panel.scrollbar(var(--sf-list--padding-right), --sf-list--track, var(--sf-list--row-height));
+  }
+  .sf-dropdown .sf-list > .sf-list-search,
+  .sf-list--menu > .sf-list-search {
+    @include panel.search-header(var(--sf-list--row-height), var(--sf-list--padding-top), var(--sf-list--padding-bottom), var(--sf-list--padding-left), var(--sf-list--padding-right));
+  }
+  .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
+  .sf-list--menu > .sf-list-search > .sf-list-search-input {
+    @include panel.search-input;
+  }
+  .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover,
+  .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  .sf-dropdown .sf-list .sf-list-item.selected,
+  .sf-list--menu .sf-list-item.selected {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  @include paint.part(all);
+}
+
 @layer sf.components {
+  @include paint.part(shape);
   .sf-dropdown .sf-list,
   .sf-list--menu {
     --sf-list--border-width: 0;
@@ -226,6 +272,7 @@
     --sf-list-item--background-color: var(--sf-primary-container);
     @include places.sf-place-fill(var(--sf-list-item--background-color));
   }
+  @include paint.part(all);
 }
 
 @media (forced-colors: active) {
@@ -255,19 +302,34 @@
    passes through it, a keyboard steps over it, and a reader is told it carries
    no choice. It stays while its stretch scrolls, because a list long enough to
    need headings is long enough to lose which one you are inside of. */
-@layer sf.components {
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
   .sf-list-heading {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
     /* The surface's own colour, read from the list that sets it: `inherit`
        would take a wrapper's transparent background and the rows would scroll
        through the heading. */
     /* Over moving rows a layer stacks over the solid place (C43 rule 3):
        the place's colour, not the page's. */
     background-color: var(--sf-list--background-color, var(--sf-surface-place));
+    @include panel.group-heading;
+  }
+  .sf-list-heading:not(:first-child) {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  @include paint.part(all);
+}
+
+@layer sf.components {
+  @include paint.part(shape);
+  .sf-list-heading {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
     padding-block: var(--sf-space-1\/4);
     padding-inline: var(--sf-list-item--padding-inline-start, var(--sf-space-1\/2));
     /* The popup group heading (C175 (3)): 12/16 medium, as the menu's and
@@ -277,7 +339,8 @@
 
   .sf-list-heading:not(:first-child) {
     margin-block-start: var(--sf-space-1\/4);
-    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-start-width: var(--sf-px);
+    border-block-start-style: solid;
     padding-block-start: var(--sf-space-1\/2);
   }
 
@@ -285,6 +348,7 @@
     min-inline-size: 0;
     overflow-wrap: anywhere;
   }
+  @include paint.part(all);
 }
 
 /* Several options in a row. A hundred icons in a column is a column nobody

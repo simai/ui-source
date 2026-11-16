@@ -1,6 +1,18 @@
 @use 'var__slider' as *;
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-slider-dots.sf-slider-dots--count {
+    color: var(--sf-slider-dots-dot--color);
+  }
+  .sf-slider-dots.sf-slider-dots--plate.sf-slider-dots--count {
+    color: var(--sf-on-surface);
+  }
+}
+
 @layer sf.components {
 .sf-slider {
   --sf-slider--duration: var(--sf-duration-normal);
@@ -207,7 +219,6 @@
    they change. */
 .sf-slider-dots.sf-slider-dots--count {
   align-items: center;
-  color: var(--sf-slider-dots-dot--color);
   font-size: var(--sf-text-size-1\/2);
   font-variant-numeric: tabular-nums;
   gap: 0;
@@ -216,10 +227,6 @@
   padding-block: 0;
   padding-inline: var(--sf-space-1\/2);
   white-space: pre;
-}
-
-.sf-slider-dots.sf-slider-dots--plate.sf-slider-dots--count {
-  color: var(--sf-on-surface);
 }
 
 .sf-slider-dots.sf-slider-dots--bare.sf-slider-dots--count {

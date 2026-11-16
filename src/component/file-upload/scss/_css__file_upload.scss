@@ -1,3 +1,41 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-file-upload {
+    background-color: var(--sf-file-upload--background-color);
+    border-color: var(--sf-file-upload--border-color, transparent);
+  }
+  .sf-file-upload .sf-file-upload-bottom {
+    background-color: var(--sf-file-upload-bottom--background-color);
+  }
+  .sf-file-upload .sf-file-upload-block {
+    background-color: var(--sf-file-upload-block--background-color);
+  }
+  .sf-file-upload .sf-file-upload-link {
+    color: var(--sf-file-upload-link--color);
+  }
+  .sf-file-upload .sf-file-upload-block-text {
+    color: var(--sf-file-upload-block-text--color);
+  }
+  .sf-file-upload .sf-file-upload-text {
+    color: var(--sf-file-upload-text--color);
+  }
+  .sf-file-upload:not([disabled]):not(.disabled):focus-visible .sf-featured-icon .sf-icon, .sf-file-upload:not([disabled]):not(.disabled):hover .sf-featured-icon .sf-icon {
+    color: var(--sf-primary);
+  }
+  .sf-file-upload.dragover:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon,
+sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon {
+    color: var(--sf-primary);
+  }
+  .sf-file-upload:is([disabled], .disabled) .sf-featured-icon .sf-icon {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-file-upload-message {
+    color: var(--sf-file-upload-message--color);
+  }
+}
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-file-upload {
@@ -14,8 +52,6 @@
   padding-top: var(--sf-file-upload--padding-top);
   padding-inline-end: var(--sf-file-upload--padding-inline-end);
   padding-bottom: var(--sf-file-upload--padding-bottom);
-  background-color: var(--sf-file-upload--background-color);
-  border-color: var(--sf-file-upload--border-color, transparent);
   /* A drop zone, not a box (owner C81, 2026-11-12: «Рамка зоны — пунктир»). */
   border-style: dashed;
   box-shadow: var(--sf-file-upload--box-shadow);
@@ -27,7 +63,6 @@
 .sf-file-upload .sf-file-upload-bottom {
   --sf-file-upload-bottom--background-color: transparent;
   --sf-file-upload-bottom--gap: var(--sf-space-1\/4);
-  background-color: var(--sf-file-upload-bottom--background-color);
   gap: var(--sf-file-upload-bottom--gap);
 }
 
@@ -35,7 +70,6 @@
 .sf-file-upload .sf-file-upload-block {
   --sf-file-upload-block--background-color: transparent;
   --sf-file-upload-block--gap: var(--sf-space-1\/4);
-  background-color: var(--sf-file-upload-block--background-color);
   gap: var(--sf-file-upload-block--gap);
 }
 
@@ -44,7 +78,6 @@
   --sf-file-upload-link--font-family: var(--sf-text--family);
   --sf-file-upload-link--font-weight: var(--sf-font-weight-medium);
   --sf-file-upload-link--margin-bottom: var(--sf-text--margin);
-  color: var(--sf-file-upload-link--color);
   font-family: var(--sf-file-upload-link--font-family);
   font-size: var(--sf-file-upload-link--font-size);
   font-weight: var(--sf-file-upload-link--font-weight);
@@ -56,7 +89,6 @@
   --sf-file-upload-block-text--color: var(--sf-file-upload-text-color, var(--sf-on-surface-variant));
   --sf-file-upload-block-text--font-family: var(--sf-text--family);
   --sf-file-upload-block-text--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-file-upload-block-text--color);
   font-family: var(--sf-file-upload-block-text--font-family);
   font-size: var(--sf-file-upload-block-text--font-size);
   font-weight: var(--sf-file-upload-block-text--font-weight);
@@ -67,7 +99,6 @@
   --sf-file-upload-text--color: var(--sf-on-surface-variant);
   --sf-file-upload-text--font-family: var(--sf-text--family);
   --sf-file-upload-text--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-file-upload-text--color);
   font-family: var(--sf-file-upload-text--font-family);
   font-size: var(--sf-file-upload-text--font-size);
   font-weight: var(--sf-file-upload-text--font-weight);
@@ -153,10 +184,6 @@
   outline-offset: var(--sf-focus--offset);
 }
 
-.sf-file-upload:not([disabled]):not(.disabled):focus-visible .sf-featured-icon .sf-icon, .sf-file-upload:not([disabled]):not(.disabled):hover .sf-featured-icon .sf-icon {
-  color: var(--sf-primary);
-}
-
 .sf-file-upload:not([disabled]):not(.disabled):hover {
   --sf-file-upload--border-color: var(--sf-primary-outline);
 }
@@ -171,18 +198,9 @@ sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disable
   --sf-file-upload--border-color: var(--sf-file-upload-dragged-over-border-color, var(--sf-primary-outline));
 }
 
-.sf-file-upload.dragover:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon,
-sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disabled) .sf-featured-icon .sf-icon {
-  color: var(--sf-primary);
-}
-
 .sf-file-upload:is([disabled], .disabled) {
   --sf-file-upload--background-color: var(--sf-surface-disabled);
   --sf-file-upload--border-color: var(--sf-outline-disabled);
-}
-
-.sf-file-upload:is([disabled], .disabled) .sf-featured-icon .sf-icon {
-  color: var(--sf-on-surface-disabled);
 }
 
 .sf-file-upload:is([disabled], .disabled) .sf-file-upload-link {
@@ -203,7 +221,6 @@ sf-file-upload[data-dragged-over] > .sf-file-upload:not([disabled]):not(.disable
   --sf-file-upload-message--color: var(--sf-error);
   --sf-file-upload-message--font-size: var(--sf-text-size-1\/2);
   --sf-file-upload-message--line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-file-upload-message--color);
   font-family: var(--sf-text--family);
   font-size: var(--sf-file-upload-message--font-size);
   font-weight: var(--sf-font-weight-regular);

@@ -11,6 +11,7 @@
 
 // COMMON MIXIN
 
+@use 'mix__paint' as paint;
 
 @mixin transition ($transition){
 	-webkit-transition: $transition;
@@ -64,11 +65,13 @@
 }
 
 @mixin background-gradient($from, $to) {
-	background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, $from), color-stop(100%,  $to));
-	background: -webkit-linear-gradient($from, $to);
-	background: -moz-linear-gradient($from, $to);
-	background: -o-linear-gradient($from, $to);
-	background: linear-gradient($from, $to);
+  @if paint.writes-paint() {
+  	background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, $from), color-stop(100%,  $to));
+  	background: -webkit-linear-gradient($from, $to);
+  	background: -moz-linear-gradient($from, $to);
+  	background: -o-linear-gradient($from, $to);
+  	background: linear-gradient($from, $to);
+  }
 }
 
 @mixin transform($transforms) {

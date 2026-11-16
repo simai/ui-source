@@ -25,25 +25,39 @@
 // help. Written in the component's own sheet, so it lands in the component's
 // layer.
 
+@use 'mix__paint' as paint;
+
 @mixin sf-notice-link($text) {
   #{$text} a[href] {
-    color: inherit;
-    text-decoration-line: underline;
-    text-decoration-color: currentColor;
-    text-decoration-thickness: var(--sf-link--underline-weight);
-    text-underline-offset: var(--sf-a3);
+    @if paint.writes-paint() {
+      color: inherit;
+    }
+    @if paint.writes-shape() {
+      text-decoration-line: underline;
+      text-decoration-color: currentColor;
+      text-decoration-thickness: var(--sf-link--underline-weight);
+      text-underline-offset: var(--sf-a3);
+    }
   }
 
   #{$text} a[href]:is(:hover, :active, :visited) {
-    color: inherit;
-    text-decoration-color: currentColor;
+    @if paint.writes-paint() {
+      color: inherit;
+    }
+    @if paint.writes-shape() {
+      text-decoration-color: currentColor;
+    }
   }
 
   #{$text} a[href]:is(:hover, :active) {
-    text-decoration-thickness: calc(2 * var(--sf-link--underline-weight));
+    @if paint.writes-shape() {
+      text-decoration-thickness: calc(2 * var(--sf-link--underline-weight));
+    }
   }
 
   #{$text} a[href]:focus-visible {
-    outline-color: currentColor;
+    @if paint.writes-shape() {
+      outline-color: currentColor;
+    }
   }
 }

@@ -1,3 +1,85 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .theme-light,
+  .theme-dark {
+    .hljs {
+      color: var(--sf-highlight--text);
+      background: var(--sf-highlight-background);
+    }
+    .hljs-doctag,
+    .hljs-keyword,
+    .hljs-meta .hljs-keyword,
+    .hljs-template-tag,
+    .hljs-template-variable,
+    .hljs-type,
+    .hljs-variable.language_ {
+      color: var(--sf-highlight--keyword);
+    }
+    .hljs-title,
+    .hljs-title.class_,
+    .hljs-title.class_.inherited__,
+    .hljs-title.function_ {
+      color: var(--sf-highlight--title);
+    }
+    .hljs-attr,
+    .hljs-attribute,
+    .hljs-literal,
+    .hljs-meta,
+    .hljs-number,
+    .hljs-operator,
+    .hljs-selector-attr,
+    .hljs-selector-class,
+    .hljs-selector-id,
+    .hljs-variable {
+      color: var(--sf-highlight--attribute);
+    }
+    .hljs-meta .hljs-string,
+    .hljs-regexp,
+    .hljs-string {
+      color: var(--sf-highlight--string);
+    }
+    .hljs-built_in,
+    .hljs-symbol {
+      color: var(--sf-highlight--built-in);
+    }
+    .hljs-code,
+    .hljs-comment,
+    .hljs-formula {
+      color: var(--sf-highlight--comment);
+    }
+    .hljs-name,
+    .hljs-quote,
+    .hljs-selector-pseudo,
+    .hljs-selector-tag {
+      color: var(--sf-highlight--tag);
+    }
+    .hljs-subst,
+    .hljs-emphasis,
+    .hljs-strong {
+      color: var(--sf-highlight--text);
+    }
+    .hljs-section {
+      color: var(--sf-highlight--section);
+    }
+    .hljs-bullet {
+      color: var(--sf-highlight--bullet);
+    }
+    .hljs-addition {
+      color: var(--sf-highlight--addition);
+      background-color: var(--sf-highlight-addition-background);
+    }
+    .hljs-deletion {
+      color: var(--sf-highlight--deletion);
+      background-color: var(--sf-highlight-deletion-background);
+    }
+    .hljs-punctuation {
+      color: var(--sf-highlight--punctuation);
+    }
+  }
+}
+
 @layer sf.components {
   .theme-light,
   .theme-dark {
@@ -64,78 +146,8 @@
       padding: var(--sf-space-1\/3) var(--sf-space-1\/2);
     }
 
-    .hljs {
-      color: var(--sf-highlight--text);
-      background: var(--sf-highlight-background);
-    }
-
-    .hljs-doctag,
-    .hljs-keyword,
-    .hljs-meta .hljs-keyword,
-    .hljs-template-tag,
-    .hljs-template-variable,
-    .hljs-type,
-    .hljs-variable.language_ {
-      color: var(--sf-highlight--keyword);
-    }
-
-    .hljs-title,
-    .hljs-title.class_,
-    .hljs-title.class_.inherited__,
-    .hljs-title.function_ {
-      color: var(--sf-highlight--title);
-    }
-
-    .hljs-attr,
-    .hljs-attribute,
-    .hljs-literal,
-    .hljs-meta,
-    .hljs-number,
-    .hljs-operator,
-    .hljs-selector-attr,
-    .hljs-selector-class,
-    .hljs-selector-id,
-    .hljs-variable {
-      color: var(--sf-highlight--attribute);
-    }
-
-    .hljs-meta .hljs-string,
-    .hljs-regexp,
-    .hljs-string {
-      color: var(--sf-highlight--string);
-    }
-
-    .hljs-built_in,
-    .hljs-symbol {
-      color: var(--sf-highlight--built-in);
-    }
-
-    .hljs-code,
-    .hljs-comment,
-    .hljs-formula {
-      color: var(--sf-highlight--comment);
-    }
-
-    .hljs-name,
-    .hljs-quote,
-    .hljs-selector-pseudo,
-    .hljs-selector-tag {
-      color: var(--sf-highlight--tag);
-    }
-
-    .hljs-subst,
-    .hljs-emphasis,
-    .hljs-strong {
-      color: var(--sf-highlight--text);
-    }
-
     .hljs-section {
-      color: var(--sf-highlight--section);
       font-weight: var(--sf-font-weight-bold);
-    }
-
-    .hljs-bullet {
-      color: var(--sf-highlight--bullet);
     }
 
     .hljs-emphasis {
@@ -144,20 +156,6 @@
 
     .hljs-strong {
       font-weight: var(--sf-font-weight-bold);
-    }
-
-    .hljs-addition {
-      color: var(--sf-highlight--addition);
-      background-color: var(--sf-highlight-addition-background);
-    }
-
-    .hljs-deletion {
-      color: var(--sf-highlight--deletion);
-      background-color: var(--sf-highlight-deletion-background);
-    }
-
-    .hljs-punctuation {
-      color: var(--sf-highlight--punctuation);
     }
   }
 }

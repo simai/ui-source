@@ -1,6 +1,70 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use 'sass:map';
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+/* layout auto (owner decision C180 (3)): the label beside its value from a
+   list wider than 20rem -- a 24rem side panel holds a 21.5rem list (its 20 px
+   gutters) and puts them side by side; a 20rem panel and anything narrower
+   stack. The decision names 22rem of list width for "a 24rem panel"; the
+   ladder's step below it, g0, is the one that keeps that panel beside (22rem
+   would stack it at 1440, where the list is 344 px). It was g2 (24rem): every
+   20 and 24rem panel stacked, rows 60 instead of 40. On a phone (below md, as
+   sf-drawer's whole-screen panel) a label is always over its value, however
+   wide the list (C33): a phone's list is wider than a 24rem panel's, so no
+   container step tells them apart. */
+@mixin list-description-stacked-auto {
+  .sf-list-description--layout-auto .sf-list-description-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sf-list-description--layout-auto .sf-list-description-label {
+    --sf-list-description--label-line: var(--sf-list-description--below-line);
+    font-size: var(--sf-list-description--below-font-size);
+    line-height: var(--sf-list-description--label-line);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-description {
+    color: var(--sf-list-description-value-color, var(--sf-on-surface));
+  }
+  .sf-list-description--dividers .sf-list-description-row + .sf-list-description-row {
+    border-block-start-color: var(--sf-list-description--divider);
+  }
+  .sf-list-description-label {
+    color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-description-title {
+    color: var(--sf-list-description-value-color, var(--sf-on-surface));
+  }
+  .sf-list-description--dividers .sf-list-description-head + .sf-list-description-part > .sf-list-description-row:first-child {
+    border-block-start-color: var(--sf-list-description--divider);
+  }
+  .sf-list-description-link {
+    color: var(--sf-link);
+  }
+  .sf-list-description-empty {
+    color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-description-icon--success {
+    color: var(--sf-success);
+  }
+  .sf-list-description-icon--warning {
+    color: var(--sf-warning);
+  }
+  .sf-list-description-icon--error {
+    color: var(--sf-error);
+  }
+  .sf-list-description-icon--info {
+    color: var(--sf-info);
+  }
+  .sf-list-description-hint {
+    color: var(--sf-on-surface-variant);
+  }
+}
+
 @layer sf.components {
 /* sf-list-description (standard simai.smart-component 1.3.14 §6). One rung S
    of the ladder (docs/foundation-composition-geometry.md), 1 by default, 1/2
@@ -55,7 +119,6 @@ sf-list-description {
   min-inline-size: 0;
   margin: 0;
   container-type: inline-size;
-  color: var(--sf-list-description-value-color, var(--sf-on-surface));
   font-size: var(--sf-list-description--font-size);
   line-height: var(--sf-list-description--line);
 }
@@ -108,7 +171,8 @@ sf-list-description {
 
 .sf-list-description--dividers .sf-list-description-row + .sf-list-description-row {
   padding-block-start: calc(var(--sf-list-description--padding-block) - var(--sf-px));
-  border-block-start: var(--sf-px) solid var(--sf-list-description--divider);
+  border-block-start-width: var(--sf-px);
+  border-block-start-style: solid;
 }
 
 .sf-list-description-label {
@@ -121,7 +185,6 @@ sf-list-description {
   min-inline-size: 0;
   font-size: var(--sf-list-description--below-font-size);
   margin: 0;
-  color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
   overflow-wrap: anywhere;
 }
 
@@ -162,7 +225,6 @@ sf-list-description {
 .sf-list-description-title {
   flex: 1 1 auto;
   min-inline-size: 0;
-  color: var(--sf-list-description-value-color, var(--sf-on-surface));
   font-weight: var(--sf-font-weight-medium);
   overflow-wrap: anywhere;
 }
@@ -170,7 +232,8 @@ sf-list-description {
 /* With dividers a section's first row has its hairline too, under the head. */
 .sf-list-description--dividers .sf-list-description-head + .sf-list-description-part > .sf-list-description-row:first-child {
   padding-block-start: calc(var(--sf-list-description--padding-block) - var(--sf-px));
-  border-block-start: var(--sf-px) solid var(--sf-list-description--divider);
+  border-block-start-width: var(--sf-px);
+  border-block-start-style: solid;
 }
 
 /* The help mark after a label, --sf-space-1/4 from it (the prototype's 4,
@@ -227,14 +290,9 @@ sf-list-description {
 }
 
 .sf-list-description-link {
-  color: var(--sf-link);
   text-decoration: underline;
   text-decoration-thickness: var(--sf-link--underline-weight, var(--sf-px));
   text-underline-offset: var(--sf-a3);
-}
-
-.sf-list-description-empty {
-  color: var(--sf-list-description-label-color, var(--sf-on-surface-variant));
 }
 
 .sf-list-description .sf-list-description-icon {
@@ -250,24 +308,7 @@ sf-list-description {
   margin-inline-end: calc(var(--sf-space-1\/2) - var(--sf-list-description--text-space-x));
 }
 
-.sf-list-description-icon--success {
-  color: var(--sf-success);
-}
-
-.sf-list-description-icon--warning {
-  color: var(--sf-warning);
-}
-
-.sf-list-description-icon--error {
-  color: var(--sf-error);
-}
-
-.sf-list-description-icon--info {
-  color: var(--sf-info);
-}
-
 .sf-list-description-hint {
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-list-description--below-font-size);
   line-height: var(--sf-list-description--below-line);
   overflow-wrap: anywhere;
@@ -382,28 +423,6 @@ sf-list-description {
   white-space: nowrap;
 }
 
-/* layout auto (owner decision C180 (3)): the label beside its value from a
-   list wider than 20rem -- a 24rem side panel holds a 21.5rem list (its 20 px
-   gutters) and puts them side by side; a 20rem panel and anything narrower
-   stack. The decision names 22rem of list width for "a 24rem panel"; the
-   ladder's step below it, g0, is the one that keeps that panel beside (22rem
-   would stack it at 1440, where the list is 344 px). It was g2 (24rem): every
-   20 and 24rem panel stacked, rows 60 instead of 40. On a phone (below md, as
-   sf-drawer's whole-screen panel) a label is always over its value, however
-   wide the list (C33): a phone's list is wider than a 24rem panel's, so no
-   container step tells them apart. */
-@mixin list-description-stacked-auto {
-  .sf-list-description--layout-auto .sf-list-description-list {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .sf-list-description--layout-auto .sf-list-description-label {
-    --sf-list-description--label-line: var(--sf-list-description--below-line);
-    font-size: var(--sf-list-description--below-font-size);
-    line-height: var(--sf-list-description--label-line);
-  }
-}
-
 @container (max-width: #{mq.container-step(g0)}) {
   @include list-description-stacked-auto;
 }
@@ -411,5 +430,4 @@ sf-list-description {
 @media not all and (min-width: map.get(bp.$breakpoint-array, md)) {
   @include list-description-stacked-auto;
 }
-
 }

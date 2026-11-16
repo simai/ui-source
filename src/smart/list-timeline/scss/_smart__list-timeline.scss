@@ -1,3 +1,98 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-timeline {
+    color: var(--sf-on-surface);
+  }
+  /* A day: block list's heading (.sf-group-heading) carries the type and the
+     spaces; the timeline keeps its words' colour. */
+  .sf-list-timeline-group > .sf-list-timeline-day {
+    color: var(--sf-list-timeline-day-color, var(--sf-on-surface));
+  }
+  .sf-list-timeline-item:not(:last-child)::before {
+    background: var(--sf-list-timeline--line-color);
+  }
+  .sf-list-timeline-list--steps > .sf-list-timeline-item[data-state="done"]:not(:last-child)::before {
+    background: var(--sf-primary);
+  }
+  .sf-list-timeline-marker {
+    background-color: var(--sf-list-timeline--ground);
+  }
+  .sf-list-timeline-item[data-state="upcoming"] > .sf-list-timeline-body > .sf-list-timeline-head > .sf-list-timeline-title {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-timeline-marker--dot {
+    color: var(--sf-list-timeline-marker-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-timeline-marker--dot.sf-list-timeline-marker--success {
+    color: var(--sf-success);
+  }
+  .sf-list-timeline-marker--dot.sf-list-timeline-marker--warning {
+    color: var(--sf-warning);
+  }
+  .sf-list-timeline-marker--dot.sf-list-timeline-marker--error {
+    color: var(--sf-error);
+  }
+  .sf-list-timeline-dot {
+    background: currentColor;
+  }
+  /* A step without an icon (owner decision C61, variant A of
+     prototypes/timeline-stage-dot-state.html): the state is told by the shape,
+     one logic with the icon steps -- done a solid dot, current the same dot
+     ringed outside through a gap, upcoming an empty dot with a ring. The
+     colour is the status (C61 round 4): the primary colour (an upcoming one:
+     --sf-on-surface-variant; --sf-outline-variant, the line's 24 %, is lost on
+     a dot this small), or the status colour (success, warning, error), which
+     keeps the shape: an upcoming step with an error is an empty error ring. */
+  .sf-list-timeline-item:is([data-state="done"], [data-state="current"]) > .sf-list-timeline-rail > .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) {
+    color: var(--sf-primary);
+  }
+  .sf-list-timeline-item[data-state="upcoming"] > .sf-list-timeline-rail > .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+    background: var(--sf-list-timeline--ground);
+  }
+  .sf-list-timeline-head {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-list-timeline-actor {
+    color: var(--sf-on-surface);
+  }
+  /* No actor: the title is the sentence and reads in the text colour. */
+  .sf-list-timeline-head > .sf-list-timeline-title:first-child,
+.sf-list-timeline-head > .sr-only + .sf-list-timeline-title {
+    color: var(--sf-on-surface);
+  }
+  .sf-list-timeline-link {
+    color: var(--sf-link);
+  }
+  .sf-list-timeline-meta {
+    color: var(--sf-list-timeline--quiet);
+  }
+  .sf-list-timeline-comment {
+    border-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface);
+  }
+  .sf-list-timeline-run {
+    background: none;
+    color: var(--sf-link);
+  }
+  .sf-list-timeline-quiet {
+    color: var(--sf-on-surface-variant);
+  }
+  @media (forced-colors: active) {
+    .sf-list-timeline-item:not(:last-child)::before,
+  .sf-list-timeline-list--steps > .sf-list-timeline-item[data-state="done"]:not(:last-child)::before {
+      background: CanvasText;
+    }
+    .sf-list-timeline-dot {
+      background: CanvasText;
+    }
+    .sf-list-timeline-item[data-state="upcoming"] > .sf-list-timeline-rail > .sf-list-timeline-marker--dot .sf-list-timeline-dot {
+      background: Canvas;
+    }
+  }
+}
+
 @layer sf.components {
 /* sf-list-timeline 1.1 (standard simai.smart-component 1.3.15 §6; owner
    decision C40, R092 option 1). One rung S of the ladder
@@ -73,7 +168,6 @@ sf-list-timeline {
   margin: 0;
   padding-inline: var(--sf-list-timeline--padding-inline);
   container-type: inline-size;
-  color: var(--sf-on-surface);
   font-size: var(--sf-list-timeline--font-size);
   line-height: var(--sf-list-timeline--line);
 }
@@ -110,12 +204,6 @@ sf-list-timeline {
   --sf-list-timeline--control: var(--sf-ui-2--control-height);
   --sf-list-timeline--button: var(--sf-ui-1--control-height);
   --sf-list-timeline--dot: var(--sf-micro--dot-2);
-}
-
-/* A day: block list's heading (.sf-group-heading) carries the type and the
-   spaces; the timeline keeps its words' colour. */
-.sf-list-timeline-group > .sf-list-timeline-day {
-  color: var(--sf-list-timeline-day-color, var(--sf-on-surface));
 }
 
 .sf-list-timeline-group + .sf-list-timeline-group > .sf-list-timeline-day {
@@ -159,7 +247,6 @@ sf-list-timeline {
   inset-block: calc(var(--sf-list-timeline--line) / 2) calc(var(--sf-list-timeline--line) / -2);
   inset-inline-start: calc((var(--sf-list-timeline--rail) - var(--sf-px)) / 2);
   inline-size: var(--sf-px);
-  background: var(--sf-list-timeline--line-color);
 }
 
 /* A passed step's segment: sf-steps' line (C204 (1), C101 (2)), 2 px in the
@@ -168,7 +255,6 @@ sf-list-timeline {
 .sf-list-timeline-list--steps > .sf-list-timeline-item[data-state="done"]:not(:last-child)::before {
   inset-inline-start: calc((var(--sf-list-timeline--rail) - var(--sf-px) * 2) / 2);
   inline-size: calc(var(--sf-px) * 2);
-  background: var(--sf-primary);
 }
 
 /* The rail: one line tall, the marker centred on it (it may be taller than
@@ -190,7 +276,6 @@ sf-list-timeline {
   align-items: center;
   justify-content: center;
   border-radius: var(--sf-radius-circle);
-  background-color: var(--sf-list-timeline--ground);
 }
 
 /* A neutral marker's glyph is quiet (the prototype's, C40); a tone keeps the
@@ -232,10 +317,6 @@ sf-list-timeline {
   font-weight: var(--sf-font-weight-medium);
 }
 
-.sf-list-timeline-item[data-state="upcoming"] > .sf-list-timeline-body > .sf-list-timeline-head > .sf-list-timeline-title {
-  color: var(--sf-on-surface-variant);
-}
-
 .sf-list-timeline .sf-list-timeline-icon {
   --sf-icon--font-size: var(--sf-featured-icon--icon-size);
   --sf-icon--width: var(--sf-featured-icon--icon-size);
@@ -247,30 +328,12 @@ sf-list-timeline {
 .sf-list-timeline-marker--dot {
   inline-size: var(--sf-list-timeline--line);
   block-size: var(--sf-list-timeline--line);
-  color: var(--sf-list-timeline-marker-color, var(--sf-on-surface-variant));
 }
-
-.sf-list-timeline-marker--dot.sf-list-timeline-marker--success { color: var(--sf-success); }
-.sf-list-timeline-marker--dot.sf-list-timeline-marker--warning { color: var(--sf-warning); }
-.sf-list-timeline-marker--dot.sf-list-timeline-marker--error { color: var(--sf-error); }
 
 .sf-list-timeline-dot {
   inline-size: var(--sf-list-timeline--dot);
   block-size: var(--sf-list-timeline--dot);
   border-radius: var(--sf-radius-circle);
-  background: currentColor;
-}
-
-/* A step without an icon (owner decision C61, variant A of
-   prototypes/timeline-stage-dot-state.html): the state is told by the shape,
-   one logic with the icon steps -- done a solid dot, current the same dot
-   ringed outside through a gap, upcoming an empty dot with a ring. The
-   colour is the status (C61 round 4): the primary colour (an upcoming one:
-   --sf-on-surface-variant; --sf-outline-variant, the line's 24 %, is lost on
-   a dot this small), or the status colour (success, warning, error), which
-   keeps the shape: an upcoming step with an error is an empty error ring. */
-.sf-list-timeline-item:is([data-state="done"], [data-state="current"]) > .sf-list-timeline-rail > .sf-list-timeline-marker--dot:is(.sf-list-timeline-marker--neutral, .sf-list-timeline-marker--info) {
-  color: var(--sf-primary);
 }
 
 .sf-list-timeline-item[data-state="current"] > .sf-list-timeline-rail > .sf-list-timeline-marker--dot .sf-list-timeline-dot {
@@ -278,7 +341,6 @@ sf-list-timeline {
 }
 
 .sf-list-timeline-item[data-state="upcoming"] > .sf-list-timeline-rail > .sf-list-timeline-marker--dot .sf-list-timeline-dot {
-  background: var(--sf-list-timeline--ground);
   box-shadow: inset 0 0 0 calc(var(--sf-px) * 2) currentColor;
 }
 
@@ -294,7 +356,6 @@ sf-list-timeline {
 .sf-list-timeline-head {
   margin: 0;
   min-inline-size: 0;
-  color: var(--sf-on-surface-variant);
   overflow-wrap: anywhere;
 }
 
@@ -307,18 +368,10 @@ sf-list-timeline {
 }
 
 .sf-list-timeline-actor {
-  color: var(--sf-on-surface);
   font-weight: var(--sf-font-weight-medium);
 }
 
-/* No actor: the title is the sentence and reads in the text colour. */
-.sf-list-timeline-head > .sf-list-timeline-title:first-child,
-.sf-list-timeline-head > .sr-only + .sf-list-timeline-title {
-  color: var(--sf-on-surface);
-}
-
 .sf-list-timeline-link {
-  color: var(--sf-link);
   text-decoration: none;
 }
 
@@ -335,7 +388,6 @@ sf-list-timeline {
 /* One quiet line: the time · the text. */
 .sf-list-timeline-meta {
   margin: 0;
-  color: var(--sf-list-timeline--quiet);
   font-size: var(--sf-list-timeline--below-font-size);
   line-height: var(--sf-list-timeline--below-line);
   overflow-wrap: anywhere;
@@ -346,9 +398,9 @@ sf-list-timeline {
 .sf-list-timeline-comment {
   margin: var(--sf-space-1\/3) 0 0;
   padding: var(--sf-space-1\/2) var(--sf-space-1);
-  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-radius--surface);
-  color: var(--sf-on-surface);
   overflow-wrap: anywhere;
   white-space: pre-line;
 }
@@ -366,8 +418,6 @@ sf-list-timeline {
   padding: 0;
   border: 0;
   border-radius: var(--sf-radius--ui);
-  background: none;
-  color: var(--sf-link);
   font: inherit;
   line-height: var(--sf-list-timeline--line);
   text-align: start;
@@ -421,7 +471,6 @@ sf-list-timeline {
   min-block-size: var(--sf-list-timeline--control);
   margin: 0;
   padding-block: calc((var(--sf-list-timeline--control) - var(--sf-list-timeline--line)) / 2);
-  color: var(--sf-on-surface-variant);
 }
 
 /* «Показать ещё»: the rung below's button on the text's axis.
@@ -438,11 +487,6 @@ sf-list-timeline {
 }
 
 @media (forced-colors: active) {
-  .sf-list-timeline-item:not(:last-child)::before,
-  .sf-list-timeline-list--steps > .sf-list-timeline-item[data-state="done"]:not(:last-child)::before {
-    background: CanvasText;
-  }
-
   /* High contrast drops shadows and forces fills: a step keeps its shape in
      the system colours, whatever its status (the status is said in words) --
      done filled, current filled and ringed outside through a gap (an
@@ -452,7 +496,6 @@ sf-list-timeline {
      system colours, the gap is the Canvas behind. */
   .sf-list-timeline-dot {
     forced-color-adjust: none;
-    background: CanvasText;
     box-shadow: none;
   }
 
@@ -463,7 +506,6 @@ sf-list-timeline {
   }
 
   .sf-list-timeline-item[data-state="upcoming"] > .sf-list-timeline-rail > .sf-list-timeline-marker--dot .sf-list-timeline-dot {
-    background: Canvas;
     box-shadow: none;
     outline: calc(var(--sf-px) * 2) solid CanvasText;
     outline-offset: calc(var(--sf-px) * -2);

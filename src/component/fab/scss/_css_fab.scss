@@ -1,3 +1,18 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-fab {
+    background-color: var(--sf-fab--background-color);
+  }
+  .sf-fab .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-fab.sf-fab--tonal.sf-fab--on-surface {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+}
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-fab {
@@ -10,12 +25,10 @@
   padding-top: var(--sf-fab--padding-top);
   padding-inline-end: var(--sf-fab--padding-inline-end);
   padding-bottom: var(--sf-fab--padding-bottom);
-  background-color: var(--sf-fab--background-color);
   box-shadow: var(--sf-fab--focus-inset, 0 0 var(--sf-transparent)), var(--sf-fab--box-shadow, 0 0 var(--sf-transparent));
 }
 
 .sf-fab .sf-icon {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
   height: var(--sf-icon--height, var(--sf-icon-size-3));
   width: var(--sf-icon--width, var(--sf-icon-size-3));
@@ -43,7 +56,6 @@
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface {
   --sf-fab--background-color: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-fab.sf-fab--tonal.sf-fab--on-surface .sf-icon {

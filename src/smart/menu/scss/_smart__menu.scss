@@ -4,6 +4,24 @@
 // becomes, and the link of a branch that is also a destination. Nothing the
 // class draws is redrawn here.
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-smart-menu .sf-menu-element > a.sf-menu-element-wrap {
+    color: inherit;
+  }
+  .sf-smart-menu-search {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) {
+    border-color: var(--sf-outline-variant);
+  }
+  .sf-smart-menu-search-empty {
+    color: var(--sf-on-surface-variant);
+  }
+}
+
 @layer sf.components {
   // The <nav> is as wide as it is given and no wider: a flex item that may
   // shrink, so a row that does not fit is seen not to fit and becomes the
@@ -59,7 +77,6 @@
   // the row draws them, and takes the row's focus ring inside its own box; the
   // disclosure button beside it mirrors its glyph in RTL as the row's does.
   .sf-smart-menu .sf-menu-element > a.sf-menu-element-wrap {
-    color: inherit;
     text-decoration: none;
     border-radius: inherit;
   }
@@ -93,7 +110,8 @@
   .sf-smart-menu-search {
     flex: none;
     padding: var(--sf-space-1\/4);
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-end-width: var(--sf-px);
+    border-block-end-style: solid;
   }
 
   .sf-smart-menu-search > .sf-smart-menu-search-field {
@@ -118,7 +136,8 @@
   // the frame's pixel.
   .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) {
     box-sizing: border-box;
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-radius--surface);
   }
 
@@ -146,7 +165,6 @@
     margin: var(--sf-0);
     padding-block: var(--sf-space-1\/2);
     padding-inline: calc(var(--sf-space-1\/4) + var(--sf-space-1\/2));
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-text-size-1);
     line-height: var(--sf-text-height-1);
   }
@@ -162,6 +180,15 @@
 // the split control's link and chevron, which the class has not, and the
 // levels it marks data-sf-menu-in-place -- take the room a finger needs and
 // stay inside the viewport. The class menu's rows are not redrawn.
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu[data-sf-menu-in-place] {
+    background: none;
+  }
+}
+
 @layer sf.components {
   // The split control's link is the row's height (R179 D2): it takes the
   // row's block padding into its own box, as the chevron beside it does, so
@@ -213,7 +240,6 @@
     padding: var(--sf-0);
     border: var(--sf-0);
     border-radius: var(--sf-0);
-    background: none;
     box-shadow: none;
     --sf-menu--line-border: inherit;
   }

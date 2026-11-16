@@ -15,6 +15,8 @@
 // The anchor says ρ and its border width; percentages are of the anchor's
 // padding box, so `50% + border` is half of its border box on each axis.
 
+@use '../../../core/scss/mix/mix__paint' as paint;
+
 $diagonal: 0.29289; // 1 - 1/sqrt(2)
 
 @mixin properties {
@@ -37,66 +39,76 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
 // The badge on its anchor: the place, the box from the step's variables, the
 // ring. Step 1 when the anchor names no step.
 @mixin badge {
-  @include step-1;
-  --sf-badge--anchored-size: var(--sf-badge--anchored-count);
-  --sf-badge--anchored-max: none;
-  --sf-badge--anchored-inset: calc(min(var(--sf-badge--anchor-radius), 50% + var(--sf-badge--anchor-border)) * #{$diagonal});
-  // The ring is the place the anchor sits on: a page may name it with the
-  // public --sf-badge-ring-color; every place (a card, a menu, a drawer, a
-  // modal, a coloured block) declares --sf-surface-place, which inherits (C16).
-  // --sf-badge--surface, the name a surface said it by before, still wins
-  // until the alias list's remove_after.
-  --sf-badge--ring: var(--sf-badge-ring-color, var(--sf-badge--surface, var(--sf-surface-place)));
-  // On a translucent fill (a selected, open, current or hovered row, core mix
-  // sf-place-fill) the place under the badge is the row: its fill over the
-  // place colour (C43 D3, D4, 2026-11-11). The fill is laid over the ring as a
-  // second shadow. Every place takes the fill back (C43 later, 2026-11-12), so
-  // it is read on its own: on a row of any place, a soft one too, it is the
-  // row's fill, and on a popup or a place opened from the row it is initial.
-  --sf-badge--ring-fill: var(--sf-surface-place-fill, transparent);
-  // A count says something needs attention: the error role, unless the badge
-  // names a scheme of its own (sf-badge--main sf-badge--primary, ...).
-  --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
-  --sf-badge--color: var(--sf-badge-color, var(--sf-on-error));
+  @if paint.writes-shape() {
+    @include step-1;
+    --sf-badge--anchored-size: var(--sf-badge--anchored-count);
+    --sf-badge--anchored-max: none;
+    --sf-badge--anchored-inset: calc(min(var(--sf-badge--anchor-radius), 50% + var(--sf-badge--anchor-border)) * #{$diagonal});
+    // The ring is the place the anchor sits on: a page may name it with the
+    // public --sf-badge-ring-color; every place (a card, a menu, a drawer, a
+    // modal, a coloured block) declares --sf-surface-place, which inherits (C16).
+    // --sf-badge--surface, the name a surface said it by before, still wins
+    // until the alias list's remove_after.
+    --sf-badge--ring: var(--sf-badge-ring-color, var(--sf-badge--surface, var(--sf-surface-place)));
+    // On a translucent fill (a selected, open, current or hovered row, core mix
+    // sf-place-fill) the place under the badge is the row: its fill over the
+    // place colour (C43 D3, D4, 2026-11-11). The fill is laid over the ring as a
+    // second shadow. Every place takes the fill back (C43 later, 2026-11-12), so
+    // it is read on its own: on a row of any place, a soft one too, it is the
+    // row's fill, and on a popup or a place opened from the row it is initial.
+    --sf-badge--ring-fill: var(--sf-surface-place-fill, transparent);
+    // A count says something needs attention: the error role, unless the badge
+    // names a scheme of its own (sf-badge--main sf-badge--primary, ...).
+    --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error));
+    --sf-badge--color: var(--sf-badge-color, var(--sf-on-error));
 
-  position: absolute;
-  inset-block-start: calc(var(--sf-badge--anchored-inset) - var(--sf-badge--anchor-border));
-  inset-inline-start: calc(100% + var(--sf-badge--anchor-border) - var(--sf-badge--anchored-inset));
-  translate: -50% -50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  block-size: var(--sf-badge--anchored-size);
-  min-block-size: var(--sf-badge--anchored-size);
-  min-inline-size: var(--sf-badge--anchored-size);
-  max-inline-size: var(--sf-badge--anchored-max);
-  padding-block: 0;
-  padding-inline: var(--sf-badge--anchored-padding);
-  overflow: hidden;
-  font-size: var(--sf-badge--anchored-font-size);
-  line-height: var(--sf-badge--anchored-size);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  // Under both, the nearest opaque place (--sf-surface-place-ground): on a soft
-  // place the ring is the soft tone over its ground, the place's own look, not
-  // the tone laid twice over the soft place showing through; on glass the
-  // ground is black, as under the status dot. On a solid place the ring is
-  // opaque and the ground is not seen. An author's --sf-badge-ring-color is
-  // the ring itself, so at rest it is what shows.
-  box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring-fill), 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring), 0 0 0 var(--sf-badge--ring-width) var(--sf-surface-place-ground, transparent);
+    position: absolute;
+    inset-block-start: calc(var(--sf-badge--anchored-inset) - var(--sf-badge--anchor-border));
+    inset-inline-start: calc(100% + var(--sf-badge--anchor-border) - var(--sf-badge--anchored-inset));
+    translate: -50% -50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    block-size: var(--sf-badge--anchored-size);
+    min-block-size: var(--sf-badge--anchored-size);
+    min-inline-size: var(--sf-badge--anchored-size);
+    max-inline-size: var(--sf-badge--anchored-max);
+    padding-block: 0;
+    padding-inline: var(--sf-badge--anchored-padding);
+    overflow: hidden;
+    font-size: var(--sf-badge--anchored-font-size);
+    line-height: var(--sf-badge--anchored-size);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    // Under both, the nearest opaque place (--sf-surface-place-ground): on a soft
+    // place the ring is the soft tone over its ground, the place's own look, not
+    // the tone laid twice over the soft place showing through; on glass the
+    // ground is black, as under the status dot. On a solid place the ring is
+    // opaque and the ground is not seen. An author's --sf-badge-ring-color is
+    // the ring itself, so at rest it is what shows.
+    box-shadow: 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring-fill), 0 0 0 var(--sf-badge--ring-width) var(--sf-badge--ring), 0 0 0 var(--sf-badge--ring-width) var(--sf-surface-place-ground, transparent);
+  }
 
   // RTL: the end is the left, and the badge is centred from its right edge.
   &:dir(rtl) {
-    translate: 50% -50%;
+    @if paint.writes-shape() {
+      translate: 50% -50%;
+    }
   }
 
   @media (forced-colors: active) {
-    forced-color-adjust: none;
-    background-color: Highlight;
-    color: HighlightText;
-    box-shadow: none;
-    outline: var(--sf-badge--ring-width) solid Canvas;
+    @if paint.writes-shape() {
+      forced-color-adjust: none;
+    }
+    @if paint.writes-paint() {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+    @if paint.writes-shape() {
+      box-shadow: none;
+      outline: var(--sf-badge--ring-width) solid Canvas;
+    }
   }
 }
 
@@ -117,22 +129,28 @@ $diagonal: 0.29289; // 1 - 1/sqrt(2)
 // the badge sheet draws a dot; the menus that include `dot` keep their own.
 @mixin dot-disc {
   &:has(> .sf-dot) {
-    background-color: transparent;
+    @if paint.writes-paint() {
+      background-color: transparent;
+    }
   }
 
   & > .sf-dot {
-    --sf-dot-item--size: var(--sf-badge--anchored-dot);
-    --sf-dot-item--background-color: var(--sf-badge--background-color);
-    // Over the whole box, the disc centred: the hidden digits of a count
-    // and the badge's gap move nothing.
-    position: absolute;
-    inset: 0;
-    display: flex;
+    @if paint.writes-shape() {
+      --sf-dot-item--size: var(--sf-badge--anchored-dot);
+      --sf-dot-item--background-color: var(--sf-badge--background-color);
+      // Over the whole box, the disc centred: the hidden digits of a count
+      // and the badge's gap move nothing.
+      position: absolute;
+      inset: 0;
+      display: flex;
+    }
   }
 
   @media (forced-colors: active) {
     & > .sf-dot > .sf-dot-item {
-      background-color: Highlight;
+      @if paint.writes-paint() {
+        background-color: Highlight;
+      }
     }
   }
 }

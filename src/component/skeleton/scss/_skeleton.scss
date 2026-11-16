@@ -1,3 +1,17 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-skeleton-text {
+    background: var(--sf-skeleton-background-color, var(--sf-skeleton-base));
+  }
+  @media (forced-colors: active) {
+    .sf-skeleton-text {
+      background: CanvasText;
+    }
+  }
+}
+
 @layer sf.components {
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) */
 .sf-skeleton {
@@ -29,7 +43,6 @@
   --sf-skeleton-text--bar: calc(var(--sf-skeleton-text--height) * 0.727);
   position: relative;
   overflow: hidden;
-  background: var(--sf-skeleton-background-color, var(--sf-skeleton-base));
   border-radius: var(--sf-skeleton-radius, var(--sf-radius--ui));
   block-size: var(--sf-skeleton-text--height);
   flex: none;
@@ -226,7 +239,6 @@
 
 @media (forced-colors: active) {
   .sf-skeleton-text {
-    background: CanvasText;
     opacity: var(--sf-opacity-30);
   }
 

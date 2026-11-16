@@ -1,3 +1,14 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  /* While the file is still coming, the box holds its place instead of letting
+     the line jump. */
+  .sf-flag:not(:has(img, svg)) {
+    background-color: var(--sf-flag-placeholder-color, var(--sf-surface-container));
+  }
+}
+
 @layer sf.components {
   /* A flag is a picture with a fixed aspect ratio, and the set ships it twice:
      a rectangle at 28x20 and a circle at 24x24. The circle is not the rectangle
@@ -47,11 +58,5 @@
     --sf-flag--default-size: var(--sf-icon-size-3);
     inline-size: var(--sf-flag--height);
     --sf-flag--radius: var(--sf-flag-radius, var(--sf-radius-circle));
-  }
-
-  /* While the file is still coming, the box holds its place instead of letting
-     the line jump. */
-  .sf-flag:not(:has(img, svg)) {
-    background-color: var(--sf-flag-placeholder-color, var(--sf-surface-container));
   }
 }

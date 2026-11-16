@@ -1,4 +1,47 @@
 @use 'theme';
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-code-line__number {
+    color: var(--sf-place--ink-variant, var(--sf-on-surface-variant));
+  }
+  .sf-highlight__head {
+    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+  }
+  .sf-code-surface {
+    /* On a grey plate the plate is the fill: the place hook draws none
+       (--sf-place--fill-surface, core mix/_mix__places.scss). */
+    background: var(--sf-highlight-background-color, var(--sf-place--fill-surface, var(--sf-surface-container)));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+    color: var(--sf-highlight-color, var(--sf-on-surface));
+  }
+  .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
+    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+  }
+  .sf-code-surface__scroll {
+    background: transparent;
+  }
+  .sf-code-surface__scroll code {
+    background: transparent;
+  }
+  .hljs-ln-numbers {
+    color: var(--sf-highlight--line-number);
+    div {
+      border-inline-end-color: var(--sf-highlight-line-divider);
+    }
+  }
+  @media (forced-colors: active) {
+    .sf-code-surface {
+      border-color: CanvasText;
+    }
+    .hljs-ln-numbers div {
+      border-color: CanvasText;
+    }
+  }
+}
+
 @layer sf.components {
   /* Line numbers (data-lines): one row per line, the number in a column of
      its own that copying leaves behind. The rows were spans with no display,
@@ -15,7 +58,6 @@
     flex: none;
     min-inline-size: var(--sf-code-line--number-size, 3ch);
     padding-inline-end: var(--sf-space-1\/2);
-    color: var(--sf-place--ink-variant, var(--sf-on-surface-variant));
     text-align: end;
     user-select: none;
   }
@@ -74,7 +116,8 @@
   .sf-highlight__head {
     padding: 0 var(--sf-space-1);
     margin: 0;
-    border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-block-end-width: var(--sf-highlight-border-width, var(--sf-px));
+    border-block-end-style: solid;
   }
 
   /* The copy status is read aloud and never shown; hidden here for the same
@@ -116,20 +159,17 @@
     min-width: 0;
     overflow: hidden;
     margin: 0;
-    /* On a grey plate the plate is the fill: the place hook draws none
-       (--sf-place--fill-surface, core mix/_mix__places.scss). */
-    background: var(--sf-highlight-background-color, var(--sf-place--fill-surface, var(--sf-surface-container)));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-width: var(--sf-highlight-border-width, var(--sf-px));
+    border-style: solid;
     border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
-    color: var(--sf-highlight-color, var(--sf-on-surface));
   }
 
   .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
     margin: 0;
     padding-block: 0;
     padding-inline: var(--sf-space-1);
-    border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-block-end-width: var(--sf-highlight-border-width, var(--sf-px));
+    border-block-end-style: solid;
   }
 
   .sf-code-surface__scroll {
@@ -140,7 +180,6 @@
     overscroll-behavior-inline: contain;
     direction: ltr;
     text-align: start;
-    background: transparent;
     border: 0;
     border-radius: 0;
     box-shadow: none;
@@ -151,7 +190,6 @@
     min-inline-size: max-content;
     padding: 0;
     white-space: pre;
-    background: transparent;
   }
 
   /* After the code surface's own rule, which sizes the code to its longest
@@ -187,11 +225,11 @@
     padding-bottom: 0;
 
     text-align: center;
-    color: var(--sf-highlight--line-number);
     vertical-align: top;
 
     div {
-      border-inline-end: var(--sf-px) solid var(--sf-highlight-line-divider);
+      border-inline-end-width: var(--sf-px);
+      border-inline-end-style: solid;
       padding-inline-end: var(--sf-a5);
     }
 
@@ -231,15 +269,5 @@
     line-height: var(--sf-text-height-1\/2);
     direction: ltr;
     text-align: start;
-  }
-
-  @media (forced-colors: active) {
-    .sf-code-surface {
-      border-color: CanvasText;
-    }
-
-    .hljs-ln-numbers div {
-      border-color: CanvasText;
-    }
   }
 }

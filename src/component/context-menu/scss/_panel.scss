@@ -29,6 +29,8 @@
 //   scrollbar-gutter: a stable gutter keeps an empty track when the rows fit.
 
 // The values, every one a Framework variable; the mixins read them.
+@use '../../../core/scss/mix/mix__paint' as paint;
+
 $inset: var(--sf-space-1\/4);
 $row-padding: var(--sf-space-1\/2);
 $row-radius: var(--sf-radius--ui);
@@ -39,35 +41,59 @@ $thumb: var(--sf-scroll-thumb-width);
 // custom property that holds the track's width, $thumb-min the thumb's
 // shortest length (a row's height), $thumb-width the thumb's width.
 @mixin scrollbar($inset, $track, $thumb-min, $thumb-width: $thumb) {
-  #{$track}: calc(2 * #{$inset} + #{$thumb-width});
+  @if paint.writes-shape() {
+    #{$track}: calc(2 * #{$inset} + #{$thumb-width});
+  }
 
   &::-webkit-scrollbar {
-    width: var(#{$track});
-    height: var(#{$track});
+    @if paint.writes-shape() {
+      width: var(#{$track});
+      height: var(#{$track});
+    }
   }
 
   &::-webkit-scrollbar-track {
-    border: 0;
-    background-color: transparent;
+    @if paint.writes-shape() {
+      border: 0;
+    }
+    @if paint.writes-paint() {
+      background-color: transparent;
+    }
   }
 
   &::-webkit-scrollbar-thumb {
-    min-height: $thumb-min;
-    border: $inset solid transparent;
-    border-radius: var(#{$track});
-    background-clip: padding-box;
-    background-color: var(--sf-scroll-bg-thumb);
+    @if paint.writes-shape() {
+      min-height: $thumb-min;
+    }
+    @if paint.writes-shape() {
+      border-width: $inset;
+      border-style: solid;
+    }
+    @if paint.writes-paint() {
+      border-color: transparent;
+    }
+    @if paint.writes-shape() {
+      border-radius: var(#{$track});
+      background-clip: padding-box;
+    }
+    @if paint.writes-paint() {
+      background-color: var(--sf-scroll-bg-thumb);
+    }
   }
 
   // C208 (1): the one hover rule of every bar -- the place's text under the
   // pointer and while dragged (core's --sf-scroll--thumb-hover).
   &::-webkit-scrollbar-thumb:hover,
   &::-webkit-scrollbar-thumb:active {
-    background-color: var(--sf-scroll--thumb-hover);
+    @if paint.writes-paint() {
+      background-color: var(--sf-scroll--thumb-hover);
+    }
   }
 
   @supports not selector(::-webkit-scrollbar) {
-    scrollbar-width: thin;
+    @if paint.writes-shape() {
+      scrollbar-width: thin;
+    }
   }
 }
 
@@ -76,15 +102,23 @@ $thumb: var(--sf-scroll-thumb-width);
 // row's padding ($inline-start, $inline-end are the panel's insets), a
 // hairline under it.
 @mixin search-header($row-height, $block-start, $block-end, $inline-start, $inline-end) {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: $row-padding;
-  min-block-size: calc(#{$row-height} + #{$block-start} + #{$block-end});
-  padding-block: 0;
-  padding-inline: calc(#{$inline-start} + #{$row-padding}) calc(#{$inline-end} + #{$row-padding});
-  border: 0;
-  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  @if paint.writes-shape() {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: $row-padding;
+    min-block-size: calc(#{$row-height} + #{$block-start} + #{$block-end});
+    padding-block: 0;
+    padding-inline: calc(#{$inline-start} + #{$row-padding}) calc(#{$inline-end} + #{$row-padding});
+    border: 0;
+  }
+  @if paint.writes-shape() {
+    border-block-end-width: var(--sf-px);
+    border-block-end-style: solid;
+  }
+  @if paint.writes-paint() {
+    border-block-end-color: var(--sf-outline-variant);
+  }
 }
 
 // The header's search icon, as wide as the rows' icons ($size).
@@ -108,21 +142,29 @@ $thumb: var(--sf-scroll-thumb-width);
 
 // The header's field: no frame, no fill, a primary caret.
 @mixin search-input {
-  flex: 1 1 auto;
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  outline: none;
-  background-color: transparent;
-  color: var(--sf-on-surface);
-  font: inherit;
-  appearance: none;
-  caret-color: var(--sf-primary);
+  @if paint.writes-shape() {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    outline: none;
+  }
+  @if paint.writes-paint() {
+    background-color: transparent;
+    color: var(--sf-on-surface);
+  }
+  @if paint.writes-shape() {
+    font: inherit;
+    appearance: none;
+    caret-color: var(--sf-primary);
+  }
 
   &::placeholder {
-    color: var(--sf-on-surface-variant);
+    @if paint.writes-paint() {
+      color: var(--sf-on-surface-variant);
+    }
   }
 }
 
@@ -130,13 +172,15 @@ $thumb: var(--sf-scroll-thumb-width);
 // line in the primary colour (Highlight in forced colours). Included in
 // sf.states on the header's selector.
 @mixin search-focus {
-  &:focus-within {
-    border-block-end-color: var(--sf-primary);
-  }
-
-  @media (forced-colors: active) {
+  @if paint.writes-paint() {
     &:focus-within {
-      border-block-end-color: Highlight;
+      border-block-end-color: var(--sf-primary);
+    }
+
+    @media (forced-colors: active) {
+      &:focus-within {
+        border-block-end-color: Highlight;
+      }
     }
   }
 }
@@ -147,8 +191,12 @@ $thumb: var(--sf-scroll-thumb-width);
 // page are C40's (sf-group-heading). Each panel keeps its own paddings.
 // sf-menu-context's .sf-context-menu-heading already writes these values.
 @mixin group-heading {
-  color: var(--sf-on-surface-variant);
-  font-size: var(--sf-text-size-1\/3);
-  line-height: var(--sf-text-height-1\/3);
-  font-weight: var(--sf-weight--medium);
+  @if paint.writes-paint() {
+    color: var(--sf-on-surface-variant);
+  }
+  @if paint.writes-shape() {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+    font-weight: var(--sf-weight--medium);
+  }
 }

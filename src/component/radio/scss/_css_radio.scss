@@ -1,3 +1,35 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-radio-button {
+    background-color: var(--sf-radio-button--background-color, transparent);
+  }
+  .sf-radio-button > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-radio-button .sf-radio-button-box {
+    background-color: var(--sf-radio-button-box--background-color);
+    border-color: var(--sf-radio-button-box--border-color, transparent);
+  }
+  .sf-radio-button .sf-radio-button-container {
+    background-color: var(--sf-radio-button-container--background-color);
+  }
+  .sf-radio-button .sf-radio-button-description {
+    color: var(--sf-radio-button-description--color);
+  }
+  .sf-radio-button .sf-radio-button-top {
+    background-color: var(--sf-radio-button-top--background-color);
+  }
+  .sf-radio-button .sf-radio-button-text {
+    background-color: var(--sf-radio-button-text--background-color);
+    color: var(--sf-radio-button-text--color);
+  }
+  .sf-radio-button .sf-radio-button-mark {
+    background-color: var(--sf-radio-button-mark--background-color);
+  }
+}
+
 @layer sf.components {
   /* The native input of a radio drawn by the component (the font variant among
      them): kept in the form and the focus order, out of sight. */
@@ -12,12 +44,10 @@
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-radio-button {
-  background-color: var(--sf-radio-button--background-color, transparent);
   gap: var(--sf-radio-button--gap);
 }
 
 .sf-radio-button > .sf-radio-button-container > .sf-radio-button-top > .sf-icon {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
   height: var(--sf-icon--height, var(--sf-icon-size-3));
   width: var(--sf-icon--width, var(--sf-icon-size-3));
@@ -61,9 +91,7 @@
   --sf-radio-button-box--border-style: solid;
   --sf-radio-button-box--border-width: var(--sf-radio-button-border-width, var(--sf-px));
   --sf-radio-button-box--gap: var(--sf-a0);
-  background-color: var(--sf-radio-button-box--background-color);
   border: var(--sf-radio-button-box--border);
-  border-color: var(--sf-radio-button-box--border-color, transparent);
   border-end-end-radius: var(--sf-radio-button-box--border-end-end-radius);
   border-end-start-radius: var(--sf-radio-button-box--border-end-start-radius);
   border-start-end-radius: var(--sf-radio-button-box--border-start-end-radius);
@@ -79,14 +107,12 @@
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-radio-button .sf-radio-button-container {
   --sf-radio-button-container--background-color: transparent;
-  background-color: var(--sf-radio-button-container--background-color);
 }
 
 .sf-radio-button .sf-radio-button-description {
   --sf-radio-button-description--color: var(--sf-on-surface-variant);
   --sf-radio-button-description--font-family: var(--sf-text--family);
   --sf-radio-button-description--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-radio-button-description--color);
   font-family: var(--sf-radio-button-description--font-family);
   font-size: var(--sf-radio-button-description--font-size);
   font-weight: var(--sf-radio-button-description--font-weight);
@@ -96,15 +122,12 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) gap/var(--sf-radio-button-top--gap) */
 .sf-radio-button .sf-radio-button-top {
   --sf-radio-button-top--background-color: transparent;
-  background-color: var(--sf-radio-button-top--background-color);
   gap: var(--sf-radio-button-top--gap);
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-radio-button .sf-radio-button-text {
   --sf-radio-button-text--background-color: transparent;
-  background-color: var(--sf-radio-button-text--background-color);
-  color: var(--sf-radio-button-text--color);
   font-family: var(--sf-radio-button-text--font-family);
   font-size: var(--sf-radio-button-text--font-size);
   font-weight: var(--sf-radio-button-text--font-weight);
@@ -113,7 +136,6 @@
 }
 
 .sf-radio-button .sf-radio-button-mark {
-  background-color: var(--sf-radio-button-mark--background-color);
   border-radius: var(--sf-radio-button-mark--border-radius);
   height: var(--sf-radio-button-mark--height);
   width: var(--sf-radio-button-mark--width);
@@ -186,12 +208,6 @@
   --sf-radio-button-text--color: var(--sf-on-surface-disabled);
 }
 
-
-
-
-
-
-
 /* The ring is the picture before a label: the label follows it at the row
    gap H2 of C105 (--sf-space-1/2: 12, compact and phone 8) at every size,
    as the text follows its picture in a list row, so a radio lines up with
@@ -236,7 +252,6 @@
 .sf-radio-button--size-2 {
   --sf-radio-button--gap: var(--sf-radio-button-gap, var(--sf-space-1\/2));
 }
-
 
 .sf-radio-button:has(input:enabled:not(:disabled):not(.disabled):hover):not(:has(sf-help-mark:hover, [slot="help"]:hover)) .sf-radio-button-box {
   --sf-radio-button-box--border-color: var(--sf-primary-hover);

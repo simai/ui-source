@@ -1,3 +1,33 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-outline {
+    color: var(--sf-on-surface);
+  }
+  .sf-outline__link {
+    border-inline-start-color: var(--sf-transparent);
+    color: var(--sf-outline--color);
+    background-color: var(--sf-transparent);
+  }
+  .sf-outline__link:hover {
+    color: var(--sf-outline--hover-color);
+    background-color: var(--sf-outline--hover-background);
+  }
+  .sf-outline__link[aria-current="location"],
+  .sf-outline__link[data-sf-outline-active] {
+    border-inline-start-color: var(--sf-outline--current-indicator);
+    color: var(--sf-outline--current-color);
+    background-color: var(--sf-outline--current-background);
+  }
+  @media (forced-colors: active) {
+    .sf-outline__link[aria-current="location"],
+    .sf-outline__link[data-sf-outline-active] {
+      border-inline-start-color: Highlight;
+    }
+  }
+}
+
 @layer sf.components {
   .sf-outline {
     --sf-outline--gap: var(--sf-space-1\/3);
@@ -18,7 +48,6 @@
     --sf-outline--current-indicator: var(--sf-transparent);
 
     min-inline-size: var(--sf-0);
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text--size);
     line-height: var(--sf-text--height);
@@ -45,17 +74,11 @@
     padding-block: var(--sf-outline--link-padding-block);
     padding-inline: var(--sf-outline--link-padding-inline);
     border: 0;
-    border-inline-start: var(--sf-outline--indicator-width) solid var(--sf-transparent);
+    border-inline-start-width: var(--sf-outline--indicator-width);
+    border-inline-start-style: solid;
     border-radius: var(--sf-radius--ui);
-    color: var(--sf-outline--color);
-    background-color: var(--sf-transparent);
     overflow-wrap: anywhere;
     text-decoration: none;
-  }
-
-  .sf-outline__link:hover {
-    color: var(--sf-outline--hover-color);
-    background-color: var(--sf-outline--hover-background);
   }
 
   .sf-outline__link:focus {
@@ -71,9 +94,6 @@
 
   .sf-outline__link[aria-current="location"],
   .sf-outline__link[data-sf-outline-active] {
-    border-inline-start-color: var(--sf-outline--current-indicator);
-    color: var(--sf-outline--current-color);
-    background-color: var(--sf-outline--current-background);
     font-weight: var(--sf-font-weight-medium);
   }
 
@@ -82,11 +102,6 @@
       outline: var(--sf-focus-outline-width) solid currentColor;
       outline-offset: calc(var(--sf-focus-outline-width) * -1);
       box-shadow: none;
-    }
-
-    .sf-outline__link[aria-current="location"],
-    .sf-outline__link[data-sf-outline-active] {
-      border-inline-start-color: Highlight;
     }
   }
 }

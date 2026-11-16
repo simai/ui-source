@@ -1,10 +1,22 @@
 @use 'var__slider' as *;
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-slider-arrows {
+    background-color: var(--sf-slider-arrows--background-color, transparent);
+  }
+  .sf-slider-arrows .sf-icon-button,
+.sf-slider-rotation-place .sf-icon-button {
+    background-color: var(--sf-icon-button--background-color);
+  }
+}
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-slider-arrows {
-  background-color: var(--sf-slider-arrows--background-color, transparent);
   box-shadow: var(--sf-slider-arrows--box-shadow);
   backdrop-filter: var(--sf-slider-arrows--backdrop-filter);
 }
@@ -16,7 +28,6 @@
   --sf-icon-button--border-end-start-radius: var(--sf-radius-rounded);
   --sf-icon-button--border-start-end-radius: var(--sf-radius-rounded);
   --sf-icon-button--border-start-start-radius: var(--sf-radius-rounded);
-  background-color: var(--sf-icon-button--background-color);
   border-end-end-radius: var(--sf-icon-button--border-end-end-radius);
   border-end-start-radius: var(--sf-icon-button--border-end-start-radius);
   border-start-end-radius: var(--sf-icon-button--border-start-end-radius);

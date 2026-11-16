@@ -2,6 +2,41 @@
 
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-carousel-switch,
+.sf-carousel-rotation {
+    background-color: var(--sf-carousel-control--background-color);
+    color: var(--sf-carousel-control--color);
+  }
+  .sf-carousel-pagination {
+    background-color: var(--sf-carousel-pagination--background-color);
+  }
+  .sf-carousel-pagination-item,
+button.sf-carousel-pagination-item {
+    background: transparent;
+    color: var(--sf-carousel-pagination-item--color);
+  }
+  .sf-carousel-pagination-item::after {
+    background-color: currentColor;
+  }
+  @media (forced-colors: active) {
+    .sf-carousel-switch,
+  .sf-carousel-rotation,
+  .sf-carousel-pagination {
+      border-color: ButtonText;
+    }
+    .sf-carousel-pagination-item {
+      color: ButtonText;
+    }
+    .sf-carousel-pagination-item--active {
+      color: Highlight;
+    }
+  }
+}
+
 @layer sf.components {
 .sf-carousel {
   --sf-carousel--block-size: var(--sf-g3);
@@ -62,10 +97,8 @@
   appearance: none;
   align-items: center;
   backdrop-filter: var(--sf-carousel-control--backdrop, none);
-  background-color: var(--sf-carousel-control--background-color);
   border: 0;
   border-radius: var(--sf-carousel-control--radius, var(--sf-radius--ui));
-  color: var(--sf-carousel-control--color);
   cursor: pointer;
   display: inline-flex;
   font: inherit;
@@ -198,7 +231,6 @@
 .sf-carousel-pagination {
   align-items: center;
   backdrop-filter: var(--sf-carousel-pagination--backdrop, blur(var(--sf-blur-large)));
-  background-color: var(--sf-carousel-pagination--background-color);
   border-radius: var(--sf-carousel-pagination--radius, var(--sf-radius--ui));
   display: inline-flex;
   gap: var(--sf-space-1\/2);
@@ -213,10 +245,8 @@
 .sf-carousel-pagination-item,
 button.sf-carousel-pagination-item {
   appearance: none;
-  background: transparent;
   border: 0;
   border-radius: var(--sf-radius-circle);
-  color: var(--sf-carousel-pagination-item--color);
   cursor: pointer;
   min-block-size: var(--sf-ui-1\/3--control-height);
   min-inline-size: var(--sf-ui-1\/3--control-height);
@@ -225,7 +255,6 @@ button.sf-carousel-pagination-item {
 }
 
 .sf-carousel-pagination-item::after {
-  background-color: currentColor;
   border-radius: var(--sf-radius-circle);
   block-size: var(--sf-a8);
   content: '';
@@ -300,16 +329,9 @@ button.sf-carousel-pagination-item {
   .sf-carousel-switch,
   .sf-carousel-rotation,
   .sf-carousel-pagination {
-    border: var(--sf-focus-outline-width) solid ButtonText;
+    border-width: var(--sf-focus-outline-width);
+    border-style: solid;
     forced-color-adjust: none;
-  }
-
-  .sf-carousel-pagination-item {
-    color: ButtonText;
-  }
-
-  .sf-carousel-pagination-item--active {
-    color: Highlight;
   }
 }
 }

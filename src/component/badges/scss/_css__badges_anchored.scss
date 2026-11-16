@@ -3,10 +3,30 @@
 // gives) is placed by the Framework -- no position utilities. The geometry and
 // the size table are in _anchored-geometry.scss.
 @use 'anchored-geometry' as anchored;
+@use '../../../core/scss/mix/mix__paint' as paint;
 
 @include anchored.properties;
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-badge.sf-badge--anchored {
+    @include anchored.badge;
+  }
+  :is(.sf-avatar--size-1\/4, .sf-avatar--size-1\/3, .sf-icon-button--size-1\/3, .sf-badge-anchor--size-1\/3, .sf-avatar--size-1\/2, .sf-icon-button--size-1\/2, .sf-badge-anchor--size-1\/2, .sf-avatar--line-1\/2, .sf-avatar--line-1, .sf-avatar--line-2) > .sf-badge--anchored,
+  .sf-badge.sf-badge--anchored.sf-badge--dot {
+    @include anchored.dot-disc;
+  }
+  .sf-badge.sf-badge--dot:not(.sf-badge--anchored):has(> .sf-dot) {
+    background-color: transparent;
+  }
+  @include paint.part(all);
+}
+
 @layer sf.components {
+  @include paint.part(shape);
   // An anchor holding a badge is its containing block. Zero specificity, so an
   // anchor that is positioned already (absolute, fixed, sticky) stays so.
   :where(.sf-avatar, .sf-icon-button, .sf-badge-anchor):has(> .sf-badge--anchored) {
@@ -133,7 +153,6 @@
   // Its disc is the Framework's one dot too (owner decision C185 (8)), the
   // dot's own size 8 in the badge's colour; the badge fills nothing itself.
   .sf-badge.sf-badge--dot:not(.sf-badge--anchored):has(> .sf-dot) {
-    background-color: transparent;
     background-image: none;
   }
 
@@ -159,4 +178,5 @@
   span.sf-badge-anchored-text {
     @include anchored.visually-hidden;
   }
+  @include paint.part(all);
 }

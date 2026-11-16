@@ -1,11 +1,51 @@
 @use '../../inputs/scss/field-ladder' as ladder;
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-quantity {
+    background-color: var(--sf-quantity--background-color, transparent);
+  }
+  .sf-quantity .sf-quantity-label {
+    background-color: var(--sf-quantity-label--background-color);
+  }
+  .sf-quantity .sf-quantity-text {
+    color: var(--sf-quantity-text--color);
+  }
+  .sf-quantity .sf-quantity-hint-text-wrap {
+    color: var(--sf-quantity-hint-text-wrap--color);
+  }
+  .sf-quantity .sf-quantity-required {
+    color: var(--sf-quantity-required--color);
+  }
+  .sf-quantity .sf-quantity-wrap {
+    background-color: var(--sf-quantity-wrap--background-color);
+    border-color: var(--sf-quantity-wrap--border-color, transparent);
+  }
+  .sf-quantity .sf-icon-button {
+    background-color: var(--sf-icon-button--background-color);
+  }
+  .sf-quantity .sf-quantity-wrap input {
+    background-color: var(--sf-quantity-input--background-color);
+    color: var(--sf-quantity-input--color);
+  }
+  .sf-quantity .sf-quantity-wrap input::placeholder {
+    color: var(--sf-quantity-placeholder--color);
+  }
+  .sf-quantity .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-quantity:has(input:disabled) .sf-button .sf-icon {
+    background-color: var(--sf-on-surface-disabled);
+  }
+}
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-quantity {
   min-inline-size: 0;
   inline-size: 100%;
-  background-color: var(--sf-quantity--background-color, transparent);
   gap: var(--sf-quantity--gap, var(--sf-space-1\/4));
 }
 
@@ -13,7 +53,6 @@
 .sf-quantity .sf-quantity-label {
   --sf-quantity-label--background-color: transparent;
   --sf-quantity-label--gap: var(--sf-space-1\/4);
-  background-color: var(--sf-quantity-label--background-color);
   gap: var(--sf-quantity-label--gap);
 }
 
@@ -22,7 +61,6 @@
   --sf-quantity-text--color: var(--sf-on-surface);
   --sf-quantity-text--font-family: var(--sf-text--family);
   --sf-quantity-text--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-quantity-text--color);
   font-family: var(--sf-quantity-text--font-family);
   font-size: var(--sf-quantity-text--font-size);
   font-weight: var(--sf-quantity-text--font-weight);
@@ -34,7 +72,6 @@
    step below the box. */
 .sf-quantity .sf-quantity-hint-text-wrap {
   --sf-quantity-hint-text-wrap--color: var(--sf-on-surface-variant);
-  color: var(--sf-quantity-hint-text-wrap--color);
   font-family: var(--sf-text--family);
   font-size: var(--sf-quantity-hint-text-wrap--font-size);
   font-weight: var(--sf-font-weight-regular);
@@ -65,7 +102,6 @@
   --sf-quantity-required--color: var(--sf-on-surface);
   --sf-quantity-required--font-family: var(--sf-text--family);
   --sf-quantity-required--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-quantity-required--color);
   font-family: var(--sf-quantity-required--font-family);
   font-size: var(--sf-quantity-required--font-size);
   font-weight: var(--sf-quantity-required--font-weight);
@@ -84,9 +120,7 @@
   --sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
   /* The class component's gap; the Smart field's is 0 (C53 F2, below). */
   --sf-quantity-wrap--gap: var(--sf-quantity-gap, var(--sf-space-2));
-  background-color: var(--sf-quantity-wrap--background-color);
   border: var(--sf-quantity-wrap--border);
-  border-color: var(--sf-quantity-wrap--border-color, transparent);
   border-end-end-radius: var(--sf-quantity-wrap--border-end-end-radius);
   border-end-start-radius: var(--sf-quantity-wrap--border-end-start-radius);
   border-start-end-radius: var(--sf-quantity-wrap--border-start-end-radius);
@@ -107,7 +141,6 @@
   --sf-icon-button--border-end-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
   --sf-icon-button--border-start-end-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
   --sf-icon-button--border-start-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
-  background-color: var(--sf-icon-button--background-color);
   border-end-end-radius: var(--sf-icon-button--border-end-end-radius);
   border-end-start-radius: var(--sf-icon-button--border-end-start-radius);
   border-start-end-radius: var(--sf-icon-button--border-start-end-radius);
@@ -133,8 +166,6 @@
   border: 0;
   outline: 0;
   --sf-quantity-input--background-color: transparent;
-  background-color: var(--sf-quantity-input--background-color);
-  color: var(--sf-quantity-input--color);
   font-family: var(--sf-quantity-input--font-family);
   font-size: var(--sf-quantity-input--font-size);
   font-weight: var(--sf-quantity-input--font-weight);
@@ -149,14 +180,12 @@
 .sf-quantity .sf-quantity-wrap input::placeholder {
   --sf-quantity-placeholder--color: var(--sf-on-surface-variant);
   --sf-quantity-placeholder--font-family: var(--sf-text--family);
-  color: var(--sf-quantity-placeholder--color);
   font-family: var(--sf-quantity-placeholder--font-family);
   font-size: var(--sf-quantity-placeholder--font-size);
   line-height: var(--sf-quantity-placeholder--line-height);
 }
 
 .sf-quantity .sf-icon {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
   height: var(--sf-icon--height, var(--sf-text-size-3));
   width: var(--sf-icon--width, var(--sf-text-size-3));
@@ -337,10 +366,6 @@
   --sf-quantity-wrap--border-color: var(--sf-outline-disabled);
 }
 
-.sf-quantity:has(input:disabled) .sf-button .sf-icon {
-  background-color: var(--sf-on-surface-disabled);
-}
-
 .sf-quantity:has(input:disabled) .sf-icon {
   --sf-icon--color: var(--sf-on-surface-disabled);
 }
@@ -432,6 +457,18 @@
    inherited value at the field's decimals; at least 2, 6 with no upper
    bound) or the digits setting, which a column of fields sets to one
    number so the column is straight (F6). */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-quantity .sf-quantity-unit {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-unit {
+    color: var(--sf-on-surface-disabled);
+  }
+}
+
 @layer sf.components {
   /* C53 is the Smart field's look (sf-input-quantity renders the box in a
      .sf-quantity-row); the class component (label.sf-quantity with the box
@@ -499,7 +536,6 @@
   /* The unit after the number, in the quiet ink, the number's own type. */
   .sf-quantity .sf-quantity-unit {
     padding-inline-end: var(--sf-space-1\/4);
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-quantity-input--font-family);
     font-size: var(--sf-quantity-input--font-size);
     line-height: var(--sf-quantity-input--line-height);
@@ -516,10 +552,6 @@
         font-size: max(var(--sf-quantity-input--font-size), 16px);
       }
     }
-  }
-
-  .sf-quantity:has(input:disabled) .sf-quantity-unit {
-    color: var(--sf-on-surface-disabled);
   }
 
   /* An exact value (steppers="none"): a plain number field. The text starts
@@ -579,10 +611,18 @@
    arrived; until it does they were the browser's grey button, fading out over
    the button's transition (simai/ui-source#2). No weight here: the icon
    button's own rules win the moment they apply. */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  :where(.sf-quantity .sf-quantity-count) {
+    background-color: transparent;
+  }
+}
+
 @layer sf.components {
   :where(.sf-quantity .sf-quantity-count) {
     appearance: none;
-    background-color: transparent;
     border: 0;
   }
 }

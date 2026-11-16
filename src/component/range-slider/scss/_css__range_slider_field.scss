@@ -1,5 +1,95 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-range-slider-name {
+    color: var(--sf-range-slider-name--color, var(--sf-on-surface-variant));
+  }
+  .sf-range-slider-output {
+    color: var(--sf-range-slider-value-color, var(--sf-on-surface));
+  }
+  // Disabled (S7, C16 disabled roles): the name, the value and the scale take
+  // the disabled content role, as a disabled field's label and text do; the
+  // value no longer stays full ink beside a greyed handle.
+  .sf-range-slider-group.disabled .sf-range-slider-name,
+.sf-range-slider-group.disabled .sf-range-slider-output,
+.sf-range-slider-group.disabled .sf-range-slider-scale {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-range-slider-group.readonly .sf-range-slider {
+    border-color: var(--sf-outline-variant);
+  }
+  .sf-range-slider.readonly .sf-thumb-handle,
+.sf-range-slider[data-readonly="true"] .sf-thumb-handle {
+    background-color: var(--sf-on-surface-variant);
+  }
+  .sf-range-slider.readonly .sf-range-slider-progress-line,
+.sf-range-slider[data-readonly="true"] .sf-range-slider-progress-line {
+    background-color: var(--sf-on-surface-variant);
+  }
+  .sf-range-slider .sf-range-slider-tick {
+    background-color: var(--sf-range-slider-tick--background-color, var(--sf-surface-place));
+  }
+  .sf-range-slider-scale {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-range-slider-field {
+    background-color: var(--sf-transparent);
+    border-color: var(--sf-outline);
+    color: var(--sf-on-surface);
+  }
+  .sf-range-slider-field-input {
+    background: var(--sf-transparent);
+    color: inherit;
+  }
+  .sf-range-slider-field-unit,
+.sf-range-slider-field-dash {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:hover {
+    border-color: var(--sf-primary-hover);
+  }
+  .sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:focus-within {
+    border-color: var(--sf-primary);
+  }
+  .sf-range-slider-group.readonly .sf-range-slider-field {
+    border-color: var(--sf-outline-variant);
+  }
+  .sf-range-slider-group.disabled .sf-range-slider-field {
+    border-color: var(--sf-outline-disabled);
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-range-slider-group.disabled .sf-range-slider-field-unit,
+.sf-range-slider-group.disabled .sf-range-slider-field-dash {
+    color: var(--sf-on-surface-disabled);
+  }
+  @container sf-range-slider (inline-size < #{mq.container-step(g3)}) {
+    .sf-range-slider-group--field .sf-range-slider-field-box {
+      border-color: var(--sf-outline);
+    }
+    .sf-range-slider-group--field .sf-range-slider-field-box > .sf-range-slider-field-word {
+      color: var(--sf-on-surface-variant);
+    }
+    .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field-box:hover {
+      border-color: var(--sf-primary-hover);
+    }
+    .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field-box:focus-within {
+      border-color: var(--sf-primary);
+    }
+    .sf-range-slider-group--field.readonly .sf-range-slider-field-box {
+      border-color: var(--sf-outline-variant);
+    }
+    .sf-range-slider-group--field.disabled .sf-range-slider-field-box {
+      border-color: var(--sf-outline-disabled);
+    }
+    .sf-range-slider-group--field.disabled .sf-range-slider-field-word {
+      color: var(--sf-on-surface-disabled);
+    }
+  }
+}
+
 @layer sf.components {
 // The field around a Smart slider (C78): the visible name above, as every
 // field's label (sf-input-quantity's: the variant ink, regular, one text step
@@ -22,7 +112,6 @@
 }
 
 .sf-range-slider-name {
-  color: var(--sf-range-slider-name--color, var(--sf-on-surface-variant));
   font-family: var(--sf-text--family);
   font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
   font-weight: var(--sf-font-weight-regular);
@@ -32,7 +121,6 @@
 }
 
 .sf-range-slider-output {
-  color: var(--sf-range-slider-value-color, var(--sf-on-surface));
   font-family: var(--sf-text--family);
   font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
   font-variant-numeric: tabular-nums;
@@ -126,15 +214,6 @@
   }
 }
 
-// Disabled (S7, C16 disabled roles): the name, the value and the scale take
-// the disabled content role, as a disabled field's label and text do; the
-// value no longer stays full ink beside a greyed handle.
-.sf-range-slider-group.disabled .sf-range-slider-name,
-.sf-range-slider-group.disabled .sf-range-slider-output,
-.sf-range-slider-group.disabled .sf-range-slider-scale {
-  color: var(--sf-on-surface-disabled);
-}
-
 .sf-range-slider:is([disabled], .disabled) .sf-thumb-text {
   --sf-thumb-text--color: var(--sf-on-surface-disabled);
 }
@@ -184,7 +263,8 @@
 // content and drew the frame 26 / 22 px high.
 .sf-range-slider-group.readonly .sf-range-slider {
   block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
-  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-radius--ui);
   box-sizing: border-box;
   min-block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
@@ -198,13 +278,7 @@
 
 .sf-range-slider.readonly .sf-thumb-handle,
 .sf-range-slider[data-readonly="true"] .sf-thumb-handle {
-  background-color: var(--sf-on-surface-variant);
   box-shadow: none;
-}
-
-.sf-range-slider.readonly .sf-range-slider-progress-line,
-.sf-range-slider[data-readonly="true"] .sf-range-slider-progress-line {
-  background-color: var(--sf-on-surface-variant);
 }
 
 .sf-range-slider.readonly .sf-range-slider-handle,
@@ -224,7 +298,6 @@
 }
 
 .sf-range-slider .sf-range-slider-tick {
-  background-color: var(--sf-range-slider-tick--background-color, var(--sf-surface-place));
   block-size: var(--sf-range-slider-track--height, var(--sf-a4));
   border-radius: var(--sf-radius-circle);
   inline-size: var(--sf-range-slider-track--height, var(--sf-a4));
@@ -240,7 +313,6 @@
 // inside the track, logical, so right-to-left needs nothing more.
 .sf-range-slider-scale {
   block-size: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
-  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
   font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
   font-variant-numeric: tabular-nums;
@@ -274,12 +346,11 @@
 // shrinks below that.
 .sf-range-slider-field {
   align-items: center;
-  background-color: var(--sf-transparent);
   block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
-  border: var(--sf-px) solid var(--sf-outline);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-radius--ui);
   box-sizing: border-box;
-  color: var(--sf-on-surface);
   display: inline-flex;
   flex: none;
   font-family: var(--sf-text--family);
@@ -310,9 +381,7 @@
 }
 
 .sf-range-slider-field-input {
-  background: var(--sf-transparent);
   border: 0;
-  color: inherit;
   font: inherit;
   inline-size: 100%;
   margin: 0;
@@ -332,35 +401,12 @@
 
 .sf-range-slider-field-unit,
 .sf-range-slider-field-dash {
-  color: var(--sf-on-surface-variant);
   flex: none;
-}
-
-.sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:hover {
-  border-color: var(--sf-primary-hover);
-}
-
-.sf-range-slider-group:not(.disabled):not(.readonly) .sf-range-slider-field:focus-within {
-  border-color: var(--sf-primary);
 }
 
 .sf-range-slider-field:has(.sf-range-slider-field-input:focus-visible) {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
-}
-
-.sf-range-slider-group.readonly .sf-range-slider-field {
-  border-color: var(--sf-outline-variant);
-}
-
-.sf-range-slider-group.disabled .sf-range-slider-field {
-  border-color: var(--sf-outline-disabled);
-  color: var(--sf-on-surface-disabled);
-}
-
-.sf-range-slider-group.disabled .sf-range-slider-field-unit,
-.sf-range-slider-group.disabled .sf-range-slider-field-dash {
-  color: var(--sf-on-surface-disabled);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -428,7 +474,8 @@
   .sf-range-slider-group--field .sf-range-slider-field-box {
     align-items: center;
     block-size: var(--sf-range-slider--row, var(--sf-ui-1--control-height));
-    border: var(--sf-px) solid var(--sf-outline);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-radius--ui);
     box-sizing: border-box;
     display: grid;
@@ -444,7 +491,6 @@
   }
 
   .sf-range-slider-group--field .sf-range-slider-field-box > .sf-range-slider-field-word {
-    color: var(--sf-on-surface-variant);
     display: block;
     grid-area: 1 / 1;
   }
@@ -453,29 +499,9 @@
     text-align: start;
   }
 
-  .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field-box:hover {
-    border-color: var(--sf-primary-hover);
-  }
-
-  .sf-range-slider-group--field:not(.disabled):not(.readonly) .sf-range-slider-field-box:focus-within {
-    border-color: var(--sf-primary);
-  }
-
   .sf-range-slider-group--field .sf-range-slider-field-box:has(.sf-range-slider-field-input:focus-visible) {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: var(--sf-focus--offset);
-  }
-
-  .sf-range-slider-group--field.readonly .sf-range-slider-field-box {
-    border-color: var(--sf-outline-variant);
-  }
-
-  .sf-range-slider-group--field.disabled .sf-range-slider-field-box {
-    border-color: var(--sf-outline-disabled);
-  }
-
-  .sf-range-slider-group--field.disabled .sf-range-slider-field-word {
-    color: var(--sf-on-surface-disabled);
   }
 }
 }

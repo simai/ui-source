@@ -17,6 +17,21 @@
   @return map.get(bp.$breakpoint-array, sm);
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-page-header-heading {
+    color: var(--sf-page-header-heading-color, inherit);
+  }
+  .sf-page-header--sticky {
+    background-color: var(--sf-surface-page);
+  }
+  :is(sf-header-page, sf-page-header)[data-scrolled='true'] > .sf-page-header--sticky {
+    background-color: var(--sf-surface-raised);
+  }
+}
+
 @layer sf.components {
 /* The head of an admin page. The public variables (standard 1.3.8 §6): the gap
    between the path and the line, the line's gap, the actions' gap, the
@@ -62,7 +77,6 @@
 
 .sf-page-header-heading {
   flex: 0 1 auto;
-  color: var(--sf-page-header-heading-color, inherit);
 }
 
 /* The actions are buttons of one group: 8 apart (C105 H5, --sf-space-1/3);
@@ -206,7 +220,6 @@
   inset-block-start: 0;
   z-index: var(--sf-z-index-1);
   padding-block: var(--sf-space-1\/2);
-  background-color: var(--sf-surface-page);
   box-shadow: var(--sf-shadow-flat);
   transition: box-shadow var(--sf-duration-fast) var(--sf-animation), background-color var(--sf-duration-fast) var(--sf-animation);
 }
@@ -222,7 +235,6 @@
 }
 
 :is(sf-header-page, sf-page-header)[data-scrolled='true'] > .sf-page-header--sticky {
-  background-color: var(--sf-surface-raised);
   box-shadow: var(--sf-shadow-raised);
 }
 

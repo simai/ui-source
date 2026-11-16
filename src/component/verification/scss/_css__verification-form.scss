@@ -1,3 +1,21 @@
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-verification-form-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-verification-form:has(input:disabled) .sf-verification-form-label {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-verification-form-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-verification-form.error .sf-verification-form-hint {
+    color: var(--sf-error);
+  }
+}
+
 @layer sf.components {
 .sf-verification-form {
   display: flex;
@@ -12,7 +30,6 @@
    the label of sf-input -- regular weight, on-surface-variant, one text step
    below the field's text (14 at size 1). It was 16/500 on-surface. */
 .sf-verification-form-label {
-  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1\/2);
   font-weight: var(--sf-font-weight-regular);
@@ -29,17 +46,10 @@
   line-height: var(--sf-text-height-1);
 }
 
-.sf-verification-form:has(input:disabled) .sf-verification-form-label {
-  color: var(--sf-on-surface-disabled);
-}
-
 .sf-verification-form-hint {
-  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1\/3);
   font-weight: var(--sf-font-weight-regular);
   line-height: var(--sf-text-height-1\/3);
 }
-
-.sf-verification-form.error .sf-verification-form-hint { color: var(--sf-error); }
 }

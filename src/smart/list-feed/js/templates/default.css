@@ -1,3 +1,15 @@
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+    .sf-list-feed__entry {
+        color: var(--sf-on-surface);
+    }
+    .sf-list-feed__author {
+        color: var(--sf-on-surface);
+    }
+}
+
 @layer sf.components {
   /* sf-list-feed. The host is display: contents (the Smart base sets it), so
      .sf-list-feed is what the page's layout places: give its container a
@@ -132,7 +144,6 @@
     align-self: stretch;
     gap: var(--sf-space-1\/4);
     max-inline-size: 100%;
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text--size);
     line-height: var(--sf-text--height);
@@ -140,7 +151,6 @@
 
   .sf-list-feed__author {
     margin: 0;
-    color: var(--sf-on-surface);
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
     font-weight: var(--sf-font-weight-medium);

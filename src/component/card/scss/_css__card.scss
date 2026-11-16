@@ -53,6 +53,39 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-card {
+    color: var(--sf-card-color, var(--sf-on-surface));
+    // The card place (C16): white in the light theme, a step lighter than
+    // the page in the dark (it was the page's own colour there).
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card)));
+    border-color: var(--sf-card-border-color, var(--sf-outline-variant));
+  }
+  .sf-card:is(a[href], button):not(.sf-card--plain):hover {
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-raised)));
+  }
+  // A card in a card is its outline only (C16, surfaces research 4.2: page,
+  // then area or card, then outline only): no second plate, so it does not
+  // stand a step lighter again in the dark. Its own variables still win.
+  // The same in a window, a drawer and a popover (C42, owner 2026-11-10):
+  // the edge stays --sf-outline-variant, the fill is the place's.
+  :is(#{$sf-card-above-card}) .sf-card:not(.sf-card--plain) {
+    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
+  }
+  .sf-card--plain {
+    background-color: var(--sf-transparent);
+    border-color: var(--sf-transparent);
+  }
+  @media (forced-colors: active) {
+    .sf-card:not(.sf-card--plain) {
+      border-color: CanvasText;
+    }
+  }
+}
+
 @layer sf.components {
   .sf-card {
     // The card's corner, read by what stands at its edge (a picture as the
@@ -70,11 +103,8 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     // for its words: the side space is a share of the card's column (8 %)
     // up to the full step, so a wide card is unchanged.
     padding-inline: var(--sf-card-padding-inline, min(var(--sf-space-2), 8%));
-    color: var(--sf-card-color, var(--sf-on-surface));
-    // The card place (C16): white in the light theme, a step lighter than
-    // the page in the dark (it was the page's own colour there).
-    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-card)));
-    border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
+    border-width: var(--sf-card-border-width, var(--sf-px));
+    border-style: solid;
     border-radius: var(--sf-card--radius);
     // At rest a card is the flat place (C20): no shadow, its edge is the line.
     box-shadow: var(--sf-shadow-flat);
@@ -97,17 +127,7 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
   }
 
   .sf-card:is(a[href], button):not(.sf-card--plain):hover {
-    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-surface-raised)));
     box-shadow: var(--sf-shadow-raised);
-  }
-
-  // A card in a card is its outline only (C16, surfaces research 4.2: page,
-  // then area or card, then outline only): no second plate, so it does not
-  // stand a step lighter again in the dark. Its own variables still win.
-  // The same in a window, a drawer and a popover (C42, owner 2026-11-10):
-  // the edge stays --sf-outline-variant, the fill is the place's.
-  :is(#{$sf-card-above-card}) .sf-card:not(.sf-card--plain) {
-    background-color: var(--sf-card-background-color, var(--sf-card-background, var(--sf-transparent)));
   }
 
   // A rounded block inside a card -- a card in a card, a figure's picture --
@@ -176,20 +196,12 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
 
   .sf-card--plain {
     padding: var(--sf-0);
-    background-color: var(--sf-transparent);
-    border-color: var(--sf-transparent);
     border-radius: var(--sf-0);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .sf-card:is(a[href], button):not(.sf-card--plain) {
       transition: none;
-    }
-  }
-
-  @media (forced-colors: active) {
-    .sf-card:not(.sf-card--plain) {
-      border-color: CanvasText;
     }
   }
 }

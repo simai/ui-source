@@ -18,6 +18,8 @@
 // space ladder, which drew 16 on a phone), in the quiet ink of the place
 // (on-surface-variant), rounded. The handle row is the 1/2 control's height.
 
+@use 'mix__paint' as paint;
+
 @mixin sheet-surface {
   position: fixed;
   inset: auto 0 0;
@@ -37,20 +39,28 @@
 }
 
 @mixin sheet-bar {
-  flex: none;
-  inline-size: var(--sf-c2);
-  block-size: var(--sf-a4);
-  border-radius: var(--sf-radius-rounded);
-  background-color: var(--sf-on-surface-variant);
+  @if paint.writes-shape() {
+    flex: none;
+    inline-size: var(--sf-c2);
+    block-size: var(--sf-a4);
+    border-radius: var(--sf-radius-rounded);
+  }
+  @if paint.writes-paint() {
+    background-color: var(--sf-on-surface-variant);
+  }
 }
 
 // A ::before that stands for the handle row: the bar, with the room of a
 // half-control row around it, centred. A press there starts a swipe
 // (sheet-swipe.js reads the same row height off the sheet's top).
 @mixin sheet-bar-row {
-  content: '';
-  display: block;
+  @if paint.writes-shape() {
+    content: '';
+    display: block;
+  }
   @include sheet-bar;
-  margin-block: calc((var(--sf-ui-1\/2--control-height) - var(--sf-a4)) / 2);
-  margin-inline: auto;
+  @if paint.writes-shape() {
+    margin-block: calc((var(--sf-ui-1\/2--control-height) - var(--sf-a4)) / 2);
+    margin-inline: auto;
+  }
 }

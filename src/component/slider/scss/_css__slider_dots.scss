@@ -1,6 +1,34 @@
 @use 'var__slider' as *;
 /* In the components layer, as every other component: outside it these rules
    outranked every utility, whatever its layer. */
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-slider-dots {
+    background-color: var(--sf-slider-dots--background-color);
+  }
+  .sf-slider-dots .sf-slider-dots-dot {
+    background-color: var(--sf-slider-dots-dot--background-color);
+    color: var(--sf-slider-dots-dot--color);
+    border-color: currentColor;
+  }
+  .sf-slider-dots .sf-slider-dots-dot.active {
+    color: var(--sf-slider-dots-dot--active-color, var(--sf-slider-dots-dot--color));
+  }
+  @media (forced-colors: active) {
+    .sf-slider-dots .sf-slider-dots-dot {
+      color: ButtonText;
+      border-color: ButtonText;
+      background-color: ButtonFace;
+    }
+    .sf-slider-dots .sf-slider-dots-dot.active {
+      border-color: Highlight;
+      background-color: Highlight;
+    }
+  }
+}
+
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-slider-dots {
@@ -17,7 +45,6 @@
   border-start-end-radius: var(--sf-slider-dots--border-start-end-radius);
   border-end-start-radius: var(--sf-slider-dots--border-end-start-radius);
   border-end-end-radius: var(--sf-slider-dots--border-end-end-radius);
-  background-color: var(--sf-slider-dots--background-color);
   box-shadow: var(--sf-slider-dots--box-shadow);
   backdrop-filter: var(--sf-slider-dots--backdrop-filter);
 }
@@ -34,9 +61,8 @@
   --sf-slider-dots-dot--border-end-start-radius: var(--sf-radius-circle);
   --sf-slider-dots-dot--border-start-end-radius: var(--sf-radius-circle);
   --sf-slider-dots-dot--border-start-start-radius: var(--sf-radius-circle);
-  background-color: var(--sf-slider-dots-dot--background-color);
-  color: var(--sf-slider-dots-dot--color);
-  border: var(--sf-slider-dots-dot--stroke-width, var(--sf-px)) solid currentColor;
+  border-width: var(--sf-slider-dots-dot--stroke-width, var(--sf-px));
+  border-style: solid;
   outline: none;
   border-end-end-radius: var(--sf-slider-dots-dot--border-end-end-radius);
   border-end-start-radius: var(--sf-slider-dots-dot--border-end-start-radius);
@@ -65,7 +91,6 @@
 
 .sf-slider-dots .sf-slider-dots-dot.active {
   --sf-slider-dots-dot--background-color: var(--sf-slider-dots-dot--active-color, var(--sf-slider-dots-dot--color));
-  color: var(--sf-slider-dots-dot--active-color, var(--sf-slider-dots-dot--color));
   width: var(--sf-slider-dots-dot--active-width);
 }
 
@@ -79,13 +104,6 @@
 @media (forced-colors: active) {
   .sf-slider-dots .sf-slider-dots-dot {
     forced-color-adjust: none;
-    color: ButtonText;
-    border-color: ButtonText;
-    background-color: ButtonFace;
-  }
-  .sf-slider-dots .sf-slider-dots-dot.active {
-    border-color: Highlight;
-    background-color: Highlight;
   }
   .sf-slider-dots .sf-slider-dots-dot:focus-visible {
     outline-color: Highlight;
@@ -229,5 +247,4 @@
   padding-inline-start: 0;
   padding-inline-end: 0;
 }
-
 }

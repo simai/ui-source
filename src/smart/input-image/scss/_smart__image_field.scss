@@ -1,4 +1,104 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-image-field-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field-required {
+    color: var(--sf-error);
+  }
+  .sf-image-field-well {
+    background-color: var(--sf-image-field--background-color);
+    color: var(--sf-on-surface);
+  }
+  .sf-image-field-thumb {
+    background-color: var(--sf-image-field-thumbnail-background-color, var(--sf-surface-container));
+    /* The glyph stands on the container fill, so the dimmed role is the
+       container's own: on-surface-variant alone falls under 4.5:1 there. */
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-image-field-thumb .sf-icon {
+    color: var(--sf-icon--color);
+  }
+  :is(.sf-image-field-thumb, .sf-image-field-frame).sf-image-field-thumb--transparent,
+.sf-image-field-frame--transparent {
+    background-color: var(--sf-surface-card);
+  }
+  .sf-image-field-ring {
+    background-color: var(--sf-surface-media);
+    color: var(--sf-on-surface-media);
+  }
+  .sf-image-field-name {
+    color: var(--sf-on-surface);
+  }
+  .sf-image-field-meta {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field--empty .sf-image-field-name {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field-frame {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-surface-container);
+    /* The words and the glyph stand on the container fill, so the dimmed role
+       is the container's own, as in the thumbnail. */
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field--empty .sf-image-field-frame {
+    border-color: var(--sf-image-field--border-color);
+    background-color: var(--sf-image-field--background-color);
+  }
+  .sf-image-field-frame > .sf-icon {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field-stage {
+    background-color: var(--sf-surface-inverse);
+  }
+  .sf-image-field-focus-dot {
+    border-color: var(--sf-on-surface-media);
+    background-color: var(--sf-primary);
+  }
+  .sf-image-field-editor-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field.dragover .sf-image-field-frame {
+    border-color: var(--sf-image-field--border-color);
+    background-color: var(--sf-image-field--background-color);
+  }
+  .sf-image-field.error .sf-image-field-frame {
+    border-color: var(--sf-error);
+  }
+  .sf-image-field.disabled .sf-image-field-frame {
+    border-color: var(--sf-outline-disabled);
+  }
+  .sf-image-field.disabled .sf-image-field-name,
+.sf-image-field.disabled .sf-image-field-meta,
+.sf-image-field.disabled .sf-image-field-label {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-image-field-message {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-image-field.error .sf-image-field-message[data-field-message="error"] {
+    color: var(--sf-error);
+  }
+  /* What the field did with extra files is information, not an error. */
+  .sf-image-field-message[data-field-message="info"] {
+    color: var(--sf-on-surface-variant);
+  }
+  @media (forced-colors: active) {
+    .sf-image-field-well {
+      border-color: CanvasText;
+    }
+    .sf-image-field.dragover .sf-image-field-well {
+      border-color: Highlight;
+    }
+  }
+}
+
 @layer sf.components {
 /* sf-input-image: one image in a form -- as a row (the thumbnail, the file
    name and size, then «Заменить…» and the remove icon) or as a preview (the
@@ -78,14 +178,9 @@
 .sf-image-field-label {
   display: flex;
   gap: var(--sf-space-1\/4);
-  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
   font-size: var(--sf-image-field--small-size);
   line-height: var(--sf-image-field--small-height);
-}
-
-.sf-image-field-required {
-  color: var(--sf-error);
 }
 
 /* The row. A grid, so that on a narrow column the buttons move under the name
@@ -103,8 +198,6 @@
   padding-inline: var(--sf-image-field-padding-inline, var(--sf-image-field--inset));
   border: var(--sf-image-field-border-width, var(--sf-px)) var(--sf-image-field--border-style) var(--sf-image-field--border-color);
   border-radius: var(--sf-image-field-radius, var(--sf-radius--ui));
-  background-color: var(--sf-image-field--background-color);
-  color: var(--sf-on-surface);
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color;
   transition-timing-function: var(--sf-animation);
@@ -126,15 +219,10 @@
   block-size: var(--sf-image-field-thumbnail-size, var(--sf-image-field--thumb));
   overflow: hidden;
   border-radius: var(--sf-image-field-thumbnail-radius, var(--sf-radius--ui));
-  background-color: var(--sf-image-field-thumbnail-background-color, var(--sf-surface-container));
-  /* The glyph stands on the container fill, so the dimmed role is the
-     container's own: on-surface-variant alone falls under 4.5:1 there. */
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-icon--color: var(--sf-on-surface-variant);
 }
 
 .sf-image-field-thumb .sf-icon {
-  color: var(--sf-icon--color);
   font-size: var(--sf-image-field--icon);
   inline-size: var(--sf-image-field--icon);
   block-size: var(--sf-image-field--icon);
@@ -165,7 +253,6 @@
    seen and empty space reads as empty. */
 :is(.sf-image-field-thumb, .sf-image-field-frame).sf-image-field-thumb--transparent,
 .sf-image-field-frame--transparent {
-  background-color: var(--sf-surface-card);
   background-image: conic-gradient(var(--sf-outline-variant) 25%, var(--sf-transparent) 0 50%, var(--sf-outline-variant) 0 75%, var(--sf-transparent) 0);
   background-size: var(--sf-a8) var(--sf-a8);
 }
@@ -178,8 +265,6 @@
   align-items: center;
   justify-content: center;
   border-radius: inherit;
-  background-color: var(--sf-surface-media);
-  color: var(--sf-on-surface-media);
 }
 
 .sf-image-field-body {
@@ -194,7 +279,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--sf-on-surface);
   font-size: var(--sf-image-field--name-size);
   line-height: var(--sf-image-field--name-height);
 }
@@ -203,13 +287,8 @@
    (IF-9). */
 .sf-image-field-meta {
   overflow-wrap: anywhere;
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-image-field--small-size);
   line-height: var(--sf-image-field--small-height);
-}
-
-.sf-image-field--empty .sf-image-field-name {
-  color: var(--sf-on-surface-variant);
 }
 
 .sf-image-field-actions {
@@ -237,14 +316,10 @@
   max-inline-size: 100%;
   aspect-ratio: var(--sf-image-field--aspect, 16 / 9);
   overflow: hidden;
-  border: var(--sf-image-field-border-width, var(--sf-px)) solid var(--sf-outline-variant);
+  border-width: var(--sf-image-field-border-width, var(--sf-px));
+  border-style: solid;
   border-radius: var(--sf-radius--surface);
-  background-color: var(--sf-surface-container);
-  /* The words and the glyph stand on the container fill, so the dimmed role
-     is the container's own, as in the thumbnail. */
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-icon--color: var(--sf-on-surface-variant);
-  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
   text-align: center;
   transition-duration: var(--sf-duration-fast);
@@ -264,12 +339,9 @@
 .sf-image-field--empty .sf-image-field-frame {
   padding: var(--sf-space-1);
   border-style: var(--sf-image-field--border-style);
-  border-color: var(--sf-image-field--border-color);
-  background-color: var(--sf-image-field--background-color);
 }
 
 .sf-image-field-frame > .sf-icon {
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-image-field--icon);
   inline-size: var(--sf-image-field--icon);
   block-size: var(--sf-image-field--icon);
@@ -346,7 +418,6 @@
   aspect-ratio: var(--sf-image-field--aspect, 16 / 9);
   overflow: hidden;
   border-radius: var(--sf-radius--ui);
-  background-color: var(--sf-surface-inverse);
   touch-action: none;
   cursor: grab;
   outline: none;
@@ -394,14 +465,13 @@
   inline-size: var(--sf-space-1);
   block-size: var(--sf-space-1);
   translate: -50% -50%;
-  border: var(--sf-px) solid var(--sf-on-surface-media);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: 50%;
-  background-color: var(--sf-primary);
   pointer-events: none;
 }
 
 .sf-image-field-editor-hint {
-  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1\/3);
   line-height: var(--sf-text-height-1\/3);
@@ -427,16 +497,10 @@
 
 .sf-image-field.dragover .sf-image-field-frame {
   border-style: dashed;
-  border-color: var(--sf-image-field--border-color);
-  background-color: var(--sf-image-field--background-color);
 }
 
 .sf-image-field.error {
   --sf-image-field--border-color: var(--sf-error);
-}
-
-.sf-image-field.error .sf-image-field-frame {
-  border-color: var(--sf-error);
 }
 
 /* Read-only and disabled are drawn as sf-input draws them (IF-10): read-only
@@ -452,34 +516,14 @@
   --sf-image-field--border-color: var(--sf-outline-disabled);
 }
 
-.sf-image-field.disabled .sf-image-field-frame {
-  border-color: var(--sf-outline-disabled);
-}
-
-.sf-image-field.disabled .sf-image-field-name,
-.sf-image-field.disabled .sf-image-field-meta,
-.sf-image-field.disabled .sf-image-field-label {
-  color: var(--sf-on-surface-disabled);
-}
-
 .sf-image-field.disabled .sf-image-field-thumb {
   --sf-icon--color: var(--sf-on-surface-disabled);
 }
 
 .sf-image-field-message {
-  color: var(--sf-on-surface-variant);
   font-family: var(--sf-text--family);
   font-size: var(--sf-image-field--small-size);
   line-height: var(--sf-image-field--small-height);
-}
-
-.sf-image-field.error .sf-image-field-message[data-field-message="error"] {
-  color: var(--sf-error);
-}
-
-/* What the field did with extra files is information, not an error. */
-.sf-image-field-message[data-field-message="info"] {
-  color: var(--sf-on-surface-variant);
 }
 
 /* The platform's file input opens the dialog and carries the file to a form.
@@ -509,16 +553,6 @@
   .sf-image-field-well {
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas: "thumb body" "thumb actions";
-  }
-}
-
-@media (forced-colors: active) {
-  .sf-image-field-well {
-    border-color: CanvasText;
-  }
-
-  .sf-image-field.dragover .sf-image-field-well {
-    border-color: Highlight;
   }
 }
 }

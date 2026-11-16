@@ -42,6 +42,19 @@
 // takes this look.
 @mixin rules($fields: '.sf-input-field') {
   $action: '.sf-field-action:not([hidden])';
+  // Paint (C273): the fill, edge and place colour of these parts stand in
+  // sf.paint, under the utilities, so bg-*, border-* and color-* on them
+  // win; their geometry stays in sf.components, over the utilities.
+  @layer sf.paint {
+    .sf-field-action {
+      background: none;
+      color: var(--sf-field-action--ink);
+    }
+    .sf-field-action .sf-icon {
+      color: var(--sf-field-action--ink);
+    }
+  }
+
   @layer sf.components {
     :is(#{$fields}) {
       --sf-field-action--standout: calc((max(var(--sf-field-action--glyph, var(--sf-text-height-1)) + var(--sf-field-action--inset, var(--sf-space-1)) / 2, var(--sf-c2)) - var(--sf-field-action--glyph, var(--sf-text-height-1))) / 2);
@@ -67,9 +80,7 @@
       padding: 0;
       border: 0;
       border-radius: 0;
-      background: none;
       box-shadow: none;
-      color: var(--sf-field-action--ink);
       font: inherit;
       cursor: pointer;
       outline: none;
@@ -85,7 +96,6 @@
       --sf-icon--height: var(--sf-field-action--glyph-size);
       --sf-icon--width: var(--sf-field-action--glyph-size);
       --sf-icon--color: var(--sf-field-action--ink);
-      color: var(--sf-field-action--ink);
       border-radius: var(--sf-radius--ui);
       pointer-events: none;
     }
