@@ -247,8 +247,147 @@
 }
 }
 
+@layer sf.components {
+/* The 1.2.0 markup, a retired name until 2027-01-01 (C187 (1), C134; RG-NV
+   30). Pages written for sf-steps 1.2.0 carry sf-step--stage-default,
+   -completed and -error, the class selected (with aria-current="step") on the
+   current step, an icon for a done or failed step, and a «›» icon,
+   sf-steps-separator--directional, between steps. In 1.3.x those classes drew
+   nothing: every step was bare text and the current one looked like the rest.
+   They now draw the C101 look -- the marker, the label, the line -- so a
+   site on the old markup keeps its current step until it moves to
+   sf-step--state-*; the Loader notes each old name in SF.deprecations
+   (src/core/js/retired-classes.table.js). The number of a step without an
+   icon is its place in the list (a counter); a done or failed step's own icon
+   is its marker. */
+.sf-steps .sf-steps-container:has(> :is(.sf-step[class*="sf-step--stage-"], :has(> .sf-step[class*="sf-step--stage-"]), .sf-steps-separator--directional)) {
+  counter-reset: sf-step-legacy;
+}
+
+.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error) {
+  counter-increment: sf-step-legacy;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: calc(var(--sf-a8) + var(--sf-step--ring) * 2);
+  /* Room for the current marker's ring, as the row keeps. */
+  padding-block: calc(var(--sf-step--ring) * 2);
+  margin: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-step--font-size);
+  line-height: var(--sf-step--line-height);
+  text-align: start;
+}
+
+button.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error) {
+  border-radius: var(--sf-radius--ui);
+  cursor: pointer;
+}
+
+/* A step without an icon: a numbered marker drawn before the label. */
+.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error):not(:has(> .sf-icon))::before {
+  content: counter(sf-step-legacy);
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--sf-step--marker);
+  block-size: var(--sf-step--marker);
+  border: var(--sf-px) solid var(--sf-steps-step-border-color, var(--sf-outline));
+  border-radius: var(--sf-steps-step-radius, var(--sf-radius-circle));
+  font-size: var(--sf-step--small-size);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
+}
+
+.sf-step.sf-step--stage-default:is(.selected, [aria-current="step"]):not(:has(> .sf-icon))::before {
+  border-color: var(--sf-step--progress);
+  background-color: var(--sf-step--progress);
+  color: var(--sf-on-primary);
+  outline: var(--sf-step--ring) solid var(--sf-steps-current-border-color, var(--sf-step--progress));
+  outline-offset: var(--sf-step--ring);
+}
+
+/* A done or failed step's own icon is its marker, at the marker's size. */
+.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error) > .sf-icon {
+  --sf-icon--font-size: var(--sf-step--marker);
+  --sf-icon--height: var(--sf-step--marker);
+  --sf-icon--width: var(--sf-step--marker);
+  --sf-icon--color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
+  flex: none;
+}
+
+.sf-step.sf-step--stage-completed > .sf-icon {
+  --sf-icon--color: var(--sf-step--progress);
+}
+
+.sf-step.sf-step--stage-error > .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+/* The label: ahead in the variant ink, current medium, done on-surface,
+   error in the error colour. */
+.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error) > .sf-step-container {
+  color: var(--sf-on-surface);
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.sf-step.sf-step--stage-default:not(.selected, [aria-current="step"]) > .sf-step-container {
+  color: var(--sf-steps-step-color, var(--sf-on-surface-variant));
+}
+
+.sf-step.sf-step--stage-default:is(.selected, [aria-current="step"]) > .sf-step-container {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-step.sf-step--stage-error > .sf-step-container {
+  color: var(--sf-error);
+}
+
+.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error):is(.disabled, [aria-disabled="true"]) > :is(.sf-step-container, .sf-icon) {
+  --sf-icon--color: var(--sf-on-surface-disabled);
+  color: var(--sf-on-surface-disabled);
+}
+
+.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error):is(.disabled, [aria-disabled="true"]):not(:has(> .sf-icon))::before {
+  border-color: var(--sf-outline-disabled);
+  background-color: transparent;
+  color: var(--sf-on-surface-disabled);
+  outline: 0;
+}
+
+/* The «›» between steps becomes the line (C101: no «›»): 1 px outline-variant,
+   2 px of the progress colour after a done step, 8 from the label and 8
+   before the next marker (C241). */
+.sf-steps .sf-steps-separator--directional {
+  --sf-icon--font-size: 0;
+  --sf-icon--height: var(--sf-px);
+  --sf-icon--width: auto;
+  flex: 1 1 var(--sf-space-1);
+  min-inline-size: var(--sf-space-1);
+  margin-inline: var(--sf-space-1\/3);
+  overflow: hidden;
+  color: transparent;
+  background-color: var(--sf-steps-separator-color, var(--sf-outline-variant));
+}
+
+.sf-steps :is(.sf-step--stage-completed, :has(> .sf-step--stage-completed)) + .sf-steps-separator--directional {
+  --sf-icon--height: calc(var(--sf-px) * 2);
+  background-color: var(--sf-step--progress, var(--sf-primary));
+}
+
+}
+
 @layer sf.states {
-  .sf-step .sf-step-control:not(:disabled):not([aria-disabled="true"]):focus-visible {
+  /* The second selector: a 1.2.0 step that is itself a button (the retired
+     markup above), with its radius in the components layer. */
+  .sf-step .sf-step-control:not(:disabled):not([aria-disabled="true"]):focus-visible,
+  button.sf-step:is(.sf-step--stage-default, .sf-step--stage-completed, .sf-step--stage-error):not(:disabled):not([aria-disabled="true"]):focus-visible {
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
     outline-offset: var(--sf-focus--offset);
   }

@@ -207,6 +207,20 @@ export default {
       "names": {
         "sf-tabs--full": "sf-tabs"
       }
+    },
+    {
+      "journal": "class-steps-1-2-stages-retired",
+      "decision": "C187 (1), C134, C101",
+      "component": "step",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "The sf-steps 1.2.0 markup: stage classes, the class selected (with aria-current=\"step\") on the current step and a «›» icon between steps. Until the date they draw the C101 look -- a numbered marker (the step's own icon for a done or failed step), the label, the line -- so the current step stays marked. Write sf-step--state-ahead (or sf-step--state-current for the selected step), -done, -error with an sf-step-body; the line is drawn by the list's layout.",
+      "names": {
+        "sf-step--stage-default": "sf-step--state-ahead",
+        "sf-step--stage-completed": "sf-step--state-done",
+        "sf-step--stage-error": "sf-step--state-error",
+        "sf-steps-separator--directional": null
+      }
     }
   ],
   "extended": {

@@ -6,7 +6,8 @@
 // (a console line under data-sf-deprecations="warn", and after the date
 // whatever the page opted into). Journals: class-table-sm-to-density,
 // class-text-flow-utility-aliases,
-// class-c187-retired-utilities, class-c187-retired-parts, class-c96-tabs-looks.
+// class-c187-retired-utilities, class-c187-retired-parts, class-c96-tabs-looks,
+// class-steps-1-2-stages-retired.
 import table from './retired-classes.table.js';
 import {noteDeprecated} from './deprecations.js';
 

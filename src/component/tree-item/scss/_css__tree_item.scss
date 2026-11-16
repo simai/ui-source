@@ -32,7 +32,11 @@
    because this layer outranks the checkbox's own on-primary. */
 @layer sf.override {
   .sf-tree-item-container > .sf-tree-node-icon,
-  .sf-tree-item-container > .sf-tree-toggle > .sf-tree-chevron {
+  .sf-tree-item-container > .sf-tree-toggle > .sf-tree-chevron,
+  /* The chevron written as a span in the row (RG-NV 31j) and a toggle button
+     without the sf-tree-toggle class (the docs' markup) are the same glyph. */
+  .sf-tree-item-container > .sf-tree-chevron,
+  .sf-tree-item-container > .sf-icon-button > .sf-icon {
     --sf-icon--color: var(--sf-tree-item-icon-color, var(--sf-tree-item-icon--color, var(--sf-on-surface-variant)));
   }
 }
