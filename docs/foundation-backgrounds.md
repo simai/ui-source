@@ -370,8 +370,9 @@ roles, the same words for `bg-`, `color-`, `border-`, `fill-`, `stroke-`,
 `outline` and `outline-variant`, and the seven accents with `-container`,
 `-container-strong` and, where the property draws text, `on-<accent>` and
 `on-<accent>-container`; a state is `hover:`/`active:` `<role>-state`. A
-property does not yet take every word (stroke has no `info`, outline no
-containers); a missing word is added when a page needs it.
+property does not take every word yet (stroke has no `info`, outline no
+containers): the missing words are a separate block, and no word outside the
+list is added.
 
 Palette tones are variables (`var(--sf-blue-40)`), not utilities. Old names
 keep drawing what they drew until 2027-01-01 and the Loader notes each one

@@ -13,6 +13,6 @@
     "src/utility/stripe-color/default/scss/_sf_var__stripe_color.scss",
     "src/utility/stripe-color/default/scss/index.scss"
   ],
-  "content_sha256": "9c97ac2e21b9ba4a3458e2a349e25e9015c5ed9288ebdc92dd1031eabd4fd446",
+  "content_sha256": "c1ec1ccf4082f26e615be5cc0994162a07f99636e7a5dfdba688a74bb4b89304",
   "dependencies": []
 }

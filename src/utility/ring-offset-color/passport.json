@@ -27,7 +27,7 @@
     "src/utility/ring-offset-color/hover/scss/_sf_css__ring_offset_color.scss",
     "src/utility/ring-offset-color/hover/scss/index.scss"
   ],
-  "content_sha256": "aeb9b94e826a7901632901a1e4ad84ed6fbe9e53a5a2d618c3df6712942bf1d4",
+  "content_sha256": "27da7863a027e82e9941f98aee22e4fa605a9ea9b177f52abfe645d1c232418b",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

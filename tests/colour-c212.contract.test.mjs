@@ -47,8 +47,8 @@ const prefixOf = (name) => Object.keys(SHEETS).sort((a, b) => b.length - a.lengt
 const ACCENTS = ['primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'error'];
 const FAMILY = {white: 'neutral', black: 'neutral', gray: 'neutral', red: 'error', orange: 'warning', yellow: 'warning', green: 'success', blue: 'primary', purple: 'tertiary', pink: 'tertiary'};
 
-test('C212 (5): four dated records, each recorded in the change journal', () => {
-  for (const [id, rewrite] of [['utility-c16-background-names', 'rename-utility'], ['class-c212-colour', 'rename-class'],
+test('C212 (5): five dated records, each recorded in the change journal', () => {
+  for (const [id, rewrite] of [['utility-c16-background-names', 'rename-utility'], ['utility-c16-colour-family-names', 'rename-utility'], ['class-c212-colour', 'rename-class'],
     ['utility-c17-legacy-palette-classes', 'manual'], ['class-c212-colour-nearest', 'manual']]) {
     const found = record(id);
     assert.ok(found, `${id} is in the retired-classes table`);
@@ -68,7 +68,7 @@ test('C212 (5): four dated records, each recorded in the change journal', () => 
 
 test('C212 (5): an old spelling reads the variable its role reads, in the same array', () => {
   let checked = 0;
-  for (const id of ['utility-c16-background-names', 'class-c212-colour']) {
+  for (const id of ['utility-c16-background-names', 'utility-c16-colour-family-names', 'class-c212-colour']) {
     for (const [from, role] of Object.entries(record(id).names)) {
       const prefix = prefixOf(from);
       assert.ok(prefix && role.startsWith(prefix), `${from} -> ${role} keeps its property`);

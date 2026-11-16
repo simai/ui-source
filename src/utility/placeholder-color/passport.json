@@ -22,7 +22,7 @@
     "src/utility/placeholder-color/hover/scss/_sf_css__placeholder_color.scss",
     "src/utility/placeholder-color/hover/scss/index.scss"
   ],
-  "content_sha256": "29c8208b02c23eec9bf38cd60abc5e7f7b5cf0f9982bf6e997f07af3fc494e9c",
+  "content_sha256": "0a5146e558b9e8a577fbb4d87ddebccfe32328b37c51443eeaa603d9f130e78a",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

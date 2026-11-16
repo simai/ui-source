@@ -13737,7 +13737,7 @@
       "recorded_on": "2026-11-16",
       "stage": "compat",
       "kind": "class",
-      "summary": "Owner decision C212 (5): one list of roles for every colour property. These old spellings of a role draw exactly what the role draws and keep drawing until remove_after; the Loader notes each one once in SF.deprecations (core/js/retired-classes.table.js): surface-0 -> surface-page, surface-1 and surface -> surface-area, surface-overlay -> surface-veil, <colour>-transparent-overlay -> <colour>-container-strong, <colour>-transparent-select -> <colour>-state-select, hover:/active: <colour>-transparent -> <colour>-state, disable -> surface-disabled, on-disable -> on-surface-disabled, for border-, ring-, ring-offset-, fill-, drop-shadow-, stripe-, placeholder-, color- and bg- (the bg- names of C16 keep their own record, utility-c16-background-names). utility.background-color, utility.text-color, utility.border-color, utility.fill, utility.drop-shadow-color, utility.ring-color, utility.ring-offset-color, utility.placeholder-color and utility.stripe-color take a minor version (comments only).",
+      "summary": "Owner decision C212 (5): one list of roles for every colour property. The Loader notes the old spellings of a role once in SF.deprecations (core/js/retired-classes.table.js); the C16 names keep their records (utility-c16-background-names, utility-c16-colour-family-names), and this record lists the old spellings no C16 record lists, which draw exactly what the role draws and keep drawing until remove_after: the bare surface -> surface-area (bg-, border-, ring-, ring-offset-, fill-, drop-shadow-), and bg-<colour>-transparent and fill-<colour>-transparent, built as hover: and active: only, -> <colour>-state. utility.background-color, utility.text-color, utility.border-color, utility.fill, utility.drop-shadow-color, utility.ring-color, utility.ring-offset-color, utility.placeholder-color and utility.stripe-color take a minor version (comments only).",
       "items": [
         {
           "component": "utility",
@@ -13788,103 +13788,8 @@
         },
         {
           "component": "utility",
-          "from": "border-error-transparent-overlay",
-          "to": "border-error-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "border-primary-transparent-overlay",
-          "to": "border-primary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "border-secondary-transparent-overlay",
-          "to": "border-secondary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "border-success-transparent-overlay",
-          "to": "border-success-container-strong"
-        },
-        {
-          "component": "utility",
           "from": "border-surface",
           "to": "border-surface-area"
-        },
-        {
-          "component": "utility",
-          "from": "border-surface-0",
-          "to": "border-surface-page"
-        },
-        {
-          "component": "utility",
-          "from": "border-surface-1",
-          "to": "border-surface-area"
-        },
-        {
-          "component": "utility",
-          "from": "border-surface-overlay",
-          "to": "border-surface-veil"
-        },
-        {
-          "component": "utility",
-          "from": "border-surface-transparent-overlay",
-          "to": "border-surface-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "border-tertiary-transparent-overlay",
-          "to": "border-tertiary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "border-warning-transparent-overlay",
-          "to": "border-warning-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "color-on-disable",
-          "to": "color-on-surface-disabled"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-error-transparent-overlay",
-          "to": "drop-shadow-error-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-error-transparent-select",
-          "to": "drop-shadow-error-state-select"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-primary-transparent-overlay",
-          "to": "drop-shadow-primary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-primary-transparent-select",
-          "to": "drop-shadow-primary-state-select"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-secondary-transparent-overlay",
-          "to": "drop-shadow-secondary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-secondary-transparent-select",
-          "to": "drop-shadow-secondary-state-select"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-success-transparent-overlay",
-          "to": "drop-shadow-success-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-success-transparent-select",
-          "to": "drop-shadow-success-state-select"
         },
         {
           "component": "utility",
@@ -13893,98 +13798,27 @@
         },
         {
           "component": "utility",
-          "from": "drop-shadow-surface-0",
-          "to": "drop-shadow-surface-page"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-surface-1",
-          "to": "drop-shadow-surface-area"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-tertiary-transparent-overlay",
-          "to": "drop-shadow-tertiary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-tertiary-transparent-select",
-          "to": "drop-shadow-tertiary-state-select"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-warning-transparent-overlay",
-          "to": "drop-shadow-warning-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "drop-shadow-warning-transparent-select",
-          "to": "drop-shadow-warning-state-select"
-        },
-        {
-          "component": "utility",
-          "from": "fill-disable",
-          "to": "fill-surface-disabled"
-        },
-        {
-          "component": "utility",
           "from": "fill-error-transparent",
-          "to": "fill-error-state"
-        },
-        {
-          "component": "utility",
-          "from": "fill-error-transparent-overlay",
-          "to": "fill-error-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "fill-error-transparent-select",
-          "to": "fill-error-state-select"
+          "to": "fill-error-state",
+          "match": "(?<![\\w:-])fill-error-transparent(?![\\w-])"
         },
         {
           "component": "utility",
           "from": "fill-primary-transparent",
-          "to": "fill-primary-state"
-        },
-        {
-          "component": "utility",
-          "from": "fill-primary-transparent-overlay",
-          "to": "fill-primary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "fill-primary-transparent-select",
-          "to": "fill-primary-state-select"
+          "to": "fill-primary-state",
+          "match": "(?<![\\w:-])fill-primary-transparent(?![\\w-])"
         },
         {
           "component": "utility",
           "from": "fill-secondary-transparent",
-          "to": "fill-secondary-state"
-        },
-        {
-          "component": "utility",
-          "from": "fill-secondary-transparent-overlay",
-          "to": "fill-secondary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "fill-secondary-transparent-select",
-          "to": "fill-secondary-state-select"
+          "to": "fill-secondary-state",
+          "match": "(?<![\\w:-])fill-secondary-transparent(?![\\w-])"
         },
         {
           "component": "utility",
           "from": "fill-success-transparent",
-          "to": "fill-success-state"
-        },
-        {
-          "component": "utility",
-          "from": "fill-success-transparent-overlay",
-          "to": "fill-success-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "fill-success-transparent-select",
-          "to": "fill-success-state-select"
+          "to": "fill-success-state",
+          "match": "(?<![\\w:-])fill-success-transparent(?![\\w-])"
         },
         {
           "component": "utility",
@@ -13993,88 +13827,21 @@
         },
         {
           "component": "utility",
-          "from": "fill-surface-0",
-          "to": "fill-surface-page"
-        },
-        {
-          "component": "utility",
-          "from": "fill-surface-1",
-          "to": "fill-surface-area"
-        },
-        {
-          "component": "utility",
           "from": "fill-surface-transparent",
-          "to": "fill-surface-state"
-        },
-        {
-          "component": "utility",
-          "from": "fill-surface-transparent-overlay",
-          "to": "fill-surface-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "fill-surface-transparent-select",
-          "to": "fill-surface-state-select"
+          "to": "fill-surface-state",
+          "match": "(?<![\\w:-])fill-surface-transparent(?![\\w-])"
         },
         {
           "component": "utility",
           "from": "fill-tertiary-transparent",
-          "to": "fill-tertiary-state"
-        },
-        {
-          "component": "utility",
-          "from": "fill-tertiary-transparent-overlay",
-          "to": "fill-tertiary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "fill-tertiary-transparent-select",
-          "to": "fill-tertiary-state-select"
+          "to": "fill-tertiary-state",
+          "match": "(?<![\\w:-])fill-tertiary-transparent(?![\\w-])"
         },
         {
           "component": "utility",
           "from": "fill-warning-transparent",
-          "to": "fill-warning-state"
-        },
-        {
-          "component": "utility",
-          "from": "fill-warning-transparent-overlay",
-          "to": "fill-warning-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "fill-warning-transparent-select",
-          "to": "fill-warning-state-select"
-        },
-        {
-          "component": "utility",
-          "from": "placeholder-on-disable",
-          "to": "placeholder-on-surface-disabled"
-        },
-        {
-          "component": "utility",
-          "from": "ring-error-transparent-overlay",
-          "to": "ring-error-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-error-transparent-overlay",
-          "to": "ring-offset-error-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-primary-transparent-overlay",
-          "to": "ring-offset-primary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-secondary-transparent-overlay",
-          "to": "ring-offset-secondary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-success-transparent-overlay",
-          "to": "ring-offset-success-container-strong"
+          "to": "fill-warning-state",
+          "match": "(?<![\\w:-])fill-warning-transparent(?![\\w-])"
         },
         {
           "component": "utility",
@@ -14083,97 +13850,17 @@
         },
         {
           "component": "utility",
-          "from": "ring-offset-surface-0",
-          "to": "ring-offset-surface-page"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-surface-1",
-          "to": "ring-offset-surface-area"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-surface-overlay",
-          "to": "ring-offset-surface-veil"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-surface-transparent-overlay",
-          "to": "ring-offset-surface-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-tertiary-transparent-overlay",
-          "to": "ring-offset-tertiary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-offset-warning-transparent-overlay",
-          "to": "ring-offset-warning-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-primary-transparent-overlay",
-          "to": "ring-primary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-secondary-transparent-overlay",
-          "to": "ring-secondary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-success-transparent-overlay",
-          "to": "ring-success-container-strong"
-        },
-        {
-          "component": "utility",
           "from": "ring-surface",
           "to": "ring-surface-area"
-        },
-        {
-          "component": "utility",
-          "from": "ring-surface-0",
-          "to": "ring-surface-page"
-        },
-        {
-          "component": "utility",
-          "from": "ring-surface-1",
-          "to": "ring-surface-area"
-        },
-        {
-          "component": "utility",
-          "from": "ring-surface-overlay",
-          "to": "ring-surface-veil"
-        },
-        {
-          "component": "utility",
-          "from": "ring-surface-transparent-overlay",
-          "to": "ring-surface-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-tertiary-transparent-overlay",
-          "to": "ring-tertiary-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "ring-warning-transparent-overlay",
-          "to": "ring-warning-container-strong"
-        },
-        {
-          "component": "utility",
-          "from": "stripe-surface-transparent-overlay",
-          "to": "stripe-surface-container-strong"
         }
       ],
       "deprecated_on": "2026-11-16",
       "remove_after": "2027-01-01",
       "rewrite": "rename-class",
-      "manual": "Write the role: surface-page for surface-0, surface-area for surface-1 and surface, surface-veil for surface-overlay, <colour>-container-strong for <colour>-transparent-overlay, <colour>-state-select for <colour>-transparent-select, hover:/active: <colour>-state for <colour>-transparent, surface-disabled for disable, on-surface-disabled for on-disable; sf-upgrade --apply rewrites them.",
+      "manual": "Write the role: surface-area for the bare surface, hover:/active: <colour>-state for <colour>-transparent; sf-upgrade --apply rewrites the bare surface (the hover: and active: forms are reported by the C16 records).",
       "examples": {
-        "before": "<div class=\"border-surface-overlay ring-primary-transparent-overlay hover:fill-surface-transparent\">",
-        "after": "<div class=\"border-surface-veil ring-primary-container-strong hover:fill-surface-state\">"
+        "before": "<div class=\"bg-surface border border-surface\">",
+        "after": "<div class=\"bg-surface-area border border-surface-area\">"
       },
       "owner": "ui-source",
       "source": "src/utility/background-color; src/utility/text-color; src/utility/border-color; src/utility/fill; src/utility/drop-shadow-color; src/utility/ring-color; src/utility/ring-offset-color; src/utility/placeholder-color; src/utility/stripe-color; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md section 5; control/docs-review/decisions.md C212"
