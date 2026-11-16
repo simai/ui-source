@@ -14,6 +14,10 @@ import {join} from 'node:path';
 
 export const TAG = /^sf(-[a-z0-9]+){1,3}$/u;
 
+// BEM marks belong to classes, never to tag names (C174 point 4): an element
+// part is `__`, a modifier `--`; a tag carries neither.
+export const BEM_MARK = /__|--/u;
+
 export const familyOf = (tag) => String(tag).split('-')[1] ?? '';
 
 // The Framework's components as the gate reads them: folder, tag, and the
@@ -50,7 +54,26 @@ export function checkComponentNames({registry, framework, packages, tagAliases =
     return Boolean(allowed && allowed.owner === ownerId && allowed.family_owner === familyOwner.get(family));
   };
 
+  // Every name a page may write: current tags, alias elements and former tags.
+  const named = [
+    ...framework.map(({tag}) => ({home: 'framework', name: tag})),
+    ...tagAliases.flatMap((row) => [{home: 'framework alias', name: row.from}, {home: 'framework alias', name: row.to}]),
+    ...list.flatMap((pkg) => [
+      ...pkg.tags.map((name) => ({home: pkg.id, name})),
+      ...(pkg.former_tags ?? []).flatMap((row) => [{home: `${pkg.id} former tag`, name: row.from}, {home: `${pkg.id} former tag`, name: row.to}]),
+      ...(pkg.alias_elements ?? []).map((row) => ({home: `${pkg.id} alias element`, name: row.element})),
+    ]),
+  ];
+  const marked = new Set();
+  for (const {home, name} of named) {
+    const key = `${home} ${name}`;
+    if (!BEM_MARK.test(String(name ?? '')) || marked.has(key)) continue;
+    marked.add(key);
+    problems.push(`${key}: a tag never carries the BEM marks __ or -- (C174 point 4)`);
+  }
+
   for (const {folder, tag, family} of framework) {
+    if (BEM_MARK.test(tag ?? '')) continue;
     if (!TAG.test(tag ?? '')) {
       problems.push(`framework ${tag}: not sf-<family>[-<word>] with at most three words`);
       continue;
@@ -66,7 +89,16 @@ export function checkComponentNames({registry, framework, packages, tagAliases =
   }
 
   for (const pkg of list) {
+    // The passport family of a package tag is its first word as well (NM-5),
+    // when the family was read from the package (`families`).
+    if (pkg.families) {
+      for (const tag of pkg.tags) {
+        if (!(tag in pkg.families)) problems.push(`${pkg.id} ${tag}: no passport family read for it`);
+        else if (pkg.families[tag] !== familyOf(tag)) problems.push(`${pkg.id} ${tag}: its passport names family "${pkg.families[tag]}", the first word of the tag is "${familyOf(tag)}" (family first, C174)`);
+      }
+    }
     for (const tag of pkg.tags) {
+      if (BEM_MARK.test(tag)) continue;
       if (!TAG.test(tag)) {
         problems.push(`${pkg.id} ${tag}: not sf-<family>[-<word>] with at most three words`);
         continue;
@@ -106,5 +138,33 @@ export function checkComponentNames({registry, framework, packages, tagAliases =
     if (homes.has(row.from)) problems.push(`${row.home} former tag ${row.from}: it is a current tag of ${homes.get(row.from).join(' and ')}`);
   }
 
+  // A former tag is a declared alias: it names a tag that is shipped, and one
+  // old name never points to two tags.
+  const target = new Map();
+  for (const row of formers) {
+    if (!homes.has(row.to)) problems.push(`${row.home} former tag ${row.from}: it names ${row.to}, which no package ships`);
+    const seen = target.get(row.from);
+    if (seen && seen.to !== row.to) problems.push(`former tag ${row.from}: ${seen.home} names ${seen.to}, ${row.home} names ${row.to}`);
+    else if (!seen) target.set(row.from, row);
+  }
+  for (const pkg of list) {
+    for (const row of pkg.alias_elements ?? []) {
+      const seen = target.get(row.element);
+      if (seen && seen.to !== row.of) problems.push(`${pkg.id} alias element ${row.element}: of ${row.of}, but ${seen.home} names ${seen.to}`);
+    }
+  }
+
   return problems;
+}
+
+// The gate's answer against the listed open problems (package-tags.json
+// `open`): a problem nobody listed fails, and so does a listed one that is
+// gone, so the list is kept true instead of hiding anything.
+export function splitOpen(problems, open = []) {
+  const listed = new Set(open.map((row) => row.problem));
+  return {
+    fresh: problems.filter((line) => !listed.has(line)),
+    listed: problems.filter((line) => listed.has(line)),
+    gone: [...listed].filter((line) => !problems.includes(line)),
+  };
 }

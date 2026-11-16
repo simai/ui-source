@@ -72,7 +72,8 @@ export function registerTagAliasRows(rows) {
   for (const row of Array.isArray(rows) ? rows : []) {
     if (!row || typeof row.from !== 'string' || typeof row.to !== 'string') continue;
     if (shared.byOld.has(row.from)) continue;
-    const clean = Object.freeze({from: row.from, to: row.to, since: String(row.since ?? ''), remove_after: String(row.remove_after ?? '')});
+    const clean = Object.freeze({from: row.from, to: row.to, since: String(row.since ?? ''), remove_after: String(row.remove_after ?? ''),
+      ...(typeof row.package === 'string' && row.package ? {package: row.package} : {})});
     addRow(shared, clean);
     taken.push(clean);
   }
@@ -123,14 +124,16 @@ export function listTagAliases() {
 export function noteTagAlias(row) {
   const shared = state();
   const expired = aliasExpired(row);
-  noteDeprecated({component: row.to, kind: 'tag', from: row.from, to: row.to, tag: row.to, since: row.since, remove_after: row.remove_after, expired});
+  noteDeprecated({component: row.to, kind: 'tag', from: row.from, to: row.to, tag: row.to, since: row.since, remove_after: row.remove_after, expired, package: row.package});
   if (shared.noted.has(row.from)) return;
   shared.noted.add(row.from);
   // deprecations.js prints an expired name itself, and every name when the
   // page opted in; the note here is for the rest.
   const optedIn = globalThis.document?.documentElement?.dataset?.sfDeprecations === 'warn' || globalThis.SF?.deprecations?.warn === true;
   if (expired || optedIn) return;
-  globalThis.console?.warn?.(`[SIMAI Framework] <${row.from}> is now <${row.to}>; the old tag works until ${row.remove_after}. Write <${row.to}>. See contracts/changes/journal.json.`);
+  // A package's element says which package ships it now (C174 NM-3).
+  const where = row.package ? ` from the component package ${row.package}` : '';
+  globalThis.console?.warn?.(`[SIMAI Framework] <${row.from}> is now <${row.to}>; the old tag works until ${row.remove_after}. Write <${row.to}>${where}. See contracts/changes/journal.json.`);
 }
 
 // Defines each old tag of `tag` as a subclass of `Base` (the class that

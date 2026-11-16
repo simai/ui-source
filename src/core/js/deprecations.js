@@ -28,7 +28,7 @@ function warnEnabled() {
   return root?.dataset?.sfDeprecations === 'warn' || globalThis.SF?.deprecations?.warn === true;
 }
 
-export function noteDeprecated({component = '', kind = 'attribute', attribute = '', from, to = null, tag, since, remove_after: removeAfter, expired} = {}) {
+export function noteDeprecated({component = '', kind = 'attribute', attribute = '', from, to = null, tag, since, remove_after: removeAfter, expired, package: pkg} = {}) {
   if (!from) return;
   const key = [component, kind, attribute, from].join('|');
   const notes = sharedNotes();
@@ -45,6 +45,8 @@ export function noteDeprecated({component = '', kind = 'attribute', attribute = 
   if (tag !== undefined) note.tag = tag;
   if (since !== undefined) note.since = since;
   if (removeAfter !== undefined) note.remove_after = removeAfter;
+  // The component package that ships the new name, for a package's element.
+  if (pkg) note.package = pkg;
   if (expired === true) note.expired = true;
   if (firstExpiry) {
     globalThis.console?.warn?.(`[SIMAI Framework] ${describe(note)} was due to leave after ${note.remove_after || 'its date'}${to ? `; write ${to}` : ''}. See contracts/changes/journal.json.`);
