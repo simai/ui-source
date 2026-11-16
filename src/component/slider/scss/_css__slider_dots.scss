@@ -67,7 +67,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: calc(100% + var(--sf-slider-dots--gap));
+  /* The step: the dot (its padding box and both strokes) and the gap (C246). */
+  width: calc(100% + 2 * var(--sf-slider-dots-dot--stroke-width, var(--sf-px)) + var(--sf-slider-dots--gap));
   height: max(100%, var(--sf-slider-dots-dot--target-size));
 }
 

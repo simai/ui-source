@@ -10,7 +10,7 @@ test('Slider reserves semantic pointer targets while retaining geometric marker 
   assert.match(dots,/\.sf-slider-dots-dot::before/);
   // Dots 8 apart (owner decision C246); the press area is the step wide and a target high.
   assert.match(dots,/--sf-slider-dots--gap: var\(--sf-space-1\\\/3\);\n  gap: var\(--sf-slider-dots--gap\);/);
-  assert.match(dots,/width: calc\(100% \+ var\(--sf-slider-dots--gap\)\);\n  height: max\(100%, var\(--sf-slider-dots-dot--target-size\)\);/);
+  assert.match(dots,/width: calc\(100% \+ 2 \* var\(--sf-slider-dots-dot--stroke-width, var\(--sf-px\)\) \+ var\(--sf-slider-dots--gap\)\);\n  height: max\(100%, var\(--sf-slider-dots-dot--target-size\)\);/);
 });
 test('Slider content mode is opt-in and retains explicit media dimension overrides',()=>{
   assert.match(slider,/\.sf-slider--content \.sf-slider-slide\s*\{\s*height: var\(--sf-slider-slide--height, auto\);\s*min-height: var\(--sf-slider-slide--min-height, 0\)/);
