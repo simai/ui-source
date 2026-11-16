@@ -3,8 +3,8 @@
 // counts, so the message box, the multi-line field and the formatted text
 // say the same thing at the same moment.
 //
-// - The count shows from 80 % of the limit (more than 0.8 x limit
-//   characters), or always when the field asks for it (`counter`).
+// - The count shows from 80 % of the limit (0.8 x limit characters and
+//   more: at 80 of 100), or always when the field asks for it (`counter`).
 // - Past the limit the count and the field's frame are the error colour and
 //   the field is invalid (too-long), so its form is not sent; the text is
 //   never cut: the person decides what to take out.
@@ -33,7 +33,7 @@ export function charCount(length, limit, {always = false} = {}) {
   const max = countLimit(limit);
   const count = Math.max(0, Number(length) || 0);
   if (max === null) return {limit: null, length: count, near: false, over: false, shown: false, level: ''};
-  const near = count > max * COUNT_FROM;
+  const near = count >= max * COUNT_FROM;
   const over = count > max;
   return {limit: max, length: count, near, over, shown: Boolean(always) || near, level: over ? 'over' : near ? 'near' : ''};
 }

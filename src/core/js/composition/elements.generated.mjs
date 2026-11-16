@@ -999,7 +999,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.13.2"
+    "version": "1.14.0"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -1175,7 +1175,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.12.2"
+    "version": "1.12.3"
   },
   "sf-switch": {
     "inputs": {

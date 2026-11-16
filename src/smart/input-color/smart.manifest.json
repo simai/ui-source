@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.17.4",
+  "version": "1.17.5",
   "title": "Color",
   "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a hex code with «Применить») -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -135,6 +135,11 @@
       "disabled": {
         "type": "boolean",
         "default": false
+      },
+      "readonly": {
+        "type": "boolean",
+        "default": false,
+        "description": "The colour can be read but not changed, as sf-input's readonly: the swatch and the name or code in the text's ink, the region line (outline-variant) for the frame, no chevron, no window, no reset; the field is not a Tab stop of its own and a screen reader reads «name: value» with the field. It is sent with the form. A record card's view draws a colour so (module.smart-field-renderers); disabled stays the field a person cannot use now."
       },
       "name": {
         "type": "string",
@@ -486,7 +491,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-color/index.js",
-        "sha256": "44a932ef84abf0cfd5677ae99800fad2de93b00afac814d20c5efa6fca79f464"
+        "sha256": "51f696dce1f669fa7c579de9c410ff9542a0eb5020e0b4c3b945a2d58e075cb9"
       },
       {
         "path": "src/smart/input-color/rule.js",
@@ -494,11 +499,11 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.js",
-        "sha256": "b8516c77a7db4f862ae6ba1a15a002d1a343d0465cda462a4c1217ad4b77eba2"
+        "sha256": "0f07e6abc25ce0193d187a54ecc5f4aa000e837e2a3aff3d8674447f0fcf122d"
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "eb06ee47e75b4a13db18f7e6d3454b17ec3b51be87bd602cf102bba1a7915699"
+        "sha256": "d947e0cbf7475b49c7c88ac5e0c850fc05c526b8697d4f71bb3bd5fd9df503cb"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
