@@ -1,0 +1,6 @@
+{
+  "schema": "simai.framework.twin-intent",
+  "schema_version": 1,
+  "$comment": "Owner decision C251 (2026-11-16): a change to one twin of a plain/Smart pair that is meant for that side only. Each mark names the unit and the version that carries the change, the twin it leaves as it was, the reason and the decision behind it: {\"unit\": \"component.badges\", \"version\": \"1.6.0\", \"twin\": \"smart.badge\", \"reason\": \"...\", \"decision\": \"C###\", \"date\": \"yyyy-mm-dd\"}. A mark covers that version alone; the next change needs its own mark or a change to the twin. Marks of released pairs may be removed after the next pair.",
+  "marks": []
+}

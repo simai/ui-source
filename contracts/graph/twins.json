@@ -1,0 +1,217 @@
+{
+  "schema": "simai.framework.twins",
+  "schema_version": 1,
+  "$comment": "Owner decision C251 (2026-11-16): each plain component and its Smart twin, one look in two models. Smart is the default model (C224). The pair is an edge of kind twin in the dependency graph; a look or behaviour change to one twin in a pair needs a change to the other in the same pair, or an intended mark in twin-intent.json. scripts/dependency-graph.mjs suggests pairs by name; a suggested pair not listed here fails the gate, and a plain component that has no twin despite the name is listed with \"smart\": null and a reason.",
+  "pairs": [
+    {
+      "plain": "component.accordion",
+      "smart": "smart.accordion",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.alerts",
+      "smart": "smart.alert",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.avatars",
+      "smart": "smart.avatar-group",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.badges",
+      "smart": "smart.badge",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.breadcrumbs",
+      "smart": "smart.breadcrumbs",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.button-group",
+      "smart": "smart.segmented",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.buttons",
+      "smart": "smart.button",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.checkbox",
+      "smart": "smart.checkbox",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.clipboard",
+      "smart": "smart.button-copy",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.close",
+      "smart": "smart.button-close",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.context-menu",
+      "smart": "smart.menu-context",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.country-code",
+      "smart": "smart.input-country",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.datepicker",
+      "smart": "smart.input-date",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.download-file",
+      "smart": "smart.file-download",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.dropdown",
+      "smart": "smart.dropdown",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.file-preview",
+      "smart": "smart.file-preview",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.file-upload",
+      "smart": "smart.file-upload",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.icon-buttons",
+      "smart": "smart.button-icon",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.icons",
+      "smart": "smart.icon",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.inputs",
+      "smart": "smart.input",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.menu",
+      "smart": "smart.menu",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.modal",
+      "smart": "smart.modal",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.pagination",
+      "smart": "smart.pager",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.progress-bar",
+      "smart": "smart.progress-bar",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.progress-ring",
+      "smart": "smart.progress-ring",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.progress-scale",
+      "smart": "smart.progress-scale",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.quantity",
+      "smart": "smart.input-quantity",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.radio",
+      "smart": "smart.radio",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.range-slider",
+      "smart": "smart.slider-range",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.reference-link",
+      "smart": "smart.reference-link",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.skeleton",
+      "smart": "smart.skeleton",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.slider",
+      "smart": "smart.slider",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.spinner",
+      "smart": "smart.spinner",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.step",
+      "smart": "smart.steps",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.switch",
+      "smart": "smart.switch",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.tabs",
+      "smart": "smart.tabs",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.tags",
+      "smart": "smart.tag",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.textarea",
+      "smart": "smart.input-textarea",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.toast",
+      "smart": "smart.toast",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.tooltip",
+      "smart": "smart.tooltip",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.tree",
+      "smart": "smart.tree",
+      "since": "2026-11-16"
+    },
+    {
+      "plain": "component.tree-item",
+      "smart": "smart.tree-item",
+      "since": "2026-11-16"
+    }
+  ]
+}

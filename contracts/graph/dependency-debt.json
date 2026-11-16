@@ -1,0 +1,698 @@
+{
+  "schema": "simai.framework.dependency-debt",
+  "schema_version": 1,
+  "$comment": "Owner decision C250 (2026-11-16): the mismatches between what a Smart component declares (smart.manifest.json composition.uses) and what its code draws, recorded as dated debt at the revision named. scripts/dependency-graph.mjs check fails on a mismatch not listed here and on an entry that is no longer true (remove it in the change that fixes it). Never add an entry to pass a gate: declare the unit, or stop drawing it.",
+  "recorded_at": "10145e63b9dc3325eeffd62731b4bb5881b21c12",
+  "missing": [
+    {
+      "smart": "smart.alert-bar",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.avatar",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/card.js"
+    },
+    {
+      "smart": "smart.avatar-group",
+      "unit": "smart.avatar",
+      "since": "2026-11-16",
+      "evidence": "import js/templates/default.js"
+    },
+    {
+      "smart": "smart.badge",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.breadcrumbs",
+      "unit": "smart.header-page",
+      "since": "2026-11-16",
+      "evidence": "<sf-header-page> index.js"
+    },
+    {
+      "smart": "smart.button-copy",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.button-copy",
+      "unit": "component.clipboard",
+      "since": "2026-11-16",
+      "evidence": ".sf-copy-button-holder index.js"
+    },
+    {
+      "smart": "smart.button-copy",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button index.js"
+    },
+    {
+      "smart": "smart.button-copy",
+      "unit": "component.inputs",
+      "since": "2026-11-16",
+      "evidence": ".sf-input-field index.js"
+    },
+    {
+      "smart": "smart.button-icon",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon index.js"
+    },
+    {
+      "smart": "smart.confirm",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button-text-container index.js"
+    },
+    {
+      "smart": "smart.confirm",
+      "unit": "component.dropdown",
+      "since": "2026-11-16",
+      "evidence": ".sf-dropdown index.js"
+    },
+    {
+      "smart": "smart.confirm",
+      "unit": "smart.drawer",
+      "since": "2026-11-16",
+      "evidence": "<sf-drawer> index.js"
+    },
+    {
+      "smart": "smart.confirm",
+      "unit": "smart.popover",
+      "since": "2026-11-16",
+      "evidence": "<sf-popover> index.js"
+    },
+    {
+      "smart": "smart.contents",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button-text-container index.js"
+    },
+    {
+      "smart": "smart.drawer",
+      "unit": "smart.resizer",
+      "since": "2026-11-16",
+      "evidence": "<sf-resizer> index.js"
+    },
+    {
+      "smart": "smart.dropdown",
+      "unit": "component.close",
+      "since": "2026-11-16",
+      "evidence": ".sf-close--size-1 js/templates/default.js"
+    },
+    {
+      "smart": "smart.dropdown",
+      "unit": "component.tags",
+      "since": "2026-11-16",
+      "evidence": ".sf-tag-color-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.dropdown",
+      "unit": "smart.avatar",
+      "since": "2026-11-16",
+      "evidence": "import js/templates/default.js"
+    },
+    {
+      "smart": "smart.dropdown",
+      "unit": "smart.list",
+      "since": "2026-11-16",
+      "evidence": "<sf-list> js/templates/default.js"
+    },
+    {
+      "smart": "smart.empty-state",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.file-upload",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "component.dropdown",
+      "since": "2026-11-16",
+      "evidence": ".sf-dropdown index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.checkbox",
+      "since": "2026-11-16",
+      "evidence": "<sf-checkbox> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-choice",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-choice> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-code",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-code> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-color",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-color> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-country",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-country> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-date",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-date> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-image",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-image> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-lookup",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-lookup> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-quantity",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-quantity> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-rich",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-rich> index.js"
+    },
+    {
+      "smart": "smart.form",
+      "unit": "smart.input-textarea",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-textarea> index.js"
+    },
+    {
+      "smart": "smart.gallery",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.gallery",
+      "unit": "component.slider",
+      "since": "2026-11-16",
+      "evidence": "import index.js"
+    },
+    {
+      "smart": "smart.header-site",
+      "unit": "component.menu",
+      "since": "2026-11-16",
+      "evidence": ".sf-menu index.js"
+    },
+    {
+      "smart": "smart.header-site",
+      "unit": "smart.language",
+      "since": "2026-11-16",
+      "evidence": "<sf-language> index.js"
+    },
+    {
+      "smart": "smart.header-site",
+      "unit": "smart.menu",
+      "since": "2026-11-16",
+      "evidence": "<sf-menu> index.js"
+    },
+    {
+      "smart": "smart.include",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.input-choice",
+      "unit": "component.badges",
+      "since": "2026-11-16",
+      "evidence": ".sf-badge--disabled js/templates/default.js"
+    },
+    {
+      "smart": "smart.input-country",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.input-date",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button js/templates/default.js"
+    },
+    {
+      "smart": "smart.input-date",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.input-date",
+      "unit": "component.inputs",
+      "since": "2026-11-16",
+      "evidence": ".sf-input-field index.js"
+    },
+    {
+      "smart": "smart.input-image",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.input-image",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.input-lookup",
+      "unit": "component.tags",
+      "since": "2026-11-16",
+      "evidence": ".sf-tag index.js"
+    },
+    {
+      "smart": "smart.input-lookup",
+      "unit": "smart.avatar",
+      "since": "2026-11-16",
+      "evidence": "import js/templates/default.js"
+    },
+    {
+      "smart": "smart.language",
+      "unit": "component.button-group",
+      "since": "2026-11-16",
+      "evidence": ".sf-button-group-narrow index.js"
+    },
+    {
+      "smart": "smart.language",
+      "unit": "component.context-menu",
+      "since": "2026-11-16",
+      "evidence": ".sf-context-menu index.js"
+    },
+    {
+      "smart": "smart.list",
+      "unit": "component.avatars",
+      "since": "2026-11-16",
+      "evidence": ".sf-avatar--size-1 js/templates/default.js"
+    },
+    {
+      "smart": "smart.list-attention",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.list-description",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.list-item",
+      "unit": "smart.avatar",
+      "since": "2026-11-16",
+      "evidence": "import js/templates/default.js"
+    },
+    {
+      "smart": "smart.list-item",
+      "unit": "smart.sortable",
+      "since": "2026-11-16",
+      "evidence": "<sf-sortable> index.js"
+    },
+    {
+      "smart": "smart.list-timeline",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.menu",
+      "unit": "component.admin-menu",
+      "since": "2026-11-16",
+      "evidence": ".sf-badge-anchored-text items.mjs"
+    },
+    {
+      "smart": "smart.menu-context",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.menu-context",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.menu-context",
+      "unit": "component.menu",
+      "since": "2026-11-16",
+      "evidence": ".sf-menu-tip js/templates/default.js"
+    },
+    {
+      "smart": "smart.menu-context",
+      "unit": "component.tooltip",
+      "since": "2026-11-16",
+      "evidence": ".sf-tooltip index.js"
+    },
+    {
+      "smart": "smart.menu-context",
+      "unit": "smart.avatar",
+      "since": "2026-11-16",
+      "evidence": "import js/templates/default.js"
+    },
+    {
+      "smart": "smart.menu-context",
+      "unit": "smart.settings",
+      "since": "2026-11-16",
+      "evidence": "<sf-settings> index.js"
+    },
+    {
+      "smart": "smart.modal",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.modal",
+      "unit": "smart.button",
+      "since": "2026-11-16",
+      "evidence": "<sf-button> index.js"
+    },
+    {
+      "smart": "smart.modal",
+      "unit": "smart.confirm",
+      "since": "2026-11-16",
+      "evidence": "<sf-confirm> index.js"
+    },
+    {
+      "smart": "smart.modal",
+      "unit": "smart.confirm-change",
+      "since": "2026-11-16",
+      "evidence": "<sf-confirm-change> index.js"
+    },
+    {
+      "smart": "smart.modal",
+      "unit": "smart.drawer",
+      "since": "2026-11-16",
+      "evidence": "<sf-drawer> index.js"
+    },
+    {
+      "smart": "smart.pager",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button js/templates/default.js"
+    },
+    {
+      "smart": "smart.pager",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.pager",
+      "unit": "smart.wizard",
+      "since": "2026-11-16",
+      "evidence": "<sf-wizard> index.js"
+    },
+    {
+      "smart": "smart.pagination",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button js/templates/default.js"
+    },
+    {
+      "smart": "smart.pagination",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button js/templates/default.js"
+    },
+    {
+      "smart": "smart.popover",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.popover",
+      "unit": "smart.button-icon",
+      "since": "2026-11-16",
+      "evidence": "<sf-button-icon> index.js"
+    },
+    {
+      "smart": "smart.profile-picker",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.progress-ring",
+      "unit": "component.avatars",
+      "since": "2026-11-16",
+      "evidence": ".sf-avatar index.js"
+    },
+    {
+      "smart": "smart.progress-ring",
+      "unit": "smart.avatar",
+      "since": "2026-11-16",
+      "evidence": "<sf-avatar> index.js"
+    },
+    {
+      "smart": "smart.progress-run",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.progress-run",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.reference-link",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button js/templates/default.js"
+    },
+    {
+      "smart": "smart.reference-link",
+      "unit": "component.tooltip",
+      "since": "2026-11-16",
+      "evidence": ".sf-tooltip index.js"
+    },
+    {
+      "smart": "smart.resizer",
+      "unit": "smart.button-icon",
+      "since": "2026-11-16",
+      "evidence": "<sf-button-icon> index.js"
+    },
+    {
+      "smart": "smart.segmented",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.settings",
+      "unit": "component.context-menu",
+      "since": "2026-11-16",
+      "evidence": ".sf-context-menu-item-label index.js"
+    },
+    {
+      "smart": "smart.settings",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/panel.js"
+    },
+    {
+      "smart": "smart.slider",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button index.js"
+    },
+    {
+      "smart": "smart.switch",
+      "unit": "component.checkbox",
+      "since": "2026-11-16",
+      "evidence": ".sf-checkbox index.js"
+    },
+    {
+      "smart": "smart.tabs",
+      "unit": "component.buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-button index.js"
+    },
+    {
+      "smart": "smart.tabs",
+      "unit": "component.checkbox",
+      "since": "2026-11-16",
+      "evidence": ".sf-checkbox index.js"
+    },
+    {
+      "smart": "smart.tabs",
+      "unit": "component.context-menu",
+      "since": "2026-11-16",
+      "evidence": ".sf-context-menu-body index.js"
+    },
+    {
+      "smart": "smart.tabs",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button index.js"
+    },
+    {
+      "smart": "smart.tabs",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon index.js"
+    },
+    {
+      "smart": "smart.tag",
+      "unit": "component.dropdown",
+      "since": "2026-11-16",
+      "evidence": ".sf-dropdown js/tag-row.js"
+    },
+    {
+      "smart": "smart.tag",
+      "unit": "component.inputs",
+      "since": "2026-11-16",
+      "evidence": ".sf-input-field js/tag-row.js"
+    },
+    {
+      "smart": "smart.tag",
+      "unit": "smart.avatar",
+      "since": "2026-11-16",
+      "evidence": "import js/templates/default.js"
+    },
+    {
+      "smart": "smart.tag",
+      "unit": "smart.input-lookup",
+      "since": "2026-11-16",
+      "evidence": "<sf-input-lookup> js/tag-row.js"
+    },
+    {
+      "smart": "smart.tag",
+      "unit": "smart.tag-group",
+      "since": "2026-11-16",
+      "evidence": "<sf-tag-group> index.js"
+    },
+    {
+      "smart": "smart.tag-group",
+      "unit": "component.tags",
+      "since": "2026-11-16",
+      "evidence": ".sf-tag index.js"
+    },
+    {
+      "smart": "smart.tile-metric",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.toast",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon-button js/templates/default.js"
+    },
+    {
+      "smart": "smart.tree-item",
+      "unit": "component.checkbox",
+      "since": "2026-11-16",
+      "evidence": ".sf-checkbox js/templates/row.js"
+    },
+    {
+      "smart": "smart.tree-item",
+      "unit": "component.tooltip",
+      "since": "2026-11-16",
+      "evidence": ".sf-tooltip js/templates/row.js"
+    },
+    {
+      "smart": "smart.tree-item",
+      "unit": "component.tree",
+      "since": "2026-11-16",
+      "evidence": ".sf-tree-group index.js"
+    },
+    {
+      "smart": "smart.wizard",
+      "unit": "component.icons",
+      "since": "2026-11-16",
+      "evidence": ".sf-icon js/templates/default.js"
+    },
+    {
+      "smart": "smart.wizard",
+      "unit": "component.modal",
+      "since": "2026-11-16",
+      "evidence": ".sf-modal index.js"
+    },
+    {
+      "smart": "smart.wizard-step",
+      "unit": "smart.wizard",
+      "since": "2026-11-16",
+      "evidence": "<sf-wizard> index.js"
+    }
+  ],
+  "unused": [
+    {
+      "smart": "smart.avatar-group",
+      "unit": "component.tooltip",
+      "since": "2026-11-16"
+    },
+    {
+      "smart": "smart.input",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16"
+    },
+    {
+      "smart": "smart.input-lookup",
+      "unit": "component.icons",
+      "since": "2026-11-16"
+    },
+    {
+      "smart": "smart.menu-context",
+      "unit": "component.avatars",
+      "since": "2026-11-16"
+    },
+    {
+      "smart": "smart.modal",
+      "unit": "component.spinner",
+      "since": "2026-11-16"
+    },
+    {
+      "smart": "smart.radio",
+      "unit": "component.icons",
+      "since": "2026-11-16"
+    },
+    {
+      "smart": "smart.sortable",
+      "unit": "component.icon-buttons",
+      "since": "2026-11-16"
+    },
+    {
+      "smart": "smart.tag",
+      "unit": "component.avatars",
+      "since": "2026-11-16"
+    }
+  ]
+}

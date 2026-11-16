@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Usage:
-//   node scripts/linkage.mjs passports --check [--rev <rev>] [--worktree] [--previous <inventory.json>] [--json]
+//   node scripts/linkage.mjs passports --check [--rev <rev>] [--worktree] [--previous <inventory.json>] [--json] [--no-graph]
 //   node scripts/linkage.mjs passports --write
-//   node scripts/linkage.mjs inventory --out <file> [--rev <rev>] [--release <ui-xxxxxxxxxxxx>] [--files]
+//   node scripts/linkage.mjs inventory --out <file> [--rev <rev>] [--release <ui-xxxxxxxxxxxx>] [--files] [--no-graph]
 //   node scripts/linkage.mjs compare <from-inventory.json> <to-inventory.json> [--out <file>]
 //
 // Standard simai.linkage 1.0.0 (contracts/standards/simai.linkage): every unit
@@ -50,6 +50,15 @@
 // match its files or hash, a dependency the code uses is not declared, or --
 // with --previous -- a unit's hash moved against the previous release's
 // inventory while its version did not.
+//
+// The dependency graph (scripts/dependency-graph.mjs, owner decisions
+// C249-C251) rides both commands, so every pair build has it without a step of
+// its own: `passports --check` also runs the graph gates (a declared/drawn
+// mismatch or a twin divergence that is not dated debt, debt that is fixed but
+// still listed, and -- with --previous -- one twin changed without the other)
+// and prints the impact list of every unit changed since the previous pair;
+// `inventory --out <dir>/<id>.inventory.json` also writes the graph beside it,
+// <dir>/<id>.graph.json. `--no-graph` leaves both out.
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
@@ -629,13 +638,13 @@ export function compareInventories(from, to) {
 // ---------------------------------------------------------------------------
 // The command line.
 
-function main(argv) {
+async function main(argv) {
   const [command, ...rest] = argv;
   const flag = (name) => rest.includes(name);
   const option = (name) => (rest.includes(name) ? rest[rest.indexOf(name) + 1] : null);
-  const usage = 'Usage: node scripts/linkage.mjs passports --check [--rev <rev>] [--worktree] [--previous <inventory.json>] [--json]\n'
+  const usage = 'Usage: node scripts/linkage.mjs passports --check [--rev <rev>] [--worktree] [--previous <inventory.json>] [--json] [--no-graph]\n'
     + '       node scripts/linkage.mjs passports --write\n'
-    + '       node scripts/linkage.mjs inventory --out <file> [--rev <rev>] [--release <id>] [--files]\n'
+    + '       node scripts/linkage.mjs inventory --out <file> [--rev <rev>] [--release <id>] [--files] [--no-graph]\n'
     + '       node scripts/linkage.mjs compare <from-inventory.json> <to-inventory.json> [--out <file>]';
   const read = () => (flag('--worktree') ? readWorkingTree() : readCommittedTree(repositoryRoot, option('--rev') || 'HEAD'));
 
@@ -649,18 +658,33 @@ function main(argv) {
     const collected = collectUnits(tree);
     const problems = checkPassports(collected);
     let report = null;
+    let previous = null;
     if (option('--previous')) {
-      const previous = JSON.parse(readFileSync(option('--previous'), 'utf8'));
+      previous = JSON.parse(readFileSync(option('--previous'), 'utf8'));
       report = compareInventories(previous, inventoryOf(collected, {revision}));
       for (const violation of report.violations) problems.push(violation);
     }
-    if (flag('--json')) console.log(JSON.stringify({revision, units: collected.units.length, problems, report}, null, 2));
+    // The graph gates (C250, C251) against the same previous inventory; without
+    // one the twin change check has no pair to compare with and says so.
+    let graph = null;
+    if (!flag('--no-graph')) {
+      const {graphGate, formatCheck} = await import('./dependency-graph.mjs');
+      graph = graphGate({tree, revision, collected, previous, releasesDir: false});
+      for (const problem of graph.problems) problems.push(problem);
+    }
+    if (flag('--json')) console.log(JSON.stringify({revision, units: collected.units.length, problems, report, ...(graph ? {graph: {stats: graph.graph.stats, notes: graph.notes, impact: graph.impact}} : {})}, null, 2));
     else {
       const counts = {};
       for (const unit of collected.units) counts[unit.kind] = (counts[unit.kind] ?? 0) + 1;
       console.log(`linkage: ${collected.units.length} units at ${revision.slice(0, 12)} (${Object.entries(counts).map(([kind, count]) => `${kind} ${count}`).join(', ')})`);
-      for (const problem of problems) console.log(`  ${problem.code}: ${problem.message}`);
-      console.log(problems.length ? `linkage: ${problems.length} problem(s); \`node scripts/linkage.mjs passports --write\` refreshes files, hashes and dependencies, a version is moved by hand` : 'linkage: every passport matches its files');
+      const graphProblems = new Set(graph?.problems ?? []);
+      for (const problem of problems.filter((entry) => !graphProblems.has(entry))) console.log(`  ${problem.code}: ${problem.message}`);
+      if (graph) {
+        const {formatCheck} = await import('./dependency-graph.mjs');
+        for (const line of formatCheck(graph.graph, graph)) console.log(line);
+      }
+      const passportProblems = problems.length - graphProblems.size;
+      console.log(passportProblems ? `linkage: ${passportProblems} problem(s); \`node scripts/linkage.mjs passports --write\` refreshes files, hashes and dependencies, a version is moved by hand` : 'linkage: every passport matches its files');
     }
     return problems.length ? 1 : 0;
   }
@@ -676,6 +700,15 @@ function main(argv) {
     const inventory = inventoryOf(collected, {revision, release: option('--release'), files: flag('--files')});
     writeFileSync(option('--out'), `${JSON.stringify(inventory, null, 2)}\n`);
     console.log(`linkage: ${inventory.units.length} units at ${revision.slice(0, 12)} -> ${option('--out')}`);
+    // The dependency graph ships beside the inventory (C249): ui-<12>.graph.json.
+    if (!flag('--no-graph') && option('--out').endsWith('.inventory.json')) {
+      const {buildGraph, readContracts} = await import('./dependency-graph.mjs');
+      const twins = (readContracts().twins.pairs ?? []).filter((pair) => pair.smart);
+      const graph = buildGraph(tree, {revision, release: option('--release'), units: collected.units, twins: twins.length ? twins : null});
+      const graphFile = option('--out').replace(/\.inventory\.json$/u, '.graph.json');
+      writeFileSync(graphFile, `${JSON.stringify(graph, null, 1)}\n`);
+      console.log(`linkage: graph ${graph.stats.nodes} nodes, ${graph.stats.edges} edges -> ${graphFile}`);
+    }
     return 0;
   }
   if (command === 'compare' && rest.filter((arg) => !arg.startsWith('--')).length >= 2) {
@@ -694,5 +727,7 @@ function main(argv) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  process.exitCode = main(process.argv.slice(2));
+  // Not a top-level await: the graph (dependency-graph.mjs) imports this module,
+  // and an import of a module still evaluating would wait for itself.
+  main(process.argv.slice(2)).then((code) => { process.exitCode = code; });
 }
