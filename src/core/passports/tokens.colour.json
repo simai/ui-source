@@ -34,7 +34,7 @@
     "src/core/scss/vars/_sf_var__color.scss",
     "src/core/scss/vars/_sf_var__hue.scss"
   ],
-  "content_sha256": "90f6243fbe9f655d1ff9823d8455812bbaddd1e75e0e331e585b04797358dcb1",
+  "content_sha256": "7c209a4a0cb478c75722dd02e11692a4c0fa45f50cf1657489850138a3e360c6",
   "dependencies": [
     {
       "id": "tokens.border",

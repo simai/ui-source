@@ -3,9 +3,12 @@
 
 // STRIPES WIDTH
 
+// The repeat of the stripes is a step of the space ladder (C57; RG-UT-V
+// STR-2): 4, about 5, 8 and 16 at the desktop step. They were the raw
+// steps a2 ... a5, 2 to 5 px.
 $stripe-size-array:(
-    1: a2,    
-    2: a3,
-    3: a4,
-    4: a5			
+    1: 'space-1\\/4',
+    2: 'space-1\\/3',
+    3: 'space-1\\/2',
+    4: 'space-1'
 );	
