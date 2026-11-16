@@ -265,6 +265,17 @@ export default {
         "print-table": "print-only",
         "print-visible-none": "print-invisible"
       }
+    },
+    {
+      "journal": "class-ut1-layout-col-auto",
+      "decision": "C212",
+      "component": "utility",
+      "since": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "note": "layout-col-auto wrote column-count: auto; without a column width, which no utility gives, a block with it is always one column, so the class did nothing. Write layout-col-<n> for n columns. It keeps drawing what it drew until remove_after.",
+      "names": {
+        "layout-col-auto": null
+      }
     }
   ],
   "extended": {

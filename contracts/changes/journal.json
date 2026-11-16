@@ -13916,6 +13916,30 @@
       "manual": "Write print-only for print-block, print-inline, print-inline-block, print-flex, print-inline-flex and print-table; when the element must take a display on paper other than its own, set it in a page rule under @media print. Write print-invisible for print-visible-none. print-hidden removes the element on paper now: where the empty space or a print-visible element inside it must stay, use print-invisible to keep the space.",
       "owner": "ui-source",
       "source": "src/utility/display-print/default/scss/_sf_css__display_print.scss; src/core/scss/_sf_css__hide.scss; src/core/js/retired-classes.table.js; ui-control control/research/2026-11-15-utilities-sprawl.md; control/docs-review/decisions.md C212"
+    },
+    {
+      "id": "class-ut1-layout-col-auto",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Utilities joint pass RG-UT-L LB-2, by the principle of owner decision C212 (one set per job): layout-col-auto wrote column-count: auto, and with no column-width (the utilities give none) the block is one column -- the class does nothing. It is deprecated, keeps drawing until remove_after, and the Loader notes it once in SF.deprecations. utility.column 1.1.0.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "layout-col-auto",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove layout-col-auto, or write layout-col-<n> for the number of columns wanted.",
+      "examples": {
+        "before": "<div class=\"layout-col-auto\">",
+        "after": "<div class=\"layout-col-2\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/column/default/scss/_sf_var__column.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-layout-break-study.html LB-2"
     }
   ]
 }

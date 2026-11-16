@@ -16,5 +16,9 @@ $column-array: (
     10: 10,
     11: 11,
     12: 12,
+    // layout-col-auto is deprecated until 2027-01-01 (RG-UT-L LB-2; journal
+    // class-ut1-layout-col-auto): column-count: auto with no column width,
+    // which the utilities do not give, is always one column. It keeps
+    // drawing what it drew; write layout-col-<n>.
     auto: 'auto',
 );
