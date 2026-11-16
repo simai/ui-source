@@ -554,7 +554,14 @@ class SfSearch extends SearchElement {
   }
 
   onFieldKeydown(event) {
-    if (event.isComposing || !this.shown()) return;
+    if (event.isComposing) return;
+    if (!this.shown()) {
+      // The keys the field always took stay taken: an Enter let through
+      // would reach what the focus went back to (the trigger) as a press,
+      // and open the window again; the arrows would scroll the page.
+      if (event.key === 'Enter' || event.key === 'ArrowDown' || event.key === 'ArrowUp') event.preventDefault();
+      return;
+    }
     const count = this._view?.rowCount ?? 0;
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();

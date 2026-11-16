@@ -33,7 +33,7 @@ test('shown() is the window open with its portal mounted', () => {
 
 test('every handler the window binds returns while the window is not shown', () => {
   for (const name of HANDLERS) {
-    assert.match(firstLines(name, 2), /if \([^\n]*!this\.shown\(\)[^\n]*\) return/u, `${name} guards a closed window`);
+    assert.match(firstLines(name, 3), /if \([^\n]*!this\.shown\(\)[^\n]*\) (?:return|\{)/u, `${name} guards a closed window`);
   }
 });
 
@@ -43,6 +43,10 @@ test('the guarded list covers the event handlers of the template', () => {
   for (const name of ['onInput', 'onFieldKeydown', 'onRowActionsKeydown', 'onScopeSelect', 'onStateAction', 'onRowClick', 'hover']) {
     assert.ok(bound.has(name), `${name} is bound by the template`);
   }
+});
+
+test('a closed window still takes the keys the field always took', () => {
+  assert.match(body('onFieldKeydown'), /if \(!this\.shown\(\)\) \{[\s\S]*?if \(event\.key === 'Enter' \|\| event\.key === 'ArrowDown' \|\| event\.key === 'ArrowUp'\) event\.preventDefault\(\);\s*return;\s*\}/u);
 });
 
 test('the direction is never read from a removed portal', () => {
