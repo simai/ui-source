@@ -32,7 +32,7 @@ test('RG-B-50: a reference card draws one ring, the link inside none', async () 
   const states = css.slice(css.indexOf('@layer sf.states'));
   assert.match(states, /\.sf-reference-link :where\(\.sf-reference-link__link, \.sf-reference-link-left > a\):focus-visible \{\s*outline: none;\s*\}/);
   assert.match(states, /\.sf-reference-link:has\(:where\(\.sf-reference-link__link, \.sf-reference-link-left > a\):focus-visible\) \{\s*outline-color: var\(--sf-focus\);/);
-  assert.equal((await json('src/component/reference-link/passport.json')).version, '1.2.1');
+  assert.equal((await json('src/component/reference-link/passport.json')).version, '1.3.1'); // first paint R222 open item 2: inline icons at the line's top (above 1.3.0 on fix/nav-procedure-ref-nv1)
 });
 
 test('C102 (4) (RG-B-47): the class tree toggles by the chevron, the folder is the type icon', async () => {
