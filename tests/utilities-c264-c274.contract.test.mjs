@@ -221,7 +221,7 @@ test('C274: the short text-role names are dated aliases of the roles and the C21
     assert.equal(`<label for="a">text</label>`.match(match), null, item.from);
     assert.equal(`<p class="x ${item.from} y">`.match(match)?.[0], item.from, item.from);
   }
-  // The text-large value (16/24 at desktop) is text-2's.
+  // The text-large value is text-2's (20/28 on a desktop, 16/24 on a phone, measured).
   const roles = read('src/core/figma_variables/figma_typography_roles.scss');
   assert.match(roles, /--sf-text-large--size: var\(--sf-text--size-2\);\s*--sf-text-large--height: var\(--sf-text--height-2\);/u);
   // The paragraph lead of the composition writes the utility, not the alias.

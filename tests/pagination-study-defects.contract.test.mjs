@@ -49,7 +49,7 @@ test('PG-11: the last-page button is drawn only where the jump can be answered',
 });
 
 test('PG-10: three settings, all off by default, and the word of the title', () => {
-  assert.equal(component.version, '1.7.0');
+  assert.equal(component.version, '1.8.5'); // C268: pointer-events-* in the template (utilities-c264)
   assert.deepEqual(
     [component.settings.href.type, component.settings.href.default],
     ['string', ''],

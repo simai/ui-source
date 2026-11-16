@@ -48,7 +48,7 @@ test('T14: a tab without a label is named in the page language', () => {
 });
 
 test('sf-tabs 1.3.x names the R184 work in its decisions', () => {
-  assert.match(manifest.version, /^1\.3\.\d+$/u);
+  assert.match(manifest.version, /^1\.(?:3|4)\.\d+$/u); // 1.4.1: C268 patch above fix/lists-tabs-f1's 1.4.0
   assert.ok(manifest['x-decisions'].some((one) => /^version: 1\.2\.0 → 1\.3\.0, a minor \(R184/u.test(one)));
 });
 
