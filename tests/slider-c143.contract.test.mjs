@@ -37,7 +37,9 @@ test('Under cards one row: position at the start, arrows 8 apart at the end (C10
 
 test('Dots are 8, the current a 24 x 8 pill; from eight slides a counter', () => {
   assert.match(dots, /--sf-slider-dots-dot--active-width: var\(--sf-c2\)/);
-  assert.equal((dots.match(/--sf-slider-dots-dot--width: var\(--sf-a8\)/g) || []).length, 2);
+  // The block's own size, so --plate and --bare without a size step draw 8 (RG-OT 5).
+  assert.equal((dots.match(/--sf-slider-dots-dot--width: var\(--sf-a8\)/g) || []).length, 1);
+  assert.match(dots, /\.sf-slider-dots \{[^}]*--sf-slider-dots-dot--width: var\(--sf-a8\);/);
   assert.match(slider, /const DOTS_LIMIT = 7;/);
   assert.match(slider, /type: 'fraction'/);
   assert.match(engine, /options\.type === 'fraction'/);

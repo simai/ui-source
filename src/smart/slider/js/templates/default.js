@@ -168,9 +168,14 @@ function renderArrows(context) {
   const plated = isPlated(context);
   const buttonOptions = plated ? { type: 'ghost', scheme: 'on-surface' } : getButtonOptions(context.buttonType);
   const buttonSize = context.buttonSize || '1';
+  // button-type light is the class look --light: ghost arrows on the light
+  // circle (sf-slider 1.2.1, FW-B-3). The template wrote the ghost buttons
+  // without the class, so their dark glyph lay on the picture, 1.28:1 on a
+  // dark photo (RG-OT 9, C224: the Smart twin draws the class look).
+  const light = !plated && normalizeOption(context.buttonType) === 'light';
 
   return html`
-    <div class=${joinClasses('sf-slider-arrows sf-slider-arrows--size-2', plated && 'sf-slider-arrows--plate')}>
+    <div class=${joinClasses('sf-slider-arrows sf-slider-arrows--size-2', plated && 'sf-slider-arrows--plate', light && 'sf-slider-arrows--light')}>
       <sf-button-icon
         root-class="sf-slider-button-prev"
         icon="keyboard_arrow_left"

@@ -9,5 +9,9 @@
     --sf-opacity-70: 70%;
     --sf-opacity-80: 80%;
     --sf-opacity-90: 90%;
+    /* A part that cannot be used and has no disabled look of its own (an
+       edge arrow that is not a button): one step of the scale (C18, RG-OT 1).
+       Buttons, fields and choices draw their disabled colours instead. */
+    --sf-opacity-disabled: var(--sf-opacity-40);
   }
 }

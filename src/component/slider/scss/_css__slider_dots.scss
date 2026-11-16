@@ -6,9 +6,17 @@
 .sf-slider-dots {
   --sf-slider-dots-dot--color: var(--sf-on-surface);
   --sf-slider-dots-dot--target-size: var(--sf-ui-1\/3--control-height);
-  /* The current dot is a pill as long as three dots (C143 (4)): 24 x 8. */
+  /* One dot size (C143 (4)): 8, the current one a pill as long as three dots,
+     24 x 8. It is the block's own, not a size modifier's: the places of C143
+     (--plate, --bare) write no size, and their dots drew 2 x 2 (RG-OT 5). */
+  --sf-slider-dots-dot--height: var(--sf-a8);
+  --sf-slider-dots-dot--width: var(--sf-a8);
   --sf-slider-dots-dot--active-width: var(--sf-c2);
-  gap: max(var(--sf-slider-dots--gap), calc(var(--sf-slider-dots-dot--target-size) - var(--sf-slider-dots-dot--width) + var(--sf-space-1\/4)));
+  /* Dots 8 apart, a step of 16 (owner decision C246): they read as one group.
+     A dot's press area is its step wide and a target high; narrower than 24
+     is allowed, the arrows beside do the same (WCAG 2.5.8). */
+  --sf-slider-dots--gap: var(--sf-space-1\/3);
+  gap: var(--sf-slider-dots--gap);
   padding-inline-start: max(var(--sf-slider-dots--padding-inline-start, 0px), calc((var(--sf-slider-dots-dot--target-size) - var(--sf-slider-dots-dot--width)) / 2));
   padding-top: max(var(--sf-slider-dots--padding-top, 0px), calc((var(--sf-slider-dots-dot--target-size) - var(--sf-slider-dots-dot--height)) / 2));
   padding-inline-end: max(var(--sf-slider-dots--padding-inline-end, 0px), calc((var(--sf-slider-dots-dot--target-size) - var(--sf-slider-dots-dot--width)) / 2));
@@ -59,7 +67,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: max(100%, var(--sf-slider-dots-dot--target-size));
+  width: calc(100% + var(--sf-slider-dots--gap));
   height: max(100%, var(--sf-slider-dots-dot--target-size));
 }
 
@@ -182,18 +190,8 @@
   --sf-slider-dots--padding-top: var(--sf-ui-2--space-y);
 }
 
-.sf-slider-dots--size-1 {
-  --sf-slider-dots--gap: var(--sf-space-1\/2);
-  --sf-slider-dots-dot--height: var(--sf-a8);
-  --sf-slider-dots-dot--width: var(--sf-a8);
-}
-
-.sf-slider-dots--size-2 {
-  --sf-slider-dots--gap: var(--sf-space-1);
-  /* One dot size (C143 (4)): 8 in both steps; the step keeps its plate. */
-  --sf-slider-dots-dot--height: var(--sf-a8);
-  --sf-slider-dots-dot--width: var(--sf-a8);
-}
+/* The size steps keep their plates (the paddings above); the dot and its
+   gap are the block's in both (C143 (4), C246). */
 
 .sf-slider-dots--framed {
   --sf-slider-dots--border-end-end-radius: var(--sf-radius-3);

@@ -18,15 +18,18 @@ test('Slider pauses owned autoplay while focus is inside or the document is hidd
   // keyboard focus holds; the pointer and a hidden tab only hold while they last.
   assert.match(source, /const holds = new Set\(\)/);
   assert.match(source, /:focus-visible/);
-  assert.match(source, /findRotationButton\(root\)/);
+  assert.match(source, /findRotationButton\(root, parts\.rotation\)/);
   assert.match(source, /delete sliderOptions\.autoplay/);
 });
 
-test('Only active or visible slides remain keyboard reachable and cleanup restores authored inert', () => {
-  assert.match(source, /swiper-slide-visible/);
-  assert.match(source, /swiper-slide-active/);
-  assert.match(source, /slide\.setAttribute\('inert', ''\)/);
-  assert.match(source, /authoredState\.forEach/);
+// The engine owns it since swiper 1.2.0 (owner decision C245): every strip on
+// it gets inert hidden slides, an authored inert stays and comes back on destroy.
+test('Only active or visible slides remain keyboard reachable and cleanup restores authored inert', async () => {
+  const engine = await readFile(new URL('../src/component/swiper/js/index.js', import.meta.url), 'utf8');
+  assert.match(engine, /slide\.classList\.toggle\('swiper-slide-visible', visible\)/);
+  assert.match(engine, /slide\.toggleAttribute\('inert', !visible \|\| slide\.__sfAuthoredInert\)/);
+  assert.match(engine, /slide\.toggleAttribute\('inert', slide\.__sfAuthoredInert\)/);
+  assert.doesNotMatch(source, /createSlideInteractivityGuard/);
 });
 
 test('Smart Slider preloads the Smart Icon Buttons that its template renders', async () => {

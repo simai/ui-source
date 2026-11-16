@@ -45,9 +45,16 @@
   min-inline-size: 0;
 }
 
+/* An edge control with nowhere to go. A <button> is disabled by the engine
+   (C245) and draws its own disabled look, so it takes no fade here: the fade
+   on top of that look dimmed the slider's arrows twice (RG-OT 1, 6). Another
+   element keeps the pale mark, the system's disabled opacity (C18). */
 .swiper-button-disabled {
   cursor: default;
-  opacity: var(--sf-opacity-disabled, 0.38);
   pointer-events: none;
+}
+
+.swiper-button-disabled:not(:disabled, :has(> button:disabled)) {
+  opacity: var(--sf-opacity-disabled);
 }
 }
