@@ -14,14 +14,16 @@ import test from 'node:test';
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const flat = (css) => css.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\s+/gu, ' ');
 
+const same = (selector) => selector.trim().replace(/\s*>\s*/gu, ' > ').replace(/"/gu, '');
 // The declarations of every rule whose selector list holds `selector`, joined.
 function declarations(css, selector) {
   const text = flat(css);
   const found = [];
   const rule = /([^{}]+)\{([^{}]*)\}/gu;
   for (const match of text.matchAll(rule)) {
-    const selectors = match[1].split(',').map((part) => part.trim().replace(/\s*>\s*/gu, ' > '));
-    if (selectors.includes(selector)) found.push(match[2].trim());
+    // The build writes attribute values unquoted ([data-layout=stack]).
+    const selectors = match[1].split(',').map(same);
+    if (selectors.includes(same(selector))) found.push(match[2].trim());
   }
   return found.join('; ');
 }
