@@ -10,13 +10,30 @@
 // core's root attributes instead (core/scss/_sf_css__display.scss), for the
 // page only: the panel keeps its own cookies as before, nothing new is kept.
 // Each legacy use is noted once in SF.deprecations.
-import {applySettings, LEGACY_REMOVE_AFTER, LEGACY_SINCE, schemeName} from '../../../core/js/display-settings.js';
+//
+// The panel's text size (kegl, 14-24 px, 16 by default) was its own px on
+// <html> and <body>. Since module.special 2.2.1 the panel writes it as the
+// class special-kegl-<n> and it is read here as the core text step
+// (data-sf-text-scale), which multiplies the browser's own size: the nearest
+// step of TEXT_SCALES to kegl / 16, never below the person's own size.
+import {applySettings, LEGACY_REMOVE_AFTER, LEGACY_SINCE, schemeName, TEXT_SCALES} from '../../../core/js/display-settings.js';
 import {noteDeprecated} from '../../../core/js/deprecations.js';
 
 const COLOURS = ['white', 'black', 'yellow', 'blue', 'green'];
 
 function note(from, to) {
   noteDeprecated({component: 'special', kind: 'class', from, to, since: LEGACY_SINCE, remove_after: LEGACY_REMOVE_AFTER});
+}
+
+// The legacy panel's default text size, the size a text step multiplies.
+const KEGL_BASE = 16;
+const KEGL_CLASS = /^special-kegl-(\d{1,2})$/u;
+
+/** The core text step of a legacy kegl: the nearest of TEXT_SCALES, a tie upwards, at least 100. */
+export function keglScale(kegl) {
+  const share = (Number(kegl) / KEGL_BASE) * 100;
+  if (!Number.isFinite(share) || share <= 100) return 100;
+  return TEXT_SCALES.reduce((best, step) => (Math.abs(step - share) <= Math.abs(best - share) ? step : best), 100);
 }
 
 /** The display settings the legacy classes ask for (null: the version is off). */
@@ -39,6 +56,11 @@ export function legacySettings(html, body) {
   } else if (has('special-img-black')) {
     settings.images = 'grey';
     note('special-img-black', '<html data-sf-images="grey">');
+  }
+  const kegl = [...html.classList].map((name) => KEGL_CLASS.exec(name)?.[1]).find(Boolean);
+  if (kegl) {
+    settings.textScale = keglScale(kegl);
+    if (Number(kegl) !== KEGL_BASE) note(`special-kegl-${kegl}`, `<html data-sf-text-scale="${settings.textScale}">`);
   }
   if (has('special-font-sans')) settings.font = 'sans';
   if (has('special-font-serif')) settings.font = 'serif';

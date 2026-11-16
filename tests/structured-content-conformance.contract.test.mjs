@@ -52,11 +52,11 @@ test('the JS renderer passes every case under the comparison rule', async () => 
   }
 });
 
-test('no case draws a style attribute, and a style key is a forbidden field (kit 2.0.0)', () => {
+test('no case draws a style attribute, and a style key is a forbidden field (kit 2.0.0 and later)', () => {
   for (const entry of cases) assert.equal(/\sstyle=/u.test(entry.expect.html), false, entry.id);
   const aligned = cases.find(({ id }) => id === 'table-align');
   assert.match(aligned.expect.html, /<td class="text-center">1<\/td><td class="text-end">/u);
-  assert.equal(manifest.version.split('.')[0], '2');
+  assert.ok(Number(manifest.version.split('.')[0]) >= 2, 'kit 2.0.0 or later');
   for (const place of ['node', 'data', 'props']) {
     const node = { id: 'p', type: 'content.paragraph', data: { content: [{ type: 'text', value: 'x' }] } };
     if (place === 'node') node.style = 'color: red';
@@ -170,7 +170,7 @@ test('the kit holds the inline model, escaping, the html@1 cleaning, the outlet 
 
 // Kit 2.1.0 (2026-11-10, F2): content.foreign and the converters.
 test('content.foreign draws nothing of raw on a public page, and a hash mismatch is reported', async () => {
-  assert.equal(manifest.version, '2.2.0');
+  assert.equal(manifest.version, '3.0.0');
   const foreign = cases.filter(({ id }) => id.startsWith('foreign-'));
   assert.deepEqual(foreign.map(({ id }) => id).sort(), ['foreign-editorjs', 'foreign-hash', 'foreign-hash-mismatch', 'foreign-html-script', 'foreign-markdown']);
   for (const entry of foreign) {

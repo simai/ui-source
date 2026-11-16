@@ -2,7 +2,7 @@ import { pageText } from '../page-language.js';
 import { actionEntry, layoutActionRow, openRowMenu } from '../overflow-row.js';
 import { roving } from '../roving.js';
 import { defineTagAliases } from '../tag-aliases.js';
-import { INLINE_COMPONENTS, INLINE_LIMITS, INLINE_MARKS, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
+import { INLINE_COMPONENTS, INLINE_LIMITS, INLINE_MARKS, INLINE_OBJECT, breakSegment, currentInlineProps, fromSegments, inlineComponentView, inlineExtensions, inlineLength, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from './inline-model.mjs';
 
 // In-place editor for the Composition inline content model. The host starts
 // it on a rendered heading or paragraph element; the editor exposes only
@@ -117,7 +117,10 @@ function atomEntry(element) {
     if (!element.hasAttribute(key)) continue;
     props[key] = kind === 'boolean' ? true : element.getAttribute(key);
   }
-  const entry = { type: 'component', name, ...(Object.keys(props).length ? { props } : {}) };
+  // An element read back is written under the current names: a dated alias
+  // attribute (sf-badge compact) becomes its new prop (icon-only).
+  const current = currentInlineProps(name, props);
+  const entry = { type: 'component', name, ...(Object.keys(current).length ? { props: current } : {}) };
   return isInlineComponent(entry) ? entry : null;
 }
 

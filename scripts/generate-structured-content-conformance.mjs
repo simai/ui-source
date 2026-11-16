@@ -21,7 +21,7 @@ import { canonicalHtml } from '../contracts/conformance/structured-content/norma
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const kit = resolve(root, 'contracts/conformance/structured-content');
-const KIT_VERSION = '2.2.0';
+const KIT_VERSION = '3.0.0';
 
 // ---------------------------------------------------------------------------
 // Building blocks
@@ -181,7 +181,11 @@ inline('link-dot-relative', 'A ./ and ../ link.', link('./a', text('here')), tex
 inline('link-fragment', 'A fragment link.', link('#section', text('below')));
 inline('link-schemes', 'http, https, mailto and tel links.', link('http://example.com', text('http')), text(' '), link('https://example.com/a"b', text('https')), text(' '), link('mailto:a@example.com', text('mail')), text(' '), link('tel:+70000000000', text('call')));
 inline('link-marked-children', 'A link holds marked text runs.', link('/a', text('plain '), text('bold', ['strong']), text(' code', ['code'])));
-inline('atom-badge', 'The badge atom draws sf-badge with its props; true is a bare attribute, false is left out.', text('New '), atom('badge', { text: 'beta', icon: 'star', appearance: 'outlined', scheme: 'primary', status: 'info', size: '1/2', compact: true }), text(' '), atom('badge', { text: 'off', compact: false }));
+inline('atom-badge', 'The badge atom draws sf-badge with its props; true is a bare attribute, false is left out.', text('New '), atom('badge', { text: 'beta', icon: 'star', appearance: 'outlined', scheme: 'primary', status: 'info', size: '1/2', 'icon-only': true }), text(' '), atom('badge', { text: 'off', 'icon-only': false }));
+// Kit 3.0.0 (2026-11-16, owner decision C134: the word compact means density
+// only): the badge atom's icon-only; compact is its dated alias until
+// 2027-01-01, accepted and drawn as icon-only (the new prop wins).
+inline('atom-badge-compact-alias', 'The badge atom\'s compact is the dated alias of icon-only: it is drawn as icon-only, and icon-only written beside it wins.', atom('badge', { text: 'beta', icon: 'star', compact: true }), text(' '), atom('badge', { text: 'on', compact: false, 'icon-only': true }), text(' '), atom('badge', { text: 'off', compact: true, 'icon-only': false }));
 inline('atom-badge-bare', 'A badge without props.', atom('badge'));
 inline('atom-kbd', 'The kbd atom draws its text as content, escaped.', atom('kbd', { text: 'Ctrl + <' }));
 inline('atom-icon', 'The icon atom.', atom('icon', { icon: 'home', label: 'Home "page"', size: '2', filled: true }));

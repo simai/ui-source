@@ -37,6 +37,19 @@ SF.Special = function(el, opt) {
 
         plugin.cookies = this.updateparam(plugin.cookies);
 
+        // The text size is the core display setting (C196 follow-up, module.special
+        // 2.2.1): the panel writes its size as the class special-kegl-<n> beside its
+        // other special-* classes, and the bridge (component/special/js/bridge.js)
+        // reads it as data-sf-text-scale. No px of its own on <html> or <body>; the
+        // panel's cookie stays as it was.
+        var setKegl = (kegl) => {
+            Array.from(html.classList).forEach((name) => {
+                if (/^special-kegl-\d+$/.test(name)) html.classList.remove(name);
+            });
+            var size = parseInt(kegl, 10);
+            if (size > 0) html.classList.add('special-kegl-' + size);
+        };
+
 
         this.close = () => {
             this.send(this.el.params.events.soundoff, window);
@@ -136,8 +149,7 @@ SF.Special = function(el, opt) {
                         break;
                 }
 
-                html.style.fontSize = plugin.cookies.specialkegl + 'px';
-                body.style.fontSize = plugin.cookies.specialkegl + 'px';
+                setKegl(plugin.cookies.specialkegl);
 
                 switch(plugin.cookies.specialimage) {
                     case 'off':
@@ -241,8 +253,7 @@ SF.Special = function(el, opt) {
                 if(plugin.cookies.specialkegl < 24) {
                     var kegl = Number(plugin.cookies.specialkegl);
                     kegl++;
-                    html.style.fontSize = kegl + 'px';
-                    body.style.fontSize = kegl + 'px';
+                    setKegl(kegl);
                     _this.cookies.set('specialkegl', kegl, 7);
                 }
             });
@@ -255,8 +266,7 @@ SF.Special = function(el, opt) {
                 if(plugin.cookies.specialkegl > 14) {
                     var kegl = Number(plugin.cookies.specialkegl);
                     kegl--;
-                    html.style.fontSize = kegl + 'px';
-                    body.style.fontSize = kegl + 'px';
+                    setKegl(kegl);
                     _this.cookies.set('specialkegl', kegl, 7);
                 }
             });
@@ -602,8 +612,7 @@ SF.Special = function(el, opt) {
             this.cookies.set('specialfont', defaultParams.cookies.specialfont, 7);
             panel.font.status.innerText = BX.message("SF_SPECIAL__FONT_DEFAULT");
 
-            html.style.fontSize = `${defaultParams.cookies.specialkegl}px`;
-            body.style.fontSize = `${defaultParams.cookies.specialkegl}px`;
+            setKegl(defaultParams.cookies.specialkegl);
             panel.kegl.status.innerText = `${defaultParams.cookies.specialkegl}${BX.message("SF_SPECIAL__SPECIAL_KEGL")}`;
             this.cookies.set('specialkegl', defaultParams.cookies.specialkegl, 7);
 

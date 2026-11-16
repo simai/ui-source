@@ -132,3 +132,23 @@ test('sf-button-copy, the attribute route and code copy say it through the helpe
   assert.ok(entry, 'SF.copyFeedback is in the public JS API');
   assert.deepEqual(entry.members, ['create', 'readText', 'select', 'words']);
 });
+
+test('the hidden holder of a value stands at the corner of its containing block (RG-CP-4 in core)', async () => {
+  // With no offsets an absolute box keeps its static place: after a button in
+  // a scrolled table with no positioned wrapper that place lies outside the
+  // scroller and widens the page (sf-clipboard's status, RG-CP-4). The core
+  // holder of selectCopySource is the same box.
+  const source = await read('src/core/js/copy-feedback.js');
+  const style = /const HOLDER_STYLE = '([^']+)'/u.exec(source)?.[1] ?? '';
+  assert.match(style, /position:absolute/u);
+  assert.match(style, /inset-block-start:0/u, 'holder at the block start');
+  assert.match(style, /inset-inline-start:0/u, 'holder at the inline start');
+});
+
+test('the Copy class component writes no dead sf-clipboard-<size> class', async () => {
+  // Its button is always sf-button or sf-icon-button, and every
+  // sf-clipboard-1/2/3 rule reads :not(.sf-button):not(.sf-icon-button);
+  // a size like 1/2 even wrote sf-clipboard-1/2, a name no sheet has.
+  const source = await read('src/component/clipboard/js/index.js');
+  assert.doesNotMatch(source, /`sf-clipboard-\$\{normalizedSize\}`/u);
+});

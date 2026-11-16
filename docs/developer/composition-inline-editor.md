@@ -26,11 +26,13 @@ hosts on this pair.
 An atom is `{type: 'component', name, props}`. `name` comes from a closed
 list, `badge`, `kbd`, `icon` and `button`; `props` are that component's own
 settings, and only the declared ones (`badge`: text, icon, appearance, scheme,
-status, size, compact; `kbd`: text, required; `icon`: icon, required, label,
+status, size, icon-only; `kbd`: text, required; `icon`: icon, required, label,
 size, filled; `button`: text, icon, appearance, scheme, size). Text props are
 strings, the others tokens or booleans. The Document validator refuses an
 atom with marks, an atom inside a link, a name outside the list and an
-undeclared or ill-typed prop.
+undeclared or ill-typed prop. A badge's `compact` is the dated alias of
+`icon-only` until 2027-01-01 (owner decision C134, inline model 1.3.0): still
+valid, drawn as `icon-only`, and read back from the page as `icon-only`.
 
 An atom draws its element (`<sf-badge>`, `<kbd>`, `<sf-icon>`,
 `<sf-button>`) with its props as attribute values, or for `kbd` as its text,

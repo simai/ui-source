@@ -80,6 +80,19 @@ function dropDescription(row, id) {
     else row.removeAttribute("aria-describedby");
 }
 
+// A menu without `popup` is drawn in place, as its contract says: opened
+// through openFor() it floats, and once closed it is drawn where it stands
+// again -- with the entries it was last given (sf-editor, evidence
+// control/evidence/2026-11-12-menu-context-closed). The contract is unchanged;
+// the development warning says so once per page, naming the first such menu.
+const IN_PLACE_OPEN_SAID = Symbol.for("sf.menu-context.in-place-open-said");
+function sayInPlaceOpen(menu) {
+  if (globalThis[IN_PLACE_OPEN_SAID] || menu.hasAttribute("popup")) return;
+  globalThis[IN_PLACE_OPEN_SAID] = true;
+  const name = menu.id ? `#${menu.id}` : (menu.className ? `${menu.localName}.${String(menu.className).trim().split(/\s+/u)[0]}` : menu.localName);
+  console.warn(`SIMAI Framework: ${name} was opened through openFor() without the popup attribute. A menu without popup is drawn in place, so it stays drawn after it closes; add popup to a menu that only opens from a control or a right click.`);
+}
+
 // How wide a popup is by what it holds (owner decision C32, 2026-11-09): the
 // class sheet sizes each from core's --sf-popup-*-width steps, which follow
 // the density. "content" (the default) is the menu's rule.
@@ -1273,6 +1286,7 @@ class SfContextMenu extends ContextMenuElement {
   // attribute gives the default.
   async openFor(anchor, {side = "block-end", align = "start", focus = "first", parentMenu = null, alignmentOffset = 0, offset = undefined, width = this.width, target = undefined} = {}) {
     if (!(anchor instanceof Element)) return {outcome: "refused", reason: "invalid"};
+    sayInPlaceOpen(this);
     if (this._owned) this.close({restoreFocus: false, ask: false});
     // The object the menu acts on (C164): the row of an area named by `for`
     // that holds the anchor -- the row's «⋯» opens the same menu the right

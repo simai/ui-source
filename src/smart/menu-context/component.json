@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu-context's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu-context",
   "tag": "sf-menu-context",
-  "version": "1.25.4",
+  "version": "1.25.5",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -212,7 +212,7 @@
     "popup": {
       "type": "boolean",
       "default": false,
-      "summary": "Not drawn until opened through openFor(). A menu without it is drawn in place, as before."
+      "summary": "Not drawn until opened through openFor(). A menu without it is drawn in place, as before, and stays drawn after openFor() closes it; since 1.25.5 such an openFor() warns once in the console."
     },
     "search": {
       "type": "object",
@@ -996,7 +996,8 @@
     "version 1.25.0 (2026-11-15, owner decision C164 (1), research CM): a menu opened at a point (a zero-size anchor: right-click, long press) flips to the other side of the point when it does not fit -- left of the point at the right edge (right of it in RTL), above it at the bottom edge -- so its corner stays on the point; on a phone it was shifted 36 px off the point instead. Only when it fits on neither side does it stand on the side with more room, shifted to the viewport's edge less --sf-space-1/2. The rule is core positioning's (position.js: a point flips on both axes); a menu opened at an element (the menu key, Shift+F10, a button) keeps its placement. Settings, values, events and keys unchanged.",
     "version 1.25.1 (2026-11-14, owner decision C176, defect SM-3; C157 (5), (6); written on the branch as 1.22.0): a minor. A drilling popup (submenu=\"drill\", opened by openFor) is the one bottom sheet on a phone, as a form is: a settings menu (sf-settings) and the person menu with its settings rows; its levels open inside the same sheet with the way back in its head, a swipe down from the handle row closes it, and a window widened past the phone anchors it again. Above a phone nothing changes.",
     "version 1.25.3 (2026-11-15, owner decision C191 (4)-(6), control/research/2026-11-14-recipe-parts.md #q-ar-where, #q-ar-direction; above 1.23.0 of fix/menu-opener-size; written on the branch as 1.24.0): a meter row, entry {type: 'meter', text, value, value-text, warning-at, error-at}: an amount within a known range, such as the account's tariff remainder in a person menu, where it stands instead of a ring on the header's avatar (4). A block between rows, not a row (no focus, not in the arrow walk, not narrowed by a search; role none): the name and the words on one line, aria-hidden, over an sf-progress-bar meter (size 1, text-position none) named by text, valued by value (the share used, clamped 0..100, so the thresholds fire, (5)) and said by value-text (the remainder in words, (5)-(6)); without value-text the line shows the percentage. Insets the note's and the header's, 4 between the line and the bar (component.context-menu 1.16.0). Relation cl-progress-bar (lazy). Other entries, settings, events and keys unchanged.",
-    "version 1.25.4 (2026-11-15, DEV return TT-11 of the GB6+GB7 intent acceptance, owner decision C160 (1)): a patch: the value under a drilling row's name (sf-settings' «Обычно») no longer carries a browser title; when it is cut, its whole text is the row's Framework tooltip on hover, keyboard focus or a long press, measured each time the row is reached, and not the row's description (the value is in its name already)."
+    "version 1.25.4 (2026-11-15, DEV return TT-11 of the GB6+GB7 intent acceptance, owner decision C160 (1)): a patch: the value under a drilling row's name (sf-settings' «Обычно») no longer carries a browser title; when it is cut, its whole text is the row's Framework tooltip on hover, keyboard focus or a long press, measured each time the row is reached, and not the row's description (the value is in its name already).",
+    "version 1.25.5 (2026-11-16, queue item 304, evidence ui-control control/evidence/2026-11-12-menu-context-closed): a patch: openFor() on a menu without the popup attribute -- which floats while open and is drawn in place again after it closes, with its last entries (the trap sf-editor fell into) -- writes one development warning per page, naming the menu, and opens as before. Settings, values, events, keys and the drawing unchanged."
   ],
   "x-registry": {
     "item_contract": {

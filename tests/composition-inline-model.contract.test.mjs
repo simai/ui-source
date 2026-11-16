@@ -3,7 +3,7 @@ import test from 'node:test';
 
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
 import { render, validate } from '../src/core/js/composition/index.mjs';
-import { INLINE_COMPONENTS, fromSegments, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from '../src/core/js/composition/inline-model.mjs';
+import { INLINE_COMPONENTS, INLINE_PROP_ALIASES, currentInlineProps, fromSegments, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark } from '../src/core/js/composition/inline-model.mjs';
 
 const text = (value, marks) => ({ type: 'text', value, ...(marks ? { marks } : {}) });
 const paragraph = (content) => ({ schema: 'simai.composition.document.v1', id: 'p', profile: 'ui-layout', root: { id: 'p', type: 'content.paragraph', data: { content } } });
@@ -107,7 +107,7 @@ test('every inline operation keeps unknown nodes and atoms exactly', () => {
 });
 
 test('edits next to an atom keep it, and deleting its one unit removes it whole', () => {
-  const badge = atom('badge', { text: 'New', status: 'success', compact: true });
+  const badge = atom('badge', { text: 'New', status: 'success', 'icon-only': true });
   const content = [text('Hello'), badge, text('world')];
   assert.deepEqual(objectAt(content, 5), badge);
   assert.equal(objectAt(content, 4), null);
@@ -125,7 +125,7 @@ test('edits next to an atom keep it, and deleting its one unit removes it whole'
 
 test('the inline atom validates for each declared name', () => {
   const content = [
-    text('Status '), atom('badge', { text: 'Beta', appearance: 'tonal', scheme: 'primary', status: 'info', size: '1/2', compact: false, icon: 'star' }),
+    text('Status '), atom('badge', { text: 'Beta', appearance: 'tonal', scheme: 'primary', status: 'info', size: '1/2', 'icon-only': false, icon: 'star' }),
     text(', press '), atom('kbd', { text: 'Ctrl+S' }),
     text(', '), atom('icon', { icon: 'arrow_forward', label: 'Next', filled: true }),
     text(', '), atom('button', { text: 'Save', icon: 'save', appearance: 'outline', scheme: 'secondary', size: '1' }),
@@ -144,6 +144,7 @@ test('the inline atom rejects marks, nesting in a link, names outside the list a
   assert.deepEqual(codes([atom('badge', { onclick: 'alert(1)' })]), ['schema_one_of']);
   assert.deepEqual(codes([atom('badge', { status: 'x" onload="y' })]), ['schema_one_of']);
   assert.deepEqual(codes([atom('badge', { compact: 'yes' })]), ['schema_one_of']);
+  assert.deepEqual(codes([atom('badge', { 'icon-only': 'yes' })]), ['schema_one_of']);
   assert.deepEqual(codes([atom('kbd')]), ['schema_one_of']);
   assert.deepEqual(codes([atom('icon', { label: 'No glyph' })]), ['schema_one_of']);
   assert.deepEqual(codes([{ ...atom('kbd', { text: 'K' }), value: 'x' }]), ['schema_one_of']);
@@ -153,23 +154,23 @@ test('the inline atom rejects marks, nesting in a link, names outside the list a
 test('the renderer draws atoms with every prop escaped as text', async () => {
   const content = [
     atom('kbd', { text: '<script>alert(1)</script>' }),
-    atom('badge', { text: '"><script>alert(2)</script>', status: 'info', compact: true }),
+    atom('badge', { text: '"><script>alert(2)</script>', status: 'info', 'icon-only': true }),
     atom('button', { text: '<b>x</b>' }),
     atom('icon', { icon: 'star', label: '</sf-icon><img src=x onerror=alert(3)>' }),
   ];
   const { html } = await render({ ...paragraph(content) });
   assert.equal(html, '<p data-sf-composition-id="p">'
     + '<kbd>&lt;script&gt;alert(1)&lt;/script&gt;</kbd>'
-    + '<sf-badge text="&quot;&gt;&lt;script&gt;alert(2)&lt;/script&gt;" status="info" compact></sf-badge>'
+    + '<sf-badge text="&quot;&gt;&lt;script&gt;alert(2)&lt;/script&gt;" status="info" icon-only></sf-badge>'
     + '<sf-button text="&lt;b&gt;x&lt;/b&gt;"></sf-button>'
     + '<sf-icon icon="star" label="&lt;/sf-icon&gt;&lt;img src=x onerror=alert(3)&gt;"></sf-icon>'
     + '</p>');
 });
 
-test('content.heading is type version 1.3.0 and content.paragraph 1.4.0 (inline model 1.2.0: break, strike), the Document stays v1', () => {
-  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.heading').version, '1.3.0');
-  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.paragraph').version, '1.4.0');
-  assert.equal(BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.heading').type_version, '1.3.0');
+test('content.heading is type version 1.4.0 and content.paragraph 1.5.0 (inline model 1.3.0: the badge atom\'s icon-only), the Document stays v1', () => {
+  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.heading').version, '1.4.0');
+  assert.equal(BUILTIN_TYPE_MANIFESTS.find((entry) => entry.type === 'content.paragraph').version, '1.5.0');
+  assert.equal(BUILTIN_EDITOR_MANIFESTS.find((entry) => entry.type === 'content.heading').type_version, '1.4.0');
   assert.deepEqual(Object.keys(INLINE_COMPONENTS), ['badge', 'kbd', 'icon', 'button']);
 });
 
@@ -255,4 +256,23 @@ test('every inline operation\'s output validates (property test)', () => {
     }
   }
   assert.equal(checked, 1600);
+});
+
+// Owner decision C134 (the word compact means density only): the badge atom
+// that shows its icon alone is icon-only, as on sf-badge 1.6.0; compact is
+// its dated alias in a Document until 2027-01-01, still valid and drawn as
+// icon-only, the new prop winning when both are written (queue #74).
+test('the badge atom writes icon-only; compact is its dated alias drawn the same', async () => {
+  assert.equal(INLINE_COMPONENTS.badge.props['icon-only'], 'boolean');
+  assert.deepEqual(INLINE_PROP_ALIASES.badge.compact, { to: 'icon-only', since: '2026-11-16', remove_after: '2027-01-01' });
+  for (const props of [{ 'icon-only': true }, { compact: true }, { compact: false, 'icon-only': true }]) {
+    const entry = atom('badge', { text: 'x', ...props });
+    assert.equal(isInlineComponent(entry), true, JSON.stringify(props));
+    assert.deepEqual(inlineComponentView(entry).attributes, [['text', 'x'], ['icon-only', '']], JSON.stringify(props));
+  }
+  assert.deepEqual(inlineComponentView(atom('badge', { text: 'x', compact: true, 'icon-only': false })).attributes, [['text', 'x']]);
+  assert.deepEqual(currentInlineProps('badge', { compact: true, text: 'x' }), { text: 'x', 'icon-only': true });
+  const { html } = await render(paragraph([atom('badge', { text: 'Old', compact: true })]));
+  assert.equal(html, '<p data-sf-composition-id="p"><sf-badge text="Old" icon-only></sf-badge></p>');
+  assert.doesNotMatch(html, /compact/u);
 });

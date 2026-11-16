@@ -67,11 +67,32 @@ export const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLengt
 // component reads from a fixed set) or a boolean. Nothing else is drawn, so
 // no prop can become an event handler or markup.
 export const INLINE_COMPONENTS = Object.freeze({
-  badge: Object.freeze({ tag: 'sf-badge', required: [], props: Object.freeze({ text: 'text', icon: 'token', appearance: 'token', scheme: 'token', status: 'token', size: 'token', compact: 'boolean' }) }),
+  badge: Object.freeze({ tag: 'sf-badge', required: [], props: Object.freeze({ text: 'text', icon: 'token', appearance: 'token', scheme: 'token', status: 'token', size: 'token', 'icon-only': 'boolean', compact: 'boolean' }) }),
   kbd: Object.freeze({ tag: 'kbd', required: ['text'], props: Object.freeze({ text: 'text' }) }),
   icon: Object.freeze({ tag: 'sf-icon', required: ['icon'], props: Object.freeze({ icon: 'token', label: 'text', size: 'token', filled: 'boolean' }) }),
   button: Object.freeze({ tag: 'sf-button', required: [], props: Object.freeze({ text: 'text', icon: 'token', appearance: 'token', scheme: 'token', size: 'token' }) }),
 });
+// Dated prop aliases of an atom: the old prop is still accepted and drawn as
+// the new one, until remove_after. The badge that shows its icon alone is
+// icon-only (owner decision C134: the word compact means density only,
+// sf-badge 1.6.0); compact is its alias in a Document, as on the element
+// (journal property-inline-badge-compact-to-icon-only). An entry that has
+// both draws the new one.
+export const INLINE_PROP_ALIASES = Object.freeze({
+  badge: Object.freeze({ compact: Object.freeze({ to: 'icon-only', since: '2026-11-16', remove_after: '2027-01-01' }) }),
+});
+const aliasOf = (name, key) => INLINE_PROP_ALIASES[name]?.[key]?.to ?? null;
+
+/** The atom's props under their current names: a dated alias moved to its new prop (the new prop wins). */
+export function currentInlineProps(name, props = {}) {
+  const out = {};
+  for (const [key, value] of Object.entries(props)) if (!aliasOf(name, key)) out[key] = value;
+  for (const [key, value] of Object.entries(props)) {
+    const to = aliasOf(name, key);
+    if (to && !(to in out)) out[to] = value;
+  }
+  return out;
+}
 const TOKEN = '^[a-z0-9][a-z0-9_/-]{0,63}$';
 const TOKEN_PATTERN = new RegExp(TOKEN, 'u');
 // The one unit an atom or an opaque node holds in segment offsets.
@@ -118,7 +139,7 @@ export function isInlineComponent(node) {
 export function inlineComponentView(node) {
   if (!isInlineComponent(node)) return null;
   const entry = INLINE_COMPONENTS[node.name];
-  const props = node.props ?? {};
+  const props = currentInlineProps(node.name, node.props ?? {});
   if (node.name === 'kbd') return { tag: entry.tag, attributes: [], text: props.text };
   const attributes = Object.keys(entry.props).filter((key) => key in props && props[key] !== false)
     .map((key) => [key, props[key] === true ? '' : props[key]]);
