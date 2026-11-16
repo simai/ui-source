@@ -13,7 +13,7 @@
     "src/component/placeholder/scss/_css__placeholder.scss",
     "src/component/placeholder/scss/index.scss"
   ],
-  "content_sha256": "358aaa53991b118980b108341579e75ebae27ff34ac4e46a456ec0e13dcfa561",
+  "content_sha256": "882b09ea6bc465a7defdc803c083a166079ccbc9a80402dd7d53fb526fa7dfa1",
   "dependencies": [
     {
       "id": "tokens.colour",

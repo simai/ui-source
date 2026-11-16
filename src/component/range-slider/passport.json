@@ -18,7 +18,7 @@
     "src/component/range-slider/scss/_css__thumbs.scss",
     "src/component/range-slider/scss/index.scss"
   ],
-  "content_sha256": "3c6e28c82be534c8eb6ce7f4571e8a505b722fe4dfa850adf5003934924d6586",
+  "content_sha256": "4bccc48a2e151ec5cf65fd0eeef84157adcbc42a003be18392fe1766e0d969c3",
   "dependencies": [
     {
       "id": "core.runtime",

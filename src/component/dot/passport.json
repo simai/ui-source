@@ -11,7 +11,7 @@
     "src/component/dot/scss/_css_dot.scss",
     "src/component/dot/scss/index.scss"
   ],
-  "content_sha256": "72b21cabf6fd1c851fbf6915b68eef80a3c4c7c6b134370d6430b3d9e5e2f6b7",
+  "content_sha256": "545057c2f8eea2704832684fc1baec3842aec849240176919def8d9166fc5068",
   "dependencies": [
     {
       "id": "tokens.colour",

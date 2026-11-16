@@ -16,7 +16,7 @@
     "src/component/tooltip/scss/_css__tooltip_custom.scss",
     "src/component/tooltip/scss/index.scss"
   ],
-  "content_sha256": "a0a226281c56edc1f2fd75e25129e249a0f2e9fb1f609711985470c0971ab02c",
+  "content_sha256": "6bf0847e12a4601ff5a3dfb02d97dbd425b5258e68ec6006454d25fdb1b9967c",
   "dependencies": [
     {
       "id": "component.kbd",
@@ -25,6 +25,10 @@
     {
       "id": "core.runtime",
       "range": "^1.0.0"
+    },
+    {
+      "id": "core.styles",
+      "range": "^1.15.0"
     },
     {
       "id": "module.component-shared",

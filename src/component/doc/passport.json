@@ -13,7 +13,7 @@
     "src/component/doc/scss/_sf_css_doc.scss",
     "src/component/doc/scss/index.scss"
   ],
-  "content_sha256": "ef1d420781253bcd10dbfea4a084f0d06b629b077aa9592fed28b89e1340f675",
+  "content_sha256": "6a0f2e5fe224bff61ea7a66bc5001f6f03c696529ea06ca793dc068c9c5512c2",
   "dependencies": [
     {
       "id": "tokens.border",

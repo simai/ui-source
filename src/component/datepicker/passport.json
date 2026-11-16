@@ -14,8 +14,12 @@
     "src/component/datepicker/scss/_css_day.scss",
     "src/component/datepicker/scss/index.scss"
   ],
-  "content_sha256": "0beeba3b785e74ad4a36e76ef302b6da61899abb6629147075e918e2b3c1b66d",
+  "content_sha256": "cd70a323828a6ec187c4037b8219e2d75417a63c7701afd1371b29e096e03212",
   "dependencies": [
+    {
+      "id": "core.styles",
+      "range": "^1.15.0"
+    },
     {
       "id": "tokens.border",
       "range": "^1.0.0"

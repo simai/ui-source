@@ -16,7 +16,7 @@
     "src/component/textarea/scss/_css__utility_hint_layout.scss",
     "src/component/textarea/scss/index.scss"
   ],
-  "content_sha256": "d84e44dca2b850d7574b2979286db2e1c12e744cf0599177273e6534208f54a0",
+  "content_sha256": "23cce8f3aeb3c2a0128f699ca6cfb72eb52c48cc6533dc0111f70d2ec186d3f4",
   "dependencies": [
     {
       "id": "component.inputs",

@@ -14,7 +14,7 @@
     "src/component/featured-icon/scss/_css_featured-icon.scss",
     "src/component/featured-icon/scss/index.scss"
   ],
-  "content_sha256": "ddd3176d81574133220f2373d1e68df53db84800ec14c1ec68d108ad53cbb00f",
+  "content_sha256": "9b16849c0b1629d3e2336002c99b10e7e7ef7bfe7ecbf59c80c13ceff25d21d6",
   "dependencies": [
     {
       "id": "core.runtime",

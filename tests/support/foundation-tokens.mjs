@@ -75,7 +75,9 @@ function closeOf(text, open) {
 }
 
 // Rules: {selectors, media: [conditions], layer: name|null, order, declarations: [[name, value]]}
-export function parseSheet(input) {
+// With {all: true} every declaration is kept, not the custom properties
+// alone (the C273 paint test asks which layer wins a background-color).
+export function parseSheet(input, {all = false} = {}) {
   const css = stripComments(input);
   const rules = [];
   const layerOrder = [];
@@ -125,7 +127,7 @@ export function parseSheet(input) {
           const colon = part.indexOf(':');
           if (colon < 0) continue;
           const name = part.slice(0, colon).trim().replace(/\\/gu, '');
-          if (!name.startsWith('--')) continue;
+          if (!all && !name.startsWith('--')) continue;
           declarations.push([name, part.slice(colon + 1).trim()]);
         }
         if (declarations.length) rules.push({selectors: splitTop(prelude, ',').map((s) => s.trim()), media, layer, order: order++, declarations});

@@ -19,7 +19,7 @@
     "src/component/menu/scss/_css__menu_group.scss",
     "src/component/menu/scss/index.scss"
   ],
-  "content_sha256": "a0058f055ab5024342b69878364b18e6347c2b1c08ba7307f7002056ede1bf8c",
+  "content_sha256": "b3395747308f85e447e23ccb479f0e7d29fa719c14793cb6503d18a3de498ac5",
   "dependencies": [
     {
       "id": "component.badges",
@@ -36,6 +36,10 @@
     {
       "id": "core.runtime",
       "range": "^1.0.0"
+    },
+    {
+      "id": "core.styles",
+      "range": "^1.15.0"
     },
     {
       "id": "tokens.border",

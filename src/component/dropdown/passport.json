@@ -19,7 +19,7 @@
     "src/component/dropdown/scss/_css__list.scss",
     "src/component/dropdown/scss/index.scss"
   ],
-  "content_sha256": "debae64ee3caa19d2fae94830675592acaf13c22e2f4479d40fb7d4ad3edc3fb",
+  "content_sha256": "42d350f45b42233a5ae10217c918ba39956787262862033aeb91c13cee83b991",
   "dependencies": [
     {
       "id": "component.context-menu",
@@ -36,6 +36,10 @@
     {
       "id": "core.runtime",
       "range": "^1.0.0"
+    },
+    {
+      "id": "core.styles",
+      "range": "^1.15.0"
     },
     {
       "id": "module.component-shared",
