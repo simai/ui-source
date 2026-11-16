@@ -113,7 +113,7 @@ test('sf-menu: navigate and toggle by vocabulary 1.1.5, Escape declared where it
   // C30 adds the APG disclosure-navigation arrows to a panel and to the row.
   assert.deepEqual(manifest.keyboard.panel, {Escape: 'close', ArrowDown: 'next', ArrowUp: 'previous', Home: 'first', End: 'last', ArrowRight: 'open', ArrowLeft: 'close'});
   assert.ok(!('Escape' in manifest.keyboard.host));
-  assert.deepEqual(manifest.accessibility.keys.Escape.when, [{orientation: 'horizontal', appearance: 'default'}, {orientation: 'horizontal', appearance: 'navigation'}, {collapse: 'always'}, {collapse: 'narrow'}]);
+  assert.deepEqual(manifest.accessibility.keys.Escape.when, [{orientation: 'horizontal', appearance: 'default'}, {orientation: 'horizontal', appearance: 'navigation'}, {orientation: 'horizontal', appearance: 'framed'}, {collapse: 'always'}, {collapse: 'narrow'}]);
   const source = read('src/smart/menu/index.js');
   assert.match(source, /return flyouts \|\| panel \? \{outcome: 'applied'\} : \{outcome: 'refused', reason: 'already'\};/u);
   assert.doesNotMatch(source, /\+\+sequence|let sequence/u, 'no module counter (#41)');

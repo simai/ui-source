@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {URL} from 'node:url';
 
 // Section navigation review, area c (DEV letter RG-NV 13-29; owner decisions
 // C238, C239, C240). Measured in a browser by ui-control's helper probe
