@@ -14,11 +14,15 @@
     "src/component/reference-link/scss/_css__reference_link.scss",
     "src/component/reference-link/scss/index.scss"
   ],
-  "content_sha256": "942e212540ad58bf663e3a41b5a92d363b06e15d6e5f53fb6dc57bea8a2d08ef",
+  "content_sha256": "72ad96389690ffde6a932b4a39eecc5963d19881bce69b4c474daacc9e6af497",
   "dependencies": [
     {
       "id": "tokens.border",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.breakpoint",
+      "range": "^1.2.0"
     },
     {
       "id": "tokens.colour",
