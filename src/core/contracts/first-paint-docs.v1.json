@@ -1127,26 +1127,38 @@
           "skeleton": null,
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 390,
                 24
-              ]
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  24
+                ],
+                "drawn": [
+                  390,
+                  24
+                ],
+                "holds": true
+              }
             },
             "1440": {
+              "bare": {
+                "held": [
+                  1440,
+                  28
+                ],
+                "drawn": [
+                  1440,
+                  28
+                ],
+                "holds": true
+              },
               "printed": [
                 1440,
                 28
-              ],
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              }
+              ]
             }
           }
         },
@@ -1162,21 +1174,33 @@
                 24
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  24
+                ],
+                "drawn": [
+                  390,
+                  24
+                ],
                 "holds": true
               }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 1440,
                 28
-              ]
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  28
+                ],
+                "drawn": [
+                  1440,
+                  28
+                ],
+                "holds": true
+              }
             }
           }
         },
@@ -1192,8 +1216,14 @@
                 24
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  24
+                ],
+                "drawn": [
+                  390,
+                  24
+                ],
                 "holds": true
               }
             },
@@ -1203,8 +1233,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  28
+                ],
+                "drawn": [
+                  1440,
+                  28
+                ],
                 "holds": true
               }
             }
@@ -1217,15 +1253,21 @@
           "skeleton": null,
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 390,
                 24
-              ]
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  24
+                ],
+                "drawn": [
+                  390,
+                  24
+                ],
+                "holds": true
+              }
             },
             "1440": {
               "printed": [
@@ -1233,8 +1275,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  28
+                ],
+                "drawn": [
+                  1440,
+                  28
+                ],
                 "holds": true
               }
             }
@@ -2028,21 +2076,33 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 0,
                 0
-              ]
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
+              }
             }
           }
         },
@@ -2058,8 +2118,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
@@ -2069,8 +2135,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -2088,8 +2160,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
@@ -2099,8 +2177,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -2118,21 +2202,33 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 0,
                 0
-              ]
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
+              }
             }
           }
         },
@@ -2149,8 +2245,11 @@
               ],
               "bare": {
                 "held": null,
-                "drawn": null,
-                "holds": true
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": false
               }
             },
             "1440": {
@@ -2159,8 +2258,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -2178,8 +2283,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
@@ -2189,8 +2300,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -2283,21 +2400,33 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
             "1440": {
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
+              },
               "printed": [
                 0,
                 0
-              ],
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              }
+              ]
             }
           }
         },
@@ -2313,9 +2442,15 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -2324,9 +2459,15 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
               }
             }
           }
@@ -2343,9 +2484,15 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -2354,9 +2501,15 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
               }
             }
           }
@@ -2390,8 +2543,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
@@ -2401,8 +2560,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -2420,21 +2585,33 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
             "1440": {
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
+                "holds": true
+              },
               "printed": [
                 0,
                 0
-              ],
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              }
+              ]
             }
           }
         },
@@ -2450,8 +2627,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
@@ -2461,8 +2644,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -2480,8 +2669,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
@@ -2491,8 +2686,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -3072,24 +3273,44 @@
           "skeleton": "default/reference.skeleton.html",
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
-              },
+              "skeleton": [
+                390,
+                657
+              ],
               "printed": [
                 390,
                 657
-              ]
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  545
+                ],
+                "holds": false
+              }
             },
             "1440": {
+              "skeleton": [
+                1440,
+                685
+              ],
               "printed": [
                 1440,
                 685
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  557
+                ],
                 "holds": false
               }
             }
@@ -3102,24 +3323,44 @@
           "skeleton": "default/labels-start.skeleton.html",
           "box": {
             "390": {
+              "skeleton": [
+                390,
+                388
+              ],
               "printed": [
                 390,
                 388
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  388
+                ],
                 "holds": false
               }
             },
             "1440": {
+              "skeleton": [
+                1440,
+                392
+              ],
               "printed": [
                 1440,
                 392
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  392
+                ],
                 "holds": false
               }
             }
@@ -3132,24 +3373,44 @@
           "skeleton": "default/view.skeleton.html",
           "box": {
             "390": {
+              "skeleton": [
+                390,
+                265.2
+              ],
               "printed": [
                 390,
                 265.2
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  265.2
+                ],
                 "holds": false
               }
             },
             "1440": {
+              "skeleton": [
+                1440,
+                241.6
+              ],
               "printed": [
                 1440,
                 241.6
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  241.6
+                ],
                 "holds": false
               }
             }
@@ -3162,26 +3423,46 @@
           "skeleton": "default/instant.skeleton.html",
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
-              },
+              "skeleton": [
+                390,
+                244
+              ],
               "printed": [
                 390,
                 244
-              ]
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  224
+                ],
+                "holds": false
+              }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
-              },
+              "skeleton": [
+                1440,
+                272
+              ],
               "printed": [
                 1440,
                 272
-              ]
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  248
+                ],
+                "holds": false
+              }
             }
           }
         },
@@ -3192,24 +3473,44 @@
           "skeleton": "default/sticky.skeleton.html",
           "box": {
             "390": {
+              "skeleton": [
+                390,
+                674
+              ],
               "printed": [
                 390,
                 674
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  562
+                ],
                 "holds": false
               }
             },
             "1440": {
+              "skeleton": [
+                1440,
+                710
+              ],
               "printed": [
                 1440,
                 710
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  582
+                ],
                 "holds": false
               }
             }
@@ -3470,8 +3771,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -3481,8 +3788,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -3500,8 +3813,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -3511,8 +3830,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -3530,8 +3855,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -3541,8 +3872,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -3560,8 +3897,14 @@
                 68
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  68
+                ],
+                "drawn": [
+                  390,
+                  68
+                ],
                 "holds": true
               }
             },
@@ -3571,8 +3914,14 @@
                 80
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  80
+                ],
+                "drawn": [
+                  1440,
+                  80
+                ],
                 "holds": true
               }
             }
@@ -3590,8 +3939,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -3601,8 +3956,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -3620,8 +3981,14 @@
                 80
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  80
+                ],
+                "drawn": [
+                  390,
+                  80
+                ],
                 "holds": true
               }
             },
@@ -3631,8 +3998,14 @@
                 92
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  92
+                ],
+                "drawn": [
+                  1440,
+                  92
+                ],
                 "holds": true
               }
             }
@@ -3645,15 +4018,21 @@
           "skeleton": null,
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 390,
                 36
-              ]
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": true
+              }
             },
             "1440": {
               "printed": [
@@ -3661,8 +4040,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
                 "holds": true
               }
             }
@@ -3680,8 +4065,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -3691,8 +4082,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -3727,8 +4124,14 @@
                 61
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  61
+                ],
+                "drawn": [
+                  390,
+                  61
+                ],
                 "holds": true
               }
             },
@@ -3738,8 +4141,14 @@
                 73
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  73
+                ],
+                "drawn": [
+                  1440,
+                  73
+                ],
                 "holds": true
               }
             }
@@ -3757,8 +4166,14 @@
                 53
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  53
+                ],
+                "drawn": [
+                  390,
+                  53
+                ],
                 "holds": true
               }
             },
@@ -3768,8 +4183,14 @@
                 65
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  65
+                ],
+                "drawn": [
+                  1440,
+                  65
+                ],
                 "holds": true
               }
             }
@@ -3787,21 +4208,33 @@
                 61
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  61
+                ],
+                "drawn": [
+                  390,
+                  61
+                ],
                 "holds": true
               }
             },
             "1440": {
+              "bare": {
+                "held": [
+                  1440,
+                  73
+                ],
+                "drawn": [
+                  1440,
+                  73
+                ],
+                "holds": true
+              },
               "printed": [
                 1440,
                 73
-              ],
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              }
+              ]
             }
           }
         },
@@ -3817,21 +4250,33 @@
                 61
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  61
+                ],
+                "drawn": [
+                  390,
+                  61
+                ],
                 "holds": true
               }
             },
             "1440": {
+              "bare": {
+                "held": [
+                  1440,
+                  73
+                ],
+                "drawn": [
+                  1440,
+                  73
+                ],
+                "holds": true
+              },
               "printed": [
                 1440,
                 73
-              ],
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              }
+              ]
             }
           }
         }
@@ -4162,9 +4607,15 @@
                 80
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  80
+                ],
+                "drawn": [
+                  390,
+                  80
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4173,8 +4624,14 @@
                 88
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  88
+                ],
+                "drawn": [
+                  1440,
+                  88
+                ],
                 "holds": true
               }
             }
@@ -4192,21 +4649,33 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
+                "holds": true
               }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 1440,
                 64
-              ]
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  64
+                ],
+                "drawn": [
+                  1440,
+                  64
+                ],
+                "holds": true
+              }
             }
           }
         },
@@ -4222,8 +4691,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             },
@@ -4233,8 +4708,14 @@
                 0
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  0,
+                  0
+                ],
                 "holds": true
               }
             }
@@ -4252,9 +4733,15 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4263,8 +4750,14 @@
                 64
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  64
+                ],
+                "drawn": [
+                  1440,
+                  64
+                ],
                 "holds": true
               }
             }
@@ -4282,9 +4775,15 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4293,8 +4792,14 @@
                 64
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  64
+                ],
+                "drawn": [
+                  1440,
+                  64
+                ],
                 "holds": true
               }
             }
@@ -4312,9 +4817,15 @@
                 80
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  80
+                ],
+                "drawn": [
+                  390,
+                  80
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4323,8 +4834,14 @@
                 88
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  88
+                ],
+                "drawn": [
+                  1440,
+                  88
+                ],
                 "holds": true
               }
             }
@@ -4342,9 +4859,15 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4353,8 +4876,14 @@
                 64
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  64
+                ],
+                "drawn": [
+                  1440,
+                  64
+                ],
                 "holds": true
               }
             }
@@ -4372,9 +4901,15 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4383,8 +4918,14 @@
                 64
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  64
+                ],
+                "drawn": [
+                  1440,
+                  64
+                ],
                 "holds": true
               }
             }
@@ -4402,9 +4943,15 @@
                 80
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  80
+                ],
+                "drawn": [
+                  390,
+                  80
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4413,8 +4960,14 @@
                 88
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  88
+                ],
+                "drawn": [
+                  1440,
+                  88
+                ],
                 "holds": true
               }
             }
@@ -4432,9 +4985,15 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -4443,8 +5002,14 @@
                 64
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  64
+                ],
+                "drawn": [
+                  1440,
+                  64
+                ],
                 "holds": true
               }
             }
@@ -4462,21 +5027,33 @@
                 68
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  68
+                ],
+                "drawn": [
+                  390,
+                  68
+                ],
                 "holds": true
               }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 1440,
                 76
-              ]
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  76
+                ],
+                "drawn": [
+                  1440,
+                  76
+                ],
+                "holds": true
+              }
             }
           }
         }
@@ -5292,8 +5869,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  84,
+                  28
+                ],
+                "drawn": [
+                  84,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -5303,8 +5886,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  102,
+                  32
+                ],
+                "drawn": [
+                  102,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -5322,8 +5911,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  28
+                ],
+                "drawn": [
+                  152.9,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -5333,8 +5928,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  0,
+                  32
+                ],
+                "drawn": [
+                  179,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -5352,8 +5953,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  84,
+                  28
+                ],
+                "drawn": [
+                  84,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -5363,8 +5970,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  102,
+                  32
+                ],
+                "drawn": [
+                  102,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -5382,8 +5995,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  84,
+                  28
+                ],
+                "drawn": [
+                  84,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -5393,8 +6012,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  102,
+                  32
+                ],
+                "drawn": [
+                  102,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -5412,8 +6037,14 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  100,
+                  36
+                ],
+                "drawn": [
+                  100,
+                  36
+                ],
                 "holds": true
               }
             },
@@ -5423,8 +6054,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  120,
+                  40
+                ],
+                "drawn": [
+                  120,
+                  40
+                ],
                 "holds": true
               }
             }
@@ -5442,8 +6079,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  84,
+                  28
+                ],
+                "drawn": [
+                  84,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -5453,8 +6096,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  102,
+                  32
+                ],
+                "drawn": [
+                  102,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -5743,8 +6392,14 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
                 "holds": true
               }
             },
@@ -5754,8 +6409,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
                 "holds": true
               }
             }
@@ -5768,26 +6429,38 @@
           "skeleton": null,
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 390,
                 44
-              ]
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  44
+                ],
+                "drawn": [
+                  390,
+                  44
+                ],
+                "holds": true
+              }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 1440,
                 48
-              ]
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  48
+                ],
+                "drawn": [
+                  1440,
+                  48
+                ],
+                "holds": true
+              }
             }
           }
         },
@@ -5798,15 +6471,21 @@
           "skeleton": null,
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 390,
                 36
-              ]
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": true
+              }
             },
             "1440": {
               "printed": [
@@ -5814,8 +6493,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
                 "holds": true
               }
             }
@@ -5833,8 +6518,14 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
                 "holds": true
               }
             },
@@ -5844,8 +6535,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
                 "holds": true
               }
             }
@@ -5863,8 +6560,14 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
                 "holds": true
               }
             },
@@ -5874,8 +6577,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
                 "holds": true
               }
             }
@@ -5893,8 +6602,14 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
                 "holds": true
               }
             },
@@ -5904,8 +6619,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
                 "holds": true
               }
             }
@@ -5934,42 +6655,292 @@
           "title": "История заказа: события людей и робота, изменения полей, комментарий, свёрнутая серия",
           "snapshot": "default/reference.html",
           "skeleton": "default/reference.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                376,
+                982
+              ],
+              "printed": [
+                376,
+                982
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  0
+                ],
+                "drawn": [
+                  376,
+                  982
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1426,
+                1026
+              ],
+              "printed": [
+                1426,
+                1026
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  0
+                ],
+                "drawn": [
+                  1426,
+                  1026
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "steps",
           "title": "Этапы заказа: пройдено, сейчас, впереди",
           "snapshot": "default/steps.html",
           "skeleton": "default/steps.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                260
+              ],
+              "printed": [
+                390,
+                260
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  260
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                316
+              ],
+              "printed": [
+                1440,
+                316
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  316
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "server",
           "title": "Действия на сервере по дням, время относительное",
           "snapshot": "default/server.html",
           "skeleton": "default/server.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                408
+              ],
+              "printed": [
+                390,
+                408
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  408
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                480
+              ],
+              "printed": [
+                1440,
+                480
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  480
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "side-panel",
           "title": "Боковая панель: размер 1/2, точное время",
           "snapshot": "default/side-panel.html",
           "skeleton": "default/side-panel.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                192
+              ],
+              "printed": [
+                390,
+                192
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  192
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                220
+              ],
+              "printed": [
+                1440,
+                220
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  220
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "history",
           "title": "История записи без групп, размер 2",
           "snapshot": "default/history.html",
           "skeleton": "default/history.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                104
+              ],
+              "printed": [
+                390,
+                104
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  104
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                128
+              ],
+              "printed": [
+                1440,
+                128
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  128
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "empty",
           "title": "Событий пока нет",
           "snapshot": "default/empty.html",
           "skeleton": null,
-          "box": null
+          "box": {
+            "390": {
+              "printed": [
+                390,
+                36
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "printed": [
+                1440,
+                40
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
+                "holds": false
+              }
+            }
+          }
         }
       ]
     },
@@ -5994,77 +6965,550 @@
           "title": "Разделы",
           "snapshot": "default/reference.html",
           "skeleton": "default/reference.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                212
+              ],
+              "printed": [
+                390,
+                212
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  212
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                232
+              ],
+              "printed": [
+                1440,
+                232
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  232
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "visible",
           "title": "Видимое меню",
           "snapshot": "default/visible.html",
           "skeleton": "default/visible.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                124
+              ],
+              "printed": [
+                390,
+                124
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  124
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                136
+              ],
+              "printed": [
+                1440,
+                136
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  136
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "row",
           "title": "Строка с панелями",
           "snapshot": "default/row.html",
           "skeleton": "default/row.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                36
+              ],
+              "printed": [
+                390,
+                36
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                40
+              ],
+              "printed": [
+                1440,
+                40
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "button",
           "title": "Меню-кнопка",
           "snapshot": "default/button.html",
           "skeleton": "default/button.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                36
+              ],
+              "printed": [
+                390,
+                36
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                40
+              ],
+              "printed": [
+                1440,
+                40
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "docs-tree",
           "title": "Дерево документации",
           "snapshot": "default/docs-tree.html",
           "skeleton": "default/docs-tree.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                244
+              ],
+              "printed": [
+                390,
+                244
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  244
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                268
+              ],
+              "printed": [
+                1440,
+                268
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  268
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "sections",
           "title": "Разделы карточки",
           "snapshot": "default/sections.html",
           "skeleton": "default/sections.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                284
+              ],
+              "printed": [
+                390,
+                284
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  284
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                316
+              ],
+              "printed": [
+                1440,
+                316
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  316
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "site-row",
           "title": "Строка сайта: лишнее — в «Ещё»",
           "snapshot": "default/site-row.html",
           "skeleton": "default/site-row.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                560,
+                36
+              ],
+              "printed": [
+                560,
+                36
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  560,
+                  36
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                560,
+                40
+              ],
+              "printed": [
+                560,
+                40
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  560,
+                  40
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "site-column",
           "title": "Колонка сайта: четыре уровня",
           "snapshot": "default/site-column.html",
           "skeleton": "default/site-column.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                390,
+                528
+              ],
+              "printed": [
+                390,
+                528
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  390,
+                  528
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                1440,
+                580
+              ],
+              "printed": [
+                1440,
+                580
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  1440,
+                  580
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "admin",
           "title": "Простая админка: иконки у первого уровня, плотный вид",
           "snapshot": "default/admin.html",
           "skeleton": "default/admin.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                280,
+                200
+              ],
+              "printed": [
+                280,
+                200
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  280,
+                  200
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                280,
+                176
+              ],
+              "printed": [
+                280,
+                176
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  280,
+                  176
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "bordered",
           "title": "Колонка в рамке: линия пути на рамке",
           "snapshot": "default/bordered.html",
           "skeleton": "default/bordered.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                280,
+                210
+              ],
+              "printed": [
+                280,
+                210
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  280,
+                  210
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                280,
+                230
+              ],
+              "printed": [
+                280,
+                230
+              ],
+              "bare": {
+                "held": [
+                  0,
+                  0
+                ],
+                "drawn": [
+                  280,
+                  230
+                ],
+                "holds": false
+              }
+            }
+          }
         },
         {
           "name": "search",
           "title": "Колонка с поиском",
           "snapshot": "default/search.html",
           "skeleton": "default/search.skeleton.html",
-          "box": null
+          "box": {
+            "390": {
+              "skeleton": [
+                280,
+                385
+              ],
+              "printed": [
+                280,
+                385
+              ],
+              "bare": {
+                "held": [
+                  280,
+                  0
+                ],
+                "drawn": [
+                  280,
+                  385
+                ],
+                "holds": false
+              }
+            },
+            "1440": {
+              "skeleton": [
+                280,
+                349
+              ],
+              "printed": [
+                280,
+                349
+              ],
+              "bare": {
+                "held": [
+                  280,
+                  0
+                ],
+                "drawn": [
+                  280,
+                  349
+                ],
+                "holds": false
+              }
+            }
+          }
         }
       ]
     },
@@ -6419,9 +7863,15 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -6434,9 +7884,15 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
+                "holds": true
               }
             }
           }
@@ -6457,9 +7913,15 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -6472,9 +7934,15 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
+                "holds": true
               }
             }
           }
@@ -6495,9 +7963,15 @@
                 36
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  390,
+                  36
+                ],
+                "drawn": [
+                  390,
+                  36
+                ],
+                "holds": true
               }
             },
             "1440": {
@@ -6510,9 +7984,15 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
+                "held": [
+                  1440,
+                  40
+                ],
+                "drawn": [
+                  1440,
+                  40
+                ],
+                "holds": true
               }
             }
           }
@@ -6930,8 +8410,14 @@
                 78
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  78
+                ],
+                "drawn": [
+                  390,
+                  78
+                ],
                 "holds": true
               }
             },
@@ -6941,8 +8427,14 @@
                 56
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  56
+                ],
+                "drawn": [
+                  1440,
+                  56
+                ],
                 "holds": true
               }
             }
@@ -6955,26 +8447,38 @@
           "skeleton": null,
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 390,
                 78
-              ]
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  78
+                ],
+                "drawn": [
+                  390,
+                  78
+                ],
+                "holds": true
+              }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 1440,
                 56
-              ]
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  56
+                ],
+                "drawn": [
+                  1440,
+                  56
+                ],
+                "holds": true
+              }
             }
           }
         },
@@ -6990,8 +8494,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  32
+                ],
+                "drawn": [
+                  390,
+                  32
+                ],
                 "holds": true
               }
             },
@@ -7001,8 +8511,14 @@
                 24
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  24
+                ],
+                "drawn": [
+                  1440,
+                  24
+                ],
                 "holds": true
               }
             }
@@ -7020,8 +8536,14 @@
                 58
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  58
+                ],
+                "drawn": [
+                  390,
+                  58
+                ],
                 "holds": true
               }
             },
@@ -7031,8 +8553,14 @@
                 56
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  56
+                ],
+                "drawn": [
+                  1440,
+                  56
+                ],
                 "holds": true
               }
             }
@@ -7050,21 +8578,33 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 1440,
                 32
-              ]
+              ],
+              "bare": {
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
+                "holds": true
+              }
             }
           }
         },
@@ -7080,8 +8620,14 @@
                 20
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  20
+                ],
+                "drawn": [
+                  390,
+                  20
+                ],
                 "holds": true
               }
             },
@@ -7091,8 +8637,14 @@
                 24
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  24
+                ],
+                "drawn": [
+                  1440,
+                  24
+                ],
                 "holds": true
               }
             }
@@ -7110,8 +8662,14 @@
                 58
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  58
+                ],
+                "drawn": [
+                  390,
+                  58
+                ],
                 "holds": true
               }
             },
@@ -7121,8 +8679,14 @@
                 56
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  56
+                ],
+                "drawn": [
+                  1440,
+                  56
+                ],
                 "holds": true
               }
             }
@@ -7140,8 +8704,14 @@
                 17
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  98.7,
+                  17
+                ],
+                "drawn": [
+                  98.7,
+                  17
+                ],
                 "holds": true
               }
             },
@@ -7151,8 +8721,14 @@
                 20
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  112.8,
+                  20
+                ],
+                "drawn": [
+                  112.8,
+                  20
+                ],
                 "holds": true
               }
             }
@@ -7170,19 +8746,31 @@
                 17
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  217.3,
+                  17
+                ],
+                "drawn": [
+                  197.6,
+                  17
+                ],
                 "holds": false
               }
             },
             "1440": {
               "printed": [
-                249.3,
+                225.3,
                 20
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  248.9,
+                  20
+                ],
+                "drawn": [
+                  225.3,
+                  20
+                ],
                 "holds": false
               }
             }
@@ -7196,25 +8784,37 @@
           "box": {
             "390": {
               "printed": [
-                121.6,
+                101.6,
                 17
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  121.6,
+                  17
+                ],
+                "drawn": [
+                  101.6,
+                  17
+                ],
                 "holds": false
               }
             },
             "1440": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": false
-              },
               "printed": [
                 139.5,
                 20
-              ]
+              ],
+              "bare": {
+                "held": [
+                  139.5,
+                  20
+                ],
+                "drawn": [
+                  115.5,
+                  20
+                ],
+                "holds": false
+              }
             }
           }
         },
@@ -7230,19 +8830,31 @@
                 17
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  145.5,
+                  17
+                ],
+                "drawn": [
+                  125.5,
+                  17
+                ],
                 "holds": false
               }
             },
             "1440": {
               "printed": [
-                142.8,
+                166.8,
                 20
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  166.8,
+                  20
+                ],
+                "drawn": [
+                  142.8,
+                  20
+                ],
                 "holds": false
               }
             }
@@ -7260,8 +8872,14 @@
                 78
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  78
+                ],
+                "drawn": [
+                  390,
+                  78
+                ],
                 "holds": true
               }
             },
@@ -7271,8 +8889,14 @@
                 56
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  56
+                ],
+                "drawn": [
+                  1440,
+                  56
+                ],
                 "holds": true
               }
             }
@@ -7290,8 +8914,14 @@
                 78
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  78
+                ],
+                "drawn": [
+                  390,
+                  78
+                ],
                 "holds": true
               }
             },
@@ -7301,8 +8931,14 @@
                 56
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  56
+                ],
+                "drawn": [
+                  1440,
+                  56
+                ],
                 "holds": true
               }
             }
@@ -7855,8 +9491,14 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
                 "holds": true
               }
             },
@@ -7866,8 +9508,14 @@
                 72
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  72
+                ],
+                "drawn": [
+                  1440,
+                  72
+                ],
                 "holds": true
               }
             }
@@ -7885,8 +9533,14 @@
                 20
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  20
+                ],
+                "drawn": [
+                  390,
+                  20
+                ],
                 "holds": true
               }
             },
@@ -7896,8 +9550,14 @@
                 24
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  24
+                ],
+                "drawn": [
+                  1440,
+                  24
+                ],
                 "holds": true
               }
             }
@@ -7915,8 +9575,14 @@
                 40
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  40
+                ],
+                "drawn": [
+                  390,
+                  40
+                ],
                 "holds": true
               }
             },
@@ -7926,8 +9592,14 @@
                 48
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  48
+                ],
+                "drawn": [
+                  1440,
+                  48
+                ],
                 "holds": true
               }
             }
@@ -7940,15 +9612,21 @@
           "skeleton": null,
           "box": {
             "390": {
-              "bare": {
-                "held": null,
-                "drawn": null,
-                "holds": true
-              },
               "printed": [
                 390,
                 40
-              ]
+              ],
+              "bare": {
+                "held": [
+                  390,
+                  40
+                ],
+                "drawn": [
+                  390,
+                  40
+                ],
+                "holds": true
+              }
             },
             "1440": {
               "printed": [
@@ -7956,8 +9634,14 @@
                 48
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  48
+                ],
+                "drawn": [
+                  1440,
+                  48
+                ],
                 "holds": true
               }
             }
@@ -8512,8 +10196,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -8523,8 +10213,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -8542,8 +10238,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -8553,8 +10255,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -8572,8 +10280,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  320,
+                  28
+                ],
+                "drawn": [
+                  320,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -8583,8 +10297,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  320,
+                  32
+                ],
+                "drawn": [
+                  320,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -8602,8 +10322,14 @@
                 92
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  320,
+                  92
+                ],
+                "drawn": [
+                  320,
+                  92
+                ],
                 "holds": true
               }
             },
@@ -8613,8 +10339,14 @@
                 104
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  320,
+                  104
+                ],
+                "drawn": [
+                  320,
+                  104
+                ],
                 "holds": true
               }
             }
@@ -8632,8 +10364,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -8643,8 +10381,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -8662,8 +10406,14 @@
                 28
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  28
+                ],
+                "drawn": [
+                  390,
+                  28
+                ],
                 "holds": true
               }
             },
@@ -8673,8 +10423,14 @@
                 32
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  32
+                ],
+                "drawn": [
+                  1440,
+                  32
+                ],
                 "holds": true
               }
             }
@@ -9919,8 +11675,14 @@
                 60
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  60
+                ],
+                "drawn": [
+                  390,
+                  60
+                ],
                 "holds": true
               }
             },
@@ -9930,8 +11692,14 @@
                 64
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  64
+                ],
+                "drawn": [
+                  1440,
+                  64
+                ],
                 "holds": true
               }
             }
@@ -9949,8 +11717,14 @@
                 20
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  390,
+                  20
+                ],
+                "drawn": [
+                  390,
+                  20
+                ],
                 "holds": true
               }
             },
@@ -9960,8 +11734,14 @@
                 24
               ],
               "bare": {
-                "held": null,
-                "drawn": null,
+                "held": [
+                  1440,
+                  24
+                ],
+                "drawn": [
+                  1440,
+                  24
+                ],
                 "holds": true
               }
             }
