@@ -108,8 +108,27 @@ class SfReferenceLink extends ReferenceLinkElement {
     return renderReferenceLinkTemplate(this.templateContext());
   }
 
+  // A card is in a place of its own (C181 (2), dispatcher decision
+  // 2026-11-15): its host draws a block, the container sf-reference-link its
+  // card stacks in by the place's width (the component sheet). Every other
+  // form -- in text, plain, a size, a line -- is a run or a control in a row
+  // or a cell: its host stays display: contents, as every Smart host. What
+  // the page set inline that a child inherits stays on the host before it.
+  get isCard() {
+    const appearance = this.appearance || 'card';
+    return appearance !== 'inline' && appearance !== 'plain' && !this.size && !this.line;
+  }
+
+  applyHostDisplayStyle() {
+    const next = [this.hostInheritedStyle(), `display: ${this.isCard ? 'block' : 'contents'};`].filter(Boolean).join(' ');
+    return this.writeHostStyle(next);
+  }
+
   afterRender(callback) {
     if (typeof callback === 'function') return super.afterRender(callback);
+    // appearance, size or line may have changed the form since connect;
+    // the host's style is written only when it differs.
+    this.applyHostDisplayStyle();
     this.markCutName();
     this.observeRoom();
     return undefined;

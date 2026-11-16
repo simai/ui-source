@@ -1,3 +1,28 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+@use '../../../core/scss/mix/mix__breakpoint' as mq;
+
+// The stacked card: the link line over the route (C181 (2)). One body for
+// the screen rule of class markup and the container rule of the Smart card;
+// $only says which cards it is for.
+@mixin card-stacks($only) {
+  .sf-reference-link#{$only}:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  /* Two lines are not a control step: the stacked card keeps the card's
+     --sf-space-1 above and below. */
+  .sf-reference-link#{$only}:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]):not(.sf-reference-link--plain) {
+    --sf-reference-link--padding-block: var(--sf-space-1);
+  }
+
+  .sf-reference-link#{$only}:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) :where(.sf-reference-link__meta, .sf-reference-link-text) {
+    padding-inline-start: calc(var(--sf-text-height-1) + var(--sf-space-1\/3));
+    text-align: start;
+  }
+}
+
 @layer sf.components {
   .sf-reference-link {
     /* The card sits on whatever surface holds it; hover and press add the
@@ -229,24 +254,18 @@
     color: var(--sf-on-surface-disabled);
   }
 
-  @media (width < 32rem) { // below sm
-    /* The card stacks on a narrow screen; a sized reference is a control in a
-       row or a cell and keeps its one line at the row's height. */
-    .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) {
-      align-items: flex-start;
-      flex-direction: column;
-    }
+  /* The card stacks in a narrow place; a sized reference is a control in a
+     row or a cell and keeps its one line at the row's height (C181 (2)).
+     Class markup has no element around the card to be its container, so it
+     -- and the Smart plain form, whose host draws no box -- stacks on a
+     narrow screen, below sm. The Smart card stacks by the width of its own
+     place: its host, sf-reference-link, is the container (below). */
+  @media (width < map.get(bp.$breakpoint-array, sm)) {
+    @include card-stacks(':where(:not(sf-reference-link > .sf-reference-link:not(.sf-reference-link--plain)))');
+  }
 
-    /* Two lines are not a control step: the stacked card keeps the card's
-       --sf-space-1 above and below. */
-    .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]):not(.sf-reference-link--plain) {
-      --sf-reference-link--padding-block: var(--sf-space-1);
-    }
-
-    .sf-reference-link:not([class*="sf-reference-link--size-"]):not([class*="sf-reference-link--line-"]) :where(.sf-reference-link__meta, .sf-reference-link-text) {
-      padding-inline-start: calc(var(--sf-text-height-1) + var(--sf-space-1\/3));
-      text-align: start;
-    }
+  @container sf-reference-link (width < #{mq.container-step(g6)}) {
+    @include card-stacks(':where(sf-reference-link > *)');
   }
 
   @media (forced-colors: active) {
@@ -544,4 +563,17 @@
 .sf-reference-link.sf-reference-link--inline .sf-reference-link__icon,
 .sf-reference-link.sf-reference-link--inline .sf-reference-link__tab {
   vertical-align: top;
+}
+
+@layer sf.components {
+  /* The Smart card's place (C181 (2), dispatcher decision 2026-11-15): the
+     host sf-reference-link of a card draws a block (the element sets it; every
+     other form keeps display: contents) and is the container its card stacks
+     in. As wide as its place, as the card is: a flex row's item does not
+     shrink to nothing for its contained width. */
+  sf-reference-link:has(> .sf-reference-link:not(.sf-reference-link--inline, .sf-reference-link--plain, [class*="sf-reference-link--size-"], [class*="sf-reference-link--line-"])) {
+    container: sf-reference-link / inline-size;
+    inline-size: 100%;
+    min-inline-size: var(--sf-0);
+  }
 }
