@@ -183,3 +183,16 @@ test('SM-SP-3: sf-spinner lists no dots, filled or direction; each is a dated re
   assert.equal(journal?.remove_after, '2027-01-01');
   assert.doesNotMatch(read('src/smart/spinner/docs/docs.md'), /`dots` — от 3 до 32/u);
 });
+
+// ---- SM-CNF-1, SM-CCH-1: the status sign is written with the ladder name ----
+
+test('SM-CNF-1/SM-CCH-1: the confirm surface writes no old-scale icon size', () => {
+  const source = read('src/smart/helpers/confirm-surface.js');
+  const icons = [...source.matchAll(/<sf-icon\b[^>]*>/gu)].map((match) => match[0]);
+  assert.ok(icons.length > 0);
+  for (const icon of icons) {
+    const size = /\ssize="([^"]+)"/u.exec(icon)?.[1];
+    if (size === undefined) continue;
+    assert.match(icon, /data-sf-icon-scale="ladder"/u, icon);
+  }
+});

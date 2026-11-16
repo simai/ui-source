@@ -394,10 +394,13 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
     // that appears together with its words is not heard. With statusLast it
     // follows the answers in the markup too (sf-confirm-change 1.9.0: the
     // deadline under the answers, an sf-time that may take a Tab after them).
+    // The status sign is 16, the ladder's 1/3 (C151 (1)): size="1" was the old
+    // icon scale's name for it, noted in SF.deprecations on every state
+    // (Smart joint pass SM-CNF-1, SM-CCH-1).
     const status = html`
                 <p class=${part("status")} role="status" tabindex="-1">
                     ${context.statusText
-                        ? html`<sf-icon icon=${context.statusIcon} size="1" aria-hidden="true"></sf-icon>
+                        ? html`<sf-icon icon=${context.statusIcon} data-sf-icon-scale="ladder" size="1/3" aria-hidden="true"></sf-icon>
                             <span>${context.statusText}</span>`
                         : nothing}
                 </p>`;
