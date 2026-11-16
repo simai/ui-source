@@ -27,11 +27,12 @@ test('the tooltip opens after 0.5 s of hover, its neighbours at once, a long pre
   }
 });
 
-test('no tooltip draws a frame or a flat tail: the light look takes the window shadow as a filter', async () => {
+test('no tooltip draws a frame or a flat tail: every look takes the window shadow as a filter', async () => {
   const sheet = await read('src/component/tooltip/scss/_css__tooltip.scss');
   const light = sheet.slice(sheet.indexOf('.sf-tooltip--light .sf-tooltip-content {'));
   assert.doesNotMatch(light.slice(0, light.indexOf('}')), /border:|box-shadow:/);
-  assert.match(sheet, /\.sf-tooltip\.sf-tooltip--light \{\s*filter: var\(--sf-shadow-overlay-filter\);/);
+  // The dark tooltip, the default, too (C20, C59; component.tooltip 1.6.0).
+  assert.match(sheet, /\n\.sf-tooltip \{\s*filter: var\(--sf-shadow-overlay-filter\);/);
   const custom = await read('src/component/tooltip/scss/_css__tooltip_custom.scss');
   assert.match(custom, /border: var\(--sf-tooltip-border-width, 0\)/);
 });
