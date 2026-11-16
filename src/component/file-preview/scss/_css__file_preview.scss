@@ -229,6 +229,14 @@
     min-inline-size: 0;
   }
 
+  /* The class markup of the row (sf-file-upload draws it without Smart):
+     the bar and «Повторить» stand in spans that draw no box, as the
+     sf-progress-bar and sf-button hosts, so the rules above and below hold
+     for both. */
+  .sf-file-preview span:is(.sf-file-preview-progress, .sf-file-preview-retry) {
+    display: contents;
+  }
+
   .sf-file-preview .sf-file-preview-error {
     color: var(--sf-error);
     font-family: var(--sf-text--family);

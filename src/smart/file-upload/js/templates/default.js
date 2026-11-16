@@ -107,6 +107,8 @@ export function renderFileUploadTemplate(context) {
 
         <div class="sf-file-upload-message" role="status" hidden></div>
 
+        <div class="sf-file-upload-status" role="status" aria-atomic="true"></div>
+
         <div class="sf-file-upload-files grid grid-col-1 gap-1/2 w-full" role="list">
             ${Array.isArray(context.items)
                     ? repeat(context.items, (item, index) => context.keyOf(item, index), (item, index) => renderUploadItem(item, index, context))

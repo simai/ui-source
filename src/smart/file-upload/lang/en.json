@@ -30,6 +30,14 @@
     "value-missing-many": "Add at least one file",
     "wait-for-uploads": "Wait until the files are uploaded",
     "file-removed": "File removed",
-    "undo": "Undo"
+    "undo": "Undo",
+    "said-added": "“{name}” added",
+    "said-added-many": {
+      "one": "{n} file added",
+      "other": "{n} files added"
+    },
+    "said-done": "“{name}” uploaded",
+    "said-error": "“{name}” was not uploaded",
+    "said-error-line": "“{name}” was not uploaded: {message}"
   }
 }

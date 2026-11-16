@@ -24,6 +24,14 @@
     "done": "Uploaded",
     "done-line": "{size} · uploaded",
     "error": "Not uploaded",
-    "error-line": "Not uploaded: {message}"
+    "error-line": "Not uploaded: {message}",
+    "said-added": "“{name}” added",
+    "said-added-many": {
+      "one": "{n} file added",
+      "other": "{n} files added"
+    },
+    "said-done": "“{name}” uploaded",
+    "said-error": "“{name}” was not uploaded",
+    "said-error-line": "“{name}” was not uploaded: {message}"
   }
 }

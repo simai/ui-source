@@ -183,9 +183,12 @@
 }
 
 .sf-upload-progress.sf-upload-progress--size-1 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-3);
-  --sf-icon--height: var(--sf-text-size-3);
-  --sf-icon--width: var(--sf-text-size-3);
+  /* The icon ladder at the row's step (C151 (1)): 20 / 24 / 28, a step lower
+     on a phone and under compact (16 / 20 / 24). The text sizes gave 16 / 18
+     / 20 on a phone (RG-FU-2). */
+  --sf-icon--font-size: var(--sf-icon-size-1);
+  --sf-icon--height: var(--sf-icon-size-1);
+  --sf-icon--width: var(--sf-icon-size-1);
 }
 
 .sf-upload-progress.sf-upload-progress--size-1 .sf-upload-progress-text {
@@ -198,9 +201,12 @@
 }
 
 .sf-upload-progress.sf-upload-progress--size-2 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-4);
-  --sf-icon--height: var(--sf-text-size-4);
-  --sf-icon--width: var(--sf-text-size-4);
+  /* The icon ladder at the row's step (C151 (1)): 20 / 24 / 28, a step lower
+     on a phone and under compact (16 / 20 / 24). The text sizes gave 16 / 18
+     / 20 on a phone (RG-FU-2). */
+  --sf-icon--font-size: var(--sf-icon-size-2);
+  --sf-icon--height: var(--sf-icon-size-2);
+  --sf-icon--width: var(--sf-icon-size-2);
 }
 
 .sf-upload-progress.sf-upload-progress--size-2 .sf-upload-progress-text {
@@ -217,9 +223,12 @@
 }
 
 .sf-upload-progress.sf-upload-progress--size-1\/2 .sf-icon {
-  --sf-icon--font-size: var(--sf-text-size-2);
-  --sf-icon--height: var(--sf-text-size-2);
-  --sf-icon--width: var(--sf-text-size-2);
+  /* The icon ladder at the row's step (C151 (1)): 20 / 24 / 28, a step lower
+     on a phone and under compact (16 / 20 / 24). The text sizes gave 16 / 18
+     / 20 on a phone (RG-FU-2). */
+  --sf-icon--font-size: var(--sf-icon-size-1\/2);
+  --sf-icon--height: var(--sf-icon-size-1\/2);
+  --sf-icon--width: var(--sf-icon-size-1\/2);
 }
 
 .sf-upload-progress.sf-upload-progress--size-1\/2 .sf-upload-progress-text {

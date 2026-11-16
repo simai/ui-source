@@ -196,7 +196,7 @@ test('FU-3: a chosen file is ready -- not a transfer at 0 % -- until the host or
   // Both renderers draw the bar for process alone: the Smart row is
   // sf-file-preview, whose bar is its uploading state (C81).
   assert.match(template, /PREVIEW_STATES = Object\.freeze\(\{ready: 'ready', done: 'ready', process: 'uploading', error: 'error'\}\)/u, 'the Smart row is uploading for process alone');
-  assert.match(source, /if \(state === 'process'\) \{\s*const progressBar/u, 'the class row draws a bar for process alone');
+  assert.match(source, /if \(state === 'process'\) \{[^{}]*?const progressBar/u, 'the class row draws a bar for process alone');
 });
 
 test('FU-4: a sent file says so, keeps Remove and has no 100 % bar', async () => {
@@ -255,7 +255,9 @@ test('FU-10: Remove and Retry are named with their file; every glyph is out of t
       querySelectorAll: () => [],
     };
   };
-  const row = {querySelector: (selector) => (selector === '.sf-upload-progress-name' ? {textContent: 'Скан.pdf'} : null)};
+  // A hand-written .sf-upload-progress row and the family row the class draws
+  // (.sf-file-preview-name, RG-FU-1) are named alike.
+  const row = {querySelector: (selector) => (selector.split(', ').includes('.sf-upload-progress-name') ? {textContent: 'Скан.pdf'} : null)};
   const remove = Object.assign(element(), {closest: () => row});
   remove.dataset.action = 'remove';
   const retry = Object.assign(element({}, '\n  Повторить\n'), {closest: () => row});
@@ -274,7 +276,7 @@ test('FU-10: Remove and Retry are named with their file; every glyph is out of t
     const text = await readFile(new URL(path, import.meta.url), 'utf8');
     const html = [...text.matchAll(/<i class="sf-icon[^"]*"[^>]*>/gu)].map((match) => match[0]);
     for (const tag of html) assert.match(tag, /aria-hidden="true"/u, `${path}: ${tag}`);
-    const dom = text.split(/\n/u).filter((line) => /className = 'sf-icon|classList\.add\('sf-icon'\)/u.test(line)).length;
+    const dom = text.split(/\n/u).filter((line) => /className = 'sf-icon(?:'| )|classList\.add\('sf-icon'\)/u.test(line)).length;
     const hidden = (text.match(/Icon\.setAttribute\('aria-hidden', 'true'\)|glyph\.setAttribute\('aria-hidden', 'true'\)/gu) || []).length;
     assert.ok(hidden >= dom, `${path}: every DOM glyph is aria-hidden (${hidden} of ${dom})`);
   }
