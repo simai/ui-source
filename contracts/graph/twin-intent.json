@@ -2,5 +2,86 @@
   "schema": "simai.framework.twin-intent",
   "schema_version": 1,
   "$comment": "Owner decision C251 (2026-11-16): a change to one twin of a plain/Smart pair that is meant for that side only. Each mark names the unit and the version that carries the change, the twin it leaves as it was, the reason and the decision behind it: {\"unit\": \"component.badges\", \"version\": \"1.6.0\", \"twin\": \"smart.badge\", \"reason\": \"...\", \"decision\": \"C###\", \"date\": \"yyyy-mm-dd\"}. A mark covers that version alone; the next change needs its own mark or a change to the twin. Marks of released pairs may be removed after the next pair.",
-  "marks": []
+  "marks": [
+    {
+      "unit": "component.badges",
+      "version": "1.10.2",
+      "twin": "smart.badge",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): the class badges count word is a plural object, not forms joined by «|» (fix/languages-g1 b8d0d37d2); sf-badge reads its own words",
+      "decision": "C177 follow-up #86",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.breadcrumbs",
+      "version": "1.2.0",
+      "twin": "smart.breadcrumbs",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): class crumb ring and link look of the class markup (fix/nav-crumbs-pages-nv1 4e61ffc8b, RG-NV 1-12) and the C212 focus tokens",
+      "decision": "C237, C212 (7)",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.progress-bar",
+      "version": "1.4.2",
+      "twin": "smart.progress-bar",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): a paused indeterminate class bar tints the whole track (fix/feedback-defects-fb1 adb366582, RG-PB-1)",
+      "decision": "RG-PB-1",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.radio",
+      "version": "1.5.0",
+      "twin": "smart.radio",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): class hit area, checked label ink, error over checked, font tiles retired (fix/choice-cb1 9a3512950)",
+      "decision": "C221, C222",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.skeleton",
+      "version": "1.3.1",
+      "twin": "smart.skeleton",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): the class skeleton icon on the icon ladder (fix/feedback-defects-fb1 adb366582, RG-SK-1)",
+      "decision": "RG-SK-1",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.step",
+      "version": "1.4.0",
+      "twin": "smart.steps",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): class step versions, public variable defaults and C212 focus tokens (fix/nav-steps-tabs-tree-nv1 c495a9ffb)",
+      "decision": "RG-NV, C212 (7)",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.switch",
+      "version": "1.4.0",
+      "twin": "smart.switch",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): class hit area, checked label ink, error over checked (fix/choice-cb1 9a3512950)",
+      "decision": "C221",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.tooltip",
+      "version": "1.6.2",
+      "twin": "smart.tooltip",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): class tooltip shadow, two lines, tail gap (fix/ot-modal-tooltip-ot1, C224), a tooltip the name already says is not the description (fix/tooltip-name-repeat a192733fb), utility hints removed (d800f22bf)",
+      "decision": "C224, C248, RG-B-53",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "component.tree-item",
+      "version": "1.1.2",
+      "twin": "smart.tree-item",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): class tree row versions and public variable defaults (fix/nav-steps-tabs-tree-nv1 c495a9ffb)",
+      "decision": "RG-NV",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "smart.progress-ring",
+      "version": "1.6.0",
+      "twin": "component.progress-ring",
+      "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): sf-progress-ring takes a lone avatar as its content (fix/avatar-ring-ar1 23096bb9a, AR-4); the class ring has no content slot",
+      "decision": "AR-4",
+      "date": "2026-11-17"
+    }
+  ]
 }
