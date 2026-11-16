@@ -13411,6 +13411,30 @@
       "source": "src/component/tabs/scss/_css__tabs.scss; src/core/js/retired-classes.table.js; ui-control control/docs-review/decisions.md C96"
     },
     {
+      "id": "class-avatar-offline-point-retired",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.avatars 1.11.0: owner decision C152 (5), 2026-11-14 -- an avatar marks presence only while the person is online (and away, a hollow ring, where the host asks for it); a grey offline point in a long list reads as «something here». sf-avatar draws no point for offline since 1.7.0; the class .sf-online-indicator--offline written by hand keeps drawing the dim-ink point until remove_after, and the Loader notes each use in SF.deprecations (kind class, no replacement). Its two public variables, --sf-avatar-offline-background-color and --sf-avatar-offline-overlay, colour that point until the same date.",
+      "items": [
+        {
+          "component": "avatars",
+          "from": "sf-online-indicator--offline",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<span class=\"sf-avatar ...\" role=\"img\" aria-label=\"Иван Петров, не в сети\">ИП<span class=\"sf-online-indicator sf-online-indicator--offline sf-online-indicator--size-1 ...\"></span></span>",
+        "after": "<span class=\"sf-avatar ...\" role=\"img\" aria-label=\"Иван Петров, не в сети\">ИП</span>"
+      },
+      "manual": "Remove the offline indicator span; keep «не в сети» (offline) in the avatar's accessible name. For a person who stepped away use .sf-online-indicator--away (or <sf-avatar status=\"away\">).",
+      "owner": "ui-source",
+      "source": "src/component/avatars/scss/_css__avatar_online_indicator.scss; src/core/js/retired-classes.table.js; ui-control control/docs-review/decisions.md C152; control/research/2026-11-14-plain-group-2.md DT-3"
+    },
+    {
       "id": "class-featured-icon-look-aliases",
       "recorded_on": "2026-11-14",
       "stage": "compat",

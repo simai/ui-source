@@ -207,6 +207,17 @@ export default {
       "names": {
         "sf-tabs--full": "sf-tabs"
       }
+    },
+    {
+      "journal": "class-avatar-offline-point-retired",
+      "decision": "C152 (5)",
+      "component": "avatars",
+      "since": "2026-11-14",
+      "remove_after": "2027-01-01",
+      "note": "An avatar shows presence only while the person is online (and away, as a hollow ring, where the host asks for it); offline draws no point, its word stays in the avatar's name. sf-online-indicator--offline keeps drawing the dim-ink point until the date.",
+      "names": {
+        "sf-online-indicator--offline": null
+      }
     }
   ],
   "extended": {

@@ -77,6 +77,11 @@
   --sf-online-indicator--ring-width: var(--sf-micro--ring-1\/2);
 }
 
+// Offline is retired (owner decision C152 (5), 2026-11-14): an avatar marks
+// presence only while the person is online, and sf-avatar draws no point for
+// offline. The class keeps drawing until 2027-01-01 for markup written by
+// hand, and the Loader notes each use in SF.deprecations (core
+// retired-classes.table.js, journal class-avatar-offline-point-retired).
 // Offline is the place's dim ink, --sf-on-surface-variant, read on the dot so
 // it follows the place (defect fix 2026-11-11). The disabled ink over the
 // place (C43) stayed under 3:1 for a status mark: light 3.10 against the

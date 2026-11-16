@@ -56,6 +56,30 @@ function normalizeProgressScaleTone(value) {
   return TONE_VALUES.includes(normalized) ? normalized : '';
 }
 
+// The thresholds of a meter (owner decision C131 (7), as sf-progress-bar and
+// the Smart scale): data-warning-at and data-error-at, in per cent like the
+// value. The page sets them and the scale only compares: from a threshold on,
+// the scale draws the more serious of its own status and the one reached.
+// Unset or not a number is no threshold.
+const THRESHOLD_RANK = { warning: 1, error: 2 };
+
+function readThreshold(value) {
+  if (value === undefined || value === null || String(value).trim() === '') return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function progressScaleThresholdStatus(value, warningAt, errorAt) {
+  if (errorAt !== null && value >= errorAt) return 'error';
+  if (warningAt !== null && value >= warningAt) return 'warning';
+  return '';
+}
+
+function progressScaleDrawnTone(tone, value, warningAt, errorAt) {
+  const reached = progressScaleThresholdStatus(value, warningAt, errorAt);
+  return (THRESHOLD_RANK[reached] ?? 0) > (THRESHOLD_RANK[tone] ?? 0) ? reached : tone;
+}
+
 function normalizeBoolean(value, fallback = true) {
   if (value === undefined || value === null || value === '') return fallback;
   if (typeof value === 'boolean') return value;
@@ -118,6 +142,14 @@ function renderProgressScale(root) {
   const step = lit * 10;
   const size = normalizeProgressScaleSize(root.dataset.size);
   const tone = normalizeProgressScaleTone(root.dataset.tone);
+  // The status drawn: the page's, or the threshold the value reached (C131
+  // (7)); data-tone keeps the page's own word, the status class draws.
+  const drawnTone = progressScaleDrawnTone(
+    tone,
+    value,
+    readThreshold(root.dataset.warningAt),
+    readThreshold(root.dataset.errorAt),
+  );
   const showText = normalizeBoolean(root.dataset.showText, true);
 
   // A scale on a text line, and a level scale, lay their track and value out
@@ -127,7 +159,7 @@ function renderProgressScale(root) {
   root.classList.add('sf-progress-scale', 'flex', onRow ? 'flex-row' : 'flex-col');
   root.classList.remove(onRow ? 'flex-col' : 'flex-row');
   root.classList.toggle('sf-progress-scale--level', level);
-  syncScaleClasses(root, step, size, tone);
+  syncScaleClasses(root, step, size, drawnTone);
   root.dataset.value = String(value);
   root.dataset.size = size;
   root.dataset.tone = tone;
@@ -204,6 +236,12 @@ function setProgressScaleState(target, state = {}) {
     if (state.meter) root.dataset.meter = 'true';
     else delete root.dataset.meter;
   }
+  ['warningAt', 'errorAt'].forEach((key) => {
+    if (!Object.prototype.hasOwnProperty.call(state, key)) return;
+    const threshold = readThreshold(state[key]);
+    if (threshold === null) delete root.dataset[key];
+    else root.dataset[key] = String(threshold);
+  });
   if (Object.prototype.hasOwnProperty.call(state, 'steps')) {
     if (state.steps === null || state.steps === undefined || state.steps === '') delete root.dataset.steps;
     else root.dataset.steps = String(normalizeProgressScaleSteps(state.steps));
@@ -227,6 +265,8 @@ function getProgressScaleState(target) {
     valueText: root.getAttribute('aria-valuetext') || '',
     meter: root.dataset.meter === 'true',
     steps: root.dataset.steps ? normalizeProgressScaleSteps(root.dataset.steps) : null,
+    warningAt: readThreshold(root.dataset.warningAt),
+    errorAt: readThreshold(root.dataset.errorAt),
   };
 }
 
@@ -294,4 +334,5 @@ export {
   normalizeProgressScaleStep,
   normalizeProgressScaleSteps,
   progressScaleLit,
+  progressScaleDrawnTone,
 };
