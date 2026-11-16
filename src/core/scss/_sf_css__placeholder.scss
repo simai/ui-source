@@ -531,6 +531,16 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
   --sf-tag--box-line: var(--sf-text-height-1\/3);
 }
 
+/* The badge's words are medium and it stands on the line's middle, as the
+   drawn badge (component.badges) does. */
+:where(sf-tag[status]:not([status=""]):not([interactive]):not([closable]):not(:defined)):not(:has(> [data-sf-static])) {
+  vertical-align: middle;
+}
+
+:where(sf-tag[status]:not([status=""]):not([interactive]):not([closable]):not(:defined)):not(:has(> [data-sf-static]))::before {
+  font-weight: var(--sf-font-weight-medium);
+}
+
 /* A pressable tag that can be removed: its cross stands after the label's
    button, centred in a --sf-c2 target (sf-tag's template), so the gap before
    it is half of what the target leaves around the cross: 6 beside a 12 cross,

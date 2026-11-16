@@ -23,6 +23,9 @@ test('status tag: the badge side room, its line kept on a text line (open item 8
   const offLine = ruleOf(':where(sf-tag[status]:not([status=""]):not([interactive]):not([closable]):not([line]:not([line=""])):not(:defined))');
   assert.match(offLine, /--sf-tag--box-control: var\(--sf-c2\);/u);
   assert.match(offLine, /--sf-tag--box-text: var\(--sf-text-size-1\\\/3\);/u);
+  // The badge's medium words, on the line's middle.
+  assert.match(core, /:where\(sf-tag\[status\]:not\(\[status=""\]\):not\(\[interactive\]\):not\(\[closable\]\):not\(:defined\)\):not\(:has\(> \[data-sf-static\]\)\) \{\s*vertical-align: middle;/u);
+  assert.match(core, /:not\(:has\(> \[data-sf-static\]\)\)::before \{\s*font-weight: var\(--sf-font-weight-medium\);/u);
 });
 
 test('pressable removable tag: the cross stands centred in its --sf-c2 target (open item 8)', () => {
