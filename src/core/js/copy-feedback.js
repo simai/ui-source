@@ -103,7 +103,15 @@ export function readCopyText(element) {
     || (View.HTMLTextAreaElement && element instanceof View.HTMLTextAreaElement)) return element.value;
   const rows = element.querySelectorAll?.(':scope .sf-code-lines > .sf-code-line > .sf-code-line__content');
   // An empty line is drawn as a space so its row keeps a height; it copies empty.
-  if (rows?.length) return Array.from(rows, (row) => (row.textContent === ' ' ? '' : row.textContent)).join('\n');
+  // A row marked data-copy="false" is left out: a code block's removed line
+  // and a terminal's output (owner decisions C255, C257), so what is copied
+  // is the code after the change, or the commands alone.
+  if (rows?.length) {
+    return Array.from(rows)
+      .filter((row) => row.parentElement?.dataset?.copy !== 'false')
+      .map((row) => (row.textContent === ' ' ? '' : row.textContent))
+      .join('\n');
+  }
   return element.textContent ?? '';
 }
 

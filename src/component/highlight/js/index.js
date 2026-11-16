@@ -15,7 +15,12 @@ const CODE_SELECTOR = 'pre code';
 const ROOT_SELECTOR = '.sf-highlight, .source';
 const CHROME_MODES = new Set(['auto', 'none', 'static']);
 const highlightedNodes = new WeakSet();
+// The text a block was given (its markers included), for refresh, and the
+// text it shows, for telling an edit from its own drawing.
 const sourceText = new WeakMap();
+const drawnText = new WeakMap();
+// Each line's marks (diff, marked, focus, terminal prompt and output).
+const lineMarks = new WeakMap();
 const plugins = [];
 const supportedLanguages = new Set(AVAILABLE_LANGUAGES);
 const languageAliases = { ...LANGUAGE_ALIASES };
@@ -95,6 +100,90 @@ const hljs = {
 };
 initLineNumbers(hljs);
 if (typeof window !== 'undefined') window.hljs = hljs;
+
+// ---- Line marks (owner decisions C255-C258) ----
+// An author marks lines two ways (C258): attributes of the block, for ranges
+// and for code that cannot be edited (data-mark, data-focus, data-add,
+// data-remove, each a list such as "2,4-5"; data-frame="terminal"), and
+// Shiki's markers at the end of a line, as Docara and VitePress write them:
+// a comment holding [!code ++], [!code --], [!code highlight] or
+// [!code focus], with an optional :N for N lines from this one
+// ([!code highlight:3]). The marker
+// and its comment leave the text before it is coloured, shown or copied;
+// [!!code ...] shows a marker as text.
+const LINE_MARKER = /[ \t]*(?:\/\/|\/\*|#|<!--|--|;|%|')[ \t]*\[!code[ \t]+(\+\+|--|highlight|hl|focus)(?::(\d+))?\][ \t]*(?:\*\/|-->)?[ \t]*$/u;
+// Languages whose text shows Markdown: a marker there is text to show.
+const LITERAL_LANGUAGES = new Set(['markdown', 'md']);
+
+function blockOption(block, name) {
+  const holders = [block, block.closest('pre'), block.closest(ROOT_SELECTOR)];
+  for (const holder of holders) {
+    const value = holder?.getAttribute(name);
+    if (value !== null && value !== undefined) return value;
+  }
+  return null;
+}
+
+// "2,4-6" (commas or spaces) as line indexes from 0; a part that is not a
+// number or a range, or a line the block does not have, is left out.
+function lineRanges(value, count) {
+  const indexes = new Set();
+  String(value || '').split(/[\s,]+/u).forEach((part) => {
+    const match = /^(\d+)(?:-(\d+))?$/u.exec(part);
+    if (!match) return;
+    const from = Number(match[1]);
+    const to = match[2] ? Number(match[2]) : from;
+    for (let line = Math.max(1, from); line <= Math.min(to, count); line++) indexes.add(line - 1);
+  });
+  return indexes;
+}
+
+function terminalFrame(block) {
+  return blockOption(block, 'data-frame') === 'terminal';
+}
+
+// The text to colour and each line's marks.
+function readLineMarks(block, source, language) {
+  const texts = String(source).split(/\r?\n/u);
+  const lines = texts.map(() => ({diff: '', mark: false, focus: false, prompt: false, output: false, skip: false}));
+  const apply = (index, kind, count = 1) => {
+    for (let line = index; line < Math.min(index + Math.max(1, count), lines.length); line++) {
+      if (kind === '++') lines[line].diff = 'add';
+      else if (kind === '--') lines[line].diff = 'remove';
+      else if (kind === 'focus') lines[line].focus = true;
+      else lines[line].mark = true;
+    }
+  };
+  if (!LITERAL_LANGUAGES.has(language)) {
+    texts.forEach((text, index) => {
+      const match = LINE_MARKER.exec(text);
+      if (match) {
+        texts[index] = text.slice(0, match.index);
+        apply(index, match[1], match[2] ? Number(match[2]) : 1);
+      }
+      texts[index] = texts[index].replaceAll('[!!code ', '[!code ');
+    });
+  }
+  lineRanges(blockOption(block, 'data-mark'), lines.length).forEach((index) => apply(index, 'highlight'));
+  lineRanges(blockOption(block, 'data-focus'), lines.length).forEach((index) => apply(index, 'focus'));
+  lineRanges(blockOption(block, 'data-add'), lines.length).forEach((index) => apply(index, '++'));
+  lineRanges(blockOption(block, 'data-remove'), lines.length).forEach((index) => apply(index, '--'));
+  // A terminal (C257): a line that starts with "$ " is a command, the prompt
+  // drawn by the stylesheet; the others are its output, which copy leaves
+  // behind. A terminal without a prompt is all commands.
+  const terminal = terminalFrame(block);
+  if (terminal && texts.some((text) => /^\$(?: |$)/u.test(text))) {
+    texts.forEach((text, index) => {
+      if (/^\$(?: |$)/u.test(text)) {
+        lines[index].prompt = true;
+        texts[index] = text.slice(2);
+      } else lines[index].output = true;
+    });
+  }
+  lines.forEach((line) => { line.skip = line.diff === 'remove' || line.output; });
+  const marked = lines.some((line) => line.diff || line.mark || line.focus || line.prompt || line.output);
+  return {text: texts.join('\n'), lines, marked, terminal};
+}
 
 function chromeMode(block, root) {
   const value = block.dataset.chrome || root?.dataset.chrome || root?.dataset.sfHighlightChrome || 'auto';
@@ -285,7 +374,18 @@ function updateChrome(block, result) {
     language.className = 'sf-highlight__language sf-text-1/2 weight-5';
     head.prepend(language);
   }
-  language.textContent = block.dataset.requestedLang || result.language || 'text';
+  // A terminal (C257) names itself in the head: its icon and the word, in
+  // the language of the block; the frame follows the site theme.
+  const terminal = lineMarks.get(block)?.terminal === true;
+  root.classList.toggle('sf-highlight--terminal', terminal);
+  if (terminal) {
+    const icon = block.ownerDocument.createElement('span');
+    // Icon step 2: 20 on a desktop, 16 on a phone, the code's line height.
+    icon.className = 'sf-icon sf-icon--size-2';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = 'terminal';
+    language.replaceChildren(icon, block.ownerDocument.createTextNode(pageText(HIGHLIGHT_TEXT, 'terminal', block, 'sf-highlight')));
+  } else language.textContent = block.dataset.requestedLang || result.language || 'text';
   ensureCopyButton(block, root, head);
   ensureWrapButton(block, root, head);
 }
@@ -294,7 +394,18 @@ hljs.addPlugin({
   'before:highlightElement': ({ el }) => ensureStructure(el),
   'after:highlightElement': ({ el, result }) => {
     updateChrome(el, result);
-    if (lineNumbersEnabled(el)) hljs.lineNumbersBlock(el);
+    const marks = lineMarks.get(el);
+    const numbers = lineNumbersEnabled(el);
+    if (numbers || marks?.marked) {
+      hljs.lineNumbersBlock(el, {
+        numbers,
+        lines: marks?.lines,
+        words: {
+          add: pageText(HIGHLIGHT_TEXT, 'added', el, 'sf-highlight'),
+          remove: pageText(HIGHLIGHT_TEXT, 'removed', el, 'sf-highlight'),
+        },
+      });
+    }
   },
 });
 
@@ -311,10 +422,14 @@ async function highlightBlock(block) {
   // An empty block waits for its text: marked now, it was skipped for good
   // when a page filled it later (ui-effects site, a code block in a tab).
   if (block.textContent.trim() === '') return false;
-  block.textContent = block.textContent.trim();
-  sourceText.set(block, block.textContent);
+  const source = block.textContent.trim();
+  sourceText.set(block, source);
   const requested = requestedLanguage(block);
   const language = normalizeLanguage(requested || 'plaintext');
+  const marks = readLineMarks(block, source, language);
+  lineMarks.set(block, marks);
+  drawnText.set(block, marks.text);
+  block.textContent = marks.text;
   block.dataset.requestedLang = requested;
   block.dataset.highlightState = hljs.getLanguage(language) ? 'ready' : 'unsupported';
   if (!hljs.getLanguage(language)) block.classList.add('language-plaintext');
@@ -352,7 +467,7 @@ if (typeof document !== 'undefined') {
   const textChanged = (block) => {
     if (!block) return;
     if (!block.dataset.highlighted && !highlightedNodes.has(block)) highlightBlock(block);
-    else if (block.textContent.trim() !== (sourceText.get(block) ?? '').trim()) refresh(block, block.textContent.trim());
+    else if (block.textContent.trim() !== (drawnText.get(block) ?? sourceText.get(block) ?? '').trim()) refresh(block, block.textContent.trim());
   };
   const observer = new MutationObserver((mutations) => mutations.forEach((mutation) => {
     if (mutation.type === 'characterData') return textChanged(blockOf(mutation.target));
@@ -369,5 +484,5 @@ if (typeof window !== 'undefined') {
 }
 registerComponent('hljs', hljs);
 
-export { highlightAllLazy, highlightBlock, lineNumbersEnabled, normalizeLanguage, refresh, requestedLanguage };
+export { highlightAllLazy, highlightBlock, lineNumbersEnabled, lineRanges, normalizeLanguage, readLineMarks, refresh, requestedLanguage };
 export default hljs;

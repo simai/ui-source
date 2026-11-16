@@ -15,6 +15,7 @@
     "src/core/figma_variables/img.png",
     "src/core/scss/_base.scss",
     "src/core/scss/_sf_css__actions.scss",
+    "src/core/scss/_sf_css__code_palette.scss",
     "src/core/scss/_sf_css__composition.scss",
     "src/core/scss/_sf_css__density.scss",
     "src/core/scss/_sf_css__display.scss",
@@ -33,7 +34,7 @@
     "src/core/scss/mix/_mix__window-footer.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "53c0985f797ed00915704785b739806cbd4bc155ad3011ce43ec8dc1d41e4ca9",
+  "content_sha256": "ec1ce152cb148ea45546908bca2fb21e06ea11e27bb3a1ee523e5f1f1636248a",
   "dependencies": [
     {
       "id": "font.inter",

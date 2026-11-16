@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.highlight",
   "kind": "component",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/highlight/docs/docs.md",
@@ -19,7 +19,7 @@
     "src/component/highlight/scss/_theme.scss",
     "src/component/highlight/scss/index.scss"
   ],
-  "content_sha256": "fe8159014bc372f61ba105401b68c95829425e00588e1c29c44ccc0f9e31ccaf",
+  "content_sha256": "6f2a4704476767b2f10a29ad3450b041e4c4e90ba06f1fbb69fffe7f74a331a6",
   "dependencies": [
     {
       "id": "component.clipboard",
@@ -36,6 +36,10 @@
     {
       "id": "component.scrollbar",
       "range": "^1.0.0"
+    },
+    {
+      "id": "component.tooltip",
+      "range": "^1.4.2"
     },
     {
       "id": "core.runtime",

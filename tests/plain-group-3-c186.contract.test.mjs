@@ -13,7 +13,8 @@ const link = read('src/core/scss/_sf_css__link.scss');
 const linkVars = read('src/core/scss/vars/_sf_var__link.scss');
 const typography = read('src/core/scss/_sf_css__typograpy.scss');
 const sfLink = read('src/component/link/scss/_css__link.scss');
-const highlightTheme = read('src/component/highlight/scss/_theme.scss');
+// The palette moved to core in highlight 1.7.0 (DEV msg-75ee8dec).
+const highlightTheme = read('src/core/scss/_sf_css__code_palette.scss');
 const highlight = read('src/component/highlight/scss/_default.scss');
 const wordBreak = read('src/utility/word-break/default/scss/_sf_css__word_break.scss');
 const contract = JSON.parse(read('src/core/contracts/adaptive-sizing.v1.json'));

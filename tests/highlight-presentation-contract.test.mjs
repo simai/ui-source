@@ -25,7 +25,8 @@ test('Highlight uses compact Framework tokens and a transparent code surface', a
     defaults,
     /&-wrap\s*\{[^}]*padding:\s*0 var\(--sf-space-1\) var\(--sf-space-1\);/s,
   );
-  assert.match(theme, /--sf-highlight-background:\s*transparent;/);
+  // The palette roles are core's since 1.7.0 (DEV msg-75ee8dec).
+  assert.match(await read('src/core/scss/_sf_css__code_palette.scss'), /--sf-highlight-background:\s*transparent;/);
   assert.match(
     theme,
     /\.hljs\s*\{[\s\S]*background:\s*var\(--sf-highlight-background\);/,

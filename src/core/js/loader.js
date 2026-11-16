@@ -928,7 +928,11 @@ function parseParams(str) {
   return result;
 }
 
-const SHORTCODE_SKIPPED = 'script, style, yamap, head, meta, link, [data-sf-observer="ignore"]';
+// Code shows its text as written: a [!name] in a code block or inline code
+// is text, not a shortcode. A code block's line marker, // [!code ++]
+// (owner decision C258), was read as the shortcode «code» and dropped
+// before the highlighter saw it.
+const SHORTCODE_SKIPPED = 'script, style, yamap, head, meta, link, pre, code, [data-sf-observer="ignore"]';
 
 SFLoaderPlugin.prototype.findShortCodes = function (node) {
   const regex =
@@ -939,6 +943,7 @@ SFLoaderPlugin.prototype.findShortCodes = function (node) {
   if (this.shouldSkipNode(host)) {
     return;
   }
+  if (node.nodeType !== Node.COMMENT_NODE && host?.closest?.('pre, code')) return;
   // Both text and comment placeholders (the boot script hides a shortcode in
   // a comment). The walk is the browser's: a recursive walk in script over
   // every node of the page, for a `[!` that is almost never there, was the

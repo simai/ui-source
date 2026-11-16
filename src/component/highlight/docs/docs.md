@@ -81,3 +81,51 @@ CB-3): it ends with a paragraph's space (`--sf-text--space-bottom`, 16 on a
 desktop and 12 on a phone) and what follows brings its own, so a heading after
 it keeps its larger top. It was a fixed `--sf-space-4` (32 / 24) on the top of
 whatever came next. A block that ends its holder adds no space after it.
+
+Line marks (1.7.0, owner decisions C254-C258). The number column stays the
+quiet column (`data-lines`, `data-start`; C254). A line can be marked in two
+ways (C258): by attributes of the block, for ranges and for code that cannot be
+edited -- `data-mark`, `data-focus`, `data-add`, `data-remove`, each a list such
+as `"2,4-5"`, read from the `code`, its `pre` or the root -- and by Shiki's
+markers at the end of a line, as Docara and VitePress write them: a comment
+holding `[!code ++]`, `[!code --]`, `[!code highlight]` (or `hl`) or
+`[!code focus]`, with an optional count for N lines from that one
+(`[!code highlight:3]`). The marker and
+its comment leave the text before it is coloured, shown or copied; `[!!code ...]`
+shows a marker as text, and a Markdown block (`md`, `markdown`) shows markers
+as written. The Loader no longer reads `[!name]` inside `pre` or `code` as a
+shortcode (it took `[!code ++]` for the shortcode "code").
+
+- Changed lines (C255): the row is tinted with the diff roles
+  (`--sf-highlight-addition-background`, `--sf-highlight-deletion-background`:
+  the success and error containers) and carries a `+` or `−` sign in a column
+  two characters wide; the code on a tint holds 4.5:1. The sign is drawn by the
+  stylesheet and a screen reader hears "added" / "removed" before the line.
+  Copy gives the result: removed lines and signs are left out.
+- Marked and focused lines (C256): a light primary-container fill (12 % light,
+  24 % dark) and a 2 px primary bar at the line's start. Focus is drawn the
+  same; the other lines are neither dimmed nor blurred.
+- Terminal (C257): `data-frame="terminal"`. The frame is the ordinary code
+  block of the site's theme; its head shows the `terminal` icon and the word
+  "Terminal" in the block's language instead of the language name. A line that
+  starts with `$ ` is a command, its prompt drawn by the stylesheet; the other
+  lines are its output in the place's dim ink. Copy takes the commands only,
+  without prompts or output. A terminal without any `$ ` line is all commands.
+
+Rows carry the block's side room (`--sf-space-1`), not the scroller, so a
+row's fill reaches the block's edges. A token that runs over several lines (a
+block comment, a template string) keeps its colour on every row. Rows are built
+when numbers or any mark is present; `data-copy="false"` on a row is what the
+core copy reader leaves out.
+
+`--sf-highlight-line-divider` is no longer declared (nothing drew it; C254 has
+no line). The legacy `.hljs-ln-numbers` rule still reads it, with the edge
+colour as its fallback, until 2027-01-01.
+
+The palette -- the `--sf-highlight-*` roles and the place hooks the code reads
+them through -- moved to core styles (`core.css`), so a page that colours its
+code at build time (C252 first paint) has the colours before the Highlight
+sheet arrives. New roles `--sf-highlight-number`, `--sf-highlight-property`,
+`--sf-highlight-operator` and `--sf-highlight-variable` let a host aim at one
+kind of token; each is an alias of `--sf-highlight-attribute` (no new hue,
+C186 (11)).
