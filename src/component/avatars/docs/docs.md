@@ -29,7 +29,9 @@ a real destination or action.
   `data-sf-loaded="error"` (sf-avatar sets both, C152 (2)). Initials are in the
   medium weight;
 - composition: `.sf-avatar-label-group`, `.sf-avatar-group` and
-  `.sf-avatar-card`;
+  `.sf-avatar-card`; the label group's heading and text wrap, a word longer
+  than the line included (1.10.1, register RG-S1-24): a printed name is read
+  whole (owner decision C152 (7));
 - state: online indicator (`.sf-online-indicator--online`), away
   (`.sf-online-indicator--away`, a hollow ring of the place's dim ink, owner
   decision C152 (5); sf-avatar draws no point for offline), and

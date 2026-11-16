@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional presence point or verification mark. By default a picture (role img with the name); a link with href, a native button as a menu's trigger; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -101,7 +101,7 @@
       "no-wrap": {
         "type": "boolean",
         "default": false,
-        "description": "Keeps heading and description on one line each in the label and card templates, cut with an ellipsis when the place is narrower."
+        "description": "Keeps heading and description on one line each in the label and card templates, cut with an ellipsis when the place is narrower; in the label template the full text is each line's title. Without it they wrap, a word longer than the line included."
       },
       "text": {
         "type": "string",
