@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.transition-duration",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/transition-duration/default/index.js",
@@ -13,7 +13,7 @@
     "src/utility/transition-duration/default/scss/_sf_var__transition_duration.scss",
     "src/utility/transition-duration/default/scss/index.scss"
   ],
-  "content_sha256": "fd1d70a73a01172d35e19527c6bf173566828d903e5252adda74d967b2d08fe9",
+  "content_sha256": "fe3d69f9e897ce688841f6112a079a8a95734db05269bd2b239b47573b1cc9ba",
   "dependencies": [
     {
       "id": "tokens.breakpoint",
