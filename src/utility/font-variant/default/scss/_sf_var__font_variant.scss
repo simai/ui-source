@@ -3,7 +3,10 @@
 
 // FONT VARIANT
 
+// The capitals only (RG-UT-V TYP-4): small-caps-none wrote font-variant:
+// none, which also turns ligatures off, and the build's fallback for it is
+// font-feature-settings: "kern" off -- the text lost its kerning.
 $font-variant-array:(
     '': small-caps,
-    -none: none
+    -none: normal
 );
