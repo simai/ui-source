@@ -152,6 +152,20 @@
     :where([data-sf-composition-part="content"]:is(.grid, .flex)) > * {
         margin-block: 0;
     }
+
+    // A block that draws no box of its own around running text -- a quote
+    // (blockquote), an HTML block (a bare div) -- used to let its first and
+    // last paragraphs' margins pass out into the rhythm in the block flow. A
+    // flex or grid item keeps them inside, which added 16 px of empty space
+    // under a quote's words; its text's outer margins are cleared instead, so
+    // the block is as tall as its text and the gap alone is the space.
+    :where([data-sf-composition-part="content"]:is(.grid, .flex)) > :where(blockquote, div:not([class])) > :first-child {
+        margin-block-start: 0;
+    }
+
+    :where([data-sf-composition-part="content"]:is(.grid, .flex)) > :where(blockquote, div:not([class])) > :last-child {
+        margin-block-end: 0;
+    }
 }
 
 // A block on the accent fill (the background parameter's accent, 1.1.0;
