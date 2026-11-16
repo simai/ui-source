@@ -180,8 +180,9 @@ test('the field draws V4: rectangular flag on the C77 inset, a small caret, the 
   assert.match(css, /\.sf-country-code\.sf-country-code--size-2 \{\s*--sf-country-code--inset: var\(--sf-space-2\);/u);
   assert.match(css, /--sf-country-code-flag-icon--width: calc\(var\(--sf-country-code--flag-height\) \* 1\.4\);/u);
   assert.match(custom, /--sf-country-code-flag--height: var\(--sf-country-code--flag-height\);/u);
-  // The code is locked only for one country or a country mask.
-  assert.match(source, /if \(config\.multiCountry && !config\.useMask\) return '';/u);
+  // The code is locked only for one country; a masked field with a choice of
+  // countries reads its code from the text too (RG-CC-1).
+  assert.match(source, /if \(config\.multiCountry\) return '';/u);
 });
 
 test('the list: search header, frequent group, chosen row filled, a sheet on a phone', () => {
