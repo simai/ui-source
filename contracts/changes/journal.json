@@ -13764,6 +13764,31 @@
       "manual": "Remove the class: the bar takes the place's colours and the one thickness by itself. A quieter bar is scroll-subtle; a bar shown only while the pointer is over the area is scroll-hover.",
       "owner": "ui-source",
       "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
+    },
+    {
+      "id": "global-sf-tab-to-sf-tabs",
+      "recorded_on": "2026-11-16",
+      "stage": "compat",
+      "kind": "global",
+      "summary": "Owner decision C263 (2026-11-16): the single legacy tab is deprecated and sf-tabs replaces it. The class .sf-tab is already a retired class (class-c187-retired-parts, C187 (8)); its script API SF.Tab is now a dated alias too: it keeps working until remove_after and every read is noted in SF.deprecations (printed in the console only when the page opts in, as every compatibility note).",
+      "items": [
+        {
+          "component": "tab",
+          "from": "SF.Tab",
+          "to": "sf-tabs",
+          "match": "\\bSF\\??\\.Tab\\b"
+        }
+      ],
+      "deprecated_on": "2026-11-16",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<div class=\"sf-tab\" data-active=\"0\">…</div>\n<script>SF.Tab.activate(root, 1);</script>",
+        "after": "<sf-tabs value=\"second\">…</sf-tabs>"
+      },
+      "manual": "Replace the .sf-tab block with <sf-tabs> (or the class .sf-tabs) and its panels; SF.Tab.init is not needed (the element binds itself) and SF.Tab.activate(root, index) becomes setting the element's value; listen to sf-tabs-change instead of sf:tab-change.",
+      "owner": "ui-source",
+      "source": "ui-control control/docs-review/decisions.md C263; src/component/tab/js/_tabs.js (SF_TAB_ALIAS)"
     }
   ]
 }
