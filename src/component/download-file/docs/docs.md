@@ -60,7 +60,9 @@ released docs pre-check above):
   the row has no room for both on one line, `__meta` goes under the name: the
   row's own width decides, so a file in a narrow column of a wide screen does
   the same. Below the `sm` step (32rem, a phone) it is always under the name,
-  a step smaller. The name is never cut: it wraps on its spaces and narrows to
+  a step smaller; hand-written class markup (the size a child of
+  `.sf-download-file-wrap`, beside the container) does the same from the
+  name's start (1.6.1, SM-DL-2: it stood beside the name). The name is never cut: it wraps on its spaces and narrows to
   its longest word, never to letters (`overflow-wrap: break-word`); a word
   breaks only when it does not fit the row beside the icon. The ellipsis and
   the `title` are gone.

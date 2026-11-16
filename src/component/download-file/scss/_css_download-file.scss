@@ -487,6 +487,23 @@
       font-size: var(--sf-text-size-1\/2);
       line-height: var(--sf-text-height-1\/2);
     }
+
+    /* Class markup written by hand (the class documentation's row: the size
+       a child of the wrap, beside the container) draws the same phone row
+       as sf-file-download, the reference twin (C251, SM-DL-2): the size goes
+       under the name, a step smaller, from the name's start. Before, it
+       stood beside the name: 264x36 against the Smart row's 219x52. */
+    .sf-download-file :where(.sf-download-file-wrap:has(> .sf-download-file-file-size)) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sf-0);
+    }
+
+    .sf-download-file :where(.sf-download-file-wrap > .sf-download-file-file-size) {
+      margin-inline-start: calc(var(--sf-file-download-icon-size, var(--sf-download-file-icon-size, var(--sf-download-file--icon-size))) + var(--sf-file-download-gap, var(--sf-download-file-gap, var(--sf-download-file--gap))));
+      font-size: var(--sf-text-size-1\/2);
+      line-height: var(--sf-text-height-1\/2);
+    }
   }
 }
 
