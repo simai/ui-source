@@ -4,5 +4,224 @@
   "delivery": "framework",
   "languages": [
     "kk"
-  ]
+  ],
+  "parts": {
+    "kk": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-file-size",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    }
+  },
+  "coverage": {
+    "kk": {
+      "words": 1205,
+      "translated": 1205,
+      "share": 100
+    }
+  }
 }

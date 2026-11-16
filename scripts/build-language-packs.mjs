@@ -9,15 +9,24 @@
 // language. A language may come in parts: what a pack lacks is said in English
 // and counted in its `coverage` (scripts/language-coverage.mjs lists it).
 //
-//   node scripts/build-language-packs.mjs            write src/core/lang/<code>.json and index.json
+// The Framework's own pack is written in parts, one per component family
+// (component.json `family`; core's words are the family `core`): a page
+// fetches the parts of the families it shows, not every word of the
+// Framework (C177 follow-up: the Kazakh pack reached 15.2 KB gzip of a 16 KB
+// cap with half the Framework's words still to come). Each part is a whole
+// pack of the format; index.json says which components each part holds.
+// Another delivery (ui-pro, ui-chart, a product) writes one file per language
+// unless it asks for parts with --parts.
+//
+//   node scripts/build-language-packs.mjs            write src/core/lang/<code>/<family>.json and index.json
 //   node scripts/build-language-packs.mjs --check    exit 1 when a written pack differs or a word is wrong
 //
 // Another delivery (ui-pro, ui-chart, a product) runs the same script over its
 // own sources and ships the result beside its bundles:
 //
 //   node ../ui-source/scripts/build-language-packs.mjs --root ../ui-pro/components \
-//     --delivery pro --out ../ui-pro/components/src/lang
-import {existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync} from 'node:fs';
+//     --delivery pro --out ../ui-pro/components/src/lang            (one file: <out>/<code>.json)
+import {existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {BUILT_IN, FALLBACK, ROOT, folderGaps, languageFolders, placeholderGaps, runtimeWords} from './language-coverage.mjs';
@@ -45,7 +54,12 @@ export const LEGACY_IDS = Object.freeze({
   'component/swiper': 'sf-swiper',
   'component/toast': 'sf-toast',
   'core/file-size': 'sf-file-size',
+  'core/relative-day': 'sf-relative-day',
 });
+
+// The family of a part that holds core's own words (file sizes, relative days).
+export const CORE_PART = 'core';
+const PART_NAME = /^[a-z][a-z0-9-]*$/u;
 
 const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
 
@@ -149,8 +163,80 @@ export function buildPack(code, {root = ROOT, delivery = 'framework', headers} =
   return {pack, problems};
 }
 
-export function packIndex(codes, delivery = 'framework') {
-  return {schema: INDEX_FORMAT, schema_version: SCHEMA_VERSION, delivery, languages: codes};
+/**
+ * The part each component's words ride in: Map id -> family. A Smart
+ * component's family is its component.json `family`; core's words are `core`;
+ * a class component that shares its name with a Smart one rides with it
+ * (sf-badge), any other is its own family, its name without sf-.
+ */
+export function packFamilies(root = ROOT) {
+  const families = new Map();
+  const smart = path.join(root, 'src/smart');
+  const byTag = new Map();
+  if (existsSync(smart)) {
+    for (const name of readdirSync(smart).sort()) {
+      const manifest = path.join(smart, name, 'component.json');
+      if (!existsSync(manifest)) continue;
+      const {tag, family} = readJson(manifest);
+      if (typeof tag === 'string' && typeof family === 'string' && family) byTag.set(tag, family);
+    }
+  }
+  for (const folder of languageFolders(root)) {
+    const id = componentId(folder);
+    const family = folder.id.startsWith('core/') ? CORE_PART : byTag.get(id) ?? id.replace(/^sf-/u, '');
+    if (!PART_NAME.test(family)) throw new Error(`${folder.id}: family "${family}" is not a file name`);
+    if (families.has(id) && families.get(id) !== family) throw new Error(`${id}: two families, ${families.get(id)} and ${family}`);
+    families.set(id, family);
+  }
+  return families;
+}
+
+/**
+ * A pack in parts: [{family, pack}], one pack per family that says a word, by
+ * family name. Each part is a whole pack of the format (lang, delivery, the
+ * header) whose words are its family's and whose coverage is its family's.
+ */
+export function splitPack(pack, {root = ROOT, families = packFamilies(root)} = {}) {
+  const parts = new Map();
+  for (const [id, words] of Object.entries(pack.words)) {
+    const family = families.get(id);
+    if (!family) throw new Error(`${id}: no family`);
+    if (!parts.has(family)) parts.set(family, {});
+    parts.get(family)[id] = words;
+  }
+  const counts = familyCoverage(pack.lang, {root, families});
+  return [...parts].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([family, words]) => {
+    const {words: total, translated} = counts.get(family) ?? {words: 0, translated: 0};
+    // A part sits one folder deeper (core/lang/<code>/<family>.json).
+    return {family, pack: {...pack, $schema: '../../contracts/language-pack.v1.schema.json', coverage: {words: total, translated, share: total ? Math.round((translated / total) * 1000) / 10 : 100}, words}};
+  });
+}
+
+// Words and words said, per family, for one language.
+function familyCoverage(code, {root, families}) {
+  const counts = new Map();
+  for (const folder of languageFolders(root)) {
+    const family = families.get(componentId(folder));
+    const gaps = folderGaps(folder.dir, code);
+    const count = counts.get(family) ?? {words: 0, translated: 0};
+    count.words += gaps.words;
+    count.translated += gaps.words - gaps.missing.length;
+    counts.set(family, count);
+  }
+  return counts;
+}
+
+/**
+ * The index of a delivery's packs. `parts` (a delivery written in parts):
+ * {code: {family: [component ids]}}, and `coverage`: {code: {words,
+ * translated, share}} of the whole language.
+ */
+export function packIndex(codes, delivery = 'framework', {parts = null, coverage = null} = {}) {
+  return {
+    schema: INDEX_FORMAT, schema_version: SCHEMA_VERSION, delivery, languages: codes,
+    ...(parts ? {parts} : {}),
+    ...(coverage ? {coverage} : {}),
+  };
 }
 
 const text = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -167,16 +253,31 @@ if (isMain) {
   const delivery = option('--delivery', 'framework');
   const out = path.resolve(option('--out', path.join(root, 'src/core/lang')));
   const headers = path.resolve(option('--headers', path.join(ROOT, 'src/core/lang/headers')));
+  // The Framework's own pack is written in parts by family; another delivery
+  // asks for them with --parts.
+  const inParts = delivery === 'framework' || args.includes('--parts');
   const codes = packLanguages(root);
-  const files = new Map([[path.join(out, 'index.json'), text(packIndex(codes, delivery))]]);
+  const files = new Map();
+  const parts = {};
+  const coverage = {};
   let failed = false;
   for (const code of codes) {
     const {pack, problems} = buildPack(code, {root, delivery, headers});
     for (const problem of problems) process.stderr.write(`${code}: ${problem}\n`);
     if (problems.length) failed = true;
-    files.set(path.join(out, `${code}.json`), text(pack));
-    process.stdout.write(`${code}: ${pack.coverage.share} % of ${pack.coverage.words} words, ${Object.keys(pack.words).length} components, ${pack.status}\n`);
+    if (inParts) {
+      parts[code] = {};
+      coverage[code] = pack.coverage;
+      for (const {family, pack: part} of splitPack(pack, {root})) {
+        parts[code][family] = Object.keys(part.words);
+        files.set(path.join(out, code, `${family}.json`), text(part));
+      }
+    } else {
+      files.set(path.join(out, `${code}.json`), text(pack));
+    }
+    process.stdout.write(`${code}: ${pack.coverage.share} % of ${pack.coverage.words} words, ${Object.keys(pack.words).length} components${inParts ? ` in ${Object.keys(parts[code]).length} parts` : ''}, ${pack.status}\n`);
   }
+  files.set(path.join(out, 'index.json'), text(packIndex(codes, delivery, inParts ? {parts, coverage} : {})));
   for (const [file, body] of files) {
     if (check) {
       if (!existsSync(file) || readFileSync(file, 'utf8') !== body) {
@@ -188,11 +289,21 @@ if (isMain) {
       writeFileSync(file, body);
     }
   }
-  if (check && existsSync(out)) {
-    for (const file of readdirSync(out)) {
-      if (file.endsWith('.json') && !files.has(path.join(out, file))) {
-        process.stderr.write(`${file}: a pack of no language in the sources\n`);
+  // A pack or a part no source says any more: reported by --check, removed
+  // by a write (a family that lost its last word, a language whose files went).
+  if (existsSync(out)) {
+    const written = (dir) => readdirSync(dir, {withFileTypes: true}).flatMap((entry) => {
+      const file = path.join(dir, entry.name);
+      if (entry.isDirectory()) return dir === out && entry.name !== 'headers' ? written(file) : [];
+      return entry.name.endsWith('.json') ? [file] : [];
+    });
+    for (const file of written(out)) {
+      if (files.has(file)) continue;
+      if (check) {
+        process.stderr.write(`${path.relative(out, file)}: a pack of no language or family in the sources\n`);
         failed = true;
+      } else {
+        rmSync(file);
       }
     }
   }

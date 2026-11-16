@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "Растау",
+      "accepted-text": "Дайын",
+      "accepting-text": "Орындалуда…",
+      "decline-text": "Болдырмау",
+      "declining-text": "Болдырмауда…",
+      "expired-text": "Жауап беру уақыты өтіп кетті",
+      "question-label": "Растау",
+      "require-error": "«{name}» дегенді жоғарыдағыдай дәл енгізіңіз",
+      "require-text": "Растау үшін {name} деп енгізіңіз",
+      "until-text": "{time} дейін жауап беруге болады"
+    },
+    "sf-confirm-change": {
+      "accept-text": "Растау",
+      "accepted-text": "Қолданылды",
+      "accepting-text": "Қолданылуда…",
+      "after-text": "Болады",
+      "before-text": "Болды",
+      "changes-label": "Не өзгереді",
+      "decline-text": "Қабылдамау",
+      "declining-text": "Қабылданбауда…",
+      "empty-value-text": "бос",
+      "expired-text": "Растау уақыты өтіп кетті",
+      "until-text": "{time} дейін растауға болады"
+    }
+  }
+}

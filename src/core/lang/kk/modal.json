@@ -1,0 +1,31 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 14,
+    "translated": 14,
+    "share": 100
+  },
+  "words": {
+    "sf-modal": {
+      "close": "Жабу",
+      "discard": "Сақтамау",
+      "discard-heading": "Сақтамай жабасыз ба?",
+      "frame-failed": "Ендірілген бетті жүктеу мүмкін болмады",
+      "keep-editing": "Өңдеуді жалғастыру",
+      "load-failed": "Мазмұнды жүктеу мүмкін болмады",
+      "loading": "Жүктелуде…",
+      "minimize": "Жию",
+      "title": "Терезе",
+      "loadFailed": "Мазмұнды жүктеу мүмкін болмады",
+      "frameFailed": "Ендірілген бетті жүктеу мүмкін болмады"
+    }
+  }
+}

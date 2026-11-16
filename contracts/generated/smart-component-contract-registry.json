@@ -509,7 +509,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/change/smart.manifest.json",
-      "manifest_sha256": "7f930d49ca84b5ffb0a498c1f6cc592a6c7988592050e58e9768781b08c3b146",
+      "manifest_sha256": "9f9de1ed8805fae08c064f53e6f2f2176c8a58c35cb6094f265c3b9a9876408d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -587,7 +587,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/confirm/smart.manifest.json",
-      "manifest_sha256": "83e767ae731a071002f7f0d29ae90b7a80c1f25bc4a8f7ca271dc2a01e8a2800",
+      "manifest_sha256": "f3e72af2bd5dcaf0a0ff03bfb38a606e376c50e9d39edca637834aabad1afc50",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1275,7 +1275,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/icon/smart.manifest.json",
-      "manifest_sha256": "ed99117903078db6b7c53047919027008e98b67ba7aa883b71a09e508f9197a3",
+      "manifest_sha256": "2bb8a9ec819a90248770e186382e8bfc79712254775521591d993384c4b78f27",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1511,7 +1511,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-color/smart.manifest.json",
-      "manifest_sha256": "13ec53564cc58b0ca7c305b8d02c899e2e21095a3477148e933a962c24284e39",
+      "manifest_sha256": "e4b3441985dba59ff8dca61c2efab3282842bb22477cf82d526cc30e60ef6030",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1641,7 +1641,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-image/smart.manifest.json",
-      "manifest_sha256": "1e636078bf8449818d83a7acf1b4fe31eaad0e16512a08ca7c45ede22f35841b",
+      "manifest_sha256": "41e228e989503f0cade1b02934eaaa3dcc9ec494392276a0e10bff9f6f22d4d2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2379,7 +2379,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pagination/smart.manifest.json",
-      "manifest_sha256": "a935d030a2c465d5623b0ffa27bd72ac1883bc6a88c2ec3e8872c5b38a4b2870",
+      "manifest_sha256": "14e3c6a787b3284f78bead6dd6be4670824a56344b8e933344fceebb3c8dbd48",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2977,7 +2977,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/slider-range/smart.manifest.json",
-      "manifest_sha256": "93daec8b31f3035fc2ba8f64dccfa6269f00caf265ad06e349d02ad099c709b9",
+      "manifest_sha256": "2f269993db0c61a855e884611445c8ed9bca49c044e4dd4dca87fa5e38a17624",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3303,7 +3303,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/theme-generator/smart.manifest.json",
-      "manifest_sha256": "3878b9e2ee2b4b4df6fd4679af190305b09b5cd359c9d200badf66e65eba82b6",
+      "manifest_sha256": "e9af8055171f5855bcc16a21fca58e1e6cbcf5d60c36872da0cac95f57d2ebbd",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3386,7 +3386,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/time/smart.manifest.json",
-      "manifest_sha256": "2020e7c30fe88aafa6789e7ba0ea07ec0199a8c862e1ea769346f95a003a0c65",
+      "manifest_sha256": "e9e24690f418a27429498063d7cba1ee1390de13851d7172c7acbdf718f4d16b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

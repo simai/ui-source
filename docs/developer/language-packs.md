@@ -17,10 +17,15 @@ be copied.
   dictionary: two components that both say «Close» each say it.
 - **Russian and English are built in.** They are inside every component's
   bundle and never cost a request. English is the fallback.
-- **Every other language is one file per language and delivery** — one for the
+- **Every other language is one pack per language and delivery** — one for the
   whole Framework, one for ui-pro, one for ui-chart, one for a product. A page
-  fetches the file only when it speaks that language. A Russian or English page
+  fetches it only when it speaks that language. A Russian or English page
   never fetches anything.
+- **The Framework's own pack comes in parts, one per component family**
+  (`core/lang/kk/input.json`, `core/lang/kk/pagination.json`, …, and
+  `core/lang/kk/core.json` for core's own words). A page fetches the parts of
+  the families it shows. Each part is a whole pack of the format below; a
+  product's pack stays one file.
 - A language may ship in parts. A word a pack lacks is said in English, the
   console says so once, `SF.language.missing()` lists it and
   `scripts/language-coverage.mjs` counts it.
@@ -35,7 +40,7 @@ For a component on a page whose language is `kk`, in this order:
 2. a word a product gave: registered one by one
    (`SF.language.register('sf-pagination', 'kk', {…})`) or in a product's pack
    (`delivery` other than `framework`); between the product's own, the later wins;
-3. a word of the Framework's pack (`core/lang/kk.json`) — it never replaces a
+3. a word of the Framework's pack (`core/lang/kk/<family>.json`) — it never replaces a
    product's word, whichever arrived first;
 4. the component's built-in word of that language (ru, en only);
 5. the same for the language without its region (`kk-KZ` → `kk`);
@@ -104,7 +109,8 @@ number formats or plural rules of its own (see «Numbers and dates»).
 - a class component: the name its documentation gives, the same as
   `SF.language.register` takes: `sf-modal`, `sf-toast`, `sf-badge`,
   `sf-input-country` (country-code), `download-file`;
-- shared core words: `sf-file-size` (the four size units `b`, `kb`, `mb`, `gb`).
+- shared core words: `sf-file-size` (the four size units `b`, `kb`, `mb`, `gb`)
+  and `sf-relative-day` (`today`, `yesterday`, `tomorrow`, see «Numbers and dates»).
 
 The keys are the keys of the component's `lang/en.json` → `runtime`, and the
 words of a trait the component opts into (`x-trait-words` → `words`, for
@@ -129,8 +135,11 @@ A word is a string. Braces are filled by the component:
   Russian word gains a placeholder (`"Скачать файл"` becomes `"Скачать {name}"`),
   every language of that word follows in the same change.
 
-Write the punctuation of the language: quotes `«…»` or `„…“`, the decimal sign
-of `input-color`'s `decimal` key, a space before `%` where the language wants it.
+Write the punctuation of the language: quotes `«…»` or `„…“` around a
+`{name}`, a space before `%` where the language wants it. The decimal sign of a
+number is never a word: `{n}` and every number a component writes take it from
+`Intl.NumberFormat` (input-color and theme-generator had a `decimal` word until
+the C177 follow-up).
 
 ### Plural words
 
@@ -157,18 +166,32 @@ Never in a pack. Numbers, dates, month and weekday names, relative time
 time takes it as a placeholder already formatted: `"saved": "Жоба {time} сақталды"`.
 
 Known gap (study LC-12): some browsers carry little data for some languages —
-headless Chromium answers `M01` for Kazakh and Uzbek months. Desktop Chrome,
-Edge, Firefox and Safari carry it; phones are to be checked on devices.
+headless Chromium answers `M01` for Kazakh and Uzbek months and «yesterday»
+for the Kazakh «кеше». Desktop Chrome, Edge, Firefox and Safari carry it;
+phones are to be checked on devices.
+
+The one exception to «never in a pack»: the three day words «today»,
+«yesterday», «tomorrow» are core's words `sf-relative-day`
+(`src/core/js/lang/relative-day/`), said only where the browser has no
+relative-time words of the language (it answers for another language, or in
+English): a Kazakh page in such a browser says «кеше, 09:05», not
+«yesterday, 09:05». Where the browser has the words, they are the browser's.
 
 ## How a page gets a pack
 
 Core reads `<html lang>` when it starts. When the language is neither Russian
 nor English and the Framework has a pack of it (`core/lang/index.json` lists
-them, inside core), core fetches `core/lang/<lang>.json` beside itself — one
-request, once per page. The same happens for `SF.language.use('kk')` and for
-the first word a component looks up in a part of the page with its own
-`[lang]`. While the pack is on its way components say English without a
-warning, and draw again when it arrives.
+the languages and, for each, the parts and the components each part holds;
+the index is inside core), core fetches beside itself the part `core` and the
+part of every family whose elements are already in the document, and once more
+for the families the parsed document adds. A component drawn later fetches its
+family's part with the first word it looks up. Each part is fetched once per
+page. The same happens for `SF.language.use('kk')` and for a part of the page
+with its own `[lang]`. While a part is on its way components say English
+without a warning, and draw again when it arrives (once per frame, however
+many parts came).
+
+`SF.language.load('kk')` fetches every part at once.
 
 A page in a language with no pack makes no request: its words are English, and
 the console says once which language had no words.
@@ -233,8 +256,8 @@ exits 1 when one differs:
 `smart/time: yesterday-at: {time} where ru says {day}, {time}`.
 
 On a page, `SF.language.missing('kk')` lists the words said in English so far
-(`["sf-change|to-text"]`), and the console warns once per language:
-`[SIMAI Framework] "kk": words missing, said in English (first: sf-change "to-text")`.
+(`["sf-pagination|next-label"]`), and the console warns once per language:
+`[SIMAI Framework] "kk": words missing, said in English (first: sf-pagination "next-label")`.
 
 ## Making the packs of a delivery
 
@@ -245,17 +268,23 @@ says about the language itself (`name`, `dir`, `status`, `review`) is
 `src/core/lang/headers/<lang>.json`. The build collects them:
 
 ```sh
-node scripts/build-language-packs.mjs           # writes src/core/lang/<lang>.json and index.json
-node scripts/build-language-packs.mjs --check   # fails when a pack is stale or a word is wrong
+node scripts/build-language-packs.mjs           # writes src/core/lang/<lang>/<family>.json and index.json
+node scripts/build-language-packs.mjs --check   # fails when a part is stale or a word is wrong
 ```
 
 It fails on a word whose placeholders differ from English, a missing plural
 category, a key English does not have, and one component saying one key two
-ways in two folders. The core build ships `src/core/lang/` as `distr/core/lang/`.
+ways in two folders. A part's family is its component's `family`
+(`component.json`); core's words are `core`; a class component without a
+Smart one of its name is its own family. A part no source says any more is
+removed by the build and reported by `--check`. Each part stays under 8 KB
+gzip (the test of C177 (7)): the whole Kazakh pack had reached 15.2 KB of a
+16 KB cap. The core build ships `src/core/lang/` as `distr/core/lang/`.
 
 ui-pro, ui-chart and any package of components run the same script over their
 own sources and ship the result beside their bundles, then name it with
-`SF.language.addPack` in their entry (one pack per language per delivery):
+`SF.language.addPack` in their entry (one file per language per delivery;
+`--parts` writes parts instead, which only core knows how to fetch today):
 
 ```sh
 node ../ui-source/scripts/build-language-packs.mjs --root ../ui-pro/components \
@@ -282,7 +311,12 @@ A pack is written for people who read the language every day (owner, C177 (9)):
 - **Do not glue.** A sentence built from pieces cannot be translated. If a
   component puts a word before a name or number in code (`"Go to slide " + 3`),
   that is a defect of the component: ask for one word with a placeholder
-  (`"Go to slide {n}"`).
+  (`"Go to slide {n}"`). A control inside a sentence is a placeholder too: the
+  page field of sf-pagination is `{page}` in `"{page} из {count}"`, the name to
+  type in sf-confirm is `{name}` in `"Чтобы подтвердить, введите {name}"`;
+  the component draws the field or the name where the word puts it.
+- **Plurals are objects.** A word that takes a number is a plural word
+  (`{"one": …, "other": …}`), never forms joined by «|».
 - **Status.** A machine or unreviewed translation is `"status": "draft"`; only a
   native speaker who has read every word sets `"reviewed"` and names themselves
   in `review`.

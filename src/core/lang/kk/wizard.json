@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 23,
+    "translated": 23,
+    "share": 100
+  },
+  "words": {
+    "sf-wizard": {
+      "label": "Қадамдық баптау",
+      "running-text": "Орындалуда…",
+      "position": "Қадам {n} / {count}",
+      "moved": "Қадам {n} / {count}: {step}",
+      "back": "Артқа",
+      "skip": "Өткізу",
+      "next": "Әрі қарай",
+      "run": "Іске қосу",
+      "retry": "Қайталау",
+      "apply": "Қолдану",
+      "done": "Дайын",
+      "later": "Кейінірек жалғастыру",
+      "steps": "Қадамдар",
+      "all-steps": "Барлық қадамдар",
+      "hide-steps": "Қадамдарды жасыру",
+      "progress": "Шебер барысы",
+      "state-done": "Орындалды",
+      "state-skipped": "Өткізілді",
+      "state-running": "Орындалуда",
+      "state-error": "Қате",
+      "required": "Өрісті толтырыңыз",
+      "invalid": "Мәнді тексеріңіз",
+      "saved": "Жоба {time} сақталды"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-sortable": {
+      "cancelled": "Жылжыту болдырылмады.",
+      "dropped": "Қойылды: {item}, «{list}» ішіндегі орны {index}.",
+      "empty": "Ештеңе табылмады",
+      "hint": "Плюс — кейін кірістіру.",
+      "inserted": "Кірістірілді: {item}, «{list}» ішіндегі орны {index}.",
+      "instructions": "Бос орын немесе Enter — алу, бағыт пернелері — жылжыту, Бос орын немесе Enter — қою, Escape — болдырмау.",
+      "menu": "Кірістіру",
+      "move-down": "Төменірек",
+      "move-first": "Басына",
+      "move-last": "Соңына",
+      "move-menu": "«{item}» жылжыту",
+      "move-up": "Жоғарырақ",
+      "moved": "«{list}» ішінде {total} ішінен {index}-орын.",
+      "picked": "Алынды: {item}. «{list}» ішінде {total} ішінен {index}-орын.",
+      "point": "Кірістіру: {total} ішінен {index}-орын",
+      "roledescription": "жылжытылатын",
+      "search": "Табу",
+      "target": "Мақсат: {target}."
+    }
+  }
+}

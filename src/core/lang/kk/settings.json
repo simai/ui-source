@@ -1,0 +1,48 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 28,
+    "translated": 28,
+    "share": 100
+  },
+  "words": {
+    "sf-settings": {
+      "label": "Баптаулар",
+      "hue-red": "Қызыл",
+      "hue-orange": "Сарғылт",
+      "hue-amber": "Кәріптас",
+      "hue-yellow": "Сары",
+      "hue-lime": "Лайм",
+      "hue-green": "Жасыл",
+      "hue-teal": "Көкшіл жасыл",
+      "hue-cyan": "Көгілдір",
+      "hue-sky": "Аспан көк",
+      "hue-blue": "Көк",
+      "hue-indigo": "Индиго",
+      "hue-violet": "Күлгін",
+      "hue-purple": "Қызыл күрең",
+      "hue-pink": "Қызғылт",
+      "hue-brown": "Қоңыр",
+      "hue-gray": "Сұр",
+      "own-color": "Өз түсіңіз…",
+      "own-color-value": "Өз түсіңіз: {value}",
+      "close": "Жабу",
+      "reset": "Қалпына келтіру",
+      "apply": "Қолдану",
+      "search": "Табу",
+      "empty": "Ештеңе табылмады",
+      "pin": "Бекіту",
+      "unpin": "Босату",
+      "move-hint": "Alt пен жоғары және төмен бағыт пернелері ретін өзгертеді",
+      "position": "{text}: {count} ішінен {index}"
+    }
+  }
+}

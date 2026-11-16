@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import {gzipSync} from 'node:zlib';
-import {LEGACY_IDS, buildPack, componentId, packLanguages} from '../scripts/build-language-packs.mjs';
+import {LEGACY_IDS, buildPack, componentId, packFamilies, packLanguages} from '../scripts/build-language-packs.mjs';
 import {languageCoverage, languageFolders, placeholderGaps} from '../scripts/language-coverage.mjs';
 
 // Owner decision C177 (2026-11-14): every language but ru and en is one file
@@ -44,10 +44,33 @@ function packProblems(pack, schema) {
   return problems;
 }
 
-test('C177 (1)(3): one pack per language for the Framework, written by the script and current', () => {
+// The Framework's pack of a language, read whole from its parts.
+const partsOf = (code) => Object.keys(json('src/core/lang/index.json').parts[code]);
+const part = (code, family) => json(`src/core/lang/${code}/${family}.json`);
+const wholePack = (code) => {
+  const parts = partsOf(code).map((family) => part(code, family));
+  return {...parts[0], coverage: json('src/core/lang/index.json').coverage[code], words: Object.assign({}, ...parts.map((one) => one.words))};
+};
+
+test('C177 (1)(3): one pack per language for the Framework, in parts by family, written by the script and current', () => {
   execFileSync(process.execPath, ['scripts/build-language-packs.mjs', '--check'], {cwd: new URL('..', import.meta.url)});
   assert.deepEqual(packLanguages(), ['kk']);
-  assert.deepEqual(json('src/core/lang/index.json'), {schema: 'simai.language-pack-index', schema_version: 1, delivery: 'framework', languages: ['kk']});
+  const index = json('src/core/lang/index.json');
+  assert.deepEqual([index.schema, index.schema_version, index.delivery, index.languages], ['simai.language-pack-index', 1, 'framework', ['kk']]);
+  // C177 follow-up (#46): the pack is split by component family before the
+  // next word group; index.json says which components each part holds, and
+  // every part is a file of that name.
+  const families = packFamilies();
+  const parts = index.parts.kk;
+  assert.ok(Object.keys(parts).length > 40, 'a part per family');
+  assert.ok(parts.core.includes('sf-file-size') && parts.core.includes('sf-relative-day'), 'core words are the core part');
+  assert.ok(parts.input.includes('sf-input') && parts.pagination.includes('sf-pagination'));
+  for (const [family, ids] of Object.entries(parts)) {
+    assert.deepEqual(Object.keys(part('kk', family).words), ids, family);
+    for (const id of ids) assert.equal(families.get(id), family, id);
+  }
+  assert.deepEqual(readdirSync(new URL('../src/core/lang/kk/', import.meta.url)).sort(), Object.keys(parts).map((family) => `${family}.json`).sort());
+  assert.ok(!existsSync(new URL('../src/core/lang/kk.json', import.meta.url)), 'no whole-language file beside the parts');
   // ru and en are never packs: they are built into the components (C177 (2)).
   assert.ok(!existsSync(new URL('../src/core/lang/ru.json', import.meta.url)));
   assert.ok(!existsSync(new URL('../src/core/lang/en.json', import.meta.url)));
@@ -56,8 +79,12 @@ test('C177 (1)(3): one pack per language for the Framework, written by the scrip
 test('C177 (8): the pack is what the public schema says', () => {
   const schema = json('src/core/contracts/language-pack.v1.schema.json');
   assert.equal(schema.$id, 'https://simai.io/contracts/language-pack.v1.schema.json');
-  const pack = json('src/core/lang/kk.json');
-  assert.deepEqual(packProblems(pack, schema), []);
+  // Every part is a whole pack of the public format.
+  for (const family of partsOf('kk')) {
+    const one = part('kk', family);
+    assert.deepEqual(packProblems(one, schema), [], family);
+    assert.equal(one.$schema, '../../contracts/language-pack.v1.schema.json', family);
+  }
   // A pack a product writes by hand: the smallest one the schema takes.
   assert.deepEqual(packProblems({schema: 'simai.language-pack', schema_version: 1, lang: 'de', words: {'sf-pagination': {'next-label': 'Nächste Seite'}}}, schema), []);
   assert.ok(packProblems({schema: 'simai.language-pack', schema_version: 1, lang: 'DE', words: {}}, schema).includes('lang'));
@@ -67,25 +94,31 @@ test('C177 (8): the pack is what the public schema says', () => {
   }
 });
 
-test('C177 (7): the Kazakh pilot - draft, nearly whole, 11-16 KB, the gaps named', () => {
-  const pack = json('src/core/lang/kk.json');
+test('C177 (7): the Kazakh pilot - draft, whole, every part within its budget', () => {
+  const pack = wholePack('kk');
   assert.equal(pack.lang, 'kk');
   assert.equal(pack.status, 'draft', 'a machine draft until a native speaker reads it');
   assert.match(pack.review, /native review/u);
   const coverage = languageCoverage('kk');
   assert.equal(pack.coverage.words, coverage.words);
   assert.equal(pack.coverage.translated, coverage.words - coverage.missing);
-  assert.ok(pack.coverage.share >= 99, `${pack.coverage.share}`);
-  // The one word left out on purpose: sf-change reads «A to B» as three
-  // pieces, which Kazakh cannot say without endings on the values (C177 (9)).
-  assert.deepEqual(coverage.folders.map((folder) => [folder.id, folder.missing]), [['smart/change', ['to-text']]]);
+  // sf-change says one phrase with both values (change-text) since 1.1.0, so
+  // the word Kazakh could not say (to-text, C177 (9)) is gone: nothing missing.
+  assert.equal(pack.coverage.share, 100, `${pack.coverage.share}`);
+  assert.deepEqual(coverage.folders.map((folder) => [folder.id, folder.missing]), []);
   // A trait's words (x-trait-words, field-inherit@1) are the component's own words and ride the pack.
   for (const id of ['sf-input', 'sf-dropdown', 'sf-switch', 'sf-input-textarea', 'sf-input-quantity']) {
     assert.deepEqual(Object.keys(pack.words[id] ?? {}).filter((key) => ['inherited', 'reset', 'described'].includes(key)).sort(), ['described', 'inherited', 'reset'], id);
   }
-  const gzip = gzipSync(readFileSync(new URL('../src/core/lang/kk.json', import.meta.url)), {level: 9}).length;
-  // 16 KB since group build 7 (its branches add 116 words; the languages-kk evidence asked to raise the cap or split the pack).
-  assert.ok(gzip >= 9000 && gzip <= 16384, `kk.json gzip ${gzip}`);
+  // The byte budget is a part's (#46, #113): the whole pack had reached
+  // 15.2 KB gzip of its 16 KB cap. A part stays under 8 KB gzip, so a page
+  // that shows a few families fetches a few KB, and a family that grows past
+  // it is a sign to look at its words, not to raise the cap.
+  for (const family of partsOf('kk')) {
+    const gzip = gzipSync(readFileSync(new URL(`../src/core/lang/kk/${family}.json`, import.meta.url)), {level: 9}).length;
+    assert.ok(gzip <= 8192, `kk/${family}.json gzip ${gzip}`);
+    assert.equal(part('kk', family).status, 'draft', family);
+  }
   // Kazakh nouns stay singular after a number: one and other say the same.
   for (const words of Object.values(pack.words)) {
     for (const word of Object.values(words)) {
@@ -174,49 +207,76 @@ test('C177 (4)(6): pack words below a product word, a Framework pack below a pro
   language.forget();
 });
 
-test('C177 (1)(4): core fetches one pack, only for a language that has one; a missing word is said in English and listed', async () => {
+test('C177 (1)(4): core fetches only the parts a page shows, only for a language that has a pack; a missing word is said in English and listed', async () => {
   const {language, pageWord} = await import('../src/core/js/page-language.js');
   const {installLanguagePacks} = await import('../src/core/js/language-packs.js');
   const saved = {document: globalThis.document, config: globalThis.SF_BOOT_CONFIG, warn: console.warn};
   const warnings = [];
   console.warn = (text) => warnings.push(String(text));
-  const run = async (lang, config) => {
+  const CDN = 'https://cdn.test/distr/core/lang/';
+  let fetched = [];
+  // A document in `lang` holding the elements `tags`.
+  const install = (lang, config, tags = []) => {
     language.forget();
     globalThis.__sfMissingWords = new Map();
-    globalThis.document = {documentElement: {getAttribute: () => lang}, baseURI: 'https://example.test/page/'};
+    globalThis.document = {
+      documentElement: {getAttribute: () => lang}, baseURI: 'https://example.test/page/', readyState: 'complete',
+      querySelectorAll: (selector) => tags.filter((tag) => selector.split(',').includes(tag)).map((tag) => ({localName: tag})),
+    };
     globalThis.SF_BOOT_CONFIG = config;
-    const fetched = [];
-    const pack = json('src/core/lang/kk.json');
+    fetched = [];
     installLanguagePacks({root: 'https://cdn.test/distr/core/', again: true, fetchJson: async (url) => {
       fetched.push(url);
-      if (url.endsWith('/core/lang/kk.json')) return pack;
+      if (url.startsWith(CDN)) return json(`src/core/lang/${url.slice(CDN.length)}`);
       return {schema: 'simai.language-pack', schema_version: 1, delivery: 'shop', lang: 'kk', words: {'sf-empty-state': {'no-data-title': 'Тауар әзірге жоқ'}}};
     }});
-    await language.load(lang ?? 'en');
-    return fetched;
   };
+  const settle = () => Promise.all([...globalThis.__sfPageLanguage.packs.pending.values()]);
   try {
-    assert.deepEqual(await run('ru'), [], 'a Russian page asks for nothing');
-    assert.deepEqual(await run('en'), [], 'an English page asks for nothing');
-    assert.deepEqual(await run('de'), [], 'no Framework pack of de: nothing is asked');
-    assert.deepEqual(await run('kk'), ['https://cdn.test/distr/core/lang/kk.json'], 'one file');
-    assert.deepEqual(await run('kk-KZ'), ['https://cdn.test/distr/core/lang/kk.json'], 'the region asks for its language');
+    for (const lang of ['ru', 'en', 'de']) {
+      install(lang, undefined, ['sf-change']);
+      await settle();
+      assert.deepEqual(fetched, [], `${lang}: nothing is asked (built in, or no Framework pack)`);
+    }
+    // A Kazakh page: core's words and the families of the elements already
+    // in the document, nothing else.
+    install('kk', undefined, ['sf-change', 'sf-pagination']);
+    await settle();
+    assert.deepEqual(fetched.sort(), [`${CDN}kk/change.json`, `${CDN}kk/core.json`, `${CDN}kk/pagination.json`]);
+    install('kk-KZ', undefined, []);
+    await settle();
+    assert.deepEqual(fetched, [`${CDN}kk/core.json`], 'the region asks for its language');
+    // A component drawn later asks for its family's part with its first word;
+    // the English said meanwhile is a moment, not a gap.
+    const empty = {closest: () => ({getAttribute: () => 'kk'}), tagName: 'SF-EMPTY-STATE'};
+    assert.equal(pageWord({en: {'no-data-title': 'No records yet'}}, 'no-data-title', empty), 'No records yet');
+    assert.ok(fetched.includes(`${CDN}kk/empty.json`));
+    await settle();
+    assert.deepEqual(language.missing('kk'), []);
+    assert.equal(pageWord({en: {'no-data-title': 'No records yet'}}, 'no-data-title', empty), 'Әзірге жазба жоқ');
+    // The word no pack has: English, one warning, listed by SF.language.missing().
     const node = {closest: () => ({getAttribute: () => 'kk'}), tagName: 'SF-CHANGE'};
-    // The word the pack lacks: English, one warning, listed by SF.language.missing().
-    assert.equal(pageWord({en: {'to-text': 'to'}, ru: {'to-text': 'на'}}, 'to-text', node), 'to');
-    assert.deepEqual(language.missing('kk'), ['sf-change|to-text']);
+    install('kk', undefined, ['sf-change']);
+    await settle();
+    assert.equal(pageWord({en: {'gone-text': 'gone'}, ru: {'gone-text': 'нет'}}, 'gone-text', node), 'gone');
+    assert.deepEqual(language.missing('kk'), ['sf-change|gone-text']);
     // An English word that is empty on purpose (a placeholder left blank) has nothing to translate.
     const country = {closest: () => ({getAttribute: () => 'kk'}), tagName: 'SF-INPUT-COUNTRY'};
     assert.equal(pageWord({en: {placeholder: ''}, ru: {placeholder: ''}}, 'placeholder', country), '');
-    assert.deepEqual(language.missing('kk'), ['sf-change|to-text']);
+    assert.deepEqual(language.missing('kk'), ['sf-change|gone-text']);
     assert.ok(warnings.some((text) => text.includes('"kk": words missing')));
     assert.equal(pageWord({en: {'show-text': 'Show changes'}, ru: {}}, 'show-text', node), 'Өзгерістерді көрсету');
-    // A product's pack, one line in its boot config, rides with the Framework's.
-    const both = await run('kk', {languages: {kk: '/shop/lang/kk.json'}});
-    assert.deepEqual(both, ['https://cdn.test/distr/core/lang/kk.json', 'https://example.test/shop/lang/kk.json']);
-    const empty = {closest: () => ({getAttribute: () => 'kk'}), tagName: 'SF-EMPTY-STATE'};
+    // SF.language.load fetches every part.
+    await language.load('kk');
+    assert.equal(fetched.filter((url) => url.startsWith(`${CDN}kk/`)).length, Object.keys(json('src/core/lang/index.json').parts.kk).length);
+    // A product's pack, one line in its boot config, one file, rides with the Framework's.
+    install('kk', {languages: {kk: '/shop/lang/kk.json'}}, []);
+    await settle();
+    assert.deepEqual(fetched.sort(), [`${CDN}kk/core.json`, 'https://example.test/shop/lang/kk.json']);
     assert.equal(pageWord({en: {'no-data-title': 'No records yet'}}, 'no-data-title', empty), 'Тауар әзірге жоқ');
-    assert.equal(language.packs().kk.length, 2);
+    await settle();
+    assert.equal(pageWord({en: {'no-data-title': 'No records yet'}}, 'no-data-title', empty), 'Тауар әзірге жоқ', 'a product word stays over the Framework part that came after');
+    assert.deepEqual(language.packs().kk.map((info) => info.delivery).sort(), ['framework', 'framework', 'shop']);
   } finally {
     language.forget();
     globalThis.document = saved.document;

@@ -1,0 +1,45 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "kk",
+  "name": "Қазақша",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
+  "coverage": {
+    "words": 25,
+    "translated": 25,
+    "share": 100
+  },
+  "words": {
+    "sf-profile-picker": {
+      "actions": "Әрекеттер",
+      "builtin": "стандартты",
+      "cancel": "Болдырмау",
+      "close": "Жабу",
+      "copy-of": "«{name}» профилінің көшірмесі.",
+      "create": "Жасау",
+      "kind": "Профильді кім көреді",
+      "label": "Профиль",
+      "locked": "Өзгертуге құқығыңыз жоқ",
+      "name": "Профиль атауы",
+      "name-empty": "Профильге атау беріңіз.",
+      "new-profile": "Жаңа профиль…",
+      "personal": "Жеке",
+      "personal-taken": "Жеке профиліңіз бар",
+      "remove": "Жою",
+      "remove-ask": "Жою…",
+      "remove-question": "«{name}» жойылсын ба?",
+      "remove-shared": "Ол сайттағы барлық адамнан жойылады.",
+      "rename": "Атын өзгерту",
+      "reset": "Стандарттыға қайтару",
+      "save": "Сақтау",
+      "seen-by-all": "Сайттағы барлығына көрінеді.",
+      "seen-by-you": "Тек сізге көрінеді.",
+      "shared": "Барлығы үшін",
+      "shared-denied": "Ортақ профильдер жасауға құқығыңыз жоқ"
+    }
+  }
+}
