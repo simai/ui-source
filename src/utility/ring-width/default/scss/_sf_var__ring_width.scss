@@ -45,3 +45,17 @@ $ring-width-array: (
         var(--sf-ring-offset-color, transparent);
     box-shadow: var(--sf-ring-shadow), var(--sf-place-shadow, 0 0 transparent);
 }
+
+// The place shadow and the ring are the element's own: they do not inherit,
+// so a component that draws them (sf-card, RG-UT-V (18)) does not take its
+// parent's. utility/box-shadow registers the same two; every ring
+// sheet reads this file.
+@property --sf-place-shadow {
+    syntax: "*";
+    inherits: false;
+}
+
+@property --sf-ring-shadow {
+    syntax: "*";
+    inherits: false;
+}
