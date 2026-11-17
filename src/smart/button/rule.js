@@ -19,6 +19,9 @@ SF.RuleLoader['cl-button'] = {
     { name: 'cl-button-icon', lazy: true },
     // The menu of a menu or split button (C119).
     { name: 'cl-menu-context', lazy: true },
+    // The tooltip controller and sheet of a label cut with an ellipsis (overflow="truncate",
+    // C301 (2)): asked for once a label is cut, as sf-button-icon's name tooltip (C160).
+    { name: 'tooltip', lazy: true },
   ],
 };
 

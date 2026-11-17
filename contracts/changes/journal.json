@@ -18326,6 +18326,54 @@
       "manual": "A product that needs Kazakh words registers its own pack (SF.language.addPack or SF_BOOT_CONFIG.languages) in the format docs/developer/language-packs.md describes.",
       "owner": "ui-source",
       "source": "ui-control control/docs-review/decisions.md C278"
+    },
+    {
+      "id": "attribute-input-date-input-type-to-appearance",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "One look vocabulary for every field (dispatcher decision 2026-11-17 on the Larena record forms letter msg-9e7b5015): every field names its look on appearance, bordered or filled. sf-input-date 1.16.0 takes appearance (bordered, the default, or filled); input-type, the name it used, keeps working until remove_after, noted in SF.deprecations and said once per page in the console, appearance winning when both are set.",
+      "items": [
+        {
+          "component": "sf-input-date",
+          "from": "input-type",
+          "to": "appearance",
+          "match": "<sf-(input-date|datepicker)[^>]*\\sinput-type="
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write appearance for input-type on sf-input-date (and its dated tag sf-datepicker). bordered is the default; filled is the other shared look.",
+      "examples": {
+        "before": "<sf-input-date label=\"Срок\" input-type=\"filled\"></sf-input-date>",
+        "after": "<sf-input-date label=\"Срок\" appearance=\"filled\"></sf-input-date>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-date/index.js; src/smart/helpers/field-appearance.js; contracts/public-api-axes.json field_appearance"
+    },
+    {
+      "id": "behaviour-popover-data-open-retired",
+      "recorded_on": "2026-11-17",
+      "stage": "removed",
+      "kind": "behaviour",
+      "summary": "sf-popover 1.8.0 no longer writes data-open on its host (DEV order msg-d56fa72b, list head notes; standard §5.3). It wrote \"true\" or \"false\" on every drawing, over a data-open the page kept on the element, and repeated the open value, which is reflected as the open attribute. The popover sheet hides a closed surface by sf-popover:not([open]); sf-input-rich reads [open].",
+      "items": [
+        {
+          "component": "sf-popover",
+          "attribute": "data-open",
+          "from": "sf-popover[data-open=\"true\"]",
+          "to": "sf-popover[open]",
+          "match": "sf-popover[^{,]*\\[data-open"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-17",
+      "rewrite": "manual",
+      "manual": "In a page selector or script write sf-popover[open] for sf-popover[data-open=\"true\"], sf-popover:not([open]) for sf-popover[data-open=\"false\"], and popover.open for popover.dataset.open. data-open on sf-popover is the page's own attribute again.",
+      "owner": "ui-source",
+      "source": "src/smart/popover/index.js updateDom; src/smart/popover/js/templates/default.css"
     }
   ]
 }

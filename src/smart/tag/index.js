@@ -141,7 +141,17 @@ function tagAppearance(element) {
 // group's «+N» panel.
 const BARE_TOGGLE = {since: '2026-11-17', remove_after: '2027-01-01'};
 
+// interactive written on the host, as the boolean attribute reads it.
+function isInteractive(element) {
+  return Boolean(element?.hasAttribute?.('interactive')) && normalize(element.getAttribute('interactive')) !== 'false';
+}
+
 function bareToggle(element) {
+  // An interactive tag opens something (a filter field's menu): its label is
+  // a button beside the remove action, never a toggle, in a group that
+  // selects or with a change listener (1.12.6, DEV order msg-d56fa72b: an
+  // interactive bare tag in such a group drew as a checkbox and toggled).
+  if (isInteractive(element)) return false;
   const original = element?._sfOriginal;
   if (original && original !== element) return original.kind === 'checkbox';
   const group = element?.parentElement;

@@ -102,6 +102,9 @@ export function renderButtonTemplate(context) {
         radius ? `radius-${radius}` : '',
         // full-width (1.12.0, owner decision C36): sf-segmented's setting.
         context.fullWidth ? 'sf-button--full-width' : '',
+        // overflow="truncate" (1.17.0, FW-LH-1, owner decision C301 (2)): one
+        // line, cut with an ellipsis at max-width or the container's width.
+        context.overflow === 'truncate' ? 'sf-button--truncate' : '',
         rootClass,
         loading ? 'loading sf-button-state-loading' : '',
         // A loading button keeps its scheme colour (owner decision C36); one
@@ -119,7 +122,7 @@ export function renderButtonTemplate(context) {
                     class="sf-button-text-container text-${textPosition} pointer-events-none${fullText ? ' flex-1' : ''}">
         ${textContent}
       </span>` : ''}
-            ${endContent}${shortcutCaps.length ? html`<span class="sf-button-shortcut pointer-events-none" aria-hidden="true"><kbd class="sf-kbd--group">${shortcutCaps.map((cap, at) => html`${at && context.shortcutJoin ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${cap.square ? 'sf-kbd--square' : nothing}>${cap.text}</kbd>`)}</kbd></span>` : ''}
+            ${endContent}${renderCutTooltip(context)}${shortcutCaps.length ? html`<span class="sf-button-shortcut pointer-events-none" aria-hidden="true"><kbd class="sf-kbd--group">${shortcutCaps.map((cap, at) => html`${at && context.shortcutJoin ? html`<span class="sf-kbd-join">+</span>` : nothing}<kbd class=${cap.square ? 'sf-kbd--square' : nothing}>${cap.text}</kbd>`)}</kbd></span>` : ''}
 `;
 
     // href (1.4.0): a link with the button's look. The browser's own link
@@ -141,6 +144,7 @@ export function renderButtonTemplate(context) {
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
+                data-tooltip=${context.cutTooltipId || nothing}
         >${content}</a>
     `;
     }
@@ -161,11 +165,22 @@ export function renderButtonTemplate(context) {
                 @keydown=${context.menuMode === 'menu' ? (event) => component.onMenuKey(event) : nothing}
                 aria-pressed=${announcesPressed ? String(Boolean(context.pressed)) : nothing}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
+                data-tooltip=${context.cutTooltipId || nothing}
         >${content}</button>${context.cycleView ? html`<span class="sf-button-announce sr-only" role="status" aria-live="polite" aria-atomic="true">${context.cycleView.announcement}</span>` : nothing}
     `;
 
     if (!context.menuMode) return button;
     return html`${context.menuMode === 'split' ? renderSplit(context, button) : button}${renderMenu(context)}`;
+}
+
+// The Framework's plain tooltip (component.tooltip, class markup) of a label
+// cut with an ellipsis (overflow="truncate", FW-LH-1, C301 (2)), as sf-tag's
+// (C58): hidden until the tooltip controller shows it on hover or keyboard
+// focus. The label stays whole in the markup, so the accessible name is all of
+// it; the tooltip is for the eye and says the whole label (or the host's title).
+function renderCutTooltip(context) {
+    if (!context.cutTooltipId) return nothing;
+    return html`<span id=${context.cutTooltipId} class="sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3 sf-button-tooltip" aria-hidden="true" hidden><span class="sf-tooltip-content"><span class="sf-tooltip-text">${context.cutText}</span></span></span>`;
 }
 
 const stop = (event) => event.stopPropagation();

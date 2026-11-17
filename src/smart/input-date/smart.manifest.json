@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-date",
-  "version": "1.14.3",
+  "version": "1.16.0",
   "title": "Datepicker",
   "summary": "Accessible date, date-and-time, time and date-range picker with popup and inline presentation, calendar and time navigation and host-owned values.",
   "kind": "composite",
@@ -173,10 +173,19 @@
         "default": true,
         "description": "Draw the panel at the end of the document so no clipping ancestor cuts it."
       },
+      "appearance": {
+        "type": "string",
+        "default": "bordered",
+        "description": "How the field looks, by the names every field uses (sf-input, sf-input-textarea, sf-dropdown, sf-input-quantity...): bordered, the default, a box with a border; filled, the container fill with no border and the bottom line. A value outside the list reads as bordered.",
+        "enum": [
+          "bordered",
+          "filled"
+        ]
+      },
       "input-type": {
         "type": "string",
         "default": "bordered",
-        "description": "The field's appearance (bordered by default), as on sf-inputs."
+        "description": "Legacy name for appearance, honoured until 2027-01-01, noted in SF.deprecations and said once per page in the console; appearance wins when both are set. See contracts/public-api-axes.json field_appearance."
       },
       "size": {
         "type": "string",

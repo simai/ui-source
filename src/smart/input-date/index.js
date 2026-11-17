@@ -1,6 +1,7 @@
 import SfBaseElement, {toNumber} from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {noteDeprecated} from '../../core/js/deprecations.js';
+import {FIELD_APPEARANCES, FIELD_APPEARANCE_DEFAULT, sayFieldAppearanceFormer} from '../helpers/field-appearance.js';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {ladderSize} from '../../component/field-size';
 import {FormField, ShownValidity} from '../helpers/form-field';
@@ -553,7 +554,8 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
             input: {type: Boolean, default: true},
             open: {type: Boolean, default: false},
             portal: {type: Boolean, default: true},
-            inputType: {attribute: 'input-type', default: 'bordered'},
+            appearance: {default: FIELD_APPEARANCE_DEFAULT, values: [...FIELD_APPEARANCES]},
+            inputType: {attribute: 'input-type', default: ''},
             size: {default: '1'},
             inputSize: {attribute: 'input-size', default: '1'},
             inputName: {attribute: 'input-name', default: ''},
@@ -1110,8 +1112,30 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         return this.getBooleanAttr('portal', true);
     }
 
+    // The field's look on the setting every field names it with (1.16.0,
+    // dispatcher decision 2026-11-17, helpers/field-appearance.js): bordered
+    // or filled. input-type is its legacy name, honoured until 2027-01-01,
+    // noted in SF.deprecations and said once per page; appearance wins when
+    // both are set, and input-type still passes any look of sf-input on.
+    get appearance() {
+        if (this.hasAttribute('appearance')) {
+            const look = String(this.getAttribute('appearance') || '').trim().toLowerCase();
+            return FIELD_APPEARANCES.includes(look) ? look : FIELD_APPEARANCE_DEFAULT;
+        }
+        if (this.hasAttribute('input-type')) {
+            sayFieldAppearanceFormer('sf-input-date', {kind: 'attribute', from: 'input-type', to: 'appearance', since: '2026-11-17', journal: 'attribute-input-date-input-type-to-appearance'});
+            return String(this.getAttribute('input-type') || '').trim().toLowerCase() || FIELD_APPEARANCE_DEFAULT;
+        }
+        return FIELD_APPEARANCE_DEFAULT;
+    }
+
+    set appearance(value) {
+        if (value === null || value === undefined) this.removeAttribute('appearance');
+        else this.setAttribute('appearance', String(value));
+    }
+
     get inputType() {
-        return this.getAttribute('input-type') || 'bordered';
+        return this.appearance;
     }
 
     // `size` is the canonical name, as on every field; `input-size` is its

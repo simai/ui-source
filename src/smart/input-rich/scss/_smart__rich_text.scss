@@ -226,12 +226,12 @@
   cursor: default;
 }
 
-/* The link editor's surface: closed until the popover says it is open, also
-   before the popover's code has arrived. It is a form in a popup, so its
-   width is the wide form's step (C32, --sf-popup-form-wide-width: the field,
+/* The link editor's surface: closed until the popover is open (its open
+   attribute, sf-popover 1.8.0), also before the popover's code has arrived.
+   It is a form in a popup, so its width is the wide form's step (C32, --sf-popup-form-wide-width: the field,
    its hint and Apply / Remove of the field's size fit one row, R121), never
    wider than the screen. */
-.sf-rich-text sf-popover.sf-rich-text-link:not([data-open='true']) > [slot='content'] {
+.sf-rich-text sf-popover.sf-rich-text-link:not([open]) > [slot='content'] {
   display: none;
 }
 
@@ -441,7 +441,7 @@
      so a list or the paragraph the caret is in still says so. The pressed
      look is the icon button's own, in this layer (C12), hence the repeated
      class to stand above it. */
-  .sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[data-open='true']) .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-rich-text-tool:not([data-sf-tool='link']):not(:disabled):is(*, :hover, :active, :focus-visible) {
+  .sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[open]) .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-rich-text-tool:not([data-sf-tool='link']):not(:disabled):is(*, :hover, :active, :focus-visible) {
     --sf-icon-button--background-color: transparent;
     --sf-icon--color: var(--sf-on-surface);
   }
@@ -470,7 +470,7 @@
 
 /* The second cue of a pressed tool, its filled glyph, rests too while the
    link editor is open (R121); outside the layers, as the icon button's fill rule is. */
-.sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[data-open='true']) .sf-rich-text-tool:not([data-sf-tool='link'])[aria-pressed='true'] .sf-icon {
+.sf-rich-text .sf-rich-text-toolbar:has(sf-popover.sf-rich-text-link[open]) .sf-rich-text-tool:not([data-sf-tool='link'])[aria-pressed='true'] .sf-icon {
   --sf-icon--fill: 0;
 }
 

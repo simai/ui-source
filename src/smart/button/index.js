@@ -7,6 +7,7 @@ import { noteDeprecated } from "../../core/js/deprecations.js";
 import { warnUnknownControlStatus } from "../helpers/control-status";
 import { buttonSetLook, sayButtonSetFormers } from "../helpers/button-set";
 import { tagSelector } from "../../core/js/tag-aliases.js";
+import { instancePath, partId } from "../../core/js/instance-path.js";
 import {
   ariaKeyShortcuts,
   isCommandShortcut,
@@ -45,6 +46,11 @@ const COMPONENT_ATTRIBUTES = new Set([
   "tightness",
   "radius",
   "full-width",
+  "overflow",
+  "max-width",
+  // title is the button's own (1.17.0): the native button's title, or, on a
+  // cut label, the text of its tooltip (syncTitle).
+  "title",
   "root-class",
   "loading",
   "segment",
@@ -156,6 +162,16 @@ function sayMenuOnce(key, message) {
   if (root.__sfButtonMenuWarned.has(key)) return;
   root.__sfButtonMenuWarned.add(key);
   globalThis.console?.warn?.(`[SIMAI Framework] sf-button: ${message}`);
+}
+
+// overflow="truncate" (1.17.0, FW-LH-1, owner decision C301 (2)): the label
+// stays on one line and is cut with an ellipsis at max-width, or at the width
+// its container gives. max-width is a CSS length (22rem, 40vw, min(22rem,
+// 40vw), var(--sf-...)); a value that could close the declaration is dropped.
+function maxWidthStyle(value) {
+  const width = String(value ?? "").trim();
+  if (!width || /[;{}<>"\\]/u.test(width)) return "";
+  return `--sf-button--max-width: ${width}`;
 }
 
 // The menu element the template draws, by its current and its former tag.
@@ -280,7 +296,8 @@ class SfButton extends ButtonElement {
   // the first file's name after a new drop (1.14.0); sf-button-icon watched it
   // since 2026-11-06. A change now draws the button again with the new name.
   static get observedAttributes() {
-    return [...new Set([...super.observedAttributes, "aria-label"])];
+    // title: a cut label's tooltip says it in place of the label (1.17.0).
+    return [...new Set([...super.observedAttributes, "aria-label", "title"])];
   }
 
   constructor() {
@@ -483,8 +500,74 @@ class SfButton extends ButtonElement {
       ariaKeyShortcuts: ariaKeyShortcuts(parseShortcut(this.shortcut)),
       ...resolveControlSpacing({spacing: this.getAttribute('spacing')}),
       height: buttonHeight(this),
+      // overflow="truncate" (1.17.0, FW-LH-1): the width it is cut at, and
+      // a cut label's tooltip (the Framework's plain tooltip, as sf-tag's).
+      overflow: this.truncates() ? "truncate" : "wrap",
+      rootStyle: [this.getRootStyle(), this.truncates() ? maxWidthStyle(this.getAttribute("max-width")) : ""].filter(Boolean).join("; "),
+      cutTooltipId: this._sfCut ? partId(instancePath(this, {kind: "sf-button"}), "tooltip") : "",
+      cutText: this._sfCut ? this.cutText() : "",
       component: this,
     });
+  }
+
+  // ─── overflow="truncate" (1.17.0, FW-LH-1, owner decision C301 (2)) ───────
+  truncates() {
+    return String(this.getAttribute("overflow") || "").trim().toLowerCase() === "truncate";
+  }
+
+  // What the tooltip of a cut label says: the host's title when the page wrote
+  // one, else the whole label as drawn (a cycle's or a pressed toggle's label
+  // included).
+  cutText() {
+    const title = String(this.getAttribute("title") || "").trim();
+    if (title) return title;
+    const label = this.querySelector(":scope > .sf-button > .sf-button-text-container, :scope > .sf-button-split > .sf-button > .sf-button-text-container");
+    return String(label?.textContent ?? this.text ?? "").replace(/\s+/gu, " ").trim();
+  }
+
+  // Whether the drawn label is cut: read from the label, since the width the
+  // container gives, the font and the row decide it, not the text's length.
+  measureCut() {
+    const label = this.truncates()
+      ? this.querySelector(":scope > .sf-button > .sf-button-text-container, :scope > .sf-button-split > .sf-button > .sf-button-text-container")
+      : null;
+    const cut = Boolean(label && label.scrollWidth - label.clientWidth > 0.5);
+    if (cut) {
+      // The tooltip controller, fetched once a label is cut (a lazy relation).
+      globalThis.SF?.Loader?.ensurePlugin?.("tooltip");
+    }
+    const text = cut ? this.cutText() : "";
+    if (cut === Boolean(this._sfCut) && text === (this._sfCutText || "")) return;
+    this._sfCut = cut;
+    this._sfCutText = text;
+    this.requestComponentUpdate("cut");
+  }
+
+  // The native button's title: the cycle's tooltip (the current and the next
+  // value); else the host's title, except on a cut label, whose Framework
+  // tooltip says it, so the browser draws none over it (as sf-button-icon's,
+  // C160 (1)). An empty title on the button keeps the host's (an ancestor's)
+  // from showing.
+  syncTitle() {
+    const button = this.querySelector(".sf-button");
+    if (!button) return;
+    const cycle = this.cycleState();
+    if (cycle) button.setAttribute("title", cycle.tooltip);
+    else if (!this.hasAttribute("title")) button.removeAttribute("title");
+    else button.setAttribute("title", this._sfCut ? "" : this.getAttribute("title"));
+  }
+
+  watchCut() {
+    const label = this.truncates()
+      ? this.querySelector(":scope > .sf-button > .sf-button-text-container, :scope > .sf-button-split > .sf-button > .sf-button-text-container")
+      : null;
+    if (this._sfCutLabel === label) return;
+    this._sfCutObserver?.disconnect();
+    this._sfCutObserver = null;
+    this._sfCutLabel = label;
+    if (!label || typeof ResizeObserver === "undefined") return;
+    this._sfCutObserver = new ResizeObserver(() => this.measureCut());
+    this._sfCutObserver.observe(label);
   }
 
   template() {
@@ -565,6 +648,11 @@ class SfButton extends ButtonElement {
     if ((name === "shortcut" || name === "shortcut-listen") && oldValue !== newValue && this.isConnected) {
       this.syncShortcutListener();
     }
+    // A cut label's tooltip says the host's title (overflow="truncate").
+    if (name === "title" && oldValue !== newValue && this.isConnected) {
+      if (this.truncates()) this.measureCut();
+      this.syncTitle();
+    }
   }
 
   // shortcut-listen: one keydown listener on the document while the button is
@@ -618,8 +706,10 @@ class SfButton extends ButtonElement {
     const button = this.querySelector(".sf-button");
     applyButtonAttributes(this, button);
     // The cycle's tooltip names the current and the next value.
-    const cycle = this.cycleState();
-    if (button && cycle) button.setAttribute("title", cycle.tooltip);
+    this.syncTitle();
+    // A cut label (overflow="truncate"): its tooltip says the whole label.
+    this.watchCut();
+    this.measureCut();
 
     if (!this._attributeObserver) {
       this._attributeObserver = this.observeForwardedHostAttributes(
@@ -663,6 +753,8 @@ class SfButton extends ButtonElement {
       spacing: this.spacing,
       radius: this.radius,
       fullWidth: this.fullWidth,
+      overflow: this.truncates() ? "truncate" : "wrap",
+      maxWidth: this.getAttribute("max-width") || "",
       rootClass: this.rootClass,
       loading: this.loading,
       disabled: this.disabled,
@@ -753,6 +845,9 @@ class SfButton extends ButtonElement {
       globalThis.removeEventListener?.("sf-theme-change", this._cycleTheme);
       this._cycleTheme = null;
     }
+    this._sfCutObserver?.disconnect();
+    this._sfCutObserver = null;
+    this._sfCutLabel = null;
     this.disconnectForwardedHostAttributes();
     this._attributeObserver = null;
     super.onDisconnected?.();

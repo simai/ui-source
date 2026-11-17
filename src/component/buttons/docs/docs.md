@@ -126,6 +126,12 @@ the Smart `sf-button` projection.
 - full width (1.9.0, owner decision C36): `sf-button--full-width` -- the
   control fills its container and its content stays in the middle, as
   sf-segmented's `full-width`; the constructor's option is `fullWidth`.
+- one line with an ellipsis (1.20.0, owner decision C301 (2)):
+  `sf-button--truncate` -- the label stays on one line and is cut at
+  `--sf-button-max-width` or at the width the container gives, whichever is
+  less; the icons and the keys keep their size. The Smart `sf-button` writes
+  it for `overflow="truncate"` and shows the whole label in a tooltip while
+  it is cut; a class button gives its own `title` or tooltip.
 
 `radius-default` is the control radius `--sf-radius--ui`, the same as no
 radius class; it stays for the Smart `radius="default"` value. The utility

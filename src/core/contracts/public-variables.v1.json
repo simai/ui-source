@@ -173,6 +173,13 @@
           ]
         },
         {
+          "name": "--sf-button-max-width",
+          "role": "max-inline-size",
+          "summary": "With overflow=\"truncate\": the widest the button grows before its label is cut with an ellipsis; the max-width setting wins over it, and the container's width stays the limit.",
+          "default": "100%",
+          "since": "2026-11-17"
+        },
+        {
           "name": "--sf-button-pressed-background-color",
           "role": "background",
           "summary": "The fill of a toggle that is on (pressed, aria-pressed=\"true\"); hover, press over it and disabled keep their own.",
