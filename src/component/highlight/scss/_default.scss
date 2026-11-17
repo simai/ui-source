@@ -140,6 +140,16 @@
     min-block-size: var(--sf-ui-1--control-height);
   }
 
+  /* The head's parts stand on its middle with no block margin of their own
+     (defects-d12, DEV msg-dd9ece44): the language label carries the text
+     utility sf-text-1/2, whose flow rule (.sf-text-1/2 + *, sf.base) gave
+     the next part, the wrap toggle, 16 above it, and the head drew 48, not
+     the step's 40 (36 on a phone). The read-aloud status keeps the sr-only
+     box. */
+  :is(.sf-highlight__head, .sf--highlight-head) > :not(.sr-only, .sf-highlight__status) {
+    margin-block: 0;
+  }
+
   .sf-highlight__head {
     padding: 0 var(--sf-space-1);
     margin: 0;
