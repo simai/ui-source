@@ -1,0 +1,506 @@
+// sf-bulk-actions: the group actions bar of a list while items are selected
+// (owner decisions C291 (1) and C295, 2026-11-17; study ui-control
+// control/research/2026-11-17-sf-bulk-actions/README.md, prototype
+// prototypes/sf-bulk-actions-study.html, variant A).
+//
+//   <sf-bulk-actions count="2" page-count="12" total="240"></sf-bulk-actions>
+//   bar.actions = [{id: 'publish', text: 'Опубликовать', icon: 'public'},
+//                  {id: 'archive', text: 'В архив', icon: 'archive', undo: true},
+//                  {id: 'delete', text: 'Удалить', icon: 'delete'}];
+//
+// One bar instead of the four copies sf-pagination, sf-view, sf-view-table and
+// sf-gallery drew. It is shown while count is above 0: «Выбрано N» and the
+// clear cross at the end; up to three labelled actions, the rest in «⋯» (the
+// page's one menu, SF.menu.open, C184 (4)), a dangerous action last in it
+// after a line and asked about first in the question window (sf-modal
+// size="question" with sf-confirm appearance="window", C39). A reversible
+// action runs at once and the notice offers «Отменить» (SF.notify, C25).
+// After the page is selected, «Выбрать все N» takes all under the filter
+// (all-selected, «Только эта страница» back). A short run shows in the bar
+// (progress()), its result says which failed (result()); a long job is the
+// host's sf-progress-run (C34). The focus is never moved into the bar; Esc
+// in the list or the bar clears the selection.
+//
+// The host list owns the selection, what «all under the filter» means, doing
+// an action, undoing it and which items failed: the bar only says and asks.
+//
+// From its component.json (standard simai.smart-component 1.3.16 §3, §4, §8):
+// the settings are made by core/js/element-manifest.js, the words are the
+// language files'.
+import {nothing} from 'lit';
+import SfBaseElement from '../../core/js/smart-base';
+import {elementFromManifest} from '../../core/js/element-manifest';
+import {openLayers} from '../../core/js/layer-stack';
+import {pageLocale} from '../../core/js/page-language';
+import {BREAKPOINTS} from '../../core/js/breakpoints.js';
+import {isDestructiveAction, orderActions} from './js/danger.js';
+import {VISIBLE, VISIBLE_COMPACT, normalizeAction, number, splitActions} from './js/actions.js';
+import {renderBulkActionsTemplate} from './js/templates/default';
+import manifest from './component.json';
+import './scss/index.scss';
+import {files as languageFiles} from './lang/index.mjs';
+
+export {isDestructiveAction, normalizeAction, orderActions, splitActions};
+
+const SIZES = ['1/2', '1', '2'];
+const PLACES = ['dock', 'top', 'float', 'inline'];
+// A run longer than this many items is a job: the host's sf-progress-run (C34).
+const SHORT_RUN = 100;
+// The live region speaks after the selection settles (Carbon, Shopify).
+const SAY_AFTER = 300;
+
+const BulkActionsElement = elementFromManifest(manifest, {
+  base: SfBaseElement,
+  lang: languageFiles,
+  source: 'ru',
+  actions: {
+    progress({done, total, text} = {}) {
+      return this.showProgress({done, total, text});
+    },
+    result({ok, failed, text} = {}) {
+      return this.showResult({ok, failed, text});
+    },
+    clear() {
+      this.clear();
+      return undefined;
+    },
+  },
+});
+
+class SfBulkActions extends BulkActionsElement {
+  constructor() {
+    super();
+    this._run = null;
+    this._result = null;
+    this._announcement = '';
+    this._compact = false;
+    this._onKey = (event) => this.onDocumentKey(event);
+  }
+
+  connectedCallback() {
+    super.connectedCallback?.();
+    this.ownerDocument.addEventListener('keydown', this._onKey);
+    this.watchWidth();
+  }
+
+  disconnectedCallback() {
+    this.ownerDocument.removeEventListener('keydown', this._onKey);
+    this._widthObserver?.disconnect();
+    this._widthObserver = null;
+    clearTimeout(this._sayTimer);
+    super.disconnectedCallback?.();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback?.(name, oldValue, newValue);
+    if (oldValue === newValue) return;
+    if (name === 'count' || name === 'all-selected') this.selectionChanged(name, oldValue);
+  }
+
+  // The selection moved: «Выбрать все N» lasts while the page stays selected
+  // (any other change resets it), a result lasts while its failed items are
+  // what is selected, and the live region says the new count.
+  selectionChanged(name, oldValue) {
+    const count = this.selectedCount;
+    if (name === 'count' && this.allSelected && this.pageCount && count !== this.pageCount) {
+      this.removeAttribute('all-selected');
+      return;
+    }
+    if (this._result && count !== this._result.failed.length) this._result = null;
+    if (this._run) return;
+    const before = name === 'count' ? number(oldValue) : count;
+    if (count > 0) this.say(this.allSelected && this.total ? this.word('all-text', this.total) : this.word('count-text', count));
+    else if (before > 0) this.say(this.sfWord('cleared-text'));
+  }
+
+  // The size the host gives, or the nearest sized element's around it (the
+  // list that places it), or 1.
+  get size() {
+    const own = this.getAttribute('size');
+    if (SIZES.includes(own)) return own;
+    const around = this.parentElement?.closest?.('[size]')?.getAttribute('size');
+    return SIZES.includes(around) ? around : '1';
+  }
+
+  get place() {
+    const value = this.getAttribute('place');
+    return PLACES.includes(value) ? value : 'dock';
+  }
+
+  get selectedCount() {
+    return number(this.getAttribute('count'));
+  }
+
+  get pageCount() {
+    return number(this.getAttribute('page-count'));
+  }
+
+  get total() {
+    return number(this.getAttribute('total'));
+  }
+
+  get allSelected() {
+    const raw = this.getAttribute('all-selected');
+    return raw !== null && raw !== 'false';
+  }
+
+  /** How many the next action goes to: all under the filter, or the selection. */
+  get effectiveCount() {
+    return this.allSelected && this.total ? this.total : this.selectedCount;
+  }
+
+  /** What the bar does now: idle, running a short run, or showing a result. */
+  get runState() {
+    if (this._run) return 'running';
+    if (this._result) return 'result';
+    return this.selectedCount > 0 ? 'shown' : 'hidden';
+  }
+
+  word(key, count, vars) {
+    return this.sfWord(key, {count, vars});
+  }
+
+  formatNumber(value) {
+    try {
+      return new Intl.NumberFormat(pageLocale(this) || undefined).format(value);
+    } catch {
+      return String(value);
+    }
+  }
+
+  // The live region, after the selection settles.
+  say(text) {
+    clearTimeout(this._sayTimer);
+    this._sayTimer = setTimeout(() => {
+      this._announcement = text;
+      this.requestComponentUpdate('announcement');
+    }, SAY_AFTER);
+  }
+
+  // Compact below the Framework's sm step, measured on the box the bar
+  // stands in (a narrow panel is a phone too).
+  watchWidth() {
+    const box = this.parentElement;
+    if (!box || typeof ResizeObserver !== 'function') return;
+    const measure = () => {
+      const rem = Number.parseFloat(getComputedStyle(this.ownerDocument.documentElement).fontSize) || 16;
+      const width = box.getBoundingClientRect().width || globalThis.innerWidth || 0;
+      const compact = width > 0 && width < Number.parseFloat(BREAKPOINTS.sm) * rem;
+      if (compact === this._compact) return;
+      this._compact = compact;
+      this.requestComponentUpdate('compact');
+    };
+    this._widthObserver = new ResizeObserver(measure);
+    this._widthObserver.observe(box);
+    measure();
+  }
+
+  get actionList() {
+    const actions = this.actions;
+    return Array.isArray(actions) ? actions : [];
+  }
+
+  findAction(id) {
+    return this.actionList.map(normalizeAction).find((action) => action?.id === id) ?? null;
+  }
+
+  // Why an action cannot go now: its own disabled, or a count outside its min
+  // and max (C164 (4): pale, still reached, with its reason).
+  unavailableReason(action, count = this.effectiveCount) {
+    if (action.max && count > action.max) return action.reason || this.sfWord('max-reason', {vars: {max: this.formatNumber(action.max)}});
+    if (action.min && count < action.min) return action.reason || this.sfWord('min-reason', {vars: {min: this.formatNumber(action.min)}});
+    if (action.disabled) return action.reason || '';
+    return null;
+  }
+
+  // Escape in the list or the bar clears the selection, unless a menu, a
+  // window or a field took it first.
+  onDocumentKey(event) {
+    if (event.key !== 'Escape' || event.defaultPrevented || this.runState === 'hidden' || this._run) return;
+    if (openLayers().length) return;
+    const target = event.target;
+    const editable = target?.isContentEditable
+      || (target?.localName === 'textarea')
+      || (target?.localName === 'input' && !['checkbox', 'radio', 'button'].includes(target.type));
+    if (editable) return;
+    const scope = this.parentElement;
+    const inScope = target === this.ownerDocument.body || target === this.ownerDocument.documentElement
+      || this.contains(target) || Boolean(scope?.contains?.(target));
+    if (!inScope) return;
+    event.preventDefault();
+    this.clear('escape');
+  }
+
+  clear(reason = 'button') {
+    this._result = null;
+    const count = this.selectedCount;
+    const all = this.allSelected;
+    if (all) this.removeAttribute('all-selected');
+    this.sfEmit('clear', {count, scope: all ? 'all' : 'selection', reason});
+    this.requestComponentUpdate('clear');
+  }
+
+  selectAll() {
+    if (!this.total) return;
+    this.setAttribute('all-selected', '');
+    this.sfEmit('select-all', {total: this.total, count: this.selectedCount});
+    this.say(this.word('all-text', this.total));
+  }
+
+  selectPage() {
+    this.removeAttribute('all-selected');
+    this.sfEmit('select-page', {count: this.selectedCount});
+    this.say(this.word('count-text', this.selectedCount));
+  }
+
+  pressAction(id, event) {
+    const action = this.findAction(id);
+    if (!action) return;
+    if (this.unavailableReason(action) !== null) {
+      event?.preventDefault?.();
+      return;
+    }
+    this.runAction(action);
+  }
+
+  async openMore(anchor) {
+    const {rest} = this.split();
+    const count = this.effectiveCount;
+    const entries = [];
+    rest.forEach((action, index) => {
+      if (action.danger && index > 0 && !rest[index - 1].danger) entries.push({kind: 'separator'});
+      const reason = this.unavailableReason(action, count);
+      entries.push({
+        id: action.id,
+        text: action.text,
+        icon: action.icon || undefined,
+        status: action.danger ? 'danger' : undefined,
+        disabled: reason !== null,
+        caption: reason || undefined,
+      });
+    });
+    const open = globalThis.SF?.menu?.open;
+    if (typeof open !== 'function') return;
+    const button = anchor?.querySelector?.('button') ?? anchor;
+    const choice = await open({anchor: button, entries, label: this.sfWord('more-text'), size: this.size});
+    const action = choice?.id ? this.findAction(choice.id) : null;
+    if (action && this.unavailableReason(action) === null) this.runAction(action);
+  }
+
+  // One action: the question first when it deletes or asks for one (C39),
+  // then the event the host does it on; a reversible one offers «Отменить»
+  // in the notice (C25).
+  async runAction(action, {retry = false} = {}) {
+    const scope = this.allSelected && this.total && !retry ? 'all' : 'selection';
+    const count = retry && this._result ? this._result.failed.length : this.effectiveCount;
+    if (!count) return {outcome: 'refused', reason: 'empty'};
+    if (action.confirm) {
+      const yes = await this.ask(action, count, scope);
+      if (!yes) return {outcome: 'refused', reason: 'declined'};
+    }
+    this._result = null;
+    this._lastAction = action.id;
+    const detail = {id: action.id, scope, count};
+    const allowed = this.sfEmit('action', detail);
+    this.requestComponentUpdate('action');
+    if (!allowed) return {outcome: 'refused', reason: 'prevented'};
+    if (action.undo) this.offerUndo(action, detail);
+    return {outcome: 'applied'};
+  }
+
+  offerUndo(action, detail) {
+    const notify = globalThis.SF?.notify;
+    if (typeof notify !== 'function') return;
+    notify({
+      status: 'success',
+      title: this.sfWord('notice-text', {vars: {action: action.text, n: this.formatNumber(detail.count)}}),
+      source: 'sf-bulk-actions',
+      actions: [{label: this.sfWord('undo-text'), onSelect: () => this.sfEmit('undo', detail)}],
+    });
+  }
+
+  // The question window (C39): sf-modal size="question" holding sf-confirm
+  // appearance="window", red, with what will be lost. Answers true for «yes».
+  ask(action, count, scope) {
+    const doc = this.ownerDocument;
+    const own = action.confirm || {};
+    const n = this.formatNumber(count);
+    const heading = own.question || this.sfWord('question-text', {count, vars: {action: action.text}});
+    const accept = own['accept-text'] || own.acceptText || this.sfWord('accept-text', {vars: {action: action.text, n}});
+    const consequence = own.consequence ?? (action.danger ? this.sfWord('consequence-text') : '');
+    const modal = doc.createElement('sf-modal');
+    modal.setAttribute('size', 'question');
+    modal.setAttribute('heading', heading);
+    modal.setAttribute('data-sf-bulk-question', action.id);
+    const confirm = doc.createElement('sf-confirm');
+    confirm.setAttribute('slot', 'content');
+    confirm.setAttribute('appearance', 'window');
+    if (action.danger) confirm.setAttribute('status', 'danger');
+    confirm.setAttribute('accept-text', accept);
+    if (consequence) confirm.setAttribute('consequence', consequence);
+    if (scope === 'all') {
+      const description = doc.createElement('p');
+      description.setAttribute('slot', 'description');
+      description.textContent = this.sfWord('all-scope-text', {count, vars: {n}});
+      confirm.append(description);
+    }
+    modal.append(confirm);
+    doc.body.append(modal);
+    return new Promise((resolve) => {
+      let answered = false;
+      const finish = (value) => {
+        if (answered) return;
+        answered = true;
+        doc.removeEventListener('sf-confirm-answer', onAnswer, true);
+        if (value) modal.close?.({reason: 'api'});
+        setTimeout(() => modal.remove(), 400);
+        resolve(value);
+      };
+      // The window moves its content to the top layer: the answer is heard
+      // on the document, from this question only.
+      const onAnswer = (event) => {
+        const path = event.composedPath?.() ?? [];
+        if (event.target === confirm || path.includes(confirm)) finish(Boolean(event.detail?.accepted));
+      };
+      doc.addEventListener('sf-confirm-answer', onAnswer, true);
+      modal.addEventListener('sf-modal-closed', () => finish(false));
+      customElements.whenDefined('sf-modal').then(() => modal.open?.());
+      globalThis.SF?.Loader?.ensure?.(['sf-modal', 'sf-confirm']);
+    });
+  }
+
+  // A short run in the bar: «Выполняем: 4 из 12» over a bar. Over 100 items
+  // it is a job for the host's sf-progress-run (C34): refused.
+  showProgress({done = 0, total = 0, text = ''} = {}) {
+    const all = number(total);
+    if (all > SHORT_RUN) return 'long';
+    if (!all) return 'invalid';
+    const made = Math.min(all, number(done));
+    this._result = null;
+    this._run = made >= all ? null : {done: made, total: all, text: String(text || '')};
+    this.say(this.progressText(made, all, text));
+    this.requestComponentUpdate('progress');
+    return undefined;
+  }
+
+  progressText(done, total, text) {
+    const vars = {done: this.formatNumber(done), total: this.formatNumber(total)};
+    return text ? `${text}: ${vars.done} / ${vars.total}` : this.sfWord('progress-text', {vars});
+  }
+
+  // The result in place: «Готово 10 из 12 · 2 не удалось», «Подробнее» and
+  // «Повторить для 2»; the host keeps the failed items selected.
+  showResult({ok = 0, failed = [], text = ''} = {}) {
+    const refusals = (Array.isArray(failed) ? failed : [])
+      .map((item) => (item && typeof item === 'object' ? item : {id: String(item ?? '')}))
+      .map((item) => ({id: String(item.id ?? ''), text: String(item.text ?? item.id ?? ''), reason: String(item.reason ?? '')}));
+    const done = number(ok);
+    const total = done + refusals.length;
+    this._run = null;
+    const line = text || [
+      this.sfWord('result-text', {vars: {ok: this.formatNumber(done), total: this.formatNumber(total)}}),
+      refusals.length ? this.word('failed-text', refusals.length) : '',
+    ].filter(Boolean).join(' · ');
+    this._result = refusals.length ? {ok: done, total, failed: refusals, text: line, action: this._lastAction ?? null} : null;
+    this.say(line);
+    this.requestComponentUpdate('result');
+    return undefined;
+  }
+
+  showDetails() {
+    const shown = this._result;
+    if (!shown) return;
+    const doc = this.ownerDocument;
+    const modal = doc.createElement('sf-modal');
+    modal.setAttribute('size', 'question');
+    modal.setAttribute('heading', this.sfWord('details-heading', {vars: {
+      failed: this.formatNumber(shown.failed.length), total: this.formatNumber(shown.total)}}));
+    modal.setAttribute('data-sf-bulk-details', '');
+    const content = doc.createElement('div');
+    content.setAttribute('slot', 'content');
+    const list = doc.createElement('sf-list-description');
+    content.append(list);
+    modal.append(content);
+    doc.body.append(modal);
+    const fallback = this.sfWord('failed-reason');
+    customElements.whenDefined('sf-list-description').then(() => {
+      list.items = shown.failed.map((item) => ({id: item.id, label: item.text || item.id, value: item.reason || fallback}));
+    });
+    modal.addEventListener('sf-modal-closed', () => setTimeout(() => modal.remove(), 400));
+    customElements.whenDefined('sf-modal').then(() => modal.open?.());
+    globalThis.SF?.Loader?.ensure?.(['sf-modal', 'sf-list-description']);
+  }
+
+  retry() {
+    const action = this._result?.action ? this.findAction(this._result.action) : null;
+    if (action) this.runAction(action, {retry: true});
+  }
+
+  split() {
+    return splitActions(this.actionList, this._compact ? VISIBLE_COMPACT : VISIBLE);
+  }
+
+  templateContext() {
+    const count = this.selectedCount;
+    const effective = this.effectiveCount;
+    const total = this.total;
+    const pageCount = this.pageCount;
+    const all = this.allSelected && total > 0;
+    const {visible, rest} = this.split();
+    const mark = (action) => {
+      const reason = this.unavailableReason(action, effective);
+      return {...action, unavailable: reason !== null, reason: reason || ''};
+    };
+    let offer = null;
+    if (!this._run && !this._result) {
+      if (all) offer = {kind: 'page', text: this.word('select-page-text', pageCount || count)};
+      else if (total && pageCount && count === pageCount && total > pageCount) offer = {kind: 'all', text: this.word('select-all-text', total)};
+    }
+    const countText = this.getAttribute('count-text') || (all ? this.word('all-text', total) : this.word('count-text', count));
+    const run = this._run ? {
+      text: this.progressText(this._run.done, this._run.total, this._run.text),
+      percent: Math.round((this._run.done / this._run.total) * 100),
+    } : null;
+    const result = this._result ? {
+      text: this._result.text,
+      failed: this._result.failed.length,
+      details: this.sfWord('details-text'),
+      retry: this._result.action ? this.word('retry-text', this._result.failed.length) : '',
+    } : null;
+    const shown = count > 0 || Boolean(this._run) || Boolean(this._result);
+    this.sfHostState('data-state', this.runState);
+    this.sfHostState('data-place', this.place);
+    return this.createTemplateContext({
+      ...this.getPropsContext(),
+      component: this,
+      size: this.size,
+      place: this.place,
+      compact: this._compact,
+      shown,
+      label: this.label || this.sfWord('label-text'),
+      countText,
+      offer,
+      visible: visible.map(mark),
+      rest,
+      run,
+      result,
+      start: this.hasSlotContent('start') ? this.getSlotContent('start') : nothing,
+      end: this.hasSlotContent('end') ? this.getSlotContent('end') : nothing,
+      announcement: this._announcement,
+      words: {
+        more: this.sfWord('more-text'),
+        clear: this.sfWord('clear-text'),
+        clearHint: this.sfWord('clear-hint'),
+      },
+      rootClass: this.getRootClass(),
+    });
+  }
+
+  template() {
+    return renderBulkActionsTemplate(this.templateContext());
+  }
+}
+
+SfBulkActions.define('sf-bulk-actions');
+
+export {SfBulkActions};

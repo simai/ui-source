@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.8.9",
+  "version": "1.9.0",
   "title": "Pagination",
   "summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
   "kind": "smart",
@@ -25,6 +25,7 @@
   "composition": {
     "uses": [
       "component.pagination",
+      "smart.bulk-actions",
       "smart.button",
       "smart.button-icon",
       "smart.checkbox",
@@ -1181,7 +1182,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pagination/index.js",
-        "sha256": "942192f5112be7e05271f8ffbc7f1145ddad789217b4844753ce68bc2464007e"
+        "sha256": "77e8af7145bcc00c6605e4d48aa4f20dcfe0463f920f8a45cde21504daee21f7"
       }
     ],
     "generated_runtime": [

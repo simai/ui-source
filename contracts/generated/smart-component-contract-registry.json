@@ -278,6 +278,54 @@
       "backend_adapters": [],
       "capabilities": [
         "render",
+        "interaction",
+        "keyboard",
+        "theme",
+        "i18n",
+        "responsive"
+      ],
+      "composition": {
+        "public_parts": [],
+        "uses": [
+          "smart.button",
+          "smart.button-icon",
+          "smart.icon",
+          "smart.progress-bar"
+        ]
+      },
+      "contract_schema": {
+        "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+        "version": 2
+      },
+      "custom_element": "sf-bulk-actions",
+      "id": "smart.bulk-actions",
+      "kind": "smart",
+      "lifecycle": "experimental",
+      "manifest_path": "src/smart/bulk-actions/smart.manifest.json",
+      "manifest_sha256": "27d8047b6b5262d3dfd8dda04fd72d2c68d91e3edb88ec975a19a44b9e16b2db",
+      "reuse_mode": "whole",
+      "runtime_pair": {
+        "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+        "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+      },
+      "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run and its per-item result. One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
+      "tags": [
+        "bulk",
+        "selection",
+        "actions",
+        "batch",
+        "toolbar",
+        "list",
+        "table",
+        "gallery",
+        "admin"
+      ],
+      "title": "Group actions"
+    },
+    {
+      "backend_adapters": [],
+      "capabilities": [
+        "render",
         "theme",
         "responsive"
       ],
@@ -2366,6 +2414,7 @@
         "public_parts": [],
         "uses": [
           "component.pagination",
+          "smart.bulk-actions",
           "smart.button",
           "smart.button-icon",
           "smart.checkbox",
@@ -2387,7 +2436,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/pagination/smart.manifest.json",
-      "manifest_sha256": "b67a46afc2c79f6a040abb6625810b4e5691791be1f132732bd7cfdaf36a5797",
+      "manifest_sha256": "a16548e2aee20602ee07893be575ecdc5de1e062a4b994836a73e3cc4697156b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

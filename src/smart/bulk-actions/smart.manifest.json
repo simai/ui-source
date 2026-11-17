@@ -1,0 +1,462 @@
+{
+  "schema_version": 2,
+  "id": "smart.bulk-actions",
+  "version": "1.0.0",
+  "title": "Group actions",
+  "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run and its per-item result. One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
+  "kind": "smart",
+  "reuse_mode": "whole",
+  "lifecycle": "experimental",
+  "tags": [
+    "bulk",
+    "selection",
+    "actions",
+    "batch",
+    "toolbar",
+    "list",
+    "table",
+    "gallery",
+    "admin"
+  ],
+  "capabilities": [
+    "render",
+    "interaction",
+    "keyboard",
+    "theme",
+    "i18n",
+    "responsive"
+  ],
+  "custom_element": "sf-bulk-actions",
+  "templates": [
+    "default"
+  ],
+  "exported_parts": [],
+  "composition": {
+    "uses": [
+      "smart.button",
+      "smart.button-icon",
+      "smart.icon",
+      "smart.progress-bar"
+    ],
+    "public_parts": []
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "template": {
+        "type": "string",
+        "default": "default",
+        "description": "Template variant name for SfBaseElement external templates."
+      },
+      "root-class": {
+        "type": "string",
+        "default": "",
+        "description": "Classes added to the root element the component draws."
+      },
+      "root-style": {
+        "type": "string",
+        "default": "",
+        "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "count": {
+        "type": "integer",
+        "default": 0,
+        "description": "How many items the host has selected. 0 hides the bar (its live region stays and says «Выбор снят»); the host owns the selection and writes this on every change",
+        "minimum": 0
+      },
+      "page-count": {
+        "type": "integer",
+        "default": 0,
+        "description": "How many items are on screen (the rows of the page). When count equals it and total is larger, the bar offers «Выбрать все N». 0: not known, no offer",
+        "minimum": 0
+      },
+      "total": {
+        "type": "number",
+        "description": "How many items are under the filter. Unset or 0: not known (a cursor list), no «Выбрать все N»",
+        "minimum": 0
+      },
+      "all-selected": {
+        "type": "boolean",
+        "default": false,
+        "description": "All items under the filter are selected: the count says «Выбраны все 240», the offer turns to «Только эта страница (12)» and an action goes with scope all. The bar sets it on «Выбрать все N» and takes it off on «Только эта страница», on clear and when count stops being page-count"
+      },
+      "count-text": {
+        "type": "string",
+        "default": "",
+        "description": "The host's own count line in place of «Выбрано N» («Выбрано 3 · с вложенными 48» of a tree). Empty: the bar's words"
+      },
+      "place": {
+        "type": "string",
+        "default": "dock",
+        "description": "Where the bar stands (C295 (1)): dock over the list's bottom edge at its width, sticking to the bottom of the scroll; top in the toolbar's place, in the primary container; float a plate at the middle of the window's bottom edge; inline a plain row in the flow. The host places the element: after its list for dock and inline, before it for top",
+        "enum": [
+          "dock",
+          "top",
+          "float",
+          "inline"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The ladder rung its buttons and count take (the bar is the rung's control height and space-1/4 above and below: 42 px at 1/2, 50 at 1). Unset: the size of the nearest element around it that has one (the list that places it), else 1",
+        "enum": [
+          "1/2",
+          "1",
+          "2"
+        ]
+      },
+      "label": {
+        "type": "string",
+        "description": "The region's name. Empty: «Действия с выбранными» («Actions on the selected»)"
+      },
+      "actions": {
+        "type": "array",
+        "default": [],
+        "description": "The actions on the selection: up to three labelled outline buttons (one icon button on a phone), the rest in «⋯» (the page's one menu, SF.menu.open), a dangerous one always last in «⋯»"
+      }
+    },
+    "additionalProperties": false
+  },
+  "item_contract": {},
+  "contracts": {},
+  "methods": {
+    "progress": {
+      "summary": "A short run in the bar: «Выполняем: 4 из 12» (or «<text>: 4 / 12») over a progress bar, the actions out of reach until done reaches total or result() comes. Refused {reason: long} over 100 items -- a job longer than that is the host's sf-progress-run (C34) -- and {reason: invalid} without a total",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "done": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "done",
+              "total"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "result": {
+      "summary": "How it went, failed as [{id, text, reason}]: with refusals the bar says «Готово 10 из 12 · 2 не удалось» with «Подробнее» (the list in a question window) and «Повторить для 2»; the host keeps the failed items selected, and the result goes when the selection changes. Without refusals it is said and the bar goes back",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "number"
+              },
+              "failed": {
+                "type": "array"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "ok",
+              "failed"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object"
+      }
+    },
+    "clear": {
+      "summary": "Sends clear {reason: api}, as × does",
+      "arguments": [],
+      "returns": {
+        "type": "object"
+      }
+    }
+  },
+  "events": {
+    "sf-bulk-actions-action": {
+      "summary": "A person chose an action (after «yes» in the question when it asks one): the host does it on the selection or on all under the filter. Cancel it to refuse; a reversible action's notice is then not shown",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "scope",
+          "count"
+        ],
+        "properties": {
+          "id": {
+            "description": "The action's id."
+          },
+          "scope": {
+            "enum": [
+              "selection",
+              "all"
+            ],
+            "description": "selection: the items selected; all: every item under the filter («Выбрать все N» was taken)."
+          },
+          "count": {
+            "type": "number",
+            "description": "How many items it goes to."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-bulk-actions-undo": {
+      "summary": "A person pressed «Отменить» in the notice of a reversible action (C25): the host puts the items back",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "scope",
+          "count"
+        ],
+        "properties": {
+          "id": {
+            "description": "The action undone."
+          },
+          "scope": {
+            "enum": [
+              "selection",
+              "all"
+            ]
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-bulk-actions-select-all": {
+      "summary": "A person took «Выбрать все N»: every item under the filter is selected (all-selected is set)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "total",
+          "count"
+        ],
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "count": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-bulk-actions-select-page": {
+      "summary": "A person took «Только эта страница»: back to the items on screen (all-selected is off)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "count"
+        ],
+        "properties": {
+          "count": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-bulk-actions-clear": {
+      "summary": "A person pressed × or Escape (or the page called clear()): the host drops the selection and writes count 0",
+      "payload": {
+        "type": "object",
+        "required": [
+          "count",
+          "scope",
+          "reason"
+        ],
+        "properties": {
+          "count": {
+            "type": "number"
+          },
+          "scope": {
+            "enum": [
+              "selection",
+              "all"
+            ]
+          },
+          "reason": {
+            "enum": [
+              "button",
+              "escape",
+              "api"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "state": {
+    "machines": {
+      "bar": [
+        "hidden",
+        "shown",
+        "running",
+        "result"
+      ]
+    },
+    "visual_states": [
+      "default",
+      "disabled",
+      "loading"
+    ]
+  },
+  "persistence": {
+    "mode": "none",
+    "source_of_truth": "host",
+    "network_owner": "host",
+    "revision_field": null
+  },
+  "ownership": {
+    "source": "simai/ui-source",
+    "data": "host",
+    "effects": "host",
+    "forbidden_client_responsibilities": [
+      "holding the selection or the row boxes (the host list does)",
+      "doing an action or undoing it (the host does, on the action and undo events)",
+      "deciding which items failed (the host says so through result())"
+    ]
+  },
+  "security": {
+    "permissions_owner": "host",
+    "untrusted_inputs": [
+      "props",
+      "attributes"
+    ],
+    "network_policy": "deny"
+  },
+  "accessibility": {
+    "role": "region",
+    "accessible_name": "required",
+    "keyboard": [
+      "Tab reaches the offer, every action, «⋯» and ×; Enter or Space presses it",
+      "Escape in the list or the bar clears the selection, unless a menu, a window or a text field holds it"
+    ],
+    "focus": "Never moved into the bar on a selection; the question window gives the focus back to where it opened, the menu to «⋯»."
+  },
+  "presentation": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "responsive": [
+      "desktop",
+      "mobile"
+    ],
+    "skeleton": {
+      "shape": "none",
+      "while_loading": "none"
+    }
+  },
+  "adapter": {
+    "kind": "generic",
+    "protocol": "simai.smart-studio-adapter.v1",
+    "module": null
+  },
+  "artifacts": {
+    "fixtures": [
+      "studio.fixture.json"
+    ],
+    "scenarios": [
+      "studio.scenario.json"
+    ]
+  },
+  "readiness": {
+    "level": "described",
+    "required_checks": [
+      "manifest",
+      "fixture",
+      "runtime-upgrade",
+      "scenario-smoke"
+    ]
+  },
+  "compatibility": {
+    "contract_schema": {
+      "id": "https://simai.io/contracts/smart-component-manifest.v2.schema.json",
+      "version": 2
+    },
+    "runtime_pair": {
+      "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
+      "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
+    },
+    "aliases": [],
+    "deprecations": [],
+    "replacement": null,
+    "migrations": []
+  },
+  "provenance": {
+    "source_repository": "simai/ui-source",
+    "source_revision": "acc113415d98032041f3fdbf3e2ba622c48465a1",
+    "source_artifacts": [
+      {
+        "path": "src/smart/bulk-actions/index.js",
+        "sha256": "2e9b3d59cf6e6a69b1106f2f779f558a0a279aeddfad07c213ae592f58a22997"
+      },
+      {
+        "path": "src/smart/bulk-actions/js/templates/default.js",
+        "sha256": "512e2dbbc76063da5831c1b2d7c111c3e8a144704fe50dec89362ffa8491fecf"
+      },
+      {
+        "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
+        "sha256": "1af4aad15178d0475efc23fff947568fcabdeb5b0c8c701d9dc258faf114aa31"
+      },
+      {
+        "path": "src/smart/bulk-actions/rule.js",
+        "sha256": "393667ad2eaa4ac8cf66ca2015d1ded128c73ff6e5d095ed463b0b72363ae98f"
+      },
+      {
+        "path": "src/smart/bulk-actions/docs.md",
+        "sha256": "7d5ea9fb4d431516c01f68a15e8a7ee2633153f7ba01e97802afada0ce6a43a9"
+      }
+    ],
+    "generated_runtime": []
+  },
+  "ai_guidance": {
+    "use_when": "Use sf-bulk-actions with any list, table, gallery or tree whose items a person selects to act on several at once: place it after the list (before it for place top), write count, page-count and total from the selection, give it actions and do the work on sf-bulk-actions-action.",
+    "do_not": [
+      "Do not draw your own «Выбрано N» row, Apply button or «для всех» checkbox beside a list",
+      "Do not move the focus into the bar when a row is selected",
+      "Do not run a job over 100 items or longer than about 10 s in the bar; use sf-progress-run (C34)",
+      "Do not ask your own question before a dangerous action the bar already asks about"
+    ],
+    "required_reads": [
+      "inputs",
+      "accessibility",
+      "ownership"
+    ],
+    "minimal_example": "<sf-bulk-actions count=\"2\" page-count=\"12\" total=\"240\"></sf-bulk-actions>",
+    "owner_commands": [
+      "npm run contract:verify",
+      "npm test"
+    ]
+  }
+}

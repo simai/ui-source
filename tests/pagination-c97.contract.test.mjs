@@ -47,7 +47,7 @@ const words = (self, file = ru) => (key, {vars = {}} = {}) => String(file.runtim
 const show = (places) => places.map((place) => (place === 'gap' ? '…' : place)).join(' ');
 
 test('C97 point 1: five appearances, field the default; no appearance is the compatible footer', () => {
-  assert.equal(component.version, '1.8.9'); // 1.8.0: of-pages says {page} (C177 follow-up #86) // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch
+  assert.equal(component.version, '1.9.0'); // 1.8.0: of-pages says {page} (C177 follow-up #86) // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch // C295: 1.9.0, the band is sf-bulk-actions
   assert.deepEqual(component.settings.appearance.values, ['field', 'numbers', 'arrows', 'cursor', 'more']);
   assert.equal(component.settings.appearance.default, 'field');
   assert.match(source, /get footer\(\) \{\s*return !this\.hasAttribute\("appearance"\);/u);

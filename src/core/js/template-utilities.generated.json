@@ -48,6 +48,13 @@
   "cl-breadcrumbs": [
     "display/default"
   ],
+  "cl-bulk-actions": [
+    "display/default",
+    "sr-only/default",
+    "text-max-width/default",
+    "user-select/default",
+    "visibility/default"
+  ],
   "cl-button": [
     "align-items/default",
     "display/default",

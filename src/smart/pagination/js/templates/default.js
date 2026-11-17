@@ -1,6 +1,4 @@
 import { html, nothing } from "lit";
-import { keyed } from "lit/directives/keyed.js";
-import { isDestructiveAction, orderActions } from "../actions.js";
 
 // sf-pagination's markup (decision C97, 2026-11-12). The element is page
 // navigation, in five appearances, each a named <nav> holding only the way
@@ -397,88 +395,32 @@ function renderPageSize(context, component) {
 }
 
 // The band of bulk controls, kept for a pagination that carries it until
-// 2027-01-01 (C97 point 5: it belongs to sf-view, which draws it itself).
+// 2027-01-01 (C97 point 5: it belongs to the list). Since 1.9.0 it is the
+// group actions bar, sf-bulk-actions (owner decision C295): «Выбрано N», the
+// actions as buttons (up to three, the rest in «⋯», the dangerous one last in
+// it, BA-1), «Выбрать все N» once the page is selected and ×. The pagination
+// passes its settings to the bar and turns the bar's events into its own
+// (setAction, setActionForAll, applyAction, clearSelection), so a host that
+// listens for sf-pagination-apply and -selection-clear is served as before.
 function renderBand(context, component) {
-  // C116: Apply is a regular button in a band of controls (outline
-  // on-surface), never the filled main one; over an action that deletes it is
-  // the outlined danger, and that action is listed last. A Smart button draws
-  // its look once, so a look that changes is a new button in the same place
-  // (keyed), bound once by the template: one press, one apply.
-  const danger = isDestructiveAction(context.actions.find((item) => item.value === context.action));
   return html`
-    <div
-      class=${joinClasses("sf-pagination-actions", "flex", "items-cross-center", context.bottomClass)}
-      role="region"
-      aria-label=${context.actionsRegionLabel}
-    >
-      <span class="sf-pagination-actions-count">
-        ${context.selectedLabel} ${context.selectedCount}
-      </span>
-      <span class="sf-pagination-actions-separator" aria-hidden="true"></span>
-      <sf-dropdown
-        size=${context.size}
-        appearance="bordered"
-        search="false"
-        mode="select"
-        value=${context.action}
-        placeholder=${context.actionChooseLabel}
-        aria-label=${context.actionsLabel}
-        .options=${[
-          // The list opens on a choice that is not an action: Apply is not
-          // pressable before anyone has chosen anything.
-          {
-            type: "text",
-            size: context.size,
-            text: context.actionChooseLabel,
-            value: "",
-            selected: !context.action,
-          },
-          ...orderActions(context.actions).map((action) => ({
-            type: "text",
-            size: context.size,
-            text: action.text,
-            value: action.value,
-            selected: action.value === context.action,
-            disabled: Boolean(action.disabled),
-          })),
-        ]}
-        @change=${(event) => component.setAction(event.detail.value)}
-      ></sf-dropdown>
-      ${keyed(danger, html`<sf-button
-        data-sf-bulk="apply"
-        size=${context.size}
-        appearance="outline"
-        scheme="on-surface"
-        status=${danger ? "danger" : nothing}
-        text=${context.actionApplyText}
-        ?disabled=${!context.action}
-        @click=${() => component.applyAction()}
-      ></sf-button>`)}
-      ${context.showActionForAll
-        ? html`
-            <span class="sf-pagination-actions-separator" aria-hidden="true"></span>
-            <sf-checkbox
-              size=${context.size}
-              label=${context.countKnown
-                ? `${context.actionForAllLabel} (${context.shownTotal})`
-                : context.actionForAllLabel}
-              ?checked=${Boolean(context.actionForAll)}
-              @change=${(event) =>
-                component.setActionForAll(Boolean(event.target?.checked))}
-            ></sf-checkbox>
-          `
-        : ""}
-      <sf-button-icon
-        class="sf-pagination-actions-clear"
-        size=${context.size}
-        appearance="ghost"
-        scheme="on-surface"
-        icon="close"
-        title=${context.clearSelectionLabel}
-        aria-label=${context.clearSelectionLabel}
-        @click=${() => component.clearSelection()}
-      ></sf-button-icon>
-    </div>
+    <sf-bulk-actions
+      class=${joinClasses("sf-pagination-bulk", context.bottomClass)}
+      data-sf-bulk="bar"
+      place="dock"
+      size=${context.size}
+      count=${String(context.selectedCount)}
+      page-count=${String(context.bulkPageCount)}
+      total=${context.showActionForAll && context.countKnown ? String(context.total) : nothing}
+      ?all-selected=${Boolean(context.showActionForAll && context.actionForAll)}
+      label=${context.actionsRegionLabel}
+      count-text=${context.bulkCountText || nothing}
+      .actions=${context.bulkActions}
+      @sf-bulk-actions-action=${(event) => component.applyBulkAction(event)}
+      @sf-bulk-actions-select-all=${() => component.setActionForAll(true)}
+      @sf-bulk-actions-select-page=${() => component.setActionForAll(false)}
+      @sf-bulk-actions-clear=${() => component.clearSelection()}
+    ></sf-bulk-actions>
   `;
 }
 

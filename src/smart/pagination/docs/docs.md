@@ -98,13 +98,19 @@ An author's own `total-label` still draws «Всего: 240», an author's own
 `pages-label` its label. `sf-view` uses this footer until it composes its
 own.
 
-The band's Apply is a regular button (outline on-surface, C116), never the
-filled main one. While the chosen action deletes, Apply is the outlined
-danger button, and such an action is listed last (1.6.0). An action says it
+The band is the group actions bar, `sf-bulk-actions` (1.9.0, C295): «Выбрано
+N», the actions as outline buttons (up to three, the rest in «⋯», an action
+that deletes last in it, red), «Выбрать все N» once the whole page is marked
+(with `show-action-for-all` and a known count) and ×. An action says it
 deletes with the `danger` flag (`actions="archive:В архив|delete:Удалить::danger"`,
 or `{value, text, danger: true}` in the property), or by its value: `delete`,
-`remove`, `destroy`, `trash` -- the rule `sf-view`'s own band reads. One
-press of Apply sends one `sf-pagination-apply`.
+`remove`, `destroy`, `trash` -- the bar's one rule (`isDestructiveAction`,
+re-exported by `js/actions.js`). A press of an action sends
+`sf-pagination-action-change`, `sf-pagination-action-for-all-change` and one
+`sf-pagination-apply`, as Apply did; × sends `sf-pagination-selection-clear`.
+The band asks no question before an action that deletes, as before: a host
+that asks its own keeps doing so. A changed `selected-count` takes
+`action-for-all` back (BA-3).
 
 ## Data and labels
 

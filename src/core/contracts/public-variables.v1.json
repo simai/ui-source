@@ -4686,6 +4686,47 @@
       ]
     },
     {
+      "component": "bulk-actions",
+      "selector": "sf-bulk-actions, .sf-bulk-actions",
+      "variables": [
+        {
+          "name": "--sf-bulk-actions-background",
+          "role": "background",
+          "summary": "The bar's surface (the card's on dock and inline, the primary container on top, the popup surface on float).",
+          "default": "var(--sf-surface-card)",
+          "since": "2026-11-17"
+        },
+        {
+          "name": "--sf-bulk-actions-border-color",
+          "role": "border-color",
+          "summary": "The bar's edge.",
+          "default": "var(--sf-outline-variant)",
+          "since": "2026-11-17"
+        },
+        {
+          "name": "--sf-bulk-actions-color",
+          "role": "color",
+          "summary": "The count and the run's words.",
+          "default": "var(--sf-on-surface)",
+          "since": "2026-11-17"
+        },
+        {
+          "name": "--sf-bulk-actions-gap",
+          "role": "gap",
+          "summary": "Between the groups: the count and the actions (inside a group the buttons stand 8 apart).",
+          "default": "var(--sf-space-1)",
+          "since": "2026-11-17"
+        },
+        {
+          "name": "--sf-bulk-actions-radius",
+          "role": "radius",
+          "summary": "The bar's corners.",
+          "default": "var(--sf-radius--surface)",
+          "since": "2026-11-17"
+        }
+      ]
+    },
+    {
       "component": "group-heading",
       "selector": ".sf-group-heading",
       "variables": [

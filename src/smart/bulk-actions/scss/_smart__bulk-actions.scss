@@ -1,0 +1,157 @@
+@layer sf.components {
+/* sf-bulk-actions (standard simai.smart-component 1.3.16 §6; owner decision
+   C295; prototype sf-bulk-actions-study, variant A). One row: the count and
+   the offer at the start, the actions, «⋯» and the clear cross at the end.
+   Its height is the rung's control height and the space-1/4 above and below
+   (C18: 42 at 1/2, 50 at 1 with the edge); the groups wrap 16 apart (space-1),
+   inside a group 8 (space-1/3, C105: one group 8). The buttons are sf-button's
+   own look (outline on-surface, C116); nothing here repaints a button.
+
+   place: dock (default) stands over the list's bottom edge at the card's
+   width and sticks to the bottom of the scroll; top is the toolbar's place
+   in the primary container; float a plate at the middle of the window's
+   bottom edge; inline a plain row in the flow.
+
+   The public variables are read with the system value as their fallback and
+   never set here:
+     --sf-bulk-actions-background     the bar's surface
+     --sf-bulk-actions-border-color   the bar's edge
+     --sf-bulk-actions-color          the count's text
+     --sf-bulk-actions-gap            between the groups
+     --sf-bulk-actions-radius         the bar's corners */
+.sf-bulk-actions {
+  --sf-bulk-actions--gap: var(--sf-bulk-actions-gap, var(--sf-space-1));
+  --sf-bulk-actions--group-gap: var(--sf-space-1\/3);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sf-bulk-actions--group-gap) var(--sf-bulk-actions--gap);
+  box-sizing: border-box;
+  min-inline-size: 0;
+  padding-block: var(--sf-space-1\/4);
+  padding-inline: var(--sf-space-1\/2) var(--sf-space-1\/4);
+  border-width: var(--sf-px);
+  border-style: solid;
+  border-radius: var(--sf-bulk-actions-radius, var(--sf-radius--surface));
+}
+
+.sf-bulk-actions[hidden] {
+  display: none;
+}
+
+.sf-bulk-actions__lead,
+.sf-bulk-actions__end,
+.sf-bulk-actions__actions,
+.sf-bulk-actions__answers,
+.sf-bulk-actions__run {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-bulk-actions--group-gap);
+  min-inline-size: 0;
+}
+
+.sf-bulk-actions__lead {
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+}
+
+.sf-bulk-actions__run {
+  flex: 1 1 16rem;
+  flex-wrap: wrap;
+  column-gap: var(--sf-bulk-actions--gap);
+}
+
+.sf-bulk-actions__end {
+  margin-inline-start: auto;
+}
+
+.sf-bulk-actions__count,
+.sf-bulk-actions__say {
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sf-bulk-actions__count {
+  font-weight: var(--sf-font-weight-medium);
+}
+
+.sf-bulk-actions--size-1 :is(.sf-bulk-actions__count, .sf-bulk-actions__say) {
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+}
+
+.sf-bulk-actions--size-2 :is(.sf-bulk-actions__count, .sf-bulk-actions__say) {
+  font-size: var(--sf-text-size-2);
+  line-height: var(--sf-text-height-2);
+}
+
+.sf-bulk-actions__say--warning {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+}
+
+.sf-bulk-actions__progress {
+  flex: 1 1 10rem;
+  min-inline-size: 6rem;
+  max-inline-size: 20rem;
+}
+
+.sf-bulk-actions--dock {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: var(--sf-layer--sticky);
+}
+
+.sf-bulk-actions--float {
+  position: fixed;
+  inset-block-end: var(--sf-space-1);
+  inset-inline: var(--sf-space-1);
+  max-inline-size: 48rem;
+  margin-inline: auto;
+  z-index: var(--sf-layer--sticky);
+}
+
+/* A phone: the actions are icon buttons named in their tooltips; the start
+   steps in to the screen's edge. */
+.sf-bulk-actions--compact {
+  padding-inline-start: var(--sf-space-1\/3);
+}
+
+.sf-bulk-actions--compact.sf-bulk-actions--dock {
+  border-radius: var(--sf-bulk-actions-radius, var(--sf-radius--ui));
+}
+}
+
+// Paint (C273): the fill, edge, text and shadow of the bar stand in sf.paint,
+// under the utilities, so bg-*, border-* and color-* on it win; its geometry
+// stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-bulk-actions {
+    border-color: var(--sf-bulk-actions-border-color, var(--sf-outline-variant));
+    background-color: var(--sf-bulk-actions-background, var(--sf-surface-card));
+    color: var(--sf-bulk-actions-color, var(--sf-on-surface));
+  }
+  .sf-bulk-actions--dock {
+    box-shadow: var(--sf-shadow-raised);
+  }
+  .sf-bulk-actions--top {
+    border-color: transparent;
+    background-color: var(--sf-bulk-actions-background, var(--sf-primary-container));
+    color: var(--sf-bulk-actions-color, var(--sf-on-primary-container));
+  }
+  .sf-bulk-actions--float {
+    background-color: var(--sf-bulk-actions-background, var(--sf-surface-popup));
+    box-shadow: var(--sf-shadow-popup);
+  }
+  .sf-bulk-actions__warning {
+    color: var(--sf-warning);
+  }
+  @media (forced-colors: active) {
+    .sf-bulk-actions {
+      border-color: CanvasText;
+    }
+  }
+}
