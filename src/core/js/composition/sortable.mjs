@@ -848,12 +848,13 @@ export function attachSortable(container, options = {}) {
     : (item) => item.getAttribute('data-sf-sortable-item') || item.dataset.key || item.dataset.rowId || '';
   const handleSelector = vertical && typeof options.handle === 'string' && options.handle ? options.handle : '';
   // A row read as one run of text said «ПереместитьЗадача вторая11.11.2026»:
-  // the handle's own name and every cell glued together.
+  // the handle's own name (its tooltip, drawn in the cell on hover) and every
+  // cell glued together.
   const labelOf = typeof options.labelOf === 'function' ? options.labelOf : (item) => {
     if (item.getAttribute('aria-label')) return item.getAttribute('aria-label');
     const clean = (node) => {
       const clone = node.cloneNode(true);
-      for (const hidden of clone.querySelectorAll(`[aria-hidden="true"], .sf-sortable-live${handleSelector ? `, ${handleSelector}` : ''}`)) hidden.remove();
+      for (const hidden of clone.querySelectorAll(`[aria-hidden="true"], [role="tooltip"], .sf-sortable-live${handleSelector ? `, ${handleSelector}` : ''}`)) hidden.remove();
       return clone.textContent.replace(/\s+/gu, ' ').trim();
     };
     if (item.tagName === 'TR') return [...item.cells].map(clean).filter(Boolean).join(', ');
