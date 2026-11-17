@@ -20,10 +20,13 @@ const failures = [];
 const type = (path) => path.endsWith('.css') ? 'text/css; charset=utf-8' : path.endsWith('.json') ? 'application/json' : 'text/javascript; charset=utf-8';
 const serve = (route, path) => existsSync(path) ? route.fulfill({status: 200, contentType: type(path), body: readFileSync(path)}) : route.fulfill({status: 404, body: ''});
 const base = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/';
+// Each element in its own section, as on the files page: the drawn host is
+// display: contents, so in a flex parent with a gap its hidden message,
+// status and empty list would each take a gap the held box cannot know.
 const body = `<main id="stage" style="display:flex;flex-direction:column;gap:16px">
-  <sf-file-upload id="full" link-text="Выберите файлы" text="или перетащите их сюда" formats="PDF, PNG или JPG" supporting-text="Можно загрузить несколько документов" multiple></sf-file-upload>
-  <sf-file-upload id="plain" link-text="Выберите файл"></sf-file-upload>
-  <sf-input-image id="image" label="Логотип" name="logo" hint="PNG или SVG, до 1 МБ"></sf-input-image>
+  <section><sf-file-upload id="full" link-text="Выберите файлы" text="или перетащите их сюда" formats="PDF, PNG или JPG" supporting-text="Можно загрузить несколько документов" multiple></sf-file-upload></section>
+  <section><sf-file-upload id="plain" link-text="Выберите файл"></sf-file-upload></section>
+  <section><sf-input-image id="image" label="Логотип" name="logo" hint="PNG или SVG, до 1 МБ"></sf-input-image></section>
 </main>`;
 const html = (theme, code) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="${base}core/css/core.css">
