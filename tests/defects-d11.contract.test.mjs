@@ -40,7 +40,9 @@ test('(1) RG-NV 9: one width rule for a page number, the place hands it the cont
   assert.doesNotMatch(sheet.replace(/\/\*[\s\S]*?\*\//gu, ''), /--sf-pagination--digits:/u);
   assert.match(read('src/smart/pagination/js/templates/default.js'), /style=\$\{`--sf-pagination--digits: \$\{context\.slotDigits\}`\}/u);
   // The Smart page button is square at least, as the plain twin.
-  assert.match(ruleOf(sheet, '.sf-pagination .sf-pagination-slot > .sf-pagination-page'), /min-inline-size: max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits, 1\) \* 1ch \+ 2 \* var\(--sf-pagination--place-x\)\)\);/u);
+  assert.match(ruleOf(sheet, '.sf-pagination .sf-pagination-slot > .sf-pagination-page'), /min-inline-size: var\(--sf-pagination--control-height\);/u);
+  // The Smart places (the row writes its digits) keep one floor: the widest number.
+  assert.match(sheet, /\n\.sf-pagination \.sf-pagination-item\.sf-pagination-slot \{\s*min-inline-size: max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits, 2\) \* 1ch \+ 2 \* var\(--sf-pagination--place-x\)\)\);/u);
 });
 
 const LAYER = /@layer\s+(sf\.[\w-]+)\s*\{/gu;
