@@ -571,7 +571,7 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
         this.instructions.id = nextHelpId();
       }
       this.append(this.live, this.instructions);
-      this.updateInstructions();
+      this.writeInstructions();
       this.addEventListener('pointerdown', (event) => this.onPointerDown(event), options);
       this.addEventListener('keydown', (event) => this.onKeyDown(event), options);
       this.addEventListener('focusin', (event) => {
@@ -634,15 +634,20 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
         const want = item === this.currentItem ? '0' : '-1';
         if (item.getAttribute('tabindex') !== want) item.setAttribute('tabindex', want);
       }
-      this.updateInstructions();
+      this.writeInstructions();
     }
 
     // On a list of selectable items the instructions say Space selects (BV-8).
-    updateInstructions() {
+    // An extension of the element may add its own hint after these words
+    // through updateInstructions(); they are kept when they already lead.
+    writeInstructions() {
       if (!this.instructions) return;
       const words = messages();
       const text = items(this).some(sortableSelectable) ? words['instructions-select'] : words.instructions;
-      if (this.instructions.textContent !== text) this.instructions.textContent = text;
+      const current = this.instructions.textContent;
+      if (current === text || current.startsWith(`${text} `)) return;
+      this.instructions.textContent = text;
+      this.updateInstructions?.();
     }
 
     focusItem(item) {
@@ -703,7 +708,7 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       if (!this.live || !this.instructions) return;
       if (this.live.parentNode === this && this.instructions.parentNode === this) return;
       this.append(this.live, this.instructions);
-      this.updateInstructions();
+      this.writeInstructions();
     }
 
     announce(text) {
