@@ -43,11 +43,16 @@ outside the compatible footer the row had no gap before and its edge buttons
 touched their neighbours). `--sf-pagination-gap` still sets it.
 
 A numbers place is as wide as the widest number with the button's side
-padding while the row has room, and shrinks to square (the control height)
-when it has none: a phone's column or a narrow column of a wide page, the
-Smart row and a class row of `sf-page-number` alike (1.5.2; the places could
-not shrink, so two arrows and five places needed 350 in the 326 column of a
-390 screen, and a class long range of seven stood 17 past it).
+padding while the row has room, and shrinks when it has none: a phone's
+column or a narrow column of a wide page, the Smart row and a class row of
+`sf-page-number` alike (1.5.2; the places could not shrink, so two arrows and
+five places needed 350 in the 326 column of a 390 screen, and a class long
+range of seven stood 17 past it). A place never shrinks below its own number:
+square at least, and as wide as its digits with the label's side padding
+(1.6.2; a place counted two digits whatever the row wrote, and «10240» spilled
+out of a 48 place of `<sf-pagination>` and of a 40 class place in a narrow
+column). The widest number's digits are the row's `--sf-pagination--digits`;
+without it a place counts two.
 
 ## The row's box
 

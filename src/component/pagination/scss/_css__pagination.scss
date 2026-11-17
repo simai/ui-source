@@ -105,19 +105,24 @@
 
 /* numbers: every place is as wide as the widest page number there is (at
    least the control height), so the row keeps one width while a person
-   pages; the number sits in the middle of its place.
+   pages; the number sits in the middle of its place. The widest number's
+   digits are the row's --sf-pagination--digits: sf-pagination writes it on
+   its list, a class row may write it; without it a place counts two digits.
 
-   A narrow box takes the places down to square (SM-PN-1, EX-3): that width
-   is the place's basis, and it shrinks to the control height when the row
-   has no more room -- a phone column, or a narrow column of a wide page,
-   with no query of the screen or of a container (C181). With the button's
-   side padding a two-digit place could not shrink below 46: two arrows,
-   five places and six gaps of 8 needed 350 in the 326 column of a 390
-   screen and the row scrolled; now the same row is 300. The number's own
-   padding is the label's (--sf-ui-<S>--text-space-x), so its words never
-   reach the place's edge; the place's width is the basis, not the padding.
-   The plain twin's sf-page-number is the same place (C251): a class long
-   range of seven places stood 17 past the phone column. */
+   A narrow box takes the places down (SM-PN-1, EX-3): the width above is
+   the place's basis, and it shrinks when the row has no more room -- a
+   phone column, or a narrow column of a wide page, with no query of the
+   screen or of a container (C181) -- but never below its own number
+   (RG-NV 9: a number is square at least and as wide as its digits with the
+   place's padding, it never spills): its floor is its content, so a one- or
+   two-digit place goes down to square and «10240» keeps its five digits.
+   With the button's side padding a two-digit place could not shrink below
+   46: two arrows, five places and six gaps of 8 needed 350 in the 326
+   column of a 390 screen and the row scrolled; now the same row is 300. The
+   number's own padding is the label's (--sf-ui-<S>--text-space-x), so its
+   words never reach the place's edge. The plain twin's sf-page-number is
+   the same place (C251), and its width is RG-NV 9's one rule
+   (_css__page_number.scss) with that padding. */
 .sf-pagination {
   --sf-pagination--place-x: var(--sf-ui-1--text-space-x);
 }
@@ -127,18 +132,29 @@
 }
 
 /* Item and slot classes both (0,3,0): the item's flex: 0 0 auto below must
-   not take the place's shrinking back. */
+   not take the place's shrinking back. The digits are the row's, never set
+   here (a place that set two drew «10240» in a two-digit place, 48 wide,
+   and the number spilled). */
 .sf-pagination .sf-pagination-item.sf-pagination-slot,
 .sf-pagination .sf-pagination-item:has(> .sf-page-number) {
-  --sf-pagination--digits: 2;
-  flex: 0 1 max(var(--sf-pagination--control-height), calc(var(--sf-pagination--digits) * 1ch + 2 * var(--sf-pagination--space-x)));
-  min-inline-size: var(--sf-pagination--control-height);
+  flex: 0 1 max(var(--sf-pagination--control-height), calc(var(--sf-pagination--digits, 2) * 1ch + 2 * var(--sf-pagination--space-x)));
+  min-inline-size: min-content;
   justify-content: center;
+}
+
+/* sf-pagination writes the row's digits on its list, so its places keep one
+   floor too: the widest number with the place's padding, measured in the
+   place's own text (RG-NV 9). A shrunk row of «1 … 59 60 61 … 120» had a 45
+   place among 40 ones. */
+.sf-pagination .sf-pagination-item.sf-pagination-slot {
+  min-inline-size: max(var(--sf-pagination--control-height), calc(var(--sf-pagination--digits, 2) * 1ch + 2 * var(--sf-pagination--place-x)));
 }
 
 .sf-pagination .sf-pagination-slot > .sf-pagination-page {
   --sf-button--padding-inline-start: var(--sf-pagination--place-x);
   --sf-button--padding-inline-end: var(--sf-pagination--place-x);
+  /* Square at least, as the plain twin's sf-page-number (RG-NV 9). */
+  min-inline-size: var(--sf-pagination--control-height);
   inline-size: 100%;
   justify-content: center;
   text-decoration: none;
@@ -157,12 +173,9 @@
 }
 
 .sf-pagination .sf-pagination-item > .sf-page-number {
-  --sf-page-number--padding-left: var(--sf-pagination--place-x);
-  --sf-page-number--padding-right: var(--sf-pagination--place-x);
   --sf-page-number--space-x: var(--sf-pagination--place-x);
-  --sf-page-number--width: 100%;
+  --sf-page-number--width: var(--sf-pagination--control-height);
   inline-size: 100%;
-  min-inline-size: var(--sf-pagination--control-height);
 }
 
 /* The gap is not a control: a mark of the pages left out. */

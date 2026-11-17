@@ -9,7 +9,9 @@
 // addendum) and a popup on a phone is a bottom sheet of the window width
 // (C176, C157); the one-line rows are the menu's rung (40 px at the default
 // size 1, 32 px at 1/2, less on a phone where the ladder is tighter); a long name wraps and a
-// long value ends in an ellipsis with the whole of it in title; the row
+// long value ends in an ellipsis with no browser title: reached by the
+// pointer or the keyboard, its row is named by the Framework tooltip that
+// holds the whole value (TT-11, owner decision C160 (1)); the row
 // glyphs are the on-surface or on-surface-variant role; the panel stays in
 // the window. The keyboard: a popup opens on Enter with the focus on its
 // first row, Down moves, Enter on a drilling choice opens its level, Escape
@@ -80,7 +82,7 @@ const CASES = {
 const shell = (name, theme) => {
   const {look, items, popup, size, former} = CASES[name];
   const trigger = popup ? '<sf-button-icon id="trigger" icon="tune" appearance="ghost" scheme="on-surface" aria-label="Настройки"></sf-button-icon>' : '';
-  return `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  return `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="data:,">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css"><script src="/distr/core/js/core.js"></script>
 <style>body{margin:0;background:var(--sf-surface);color:var(--sf-on-surface);font-family:var(--sf-font-family, system-ui)}main{padding:16px;display:flex;flex-direction:column;gap:16px;align-items:flex-start;max-inline-size:100%;box-sizing:border-box}</style></head>
@@ -172,8 +174,22 @@ for (const theme of ['light', 'dark']) {
       ok(`${label}: the glyphs are the on-surface or on-surface-variant role`, m.withIcons === (m.glyphs.length > 0) && m.glyphs.every((one) => roles.includes(one)), JSON.stringify({glyphs: m.glyphs, roles}));
       if (CASES[name].look === 'drill' && !CASES[name].former) {
         ok(`${label}: a long name wraps to a second line`, m.wrapped === true, JSON.stringify(m));
-        const digest = await tab.evaluate(() => { const under = [...document.querySelectorAll('#settings .sf-context-menu-item-under')].find((one) => one.textContent.includes('Раз в неделю')); return under && {cut: under.scrollWidth > under.clientWidth + 0.5, title: under.getAttribute('title')}; });
-        ok(`${label}: the long value ends in an ellipsis, whole in its title`, digest?.cut && digest.title === 'Раз в неделю, в понедельник утром, со всеми задачами', JSON.stringify(digest));
+        // The cut value carries no browser title (TT-11, C160 (1)); reaching
+        // its row (here the keyboard focus, as a hover does) names the row by
+        // the Framework tooltip that holds the whole value.
+        await tab.evaluate(() => { const under = [...document.querySelectorAll('#settings .sf-context-menu-item-under')].find((one) => one.textContent.includes('Раз в неделю')); under?.closest('.sf-context-menu-item')?.focus(); });
+        await tab.waitForTimeout(300);
+        const digest = await tab.evaluate(() => {
+          const under = [...document.querySelectorAll('#settings .sf-context-menu-item-under')].find((one) => one.textContent.includes('Раз в неделю'));
+          if (!under) return null;
+          const row = under.closest('.sf-context-menu-item');
+          const tip = row?.getAttribute('data-tooltip') ? document.getElementById(row.getAttribute('data-tooltip')) : null;
+          return {cut: under.scrollWidth > under.clientWidth + 0.5, title: under.getAttribute('title') ?? row?.getAttribute('title') ?? null, tooltip: tip?.classList.contains('sf-tooltip') ? tip.querySelector('.sf-tooltip-text')?.textContent : null};
+        });
+        ok(`${label}: the long value ends in an ellipsis, no browser title; its row is named by the Framework tooltip of the whole value (TT-11)`, digest?.cut && digest.title === null && digest.tooltip === 'Раз в неделю, в понедельник утром, со всеми задачами', JSON.stringify(digest));
+        // The focus back on the first row, where the keyboard run below starts.
+        await tab.evaluate(() => document.querySelector('#settings .sf-context-menu-item')?.focus());
+        await tab.waitForTimeout(100);
       }
       if (CASES[name].former) ok(`${label}: the former look=tiles draws drill, its switches are rows, no tiles (C176)`, m.tiles === 0 && m.switches === 3, JSON.stringify({tiles: m.tiles, switches: m.switches}));
       if (shots) await tab.screenshot({path: join(shots, `settings-${name}-${width}-${theme}.png`), clip: {x: 0, y: 0, width, height: 560}});

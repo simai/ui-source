@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.emoji",
   "kind": "component",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/emoji/index.js",
@@ -14,7 +14,7 @@
     "src/component/emoji/scss/_css_emoji_custom.scss",
     "src/component/emoji/scss/index.scss"
   ],
-  "content_sha256": "a7499919aaa1a8e4d62e4ec1370c57542b1f94fc2171855b0274928150c6bae0",
+  "content_sha256": "78a9ca448f8bdc06eadc95762859e3a9e90d6d54aba50d212258724e7fe5d53b",
   "dependencies": [
     {
       "id": "core.runtime",

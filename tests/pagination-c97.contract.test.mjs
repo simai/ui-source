@@ -98,9 +98,10 @@ test('C97 numbers: links with href, the current page says aria-current, the gap 
   assert.match(markup, /const href = context\.href \? component\.pageHref\(slot\.value\) : "";/u);
   assert.match(markup, /aria-current=\$\{slot\.selected \? "page" : nothing\}/u);
   assert.match(markup, /slot\.selected \? "sf-button--tonal sf-button--primary sf-pagination-page--current" : "sf-button--ghost sf-button--link sf-button--on-surface"/u);
-  // A place is as wide as the widest page number there is, its basis; it
-  // shrinks to square when the row has no room (SM-PN-1, fix/smart-pass-sp1).
-  assert.match(sheet, /\.sf-pagination \.sf-pagination-item\.sf-pagination-slot,[^{]*\{[^}]*flex: 0 1 max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits\) \* 1ch \+ 2 \* var\(--sf-pagination--space-x\)\)\);/u);
+  // A place is as wide as the widest page number there is (the row's digits,
+  // two without them), its basis; it shrinks when the row has no room, never
+  // below its own number (SM-PN-1, fix/smart-pass-sp1; RG-NV 9, defects-d11).
+  assert.match(sheet, /\.sf-pagination \.sf-pagination-item\.sf-pagination-slot,[^{]*\{[^}]*flex: 0 1 max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits, 2\) \* 1ch \+ 2 \* var\(--sf-pagination--space-x\)\)\);/u);
 });
 
 test('C97 point 4: the ends are disabled, not removed, in every appearance', () => {
