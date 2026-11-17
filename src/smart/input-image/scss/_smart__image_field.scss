@@ -86,7 +86,7 @@
   line-height: var(--sf-image-field--small-height);
 }
 
-@media not all and (min-width: 60rem) {
+@media not all and (min-width: #{mq.breakpoint-min(lg)}) {
   .sf-image-field.sf-image-field--size-1 .sf-image-field-label {
     font-size: var(--sf-text-size-1);
     line-height: var(--sf-text-height-1);

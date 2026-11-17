@@ -615,6 +615,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "hint": {
+          "default": "",
+          "type": "string"
+        },
         "inherited-text": {
           "default": "",
           "type": "string"
@@ -698,7 +702,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.16.1"
+    "version": "1.20.0"
   },
   "sf-icon": {
     "inputs": {
