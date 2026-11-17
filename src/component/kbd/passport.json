@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.kbd",
   "kind": "component",
-  "version": "1.5.2",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/kbd/docs/docs.md",
@@ -17,7 +17,7 @@
     "src/component/kbd/scss/_kbd.scss",
     "src/component/kbd/scss/index.scss"
   ],
-  "content_sha256": "e16d03a0c1e83a3c9265149088177dfca796adc9d42d0e4f780aeb6754961531",
+  "content_sha256": "0129f36626fea450a10b1465cb12cae4375ec04b6547dc6446046ecc85e75f01",
   "dependencies": [
     {
       "id": "tokens.border",

@@ -25,7 +25,7 @@ test('(1) the pagination list is one group of buttons: --sf-space-1/3 behind the
   const css = read('src/component/pagination/scss/_css__pagination.scss');
   const list = rule(css, '.sf-pagination .sf-pagination-list');
   assert.match(list, /gap: var\(--sf-pagination-container--gap, var\(--sf-pagination-gap, var\(--sf-space-1\\\/3\)\)\);/u);
-  assert.equal(json('src/component/pagination/passport.json').version, '1.5.1');
+  assert.equal(json('src/component/pagination/passport.json').version, '1.6.1'); // fix/c178-findings: gaps on role steps (C105)
   assert.equal(json('src/smart/pagination/component.json').version, '1.8.4'); // group build 8: fix/pagination-more-c167's 1.7.0 (group build 7: 1.6.2, the branch wrote 1.6.1) // group build 9: 1.7.3 moved on by the merged branches or a GB9 patch
 });
 

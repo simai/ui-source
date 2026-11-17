@@ -185,7 +185,7 @@
   cursor: not-allowed;
 }
 
-/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-b0) justify-content/center (.justify-center) align-items/center (.items-center) */
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-gap--actions) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-pagination .sf-pagination-top {
   --sf-pagination-top--background-color: transparent;
   --sf-pagination-top--border-bottom-width: var(--sf-px);
@@ -200,7 +200,9 @@
   border-bottom-width: var(--sf-pagination-top--border-bottom-width);
   border-color: var(--sf-pagination-top--border-color, transparent);
   border-style: var(--sf-pagination-top--border-style, solid);
-  gap: var(--sf-b0);
+  /* The buttons of the row (Show more): one group, H5 8 (C105; it was
+     --sf-b0, 10, no space step). */
+  gap: var(--sf-gap--actions);
   padding-bottom: var(--sf-pagination-top--padding-bottom);
 }
 

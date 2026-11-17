@@ -39,9 +39,9 @@ const CONCURRENCY = Number(process.env.RUNG_CONCURRENCY || 6);
 // The pairs found on group build 4 (2026-11-14), each a defect of its owner
 // component: «component: count». A count that changes fails.
 const KNOWN = {
-  // progress: the cancel link button is height-low (32) beside the size 1
-  // download button (40).
-  'file-download': 1,
+  // file-download/progress (the cancel button height-low 32 beside the size 1
+  // row 40) left the list with sf-file-download 1.6.0: «Отменить» and
+  // «Скачать» stand on the row's rung.
   // file-preview/error and file-upload/error (the retry button 32 beside the
   // icon actions 40) left the list with owner decision C260 (sf-file-preview
   // 1.5.0): «Повторить» stands on the rung of its neighbours.

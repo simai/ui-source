@@ -128,7 +128,9 @@
     font-family: var(--sf-input-hint-text-wrap--font-family);
     font-size: var(--sf-input-hint-text-wrap--font-size);
     font-weight: var(--sf-input-hint-text-wrap--font-weight);
-    gap: var(--sf-b0);
+    /* A picture before the hint's words is a picture in a field's row: H2
+       (C105). It was --sf-b0, 10, a size primitive with no space step. */
+    gap: var(--sf-gap--icon-text);
     line-height: var(--sf-input-hint-text-wrap--line-height);
   }
 

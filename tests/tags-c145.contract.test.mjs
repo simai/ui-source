@@ -113,8 +113,8 @@ test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.1, sf-dropd
   assert.equal(json('src/component/dropdown/passport.json').version, '1.15.0'); // group build 7: the patch for moved files (the line had 1.13.2) // group build 9: 1.13.4 moved on by the merged branches or a GB9 patch
   assert.equal(json('src/smart/input-lookup/component.json').version, '1.16.1'); // group build 8: C208's patch above RG-S2's 1.15.2 (group build 7: the integrated number; the branch wrote 1.13.1) // group build 9: 1.15.3 moved on by the merged branches or a GB9 patch
   assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.16.1'); // group build 9 // group build 8
-  assert.equal(json('src/smart/tag/component.json').version, '1.11.2'); // group build 9 // group build 7: the GB6 notes numbered above the released 1.9.1
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.2'); // group build 9 // group build 7
+  assert.equal(json('src/smart/tag/component.json').version, '1.12.2'); // group build 9 // group build 7: the GB6 notes numbered above the released 1.9.1 // fix/c178-findings: the action's gap fallback (C105)
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.12.2'); // group build 9 // group build 7 // fix/c178-findings: the action's gap fallback (C105)
   assert.ok(atLeastTags(json('src/component/tags/passport.json').version), 'component.tags at least 1.7.0');
   assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.1'); // first paint R222 open item 10: the printed «+N» replaced
 });

@@ -3,7 +3,7 @@
 @use '../../../core/scss/mix/mix__sheet' as sheet;
 
 @layer sf.components {
-/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-d4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/0 justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-context-menu {
   background-color: var(--sf-context-menu--background-color, transparent);
   box-shadow: var(--sf-context-menu--box-shadow, var(--sf-shadow-overlay));
@@ -11,7 +11,10 @@
   border-end-start-radius: var(--sf-context-menu--border-end-start-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
   border-start-end-radius: var(--sf-context-menu--border-start-end-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
   border-start-start-radius: var(--sf-context-menu--border-start-start-radius, var(--sf-context-menu-radius, var(--sf-radius--surface)));
-  gap: var(--sf-d4);
+  /* The menu's box holds one frame (the sheet: a handle row on top of it,
+     below), so nothing stands beside it: no gap. It was --sf-d4, a size
+     primitive (56) the role table has no step for (C105, C178). */
+  gap: 0;
 }
 
 /* Markup written for the tail it used to have draws none: a menu has no tail
@@ -649,7 +652,8 @@
   flex: none;
   align-self: center;
   align-items: center;
-  gap: var(--sf-a4);
+  /* The slider and its number: neighbours, H5 plates (C105). */
+  gap: var(--sf-space-1\/4);
 }
 
 .sf-context-menu-range-input {
@@ -690,7 +694,8 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   flex: none;
-  gap: var(--sf-a4);
+  /* Tiles are plates side by side: H5 4 (C105). */
+  gap: var(--sf-space-1\/4);
   padding-block: var(--sf-a4);
 }
 
@@ -1056,7 +1061,7 @@
   display: flex;
   flex-direction: column;
   /* The handle row stands right on the content: the menu's own gap (--sf-d4,
-     56) stood between the grab bar and the first row (C164 probe). */
+     56, before it was 0) stood between the grab bar and the first row (C164 probe). */
   gap: 0;
   overflow: hidden;
   background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));

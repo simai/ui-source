@@ -25,5 +25,5 @@ test('the plain join has the plain keys\' line', () => {
     assert.match(rule, /display: inline;/u);
     assert.match(rule, /line-height: 1;/u);
   }
-  assert.equal(passport.version, '1.5.2'); // group build 9: 1.5.1 moved on by the merged branches or a GB9 patch
+  assert.equal(passport.version, '1.7.0'); // group build 9: 1.5.1 moved on by the merged branches or a GB9 patch // fix/c178-findings: plain gap on --sf-space-1/4 (C105)
 });
