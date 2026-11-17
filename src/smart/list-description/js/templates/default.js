@@ -13,7 +13,10 @@ import {html, nothing} from 'lit';
 // - A value is text: a link (href), monospace (mono), tabular figures
 //   (numeric), cut to one line (overflow truncate, then focusable with its
 //   whole text as title), a badge (sf-badge on the value's line), or
-//   empty-text when there is none. A status icon stands before a value, its
+//   empty-text when there is none. A field template's drawing (VP-24, C302
+//   (2), place Показ) stands in place of the text: the host content of the
+//   item's slot, or a node given as value, in .sf-list-description-drawn
+//   (after a badge, before the copy button and the action). A status icon stands before a value, its
 //   word visually hidden (never on an empty value); a copy button and the
 //   item's action after it; a hint under it.
 // - With no items: nothing at all.
@@ -51,6 +54,11 @@ function shown(context, item) {
         status=${item.badge.status || nothing} scheme=${item.badge.status ? nothing : item.badge.scheme}
         icon=${item.badge.icon || nothing} text=${item.badge.text}></sf-badge>`
     : nothing;
+  if (item.drawn) {
+    return html`${badge}<span class="sf-list-description-drawn" title=${titled && item.value ? item.value : nothing}>${item.slot
+      ? component.getSlotContent(item.slot)
+      : item.node}</span>`;
+  }
   if (!item.value) return badge;
   if (item.href) {
     return html`${badge}<a class=${`${classes} sf-list-description-link`} href=${item.href} title=${titled ? item.value : nothing}

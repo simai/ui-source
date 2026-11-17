@@ -224,6 +224,13 @@ sf-list-description {
   overflow-wrap: anywhere;
 }
 
+/* A field template's drawing in place of the text (VP-24, C302 (2)): it
+   takes the value's line and font and lays out its own parts. */
+.sf-list-description-drawn {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
 /* Monospace a step smaller, on the same line, so it looks the size of the
    text around it. A path, a hash or a key wraps by characters, every line
    full (owner decision C180 (5)): it broke only where it could not go on

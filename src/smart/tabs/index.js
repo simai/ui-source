@@ -66,6 +66,16 @@ function panelHasContent(panel) {
   return false;
 }
 
+// A box's content width: its border box less its padding and border.
+function contentWidth(box) {
+  const width = box.getBoundingClientRect().width;
+  if (!width) return 0;
+  const style = globalThis.getComputedStyle?.(box);
+  const sides = ['paddingInlineStart', 'paddingInlineEnd', 'borderInlineStartWidth', 'borderInlineEndWidth']
+    .reduce((sum, side) => sum + (Number.parseFloat(style?.[side]) || 0), 0);
+  return Math.max(0, width - sides);
+}
+
 function tabIndexOf(element) {
   const own = element?.dataset?.sfTabIndex ?? element?.querySelector?.(':scope > [data-sf-tab-index]')?.dataset?.sfTabIndex;
   const index = Number(own);
@@ -441,6 +451,7 @@ class SfTabs extends TabsElement {
     this._narrowMedia = null;
     this._placeObserver?.disconnect();
     this._watchedPlace = null;
+    this._watchedRoot = null;
     if (this._addressListener) {
       globalThis.removeEventListener?.('hashchange', this._addressListener);
       globalThis.removeEventListener?.('popstate', this._addressListener);
@@ -835,17 +846,45 @@ class SfTabs extends TabsElement {
     else this.setAttribute('selected', String(value));
   }
 
-  // The width the vertical look folds on (C181 (2)): the tabs' own block,
-  // which is as wide as their place in either look (sf-tabs itself is
-  // display: contents); before the first drawing, the parent's content box.
+  // The width the vertical look folds on (C181 (2)): the box that holds the
+  // tabs and their content (VP-26, C96 (5), C289 (5)); before the first
+  // drawing, the parent's content box.
   placeWidth() {
-    const root = this.querySelector(':scope > .sf-tabs');
-    if (root) return root.getBoundingClientRect().width;
+    const place = this.placeBox();
+    if (place) return contentWidth(place);
     const parent = this.parentElement;
     if (!parent) return 0;
-    const style = globalThis.getComputedStyle?.(parent);
-    const inset = (Number.parseFloat(style?.paddingInlineStart) || 0) + (Number.parseFloat(style?.paddingInlineEnd) || 0);
-    return Math.max(0, parent.getBoundingClientRect().width - inset);
+    return contentWidth(parent);
+  }
+
+  // With the panels inside, the tabs' own block holds the tabs and the
+  // content (sf-tabs itself is display: contents). A tab list alone -- the
+  // host draws the content beside it, as sf-view-properties' section column
+  // does -- stands in a column of its own, always below the step: its own
+  // block folded the column into the line with «Ещё (n)» even full screen at
+  // 1440 (VP-26). Its place is then the first box around it wider than that
+  // column: the wrapper of the column and the content. A column's own
+  // wrappers (as wide as it) are passed over; with none wider, its own block.
+  placeBox() {
+    const root = this.querySelector(':scope > .sf-tabs');
+    if (!root) return null;
+    if (this.holdsContent()) return root;
+    const own = root.getBoundingClientRect().width;
+    const top = this.ownerDocument?.documentElement;
+    for (let box = this.parentElement; box && box !== top; box = box.parentElement) {
+      if (contentWidth(box) > own + 0.5) return box;
+    }
+    return root;
+  }
+
+  // The content stands inside the tabs: a panel given (a page panel, a slot,
+  // a part or a text) or one the page filled.
+  holdsContent() {
+    return this.computedItems.some((item) => this.pagePanelFor(item, item.index)
+      || this.hasSlotContent?.(item.slotName)
+      || item.panel?.component
+      || typeof item.panel?.text !== 'undefined')
+      || this.drawnPanels().some(panelHasContent);
   }
 
   readNarrow() {
@@ -869,13 +908,17 @@ class SfTabs extends TabsElement {
   // Only vertical tabs fold, so only they watch their place.
   watchPlace() {
     if (!this._placeObserver) return;
-    const place = this.getAttribute('type') === 'vertical'
-      ? (this.querySelector(':scope > .sf-tabs') || this.parentElement)
-      : null;
-    if (place === this._watchedPlace) return;
+    // The tabs' own block and the box they fold by (placeBox): a column that
+    // changes width can change which box that is.
+    const vertical = this.getAttribute('type') === 'vertical';
+    const root = vertical ? this.querySelector(':scope > .sf-tabs') : null;
+    const place = vertical ? (this.placeBox() || this.parentElement) : null;
+    if (place === this._watchedPlace && root === this._watchedRoot) return;
     this._placeObserver.disconnect();
     this._watchedPlace = place;
+    this._watchedRoot = root;
     if (place) this._placeObserver.observe(place);
+    if (root && root !== place) this._placeObserver.observe(root);
   }
 
   // The look drawn (C96 item 1): line unless pills or vertical; vertical on a
