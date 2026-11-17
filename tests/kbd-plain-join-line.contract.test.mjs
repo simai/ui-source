@@ -27,5 +27,5 @@ test('the plain join has the plain keys\' line', () => {
     assert.match(rule, /display: inline;/u);
     assert.match(rule, /line-height: 1;/u);
   }
-  assert.equal(passport.version, '1.6.1'); // group build 9: 1.5.1 moved on by the merged branches or a GB9 patch // C282: 1.5.2 moved on by the language-file patch (Russian is a language file)
+  assert.equal(passport.version, '1.7.0'); // group build 9: 1.5.1 moved on by the merged branches or a GB9 patch // C282: 1.5.2 moved on by the language-file patch (Russian is a language file) // group build 11: 1.6.1 moved on by the merged branches or a GB11 merge (fix/c178-findings)
 });
