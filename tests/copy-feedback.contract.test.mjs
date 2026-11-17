@@ -3,6 +3,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {russianWords} from './support/russian-language-file.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
@@ -22,7 +23,9 @@ function recorder(duration = 30) {
 test('the words are sf-button-copy\'s, in both languages', async () => {
   for (const locale of ['en', 'ru']) {
     const words = JSON.parse(await read(`src/smart/button-copy/lang/${locale}.json`)).runtime;
-    for (const key of ['copy', 'copied', 'failed', 'selected']) assert.equal(WORDS[locale][key], words[key], `${locale}.${key}`);
+    // English is built in; Russian is core's language file (C282).
+    const own = locale === 'en' ? WORDS.en : russianWords('core/js/lang/copy');
+    for (const key of ['copy', 'copied', 'failed', 'selected']) assert.equal(own[key], words[key], `${locale}.${key}`);
   }
   assert.equal(DURATION, 2000);
   assert.deepEqual([...SOURCE_ERRORS].sort(), ['ambiguous_source', 'empty_source', 'missing_source', 'missing_target']);

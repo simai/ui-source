@@ -9,6 +9,7 @@ const rule = fs.readFileSync(new URL('../src/component/carousel/rule.js', import
 // Owner decision C247: until its removal (2027-01-01) .sf-carousel binds
 // through the slider adapter and gets the slider's accessibility and words.
 const slider = fs.readFileSync(new URL('../src/component/slider/js/_slider.js', import.meta.url), 'utf8');
+const sliderRu = JSON.parse(fs.readFileSync(new URL('../src/component/slider/lang/ru.json', import.meta.url), 'utf8'));
 const engine = fs.readFileSync(new URL('../src/component/swiper/js/index.js', import.meta.url), 'utf8');
 
 test('Carousel scopes Swiper and supports Loader-time insertion', () => {
@@ -24,7 +25,8 @@ test('Carousel exposes the WAI container and slide semantics', () => {
   // Region and slides in the page's language (RG-OT 10): the slider's words.
   assert.match(slider, /root\.setAttribute\('aria-roledescription', sliderWord\(root, 'carousel'\)\)/);
   assert.match(slider, /itemRoleDescriptionMessage: root\.dataset\.slideRoledescription \|\| sliderWord\(root, 'slide'\)/);
-  assert.match(slider, /position: '\{n\} из \{count\}'/);
+  // The slider's words are its language files' (C282: Russian is a language file).
+  assert.equal(sliderRu.runtime.position, '{n} из {count}');
   assert.match(engine, /slide\.setAttribute\('aria-hidden', String\(!visible\)\)/);
   assert.match(engine, /slide\.toggleAttribute\('inert', !visible/);
   assert.match(slider, /mainEl\.setAttribute\('aria-live', slider\.autoplay\?\.running \? 'off' : 'polite'\)/);

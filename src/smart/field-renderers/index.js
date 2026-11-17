@@ -1728,7 +1728,7 @@ function renderChoicesEdit(field, value, host) {
 // the host supplies them and the Russian is only the fallback -- the same
 // arrangement as `booleanWords`, and the same reason. A host that passes nothing
 // keeps exactly what was published.
-const SET_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const SET_TEXT = LANG_WORDS;
 
 // The host's word wins, as it always did; the set's own fallback now follows
 // the page's language instead of being Russian whatever the page is. `host` is

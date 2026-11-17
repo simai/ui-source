@@ -1,0 +1,48 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 28,
+    "translated": 28,
+    "share": 100
+  },
+  "words": {
+    "sf-settings": {
+      "label": "Настройки",
+      "hue-red": "Красный",
+      "hue-orange": "Оранжевый",
+      "hue-amber": "Янтарный",
+      "hue-yellow": "Жёлтый",
+      "hue-lime": "Лайм",
+      "hue-green": "Зелёный",
+      "hue-teal": "Бирюзовый",
+      "hue-cyan": "Голубой",
+      "hue-sky": "Небесный",
+      "hue-blue": "Синий",
+      "hue-indigo": "Индиго",
+      "hue-violet": "Фиолетовый",
+      "hue-purple": "Пурпурный",
+      "hue-pink": "Розовый",
+      "hue-brown": "Коричневый",
+      "hue-gray": "Серый",
+      "own-color": "Свой цвет…",
+      "own-color-value": "Свой: {value}",
+      "close": "Закрыть",
+      "reset": "Сбросить",
+      "apply": "Применить",
+      "search": "Найти",
+      "empty": "Ничего не найдено",
+      "pin": "Закрепить",
+      "unpin": "Открепить",
+      "move-hint": "Alt и стрелки вверх и вниз меняют порядок",
+      "position": "{text}: {index} из {count}"
+    }
+  }
+}

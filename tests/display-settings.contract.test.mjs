@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {russianWords} from './support/russian-language-file.mjs';
 
 // The display settings (owner decision C196, 2026-11-15): core
 // (core/js/display-settings.js, core/scss/_sf_css__display.scss) and the panel
@@ -33,7 +34,9 @@ test('no component background or edge is reset with !important', () => {
 
 test('the words core says are the panel\'s', () => {
   for (const locale of ['ru', 'en']) {
-    assert.equal(settings.WORDS[locale]['skip-link-text'], lang[locale].runtime['skip-link-text'], locale);
+    // English is built in; Russian is core's language file (C282).
+    const own = locale === 'en' ? settings.WORDS.en : russianWords('core/js/lang/skip-link');
+    assert.equal(own['skip-link-text'], lang[locale].runtime['skip-link-text'], locale);
     for (const name of settings.SCHEMES) assert.ok(lang[locale].runtime[`scheme-${name}`], `${locale} names ${name}`);
   }
   assert.deepEqual(Object.keys(lang.ru.runtime).sort(), Object.keys(lang.en.runtime).sort());

@@ -1,0 +1,35 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 19,
+    "translated": 19,
+    "share": 100
+  },
+  "words": {
+    "sf-slider": {
+      "next": "Следующий слайд",
+      "previous": "Предыдущий слайд",
+      "label": "Слайды",
+      "carousel": "карусель",
+      "slide": "слайд",
+      "position": "{n} из {count}",
+      "pause": "Остановить прокрутку",
+      "play": "Запустить прокрутку",
+      "thumb": "Перейти к слайду {n}"
+    },
+    "sf-slider-range": {
+      "from": "от",
+      "to": "до",
+      "from-label": "{name}, от",
+      "to-label": "{name}, до"
+    }
+  }
+}

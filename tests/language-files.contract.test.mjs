@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import test from 'node:test';
+import { loadRussian } from './support/russian-language-file.mjs';
 import { languageCoverage, languageFolders } from '../scripts/language-coverage.mjs';
 import { language, localeText, pageWord } from '../src/core/js/page-language.js';
 import { fileSizeUnits, formatFileSize } from '../src/core/js/format-file-size.js';
@@ -68,6 +69,7 @@ test('LC-3: file-size units are language-file words; a product adds a language f
     assert.equal(formatFileSize(2048, { locale: 'de' }).replace(/\s/gu, ' '), '2 KB');
   } finally {
     language.forget();
+    loadRussian();
   }
 });
 

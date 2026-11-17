@@ -321,13 +321,13 @@ test('BC-07, BC-09: the class runtime reads the list form and prints no utility 
 
 test('the manifest names the new setting and the new default', async () => {
   const manifest = JSON.parse(await read('src/smart/breadcrumbs/component.json'));
-  assert.equal(manifest.version, '1.2.7'); // above every branch's 1.2.3; group build 5 patch above 1.2.4 // group build 7: the patch for moved files (the line had 1.2.5) // group build 9: 1.2.6 moved on by the merged branches or a GB9 patch
+  assert.equal(manifest.version, '1.2.8'); // above every branch's 1.2.3; group build 5 patch above 1.2.4 // group build 7: the patch for moved files (the line had 1.2.5) // group build 9: 1.2.6 moved on by the merged branches or a GB9 patch // C282: 1.2.7 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(manifest.settings.current.values, ['last', 'none']);
   assert.equal(manifest.settings.current.default, 'last');
   assert.equal(manifest.settings['max-items'].default, 0);
   assert.equal(manifest.settings.siblings.default, false);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-menu-context' && relation.lazy === true));
   const passport = JSON.parse(await read('src/component/breadcrumbs/passport.json'));
-  assert.equal(passport.version, '1.2.0'); // above every branch's 1.1.6 (register smart-2) // C212 focus offsets // group build 9: 1.1.8 moved on by the merged branches or a GB9 patch
+  assert.equal(passport.version, '1.3.1'); // above every branch's 1.1.6 (register smart-2) // C212 focus offsets // group build 9: 1.1.8 moved on by the merged branches or a GB9 patch // C282: 1.2.0 moved on by the language-file patch (Russian is a language file)
   assert.ok(passport.files.includes('src/component/breadcrumbs/js/_trail.js'));
 });

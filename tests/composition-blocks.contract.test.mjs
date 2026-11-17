@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import test from 'node:test';
+import './support/russian-language-file.mjs';
 import vm from 'node:vm';
 
 import { BREAKPOINTS } from '../src/core/js/breakpoints.js';

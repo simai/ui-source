@@ -47,21 +47,25 @@ function packProblems(pack, schema) {
 }
 
 
-test('C177 (1)(3), C278: the Framework packs are written by the script and current; none ships now', () => {
+test('C177 (1)(3), C278, C282: the Framework packs are written by the script and current; Russian is the one that ships', () => {
   execFileSync(process.execPath, ['scripts/build-language-packs.mjs', '--check'], {cwd: new URL('..', import.meta.url)});
-  assert.deepEqual(packLanguages(), []);
+  assert.deepEqual(packLanguages(), ['ru']);
   const index = json('src/core/lang/index.json');
-  assert.deepEqual([index.schema, index.schema_version, index.delivery, index.languages], ['simai.language-pack-index', 1, 'framework', []]);
+  assert.deepEqual([index.schema, index.schema_version, index.delivery, index.languages], ['simai.language-pack-index', 1, 'framework', ['ru']]);
   // A part's family is its component's family (C177 follow-up #46): the map
   // the next pack is split by.
   const families = packFamilies();
   assert.equal(families.get('sf-input'), 'input');
   assert.equal(families.get('sf-pagination'), 'pagination');
-  // No language folder and no whole-language file is left in core/lang.
-  assert.deepEqual(readdirSync(new URL('../src/core/lang/', import.meta.url)).sort(), ['index.json', 'index.mjs']);
-  // ru and en are never packs: they are built into the components (C177 (2)).
+  // Russian is a language file (owner decision C282): its parts by family
+  // and its script form, included before core. English is built in and never
+  // a pack; no whole-language JSON file is written.
+  assert.deepEqual(readdirSync(new URL('../src/core/lang/', import.meta.url)).sort(), ['built-in.json', 'built-in.mjs', 'headers', 'index.json', 'index.mjs', 'ru', 'ru.js']);
+  assert.ok(existsSync(new URL('../src/core/lang/ru/core.json', import.meta.url)));
   assert.ok(!existsSync(new URL('../src/core/lang/ru.json', import.meta.url)));
   assert.ok(!existsSync(new URL('../src/core/lang/en.json', import.meta.url)));
+  assert.ok(!existsSync(new URL('../src/core/lang/en.js', import.meta.url)));
+  assert.deepEqual(json('src/core/lang/built-in.json').built_in, ['en'], 'the bundles say English only');
 });
 
 test('C177 (8): the pack is what the public schema says', () => {
@@ -197,11 +201,26 @@ test('C177 (1)(4): core fetches only the parts a page shows, only for a language
   };
   const settle = () => Promise.all([...globalThis.__sfPageLanguage.packs.pending.values()]);
   try {
-    for (const lang of ['ru', 'en', 'de', 'fr']) {
+    for (const lang of ['en', 'de', 'fr']) {
       install(lang, undefined, ['sf-change'], json('src/core/lang/index.json'));
       await settle();
       assert.deepEqual(fetched, [], `${lang}: nothing is asked (built in, or no Framework pack)`);
     }
+    // Russian is a language file (C282): a Russian page asks for core's part
+    // and the parts of what it shows...
+    install('ru', undefined, ['sf-change'], json('src/core/lang/index.json'));
+    await settle();
+    assert.deepEqual(fetched.sort(), [`${CDN}ru/change.json`, `${CDN}ru/core.json`]);
+    // ...and nothing once its script form, core/lang/ru.js, came before core.
+    install('ru', undefined, ['sf-change'], json('src/core/lang/index.json'));
+    const {loadRussian} = await import('./support/russian-language-file.mjs');
+    language.forget();
+    loadRussian();
+    fetched = [];
+    installLanguagePacks({root: 'https://cdn.test/distr/core/', again: true, packs: json('src/core/lang/index.json'), fetchJson: async (url) => { fetched.push(url); return null; }});
+    await settle();
+    assert.deepEqual(fetched, [], 'ru.js is here: nothing is asked');
+    assert.equal(pageWord({en: {'show-text': 'Show changes'}}, 'show-text', {closest: () => ({getAttribute: () => 'ru'}), tagName: 'SF-CHANGE'}), JSON.parse(read('src/smart/change/lang/ru.json')).runtime['show-text']);
     // A German page over the made-up index: core's words and the families of the elements already
     // in the document, nothing else.
     install('de', undefined, ['sf-change', 'sf-pagination']);

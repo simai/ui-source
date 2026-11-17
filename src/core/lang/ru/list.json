@@ -1,0 +1,155 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 87,
+    "translated": 87,
+    "share": 100
+  },
+  "words": {
+    "sf-list": {
+      "actions-label": "Действия: {text}",
+      "count-label": {
+        "one": "{n} непрочитанное",
+        "few": "{n} непрочитанных",
+        "many": "{n} непрочитанных",
+        "other": "{n} непрочитанного"
+      },
+      "empty-text": "Здесь пока пусто",
+      "label": "Список",
+      "loading-more-text": "Загружаю…",
+      "loading-text": "Загружаю список",
+      "more-text": "Показать ещё",
+      "pinned-text": "Закреплённые",
+      "rename-label": "Новое название",
+      "rename-text": "Переименовать",
+      "undated-text": "Без даты",
+      "ungrouped-text": "Другое",
+      "unread-text": "не прочитано",
+      "untitled-text": "Без названия"
+    },
+    "sf-list-attention": {
+      "label": "Требует внимания",
+      "empty-text": "Всё в порядке",
+      "empty-checked-text": "{text} · проверено {when}",
+      "status-error": "Ошибка",
+      "status-warning": "Предупреждение",
+      "status-info": "Сведения",
+      "status-success": "Готово",
+      "status-passed": "Пройдено",
+      "summary-error": {
+        "one": "{n} ошибка",
+        "few": "{n} ошибки",
+        "many": "{n} ошибок",
+        "other": "{n} ошибки"
+      },
+      "summary-warning": {
+        "one": "{n} предупреждение",
+        "few": "{n} предупреждения",
+        "many": "{n} предупреждений",
+        "other": "{n} предупреждения"
+      },
+      "summary-info": {
+        "one": "{n} рекомендация",
+        "few": "{n} рекомендации",
+        "many": "{n} рекомендаций",
+        "other": "{n} рекомендации"
+      },
+      "summary-success": {
+        "one": "{n} решена",
+        "few": "{n} решены",
+        "many": "{n} решено",
+        "other": "{n} решено"
+      },
+      "group-error": "Ошибки",
+      "group-warning": "Предупреждения",
+      "group-info": "Рекомендации",
+      "group-success": "Решено",
+      "group-passed": "Пройдено",
+      "affected-text": "затронуто: {text}",
+      "age-now": "только что",
+      "age-minutes": "{n} мин",
+      "age-hours": "{n} ч",
+      "age-days": {
+        "one": "{n} день",
+        "few": "{n} дня",
+        "many": "{n} дней",
+        "other": "{n} дня"
+      },
+      "checked-text": "Проверено {when}",
+      "checked-now": "только что",
+      "checked-minutes": "{n} мин назад",
+      "checked-time": "в {time}",
+      "checked-date": "{date} в {time}",
+      "recheck-label": "Проверить снова",
+      "more-text": "Все проблемы ({n})",
+      "show-all-text": "Показать все ({n})",
+      "more-label": "Ещё: {title}",
+      "snooze-day-text": "Отложить на день",
+      "snooze-week-text": "Отложить на неделю",
+      "dismiss-text": "Не напоминать",
+      "help-text": "Подробнее о проверке",
+      "snoozed-day-notice": "Отложено на день: {title}",
+      "snoozed-week-notice": "Отложено на неделю: {title}",
+      "dismissed-notice": "Больше не напомним: {title}",
+      "undo-text": "Вернуть"
+    },
+    "sf-list-description": {
+      "empty-text": "Не указан",
+      "copy": "Скопировать: {label}",
+      "action": "{action}: {label}",
+      "help": "Подробнее: {label}",
+      "status-success": "В порядке",
+      "status-warning": "Предупреждение",
+      "status-error": "Ошибка",
+      "status-info": "Сведения"
+    },
+    "sf-list-feed": {
+      "earlier-text": "Показать предыдущие",
+      "empty-text": "Записей пока нет",
+      "latest-label": "К последней записи",
+      "loading-earlier-text": "Загружаю предыдущие записи",
+      "new-text": "Новые",
+      "log-label": "Записи",
+      "region-label": "Лента",
+      "you-text": "Вы"
+    },
+    "sf-list-timeline": {
+      "empty-text": "Событий пока нет",
+      "more": "Показать ещё",
+      "loading": "Загружаем…",
+      "today": "Сегодня",
+      "yesterday": "Вчера",
+      "tomorrow": "Завтра",
+      "status-success": "Готово",
+      "status-warning": "Предупреждение",
+      "status-error": "Ошибка",
+      "status-info": "Сведения",
+      "state-done": "Пройдено",
+      "state-current": "Сейчас",
+      "state-upcoming": "Впереди",
+      "step-status-success": "успешно",
+      "step-status-warning": "с предупреждением",
+      "step-status-error": "с ошибкой",
+      "run-changes": {
+        "one": "Ещё {n} изменение",
+        "few": "Ещё {n} изменения",
+        "many": "Ещё {n} изменений",
+        "other": "Ещё {n} изменения"
+      },
+      "run-events": {
+        "one": "Ещё {n} событие",
+        "few": "Ещё {n} события",
+        "many": "Ещё {n} событий",
+        "other": "Ещё {n} события"
+      }
+    }
+  }
+}

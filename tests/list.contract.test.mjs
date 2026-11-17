@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.20.2'], ['list-feed', 'sf-list-feed', '1.4.1']]) { // group build 7: list-feed's patch for moved files // group build 8: both patched for the C185 dot sheet in their first-paint sheet lists
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.21.1'], ['list-feed', 'sf-list-feed', '1.5.1']]) { // C282: both patched for the language file // group build 7: list-feed's patch for moved files // group build 8: both patched for the C185 dot sheet in their first-paint sheet lists
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -185,7 +185,7 @@ test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text,
 
 test('owner decision C148: the list row -- end column, one Tab stop with arrows into its controls, no lines but divided, one line or lines="2", long press', () => {
   const item = json('src/smart/list-item/component.json');
-  assert.equal(item.version, '1.6.1'); // group build 7: the patch for moved files (the line had 1.6.0)
+  assert.equal(item.version, '1.6.2'); // group build 7: the patch for moved files (the line had 1.6.0) // C282: 1.6.1 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual([item.settings.divided.type, item.settings.divided.default], ['boolean', false]);
   assert.deepEqual([item.settings.lines.values, item.settings.lines.default], [['1', '2'], '1']);
   const list = json('src/smart/list/component.json');

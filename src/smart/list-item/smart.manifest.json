@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list-item",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "title": "List item",
   "summary": "A row: an option sf-dropdown captures, or the general list row -- a supporting line, a row a person acts on, an item of an sf-sortable list, a pinned row.",
   "kind": "smart",
@@ -355,7 +355,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-item/index.js",
-        "sha256": "eb722d6e0d78a8f0f5a8187548d22736e04c49a6fb42021057600ad3b179b50a"
+        "sha256": "b6332ce1223a3678e3e0cfc25fd9cecef1001c8ebabaadc33b0f063b03b653aa"
       }
     ],
     "generated_runtime": [

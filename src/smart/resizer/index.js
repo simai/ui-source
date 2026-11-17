@@ -15,12 +15,11 @@ import {installAliases} from '../../core/js/aliases.js';
 import BundledPreferences from '../../core/js/preferences.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 import './scss/index.scss';
 
 // The words are lang/<locale>.json, read through the shared reader, so
@@ -54,7 +53,7 @@ class ResizerHost extends HTMLElement {
 
 // From its component.json: settings are attributes and properties made by
 // core/js/element-manifest.js; sf-resize is a dated alias of sf-resizer-resize.
-const ResizerElement = elementFromManifest(manifest, {base: ResizerHost, lang: {en, ru}, source: 'ru', aliases});
+const ResizerElement = elementFromManifest(manifest, {base: ResizerHost, lang: languageFiles, source: 'ru', aliases});
 
 // A CSS length (tokens included) in pixels, read in the target's context.
 function pixels(value, context) {

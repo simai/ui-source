@@ -1,30 +1,11 @@
 import { tagSelector } from '../../../core/js/tag-aliases.js';
 import { pageText } from '../../../core/js/page-language';
 import { BREAKPOINTS } from '../../../core/js/breakpoints.js';
-
-// The words a slider says about itself (SL-5), for the class block; sf-slider
-// hands its own from lang/ through the root's attributes, which win. A product
-// adds a language with SF.language.register('sf-slider', code, words).
-const SLIDER_TEXT = {
-  en: {
-    label: 'Slides',
-    carousel: 'carousel',
-    slide: 'slide',
-    position: '{n} of {count}',
-    pause: 'Stop slides',
-    play: 'Start slides',
-    thumb: 'Go to slide {n}',
-  },
-  ru: {
-    label: 'Слайды',
-    carousel: 'карусель',
-    slide: 'слайд',
-    position: '{n} из {count}',
-    pause: 'Остановить прокрутку',
-    play: 'Запустить прокрутку',
-    thumb: 'Перейти к слайду {n}',
-  },
-};
+// The words a slider says about itself (SL-5), for the class block: lang/,
+// English built in, the other languages from a language file (C282);
+// sf-slider hands its own from its lang/ through the root's attributes, which
+// win. A product adds a language with SF.language.register('sf-slider', code, words).
+import SLIDER_TEXT from '../lang/index.mjs';
 
 const SLIDER_SELECTOR = '.sf-slider';
 // Up to seven slides are dots; from eight a counter «2 / 12» stands in their

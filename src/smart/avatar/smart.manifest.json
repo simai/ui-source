@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.8.1",
+  "version": "1.8.3",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional presence point or verification mark. By default a picture (role img with the name); a link with href, a native button as a menu's trigger; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
@@ -343,7 +343,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/avatar/index.js",
-        "sha256": "ac61b09fbfb1842a444065b495b8c2ec50b0b164835eb275e4dc3916e26c0d1f"
+        "sha256": "8aae94518542e8a4bd24eebc080634deb58207e235f35dbcc73372aae5d7e191"
       }
     ],
     "generated_runtime": [

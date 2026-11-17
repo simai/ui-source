@@ -11,7 +11,7 @@ import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
 // and no more.
-const FILE_UPLOAD_ITEM_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const FILE_UPLOAD_ITEM_TEXT = LANG_WORDS;
 
 
 const FILE_UPLOAD_SELECTOR = '.sf-file-upload';

@@ -58,5 +58,8 @@ test('C171 (4): one drop line, 2 px, one look', async () => {
 test('SO-1: items say they can be moved', async () => {
   const core = await read('src/core/js/composition/sortable.mjs');
   assert.match(core, /item\.setAttribute\('aria-roledescription', messages\(\)\.roledescription\)/);
-  assert.match(core, /roledescription: 'перемещаемый'/);
+  // Russian is sf-sortable's language file (C282), not the module's.
+  assert.match(core, /roledescription: 'draggable'/);
+  assert.doesNotMatch(core, /перемещаемый/);
+  assert.equal(JSON.parse(await read('src/smart/sortable/lang/ru.json')).runtime.roledescription, 'перемещаемый');
 });

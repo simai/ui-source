@@ -344,6 +344,7 @@ export function foldWords(value) {
   let folded = '';
   for (const unit of text(value)) {
     const lower = unit.toLowerCase();
+    // c282-allow: input parsing (ё is searched as е)
     folded += lower === 'ё' ? 'е' : lower.length === unit.length ? lower : unit;
   }
   return folded;

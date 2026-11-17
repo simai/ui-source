@@ -35,7 +35,6 @@ export const INHERITED_RESET_EVENT = 'sf-field-reset';
 // words with `inherited-text` and `reset-label`, or registers a language.
 export const INHERITED_TEXT = {
   en: {inherited: 'inherited', reset: 'Reset to inherited', described: 'Inherited: {value}'},
-  ru: {inherited: 'наследуется', reset: 'Сбросить к наследуемому', described: 'Наследуется: {value}'},
 };
 
 // Each control declares the three in its own props -- inherited-value,

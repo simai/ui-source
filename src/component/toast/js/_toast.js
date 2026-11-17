@@ -6,7 +6,7 @@ import { pageText } from '../../../core/js/page-language';
 // one place for every language, as the Smart components keep them.
 import LANG_WORDS from '../lang/index.mjs';
 
-const TOAST_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const TOAST_TEXT = LANG_WORDS;
 
 const TOAST_SELECTOR = '.sf-toast';
 const TOAST_BOUND_FLAG = 'sfToastBound';

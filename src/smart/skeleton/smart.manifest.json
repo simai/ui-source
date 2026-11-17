@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.skeleton",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "title": "Skeleton",
   "summary": "Decorative loading placeholder that reserves source-backed content geometry with semantic tokens and reduced-motion support.",
   "kind": "smart",
@@ -245,7 +245,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/skeleton/index.js",
-        "sha256": "dd20c27d4dc189de7d30c795d1b63368adab7a6c823e7eeda1979839e108fbee"
+        "sha256": "3917bb659b4738bd32fde4a1d588d042348f740f6dc10d85e11311e6197b457d"
       },
       {
         "path": "src/smart/skeleton/js/templates/default.js",

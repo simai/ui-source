@@ -21,7 +21,7 @@ test('C244: the single theme button shows the theme on screen, says the next, ha
   assert.match(js, /removeAttribute\('aria-pressed'\)/u);
   assert.doesNotMatch(js, /setAttribute\('aria-pressed'/u);
   assert.equal(json('src/component/theme/lang/ru.json').runtime['cycle-next'], '{name}. Нажмите — {next}');
-  assert.equal(json('src/component/theme/passport.json').version, '1.3.0');
+  assert.equal(json('src/component/theme/passport.json').version, '1.3.1'); // C282: 1.3.0 moved on by the language-file patch (Russian is a language file)
 });
 
 test('OT 27: a hide-show pair shows one button before its script', () => {
@@ -49,7 +49,7 @@ test('OT 35: the sf-scrollbar root draws the ring its viewport cannot', () => {
   const sheet = read('src/component/scrollbar/scss/_css__scrollbar.scss');
   assert.match(sheet, /\.sf-scrollbar__viewport:focus-visible \{\s*outline: none;\s*\}/u);
   assert.match(sheet, /\.sf-scrollbar:has\(> \.sf-scrollbar__viewport:focus-visible\) \{\s*outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\s*outline-offset: var\(--sf-focus--offset\);/u);
-  assert.equal(json('src/component/scrollbar/passport.json').version, '1.4.2');
+  assert.equal(json('src/component/scrollbar/passport.json').version, '1.5.1'); // C282: 1.4.2 moved on by the language-file patch (Russian is a language file)
 });
 
 test('OT 36: Firefox keeps a coloured page bar', () => {

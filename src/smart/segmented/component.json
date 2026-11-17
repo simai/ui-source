@@ -2,7 +2,7 @@
   "$comment": "The source of sf-segmented's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/button-group (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/button-group/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.segmented",
   "tag": "sf-segmented",
-  "version": "1.6.4",
+  "version": "1.6.6",
   "kind": "leaf",
   "family": "segmented",
   "settings": {
@@ -433,7 +433,8 @@
     "version 1.6.1 (2026-11-14, group build 5; numbered above 1.6.0 on origin/fix/accent-section-buttons): a patch, its own code unchanged: the passport family is the first word of the tag (C174, NM-5; fix/sets-step-1); 2 first-paint snapshot file(s) follow the merged markup (fix/icons-c151).",
     "version 1.6.2 (2026-11-14, first paint; written on fix/first-paint-fp as 1.6.1, renumbered above group build 5's 1.6.1 patch; found by tools/first-paint/print.mjs, ui-control evidence 2026-11-14-first-paint-print; component.button-group 1.4.1): a patch, no new look. The selected option is highlighted in the printed first paint: the print kept the track's data-plate but not the plate's measured place, so the option was clear and the plate had no size until the element measured it; the sheet now applies the plate only to a track that is not printed markup (data-sf-static), and there the option paints the plate itself, as the template always meant. The plate's first placement is measured at once and shown a frame later, at its place (the option paints the same fill meanwhile): shown in the frame it was first placed, the browser counted a layout shift on every hydration (0.0009 at 1440, 0.0035 at 390). A new choice slides as before. Markup, settings, values, events and keys unchanged.",
     "version 1.6.3 (2026-11-15; numbered above 1.6.2 of group build 7): a patch. The buttons look tells its sf-button items the button set's current scheme name: scheme=\"secondary\" reaches the selected button as on-surface, sf-button's name for it (C116), so sf-button no longer says its former name secondary in the console on every page with such a group. The button drew as on-surface already (sf-button 1.14.0), so nothing looks different. The track look keeps secondary (a segment colour in core). Settings, values, events and keys unchanged.",
-    "version 1.6.4 (FM-9): the folded dropdown writes appearance=\"bordered\", the field look's name since sf-dropdown 1.18.0; it draws as before."
+    "version 1.6.4 (FM-9): the folded dropdown writes appearance=\"bordered\", the field look's name since sf-dropdown 1.18.0; it draws as before.",
+    "version 1.6.6 (2026-11-17, feat/lang-file-c282; numbered above 1.6.5 on origin/fix/utilities-c264): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged."
   ],
   "x-registry": {
     "capabilities": [

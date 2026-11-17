@@ -17,7 +17,7 @@ function element(attrs, value) {
   }
   class FakeFormData { constructor() { this.entries = []; } append(name, part) { this.entries.push([name, part]); } }
   const context = vm.createContext({SfBaseElement: Base, HTMLElement: class {}, FormData: FakeFormData, elementFromManifest: (manifest, {base}) => base,
-    manifest: {}, aliases: {}, en: {}, ru: {}, setRangeSliderValue() {}, getRangeSliderValue: () => value});
+    manifest: {}, aliases: {}, languageFiles: {en: {}}, setRangeSliderValue() {}, getRangeSliderValue: () => value});
   vm.runInContext(`${source.slice(source.indexOf('function serializeValue'), source.indexOf("SfRangeSlider.define('sf-slider-range');"))}\nglobalThis.Slider=SfRangeSlider;`, context);
   const slider = new context.Slider();
   slider.attrs = attrs;

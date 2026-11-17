@@ -65,9 +65,11 @@ const LEGACY_DETAIL = {
 };
 
 const MESSAGES = {
-  ru: { picked: 'Перемещение: {label}. Стрелки выбирают место, Enter — положить, Escape — отменить.', cancelled: 'Перемещение отменено.', tree: 'Структура страницы', toolbar: 'Действия', insert: 'Вставить', insertAt: 'Вставить в «{slot}», позиция {index}', position: '{index} из {total}', selected: 'Выбрано: {label}', editing: 'Редактирование: {label}. Enter — сохранить, Escape — отменить.', more: 'Ещё', insertAfter: 'Вставить после «{label}»', dropped: 'Перемещено: {label}. {place}.' },
   en: { picked: 'Moving {label}. Arrows choose a place, Enter drops, Escape cancels.', cancelled: 'Move cancelled.', tree: 'Page structure', toolbar: 'Actions', insert: 'Insert', insertAt: 'Insert into “{slot}”, position {index}', position: '{index} of {total}', selected: 'Selected: {label}', editing: 'Editing {label}. Enter saves, Escape cancels.', more: 'More', insertAfter: 'Insert after “{label}”', dropped: 'Moved {label}. {place}.' },
 };
+
+const dashed = (key) => key.replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`);
+const DASHED_MESSAGES = { en: Object.fromEntries(Object.entries(MESSAGES.en).map(([key, word]) => [dashed(key), word])) };
 
 const ACTION_ID = /^[a-z][a-z0-9-]{0,63}$/u;
 const ACTION_KEYS = new Set(['id', 'label', 'icon', 'shortcut', 'disabled', 'tone', 'priority']);
@@ -387,8 +389,11 @@ export function defineCompositionOverlay(registry = globalThis.customElements, {
     }
 
     get messages() {
-      // In the page's language through pageText, as every component's words are.
-      const words = Object.fromEntries(Object.keys(MESSAGES.en).map((key) => [key, pageText(MESSAGES, key, this, 'sf-editor-overlay')]));
+      // In the page's language through pageText, as every component's words
+      // are: English here, any other language the words its language file
+      // registered for sf-editor-overlay (C282), whose keys are dashed
+      // (insert-at for insertAt).
+      const words = Object.fromEntries(Object.keys(MESSAGES.en).map((key) => [key, pageText(DASHED_MESSAGES, dashed(key), this, 'sf-editor-overlay')]));
       return { ...words, ...(this.customMessages || {}) };
     }
 

@@ -23,10 +23,8 @@
 // [lang] above a combination.
 import {isApplePlatform, shortcutView} from './shortcut.js';
 import {spokenText} from './spoken.js';
-import en from '../lang/en.json';
-import ru from '../lang/ru.json';
+import WORDS from '../lang/index.mjs';
 
-const WORDS = {en: en.runtime, ru: ru.runtime};
 const SELECTOR = 'kbd[data-sf-shortcut]';
 const ATTRIBUTE = 'data-sf-shortcut';
 // Read, never seen; inline as well, so the words take no room before the

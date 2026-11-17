@@ -34,12 +34,11 @@ import {formatLocale, intlFormatter} from '../../core/js/format-intl.js';
 import {language} from '../../core/js/page-language.js';
 import {renderTimeTemplate} from './js/templates/default';
 import manifest from './component.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 import './scss/index.scss';
 
 export const FORMATS = ['auto', 'time', 'date', 'datetime', 'relative'];
@@ -327,7 +326,7 @@ export function msUntilWordsChange(said, {now = Date.now(), threshold = HOUR, ti
 
 const TimeElement = elementFromManifest(manifest, {
   base: SfBaseElement,
-  lang: {en, ru},
+  lang: languageFiles,
   source: 'ru',
 });
 
@@ -387,7 +386,7 @@ class SfTime extends TimeElement {
     const wanted = formatLocale({node: this}).toLowerCase().replace('_', '-');
     const registered = globalThis.__sfPageLanguage?.registered?.get?.('sf-time');
     for (const code of [...new Set([wanted, wanted.split('-')[0]])]) {
-      const own = registered?.get?.(code)?.[key] ?? {ru, en}[code]?.runtime?.[key];
+      const own = registered?.get?.(code)?.[key] ?? languageFiles[code]?.runtime?.[key];
       if (typeof own === 'string' && own.trim()) return this.sfWord(key);
     }
     return null;

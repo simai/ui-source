@@ -21,7 +21,7 @@ test('slider: the arrow pair is a row 8 apart', () => {
   const arrows = rule(read('src/component/slider/scss/_css__slider_arrows.scss'), '.sf-slider-arrows');
   assert.match(arrows, /display: inline-flex;/u);
   assert.match(arrows, /gap: var\(--sf-space-1\\\/3\);/u);
-  assert.equal(JSON.parse(read('src/component/slider/passport.json')).version, '1.3.3'); // group build 9: 1.3.2 moved on by the merged branches or a GB9 patch
+  assert.equal(JSON.parse(read('src/component/slider/passport.json')).version, '1.4.1'); // group build 9: 1.3.2 moved on by the merged branches or a GB9 patch // C282: 1.3.3 moved on by the language-file patch (Russian is a language file)
 });
 
 test('tree: the chevron is mirrored right to left', () => {

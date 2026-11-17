@@ -14,7 +14,7 @@ import LANG_WORDS from '../lang/index.mjs';
 // (data-mode="thin flush"). The modes of C208 and before are dated aliases
 // until 2027-01-01: overlay and standard are the default now, persistent is
 // always (journal component-c210-scrollbar-modes).
-const SCROLLBAR_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const SCROLLBAR_TEXT = LANG_WORDS;
 const ROOT_SELECTOR = '.sf-scrollbar';
 const VIEWPORT_SELECTOR = '.sf-scrollbar__viewport';
 export const MODES = Object.freeze(['always', 'thin', 'flush', 'square', 'hidden']);

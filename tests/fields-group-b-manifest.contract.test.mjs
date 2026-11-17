@@ -33,7 +33,7 @@ for (const [folder, spec] of Object.entries(COMPONENTS)) {
 
   test(`${folder}: the element is made from its component.json, language files and aliases`, () => {
     const source = read(`${base}/index.js`);
-    for (const file of ['./component.json', './aliases.json', './lang/en.json', './lang/ru.json']) {
+    for (const file of ['./component.json', './aliases.json', './lang/index.mjs']) {
       assert.ok(source.includes(`from '${file}'`), `${folder} imports ${file}`);
     }
     assert.match(source, /elementFromManifest\(manifest, \{/u);

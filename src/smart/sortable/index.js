@@ -11,19 +11,18 @@ import { SORTABLE_INSERT_EVENT, inserterRegistry } from '../../core/js/compositi
 import { manifestHost } from '../../core/js/composition/manifest-host.mjs';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 import './scss/index.scss';
 
 import { moveMenuRegistry } from '../../core/js/composition/sortable-move-menu.mjs';
 // Defined with its insertion point and inserter (inserter-items, opt-in) and
 // the handle's move menu (C171 (1)). They come with this bundle only: the
 // composition overlay carries the drag module too and has no use for them.
-defineSortable(moveMenuRegistry(inserterRegistry()), {base: manifestHost(manifest, {lang: {en, ru}, source: 'ru', aliases})});
+defineSortable(moveMenuRegistry(inserterRegistry()), {base: manifestHost(manifest, {lang: languageFiles, source: 'ru', aliases})});
 
 globalThis.SF = globalThis.SF || {};
 // attach: sf-sortable's pointer behaviour on any container (the column mode).

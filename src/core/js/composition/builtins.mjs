@@ -20,6 +20,21 @@ const SECTION_DEFAULTS = Object.freeze({ width: 'normal', padding_y: 8 });
 const GRID_DEFAULTS = Object.freeze({ columns: 3, gap: 5 });
 const CONTAINER_DEFAULTS = Object.freeze({ width: 'narrow' });
 const catalogueWord = (type) => `sf.composition.catalogue.type.${type.replace('.', '_').replaceAll('-', '_')}`;
+// The catalogue's search words (owner decision C282): English here; Russian
+// is the words the ru language file registered for sf-composition (its editor
+// part, sf.composition.catalogue.keywords.<type>, the words joined by commas),
+// read when they are asked, so a catalogue built after the file arrived
+// finds «сетка». Empty until then.
+const catalogueKeywords = (type, en) => {
+  const key = `sf.composition.catalogue.keywords.${type.replace('.', '_').replaceAll('-', '_')}`;
+  return Object.freeze(Object.defineProperty({ en: Object.freeze([...en]) }, 'ru', {
+    enumerable: true,
+    get: () => {
+      const word = globalThis.__sfPageLanguage?.registered?.get?.('sf-composition')?.get?.('ru')?.[key];
+      return typeof word === 'string' ? word.split(',').map((one) => one.trim()).filter(Boolean) : [];
+    },
+  }));
+};
 const variantWord = (type, id) => `sf.composition.catalogue.variant.${type.replace('.', '_').replaceAll('-', '_')}.${id.replaceAll('-', '_')}`;
 
 // Text runs, links of text runs, and since content.heading and
@@ -463,7 +478,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     parameter_sets: ['width', 'spacing', 'background', 'visibility'],
     parameter_defaults: CONTAINER_DEFAULTS,
     slots: { default: { min: 0, max: 500, categories: ['layout', 'content', 'smart'] } },
-    catalogue: { group: 'layout', icon: 'width_normal', label_key: catalogueWord('layout.container'), keywords: { en: ['container', 'width', 'wrapper'], ru: ['контейнер', 'ширина', 'обёртка'] }, order: 140 },
+    catalogue: { group: 'layout', icon: 'width_normal', label_key: catalogueWord('layout.container'), keywords: catalogueKeywords('layout.container', ['container', 'width', 'wrapper']), order: 140 },
     variants: [
       { id: 'narrow', label_key: variantWord('layout.container', 'narrow') },
       { id: 'normal', label_key: variantWord('layout.container', 'normal'), props: { width: 'normal' } },
@@ -477,7 +492,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     parameter_sets: ['grid', 'visibility'],
     parameter_defaults: GRID_DEFAULTS,
     slots: { default: { min: 0, max: 48, categories: ['layout', 'content', 'smart'] } },
-    catalogue: { group: 'layout', icon: 'grid_on', label_key: catalogueWord('layout.grid'), keywords: { en: ['grid', 'tiles', 'gallery', 'cells'], ru: ['сетка', 'плитка', 'галерея', 'ячейки'] }, order: 150 },
+    catalogue: { group: 'layout', icon: 'grid_on', label_key: catalogueWord('layout.grid'), keywords: catalogueKeywords('layout.grid', ['grid', 'tiles', 'gallery', 'cells']), order: 150 },
     variants: [2, 3, 4].map((count) => ({
       id: `cards-${count}`,
       label_key: variantWord('layout.grid', `cards-${count}`),
@@ -493,7 +508,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     parameter_sets: ['visibility'],
     parameter_defaults: { size: 6 },
     slots: {},
-    catalogue: { group: 'layout', icon: 'height', label_key: catalogueWord('layout.spacer'), keywords: { en: ['spacer', 'space', 'gap'], ru: ['пустое место', 'отступ', 'промежуток'] }, order: 160 },
+    catalogue: { group: 'layout', icon: 'height', label_key: catalogueWord('layout.spacer'), keywords: catalogueKeywords('layout.spacer', ['spacer', 'space', 'gap']), order: 160 },
   }),
   // Elements (visual parity, 2026-11-04; G-20): the smart elements a block
   // prints, each a type of its own so an author places it anywhere a block
@@ -511,7 +526,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       icon: iconName,
       icon_position: { enum: ['start', 'end'], default: 'start' },
     }),
-    catalogue: { group: 'elements', icon: 'smart_button', label_key: catalogueWord('element.button'), keywords: { en: ['button', 'link', 'call to action', 'cta'], ru: ['кнопка', 'ссылка', 'призыв'] }, order: 100 },
+    catalogue: { group: 'elements', icon: 'smart_button', label_key: catalogueWord('element.button'), keywords: catalogueKeywords('element.button', ['button', 'link', 'call to action', 'cta']), order: 100 },
     variants: [
       { id: 'plain', label_key: variantWord('element.button', 'plain') },
       { id: 'icon', label_key: variantWord('element.button', 'icon'), props: { icon: 'arrow_forward', icon_position: 'end' } },
@@ -528,7 +543,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       scheme: { enum: ['primary', 'secondary', 'on-surface', 'on-surface-variant'], default: 'primary' },
       size: { enum: ['1/2', '1', '2'], default: '1' },
     }),
-    catalogue: { group: 'elements', icon: 'add_circle', label_key: catalogueWord('element.button-icon'), keywords: { en: ['icon button', 'icon', 'button'], ru: ['кнопка-значок', 'значок', 'иконка', 'кнопка'] }, order: 110 },
+    catalogue: { group: 'elements', icon: 'add_circle', label_key: catalogueWord('element.button-icon'), keywords: catalogueKeywords('element.button-icon', ['icon button', 'icon', 'button']), order: 110 },
   }),
   elementManifest('element.badge', 'smart/badge', {
     data_schema: closed({ text: plainText(120) }),
@@ -538,7 +553,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       size: { enum: ['1/3', '1/2', '1'], default: '1/2' },
       icon: iconName,
     }),
-    catalogue: { group: 'elements', icon: 'label', label_key: catalogueWord('element.badge'), keywords: { en: ['badge', 'tag', 'status', 'label'], ru: ['метка', 'бейдж', 'тег', 'статус'] }, order: 120 },
+    catalogue: { group: 'elements', icon: 'label', label_key: catalogueWord('element.badge'), keywords: catalogueKeywords('element.badge', ['badge', 'tag', 'status', 'label']), order: 120 },
   }),
   elementManifest('element.icon', 'smart/icon', {
     // The label names the icon for a screen reader; without it the icon only decorates.
@@ -547,7 +562,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       icon: { ...iconName, default: 'star' },
       size: { enum: ['1', '2', '3', '4', '5'], default: '2' },
     }),
-    catalogue: { group: 'elements', icon: 'star', label_key: catalogueWord('element.icon'), keywords: { en: ['icon', 'symbol', 'pictogram'], ru: ['значок', 'иконка', 'пиктограмма'] }, order: 130 },
+    catalogue: { group: 'elements', icon: 'star', label_key: catalogueWord('element.icon'), keywords: catalogueKeywords('element.icon', ['icon', 'symbol', 'pictogram']), order: 130 },
   }),
   // Forms (2026-11-04; the ui-editor host's G-20): a form and its fields,
   // each field one SIMAI Framework Smart element printed from its inputs
@@ -572,7 +587,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     renderer: { kind: 'builtin', name: 'form.form' },
     assets: [],
     capabilities: ['html'],
-    catalogue: { group: 'forms', icon: 'contact_mail', label_key: catalogueWord('form.form'), keywords: { en: ['form', 'request', 'contact', 'feedback'], ru: ['форма', 'заявка', 'обратная связь', 'контакты'] }, order: 100 },
+    catalogue: { group: 'forms', icon: 'contact_mail', label_key: catalogueWord('form.form'), keywords: catalogueKeywords('form.form', ['form', 'request', 'contact', 'feedback']), order: 100 },
     variants: [
       {
         id: 'request',
@@ -602,7 +617,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       required: { type: 'boolean', default: false },
       size: { enum: ['1/2', '1', '2'], default: '1' },
     }),
-    catalogue: { group: 'forms', icon: 'input', label_key: catalogueWord('form.input'), keywords: { en: ['field', 'input', 'text field', 'email', 'phone'], ru: ['поле', 'ввод', 'текстовое поле', 'почта', 'телефон'] }, order: 110 },
+    catalogue: { group: 'forms', icon: 'input', label_key: catalogueWord('form.input'), keywords: catalogueKeywords('form.input', ['field', 'input', 'text field', 'email', 'phone']), order: 110 },
   }),
   elementManifest('form.textarea', 'smart/input-textarea', {
     data_schema: closed({ label: plainText(200), placeholder: plainText(200), hint: plainText(300), name: fieldName }),
@@ -611,7 +626,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       required: { type: 'boolean', default: false },
       size: { enum: ['1/2', '1', '2'], default: '1' },
     }),
-    catalogue: { group: 'forms', icon: 'notes', label_key: catalogueWord('form.textarea'), keywords: { en: ['text area', 'message', 'comment', 'multiline'], ru: ['многострочное поле', 'сообщение', 'комментарий'] }, order: 120 },
+    catalogue: { group: 'forms', icon: 'notes', label_key: catalogueWord('form.textarea'), keywords: catalogueKeywords('form.textarea', ['text area', 'message', 'comment', 'multiline']), order: 120 },
   }),
   elementManifest('form.checkbox', 'smart/checkbox', {
     data_schema: closed({ label: plainText(300), hint: plainText(300), name: fieldName }),
@@ -619,7 +634,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       checked: { type: 'boolean', default: false },
       size: { enum: ['1/2', '1', '2'], default: '1' },
     }),
-    catalogue: { group: 'forms', icon: 'check_box', label_key: catalogueWord('form.checkbox'), keywords: { en: ['checkbox', 'agree', 'consent', 'tick'], ru: ['флажок', 'галочка', 'согласие'] }, order: 130 },
+    catalogue: { group: 'forms', icon: 'check_box', label_key: catalogueWord('form.checkbox'), keywords: catalogueKeywords('form.checkbox', ['checkbox', 'agree', 'consent', 'tick']), order: 130 },
   }),
   elementManifest('form.switch', 'smart/switch', {
     data_schema: closed({ label: plainText(300), hint: plainText(300), name: fieldName }),
@@ -627,7 +642,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       checked: { type: 'boolean', default: false },
       size: { enum: ['1/2', '1', '2'], default: '1' },
     }),
-    catalogue: { group: 'forms', icon: 'toggle_on', label_key: catalogueWord('form.switch'), keywords: { en: ['switch', 'toggle', 'on off'], ru: ['переключатель', 'вкл выкл'] }, order: 140 },
+    catalogue: { group: 'forms', icon: 'toggle_on', label_key: catalogueWord('form.switch'), keywords: catalogueKeywords('form.switch', ['switch', 'toggle', 'on off']), order: 140 },
   }),
   elementManifest('form.select', 'smart/dropdown', {
     // The options are words, one after another, separated by commas: what an
@@ -637,7 +652,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       required: { type: 'boolean', default: false },
       size: { enum: ['1/2', '1', '2'], default: '1' },
     }),
-    catalogue: { group: 'forms', icon: 'arrow_drop_down_circle', label_key: catalogueWord('form.select'), keywords: { en: ['select', 'dropdown', 'choice', 'list'], ru: ['список', 'выбор', 'выпадающий список'] }, order: 150 },
+    catalogue: { group: 'forms', icon: 'arrow_drop_down_circle', label_key: catalogueWord('form.select'), keywords: catalogueKeywords('form.select', ['select', 'dropdown', 'choice', 'list']), order: 150 },
   }),
   elementManifest('form.button-submit', 'smart/button', {
     // Unset, it reads «Send» in the Document's language.
@@ -646,7 +661,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
       appearance: { enum: ['default', 'tonal', 'outline'], default: 'default' },
       size: { enum: ['1/2', '1', '2'], default: '1' },
     }),
-    catalogue: { group: 'forms', icon: 'send', label_key: catalogueWord('form.button-submit'), keywords: { en: ['submit', 'send', 'button'], ru: ['отправить', 'кнопка отправки', 'кнопка'] }, order: 160 },
+    catalogue: { group: 'forms', icon: 'send', label_key: catalogueWord('form.button-submit'), keywords: catalogueKeywords('form.button-submit', ['submit', 'send', 'button']), order: 160 },
   }),
   // The root of a structured-content Document: the page's blocks in order,
   // under the page's title (the accepted content editor prototype writes

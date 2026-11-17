@@ -20,7 +20,7 @@ const rule = (selector, from = sheet) => {
 // 1.3.0 (C97 point 7) narrows the looks to cards, row and counter; steps and
 // course stay values until 2027-01-01 (tests/pager-c97.contract.test.mjs).
 test('version 1.3.3: the five values still parse, three are the component\'s looks', () => {
-  assert.equal(component.version, '1.3.7'); // group build 6: C181 (2) renumbered above the group build 5 patch // group build 8: 1.3.4 moved on by the merged branches or a GB8 patch // group build 9: 1.3.5 moved on by the merged branches or a GB9 patch
+  assert.equal(component.version, '1.4.1'); // group build 6: C181 (2) renumbered above the group build 5 patch // group build 8: 1.3.4 moved on by the merged branches or a GB8 patch // group build 9: 1.3.5 moved on by the merged branches or a GB9 patch // C282: 1.3.7 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(component.settings.appearance.values, ['cards', 'row', 'steps', 'course', 'counter']);
 });
 

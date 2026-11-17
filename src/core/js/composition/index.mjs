@@ -1,4 +1,6 @@
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS, CONTENT_ITEM_PARENTS } from './builtins.mjs';
+import ELEMENT_WORDS from '../lang/composition/index.mjs';
+import { localeText } from '../page-language.js';
 // The editor words are not part of core (localization study LC-1): the
 // runtime reads the installed words, SF.Composition.loadEditorWords() fetches
 // them. EDITOR_FIELD_WORDS here reads the installed words and starts loading
@@ -795,10 +797,9 @@ function renderMedia(node, slots) {
 
 // The words an element prints until the author writes its own, in the
 // Document's language (English when there is none for it).
-const ELEMENT_PLACEHOLDERS = Object.freeze({
-  en: { button: 'Button', badge: 'Badge', send: 'Send', field: 'Field', option: 'Option', name: 'Name', phone: 'Phone', email: 'Email', message: 'Message' },
-  ru: { button: 'Кнопка', badge: 'Метка', send: 'Отправить', field: 'Поле', option: 'Вариант', name: 'Имя', phone: 'Телефон', email: 'Почта', message: 'Сообщение' },
-});
+// core/js/lang/composition: English built in, the other languages from a
+// language file, registered for sf-composition (C282).
+const ELEMENT_PLACEHOLDERS = ELEMENT_WORDS;
 // The fields whose name has a word of its own when they have no label (forms, 2026-11-04).
 const NAMED_FIELDS = new Set(['name', 'phone', 'email', 'message']);
 const fieldLabel = (node, locale) => node.data?.label || placeholder(locale, NAMED_FIELDS.has(node.data?.name) ? node.data.name : 'field');
@@ -806,7 +807,7 @@ const fieldLabel = (node, locale) => node.data?.label || placeholder(locale, NAM
 const fieldBlock = (node, html) => (html ? `<div${id(node)}>${html}</div>` : '');
 // The options of a select: the words an author wrote, separated by commas.
 const optionList = (text) => [...new Set(String(text ?? '').split(',').map((word) => word.trim()).filter(Boolean))];
-const placeholder = (locale, key) => (ELEMENT_PLACEHOLDERS[String(locale || 'en').toLowerCase().split('-')[0]] || ELEMENT_PLACEHOLDERS.en)[key];
+const placeholder = (locale, key) => localeText(ELEMENT_PLACEHOLDERS, key, String(locale || 'en'), 'sf-composition');
 const defined = (inputs) => Object.fromEntries(Object.entries(inputs).filter(([, value]) => value !== undefined && value !== ''));
 // An element stands in a block of its own: the editor selects and the
 // utilities reach the block (sf-button's host is display: contents), the

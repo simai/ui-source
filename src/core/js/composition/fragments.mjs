@@ -1,4 +1,7 @@
 import { isPlainObject } from './canonical.mjs';
+import { localeText } from '../page-language.js';
+// English built in; the other languages from a language file (C282).
+import FRAGMENT_TEXT from '../lang/fragment/index.mjs';
 import { isSchema } from './schema-name.mjs';
 import { valueTypeEntry, valueTypeName } from './routing.mjs';
 
@@ -152,10 +155,6 @@ export function publishEffects(effects, {origin = null} = {}) {
 //   <sf-fragment data-sf-fragment="larena.file-manager" load-timeout="10000">
 //     <sf-file-manager ...></sf-file-manager>
 //   </sf-fragment>
-const FRAGMENT_TEXT = {
-  ru: {heading: 'Не удалось показать этот блок'},
-  en: {heading: 'This block could not be shown'},
-};
 
 export function defineFragmentBoundary(registry = globalThis.customElements) {
   if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
@@ -208,8 +207,8 @@ export function defineFragmentBoundary(registry = globalThis.customElements) {
     }
 
     text(key) {
-      const lang = (this.closest('[lang]')?.getAttribute('lang') || 'en').slice(0, 2);
-      return (FRAGMENT_TEXT[lang] ?? FRAGMENT_TEXT.en)[key];
+      const lang = this.closest('[lang]')?.getAttribute('lang') || 'en';
+      return localeText(FRAGMENT_TEXT, key, lang, 'sf-fragment');
     }
 
     fail(phase, message) {

@@ -16,7 +16,7 @@ const template = read('src/smart/language/js/templates/default.js');
 test('the manifest: a leaf of family language, a form field with one cancellable change and select', () => {
   assert.equal(manifest.tag, 'sf-language');
   assert.equal(manifest.family, 'language');
-  assert.equal(manifest.version, '1.5.0'); // fix/returns-gb67: TT-11, the trigger's name is the Framework tooltip // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2) // queue #70: the field look takes the dropdown of the same size
+  assert.equal(manifest.version, '1.5.2'); // fix/returns-gb67: TT-11, the trigger's name is the Framework tooltip // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2) // queue #70: the field look takes the dropdown of the same size // C282: 1.5.0 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'missing', 'home', 'mode', 'inline-max', 'search-from', 'labels', 'size', 'apply', 'remember', 'label', 'name', 'disabled']);
   assert.deepEqual(manifest.settings.mode.values, ['auto', 'inline', 'menu', 'search', 'field']);
   assert.deepEqual(manifest.settings.size.values, ['1/3', '1/2', '1', '2', '3']);

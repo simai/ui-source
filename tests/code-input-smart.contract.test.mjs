@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {russianWords} from './support/russian-language-file.mjs';
+// Russian is a language file (C282): read from lang/ru.json.
+const RU = russianWords('smart/input-code/lang');
 
 import {
   CODE_INPUT_TEXT,
@@ -127,15 +130,15 @@ test('code input: a pasted code fills every cell, a part goes in at the caret', 
 });
 
 test('code input: each cell is spoken by its place, in Russian and English', () => {
-  assert.equal(positionWords(CODE_INPUT_TEXT.ru.digit, 2, 6), 'цифра 3 из 6');
+  assert.equal(positionWords(RU.digit, 2, 6), 'цифра 3 из 6');
   assert.equal(positionWords(CODE_INPUT_TEXT.en.digit, 0, 4), 'digit 1 of 4');
-  assert.equal(positionWords(CODE_INPUT_TEXT.ru.character, 5, 6), 'символ 6 из 6');
+  assert.equal(positionWords(RU.character, 5, 6), 'символ 6 из 6');
   assert.equal(positionWords(CODE_INPUT_TEXT.en.character, 1, 8), 'character 2 of 8');
-  assert.deepEqual(Object.keys(CODE_INPUT_TEXT.ru), Object.keys(CODE_INPUT_TEXT.en));
+  assert.deepEqual(Object.keys(RU).sort(), Object.keys(CODE_INPUT_TEXT.en).sort());
   // The words the element says are its language files' (standard 1.3.8 §11),
   // the same as code.mjs keeps for these unit checks.
   assert.match(source, /text\(key\) \{\n    return this\.sfWord\(key\);/u);
-  for (const lang of ['ru', 'en']) assert.deepEqual(JSON.parse(read(`src/smart/input-code/lang/${lang}.json`)).runtime, CODE_INPUT_TEXT[lang], lang);
+  for (const lang of ['ru', 'en']) assert.deepEqual(JSON.parse(read(`src/smart/input-code/lang/${lang}.json`)).runtime, lang === 'ru' ? RU : CODE_INPUT_TEXT[lang], lang);
   // A digit for a numeric code or an alphabet of digits only (C82).
   assert.match(source, /this\.text\(this\.numeric \? 'digit' : 'character'\)/u);
 });

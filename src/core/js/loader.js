@@ -5017,9 +5017,58 @@ SFLoaderPlugin.prototype.preloadScript = function (pluginURL) {
   document.head.append(link);
 };
 
+// The page's language file while it is on its way (owner decision C282,
+// 2026-11-17). English is the only language built into the components; a page
+// in any other language takes its words from a language file. When the page
+// included its script form before core (core/lang/<code>.js) the words are
+// here and nothing waits. Otherwise core fetches the parts of the page's
+// language when it starts (core/js/language-packs.js), and a component whose
+// script ran before they arrived drew English first and the page's language a
+// moment later (study 2026-11-17: 9 of 9 loads at a 300 ms file). So the
+// scripts the Loader adds wait for those words, at most `languageWait` ms
+// (SF_BOOT_CONFIG.languageWait, 800 by default, 0 never waits); they are
+// preloaded meanwhile, so nothing is fetched later than without the wait.
+// Past the limit they run, say English and draw again when the words come.
+const LANGUAGE_WAIT_MS = 800;
+const languageHoldSince = new WeakMap();
+
+function languageWaitLimit() {
+  const configured = Number(globalThis.SF_BOOT_CONFIG?.languageWait);
+  return Number.isFinite(configured) && configured >= 0 ? configured : LANGUAGE_WAIT_MS;
+}
+
+/** A promise that settles when the page's language words are here (or the limit passes), or null when nothing is on its way. */
+function languageHold() {
+  const store = globalThis.__sfPageLanguage;
+  const pending = store?.packs?.pending;
+  if (!pending?.size) return null;
+  const limit = languageWaitLimit();
+  if (!limit) return null;
+  const root = globalThis.document?.documentElement;
+  const wanted = String(store.chosen || root?.getAttribute?.('lang') || '').trim().toLowerCase().replace('_', '-');
+  const waits = [...new Set([wanted, wanted.split('-')[0]])].filter(Boolean).map((code) => pending.get(code)).filter(Boolean);
+  if (!waits.length) return null;
+  const now = () => globalThis.performance?.now?.() ?? Date.now();
+  const holds = waits.map((words) => {
+    if (!languageHoldSince.has(words)) languageHoldSince.set(words, now());
+    const left = limit - (now() - languageHoldSince.get(words));
+    if (left <= 0) return null;
+    return Promise.race([
+      Promise.resolve(words).catch(() => null),
+      new Promise((resolve) => { setTimeout(resolve, left); }),
+    ]);
+  }).filter(Boolean);
+  return holds.length ? Promise.all(holds) : null;
+}
+
 SFLoaderPlugin.prototype.addScript = function (pluginURL, param = {}) {
   const src = this.versionAssetUrl(pluginURL);
-  return onceByUrl('scripts', src, () => this.insertScript(src, pluginURL, param));
+  return onceByUrl('scripts', src, () => {
+    const hold = languageHold();
+    if (!hold) return this.insertScript(src, pluginURL, param);
+    this.preloadScript(pluginURL);
+    return hold.then(() => this.insertScript(src, pluginURL, param));
+  });
 };
 
 SFLoaderPlugin.prototype.insertScript = function (src, pluginURL, param = {}) {

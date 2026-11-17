@@ -8,7 +8,11 @@ import {
   projectEditorFields,
   renderFieldFallback,
 } from '../src/core/js/composition/index.mjs';
-import { EDITOR_FIELD_WORDS, catalogueWordKeys, editorFieldKeys, editorFieldMessages, installEditorWords } from '../src/core/js/composition/editor-words.mjs';
+import { EDITOR_FIELD_WORDS as BUILT_IN_WORDS, catalogueWordKeys, editorFieldKeys, editorFieldMessages, fieldWords, installEditorWords } from '../src/core/js/composition/editor-words.mjs';
+import { loadRussian, russianWords } from './support/russian-language-file.mjs';
+// English is built in; Russian is core's language file (C282), read here as
+// the words contract carries it.
+const EDITOR_FIELD_WORDS = Object.freeze({ ...BUILT_IN_WORDS, ru: fieldWords(russianWords('core/js/lang/editor')) });
 import { language } from '../src/core/js/page-language.js';
 
 // simai/ui-source#65: a host that draws a parameters form from a built-in
@@ -70,6 +74,7 @@ test('a product registers a language or one word for sf-composition', () => {
     assert.equal(ru['sf.composition.content_figure.src'], 'Адрес картинки');
   } finally {
     language.forget();
+    loadRussian();
   }
 });
 

@@ -12,12 +12,11 @@ import { freezeModalContent } from "../../component/modal/js/_closing";
 import { scheduleModalClose, scheduleModalFrame } from "../../component/modal/js/_motion";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
-import enFile from "./lang/en.json";
-import ruFile from "./lang/ru.json";
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from "./lang/index.mjs";
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 
 // A box that holds its own overlays (sf-modal, sf-drawer); the drawer's own
 // name came first and is read until the change journal retires it.
@@ -59,7 +58,7 @@ import { breakpointMedia } from "../../core/js/breakpoints.js";
 // modal:* events, hide() and show() -- are dated aliases in aliases.json.
 const ModalElement = elementFromManifest(manifest, {
   base: SfBaseElement,
-  lang: { en, ru },
+  lang: languageFiles,
   source: "ru",
   aliases,
 });

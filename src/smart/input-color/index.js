@@ -12,15 +12,14 @@ import {
 import {RECENT_SHOW, onRecentChange, recentColours, rememberColour} from './js/recent.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
+import {files as languageFiles} from './lang/index.mjs';
 import {formatNumber} from '../../core/js/format-number.js';
 import {registeredWord} from '../../core/js/page-language.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 
 // A colour, for anywhere a colour is set: a theme, a site's own look, a label, a
 // chart series. It was built because the property set had no colour at all while a
@@ -48,7 +47,7 @@ const ru = {runtime: ruFile.runtime};
 // words with them), and the host is the form control through ElementInternals.
 const ColorElement = elementFromManifest(manifest, {
     base: InheritedValueField(SfBaseElement),
-    lang: {en, ru},
+    lang: languageFiles,
     source: "ru",
     aliases,
     actions: {

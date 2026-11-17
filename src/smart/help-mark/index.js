@@ -18,12 +18,11 @@ import {FOCUSABLE} from '../../core/js/layer-stack';
 import {renderHelpMarkTemplate} from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 import './scss/index.scss';
 
 const position = () => globalThis.SF?.Position || BundledPosition;
@@ -32,7 +31,7 @@ let sequence = 0;
 
 const HelpMarkElement = elementFromManifest(manifest, {
   base: SfBaseElement,
-  lang: {en, ru},
+  lang: languageFiles,
   source: 'ru',
   aliases,
   actions: {

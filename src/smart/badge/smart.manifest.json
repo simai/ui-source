@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.badge",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "title": "Badges",
   "summary": "A short non-interactive label for a status, a run's state, a category, a version or a count beside an object, drawn in a size, appearance and colour role or status. It adds no keyboard or pointer behaviour.",
   "kind": "smart",
@@ -284,7 +284,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/badge/index.js",
-        "sha256": "7e65db4c6037bed09ef7eaa3f07b17d7fe23f25efedf1387b554c6659507a0b3"
+        "sha256": "cb2b00088bf0f68ecde646011b8b68343eb8b8983ccd638d0f3cd08a5fc88a79"
       }
     ],
     "generated_runtime": [

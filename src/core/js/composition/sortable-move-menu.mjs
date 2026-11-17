@@ -19,13 +19,6 @@ const ITEM = '[data-sf-sortable-item]';
 const HANDLE = '[data-sf-sortable-handle]';
 
 const MESSAGES = {
-  ru: {
-    'move-menu': 'Переместить «{item}»',
-    'move-up': 'Выше',
-    'move-down': 'Ниже',
-    'move-first': 'В начало',
-    'move-last': 'В конец',
-  },
   en: {
     'move-menu': 'Move “{item}”',
     'move-up': 'Up',

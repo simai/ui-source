@@ -150,6 +150,7 @@ function foldChar(char, locale) {
   } catch {
     lower = char.toLowerCase();
   }
+  // c282-allow: input parsing (ё is searched as е)
   return lower.normalize('NFD').replace(/[\u0300-\u036f]/gu, '').replace(/ё/gu, 'е');
 }
 
@@ -263,6 +264,7 @@ export function foldText(text, locale) {
   } catch {
     lower = String(text ?? '').toLowerCase();
   }
+  // c282-allow: input parsing (ё is searched as е)
   return lower.normalize('NFD').replace(/[̀-ͯ]/gu, '').replace(/ё/gu, 'е').trim();
 }
 

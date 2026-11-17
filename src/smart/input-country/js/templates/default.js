@@ -1,6 +1,7 @@
 import { html, nothing } from 'lit';
 import {renderFieldHelp} from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
+import { countryName } from '../../../../component/country-code/js/_country_code';
 
 // A flag of the list is the browser's own lazy image: the address is written
 // with the row, and the browser fetches it when the row comes near the view (a
@@ -155,9 +156,7 @@ export function renderCountryCodeTemplate(context) {
                       </div>
                       <span>
                         ${country.label ||
-                        `${locale === 'en'
-                          ? country.nameEn
-                          : country.nameRu || country.nameEn} (${country.dialCode || country.code || ''})`}
+                        `${countryName(country, locale)} (${country.dialCode || country.code || ''})`}
                       </span>
                     </span>
                   `,

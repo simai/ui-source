@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-button": {
+      "theme": "Тема",
+      "theme-system": "как в системе",
+      "theme-light": "светлая",
+      "theme-dark": "тёмная",
+      "theme-system-now": "как в системе (сейчас {theme})",
+      "cycle-next": "{name}. Нажмите — {next}",
+      "split-more": "Другие варианты: {label}"
+    },
+    "sf-button-close": {
+      "close": "Закрыть"
+    },
+    "sf-button-copy": {
+      "copied": "Скопировано",
+      "copy": "Копировать",
+      "failed": "Не удалось скопировать",
+      "selected": "Выделено — нажмите {keys}"
+    },
+    "sf-button-icon": {
+      "theme": "Тема",
+      "theme-system": "как в системе",
+      "theme-light": "светлая",
+      "theme-dark": "тёмная",
+      "theme-system-now": "как в системе (сейчас {theme})",
+      "cycle-next": "{name}. Нажмите — {next}"
+    }
+  }
+}

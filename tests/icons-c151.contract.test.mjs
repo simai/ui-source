@@ -3,6 +3,7 @@
 // The drawn sizes, the mirroring, the empty box of an unknown name and the
 // registered glyph are measured in a browser by the decision's probe.
 import test from 'node:test';
+import './support/russian-language-file.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';

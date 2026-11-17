@@ -15,10 +15,10 @@ const manifest = json('src/smart/switch/component.json');
 
 test('the switch element is made from its component.json, language files and aliases', () => {
   const source = read('src/smart/switch/index.js');
-  for (const file of ['./component.json', './aliases.json', './lang/en.json', './lang/ru.json']) {
+  for (const file of ['./component.json', './aliases.json', './lang/index.mjs']) {
     assert.ok(source.includes(`from '${file}'`), file);
   }
-  assert.match(source, /elementFromManifest\(manifest, \{\s*base: InheritedValueField\(SfBaseElement\),\s*lang: \{ en, ru \},\s*source: 'ru',\s*aliases,/);
+  assert.match(source, /elementFromManifest\(manifest, \{\s*base: InheritedValueField\(SfBaseElement\),\s*lang: languageFiles,\s*source: 'ru',\s*aliases,/);
   assert.match(source, /class SfSwitch extends SwitchElement/);
   // The hand-written settings are gone: the manifest makes them.
   for (const name of ['size', 'label', 'description', 'help', 'disabled', 'name', 'value']) {

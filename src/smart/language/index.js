@@ -35,12 +35,12 @@ import {renderLanguageTemplate} from './js/templates/default';
 import {SIZES, canonicalCode, languageRows, lookFor, matchLanguage, normalizeLanguages, useNames} from './js/languages';
 import names from './data/names.json';
 import manifest from './component.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
+const en = languageFiles.en;
 
 useNames(names);
 
@@ -81,7 +81,7 @@ export const rememberKey = (name) => (text(name) ? `sf-language/${text(name)}` :
 
 const LanguageElement = elementFromManifest(manifest, {
   base: SfBaseElement,
-  lang: {en, ru},
+  lang: languageFiles,
   source: 'ru',
   actions: {
     select(args = {}) {
@@ -514,7 +514,11 @@ SfLanguage.menuEntry = function menuEntry({languages = '', items = [], value = '
   const list = normalizeLanguages(languages, items, href, {missing, home});
   const doc = globalThis.document?.documentElement;
   const pageCode = page || doc?.getAttribute('lang') || 'en';
-  const words = (String(pageCode).toLowerCase().startsWith('ru') ? ru : en).runtime;
+  // The page language's words: English built in, any other the words its
+  // language file registered for sf-language (C282).
+  const code = String(pageCode).toLowerCase().replace('_', '-');
+  const registered = globalThis.__sfPageLanguage?.registered?.get?.('sf-language');
+  const words = {...en.runtime, ...(registered?.get?.(code.split('-')[0]) ?? {}), ...(registered?.get?.(code) ?? {})};
   const current = (value && matchLanguage(list, value)) ?? matchLanguage(list, pageCode) ?? list[0] ?? null;
   const entry = {
     id: 'language',

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button-icon",
-  "version": "1.13.3",
+  "version": "1.13.6",
   "title": "Icon Buttons",
   "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
   "kind": "smart",
@@ -644,7 +644,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button-icon/index.js",
-        "sha256": "9d8078bf6c347eef92c30804de80e911ebac07434576f258c993193f14a782a1"
+        "sha256": "64f1953857e0d5c186417e9f26c9b2a867ee990e3a7bed29ae6e214ebfce2fa9"
       }
     ],
     "generated_runtime": [

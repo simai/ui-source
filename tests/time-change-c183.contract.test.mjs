@@ -28,7 +28,7 @@ test('C183 (3): core formats and counts days on a named zone\'s clock', () => {
 
 test('C183: sf-time 1.3.0 -- just now, the time-zone setting, list times off the Tab order, the future mirrors the past', () => {
   const manifest = json('src/smart/time/component.json');
-  assert.equal(manifest.version, '1.7.1'); // group build 8: C204 (fix/time-table-c183) above GB7's 1.6.0 // 1.7.1: zone words of any language (C177 follow-up #113)
+  assert.equal(manifest.version, '1.8.1'); // group build 8: C204 (fix/time-table-c183) above GB7's 1.6.0 // 1.7.1: zone words of any language (C177 follow-up #113) // C282: 1.7.1 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(manifest.settings['time-zone'], {type: 'string', default: '', summary: manifest.settings['time-zone'].summary});
   const ru = json('src/smart/time/lang/ru.json').runtime;
   const en = json('src/smart/time/lang/en.json').runtime;
@@ -55,7 +55,7 @@ test('C183: sf-time 1.3.0 -- just now, the time-zone setting, list times off the
 
 test('C183: sf-confirm-change 1.9.0 -- the main answer filled, the deadline an sf-time under the answers', () => {
   const manifest = json('src/smart/confirm-change/component.json');
-  assert.equal(manifest.version, '1.9.2'); // group build 9: 1.9.1 moved on by the merged branches or a GB9 patch
+  assert.equal(manifest.version, '1.10.1'); // group build 9: 1.9.1 moved on by the merged branches or a GB9 patch // C282: 1.9.2 moved on by the language-file patch (Russian is a language file)
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-time'));
   assert.match(read('src/smart/confirm-change/rule.js'), /\{ name: 'cl-time' \}/u);
   const source = read('src/smart/confirm-change/index.js');

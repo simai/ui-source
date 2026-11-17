@@ -15,10 +15,16 @@
 
 // The names of the types and variants live in the set's language files
 // (localization study LC-5); `label` keeps its {ru, en} shape for the hosts
-// that read it.
+// that read it. English is built in; the Russian name is read from the words
+// the ru language file registered for sf-field-renderers (owner decision
+// C282), English until it is on the page.
 import LANG_WORDS from './lang/index.mjs';
 
-const typeLabel = (key) => ({ru: LANG_WORDS.ru[key], en: LANG_WORDS.en[key]});
+const registeredName = (code, key) => globalThis.__sfPageLanguage?.registered?.get?.('sf-field-renderers')?.get?.(code)?.[key];
+const typeLabel = (key) => Object.freeze(Object.defineProperties({}, {
+    ru: {enumerable: true, get: () => LANG_WORDS.ru?.[key] ?? registeredName('ru', key) ?? LANG_WORDS.en[key]},
+    en: {enumerable: true, value: LANG_WORDS.en[key]},
+}));
 
 export const PROPERTY_TYPES = Object.freeze([
     {type: 'string', label: typeLabel('type-string'),

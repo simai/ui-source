@@ -1,0 +1,24 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 4,
+    "translated": 4,
+    "share": 100
+  },
+  "words": {
+    "sf-breadcrumbs": {
+      "aria-label": "Хлебные крошки",
+      "expand-label": "Показать скрытые крошки",
+      "siblings-label": "Соседние разделы",
+      "expandLabel": "Показать скрытые крошки"
+    }
+  }
+}

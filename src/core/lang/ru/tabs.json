@@ -1,0 +1,33 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 9,
+    "translated": 9,
+    "share": 100
+  },
+  "words": {
+    "sf-tabs": {
+      "customize": "Настроить вкладки",
+      "errors": {
+        "one": "{n} ошибка",
+        "few": "{n} ошибки",
+        "many": "{n} ошибок",
+        "other": "{n} ошибки"
+      },
+      "more": "Ещё",
+      "moved": "Перемещено",
+      "pinned": "Всегда на месте",
+      "reset": "Сбросить",
+      "tab": "Вкладка {n}",
+      "visible": "Показывать"
+    }
+  }
+}

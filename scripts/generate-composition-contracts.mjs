@@ -6,15 +6,21 @@ import { fileURLToPath } from 'node:url';
 import { BUILTIN_EDITOR_MANIFESTS, BUILTIN_PORT_MANIFESTS, BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
 import { PORT_ELEMENT_ALIASES, VALUE_TYPES, valueTypeName } from '../src/core/js/composition/routing.mjs';
 import { fieldKindRegistry } from '../src/core/js/composition/fields.mjs';
-import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER } from '../src/core/js/composition/editor-words.mjs';
+import { EDITOR_FIELD_WORDS, EDITOR_WORDS_OWNER, fieldWords } from '../src/core/js/composition/editor-words.mjs';
 import { stableStringify } from '../src/core/js/composition/index.mjs';
 import { schemaFields } from '../src/core/js/composition/schema-name.mjs';
 import { BUILTIN_CATALOGUE, BUILTIN_CATALOGUE_ALSO_IN, BUILTIN_CATALOGUE_ICONS, CATALOGUE_GROUPS, CATALOGUE_GROUP_ALIASES, CATALOGUE_GROUP_TABLE, CATALOGUE_TABS } from '../src/core/js/composition/catalogue.mjs';
 import { BINDING_STATES, DATA_SHAPES, SOURCE_PORT } from '../src/core/js/composition/data.mjs';
 import { UTILITY_BREAKPOINTS } from '../src/core/js/composition/utilities.mjs';
 import { parameterSetTable } from '../src/core/js/composition/parameter-sets.mjs';
+import { registerLanguageFile } from './language-file-node.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+// The built-in types' Russian catalogue keywords are read from the word
+// registry (owner decision C282): the ru language file's editor words,
+// registered here as a page that includes the file has them, so the types
+// contract keeps both languages.
+registerLanguageFile('ru', root);
 const outputPath = resolve(root, 'src/core/contracts/composition-types.v1.json');
 const editorOutputPath = resolve(root, 'src/core/contracts/composition-editor-manifests.v1.json');
 const portOutputPath = resolve(root, 'src/core/contracts/composition-ports.v1.json');
@@ -84,10 +90,14 @@ const portOutput = `${JSON.stringify(JSON.parse(stableStringify({
 const kindOutput = `${JSON.stringify(fieldKindRegistry(), null, 2)}\n`;
 // The words of the built-in editor manifests, for a host without JavaScript:
 // the same keys renderFieldFallback reads from messages.
+// English is built into the module, Russian is a language file (owner
+// decision C282): the contract still gives both, read from the language
+// folder, so a host without JavaScript is unchanged.
+const editorLanguage = (code) => JSON.parse(readFileSync(resolve(root, `src/core/js/lang/editor/${code}.json`), 'utf8')).runtime;
 const wordsOutput = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.editor-words', 1),
   owner: EDITOR_WORDS_OWNER,
-  words: EDITOR_FIELD_WORDS,
+  words: { ...EDITOR_FIELD_WORDS, ru: fieldWords(editorLanguage('ru')) },
 })), null, 2)}\n`;
 const blocksOutput = `${JSON.stringify(JSON.parse(stableStringify({
   ...schemaFields('simai.composition.blocks', 1),

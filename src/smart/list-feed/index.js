@@ -46,12 +46,11 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {readingPosition} from "../../core/js/reading-position.js";
 import {renderListFeedTemplate} from "./js/templates/default.js";
 import manifest from "./component.json";
-import enFile from "./lang/en.json";
-import ruFile from "./lang/ru.json";
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from "./lang/index.mjs";
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 
 // A finished entry is announced whole only up to this length; a screen
 // reader reading a long answer in one breath is not a summary of it.
@@ -152,7 +151,7 @@ function overlay(target, source) {
 
 const FeedElement = elementFromManifest(manifest, {
     base: SfBaseElement,
-    lang: {en, ru},
+    lang: languageFiles,
     source: "ru",
 });
 

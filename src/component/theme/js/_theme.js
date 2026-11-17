@@ -10,7 +10,7 @@ import LANG_WORDS from '../lang/index.mjs';
   // pressed state: a pressed look beside a glyph of the other theme said two
   // different things. Only an icon left empty or already one of the two is
   // written, so an author's own glyph stays.
-  const THEME_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+  const THEME_TEXT = LANG_WORDS;
   const THEME_GLYPHS = new Set(['light_mode', 'dark_mode']);
   const say = (button, key) => pageText(THEME_TEXT, key, button, 'sf-theme-button');
   const syncGlyph = (button, isDark) => {

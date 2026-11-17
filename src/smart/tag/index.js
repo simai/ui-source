@@ -9,12 +9,11 @@ import { tagInRow, tagLeftRow } from './js/tag-row.js';
 import { OPTION_BADGE_PALETTE, nearestPaletteHue } from '../helpers/option-badge.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 
 const TAG_KINDS = ['checkbox', 'icon', 'default', 'color', 'avatar'];
 
@@ -155,7 +154,7 @@ function resolveTagStatus(element, raw, fallback) {
 // {active}; close is sf-tag-close, the old name close its dated alias.
 const TagElement = elementFromManifest(manifest, {
   base: SfBaseElement,
-  lang: { en, ru },
+  lang: languageFiles,
   source: 'ru',
   aliases,
 });

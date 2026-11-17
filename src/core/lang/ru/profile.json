@@ -1,0 +1,45 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 25,
+    "translated": 25,
+    "share": 100
+  },
+  "words": {
+    "sf-profile-picker": {
+      "actions": "Действия",
+      "builtin": "стандартный",
+      "cancel": "Отмена",
+      "close": "Закрыть",
+      "copy-of": "Копия профиля «{name}».",
+      "create": "Создать",
+      "kind": "Кому виден профиль",
+      "label": "Профиль",
+      "locked": "Нет прав на изменение",
+      "name": "Название профиля",
+      "name-empty": "Дайте профилю название.",
+      "new-profile": "Новый профиль…",
+      "personal": "Личный",
+      "personal-taken": "Личный профиль уже есть",
+      "remove": "Удалить",
+      "remove-ask": "Удалить…",
+      "remove-question": "Удалить «{name}»?",
+      "remove-shared": "Он исчезнет у всех на сайте.",
+      "rename": "Переименовать",
+      "reset": "Сбросить к стандартному",
+      "save": "Сохранить",
+      "seen-by-all": "Виден всем на сайте.",
+      "seen-by-you": "Виден только вам.",
+      "shared": "Для всех",
+      "shared-denied": "Нет прав на общие профили"
+    }
+  }
+}

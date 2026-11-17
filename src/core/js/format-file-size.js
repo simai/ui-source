@@ -4,9 +4,10 @@
 import {formatLocale, intlFormatter} from './format-intl.js';
 
 // The four words of a size live in core's language files
-// (core/js/lang/file-size, localization study LC-3): ru and en ship; any
-// other language takes the words a product registers for `sf-file-size`
-// (SF.language.register('sf-file-size', 'de', {b, kb, mb, gb})), else the
+// (core/js/lang/file-size, localization study LC-3): English ships in the
+// bundle; Russian and any other language take the words their language file
+// or a product registers for `sf-file-size` (owner decision C282;
+// SF.language.register('sf-file-size', 'de', {b, kb, mb, gb})), else the
 // English words with its own digits. A component with words of its own passes
 // them as `units`. The registry is read from the shared global the page
 // language keeps (core/js/page-language.js), so this module still runs
@@ -18,15 +19,22 @@ function unitsOf(words) {
   return Object.freeze(UNIT_KEYS.map((key) => words[key]));
 }
 
-export const FILE_SIZE_UNITS = /* @__PURE__ */ Object.freeze({
-  en: /* @__PURE__ */ unitsOf(UNIT_WORDS.en),
-  ru: /* @__PURE__ */ unitsOf(UNIT_WORDS.ru),
-});
-
 function registeredUnits(code) {
   const words = globalThis.__sfPageLanguage?.registered?.get?.('sf-file-size')?.get?.(code);
   return words && UNIT_KEYS.every((key) => typeof words[key] === 'string') ? unitsOf(words) : null;
 }
+
+// The built-in languages' units (English; owner decision C282), and `ru` as
+// before for a reader of SF.format.FILE_SIZE_UNITS.ru: the units the ru
+// language file registered, null until it is on the page.
+function unitTable(words) {
+  const table = {};
+  for (const [code, own] of Object.entries(words)) table[code] = unitsOf(own);
+  if (!table.ru) Object.defineProperty(table, 'ru', {enumerable: true, get: () => registeredUnits('ru')});
+  return Object.freeze(table);
+}
+
+export const FILE_SIZE_UNITS = /* @__PURE__ */ unitTable(UNIT_WORDS);
 
 /** The unit words for a locale: registered for it, its own, its language's, else English. */
 export function fileSizeUnits(locale = 'en') {

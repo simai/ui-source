@@ -44,7 +44,7 @@ const doc = {createElement: (name) => new Node(name)};
 const words = {'you-text': 'Вы', 'new-text': 'Новые'};
 
 test('the contract: date and unread on entries, the word new-text, relations', () => {
-  assert.equal(component.version, '1.4.1'); // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch
+  assert.equal(component.version, '1.5.1'); // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch // C282: 1.4.1 moved on by the language-file patch (Russian is a language file)
   assert.equal(component.settings.items.of.date.type, 'date');
   assert.equal(component.settings.items.of.unread.type, 'boolean');
   for (const lang of ['ru', 'en']) assert.ok(JSON.parse(read(`src/smart/list-feed/lang/${lang}.json`)).runtime['new-text']);

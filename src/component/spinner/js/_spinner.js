@@ -14,7 +14,7 @@ import {
   createSvgNode,
 } from './_spinner-draw';
 
-const SPINNER_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const SPINNER_TEXT = LANG_WORDS;
 
 const SPINNER_SELECTOR = '.sf-loader-container';
 const SPINNER_BOUND_FLAG = 'sfSpinnerBound';

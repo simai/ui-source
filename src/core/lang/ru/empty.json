@@ -1,0 +1,37 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 17,
+    "translated": 17,
+    "share": 100
+  },
+  "words": {
+    "sf-empty-state": {
+      "create": "Создать",
+      "error-text": "Попробуйте ещё раз",
+      "error-title": "Не удалось загрузить",
+      "first-use-text": "Создайте первую запись — она появится здесь",
+      "first-use-title": "Здесь пока пусто",
+      "no-access-text": "Обратитесь к администратору",
+      "no-access-title": "Нет доступа",
+      "no-data-text": "Они появятся здесь, когда их добавят",
+      "no-data-title": "Записей пока нет",
+      "nothing-found-text": "Попробуйте изменить запрос или фильтры",
+      "nothing-found-title": "Ничего не найдено",
+      "offline-text": "Проверьте подключение — повторим сами, когда сеть вернётся",
+      "offline-title": "Нет связи",
+      "processing-share": "Готово",
+      "processing-text": "Это может занять несколько минут. Результат появится здесь — страницу можно закрыть",
+      "processing-title": "Готовится",
+      "retry": "Повторить"
+    }
+  }
+}

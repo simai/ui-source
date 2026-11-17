@@ -1,0 +1,26 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 6,
+    "translated": 6,
+    "share": 100
+  },
+  "words": {
+    "sf-highlight": {
+      "copy": "Копировать код",
+      "copied": "Код скопирован",
+      "wrap": "Переносить строки",
+      "added": "добавлено",
+      "removed": "удалено",
+      "terminal": "Терминал"
+    }
+  }
+}
