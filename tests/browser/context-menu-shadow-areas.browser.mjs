@@ -28,8 +28,9 @@ const styles = [
   'core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/context-menu/css/context-menu.css',
 ].map((p) => join(out, p));
+// The Russian words, as a Russian site lays them before core (C282, group build 10).
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button-icon/js/button-icon.js',
+  'core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button-icon/js/button-icon.js',
   'smart/smart/menu-context/js/menu-context.js',
 ].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));
@@ -75,7 +76,7 @@ async function open(browser, options) {
       }
     });
   }, {a: rowsHtml('a'), b: rowsHtml('b')});
-  for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
+  for (const path of modules) await page.addScriptTag(path.endsWith('/lang/ru.js') ? {path} : {path, type: 'module'}).catch(() => {});
   await page.waitForFunction(() => customElements.get('sf-menu-context'));
   await page.evaluate(() => {
     window.__log = []; window.__ctx = [];
