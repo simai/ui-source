@@ -6,7 +6,10 @@
 // fill of the chosen and no mark, and the rows reach the end padding; a ticked
 // row (menuitemcheckbox) leads with its check in the icons' column, at their
 // width; the pointer's plate and the focus ring are never the chosen fill --
-// light and dark, a flyout list and a drilled choice's options.
+// light and dark, a flyout list and a drilled choice's options. A row's plate
+// stands --sf-space-1/4 (4) from the panel's edge (owner C05), the panel's 1
+// px border inside that inset (owner C105 H4, as the fields' C77 inset): 4
+// from the outer edge, 3 from the border's inner edge.
 import {resolve, join} from 'node:path';
 import {existsSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -68,12 +71,12 @@ async function show(page, entries, attributes = {}) {
   await page.waitForTimeout(200);
 }
 
-// The rows of the open surface: their box against the content's inner box,
-// what stands at their end, their fill.
+// The rows of the open surface: their box against the panel's outer edge
+// (the border is inside the inset, C105 H4), what stands at their end, their
+// fill.
 const ROWS = () => {
   const content = document.querySelector('#menu .sf-context-menu-content');
   const inner = content.getBoundingClientRect();
-  const border = parseFloat(getComputedStyle(content).borderRightWidth) || 0;
   return [...document.querySelectorAll('#menu .sf-context-menu-item')].map((row) => {
     const box = row.getBoundingClientRect();
     const style = getComputedStyle(row);
@@ -88,7 +91,7 @@ const ROWS = () => {
       checkInLead: Boolean(lead?.querySelector('.sf-context-menu-item-check')),
       leadLeft: lead ? lead.getBoundingClientRect().left - inner.left : null,
       leadWidth: lead ? lead.getBoundingClientRect().width : null,
-      gapToEdge: inner.right - border - box.right,
+      gapToEdge: inner.right - box.right,
       valueGap: value ? box.right - parseFloat(style.paddingRight) - value.getBoundingClientRect().right : null,
       background: style.backgroundColor,
     };
@@ -109,8 +112,8 @@ try {
       for (const row of radio) {
         if (row.endMark) note({case: `a pick-one row keeps no mark at its end (${theme})`, got: row});
         if (row.chosen !== (row.checked === 'true')) note({case: `the chosen row and only it carries the chosen fill (${theme})`, got: row});
-        // The row reaches the content's end padding (4px), its value the row's
-        // own end padding.
+        // The row reaches the panel's end inset (4 from its outer edge, the
+        // border inside it), its value the row's own end padding.
         if (Math.abs(row.gapToEdge - 4) > 0.5) note({case: `a pick-one row reaches the end padding (${theme})`, got: row});
         if (row.valueGap !== null && Math.abs(row.valueGap) > 0.5) note({case: `the trailing hint ends at the row's end padding (${theme})`, got: row});
       }

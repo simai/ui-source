@@ -15,7 +15,7 @@ const read = (path) => readFileSync(resolve(root, path), 'utf8');
 const kinds = read('src/utility/gradient/default/scss/_sf_css__gradient_kind.scss');
 const kindVars = read('src/utility/gradient/default/scss/_sf_var__gradient_kind.scss');
 const ruleOf = (path) => new RegExp(JSON.parse(read(path).match(/new RegExp\((".*")\)/u)[1]), 'u');
-// The eleven alpha steps (C21): the state, fill and ink families.
+// The eleven alpha steps (C43): the state, fill and ink families.
 const ALPHA = [4, 8, 12, 16, 20, 24, 28, 32, 48, 64, 80];
 const WHEEL = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'pink'];
 const COLOURS = ['primary', 'secondary', 'tertiary', ...WHEEL, 'brown', 'gray'];

@@ -1,4 +1,4 @@
-// sf-input-choice gaps inside a card (owner C68 and C72, DEV C71, 2026-11-12):
+// sf-input-choice gaps inside a card (owner C68, dispatcher C72, 2026-11-12):
 // a quarter step from the name to the description, a wrapped badge with the
 // same 4 above it, and the icon as far from the name as sf-button size 1 puts
 // its text from its icon. Measured on the built bytes by ui-control evidence
