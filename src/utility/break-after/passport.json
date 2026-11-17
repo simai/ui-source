@@ -4,8 +4,8 @@
   "id": "utility.break-after",
   "kind": "utility",
   "version": "1.0.1",
-  "summary": "1.0.1: the built sheet no longer writes the legacy page-break-after fallback beside break-after (dropped by the builder fix that shipped in pair ui-1ed6b6c9a040, which changed the output without a version step; DEV acceptance R-1).",
   "owner": "simai/ui-source",
+  "summary": "1.0.1: the built sheet no longer writes the legacy page-break-after fallback beside break-after (dropped by the builder fix that shipped in pair ui-1ed6b6c9a040, which changed the output without a version step; DEV acceptance R-1).",
   "files": [
     "src/utility/break-after/default/index.js",
     "src/utility/break-after/default/index.scss",

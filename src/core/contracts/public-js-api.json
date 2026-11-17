@@ -917,6 +917,7 @@
         "NUMBER_FILTER_OPERATORS",
         "isNumericType",
         "decimal",
+        "dateFilter",
         "registry"
       ]
     },
