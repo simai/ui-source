@@ -27,7 +27,7 @@ test('versions above every origin branch', () => {
   assert.equal(json('src/component/tabs/passport.json').version, '1.5.2'); // GB10 fix/misc-m10: the counter's own text step (1.4.1 in group build 9) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
   assert.equal(json('src/component/tab/passport.json').version, '1.1.0'); // group build 9: 1.0.3 moved on by the merged branches or a GB9 patch
   assert.equal(json('src/component/tree/passport.json').version, '1.6.0'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
-  assert.equal(json('src/component/tree-item/passport.json').version, '1.1.2');
+  assert.equal(json('src/component/tree-item/passport.json').version, '1.2.0'); // group build 10: 1.1.2 moved on by the merged branches or a GB10 patch
   assert.equal(json('src/smart/tree/component.json').version, '2.4.1'); // C282: 2.4.0 moved on by the language-file patch (Russian is a language file)
 });
 
