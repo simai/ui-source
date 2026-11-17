@@ -589,7 +589,9 @@ class SfList extends ListElement {
         event.preventDefault();
         event.stopPropagation();
         this._rowsWindow.reveal(event.key === "Home" ? 0 : items.length - 1);
-        this.focusRow(item.id);
+        // The row is drawn with the moved range and draws itself a frame or
+        // more later: it is waited for longer than a renamed row.
+        this.focusRow(item.id, 30);
     };
 
     templateContext() {

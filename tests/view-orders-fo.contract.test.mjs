@@ -48,6 +48,24 @@ test('FO-2: reveal puts a row reached by a key in the range; a row already in it
   assert.equal(moves.length, 2);
 });
 
+test('FO-2: the range stays around a revealed row until the page scrolls to it', () => {
+  // The window shows rows 0..20; a key went to the last row.
+  const body = {getBoundingClientRect: () => ({top: 0}), ownerDocument: {defaultView: {innerHeight: 800}}};
+  const win = rowsWindow({body: () => body, rows: () => [], clip: () => null, guess: 40});
+  win.slice(10_000);
+  assert.equal(win.reveal(9_999), true);
+  // The drawing after it measures the window still on the first rows: the range is kept.
+  assert.equal(win.sync(), false);
+  assert.equal(win.range.last, 9_999);
+  // Once the row is in view (the focus scrolled to it), the range follows the window again.
+  body.getBoundingClientRect = () => ({top: -9_990 * 40});
+  win.sync();
+  assert.equal(win.range.last, 9_999);
+  body.getBoundingClientRect = () => ({top: -5_000 * 40});
+  assert.equal(win.sync(), true);
+  assert.ok(win.range.first <= 5_000 && win.range.last >= 5_020, JSON.stringify(win.range));
+});
+
 test('FO-2: sf-list draws by the core helper, between two spacers, with each row\'s place in the whole list', () => {
   const index = read('src/smart/list/index.js');
   assert.match(index, /import \{\s*rowsWindow\s*\} from "\.\.\/\.\.\/core\/js\/rows-window(?:\.js)?";/u);

@@ -36,6 +36,14 @@ for (const {width, theme} of CASES) {
     }, COUNT);
     await tab.waitForFunction(() => document.querySelectorAll('#list [aria-posinset]').length > 0
       && document.querySelector('#list [data-sf-rows-spacer]'), null, {timeout: 20_000});
+    // The first drawing stands the spacers on a guessed row height; the list
+    // measures its rows and draws again (within a few frames).
+    await tab.waitForFunction((count) => {
+      const rows = [...document.querySelectorAll('#list [aria-posinset]')];
+      const height = rows[1]?.getBoundingClientRect().top - rows[0]?.getBoundingClientRect().top;
+      const total = document.querySelector('#list .sf-list__rows')?.getBoundingClientRect().height;
+      return height > 0 && Math.abs(total - count * height) < height * 3;
+    }, COUNT, {timeout: 5000}).catch(() => null);
     await tab.waitForTimeout(300);
 
     const first = await tab.evaluate(() => {

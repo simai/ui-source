@@ -65,6 +65,11 @@ export function rowsWindow({
   let range = null;
   let frame = 0;
   let abort = null;
+  // The row a key went to (reveal): the range stays around it until the page
+  // scrolls -- the focus that follows scrolls the row into view. Without it,
+  // the drawing after reveal measured the window still showing the old rows
+  // and put the range back there, and the row the key went to was gone.
+  let held = null;
 
   const rowHeight = () => height || guess;
 
@@ -127,6 +132,8 @@ export function rowsWindow({
     }
     const view = seen();
     if (!view) return changed ? moved() : false;
+    if (held !== null && (held < view.first || held > view.last)) return changed ? moved() : false;
+    held = null;
     const now = range ?? {first: 0, last: initial - 1};
     const low = now.first > 0 ? now.first + margin / 2 : 0;
     const high = now.last < count - 1 ? now.last - margin / 2 : count - 1;
@@ -145,6 +152,7 @@ export function rowsWindow({
   function reveal(index) {
     if (!windowed) return false;
     const at = Math.min(Math.max(0, Math.floor(Number(index) || 0)), count - 1);
+    held = at;
     const now = range ?? {first: 0, last: initial - 1};
     if (at >= now.first && at <= now.last) return false;
     const span = Math.max(initial, now.last - now.first + 1);
@@ -158,6 +166,7 @@ export function rowsWindow({
     abort = new AbortController();
     const {signal} = abort;
     const onScroll = () => {
+      held = null;
       if (!windowed || frame) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
