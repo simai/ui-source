@@ -9,12 +9,16 @@
     "src/component/progress-bar/index.js",
     "src/component/progress-bar/js/_progressbar.js",
     "src/component/progress-bar/js/index.js",
+    "src/component/progress-bar/lang/en.json",
+    "src/component/progress-bar/lang/index.mjs",
+    "src/component/progress-bar/lang/kk.json",
+    "src/component/progress-bar/lang/ru.json",
     "src/component/progress-bar/rule.js",
     "src/component/progress-bar/scss/_css__progressbar.scss",
     "src/component/progress-bar/scss/_css__progressbar_custom.scss",
     "src/component/progress-bar/scss/index.scss"
   ],
-  "content_sha256": "063977336b59c49d8d9639b737ead42e2263ad9ec34b3b24cb76cac07980cc97",
+  "content_sha256": "dbecef41fb1b640cda8d7f240d01ea58610351d51354b07f45269ecb6a66aed9",
   "dependencies": [
     {
       "id": "core.runtime",

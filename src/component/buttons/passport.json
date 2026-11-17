@@ -10,6 +10,7 @@
     "src/component/buttons/index.js",
     "src/component/buttons/js/_buttons.js",
     "src/component/buttons/js/index.js",
+    "src/component/buttons/js/link-alias.js",
     "src/component/buttons/json/button.utility.json",
     "src/component/buttons/rule.js",
     "src/component/buttons/scss/_css__buttons.scss",
@@ -17,7 +18,7 @@
     "src/component/buttons/scss/_css__utility_hint_layout.scss",
     "src/component/buttons/scss/index.scss"
   ],
-  "content_sha256": "4cc3d9ca86cbd9599034977310a79ffe838b271648f610b0f3dac0a5a481c432",
+  "content_sha256": "43e3585974a9c9456c5fe92bc2f1ede48f8f3c17004a40dfe5dfbdce30bf91fb",
   "dependencies": [
     {
       "id": "component.spinner",
