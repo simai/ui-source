@@ -44,7 +44,7 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
 import {menuOpen} from "../../core/js/menu-open.js";
-import {rowsWindow} from "../../core/js/rows-window.js";
+import {rowsWindow, ROWS_WINDOW_FROM} from "../../core/js/rows-window.js";
 import {noteDeprecated} from "../../core/js/deprecations";
 
 // Is the end within watchEdge's margin of the box that scrolls the list (or
@@ -190,12 +190,22 @@ class SfList extends ListElement {
         this._edge = null;
         this._dayTimer = 0;
         // A long list draws the rows in view (FO-2, core/js/rows-window.js):
-        // an ungrouped list of 200 rows or more, the rows a person can see and
-        // 20 on each side, two spacers standing for the rest.
+        // a list of 200 entries or more, the entries a person can see and 20
+        // on each side, two spacers standing for the rest. A grouped list is
+        // one run of «heading, its rows» (FO2-1); a range never starts inside
+        // a group without its heading. Each entry's height is kept by its id
+        // (FO2-4). rows-window="off" draws every row (FO2-3).
+        this._entries = [];
         this._rowsWindow = rowsWindow({
-            body: () => this.querySelector(":scope > .sf-list__frame .sf-list__rows[data-sf-rows-window]"),
-            rows: () => [...this.querySelectorAll(":scope > .sf-list__frame .sf-list__rows[data-sf-rows-window] > .sf-list__row")],
+            body: () => this.querySelector(":scope > .sf-list__frame [data-sf-rows-window]"),
+            rows: () => [...this.querySelectorAll([
+                ":scope > .sf-list__frame .sf-list__rows[data-sf-rows-window] > .sf-list__row",
+                ":scope > .sf-list__frame .sf-list__body[data-sf-rows-window] > .sf-list__group > .sf-list__heading",
+                ":scope > .sf-list__frame .sf-list__body[data-sf-rows-window] > .sf-list__group > .sf-list__rows > .sf-list__row",
+            ].join(", "))],
             onMove: () => this.requestComponentUpdate("window"),
+            key: (index) => this._entries[index]?.key,
+            snap: (index) => this._entries[index]?.head ?? index,
             guess: 40,
         });
         listCount += 1;
@@ -562,16 +572,36 @@ class SfList extends ListElement {
         return {twoLine, lead: {kind: "avatar", wide, shape: learned ? learned.shape : "circle"}};
     }
 
-    // The range a long list draws, or null (FO-2): only an ungrouped list --
-    // one section of every row -- that is not loading and has no row being
-    // renamed is windowed; any other list draws every row.
+    // The range a long list draws, or null (FO-2): a list that is not
+    // loading and has no row being renamed. An ungrouped list is its rows; a
+    // grouped one is one run of each group's heading and rows (FO2-1), and the
+    // range says, per group, the rows it draws (parts: group key -> [from,
+    // to], rows of the group). rows-window="off" draws every row (FO2-3).
     windowOf(sections, loading) {
-        const one = sections.length === 1 && sections[0].key === "all" ? sections[0] : null;
-        if (!one || loading || this._editing) {
+        this._rowsWindow.from = this.getAttribute("rows-window") === "off" ? Infinity : ROWS_WINDOW_FROM;
+        const flat = sections.length === 1 && sections[0].key === "all";
+        const entries = [];
+        for (const group of sections) {
+            const head = entries.length;
+            if (!flat) entries.push({key: `head:${group.key}`, head, group: group.key, row: -1});
+            group.items.forEach((item, row) => entries.push({key: `row:${item.id}`, head: flat ? entries.length : head, group: group.key, row}));
+        }
+        this._entries = entries;
+        if (loading || this._editing) {
             this._rowsWindow.slice(0);
             return null;
         }
-        return this._rowsWindow.slice(one.items.length);
+        const slice = this._rowsWindow.slice(entries.length);
+        if (!slice) return null;
+        const parts = new Map();
+        for (let index = slice.first; index <= slice.last; index += 1) {
+            const entry = entries[index];
+            if (!entry) continue;
+            const part = parts.get(entry.group) ?? [Infinity, -1];
+            if (entry.row >= 0) parts.set(entry.group, [Math.min(part[0], entry.row), Math.max(part[1], entry.row)]);
+            else parts.set(entry.group, part);
+        }
+        return {...slice, flat, parts};
     }
 
     // Home and End in a long list go to the whole list's first and last row,
@@ -583,12 +613,14 @@ class SfList extends ListElement {
         if (event.key !== "Home" && event.key !== "End") return;
         const row = event.target?.closest?.(".sf-list-item[data-sf-list-roving]");
         if (!row || event.target !== row || !this.contains(row)) return;
-        const items = this.arranged()[0]?.items ?? [];
+        const sections = this.arranged();
+        const items = sections.flatMap((group) => group.items);
         const item = event.key === "Home" ? items[0] : items.at(-1);
         if (!item) return;
         event.preventDefault();
         event.stopPropagation();
-        this._rowsWindow.reveal(event.key === "Home" ? 0 : items.length - 1);
+        const at = this._entries.findIndex((entry) => entry.key === `row:${item.id}`);
+        this._rowsWindow.reveal(event.key === "Home" ? 0 : Math.max(0, at));
         // The row is drawn with the moved range and draws itself a frame or
         // more later: it is waited for longer than a renamed row.
         this.focusRow(item.id, 30);

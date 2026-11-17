@@ -161,6 +161,15 @@
         "default": false,
         "description": "The group headings stay in sight while the list scrolls (block list's sticky heading, C40), the place's solid surface behind them"
       },
+      "rows-window": {
+        "type": "string",
+        "default": "auto",
+        "description": "auto: a list of 200 entries or more (rows, and the headings of a grouped list) draws the ones in view and two spacers for the rest (core rows window, Framework order FO-2); off: every row stays in the document, for a page that is printed or searched with the browser's find (FO2-3). The length from which auto windows waits for the owner (q-fo2-find).",
+        "enum": [
+          "auto",
+          "off"
+        ]
+      },
       "empty-text": {
         "type": "string",
         "description": "The empty state's heading (sf-empty-state no-data); the empty slot replaces the whole state."

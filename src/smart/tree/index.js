@@ -22,6 +22,7 @@ import {instancePath, partId} from '../../core/js/instance-path.js';
 import {fileKind, fileType} from '../../core/js/file-types/index.js';
 import {createInlineSpinner} from '../../component/spinner/js/_spinner-draw';
 import {filesDrop, carriesFiles} from '../../core/js/files-drop.js';
+import {rowsWindow} from '../../core/js/rows-window.js';
 import { renderTreeTemplate, renderStaticTreeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -137,9 +138,20 @@ class SfTree extends TreeElement {
     this._typeahead = '';
     this._typeaheadTimer = null;
     this._window = {first: 0, last: -1};
-    this._rowHeight = 0;
-    this._scroller = null;
-    this._frame = 0;
+    this._gap = 0;
+    // The window over the rows (§18.4) is core's rows window (FO2-5, the
+    // one sf-list draws by): each row's height kept by its id, the range
+    // held around a row a key went to, the scroll of any box between the
+    // tree and the page followed.
+    this._rowsWindow = rowsWindow({
+      body: () => this.querySelector(':scope > .sf-tree'),
+      rows: () => [...this.querySelectorAll(':scope > .sf-tree > .sf-tree-item')],
+      onMove: () => this.requestComponentUpdate('window'),
+      from: WINDOW_FROM + 1,
+      margin: WINDOW_MARGIN,
+      guess: ROW_GUESS,
+      key: (index) => this._rows[index]?.id,
+    });
     // The drawn entries whose name the line cuts (TR-14): their rows carry a
     // tooltip with the whole name.
     this._cut = new Set();
@@ -592,7 +604,7 @@ class SfTree extends TreeElement {
     clearTimeout(this._typeaheadTimer);
     this._itemObserver?.disconnect();
     this._itemObserver = null;
-    this.unwatchScroll();
+    this._rowsWindow.stop();
     this._resize?.disconnect();
     this._resize = null;
     super.disconnectedCallback();
@@ -600,81 +612,15 @@ class SfTree extends TreeElement {
 
   // ---- the window (§18.4) ------------------------------------------------
 
-  // The nearest ancestor that scrolls, or the page.
-  scroller() {
-    for (let node = this.parentElement; node && node !== document.body && node !== document.documentElement; node = node.parentElement) {
-      const overflow = getComputedStyle(node).overflowY;
-      if (overflow === 'auto' || overflow === 'scroll' || overflow === 'overlay') return node;
-    }
-    return window;
-  }
-
-  watchScroll() {
-    if (this._scroller) return;
-    this._scroller = this.scroller();
-    this._onScroll = () => {
-      if (this._frame) return;
-      this._frame = requestAnimationFrame(() => {
-        this._frame = 0;
-        if (this.windowed() && !same(this.windowRange(), [this._window.first, this._window.last])) this.requestComponentUpdate('window');
-      });
-    };
-    this._scroller.addEventListener('scroll', this._onScroll, {passive: true});
-    window.addEventListener('resize', this._onScroll, {passive: true});
-  }
-
-  unwatchScroll() {
-    if (!this._scroller) return;
-    this._scroller.removeEventListener('scroll', this._onScroll);
-    window.removeEventListener('resize', this._onScroll);
-    cancelAnimationFrame(this._frame);
-    this._frame = 0;
-    this._scroller = null;
-  }
-
-  windowed() {
-    return !this.static && this._rows.length > WINDOW_FROM;
-  }
-
-  // The rows in view of the scroller, plus the margin: [first, last].
-  windowRange() {
-    const count = this._rows.length;
-    const height = this._rowHeight || ROW_GUESS;
+  // The rows' gap: a spacer stands for the rows it replaces less the gap
+  // the list keeps after it.
+  measureGap() {
     const list = this.querySelector(':scope > .sf-tree');
-    if (!list || !this.isConnected) return [0, Math.min(count, 60) - 1];
-    const top = list.getBoundingClientRect().top;
-    let viewTop = 0;
-    let viewBottom = window.innerHeight;
-    if (this._scroller && this._scroller !== window) {
-      const box = this._scroller.getBoundingClientRect();
-      viewTop = Math.max(box.top, 0);
-      viewBottom = Math.min(box.bottom, window.innerHeight);
-    }
-    let first = Math.floor((viewTop - top) / height) - WINDOW_MARGIN;
-    let last = Math.ceil((viewBottom - top) / height) + WINDOW_MARGIN;
-    first = Math.max(0, Math.min(first, count - 1));
-    last = Math.max(first, Math.min(last, count - 1));
-    // A row the keyboard asked for is drawn even outside the view: the window
-    // moves to it, the same size.
-    const want = this._want;
-    if (want !== undefined && want >= 0 && (want < first || want > last)) {
-      const size = last - first;
-      first = Math.max(0, Math.min(want - WINDOW_MARGIN, count - 1 - size));
-      last = Math.min(count - 1, first + size);
-    }
-    return [first, last];
-  }
-
-  measureRow() {
-    const row = this.querySelector(':scope > .sf-tree > .sf-tree-item');
-    const list = row?.parentElement;
-    if (!row || !list) return;
+    if (!list) return false;
     const gap = parseFloat(getComputedStyle(list).rowGap) || 0;
-    const height = row.getBoundingClientRect().height + gap;
-    if (height > 0) {
-      this._rowHeight = height;
-      this._gap = gap;
-    }
+    const changed = Math.abs(gap - this._gap) > 0.5;
+    this._gap = gap;
+    return changed;
   }
 
   // ---- focus: one Tab stop (roving tabindex) -----------------------------
@@ -703,22 +649,11 @@ class SfTree extends TreeElement {
       show(drawn);
       return;
     }
-    // Outside the window: scroll to where it will be, draw it, then focus it.
-    const list = this.querySelector(':scope > .sf-tree');
-    const scroller = this._scroller || this.scroller();
-    if (list) {
-      const offset = index * (this._rowHeight || ROW_GUESS);
-      if (scroller === window) {
-        window.scrollTo({top: window.scrollY + list.getBoundingClientRect().top + offset - window.innerHeight / 2, behavior: 'instant'});
-      } else {
-        const top = scroller.scrollTop + list.getBoundingClientRect().top - scroller.getBoundingClientRect().top + offset - scroller.clientHeight / 2;
-        scroller.scrollTo({top, behavior: 'instant'});
-      }
-    }
-    this._want = index;
+    // Outside the window: the range is put around it, it is drawn, then
+    // scrolled to and focused; the range stays there until the page scrolls.
+    this._rowsWindow.reveal(index);
     this.requestComponentUpdate('focus');
     this.whenRendered?.(() => {
-      this._want = undefined;
       const element = this.rowElement(row.id);
       if (element) show(element);
     }, {next: true});
@@ -1021,6 +956,7 @@ class SfTree extends TreeElement {
     if (this.static) {
       this._rows = [];
       this._rowsDirty = true;
+      this._rowsWindow.slice(0);
       return this.staticContext();
     }
     const rows = this.flatten();
@@ -1029,16 +965,12 @@ class SfTree extends TreeElement {
     // The tooltips' ids start with the tree's path (§7.1.1), read once a drawing.
     this._tipPath = this._cut.size ? instancePath(this, {kind: 'sf-tree'}) : '';
     const tabStopId = rows[this.tabStopIndex()]?.id;
-    let first = 0;
-    let last = rows.length - 1;
-    if (this.windowed()) {
-      this.watchScroll();
-      [first, last] = this.windowRange();
-    }
+    const slice = this._rowsWindow.slice(rows.length);
+    const first = slice ? slice.first : 0;
+    const last = slice ? slice.last : rows.length - 1;
     const changed = first !== this._window.first || last !== this._window.last;
     this._window = {first, last};
-    if (changed && this.windowed()) queueMicrotask(() => this.sfEmit('window', {first, last}));
-    const height = this._rowHeight || ROW_GUESS;
+    if (changed && slice) queueMicrotask(() => this.sfEmit('window', {first, last}));
     const drawn = rows.slice(first, last + 1).map((row) => this.rowContext({...row, ...this.handlersFor(row.id)}, tabStopId));
     return this.createTemplateContext({
       ...this.getPropsContext(),
@@ -1048,8 +980,9 @@ class SfTree extends TreeElement {
       tabStopDrawn: drawn.some((row) => row.tabStop),
       // A spacer stands for the rows it replaces; the list's gap after it is
       // one of theirs.
-      before: this.windowed() && first > 0 ? Math.max(0, first * height - (this._gap || 0)) : 0,
-      after: this.windowed() && last < rows.length - 1 ? Math.max(0, (rows.length - 1 - last) * height - (this._gap || 0)) : 0,
+      before: slice && first > 0 ? Math.max(0, slice.before - (this._gap || 0)) : 0,
+      after: slice && last < rows.length - 1 ? Math.max(0, slice.after - (this._gap || 0)) : 0,
+      windowed: Boolean(slice),
       hasBranches: this._hasBranches,
       selection: this.selection,
       ariaLabel: this.getAttribute('aria-label') || '',
@@ -1070,10 +1003,15 @@ class SfTree extends TreeElement {
     super.afterRender?.(changedAttributes);
     this.watchWidth();
     if (!this._rows.length) return;
-    const before = this._rowHeight;
-    this.measureRow();
+    const gap = this.measureGap();
+    if (this._rowsWindow.windowed) {
+      this._rowsWindow.start();
+      this._rowsWindow.sync();
+    } else {
+      this._rowsWindow.stop();
+    }
     const cut = this.measureCut();
-    if (cut || (this.windowed() && Math.abs((this._rowHeight || 0) - (before || 0)) > 0.5)) this.requestComponentUpdate(cut ? 'cut' : 'window');
+    if (cut || (gap && this._rowsWindow.windowed)) this.requestComponentUpdate(cut ? 'cut' : 'window');
   }
 
   // ---- long names (TR-14) ------------------------------------------------

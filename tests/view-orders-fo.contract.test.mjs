@@ -68,11 +68,66 @@ test('FO-2: the range stays around a revealed row until the page scrolls to it',
 
 test('FO-2: sf-list draws by the core helper, between two spacers, with each row\'s place in the whole list', () => {
   const index = read('src/smart/list/index.js');
-  assert.match(index, /import \{\s*rowsWindow\s*\} from "\.\.\/\.\.\/core\/js\/rows-window(?:\.js)?";/u);
+  assert.match(index, /import \{\s*rowsWindow, ROWS_WINDOW_FROM\s*\} from "\.\.\/\.\.\/core\/js\/rows-window(?:\.js)?";/u);
   const template = read('src/smart/list/js/templates/default.js');
   assert.match(template, /data-sf-rows-spacer/u);
   assert.match(template, /aria-posinset/u);
   assert.match(template, /aria-setsize/u);
+});
+
+test('FO2-4: each entry keeps its own measured height by its id; the rest are their average', () => {
+  // Rows 0..59 drawn: every tenth one a picture row of 200 px, the rest 40 px.
+  const tall = (index) => index % 10 === 0;
+  let tops = [];
+  const drawn = () => tops.map(([top, height]) => ({getBoundingClientRect: () => ({top, bottom: top + height, height})}));
+  const body = {getBoundingClientRect: () => ({top: 0}), ownerDocument: {defaultView: {innerHeight: 800}}};
+  const win = rowsWindow({body: () => body, rows: drawn, clip: () => null, guess: 40, key: (index) => `r${index}`});
+  win.slice(1_000);
+  let top = 0;
+  tops = Array.from({length: ROWS_WINDOW_INITIAL}, (_, index) => {
+    const height = tall(index) ? 200 : 40;
+    const box = [top, height];
+    top += height;
+    return box;
+  });
+  win.sync();
+  const slice = win.slice(1_000);
+  // The drawn rows' own heights: the spacer after them is the rest at the average.
+  const average = top / ROWS_WINDOW_INITIAL;
+  assert.ok(Math.abs(slice.after - (1_000 - ROWS_WINDOW_INITIAL) * average) < 1, `${slice.after}`);
+  assert.equal(slice.before, 0);
+  // Scrolled past them: the before spacer is the sum of their own heights, not count x average.
+  body.getBoundingClientRect = () => ({top: -top - 400});
+  win.sync();
+  const moved = win.slice(1_000);
+  const measured = Array.from({length: moved.first}, (_, index) => (index < ROWS_WINDOW_INITIAL ? (tall(index) ? 200 : 40) : average)).reduce((a, b) => a + b, 0);
+  assert.ok(Math.abs(moved.before - measured) < 1, `${moved.before} vs ${measured}`);
+});
+
+test('FO2-1, FO2-3: a range never starts inside a group without its heading; from Infinity is off', () => {
+  // Groups of 50: heading at 0, 51, 102, ...
+  const head = (index) => index - (index % 51);
+  const win = rowsWindow({body: () => null, rows: () => [], snap: head});
+  win.slice(5_100);
+  assert.equal(win.reveal(4_000), true);
+  assert.equal(win.range.first, head(win.range.first));
+  assert.ok(win.range.first <= 4_000 && win.range.last >= 4_000);
+  win.from = Infinity;
+  assert.equal(win.slice(5_100), null);
+  assert.equal(win.windowed, false);
+  win.from = undefined;
+  assert.equal(win.from, ROWS_WINDOW_FROM);
+});
+
+test('FO2-1, FO2-3, FO2-5: sf-list windows grouped lists and has rows-window; sf-tree draws by the same helper', () => {
+  const list = read('src/smart/list/index.js');
+  assert.match(list, /entries\.push\(\{key: `head:\$\{group\.key\}`/u);
+  assert.match(list, /getAttribute\("rows-window"\) === "off" \? Infinity : ROWS_WINDOW_FROM/u);
+  assert.deepEqual(json('src/smart/list/component.json').settings['rows-window'].values, ['auto', 'off']);
+  const tree = read('src/smart/tree/index.js');
+  assert.match(tree, /import \{rowsWindow\} from '\.\.\/\.\.\/core\/js\/rows-window\.js';/u);
+  assert.doesNotMatch(tree, /windowRange\(|watchScroll\(/u);
+  assert.match(read('src/smart/tree/js/templates/default.css'), /\.sf-tree\[data-sf-rows-window\] \{\s*overflow-anchor: none;/u);
 });
 
 // ------------------------------------------------------------- FO-1 files drop

@@ -203,7 +203,9 @@ test('C102 5 (§7 item 7): static, list semantics and the .sf-tree--static class
   // The class tree leaves static markup alone.
   assert.match(classTree, /isSmartTreeRoot\(root\) \|\|\n\s+isStaticTree\(root\)/u);
   // A static tree is never windowed.
-  assert.match(source, /return !this\.static && this\._rows\.length > WINDOW_FROM;/u);
+  // A static tree is never windowed (since FO2-5 the window is core's rows window, from 301 rows).
+  assert.match(source, /if \(this\.static\) \{\s*this\._rows = \[\];\s*this\._rowsDirty = true;\s*this\._rowsWindow\.slice\(0\);/u);
+  assert.match(source, /from: WINDOW_FROM \+ 1,/u);
 });
 
 test('C102 6: a lazy branch shows «Загрузка…», an error row with retry', async () => {
