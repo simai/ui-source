@@ -378,14 +378,19 @@ function updateChrome(block, result) {
   // the language of the block; the frame follows the site theme.
   const terminal = lineMarks.get(block)?.terminal === true;
   root.classList.toggle('sf-highlight--terminal', terminal);
+  // A file name (owner decision C285): data-title on the code, its pre or the
+  // root stands where the language name is, in the same head text; the
+  // language is not shown then. A terminal keeps its icon and shows the name
+  // in place of its word.
+  const title = String(blockOption(block, 'data-title') ?? '').trim();
   if (terminal) {
     const icon = block.ownerDocument.createElement('span');
     // Icon step 2: 20 on a desktop, 16 on a phone, the code's line height.
     icon.className = 'sf-icon sf-icon--size-2';
     icon.setAttribute('aria-hidden', 'true');
     icon.textContent = 'terminal';
-    language.replaceChildren(icon, block.ownerDocument.createTextNode(pageText(HIGHLIGHT_TEXT, 'terminal', block, 'sf-highlight')));
-  } else language.textContent = block.dataset.requestedLang || result.language || 'text';
+    language.replaceChildren(icon, block.ownerDocument.createTextNode(title || pageText(HIGHLIGHT_TEXT, 'terminal', block, 'sf-highlight')));
+  } else language.textContent = title || block.dataset.requestedLang || result.language || 'text';
   ensureCopyButton(block, root, head);
   ensureWrapButton(block, root, head);
 }

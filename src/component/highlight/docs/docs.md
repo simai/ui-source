@@ -17,7 +17,12 @@ The copy button has the icon button's plain look (1.5.0, owner decision C201,
 `sf-icon-button--plain`): it is an icon inside the block, so it has no plate
 in any state, and only its glyph's ink moves -- the block's dim ink at rest,
 the text's ink under the pointer, the primary colour on a press. The wrap
-toggle beside it keeps its look. `data-chrome="none"` omits the header. `data-chrome="static"` lets the host own
+toggle beside it keeps its look. A file name (1.9.0, owner decision C285): `data-title="config/app.php"` on
+the `code`, its `pre` or the root puts the name where the header shows the
+language, in the same header text; the language is not shown then. Without
+`data-title` the header names the language as before. A terminal
+(`data-frame="terminal"`) keeps its icon and shows the name in place of the
+word "Terminal". `data-chrome="none"` omits the header. `data-chrome="static"` lets the host own
 the existing header without duplication. The historical
 `data-sf-highlight-chrome="static"` input remains compatible. Generated copy
 labels follow the document language and may be overridden by `data-copy-label`

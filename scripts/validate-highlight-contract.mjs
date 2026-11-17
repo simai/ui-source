@@ -22,5 +22,8 @@ assert.match(lines, /sf-code-line__number/);
 assert.match(palette, /--sf-highlight-background:\s*transparent/);
 assert.match(theme, /--sf-highlight--keyword/);
 assert.match(defaults, /sf-code-surface/);
+// The head's file name (owner decision C285): data-title stands in the language slot.
+assert.match(runtime, /blockOption\(block, 'data-title'\)/);
+assert.match(runtime, /language\.textContent = title \|\|/);
 
 process.stdout.write(`${JSON.stringify({status: 'PASS', runtime: 'project-owned', externalRuntimeDependencies: 0})}\n`);
