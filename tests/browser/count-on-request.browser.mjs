@@ -26,6 +26,8 @@ const modules = [
   'smart/smart/dropdown/js/dropdown.js',
   'smart/smart/input/js/input.js',
   'smart/smart/spinner/js/spinner.js',
+  'smart/smart/progress-bar/js/progress-bar.js',
+  'smart/smart/bulk-actions/js/bulk-actions.js',
   'smart/smart/pagination/js/pagination.js',
 ].map((p) => join(out, p));
 
@@ -137,21 +139,29 @@ try {
   if (String(landed) !== '45') note({case: 'last page', pages: landed, expected: 'page 45 once the number is known'});
   await lastly.close();
 
-  // 5. For-all asks for the number it would be applied against.
+  // 5. For-all asks for the number it would be applied against. Since 1.9.0
+  // (C295) the band is sf-bulk-actions: no «для всех» box to mark, so the
+  // count is asked for once the whole page is selected, and the bar offers
+  // «Выбрать все N» with the answer.
   const forAll = await open('total="0" count-known="false" can-count="true" has-next="true" current="1" page-size="10" selected-count="3" actions="archive:В архив" show-action-for-all="true"');
-  const label = await forAll.evaluate(() => {
-    const box = document.querySelector('.sf-pagination-actions sf-checkbox');
-    return box?.getAttribute('label') ?? null;
+  const before = await forAll.evaluate(async () => {
+    await new Promise((done) => setTimeout(done, 150));
+    return {asked: [...window.asked], offer: Boolean(document.querySelector('#p [data-sf-bulk-offer]'))};
   });
-  if (label !== 'For all') note({case: 'for all', label, expected: 'no number in the label until there is one'});
-  await forAll.evaluate(() => {
-    const box = document.querySelector('.sf-pagination-actions sf-checkbox input[type="checkbox"]')
-      ?? document.querySelector('.sf-pagination-actions sf-checkbox');
-    box.click();
-  });
+  if (before.asked.length || before.offer) note({case: 'for all', got: before, expected: 'nothing asked or offered while part of the page is selected'});
+  await forAll.evaluate(() => document.getElementById('p').setAttribute('selected-count', '10'));
   await forAll.waitForTimeout(250);
   const asked = await forAll.evaluate(() => [...window.asked]);
   if (String(asked) !== 'action-for-all') note({case: 'for all', asked, expected: 'the count, with reason action-for-all'});
+  const offer = await forAll.evaluate(async () => {
+    const element = document.getElementById('p');
+    element.setAttribute('total', '240');
+    element.setAttribute('count-known', 'true');
+    await new Promise((done) => setTimeout(done, 300));
+    const button = element.querySelector('[data-sf-bulk-offer="all"]');
+    return button ? (button.getAttribute('text') ?? button.textContent).replace(/\s+/gu, ' ').trim() : null;
+  });
+  if (!offer || !/240/u.test(offer)) note({case: 'for all', offer, expected: 'the bar offers all 240 once the number is known'});
   await forAll.close();
 
   // 6. A host that cannot count is offered nothing at all.

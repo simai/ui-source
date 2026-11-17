@@ -1418,6 +1418,24 @@ class SfPagination extends PaginationElement {
     if (name === "selected-count" && this.isConnected && oldValue !== null && oldValue !== newValue && this.actionForAll) {
       this.setActionForAll(false);
     }
+    if (name === "selected-count" || name === "show-action-for-all") {
+      queueMicrotask(() => this.askCountForAll());
+    }
+  }
+
+  // The bar offers «Выбрать все N» once the whole page is selected, and N is
+  // the number the action would go to: without an exact count the old «для
+  // всех» box asked for it when marked. The bar has no box, so the count is
+  // asked for when the whole page is selected (reason action-for-all, as
+  // before) and the offer appears with the answer.
+  askCountForAll() {
+    if (!this.isConnected || !this.showActionForAll || this.exactCount || !this.canCount || this.counting) {
+      return this;
+    }
+    if (this.selectedCount > 0 && this.selectedCount >= this.bulkPageCount) {
+      this.requestCount("action-for-all");
+    }
+    return this;
   }
 
   applyAction() {
