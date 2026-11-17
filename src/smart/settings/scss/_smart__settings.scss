@@ -352,17 +352,27 @@
 .sf-settings-panel-footer {
   display: flex;
   flex: none;
+  flex-wrap: wrap;
   gap: var(--sf-gap--actions);
   padding: var(--sf-space-1\/2);
   border-block-start-width: var(--sf-px);
   border-block-start-style: solid;
 }
 
-/* sf-button draws no box of its own: its button shares the width. */
+/* sf-button draws no box of its own: its button shares the width. Each
+   grows from its own label, which stays on one line (C144, C166 follow-up: equal
+   halves from a zero basis left «Применить (12)» 101 px for 107 at size
+   1/2 and wrapped it to two lines, 52 px high); where the two labels do
+   not fit side by side the second goes under the first, both the full
+   width, as a window's answers do (C155). */
 .sf-settings-panel-footer > *,
 .sf-settings-panel-footer > sf-button > .sf-button {
-  flex: 1 1 0;
+  flex: 1 1 auto;
   min-inline-size: 0;
+}
+
+.sf-settings-panel-footer .sf-button-text-container {
+  white-space: nowrap;
 }
 
 .sf-settings-panel-live {
