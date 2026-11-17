@@ -1557,11 +1557,13 @@ function renderMoneyEdit(field, value, host) {
     // amount and its currency, never a currency alone.
     const currencyKey = `${key}#currency`;
     const currency = parts.currency || draftOf(host, currencyKey) || null;
+    const min = hasBound(field.min) ? field.min : null;
+    const max = hasBound(field.max) ? field.max : null;
     const check = (text, code) => {
         const message = decimalError(host, text, {
             digits: code ? currencyOf(code, locale).minor : null,
-            min: field.min ?? null,
-            max: field.max ?? null,
+            min,
+            max,
         });
         if (message) return message;
         return readDecimal(text).value !== null && !code ? setText(host, 'chooseCurrency') : '';

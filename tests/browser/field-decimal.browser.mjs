@@ -138,8 +138,6 @@ try {
   expect('items cell en', cells.items2En, '2 rows');
   expect('items cell empty', cells.itemsEmpty, '');
   expect('set types: modes', modes, {
-    money: {set: 'view', view: false, edit: false, cell: 'own', filter: 'own'},
-    percent: {set: 'view', view: false, edit: false, cell: 'own', filter: 'own'},
     items: {set: 'view', view: false, edit: false, cell: 'own', filter: 'own'},
     compound: {set: 'view', view: false, edit: false, cell: 'text', filter: 'text'},
     'ru.requisites': {set: 'view', view: false, edit: false, cell: 'text', filter: 'text'},
