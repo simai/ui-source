@@ -23,7 +23,8 @@ const check = (change = {}) => checkComponentNames({registry, framework, package
 const run = (change = {}) => splitOpen(check(change), packages.open).fresh;
 
 test('every Smart tag of this checkout passes the naming gate; the open problems are listed, not hidden', () => {
-  assert.equal(framework.length, registry.owners.find(({id}) => id === 'framework').names.length, 'every Framework component is read');
+  // A reserved name is held, not shipped: no component stands behind it.
+  assert.equal(framework.length, registry.owners.find(({id}) => id === 'framework').names.filter(({status}) => status !== 'reserved').length, 'every Framework component is read');
   const problems = check({today: new Date().toISOString().slice(0, 10)});
   const {fresh, listed, gone} = splitOpen(problems, packages.open);
   assert.deepEqual(fresh, [], 'a problem the open list does not name');

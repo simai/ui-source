@@ -40,7 +40,8 @@
               "required": ["element", "status"],
               "properties": {
                 "element": {"type": "string", "pattern": "^sf-[a-z][a-z0-9]*(-[a-z0-9]+)*$"},
-                "status": {"enum": ["released", "preview", "reserved"], "description": "released: shipped in a release of its owner; preview: shipped, but its shape may still change before it is released (the set marks it preview); reserved: held for the owner, not shipped yet."}
+                "status": {"enum": ["released", "preview", "reserved"], "description": "released: shipped in a release of its owner; preview: shipped, but its shape may still change before it is released (the set marks it preview); reserved: held for the owner, not shipped yet."},
+                "note": {"type": "string", "description": "Optional: why a name is reserved or in preview, with its decision reference."}
               }
             }
           },
