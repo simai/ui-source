@@ -71,7 +71,7 @@ test('SM-DP-2: left-icon and input-size are dated aliases until 2027-01-01, note
 });
 
 test('C153 (1), SM-CI-1 / SM-CLR-1 / SM-IF-1 / SM-ICH-1: code, colour, image and choice labels are in the text ink and stay 14 on a phone', () => {
-  const phone = /@media not all and \(min-width: (?:60rem|#\{mq\.breakpoint-min\(lg\)\})\) \{[^@]*?font-size: var\(--sf-text-size-1\); line-height: var\(--sf-text-height-1\);/u;
+  const phone = /@media not all and \(min-width: (?:60rem|#\{bp\.\$breakpoint-desktop\})\) \{[^@]*?font-size: var\(--sf-text-size-1\); line-height: var\(--sf-text-height-1\);/u;
   const cases = [
     ['src/component/verification/scss/_css__verification-form.scss', '.sf-verification-form-label', '.sf-verification-form.sf-verification-form--size-1 .sf-verification-form-label'],
     ['src/smart/input-color/js/templates/default.css', '.sf-color-label', '.sf-color-field.sf-color-field--size-1 .sf-color-label'],
@@ -84,7 +84,7 @@ test('C153 (1), SM-CI-1 / SM-CLR-1 / SM-IF-1 / SM-ICH-1: code, colour, image and
     assert.match(own, /color: var\(--sf-on-surface\);/u, `${path}: ${label} is on-surface`);
     assert.doesNotMatch(own, /color: var\(--sf-on-surface-variant\)/u, `${path}: ${label} is not the hint ink`);
     const text = flat(css);
-    const at = text.indexOf(`${small} {`, text.search(/@media not all and \(min-width: (?:60rem|#\{mq\.breakpoint-min\(lg\)\})\)/u));
+    const at = text.indexOf(`${small} {`, text.search(/@media not all and \(min-width: (?:60rem|#\{bp\.\$breakpoint-desktop\})\)/u));
     assert.ok(at > 0, `${path}: a phone rule names ${small}`);
     assert.match(text.slice(text.lastIndexOf('@media', at)), phone, `${path}: the phone label is 14 / 20`);
   }

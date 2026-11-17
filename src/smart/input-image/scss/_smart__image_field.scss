@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @layer sf.components {
 /* sf-input-image: one image in a form -- as a row (the thumbnail, the file
    name and size, then «Заменить…» and the remove icon) or as a preview (the
@@ -86,7 +87,7 @@
   line-height: var(--sf-image-field--small-height);
 }
 
-@media not all and (min-width: #{mq.breakpoint-min(lg)}) {
+@media not all and (min-width: #{bp.$breakpoint-desktop}) {
   .sf-image-field.sf-image-field--size-1 .sf-image-field-label {
     font-size: var(--sf-text-size-1);
     line-height: var(--sf-text-height-1);
