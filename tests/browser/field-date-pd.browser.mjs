@@ -44,7 +44,9 @@ async function run(lang) {
     if (message.type() === 'warning') warnings.push(message.text());
     if (message.type() === 'error') errors.push(message.text());
   });
-  page.on('pageerror', (error) => errors.push(String(error)));
+  // Scripts added inline (addScriptTag with a path) have no src, so a bundle
+  // that computes its public path says so; the page loads every module anyway.
+  page.on('pageerror', (error) => { if (!String(error).includes('Automatic publicPath')) errors.push(String(error)); });
   await page.setContent(`<!doctype html><html class="theme-light" lang="${lang}"><head><meta charset="utf-8"></head>`
     + '<body style="margin:0"><div id="host" style="width:600px"></div></body></html>');
   for (const path of styles) await page.addStyleTag({path}).catch(() => {});
@@ -74,6 +76,11 @@ async function run(lang) {
 
     const report = {};
     const gt = draw(set.renderFilterField(dateField, filterHost('gt')));
+    // Read from a box that is not in the page: sf-dropdown takes its items
+    // into its panel once it is connected.
+    const loose = document.createElement('div');
+    render(set.renderFilterField(dateField, filterHost('gt')), loose);
+    report.words = [...loose.querySelectorAll('sf-list-item')].map((item) => item.getAttribute('text'));
     const today = draw(set.renderFilterField(dateField, filterHost('today')));
     const between = draw(set.renderFilterField(dateField, filterHost('between')));
 
@@ -90,7 +97,6 @@ async function run(lang) {
     report.filterSize = dateIn(gt)?.getAttribute('size') ?? null;
     report.filterLocale = dateIn(gt)?.getAttribute('locale') ?? null;
     report.filterPlaceholder = dateIn(gt)?.querySelector('input')?.getAttribute('placeholder') ?? null;
-    report.words = [...gt.querySelectorAll('sf-list-item')].map((item) => item.getAttribute('text'));
     report.todayHasDay = Boolean(dateIn(today));
     report.betweenRange = dateIn(between)?.hasAttribute('range') ?? null;
     report.betweenPresets = String(dateIn(between)?.presets ?? '');
