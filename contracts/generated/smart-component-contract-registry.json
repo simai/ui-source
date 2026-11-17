@@ -27,7 +27,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/accordion/smart.manifest.json",
-      "manifest_sha256": "01ff87efc37f0d43f1ae04a6b7df58e7fb0d40de4ae9273213c8ab08ddd45f6b",
+      "manifest_sha256": "919783bfebc88ff9a62281729a9a898f8ddf55e103b94340914411427842dfa0",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
