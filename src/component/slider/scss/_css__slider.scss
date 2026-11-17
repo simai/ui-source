@@ -78,6 +78,15 @@
   min-height: var(--sf-slider-slide--min-height, var(--sf-f2));
 }
 
+/* A slider with a ratio is as high as its ratio makes it: the slide fills the
+   frame and has no floor of its own. The 192 floor (--sf-f2) stood under the
+   frame on a narrow screen -- 16/9 at 390 is a 280 x 158 window, 21/9 about
+   120 high -- and the window cut the slide's bottom, its number and its
+   caption on the scrim with it (34 px at 16/9, about 72 at 21/9). */
+.sf-slider:not(.sf-slider--content):not([data-ratio="auto"])[data-ratio] > .sf-slider-main.swiper .sf-slider-slide {
+  min-height: 0;
+}
+
 .sf-slider .sf-slider-slide img {
   width: var(--sf-slider-slide-img--width, 100%);
   height: var(--sf-slider-slide-img--height, 100%);

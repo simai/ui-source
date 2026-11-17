@@ -50,7 +50,7 @@ export function renderSiteHeaderTemplate(context) {
         ${hasSlot('actions') ? html`<div class="sf-site-header-actions">${slot('actions')}</div>` : nothing}
         ${tools?.settings.length ? html`<div class="sf-site-header-settings" role="group" aria-labelledby=${`${id}-settings`}>
           <span class="sf-site-header-settings-heading" id=${`${id}-settings`}>${settingsLabel}</span>
-          ${tools.settings.map(({node, label: word}) => html`<div class="sf-site-header-setting"><span class="sf-site-header-setting-label" aria-hidden="true">${word}</span>${node}</div>`)}
+          ${tools.settings.map(({node, kind, label: word}) => html`<div class="sf-site-header-setting" role=${kind === 'tools' ? 'group' : nothing} aria-label=${kind === 'tools' ? word : nothing}><span class="sf-site-header-setting-label" aria-hidden="true">${word}</span>${node}</div>`)}
         </div>` : nothing}
         ${hasSlot('sheet') ? html`<div class="sf-site-header-sheet">${slot('sheet')}</div>` : nothing}
       </div>

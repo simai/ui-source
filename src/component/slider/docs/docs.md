@@ -176,3 +176,12 @@ square corner and stand `--sf-slider-thumbnails--space-between` apart.
 - `bindSlider(root, parts)` takes the class names of another block; the old
   `.sf-carousel` binds through it until 2027-01-01 (component.carousel 1.4.0,
   C247), and `data-delay` is read as the autoplay delay there.
+
+## A ratio is the slide's height (1.4.1)
+
+- A slider with `data-ratio` is as high as its ratio: the slide fills the
+  frame and the slide floor (`--sf-slider-slide--min-height`, default
+  `--sf-f2`, 192) does not apply. At 390 a 16/9 slider is a 280 x 158 window;
+  the 192 floor stood under it and the window cut 34 px off the slide (about
+  72 at 21/9), with the slide's number and its caption on the scrim. A content
+  slider and a slider without a ratio (or `data-ratio="auto"`) keep the floor.

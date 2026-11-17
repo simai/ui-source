@@ -609,6 +609,28 @@
     vertical-align: top;
   }
 
+  // A count written beside the button's text container, straight in the
+  // button (the class markup the docs teach, and Docara's example log), has
+  // no label to inherit from: it took the browser's button font, Arial
+  // 13.33 on a line of «normal» (Docara audit FW-2, 2026-11-17). It takes the
+  // text family and the text step of the tabs' size, as the label does: 1 by
+  // default, 1/2 and 2 by the size class.
+  .sf-button > .sf-tabs-count {
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+
+  .sf-tabs--size-1-2 .sf-button > .sf-tabs-count {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-tabs--size-2 .sf-button > .sf-tabs-count {
+    font-size: var(--sf-text-size-2);
+    line-height: var(--sf-text-height-2);
+  }
+
   .sf-tabs--size-1-2 .sf-tabs-count {
     min-inline-size: var(--sf-text-height-1\/2);
   }

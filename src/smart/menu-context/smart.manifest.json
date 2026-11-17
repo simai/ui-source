@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.25.5",
+  "version": "1.26.1",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -189,7 +189,7 @@
       },
       "search": {
         "type": "object",
-        "description": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-context-menu-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
+        "description": "{placeholder, empty, remote}: a search field above the rows (set as a property). Local by default; with remote: true the menu raises sf-menu-context-search {query} and shows the entries the host sets. A submenu entry passes it with `search`."
       }
     },
     "additionalProperties": false
@@ -199,7 +199,7 @@
     "kinds": {
       "item": {
         "fields": {
-          "id": "string, returned in sf-context-menu-select",
+          "id": "string, returned in sf-menu-context-select",
           "text": "string, the label",
           "icon": "string, a Material Symbols name",
           "caption": "string, a second line under the label",
@@ -467,7 +467,7 @@
       }
     },
     "chooseTab": {
-      "summary": "Choose a tab by index and emit sf-context-menu-tab.",
+      "summary": "Choose a tab by index and emit sf-menu-context-tab.",
       "arguments": [
         {
           "name": "args",
@@ -491,7 +491,7 @@
       }
     },
     "requestClose": {
-      "summary": "Close an owned menu; for a menu its host placed, emit sf-context-menu-close for the host to close it.",
+      "summary": "Close an owned menu; for a menu its host placed, emit sf-menu-context-close for the host to close it.",
       "arguments": [],
       "returns": {
         "type": "boolean"
@@ -1056,7 +1056,7 @@
     ]
   },
   "ai_guidance": {
-    "use_when": "Use sf-context-menu for every action menu: give it entries and open it with openFor(anchor). It opens below and start-aligned by default, with no tail, in the top layer, on the profile menu's surface. A profile menu is one: a header for the person, a choice row for the theme, a submenu with search for the language. A settings panel is one too, and is this component rather than a tag of its own: submenu=\"drill\" with value rows (switch, range, choice, a group of tiles), listening to sf-context-menu-change alone.",
+    "use_when": "Use sf-menu-context for every action menu: give it entries and open it with openFor(anchor). It opens below and start-aligned by default, with no tail, in the top layer, on the profile menu's surface. A profile menu is one: a header for the person, a choice row for the theme, a submenu with search for the language. A settings panel is one too, and is this component rather than a tag of its own: submenu=\"drill\" with value rows (switch, range, choice, a group of tiles), listening to sf-menu-context-change alone.",
     "do_not": [
       "Do not copy generated ui-smart code",
       "Do not move host data or access decisions into the component",

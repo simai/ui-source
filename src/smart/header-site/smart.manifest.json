@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.11.3",
+  "version": "1.12.2",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -117,7 +117,7 @@
   "contracts": {},
   "methods": {
     "open": {
-      "summary": "Opens the side panel; refused while the bar is not collapsed, or when a page cancels sf-site-header-open",
+      "summary": "Opens the side panel; refused while the bar is not collapsed, or when a page cancels sf-header-site-open",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -125,7 +125,7 @@
       }
     },
     "close": {
-      "summary": "Closes the side panel; refused when it is closed already or a page cancels sf-site-header-close",
+      "summary": "Closes the side panel; refused when it is closed already or a page cancels sf-header-site-close",
       "arguments": [
         {
           "name": "args",
@@ -367,11 +367,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-site/index.js",
-        "sha256": "37b8ec5bbfd04d550e54c469636155603e55685760cb7a0e3ec3406d8c8ed752"
+        "sha256": "eee55084002a502ef7b26dbb5b07344c4aa92f5432f1ae2b717d5c3c3d176b5d"
       },
       {
         "path": "src/smart/header-site/js/templates/default.js",
-        "sha256": "3000d65e830ea948a1f7ab6f70edc6df42a91a90bc351a2c61022b890006f6aa"
+        "sha256": "ac4c7c96180e4e7dc8cc63d493b778aec6b69574d0acc2c2595e70294af199b9"
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",

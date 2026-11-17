@@ -32,7 +32,7 @@
     {id: 'archive', text: 'В архив', icon: 'archive', danger: true, caption: 'Можно вернуть'},
   ];
   more.addEventListener('click', () => menu.toggleFor(more));
-  menu.addEventListener('sf-context-menu-select', (event) => {
+  menu.addEventListener('sf-menu-context-select', (event) => {
     console.log(event.detail.id, event.detail.checked);
   });
 </script>
@@ -66,7 +66,7 @@
 `→` открывает подменю, `←` и `Escape` закрывают текущий уровень, а `Tab` и
 нажатие вне меню закрывают всё меню. Буква переводит фокус на следующий пункт,
 который с неё начинается. После выбора меню закрывается и возвращает фокус
-кнопке. Выбор на любом уровне приходит одним событием `sf-context-menu-select`;
+кнопке. Выбор на любом уровне приходит одним событием `sf-menu-context-select`;
 чтобы меню осталось открытым, отмените событие или задайте пункту `keepOpen`.
 
 ### Меню объекта: правая кнопка, клавиша меню, долгое нажатие
@@ -270,12 +270,12 @@ menu.entries = [
 
 | Событие | Когда |
 | --- | --- |
-| `sf-context-menu-change` | Человек просит изменить значение; отменяемое, `{id, value, previous, entry}` |
-| `sf-context-menu-changed` | Значение записано в запись, строка его показывает |
-| `sf-context-menu-reset` | Человек просит вернуть объявленные значения; отменяемое |
+| `sf-menu-context-change` | Человек просит изменить значение; отменяемое, `{id, value, previous, entry}` |
+| `sf-menu-context-changed` | Значение записано в запись, строка его показывает |
+| `sf-menu-context-reset` | Человек просит вернуть объявленные значения; отменяемое |
 
 ```js
-menu.addEventListener('sf-context-menu-change', async (event) => {
+menu.addEventListener('sf-menu-context-change', async (event) => {
   event.preventDefault();                       // ждём сервер
   const {id, value} = event.detail;
   if (await save(id, value)) menu.setValue(id, value);
@@ -359,7 +359,7 @@ menu.entries = [
 
 Когда пунктов много и ищет сервер — например, сайты, — поиск задают с
 `remote: true`. Меню не фильтрует пункты само: оно сообщает запрос событием
-`sf-context-menu-search` и показывает те записи, которые хост поставит в
+`sf-menu-context-search` и показывает те записи, которые хост поставит в
 `entries`. В начале строки может стоять картинка `avatar` (логотип сайта, фото)
 или инициалы `initials`. Цвет, о котором строка, — `swatch`: CSS-цвет
 (код, `var()` токена, `light-dark()` двух), нарисованный кружком на месте
@@ -368,7 +368,7 @@ menu.entries = [
 
 ```js
 menu.search = {placeholder: 'Найти сайт', empty: 'Ничего не найдено', remote: true};
-menu.addEventListener('sf-context-menu-search', async (event) => {
+menu.addEventListener('sf-menu-context-search', async (event) => {
   menu.entries = await findSites(event.detail.query);
 });
 ```
