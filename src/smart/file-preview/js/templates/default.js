@@ -129,7 +129,11 @@ function renderLine(context) {
     ></sf-progress-bar>`;
   }
   if (context.state === 'error') {
-    return html`<span class="sf-file-preview-error">${context.words.failed}</span>`;
+    // The reason is said when it appears (role alert, as sf-form's summary
+    // and sf-alert-bar's live line; defects-d12): the row drew it in silence.
+    // A chip cuts it to one line, so the whole reason is its title as well.
+    return html`<span class="sf-file-preview-error" role="alert"
+      title=${context.view === 'chip' ? context.words.failed : nothing}>${context.words.failed}</span>`;
   }
   return context.meta
     ? html`<span class="sf-file-preview-meta sf-file-preview-size" aria-hidden="true" title=${context.view === 'tile' ? context.meta : nothing}>${context.meta}</span>`
