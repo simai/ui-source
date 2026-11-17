@@ -97,7 +97,7 @@ async function run(lang) {
       // Read from a box not in the page: sf-dropdown takes its items into its panel once connected.
       const loose = document.createElement('div');
       render(set.renderFilterField(field, {...one.host, entry: {}, getFilterControlValue: () => ({})}), loose);
-      report[`${name}Groups`] = [...new Set([...loose.querySelectorAll('sf-list-item')].map((item) => item.getAttribute('group')))];
+      report[`${name}Groups`] = [...new Set([...loose.querySelector('sf-dropdown').querySelectorAll('sf-list-item')].map((item) => item.getAttribute('group')))];
       report[`${name}Label`] = dropdown.getAttribute('label');
       report[`${name}Hint`] = dropdown.getAttribute('hint');
       const rows = [];
