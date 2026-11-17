@@ -1922,6 +1922,9 @@ class SfContextMenu extends ContextMenuElement {
 
     return this.createTemplateContext({
       ...props,
+      // The host's name, read here: a watched attribute is kept out of the
+      // template's custom props, where the name used to arrive from.
+      ariaLabel: this.getAttribute("aria-label") || "",
       // The older list form set as a property (`.items=${…}`, sf-admin-menu's
       // settings menu) is kept by the manifest's accessor, which the props
       // above do not read: they gave the default, an empty list, and the menu
