@@ -17,7 +17,7 @@
     "src/component/pagination/scss/_var__pagination.scss",
     "src/component/pagination/scss/index.scss"
   ],
-  "content_sha256": "a4b44a717a94afe6c5c454be9b4e06cf7b473db3867ef4802a6a3c1ad7f4a57e",
+  "content_sha256": "377f477e7be269addf445338bdbdc1cfa1ad6d1d994eb20455d99581dae8ff9d",
   "dependencies": [
     {
       "id": "tokens.border",

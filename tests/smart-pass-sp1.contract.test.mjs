@@ -261,29 +261,34 @@ test('SM-CPY-2: sf-button-icon writes one scheme class; the sheet carries on-sur
   assert.match(sheets, /\.sf-icon-button\.sf-icon-button:is\(\.sf-icon-button--on-surface-variant\.sf-icon-button--on-surface-variant, \.sf-icon-button--secondary\):not\(\.sf-icon-button--default\) \{\n\s+--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-on-surface-variant\)\);/u);
 });
 
-// ---- SM-PN-1: five places fit a phone column -------------------------------
+// ---- SM-PN-1, EX-3: both pagination twins fit a phone column ---------------
 
-test('SM-PN-1, EX-3: below the sm step both twins take the tightness: Smart five places and the class long range fit 326', () => {
+test('SM-PN-1, EX-3: a numbers place of either twin shrinks to square when the row has no room, with no screen query', () => {
   const sheet = read('src/component/pagination/scss/_css__pagination.scss');
-  const narrow = sheet.match(/@include mq\.media-breakpoint-down\(sm\) \{([\s\S]*?)\n\}/u);
-  assert.ok(narrow, 'the pagination sheet has a below-sm block');
-  const block = narrow[1];
-  assert.match(block, /\.sf-pagination \{\s*--sf-pagination--space-x: var\(--sf-ui-1--space-y-tightness-default\);/u);
-  assert.match(block, /\.sf-pagination\.sf-pagination--size-1\\\/2 \{\s*--sf-pagination--space-x: var\(--sf-ui-1\\\/2--space-y-tightness-default\);/u);
-  assert.match(block, /--sf-button--padding-inline-start: var\(--sf-pagination--space-x\);/u);
-  assert.match(block, /--sf-button--padding-inline-end: var\(--sf-pagination--space-x\);/u);
-  // The plain twin (EX-3): sf-page-number reads --sf-page-number--space-x for
-  // its side padding where its place grows with its number; both steps set it
-  // to the same tightness as the Smart place.
-  const tightness = [...block.matchAll(/--sf-page-number--space-x: var\(--sf-pagination--space-x\);/gu)];
-  assert.equal(tightness.length, 2, 'the class place follows the Smart place at steps 1 and 1/2');
-  // Class long range (ui-doc examples/components/pagination/long-range): seven
-  // places, no arrows. Smart numbers: two arrows and five places.
-  assert.ok(7 * 36 + 6 * 8 <= 326, 'class long range fits');
-  // The arithmetic the block answers: arrows and places are the control
-  // height (36 at the phone step), six gaps of 8.
-  const control = 36, gap = 8;
-  assert.ok(2 * control + 5 * control + 6 * gap <= 326);
+  const rule = (selector) => {
+    const at = sheet.indexOf(`${selector} {`);
+    assert.ok(at >= 0, `the rule ${selector}`);
+    return sheet.slice(at, sheet.indexOf('}', at));
+  };
+  // One place rule for the Smart slot and the plain sf-page-number item.
+  const place = rule('.sf-pagination .sf-pagination-item.sf-pagination-slot,\n.sf-pagination .sf-pagination-item:has(> .sf-page-number)');
+  assert.match(place, /flex: 0 1 max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits\) \* 1ch \+ 2 \* var\(--sf-pagination--space-x\)\)\);/u);
+  assert.match(place, /min-inline-size: var\(--sf-pagination--control-height\);/u);
+  // The numbers' own padding is the label's, a step of the role table, so the place can shrink.
+  assert.match(sheet, /\.sf-pagination \{\s*--sf-pagination--place-x: var\(--sf-ui-1--text-space-x\);/u);
+  assert.match(sheet, /\.sf-pagination\.sf-pagination--size-1\\\/2 \{\s*--sf-pagination--place-x: var\(--sf-ui-1\\\/2--text-space-x\);/u);
+  const smart = rule('.sf-pagination .sf-pagination-slot > .sf-pagination-page');
+  assert.match(smart, /--sf-button--padding-inline-start: var\(--sf-pagination--place-x\);/u);
+  const plain = rule('.sf-pagination .sf-pagination-item > .sf-page-number');
+  assert.match(plain, /--sf-page-number--space-x: var\(--sf-pagination--place-x\);/u);
+  assert.match(plain, /inline-size: 100%;\s*min-inline-size: var\(--sf-pagination--control-height\);/u);
+  // The item's flex: 0 0 auto stays below the place rule in specificity (0,2,0 against 0,3,0).
+  assert.match(sheet, /\.sf-pagination \.sf-pagination-item \{\s*display: flex;\s*flex: 0 0 auto;/u);
+  // No screen query (C181): the row shrinks in any narrow box.
+  assert.doesNotMatch(sheet, /media-breakpoint-down\(sm\)/u);
+  // The arithmetic at the phone step (control 36, gap 8): Smart two arrows and
+  // five places, the class long range seven places.
+  assert.ok(2 * 36 + 5 * 36 + 6 * 8 <= 326 && 7 * 36 + 6 * 8 <= 326);
   assert.equal(json('src/component/pagination/passport.json').version, '1.5.2');
 });
 
