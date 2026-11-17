@@ -28,8 +28,8 @@ be copied.
   fetches it only when it speaks that language. An English page never fetches
   anything.
 - **The Framework's own pack comes in parts, one per component family**
-  (the Framework ships Russian; the Kazakh pilot was withdrawn by owner
-  decision C278, so a page in a language without a pack says English)
+  (the Framework ships Russian, owner decision C278, so a page in a
+  language without a pack says English)
   (`core/lang/<lang>/input.json`, `core/lang/<lang>/pagination.json`, …, and
   `core/lang/<lang>/core.json` for core's own words). A page fetches the parts of
   the families it shows. Each part is a whole pack of the format below; a

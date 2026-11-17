@@ -28,7 +28,7 @@ const rule = (css, selector) => {
 test('versions: smart.steps 1.4.3, component.step 1.4.0', () => {
   assert.equal(component.version, '1.4.5'); // C282: 1.4.3 moved on by the language-file patch (Russian is a language file)
   assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.5'); // C282: 1.4.3 moved on by the language-file patch (Russian is a language file)
-  assert.equal(json('src/component/step/passport.json').version, '1.4.0'); // docs batch B, FW-B-8: size 1 named; above C61's 1.3.2 // group build 9: 1.3.4 moved on by the merged branches or a GB9 patch
+  assert.equal(json('src/component/step/passport.json').version, '1.5.0'); // docs batch B, FW-B-8: size 1 named; above C61's 1.3.2 // group build 9: 1.3.4 moved on by the merged branches or a GB9 patch // group build 10: 1.4.0 moved on by the merged branches or a GB10 patch
 });
 
 test('C101 (1) role: an ordered process of a person; a server job is sf-progress-run, tasks in any order are not steps', () => {

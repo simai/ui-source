@@ -7,10 +7,16 @@ import test from 'node:test';
 // decisions C228, C233): the rules the measured fixes rest on.
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/^\s*\/\/.*$/gmu, '');
+// Every rule of the selector, joined: C273 writes a part's shape in
+// sf.components and its paint in a sf.paint block of the same selector, and
+// splits a border shorthand into its width and style there and its colour here
+// (group build 10).
 const block = (css, selector) => {
-  const start = css.indexOf(`${selector} {`);
-  if (start < 0) return '';
-  return css.slice(start, css.indexOf('}', start) + 1);
+  const out = [];
+  for (let start = css.indexOf(`${selector} {`); start >= 0; start = css.indexOf(`${selector} {`, start + 1)) {
+    out.push(css.slice(start, css.indexOf('}', start) + 1));
+  }
+  return out.join('\n');
 };
 const layer = (css, name) => {
   const start = css.indexOf(`@layer ${name} {`);
@@ -67,10 +73,12 @@ test('C228: the class accordion keeps its names; plates without a modifier, line
 test('doc D1: the example stands on the page, the source is the code surface (D20)', () => {
   const example = block(doc, '  .sf-doc-example,\n  .example');
   assert.doesNotMatch(example, /background/u);
-  assert.match(example, /border: var\(--sf-px\) solid var\(--sf-outline-variant\)/u);
+  assert.match(example, /border-width: var\(--sf-px\);\s*border-style: solid;/u);
+  assert.match(example, /border-color: var\(--sf-outline-variant\);/u);
   const source = block(doc, '  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll)');
   assert.match(source, /background-color: var\(--sf-highlight-background-color, var\(--sf-surface-container\)\)/u);
-  assert.match(source, /solid var\(--sf-highlight-border-color, var\(--sf-outline-variant\)\)/u);
+  assert.match(source, /border-style: solid;/u);
+  assert.match(source, /border-color: var\(--sf-highlight-border-color, var\(--sf-outline-variant\)\)/u);
   assert.doesNotMatch(doc, /inverse/u);
 });
 

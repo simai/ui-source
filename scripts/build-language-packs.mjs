@@ -28,7 +28,7 @@
 // The Framework's own pack is written in parts, one per component family
 // (component.json `family`; core's words are the family `core`): a page
 // fetches the parts of the families it shows, not every word of the
-// Framework (C177 follow-up: the Kazakh pack reached 15.2 KB gzip of a 16 KB
+// Framework (C177 follow-up: a pilot pack reached 15.2 KB gzip of a 16 KB
 // cap with half the Framework's words still to come). Each part is a whole
 // pack of the format; index.json says which components each part holds.
 // Another delivery (ui-pro, ui-chart, a product) writes one file per language

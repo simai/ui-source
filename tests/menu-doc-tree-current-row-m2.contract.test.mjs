@@ -23,7 +23,8 @@ test('RG-MN-1: the disclosure glyph of a current row takes the plate\'s ink', ()
 });
 
 test('RG-MN-1: the link inside a current row draws no plate of its own', () => {
-  assert.ok(css.includes(`${tree} .sf-menu-element > [aria-current='page'] {\n  color: inherit;\n}`));
+  // C273: the rule stands in a sf.paint block, one indent in (group build 10).
+  assert.match(css, /\.sf-menu\.sf-menu--documentation-tree \.sf-menu-element > \[aria-current='page'\] \{\s*color: inherit;\s*\}/u);
   assert.ok(css.includes(`${tree} [aria-current="page"]:not(.sf-menu-element, .sf-menu-element > *) {`), 'a bare current link keeps its own plate only outside a row');
   assert.doesNotMatch(css, /\.sf-menu\.sf-menu--documentation-tree \[aria-current="page"\] \{/u, 'no rule fills every element that carries aria-current');
 });

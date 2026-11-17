@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import test from 'node:test';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 // component.kbd 1.5.1 (admin K-2 acceptance N5): in a plain group the + join
 // takes the glyphs' own line, as the plain keys do (line-height: 1). With the
@@ -19,7 +20,8 @@ const body = (selector) => {
 };
 
 test('the plain join has the plain keys\' line', () => {
-  assert.match(/@mixin plain \{([^}]*)\}/u.exec(sheet)[1], /line-height: 1;/u);
+  // C273 splits the mixin by paint and shape mode; unfolded it reads as one (group build 10).
+  assert.match(/@mixin plain \{([^}]*)\}/u.exec(unfoldModes(sheet))[1], /line-height: 1;/u);
   for (const selector of [':where(#{$plain-places}) :where(.sf-kbd-join)', ':where(#{said-group(plain)}) > :where(.sf-kbd-join)']) {
     const rule = body(selector);
     assert.match(rule, /display: inline;/u);

@@ -9,13 +9,18 @@ const root = resolve(import.meta.dirname, '..');
 const read = (path) => readFileSync(join(root, path), 'utf8');
 const flat = (css) => css.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/^\s*\/\/.*$/gmu, '').replace(/\s+/gu, ' ');
 
-// The declarations of the rule whose selector is exactly `selector`.
+// The declarations of the rules whose selector is exactly `selector`, joined:
+// C273 writes a part's shape in sf.components and its paint in a sf.paint
+// rule of the same selector (group build 10).
 function rule(source, selector) {
   const css = flat(source);
-  const at = css.indexOf(`${selector} {`);
-  assert.ok(at >= 0, `a rule names ${selector}`);
-  const open = css.indexOf('{', at);
-  return css.slice(open + 1, css.indexOf('}', open));
+  const out = [];
+  for (let at = css.indexOf(`${selector} {`); at >= 0; at = css.indexOf(`${selector} {`, at + 1)) {
+    const open = css.indexOf('{', at);
+    out.push(css.slice(open + 1, css.indexOf('}', open)));
+  }
+  assert.ok(out.length, `a rule names ${selector}`);
+  return out.join(' ');
 }
 
 test('C226: the field ladder floors the label at 1/3 (12), never 1/4 (10)', () => {

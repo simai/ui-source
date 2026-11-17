@@ -44,7 +44,7 @@ const doc = {createElement: (name) => new Node(name)};
 const words = {'you-text': 'Вы', 'new-text': 'Новые'};
 
 test('the contract: date and unread on entries, the word new-text, relations', () => {
-  assert.equal(component.version, '1.5.1'); // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch // C282: 1.4.1 moved on by the language-file patch (Russian is a language file)
+  assert.equal(component.version, '1.5.3'); // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch // C282: 1.4.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
   assert.equal(component.settings.items.of.date.type, 'date');
   assert.equal(component.settings.items.of.unread.type, 'boolean');
   for (const lang of ['ru', 'en']) assert.ok(JSON.parse(read(`src/smart/list-feed/lang/${lang}.json`)).runtime['new-text']);
@@ -99,5 +99,6 @@ test('(4) the default entry reads «Автор · время»', () => {
   // Not the first of a run: no author line.
   const next = renderDefault.call(host, {'author-name': 'Анна', text: 'Ещё', date: '2026-11-16T09:31:00Z'}, {first: false, own: false});
   assert.equal(next.children.length, 1);
-  assert.match(/\.sf-list-feed__time \{([^}]*)\}/u.exec(sheet)?.[1] ?? '', /color: var\(--sf-on-surface-variant\);/u);
+  // C273: the ink stands in the sf.paint rule of the same selector (group build 10).
+  assert.match([...sheet.matchAll(/\.sf-list-feed__time \{([^}]*)\}/gu)].map((match) => match[1]).join(''), /color: var\(--sf-on-surface-variant\);/u);
 });

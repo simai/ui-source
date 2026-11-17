@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import {URL} from 'node:url';
-import {paintBlocks} from './support/paint-blocks.mjs';
+import {paintBlocks, unfoldModes} from './support/paint-blocks.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
@@ -62,9 +62,11 @@ test('C185 (3): zebra 4, hover and selected 8 over it (12 on a stripe), a primar
 });
 
 test('C185 (4): the first column of .table-frame stands still with its line at the end', async () => {
-  const frame = await read('src/utility/table-frame/default/scss/_sf_css__table_frame.scss');
+  // C273: unfolded paint and shape modes (group build 10).
+  const frame = unfoldModes(await read('src/utility/table-frame/default/scss/_sf_css__table_frame.scss'));
   assert.match(frame, /> :not\(caption\) > tr > :first-child \{\s*position: sticky;\s*inset-inline-start: 0;/u);
-  assert.match(frame, /border-inline-end: var\(--sf-px\) solid var\(--sf-table-frame-border-color\);/u);
+  assert.match(frame, /border-inline-end-width: var\(--sf-px\);\s*border-inline-end-style: solid;/u);
+  assert.match(frame, /border-inline-end-color: var\(--sf-table-frame-border-color\);/u);
 });
 
 test('C185 (5): the scale draws 2 to 10 steps, floor, the level words at the row end', async () => {

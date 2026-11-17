@@ -7,6 +7,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const sheet = await read('src/component/range-slider/scss/_css__range_slider_field.scss');
@@ -19,7 +20,8 @@ const rule = (selector, from = sheet) => {
 };
 
 test('RG-RS-1: the name takes the text ink, not the variant ink', () => {
-  const name = rule('.sf-range-slider-name');
+  // C273: the ink stands in the sf.paint rule of the same selector (group build 10).
+  const name = rule('.sf-range-slider-name') + rule('.sf-range-slider-name', `\n${paintBlocks(sheet).replace(/^ {2}/gmu, '')}`);
   assert.match(name, /color: var\(--sf-range-slider-name--color, var\(--sf-on-surface\)\);/u);
   assert.doesNotMatch(name, /on-surface-variant/u);
 });

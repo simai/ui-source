@@ -16,8 +16,11 @@ const rule = (sheet, selector) => {
 };
 
 test('sf-card: the title the others follow', () => {
+  // fix/small-fixes-sf1 writes the rule once in a mixin the card's sheet and core both emit (group build 10).
   const card = read('src/component/card/scss/_css__card.scss');
-  assert.match(card, /font-size: var\(--sf-card-title-size, var\(--sf-heading-6--size\)\);\s*line-height: var\(--sf-title--height-card\);\s*font-weight: var\(--sf-card-title-weight, var\(--sf-text--font-weight-6\)\);/u);
+  assert.match(card, /@include card-title\.card-title;/u);
+  const title = read('src/core/scss/mix/_mix__card_title.scss');
+  assert.match(title, /font-size: var\(--sf-card-title-size, var\(--sf-heading-6--size\)\);\s*line-height: var\(--sf-title--height-card\);\s*font-weight: var\(--sf-card-title-weight, var\(--sf-text--font-weight-6\)\);/u);
 });
 
 test('sf-list-attention: the heading is a card title, semibold', () => {

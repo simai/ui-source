@@ -48,7 +48,7 @@ test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is o
   assert.doesNotMatch(base, /var\(--sf-text-size-1\)|var\(--sf-text-height-1\)/u);
   assert.match(css, /\.sf-link:has\(> :is\(\.sf-link__icon, \.sf-link-icon\)\) \{\n[^}]*display: inline-flex;/u);
   assert.match(css, /--sf-icon--font-size: 1lh;\n\s+--sf-icon--width: 1em;\n\s+--sf-icon--height: 1em;\n\s+--sf-link-icon--size: 1em;/u);
-  assert.equal((await json('src/component/link/passport.json')).version, '1.2.0');
+  assert.equal((await json('src/component/link/passport.json')).version, '1.3.0'); // group build 10: 1.2.0 moved on by the merged branches or a GB10 patch
 });
 
 test('RG-NV 7, 8, 9: a page number is the ghost page button, no plate, as wide as its number', async () => {
@@ -59,7 +59,7 @@ test('RG-NV 7, 8, 9: a page number is the ghost page button, no plate, as wide a
   assert.match(css, /--sf-page-number--background-color: var\(--sf-pagination-current-background-color, var\(--sf-primary-container\)\);\n\s+--sf-page-number--color: var\(--sf-pagination-current-color, var\(--sf-on-primary-container\)\);/u);
   assert.match(css, /--sf-page-number--background-color: var\(--sf-place--control-hover, var\(--sf-surface-container-hover\)\);/u);
   assert.match(css, /inline-size: auto;\n\s+min-inline-size: max\(/u);
-  assert.equal((await json('src/component/pagination/passport.json')).version, '1.5.1'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch
+  assert.equal((await json('src/component/pagination/passport.json')).version, '1.6.0'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
 });
 
 test('RG-NV 10, 11: the row size reaches the arrows; the count row keeps the icon ink; a Smart number never breaks', async () => {
@@ -74,7 +74,7 @@ test('RG-NV 12: sf-pagination numbers fit seven or five places by its own room',
   assert.match(source, /return Boolean\(this\._sfNarrow\?\.matches\) \|\| this\._sfCramped === true;/u);
   assert.match(source, /fitPlaces\(\) \{/u);
   assert.match(source, /this\.noteFooterParts\(\);\n(?:\s+this\.\w+\(\);\n)*\s+this\.fitPlaces\(\);/u);
-  assert.equal((await json('src/smart/pagination/component.json')).version, '1.8.7'); // group build 9: 1.7.2 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file)
+  assert.equal((await json('src/smart/pagination/component.json')).version, '1.8.9'); // group build 9: 1.7.2 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch
 });
 
 test('C237: sf-page-number--circle is a retired name that draws the square', async () => {

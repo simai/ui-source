@@ -10,13 +10,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import {fileURLToPath} from 'node:url';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const stylePath = 'src/utility/table-frame/default/scss/_sf_css__table_frame.scss';
+// C273: the frame mixin is split by paint and shape mode and its border
+// shorthands by width, style and colour; unfolded, the source reads as one
+// rule per part again, the border in its three longhands (group build 10).
+const readFrame = () => unfoldModes(fs.readFileSync(path.join(root, stylePath), 'utf8'));
 
 test('the frame is the scroll area and the only outer edge', () => {
-  const source = read(stylePath);
+  const source = readFrame();
 
   // The frame's rules stand in one mixin, laid on every frame but one around
   // a table with row actions on a phone (C259), and on that one from the md
@@ -25,7 +30,8 @@ test('the frame is the scroll area and the only outer edge', () => {
   assert.match(source, /\.table-frame:not\(:where\(#\{\$table-frame-keyed-actions\}\)\) \{\s*@include frame;/u);
   assert.match(source, /@media \(min-width: \$table-phone-min\) \{\s*\.table-frame:where\(#\{\$table-frame-keyed-actions\}\) \{\s*@include frame;/u);
   assert.match(source, /overflow:\s*auto/u);
-  assert.match(source, /border:\s*var\(--sf-px\) solid var\(--sf-table-frame-border-color\)/u);
+  assert.match(source, /border-width:\s*var\(--sf-px\);\s*border-style: solid;/u);
+  assert.match(source, /border-color:\s*var\(--sf-table-frame-border-color\)/u);
   assert.match(source, /border-radius:\s*var\(--sf-table-frame-radius\)/u);
   // The frame is a surface, so its corner reads the surface role, never a
   // numbered step or the old name.
@@ -60,7 +66,7 @@ test('the frame is the scroll area and the only outer edge', () => {
 });
 
 test('every number comes from the ladder, through a public variable', () => {
-  const source = read(stylePath);
+  const source = readFrame();
 
   const declared = [...source.matchAll(/--sf-table-frame-([a-z-]+):\s*([^;]+);/gu)]
     .map(([, name, value]) => [name, value.trim()]);
@@ -169,7 +175,7 @@ test('the .table row actions: narrow control cells and the name link', () => {
   // In the frame too (DEV msg-85307787: 80 and 80 at 390): the frame's least
   // cell width is for words; a control cell and a head cell holding only a
   // screen reader's name drop it.
-  assert.match(read(stylePath), /> :not\(caption\) > \* > #\{\$table-control-cell\},\s*> :not\(caption\) > \* > :has\(> \.sr-only:only-child\) \{\s*min-inline-size: var\(--sf-0\);/u);
+  assert.match(readFrame(), /> :not\(caption\) > \* > #\{\$table-control-cell\},\s*> :not\(caption\) > \* > :has\(> \.sr-only:only-child\) \{\s*min-inline-size: var\(--sf-0\);/u);
   // The name link keeps the link colour (visited too), underlined under the
   // pointer and on keyboard focus; a link drawn as a button keeps its look.
   assert.match(css, /> tbody > tr > \* > a:where\(\[href\]:not\(\.sf-button\)\) \{\s*color: var\(--sf-link\);/u);

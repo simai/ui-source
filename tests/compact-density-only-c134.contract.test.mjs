@@ -26,7 +26,7 @@ const record = (id) => journal.find((entry) => entry.id === id);
 
 test('C134 sf-language: labels name|code replaces the boolean compact, read in code and noted with its dates', () => {
   const manifest = json('src/smart/language/component.json');
-  assert.ok(['1.3.0', '1.4.0', '1.4.2', '1.4.3', '1.4.4', '1.5.0', '1.5.2'].includes(manifest.version), manifest.version); // 1.4.2: group build 5 patch; 1.4.3: group build 7 (the GB6 note renumbered); 1.4.4: TT-11 tooltip (fix/returns-gb67); 1.5.0: the field look on the five-step ladder (#70)
+  assert.ok(['1.3.0', '1.4.0', '1.4.2', '1.4.3', '1.4.4', '1.5.0', '1.5.2', '1.5.3'].includes(manifest.version), manifest.version); // 1.4.2: group build 5 patch; 1.4.3: group build 7 (the GB6 note renumbered); 1.4.4: TT-11 tooltip (fix/returns-gb67); 1.5.0: the field look on the five-step ladder (#70)
   assert.ok(!('compact' in manifest.settings), 'compact leaves the settings');
   assert.deepEqual(manifest.settings.labels.values, ['name', 'code']);
   assert.equal(manifest.settings.labels.default, 'name');
@@ -57,7 +57,7 @@ test('C134 sf-menu: appearance rail, compact a dated value alias; the rail write
   assert.doesNotMatch(sheet, /\.sf-menu\.sf-menu--compact/u);
   assert.equal(withoutPaintBlocks(sheet).match(/\.sf-menu:is\(\.sf-menu--rail, \.sf-menu--compact\)/gu).length, 13); // 13: the rail count's grey (RG-NV 28)
   assert.match(read('src/component/menu/scss/_css__menu_element.scss'), /:where\(\.sf-menu:not\(\.sf-menu--rail, \.sf-menu--compact\)\)/u);
-  assert.equal(json('src/component/menu/passport.json').version, '1.9.1'); // 1.9.1: the C16 sweep's docs names (queue item 244), above 1.9.0 on fix/nav-menus-nv1
+  assert.equal(json('src/component/menu/passport.json').version, '1.10.0'); // 1.9.1: the C16 sweep's docs names (queue item 244), above 1.9.0 on fix/nav-menus-nv1 // group build 10: 1.9.1 moved on by the merged branches or a GB10 patch
   assert.equal(record('value-menu-appearance-compact-to-rail').rewrite, 'rename-value');
   assert.deepEqual(record('class-menu-compact-to-rail').items, [{component: 'sf-menu', from: 'sf-menu--compact', to: 'sf-menu--rail'}]);
 });

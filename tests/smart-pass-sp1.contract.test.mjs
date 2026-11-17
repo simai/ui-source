@@ -292,7 +292,7 @@ test('SM-PN-1, EX-3: a numbers place of either twin shrinks to square when the r
   // The arithmetic at the phone step (control 36, gap 8): Smart two arrows and
   // five places, the class long range seven places.
   assert.ok(2 * 36 + 5 * 36 + 6 * 8 <= 326 && 7 * 36 + 6 * 8 <= 326);
-  assert.equal(json('src/component/pagination/passport.json').version, '1.5.2');
+  assert.equal(json('src/component/pagination/passport.json').version, '1.6.0'); // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch
 });
 
 // ---- SM-DL-2: the class row puts the size under the name on a phone --------
@@ -304,7 +304,7 @@ test('SM-DL-2: below sm the hand-written class row stacks the size under the nam
   const block = sheet.slice(at, sheet.indexOf('\n  }\n', at));
   assert.match(block, /\.sf-download-file-wrap:has\(> \.sf-download-file-file-size\)\) \{\s*flex-direction: column;/u);
   assert.match(block, /\.sf-download-file-wrap > \.sf-download-file-file-size\) \{\s*margin-inline-start: calc\(var\(--sf-file-download-icon-size[^;]*--sf-download-file--gap\)\)\)\);\s*font-size: var\(--sf-text-size-1\\\/2\);/u);
-  assert.equal(json('src/component/download-file/passport.json').version, '1.6.1');
+  assert.equal(json('src/component/download-file/passport.json').version, '1.7.2'); // group build 10: 1.6.1 moved on by the merged branches or a GB10 patch
 });
 
 // ---- C250: sf-progress-ring declares the avatar it holds -------------------

@@ -2,6 +2,7 @@
 // 2026-11-16): the source rules that keep the fixes. Measured in a browser on
 // the build (ui-control helper evidence ot-frame); these pin the rules.
 import test from 'node:test';
+import {unfoldModes} from './support/paint-blocks.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
@@ -38,11 +39,12 @@ test('OT 29-30: sf-outline keeps one row step and its text at the list inset', (
   const sheet = read('src/component/outline/scss/_outline.scss');
   assert.match(sheet, /\.sf-outline__list \.sf-outline__list \{[^}]*padding-block-start: var\(--sf-outline--gap\);/u);
   assert.match(sheet, /padding-inline-start: calc\(var\(--sf-outline--link-padding-inline\) - var\(--sf-outline--indicator-width\)\);/u);
-  assert.equal(json('src/component/outline/passport.json').version, '1.1.3');
+  assert.equal(json('src/component/outline/passport.json').version, '1.2.0'); // group build 10: 1.1.3 moved on by the merged branches or a GB10 patch
 });
 
 test('OT 31: sf-contents column ring takes the control corner', () => {
-  assert.match(read('src/smart/contents/scss/_smart__contents.scss'), /\.sf-contents-link:focus-visible \{\s*border-radius: var\(--sf-radius--ui\);/u);
+  // C273: the column mixin writes the corner in its shape mode; unfolded it reads as one (group build 10).
+  assert.match(unfoldModes(read('src/smart/contents/scss/_smart__contents.scss')), /\.sf-contents-link:focus-visible \{\s*border-radius: var\(--sf-radius--ui\);/u);
 });
 
 test('OT 35: the sf-scrollbar root draws the ring its viewport cannot', () => {

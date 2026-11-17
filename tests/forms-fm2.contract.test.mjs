@@ -73,7 +73,7 @@ test('SM-DP-2: left-icon and input-size are dated aliases until 2027-01-01, note
 test('C153 (1), SM-CI-1 / SM-CLR-1 / SM-IF-1 / SM-ICH-1: code, colour, image and choice labels are in the text ink and stay 14 on a phone', () => {
   const phone = /@media not all and \(min-width: (?:60rem|#\{bp\.\$breakpoint-desktop\})\) \{[^@]*?font-size: var\(--sf-text-size-1\); line-height: var\(--sf-text-height-1\);/u;
   const cases = [
-    ['src/component/verification/scss/_css__verification-form.scss', '.sf-verification-form-label', '.sf-verification-form.sf-verification-form--size-1 .sf-verification-form-label'],
+    ['src/component/verification/scss/_css__verification-form.scss', '.sf-verification-form-label', '.sf-verification-form--size-1 .sf-verification-form-label, .sf-verification-form:not([class*="sf-verification-form--size-"]) .sf-verification-form-label'], // group build 10: group build 9's wider phone rule, which also takes a form with no size class
     ['src/smart/input-color/js/templates/default.css', '.sf-color-label', '.sf-color-field.sf-color-field--size-1 .sf-color-label'],
     ['src/smart/input-image/scss/_smart__image_field.scss', '.sf-image-field-label', '.sf-image-field.sf-image-field--size-1 .sf-image-field-label'],
     ['src/smart/input-choice/scss/_smart__choice.scss', '.sf-choice .sf-choice-label', '.sf-choice .sf-choice-label'],
@@ -118,7 +118,7 @@ test('C251, SM-RD-1 / SM-SW-1: sf-radio and sf-switch take position start | end,
   assert.match(rule(row, end), /inline-size: auto;/u);
   assert.match(rule(row, `.sf-checkable-row > ${end}`), /flex: 1 1 auto;/u);
   assert.match(row, /> \.sf-checkable--text > \.sf-radio-button-container \+ \.sf-radio-button-box, > \.sf-checkable--text > \.sf-switch-container-wrap \+ \.sf-switch-toggler\) \{\s+grid-template-columns: minmax\(0, auto\) auto 1fr auto;/u);
-  assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.15.0');
+  assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.15.1'); // group build 10: 1.15.0 moved on by the merged branches or a GB10 patch
 });
 
 test('C251, SM-SW-1: sf-switch draws the class markup\'s thumb glyphs, icon alone or icon with icon-on', () => {

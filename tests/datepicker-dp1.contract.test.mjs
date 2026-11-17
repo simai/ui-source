@@ -21,7 +21,8 @@ const flat = (css) => css.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\[aria-curr
 function rules(css) {
   const out = [];
   for (const match of flat(css).matchAll(/([^{}]+)\{([^{}]*)\}/gu)) {
-    const head = match[1].replace(/^.*@(?:layer|media)[^{]*$/u, '').trim();
+    // C273: a block opens with `@include paint.part(shape);`, which is no selector (group build 10).
+    const head = match[1].replace(/^.*@(?:layer|media)[^{]*$/u, '').replace(/^[^]*;/u, '').trim();
     out.push([head, match[2]]);
   }
   return out;

@@ -33,7 +33,9 @@ function checkPaused(css, where) {
   assert.match(rule[1], /inset-inline: ?0/u, `${where}: across the whole track`);
   assert.match(rule[1], /width: ?auto/u, `${where}: no 30 % segment`);
   assert.match(rule[1], /animation: ?none/u, `${where}: still`);
-  assert.match(rule[1], /color-mix\(in srgb, ?var\(--sf-progress-bar-progress--background-color\) 32%, ?transparent\)/u, `${where}: the fill at 32 %`);
+  // C273: the fill stands in the sf.paint rule of the same selector (group build 10).
+  const paint = [...flat.matchAll(/\.sf-progress-bar\.sf-progress-bar--indeterminate\.sf-progress-bar--paused \.sf-progress-bar-progress ?\{([^}]*)\}/gu)].map((match) => match[1]).join(';');
+  assert.match(paint, /color-mix\(in srgb, ?var\(--sf-progress-bar-progress--background-color\) 32%, ?transparent\)/u, `${where}: the fill at 32 %`);
 }
 
 function checkSkeleton(css, where) {

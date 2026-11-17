@@ -107,7 +107,8 @@ test('RG-TW-1: every converted name is a class the build serves', {skip}, () => 
 });
 
 test('RG-TW-3: ring-N alone draws (in the focus role, fix/small-fixes-sf1), outline-N alone draws solid', {skip}, () => {
-  const core = sheetsUnder(join(distribution, 'core/css')).map((file) => readFileSync(file, 'utf8')).join('\n');
+  // The root sheets only: utility.full.css beside them carries the ring-color utilities, which set it on their element (group build 10).
+  const core = sheetsUnder(join(distribution, 'core/css')).filter((file) => !/utility\.full/u.test(file)).map((file) => readFileSync(file, 'utf8')).join('\n');
   assert.doesNotMatch(core, /--sf-ring-color:\s*;/u, 'an empty ring colour hides the fallback');
   assert.doesNotMatch(core, /--sf-ring-color:/u, 'no root ring colour: the fallback is read where the ring is drawn');
   const ring = readFileSync(join(distribution, 'utility/ring-width/default/css/default.css'), 'utf8');
