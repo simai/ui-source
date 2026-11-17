@@ -176,8 +176,17 @@
   // The drawn bar (core/js/scrollbars.js): a track per axis laid over the
   // room, beside the area in the page. The
   // script writes its place, its length and the place's values it reads off
-  // the area (--sf-scroll--*); nothing here draws until it does.
+  // the area (--sf-scroll--*); nothing here draws until it does. The track
+  // declares the same values from the scroll system as its defaults
+  // (dispatcher decision 2026-11-17, C18); the script's live values on the
+  // track's own style come first.
   .sf-scrollbar__track {
+    --sf-scroll--gap: var(--sf-scroll--gap-content, var(--sf-0));
+    --sf-scroll--edge: var(--sf-scroll--gap-edge, var(--sf-0));
+    --sf-scroll--room: var(--sf-scroll-bg-width);
+    --sf-scroll--rest-at: var(--sf-scroll--rest, var(--sf-scroll-thumb-size));
+    --sf-scroll--rest-colour: var(--sf-scroll-bg-thumb);
+    --sf-scroll--held-colour: var(--sf-scroll--thumb-held, var(--sf-on-surface-variant));
     position: absolute;
     z-index: 1;
     box-sizing: border-box;

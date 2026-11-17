@@ -3,18 +3,5 @@
   "schema_version": 1,
   "recorded": "2026-09-29",
   "why": "Токены, которые читают собранные листы, но никто не объявляет: такой класс молча ничего не делает. Здесь они записаны, чтобы новый разрыв падал, а эти ждали решения владельца. Группа state-variant-name закрыта 2026-09-29: focus-вариант цветовых утилит читал --sf-color--<роль> вместо --sf-<роль>. Группа role-not-in-theme закрыта 2026-09-29.",
-  "groups": {
-    "runtime-set-scrollbar": {
-      "recorded": "2026-11-17",
-      "why": "C210 scrollbar tracks: src/core/js/scrollbars.js sets these on each track element (style.setProperty) from the area's --sf-scroll--gap-content, --sf-scroll--gap-edge, --sf-scroll--rest, --sf-scroll-bg-thumb, --sf-scroll--thumb-held and the measured room; the track is hidden until the script has set them. Open: declare defaults on .sf-scrollbar__track, or keep them runtime-only.",
-      "tokens": [
-        "--sf-scroll--edge",
-        "--sf-scroll--gap",
-        "--sf-scroll--held-colour",
-        "--sf-scroll--rest-at",
-        "--sf-scroll--rest-colour",
-        "--sf-scroll--room"
-      ]
-    }
-  }
+  "groups": {}
 }
