@@ -2,6 +2,13 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { noteDeprecated } from '../../../core/js/deprecations.js';
 import { percentText } from '../../../core/js/format-number.js';
+import { pageText } from '../../../core/js/page-language';
+import { STATUS_RANK } from '../../progress-threshold';
+// The words live in the component's language files, the Smart bar's words
+// under the same name (sf-progress-bar), so a pack serves both.
+import LANG_WORDS from '../lang/index.mjs';
+
+const PAUSED_WORDS = { en: LANG_WORDS.en, ru: LANG_WORDS.ru };
 
 const PROGRESS_BAR_SELECTOR = '.sf-progress-bar';
 const PROGRESS_BAR_BOUND_FLAG = 'sfProgressBarBound';
@@ -136,6 +143,20 @@ function isPaused(root) {
   return root.classList.contains('sf-progress-bar--paused') || root.dataset.paused === 'true';
 }
 
+// A paused bar is at least a warning, as the Smart bar draws it (C34; examples
+// pass EX-2): an error stays an error. The page's status stays in data-tone,
+// so the bar takes it back when the work goes on.
+function pausedTone(tone, paused) {
+  return paused && (STATUS_RANK[tone] ?? 0) < STATUS_RANK.warning ? 'warning' : tone;
+}
+
+// What a screen reader hears for a paused bar, as the Smart bar says it:
+// «35 %, на паузе», or «на паузе» while the size of the work is not known.
+function pausedValueText(root, value) {
+  if (isIndeterminate(root)) return pageText(PAUSED_WORDS, 'paused', root, 'sf-progress-bar');
+  return pageText(PAUSED_WORDS, 'paused-value', root, 'sf-progress-bar').replace('{value}', String(Math.round(value * 100) / 100));
+}
+
 // Meter (owner decision C131 (7)): an amount within a known range (a quota
 // used), not a task's progress: role meter. A meter always has a value.
 function isMeter(root) {
@@ -163,7 +184,9 @@ function syncProgressAccessibility(root, value) {
 
   // What a screen reader hears: the page's value text, else the per cent the
   // bar shows, «72 %» (C203 (3)); nothing while the size is not known.
-  const valueText = root.dataset.valueText || (isIndeterminate(root) ? '' : percentText(value, root));
+  const valueText = root.dataset.valueText
+    || (isPaused(root) ? pausedValueText(root, value) : '')
+    || (isIndeterminate(root) ? '' : percentText(value, root));
   if (valueText) {
     root.setAttribute('aria-valuetext', valueText);
   } else {
@@ -171,10 +194,12 @@ function syncProgressAccessibility(root, value) {
   }
 }
 
-// One status class at most; no status has none.
+// One status class at most; no status has none. The class drawn is the
+// paused bar's warning (pausedTone); data-tone keeps the page's status.
 function syncTone(root, tone) {
+  const drawn = pausedTone(tone, isPaused(root));
   ['primary', ...TONES].forEach((name) => {
-    root.classList.toggle(`sf-progress-bar--${name}`, name === tone);
+    root.classList.toggle(`sf-progress-bar--${name}`, name === drawn);
   });
   if (tone) root.dataset.tone = tone;
   else delete root.dataset.tone;

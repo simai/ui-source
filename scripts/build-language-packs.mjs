@@ -39,6 +39,7 @@ export const LEGACY_IDS = Object.freeze({
   'component/kbd': 'sf-kbd',
   'component/highlight': 'sf-highlight',
   'component/modal': 'sf-modal',
+  'component/progress-bar': 'sf-progress-bar',
   'component/quantity': 'sf-quantity',
   'component/scrollbar': 'sf-scrollbar',
   'component/spinner': 'sf-spinner',
