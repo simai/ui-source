@@ -32,7 +32,7 @@ plain table and `sf-view-table`. What the classes draw:
 | C146 | What the classes do |
 | --- | --- |
 | (1) Row 40, compact 32, two lines 48, the head the same height | A row is a step of the ladder: the step is the cells' least height and the content stands in its middle, so a line of text and a 24 badge keep the row on the step. A name clamped to two lines stands on the two-line rung. |
-| (2) A quiet head | The head cells: the row's text, the medium weight, `--sf-on-surface-variant`, no fill of their own, the row's line under them. |
+| (2) A quiet head | The head cells: the row's text, the medium weight, `--sf-on-surface-variant` through the public variable `--sf-table-head-color` (utility.table 1.8.0; in a `.table-frame`, `--sf-table-frame-head-color`), no fill of their own, the row's line under them. |
 | (3) The number column type | `.table-numeric` on the column's `<th>` and `<td>`s: end aligned, `tabular-nums`, `white-space: nowrap`. The unit goes in the head (`Сумма, ₽`). |
 | (4) Lines, hover and selected; zebra by choice | Lines between rows (`--sf-outline-variant`); the row under the pointer on the hover layer; a selected row (`.table-active`) on the select layer, also under the pointer; `.table-stripe` only when the author asks for it. |
 | (5) Row actions, variant В | The check box and the row menu «≡» stand in cells of their own at the row's start, each as narrow as its control; the main field (the name) is a plain `<a href>` that opens the record (a middle click and a new tab work), the link colour at rest, underlined under the pointer and on keyboard focus. The right button, the menu key / Shift+F10 and a long press open the same menu as «≡» (the page wires it, see Row actions). No quick buttons under the pointer; on a phone the row keeps its key cells (C259, below). |
@@ -125,6 +125,13 @@ frame too, with the frame's cell padding around it (the frame's least cell
 width, `--sf-table-frame-cell-min-inline-size`, is for words): at 1440 the
 check box and «≡» columns are 56 and 65, at 390 44 and 53 (they were 80 and
 80).
+
+The public variables of `.table` itself, set on the table or an ancestor's
+rule for it: `--sf-table-color` (the text), `--sf-table-head-color` (the
+head's text, `--sf-on-surface-variant`), `--sf-table-border-color`, and the
+fills and texts of the zebra, the selected row and the row under the pointer
+(`--sf-table-stripe-bg`, `--sf-table-stripe-color`, `--sf-table-active-bg`,
+`--sf-table-active-color`, `--sf-table-hover-bg`, `--sf-table-hover-color`).
 
 A bare `.table` is as wide as its columns: on a phone a table with a number
 column (which never wraps) can be wider than the screen. Put any table that

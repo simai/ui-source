@@ -27,7 +27,11 @@ $prefix: --sf-table-;
     }
 
     .table {
+        // The public variables of .table (ten, §6's 5-10): the text, the
+        // head's text, the lines, and the fills and texts of the zebra, the
+        // selected row and the row under the pointer.
         #{$prefix}color: #{$table-color};
+        #{$prefix}head-color: #{$table-head-color};
         //#{$prefix}bg: #{$table-bg};
         #{$prefix}border-color: #{$table-border-color};
         #{$prefix}accent-bg: #{$table-accent-bg};
@@ -85,9 +89,10 @@ $prefix: --sf-table-;
 
         // The head is quiet (C146 (2)): the row's text in the medium weight
         // and the supporting role, on no fill of its own, with the row's line
-        // under it.
+        // under it. The role comes through --sf-table-head-color, so a host
+        // (a set's table, a page) changes the head's words in one place.
         > thead > tr > th {
-            color: var(--sf-on-surface-variant);
+            color: var(#{$prefix}head-color);
             font-weight: var(--sf-weight--medium);
         }
 
