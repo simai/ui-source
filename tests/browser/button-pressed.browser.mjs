@@ -271,7 +271,12 @@ try {
     const iconFav = cells['extra icon-fav-on'];
     pressedLook('extra icon-fav-on', {label: false});
     if (iconFav?.name !== 'Убрать из избранного' || iconFav?.ariaPressed !== null) fail(`label-pressed: name «${iconFav?.name}», aria-pressed ${iconFav?.ariaPressed}`);
-    pressedLook('extra default-on');
+    // C211 (1): the pressed look belongs to a toggle only (outline or ghost in
+    // the on-surface scheme). A filled button is no toggle: Framework does not
+    // draw pressed on it (it warns in the console) and it keeps its own fill.
+    const filledOn = cells['extra default-on'];
+    if (!filledOn) fail('extra default-on not drawn');
+    else if (filledOn.fill === pc || filledOn.label === onPc) fail(`extra default-on: a filled button wears the pressed look (fill ${filledOn.fill}, label ${filledOn.label})`);
     pressedLook('extra link-on');
     pressedLook('extra plain-on');
     const disabled = cells['extra disabled-on'];

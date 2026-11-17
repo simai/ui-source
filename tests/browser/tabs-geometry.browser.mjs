@@ -52,7 +52,7 @@ try {
     ${['1/2', '1', '2'].map((size) => `<sf-tabs class="g" data-s="${size}" type="underline" size="${size}" items="Обзор|Настройки|История"></sf-tabs>`).join('<br>')}
     <div style="width:360px;display:flex"><sf-tabs id="more" style="flex:1;min-width:0" type="underline" size="1/2" overflow="more"></sf-tabs></div>
     <sf-tabs id="conf" type="underline" size="1/2" configurable></sf-tabs>
-    <div style="width:300px;display:flex"><sf-tabs id="narrow" style="flex:1;min-width:0" type="underline" size="1/2" overflow="more"></sf-tabs></div>
+    <div style="width:420px;display:flex"><sf-tabs id="narrow" style="flex:1;min-width:0" type="underline" size="1/2" overflow="more"></sf-tabs></div>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({url: `${origin}/${path}`}).catch(() => {});
   // Core takes its distr from its own script URL when sfPath is unset
@@ -142,7 +142,10 @@ try {
   if (chosen !== '7') note({case: 'choosing in «Ещё» activates the tab', got: chosen});
 
   // A pinned first tab and an active last one, in a row too narrow for both
-  // and the rest: both stay, the others go into «Ещё» (docs trial 5).
+  // and the rest: both stay, the others go into «Ещё» (docs trial 5). The row
+  // is 420 wide: with the bold width reserved (C96 (3)) and the tab inset of
+  // C105 the two tabs and «Ещё (3)» no longer fit in 300, so the row then
+  // had room for one of them only.
   const narrow = await page.evaluate(async () => {
     const tabs = document.getElementById('narrow');
     tabs.setItems(['Главная вкладка', 'Вторая длинная', 'Третья длинная', 'Четвёртая длинная', 'Последняя вкладка'].map((label, at) => ({key: `n${at}`, label, pinned: at === 0})));

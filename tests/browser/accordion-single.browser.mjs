@@ -15,7 +15,8 @@
 //     again;
 //   - data-single-section="toggle" keeps a single section a toggle;
 //   - the legacy markup (the section is its own control) keeps its toggle;
-//   - the header keeps the size's control height when it is plain.
+//   - the header keeps the size's control height when it is plain (with its
+//     flush divider, drawn inside the height: C01).
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -57,7 +58,10 @@ const read = (page, id) => page.evaluate((id) => {
     tag: trigger?.tagName ?? null, id: trigger?.id ?? null, expanded: trigger?.getAttribute('aria-expanded') ?? null,
     static: root.classList.contains('sf-accordion--static'), contentShown: !content.hidden && getComputedStyle(content).display !== 'none',
     labelledBy: content.getAttribute('aria-labelledby'), title: root.querySelector('.sf-accordion-title')?.textContent,
-    iconShown: icon ? getComputedStyle(icon).display !== 'none' : null, height: trigger ? trigger.getBoundingClientRect().height : null,
+    // The flush divider is drawn inside the header's height (C01, AC-02):
+    // trigger + frame is the size's control height.
+    iconShown: icon ? getComputedStyle(icon).display !== 'none' : null,
+    height: trigger ? trigger.getBoundingClientRect().height + parseFloat(getComputedStyle(root).borderTopWidth) + parseFloat(getComputedStyle(root).borderBottomWidth) : null,
     focusable: [...root.querySelectorAll('button, [tabindex]')].filter((element) => element.tabIndex >= 0).length,
     cursor: trigger ? getComputedStyle(trigger).cursor : null,
   };

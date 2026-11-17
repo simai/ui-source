@@ -30,8 +30,12 @@ const styles = [
   'smart/smart/list-feed/css/list-feed.css',
 ].map((p) => join(out, p));
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
+  // C282: Russian is a language file, before core.js as the Loader's page has it.
+  'core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js',
+  // The empty feed is the Framework's empty state (C120 (3)); the Loader
+  // brings it on a page.
+  'smart/smart/empty-state/js/empty-state.js',
   'smart/smart/list-feed/js/list-feed.js',
 ].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));
@@ -48,7 +52,7 @@ try {
   page.on('pageerror', (error) => { if (!/Automatic publicPath/u.test(error.message)) errors.push(error.message); });
   await page.setContent('<!doctype html><html class="theme-light" lang="ru"><head><meta charset="utf-8"></head><body style="margin:0"><div id="box" style="display:flex;flex-direction:column;height:480px;width:720px"></div></body></html>');
   for (const style of styles) await page.addStyleTag({path: style}).catch(() => {});
-  for (const module of modules) await page.addScriptTag({path: module, type: 'module'}).catch(() => {});
+  for (const module of modules) await page.addScriptTag(module.endsWith('/lang/ru.js') ? {path: module} : {path: module, type: 'module'}).catch(() => {});
   await page.waitForFunction(() => Boolean(customElements.get('sf-list-feed')));
 
   const frames = (count = 3) => page.evaluate((n) => new Promise((done) => {
@@ -129,7 +133,8 @@ try {
     {id: 'm100', first: true, last: false, own: false, author: 'Анна'},
     {id: 'm101', first: false, last: false, own: false, author: null},
     {id: 'm103', first: false, last: true, own: false, author: null},
-    {id: 'm104', first: true, last: true, own: true, author: null},
+    // One's own run is named too, as «Вы» (owner decision C167 (4)).
+    {id: 'm104', first: true, last: true, own: true, author: 'Вы'},
   ];
   if (JSON.stringify(runs) !== JSON.stringify(expectRuns)) note({case: 'runs of one author and the reader\'s side', got: runs});
   const side = await page.evaluate(() => {
@@ -292,16 +297,20 @@ try {
   });
   if (replaced.join() !== '501,x1') note({case: 'a message that got its server id keeps its place', got: replaced});
 
-  // 8. Empty: the slot instead of the column.
+  // 8. Empty: the slot instead of the column. Words alone in the slot (a <p>
+  // of text) are the heading of the Framework's empty state (owner decision
+  // C120 (3), study LF-5), so the words are shown, not the page's <p> itself.
+  const shown = () => [...document.querySelectorAll('#log *')].some((node) => node.offsetParent && node.childElementCount === 0
+    && node.textContent.trim() === 'Начните разговор');
   await make({count: 0, hasMore: false, empty: true});
-  const empty = await page.evaluate(() => ({
-    greeting: Boolean(document.getElementById('greeting')?.offsetParent),
+  const empty = await page.evaluate((source) => ({
+    greeting: eval(source)(),
     column: getComputedStyle(document.querySelector('.sf-list-feed__column')).display,
-  }));
+  }), shown.toString());
   if (!empty.greeting || empty.column !== 'none') note({case: 'an empty conversation shows the empty slot', got: empty});
   await page.evaluate(() => document.getElementById('log').upsert({id: 'first', author: 'anna', 'author-name': 'Анна', text: 'Привет'}));
   await frames(3);
-  const filled = await page.evaluate(() => ({greeting: Boolean(document.getElementById('greeting')?.offsetParent), items: document.querySelectorAll('.sf-list-feed__item').length}));
+  const filled = await page.evaluate((source) => ({greeting: eval(source)(), items: document.querySelectorAll('.sf-list-feed__item').length}), shown.toString());
   if (filled.greeting || filled.items !== 1) note({case: 'the first message replaces the empty slot', got: filled});
 
   // 9. English.

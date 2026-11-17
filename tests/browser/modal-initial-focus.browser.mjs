@@ -5,8 +5,8 @@
 // focus on its safe answer, «Отмена», without the page marking it -- opened from
 // the keyboard and by the mouse, light and dark, 3 loads -- and no ring is drawn
 // around the panel. Also: an sf-confirm in a window gives its declining answer
-// the focus; a window that asks nothing still focuses its panel (auto, as
-// before); initial-focus="first" and "panel" name the target; the page's
+// the focus; a window with fields that asks nothing opens on its first field
+// (owner decision C159 (9)); initial-focus="first" and "panel" name the target; the page's
 // [autofocus] still wins under auto. Only answers make a question window: a
 // red sf-badge in the body of a plain window leaves the focus on the panel, on
 // the first open and on the next (recipes gaps acceptance D3).
@@ -93,7 +93,8 @@ async function opened(page, how) {
 const cases = [
   {name: 'delete window: «Отмена» without autofocus', body: deleteWindow(), want: 'safe'},
   {name: 'sf-confirm in a window: its declining answer', body: confirmWindow, want: 'decline'},
-  {name: 'a window that asks nothing: the panel, as before', body: plainWindow(), want: 'panel'},
+  // C159 (9): a window with fields is one form and opens on its first field.
+  {name: 'a window with fields that asks nothing: its first field (C159 (9))', body: plainWindow(), want: 'first'},
   {name: 'initial-focus="first": the first control', body: plainWindow(' initial-focus="first"'), want: 'first'},
   {name: 'initial-focus="panel" in a delete window: the panel', body: deleteWindow(' initial-focus="panel"'), want: 'panel'},
   {name: 'initial-focus="safe" in a window that asks nothing: its closing answer', body: plainWindow(' initial-focus="safe"'), want: 'Отмена'},

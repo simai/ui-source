@@ -5,9 +5,10 @@
 // and P-14), served through the loader:
 //   - geometry, at 1440px and 390px, light and dark, sizes 1/3, 1/2, 1, 2 and
 //     3: a one-line row is exactly the control height of its size (the
-//     sf-button of that size); a two-line row is the control height plus one
-//     line of the step below, and from size 1/2 up at least the C49 caption
-//     row (1/2 control step + a 1/3 line); the title keeps the one-line row's text;
+//     sf-button of that size); a two-line row is the next size's control
+//     height (its two lines at least; LI-03, LS-02), and from size 1/2 up at
+//     least the C49 caption row (1/2 control step + a 1/3 line, C148 (1)); the
+//     title keeps the one-line row's text;
 //   - states: hover, selected and plain rows have three different fills, in
 //     both themes;
 //   - an sf-sortable list of rows: one Tab stop for the whole list; ArrowDown,
@@ -130,13 +131,18 @@ try {
         });
       }, BELOW);
       evidence[`${theme} ${width}`] = geometry.map(({size, button, one, two}) => ({size, button, one, two}));
-      for (const row of geometry) {
+      for (const [index, row] of geometry.entries()) {
         const at = `${theme} ${width}px size ${row.size}`;
         check(`${at}: a one-line row is the control height`, near(row.one, row.button), row);
-        // C49: from size 1/2 up a name + caption row is at least the 1/2 control
-        // step and a caption line (48 at 1440, 44 compact).
-        const twoWant = row.size === '1/3' ? row.button + row.below : Math.max(row.button + row.below, row.caption);
-        check(`${at}: a two-line row is the control height and a line of the step below, at least the C49 caption row`, near(row.two, twoWant), row);
+        // A two-line row is a step of the height ladder (docs precheck smart
+        // content LI-03, LS-02; sf-list-item two-line rule): the next size's
+        // control height with the two lines centred in it, never lower than
+        // the two lines (size 3 has no step above it); from size 1/2 up at
+        // least the C49 caption row (C148 (1): as menu rows, 48 at 1440).
+        const next = (geometry[index + 1] ?? row).button;
+        const lines = row.twoTitle[1] + row.supporting[1];
+        const twoWant = row.size === '1/3' ? Math.max(next, lines) : Math.max(next, lines, row.caption);
+        check(`${at}: a two-line row is the next size's control height (the lines at least), at least the C49 caption row`, near(row.two, twoWant), {...row, want: twoWant});
         check(`${at}: the title of a two-line row keeps the row's text`, row.twoTitle[0] === row.oneText[0] && row.twoTitle[1] === row.oneText[1], row);
         check(`${at}: the supporting line is a line of the step below`, near(row.supporting[1], row.below), row);
       }

@@ -9,7 +9,8 @@
 //        writing direction (and so do left and right, which the window
 //        places at the line's start and end; an open inline-start or
 //        inline-end panel in a right-to-left page stood off the screen); on a phone (390) the panel is the whole screen
-//        with no radius and no border. The centre window keeps all four.
+//        with no radius and no border. The centre window keeps all four; on a
+//        phone it is a sheet from the bottom (C159 (2)): top corners and edges.
 //   D1   one start line (C39): the title and the content's text start on
 //        one line, in the Smart window (centre and side panels) and in the
 //        class window (component.modal); they stood 4 px apart (ui-control
@@ -144,13 +145,22 @@ try {
         check(`${name}: no border`, Object.values(m.border).every((v) => v === 0), m.border);
       }
     }
-    // The centre window keeps its four corners and its border.
+    // The centre window keeps its four corners and its border (a sheet from
+    // the bottom on a phone, C159 (2)).
     for (const [width, touch] of [[1440, false], [390, true]]) {
       const m = await measure(width, touch, 'ltr', theme, `<sf-modal heading="Окно" open>${content}</sf-modal>`);
       const name = `${theme} ${width} centre`;
       evidence.push({name, ...m});
-      check(`${name}: four rounded corners`, Object.values(m.radius).every((v) => v === 8), m.radius);
-      check(`${name}: a border on every side`, Object.values(m.border).every((v) => v > 0), m.border);
+      if (width >= 768) {
+        check(`${name}: four rounded corners`, Object.values(m.radius).every((v) => v === 8), m.radius);
+        check(`${name}: a border on every side`, Object.values(m.border).every((v) => v > 0), m.border);
+      } else {
+        // On a phone a window up to the form size is a sheet from the bottom,
+        // the screen's whole width (owner decision C159 (2)): rounded and
+        // edged at the top, square and edgeless at the screen's bottom.
+        check(`${name}: a bottom sheet's corners (top rounded, bottom square)`, m.radius.tl === 8 && m.radius.tr === 8 && m.radius.br === 0 && m.radius.bl === 0, m.radius);
+        check(`${name}: a bottom sheet's border (top and sides, none at the bottom)`, m.border.t > 0 && m.border.l > 0 && m.border.r > 0 && m.border.b === 0, m.border);
+      }
       check(`${name}: the text starts on the title's line`, m.startLine !== null && Math.abs(m.startLine) < 0.5, {startLine: m.startLine});
       check(`${name}: the scroll box stands 1/4 into the frame`, m.inner && m.inner.left === m.border.l + m.padding.l - 4, {inner: m.inner, padding: m.padding});
     }

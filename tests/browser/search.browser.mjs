@@ -220,7 +220,7 @@ try {
     await tab.click('#t');
     await tab.waitForSelector(WINDOW);
     await typeQuery(tab, 'таб');
-    const before = errors.length;
+    const errorsBefore = errors.length;
     await tab.keyboard.press('F2');
     await tab.click('#t');
     await tab.waitForSelector(WINDOW);
@@ -230,7 +230,7 @@ try {
     await tab.evaluate(() => { window.closeOnEnter = false; });
     await tab.waitForTimeout(200);
     const raced = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), navigated: window.navigated}));
-    expect('key-after-close-quiet', !raced.open && raced.navigated === 0 && errors.length === before, {...raced, errors: errors.slice(before)});
+    expect('key-after-close-quiet', !raced.open && raced.navigated === 0 && errors.length === errorsBefore, {...raced, errors: errors.slice(errorsBefore)});
 
     // / in a text field types; outside one it opens.
     await tab.focus('#text');

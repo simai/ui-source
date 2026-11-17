@@ -147,7 +147,9 @@ for (const width of [1440, 390]) {
       probe.remove();
       return {
         role: root.getAttribute('role'), name: root.getAttribute('aria-label'),
-        current: row?.querySelector('[aria-current="step"]')?.textContent.trim() ?? '',
+        // The row is sf-steps: the current step's label is its .sf-step-container
+        // (the marker's number and the sr-only state word sit beside it).
+        current: row?.querySelector('[aria-current="step"] .sf-step-container')?.textContent.trim() ?? '',
         position: w.querySelector('.sf-wizard-compact-label, .sf-wizard-position')?.textContent.trim(),
         back: Boolean(w.querySelector('.sf-wizard-back')),
         primaries: w.querySelectorAll('.sf-wizard-primary').length,
@@ -296,13 +298,15 @@ for (const scheme of ['light', 'dark']) {
       inView: Boolean(box && box.top >= view.top - 1 && box.bottom <= view.bottom + 1),
       head: w.querySelector('.sf-wizard-head').getBoundingClientRect().top - w.querySelector('.sf-wizard').getBoundingClientRect().top,
       page: globalThis.scrollY,
-      look: scroller?.closest('.sf-scrollbar')?.getAttribute('data-mode') ?? '',
+      // C208: the default bar is the one bar; "standard" is a retired word,
+      // so a default sf-scrollbar writes no data-mode at all.
+      look: scroller?.closest('.sf-scrollbar') ? (scroller.closest('.sf-scrollbar').getAttribute('data-mode') || 'default') : '',
     };
   });
   const first = await read();
   ok(`${tag}: 30 steps beside a short body do not make the wizard taller`, first.column > 0 && first.column <= first.body + 1, JSON.stringify(first));
   ok(`${tag}: beside a short body the column is six rows tall, not less, not more (owner, 2026-11-07)`, Math.abs(first.column - 6 * first.row) <= 1, JSON.stringify(first));
-  ok(`${tag}: the column scrolls inside, an sf-scrollbar in standard mode`, first.scrolls && first.look === 'standard', JSON.stringify(first));
+  ok(`${tag}: the column scrolls inside, an sf-scrollbar in its default mode (C208)`, first.scrolls && first.look === 'default', JSON.stringify(first));
   ok(`${tag}: the current step (18) is in view on load, the page not scrolled`, first.inView && first.page === 0, JSON.stringify(first));
   await tab.locator('#w .sf-wizard-column-scroll .sf-wizard-list-step').first().click();
   await tab.waitForTimeout(700);

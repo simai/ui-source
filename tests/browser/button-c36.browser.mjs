@@ -11,8 +11,8 @@
 //   - full-width: the control fills its container (sf-segmented's name and
 //     meaning), its content stays centred; without it the button hugs its
 //     content; the property follows the attribute;
-//   - an icon-only sf-button is not square (it keeps the button's side
-//     padding); sf-button-icon is the square one, at every size;
+//   - an icon-only sf-button is square, as sf-button-icon of the same size
+//     (owner decision C211 (2), which replaced C36's «not square»);
 //   - compact density moves buttons one step down on the desktop and leaves
 //     them as they are on the phone, whose ladder already is the dense one;
 //   - sf-button-close at its default size 1/3 is 28 on the desktop (C27), 24
@@ -224,9 +224,10 @@ try {
         if (!near(textStart, textEnd, 1)) failures.push({where, check: 'full-width text is centred', textStart, textEnd});
       }
 
-      // Icon-only sf-button is not square; sf-button-icon is.
+      // C211 (2) (replaces C36's «not square»): an sf-button without a label
+      // becomes square by itself, as the sf-button-icon of the same size.
       for (const [size, row] of Object.entries(data.shapes)) {
-        if (!(row['icon-only'].width > row['icon-only'].height + 4)) failures.push({where, size, check: 'icon-only sf-button is wider than tall', box: row['icon-only']});
+        if (!near(row['icon-only'].width, row['icon-only'].height) || !near(row['icon-only'].width, row['icon-button'].width)) failures.push({where, size, check: 'icon-only sf-button is the square of the sf-button-icon of its size (C211 (2))', box: row['icon-only'], iconButton: row['icon-button']});
         if (!near(row['icon-button'].width, row['icon-button'].height)) failures.push({where, size, check: 'sf-button-icon is square', box: row['icon-button']});
         if (!near(row['icon-only'].height, row['icon-button'].height)) failures.push({where, size, check: 'icon-only sf-button and sf-button-icon stand the same height', a: row['icon-only'].height, b: row['icon-button'].height});
       }

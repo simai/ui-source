@@ -25,8 +25,9 @@
 // 1.11.0 (black in light, white in dark).
 //
 // surface + on-surface-variant is retired (sf-button 1.11.0, as C15 did on the
-// icon buttons; it read 4.38:1 in dark): it draws as surface + on-surface and
-// the page warns once, naming the replacement. The page raises no error.
+// icon buttons; it read 4.38:1 in dark), and surface itself since C116 (6): it
+// draws as the soft grey button (tonal + on-surface) and the page warns once,
+// naming the replacement. The page raises no error.
 import {createServer} from 'node:http';
 import {existsSync, mkdirSync, readFileSync, statSync, writeFileSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -46,7 +47,9 @@ const LOOKS = [
 ];
 const MINIMUM = 4.5;
 // The error role a danger button's label and icon wear, by appearance.
-const DANGER_INK = {default: '--sf-on-error', tonal: '--sf-on-error-container', outline: '--sf-error', ghost: '--sf-error', surface: '--sf-error'};
+// C116 (5) #q-danger-looks: a danger button is filled, outline or a fill-less
+// icon; tonal and surface with status danger are former words drawn as outline.
+const DANGER_INK = {default: '--sf-on-error', tonal: '--sf-error', outline: '--sf-error', ghost: '--sf-error', surface: '--sf-error'};
 const RETIRED = 'surface on-surface-variant';
 const keyOf = ({appearance, scheme, status}) => [appearance, status || scheme].join(' ');
 
@@ -173,7 +176,10 @@ try {
     warnings[theme] = warned;
     tab.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text());
-      if (message.type() === 'warning' && /on-surface-variant/u.test(message.text())) warned.push(message.text());
+      // C116 (6): the retired surface (with on-surface-variant among its
+      // schemes) is a former name said once per page, naming the soft grey
+      // button it draws as.
+      if (message.type() === 'warning' && /appearance="surface"/u.test(message.text())) warned.push(message.text());
     });
     await tab.goto(`http://127.0.0.1:${server.address().port}/${theme}`);
     await tab.waitForFunction((count) => customElements.get('sf-button')
@@ -198,7 +204,12 @@ try {
       }
       if (row.look === RETIRED && (!/\bsf-button--on-surface\b/u.test(row.classes) || /sf-button--on-surface-variant/u.test(row.classes))) failures.push(`${theme} ${RETIRED}: not drawn as on-surface (${row.classes})`);
     }
-    if (warned.length !== 1 || !/scheme="on-surface"/u.test(warned[0] ?? '')) failures.push(`${theme}: ${warned.length} console warnings for the retired pair, expected one naming scheme="on-surface"`);
+    // One sentence for the retired surface (C116 (6)) and one for surface on a
+    // danger button, which draws as outline (C116 (5)); each said once a page.
+    const plain = warned.filter((text) => !/status="danger"/u.test(text));
+    const danger = warned.filter((text) => /status="danger"/u.test(text));
+    if (plain.length !== 1 || !/appearance="tonal" scheme="on-surface"/u.test(plain[0] ?? '')) failures.push(`${theme}: ${plain.length} console warnings for the retired surface, expected one naming appearance="tonal" scheme="on-surface" (C116 (6))`);
+    if (danger.length !== 1 || !/appearance="outline" status="danger"/u.test(danger[0] ?? '')) failures.push(`${theme}: ${danger.length} console warnings for surface on a danger button, expected one naming appearance="outline" status="danger" (C116 (5))`);
     if (errors.length) failures.push(`${theme}: console ${JSON.stringify(errors)}`);
     await tab.close();
   }

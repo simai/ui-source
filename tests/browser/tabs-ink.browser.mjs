@@ -8,8 +8,10 @@
 // tab its icon button's resting grey. Here, in both themes, for every skin
 // (default, underline, pills, full, vertical), every scheme (default, outline,
 // link) and both variants (text, icons):
-//   - the tab element's colour equals its label's colour (the icon's, for an
-//     icon tab) for the selected, the resting and the disabled tab;
+//   - the tab element's colour equals its label's colour for the selected,
+//     the resting and the disabled tab (an icon tab's glyph at rest may take
+//     the icon role, --sf-on-surface-icon, C107); a disabled tab is the one
+//     saying aria-disabled (R184 T9);
 //   - the same under the pointer, for underline, full and outline tabs;
 //   - an underline tab's colour is --sf-on-surface-variant at rest and
 //     --sf-on-surface when selected, resolved in the theme, and the selected
@@ -58,7 +60,7 @@ const PILLS = () => {
       const style = getComputedStyle(tab);
       const label = tab.querySelector('.sf-button-text-container') || tab.querySelector('.sf-icon');
       return {key: host.dataset.k.replace(/^pills\//u, ''), index, selected: tab.classList.contains('selected'),
-        disabled: tab.disabled, background: style.backgroundColor, border: style.borderTopColor, ink: getComputedStyle(label).color};
+        disabled: tab.disabled || tab.getAttribute('aria-disabled') === 'true', background: style.backgroundColor, border: style.borderTopColor, ink: getComputedStyle(label).color};
     }));
   const body = getComputedStyle(document.body).backgroundColor;
   return {rows, fill, page: /^rgba\(.*, 0\)$/u.test(body) || body === 'transparent'
@@ -113,7 +115,7 @@ try {
       return {tab: style.color, label: getComputedStyle(label).color, line: style.borderBottomColor, lineWidth: style.borderBottomWidth,
         underLine: under.borderBottomColor, underWidth: under.borderBottomWidth};
     }`;
-    const roles = await page.evaluate(() => Object.fromEntries(['--sf-on-surface', '--sf-on-surface-variant', '--sf-primary'].map((name) => {
+    const roles = await page.evaluate(() => Object.fromEntries(['--sf-on-surface', '--sf-on-surface-variant', '--sf-primary', '--sf-on-surface-icon'].map((name) => {
       const probe = document.getElementById('role');
       probe.style.color = `var(${name})`;
       return [name, getComputedStyle(probe).color];
@@ -125,13 +127,21 @@ try {
     });
     const rows = await page.evaluate((read) => [...document.querySelectorAll('sf-tabs')].flatMap((host) =>
       [...host.querySelectorAll('.sf-tabs-top :is(.sf-button, .sf-icon-button)')].map((tab, index) => ({
-        key: host.dataset.k, index, selected: tab.classList.contains('selected'), disabled: tab.disabled,
+        // A disabled tab stays focusable and says aria-disabled (R184 T9).
+        key: host.dataset.k, index, selected: tab.classList.contains('selected'), disabled: tab.disabled || tab.getAttribute('aria-disabled') === 'true',
         ...eval(read)(tab)}))), READ);
     let matched = 0;
     for (const row of rows) {
       const at = `${theme} ${row.key} tab ${row.index}${row.selected ? ' (selected)' : ''}${row.disabled ? ' (disabled)' : ''}`;
-      check(`${at}: the tab's colour is its label's`, row.tab === row.label, row);
-      if (row.tab === row.label) matched += 1;
+      // An icon tab's glyph at rest takes the icon role (C107 (2), (3): a
+      // glyph without text is drawn as in a button with text), not the tab's
+      // ink; under the pointer it catches the ink up (C107 (4)).
+      // A vertical tab is a row of a column (C96 (5)): its glyph is a row's,
+      // a step paler, --sf-on-surface-variant (C107 (1)).
+      const iconRole = row.key.endsWith('/icons') && !row.disabled
+        && row.label === roles[row.key.startsWith('vertical/') && !row.selected ? '--sf-on-surface-variant' : '--sf-on-surface-icon'];
+      check(`${at}: the tab's colour is its label's`, row.tab === row.label || iconRole, row);
+      if (row.tab === row.label || iconRole) matched += 1;
       if (row.key.endsWith('/text')) check(`${at}: not the browser's ButtonText`, row.tab !== buttonText || row.label === buttonText, {...row, buttonText});
       if (row.key.startsWith('underline/') && !row.disabled) {
         const role = row.selected ? '--sf-on-surface' : '--sf-on-surface-variant';

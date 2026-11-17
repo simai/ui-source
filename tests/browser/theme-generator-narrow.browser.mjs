@@ -91,6 +91,9 @@ try {
             for (const node of host.querySelectorAll('*')) {
               const rect = node.getBoundingClientRect();
               if (!rect.width && !rect.height) continue;
+              // A visually hidden node (the core .sr-only pattern: a clipped
+              // 1px box, e.g. the counter's live sentence) paints nothing.
+              if (getComputedStyle(node).clipPath === 'inset(50%)') continue;
               const past = Math.max(rect.right - box.right, box.left - rect.left);
               if (past > 0.5 && (!worst || past > worst.past)) {
                 worst = {past: Math.round(past * 10) / 10, node: `${node.tagName.toLowerCase()}${node.className && typeof node.className === 'string' ? `.${node.className.trim().split(/\s+/u).join('.')}` : ''}`};

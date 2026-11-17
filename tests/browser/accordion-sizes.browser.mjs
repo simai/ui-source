@@ -6,8 +6,10 @@
 // under them). Measured on the built bytes, at 1440px (desktop steps) and 390px
 // (mobile steps), for sizes 1/3, 1/2, 1, 2 and 3, filled, outline and flush,
 // against an sf-input and an sf-button of the same size:
-//   - the header (the trigger) is exactly the control height of the size: the
-//     sf-button's height, and the sf-input's where the field has the size;
+//   - the header with its frame (the trigger plus the outline's two edges or
+//     the flush divider: the frame is inside the height, C01, AC-02) is
+//     exactly the control height of the size: the sf-button's height, and the
+//     sf-input's where the field has the size;
 //   - the title takes the size's text: the sf-button label's font size and
 //     line height;
 //   - the chevron box is a line tall, and stands in the middle of the header;
@@ -86,7 +88,12 @@ try {
         const t = trigger.getBoundingClientRect();
         const i = icon.getBoundingClientRect();
         const titleStyle = getComputedStyle(title);
-        return {height: t.height, titleFont: px(titleStyle.fontSize), titleLine: px(titleStyle.lineHeight),
+        // C01: the frame is drawn inside the height. The outline's two edges
+        // and the flush divider belong to the header's box (docs precheck
+        // AC-02): header + frame is the size's control height.
+        const box = getComputedStyle(article);
+        const frame = article.matches('[data-legacy]') ? 0 : px(box.borderTopWidth) + px(box.borderBottomWidth);
+        return {height: t.height + frame, trigger: t.height, frame, titleFont: px(titleStyle.fontSize), titleLine: px(titleStyle.lineHeight),
           icon: {width: i.width, height: i.height, font: px(getComputedStyle(icon).fontSize), middle: i.top + i.height / 2 - t.top},
           titleLeft: title.getBoundingClientRect().left, contentLeft: content ? content.getBoundingClientRect().left : null,
           padding: px(getComputedStyle(trigger).paddingTop)};
@@ -127,7 +134,7 @@ try {
         if (row.input !== null) check(at('and the sf-input height of the size'), near(entry.height, row.input), {height: entry.height, input: row.input});
         check(at('the title takes the size\'s text'), entry.titleFont === row.label.font && entry.titleLine === row.label.line, {title: [entry.titleFont, entry.titleLine], label: row.label});
         check(at('the chevron is a line tall'), near(entry.icon.width, entry.titleLine) && near(entry.icon.height, entry.titleLine), entry.icon);
-        check(at('the chevron stands in the middle of the header'), near(entry.icon.middle, entry.height / 2, 0.5), {middle: entry.icon.middle, height: entry.height});
+        check(at('the chevron stands in the middle of the header'), near(entry.icon.middle, entry.trigger / 2, 0.5), {middle: entry.icon.middle, trigger: entry.trigger});
         check(at('the content text starts under the title'), near(entry.contentLeft, entry.titleLeft, 0.5), {content: entry.contentLeft, title: entry.titleLeft});
       }
     }

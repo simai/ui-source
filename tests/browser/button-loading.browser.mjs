@@ -30,7 +30,10 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 
 const SPINNER_SHEET = 'component/component/spinner/css/spinner.css';
-const SHEETS = ['core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
+// The button's template lays itself out with utility classes (flex,
+// items-cross-center: generate-template-utilities); the Loader brings that
+// sheet on a page, so this page brings it too.
+const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/button-group/css/button-group.css', SPINNER_SHEET];
 const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button/js/button.js',
   'smart/smart/button-icon/js/button-icon.js', 'component/component/button-group/js/button-group.js', 'smart/smart/segmented/js/segmented.js',

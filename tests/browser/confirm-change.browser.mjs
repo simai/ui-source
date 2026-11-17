@@ -23,8 +23,10 @@ const styles = [
   'smart/smart/change/css/change.css',
   'smart/smart/confirm-change/css/confirm-change.css',
 ].map((p) => join(out, p));
+// C282: Russian is a language file (the bundles carry English only); the
+// Loader's page brings it before core.js, so this page does too.
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
+  'core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js',
   // The values are sf-change's list (sf-confirm-change 1.7.0, C40): the Loader
   // brings it on a real page; here it is added like the others.
@@ -47,7 +49,7 @@ try {
   page.on('pageerror', (error) => { if (!/Automatic publicPath/u.test(error.message)) errors.push(error.message); });
   await page.setContent('<!doctype html><html class="theme-light" lang="ru"><head><meta charset="utf-8"></head><body style="margin:0"><button id="before">до</button><div id="box" style="width:420px;padding:16px"></div></body></html>');
   for (const style of styles) await page.addStyleTag({path: style}).catch(() => {});
-  for (const module of modules) await page.addScriptTag({path: module, type: 'module'}).catch(() => {});
+  for (const module of modules) await page.addScriptTag((module.endsWith('/lang/ru.js') ? {path: module} : {path: module, type: 'module'})).catch(() => {});
   await page.waitForFunction(() => Boolean(customElements.get('sf-confirm-change')));
 
   const make = async ({attributes = {}, changes = null, cancel = null} = {}) => {
@@ -219,7 +221,8 @@ try {
     buttons: [...document.querySelectorAll('#card .sf-change-confirm__actions button')].map((node) => node.textContent.trim()),
     tags: [...document.querySelectorAll('#card .sf-change .sr-only')].slice(0, 1).map((node) => node.textContent.trim()),
   }));
-  if (JSON.stringify(english) !== JSON.stringify({label: 'What will change', buttons: ['Confirm', 'Decline'], tags: ['to']})) note({case: 'an English page speaks English', got: english});
+  // sf-change says a change as one sentence, «was …, now …» (C40, languages #86).
+  if (JSON.stringify({...english, tags: english.tags.map((tag) => (/^was .+, now .+$/u.test(tag) ? 'was …, now …' : tag))}) !== JSON.stringify({label: 'What will change', buttons: ['Confirm', 'Decline'], tags: ['was …, now …']})) note({case: 'an English page speaks English', got: english});
 
   if (errors.length) note({case: 'no page errors', got: errors});
   console.log(JSON.stringify({checked: 7}));
