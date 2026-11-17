@@ -126,3 +126,29 @@ test('C251, SM-SW-1: sf-switch draws the class markup\'s thumb glyphs, icon alon
   const plain = read('src/component/switch/scss/_css_switch.scss');
   assert.match(plain, /\.sf-switch:has\(input:checked\) \.sf-switch-inner \.sf-switch-icon--on \{\s*opacity: 1;/u);
 });
+
+test('field parity: sf-slider-range draws hint under the field and help after its label, as sf-input', () => {
+  const settings = json('src/smart/slider-range/component.json').settings;
+  assert.equal(settings.hint?.type, 'string');
+  assert.equal(settings.help?.type, 'string');
+  const template = read('src/smart/slider-range/js/templates/default.js');
+  assert.match(template, /import \{renderFieldHelp\} from '\.\.\/\.\.\/\.\.\/helpers\/field-help';/u);
+  assert.match(template, /renderFieldHelp\(\{help: context\.help, label: context\.name, size: context\.size, className: 'sf-range-slider-help', component: context\.component\}\)/u);
+  assert.match(template, /<span class="sf-range-slider-hint" id=\$\{context\.hintId\} data-field-message="hint">\$\{context\.hint\}<\/span>/u);
+  assert.match(template, /data-describedby=\$\{context\.hintId \|\| nothing\}/u);
+  assert.match(template, /aria-describedby=\$\{context\.hintId \|\| nothing\}/u);
+  // The class slider describes each handle by the field's line.
+  const plain = read('src/component/range-slider/js/_range_slider.js');
+  assert.match(plain, /const description = root\.getAttribute\('data-describedby'\);\s+if \(description && !handle\.hasAttribute\('aria-describedby'\)\) \{\s+handle\.setAttribute\('aria-describedby', description\);/u);
+  const css = read('src/component/range-slider/scss/_css__range_slider_field.scss');
+  const hint = rule(css, '.sf-range-slider-hint');
+  assert.match(hint, /color: var\(--sf-on-surface-variant\);/u);
+  assert.match(hint, /font-size: var\(--sf-range-slider--label-size, var\(--sf-text-size-1\\\/2\)\);/u);
+});
+
+test('field parity: sf-dropdown shows hint under the field, an error in its place while shown', () => {
+  assert.equal(json('src/smart/dropdown/component.json').settings.hint?.type, 'string');
+  const source = read('src/smart/dropdown/index.js');
+  assert.match(source, /if \(this\.invalid && this\.errorMessage\) return this\.errorMessage;\s+if \(this\.shownMissing\) return this\.sfWord\('value-missing'\);\s+return this\.hint \|\| '';/u);
+  assert.match(read('src/smart/dropdown/js/templates/default.js'), /data-field-message=\$\{context\.messageIsError \? "error" : "hint"\}/u);
+});

@@ -1,4 +1,5 @@
 import {html, nothing} from 'lit';
+import {renderFieldHelp} from '../../../helpers/field-help';
 
 function joinClasses(...tokens) {
     return tokens.flat().filter(Boolean).join(' ');
@@ -17,15 +18,21 @@ function renderHead(context) {
     // With the from/to field the numbers are in the field; the line keeps the name.
     const showOutput = context.valueDisplay === 'text' && !context.field;
     if (!showName && !showOutput) return nothing;
+    // The «?» after the label (C153 (8), as sf-input's): beside the name, not
+    // in it, so the handles' name (aria-labelledby) stays the label.
+    const helpMark = showName
+        ? renderFieldHelp({help: context.help, label: context.name, size: context.size, className: 'sf-range-slider-help', component: context.component})
+        : nothing;
+    const nameLine = (name) => (helpMark === nothing ? name : html`<span class="sf-range-slider-label">${name}${helpMark}</span>`);
     return html`
         <div class="sf-range-slider-head">
             ${showName
                 // The unit of the from/to field joins the name when the field
                 // stands under the track (C202): «Цена, ₽». Hidden in the wide
                 // layout, where the field writes it; the handles say it anyway.
-                ? html`<span class="sf-range-slider-name" id=${context.nameId}>${context.name}${context.field && context.fieldUnit
+                ? nameLine(html`<span class="sf-range-slider-name" id=${context.nameId}>${context.name}${context.field && context.fieldUnit
                     ? html`<span class="sf-range-slider-name-unit" aria-hidden="true">, ${context.fieldUnit}</span>`
-                    : nothing}</span>`
+                    : nothing}</span>`)
                 : nothing}
             ${showOutput
                 // Each handle reads its own value out (aria-valuetext); this is the sighted copy.
@@ -83,6 +90,7 @@ function renderField(context) {
             autocomplete="off"
             spellcheck="false"
             aria-label=${context.fieldLabels[index] || nothing}
+            aria-describedby=${context.hintId || nothing}
             ?disabled=${context.disabled}
             ?readonly=${context.readonly}
             @focus=${(event) => event.target.select?.()}
@@ -142,6 +150,7 @@ export function renderRangeSliderTemplate(context) {
                         data-lower-label=${valueOrNothing(context.lowerLabel)}
                         data-upper-label=${valueOrNothing(context.upperLabel)}
                         data-labelledby=${context.name ? context.nameId : nothing}
+                        data-describedby=${context.hintId || nothing}
                         data-precision=${valueOrNothing(context.precision)}
                         data-grouping=${context.grouping === false ? 'false' : nothing}
                         data-locale=${valueOrNothing(context.locale)}
@@ -154,6 +163,10 @@ export function renderRangeSliderTemplate(context) {
               </div>
               ${renderField(context)}
             </div>
+            ${context.hint
+                // The help line under the field (C153, as sf-input's hint).
+                ? html`<span class="sf-range-slider-hint" id=${context.hintId} data-field-message="hint">${context.hint}</span>`
+                : nothing}
         </div>
     `;
 }

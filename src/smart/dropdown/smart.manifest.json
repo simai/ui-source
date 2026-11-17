@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.16.1",
+  "version": "1.20.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -82,6 +82,11 @@
       "label": {
         "type": "string",
         "default": ""
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "The help line under the field, as sf-input's hint (field parity): the hint's ink, a step below the value, and the trigger's description (aria-describedby); on an error the error message takes its place."
       },
       "help": {
         "type": "string",
@@ -495,7 +500,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "f0839e22a9c5e0dfb666634f42a1b3eea53207444a969d07444345124412a6c1"
+        "sha256": "4bdb4203be3391cd9faed0583be4c2cedcff78540a8b92fcae4c582396f1f159"
       },
       {
         "path": "src/smart/dropdown/rule.js",
@@ -503,7 +508,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "ca817a016476b92ffae11801b8de781fe634e00b5a9bacb7a4d6c7d58cbbc795"
+        "sha256": "e81579c24f98301d64ebb63c6e0a904b1f8e819d29ac3b6965a025634372883b"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

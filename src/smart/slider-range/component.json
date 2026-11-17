@@ -2,7 +2,7 @@
   "$comment": "The source of sf-slider-range's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/range-slider (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/range-slider/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.slider-range",
   "tag": "sf-slider-range",
-  "version": "1.5.2",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "slider",
   "settings": {
@@ -68,6 +68,16 @@
       "type": "string",
       "default": "",
       "summary": "The visible name above the slider, as every field's label (owner decision C78); it names the handles unless aria-label, aria-labelledby or lower-label/upper-label do. Until 2027-01-01 the words none, text and tooltip here still mean value-display."
+    },
+    "hint": {
+      "type": "string",
+      "default": "",
+      "summary": "The help line under the field, as sf-input's hint (C153, SM-RNG field parity): the hint's ink, a step below the value; each handle and each box of the from/to field is described by it (aria-describedby)."
+    },
+    "help": {
+      "type": "string",
+      "default": "",
+      "summary": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text, as sf-input's help (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is no part of the handles' name."
     },
     "value-display": {
       "type": "enum",
@@ -374,7 +384,8 @@
     "version 1.4.2 (2026-11-15, group build 6; numbered above 1.4.1 on refs/remotes/origin/feat/slider-range-c78-c80): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); its Kazakh words ride lang/kk.json (C177 (7) pilot draft, fix/languages-c177).",
     "version 1.5.0 (2026-11-15, owner decision C202, refines C80; study control/research/2026-11-15-range-filter.md, prototype prototypes/range-filter-study.html, defects RF-1..RF-3): a slider with the from/to field picks its layout by its own width, a container query at the ladder step g3 (26rem, added to the C181 ladder for it): from 26rem the field stays in the track's line (C80 unchanged); narrower the field goes under the track as two boxes «от …» «до …», equal halves of the full width, each a field of the step, and the unit leaves the boxes for the name («Цена, ₽»). The words and the unit are in the markup and hidden in the wide layout, so a printed first frame holds in both. The box takes a number typed with its own unit or a currency sign («12500 ₽», «12 500₽»: RF-1) as it takes spaces; the boxes write their value as the default value too, and a new example field gives the field look a static first paint (RF-3). Class sheet component.range-slider 1.5.0.",
     "version 1.5.1 (2026-11-16, DEV msg-5241318c RG-RS-1, RG-RS-2; numbered above 1.5.0 on refs/remotes/origin/fix/slider-range-c202): 1.5.0 (C202) merged onto main with main's 1.4.2; the name is a field label (C153 (1)): the text ink, and at size 1 the name line stays 14 on a phone. Class sheet component.range-slider 1.6.0.",
-    "version 1.5.2 (2026-11-16, owner decision C261, refines C202; component.range-slider 1.7.1; numbered above 1.5.1 on origin/fix/field-ladder-icons): a patch. The from/to boxes under the track (a slider narrower than 26rem) always hold the whole number: each box is at least as wide as its word and its wider ruler, and the two share the row in equal parts while both fit; where they do not, the second wraps to a row of its own under the first, at the whole width. The equal grid halves cut the last digit of a size 2 field in a 280 px column by 2-5 px. Settings, events and words unchanged."
+    "version 1.5.2 (2026-11-16, owner decision C261, refines C202; component.range-slider 1.7.1; numbered above 1.5.1 on origin/fix/field-ladder-icons): a patch. The from/to boxes under the track (a slider narrower than 26rem) always hold the whole number: each box is at least as wide as its word and its wider ruler, and the two share the row in equal parts while both fit; where they do not, the second wraps to a row of its own under the first, at the whole width. The equal grid halves cut the last digit of a size 2 field in a 280 px column by 2-5 px. Settings, events and words unchanged.",
+    "version 1.7.0 (2026-11-17, group build 10, fix/forms-fm2; component.range-slider 1.9.0; numbered above 1.6.2 on another origin branch): a minor, settings. Field parity with sf-input (the ui-effects controls panel from Framework parts): `hint`, the help line under the field in the hint's ink a step below the value (14 / 20 at size 1, 12 / 16 on a phone, as sf-input's hint), describing each handle (data-describedby, the class slider's own) and each box of the from/to field (aria-describedby); `help`, sf-help-mark after the label, beside the name and not in it, so the handles' name stays the label. The label stays on the field label ladder in the text ink (RG-RS-1, C153 (1), fix/range-slider-rs1). Values, events and keys unchanged."
   ],
   "x-registry": {
     "ownership": {

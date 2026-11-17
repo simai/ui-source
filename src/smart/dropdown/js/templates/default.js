@@ -290,7 +290,7 @@ export function renderDropdownTemplate(context) {
         ? html`<span
             id=${context.messageId}
             class="sf-dropdown-message"
-            data-field-message=${context.invalid ? "error" : "hint"}
+            data-field-message=${context.messageIsError ? "error" : "hint"}
           >${context.message}</span>`
         : nothing}
 

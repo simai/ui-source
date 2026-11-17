@@ -281,6 +281,13 @@ function bindSliderAccessibility(root, owner = root) {
       handle.setAttribute('aria-labelledby', visibleName);
       next['aria-labelledby'] = visibleName;
     }
+    // The field's help line (data-describedby: its id, as sf-input's hint)
+    // describes a handle nothing else describes.
+    const description = root.getAttribute('data-describedby');
+    if (description && !handle.hasAttribute('aria-describedby')) {
+      handle.setAttribute('aria-describedby', description);
+      next['aria-describedby'] = description;
+    }
     if (isDisabledRoot(root)) {
       handle.setAttribute('aria-disabled', 'true');
       next['aria-disabled'] = 'true';
@@ -292,7 +299,7 @@ function bindSliderAccessibility(root, owner = root) {
   const ownerFilter = owner === root
     ? [...accessibleAttributes, ...handleLabelAttributes]
     : [...accessibleAttributes, 'lower-label', 'upper-label'];
-  ownerFilter.push('data-labelledby');
+  ownerFilter.push('data-labelledby', 'data-describedby');
   if (owner === root) {
     state.observer.observe(root, {
       attributes: true,
@@ -302,7 +309,7 @@ function bindSliderAccessibility(root, owner = root) {
     state.observer.observe(owner, { attributes: true, attributeFilter: ownerFilter });
     state.observer.observe(root, {
       attributes: true,
-      attributeFilter: [...handleLabelAttributes, 'data-labelledby', 'disabled', 'class'],
+      attributeFilter: [...handleLabelAttributes, 'data-labelledby', 'data-describedby', 'disabled', 'class'],
     });
   }
   root[SLIDER_ACCESSIBILITY_STATE] = state;

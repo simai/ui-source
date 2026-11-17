@@ -405,9 +405,16 @@ class SfDropdown extends FormField(DropdownElement) {
     return Boolean(this.invalid) || this.shownMissing;
   }
 
+  // The line under the field: the error while one is shown, else the hint
+  // (as sf-input's: an invalid field with no message keeps its hint).
   get shownMessage() {
-    if (this.invalid) return this.errorMessage || '';
-    return this.shownMissing ? this.sfWord('value-missing') : '';
+    if (this.invalid && this.errorMessage) return this.errorMessage;
+    if (this.shownMissing) return this.sfWord('value-missing');
+    return this.hint || '';
+  }
+
+  get shownMessageIsError() {
+    return Boolean((this.invalid && this.errorMessage) || this.shownMissing);
   }
 
   // The trigger is the control: focus(), the browser's pointer at the first
@@ -474,7 +481,7 @@ class SfDropdown extends FormField(DropdownElement) {
     else trigger.removeAttribute('aria-describedby');
     if (this.shownInvalid) trigger.setAttribute('aria-invalid', 'true');
     else trigger.removeAttribute('aria-invalid');
-    if (this.shownInvalid && id) trigger.setAttribute('aria-errormessage', id);
+    if (this.shownInvalid && this.shownMessageIsError && id) trigger.setAttribute('aria-errormessage', id);
     else trigger.removeAttribute('aria-errormessage');
   }
 
@@ -572,6 +579,7 @@ class SfDropdown extends FormField(DropdownElement) {
       controlName: innerControlName(this, this.name),
       invalid: this.shownInvalid,
       message: this.shownMessage,
+      messageIsError: this.shownMessageIsError,
       messageId: partId(instancePath(this, { kind: 'sf-dropdown' }), 'message'),
       triggerText: this.triggerText,
       searchValue: this._searchValue,
