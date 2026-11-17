@@ -2874,17 +2874,14 @@ export function installIconSubsetRuntime(
       timer = setTimeout(check, budgetMs);
     });
 
-    // Defined and connected, not drawn yet. A Smart element defined on the
-    // frame the hold looked (sf-menu in sf-header-site's bundle, never asked
-    // for on its own) draws its icons a moment later: the first request then
-    // held the header's menu alone, and the menu's chevrons waited for a
-    // second whole font, blank for 700-1000 ms (menu-chevron-swap). Such an
-    // element is waited for until it has drawn once, for at most drawCapMs
-    // from the first time one is seen: one that waits for its data, or never
-    // draws, does not hold the page's icons longer than that (a drawing takes
-    // tens of milliseconds after the definition; a second font costs ten
-    // times more). An element inside another's printed first paint draws
-    // with that one.
+    // Defined and connected, not drawn yet. A Smart element defined a frame
+    // before the hold looks draws its icons a moment later; the first request
+    // must carry them (menu-chevron-swap). Such an element is waited for until
+    // it has drawn once, for at most drawCapMs from the first time one is
+    // seen: one that waits for its data, or never draws, does not hold the
+    // page's icons longer than that (a drawing takes tens of milliseconds
+    // after the definition; a second font costs ten times more). An element
+    // inside another's printed first paint draws with that one.
     const drawCapMs = 600;
     let drawSeen = 0;
     const undrawn = () => {
@@ -2966,6 +2963,16 @@ export function installIconSubsetRuntime(
         this.iconFirstRequestHeld = this.holdFirstIconRequest().then(() => {
           this.iconFirstRequestReleased = true;
           this.iconFirstRequestHeld = null;
+          // What the elements drew while the hold lasted is on the page, but
+          // the Loader's observer may still keep those records (until its
+          // search ends, then a debounce): sf-menu's chevrons, drawn before
+          // the hold let go, were tracked only after the first request had
+          // left with the header's menu glyph alone, and came in a second
+          // whole font 600-700 ms later (menu-chevron-swap). One scan of the
+          // page now tracks every drawn glyph without loading, so the first
+          // request carries them all; the observer's later records find them
+          // tracked and ask for nothing new.
+          if (globalThis.document?.body) this.scanStaticIcons(globalThis.document.body, false);
           return this.loadFonts();
         });
       }
