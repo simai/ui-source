@@ -114,7 +114,7 @@ const origin = `http://127.0.0.1:${server.address().port}`;
 
 // The box a field draws its look on, per tag.
 const measure = () => {
-  const BOX = ['.sf-dropdown-field', '.sf-textarea', '.sf-quantity', '.sf-input-container', '.sf-input'];
+  const BOX = ['.sf-dropdown-field', '.sf-quantity-wrap', '.sf-input-field', 'textarea'];
   const box = (host) => {
     for (const selector of BOX) {
       const found = host.querySelector(selector);
@@ -140,7 +140,7 @@ const measure = () => {
     const label = inner?.querySelector(':scope > .sf-button-text-container');
     const tipId = inner?.getAttribute('data-tooltip') || '';
     const tip = tipId ? document.getElementById(tipId) : null;
-    const icons = [...(inner?.querySelectorAll(':scope > sf-icon, :scope > .sf-icon') ?? [])].map((icon) => Math.round(icon.getBoundingClientRect().width));
+    const icons = [...(inner?.querySelectorAll(':scope > sf-icon > .sf-icon, :scope > .sf-icon') ?? [])].map((icon) => Math.round(icon.getBoundingClientRect().width));
     return inner ? {
       width: Math.round(inner.getBoundingClientRect().width),
       cut: label ? label.scrollWidth - label.clientWidth > 0.5 : false,
