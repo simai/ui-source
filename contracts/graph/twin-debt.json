@@ -151,17 +151,6 @@
       ]
     },
     {
-      "plain": "component.quantity",
-      "smart": "smart.input-quantity",
-      "since": "2026-11-16",
-      "codes": [
-        "default-look"
-      ],
-      "notes": [
-        "plain default draws an outline border; Smart has no appearance setting"
-      ]
-    },
-    {
       "plain": "component.tags",
       "smart": "smart.tag",
       "since": "2026-11-16",
