@@ -281,7 +281,7 @@ function choiceOption(field, option = {}) {
     const label = option.label || option.title || String(value ?? '');
     const look = field.filter?.optionRenderer;
     const item = {value: String(value ?? ''), label, caption: option.caption || '', disabled: option.disabled === true};
-    if (look === 'avatar-checkbox') item.avatar = {image: option.imageUrl || option.avatar?.image || '', text: option.avatarText || label};
+    if (look === 'avatar-checkbox') item.avatar = {image: option.imageUrl || option.avatar?.image || '', text: option.avatarText || option.avatar?.text || label};
     else if (look === 'swatch' && option.color) item.swatch = option.color;
     else if (look === 'badge') item.scheme = option.scheme ?? option.color ?? '';
     return item;

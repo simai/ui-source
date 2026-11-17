@@ -83,8 +83,10 @@ for (const {width, theme} of CASES) {
         const box = row(value)?.querySelector('.sf-choice-input')?.getBoundingClientRect();
         return box ? box.top + box.height / 2 : 0;
       };
+      // sf-avatar and sf-badge stand as display: contents: their box is their first child's.
       const centre = (node) => {
-        const box = node?.getBoundingClientRect();
+        const drawn = node && getComputedStyle(node).display === 'contents' ? node.firstElementChild : node;
+        const box = drawn?.getBoundingClientRect();
         return box ? box.top + box.height / 2 : -100;
       };
       const avatarNode = row('anna')?.querySelector('sf-avatar.sf-choice-avatar');
@@ -122,7 +124,7 @@ for (const {width, theme} of CASES) {
     const firstPage = {rows: await rows(tab, 'paged'), ...(await status(tab, 'paged')), calls: await tab.evaluate(() => window.calls.slice())};
     ok(`${key} pages: the first page, «Показать ещё» under it`, firstPage.rows.length === 51 && /Показать ещё/u.test(firstPage.more) && firstPage.calls[0]?.cursor === null && firstPage.calls[0]?.limit === 50, {...firstPage, rows: firstPage.rows.length});
     ok(`${key} pages: the chosen option the pages have not reached keeps its row`, firstPage.rows.includes('u-120'), firstPage.rows.slice(0, 3));
-    await tab.click('#paged .sf-choice-more');
+    await tab.click('#paged .sf-choice-more button');
     await tab.waitForFunction(() => document.querySelectorAll('#paged .sf-choice-input').length >= 101, null, {timeout: 5000}).catch(() => null);
     const second = {rows: (await rows(tab, 'paged')).length, call: await tab.evaluate(() => window.calls.at(-1))};
     ok(`${key} pages: «Показать ещё» asks with the cursor and adds the page`, second.rows === 101 && second.call.cursor === '50', second);
@@ -140,7 +142,7 @@ for (const {width, theme} of CASES) {
     await tab.waitForTimeout(600);
     const failed = await status(tab, 'paged');
     ok(`${key} pages: an error is said with «Повторить»`, /не удалось|ошибк/iu.test(failed.text) && /Повторить/u.test(failed.more), failed);
-    await tab.click('#paged .sf-choice-more');
+    await tab.click('#paged .sf-choice-more button');
     await tab.waitForTimeout(500);
     const retried = {...(await status(tab, 'paged')), calls: await tab.evaluate(() => window.calls.filter((one) => one.query === 'сбой').length)};
     ok(`${key} pages: «Повторить» asks again`, retried.calls === 2 && !/Повторить/u.test(retried.more), retried);

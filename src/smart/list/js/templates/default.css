@@ -357,6 +357,14 @@
     padding: 0;
   }
 
+  /* A long list's rows are no scroll anchor: when the range moves, the
+     browser kept a drawn row in place by moving the scroll position, which
+     moved the range again, until the list ran to its end (measured: a
+     scroll to the middle of 10 000 rows ended at the last row). */
+  .sf-list__rows[data-sf-rows-window] {
+    overflow-anchor: none;
+  }
+
   .sf-list__row {
     display: flex;
     align-items: center;

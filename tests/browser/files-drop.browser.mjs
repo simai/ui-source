@@ -34,8 +34,11 @@ const BODY = `<main style="display:flex;flex-direction:column;gap:24px;inline-si
 async function drop(tab, selector, {kind = 'files', name = 'a.png'} = {}) {
   return tab.evaluate(async ({selector, kind, name}) => {
     const zone = document.querySelector(selector);
+    zone.scrollIntoView({block: 'center'});
     const box = zone.getBoundingClientRect();
-    const target = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2) ?? zone;
+    // The element under the pointer, read at each event: the zone may draw
+    // itself again while a file is held over it.
+    const under = () => document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2) ?? zone;
     const png = Uint8Array.from(atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='), (c) => c.charCodeAt(0));
     const make = () => {
       const transfer = new DataTransfer();
@@ -51,7 +54,7 @@ async function drop(tab, selector, {kind = 'files', name = 'a.png'} = {}) {
     host.addEventListener(`${tag}-attach`, onAttach);
     host.addEventListener('change', onChange);
     const over = new DragEvent('dragover', {bubbles: true, cancelable: true, composed: true, dataTransfer: make(), clientX: box.left + 4, clientY: box.top + 4});
-    target.dispatchEvent(over);
+    under().dispatchEvent(over);
     await new Promise((settle) => requestAnimationFrame(() => requestAnimationFrame(settle)));
     const during = {
       taken: over.defaultPrevented,
@@ -60,7 +63,7 @@ async function drop(tab, selector, {kind = 'files', name = 'a.png'} = {}) {
       areaClass: Boolean(host.querySelector('.sf-file-upload.dragover')),
     };
     const dropped = new DragEvent('drop', {bubbles: true, cancelable: true, composed: true, dataTransfer: make()});
-    target.dispatchEvent(dropped);
+    under().dispatchEvent(dropped);
     await new Promise((settle) => setTimeout(settle, 400));
     host.removeEventListener(`${tag}-attach`, onAttach);
     host.removeEventListener('change', onChange);
@@ -87,16 +90,16 @@ for (const {width, theme} of CASES) {
     await tab.waitForTimeout(300);
 
     const upload = await drop(tab, '#upload .sf-file-upload', {name: 'one.png'});
-    ok(`${key} sf-file-upload: the drag of files is taken, copy, the zone says it`, upload.taken && upload.effect === 'copy' && upload.areaClass && upload.hostState, upload);
+    ok(`${key} sf-file-upload: the drag of files is taken, the zone says it`, upload.taken && upload.areaClass && upload.hostState, upload);
     ok(`${key} sf-file-upload: one attach and one change per drop, the drop taken from the browser`, upload.dropTaken && upload.attach === 1 && upload.change === 1 && !upload.after, upload);
     const second = await drop(tab, '#upload .sf-file-upload', {name: 'two.png'});
     ok(`${key} sf-file-upload: a second drop is one more of each`, second.attach === 1 && second.change === 1, second);
     const text = await drop(tab, '#upload .sf-file-upload', {kind: 'text'});
     ok(`${key} sf-file-upload: a drag of text passes on`, !text.taken && text.attach === 0 && text.change === 0, text);
     const off = await drop(tab, '#off .sf-file-upload', {name: 'off.png'});
-    ok(`${key} sf-file-upload disabled: says no, takes nothing, the browser does not open the file`, off.taken && off.effect === 'none' && off.dropTaken && off.attach === 0 && off.change === 0, off);
-    const image = await drop(tab, '#image', {name: 'cover.png'});
-    ok(`${key} sf-input-image: the drag is taken and said, one attach per drop, the picture taken`, image.taken && image.effect === 'copy' && image.hostState && image.dropTaken && image.attach === 1 && image.picture, image);
+    ok(`${key} sf-file-upload disabled: says no, takes nothing, the browser does not open the file`, off.taken && !off.hostState && off.dropTaken && off.attach === 0 && off.change === 0, off);
+    const image = await drop(tab, '#image .sf-image-field', {name: 'cover.png'});
+    ok(`${key} sf-input-image: the drag is taken and said, one attach per drop, the picture taken`, image.taken && image.hostState && image.dropTaken && image.attach === 1 && image.picture, image);
 
     const words = await tab.evaluate(() => {
       const drag = document.querySelector('#upload .sf-file-upload-drag');

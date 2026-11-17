@@ -28,13 +28,10 @@ for (const {width, theme} of CASES) {
     const context = await browser.newContext({viewport: {width, height: 800}, colorScheme: theme, locale: 'ru-RU', reducedMotion: 'reduce'});
     const tab = await context.newPage();
     const errors = watchConsole(tab);
-    await tab.goto(server.page(russianPage({theme, body: '<main><h1 style="margin:0 0 16px">Список</h1><div id="box"></div></main>'})));
+    await tab.goto(server.page(russianPage({theme, body: '<main><h1 style="margin:0 0 16px">Список</h1><sf-list id="list" label="Строки"></sf-list></main>'})));
     await tab.waitForFunction(() => customElements.get('sf-list') && customElements.get('sf-list-item'), null, {timeout: 20_000});
     await tab.evaluate((count) => {
-      const list = document.createElement('sf-list');
-      list.id = 'list';
-      list.setAttribute('label', 'Строки');
-      document.getElementById('box').append(list);
+      const list = document.getElementById('list');
       list.setItems(Array.from({length: count}, (_, index) => ({id: `r${index}`, text: `Строка ${index + 1}`, supporting: `Описание ${index + 1}`})));
     }, COUNT);
     await tab.waitForFunction(() => document.querySelectorAll('#list [aria-posinset]').length > 0
@@ -43,11 +40,11 @@ for (const {width, theme} of CASES) {
 
     const first = await tab.evaluate(() => {
       const rows = [...document.querySelectorAll('#list [aria-posinset]')];
-      const list = document.getElementById('list');
+      const list = document.querySelector('#list .sf-list__rows');
       const height = rows[1].getBoundingClientRect().top - rows[0].getBoundingClientRect().top;
       return {
         drawn: rows.length,
-        setsize: new Set(rows.map((row) => row.getAttribute('aria-setsize'))),
+        setsize: [...new Set(rows.map((row) => row.getAttribute('aria-setsize')))],
         firstPlace: Number(rows[0].getAttribute('aria-posinset')),
         height,
         listHeight: list.getBoundingClientRect().height,
@@ -55,7 +52,7 @@ for (const {width, theme} of CASES) {
       };
     });
     ok(`${key}: only a range is drawn (${first.drawn} of ${COUNT})`, first.drawn > 0 && first.drawn < 200, first);
-    ok(`${key}: every row says its place in the whole list`, first.setsize.size === 1 && first.setsize.has(String(COUNT)) && first.firstPlace === 1, {...first, setsize: [...first.setsize]});
+    ok(`${key}: every row says its place in the whole list`, first.setsize.length === 1 && first.setsize[0] === String(COUNT) && first.firstPlace === 1, first);
     ok(`${key}: the spacers keep the list as tall as its ${COUNT} rows`, Math.abs(first.listHeight - COUNT * first.height) < first.height * 3 && first.pageHeight >= first.listHeight, first);
 
     // A scroll to the middle: held where it was put, the range follows it.
@@ -64,7 +61,7 @@ for (const {width, theme} of CASES) {
       const top = rows[0].getBoundingClientRect().top + window.scrollY;
       const height = rows[1].getBoundingClientRect().top - rows[0].getBoundingClientRect().top;
       const y = Math.round(top + (count / 2) * height);
-      window.scrollTo(0, y);
+      window.scrollTo({top: y, behavior: 'instant'});
       return {y, top, height};
     }, COUNT);
     await tab.waitForTimeout(400);

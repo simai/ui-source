@@ -47,17 +47,14 @@ for (const {width, theme} of CASES) {
     const context = await browser.newContext({viewport: {width, height: 900}, colorScheme: theme, locale: 'ru-RU', reducedMotion: 'reduce'});
     const tab = await context.newPage();
     const errors = watchConsole(tab);
-    await tab.goto(server.page(russianPage({theme, body: '<main style="inline-size:min(100%,40rem)"><div id="box"></div></main>'})));
+    await tab.goto(server.page(russianPage({theme, body: '<main style="inline-size:min(100%,40rem)"><sf-form id="form" label="Заказ"></sf-form></main>'})));
     await tab.waitForFunction(() => customElements.get('sf-form'), null, {timeout: 20_000});
     await tab.evaluate((fields) => {
-      const form = document.createElement('sf-form');
-      form.id = 'form';
-      form.setAttribute('label', 'Заказ');
+      const form = document.getElementById('form');
       form.fields = fields;
       form.value = {delivery: 'pickup'};
       window.saved = [];
       form.addEventListener('sf-form-submit', (event) => window.saved.push(event.detail));
-      document.getElementById('box').append(form);
     }, FIELDS);
     await tab.waitForFunction(() => document.querySelector('#form .sf-form-field[data-key="delivery"] input[value="courier"]')
       && document.querySelector('#form .sf-form-field[data-key="floor"]'), null, {timeout: 20_000});

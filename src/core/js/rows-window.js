@@ -22,6 +22,10 @@
 //   win.start() / win.stop()   follow scrolling and resizing (any scroll box
 //                     between the rows and the page, one listener per list)
 //
+// The box the rows stand in must not be a scroll anchor (overflow-anchor:
+// none): when the range moves, the browser's scroll anchoring keeps a drawn
+// row in place by moving the scroll position, which moves the range again.
+//
 // What is in view is read against the window and the nearest box that
 // scrolls the rows. A row's height is the average of the rows drawn, so a
 // row of two lines among rows of one does not throw the spacers off; until a

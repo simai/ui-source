@@ -30,7 +30,7 @@ const BODY = `<main style="display:flex;flex-wrap:wrap;gap:12px;align-items:cent
 </main>`;
 const HEAD = '<script type="module" src="/distr/smart/field-renderers/js/field-renderers.js"></script>';
 
-const STATUS = {key: 'status', label: 'Статус', propertyType: 'choice', filter: {options: [
+const STATUS = {key: 'status', label: 'Статус', propertyType: 'choice', filter: {optionRenderer: 'badge', options: [
   {value: 'new', label: 'Новая', scheme: 'primary'}, {value: 'work', label: 'В работе', scheme: 'warning'}, {value: 'done', label: 'Готово', scheme: 'success'}]}};
 
 // Opens the window from an anchor; the answer lands in window.answers.
@@ -42,7 +42,7 @@ const open = (tab, anchor, field) => tab.evaluate(({anchor, field}) => {
 }, {anchor, field});
 const shown = (tab) => tab.waitForFunction(() => {
   const surface = document.querySelector('[data-sf-filter-window] [role="dialog"], [data-sf-filter-window] dialog, [data-sf-filter-window] .sf-popover__surface');
-  return document.querySelector('[data-sf-filter-window] [data-action="apply"] button') && surface && surface.getBoundingClientRect().height > 0;
+  return document.querySelector('[data-sf-filter-window] button[data-action="apply"]') && surface && surface.getBoundingClientRect().height > 0;
 }, null, {timeout: 10_000});
 const lastAnswer = (tab) => tab.evaluate(() => window.answers.at(-1));
 
@@ -100,7 +100,7 @@ for (const {width, theme} of CASES) {
     ok(`${key}: the control is sf-input-choice list, the statuses as tonal badges; the focus in the window`, window1.choice && window1.badges === 3 && window1.focusInside, window1);
 
     await tab.click('[data-sf-filter-window] .sf-choice-input[value="work"]', {force: true});
-    await tab.click('[data-sf-filter-window] [data-action="apply"] button');
+    await tab.click('[data-sf-filter-window] button[data-action="apply"]');
     await tab.waitForTimeout(400);
     const applied = {answer: await lastAnswer(tab), left: await tab.evaluate(() => document.querySelectorAll('[data-sf-filter-window]').length)};
     ok(`${key}: apply answers the choice, the window leaves the page`, applied.answer?.action === 'apply' && JSON.stringify(applied.answer?.value?.values) === '["work"]' && applied.left === 0, applied);
@@ -108,7 +108,7 @@ for (const {width, theme} of CASES) {
     // 2. Reset.
     await open(tab, 'status', 'status');
     await shown(tab);
-    await tab.click('[data-sf-filter-window] [data-action="reset"] button');
+    await tab.click('[data-sf-filter-window] button[data-action="reset"]');
     await tab.waitForTimeout(400);
     const reset = await lastAnswer(tab);
     ok(`${key}: reset answers reset, with no value`, reset?.action === 'reset' && reset?.value === null, reset);
@@ -142,7 +142,8 @@ for (const {width, theme} of CASES) {
     // 5. From a chip, with the host's pages and search inside.
     await open(tab, 'owner', 'owner');
     await shown(tab);
-    await tab.waitForFunction(() => document.querySelectorAll('[data-sf-filter-window] .sf-choice-input').length >= 50, null, {timeout: 10_000}).catch(() => null);
+    await tab.waitForFunction(() => document.querySelectorAll('[data-sf-filter-window] .sf-choice-input').length >= 50
+      && document.querySelector('[data-sf-filter-window] .sf-choice-search input'), null, {timeout: 10_000}).catch(() => null);
     const paged = await tab.evaluate(() => ({
       rows: document.querySelectorAll('[data-sf-filter-window] .sf-choice-input').length,
       avatars: document.querySelectorAll('[data-sf-filter-window] sf-avatar.sf-choice-avatar').length,

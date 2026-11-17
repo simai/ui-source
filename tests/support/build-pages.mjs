@@ -21,6 +21,10 @@ export async function serveBuild(out) {
   const pages = new Map();
   const server = createServer((request, response) => {
     const path = decodeURIComponent(new URL(request.url, 'http://x').pathname);
+    if (path === '/favicon.ico') {
+      response.writeHead(204);
+      return response.end();
+    }
     if (pages.has(path)) {
       response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
       return response.end(pages.get(path));
