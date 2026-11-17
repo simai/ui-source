@@ -35,8 +35,10 @@ export function renderRadioTemplate(context) {
   const showContainer = !!(labelContent || descriptionContent);
   rootClasses.push(...checkableClasses(size, showContainer));
 
-  const control = html`
-    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
+  // position="end" (C251, SM-RD-1): the box after the text column, as
+  // sf-checkbox's and the class markup's (the box the label's last child).
+  const atEnd = context.position === 'end';
+  const box = html`
       <span class="sf-radio-button-box flex items-cross-center content-main-center">
         <input
           type="radio"
@@ -47,9 +49,12 @@ export function renderRadioTemplate(context) {
           ?disabled=${disabled}
         />
         <span class="sf-radio-button-mark" aria-hidden="true"></span>
-      </span>
-
+      </span>`;
+  const control = html`
+    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
+      ${atEnd ? '' : box}
       ${renderCheckableText({ column: 'sf-radio-button-container', top: 'sf-radio-button-top' }, labelContent, descriptionContent)}
+      ${atEnd ? box : ''}
     </label>
   `;
   return renderCheckableRow(size, control, helpContent);

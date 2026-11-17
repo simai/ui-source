@@ -78,6 +78,14 @@
   inset-inline-end: max(calc(-1 * var(--sf-radio-button-box--border-width, var(--sf-px))), min(0px, calc((100% - var(--sf-c2)) / 2)));
 }
 
+/* With the box at the end (the box after the text column: the class markup,
+   and sf-radio position="end", C251 SM-RD-1) the text column takes the rest
+   of the row, so the box stands at the end of the row, not right after the
+   text, as sf-checkbox's. */
+.sf-radio-button:has(> .sf-radio-button-container + .sf-radio-button-box) > .sf-radio-button-container {
+  flex: 1 1 auto;
+}
+
 /* The help mark («?», sf-help-mark) is the help's own button: it stands above
    the native control's hit area, so a press on it is never a press on the
    box. */

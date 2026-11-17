@@ -2661,7 +2661,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/radio/smart.manifest.json",
-      "manifest_sha256": "25d7de3781fee1c28b713b96abde2f503ce5ada62a2df67aef6242204b99a665",
+      "manifest_sha256": "4000602820e646930b30d4759e3bdc6cde42d413d25b12fe374eac9e0d52b735",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -3135,7 +3135,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/switch/smart.manifest.json",
-      "manifest_sha256": "fcaa5b35714300e971f80507187089dcf81448896d50ca1684973f88a667541c",
+      "manifest_sha256": "81a26908c8840b95c53d9f4376b4ad65a6122b3c54aebc55192c5eb34ece83ec",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

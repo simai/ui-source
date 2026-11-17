@@ -99,3 +99,30 @@ test('C284: code cells give way in width down to the touch rung 1/2, the row nev
   assert.match(rule(css, '.sf-verification-form > .sf-verification'), /max-inline-size: 100%;/u);
   assert.match(rule(css, '.sf-verification-cells, .sf-verification-form-wrap'), /min-inline-size: 0;/u);
 });
+
+test('C251, SM-RD-1 / SM-SW-1: sf-radio and sf-switch take position start | end, as sf-checkbox and the class markup', () => {
+  for (const name of ['radio', 'switch']) {
+    const setting = json(`src/smart/${name}/component.json`).settings.position;
+    assert.deepEqual(setting?.values, ['start', 'end'], name);
+    assert.equal(setting.default, 'start', name);
+    const template = read(`src/smart/${name}/js/templates/default.js`);
+    assert.match(template, /const atEnd = context\.position === 'end';/u, name);
+  }
+  assert.match(read('src/smart/radio/js/templates/default.js'), /\$\{atEnd \? '' : box\}\s+\$\{renderCheckableText[^\n]+\n\s+\$\{atEnd \? box : ''\}/u);
+  assert.match(read('src/smart/switch/js/templates/default.js'), /\$\{atEnd \? '' : toggler\}\s+\$\{renderCheckableText[^\n]+\n\s+\$\{atEnd \? toggler : ''\}/u);
+  assert.match(rule(read('src/component/radio/scss/_css_radio_custom.scss'), '.sf-radio-button:has(> .sf-radio-button-container + .sf-radio-button-box) > .sf-radio-button-container'), /flex: 1 1 auto;/u);
+  assert.match(rule(read('src/component/switch/scss/_css_switch_custom.scss'), '.sf-switch:has(> .sf-switch-container-wrap + .sf-switch-toggler) > .sf-switch-container-wrap'), /flex: 1 1 auto;/u);
+});
+
+test('C251, SM-SW-1: sf-switch draws the class markup\'s thumb glyphs, icon alone or icon with icon-on', () => {
+  const settings = json('src/smart/switch/component.json').settings;
+  assert.equal(settings.icon?.type, 'icon');
+  assert.equal(settings['icon-on']?.type, 'icon');
+  const template = read('src/smart/switch/js/templates/default.js');
+  assert.match(template, /<i class="sf-icon sf-switch-icon--off" aria-hidden="true">\$\{context\.icon\}<\/i>/u);
+  assert.match(template, /<i class="sf-icon sf-switch-icon--on" aria-hidden="true">\$\{context\.iconOn\}<\/i>/u);
+  assert.match(template, /<span class="sf-switch-inner transition" aria-hidden="true">\$\{icons\}<\/span>/u);
+  // The class sheet the glyphs answer to (the twin's own rules).
+  const plain = read('src/component/switch/scss/_css_switch.scss');
+  assert.match(plain, /\.sf-switch:has\(input:checked\) \.sf-switch-inner \.sf-switch-icon--on \{\s*opacity: 1;/u);
+});

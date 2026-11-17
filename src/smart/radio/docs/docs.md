@@ -19,6 +19,8 @@ groups in different forms independent.
   after the label's last word: when the label wraps, at the end of its last
   line, not of the first. The `help` slot takes an
   sf-help-mark of your own (links, a heading).
+- `position` — `start` (default) or `end`: the box after the text column, at
+  the row's end, as sf-checkbox and the class markup; RTL follows the document.
 - `checked`
 - `disabled`
 - `name`

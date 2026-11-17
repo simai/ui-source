@@ -21,6 +21,15 @@
   min-width: 0;
 }
 
+/* With the track at the end (the track after the text column: the class
+   markup, and sf-switch position="end", C251 SM-SW-1) the text column takes
+   the rest of the row, so the track stands at the end of the row, as
+   sf-checkbox's box. The track is twice its height, wider than the 24 hit
+   area, so its hit area never stands past the row. */
+.sf-switch:has(> .sf-switch-container-wrap + .sf-switch-toggler) > .sf-switch-container-wrap {
+  flex: 1 1 auto;
+}
+
 .sf-switch .sf-switch-text {
   white-space: var(--sf-switch-text--white-space, normal);
   overflow-wrap: anywhere;
