@@ -68,6 +68,8 @@ test('SF.Sortable.attach has a row mode with the column mode left as it was', ()
   assert.match(core, /say\(format\(messages\(\)\.picked, /);
   assert.match(core, /say\(format\(messages\(\)\.moved, /);
   assert.match(core, /item\.setAttribute\('aria-describedby', \[\.\.\.described, help\.id\]\.join\(' '\)\)/);
+  // A table row is named by its cells, not one run of glued text with the handle's name.
+  assert.match(core, /if \(item\.tagName === 'TR'\) return \[\.\.\.item\.cells\]\.map\(clean\)\.filter\(Boolean\)\.join\(', '\);/);
   // The column mode stays quiet: state events in the row mode only.
   assert.equal((core.match(/if \(vertical\) container\.dispatchEvent/g) || []).length, 2);
   const menu = read('src/core/js/composition/sortable-move-menu.mjs');

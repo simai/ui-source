@@ -209,7 +209,7 @@ export function attachSortableWithMenu(container, options = {}) {
     const choice = await menuOpen({
       anchor: control,
       entries: moveMenuEntries(index, peers.length),
-      label: format(text('move-menu'), { item: itemLabel(found.item) }),
+      label: format(text('move-menu'), { item: detach.labelOf(found.item) }),
     });
     if (control.isConnected) control.setAttribute('aria-expanded', 'false');
     const id = choice?.id;

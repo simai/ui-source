@@ -818,6 +818,10 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
  *                container
  *   cellsOf      (item) => elements to mark as the moving item (its cells)
  *   label        the list's name for the announcement
+ *   labelOf      (item) => string -- what the item is called in the
+ *                announcements and the move menu; default its aria-label, a
+ *                table row its cells' text joined by commas, anything else its
+ *                visible text, the handle and hidden parts left out
  *   onIntent     ({item, from, index, group}) -- index among the group's items
  *                without the dragged one, the place it is to take
  * Returns detach(); detach.move(item, index) asks a move without dragging,
@@ -843,6 +847,18 @@ export function attachSortable(container, options = {}) {
     ? options.keyOf
     : (item) => item.getAttribute('data-sf-sortable-item') || item.dataset.key || item.dataset.rowId || '';
   const handleSelector = vertical && typeof options.handle === 'string' && options.handle ? options.handle : '';
+  // A row read as one run of text said «ПереместитьЗадача вторая11.11.2026»:
+  // the handle's own name and every cell glued together.
+  const labelOf = typeof options.labelOf === 'function' ? options.labelOf : (item) => {
+    if (item.getAttribute('aria-label')) return item.getAttribute('aria-label');
+    const clean = (node) => {
+      const clone = node.cloneNode(true);
+      for (const hidden of clone.querySelectorAll(`[aria-hidden="true"], .sf-sortable-live${handleSelector ? `, ${handleSelector}` : ''}`)) hidden.remove();
+      return clone.textContent.replace(/\s+/gu, ' ').trim();
+    };
+    if (item.tagName === 'TR') return [...item.cells].map(clean).filter(Boolean).join(', ');
+    return clean(item);
+  };
   const keyboard = vertical && options.keyboard !== false;
   const extentOf = () => options.extent?.isConnected ? options.extent : container;
   const live = doc.createElement('div');
@@ -940,7 +956,7 @@ export function attachSortable(container, options = {}) {
   // handle's menu.
   const request = (item, index, group = groupOf(item)) => {
     const id = keyOf(item);
-    say(format(messages().dropped, {item: itemLabel(item), index: index + 1, list: options.label || ''}));
+    say(format(messages().dropped, {item: labelOf(item), index: index + 1, list: options.label || ''}));
     options.onIntent?.({item: id, from: group, index, group});
   };
 
@@ -1114,7 +1130,7 @@ export function attachSortable(container, options = {}) {
         lift(item, null, 'keyboard');
         const total = members(session.group).length;
         draw(peerBoxes(), session.index);
-        say(format(messages().picked, {item: itemLabel(item), index: session.index + 1, total, list: options.label || ''}));
+        say(format(messages().picked, {item: labelOf(item), index: session.index + 1, total, list: options.label || ''}));
         // Focus or a press leaving the list abandons the move.
         const {signal} = session.pending;
         container.addEventListener('focusout', (focusEvent) => {
@@ -1168,6 +1184,7 @@ export function attachSortable(container, options = {}) {
   };
   detach.members = (item) => members(groupOf(item));
   detach.handle = handleSelector;
+  detach.labelOf = labelOf;
   return detach;
 }
 
