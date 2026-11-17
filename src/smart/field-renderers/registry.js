@@ -39,7 +39,9 @@ export const PROPERTY_TYPES = Object.freeze([
         // included, and an incomplete one is reported, not written as a value.
         // nullable: false makes a cleared masked field write "" instead of null.
         // Read by the plain string alone: phone and password keep their controls.
-        params: ['placeholder', 'mask', 'nullable', 'required', 'readonly']},
+        // defaultCountry (FL-7): the phone variant's country while it is empty,
+        // ISO 3166 alpha-2; without it, the page's.
+        params: ['placeholder', 'mask', 'nullable', 'defaultCountry', 'required', 'readonly']},
     {type: 'text', label: typeLabel('type-text'),
         variants: [],
         params: ['placeholder', 'required', 'readonly']},

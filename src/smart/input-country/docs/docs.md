@@ -48,7 +48,10 @@ on the host names the native input, so the label is not printed twice.
 The JavaScript countries property supplies local descriptors (iso2, dialCode/code,
 label, maskPattern). Explicit fields override the built-in record; missing fields
 for a known ISO are filled from it. Empty countries restores the dataset. Initial
-selection without iso2/dial-code uses the first supplied item. Known explicit
+selection without iso2/dial-code and without a number follows the page locale:
+the region it writes (en-GB is Britain), else the language's likely country from
+Intl (ru is Russia, en the United States), else the United States -- when the
+list offers that country; otherwise the first supplied item. Known explicit
 selections outside the list remain supported; max-items is a display limit, not
 validation. A fixed country (fixed-country; multi-country="false" until 2027-01-01) still uses the supplied descriptors.
 When assigning after connection, wait for customElements.whenDefined, specify the

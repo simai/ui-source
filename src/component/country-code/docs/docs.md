@@ -137,8 +137,13 @@ Can be set on `.sf-country-code` (or partly on input):
 Country resolution:
 
 1. explicit `iso2` / `dialCode`, first in the supplied list, then in the built-in dataset;
-2. first supplied item when neither selection is specified;
-3. the built-in list when `countries` is omitted or empty.
+2. the country the value's own dial code names (`+7 900…` is Russia, `+7 701…` Kazakhstan);
+3. the page locale's country when the list offers it (1.12.0): the region the locale
+   writes (`en-GB` is Britain), else the language's likely region from Intl (`ru` is
+   Russia, `en` the United States), else the United States. An empty field on a
+   Russian page started on the first row, Australia and +61;
+4. first supplied item when none of these is in the list;
+5. the built-in list when `countries` is omitted or empty.
 
 Custom `countries` descriptors override matching dataset fields. `code` aliases
 `dialCode`; a known `iso2` fills omitted names, flag, dial code and mask. An explicit
