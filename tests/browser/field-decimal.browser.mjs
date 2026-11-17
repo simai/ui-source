@@ -131,7 +131,8 @@ try {
   expect('money cell: the host formats first', cells.moneyHost, 'host');
   expect('money cell: not a decimal falls through', cells.moneyNotDecimal, null);
   expect('percent cell ru', cells.percentRu, '12,5 %');
-  expect('percent cell en', cells.percentEn, '20%');
+  // C203 (3), C294: a no-break space before «%» in every language.
+  expect('percent cell en', cells.percentEn, '20\u00a0%');
   expect('items cell 1', cells.items1, '1 строка');
   expect('items cell 3', cells.items3, '3 строки');
   expect('items cell 5', cells.items5, '5 строк');
@@ -142,7 +143,8 @@ try {
     compound: {set: 'view', view: false, edit: false, cell: 'text', filter: 'text'},
     'ru.requisites': {set: 'view', view: false, edit: false, cell: 'text', filter: 'text'},
   });
-  expect('money filter is the number filter', filter, {inputs: 1, operators: 1});
+  // C294: the condition, the amount and, for a currency kept in the value, the currency.
+  expect('money filter is the number filter', filter, {inputs: 1, operators: 2});
   expect('a number field writes a number, comma read', edits.plainComma.writes, [['plain', 1234.5]]);
   expect('a number whose value is a string writes a decimal string', edits.stringy.writes, [['stringy', '1500.50']]);
   expect('a decimal-string field cleared writes null', edits.stringyCleared.writes, [['stringy', null]]);

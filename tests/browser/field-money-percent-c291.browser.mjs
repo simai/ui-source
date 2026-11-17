@@ -258,25 +258,29 @@ try {
       set.registry.percent.set, set.registry.percent.modes], [null, all, null, all]);
     expect(at('(2) the view in the page language'), Object.fromEntries(Object.entries(set.view).map(([k, v]) => [k, nbsp(v)])), ru_
       ? {money: '1 500,50 ₽', moneyUsd: '1 500,50 $', moneyFixed: '1 200 ¥', percent: '12,5 %', host: 'host', empty: ''}
-      : {money: '₽1,500.50', moneyUsd: '$1,500.50', moneyFixed: '¥1,200', percent: '12.5 %', host: 'host', empty: ''});
+      // C294: the standard sign -- an English page writes «RUB» for the rouble and «¥» for the yen.
+      : {money: 'RUB 1,500.50', moneyUsd: '$1,500.50', moneyFixed: '¥1,200', percent: '12.5 %', host: 'host', empty: ''});
     expect(at('(2) the cell reads as the view'), [nbsp(set.cell.money), nbsp(set.cell.percent)], [nbsp(set.view.money), nbsp(set.view.percent)]);
     expect(at('(2) percent editor: shown in the page language, % and the decimal keyboard'), [set.percentEdit.shown, set.percentEdit.end, set.percentEdit.keyboard],
       [ru_ ? '12,5' : '12.5', '%', 'decimal']);
     expect(at('(2) percent: more digits than precision'), [set.percentEdit.digits.value, set.percentEdit.digits.error],
       ['12.75', ru_ ? 'Не больше 1 знака после запятой' : 'At most 1 digit after the point']);
-    expect(at('(2) percent: 0 to 100 by default'), [set.percentEdit.bound.value, set.percentEdit.bound.error], ['150', ru_ ? 'От 0 до 100' : 'From 0 to 100']);
+    // C294 (MP-11): a percent is bounded only by the field's min and max; 150 is a percent.
+    expect(at('(2) percent: no default bounds'), [set.percentEdit.bound.value, set.percentEdit.bound.error], ['150', null]);
     expect(at('(2) percent: a right value is a decimal string'), set.percentEdit.ok, {value: '7.5', error: null});
     expect(at('(2) percent: not a number'), [set.percentEdit.notNumber.value, set.percentEdit.notNumber.error, set.percentEdit.notNumber.invalid],
       ['abc', ru_ ? 'Введите число' : 'Enter a number', true]);
     // The sign stands where the page's language writes it: «1 500,50 ₽», «₽1,500.50».
     expect(at('(2) money fixed RUB: the sign where the language writes it, no dropdown'), [nbsp(set.moneyFixed.shown), set.moneyFixed.end, set.moneyFixed.start, set.moneyFixed.dropdown],
-      [ru_ ? '1500,5' : '1500.5', ru_ ? '₽' : null, ru_ ? null : '₽', false]);
+      // C294: at rest the amount shows its groups and the currency's digits; en writes «RUB» before it.
+      [ru_ ? '1 500,50' : '1,500.50', ru_ ? '₽' : null, ru_ ? null : 'RUB', false]);
     expect(at('(2) money: the currency\'s minor units'), [set.moneyFixed.minor.value, set.moneyFixed.minor.error],
       [{amount: '10.555', currency: 'RUB'}, ru_ ? 'Не больше 2 знаков после запятой' : 'At most 2 digits after the point']);
     expect(at('(2) money: groups and a comma read'), set.moneyFixed.ok, {value: {amount: '1500.5', currency: 'RUB'}, error: null});
     expect(at('(2) money fixed USD: the sign before where the language writes it'), [set.moneyUsd.start, set.moneyUsd.end], ru_ ? [null, '$'] : ['$', null]);
     expect(at('(2) money without a currency: a dropdown of currencies'), [set.moneyFree.dropdown, set.moneyFree.first, set.moneyFree.count, set.moneyFree.label],
-      [true, 'RUB', 10, ru_ ? 'Валюта' : 'Currency']);
+      // C294 (MP-10): without the field's currencies, every ISO 4217 code the browser knows.
+      [true, set.moneyFree.first, Math.max(set.moneyFree.count, 100), ru_ ? 'Валюта' : 'Currency']);
     expect(at('(2) money: an amount without a currency'), [set.moneyFree.noCurrency.value, set.moneyFree.noCurrency.error],
       [{amount: '100', currency: null}, ru_ ? 'Выберите валюту' : 'Choose a currency']);
     expect(at('(2) money: amount and currency on one row, one height, 8 apart'), [set.moneyFree.row?.sameTop, set.moneyFree.row?.sameHeight, set.moneyFree.row?.gap], [true, true, 8]);
@@ -295,7 +299,7 @@ try {
     expect(at('(3) the answer carries the values as decimal strings'), accept[3].last,
       {accepted: true, value: {company: 'Acme', budget: {amount: '1500000.5', currency: 'RUB'}, discount: '12.5'}});
     expect(at('(3) the read view prints them in the page language'), accept[3].views.map(nbsp),
-      ['Acme', ru_ ? '1 500 000,50 ₽' : '₽1,500,000.50', ru_ ? '12,5 %' : '12.5 %']);
+      ['Acme', ru_ ? '1 500 000,50 ₽' : 'RUB 1,500,000.50', ru_ ? '12,5 %' : '12.5 %']);
     expect(at('(3) pending: locked, the pressed button waits, «Sending…»'), [pending[2].state, pending[2].inert, pending[2].loading, pending[2].line, pending[2].glyph],
       ['pending', true, true, ru_ ? 'Отправляем…' : 'Sending…', 'schedule']);
     expect(at('(3) set-errors reopens a pending answer'), [pending[3].state, pending[3].inert, pending[3].line], ['open', false, '']);

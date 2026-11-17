@@ -51,10 +51,13 @@ export const PROPERTY_TYPES = Object.freeze([
         params: ['placeholder', 'required', 'readonly']},
     // stepper: edited with sf-quantity, «−» and «+» and the arrow keys; min,
     // max and step (and a number's precision) are read by that variant alone.
-    {type: 'integer', label: typeLabel('type-integer'),
+    // numeric (C294, MP-12): a number a table aligns to the end of the line
+    // with figures of one width -- integer, number, money and percent -- read
+    // from here by any table instead of each keeping its own list.
+    {type: 'integer', label: typeLabel('type-integer'), numeric: true,
         variants: [{id: 'stepper', label: typeLabel('variant-integer-stepper')}],
         params: ['unit', 'min', 'max', 'step', 'required', 'readonly']},
-    {type: 'number', label: typeLabel('type-number'),
+    {type: 'number', label: typeLabel('type-number'), numeric: true,
         variants: [{id: 'scale', label: typeLabel('variant-number-scale')},
             // meter (owner decision C203 (5)): a share of a limit, 0..100, as
             // the inline sf-progress-bar meter; the scale stays for levels.
@@ -127,21 +130,23 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'include', label: typeLabel('type-include'),
         variants: [],
         params: ['language', 'required', 'readonly']},
-    // money and percent (owner decision C291 (2), 2026-11-17): the
-    // Framework's in every mode -- view, cell, edit and filter -- where the
-    // View set drew their view and edit until now. Every number is a decimal
-    // string, never a float. money is {amount, currency}: `currency` fixes an
-    // ISO 4217 code (a bare amount is then read in it, and no currency is
-    // offered), the digits after the point are the currency's minor units;
-    // min and max bound the amount. percent is the percent ("12.5" is
-    // 12,5 %), 0 to 100 unless min and max say otherwise; precision is its
-    // digits after the point.
-    {type: 'money', label: typeLabel('type-money'),
+    // money and percent (owner decisions C291 (2) and C294, 2026-11-17): the
+    // Framework's in every mode -- view, cell, edit and filter. Every number
+    // is a decimal string, never a float. money is {amount, currency}:
+    // `currency` fixes an ISO 4217 code (a bare amount is then read in it, and
+    // no currency is offered); `currencies` lists the codes a value may carry
+    // (absent: every ISO 4217 code, with a search); `currencyDisplay` is how
+    // the currency is written -- symbol (default: «₽», «$», «CA$»), code or
+    // name; the digits after the point are at most the currency's minor units
+    // (more is a field error, never rounded); min and max bound the amount.
+    // percent is the percent ("12.5" is 12,5 %), bounded only by min and max;
+    // its digits after the point are `precision`, else those of `step`.
+    {type: 'money', label: typeLabel('type-money'), numeric: true,
         variants: [],
-        params: ['currency', 'min', 'max', 'placeholder', 'required', 'readonly']},
-    {type: 'percent', label: typeLabel('type-percent'),
+        params: ['currency', 'currencies', 'currencyDisplay', 'min', 'max', 'placeholder', 'required', 'readonly']},
+    {type: 'percent', label: typeLabel('type-percent'), numeric: true,
         variants: [],
-        params: ['min', 'max', 'precision', 'placeholder', 'required', 'readonly']},
+        params: ['min', 'max', 'step', 'precision', 'placeholder', 'required', 'readonly']},
     // The types a component set draws (property-view port 1.18.0; Larena
     // property types standard, notes of 2026-11-03): `set` names the set whose
     // components show and edit them -- the View set's sf-view-properties -- and

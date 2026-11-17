@@ -1,0 +1,28 @@
+{
+  "id": "opening-the-record-as-a-page-is-offered-only-where-it-leads-somewhere",
+  "intent": "record.open",
+  "capability": "record-open",
+  "summary": "The control that opens the record away from the panel is drawn only where the host declares it can open one.",
+  "given": {
+    "capabilities": [
+      "record-open"
+    ]
+  },
+  "when": {
+    "intent": "record.open",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "field": null,
+      "value": {
+        "value": "record-1",
+        "label": "Платежи",
+        "href": "/admin/cms/record-1"
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "note": "A host without this capability is not broken: the panel is the whole of the record, and the control is not drawn at all. An address is not enough to promise a page -- a host may have one to copy and nowhere to go, which is how a control that did nothing came to stand in every panel's strip."
+  }
+}

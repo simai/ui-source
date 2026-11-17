@@ -1,0 +1,65 @@
+{
+  "id": "a-choice-as-buttons-saves-the-option-value",
+  "intent": "group.save",
+  "summary": "A choice drawn as buttons saves the chosen option's value, and null when the chosen button was pressed again on a field that is not required.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "kind",
+        "propertyType": "choice",
+        "variant": "buttons",
+        "size": "1/2",
+        "options": [
+          {
+            "value": "person",
+            "label": "Физлицо"
+          },
+          {
+            "value": "company",
+            "label": "Юрлицо"
+          }
+        ],
+        "value": "person"
+      },
+      {
+        "key": "tier",
+        "propertyType": "choice",
+        "variant": "buttons",
+        "required": true,
+        "options": [
+          {
+            "value": 1,
+            "label": "Базовый"
+          },
+          {
+            "value": 2,
+            "label": "Расширенный"
+          }
+        ],
+        "value": 1
+      }
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contacts",
+      "section": "main",
+      "group": "about",
+      "values": {
+        "kind": null,
+        "tier": 2
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The value is the option's own, in its own type -- 2, not \"2\". The buttons are a variant of choice, not a type: a host that does not know the variant still reads and writes the same value, and a renderer that does not know it draws the dropdown."
+  }
+}

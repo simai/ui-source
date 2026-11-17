@@ -1,0 +1,26 @@
+{
+  "id": "group-load-without-the-capability",
+  "intent": "group.load",
+  "capability": "group-load",
+  "summary": "A host that does not announce group-load is never asked for a group: the adapter reads the record once per revision and serves every group from it.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "group.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "section": "main",
+      "group": "about",
+      "reason": "started"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "A host asked anyway answers unavailable. The component does not ask: its adapter raises record.load once for the revision it holds and hands every section its group from that answer, so the panel draws the same and only reads more at once. A save answered at a new revision, or a conflict, makes the next record.load."
+  }
+}

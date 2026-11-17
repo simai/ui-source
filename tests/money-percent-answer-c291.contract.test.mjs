@@ -22,8 +22,9 @@ test('C291 (2): money and percent are registered without a set, with the port\'s
   const percent = PROPERTY_TYPES.find((entry) => entry.type === 'percent');
   assert.equal(money.set, undefined);
   assert.equal(percent.set, undefined);
-  assert.deepEqual(money.params, ['currency', 'min', 'max', 'placeholder', 'required', 'readonly']);
-  assert.deepEqual(percent.params, ['min', 'max', 'precision', 'placeholder', 'required', 'readonly']);
+  // C294 adds currencies and currencyDisplay to money, step to percent.
+  assert.deepEqual(money.params, ['currency', 'currencies', 'currencyDisplay', 'min', 'max', 'placeholder', 'required', 'readonly']);
+  assert.deepEqual(percent.params, ['min', 'max', 'step', 'precision', 'placeholder', 'required', 'readonly']);
   for (const map of ['VIEW_RENDERERS', 'EDIT_RENDERERS']) {
     const body = renderers.slice(renderers.indexOf(`${map} = {`), renderers.indexOf('};', renderers.indexOf(`${map} = {`)));
     assert.match(body, /money: renderMoney(View|Edit),/u, map);
@@ -45,6 +46,8 @@ test('C291 (2): decimals compared by their digits, never as floats', () => {
 
 test('C291 (2): a currency\'s sign, side and minor units come from Intl', () => {
   assert.deepEqual(currencyOf('RUB', 'ru'), {sign: '₽', before: false, minor: 2});
+  // The standard sign since C294: the Canadian dollar is «CA$», never «$».
+  assert.deepEqual(currencyOf('CAD', 'en'), {sign: 'CA$', before: true, minor: 2});
   assert.deepEqual(currencyOf('USD', 'en'), {sign: '$', before: true, minor: 2});
   assert.equal(currencyOf('JPY', 'ru').minor, 0);
   assert.equal(currencyOf('KWD', 'en').minor, 3);
@@ -57,9 +60,9 @@ test('C291 (2): the editors write decimal strings and say what is wrong through 
   assert.match(renderers, /inputmode="decimal"/u);
   assert.match(renderers, /host\.setFieldError\(field, message\);\n\s+host\.setFieldValue\(field, value\);/u);
   assert.match(renderers, /amount === null \|\| amount === '' \? null : \{amount, currency: code \?\? null\}/u);
-  // 0 to 100 unless the field bounds it otherwise.
-  assert.match(renderers, /const min = hasBound\(field\.min\) \? field\.min : '0';/u);
-  assert.match(renderers, /const max = hasBound\(field\.max\) \? field\.max : '100';/u);
+  // C294 (MP-11): a percent is bounded by the field's min and max alone.
+  assert.match(renderers, /const min = hasBound\(field\.min\) \? field\.min : null;/u);
+  assert.doesNotMatch(renderers, /field\.max : '100'/u);
   for (const language of ['en', 'ru']) {
     const words = json(`src/smart/field-renderers/lang/${language}.json`).runtime;
     for (const key of ['fractionNone', 'boundBetween', 'boundAtLeast', 'boundAtMost', 'currency', 'chooseCurrency']) assert.ok(words[key], `${language}.${key}`);

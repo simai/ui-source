@@ -86,12 +86,13 @@ test('the password renderers never put the value into markup and write only type
   }
 });
 
-// The types the View set draws (simai.property-view-port 1.18.0): registered
+// The types the View set draws (simai.property-view-port 1.18.0; money's
+// currencies and currencyDisplay since 1.19.0, C294): registered
 // with the set that shows and edits them, their cells and filters the
 // Framework's, and every key they read declared by the port. money and
 // percent are the Framework's in every mode since C291 (2).
 test('items, compound and ru.requisites are the view set\'s; money and percent the Framework\'s, with the port\'s keys', () => {
-  const port = JSON.parse(readFileSync(join(root, 'src/core/contracts/ports/simai.property-view-port/1.18.0/port.json'), 'utf8'));
+  const port = JSON.parse(readFileSync(join(root, 'src/core/contracts/ports/simai.property-view-port/1.19.0/port.json'), 'utf8'));
   const declared = new Set(Object.keys(port.data.record.schema.properties.sections.items.properties.groups.items.properties.fields.items.properties));
   const cell = new Set(mapKeys('CELL_RENDERERS'));
   const filter = new Set(mapKeys('FILTER_RENDERERS'));
