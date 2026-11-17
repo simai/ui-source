@@ -60,6 +60,15 @@ async page => {
     && parseFloat(look.offset) === -parseFloat(look.width) && look.rowShadow === 'none' && look.rowOutline === 'none';
   await page.keyboard.press('Tab');
   await page.keyboard.press('Shift+Tab');
+  // From the keyboard the browser selects the whole code: every cell draws
+  // the selection (K2), and there is no current cell until the caret moves.
+  // The cells follow the selection on selectionchange, a task later.
+  await page.waitForTimeout(50);
+  check('keyboard focus on a whole code draws it selected (K2)', await form.evaluate(root => {
+    const cells = [...root.querySelectorAll('.sf-verification-cell')];
+    return document.activeElement === root.querySelector('.sf-verification-input') && cells.every(cell => cell.classList.contains('selected'));
+  }));
+  await page.keyboard.press('End');
   const byKeys = await focusLook();
   check('keyboard focus is a 2 px edge of the focus colour inside the current cell (C153 (4))', insideEdge(byKeys), byKeys);
   await input.click();
