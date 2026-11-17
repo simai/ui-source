@@ -2,7 +2,7 @@
   "$comment": "The source of sf-menu-context's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/context-menu (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.menu-context",
   "tag": "sf-menu-context",
-  "version": "1.25.5",
+  "version": "1.27.0",
   "kind": "leaf",
   "family": "menu",
   "settings": {
@@ -261,7 +261,8 @@
     "for": {
       "type": "string",
       "default": "",
-      "summary": "The id of a page area -- a list, a table, a tree -- or several separated by spaces, whose objects open this menu by the right button, the menu key (Shift+F10) and a long press on a touch screen (owner decision C164 (1)). The object is the row the event came from (a table body's row, an element with a row, option, treeitem or listitem role, a list item), or the area itself; its «⋯» opened with openFor() names the same object, so one open listener gives one list for every way in (C164 (2)). On a selected row (aria-selected=\"true\") the menu acts on every selected row of the area and says «Выбрано N»; a row that can be selected and is not is selected alone first (C164 (3)). A link, a field, selected text and the right button with Shift keep the browser's own menu. On a phone the menu of an object is the sheet at the bottom (C164 (6))."
+      "x-note": "ids separated by spaces in the attribute; the property also takes a list of the areas, elements or ids (the component's own accessor), one member with one type (§4.2)",
+      "summary": "The id of a page area -- a list, a table, a tree -- or several separated by spaces, whose objects open this menu by the right button, the menu key (Shift+F10) and a long press on a touch screen (owner decision C164 (1)). The object is the row the event came from (a table body's row, an element with a row, option, treeitem or listitem role, a list item), or the area itself; its «⋯» opened with openFor() names the same object, so one open listener gives one list for every way in (C164 (2)). On a selected row (aria-selected=\"true\") the menu acts on every selected row of the area and says «Выбрано N»; a row that can be selected and is not is selected alone first (C164 (3)). A link, a field, selected text and the right button with Shift keep the browser's own menu. On a phone the menu of an object is the sheet at the bottom (C164 (6)). An area may stand in a shadow root -- a view's own table: an id is found in the menu's own root and in the root of the control it is open for, then in the document; an area no id reaches is given as the property, a list of the areas themselves (menu.for = [table, ...]; ids may stand in the list too), kept until a string is set. The events of an area in a shadow root are read at the element they came from (the first of the composed path), not at the host the document sees (since 1.27.0)."
     }
   },
   "values": {},
@@ -997,7 +998,8 @@
     "version 1.25.1 (2026-11-14, owner decision C176, defect SM-3; C157 (5), (6); written on the branch as 1.22.0): a minor. A drilling popup (submenu=\"drill\", opened by openFor) is the one bottom sheet on a phone, as a form is: a settings menu (sf-settings) and the person menu with its settings rows; its levels open inside the same sheet with the way back in its head, a swipe down from the handle row closes it, and a window widened past the phone anchors it again. Above a phone nothing changes.",
     "version 1.25.3 (2026-11-15, owner decision C191 (4)-(6), control/research/2026-11-14-recipe-parts.md #q-ar-where, #q-ar-direction; above 1.23.0 of fix/menu-opener-size; written on the branch as 1.24.0): a meter row, entry {type: 'meter', text, value, value-text, warning-at, error-at}: an amount within a known range, such as the account's tariff remainder in a person menu, where it stands instead of a ring on the header's avatar (4). A block between rows, not a row (no focus, not in the arrow walk, not narrowed by a search; role none): the name and the words on one line, aria-hidden, over an sf-progress-bar meter (size 1, text-position none) named by text, valued by value (the share used, clamped 0..100, so the thresholds fire, (5)) and said by value-text (the remainder in words, (5)-(6)); without value-text the line shows the percentage. Insets the note's and the header's, 4 between the line and the bar (component.context-menu 1.16.0). Relation cl-progress-bar (lazy). Other entries, settings, events and keys unchanged.",
     "version 1.25.4 (2026-11-15, DEV return TT-11 of the GB6+GB7 intent acceptance, owner decision C160 (1)): a patch: the value under a drilling row's name (sf-settings' «Обычно») no longer carries a browser title; when it is cut, its whole text is the row's Framework tooltip on hover, keyboard focus or a long press, measured each time the row is reached, and not the row's description (the value is in its name already).",
-    "version 1.25.5 (2026-11-16, queue item 304, evidence ui-control control/evidence/2026-11-12-menu-context-closed): a patch: openFor() on a menu without the popup attribute -- which floats while open and is drawn in place again after it closes, with its last entries (the trap sf-editor fell into) -- writes one development warning per page, naming the menu, and opens as before. Settings, values, events, keys and the drawing unchanged."
+    "version 1.25.5 (2026-11-16, queue item 304, evidence ui-control control/evidence/2026-11-12-menu-context-closed): a patch: openFor() on a menu without the popup attribute -- which floats while open and is drawn in place again after it closes, with its last entries (the trap sf-editor fell into) -- writes one development warning per page, naming the menu, and opens as before. Settings, values, events, keys and the drawing unchanged.",
+    "version 1.27.0 (2026-11-17, queue db8793a2, the ui-view row-menu study; above 1.26.1 on every origin branch): a minor. for reaches areas inside a shadow root: an id is found in the menu's own root and in the root of the control it is open for, then in the document; the property also takes a list of the areas themselves (menu.for = [table, ...], ids may stand in it) for an area no id reaches, kept until a string is set. The right button, the menu key, Shift+F10 and a long press of such an area are read at the element they came from (event.composedPath()[0], walked up through the hosts to the area's own tree), not at the shadow host the document sees, and the focus goes back to the element focused inside the root. The events are still heard once, on the document (they are composed); an area of the document reads the same node as before (event.target), so the browser's own menu with Shift or on a link, the focus back to the opener, openFor() and toggleFor() are unchanged. ui-view's sf-view-table can drop its own shadow-root row-menu listeners. Values, events and keys unchanged."
   ],
   "x-registry": {
     "item_contract": {
@@ -1235,6 +1237,12 @@
         }
       },
       "tabs": {
+        "type": [
+          "string",
+          "array"
+        ]
+      },
+      "for": {
         "type": [
           "string",
           "array"

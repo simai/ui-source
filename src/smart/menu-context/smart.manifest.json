@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.menu-context",
-  "version": "1.25.5",
+  "version": "1.27.0",
   "title": "Context Menu",
   "summary": "The Framework's action menu and its settings panel: data entries with icon, caption, value, shortcut, check, submenu, separator and heading, and the value rows a setting needs (switch, range, choice, a group of rows or tiles) with one change event and the set-value, set-all, reset and show actions, opened by openFor() into the top layer, anchored, with keyboard, typeahead and focus return. A host may still render its own items and own the lifecycle.",
   "kind": "smart",
@@ -160,9 +160,12 @@
         "description": "A close button at the end of the panel's head."
       },
       "for": {
-        "type": "string",
+        "type": [
+          "string",
+          "array"
+        ],
         "default": "",
-        "description": "The id of a page area -- a list, a table, a tree -- or several separated by spaces, whose objects open this menu by the right button, the menu key (Shift+F10) and a long press on a touch screen (owner decision C164 (1)). The object is the row the event came from (a table body's row, an element with a row, option, treeitem or listitem role, a list item), or the area itself; its «⋯» opened with openFor() names the same object, so one open listener gives one list for every way in (C164 (2)). On a selected row (aria-selected=\"true\") the menu acts on every selected row of the area and says «Выбрано N»; a row that can be selected and is not is selected alone first (C164 (3)). A link, a field, selected text and the right button with Shift keep the browser's own menu. On a phone the menu of an object is the sheet at the bottom (C164 (6))."
+        "description": "The id of a page area -- a list, a table, a tree -- or several separated by spaces, whose objects open this menu by the right button, the menu key (Shift+F10) and a long press on a touch screen (owner decision C164 (1)). The object is the row the event came from (a table body's row, an element with a row, option, treeitem or listitem role, a list item), or the area itself; its «⋯» opened with openFor() names the same object, so one open listener gives one list for every way in (C164 (2)). On a selected row (aria-selected=\"true\") the menu acts on every selected row of the area and says «Выбрано N»; a row that can be selected and is not is selected alone first (C164 (3)). A link, a field, selected text and the right button with Shift keep the browser's own menu. On a phone the menu of an object is the sheet at the bottom (C164 (6)). An area may stand in a shadow root -- a view's own table: an id is found in the menu's own root and in the root of the control it is open for, then in the document; an area no id reaches is given as the property, a list of the areas themselves (menu.for = [table, ...]; ids may stand in the list too), kept until a string is set. The events of an area in a shadow root are read at the element they came from (the first of the composed path), not at the host the document sees (since 1.27.0)."
       },
       "aria-label": {
         "type": "string",
@@ -1031,7 +1034,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/menu-context/index.js",
-        "sha256": "60d2362f6221ca7f98dd3b058013efd466b9269be4fa90e27f9c4778170166ac"
+        "sha256": "ff2c5a685b4a50d163fc04fab0e6b745c4691521b59ecbefad3ddff565b5a662"
       },
       {
         "path": "src/smart/menu-context/js/templates/default.js",

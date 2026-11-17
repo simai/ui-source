@@ -131,6 +131,36 @@ const BROWSER_KEEPS = 'a[href], input, select, textarea, [contenteditable=""], [
 const LONG_PRESS_MS = 500;
 const LONG_PRESS_SLOP = 10;
 const ids = (value) => String(value ?? "").trim().split(/\s+/u).filter(Boolean);
+// An area may stand in a shadow root -- a view's own table (sf-menu-context
+// 1.27.0). The page's events come to the document retargeted to the shadow
+// host; the node the event really came from is the first of its composed
+// path. Each area reads it in its own tree: the node walks up through the
+// hosts to the root the area stands in -- for an area of the document that is
+// event.target, as it always was; for an area in a shadow root, the row.
+const origin = (event) => {
+  const node = event.composedPath?.()[0] ?? event.target;
+  return node instanceof Element ? node : (node?.parentElement ?? event.target);
+};
+const hostOf = (node) => {
+  const root = node?.getRootNode?.();
+  return root && root !== node && root.host ? root.host : null;
+};
+const inTreeOf = (node, element) => {
+  const root = element.getRootNode();
+  let at = node;
+  while (at && at.getRootNode() !== root) at = hostOf(at);
+  return at;
+};
+const holds = (outer, node) => {
+  const at = node && inTreeOf(node, outer);
+  return Boolean(at && outer.contains(at));
+};
+// The focused element itself, inside the shadow roots it stands in.
+const deepActive = () => {
+  let active = document.activeElement;
+  while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement;
+  return active;
+};
 const selected = (element) => element?.getAttribute?.("aria-selected") === "true";
 
 // ─── drilling (1.5.0) ────────────────────────────────────────────────────────
@@ -334,6 +364,12 @@ class SfContextMenu extends ContextMenuElement {
       const early = this.search;
       delete this.search;
       this._search = early && typeof early === "object" ? early : null;
+    }
+    // Areas given as the property before the element was defined (1.27.0).
+    if (Object.prototype.hasOwnProperty.call(this, "for")) {
+      const early = this.for;
+      delete this.for;
+      this.for = early;
     }
     if (Object.prototype.hasOwnProperty.call(this, "entries")) {
       const early = this.entries;
@@ -1144,8 +1180,38 @@ class SfContextMenu extends ContextMenuElement {
   }
 
   // ─── the areas named by `for` (C164) ─────────────────────────────────────
+  // `for` is the areas' ids in the attribute; the property also takes a list
+  // of the areas themselves, or of ids, for an area the page cannot name by
+  // an id the document sees -- a table in a shadow root (1.27.0). A list set
+  // as the property is kept until a string is set.
+  get for() {
+    return Array.isArray(this._forList) ? this._forList.slice() : (this.getAttribute("for") ?? "");
+  }
+
+  set for(value) {
+    if (Array.isArray(value)) {
+      this._forList = value.slice();
+      return;
+    }
+    this._forList = null;
+    if (value === null || value === undefined || value === "") this.removeAttribute("for");
+    else this.setAttribute("for", String(value));
+  }
+
+  // The areas named by `for`: the elements it was given, and each id found
+  // in the menu's own root, in the root of the control it is open for, then
+  // in the document.
   areas() {
-    return ids(this.getAttribute("for") ?? this.for).map((id) => document.getElementById(id)).filter(Boolean);
+    const given = Array.isArray(this._forList) ? this._forList : ids(this.getAttribute("for"));
+    const roots = [...new Set([this.getRootNode?.(), this._owned?.anchor?.getRootNode?.(), document])]
+      .filter((root) => typeof root?.getElementById === "function");
+    const areas = [];
+    for (const one of given) {
+      const area = one instanceof Element ? one
+        : typeof one === "string" ? roots.map((root) => root.getElementById(one)).find(Boolean) : null;
+      if (area?.isConnected && !areas.includes(area)) areas.push(area);
+    }
+    return areas;
   }
 
   // The object a node of the page stands in: {area, target}, or null outside
@@ -1153,8 +1219,9 @@ class SfContextMenu extends ContextMenuElement {
   targetOf(node) {
     if (!(node instanceof Element)) return null;
     for (const area of this.areas()) {
-      if (!area.contains(node)) continue;
-      const row = node.closest(TARGETS);
+      const at = inTreeOf(node, area);
+      if (!at || !area.contains(at)) continue;
+      const row = at.closest(TARGETS);
       return {area, target: row && row !== area && area.contains(row) ? row : area};
     }
     return null;
@@ -1184,10 +1251,12 @@ class SfContextMenu extends ContextMenuElement {
   // browser's own menu (C164 (1)).
   browserKeeps(event, target) {
     if (event.shiftKey && event.type === "contextmenu" && event.button === 2) return true;
-    if (event.target?.closest?.(BROWSER_KEEPS) && target.contains(event.target.closest(BROWSER_KEEPS))) return true;
-    const selection = document.getSelection?.();
+    const from = inTreeOf(origin(event), target);
+    if (from?.closest?.(BROWSER_KEEPS) && target.contains(from.closest(BROWSER_KEEPS))) return true;
+    const root = target.getRootNode?.();
+    const selection = (typeof root?.getSelection === "function" ? root : document).getSelection?.();
     return Boolean(selection && !selection.isCollapsed && String(selection).trim()
-      && selection.anchorNode && target.contains(selection.anchorNode));
+      && selection.anchorNode && holds(target, selection.anchorNode));
   }
 
   // The menu at an object opened from the keyboard: under its start.
@@ -1227,13 +1296,17 @@ class SfContextMenu extends ContextMenuElement {
     }
     // The menu's own rows, when the page placed the menu inside its area,
     // are not objects of the area.
-    if (event.defaultPrevented || this.contains(event.target)) return;
-    const found = this.targetOf(event.target);
+    // An area in a shadow root sends its events retargeted to the host: the
+    // node they came from is read from the composed path (1.27.0).
+    const node = origin(event);
+    if (event.defaultPrevented || holds(this, node)) return;
+    const found = this.targetOf(node);
     if (!found) return;
+    const from = inTreeOf(node, found.area);
     if (type === "pointerdown") {
       this.cancelPress();
       if (event.pointerType !== "touch" || event.button > 0 || !event.isPrimary) return;
-      if (event.target.closest?.(BROWSER_KEEPS)) return;
+      if (from.closest?.(BROWSER_KEEPS)) return;
       const press = {x: event.clientX, y: event.clientY, fired: false, at: 0};
       press.timer = setTimeout(() => {
         if (this._press !== press) return;
@@ -1246,7 +1319,7 @@ class SfContextMenu extends ContextMenuElement {
     }
     if (type === "keydown") {
       if (event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10")) return;
-      if (event.target.closest?.(BROWSER_KEEPS)) return;
+      if (from.closest?.(BROWSER_KEEPS)) return;
       event.preventDefault();
       this._keyAt = Date.now();
       this.openAtTarget(found.target);
@@ -1335,7 +1408,10 @@ class SfContextMenu extends ContextMenuElement {
     const focusable = (element) => (element?.matches?.("button, a[href], input, select, textarea, [tabindex]")
       ? element
       : element?.querySelector?.("button, a[href], input, select, textarea, [tabindex]") ?? element);
-    const active = document.activeElement;
+    // The focus inside an area's shadow root is the element itself, not the
+    // host the document names (1.27.0).
+    const shallow = document.activeElement, deep = deepActive();
+    const active = found && deep !== shallow && !found.target.contains(shallow) && holds(found.target, deep) ? deep : shallow;
     const somewhere = active instanceof HTMLElement && active !== document.body && active !== document.documentElement;
     // Opened at the pointer for an object (openAt, C164), the focus goes back
     // to the object it acted on -- where it was inside it, else the object
