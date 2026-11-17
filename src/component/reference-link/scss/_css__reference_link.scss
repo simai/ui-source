@@ -53,9 +53,8 @@
     max-inline-size: 100%;
     padding-block: var(--sf-reference-link-padding-block, var(--sf-reference-link--padding-block));
     padding-inline: var(--sf-reference-link-padding-inline, var(--sf-reference-link--padding-inline));
-    color: var(--sf-on-surface);
-    background-color: var(--sf-reference-link--background-color);
-    border: var(--sf-px) solid var(--sf-reference-link--border-color);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-reference-link-radius, var(--sf-radius--ui));
   }
 
@@ -70,7 +69,6 @@
        button step (6-10), neither role (RL-8). */
     gap: var(--sf-reference-link--main-gap, var(--sf-space-1\/2));
     min-inline-size: var(--sf-0);
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-reference-link--font-size, var(--sf-text-size-1));
     font-weight: var(--sf-font-weight-medium);
@@ -79,7 +77,6 @@
 
   .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a) {
     min-inline-size: var(--sf-0);
-    color: var(--sf-reference-link-link-color, var(--sf-reference-link--link));
     font: inherit;
     overflow-wrap: anywhere;
     /* Underline (C147 (3)): in a card, a field, a table -- a size, a line,
@@ -116,7 +113,6 @@
     flex: none;
     block-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     inline-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
-    color: var(--sf-reference-link--accent);
     font-size: var(--sf-reference-link--line-height, var(--sf-text-height-1));
     /* The glyph is a ligature word (arrow_forward): selecting the reference
        copied it with the label (RL-10). The icon is a picture, not text. */
@@ -130,7 +126,6 @@
 
   .sf-reference-link :where(.sf-reference-link__meta, .sf-reference-link-text) {
     min-inline-size: var(--sf-0);
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-size: var(--sf-reference-link--font-size, var(--sf-text-size-1));
     font-weight: var(--sf-font-weight-regular);
@@ -233,6 +228,29 @@
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-reference-link {
+    color: var(--sf-on-surface);
+    background-color: var(--sf-reference-link--background-color);
+    border-color: var(--sf-reference-link--border-color);
+  }
+  .sf-reference-link :where(.sf-reference-link__main, .sf-reference-link-left) {
+    color: var(--sf-on-surface);
+  }
+  .sf-reference-link :where(.sf-reference-link__link, .sf-reference-link-left > a) {
+    color: var(--sf-reference-link-link-color, var(--sf-reference-link--link));
+  }
+  .sf-reference-link :where(.sf-reference-link__icon, .sf-reference-link-left > .sf-icon) {
+    color: var(--sf-reference-link--accent);
+  }
+  .sf-reference-link :where(.sf-reference-link__meta, .sf-reference-link-text) {
+    color: var(--sf-on-surface-variant);
+  }
+}
+
 @layer sf.components {
   /* Plain: a reference that stands inside a box of its own already -- a
      record's field, a table cell -- where the card's frame, fill and padding
@@ -244,6 +262,16 @@
     --sf-reference-link--padding-inline: var(--sf-0);
 
     inline-size: auto;
+    border: 0;
+    border-color: revert-layer;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-reference-link.sf-reference-link--plain {
     border: 0;
   }
 }
@@ -464,7 +492,6 @@
      underlined or copied. */
   .sf-reference-link :where(.sf-reference-link__tab) {
     margin-inline-start: var(--sf-space-1\/4);
-    color: inherit;
     text-decoration: none;
     user-select: none;
     -webkit-user-select: none;
@@ -480,12 +507,6 @@
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
-  }
-
-  /* A target that is gone (C147 (6)): no link, so no link ink -- the words
-     and the broken-link icon in the dim ink, the reason after the name. */
-  .sf-reference-link.sf-reference-link--gone :where(.sf-reference-link__main, .sf-reference-link__link, .sf-reference-link__label, .sf-reference-link__icon, .sf-reference-link__reason) {
-    color: var(--sf-on-surface-variant);
   }
 
   .sf-reference-link :where(.sf-reference-link__reason) {
@@ -513,6 +534,20 @@
   }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-reference-link :where(.sf-reference-link__tab) {
+    color: inherit;
+  }
+  /* A target that is gone (C147 (6)): no link, so no link ink -- the words
+     and the broken-link icon in the dim ink, the reason after the name. */
+  .sf-reference-link.sf-reference-link--gone :where(.sf-reference-link__main, .sf-reference-link__link, .sf-reference-link__label, .sf-reference-link__icon, .sf-reference-link__reason) {
+    color: var(--sf-on-surface-variant);
+  }
+}
+
 @layer sf.components {
   /* In text (C147 (1)): the reference is a link in the sentence. It flows
      and wraps with the words and takes the size of the text around it, so
@@ -528,14 +563,12 @@
     min-inline-size: var(--sf-0);
     max-inline-size: none;
     padding: var(--sf-0);
-    color: inherit;
-    background-color: transparent;
     border: 0;
+    border-color: revert-layer;
     border-radius: var(--sf-radius--ui);
   }
 
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__link) {
-    color: var(--sf-reference-link-link-color, var(--sf-link));
     font: inherit;
     overflow-wrap: inherit;
     text-decoration: none;
@@ -562,7 +595,6 @@
      that same line. It stands at the line's top (below, outside the
      layers). */
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon, .sf-reference-link__tab) {
-    color: inherit;
     --sf-icon--font-size: 1lh;
     --sf-icon--height: 1lh;
     --sf-icon--width: 1lh;
@@ -582,7 +614,6 @@
 
   /* The number is one word: «№ 4812» never breaks at its space. */
   .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__number) {
-    color: var(--sf-on-surface-variant);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
@@ -590,11 +621,29 @@
   .sf-reference-link.sf-reference-link--inline:is(.disabled, .sf-reference-link--gone) :where(.sf-reference-link__label) {
     text-decoration-line: none;
   }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-reference-link.sf-reference-link--inline {
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+  }
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__link) {
+    color: var(--sf-reference-link-link-color, var(--sf-link));
+  }
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__icon, .sf-reference-link__tab) {
+    color: inherit;
+  }
+  .sf-reference-link.sf-reference-link--inline :where(.sf-reference-link__number) {
+    color: var(--sf-on-surface-variant);
+  }
   .sf-reference-link.sf-reference-link--inline.sf-reference-link--gone :where(.sf-reference-link__link) {
     color: var(--sf-on-surface-variant);
   }
-
   .sf-reference-link.sf-reference-link--inline.disabled :where(.sf-reference-link__link, .sf-reference-link__icon, .sf-reference-link__number) {
     color: var(--sf-on-surface-disabled);
   }

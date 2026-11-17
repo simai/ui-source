@@ -34,29 +34,13 @@ sf-change[data-block] {
 .sf-change {
   --sf-change--before: var(--sf-change-before-color, var(--sf-on-surface-variant));
   --sf-change--after: var(--sf-change-after-color, var(--sf-on-surface));
-  color: var(--sf-change--after);
-}
-
-.sf-change__label,
-.sf-change__term {
-  color: var(--sf-change-label-color, var(--sf-on-surface-variant));
-}
-
-.sf-change__before {
-  color: var(--sf-change--before);
-}
-
-.sf-change__arrow {
-  color: var(--sf-change-arrow-color, var(--sf-on-surface-variant));
 }
 
 .sf-change__after {
-  color: var(--sf-change--after);
   font-weight: var(--sf-change-after-weight, var(--sf-font-weight-medium));
 }
 
 .sf-change__empty {
-  color: var(--sf-change--before);
   font-style: italic;
   font-weight: var(--sf-font-weight-regular);
 }
@@ -113,9 +97,8 @@ sf-change[data-block] {
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   border-radius: var(--sf-radius--ui);
-  background: none;
-  color: var(--sf-link);
   font: inherit;
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
@@ -161,20 +144,15 @@ sf-change[data-block] {
 .sf-change__block {
   display: block;
   padding: var(--sf-space-1\/3) var(--sf-space-1\/2);
-  border: var(--sf-px) solid var(--sf-outline-variant);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-radius--surface);
-  color: var(--sf-change--after);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 
-.sf-change__block--before {
-  color: var(--sf-change--before);
-}
-
 .sf-change__block-label {
   display: block;
-  color: var(--sf-change-label-color, var(--sf-on-surface-variant));
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
   white-space: normal;
@@ -185,4 +163,44 @@ sf-change[data-block] {
     outline-color: Highlight;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-change {
+    color: var(--sf-change--after);
+  }
+  .sf-change__label,
+.sf-change__term {
+    color: var(--sf-change-label-color, var(--sf-on-surface-variant));
+  }
+  .sf-change__before {
+    color: var(--sf-change--before);
+  }
+  .sf-change__arrow {
+    color: var(--sf-change-arrow-color, var(--sf-on-surface-variant));
+  }
+  .sf-change__after {
+    color: var(--sf-change--after);
+  }
+  .sf-change__empty {
+    color: var(--sf-change--before);
+  }
+  .sf-change__toggle {
+    border: 0;
+    background: none;
+    color: var(--sf-link);
+  }
+  .sf-change__block {
+    border-color: var(--sf-outline-variant);
+    color: var(--sf-change--after);
+  }
+  .sf-change__block--before {
+    color: var(--sf-change--before);
+  }
+  .sf-change__block-label {
+    color: var(--sf-change-label-color, var(--sf-on-surface-variant));
+  }
 }

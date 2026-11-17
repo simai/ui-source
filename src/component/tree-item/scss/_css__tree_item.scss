@@ -8,11 +8,18 @@
     gap: var(--sf-tree-item-gap, var(--sf-space-1\/2));
   }
 
-
   .sf-tree-item .sf-tree-item-name {
-    color: var(--sf-tree-item-name-color, var(--sf-tree-item-name--color, var(--sf-primary)));
     font-size: var(--sf-tree-item-name--font-size, var(--sf-text-size-1));
     line-height: var(--sf-tree-item-name--line-height, var(--sf-text-height-1));
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-tree-item .sf-tree-item-name {
+    color: var(--sf-tree-item-name-color, var(--sf-tree-item-name--color, var(--sf-primary)));
   }
 }
 

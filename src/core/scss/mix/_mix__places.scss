@@ -77,6 +77,7 @@
 @use 'sass:meta';
 @use 'sass:string';
 @use 'mix__role_aliases' as aliases;
+@use 'mix__paint' as paint;
 
 $sf-place-theme-roles: (
   'on-surface': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
@@ -189,8 +190,10 @@ $sf-place-container-ink-roles: (
 // The status containers' ink as the place's ink, on the children of a strong
 // place, on glass's children and on the duo gradient plate.
 @mixin sf-place-container-ink($ink) {
-  @each $role, $value in $sf-place-container-ink-roles {
-    --sf-#{$role}: #{$ink};
+  @if paint.writes-paint() {
+    @each $role, $value in $sf-place-container-ink-roles {
+      --sf-#{$role}: #{$ink};
+    }
   }
 }
 
@@ -204,12 +207,14 @@ $sf-place-container-ink-roles: (
 // --sf-focus--color, resolved at the root, is re-declared with it. The roles
 // and their theme values are $sf-place-glass-link-roles.
 @mixin sf-place-link-ring($ink, $hover, $active, $visited) {
-  --sf-link: #{$ink};
-  --sf-link-hover: #{$hover};
-  --sf-link-active: #{$active};
-  --sf-link-visited: #{$visited};
-  --sf-focus: #{$ink};
-  --sf-focus--color: var(--sf-focus);
+  @if paint.writes-paint() {
+    --sf-link: #{$ink};
+    --sf-link-hover: #{$hover};
+    --sf-link-active: #{$active};
+    --sf-link-visited: #{$visited};
+    --sf-focus: #{$ink};
+    --sf-focus--color: var(--sf-focus);
+  }
 }
 
 // The seven colours that are places.
@@ -255,36 +260,38 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
 // place, the accent on a strong one. Off a coloured place it declares
 // neither, and a project's role reaches inside.
 @mixin sf-place-back-on-colour {
-  :where(#{$sf-place-coloured-selectors}) & {
-    @each $role, $value in $sf-place-colour-roles {
-      --sf-#{$role}: #{string.unquote($value)};
+  @if paint.writes-paint() {
+    :where(#{$sf-place-coloured-selectors}) & {
+      @each $role, $value in $sf-place-colour-roles {
+        --sf-#{$role}: #{string.unquote($value)};
+      }
     }
-  }
-  :where(#{$sf-place-strong-selectors}) & {
-    @each $role, $value in $sf-place-accent-roles {
-      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+    :where(#{$sf-place-strong-selectors}) & {
+      @each $role, $value in $sf-place-accent-roles {
+        --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+      }
+      // The status containers' ink and the ring (PS-A, PS-B).
+      @each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {
+        --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+      }
+      --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
+      --sf-place--plate: initial;
+      --sf-place--on-plate: initial;
+      --sf-place--fill-placeholder: initial;
+      --sf-place--control-hover: initial;
+      --sf-place--control-active: initial;
     }
-    // The status containers' ink and the ring (PS-A, PS-B).
-    @each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {
-      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+    // On glass (C70): the accent, the link and the ring the page had there.
+    :where(.sf-surface-media) & {
+      @each $role, $value in $sf-place-glass-accent-roles {
+        --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+      }
+      // The status containers' ink (PS-B).
+      @each $role, $value in $sf-place-container-ink-roles {
+        --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
+      }
+      --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
     }
-    --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
-    --sf-place--plate: initial;
-    --sf-place--on-plate: initial;
-    --sf-place--fill-placeholder: initial;
-    --sf-place--control-hover: initial;
-    --sf-place--control-active: initial;
-  }
-  // On glass (C70): the accent, the link and the ring the page had there.
-  :where(.sf-surface-media) & {
-    @each $role, $value in $sf-place-glass-accent-roles {
-      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
-    }
-    // The status containers' ink (PS-B).
-    @each $role, $value in $sf-place-container-ink-roles {
-      --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
-    }
-    --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
   }
 }
 
@@ -320,15 +327,17 @@ $sf-place-popup-nested-container-variant: 'light-dark(var(--sf-neutral-35), var(
 // the popup itself, which still paints the ordinary popup. A popup portalled
 // out of its parent (to the body) is not nested, and paints the popup.
 @mixin sf-place-popup-children {
-  & > * {
-    --sf-surface-popup: var(--sf-surface-popup-nested);
-    --sf-on-surface-popup-variant: var(--sf-on-surface-popup-nested-variant);
-    --sf-place--popup-container-variant: #{$sf-place-popup-nested-container-variant};
-    // The nested popup's boundary (contrast R3b, DEV 2026-11-11): read by a
-    // popup place's outline, so a popup among the children draws the
-    // nested edge (dark 4.07, not 2.97) and other children keep theirs.
-    --sf-place--popup-outline: #{$sf-place-popup-nested-outline};
-    @include aliases.sf-role-aliases(('surface-popup', 'on-surface-popup-variant'));
+  @if paint.writes-paint() {
+    & > * {
+      --sf-surface-popup: var(--sf-surface-popup-nested);
+      --sf-on-surface-popup-variant: var(--sf-on-surface-popup-nested-variant);
+      --sf-place--popup-container-variant: #{$sf-place-popup-nested-container-variant};
+      // The nested popup's boundary (contrast R3b, DEV 2026-11-11): read by a
+      // popup place's outline, so a popup among the children draws the
+      // nested edge (dark 4.07, not 2.97) and other children keep theirs.
+      --sf-place--popup-outline: #{$sf-place-popup-nested-outline};
+      @include aliases.sf-role-aliases(('surface-popup', 'on-surface-popup-variant'));
+    }
   }
 }
 
@@ -379,40 +388,45 @@ $sf-place-container-outline: $sf-place-step-outline;
 $sf-place-step-4-roles: ('primary', 'primary-hover', 'primary-active', 'link', 'link-hover', 'link-active');
 
 @mixin sf-place-step-4-accent-found {
-  @each $role in $sf-place-step-4-roles {
-    --sf-place--found-#{$role}: var(--sf-#{$role});
-  }
-  :where(.bg-surface-4) & {
+  @if paint.writes-paint() {
     @each $role in $sf-place-step-4-roles {
-      --sf-place--found-#{$role}: inherit;
+      --sf-place--found-#{$role}: var(--sf-#{$role});
     }
+    :where(.bg-surface-4) & {
+      @each $role in $sf-place-step-4-roles {
+        --sf-place--found-#{$role}: inherit;
+      }
+    }
+    --sf-place--step-primary: light-dark(var(--sf-primary-hover), var(--sf-primary));
+    --sf-place--step-primary-hover: light-dark(var(--sf-primary-active), var(--sf-primary-hover));
+    --sf-place--step-primary-active: light-dark(var(--sf-primary-25), var(--sf-primary-active));
+    --sf-place--step-link: light-dark(var(--sf-link-hover), var(--sf-link));
+    --sf-place--step-link-hover: light-dark(var(--sf-link-active), var(--sf-link-hover));
+    --sf-place--step-link-active: light-dark(var(--sf-primary-25), var(--sf-link-active));
   }
-  --sf-place--step-primary: light-dark(var(--sf-primary-hover), var(--sf-primary));
-  --sf-place--step-primary-hover: light-dark(var(--sf-primary-active), var(--sf-primary-hover));
-  --sf-place--step-primary-active: light-dark(var(--sf-primary-25), var(--sf-primary-active));
-  --sf-place--step-link: light-dark(var(--sf-link-hover), var(--sf-link));
-  --sf-place--step-link-hover: light-dark(var(--sf-link-active), var(--sf-link-hover));
-  --sf-place--step-link-active: light-dark(var(--sf-primary-25), var(--sf-link-active));
 }
 
 @mixin sf-place-step-4-accent {
-  --sf-primary: var(--sf-place--step-primary);
-  --sf-primary-hover: var(--sf-place--step-primary-hover);
-  --sf-primary-active: var(--sf-place--step-primary-active);
-  --sf-link: var(--sf-place--step-link);
-  --sf-link-hover: var(--sf-place--step-link-hover);
-  --sf-link-active: var(--sf-place--step-link-active);
+  @if paint.writes-paint() {
+    --sf-primary: var(--sf-place--step-primary);
+    --sf-primary-hover: var(--sf-place--step-primary-hover);
+    --sf-primary-active: var(--sf-place--step-primary-active);
+    --sf-link: var(--sf-place--step-link);
+    --sf-link-hover: var(--sf-place--step-link-hover);
+    --sf-link-active: var(--sf-place--step-link-active);
+  }
 }
 
 // A place inside bg-surface-4 takes back the accent the step found (M3).
 @mixin sf-place-step-4-accent-back {
-  :where(.bg-surface-4) & {
-    @each $role in $sf-place-step-4-roles {
-      --sf-#{$role}: var(--sf-place--found-#{$role});
+  @if paint.writes-paint() {
+    :where(.bg-surface-4) & {
+      @each $role in $sf-place-step-4-roles {
+        --sf-#{$role}: var(--sf-place--found-#{$role});
+      }
     }
   }
 }
-
 
 // The nested popup's boundary in the dark theme (contrast R3, 2026-11-11): the
 // theme's neutral-90 at 48 over the nested popup's step (neutral-30) is 2.98:1,
@@ -458,51 +472,55 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // colour is ordinary code. A site's --sf-code-color / --sf-code-background
 // still win: the rule reads them first.
 @mixin sf-place-code($ink, $fill) {
-  --sf-code--color: #{$ink};
-  --sf-code--background: #{$fill};
+  @if paint.writes-paint() {
+    --sf-code--color: #{$ink};
+    --sf-code--background: #{$fill};
+  }
 }
 
 // $popup: the place is a popup step. A popup is told by its dim ink (a
 // popup-variant) unless the place says so itself: bg-surface-4 passes its
 // own ink and $popup: true, so a popup inside it is nested (R3b).
 @mixin sf-place($surface, $variant: null, $outline: null, $container-variant: null, $popup: null) {
-  --sf-surface-place: #{$surface};
-  --sf-surface-place-solid: #{$surface};
-  --sf-surface-place-ground: #{$surface};
-  @if not $container-variant { $container-variant: sf-place-container-variant($variant); }
-  @if not $outline { $outline: sf-place-outline($variant); }
-  // Read where it is declared: the place's own dim ink on a fill, below.
-  --sf-place--ink-variant: var(--sf-on-surface-container-variant);
-  --sf-place--ink: initial;
-  // A popup in the dark theme is a raised step already: a fill on it took the
-  // hues of code to 4.3:1 (the theme's tone 80 over the popup and the fill),
-  // so a block that would lay the container fill there lays none.
-  @if $container-variant {
-    --sf-place--fill-surface: light-dark(var(--sf-surface-container), transparent);
-  } @else {
-    --sf-place--fill-surface: initial;
-  }
-  @each $role, $value in $sf-place-theme-roles {
-    @if $role == 'on-surface-variant' and $variant {
-      --sf-on-surface-variant: #{$variant};
-    } @else if $role == 'outline' and $outline {
-      --sf-outline: #{string.unquote($outline)};
-    } @else if $role == 'on-surface-container-variant' and $container-variant {
-      --sf-on-surface-container-variant: #{string.unquote($container-variant)};
+  @if paint.writes-paint() {
+    --sf-surface-place: #{$surface};
+    --sf-surface-place-solid: #{$surface};
+    --sf-surface-place-ground: #{$surface};
+    @if not $container-variant { $container-variant: sf-place-container-variant($variant); }
+    @if not $outline { $outline: sf-place-outline($variant); }
+    // Read where it is declared: the place's own dim ink on a fill, below.
+    --sf-place--ink-variant: var(--sf-on-surface-container-variant);
+    --sf-place--ink: initial;
+    // A popup in the dark theme is a raised step already: a fill on it took the
+    // hues of code to 4.3:1 (the theme's tone 80 over the popup and the fill),
+    // so a block that would lay the container fill there lays none.
+    @if $container-variant {
+      --sf-place--fill-surface: light-dark(var(--sf-surface-container), transparent);
     } @else {
-      --sf-#{$role}: #{$value};
+      --sf-place--fill-surface: initial;
     }
-  }
-  @include aliases.sf-role-aliases($sf-place-aliased);
-  @include sf-place-code(var(--sf-on-surface), var(--sf-surface-container));
-  --sf-place--container-outline: initial;
-  @include sf-place-back-on-colour;
-  @include sf-place-step-4-accent-back;
-  @if $popup == null {
-    $popup: $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested');
-  }
-  @if $popup {
-    @include sf-place-popup-children;
+    @each $role, $value in $sf-place-theme-roles {
+      @if $role == 'on-surface-variant' and $variant {
+        --sf-on-surface-variant: #{$variant};
+      } @else if $role == 'outline' and $outline {
+        --sf-outline: #{string.unquote($outline)};
+      } @else if $role == 'on-surface-container-variant' and $container-variant {
+        --sf-on-surface-container-variant: #{string.unquote($container-variant)};
+      } @else {
+        --sf-#{$role}: #{$value};
+      }
+    }
+    @include aliases.sf-role-aliases($sf-place-aliased);
+    @include sf-place-code(var(--sf-on-surface), var(--sf-surface-container));
+    --sf-place--container-outline: initial;
+    @include sf-place-back-on-colour;
+    @include sf-place-step-4-accent-back;
+    @if $popup == null {
+      $popup: $container-variant and string.index(meta.inspect($variant), 'popup-variant') and not string.index(meta.inspect($variant), 'nested');
+    }
+    @if $popup {
+      @include sf-place-popup-children;
+    }
   }
 }
 
@@ -511,14 +529,16 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // row, --sf-surface-place, read where the fill is declared. Include it with
 // the fill, in the same rule.
 @mixin sf-place-fill($fill) {
-  --sf-surface-underlay: var(--sf-surface-place-solid);
-  // The fill itself, the colour the row lays over its place (C43 D3, D4,
-  // 2026-11-11). An anchored badge's ring lays it over the place colour, so
-  // on the row the ring is the row's own colour, not a halo of the place
-  // around the badge. $fill is the row's background in that rule. Every
-  // place takes it back (C43 later, 2026-11-12), so it holds on a row of a
-  // soft place too, where the underlay is initial.
-  --sf-surface-place-fill: #{$fill};
+  @if paint.writes-paint() {
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    // The fill itself, the colour the row lays over its place (C43 D3, D4,
+    // 2026-11-11). An anchored badge's ring lays it over the place colour, so
+    // on the row the ring is the row's own colour, not a halo of the place
+    // around the badge. $fill is the row's background in that rule. Every
+    // place takes it back (C43 later, 2026-11-12), so it holds on a row of a
+    // soft place too, where the underlay is initial.
+    --sf-surface-place-fill: #{$fill};
+  }
 }
 
 // A soft coloured place, bg-<c>-container: the colour's own container trio is
@@ -528,23 +548,25 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // so the controls keep the theme's ink, which holds on every container
 // (surfaces research 6.3: text 12.32 light / 8.60 dark at least).
 @mixin sf-place-soft($c) {
-  --sf-surface-place: var(--sf-#{$c}-container);
-  --sf-surface-place-solid: initial;
-  // --sf-surface-place-ground is not declared: it is the opaque place below.
-  --sf-surface-underlay: initial;
-  --sf-surface-place-fill: initial;
-  --sf-surface-container: var(--sf-#{$c}-container);
-  --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
-  --sf-surface-container-active: var(--sf-#{$c}-container-active);
-  --sf-surface-state-hover: var(--sf-#{$c}-state-hover);
-  --sf-surface-state-select: var(--sf-#{$c}-state-select);
-  --sf-surface-state-active: var(--sf-#{$c}-state-active);
-  --sf-outline: var(--sf-#{$c}-outline);
-  --sf-outline-variant: var(--sf-#{$c}-container-strong);
-  --sf-place--container-outline: var(--sf-outline);
-  @include sf-place-code(var(--sf-on-#{$c}-container), var(--sf-#{$c}-container));
-  @include aliases.sf-role-aliases(('surface-state-hover', 'surface-state-select', 'surface-state-active'));
-  @include sf-place-step-4-accent-back;
+  @if paint.writes-paint() {
+    --sf-surface-place: var(--sf-#{$c}-container);
+    --sf-surface-place-solid: initial;
+    // --sf-surface-place-ground is not declared: it is the opaque place below.
+    --sf-surface-underlay: initial;
+    --sf-surface-place-fill: initial;
+    --sf-surface-container: var(--sf-#{$c}-container);
+    --sf-surface-container-hover: var(--sf-#{$c}-container-hover);
+    --sf-surface-container-active: var(--sf-#{$c}-container-active);
+    --sf-surface-state-hover: var(--sf-#{$c}-state-hover);
+    --sf-surface-state-select: var(--sf-#{$c}-state-select);
+    --sf-surface-state-active: var(--sf-#{$c}-state-active);
+    --sf-outline: var(--sf-#{$c}-outline);
+    --sf-outline-variant: var(--sf-#{$c}-container-strong);
+    --sf-place--container-outline: var(--sf-outline);
+    @include sf-place-code(var(--sf-on-#{$c}-container), var(--sf-#{$c}-container));
+    @include aliases.sf-role-aliases(('surface-state-hover', 'surface-state-select', 'surface-state-active'));
+    @include sf-place-step-4-accent-back;
+  }
 }
 
 // An inverse place, bg-surface-inverse (C16 lists it as a place; DEV
@@ -571,36 +593,38 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 }
 
 @mixin sf-place-inverse($surface, $fixed: false) {
-  $half: if($fixed, 'dark', 'swap');
-  --sf-surface-place: #{$surface};
-  --sf-surface-place-solid: #{$surface};
-  --sf-surface-place-ground: #{$surface};
-  // The place hooks (code highlighting, variant C; fix/highlight-place-roles
-  // deviation 2): the place's own inks, read where they are declared, so a
-  // hue of code on the inverse is the other theme's ink, not the page's hue
-  // (every role read 1.13-1.94:1 there), and no container fill is laid twice.
-  --sf-place--ink-variant: var(--sf-on-surface-container-variant);
-  --sf-place--ink: var(--sf-on-surface);
-  --sf-place--fill-surface: initial;
-  @each $role, $value in $sf-place-theme-roles {
-    @if $role == 'outline' and not $fixed {
-      --sf-outline: light-dark(var(--sf-neutral-90--alfa-48), var(--sf-neutral-50));
-    } @else {
+  @if paint.writes-paint() {
+    $half: if($fixed, 'dark', 'swap');
+    --sf-surface-place: #{$surface};
+    --sf-surface-place-solid: #{$surface};
+    --sf-surface-place-ground: #{$surface};
+    // The place hooks (code highlighting, variant C; fix/highlight-place-roles
+    // deviation 2): the place's own inks, read where they are declared, so a
+    // hue of code on the inverse is the other theme's ink, not the page's hue
+    // (every role read 1.13-1.94:1 there), and no container fill is laid twice.
+    --sf-place--ink-variant: var(--sf-on-surface-container-variant);
+    --sf-place--ink: var(--sf-on-surface);
+    --sf-place--fill-surface: initial;
+    @each $role, $value in $sf-place-theme-roles {
+      @if $role == 'outline' and not $fixed {
+        --sf-outline: light-dark(var(--sf-neutral-90--alfa-48), var(--sf-neutral-50));
+      } @else {
+        --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
+      }
+    }
+    @each $role, $value in $sf-place-colour-roles {
       --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
     }
+    @include sf-place-code(var(--sf-on-surface), var(--sf-surface-container));
+    @include aliases.sf-role-aliases($sf-place-aliased);
+    // The accent the place found, kept for an opaque place on it (D1); the
+    // status containers' ink, the link and the ring too (inverse places IP,
+    // 2026-11-14), re-declared on its children (sf-place-inverse-accent).
+    @each $role, $value in map.merge($sf-place-accent-roles, map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles)) {
+      --sf-place--outer-#{$role}: var(--sf-#{$role});
+    }
+    --sf-place--outer-focus--color: var(--sf-focus--color);
   }
-  @each $role, $value in $sf-place-colour-roles {
-    --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
-  }
-  @include sf-place-code(var(--sf-on-surface), var(--sf-surface-container));
-  @include aliases.sf-role-aliases($sf-place-aliased);
-  // The accent the place found, kept for an opaque place on it (D1); the
-  // status containers' ink, the link and the ring too (inverse places IP,
-  // 2026-11-14), re-declared on its children (sf-place-inverse-accent).
-  @each $role, $value in map.merge($sf-place-accent-roles, map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles)) {
-    --sf-place--outer-#{$role}: var(--sf-#{$role});
-  }
-  --sf-place--outer-focus--color: var(--sf-focus--color);
 }
 
 // The other theme's accent on an inverse place: on its children, in sf.base,
@@ -614,11 +638,13 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // its hue there: the other theme's tone of it, as its accent already is.
 // --sf-focus--color, resolved at the root, is re-declared with the ring.
 @mixin sf-place-inverse-accent($fixed: false) {
-  $half: if($fixed, 'dark', 'swap');
-  @each $role, $value in map.merge($sf-place-accent-roles, map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles)) {
-    --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
+  @if paint.writes-paint() {
+    $half: if($fixed, 'dark', 'swap');
+    @each $role, $value in map.merge($sf-place-accent-roles, map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles)) {
+      --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
+    }
+    --sf-focus--color: var(--sf-focus);
   }
-  --sf-focus--color: var(--sf-focus);
 }
 
 // The theme's neutral tonal plate on a control that stands on a soft
@@ -628,11 +654,13 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // the theme's, from $sf-place-theme-roles, and a strong place's tonal steps
 // are taken back.
 @mixin sf-place-neutral-container {
-  @each $role in ('surface-container', 'surface-container-hover', 'surface-container-active') {
-    --sf-#{$role}: #{string.unquote(map.get($sf-place-theme-roles, $role))};
+  @if paint.writes-paint() {
+    @each $role in ('surface-container', 'surface-container-hover', 'surface-container-active') {
+      --sf-#{$role}: #{string.unquote(map.get($sf-place-theme-roles, $role))};
+    }
+    --sf-place--control-hover: initial;
+    --sf-place--control-active: initial;
   }
-  --sf-place--control-hover: initial;
-  --sf-place--control-active: initial;
 }
 
 // A step of a strong place's ink: on-<c>, white in the light theme and tone 20
@@ -648,54 +676,56 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // near-grey header), line 24, boundary 64, dim ink 80 -- and the controls'
 // own ink is on-<c>, or a field's text would be dark on the colour.
 @mixin sf-place-strong($c) {
-  --sf-surface-place: var(--sf-#{$c});
-  --sf-surface-place-solid: var(--sf-#{$c});
-  --sf-surface-place-ground: var(--sf-#{$c});
-  --sf-surface-underlay: initial;
-  --sf-surface-place-fill: initial;
-  --sf-place--ink-variant: var(--sf-on-#{$c});
-  --sf-place--ink: var(--sf-on-#{$c});
-  --sf-place--fill-surface: initial;
-  --sf-on-surface: var(--sf-on-#{$c});
-  // The icon role (C107): the alpha scale has no step between the ink and its
-  // 80, so a control's glyph on a strong colour is the place's ink.
-  --sf-on-surface-icon: var(--sf-on-#{$c});
-  // The ink of a hovered and a pressed control is the place's ink too
-  // (contrast lows, 2026-11-11): the theme's neutral 15 / 20 (85 / 80 in the
-  // dark) turned a pressed outline or link button's label dark on red, 2.80
-  // light and 1.44 dark in sf-alert-bar (R190 AA-10: 2.1-2.2:1 light, 1.4:1 dark
-  // when pressed on the alert bar).
-  --sf-on-surface-hover: var(--sf-on-#{$c});
-  --sf-on-surface-active: var(--sf-on-#{$c});
-  --sf-on-surface-variant: #{sf-ink($c, 80)};
-  --sf-on-surface-container-variant: #{sf-ink($c, 80)};
-  --sf-surface-state-hover: #{sf-ink($c, 4)};
-  --sf-surface-state-select: #{sf-ink($c, 8)};
-  --sf-surface-state-active: #{sf-ink($c, 12)};
-  --sf-surface-container: #{sf-ink($c, 12)};
-  --sf-surface-container-hover: #{sf-ink($c, 16)};
-  --sf-surface-container-active: #{sf-ink($c, 20)};
-  --sf-outline: #{sf-ink($c, 64)};
-  --sf-outline-variant: #{sf-ink($c, 24)};
-  --sf-place--container-outline: var(--sf-outline);
-  @include sf-place-code(var(--sf-on-#{$c}), sf-ink($c, 12));
-  --sf-surface-disabled: #{sf-ink($c, 8)};
-  --sf-on-surface-disabled: #{sf-ink($c, 64)};
-  --sf-on-surface-muted: var(--sf-on-surface-disabled);
-  @include aliases.sf-role-aliases($sf-place-aliased);
-  // The accent the place found, kept for an opaque place on it (D1).
-  @each $role, $value in $sf-place-accent-roles {
-    --sf-place--outer-#{$role}: var(--sf-#{$role});
+  @if paint.writes-paint() {
+    --sf-surface-place: var(--sf-#{$c});
+    --sf-surface-place-solid: var(--sf-#{$c});
+    --sf-surface-place-ground: var(--sf-#{$c});
+    --sf-surface-underlay: initial;
+    --sf-surface-place-fill: initial;
+    --sf-place--ink-variant: var(--sf-on-#{$c});
+    --sf-place--ink: var(--sf-on-#{$c});
+    --sf-place--fill-surface: initial;
+    --sf-on-surface: var(--sf-on-#{$c});
+    // The icon role (C107): the alpha scale has no step between the ink and its
+    // 80, so a control's glyph on a strong colour is the place's ink.
+    --sf-on-surface-icon: var(--sf-on-#{$c});
+    // The ink of a hovered and a pressed control is the place's ink too
+    // (contrast lows, 2026-11-11): the theme's neutral 15 / 20 (85 / 80 in the
+    // dark) turned a pressed outline or link button's label dark on red, 2.80
+    // light and 1.44 dark in sf-alert-bar (R190 AA-10: 2.1-2.2:1 light, 1.4:1 dark
+    // when pressed on the alert bar).
+    --sf-on-surface-hover: var(--sf-on-#{$c});
+    --sf-on-surface-active: var(--sf-on-#{$c});
+    --sf-on-surface-variant: #{sf-ink($c, 80)};
+    --sf-on-surface-container-variant: #{sf-ink($c, 80)};
+    --sf-surface-state-hover: #{sf-ink($c, 4)};
+    --sf-surface-state-select: #{sf-ink($c, 8)};
+    --sf-surface-state-active: #{sf-ink($c, 12)};
+    --sf-surface-container: #{sf-ink($c, 12)};
+    --sf-surface-container-hover: #{sf-ink($c, 16)};
+    --sf-surface-container-active: #{sf-ink($c, 20)};
+    --sf-outline: #{sf-ink($c, 64)};
+    --sf-outline-variant: #{sf-ink($c, 24)};
+    --sf-place--container-outline: var(--sf-outline);
+    @include sf-place-code(var(--sf-on-#{$c}), sf-ink($c, 12));
+    --sf-surface-disabled: #{sf-ink($c, 8)};
+    --sf-on-surface-disabled: #{sf-ink($c, 64)};
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
+    @include aliases.sf-role-aliases($sf-place-aliased);
+    // The accent the place found, kept for an opaque place on it (D1).
+    @each $role, $value in $sf-place-accent-roles {
+      --sf-place--outer-#{$role}: var(--sf-#{$role});
+    }
+    // The status containers' ink and the ring it found (PS-A, PS-B), re-declared
+    // on its children (sf-place-strong-accent).
+    @each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {
+      --sf-place--outer-#{$role}: var(--sf-#{$role});
+    }
+    --sf-place--outer-focus--color: var(--sf-focus--color);
+    // Inside bg-surface-4 the place paints and hands down the accent the step
+    // found, not the step's (M3): bg-primary there is primary-40 again.
+    @include sf-place-step-4-accent-back;
   }
-  // The status containers' ink and the ring it found (PS-A, PS-B), re-declared
-  // on its children (sf-place-strong-accent).
-  @each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {
-    --sf-place--outer-#{$role}: var(--sf-#{$role});
-  }
-  --sf-place--outer-focus--color: var(--sf-focus--color);
-  // Inside bg-surface-4 the place paints and hands down the accent the step
-  // found, not the step's (M3): bg-primary there is primary-40 again.
-  @include sf-place-step-4-accent-back;
 }
 
 // The accent on a strong coloured place (C42 (4), owner 2026-11-10): what
@@ -717,53 +747,55 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // theme's primary container is a primary tint, blue on blue (2.78:1 light,
 // 1.66:1 dark on bg-primary).
 @mixin sf-place-strong-accent($c) {
-  --sf-primary: light-dark(var(--sf-white), var(--sf-#{$c}-20));
-  --sf-primary-hover: light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25));
-  --sf-primary-active: light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30));
-  // The place's own colour (its solid colour, declared on the place, so a
-  // project's --sf-primary brands the label of a white button on its banner
-  // too); the tones only where a child is no solid place.
-  --sf-on-primary: var(--sf-surface-place-solid, light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-80)));
-  --sf-primary-container: #{sf-ink($c, 12)};
-  // Hover and press (DEV acceptance 2026-11-11, D2b): in the light theme a
-  // step darker, the white fill going down 12 -> 8 -> 4 towards the place,
-  // so the white label gains contrast (more white under white text lost it:
-  // 4.44 hover, 4.06-4.31 press). In the dark the place's dark ink rises
-  // 16 / 20 as before, darker as well (>= 5.34).
-  --sf-primary-container-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
-  --sf-primary-container-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
-  --sf-on-primary-container: light-dark(var(--sf-white), var(--sf-#{$c}-20));
-  // A raised plate on the place (a segmented thumb; DEV acceptance
-  // 2026-11-10, D4): lighter than the track in both themes, as C42 (3) asks
-  // on every place. In the light theme white, the theme's raised place; in the
-  // dark the colour's tone 90 over the place's 80, where the fill's top step
-  // (the place's ink, tone 20) was darker than the track. Its label is the
-  // place's colour in the light theme and the place's ink in the dark.
-  --sf-place--plate: light-dark(var(--sf-white), var(--sf-#{$c}-90));
-  --sf-place--on-plate: light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-20));
-  // A filled field's placeholder on the place (forms batch round 2, item C):
-  // the place's full ink, as before. Its dim ink (80) over the field's fill
-  // (12) gave 3.86:1 light and 4.31:1 dark on bg-primary, under 4.5.
-  --sf-place--fill-placeholder: light-dark(var(--sf-white), var(--sf-#{$c}-20));
-  // The hover and press fill of a neutral button on the place -- tonal,
-  // outline and ghost on-surface (R190 AA-10, 2026-11-12): the D2b rule above
-  // for the tonal accent, given to the neutral buttons too. In the light
-  // theme a step down, 8 and 4 of white (the tonal plate's rest is 12), so the
-  // white label gains contrast: the fill family's 16 and 20 put more white
-  // under white text, 4.56-5.08 hover and 4.19-4.72 press on the warning and
-  // info alert bar, under 4.5. In the dark the place's dark ink rises 16 / 20,
-  // the fill family's own steps. Read by those sf-button rules only
-  // (component/buttons), so the fill family's 12/16/20 for every other control
-  // on the place is unchanged.
-  --sf-place--control-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
-  --sf-place--control-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
-  // The status containers' ink, the link and the ring are the place's ink
-  // (PS-A, PS-B), from the tones, as the accent above: the link's hover and
-  // press are the accent's steps, a visited link the place's dim ink (80).
-  @include sf-place-container-ink(light-dark(var(--sf-white), var(--sf-#{$c}-20)));
-  @include sf-place-link-ring(light-dark(var(--sf-white), var(--sf-#{$c}-20)),
-    light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25)), light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30)),
-    #{sf-ink($c, 80)});
+  @if paint.writes-paint() {
+    --sf-primary: light-dark(var(--sf-white), var(--sf-#{$c}-20));
+    --sf-primary-hover: light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25));
+    --sf-primary-active: light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30));
+    // The place's own colour (its solid colour, declared on the place, so a
+    // project's --sf-primary brands the label of a white button on its banner
+    // too); the tones only where a child is no solid place.
+    --sf-on-primary: var(--sf-surface-place-solid, light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-80)));
+    --sf-primary-container: #{sf-ink($c, 12)};
+    // Hover and press (DEV acceptance 2026-11-11, D2b): in the light theme a
+    // step darker, the white fill going down 12 -> 8 -> 4 towards the place,
+    // so the white label gains contrast (more white under white text lost it:
+    // 4.44 hover, 4.06-4.31 press). In the dark the place's dark ink rises
+    // 16 / 20 as before, darker as well (>= 5.34).
+    --sf-primary-container-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
+    --sf-primary-container-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
+    --sf-on-primary-container: light-dark(var(--sf-white), var(--sf-#{$c}-20));
+    // A raised plate on the place (a segmented thumb; DEV acceptance
+    // 2026-11-10, D4): lighter than the track in both themes, as C42 (3) asks
+    // on every place. In the light theme white, the theme's raised place; in the
+    // dark the colour's tone 90 over the place's 80, where the fill's top step
+    // (the place's ink, tone 20) was darker than the track. Its label is the
+    // place's colour in the light theme and the place's ink in the dark.
+    --sf-place--plate: light-dark(var(--sf-white), var(--sf-#{$c}-90));
+    --sf-place--on-plate: light-dark(var(--sf-#{$c}-40), var(--sf-#{$c}-20));
+    // A filled field's placeholder on the place (forms batch round 2, item C):
+    // the place's full ink, as before. Its dim ink (80) over the field's fill
+    // (12) gave 3.86:1 light and 4.31:1 dark on bg-primary, under 4.5.
+    --sf-place--fill-placeholder: light-dark(var(--sf-white), var(--sf-#{$c}-20));
+    // The hover and press fill of a neutral button on the place -- tonal,
+    // outline and ghost on-surface (R190 AA-10, 2026-11-12): the D2b rule above
+    // for the tonal accent, given to the neutral buttons too. In the light
+    // theme a step down, 8 and 4 of white (the tonal plate's rest is 12), so the
+    // white label gains contrast: the fill family's 16 and 20 put more white
+    // under white text, 4.56-5.08 hover and 4.19-4.72 press on the warning and
+    // info alert bar, under 4.5. In the dark the place's dark ink rises 16 / 20,
+    // the fill family's own steps. Read by those sf-button rules only
+    // (component/buttons), so the fill family's 12/16/20 for every other control
+    // on the place is unchanged.
+    --sf-place--control-hover: light-dark(var(--sf-white--alfa-8), var(--sf-#{$c}-20--alfa-16));
+    --sf-place--control-active: light-dark(var(--sf-white--alfa-4), var(--sf-#{$c}-20--alfa-20));
+    // The status containers' ink, the link and the ring are the place's ink
+    // (PS-A, PS-B), from the tones, as the accent above: the link's hover and
+    // press are the accent's steps, a visited link the place's dim ink (80).
+    @include sf-place-container-ink(light-dark(var(--sf-white), var(--sf-#{$c}-20)));
+    @include sf-place-link-ring(light-dark(var(--sf-white), var(--sf-#{$c}-20)),
+      light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25)), light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30)),
+      #{sf-ink($c, 80)});
+  }
 }
 
 // A child that asks for the on-colour by name keeps it (FW-B-1, docs batch B
@@ -777,38 +809,44 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // dark on bg-primary. A filled button and a checked box on the place still
 // take the place's colour as their label: they do not name the utility.
 @mixin sf-place-strong-named-ink {
-  --sf-on-primary: var(--sf-place--outer-on-primary);
+  @if paint.writes-paint() {
+    --sf-on-primary: var(--sf-place--outer-on-primary);
+  }
 }
 
 // Glass keeps the accent it found (C70), for an opaque place on it to take
 // back; declared on the glass, which re-declares none of these roles itself.
 @mixin sf-place-glass-outer {
-  @each $role, $value in map.merge($sf-place-glass-accent-roles, $sf-place-container-ink-roles) {
-    --sf-place--outer-#{$role}: var(--sf-#{$role});
+  @if paint.writes-paint() {
+    @each $role, $value in map.merge($sf-place-glass-accent-roles, $sf-place-container-ink-roles) {
+      --sf-place--outer-#{$role}: var(--sf-#{$role});
+    }
+    --sf-place--outer-focus--color: var(--sf-focus--color);
   }
-  --sf-place--outer-focus--color: var(--sf-focus--color);
 }
 
 // The accent on glass (C70; see $sf-place-glass-link-roles): on the glass's
 // children, as on a strong place, so the glass itself never reads a role it
 // re-declares.
 @mixin sf-place-glass-accent {
-  --sf-primary: var(--sf-white);
-  --sf-primary-hover: var(--sf-neutral-95);
-  --sf-primary-active: var(--sf-neutral-90);
-  --sf-on-primary: var(--sf-black);
-  --sf-primary-container: var(--sf-white--alfa-12);
-  --sf-primary-container-hover: var(--sf-white--alfa-16);
-  --sf-primary-container-active: var(--sf-white--alfa-20);
-  --sf-on-primary-container: var(--sf-white);
-  --sf-link: var(--sf-white);
-  --sf-link-hover: var(--sf-neutral-95);
-  --sf-link-active: var(--sf-neutral-90);
-  --sf-link-visited: var(--sf-white--alfa-80);
-  --sf-focus: var(--sf-white);
-  // The ring reads --sf-focus--color, resolved where it is declared (the
-  // root): it is re-declared with the ring colour, or the ring stays blue.
-  --sf-focus--color: var(--sf-focus);
-  // The status containers' ink (PS-B): white, the glass's ink.
-  @include sf-place-container-ink(var(--sf-white));
+  @if paint.writes-paint() {
+    --sf-primary: var(--sf-white);
+    --sf-primary-hover: var(--sf-neutral-95);
+    --sf-primary-active: var(--sf-neutral-90);
+    --sf-on-primary: var(--sf-black);
+    --sf-primary-container: var(--sf-white--alfa-12);
+    --sf-primary-container-hover: var(--sf-white--alfa-16);
+    --sf-primary-container-active: var(--sf-white--alfa-20);
+    --sf-on-primary-container: var(--sf-white);
+    --sf-link: var(--sf-white);
+    --sf-link-hover: var(--sf-neutral-95);
+    --sf-link-active: var(--sf-neutral-90);
+    --sf-link-visited: var(--sf-white--alfa-80);
+    --sf-focus: var(--sf-white);
+    // The ring reads --sf-focus--color, resolved where it is declared (the
+    // root): it is re-declared with the ring colour, or the ring stays blue.
+    --sf-focus--color: var(--sf-focus);
+    // The status containers' ink (PS-B): white, the glass's ink.
+    @include sf-place-container-ink(var(--sf-white));
+  }
 }

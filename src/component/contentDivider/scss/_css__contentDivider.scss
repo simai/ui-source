@@ -39,7 +39,6 @@
     --sf-divider-content--font-size: var(--sf-text-size-1\/2);
     --sf-divider-content--line-height: var(--sf-text-height-1\/2);
 
-    color: var(--sf-divider-content--color);
     text-align: center;
   }
 
@@ -52,7 +51,6 @@
   .sf-divider-horizontal:empty {
     display: block;
     block-size: var(--sf-divider--thickness);
-    background-color: var(--sf-divider--background-color);
   }
 
   .sf-divider-horizontal:not(:empty) {
@@ -67,7 +65,6 @@
     flex: 1 1 auto;
     min-inline-size: 0;
     block-size: var(--sf-divider--thickness);
-    background-color: var(--sf-divider--background-color);
   }
 
   .sf-divider-vertical {
@@ -75,7 +72,6 @@
     align-self: stretch;
     inline-size: var(--sf-divider--thickness);
     min-block-size: var(--sf-divider--length);
-    background-color: var(--sf-divider--background-color);
   }
 
   /* Backward-compatible double-boundary presentation. */
@@ -88,8 +84,8 @@
     position: absolute;
     inset: 0;
     z-index: 2;
-    border-block: var(--sf-divider--thickness) solid
-      var(--sf-divider--border-color);
+    border-block-width: var(--sf-divider--thickness);
+    border-block-style: solid;
     pointer-events: none;
   }
 
@@ -100,8 +96,6 @@
     align-items: center;
     min-inline-size: 0;
     padding: var(--sf-divider-content--padding);
-    background-color: var(--sf-divider-content--background-color);
-    color: var(--sf-divider-content--color);
     font-size: var(--sf-divider-content--font-size);
     line-height: var(--sf-divider-content--line-height);
   }
@@ -115,6 +109,7 @@
      SF.deprecations (journal class-content-divider-c188-aliases). */
   .sf-divider-content-border {
     border: 0;
+    border-color: revert-layer;
   }
 
   /* The small caption is an alias until 2027-01-01 (owner decision C233,
@@ -161,10 +156,9 @@
     box-sizing: border-box;
     min-block-size: var(--sf-ui-1--control-height);
     padding: var(--sf-0) var(--sf-space-1);
-    border: var(--sf-divider--thickness) solid var(--sf-outline);
+    border-width: var(--sf-divider--thickness);
+    border-style: solid;
     border-inline-end-width: 0;
-    background-color: var(--sf-transparent);
-    color: var(--sf-on-surface);
     font-family: inherit;
     font-size: var(--sf-text-size-1);
     line-height: var(--sf-text-height-1);
@@ -226,23 +220,57 @@
   }
 
   @media (forced-colors: active) {
+    .sf-divider-button:focus-visible {
+      outline: var(--sf-focus--width) solid Highlight;
+      outline-offset: var(--sf-focus--inset);
+      box-shadow: none;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-divider {
+    color: var(--sf-divider-content--color);
+  }
+  .sf-divider-horizontal:empty {
+    background-color: var(--sf-divider--background-color);
+  }
+  .sf-divider-horizontal:not(:empty)::before,
+  .sf-divider-horizontal:not(:empty)::after {
+    background-color: var(--sf-divider--background-color);
+  }
+  .sf-divider-vertical {
+    background-color: var(--sf-divider--background-color);
+  }
+  .sf-divider-borders::after {
+    border-block-color: var(--sf-divider--border-color);
+  }
+  .sf-divider-content {
+    background-color: var(--sf-divider-content--background-color);
+    color: var(--sf-divider-content--color);
+  }
+  .sf-divider-content-border {
+    border: 0;
+  }
+  .sf-divider-button {
+    border-color: var(--sf-outline);
+    background-color: var(--sf-transparent);
+    color: var(--sf-on-surface);
+  }
+  @media (forced-colors: active) {
     .sf-divider-horizontal:empty,
     .sf-divider-horizontal:not(:empty)::before,
     .sf-divider-horizontal:not(:empty)::after,
     .sf-divider-vertical {
       background-color: CanvasText;
     }
-
     .sf-divider-borders::after,
     .sf-divider-content-border,
     .sf-divider-button {
       border-color: CanvasText;
-    }
-
-    .sf-divider-button:focus-visible {
-      outline: var(--sf-focus--width) solid Highlight;
-      outline-offset: var(--sf-focus--inset);
-      box-shadow: none;
     }
   }
 }

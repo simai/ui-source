@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
 // Editor canvas overlay (sf-editor-overlay). Placed in the scroller of its
 // canvas, the parts lie in the scrolled content and travel with it; anywhere else
 // they are fixed to the viewport. Either way above the canvas and below drawers
@@ -7,6 +8,7 @@
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
 @layer sf.components {
+  @include paint.part(shape);
     .sf-composition-overlay {
         /* The public variables (standard 1.3.8 §6): the frames' and the
            insertion points' colour, the layer, the toolbar's fill, radius
@@ -62,7 +64,8 @@
         box-sizing: content-box;
         margin: calc(-1 * (var(--sf-a2) + var(--sf-px)));
         padding: var(--sf-a2);
-        border: var(--sf-px) solid var(--sf-composition-overlay-color);
+        border-width: var(--sf-px);
+        border-style: solid;
     }
 
     .sf-composition-overlay-frame--selected {
@@ -115,10 +118,7 @@
         margin-block-end: var(--sf-space-1\/4);
         padding: var(--sf-space-1\/4);
         border-radius: var(--sf-composition-overlay-toolbar-radius, var(--sf-radius-1));
-        /* A toolbar floats over the page: step 2's surface and shadow. */
-        background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas));
         @include places.sf-place(var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
-        color: var(--sf-on-surface, CanvasText);
         box-shadow: var(--sf-shadow-overlay);
         pointer-events: auto;
     }
@@ -143,7 +143,6 @@
         min-inline-size: calc(2 * var(--sf-space-1\/3) + var(--sf-text-size-1));
         overflow: hidden;
         padding-inline: var(--sf-space-1\/3);
-        color: var(--sf-on-surface, CanvasText);
         font-size: var(--sf-text-size-1\/2);
         font-weight: var(--sf-weight--medium);
         line-height: var(--sf-text-height-1\/2);
@@ -152,7 +151,6 @@
 
     .sf-composition-overlay-name .sf-icon {
         flex: none;
-        color: var(--sf-on-surface-variant);
         font-size: var(--sf-text-size-1);
     }
 
@@ -180,7 +178,6 @@
         align-self: stretch;
         inline-size: var(--sf-px);
         margin-block: var(--sf-space-1\/4);
-        background-color: var(--sf-outline-variant);
     }
 
     .sf-composition-overlay[data-sf-overlay-side] .sf-composition-overlay-group {
@@ -265,8 +262,7 @@
         margin-block-start: calc(var(--sf-ui-1\/3--control-height) / -2);
         padding: 0;
         border: 0;
-        background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% var(--sf-a2) no-repeat;
-        color: var(--sf-composition-overlay-color);
+        border-color: revert-layer;
         opacity: 0;
         pointer-events: none;
     }
@@ -289,12 +285,6 @@
     .sf-composition-overlay-insert[data-sf-insert-shown] .sf-composition-overlay-insert-mark,
     .sf-composition-overlay-insert:focus-visible .sf-composition-overlay-insert-mark {
         pointer-events: auto;
-    }
-
-    // The «+» under the selected block, while nothing points at its place: the
-    // button alone, so the frame's line is not doubled by a second one.
-    .sf-composition-overlay-insert[data-sf-insert-after]:not(:focus-visible) {
-        background: none;
     }
 
     .sf-composition-overlay-insert[aria-pressed="true"] {
@@ -326,6 +316,43 @@
     .sf-composition-overlay[data-sf-overlay-editing] .sf-composition-overlay-frame--hover {
         display: none;
     }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-composition-overlay-frame {
+    border-color: var(--sf-composition-overlay-color);
+  }
+  .sf-composition-overlay-toolbar {
+    /* A toolbar floats over the page: step 2's surface and shadow. */
+    background: var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas));
+    @include places.sf-place(var(--sf-composition-overlay-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface, CanvasText);
+  }
+  .sf-composition-overlay-name {
+    color: var(--sf-on-surface, CanvasText);
+  }
+  .sf-composition-overlay-name .sf-icon {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-composition-overlay-separator {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-composition-overlay-insert {
+    border: 0;
+    background: linear-gradient(var(--sf-composition-overlay-color), var(--sf-composition-overlay-color)) center / 100% var(--sf-a2) no-repeat;
+    color: var(--sf-composition-overlay-color);
+  }
+  // The «+» under the selected block, while nothing points at its place: the
+  // button alone, so the frame's line is not doubled by a second one.
+  .sf-composition-overlay-insert[data-sf-insert-after]:not(:focus-visible) {
+    background: none;
+  }
+  @include paint.part(all);
 }
 
 // A dangerous action colours its hover only. A later layer than the button's own.

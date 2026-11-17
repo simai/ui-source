@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // Owner decision C147 (2026-11-14, reference link study): the rules the
 // measured behaviour rests on, so a later edit cannot drop one silently.
@@ -31,7 +32,9 @@ test('two looks: inline in text beside the card; three settings added (C147 (1),
 test('a record in text: type icon one line high, 4 before the name, the number quiet and whole (C147 (2))', () => {
   assert.match(css, /\.sf-reference-link--inline :where\(\.sf-reference-link__icon, \.sf-reference-link__tab\) \{[^}]*--sf-icon--font-size: 1lh;/u);
   assert.match(css, /\.sf-reference-link--inline :where\(\.sf-reference-link__icon\) \{\s*margin-inline-end: var\(--sf-space-1\\\/4\);/u);
-  assert.match(css, /__number\) \{\s*color: var\(--sf-on-surface-variant\);[^}]*white-space: nowrap;/u);
+  // C273: the number's ink in the paint block, its wrapping in the component block.
+  assert.match(paintBlocks(css), /__number\) \{\s*color: var\(--sf-on-surface-variant\);/u);
+  assert.match(css, /__number\) \{[^}]*white-space: nowrap;/u);
   // In text an absent icon is none; elsewhere the arrow.
   assert.match(element, /appearance'\) === 'inline' \? '' : 'arrow_forward'/u);
 });

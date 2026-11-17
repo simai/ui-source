@@ -5,12 +5,20 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const sheet = await readFile(new URL('../src/component/range-slider/scss/_css__range_slider_field.scss', import.meta.url), 'utf8');
 const rule = (selector) => {
   const at = sheet.indexOf(`\n${selector} {`);
   assert.ok(at >= 0, selector);
   return sheet.slice(at, sheet.indexOf('}', at));
+};
+// C273: a part's paint stands in the paint block under the same selector.
+const paint = paintBlocks(sheet);
+const paintRule = (selector) => {
+  const at = paint.indexOf(`${selector} {`);
+  assert.ok(at >= 0, `paint ${selector}`);
+  return paint.slice(at, paint.indexOf('}', at));
 };
 
 test('no literal sizes or colours: every value is a system token', () => {
@@ -34,7 +42,7 @@ test('S6: under a finger the hit area is at least the size-2 control height, the
 });
 
 test('S7: disabled name, value and scale take the disabled content role', () => {
-  assert.match(sheet, /\.sf-range-slider-group\.disabled \.sf-range-slider-name,\n\.sf-range-slider-group\.disabled \.sf-range-slider-output,\n\.sf-range-slider-group\.disabled \.sf-range-slider-scale \{\n {2}color: var\(--sf-on-surface-disabled\);/u);
+  assert.match(paint, /\.sf-range-slider-group\.disabled \.sf-range-slider-name,\n\.sf-range-slider-group\.disabled \.sf-range-slider-output,\n\.sf-range-slider-group\.disabled \.sf-range-slider-scale \{\n\s*color: var\(--sf-on-surface-disabled\);/u);
   assert.match(sheet, /\.disabled\) \.sf-thumb-text \{\n {2}--sf-thumb-text--color: var\(--sf-on-surface-disabled\);/u);
 });
 
@@ -48,25 +56,28 @@ test('C78: the value bubble shows only while its handle is dragged or keyboard-f
 
 test('C80 R2: read-only is the light outline at field height with a neutral handle and fill', () => {
   const frame = rule('.sf-range-slider-group.readonly .sf-range-slider');
-  assert.match(frame, /border: var\(--sf-px\) solid var\(--sf-outline-variant\);/u);
+  assert.match(frame, /border-width: var\(--sf-px\);\n {2}border-style: solid;/u);
+  assert.match(paintRule('.sf-range-slider-group.readonly .sf-range-slider'), /border-color: var\(--sf-outline-variant\);/u);
   assert.match(frame, /block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
   // Acceptance R1: the root is a flex-1 item of the track column, so the height
   // holds only as a minimum; min-block-size 0 drew the frame 26 / 22 px.
   assert.match(frame, /\n {2}min-block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
-  assert.match(rule('.sf-range-slider.readonly .sf-thumb-handle,\n.sf-range-slider[data-readonly="true"] .sf-thumb-handle'), /background-color: var\(--sf-on-surface-variant\);/u);
+  assert.match(paintRule('.sf-range-slider.readonly .sf-thumb-handle,\n.sf-range-slider[data-readonly="true"] .sf-thumb-handle'), /background-color: var\(--sf-on-surface-variant\);/u);
 });
 
 test('C80 T1: ticks are cut out in the colour of the place; the scale is logical', () => {
-  assert.match(rule('.sf-range-slider .sf-range-slider-tick'), /background-color: var\(--sf-range-slider-tick--background-color, var\(--sf-surface-place\)\);[\s\S]*margin-inline-start:/u);
+  assert.match(paintRule('.sf-range-slider .sf-range-slider-tick'), /background-color: var\(--sf-range-slider-tick--background-color, var\(--sf-surface-place\)\);/u);
+  assert.match(rule('.sf-range-slider .sf-range-slider-tick'), /margin-inline-start:/u);
   assert.match(rule('.sf-range-slider-scale-mark--end'), /justify-content: flex-end;/u);
 });
 
 test('C80: the from/to field is a field of the step at the end of the track line', () => {
   const field = rule('.sf-range-slider-field');
   assert.match(field, /block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);/u);
-  assert.match(field, /border: var\(--sf-px\) solid var\(--sf-outline\);/u);
+  assert.match(field, /border-width: var\(--sf-px\);\n {2}border-style: solid;/u);
+  assert.match(paintRule('.sf-range-slider-field'), /border-color: var\(--sf-outline\);/u);
   assert.match(field, /padding-inline: calc\(var\(--sf-range-slider--space-x, var\(--sf-ui-1--space-x\)\) - var\(--sf-px\)\);/u);
-  assert.match(rule('.sf-range-slider-group.readonly .sf-range-slider-field'), /--sf-outline-variant/u);
+  assert.match(paintRule('.sf-range-slider-group.readonly .sf-range-slider-field'), /--sf-outline-variant/u);
 });
 
 test('C80 acceptance R2: the from/to numbers stay whole -- the box is as wide as its widest end', () => {
@@ -93,7 +104,8 @@ test('C202: the slider with the field picks its layout by its own width, at the 
   assert.match(narrow, /display: flex;\n {4}flex-wrap: wrap;\n {4}gap: var\(--sf-space-1\\\/3\);\n {4}inline-size: 100%;/u);
   assert.match(narrow, /gap: var\(--sf-space-1\\\/3\);/u);
   // Each box is a field of the step, the unit and the dash leave, the words and the name's unit show.
-  assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-field-box \{[\s\S]*?block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);[\s\S]*?border: var\(--sf-px\) solid var\(--sf-outline\);/u);
+  assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-field-box \{[\s\S]*?block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);[\s\S]*?border-width: var\(--sf-px\);/u);
+  assert.match(paint, /\.sf-range-slider-group--field \.sf-range-slider-field-box \{\n\s*border-color: var\(--sf-outline\);/u);
   assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-field-dash,\n {2}\.sf-range-slider-group--field \.sf-range-slider-field-unit \{\n {4}display: none;/u);
   assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-name-unit \{\n {4}display: inline;/u);
   assert.match(narrow, /\.sf-range-slider-field-box > \.sf-range-slider-field-word \{[\s\S]*?display: block;/u);

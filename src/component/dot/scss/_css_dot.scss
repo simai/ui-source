@@ -18,7 +18,6 @@
     align-items: center;
     justify-content: center;
     vertical-align: middle;
-    background-color: var(--sf-dot--background-color, var(--sf-transparent));
     gap: var(--sf-dot--gap, var(--sf-space-1\/2));
     padding: 0;
   }
@@ -28,7 +27,6 @@
     display: block;
     flex: 0 0 auto;
     box-sizing: border-box;
-    background-color: var(--sf-dot-item--background-color);
     border-radius: var(--sf-dot-item--border-radius);
     block-size: var(--sf-dot-item--height, var(--sf-dot-item--size));
     inline-size: var(--sf-dot-item--width, var(--sf-dot-item--size));
@@ -109,7 +107,6 @@
   }
 
   .sf-dot.sf-dot--hollow .sf-dot-item {
-    background-color: transparent;
     box-shadow: inset 0 0 0 var(--sf-dot-item--ring) var(--sf-dot-item--background-color);
   }
 
@@ -123,7 +120,6 @@
     .sf-dot .sf-dot-item {
       forced-color-adjust: none;
       --sf-dot-item--background-color: CanvasText;
-      background-color: CanvasText;
       box-shadow: none;
     }
 
@@ -134,10 +130,32 @@
     }
 
     .sf-dot.sf-dot--hollow .sf-dot-item {
-      background-color: Canvas;
       box-shadow: none;
       outline: var(--sf-dot-item--ring) solid CanvasText;
       outline-offset: calc(-1 * var(--sf-dot-item--ring));
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-dot {
+    background-color: var(--sf-dot--background-color, var(--sf-transparent));
+  }
+  .sf-dot .sf-dot-item {
+    background-color: var(--sf-dot-item--background-color);
+  }
+  .sf-dot.sf-dot--hollow .sf-dot-item {
+    background-color: transparent;
+  }
+  @media (forced-colors: active) {
+    .sf-dot .sf-dot-item {
+      background-color: CanvasText;
+    }
+    .sf-dot.sf-dot--hollow .sf-dot-item {
+      background-color: Canvas;
     }
   }
 }

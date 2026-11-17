@@ -27,9 +27,9 @@
     gap: var(--sf-confirm-change--gap);
     min-inline-size: 0;
     padding: var(--sf-confirm-change--inset);
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-confirm-change--radius);
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text--size);
     line-height: var(--sf-text--height);
@@ -41,7 +41,6 @@
   }
 
   .sf-confirm-change__description {
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-label-large--size);
     line-height: var(--sf-label-large--height);
   }
@@ -56,15 +55,6 @@
     margin: 0;
     font-size: var(--sf-label-large--size);
     line-height: var(--sf-label-large--height);
-  }
-
-  .sf-confirm-change__list .sf-change__before {
-    background-color: var(--sf-change-confirm--before-fill, var(--sf-confirm-change-before-background-color, var(--sf-change-confirm-before-background-color, transparent)));
-  }
-
-  .sf-confirm-change__list .sf-change__after {
-    background-color: var(--sf-change-confirm--after-fill, var(--sf-confirm-change-after-background-color, var(--sf-change-confirm-after-background-color, transparent)));
-    color: var(--sf-change-confirm--after-ink, var(--sf-confirm-change-after-color, var(--sf-change-confirm-after-color, var(--sf-change--after))));
   }
 
   /* The answers at the start, the accepting one first (C166, C157 (3), C159
@@ -89,7 +79,6 @@
     align-items: center;
     gap: var(--sf-space-1\/4);
     margin: 0;
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-label-medium--size);
     line-height: var(--sf-label-medium--height);
   }
@@ -111,10 +100,6 @@
      display would otherwise keep it drawn. */
   .sf-confirm-change[hidden] { display: none; }
 
-  /* The outcome's ink is the success role on the card's surface (C16), not
-     the ink of a success container. */
-  .sf-confirm-change--accepted .sf-confirm-change__status { color: var(--sf-success); }
-
   .sf-confirm-change__actions {
     display: flex;
     gap: var(--sf-gap--actions);
@@ -134,4 +119,32 @@
       inline-size: 100%;
     }
   }
+}
+
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+    .sf-confirm-change {
+        border-color: var(--sf-outline-variant);
+        color: var(--sf-on-surface);
+    }
+    .sf-confirm-change__description {
+        color: var(--sf-on-surface-variant);
+    }
+    .sf-confirm-change__list .sf-change__before {
+        background-color: var(--sf-change-confirm--before-fill, var(--sf-confirm-change-before-background-color, var(--sf-change-confirm-before-background-color, transparent)));
+    }
+    .sf-confirm-change__list .sf-change__after {
+        background-color: var(--sf-change-confirm--after-fill, var(--sf-confirm-change-after-background-color, var(--sf-change-confirm-after-background-color, transparent)));
+        color: var(--sf-change-confirm--after-ink, var(--sf-confirm-change-after-color, var(--sf-change-confirm-after-color, var(--sf-change--after))));
+    }
+    .sf-confirm-change__status {
+        color: var(--sf-on-surface-variant);
+    }
+    /* The outcome's ink is the success role on the card's surface (C16), not
+       the ink of a success container. */
+    .sf-confirm-change--accepted .sf-confirm-change__status {
+        color: var(--sf-success);
+    }
 }

@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {nothing} from 'lit';
 import {renderProgressRingTemplate} from '../src/smart/progress-ring/js/templates/default.js';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // Owner decision C191 (4)-(8) (2026-11-15; research
 // control/research/2026-11-14-recipe-parts.md, prototype
@@ -111,7 +112,8 @@ test('C191 (4): the meter row is declared, styled from the systems, documented a
   const block = sheet.slice(sheet.indexOf('.sf-context-menu-meter {'), sheet.indexOf('/* The search is the panel\'s header'));
   assert.match(block, /gap: var\(--sf-space-1\\\/4\);/);
   assert.match(block, /padding: var\(--sf-context-menu--space-y\) var\(--sf-context-menu--inset-end\) var\(--sf-context-menu--space-y\) var\(--sf-context-menu--inset-start\);/);
-  assert.match(block, /color: var\(--sf-on-surface-variant\);/);
+  // C273: the value's colour stands in the paint block after the component block
+  assert.match(paintBlocks(sheet), /\.sf-context-menu-meter-value \{\s*color: var\(--sf-on-surface-variant\);/);
   assert.doesNotMatch(block, /\d+px/, 'no magic lengths');
   const docs = read('src/smart/menu-context/docs/docs.md');
   assert.match(docs, /Строка-шкала `\{type: 'meter'\}`/u);

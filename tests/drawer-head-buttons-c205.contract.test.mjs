@@ -120,7 +120,7 @@ test('C205 (1): the content headings one rung below the title, all one size, con
 test('C205: the version, its decision and its migration step', () => {
   assert.equal(manifest.version, '1.17.1'); // group build 9: 1.16.1 moved on by the merged branches or a GB9 patch // C282: 1.16.4 moved on by the language-file patch (Russian is a language file)
   assert.match(manifest['x-decisions'][0], /^version 1\.16\.1 \(2026-11-15, owner decision C205/u);
-  const step = manifest.compatibility?.migrations?.find?.((entry) => entry.to === '1.16.1')
+  const step = manifest.compatibility?.migrations?.find?.((entry) => entry.to === '1.17.0')
     ?? JSON.stringify(manifest).match(/"from":"1\.16\.0","to":"1\.16\.1"/u);
   assert.ok(step, 'a 1.16.0 -> 1.16.1 migration step');
   const gate = read('tests/browser/drawer-head-buttons.browser.mjs');

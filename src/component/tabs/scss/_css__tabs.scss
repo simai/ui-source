@@ -19,7 +19,6 @@
 
 @layer sf.components {
   .sf-tabs {
-    background-color: var(--sf-tabs--background-color, transparent);
     min-inline-size: 0;
     max-inline-size: 100%;
   }
@@ -91,7 +90,6 @@
     margin: var(--sf-tabs-top--margin, 0);
     border-width: var(--sf-tabs-top--border-width, 0);
     border-style: var(--sf-tabs-top--border-style, solid);
-    border-color: var(--sf-tabs-top--border-color, transparent);
     gap: var(--sf-tabs-top--gap, var(--sf-tabs-gap, var(--sf-space-1)));
   }
 
@@ -105,7 +103,6 @@
   .sf-tabs-top-container {
     border-width: var(--sf-tabs-top-container--border-width, 0 0 var(--sf-tabs-border-width, var(--sf-tabs--border-width, var(--sf-px))) 0);
     border-style: var(--sf-tabs-top-container--border-style, solid);
-    border-color: var(--sf-tabs-top-container--border-color, var(--sf-tabs-border-color, var(--sf-outline-variant)));
     padding-inline-end: var(--sf-tabs-top-container--padding-inline-end, 0);
     padding-inline-start: var(--sf-tabs-top-container--padding-inline-start, 0);
     padding-top: var(--sf-tabs-top-container--padding-top, 0);
@@ -160,11 +157,28 @@
     position: sticky;
     inset-block-start: var(--sf-tabs-sticky-top, var(--sf-0));
     z-index: var(--sf-layer--sticky);
-    background-color: var(--sf-surface-page);
   }
 
   .sf-tabs.sf-tabs--sticky.sf-tabs--vertical > .sf-tabs-top-container {
     align-self: flex-start;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-tabs {
+    background-color: var(--sf-tabs--background-color, transparent);
+  }
+  .sf-tabs-top {
+    border-color: var(--sf-tabs-top--border-color, transparent);
+  }
+  .sf-tabs-top-container {
+    border-color: var(--sf-tabs-top-container--border-color, var(--sf-tabs-border-color, var(--sf-outline-variant)));
+  }
+  .sf-tabs.sf-tabs--sticky > .sf-tabs-top-container {
+    background-color: var(--sf-surface-page);
   }
 }
 
@@ -393,7 +407,6 @@
   :is(.sf-tabs--underline, :where(.sf-tabs:not(.sf-tabs--pills, .sf-tabs--vertical))) > .sf-tabs-top-container > .sf-tabs-top .sf-icon-button {
     padding-block-end: calc(var(--sf-icon-button--padding-bottom) - var(--sf-icon-button--border-bottom-width));
   }
-
 }
 
 @layer sf.overrides {

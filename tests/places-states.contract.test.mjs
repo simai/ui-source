@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {unfoldModes, paintBlocks} from './support/paint-blocks.mjs';
 
 // Places states (PS, 2026-11-14). A strong coloured place (bg-<colour>, the
 // alert bar's levels, the duo gradient plate) and glass re-declare what their
@@ -17,7 +18,7 @@ import {fileURLToPath} from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
-const mix = read('src/core/scss/mix/_mix__places.scss');
+const mix = unfoldModes(read('src/core/scss/mix/_mix__places.scss')); // C273: the paint mode blocks unfolded
 const theme = read('src/core/scss/_sf_css__theme.scss');
 const gradient = read('src/utility/gradient/default/scss/_sf_css__gradient_kind.scss');
 const popover = read('src/smart/popover/js/templates/default.css');
@@ -73,8 +74,10 @@ test('an opaque place and a popover on a strong place or glass take the ink, lin
   assert.ok(back.includes('@each $role, $value in map.merge($sf-place-container-ink-roles, $sf-place-glass-link-roles) {'));
   const onGlass = back.slice(back.indexOf(':where(.sf-surface-media) & {'));
   assert.ok(onGlass.includes('@each $role, $value in $sf-place-container-ink-roles {'), 'on glass too');
-  const strongPop = block(popover, ":where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, :is(.sf-alert-bar--error, .sf-alert-bar--danger, .sf-alert-bar--warning, .sf-alert-bar--info) :is(.sf-alert-bar-row, .sf-alert-bar-strip), .bg-surface-inverse, .bg-surface-inverse-fixed, .gradient-duo) sf-popover > [slot='content'] {\n    --sf-primary:");
-  const glassPop = block(popover, ":where(.sf-surface-media) sf-popover > [slot='content'] {");
+  // C273: the roles a popover takes back are paint: its paint block, one indent less
+  const popoverPaint = paintBlocks(popover).replace(/^ {4}/gmu, '');
+  const strongPop = block(popoverPaint, ":where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, :is(.sf-alert-bar--error, .sf-alert-bar--danger, .sf-alert-bar--warning, .sf-alert-bar--info) :is(.sf-alert-bar-row, .sf-alert-bar-strip), .bg-surface-inverse, .bg-surface-inverse-fixed, .gradient-duo) sf-popover > [slot='content'] {\n    --sf-primary:");
+  const glassPop = block(popoverPaint, ":where(.sf-surface-media) sf-popover > [slot='content'] {");
   for (const role of INK_ROLES) {
     const value = theme.match(new RegExp(`\\s--sf-${role}: ([^;]+);`, 'u'))[1];
     const line = `--sf-${role}: var(--sf-place--outer-${role}, ${value});`;

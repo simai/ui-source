@@ -59,9 +59,17 @@
   }
 
   .sf-modal-hide-icon {
-    background-color: currentColor;
     display: block;
     height: var(--sf-a2);
     width: var(--sf-space-1);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-modal-hide-icon {
+    background-color: currentColor;
   }
 }

@@ -18,7 +18,6 @@
     --sf-outline--current-indicator: var(--sf-transparent);
 
     min-inline-size: var(--sf-0);
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text--size);
     line-height: var(--sf-text--height);
@@ -54,17 +53,12 @@
        compact), not 18. */
     padding-inline-start: calc(var(--sf-outline--link-padding-inline) - var(--sf-outline--indicator-width));
     border: 0;
-    border-inline-start: var(--sf-outline--indicator-width) solid var(--sf-transparent);
+    border-color: revert-layer;
+    border-inline-start-width: var(--sf-outline--indicator-width);
+    border-inline-start-style: solid;
     border-radius: var(--sf-radius--ui);
-    color: var(--sf-outline--color);
-    background-color: var(--sf-transparent);
     overflow-wrap: anywhere;
     text-decoration: none;
-  }
-
-  .sf-outline__link:hover {
-    color: var(--sf-outline--hover-color);
-    background-color: var(--sf-outline--hover-background);
   }
 
   .sf-outline__link:focus {
@@ -80,9 +74,6 @@
 
   .sf-outline__link[aria-current="location"],
   .sf-outline__link[data-sf-outline-active] {
-    border-inline-start-color: var(--sf-outline--current-indicator);
-    color: var(--sf-outline--current-color);
-    background-color: var(--sf-outline--current-background);
     font-weight: var(--sf-font-weight-medium);
   }
 
@@ -92,7 +83,33 @@
       outline-offset: var(--sf-focus--inset);
       box-shadow: none;
     }
+  }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-outline {
+    color: var(--sf-on-surface);
+  }
+  .sf-outline__link {
+    border: 0;
+    border-inline-start-color: var(--sf-transparent);
+    color: var(--sf-outline--color);
+    background-color: var(--sf-transparent);
+  }
+  .sf-outline__link:hover {
+    color: var(--sf-outline--hover-color);
+    background-color: var(--sf-outline--hover-background);
+  }
+  .sf-outline__link[aria-current="location"],
+  .sf-outline__link[data-sf-outline-active] {
+    border-inline-start-color: var(--sf-outline--current-indicator);
+    color: var(--sf-outline--current-color);
+    background-color: var(--sf-outline--current-background);
+  }
+  @media (forced-colors: active) {
     .sf-outline__link[aria-current="location"],
     .sf-outline__link[data-sf-outline-active] {
       border-inline-start-color: Highlight;

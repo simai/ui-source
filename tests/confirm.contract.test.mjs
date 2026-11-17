@@ -7,6 +7,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(read(path));
@@ -54,7 +55,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
   // The outcome is the success role on the surface, not a container's ink (C16).
   for (const folder of ['confirm', 'confirm-change']) {
     const css = read(`src/smart/${folder}/js/templates/default.css`);
-    assert.match(css, /--accepted [^{]*__status \{ color: var\(--sf-success\); \}/u, folder);
+    assert.match(paintBlocks(css), /--accepted [^{]*__status \{\s*color: var\(--sf-success\);\s*\}/u, folder); // C273: paint
     assert.doesNotMatch(css, /var\(--sf-on-success-container\)/u, folder);
   }
   for (const folder of ['confirm', 'confirm-change']) {
@@ -142,7 +143,7 @@ test('C166 (4), R245: every question puts its answers first, at the start, 8 apa
   }
   const css = read('src/smart/confirm/js/templates/default.css');
   const inline = css.match(/\.sf-confirm--inline \{([^}]*)\}/u)[1];
-  assert.match(inline, /background: var\(--sf-confirm-background-color, var\(--sf-surface-container\)\);/u);
+  assert.match(paintBlocks(css), /\.sf-confirm--inline \{\s*background: var\(--sf-confirm-background-color, var\(--sf-surface-container\)\);/u); // C273: paint
   assert.match(inline, /border-radius: var\(--sf-confirm-radius, var\(--sf-radius-2\)\);/u);
   assert.doesNotMatch(inline, /border:/u, 'no second frame');
   // On a phone the answers share the row in halves in every form, measured.

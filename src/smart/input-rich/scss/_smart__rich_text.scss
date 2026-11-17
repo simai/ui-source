@@ -81,21 +81,6 @@
   line-height: var(--sf-rich-text--label-height);
 }
 
-/* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
-   hint ink. */
-.sf-rich-text .sf-rich-text-text,
-.sf-rich-text .sf-rich-text-required {
-  color: var(--sf-on-surface);
-}
-
-.sf-rich-text .sf-rich-text-hint-text-wrap {
-  color: var(--sf-on-surface-variant);
-}
-
-.sf-rich-text.error .sf-rich-text-hint-text-wrap {
-  color: var(--sf-error);
-}
-
 /* The frame: what sf-input-textarea draws on its <textarea>. */
 .sf-rich-text .sf-rich-text-frame {
   position: relative;
@@ -103,11 +88,8 @@
   inline-size: 100%;
   min-inline-size: 0;
   border: var(--sf-px) solid;
-  border-color: var(--sf-rich-text--border-color, transparent);
-  border-block-end-color: var(--sf-rich-text--line-color, var(--sf-rich-text--border-color, transparent));
+  border-color: revert-layer;
   border-radius: var(--sf-rich-text--radius);
-  background-color: var(--sf-rich-text--background-color);
-  color: var(--sf-rich-text-color, var(--sf-on-surface));
   transition-duration: var(--sf-duration-fast);
   transition-property: background-color, border-color, box-shadow, color;
   transition-timing-function: var(--sf-animation);
@@ -121,7 +103,6 @@
 .sf-rich-text.sf-rich-text--filled .sf-rich-text-frame {
   --sf-rich-text--background-color: var(--sf-rich-text-background-color, var(--sf-surface-container));
   --sf-rich-text--border-color: var(--sf-rich-text-border-color, var(--sf-transparent-for-focus));
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
 }
 
 .sf-rich-text:not(.error):not(.sf-rich-text--disabled):not(.sf-rich-text--readonly) .sf-rich-text-frame:hover {
@@ -183,11 +164,6 @@
   --sf-rich-text--border-color: var(--sf-outline-variant);
 }
 
-.sf-rich-text.sf-rich-text--disabled .sf-rich-text-frame {
-  color: var(--sf-on-surface-disabled);
-  --sf-on-surface-variant: var(--sf-on-surface-disabled);
-}
-
 .sf-rich-text.sf-rich-text--disabled.sf-rich-text--bordered .sf-rich-text-frame {
   --sf-rich-text--border-color: var(--sf-outline-disabled);
 }
@@ -205,7 +181,8 @@
 .sf-rich-text .sf-rich-text-toolbar {
   gap: var(--sf-gap--toolbar);
   padding: var(--sf-space-1\/4);
-  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  border-block-end-width: var(--sf-px);
+  border-block-end-style: solid;
 }
 
 .sf-rich-text .sf-rich-text-group {
@@ -216,7 +193,6 @@
   align-self: stretch;
   inline-size: var(--sf-px);
   margin-block: var(--sf-space-1\/4);
-  background-color: var(--sf-outline-variant);
 }
 
 /* A block level's short text in place of a glyph: the glyph's square -- the
@@ -247,7 +223,6 @@
 
 .sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-disabled='true'] {
   --sf-icon--color: var(--sf-on-surface-disabled);
-  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -269,7 +244,6 @@
 .sf-rich-text .sf-rich-text-link-panel {
   gap: var(--sf-space-1\/2);
   padding: var(--sf-space-1\/2);
-  color: var(--sf-on-surface);
 }
 
 .sf-rich-text .sf-rich-text-link-actions {
@@ -296,9 +270,6 @@
   padding-block-end: calc(var(--sf-space-1) + env(safe-area-inset-bottom, var(--sf-a0)));
   border-end-end-radius: 0;
   border-end-start-radius: 0;
-  /* The popover's own surface, said here beside the modal shadow it stands
-     under (C20: a window is on the popup surface). */
-  background-color: var(--sf-popover-background-color, var(--sf-surface-popup));
   box-shadow: var(--sf-shadow-modal), 0 0 0 100vmax var(--sf-scrim-color, var(--sf-black--alfa-64));
 }
 
@@ -321,7 +292,6 @@
   font-size: var(--sf-rich-text--font-size);
   font-weight: var(--sf-font-weight-regular);
   line-height: var(--sf-rich-text--line);
-  color: inherit;
   cursor: text;
 }
 
@@ -334,7 +304,6 @@
   position: absolute;
   inset-block-start: var(--sf-rich-text--padding-block);
   inset-inline: var(--sf-rich-text--padding-inline);
-  color: var(--sf-on-surface-variant);
   pointer-events: none;
 }
 
@@ -390,18 +359,79 @@
 .sf-rich-text .sf-rich-text-editor blockquote {
   margin-inline: 0;
   padding-inline-start: var(--sf-space-2);
-  border-inline-start: var(--sf-a2) solid var(--sf-outline-variant);
-  color: var(--sf-on-surface-variant);
+  border-inline-start-width: var(--sf-a2);
+  border-inline-start-style: solid;
 }
 
 .sf-rich-text .sf-rich-text-editor a {
-  color: var(--sf-primary);
   text-decoration: underline;
 }
 
 .sf-rich-text .sf-rich-text-editor strong {
   font-weight: var(--sf-font-weight-bold);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  /* C153 (1), (2): the label and its mark in the text ink; the hint keeps the
+     hint ink. */
+  .sf-rich-text .sf-rich-text-text,
+.sf-rich-text .sf-rich-text-required {
+    color: var(--sf-on-surface);
+  }
+  .sf-rich-text .sf-rich-text-hint-text-wrap {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text.error .sf-rich-text-hint-text-wrap {
+    color: var(--sf-error);
+  }
+  .sf-rich-text .sf-rich-text-frame {
+    border: var(--sf-px) solid;
+    border-color: var(--sf-rich-text--border-color, transparent);
+    border-block-end-color: var(--sf-rich-text--line-color, var(--sf-rich-text--border-color, transparent));
+    background-color: var(--sf-rich-text--background-color);
+    color: var(--sf-rich-text-color, var(--sf-on-surface));
+  }
+  .sf-rich-text.sf-rich-text--filled .sf-rich-text-frame {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-rich-text.sf-rich-text--disabled .sf-rich-text-frame {
+    color: var(--sf-on-surface-disabled);
+    --sf-on-surface-variant: var(--sf-on-surface-disabled);
+  }
+  .sf-rich-text .sf-rich-text-toolbar {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-rich-text .sf-rich-text-separator {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-rich-text .sf-rich-text-toolbar .sf-icon-button.sf-rich-text-tool[aria-disabled='true'] {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-rich-text .sf-rich-text-link-panel {
+    color: var(--sf-on-surface);
+  }
+  .sf-rich-text sf-popover.sf-rich-text-link > [slot='content'][data-sf-sheet] {
+    /* The popover's own surface, said here beside the modal shadow it stands
+       under (C20: a window is on the popup surface). */
+    background-color: var(--sf-popover-background-color, var(--sf-surface-popup));
+  }
+  .sf-rich-text .sf-rich-text-editor {
+    color: inherit;
+  }
+  .sf-rich-text .sf-rich-text-editor[data-empty]::before {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text .sf-rich-text-editor blockquote {
+    border-inline-start-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text .sf-rich-text-editor a {
+    color: var(--sf-primary);
+  }
 }
 
 @layer sf.states {
@@ -543,9 +573,6 @@
     z-index: 1;
     border-start-start-radius: calc(var(--sf-rich-text--radius) - var(--sf-px));
     border-start-end-radius: calc(var(--sf-rich-text--radius) - var(--sf-px));
-    background:
-      linear-gradient(var(--sf-rich-text--background-color), var(--sf-rich-text--background-color)),
-      var(--sf-surface-place-solid, var(--sf-surface-page));
   }
 
   /* (1) The count at the end of the message line: the message's text and
@@ -564,17 +591,12 @@
   .sf-rich-text .sf-rich-text-count {
     flex: none;
     margin-inline-start: auto;
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-weight: var(--sf-font-weight-regular);
     font-size: var(--sf-rich-text--label-size);
     line-height: var(--sf-rich-text--label-height);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-  }
-
-  .sf-rich-text.sf-rich-text--over .sf-rich-text-count {
-    color: var(--sf-error);
   }
 
   .sf-rich-text .sf-rich-text-count-said {
@@ -587,6 +609,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
   }
 
   /* (7) Headings in a field stand one level below the page's: h2 is the
@@ -608,6 +631,26 @@
   .sf-rich-text .sf-rich-text-editor h4 {
     font-size: max(var(--sf-heading-5--size), var(--sf-rich-text--h4-size));
     line-height: max(var(--sf-heading-5--height), var(--sf-rich-text--h4-height), var(--sf-rich-text--touch-line, var(--sf-rich-text--h4-height)));
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-rich-text .sf-rich-text-toolbar {
+    background:
+      linear-gradient(var(--sf-rich-text--background-color), var(--sf-rich-text--background-color)),
+      var(--sf-surface-place-solid, var(--sf-surface-page));
+  }
+  .sf-rich-text .sf-rich-text-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-rich-text.sf-rich-text--over .sf-rich-text-count {
+    color: var(--sf-error);
+  }
+  .sf-rich-text .sf-rich-text-count-said {
+    border: 0;
   }
 }
 
@@ -661,7 +704,15 @@
 
   .sf-rich-text .sf-rich-text-levels[aria-disabled='true'] {
     --sf-icon--color: var(--sf-on-surface-disabled);
-    color: var(--sf-on-surface-disabled);
     cursor: default;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-rich-text .sf-rich-text-levels[aria-disabled='true'] {
+    color: var(--sf-on-surface-disabled);
   }
 }

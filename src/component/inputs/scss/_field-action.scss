@@ -66,10 +66,9 @@
       margin: 0;
       padding: 0;
       border: 0;
+      border-color: revert-layer;
       border-radius: 0;
-      background: none;
       box-shadow: none;
-      color: var(--sf-field-action--ink);
       font: inherit;
       cursor: pointer;
       outline: none;
@@ -85,7 +84,6 @@
       --sf-icon--height: var(--sf-field-action--glyph-size);
       --sf-icon--width: var(--sf-field-action--glyph-size);
       --sf-icon--color: var(--sf-field-action--ink);
-      color: var(--sf-field-action--ink);
       border-radius: var(--sf-radius--ui);
       pointer-events: none;
     }
@@ -104,6 +102,20 @@
     :is(#{$fields}) > :is(#{$action}, :has(#{$action})) ~ #{$action},
     :is(#{$fields}) > :is(#{$action}, :has(#{$action})) ~ * #{$action} {
       margin-inline-start: var(--sf-field-action--pair-space);
+    }
+  }
+
+  // Paint (C273): the fill, edge and place colour of these parts stand in
+  // sf.paint, under the utilities, so bg-*, border-* and color-* on them
+  // win; their geometry stays in sf.components, over the utilities.
+  @layer sf.paint {
+    .sf-field-action {
+      border: 0;
+      background: none;
+      color: var(--sf-field-action--ink);
+    }
+    .sf-field-action .sf-icon {
+      color: var(--sf-field-action--ink);
     }
   }
 

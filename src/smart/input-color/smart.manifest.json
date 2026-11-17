@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-color",
-  "version": "1.19.2",
+  "version": "1.19.3",
   "title": "Color",
   "summary": "A colour field: a swatch, the value and a chevron that open the Framework's own compact window -- the static palette first, the product's own colours, recent own colours and «Своё» (shade area, eyedropper, hue and alpha strips, a hex code with «Применить») -- and a way back to an inherited colour. The value is a palette name or a code. Built as a general part because a colour is set in a theme, in a site look, on a label and on a chart series, not only on a record.",
   "kind": "smart",
@@ -509,7 +509,7 @@
       },
       {
         "path": "src/smart/input-color/js/templates/default.css",
-        "sha256": "ec5c4ef3800295f33896c67ff64b91167c1e1b1d1ce88c39e9288b3d44121aef"
+        "sha256": "3c7700dd1eaec475ed81b4c27346db6645f4fbce5457f00d52ff28ec8b065e3f"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
@@ -517,7 +517,7 @@
       },
       {
         "path": "src/smart/helpers/inherited-value.css",
-        "sha256": "02a3d017c309094057bfb19f94ef588ee6ae2c6e3c0758cda318dfc857436452"
+        "sha256": "1db5b90ef0022b25a865e9f792771b7d19e2704e429bffcebdc7898fcbbf9a1a"
       }
     ],
     "generated_runtime": []

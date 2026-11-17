@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {existsSync, readdirSync, readFileSync, statSync} from 'node:fs';
 import {dirname, extname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 // The former names of the background system (C16, 2026-11-08). A renamed
 // theme role keeps its former name as var() of the new one until the alias
@@ -59,7 +60,8 @@ test('no source writes a former name; a rule that writes a renamed role includes
   const wrong = [];
   for (const path of files(resolve(root, 'src'), ['.scss', '.css'])) {
     if (!statSync(path).isFile() || path.endsWith('_mix__role_aliases.scss')) continue;
-    const css = readFileSync(path, 'utf8');
+    // C273: the paint/shape mode blocks of a mixin unfolded, so a role and its alias read as one block.
+    const css = unfoldModes(readFileSync(path, 'utf8'));
     const short = path.slice(root.length + 1);
     // A plain CSS sheet (a Smart template) cannot include the mixin: it writes
     // the alias out, the former name as exactly var() of the new one (C16

@@ -3,6 +3,7 @@
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../../core/scss/mix/mix__window-footer' as window-footer;
 @use '../../../core/scss/mix/mix__sheet' as sheet;
+@use '../../../core/scss/mix/mix__paint' as paint;
 @property --sf-drawer-stack-offset {
   syntax: "<length>";
   inherits: true;
@@ -10,6 +11,7 @@
 }
 
 @layer sf.components {
+  @include paint.part(shape);
   /* The panels start under an app bar when the page says how tall it is
      (--sf-drawer-block-start, or the block-start attribute): a sliding panel
      covered the bar's back, name and actions, which the docked ones already
@@ -27,9 +29,6 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20), the
-       drawer's own variables first. */
-    background: var(--sf-drawer-overlay-background, var(--sf-scrim-color, var(--sf-black--alfa-64)));
     opacity: var(--sf-drawer-overlay-opacity, var(--sf-scrim-opacity, 1));
     transition: opacity var(--sf-duration-normal) var(--sf-ease-exit);
   }
@@ -107,7 +106,6 @@
     scroll-padding: var(--sf-focus-room);
     pointer-events: auto;
     border-radius: var(--sf-drawer-radius, var(--sf-radius--surface));
-    color: var(--sf-drawer-color, var(--sf-on-surface));
     box-shadow: var(--sf-drawer-shadow, var(--sf-shadow-modal));
     /* sf-focus-ring: none — the panel takes focus programmatically when it
        opens, so it draws no ring of its own; the ring belongs to the controls
@@ -138,7 +136,6 @@
   /* A floating panel is the modal place (C20): the popup surface, the modal
      shadow, the scrim; a column of the page takes the page's (below). */
   .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-panel {
-    background: var(--sf-drawer-background, var(--sf-surface-popup));
     @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   }
 
@@ -161,7 +158,8 @@
   .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-panel {
     --sf-drawer--edge-end: var(--sf-px);
     left: var(--sf-drawer-stack-inset);
-    border-right: var(--sf-px) solid var(--sf-outline-variant);
+    border-right-width: var(--sf-px);
+    border-right-style: solid;
     border-top-left-radius: var(--sf-0);
     border-bottom-left-radius: var(--sf-0);
     transform: translateX(-100%);
@@ -170,7 +168,8 @@
   .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-panel {
     --sf-drawer--edge-start: var(--sf-px);
     right: var(--sf-drawer-stack-inset);
-    border-left: var(--sf-px) solid var(--sf-outline-variant);
+    border-left-width: var(--sf-px);
+    border-left-style: solid;
     border-top-right-radius: var(--sf-0);
     border-bottom-right-radius: var(--sf-0);
     transform: translateX(100%);
@@ -191,7 +190,8 @@
   .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-panel {
     --sf-drawer--edge-end: var(--sf-px);
     inset-inline-start: var(--sf-drawer-stack-inset);
-    border-inline-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-inline-end-width: var(--sf-px);
+    border-inline-end-style: solid;
     border-start-start-radius: var(--sf-0);
     border-end-start-radius: var(--sf-0);
     transform: translateX(-100%);
@@ -206,7 +206,8 @@
   .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-panel {
     --sf-drawer--edge-start: var(--sf-px);
     inset-inline-end: var(--sf-drawer-stack-inset);
-    border-inline-start: var(--sf-px) solid var(--sf-outline-variant);
+    border-inline-start-width: var(--sf-px);
+    border-inline-start-style: solid;
     border-start-end-radius: var(--sf-0);
     border-end-end-radius: var(--sf-0);
     transform: translateX(100%);
@@ -252,7 +253,6 @@
     position: sticky;
     inset-block-start: 0;
     z-index: 1;
-    background: inherit;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -308,7 +308,6 @@
     flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
-    color: var(--sf-on-surface);
     font-size: var(--sf-drawer--title-size, var(--sf-heading-4--size));
     line-height: var(--sf-drawer--title-height, var(--sf-heading-4--height));
     font-weight: var(--sf-weight--bold);
@@ -389,7 +388,6 @@
     display: flex;
     flex: none;
     flex-wrap: wrap;
-    background: inherit;
     padding-block: var(--sf-space-1) var(--sf-drawer--inset);
     padding-inline: var(--sf-drawer--inset-start) var(--sf-drawer--inset-end);
   }
@@ -421,7 +419,6 @@
       margin-inline-start: 0;
     }
   }
-
 
   /* The body's end padding is the gap to the foot when there is one. */
   .sf-drawer-panel:has(> .sf-drawer-foot:not(:empty)) > .sf-drawer-body {
@@ -552,11 +549,6 @@
      stands in its head (data-sf-drawer-edge-in-head). */
   .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge {
     @include places.sf-place-glass-accent;
-    --sf-on-surface: var(--sf-on-scrim-control);
-    --sf-on-surface-icon: var(--sf-on-scrim-control);
-    --sf-on-surface-hover: var(--sf-on-scrim-control);
-    --sf-on-surface-active: var(--sf-on-scrim-control);
-    --sf-on-surface-variant: var(--sf-on-scrim-control);
   }
 
   /* A phone (below md, where the forms in popups are sheets, C32): a side
@@ -653,7 +645,6 @@
      the page. Without the room (a narrow host) it floats over the page and
      keeps the popup place and its shadow. */
   .sf-drawer[data-sf-drawer-column='true'] .sf-drawer-panel {
-    background: var(--sf-drawer-background, var(--sf-surface-area));
     @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-area)));
     box-shadow: var(--sf-shadow-flat);
   }
@@ -675,7 +666,8 @@
     max-width: var(--sf-h1);
     margin-inline: auto;
     max-block-size: calc(var(--sf-drawer-sheet-room) - var(--sf-space-3));
-    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-start-width: var(--sf-px);
+    border-block-start-style: solid;
     border-end-start-radius: var(--sf-0);
     border-end-end-radius: var(--sf-0);
     padding-block-end: env(safe-area-inset-bottom, 0);
@@ -720,7 +712,7 @@
     margin: 0;
     padding: 0;
     border: 0;
-    background: inherit;
+    border-color: revert-layer;
     cursor: grab;
     touch-action: none;
   }
@@ -770,6 +762,70 @@
       transition: none;
     }
   }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-drawer-overlay {
+    /* The shared scrim (core --sf-scrim-*, black at 64: C16, C20), the
+       drawer's own variables first. */
+    background: var(--sf-drawer-overlay-background, var(--sf-scrim-color, var(--sf-black--alfa-64)));
+  }
+  .sf-drawer-panel {
+    color: var(--sf-drawer-color, var(--sf-on-surface));
+  }
+  .sf-drawer:not([data-sf-drawer-column='true']) .sf-drawer-panel {
+    background: var(--sf-drawer-background, var(--sf-surface-popup));
+    @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+  }
+  .sf-drawer[data-sf-drawer-placement='left'] .sf-drawer-panel {
+    border-right-color: var(--sf-outline-variant);
+  }
+  .sf-drawer[data-sf-drawer-placement='right'] .sf-drawer-panel {
+    border-left-color: var(--sf-outline-variant);
+  }
+  .sf-drawer[data-sf-drawer-placement='inline-start'] .sf-drawer-panel {
+    border-inline-end-color: var(--sf-outline-variant);
+  }
+  .sf-drawer[data-sf-drawer-placement='inline-end'] .sf-drawer-panel {
+    border-inline-start-color: var(--sf-outline-variant);
+  }
+  .sf-drawer-head {
+    background: inherit;
+  }
+  .sf-drawer-title {
+    color: var(--sf-on-surface);
+  }
+  .sf-drawer-foot {
+    background: inherit;
+  }
+  .sf-drawer:not([data-sf-drawer-column='true']):not([data-sf-drawer-edge-in-head]) .sf-drawer-edge {
+    @include places.sf-place-glass-accent;
+    --sf-on-surface: var(--sf-on-scrim-control);
+    --sf-on-surface-icon: var(--sf-on-scrim-control);
+    --sf-on-surface-hover: var(--sf-on-scrim-control);
+    --sf-on-surface-active: var(--sf-on-scrim-control);
+    --sf-on-surface-variant: var(--sf-on-scrim-control);
+  }
+  .sf-drawer[data-sf-drawer-column='true'] .sf-drawer-panel {
+    background: var(--sf-drawer-background, var(--sf-surface-area));
+    @include places.sf-place(var(--sf-drawer-background, var(--sf-surface-area)));
+  }
+  .sf-drawer[data-sf-drawer-placement='bottom'] .sf-drawer-panel {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-drawer-handle {
+    border: 0;
+    background: inherit;
+  }
+  .sf-drawer-handle-bar {
+    @include sheet.sheet-bar;
+  }
+  @include paint.part(all);
 }
 
 /* A control on the scrim (study VP-16, C14 (3)): the round plate of the core

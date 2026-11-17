@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import {URL} from 'node:url';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // --sf-surface-place-ground, the nearest opaque place (status dot on soft
 // places, 2026-11-11): the page declares it, every solid place declares it
@@ -42,7 +43,8 @@ test('the status dot draws over the ground, its ring outside the disc (C132)', a
   // disc (C132: the coloured diameter is the step); no border eats the disc.
   assert.match(base, /box-shadow: 0 0 0 var\(--sf-online-indicator--ring-width\) var\(--sf-surface-place, transparent\), 0 0 0 var\(--sf-online-indicator--ring-width\) var\(--sf-surface-place-ground, transparent\);/u);
   assert.doesNotMatch(base, /border-[a-z-]*width/u);
-  assert.match(base, /background-color: var\(--sf-surface-place-ground, transparent\);/u);
+  // C273: the ground's fill stands in the paint block.
+  assert.match(paintBlocks(dot), /\.sf-online-indicator \{[^}]*background-color: var\(--sf-surface-place-ground, transparent\);/u);
   assert.match(base, /background-image: linear-gradient\(var\(--sf-online-indicator--background-color\) 0 0\);/u);
   assert.doesNotMatch(base, /background-clip/u);
   // On a row with a fill the ring takes the row's fill over the place colour,

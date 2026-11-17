@@ -17,10 +17,6 @@
   cursor: pointer;
 }
 
-.sf-country-code-item:hover {
-  background: var(--sf-surface-container-hover);
-}
-
 /* The field is as tall as a text field of its size, by the same rule. */
 .sf-country-code.sf-country-code--size-1\/2 .sf-country-code-field {
   block-size: var(--sf-ui-1\/2--control-height);
@@ -89,6 +85,15 @@
     outline-color: Highlight;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-country-code-item:hover {
+    background: var(--sf-surface-container-hover);
+  }
 }
 
 @layer sf.states {

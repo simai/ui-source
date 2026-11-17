@@ -17,7 +17,7 @@
     "src/component/admin-menu/scss/_css__admin_menu.scss",
     "src/component/admin-menu/scss/index.scss"
   ],
-  "content_sha256": "a6949aa56ab2a87c0bb7eb5fe01f7399a279167dfede3ee061e52ff186909c2d",
+  "content_sha256": "f1a7bc68ae87ef7f1d32985960caf475ca3faa3a5c487632b7fbbfb10e92176a",
   "dependencies": [
     {
       "id": "component.badges",
@@ -26,6 +26,10 @@
     {
       "id": "core.runtime",
       "range": "^1.0.0"
+    },
+    {
+      "id": "core.styles",
+      "range": "^1.15.0"
     },
     {
       "id": "module.component-shared",

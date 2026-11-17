@@ -23,9 +23,9 @@
     justify-content: center;
     box-sizing: border-box;
     padding: var(--sf-featured-icon--padding);
-    border: 0 solid var(--sf-featured-icon--container);
+    border-width: 0;
+    border-style: solid;
     border-radius: var(--sf-featured-icon--radius);
-    background-color: var(--sf-featured-icon--background-color);
     background-clip: padding-box;
     box-shadow: var(--sf-featured-icon--box-shadow);
     line-height: 0;
@@ -168,5 +168,15 @@
       outline: var(--sf-a1) solid CanvasText;
       outline-offset: calc(-1 * var(--sf-a1));
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-featured-icon {
+    border-color: var(--sf-featured-icon--container);
+    background-color: var(--sf-featured-icon--background-color);
   }
 }

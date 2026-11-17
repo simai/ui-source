@@ -46,7 +46,6 @@
   gap: 0 var(--sf-space-1\/3);
   box-sizing: border-box;
   margin: var(--sf-group-heading-margin-block-start, var(--sf-space-3)) 0 var(--sf-group-heading-margin-block-end, var(--sf-space-1\/2));
-  color: var(--sf-on-surface);
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
   font-weight: var(--sf-weight--medium);
@@ -79,7 +78,6 @@
 }
 
 .sf-group-heading-date {
-  color: var(--sf-group-heading-date-color, var(--sf-on-surface-variant));
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
   font-weight: var(--sf-font-weight-regular);
@@ -90,7 +88,6 @@
   inset-block-start: 0;
   z-index: 2;
   padding-block: var(--sf-space-1\/4);
-  background-color: var(--sf-group-heading-background-color, var(--sf-surface-place-solid, var(--sf-surface-page)));
 }
 
 /* A new day in a conversation (owner decision C167 (2), 2026-11-14; list and
@@ -103,7 +100,6 @@
   align-items: center;
   gap: var(--sf-space-1\/2);
   margin-block: var(--sf-space-1\/2) var(--sf-space-1\/4);
-  color: var(--sf-group-heading-date-color, var(--sf-on-surface-variant));
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
   font-weight: var(--sf-weight--medium);
@@ -114,13 +110,33 @@
   content: "";
   flex: 1;
   block-size: var(--sf-px);
-  background-color: var(--sf-group-heading-line-color, var(--sf-outline-variant));
+}
 }
 
-@media (forced-colors: active) {
-  .sf-group-heading--divider::before,
-  .sf-group-heading--divider::after {
-    background-color: CanvasText;
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-group-heading {
+    color: var(--sf-on-surface);
   }
-}
+  .sf-group-heading-date {
+    color: var(--sf-group-heading-date-color, var(--sf-on-surface-variant));
+  }
+  .sf-group-heading--sticky {
+    background-color: var(--sf-group-heading-background-color, var(--sf-surface-place-solid, var(--sf-surface-page)));
+  }
+  .sf-group-heading--divider {
+    color: var(--sf-group-heading-date-color, var(--sf-on-surface-variant));
+  }
+  .sf-group-heading--divider::before,
+.sf-group-heading--divider::after {
+    background-color: var(--sf-group-heading-line-color, var(--sf-outline-variant));
+  }
+  @media (forced-colors: active) {
+    .sf-group-heading--divider::before,
+  .sf-group-heading--divider::after {
+      background-color: CanvasText;
+    }
+  }
 }

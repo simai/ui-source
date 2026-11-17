@@ -1,6 +1,5 @@
 @layer sf.components {
 .sf-thumb {
-  background-color: var(--sf-thumb--background-color, transparent);
   gap: var(--sf-thumb--gap, var(--sf-space-1\/4));
 }
 
@@ -14,8 +13,6 @@
 // stands on; --sf-thumb-handle--box-shadow replaces the whole rest shadow.
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-thumb .sf-thumb-handle {
-  // Defaults belong at use sites so root/Smart-host tokens remain inheritable.
-  background-color: var(--sf-thumb-handle--background-color, var(--sf-range-slider-handle-color, var(--sf-primary)));
   border-end-end-radius: var(--sf-thumb-handle--border-end-end-radius, var(--sf-radius-circle));
   border-end-start-radius: var(--sf-thumb-handle--border-end-start-radius, var(--sf-radius-circle));
   border-start-end-radius: var(--sf-thumb-handle--border-start-end-radius, var(--sf-radius-circle));
@@ -33,7 +30,6 @@
 // --sf-thumb-inner--background-color) brings back the hollow handle, its centre
 // growing on hover as before.
 .sf-thumb .sf-thumb-inner {
-  background-color: var(--sf-thumb-inner--background-color, var(--sf-range-slider-handle-inner-color, transparent));
   border-radius: var(--sf-thumb-inner--border-radius, var(--sf-radius-circle));
   height: var(--sf-thumb-inner--height, 50%);
   transition-duration: var(--sf-duration-fast);
@@ -43,7 +39,6 @@
 }
 
 .sf-thumb .sf-thumb-text {
-  color: var(--sf-thumb-text--color, var(--sf-range-slider-value-color, var(--sf-on-surface)));
   font-family: var(--sf-thumb-text--font-family, var(--sf-text--family));
   font-size: var(--sf-thumb-text--font-size, var(--sf-text-small--size));
   font-weight: var(--sf-thumb-text--font-weight, var(--sf-font-weight-regular));
@@ -77,7 +72,6 @@
 // Hover and press grow a halo of the primary state layer around the disc, not
 // the disc: 8% on hover, 12% while the handle is held.
 .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):not(.readonly *):hover .sf-thumb-handle {
-  background-color: var(--sf-thumb-handle--hover-background-color, var(--sf-primary-hover));
   box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place)), 0 0 0 var(--sf-a8) var(--sf-primary-state-select), var(--sf-shadow-raised);
 }
 
@@ -94,25 +88,15 @@
 // disabled content role, laid over the surface so the fill does not show
 // through it. No centre, no shadow.
 .sf-range-slider:is([disabled], .disabled) .sf-thumb-handle {
-  background: linear-gradient(var(--sf-on-surface-disabled), var(--sf-on-surface-disabled)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));
   box-shadow: 0 0 0 var(--sf-thumb-handle--ring-width, 0px) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));
-}
-
-.sf-range-slider:is([disabled], .disabled) .sf-thumb-inner {
-  background-color: transparent;
 }
 
 @media (forced-colors: active) {
   // A forced palette drops the shadow and the fill; a system colour is kept,
   // so the disc stays solid.
   .sf-range-slider .sf-thumb-handle {
-    background-color: ButtonText;
-    border: var(--sf-focus--width) solid ButtonText;
-  }
-
-  .sf-range-slider:is([disabled], .disabled) .sf-thumb-handle {
-    background: GrayText;
-    border-color: GrayText;
+    border-width: var(--sf-focus--width);
+    border-style: solid;
   }
 
   .sf-range-slider:not([disabled]):not(.disabled) .sf-range-slider-handle:focus-visible .sf-thumb-handle {
@@ -127,4 +111,42 @@
     transition-duration: 0s;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-thumb {
+    background-color: var(--sf-thumb--background-color, transparent);
+  }
+  .sf-thumb .sf-thumb-handle {
+    // Defaults belong at use sites so root/Smart-host tokens remain inheritable.
+    background-color: var(--sf-thumb-handle--background-color, var(--sf-range-slider-handle-color, var(--sf-primary)));
+  }
+  .sf-thumb .sf-thumb-inner {
+    background-color: var(--sf-thumb-inner--background-color, var(--sf-range-slider-handle-inner-color, transparent));
+  }
+  .sf-thumb .sf-thumb-text {
+    color: var(--sf-thumb-text--color, var(--sf-range-slider-value-color, var(--sf-on-surface)));
+  }
+  .sf-thumb:not(:disabled):not([disabled]):not(.disabled):not([disabled] *):not(.disabled *):not(.readonly *):hover .sf-thumb-handle {
+    background-color: var(--sf-thumb-handle--hover-background-color, var(--sf-primary-hover));
+  }
+  .sf-range-slider:is([disabled], .disabled) .sf-thumb-handle {
+    background: linear-gradient(var(--sf-on-surface-disabled), var(--sf-on-surface-disabled)) var(--sf-thumb-handle--ring-color, var(--sf-surface-place));
+  }
+  .sf-range-slider:is([disabled], .disabled) .sf-thumb-inner {
+    background-color: transparent;
+  }
+  @media (forced-colors: active) {
+    .sf-range-slider .sf-thumb-handle {
+      background-color: ButtonText;
+      border-color: ButtonText;
+    }
+    .sf-range-slider:is([disabled], .disabled) .sf-thumb-handle {
+      background: GrayText;
+      border-color: GrayText;
+    }
+  }
 }

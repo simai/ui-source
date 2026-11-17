@@ -1,0 +1,57 @@
+// SIMAI Framework
+// https://simai.io
+
+// PAINT AND SHAPE (C273, owner 2026-11-17)
+//
+// A component's paint -- its fill, its edge colour, its text colour and the
+// place roles it declares -- stands in the cascade layer sf.paint, under the
+// utilities; its shape -- size, padding, radius, height, edge width -- stays
+// in sf.components, over them. So `<sf-card class="bg-success-container">`
+// is a green card, and `p-4` on a button does not move it off the height
+// ladder (C01, C105).
+//
+// A component sheet writes its paint into `@layer sf.paint { }` and its shape
+// into `@layer sf.components { }`, the same selectors in both. A mixin that
+// writes both (a place, a scrollbar, a panel heading) is called from both
+// blocks; the block sets the mode first and the mixin writes only its half:
+//
+//   @layer sf.paint {
+//     @include paint.part(paint);
+//     .sf-x { @include places.sf-place(...); }
+//     @include paint.part(all);
+//   }
+//   @layer sf.components {
+//     @include paint.part(shape);
+//     .sf-x { @include places.sf-place(...); }
+//     @include paint.part(all);
+//   }
+//
+// and inside the mixin:
+//
+//   @if paint.writes-paint() { background-color: ...; }
+//   @if paint.writes-shape() { padding: ...; }
+//
+// Out of a component block the mode is all, so a mixin used anywhere else
+// writes everything, as it always did.
+
+@use 'sass:list';
+
+$-mode: all;
+
+// Whether a mixin writes its paint declarations now.
+@function writes-paint() {
+  @return $-mode != shape;
+}
+
+// Whether a mixin writes its shape declarations now.
+@function writes-shape() {
+  @return $-mode != paint;
+}
+
+// Sets the mode for the mixins that follow: all, paint or shape.
+@mixin part($mode) {
+  @if not list.index((all, paint, shape), $mode) {
+    @error 'paint.part: #{$mode} is not all, paint or shape';
+  }
+  $-mode: $mode !global;
+}

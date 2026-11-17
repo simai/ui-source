@@ -19,7 +19,7 @@
     "src/component/fab/scss/_css_fab.scss",
     "src/component/fab/scss/index.scss"
   ],
-  "content_sha256": "77cd4d5aa3bf6eaf31311d5a7d5a613709d7b0d33ec00dd15a6f5c51e8f42f1c",
+  "content_sha256": "207afdb97bf1d264083679fad3e0ed3947c7988a034f74736aaf6b2d31403fda",
   "dependencies": [
     {
       "id": "core.runtime",

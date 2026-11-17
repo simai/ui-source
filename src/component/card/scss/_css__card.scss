@@ -108,8 +108,8 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
     // for its words: the side space is a share of the card's column (8 %)
     // up to the full step, so a wide card is unchanged.
     padding-inline: var(--sf-card-padding-inline, min(var(--sf-space-2), 8%));
-    color: var(--sf-card-color, var(--sf-on-surface));
-    border: var(--sf-card-border-width, var(--sf-px)) solid var(--sf-card-border-color, var(--sf-outline-variant));
+    border-width: var(--sf-card-border-width, var(--sf-px));
+    border-style: solid;
     border-radius: var(--sf-card--radius);
     // At rest a card is the flat place (C20): no shadow, its edge is the line.
     // A shadow-* or ring-* utility on the card still shows (RG-UT-V (18)):
@@ -240,7 +240,6 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
 
   .sf-card--plain {
     padding: var(--sf-0);
-    border-color: var(--sf-transparent);
     border-radius: var(--sf-0);
   }
 
@@ -249,7 +248,19 @@ $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawe
       transition: none;
     }
   }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-card {
+    color: var(--sf-card-color, var(--sf-on-surface));
+    border-color: var(--sf-card-border-color, var(--sf-outline-variant));
+  }
+  .sf-card--plain {
+    border-color: var(--sf-transparent);
+  }
   @media (forced-colors: active) {
     .sf-card:not(.sf-card--plain) {
       border-color: CanvasText;

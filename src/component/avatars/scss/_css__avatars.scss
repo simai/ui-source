@@ -28,7 +28,6 @@ $sf-avatar-hue-classes: ();
     border-end-start-radius: var(--sf-avatar--border-bottom-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
     border-start-end-radius: var(--sf-avatar--border-top-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
     border-start-start-radius: var(--sf-avatar--border-top-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
-    color: var(--sf-avatar--color, var(--sf-avatar-color, var(--sf-on-surface-variant)));
     font-family: var(--sf-avatar--font-family, var(--sf-text--family));
     /* Initials in the medium weight (owner decision C152 (3), 2026-11-14;
        Material, Fluent, Telegram): regular letters on a tinted plate read
@@ -36,11 +35,9 @@ $sf-avatar-hue-classes: ();
     font-weight: var(--sf-avatar--font-weight, var(--sf-weight--medium));
     width: var(--sf-avatar--width);
     height: var(--sf-avatar--height);
-    background-color: var(--sf-avatar--background-color);
     font-size: var(--sf-avatar--font-size);
     line-height: var(--sf-avatar--line-height);
     white-space: nowrap;
-    border-color: var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
     border-width: var(--sf-avatar--border-width, 0);
     border-top-width: var(--sf-avatar--border-top-width, 0);
     border-inline-end-width: var(--sf-avatar--border-inline-end-width, 0);
@@ -70,7 +67,7 @@ $sf-avatar-hue-classes: ();
 
   .sf-avatar .sf-avatar-badge {
     border: var(--sf-avatar-badge--border, 0 solid);
-    border-color: var(--sf-avatar-badge--border-color, transparent);
+    border-color: revert-layer;
     border-end-end-radius: var(--sf-avatar-badge--border-end-end-radius);
     border-end-start-radius: var(--sf-avatar-badge--border-end-start-radius);
     border-start-end-radius: var(--sf-avatar-badge--border-start-end-radius);
@@ -215,7 +212,6 @@ $sf-avatar-hue-classes: ();
 
   .sf-avatar--placeholder, .sf-avatar--text {
     --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 
   /* The hue of initials (owner decision C17, 2026-11-08): sf-hue-<name> gives
@@ -406,6 +402,24 @@ $sf-avatar-hue-classes: ();
     flex: none;
     position: relative;
     vertical-align: middle;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-avatar {
+    color: var(--sf-avatar--color, var(--sf-avatar-color, var(--sf-on-surface-variant)));
+    background-color: var(--sf-avatar--background-color);
+    border-color: var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
+  }
+  .sf-avatar .sf-avatar-badge {
+    border: var(--sf-avatar-badge--border, 0 solid);
+    border-color: var(--sf-avatar-badge--border-color, transparent);
+  }
+  .sf-avatar--placeholder, .sf-avatar--text {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
 }
 

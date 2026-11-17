@@ -53,7 +53,6 @@ sf-resizer::after {
   inset-block: 0;
   inset-inline-start: calc(50% - var(--sf-resizer-line-width, calc(2 * var(--sf-px))) / 2);
   inline-size: var(--sf-resizer-line-width, calc(2 * var(--sf-px)));
-  background-color: var(--sf-resizer-line-color, transparent);
   transition: background-color var(--sf-duration-fast, 0.15s) var(--sf-animation, ease);
 }
 
@@ -109,6 +108,15 @@ html[data-sf-resizer-active] * {
   cursor: col-resize !important;
   user-select: none !important;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  sf-resizer::after {
+    background-color: var(--sf-resizer-line-color, transparent);
+  }
 }
 
 @layer sf.states {

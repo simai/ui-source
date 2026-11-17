@@ -8,11 +8,13 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {fitInOrder, chooseBeside, fitBesideMore, spanOf} from '../src/core/js/overflow-row.js';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const source = read('src/smart/contents/index.js');
 const template = read('src/smart/contents/js/templates/default.js');
-const sheet = read('src/smart/contents/scss/_smart__contents.scss');
+// C273: the mixins' paint and shape mode blocks unfolded, as written before
+const sheet = unfoldModes(read('src/smart/contents/scss/_smart__contents.scss'));
 const manifest = JSON.parse(read('src/smart/contents/component.json'));
 const generated = JSON.parse(read('src/smart/contents/smart.manifest.json'));
 const journal = JSON.parse(read('contracts/changes/journal.json'));

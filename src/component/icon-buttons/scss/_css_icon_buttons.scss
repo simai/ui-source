@@ -36,12 +36,6 @@
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-icon-button {
-    /* Public variables (core/contracts/public-variables.v1.json): names with a
-       single dash after the block, never set by the Framework, read where a
-       resting look is defined -- base, size, spacing, appearance, scheme -- and
-       not by hover, focus, pressed, disabled, loading or a group's segments, so
-       states and joined groups still show. */
-    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
     --sf-icon-button--radius: var(--sf-icon-button-radius, var(--sf-radius--ui));
     border-end-end-radius: var(--sf-icon-button--border-bottom-right-radius, var(--sf-icon-button--radius));
     border-end-start-radius: var(--sf-icon-button--border-bottom-left-radius, var(--sf-icon-button--radius));
@@ -58,8 +52,6 @@
     --sf-icon-button--border-bottom-width: var(--sf-icon-button-border-width, 0);
     --sf-icon-button--border-inline-start-width: var(--sf-icon-button-border-width, 0);
     --sf-icon-button--border-inline-end-width: var(--sf-icon-button-border-width, 0);
-    background-color: var(--sf-icon-button--background-color);
-    border-color: var(--sf-icon-button--border-color, var(--sf-icon-button-border-color, transparent));
     border-width: var(--sf-icon-button--border-width, 0);
     border-top-width: var(--sf-icon-button--border-top-width, 0);
     border-inline-end-width: var(--sf-icon-button--border-inline-end-width, 0);
@@ -67,11 +59,6 @@
     border-inline-start-width: var(--sf-icon-button--border-inline-start-width, 0);
     border-style: var(--sf-icon-button--border-style, solid);
     box-shadow: var(--sf-icon-button--focus-inset, 0 0 var(--sf-transparent)), var(--sf-icon-button--box-shadow, 0 0 var(--sf-transparent));
-  }
-
-  .sf-icon-button .sf-close-icon {
-    background-color: var(--sf-close-icon--background-color);
-    border-color: var(--sf-close-icon--border-color, transparent);
   }
 
   /* A close draws its cross in the box an icon gets: the line of its size
@@ -116,7 +103,6 @@
   }
 
   .sf-icon-button .sf-icon {
-    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
     font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
     height: var(--sf-icon--height, var(--sf-icon-size-3));
     width: var(--sf-icon--width, var(--sf-icon-size-3));
@@ -480,11 +466,32 @@
     --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
     --sf-icon-button--border-inline-start-width: 0;
   }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-icon-button {
+    /* Public variables (core/contracts/public-variables.v1.json): names with a
+       single dash after the block, never set by the Framework, read where a
+       resting look is defined -- base, size, spacing, appearance, scheme -- and
+       not by hover, focus, pressed, disabled, loading or a group's segments, so
+       states and joined groups still show. */
+    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
+    background-color: var(--sf-icon-button--background-color);
+    border-color: var(--sf-icon-button--border-color, var(--sf-icon-button-border-color, transparent));
+  }
+  .sf-icon-button .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+  .sf-icon-button .sf-icon {
+    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
+  }
   .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle) {
     border-inline-end-color: var(--sf-white--alfa-24, transparent);
   }
-
 }
 
 @layer sf.states {
@@ -576,7 +583,6 @@
       outline-offset: var(--sf-focus--inset);
     }
   }
-
 }
 
 /* The destructive status (`danger`, decision C13; `error` is its former name
@@ -635,7 +641,6 @@
   .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
     --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
   }
-
 }
 
 @layer sf.states {
@@ -703,5 +708,4 @@
   .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error):where(:not(.sf-icon-button--close)) {
     --sf-icon-button--focus-ink: var(--sf-on-error);
   }
-
 }

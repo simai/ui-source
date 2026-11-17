@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -92,7 +93,9 @@ test('Smart Drawer: a docked column takes the page surface (simai/ui-source#26)'
   assert.match(source, /drawer\.setDockColumn\(column\)/);
   // A column: the area (C16 S4a, a column beside the page) and no shadow; the raised surface and its
   // dimmed-text role stay with a floating panel.
-  assert.match(styles, /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*background: var\(--sf-drawer-background, var\(--sf-surface-area\)\);[^}]*box-shadow: var\(--sf-shadow-flat\);/);
+  // C273: the fill in the paint block, the shadow in the component block
+  assert.match(paintBlocks(styles), /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*background: var\(--sf-drawer-background, var\(--sf-surface-area\)\);/);
+  assert.match(styles, /\.sf-drawer\[data-sf-drawer-column='true'\] \.sf-drawer-panel \{[^}]*box-shadow: var\(--sf-shadow-flat\);/);
   assert.match(styles, /\.sf-drawer:not\(\[data-sf-drawer-column='true'\]\) \.sf-drawer-panel \{\s*background: var\(--sf-drawer-background, var\(--sf-surface-popup\)\);[^}]*@include places\.sf-place\(var\(--sf-drawer-background, var\(--sf-surface-popup\)\), var\(--sf-on-surface-popup-variant\)\);/);
   // A docked drawer that floats (a narrow host) keeps its shadow.
   assert.doesNotMatch(styles, /\.sf-drawer\[data-sf-drawer-docked='true'\] \.sf-drawer-panel \{[^}]*box-shadow: (?:none|var\(--sf-shadow-flat\))/);

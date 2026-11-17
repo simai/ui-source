@@ -4,6 +4,7 @@ import test from 'node:test';
 import {russianWords} from './support/russian-language-file.mjs';
 // Russian is a language file (C282): read from lang/ru.json.
 const RU = russianWords('smart/input-code/lang');
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 import {
   CODE_INPUT_TEXT,
@@ -89,7 +90,9 @@ test('code input: charset, uppercase and groups (C82)', () => {
   assert.match(template, /if \(separators\.includes\(index\)\) parts\.push/u);
   assert.match(template, /autocapitalize=\$\{capitals \? 'characters' : 'off'\}/u);
   assert.match(source, /settings\.uppercase = this\.uppercase;\n    return codeKind\(settings\);/u);
-  assert.match(classSheet, /\.sf-verification-separator \{[^}]*inline-size: var\(--sf-space-1\\\/2\);[^}]*border-block-start: var\(--sf-px\) solid var\(--sf-on-surface-variant\);/u);
+  // C273: the line's width and style are the component's, its colour paint
+  assert.match(classSheet, /\.sf-verification-separator \{[^}]*inline-size: var\(--sf-space-1\\\/2\);[^}]*border-block-start-width: var\(--sf-px\);\s*border-block-start-style: solid;/u);
+  assert.match(paintBlocks(classSheet), /\.sf-verification-separator \{\s*border-block-start-color: var\(--sf-on-surface-variant\);/u);
   const settings = JSON.parse(read('src/smart/input-code/component.json')).settings;
   assert.equal(settings.charset.type, 'string');
   assert.equal(settings.uppercase.type, 'boolean');
@@ -231,7 +234,8 @@ test('code input: input and change are the native input\'s, complete once per co
   // is drawn in its cell, blinking unless motion is reduced.
   assert.match(source, /input\.setSelectionRange\(start, start \+ 1, 'forward'\);/u);
   assert.match(source, /cell\.classList\.toggle\('caret', bare && index === current\);/u);
-  assert.match(classSheet, /\.sf-verification-cell\.caret::after \{[^}]*inline-size: calc\(var\(--sf-px\) \* 2\);[^}]*background: var\(--sf-on-surface\);/u);
+  assert.match(classSheet, /\.sf-verification-cell\.caret::after \{[^}]*inline-size: calc\(var\(--sf-px\) \* 2\);/u);
+  assert.match(paintBlocks(classSheet), /\.sf-verification-cell\.caret::after \{\s*background: var\(--sf-on-surface\);/u); // C273
   assert.match(classSheet, /@media \(prefers-reduced-motion: no-preference\) \{\n  \.sf-verification-cell\.caret::after \{\n    animation: sf-verification-caret calc\(var\(--sf-duration-slow\) \* 2\) steps\(1\) infinite;/u);
   // K2: the cells paint a selection; a mouse selects by cells, a click does
   // not collapse it, copy gives the selected code and never a masked one; the
@@ -246,7 +250,7 @@ test('code input: input and change are the native input\'s, complete once per co
   assert.match(classSheet, /\.sf-verification:has\(\.sf-verification-input:enabled:focus\) \.sf-verification-cell\.selected \{[^}]*background: var\(--sf-primary-container\);/u);
   // K4: hover marks one cell, never the group, in the text ink (C153 (4)).
   assert.doesNotMatch(classSheet, /\.sf-verification:hover \.sf-verification-cell/u);
-  assert.match(classSheet, /\.sf-verification-cell\.hover,\n\.sf-verification-form-wrap \.sf-verification:hover \{ border-color: var\(--sf-on-surface\); \}/u);
+  assert.match(paintBlocks(classSheet), /\.sf-verification-cell\.hover,\n\.sf-verification-form-wrap \.sf-verification:hover \{\s*border-color: var\(--sf-on-surface\);\s*\}/u); // C273: paint
   assert.match(classSheet, /\.sf-verification--filled \.sf-verification-cell\.hover \{[^}]*background: var\(--sf-surface-container-hover\);/u);
   assert.match(source, /cell\.classList\.toggle\('hover', index === this\._hover && !selected && !\(focused && one && index === current\)\);/u);
   // K6: the current cell only while the field has the focus.
@@ -286,7 +290,7 @@ test('code input: the class verification\'s public variables wrap the values it 
     '--sf-verification--gap: var(--sf-verification-gap, var(--sf-space-1\\/3));',
     '--sf-verification--radius: var(--sf-verification-radius, var(--sf-radius--ui));',
     '--sf-verification--border-width: var(--sf-verification-border-width, var(--sf-px));',
-    'solid var(--sf-verification-border-color, var(--sf-outline));',
+    'border-color: var(--sf-verification-border-color, var(--sf-outline));', // C273: the colour of the frame is paint
     'background: var(--sf-verification-background-color, var(--sf-transparent));',
     'background: var(--sf-verification-background-color, var(--sf-surface-container));',
     'color: var(--sf-verification-color, var(--sf-on-surface));',

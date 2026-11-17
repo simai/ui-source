@@ -1,8 +1,6 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) */
 .sf-progress-bar {
-  background-color: var(--sf-progress-bar--background-color, transparent);
-  color: var(--sf-progress-bar--color, var(--sf-on-surface));
   font-family: var(--sf-progress-bar--font-family, var(--sf-text--family));
   font-weight: var(--sf-progress-bar--font-weight, var(--sf-font-weight-regular));
   gap: var(--sf-progress-bar--gap);
@@ -17,7 +15,6 @@
   --sf-progress-bar-main--background-color: var(--sf-progress-bar-track-color, var(--sf-surface-container));
   /* Round ends at every thickness (owner decision C131 (3)). */
   --sf-progress-bar-main--border-radius: var(--sf-progress-bar-radius, var(--sf-radius-circle));
-  background-color: var(--sf-progress-bar-main--background-color);
   border-radius: var(--sf-progress-bar-main--border-radius);
   height: var(--sf-progress-bar-height, var(--sf-progress-bar-main--height));
 }
@@ -25,7 +22,6 @@
 .sf-progress-bar .sf-progress-bar-progress {
   --sf-progress-bar-progress--background-color: var(--sf-progress-bar-fill-color, var(--sf-primary));
   --sf-progress-bar-progress--border-radius: var(--sf-progress-bar-radius, var(--sf-radius-circle));
-  background-color: var(--sf-progress-bar-progress--background-color);
   border-radius: var(--sf-progress-bar-progress--border-radius);
 }
 
@@ -139,6 +135,22 @@
 }
 }
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-progress-bar {
+    background-color: var(--sf-progress-bar--background-color, transparent);
+    color: var(--sf-progress-bar--color, var(--sf-on-surface));
+  }
+  .sf-progress-bar .sf-progress-bar-main {
+    background-color: var(--sf-progress-bar-main--background-color);
+  }
+  .sf-progress-bar .sf-progress-bar-progress {
+    background-color: var(--sf-progress-bar-progress--background-color);
+  }
+}
+
 @layer sf.components {
 /* The text (owner decision C131 (4)): top -- the name at the start and the
    value at the end, on one text line over the bar -- or inline-end, the value
@@ -174,7 +186,6 @@
 
 .sf-progress-bar .sf-progress-bar-text {
   flex: none;
-  color: var(--sf-progress-bar-color, var(--sf-on-surface-variant));
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -222,12 +233,19 @@
   min-inline-size: calc(3ch + 1.4em);
   text-align: end;
 }
-
-.sf-progress-bar.sf-progress-bar--inline.sf-progress-bar--warning .sf-progress-bar-text {
-  color: var(--sf-progress-bar-color, var(--sf-warning));
 }
 
-.sf-progress-bar.sf-progress-bar--inline.sf-progress-bar--error .sf-progress-bar-text {
-  color: var(--sf-progress-bar-color, var(--sf-error));
-}
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-progress-bar .sf-progress-bar-text {
+    color: var(--sf-progress-bar-color, var(--sf-on-surface-variant));
+  }
+  .sf-progress-bar.sf-progress-bar--inline.sf-progress-bar--warning .sf-progress-bar-text {
+    color: var(--sf-progress-bar-color, var(--sf-warning));
+  }
+  .sf-progress-bar.sf-progress-bar--inline.sf-progress-bar--error .sf-progress-bar-text {
+    color: var(--sf-progress-bar-color, var(--sf-error));
+  }
 }

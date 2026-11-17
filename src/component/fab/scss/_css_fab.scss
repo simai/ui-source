@@ -10,7 +10,6 @@
   padding-top: var(--sf-fab--padding-top);
   padding-inline-end: var(--sf-fab--padding-inline-end);
   padding-bottom: var(--sf-fab--padding-bottom);
-  background-color: var(--sf-fab--background-color);
   /* A floating button always carries the raised place's shadow (C20), in
      every kind and theme (owner decision C216, 2026-11-16; 1.2.0). Over
      content only the filled kind is placed; tonal is translucent and belongs
@@ -19,7 +18,6 @@
 }
 
 .sf-fab .sf-icon {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
   height: var(--sf-icon--height, var(--sf-icon-size-3));
   width: var(--sf-icon--width, var(--sf-icon-size-3));
@@ -198,4 +196,16 @@
     --sf-fab--box-shadow: none;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-fab {
+    background-color: var(--sf-fab--background-color);
+  }
+  .sf-fab .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
 }

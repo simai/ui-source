@@ -1,16 +1,5 @@
 @layer sf.components {
-/* utility-hint: display/block */
-.sf-range-slider {
-  background-color: var(--sf-range-slider--background-color, transparent);
-}
-
-/* utility-hint: display/block */
-.sf-range-slider .sf-range-slider-progress {
-  background-color: var(--sf-range-slider-progress--background-color, transparent);
-}
-
 .sf-range-slider .sf-range-slider-progress-line {
-  background-color: var(--sf-range-slider-progress-line--background-color, var(--sf-range-slider-fill-color, var(--sf-primary)));
   border-end-end-radius: var(--sf-range-slider-progress-line--border-end-end-radius, var(--sf-radius--ui));
   border-end-start-radius: var(--sf-range-slider-progress-line--border-end-start-radius, var(--sf-radius--ui));
   border-start-end-radius: var(--sf-range-slider-progress-line--border-start-end-radius, var(--sf-radius--ui));
@@ -19,7 +8,6 @@
 }
 
 .sf-range-slider .sf-range-slider-track {
-  background-color: var(--sf-range-slider-track--background-color, var(--sf-range-slider-track-color, var(--sf-outline)));
   border-end-end-radius: var(--sf-range-slider-track--border-end-end-radius, var(--sf-radius--ui));
   border-end-start-radius: var(--sf-range-slider-track--border-end-start-radius, var(--sf-radius--ui));
   border-start-end-radius: var(--sf-range-slider-track--border-start-end-radius, var(--sf-radius--ui));
@@ -31,14 +19,32 @@
   box-shadow: var(--sf-range-slider-track--box-shadow, none);
   height: var(--sf-range-slider-track--height, var(--sf-a4));
 }
-
-// Disabled: the rail is the disabled container, the chosen part the disabled
-// content role, as the handle on it.
-.sf-range-slider:is([disabled], .disabled) .sf-range-slider-track {
-  background-color: var(--sf-surface-disabled);
 }
 
-.sf-range-slider:is([disabled], .disabled) .sf-range-slider-progress-line {
-  background-color: var(--sf-on-surface-disabled);
-}
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  /* utility-hint: display/block */
+  .sf-range-slider {
+    background-color: var(--sf-range-slider--background-color, transparent);
+  }
+  /* utility-hint: display/block */
+  .sf-range-slider .sf-range-slider-progress {
+    background-color: var(--sf-range-slider-progress--background-color, transparent);
+  }
+  .sf-range-slider .sf-range-slider-progress-line {
+    background-color: var(--sf-range-slider-progress-line--background-color, var(--sf-range-slider-fill-color, var(--sf-primary)));
+  }
+  .sf-range-slider .sf-range-slider-track {
+    background-color: var(--sf-range-slider-track--background-color, var(--sf-range-slider-track-color, var(--sf-outline)));
+  }
+  // Disabled: the rail is the disabled container, the chosen part the disabled
+  // content role, as the handle on it.
+  .sf-range-slider:is([disabled], .disabled) .sf-range-slider-track {
+    background-color: var(--sf-surface-disabled);
+  }
+  .sf-range-slider:is([disabled], .disabled) .sf-range-slider-progress-line {
+    background-color: var(--sf-on-surface-disabled);
+  }
 }

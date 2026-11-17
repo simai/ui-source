@@ -41,12 +41,10 @@
   display: block;
   margin: 0;
   min-inline-size: 0;
-  color: var(--sf-on-surface);
 }
 
 .sf-form-note {
   margin: 0 0 var(--sf-form--field-gap);
-  color: var(--sf-form--label-color);
   font-size: var(--sf-form--small-size);
   line-height: var(--sf-form--small-line);
 }
@@ -56,8 +54,6 @@
   margin: 0 0 var(--sf-form--field-gap);
   padding: var(--sf-space-1\/2) var(--sf-space-1);
   border-radius: var(--sf-radius--ui);
-  background: var(--sf-form--summary-background);
-  color: var(--sf-on-error-container);
   font-size: var(--sf-form--small-size);
   line-height: var(--sf-form--small-line);
 }
@@ -81,10 +77,6 @@
   padding-inline-start: var(--sf-space-1);
 }
 
-.sf-form-summary-list a {
-  color: inherit;
-}
-
 .sf-form-body {
   display: flex;
   flex-direction: column;
@@ -96,12 +88,14 @@
   margin: 0;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   min-inline-size: 0;
 }
 
 .sf-form-group + .sf-form-group {
   padding-block-start: var(--sf-form--group-gap);
-  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+  border-block-start-width: var(--sf-px);
+  border-block-start-style: solid;
 }
 
 .sf-form-legend {
@@ -111,7 +105,6 @@
   inline-size: 100%;
   margin: 0;
   padding: 0 0 var(--sf-form--field-gap);
-  color: var(--sf-on-surface);
   font-size: var(--sf-text-size-1);
   font-weight: var(--sf-weight--medium);
   line-height: var(--sf-text-height-1);
@@ -148,7 +141,6 @@
   align-items: center;
   gap: var(--sf-space-1\/4);
   min-inline-size: 0;
-  color: var(--sf-form--label-color);
   font-size: var(--sf-form--label-size);
   line-height: var(--sf-form--label-line);
 }
@@ -177,14 +169,6 @@
   margin: 0;
   font-size: var(--sf-form--small-size);
   line-height: var(--sf-form--small-line);
-}
-
-.sf-form-hint {
-  color: var(--sf-on-surface-variant);
-}
-
-.sf-form-error {
-  color: var(--sf-error);
 }
 
 /* C182 (4): from 44rem of the form's own width the fields without a width
@@ -240,7 +224,6 @@
 
 .sf-form-state {
   margin: 0;
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-form--small-size);
   line-height: var(--sf-form--small-line);
 }
@@ -257,7 +240,51 @@
   inset-block-end: 0;
   z-index: var(--sf-layer--sticky, 1);
   padding-block: var(--sf-space-1\/2);
-  border-block-start: var(--sf-px) solid var(--sf-outline-variant);
-  background: var(--sf-form--footer-background);
+  border-block-start-width: var(--sf-px);
+  border-block-start-style: solid;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-form {
+    color: var(--sf-on-surface);
+  }
+  .sf-form-note {
+    color: var(--sf-form--label-color);
+  }
+  .sf-form-summary {
+    background: var(--sf-form--summary-background);
+    color: var(--sf-on-error-container);
+  }
+  .sf-form-summary-list a {
+    color: inherit;
+  }
+  .sf-form-group {
+    border: 0;
+  }
+  .sf-form-group + .sf-form-group {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-form-legend {
+    color: var(--sf-on-surface);
+  }
+  .sf-form-label {
+    color: var(--sf-form--label-color);
+  }
+  .sf-form-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-form-error {
+    color: var(--sf-error);
+  }
+  .sf-form-state {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-form-footer[data-sticky] {
+    border-block-start-color: var(--sf-outline-variant);
+    background: var(--sf-form--footer-background);
+  }
 }

@@ -7,6 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { checkOverlayActions } from '../src/core/js/composition/overlay.mjs';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -28,7 +29,8 @@ test('C170 (1): up to five icons in groups, the rest under «Ещё» by the row
   assert.doesNotMatch(styles, /\.sf-composition-overlay-action\b/);
   // C144: 4 within a group, a 1 px separator with 4 on each side (CO-2).
   assert.match(styles, /\.sf-composition-overlay-group \{[^}]*gap: var\(--sf-space-1\\\/4\);/);
-  assert.match(styles, /\.sf-composition-overlay-separator \{[^}]*inline-size: var\(--sf-px\);[^}]*margin-block: var\(--sf-space-1\\\/4\);[^}]*background-color: var\(--sf-outline-variant\);/);
+  assert.match(styles, /\.sf-composition-overlay-separator \{[^}]*inline-size: var\(--sf-px\);[^}]*margin-block: var\(--sf-space-1\\\/4\);/);
+  assert.match(paintBlocks(styles), /\.sf-composition-overlay-separator \{[^}]*background-color: var\(--sf-outline-variant\);/); // C273: paint
 });
 
 test('C170 (2): no label above the frame; the toolbar starts with the kind icon and the name, which gives way first', async () => {
@@ -42,7 +44,7 @@ test('C170 (2): no label above the frame; the toolbar starts with the kind icon 
 
 test('C170 (2b): the selected frame is a 2 px line 2 clear of the block, the hover a 1 px line (CO-7, CO-8)', async () => {
   const styles = await read('src/smart/editor-overlay/scss/_smart__composition-overlay.scss');
-  assert.match(styles, /\.sf-composition-overlay-frame \{[^}]*box-sizing: content-box;[^}]*padding: var\(--sf-a2\);[^}]*border: var\(--sf-px\) solid/);
+  assert.match(styles, /\.sf-composition-overlay-frame \{[^}]*box-sizing: content-box;[^}]*padding: var\(--sf-a2\);[^}]*border-width: var\(--sf-px\);\s*border-style: solid;/); // C273: the colour is paint
   assert.match(styles, /\.sf-composition-overlay-frame--selected \{[^}]*margin: calc\(-2 \* var\(--sf-a2\)\);[^}]*border-width: var\(--sf-a2\);/);
 });
 

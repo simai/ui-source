@@ -4,6 +4,7 @@ import process from 'node:process';
 import test from 'node:test';
 import {URL} from 'node:url';
 import vm from 'node:vm';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
@@ -155,7 +156,9 @@ test('Avatar card without a photo draws initials on the hue, else the glyph', as
   assert.doesNotMatch(card, /bg-surface-container/);
   assert.match(source, /this\.templateName === "card" && !this\.hue && !this\.tone \? "auto" : ""/);
 
-  assert.match(sheet, /\.sf-avatar-card \.sf-avatar-card-placeholder \{[^}]*container-type: inline-size;[^}]*background-color: var\(--sf-surface-container\);[^}]*color: var\(--sf-on-surface-container-variant\);/u);
+  assert.match(sheet, /\.sf-avatar-card \.sf-avatar-card-placeholder \{[^}]*container-type: inline-size;/u);
+  // C273: the fill and the ink stand in the paint block
+  assert.match(paintBlocks(sheet), /\.sf-avatar-card \.sf-avatar-card-placeholder \{[^}]*background-color: var\(--sf-surface-container\);[^}]*color: var\(--sf-on-surface-container-variant\);/u);
   assert.match(sheet, /\.sf-avatar-card-placeholder--text:is\(#\{\$sf-avatar-card-hue-classes\}\) \{[^}]*var\(--sf-hue-container\);[^}]*var\(--sf-on-hue-container\);/u);
   assert.match(sheet, /\.sf-avatar-card-initials \{[^}]*font-size: 36cqi;[^}]*font-weight: var\(--sf-font-weight-medium\);/u);
   assert.match(sheet, /\.sf-avatar-card-placeholder \.sf-icon \{[^}]*--sf-icon--font-size: 45cqi;[^}]*--sf-icon--height: 45cqi;[^}]*--sf-icon--width: 45cqi;/u);

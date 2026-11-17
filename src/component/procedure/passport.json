@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.procedure",
   "kind": "component",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/procedure/docs/docs.md",
@@ -12,7 +12,7 @@
     "src/component/procedure/scss/_css__procedure.scss",
     "src/component/procedure/scss/index.scss"
   ],
-  "content_sha256": "7225bb2343553ab3950558185ab6b08b4fd8915f0463ffbd714d0e6a45961a2e",
+  "content_sha256": "3e64a3ccf2052024ecb64451e877f411e1d55827e3c03aecdca5ae0f2b389343",
   "dependencies": [
     {
       "id": "tokens.colour",

@@ -41,7 +41,6 @@ $sf-avatar-card-hue-classes: ();
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-avatar-card .sf-avatar-card-content {
-  color: var(--sf-on-surface);
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1);
   font-weight: var(--sf-font-weight-medium);
@@ -50,7 +49,6 @@ $sf-avatar-card-hue-classes: ();
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-avatar-card-row--gap, var(--sf-space-1\/4)) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-avatar-card .sf-avatar-card-row {
-  color: var(--sf-avatar-card-row--color, var(--sf-on-surface-variant));
   font-family: var(--sf-avatar-card-row--font-family, var(--sf-text--family));
   font-size: var(--sf-avatar-card-row--font-size, var(--sf-text-size-1));
   font-weight: var(--sf-avatar-card-row--font-weight, var(--sf-font-weight-regular));
@@ -65,13 +63,11 @@ $sf-avatar-card-hue-classes: ();
 }
 
 .sf-avatar-card .sf-avatar-card-title {
-  color: var(--sf-avatar-card-title--color, var(--sf-on-surface));
   font-family: var(--sf-avatar-card-title--font-family, var(--sf-text--family));
   font-size: var(--sf-avatar-card-title--font-size, var(--sf-text-size-1));
   font-weight: var(--sf-avatar-card-title--font-weight, var(--sf-font-weight-medium));
   line-height: var(--sf-avatar-card-title--line-height, var(--sf-text-height-1));
 }
-
 
 /* The media box without a photo (owner decision C124, 2026-11-13; research
    control/research/2026-11-13-avatar-placeholder.md, variants B and A).
@@ -84,16 +80,6 @@ $sf-avatar-card-hue-classes: ();
 .sf-avatar-card .sf-avatar-card-placeholder {
   container-type: inline-size;
   overflow: hidden;
-  background-color: var(--sf-surface-container);
-  /* The container text role, as on the round placeholder (C124 "the round
-     placeholder's colours"): dimmed text inside reads the container ink. */
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  color: var(--sf-on-surface-container-variant);
-}
-
-.sf-avatar-card .sf-avatar-card-placeholder--text:is(#{$sf-avatar-card-hue-classes}) {
-  background-color: var(--sf-hue-container);
-  color: var(--sf-on-hue-container);
 }
 
 .sf-avatar-card .sf-avatar-card-initials {
@@ -111,6 +97,34 @@ $sf-avatar-card-hue-classes: ();
   --sf-icon--font-size: 45cqi;
   --sf-icon--height: 45cqi;
   --sf-icon--width: 45cqi;
-  color: inherit;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-avatar-card .sf-avatar-card-content {
+    color: var(--sf-on-surface);
+  }
+  .sf-avatar-card .sf-avatar-card-row {
+    color: var(--sf-avatar-card-row--color, var(--sf-on-surface-variant));
+  }
+  .sf-avatar-card .sf-avatar-card-title {
+    color: var(--sf-avatar-card-title--color, var(--sf-on-surface));
+  }
+  .sf-avatar-card .sf-avatar-card-placeholder {
+    background-color: var(--sf-surface-container);
+    /* The container text role, as on the round placeholder (C124 "the round
+       placeholder's colours"): dimmed text inside reads the container ink. */
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-on-surface-container-variant);
+  }
+  .sf-avatar-card .sf-avatar-card-placeholder--text:is(#{$sf-avatar-card-hue-classes}) {
+    background-color: var(--sf-hue-container);
+    color: var(--sf-on-hue-container);
+  }
+  .sf-avatar-card .sf-avatar-card-placeholder .sf-icon {
+    color: inherit;
+  }
 }

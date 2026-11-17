@@ -13,8 +13,7 @@
         margin: 0;
         padding: 0;
         border: 0;
-        background: none;
-        color: inherit;
+        border-color: revert-layer;
         font: inherit;
         gap: var(--sf-tag--gap, var(--sf-a1));
         cursor: pointer;
@@ -96,6 +95,17 @@
     }
 }
 
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+    .sf-tag .sf-tag-action {
+        border: 0;
+        background: none;
+        color: inherit;
+    }
+}
+
 @layer sf.states {
     .sf-tag.sf-tag--color.disabled > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--icon.disabled > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--default.disabled > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon, .sf-tag.sf-tag--avatar.disabled > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon {
         --sf-close-icon--background-color: var(--sf-surface-disabled);
@@ -119,7 +129,6 @@
     .sf-tag > :is(sf-button-close, sf-close) > .sf-icon-button.sf-button-close.sf-button-close--plain {
         --sf-button-close--base: var(--sf-tag-color, var(--sf-on-surface));
     }
-
 }
 
 /* The remove button of the Smart tag. The component stylesheet sizes the close

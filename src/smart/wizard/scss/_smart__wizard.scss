@@ -63,10 +63,9 @@
   max-inline-size: var(--sf-wizard--max-width);
   min-inline-size: 0;
   padding: var(--sf-wizard--padding);
-  border: var(--sf-px) solid var(--sf-wizard--border-color);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-wizard--radius);
-  background-color: var(--sf-wizard--background);
-  color: var(--sf-on-surface);
   font-size: var(--sf-wizard--font-size);
   line-height: var(--sf-wizard--line);
   container-name: sf-wizard;
@@ -96,8 +95,8 @@
 .sf-wizard.sf-wizard--window {
   padding: var(--sf-wizard-padding, 0);
   border: 0;
+  border-color: revert-layer;
   border-radius: 0;
-  background-color: transparent;
 }
 
 /* ---------------------------------------------------------------- head */
@@ -121,14 +120,12 @@
 .sf-wizard-heading {
   flex: 1 1 auto;
   margin: 0;
-  color: var(--sf-on-surface);
   font-size: var(--sf-wizard--name-size);
   font-weight: var(--sf-weight--bold);
   line-height: var(--sf-wizard--name-line);
 }
 
 .sf-wizard-position {
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-wizard--small-font-size);
   line-height: var(--sf-wizard--small-line);
   white-space: nowrap;
@@ -221,7 +218,6 @@
 
 .sf-wizard-compact-label {
   min-inline-size: 0;
-  color: var(--sf-on-surface-variant);
   overflow-wrap: anywhere;
 }
 
@@ -245,28 +241,18 @@
   padding-block: calc((var(--sf-wizard--control) - var(--sf-wizard--line)) / 2);
   padding-inline: var(--sf-wizard--row-inset);
   border: 0;
+  border-color: revert-layer;
   border-radius: var(--sf-radius--ui, var(--sf-radius-1));
-  background: transparent;
-  color: var(--sf-on-surface-variant);
   font: inherit;
   text-align: start;
   cursor: pointer;
 }
 
-.sf-wizard-list-step:not(:disabled):hover {
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  background-color: var(--sf-surface-container);
-}
-
 .sf-wizard-list-step[aria-current="step"] {
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  background-color: var(--sf-surface-container);
-  color: var(--sf-on-surface);
   font-weight: 600;
 }
 
 .sf-wizard-list-step:disabled {
-  color: var(--sf-on-surface-disabled);
   cursor: default;
 }
 
@@ -308,7 +294,8 @@
   box-sizing: border-box;
   inline-size: 100%;
   block-size: 100%;
-  border: var(--sf-px) solid currentColor;
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-radius-circle);
   font-size: var(--sf-wizard--small-font-size);
   line-height: 1;
@@ -349,7 +336,6 @@
    it is not in the tab order and draws no ring (it is not a control). */
 .sf-wizard-title {
   margin: 0;
-  color: var(--sf-on-surface);
   font-size: var(--sf-wizard--title-size);
   font-weight: var(--sf-weight--medium);
   line-height: var(--sf-wizard--title-line);
@@ -358,7 +344,6 @@
 
 .sf-wizard-why {
   margin: 0;
-  color: var(--sf-on-surface-variant);
 }
 
 /* The running line: sf-spinner of the wizard's rung with its own label
@@ -375,10 +360,6 @@
   flex-direction: row;
   justify-content: flex-start;
   gap: var(--sf-wizard--text-space-x);
-}
-
-.sf-wizard-running .sf-loader--text {
-  color: var(--sf-on-surface-variant);
 }
 
 .sf-wizard-live {
@@ -426,7 +407,8 @@
 }
 
 .sf-wizard-plan > li + li {
-  border-block-start: var(--sf-px) solid var(--sf-wizard--border-color);
+  border-block-start-width: var(--sf-px);
+  border-block-start-style: solid;
 }
 
 .sf-wizard-plan > li > :first-child {
@@ -445,7 +427,8 @@
   align-items: center;
   gap: var(--sf-wizard--actions-gap);
   padding-block-start: var(--sf-wizard--gap);
-  border-block-start: var(--sf-px) solid var(--sf-wizard--border-color);
+  border-block-start-width: var(--sf-px);
+  border-block-start-style: solid;
 }
 
 .sf-wizard-footer-end {
@@ -464,7 +447,6 @@
   align-items: center;
   gap: var(--sf-space-1\/4);
   margin: 0;
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-wizard--small-font-size);
   line-height: var(--sf-wizard--small-line);
 }
@@ -519,7 +501,6 @@
     z-index: 1;
     flex-wrap: nowrap;
     padding-block-end: var(--sf-focus-room);
-    background-color: var(--sf-modal-surface-bg, var(--sf-surface-popup));
   }
 
   .sf-wizard--window .sf-wizard-footer-end {
@@ -559,7 +540,8 @@
     flex: none;
     inline-size: var(--sf-wizard--column);
     min-block-size: calc(var(--sf-wizard--row) * var(--sf-wizard--column-rows));
-    border-inline-end: var(--sf-px) solid var(--sf-wizard--border-color);
+    border-inline-end-width: var(--sf-px);
+    border-inline-end-style: solid;
   }
 
   .sf-wizard--progress-column .sf-wizard-column-scroll {
@@ -620,7 +602,78 @@
     flex-basis: 100%;
   }
 }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-wizard {
+    border-color: var(--sf-wizard--border-color);
+    background-color: var(--sf-wizard--background);
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard.sf-wizard--window {
+    border: 0;
+    background-color: transparent;
+  }
+  .sf-wizard-heading {
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard-position {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-compact-label {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-list-step {
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-list-step:not(:disabled):hover {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background-color: var(--sf-surface-container);
+  }
+  .sf-wizard-list-step[aria-current="step"] {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    background-color: var(--sf-surface-container);
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard-list-step:disabled {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-wizard-list-number {
+    border-color: currentColor;
+  }
+  .sf-wizard-title {
+    color: var(--sf-on-surface);
+  }
+  .sf-wizard-why {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-running .sf-loader--text {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-wizard-plan > li + li {
+    border-block-start-color: var(--sf-wizard--border-color);
+  }
+  .sf-wizard-footer {
+    border-block-start-color: var(--sf-wizard--border-color);
+  }
+  .sf-wizard-saved {
+    color: var(--sf-on-surface-variant);
+  }
+  @container sf-wizard (width < #{mq.container-step(g5)}) {
+    .sf-wizard--window .sf-wizard-footer {
+      background-color: var(--sf-modal-surface-bg, var(--sf-surface-popup));
+    }
+  }
+  @container sf-wizard (min-width: #{mq.container-step(h0)}) {
+    .sf-wizard--progress-column .sf-wizard-column {
+      border-inline-end-color: var(--sf-wizard--border-color);
+    }
+  }
 }
 
 /* A touch target of at least 44px under a coarse pointer (WCAG 2.5.5, the

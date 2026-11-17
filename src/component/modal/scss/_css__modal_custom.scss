@@ -3,7 +3,9 @@
 @use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @use '../../../core/scss/mix/mix__window-footer' as window-footer;
 @use '../../../core/scss/mix/mix__sheet' as sheet;
+@use '../../../core/scss/mix/mix__paint' as paint;
 @layer sf.components {
+  @include paint.part(shape);
 .sf-modal-focus-guard {
   position: fixed;
   inline-size: 0;
@@ -164,12 +166,12 @@
   --sf-modal-surface-radius: var(--sf-modal-radius, var(--sf-radius--surface));
   --sf-modal-surface-shadow: var(--sf-shadow-flat);
 
-  background-color: var(--sf-modal-surface-bg);
   // A flat modal surface is an area (C18), a place of its own (C16).
   @include places.sf-place(var(--sf-modal-surface-bg));
   border: var(--sf-modal-surface-border-width)
     var(--sf-modal-surface-border-style)
     var(--sf-modal-surface-border-color);
+  border-color: revert-layer;
   border-radius: var(--sf-modal-surface-radius);
   box-shadow: var(--sf-modal-surface-shadow);
   gap: var(--sf-modal-surface-gap);
@@ -186,7 +188,6 @@
 }
 
 .sf-modal [data-sf-modal-overlay] {
-  background-color: var(--sf-modal-overlay-background);
   opacity: var(--sf-modal-overlay-opacity);
   transition: opacity var(--sf-duration-normal) var(--sf-ease-enter);
 }
@@ -229,7 +230,6 @@
   will-change: transform, opacity;
 }
 
-
 .sf-modal[data-sf-modal-position='left'] [data-sf-modal-panel] {
   transform: translateX(-100%);
 }
@@ -265,7 +265,6 @@
 .sf-modal[data-sf-modal-position='center'] [data-sf-modal-panel] {
   transform: translateY(var(--sf-space-1\/2)) scale(0.98);
 }
-
 
 .sf-modal[data-sf-modal-state='opening'] [data-sf-modal-panel] {
   opacity: 0;
@@ -683,14 +682,6 @@
   }
 }
 
-/* Window over window (owner decision C159 (7), 2026-11-14): one scrim. The
-   window above another lays no scrim of its own -- the first window stays
-   in view under it, the page stays at one dim (64, C16) -- and still takes
-   the presses outside it. Two scrims stood at about 87 %. */
-.sf-modal[data-sf-modal-stacked] [data-sf-modal-overlay] {
-  background-color: transparent;
-}
-
 /* The body's edge (owner decision C159 (3), 2026-11-14): a hairline over the
    body only while text is above it, under the body only while text is
    below it -- a short window draws none. The window marks which (sf-modal
@@ -734,7 +725,6 @@
   block-size: var(--sf-modal-skeleton--bar);
   margin-block-start: calc((var(--sf-text-height-1) - var(--sf-modal-skeleton--bar)) / 2);
   border-radius: var(--sf-radius--ui);
-  background-color: var(--sf-skeleton-base);
 }
 
 .sf-modal-skeleton-line:nth-child(2)::before { inline-size: 90%; }
@@ -745,6 +735,41 @@
     animation: none;
   }
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-modal[data-sf-modal-position='bottom']:not([data-sf-modal-fullscreen='true']) [data-sf-modal-surface]::before {
+    @include sheet.sheet-bar-row;
+  }
+  .sf-modal-surface {
+    background-color: var(--sf-modal-surface-bg);
+    @include places.sf-place(var(--sf-modal-surface-bg));
+    border: var(--sf-modal-surface-border-width)
+    var(--sf-modal-surface-border-style)
+    var(--sf-modal-surface-border-color);
+  }
+  .sf-modal-surface--elevated {
+    @include places.sf-place(var(--sf-modal-surface-bg), var(--sf-on-surface-popup-variant));
+  }
+  .sf-modal [data-sf-modal-overlay] {
+    background-color: var(--sf-modal-overlay-background);
+  }
+  /* Window over window (owner decision C159 (7), 2026-11-14): one scrim. The
+     window above another lays no scrim of its own -- the first window stays
+     in view under it, the page stays at one dim (64, C16) -- and still takes
+     the presses outside it. Two scrims stood at about 87 %. */
+  .sf-modal[data-sf-modal-stacked] [data-sf-modal-overlay] {
+    background-color: transparent;
+  }
+  .sf-modal-skeleton-line::before {
+    background-color: var(--sf-skeleton-base);
+  }
+  @include paint.part(all);
 }
 
 /* The spinner a modal shows while its content loads (simai/ui-source#11): the
@@ -758,13 +783,21 @@
     flex: none;
     inline-size: var(--sf-text-height-3);
     block-size: var(--sf-text-height-3);
-    color: var(--sf-loader--color, currentColor);
   }
 
   .sf-modal-loading .sf-modal-spinner :is(.sf-loader--loading-indicator, .sf-loader-svg) {
     display: block;
     inline-size: 100%;
     block-size: 100%;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-modal-loading .sf-modal-spinner {
+    color: var(--sf-loader--color, currentColor);
   }
 }
 

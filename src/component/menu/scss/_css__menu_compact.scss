@@ -7,10 +7,12 @@
 // top end corner, with the same geometry and ring. Branches do not open here.
 @use '../../badges/scss/anchored-geometry' as anchored;
 @use 'css__menu' as menu;
+@use '../../../core/scss/mix/mix__paint' as paint;
 
 @include anchored.properties;
 
 @layer sf.components {
+  @include paint.part(shape);
   // Beside the words, a counter stands at the row's end.
   .sf-menu-element-wrap > .sf-badge {
     flex: none;
@@ -49,7 +51,6 @@
   // item's status error). The anchored geometry drew every count red.
   .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge:not(.sf-badge--dot):is(.sf-badge--neutral, .sf-badge--on-surface, :not(.sf-badge--primary, .sf-badge--secondary, .sf-badge--error, .sf-badge--danger, .sf-badge--success, .sf-badge--warning, .sf-badge--info)) {
     --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
   }
 
@@ -86,4 +87,28 @@
   .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge.sf-badge--dot {
     @include anchored.dot;
   }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-text {
+    @include anchored.visually-hidden;
+  }
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge {
+    @include anchored.badge;
+  }
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element-wrap > .sf-badge:not(.sf-badge--dot):is(.sf-badge--neutral, .sf-badge--on-surface, :not(.sf-badge--primary, .sf-badge--secondary, .sf-badge--error, .sf-badge--danger, .sf-badge--success, .sf-badge--warning, .sf-badge--info)) {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) .sf-menu-element:not(:disabled):not(.disabled):not([aria-disabled='true']):is([aria-current='page'], [aria-current='true'], :has(> [aria-current='page'], > [aria-current='true'])) {
+    @include menu.current-plate;
+  }
+  .sf-menu:is(.sf-menu--rail, .sf-menu--compact) {
+    @include menu.path-line('.sf-menu-element.sf-menu-element--holds-current:not([aria-current])');
+  }
+  @include paint.part(all);
 }

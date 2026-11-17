@@ -14,7 +14,6 @@
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-upload-progress {
   min-inline-size: 0;
-  background-color: var(--sf-upload-progress--background-color, transparent);
   gap: var(--sf-upload-progress--gap);
 }
 
@@ -28,7 +27,6 @@
 .sf-upload-progress .sf-upload-progress-content {
   min-inline-size: 0;
   --sf-upload-progress-content--background-color: transparent;
-  background-color: var(--sf-upload-progress-content--background-color);
   gap: var(--sf-upload-progress-content--gap);
 }
 
@@ -36,7 +34,6 @@
 .sf-upload-progress .sf-upload-progress-top {
   min-inline-size: 0;
   --sf-upload-progress-top--background-color: transparent;
-  background-color: var(--sf-upload-progress-top--background-color);
   gap: var(--sf-upload-progress-top--gap);
 }
 
@@ -44,14 +41,12 @@
 .sf-upload-progress .sf-upload-progress-left {
   min-inline-size: 0;
   --sf-upload-progress-left--background-color: transparent;
-  background-color: var(--sf-upload-progress-left--background-color);
 }
 
 .sf-upload-progress .sf-upload-progress-name {
   --sf-upload-progress-name--color: var(--sf-on-surface);
   --sf-upload-progress-name--font-family: var(--sf-text--family);
   --sf-upload-progress-name--font-weight: var(--sf-font-weight-medium);
-  color: var(--sf-upload-progress-name--color);
   font-family: var(--sf-upload-progress-name--font-family);
   font-size: var(--sf-upload-progress-name--font-size);
   font-weight: var(--sf-upload-progress-name--font-weight);
@@ -61,7 +56,6 @@
 .sf-upload-progress .sf-upload-progress-text {
   --sf-upload-progress-text--font-family: var(--sf-text--family);
   --sf-upload-progress-text--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-upload-progress-text--color);
   font-family: var(--sf-upload-progress-text--font-family);
   font-size: var(--sf-upload-progress-text--font-size);
   font-weight: var(--sf-upload-progress-text--font-weight);
@@ -69,7 +63,6 @@
 }
 
 .sf-upload-progress .sf-icon {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size);
   height: var(--sf-icon--height);
   width: var(--sf-icon--width);
@@ -98,7 +91,6 @@
   text-align: start;
   text-decoration: underline;
   text-underline-offset: 0.2em;
-  color: var(--sf-upload-progress-repeat--color);
   font-family: var(--sf-upload-progress-repeat--font-family);
   font-size: var(--sf-upload-progress-repeat--font-size);
   font-weight: var(--sf-upload-progress-repeat--font-weight);
@@ -267,4 +259,34 @@
   /* The size line's weight: bold made the retry read as a second file name. */
   --sf-upload-progress-repeat--font-weight: var(--sf-font-weight-regular);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-upload-progress {
+    background-color: var(--sf-upload-progress--background-color, transparent);
+  }
+  .sf-upload-progress .sf-upload-progress-content {
+    background-color: var(--sf-upload-progress-content--background-color);
+  }
+  .sf-upload-progress .sf-upload-progress-top {
+    background-color: var(--sf-upload-progress-top--background-color);
+  }
+  .sf-upload-progress .sf-upload-progress-left {
+    background-color: var(--sf-upload-progress-left--background-color);
+  }
+  .sf-upload-progress .sf-upload-progress-name {
+    color: var(--sf-upload-progress-name--color);
+  }
+  .sf-upload-progress .sf-upload-progress-text {
+    color: var(--sf-upload-progress-text--color);
+  }
+  .sf-upload-progress .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-upload-progress .sf-upload-progress-repeat {
+    color: var(--sf-upload-progress-repeat--color);
+  }
 }

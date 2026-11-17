@@ -3,6 +3,7 @@ import {readFile} from 'node:fs/promises';
 import process from 'node:process';
 import test from 'node:test';
 import {URL} from 'node:url';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
@@ -216,7 +217,8 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
   assert.match(popover, /--sf-surface-place-fill: initial;/u);
   assert.match(await read('src/core/scss/_sf_css__surface_places.scss'), /\.sf-surface-media \{[^}]*--sf-surface-place-fill: initial;/u);
   // A translucent fill declares the place it stands on.
-  assert.match(mix, /@mixin sf-place-fill\(\$fill\) \{\s*--sf-surface-underlay: var\(--sf-surface-place-solid\);[^}]*--sf-surface-place-fill: #\{\$fill\};\s*\}/u);
+  // (C273: the mixin writes in the paint mode)
+  assert.match(mix, /@mixin sf-place-fill\(\$fill\) \{\s*(?:@if paint\.writes-paint\(\) \{\s*)?--sf-surface-underlay: var\(--sf-surface-place-solid\);[^}]*--sf-surface-place-fill: #\{\$fill\};\s*\}/u);
   // The solid colour: the page's, an opaque or strong place's; initial on a
   // translucent (soft) place, so a row there leaves the role off (DEV D1).
   assert.match(theme, /\s--sf-surface-place-solid: var\(--sf-surface-page\);/u);
@@ -230,13 +232,13 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
     ['src/component/context-menu/scss/_css__context_menu.scss', /\.sf-context-menu-item--chosen \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/component/admin-menu/scss/_css__admin_menu.scss', /\.sf-admin-menu-search-row\.selected \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill\(/u],
-    ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{[^}]*@include places\.sf-place-fill\(/u],
-    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--current\);/u],
+    ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{(?:[^}]*\})?[^}]*@include places\.sf-place-fill\(/u], // (C273: a mode block may come first)
+    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\);\s*--sf-surface-place-fill: var\(--sf-list--current\);/u],
   ];
   for (const [path, pattern] of rows) assert.match(await read(path), pattern, path);
   // A checked choice card is not such a row (input-choice audit 2026-11-11):
   // its tonal badge stacks over the card's fill, so the plate shows (C28).
-  const checked = await read('src/smart/input-choice/scss/_smart__choice.scss');
+  const checked = paintBlocks(await read('src/smart/input-choice/scss/_smart__choice.scss')); // C273: the edge colour is paint
   const rule = checked.slice(checked.indexOf('.sf-choice .sf-choice-card--checked:hover {'), checked.indexOf('}', checked.indexOf('.sf-choice .sf-choice-card--checked:hover {')));
   assert.ok(rule.includes('border-color: var(--sf-choice--selected-border-color);'), 'the checked rule found');
   assert.doesNotMatch(rule, /sf-place-fill|--sf-surface-underlay/u);
@@ -311,10 +313,17 @@ test('panel rows, lookup options and contents entries are fills of their own col
     read('src/smart/input-lookup/scss/_smart__lookup.scss'),
     read('src/smart/contents/scss/_smart__contents.scss'),
   ]);
+  // C273: a rule's fill may stand in a paint block, or in a paint-mode
+  // block of a mixin; the rule is any of the selector's rules (whole body).
   const rule = (css, selector, fill) => {
-    const at = css.indexOf(`${selector} {`);
-    assert.ok(at >= 0, selector);
-    const body = css.slice(at, css.indexOf('}', at));
+    const bodies = [];
+    for (let at = css.indexOf(`${selector} {`); at >= 0; at = css.indexOf(`${selector} {`, at + 1)) {
+      let depth = 0; let end = css.indexOf('{', at);
+      for (; end < css.length; end++) { if (css[end] === '{') depth++; else if (css[end] === '}' && !--depth) break; }
+      bodies.push(css.slice(at, end));
+    }
+    assert.ok(bodies.length, selector);
+    const body = bodies.find((b) => b.includes(`@include places.sf-place-fill(var(${fill}));`) && b.includes(`background-color: var(${fill});`)) ?? bodies[0];
     assert.match(body, /background-color: var\(--sf-[a-z-]+\);/u, `${selector}: paints a fill`);
     assert.ok(body.includes(`background-color: var(${fill});`), `${selector}: paints ${fill}`);
     assert.ok(body.includes(`@include places.sf-place-fill(var(${fill}));`), `${selector}: names ${fill} to the mix`);

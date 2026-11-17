@@ -71,7 +71,8 @@
   .sf-smart-menu-search {
     flex: none;
     padding: var(--sf-space-1\/4);
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-end-width: var(--sf-px);
+    border-block-end-style: solid;
   }
 
   .sf-smart-menu-search > .sf-smart-menu-search-field {
@@ -96,12 +97,14 @@
   // the frame's pixel.
   .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) {
     box-sizing: border-box;
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-radius--surface);
   }
 
   .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) > .sf-smart-menu-search {
     border-block-end: var(--sf-0);
+    border-block-end-color: revert-layer;
   }
 
   .sf-smart-menu.sf-smart-menu--search > ul.sf-menu.sf-menu--navigation.sf-menu--bordered:not(.sf-menu--horizontal):not(.sf-menu-item > .sf-menu) {
@@ -126,11 +129,27 @@
     margin: var(--sf-0);
     padding-block: var(--sf-space-1\/2);
     padding-inline: calc(var(--sf-space-1\/4) + var(--sf-space-1\/2));
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-text-size-1);
     line-height: var(--sf-text-height-1);
   }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-smart-menu-search {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) {
+    border-color: var(--sf-outline-variant);
+  }
+  .sf-smart-menu.sf-smart-menu--search:has(> ul.sf-menu.sf-menu--bordered) > .sf-smart-menu-search {
+    border-block-end: var(--sf-0);
+  }
+  .sf-smart-menu-search-empty {
+    color: var(--sf-on-surface-variant);
+  }
 }
 
 // The phone (R179, sf-menu 1.6.2): the parts the element itself writes --
@@ -155,8 +174,8 @@
     max-inline-size: none;
     padding: var(--sf-0);
     border: var(--sf-0);
+    border-color: revert-layer;
     border-radius: var(--sf-0);
-    background: none;
     box-shadow: none;
     --sf-menu--line-border: inherit;
   }
@@ -169,6 +188,16 @@
 
   .sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu[data-sf-menu-in-place] .sf-menu-element--level-4 {
     --sf-menu-element--padding-inline-start: calc(var(--sf-space-1\/2) + var(--sf-space-1) * 2);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-smart-menu .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item > .sf-menu[data-sf-menu-in-place] {
+    border: var(--sf-0);
+    background: none;
   }
 }
 

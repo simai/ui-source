@@ -7,12 +7,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {withoutPaintBlocks, unfoldModes} from './support/paint-blocks.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const USE = "@use '../../../core/scss/mix/mix__notice-link' as notice-link;";
 
 test('the shared rule: text ink, underline at the link weight, doubled on hover, ring in the ink', () => {
-  const mix = read('src/core/scss/mix/_mix__notice-link.scss');
+  const mix = unfoldModes(read('src/core/scss/mix/_mix__notice-link.scss')); // C273: mode blocks unfolded
   assert.match(mix, /@mixin sf-notice-link\(\$text\)/);
   assert.match(mix, /#\{\$text\} a\[href\] \{\n    color: inherit;\n    text-decoration-line: underline;\n    text-decoration-color: currentColor;\n    text-decoration-thickness: var\(--sf-link--underline-weight\);/);
   assert.match(mix, /a\[href\]:is\(:hover, :active, :visited\) \{\n    color: inherit;/);
@@ -32,7 +33,8 @@ test('every notice includes the rule on its text block', () => {
   for (const [path, include] of Object.entries(sheets)) {
     const sheet = read(path);
     assert.ok(sheet.includes(USE), `${path} uses the shared rule`);
-    assert.equal(sheet.split(include).length - 1, 1, `${path} includes it once on its text`);
+    // C273: the paint block includes it a second time for the link's ink.
+    assert.equal(withoutPaintBlocks(sheet).split(include).length - 1, 1, `${path} includes it once on its text`);
   }
 });
 

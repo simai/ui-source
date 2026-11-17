@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-site",
-  "version": "1.12.4",
+  "version": "1.12.5",
   "title": "Site header",
   "summary": "The top bar of a SIMAI site: brand, navigation, actions and tools in one row on the container's width, collapsing below a Framework breakpoint into a menu button that opens the navigation and actions as a side panel in the shared layer stack. Every SIMAI site uses it: the effects catalogue, Docara documentation sites and the simai.io hub.",
   "kind": "smart",
@@ -375,7 +375,7 @@
       },
       {
         "path": "src/smart/header-site/scss/_smart__site_header.scss",
-        "sha256": "20139f0fd239dec1a3c981add2a9250a80f79583d3e3d0018f091b6eea75393e"
+        "sha256": "16890c7fbba7b60b199540787bd5673a7df8625e21c945d98a1bcd051980ebd0"
       },
       {
         "path": "src/smart/header-site/rule.js",

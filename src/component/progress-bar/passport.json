@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.progress-bar",
   "kind": "component",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/progress-bar/index.js",
@@ -14,7 +14,7 @@
     "src/component/progress-bar/scss/_css__progressbar_custom.scss",
     "src/component/progress-bar/scss/index.scss"
   ],
-  "content_sha256": "971dded24bf9b9ec7e0a0ef4d8a3974bcbea0ee410a4a6b6fcff2ffc7302a5c6",
+  "content_sha256": "fb134d147ebec2541a845f80bd5d847dc5a7b8813565b359900a4d2f7ac59c67",
   "dependencies": [
     {
       "id": "core.runtime",

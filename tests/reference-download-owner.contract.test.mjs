@@ -12,7 +12,8 @@ test('Reference Link owns native navigation, complete geometry and BEM aliases',
   const manifest = JSON.parse(await read('src/smart/reference-link/smart.manifest.json'));
 
   assert.match(css, /display: flex/);
-  assert.match(css, /border: var\(--sf-px\)/);
+  // C273: the frame's width in the component block, its colour in the paint block.
+  assert.match(css, /border-width: var\(--sf-px\);\s*border-style: solid;/);
   assert.match(css, /border-radius: var\(--sf-(?:reference-link|download-file)-radius, var\(--sf-radius--ui\)\)/);
   assert.match(css, /:has\([^}]*:focus-visible/s);
   assert.match(css, /\.sf-reference-link__link/);
@@ -39,7 +40,8 @@ test('Download File owns native/button semantics, canonical structure and tokens
   assert.match(runtime, /setAttribute\('aria-hidden', 'true'\)/);
   assert.doesNotMatch(runtime, /^\s*console;\s*$/m);
   assert.match(css, /--sf-download-file--text-size: var\(--sf-text-size-1\)/);
-  assert.match(css, /border: var\(--sf-px\)/);
+  // C273: the frame's width in the component block, its colour in the paint block.
+  assert.match(css, /border-width: var\(--sf-px\);\s*border-style: solid;/);
   // The public variable carries the element's name; the former one is read
   // under it until 2027-01-01 (DF-11, journal token-file-download-variable-names).
   assert.match(css, /border-radius: var\(--sf-file-download-radius, var\(--sf-download-file-radius, var\(--sf-radius--ui\)\)\)/);

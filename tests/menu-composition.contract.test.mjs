@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {readFile} from 'node:fs/promises';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 const read = (path) => readFile(new URL(`../src/${path}`, import.meta.url), 'utf8');
 
@@ -41,12 +42,15 @@ test('menu composition: a split row chevron draws a square plate under a fine po
   assert.ok(fine.length < css.length, 'the fine-pointer block');
   assert.ok(fine.includes('--sf-menu--split-plate: var(--sf-ui-1--control-height);'));
   assert.ok(fine.includes('inline-size: var(--sf-menu--split-plate);'));
-  assert.ok(fine.includes('background-color: var(--sf-transparent);'));
+  // C273: the fills are paint, in the paint block's fine-pointer block
+  const finePaint = paintBlocks(css).slice(paintBlocks(css).indexOf('@media not (pointer: coarse) {'));
+  assert.ok(finePaint.includes('background-color: var(--sf-transparent);'));
   const plate = fine.slice(fine.indexOf('.sf-menu-element > button.sf-icon-button::before {'));
   const body = plate.slice(0, plate.indexOf('}'));
   assert.ok(body.includes('block-size: min(100% + 2 * var(--sf-menu-element--border-width, calc(var(--sf-px) * 0)), var(--sf-menu--split-plate));'));
   assert.ok(body.includes('aspect-ratio: 1;'));
-  assert.ok(body.includes('background-color: var(--sf-icon-button--background-color, var(--sf-transparent));'));
+  const platePaint = finePaint.slice(finePaint.indexOf('.sf-menu-element > button.sf-icon-button::before {'));
+  assert.ok(platePaint.slice(0, platePaint.indexOf('}')).includes('background-color: var(--sf-icon-button--background-color, var(--sf-transparent));'));
   assert.ok(body.includes('border-radius: inherit;'));
   assert.ok(body.includes('pointer-events: none;'));
   // The stretch that gives the box the row's height is not touched.

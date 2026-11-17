@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {unfoldModes, paintBlocks} from './support/paint-blocks.mjs';
 
 // sf-list 1.11.0, sf-list-feed 1.2.0, group-heading 1.1.0 (owner decision
 // C167, 2026-11-14; study ui-control control/research/2026-11-14-list-feed.md):
@@ -14,10 +15,12 @@ const json = (path) => JSON.parse(read(path));
 const code = (path) => read(path).split('\n').filter((line) => !line.trimStart().startsWith('//')).join('\n');
 
 test('C167 (2): the day divider is the shared part, quiet medium words on a line, 12 above and 4 below, sticky by class', () => {
-  const sheet = read('src/component/group-heading/scss/_group-heading.scss');
-  assert.match(sheet, /\.sf-group-heading--divider \{\n\s*flex-wrap: nowrap;\n\s*align-items: center;\n\s*gap: var\(--sf-space-1\\\/2\);\n\s*margin-block: var\(--sf-space-1\\\/2\) var\(--sf-space-1\\\/4\);\n\s*color: var\(--sf-group-heading-date-color, var\(--sf-on-surface-variant\)\);\n\s*font-size: var\(--sf-text-size-1\\\/2\);\n\s*line-height: var\(--sf-text-height-1\\\/2\);\n\s*font-weight: var\(--sf-weight--medium\);/u);
+  const sheet = unfoldModes(read('src/component/group-heading/scss/_group-heading.scss')); // C273: mode blocks unfolded
+  assert.match(sheet, /\.sf-group-heading--divider \{\n\s*flex-wrap: nowrap;\n\s*align-items: center;\n\s*gap: var\(--sf-space-1\\\/2\);\n\s*margin-block: var\(--sf-space-1\\\/2\) var\(--sf-space-1\\\/4\);\n\s*font-size: var\(--sf-text-size-1\\\/2\);\n\s*line-height: var\(--sf-text-height-1\\\/2\);\n\s*font-weight: var\(--sf-weight--medium\);/u);
+  // C273: the words' colour is paint
+  assert.match(paintBlocks(sheet), /\.sf-group-heading--divider \{\s*color: var\(--sf-group-heading-date-color, var\(--sf-on-surface-variant\)\);/u);
   assert.match(sheet, /\.sf-group-heading--sticky \{\n\s*position: sticky;/u);
-  assert.equal(json('src/component/group-heading/passport.json').version, '1.1.0');
+  assert.equal(json('src/component/group-heading/passport.json').version, '1.2.0'); // 1.2.0: C273
 });
 
 test('C167 (3): a row with a count is unread, its title semibold', () => {

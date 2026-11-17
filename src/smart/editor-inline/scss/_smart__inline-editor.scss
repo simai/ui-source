@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
 // In-place inline editor (startInlineEdit). The edited element shows a
 // visible editing state; the formatting toolbar floats over the selected
 // text, or stands above the screen keyboard on a phone; the link window is a
@@ -8,6 +9,7 @@
    own colour, which is part of the editor's language rather than the product's
    focus colour. Width and style stay the system's. */
 @layer sf.components {
+  @include paint.part(shape);
     [data-sf-inline-editing] {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-inline-editor-outline-color, var(--sf-primary, Highlight));
         outline-offset: 2px;
@@ -30,9 +32,7 @@
         box-sizing: border-box;
         max-inline-size: 100vw;
         border-radius: var(--sf-inline-editor-toolbar-radius, var(--sf-radius--ui));
-        background: var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas));
         @include places.sf-place(var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
-        color: var(--sf-on-surface, CanvasText);
         box-shadow: var(--sf-shadow-overlay);
     }
 
@@ -51,7 +51,6 @@
         align-self: stretch;
         inline-size: var(--sf-px);
         margin-block: var(--sf-space-1\/4);
-        background-color: var(--sf-outline-variant);
     }
 
     /* The icon button class markup (the sheet of icon-buttons draws it); the
@@ -93,9 +92,7 @@
         max-inline-size: 100vw;
         padding: var(--sf-space-1\/2);
         border-radius: var(--sf-radius--surface);
-        background: var(--sf-surface-popup, Canvas);
         @include places.sf-place(var(--sf-surface-popup, Canvas), var(--sf-on-surface-popup-variant));
-        color: var(--sf-on-surface, CanvasText);
         box-shadow: var(--sf-shadow-overlay);
     }
 
@@ -142,4 +139,26 @@
         clip-path: inset(50%);
         white-space: nowrap;
     }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-inline-editor-toolbar {
+    background: var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas));
+    @include places.sf-place(var(--sf-inline-editor-toolbar-background-color, var(--sf-surface-popup, Canvas)), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface, CanvasText);
+  }
+  .sf-inline-editor-separator {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-inline-editor-link {
+    background: var(--sf-surface-popup, Canvas);
+    @include places.sf-place(var(--sf-surface-popup, Canvas), var(--sf-on-surface-popup-variant));
+    color: var(--sf-on-surface, CanvasText);
+  }
+  @include paint.part(all);
 }

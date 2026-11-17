@@ -4,6 +4,7 @@ import { dirname, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import {themeSource} from './support/theme-source.mjs';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // A role is dimmed relative to the surface it lies on, and a raised surface
 // lightens with its step in the dark theme. One fixed value therefore cannot
@@ -182,7 +183,15 @@ test('whatever lays a container fill under text carries the container text role'
       // A skeleton bar is the fill (C16 S3) and stands in for text it does not carry.
       if (/skeleton/u.test(lines.slice(Math.max(0, index - 8), index + 1).join('\n')) || path.includes('skeleton/')) return;
       // The role under its C16 name or the former one (token-aliases.v1.json).
-      if (!/--sf-on-surface-variant: var\(--sf-on-surface-container-{1,2}variant\)/u.test(near)) offenders.push(`${path}:${index + 1}`);
+      const role = /--sf-on-surface-variant: var\(--sf-on-surface-container-{1,2}variant\)/u;
+      if (role.test(near)) return;
+      // C273: the role is paint; it may stand in the paint block's rule of
+      // the same selector while the fill's own variable stays in the
+      // component block.
+      let selector = '';
+      for (let k = index; k >= 0 && !selector; k--) if (/\{\s*$/u.test(lines[k])) selector = lines[k].replace(/\{\s*$/u, '').trim();
+      const twin = selector && paintBlocks(lines.join('\n')).split(`${selector} {`).slice(1).some((rest) => role.test(rest.slice(0, rest.indexOf('}'))));
+      if (!twin) offenders.push(`${path}:${index + 1}`);
     });
   }
   assert.deepEqual(offenders, [], 'dimmed text on a container fill reads the container role');

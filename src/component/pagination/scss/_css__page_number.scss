@@ -36,11 +36,7 @@
   border-start-end-radius: var(--sf-page-number--border-start-end-radius, var(--sf-pagination-page-radius, var(--sf-radius--ui)));
   border-end-start-radius: var(--sf-page-number--border-end-start-radius, var(--sf-pagination-page-radius, var(--sf-radius--ui)));
   border-end-end-radius: var(--sf-page-number--border-end-end-radius, var(--sf-pagination-page-radius, var(--sf-radius--ui)));
-  background-color: var(--sf-page-number--background-color);
-  color: var(--sf-page-number--color);
   box-shadow: var(--sf-page-number--box-shadow);
-  /* The button's frame: one pixel, transparent unless a look draws it. */
-  border-color: var(--sf-page-number--border-color, transparent);
   border-style: var(--sf-page-number--border-style, solid);
   border-width: var(--sf-page-number--border-width, var(--sf-px));
   box-sizing: border-box;
@@ -110,11 +106,6 @@
     outline: var(--sf-a2) solid Highlight;
     outline-offset: var(--sf-focus--offset);
   }
-
-  .sf-page-number.selected,
-  .sf-page-number[aria-current="page"] {
-    border-color: Highlight;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -122,6 +113,24 @@
     transition-duration: 0s;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-page-number {
+    background-color: var(--sf-page-number--background-color);
+    color: var(--sf-page-number--color);
+    /* The button's frame: one pixel, transparent unless a look draws it. */
+    border-color: var(--sf-page-number--border-color, transparent);
+  }
+  @media (forced-colors: active) {
+    .sf-page-number.selected,
+  .sf-page-number[aria-current="page"] {
+      border-color: Highlight;
+    }
+  }
 }
 
 @layer sf.states {

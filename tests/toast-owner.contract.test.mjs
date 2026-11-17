@@ -27,7 +27,8 @@ test('Toast presentation uses semantic surface, typography and motion tokens', a
   const css = await read('src/component/toast/scss/_css__toast.scss');
 
   assert.match(css, /var\(--sf-radius--surface\)/);
-  assert.match(css, /border: var\(--sf-px\)/);
+  // C273: the frame's width in the component block, its colour in the paint block.
+  assert.match(css, /border-width: var\(--sf-px\);\s*border-style: solid;/);
   assert.match(css, /--sf-toast-text--font-size: var\(--sf-text-size-1\)/);
   assert.match(css, /--sf-toast-supporting-text--font-size: var\(--sf-text-size-1\)/);
   assert.match(css, /--sf-toast-text--font-weight: var\(--sf-font-weight-medium\)/);

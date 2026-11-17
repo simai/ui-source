@@ -18,8 +18,12 @@
     "src/component/kbd/scss/_kbd.scss",
     "src/component/kbd/scss/index.scss"
   ],
-  "content_sha256": "a2693067ad05293cebb03d7c428732126955626782d821c15a2f43cd532f8ec9",
+  "content_sha256": "485927a17d04fe0b42d1aa2063126650be55d1ca753d9c13e0ebc70939d4d754",
   "dependencies": [
+    {
+      "id": "core.styles",
+      "range": "^1.15.0"
+    },
     {
       "id": "tokens.border",
       "range": "^1.0.0"

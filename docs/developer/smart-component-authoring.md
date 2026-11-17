@@ -338,3 +338,11 @@ the next one.
   `tests/control-boundary.contract.test.mjs`.
 - **Geometry is measured**, at a desktop and a mobile width, against the
   size ladder: `docs/foundation-composition-geometry.md`.
+- **Paint under the utilities, shape over them** (C273, owner 2026-11-17): a
+  component's fill, edge colour, text colour and the place roles it declares
+  go in `@layer sf.paint`, its size, padding, radius, height and edge width in
+  `@layer sf.components`, the same selectors in both. So
+  `<sf-card class="bg-success-container">` is a green card and `p-4` on a
+  button leaves it on the height ladder. A mixin that writes both is split by
+  mode (`src/core/scss/mix/_mix__paint.scss`).
+  `tests/paint-layer.contract.test.mjs`.

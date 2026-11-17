@@ -1,8 +1,9 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
 @layer sf.components {
+  @include paint.part(shape);
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
 .sf-country-code {
-  background-color: var(--sf-country-code--background-color, transparent);
   gap: var(--sf-country-code--gap, var(--sf-space-1\/4));
 }
 
@@ -10,7 +11,6 @@
 .sf-country-code .sf-country-code-label {
   --sf-country-code-label--background-color: transparent;
   --sf-country-code-label--gap: var(--sf-space-1\/4);
-  background-color: var(--sf-country-code-label--background-color);
   gap: var(--sf-country-code-label--gap);
 }
 
@@ -19,7 +19,6 @@
   --sf-country-code-text--color: var(--sf-on-surface);
   --sf-country-code-text--font-family: var(--sf-text--family);
   --sf-country-code-text--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-country-code-text--color);
   font-family: var(--sf-country-code-text--font-family);
   font-size: var(--sf-country-code-text--font-size);
   font-weight: var(--sf-country-code-text--font-weight);
@@ -31,7 +30,6 @@
   --sf-country-code-required--color: var(--sf-on-surface);
   --sf-country-code-required--font-family: var(--sf-text--family);
   --sf-country-code-required--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-country-code-required--color);
   font-family: var(--sf-country-code-required--font-family);
   font-size: var(--sf-country-code-required--font-size);
   font-weight: var(--sf-country-code-required--font-weight);
@@ -47,9 +45,8 @@
   --sf-country-code-field--border-end-start-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
   --sf-country-code-field--border-start-end-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
   --sf-country-code-field--border-start-start-radius: var(--sf-country-code-radius, var(--sf-ui-radius-default));
-  background-color: var(--sf-country-code-field--background-color);
   border: var(--sf-country-code-field--border);
-  border-color: var(--sf-country-code-field--border-color, transparent);
+  border-color: revert-layer;
   border-end-end-radius: var(--sf-country-code-field--border-end-end-radius);
   border-end-start-radius: var(--sf-country-code-field--border-end-start-radius);
   border-start-end-radius: var(--sf-country-code-field--border-start-end-radius);
@@ -64,7 +61,6 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-country-code .sf-country-code-left {
   --sf-country-code-left--background-color: transparent;
-  background-color: var(--sf-country-code-left--background-color);
 }
 
 /* The slot holds a picture, and the picture fills it in the shape the rest of
@@ -84,7 +80,6 @@
 
 .sf-country-code .sf-country-code-flag-icon {
   --sf-country-code-flag-icon--background-color: transparent;
-  background-color: var(--sf-country-code-flag-icon--background-color);
   font-size: var(--sf-country-code-flag-icon--font-size);
   height: var(--sf-country-code-flag-icon--height);
   opacity: var(--sf-country-code-flag-icon--opacity);
@@ -94,8 +89,6 @@
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) */
 .sf-country-code .sf-country-code-field input {
   --sf-country-code-input--background-color: transparent;
-  background-color: var(--sf-country-code-input--background-color);
-  color: var(--sf-country-code-input--color);
   font-family: var(--sf-country-code-input--font-family);
   font-size: var(--sf-country-code-input--font-size);
   font-weight: var(--sf-country-code-input--font-weight);
@@ -107,7 +100,6 @@
 .sf-country-code .sf-country-code-field input::placeholder {
   --sf-country-code-placeholder--color: var(--sf-on-surface-variant);
   --sf-country-code-placeholder--font-family: var(--sf-text--family);
-  color: var(--sf-country-code-placeholder--color);
   font-family: var(--sf-country-code-placeholder--font-family);
   font-size: var(--sf-country-code-placeholder--font-size);
   line-height: var(--sf-country-code-placeholder--line-height);
@@ -118,7 +110,6 @@
   --sf-country-code-hint--color: var(--sf-on-surface-variant);
   --sf-country-code-hint--font-family: var(--sf-text--family);
   --sf-country-code-hint--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-country-code-hint--color);
   font-family: var(--sf-country-code-hint--font-family);
   font-size: var(--sf-country-code-hint--font-size);
   font-weight: var(--sf-country-code-hint--font-weight);
@@ -126,16 +117,11 @@
 }
 
 .sf-country-code .sf-country-code-list {
-  background-color: var(--sf-country-code-list--background-color);
   box-shadow: var(--sf-country-code-list--box-shadow);
   padding-bottom: var(--sf-country-code-list--padding-bottom);
   padding-inline-end: var(--sf-country-code-list--padding-inline-end);
   padding-inline-start: var(--sf-country-code-list--padding-inline-start);
   padding-top: var(--sf-country-code-list--padding-top);
-}
-
-.sf-country-code .sf-country-code-items {
-  background-color: var(--sf-country-code-items--background-color);
 }
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-country-code-item--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -145,8 +131,6 @@
   border-radius: var(--sf-radius--ui);
   --sf-country-code-item--background-color: transparent;
   --sf-country-code-item--gap: var(--sf-space-1\/3);
-  background-color: var(--sf-country-code-item--background-color);
-  color: var(--sf-country-code-item--color);
   font-family: var(--sf-country-code-item--font-family);
   font-size: var(--sf-country-code-item--font-size);
   font-weight: var(--sf-country-code-item--font-weight);
@@ -162,14 +146,12 @@
 .sf-country-code .sf-country-code-flag {
   flex-shrink: 0;
   --sf-country-code-flag--background-color: transparent;
-  background-color: var(--sf-country-code-flag--background-color);
   font-size: var(--sf-country-code-flag--font-size);
   height: var(--sf-country-code-flag--height);
   width: var(--sf-country-code-flag--width);
 }
 
 .sf-country-code .sf-icon {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
   height: var(--sf-icon--height, var(--sf-text-size-3));
   width: var(--sf-icon--width, var(--sf-text-size-3));
@@ -490,7 +472,8 @@
 /* A code the text does not name: the flag's place is an empty frame. */
 .sf-country-code.sf-country-code--unknown .sf-country-code-flag-icon {
   box-sizing: border-box;
-  border: var(--sf-px) dashed var(--sf-outline);
+  border-width: var(--sf-px);
+  border-style: dashed;
   border-radius: var(--sf-radius--ui);
 }
 
@@ -522,7 +505,8 @@
   block-size: var(--sf-country-code-row--block-size, var(--sf-ui-1--control-height));
   padding-inline: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
   margin-block-end: var(--sf-space-1\/4);
-  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+  border-block-end-width: var(--sf-px);
+  border-block-end-style: solid;
 }
 
 .sf-country-code .sf-country-code-search .sf-icon {
@@ -539,16 +523,14 @@
   block-size: 100%;
   padding: 0;
   border: 0;
+  border-color: revert-layer;
   outline: 0;
-  background: transparent;
-  color: var(--sf-on-surface);
   font: inherit;
   font-size: var(--sf-country-code-item--font-size, var(--sf-text-size-1));
   line-height: var(--sf-country-code-item--line-height, var(--sf-text-height-1));
 }
 
 .sf-country-code .sf-country-code-search input::placeholder {
-  color: var(--sf-on-surface-variant);
   opacity: 1;
 }
 
@@ -556,7 +538,6 @@
   display: block;
   padding-block: var(--sf-space-1\/4);
   padding-inline: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
 }
@@ -569,7 +550,6 @@
   order: 999;
   block-size: var(--sf-country-code-row--block-size, var(--sf-ui-1--control-height));
   padding-inline: calc(var(--sf-country-code--inset) - var(--sf-country-code-list--padding-inline-start, 0px));
-  color: var(--sf-on-surface-variant);
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
 }
@@ -607,6 +587,90 @@
   min-block-size: 0;
   max-block-size: none;
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-country-code {
+    background-color: var(--sf-country-code--background-color, transparent);
+  }
+  .sf-country-code .sf-country-code-label {
+    background-color: var(--sf-country-code-label--background-color);
+  }
+  .sf-country-code .sf-country-code-text {
+    color: var(--sf-country-code-text--color);
+  }
+  .sf-country-code .sf-country-code-required {
+    color: var(--sf-country-code-required--color);
+  }
+  .sf-country-code .sf-country-code-field {
+    background-color: var(--sf-country-code-field--background-color);
+    border: var(--sf-country-code-field--border);
+    border-color: var(--sf-country-code-field--border-color, transparent);
+  }
+  .sf-country-code .sf-country-code-left {
+    background-color: var(--sf-country-code-left--background-color);
+  }
+  .sf-country-code .sf-country-code-flag-icon {
+    background-color: var(--sf-country-code-flag-icon--background-color);
+  }
+  .sf-country-code .sf-country-code-field input {
+    background-color: var(--sf-country-code-input--background-color);
+    color: var(--sf-country-code-input--color);
+  }
+  .sf-country-code .sf-country-code-field input::placeholder {
+    color: var(--sf-country-code-placeholder--color);
+  }
+  .sf-country-code .sf-country-code-hint {
+    color: var(--sf-country-code-hint--color);
+  }
+  .sf-country-code .sf-country-code-list {
+    background-color: var(--sf-country-code-list--background-color);
+  }
+  .sf-country-code .sf-country-code-items {
+    background-color: var(--sf-country-code-items--background-color);
+  }
+  .sf-country-code .sf-country-code-item {
+    background-color: var(--sf-country-code-item--background-color);
+    color: var(--sf-country-code-item--color);
+  }
+  .sf-country-code .sf-country-code-flag {
+    background-color: var(--sf-country-code-flag--background-color);
+  }
+  .sf-country-code .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-country-code.open .sf-country-code-list {
+    @include places.sf-place(var(--sf-country-code-list-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+  }
+  .sf-country-code.sf-country-code--unknown .sf-country-code-flag-icon {
+    border-color: var(--sf-outline);
+  }
+  .sf-country-code .sf-country-code-search {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-country-code .sf-country-code-search input {
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface);
+  }
+  .sf-country-code .sf-country-code-search input::placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-country-code .sf-country-code-group {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-country-code .sf-country-code-empty {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-country-code .sf-country-code-item[aria-selected="true"] {
+    @include places.sf-place-fill(var(--sf-country-code-item--background-color));
+  }
+  @include paint.part(all);
 }
 
 /* C153 (1), (2): a disabled field's label and mark take the disabled ink. */

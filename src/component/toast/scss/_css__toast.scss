@@ -3,12 +3,14 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__notice-link' as notice-link;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use '../../../core/scss/mix/mix__paint' as paint;
 /* The status words are the shared vocabulary: neutral, info, success, warning,
    error. The component renders the canonical class, and the two words this
    component used before — default and primary — are matched beside it so
    existing markup and project CSS keep working. `primary` was a colour inside a
    list of statuses; here it meant info. See contracts/public-api-axes.json. */
 @layer sf.components {
+  @include paint.part(shape);
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   /* The notice's geometry (owner decision C35, remarks R066 and R079), in
      tokens, so a compact region (data-sf-density) moves every step itself:
@@ -33,7 +35,8 @@
     box-sizing: border-box;
     min-inline-size: var(--sf-0);
     max-inline-size: 100%;
-    border: var(--sf-toast-border-width, var(--sf-px)) solid var(--sf-toast-border-color, var(--sf-toast--border-color, var(--sf-outline-variant)));
+    border-width: var(--sf-toast-border-width, var(--sf-px));
+    border-style: solid;
     border-end-end-radius: var(--sf-toast-radius, var(--sf-toast--border-bottom-right-radius, var(--sf-radius--surface)));
     border-end-start-radius: var(--sf-toast-radius, var(--sf-toast--border-bottom-left-radius, var(--sf-radius--surface)));
     border-start-end-radius: var(--sf-toast-radius, var(--sf-toast--border-top-right-radius, var(--sf-radius--surface)));
@@ -43,15 +46,9 @@
     padding-inline-end: var(--sf-toast-padding-inline, var(--sf-toast--padding-right, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
     padding-inline-start: var(--sf-toast-padding-inline, var(--sf-toast--padding-left, calc(var(--sf-space-1) - var(--sf-toast-border-width, var(--sf-px)))));
     padding-top: var(--sf-toast-padding-block, var(--sf-toast--padding-top, var(--sf-space-1\/2)));
-    /* A toast floats over the page, and the status containers are
-       translucent fills: painted alone they let the table under a toast read
-       through its text (owner, 2026-10-12). So the toast stands on the raised
-       surface of its step, with its shadow, and the status tints it. */
-    background-color: var(--sf-surface-popup);
     @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
     background-image: linear-gradient(var(--sf-toast--background-color), var(--sf-toast--background-color));
     box-shadow: var(--sf-shadow-overlay);
-    color: var(--sf-toast--content-color, var(--sf-on-surface));
     opacity: 1;
     transform: translateY(var(--sf-0));
     transition: opacity var(--sf-duration-normal) var(--sf-ease-enter), transform var(--sf-duration-normal) var(--sf-ease-enter);
@@ -61,11 +58,6 @@
     transition-timing-function: var(--sf-ease-exit);
     opacity: 0;
     transform: translateY(var(--sf-space-1\/2));
-  }
-
-  .sf-toast .sf-close-icon {
-    background-color: var(--sf-close-icon--background-color);
-    border-color: var(--sf-close-icon--border-color, transparent);
   }
 
   /* The status icon is the line's size (C22: an icon follows its text), as
@@ -82,13 +74,6 @@
     font-size: var(--sf-icon--font-size);
     height: var(--sf-icon--height);
     width: var(--sf-icon--width);
-  }
-
-  /* The status colour is the notice's own icon only (C35 acceptance A-F1): an
-     icon inside an action button keeps the button's own icon role. */
-  .sf-toast > .sf-icon,
-  .sf-toast > sf-icon > .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
   }
 
   /* Centred on the first line: the line's lead in the low control's box. The
@@ -113,7 +98,6 @@
   .sf-toast .sf-toast-container {
     --sf-toast-container--background-color: transparent;
     --sf-toast-container--gap: var(--sf-space-1\/2);
-    background-color: var(--sf-toast-container--background-color);
     gap: var(--sf-toast-container--gap);
     min-inline-size: var(--sf-0);
     /* The text's first and last lines in the low control's box; the actions
@@ -173,7 +157,6 @@
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
   .sf-toast .sf-toast-bottom {
     --sf-toast-bottom--background-color: transparent;
-    background-color: var(--sf-toast-bottom--background-color);
     flex-wrap: wrap;
     gap: var(--sf-space-1\/3);
   }
@@ -193,7 +176,6 @@
     --sf-toast-wrap--background-color: transparent;
     /* The title and its text are one block (C35). */
     --sf-toast-wrap--gap: var(--sf-0);
-    background-color: var(--sf-toast-wrap--background-color);
     gap: var(--sf-toast-wrap--gap);
   }
 
@@ -202,7 +184,6 @@
     --sf-toast-supporting-text--font-size: var(--sf-text-size-1);
     --sf-toast-supporting-text--font-weight: var(--sf-font-weight-regular);
     --sf-toast-supporting-text--line-height: var(--sf-text-height-1);
-    color: var(--sf-toast-supporting-text--color);
     font-family: var(--sf-toast-supporting-text--font-family);
     font-size: var(--sf-toast-supporting-text--font-size);
     font-weight: var(--sf-toast-supporting-text--font-weight);
@@ -215,7 +196,6 @@
     --sf-toast-text--font-size: var(--sf-text-size-1);
     --sf-toast-text--font-weight: var(--sf-font-weight-medium);
     --sf-toast-text--line-height: var(--sf-text-height-1);
-    color: var(--sf-toast-text--color);
     font-family: var(--sf-toast-text--font-family);
     font-size: var(--sf-toast-text--font-size);
     font-weight: var(--sf-toast-text--font-weight);
@@ -315,7 +295,6 @@
   /* utility-hint: flex/1 (.flex-1) */
   :is(.sf-toast--neutral, .sf-toast--default) {
     --sf-toast--background-color: var(--sf-toast-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     --sf-toast--content-color: var(--sf-toast-color, var(--sf-on-surface));
   }
 
@@ -365,11 +344,74 @@
     }
   }
 
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-toast {
+    border-color: var(--sf-toast-border-color, var(--sf-toast--border-color, var(--sf-outline-variant)));
+    /* A toast floats over the page, and the status containers are
+       translucent fills: painted alone they let the table under a toast read
+       through its text (owner, 2026-10-12). So the toast stands on the raised
+       surface of its step, with its shadow, and the status tints it. */
+    background-color: var(--sf-surface-popup);
+    @include places.sf-place(var(--sf-surface-popup), var(--sf-on-surface-popup-variant));
+    color: var(--sf-toast--content-color, var(--sf-on-surface));
+  }
+  .sf-toast .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+  /* The status colour is the notice's own icon only (C35 acceptance A-F1): an
+     icon inside an action button keeps the button's own icon role. */
+  .sf-toast > .sf-icon,
+  .sf-toast > sf-icon > .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-toast .sf-toast-container {
+    background-color: var(--sf-toast-container--background-color);
+  }
+  .sf-toast .sf-toast-bottom {
+    background-color: var(--sf-toast-bottom--background-color);
+  }
+  .sf-toast .sf-toast-bottom .sf-button.sf-button--tonal.sf-button--on-surface {
+    @include places.sf-place-neutral-container;
+  }
+  .sf-toast .sf-toast-wrap {
+    background-color: var(--sf-toast-wrap--background-color);
+  }
+  .sf-toast .sf-toast-supporting-text {
+    color: var(--sf-toast-supporting-text--color);
+  }
+  .sf-toast .sf-toast-text {
+    color: var(--sf-toast-text--color);
+  }
+  :is(.sf-toast--neutral, .sf-toast--default) {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  :is(.sf-toast--info, .sf-toast--primary) {
+    @include places.sf-place-soft(info);
+  }
+  .sf-toast--error {
+    @include places.sf-place-soft(error);
+  }
+  .sf-toast--warning {
+    @include places.sf-place-soft(warning);
+  }
+  .sf-toast--success {
+    @include places.sf-place-soft(success);
+  }
+  @include notice-link.sf-notice-link('.sf-toast .sf-toast-wrap');
   @media (forced-colors: active) {
     .sf-toast {
       border-color: CanvasText;
     }
   }
+  @include paint.part(all);
 }
 
 /* The action's label under the pointer in the dark theme (C113 follow-up,
@@ -416,8 +458,7 @@
     margin: 0;
     padding: 0;
     border: 0;
-    background: transparent;
-    color: inherit;
+    border-color: revert-layer;
     overflow: visible;
     display: flex;
     flex-direction: column;
@@ -454,6 +495,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
     pointer-events: none;
   }
 
@@ -468,8 +510,6 @@
     inset-inline-start: calc(-1 * var(--sf-space-1\/4));
     padding-inline: var(--sf-space-1\/4);
     border-radius: var(--sf-radius-circle);
-    background-color: var(--sf-on-surface);
-    color: var(--sf-surface-page);
     font-size: var(--sf-text-size-1\/3);
     line-height: var(--sf-text-height-1\/3);
   }
@@ -532,6 +572,24 @@
     .sf-notifications[data-layout="stack"] > .sf-toast > * {
       transition: none;
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-notifications {
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+  .sf-notifications > .sf-notifications-live {
+    border: 0;
+  }
+  .sf-notifications .sf-toast[data-count]::before {
+    background-color: var(--sf-on-surface);
+    color: var(--sf-surface-page);
   }
 }
 

@@ -6,12 +6,10 @@
   .sf-input {
     min-inline-size: 0;
     --sf-input--radius: var(--sf-input-radius, var(--sf-radius--ui));
-    background-color: var(--sf-input--background-color, transparent);
     gap: var(--sf-input--gap, var(--sf-space-1\/4));
   }
 
   .sf-input .sf-icon {
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
     font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
     height: var(--sf-icon--height, var(--sf-icon-size-3));
     width: var(--sf-icon--width, var(--sf-icon-size-3));
@@ -25,10 +23,8 @@
     --sf-input-field--border-end-start-radius: var(--sf-input--radius);
     --sf-input-field--border-start-end-radius: var(--sf-input--radius);
     --sf-input-field--border-start-start-radius: var(--sf-input--radius);
-    background-color: var(--sf-input-field--background-color);
     border: var(--sf-input-field--border, 0 solid);
-    border-color: var(--sf-input-field--border-color, transparent);
-    border-block-end-color: var(--sf-input-field--line-color, var(--sf-input-field--border-color, transparent));
+    border-color: revert-layer;
     border-end-end-radius: var(--sf-input-field--border-end-end-radius);
     border-end-start-radius: var(--sf-input-field--border-end-start-radius);
     border-start-end-radius: var(--sf-input-field--border-start-end-radius);
@@ -45,15 +41,12 @@
 
   .sf-input .sf-input-hint {
     --sf-input-hint--background-color: transparent;
-    background-color: var(--sf-input-hint--background-color);
   }
 
   /* utility-hint: flex/1 (.flex-1) */
   .sf-input .sf-input-field input {
     min-inline-size: 0;
     --sf-input-input--background-color: transparent;
-    background-color: var(--sf-input-input--background-color);
-    color: var(--sf-input-color, var(--sf-input-input--color));
     font-family: var(--sf-input-input--font-family);
     font-size: var(--sf-input-input--font-size);
     line-height: var(--sf-input-input--line-height);
@@ -70,7 +63,6 @@
   .sf-input .sf-input-field input::placeholder {
     --sf-input-placeholder--color: var(--sf-on-surface-variant);
     --sf-input-placeholder--font-family: var(--sf-text--family);
-    color: var(--sf-input-placeholder--color);
     font-family: var(--sf-input-placeholder--font-family);
     font-size: var(--sf-input-placeholder--font-size);
     line-height: var(--sf-input-placeholder--line-height);
@@ -99,13 +91,11 @@
 
   .sf-input .sf-input-left {
     --sf-input-left--background-color: transparent;
-    background-color: var(--sf-input-left--background-color);
   }
 
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-input .sf-input-right {
     --sf-input-right--background-color: transparent;
-    background-color: var(--sf-input-right--background-color);
     padding-inline-end: var(--sf-input-right--padding-inline-end);
     padding-inline-start: var(--sf-input-right--padding-inline-start);
   }
@@ -114,7 +104,6 @@
     --sf-input-text--color: var(--sf-on-surface-variant);
     --sf-input-text--font-family: var(--sf-text--family);
     --sf-input-text--font-weight: var(--sf-font-weight-regular);
-    color: var(--sf-input-text--color);
     font-family: var(--sf-input-text--font-family);
     font-size: var(--sf-input-text--font-size);
     font-weight: var(--sf-input-text--font-weight);
@@ -123,8 +112,6 @@
 
   .sf-input .sf-input-hint-text-wrap {
     --sf-input-hint-text-wrap--background-color: transparent;
-    background-color: var(--sf-input-hint-text-wrap--background-color);
-    color: var(--sf-input-hint-text-wrap--color);
     font-family: var(--sf-input-hint-text-wrap--font-family);
     font-size: var(--sf-input-hint-text-wrap--font-size);
     font-weight: var(--sf-input-hint-text-wrap--font-weight);
@@ -136,7 +123,6 @@
   .sf-input .sf-input-label {
     --sf-input-label--background-color: transparent;
     --sf-input-label--gap: var(--sf-space-1\/4);
-    background-color: var(--sf-input-label--background-color);
     gap: var(--sf-input-label--gap);
   }
 
@@ -146,7 +132,6 @@
     --sf-input-required--color: var(--sf-on-surface);
     --sf-input-required--font-family: var(--sf-text--family);
     --sf-input-required--font-weight: var(--sf-font-weight-regular);
-    color: var(--sf-input-required--color);
     font-family: var(--sf-input-required--font-family);
     font-size: var(--sf-input-required--font-size);
     font-weight: var(--sf-input-required--font-weight);
@@ -349,6 +334,53 @@
     // красится ролью ошибки; значок оставался приглушённо-серым и давал 2.92:1
     // в тёмной теме.
     --sf-icon--color: var(--sf-error);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-input {
+    background-color: var(--sf-input--background-color, transparent);
+  }
+  .sf-input .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-input .sf-input-field {
+    background-color: var(--sf-input-field--background-color);
+    border: var(--sf-input-field--border, 0 solid);
+    border-color: var(--sf-input-field--border-color, transparent);
+    border-block-end-color: var(--sf-input-field--line-color, var(--sf-input-field--border-color, transparent));
+  }
+  .sf-input .sf-input-hint {
+    background-color: var(--sf-input-hint--background-color);
+  }
+  .sf-input .sf-input-field input {
+    background-color: var(--sf-input-input--background-color);
+    color: var(--sf-input-color, var(--sf-input-input--color));
+  }
+  .sf-input .sf-input-field input::placeholder {
+    color: var(--sf-input-placeholder--color);
+  }
+  .sf-input .sf-input-left {
+    background-color: var(--sf-input-left--background-color);
+  }
+  .sf-input .sf-input-right {
+    background-color: var(--sf-input-right--background-color);
+  }
+  .sf-input .sf-input-text {
+    color: var(--sf-input-text--color);
+  }
+  .sf-input .sf-input-hint-text-wrap {
+    background-color: var(--sf-input-hint-text-wrap--background-color);
+    color: var(--sf-input-hint-text-wrap--color);
+  }
+  .sf-input .sf-input-label {
+    background-color: var(--sf-input-label--background-color);
+  }
+  .sf-input .sf-input-required {
+    color: var(--sf-input-required--color);
   }
 }
 
@@ -659,7 +691,6 @@
     flex: none;
     display: flex;
     align-items: center;
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-weight: var(--sf-weight--regular);
     white-space: nowrap;
@@ -710,7 +741,6 @@
   .sf-input .sf-input-count {
     flex: none;
     margin-inline-start: auto;
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-weight: var(--sf-weight--regular);
     font-variant-numeric: tabular-nums;
@@ -724,10 +754,6 @@
     }
   }
 
-  .sf-input.sf-input--over .sf-input-count {
-    color: var(--sf-error);
-  }
-
   .sf-input-count-said {
     position: absolute;
     inline-size: var(--sf-px);
@@ -737,6 +763,25 @@
     overflow: hidden;
     clip-path: inset(50%);
     white-space: nowrap;
+    border: 0;
+    border-color: revert-layer;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-input .sf-input-start {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-input .sf-input-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-input.sf-input--over .sf-input-count {
+    color: var(--sf-error);
+  }
+  .sf-input-count-said {
     border: 0;
   }
 }

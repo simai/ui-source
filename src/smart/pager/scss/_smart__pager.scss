@@ -36,7 +36,6 @@
   display: block;
   box-sizing: border-box;
   min-inline-size: 0;
-  color: var(--sf-on-surface);
   font-size: var(--sf-pager--text);
   line-height: var(--sf-pager--line);
 }
@@ -84,7 +83,6 @@
 
 .sf-pager-meta,
 .sf-pager-place {
-  color: var(--sf-pager--meta-color);
   font-size: var(--sf-pager--note-text);
   line-height: var(--sf-pager--note-line);
 }
@@ -93,8 +91,7 @@
 .sf-pager-side {
   margin: 0;
   border: 0;
-  background: none;
-  color: var(--sf-pager--link-color);
+  border-color: revert-layer;
   font: inherit;
   text-align: start;
   text-decoration: none;
@@ -121,13 +118,9 @@
   min-inline-size: 0;
   padding-block: var(--sf-pager--inset-y);
   padding-inline: var(--sf-pager--space-x);
-  border: var(--sf-px) solid var(--sf-pager--card-border-color);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-pager--card-radius);
-  background: var(--sf-pager--card-background);
-}
-
-.sf-pager--cards .sf-pager-side:hover {
-  border-color: var(--sf-primary-outline);
 }
 
 .sf-pager--cards .sf-pager-side--prev {
@@ -144,7 +137,6 @@
   display: flex;
   align-items: center;
   gap: var(--sf-pager--text-space);
-  color: var(--sf-pager--meta-color);
   font-size: var(--sf-pager--note-text);
   line-height: var(--sf-pager--note-line);
 }
@@ -247,11 +239,6 @@
   flex: 1 1 0;
   block-size: var(--sf-a4);
   border-radius: var(--sf-a2);
-  background: var(--sf-pager--track-color);
-}
-
-.sf-pager-segment--done {
-  background: var(--sf-pager--fill-color);
 }
 
 /* ── course: the dots and the place, then the next lesson's card. ── */
@@ -279,17 +266,11 @@
   inline-size: var(--sf-a8);
   block-size: var(--sf-a8);
   border-radius: 50%;
-  background: var(--sf-pager--track-color);
-}
-
-.sf-pager-dot--done {
-  background: var(--sf-pager--fill-color);
 }
 
 .sf-pager-dot--current {
-  border: var(--sf-a2) solid var(--sf-pager--fill-color);
-  /* A ring: its middle is the place the dots stand on (C16). */
-  background: var(--sf-surface-place);
+  border-width: var(--sf-a2);
+  border-style: solid;
 }
 
 .sf-pager-lesson {
@@ -298,9 +279,9 @@
   gap: var(--sf-pager--text-space);
   padding-block: var(--sf-pager--inset-y);
   padding-inline: var(--sf-pager--space-x);
-  border: var(--sf-px) solid var(--sf-pager--card-border-color);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-pager--card-radius);
-  background: var(--sf-pager--card-background);
 }
 
 .sf-pager-lesson-number {
@@ -311,8 +292,6 @@
   inline-size: var(--sf-pager--line);
   block-size: var(--sf-pager--line);
   border-radius: 50%;
-  background: var(--sf-primary-container);
-  color: var(--sf-on-primary-container);
   font-size: var(--sf-pager--note-text);
   font-weight: var(--sf-font-weight-medium);
   line-height: 1;
@@ -361,7 +340,6 @@
 
 .sf-pager--counter .sf-pager-place {
   min-inline-size: 7ch;
-  color: var(--sf-on-surface);
   font-size: var(--sf-pager--text);
   line-height: var(--sf-pager--line);
   font-variant-numeric: tabular-nums;
@@ -408,14 +386,76 @@
     outline: var(--sf-focus--width) solid currentColor;
   }
 
-  .sf-pager-segment--done,
-  .sf-pager-dot--done {
-    background: Highlight;
-  }
-
   .sf-pager-segment,
   .sf-pager-dot {
-    border: var(--sf-px) solid CanvasText;
+    border-width: var(--sf-px);
+    border-style: solid;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-pager {
+    color: var(--sf-on-surface);
+  }
+  .sf-pager-meta,
+.sf-pager-place {
+    color: var(--sf-pager--meta-color);
+  }
+  .sf-pager-side {
+    border: 0;
+    background: none;
+    color: var(--sf-pager--link-color);
+  }
+  .sf-pager--cards .sf-pager-side {
+    border-color: var(--sf-pager--card-border-color);
+    background: var(--sf-pager--card-background);
+  }
+  .sf-pager--cards .sf-pager-side:hover {
+    border-color: var(--sf-primary-outline);
+  }
+  .sf-pager--cards .sf-pager-direction {
+    color: var(--sf-pager--meta-color);
+  }
+  .sf-pager-segment {
+    background: var(--sf-pager--track-color);
+  }
+  .sf-pager-segment--done {
+    background: var(--sf-pager--fill-color);
+  }
+  .sf-pager-dot {
+    background: var(--sf-pager--track-color);
+  }
+  .sf-pager-dot--done {
+    background: var(--sf-pager--fill-color);
+  }
+  .sf-pager-dot--current {
+    border-color: var(--sf-pager--fill-color);
+    /* A ring: its middle is the place the dots stand on (C16). */
+    background: var(--sf-surface-place);
+  }
+  .sf-pager-lesson {
+    border-color: var(--sf-pager--card-border-color);
+    background: var(--sf-pager--card-background);
+  }
+  .sf-pager-lesson-number {
+    background: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+  .sf-pager--counter .sf-pager-place {
+    color: var(--sf-on-surface);
+  }
+  @media (forced-colors: active) {
+    .sf-pager-segment--done,
+  .sf-pager-dot--done {
+      background: Highlight;
+    }
+    .sf-pager-segment,
+  .sf-pager-dot {
+      border-color: CanvasText;
+    }
+  }
 }

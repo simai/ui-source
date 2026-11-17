@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.reference-link",
   "kind": "component",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/reference-link/docs/docs.md",
@@ -14,7 +14,7 @@
     "src/component/reference-link/scss/_css__reference_link.scss",
     "src/component/reference-link/scss/index.scss"
   ],
-  "content_sha256": "bfc0d53a0d9498346395de165df3f8c00211922d0c365efc55876fdda3e45f57",
+  "content_sha256": "c38837a2d63f741aefbc54f9e8646e44f18fc58fb11b958b89e9c048fccbb720",
   "dependencies": [
     {
       "id": "tokens.border",

@@ -26,7 +26,8 @@
    width (C59: windows have a shadow, no frame; the light look lost its
    hairline). The forced-colours border below comes later and wins. */
 .sf-tooltip .sf-tooltip-content {
-  border: var(--sf-tooltip-border-width, 0) solid var(--sf-tooltip-border-color, var(--sf-outline-variant));
+  border-width: var(--sf-tooltip-border-width, 0);
+  border-style: solid;
 }
 
 .sf-tooltip .sf-tooltip-text,
@@ -283,7 +284,22 @@
 
 @media (forced-colors: active) {
   .sf-tooltip .sf-tooltip-content {
-    border: var(--sf-px) solid CanvasText;
+    border-width: var(--sf-px);
+    border-style: solid;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-tooltip .sf-tooltip-content {
+    border-color: var(--sf-tooltip-border-color, var(--sf-outline-variant));
+  }
+  @media (forced-colors: active) {
+    .sf-tooltip .sf-tooltip-content {
+      border-color: CanvasText;
+    }
+  }
 }

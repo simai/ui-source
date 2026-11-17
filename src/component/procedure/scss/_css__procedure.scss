@@ -72,11 +72,8 @@
     box-sizing: border-box;
     inline-size: var(--sf-procedure--marker-size);
     block-size: var(--sf-procedure--marker-size);
-    // A step ahead: the number in the explanation's ink, as sf-steps (Pr3).
-    color: var(--sf-procedure-marker-color, var(--sf-on-surface-variant));
-    // No fill: an empty circle, as the sf-steps marker of a step ahead.
-    background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, transparent));
-    border: var(--sf-px) solid var(--sf-outline);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-radius-circle);
     font-size: var(--sf-text-size-1\/2);
     font-weight: var(--sf-font-weight-medium);
@@ -96,7 +93,6 @@
     inset-block-end: calc(var(--sf-space-1\/4) - var(--sf-procedure--gap));
     inset-inline-start: calc((var(--sf-procedure--marker-size) - var(--sf-procedure--line-width)) / 2);
     inline-size: var(--sf-procedure--line-width);
-    background-color: var(--sf-procedure-line-color, var(--sf-outline-variant));
   }
 
   .sf-procedure-title,
@@ -139,9 +135,6 @@
   // marker is decoration either way: the step's own words say it is done.
   .sf-procedure-step--complete::before {
     content: '';
-    color: var(--sf-on-primary);
-    background-color: var(--sf-primary);
-    border-color: var(--sf-primary);
     background-image:
       linear-gradient(
         to top right,
@@ -168,9 +161,6 @@
   // ring through a gap, as sf-steps (Pr2; it was a pale primary-container
   // circle with a 1 px ring flush against it).
   .sf-procedure-step--current::before {
-    color: var(--sf-on-primary);
-    background-color: var(--sf-primary);
-    border-color: var(--sf-primary);
     outline: var(--sf-procedure--ring) solid var(--sf-primary);
     outline-offset: var(--sf-procedure--ring);
   }
@@ -190,14 +180,6 @@
   }
 
   @media (forced-colors: active) {
-    .sf-procedure-step::before {
-      border-color: CanvasText;
-    }
-
-    .sf-procedure-step:not(:last-child)::after {
-      background-color: CanvasText;
-    }
-
     // Forced colours drop the fill and the drawn check: a done step keeps its
     // number, a current step its ring.
     .sf-procedure-step--complete::before {
@@ -206,6 +188,40 @@
 
     .sf-procedure-step--current::before {
       outline-color: CanvasText;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-procedure-step::before {
+    // A step ahead: the number in the explanation's ink, as sf-steps (Pr3).
+    color: var(--sf-procedure-marker-color, var(--sf-on-surface-variant));
+    // No fill: an empty circle, as the sf-steps marker of a step ahead.
+    background-color: var(--sf-procedure-marker-background-color, var(--sf-procedure-marker-background, transparent));
+    border-color: var(--sf-outline);
+  }
+  .sf-procedure-step:not(:last-child)::after {
+    background-color: var(--sf-procedure-line-color, var(--sf-outline-variant));
+  }
+  .sf-procedure-step--complete::before {
+    color: var(--sf-on-primary);
+    background-color: var(--sf-primary);
+    border-color: var(--sf-primary);
+  }
+  .sf-procedure-step--current::before {
+    color: var(--sf-on-primary);
+    background-color: var(--sf-primary);
+    border-color: var(--sf-primary);
+  }
+  @media (forced-colors: active) {
+    .sf-procedure-step::before {
+      border-color: CanvasText;
+    }
+    .sf-procedure-step:not(:last-child)::after {
+      background-color: CanvasText;
     }
   }
 }

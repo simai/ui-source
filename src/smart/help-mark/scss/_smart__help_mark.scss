@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
 @layer sf.components {
 /* A «?» on a label's line, and a short explanation on the menu's surface, at
    most 20rem wide. */
@@ -60,6 +61,7 @@ sf-help-mark {
 }
 
 @layer sf.components {
+  @include paint.part(shape);
 
 .sf-help-mark-panel {
   position: fixed;
@@ -73,12 +75,11 @@ sf-help-mark {
   /* A window has a shadow, no frame (C59, owner 2026-11-11): the border is
      transparent unless a page names a colour (--sf-help-mark-border-color), so
      the window keeps its size and one look with sf-popover. */
-  border: var(--sf-px) solid var(--sf-help-mark-border-color, transparent);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-help-mark-radius, var(--sf-radius--surface));
-  background-color: var(--sf-help-mark-background-color, var(--sf-surface-popup));
   @include places.sf-place(var(--sf-help-mark-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
   box-shadow: var(--sf-shadow-overlay);
-  color: var(--sf-help-mark-color, var(--sf-on-surface));
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
   white-space: normal;
@@ -93,10 +94,6 @@ sf-help-mark {
   font-weight: var(--sf-font-weight-medium);
 }
 
-.sf-help-mark-body {
-  color: var(--sf-on-surface-variant);
-}
-
 .sf-help-mark-live {
   position: absolute;
   inline-size: var(--sf-px);
@@ -107,4 +104,22 @@ sf-help-mark {
   line-height: var(--sf-text-height-1\/2);
   white-space: nowrap;
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-help-mark-panel {
+    border-color: var(--sf-help-mark-border-color, transparent);
+    background-color: var(--sf-help-mark-background-color, var(--sf-surface-popup));
+    @include places.sf-place(var(--sf-help-mark-background-color, var(--sf-surface-popup)), var(--sf-on-surface-popup-variant));
+    color: var(--sf-help-mark-color, var(--sf-on-surface));
+  }
+  .sf-help-mark-body {
+    color: var(--sf-on-surface-variant);
+  }
+  @include paint.part(all);
 }

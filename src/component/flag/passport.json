@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.flag",
   "kind": "component",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/flag/docs/docs.md",
@@ -510,7 +510,7 @@
     "src/component/flag/scss/_css__flag.scss",
     "src/component/flag/scss/index.scss"
   ],
-  "content_sha256": "74fd8a7271d11cb399ef0d90c76c05c6b7f96f5413ccd695f4552e9be57244f8",
+  "content_sha256": "8f31f32a552299e756eacc285ed02b7fc489a3dddbc0c10a4015f1f7f6115fa2",
   "dependencies": [
     {
       "id": "tokens.border",

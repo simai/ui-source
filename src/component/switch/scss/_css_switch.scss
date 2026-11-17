@@ -1,7 +1,6 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-switch {
-  background-color: var(--sf-switch--background-color, transparent);
   gap: var(--sf-switch--gap);
 }
 
@@ -9,7 +8,6 @@
    its own button's glyph, sized and coloured by sf-help-mark (it took the
    size-2 line, 28 in a 32 button). :where keeps the weight of the rules. */
 .sf-switch .sf-icon:where(:not(sf-help-mark *)) {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
   height: var(--sf-icon--height, var(--sf-text-size-3));
   width: var(--sf-icon--width, var(--sf-text-size-3));
@@ -19,7 +17,6 @@
 .sf-switch .sf-switch-container-wrap {
   --sf-switch-container-wrap--background-color: transparent;
   --sf-switch-container-wrap--gap: var(--sf-space-0);
-  background-color: var(--sf-switch-container-wrap--background-color);
   gap: var(--sf-switch-container-wrap--gap);
 }
 
@@ -27,7 +24,6 @@
   --sf-switch-description--color: var(--sf-on-surface-variant);
   --sf-switch-description--font-family: var(--sf-text--family);
   --sf-switch-description--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-switch-description--color);
   font-family: var(--sf-switch-description--font-family);
   font-size: var(--sf-switch-description--font-size);
   font-weight: var(--sf-switch-description--font-weight);
@@ -37,7 +33,6 @@
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) gap/var(--sf-switch-top--gap) */
 .sf-switch .sf-switch-top {
   --sf-switch-top--background-color: transparent;
-  background-color: var(--sf-switch-top--background-color);
   gap: var(--sf-switch-top--gap);
 }
 
@@ -46,8 +41,6 @@
   --sf-switch-container--background-color: transparent;
   --sf-switch-container--gap: var(--sf-a0);
   --sf-switch-container--font-weight: var(--sf-font-weight-regular); /* C63 W6: one label weight, named */
-  background-color: var(--sf-switch-container--background-color);
-  color: var(--sf-switch-container--color);
   font-family: var(--sf-switch-container--font-family);
   font-size: var(--sf-switch-container--font-size);
   font-weight: var(--sf-switch-container--font-weight);
@@ -67,9 +60,8 @@
   --sf-switch-toggler--border-start-start-radius: var(--sf-switch-radius, var(--sf-radius-circle));
   --sf-switch-toggler--border-style: solid;
   --sf-switch-toggler--border-width: var(--sf-switch-border-width, var(--sf-px));
-  background-color: var(--sf-switch-toggler--background-color);
   border: var(--sf-switch-toggler--border);
-  border-color: var(--sf-switch-toggler--border-color, transparent);
+  border-color: revert-layer;
   border-end-end-radius: var(--sf-switch-toggler--border-end-end-radius);
   border-end-start-radius: var(--sf-switch-toggler--border-end-start-radius);
   border-start-end-radius: var(--sf-switch-toggler--border-start-end-radius);
@@ -88,7 +80,6 @@
 .sf-switch .sf-switch-inner {
   --sf-switch-inner--background-color: var(--sf-on-surface-variant);
   --sf-switch-inner--border-radius: var(--sf-radius-circle);
-  background-color: var(--sf-switch-inner--background-color);
   border-radius: var(--sf-switch-inner--border-radius);
   height: var(--sf-switch-inner--height);
   width: var(--sf-switch-inner--width);
@@ -126,7 +117,6 @@
   --sf-switch-container--font-size: var(--sf-text-size-2);
   --sf-switch-container--line-height: var(--sf-text-height-2);
 }
-
 
 .sf-switch.sf-switch--size-1\/2 .sf-switch-top {
   --sf-switch-top--gap: var(--sf-space-1\/4);
@@ -343,6 +333,39 @@
    press filled the track primary and the thumb white while the thumb stayed
    put, so the fill ran ahead of the travel by the length of the press. The
    colours and the travel now start together on release, on one clock. */
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-switch {
+    background-color: var(--sf-switch--background-color, transparent);
+  }
+  .sf-switch .sf-icon:where(:not(sf-help-mark *)) {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-switch .sf-switch-container-wrap {
+    background-color: var(--sf-switch-container-wrap--background-color);
+  }
+  .sf-switch .sf-switch-description {
+    color: var(--sf-switch-description--color);
+  }
+  .sf-switch .sf-switch-top {
+    background-color: var(--sf-switch-top--background-color);
+  }
+  .sf-switch .sf-switch-container {
+    background-color: var(--sf-switch-container--background-color);
+    color: var(--sf-switch-container--color);
+  }
+  .sf-switch .sf-switch-toggler {
+    background-color: var(--sf-switch-toggler--background-color);
+    border: var(--sf-switch-toggler--border);
+    border-color: var(--sf-switch-toggler--border-color, transparent);
+  }
+  .sf-switch .sf-switch-inner {
+    background-color: var(--sf-switch-inner--background-color);
+  }
 }
 
 @layer sf.states {

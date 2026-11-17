@@ -97,7 +97,6 @@
   }
 
   .sf-gallery-count {
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
     font-variant-numeric: tabular-nums;
@@ -113,8 +112,6 @@
     margin-block-end: var(--sf-space-1\/3);
     padding-inline: var(--sf-space-1\/4);
     border-radius: var(--sf-radius--ui);
-    background-color: var(--sf-primary-container);
-    color: var(--sf-on-primary-container);
   }
 
   .sf-gallery-bar[hidden] {
@@ -159,20 +156,15 @@
     margin: var(--sf-0);
     padding: var(--sf-0);
     border: var(--sf-0);
+    border-color: revert-layer;
     overflow: hidden;
-    background-color: var(--sf-black);
     backdrop-filter: none;
-    color: var(--sf-on-surface-media);
     color-scheme: dark;
   }
 
   .sf-gallery-viewer[open] {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
-  }
-
-  .sf-gallery-viewer::backdrop {
-    background-color: var(--sf-black);
   }
 
   /* The bar: «3 / 12» at the start, the actions at the end 8 apart (C105 H5). */
@@ -203,10 +195,6 @@
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
     font-variant-numeric: tabular-nums;
-  }
-
-  .sf-gallery-viewer-name + .sf-gallery-viewer-count {
-    color: var(--sf-on-surface-variant);
   }
 
   .sf-gallery-viewer-actions {
@@ -266,7 +254,7 @@
     inline-size: min(100%, var(--sf-h5));
     block-size: 100%;
     border: var(--sf-0);
-    background-color: var(--sf-white);
+    border-color: revert-layer;
   }
 
   .sf-gallery-viewer-side {
@@ -291,7 +279,6 @@
   .sf-gallery-viewer-caption {
     min-block-size: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2) + var(--sf-space-1));
     padding: var(--sf-space-1\/2) var(--sf-space-1) var(--sf-space-1);
-    color: var(--sf-gallery-caption-color, var(--sf-on-surface-variant));
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
     text-align: center;
@@ -314,6 +301,37 @@
     .sf-gallery-viewer-media > img {
       transition: none;
     }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-gallery-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-gallery-bar {
+    background-color: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+  }
+  .sf-gallery-viewer {
+    border: var(--sf-0);
+    background-color: var(--sf-black);
+    color: var(--sf-on-surface-media);
+  }
+  .sf-gallery-viewer::backdrop {
+    background-color: var(--sf-black);
+  }
+  .sf-gallery-viewer-name + .sf-gallery-viewer-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-gallery-viewer-media > iframe {
+    border: var(--sf-0);
+    background-color: var(--sf-white);
+  }
+  .sf-gallery-viewer-caption {
+    color: var(--sf-gallery-caption-color, var(--sf-on-surface-variant));
   }
 }
 

@@ -34,7 +34,9 @@ test('Outline uses Framework roles and reserves stable current geometry', async 
   ]) {
     assert.ok(css.includes(token), token);
   }
-  assert.match(css, /border-inline-start:\s*var\(--sf-outline--indicator-width\) solid var\(--sf-transparent\)/);
+  // C273: the indicator's width and style in the component block, its colour in the paint block.
+  assert.match(css, /border-inline-start-width:\s*var\(--sf-outline--indicator-width\);\s*border-inline-start-style: solid;/);
+  assert.match(css, /border-inline-start-color: var\(--sf-transparent\)/);
   assert.match(css, /\[aria-current="location"\][\s\S]*border-inline-start-color:/);
   assert.match(css, /overflow-wrap:\s*anywhere/);
   assert.match(css, /:focus-visible/);

@@ -31,11 +31,12 @@
     "src/core/scss/index.scss",
     "src/core/scss/mix/_mix__common.scss",
     "src/core/scss/mix/_mix__notice-link.scss",
+    "src/core/scss/mix/_mix__paint.scss",
     "src/core/scss/mix/_mix__sheet.scss",
     "src/core/scss/mix/_mix__window-footer.scss",
     "src/core/scss/vars/_sf_var__display.scss"
   ],
-  "content_sha256": "40d85b978751c5a761be1ddf1f0b9eebfbcb453645e172478a3db5ed5c2e0a62",
+  "content_sha256": "53c73ab7827840ab0ebb3f46fff54cc5fff4d8335d662fa266aabdbb769fdaa3",
   "dependencies": [
     {
       "id": "font.inter",

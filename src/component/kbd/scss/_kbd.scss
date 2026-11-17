@@ -38,6 +38,8 @@
 // the plain glyphs' letters among them.
 
 // A key: a <kbd> without keys inside it, or the class fallback.
+@use '../../../core/scss/mix/mix__paint' as paint;
+
 $key: 'kbd:not(.sf-kbd--group):not(:has(> kbd)), .sf-kbd:not(.sf-kbd--group)';
 // A combination: a <kbd> of keys, or the explicit group.
 $group: 'kbd:has(> kbd), .sf-kbd--group';
@@ -70,12 +72,24 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
 // 2026-11-10 defect 7): a step darker than whatever place it stands on. The
 // opaque area it had was 1.54:1 darker than a dark popup, a hole in it.
 @mixin keycap {
-  @include sized;
-  color: var(--sf-on-surface);
-  background: var(--sf-surface-container);
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-  border: var(--sf-px) solid var(--sf-kbd-border-color, var(--sf-outline-variant));
-  box-shadow: inset 0 calc(-1 * var(--sf-px)) 0 var(--sf-kbd-border-color, var(--sf-outline-variant));
+  @if paint.writes-shape() {
+    @include sized;
+  }
+  @if paint.writes-paint() {
+    color: var(--sf-on-surface);
+    background: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  @if paint.writes-shape() {
+    border-width: var(--sf-px);
+    border-style: solid;
+  }
+  @if paint.writes-paint() {
+    border-color: var(--sf-kbd-border-color, var(--sf-outline-variant));
+  }
+  @if paint.writes-shape() {
+    box-shadow: inset 0 calc(-1 * var(--sf-px)) 0 var(--sf-kbd-border-color, var(--sf-outline-variant));
+  }
 }
 
 // The cap's ink is the ink it sits in, whole (rule C04: the colour of the
@@ -86,42 +100,66 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
 // 3.71:1 on the outline search trigger); tests/browser/
 // button-shortcut-contrast.browser.mjs holds every look of sf-button at 4.5:1.
 @mixin cap {
-  @include sized;
-  color: var(--sf-kbd-color, currentColor);
-  background: var(--sf-kbd-background-color, var(--sf-kbd-background, color-mix(in srgb, currentColor 8%, transparent)));
-  // The keycap's darker ink is the keycap's (it stands on the neutral fill);
-  // a cap takes its button's back (see plain).
-  --sf-on-surface-variant: inherit;
-  border: none;
-  box-shadow: none;
+  @if paint.writes-shape() {
+    @include sized;
+  }
+  @if paint.writes-paint() {
+    color: var(--sf-kbd-color, currentColor);
+    background: var(--sf-kbd-background-color, var(--sf-kbd-background, color-mix(in srgb, currentColor 8%, transparent)));
+    // The keycap's darker ink is the keycap's (it stands on the neutral fill);
+    // a cap takes its button's back (see plain).
+    --sf-on-surface-variant: inherit;
+  }
+  @if paint.writes-shape() {
+    border: none;
+    border-color: revert-layer;
+  }
+  @if paint.writes-paint() {
+    border: none;
+  }
+  @if paint.writes-shape() {
+    box-shadow: none;
+  }
 }
 
 // Plain glyphs are the row's own text (C38): they inherit its size. The gap
 // between them is the hairline step a2 (2px), C18: no em off the ladder.
 @mixin plain {
-  inline-size: auto;
-  min-inline-size: var(--sf-0);
-  block-size: auto;
-  padding-inline: var(--sf-0);
+  @if paint.writes-shape() {
+    inline-size: auto;
+    min-inline-size: var(--sf-0);
+    block-size: auto;
+    padding-inline: var(--sf-0);
+  }
   // Every kbd is a keycap first, and the keycap redeclares the muted ink for
   // its neutral plate (C41, 0450b02a). A plain glyph has no plate: it takes
   // its row's muted ink back (C04, C38), or in a dark popup it read the full
   // text colour (pair next 2 sweep, kbd-places).
-  --sf-on-surface-variant: inherit;
-  color: var(--sf-kbd-plain-color, var(--sf-on-surface-variant));
-  background: var(--sf-transparent);
-  border: none;
-  border-radius: var(--sf-0);
-  box-shadow: none;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  // The glyphs' own line (1em), as before C38's centring: the row's line is
-  // the label's, and a key's line box of the row's height reported a line
-  // the glyphs do not draw (pair ui-a0370c0c99fb acceptance, F2).
-  line-height: 1;
-  margin-block: var(--sf-0);
-  vertical-align: baseline;
+  @if paint.writes-paint() {
+    --sf-on-surface-variant: inherit;
+    color: var(--sf-kbd-plain-color, var(--sf-on-surface-variant));
+    background: var(--sf-transparent);
+  }
+  @if paint.writes-shape() {
+    border: none;
+    border-color: revert-layer;
+  }
+  @if paint.writes-paint() {
+    border: none;
+  }
+  @if paint.writes-shape() {
+    border-radius: var(--sf-0);
+    box-shadow: none;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    // The glyphs' own line (1em), as before C38's centring: the row's line is
+    // the label's, and a key's line box of the row's height reported a line
+    // the glyphs do not draw (pair ui-a0370c0c99fb acceptance, F2).
+    line-height: 1;
+    margin-block: var(--sf-0);
+    vertical-align: baseline;
+  }
 }
 
 // The step a place says (owner decision C38): the text step one below its
@@ -148,6 +186,7 @@ $steps: (
 $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]';
 
 @layer sf.components {
+  @include paint.part(shape);
   // A bare control -- a native button, a button, combobox or searchbox role
   // -- without a size class is a control of the default size 1: step 1/2,
   // not its text's. Written before the map so a size class says otherwise.
@@ -206,9 +245,8 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
     block-size: auto;
     margin: var(--sf-0);
     padding: var(--sf-0);
-    color: inherit;
-    background: var(--sf-transparent);
     border: none;
+    border-color: revert-layer;
     border-radius: var(--sf-0);
     box-shadow: none;
     font: inherit;
@@ -257,15 +295,6 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   :where(#{$plain-places}) :where(.sf-kbd-join) {
     display: inline;
     line-height: 1;
-  }
-
-  :where(#{$tooltip-places}) :where(#{$key}) {
-    color: color-mix(in srgb, currentColor 64%, transparent);
-  }
-
-  // A disabled command's keys take its disabled ink.
-  :where(#{$plain-places}) :where(:disabled, [aria-disabled="true"]) :where(#{$key}) {
-    color: inherit;
   }
 
   // An appearance said outright wins over the place.
@@ -327,14 +356,54 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   }
 
   @media (forced-colors: active) {
-    :where(#{$key}) {
-      border-color: CanvasText;
-    }
-
     :where(#{$cap-places}) :where(#{$key}),
     :where(#{said(cap)}) {
       outline: var(--sf-px) solid CanvasText;
       outline-offset: calc(-1 * var(--sf-px));
     }
   }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  :where(#{$key}) {
+    @include keycap;
+  }
+  :where(#{$group}) {
+    color: inherit;
+    background: var(--sf-transparent);
+    border: none;
+  }
+  :where(#{$cap-places}) :where(#{$key}) {
+    @include cap;
+  }
+  :where(#{$plain-places}) :where(#{$key}) {
+    @include plain;
+  }
+  :where(#{$tooltip-places}) :where(#{$key}) {
+    color: color-mix(in srgb, currentColor 64%, transparent);
+  }
+  // A disabled command's keys take its disabled ink.
+  :where(#{$plain-places}) :where(:disabled, [aria-disabled="true"]) :where(#{$key}) {
+    color: inherit;
+  }
+  :where(#{said(cap)}) {
+    @include cap;
+  }
+  :where(#{said(plain)}) {
+    @include plain;
+  }
+  :where(#{said(key)}) {
+    @include keycap;
+  }
+  @media (forced-colors: active) {
+    :where(#{$key}) {
+      border-color: CanvasText;
+    }
+  }
+  @include paint.part(all);
 }

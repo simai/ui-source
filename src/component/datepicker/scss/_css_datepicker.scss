@@ -1,6 +1,8 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use '../../../core/scss/mix/mix__paint' as paint;
 @layer sf.components {
+  @include paint.part(shape);
   /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
   .sf-datepicker {
     /* Seven days of the control height and the panel's own two paddings
@@ -9,9 +11,6 @@
        steps of no ladder. The day's height and the paddings are read where
        they are set, so a product that changes them keeps square days. */
     --sf-datepicker--inline-size: calc(var(--sf-datepicker-day--height, var(--sf-ui-1--control-height)) * 7 + var(--sf-datepicker--padding-left, var(--sf-space-1\/3)) + var(--sf-datepicker--padding-right, var(--sf-space-1\/3)));
-    /* The whole calendar floats on step 3, not only its top band: on the plain
-       surface its body was the page's colour in the dark theme. */
-    background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup)));
     @include places.sf-place(var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
     border-end-end-radius: var(--sf-datepicker--border-bottom-right-radius, var(--sf-radius--surface));
     border-end-start-radius: var(--sf-datepicker--border-bottom-left-radius, var(--sf-radius--surface));
@@ -129,7 +128,6 @@
     padding-inline: var(--sf-space-1\/3);
     min-block-size: calc(2 * var(--sf-text-height-1\/2) + var(--sf-space-1\/3));
     box-sizing: border-box;
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1\/2);
     font-weight: var(--sf-weight--regular);
@@ -138,23 +136,19 @@
   }
 
   .sf-datepicker .sf-datepicker-dayline-date {
-    color: var(--sf-on-surface);
     font-weight: var(--sf-weight--medium);
   }
 
   .sf-datepicker .sf-datepicker-main {
     --sf-datepicker-main--background-color: var(--sf-transparent);
-    background-color: var(--sf-datepicker-main--background-color);
   }
 
   .sf-datepicker .sf-datepicker-row {
     --sf-datepicker-row--background-color: var(--sf-transparent);
-    background-color: var(--sf-datepicker-row--background-color);
   }
 
   .sf-datepicker .sf-datepicker-top {
     --sf-datepicker-top--background-color: var(--sf-surface-popup);
-    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
     /* One band of 1/2 buttons with a quarter step over and under it: a
        control height of size 1, a day's height (audit G4: 72 = 16 + 40 + 16
        with 40 and 32 buttons in the band). */
@@ -162,7 +156,6 @@
     --sf-datepicker-top--padding-inline-end: var(--sf-space-1\/3);
     --sf-datepicker-top--padding-inline-start: var(--sf-space-1\/3);
     --sf-datepicker-top--padding-top: var(--sf-space-1\/4);
-    background-color: var(--sf-datepicker-top--background-color);
     padding-bottom: var(--sf-datepicker-top--padding-bottom);
     padding-inline-end: var(--sf-datepicker-top--padding-inline-end);
     padding-inline-start: var(--sf-datepicker-top--padding-inline-start);
@@ -179,7 +172,6 @@
   }
 
   .sf-datepicker .sf-datepicker-weekday {
-    color: var(--sf-datepicker-weekday--color, var(--sf-datepicker-weekday-color, var(--sf-on-surface-variant)));
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1\/2);
     font-weight: var(--sf-font-weight-medium);
@@ -201,7 +193,8 @@
     min-block-size: var(--sf-ui-1--control-height);
   }
   .sf-datepicker .sf-datepicker-container > .sf-datepicker-time {
-    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-start-width: var(--sf-px);
+    border-block-start-style: solid;
     margin-block-start: var(--sf-space-1\/3);
     padding-block-start: var(--sf-space-1\/3);
   }
@@ -217,7 +210,6 @@
     user-select: none;
   }
   .sf-datepicker .sf-datepicker-time-separator {
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1);
     font-weight: var(--sf-font-weight-medium);
@@ -244,9 +236,6 @@
      top back, so its head stands right under the sheet's handle, and keeps a
      step 1 under «Готово» (#lenta). */
   .sf-datepicker.sf-datepicker--sheet {
-    --sf-surface-place: inherit;
-    --sf-surface-place-solid: inherit;
-    --sf-surface-place-ground: inherit;
     --sf-datepicker--background-color: var(--sf-surface-place, var(--sf-surface-popup));
     --sf-datepicker--box-shadow: none;
     --sf-datepicker--border-top-left-radius: var(--sf-0);
@@ -281,7 +270,6 @@
     flex: 1 1 auto;
     min-inline-size: 0;
     overflow: hidden;
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1);
     font-weight: var(--sf-font-weight-medium);
@@ -322,7 +310,8 @@
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     flex: none;
-    border-block-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-end-width: var(--sf-px);
+    border-block-end-style: solid;
   }
   .sf-datepicker .sf-datepicker-ribbon {
     position: relative;
@@ -352,8 +341,6 @@
     display: flex;
     align-items: center;
     block-size: var(--sf-ui-1--control-height);
-    background-color: var(--sf-datepicker--background-color, var(--sf-surface-popup));
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1);
     font-weight: var(--sf-font-weight-medium);
@@ -365,7 +352,8 @@
     flex: none;
     gap: var(--sf-space-1\/2);
     padding-block-start: var(--sf-space-1\/2);
-    border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-start-width: var(--sf-px);
+    border-block-start-style: solid;
   }
   .sf-datepicker .sf-datepicker-sheet-summary {
     display: flex;
@@ -373,7 +361,6 @@
     align-items: baseline;
     column-gap: var(--sf-space-1\/3);
     min-block-size: var(--sf-text-height-1);
-    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1);
     line-height: var(--sf-text-height-1);
@@ -383,7 +370,6 @@
     font-weight: var(--sf-font-weight-medium);
   }
   .sf-datepicker .sf-datepicker-sheet-summary span {
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
   }
@@ -396,14 +382,77 @@
    align-items: center;
    /* Opaque, to cover the days under it, in the panel's own colour. */
    --sf-datepicker-context--background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup)));
-   background: var(--sf-datepicker-context--background-color);
-   --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
    z-index: var(--sf-z-index-2);
  }
 
+  @include paint.part(all);
+}
 
-
-
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-datepicker {
+    /* The whole calendar floats on step 3, not only its top band: on the plain
+       surface its body was the page's colour in the dark theme. */
+    background-color: var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup)));
+    @include places.sf-place(var(--sf-datepicker--background-color, var(--sf-datepicker-background-color, var(--sf-surface-popup))), var(--sf-on-surface-popup-variant));
+  }
+  .sf-datepicker .sf-datepicker-dayline {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-datepicker .sf-datepicker-dayline-date {
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-main {
+    background-color: var(--sf-datepicker-main--background-color);
+  }
+  .sf-datepicker .sf-datepicker-row {
+    background-color: var(--sf-datepicker-row--background-color);
+  }
+  .sf-datepicker .sf-datepicker-top {
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    background-color: var(--sf-datepicker-top--background-color);
+  }
+  .sf-datepicker .sf-datepicker-weekday {
+    color: var(--sf-datepicker-weekday--color, var(--sf-datepicker-weekday-color, var(--sf-on-surface-variant)));
+  }
+  .sf-datepicker .sf-datepicker-container > .sf-datepicker-time {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-time-separator {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-datepicker.sf-datepicker--sheet {
+    --sf-surface-place: inherit;
+    --sf-surface-place-solid: inherit;
+    --sf-surface-place-ground: inherit;
+  }
+  .sf-datepicker .sf-datepicker-sheet-title {
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-sheet-weekdays {
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-ribbon-title {
+    background-color: var(--sf-datepicker--background-color, var(--sf-surface-popup));
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-sheet-foot {
+    border-block-start-color: var(--sf-outline-variant);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary {
+    color: var(--sf-on-surface);
+  }
+  .sf-datepicker .sf-datepicker-sheet-summary span {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-datepicker .sf-datepicker-context {
+    background: var(--sf-datepicker-context--background-color);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  }
+  @include paint.part(all);
 }
 
 @layer sf.overrides {

@@ -5,14 +5,11 @@
 .sf-textarea {
   min-inline-size: 0;
   --sf-textarea--radius: var(--sf-textarea-radius, var(--sf-radius--ui));
-  background-color: var(--sf-textarea--background-color, transparent);
   gap: var(--sf-textarea--gap, var(--sf-space-1\/4));
 }
 
 .sf-textarea .sf-textarea-hint-text-wrap {
   --sf-textarea-hint-text-wrap--background-color: transparent;
-  background-color: var(--sf-textarea-hint-text-wrap--background-color);
-  color: var(--sf-textarea-hint-text-wrap--color);
   font-family: var(--sf-textarea-hint-text-wrap--font-family);
   font-size: var(--sf-textarea-hint-text-wrap--font-size);
   font-weight: var(--sf-textarea-hint-text-wrap--font-weight);
@@ -23,7 +20,6 @@
 .sf-textarea .sf-textarea-label {
   --sf-textarea-label--background-color: transparent;
   --sf-textarea-label--gap: var(--sf-space-1\/4);
-  background-color: var(--sf-textarea-label--background-color);
   gap: var(--sf-textarea-label--gap);
 }
 
@@ -32,7 +28,6 @@
   --sf-textarea-required--color: var(--sf-on-surface);
   --sf-textarea-required--font-family: var(--sf-text--family);
   --sf-textarea-required--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-textarea-required--color);
   font-family: var(--sf-textarea-required--font-family);
   font-size: var(--sf-textarea-required--font-size);
   font-weight: var(--sf-textarea-required--font-weight);
@@ -44,7 +39,6 @@
   --sf-textarea-text--color: var(--sf-on-surface);
   --sf-textarea-text--font-family: var(--sf-text--family);
   --sf-textarea-text--font-weight: var(--sf-font-weight-regular);
-  color: var(--sf-textarea-text--color);
   font-family: var(--sf-textarea-text--font-family);
   font-size: var(--sf-textarea-text--font-size);
   font-weight: var(--sf-textarea-text--font-weight);
@@ -62,16 +56,13 @@
   --sf-textarea-textarea--border-end-start-radius: var(--sf-textarea--radius);
   --sf-textarea-textarea--border-start-end-radius: var(--sf-textarea--radius);
   --sf-textarea-textarea--border-start-start-radius: var(--sf-textarea--radius);
-  background-color: var(--sf-textarea-textarea--background-color);
   border: var(--sf-textarea-textarea--border);
-  border-color: var(--sf-textarea-textarea--border-color, transparent);
-  border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
+  border-color: revert-layer;
   border-end-end-radius: var(--sf-textarea-textarea--border-end-end-radius);
   border-end-start-radius: var(--sf-textarea-textarea--border-end-start-radius);
   border-start-end-radius: var(--sf-textarea-textarea--border-start-end-radius);
   border-start-start-radius: var(--sf-textarea-textarea--border-start-start-radius);
   box-shadow: var(--sf-textarea-textarea--box-shadow);
-  color: var(--sf-textarea-textarea--color);
   font-family: var(--sf-textarea-textarea--font-family);
   font-size: var(--sf-textarea-textarea--font-size);
   font-weight: var(--sf-textarea-textarea--font-weight);
@@ -90,7 +81,6 @@
 .sf-textarea textarea::placeholder {
   --sf-textarea-placeholder--color: var(--sf-on-surface-variant);
   --sf-textarea-placeholder--font-family: var(--sf-text--family);
-  color: var(--sf-textarea-placeholder--color);
   font-family: var(--sf-textarea-placeholder--font-family);
   font-size: var(--sf-textarea-placeholder--font-size);
   line-height: var(--sf-textarea-placeholder--line-height);
@@ -183,7 +173,6 @@
 
 .sf-textarea.sf-textarea--filled textarea {
   --sf-textarea-textarea--background-color: var(--sf-textarea-background-color, var(--sf-surface-container));
-  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   --sf-textarea-textarea--border-color: var(--sf-textarea-border-color, var(--sf-transparent-for-focus));
 }
 
@@ -400,8 +389,8 @@
   --sf-textarea-textarea--font-weight: var(--sf-font-weight-regular);
   --sf-textarea-textarea--padding-inline-start: var(--sf-textarea-padding-inline, 0px);
   --sf-textarea-textarea--padding-inline-end: var(--sf-textarea-padding-inline, 0px);
-  background-color: transparent;
   border: 0;
+  border-color: revert-layer;
   border-radius: 0;
   box-shadow: none;
   margin: 0;
@@ -434,6 +423,45 @@
 .sf-textarea.sf-textarea--flush:has(textarea:enabled:not(:disabled):not(.disabled):focus) textarea {
   outline: none;
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-textarea {
+    background-color: var(--sf-textarea--background-color, transparent);
+  }
+  .sf-textarea .sf-textarea-hint-text-wrap {
+    background-color: var(--sf-textarea-hint-text-wrap--background-color);
+    color: var(--sf-textarea-hint-text-wrap--color);
+  }
+  .sf-textarea .sf-textarea-label {
+    background-color: var(--sf-textarea-label--background-color);
+  }
+  .sf-textarea .sf-textarea-required {
+    color: var(--sf-textarea-required--color);
+  }
+  .sf-textarea .sf-textarea-text {
+    color: var(--sf-textarea-text--color);
+  }
+  .sf-textarea textarea {
+    background-color: var(--sf-textarea-textarea--background-color);
+    border: var(--sf-textarea-textarea--border);
+    border-color: var(--sf-textarea-textarea--border-color, transparent);
+    border-block-end-color: var(--sf-textarea-textarea--line-color, var(--sf-textarea-textarea--border-color, transparent));
+    color: var(--sf-textarea-textarea--color);
+  }
+  .sf-textarea textarea::placeholder {
+    color: var(--sf-textarea-placeholder--color);
+  }
+  .sf-textarea.sf-textarea--filled textarea {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-textarea.sf-textarea--flush textarea {
+    background-color: transparent;
+    border: 0;
+  }
 }
 
 @layer sf.states {
@@ -617,7 +645,6 @@
   .sf-textarea .sf-textarea-count {
     flex: none;
     margin-inline-start: auto;
-    color: var(--sf-on-surface-variant);
     font-family: var(--sf-text--family);
     font-weight: var(--sf-font-weight-regular);
     font-variant-numeric: tabular-nums;
@@ -631,10 +658,6 @@
     }
   }
 
-  .sf-textarea.sf-textarea--over .sf-textarea-count {
-    color: var(--sf-error);
-  }
-
   .sf-textarea-count-said {
     position: absolute;
     inline-size: var(--sf-px);
@@ -645,6 +668,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
   }
 
   .sf-textarea.sf-textarea--code textarea {
@@ -653,6 +677,21 @@
     white-space: pre;
     overflow-wrap: normal;
     overflow-x: auto;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-textarea .sf-textarea-count {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-textarea.sf-textarea--over .sf-textarea-count {
+    color: var(--sf-error);
+  }
+  .sf-textarea-count-said {
+    border: 0;
   }
 }
 

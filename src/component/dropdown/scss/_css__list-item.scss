@@ -1,4 +1,5 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
 /* A row's divider is inside its control height: the bottom padding gives the
    border back, so a standalone row and the same row in a list without
    dividers stand equally tall. The width is registered as a length, so a
@@ -12,6 +13,7 @@
 }
 
 @layer sf.components {
+  @include paint.part(shape);
 /* The row's public variables (standard 1.3.8 §6, sf-list-item): its fill and
    divider, the title's and the supporting line's ink, the handle's ink. */
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -20,8 +22,6 @@
   padding-top: var(--sf-list-item--padding-top);
   padding-inline-end: var(--sf-list-item--padding-inline-end);
   padding-bottom: calc(var(--sf-list-item--padding-bottom) - var(--sf-list-item--border-bottom-width));
-  background-color: var(--sf-list-item--background-color);
-  border-color: var(--sf-list-item--border-color, transparent);
   border-bottom-width: var(--sf-list-item--border-bottom-width);
   border-style: var(--sf-list-item--border-style, solid);
   box-shadow: var(--sf-list-item--box-shadow);
@@ -48,7 +48,6 @@
    line. Markup without the flex utilities used to shrink it to the label and
    put the mark right after the text. */
 .sf-list-item .sf-list-item-wrap {
-  background-color: var(--sf-list-item-wrap--background-color);
   display: flex;
   flex: 1 1 auto;
   align-items: center;
@@ -56,8 +55,6 @@
 }
 
 .sf-list-item .sf-list-item-container {
-  background-color: var(--sf-list-item-container--background-color);
-  color: var(--sf-list-item-container--color);
   font-family: var(--sf-list-item-container--font-family);
   font-size: var(--sf-list-item-container--font-size);
   font-weight: var(--sf-list-item-container--font-weight);
@@ -68,17 +65,12 @@
   overflow-wrap: anywhere;
 }
 
-.sf-list-item .sf-tag {
-  background-color: var(--sf-tag--background-color);
-}
-
 .sf-list-item .sf-tag-container {
   font-size: var(--sf-tag-container--font-size);
   line-height: var(--sf-tag-container--line-height);
 }
 
 .sf-list-item .sf-icon {
-  color: var(--sf-icon--color, var(--sf-on-surface-variant));
   font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
   height: var(--sf-icon--height, var(--sf-text-size-3));
   width: var(--sf-icon--width, var(--sf-text-size-3));
@@ -86,21 +78,12 @@
 }
 
 .sf-list-item .sf-avatar-label-group-title {
-  color: var(--sf-avatar-label-group-title--color);
   font-size: var(--sf-avatar-label-group-title--font-size);
   line-height: var(--sf-avatar-label-group-title--line-height);
 }
 
-.sf-list-item .sf-list-item-selected-item {
-  background-color: var(--sf-list-item-selected-item--background-color);
-}
-
 .sf-list-item .sf-avatar {
   opacity: var(--sf-avatar--opacity);
-}
-
-.sf-list-item .sf-checkbox-box {
-  border-color: var(--sf-checkbox-box--border-color, transparent);
 }
 
 /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
@@ -400,6 +383,47 @@
   --sf-list-item--padding-inline-start: var(--sf-list-item--inset);
   --sf-list-item--padding-inline-end: var(--sf-list-item--inset);
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-list-item {
+    background-color: var(--sf-list-item--background-color);
+    border-color: var(--sf-list-item--border-color, transparent);
+  }
+  .sf-list-item .sf-list-item-wrap {
+    background-color: var(--sf-list-item-wrap--background-color);
+  }
+  .sf-list-item .sf-list-item-container {
+    background-color: var(--sf-list-item-container--background-color);
+    color: var(--sf-list-item-container--color);
+  }
+  .sf-list-item .sf-tag {
+    background-color: var(--sf-tag--background-color);
+  }
+  .sf-list-item .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item .sf-avatar-label-group-title {
+    color: var(--sf-avatar-label-group-title--color);
+  }
+  .sf-list-item .sf-list-item-selected-item {
+    background-color: var(--sf-list-item-selected-item--background-color);
+  }
+  .sf-list-item .sf-checkbox-box {
+    border-color: var(--sf-checkbox-box--border-color, transparent);
+  }
+  .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):hover {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  .sf-list-item.selected {
+    @include places.sf-place-fill(var(--sf-list-item--background-color));
+  }
+  @include paint.part(all);
 }
 
 @layer sf.states {
@@ -546,7 +570,6 @@
 }
 
 .sf-list-item--two-line .sf-list-item-supporting {
-  color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
   font-size: var(--sf-list-item-supporting--font-size, var(--sf-text-size-1\/2));
   line-height: var(--sf-list-item-supporting--line-height, var(--sf-text-height-1\/2));
 }
@@ -644,10 +667,6 @@
   margin-block-end: min(calc(var(--sf-px) * 0), calc(var(--sf-list-item--two-line-block, calc(var(--sf-px) * 0)) - var(--sf-list-item--border-bottom-width)));
 }
 
-.sf-list-item.disabled .sf-list-item-supporting {
-  color: var(--sf-on-surface-disabled);
-}
-
 /* The handle's slot is a line of the size square, before the row's content. */
 .sf-list-item-handle {
   display: flex;
@@ -656,7 +675,6 @@
   justify-content: center;
   inline-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
   block-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
-  color: var(--sf-list-item-handle-color, var(--sf-on-surface-variant));
   --sf-icon--color: var(--sf-list-item-handle-color, var(--sf-on-surface-variant));
   --sf-icon--font-size: var(--sf-list-item-handle--size, var(--sf-text-height-1));
   --sf-icon--width: var(--sf-list-item-handle--size, var(--sf-text-height-1));
@@ -714,10 +732,6 @@
   --sf-list-item-container--color: var(--sf-on-surface-disabled);
 }
 
-.sf-list-item-handle .sf-icon {
-  color: var(--sf-icon--color);
-}
-
 .sf-list-item-handle[data-sf-sortable-handle] {
   cursor: grab;
   touch-action: none;
@@ -744,6 +758,24 @@
     opacity: 1;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-item--two-line .sf-list-item-supporting {
+    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item.disabled .sf-list-item-supporting {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-list-item-handle {
+    color: var(--sf-list-item-handle-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item-handle .sf-icon {
+    color: var(--sf-icon--color);
+  }
 }
 
 @layer sf.states {
@@ -846,15 +878,10 @@
   justify-items: end;
   /* No step between the two lines: they are the title's and the caption's. */
   gap: 0 var(--sf-space-1\/4);
-  color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
   font-size: var(--sf-list-item-supporting--font-size);
   font-variant-numeric: tabular-nums;
   line-height: var(--sf-list-item-supporting--line-height);
   white-space: nowrap;
-}
-
-.sf-list-item.disabled.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]) {
-  color: var(--sf-on-surface-disabled);
 }
 
 /* C148 (4), divided: a line under the row from its text to its end edge, as
@@ -875,7 +902,6 @@
   inset-block-end: 0;
   inline-size: 100vmax;
   block-size: var(--sf-px);
-  background-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
   pointer-events: none;
 }
 
@@ -907,4 +933,19 @@
     min-inline-size: var(--sf-d1);
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-list-item.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]):not(:has(:is(button, a[href], input, select, textarea, sf-button, :is(sf-button-icon, sf-icon-button), [role="button"]))) {
+    color: var(--sf-list-item-supporting-color, var(--sf-on-surface-variant));
+  }
+  .sf-list-item.disabled.sf-list-item--two-line:not([role="option"]) > .sf-list-item-wrap > :is(.sf-list-item-trailing, span[slot="trailing"], div[slot="trailing"]) {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-list-item.sf-list-item--divided > .sf-list-item-wrap > .sf-list-item-container::after {
+    background-color: var(--sf-list-item-border-color, var(--sf-outline-variant));
+  }
 }

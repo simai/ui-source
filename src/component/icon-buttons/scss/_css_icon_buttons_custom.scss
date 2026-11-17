@@ -1,5 +1,4 @@
 @layer sf.override {
-
   /* One line at a join (docs review R003, 2026-11-06), as on the button: a
      segment that follows another has no start edge. Here, after surface has
      written its four edges in sf.components. */
@@ -120,9 +119,6 @@
     flex: none;
     inline-size: var(--sf-icon-button-spinner--size);
     block-size: var(--sf-icon-button-spinner--size);
-    /* The icon's colour (C36 follow-up): the spinner stands where the icon
-       stood and reads the same variables the icon does. */
-    color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
     /* The background ring is the spinner's own: that ink at 16 %, drawn whole
        (spinner sheet, DEV J1/S1); the button sets only the colour. */
   }
@@ -135,6 +131,17 @@
     display: block;
     inline-size: 100%;
     block-size: 100%;
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-icon-button .sf-icon-button-spinner {
+    /* The icon's colour (C36 follow-up): the spinner stands where the icon
+       stood and reads the same variables the icon does. */
+    color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
   }
 }
 

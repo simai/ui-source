@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 
 // sf-tile-metric 1.4.0 (owner decision C168, 2026-11-14; study ui-control
 // control/research/2026-11-14-tile-metric.md): the four accepted points held
@@ -35,7 +36,9 @@ test('C168 (3): an svg names a slot; the chart is the tile\'s width, 32 high, in
   const base = code('src/core/js/smart-base.js');
   assert.match(base, /Array\.from\(this\.children\)\.forEach\(\(child\) => \{\n\s*if \(!\(child instanceof Element\)\) \{/u);
   const sheet = read('src/smart/tile-metric/scss/_smart__tile-metric.scss');
-  assert.match(sheet, /\.sf-tile-metric-chart \{\n\s*display: block;\n\s*min-inline-size: 0;\n\s*color: var\(--sf-on-surface-variant\);/u);
+  // C273: the chart's ink stands in the paint block.
+  assert.match(sheet, /\.sf-tile-metric-chart \{\n\s*display: block;\n\s*min-inline-size: 0;/u);
+  assert.match(paintBlocks(sheet), /\.sf-tile-metric-chart \{\n\s*color: var\(--sf-on-surface-variant\);/u);
   assert.match(sheet, /\.sf-tile-metric-chart > \* \{[^}]*inline-size: 100%;[^}]*block-size: var\(--sf-c6\);/u);
 });
 

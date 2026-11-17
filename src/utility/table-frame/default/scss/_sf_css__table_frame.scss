@@ -1,4 +1,5 @@
 @use '../../../table/default/scss/sf_var__table' as *;
+@use '../../../../core/scss/mix/mix__paint' as paint;
 @layer sf.utilities {
 // SIMAI Framework
 // https://simai.io
@@ -23,52 +24,90 @@
         /* The public variables of .table-frame; the head fill,
            --sf-table-frame-head-background, defaults on the head cells to
            the frame's own background: no fill of its own. */
-        --sf-table-frame-border-color: var(--sf-outline-variant);
-        --sf-table-frame-radius: var(--sf-radius--surface);
-        // The place it stands on (C16): a card, a popup, a coloured block.
-        --sf-table-frame-background: var(--sf-surface-place);
-        // The quiet head (C146 (2)): the supporting text role.
-        --sf-table-frame-head-color: var(--sf-on-surface-variant);
-        // A row and the head stand on the table's step (C146 (1), C18): size
-        // 1, 40 at 1440, 32 compact, 36 on a phone. The padding is the step
-        // less the line of the text and the row's line, halved (C49), so a
-        // reference text that wraps keeps that room above and below.
-        --sf-table-frame-head-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2);
-        --sf-table-frame-cell-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2);
-        --sf-table-frame-cell-padding-inline: var(--sf-space-1);
-        --sf-table-frame-cell-min-inline-size: var(--sf-e0);
+        @if paint.writes-shape() {
+          --sf-table-frame-border-color: var(--sf-outline-variant);
+          --sf-table-frame-radius: var(--sf-radius--surface);
+          // The place it stands on (C16): a card, a popup, a coloured block.
+          --sf-table-frame-background: var(--sf-surface-place);
+          // The quiet head (C146 (2)): the supporting text role.
+          --sf-table-frame-head-color: var(--sf-on-surface-variant);
+          // A row and the head stand on the table's step (C146 (1), C18): size
+          // 1, 40 at 1440, 32 compact, 36 on a phone. The padding is the step
+          // less the line of the text and the row's line, halved (C49), so a
+          // reference text that wraps keeps that room above and below.
+          --sf-table-frame-head-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2);
+          --sf-table-frame-cell-padding-block: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-1) - var(--sf-px)) / 2);
+          --sf-table-frame-cell-padding-inline: var(--sf-space-1);
+          --sf-table-frame-cell-min-inline-size: var(--sf-e0);
 
-        inline-size: 100%;
-        overflow: auto;
-        // Keyboard focus stops core's ring room short of the frame's clip
-        // edge, so a scrolled-to control in a cell keeps its ring (R242).
-        scroll-padding: var(--sf-focus-room);
-        border: var(--sf-px) solid var(--sf-table-frame-border-color);
-        border-radius: var(--sf-table-frame-radius);
-        background-color: var(--sf-table-frame-background);
+          inline-size: 100%;
+          overflow: auto;
+          // Keyboard focus stops core's ring room short of the frame's clip
+          // edge, so a scrolled-to control in a cell keeps its ring (R242).
+          scroll-padding: var(--sf-focus-room);
+        }
+        @if paint.writes-shape() {
+          border-width: var(--sf-px);
+          border-style: solid;
+        }
+        @if paint.writes-paint() {
+          border-color: var(--sf-table-frame-border-color);
+        }
+        @if paint.writes-shape() {
+          border-radius: var(--sf-table-frame-radius);
+        }
+        @if paint.writes-paint() {
+          background-color: var(--sf-table-frame-background);
+        }
 
         > .table {
-            inline-size: 100%;
-            margin: 0;
-            border: 0;
-            border-radius: 0;
-            border-collapse: separate;
-            border-spacing: 0;
-            // The frame scrolls, so a word keeps whole and the column widens
-            // instead: the base typography lets a table break inside a word,
-            // which in a narrow column cuts a header in two.
-            word-break: normal;
-            overflow-wrap: normal;
+            @if paint.writes-shape() {
+              inline-size: 100%;
+              margin: 0;
+            }
+            @if paint.writes-shape() {
+              border: 0;
+              border-color: revert-layer;
+            }
+            @if paint.writes-paint() {
+              border: 0;
+            }
+            @if paint.writes-shape() {
+              border-radius: 0;
+              border-collapse: separate;
+              border-spacing: 0;
+              // The frame scrolls, so a word keeps whole and the column widens
+              // instead: the base typography lets a table break inside a word,
+              // which in a narrow column cuts a header in two.
+              word-break: normal;
+              overflow-wrap: normal;
+            }
 
             > :not(caption) > * > * {
-                min-inline-size: var(--sf-table-frame-cell-min-inline-size);
-                padding-block: var(--sf-table-frame-cell-padding-block);
-                padding-inline: var(--sf-table-frame-cell-padding-inline);
-                border-width: var(--sf-0);
-                border-inline-end: var(--sf-px) solid var(--sf-table-frame-border-color);
-                border-block-end: var(--sf-px) solid var(--sf-table-frame-border-color);
-                text-align: start;
-                vertical-align: top;
+                @if paint.writes-shape() {
+                  min-inline-size: var(--sf-table-frame-cell-min-inline-size);
+                  padding-block: var(--sf-table-frame-cell-padding-block);
+                  padding-inline: var(--sf-table-frame-cell-padding-inline);
+                  border-width: var(--sf-0);
+                }
+                @if paint.writes-shape() {
+                  border-inline-end-width: var(--sf-px);
+                  border-inline-end-style: solid;
+                }
+                @if paint.writes-paint() {
+                  border-inline-end-color: var(--sf-table-frame-border-color);
+                }
+                @if paint.writes-shape() {
+                  border-block-end-width: var(--sf-px);
+                  border-block-end-style: solid;
+                }
+                @if paint.writes-paint() {
+                  border-block-end-color: var(--sf-table-frame-border-color);
+                }
+                @if paint.writes-shape() {
+                  text-align: start;
+                  vertical-align: top;
+                }
             }
 
             // A control cell (the row's check box, its «≡») is as narrow as
@@ -79,7 +118,9 @@
             // msg-85307787).
             > :not(caption) > * > #{$table-control-cell},
             > :not(caption) > * > :has(> .sr-only:only-child) {
-                min-inline-size: var(--sf-0);
+                @if paint.writes-shape() {
+                  min-inline-size: var(--sf-0);
+                }
             }
 
             // The frame's border is inside the table's edge inset (C77,
@@ -87,11 +128,15 @@
             // cell's text stand 16 from the frame's outer edge (12 compact
             // and on a phone), not 17.
             > :not(caption) > * > :first-child {
-                padding-inline-start: calc(var(--sf-table-frame-cell-padding-inline) - var(--sf-px));
+                @if paint.writes-shape() {
+                  padding-inline-start: calc(var(--sf-table-frame-cell-padding-inline) - var(--sf-px));
+                }
             }
 
             > :not(caption) > * > :last-child {
-                padding-inline-end: calc(var(--sf-table-frame-cell-padding-inline) - var(--sf-px));
+                @if paint.writes-shape() {
+                  padding-inline-end: calc(var(--sf-table-frame-cell-padding-inline) - var(--sf-px));
+                }
             }
 
             // A column aligned otherwise carries the text-align utility on its
@@ -100,16 +145,22 @@
             // the utility, so the frame honours the two values itself, from
             // its own sheet, and the cell is aligned from the first paint.
             > :not(caption) > * > .text-center {
-                text-align: center;
+                @if paint.writes-shape() {
+                  text-align: center;
+                }
             }
 
             > :not(caption) > * > .text-end {
-                text-align: end;
+                @if paint.writes-shape() {
+                  text-align: end;
+                }
             }
 
             // A column of numbers is end aligned (C146 (3)), in the frame too.
             > :not(caption) > * > .table-numeric {
-                text-align: end;
+                @if paint.writes-shape() {
+                  text-align: end;
+                }
             }
 
             // On a phone, or wherever the columns do not fit, the table
@@ -119,13 +170,17 @@
             // gridline marks the edge. A row's fill (hover, stripe, active)
             // is the cell's background image, laid over that background.
             > :not(caption) > tr > :first-child {
-                position: sticky;
-                inset-inline-start: 0;
-                z-index: 1;
+                @if paint.writes-shape() {
+                  position: sticky;
+                  inset-inline-start: 0;
+                  z-index: 1;
+                }
             }
 
             > :is(tbody, tfoot) > tr > :first-child {
-                background-color: var(--sf-table-frame-background);
+                @if paint.writes-paint() {
+                  background-color: var(--sf-table-frame-background);
+                }
             }
 
             // The frame draws the outer edge, so the last column and the last
@@ -133,11 +188,15 @@
             // last row keeps its line's room, unpainted, so it stands on the
             // ladder like the others.
             > :not(caption) > * > *:last-child {
-                border-inline-end-width: var(--sf-0);
+                @if paint.writes-shape() {
+                  border-inline-end-width: var(--sf-0);
+                }
             }
 
             > :last-child > tr:last-child > * {
-                border-block-end-color: transparent;
+                @if paint.writes-paint() {
+                  border-block-end-color: transparent;
+                }
             }
 
             > thead > tr > * {
@@ -147,11 +206,17 @@
                 // cell, standing still, covers what scrolls under it. The
                 // fill's default is a fallback rather than a declaration, so
                 // a fill set on the frame still reaches the head cells.
-                padding-block: var(--sf-table-frame-head-padding-block);
-                background-color: var(--sf-table-frame-head-background, var(--sf-table-frame-background));
-                color: var(--sf-table-frame-head-color);
-                font-weight: var(--sf-weight--medium);
-                vertical-align: bottom;
+                @if paint.writes-shape() {
+                  padding-block: var(--sf-table-frame-head-padding-block);
+                }
+                @if paint.writes-paint() {
+                  background-color: var(--sf-table-frame-head-background, var(--sf-table-frame-background));
+                  color: var(--sf-table-frame-head-color);
+                }
+                @if paint.writes-shape() {
+                  font-weight: var(--sf-weight--medium);
+                  vertical-align: bottom;
+                }
             }
         }
     }

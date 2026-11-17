@@ -1,7 +1,6 @@
 @layer sf.components {
   /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
   .sf-close {
-    background-color: var(--sf-close--background-color, var(--sf-close-background-color, transparent));
     padding-inline-start: var(--sf-close-padding-inline, var(--sf-close--padding-inline-start));
     padding-top: var(--sf-close-padding-block, var(--sf-close--padding-top));
     padding-inline-end: var(--sf-close-padding-inline, var(--sf-close--padding-inline-end));
@@ -30,8 +29,6 @@
     -webkit-mask-image: var(--sf-close-icon---webkit-mask-image);
     -webkit-mask-repeat: var(--sf-close-icon---webkit-mask-repeat);
     -webkit-mask-size: var(--sf-close-icon---webkit-mask-size);
-    background-color: var(--sf-close-icon--background-color);
-    border-color: var(--sf-close-icon--border-color, transparent);
     font-size: var(--sf-close-icon--font-size);
     height: var(--sf-close-glyph-size, var(--sf-close-icon--height));
     mask-image: var(--sf-close-icon--mask-image);
@@ -174,9 +171,26 @@
     .sf-close .sf-close-icon,
     .sf-icon-button .sf-close .sf-close-icon {
       forced-color-adjust: none;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-close {
+    background-color: var(--sf-close--background-color, var(--sf-close-background-color, transparent));
+  }
+  .sf-close .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+  @media (forced-colors: active) {
+    .sf-close .sf-close-icon,
+    .sf-icon-button .sf-close .sf-close-icon {
       background-color: CanvasText;
     }
-
     :disabled .sf-close .sf-close-icon,
     [aria-disabled='true'] .sf-close .sf-close-icon,
     .sf-close:disabled .sf-close-icon {

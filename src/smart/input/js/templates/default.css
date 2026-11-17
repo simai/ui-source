@@ -63,6 +63,16 @@
         clip-path: inset(50%);
         white-space: nowrap;
         border: 0;
+        border-color: revert-layer;
+    }
+}
+
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+    .sf-input-caps-said {
+        border: 0;
     }
 }
 

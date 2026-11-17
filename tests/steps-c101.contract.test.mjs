@@ -5,6 +5,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {paintBlocks} from './support/paint-blocks.mjs';
 import {
   COUNT_BELOW_REM, LAYOUTS, MARKERS, NAVIGATION, STATES, ownState, parseItems, reachable, resolveStates,
 } from '../src/smart/steps/js/items.js';
@@ -46,10 +47,11 @@ test('C101 (2) look: marker, label, line -- 2 px progress behind current, 1 px o
   assert.doesNotMatch(stepsCss + current, /\.sf-steps-separator|primary-container/);
   const line = rule(stepsCss, '.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step:not(:last-child)::after');
   assert.match(line, /block-size: var\(--sf-px\);/);
-  assert.match(line, /background-color: var\(--sf-steps-separator-color, var\(--sf-outline-variant\)\);/);
+  // C273: the line's colour stands in the paint block under the same selector.
+  assert.match(rule(paintBlocks(stepsCss), '.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step:not(:last-child)::after'), /background-color: var\(--sf-steps-separator-color, var\(--sf-outline-variant\)\);/);
   const passed = rule(stepsCss, '.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::after');
   assert.match(passed, /block-size: calc\(var\(--sf-px\) \* 2\);/);
-  assert.match(passed, /background-color: var\(--sf-step--progress\);/);
+  assert.match(rule(paintBlocks(stepsCss), '.sf-steps:is(.sf-steps--layout-row, [data-sf-measure]) .sf-step.sf-step--passed:not(:last-child)::after'), /background-color: var\(--sf-step--progress\);/);
   assert.match(stepCss, /--sf-step--progress: var\(--sf-steps-completed-icon-color, var\(--sf-primary\)\);/);
   // Labels never break inside a word (ST-1), in every layout.
   assert.match(rule(stepCss, '.sf-step .sf-step-container'), /overflow-wrap: normal;\n  word-break: normal;/);
@@ -131,14 +133,17 @@ test('C101 (6) states: by shape and the progress colour; running is the spinner;
   assert.match(template, /const MARK_ICONS = \{ done: 'check', error: 'priority_high' \};/);
   assert.match(stepCss, /\.sf-steps--marker-number \.sf-step--state-current \.sf-step-marker \{\n  outline: var\(--sf-step--ring\) solid var\(--sf-steps-current-border-color, var\(--sf-step--progress\)\);\n  outline-offset: var\(--sf-step--ring\);/);
   assert.match(stepCss, /\.sf-steps--marker-dot \.sf-step--state-current \.sf-step-marker::before \{\n  outline: var\(--sf-step--ring\)/);
-  assert.match(rule(stepCss, '.sf-steps--marker-number .sf-step .sf-step-marker'), /border: var\(--sf-px\) solid var\(--sf-steps-step-border-color, var\(--sf-outline\)\);/);
+  assert.match(rule(stepCss, '.sf-steps--marker-number .sf-step .sf-step-marker'), /border-width: var\(--sf-px\);\n  border-style: solid;/);
+  assert.match(rule(paintBlocks(stepCss), '.sf-steps--marker-number .sf-step .sf-step-marker'), /border-color: var\(--sf-steps-step-border-color, var\(--sf-outline\)\);/);
   assert.match(rule(stepCss, '.sf-steps--marker-number .sf-step--state-error .sf-step-marker'), /background-color: var\(--sf-error\);/);
   assert.match(rule(stepCss, '.sf-steps--marker-number .sf-step--state-skipped .sf-step-marker'), /border-style: dashed;/);
   assert.match(rule(stepCss, '.sf-steps--marker-dot .sf-step--state-skipped .sf-step-marker::before'), /border-style: dashed;/);
   // Running: the Framework spinner at the rung's size, no ring of its own.
   assert.match(template, /<sf-spinner size=\$\{context\.size\} \?infinite=\$\{true\} label=""><\/sf-spinner>/);
   const running = rule(stepCss, '.sf-steps .sf-step--state-running .sf-step-marker');
-  assert.match(running, /border: 0;\n  background: none;\n  outline: 0;/);
+  // C273: the reset frame is reverted for the paint block, which repeats it with the empty fill.
+  assert.match(running, /border: 0;\n  border-color: revert-layer;\n  outline: 0;/);
+  assert.match(rule(paintBlocks(stepCss), '.sf-steps .sf-step--state-running .sf-step-marker'), /border: 0;\n\s*background: none;/);
   assert.ok(component.relations.some(({name}) => name === 'cl-spinner'));
   // No green in the steps (ST-5).
   assert.doesNotMatch(stepCss + stepsCss, /--sf-success/);

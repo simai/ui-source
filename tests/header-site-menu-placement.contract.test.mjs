@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {unfoldModes} from './support/paint-blocks.mjs';
 
 // sf-header-site, owner decision C104 (R189, 2026-11-12): the side of the
 // menu button and its panel (menu-placement, MP-1), a switch of the page's
@@ -12,7 +13,8 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const component = JSON.parse(read('src/smart/header-site/component.json'));
 const source = read('src/smart/header-site/index.js');
 const template = read('src/smart/header-site/js/templates/default.js');
-const sheet = read('src/smart/header-site/scss/_smart__site_header.scss');
+// C273: the mixins' paint and shape mode blocks unfolded, as written before
+const sheet = unfoldModes(read('src/smart/header-site/scss/_smart__site_header.scss'));
 const docs = read('src/smart/header-site/docs.md');
 const collapsed = sheet.slice(sheet.indexOf('@mixin collapsed {'), sheet.indexOf('.sf-site-header--collapse-always {'));
 

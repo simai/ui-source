@@ -23,7 +23,6 @@ sf-time {
 
 .sf-time {
   border-radius: var(--sf-time-radius, var(--sf-radius--ui));
-  color: var(--sf-time-color, inherit);
   font-variant-numeric: var(--sf-time-font-variant-numeric, tabular-nums);
   white-space: var(--sf-time-white-space, nowrap);
 }
@@ -37,7 +36,6 @@ sf-time {
 }
 
 .sf-time:focus-visible {
-  --sf-focus--color: var(--sf-time-focus-ring-color, var(--sf-focus));
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
   outline-offset: var(--sf-focus--offset);
 }
@@ -52,4 +50,16 @@ sf-time {
     outline-color: Highlight;
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-time {
+    color: var(--sf-time-color, inherit);
+  }
+  .sf-time:focus-visible {
+    --sf-focus--color: var(--sf-time-focus-ring-color, var(--sf-focus));
+  }
 }

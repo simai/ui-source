@@ -19,7 +19,7 @@
     "src/component/spinner/scss/_var__spinner.scss",
     "src/component/spinner/scss/index.scss"
   ],
-  "content_sha256": "1e58ae5c3f7809b3e606f24402539e08e696a024089995730cfba906cebf5633",
+  "content_sha256": "47e1062ff744df377b3c062e62dd41b0f27c20d0d73b3018ceb54716471d72f6",
   "dependencies": [
     {
       "id": "core.runtime",

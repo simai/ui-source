@@ -1,5 +1,7 @@
 @use '../../../core/scss/mix/mix__places' as places;
+@use '../../../core/scss/mix/mix__paint' as paint;
 @layer sf.components {
+  @include paint.part(shape);
   /* The rows stand as the menu column's (owner decision C243, 2026-11-16;
      C129, C77): 4 between rows -- at the top level, inside a group and
      between a branch and its group -- and the row's inset of C77 (below,
@@ -21,7 +23,6 @@
     flex-direction: column;
     gap: var(--sf-tree-item--gap, var(--sf-space-1\/4));
     border-radius: var(--sf-tree-radius, var(--sf-radius--ui));
-    color: var(--sf-tree-color, var(--sf-on-surface));
     outline: none;
   }
 
@@ -126,7 +127,6 @@
   .sf-tree .sf-tree-item-name {
     flex: 1 1 auto;
     min-inline-size: 0;
-    color: inherit;
     text-decoration: none;
     font-size: var(--sf-tree-item-name--font-size, var(--sf-tree--text-size));
     line-height: var(--sf-tree-item-name--line-height, var(--sf-tree--text-height));
@@ -141,9 +141,6 @@
      row keeps its fill under the pointer, the state step over it (C16, C107
      point 4), below. */
   .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):not([aria-current='page']):not(.active):not([aria-selected='true']) > .sf-tree-item-container:hover {
-    /* The current page keeps its plate under the pointer, as the menu's
-       current row does (C129: the tree and the menu behave alike). */
-    background: var(--sf-surface-container-hover);
     /* On hover the glyphs catch up with the name's ink (C107 point 4). */
     --sf-tree-item-icon--color: currentColor;
     /* A translucent fill, as the selected row: a tonal badge keeps its tone
@@ -153,9 +150,6 @@
 
   .sf-tree .sf-tree-item.active > .sf-tree-item-container,
   .sf-tree .sf-tree-item[aria-selected='true'] > .sf-tree-item-container {
-    /* The selected role (C16), with its ink. */
-    background: var(--sf-tree-selected-background-color, var(--sf-primary-container));
-    color: var(--sf-on-primary-container);
     --sf-icon--color: var(--sf-on-primary-container);
     /* A selected row's glyphs are the ink of its fill (C107 point 4). */
     --sf-tree-item-icon--color: currentColor;
@@ -168,7 +162,6 @@
      family's +4, --sf-primary-container-hover), never the grey of a resting
      row (RG-NV 31i). */
   .sf-tree:not(.sf-tree--static) .sf-tree-item:is(.active, [aria-selected='true']):not([aria-disabled='true']):not([aria-current='page']) > .sf-tree-item-container:hover {
-    background: var(--sf-tree-selected-background-color, var(--sf-primary-container-hover));
     @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container-hover)));
   }
 
@@ -178,8 +171,6 @@
      medium label -- the weight is the second sign besides colour. A selected
      row keeps the soft selected plate (C16), so the two read apart. */
   .sf-tree .sf-tree-item[aria-current='page'] > .sf-tree-item-container {
-    background: var(--sf-primary-container-active);
-    color: var(--sf-on-primary-container);
     font-weight: var(--sf-font-weight-medium);
     --sf-icon--color: var(--sf-on-primary-container);
     /* Its chevron and type icon are the ink of its plate (C107 point 4,
@@ -216,7 +207,6 @@
 
   // A disabled item reads the disabled ink of the place it stands on (C43).
   .sf-tree .sf-tree-item[aria-disabled='true'] {
-    color: var(--sf-on-surface-disabled);
     cursor: not-allowed;
     /* Its glyphs are disabled with it, not the variant ink. */
     --sf-tree-item-icon--color: currentColor;
@@ -283,7 +273,6 @@
      count or a size is short -- and the name is the part that is cut. */
   .sf-tree .sf-tree-item-note {
     flex: none;
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
     font-variant-numeric: tabular-nums;
@@ -293,16 +282,6 @@
   /* A highlighted line (mark) and the «…» line (more). */
   .sf-tree .sf-tree-item--mark > .sf-tree-item-container > .sf-tree-item-name {
     font-weight: var(--sf-font-weight-bold);
-  }
-
-  .sf-tree .sf-tree-item--more > .sf-tree-item-container {
-    color: var(--sf-on-surface-variant);
-  }
-
-  /* A hidden page of a page tree (C102 item 8): greyed, with its word. It is
-     still a page that can be chosen and edited, so it is not disabled. */
-  .sf-tree .sf-tree-item--hidden > .sf-tree-item-container > .sf-tree-item-name {
-    color: var(--sf-on-surface-variant);
   }
 
   /* selection="check" (C102 item 9): the Framework's check box in the row.
@@ -322,7 +301,6 @@
     flex: none;
     inline-size: var(--sf-tree--column);
     block-size: var(--sf-tree--column);
-    color: var(--sf-primary);
   }
 
   .sf-tree .sf-tree-item-spinner :is(.sf-loader-container, .sf-loader--loading-indicator, .sf-loader-svg) {
@@ -331,18 +309,12 @@
     block-size: 100%;
   }
 
-  .sf-tree .sf-tree-item--loading > .sf-tree-item-container,
-  .sf-tree .sf-tree-item--error > .sf-tree-item-container {
-    color: var(--sf-on-surface-variant);
-  }
-
   .sf-tree .sf-tree-item-retry {
     flex: none;
     margin: 0;
     padding: 0;
     border: 0;
-    background: none;
-    color: var(--sf-primary);
+    border-color: revert-layer;
     font: inherit;
     text-decoration: underline;
     cursor: pointer;
@@ -358,7 +330,6 @@
     position: absolute;
     inset-inline: 0;
     block-size: var(--sf-focus--width);
-    background-color: var(--sf-primary);
     pointer-events: none;
   }
 
@@ -434,6 +405,74 @@
     line-height: var(--sf-tree--text-height);
     white-space: normal;
   }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-tree .sf-tree-item {
+    color: var(--sf-tree-color, var(--sf-on-surface));
+  }
+  .sf-tree .sf-tree-item .sf-tree-item-name,
+  .sf-tree .sf-tree-item-name {
+    color: inherit;
+  }
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:not([aria-disabled='true']):not([aria-current='page']):not(.active):not([aria-selected='true']) > .sf-tree-item-container:hover {
+    /* The current page keeps its plate under the pointer, as the menu's
+       current row does (C129: the tree and the menu behave alike). */
+    background: var(--sf-surface-container-hover);
+    @include places.sf-place-fill(var(--sf-surface-container-hover));
+  }
+  .sf-tree .sf-tree-item.active > .sf-tree-item-container,
+  .sf-tree .sf-tree-item[aria-selected='true'] > .sf-tree-item-container {
+    /* The selected role (C16), with its ink. */
+    background: var(--sf-tree-selected-background-color, var(--sf-primary-container));
+    color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container)));
+  }
+  .sf-tree:not(.sf-tree--static) .sf-tree-item:is(.active, [aria-selected='true']):not([aria-disabled='true']):not([aria-current='page']) > .sf-tree-item-container:hover {
+    background: var(--sf-tree-selected-background-color, var(--sf-primary-container-hover));
+    @include places.sf-place-fill(var(--sf-tree-selected-background-color, var(--sf-primary-container-hover)));
+  }
+  .sf-tree .sf-tree-item[aria-current='page'] > .sf-tree-item-container {
+    background: var(--sf-primary-container-active);
+    color: var(--sf-on-primary-container);
+    @include places.sf-place-fill(var(--sf-primary-container-active));
+  }
+  .sf-tree .sf-tree-item[aria-disabled='true'] {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-tree .sf-tree-item-note {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-tree .sf-tree-item--more > .sf-tree-item-container {
+    color: var(--sf-on-surface-variant);
+  }
+  /* A hidden page of a page tree (C102 item 8): greyed, with its word. It is
+     still a page that can be chosen and edited, so it is not disabled. */
+  .sf-tree .sf-tree-item--hidden > .sf-tree-item-container > .sf-tree-item-name {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-tree .sf-tree-item-spinner {
+    color: var(--sf-primary);
+  }
+  .sf-tree .sf-tree-item--loading > .sf-tree-item-container,
+  .sf-tree .sf-tree-item--error > .sf-tree-item-container {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-tree .sf-tree-item-retry {
+    border: 0;
+    background: none;
+    color: var(--sf-primary);
+  }
+  .sf-tree .sf-tree-item[data-sf-drop-position='before'] > .sf-tree-item-container::before,
+  .sf-tree .sf-tree-item[data-sf-drop-position='after'] > .sf-tree-item-container::before {
+    background-color: var(--sf-primary);
+  }
+  @include paint.part(all);
 }
 
 @layer sf.states {

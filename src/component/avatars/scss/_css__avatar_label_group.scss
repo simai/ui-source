@@ -1,7 +1,6 @@
 @layer sf.components {
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
 .sf-avatar-label-group {
-  background-color: var(--sf-avatar-label-group--background-color, transparent);
   gap: var(--sf-avatar-label-group--gap);
   /* The group may be narrower than its text, so the no-wrap lines can end
      in an ellipsis (docs precheck smart content AV-01): as a grid or flex
@@ -13,7 +12,6 @@
 
 /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
 .sf-avatar-label-group .sf-avatar-label-group-container {
-  background-color: var(--sf-avatar-label-group-container--background-color, transparent);
   min-inline-size: 0;
   /* The name and the role wrap inside the group (owner decision C152 (7):
      the name is printed, so it is read whole, not cut): a word longer than
@@ -25,7 +23,6 @@
 }
 
 .sf-avatar-label-group .sf-avatar-label-group-title {
-  color: var(--sf-avatar-label-group-title--color, var(--sf-on-surface));
   font-family: var(--sf-avatar-label-group-title--font-family, var(--sf-text--family));
   font-size: var(--sf-avatar-label-group-title--font-size);
   font-weight: var(--sf-avatar-label-group-title--font-weight, var(--sf-font-weight-medium));
@@ -33,7 +30,6 @@
 }
 
 .sf-avatar-label-group .sf-avatar-label-group-text {
-  color: var(--sf-avatar-label-group-text--color, var(--sf-on-surface-variant));
   font-family: var(--sf-avatar-label-group-text--font-family, var(--sf-text--family));
   font-size: var(--sf-avatar-label-group-text--font-size);
   font-weight: var(--sf-avatar-label-group-text--font-weight, var(--sf-font-weight-regular));
@@ -104,4 +100,22 @@
 .sf-avatar-label-group--size-1\/4 {
   --sf-avatar-label-group--gap: var(--sf-space-1\/4);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-avatar-label-group {
+    background-color: var(--sf-avatar-label-group--background-color, transparent);
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-container {
+    background-color: var(--sf-avatar-label-group-container--background-color, transparent);
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-title {
+    color: var(--sf-avatar-label-group-title--color, var(--sf-on-surface));
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-text {
+    color: var(--sf-avatar-label-group-text--color, var(--sf-on-surface-variant));
+  }
 }

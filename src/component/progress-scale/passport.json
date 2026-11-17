@@ -16,7 +16,7 @@
     "src/component/progress-scale/scss/_css__progress_scale.scss",
     "src/component/progress-scale/scss/index.scss"
   ],
-  "content_sha256": "ec2fc7aaccf366572b7ff0be4248b2be95737a26ee82b9f9f87bd6f0d37a1f94",
+  "content_sha256": "5a73a08493042d436a2e163c09ed3609fd54f1ad5bc79262b54bb6d1f0d89bc3",
   "dependencies": [
     {
       "id": "core.runtime",

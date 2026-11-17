@@ -7,7 +7,6 @@
     min-inline-size: min-content;
     /* The focus ring follows the Framework's links and buttons (BC-08). */
     border-radius: var(--sf-radius--ui);
-    background-color: var(--sf-breadcrumbs-item--background-color);
     box-shadow: var(--sf-breadcrumbs-item--box-shadow);
     --sf-breadcrumbs-item--background-color: transparent;
     --sf-breadcrumbs-item--box-shadow: none;
@@ -26,9 +25,9 @@
 
   .sf-breadcrumbs-item:is(button) {
     border: 0;
+    border-color: revert-layer;
     padding: 0;
     font: inherit;
-    color: inherit;
   }
 
   .sf-breadcrumbs-item[aria-expanded] {
@@ -61,8 +60,6 @@
     --sf-breadcrumbs-item-container--font-weight: var(--sf-font-weight-regular);
     --sf-breadcrumbs-item-container--gap: var(--sf-space-1\/4);
     --sf-breadcrumbs-item-container--line-height: var(--sf-breadcrumbs--text-height, var(--sf-text-height-1\/2));
-    background-color: var(--sf-breadcrumbs-item-container--background-color);
-    color: var(--sf-breadcrumbs-item-container--color);
     font-family: var(--sf-breadcrumbs-item-container--font-family);
     font-size: var(--sf-breadcrumbs-item-container--font-size);
     font-weight: var(--sf-breadcrumbs-item-container--font-weight);
@@ -75,7 +72,6 @@
     --sf-icon--font-size: var(--sf-breadcrumbs--text-height, var(--sf-text-height-1\/2));
     --sf-icon--height: var(--sf-breadcrumbs--text-height, var(--sf-text-height-1\/2));
     --sf-icon--width: var(--sf-breadcrumbs--text-height, var(--sf-text-height-1\/2));
-    color: var(--sf-icon--color, var(--sf-on-surface-variant));
     font-size: var(--sf-icon--font-size);
     height: var(--sf-icon--height);
     width: var(--sf-icon--width);
@@ -123,6 +119,26 @@
   .sf-breadcrumbs-item .sf-breadcrumbs-item-container[aria-current="page"] {
     --sf-breadcrumbs-item-container--color: var(--sf-breadcrumbs-current-color, var(--sf-on-surface));
     --sf-breadcrumbs-item-container--font-weight: var(--sf-font-weight-medium);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-breadcrumbs-item {
+    background-color: var(--sf-breadcrumbs-item--background-color);
+  }
+  .sf-breadcrumbs-item:is(button) {
+    border: 0;
+    color: inherit;
+  }
+  .sf-breadcrumbs-item .sf-breadcrumbs-item-container {
+    background-color: var(--sf-breadcrumbs-item-container--background-color);
+    color: var(--sf-breadcrumbs-item-container--color);
+  }
+  .sf-breadcrumbs-item .sf-breadcrumbs-item-container > .sf-icon, .sf-breadcrumbs-item .sf-breadcrumbs-item-container > sf-icon > .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
   }
 }
 

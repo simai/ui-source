@@ -1,6 +1,8 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
+@use '../../../core/scss/mix/mix__paint' as paint;
 @layer sf.components {
+  @include paint.part(shape);
 /* sf-input-choice (standard simai.smart-component 1.3.15 §6; owner decision
    C28, prototype input-choice-world.html): options as cards in one of three
    layouts. The label row and the message line are sf-input's (text size 1/2,
@@ -43,12 +45,6 @@
   font-weight: var(--sf-font-weight-regular);
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-on-surface-variant);
-}
-
-.sf-choice .sf-choice-required,
-.sf-choice.sf-choice--invalid .sf-choice-message {
-  color: var(--sf-error);
 }
 
 .sf-choice .sf-choice-required {
@@ -108,10 +104,9 @@
   gap: var(--sf-space-1\/4);
   min-inline-size: 0;
   padding: var(--sf-choice--padding);
-  border: var(--sf-px) solid var(--sf-choice--border-color);
+  border-width: var(--sf-px);
+  border-style: solid;
   border-radius: var(--sf-choice--radius);
-  background-color: var(--sf-choice--background-color);
-  color: var(--sf-on-surface);
   cursor: pointer;
   transition-property: background-color, border-color, box-shadow;
   transition-duration: var(--sf-duration-fast);
@@ -220,7 +215,6 @@
   font-size: var(--sf-text-size-1\/2);
   font-weight: var(--sf-font-weight-regular);
   line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-on-surface-variant);
   overflow-wrap: anywhere;
 }
 
@@ -248,7 +242,6 @@
   font-size: var(--sf-text-size-1\/2);
   font-weight: var(--sf-font-weight-regular);
   line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-on-surface-variant);
 }
 
 /* Tile and picture: the price at the foot, after a divider; the term on its
@@ -261,7 +254,6 @@
   display: block;
   block-size: var(--sf-px);
   margin-block-start: var(--sf-space-1\/3);
-  background-color: var(--sf-outline-variant);
 }
 
 .sf-choice .sf-choice-price {
@@ -284,16 +276,12 @@
 }
 
 .sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
-  border-color: var(--sf-outline);
-  background-color: var(--sf-surface-state-hover);
   /* A translucent fill, as the checked card (C43 D4). */
   @include places.sf-place-fill(var(--sf-surface-state-hover));
 }
 
 .sf-choice .sf-choice-card--checked,
 .sf-choice .sf-choice-card--checked:hover {
-  border-color: var(--sf-choice--selected-border-color);
-  background-color: var(--sf-choice--selected-background-color);
   box-shadow: inset 0 0 0 var(--sf-px) var(--sf-choice--selected-border-color);
   /* No solid underlay for what stands on it (input-choice audit 2026-11-11,
      item 2): the card's fill is the lowest step of primary-container, the
@@ -304,21 +292,11 @@
      12 % plate over 12 % fill). */
 }
 
-.sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {
-  border-color: var(--sf-error);
-}
-
 /* Disabled: the disable roles on the edge and the words, the control and the
    badge in their own disabled look, no hover; distinct from a card not
    chosen, which keeps on-surface words and the outline-variant edge. */
 .sf-choice .sf-choice-card--disabled {
-  border-color: var(--sf-outline-disabled);
-  color: var(--sf-on-surface-disabled);
   cursor: default;
-}
-
-.sf-choice .sf-choice-card--disabled :is(.sf-choice-caption, .sf-choice-term) {
-  color: inherit;
 }
 
 .sf-choice .sf-choice-card--disabled .sf-choice-title {
@@ -327,10 +305,6 @@
 
 .sf-choice .sf-choice-card--disabled .sf-choice-icon {
   --sf-icon--color: var(--sf-on-surface-disabled);
-}
-
-.sf-choice .sf-choice-card--disabled .sf-choice-rule {
-  background-color: var(--sf-outline-disabled);
 }
 
 /* ---------------------------------------------------------------- list
@@ -366,12 +340,6 @@
   z-index: 1;
 }
 
-/* Inside the frame a hover or a disabled row keeps the frame's line. */
-.sf-choice[data-layout='list'] .sf-choice-card:not(.sf-choice-card--checked):hover,
-.sf-choice[data-layout='list'] .sf-choice-card--disabled {
-  border-color: var(--sf-choice--border-color);
-}
-
 /* ---------------------------------------------------------------- picture
    The image runs to the card's edges, the caption under it with the card's
    padding; the chosen edge is drawn over the image. */
@@ -405,8 +373,8 @@
   display: block;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border-block-end: var(--sf-px) solid var(--sf-outline-variant);
-  background-color: var(--sf-surface-area);
+  border-block-end-width: var(--sf-px);
+  border-block-end-style: solid;
 }
 
 .sf-choice .sf-choice-media img {
@@ -464,7 +432,9 @@
     aspect-ratio: auto;
     min-block-size: var(--sf-e0);
     border-block-end: 0;
-    border-inline-end: var(--sf-px) solid var(--sf-outline-variant);
+    border-block-end-color: revert-layer;
+    border-inline-end-width: var(--sf-px);
+    border-inline-end-style: solid;
   }
 
   .sf-choice[data-layout='picture'] .sf-choice-card > :not(.sf-choice-media) {
@@ -498,12 +468,6 @@
   font-size: var(--sf-text-size-1);
   line-height: var(--sf-text-height-1);
   font-weight: var(--sf-font-weight-medium);
-  color: var(--sf-on-surface);
-}
-
-/* «*» in the heading's ink, hidden from assistive technology (C153 (2)). */
-.sf-choice--list .sf-choice-heading .sf-choice-required {
-  color: inherit;
 }
 
 /* The «?» keeps the line it stands on (C103, C153 (8)): its box is that
@@ -534,7 +498,6 @@
   font-family: var(--sf-text--family);
   font-size: var(--sf-text-size-1\/2);
   line-height: var(--sf-text-height-1\/2);
-  color: var(--sf-on-surface-variant);
 }
 
 .sf-choice--list .sf-choice-options {
@@ -586,7 +549,6 @@
   display: flex;
   align-items: flex-start;
   gap: var(--sf-space-1\/4);
-  color: var(--sf-error);
 }
 
 .sf-choice--list .sf-choice-message-icon {
@@ -595,6 +557,88 @@
   --sf-icon--height: var(--sf-text-height-1\/2);
   --sf-icon--width: var(--sf-text-height-1\/2);
 }
+  @include paint.part(all);
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  @include paint.part(paint);
+  .sf-choice .sf-choice-label,
+.sf-choice .sf-choice-message {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice .sf-choice-required,
+.sf-choice.sf-choice--invalid .sf-choice-message {
+    color: var(--sf-error);
+  }
+  .sf-choice .sf-choice-card {
+    border-color: var(--sf-choice--border-color);
+    background-color: var(--sf-choice--background-color);
+    color: var(--sf-on-surface);
+  }
+  .sf-choice .sf-choice-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice .sf-choice-term {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice .sf-choice-rule {
+    background-color: var(--sf-outline-variant);
+  }
+  .sf-choice .sf-choice-card:not(.sf-choice-card--disabled, .sf-choice-card--checked):hover {
+    border-color: var(--sf-outline);
+    background-color: var(--sf-surface-state-hover);
+    @include places.sf-place-fill(var(--sf-surface-state-hover));
+  }
+  .sf-choice .sf-choice-card--checked,
+.sf-choice .sf-choice-card--checked:hover {
+    border-color: var(--sf-choice--selected-border-color);
+    background-color: var(--sf-choice--selected-background-color);
+  }
+  .sf-choice.sf-choice--invalid .sf-choice-card:not(.sf-choice-card--checked, .sf-choice-card--disabled) {
+    border-color: var(--sf-error);
+  }
+  .sf-choice .sf-choice-card--disabled {
+    border-color: var(--sf-outline-disabled);
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-choice .sf-choice-card--disabled :is(.sf-choice-caption, .sf-choice-term) {
+    color: inherit;
+  }
+  .sf-choice .sf-choice-card--disabled .sf-choice-rule {
+    background-color: var(--sf-outline-disabled);
+  }
+  /* Inside the frame a hover or a disabled row keeps the frame's line. */
+  .sf-choice[data-layout='list'] .sf-choice-card:not(.sf-choice-card--checked):hover,
+.sf-choice[data-layout='list'] .sf-choice-card--disabled {
+    border-color: var(--sf-choice--border-color);
+  }
+  .sf-choice .sf-choice-media {
+    border-block-end-color: var(--sf-outline-variant);
+    background-color: var(--sf-surface-area);
+  }
+  @container sf-choice (inline-size < #{mq.container-step(g5)}) {
+    .sf-choice[data-layout='picture'] .sf-choice-media {
+      border-block-end: 0;
+      border-inline-end-color: var(--sf-outline-variant);
+    }
+  }
+  .sf-choice--list .sf-choice-heading {
+    color: var(--sf-on-surface);
+  }
+  /* «*» in the heading's ink, hidden from assistive technology (C153 (2)). */
+  .sf-choice--list .sf-choice-heading .sf-choice-required {
+    color: inherit;
+  }
+  .sf-choice--list .sf-choice-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice--list .sf-choice-message {
+    color: var(--sf-error);
+  }
+  @include paint.part(all);
 }
 
 /* The card owns the focus ring: the control gives its own up (one component,

@@ -35,18 +35,22 @@
 .sf-copy-button--pending {
   opacity: var(--sf-copy-button-pending-opacity, 1);
 }
-
-/* The result's ink is the glyph's own colour: the icon button and the button
-   set --sf-icon--color on their root, nearer the glyph than this wrapper, so a
-   variable set here never reached it and the check stayed in the resting ink
-   (found by tests/browser/public-variables, 2026-10-27). */
-.sf-copy-button--success :is(.sf-icon-button, .sf-button, .sf-field-action) .sf-icon {
-  color: var(--sf-copy-button-success-color, var(--sf-success));
 }
 
-.sf-copy-button--error :is(.sf-icon-button, .sf-button, .sf-field-action) .sf-icon {
-  color: var(--sf-copy-button-error-color, var(--sf-error));
-}
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  /* The result's ink is the glyph's own colour: the icon button and the button
+     set --sf-icon--color on their root, nearer the glyph than this wrapper, so a
+     variable set here never reached it and the check stayed in the resting ink
+     (found by tests/browser/public-variables, 2026-10-27). */
+  .sf-copy-button--success :is(.sf-icon-button, .sf-button, .sf-field-action) .sf-icon {
+    color: var(--sf-copy-button-success-color, var(--sf-success));
+  }
+  .sf-copy-button--error :is(.sf-icon-button, .sf-button, .sf-field-action) .sf-icon {
+    color: var(--sf-copy-button-error-color, var(--sf-error));
+  }
 }
 
 /* Inside a field an icon-only copy is the field's action since 1.5.0 (C123:

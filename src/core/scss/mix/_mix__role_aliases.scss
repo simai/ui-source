@@ -15,6 +15,7 @@
 // rule in the built sheets.
 
 @use 'sass:list';
+@use 'mix__paint' as paint;
 
 // new name: the former names it answers for.
 $sf-role-aliases: (
@@ -73,10 +74,12 @@ $sf-role-aliases: (
 // No argument: every alias (the theme root). A list of new names: the
 // aliases of those roles only (a place, a component that re-declares a role).
 @mixin sf-role-aliases($roles: null) {
-  @each $new, $olds in $sf-role-aliases {
-    @if $roles == null or list.index($roles, $new) {
-      @each $old in $olds {
-        --sf-#{$old}: var(--sf-#{$new});
+  @if paint.writes-paint() {
+    @each $new, $olds in $sf-role-aliases {
+      @if $roles == null or list.index($roles, $new) {
+        @each $old in $olds {
+          --sf-#{$old}: var(--sf-#{$new});
+        }
       }
     }
   }
@@ -126,10 +129,12 @@ $sf-shadow-retired: (
 );
 
 @mixin sf-shadow-aliases {
-  @each $old, $new in $sf-shadow-aliases {
-    --sf-#{$old}: var(--sf-#{$new});
-  }
-  @each $old, $value in $sf-shadow-retired {
-    --sf-#{$old}: #{$value};
+  @if paint.writes-paint() {
+    @each $old, $new in $sf-shadow-aliases {
+      --sf-#{$old}: var(--sf-#{$new});
+    }
+    @each $old, $value in $sf-shadow-retired {
+      --sf-#{$old}: #{$value};
+    }
   }
 }

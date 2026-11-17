@@ -17,8 +17,6 @@
     --sf-link--text-decoration: underline;
 
     display: inline;
-    color: var(--sf-link--color);
-    background-color: var(--sf-link--background-color);
     font: inherit;
     text-decoration-line: var(--sf-link--text-decoration);
     /* The line at rest is the link's colour at ink 48, full under the pointer
@@ -50,7 +48,6 @@
 
   .sf-link :where(.sf-link__content, .sf-link-content) {
     min-inline-size: var(--sf-0);
-    color: inherit;
     font: inherit;
     overflow-wrap: anywhere;
     text-decoration: inherit;
@@ -75,6 +72,21 @@
     flex: none;
     block-size: var(--sf-link-icon--size);
     inline-size: var(--sf-link-icon--size);
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-link {
+    color: var(--sf-link--color);
+    background-color: var(--sf-link--background-color);
+  }
+  .sf-link :where(.sf-link__content, .sf-link-content) {
+    color: inherit;
+  }
+  .sf-link :where(.sf-link__icon, .sf-link-icon) {
     color: currentColor;
   }
 }

@@ -75,7 +75,9 @@ function closeOf(text, open) {
 }
 
 // Rules: {selectors, media: [conditions], layer: name|null, order, declarations: [[name, value]]}
-export function parseSheet(input) {
+// With {all: true} every declaration is kept, not the custom properties
+// alone (the C273 paint test asks which layer wins a background-color).
+export function parseSheet(input, {all = false} = {}) {
   const css = stripComments(input);
   const rules = [];
   const layerOrder = [];
@@ -125,7 +127,7 @@ export function parseSheet(input) {
           const colon = part.indexOf(':');
           if (colon < 0) continue;
           const name = part.slice(0, colon).trim().replace(/\\/gu, '');
-          if (!name.startsWith('--')) continue;
+          if (!all && !name.startsWith('--')) continue;
           declarations.push([name, part.slice(colon + 1).trim()]);
         }
         if (declarations.length) rules.push({selectors: splitTop(prelude, ',').map((s) => s.trim()), media, layer, order: order++, declarations});
@@ -324,6 +326,7 @@ export function cascade(sheet, width) {
   function specified(el) {
     if (cache.has(el)) return cache.get(el);
     const winners = new Map(); // name -> {value, key}
+    const candidates = new Map(); // name -> [{value, key}], for revert-layer
     for (const rule of active) {
       let best = null;
       for (const steps of rule.parsed) {
@@ -337,7 +340,20 @@ export function cascade(sheet, width) {
       for (const [name, value] of rule.declarations) {
         const current = winners.get(name);
         if (!current || compareKeys(key, current.key) >= 0) winners.set(name, {value, key});
+        if (!candidates.has(name)) candidates.set(name, []);
+        candidates.get(name).push({value, key});
       }
+    }
+    // `revert-layer` hands the property back to the layers under the one
+    // that won: the best declaration of a lower layer wins instead (C273).
+    for (const [name, won] of winners) {
+      let current = won;
+      while (current && current.value.trim() === 'revert-layer') {
+        const layer = current.key[0];
+        current = candidates.get(name).filter((c) => c.key[0] < layer)
+          .reduce((best, c) => (!best || compareKeys(c.key, best.key) >= 0 ? c : best), null);
+      }
+      if (current) winners.set(name, current); else winners.delete(name);
     }
     cache.set(el, winners);
     return winners;

@@ -26,7 +26,6 @@
     flex: none;
     min-inline-size: var(--sf-code-line--number-size, 3ch);
     padding-inline-end: var(--sf-space-1\/2);
-    color: var(--sf-place--ink-variant, var(--sf-on-surface-variant));
     text-align: end;
     user-select: none;
   }
@@ -54,35 +53,12 @@
     user-select: none;
   }
 
-  .sf-code-line[data-line-diff='add'] {
-    background: var(--sf-highlight-addition-background);
-  }
-
-  .sf-code-line[data-line-diff='remove'] {
-    background: var(--sf-highlight-deletion-background);
-  }
-
   .sf-code-line[data-line-diff='add'] > .sf-code-line__sign::before {
     content: '+' / '';
-    color: var(--sf-success);
   }
 
   .sf-code-line[data-line-diff='remove'] > .sf-code-line__sign::before {
     content: '\2212' / '';
-    color: var(--sf-error);
-  }
-
-  /* Marked and focused lines (C256): a light fill, the primary container
-     (12 % light, 24 % dark), and a 2 px bar at the line's start in primary
-     -- a second cue that leaves the code's contrast alone. Focus is drawn
-     the same: the other lines are neither dimmed nor blurred. */
-  .sf-code-line:is([data-line-mark], [data-line-focus]) {
-    /* The bar is a background layer, not an inset shadow (a shadow is the
-       retired focus ring's tool); code runs left to right here (direction:
-       ltr on the scroller), so its start is the left edge. */
-    background:
-      linear-gradient(var(--sf-primary), var(--sf-primary)) left / calc(2 * var(--sf-px)) 100% no-repeat,
-      var(--sf-primary-container);
   }
 
   /* A terminal (C257): the frame is the code block of the site's theme; a
@@ -91,7 +67,6 @@
   .sf-code-line__prompt {
     flex: none;
     inline-size: 2ch;
-    color: var(--sf-highlight--punctuation, var(--sf-on-surface-variant));
     user-select: none;
   }
 
@@ -101,21 +76,12 @@
 
   .sf-code-line[data-line-output] > .sf-code-line__content {
     padding-inline-start: 2ch;
-    color: var(--sf-highlight--comment, var(--sf-on-surface-variant));
-
-    * {
-      color: inherit;
-    }
   }
 
   .sf-highlight--terminal .sf-highlight__language {
     display: inline-flex;
     align-items: center;
     column-gap: var(--sf-space-1\/3);
-
-    .sf-icon {
-      color: var(--sf-on-surface-icon, var(--sf-on-surface-variant));
-    }
   }
 
   .sf {
@@ -166,7 +132,8 @@
   .sf-highlight__head {
     padding: 0 var(--sf-space-1);
     margin: 0;
-    border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-block-end-width: var(--sf-highlight-border-width, var(--sf-px));
+    border-block-end-style: solid;
   }
 
   /* The copy status is read aloud and never shown; hidden here for the same
@@ -182,6 +149,7 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+    border-color: revert-layer;
   }
 
   /* The block is a column: the head, then the code taking the rest. The code
@@ -209,20 +177,17 @@
     min-width: 0;
     overflow: hidden;
     margin: 0;
-    /* On a grey plate the plate is the fill: the place hook draws none
-       (--sf-place--fill-surface, core mix/_mix__places.scss). */
-    background: var(--sf-highlight-background-color, var(--sf-place--fill-surface, var(--sf-surface-container)));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-width: var(--sf-highlight-border-width, var(--sf-px));
+    border-style: solid;
     border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
-    color: var(--sf-highlight-color, var(--sf-on-surface));
   }
 
   .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
     margin: 0;
     padding-block: 0;
     padding-inline: var(--sf-space-1);
-    border-block-end: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-block-end-width: var(--sf-highlight-border-width, var(--sf-px));
+    border-block-end-style: solid;
   }
 
   /* A code block in running text keeps the text's rhythm (CB-3, plain
@@ -246,8 +211,8 @@
     overscroll-behavior-inline: contain;
     direction: ltr;
     text-align: start;
-    background: transparent;
     border: 0;
+    border-color: revert-layer;
     border-radius: 0;
     box-shadow: none;
   }
@@ -257,7 +222,6 @@
     min-inline-size: max-content;
     padding: 0;
     white-space: pre;
-    background: transparent;
   }
 
   /* After the code surface's own rule, which sizes the code to its longest
@@ -278,7 +242,6 @@
     padding: 0 !important;
   }
 
-
   .hljs-ln-numbers {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -290,14 +253,14 @@
     padding-bottom: 0;
 
     text-align: center;
-    color: var(--sf-highlight--line-number);
     vertical-align: top;
 
     div {
       /* --sf-highlight-line-divider is read here only, as an alias of the
          edge colour until 2027-01-01: the quiet number column (C254) has no
          line, and the role is no longer declared. */
-      border-inline-end: var(--sf-px) solid var(--sf-highlight-line-divider, var(--sf-outline-variant));
+      border-inline-end-width: var(--sf-px);
+      border-inline-end-style: solid;
       padding-inline-end: var(--sf-a5);
     }
 
@@ -338,12 +301,88 @@
     direction: ltr;
     text-align: start;
   }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-code-line__number {
+    color: var(--sf-place--ink-variant, var(--sf-on-surface-variant));
+  }
+  .sf-code-line[data-line-diff='add'] {
+    background: var(--sf-highlight-addition-background);
+  }
+  .sf-code-line[data-line-diff='remove'] {
+    background: var(--sf-highlight-deletion-background);
+  }
+  .sf-code-line[data-line-diff='add'] > .sf-code-line__sign::before {
+    color: var(--sf-success);
+  }
+  .sf-code-line[data-line-diff='remove'] > .sf-code-line__sign::before {
+    color: var(--sf-error);
+  }
+  /* Marked and focused lines (C256): a light fill, the primary container
+     (12 % light, 24 % dark), and a 2 px bar at the line's start in primary
+     -- a second cue that leaves the code's contrast alone. Focus is drawn
+     the same: the other lines are neither dimmed nor blurred. */
+  .sf-code-line:is([data-line-mark], [data-line-focus]) {
+    /* The bar is a background layer, not an inset shadow (a shadow is the
+       retired focus ring's tool); code runs left to right here (direction:
+       ltr on the scroller), so its start is the left edge. */
+    background:
+      linear-gradient(var(--sf-primary), var(--sf-primary)) left / calc(2 * var(--sf-px)) 100% no-repeat,
+      var(--sf-primary-container);
+  }
+  .sf-code-line__prompt {
+    color: var(--sf-highlight--punctuation, var(--sf-on-surface-variant));
+  }
+  .sf-code-line[data-line-output] > .sf-code-line__content {
+    color: var(--sf-highlight--comment, var(--sf-on-surface-variant));
+    * {
+      color: inherit;
+    }
+  }
+  .sf-highlight--terminal .sf-highlight__language {
+    .sf-icon {
+      color: var(--sf-on-surface-icon, var(--sf-on-surface-variant));
+    }
+  }
+  .sf-highlight__head {
+    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+  }
+  .sf-code-line__state,
+  .sf-highlight__status {
+    border: 0;
+  }
+  .sf-code-surface {
+    /* On a grey plate the plate is the fill: the place hook draws none
+       (--sf-place--fill-surface, core mix/_mix__places.scss). */
+    background: var(--sf-highlight-background-color, var(--sf-place--fill-surface, var(--sf-surface-container)));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+    color: var(--sf-highlight-color, var(--sf-on-surface));
+  }
+  .sf-code-surface > :is(.sf-highlight__head, .sf--highlight-head) {
+    border-block-end-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+  }
+  .sf-code-surface__scroll {
+    background: transparent;
+    border: 0;
+  }
+  .sf-code-surface__scroll code {
+    background: transparent;
+  }
+  .hljs-ln-numbers {
+    color: var(--sf-highlight--line-number);
+    div {
+      border-inline-end-color: var(--sf-highlight-line-divider, var(--sf-outline-variant));
+    }
+  }
   @media (forced-colors: active) {
     .sf-code-surface {
       border-color: CanvasText;
     }
-
     .hljs-ln-numbers div {
       border-color: CanvasText;
     }

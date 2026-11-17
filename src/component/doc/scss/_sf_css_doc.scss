@@ -7,7 +7,6 @@
 
   .sf-doc-lead,
   .t-lead {
-    color: var(--sf-on-surface-variant);
     font-size: var(--sf-text-large--size);
     line-height: var(--sf-text-large--height);
   }
@@ -33,9 +32,9 @@
     margin-block-end: 0;
     padding: var(--sf-space-3);
     overflow-wrap: anywhere;
-    border: var(--sf-px) solid var(--sf-outline-variant);
+    border-width: var(--sf-px);
+    border-style: solid;
     border-radius: var(--sf-radius--surface);
-    color: var(--sf-on-surface);
   }
 
   // The source block's own paint, and not the highlighter's: a highlighted
@@ -52,18 +51,15 @@
     margin-block-end: var(--sf-text--space-bottom);
     padding: var(--sf-space-1);
     overflow: auto;
-    background-color: var(--sf-highlight-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
-    border: var(--sf-highlight-border-width, var(--sf-px)) solid var(--sf-highlight-border-color, var(--sf-outline-variant));
+    border-width: var(--sf-highlight-border-width, var(--sf-px));
+    border-style: solid;
     border-radius: var(--sf-highlight-radius, var(--sf-radius--surface));
-    color: var(--sf-highlight-color, var(--sf-on-surface));
     tab-size: 2;
   }
 
   // Inside the block code takes the block's colour (the core gives <code>
   // the main text colour outright) and the block's code step.
   :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) code {
-    color: inherit;
     font-family: var(--sf-code-font-family, var(--sf-code--font-family, var(--sf-mono)));
     font-size: var(--sf-text-size-1\/2);
     line-height: var(--sf-text-height-1\/2);
@@ -108,7 +104,6 @@
 
   .sf-doc-checkerboard,
   .bg-checkered {
-    background-color: var(--sf-surface-page);
     background-image: conic-gradient(
       var(--sf-surface-area) 25%,
       var(--sf-transparent) 0 50%,
@@ -127,18 +122,54 @@
   }
 
   @media (forced-colors: active) {
+    .sf-doc-stripes,
+    .bg-stripes,
+    .sf-doc-checkerboard,
+    .bg-checkered {
+      border-width: var(--sf-px);
+      border-style: solid;
+    }
+  }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-doc-lead,
+  .t-lead {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-doc-example,
+  .example {
+    border-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface);
+  }
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
+    background-color: var(--sf-highlight-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    border-color: var(--sf-highlight-border-color, var(--sf-outline-variant));
+    color: var(--sf-highlight-color, var(--sf-on-surface));
+  }
+  :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) code {
+    color: inherit;
+  }
+  .sf-doc-checkerboard,
+  .bg-checkered {
+    background-color: var(--sf-surface-page);
+  }
+  @media (forced-colors: active) {
     .sf-doc-example,
     .example,
     :is(.sf-doc-source, .source):not(.sf-code-surface, .sf-code-surface__scroll) {
       border-color: CanvasText;
     }
-
     .sf-doc-stripes,
     .bg-stripes,
     .sf-doc-checkerboard,
     .bg-checkered {
       background: Canvas;
-      border: var(--sf-px) solid CanvasText;
+      border-color: CanvasText;
     }
   }
 }

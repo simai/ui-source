@@ -59,7 +59,12 @@
     inline-size: var(--sf-flag--height);
     --sf-flag--radius: var(--sf-flag-radius, var(--sf-radius-circle));
   }
+}
 
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
   /* While the file is still coming, the box holds its place instead of letting
      the line jump. */
   .sf-flag:not(:has(img, svg)) {

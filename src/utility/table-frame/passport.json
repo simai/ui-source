@@ -12,8 +12,12 @@
     "src/utility/table-frame/default/scss/_sf_css__table_frame.scss",
     "src/utility/table-frame/default/scss/index.scss"
   ],
-  "content_sha256": "a645801e21fb50a3db519970f9717c5769d941f9cb6bdd309699b025a2175d24",
+  "content_sha256": "2fc021630a31e795def8f73a5a2ff9aa81733e04a63d6c0118cd5d22c7e9bdb9",
   "dependencies": [
+    {
+      "id": "core.styles",
+      "range": "^1.15.1"
+    },
     {
       "id": "tokens.border",
       "range": "^1.0.0"

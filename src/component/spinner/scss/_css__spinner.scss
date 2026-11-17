@@ -36,13 +36,6 @@
   --sf-loader-spin-duration: calc(var(--sf-duration-slow) * 4);
   --sf-loader-breath-duration: calc(var(--sf-duration-slow) * 3);
   --sf-loader-comet-duration: calc(var(--sf-duration-slow) * 2);
-  /* A spinner on its own is the place's quiet ink, on-surface-variant (owner
-     decision C130 (6)): quieter than the text beside it, as the «готовится»
-     glyph of C120; the words under it read the same ink (below). A control
-     that draws one (a button, an icon button, a badge, a modal) sets the
-     colour on its own spinner, so a spinner in a button keeps the button's
-     ink. --sf-spinner-color and --sf-loader--color still set it. */
-  color: var(--sf-spinner-color, var(--sf-loader--color, var(--sf-on-surface-variant)));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,11 +48,6 @@
   font-weight: 400;
   font-size: var(--sf-loader-text-size);
   line-height: var(--sf-loader-text-line);
-  /* The words take the spinner's own ink, currentColor (DEV J1/S1; RG-SP-1):
-     on-surface-variant for a spinner on its own, as its arc (C130 (6), set on
-     the container above), and the control's ink inside a button or another
-     control. --sf-spinner-text-color still sets them apart. */
-  color: var(--sf-spinner-text-color, currentColor);
 }
 
 /* Said, not shown (SP-07): label-hidden keeps the words for a screen reader
@@ -75,6 +63,7 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+  border-color: revert-layer;
 }
 
 .sf-loader-container.sf-loader--size-1\/3 {
@@ -145,4 +134,29 @@ sf-spinner > .sf-loader-container,
 .sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-3 {
   --sf-loader-stroke-width: var(--sf-a8);
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-loader-container {
+    /* A spinner on its own is the place's quiet ink, on-surface-variant (owner
+       decision C130 (6)): quieter than the text beside it, as the «готовится»
+       glyph of C120; the words under it read the same ink (below). A control
+       that draws one (a button, an icon button, a badge, a modal) sets the
+       colour on its own spinner, so a spinner in a button keeps the button's
+       ink. --sf-spinner-color and --sf-loader--color still set it. */
+    color: var(--sf-spinner-color, var(--sf-loader--color, var(--sf-on-surface-variant)));
+  }
+  .sf-loader-container .sf-loader--text {
+    /* The words take the spinner's own ink, currentColor (DEV J1/S1; RG-SP-1):
+       on-surface-variant for a spinner on its own, as its arc (C130 (6), set on
+       the container above), and the control's ink inside a button or another
+       control. --sf-spinner-text-color still sets them apart. */
+    color: var(--sf-spinner-text-color, currentColor);
+  }
+  .sf-loader-container.sf-loader--label-hidden .sf-loader--text {
+    border: 0;
+  }
 }
