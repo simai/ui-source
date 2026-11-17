@@ -67,14 +67,10 @@
   --sf-settings-panel--pin: calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-low));
 }
 
-/* Compact (C22): the rows and the text a step down, the H4 inset 12. */
-[data-sf-density='compact'] .sf-settings-panel--size-1,
-.sf-settings-panel--size-1[data-sf-density='compact'] {
-  --sf-settings-panel--row-height: var(--sf-ui-1\/2--control-height);
-  --sf-settings-panel--text: var(--sf-text-size-1\/2);
-  --sf-settings-panel--line: var(--sf-text-height-1\/2);
-  --sf-settings-panel--pad: var(--sf-space-1\/2);
-}
+/* Compact (C22): no rule of its own. The density already moves the size's
+   tokens a step down (40 -> 32 rows, 16 -> 14 text, the H4 inset 12) on the
+   panel and on its buttons; a second step here drew 28 rows and 12 text
+   under 32 buttons. */
 
 /* Over the page: the popup's elevation, fitted to its room. */
 .sf-settings-panel--popup {

@@ -234,3 +234,9 @@ test('the order: words per element, open({tab}) and close(), tab, apply-count, t
   assert.match(panel, /<div class="sf-settings-panel-footer"><sf-button size=\$\{size\} text=\$\{label\} data-sf-apply><\/sf-button>\$\{reset\}<\/div>/u);
   assert.equal(applyCount([COLUMNS, VIEW]), 3);
 });
+
+test('C22: compact density steps the panel once -- no rule of the panel moves its rows and text to the 1/2 tokens again', () => {
+  const rules = css.replace(/\/\*[\s\S]*?\*\//gu, '');
+  assert.doesNotMatch(rules, /\[data-sf-density='compact'\] \.sf-settings-panel--size-1/u);
+  assert.doesNotMatch(rules, /\.sf-settings-panel--size-1\[data-sf-density='compact'\]/u);
+});
