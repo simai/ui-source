@@ -21,6 +21,7 @@
 //   win.reveal(index) put a row in the range (a key that goes to it, Home, End)
 //   win.start() / win.stop()   follow scrolling and resizing (any scroll box
 //                     between the rows and the page, one listener per list)
+//                     and the rows' box growing or shrinking
 //
 // The box the rows stand in must not be a scroll anchor (overflow-anchor:
 // none): when the range moves, the browser's scroll anchoring keeps a drawn
@@ -70,6 +71,11 @@ export function rowsWindow({
   // the drawing after reveal measured the window still showing the old rows
   // and put the range back there, and the row the key went to was gone.
   let held = null;
+  // The rows' box is watched for its size: rows that draw themselves after
+  // the list measured them (a row's own element, a late font) change the row
+  // height, and the spacers follow without waiting for a scroll.
+  let observer = null;
+  let observed = null;
 
   const rowHeight = () => height || guess;
 
@@ -161,17 +167,33 @@ export function rowsWindow({
     return moved();
   }
 
+  function schedule() {
+    if (!windowed || frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      sync();
+    });
+  }
+
+  function watchSize() {
+    const box = body?.();
+    if (box === observed) return;
+    observer?.disconnect();
+    observed = box ?? null;
+    const Observer = box?.ownerDocument?.defaultView?.ResizeObserver ?? globalThis.ResizeObserver;
+    if (!box || typeof Observer !== 'function') return;
+    observer ??= new Observer(schedule);
+    observer.observe(box);
+  }
+
   function start() {
+    watchSize();
     if (abort) return;
     abort = new AbortController();
     const {signal} = abort;
     const onScroll = () => {
       held = null;
-      if (!windowed || frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        sync();
-      });
+      schedule();
     };
     // Any scroll box between the rows and the page moves them: listened once,
     // in the capture phase, on the document.
@@ -181,6 +203,8 @@ export function rowsWindow({
   }
 
   function stop() {
+    observer?.disconnect();
+    observed = null;
     abort?.abort();
     abort = null;
     if (frame) cancelAnimationFrame(frame);
