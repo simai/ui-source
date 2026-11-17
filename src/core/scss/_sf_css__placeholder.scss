@@ -110,8 +110,12 @@
    - inline: the track, one control of its size high; its width is its
      labels', which no attribute gives;
    - field: the field, its label line above it, the label's gap and one
-     control of the field's size (1/3 draws 1/2, 3 draws 2), as wide as its
-     container;
+     control of the field's size, as wide as its container: the field is
+     sf-input's ladder, so the label is the text a step below the size and,
+     below the desktop breakpoint, size 1 sets it in the body text (16, so
+     iOS does not zoom), as sf-input's box above; it held 1/3 as 1/2 and 3
+     as 2, the fields' clamp before they took every size (defects-d12: the
+     row under a field moved 4 to 12 px);
    - one language (a languages list without a separator, no island) draws
      nothing, so nothing is held.
 
@@ -136,8 +140,8 @@
   --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-1\/3--space-x));
   --sf-language--text-x: var(--sf-ui-1\/3--text-space-x);
   --sf-language--line: var(--sf-text-height-1\/3);
-  --sf-language--field-label: var(--sf-text-height-1\/3);
-  --sf-language--field: var(--sf-ui-1\/2--control-height);
+  --sf-language--field-label: var(--sf-text-height-1\/4);
+  --sf-language--field: var(--sf-ui-1\/3--control-height);
 }
 :where(sf-language[size="1/2"]) {
   --sf-language--box: var(--sf-ui-1\/2--control-height);
@@ -160,8 +164,12 @@
   --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-3--space-x));
   --sf-language--text-x: var(--sf-ui-3--text-space-x);
   --sf-language--line: var(--sf-text-height-3);
-  --sf-language--field-label: var(--sf-text-height-1);
-  --sf-language--field: var(--sf-ui-2--control-height);
+  --sf-language--field-label: var(--sf-text-height-2);
+  --sf-language--field: var(--sf-ui-3--control-height);
+}
+
+@media not all and (min-width: 60rem) {
+  :where(sf-language:not([size="1/3"], [size="1/2"], [size="2"], [size="3"])) { --sf-language--field-label: var(--sf-text-height-1); }
 }
 
 :where(sf-language:not([data-look])):not(:has(> [data-sf-static])) {
