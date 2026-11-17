@@ -25,8 +25,8 @@ const rule = (css, selector) => {
 };
 
 test('versions: smart.steps 1.4.3, component.step 1.3.3', () => {
-  assert.equal(component.version, '1.4.3');
-  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.3');
+  assert.equal(component.version, '1.4.4');
+  assert.equal(json('src/smart/steps/smart.manifest.json').version, '1.4.4'); // fix/smart-pass-sp1: snapshots retaken
   assert.equal(json('src/component/step/passport.json').version, '1.3.4'); // docs batch B, FW-B-8: size 1 named; above C61's 1.3.2
 });
 
