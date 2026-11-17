@@ -163,3 +163,15 @@ test('ST-2, C166: the pin is sf-button-icon that names itself; RT-1: the footer 
   // Group build 7: the role (C173 (9) RT-ROLE-STEP); --sf-gap--actions is --sf-space-1/3, compact 4.
   assert.match(footer, /gap: var\(--sf-gap--actions\);/u);
 });
+
+test('C166 follow-up, C144: the footer labels stay on one line; the buttons grow from their labels and wrap as a whole', () => {
+  const footer = css.match(/\.sf-settings-panel-footer \{([^}]*)\}/u)[1];
+  assert.match(footer, /flex-wrap: wrap;/u);
+  const share = css.match(/\.sf-settings-panel-footer > \*,\n\.sf-settings-panel-footer > sf-button > \.sf-button \{([^}]*)\}/u)[1];
+  // Equal halves from a zero basis squeezed «Применить (12)» to two lines at size 1/2.
+  assert.match(share, /flex: 1 1 auto;/u);
+  assert.doesNotMatch(share, /flex: 1 1 0;/u);
+  assert.match(css, /\.sf-settings-panel-footer \.sf-button-text-container \{\s*white-space: nowrap;\s*\}/u);
+  const component = JSON.parse(read('src/smart/settings/component.json'));
+  assert.equal(component.version, '1.7.2');
+});
