@@ -79,6 +79,8 @@ function needPack(code, component) {
   const name = component ? canonicalTag(component) : undefined;
   PACKS.request(base, name);
   if (wanted !== base) PACKS.request(wanted, name);
+  const named = aliasOf(wanted);
+  if (named && named !== wanted && named !== base) PACKS.request(named, name);
 }
 
 // Words are kept under a component's current tag: a product that registered
@@ -91,12 +93,24 @@ function normalise(value) {
   return String(value ?? '').trim().toLowerCase().replace('_', '-');
 }
 
+// The registry's second names of a language (localization registry, C278:
+// zh-CN and zh-SG are zh-Hans). Core puts them on the shared store from
+// core/contracts/language-registry.v1.json (core/js/language-packs.js), so a
+// bundle does not carry the registry: {'zh-cn': 'zh-hans', ...}. A page in
+// lang="zh-CN" reads the zh-hans words; a word registered for zh-cn itself
+// still comes first.
+function aliasOf(code) {
+  const aliases = STORE.aliases;
+  const named = aliases && typeof aliases === 'object' ? aliases[code] : undefined;
+  return typeof named === 'string' && named ? named : null;
+}
+
 /** The languages to try, most specific first, English last. */
 const chain = (language) => {
   const wanted = normalise(language);
   const base = wanted.split('-')[0];
   const order = [];
-  for (const candidate of [wanted, base, 'en']) {
+  for (const candidate of [wanted, aliasOf(wanted), base, 'en']) {
     if (candidate && !order.includes(candidate)) order.push(candidate);
   }
   return order;
@@ -288,8 +302,9 @@ export function localeText(dictionary, key, locale, component) {
 // the shared global, because every bundle carries this module.
 function warnFallback(order, owner, key) {
   const wanted = String(order[0] || '').split('-')[0];
-  // While its pack is on its way the English is a moment, not a gap.
-  if (!wanted || wanted === 'en' || PACKS.pending.has(wanted)) return;
+  // While its pack is on its way the English is a moment, not a gap (the
+  // registry name's pack too: zh-hans for a zh-CN page).
+  if (!wanted || wanted === 'en' || order.some((code) => code !== 'en' && PACKS.pending.has(code))) return;
   const root = globalThis;
   if (!(root.__sfMissingWords instanceof Map)) root.__sfMissingWords = new Map();
   const seen = root.__sfMissingWords;

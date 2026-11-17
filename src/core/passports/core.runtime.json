@@ -66,6 +66,7 @@
     "src/core/contracts/icon-names.v1.json",
     "src/core/contracts/interface-fragment.v1.schema.json",
     "src/core/contracts/language-pack.v1.schema.json",
+    "src/core/contracts/language-registry.mjs",
     "src/core/contracts/language-registry.v1.json",
     "src/core/contracts/packages/larena.package.json",
     "src/core/contracts/packages/pro.package.json",
@@ -349,7 +350,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "73a01b33dd913438a4c67e0fad018cb7df1e8c5e2799221d9891a6e4c06d687d",
+  "content_sha256": "312dc0dbbfb1a4e1a8e99716b37d806abf6179087e9c3047076ad57c2c472ee1",
   "dependencies": [
     {
       "id": "core.styles",

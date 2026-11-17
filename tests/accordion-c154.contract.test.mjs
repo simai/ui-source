@@ -112,3 +112,38 @@ test('C154: values from the systems only', () => {
     assert.doesNotMatch(rules(text), /\b\d+(?:px|rem|em|ms)\b/u);
   }
 });
+
+test('C154 (4): a closing panel is inert from the start of the close and given back when it ends or opens', async () => {
+  const {markClosing, CLOSING_ATTRIBUTE} = await import('../src/component/accordion/js/motion.js');
+  const fake = (classes) => {
+    const attrs = new Map();
+    return {
+      classList: {contains: (name) => classes.includes(name)},
+      children: [],
+      setAttribute: (name, value) => attrs.set(name, String(value)),
+      removeAttribute: (name) => attrs.delete(name),
+      hasAttribute: (name) => attrs.has(name),
+      attrs,
+    };
+  };
+  const section = fake(['sf-accordion']);
+  const heading = fake(['sf-accordion-heading']);
+  const panel = fake(['sf-accordion-content']);
+  section.children = [heading, panel];
+  markClosing(section, true);
+  assert.ok(section.hasAttribute(CLOSING_ATTRIBUTE));
+  assert.ok(panel.hasAttribute('inert'), 'Tab cannot land in a panel that is closing');
+  assert.ok(!heading.hasAttribute('inert'), 'the header stays reachable');
+  markClosing(section, false);
+  assert.ok(!section.hasAttribute(CLOSING_ATTRIBUTE));
+  assert.ok(!panel.hasAttribute('inert'), 'given back at the end of the motion or at open');
+  // An inert the page set itself is not taken away.
+  panel.setAttribute('inert', '');
+  markClosing(section, true);
+  markClosing(section, false);
+  assert.ok(panel.hasAttribute('inert'));
+  // Both runtimes mark through it.
+  assert.match(runtime, /markClosing\(this\.el, true\)/u);
+  assert.match(element, /markClosing\(article, true\)/u);
+  assert.doesNotMatch(runtime + element, /setAttribute\(CLOSING_ATTRIBUTE/u);
+});

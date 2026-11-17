@@ -1,6 +1,6 @@
 import registerComponent from '../../register-helper';
 import { instancePath, partId } from '../../../core/js/instance-path.js';
-import { moveSection, sectionHeight, stopSectionMotion } from './motion.js';
+import { markClosing, moveSection, sectionHeight, stopSectionMotion } from './motion.js';
 
 const accordionInstances = new WeakMap();
 const ACCORDION_GROUP_SELECTOR = '.sf-accordion-group';
@@ -21,9 +21,6 @@ const SINGLE_TOGGLE_ATTRIBUTE = 'data-single-section';
 // would take the text out of the search (accordion study AC-8). A browser
 // without until-found hides such a panel as it hides any hidden one.
 const UNTIL_FOUND = 'until-found';
-// Marks a section whose panel is closed but still drawn while the section
-// shrinks to its header (C154 (4)); the class sheet keeps it in view.
-const CLOSING_ATTRIBUTE = 'data-sf-accordion-closing';
 // The marker is the header's last icon; an icon before the title
 // (.sf-accordion-lead) is not the marker and keeps its glyph.
 const MARKER_SELECTOR = '.sf-icon:not(.sf-accordion-lead)';
@@ -200,7 +197,7 @@ class SfAccordion {
 
     const from = sectionHeight(this.el);
     stopSectionMotion(this.el);
-    this.el.removeAttribute(CLOSING_ATTRIBUTE);
+    markClosing(this.el, false);
     if (open) {
       this.closeSingleModeSiblings();
       this.content.hidden = false;
@@ -210,8 +207,8 @@ class SfAccordion {
     }
     this.syncState();
     if (!motion) return;
-    const moving = moveSection(this.el, from, () => this.el.removeAttribute(CLOSING_ATTRIBUTE));
-    if (moving && !open) this.el.setAttribute(CLOSING_ATTRIBUTE, '');
+    const moving = moveSection(this.el, from, () => markClosing(this.el, false));
+    if (moving && !open) markClosing(this.el, true);
   }
 
   closeSingleModeSiblings() {

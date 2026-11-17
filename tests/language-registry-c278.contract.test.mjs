@@ -27,3 +27,36 @@ test('C278: every Framework language pack is of a registry language', () => {
   const codes = new Set(registry.languages.map((one) => one.locale.toLowerCase()));
   for (const code of index.languages) assert.ok(codes.has(code), code);
 });
+
+test('C278: a page in a registry second name (zh-CN) asks for and reads the registry language (zh-hans); no pack is added', async () => {
+  const {language, pageWord} = await import('../src/core/js/page-language.js');
+  const {installLanguagePacks, registryAliases} = await import('../src/core/js/language-packs.js');
+  const aliases = registryAliases();
+  for (const entry of registry.languages) {
+    for (const alias of entry.aliases) assert.equal(aliases[alias.toLowerCase()], entry.slug, alias);
+  }
+  assert.deepEqual(aliases, registryAliases(registry), 'read from the registry, nothing else');
+  assert.equal(globalThis.__sfPageLanguage.aliases['zh-cn'], 'zh-hans');
+  const saved = {document: globalThis.document, config: globalThis.SF_BOOT_CONFIG};
+  const asked = [];
+  try {
+    language.forget();
+    globalThis.document = {documentElement: {getAttribute: () => 'zh-CN'}, baseURI: 'https://example.test/', readyState: 'complete', querySelectorAll: () => []};
+    globalThis.SF_BOOT_CONFIG = {languages: {'zh-hans': '/site/lang/zh-hans.json'}};
+    installLanguagePacks({root: 'https://cdn.test/core/', again: true, packs: {languages: [], parts: {}}, fetchJson: async (url) => {
+      asked.push(url);
+      return {schema: 'simai.language-pack', schema_version: 1, delivery: 'site', lang: 'zh-hans', words: {'sf-display-settings': {'skip-link-text': '跳到内容'}}};
+    }});
+    await Promise.all([...globalThis.__sfPageLanguage.packs.pending.values()]);
+    assert.deepEqual(asked, ['https://example.test/site/lang/zh-hans.json']);
+    const node = {closest: () => ({getAttribute: () => 'zh-CN'}), tagName: 'SF-DISPLAY-SETTINGS'};
+    assert.equal(pageWord({en: {'skip-link-text': 'Skip to content'}}, 'skip-link-text', node), '跳到内容');
+    // A word registered for zh-CN itself still comes first.
+    language.register('sf-display-settings', 'zh-CN', {'skip-link-text': '跳至内容'});
+    assert.equal(pageWord({en: {'skip-link-text': 'Skip to content'}}, 'skip-link-text', node), '跳至内容');
+  } finally {
+    language.forget();
+    globalThis.document = saved.document;
+    globalThis.SF_BOOT_CONFIG = saved.config;
+  }
+});

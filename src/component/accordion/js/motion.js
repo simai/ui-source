@@ -9,6 +9,33 @@
 
 const running = new WeakMap();
 
+// The mark of a section that shrinks to its header: its closed panel stays
+// drawn (the class sheet), so the text leaves with the motion.
+export const CLOSING_ATTRIBUTE = 'data-sf-accordion-closing';
+
+// Panels made inert here, so only those are given back.
+const madeInert = new WeakSet();
+
+// Marks a section closing or not. A closing panel is drawn but closed: from
+// the start of the close nothing in it takes focus, Tab or a click (inert),
+// as after the motion, when the sheet no longer draws it; it is given back
+// when the motion ends or the section opens again.
+export function markClosing(section, closing) {
+  if (!section) return;
+  if (closing) section.setAttribute(CLOSING_ATTRIBUTE, '');
+  else section.removeAttribute(CLOSING_ATTRIBUTE);
+  const panel = Array.from(section.children ?? []).find((child) => child.classList?.contains('sf-accordion-content'));
+  if (!panel) return;
+  if (closing) {
+    if (panel.hasAttribute('inert')) return;
+    panel.setAttribute('inert', '');
+    madeInert.add(panel);
+  } else if (madeInert.has(panel)) {
+    madeInert.delete(panel);
+    panel.removeAttribute('inert');
+  }
+}
+
 function seconds(value) {
   const first = String(value || '').split(',')[0].trim();
   if (!first) return 0;
