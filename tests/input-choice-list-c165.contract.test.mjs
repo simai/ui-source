@@ -63,8 +63,9 @@ test('C165 (1): sf-form draws a short choice field through sf-input-choice appea
   const source = read('src/smart/form/js/choice-list.js');
   assert.match(source, /export const LIST_MOST = 5;/u);
   assert.match(source, /appearance="list"/u);
-  assert.match(source, /new Set\(\['buttons', 'select', 'checklist'\]\)/u);
+  // A template other than the default dropdown keeps its own control (C302), as does the former select.
+  assert.match(source, /if \(template !== DEFAULT_TEMPLATE \|\| former === 'select'\) return false;/u);
   const form = read('src/smart/form/index.js');
   assert.match(form, /isListChoice\(field\) \? renderChoiceList\(field, value, host\) : renderEditField/u);
-  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.4.0'); // 1.2.0: late fields and groups (R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch // fix/date-pd: 1.3.4, the unknown-type warning
+  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.5.0'); // C302/C303: 1.5.0 // 1.2.0: late fields and groups (R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch // fix/date-pd: 1.3.4, the unknown-type warning
 });

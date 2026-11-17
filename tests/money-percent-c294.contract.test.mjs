@@ -70,7 +70,8 @@ test('C294 (MP-8): what a person pastes is read as they mean it', () => {
 
 test('C294 (MP-12): numeric in the registry; totals by the digits, one per currency', () => {
   const numeric = PROPERTY_TYPES.filter((entry) => entry.numeric).map((entry) => entry.type);
-  assert.deepEqual(numeric, ['integer', 'number', 'money', 'percent']);
+  // C303 (2): integer is read as number (decimals 0); it is numeric through it.
+  assert.deepEqual(numeric, ['number', 'money', 'percent']);
   assert.equal(addDecimal('0.1', '0.2'), '0.3');
   assert.equal(addDecimal(['1500.5', '-0.5', null]), '1500');
   const totals = moneyTotals([{amount: '12500', currency: 'USD'}, {amount: '3000', currency: 'EUR'}, {amount: '7250.75', currency: 'USD'}, null], {}, 'en');

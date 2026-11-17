@@ -1,0 +1,27 @@
+{
+  "id": "an-incomplete-masked-value-is-never-sent",
+  "intent": "record.save",
+  "summary": "While a masked field is incomplete neither save is raised; once every masked field is complete or cleared, one save carries them, each as its own.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contacts",
+      "values": {
+        "phone": "+7 (912) 345-67-89",
+        "fax": null
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "A host never receives «+7 (912) 3»: the panel holds the save while any masked field in it is incomplete, says which under the field, and keeps what was typed. Each masked field is complete or not on its own, so the fax cleared beside a completed phone is sent as null."
+  }
+}

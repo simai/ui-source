@@ -21,7 +21,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
 import {renderFormTemplate} from './js/templates/default';
@@ -682,16 +682,18 @@ class SfForm extends FormElement {
     };
   }
 
-  fieldContext(field, {editing, instant, id}) {
+  fieldContext(field, {editing, id}) {
     const value = this._values[field.key];
     const host = this.hostOf(field);
     // A short choice is a ready group of radios or checks (C165 (1)).
     const control = editing
       ? (isListChoice(field) ? renderChoiceList(field, value, host) : renderEditField(field, value, host, this.renderOptions()))
       : renderViewField(field, value, host, this.size === '1/2' ? {size: '1/2'} : {});
-    // A required yes/no under apply submit is a checkbox, which carries its
-    // label beside the box (C165 (4)): no label row over it.
-    const checkbox = editing && !instant && field.propertyType === 'boolean' && field.required === true && field.readonly !== true;
+    // A yes/no drawn as a checkbox carries its label beside the box (C165
+    // (4)): no label row over it. The field's template says which it is
+    // (C303 (4)); the form no longer picks it from required and apply.
+    const drawn = fieldTemplate(field);
+    const checkbox = editing && drawn.type === 'boolean' && drawn.template === 'checkbox' && field.readonly !== true;
     const error = editing ? (this._errors.get(field.key) || '') : '';
     const element = this.controlOf(field.key);
     const speaks = Boolean(element && SPEAKING_TAGS.has(element.localName));
@@ -700,7 +702,7 @@ class SfForm extends FormElement {
       id: `${id}--field-${field.key}`,
       label: field.label,
       labelRow: !checkbox,
-      required: editing && field.required === true && field.readonly !== true && field.propertyType !== 'boolean',
+      required: editing && field.required === true && field.readonly !== true && drawn.type !== 'boolean',
       help: text(field.help),
       helpLabel: this.sfWord('help-label', {vars: {label: field.label}}),
       // The hint gives its place to the error (C153 (3)).

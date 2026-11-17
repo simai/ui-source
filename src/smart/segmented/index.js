@@ -375,11 +375,21 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     return {need, room};
   }
 
+  // A track its author lets wrap (root-class flex-wrap, as the field
+  // renderers' choice buttons do) takes more lines instead of folding: it
+  // was asked to show every option, and a dropdown in its place is another
+  // control (C302: the template is the administrator's choice; FW-2).
+  wrapsLines() {
+    const root = this.querySelector(':scope > .sf-button-group');
+    return Boolean(root) && globalThis.getComputedStyle?.(root)?.flexWrap === 'wrap';
+  }
+
   checkFit() {
     if (!this.isConnected) return;
-    if (!this.foldable) {
+    if (!this.foldable || this.wrapsLines()) {
       if (this._folded) {
         this._folded = false;
+        this.toggleAttribute('data-sf-folded', false);
         this.requestComponentUpdate?.('fit');
       }
       return;

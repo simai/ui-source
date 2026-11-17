@@ -1,0 +1,27 @@
+{
+  "intent": "view.create",
+  "summary": "A person who may not write the shared layer may not make a shared view either.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.create",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "label": "Для всех",
+      "shared": true,
+      "view": {}
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "The same right that governs the shared layer governs a shared view; saying so is what stops a person making one and losing it on the next read."
+  },
+  "id": "view-create-shared-may-be-refused"
+}

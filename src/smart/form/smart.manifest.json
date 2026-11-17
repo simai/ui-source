@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "title": "Form",
   "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "kind": "smart",
@@ -121,7 +121,7 @@
       "fields": {
         "type": "array",
         "default": [],
-        "description": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type and its parameters (propertyType, variant, required, readonly, placeholder, options, min, max, step, unit … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width s (8rem), m (16rem) or full; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
+        "description": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type, its template and its parameters (propertyType, template and templateParams -- variant is the former name of template until 2027-01-01 --, required, readonly, placeholder, options, min, max, step, unit, decimals, currency, currencies, currencyDisplay … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width s (8rem), m (16rem) or full; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
       },
       "groups": {
         "type": "array",
@@ -400,7 +400,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "d32c08e359486fd618216ccf3ac877dc78fdf4c2e6d95aacbe7aa9abe067a15b"
+        "sha256": "cf61739ee559f8fdeb61a366c33321585a6ca6f0df87a7b5657bf9a9d41cbee6"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
@@ -408,7 +408,7 @@
       },
       {
         "path": "src/smart/form/js/choice-list.js",
-        "sha256": "c7f6f918b5f8dee0947d3bc504d81943298db870e9e7659143ebfafba3833a28"
+        "sha256": "4bdf48c783b9de5260e79e9cf1db76f5e35216a9d2ff0df785e1d3df6c21a089"
       },
       {
         "path": "src/smart/form/rule.js",
@@ -416,7 +416,7 @@
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "8ae922fd2ba71789c03bf1c164df233ee57ed366ab4833388759e4a1f952b960"
+        "sha256": "4f8cfe167b5f8e33a85f6ffcd0a0386bb3d87475db5d97b3f83a5b718e549836"
       }
     ],
     "generated_runtime": []

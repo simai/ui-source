@@ -77,13 +77,14 @@ test('FL-1: E.164 and the legacy formatted strings are one number; a round trip 
 });
 
 test('FL-1: the phone edit writes the control\'s form value, view and cell read left to right', () => {
-  const edit = renderers.slice(renderers.indexOf('function renderPhoneEdit'), renderers.indexOf('function isPhoneField'));
+  const edit = renderers.slice(renderers.indexOf('function renderPhoneEdit'), renderers.indexOf('// A phone shown:'));
   assert.match(edit, /@change=\$\{\(event\) => host\.setFieldValue\(field, phoneWritten\(event, extension\)\)\}/u);
   assert.match(edit, /return number && extension \? `\$\{number\};ext=\$\{extension\}` : number;/u);
   assert.match(edit, /control\.sfFormValue\(\)/u);
   assert.match(edit, /: phoneE164\(event\.detail/u);
   assert.doesNotMatch(edit, /setFieldValue\(field, event\.(detail|target)/u, 'never the box text');
-  assert.match(renderers, /if \(isPhoneField\(field\)\) \{\s+const text = phoneText\(field, value, host\);\s+return text \? html`<bdi dir="ltr">/u);
+  // phone is a type of its own (C302): its cell and view are its own renderers.
+  assert.match(renderers, /function renderPhoneCell\(field, value, host\) \{\s+const text = phoneText\(field, value, host\);\s+return text \? html`<bdi dir="ltr">/u);
   assert.match(renderers, /<span class="sf-field-view"><bdi dir="ltr">\$\{text\}<\/bdi><\/span>/u);
 });
 
@@ -127,5 +128,6 @@ test('FL-7: defaultCountry is a phone field\'s setting, passed only while the fi
   assert.match(edit, /field\.defaultCountry/u);
   assert.match(edit, /&& !String\(stored\)\.trim\(\) \? preferred : nothing/u);
   assert.match(edit, /iso2=\$\{iso2\}/u);
-  assert.match(registry, /params: \['placeholder', 'mask', 'nullable', 'defaultCountry', 'required', 'readonly'\]/u);
+  // The phone type's setting (C302: phone left the string's variants).
+  assert.match(registry, /type: 'phone'[\s\S]*?params: \['defaultCountry', 'required', 'readonly'\]/u);
 });

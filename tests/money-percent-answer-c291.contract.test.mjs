@@ -24,7 +24,8 @@ test('C291 (2): money and percent are registered without a set, with the port\'s
   assert.equal(percent.set, undefined);
   // C294 adds currencies and currencyDisplay to money, step to percent.
   assert.deepEqual(money.params, ['currency', 'currencies', 'currencyDisplay', 'min', 'max', 'placeholder', 'required', 'readonly']);
-  assert.deepEqual(percent.params, ['min', 'max', 'step', 'precision', 'placeholder', 'required', 'readonly']);
+  // C303 (2): decimals, the digits a percent keeps (precision its former name).
+  assert.deepEqual(percent.params, ['decimals', 'min', 'max', 'step', 'precision', 'placeholder', 'required', 'readonly']);
   for (const map of ['VIEW_RENDERERS', 'EDIT_RENDERERS']) {
     const body = renderers.slice(renderers.indexOf(`${map} = {`), renderers.indexOf('};', renderers.indexOf(`${map} = {`)));
     assert.match(body, /money: renderMoney(View|Edit),/u, map);
@@ -72,7 +73,7 @@ test('C291 (2): the editors write decimal strings and say what is wrong through 
 
 test('C291 (3): sf-form apply answer, size and state over the confirm surface\'s words', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.4.0');
+  assert.equal(manifest.version, '1.5.0'); // C302/C303: template keys declared
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.deepEqual(manifest.settings.size.values, ['1', '1/2']);
   assert.equal(manifest.settings.size.default, '1');

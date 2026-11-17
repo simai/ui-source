@@ -44,15 +44,19 @@ test('the set publishes the registry with each type\'s modes', () => {
   assert.match(source, /registry: PROPERTY_TYPES\.map\(\(entry\) => \(\{\.\.\.entry, modes: propertyModes\(entry\.type\)\}\)\)/u);
 });
 
-// A password is a string the set never shows (owner, 2026-10-19). The registry
-// names it write-only; its renderers never bind the value into markup, and the
-// control writes only what a person types.
-test('string:password is registered, write-only, in both languages', () => {
+// A password is a type the set never shows (owner, 2026-10-19; a type of its
+// own since C302 (1), a string variant before). The registry names it
+// write-only; its renderers never bind the value into markup, and the control
+// writes only what a person types.
+test('password is a registered type, write-only, in both languages', () => {
+  const password = PROPERTY_TYPES.find((entry) => entry.type === 'password');
+  assert.equal(password.writeOnly, true);
+  assert.deepEqual({...password.label}, {ru: 'Пароль', en: 'Password'});
+  assert.deepEqual(password.templates.map((one) => one.id), ['input']);
   const string = PROPERTY_TYPES.find((entry) => entry.type === 'string');
-  const password = string.variants.find((variant) => variant.id === 'password');
-  assert.deepEqual(password, {id: 'password', label: {ru: 'Пароль', en: 'Password'}, writeOnly: true});
+  assert.deepEqual(string.variants, []);
   // mask and nullable since property-view port 1.16.0 (a masked string).
-  assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'defaultCountry', 'required', 'readonly']);
+  assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'required', 'readonly']);
 });
 
 test('the password renderers never put the value into markup and write only typed text', () => {
@@ -74,10 +78,12 @@ test('the password renderers never put the value into markup and write only type
   // The only write is the typed text, and erasing withdraws it.
   assert.equal(edit.match(/setFieldValue/gu).length, 1);
   assert.match(edit, /host\.setFieldValue\(field, typed === '' \? undefined : typed\)/u);
-  for (const name of ['renderStringView', 'renderStringCell', 'passwordState']) {
+  for (const name of ['renderPasswordView', 'renderPasswordCell', 'passwordState']) {
     assert.doesNotMatch(body(name), /formatFieldValue|scalarValue|viewText\(|console\./u, name);
   }
-  assert.match(body('renderTextEdit'), /if \(isPasswordField\(field\)\) return renderPasswordEdit/u);
+  assert.match(source, /\n    password: renderPasswordEdit,\n/u);
+  assert.match(source, /\n    password: renderPasswordView,\n/u);
+  assert.match(source, /\n    password: renderPasswordCell,\n/u);
   assert.match(source, /const VIEW_RENDERERS = \{\n    string: renderStringView,/u);
   assert.match(source, /string: renderStringCell,/u);
   for (const key of ['passwordSet', 'passwordUnset', 'passwordKeep']) {
@@ -91,17 +97,18 @@ test('the password renderers never put the value into markup and write only type
 // with the set that shows and edits them, their cells and filters the
 // Framework's, and every key they read declared by the port. money and
 // percent are the Framework's in every mode since C291 (2).
-test('items, compound and ru.requisites are the view set\'s; money and percent the Framework\'s, with the port\'s keys', () => {
-  const port = JSON.parse(readFileSync(join(root, 'src/core/contracts/ports/simai.property-view-port/1.19.0/port.json'), 'utf8'));
+test('items, complex and ru.requisites are the view set\'s; money and percent the Framework\'s, with the port\'s keys', () => {
+  const port = JSON.parse(readFileSync(join(root, 'src/core/contracts/ports/simai.property-view-port/1.20.0/port.json'), 'utf8'));
   const declared = new Set(Object.keys(port.data.record.schema.properties.sections.items.properties.groups.items.properties.fields.items.properties));
   const cell = new Set(mapKeys('CELL_RENDERERS'));
   const filter = new Set(mapKeys('FILTER_RENDERERS'));
   const view = new Set(mapKeys('VIEW_RENDERERS'));
   const edit = new Set(mapKeys('EDIT_RENDERERS'));
   const drawn = PROPERTY_TYPES.filter((entry) => entry.set);
-  assert.deepEqual(drawn.map((entry) => entry.type), ['items', 'compound', 'ru.requisites']);
+  // complex is the former compound (C302 catalogue), read under that name until 2027-01-01.
+  assert.deepEqual(drawn.map((entry) => entry.type), ['items', 'complex', 'ru.requisites']);
   for (const entry of drawn) assert.equal(entry.set, 'view', entry.type);
-  for (const entry of PROPERTY_TYPES.filter((one) => ['money', 'percent', 'items', 'compound', 'ru.requisites'].includes(one.type))) {
+  for (const entry of PROPERTY_TYPES.filter((one) => ['money', 'percent', 'items', 'complex', 'ru.requisites'].includes(one.type))) {
     for (const param of entry.params) assert.ok(declared.has(param), `${entry.type}.${param} is declared by the port`);
   }
   for (const type of ['money', 'percent']) {

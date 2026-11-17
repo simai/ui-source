@@ -1,0 +1,40 @@
+{
+  "id": "a-field-taken-out-of-an-area-is-unplaced",
+  "intent": "view.save",
+  "capability": "view-settings",
+  "summary": "A field removed from an area is written with a null group and comes back in `unplaced`, not as a hidden field.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "target": {
+        "kind": "personal",
+        "revision": "v7"
+      },
+      "view": {
+        "schema_version": 1,
+        "sections": {},
+        "groups": {},
+        "fields": {
+          "code": {
+            "group": null,
+            "order": 1
+          }
+        }
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision"
+    ],
+    "note": "Hiding and taking out are different things and the port has both. A hidden field is one the layer above may have hidden for everyone; an unplaced field belongs to no area and is offered back where areas take fields. Answering a null group with a hidden field would make removal look permanent."
+  }
+}

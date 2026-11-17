@@ -19,27 +19,26 @@ const body = (name) => {
 };
 
 test('only a stepper number is drawn with sf-quantity; the default number edit is unchanged', () => {
-  assert.match(body('isStepperField'), /return String\(field\.variant \?\? ''\) === 'stepper';/u);
+  assert.match(body('isStepperField'), /return templateOf\(field\) === 'stepper';/u);
   assert.match(body('renderNumberEdit'), /^function renderNumberEdit\(field, value, host\) \{\n    if \(isStepperField\(field\)\) return renderStepperEdit\(field, value, host\);\n/u);
-  // The plain editor below it is an sf-input: an integer the one it was, a
-  // number the decimal editor of property-view port 1.18.0 (field-decimal).
+  // The plain editor below it is one sf-input for every number (C303 (2)):
+  // the digit keyboard for a whole one (decimals 0, an integer field), the
+  // decimal one otherwise; an integer field still writes a number.
   const plain = body('renderNumberEdit');
-  assert.match(plain, /<sf-input[\s\S]*inputmode="numeric"/u);
-  assert.match(plain, /host\.setFieldValue\(field, next === '' \? null : Number\(next\)\);/u);
-  assert.match(plain, /<sf-input[\s\S]*inputmode="decimal"/u);
-  assert.match(source, /\n    integer: renderNumberEdit,\n    number: renderNumberEdit,\n/u);
+  assert.match(plain, /inputmode=\$\{decimals === 0 \? 'numeric' : 'decimal'\}/u);
+  assert.match(plain, /host\.setFieldValue\(field, asString \? read\.value : Number\(read\.value\)\)/u);
+  assert.match(source, /\n    number: renderNumberEdit,\n/u);
+  assert.doesNotMatch(source, /\n    integer: renderNumberEdit,\n/u);
 });
 
-test('the registry names the stepper variant for both number types, and the keys it reads', () => {
-  for (const type of ['integer', 'number']) {
-    const entry = PROPERTY_TYPES.find((one) => one.type === type);
-    assert.deepEqual(entry.variants.find((variant) => variant.id === 'stepper'),
-      {id: 'stepper', label: {ru: 'Кнопками «−» и «+»', en: 'With steppers'}}, type);
-  }
-  assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'integer').params, ['unit', 'min', 'max', 'step', 'required', 'readonly']);
-  assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'number').params, ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']);
-  // The scale stays the number's first variant.
-  assert.equal(PROPERTY_TYPES.find((one) => one.type === 'number').variants[0].id, 'scale');
+// C303 (2): number is one type; integer is read as number with decimals 0.
+test('the registry names the stepper template of the one number type, and the keys it reads', () => {
+  assert.equal(PROPERTY_TYPES.find((one) => one.type === 'integer'), undefined);
+  const number = PROPERTY_TYPES.find((one) => one.type === 'number');
+  assert.deepEqual(number.variants.find((variant) => variant.id === 'stepper'),
+    {id: 'stepper', label: {ru: 'Кнопками «−» и «+»', en: 'With steppers'}});
+  assert.deepEqual(number.params, ['decimals', 'unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']);
+  assert.deepEqual(number.templates.map((one) => one.id), ['input', 'stepper', 'scale', 'meter']);
 });
 
 test('the stepper takes the field as the other controls do', () => {
@@ -56,8 +55,8 @@ test('the stepper takes the field as the other controls do', () => {
   assert.doesNotMatch(element, /(?<!aria-)label=/u);
   assert.match(element, /\?required=\$\{Boolean\(field\.required\)\}/u);
   assert.match(element, /\?disabled=\$\{field\.readonly === true\}/u);
-  // An integer has no decimals; a number has its precision, its step's, or two.
-  assert.match(edit, /const precision = decimal\n\s+\? stepperNumber\(field\.precision\) \|\| \(step \? '' : '2'\)\n\s+: '0';/u);
+  // A number has its decimals (an integer field 0), its step's, or two.
+  assert.match(edit, /const precision = decimals !== null \? String\(decimals\) : \(step \? '' : '2'\);/u);
   // The value written is the stepper's number, or null.
   assert.match(edit, /const write = \(event\) => host\.setFieldValue\(field, event\.detail\?\.value \?\? null\);/u);
   assert.equal((edit.match(/@[a-z-:]+=/gu) ?? []).join(), '@input=,@change=');

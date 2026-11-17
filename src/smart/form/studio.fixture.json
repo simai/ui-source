@@ -54,7 +54,8 @@
       {
         "key": "radius",
         "label": "Скругление, px",
-        "propertyType": "integer",
+        "propertyType": "number",
+        "decimals": 0,
         "group": "look",
         "width": "s",
         "min": 0,

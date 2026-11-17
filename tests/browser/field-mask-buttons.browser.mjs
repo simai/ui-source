@@ -283,17 +283,20 @@ try {
         // sf-dropdown draws no box of its own: its place is the fold's box.
         const rect = host?.querySelector('.sf-button-group-narrow')?.getBoundingClientRect();
         const track = host?.querySelector('.sf-button-group');
-        return {folded: Boolean(host?.hasAttribute('data-sf-folded')), dropdown: Boolean(dropdown), size: dropdown?.getAttribute('size') ?? dropdown?.size ?? null,
-          options: Array.isArray(dropdown?.options) ? dropdown.options.length : null,
+        const buttons = [...(track?.querySelectorAll(':scope > button, :scope > sf-button > button') ?? [])].map((one) => one.getBoundingClientRect())
+          .filter((one) => one.width > 0);
+        return {folded: Boolean(host?.hasAttribute('data-sf-folded')), dropdown: Boolean(dropdown?.offsetParent ?? dropdown?.querySelector('.sf-dropdown')?.offsetParent),
+          buttons: buttons.length, rows: new Set(buttons.map((one) => Math.round(one.top))).size,
+          inside: buttons.every((one) => one.left >= box.left - 0.5 && one.right <= box.right + 0.5),
           box: [box.left, box.right], drawn: rect ? [rect.left, rect.right, rect.height] : null,
           trackVisibility: track ? getComputedStyle(track).visibility : null, page: document.documentElement.scrollWidth, viewport: innerWidth};
       });
-      // C47 C: nine labels do not fit a 420 or 328 px field on one line, so the
-      // group is drawn as an sf-dropdown of its size, as wide as the field.
-      check(at('a long list folds into a dropdown of its size with every option'), many.labels.length === 9 && fold.folded && fold.dropdown
-        && String(fold.size) === '1/2' && fold.options === 9, {many, fold});
-      check(at('the folded list stays in its field and the page is no wider'), fold.drawn && fold.drawn[2] > 0 && fold.drawn[0] >= fold.box[0] - 0.5
-        && fold.drawn[1] <= fold.box[1] + 0.5 && fold.trackVisibility === 'hidden' && fold.page <= fold.viewport, {fold});
+      // C302 FW-2 (owner 2026-11-17, replaces C47 C for choice buttons): nine
+      // labels that do not fit the field on one line wrap into rows; the
+      // buttons never fold into a dropdown.
+      check(at('a long list wraps into rows of buttons, every option shown, never folded'), many.labels.length === 9 && !fold.folded && !fold.dropdown
+        && fold.buttons === 9 && fold.rows > 1, {many, fold});
+      check(at('the wrapped list stays in its field and the page is no wider'), fold.inside && fold.trackVisibility === 'visible' && fold.page <= fold.viewport, {fold});
       check(at('no horizontal page scroll'), await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
 
       const dropdown = await page.evaluate(() => ({dropdown: Boolean(document.querySelector('#dropdown sf-dropdown')),

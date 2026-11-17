@@ -1,0 +1,14 @@
+{
+  "id": "upload-refused-is-explained",
+  "intent": "field.upload",
+  "capability": "field-upload",
+  "summary": "A file the host will not take is refused with a reason the field shows, and nothing is added to the value.",
+  "given": {"capabilities": ["field-upload"]},
+  "when": {"intent": "field.upload", "payload": {"record_id": "record-1", "collection": "pages",
+            "field": "document", "file": "<a file too large, or of a kind the host rejects>"}},
+  "then": {
+    "answer": "refused",
+    "answer_must_include": ["reason"],
+    "note": "The reason is shown under the field. A silent failure leaves a person looking at a field that did not change and no way to know why."
+  }
+}

@@ -125,10 +125,13 @@ test('a read-only choice as buttons stays a control; every other read-only field
   assert.match(edit, /if \(\(field\.readonly === true \|\| disabled\) && VIEW_RENDERERS\[asked\] && !keepsControlWhenLocked\(asked, field\)\) \{\n\s+return renderViewField\(field, value, host, options\);/u);
 });
 
-test('the registry names the buttons variant of choice and the keys the two read', () => {
+// C302: buttons is a template of choice (its former variant id the same),
+// size its template parameter; defaultCountry moved to the phone type.
+test('the registry names the buttons template of choice and the keys the two read', () => {
   const string = PROPERTY_TYPES.find((entry) => entry.type === 'string');
-  assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'defaultCountry', 'required', 'readonly']);
+  assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'required', 'readonly']);
   const choice = PROPERTY_TYPES.find((entry) => entry.type === 'choice');
   assert.deepEqual(choice.variants, [{id: 'buttons', label: {ru: 'Кнопками', en: 'As buttons'}}]);
-  assert.deepEqual(choice.params, ['options', 'badgeAppearance', 'size', 'required', 'readonly']);
+  assert.deepEqual(choice.templates.map((one) => [one.id, one.default, one.params]), [['dropdown', true, ['badge']], ['buttons', false, ['size']]]);
+  assert.deepEqual(choice.params, ['options', 'required', 'readonly']);
 });
