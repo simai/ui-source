@@ -1,5 +1,6 @@
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../component/inputs/scss/field-ladder' as ladder;
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
 @layer sf.components {
 /* sf-input-image: one image in a form -- as a row (the thumbnail, the file
    name and size, then «Заменить…» and the remove icon) or as a preview (the
@@ -97,6 +98,8 @@
   }
 }
 
+/* C153 (1), SM-IF-1: the label in the text ink, as sf-input's (it was
+   on-surface-variant, the hint's ink). On a phone (below 60rem, the text tokens' own break) the label of size 1 stays 14, the value's step there, as sf-input's. */
 .sf-image-field-label {
   display: flex;
   align-items: center;
@@ -110,6 +113,13 @@
    the row keeps its height. */
 .sf-image-field-label > sf-help-mark > .sf-help-mark {
   block-size: var(--sf-image-field--small-height);
+}
+
+@media not all and (min-width: #{bp.$breakpoint-desktop}) {
+  .sf-image-field.sf-image-field--size-1 .sf-image-field-label {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
 }
 
 /* The row. A grid, so that on a narrow column the buttons move under the name
@@ -492,7 +502,7 @@
 // win; their geometry stays in sf.components, over the utilities.
 @layer sf.paint {
   .sf-image-field-label {
-    color: var(--sf-on-surface-variant);
+    color: var(--sf-on-surface);
   }
   .sf-image-field-required {
     color: var(--sf-error);

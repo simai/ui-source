@@ -64,6 +64,12 @@ const sfDropdownMeta = {
       "valueType": "string",
       "default": ""
     },
+    "hint": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The help line under the field, as sf-input's hint (field parity): the hint's ink, a step below the value, and the trigger's description (aria-describedby); on an error the error message takes its place."
+    },
     "help": {
       "kind": "custom",
       "valueType": "string",

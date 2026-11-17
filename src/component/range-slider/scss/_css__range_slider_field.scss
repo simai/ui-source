@@ -41,6 +41,27 @@
   white-space: nowrap;
 }
 
+// The label row with the «?» after the name (C153 (8), as sf-input's): the
+// mark a quarter space after the name, on its line.
+.sf-range-slider-label {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--sf-space-1\/4);
+  min-inline-size: 0;
+}
+
+// The help line under the field (C153, as sf-input's hint): the hint's ink, a
+// step below the value -- the name's step without its phone rule, 14 / 20 at
+// size 1 on a desktop and 12 / 16 on a phone, as sf-input's hint.
+.sf-range-slider-hint {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-range-slider--label-size, var(--sf-text-size-1\/2));
+  font-weight: var(--sf-font-weight-regular);
+  line-height: var(--sf-range-slider--label-height, var(--sf-text-height-1\/2));
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
 // C153 (1), RG-RS-1: at size 1 the name line stays 14 on a phone (below
 // 60rem), as sf-input's label; the scale under the track keeps its step.
 @media not all and (min-width: 60rem) {
@@ -438,6 +459,18 @@
     outline-offset: var(--sf-focus--inset);
   }
 }
+}
+
+// Paint (C273): the fill, edge and place colour of these parts stand in
+// sf.paint, under the utilities, so bg-*, border-* and color-* on them
+// win; their geometry stays in sf.components, over the utilities.
+@layer sf.paint {
+  .sf-range-slider-hint {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-range-slider-group.disabled .sf-range-slider-hint {
+    color: var(--sf-on-surface-disabled);
+  }
 }
 
 // Paint (C273): the fill, edge and place colour of these parts stand in

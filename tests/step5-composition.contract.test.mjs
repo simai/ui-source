@@ -28,7 +28,7 @@ test('renderer inputs: datepicker size, reference size, avatar line, file-previe
   assert.deepEqual(datepicker.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.match(datepicker.inputs.properties['input-size'].description, /Legacy name for size/);
   const runtime = await read('smart/input-date/index.js');
-  assert.match(runtime, /this\.getAttribute\('size'\) \|\| this\.getAttribute\('input-size'\)/);
+  assert.match(runtime, /if \(this\.hasAttribute\('size'\)\) return ladderSize\(this\.getAttribute\('size'\)\);[\s\S]*?return ladderSize\(this\.getAttribute\('input-size'\)\);/); // fix/forms-fm2 (SM-DP-2): size wins, input-size is read and noted until 2027-01-01
   assert.deepEqual((await manifest('reference-link')).inputs.properties.size.enum, ['', '1/2', '1', '2']);
   const reference = await read('component/reference-link/scss/_css__reference_link.scss');
   for (const size of ['1\\/2', '1', '2']) assert.ok(reference.includes(`.sf-reference-link.sf-reference-link--size-${size} {`), size);

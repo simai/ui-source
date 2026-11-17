@@ -1,5 +1,6 @@
 import SfBaseElement, {toNumber} from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
+import {noteDeprecated} from '../../core/js/deprecations.js';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {ladderSize} from '../../component/field-size';
 import {FormField, ShownValidity} from '../helpers/form-field';
@@ -23,6 +24,14 @@ const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
 // Between the two dates of a range in its one field: an en dash with a space
 // on each side, «01.09.2026 – 07.09.2026» (owner decision C62).
 const RANGE_SEPARATOR = ' \u2013 ';
+
+// The legacy setting names (SM-DP-2): read by the element itself until the
+// date, each use noted once per page in SF.deprecations (the alias rows are
+// manifest-only, no shim: the canonical name wins when both are set).
+function noteLegacyName(from, to) {
+    noteDeprecated({component: 'sf-input-date', kind: 'attribute', from, to,
+        since: '2026-11-17', remove_after: '2027-01-01'});
+}
 // The ribbon of months on a phone: how many months it shows before and after
 // the one it opens on, and how many it adds as it nears an end.
 const RIBBON_BEFORE = 3;
@@ -1106,9 +1115,12 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
     }
 
     // `size` is the canonical name, as on every field; `input-size` is its
-    // legacy name and still honoured. The canonical name wins when both are set.
+    // legacy name, honoured until 2027-01-01 and noted in SF.deprecations
+    // (aliases.json, SM-DP-2). The canonical name wins when both are set.
     get size() {
-        return ladderSize(this.getAttribute('size') || this.getAttribute('input-size'));
+        if (this.hasAttribute('size')) return ladderSize(this.getAttribute('size'));
+        if (this.hasAttribute('input-size')) noteLegacyName('input-size', 'size');
+        return ladderSize(this.getAttribute('input-size'));
     }
 
     get inputSize() {
@@ -1185,8 +1197,11 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
     // meaning icon, as search is for a search field): none unless the page
     // gives one. The calendar is the field's indicator at its end (owner
     // decision C197, 2026-11-15); it is not this setting.
+    // left-icon is its legacy name, honoured until 2027-01-01 and noted in
+    // SF.deprecations (aliases.json, SM-DP-2).
     get leftIcon() {
         if (this.hasAttribute('icon-start')) return this.getAttribute('icon-start');
+        if (this.hasAttribute('left-icon')) noteLegacyName('left-icon', 'icon-start');
         return this.getAttribute('left-icon') || '';
     }
 
@@ -1392,6 +1407,21 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         }
 
         return this.formattedStartValue || this.formattedEndValue || '';
+    }
+
+    // The characters the text box holds (SM-DP-1): the longest of the value,
+    // the hint in an empty field and a full value of the format -- two dates
+    // with the dash for a period, the time with a date-time -- so a period's
+    // second date is never cut. The sheet makes the box at least that many
+    // figures wide (1ch each, the figures tabular); the field grows, and a
+    // narrower column still holds it at its own width.
+    get textChars() {
+        const sample = new Date(2000, 11, 28);
+        const one = this.mode === 'date'
+            ? formatDateValue(sample, this.format)
+            : formatDateValue(this.mode === 'time' ? null : sample, this.format, 23 * 60 + 59);
+        const full = this.range ? `${one}${RANGE_SEPARATOR}${one}` : one;
+        return Math.max(full.length, String(this.displayValue || '').length, String(this.placeholder || '').length);
     }
 
     get displayDate() {
@@ -2952,6 +2982,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
             portal: this.portal,
             inputType: this.inputType,
             inputSize: this.inputSize,
+            textChars: this.textChars,
             // The host is the form control where the browser has
             // ElementInternals, so the inner text box carries no name (§17.1
             // item 6); without them it is named, as before.

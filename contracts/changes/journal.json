@@ -13949,6 +13949,37 @@
       "source": "src/core/js/retired-classes.table.js; src/core/scss/_sf_css__scroll.scss; ui-control control/research/2026-11-15-scrollbar.md; control/docs-review/decisions.md C208"
     },
     {
+      "id": "attribute-input-date-legacy-names",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "attribute",
+      "summary": "sf-input-date 1.14.0: the legacy names left-icon (icon-start) and input-size (size) were honoured with no date (Smart study pass SM-DP-2). They keep working until remove_after, the canonical name winning when both are set, and each use is noted in SF.deprecations.",
+      "items": [
+        {
+          "component": "sf-input-date",
+          "from": "left-icon",
+          "to": "icon-start",
+          "match": "<sf-input-date[^>]*\\sleft-icon="
+        },
+        {
+          "component": "sf-input-date",
+          "from": "input-size",
+          "to": "size",
+          "match": "<sf-input-date[^>]*\\sinput-size="
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write icon-start for left-icon and size for input-size on sf-input-date (and its dated tag sf-datepicker).",
+      "examples": {
+        "before": "<sf-input-date label=\"Дата\" left-icon=\"event\" input-size=\"2\"></sf-input-date>",
+        "after": "<sf-input-date label=\"Дата\" icon-start=\"event\" size=\"2\"></sf-input-date>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/input-date/index.js"
+    },
+    {
       "id": "utility-c210-scrollbar-retired-sheets",
       "recorded_on": "2026-11-15",
       "stage": "compat",

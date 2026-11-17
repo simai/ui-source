@@ -30,6 +30,12 @@ Switch (решение владельца C165 (4)). Switch внутри `<form>
   after the label's last word: when the label wraps, at the end of its last
   line, not of the first. The `help` slot takes an
   sf-help-mark of your own (links, a heading).
+- `position` — `start` (default) or `end`: the track after the text column, at
+  the row's end, as sf-checkbox and the class markup; RTL follows the document.
+- `icon`, `icon-on` — a decorative glyph in the thumb, as the class markup's
+  `.sf-switch-inner .sf-icon`: `icon` alone stays in both states; with
+  `icon-on` it is the off state's glyph and the two cross over as the thumb
+  arrives (`.sf-switch-icon--off` / `--on`). The label still names the setting.
 - `checked`
 - `disabled`
 - `name`

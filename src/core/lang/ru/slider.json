@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 19,
-    "translated": 19,
+    "words": 20,
+    "translated": 20,
     "share": 100
   },
   "words": {
@@ -29,7 +29,8 @@
       "from": "от",
       "to": "до",
       "from-label": "{name}, от",
-      "to-label": "{name}, до"
+      "to-label": "{name}, до",
+      "help": "Подробнее: {label}"
     }
   }
 }

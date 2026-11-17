@@ -341,6 +341,12 @@ class SfRangeSlider extends RangeSliderElement {
       start: this.initialValue,
       name,
       nameId: name ? `${partId(instancePath(this, {kind: 'sf-range-slider'}))}--name` : '',
+      // The help line under the field and the «?» after its label (C153,
+      // field parity with sf-input): the line describes the handles and the
+      // from/to boxes.
+      hint: props.hint || '',
+      help: name ? props.help || '' : '',
+      hintId: props.hint ? `${partId(instancePath(this, {kind: 'sf-range-slider'}))}--hint` : '',
       valueDisplay,
       size: this.size,
       // The class draws a tooltip over each handle; the value as text sits at

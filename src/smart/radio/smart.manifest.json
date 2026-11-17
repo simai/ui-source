@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.radio",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "title": "Radio buttons",
   "summary": "One radio option: a native radio input with a label, description and help text. Radios with the same name form a group in which checking one unchecks the others.",
   "kind": "smart",
@@ -73,6 +73,15 @@
         "type": "string",
         "default": "",
         "description": "The explanation behind a «?» button (sf-help-mark) after the label text: --sf-space-1/4 after the label's last word, on its last line when the label wraps; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
+      },
+      "position": {
+        "type": "string",
+        "default": "start",
+        "description": "Logical placement of the indicator relative to its text, as sf-checkbox's (C251, SM-RD-1): `end` puts it after the text column, at the row's end; RTL follows the document direction.",
+        "enum": [
+          "start",
+          "end"
+        ]
       },
       "disabled": {
         "type": "boolean",

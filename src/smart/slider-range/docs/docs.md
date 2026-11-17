@@ -23,6 +23,11 @@ Smart wrapper for the project-owned `range-slider` component.
   names the handles unless `aria-label`, `aria-labelledby` or
   `lower-label`/`upper-label` do. Until 2027-01-01 `label="none|text|tooltip"`
   still means `value-display` (noted in `SF.deprecations`).
+- `hint` — the help line under the field, as `sf-input`'s: the hint's ink, a
+  step below the value; it describes each handle and each box of the from/to
+  field (`aria-describedby`).
+- `help` — the explanation behind a «?» (`sf-help-mark`) after the label, as
+  `sf-input`'s; the mark is no part of the handles' name.
 - `value-display="none|text|tooltip"` — the value at the end of the name line,
   or in a bubble over a handle shown only while it is dragged or
   keyboard-focused (owner decision C78).

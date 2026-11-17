@@ -280,6 +280,9 @@ Main attributes:
 - `mode`
 - `multiple`
 - `label`
+- `hint` — the help line under the field, as `sf-input`'s; the trigger's
+  description; an error message takes its place
+- `help` — the explanation behind a «?» after the label
 - `required`
 - `invalid`
 - `error-message`

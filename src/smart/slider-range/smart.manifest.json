@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.slider-range",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "title": "Range Slider",
   "summary": "A slider for one number or a range of two on a track, as a form field: a visible name above, drag, click or keys move a handle by step (PageUp/PageDown by ten), the value shown at the end of the name line, in a bubble while dragging, or in a from/to field beside the track; ticks and a scale on request; sizes 1/2, 1, 2; read-only and disabled.",
   "kind": "smart",
@@ -103,6 +103,16 @@
         "type": "string",
         "default": "",
         "description": "The visible name above the slider, as every field's label (owner decision C78); it names the handles unless aria-label, aria-labelledby or lower-label/upper-label do. Until 2027-01-01 the words none, text and tooltip here still mean value-display."
+      },
+      "hint": {
+        "type": "string",
+        "default": "",
+        "description": "The help line under the field, as sf-input's hint (C153, SM-RNG field parity): the hint's ink, a step below the value; each handle and each box of the from/to field is described by it (aria-describedby)."
+      },
+      "help": {
+        "type": "string",
+        "default": "",
+        "description": "The explanation behind a «?» (sf-help-mark, C133's look) after the label text, as sf-input's help (C153 (8)): a step below the value as the label; the label row keeps its height. The mark is no part of the handles' name."
       },
       "value-display": {
         "type": "string",
@@ -670,7 +680,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/slider-range/index.js",
-        "sha256": "d4ffddef5be74322bf4b628f5e3fb8fe091b2ca04a5c7d5d70024095d7737a61"
+        "sha256": "e22f55a9de157595f42dc357dc7467ec86fa40df3a880b07a6f155b0aec9e2e2"
       }
     ],
     "generated_runtime": [

@@ -30,8 +30,15 @@ export function renderSwitchTemplate(context) {
   const showContainer = !!(labelContent || descriptionContent);
   rootClasses.push(...checkableClasses(size, showContainer));
 
-  const control = html`
-    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
+  // position="end" (C251, SM-SW-1): the track after the text column, as
+  // sf-checkbox's box and the class markup's (the track the label's last child).
+  const atEnd = context.position === 'end';
+  // The thumb's glyphs (C251, SM-SW-1), the class markup's: one glyph stays in
+  // both states; with icon-on the two cross over (.sf-switch-icon--off / --on).
+  const icons = context.iconOn
+    ? html`${context.icon ? html`<i class="sf-icon sf-switch-icon--off" aria-hidden="true">${context.icon}</i>` : nothing}<i class="sf-icon sf-switch-icon--on" aria-hidden="true">${context.iconOn}</i>`
+    : context.icon ? html`<i class="sf-icon" aria-hidden="true">${context.icon}</i>` : nothing;
+  const toggler = html`
       <span class="sf-switch-toggler transition flex items-cross-center content-main-start">
         <input
           type="checkbox"
@@ -42,10 +49,13 @@ export function renderSwitchTemplate(context) {
           ?disabled=${disabled}
           aria-label=${!labelContent && ariaLabel ? ariaLabel : nothing}
         />
-        <span class="sf-switch-inner transition" aria-hidden="true"></span>
-      </span>
-
+        <span class="sf-switch-inner transition" aria-hidden="true">${icons}</span>
+      </span>`;
+  const control = html`
+    <label class=${rootClasses.filter(Boolean).join(' ')} style=${context.rootStyle || nothing} @click=${keepHelpOutOfLabel}>
+      ${atEnd ? '' : toggler}
       ${renderCheckableText({ column: 'sf-switch-container-wrap', top: 'sf-switch-top', wrap: 'sf-switch-container flex items-cross-center content-main-center' }, labelContent, descriptionContent)}
+      ${atEnd ? toggler : ''}
       ${renderInheritedSlot(context.component, { size, disabled, className: 'sf-switch-inherited' })}
     </label>
   `;

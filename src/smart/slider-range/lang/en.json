@@ -4,6 +4,7 @@
     "from": "from",
     "to": "to",
     "from-label": "{name}, from",
-    "to-label": "{name}, to"
+    "to-label": "{name}, to",
+    "help": "More about: {label}"
   }
 }

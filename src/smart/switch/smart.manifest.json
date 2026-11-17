@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -80,6 +80,25 @@
         "type": "string",
         "default": "",
         "description": "The explanation behind a «?» button (sf-help-mark) after the label text: --sf-space-1/4 after the label's last word, on its last line when the label wraps; a press on the button opens it and never changes the control. The help slot takes an sf-help-mark of the page's own."
+      },
+      "position": {
+        "type": "string",
+        "default": "start",
+        "description": "Logical placement of the indicator relative to its text, as sf-checkbox's (C251, SM-SW-1): `end` puts it after the text column, at the row's end; RTL follows the document direction.",
+        "enum": [
+          "start",
+          "end"
+        ]
+      },
+      "icon": {
+        "type": "string",
+        "default": "",
+        "description": "A decorative glyph in the thumb, the class markup's .sf-switch-inner .sf-icon (C251, SM-SW-1): alone it stays in both states; with icon-on it is the off state's glyph and the two cross over as the thumb arrives. The label still names the setting."
+      },
+      "icon-on": {
+        "type": "string",
+        "default": "",
+        "description": "The thumb's glyph while the switch is on, the class markup's .sf-switch-icon--on (C251, SM-SW-1); icon is then the off state's (.sf-switch-icon--off)."
       },
       "disabled": {
         "type": "boolean",
@@ -431,7 +450,7 @@
       },
       {
         "path": "src/smart/switch/js/templates/default.js",
-        "sha256": "a0b31e6e7c0383225fbf49f2f73a903595fcb3b32bf971627be7457ffefa1387"
+        "sha256": "2cffdeee90c4b97fe1edfc7d8ba0d2a12f416d2824f9b742c6d8ae55bec186a7"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

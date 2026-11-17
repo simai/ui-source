@@ -4,6 +4,7 @@
     "from": "от",
     "to": "до",
     "from-label": "{name}, от",
-    "to-label": "{name}, до"
+    "to-label": "{name}, до",
+    "help": "Подробнее: {label}"
   }
 }

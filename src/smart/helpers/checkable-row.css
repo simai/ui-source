@@ -54,9 +54,10 @@
     max-inline-size: 100%;
   }
 
-  /* position="end" (sf-checkbox, W4): the box stands at the row's end, so the
-     row is the control and keeps its full width. */
-  .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child) {
+  /* position="end" (sf-checkbox, W4; sf-radio and sf-switch, C251): the box
+     stands at the row's end, so the row is the control and keeps its full
+     width. */
+  .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child, > .sf-radio-button-container + .sf-radio-button-box, > .sf-switch-container-wrap + .sf-switch-toggler) {
     inline-size: auto;
   }
 
@@ -73,7 +74,7 @@
     min-inline-size: 0;
   }
 
-  .sf-checkable-row > .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child) {
+  .sf-checkable-row > .sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child, > .sf-radio-button-container + .sf-radio-button-box, > .sf-switch-container-wrap + .sf-switch-toggler) {
     flex: 1 1 auto;
   }
 
@@ -153,9 +154,10 @@
     margin-block-start: 0;
   }
 
-  /* position="end" (sf-checkbox): the name, the «?», the free space, then the
-     box at the row's end; the description under the name. */
-  .sf-checkable-row:has(> .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child) {
+  /* position="end" (sf-checkbox; sf-radio and sf-switch, C251): the name, the
+     «?», the free space, then the box at the row's end; the description under
+     the name. */
+  .sf-checkable-row:has(> .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child, > .sf-checkable--text > .sf-radio-button-container + .sf-radio-button-box, > .sf-checkable--text > .sf-switch-container-wrap + .sf-switch-toggler) {
     grid-template-columns: minmax(0, auto) auto 1fr auto;
     grid-template-areas:
       "name help . box"
@@ -165,6 +167,14 @@
 
   .sf-checkable-row > .sf-checkable--text > .sf-checkbox-container + .sf-checkbox-box:last-child {
     margin-inline-start: var(--sf-checkbox--gap);
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-radio-button-container + .sf-radio-button-box {
+    margin-inline: var(--sf-radio-button--gap) 0;
+  }
+
+  .sf-checkable-row > .sf-checkable--text > .sf-switch-container-wrap + .sf-switch-toggler {
+    margin-inline: var(--sf-switch--gap) 0;
   }
 
   /* A wrapped name (dispatcher decision 2026-11-13, a standard ambiguity of
