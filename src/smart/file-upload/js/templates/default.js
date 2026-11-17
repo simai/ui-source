@@ -43,6 +43,7 @@ function renderUploadItem(item, index, context) {
                     value=${state === 'process' && row.progress !== null ? String(row.progress) : nothing}
                     error-text=${state === 'error' && row.message ? row.message : nothing}
                     download-action=${href ? 'true' : 'false'}
+                    data-said-by="host"
                     ?stored=${item?.stored === true}
                     ?disabled=${context.disabled}
                     @sf-file-preview-detach=${(event) => owner?.handleRowDetach?.(event, index)}
