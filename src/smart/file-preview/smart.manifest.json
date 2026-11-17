@@ -491,11 +491,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-preview/index.js",
-        "sha256": "c833a37585dead9b0375fbd4909c58fb6ca7848425f33395d8add86f8b13fffa"
+        "sha256": "4e45cce420249eab1f83a1605ec2ee4719444b0d9c1d59bd34c161ea29d46b8a"
       },
       {
         "path": "src/smart/file-preview/js/templates/default.js",
-        "sha256": "abf859584c7e8df948424e006b6eccf59fbb09393b02d96ed470963af377e1c7"
+        "sha256": "4ee7cbf1284a127c5a5fb9b36e297867e6e312f9c5c2b5f69621fd53570a485c"
       }
     ],
     "generated_runtime": []

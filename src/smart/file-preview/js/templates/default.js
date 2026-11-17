@@ -131,8 +131,9 @@ function renderLine(context) {
   if (context.state === 'error') {
     // The reason is said when it appears (role alert, as sf-form's summary
     // and sf-alert-bar's live line; defects-d12): the row drew it in silence.
+    // Not in sf-file-upload's list, which says it in its own status line.
     // A chip cuts it to one line, so the whole reason is its title as well.
-    return html`<span class="sf-file-preview-error" role="alert"
+    return html`<span class="sf-file-preview-error" role=${context.announced ? 'alert' : nothing}
       title=${context.view === 'chip' ? context.words.failed : nothing}>${context.words.failed}</span>`;
   }
   return context.meta

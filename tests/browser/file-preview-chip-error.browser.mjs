@@ -8,7 +8,8 @@
 // about 520 high, alone and in a row. Now the failed chip is as high as a
 // ready one (the size 2 control), at most --sf-f8 wide and not a sliver, its
 // reason on one line inside it, «Повторить» as the icon named «Повторить
-// <имя>», and the reason said by role alert (in a row as well). Measured at
+// <имя>», and the reason said by role alert (in a row as well; not in
+// sf-file-upload's list, which says it in its own status line). Measured at
 // 1440 and 390 (a touch phone), light and dark, three loads each.
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
@@ -26,7 +27,9 @@ const body = `
   <div id="ready-row">${chip('ready', false)}</div>
   <div id="plain">${chip('plain-1', true)} ${chip('plain-2', false)}</div>
   <div id="flex" style="display:flex;flex-wrap:wrap;gap:8px">${chip('flex-1', true)}${chip('flex-2', false)}</div>
-  <sf-file-preview id="row" file-name="Устав.pdf" state="error" error-text="нет связи с сервером"></sf-file-preview>`;
+  <sf-file-preview id="row" file-name="Устав.pdf" state="error" error-text="нет связи с сервером"></sf-file-preview>
+  <sf-file-upload id="upload"></sf-file-upload>
+  <script>customElements.whenDefined('sf-file-upload').then(() => { document.getElementById('upload').items = [{id: 'b', name: 'photo.png', fileSize: '3MB', state: 'error', errorMessage: 'Сеть недоступна'}]; });</script>`;
 
 const browser = await chromium.launch({headless: true, channel: 'chrome', ignoreDefaultArgs: ['--hide-scrollbars']});
 try {
@@ -49,13 +52,15 @@ try {
       page.on('console', (message) => { if (['error', 'warning'].includes(message.type())) said.push(message.text()); });
       page.on('pageerror', (error) => failures.push({view, name: 'page error', said: error.message}));
       await page.goto('http://probe.test/');
-      await page.waitForFunction(() => document.querySelectorAll('.sf-file-preview .sf-file-preview-holder').length === 7, null, {timeout: 15000});
+      await page.waitForFunction(() => document.querySelectorAll('.sf-file-preview .sf-file-preview-holder').length === 8, null, {timeout: 15000});
       await page.evaluate(() => document.fonts.ready);
       await page.waitForTimeout(300);
       const read = await page.evaluate(() => {
         const f8 = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sf-f8')) * parseFloat(getComputedStyle(document.documentElement).fontSize);
         const shown = (element) => Boolean(element) && element.getBoundingClientRect().width > 0 && getComputedStyle(element).display !== 'none';
-        const chips = [...document.querySelectorAll('sf-file-preview')].map((host) => {
+        const inUpload = document.querySelector('sf-file-upload .sf-file-preview-error');
+        const uploadRole = inUpload ? inUpload.getAttribute('role') : 'missing';
+        const chips = [...document.querySelectorAll('sf-file-preview:not(sf-file-upload sf-file-preview)')].map((host) => {
           const root = host.querySelector('.sf-file-preview');
           const box = root.getBoundingClientRect();
           const error = root.querySelector('.sf-file-preview-error');
@@ -72,7 +77,7 @@ try {
             words: shown(words), icon: shown(icon), iconName: icon?.getAttribute('aria-label') || icon?.querySelector('button')?.getAttribute('aria-label') || '',
           };
         });
-        return {f8, chips, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth};
+        return {f8, chips, uploadRole, overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth};
       });
       const ready = read.chips.find((item) => item.id === 'ready');
       for (const item of read.chips) {
@@ -90,6 +95,7 @@ try {
         if (item.words || !item.icon) failures.push({view: where, name: '«Повторить» is the icon in a chip', words: item.words, icon: item.icon});
         if (!item.iconName.startsWith('Повторить')) failures.push({view: where, name: 'the icon is named «Повторить <имя>»', iconName: item.iconName});
       }
+      if (read.uploadRole !== null) failures.push({view, name: 'in sf-file-upload the reason is not said twice (the upload\'s status line says it)', role: read.uploadRole});
       if (read.overflow) failures.push({view, name: 'nothing spills past the page'});
       if (said.length) failures.push({view, name: 'console', said});
       console.log(JSON.stringify({view, f8: read.f8, chips: read.chips.map(({id, width, height, error}) => ({id, width, height, line: error?.height}))}));

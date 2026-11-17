@@ -317,6 +317,10 @@ class SfFilePreview extends FilePreviewElement {
       removeAction: this.removeAction,
       disabled: this.disabled,
       ariaLabel: this.accessibleName,
+      // The reason of a failure is said by role alert (defects-d12), except
+      // in sf-file-upload's list: the upload says it in its own status line
+      // («said-error-line»), and the reader would hear it twice.
+      announced: !this.closest('sf-file-upload'),
       // «Скачать <имя>», «Убрать <имя>» or, for a stored file, «Удалить <имя>»
       // (C51, C149 (8)): a page's own label is kept.
       downloadLabel: this.getAttribute('download-label') || this.sfWord('download-label', {vars: {name}}),
