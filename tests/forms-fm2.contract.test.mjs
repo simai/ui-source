@@ -69,3 +69,33 @@ test('SM-DP-2: left-icon and input-size are dated aliases until 2027-01-01, note
   const record = json('contracts/changes/journal.json').records.find((item) => item.id === 'attribute-input-date-legacy-names');
   assert.equal(record?.remove_after, '2027-01-01');
 });
+
+test('C153 (1), SM-CI-1 / SM-CLR-1 / SM-IF-1 / SM-ICH-1: code, colour, image and choice labels are in the text ink and stay 14 on a phone', () => {
+  const phone = /@media not all and \(min-width: 60rem\) \{[^@]*?font-size: var\(--sf-text-size-1\); line-height: var\(--sf-text-height-1\);/u;
+  const cases = [
+    ['src/component/verification/scss/_css__verification-form.scss', '.sf-verification-form-label', '.sf-verification-form.sf-verification-form--size-1 .sf-verification-form-label'],
+    ['src/smart/input-color/js/templates/default.css', '.sf-color-label', '.sf-color-field.sf-color-field--size-1 .sf-color-label'],
+    ['src/smart/input-image/scss/_smart__image_field.scss', '.sf-image-field-label', '.sf-image-field.sf-image-field--size-1 .sf-image-field-label'],
+    ['src/smart/input-choice/scss/_smart__choice.scss', '.sf-choice .sf-choice-label', '.sf-choice .sf-choice-label'],
+  ];
+  for (const [path, label, small] of cases) {
+    const css = read(path);
+    const own = rule(css, label);
+    assert.match(own, /color: var\(--sf-on-surface\);/u, `${path}: ${label} is on-surface`);
+    assert.doesNotMatch(own, /color: var\(--sf-on-surface-variant\)/u, `${path}: ${label} is not the hint ink`);
+    const text = flat(css);
+    const at = text.indexOf(`${small} {`, text.indexOf('@media not all and (min-width: 60rem)'));
+    assert.ok(at > 0, `${path}: a phone rule names ${small}`);
+    assert.match(text.slice(text.lastIndexOf('@media', at)), phone, `${path}: the phone label is 14 / 20`);
+  }
+});
+
+test('C284: code cells give way in width down to the touch rung 1/2, the row never leaves its column', () => {
+  const css = read('src/component/verification/scss/_css__verification.scss');
+  const cell = rule(css, '.sf-verification-cell, .sf-verification-form-wrap .sf-verification');
+  assert.ok(cell.includes('flex: 0 1 var(--sf-verification--cell-size);'), cell);
+  assert.ok(cell.includes('min-inline-size: min(var(--sf-verification--cell-size), var(--sf-ui-1\\/2--control-height));'), cell);
+  assert.ok(cell.includes('inline-size: auto;'), cell);
+  assert.match(rule(css, '.sf-verification-form > .sf-verification'), /max-inline-size: 100%;/u);
+  assert.match(rule(css, '.sf-verification-cells, .sf-verification-form-wrap'), /min-inline-size: 0;/u);
+});

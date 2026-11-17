@@ -75,13 +75,22 @@
   --sf-image-field--small-height: var(--sf-text-height-1);
 }
 
+/* C153 (1), SM-IF-1: the label in the text ink, as sf-input's (it was
+   on-surface-variant, the hint's ink). On a phone (below 60rem, the text tokens' own break) the label of size 1 stays 14, the value's step there, as sf-input's. */
 .sf-image-field-label {
   display: flex;
   gap: var(--sf-space-1\/4);
-  color: var(--sf-on-surface-variant);
+  color: var(--sf-on-surface);
   font-family: var(--sf-text--family);
   font-size: var(--sf-image-field--small-size);
   line-height: var(--sf-image-field--small-height);
+}
+
+@media not all and (min-width: 60rem) {
+  .sf-image-field.sf-image-field--size-1 .sf-image-field-label {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
 }
 
 .sf-image-field-required {

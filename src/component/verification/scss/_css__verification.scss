@@ -35,12 +35,28 @@
   border-block-start-color: var(--sf-outline-disabled);
 }
 
+/* A code longer than its column (owner decision C284, prototype
+   smart-code-input-study.html#q-ci-narrow, variant A): the row never leaves
+   the column. The cells give way in width, all alike, down to the touch rung
+   1/2 (28 on a phone; never below the cell's own size); their height stays
+   the field's. Eight size-1 cells were 344 in a 328 phone column. */
+.sf-verification-form > .sf-verification {
+  max-inline-size: 100%;
+}
+
+.sf-verification-cells,
+.sf-verification-form-wrap {
+  min-inline-size: 0;
+}
+
 .sf-verification-cell,
 .sf-verification-form-wrap .sf-verification {
   position: relative;
   display: grid;
   place-items: center;
-  inline-size: var(--sf-verification--cell-size);
+  flex: 0 1 var(--sf-verification--cell-size);
+  min-inline-size: min(var(--sf-verification--cell-size), var(--sf-ui-1\/2--control-height));
+  inline-size: auto;
   block-size: var(--sf-verification--cell-size);
   box-sizing: border-box;
   border: var(--sf-verification--border-width) solid var(--sf-verification-border-color, var(--sf-outline));

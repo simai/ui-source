@@ -46,6 +46,19 @@
   color: var(--sf-on-surface-variant);
 }
 
+/* C153 (1), SM-ICH-1: the label in the text ink, as sf-input's; the message
+   keeps the hint's ink. On a phone (below 60rem, the text tokens' own break) the label of size 1 stays 14, the value's step there, as sf-input's (the choice has one size). */
+.sf-choice .sf-choice-label {
+  color: var(--sf-on-surface);
+}
+
+@media not all and (min-width: 60rem) {
+  .sf-choice .sf-choice-label {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+}
+
 .sf-choice .sf-choice-required,
 .sf-choice.sf-choice--invalid .sf-choice-message {
   color: var(--sf-error);

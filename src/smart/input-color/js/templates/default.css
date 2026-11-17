@@ -40,8 +40,10 @@
     --sf-color--text-height: var(--sf-text-height-2);
   }
 
+  /* C153 (1), SM-CLR-1: the label in the text ink, as sf-input's (it was
+     on-surface-variant, the hint's ink). On a phone (below 60rem, the text tokens' own break) the label of size 1 stays 14, the value's step there, as sf-input's. */
   .sf-color-label {
-    color: var(--sf-on-surface-variant);
+    color: var(--sf-on-surface);
     font-family: var(--sf-text--family);
     font-size: var(--sf-text-size-1\/2);
     font-weight: var(--sf-font-weight-regular);
@@ -56,6 +58,13 @@
   .sf-color-field--size-2 .sf-color-label {
     font-size: var(--sf-text-size-1);
     line-height: var(--sf-text-height-1);
+  }
+
+  @media not all and (min-width: 60rem) {
+    .sf-color-field.sf-color-field--size-1 .sf-color-label {
+      font-size: var(--sf-text-size-1);
+      line-height: var(--sf-text-height-1);
+    }
   }
 
   .sf-color-field:has(.sf-color-trigger:disabled) .sf-color-label {
