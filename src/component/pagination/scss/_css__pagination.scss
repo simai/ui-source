@@ -145,8 +145,11 @@
 .sf-pagination .sf-pagination-slot > .sf-pagination-page {
   --sf-button--padding-inline-start: var(--sf-pagination--place-x);
   --sf-button--padding-inline-end: var(--sf-pagination--place-x);
-  /* Square at least, as the plain twin's sf-page-number (RG-NV 9). */
-  min-inline-size: var(--sf-pagination--control-height);
+  /* Square at least and as wide as the row's widest number with the
+     place's padding, as the plain twin's sf-page-number (RG-NV 9): every
+     place of a shrunk row keeps one width («120» 45 beside a square «1»
+     was the floor of its own number only). */
+  min-inline-size: max(var(--sf-pagination--control-height), calc(var(--sf-pagination--digits, 1) * 1ch + 2 * var(--sf-pagination--place-x)));
   inline-size: 100%;
   justify-content: center;
   text-decoration: none;

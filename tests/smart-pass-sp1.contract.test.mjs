@@ -285,7 +285,7 @@ test('SM-PN-1, EX-3: a numbers place of either twin shrinks to square when the r
   assert.match(sheet, /\.sf-pagination\.sf-pagination--size-1\\\/2 \{\s*--sf-pagination--place-x: var\(--sf-ui-1\\\/2--text-space-x\);/u);
   const smart = rule('.sf-pagination .sf-pagination-slot > .sf-pagination-page');
   assert.match(smart, /--sf-button--padding-inline-start: var\(--sf-pagination--place-x\);/u);
-  assert.match(smart, /min-inline-size: var\(--sf-pagination--control-height\);/u);
+  assert.match(smart, /min-inline-size: max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits, 1\) \* 1ch \+ 2 \* var\(--sf-pagination--place-x\)\)\);/u);
   const plain = rule('.sf-pagination .sf-pagination-item > .sf-page-number');
   assert.match(plain, /--sf-page-number--space-x: var\(--sf-pagination--place-x\);/u);
   // Square at least by RG-NV 9's own rule (_css__page_number.scss): the item
