@@ -45,16 +45,24 @@
 
 /* The first paint (C55): the static markup is the wide row; where the code
    will draw the phone's row (the list narrower than sm) it shows the same
-   row before the code comes -- the first action as its icon, «⋯» and ×, the
-   phone's padding -- so the bar is already its drawn height. */
+   row before the code comes -- the first action as its icon, «⋯» and
+   ×, the phone's padding -- so the bar is already its drawn height. */
 @media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
   .sf-bulk-actions[data-sf-static] {
     padding-inline-start: var(--sf-space-1\/3);
   }
 
-  .sf-bulk-actions[data-sf-static] .sf-bulk-actions__actions > .sf-bulk-actions__action ~ .sf-bulk-actions__action,
+  // sf-button's host is display: contents (its inline style), so the
+  // inner button is what is hidden.
+  .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action ~ .sf-bulk-actions__action > button,
   .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action .sf-button-text-container {
     display: none;
+  }
+
+  .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action > button {
+    flex-shrink: 0;
+    justify-content: center;
+    padding-inline: var(--sf-space-1\/4);
   }
 }
 
