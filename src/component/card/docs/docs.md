@@ -22,7 +22,8 @@ keep their meaning, not their page size): the heading-6 step
 (`--sf-heading-6--size`, the size of `--sf-text-size-1` at normal density) on
 the card title line `--sf-title--height-card`, semibold -- 16 px on a 24 px
 line on a desktop, 14 px on 20 on a phone, the line of the text under it, as
-the titles of the other components (1.6.0, R082, C89). Headings do not follow density (C44): in a compact region
+the titles of the other components (1.6.0, R082, C89). The title rule also rides the core sheet, so a card drawn before its own
+sheet arrives already has its title size on the first frame (#261 N3; 1.8.3). Headings do not follow density (C44): in a compact region
 (`data-sf-density="compact"` on `<html>` or on a container) the title is the
 same; `--sf-card-title-size` and `--sf-card-title-weight` change it. In a narrow card (three in a row on a phone) the words wrap, a long
 word breaks at a hyphen where the language allows it (`hyphens: auto`, with

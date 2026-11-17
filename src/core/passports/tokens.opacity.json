@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.opacity",
   "kind": "tokens",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "owner": "simai/ui-source",
   "summary": "The alpha scale and the per-property alpha channels.",
   "includes": [
@@ -14,7 +14,7 @@
     "src/core/figma_variables/figma_opacity.scss",
     "src/core/scss/_sf_css__opacity.scss"
   ],
-  "content_sha256": "7573a74156c6d5417e45c585cda50189406421e806fce899be24a2a8463bbaf3",
+  "content_sha256": "89a18b7661dbfc156bc46b745d4d2aa685f7fc3c51d6dd1552dd776b1048bd67",
   "dependencies": [
     {
       "id": "tokens.colour",

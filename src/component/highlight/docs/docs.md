@@ -77,7 +77,9 @@ keyword violet, string and tag green, attribute and number blue, title amber,
 built-in teal, tone 40 on the light theme and 80 on the dark, each 4.5:1 or
 more on the block. The `--sf-highlight-*` names are unchanged; a project that
 set one keeps its value. Long lines scroll, and the head's wrap button wraps
-them (C186 (12)).
+them (C186 (12)). The wrap button shows its name as the Framework tooltip on
+hover and keyboard focus, as copy does, and the two stand the actions gap
+apart, `--sf-gap--actions` (8, compact 4; C144; 1.7.1).
 
 Existing and inserted blocks initialize once. Applications can call
 `SF.Highlight.highlight(block)` or `SF.Highlight.refresh(block, nextSource)`.

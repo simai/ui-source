@@ -106,10 +106,12 @@ test('RG-TW-1: every converted name is a class the build serves', {skip}, () => 
   assert.deepEqual(unserved, [], 'converted to a name the pair does not serve');
 });
 
-test('RG-TW-3: ring-N alone draws in currentColor, outline-N alone draws solid', {skip}, () => {
+test('RG-TW-3: ring-N alone draws (in the focus role, fix/small-fixes-sf1), outline-N alone draws solid', {skip}, () => {
   const core = sheetsUnder(join(distribution, 'core/css')).map((file) => readFileSync(file, 'utf8')).join('\n');
-  assert.doesNotMatch(core, /--sf-ring-color:\s*;/u, 'an empty ring colour hides the currentColor fallback');
-  assert.match(core, /--sf-ring-color:\s*currentColor;/u);
+  assert.doesNotMatch(core, /--sf-ring-color:\s*;/u, 'an empty ring colour hides the fallback');
+  assert.doesNotMatch(core, /--sf-ring-color:/u, 'no root ring colour: the fallback is read where the ring is drawn');
+  const ring = readFileSync(join(distribution, 'utility/ring-width/default/css/default.css'), 'utf8');
+  assert.match(ring, /var\(--sf-ring-color, var\(--sf-focus--color, var\(--sf-focus\)\)\)/u);
   const outline = readFileSync(join(distribution, 'utility/outline-width/default/css/default.css'), 'utf8');
   assert.match(outline, /:where\(\.outline-2\)\s*\{\s*outline-style:\s*solid;/u);
 });

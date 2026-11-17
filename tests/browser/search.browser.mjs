@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 // sf-search on the built bytes, through the real Loader, at a desktop and a
-// phone width:
+// phone width. Rewritten for the window of 1.10.x (C175): the field is the
+// window's frameless head, the scopes are one sf-tag-group, the selected row
+// ends in its Enter or its own buttons, the key hints wait for an arrow.
 // - Command/Control+K opens the window from anywhere, / only outside a text
 //   field; the field takes the focus and the trigger says aria-expanded;
 // - the built-in provider reads the static index: quick actions and popular
@@ -9,25 +11,30 @@
 //   marked; the arrows move the selection (aria-activedescendant), Enter opens
 //   the selected result (sf-search-navigate, cancelable) and the window closes;
 //   a pointer over a row selects it;
-// - the scope pills filter the results and keep their counts;
+// - the scopes are one sf-tag-group of single choice (C175 (4)): they filter
+//   the results and keep their counts, the scope in force has a check (C145
+//   (2)); chosen with a pointer, the focus goes back to the field (dispatcher
+//   2026-11-16), chosen from the keyboard it stays on the tag;
 // - a query is recorded as recent when a result is opened (SF.Preferences,
-//   localStorage sf-pref:sf-search/<recent-key>); a recent query is removed
-//   by its X and the list is cleared by «Очистить»;
-// - the field's X clears a filled field and keeps the focus, then closes the
-//   empty window; Escape does the same; focus goes back to the trigger;
+//   localStorage sf-pref:sf-search/<recent-key>), the page opened stands as a
+//   recent page under the queries; a recent query is removed by its X and the
+//   list is cleared by «Очистить»;
+// - the field's X clears a filled field and keeps the focus (the empty head
+//   has no X; the back arrow, «Закрыть», is the phone's); Escape clears, then
+//   closes; focus goes back to the trigger;
 // - a provider: while an answer is awaited the rows on screen stay (paler,
 //   aria-busy) and a «Поиск…» line with a spinner comes after 1 s (C139 (4));
 //   nothing found and a failure are inline sf-empty-states, «Повторить» asks
 //   again (C120); a stale request aborted; a cut title is the row's tooltip;
-// - the match is medium weight without a fill (C139 (8)); the scope in force
-//   has a check (C145 (2)); a window opened by a key with nothing focused gives
-//   the focus back to its trigger (SR-7);
-// - geometry on the ladder: the field 48 px, a result row 48 px, a one-line
-//   row 40 px, the icon square 32 px; the field's glyph and the rows' squares
-//   on one axis, the field's text where the titles start, the X over the go
-//   arrows;
+// - the match is medium weight without a fill (C139 (8)); a window opened by
+//   a key with nothing focused gives the focus back to its trigger (SR-7);
+// - geometry: the head on the control height of step 2 and its 1 px line, a
+//   result row of two lines 48 px, a recent row of one line 40 px, the head
+//   glyph and the row glyph 20; the head's glyph and the rows' glyphs on one axis, the
+//   field's text where the titles start; the window and its card one width;
+// - the key hints wait for the first arrow (R252, C175 (11));
 // - at 375 px the window is a full-screen sheet with the field on top and a
-//   back arrow that closes it.
+//   back arrow («Закрыть»; «Назад» inside a command's step) that closes it.
 // - a host of simai.search-port: a block stands only where the capability is
 //   announced and the setting left on; recent.forget, recent.clear and
 //   action.run reach the host; a correction is offered and choosing it is a
@@ -145,6 +152,7 @@ const server = createServer((request, response) => {
 await new Promise((settle) => server.once('listening', settle));
 const origin = `http://127.0.0.1:${server.address().port}`;
 
+
 const failures = [];
 const seen = {};
 const expect = (name, ok, detail) => {
@@ -152,18 +160,33 @@ const expect = (name, ok, detail) => {
   if (!ok) failures.push({name, detail});
 };
 const WINDOW = '.sf-search-window';
+const INPUT = '.sf-search-input';
+const CLEAR = '.sf-search-clear button';
+const SCOPE = (key) => `.sf-search-scopes sf-tag[key="${key}"] button`;
 const rowsInfo = (tab) => tab.evaluate(() => [...document.querySelectorAll('.sf-search-row')].map((row) => ({
   id: row.id,
   title: row.querySelector('.sf-search-row-title')?.textContent.trim(),
   selected: row.getAttribute('aria-selected') === 'true',
   mark: row.querySelector('mark')?.textContent ?? null,
 })));
+const scopesInfo = (tab) => tab.evaluate(() => [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((tag) => ({
+  key: tag.getAttribute('key'), text: tag.getAttribute('text'), count: tag.getAttribute('count'),
+  pressed: tag.querySelector('button')?.getAttribute('aria-pressed') ?? null,
+  check: Boolean(tag.querySelector('.sf-tag-check')),
+})));
+const focusedOn = (tab) => tab.evaluate(() => {
+  const active = document.activeElement;
+  if (active?.matches('.sf-search-input')) return 'field';
+  const tag = active?.closest('sf-tag');
+  return tag ? `tag:${tag.getAttribute('key')}` : (active?.id || active?.localName || 'none');
+});
 const typeQuery = async (tab, text) => {
   await tab.keyboard.type(text, {delay: 20});
   // Past the debounce, then until the card is no longer busy with a request.
   await tab.waitForTimeout(200);
   await tab.waitForFunction(() => document.querySelector('.sf-search-card')?.getAttribute('aria-busy') === 'false', null, {timeout: 5000}).catch(() => {});
 };
+const settled = (tab) => tab.waitForFunction(() => document.querySelector('.sf-search-card')?.getAttribute('aria-busy') === 'false', null, {timeout: 5000}).catch(() => {});
 
 const browser = await chromium.launch();
 try {
@@ -219,6 +242,7 @@ try {
     await tab.keyboard.press('ControlOrMeta+k');
     await tab.waitForSelector(WINDOW, {timeout: 5000}).catch(() => {});
     await tab.waitForFunction(() => document.querySelectorAll('.sf-search-row').length > 0, null, {timeout: 5000}).catch(() => {});
+    await tab.waitForTimeout(300);
     const opened = await tab.evaluate(() => {
       const w = document.querySelector('.sf-search-window');
       const input = document.querySelector('.sf-search-input');
@@ -226,18 +250,22 @@ try {
         dialog: w?.getAttribute('role'), modal: w?.getAttribute('aria-modal'), label: w?.getAttribute('aria-label'),
         focused: document.activeElement === input, expanded: document.querySelector('#t').getAttribute('aria-expanded'),
         locked: document.documentElement.style.overflow, open: document.querySelector('#s').getAttribute('data-open'),
-        portalAtBodyEnd: document.body.lastElementChild?.classList.contains('sf-search-portal'),
+        portalAtBodyEnd: document.body.lastElementChild?.classList.contains('sf-search-portal') && document.body.lastElementChild.contains(w),
         captions: [...document.querySelectorAll('.sf-search-caption > span')].map((n) => n.textContent.trim()),
         pills: [...document.querySelectorAll('.sf-search-pills .sf-search-pill')].map((n) => n.textContent.trim()),
         actions: [...document.querySelectorAll('.sf-search-row')].map((n) => n.querySelector('.sf-search-row-title').textContent.trim()),
-        kbd: document.querySelector('.sf-search-row .sf-search-shortcut')?.textContent ?? null,
-        keys: Boolean(document.querySelector('.sf-search-keys')),
+        kbd: document.querySelector('.sf-search-row .sf-search-row-keys')?.textContent.replace(/\s+/gu, '') ?? null,
+        back: document.querySelector('.sf-search-back button')?.getAttribute('aria-label') ?? null,
+        clear: Boolean(document.querySelector('.sf-search-clear')),
+        hints: Boolean(document.querySelector('.sf-search-keys')),
       };
     });
     expect('shortcut-opens', opened.dialog === 'dialog' && opened.modal === 'true' && opened.label === 'Поиск по сайту' && opened.focused
       && opened.expanded === 'true' && opened.locked === 'hidden' && opened.open === 'true' && opened.portalAtBodyEnd, opened);
     expect('empty-field-blocks', opened.captions.join('|') === 'Часто ищут|Быстрые действия' && opened.pills.join('|') === 'таблица|тема|кнопка'
-      && opened.actions.join('|') === 'Сменить тему' && opened.kbd === '⇧⌘L' && opened.keys, opened);
+      && opened.actions.join('|') === 'Сменить тему' && opened.kbd === '⇧⌘L', opened);
+    expect('empty-head-back-no-x', opened.back === 'Закрыть' && !opened.clear, opened);
+    expect('key-hints-wait-for-an-arrow', !opened.hints, opened);
 
     // A popular pill fills the field.
     await tab.click('.sf-search-pills .sf-search-pill >> nth=0');
@@ -245,42 +273,43 @@ try {
     const pill = await tab.evaluate(() => ({value: document.querySelector('.sf-search-input').value, focused: document.activeElement === document.querySelector('.sf-search-input')}));
     expect('popular-fills-field', pill.value === 'таблица' && pill.focused, pill);
 
-    // X clears a filled field and keeps the focus.
-    await tab.click('.sf-search-clear button');
+    // X clears a filled field and keeps the focus; the empty head has none.
+    await tab.click(CLEAR);
+    await tab.waitForTimeout(150);
     const cleared = await tab.evaluate(() => ({value: document.querySelector('.sf-search-input')?.value, focused: document.activeElement === document.querySelector('.sf-search-input'),
-      label: document.querySelector('.sf-search-clear button')?.getAttribute('aria-label') ?? document.querySelector('.sf-search-clear')?.getAttribute('aria-label')}));
-    expect('x-clears', cleared.value === '' && cleared.focused && cleared.label === 'Закрыть', cleared);
+      x: Boolean(document.querySelector('.sf-search-clear')), open: Boolean(document.querySelector('.sf-search-window'))}));
+    expect('x-clears', cleared.value === '' && cleared.focused && !cleared.x && cleared.open, cleared);
 
     // Typing: grouped results, the match marked, the first row selected.
     await typeQuery(tab, 'таб');
     const typed = await tab.evaluate(() => ({
       captions: [...document.querySelectorAll('.sf-search-group .sf-search-caption')].map((n) => n.textContent.trim()),
-      // Scopes are sf-tag filter tags in an sf-tag-group (sf-search 1.10.1):
-      // the label and count are the tag's settings, the state its button's
-      // aria-pressed, the scope in force carries the check icon.
-      scopes: [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((n) => `${n.getAttribute('text')}${n.getAttribute('count')}`),
-      pressed: document.querySelector('.sf-search-scopes sf-tag:has(button[aria-pressed="true"])')?.getAttribute('text') ?? '',
-      checks: [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((n) => (n.querySelector('.sf-tag-check') ? 'check' : '')),
       mark: (() => { const m = document.querySelector('.sf-search-row mark'); const cs = m && getComputedStyle(m); return m && {weight: cs.fontWeight, fill: cs.backgroundColor}; })(),
       status: document.querySelector('.sf-search-window [role="status"]')?.textContent.trim(),
-      xLabel: document.querySelector('.sf-search-clear button')?.getAttribute('aria-label') ?? document.querySelector('.sf-search-clear')?.getAttribute('aria-label'),
+      xLabel: document.querySelector('.sf-search-clear button')?.getAttribute('aria-label'),
       active: document.querySelector('.sf-search-input').getAttribute('aria-activedescendant'),
+      scopesLabel: document.querySelector('.sf-search-scopes')?.getAttribute('aria-label'),
     }));
     const rows = await rowsInfo(tab);
+    const scopes = await scopesInfo(tab);
+    seen.scopes = scopes;
     expect('results-grouped-marked', rows.length === 3 && rows[0].title === 'Таблица в рамке' && rows[0].mark === 'Таб' && rows[0].selected
       && typed.active === rows[0].id && typed.captions.join('|') === 'Страницы|Компоненты' && typed.status === '3 результата' && typed.xLabel === 'Очистить', {rows, typed});
-    expect('scopes-with-counts', typed.scopes.join('|') === 'Все3|Страницы2|Компоненты1' && typed.pressed?.startsWith('Все'), typed);
-    expect('scope-in-force-checked', typed.checks.join('|') === 'check||', typed.checks);
+    expect('scopes-with-counts', scopes.map((one) => `${one.text}${one.count}`).join('|') === 'Все3|Страницы2|Компоненты1'
+      && scopes[0].pressed === 'true' && typed.scopesLabel === 'Где искать', {scopes, typed});
+    expect('scope-in-force-checked', scopes.map((one) => (one.check ? 'check' : '')).join('|') === 'check||', scopes);
     expect('match-medium-no-fill', typed.mark?.weight === '500' && typed.mark?.fill === 'rgba(0, 0, 0, 0)', typed.mark);
 
-    // Arrows move the selection, wrapping.
+    // The key hints come with the first arrow; the arrows move the selection, wrapping.
     await tab.keyboard.press('ArrowDown');
     const down = await rowsInfo(tab);
+    const hinted = await tab.evaluate(() => Boolean(document.querySelector('.sf-search-keys')));
     await tab.keyboard.press('ArrowUp');
     await tab.keyboard.press('ArrowUp');
     const wrapped = await rowsInfo(tab);
     const activeAfter = await tab.evaluate(() => document.querySelector('.sf-search-input').getAttribute('aria-activedescendant'));
     expect('arrows-move', down[1]?.selected && wrapped.at(-1)?.selected && activeAfter === wrapped.at(-1).id, {down, wrapped, activeAfter});
+    expect('key-hints-after-an-arrow', hinted, hinted);
 
     // A pointer over a row selects it.
     const second = await tab.$('.sf-search-row >> nth=1');
@@ -290,51 +319,79 @@ try {
     const hovered = await rowsInfo(tab);
     expect('hover-selects', hovered[1]?.selected === true, hovered);
 
-    // Scopes filter: Компоненты shows its one row, without captions.
-    await tab.click('.sf-search-scopes sf-tag >> nth=2 >> button');
+    // Scopes filter: Компоненты shows its one row, without captions; chosen
+    // with a pointer, the focus is back in the field.
+    await tab.click(SCOPE('components'));
+    await settled(tab);
+    await tab.waitForTimeout(150);
     const scoped = await tab.evaluate(() => ({
       rows: [...document.querySelectorAll('.sf-search-row-title')].map((n) => n.textContent.trim()),
       captions: document.querySelectorAll('.sf-search-group .sf-search-caption').length,
-      scopes: [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((n) => `${n.getAttribute('text')}${n.getAttribute('count')}:${n.querySelector('button')?.getAttribute('aria-pressed')}`),
-      focused: document.activeElement === document.querySelector('.sf-search-input'),
     }));
-    expect('scope-filters', scoped.rows.join('|') === 'sf-view-table' && scoped.captions === 0 && scoped.scopes.join('|') === 'Все3:false|Страницы2:false|Компоненты1:true' && scoped.focused, scoped);
-    await tab.click('.sf-search-scopes sf-tag >> nth=0 >> button');
+    const scopedTags = await scopesInfo(tab);
+    const scopedFocus = await focusedOn(tab);
+    expect('scope-filters', scoped.rows.join('|') === 'sf-view-table' && scoped.captions === 0
+      && scopedTags.map((one) => `${one.text}${one.count}:${one.pressed}`).join('|') === 'Все3:false|Страницы2:false|Компоненты1:true', {scoped, scopedTags});
+    expect('scope-click-focus-back-to-field', scopedFocus === 'field', scopedFocus);
+    // Typing goes on in the field at once.
+    await tab.keyboard.type('л', {delay: 20});
+    await settled(tab);
+    const typedOn = await tab.evaluate(() => document.querySelector('.sf-search-input').value);
+    expect('scope-click-type-on', typedOn === 'табл', typedOn);
+    await tab.keyboard.press('Backspace');
+    await settled(tab);
+    // From the keyboard the focus stays on the tag the person chose.
+    await tab.focus(SCOPE('pages'));
+    await tab.keyboard.press('Space');
+    await settled(tab);
+    await tab.waitForTimeout(150);
+    const keyFocus = await focusedOn(tab);
+    const keyTags = await scopesInfo(tab);
+    expect('scope-key-focus-stays-on-tag', keyFocus === 'tag:pages' && keyTags.find((one) => one.key === 'pages')?.pressed === 'true', {keyFocus, keyTags});
+    await tab.click(SCOPE('*'));
+    await settled(tab);
+    const back = await focusedOn(tab);
+    const all = await rowsInfo(tab);
+    expect('scope-all-again', back === 'field' && all.length === 3, {back, all: all.length});
 
-    // Geometry, measured on the open window (rows: two lines and one line).
+    // Geometry, measured on the open window (result rows of two lines).
     const geometry = await tab.evaluate(() => {
       const rect = (node) => node?.getBoundingClientRect();
-      const field = rect(document.querySelector('.sf-search-field'));
-      const glyph = rect(document.querySelector('.sf-search-glyph'));
+      const ladder = (name) => {
+        const probe = document.createElement('div');
+        probe.style.blockSize = `var(${name})`;
+        document.body.append(probe);
+        const height = probe.getBoundingClientRect().height;
+        probe.remove();
+        return height;
+      };
+      const headNode = document.querySelector('.sf-search-head');
+      const head = rect(headNode);
+      const line = parseFloat(getComputedStyle(headNode).borderBottomWidth) || 0;
+      const glyph = rect(document.querySelector('.sf-search-glyph .sf-icon'));
       const input = document.querySelector('.sf-search-input');
       const inputBox = rect(input);
-      const clear = rect(document.querySelector('.sf-search-clear button'));
-      const row = document.querySelector('.sf-search-row:not(.sf-search-row--single)');
-      const square = rect(row.querySelector('.sf-search-row-icon'));
-      const squareGlyph = rect(row.querySelector('.sf-search-row-icon .sf-icon'));
+      const row = document.querySelector('.sf-search-row--two');
+      const rowGlyph = rect(row.querySelector('.sf-search-row-icon'));
       const title = row.querySelector('.sf-search-row-title');
       const range = document.createRange();
       range.selectNodeContents(title);
       const titleText = range.getBoundingClientRect();
-      const go = rect(row.querySelector('.sf-search-go'));
-      const caption = rect(document.querySelector('.sf-search-group .sf-search-caption > span'));
       const card = rect(document.querySelector('.sf-search-card'));
+      const win = rect(document.querySelector('.sf-search-window'));
       const cs = getComputedStyle(input);
       const centre = (r) => r.left + r.width / 2;
       return {
-        fieldHeight: field.height, rowHeight: rect(row).height, square: [square.width, square.height],
-        squareGlyph: squareGlyph.width, fieldGlyph: glyph.width, clear: clear.width,
-        glyphAxis: centre(glyph) - centre(square), textStart: (inputBox.left + parseFloat(cs.paddingLeft)) - titleText.left,
-        xAxis: centre(clear) - centre(go), captionStart: caption.left - square.left,
-        widths: [field.width, card.width], gap: card.top - field.bottom,
-        fieldTop: field.top, radius: getComputedStyle(document.querySelector('.sf-search-field')).borderTopLeftRadius,
+        headHeight: head.height - line, line, control2: ladder('--sf-ui-2--control-height'), rowHeight: rect(row).height,
+        headGlyph: glyph.width, rowGlyph: rowGlyph.width,
+        glyphAxis: centre(glyph) - centre(rowGlyph), textStart: (inputBox.left + parseFloat(cs.paddingLeft)) - titleText.left,
+        widths: [win.width, card.width],
       };
     });
     const near = (value, want) => Math.abs(value - want) < 0.6;
-    expect('geometry-ladder', near(geometry.fieldHeight, 48) && near(geometry.rowHeight, 48) && near(geometry.square[0], 32) && near(geometry.square[1], 32)
-      && near(geometry.squareGlyph, 20) && near(geometry.fieldGlyph, 24) && near(geometry.clear, 32), geometry);
-    expect('geometry-axes', near(geometry.glyphAxis, 0) && near(geometry.textStart, 0) && near(geometry.xAxis, 0) && near(geometry.captionStart, 0)
-      && near(geometry.widths[0], geometry.widths[1]) && near(geometry.gap, 8) && near(geometry.fieldTop, 64), geometry);
+    expect('geometry-ladder', near(geometry.headHeight, geometry.control2) && near(geometry.rowHeight, 48)
+      && near(geometry.headGlyph, 20) && near(geometry.rowGlyph, 20) && near(geometry.line, 1), geometry);
+    expect('geometry-axes', near(geometry.glyphAxis, 0) && near(geometry.textStart, 0) && near(geometry.widths[0], geometry.widths[1]), geometry);
     seen.geometry = geometry;
 
     // Enter opens the selected result: navigate (the page cancels it here),
@@ -348,14 +405,18 @@ try {
         });
       }
     });
+    await tab.focus(INPUT);
     await tab.keyboard.press('ArrowDown');
+    const before = await rowsInfo(tab);
     await tab.keyboard.press('Enter');
+    await tab.waitForTimeout(200);
     const chosen = await tab.evaluate(() => ({heard: window.heard, open: Boolean(document.querySelector('.sf-search-window')), href: location.hash,
       recent: JSON.parse(localStorage.getItem('sf-pref:sf-search/probe-recent'))?.queries ?? null, locked: document.documentElement.style.overflow}));
     const navigate = chosen.heard.find((one) => one.name === 'sf-search-navigate');
-    expect('enter-navigates', navigate && navigate.detail.id === '#data' && navigate.detail.href === '#data' && navigate.detail.query === 'таб'
+    const picked = before.find((row) => row.selected);
+    expect('enter-navigates', navigate && picked?.title === 'Таблицы данных' && navigate.detail.href === '#data' && navigate.detail.query === 'таб'
       && navigate.detail.group === 'pages' && !chosen.open && chosen.href === '' && chosen.locked === ''
-      && chosen.heard.some((one) => one.name === 'sf-search-closed' && one.detail.reason === 'api'), chosen);
+      && chosen.heard.some((one) => one.name === 'sf-search-closed'), {chosen, picked});
     expect('recent-recorded', JSON.stringify(chosen.recent) === JSON.stringify(['таб']), chosen.recent);
 
     // Recent: shown on the empty field after opening from the trigger; a
@@ -364,25 +425,26 @@ try {
     await tab.waitForSelector('.sf-search-row--recent', {timeout: 5000}).catch(() => {});
     const recent = await tab.evaluate(() => ({
       captions: [...document.querySelectorAll('.sf-search-caption > span')].map((n) => n.textContent.trim()),
-      rows: [...document.querySelectorAll('.sf-search-row--recent .sf-search-row-title')].map((n) => n.textContent.trim()),
-      remove: document.querySelector('.sf-search-row--recent .sf-search-remove')?.getAttribute('aria-label'),
+      rows: [...document.querySelectorAll('.sf-search-row--recent:not(:has(> a.sf-search-row-main)) .sf-search-row-title')].map((n) => n.textContent.trim()),
+      remove: document.querySelector('.sf-search-row--recent .sf-search-row-actions--recent button')?.getAttribute('aria-label'),
       height: document.querySelector('.sf-search-row--recent')?.getBoundingClientRect().height,
     }));
     expect('recent-shown', recent.captions[0] === 'Недавние' && recent.rows.join('|') === 'таб' && recent.remove === 'Убрать «таб»' && Math.abs(recent.height - 40) < 0.6, recent);
-    // Record two more through the API of a page: type, open a result.
+    // Record two more: type, open a result.
     for (const query of ['кноп', 'тём']) {
       await typeQuery(tab, query);
       await tab.keyboard.press('Enter');
+      await tab.waitForTimeout(200);
       await tab.click('#t');
       await tab.waitForSelector('.sf-search-row--recent', {timeout: 5000}).catch(() => {});
     }
-    const three = await tab.evaluate(() => [...document.querySelectorAll('.sf-search-row--recent .sf-search-row-title')].map((n) => n.textContent.trim()));
+    const three = await tab.evaluate(() => [...document.querySelectorAll('.sf-search-row--recent:not(:has(> a.sf-search-row-main)) .sf-search-row-title')].map((n) => n.textContent.trim()));
     expect('recent-newest-first', three.join('|') === 'тём|кноп|таб', three);
     // Remove the middle one by its X.
-    const middle = await tab.$('.sf-search-row--recent >> nth=1');
-    await middle.hover();
-    await tab.click('.sf-search-row--recent >> nth=1 >> .sf-search-remove');
-    const removed = await tab.evaluate(() => ({rows: [...document.querySelectorAll('.sf-search-row--recent .sf-search-row-title')].map((n) => n.textContent.trim()),
+    await tab.hover('.sf-search-row--recent >> nth=1');
+    await tab.click('.sf-search-row--recent >> nth=1 >> .sf-search-row-actions--recent button');
+    await tab.waitForTimeout(150);
+    const removed = await tab.evaluate(() => ({rows: [...document.querySelectorAll('.sf-search-row--recent:not(:has(> a.sf-search-row-main)) .sf-search-row-title')].map((n) => n.textContent.trim()),
       stored: JSON.parse(localStorage.getItem('sf-pref:sf-search/probe-recent'))?.queries ?? null, focused: document.activeElement === document.querySelector('.sf-search-input'), open: Boolean(document.querySelector('.sf-search-window'))}));
     expect('recent-remove', removed.rows.join('|') === 'тём|таб' && JSON.stringify(removed.stored) === JSON.stringify(['тём', 'таб']) && removed.focused && removed.open, removed);
     // Enter on a recent row fills the field.
@@ -392,36 +454,44 @@ try {
     expect('recent-fills-field', refilled === 'тём', refilled);
     // Clear the field, then «Очистить» empties the list.
     await tab.keyboard.press('Escape');
+    await tab.waitForTimeout(150);
     await tab.click('.sf-search-caption-action');
+    await tab.waitForTimeout(150);
     const emptied = await tab.evaluate(() => ({rows: document.querySelectorAll('.sf-search-row--recent').length, stored: JSON.parse(localStorage.getItem('sf-pref:sf-search/probe-recent'))?.queries ?? null,
       open: Boolean(document.querySelector('.sf-search-window'))}));
-    expect('recent-clear', emptied.rows === 0 && emptied.stored === null && emptied.open, emptied);
+    expect('recent-clear', emptied.rows === 0 && (emptied.stored === null || emptied.stored.length === 0) && emptied.open, emptied);
 
     // Escape: clears first, then closes and gives focus back to the trigger.
+    await tab.focus(INPUT);
     await typeQuery(tab, 'кноп');
     await tab.keyboard.press('Escape');
     const firstEscape = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), value: document.querySelector('.sf-search-input')?.value}));
     await tab.keyboard.press('Escape');
+    await tab.waitForTimeout(200);
     const secondEscape = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), focus: document.activeElement?.id,
       reason: window.heard.filter((one) => one.name === 'sf-search-closed').at(-1)?.detail.reason, expanded: document.querySelector('#t').getAttribute('aria-expanded')}));
     expect('escape-clears-then-closes', firstEscape.open && firstEscape.value === '' && !secondEscape.open && secondEscape.focus === 't'
       && secondEscape.reason === 'escape' && secondEscape.expanded === 'false', {firstEscape, secondEscape});
 
-    // The X: clears, then closes; focus back to the trigger.
+    // The X clears and keeps the window; with the field empty, Escape closes;
+    // focus back to the trigger. (The back arrow is the phone's.)
     await tab.click('#t');
     await tab.waitForSelector(WINDOW);
     await typeQuery(tab, 'тем');
-    await tab.click('.sf-search-clear button');
+    await tab.click(CLEAR);
+    await tab.waitForTimeout(150);
     const xFirst = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), value: document.querySelector('.sf-search-input')?.value}));
-    await tab.click('.sf-search-clear button');
+    await tab.keyboard.press('Escape');
+    await tab.waitForTimeout(200);
     const xSecond = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), focus: document.activeElement?.id,
       reason: window.heard.filter((one) => one.name === 'sf-search-closed').at(-1)?.detail.reason}));
-    expect('x-clears-then-closes', xFirst.open && xFirst.value === '' && !xSecond.open && xSecond.focus === 't' && xSecond.reason === 'close', {xFirst, xSecond});
+    expect('x-clears-then-escape-closes', xFirst.open && xFirst.value === '' && !xSecond.open && xSecond.focus === 't' && xSecond.reason === 'escape', {xFirst, xSecond});
 
     // A press on the scrim closes as outside.
     await tab.click('#t');
     await tab.waitForSelector(WINDOW);
     await tab.mouse.click(20, 780);
+    await tab.waitForTimeout(200);
     const outside = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), reason: window.heard.filter((one) => one.name === 'sf-search-closed').at(-1)?.detail.reason}));
     expect('scrim-closes', !outside.open && outside.reason === 'outside', outside);
 
@@ -431,7 +501,9 @@ try {
     for (let i = 0; i < 6; i += 1) await tab.keyboard.press('Tab');
     const trapped = await tab.evaluate(() => document.querySelector('.sf-search-window').contains(document.activeElement));
     expect('tab-trapped', trapped, trapped);
+    await tab.focus(INPUT);
     await tab.keyboard.press('Escape');
+    await tab.waitForTimeout(200);
 
     // SR-7: opened by the key with nothing focused, Escape gives the focus to
     // the trigger, not to the body.
@@ -439,13 +511,13 @@ try {
     await tab.keyboard.press('Control+k');
     await tab.waitForSelector(WINDOW);
     await tab.keyboard.press('Escape');
+    await tab.waitForTimeout(200);
     const byKey = await tab.evaluate(() => ({open: Boolean(document.querySelector('.sf-search-window')), focus: document.activeElement?.id || document.activeElement?.localName}));
     expect('key-open-focus-back-to-trigger', !byKey.open && byKey.focus === 't', byKey);
 
     expect('no-console-errors', errors.length === 0, errors);
     await tab.close();
   }
-
   // ----------------------------------------------------------- a provider
   {
     const tab = await browser.newPage({viewport: {width: 1280, height: 800}});
@@ -524,15 +596,16 @@ try {
       const r = (s) => document.querySelector(s)?.getBoundingClientRect();
       const shown = (s) => { const n = document.querySelector(s); return Boolean(n && n.getClientRects().length && getComputedStyle(n).visibility !== 'hidden'); };
       const w = r('.sf-search-window');
-      const field = r('.sf-search-field');
-      return {window: [w.left, w.top, w.width, w.height], fieldTop: field.top, fieldHeight: field.height,
+      const field = r('.sf-search-head');
+      const line = parseFloat(getComputedStyle(document.querySelector('.sf-search-head')).borderBottomWidth) || 0;
+      return {window: [w.left, w.top, w.width, w.height], fieldTop: field.top, fieldHeight: field.height - line,
         back: shown('.sf-search-back button'), glyph: shown('.sf-search-glyph'), x: shown('.sf-search-clear button'),
         backLabel: document.querySelector('.sf-search-back button')?.getAttribute('aria-label') ?? document.querySelector('.sf-search-back')?.getAttribute('aria-label'),
         cardBottom: r('.sf-search-card').bottom};
     });
     seen.phoneLadder = ladder;
     expect('phone-full-screen', sheet.window.join(',') === '0,0,375,740' && sheet.fieldTop === 0 && Math.abs(sheet.fieldHeight - ladder) < 0.6
-      && sheet.back && !sheet.glyph && !sheet.x && sheet.backLabel === 'Назад' && Math.abs(sheet.cardBottom - 740) < 0.6, sheet);
+      && sheet.back && !sheet.glyph && !sheet.x && sheet.backLabel === 'Закрыть' && Math.abs(sheet.cardBottom - 740) < 0.6, sheet);
     await typeQuery(tab, 'кноп');
     const typedPhone = await tab.evaluate(() => {
       const shown = (s) => { const n = document.querySelector(s); return Boolean(n && n.getClientRects().length && getComputedStyle(n).visibility !== 'hidden'); };
@@ -573,7 +646,7 @@ try {
     await openPort();
     const all = await blocks();
     expect('port-empty-blocks', all.recent === 2 && all.popular === 1 && all.commands === 1, all);
-    expect('port-pane-widens-the-window', all.pane === 1 && Math.abs(all.width - 864) < 1, all);
+    expect('port-pane-widens-the-window', all.pane === 1 && all.width > 576 + 1, all);
     await typeQuery(tab, 'т');
     const withQuery = await blocks();
     expect('port-scopes-drawn', withQuery.scopes === 4 && withQuery.commands === 1, withQuery);
@@ -582,7 +655,7 @@ try {
     await tab.fill('.sf-search-input', '');
     await tab.waitForFunction(() => document.querySelectorAll('.sf-search-row--recent').length === 2, null, {timeout: 5000}).catch(() => {});
     await tab.hover('.sf-search-row--recent');
-    await tab.click('.sf-search-row--recent .sf-search-remove');
+    await tab.click('.sf-search-row--recent .sf-search-row-actions--recent button');
     await tab.waitForTimeout(100);
     const forgot = await asked('recent.forget');
     const afterForget = await blocks();

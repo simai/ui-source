@@ -106,8 +106,11 @@ test('the card title line is 24 on a desktop and 20 on a phone (C89)', () => {
   // A new name: no 5.x compatibility alias, and density never moves it.
   assert.doesNotMatch(source, /--sf-title-height-card/u);
   assert.doesNotMatch(read('src/core/scss/_sf_css__density.scss'), /--sf-title--height-card/u);
-  // The card reads it, not rung 2 and not a raw length.
-  const sheet = read('src/component/card/scss/_css__card.scss');
+  // The card reads it, not rung 2 and not a raw length: one rule, the card
+  // title mixin, in the card sheet and in core's first-paint sheet (#261 N3).
+  const sheet = read('src/core/scss/mix/_mix__card_title.scss');
+  assert.match(read('src/component/card/scss/_css__card.scss'), /@include card-title\.card-title;/u);
+  assert.match(read('src/core/scss/_sf_css__typograpy.scss'), /@include card-title\.card-title;/u);
   assert.match(sheet, /\.sf-card > :is\(h1, h2, h3, h4, h5, h6\) \{[^}]*line-height: var\(--sf-title--height-card\);/u);
   assert.match(sheet, /font-size: var\(--sf-card-title-size, var\(--sf-heading-6--size\)\);/u);
 });

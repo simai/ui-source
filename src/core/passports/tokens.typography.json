@@ -14,7 +14,8 @@
     "src/core/figma_variables/figma_typography_styles.scss",
     "src/core/scss/_sf_css__typograpy.scss",
     "src/core/scss/_sf_css__link.scss",
-    "src/core/scss/vars/_sf_var__link.scss"
+    "src/core/scss/vars/_sf_var__link.scss",
+    "src/core/scss/mix/_mix__card_title.scss"
   ],
   "files": [
     "src/core/figma_variables/figma_text_body_text_height.scss",
@@ -24,9 +25,10 @@
     "src/core/figma_variables/figma_typography_styles.scss",
     "src/core/scss/_sf_css__link.scss",
     "src/core/scss/_sf_css__typograpy.scss",
+    "src/core/scss/mix/_mix__card_title.scss",
     "src/core/scss/vars/_sf_var__link.scss"
   ],
-  "content_sha256": "d34e059c5e4d5e3a16dc36b92a9b1c5ceb1237ea72df3ef73e76a467efd51ee5",
+  "content_sha256": "e88fc14c8a278d5ecd121cdea50a7252d75b89070f9eea09833e18a314fe1780",
   "dependencies": [
     {
       "id": "font.inter",

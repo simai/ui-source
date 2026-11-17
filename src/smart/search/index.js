@@ -644,8 +644,11 @@ class SfSearch extends SearchElement {
   // A scope pressed is the same question as a keystroke (the port: scope is a
   // field of query.change, never an intent of its own), so the host is asked
   // again; the panel also filters what it holds, so the tags answer at once.
-  // The tags are one sf-tag-group of single choice (C175 (4)): the focus stays
-  // on the tag pressed, and the reader hears the scope and its count.
+  // The tags are one sf-tag-group of single choice (C175 (4)): chosen from the
+  // keyboard, the focus stays on the tag, and the reader hears the scope and
+  // its count; chosen with a pointer, the focus goes back to the field
+  // (dispatcher 2026-11-16, as the scope pills before 1.10 kept it there), so
+  // the person types on without a click into the field.
   setScope(id, {focus = true} = {}) {
     this.scope = id;
     this.selected = 0;
@@ -664,7 +667,19 @@ class SfSearch extends SearchElement {
     // «Все» is the tag of no scope; a scope released is «Все» again.
     const {id, selected} = event.detail ?? {};
     const key = String(id ?? '');
-    this.setScope(selected && key !== ALL_SCOPE_KEY ? key : '', {focus: false});
+    const pointer = this._scopePointer === true;
+    this._scopePointer = false;
+    this.setScope(selected && key !== ALL_SCOPE_KEY ? key : '', {focus: pointer});
+  }
+
+  // How the next scope choice comes: a press of a pointer on the tags, or a
+  // key (Enter or Space on a tag, which is a click too).
+  onScopePointer() {
+    this._scopePointer = true;
+  }
+
+  onScopeKey() {
+    this._scopePointer = false;
   }
 
   // ---------------------------------------------------------- operators

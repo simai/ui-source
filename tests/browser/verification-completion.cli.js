@@ -33,12 +33,38 @@ async page => {
   await input.fill('123456');
   check('same complete value can complete after editing', await page.evaluate(() => window.__verificationCompletions === 2));
 
-  await form.locator('input').focus();
-  check('keyboard focus belongs to one joined boundary', await form.evaluate(root => {
+  // The text field's focus look (owner decision C153 (4), newer than C82): the
+  // current cell -- not the row -- draws a 2 px edge of the focus colour
+  // inside its own border (an outline at minus its width), from the keyboard
+  // and the mouse alike; no ring outside and no shadow on the row, so nothing
+  // next to the cells is covered. The row's box-shadow this check read was
+  // the joined-row look before K1.
+  const focusLook = async () => form.evaluate(root => {
     const control = root.querySelector('.sf-verification');
     const inputNode = root.querySelector('input');
-    return document.activeElement === inputNode && getComputedStyle(control).boxShadow !== 'none';
-  }));
+    const cell = root.querySelector('.sf-verification-cell.current');
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;outline:var(--sf-focus--width) solid var(--sf-focus--color)';
+    cell.append(probe);
+    const want = getComputedStyle(probe);
+    const ring = {width: want.outlineWidth, color: want.outlineColor};
+    probe.remove();
+    const look = getComputedStyle(cell);
+    return {
+      focused: document.activeElement === inputNode,
+      style: look.outlineStyle, width: look.outlineWidth, color: look.outlineColor, offset: look.outlineOffset,
+      want: ring, rowShadow: getComputedStyle(control).boxShadow, rowOutline: getComputedStyle(control).outlineStyle,
+    };
+  });
+  const insideEdge = look => look.focused && look.style === 'solid' && look.width === look.want.width && look.color === look.want.color
+    && parseFloat(look.offset) === -parseFloat(look.width) && look.rowShadow === 'none' && look.rowOutline === 'none';
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Shift+Tab');
+  const byKeys = await focusLook();
+  check('keyboard focus is a 2 px edge of the focus colour inside the current cell (C153 (4))', insideEdge(byKeys), byKeys);
+  await input.click();
+  const byMouse = await focusLook();
+  check('mouse focus draws the same inside edge (C153 (4))', insideEdge(byMouse), byMouse);
 
   await page.getByRole('button', {name: 'Сбросить'}).click();
   await page.waitForTimeout(50);

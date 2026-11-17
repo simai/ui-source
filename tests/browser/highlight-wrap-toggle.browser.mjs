@@ -5,6 +5,9 @@
 // (no sideways scroll) and it says true; pressed again, they scroll again. A
 // block with data-wrap="true" starts wrapped, and data-wrap-control="none"
 // has no toggle (owner request through the effects catalogue, 2026-10-29).
+// The toggle shows its name as the Framework tooltip on hover and keyboard
+// focus, as copy does, and the two stand as an action row: the actions gap
+// role apart, 8 and 4 in compact (C144; it was 0 on screen).
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -23,6 +26,7 @@ const cases = {
   plain: block(),
   wrapped: block('data-wrap="true"'),
   none: block('data-wrap-control="none"'),
+  compact: `<div data-sf-density="compact">${block()}</div>`,
 };
 const types = {'.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.woff2': 'font/woff2'};
 const server = createServer((request, response) => {
@@ -51,11 +55,29 @@ try {
     const toggle = box.querySelector('.sf-highlight__wrap-toggle');
     const pre = box.querySelector('pre');
     const head = [...box.querySelector('.sf-highlight__head').children].map((node) => node.className.split(' ')[0]);
+    const copy = box.querySelector('.sf-highlight__copy');
+    const tip = toggle?.getAttribute('data-tooltip') ? document.getElementById(toggle.getAttribute('data-tooltip')) : null;
+    const probe = document.createElement('div');
+    probe.style.inlineSize = 'var(--sf-gap--actions)';
+    box.append(probe);
+    const role = probe.getBoundingClientRect().width;
+    probe.remove();
+    const gap = toggle && copy ? copy.getBoundingClientRect().left - toggle.getBoundingClientRect().right : null;
     return {toggle: Boolean(toggle), name: toggle?.getAttribute('aria-label') ?? null, pressed: toggle?.getAttribute('aria-pressed') ?? null,
-      sideways: pre.scrollWidth > pre.clientWidth + 1, head};
+      sideways: pre.scrollWidth > pre.clientWidth + 1, head: head.filter((name) => name !== 'sf-tooltip'),
+      tooltip: tip ? {text: tip.textContent.trim(), tooltip: tip.classList.contains('sf-tooltip')} : null,
+      gap: gap === null ? null : Math.round(gap * 100) / 100, role};
+  });
+  const tipShown = (tab) => tab.evaluate(() => {
+    const toggle = document.querySelector('.sf-highlight__wrap-toggle');
+    const tip = document.getElementById(toggle?.getAttribute('data-tooltip') || '-');
+    if (!tip) return null;
+    const box = tip.getBoundingClientRect();
+    return {hidden: tip.hidden, visible: getComputedStyle(tip).visibility !== 'hidden' && box.width > 0 && box.height > 0, role: tip.getAttribute('role')};
   });
   const open = async (name) => {
-    const tab = await browser.newPage({viewport: {width: 900, height: 700}});
+    // 1200: compact density applies from 60rem.
+    const tab = await browser.newPage({viewport: {width: 1200, height: 700}});
     await tab.goto(`http://127.0.0.1:${server.address().port}/${name}`);
     await tab.waitForFunction(() => document.querySelector('.sf-highlight__copy') && document.querySelector('code span[class^="hljs"]'), null, {timeout: 8000}).catch(() => {});
     await tab.waitForTimeout(200);
@@ -63,6 +85,15 @@ try {
   };
   let tab = await open('plain');
   seen.plain = await state(tab);
+  await tab.hover('.sf-highlight__wrap-toggle').catch(() => {});
+  await tab.waitForTimeout(900);
+  seen.hover = await tipShown(tab);
+  await tab.mouse.move(1, 1);
+  await tab.waitForTimeout(300);
+  await tab.focus('.sf-highlight__copy').catch(() => {});
+  await tab.keyboard.press('Shift+Tab');
+  await tab.waitForTimeout(900);
+  seen.keyboard = await tipShown(tab);
   await tab.locator('.sf-highlight__wrap-toggle').click().catch(() => {});
   await tab.waitForTimeout(100);
   seen.pressed = await state(tab);
@@ -72,6 +103,12 @@ try {
   await tab.close();
   tab = await open('wrapped'); seen.wrapped = await state(tab); await tab.close();
   tab = await open('none'); seen.none = await state(tab); await tab.close();
+  tab = await open('compact'); seen.compact = await state(tab); await tab.close();
+  if (seen.plain.tooltip?.text !== 'Переносить строки' || !seen.plain.tooltip.tooltip) failures.push(`the toggle has no Framework tooltip with its name: ${JSON.stringify(seen.plain.tooltip)}`);
+  if (!seen.hover?.visible || seen.hover.hidden) failures.push(`hover shows no tooltip: ${JSON.stringify(seen.hover)}`);
+  if (!seen.keyboard?.visible || seen.keyboard.hidden) failures.push(`keyboard focus shows no tooltip: ${JSON.stringify(seen.keyboard)}`);
+  if (Math.abs(seen.plain.gap - 8) > 0.5 || Math.abs(seen.plain.gap - seen.plain.role) > 0.5) failures.push(`wrap and copy are not the actions gap apart (8): ${seen.plain.gap} (role ${seen.plain.role})`);
+  if (Math.abs(seen.compact.gap - 4) > 0.5 || Math.abs(seen.compact.gap - seen.compact.role) > 0.5) failures.push(`compact: wrap and copy are not 4 apart: ${seen.compact.gap} (role ${seen.compact.role})`);
   if (!seen.plain.toggle || seen.plain.name !== 'Переносить строки' || seen.plain.pressed !== 'false' || !seen.plain.sideways) failures.push(`plain: ${JSON.stringify(seen.plain)}`);
   if (seen.plain.head.indexOf('sf-highlight__wrap-toggle') !== seen.plain.head.indexOf('sf-highlight__copy') - 1) failures.push(`the toggle does not stand right before copy: ${seen.plain.head.join(' ')}`);
   if (seen.pressed.pressed !== 'true' || seen.pressed.sideways) failures.push(`pressed: ${JSON.stringify(seen.pressed)}`);

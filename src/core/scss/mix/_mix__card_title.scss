@@ -1,0 +1,27 @@
+// SIMAI Framework
+// https://simai.io
+
+// CARD TITLE
+//
+// A heading inside a card is the card's title (R082, C19, C89): the rule is
+// written once here and emitted twice, by the card's sheet and by core. Core
+// carries it so the first frame of a page draws the title as the card does:
+// the card's sheet arrives a round trip after core.css, and until then a
+// card's h3 was a bare heading, 24 on 28 bold (18 on 24 on a phone), before
+// it became the card title, 16 on 24 semibold (14 on 20) -- a jump of the
+// lines under it (#261 N3). Both copies stand in the utilities layer with
+// the same selector, so whichever sheet comes last draws the same title.
+@mixin card-title {
+  .sf-card > :is(h1, h2, h3, h4, h5, h6) {
+    font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
+    line-height: var(--sf-title--height-card);
+    font-weight: var(--sf-card-title-weight, var(--sf-text--font-weight-6));
+  }
+
+  // The heading in the card's header (C231) is the same title.
+  .sf-card > .sf-card-header > :is(h1, h2, h3, h4, h5, h6) {
+    font-size: var(--sf-card-title-size, var(--sf-heading-6--size));
+    line-height: var(--sf-title--height-card);
+    font-weight: var(--sf-card-title-weight, var(--sf-weight--semi-bold));
+  }
+}
