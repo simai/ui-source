@@ -6,7 +6,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+const read = (path) => readFileSync(new globalThis.URL(`../${path}`, import.meta.url), "utf8");
 
 // A page with just enough of a document for SF.menu.open to reach the menu.
 function fakePage() {
