@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {resolve} from 'node:path';
 import test from 'node:test';
-import {GENERATED, run} from '../scripts/generate-component-files.mjs';
+import {GENERATED, run, topFieldProblems} from '../scripts/generate-component-files.mjs';
 
 // Standard simai.smart-component 1.4, phase 1: scripts/generate-component-files.mjs
 // makes seven files of a Smart component from the five a person writes. Until
@@ -88,12 +88,9 @@ const PHASE_A = [
   'display-settings',
 ];
 
-// Gate 1 (§4): the top-level fields of component.json are a closed list; 1.4
-// adds relations and aliases. A tool's field starts with x-, $comment is kept.
-const TOP_FIELDS = ['id', 'tag', 'version', 'kind', 'family', 'package', 'traits', 'implements', 'settings', 'values', 'events',
-  'actions', 'keys', 'roles', 'rules', 'layouts', 'slots', 'form', 'validity', 'selection', 'entry-state', 'window', 'computed',
-  'layer', 'side-effects', 'keyboard', 'port', 'connects', 'templates', 'presentation', 'styles', 'examples', 'docs', 'lang',
-  'accessibility', 'host-states', 'css-variables', 'parts', 'relations', 'aliases'];
+// Gate 1 (§4): the top-level fields of component.json are a closed list
+// (TOP_FIELDS of the generator); topFieldProblems also holds the dated x-
+// spellings and the shapes of history and framework_first.
 
 const results = await run({packages: [root], components: []});
 
@@ -106,10 +103,7 @@ test('phase A folders are in the 1.4 form and generate every file byte for byte'
     for (const [file, entry] of Object.entries(result.files)) {
       if (entry.status !== 'identical') problems.push(`${name}/${file}: ${entry.status}${entry.differences ? ` (${entry.differences.slice(0, 3).map((d) => d.path).join(', ')})` : ''}`);
     }
-    for (const field of Object.keys(result.view?.component ?? {})) {
-      if (field === '$comment' || field.startsWith('x-') || TOP_FIELDS.includes(field)) continue;
-      problems.push(`${name}/component.json: unknown top-level field ${field} (gate 1, §4)`);
-    }
+    problems.push(...topFieldProblems(result.view?.component ?? {}, {at: `${name}/component.json`}));
   }
   assert.deepEqual(problems, [], 'edit component.json or examples.json, then node scripts/generate-component-files.mjs --write --component <name>');
 });

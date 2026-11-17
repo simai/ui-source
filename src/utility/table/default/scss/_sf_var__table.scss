@@ -14,6 +14,10 @@ $table-bg: inherit;
 $table-border-color: var(--sf-outline-variant);
 $table-accent-bg: var(--sf-transparent);
 
+// The head's text (C146 (2)): the quiet supporting role. Public as
+// --sf-table-head-color, so a host restyles the head's words without a rule.
+$table-head-color: var(--sf-on-surface-variant);
+
 $table-stripe-color: var(--sf-on-surface);
 // The zebra is a fill, the lightest layer (C16): 4. The row under the pointer
 // and the selected row are states drawn over it, 8 (owner decision C185 (3)):

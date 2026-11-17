@@ -156,7 +156,10 @@ test('the .table classes take their cells from the ladder and the space system',
 // C146 (2), (3): the quiet head and the number column.
 test('the .table head is quiet and a number column keeps its digits on one line', () => {
   const css = read('src/utility/table/default/scss/_sf_css__table.scss');
-  assert.match(css, /> thead > tr > th \{\s*color: var\(--sf-on-surface-variant\);\s*font-weight: var\(--sf-weight--medium\);/u);
+  // The role comes through the public --sf-table-head-color (utility.table
+  // 1.8.0, tests/table-head-color.contract.test.mjs), its default the same role.
+  assert.match(css, /> thead > tr > th \{\s*color: var\(#\{\$prefix\}head-color\);\s*font-weight: var\(--sf-weight--medium\);/u);
+  assert.match(read('src/utility/table/default/scss/_sf_var__table.scss'), /\$table-head-color: var\(--sf-on-surface-variant\);/u);
   assert.doesNotMatch(css, /> thead > tr > th,[^{]*\{[^}]*font-weight/u);
   assert.match(css, /\.table-numeric \{\s*font-variant-numeric: tabular-nums;\s*text-align: end;\s*white-space: nowrap;/u);
 });

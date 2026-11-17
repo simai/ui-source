@@ -67,6 +67,97 @@ export const canon = (value) => JSON.stringify(sortKeys(value));
 const same = (a, b) => canon(a) === canon(b);
 
 // ======================================================================
+// Gate 1 (§4): the top-level fields of component.json
+
+// The closed list in canonical order (§3.3). 1.4 added relations and aliases;
+// standard 1.3.17 adds history (the component's change journal) and
+// framework_first (the Framework parts a set's component still copies
+// knowingly), both written first by the component sets. A tool's field starts
+// with x-; $comment is kept; folder is the generator's own (the view).
+export const TOP_FIELDS = ['id', 'tag', 'version', 'history', 'framework_first', 'kind', 'family', 'package', 'traits',
+  'implements', 'settings', 'values', 'events', 'actions', 'keys', 'roles', 'rules', 'layouts', 'slots', 'form', 'validity',
+  'selection', 'entry-state', 'window', 'computed', 'layer', 'side-effects', 'keyboard', 'port', 'connects', 'templates',
+  'presentation', 'styles', 'examples', 'docs', 'lang', 'accessibility', 'host-states', 'css-variables', 'parts',
+  'relations', 'aliases'];
+
+// The x- spellings a set wrote while the list had no word for them (SIMAI View
+// round 1, 2026-11-17): read as the standard field until the date, refused
+// after it, and never beside the standard field.
+export const TOP_FIELD_ALIASES = {
+  'x-history': {field: 'history', remove_after: '2027-01-01'},
+  'x-framework-first': {field: 'framework_first', remove_after: '2027-01-01'},
+};
+
+export const HISTORY_KINDS = ['added', 'patch', 'minor', 'major'];
+
+// A standard top-level field, read under its dated x- spelling as well.
+export function topField(component, field) {
+  if (component?.[field] !== undefined) return component[field];
+  const alias = Object.entries(TOP_FIELD_ALIASES).find(([, entry]) => entry.field === field)?.[0];
+  return alias ? component?.[alias] : undefined;
+}
+
+const SEMVER = /^\d+\.\d+\.\d+$/u;
+const DAY = /^\d{4}-\d{2}-\d{2}$/u;
+
+function historyProblems(history, version, at) {
+  if (!Array.isArray(history) || !history.length) return [`${at}: a non-empty list, newest first`];
+  const problems = [];
+  history.forEach((entry, index) => {
+    const where = `${at}[${index}]`;
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) { problems.push(`${where}: an object`); return; }
+    for (const key of Object.keys(entry)) {
+      if (!['version', 'kind', 'recorded_on', 'consumer', 'evidence', '$comment'].includes(key) && !key.startsWith('x-')) problems.push(`${where}: unknown field ${key}`);
+    }
+    if (!SEMVER.test(entry.version ?? '')) problems.push(`${where}.version: x.y.z`);
+    if (!HISTORY_KINDS.includes(entry.kind)) problems.push(`${where}.kind: one of ${HISTORY_KINDS.join(', ')}`);
+    if (!DAY.test(entry.recorded_on ?? '')) problems.push(`${where}.recorded_on: YYYY-MM-DD`);
+    if (entry.consumer !== undefined && typeof entry.consumer !== 'string') problems.push(`${where}.consumer: a string`);
+    if (['minor', 'major'].includes(entry.kind) && !(typeof entry.consumer === 'string' && entry.consumer.trim().length > 10)) problems.push(`${where}.consumer: a ${entry.kind} version says what a host does (more than 10 characters)`);
+    if (!/^https:\/\/\S+$/u.test(entry.evidence ?? '')) problems.push(`${where}.evidence: an https link`);
+  });
+  const versions = history.map((entry) => entry?.version);
+  if (new Set(versions).size !== versions.length) problems.push(`${at}: a version is listed once`);
+  if (version !== undefined && versions[0] !== version) problems.push(`${at}[0].version: the newest entry is the component's version ${version}, not ${versions[0]}`);
+  return problems;
+}
+
+function frameworkFirstProblems(value, at) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return [`${at}: an object {waits}`];
+  const problems = [];
+  for (const key of Object.keys(value)) if (!['waits', '$comment'].includes(key) && !key.startsWith('x-')) problems.push(`${at}: unknown field ${key}`);
+  const waits = value.waits;
+  if (!waits || typeof waits !== 'object' || Array.isArray(waits)) return [...problems, `${at}.waits: an object, part id to the Framework order it waits for`];
+  for (const [part, order] of Object.entries(waits)) {
+    if (!part.trim()) problems.push(`${at}.waits: an empty part id`);
+    if (!/^FO-\d+$/u.test(order)) problems.push(`${at}.waits.${part}: a Framework order FO-<n>, not ${JSON.stringify(order)}`);
+  }
+  return problems;
+}
+
+// Gate 1 over component.json's top level: unknown fields, a dated spelling
+// past its date or beside its field, and the shapes of history and
+// framework_first. `today` is YYYY-MM-DD (the run's day by default).
+export function topFieldProblems(component, {today = new Date().toISOString().slice(0, 10), at = 'component.json'} = {}) {
+  const problems = [];
+  for (const field of Object.keys(component ?? {})) {
+    const alias = TOP_FIELD_ALIASES[field];
+    if (alias) {
+      if (component[alias.field] !== undefined) problems.push(`${at}: ${field} and ${alias.field} both written; keep ${alias.field}`);
+      else if (today >= alias.remove_after) problems.push(`${at}: ${field} ended ${alias.remove_after}; write ${alias.field}`);
+      continue;
+    }
+    if (field === '$comment' || field === 'folder' || field.startsWith('x-') || TOP_FIELDS.includes(field)) continue;
+    problems.push(`${at}: unknown top-level field ${field} (gate 1, §4)`);
+  }
+  const history = topField(component, 'history');
+  if (history !== undefined) problems.push(...historyProblems(history, component.version, `${at}.history`));
+  const first = topField(component, 'framework_first');
+  if (first !== undefined) problems.push(...frameworkFirstProblems(first, `${at}.framework_first`));
+  return problems;
+}
+
+// ======================================================================
 // The generators: a 1.4 view {component, examples, lang, files, folder} -> files
 
 // ---------------------------------------------------------------- aliases.json
