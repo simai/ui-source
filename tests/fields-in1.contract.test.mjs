@@ -76,7 +76,7 @@ test('RG-TA-1: textarea size 2 takes the shared inset ladder (C77, C141), not --
 
 test('RG-QT-1: steppers="none" starts the number at C77 like sf-input, at every step', () => {
   assert.match(quantity, /@each \$size in ladder\.\$sizes \{\n\s+\.sf-quantity\.sf-quantity--steppers-none\.#\{ladder\.size-class\('sf-quantity', \$size\)\} \{\n[\s\S]*?@include ladder\.inset\(--sf-quantity--inset, \$size\);/u);
-  const wrap = rule(quantity, '.sf-quantity.sf-quantity--steppers-none:is(.sf-quantity--size-1\\/3, .sf-quantity--size-1\\/2, .sf-quantity--size-1, .sf-quantity--size-2, .sf-quantity--size-3) .sf-quantity-wrap');
+  const wrap = rule(quantity, '.sf-quantity.sf-quantity--steppers-none:is(.sf-quantity--size-1\\/3, .sf-quantity--size-1\\/2, .sf-quantity--size-1, .sf-quantity--size-2, .sf-quantity--size-3) .sf-quantity-row > .sf-quantity-wrap');
   assert.match(wrap, /--sf-quantity-wrap--padding-inline-start: var\(--sf-quantity-padding-inline, calc\(var\(--sf-quantity--value-inset\) - var\(--sf-px\) - var\(--sf-space-1\\\/4\)\)\);/u);
   // The old formula (space-x plus the text step) is gone.
   assert.doesNotMatch(quantity, /steppers-none[^{]*\{[^}]*--space-x\) \+/u);
