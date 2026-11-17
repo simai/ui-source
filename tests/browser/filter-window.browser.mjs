@@ -15,6 +15,12 @@
 // anchor pressed again closes the window and no second one opens; the filter
 // control is sf-input-choice with the host's pages and search (FO-4 inside
 // FO-5); no window is left on the page after it closes. A clean console.
+// Returns FO5-1..FO5-4 (ui-control control/research/2026-11-18-framework-
+// parts-fo): «Применить (N)» once values are chosen; on a phone (390) the
+// window is a bottom sheet (sf-drawer placement bottom, the field's label its
+// title) at the screen's bottom edge; the window stands on the body, not
+// beside its anchor; the anchor's press closes it and its click opens none
+// (no timer: a click after it opens again at once).
 import {chromium} from 'playwright';
 import {serveBuild, russianPage, launchBrowser, watchConsole, CASES, results} from '../support/build-pages.mjs';
 
@@ -49,6 +55,7 @@ const lastAnswer = (tab) => tab.evaluate(() => window.answers.at(-1));
 for (const {width, theme} of CASES) {
   for (let load = 1; load <= LOADS; load += 1) {
     const key = `${width} ${theme} #${load}`;
+    const sheet = width < 600;
     const context = await browser.newContext({viewport: {width, height: 800}, colorScheme: theme, locale: 'ru-RU', reducedMotion: 'reduce'});
     const tab = await context.newPage();
     const errors = watchConsole(tab);
@@ -76,6 +83,7 @@ for (const {width, theme} of CASES) {
     const window1 = await tab.evaluate(() => {
       const popover = document.querySelector('[data-sf-filter-window]');
       const dialog = popover.querySelector('[role="dialog"]') ?? popover.querySelector('dialog') ?? popover;
+      const labelled = dialog.getAttribute('aria-labelledby');
       const surface = popover.querySelector('.sf-popover__surface') ?? dialog;
       const box = surface.getBoundingClientRect();
       const anchor = document.getElementById('status').getBoundingClientRect();
@@ -83,7 +91,10 @@ for (const {width, theme} of CASES) {
       const text = (node) => (node.getAttribute('text') || node.textContent).trim();
       return {
         role: dialog.getAttribute('role') || dialog.localName,
-        name: dialog.getAttribute('aria-label') || popover.getAttribute('label'),
+        name: dialog.getAttribute('aria-label') || (labelled && document.getElementById(labelled)?.textContent.trim()) || popover.getAttribute('label') || popover.getAttribute('heading'),
+        tag: popover.localName,
+        onBody: popover.parentElement === document.body,
+        atBottom: Math.abs(box.bottom - innerHeight) <= 1,
         order: buttons.map((one) => one.dataset.action),
         words: buttons.map(text),
         xs: buttons.map((one) => Math.round(one.getBoundingClientRect().left)),
@@ -95,11 +106,15 @@ for (const {width, theme} of CASES) {
       };
     });
     ok(`${key}: no table on the page`, noTable);
-    ok(`${key}: the window is a dialog named by the field, on screen, under its anchor`, ['dialog'].includes(window1.role) && window1.name === 'Статус' && window1.onScreen && window1.below, window1);
+    ok(`${key}: the window is a dialog named by the field, on screen, on the body (FO5-3)`, ['dialog'].includes(window1.role) && window1.name === 'Статус' && window1.onScreen && window1.onBody, window1);
+    ok(sheet ? `${key}: on a phone a bottom sheet at the screen's bottom edge (FO5-2)` : `${key}: a popover under its anchor`, sheet ? window1.tag === 'sf-drawer' && window1.atBottom : window1.tag === 'sf-popover' && window1.below, window1);
     ok(`${key}: «Применить» then «Сбросить», in the document and from the start (C157 (3))`, window1.order.join() === 'apply,reset' && window1.words[0] === 'Применить' && window1.words[1] === 'Сбросить' && window1.xs[0] < window1.xs[1], window1);
     ok(`${key}: the control is sf-input-choice list, the statuses as tonal badges; the focus in the window`, window1.choice && window1.badges === 3 && window1.focusInside, window1);
 
     await tab.click('[data-sf-filter-window] .sf-choice-input[value="work"]', {force: true});
+    await tab.waitForTimeout(200);
+    const counted = await tab.evaluate(() => document.querySelector('[data-sf-filter-window] [data-action="apply"]').getAttribute('text'));
+    ok(`${key}: «Применить (1)» once a value is chosen (FO5-1)`, counted === 'Применить (1)', {counted});
     await tab.click('[data-sf-filter-window] button[data-action="apply"]');
     await tab.waitForTimeout(400);
     const applied = {answer: await lastAnswer(tab), left: await tab.evaluate(() => document.querySelectorAll('[data-sf-filter-window]').length)};
@@ -129,15 +144,25 @@ for (const {width, theme} of CASES) {
 
     // 4. The anchor pressed again closes it; no second window. The page's click
     // handler that opened it asks again on that press and is answered null.
-    await tab.evaluate(() => document.getElementById('status').addEventListener('click', () => window.open1()));
-    await tab.exposeFunction('open1', () => open(tab, 'status', 'status'));
-    await tab.click('#status button');
-    await shown(tab);
-    await tab.waitForTimeout(200);
-    await tab.click('#status button');
-    await tab.waitForTimeout(700);
-    const toggled = await tab.evaluate(() => ({windows: document.querySelectorAll('[data-sf-filter-window]').length, answers: window.answers.length, tail: window.answers.slice(3)}));
-    ok(`${key}: the anchor pressed again closes the window, none opens again`, toggled.windows === 0 && toggled.answers === 5 && toggled.tail.every((one) => one === null), toggled);
+    // On a phone the sheet covers the anchor: there is no press on it to guard.
+    if (!sheet) {
+      await tab.evaluate(() => document.getElementById('status').addEventListener('click', () => window.open1()));
+      await tab.exposeFunction('open1', () => open(tab, 'status', 'status'));
+      await tab.click('#status button');
+      await shown(tab);
+      await tab.waitForTimeout(200);
+      await tab.click('#status button');
+      await tab.waitForTimeout(700);
+      const toggled = await tab.evaluate(() => ({windows: document.querySelectorAll('[data-sf-filter-window]').length, answers: window.answers.length, tail: window.answers.slice(3)}));
+      ok(`${key}: the anchor pressed again closes the window, none opens again`, toggled.windows === 0 && toggled.answers === 5 && toggled.tail.every((one) => one === null), toggled);
+      // FO5-4: no timer -- a click right after opens it again.
+      await tab.click('#status button');
+      await shown(tab).catch(() => null);
+      const reopened = await tab.evaluate(() => document.querySelectorAll('[data-sf-filter-window]').length);
+      ok(`${key}: a click right after opens it again, no timer (FO5-4)`, reopened === 1, {reopened});
+      await tab.keyboard.press('Escape');
+      await tab.waitForTimeout(400);
+    }
 
     // 5. From a chip, with the host's pages and search inside.
     await open(tab, 'owner', 'owner');
@@ -150,7 +175,7 @@ for (const {width, theme} of CASES) {
       search: Boolean(document.querySelector('[data-sf-filter-window] .sf-choice-search input')),
       more: Boolean(document.querySelector('[data-sf-filter-window] .sf-choice-more')),
       onScreen: (() => {
-        const box = (document.querySelector('[data-sf-filter-window] .sf-popover__surface') ?? document.querySelector('[data-sf-filter-window] [role="dialog"]')).getBoundingClientRect();
+        const box = (document.querySelector('[data-sf-filter-window] .sf-popover__surface') ?? document.querySelector('[data-sf-filter-window] [role="dialog"]') ?? document.querySelector('[data-sf-filter-window] [slot="content"]')).getBoundingClientRect();
         return box.left >= 0 && box.right <= innerWidth + 0.5;
       })(),
     }));

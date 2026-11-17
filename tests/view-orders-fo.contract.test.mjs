@@ -495,7 +495,7 @@ test('FO5-1..FO5-4: «Применить (N)», a bottom sheet on a phone, on th
   assert.match(source, /\(anchor\.closest\?\.\('dialog\[open\]'\) \|\| doc\.body\)\.append\(surface\);/u);
   assert.match(source, /followDensity\(surface, anchor\);/u);
   assert.doesNotMatch(source, /anchor\.after\(|Date\.now\(\)|< 500/u);
-  assert.match(source, /doc\.addEventListener\('click', clear\);/u);
+  assert.match(source, /doc\.addEventListener\('pointerdown', clear, true\);\s*doc\.addEventListener\('keydown', clear, true\);/u);
   // The popover's hide rule outranks a page's own display class on the content.
   assert.match(read('src/smart/popover/js/templates/default.css'), /sf-popover\[data-open='false'\] > \[slot='content'\] \{\s*display: none !important;/u);
 });

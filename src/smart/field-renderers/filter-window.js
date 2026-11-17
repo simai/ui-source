@@ -86,19 +86,19 @@ function mount(surface, anchor) {
 }
 
 // The reopen guard (FO5-4): a press on the anchor closed its window, and the
-// click that follows that press must not open it again. Held until that click
-// has passed the anchor's own handlers (the document hears it last), or until
-// the next press when no click came; no timer.
+// click that follows that press -- or an open its handler asks for later,
+// after a fetch -- must not open it again. Held until the next press or key
+// (the document hears them first, before the anchor's own handlers); no timer.
 function holdReopen(anchor) {
   const doc = anchor.ownerDocument;
   CLOSED_BY_ANCHOR.set(anchor, true);
   const clear = () => {
     CLOSED_BY_ANCHOR.delete(anchor);
-    doc.removeEventListener('click', clear);
     doc.removeEventListener('pointerdown', clear, true);
+    doc.removeEventListener('keydown', clear, true);
   };
-  doc.addEventListener('click', clear);
   doc.addEventListener('pointerdown', clear, true);
+  doc.addEventListener('keydown', clear, true);
 }
 
 export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', renderControl} = {}) {
@@ -109,10 +109,7 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     return Promise.resolve(null);
   }
   // The press on the anchor that closed its window is followed by its click.
-  if (CLOSED_BY_ANCHOR.get(anchor)) {
-    CLOSED_BY_ANCHOR.delete(anchor);
-    return Promise.resolve(null);
-  }
+  if (CLOSED_BY_ANCHOR.get(anchor)) return Promise.resolve(null);
   const doc = anchor.ownerDocument;
   const sheet = onPhone(doc);
   return new Promise((resolve) => {
@@ -185,6 +182,13 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     OPEN.set(anchor, {close});
     const closed = () => {
       OPEN.delete(anchor);
+      // The sheet gives the focus back to the anchor, as the popover does
+      // (the anchor does not name the drawer, so the drawer does not know it).
+      if (sheet && anchor.isConnected) {
+        const target = anchor.matches?.('button, a[href], input, select, textarea, [tabindex]') ? anchor
+          : anchor.querySelector?.('button, a[href], input, select, textarea, [tabindex]') ?? anchor;
+        target.focus?.({preventScroll: true});
+      }
       // The focus is back on the anchor (sf-popover returnFocus, sf-drawer's
       // opener); the window leaves the page after it.
       queueMicrotask(() => frame.remove());
