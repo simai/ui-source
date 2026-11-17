@@ -15,9 +15,12 @@
 //       sf-input's clear and reveal draw): no plate at rest, under the pointer
 //       and pressed (background and shadow none); the quiet ink
 //       (on-surface-variant) at rest, the text's ink (on-surface) under the
-//       pointer; while the pointer is on it the frame shows the field's own
+//       pointer, primary on a press (owner decision C201, variant B1, which
+//       made the field's action the plain icon button's ink; C123 (1) had the
+//       text's ink on a press too); while the pointer is on it the frame shows the field's own
 //       hover state layer (surface-state-hover), as the field does anywhere;
-//   (2) the glyph is the field's text line, the swatch's and the chevron's
+//   (2) the glyph is the field's icon of the step (its text line; at size 3
+//       under 60rem the icon ladder's 28 over a 24 line, C151 (1)), the swatch's and the chevron's
 //       size; the hit area is the frame's inner height and the glyph plus half
 //       the inset wide, never under 24 either way;
 //   (3) value -> glyph and glyph -> chevron are half the frame's inset
@@ -56,8 +59,8 @@ const page = ({lang, theme, density}) => `<!doctype html><html lang="${lang}" cl
 <link rel="stylesheet" href="/distr/core/css/core.css"><script src="/distr/core/js/core.js"></script>
 <style>body{margin:0;padding:16px;background:var(--sf-surface-page);color:var(--sf-on-surface)}
 main{display:flex;flex-direction:column;gap:24px;min-inline-size:0;max-inline-size:480px}
-#ink-variant{color:var(--sf-on-surface-variant)}#ink-text{color:var(--sf-on-surface)}#state-hover{background-color:var(--sf-surface-state-hover)}</style></head><body><main>
-<i id="ink-variant"></i><i id="ink-text"></i><i id="state-hover"></i>
+#ink-variant{color:var(--sf-on-surface-variant)}#ink-text{color:var(--sf-on-surface)}#ink-primary{color:var(--sf-primary)}#state-hover{background-color:var(--sf-surface-state-hover)}</style></head><body><main>
+<i id="ink-variant"></i><i id="ink-text"></i><i id="ink-primary"></i><i id="state-hover"></i>
 ${FIELDS.map(([id, variant, size]) => `<sf-input-color id="${id}"${variant === 'brand' ? ' variant="brand"' : ''} label="${variant === 'brand' ? 'Фирменный цвет' : 'Цвет'}" size="${size}" value="${variant === 'brand' ? '#0b57d0' : '#1a7f37'}" clearable></sf-input-color>`).join('\n')}
 <sf-input-color id="c-theme" variant="theme" value="#0b57d0" clearable target="#theme-target"></sf-input-color><div id="theme-target"></div>
 </main></body></html>`;
@@ -143,6 +146,7 @@ const MEASURE = (id) => {
 const TOKENS = () => ({
   variant: getComputedStyle(document.getElementById('ink-variant')).color,
   text: getComputedStyle(document.getElementById('ink-text')).color,
+  primary: getComputedStyle(document.getElementById('ink-primary')).color,
   hover: getComputedStyle(document.getElementById('state-hover')).backgroundColor,
   overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
 });
@@ -238,9 +242,13 @@ for (const width of [1440, 390]) {
               }
               if (rest.ink !== tokens.variant) say(`rest ink ${rest.ink}, wants on-surface-variant ${tokens.variant}`);
               if (hover && hover.ink !== tokens.text) say(`hover ink ${hover.ink}, wants on-surface ${tokens.text}`);
-              if (pressed && pressed.ink !== tokens.text) say(`pressed ink ${pressed.ink}, wants on-surface ${tokens.text}`);
+              if (pressed && pressed.ink !== tokens.primary) say(`pressed ink ${pressed.ink}, wants primary ${tokens.primary} (C201)`);
               if (hover && hover.frameBackground !== tokens.hover) say(`hover: the frame's state layer ${hover.frameBackground}, wants ${tokens.hover}`);
-              if (!near(rest.glyph, rest.text) || !near(rest.glyph, rest.chevron)) say(`glyph ${rest.glyph}, text line ${rest.text}, chevron ${rest.chevron}`);
+              // The glyph is the field's icon of the step (C151 (1)): its text
+              // line, except size 3 under 60rem, where the line is 24 and the
+              // icon the ladder's --sf-icon-size-4 (28), as the chevron.
+              const phoneThree = id === 'c-field-3' && width < 960;
+              if ((!phoneThree && !near(rest.glyph, rest.text)) || !near(rest.glyph, rest.chevron)) say(`glyph ${rest.glyph}, text line ${rest.text}, chevron ${rest.chevron}`);
               if (!near(rest.hitH, Math.max(rest.frameInner, 24))) say(`hit height ${rest.hitH}, wants the frame's inner ${rest.frameInner}`);
               if (!near(rest.hitW, Math.max(rest.glyph + rest.inset / 2, 24))) say(`hit width ${rest.hitW}, wants max(${rest.glyph} + ${rest.inset}/2, 24)`);
               if (rest.hitW < 23.5 || rest.hitH < 23.5) say(`hit area ${rest.hitW} x ${rest.hitH} under 24`);

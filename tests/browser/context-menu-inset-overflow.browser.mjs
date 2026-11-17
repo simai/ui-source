@@ -99,7 +99,9 @@ const INSETS = `(menu) => {
     const first = row.firstElementChild?.getBoundingClientRect() ?? box;
     const lead = row.querySelector('.sf-context-menu-item-lead')?.getBoundingClientRect() ?? null;
     const text = row.querySelector('.sf-context-menu-item-text')?.getBoundingClientRect() ?? null;
-    return {text: row.textContent.trim().split('\\n')[0], start: box.left - inner.left, end: inner.right - box.right, height: box.height,
+    // The inset is measured from the panel's outer edge: its 1 px border is
+    // inside the inline inset (owner decision C105 H4, 2026-11-14).
+    return {text: row.textContent.trim().split('\\n')[0], start: box.left - c.left, end: c.right - box.right, height: box.height,
       contentStart: first.left - box.left, iconText: lead && text ? text.left - lead.right : null,
       leadLeft: lead?.left ?? null, textLeft: text?.left ?? null,
       radius: parseFloat(rs.borderTopLeftRadius), fill: rs.backgroundColor};
@@ -107,7 +109,7 @@ const INSETS = `(menu) => {
   return {tokens, rows,
     header: s && {start: s.left - inner.left, end: inner.right - s.right, height: s.height, line: parseFloat(ss.borderBottomWidth), frame: parseFloat(ss.borderTopWidth) + parseFloat(ss.borderLeftWidth), fill: ss.backgroundColor,
       iconLeft: icon?.left ?? null, textLeft: field?.left ?? null, fieldBorder: parseFloat(getComputedStyle(menu.querySelector('.sf-context-menu-search-input')).borderTopWidth)},
-    head: head && {start: head.left - inner.left, end: inner.right - head.right}};
+    head: head && {start: head.left - c.left, end: c.right - head.right}};
 }`;
 
 async function openWith(p, setup, arg) {
@@ -254,8 +256,9 @@ try {
             rowEnd: Math.round(row.right * 100) / 100,
             rowToBar: Math.round((a.left + parseFloat(as.borderLeftWidth) + area.clientWidth - row.right) * 100) / 100,
             innerRight: c.right - parseFloat(cs.borderRightWidth),
-            rowToEdge: Math.round((c.right - parseFloat(cs.borderRightWidth) - row.right) * 100) / 100,
-            rowStart: Math.round((row.left - c.left - parseFloat(cs.borderLeftWidth)) * 100) / 100,
+            // From the outer edge: the border is inside the inset (C105 H4).
+            rowToEdge: Math.round((c.right - row.right) * 100) / 100,
+            rowStart: Math.round((row.left - c.left) * 100) / 100,
             sampleY: Math.round(a.top + parseFloat(as.borderTopWidth) + 12),
           };
         });

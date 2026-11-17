@@ -119,6 +119,10 @@ const KINDS = {
     text: (row) => row.querySelector('.sf-lookup-option-text'),
   },
   picker: {
+    // Below the md breakpoint the picker's panel is a bottom sheet (sf-drawer,
+    // owner decisions C32, C106 (8), C163 (4)), not a dropping panel: it is
+    // measured where it drops, at a desktop width.
+    width: 1000,
     body: (size) => `<div style="width:280px"><sf-profile-picker id="x" label="Профиль" size="${size}"></sf-profile-picker></div>`,
     ready: () => customElements.get('sf-profile-picker') && document.querySelector('#x .sf-profile-picker-trigger'),
     fill: ([count, , , list]) => {
@@ -163,7 +167,9 @@ async function measure(p, kind, size) {
       const lead = first(row)?.getBoundingClientRect() ?? box;
       const i = icon(row)?.getBoundingClientRect() ?? null;
       const t = text(row)?.getBoundingClientRect() ?? null;
-      return {text: row.textContent.trim().split('\n')[0].trim(), start: box.left - inner.left, end: inner.right - box.right, height: box.height,
+      // A row stands the inset from the panel's outer edge: a panel's 1 px
+      // border is inside the inset (owner decision C105 H4, as sf-menu-context).
+      return {text: row.textContent.trim().split('\n')[0].trim(), start: box.left - pr.left, end: pr.right - box.right, height: box.height,
         contentStart: lead.left - box.left, iconText: i && t && i.width ? t.left - i.right : null, iconLeft: i && i.width ? i.left : null, textLeft: t?.left ?? null,
         radius: parseFloat(rs.borderTopLeftRadius)};
     });
@@ -262,7 +268,7 @@ try {
         for (const height of [800, 300]) {
           // Core writes the theme class from the page's colour scheme, so the scheme
           // is emulated as well as the class written.
-          const context = await browser.newContext({viewport: {width: Number(process.env.SF_PROBE_WIDTH || 700), height}, deviceScaleFactor: 1, colorScheme: theme});
+          const context = await browser.newContext({viewport: {width: Math.max(Number(process.env.SF_PROBE_WIDTH || 700), k.width ?? 0), height}, deviceScaleFactor: 1, colorScheme: theme});
           const p = await context.newPage();
           const errors = [];
           p.on('pageerror', (error) => { if (!/publicPath/u.test(error.message)) errors.push(error.message); });

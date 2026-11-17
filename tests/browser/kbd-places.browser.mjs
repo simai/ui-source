@@ -126,7 +126,9 @@ const MEASURE = () => {
     const group = row.querySelector('.sf-kbd--group');
     return {
       label: row.textContent.replace(/\s+/gu, ' ').trim(),
-      disabled: row.disabled === true,
+      // A menu row is disabled by aria-disabled, so it stays focusable (APG
+      // menu); a disabled button counts too.
+      disabled: row.disabled === true || row.getAttribute('aria-disabled') === 'true',
       rowColor: getComputedStyle(row.querySelector('.sf-context-menu-item-label') ?? row).color,
       // The menu's own muted role: a panel may redefine it for its fill.
       variant: (() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-on-surface-variant)'; row.append(probe); const value = getComputedStyle(probe).color; probe.remove(); return value; })(),

@@ -14,8 +14,9 @@
 // is; the nav stands at the bar's true centre and
 // clear of the brand and the tools. At 390 px the bar is collapsed: the nav
 // is not in the bar, the menu button opens it as a column of the same rows.
-// The default (navigation-align start, appearance default) is unchanged: the
-// nav right after the brand, framed rows.
+// The default (navigation-align start, no appearance written): the nav right
+// after the brand; since owner decision C238 (2026-11-16) the default look is
+// navigation, so its rows are unframed (the framed rows are the old name).
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -181,7 +182,7 @@ try {
     }
   }
 
-  // The default stays the 1.0 bar: the nav after the brand, framed rows.
+  // The default: the nav after the brand; rows unframed, the navigation look (C238).
   {
     const tab = await browser.newPage({viewport: {width: 1440, height: 600}});
     await tab.goto(`${origin}/gallery/?size=1%2F2`);
@@ -191,7 +192,7 @@ try {
     const start = await measure(tab);
     seen.default = {listLeft: start.listLeft, brandRight: start.brandRight, border: start.other?.border};
     if (!(start.listLeft - start.brandRight < 40)) failures.push(`default: the nav is not right after the brand: ${start.listLeft} vs ${start.brandRight}`);
-    if (start.other?.border !== '1px') failures.push(`default: a default row's border is ${start.other?.border}, expected 1px`);
+    if (start.other?.border !== '0px') failures.push(`default: a default row's border is ${start.other?.border}, expected 0px (navigation look by default, C238)`);
     await tab.close();
   }
 } finally {

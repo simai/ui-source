@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 // Reads the built bytes. A pagination with no page-sizes attribute offers the
-// default sizes, and a later change of that attribute reaches the dropdown —
-// the two things that were broken when Larena reported the rows-per-page list
-// rendering empty.
+// default sizes, and a later change of that attribute reaches the rows-per-page
+// list -- the two things that were broken when Larena reported the list
+// rendering empty. Since owner decision C97 (3) the compatible footer's rows
+// per page are a quiet button «По 20 ▾» opening a menu of radio rows
+// (sf-button + sf-menu-context), not an sf-dropdown: the probe opens that menu
+// and reads its rows.
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -11,8 +14,9 @@ if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js',
-  'smart/smart/list-item/js/list-item.js',
-  'smart/smart/dropdown/js/dropdown.js',
+  'smart/smart/icon/js/icon.js',
+  'smart/smart/button/js/button.js',
+  'smart/smart/menu-context/js/menu-context.js',
   'smart/smart/pagination/js/pagination.js',
 ];
 
@@ -24,20 +28,31 @@ const open = async (browser, markup) => {
   return page;
 };
 
-const readDropdown = (page) =>
-  page.evaluate(() => {
-    const dropdown = document.querySelector('sf-pagination')?.querySelector('sf-dropdown');
+// The rows per page: the quiet button opens its menu; the menu's radio rows
+// are the sizes offered, the checked one the page size.
+const readDropdown = async (page) => {
+  const found = await page.evaluate(() => Boolean(document.querySelector('sf-pagination .sf-pagination-size button')));
+  if (!found) return {found, value: null, options: null, strayChildren: 0};
+  await page.evaluate(() => {
+    const menu = document.querySelector('sf-pagination .sf-pagination-size-menu');
+    if (menu?.open) menu.close?.({restoreFocus: false});
+  });
+  await page.click('sf-pagination .sf-pagination-size button');
+  await page.waitForTimeout(300);
+  return page.evaluate(() => {
+    const host = document.querySelector('sf-pagination');
+    const menu = host.querySelector('.sf-pagination-size-menu');
+    const entries = Array.isArray(menu?.entries) ? menu.entries : null;
     return {
-      found: Boolean(dropdown),
-      value: dropdown?.getAttribute('value') ?? null,
-      options: Array.isArray(dropdown?.options) ? dropdown.options.map((o) => String(o.value)) : null,
-      // A Smart parent owns the children it renders. The dropdown must not be
-      // taking them, which is what made a later change impossible to deliver.
-      strayChildren: dropdown
-        ? Array.from(dropdown.children).filter((c) => c.tagName.toLowerCase() === 'sf-list-item').length
-        : 0,
+      found: true,
+      value: entries?.find((entry) => entry.checked)?.id ?? null,
+      options: entries ? entries.map((entry) => String(entry.id)) : null,
+      rows: [...(menu?.querySelectorAll('[role="menuitemradio"]') ?? [])].map((row) => row.textContent.trim()),
+      // Options travel as data, never as children the menu takes.
+      strayChildren: menu ? Array.from(menu.children).filter((c) => c.tagName.toLowerCase() === 'sf-list-item').length : 0,
     };
   });
+};
 
 const failures = [];
 const browser = await chromium.launch();
@@ -45,10 +60,12 @@ try {
   // 1. No page-sizes attribute at all: the default list, not a single zero.
   const plain = await open(browser, '<sf-pagination current="1" total="450" page-size="20"></sf-pagination>');
   const defaults = await readDropdown(plain);
-  if (!defaults.found) failures.push({case: 'default sizes', expected: 'a rows-per-page dropdown'});
+  if (!defaults.found) failures.push({case: 'default sizes', expected: 'a rows-per-page button and menu'});
   else {
     if (String(defaults.options) !== String(['10', '20', '30', '40']))
       failures.push({case: 'default sizes', options: defaults.options, expected: '10, 20, 30 and 40'});
+    if (defaults.rows.length !== 4)
+      failures.push({case: 'default sizes', rows: defaults.rows, expected: 'four radio rows drawn'});
     if (defaults.value !== '20')
       failures.push({case: 'default sizes', value: defaults.value, expected: 'the page size it was given'});
   }

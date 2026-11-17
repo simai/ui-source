@@ -10,7 +10,8 @@
 // Each run is a fresh browser context (a cold cache) in the light and the
 // dark theme, `runs` times (3 by default). A frame sampler (one sample per
 // animation frame) measures the chevron's glyph: the width of its text as
-// drawn. In the first 100 ms after the chevron is first drawn the probe
+// drawn (its box, and its text once its face is in: before it, the name is
+// laid out at the fallback's width but not drawn). In the first 100 ms after the chevron is first drawn the probe
 // opens its branch, then closes it; in every frame from the first drawn one
 // to the end the glyph is drawn (width > 0) and is a glyph, not the
 // ligature's words (width at most 1.5 em). The swap asks for no new font:
@@ -67,7 +68,17 @@ const SAMPLER = () => {
     const range = document.createRange();
     range.selectNodeContents(icon);
     const width = range.getBoundingClientRect().width;
-    return {name: icon.textContent.trim(), width: Math.round(width * 10) / 10, em: parseFloat(getComputedStyle(icon).fontSize) || 0, loaded: icon.classList.contains('sf-icon-loaded')};
+    const style = getComputedStyle(icon);
+    // Whether the faces that draw the glyph are in: every FontFace of the
+    // icon's family loaded (a later subset of the same family may hold the
+    // glyph). Before that, the name is laid out at the fallback's width and
+    // not drawn under font-display: block: screenshots of the first second
+    // show the place blank, then the glyph (defects-d12 evidence, probe/chev).
+    const family = style.fontFamily.split(',')[0].replace(/["']/gu, '').trim();
+    const faces = [...document.fonts].filter((one) => one.family.replace(/["']/gu, '').trim() === family);
+    const face = faces.length > 0 && faces.every((one) => one.status === 'loaded');
+    return {name: icon.textContent.trim(), width: Math.round(width * 10) / 10, em: parseFloat(style.fontSize) || 0, loaded: icon.classList.contains('sf-icon-loaded'),
+      box: Math.round(icon.getBoundingClientRect().width * 10) / 10, face};
   };
   const tick = () => {
     const now = performance.now();
@@ -151,11 +162,16 @@ try {
         check(state.opened[key] !== undefined && state.opened[key] < 100, `${k} ${key}: opened in the first 100 ms after it was drawn (${state.opened[key]} ms)`);
         const frames = state.frames.filter((frame) => frame.t >= Math.round(firstAt - state.start) && frame[key]);
         const blank = frames.filter((frame) => !(frame[key].width > 0));
-        const words = frames.filter((frame) => frame[key].width > frame[key].em * 1.5);
+        // The words are seen when the glyph's own box grows past a glyph, or
+        // when the face is in and its text is still wider than one: while the
+        // face is on its way the name is laid out at the fallback's width but
+        // not drawn, and the icon's box holds a glyph's width (layout
+        // containment, component.icons 1.4.1).
+        const words = frames.filter((frame) => frame[key].box > frame[key].em * 1.5 || (frame[key].face && frame[key].width > frame[key].em * 1.5));
         const names = [...new Set(frames.map((frame) => frame[key].name))];
         check(names.includes(OPEN[key]) && frames.at(-1)[key].name !== OPEN[key], `${k} ${key}: the glyph swapped open and back (${names.join(' → ')})`);
         check(frames.length > 30 && !blank.length, `${k} ${key}: the glyph is drawn in every one of ${frames.length} frames${blank.length ? ` — blank at ${blank.slice(0, 5).map((frame) => `${frame.t} ms ${frame[key].name}`).join(', ')}` : ''}`);
-        check(!words.length, `${k} ${key}: never the ligature's words (${words.length ? `${words[0][key].width}px at ${words[0].t} ms` : 'ok'})`);
+        check(!words.length, `${k} ${key}: never the ligature's words, nor the name laid out as letters once its faces are in (${words.length ? `${words[0][key].width}px at ${words[0].t} ms` : 'ok'})`);
       }
       // The request that first brings a chevron brings its swap partners
       // with it; no later request asks for any of them.

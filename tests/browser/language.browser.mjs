@@ -3,7 +3,8 @@
 // Build output root is required: the directory holding core/, smart/, component/, utility/.
 //
 // sf-language on the built bytes with the real Loader, in sf-header-site's
-// tools slot beside the theme switch, at 1440 and 390 px, light and dark:
+// tools slot beside the theme switch, at 1440 and 390 px, light and dark (at 390
+// the collapsed bar holds both in its side panel's settings group, C161 (8)):
 // two languages (owner decision C142: the button «RU ▾» and its menu, as for
 // every count), five (the same button and menu, opened), twelve (the menu
 // with search, opened), three with Arabic chosen from the menu (rtl on
@@ -13,7 +14,7 @@
 // of the rung's control height with the translate glyph, the current code and
 // expand_more, one width whatever language is chosen, its menu the C32
 // panel with each name's name in the page's language beside it, the menu's rows 32 px at 1/2 and 40 px at 1, every size of the
-// ladder for the switch. The trigger's glyph is the on-surface role. The
+// ladder for the switch. The trigger's glyph is the on-surface-icon role (C107). The
 // menu rows carry lang; the search finds
 // Deutsch by «нем», «German» and «de». No sideways scroll, no page errors.
 // With a screenshot folder, each case is saved there as a PNG.
@@ -95,7 +96,20 @@ async function open(name, {width, theme}) {
   await tab.waitForLoadState('networkidle', {timeout: 15000}).catch(() => null);
   await tab.evaluate(() => document.fonts.ready);
   await tab.waitForTimeout(500);
-  return {tab, context, errors};
+  // A collapsed bar (a phone) holds the settings -- sf-language and the theme
+  // switch -- in its side panel under the sections (owner decision C161 (8),
+  // sf-header-site 1.11.0), so the panel is opened before they are measured.
+  const collapsed = await tab.evaluate(() => {
+    const button = document.querySelector('.sf-site-header-menu-button button');
+    return Boolean(button && button.getBoundingClientRect().width > 0);
+  });
+  if (collapsed) {
+    await tab.click('.sf-site-header-menu-button button');
+    await tab.waitForFunction(() => document.querySelector('#picker')?.getBoundingClientRect().width > 0
+      || [...document.querySelectorAll('#picker button')].some((one) => one.getBoundingClientRect().width > 0), null, {timeout: 10000});
+    await tab.waitForTimeout(400);
+  }
+  return {tab, context, errors, collapsed};
 }
 
 const LADDER = (rung) => {
@@ -115,7 +129,7 @@ for (const theme of ['light', 'dark']) {
   for (const width of [1440, 390]) {
     for (const name of Object.keys(CASES)) {
       const label = `${name} ${width} ${theme}`;
-      const {tab, context, errors} = await open(name, {width, theme});
+      const {tab, context, errors, collapsed} = await open(name, {width, theme});
       const ladder = await tab.evaluate(LADDER, '1/2');
       const look = await tab.evaluate(() => document.querySelector('#picker').getAttribute('data-look'));
       ok(`${label}: the look follows the count`, look === LOOKS[name], look);
@@ -127,9 +141,12 @@ for (const theme of ['light', 'dark']) {
           const theme = document.querySelector('#theme .sf-button-group');
           const segments = [...document.querySelectorAll('#picker button[role="radio"]')];
           return {track: r(track).height, theme: r(theme).height, top: r(track).top, themeTop: r(theme).top, themeRight: r(theme).right, overflow: document.documentElement.scrollWidth > innerWidth,
+            inSettings: Boolean(document.querySelector('#picker')?.closest('.sf-site-header-settings')) && Boolean(document.querySelector('#theme')?.closest('.sf-site-header-settings')),
             segments: segments.map((b) => ({h: r(b).height, lang: b.lang, text: b.textContent.trim(), name: b.getAttribute('aria-label')}))};
         });
-        ok(`${label}: the switch is the theme switch's height in the tools slot, on its line`, near(g.track, g.theme) && near(g.top, g.themeTop, 1), JSON.stringify(g));
+        // On a phone the two are rows of the panel's settings group (C161 (8)), one under the other.
+        if (collapsed) ok(`${label}: the switch is the theme switch's height, both in the side panel's settings group`, near(g.track, g.theme) && g.inSettings, JSON.stringify(g));
+        else ok(`${label}: the switch is the theme switch's height in the tools slot, on its line`, near(g.track, g.theme) && near(g.top, g.themeTop, 1), JSON.stringify(g));
         ok(`${label}: the switch is the rung's control height`, near(g.track, ladder.control), JSON.stringify({track: g.track, ladder}));
         ok(`${label}: each segment carries its language`, g.segments.every((s) => s.lang && s.text), JSON.stringify(g.segments));
         ok(`${label}: the header holds the picker and the theme switch whole, no sideways scroll`, !g.overflow && g.themeRight <= width + 0.5, JSON.stringify({overflow: g.overflow, themeRight: g.themeRight}));
@@ -148,9 +165,11 @@ for (const theme of ['light', 'dark']) {
             h: r(button).height, w: r(button).width, mid: r(button).top + r(button).height / 2, themeMid: r(theme).top + r(theme).height / 2,
             glyph: icon?.textContent.trim(), ink: getComputedStyle(icon ?? button).color, onSurface: root.getPropertyValue('--sf-on-surface').trim(),
             name: button.getAttribute('aria-label'), glyphs, shown,
+            inSettings: Boolean(button.closest('.sf-site-header-settings')) && Boolean(theme?.closest('.sf-site-header-settings')),
           };
         });
-        ok(`${label}: the trigger is a button of the rung's control height, on the theme switch's centre`, near(g.h, ladder.control) && near(g.mid, g.themeMid, 1), JSON.stringify(g));
+        if (collapsed) ok(`${label}: the trigger is a button of the rung's control height, with the theme switch in the side panel's settings group (C161 (8))`, near(g.h, ladder.control) && g.inSettings, JSON.stringify(g));
+        else ok(`${label}: the trigger is a button of the rung's control height, on the theme switch's centre`, near(g.h, ladder.control) && near(g.mid, g.themeMid, 1), JSON.stringify(g));
         ok(`${label}: the trigger is «translate», the code RU and expand_more, named «Язык: Русский»`, g.glyphs.join() === 'translate,expand_more' && g.shown.join() === 'RU' && g.name === 'Язык: Русский', JSON.stringify(g));
         const widths = await tab.evaluate(async () => {
           const el = document.querySelector('#picker');
@@ -164,8 +183,10 @@ for (const theme of ['light', 'dark']) {
           return out;
         });
         ok(`${label}: the trigger keeps one width whatever language is chosen (C142)`, widths.every((one) => near(one, g.w)), JSON.stringify({first: g.w, widths}));
-        const onSurface = await tab.evaluate(() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-on-surface)'; document.body.append(probe); const c = getComputedStyle(probe).color; probe.remove(); return c; });
-        ok(`${label}: the glyph's colour is --sf-on-surface`, rgb(g.ink) === rgb(onSurface), `${g.ink} vs ${onSurface}`);
+        // An icon beside text in a control is half a step lighter than its
+        // label: the fourth role --sf-on-surface-icon (owner decision C107 (1), (2)).
+        const iconRole = await tab.evaluate(() => { const probe = document.createElement('span'); probe.style.color = 'var(--sf-on-surface-icon)'; document.body.append(probe); const c = getComputedStyle(probe).color; probe.remove(); return c; });
+        ok(`${label}: the glyph's colour is --sf-on-surface-icon (C107)`, rgb(g.ink) === rgb(iconRole), `${g.ink} vs ${iconRole}`);
         await tab.click('#picker sf-button button');
         await tab.waitForTimeout(500);
         const m = await tab.evaluate(() => {
