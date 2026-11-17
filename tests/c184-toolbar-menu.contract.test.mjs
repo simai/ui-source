@@ -73,7 +73,7 @@ test('C184 (4): SF.menu.open, public, one menu on the page', () => {
   assert.equal(entry.status, 'public');
   assert.equal(entry.layer, 'core');
   assert.deepEqual(entry.members, ['open']);
-  assert.match(entry.summary, /open\(\{anchor \| x, y, entries, label, size, returnTo\}\)/u);
+  assert.match(entry.summary, /open\(\{anchor \| x, y, entries, label, size, returnTo, align\}\)/u);
   const index = read('src/core/js/index.js');
   assert.match(index, /import \{publishMenu\} from '\.\/menu-open\.js';/u);
   assert.match(index, /\npublishMenu\(\);\n/u);

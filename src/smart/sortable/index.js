@@ -6,7 +6,7 @@
 // makes from it -- the settings' properties, the words, the dated aliases --
 // and asks sf-sortable-move (vocabulary 1.1.5 §5 move), the old
 // sf-sortable-intent following until 2026-12-01.
-import { SORTABLE_INTENT_EVENT, SORTABLE_MOVE_EVENT, SORTABLE_STATE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, sortableIndexAt } from '../../core/js/composition/sortable.mjs';
+import { SORTABLE_INTENT_EVENT, SORTABLE_MOVE_EVENT, SORTABLE_STATE_EVENT, activeSortableSession, defineSortable, registerSortableDropTarget, sortableIndexAt } from '../../core/js/composition/sortable.mjs';
 import { SORTABLE_INSERT_EVENT, inserterRegistry } from '../../core/js/composition/sortable-inserter.mjs';
 import { manifestHost } from '../../core/js/composition/manifest-host.mjs';
 import manifest from './component.json';
@@ -18,12 +18,13 @@ import {files as languageFiles} from './lang/index.mjs';
 // docs (localization study LC-2).
 import './scss/index.scss';
 
-import { moveMenuRegistry } from '../../core/js/composition/sortable-move-menu.mjs';
+import { attachSortableWithMenu, moveMenuRegistry } from '../../core/js/composition/sortable-move-menu.mjs';
 // Defined with its insertion point and inserter (inserter-items, opt-in) and
 // the handle's move menu (C171 (1)). They come with this bundle only: the
 // composition overlay carries the drag module too and has no use for them.
 defineSortable(moveMenuRegistry(inserterRegistry()), {base: manifestHost(manifest, {lang: languageFiles, source: 'ru', aliases})});
 
 globalThis.SF = globalThis.SF || {};
-// attach: sf-sortable's pointer behaviour on any container (the column mode).
-globalThis.SF.Sortable = Object.freeze({ SORTABLE_INSERT_EVENT, SORTABLE_INTENT_EVENT, SORTABLE_MOVE_EVENT, SORTABLE_STATE_EVENT, activeSortableSession, attach: attachSortable, attachSortable, registerSortableDropTarget, sortableIndexAt });
+// attach: sf-sortable's behaviour on any container -- the column mode, and the
+// row mode (orientation: 'vertical') with its keys and the handle's menu.
+globalThis.SF.Sortable = Object.freeze({ SORTABLE_INSERT_EVENT, SORTABLE_INTENT_EVENT, SORTABLE_MOVE_EVENT, SORTABLE_STATE_EVENT, activeSortableSession, attach: attachSortableWithMenu, attachSortable: attachSortableWithMenu, registerSortableDropTarget, sortableIndexAt });

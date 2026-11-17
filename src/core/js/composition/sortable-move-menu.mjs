@@ -12,7 +12,8 @@
 // drag element in the sf-sortable bundle only: the editor overlay's bundle
 // carries the drag module and has handles of its own.
 import { pageText } from '../page-language.js';
-import { activeSortableSession, requestSortableMove } from './sortable.mjs';
+import { activeSortableSession, attachSortable, requestSortableMove } from './sortable.mjs';
+import { menuOpen } from '../menu-open.js';
 import { standardMenu as placeStandardMenu } from '../overflow-row.js';
 
 const ITEM = '[data-sf-sortable-item]';
@@ -168,6 +169,66 @@ export function createSortableMoveMenu(list) {
   };
 }
 
+/**
+ * The row mode of SF.Sortable.attach with the handle's menu (C171 (1)): a
+ * press on a row's handle that did not become a drag opens the page's one menu
+ * (SF.menu.open) with «Выше · Ниже · В начало · В конец», and a choice asks
+ * the move through the controller -- the same intent and words a drag ends
+ * with; focus comes back to the moved row's handle. The column mode, or rows
+ * without a handle selector, are the controller alone.
+ */
+export function attachSortableWithMenu(container, options = {}) {
+  const detach = attachSortable(container, options);
+  if (options.orientation !== 'vertical' || !detach.handle || options.moveMenu === false) return detach;
+  const wiring = new globalThis.AbortController();
+  const handleFor = (target) => {
+    const handle = target.closest?.(detach.handle);
+    const item = handle?.closest(options.items);
+    return handle && item && container.contains(item) ? { handle, item } : null;
+  };
+  // Handles say they open a menu, those the host draws later as well.
+  const prepare = () => {
+    for (const handle of container.querySelectorAll(detach.handle)) {
+      const control = controlOf(handle);
+      if (!control.hasAttribute('aria-haspopup')) control.setAttribute('aria-haspopup', 'menu');
+      if (!control.hasAttribute('aria-expanded')) control.setAttribute('aria-expanded', 'false');
+    }
+  };
+  prepare();
+  const observer = new globalThis.MutationObserver(prepare);
+  observer.observe(container, { childList: true, subtree: true });
+  container.addEventListener('click', async (event) => {
+    const found = handleFor(event.target);
+    if (!found || activeSortableSession()) return;
+    event.preventDefault();
+    const peers = detach.members(found.item);
+    const index = peers.indexOf(found.item);
+    if (index < 0 || peers.length < 2) return;
+    const control = controlOf(found.handle);
+    control.setAttribute('aria-expanded', 'true');
+    const choice = await menuOpen({
+      anchor: control,
+      entries: moveMenuEntries(index, peers.length),
+      label: format(text('move-menu'), { item: itemLabel(found.item) }),
+    });
+    if (control.isConnected) control.setAttribute('aria-expanded', 'false');
+    const id = choice?.id;
+    if (!id) return;
+    // Asked of the item where it stands now: the list may have changed while
+    // the menu was open.
+    const now = detach.members(found.item);
+    const from = now.indexOf(found.item);
+    if (from >= 0) detach.move(found.item, moveMenuTarget(id, from, now.length));
+  }, { signal: wiring.signal });
+  const detachAll = () => {
+    wiring.abort();
+    observer.disconnect();
+    detach();
+  };
+  detachAll.move = detach.move;
+  return detachAll;
+}
+
 /** sf-sortable with the handle's move menu: the drag element, extended. */
 export function withSortableMoveMenu(Base) {
   return class SfSortable extends Base {
@@ -199,4 +260,4 @@ export function moveMenuRegistry(registry = globalThis.customElements) {
   };
 }
 
-export default { createSortableMoveMenu, moveMenuEntries, moveMenuRegistry, moveMenuTarget, withSortableMoveMenu };
+export default { attachSortableWithMenu, createSortableMoveMenu, moveMenuEntries, moveMenuRegistry, moveMenuTarget, withSortableMoveMenu };

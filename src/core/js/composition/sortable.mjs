@@ -786,45 +786,85 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
 }
 
 /**
- * sf-sortable's pointer behaviour on any container, without the element: a
- * table's head row cannot hold a custom element around its cells, and its
- * columns move with every cell under them (owner, 2026-10-13). The container
- * keeps its markup; the controller listens on it.
+ * sf-sortable's behaviour on any container, without the element: a table's
+ * head row cannot hold a custom element around its cells, and its columns move
+ * with every cell under them (owner, 2026-10-13); a table's body cannot hold
+ * one around its rows either. The container keeps its markup; the controller
+ * listens on it.
  *
  * options:
  *   items        selector of the movable children (required)
+ *   orientation  'horizontal' (default: the column mode, columns of a head
+ *                row) | 'vertical' (the row mode, rows of a list or a table
+ *                body, view round 1 D1)
+ *   handle       selector of an item's handle (row mode): when the item has
+ *                one, a drag begins there only, and a press on it that does
+ *                not become a drag opens the move menu (C171 (1)); without
+ *                one the whole row is taken -- a mouse after 4 px, a finger
+ *                after a long press, so a swipe still scrolls (C171 (2))
+ *   keyboard     row mode: Space or Enter on a focused item picks it up,
+ *                arrows move it, Space or Enter drops, Escape or Tab cancels,
+ *                each step said in the live region -- sf-sortable's keys.
+ *                Default true; false for rows whose keys are the host's (the
+ *                handle's menu stays the keyboard path then)
+ *   keyOf        (item) => string -- the item's id in the intent; default its
+ *                data-sf-sortable-item, else data-key, else data-row-id
  *   canStart     (event, item) => boolean -- a press that may begin a drag
  *   groupOf      (item) => string -- an item moves among items of its group
- *   preview      'column' (default) | 'line'
- *   extent       the element a column spans (a table); default the container
- *   cellsOf      (item) => elements to mark as the moving column (its cells)
+ *   preview      'column' | 'line'; the column mode draws 'column' (an outline
+ *                the size of the column), the row mode 'line' (the one 2 px
+ *                drop line, C171 (4)) unless told otherwise
+ *   extent       the element a column or a line spans (a table); default the
+ *                container
+ *   cellsOf      (item) => elements to mark as the moving item (its cells)
  *   label        the list's name for the announcement
  *   onIntent     ({item, from, index, group}) -- index among the group's items
  *                without the dragged one, the place it is to take
- * Returns detach().
+ * Returns detach(); detach.move(item, index) asks a move without dragging,
+ * with the same intent and the same words (as requestSortableMove does for a
+ * list).
  *
- * Keyboard reordering stays where a list is: a table's column settings are an
- * sf-sortable list with every key path. A click that ends a drag is swallowed,
- * so a heading that sorts on click does not sort on a drop.
+ * In the column mode keyboard reordering stays where a list is: a table's
+ * column settings are an sf-sortable list with every key path. A click that
+ * ends a drag is swallowed, so a heading that sorts on click does not sort on
+ * a drop, and a handle does not open its menu.
  */
 export function attachSortable(container, options = {}) {
   if (!(container instanceof globalThis.Element) || typeof options.items !== 'string') {
     throw new TypeError('attachSortable needs a container and an items selector');
   }
   const doc = globalThis.document;
-  const preview = options.preview === 'line' ? 'line' : 'column';
+  const vertical = options.orientation === 'vertical';
+  const preview = options.preview === 'line' || options.preview === 'column' ? options.preview : (vertical ? 'line' : 'column');
   const groupOf = typeof options.groupOf === 'function' ? options.groupOf : () => '';
   const canStart = typeof options.canStart === 'function' ? options.canStart : () => true;
   const cellsOf = typeof options.cellsOf === 'function' ? options.cellsOf : (item) => [item];
+  const keyOf = typeof options.keyOf === 'function'
+    ? options.keyOf
+    : (item) => item.getAttribute('data-sf-sortable-item') || item.dataset.key || item.dataset.rowId || '';
+  const handleSelector = vertical && typeof options.handle === 'string' && options.handle ? options.handle : '';
+  const keyboard = vertical && options.keyboard !== false;
   const extentOf = () => options.extent?.isConnected ? options.extent : container;
   const live = doc.createElement('div');
   live.className = 'sf-sortable-live';
   live.setAttribute('aria-live', 'polite');
   doc.body.append(live);
+  // The row mode's keys are said once, in a node the items name in
+  // aria-describedby, as a list's are.
+  let help = null;
+  if (keyboard) {
+    help = doc.createElement('div');
+    help.className = 'sf-sortable-live';
+    help.id = nextHelpId();
+    help.textContent = messages().instructions;
+    doc.body.append(help);
+  }
   const abort = new AbortController();
   let session = null;
 
   const members = (group) => [...container.querySelectorAll(options.items)].filter((item) => groupOf(item) === group);
+  const handleOf = (item) => (handleSelector ? item.querySelector(handleSelector) : null);
+  const say = (text) => { live.textContent = text; };
   const outline = () => {
     if (session.outline) return session.outline;
     const box = doc.createElement('div');
@@ -835,43 +875,89 @@ export function attachSortable(container, options = {}) {
     return box;
   };
 
-  const place = (x) => {
-    const peers = members(session.group).filter((item) => item !== session.item);
-    const boxes = peers.map((item) => item.getBoundingClientRect());
-    let index = boxes.length;
-    for (let at = 0; at < boxes.length; at += 1) {
-      if (x < boxes[at].left + boxes[at].width / 2) { index = at; break; }
-    }
-    session.index = index;
+  // Where the outline or the line stands for a place among the peers (the
+  // items of the group without the moving one): along the row for columns,
+  // down the extent for rows.
+  const draw = (boxes, index) => {
     const extent = extentOf().getBoundingClientRect();
-    const width = session.width;
     const before = boxes[index];
     const after = boxes[index - 1];
-    let left;
+    const startOf = (box) => (vertical ? box.top : box.left);
+    const endOf = (box) => (vertical ? box.bottom : box.right);
+    const origin = vertical ? extent.top : extent.left;
+    let at;
     if (preview === 'column') {
-      // The outline stands where the column will be. Moving towards the start
-      // it takes the place of the column it goes before (that one moves on);
-      // moving towards the end it ends where the column it goes after ends.
-      if (index > session.originalIndex && after) left = after.right - width;
-      else left = before ? before.left : (after ? after.right - width : extent.left);
+      // The outline stands where the item will be. Moving towards the start
+      // it takes the place of the item it goes before (that one moves on);
+      // moving towards the end it ends where the item it goes after ends.
+      const size = session.size;
+      if (index > session.originalIndex && after) at = endOf(after) - size;
+      else at = before ? startOf(before) : (after ? endOf(after) - size : origin);
     } else {
-      left = (before ? before.left : after ? after.right : extent.left) - HALF;
+      at = (before ? startOf(before) : after ? endOf(after) : origin) - HALF;
     }
-    Object.assign(outline().style, {
-      left: `${left}px`, top: `${extent.top}px`,
-      width: preview === 'column' ? `${width}px` : `${LINE}px`, height: `${extent.height}px`,
-    });
+    const length = preview === 'column' ? session.size : LINE;
+    Object.assign(outline().style, vertical
+      ? {left: `${extent.left}px`, top: `${at}px`, width: `${extent.width}px`, height: `${length}px`}
+      : {left: `${at}px`, top: `${extent.top}px`, width: `${length}px`, height: `${extent.height}px`});
   };
 
-  const autoScroll = (x) => {
-    for (let node = container.parentElement; node; node = node.parentElement) {
-      const style = globalThis.getComputedStyle(node);
-      if (!/(auto|scroll)/u.test(style.overflowX) || node.scrollWidth <= node.clientWidth) continue;
-      const box = node.getBoundingClientRect();
-      if (x < box.left + EDGE) node.scrollBy({left: -Math.ceil((box.left + EDGE - x) / 4), behavior: 'instant'});
-      else if (x > box.right - EDGE) node.scrollBy({left: Math.ceil((x - box.right + EDGE) / 4), behavior: 'instant'});
+  const peerBoxes = () => members(session.group).filter((item) => item !== session.item).map((item) => item.getBoundingClientRect());
+
+  const place = (x, y) => {
+    const boxes = peerBoxes();
+    const coordinate = vertical ? y : x;
+    let index = boxes.length;
+    for (let at = 0; at < boxes.length; at += 1) {
+      const box = boxes[at];
+      const middle = vertical ? box.top + box.height / 2 : box.left + box.width / 2;
+      if (coordinate < middle) { index = at; break; }
+    }
+    session.index = index;
+    draw(boxes, index);
+  };
+
+  const autoScroll = (x, y) => {
+    if (!vertical) {
+      for (let node = container.parentElement; node; node = node.parentElement) {
+        const style = globalThis.getComputedStyle(node);
+        if (!/(auto|scroll)/u.test(style.overflowX) || node.scrollWidth <= node.clientWidth) continue;
+        const box = node.getBoundingClientRect();
+        if (x < box.left + EDGE) node.scrollBy({left: -Math.ceil((box.left + EDGE - x) / 4), behavior: 'instant'});
+        else if (x > box.right - EDGE) node.scrollBy({left: Math.ceil((x - box.right + EDGE) / 4), behavior: 'instant'});
+        return;
+      }
       return;
     }
+    const node = scrollContainer(container);
+    if (!node) return;
+    const box = node === doc.scrollingElement ? {top: 0, bottom: globalThis.innerHeight} : node.getBoundingClientRect();
+    if (y < box.top + EDGE) node.scrollBy({top: -Math.ceil((box.top + EDGE - y) / 4), behavior: 'instant'});
+    else if (y > box.bottom - EDGE) node.scrollBy({top: Math.ceil((y - box.bottom + EDGE) / 4), behavior: 'instant'});
+  };
+
+  // The intent and its words: one path for a drop, a keyboard drop and the
+  // handle's menu.
+  const request = (item, index, group = groupOf(item)) => {
+    const id = keyOf(item);
+    say(format(messages().dropped, {item: itemLabel(item), index: index + 1, list: options.label || ''}));
+    options.onIntent?.({item: id, from: group, index, group});
+  };
+
+  // After a keyboard move or a menu choice the person's focus is back on the
+  // item they moved (or its handle), once the host has redrawn.
+  const refocus = (id, toHandle) => {
+    const back = () => {
+      const active = doc.activeElement;
+      if (active && active !== doc.body && doc.contains(active) && !(toHandle && container.contains(active))) return;
+      const item = [...container.querySelectorAll(options.items)].find((candidate) => keyOf(candidate) === id);
+      if (!item) return;
+      const handle = toHandle ? handleOf(item) : null;
+      const control = handle ? (handle.matches('button') ? handle : handle.querySelector('button') || handle) : null;
+      (control && (control.matches('button') || control.tabIndex >= 0) ? control : item).focus?.({preventScroll: false});
+    };
+    if (typeof globalThis.requestAnimationFrame !== 'function') back();
+    else globalThis.requestAnimationFrame(() => globalThis.requestAnimationFrame(back));
   };
 
   const end = (dropped) => {
@@ -879,56 +965,126 @@ export function attachSortable(container, options = {}) {
     session = null;
     if (!ended) return;
     ended.pending.abort();
+    globalThis.clearTimeout(ended.timer);
     ended.ghost?.remove();
     ended.outline?.remove();
     for (const cell of ended.cells) cell.removeAttribute('data-sf-sortable-column-source');
     doc.documentElement.removeAttribute('data-sf-sortable-active');
     if (!ended.started) return;
-    // The click a drop ends with is not a click on the heading. It comes in the
-    // same task as the pointerup, so the guard is gone by the next one and a
-    // later click is a click again.
-    const swallow = (event) => { event.preventDefault(); event.stopImmediatePropagation(); };
-    container.addEventListener('click', swallow, {capture: true, once: true});
-    globalThis.setTimeout(() => container.removeEventListener('click', swallow, {capture: true}), 0);
+    // The row mode says when a drag begins and ends, as a list does; the
+    // column mode stays quiet, as it always was.
+    if (vertical) container.dispatchEvent(new globalThis.CustomEvent(SORTABLE_STATE_EVENT, {bubbles: true, composed: true, detail: Object.freeze({state: dropped && ended.index !== ended.originalIndex ? 'dropped' : 'cancelled', item: keyOf(ended.item)})}));
+    if (ended.input !== 'keyboard') {
+      // The click a drop ends with is not a click on the heading (or the
+      // handle). It comes in the same task as the pointerup, so the guard is
+      // gone by the next one and a later click is a click again.
+      const swallow = (event) => { event.preventDefault(); event.stopImmediatePropagation(); };
+      container.addEventListener('click', swallow, {capture: true, once: true});
+      globalThis.setTimeout(() => container.removeEventListener('click', swallow, {capture: true}), 0);
+    }
     if (!dropped) {
-      live.textContent = messages().cancelled;
+      say(messages().cancelled);
       return;
     }
-    if (ended.index === undefined || ended.index === ended.originalIndex) return;
-    const id = ended.item.getAttribute('data-sf-sortable-item') || ended.item.dataset.key || '';
-    live.textContent = format(messages().dropped, {item: itemLabel(ended.item), index: ended.index + 1, list: options.label || ''});
-    options.onIntent?.({item: id, from: ended.group, index: ended.index, group: ended.group});
+    if (ended.index === undefined || ended.index === ended.originalIndex) {
+      if (ended.input === 'keyboard') say(messages().cancelled);
+      return;
+    }
+    request(ended.item, ended.index, ended.group);
+    if (ended.input === 'keyboard') refocus(keyOf(ended.item), false);
+  };
+
+  // A row is copied into a table of its own, cell widths kept: a bare row
+  // outside its table loses its columns.
+  const ghostFor = (item, box) => {
+    if (item.tagName !== 'TR') return ghostOf(item, box);
+    const ghost = ghostOf(item, box);
+    const copy = ghost.firstElementChild;
+    const table = doc.createElement('table');
+    const body = doc.createElement('tbody');
+    table.className = item.closest('table')?.className || '';
+    Object.assign(table.style, {inlineSize: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', margin: '0'});
+    [...copy.children].forEach((cell, at) => {
+      const width = item.children[at]?.getBoundingClientRect().width;
+      if (width) cell.style.inlineSize = `${width}px`;
+    });
+    copy.style.inlineSize = '';
+    body.append(copy);
+    table.append(body);
+    ghost.append(table);
+    return ghost;
+  };
+
+  const lift = (item, at, input) => {
+    session.started = true;
+    session.input = input;
+    doc.documentElement.setAttribute('data-sf-sortable-active', '');
+    session.cells = cellsOf(item).filter(Boolean);
+    for (const cell of session.cells) cell.setAttribute('data-sf-sortable-column-source', '');
+    if (vertical) container.dispatchEvent(new globalThis.CustomEvent(SORTABLE_STATE_EVENT, {bubbles: true, composed: true, detail: Object.freeze({state: 'picked', item: keyOf(item)})}));
+    if (input === 'keyboard') return;
+    const ghost = ghostFor(item, session.box);
+    ghost.style.height = `${session.box.height}px`;
+    session.ghost = ghost;
+    session.offset = {x: at.x - session.box.left, y: at.y - session.box.top};
+  };
+
+  const follow = (x, y) => {
+    Object.assign(session.ghost.style, {left: `${x - session.offset.x}px`, top: `${y - session.offset.y}px`});
+    autoScroll(x, y);
+    place(x, y);
+  };
+
+  const open = (item, extra = {}) => {
+    const group = groupOf(item);
+    const peers = members(group);
+    if (peers.length < 2) return null;
+    const box = item.getBoundingClientRect();
+    session = {item, group, pending: new AbortController(), started: false, cells: [], box,
+      size: vertical ? box.height : box.width, originalIndex: peers.indexOf(item), timer: 0, ...extra};
+    return session;
   };
 
   container.addEventListener('pointerdown', (event) => {
     if (event.button !== 0 || session || shared.session) return;
     const item = event.target.closest?.(options.items);
     if (!item || !container.contains(item) || !canStart(event, item)) return;
-    const group = groupOf(item);
-    const peers = members(group);
-    if (peers.length < 2) return;
+    const handle = handleOf(item);
+    if (handle && !handle.contains(event.target)) return;
+    if (vertical && !handle) {
+      const control = event.target.closest(INTERACTIVE);
+      if (control && control !== item && item.contains(control)) return;
+    }
+    if (!open(item)) return;
     const start = {x: event.clientX, y: event.clientY};
-    const pending = new AbortController();
-    const box = item.getBoundingClientRect();
-    session = {item, group, pending, started: false, cells: [], width: box.width, originalIndex: peers.indexOf(item)};
+    const {pending} = session;
+    // A finger on a row without a handle: the drag waits for a long press, and
+    // a move before it is the page's scroll (C171 (2)).
+    const longPress = vertical && !handle && event.pointerType === 'touch';
     const move = (moveEvent) => {
       if (moveEvent.pointerId !== event.pointerId || !session) return;
       if (!session.started) {
-        if (Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y) < DRAG_THRESHOLD) return;
-        session.started = true;
-        doc.documentElement.setAttribute('data-sf-sortable-active', '');
-        const ghost = ghostOf(item, box);
-        ghost.style.height = `${box.height}px`;
-        session.ghost = ghost;
-        session.offset = {x: start.x - box.left, y: start.y - box.top};
-        session.cells = cellsOf(item).filter(Boolean);
-        for (const cell of session.cells) cell.setAttribute('data-sf-sortable-column-source', '');
+        const distance = Math.hypot(moveEvent.clientX - start.x, moveEvent.clientY - start.y);
+        if (longPress) {
+          if (distance > LONG_PRESS_SLOP) end(false);
+          return;
+        }
+        if (distance < DRAG_THRESHOLD) return;
+        lift(item, start, moveEvent.pointerType || 'mouse');
       }
       moveEvent.preventDefault();
-      Object.assign(session.ghost.style, {left: `${moveEvent.clientX - session.offset.x}px`, top: `${moveEvent.clientY - session.offset.y}px`});
-      autoScroll(moveEvent.clientX);
-      place(moveEvent.clientX);
+      follow(moveEvent.clientX, moveEvent.clientY);
     };
+    if (longPress) {
+      session.timer = globalThis.setTimeout(() => {
+        if (!session || session.item !== item || session.started) return;
+        lift(item, start, 'touch');
+        follow(start.x, start.y);
+        const hold = (touchEvent) => { if (touchEvent.cancelable) touchEvent.preventDefault(); };
+        globalThis.addEventListener('touchmove', hold, {signal: pending.signal, passive: false});
+        globalThis.addEventListener('contextmenu', hold, {signal: pending.signal, capture: true});
+      }, LONG_PRESS);
+    }
     globalThis.addEventListener('pointermove', move, {signal: pending.signal, passive: false});
     globalThis.addEventListener('pointerup', (upEvent) => { if (upEvent.pointerId === event.pointerId) end(true); }, {signal: pending.signal});
     globalThis.addEventListener('pointercancel', () => end(false), {signal: pending.signal});
@@ -937,11 +1093,82 @@ export function attachSortable(container, options = {}) {
     }, {signal: pending.signal, capture: true});
   }, {signal: abort.signal});
 
-  return () => {
+  if (keyboard) {
+    // Items name the keys when they take the focus (rows the host draws later
+    // as well).
+    container.addEventListener('focusin', (event) => {
+      const item = event.target.closest?.(options.items);
+      if (!item || !container.contains(item) || !help) return;
+      const described = (item.getAttribute('aria-describedby') || '').split(/\s+/u).filter(Boolean);
+      if (!described.includes(help.id)) item.setAttribute('aria-describedby', [...described, help.id].join(' '));
+    }, {signal: abort.signal});
+    container.addEventListener('keydown', (event) => {
+      if (!session) {
+        const item = event.target.closest?.(options.items);
+        if (!item || event.target !== item || !container.contains(item) || shared.session) return;
+        if (event.key !== ' ' && event.key !== 'Enter') return;
+        if (!open(item)) return;
+        event.preventDefault();
+        event.stopPropagation();
+        session.index = session.originalIndex;
+        lift(item, null, 'keyboard');
+        const total = members(session.group).length;
+        draw(peerBoxes(), session.index);
+        say(format(messages().picked, {item: itemLabel(item), index: session.index + 1, total, list: options.label || ''}));
+        // Focus or a press leaving the list abandons the move.
+        const {signal} = session.pending;
+        container.addEventListener('focusout', (focusEvent) => {
+          if (focusEvent.relatedTarget && container.contains(focusEvent.relatedTarget)) return;
+          globalThis.setTimeout(() => { if (session?.input === 'keyboard' && !container.contains(doc.activeElement)) end(false); }, 0);
+        }, {signal});
+        doc.addEventListener('pointerdown', (pointerEvent) => { if (!container.contains(pointerEvent.target)) end(false); }, {signal, capture: true});
+        return;
+      }
+      if (session.input !== 'keyboard') return;
+      if (event.key === 'Escape' || event.key === 'Tab') {
+        if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); }
+        end(false);
+        return;
+      }
+      if (event.key === ' ' || event.key === 'Enter') {
+        event.preventDefault();
+        event.stopPropagation();
+        end(true);
+        return;
+      }
+      const step = {ArrowUp: -1, ArrowDown: 1}[event.key];
+      if (step === undefined) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const total = members(session.group).length;
+      const next = session.index + step;
+      if (next < 0 || next > total - 1) return;
+      session.index = next;
+      draw(peerBoxes(), next);
+      say(format(messages().moved, {index: next + 1, total, list: options.label || ''}));
+    }, {signal: abort.signal});
+  }
+
+  const detach = () => {
     end(false);
     abort.abort();
     live.remove();
+    help?.remove();
   };
+  // A move asked without dragging (the handle's menu): the same intent and
+  // words; the focus comes back to the moved item's handle.
+  detach.move = (item, index) => {
+    if (!item || !container.contains(item)) return false;
+    const peers = members(groupOf(item));
+    const from = peers.indexOf(item);
+    if (from < 0 || index < 0 || index >= peers.length || index === from) return false;
+    request(item, index);
+    refocus(keyOf(item), true);
+    return true;
+  };
+  detach.members = (item) => members(groupOf(item));
+  detach.handle = handleSelector;
+  return detach;
 }
 
 export default { SORTABLE_DROP_LINE, SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, requestSortableMove, sortableIndexAt };
