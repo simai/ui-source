@@ -19,9 +19,10 @@
     "src/smart/field-renderers/lang/index.mjs",
     "src/smart/field-renderers/lang/ru.json",
     "src/smart/field-renderers/mask.js",
+    "src/smart/field-renderers/phone.js",
     "src/smart/field-renderers/registry.js"
   ],
-  "content_sha256": "c81a1498927e2f080466f5da2f0c1f4c94dcfb2631c64264769057255f20e1ff",
+  "content_sha256": "82a0819d5262e96334ab084168f483d937187577592f336fea715f966195c85e",
   "dependencies": [
     {
       "id": "core.runtime",

@@ -79,7 +79,7 @@ test('the field renderers read a date in the page\'s language and a phone by its
   assert.match(set, /html`<time class="sf-field-view" datetime=\$\{datetime\}>\$\{text\}<\/time>`/u);
   const country = read('src/component/country-code/js/_country_code.js');
   assert.match(country, /function countryFromNumber\(root, value\)/u);
-  assert.match(country, /countryFromNumber\(root, value\) \|\|\n\s+root\.__sfCountryOptions\?\.\[0\]/u);
+  assert.match(country, /countryFromNumber\(root, value\) \|\| countryForLocale\(root, config\.localeTag\) \|\|\n\s+root\.__sfCountryOptions\?\.\[0\]/u);
 });
 
 test('the manifests carry accessibility in the current shape: keys with effects, name.from (#44 item 3)', () => {

@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 155,
-    "translated": 155,
+    "words": 156,
+    "translated": 156,
     "share": 100
   },
   "words": {
@@ -133,6 +133,7 @@
       "undo": "Вернуть",
       "passwordSet": "Задан",
       "passwordUnset": "Не задан",
+      "phoneExtension": "доб.",
       "passwordKeep": "Задан; введите новый, чтобы заменить",
       "maskIncomplete": "Заполните поле полностью",
       "notNumber": "Введите число",

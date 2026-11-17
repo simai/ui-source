@@ -127,7 +127,7 @@ test('a read-only choice as buttons stays a control; every other read-only field
 
 test('the registry names the buttons variant of choice and the keys the two read', () => {
   const string = PROPERTY_TYPES.find((entry) => entry.type === 'string');
-  assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'required', 'readonly']);
+  assert.deepEqual(string.params, ['placeholder', 'mask', 'nullable', 'defaultCountry', 'required', 'readonly']);
   const choice = PROPERTY_TYPES.find((entry) => entry.type === 'choice');
   assert.deepEqual(choice.variants, [{id: 'buttons', label: {ru: 'Кнопками', en: 'As buttons'}}]);
   assert.deepEqual(choice.params, ['options', 'badgeAppearance', 'size', 'required', 'readonly']);

@@ -118,6 +118,7 @@
     "undo": "Вернуть",
     "passwordSet": "Задан",
     "passwordUnset": "Не задан",
+    "phoneExtension": "доб.",
     "passwordKeep": "Задан; введите новый, чтобы заменить",
     "maskIncomplete": "Заполните поле полностью",
     "notNumber": "Введите число",

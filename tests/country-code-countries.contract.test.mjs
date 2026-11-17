@@ -62,10 +62,15 @@ test('CountryCode reads the country of a stored number by its dial code (simai/u
   assert.equal(ctx.resolveInitialCountry({}, root, '+44 20 7946 0958').iso2, 'GB');
   assert.equal(ctx.resolveInitialCountry({}, root, '+49 30 123456').iso2, 'DE');
   assert.equal(ctx.resolveInitialCountry({}, root, '+380 44 123 4567').iso2, 'UA');
-  // An explicit country still wins; a local number keeps the first country.
+  // An explicit country still wins; a local number or an empty field starts on
+  // the page locale's country (FL-7), the United States where no locale says
+  // one -- no longer the first row of the table, Australia and +61.
   assert.equal(ctx.resolveInitialCountry({defaultIso2: 'DE'}, root, '+7 900 123-45-67').iso2, 'DE');
-  assert.equal(ctx.resolveInitialCountry({}, root, '8 900 123-45-67'), items[0]);
-  assert.equal(ctx.resolveInitialCountry({}, root, ''), items[0]);
+  assert.equal(ctx.resolveInitialCountry({localeTag: 'ru'}, root, '8 900 123-45-67').iso2, 'RU');
+  assert.equal(ctx.resolveInitialCountry({localeTag: 'ru'}, root, '').iso2, 'RU');
+  assert.equal(ctx.resolveInitialCountry({localeTag: 'en-GB'}, root, '').iso2, 'GB');
+  assert.equal(ctx.resolveInitialCountry({}, root, '').iso2, 'US');
+  assert.equal(ctx.resolveInitialCountry({localeTag: 'en-GB', fixedDialCode: '+49'}, root, '').iso2, 'DE');
   // A local list limits the guess to its own countries.
   const local = ctx.normalizeCountriesList([{iso2: 'DE'}, {iso2: 'KZ'}]);
   assert.equal(ctx.resolveInitialCountry({}, {__sfCountryOptions: local}, '+7 900 123-45-67').iso2, 'KZ');
