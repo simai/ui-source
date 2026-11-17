@@ -277,7 +277,7 @@
       "max-width": {
         "type": "string",
         "default": "",
-        "description": "With overflow=\"truncate\": the widest the button grows before its label is cut, a CSS length (22rem, 40vw, min(22rem, 40vw), var(--sf-...)); it wins over the public variable --sf-button-max-width, which a page may set on the button or an ancestor instead. Empty: that variable, else the container's width. A value with ; { } < > \" or \\ is ignored."
+        "description": "With overflow=\"truncate\": the widest the button grows before its label is cut, a CSS length (rem, vw, a min() of them, or var(--sf-...)); it wins over the public variable --sf-button-max-width, which a page may set on the button or an ancestor instead. Empty: that variable, else the container's width. A value with ; { } < > \" or \\ is ignored."
       },
       "loading": {
         "type": "boolean",
@@ -753,7 +753,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "3355e00809fb59a46d55a61daeb036eb5b9d17ff894f57b4155d38367f8aae95"
+        "sha256": "6cf4cfe2ebd5025746345de96c4f50ca4918ecac4af773791e34df4e9a212985"
       }
     ],
     "generated_runtime": [

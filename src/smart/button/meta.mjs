@@ -187,7 +187,7 @@ const sfButtonMeta = {
       "kind": "custom",
       "valueType": "string",
       "default": "",
-      "description": "With overflow=\"truncate\": the widest the button grows before its label is cut, a CSS length (22rem, 40vw, min(22rem, 40vw), var(--sf-...)); it wins over the public variable --sf-button-max-width, which a page may set on the button or an ancestor instead. Empty: that variable, else the container's width. A value with ; { } < > \" or \\ is ignored."
+      "description": "With overflow=\"truncate\": the widest the button grows before its label is cut, a CSS length (rem, vw, a min() of them, or var(--sf-...)); it wins over the public variable --sf-button-max-width, which a page may set on the button or an ancestor instead. Empty: that variable, else the container's width. A value with ; { } < > \" or \\ is ignored."
     },
     "loading": {
       "kind": "boolean",

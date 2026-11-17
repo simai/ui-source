@@ -126,7 +126,7 @@ test('button set: «Отмена» is ghost in the Framework templates', () => {
    file's name). tests/browser/button-name-update.browser.mjs checks it drawn. */
 test('sf-button observes aria-label and draws the inner control with it', () => {
   const button = read('src/smart/button/index.js');
-  assert.match(button, /static get observedAttributes\(\) \{\s*return \[\.\.\.new Set\(\[\.\.\.super\.observedAttributes, "aria-label"\]\)\];/u);
+  assert.match(button, /static get observedAttributes\(\) \{\s*return \[\.\.\.new Set\(\[\.\.\.super\.observedAttributes, "aria-label", "title"\]\)\];/u); // 1.17.0: title, the cut label's tooltip
   assert.match(button, /resolveUpdateMode\(\) \{\s*return "lit";/u, 'a change draws the template again');
   const template = read('src/smart/button/js/templates/default.js');
   assert.equal([...template.matchAll(/aria-label=\$\{ariaLabel \|\| nothing\}/gu)].length, 2, 'the button and the link both take the name');
