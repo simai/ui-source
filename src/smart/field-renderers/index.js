@@ -272,19 +272,40 @@ function renderDateFilterControl(field, host) {
     `;
 }
 
-// An option of a filter as sf-input-choice draws it (FO-4): the field's
-// optionRenderer picks the visual -- avatar-checkbox a picture (imageUrl, the
-// initials of avatarText), swatch the option's colour as a circle, badge the
-// name as a tonal badge in its colour or scheme.
+// An option of a filter as sf-input-choice draws it (FO-4): its picture
+// (avatar, or the former imageUrl and avatarText), its icon and its colour
+// (color, or the former scheme) are the option's data and drawn wherever it
+// is (FO4-1); how the colour is drawn is the field template's parameter
+// (optionLookOf). filter.optionRenderer is the former way of saying it, read
+// until 2027-01-01 (FO4-2): avatar-checkbox the picture from the initials of
+// the name when none is given, swatch a circle, badge a badge.
 function choiceOption(field, option = {}) {
     const value = option.value ?? option.id ?? option.key ?? option.label ?? option.title;
     const label = option.label || option.title || String(value ?? '');
     const look = field.filter?.optionRenderer;
     const item = {value: String(value ?? ''), label, caption: option.caption || '', disabled: option.disabled === true};
-    if (look === 'avatar-checkbox') item.avatar = {image: option.imageUrl || option.avatar?.image || '', text: option.avatarText || option.avatar?.text || label};
-    else if (look === 'swatch' && option.color) item.swatch = option.color;
-    else if (look === 'badge') item.scheme = option.scheme ?? option.color ?? '';
+    const avatar = typeof option.avatar === 'string' ? {image: option.avatar} : option.avatar;
+    const image = avatar?.image || avatar?.src || option.imageUrl || '';
+    const initials = avatar?.text || option.avatarText || '';
+    if (image || initials || look === 'avatar-checkbox') item.avatar = {image, text: initials || label};
+    if (option.icon) item.icon = String(option.icon);
+    const color = option.color ?? option.scheme ?? '';
+    if (color) item.color = String(color);
     return item;
+}
+
+// How a choice field's option colours are drawn (FO4-2; C302: the look is the
+// template's parameter): templateParams.badge true a badge, false a circle;
+// else the former filter.optionRenderer (swatch a circle, badge a badge);
+// else '' -- sf-input-choice's own default (q-fo4-colour).
+function optionLookOf(field) {
+    const badge = field.templateParams?.badge ?? field.template?.params?.badge;
+    if (badge === true) return 'badge';
+    if (badge === false) return 'dot';
+    const look = field.filter?.optionRenderer;
+    if (look === 'swatch') return 'dot';
+    if (look === 'badge') return 'badge';
+    return '';
 }
 
 // A filter of a list of options is the Framework's choice field (FO-4):
@@ -314,6 +335,7 @@ function renderChoiceFilterControl(field, host) {
                 multiple
                 aria-label=${field.label || field.key || nothing}
                 ?searchable=${field.filter?.searchable === true}
+                option-look=${optionLookOf(field) || nothing}
                 .items=${options}
                 .provider=${pages}
                 .value=${Array.isArray(value.values) ? value.values.map(String) : []}
@@ -1581,13 +1603,25 @@ function editOptions(field, value, multiple) {
         ? new Set((Array.isArray(value) ? value : []).map((item) => String(item)))
         : new Set([String(value ?? '')]);
 
-    return options.map((option) => ({
-        type: 'text',
-        size: '1',
-        text: option.label ?? option.text ?? String(option.value),
-        value: String(option.value),
-        selected: chosen.has(String(option.value)),
-    }));
+    // An option's picture or icon is drawn in the dropdown too (FO4-1, FO4-3):
+    // sf-dropdown's avatar and icon rows. Its colour is not yet (the
+    // dropdown's colour row takes a class, not the option's colour).
+    return options.map((option) => {
+        const text = option.label ?? option.text ?? String(option.value);
+        const avatar = typeof option.avatar === 'string' ? {image: option.avatar} : option.avatar;
+        const picture = avatar?.image || avatar?.src || option.imageUrl || '';
+        const initials = avatar?.text || option.avatarText || '';
+        const visual = picture || initials
+            ? {type: 'avatar', avatarImageUrl: picture, avatarTitle: text}
+            : option.icon ? {type: 'icon', icon: String(option.icon)} : {type: 'text'};
+        return {
+            ...visual,
+            size: '1',
+            text,
+            value: String(option.value),
+            selected: chosen.has(String(option.value)),
+        };
+    });
 }
 
 // A choice as buttons (simai.property-view-port 1.16.0, variant `buttons`;

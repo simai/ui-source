@@ -82,3 +82,19 @@ export function optionBadgeProps(option = {}) {
     if (HEX_COLOR.test(color)) return {scheme: "neutral", rootStyle: paletteStyle(nearestPaletteHue(color))};
     return {scheme: "neutral", rootStyle: ""};
 }
+
+// The colour of an option drawn as a circle (FO4-1, FO4-2: option-look dot):
+// a scheme its role colour, a hue of the static palette its tone 50, a hex or
+// a CSS colour itself (the circle is a sample of the colour, not text on it);
+// neutral the outline colour. '' when nothing is given.
+const SCHEME_INK = Object.freeze({neutral: "--sf-outline", "on-surface": "--sf-on-surface-variant"});
+export function optionDotColor(option = {}) {
+    const raw = option?.color ?? option?.scheme ?? option?.swatch;
+    const color = typeof raw === "string" ? raw.trim() : "";
+    if (!color) return "";
+    const scheme = canonicalBadgeScheme(color);
+    if (scheme) return `var(${SCHEME_INK[scheme] ?? `--sf-${scheme}`})`;
+    const name = color.toLowerCase();
+    if (OPTION_BADGE_PALETTE.includes(name)) return `var(--sf-${name}-50)`;
+    return color;
+}

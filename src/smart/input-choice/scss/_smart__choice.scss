@@ -560,11 +560,17 @@
   gap: var(--sf-space-1\/4);
 }
 
-.sf-choice--list .sf-choice-avatar {
+.sf-choice .sf-choice-avatar {
   flex: none;
 }
 
-.sf-choice--list .sf-choice-swatch {
+/* A card's picture or colour circle stands on the name line before the
+   name, as its icon does (FO4-1). */
+.sf-choice:not(.sf-choice--list) :is(.sf-choice-avatar, .sf-choice-swatch) {
+  margin-inline-end: var(--sf-ui-1--text-space-x);
+}
+
+.sf-choice .sf-choice-swatch {
   box-sizing: border-box;
   display: block;
   flex: none;
@@ -594,6 +600,15 @@
 
 .sf-choice--list .sf-choice-status[hidden] {
   display: none;
+}
+
+/* The end of the host's pages (FO4-4): a mark of no size after «Show more»;
+   when it comes into view the next page is asked for. */
+.sf-choice--list .sf-choice-end {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--sf-px);
+  margin-block-start: calc(var(--sf-px) * -1);
 }
 
 /* The error under the last row: the error ink, text 1/2, the error icon a
@@ -696,7 +711,7 @@
   .sf-choice--list .sf-choice-message {
     color: var(--sf-error);
   }
-  .sf-choice--list .sf-choice-swatch {
+  .sf-choice .sf-choice-swatch {
     border-color: var(--sf-outline-variant);
     background-color: var(--sf-choice--swatch, transparent);
   }

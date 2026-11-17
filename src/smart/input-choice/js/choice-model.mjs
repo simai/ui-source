@@ -62,14 +62,28 @@ function avatarOf(given) {
   return image || initials ? {image, text: initials} : null;
 }
 
+// How an option's colour is drawn (FO4-2; C302: the look is a template
+// parameter, the colour is the option's data): badge -- the name itself as a
+// tonal badge in that colour, as a table cell draws it; dot -- a colour circle
+// before the name (the menu's colour row, C85).
+export const OPTION_LOOKS = Object.freeze(['badge', 'dot']);
+// The look of an option's colour when nobody says (option-look unset, no
+// former key): the table cell's, the one the Framework drew a colour with
+// until now. Which look is the default waits for the owner (q-fo4-colour):
+// this constant is that switch.
+export const DEFAULT_OPTION_LOOK = 'badge';
+
 // One option: {value, label, caption?, icon?, badge?, price?, term?, image?,
-// avatar?, swatch?, scheme?, disabled?} -- the shape of sf-input-lookup's
-// options, with an icon, a badge, a price with its term and an image. The
-// rows of appearance list draw three more visuals (FO-4): avatar a picture
-// before the name, swatch a colour circle before it, scheme the name itself
-// as a tonal badge in that scheme, palette hue or hex colour. `title` is read as the label; a missing
-// label is the value. An option without a value, or repeating an earlier one, is left
-// out: one value names one card.
+// avatar?, color?, disabled?} -- the shape of sf-input-lookup's options, with
+// an icon, a badge, a price with its term and an image. Three visuals draw in
+// every appearance (FO-4, FO4-1, FO4-3): avatar a picture before the name,
+// icon an icon before it, color the option's colour (a scheme, a hue of the
+// static palette or a hex), drawn by the look (option-look, OPTION_LOOKS).
+// FO4-2: one data word, color; the former swatch (a circle) and scheme (a
+// badge) are read as color with their look until 2027-01-01 (change journal
+// input-choice-option-colour-one-key). `title` is read as the label; a
+// missing label is the value. An option without a value, or repeating an
+// earlier one, is left out: one value names one card.
 export function normaliseItems(items) {
   let list = items;
   if (typeof list === 'string') {
@@ -100,12 +114,37 @@ export function normaliseItems(items) {
       term: text(source.term).trim(),
       image: text(source.image).trim(),
       avatar: avatarOf(source.avatar),
-      swatch: SWATCH.test(text(source.swatch).trim()) ? text(source.swatch).trim() : '',
-      scheme: text(source.scheme).trim(),
+      ...colourOf(source),
       disabled: Boolean(source.disabled),
     });
   }
   return result;
+}
+
+// An option's colour and the look its former key said (FO4-2): color, else
+// scheme (a badge) or swatch (a circle) until 2027-01-01. A colour that could
+// close a declaration is not drawn.
+function colourOf(source) {
+  const given = [['color', ''], ['scheme', 'badge'], ['swatch', 'dot']]
+    .map(([key, look]) => [text(source[key]).trim(), look])
+    .find(([value]) => value);
+  if (!given || !SWATCH.test(given[0])) return {color: '', look: ''};
+  return {color: given[0], look: given[1]};
+}
+
+/** The look an option's colour is drawn with: the field's option-look, else its former key's, else the default. */
+export function optionLook(item, asked) {
+  if (OPTION_LOOKS.includes(asked)) return asked;
+  if (OPTION_LOOKS.includes(item?.look)) return item.look;
+  return DEFAULT_OPTION_LOOK;
+}
+
+// Chosen first (FO4-5): with a search or a host's pages, the options chosen
+// when the list opened stand first, in their order, then the rest; what the
+// person chooses while it is open moves nothing.
+export function chosenFirst(items, opened) {
+  if (!opened?.size) return items;
+  return [...items.filter((item) => opened.has(item.value)), ...items.filter((item) => !opened.has(item.value))];
 }
 
 // The chosen values from what a host gave: a string -- one value, or values

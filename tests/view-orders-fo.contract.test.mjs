@@ -12,7 +12,7 @@ import test from 'node:test';
 import {rowsWindow, ROWS_WINDOW_FROM, ROWS_WINDOW_INITIAL} from '../src/core/js/rows-window.js';
 import {filesDrop, carriesFiles, filesDragWords, FILES_OVER_ATTRIBUTE, NO_DRAG_QUERY} from '../src/core/js/files-drop.js';
 import {evaluateCondition, fieldConditions, fieldEditable, conditionFields, CONDITION_OPS, CONDITION_NODES} from '../src/smart/field-renderers/conditions.js';
-import {normaliseItems, searchItems, mergeItems} from '../src/smart/input-choice/js/choice-model.mjs';
+import {normaliseItems, searchItems, mergeItems, chosenFirst, optionLook, OPTION_LOOKS, DEFAULT_OPTION_LOOK} from '../src/smart/input-choice/js/choice-model.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const json = (path) => JSON.parse(read(path));
@@ -406,17 +406,47 @@ test('FO-3: sf-form reads the conditions; the grammar is documented; the page ha
 
 // ------------------------------------------------------------- FO-4 option visuals and pages
 
-test('FO-4: an option carries an avatar, a swatch and a scheme; a swatch that is not a colour is dropped', () => {
-  const [avatar, swatch, badge, bad] = normaliseItems([
+test('FO-4, FO4-2: an option carries an avatar, an icon and one colour; swatch and scheme are former names of color with their look', () => {
+  const [avatar, swatch, badge, bad, both, icon] = normaliseItems([
     {value: 'ann', label: 'Анна', avatar: 'https://example.test/a.png'},
     {value: 'red', label: 'Красный', swatch: '#e53935'},
     {value: 'new', label: 'Новый', scheme: 'primary'},
     {value: 'x', swatch: 'url(javascript:alert(1))'},
+    {value: 'y', color: 'teal', scheme: 'error'},
+    {value: 'z', icon: 'folder'},
   ]);
   assert.deepEqual(avatar.avatar, {image: 'https://example.test/a.png', text: ''});
-  assert.equal(swatch.swatch, '#e53935');
-  assert.equal(badge.scheme, 'primary');
-  assert.equal(bad.swatch, '');
+  assert.deepEqual([swatch.color, swatch.look], ['#e53935', 'dot']);
+  assert.deepEqual([badge.color, badge.look], ['primary', 'badge']);
+  assert.equal(bad.color, '');
+  assert.deepEqual([both.color, both.look], ['teal', '']);
+  assert.equal(icon.icon, 'folder');
+  // The field's option-look wins; else the former key's look; else the default (q-fo4-colour).
+  assert.deepEqual(OPTION_LOOKS, ['badge', 'dot']);
+  assert.equal(optionLook(swatch, 'badge'), 'badge');
+  assert.equal(optionLook(swatch, ''), 'dot');
+  assert.equal(optionLook(both, ''), DEFAULT_OPTION_LOOK);
+});
+
+test('FO4-5: chosen first when the list opens; the order does not move while it is open', () => {
+  const items = normaliseItems([{value: 'a'}, {value: 'b'}, {value: 'c'}, {value: 'd'}]);
+  assert.deepEqual(chosenFirst(items, new Set(['c', 'a'])).map((one) => one.value), ['a', 'c', 'b', 'd']);
+  assert.deepEqual(chosenFirst(items, new Set()).map((one) => one.value), ['a', 'b', 'c', 'd']);
+  const element = read('src/smart/input-choice/index.js');
+  assert.match(element, /this\._opened \?\?= new Set\(this\.selected\);/u);
+  assert.match(element, /onDisconnected\(\) \{\s*super\.onDisconnected\?\.\(\);\s*this\._opened = null;/u);
+});
+
+test('FO4-1, FO4-3, FO4-4: visuals in both appearances and in the dropdown; the next page loads at the list\'s end', () => {
+  const template = read('src/smart/input-choice/js/templates/default.js');
+  assert.match(template, /renderVisual\(context, item, \{icon: false\}\)/u);
+  assert.match(template, /if \(icon && item\.icon\) return html`<span class="sf-icon sf-choice-icon"/u);
+  assert.match(template, /<span class="sf-choice-end" data-sf-more aria-hidden="true"><\/span>/u);
+  assert.match(read('src/smart/input-choice/index.js'), /new Observer\(\(entries\) => \{/u);
+  const renderers = read('src/smart/field-renderers/index.js');
+  assert.match(renderers, /\? \{type: 'avatar', avatarImageUrl: picture, avatarTitle: text\}\s*: option\.icon \? \{type: 'icon', icon: String\(option\.icon\)\} : \{type: 'text'\};/u);
+  assert.match(renderers, /option-look=\$\{optionLookOf\(field\) \|\| nothing\}/u);
+  assert.equal(json('src/smart/input-choice/component.json').settings['option-look'].values.join(), 'badge,dot');
 });
 
 test('FO-4: search folds case and accents; pages merge after the options in hand, one value one option', () => {

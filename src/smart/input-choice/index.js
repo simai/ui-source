@@ -4,7 +4,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import {FormField, ShownValidity} from '../helpers/form-field';
 import {renderChoiceTemplate} from './js/templates/default';
 import {fieldHelpLabel} from '../helpers/field-help';
-import {CHOICE_APPEARANCES, CHOICE_COLUMNS, CHOICE_LAYOUTS, applyChoice, formatValue, listFlow, mergeItems, normaliseItems, orderValues, parseValue, searchItems} from './js/choice-model.mjs';
+import {CHOICE_APPEARANCES, CHOICE_COLUMNS, CHOICE_LAYOUTS, OPTION_LOOKS, applyChoice, chosenFirst, formatValue, listFlow, mergeItems, normaliseItems, orderValues, parseValue, searchItems} from './js/choice-model.mjs';
 import manifest from './component.json';
 import {files as languageFiles} from './lang/index.mjs';
 // Only the words on screen ship in the bundle, English only (owner decision
@@ -148,6 +148,10 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
 
   onDisconnected() {
     super.onDisconnected?.();
+    this._opened = null;
+    this._moreWatch?.disconnect();
+    this._moreWatch = null;
+    this._moreWatched = null;
     const pages = this._pages;
     clearTimeout(pages.timer);
     pages.abort?.abort();
@@ -182,8 +186,18 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   // searchable and has no provider (a provider searches itself).
   get shownOptions() {
     const options = this.options;
-    if (!this.searchable || typeof this.provider === 'function') return options;
-    return searchItems(options, this._pages.query);
+    const paged = typeof this.provider === 'function';
+    if (!this.searchable && !paged) return options;
+    // FO4-5: with a search or a host's pages, what was chosen when the list
+    // opened stands first; the order does not move while it is open.
+    this._opened ??= new Set(this.selected);
+    const shown = paged ? options : searchItems(options, this._pages.query);
+    return chosenFirst(shown, this._opened);
+  }
+
+  get optionLookValue() {
+    const look = this.getAttribute('option-look');
+    return OPTION_LOOKS.includes(look) ? look : '';
   }
 
   get effectiveDisabled() {
@@ -343,6 +357,7 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
       appearance: this.appearanceValue,
       layout: this.layoutValue,
       flow: this.flowValue,
+      optionLook: this.optionLookValue,
       label: this.label || '',
       // C165 (1), C153 (8): the «?» after the heading, named by its subject.
       help: this.help || '',
@@ -370,7 +385,27 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   afterRender(callback) {
     if (typeof callback === 'function') return super.afterRender(callback);
     this.sfSyncFormState();
+    this.watchMore();
     return undefined;
+  }
+
+  // FO4-4: the host's next page loads when the list is scrolled to its end
+  // (the mark after «Показать ещё» comes into view, in the window or the
+  // box that scrolls the list); the button stays the last row, for the keyboard and for a
+  // browser without IntersectionObserver.
+  watchMore() {
+    const more = this.querySelector(':scope .sf-choice-end[data-sf-more]');
+    if (more === this._moreWatched) return;
+    this._moreWatch?.disconnect();
+    this._moreWatched = more;
+    const Observer = this.ownerDocument?.defaultView?.IntersectionObserver ?? globalThis.IntersectionObserver;
+    if (!more || typeof Observer !== 'function') return;
+    this._moreWatch ??= new Observer((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      const pages = this._pages;
+      if (pages.nextCursor && pages.status !== 'loading') this.loadPage(pages.nextCursor);
+    });
+    this._moreWatch.observe(more);
   }
 }
 
