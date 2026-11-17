@@ -35,7 +35,10 @@
     "uses": [
       "smart.button",
       "smart.button-icon",
+      "smart.confirm",
       "smart.icon",
+      "smart.list-description",
+      "smart.modal",
       "smart.progress-bar"
     ],
     "public_parts": []
@@ -419,7 +422,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/bulk-actions/index.js",
-        "sha256": "2e9b3d59cf6e6a69b1106f2f779f558a0a279aeddfad07c213ae592f58a22997"
+        "sha256": "b220cfa28d8e9c7053abf43181595f94adff8c1048050556941364d188804509"
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
@@ -427,11 +430,11 @@
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
-        "sha256": "1af4aad15178d0475efc23fff947568fcabdeb5b0c8c701d9dc258faf114aa31"
+        "sha256": "5674f921819eb31cb958068dc7a556a4945490c597b9ba3ecef246b0ba2672ae"
       },
       {
         "path": "src/smart/bulk-actions/rule.js",
-        "sha256": "393667ad2eaa4ac8cf66ca2015d1ded128c73ff6e5d095ed463b0b72363ae98f"
+        "sha256": "fb6d8a35be408c2bd0c72317e9937ad8064d5754bca9741f62baf363e44535ae"
       },
       {
         "path": "src/smart/bulk-actions/docs.md",

@@ -108,9 +108,9 @@ test('the markup: a region, a plain row of buttons, the live region outside the 
   assert.match(element, /SHORT_RUN = 100/u, 'a longer run is sf-progress-run (C34)');
 });
 
-test('the sheet takes every value from the systems: gaps 16 and 8, padding space-1/4, no literal colour or length', () => {
-  assert.match(sheet, /--sf-bulk-actions--gap: var\(--sf-bulk-actions-gap, var\(--sf-space-1\)\)/u);
-  assert.match(sheet, /--sf-bulk-actions--group-gap: var\(--sf-space-1\\\/3\)/u);
+test('the sheet takes every value from the systems: gaps 16 and 8 from the roles, padding space-1/4, no literal colour or length', () => {
+  assert.match(sheet, /--sf-bulk-actions--gap: var\(--sf-bulk-actions-gap, var\(--sf-gap--groups\)\)/u);
+  assert.match(sheet, /--sf-bulk-actions--group-gap: var\(--sf-gap--actions\)/u);
   assert.match(sheet, /padding-block: var\(--sf-space-1\\\/4\)/u);
   const values = sheet.replace(/\/\*[\s\S]*?\*\//gu, '').replace(/\/\/.*$/gmu, '');
   assert.doesNotMatch(values, /#[0-9a-f]{3,8}\b|rgba?\(|\b\d+px\b/iu);

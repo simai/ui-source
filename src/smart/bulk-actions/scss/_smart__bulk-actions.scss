@@ -3,8 +3,8 @@
    C295; prototype sf-bulk-actions-study, variant A). One row: the count and
    the offer at the start, the actions, «⋯» and the clear cross at the end.
    Its height is the rung's control height and the space-1/4 above and below
-   (C18: 42 at 1/2, 50 at 1 with the edge); the groups wrap 16 apart (space-1),
-   inside a group 8 (space-1/3, C105: one group 8). The buttons are sf-button's
+   (C18: 42 at 1/2, 50 at 1 with the edge); the groups wrap 16 apart (the role --sf-gap--groups),
+   inside a group 8 (the role --sf-gap--actions, C105: one group 8). The buttons are sf-button's
    own look (outline on-surface, C116); nothing here repaints a button.
 
    place: dock (default) stands over the list's bottom edge at the card's
@@ -20,12 +20,13 @@
      --sf-bulk-actions-gap            between the groups
      --sf-bulk-actions-radius         the bar's corners */
 .sf-bulk-actions {
-  --sf-bulk-actions--gap: var(--sf-bulk-actions-gap, var(--sf-space-1));
-  --sf-bulk-actions--group-gap: var(--sf-space-1\/3);
+  --sf-bulk-actions--gap: var(--sf-bulk-actions-gap, var(--sf-gap--groups));
+  --sf-bulk-actions--group-gap: var(--sf-gap--actions);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sf-bulk-actions--group-gap) var(--sf-bulk-actions--gap);
+  row-gap: var(--sf-bulk-actions--group-gap);
+  column-gap: var(--sf-bulk-actions--gap);
   box-sizing: border-box;
   min-inline-size: 0;
   padding-block: var(--sf-space-1\/4);
@@ -56,7 +57,7 @@
 }
 
 .sf-bulk-actions__run {
-  flex: 1 1 16rem;
+  flex: 1 1 var(--sf-f6);
   flex-wrap: wrap;
   column-gap: var(--sf-bulk-actions--gap);
 }
@@ -90,13 +91,13 @@
 .sf-bulk-actions__say--warning {
   display: inline-flex;
   align-items: center;
-  gap: var(--sf-space-1\/4);
+  gap: var(--sf-gap--icon-inline);
 }
 
 .sf-bulk-actions__progress {
-  flex: 1 1 10rem;
-  min-inline-size: 6rem;
-  max-inline-size: 20rem;
+  flex: 1 1 var(--sf-f0);
+  min-inline-size: var(--sf-e2);
+  max-inline-size: var(--sf-g0);
 }
 
 .sf-bulk-actions--dock {
@@ -109,7 +110,7 @@
   position: fixed;
   inset-block-end: var(--sf-space-1);
   inset-inline: var(--sf-space-1);
-  max-inline-size: 48rem;
+  max-inline-size: var(--sf-h2);
   margin-inline: auto;
   z-index: var(--sf-layer--sticky);
 }
@@ -144,7 +145,7 @@
   }
   .sf-bulk-actions--float {
     background-color: var(--sf-bulk-actions-background, var(--sf-surface-popup));
-    box-shadow: var(--sf-shadow-popup);
+    box-shadow: var(--sf-shadow-overlay);
   }
   .sf-bulk-actions__warning {
     color: var(--sf-warning);
