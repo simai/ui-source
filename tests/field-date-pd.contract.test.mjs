@@ -41,27 +41,27 @@ test('PD-3: format is the date\'s length, Intl dateStyle, medium by default', ()
   assert.ok(datetime.params.includes('format'));
 });
 
-test('PD-4..PD-8: the date filter is the operator first, then a day field at the table\'s size in the page\'s language', () => {
-  const one = body('renderDateFilterControl');
-  // PD-8: the operator list comes before the day field.
-  assert.ok(one.indexOf('<sf-dropdown') > 0 && one.indexOf('<sf-dropdown') < one.indexOf('<sf-input-date'));
-  // PD-4: the day field takes the table's size.
-  assert.match(one, /<sf-input-date\s+size=\$\{filterSize\(host\)\}/u);
+test('PD-4, PD-5, PD-8 under C293: the date filter is the condition first, then its value at the table\'s size in the page\'s language', () => {
+  const one = body('renderDateFilterControl') + body('renderDateConditionValue') + body('renderDateRangeValue');
+  // PD-8: the condition list comes before the value.
+  const control = body('renderDateFilterControl');
+  assert.ok(control.indexOf('<sf-dropdown') > 0 && control.indexOf('<sf-dropdown') < control.indexOf('renderDateConditionValue('));
+  // PD-4: the day fields take the table's size.
+  assert.match(one, /<sf-input-date\s+size=\$\{(size|filterSize\(host\))\}/u);
   // PD-5: no hard-coded locale; the calendar follows the page.
   assert.ok(!/locale=/u.test(one));
-  // PD-6: a day's words for the four comparisons.
-  assert.ok(one.includes('dateOperatorLabel(host, operator)'));
-  // PD-7: periods by themselves draw no day field; a range has quick ranges.
-  assert.match(set, /const DATE_NO_VALUE_OPERATORS = new Set\(\['today', 'week', 'month', 'any'\]\);/u);
-  assert.ok(one.includes('DATE_NO_VALUE_OPERATORS.has(selectedOperator) ? nothing'));
-  assert.ok(one.includes('.presets=${isBetween ? dateFilterPresets(field) : \'\'}'));
+  // PD-6 and PD-7 are replaced by C293 (tests/field-date-filter-c293.contract.test.mjs): the
+  // condition words come from date-filter.js, the periods are one operator with a name.
+  assert.ok(control.includes('dateConditionLabel(host, item)'));
+  assert.ok(!set.includes('DATE_NO_VALUE_OPERATORS'));
 });
 
-test('PD-6: the date operator words are in both language files', () => {
+test('C293: the date condition words are in both language files; the PD-6 operator words are gone', () => {
   const en = JSON.parse(read('src/smart/field-renderers/lang/en.json')).runtime;
   const ru = JSON.parse(read('src/smart/field-renderers/lang/ru.json')).runtime;
-  assert.deepEqual(['gt', 'gte', 'lt', 'lte'].map((key) => en[`dateOperator_${key}`]), ['After', 'On or after', 'Before', 'On or before']);
-  assert.deepEqual(['gt', 'gte', 'lt', 'lte'].map((key) => ru[`dateOperator_${key}`]), ['Позже', 'Не раньше', 'Раньше', 'Не позже']);
+  assert.deepEqual(['gt', 'gte', 'lt', 'lte'].map((key) => en[`dateCondition_${key}`]), ['After', 'On or after', 'Before', 'On or before']);
+  assert.deepEqual(['gt', 'gte', 'lt', 'lte'].map((key) => ru[`dateCondition_${key}`]), ['Позже', 'Не раньше', 'Раньше', 'Не позже']);
+  assert.ok(!Object.keys(en).some((key) => key.startsWith('dateOperator_')));
 });
 
 test('a number is printed with the page locale\'s decimal separator, every digit kept', () => {

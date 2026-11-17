@@ -3,13 +3,14 @@
   "schema_version": 1,
   "id": "module.smart-field-renderers",
   "kind": "module",
-  "version": "1.14.0",
+  "version": "1.16.0",
   "owner": "simai/ui-source",
   "summary": "The field renderers the table and the record view share (src/smart/field-renderers); not a component itself.",
   "includes": [
     "src/smart/field-renderers/"
   ],
   "files": [
+    "src/smart/field-renderers/date-filter.js",
     "src/smart/field-renderers/datetime.js",
     "src/smart/field-renderers/decimal.js",
     "src/smart/field-renderers/html.js",
@@ -20,7 +21,7 @@
     "src/smart/field-renderers/mask.js",
     "src/smart/field-renderers/registry.js"
   ],
-  "content_sha256": "3bf34205824164dd703262a21bec3799d99727b7a66cda9e6abac09466636a49",
+  "content_sha256": "713bbfd0622648f37f80eff9f74abfc6538a582e7614d90fe6565fd52bc30504",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -29,6 +30,10 @@
     {
       "id": "module.smart-helpers",
       "range": "^1.0.0"
+    },
+    {
+      "id": "smart.input-date",
+      "range": "^1.15.0"
     },
     {
       "id": "smart.input-rich",

@@ -239,10 +239,13 @@ name reaches the native input, and the label is not printed twice.
 
 In range mode `presets` puts a list of ready ranges beside the grid: built-in
 ids, comma separated -- `today`, `yesterday`, `last-7-days`, `last-30-days`,
-`this-week`, `this-month`, `last-month` -- or, as a property, your own list of
-`{id, label, relative}` or `{id, label, range: [from, to]}`. A relative range
-is resolved against today in the person's time zone, and weeks start where the
-grid starts them. Ranges are clamped to `min-date` and `max-date`; one with
+`this-week`, `last-week`, `this-month`, `last-month`, `this-year`, and for a
+deadline `tomorrow`, `next-week`, `next-month` -- or, as a property, your own
+list of `{id, label, relative}` or `{id, label, range: [from, to]}`. A relative
+range is resolved against today in the person's time zone, and weeks start where
+the grid starts them. A calendar period is whole: «this week» runs to the
+week's last day, «this month» to its last day, «this year» to 31 December;
+«last 7 days» and «last 30 days» end today. Ranges are clamped to `min-date` and `max-date`; one with
 nothing left is disabled. «Свой период» at the end lets go of the quick range
 and moves focus to the grid.
 

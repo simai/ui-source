@@ -12,6 +12,9 @@ import {formatDecimal, formatMoney, formatPercent, fractionDigits, readDecimal} 
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
+import {DATE_FUTURE_PERIODS, DATE_PERIODS, LEGACY_DATE_OPERATORS, buildFilterRequest, dateConditionLabel, dateConditionOf,
+    dateConditionValue, dateFilterChipText, dateFilterConditions, dateFilterKind, dateGroupLabel, filterRequestContext,
+    isEmptyFilterEntry, normalizeFilterEntry, resolveDatePeriod} from './date-filter.js';
 
 // The Framework's field renderers, addressed by a property type and a template
 // rather than by a control name.
@@ -216,90 +219,174 @@ function renderNumberFilterControl(field, host) {
     `;
 }
 
-// The date filter (property type study «Дата», PD-4..PD-8, 2026-11-17). The
-// operator comes first and the day field under it, because the operator says
-// whether there is one day to choose, two, or none: «Сегодня», «Неделя»,
-// «Месяц» and «Любая дата» are periods by themselves, so they draw no day
-// field (it stood there and did nothing). A period of the person's own
-// («Диапазон») is the calendar in range mode with its quick ranges -- today,
-// this week, this month, the last 7 and 30 days -- or the field's own
-// `filter.presets` (sf-input-date's presets, [] for none). The day field
-// takes the size of the table, as the operator list beside it does, and the
-// calendar names its months in the page's language: it was hard-coded ru-Ru.
-// A day's operators read as a day's, «Позже», «Не раньше», «Раньше»,
-// «Не позже», not as a number's «Больше чем» (DATE_OPERATOR_WORDS); every
-// other operator keeps the host's word.
-const DATE_NO_VALUE_OPERATORS = new Set(['today', 'week', 'month', 'any']);
-const DATE_RANGE_PRESETS = 'today,this-week,this-month,last-7-days,last-30-days';
-const DATE_OPERATOR_WORDS = {gt: 'dateOperator_gt', gte: 'dateOperator_gte', lt: 'dateOperator_lt', lte: 'dateOperator_lte'};
-
-function dateOperatorLabel(host, operator) {
-    const key = DATE_OPERATOR_WORDS[operator];
-    return key ? setText(host, key) : host.getFilterOperatorLabel(operator);
-}
-
+// The date filter (owner decision C293, 2026-11-17; it replaces the operator
+// words and quick ranges of PD-6/PD-7). A condition first, then exactly what it
+// needs: nothing (a period by name, «Пусто», «Не пусто»), one day, two days (a
+// range calendar whose quick ranges are the whole periods; pressing one makes
+// the condition that period by name), a number of days, or -- for a period
+// field -- «when»: a period by name or two days of one's own. The list is
+// grouped: Дата, Период, Заполнено (a period field: Период записи,
+// Заполнено). Choosing a condition writes its own starting value, so a stale
+// day never travels with a period (DF-2); a period, «Пусто» and «Не пусто»
+// carry a value of their own, so the table keeps them (DF-1). The rules and
+// the words are date-filter.js; this draws them. The day controls keep PD-4,
+// PD-5 and PD-8: the table's size, the page's language, the condition above.
 function dateFilterPresets(field) {
     const presets = field.filter?.presets;
-    if (presets === undefined || presets === null) return DATE_RANGE_PRESETS;
+    if (presets === undefined || presets === null) {
+        return [...DATE_PERIODS, ...(field.filter?.future === true ? DATE_FUTURE_PERIODS : [])].join(',');
+    }
     return Array.isArray(presets) ? presets : String(presets);
 }
 
+function defaultDateCondition(field, list) {
+    const asked = field.filter?.defaultOperator;
+    if (asked) {
+        const one = dateConditionOf(field, {operator: asked, value: LEGACY_DATE_OPERATORS[asked] || asked});
+        const named = list.find((item) => item.key === asked);
+        if (named || one) return named || one;
+    }
+    // One date: «Между» (the list's second, after the exact day); a period
+    // field: «Идёт в».
+    return list.find((item) => item.operator === (dateFilterKind(field) === 'period' ? 'overlaps' : 'between')) ?? list[0];
+}
+
+function dateFilterContext(host) {
+    return filterRequestContext(host ?? null, host?.getFilterContext?.() || {});
+}
+
 function renderDateFilterControl(field, host) {
-    const control = host.getFilterControlValue(field.key);
-    const operators = field.filter?.operators || ['eq'];
-    const selectedOperator = control.operator || field.filter?.defaultOperator || operators[0];
-    const isBetween = selectedOperator === 'between';
-    const dateValue = isBetween && Array.isArray(control.value)
-        ? control.value
-        : isBetween
-            ? ['', '']
-            : control.value || '';
+    const control = host.getFilterControlValue(field.key) || {};
+    const list = dateFilterConditions(field);
+    const asked = control.operator ? dateConditionOf(field, control) : null;
+    const current = asked ?? defaultDateCondition(field, list);
+    const value = asked ? normalizeFilterEntry(control).value : control.value;
+    const size = filterSize(host);
+    const patch = (next) => host.patchTempFilterValue(field.key, next);
+    const isDateTime = (field.propertyType || field.type) === 'datetime';
 
     return html`
         <div class="flex flex-col gap-1/3">
             <sf-dropdown
-                    size=${filterSize(host)}
+                    size=${size}
                     appearance="bordered"
                     mode="select"
-                    placeholder="${setText(host, 'operator')}"
+                    label="${setText(host, 'dateCondition')}"
+                    hint=${isDateTime ? setWord(host, 'dateByDayIn', {zone: dateFilterContext(host).timeZone}) : nothing}
                     root-class="flex-1"
                     search="false"
                     @change=${(event) => {
-                        const operator =
-                                event.detail?.values?.[0] ||
-                                event.detail?.value ||
-                                selectedOperator;
-                        host.patchTempFilterValue(field.key, {operator});
+                        const key = event.detail?.values?.[0] || event.detail?.value || current.key;
+                        const next = list.find((item) => item.key === key);
+                        if (!next || next.key === current.key) return;
+                        patch({operator: next.operator, value: dateConditionValue(next, {value})});
                     }}
             >
-                ${operators.map((operator) => html`
+                ${list.map((item) => html`
                     <sf-list-item
                             kind="text"
-                            size=${filterSize(host)}
-                            text="${dateOperatorLabel(host, operator)}"
-                            value="${operator}"
-                            ?selected=${operator === selectedOperator}
+                            size=${size}
+                            group=${dateGroupLabel(host, item.group)}
+                            text="${dateConditionLabel(host, item)}"
+                            value="${item.key}"
+                            ?selected=${item.key === current.key}
                     ></sf-list-item>
                 `)}
             </sf-dropdown>
-            ${DATE_NO_VALUE_OPERATORS.has(selectedOperator) ? nothing : html`
-            <sf-input-date
-                    size=${filterSize(host)}
-                    .value=${dateValue}
-                    ?range=${isBetween}
-                    .presets=${isBetween ? dateFilterPresets(field) : ''}
-                    name="sf_filter_${field.key || 'date'}"
-                    aria-label=${field.label || field.key || ''}
-                    @change=${(event) => {
-                        if (event.target !== event.currentTarget) return;
-                        host.patchTempFilterValue(field.key, {
-                            value: event.detail.value,
-                            operator: selectedOperator,
-                        });
-                    }}
-            ></sf-input-date>`}
+            ${renderDateConditionValue(field, host, current, value, patch)}
         </div>
     `;
+}
+
+function renderDateConditionValue(field, host, current, value, patch) {
+    const size = filterSize(host);
+    const name = `sf_filter_${field.key || 'date'}`;
+    if (current.need === 'none') return nothing;
+    if (current.need === 'count') {
+        return html`
+            <sf-input-quantity
+                    size=${size}
+                    label="${setText(host, current.operator === 'next-days' ? 'dateCountNext' : 'dateCountLast')}"
+                    min="1"
+                    max="366"
+                    unit="${setText(host, 'dateCountUnit')}"
+                    name="${name}_count"
+                    .value=${Number(value) > 0 ? Number(value) : 30}
+                    @change=${(event) => {
+                        if (event.target !== event.currentTarget) return;
+                        const count = Math.round(Number(event.detail?.value));
+                        patch({operator: current.operator, value: count > 0 ? count : null});
+                    }}
+            ></sf-input-quantity>`;
+    }
+    if (current.need === 'day') {
+        return html`
+            <sf-input-date
+                    size=${size}
+                    label="${setText(host, current.operator === 'contains' ? 'dateValueDay' : 'dateValueDate')}"
+                    .value=${typeof value === 'string' ? value.slice(0, 10) : ''}
+                    name="${name}"
+                    @change=${(event) => {
+                        if (event.target !== event.currentTarget) return;
+                        patch({operator: current.operator, value: event.detail?.value || null});
+                    }}
+            ></sf-input-date>`;
+    }
+    if (current.need === 'days') return renderDateRangeValue(field, host, current, value, patch);
+    // «when» (a period field): a period by name, or two days of one's own.
+    const own = Array.isArray(value);
+    const periods = [...DATE_PERIODS, ...(field.filter?.future === true ? DATE_FUTURE_PERIODS : [])];
+    return html`
+        <sf-dropdown
+                size=${size}
+                appearance="bordered"
+                mode="select"
+                label="${setText(host, 'dateWhen')}"
+                root-class="flex-1"
+                search="false"
+                @change=${(event) => {
+                    const key = event.detail?.values?.[0] || event.detail?.value;
+                    if (!key) return;
+                    if (key === 'own') {
+                        if (!own) patch({operator: current.operator, value: ['', '']});
+                        return;
+                    }
+                    if (key !== value) patch({operator: current.operator, value: key});
+                }}
+        >
+            ${periods.map((period) => html`
+                <sf-list-item kind="text" size=${size} text="${dateConditionLabel(host, {period})}" value="${period}"
+                        ?selected=${!own && value === period}></sf-list-item>
+            `)}
+            <sf-list-item kind="text" size=${size} text="${setText(host, 'dateOwnDays')}" value="own" ?selected=${own}></sf-list-item>
+        </sf-dropdown>
+        ${own ? renderDateRangeValue(field, host, current, value, patch) : nothing}`;
+}
+
+// Two days on a range calendar. Its quick ranges are the whole periods: one
+// pressed is the period by name -- in «Между» the condition becomes that
+// period (C293 (4)), in a period field's «when» the value is its name.
+function renderDateRangeValue(field, host, current, value, patch) {
+    const days = Array.isArray(value) ? value.map((day) => (typeof day === 'string' ? day.slice(0, 10) : '')) : ['', ''];
+    return html`
+        <sf-input-date
+                size=${filterSize(host)}
+                range
+                label="${setText(host, 'dateValuePeriod')}"
+                .value=${days}
+                .presets=${dateFilterPresets(field)}
+                name="sf_filter_${field.key || 'date'}"
+                @change=${(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    const preset = event.detail?.preset?.id;
+                    if (preset && (DATE_PERIODS.includes(preset) || DATE_FUTURE_PERIODS.includes(preset))) {
+                        patch(current.operator === 'between' ? {operator: 'period', value: preset} : {operator: current.operator, value: preset});
+                        return;
+                    }
+                    const next = Array.isArray(event.detail?.value) ? event.detail.value : [event.detail?.startValue || '', event.detail?.endValue || ''];
+                    patch({operator: current.operator, value: next});
+                }}
+        ></sf-input-date>`;
 }
 
 function renderMultiSelectFilterControl(field, host) {
@@ -399,6 +486,9 @@ export const FILTER_RENDERERS = {
     datetime: renderDateFilterControl,
     range: renderRangeFilterControl,
     'date-range': renderDateFilterControl,
+    // A period field (a start and an end, C293): its own conditions -- overlaps,
+    // within, starts, ends, contains a day.
+    period: renderDateFilterControl,
     'multi-select': renderMultiSelectFilterControl,
     'single-select': renderMultiSelectFilterControl,
     choice: renderMultiSelectFilterControl,
@@ -422,6 +512,11 @@ export const FILTER_RENDERERS = {
 
 // What a field asks to be filtered by: its own declared control if it has one,
 // otherwise its property type, otherwise text.
+// The date filter's rules for a host that builds the request or draws the
+// chips itself (sf-view-table): the same functions as SF.fieldRenderers.dateFilter.
+export {buildFilterRequest, dateFilterChipText, dateFilterConditions, filterRequestContext, isEmptyFilterEntry,
+    normalizeFilterEntry, resolveDatePeriod, DATE_PERIODS, DATE_FUTURE_PERIODS};
+
 export function renderFilterField(field = {}, host) {
     const asked = field.filter?.control || field.propertyType || field.type || field.dataType || 'text';
     const renderer = FILTER_RENDERERS[asked] || FILTER_RENDERERS.text;
@@ -1797,6 +1892,15 @@ function setText(host, key) {
     return host?.getFieldText?.(key) ?? pageText(SET_TEXT, key, host ?? null, SET_NAME);
 }
 
+// A word with places in it ({zone}, {n}): the host's word wins, as setText's.
+function setWord(host, key, vars) {
+    const own = host?.getFieldText?.(key);
+    if (own !== undefined && own !== null) {
+        return String(own).replace(/\{([a-z][\w-]*)\}/giu, (whole, name) => (vars && name in vars ? String(vars[name]) : whole));
+    }
+    return pageWord(SET_TEXT, key, host ?? null, {component: SET_NAME, vars});
+}
+
 // One job, one component (owner decision C139 (1), 2026-11-14): a record, a
 // relation, a user and a paged lookup are chosen with sf-input-lookup -- the
 // search the host answers, its rows with a picture and a caption, its states
@@ -2731,6 +2835,19 @@ if (typeof window !== 'undefined') {
         renderFilterField,
         renderViewField,
         FILTER_RENDERERS,
+        // The date filter's rules (C293): the chip's words, when an entry is
+        // empty, the request with its context, a period's days.
+        dateFilter: {
+            conditions: dateFilterConditions,
+            chipText: dateFilterChipText,
+            isEmptyEntry: isEmptyFilterEntry,
+            normalizeEntry: normalizeFilterEntry,
+            requestContext: filterRequestContext,
+            buildRequest: buildFilterRequest,
+            resolvePeriod: resolveDatePeriod,
+            periods: DATE_PERIODS,
+            futurePeriods: DATE_FUTURE_PERIODS,
+        },
         // A datetime's value read and written back, for a host that draws its
         // own control: split(value), compose(stored, {date, time}),
         // normalizeTime(text); and a time of day's: splitTime(value),

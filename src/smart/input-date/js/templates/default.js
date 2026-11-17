@@ -7,7 +7,7 @@ function joinClasses(...tokens) {
 
 function renderYearTop(context) {
     return html`
-        <div class="sf-datepicker-top flex content-main-between items-cross-center">
+        <div class="sf-datepicker-top sf-datepicker-top--years">
             <sf-button-icon appearance="ghost" scheme="on-surface" size="1/2" ?disabled=${context.disabled}
                 icon=${context.previousIcon} aria-label=${context.labels.previousYears}
                 @click=${() => context.component.shiftYearPage(-1)}></sf-button-icon>
@@ -24,11 +24,11 @@ function renderTop(context) {
     if (context.context === 'year') return renderYearTop(context);
 
     return html`
-        <div class="sf-datepicker-top grid items-cross-center">
+        <div class="sf-datepicker-top">
             <sf-button-icon appearance="ghost" scheme="on-surface" size="1/2" ?disabled=${context.disabled}
                 icon=${context.previousIcon} aria-label=${context.labels.previousMonth}
                 @click=${() => context.component.shiftMonth(-1)}></sf-button-icon>
-            <div class="sf-datepicker-period flex content-main-center items-cross-center">
+            <div class="sf-datepicker-period">
                 <!-- The toggles are size 1/2, as tall as the compact size 1 they were:
                      density no longer changes a button's height (C01). The arrows
                      beside them are the same size: one band of buttons, one height
@@ -59,11 +59,11 @@ function focusItem(items) {
 function renderMonthContext(context) {
     const focusable = focusItem(context.months);
     return html`
-        <div class="sf-datepicker-context absolute top-0 bottom-0 inline-start-0 inline-end-0 grid grid-col-3 overflow-auto gap-1/4"
+        <div class="sf-datepicker-context"
              role="group" aria-label=${context.labels.chooseMonth}
              @keydown=${(event) => context.component.handleContextKeydown(event)}>
             ${context.months.map((month) => html`
-                <button class=${joinClasses('sf-datepicker-text flex content-main-center items-cross-center', month.selected ? 'active' : '', month.disabled ? 'disabled' : '')}
+                <button class=${joinClasses('sf-datepicker-text sf-datepicker-choice', month.selected ? 'active' : '', month.disabled ? 'disabled' : '')}
                     ?disabled=${month.disabled} aria-pressed=${month.selected ? 'true' : 'false'}
                     tabindex=${month === focusable ? '0' : '-1'}
                     type="button" @click=${() => context.component.selectMonth(month)}>
@@ -75,11 +75,11 @@ function renderMonthContext(context) {
 function renderYearContext(context) {
     const focusable = focusItem(context.years);
     return html`
-        <div class="sf-datepicker-context absolute top-0 bottom-0 inline-start-0 inline-end-0 grid grid-col-3 overflow-auto gap-1/4"
+        <div class="sf-datepicker-context"
              role="group" aria-label=${context.labels.chooseYear}
              @keydown=${(event) => context.component.handleContextKeydown(event)}>
             ${context.years.map((year) => html`
-                <button class=${joinClasses('sf-datepicker-text flex content-main-center items-cross-center', year.selected ? 'active' : '', year.disabled ? 'disabled' : '')}
+                <button class=${joinClasses('sf-datepicker-text sf-datepicker-choice', year.selected ? 'active' : '', year.disabled ? 'disabled' : '')}
                     type="button" ?disabled=${year.disabled} aria-pressed=${year.selected ? 'true' : 'false'}
                     tabindex=${year === focusable ? '0' : '-1'}
                     @click=${() => context.component.selectYear(year)}>
@@ -165,7 +165,7 @@ function renderGrid(context) {
     const weeks = [];
     for (let at = 0; at < context.days.length; at += 7) weeks.push(context.days.slice(at, at + 7));
     return html`
-        <div class="sf-datepicker-grid grid grid-col-7" role="grid" aria-label=${context.calendarLabel}
+        <div class="sf-datepicker-grid" role="grid" aria-label=${context.calendarLabel}
             aria-readonly=${context.valueLocked ? 'true' : nothing}
             @pointerleave=${() => context.component.showDayLine('')}
             @focusin=${() => context.component.noteDaysFocus(true)}
@@ -199,14 +199,14 @@ function renderPresets(context) {
     // «Свой период» is pressed for a range picked on the grid, not for no range.
     const custom = !items.some((item) => item.pressed) && Boolean(context.startValue);
     return html`
-        <div class="sf-datepicker-presets flex flex-col gap-1/4" role="group" aria-label=${context.labels.presets}
+        <div class="sf-datepicker-presets" role="group" aria-label=${context.labels.presets}
             @keydown=${(event) => context.component.handlePresetKeydown(event)}>
             ${items.map((item) => html`
-                <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', item.pressed ? 'active' : '')}
+                <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset', item.pressed ? 'active' : '')}
                     type="button" ?disabled=${item.disabled || context.disabled} aria-pressed=${item.pressed ? 'true' : 'false'}
                     tabindex=${item === focusable ? '0' : '-1'} data-preset=${item.id}
                     @click=${() => context.component.choosePreset(item)}>${item.label}</button>`)}
-            <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', custom ? 'active' : '')}
+            <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset', custom ? 'active' : '')}
                 type="button" ?disabled=${context.disabled} aria-pressed=${custom ? 'true' : 'false'} tabindex=${focusable || context.disabled ? '-1' : '0'} data-preset=""
                 @click=${() => context.component.chooseCustomRange()}>${context.labels.customRange}</button>
         </div>`;
@@ -215,7 +215,7 @@ function renderPresets(context) {
 // A stepper beside a time part: the class markup of an icon button at the
 // field's size 1, out of the tab order as the APG spinbutton has its buttons --
 // the arrow keys already do what it does. Still a real, named button.
-const TIME_STEPPER = 'sf-datepicker-time-step sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center content-main-center';
+const TIME_STEPPER = 'sf-datepicker-time-step sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface';
 
 function renderTimeStepper(context, part, direction) {
     const labels = context.labels;
@@ -234,9 +234,9 @@ function renderTimePart(context, part) {
     const value = parts[part];
     const shown = value === null ? '--' : String(value).padStart(2, '0');
     return html`
-        <div class="sf-datepicker-time-part flex items-cross-center">
+        <div class="sf-datepicker-time-part">
             ${renderTimeStepper(context, part, -1)}
-            <span class="sf-datepicker-text sf-datepicker-time-value flex content-main-center items-cross-center"
+            <span class="sf-datepicker-text sf-datepicker-time-value"
                 role="spinbutton" data-time-part=${part}
                 tabindex=${context.disabled ? '-1' : '0'}
                 aria-label=${part === 'hours' ? context.labels.hours : context.labels.minutes}
@@ -256,7 +256,7 @@ function renderTimePart(context, part) {
 function renderTime(context) {
     if (!context.timeParts) return nothing;
     return html`
-        <div class="sf-datepicker-time flex content-main-center items-cross-center gap-1/4" role="group"
+        <div class="sf-datepicker-time" role="group"
             aria-label=${context.labels.time} dir="ltr">
             ${renderTimePart(context, 'hours')}
             <span class="sf-datepicker-time-separator" aria-hidden="true">:</span>
@@ -268,7 +268,7 @@ function renderTime(context) {
 // choice covers both: above the box it labelled columns that were not there,
 // and the choice had a row less of height than the panel gives it.
 function renderDatepickerPanel(context) {
-    const rootClasses = joinClasses('sf-datepicker inline-flex', context.input ? '' : 'sf-datepicker--inline',
+    const rootClasses = joinClasses('sf-datepicker', context.input ? '' : 'sf-datepicker--inline',
         context.presetItems.length ? 'sf-datepicker--presets' : '',
         context.mode !== 'date' ? `sf-datepicker--${context.mode}` : '',
         // A period's popup (C227): its days keep the control height on a phone.
@@ -294,14 +294,14 @@ function renderDatepickerPanel(context) {
             aria-disabled=${context.disabled ? 'true' : nothing}
             @click=${(event) => context.component.handlePanelClick(event)}>
             ${renderPresets(context)}
-            <div class="sf-datepicker-container flex flex-col">
+            <div class="sf-datepicker-container">
                 <!-- The shown month, said when it changes (audit S18c); the year
                      page says its own range in its title. -->
                 <div class="sr-only" aria-live="polite" aria-atomic="true">${context.context === 'year' ? '' : context.calendarLabel}</div>
                 ${renderTop(context)}
-                <div class="sf-datepicker-main relative">
+                <div class="sf-datepicker-main">
                     ${renderContext(context)}
-                    <div class="sf-datepicker-weekdays grid grid-col-7" aria-hidden="true">
+                    <div class="sf-datepicker-weekdays" aria-hidden="true">
                         ${context.weekdays.map((weekday, at) => html`<span class=${context.weekdaysOff?.[at] ? 'sf-datepicker-weekday sf-datepicker-weekday-off' : 'sf-datepicker-weekday'}>${weekday}</span>`)}
                     </div>
                     ${renderGrid(context)}
@@ -316,7 +316,7 @@ export function renderDatepickerTemplate(context) {
     if (!context.input) return renderDatepickerPanel(context);
 
     return html`
-        <div class=${joinClasses('sf-datepicker-wrap inline-flex flex-col relative',
+        <div class=${joinClasses('sf-datepicker-wrap',
                 context.open ? 'is-open' : '',
                 context.openAbove ? 'sf-datepicker-wrap--drop-up' : 'sf-datepicker-wrap--drop-down')}
             ${ref(context.component.refs.datePickerRoot)} data-portal=${context.portal ? 'true' : 'false'}>

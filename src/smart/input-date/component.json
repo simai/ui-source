@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-date's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/datepicker (migration/convert-1.3.8.mjs from simai/ui-source@5100227 src/smart/datepicker/smart.manifest.json); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Its x-todo are decided in x-decisions.",
   "id": "smart.input-date",
   "tag": "sf-input-date",
-  "version": "1.14.3",
+  "version": "1.15.0",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -277,8 +277,13 @@
             "last-7-days",
             "last-30-days",
             "this-week",
+            "last-week",
             "this-month",
-            "last-month"
+            "last-month",
+            "this-year",
+            "tomorrow",
+            "next-week",
+            "next-month"
           ],
           "optional": true
         },
@@ -645,7 +650,8 @@
     "version 1.13.0 (2026-11-16, owner decision C227, prototype forms-datepicker-study.html#q-dp-phone-cells; component.datepicker 1.9.0; component.inputs 1.11.0; numbered above 1.12.0 on fix/datepicker-dp1): a minor, a look. On a phone (below 60rem) the popup that picks one date (date and datetime modes) draws its days at the control height of size 2, 44 x 44 (was 36 x 36), seven days and the paddings 316 wide inside a 390 screen; the panel's width follows the day. A period keeps its days: the popup of a range field now carries sf-datepicker--range, which keeps the control height (the phone sheet has 44 already). A calendar drawn in the page (input=false) and a desktop are unchanged. The label at size 1/3 is 12, the field ladder's floor (C226; was 10). Settings, values, events and keys unchanged.",
     "version 1.14.1 (2026-11-17, feat/lang-file-c282; numbered above 1.14.0 on origin/fix/forms-fm2): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.14.2 (written on the branch as 1.13.1; 2026-11-17, owner decision C268; numbered above 1.13.0 on origin/fix/fields-c224-c227): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
-    "version 1.14.3 (written on the branch as 1.14.0; 2026-11-17, group build 10, fix/forms-fm2; component.datepicker 1.10.1; numbered above 1.13.1 on another origin branch): a minor. SM-DP-1: the text box holds a whole value of its format -- two dates and the dash for a period (23 figures), the time with a date-time -- plus its padding, its figures tabular; the field grows to it, so a period's second date is never cut (07.09.2026 – 13.09.2026 stood in 186 of the 191 px it needs). SM-DP-2: the legacy names left-icon (icon-start) and input-size (size) get their date: dated rows in aliases.json (manifest-only, read by the element itself), a change journal record attribute-input-date-legacy-names, and each use noted in SF.deprecations, until 2027-01-01. Settings, values, events and keys otherwise unchanged."
+    "version 1.14.3 (written on the branch as 1.14.0; 2026-11-17, group build 10, fix/forms-fm2; component.datepicker 1.10.1; numbered above 1.13.1 on another origin branch): a minor. SM-DP-1: the text box holds a whole value of its format -- two dates and the dash for a period (23 figures), the time with a date-time -- plus its padding, its figures tabular; the field grows to it, so a period's second date is never cut (07.09.2026 – 13.09.2026 stood in 186 of the 191 px it needs). SM-DP-2: the legacy names left-icon (icon-start) and input-size (size) get their date: dated rows in aliases.json (manifest-only, read by the element itself), a change journal record attribute-input-date-legacy-names, and each use noted in SF.deprecations, until 2027-01-01. Settings, values, events and keys otherwise unchanged.",
+    "version 1.15.0 (2026-11-17, owner decision C293, the date filter; component.datepicker 1.11.0): a minor, values added and a behaviour. DF-5: the calendar quick ranges are whole periods -- this-week runs to the week's last day, this-month to the month's last day -- where they ended today; last-week, this-year and the forward tomorrow, next-week, next-month join the built-in ids (relative presets and the presets attribute); last-7-days and last-30-days still end today. DF-8: the calendar's markup carries only its own class names (the utility names grid, grid-col-7, grid-col-3, flex, inline-flex, absolute, relative and gap-1/4 are gone), its layout is component.datepicker's, so a host page's unlayered .grid no longer lays the days out in one column. DF-7: the field's wrapper takes the row it stands in, as sf-input does. Settings, events and keys otherwise unchanged."
   ],
   "x-registry": {
     "kind": "composite",

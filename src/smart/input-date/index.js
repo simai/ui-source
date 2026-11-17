@@ -406,8 +406,14 @@ function getWeekdays(locale, weekStart = 1, weekday = 'short') {
 // Quick ranges (owner, 2026-10-15). A relative one is resolved against today
 // in the person's own time zone, every time it is drawn, so a host that stores
 // «last 7 days» gets the last seven days tomorrow too. Weeks start where the
-// grid starts them.
-const RELATIVE_PRESETS = ['today', 'yesterday', 'last-7-days', 'last-30-days', 'this-week', 'this-month', 'last-month'];
+// grid starts them. The calendar periods are whole (owner decision C293,
+// 2026-11-17, DF-5): this week runs to its last day, this month to its last
+// day, this year to 31 December; they ended today, so «this week» meant
+// Monday to today and said something else than its name. The rolling ones
+// (last 7 and 30 days) end today. Last week and this year were missing; a
+// deadline's forward periods (tomorrow, next week, next month) are here too.
+const RELATIVE_PRESETS = ['today', 'yesterday', 'last-7-days', 'last-30-days', 'this-week', 'last-week', 'this-month', 'last-month',
+    'this-year', 'tomorrow', 'next-week', 'next-month'];
 
 function addDays(date, days) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
@@ -415,14 +421,20 @@ function addDays(date, days) {
 
 function resolveRelativePreset(id, today, weekStart = 1) {
     const day = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const weekFirst = addDays(day, -((day.getDay() - weekStart + 7) % 7));
     switch (id) {
         case 'today': return [day, day];
         case 'yesterday': return [addDays(day, -1), addDays(day, -1)];
+        case 'tomorrow': return [addDays(day, 1), addDays(day, 1)];
         case 'last-7-days': return [addDays(day, -6), day];
         case 'last-30-days': return [addDays(day, -29), day];
-        case 'this-week': return [addDays(day, -((day.getDay() - weekStart + 7) % 7)), day];
-        case 'this-month': return [new Date(day.getFullYear(), day.getMonth(), 1), day];
+        case 'this-week': return [weekFirst, addDays(weekFirst, 6)];
+        case 'last-week': return [addDays(weekFirst, -7), addDays(weekFirst, -1)];
+        case 'next-week': return [addDays(weekFirst, 7), addDays(weekFirst, 13)];
+        case 'this-month': return [new Date(day.getFullYear(), day.getMonth(), 1), new Date(day.getFullYear(), day.getMonth() + 1, 0)];
         case 'last-month': return [new Date(day.getFullYear(), day.getMonth() - 1, 1), new Date(day.getFullYear(), day.getMonth(), 0)];
+        case 'next-month': return [new Date(day.getFullYear(), day.getMonth() + 1, 1), new Date(day.getFullYear(), day.getMonth() + 2, 0)];
+        case 'this-year': return [new Date(day.getFullYear(), 0, 1), new Date(day.getFullYear(), 11, 31)];
         default: return null;
     }
 }
