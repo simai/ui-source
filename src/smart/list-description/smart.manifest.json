@@ -283,15 +283,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list-description/index.js",
-        "sha256": "16c2fcfffcf58f26897e496a8cbcea50e18d0755475525e31bb48c01d6ba1ff3"
+        "sha256": "fa4e0f838b6acf28eea58cb2c7a9d10e2759c6516d5893fe0e2071b252336fd0"
       },
       {
         "path": "src/smart/list-description/js/templates/default.js",
-        "sha256": "d17b8d4055ca41932bb9b9ff17d3077f111158fbf988c1474abe5019a29e6bab"
+        "sha256": "f7d30faf15125e67f4f73d6dfe0a73c5d8f147654aee892b3c820428e9e50bda"
       },
       {
         "path": "src/smart/list-description/scss/_smart__list-description.scss",
-        "sha256": "e319504edd7d00a9d4445a122d37c7ce8fb0a6efc4f051c02e7d244ea895eda6"
+        "sha256": "d55d3f19043fc1028a3ab34e72346d858404604e6f4baa4cff205eae9170fbd2"
       },
       {
         "path": "src/smart/list-description/rule.js",
@@ -299,7 +299,7 @@
       },
       {
         "path": "src/smart/list-description/docs.md",
-        "sha256": "96b44ecaaf2e58b13c91b52f1cff6bed6615ebf3717e53fd68e58b4335f3fff5"
+        "sha256": "eda26676852c361a5c2c9b7d8560c41c9282d56603d4e12cf3ea26f8a84ede1d"
       }
     ],
     "generated_runtime": []
