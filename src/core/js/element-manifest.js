@@ -677,12 +677,11 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
         const member = read.members.find((one) => one.name === name);
         // A setting named as one of the browser's own members (sf-change's
         // before and after, ChildNode methods) is an attribute only (§3.1,
-        // owner decision C279): a server that prints it in the island means
-        // the attribute, so the island writes the attribute (the page's own
-        // attribute wins) and says nothing. A script uses the component's
-        // list setting instead.
+        // owner decision C279): a script and the island pass the component's
+        // shared list instead (sf-change: changes, one change is a list of
+        // one), so the island leaves the name out and says which to use.
         if (member && member.writable && member.native && member.attribute) {
-          if (!this.hasAttribute(member.attribute)) writeAttribute(this, member, value);
+          globalThis.console?.warn?.(`[SIMAI Framework] ${this.localName}: the island's "${name}" is attribute only (C279); pass it in the list setting (sf-change: changes) or as the attribute`);
           continue;
         }
         if (!member || !member.writable || member.native) {

@@ -461,18 +461,6 @@
       "evidence": ".sf-icon js/templates/default.js"
     },
     {
-      "smart": "smart.progress-ring",
-      "unit": "component.avatars",
-      "since": "2026-11-16",
-      "evidence": ".sf-avatar index.js"
-    },
-    {
-      "smart": "smart.progress-ring",
-      "unit": "smart.avatar",
-      "since": "2026-11-16",
-      "evidence": "<sf-avatar> index.js"
-    },
-    {
       "smart": "smart.progress-run",
       "unit": "component.buttons",
       "since": "2026-11-16",

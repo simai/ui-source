@@ -991,7 +991,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button-icon",
-      "version": "1.13.7"
+      "version": "1.13.8"
     },
     "sf-checkbox": {
       "inputs": {

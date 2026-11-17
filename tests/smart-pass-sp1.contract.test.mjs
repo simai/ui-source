@@ -13,7 +13,7 @@ const json = (path) => JSON.parse(read(path));
 
 // ---- SM-CH-1..3, C279: sf-change before/after are attribute only ----------
 
-test('C279: the island writes an attribute-only setting as the attribute, silently', async () => {
+test('C279: the island passes only the list; an attribute-only setting in it is left out with a warning', async () => {
   const {elementFromManifest} = await import('../src/core/js/element-manifest.js');
   // before and after are ChildNode methods: give the fake prototype chain them.
   const saved = globalThis.HTMLElement;
@@ -42,16 +42,18 @@ test('C279: the island writes an attribute-only setting as the attribute, silent
     const element = new Change();
     element.children = [island({label: 'Статус', before: 'Собран', after: 'Передан'})];
     element.sfReadIsland();
-    assert.equal(element.getAttribute('before'), 'Собран');
-    assert.equal(element.getAttribute('after'), 'Передан');
+    assert.equal(element.getAttribute('before'), null);
+    assert.equal(element.getAttribute('after'), null);
     assert.equal(element.getAttribute('label'), 'Статус');
-    // The page's own attribute wins over the island.
+    const said = warnings.filter((line) => /before|after/u.test(line));
+    assert.equal(said.length, 2, said.join(' | '));
+    for (const line of said) assert.match(line, /attribute only \(C279\); pass it in the list setting \(sf-change: changes\)/u);
+    // The page's own attribute stays as written.
     const own = new Change();
     own.setAttribute('before', 'Свой');
     own.children = [island({before: 'Собран'})];
     own.sfReadIsland();
     assert.equal(own.getAttribute('before'), 'Свой');
-    assert.deepEqual(warnings.filter((line) => /before|after/u.test(line)), []);
     // The browser's method stays the browser's: no property shadows it.
     assert.equal(Object.getOwnPropertyDescriptor(Change.prototype, 'before'), undefined);
   } finally {
@@ -69,6 +71,7 @@ test('C279: the passport marks before and after attribute only, and the docs say
   const docs = read('src/smart/change/docs.md');
   assert.match(docs, /Только атрибутом/u);
   assert.match(docs, /списо?к\s+`changes`/u);
+  assert.match(docs, /в острове не читаются/u);
 });
 
 test('SM-CH-2: the docs list every version up to the passport', () => {
