@@ -56,8 +56,9 @@ try {
     const host = document.querySelector('#p sf-bulk-actions');
     const root = host?.querySelector('.sf-bulk-actions');
     if (!root) return null;
+    // sf-button hands its data attributes to its inner native button.
     const buttons = [...root.querySelectorAll('[data-sf-bulk-action]')].map((one) => {
-      const button = one.querySelector('button');
+      const button = one.localName === 'button' ? one : one.querySelector('button');
       const style = button ? getComputedStyle(button) : null;
       return {
         id: one.dataset.sfBulkAction,

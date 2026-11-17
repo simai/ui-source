@@ -113,60 +113,40 @@
 </div>
 
 
-<div role="region" class="sf-pagination-actions flex items-cross-center" aria-label="Действия с отмеченными">
-<span class="sf-pagination-actions-count">
-Отмечено: 4
-</span>
-<span class="sf-pagination-actions-separator" aria-hidden="true"></span>
-<sf-dropdown appearance="bordered" search="false" mode="select" size="1/2" value placeholder="Выберите действие" aria-label="Действие с выбранными элементами" style="display: contents;" data-sf-size-relative>
-<div class="sf-dropdown sf-dropdown--size-1/2 sf-dropdown--outlined sf-dropdown--text flex flex-col" portal data-portal="true" data-sf-static>
+<sf-bulk-actions data-sf-bulk="bar" place="dock" class="sf-pagination-bulk" size="1/2" count="4" page-count="10" total="120" label="Действия с отмеченными" style="display: contents;" data-sf-size-relative data-state="shown" data-place="dock"><script type="application/json" data-sf-settings>{"actions":[{"id":"archive","text":"В архив","disabled":false,"status":"","confirm":false},{"id":"delete","text":"Удалить","disabled":false,"status":"danger","confirm":false}]}</script><div role="region" data-sf-bulk-actions class="sf-bulk-actions sf-bulk-actions--dock sf-bulk-actions--size-1/2" aria-label="Действия с отмеченными" data-sf-static>
 
+<div class="sf-bulk-actions__lead">
+<span class="sf-bulk-actions__count">Выбрано 4</span>
 
-<label class="sf-dropdown-field cursor-pointer items-cross-center relative transition flex" tabindex="-1">
-
-
-<input type="text" class="cursor-pointer" readonly placeholder="Выберите действие" aria-label="Действие с выбранными элементами" tabindex="-1">
-
-<button type="button" class="sf-field-action sf-field-action--indicator sf-dropdown-chevron absolute" id="sf-pagination-bulk-2" tabindex="0" aria-expanded="false" aria-haspopup="listbox" aria-controls="sf-dropdown-1--listbox" aria-describedby="sf-pagination-bulk-3" aria-label="Действие с выбранными элементами">
-<sf-icon aria-hidden="true" icon="keyboard_arrow_down" style="display: contents;"><i class="sf-icon" aria-hidden="true" data-sf-static>keyboard_arrow_down</i></sf-icon>
-</button>
-</label>
-
-
-<div class="sf-list sf-list--size-1/2 flex flex-col" style="--sf-list--cell: var(--sf-ui-1\/2--control-height)" hidden></div>
-<span class="sf-dropdown-value" id="sf-pagination-bulk-3">Выберите действие</span></div>
-</sf-dropdown>
-<sf-button appearance="outline" scheme="on-surface" size="1/2" text="Применить" disabled style="display: contents;" data-sf-size-relative>
-<button type="button" class="sf-button sf-button--size-1/2 sf-button--outline sf-button--on-surface flex items-cross-center" disabled data-sf-bulk="apply" data-sf-static>
+</div>
+<div class="sf-bulk-actions__end">
+<div class="sf-bulk-actions__actions">
+<sf-button class="sf-bulk-actions__action" appearance="outline" scheme="on-surface" size="1/2" text="В архив" style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-button sf-button--size-1/2 sf-button--outline sf-button--on-surface flex items-cross-center" data-sf-bulk-action="archive" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-events-none flex-1">
-Применить
+В архив
 </span>
 
 </button>
 </sf-button>
+<sf-button-icon class="sf-bulk-actions__more" appearance="ghost" scheme="on-surface" icon="more_horiz" aria-haspopup="menu" size="1/2" aria-label="Ещё действия" style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--ghost flex items-cross-center sf-icon-button--on-surface" aria-label="Ещё действия" aria-haspopup="menu" data-sf-bulk-action="more" data-sf-static>
 
-<span class="sf-pagination-actions-separator" aria-hidden="true"></span>
-<sf-checkbox size="1/2" label="Для всех (120)" style="display: contents;" data-sf-size-relative>
-<label class="sf-checkbox sf-checkbox--size-1/2 flex cursor-pointer sf-checkable sf-checkable--size-1/2 sf-checkable--text" for="sf-pagination-bulk-4" data-sf-static>
+<sf-icon root-class="pointer-events-none" weight="400" aria-hidden="true" filled="false" icon="more_horiz" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-events-none" aria-hidden="true" data-sf-static>more_horiz</i></sf-icon>
+</button>
+</sf-button-icon>
+</div>
 
-<span class="sf-checkbox-box flex">
-<input type="checkbox" value="on" aria-labelledby="sf-pagination-bulk-5" id="sf-pagination-bulk-4">
-<sf-icon aria-hidden="true" icon style="display: contents;"><i class="sf-icon" aria-hidden="true" data-sf-static></i></sf-icon>
-</span>
-<span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-top flex"><span class="sf-checkbox-label" id="sf-pagination-bulk-5">Для всех (120)</span></span></span>
-
-</label>
-</sf-checkbox>
-
-<sf-button-icon class="sf-pagination-actions-clear" appearance="ghost" scheme="on-surface" icon="close" size="1/2" title="Снять выделение" aria-label="Снять выделение" style="display: contents;" data-sf-size-relative>
-<button type="button" class="sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--ghost flex items-cross-center sf-icon-button--on-surface" aria-label="Снять выделение" title data-sf-static>
+<sf-button-icon class="sf-bulk-actions__clear" appearance="ghost" scheme="on-surface" icon="close" size="1/2" aria-label="Снять выбор" title="Снять выбор (Esc)" style="display: contents;" data-sf-size-relative>
+<button type="button" class="sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--ghost flex items-cross-center sf-icon-button--on-surface" aria-label="Снять выбор" data-sf-bulk-action="clear" title aria-description="Снять выбор (Esc)" data-sf-static>
 
 <sf-icon root-class="pointer-events-none" weight="400" aria-hidden="true" filled="false" icon="close" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-events-none" aria-hidden="true" data-sf-static>close</i></sf-icon>
 </button>
 </sf-button-icon>
 </div>
+</div><span class="sf-bulk-actions__status sr-only" role="status" aria-live="polite" data-sf-static>Выбрано 4</span></sf-bulk-actions>
 
 
 </nav>

@@ -159,7 +159,7 @@ try {
     element.setAttribute('count-known', 'true');
     await new Promise((done) => setTimeout(done, 300));
     const button = element.querySelector('[data-sf-bulk-offer="all"]');
-    return button ? (button.getAttribute('text') ?? button.textContent).replace(/\s+/gu, ' ').trim() : null;
+    return button ? (button.closest('sf-button')?.getAttribute('text') ?? button.textContent).replace(/\s+/gu, ' ').trim() : null;
   });
   if (!offer || !/240/u.test(offer)) note({case: 'for all', offer, expected: 'the bar offers all 240 once the number is known'});
   await forAll.close();
