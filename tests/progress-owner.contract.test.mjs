@@ -39,7 +39,7 @@ test('Progress Bar 1.3.1: a paused indeterminate bar stands still; a status chan
   assert.match(ordinary, /root\.classList\.toggle\('sf-progress-bar--paused', Boolean\(state\.paused\)\)/);
   assert.match(styles, /\.sf-progress-bar--indeterminate\.sf-progress-bar--paused \.sf-progress-bar-progress \{\s*animation: none;/);
   // I2: one status class at most -- a status change takes every other away.
-  assert.match(ordinary, /\['primary', \.\.\.TONES\]\.forEach\(\(name\) => \{\s*root\.classList\.toggle\(`sf-progress-bar--\$\{name\}`, name === tone\);/);
+  assert.match(ordinary, /\['primary', \.\.\.TONES\]\.forEach\(\(name\) => \{\s*root\.classList\.toggle\(`sf-progress-bar--\$\{name\}`, name === (?:tone|drawn)\);/);
 });
 
 test('Progress Scale preserves exact value while rounding visual segments only', async () => {

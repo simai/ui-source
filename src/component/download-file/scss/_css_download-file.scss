@@ -83,6 +83,13 @@
     cursor: default;
   }
 
+  /* Reduced motion: the plate changes at once. */
+  @media (prefers-reduced-motion: reduce) {
+    .sf-download-file.sf-download-file--ready {
+      transition-duration: 0s;
+    }
+  }
+
   .sf-download-file.sf-download-file--full-width {
     inline-size: 100%;
   }
