@@ -29,3 +29,11 @@ test('Slider defaults bridge semantic spacing and duration tokens into Swiper',(
   assert.doesNotMatch(template,/data-space-between=\$\{String\(context\.spaceBetween\)\}/);
   assert.doesNotMatch(template,/data-speed=\$\{String\(context\.speed\)\}/);
 });
+test('A slider with a ratio has no slide floor: the frame is the ratio, nothing is cut (GB10)',()=>{
+  // The 192 floor (--sf-f2) stood under a 16/9 window 158 high at 390 and cut 34 px of the slide.
+  const rule=slider.match(/\.sf-slider:not\(\.sf-slider--content\):not\(\[data-ratio="auto"\]\)\[data-ratio\] > \.sf-slider-main\.swiper \.sf-slider-slide \{\s*min-height: ([^;]+);/);
+  assert.ok(rule,'the ratio slider sets its own slide floor');
+  assert.equal(rule[1],'0');
+  // Content sliders and sliders with no ratio keep the variable and its default.
+  assert.match(slider,/\.sf-slider \.sf-slider-slide \{[^}]*min-height: var\(--sf-slider-slide--min-height, var\(--sf-f2\)\)/s);
+});
