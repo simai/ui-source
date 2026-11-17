@@ -30,9 +30,12 @@ function saidNames() {
 // A former name of the field's look was read: noted, and said once per page.
 // kind "value" is a former word of appearance (outlined); kind "attribute" a
 // former name of the setting itself (input-type).
-export function sayFieldAppearanceFormer(component, {kind = 'value', from, to, since, journal} = {}) {
+// noted: the shared alias layer (core/js/aliases.js, from the component's
+// aliases.json) already noted this use and put the new name in place before
+// the component read it; only the console line is left to say.
+export function sayFieldAppearanceFormer(component, {kind = 'value', from, to, since, journal, noted = false} = {}) {
   if (!component || !from) return;
-  noteDeprecated({
+  if (!noted) noteDeprecated({
     component,
     tag: component,
     kind,

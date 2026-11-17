@@ -42,6 +42,10 @@ test('field looks: sf-dropdown answers outlined as bordered and says it once', (
   const source = read('src/smart/dropdown/index.js');
   assert.match(source, /valueAliases: \{bordered: \['outlined'\]\}/u);
   assert.match(source, /sayFieldAppearanceFormer\('sf-dropdown', \{from: 'outlined', to: 'bordered'/u);
+  // The alias layer puts bordered in place before the template reads it; its
+  // note in SF.deprecations is what says outlined was written.
+  assert.match(source, /one\.component === 'sf-dropdown' && one\.kind === 'value' && one\.from === 'outlined'/u);
+  assert.match(source, /noted: look !== 'outlined'/u);
   const row = json('src/smart/dropdown/aliases.json').aliases.find((one) => one.kind === 'value' && one.from === 'outlined');
   assert.deepEqual([row.to, row.setting, row.remove_after], ['bordered', 'appearance', '2027-01-01']);
 });
@@ -91,6 +95,10 @@ test('field looks: a former name is noted every time and said once per page', as
     const notes = globalThis.SF.deprecations.list();
     const outlined = notes.find((note) => note.component === 'sf-dropdown' && note.from === 'outlined');
     assert.equal(outlined.count, 3, 'every use is noted');
+    // Already noted by the alias layer: said (once, already) but not counted again.
+    sayFieldAppearanceFormer('sf-dropdown', {from: 'outlined', to: 'bordered', noted: true});
+    assert.equal(globalThis.SF.deprecations.list().find((note) => note.component === 'sf-dropdown' && note.from === 'outlined').count, 3);
+    assert.equal(warnings.length, 2);
     assert.equal(outlined.remove_after, '2027-01-01');
   } finally {
     console.warn = original;

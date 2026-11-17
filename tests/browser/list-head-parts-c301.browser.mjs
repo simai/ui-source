@@ -87,7 +87,7 @@ const BODY = `<main style="padding:16px;display:flex;flex-direction:column;gap:2
 
 const types = {'.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.woff2': 'font/woff2'};
 const pageOf = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/distr/core/css/core.css">
+<link rel="icon" href="data:,"><link rel="stylesheet" href="/distr/core/css/core.css">
 <script>window.sfPath = '/distr/'; window.SF_BOOT_CONFIG = {icons: {enabled: false}};</script>
 <script src="/distr/core/js/core.js"></script></head><body style="margin:0">${BODY}</body></html>`;
 const pages = {'/light': pageOf('light'), '/dark': pageOf('dark')};
@@ -149,7 +149,8 @@ const measure = () => {
       truncateClass: inner.classList.contains('sf-button--truncate'),
       title: inner.getAttribute('title'),
       tooltip: tip ? tip.textContent.trim() : null,
-      name: inner.textContent.replace(/\s+/gu, ' ').replace(tip?.textContent ?? '', '').trim(),
+      // The label's own words (with icons off, an icon's ligature is text).
+      name: label ? label.textContent.replace(/\s+/gu, ' ').trim() : '',
       icons,
     } : null;
   };
@@ -200,6 +201,9 @@ try {
         await page.hover('#t-long > .sf-button');
         await page.waitForTimeout(1100);
         const hovered = await page.evaluate(visibleTips);
+        // Away first: at 390 the long label's tooltip lies over the short button.
+        await page.mouse.move(2, height - 2);
+        await page.waitForTimeout(400);
         await page.hover('#t-short > .sf-button');
         await page.waitForTimeout(900);
         const hoveredShort = await page.evaluate(visibleTips);
