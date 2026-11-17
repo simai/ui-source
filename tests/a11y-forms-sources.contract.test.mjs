@@ -70,8 +70,10 @@ test('the field renderers read a date in the page\'s language and a phone by its
   assert.match(set, /function defaultDateText\(field, value, host\)/u);
   assert.match(set, /date: renderDateCell,\n\s+datetime: renderDateCell,/u);
   // The medium form, the View set's table form (C19, 2026-11-09), through core format-date.
-  assert.match(set, /const DATE_VIEW = \{dateStyle: 'medium', timeZone: 'UTC'\};/u);
-  assert.match(set, /const DATETIME_VIEW = \{dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC'\};/u);
+  // The field's format (PD-3) picks the length; medium stays the default.
+  assert.match(set, /return DATE_FORMATS\.has\(format\) \? format : 'medium';/u);
+  assert.match(set, /intl: \{dateStyle, timeZone: 'UTC'\}/u);
+  assert.match(set, /intl: \{dateStyle, timeStyle: 'short', timeZone: 'UTC'\}/u);
   assert.match(set, /import \{formatDate\} from "\.\.\/\.\.\/core\/js\/format-date\.js";/u);
   // C40: a date in view is a time element with the record's own day and clock.
   assert.match(set, /html`<time class="sf-field-view" datetime=\$\{datetime\}>\$\{text\}<\/time>`/u);

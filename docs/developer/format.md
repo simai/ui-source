@@ -66,7 +66,8 @@ format.msUntilNextDay();                          // ms to the reader's next mid
 format.number(1234.5, 'number', {node});          // 1 234,5           1,234.5
 format.number(1234.5, 'integer', {node});         // 1 235
 format.number(1234.5, 'decimal-2', {node});       // 1 234,50
-format.number(0.123, 'percent', {node});          // 12,3 %            12.3%
+format.number(0.123, 'share', {node});            // 12,3 %            12.3 %   (a share 0..1; 'percent' is the same word)
+format.number(12.5, 'unit-percent', {node});      // 12,5 %            12.5 %   (the percent itself, as the property type stores it)
 format.number(1234, 'compact', {node});           // 1,2 тыс.          1.2K
 format.number(1234.5, 'currency-RUB', {node});    // 1 234,50 ₽
 format.number(45.3, 'unit-gigabyte', {node});     // 45,3 ГБ
@@ -76,6 +77,10 @@ format.fileSize(1468006, {node});                 // 1,4 МБ            1.4 MB
 format.fileSize(size, {node, units: ['bytes', 'KB', 'MB', 'GB']}); // a component's own words
 ```
 
+- **Two percents.** `share` (and its older name `percent`, the charts' word)
+  multiplies a share by 100: 0.125 is 12,5 %. The property type `percent`
+  stores the percent itself, «12.5» is 12,5 %, and `unit-percent` formats it so.
+  Every percent is written with a no-break space before «%» (C203 (3)).
 - **Anything that is not a value** (no date, `NaN`, `null`) is `gap`, `''` by
   default; a chart passes `'—'`.
 - **Relative days** count calendar days in the reader's time zone, not 24-hour

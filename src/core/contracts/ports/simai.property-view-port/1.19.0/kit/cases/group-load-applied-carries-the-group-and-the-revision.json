@@ -1,0 +1,33 @@
+{
+  "id": "group-load-applied-carries-the-group-and-the-revision",
+  "intent": "group.load",
+  "capability": "group-load",
+  "summary": "An applied group read carries the record's head and revision, the arrangement with every group's field count, and the fields of the group asked for.",
+  "given": {
+    "capabilities": [
+      "group-load"
+    ]
+  },
+  "when": {
+    "intent": "group.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "section": "main",
+      "group": "about",
+      "reason": "started"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record",
+      "group",
+      "revision"
+    ],
+    "data_must_include": [
+      "record"
+    ],
+    "note": "record.sections carries every section and group, so the panel draws its tabs and its skeleton to size at once; only the group `about` carries its fields, every other group carries `fields` empty and its `field_count`. An empty `fields` with a count is a group not read yet, never an empty group."
+  }
+}

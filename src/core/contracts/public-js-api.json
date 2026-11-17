@@ -486,7 +486,7 @@
       "doc": "guide/functions/text/format",
       "kind": "object",
       "loaded_by": "core",
-      "summary": "Dates, days, numbers and file sizes in the page's language (the locale named, else the node's page language), through Intl. date(value, {date, time, intl, locale, node}); relativeDay(value, {now, today, yesterday, tomorrow, weekday, capital}) says today, yesterday, a weekday of the last week or the date, and msUntilNextDay(now) when that changes; relativeTime(value, {now}); dayOffset(value, {now}) counts calendar days; number(value, format, {step, grouping, gap}) by a format word (number, integer, decimal-<n>, percent, compact, currency-<CODE>, unit-<unit>); fileSize(size, {units}) in B, KB, MB, GB. docs/developer/format.md.",
+      "summary": "Dates, days, numbers and file sizes in the page's language (the locale named, else the node's page language), through Intl. date(value, {date, time, intl, locale, node}); relativeDay(value, {now, today, yesterday, tomorrow, weekday, capital}) says today, yesterday, a weekday of the last week or the date, and msUntilNextDay(now) when that changes; relativeTime(value, {now}); dayOffset(value, {now}) counts calendar days; number(value, format, {step, grouping, gap}) by a format word (number, integer, decimal-<n>, share -- a share 0..1 as a per cent, percent its older name -- compact, currency-<CODE>, unit-<unit>; unit-percent is a value that already is the per cent, as the property type percent stores it); fileSize(size, {units}) in B, KB, MB, GB. docs/developer/format.md.",
       "members": [
         "locale",
         "date",
@@ -911,8 +911,12 @@
         "renderEditField",
         "renderViewField",
         "renderFilterField",
+        "renderTotalField",
         "dateTime",
         "FILTER_RENDERERS",
+        "NUMBER_FILTER_OPERATORS",
+        "isNumericType",
+        "decimal",
         "registry"
       ]
     },

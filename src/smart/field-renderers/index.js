@@ -8,7 +8,7 @@ import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTi
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
-import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
+import {addDecimal, compareDecimal, currencyCodes, currencyDisplayOf, currencyOf, formatDecimal, formatMoney, formatPercent, fractionDigits, moneyParts, moneyTotals, readDecimal, readTypedDecimal, restingDecimal} from "./decimal.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -133,87 +133,183 @@ function renderRangeFilterControl(field, host) {
     `;
 }
 
-function renderNumberFilterControl(field, host) {
-    const control = host.getFilterControlValue(field.key);
-    const operators = field.filter?.operators || ['eq'];
+// The number filter (owner decision C294, MP-6, MP-7; the same order as the
+// date filter): the condition comes first and under it exactly what it needs
+// -- one number, two («Между», both ends included) or nothing («Пусто», «Не
+// пусто», whose value is true). The nine conditions are the ones AG Grid, MUI
+// X and spreadsheets agree on; a field's `filter.operators` may name fewer.
+// The value is typed with the decimal keyboard and the sign in the field (a
+// fixed currency's sign where the language writes it, «%» after a percent),
+// pasted text is read as a person means it («1 234,50 ₽», «$1,234.50») and
+// the request carries a decimal string, never the typed text. A money field
+// whose currency lives in the value adds a currency choice (q-mp-mix): the
+// request carries `currency` and compares amounts within it. A new condition
+// of another shape drops the old value.
+export const NUMBER_FILTER_OPERATORS = Object.freeze(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty']);
+const NUMBER_NO_VALUE_OPERATORS = new Set(['empty', 'not-empty']);
+const operatorShape = (operator) => (NUMBER_NO_VALUE_OPERATORS.has(operator) ? 'none' : operator === 'between' ? 'two' : 'one');
+
+function numberOperatorLabel(host, operator) {
+    return NUMBER_FILTER_OPERATORS.includes(operator) ? setText(host, `numberOperator_${operator}`) : host.getFilterOperatorLabel(operator);
+}
+
+function renderNumberFilterControl(field, host, look = {}) {
+    const control = host.getFilterControlValue(field.key) || {};
+    const locale = pageLocale(host ?? null);
+    const operators = field.filter?.operators || NUMBER_FILTER_OPERATORS;
     const selectedOperator = control.operator || field.filter?.defaultOperator || operators[0];
-    const isBetween = selectedOperator === 'between';
+    const shape = operatorShape(selectedOperator);
     const rawValue = control.value;
-    const rangeValue = Array.isArray(rawValue)
-        ? rawValue
-        : [rawValue || '', ''];
-    const patchNumberValue = (index, nextInputValue) => {
-        if (!isBetween) {
-            host.patchTempFilterValue(field.key, {
-                value: nextInputValue || '',
-                operator: selectedOperator,
-            });
+    const rangeValue = Array.isArray(rawValue) ? rawValue : [rawValue ?? '', ''];
+    const currencies = look.currencies || null;
+    const currency = currencies ? (currencies.includes(control.currency) ? control.currency : currencies[0]) : (look.currency || null);
+    const sign = look.money && currency ? currencyOf(currency, locale, currencyDisplayOf(field)) : null;
+    const textStart = sign?.before ? sign.sign : '';
+    const textEnd = look.percent ? '%' : (sign && !sign.before ? sign.sign : '');
+    const minDigits = look.money && currency ? currencyOf(currency, locale).minor : 0;
+    const shown = (value) => restingDecimal(value, locale, value === '' || value === null || value === undefined ? 0 : minDigits);
+    const withCurrency = (patch) => (currencies ? {...patch, currency} : patch);
+    const patch = (next) => host.patchTempFilterValue(field.key, withCurrency({operator: selectedOperator, ...next}));
+    const typed = (index, event) => {
+        const input = event.currentTarget ?? event.target;
+        const text = String(input?.value ?? '');
+        const read = readTypedDecimal(text, {locale, currency});
+        if (input) {
+            input.toggleAttribute('invalid', !read.ok);
+            if (read.ok) input.removeAttribute('error-message');
+            else input.setAttribute('error-message', setText(host, 'notNumber'));
+        }
+        if (!read.ok) return;
+        const value = read.value ?? '';
+        if (shape !== 'two') {
+            patch({value});
             return;
         }
-
-        const nextValue = [...rangeValue];
-        nextValue[index] = nextInputValue || '';
-
-        host.patchTempFilterValue(field.key, {
-            value: nextValue,
-            operator: selectedOperator,
-        });
+        const next = [...rangeValue];
+        next[index] = value;
+        patch({value: next});
     };
+    const input = (index, label, value) => html`
+        <sf-input
+                size=${filterSize(host)}
+                appearance="bordered"
+                root-class="flex-1 min-w-0"
+                label=${label}
+                value=${shown(value)}
+                inputmode=${look.integer ? 'numeric' : 'decimal'}
+                text-start=${textStart || nothing}
+                text-end=${textEnd || nothing}
+                name="sf_filter_${field.key || 'number'}${index ? '_second' : ''}"
+                @change=${(event) => typed(index, event)}
+        ></sf-input>`;
+    const valueWord = setText(host, look.money ? 'filterAmount' : look.percent ? 'filterPercent' : 'filterNumber');
 
     return html`
         <div class="flex gap-1/3 flex-col">
-            <div class="sf-filter-operator-inputs flex gap-1/3 items-cross-center">
-                <sf-input
-                        size=${filterSize(host)}
-                        appearance="bordered"
-                        root-class="flex-1 min-w-0"
-                        label="${isBetween ? setText(host, 'rangeFrom') : host.getFilterOperatorLabel(selectedOperator)}"
-                        value="${isBetween ? rangeValue[0] || '' : rawValue || ''}"
-                        name="sf_filter_${field.key || 'number'}"
-                        @change=${(event) => {
-                            patchNumberValue(0, event.target?.value);
-                        }}
-                ></sf-input>
-                ${isBetween ? html`
-                    <sf-input
-                            size=${filterSize(host)}
-                            appearance="bordered"
-                            label="${setText(host, 'rangeTo')}"
-                            root-class="flex-1 min-w-0"
-                            value="${rangeValue[1] || ''}"
-                            name="sf_filter_${field.key || 'number'}_second"
-                            @change=${(event) => {
-                                patchNumberValue(1, event.target?.value);
-                            }}
-                    ></sf-input>` : nothing}
-            </div>
             <sf-dropdown
                     size=${filterSize(host)}
                     appearance="bordered"
                     mode="select"
-                    placeholder="${setText(host, 'operator')}"
+                    label=${setText(host, 'condition')}
+                    placeholder=${setText(host, 'condition')}
                     root-class="flex-1"
                     search="false"
+                    data-sf-filter-part="operator"
                     @change=${(event) => {
-                        const operator =
-                                event.detail?.values?.[0] ||
-                                event.detail?.value ||
-                                selectedOperator;
-                        host.patchTempFilterValue(field.key, {operator});
+                        if (event.target !== event.currentTarget) return;
+                        const operator = event.detail?.values?.[0] || event.detail?.value || selectedOperator;
+                        if (operator === selectedOperator) return;
+                        const next = operatorShape(operator);
+                        // A new condition of another shape drops the old value:
+                        // one amount and two amounts are not the same question.
+                        const value = next === 'none' ? true
+                            : next === shape ? rawValue
+                                : next === 'two' ? ['', ''] : '';
+                        host.patchTempFilterValue(field.key, withCurrency({operator, value}));
                     }}
             >
                 ${operators.map((operator) => html`
                     <sf-list-item
                             kind="text"
                             size=${filterSize(host)}
-                            text="${host.getFilterOperatorLabel(operator)}"
+                            text="${numberOperatorLabel(host, operator)}"
                             value="${operator}"
                             ?selected=${operator === selectedOperator}
                     ></sf-list-item>
                 `)}
             </sf-dropdown>
+            ${shape === 'none' ? nothing : shape === 'two' ? html`
+                <div class="sf-filter-operator-inputs flex gap-1/3 items-cross-start">
+                    ${input(0, setText(host, 'rangeFrom'), rangeValue[0])}
+                    ${input(1, setText(host, 'rangeTo'), rangeValue[1])}
+                </div>` : html`
+                <div class="sf-filter-operator-inputs flex gap-1/3 items-cross-start">
+                    ${input(0, valueWord, Array.isArray(rawValue) ? rawValue[0] : rawValue)}
+                </div>`}
+            ${currencies && shape !== 'none' ? html`
+                <sf-dropdown
+                        size=${filterSize(host)}
+                        appearance="bordered"
+                        mode="select"
+                        label=${setText(host, 'currency')}
+                        root-class="flex-1"
+                        search=${currencies.length > 12 ? 'true' : 'false'}
+                        data-sf-filter-part="currency"
+                        .options=${currencies.map((code) => ({type: 'text', size: filterSize(host), value: code, text: code, selected: code === currency}))}
+                        @change=${(event) => {
+                            if (event.target !== event.currentTarget) return;
+                            const code = event.detail?.values?.[0] || event.detail?.value;
+                            if (!code || code === currency) return;
+                            host.patchTempFilterValue(field.key, {operator: selectedOperator, value: rawValue, currency: code});
+                        }}
+                ></sf-dropdown>` : nothing}
         </div>
     `;
+}
+
+function renderIntegerFilterControl(field, host) {
+    return renderNumberFilterControl(field, host, {integer: true});
+}
+
+// Money and percent are filtered as numbers with their own sign in the field
+// (owner decisions C291 (2), C294): «%» after a percent, a fixed currency's
+// sign where the locale writes it. A money field whose currency lives in the
+// value chooses the currency in the filter, from the field's `currencies`.
+function renderMoneyFilterControl(field, host) {
+    const fixed = fixedCurrency(field);
+    return renderNumberFilterControl(field, host, {money: true, currency: fixed, currencies: fixed ? null : fieldCurrencies(field)});
+}
+
+function renderPercentFilterControl(field, host) {
+    return renderNumberFilterControl(field, host, {percent: true});
+}
+
+// The date filter (property type study «Дата», PD-4..PD-8, 2026-11-17). The
+// operator comes first and the day field under it, because the operator says
+// whether there is one day to choose, two, or none: «Сегодня», «Неделя»,
+// «Месяц» and «Любая дата» are periods by themselves, so they draw no day
+// field (it stood there and did nothing). A period of the person's own
+// («Диапазон») is the calendar in range mode with its quick ranges -- today,
+// this week, this month, the last 7 and 30 days -- or the field's own
+// `filter.presets` (sf-input-date's presets, [] for none). The day field
+// takes the size of the table, as the operator list beside it does, and the
+// calendar names its months in the page's language: it was hard-coded ru-Ru.
+// A day's operators read as a day's, «Позже», «Не раньше», «Раньше»,
+// «Не позже», not as a number's «Больше чем» (DATE_OPERATOR_WORDS); every
+// other operator keeps the host's word.
+const DATE_NO_VALUE_OPERATORS = new Set(['today', 'week', 'month', 'any']);
+const DATE_RANGE_PRESETS = 'today,this-week,this-month,last-7-days,last-30-days';
+const DATE_OPERATOR_WORDS = {gt: 'dateOperator_gt', gte: 'dateOperator_gte', lt: 'dateOperator_lt', lte: 'dateOperator_lte'};
+
+function dateOperatorLabel(host, operator) {
+    const key = DATE_OPERATOR_WORDS[operator];
+    return key ? setText(host, key) : host.getFilterOperatorLabel(operator);
+}
+
+function dateFilterPresets(field) {
+    const presets = field.filter?.presets;
+    if (presets === undefined || presets === null) return DATE_RANGE_PRESETS;
+    return Array.isArray(presets) ? presets : String(presets);
 }
 
 function renderDateFilterControl(field, host) {
@@ -229,18 +325,6 @@ function renderDateFilterControl(field, host) {
 
     return html`
         <div class="flex flex-col gap-1/3">
-            <sf-input-date
-                    .value=${dateValue}
-                    ?range=${isBetween}
-                    name="sf_filter_${field.key || 'date'}"
-                    locale="ru-Ru"
-                    @change=${(event) => {
-                        host.patchTempFilterValue(field.key, {
-                            value: event.detail.value,
-                            operator: selectedOperator,
-                        });
-                    }}
-            ></sf-input-date>
             <sf-dropdown
                     size=${filterSize(host)}
                     appearance="bordered"
@@ -260,12 +344,28 @@ function renderDateFilterControl(field, host) {
                     <sf-list-item
                             kind="text"
                             size=${filterSize(host)}
-                            text="${host.getFilterOperatorLabel(operator)}"
+                            text="${dateOperatorLabel(host, operator)}"
                             value="${operator}"
                             ?selected=${operator === selectedOperator}
                     ></sf-list-item>
                 `)}
             </sf-dropdown>
+            ${DATE_NO_VALUE_OPERATORS.has(selectedOperator) ? nothing : html`
+            <sf-input-date
+                    size=${filterSize(host)}
+                    .value=${dateValue}
+                    ?range=${isBetween}
+                    .presets=${isBetween ? dateFilterPresets(field) : ''}
+                    name="sf_filter_${field.key || 'date'}"
+                    aria-label=${field.label || field.key || ''}
+                    @change=${(event) => {
+                        if (event.target !== event.currentTarget) return;
+                        host.patchTempFilterValue(field.key, {
+                            value: event.detail.value,
+                            operator: selectedOperator,
+                        });
+                    }}
+            ></sf-input-date>`}
         </div>
     `;
 }
@@ -362,7 +462,7 @@ export const FILTER_RENDERERS = {
     text: renderTextFilterControl,
     string: renderTextFilterControl,
     number: renderNumberFilterControl,
-    integer: renderNumberFilterControl,
+    integer: renderIntegerFilterControl,
     date: renderDateFilterControl,
     datetime: renderDateFilterControl,
     range: renderRangeFilterControl,
@@ -380,12 +480,12 @@ export const FILTER_RENDERERS = {
     lookup: renderEntityMultiSelectFilterControl,
     file: renderFileFilterControl,
     color: renderColorFilterControl,
-    // The types a component set draws (property-view port 1.18.0): a money
-    // amount and a percent are filtered as numbers (the host compares the
-    // amount, as a decimal), and an items field by its number of rows.
-    money: renderNumberFilterControl,
-    percent: renderNumberFilterControl,
-    items: renderNumberFilterControl,
+    // A money amount and a percent are filtered as decimals with their sign
+    // (C291 (2)); an items field, which the View set draws, by its number of
+    // rows (property-view port 1.18.0).
+    money: renderMoneyFilterControl,
+    percent: renderPercentFilterControl,
+    items: renderIntegerFilterControl,
 };
 
 // What a field asks to be filtered by: its own declared control if it has one,
@@ -767,7 +867,12 @@ function renderNumericCell(field, value, host) {
     const variant = field.variant || field.filter?.variant;
     const number = Number(scalarValue(value));
     if ((variant !== 'scale' && variant !== 'meter') || !Number.isFinite(number)) {
-        return renderHostFormattedCell(field, value, host);
+        // The host's text first; else the number in the page's language, as
+        // the view prints it («12,5»), where the table printed «12.5».
+        const formatted = renderHostFormattedCell(field, value, host);
+        if (formatted !== null) return formatted;
+        if (carriesText(value)) return value.text || null;
+        return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || null;
     }
     if (number < 0 || number > 100) return null;
     if (variant === 'meter') return {component: {type: 'progress-bar', props: meterProps(field, number)}};
@@ -896,6 +1001,8 @@ const EDIT_RENDERERS = {
     file: renderFileEdit,
     color: renderColorEdit,
     include: renderIncludeEdit,
+    money: renderMoneyEdit,
+    percent: renderPercentEdit,
 };
 
 function fieldName(field) {
@@ -1319,6 +1426,277 @@ function renderNumberEdit(field, value, host) {
     `;
 }
 
+// Money and percent are the Framework's in every mode (owner decision C291
+// (2), 2026-11-17; set boundary study BQ-2): the View set's editors were the
+// reference, its option names kept -- `currency` (a fixed ISO 4217 code),
+// `min`, `max`, `precision` (a percent's digits; money's are its currency's
+// minor units, ISO 4217) and `placeholder`, as simai.property-view-port 1.18.0
+// declares them. Every value is a decimal string, never a float:
+//
+//   percent   "12.5" -- the percent, not the share; 0 to 100 unless the
+//             field bounds it otherwise
+//   money     {amount: "1500.50", currency: "RUB"}; a field with a fixed
+//             currency also reads a bare amount, and writes the pair
+//
+// One sf-input with the decimal keyboard and the sign in the field («%», a
+// fixed currency's «₽» after the amount or «$» before it, as the page's
+// language writes it); a money field without a fixed currency has a currency
+// dropdown beside the amount. What is typed is read with a comma or a point
+// and written canonical; the input shows it back in the page's language
+// («1500,5»). An entry that is not a value yet -- text that is not a number,
+// more digits after the point than allowed, a bound crossed, an amount without
+// a currency -- is written as typed and said through setFieldError, which holds
+// a save (port 1.16.0, as a masked string's), and under the field once the
+// person leaves it. A host without setFieldError hears undefined, as for a
+// number.
+// The codes a currency choice offers when a field names no `currencies` and
+// the browser cannot list ISO 4217 (Intl.supportedValuesOf).
+const OFFERED_CURRENCIES = ['RUB', 'USD', 'EUR', 'CNY', 'KZT', 'BYN', 'AED', 'TRY', 'GBP', 'JPY'];
+
+// A field's `currencies` (C294, MP-10): an array of ISO 4217 codes or a
+// comma-separated string; absent, every code the browser knows.
+function fieldCurrencies(field) {
+    const asked = Array.isArray(field?.currencies) ? field.currencies
+        : typeof field?.currencies === 'string' ? field.currencies.split(',') : [];
+    const codes = asked.map((code) => String(code).trim().toUpperCase()).filter((code) => /^[A-Z]{3}$/u.test(code));
+    return codes.length ? [...new Set(codes)] : currencyCodes(OFFERED_CURRENCIES);
+}
+
+// What a person is typing, per host and field: the value written is
+// canonical («12.5»), and drawn back as such it would move the caret under
+// «12,50» or swallow the comma of «12,». The typed text is shown while it
+// still reads as the value, and forgotten when the field is left.
+const DECIMAL_DRAFTS = new WeakMap();
+
+function draftOf(host, key) {
+    return host && typeof host === 'object' ? DECIMAL_DRAFTS.get(host)?.get(key) : undefined;
+}
+
+function keepDraft(host, key, text) {
+    if (!host || typeof host !== 'object') return;
+    let drafts = DECIMAL_DRAFTS.get(host);
+    if (!drafts) {
+        drafts = new Map();
+        DECIMAL_DRAFTS.set(host, drafts);
+    }
+    if (text === undefined) drafts.delete(key);
+    else drafts.set(key, text);
+}
+
+// At rest the amount shows its groups and at least `minDigits` after the
+// point («1 500,50»); while it is typed, as typed (C294).
+function decimalShown(host, key, value, {currency = null, minDigits = 0} = {}) {
+    if (value === null || value === undefined || value === '') return '';
+    const locale = pageLocale(host ?? null);
+    const read = readTypedDecimal(value, {locale: 'en', currency});
+    if (!read.ok) return String(value);
+    const draft = draftOf(host, key);
+    if (typeof draft === 'string') {
+        const typed = readTypedDecimal(draft, {locale, currency});
+        if (typed.ok && typed.value === read.value) return draft;
+    }
+    return restingDecimal(read.value, locale, minDigits);
+}
+
+const hasBound = (bound) => bound !== null && bound !== undefined && bound !== '' && readDecimal(bound).ok;
+
+function setWord(host, key, vars) {
+    return pageWord(SET_TEXT, key, host ?? null, {component: SET_NAME, vars});
+}
+
+// What is wrong with a typed decimal, or '': not a number, more digits after
+// the point than `digits` (never rounded away: «1500,555» is an error, while
+// «1500,500» is 1500.5), outside min..max.
+function decimalError(host, text, {digits = null, min = null, max = null, currency = null} = {}) {
+    const read = readTypedDecimal(text, {locale: pageLocale(host ?? null), currency});
+    if (!read.ok) return setText(host, 'notNumber');
+    if (read.value === null) return '';
+    if (Number.isInteger(digits) && fractionDigits(read.value) > digits) {
+        return digits === 0
+            ? setText(host, 'fractionNone')
+            : pageWord(SET_TEXT, 'precisionMax', host ?? null, {component: SET_NAME, count: digits});
+    }
+    const low = hasBound(min) && compareDecimal(read.value, min) === -1;
+    const high = hasBound(max) && compareDecimal(read.value, max) === 1;
+    if (!low && !high) return '';
+    const locale = pageLocale(host ?? null);
+    const vars = {min: hasBound(min) ? formatDecimal(min, locale) : '', max: hasBound(max) ? formatDecimal(max, locale) : ''};
+    if (hasBound(min) && hasBound(max)) return setWord(host, 'boundBetween', vars);
+    return low ? setWord(host, 'boundAtLeast', vars) : setWord(host, 'boundAtMost', vars);
+}
+
+// The value goes to the host with what is wrong with it: a value that is not
+// one yet is written as typed while setFieldError holds the save.
+function writeDecimal(field, host, value, message) {
+    if (message) {
+        if (typeof host.setFieldError === 'function') {
+            host.setFieldError(field, message);
+            host.setFieldValue(field, value);
+        } else {
+            host.setFieldValue(field, undefined);
+        }
+        return;
+    }
+    host.setFieldError?.(field, null);
+    host.setFieldValue(field, value);
+}
+
+function decimalInput(field, value, host, {key, check, write, currency = null, minDigits = 0, textStart = '', textEnd = '', rootClass = ''}) {
+    const own = EDIT_ERROR;
+    const locale = pageLocale(host ?? null);
+    const typed = (event, left) => {
+        const input = event.currentTarget ?? event.target;
+        const text = String(input?.value ?? '');
+        keepDraft(host, key, left ? undefined : text);
+        const message = check(text);
+        if (input && !own) {
+            if (message && left) {
+                input.setAttribute('error-message', message);
+                input.toggleAttribute('invalid', true);
+            } else if (!message && input.hasAttribute?.('invalid') && !input.hasAttribute('data-sf-form-invalid')) {
+                input.toggleAttribute('invalid', false);
+                input.removeAttribute('error-message');
+            }
+        }
+        const read = readTypedDecimal(text, {locale, currency});
+        write(read.ok ? read.value : text, message);
+    };
+    return html`
+        <sf-input
+                size=${EDIT_SIZE}
+                appearance="bordered"
+                name=${fieldName(field)}
+                value=${decimalShown(host, key, value, {currency, minDigits})}
+                inputmode="decimal"
+                text-start=${textStart || nothing}
+                text-end=${textEnd || nothing}
+                placeholder=${field.placeholder || nothing}
+                root-class=${rootClass || nothing}
+                ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(own)}
+                error-message=${own || nothing}
+                aria-label=${field.label || field.key || ''}
+                @input=${(event) => typed(event, false)}
+                @change=${(event) => typed(event, true)}
+        ></sf-input>
+    `;
+}
+
+function fixedCurrency(field) {
+    return typeof field?.currency === 'string' && /^[A-Z]{3}$/u.test(field.currency) ? field.currency : null;
+}
+
+// A percent's digits after the point: `precision`, else the digits its
+// `step` has («0.1» is one), else as many as typed.
+function percentDigits(field) {
+    if (Number.isInteger(field.precision)) return field.precision;
+    const step = readDecimal(field.step);
+    return step.ok && step.value !== null && Number(step.value) > 0 ? fractionDigits(step.value) : null;
+}
+
+// A percent is the percent itself, «12.5» is 12,5 % (C294); it is bounded
+// only by the field's min and max -- a growth of 150 % or a change of −5 % is
+// a percent too (MP-11: the View set bounded it 0..100 without saying why).
+function renderPercentEdit(field, value, host) {
+    const key = String(field.key ?? '');
+    const min = hasBound(field.min) ? field.min : null;
+    const max = hasBound(field.max) ? field.max : null;
+    const digits = percentDigits(field);
+    return decimalInput(field, scalarValue(value), host, {
+        key,
+        textEnd: '%',
+        check: (text) => decimalError(host, text, {digits, min, max}),
+        write: (next, message) => writeDecimal(field, host, next, message),
+    });
+}
+
+function renderMoneyEdit(field, value, host) {
+    const locale = pageLocale(host ?? null);
+    const key = String(field.key ?? '');
+    const fixed = fixedCurrency(field);
+    const display = currencyDisplayOf(field);
+    const parts = moneyParts(scalarValue(value), fixed);
+    // A currency chosen before an amount is typed waits here: a value is an
+    // amount and its currency, never a currency alone.
+    const currencyKey = `${key}#currency`;
+    const currency = parts.currency || draftOf(host, currencyKey) || null;
+    const min = hasBound(field.min) ? field.min : null;
+    const max = hasBound(field.max) ? field.max : null;
+    const check = (text, code) => {
+        const message = decimalError(host, text, {
+            digits: code ? currencyOf(code, locale).minor : null,
+            min,
+            max,
+            currency: code,
+        });
+        if (message) return message;
+        return readTypedDecimal(text, {locale, currency: code}).value !== null && !code ? setText(host, 'chooseCurrency') : '';
+    };
+    const write = (amount, message, code) => writeDecimal(field, host,
+        amount === null || amount === '' ? null : {amount, currency: code ?? null}, message);
+    const sign = fixed ? currencyOf(fixed, locale, display) : null;
+    const amount = decimalInput(field, parts.amount, host, {
+        key,
+        currency,
+        minDigits: currency ? currencyOf(currency, locale).minor : 0,
+        textStart: sign?.before ? sign.sign : '',
+        textEnd: sign && !sign.before ? sign.sign : '',
+        rootClass: fixed ? '' : 'flex-1 min-w-0',
+        check: (text) => check(text, currency),
+        write: (next, message) => write(next, message, currency),
+    });
+    if (fixed) return amount;
+
+    // The field's `currencies`, the value's own currency first when the list
+    // lacks it; without a list, every ISO 4217 code with a search.
+    const listed = fieldCurrencies(field);
+    const offered = [...new Set([...(currency ? [currency] : []), ...listed])];
+    const name = setText(host, 'currency');
+    return html`
+        <div class="flex gap-1/3 items-cross-start min-w-0 w-full">
+            ${amount}
+            <sf-dropdown
+                    size=${EDIT_SIZE}
+                    appearance="bordered"
+                    mode="select"
+                    search=${offered.length > 12 ? 'true' : 'false'}
+                    root-class="basis-1/3 min-w-0"
+                    name=${`${fieldName(field)}_currency`}
+                    value=${currency ?? ''}
+                    placeholder=${name}
+                    aria-label=${name}
+                    .options=${offered.map((code) => {
+                        const {sign: mark} = currencyOf(code, locale, display);
+                        return {type: 'text', size: '1', value: code, text: mark === code ? code : `${code} ${mark}`, selected: code === currency};
+                    })}
+                    @change=${(event) => {
+                        const code = event.detail?.values?.[0] || event.detail?.value || null;
+                        keepDraft(host, currencyKey, code ?? undefined);
+                        const typed = parts.amount;
+                        // The dropdown shows the code itself; a value is written
+                        // only with an amount.
+                        // The stored amount is checked as the page would show it.
+                        if (typed !== null && typed !== undefined && typed !== '') write(typed, check(restingDecimal(typed, locale), code), code);
+                    }}
+            ></sf-dropdown>
+        </div>
+    `;
+}
+
+function renderPercentView(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    const text = typeof formatted === 'string' ? formatted
+        : carriesText(value) ? value.text : formatPercent(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
+    return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
+}
+
+function renderMoneyView(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    const text = typeof formatted === 'string' ? formatted
+        : carriesText(value) ? value.text : formatMoney(scalarValue(value), field, pageLocale(host ?? null));
+    return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
+}
+
 // A date control has no clock. `sf-input-date` declares a format and a date,
 // and its parser is anchored (`^\d{4}-\d{2}-\d{2}$`), so a datetime value
 // falls through to a loose digit scan that reads `2026-11-27T13:26:00` as day
@@ -1340,16 +1718,30 @@ function splitDateTime(value) {
     return {date: match[1], suffix: `T${match[2]}${match[3] || ''}`};
 }
 
+// min and max bound the day (PD-2, as a datetime's do): an ISO date, or the
+// day of an ISO date and time; the calendar disables the days outside them
+// and a typed day outside them is put back. The host still validates.
+function dayBound(bound) {
+    const match = typeof bound === 'string' ? bound.trim().match(/^\d{4}-\d{2}-\d{2}/u) : null;
+    return match ? match[0] : '';
+}
+
 function renderDateEdit(field, value, host) {
     value = scalarValue(value);
     const {date, suffix} = splitDateTime(value);
+    const min = dayBound(field.min);
+    const max = dayBound(field.max);
     return html`
         <sf-input-date
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 value=${date ?? ''}
+                min-date=${min || nothing}
+                max-date=${max || nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     const next = event.detail?.value ?? event.target?.value ?? null;
                     host.setFieldValue(field, next && suffix ? `${next}${suffix}` : next);
@@ -1403,6 +1795,8 @@ function renderDateTimeEdit(field, value, host) {
                 minute-step=${step || nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     // The picker's own change, not a native one from its field.
                     if (event.target !== event.currentTarget) return;
@@ -1439,6 +1833,8 @@ function renderTimeEdit(field, value, host) {
                 minute-step=${step || nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     if (event.target !== event.currentTarget) return;
                     const result = composeTime(stored, String(event.detail?.value ?? ''));
@@ -2257,6 +2653,15 @@ const keepsControlWhenLocked = (asked, field) => asked === 'choice' && isChoiceB
 // differently; for every other one a disabled field is a read-only one.
 let EDIT_DISABLED = false;
 
+// `options.error`: what is wrong with the field now, a sentence, or empty (PD-1,
+// property type study «Дата»). A control that says its own error (sf-input-date
+// for a date, a datetime and a time) is drawn invalid with the sentence under
+// it, the error-message of the field family, so a host that is not sf-form --
+// a record card -- marks the field itself instead of writing a line under a
+// field with a normal border. sf-form keeps setting invalid on the controls it
+// draws, as before.
+let EDIT_ERROR = '';
+
 export function renderEditField(field = {}, value, host, options = {}) {
     const asked = field.propertyType || field.type || field.dataType;
     const disabled = options?.disabled === true;
@@ -2273,7 +2678,9 @@ export function renderEditField(field = {}, value, host, options = {}) {
     const outerDisabled = EDIT_DISABLED;
     const outerPicker = EDIT_PICKER;
     const outerApply = EDIT_APPLY;
+    const outerError = EDIT_ERROR;
     EDIT_SIZE = sizeOption(options);
+    EDIT_ERROR = typeof options?.error === 'string' ? options.error.trim() : '';
     EDIT_DISABLED = disabled;
     // `options.picker: 'dropdown'`: the record, relation, user and paged lookup
     // fields drawn as before C139, a searchable sf-dropdown (until 2027-01-01).
@@ -2286,6 +2693,7 @@ export function renderEditField(field = {}, value, host, options = {}) {
         EDIT_DISABLED = outerDisabled;
         EDIT_PICKER = outerPicker;
         EDIT_APPLY = outerApply;
+        EDIT_ERROR = outerError;
     }
 }
 
@@ -2357,6 +2765,18 @@ function renderHtmlView(field, value) {
     return clean ? html`<div class="sf-field-view sf-field-html">${unsafeHTML(clean)}</div>` : nothing;
 }
 
+// A number in the page's language (set boundary study, 2026-11-17): «12,5 кг»
+// on a Russian page, «12.5 kg» on an English one, through Intl with every
+// digit the value has (decimal.js formatDecimal, never through a float on the
+// way). The host's formatFieldValue and a value's own text still win; what is
+// not a number is shown as it came.
+function numberText(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted;
+    if (carriesText(value)) return value.text;
+    return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
+}
+
 // A number carries its unit when the field declares one, and nothing when it
 // does not -- the set does not guess at a unit, and «42» with an invented «шт»
 // beside it is a worse answer than «42».
@@ -2374,7 +2794,7 @@ function renderNumberView(field, value, host) {
         return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing}></sf-progress-bar>`;
     }
 
-    const text = viewText(field, value, host);
+    const text = numberText(field, value, host);
     return html`<span class="sf-field-view">${field.unit ? `${text} ${field.unit}` : text}</span>`;
 }
 
@@ -2389,8 +2809,20 @@ function renderNumberView(field, value, host) {
 // reads them as written, in the host's zone): nothing is moved to the reader's
 // time zone, which would show a different day near midnight. A value that is
 // not a date at all is shown as it came, never guessed at.
-const DATE_VIEW = {dateStyle: 'medium', timeZone: 'UTC'};
-const DATETIME_VIEW = {dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC'};
+//
+// `format` is the field's display setting (PD-3): the length of the date,
+// Intl's dateStyle in the page's language -- short «17.11.2026» / «11/17/26»,
+// medium (the default) «17 нояб. 2026 г.» / «Nov 17, 2026», long «17 ноября
+// 2026 г.» / «November 17, 2026», full with the weekday. A datetime keeps its
+// clock beside it. It is read by the view and the cell; the edit control
+// types the locale's digits whatever it says. Any other value is medium, and
+// the host's formatFieldValue or text still wins.
+const DATE_FORMATS = new Set(['short', 'medium', 'long', 'full']);
+
+function dateFormatOf(field) {
+    const format = String(field?.format ?? '').trim();
+    return DATE_FORMATS.has(format) ? format : 'medium';
+}
 
 function defaultDateText(field, value, host) {
     if (carriesText(value)) return null;
@@ -2402,10 +2834,11 @@ function defaultDateText(field, value, host) {
         const date = new Date(0);
         date.setUTCFullYear(year, month - 1, day);
         const type = field?.propertyType || field?.type || field?.dataType;
-        if (type !== 'datetime' || !parts.time) return formatDate(date, {intl: DATE_VIEW, locale}) || null;
+        const dateStyle = dateFormatOf(field);
+        if (type !== 'datetime' || !parts.time) return formatDate(date, {intl: {dateStyle, timeZone: 'UTC'}, locale}) || null;
         const [hours, minutes] = parts.time.split(':').map(Number);
         date.setUTCHours(hours, minutes, 0, 0);
-        return formatDate(date, {intl: DATETIME_VIEW, locale}) || null;
+        return formatDate(date, {intl: {dateStyle, timeStyle: 'short', timeZone: 'UTC'}, locale}) || null;
     } catch {
         return null;
     }
@@ -2594,11 +3027,40 @@ const VIEW_RENDERERS = {
     file: renderFileView,
     color: renderColorView,
     include: renderIncludeView,
+    money: renderMoneyView,
+    percent: renderPercentView,
 };
 
 // A field shown rather than edited. `host` is optional and used for one thing
 // only -- formatFieldValue, where a consumer's own formatting of a number or a
 // date belongs. Null when the set has no view for that type.
+// A column total (owner decision C294, MP-12): the table owns its totals
+// row, the set gives the sum by the digits and its display. Money is summed
+// per currency -- a column of dollars and euros is two lines, never one
+// number -- and a number or an integer is one sum; a percent, a choice or a
+// text has no total (null). `values` are the column's stored values; what is
+// not a number is left out.
+export function renderTotalField(field = {}, values = [], host) {
+    const type = field.propertyType || field.type || field.dataType;
+    const locale = pageLocale(host ?? null);
+    const list = (Array.isArray(values) ? values : []).map((value) => scalarValue(value));
+    if (type === 'money') {
+        const totals = moneyTotals(list, field, locale);
+        return totals.length ? totals.map((total) => total.text) : null;
+    }
+    if (type !== 'number' && type !== 'integer') return null;
+    const numbers = list.filter((value) => value !== null && value !== undefined && value !== '' && readTypedDecimal(value).ok);
+    if (!numbers.length) return null;
+    const sum = addDecimal(numbers);
+    return sum === null ? null : [formatDecimal(sum, locale)];
+}
+
+// Whether a type is a number a table aligns to the end of the line with
+// figures of one width (the registry's `numeric`, C294 MP-12).
+export function isNumericType(type) {
+    return Boolean(PROPERTY_TYPES.find((entry) => entry.type === type)?.numeric);
+}
+
 export function propertyModes(type) {
     return modesOf(type, {view: VIEW_RENDERERS, edit: EDIT_RENDERERS, cell: CELL_RENDERERS, filter: FILTER_RENDERERS});
 }
@@ -2638,7 +3100,28 @@ if (typeof window !== 'undefined') {
         renderEditField,
         renderFilterField,
         renderViewField,
+        renderTotalField,
         FILTER_RENDERERS,
+        // The nine number conditions in the filter's order (C294).
+        NUMBER_FILTER_OPERATORS,
+        isNumericType,
+        // Decimal strings as the set reads and shows them (C294): the View
+        // set's items, compound and ru.requisites call these instead of
+        // keeping a copy. format(value), money(value, field), percent(value)
+        // take a locale (the page's when absent); read(text, {locale,
+        // currency}) reads what a person typed or pasted; add(...values) and
+        // compare(a, b) work by the digits; totals(values, field) sums money
+        // per currency; currency(code, locale, display) is {sign, before, minor}.
+        decimal: {
+            format: (value, locale) => formatDecimal(value, locale || pageLocale(null)),
+            money: (value, field = {}, locale) => formatMoney(value, field, locale || pageLocale(null)),
+            percent: (value, locale) => formatPercent(value, locale || pageLocale(null)),
+            read: (text, options = {}) => readTypedDecimal(text, {locale: pageLocale(null), ...options}),
+            add: addDecimal,
+            compare: compareDecimal,
+            totals: (values, field = {}, locale) => moneyTotals(values, field, locale || pageLocale(null)),
+            currency: (code, locale, display) => currencyOf(code, locale || pageLocale(null), display),
+        },
         // A datetime's value read and written back, for a host that draws its
         // own control: split(value), compose(stored, {date, time}),
         // normalizeTime(text); and a time of day's: splitTime(value),

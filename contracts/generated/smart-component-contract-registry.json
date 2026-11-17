@@ -1063,7 +1063,8 @@
         "public_parts": [],
         "uses": [
           "smart.button",
-          "smart.help-mark"
+          "smart.help-mark",
+          "smart.icon"
         ]
       },
       "contract_schema": {
@@ -1075,13 +1076,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/form/smart.manifest.json",
-      "manifest_sha256": "998d5ae0dd740e27e1034def655274896a04e377fafe4029f560f97c918795b4",
+      "manifest_sha256": "8867945d0f2b2b2b4164334bb399d33fdf961807539a785c87c2326d5e10f562",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit or instant in one component.",
+      "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
       "tags": [
         "form",
         "fields",

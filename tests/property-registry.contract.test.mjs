@@ -86,22 +86,26 @@ test('the password renderers never put the value into markup and write only type
   }
 });
 
-// The types the View set draws (simai.property-view-port 1.18.0): registered
+// The types the View set draws (simai.property-view-port 1.18.0; money's
+// currencies and currencyDisplay since 1.19.0, C294): registered
 // with the set that shows and edits them, their cells and filters the
-// Framework's, and every key they read declared by the port.
-test('money, percent, items, compound and ru.requisites are the view set\'s, with the port\'s keys', () => {
-  const port = JSON.parse(readFileSync(join(root, 'src/core/contracts/ports/simai.property-view-port/1.18.0/port.json'), 'utf8'));
+// Framework's, and every key they read declared by the port. money and
+// percent are the Framework's in every mode since C291 (2).
+test('items, compound and ru.requisites are the view set\'s; money and percent the Framework\'s, with the port\'s keys', () => {
+  const port = JSON.parse(readFileSync(join(root, 'src/core/contracts/ports/simai.property-view-port/1.19.0/port.json'), 'utf8'));
   const declared = new Set(Object.keys(port.data.record.schema.properties.sections.items.properties.groups.items.properties.fields.items.properties));
   const cell = new Set(mapKeys('CELL_RENDERERS'));
   const filter = new Set(mapKeys('FILTER_RENDERERS'));
+  const view = new Set(mapKeys('VIEW_RENDERERS'));
+  const edit = new Set(mapKeys('EDIT_RENDERERS'));
   const drawn = PROPERTY_TYPES.filter((entry) => entry.set);
-  assert.deepEqual(drawn.map((entry) => entry.type), ['money', 'percent', 'items', 'compound', 'ru.requisites']);
-  for (const entry of drawn) {
-    assert.equal(entry.set, 'view', entry.type);
+  assert.deepEqual(drawn.map((entry) => entry.type), ['items', 'compound', 'ru.requisites']);
+  for (const entry of drawn) assert.equal(entry.set, 'view', entry.type);
+  for (const entry of PROPERTY_TYPES.filter((one) => ['money', 'percent', 'items', 'compound', 'ru.requisites'].includes(one.type))) {
     for (const param of entry.params) assert.ok(declared.has(param), `${entry.type}.${param} is declared by the port`);
   }
-  for (const type of ['money', 'percent', 'items']) {
-    assert.ok(cell.has(type), `${type} has a cell`);
-    assert.ok(filter.has(type), `${type} has a filter`);
+  for (const type of ['money', 'percent']) {
+    for (const [name, map] of [['view', view], ['edit', edit], ['cell', cell], ['filter', filter]]) assert.ok(map.has(type), `${type} has a ${name}`);
   }
+  assert.ok(cell.has('items') && filter.has('items'), 'items has a cell and a filter');
 });

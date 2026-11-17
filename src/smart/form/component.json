@@ -2,7 +2,7 @@
   "$comment": "The source of sf-form's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C182 (2026-11-14; study control/research/2026-11-14-form.md, prototype prototypes/form-study.html), a form drawn from field descriptions over the Framework's field renderers.",
   "id": "smart.form",
   "tag": "sf-form",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "kind": "leaf",
   "family": "form",
   "settings": {
@@ -101,10 +101,32 @@
       "type": "enum",
       "values": [
         "submit",
-        "instant"
+        "instant",
+        "answer"
       ],
       "default": "submit",
-      "summary": "submit: the form is saved with its button -- «Сохранить» and «Отмена» under the fields, a required yes/no is a checkbox (C165 (4)), «Есть несохранённые изменения» under the buttons after a change. instant: every change acts at once -- no buttons, a change event per field, a required yes/no is a switch (a settings panel, a block's parameters)"
+      "summary": "submit: the form is saved with its button -- «Сохранить» and «Отмена» under the fields, a required yes/no is a checkbox (C165 (4)), «Есть несохранённые изменения» under the buttons after a change. instant: every change acts at once -- no buttons, a change event per field, a required yes/no is a switch (a settings panel, a block's parameters). answer: a form a person answers once, a questionnaire in a message or a feed entry (owner decision C291 (3)) -- «Отправить» and «Отмена» under the fields; a press puts the answer on its way (state pending, «Отправляем…»), the host sets the outcome; accepted shows the values read-only with the mark «Отправлено» and no «Изменить», nothing reopens them; mode is not read"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1",
+        "1/2"
+      ],
+      "default": "1",
+      "summary": "The rung of the fields and the buttons on the size ladder: 1, or 1/2 for a form in a message (owner decision C291 (3)). The label, the hint and the error keep the 1/2 text step at both"
+    },
+    "state": {
+      "type": "enum",
+      "values": [
+        "open",
+        "pending",
+        "accepted",
+        "declined",
+        "expired"
+      ],
+      "default": "open",
+      "summary": "apply answer only: where the answer is, the confirm surface's words (sf-confirm). open: the fields and «Отправить», «Отмена». pending: an answer is on its way, set by a press -- the fields are locked, the pressed button waits, «Отправляем…» (or «Отменяем…»). accepted: the values sent, read-only, with «Отправлено». declined: nothing is drawn (C35: a declined answer says nothing). expired: only «Время ответа истекло». The host sets the outcome; back to open when the answer could not be delivered (with set-errors for the fields to fix)"
     },
     "labels": {
       "type": "enum",
@@ -178,6 +200,18 @@
       "cancelable": true,
       "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every field's value by key. Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)"
     },
+    "answer": {
+      "carries": {
+        "accepted": "boolean",
+        "value": {
+          "type": "object",
+          "optional": true,
+          "summary": "With accepted true: every field's value by key, as submit carries it"
+        }
+      },
+      "cancelable": true,
+      "summary": "apply answer: «Отправить» found every field right (accepted true, with the value) or «Отмена» was pressed (accepted false). Sent with state pending; the host sets the outcome, in its handler or later: accepted, declined, or open again. Cancelled, the answer was not taken: the form is open again and may be answered again (the confirm surface's answer)"
+    },
     "invalid": {
       "carries": {
         "fields": "list"
@@ -240,6 +274,9 @@
     },
     {
       "name": "cl-help-mark"
+    },
+    {
+      "name": "cl-icon"
     }
   ],
   "templates": {
@@ -276,7 +313,8 @@
   "host-states": {
     "data-dirty": "boolean",
     "data-invalid": "boolean",
-    "data-mode": "string"
+    "data-mode": "string",
+    "data-state": "string"
   },
   "css-variables": {
     "--sf-form-field-gap": {
@@ -300,7 +338,7 @@
       "state": "default"
     }
   },
-  "x-summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit or instant in one component.",
+  "x-summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "x-source": {
     "package": "framework",
     "folder": "form",
@@ -324,7 +362,9 @@
     "version 1.2.1 (2026-11-16, DEV follow-up msg-a1474963 to C182; numbered above 1.2.0 on origin/fix/first-paint-fp1): a patch. The hint the form draws under a field, and the error line it draws for a control that does not say its own, are read with the field: their ids join the aria-describedby of the control's native focus target (a group of choices as a whole), after the form's drawing and after the control's own, and leave it once the line is gone; ids the control set itself are kept. A screen reader heard the label and the value and never the hint. Markup, look, settings, values, events and keys unchanged.",
     "version 1.3.1 (2026-11-17, feat/lang-file-c282; numbered above 1.3.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.3.2 (written on the branch as 1.2.2; 2026-11-17, owner decision C268; numbered above 1.2.1 on origin/fix/fields-files-e1): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
-    "version 1.3.3 (written on the branch as 1.3.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged."
+    "version 1.3.3 (written on the branch as 1.3.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
+    "version 1.3.4 (2026-11-17, set boundary study msg-e78f2e51): a patch. A field of a property type the field renderers do not draw at all (money or percent, which a component set draws, or a misspelt type) is still left out, and the form now says so once per type on the page: one console warning naming the field and the type, where it was dropped without a word. Settings, values and events unchanged.",
+    "version 1.4.0 (2026-11-17, owner decision C291 (3), FO-8): a minor, settings added. apply answer: a form a person answers once, the questionnaire in a message the View set drew as sf-view-flow -- «Отправить» and «Отмена» under the fields, the answer event (accepted, value; cancelable), the setting state with the confirm surface's words (open, pending, accepted, declined, expired) and its glyphs and lines («Отправляем…», «Отправлено», «Время ответа истекло»), a read view after the answer with the mark «Отправлено» and no «Изменить». size 1/2: the fields and the buttons a rung down for a message. Host state data-state. Fields of the property types money and percent are drawn now (module.smart-field-renderers 1.15.0, C291 (2)). apply submit and instant at size 1: unchanged."
   ],
   "x-registry": {
     "capabilities": [
@@ -357,6 +397,13 @@
           "dirty",
           "invalid",
           "view"
+        ],
+        "answer": [
+          "open",
+          "pending",
+          "accepted",
+          "declined",
+          "expired"
         ]
       },
       "visual_states": [

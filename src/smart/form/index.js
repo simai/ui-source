@@ -23,6 +23,7 @@ import {applied, refused, elementFromManifest} from '../../core/js/element-manif
 import {instancePath, partId} from '../../core/js/instance-path';
 import {propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
+import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
 import {renderFormTemplate} from './js/templates/default';
 import {isListChoice, renderChoiceList} from './js/choice-list.js';
 import manifest from './component.json';
@@ -34,6 +35,22 @@ import {files as languageFiles} from './lang/index.mjs';
 import './scss/index.scss';
 
 export const WIDTHS = ['s', 'm', 'full'];
+
+// apply answer (owner decision C291 (3), FO-8): the states of the confirm
+// surface, of which open and pending draw the fields to answer.
+const ANSWERING = new Set(['open', 'pending']);
+
+// The property types already reported as unknown, once per page for each.
+const UNKNOWN_TYPES_TOLD = new Set();
+
+function warnUnknownType(field) {
+  const type = String(field?.propertyType ?? '');
+  if (UNKNOWN_TYPES_TOLD.has(type)) return;
+  const modes = propertyModes(type);
+  if (modes.view || modes.edit) return;
+  UNKNOWN_TYPES_TOLD.add(type);
+  console.warn(`sf-form: the field «${field?.key ?? ''}» is left out: the Framework's field renderers draw no property type «${type}»`);
+}
 
 // The controls of the field family that say an error in their own message
 // line, linked to their native control (C153 (3)): the form gives them
@@ -148,6 +165,9 @@ class SfForm extends FormElement {
     // The mode the form returns to after a save or a cancel: view when it was
     // opened from view.
     this._fromView = false;
+    // apply answer: which answer is on its way, true (Отправить) or false
+    // (Отмена); null when the host set pending itself.
+    this._pressed = null;
     this._hosts = new Map();
     this._onSubmit = (event) => this.onNativeSubmit(event);
     this._onFocusOut = (event) => this.onFieldLeave(event);
@@ -208,10 +228,20 @@ class SfForm extends FormElement {
     return normalizeFields(this.fields);
   }
 
-  // The fields the form shows now: every field the renderers draw.
+  // The fields the form shows now: every field the renderers draw. A field of
+  // a type the renderers do not know at all (items or compound, which a
+  // component set draws, or a misspelt type) is still left out, and the page
+  // hears it once per type, with the field that brought it (set boundary
+  // study, 2026-11-17): it was dropped without a word.
   shownFields() {
+    // An answer declined or run out shows only its outcome (the confirm
+    // surface; C35: a declined answer says nothing).
+    if (this.isAnswer && !ANSWERING.has(this.answerState) && this.answerState !== 'accepted') return [];
     const editing = this.isEditing;
-    return this.list.filter((field) => (editing ? this.drawsEdit(field) : this.drawsView(field)));
+    return this.list.filter((field) => {
+      warnUnknownType(field);
+      return editing ? this.drawsEdit(field) : this.drawsView(field);
+    });
   }
 
   // A field of a type the renderers do not draw in this mode is left out.
@@ -225,7 +255,17 @@ class SfForm extends FormElement {
   }
 
   get isEditing() {
+    if (this.isAnswer) return ANSWERING.has(this.answerState);
     return this.mode !== 'view';
+  }
+
+  // apply answer: a form a person answers once (C291 (3)); mode is not read.
+  get isAnswer() {
+    return this.apply === 'answer';
+  }
+
+  get answerState() {
+    return CONFIRM_STATES.includes(this.state) ? this.state : 'open';
   }
 
   get isInstant() {
@@ -233,7 +273,10 @@ class SfForm extends FormElement {
   }
 
   renderOptions() {
-    return this.isInstant ? {apply: 'instant'} : {};
+    const options = this.isInstant ? {apply: 'instant'} : {};
+    // size 1/2: the controls a rung down, for a form in a message (C291 (3)).
+    if (this.size === '1/2') options.size = '1/2';
+    return options;
   }
 
   forget() {
@@ -344,6 +387,12 @@ class SfForm extends FormElement {
     const shown = new Set(this.list.map((field) => field.key));
     const entries = Object.entries(errors).map(([key, message]) => [text(key), text(message)]).filter(([key, message]) => key && message);
     if (entries.length && !entries.some(([key]) => shown.has(key))) return refused('missing');
+    // apply answer: the host's errors answer a Send that could not be taken;
+    // the form is open again with them. An answer settled is not reopened.
+    if (this.isAnswer) {
+      if (!ANSWERING.has(this.answerState)) return refused('closed');
+      if (this.answerState === 'pending') this.state = 'open';
+    }
     this._hostErrors = new Map(entries.filter(([key]) => shown.has(key)));
     if (!this._hostErrors.size) {
       for (const key of [...this._errors.keys()]) this.recheck(key);
@@ -366,6 +415,7 @@ class SfForm extends FormElement {
   }
 
   submit() {
+    if (this.isAnswer) return this.answer(true);
     if (!this.isEditing || this.isInstant) return refused('mode');
     if (!this.checkFields({focus: true})) return refused('invalid');
     const value = this.value;
@@ -378,9 +428,38 @@ class SfForm extends FormElement {
   }
 
   cancel() {
+    if (this.isAnswer) return this.answer(false);
     this.restore();
     this.sfEmit('cancel', {value: this.value});
     if (this._fromView) this.toView();
+  }
+
+  // apply answer: «Отправить» (true) checks the fields and sends the values,
+  // «Отмена» (false) declines. The form goes pending before the event, so a
+  // host may set the outcome in its handler; a cancelled event is an answer
+  // the host did not take, and the form is open again (the confirm surface).
+  answer(accepted) {
+    if (this.answerState !== 'open') return refused('closed');
+    if (accepted && !this.checkFields({focus: true})) return refused('invalid');
+    const focusWasInside = this.contains(this.ownerDocument.activeElement);
+    this._pressed = accepted;
+    this.state = 'pending';
+    const detail = accepted ? {accepted, value: this.value} : {accepted};
+    if (!this.sfEmit('answer', detail, {cancelable: true})) {
+      this._pressed = null;
+      this.state = 'open';
+      return refused('prevented');
+    }
+    // The values sent are what the read view shows after the answer.
+    if (accepted) {
+      this._saved = clone(this._values);
+      this.forget();
+    }
+    // The pressed button is gone with the answers: the line that says what
+    // happened takes the focus rather than the page.
+    if (focusWasInside) this.whenDrawn(() => this.querySelector('.sf-form-state')?.focus({preventScroll: true}));
+    this.requestComponentUpdate('answer');
+    return applied();
   }
 
   restore() {
@@ -549,10 +628,12 @@ class SfForm extends FormElement {
       legend: all.length > 1 ? group.label : '',
       fields: group.fields.map((field) => this.fieldContext(field, {editing, instant, id})),
     }));
+    const answer = this.isAnswer ? this.answerContext() : null;
     const errors = editing ? fields.filter((field) => this._errors.has(field.key))
       .map((field) => ({key: field.key, message: this._errors.get(field.key), href: `#${id}--field-${field.key}`})) : [];
     this.sfHostState('data-mode', editing ? 'edit' : 'view');
     this.sfHostState('data-dirty', this._dirty);
+    this.sfHostState('data-state', answer ? answer.state : null);
     return this.createTemplateContext({
       ...this.getPropsContext(),
       component: this,
@@ -560,13 +641,16 @@ class SfForm extends FormElement {
       label: text(this.label),
       editing,
       instant,
+      answer,
+      size: this.size === '1/2' ? '1/2' : '1',
       labels: this.labels === 'start' ? 'start' : 'top',
       footer: this.footer === 'sticky' ? 'sticky' : 'static',
       groups,
-      requiredNote: editing && !instant && fields.some((field) => field.required === true && field.readonly !== true && field.propertyType !== 'boolean'),
+      requiredNote: editing && !instant && !(answer && answer.state !== 'open') && fields.some((field) => field.required === true && field.readonly !== true && field.propertyType !== 'boolean'),
       errorList: editing && this._submitted && errors.length > 1 ? errors : null,
-      dirty: this._dirty,
+      dirty: answer ? false : this._dirty,
       words: {
+        send: word('send'),
         requiredNote: word('required-note'),
         submit: word('submit'),
         cancel: word('cancel'),
@@ -578,13 +662,33 @@ class SfForm extends FormElement {
     });
   }
 
+  // apply answer: the state, the line under the fields and its glyph (the
+  // confirm surface's: schedule, check_circle, timer_off).
+  answerContext() {
+    const state = this.answerState;
+    if (state !== 'pending') this._pressed = null;
+    const line = {
+      pending: this._pressed === false ? 'answer-cancelling' : 'answer-sending',
+      accepted: 'answer-sent',
+      expired: 'answer-expired',
+    }[state];
+    return {
+      state,
+      open: state === 'open',
+      pending: state === 'pending',
+      pressed: state === 'pending' ? this._pressed : null,
+      text: line ? this.sfWord(line) : '',
+      icon: line ? CONFIRM_ICON[state] : '',
+    };
+  }
+
   fieldContext(field, {editing, instant, id}) {
     const value = this._values[field.key];
     const host = this.hostOf(field);
     // A short choice is a ready group of radios or checks (C165 (1)).
     const control = editing
       ? (isListChoice(field) ? renderChoiceList(field, value, host) : renderEditField(field, value, host, this.renderOptions()))
-      : renderViewField(field, value, host);
+      : renderViewField(field, value, host, this.size === '1/2' ? {size: '1/2'} : {});
     // A required yes/no under apply submit is a checkbox, which carries its
     // label beside the box (C165 (4)): no label row over it.
     const checkbox = editing && !instant && field.propertyType === 'boolean' && field.required === true && field.readonly !== true;

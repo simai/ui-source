@@ -11,7 +11,10 @@ import {formatLocale, intlFormatter} from './format-intl.js';
  *   number (default)  1 234,5   as many digits as `step` needs, at most 6; 2 without one
  *   integer           1 235
  *   decimal-<n>       n digits after the point, always (0 to 20)
- *   percent           a share 0..1 as 12 %
+ *   share             a share 0..1 as 12 % (0.125 is 12,5 %)
+ *   percent           the same share: the charts' word, kept
+ *   unit-percent      a value that already is the percent (12.5 is 12,5 %),
+ *                     as the property type `percent` stores it
  *   compact           1,2 тыс.  /  1.2K
  *   currency-<CODE>   1 234,50 ₽ (an ISO 4217 code)
  *   unit-<unit>       45,3 ГБ (an Intl unit: gigabyte, megabit-per-second)
@@ -31,7 +34,11 @@ export function numberOptions(format = 'number', step = 0) {
   }
   const word = words[0] ?? 'number';
   if (word === 'integer') return {minimumFractionDigits: 0, maximumFractionDigits: 0};
-  if (word === 'percent') return {style: 'percent', maximumFractionDigits: 1};
+  // Two meanings of «percent» met in the Framework (C294, MP-4): this word
+  // multiplies a share by 100, while the property type `percent` holds the
+  // percent itself. `share` says which one it is; `percent` stays its alias for
+  // the charts that write it, and `unit-percent` is the percent itself.
+  if (word === 'share' || word === 'percent') return {style: 'percent', maximumFractionDigits: 1};
   if (word === 'compact') return {notation: 'compact', maximumFractionDigits: 1};
   const decimal = /^decimal-(\d{1,2})$/u.exec(word);
   if (decimal) {
@@ -68,7 +75,10 @@ export function formatNumber(value, format = 'number', {step = 0, gap = '', grou
  * language that writes the sign first («%72») keeps its order.
  */
 export function percentSign(text) {
-  return String(text).replace(/[\s\u00a0\u202f]*%$/u, '\u00a0%');
+  // A right-to-left language writes direction marks around the sign («12.5‎%‎»
+  // in Arabic); they go with the space it had, and the number keeps the mark
+  // it starts with (C294).
+  return String(text).replace(/[\s\u00a0\u202f\u200e\u200f\u061c]*%[\u200e\u200f\u061c]*$/u, '\u00a0%');
 }
 
 /**

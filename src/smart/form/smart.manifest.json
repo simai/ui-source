@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "title": "Form",
-  "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit or instant in one component.",
+  "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -32,7 +32,8 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.help-mark"
+      "smart.help-mark",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -57,10 +58,32 @@
       "apply": {
         "type": "string",
         "default": "submit",
-        "description": "submit: the form is saved with its button -- «Сохранить» and «Отмена» under the fields, a required yes/no is a checkbox (C165 (4)), «Есть несохранённые изменения» under the buttons after a change. instant: every change acts at once -- no buttons, a change event per field, a required yes/no is a switch (a settings panel, a block's parameters)",
+        "description": "submit: the form is saved with its button -- «Сохранить» and «Отмена» under the fields, a required yes/no is a checkbox (C165 (4)), «Есть несохранённые изменения» under the buttons after a change. instant: every change acts at once -- no buttons, a change event per field, a required yes/no is a switch (a settings panel, a block's parameters). answer: a form a person answers once, a questionnaire in a message or a feed entry (owner decision C291 (3)) -- «Отправить» and «Отмена» under the fields; a press puts the answer on its way (state pending, «Отправляем…»), the host sets the outcome; accepted shows the values read-only with the mark «Отправлено» and no «Изменить», nothing reopens them; mode is not read",
         "enum": [
           "submit",
-          "instant"
+          "instant",
+          "answer"
+        ]
+      },
+      "size": {
+        "type": "string",
+        "default": "1",
+        "description": "The rung of the fields and the buttons on the size ladder: 1, or 1/2 for a form in a message (owner decision C291 (3)). The label, the hint and the error keep the 1/2 text step at both",
+        "enum": [
+          "1",
+          "1/2"
+        ]
+      },
+      "state": {
+        "type": "string",
+        "default": "open",
+        "description": "apply answer only: where the answer is, the confirm surface's words (sf-confirm). open: the fields and «Отправить», «Отмена». pending: an answer is on its way, set by a press -- the fields are locked, the pressed button waits, «Отправляем…» (or «Отменяем…»). accepted: the values sent, read-only, with «Отправлено». declined: nothing is drawn (C35: a declined answer says nothing). expired: only «Время ответа истекло». The host sets the outcome; back to open when the answer could not be delivered (with set-errors for the fields to fix)",
+        "enum": [
+          "open",
+          "pending",
+          "accepted",
+          "declined",
+          "expired"
         ]
       },
       "labels": {
@@ -212,6 +235,25 @@
         "additionalProperties": true
       }
     },
+    "sf-form-answer": {
+      "summary": "apply answer: «Отправить» found every field right (accepted true, with the value) or «Отмена» was pressed (accepted false). Sent with state pending; the host sets the outcome, in its handler or later: accepted, declined, or open again. Cancelled, the answer was not taken: the form is open again and may be answered again (the confirm surface's answer)",
+      "payload": {
+        "type": "object",
+        "required": [
+          "accepted"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean"
+          },
+          "value": {
+            "type": "object",
+            "description": "With accepted true: every field's value by key, as submit carries it"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "sf-form-invalid": {
       "summary": "A submit or check-validity found wrong fields: their keys in order. Every one shows its error at the field; from two errors a summary with a link to each stands over the form and takes the focus",
       "payload": {
@@ -250,6 +292,13 @@
         "dirty",
         "invalid",
         "view"
+      ],
+      "answer": [
+        "open",
+        "pending",
+        "accepted",
+        "declined",
+        "expired"
       ]
     },
     "visual_states": [
@@ -351,11 +400,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "d318e817514c8e64f5c8a8fc86753a8a2e1b8e68d67365b69b6c3a8ab3a3e7f5"
+        "sha256": "d32c08e359486fd618216ccf3ac877dc78fdf4c2e6d95aacbe7aa9abe067a15b"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
-        "sha256": "4cce2bf925e8e22286dbb7655f9aaa5fd4f3338fca52949acb9cc0b77892556e"
+        "sha256": "bf00d09b152963015a4f49e8c4efc11c73f2a0daa1579c4848d14c7e670125d8"
       },
       {
         "path": "src/smart/form/js/choice-list.js",
@@ -363,11 +412,11 @@
       },
       {
         "path": "src/smart/form/rule.js",
-        "sha256": "7d9c458e8d8a177c79b13e2119cfc731a5a5e41b4e432c6b0e9a03c8018ee2f1"
+        "sha256": "4b78c6a55f21a4f39766775e5141a4581a51fe5720174a6a0733e9aa270fb741"
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "d15fbd5e527ff2c7a3e517d395e69bfd49bbcc9c0bd78b4a48a0f13ff1ee8f47"
+        "sha256": "8ae922fd2ba71789c03bf1c164df233ee57ed366ab4833388759e4a1f952b960"
       }
     ],
     "generated_runtime": []

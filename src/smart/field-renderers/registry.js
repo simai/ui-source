@@ -51,25 +51,32 @@ export const PROPERTY_TYPES = Object.freeze([
         params: ['placeholder', 'required', 'readonly']},
     // stepper: edited with sf-quantity, «−» and «+» and the arrow keys; min,
     // max and step (and a number's precision) are read by that variant alone.
-    {type: 'integer', label: typeLabel('type-integer'),
+    // numeric (C294, MP-12): a number a table aligns to the end of the line
+    // with figures of one width -- integer, number, money and percent -- read
+    // from here by any table instead of each keeping its own list.
+    {type: 'integer', label: typeLabel('type-integer'), numeric: true,
         variants: [{id: 'stepper', label: typeLabel('variant-integer-stepper')}],
         params: ['unit', 'min', 'max', 'step', 'required', 'readonly']},
-    {type: 'number', label: typeLabel('type-number'),
+    {type: 'number', label: typeLabel('type-number'), numeric: true,
         variants: [{id: 'scale', label: typeLabel('variant-number-scale')},
             // meter (owner decision C203 (5)): a share of a limit, 0..100, as
             // the inline sf-progress-bar meter; the scale stays for levels.
             {id: 'meter', label: typeLabel('variant-number-meter')},
             {id: 'stepper', label: typeLabel('variant-number-stepper')}],
         params: ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']},
+    // date (PD-2, PD-3): min and max bound the day, an ISO date (the day of a
+    // date and time is read); format is the length the view and the cell print
+    // the date in, Intl's dateStyle: short, medium (the default), long, full.
     {type: 'date', label: typeLabel('type-date'),
         variants: [],
-        params: ['required', 'readonly']},
+        params: ['min', 'max', 'format', 'required', 'readonly']},
     // datetime and time: sf-input-date in mode datetime and time (1.4.0). min
     // and max bound the value -- an ISO date or date and time for a datetime,
-    // hh:mm for a time -- and step is the minute step, 1 to 60.
+    // hh:mm for a time -- and step is the minute step, 1 to 60. A datetime's
+    // format is its date's length, as a date's; the clock stays short.
     {type: 'datetime', label: typeLabel('type-datetime'),
         variants: [],
-        params: ['min', 'max', 'step', 'required', 'readonly']},
+        params: ['min', 'max', 'step', 'format', 'required', 'readonly']},
     {type: 'time', label: typeLabel('type-time'),
         variants: [],
         params: ['min', 'max', 'step', 'required', 'readonly']},
@@ -123,19 +130,29 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'include', label: typeLabel('type-include'),
         variants: [],
         params: ['language', 'required', 'readonly']},
+    // money and percent (owner decisions C291 (2) and C294, 2026-11-17): the
+    // Framework's in every mode -- view, cell, edit and filter. Every number
+    // is a decimal string, never a float. money is {amount, currency}:
+    // `currency` fixes an ISO 4217 code (a bare amount is then read in it, and
+    // no currency is offered); `currencies` lists the codes a value may carry
+    // (absent: every ISO 4217 code, with a search); `currencyDisplay` is how
+    // the currency is written -- symbol (default: «₽», «$», «CA$»), code or
+    // name; the digits after the point are at most the currency's minor units
+    // (more is a field error, never rounded); min and max bound the amount.
+    // percent is the percent ("12.5" is 12,5 %), bounded only by min and max;
+    // its digits after the point are `precision`, else those of `step`.
+    {type: 'money', label: typeLabel('type-money'), numeric: true,
+        variants: [],
+        params: ['currency', 'currencies', 'currencyDisplay', 'min', 'max', 'placeholder', 'required', 'readonly']},
+    {type: 'percent', label: typeLabel('type-percent'), numeric: true,
+        variants: [],
+        params: ['min', 'max', 'step', 'precision', 'placeholder', 'required', 'readonly']},
     // The types a component set draws (property-view port 1.18.0; Larena
     // property types standard, notes of 2026-11-03): `set` names the set whose
-    // components show and edit them -- the View set's sf-view-properties and
-    // sf-view-flow -- and the Framework draws their table cells and filters
-    // (money and percent as numbers, items by its number of rows). `params` are
-    // the keys the type reads, in the set's renderers and in these. Every
-    // number is a decimal string, never a float.
-    {type: 'money', label: typeLabel('type-money'), set: 'view',
-        variants: [],
-        params: ['currency', 'min', 'max', 'required', 'readonly']},
-    {type: 'percent', label: typeLabel('type-percent'), set: 'view',
-        variants: [],
-        params: ['min', 'max', 'required', 'readonly']},
+    // components show and edit them -- the View set's sf-view-properties -- and
+    // the Framework draws their table cells and filters (items by its number
+    // of rows). `params` are the keys the type reads, in the set's renderers
+    // and in these.
     {type: 'items', label: typeLabel('type-items'), set: 'view',
         variants: [],
         params: ['columns', 'minRows', 'maxRows', 'required', 'readonly']},

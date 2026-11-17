@@ -8,5 +8,6 @@ SF.RuleLoader['cl-form'] = {
   relation: [
     { name: 'cl-button' },
     { name: 'cl-help-mark' },
+    { name: 'cl-icon' },
   ],
 };

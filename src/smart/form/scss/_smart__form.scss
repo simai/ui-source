@@ -234,6 +234,28 @@
   margin-block-start: var(--sf-space-1\/3);
 }
 
+/* apply answer (C291 (3)): the status line under the buttons, and alone
+   after the answer -- the confirm surface's glyph before the words, a
+   quarter step apart, on the 1/2 text step. */
+.sf-form-mark:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+}
+
+.sf-form-footer > .sf-form-mark:first-child {
+  margin-block-start: 0;
+}
+
+.sf-form-mark:focus {
+  outline: none;
+}
+
+.sf-form-mark:focus-visible {
+  outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+  outline-offset: var(--sf-focus--offset);
+}
+
 /* footer="sticky" (C166 (3)): the bar at the bottom of the scrolling place. */
 .sf-form-footer[data-sticky] {
   position: sticky;
@@ -282,6 +304,11 @@
   }
   .sf-form-state {
     color: var(--sf-on-surface-variant);
+  }
+  /* The outcome's ink, glyph and words, is the success role on the surface
+     the form stands on, as sf-confirm's (C16). */
+  .sf-form-mark[data-state="accepted"] {
+    color: var(--sf-success);
   }
   .sf-form-footer[data-sticky] {
     border-block-start-color: var(--sf-outline-variant);
