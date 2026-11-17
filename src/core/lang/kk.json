@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1206,
-    "translated": 1205,
+    "words": 1207,
+    "translated": 1206,
     "share": 99.9
   },
   "words": {
@@ -1275,7 +1275,8 @@
     },
     "sf-slider-range": {
       "from": "бастап",
-      "to": "дейін"
+      "to": "дейін",
+      "help": "Толығырақ: {label}"
     },
     "sf-sortable": {
       "cancelled": "Жылжыту болдырылмады.",

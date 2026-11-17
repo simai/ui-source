@@ -2,6 +2,7 @@
   "title": "Range Slider",
   "runtime": {
     "from": "from",
-    "to": "to"
+    "to": "to",
+    "help": "More about: {label}"
   }
 }
