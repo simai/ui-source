@@ -65,9 +65,7 @@
       "name": "dots",
       "title": "Точки",
       "settings": {
-        "kind": "dots",
-        "dots": 8,
-        "filled": 3
+        "kind": "dots"
       },
       "expect": {
         "name": "Загрузка…"
@@ -145,22 +143,6 @@
                 "values": {
                   "#s3.label": ""
                 }
-              }
-            }
-          ]
-        },
-        {
-          "id": "p4-numbers",
-          "title": "dots and filled are numbers",
-          "covers": "settings.dots, settings.filled (§16 item 29)",
-          "steps": [
-            {
-              "script": "(() => { const el = document.getElementById('s2'); el.setAttribute('dots', '6'); return [el.dots, el.filled]; })()",
-              "expect": {
-                "returns": [
-                  6,
-                  3
-                ]
               }
             }
           ]

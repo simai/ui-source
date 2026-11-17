@@ -14,9 +14,9 @@
 </sf-tag-group>
 
 <sf-tag-group aria-label="Показать" selection="one">
-  <sf-tag key="all" text="Все"></sf-tag>
-  <sf-tag key="new" text="Новые" active></sf-tag>
-  <sf-tag key="mine" text="Мои"></sf-tag>
+  <sf-tag kind="checkbox" key="all" text="Все"></sf-tag>
+  <sf-tag kind="checkbox" key="new" text="Новые" active></sf-tag>
+  <sf-tag kind="checkbox" key="mine" text="Мои"></sf-tag>
 </sf-tag-group>
 ```
 

@@ -635,6 +635,7 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
 
     connectedCallback() {
       this.sfReadIsland();
+      this.sfReadListAttributes();
       super.connectedCallback();
       // A leaf outside an assembly starts with the page (§7.2.1 `now`).
       this.toggleAttribute('data-sf-started', true);
@@ -674,11 +675,62 @@ export function elementFromManifest(manifest, {base, lang = {}, source, aliases,
       }
       for (const [name, value] of Object.entries(isPlainObject(data) ? data : {})) {
         const member = read.members.find((one) => one.name === name);
+        // A setting named as one of the browser's own members (sf-change's
+        // before and after, ChildNode methods) is an attribute only (§3.1,
+        // owner decision C279): a server that prints it in the island means
+        // the attribute, so the island writes the attribute (the page's own
+        // attribute wins) and says nothing. A script uses the component's
+        // list setting instead.
+        if (member && member.writable && member.native && member.attribute) {
+          if (!this.hasAttribute(member.attribute)) writeAttribute(this, member, value);
+          continue;
+        }
         if (!member || !member.writable || member.native) {
           globalThis.console?.warn?.(`[SIMAI Framework] ${this.localName}: the island's "${name}" is not a setting`);
           continue;
         }
         if (member.attribute ? this.hasAttribute(member.attribute) : Object.prototype.hasOwnProperty.call(this.__sfManifestData ?? {}, name)) continue;
+        this[member.property] = value;
+      }
+    }
+
+    /**
+     * A list or an object written as a JSON attribute in markup (Smart joint
+     * pass SM-LS-1, SM-LD-1, 2026-11-17): one rule for every list setting.
+     * sf-accordion items, sf-change changes and sf-avatar-group avatars read
+     * their attribute themselves; sf-list and sf-list-description drew their
+     * empty state from the same markup and said nothing. A component that
+     * observes the attribute keeps its own reading; for the others the
+     * attribute is read once, when the element first connects, after the
+     * island, and only when nothing gave the setting first (a property or the
+     * island wins). Later changes go through the property. An attribute that
+     * is not JSON, or not the setting's shape (a list for a list), is said
+     * once in the console and the setting keeps its value.
+     */
+    sfReadListAttributes() {
+      if (this.__sfListAttributesRead) return;
+      this.__sfListAttributesRead = true;
+      const observed = new Set(this.constructor.observedAttributes ?? []);
+      for (const member of read.members) {
+        if (!['list', 'object'].includes(member.type) || member.attribute || !member.writable || member.native || observed.has(member.name)) continue;
+        if (typeof this.hasAttribute !== 'function' || !this.hasAttribute(member.name)) continue;
+        const current = this[member.property];
+        const given = Array.isArray(current) ? current.length > 0
+          : (current !== null && typeof current === 'object' ? Object.keys(current).length > 0 : current !== undefined && current !== null);
+        if (given || Object.prototype.hasOwnProperty.call(this.__sfManifestData ?? {}, member.name)) continue;
+        const raw = this.getAttribute(member.name);
+        let value;
+        try {
+          value = JSON.parse(raw);
+        } catch (error) {
+          globalThis.console?.warn?.(`[SIMAI Framework] ${this.localName}: the "${member.name}" attribute is not JSON; give the ${member.type} as JSON, a property or a data-sf-settings island`, error);
+          continue;
+        }
+        const shaped = member.type === 'list' ? Array.isArray(value) : value !== null && typeof value === 'object';
+        if (!shaped) {
+          globalThis.console?.warn?.(`[SIMAI Framework] ${this.localName}: the "${member.name}" attribute is not a ${member.type}`);
+          continue;
+        }
         this[member.property] = value;
       }
     }

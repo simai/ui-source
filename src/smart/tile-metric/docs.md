@@ -95,8 +95,9 @@ compact and on a phone).
 One rung S: the label, the change, the limit's words and the hint are the
 rung below's line; the value two rungs up (1/2: text 2, 1: text 3, 2: text
 4); the status icon the hint's line; the gap between lines and icon-to-text
-the rung's text-space-x; the inset the rung's space-x less the hairline. The
-surface is the card's: `surface-0`, an `outline-variant` hairline, the
+the rung's text-space-x; the inset the rung's space-x less the hairline,
+13 / 15 / 19 at 1/2 / 1 / 2 (owner decision C281: a tile's inset follows its
+size step, not the card's 20 of C105 H6). The surface is the card's: `surface-0`, an `outline-variant` hairline, the
 surface radius.
 
 ## Public variables
@@ -116,6 +117,9 @@ beside the arrow and the icon, so colour is never the only sign.
 
 ## Changes
 
+- 1.5.3 (2026-11-17, C281) — the docs say the inset rule: the size step's
+  space-x less the hairline, 13 / 15 / 19, not the card's 20; nothing drawn
+  differently.
 - 1.5.1 (2026-11-15, C181 (2)) — the row of tiles pairs its 1/2 tiles by its
   own width (below 32rem), not the screen's: a narrow column of a wide page
   too.

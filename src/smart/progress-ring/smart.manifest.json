@@ -24,7 +24,9 @@
   "exported_parts": [],
   "composition": {
     "uses": [
-      "component.progress-ring"
+      "component.avatars",
+      "component.progress-ring",
+      "smart.avatar"
     ],
     "public_parts": []
   },
@@ -269,7 +271,7 @@
       },
       {
         "path": "src/smart/progress-ring/rule.js",
-        "sha256": "18d6140c475aa91ad9c08a8c330cd6f7ea48610ec61038dc22f54e61d7eb83c1"
+        "sha256": "8d24e932250dfb6563dfd3bf0377a7c47e1144dce2a2c0c89b2331a16de5d948"
       },
       {
         "path": "src/smart/progress-ring/docs.md",

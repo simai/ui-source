@@ -12,7 +12,7 @@
     "src/component/progress-ring/scss/_css__progress_ring.scss",
     "src/component/progress-ring/scss/index.scss"
   ],
-  "content_sha256": "24765f6a89cfc3baeaa13b95a8c5c2df31fd65f3fe374a7b32cafcf04b1bf402",
+  "content_sha256": "e1409c2452b4e018537bd5e8b597d439122c5ab6a6a336779a238576987bd4d9",
   "dependencies": [
     {
       "id": "tokens.colour",

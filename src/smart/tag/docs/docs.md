@@ -65,6 +65,12 @@ pressing shows what being chosen looks like.
   picture the tag less 8, at least 16; a `size` written there does nothing.
   The cross follows the height: 8 on tags up to 28, 12 from 32; its target is
   at least 24;
+- a tag without `kind` is a plain tag, `kind="default"` (1.12.0, owner
+  decision C280): a label, no press, no Tab stop, as the class twin starts.
+  A filter toggle is written `kind="checkbox"`. Until 2027-01-01 a tag without
+  `kind` that a page uses as a toggle -- its `change` is listened to, or it
+  stands in an `sf-tag-group` that selects -- keeps toggling and is noted in
+  `SF.deprecations` (journal `value-tag-default-kind-plain`);
 - `kind="checkbox"` renders one native toggle button, reflects `active` through
   `aria-pressed` and emits `change` with `detail.active` (Space or Enter toggle
   it). It shows no mark until it is chosen; chosen, a check mark (the icon

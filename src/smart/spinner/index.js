@@ -38,6 +38,13 @@ const SpinnerElement = elementFromManifest(manifest, {
 // shared spinner, which notes each use, until the sweep.
 const PIXEL_GEOMETRY = ['width', 'height', 'stroke-width', 'dot-radius'];
 
+// The dots look's settings, retired with the look (owner decision C130 (5);
+// Smart joint pass SM-SP-3, 2026-11-17; journal
+// attribute-spinner-dots-settings-retired): the arc has no dots, so dots,
+// filled and direction draw nothing. Accepted and noted until the date.
+const DOTS_SETTINGS = ['dots', 'filled', 'direction'];
+const DOTS_RETIRED = {since: '2026-11-17', remove_after: '2027-01-01'};
+
 class SfSpinner extends SpinnerElement {
   static get props() {
     return {
@@ -52,7 +59,7 @@ class SfSpinner extends SpinnerElement {
   }
 
   static get observedAttributes() {
-    return [...new Set([...super.observedAttributes, ...PIXEL_GEOMETRY])];
+    return [...new Set([...super.observedAttributes, ...PIXEL_GEOMETRY, ...DOTS_SETTINGS])];
   }
 
   constructor() {
@@ -71,6 +78,11 @@ class SfSpinner extends SpinnerElement {
 
   templateContext() {
     const props = this.getPropsContext();
+    for (const name of DOTS_SETTINGS) {
+      if (this.hasAttribute(name)) {
+        noteDeprecated({ component: 'sf-spinner', tag: 'sf-spinner', kind: 'attribute', from: name, to: null, ...DOTS_RETIRED });
+      }
+    }
 
     return this.createTemplateContext({
       ...props,

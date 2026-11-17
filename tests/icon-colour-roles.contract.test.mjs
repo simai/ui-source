@@ -169,7 +169,7 @@ test('the controls of the C107 group name their roles', () => {
       `${ink}, the label reads the same pair as its icon`);
   }
   const iconButtons = read('component/icon-buttons/scss/_css_icon_buttons.scss');
-  assert.match(iconButtons, /:is\(\.sf-icon-button--tonal, \.sf-icon-button--surface\):is\(\.sf-icon-button--on-surface, \.sf-icon-button--secondary\)\.sf-icon-button--icon \{\s*--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-on-surface-icon\)\);/u, 'IC-2');
+  assert.match(iconButtons, /:is\(\.sf-icon-button--tonal, \.sf-icon-button--surface\):is\(\.sf-icon-button--on-surface, \.sf-icon-button--on-surface-variant, \.sf-icon-button--secondary\)\.sf-icon-button--icon \{\s*--sf-icon--color: var\(--sf-icon-button-color, var\(--sf-on-surface-icon\)\);/u, 'IC-2');
   assert.match(read('component/menu/scss/_css__menu_element.scss'), /\.sf-menu-element \.sf-menu-element-icon \{\s*--sf-icon--color: var\(--sf-on-surface-variant\);/u, 'IC-1');
   assert.match(read('component/dropdown/scss/_css__custom.scss'), /\.sf-dropdown \.sf-dropdown-field > \.sf-icon-button\.sf-icon-button--on-surface\.sf-icon-button--icon \{\s*--sf-icon--color: var\(--sf-on-surface-variant\);/u, 'IC-3');
 });

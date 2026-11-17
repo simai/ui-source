@@ -62,10 +62,9 @@ test('Spinner machine contract documents status, ownership and closed variants',
   assert.deepEqual(manifest.inputs.properties.kind.enum, ['', 'arc']);
   assert.equal(manifest.inputs.properties.kind.default, '');
   for (const look of ['breathing', 'comet', 'dots']) assert.ok(manifest.compatibility.aliases.includes(`kind=${look}`), look);
-  assert.deepEqual(manifest.inputs.properties.direction.enum, [
-    'clockwise',
-    'counterclockwise',
-  ]);
+  // dots, filled and direction went with the dots look (SM-SP-3, sf-spinner
+  // 1.5.0): retired attributes, no longer inputs.
+  for (const gone of ['dots', 'filled', 'direction']) assert.equal(manifest.inputs.properties[gone], undefined, gone);
   assert.equal(manifest.inputs.properties.announce.type, 'boolean');
   assert.deepEqual(manifest.accessibility.keyboard, []);
   assert.equal(manifest.ownership.data, 'host');

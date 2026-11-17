@@ -27,8 +27,10 @@ decorative and uses `aria-hidden="true"`.
   (`sf-icon-button--ghost`) is unchanged. At rest the glyph stands at least
   3:1 from the page, a card, the grey plate and a field's fill in both
   themes. `sf-button-icon` draws it with `appearance="plain"`;
-- scheme: `primary`, `on-surface`, or `on-surface-variant` (written beside
-  `on-surface`); `secondary` is kept for older markup;
+- scheme: `primary`, `on-surface`, or `on-surface-variant`, one class each
+  (1.16.1, SM-CPY-2: `on-surface-variant` alone draws the on-surface fill and
+  edge with the quieter glyph; markup that also writes `on-surface` beside it
+  draws the same); `secondary` is kept for older markup;
 - status: `sf-icon-button--danger` for a destructive control, in every
   emphasis (decision C13); `sf-icon-button--error` is its former name, the
   same rules, until 2027-01-01 (journal class-c13-control-error-to-danger).

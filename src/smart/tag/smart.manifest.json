@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.12.3",
+  "version": "1.12.4",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -55,8 +55,8 @@
       },
       "kind": {
         "type": "string",
-        "default": "checkbox",
-        "description": "What the tag carries: a checkbox, an icon, a colour, an avatar, or nothing but its label. The compatibility input quantity is still accepted and means default.",
+        "default": "default",
+        "description": "What the tag carries: nothing but its label (default, the plain tag, as the class twin starts: owner decision C280), a checkbox (the filter toggle, written explicitly), an icon, a colour or an avatar. The compatibility input quantity is still accepted and means default. Until 2027-01-01 a tag without kind that a page uses as a toggle (its change listened to, or in an sf-tag-group that selects) keeps toggling and is noted in SF.deprecations.",
         "enum": [
           "checkbox",
           "icon",
@@ -438,7 +438,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "a99fb30a7c37b75afa343dad4a678198c61e1b6c8601acf46217f28c0d1a1fdc"
+        "sha256": "6370e6e658092e94ea0016859200657a757aff7d0f9920d69f700788bc9117a4"
       }
     ],
     "generated_runtime": [

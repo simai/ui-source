@@ -131,12 +131,35 @@ function tagAppearance(element) {
   return 'outline';
 }
 
+// A bare tag is a plain tag (owner decision C280, 2026-11-17; Smart joint
+// pass SM-TG-1, prototypes/smart-tags-study.html#q-tag-default): kind default,
+// as the class twin starts, and a filter toggle only with kind="checkbox".
+// Until 2027-01-01 (journal value-tag-default-kind-plain) a bare tag a page
+// still uses as a toggle keeps toggling and is noted in SF.deprecations: one
+// whose change the page listens to, one in an sf-tag-group that selects
+// (selection one or many, the group's filters), and the copy of either in a
+// group's «+N» panel.
+const BARE_TOGGLE = {since: '2026-11-17', remove_after: '2027-01-01'};
+
+function bareToggle(element) {
+  const original = element?._sfOriginal;
+  if (original && original !== element) return original.kind === 'checkbox';
+  const group = element?.parentElement;
+  const selecting = group?.localName === 'sf-tag-group' && normalize(group.getAttribute('selection') || 'many') !== 'none';
+  if (!element?._sfChangeHeard && !selecting) return false;
+  if (!element._sfBareToggleNoted) {
+    element._sfBareToggleNoted = true;
+    noteDeprecated({component: 'sf-tag', tag: 'sf-tag', kind: 'value', attribute: 'kind', from: '(none) as a toggle', to: 'checkbox', ...BARE_TOGGLE});
+  }
+  return true;
+}
+
 function resolveTagKind(element, raw, fallback) {
   const requested = normalize(raw);
   if (requested) {
     return requested === 'quantity' ? 'default' : (TAG_KINDS.includes(requested) ? requested : fallback);
   }
-  return legacyType(element, 'kind') || fallback;
+  return legacyType(element, 'kind') || (bareToggle(element) ? 'checkbox' : fallback);
 }
 
 function resolveTagStatus(element, raw, fallback) {
@@ -169,7 +192,7 @@ class SfTag extends TagElement {
       // both — see contracts/public-api-axes.json. The routing lives in the prop
       // rather than in a getter, because the template reads the props context.
       kind: {
-        default: 'checkbox',
+        default: 'default',
         values: TAG_KINDS,
         parser: (raw, fallback, element) => resolveTagKind(element, raw, fallback),
       },
@@ -192,6 +215,16 @@ class SfTag extends TagElement {
 
   get kind() {
     return this.getProp('kind');
+  }
+
+  // A page that listens to a bare tag's change uses it as a toggle (C280): it
+  // keeps toggling until 2027-01-01, noted (bareToggle).
+  addEventListener(type, listener, options) {
+    if (type === 'change' && !this._sfChangeHeard) {
+      this._sfChangeHeard = true;
+      if (!this.hasAttribute('kind') && !this.hasAttribute('type')) this.requestComponentUpdate?.('kind');
+    }
+    return super.addEventListener(type, listener, options);
   }
 
   set kind(value) {

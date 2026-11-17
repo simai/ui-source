@@ -205,7 +205,7 @@ export function renderSearchWindow(context) {
     ${scopes.length > 1 ? html`<sf-tag-group class="sf-search-scopes" selection="one" layout="wrap" aria-label=${words.scopes}
       @pointerdown=${() => component.onScopePointer()} @keydown=${() => component.onScopeKey()}
       @sf-tag-group-select=${(event) => component.onScopeSelect(event)}>
-      ${scopes.map((scope) => html`<sf-tag key=${scope.id || ALL_SCOPE_KEY} size="1/2" text=${scope.label} count=${String(scope.count)}
+      ${scopes.map((scope) => html`<sf-tag kind="checkbox" key=${scope.id || ALL_SCOPE_KEY} size="1/2" text=${scope.label} count=${String(scope.count)}
         ?active=${live(scope.pressed)}></sf-tag>`)}
     </sf-tag-group>` : nothing}
     ${notice ? html`<div class="sf-search-notice" role="alert">${notice}</div>` : nothing}

@@ -42,6 +42,13 @@ The controls of one row are one group of buttons (C105 H5): they stand
 outside the compatible footer the row had no gap before and its edge buttons
 touched their neighbours). `--sf-pagination-gap` still sets it.
 
+A numbers place is as wide as the widest number with the button's side
+padding while the row has room, and shrinks to square (the control height)
+when it has none: a phone's column or a narrow column of a wide page, the
+Smart row and a class row of `sf-page-number` alike (1.5.2; the places could
+not shrink, so two arrows and five places needed 350 in the 326 column of a
+390 screen, and a class long range of seven stood 17 past it).
+
 ## The row's box
 
 The page row's height is published on `:root`, one value per step of the size

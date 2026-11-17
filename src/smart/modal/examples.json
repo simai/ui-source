@@ -129,18 +129,6 @@
       }
     },
     {
-      "name": "side",
-      "title": "Панель у края",
-      "settings": {
-        "open": true,
-        "heading": "Фильтры",
-        "position": "inline-end"
-      },
-      "expect": {
-        "open": true
-      }
-    },
-    {
       "name": "question",
       "title": "Окно опасного вопроса",
       "settings": {

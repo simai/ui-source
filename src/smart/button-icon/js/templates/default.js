@@ -15,10 +15,11 @@ function statusClasses(status, scheme) {
     if (status === 'danger' || status === 'error') return ['sf-icon-button--danger', 'sf-icon-button--error'];
     // secondary was retired (C15): drawn as on-surface-variant.
     const colour = scheme === 'secondary' ? 'on-surface-variant' : (scheme || 'primary');
-    // on-surface-variant is the on-surface family one step quieter: both
-    // classes, so every on-surface rule holds and one rule quietens it.
+    // on-surface-variant is the on-surface family one step quieter, one class
+    // (SM-CPY-2): the class sheet lists it with every on-surface rule
+    // (component.icon-buttons), so on-surface is not written beside it.
     return colour === 'on-surface-variant'
-        ? ['sf-icon-button--on-surface-variant', 'sf-icon-button--on-surface']
+        ? ['sf-icon-button--on-surface-variant']
         : [`sf-icon-button--${colour}`];
 }
 

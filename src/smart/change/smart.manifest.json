@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.change",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "title": "Change",
   "summary": "A field change as text: «Собран → Передан в доставку», the old value quiet, the new one in the text colour and medium weight, no badges and no strikethrough; inline in a sentence, as a list of several fields, or, for a long text, revealed in place as «Было» and «Стало».",
   "kind": "smart",
@@ -55,12 +55,12 @@
       "before": {
         "type": "string",
         "default": "",
-        "description": "The value as it was, text. Empty reads «пусто»"
+        "description": "The value as it was, text. Empty reads «пусто». Attribute only (owner decision C279): element.before is the browser's own ChildNode method, so a script passes the shared changes list (one change is a list of one); a server's data-sf-settings island writes it as the attribute"
       },
       "after": {
         "type": "string",
         "default": "",
-        "description": "The value as it became, text. Empty reads «пусто»"
+        "description": "The value as it became, text. Empty reads «пусто». Attribute only (owner decision C279): element.after is the browser's own ChildNode method, so a script passes the shared changes list (one change is a list of one); a server's data-sf-settings island writes it as the attribute"
       },
       "label": {
         "type": "string",
@@ -220,7 +220,7 @@
       },
       {
         "path": "src/smart/change/docs.md",
-        "sha256": "2b9dc3effa03735c92bd1863d0fdf0a2dbdb5a031f769e7becf44adb58009e62"
+        "sha256": "06e5fa7e1eb29be25a0e9b25b6bf7ff4848fef20dfd2b839b14c9065b4a27596"
       }
     ],
     "generated_runtime": []

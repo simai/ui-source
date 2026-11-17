@@ -20,6 +20,8 @@ export function renderSpinnerTemplate(context) {
     context.rootClass,
   );
 
+  // dots, filled and direction are not written (retired with the dots look,
+  // SM-SP-3): the arc draws without them.
   // width, height, stroke-width and dot-radius are the deprecated pixel geometry
   // (journal attribute-spinner-pixel-geometry): still written through to the
   // spinner, which reads and notes them until the sweep.
@@ -31,19 +33,12 @@ export function renderSpinnerTemplate(context) {
       data-width=${valueOrNothing(context.width)}
       data-height=${valueOrNothing(context.height)}
       data-label=${context.label ?? nothing}
-      data-dots=${valueOrNothing(context.dots)}
-      data-filled=${valueOrNothing(context.filled)}
       data-stroke-width=${valueOrNothing(context.strokeWidth)}
       data-dot-radius=${valueOrNothing(context.dotRadius)}
       data-infinite=${String(!!context.infinite)}
       data-announce=${String(!!context.announce)}
       data-label-hidden=${context.labelHidden ? 'true' : nothing}
       data-delay=${context.component?.hasAttribute?.('delay') ? String(context.delay ?? 1000) : nothing}
-      data-direction=${normalizeChoice(
-        context.direction,
-        ['clockwise', 'counterclockwise'],
-        'clockwise',
-      )}
     ></div>
   `;
 }
