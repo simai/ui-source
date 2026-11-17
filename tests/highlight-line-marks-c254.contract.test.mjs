@@ -61,9 +61,9 @@ test('C258: the Loader leaves [!name] inside code as text', () => {
 });
 
 test('C255, C256: tints from roles, a 2 px start bar, no dimming or blur', () => {
-  assert.match(defaults, /\[data-line-diff='add'\] \{\s*background: var\(--sf-highlight-addition-background\);/u);
-  assert.match(defaults, /\[data-line-diff='remove'\] \{\s*background: var\(--sf-highlight-deletion-background\);/u);
-  const marked = defaults.slice(defaults.indexOf('.sf-code-line:is([data-line-mark], [data-line-focus])'));
+  assert.match(defaults, /\[data-line-diff='add'\]\) \{\s*background: var\(--sf-highlight-addition-background\);/u);
+  assert.match(defaults, /\[data-line-diff='remove'\]\) \{\s*background: var\(--sf-highlight-deletion-background\);/u);
+  const marked = defaults.slice(defaults.indexOf('.sf-code-line:is(.sf-code-line--highlight, .sf-code-line--focus, [data-line-mark], [data-line-focus])'));
   assert.match(marked, /linear-gradient\(var\(--sf-primary\), var\(--sf-primary\)\) left \/ calc\(2 \* var\(--sf-px\)\) 100% no-repeat,\s*var\(--sf-primary-container\);/u);
   assert.doesNotMatch(defaults, /\.sf-code-line[^{]*\{[^}]*(?:opacity|filter):/u);
 });

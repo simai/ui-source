@@ -2,6 +2,10 @@
 // its number (data-lines, C254), a diff sign (C255), a prompt in a terminal
 // (C257) -- and the marks the stylesheet draws (a marked or focused line,
 // C256). The highlighter's colours are written into each row's content.
+// Each mark is a class of the row (1.10.0): sf-code-line--added, --removed,
+// --highlight, --focus, --prompt, --output, so a page that writes its rows
+// at build time (a documentation site) marks them with Framework classes; the data-line-*
+// attributes the runtime wrote before stay on the row and draw the same.
 
 // The coloured HTML split at its line breaks. A token that spans lines (a
 // block comment, a template string) is one <span> across them: split as it
@@ -29,10 +33,30 @@ function splitLines(html) {
   return rows;
 }
 
+// A row's mark classes, by the runtime's line entry.
+const MARK_CLASSES = [
+  ['added', (mark) => mark.diff === 'add'],
+  ['removed', (mark) => mark.diff === 'remove'],
+  ['highlight', (mark) => mark.mark],
+  ['focus', (mark) => mark.focus],
+  ['prompt', (mark) => mark.prompt],
+  ['output', (mark) => mark.output],
+];
+
+// The number of a block's first line: options.start, else data-start on the
+// code or an ancestor, else 1. A file region that starts at line 40 is
+// numbered from 40.
+function firstNumber(element, start) {
+  const value = start ?? element.dataset.start ?? element.closest?.('[data-start]')?.dataset.start ?? '1';
+  const number = Number.parseInt(value, 10);
+  return Number.isFinite(number) && number >= 0 ? number : 1;
+}
+
 export function initLineNumbers(engine) {
-  // options.numbers: draw the number column; options.lines: one entry per
-  // line, {diff: 'add'|'remove'|'', mark, focus, prompt, output, skip};
-  // options.words: the words read aloud before a changed line.
+  // options.numbers: draw the number column; options.start: the first
+  // number; options.lines: one entry per line, {diff: 'add'|'remove'|'',
+  // mark, focus, prompt, output, skip}; options.words: the words read aloud
+  // before a changed line.
   function lineNumbersBlock(element, options = {}) {
     if (!element || element.querySelector(':scope > .sf-code-lines')) return;
     const doc = element.ownerDocument;
@@ -40,17 +64,22 @@ export function initLineNumbers(engine) {
     const numbers = options.numbers !== false;
     const marks = Array.isArray(options.lines) ? options.lines : [];
     const diff = marks.some((line) => line?.diff);
-    // data-start: the number of the first line, for an excerpt of a longer file.
-    const start = Number.parseInt(element.dataset.start ?? element.closest?.('[data-start]')?.dataset.start ?? '1', 10);
-    const first = Number.isFinite(start) ? start : 1;
+    // data-start (or data-lines="40"): the number of the first line, for an
+    // excerpt of a longer file.
+    const first = firstNumber(element, options.start);
     const table = doc.createElement('span');
-    table.className = 'sf-code-lines';
+    table.className = diff ? 'sf-code-lines sf-code-lines--diff' : 'sf-code-lines';
     table.setAttribute('role', 'presentation');
     if (diff) table.dataset.diff = 'true';
+    // The number column is three digits wide; a region whose last number has
+    // more (line 998 to 1003) widens it to the longest, so every row's code
+    // starts at the same place.
+    const digits = String(first + lines.length - 1).length;
+    if (numbers && digits > 3) table.style.setProperty('--sf-code-line--number-size', `${digits}ch`);
     lines.forEach((line, index) => {
       const mark = marks[index] || {};
       const row = doc.createElement('span');
-      row.className = 'sf-code-line';
+      row.className = ['sf-code-line', ...MARK_CLASSES.filter(([, has]) => has(mark)).map(([name]) => `sf-code-line--${name}`)].join(' ');
       if (mark.diff) row.dataset.lineDiff = mark.diff;
       if (mark.mark) row.dataset.lineMark = '';
       if (mark.focus) row.dataset.lineFocus = '';
@@ -100,4 +129,4 @@ export function initLineNumbers(engine) {
   return engine;
 }
 
-export { splitLines };
+export { firstNumber, splitLines };

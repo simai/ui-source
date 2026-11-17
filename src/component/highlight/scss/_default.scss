@@ -17,14 +17,24 @@
     padding-inline: var(--sf-space-1);
   }
 
+  /* Line marks are classes of the row (1.10.0): sf-code-line--added,
+     --removed, --highlight, --focus, --prompt and --output, so a page that
+     writes its rows at build time (a documentation site) marks them with Framework
+     classes. The runtime writes the same classes; the data-line-* attributes
+     it wrote before stay on its rows and draw the same. */
+
   :is(.sf-highlight__wrap, .sf--highlight-wrap) > .sf-scrollbar__viewport:has(> code > .sf-code-lines),
   .sf-code-surface__scroll:has(> code > .sf-code-lines) {
     padding-inline: 0;
   }
 
+  /* The column holds three digits (more when the runtime widens it for a
+     longer number, --sf-code-line--number-size) plus its end room: the box
+     is border-box, so 3ch alone held under two digits with the room, and
+     rows 9 and 10 started their code at different places (1.10.0). */
   .sf-code-line__number {
     flex: none;
-    min-inline-size: var(--sf-code-line--number-size, 3ch);
+    min-inline-size: calc(var(--sf-code-line--number-size, 3ch) + var(--sf-space-1\/2));
     padding-inline-end: var(--sf-space-1\/2);
     text-align: end;
     user-select: none;
@@ -53,11 +63,11 @@
     user-select: none;
   }
 
-  .sf-code-line[data-line-diff='add'] > .sf-code-line__sign::before {
+  .sf-code-line:is(.sf-code-line--added, [data-line-diff='add']) > .sf-code-line__sign::before {
     content: '+' / '';
   }
 
-  .sf-code-line[data-line-diff='remove'] > .sf-code-line__sign::before {
+  .sf-code-line:is(.sf-code-line--removed, [data-line-diff='remove']) > .sf-code-line__sign::before {
     content: '\2212' / '';
   }
 
@@ -74,7 +84,7 @@
     content: '$' / '';
   }
 
-  .sf-code-line[data-line-output] > .sf-code-line__content {
+  .sf-code-line:is(.sf-code-line--output, [data-line-output]) > .sf-code-line__content {
     padding-inline-start: 2ch;
   }
 
@@ -321,23 +331,23 @@
   .sf-code-line__number {
     color: var(--sf-place--ink-variant, var(--sf-on-surface-variant));
   }
-  .sf-code-line[data-line-diff='add'] {
+  .sf-code-line:is(.sf-code-line--added, [data-line-diff='add']) {
     background: var(--sf-highlight-addition-background);
   }
-  .sf-code-line[data-line-diff='remove'] {
+  .sf-code-line:is(.sf-code-line--removed, [data-line-diff='remove']) {
     background: var(--sf-highlight-deletion-background);
   }
-  .sf-code-line[data-line-diff='add'] > .sf-code-line__sign::before {
+  .sf-code-line:is(.sf-code-line--added, [data-line-diff='add']) > .sf-code-line__sign::before {
     color: var(--sf-success);
   }
-  .sf-code-line[data-line-diff='remove'] > .sf-code-line__sign::before {
+  .sf-code-line:is(.sf-code-line--removed, [data-line-diff='remove']) > .sf-code-line__sign::before {
     color: var(--sf-error);
   }
   /* Marked and focused lines (C256): a light fill, the primary container
      (12 % light, 24 % dark), and a 2 px bar at the line's start in primary
      -- a second cue that leaves the code's contrast alone. Focus is drawn
      the same: the other lines are neither dimmed nor blurred. */
-  .sf-code-line:is([data-line-mark], [data-line-focus]) {
+  .sf-code-line:is(.sf-code-line--highlight, .sf-code-line--focus, [data-line-mark], [data-line-focus]) {
     /* The bar is a background layer, not an inset shadow (a shadow is the
        retired focus ring's tool); code runs left to right here (direction:
        ltr on the scroller), so its start is the left edge. */
@@ -348,7 +358,7 @@
   .sf-code-line__prompt {
     color: var(--sf-highlight--punctuation, var(--sf-on-surface-variant));
   }
-  .sf-code-line[data-line-output] > .sf-code-line__content {
+  .sf-code-line:is(.sf-code-line--output, [data-line-output]) > .sf-code-line__content {
     color: var(--sf-highlight--comment, var(--sf-on-surface-variant));
     * {
       color: inherit;
