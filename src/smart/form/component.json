@@ -274,6 +274,9 @@
     },
     {
       "name": "cl-help-mark"
+    },
+    {
+      "name": "cl-icon"
     }
   ],
   "templates": {

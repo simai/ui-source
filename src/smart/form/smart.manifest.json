@@ -32,7 +32,8 @@
   "composition": {
     "uses": [
       "smart.button",
-      "smart.help-mark"
+      "smart.help-mark",
+      "smart.icon"
     ],
     "public_parts": []
   },
@@ -411,7 +412,7 @@
       },
       {
         "path": "src/smart/form/rule.js",
-        "sha256": "7d9c458e8d8a177c79b13e2119cfc731a5a5e41b4e432c6b0e9a03c8018ee2f1"
+        "sha256": "4b78c6a55f21a4f39766775e5141a4581a51fe5720174a6a0733e9aa270fb741"
       },
       {
         "path": "src/smart/form/docs.md",
