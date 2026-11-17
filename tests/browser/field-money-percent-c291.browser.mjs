@@ -87,6 +87,8 @@ async function run(lang) {
     };
     const type = async (box, typed) => {
       const input = box.querySelector('sf-input');
+      // No editor (a set without one) writes nothing.
+      if (!input) return null;
       input.value = typed;
       input.dispatchEvent(new Event('input', {bubbles: true}));
       input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -109,7 +111,7 @@ async function run(lang) {
     await type(percent, '7,5');
     report.percentEdit.ok = {...percentHost.log};
     await type(percent, 'abc');
-    report.percentEdit.notNumber = {...percentHost.log, invalid: percent.querySelector('sf-input').hasAttribute('invalid')};
+    report.percentEdit.notNumber = {...percentHost.log, invalid: percent.querySelector('sf-input')?.hasAttribute('invalid') ?? null};
 
     const fixedHost = host();
     const fixed = draw(set.renderEditField({key: 'p', label: 'Price', propertyType: 'money', currency: 'RUB'}, {amount: '1500.5', currency: 'RUB'}, fixedHost));
@@ -133,13 +135,14 @@ async function run(lang) {
     const dropdown = free.querySelector('sf-dropdown');
     report.moneyFree = {dropdown: Boolean(dropdown), first: dropdown?.options?.[0]?.value ?? null, count: dropdown?.options?.length ?? 0,
       label: dropdown?.getAttribute('aria-label')};
-    await type(free, '100');
-    report.moneyFree.noCurrency = {...freeHost.log};
     const rect = (node) => node?.getBoundingClientRect?.();
     const amountBox = rect(free.querySelector('.sf-input'));
     const currencyBox = rect(free.querySelector('.sf-dropdown'));
     report.moneyFree.row = amountBox && currencyBox ? {sameTop: Math.round(amountBox.top) === Math.round(currencyBox.top),
-      sameHeight: Math.round(amountBox.height) === Math.round(currencyBox.height), gap: Math.round(currencyBox.left - amountBox.right)} : null;
+      sameHeight: Math.round(amountBox.height) === Math.round(currencyBox.height), gap: Math.round(currencyBox.left - amountBox.right),
+      heights: [Math.round(amountBox.height), Math.round(currencyBox.height)]} : null;
+    await type(free, '100');
+    report.moneyFree.noCurrency = {...freeHost.log};
 
     const patched = [];
     const filterHost = (operator) => ({
@@ -156,8 +159,10 @@ async function run(lang) {
       percentEnd: pf?.getAttribute('text-end'),
       keyboard: pf?.getAttribute('inputmode'),
     };
-    pf.value = '12,5';
-    pf.dispatchEvent(new Event('change', {bubbles: true}));
+    if (pf) {
+      pf.value = '12,5';
+      pf.dispatchEvent(new Event('change', {bubbles: true}));
+    }
     report.filter.written = patched.at(-1);
     return report;
   });
@@ -195,7 +200,7 @@ async function run(lang) {
         cancel: cancel?.getAttribute('text') ?? null,
         edit: Boolean(form.querySelector('.sf-form-edit')),
         sizes: [...form.querySelectorAll('.sf-form-control sf-input, .sf-form-control sf-dropdown, .sf-form-actions sf-button')].map((node) => node.getAttribute('size')),
-        line: line?.textContent.trim() ?? null,
+        line: line ? [...line.querySelectorAll('span')].map((node) => node.textContent.trim()).join('') : null,
         glyph: line?.querySelector('sf-icon')?.getAttribute('icon') ?? null,
         loading: submit?.hasAttribute('loading') ?? null,
         inert: form.querySelector('.sf-form-body')?.hasAttribute('inert') ?? null,
@@ -206,8 +211,13 @@ async function run(lang) {
     const steps_ = [];
     steps_.push({at: 'drawn', ...read()});
     for (const step of steps.do || []) {
-      if (step === 'send') form.querySelector('.sf-form-submit button')?.click();
-      if (step === 'cancel') form.querySelector('.sf-form-cancel button')?.click();
+      const press = (selector) => {
+        const button = form.querySelector(selector);
+        button?.focus();
+        button?.click();
+      };
+      if (step === 'send') press('.sf-form-submit button');
+      if (step === 'cancel') press('.sf-form-cancel button');
       if (step === 'fill') {
         form.value = {...form.value, company: 'Acme', budget: {amount: '1500000.5', currency: 'RUB'}, discount: '12.5'};
       }
@@ -248,18 +258,19 @@ try {
       set.registry.percent.set, set.registry.percent.modes], [null, all, null, all]);
     expect(at('(2) the view in the page language'), Object.fromEntries(Object.entries(set.view).map(([k, v]) => [k, nbsp(v)])), ru_
       ? {money: '1 500,50 ₽', moneyUsd: '1 500,50 $', moneyFixed: '1 200 ¥', percent: '12,5 %', host: 'host', empty: ''}
-      : {money: 'RUB 1,500.50', moneyUsd: '$1,500.50', moneyFixed: '¥1,200', percent: '12.5 %', host: 'host', empty: ''});
+      : {money: '₽1,500.50', moneyUsd: '$1,500.50', moneyFixed: '¥1,200', percent: '12.5 %', host: 'host', empty: ''});
     expect(at('(2) the cell reads as the view'), [nbsp(set.cell.money), nbsp(set.cell.percent)], [nbsp(set.view.money), nbsp(set.view.percent)]);
     expect(at('(2) percent editor: shown in the page language, % and the decimal keyboard'), [set.percentEdit.shown, set.percentEdit.end, set.percentEdit.keyboard],
       [ru_ ? '12,5' : '12.5', '%', 'decimal']);
     expect(at('(2) percent: more digits than precision'), [set.percentEdit.digits.value, set.percentEdit.digits.error],
-      ['12.75', ru_ ? 'Не больше 1 знаков после запятой' : 'At most 1 digits after the point']);
+      ['12.75', ru_ ? 'Не больше 1 знака после запятой' : 'At most 1 digit after the point']);
     expect(at('(2) percent: 0 to 100 by default'), [set.percentEdit.bound.value, set.percentEdit.bound.error], ['150', ru_ ? 'От 0 до 100' : 'From 0 to 100']);
     expect(at('(2) percent: a right value is a decimal string'), set.percentEdit.ok, {value: '7.5', error: null});
     expect(at('(2) percent: not a number'), [set.percentEdit.notNumber.value, set.percentEdit.notNumber.error, set.percentEdit.notNumber.invalid],
       ['abc', ru_ ? 'Введите число' : 'Enter a number', true]);
-    expect(at('(2) money fixed RUB: the sign after, no dropdown'), [nbsp(set.moneyFixed.shown), set.moneyFixed.end, set.moneyFixed.start, set.moneyFixed.dropdown],
-      [ru_ ? '1500,5' : '1500.5', '₽', null, false]);
+    // The sign stands where the page's language writes it: «1 500,50 ₽», «₽1,500.50».
+    expect(at('(2) money fixed RUB: the sign where the language writes it, no dropdown'), [nbsp(set.moneyFixed.shown), set.moneyFixed.end, set.moneyFixed.start, set.moneyFixed.dropdown],
+      [ru_ ? '1500,5' : '1500.5', ru_ ? '₽' : null, ru_ ? null : '₽', false]);
     expect(at('(2) money: the currency\'s minor units'), [set.moneyFixed.minor.value, set.moneyFixed.minor.error],
       [{amount: '10.555', currency: 'RUB'}, ru_ ? 'Не больше 2 знаков после запятой' : 'At most 2 digits after the point']);
     expect(at('(2) money: groups and a comma read'), set.moneyFixed.ok, {value: {amount: '1500.5', currency: 'RUB'}, error: null});
@@ -268,7 +279,7 @@ try {
       [true, 'RUB', 10, ru_ ? 'Валюта' : 'Currency']);
     expect(at('(2) money: an amount without a currency'), [set.moneyFree.noCurrency.value, set.moneyFree.noCurrency.error],
       [{amount: '100', currency: null}, ru_ ? 'Выберите валюту' : 'Choose a currency']);
-    expect(at('(2) money: amount and currency on one row, one height, 8 apart'), set.moneyFree.row, {sameTop: true, sameHeight: true, gap: 8});
+    expect(at('(2) money: amount and currency on one row, one height, 8 apart'), [set.moneyFree.row?.sameTop, set.moneyFree.row?.sameHeight, set.moneyFree.row?.gap], [true, true, 8]);
     expect(at('(2) filter: the sign and the decimal keyboard'), set.filter.moneyStart === (ru_ ? null : '$') && set.filter.percentEnd === '%' && set.filter.keyboard === 'decimal', true);
     expect(at('(2) filter: the bound written as a decimal string'), set.filter.written, '12.5');
 
@@ -284,7 +295,7 @@ try {
     expect(at('(3) the answer carries the values as decimal strings'), accept[3].last,
       {accepted: true, value: {company: 'Acme', budget: {amount: '1500000.5', currency: 'RUB'}, discount: '12.5'}});
     expect(at('(3) the read view prints them in the page language'), accept[3].views.map(nbsp),
-      ['Acme', ru_ ? '1 500 000,50 ₽' : 'RUB 1,500,000.50', ru_ ? '12,5 %' : '12.5 %']);
+      ['Acme', ru_ ? '1 500 000,50 ₽' : '₽1,500,000.50', ru_ ? '12,5 %' : '12.5 %']);
     expect(at('(3) pending: locked, the pressed button waits, «Sending…»'), [pending[2].state, pending[2].inert, pending[2].loading, pending[2].line, pending[2].glyph],
       ['pending', true, true, ru_ ? 'Отправляем…' : 'Sending…', 'schedule']);
     expect(at('(3) set-errors reopens a pending answer'), [pending[3].state, pending[3].inert, pending[3].line], ['open', false, '']);

@@ -32,7 +32,10 @@
     "passwordKeep": "Set; type a new one to replace it",
     "maskIncomplete": "Complete the field",
     "notNumber": "Enter a number",
-    "precisionMax": "At most {n} digits after the point",
+    "precisionMax": {
+      "one": "At most {n} digit after the point",
+      "other": "At most {n} digits after the point"
+    },
     "fractionNone": "A whole amount, no digits after the point",
     "boundBetween": "From {min} to {max}",
     "boundAtLeast": "At least {min}",
