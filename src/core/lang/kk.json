@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine draft with cultural adaptation (polite Сіз forms, «» quotes, singular nouns after numerals, ordinals as 3-қадам, dates and numbers by Intl); needs native review.",
   "coverage": {
-    "words": 1196,
-    "translated": 1195,
+    "words": 1206,
+    "translated": 1205,
     "share": 99.9
   },
   "words": {
@@ -422,6 +422,14 @@
       "wait-for-uploads": "Файлдар жүктелгенше күтіңіз",
       "file-removed": "Файл алып тасталды",
       "undo": "Қайтару",
+      "said-added": "«{name}» қосылды",
+      "said-added-many": {
+        "one": "{n} файл қосылды",
+        "other": "{n} файл қосылды"
+      },
+      "said-done": "«{name}» жүктелді",
+      "said-error": "«{name}» жүктелмеді",
+      "said-error-line": "«{name}» жүктелмеді: {message}",
       "uploading-name": "{name} жүктелуде",
       "linkText": "Файлды таңдаңыз"
     },

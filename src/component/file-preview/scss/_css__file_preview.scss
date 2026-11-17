@@ -229,6 +229,14 @@
     min-inline-size: 0;
   }
 
+  /* The class markup of the row (sf-file-upload draws it without Smart):
+     the bar and «Повторить» stand in spans that draw no box, as the
+     sf-progress-bar and sf-button hosts, so the rules above and below hold
+     for both. */
+  .sf-file-preview span:is(.sf-file-preview-progress, .sf-file-preview-retry) {
+    display: contents;
+  }
+
   .sf-file-preview .sf-file-preview-error {
     color: var(--sf-error);
     font-family: var(--sf-text--family);
@@ -237,37 +245,28 @@
     overflow-wrap: break-word;
   }
 
-  /* «Повторить» ends the row, first of its buttons; in a row narrower than
-     24rem (the container step g2, C181; it was 22.5rem, no step) it goes
-     under the text from the text's edge (C88). */
+  /* «Повторить» ends the row, first of its buttons, on the rung of its
+     neighbours (C103: the size's control height; it was the low button, 32
+     beside the 40 icon actions). In a row narrower than 24rem (the container
+     step g2, C181) the words do not fit beside the name: the row draws the
+     icon alone in their place, named «Повторить <имя>» with «Повторить» in
+     its tooltip (owner decision C260; it went under the text, C88, and the
+     failed row was taller than the others). One row height in every state. */
   .sf-file-preview.sf-file-preview--error {
     container-type: inline-size;
   }
 
+  .sf-file-preview .sf-file-preview-retry-icon {
+    display: none;
+  }
+
   @container (max-width: #{mq.container-step(g2)}) {
-    .sf-file-preview.sf-file-preview--error .sf-file-preview-actions {
-      display: contents;
-    }
-
-    .sf-file-preview.sf-file-preview--error .sf-file-preview-actions > .sf-icon-button {
-      grid-column: 3;
-      grid-row: 1;
-    }
-
-    /* sf-button's host draws no box (display: contents): its button is the
-       grid item. */
-    .sf-file-preview.sf-file-preview--error {
-      row-gap: var(--sf-0);
-    }
-
-    /* Its plate reaches into the gap by its own padding, so its sign lines
-       up with the name (as sf-file-download's failed row). */
     .sf-file-preview.sf-file-preview--error .sf-file-preview-retry > button {
-      grid-column: 2;
-      grid-row: 2;
-      justify-self: start;
-      margin-block-start: var(--sf-space-1\/4);
-      margin-inline-start: calc(-1 * var(--sf-button--padding-inline-start));
+      display: none;
+    }
+
+    .sf-file-preview.sf-file-preview--error .sf-file-preview-retry-icon {
+      display: inline-flex;
     }
   }
 

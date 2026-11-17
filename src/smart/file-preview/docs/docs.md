@@ -56,7 +56,9 @@ runtime refuses it), so it is the `appearance` axis, as sf-confirm's.
 - `state="ready|uploading|error"`, `value` (per cent while uploading),
   `error-text` — the upload core's rows (C81): the bar under the name while
   uploading, «Не загрузился: …» in the error colour and «Повторить» after a
-  failure; remove stays, download waits for the file
+  failure, on the rung of the buttons beside it; in a row narrower than 24rem
+  «Повторить» is the icon alone with its word in a tooltip (C260), so a failed
+  row keeps the height of the others; remove stays, download waits for the file
 - `surface`, `compact`
 - `actions`, `download-action`, `remove-action` — remove is «×» «Убрать
   <имя>»: it takes a file out of a draft or a form field at once, and the page

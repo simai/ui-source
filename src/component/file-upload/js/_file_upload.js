@@ -74,7 +74,7 @@ function getFilesContainer(root) {
   }
 
   let next = root.nextElementSibling;
-  if (next?.classList?.contains('sf-file-upload-message')) next = next.nextElementSibling;
+  while (next?.classList?.contains('sf-file-upload-message') || next?.classList?.contains('sf-file-upload-status')) next = next.nextElementSibling;
   if (next?.classList?.contains('sf-file-upload-files')) {
     return next;
   }
@@ -143,6 +143,12 @@ function syncInputConfig(root, input) {
   input.disabled = isDisabledRoot(root);
 }
 
+// The rows this part names and switches off: its own (the family row's class
+// markup) and hand-written .sf-upload-progress rows.
+const CLASS_ROW = '.sf-upload-progress, .sf-file-upload-item > .sf-file-preview';
+const CLASS_ROWS = ':is(.sf-upload-progress, .sf-file-upload-item > .sf-file-preview)';
+const CLASS_ROW_NAME = '.sf-upload-progress-name, .sf-file-preview-name';
+
 function syncFileUploadInteraction(root) {
   const state = root.__sfFileUploadInteractionState ||= {
     tabIndex: root.getAttribute('tabindex') ?? '0',
@@ -159,9 +165,16 @@ function syncFileUploadInteraction(root) {
   if (disabled && root.classList.contains('dragover')) root.classList.remove('dragover');
 
   const files = getFilesContainer(root);
-  // The class rows only: a Smart area's rows are sf-file-preview, which names
-  // its own buttons («Убрать <имя>», «Повторить <имя>»).
-  files?.querySelectorAll('.sf-upload-progress button[data-action="remove"], .sf-upload-progress button[data-action="retry"]').forEach(button => {
+  // The class rows only: the ones this part draws (the family row's class
+  // markup, .sf-file-upload-item > .sf-file-preview) and hand-written
+  // .sf-upload-progress rows. A Smart area's rows are sf-file-preview
+  // elements, which name their own buttons («Убрать <имя>», «Повторить <имя>»).
+  files?.querySelectorAll(':scope > .sf-file-upload-item > .sf-file-preview').forEach((row) => {
+    row.classList.toggle('disabled', disabled);
+    if (disabled) row.setAttribute('aria-disabled', 'true');
+    else row.removeAttribute('aria-disabled');
+  });
+  files?.querySelectorAll(`${CLASS_ROWS} button[data-action="remove"], ${CLASS_ROWS} button[data-action="retry"]`).forEach(button => {
     let previous = state.buttons.get(button);
     if (!previous) {
       previous = {disabled: button.disabled, managedDisabled: false, label: null};
@@ -175,9 +188,9 @@ function syncFileUploadInteraction(root) {
     // three times, and the retry button said only its word (FU-10).
     const currentLabel = button.getAttribute('aria-label');
     if (!button.hasAttribute('aria-labelledby') && (!currentLabel || currentLabel === previous.label)) {
-      const name = button.closest('.sf-upload-progress')?.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
+      const name = button.closest(CLASS_ROW)?.querySelector(CLASS_ROW_NAME)?.textContent?.trim() || '';
       const word = button.dataset.action === 'retry'
-        ? button.textContent.trim() || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
+        ? (button.dataset.word || (button.querySelector?.('.sf-button-text-container') || button).textContent).trim() || pageText(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload')
         : pageText(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload');
       const label = `${word} ${name}`.trim();
       if (currentLabel !== label) button.setAttribute('aria-label', label);
@@ -192,8 +205,8 @@ function syncFileUploadInteraction(root) {
   // is announced as a bare percentage: with three files uploading, the reader
   // hears three numbers and no way to tell them apart. It takes the file's name
   // the way the remove button does, unless the author named it.
-  files?.querySelectorAll('.sf-upload-progress').forEach(item => {
-    const name = item.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
+  files?.querySelectorAll(CLASS_ROWS).forEach(item => {
+    const name = item.querySelector(CLASS_ROW_NAME)?.textContent?.trim() || '';
     // The name has its place in the words ({name}), so a language that puts
     // it first can (C177 (9)).
     const label = name
@@ -280,109 +293,226 @@ function uploadItemIcon(item, state) {
   return icon === 'download' ? 'draft' : icon;
 }
 
-function createUploadProgressItem(item, size = '1', owner = null) {
-  const normalizedSize = normalizeSize(size);
+// The pictures a browser draws from a chosen file's own bytes (C81: a photo's
+// thumbnail in its row), as the Smart area draws them. A video's frame and a
+// PDF's page are the host's imageUrl: the component never decodes them.
+const DRAWN_PICTURES = /^image\/(?:png|jpeg|gif|webp|avif|bmp|svg\+xml)$/u;
+
+function rowPicture(root, item) {
+  const given = item?.imageUrl ?? item?.['image-url'];
+  if (given) return String(given);
+  const file = item?.file;
+  if (typeof Blob === 'undefined' || !(file instanceof Blob) || !DRAWN_PICTURES.test(String(file.type || ''))) return '';
+  if (typeof URL?.createObjectURL !== 'function') return '';
+  const pictures = root.__sfFileUploadPictures ||= new Map();
+  if (!pictures.has(file)) pictures.set(file, URL.createObjectURL(file));
+  return pictures.get(file);
+}
+
+// A chosen photo's address lives while its file is listed.
+function releaseRowPictures(root, items = []) {
+  const pictures = root?.__sfFileUploadPictures;
+  if (!pictures?.size) return;
+  const listed = new Set(items.map((item) => item?.file).filter(Boolean));
+  for (const [file, address] of [...pictures]) {
+    if (listed.has(file)) continue;
+    pictures.delete(file);
+    URL.revokeObjectURL?.(address);
+  }
+}
+
+// A row is the file family's row (owner decisions C81 and C149), the class
+// markup of the sf-file-preview row the Smart area draws: the picture of a
+// photo or the type's glyph in the grey holder, the name and under it one
+// line -- the size (ready; «size · загружен» when sent), the bar (uploading)
+// or the reason (error) -- and the actions at the end: «Повторить» on a
+// failed file, «×» «Убрать <имя>» on every one. One height in every state
+// and at every zone size: the class row stacked the bar and the retry under
+// the text, so a list of four files was 44 / 68 / 44 / 84 and jumped at each
+// change of state (RG-FU-1).
+// «Повторить» as the icon alone, the Smart row's (owner decision C260): the
+// sheet draws it in place of the button with words in a row too narrow for
+// them (sf-file-preview, the container step g2). Named «Повторить <имя>» by
+// the list's labelling, «Повторить» in the Framework's plain tooltip, which
+// the anchor links to the button.
+function createRetryIcon(word) {
+  const anchor = document.createElement('span');
+  anchor.className = 'sf-file-preview-retry-icon sf-tooltip-anchor';
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--primary sf-icon-button--size-1';
+  button.dataset.action = 'retry';
+  button.dataset.tooltip = '';
+  button.dataset.word = word;
+  const glyph = document.createElement('i');
+  glyph.className = 'sf-icon';
+  glyph.setAttribute('aria-hidden', 'true');
+  glyph.textContent = 'refresh';
+  button.append(glyph);
+  const tip = document.createElement('span');
+  tip.className = 'sf-tooltip sf-tooltip--dark sf-tooltip--size-1/3';
+  tip.setAttribute('aria-hidden', 'true');
+  tip.hidden = true;
+  const content = document.createElement('span');
+  content.className = 'sf-tooltip-content';
+  const text = document.createElement('span');
+  text.className = 'sf-tooltip-text';
+  text.textContent = word;
+  content.append(text);
+  tip.append(content);
+  anchor.append(button, tip);
+  return anchor;
+}
+
+function createUploadProgressItem(item, owner = null) {
   const row = describeUploadItem(item, owner, 'done');
   const {state, progress} = row;
 
+  const wrap = document.createElement('div');
+  wrap.className = 'sf-file-upload-item';
+  wrap.setAttribute('role', 'listitem');
+
   const root = document.createElement('div');
   root.className = [
-    'sf-upload-progress',
-    `sf-upload-progress--size-${normalizedSize}`,
-    `sf-upload-progress--${state}`,
-    'flex',
-    'items-main-start',
-    'items-cross-start',
-  ].join(' ');
+    'sf-file-preview',
+    'sf-file-preview--row',
+    state === 'process' ? 'sf-file-preview--uploading' : '',
+    state === 'error' ? 'sf-file-preview--error' : '',
+  ].filter(Boolean).join(' ');
+  root.dataset.state = state;
+  root.setAttribute('role', 'group');
+  root.setAttribute('aria-label', row.name);
+  if (state === 'process') root.setAttribute('aria-busy', 'true');
 
-  const leftIcon = document.createElement('i');
-  leftIcon.classList.add('sf-icon');
-  // The glyphs are pictures: their ligature names («cloud_upload», «check_circle»,
-  // «delete») were read as text (docs pre-check 2026-11-10 FU-03).
-  leftIcon.setAttribute('aria-hidden', 'true');
-  leftIcon.textContent = row.icon;
-
-  const content = document.createElement('div');
-  content.className = 'sf-upload-progress-content flex flex-col flex-1';
-
-  const top = document.createElement('div');
-  top.className = 'sf-upload-progress-top flex content-main-between';
-
-  const left = document.createElement('div');
-  left.className = 'sf-upload-progress-left flex flex-col';
-
-  const nameNode = document.createElement('div');
-  nameNode.className = 'sf-upload-progress-name';
-  nameNode.textContent = row.name;
-
-  const textNode = document.createElement('div');
-  textNode.className = 'sf-upload-progress-text';
-  textNode.textContent = row.line;
-
-  left.append(nameNode, textNode);
-  top.append(left);
-
-  if (state === 'done') {
-    const doneIcon = document.createElement('i');
-    doneIcon.className = 'sf-icon sf-icon-solid sf-upload-progress-mark';
-    doneIcon.setAttribute('aria-hidden', 'true');
-    doneIcon.textContent = 'check_circle';
-    top.append(doneIcon);
+  const holder = document.createElement('span');
+  holder.className = 'sf-file-preview-holder';
+  const picture = owner ? rowPicture(owner, item) : '';
+  if (picture) {
+    holder.classList.add('sf-file-preview-holder--picture');
+    const image = document.createElement('img');
+    image.className = 'sf-file-preview-thumbnail';
+    image.src = picture;
+    image.alt = '';
+    image.decoding = 'async';
+    holder.append(image);
+  } else {
+    const glyph = document.createElement('i');
+    glyph.className = 'sf-icon';
+    // The glyphs are pictures: their ligature names were read as text (docs
+    // pre-check 2026-11-10 FU-03).
+    glyph.setAttribute('aria-hidden', 'true');
+    // The type's glyph in every state, as the Smart row: the error is said by
+    // the reason line in the error colour.
+    glyph.textContent = uploadItemIcon(item, 'ready');
+    holder.append(glyph);
   }
 
-  // Every state can be taken out of the list.
+  const main = document.createElement('span');
+  main.className = 'sf-file-preview-main';
+  const nameNode = document.createElement('span');
+  nameNode.className = 'sf-file-preview-name';
+  nameNode.title = row.name;
+  nameNode.textContent = row.name;
+  main.append(nameNode);
+
+  if (state === 'process') {
+    // A chosen file that is not being sent, and a sent one, have no bar: there
+    // is no transfer to show (FU-3, FU-4). The bar stands in the size line's
+    // place, the size 1/2 bar with its per cent at the end (C131 (4)).
+    const holderBar = document.createElement('span');
+    holderBar.className = 'sf-file-preview-progress';
+    const progressBar = document.createElement('div');
+    progressBar.className = 'sf-progress-bar sf-progress-bar--size-1/2 flex flex-row items-cross-center';
+    if (progress === null) progressBar.dataset.indeterminate = 'true';
+    else progressBar.dataset.value = String(progress);
+    progressBar.dataset.textPosition = 'inline-end';
+    const progressMain = document.createElement('div');
+    progressMain.className = 'sf-progress-bar-main';
+    const progressValue = document.createElement('div');
+    progressValue.className = 'sf-progress-bar-progress transition';
+    if (progress !== null) progressValue.style.width = `${progress}%`;
+    const progressText = document.createElement('div');
+    progressText.className = 'sf-progress-bar-text';
+    progressText.textContent = progress === null ? '' : `${progress}%`;
+    progressMain.append(progressValue);
+    progressBar.append(progressMain, progressText);
+    holderBar.append(progressBar);
+    main.append(holderBar);
+  } else if (state === 'error') {
+    const reason = document.createElement('span');
+    reason.className = 'sf-file-preview-error';
+    reason.textContent = row.line;
+    main.append(reason);
+  } else if (row.line) {
+    const line = document.createElement('span');
+    line.className = 'sf-file-preview-meta sf-file-preview-size';
+    line.textContent = row.line;
+    main.append(line);
+  }
+
+  const actions = document.createElement('span');
+  actions.className = 'sf-file-preview-actions';
+  if (state === 'error') {
+    // «Повторить» ends the row, first of its buttons (C88), the button the
+    // Smart row draws: ghost, primary, size 1, on the rung of «×» beside it
+    // (C103; it was the low button, 32 beside 40).
+    const retryHost = document.createElement('span');
+    retryHost.className = 'sf-file-preview-retry';
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.className = 'sf-button sf-button--size-1 sf-button--ghost sf-button--link sf-button--primary flex items-cross-center';
+    retry.dataset.action = 'retry';
+    const retryIcon = document.createElement('i');
+    retryIcon.className = 'sf-icon pointer-event-none';
+    retryIcon.setAttribute('aria-hidden', 'true');
+    retryIcon.textContent = 'refresh';
+    const retryText = document.createElement('span');
+    retryText.className = 'sf-button-text-container text-center pointer-event-none';
+    retryText.textContent = row.retryText;
+    retry.append(retryIcon, retryText);
+    retryHost.append(retry);
+    actions.append(retryHost, createRetryIcon(row.retryText));
+  }
+  // Every state can be taken out of the list: «×» «Убрать <имя>», nothing is
+  // erased (C149 (8)); the trash is a stored file's, in sf-file-preview.
   const removeButton = document.createElement('button');
   removeButton.type = 'button';
-  removeButton.className =
-    `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
+  removeButton.className = 'sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1';
   removeButton.dataset.action = 'remove';
   const removeIcon = document.createElement('i');
   removeIcon.className = 'sf-icon';
   removeIcon.setAttribute('aria-hidden', 'true');
-  // «×» «Убрать <имя>»: the file leaves the list, nothing is erased (C149
-  // (8)); the trash is a stored file's, in sf-file-preview.
   removeIcon.textContent = 'close';
   removeButton.append(removeIcon);
-  top.append(removeButton);
-  content.append(top);
+  actions.append(removeButton);
 
-  if (state === 'error') {
-    const retry = document.createElement('button');
-    retry.type = 'button';
-    retry.className = 'sf-upload-progress-repeat self-cross-start';
-    retry.dataset.action = 'retry';
-    retry.textContent = row.retryText;
-    content.append(retry);
-  }
+  root.append(holder, main, actions);
+  wrap.append(root);
+  return wrap;
+}
 
-  // A chosen file that is not being sent, and a sent one, have no bar: there
-  // is no transfer to show (FU-3, FU-4).
-  if (state === 'process') {
-    const progressBar = document.createElement('div');
-    progressBar.className =
-      `sf-progress-bar sf-progress-bar--size-${normalizedSize} flex flex-row items-cross-center`;
-    if (progress === null) progressBar.dataset.indeterminate = 'true';
-    else progressBar.dataset.value = String(progress);
-    progressBar.dataset.textPosition = 'inline-end';
+// The focus inside the list keeps its place when the rows are drawn again: a
+// row taken out gives it to the row that took its place (the previous one
+// when it was the last), the area when none is left (C81, accessibility). The
+// list was rebuilt whole and the focus fell to the page's start (RG-FU-3).
+function listFocus(container) {
+  const active = container?.ownerDocument?.activeElement;
+  if (!active || !container.contains(active)) return null;
+  const row = active.closest('[data-index]');
+  return {index: Number(row?.dataset.index) || 0, action: active.dataset?.action || ''};
+}
 
-    const progressMain = document.createElement('div');
-    progressMain.className = 'sf-progress-bar-main';
-
-    const progressValue = document.createElement('div');
-    progressValue.className = 'sf-progress-bar-progress transition';
-    if (progress !== null) progressValue.style.width = `${progress}%`;
-
-    const progressText = document.createElement('div');
-    progressText.className = 'sf-progress-bar-text';
-    progressText.textContent = progress === null ? '' : `${progress}%`;
-
-    progressMain.append(progressValue);
-    progressBar.append(progressMain, progressText);
-    content.append(progressBar);
-  }
-
-  root.append(leftIcon, content);
-  return root;
+function restoreListFocus(root, container, held) {
+  if (!held) return;
+  const rows = container.querySelectorAll(':scope > [data-index]');
+  const row = rows[Math.min(held.index, rows.length - 1)];
+  // A failed row holds «Повторить» twice, with words and as the icon alone;
+  // the sheet draws one of them (C260): the focus goes to the drawn one.
+  const drawn = (selector) => [...(row?.querySelectorAll(selector) || [])].find((button) => button.getClientRects().length > 0);
+  const target = (held.action && drawn(`button[data-action="${held.action}"]:not(:disabled)`))
+    || drawn('button[data-action="remove"]:not(:disabled)')
+    || root;
+  target?.focus?.({preventScroll: true});
 }
 
 function renderFileUploadItems(root, items = []) {
@@ -394,19 +524,19 @@ function renderFileUploadItems(root, items = []) {
     return;
   }
 
-  container.innerHTML = '';
-  const size = normalizeSize(
-    Array.from(root.classList)
-      .find((cls) => cls.startsWith('sf-file-upload--size-'))
-      ?.replace('sf-file-upload--size-', '') || '1',
-  );
+  const held = listFocus(container);
+  container.replaceChildren();
+  // The rows are a list (C81), as the Smart area's.
+  if (items.length && !container.hasAttribute('role')) container.setAttribute('role', 'list');
 
   items.forEach((item, index) => {
-    const node = createUploadProgressItem(item, size, root);
+    const node = createUploadProgressItem(item, root);
     node.dataset.index = String(index);
     container.append(node);
   });
+  releaseRowPictures(root, items);
   syncFileUploadInteraction(root);
+  restoreListFocus(root, container, held);
 }
 
 function emitFileUploadItemAdd(root, item, index, items, source = 'input') {
@@ -465,6 +595,7 @@ function syncFileUploadStateEvents(root, nextItems = [], previousItems = []) {
   const previousMap = new Map(
     previousItems.map((item, index) => [getItemEventKey(item, index), normalizeItemState(item)]),
   );
+  const said = [];
 
   nextItems.forEach((item, index) => {
     const key = getItemEventKey(item, index);
@@ -473,12 +604,19 @@ function syncFileUploadStateEvents(root, nextItems = [], previousItems = []) {
 
     if (nextState === 'error' && prevState !== 'error') {
       emitFileUploadItemError(root, item, index, nextItems);
+      // A list set from scratch (a stored value) is not news.
+      if (prevState !== undefined) {
+        const message = String(item?.errorMessage || item?.error || '');
+        said.push(fileUploadWord(root, message ? 'said-error-line' : 'said-error', {vars: {name: itemName(item), message}}));
+      }
     }
 
     if (nextState === 'done' && prevState !== 'done') {
       emitFileUploadItemComplete(root, item, index, nextItems);
+      if (prevState !== undefined) said.push(fileUploadWord(root, 'said-done', {vars: {name: itemName(item)}}));
     }
   });
+  announceFileUpload(root, said);
 
   const hasItems = nextItems.length > 0;
   const isAllDone = hasItems && nextItems.every((item) => normalizeItemState(item) === 'done');
@@ -628,6 +766,9 @@ function applySelectedFiles(root, files = [], source = 'input') {
   added.forEach((item) => {
     emitFileUploadItemAdd(root, item, nextFiles.indexOf(item), nextFiles, source);
   });
+  announceFileUpload(root, [added.length === 1
+    ? fileUploadWord(root, 'said-added', {vars: {name: itemName(added[0])}})
+    : fileUploadWord(root, 'said-added-many', {count: added.length})]);
   emitSelect(root, added, source);
   return added;
 }
@@ -647,7 +788,8 @@ function formatAcceptWords(accept, root = null) {
 // Where a file that was not added is said: the line under the area (C81: the
 // message under the field, not a row in the list), a polite status a screen
 // reader announces. The Smart template draws it; an ordinary area gets one
-// after it on the first rejection.
+// after it when it is bound: a live region made at the moment of its first
+// words is often not heard (RG-FU-4).
 function getMessage(root, create = false) {
   if (!root) return null;
   const next = root.nextElementSibling;
@@ -659,6 +801,43 @@ function getMessage(root, create = false) {
   message.hidden = true;
   root.after(message);
   return message;
+}
+
+// What happened to the list, for a screen reader only (C81, accessibility):
+// a file added, sent, or not sent, said politely; the per cent is not said.
+// A region of its own beside the message, made with the area (the Smart
+// template and the class draw it): the message is seen and says only what
+// was left out.
+function getStatus(root, create = false) {
+  if (!root) return null;
+  let next = root.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-message')) next = next.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-status')) return next;
+  if (!create || isManagedRenderRoot(root) || typeof document === 'undefined') return null;
+  const anchor = getMessage(root, true);
+  if (!anchor) return null;
+  const status = document.createElement('div');
+  status.className = 'sf-file-upload-status';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-atomic', 'true');
+  anchor.after(status);
+  return status;
+}
+
+function announceFileUpload(root, lines = []) {
+  const said = lines.filter(Boolean);
+  if (!said.length) return;
+  const status = getStatus(root);
+  if (!status) return;
+  const text = said.join('. ');
+  // The same words again (a second file of one name) are said again: the
+  // region is emptied first.
+  if (status.textContent === text) status.textContent = '';
+  status.textContent = text;
+}
+
+function itemName(item) {
+  return String(item?.name || item?.fileName || item?.file?.name || '');
 }
 
 function showFileUploadRejections(root, rejected = []) {
@@ -749,6 +928,28 @@ function takeFiles(root, files = [], source = 'input') {
   return accepted.length ? applySelectedFiles(root, accepted, source) : [];
 }
 
+// The words about dragging («или перетащите их сюда») are a part of their
+// own, so a screen that cannot drag hides them (owner decision C223): the
+// author's markup wrote them as bare text after the link; they are put in
+// .sf-file-upload-drag when the zone is bound.
+function wrapDragWords(root) {
+  const block = root?.querySelector?.('.sf-file-upload-block-text');
+  if (!block || block.querySelector('.sf-file-upload-drag')) return;
+  // Only the words after the link: without a link the text is the zone's
+  // whole call and stays.
+  const link = block.querySelector('.sf-file-upload-link');
+  if (!link) return;
+  const loose = Array.from(block.childNodes).filter((node) => node.nodeType === 3
+    && node.textContent.trim()
+    && (link.compareDocumentPosition(node) & 4));
+  if (!loose.length) return;
+  const drag = document.createElement('span');
+  drag.className = 'sf-file-upload-drag';
+  drag.textContent = loose.map((node) => node.textContent).join('').trim();
+  loose[0].before(' ', drag);
+  loose.forEach((node) => node.remove());
+}
+
 function bindFileUpload(root) {
   retireFieldSizeClass(root, 'sf-file-upload');
   if (!root) return;
@@ -770,6 +971,9 @@ function bindFileUpload(root) {
   if (!root.hasAttribute('role')) {
     root.setAttribute('role', 'button');
   }
+  // The live regions stand from the start (RG-FU-4).
+  getStatus(root, true);
+  if (!isManagedRenderRoot(root)) wrapDragWords(root);
 
   const openInput = () => {
     if (isDisabledRoot(root)) return;
@@ -785,7 +989,7 @@ function bindFileUpload(root) {
 
     const target = event.target;
     if (!(target instanceof Element)) return;
-    if (target.closest('.sf-upload-progress-repeat')) return;
+    if (target.closest('.sf-upload-progress-repeat, [data-action="retry"]')) return;
     if (target.closest('input[type="file"]')) return;
     if (target.closest('[data-action="remove"]')) return;
 
@@ -857,7 +1061,7 @@ function bindFileUpload(root) {
       return;
     }
 
-    const itemNode = (removeButton || retryButton).closest('.sf-upload-progress');
+    const itemNode = (removeButton || retryButton).closest('[data-index], .sf-upload-progress');
     if (!itemNode) return;
 
     event.preventDefault();
@@ -1018,7 +1222,10 @@ class FileUpload extends ComponentObserver {
     const link = document.createElement('span');
     link.className = 'sf-file-upload-link';
     link.textContent = linkText ?? pageText(FILE_UPLOAD_ITEM_TEXT, 'linkText', root, 'sf-file-upload');
-    blockText.append(link, ` ${text ?? pageText(FILE_UPLOAD_ITEM_TEXT, 'text', root, 'sf-file-upload')}`);
+    const drag = document.createElement('span');
+    drag.className = 'sf-file-upload-drag';
+    drag.textContent = text ?? pageText(FILE_UPLOAD_ITEM_TEXT, 'text', root, 'sf-file-upload');
+    blockText.append(link, ' ', drag);
     block.append(blockText);
     bottom.append(block);
     if (supportingText) {
@@ -1032,9 +1239,15 @@ class FileUpload extends ComponentObserver {
     message.className = 'sf-file-upload-message';
     message.setAttribute('role', 'status');
     message.hidden = true;
+    const status = document.createElement('div');
+    status.className = 'sf-file-upload-status';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-atomic', 'true');
     const files = document.createElement('div');
-    files.className = 'sf-file-upload-files grid grid-col-1 gap-1 w-full';
-    wrapper.append(root, message, files);
+    // The rows' list, as the Smart area's (C81).
+    files.className = 'sf-file-upload-files grid grid-col-1 gap-1/2 w-full';
+    files.setAttribute('role', 'list');
+    wrapper.append(root, message, status, files);
     this.root = root;
     this.template = wrapper;
   }

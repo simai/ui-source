@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-preview",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "title": "File Preview",
   "summary": "Accessible Smart projection of the ordinary File Preview row.",
   "kind": "smart",
@@ -26,6 +26,7 @@
       "component.file-preview",
       "component.icon-buttons",
       "component.icons",
+      "component.tooltip",
       "smart.button",
       "smart.confirm",
       "smart.gallery",
@@ -154,7 +155,7 @@
       "state": {
         "type": "string",
         "default": "ready",
-        "description": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row -- under the text in a narrow row, where decision C88 places it -- and remove.",
+        "description": "The file's state, as the upload core's rows (decision C81). ready: the file is there -- the name is its link, the size under it, download and remove. uploading: the name as text, under it the upload row's bar with its per cent at the end (value; no value: the bar runs), aria-busy; remove stays (the host cancels), download is not offered. error: the name as text, under it «Не загрузился» and error-text in the error colour, «Повторить» (the retry event) at the end of the row on the rung of the buttons beside it -- in a row narrower than the container step g2 the icon alone, named «Повторить <имя>» with «Повторить» in its tooltip (decision C260) -- and remove.",
         "enum": [
           "ready",
           "uploading",
@@ -494,7 +495,7 @@
       },
       {
         "path": "src/smart/file-preview/js/templates/default.js",
-        "sha256": "2a3c2b97ae9b8a595abe5fefc660324bcc4826011010bf99224aac6ff7a4914e"
+        "sha256": "dab9c8f9eeccf7419a930409c0d03b718e0a6a5420dac55088d342a5dac81fcf"
       }
     ],
     "generated_runtime": []
