@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
 import {
-  applyCount, fieldOptions, itemValue, matches, movedField, panelGroups, panelLayout, placedField, sameValue,
+  applyCount, choiceOrder, fieldOptions, itemValue, matches, movedField, orderMap, orderPatch, panelGroups, panelLayout, placedField, sameValue,
   toggledField, valueMap, valuePatch, entriesFor,
 } from '../src/smart/settings/js/settings.js';
 
@@ -101,7 +101,7 @@ test('a list is one Tab stop with the arrows inside; Alt+arrows move a row and s
 
 test('a checked field is the light fill with a check at the end; one choice the fill alone; the handle at the start (C106 (2), (3); DP-3)', () => {
   assert.match(panel, /if \(kind === 'field'\) return icon\('check', 'sf-settings-row-check'\);/u);
-  assert.match(panel, /row\.handle \? icon\('drag_indicator', 'sf-settings-row-handle'\) : nothing\}\n\s+<span class="sf-settings-row-text">/u);
+  assert.match(panel, /row\.handle \? icon\('drag_indicator', 'sf-settings-row-handle'\) : row\.sorts \? icon\('drag_indicator', 'sf-settings-row-handle-place'\) : nothing\}\n\s+<span class="sf-settings-row-text">/u);
   assert.match(css, /\.sf-settings-row:is\(\.sf-settings-row--field, \.sf-settings-row--option\)\[data-checked\] \{\n\s+background-color: var\(--sf-primary-container\);/u);
   assert.match(css, /\.sf-settings-row:not\(\[data-disabled\]\):hover \{\n\s+background-color: var\(--sf-surface-state-select\);/u);
   assert.doesNotMatch(panel, /sf-checkbox/u, 'no checkboxes: a field is a check mark, a choice a fill');
@@ -173,5 +173,70 @@ test('C166 follow-up, C144: the footer labels stay on one line; the buttons grow
   assert.doesNotMatch(share, /flex: 1 1 0;/u);
   assert.match(css, /\.sf-settings-panel-footer \.sf-button-text-container \{\s*white-space: nowrap;\s*\}/u);
   const component = JSON.parse(read('src/smart/settings/component.json'));
-  assert.equal(component.version, '1.7.4'); // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch
+  assert.equal(component.version, '1.8.0'); // C106 order // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch
+});
+
+// The SIMAI Framework order of the sf-view-table move (C106; ui-control
+// control/evidence/2026-11-17-view-c106-settings «Left»).
+const TEMPLATES = {id: 'template', type: 'choice', text: 'Шаблоны', sortable: true, pinnable: true, value: 'mine', options: [
+  {id: 'all', text: 'Все', sortable: false, pinnable: false},
+  {id: 'mine', text: 'Мои'},
+  {id: 'late', text: 'Просроченные', pinned: true},
+  {id: 'week', text: 'Эта неделя'},
+]};
+
+test('C106 (3), (6): a choice that orders and pins -- its value the chosen id, its order [{id, pinned}] apart', () => {
+  assert.equal(itemValue(TEMPLATES), 'mine');
+  assert.deepEqual(choiceOrder(TEMPLATES), [{id: 'late', pinned: true}, {id: 'all', pinned: false}, {id: 'mine', pinned: false}, {id: 'week', pinned: false}]);
+  assert.deepEqual(orderMap([{type: 'group', items: [TEMPLATES]}]), {template: choiceOrder(TEMPLATES)});
+  assert.deepEqual(orderMap([{...TEMPLATES, sortable: false, pinnable: false}]), {}, 'a plain choice reports no order');
+  // Moving passes the option that does not move; it keeps its place.
+  assert.deepEqual(movedField(TEMPLATES, 'week', -1).map((one) => one.id), ['late', 'all', 'week', 'mine']);
+  assert.deepEqual(movedField(TEMPLATES, 'mine', -1), null, 'the fixed «Все» is not passed above the block start');
+  assert.equal(movedField(TEMPLATES, 'all', 1), null, 'sortable: false does not move');
+  assert.deepEqual(placedField(TEMPLATES, 'week', 'all').map((one) => one.id), ['late', 'all', 'week', 'mine'], '«Все» stays second');
+  // A pin: toggled, the order patched, the chosen option kept.
+  const pinned = toggledField(TEMPLATES, 'mine', 'pinned');
+  assert.deepEqual(pinned.find((one) => one.id === 'mine'), {id: 'mine', pinned: true});
+  const patched = {...TEMPLATES, ...orderPatch(TEMPLATES, pinned)};
+  assert.deepEqual(patched.options.map((one) => one.id), ['late', 'mine', 'all', 'week']);
+  assert.equal(itemValue(patched), 'mine');
+  assert.equal(toggledField(TEMPLATES, 'all', 'pinned'), null, 'pinnable: false is never pinned');
+  assert.equal(toggledField(TEMPLATES, 'mine', 'checked'), null, 'a choice has no checks');
+  assert.equal(orderPatch(TEMPLATES, ['nope']), null);
+  assert.deepEqual(orderPatch(TEMPLATES, ['week']).options.map((one) => one.id), ['late', 'week', 'all', 'mine']);
+});
+
+test('per option: sortable false and pinnable false in a fields list keep their places; the rows keep the handle and pin places', () => {
+  const columns = {...COLUMNS, options: [{id: 'select', text: 'Выбор', checked: true, sortable: false, pinnable: false}, ...COLUMNS.options]};
+  assert.deepEqual(movedField(columns, 'name', -1), null, 'not passed above a pinned one');
+  assert.equal(movedField(columns, 'select', 1), null);
+  assert.deepEqual(placedField(columns, 'due', 'name').map((one) => one.id), ['tags', 'select', 'due', 'name', 'status']);
+  assert.equal(toggledField(columns, 'select', 'pinned'), null);
+  assert.ok(toggledField(columns, 'select', 'checked'), 'it is still checked or not');
+  assert.match(panel, /handle: optionMoves\(item, option\), pin: optionPins\(item, option\),/u);
+  assert.match(panel, /\$\{row\.pins \? html`<span class="sf-settings-row-pin-place" aria-hidden="true"><\/span>` : nothing\}/u);
+  assert.match(css, /\.sf-settings-row-handle-place \{\n\s+visibility: hidden;/u);
+});
+
+test('the order: words per element, open({tab}) and close(), tab, apply-count, the arrange events, C22 sizes, C157 (3) footer', () => {
+  for (const [name, word] of [['closeLabel', 'close'], ['searchPlaceholder', 'search'], ['emptyText', 'empty'], ['pinLabel', 'pin'], ['unpinLabel', 'unpin'], ['moveLabel', 'move-hint']]) {
+    assert.match(source, new RegExp(`this\\.${name} \\|\\| this\\.sfWord\\('${word}'\\)`, 'u'), name);
+  }
+  assert.match(source, /async open\(given\) \{/u);
+  assert.match(source, /close\(\) \{\n\s+if \(!this\._open\) return \{outcome: 'refused', reason: 'not-open'\};/u);
+  assert.match(source, /get tab\(\) \{/u);
+  assert.match(source, /count: Number\.isInteger\(this\.applyCount\) && this\.applyCount >= 0 \? this\.applyCount : applyCount\(items\),/u);
+  assert.match(source, /if \(!this\.sfEmit\('arrange', detail, \{cancelable: true\}\)\) \{/u);
+  assert.match(source, /this\.sfEmit\('arranged', detail\);/u);
+  assert.match(source, /if \(!same\(was\[id\], value\)\) this\.writeOrdered\(id, value\);/u, 'a draft order goes out on Apply');
+  assert.doesNotMatch(panel.replace(/\/\/.*$/gmu, ''), /<sf-button[^>]* size="1\/2"/u, 'no hand size 1/2 on the panel\'s buttons (C22)');
+  assert.match(panel, /<div class="sf-settings-panel-footer"><sf-button size=\$\{size\} text=\$\{label\} data-sf-apply><\/sf-button>\$\{reset\}<\/div>/u);
+  assert.equal(applyCount([COLUMNS, VIEW]), 3);
+});
+
+test('C22: compact density steps the panel once -- no rule of the panel moves its rows and text to the 1/2 tokens again', () => {
+  const rules = css.replace(/\/\*[\s\S]*?\*\//gu, '');
+  assert.doesNotMatch(rules, /\[data-sf-density='compact'\] \.sf-settings-panel--size-1/u);
+  assert.doesNotMatch(rules, /\.sf-settings-panel--size-1\[data-sf-density='compact'\]/u);
 });

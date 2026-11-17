@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.settings",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "title": "Settings",
   "summary": "Compact settings: a few settings a person changes on the spot, as data, each holding its own value, drawn by sf-menu-context in one of two looks -- drill (the value under the name, the options in the same panel) or rows (the control at the row's end; a choice that does not fit beside its name drills by itself). With a trigger it opens over the page (a bottom sheet on a phone); without one it stands in the page's flow. A change is asked first (cancellable), then written and reported; remember keeps the values for the person. Where a product has a sign-in, the person's theme, language and text size are rows of the person menu (sf-menu-context, owner decision C176 (1)); sf-settings is the gear of a screen's view and of a site without a sign-in. The panel look (C106) draws a panel of its own for a list's view settings: sections or tabs, fields lists with a check, a handle, a pin and a search, applied at once or by «Применить».",
   "kind": "smart",
@@ -104,10 +104,38 @@
         "type": "string",
         "description": "The panel's accessible name. «Настройки» / «Settings» in the page language when not set"
       },
+      "apply-count": {
+        "type": "number",
+        "description": "The number «Применить (N)» shows in a panel applied by the button, when the page counts it (a filter whose conditions are not rows of this panel); a whole number from 0. Not set, the panel counts: the checked fields and the switches on"
+      },
+      "close-label": {
+        "type": "string",
+        "description": "The popup panel's close button's name; «Закрыть» / «Close» in the page language when not set"
+      },
+      "search-placeholder": {
+        "type": "string",
+        "description": "The words in the panel's search field, and its name; «Найти» / «Find» in the page language when not set"
+      },
+      "empty-text": {
+        "type": "string",
+        "description": "What the panel says when the search finds no row; «Ничего не найдено» / «Nothing found» in the page language when not set"
+      },
+      "pin-label": {
+        "type": "string",
+        "description": "The pin's word on a row that is not pinned: its tooltip, and its name before the row's text («Закрепить: Срок»); «Закрепить» / «Pin» in the page language when not set"
+      },
+      "unpin-label": {
+        "type": "string",
+        "description": "The pin's word on a pinned row; «Открепить» / «Unpin» in the page language when not set"
+      },
+      "move-label": {
+        "type": "string",
+        "description": "The description of a list that orders (how to move a row); «Alt со стрелками вверх и вниз меняет порядок» in the page language when not set"
+      },
       "items": {
         "type": "array",
         "default": [],
-        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
+        "description": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first; a choice in the panel look may say sortable and pinnable too (a filter's saved templates, C106 (3), (6)): the chosen option is the fill alone, the handle at the start, the pin at the end, the pinned on top; its value stays the chosen option's id and its order goes out as arrange and arranged ([{id, pinned}]). An option of a list that orders or pins may say sortable: false or pinnable: false (a table's system column): no handle or no pin, their places kept, and it stays where it stands while the others move"
       }
     },
     "additionalProperties": false
@@ -198,6 +226,36 @@
       "returns": {
         "type": "object",
         "description": "{outcome, count}: applied with how many settings moved, or cancelled."
+      }
+    },
+    "open": {
+      "summary": "The panel look's popup opens against its first trigger, as the trigger's press opens it, on the tab given by its index when the groups are tabs (an open panel turns to that tab). Refused with not-popup for another look or a panel in the page's flow; unavailable with no-trigger when the trigger is not in the page; cancelled when the page cancels open",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": false,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "tab": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "type": "Promise<object>",
+        "description": "{outcome}: applied, refused, unavailable or cancelled."
+      }
+    },
+    "close": {
+      "summary": "Closes the panel look's open popup as a script (close with reason api, cancellable); what a draft of apply=\"button\" held is dropped. Refused with not-open when it is not open; cancelled when the page cancels close",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome}: applied, refused or cancelled."
       }
     }
   },
@@ -332,6 +390,76 @@
         },
         "additionalProperties": true
       }
+    },
+    "sf-settings-arrange": {
+      "summary": "A person moves or pins an option of a choice that orders (sortable or pinnable, the panel look; a filter's templates): asked before the order is written. Cancelled, the rows stay as they were. Applied by the button, it goes out on «Применить». A fields list's order is its value: change and changed",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "order",
+          "previous",
+          "value",
+          "item"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The choice's id."
+          },
+          "order": {
+            "type": "array",
+            "description": "The options' order, the pinned first: [{id, pinned}]."
+          },
+          "previous": {
+            "type": "array",
+            "description": "The order it had."
+          },
+          "value": {
+            "description": "The chosen option, unchanged."
+          },
+          "item": {
+            "type": "object",
+            "description": "The item with its new order."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-settings-arranged": {
+      "summary": "The fact: the choice's new order is written into its options and the rows show it; remember keeps the values only (the chosen option), not the order",
+      "payload": {
+        "type": "object",
+        "required": [
+          "id",
+          "order",
+          "previous",
+          "value",
+          "item"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The choice's id."
+          },
+          "order": {
+            "type": "array",
+            "description": "The options' order, the pinned first: [{id, pinned}]."
+          },
+          "previous": {
+            "type": "array",
+            "description": "The order it had."
+          },
+          "value": {
+            "description": "The chosen option, unchanged."
+          },
+          "item": {
+            "type": "object",
+            "description": "The item with its new order."
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -448,7 +576,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/settings/index.js",
-        "sha256": "0a0028c16ca90cd804ae948e3c5b0e919560d85b9ce0f0cc1c672e7af02cefa6"
+        "sha256": "6b2ee960cbb8a4921b5bb9fffb5f3eaf053e75e191de7a088a391ddd8a4d8c06"
       },
       {
         "path": "src/smart/settings/js/templates/default.js",
@@ -460,7 +588,7 @@
       },
       {
         "path": "src/smart/settings/docs.md",
-        "sha256": "3e5b69d804c3526c2ce13eb4ca1d8a0f232dec04820c8ff6a470cef351e9187a"
+        "sha256": "897f2189f1b509db8f2c893690ea6c126c9183ae629ef7baa14b49d749a7fcf8"
       }
     ],
     "generated_runtime": []

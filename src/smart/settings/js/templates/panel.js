@@ -1,6 +1,6 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
-import {fieldOptions, holdsValue, itemValue, matches} from '../settings.js';
+import {choiceArranges, choiceOptions, fieldOptions, holdsValue, itemValue, matches, optionMoves, optionPins} from '../settings.js';
 
 // sf-settings' panel look (owner decision C106, 2026-11-12): the settings of a
 // list's view -- its fields, their order, the density -- in a panel of its own,
@@ -35,7 +35,12 @@ function mark(kind, checked) {
 }
 
 // One row. `row` is {key, kind: field|switch|option, role, checked, text,
-// caption, disabled, hidden, current, setting, option, handle, pin, pinned}.
+// caption, disabled, hidden, current, setting, option, handle, pin, pinned,
+// sorts, pins}. sorts and pins say the list orders or pins; handle and pin
+// that this row does. A row that does not (an option with sortable: false or
+// pinnable: false, a table's system column) keeps the handle's and the pin's
+// places empty, so its text stands where its neighbours' does (C105 H2: a row
+// without an icon among rows with icons keeps the icon's place).
 function renderRow(row, context) {
     const {words, size} = context;
     const main = html`<span class="sf-settings-row-main" role=${row.role}
@@ -44,12 +49,12 @@ function renderRow(row, context) {
             tabindex=${row.current ? '0' : '-1'}
             data-sf-setting=${row.setting}
             data-sf-option=${row.option ?? nothing}>
-            ${row.handle ? icon('drag_indicator', 'sf-settings-row-handle') : nothing}
+            ${row.handle ? icon('drag_indicator', 'sf-settings-row-handle') : row.sorts ? icon('drag_indicator', 'sf-settings-row-handle-place') : nothing}
             <span class="sf-settings-row-text">
                 <span class="sf-settings-row-label">${row.text}</span>
                 ${row.caption ? html`<span class="sf-settings-row-caption">${row.caption}</span>` : nothing}
             </span>
-            ${row.pin ? html`<span class="sf-settings-row-pin-place" aria-hidden="true"></span>` : nothing}
+            ${row.pins ? html`<span class="sf-settings-row-pin-place" aria-hidden="true"></span>` : nothing}
             ${mark(row.kind, row.checked)}
         </span>`;
     // The pin is the Framework's icon button (defect ST-2, owner decision
@@ -67,7 +72,7 @@ function renderRow(row, context) {
                 title=${row.pinned ? words.unpin : words.pin}
                 data-sf-setting=${row.setting} data-sf-option=${row.option}></sf-button-icon>`
         : nothing;
-    return html`<div class=${['sf-settings-row', `sf-settings-row--${row.kind}`, row.pin ? 'sf-settings-row--pins' : ''].filter(Boolean).join(' ')}
+    return html`<div class=${['sf-settings-row', `sf-settings-row--${row.kind}`, row.pins ? 'sf-settings-row--pins' : ''].filter(Boolean).join(' ')}
             ?hidden=${row.hidden}
             ?data-checked=${row.checked}
             ?data-pinned=${row.pinned}
@@ -131,19 +136,29 @@ function renderItems(items, context) {
         if (item.type === 'choice') {
             const value = itemValue(item);
             const hit = matches(context.query, item.text);
-            const rows = (Array.isArray(item.options) ? item.options : []).filter((option) => option && option.id !== undefined && option.id !== null)
-                .map((option) => ({key: String(option.id), kind: 'option', role: 'radio', setting: item.id, option: String(option.id),
+            // A choice that orders (a filter's templates, C106 (3), (6)): the
+            // fill alone for the chosen one, the handle at the start, the pin
+            // at the end, the pinned on top -- a fields list's row without its
+            // check.
+            const arranges = choiceArranges(item);
+            const options = arranges ? choiceOptions(item) : (Array.isArray(item.options) ? item.options : [])
+                .filter((option) => option && option.id !== undefined && option.id !== null);
+            const rows = options.map((option) => ({key: String(option.id), kind: 'option', role: 'radio', setting: item.id, option: String(option.id),
                     checked: option.id === value, text: option.text ?? '', disabled: Boolean(item.disabled || option.disabled),
-                    hidden: !hit && !matches(context.query, option.text)}));
+                    pinned: arranges && Boolean(item.pinnable && option.pinned),
+                    sorts: Boolean(item.sortable), pins: Boolean(item.pinnable),
+                    handle: optionMoves(item, option), pin: optionPins(item, option),
+                    hidden: !hit && !matches(context.query, option.text, option.keywords)}));
             if (item.text) parts.push(html`<div class="sf-settings-panel-label" role="presentation" ?hidden=${rows.every((row) => row.hidden)}>${item.text}</div>`);
-            parts.push(listOf(`choice:${item.id}`, 'radiogroup', item.text, rows, context));
+            parts.push(listOf(`choice:${item.id}`, 'radiogroup', item.text, rows, context, {sortable: Boolean(item.sortable)}));
             continue;
         }
         if (item.type === 'fields') {
             const rows = fieldOptions(item).map((option) => ({key: String(option.id), kind: 'field', role: 'checkbox', setting: item.id,
                 option: String(option.id), checked: Boolean(option.checked), pinned: Boolean(option.pinned),
                 text: option.text ?? '', disabled: Boolean(item.disabled || option.disabled),
-                handle: Boolean(item.sortable), pin: Boolean(item.pinnable),
+                sorts: Boolean(item.sortable), pins: Boolean(item.pinnable),
+                handle: optionMoves(item, option), pin: optionPins(item, option),
                 hidden: !matches(context.query, option.text, option.keywords)}));
             if (item.text && context.layout !== 'tabs') parts.push(html`<div class="sf-settings-panel-label" role="presentation" ?hidden=${rows.every((row) => row.hidden)}>${item.text}</div>`);
             parts.push(listOf(`fields:${item.id}`, 'group', item.text, rows, context, {sortable: Boolean(item.sortable)}));
@@ -184,7 +199,7 @@ function renderHead(context) {
                 }}></sf-tabs>`
         : html`<span class="sf-settings-panel-title">${context.label}</span>`;
     const close = context.popup
-        ? html`<sf-button-icon class="sf-settings-panel-close" appearance="ghost" scheme="on-surface" size="1/2" icon="close"
+        ? html`<sf-button-icon class="sf-settings-panel-close" appearance="ghost" scheme="on-surface" size=${buttonSize(context)} icon="close"
                 aria-label=${words.close} title=${words.close} data-sf-close></sf-button-icon>`
         : nothing;
     return html`<div class="sf-settings-panel-head">${tabs}${close}</div>`;
@@ -199,12 +214,19 @@ function renderSearch(context) {
     </label>`;
 }
 
+// The panel's buttons take its size (owner decision C22: no hand size 1/2;
+// the density of the region steps them down with the rows).
+const buttonSize = (context) => (context.size === '1' ? '1' : '1/2');
+
+// A filter's footer: «Применить (N)» first, then «Сбросить» (owner decision
+// C157 (3): the actions at the start, the main one first).
 function renderFooter(context) {
     const {words, apply, count} = context;
-    const reset = html`<sf-button size="1/2" appearance="outline" scheme="on-surface" text=${words.reset} data-sf-reset></sf-button>`;
+    const size = buttonSize(context);
+    const reset = html`<sf-button size=${size} appearance="outline" scheme="on-surface" text=${words.reset} data-sf-reset></sf-button>`;
     if (apply !== 'button') return html`<div class="sf-settings-panel-footer">${reset}</div>`;
     const label = count ? `${words.apply} (${count})` : words.apply;
-    return html`<div class="sf-settings-panel-footer">${reset}<sf-button size="1/2" text=${label} data-sf-apply></sf-button></div>`;
+    return html`<div class="sf-settings-panel-footer"><sf-button size=${size} text=${label} data-sf-apply></sf-button>${reset}</div>`;
 }
 
 export function renderPanel(context) {

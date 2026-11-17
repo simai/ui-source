@@ -2,7 +2,7 @@
   "$comment": "The source of sf-settings' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: compact settings of the owner decision of 2026-11-06 (Federation bus msg-cbe15ae81eab468fbbe8), composed over sf-menu-context.",
   "id": "smart.settings",
   "tag": "sf-settings",
-  "version": "1.7.4",
+  "version": "1.8.0",
   "kind": "leaf",
   "family": "settings",
   "settings": {
@@ -81,7 +81,7 @@
         }
       },
       "default": [],
-      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first"
+      "summary": "The settings, each holding its own value: {id, type: switch, text, value: true}, {id, type: choice, text, value: <option id>, options: [{id, text, icon?}]}, {id, type: range, text, value, min, max, step, unit}, {id, type: color, text, value: <palette hue name or #rrggbb>, options?: [hue names], custom?: false} (C85: the current colour as the row's circle, a level of hue circles and «Свой цвет…», which opens sf-input-color's window on «Своё»; ten hues by default), {type: heading, text}, {type: separator}, {type: group, text, items}; icon and caption on a setting, disabled on a setting or an option (tile is no longer read: the tiles look left, C176 (5)). A property, or the JSON island a server prints; in the panel look also {id, type: fields, text, options: [{id, text, checked, pinned, disabled}], sortable, pinnable}: a list of many to check (a table's columns), ordered by a handle and Alt+arrows when sortable, pinned on top when pinnable; its value is [{id, checked, pinned}] in order, the pinned first; a choice in the panel look may say sortable and pinnable too (a filter's saved templates, C106 (3), (6)): the chosen option is the fill alone, the handle at the start, the pin at the end, the pinned on top; its value stays the chosen option's id and its order goes out as arrange and arranged ([{id, pinned}]). An option of a list that orders or pins may say sortable: false or pinnable: false (a table's system column): no handle or no pin, their places kept, and it stays where it stands while the others move"
     },
     "look": {
       "type": "enum",
@@ -130,12 +130,51 @@
       "type": "string",
       "default-from": "runtime.label",
       "summary": "The panel's accessible name. «Настройки» / «Settings» in the page language when not set"
+    },
+    "apply-count": {
+      "type": "number",
+      "optional": true,
+      "summary": "The number «Применить (N)» shows in a panel applied by the button, when the page counts it (a filter whose conditions are not rows of this panel); a whole number from 0. Not set, the panel counts: the checked fields and the switches on"
+    },
+    "close-label": {
+      "type": "string",
+      "default-from": "runtime.close",
+      "summary": "The popup panel's close button's name; «Закрыть» / «Close» in the page language when not set"
+    },
+    "search-placeholder": {
+      "type": "string",
+      "default-from": "runtime.search",
+      "summary": "The words in the panel's search field, and its name; «Найти» / «Find» in the page language when not set"
+    },
+    "empty-text": {
+      "type": "string",
+      "default-from": "runtime.empty",
+      "summary": "What the panel says when the search finds no row; «Ничего не найдено» / «Nothing found» in the page language when not set"
+    },
+    "pin-label": {
+      "type": "string",
+      "default-from": "runtime.pin",
+      "summary": "The pin's word on a row that is not pinned: its tooltip, and its name before the row's text («Закрепить: Срок»); «Закрепить» / «Pin» in the page language when not set"
+    },
+    "unpin-label": {
+      "type": "string",
+      "default-from": "runtime.unpin",
+      "summary": "The pin's word on a pinned row; «Открепить» / «Unpin» in the page language when not set"
+    },
+    "move-label": {
+      "type": "string",
+      "default-from": "runtime.move-hint",
+      "summary": "The description of a list that orders (how to move a row); «Alt со стрелками вверх и вниз меняет порядок» in the page language when not set"
     }
   },
   "values": {
     "values": {
       "type": "object",
       "summary": "Every setting's value by its id: {theme: 'dark', sound: true, scale: 110}. Read-only; the values live in the items"
+    },
+    "tab": {
+      "type": "number",
+      "summary": "The panel look's tab shown, by its index (the groups as tabs); 0 when the groups are sections. Read-only: a person chooses the tab, open({tab}) opens on one"
     }
   },
   "events": {
@@ -230,6 +269,57 @@
         }
       },
       "summary": "The popup panel of look=\"panel\" is closed"
+    },
+    "arrange": {
+      "carries": {
+        "id": {
+          "type": "string",
+          "summary": "The choice's id."
+        },
+        "order": {
+          "type": "list",
+          "summary": "The options' order, the pinned first: [{id, pinned}]."
+        },
+        "previous": {
+          "type": "list",
+          "summary": "The order it had."
+        },
+        "value": {
+          "type": "id",
+          "summary": "The chosen option, unchanged."
+        },
+        "item": {
+          "type": "object",
+          "summary": "The item with its new order."
+        }
+      },
+      "cancelable": true,
+      "summary": "A person moves or pins an option of a choice that orders (sortable or pinnable, the panel look; a filter's templates): asked before the order is written. Cancelled, the rows stay as they were. Applied by the button, it goes out on «Применить». A fields list's order is its value: change and changed"
+    },
+    "arranged": {
+      "carries": {
+        "id": {
+          "type": "string",
+          "summary": "The choice's id."
+        },
+        "order": {
+          "type": "list",
+          "summary": "The options' order, the pinned first: [{id, pinned}]."
+        },
+        "previous": {
+          "type": "list",
+          "summary": "The order it had."
+        },
+        "value": {
+          "type": "id",
+          "summary": "The chosen option, unchanged."
+        },
+        "item": {
+          "type": "object",
+          "summary": "The item with its new order."
+        }
+      },
+      "summary": "The fact: the choice's new order is written into its options and the rows show it; remember keeps the values only (the chosen option), not the order"
     }
   },
   "actions": {
@@ -291,6 +381,38 @@
       "x-returns": {
         "type": "object",
         "description": "{outcome, count}: applied with how many settings moved, or cancelled."
+      }
+    },
+    "open": {
+      "with": {
+        "tab": {
+          "type": "number",
+          "optional": true
+        }
+      },
+      "waits": true,
+      "x-outcomes": [
+        "applied",
+        "refused",
+        "unavailable",
+        "cancelled"
+      ],
+      "summary": "The panel look's popup opens against its first trigger, as the trigger's press opens it, on the tab given by its index when the groups are tabs (an open panel turns to that tab). Refused with not-popup for another look or a panel in the page's flow; unavailable with no-trigger when the trigger is not in the page; cancelled when the page cancels open",
+      "x-returns": {
+        "type": "Promise<object>",
+        "description": "{outcome}: applied, refused, unavailable or cancelled."
+      }
+    },
+    "close": {
+      "x-outcomes": [
+        "applied",
+        "refused",
+        "cancelled"
+      ],
+      "summary": "Closes the panel look's open popup as a script (close with reason api, cancellable); what a draft of apply=\"button\" held is dropped. Refused with not-open when it is not open; cancelled when the page cancels close",
+      "x-returns": {
+        "type": "object",
+        "description": "{outcome}: applied, refused or cancelled."
       }
     }
   },
@@ -398,7 +520,13 @@
     "brief": "Owner decision 2026-11-06 relayed by the docs thread (Federation bus msg-cbe15ae81eab468fbbe8): compact settings get their own public Smart component again, sf-settings, composed over sf-menu-context the way sf-language composes its parts; not sf-settings-menu (removed 2026-10-30, not revived) and no second menu engine; items as data (property and island) of kinds switch, choice, range, heading, separator, group with the value in the item; look=drill|rows|tiles after the recipes of ui-doc 04d391db (examples/smart-components/context-menu/settings-{drill,rows,tiles}); popup with a trigger slot or for, or inline; change (cancellable, before the write), changed, reset (cancellable); setValue, setAll, show, reset with the menu's outcomes; 280 px panel, names wrap, values ellipsis with a tooltip; size 1/2 and 1; optional remember via SF.Preferences; no CSS variables of its own"
   },
   "x-words": [
-    "label"
+    "label",
+    "close-label",
+    "search-placeholder",
+    "empty-text",
+    "pin-label",
+    "unpin-label",
+    "move-label"
   ],
   "x-decisions": [
     "version 1.5.0 (2026-11-14, owner decision C157 (5); written on the branch as 1.3.0): a minor. The phone sheet is the one sheet (core mix/_mix__sheet.scss): the screen's width up to 44rem, the top corners rounded, the grab bar 24 x 4 in on-surface-variant (it was 20 x 4 in outline-variant) in a handle row, and a swipe down from that row closes the panel (reason close) -- core/js/sheet-swipe.js.",
@@ -435,7 +563,8 @@
     "version 1.7.1 (2026-11-17, feat/lang-file-c282; numbered above 1.7.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.7.2 (written on the branch as 1.6.6; 2026-11-17, owner decision C268; numbered above 1.6.5 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.7.3 (written on the branch as 1.7.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
-    "version 1.7.4 (written on the branch as 1.7.2; 2026-11-17, owner decision C166 follow-up, C144; numbered above 1.7.1 on origin/feat/lang-file-c282): a patch, a look. The panel look's footer labels stay on one line: «Сбросить» and «Применить (N)» each grow from their own label instead of equal halves from a zero basis, which left «Применить (12)» 101 px for its 107 at size 1/2 in the 20rem panel and wrapped it to two lines (the button 52 px high, the footer 77). Where the two do not fit side by side the second goes under the first, both the full width. Settings, values, events and keys unchanged; evidence ui-control control/evidence/2026-11-17-settings-st-c166."
+    "version 1.7.4 (written on the branch as 1.7.2; 2026-11-17, owner decision C166 follow-up, C144; numbered above 1.7.1 on origin/feat/lang-file-c282): a patch, a look. The panel look's footer labels stay on one line: «Сбросить» and «Применить (N)» each grow from their own label instead of equal halves from a zero basis, which left «Применить (12)» 101 px for its 107 at size 1/2 in the 20rem panel and wrapped it to two lines (the button 52 px high, the footer 77). Where the two do not fit side by side the second goes under the first, both the full width. Settings, values, events and keys unchanged; evidence ui-control control/evidence/2026-11-17-settings-st-c166.",
+    "version 1.8.0 (2026-11-17, owner decision C106, the SIMAI Framework order of the sf-view-table move, ui-control control/evidence/2026-11-17-view-c106-settings «Left»): a minor. (1) A choice in the panel look may order and pin its options as a fields list does (C106 (3), (6); the study's «templates (pin, order)»): sortable and pinnable on the choice, pinned on an option; the chosen option is the theme's light fill alone, the handle at the row's start, the pin at its end (no check column), the pinned on top, Alt+arrows and the drag as in a fields list. Its value stays the chosen option's id; its order goes out as the new events arrange (cancellable) and arranged, {id, order: [{id, pinned}], previous, value, item}; applied by the button it waits for «Применить». (2) An option of a list that orders or pins may say sortable: false or pinnable: false: no handle or no pin, their places kept (C105 H2), and it keeps its place while the others move round it; it is never pinned or unpinned. (3) The panel's words per element: close-label, search-placeholder, empty-text, pin-label, unpin-label, move-label (the page language's words when not set). (4) open({tab}) and close(): a popup panel opened or closed by a script, on a tab by its index, and the value tab, the tab shown. (5) apply-count: the number «Применить (N)» shows when the page counts its conditions. (6) The panel's close button and footer buttons take the panel's size (C22: no hand size 1/2; they were 1/2 at every size), and a filter's footer puts «Применить (N)» first, then «Сбросить» (C157 (3)). (7) Compact density steps the panel once (C22): the panel's own compact rule moved its rows and text to the 1/2 tokens, which the density had already moved, so a compact panel drew 28 rows and 12 text (two steps) under its 32 buttons; the rule is gone, and a compact panel draws 32 rows, 14 text and the H4 inset of the size's tokens. Not built, looks nobody decided (listed for DEV): a row's «⋯» menu (rename, make default, delete / restore), an inline rename field in a row, a «deleted, waiting for Apply» row state."
   ],
   "x-registry": {
     "capabilities": [

@@ -382,43 +382,121 @@ export function applyCount(items) {
   return count;
 }
 
+// ─── order and pins: a fields list, and a choice that orders (C106 (3), (6))
+//
+// A choice of one -- a filter's saved templates -- may order and pin its
+// options as a fields list does: {id, type: 'choice', sortable, pinnable,
+// options: [{id, text, pinned}]}. Its value stays the chosen option's id; its
+// order is its options' order, the pinned first, read as [{id, pinned}]
+// (choiceOrder) and given back by orderPatch. An option may say sortable:
+// false or pinnable: false -- a table's system column: it has no handle or no
+// pin, and it keeps its place while the others move round it.
+
+/** Whether a list's option moves: the list orders and the option does not refuse. */
+export const optionMoves = (item, option) => Boolean(item?.sortable) && option?.sortable !== false;
+/** Whether a list's option pins: the list pins and the option does not refuse. */
+export const optionPins = (item, option) => Boolean(item?.pinnable) && option?.pinnable !== false;
+/** Whether a choice orders or pins its options (then its order is reported). */
+export const choiceArranges = (item) => item?.type === 'choice' && Boolean(item.sortable || item.pinnable);
+
+/** A choice's options in the order they stand, the pinned first (as a fields list's). */
+export const choiceOptions = (item) => fieldOptions(item);
+
+/** A choice's order: [{id, pinned}] as its options stand, the pinned first. */
+export function choiceOrder(item) {
+  return choiceOptions(item).map((option) => ({id: option.id, pinned: Boolean(option.pinned)}));
+}
+
 /**
- * A fields list with one option moved by `step` places within its own block
- * (the pinned or the rest: a pinned field stays above every other), or null
- * when it cannot move that way. Its value, ready for valuePatch.
+ * What to write into a choice to give it an order ([{id, pinned}] or ids):
+ * the options listed come first in that order, the ones left out follow;
+ * null when an id is not the choice's. The chosen option stays chosen.
+ */
+export function orderPatch(item, order) {
+  if (item?.type !== 'choice' || !Array.isArray(order)) return null;
+  const options = optionsOf(item);
+  const byId = new Map(options.map((option) => [option.id, option]));
+  const given = order.map((one) => (typeof one === 'string' ? {id: one} : one));
+  if (!given.every((one) => one && typeof one === 'object' && byId.has(one.id))) return null;
+  const listed = new Set(given.map((one) => one.id));
+  const ordered = given.map((one) => {
+    const option = {...byId.get(one.id)};
+    if (typeof one.pinned === 'boolean') option.pinned = one.pinned;
+    return option;
+  });
+  return {options: fieldOptions({options: [...ordered, ...options.filter((option) => !listed.has(option.id))]})};
+}
+
+/** Every ordering choice's order by its id, at the depth it sits. */
+export function orderMap(items, into = {}) {
+  for (const item of Array.isArray(items) ? items : []) {
+    if (holdsValue(item) && choiceArranges(item)) into[item.id] = choiceOrder(item);
+    if (item?.type === 'group') orderMap(item.items, into);
+  }
+  return into;
+}
+
+// A list's arrangement for its options in a new order: a fields list's value
+// ([{id, checked, pinned}]), a choice's order ([{id, pinned}]).
+function arranged(item, options) {
+  return item?.type === 'choice'
+    ? options.map((option) => ({id: option.id, pinned: Boolean(option.pinned)}))
+    : options.map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
+}
+
+// The options again with the ones that do not move back at the places they
+// stood (`before`), the moving ones in the order `moved` gives them.
+function keepFixed(item, before, moved) {
+  const loose = moved.filter((option) => optionMoves(item, option));
+  let at = 0;
+  return before.map((option) => (optionMoves(item, option) ? loose[at++] : option));
+}
+
+/**
+ * A list with one option moved by `step` places within its own block (the
+ * pinned or the rest: a pinned option stays above every other), passing the
+ * options that do not move, which keep their places; null when it cannot
+ * move that way. A fields list's value or a choice's order.
  */
 export function movedField(item, optionId, step) {
   const options = fieldOptions(item);
-  const at = options.findIndex((option) => option.id === optionId);
+  const option = options.find((one) => one.id === optionId);
+  if (!option || !optionMoves(item, option)) return null;
+  const loose = options.filter((one) => optionMoves(item, one));
+  const at = loose.indexOf(option);
   const to = at + step;
-  if (at < 0 || to < 0 || to >= options.length || Boolean(options[to].pinned) !== Boolean(options[at].pinned)) return null;
-  const list = [...options];
-  const [moved] = list.splice(at, 1);
-  list.splice(to, 0, moved);
-  return list.map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
+  if (to < 0 || to >= loose.length || Boolean(loose[to].pinned) !== Boolean(option.pinned)) return null;
+  const list = [...loose];
+  list.splice(at, 1);
+  list.splice(to, 0, option);
+  return arranged(item, keepFixed(item, options, list));
 }
 
-/** A fields list's value with one option put before another of the same block (a drag), or null. */
+/** A list with one option put before another of the same block (a drag), or null. */
 export function placedField(item, optionId, beforeId) {
   const options = fieldOptions(item);
   const moving = options.find((option) => option.id === optionId);
-  if (!moving || optionId === beforeId) return null;
+  if (!moving || optionId === beforeId || !optionMoves(item, moving)) return null;
   const rest = options.filter((option) => option.id !== optionId);
   let at = beforeId === null ? rest.length : rest.findIndex((option) => option.id === beforeId);
   if (at < 0) return null;
-  // A pinned field stays among the pinned, the rest below them.
+  // A pinned option stays among the pinned, the rest below them.
   const pinned = rest.filter((option) => option.pinned).length;
   at = moving.pinned ? Math.min(at, pinned) : Math.max(at, pinned);
   rest.splice(at, 0, moving);
-  const value = rest.map((option) => ({id: option.id, checked: Boolean(option.checked), pinned: Boolean(option.pinned)}));
-  return sameValue(value, itemValue(item)) ? null : value;
+  const value = arranged(item, keepFixed(item, options, rest));
+  return sameValue(value, arranged(item, options)) ? null : value;
 }
 
-/** A fields list's value with one option checked or pinned the other way, or null. */
+/**
+ * A list with one option checked or pinned the other way, or null: a fields
+ * list's value, a choice's order (pinned only). An option that does not pin
+ * is not pinned or unpinned.
+ */
 export function toggledField(item, optionId, key = 'checked') {
   const options = fieldOptions(item);
   const option = options.find((one) => one.id === optionId);
-  if (!option || (key === 'checked' && option.disabled)) return null;
-  return options.map((one) => ({id: one.id, checked: Boolean(one.checked), pinned: Boolean(one.pinned),
-    ...(one.id === optionId ? {[key]: !one[key]} : {})}));
+  if (!option || (key === 'checked' && (option.disabled || item?.type !== 'fields'))) return null;
+  if (key === 'pinned' && !optionPins(item, option)) return null;
+  return arranged(item, options.map((one) => (one.id === optionId ? {...one, [key]: !one[key]} : one)));
 }
