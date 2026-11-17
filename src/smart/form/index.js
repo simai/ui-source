@@ -35,6 +35,18 @@ import './scss/index.scss';
 
 export const WIDTHS = ['s', 'm', 'full'];
 
+// The property types already reported as unknown, once per page for each.
+const UNKNOWN_TYPES_TOLD = new Set();
+
+function warnUnknownType(field) {
+  const type = String(field?.propertyType ?? '');
+  if (UNKNOWN_TYPES_TOLD.has(type)) return;
+  const modes = propertyModes(type);
+  if (modes.view || modes.edit) return;
+  UNKNOWN_TYPES_TOLD.add(type);
+  console.warn(`sf-form: the field «${field?.key ?? ''}» is left out: the Framework's field renderers draw no property type «${type}»`);
+}
+
 // The controls of the field family that say an error in their own message
 // line, linked to their native control (C153 (3)): the form gives them
 // invalid and error-message. Every other control gets its error line from the
@@ -208,10 +220,17 @@ class SfForm extends FormElement {
     return normalizeFields(this.fields);
   }
 
-  // The fields the form shows now: every field the renderers draw.
+  // The fields the form shows now: every field the renderers draw. A field of
+  // a type the renderers do not know at all (money or percent, which a
+  // component set draws, or a misspelt type) is still left out, and the page
+  // hears it once per type, with the field that brought it (set boundary
+  // study, 2026-11-17): it was dropped without a word.
   shownFields() {
     const editing = this.isEditing;
-    return this.list.filter((field) => (editing ? this.drawsEdit(field) : this.drawsView(field)));
+    return this.list.filter((field) => {
+      warnUnknownType(field);
+      return editing ? this.drawsEdit(field) : this.drawsView(field);
+    });
   }
 
   // A field of a type the renderers do not draw in this mode is left out.

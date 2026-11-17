@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 66,
-    "translated": 66,
+    "words": 70,
+    "translated": 70,
     "share": 100
   },
   "words": {
@@ -26,6 +26,10 @@
       "operator": "Оператор",
       "rangeFrom": "От",
       "rangeTo": "До",
+      "dateOperator_gt": "Позже",
+      "dateOperator_gte": "Не раньше",
+      "dateOperator_lt": "Раньше",
+      "dateOperator_lte": "Не позже",
       "loadingOptions": "Загрузка вариантов",
       "optionsError": "Не удалось загрузить варианты",
       "pickRecord": "Выберите запись",

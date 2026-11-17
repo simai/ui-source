@@ -8,7 +8,7 @@ import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTi
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
-import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
+import {formatDecimal, formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -216,6 +216,34 @@ function renderNumberFilterControl(field, host) {
     `;
 }
 
+// The date filter (property type study «Дата», PD-4..PD-8, 2026-11-17). The
+// operator comes first and the day field under it, because the operator says
+// whether there is one day to choose, two, or none: «Сегодня», «Неделя»,
+// «Месяц» and «Любая дата» are periods by themselves, so they draw no day
+// field (it stood there and did nothing). A period of the person's own
+// («Диапазон») is the calendar in range mode with its quick ranges -- today,
+// this week, this month, the last 7 and 30 days -- or the field's own
+// `filter.presets` (sf-input-date's presets, [] for none). The day field
+// takes the size of the table, as the operator list beside it does, and the
+// calendar names its months in the page's language: it was hard-coded ru-Ru.
+// A day's operators read as a day's, «Позже», «Не раньше», «Раньше»,
+// «Не позже», not as a number's «Больше чем» (DATE_OPERATOR_WORDS); every
+// other operator keeps the host's word.
+const DATE_NO_VALUE_OPERATORS = new Set(['today', 'week', 'month', 'any']);
+const DATE_RANGE_PRESETS = 'today,this-week,this-month,last-7-days,last-30-days';
+const DATE_OPERATOR_WORDS = {gt: 'dateOperator_gt', gte: 'dateOperator_gte', lt: 'dateOperator_lt', lte: 'dateOperator_lte'};
+
+function dateOperatorLabel(host, operator) {
+    const key = DATE_OPERATOR_WORDS[operator];
+    return key ? setText(host, key) : host.getFilterOperatorLabel(operator);
+}
+
+function dateFilterPresets(field) {
+    const presets = field.filter?.presets;
+    if (presets === undefined || presets === null) return DATE_RANGE_PRESETS;
+    return Array.isArray(presets) ? presets : String(presets);
+}
+
 function renderDateFilterControl(field, host) {
     const control = host.getFilterControlValue(field.key);
     const operators = field.filter?.operators || ['eq'];
@@ -229,18 +257,6 @@ function renderDateFilterControl(field, host) {
 
     return html`
         <div class="flex flex-col gap-1/3">
-            <sf-input-date
-                    .value=${dateValue}
-                    ?range=${isBetween}
-                    name="sf_filter_${field.key || 'date'}"
-                    locale="ru-Ru"
-                    @change=${(event) => {
-                        host.patchTempFilterValue(field.key, {
-                            value: event.detail.value,
-                            operator: selectedOperator,
-                        });
-                    }}
-            ></sf-input-date>
             <sf-dropdown
                     size=${filterSize(host)}
                     appearance="bordered"
@@ -260,12 +276,28 @@ function renderDateFilterControl(field, host) {
                     <sf-list-item
                             kind="text"
                             size=${filterSize(host)}
-                            text="${host.getFilterOperatorLabel(operator)}"
+                            text="${dateOperatorLabel(host, operator)}"
                             value="${operator}"
                             ?selected=${operator === selectedOperator}
                     ></sf-list-item>
                 `)}
             </sf-dropdown>
+            ${DATE_NO_VALUE_OPERATORS.has(selectedOperator) ? nothing : html`
+            <sf-input-date
+                    size=${filterSize(host)}
+                    .value=${dateValue}
+                    ?range=${isBetween}
+                    .presets=${isBetween ? dateFilterPresets(field) : ''}
+                    name="sf_filter_${field.key || 'date'}"
+                    aria-label=${field.label || field.key || ''}
+                    @change=${(event) => {
+                        if (event.target !== event.currentTarget) return;
+                        host.patchTempFilterValue(field.key, {
+                            value: event.detail.value,
+                            operator: selectedOperator,
+                        });
+                    }}
+            ></sf-input-date>`}
         </div>
     `;
 }
@@ -767,7 +799,12 @@ function renderNumericCell(field, value, host) {
     const variant = field.variant || field.filter?.variant;
     const number = Number(scalarValue(value));
     if ((variant !== 'scale' && variant !== 'meter') || !Number.isFinite(number)) {
-        return renderHostFormattedCell(field, value, host);
+        // The host's text first; else the number in the page's language, as
+        // the view prints it («12,5»), where the table printed «12.5».
+        const formatted = renderHostFormattedCell(field, value, host);
+        if (formatted !== null) return formatted;
+        if (carriesText(value)) return value.text || null;
+        return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || null;
     }
     if (number < 0 || number > 100) return null;
     if (variant === 'meter') return {component: {type: 'progress-bar', props: meterProps(field, number)}};
@@ -1340,16 +1377,30 @@ function splitDateTime(value) {
     return {date: match[1], suffix: `T${match[2]}${match[3] || ''}`};
 }
 
+// min and max bound the day (PD-2, as a datetime's do): an ISO date, or the
+// day of an ISO date and time; the calendar disables the days outside them
+// and a typed day outside them is put back. The host still validates.
+function dayBound(bound) {
+    const match = typeof bound === 'string' ? bound.trim().match(/^\d{4}-\d{2}-\d{2}/u) : null;
+    return match ? match[0] : '';
+}
+
 function renderDateEdit(field, value, host) {
     value = scalarValue(value);
     const {date, suffix} = splitDateTime(value);
+    const min = dayBound(field.min);
+    const max = dayBound(field.max);
     return html`
         <sf-input-date
                 size=${EDIT_SIZE}
                 name=${fieldName(field)}
                 value=${date ?? ''}
+                min-date=${min || nothing}
+                max-date=${max || nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     const next = event.detail?.value ?? event.target?.value ?? null;
                     host.setFieldValue(field, next && suffix ? `${next}${suffix}` : next);
@@ -1403,6 +1454,8 @@ function renderDateTimeEdit(field, value, host) {
                 minute-step=${step || nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     // The picker's own change, not a native one from its field.
                     if (event.target !== event.currentTarget) return;
@@ -1439,6 +1492,8 @@ function renderTimeEdit(field, value, host) {
                 minute-step=${step || nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     if (event.target !== event.currentTarget) return;
                     const result = composeTime(stored, String(event.detail?.value ?? ''));
@@ -2257,6 +2312,15 @@ const keepsControlWhenLocked = (asked, field) => asked === 'choice' && isChoiceB
 // differently; for every other one a disabled field is a read-only one.
 let EDIT_DISABLED = false;
 
+// `options.error`: what is wrong with the field now, a sentence, or empty (PD-1,
+// property type study «Дата»). A control that says its own error (sf-input-date
+// for a date, a datetime and a time) is drawn invalid with the sentence under
+// it, the error-message of the field family, so a host that is not sf-form --
+// a record card -- marks the field itself instead of writing a line under a
+// field with a normal border. sf-form keeps setting invalid on the controls it
+// draws, as before.
+let EDIT_ERROR = '';
+
 export function renderEditField(field = {}, value, host, options = {}) {
     const asked = field.propertyType || field.type || field.dataType;
     const disabled = options?.disabled === true;
@@ -2273,7 +2337,9 @@ export function renderEditField(field = {}, value, host, options = {}) {
     const outerDisabled = EDIT_DISABLED;
     const outerPicker = EDIT_PICKER;
     const outerApply = EDIT_APPLY;
+    const outerError = EDIT_ERROR;
     EDIT_SIZE = sizeOption(options);
+    EDIT_ERROR = typeof options?.error === 'string' ? options.error.trim() : '';
     EDIT_DISABLED = disabled;
     // `options.picker: 'dropdown'`: the record, relation, user and paged lookup
     // fields drawn as before C139, a searchable sf-dropdown (until 2027-01-01).
@@ -2286,6 +2352,7 @@ export function renderEditField(field = {}, value, host, options = {}) {
         EDIT_DISABLED = outerDisabled;
         EDIT_PICKER = outerPicker;
         EDIT_APPLY = outerApply;
+        EDIT_ERROR = outerError;
     }
 }
 
@@ -2357,6 +2424,18 @@ function renderHtmlView(field, value) {
     return clean ? html`<div class="sf-field-view sf-field-html">${unsafeHTML(clean)}</div>` : nothing;
 }
 
+// A number in the page's language (set boundary study, 2026-11-17): «12,5 кг»
+// on a Russian page, «12.5 kg» on an English one, through Intl with every
+// digit the value has (decimal.js formatDecimal, never through a float on the
+// way). The host's formatFieldValue and a value's own text still win; what is
+// not a number is shown as it came.
+function numberText(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted;
+    if (carriesText(value)) return value.text;
+    return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
+}
+
 // A number carries its unit when the field declares one, and nothing when it
 // does not -- the set does not guess at a unit, and «42» with an invented «шт»
 // beside it is a worse answer than «42».
@@ -2374,7 +2453,7 @@ function renderNumberView(field, value, host) {
         return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing}></sf-progress-bar>`;
     }
 
-    const text = viewText(field, value, host);
+    const text = numberText(field, value, host);
     return html`<span class="sf-field-view">${field.unit ? `${text} ${field.unit}` : text}</span>`;
 }
 
@@ -2389,8 +2468,20 @@ function renderNumberView(field, value, host) {
 // reads them as written, in the host's zone): nothing is moved to the reader's
 // time zone, which would show a different day near midnight. A value that is
 // not a date at all is shown as it came, never guessed at.
-const DATE_VIEW = {dateStyle: 'medium', timeZone: 'UTC'};
-const DATETIME_VIEW = {dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC'};
+//
+// `format` is the field's display setting (PD-3): the length of the date,
+// Intl's dateStyle in the page's language -- short «17.11.2026» / «11/17/26»,
+// medium (the default) «17 нояб. 2026 г.» / «Nov 17, 2026», long «17 ноября
+// 2026 г.» / «November 17, 2026», full with the weekday. A datetime keeps its
+// clock beside it. It is read by the view and the cell; the edit control
+// types the locale's digits whatever it says. Any other value is medium, and
+// the host's formatFieldValue or text still wins.
+const DATE_FORMATS = new Set(['short', 'medium', 'long', 'full']);
+
+function dateFormatOf(field) {
+    const format = String(field?.format ?? '').trim();
+    return DATE_FORMATS.has(format) ? format : 'medium';
+}
 
 function defaultDateText(field, value, host) {
     if (carriesText(value)) return null;
@@ -2402,10 +2493,11 @@ function defaultDateText(field, value, host) {
         const date = new Date(0);
         date.setUTCFullYear(year, month - 1, day);
         const type = field?.propertyType || field?.type || field?.dataType;
-        if (type !== 'datetime' || !parts.time) return formatDate(date, {intl: DATE_VIEW, locale}) || null;
+        const dateStyle = dateFormatOf(field);
+        if (type !== 'datetime' || !parts.time) return formatDate(date, {intl: {dateStyle, timeZone: 'UTC'}, locale}) || null;
         const [hours, minutes] = parts.time.split(':').map(Number);
         date.setUTCHours(hours, minutes, 0, 0);
-        return formatDate(date, {intl: DATETIME_VIEW, locale}) || null;
+        return formatDate(date, {intl: {dateStyle, timeStyle: 'short', timeZone: 'UTC'}, locale}) || null;
     } catch {
         return null;
     }

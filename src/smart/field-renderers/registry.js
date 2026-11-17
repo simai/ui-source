@@ -61,15 +61,19 @@ export const PROPERTY_TYPES = Object.freeze([
             {id: 'meter', label: typeLabel('variant-number-meter')},
             {id: 'stepper', label: typeLabel('variant-number-stepper')}],
         params: ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']},
+    // date (PD-2, PD-3): min and max bound the day, an ISO date (the day of a
+    // date and time is read); format is the length the view and the cell print
+    // the date in, Intl's dateStyle: short, medium (the default), long, full.
     {type: 'date', label: typeLabel('type-date'),
         variants: [],
-        params: ['required', 'readonly']},
+        params: ['min', 'max', 'format', 'required', 'readonly']},
     // datetime and time: sf-input-date in mode datetime and time (1.4.0). min
     // and max bound the value -- an ISO date or date and time for a datetime,
-    // hh:mm for a time -- and step is the minute step, 1 to 60.
+    // hh:mm for a time -- and step is the minute step, 1 to 60. A datetime's
+    // format is its date's length, as a date's; the clock stays short.
     {type: 'datetime', label: typeLabel('type-datetime'),
         variants: [],
-        params: ['min', 'max', 'step', 'required', 'readonly']},
+        params: ['min', 'max', 'step', 'format', 'required', 'readonly']},
     {type: 'time', label: typeLabel('type-time'),
         variants: [],
         params: ['min', 'max', 'step', 'required', 'readonly']},
