@@ -57,7 +57,11 @@ Space do nothing, `open-panel` is refused, and the field names no popup
 (owner decision C62). The value is still submitted. A read-only inline
 calendar (`input="false"`) can be walked through but takes no choice. A
 `range` field is never typed -- one field holding two dates has no single
-format to read back -- and is chosen on its calendar, which opens. Its `start-value` and `end-value`
+format to read back -- and is chosen on its calendar, which opens. It is
+drawn and named as an ordinary field, not a read-only one (1.12.0): its text
+box takes no typing, paste, drop or deletion and opens no on-screen keyboard,
+but it is not `readonly`, so it keeps the field's edge and hover and a screen
+reader does not call it read-only. Its `start-value` and `end-value`
 are read with the same parser, so a value holding two dates is not a date.
 
 The mask properties (`mask`, `mask-pattern`, `mask-lazy`,
@@ -298,6 +302,9 @@ use `min-date` and `max-date` or validate on the host.
 ## Interaction and accessibility
 
 The popup field exposes `aria-haspopup`, `aria-expanded` and `aria-controls`.
+The popup is a modal dialog (`aria-modal="true"`) named by the field's label
+(or `aria-label`); a period without either is named «Период», the time panel
+«Время» (1.12.0: it was named by the shown month).
 ArrowDown opens the calendar from the field; in a range field, which is not
 typed, Enter and Space open it too, while in a field that can be typed in they
 belong to the text and Enter commits it. A `readonly` field opens nothing. Inside the day
@@ -312,7 +319,11 @@ innermost open layer, so a calendar inside a popover closes before the popover.
 
 Every day has a full localized date name. The days are an ARIA grid: a row per
 week, column headers with the weekdays' full names, each day a `gridcell`. The
-current date uses `aria-current="date"`; selection uses `aria-selected`. Only
+current date uses `aria-current="date"`, drawn as owner decision C62 agreed: a
+hairline ring of the primary colour inside the day and the number in the
+primary colour (a chosen day keeps its fill). The focus on a chosen day is a
+ring of the fill's own ink one ring width inside it, so it stands out on the
+primary fill. Selection uses `aria-selected`. Only
 the active day is in the tab order. PageUp and PageDown turn a month, with Shift
 a year; Home and End go to the week's ends, held to `min-date` and `max-date`.
 The shown month is said when it changes. The month and year lists are one tab

@@ -103,6 +103,17 @@
     z-index: var(--sf-z-index-1);
   }
 
+  /* On a chosen day -- the selected one, a period's start or end -- the focus
+     colour lay on the primary fill, 1.44:1 light and 1.31:1 dark (RG-DP-3;
+     WCAG 2.4.11 asks 3:1). There the ring is the fill's own ink (on-primary,
+     the number's colour) one ring width further in, so a rim of the fill
+     stays round it and it reads as a ring on the surface as well as on a
+     period's band. */
+  .sf-datepicker-day:is(.active, .sf-datepicker-day-start, .sf-datepicker-day-end):not(:disabled):focus-visible {
+    outline-color: var(--sf-datepicker-selected-color, var(--sf-on-primary));
+    outline-offset: calc(var(--sf-focus--width) * -2);
+  }
+
   .sf-datepicker-day:not(:disabled):not(.disabled):active .sf-datepicker-day-date, .sf-datepicker-day.active .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-datepicker-selected-color, var(--sf-on-primary));
   }
@@ -125,7 +136,8 @@
   }
 
   @media (forced-colors: active) {
-    .sf-datepicker-day:not(:disabled):focus-visible {
+    .sf-datepicker-day:not(:disabled):focus-visible,
+    .sf-datepicker-day:is(.active, .sf-datepicker-day-start, .sf-datepicker-day-end):not(:disabled):focus-visible {
       outline-color: Highlight;
     }
 
@@ -136,5 +148,23 @@
     .sf-datepicker-day:is(:disabled, .disabled) .sf-datepicker-day-info {
       --sf-datepicker-day-info--color: GrayText;
     }
+  }
+}
+
+/* Today (owner decision C62, prototypes/datepicker.html:178; RG-DP-1): a
+   hairline ring of the primary colour inside the day and the number in the
+   primary colour. The day says it with aria-current="date" (sf-input-date)
+   or with the class sf-datepicker-day-today (class markup); either draws it.
+   A chosen day -- the selected one, a period's end, a day held pressed -- is
+   the primary fill already and keeps its own look; inside a period's band the
+   ring and the number stay. The overrides layer: the days-off and the
+   neighbouring month's inks there step aside for today. */
+@layer sf.overrides {
+  .sf-datepicker-day:is(.sf-datepicker-day-today, [aria-current="date"]):not(:disabled):not(.disabled):not(.active):not(:active):not(.sf-datepicker-day-start):not(.sf-datepicker-day-end) {
+    box-shadow: inset 0 0 0 var(--sf-px) var(--sf-primary);
+  }
+
+  .sf-datepicker-day:is(.sf-datepicker-day-today, [aria-current="date"]):not(:disabled):not(.disabled):not(.active):not(:active):not(.sf-datepicker-day-start):not(.sf-datepicker-day-end) .sf-datepicker-day-date {
+    --sf-datepicker-day-date--color: var(--sf-primary);
   }
 }

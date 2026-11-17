@@ -17,6 +17,11 @@ function setup(options = {}) {
     addEventListener(type, cb) { listeners.set(type, cb); },
     removeEventListener(type) { listeners.delete(type); },
     dispatchEvent(event) { listeners.get(event.type)?.(event); },
+    // The spin button's attributes (RG-QT-2) live on the element.
+    attributes: new Map(),
+    setAttribute(name, value) { this.attributes.set(name, String(value)); },
+    getAttribute(name) { return this.attributes.has(name) ? this.attributes.get(name) : null; },
+    removeAttribute(name) { this.attributes.delete(name); },
   };
   const root = {dataset:{}, classList:{
       contains:name=>rootClasses.has(name),

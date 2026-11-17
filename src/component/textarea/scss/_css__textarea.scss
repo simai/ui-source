@@ -336,6 +336,28 @@
   resize: none;
 }
 
+/* C225 (owner 2026-11-16; prototypes/forms-textarea-study.html
+   #q-ta-grow-placeholder): an empty growing field keeps its first height --
+   one row, or min-rows -- whatever its placeholder. field-sizing measured the
+   placeholder as text, so «Напишите сообщение для команды» in a narrow phone
+   field made it two rows (56 beside a 36 button) and the first letter took it
+   back to one. The placeholder stands on one line and ends in «…»; the field
+   grows only from typed text. The cap is the min-rows height itself. The
+   ellipsis needs the line rules on the empty field as well as on its
+   ::placeholder: Chrome draws «…» only with both (one alone clips). */
+.sf-textarea.sf-textarea--auto-grow textarea[rows]:placeholder-shown {
+  max-block-size: calc(var(--sf-textarea--min-rows, 1) * var(--sf-textarea--line) + var(--sf-textarea--row-frame));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sf-textarea.sf-textarea--auto-grow textarea[rows]::placeholder {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sf-textarea:has(textarea:disabled) textarea::placeholder {
   --sf-textarea-placeholder--color: var(--sf-on-surface-disabled);
 }
@@ -353,9 +375,13 @@
   outline-offset: calc(-1 * var(--sf-focus--width));
 }
 
-.sf-textarea:not(.error).sf-textarea--bordered:has(textarea:read-only:not(:disabled)) textarea {
+/* A read-only field is not filled (C16): no plate, the line of a region for
+   its edge, in both looks -- the filled one drops its plate and its bottom
+   line too, as sf-input's. */
+.sf-textarea:not(.error):is(.sf-textarea--bordered, .sf-textarea--filled):has(textarea:read-only:not(:disabled)) textarea {
   --sf-textarea-textarea--background-color: var(--sf-transparent);
   --sf-textarea-textarea--border-color: var(--sf-outline-variant);
+  --sf-textarea-textarea--line-color: var(--sf-outline-variant);
 }
 
 /* Flush: the field inside a composite control -- a chat composer, say -- whose
@@ -459,9 +485,11 @@
     --sf-textarea--value-inset: calc(var(--sf-textarea--inset) + max(calc(var(--sf-px) * 0), var(--sf-textarea--radius) - var(--sf-radius-1\/2)) / 2);
   }
 
+  /* Size 2 reads the shared ladder (C77, C141): 20 on a desktop, compact 16,
+     12 on a phone as sf-input -- --sf-space-2 alone left 16 there. */
   .sf-textarea.sf-textarea--size-2 {
-    --sf-textarea--inset: var(--sf-space-2);
     --sf-textarea--radius: min(var(--sf-textarea-radius, var(--sf-radius--ui)), var(--sf-ui-2--control-height) / 2);
+    @include ladder.inset(--sf-textarea--inset, '2');
   }
 
   /* Size 1/2 never goes below 12 (--sf-b2): on a phone, and in a compact

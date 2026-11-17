@@ -87,6 +87,9 @@
   background-color: var(--sf-quantity-wrap--background-color);
   border: var(--sf-quantity-wrap--border);
   border-color: var(--sf-quantity-wrap--border-color, transparent);
+  /* The filled look's bottom line (C52, C224): the bordered look has none of
+     its own, so the line is the border. */
+  border-block-end-color: var(--sf-quantity-wrap--line-color, var(--sf-quantity-wrap--border-color, transparent));
   border-end-end-radius: var(--sf-quantity-wrap--border-end-end-radius);
   border-end-start-radius: var(--sf-quantity-wrap--border-end-start-radius);
   border-start-end-radius: var(--sf-quantity-wrap--border-start-end-radius);
@@ -175,19 +178,20 @@
 .sf-quantity.sf-quantity--size-1 .sf-quantity-wrap {
   --sf-quantity-wrap--block-size: var(--sf-ui-1--control-height);
   --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px)));
-  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-quantity--number-height)) / 2 - var(--sf-px)));
+  --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-quantity--number-height)) / 2 - var(--sf-px)));
   --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
 }
 
 /* The stepper is the control one rung below the field and its glyph the
    field's own icon, as sf-input draws its icon at the same size (QT-03): the
-   padding is what the rung leaves around that glyph. */
+   padding is what the rung leaves around that glyph. The rung is the
+   stepper's height, --sf-quantity--number-height (below). */
 .sf-quantity.sf-quantity--size-1 .sf-quantity-count {
-  --sf-icon-button--padding-bottom: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
-  --sf-icon-button--padding-inline-end: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
-  --sf-icon-button--padding-inline-start: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
-  --sf-icon-button--padding-top: calc((var(--sf-ui-1\/2--control-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-bottom: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-inline-end: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-inline-start: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+  --sf-icon-button--padding-top: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
 }
 
 .sf-quantity.sf-quantity--size-1 .sf-icon {
@@ -488,7 +492,12 @@
     transition-timing-function: var(--sf-animation);
   }
 
-  .sf-quantity.sf-quantity--size-1 { --sf-quantity--number-height: var(--sf-ui-1\/2--control-height); }
+  /* Size 1's stepper is the field less 4 on each side (--sf-space-1/4): 32 in
+     a 40 field, 28 in a phone's 36 -- the 1/2 control, as before. In a
+     compact region C79 brings the field down to 32 and the 1/2 control to 28,
+     which left 2 to the frame; the stepper is 24 there, as plain 1/2's of
+     the same 32 height (RG-QT-4). */
+  .sf-quantity.sf-quantity--size-1 { --sf-quantity--number-height: calc(var(--sf-ui-1--control-height) - 2 * var(--sf-space-1\/4)); }
   .sf-quantity.sf-quantity--size-2 { --sf-quantity--number-height: var(--sf-ui-1--control-height); }
   .sf-quantity.sf-quantity--size-1\/2 { --sf-quantity--number-height: var(--sf-icon-size-3); }
 
@@ -530,19 +539,23 @@
     text-align: start;
   }
 
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1 .sf-quantity-row > .sf-quantity-wrap {
-    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x) - var(--sf-space-1\/4)));
-    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x) - var(--sf-space-1\/4)));
+  /* The number starts where sf-input's value does (C77, C153 (7)): the
+     step's inset from the outer edge, the border counted inside it, with
+     the same corner correction (field-ladder.inset; 12 / 16 / 20, compact
+     12 / 12 / 16, phone 12). The box's border and the number's own 4
+     (--sf-space-1/4) come off it. It stood at the step's space-x plus its
+     text step: 25 at 1, 21 on a phone. */
+  @each $size in ladder.$sizes {
+    .sf-quantity.sf-quantity--steppers-none.#{ladder.size-class('sf-quantity', $size)} {
+      --sf-quantity--line-radius: min(var(--sf-quantity-radius, var(--sf-radius--ui)), #{ladder.height($size)} / 2);
+      @include ladder.inset(--sf-quantity--inset, $size);
+    }
   }
 
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-2 .sf-quantity-row > .sf-quantity-wrap {
-    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x) - var(--sf-space-1\/4)));
-    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--text-space-x) - var(--sf-space-1\/4)));
-  }
-
-  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1\/2 .sf-quantity-row > .sf-quantity-wrap {
-    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x) - var(--sf-space-1\/4)));
-    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--text-space-x) - var(--sf-space-1\/4)));
+  .sf-quantity.sf-quantity--steppers-none:is(.sf-quantity--size-1\/3, .sf-quantity--size-1\/2, .sf-quantity--size-1, .sf-quantity--size-2, .sf-quantity--size-3) .sf-quantity-row > .sf-quantity-wrap {
+    --sf-quantity--value-inset: calc(var(--sf-quantity--inset) + max(calc(var(--sf-px) * 0), var(--sf-quantity--line-radius) - var(--sf-radius-1\/2)) / 2);
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-quantity--value-inset) - var(--sf-px) - var(--sf-space-1\/4)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-quantity--value-inset) - var(--sf-px) - var(--sf-space-1\/4)));
   }
 
   /* The inherited marker and reset stand after the box, on its row (F3):
@@ -665,13 +678,24 @@
       --sf-icon-button--padding-inline-end: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
       --sf-icon-button--padding-inline-start: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
       --sf-icon-button--padding-top: calc((#{$stepper} - #{ladder.text-height($size)}) / 2);
+
+      // The phone's icon at 3 is the icon ladder's 28 (field-ladder.icon), not
+      // the 24 text line: the stepper keeps its height round the larger glyph.
+      @if $size == '3' {
+        @media not all and (min-width: 60rem) {
+          --sf-icon-button--padding-bottom: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+          --sf-icon-button--padding-inline-end: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+          --sf-icon-button--padding-inline-start: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+          --sf-icon-button--padding-top: calc((#{$stepper} - var(--sf-icon-size-4)) / 2);
+        }
+      }
     }
 
+    /* The icon of the step, a step down on a phone (field-ladder.icon,
+       C151): 28 at 3 there, not the 24 of the text line. */
     .sf-quantity.#{$class} .sf-icon,
     .sf-quantity.#{$class} .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
-      --sf-icon--font-size: #{ladder.text-height($size)};
-      --sf-icon--height: #{ladder.text-height($size)};
-      --sf-icon--width: #{ladder.text-height($size)};
+      @include ladder.icon($size);
     }
 
     .sf-quantity.#{$class} input {
@@ -688,10 +712,6 @@
       --sf-quantity-wrap--border-color: var(--sf-primary-active);
     }
 
-    .sf-quantity.sf-quantity--steppers-none.#{$class} .sf-quantity-wrap {
-      --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(#{ladder.ui($size, space-x)} + #{ladder.ui($size, text-space-x)} - var(--sf-space-1\/4)));
-      --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(#{ladder.ui($size, space-x)} + #{ladder.ui($size, text-space-x)} - var(--sf-space-1\/4)));
-    }
   }
 }
 
@@ -713,4 +733,71 @@
 
 .sf-quantity:has(input:disabled) .sf-quantity-text {
   --sf-quantity-text--color: var(--sf-on-surface-disabled);
+}
+
+/* The look (owner decision C224, 2026-11-16; prototypes/forms-quantity-study.html
+   #q-qty-filled): a plain sf-quantity looks as the Smart quantity field and
+   the other fields of a form do -- filled, no border: sf-input--filled's and
+   sf-textarea--filled's box (C52, C113). The bordered box stays a choice by
+   the same name as sf-input's, sf-quantity--bordered (sf-quantity--filled
+   names the default). The public variables keep their meaning:
+   --sf-quantity-background-color is the fill, --sf-quantity-border-color the
+   edge and the bottom line. Read-only (QT-08), the focus edge and the
+   steppers are the same in both looks. */
+@layer sf.components {
+  /* The place's dim ink, kept above the box, which re-declares it as the ink
+     on a fill: the placeholder stays the place's dim ink, as sf-input's. */
+  .sf-quantity:not(.sf-quantity--bordered) {
+    --sf-quantity--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+  }
+
+  .sf-quantity:not(.sf-quantity--bordered):not(.error) .sf-quantity-wrap input:enabled::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-quantity--place-variant);
+  }
+
+  /* At rest: the container fill, a transparent edge a state colours, the
+     bottom line in --sf-outline. */
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:read-only)) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-container));
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    --sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-transparent-for-focus));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-border-color, var(--sf-outline));
+  }
+
+  /* While someone types in it, the ordinary field: no fill and the region's
+     line for its edge. Lighter than the hover rule, so hover still colours
+     the edge; later than the rest, as specific. */
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:not(:read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-outline);
+  }
+
+  /* Under the pointer the hover step of the fill, the dim ink made for a fill
+     and the edge in one colour (C113, C153 (4)). */
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-surface-container-hover);
+    --sf-quantity--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+
+  .sf-quantity:not(.sf-quantity--bordered):not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+  }
+
+  /* Disabled: the disabled fill and no edge, as sf-input--filled. */
+  .sf-quantity:not(.sf-quantity--bordered):has(input:disabled) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-surface-disabled);
+    --sf-quantity-wrap--border-color: var(--sf-transparent-for-focus);
+  }
+
+  /* Invalid: the error container fill, as sf-input--filled and
+     sf-textarea--filled; the message under the box takes the error colour. */
+  .sf-quantity.error:not(.sf-quantity--bordered) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-error-container);
+    --sf-quantity-wrap--border-color: var(--sf-transparent-for-focus);
+  }
 }

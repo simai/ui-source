@@ -123,9 +123,11 @@ function renderDatepickerInput(context) {
             mask-pattern=${context.maskPattern || nothing} mask-lazy=${String(context.maskLazy)}
             mask-placeholder-char=${context.maskPlaceholderChar || nothing}
             mask-options=${context.maskOptions || nothing} ?readonly=${context.readonly}
+            inputmode=${context.pickOnly ? 'none' : nothing}
             @click=${(event) => context.component.handleInputClick(event)}
             @change=${(event) => context.component.handleInputChange(event)}
             @input=${(event) => context.component.handleInputInput(event)}
+            @beforeinput=${(event) => context.component.handleInputBeforeInput(event)}
             @keydown=${(event) => context.component.handleInputKeydown(event)}
         ><span slot="end" class=${context.hintIcon ? 'sf-input-hint flex' : 'sf-input-hint'} ?hidden=${!context.hintIcon} aria-hidden="true"
             ><sf-icon icon=${context.hintIcon || nothing}></sf-icon></span
@@ -267,13 +269,16 @@ function renderTime(context) {
 function renderDatepickerPanel(context) {
     const rootClasses = joinClasses('sf-datepicker inline-flex', context.input ? '' : 'sf-datepicker--inline',
         context.presetItems.length ? 'sf-datepicker--presets' : '',
-        context.mode !== 'date' ? `sf-datepicker--${context.mode}` : '', context.rootClass);
+        context.mode !== 'date' ? `sf-datepicker--${context.mode}` : '',
+        // A period's popup (C227): its days keep the control height on a phone.
+        context.range ? 'sf-datepicker--range' : '', context.rootClass);
 
     if (context.mode === 'time') {
         return html`
             <div ${ref(context.component.refs.datePickerPanel)} id=${context.panelId}
                 class=${rootClasses} style=${context.rootStyle || nothing}
-                role=${context.input ? 'dialog' : 'group'} aria-label=${context.labels.time}
+                role=${context.input ? 'dialog' : 'group'} aria-label=${context.input ? context.dialogLabel : context.labels.time}
+                aria-modal=${context.input ? 'true' : nothing}
                 aria-disabled=${context.disabled ? 'true' : nothing}
                 @click=${(event) => context.component.handlePanelClick(event)}>
                 ${renderTime(context)}
@@ -283,7 +288,8 @@ function renderDatepickerPanel(context) {
     return html`
         <div ${ref(context.component.refs.datePickerPanel)} id=${context.panelId}
             class=${rootClasses} style=${context.rootStyle || nothing}
-            role=${context.input ? 'dialog' : 'group'} aria-label=${context.calendarLabel}
+            role=${context.input ? 'dialog' : 'group'} aria-label=${context.input ? context.dialogLabel : context.calendarLabel}
+            aria-modal=${context.input ? 'true' : nothing}
             aria-disabled=${context.disabled ? 'true' : nothing}
             @click=${(event) => context.component.handlePanelClick(event)}>
             ${renderPresets(context)}

@@ -16,7 +16,7 @@
      and an elevation class re-points it on a raised one, so the popup keeps it
      in the dark theme too. The opacity hook stays for projects that set it,
      at full by default. */
-  .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) {
+  .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected):not(.sf-datepicker-day-start):not(.sf-datepicker-day-end) {
     --sf-datepicker-another-month--opacity: 1;
     opacity: var(--sf-datepicker-another-month--opacity);
   }
@@ -27,10 +27,10 @@
      beside this month's full one, as before DP-02 (dispatcher ruling
      2026-11-11: the shared ink and the DEV hold 7fddefd9 had made both the
      same full error red); still 4.5:1 on the panel in both themes. */
-  .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) .sf-datepicker-day-date {
+  .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected):not(.sf-datepicker-day-start):not(.sf-datepicker-day-end):not(.sf-datepicker-day-today):not([aria-current="date"]) .sf-datepicker-day-date {
     --sf-datepicker-day-date--color: var(--sf-on-surface-variant);
   }
-  .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected) :is(.sf-datepicker-day-date, .sf-datepicker-day-info) {
+  .sf-datepicker .sf-datepicker-day.sf-datepicker-another-month.sf-datepicker-day-off:not(:disabled):not(.active):not(.disabled):not(.sf-datepicker-day-selected):not(.sf-datepicker-day-start):not(.sf-datepicker-day-end):not(.sf-datepicker-day-today):not([aria-current="date"]) :is(.sf-datepicker-day-date, .sf-datepicker-day-info) {
     --sf-datepicker-day-date--color: color-mix(in srgb, var(--sf-datepicker--day-off-color) 80%, transparent);
     --sf-datepicker-day-info--color: color-mix(in srgb, var(--sf-datepicker--day-off-color) 80%, transparent);
   }

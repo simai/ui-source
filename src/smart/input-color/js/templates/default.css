@@ -719,9 +719,11 @@
     --sf-color--text-height: var(--sf-text-height-3);
   }
 
+  /* The label at 1/3 is the field ladder's label floor (C226): 12, the 1/3
+     text -- the step below, 1/4, is 10. */
   .sf-color-field--size-1\/3 .sf-color-label {
-    font-size: var(--sf-text-size-1\/4);
-    line-height: var(--sf-text-height-1\/4);
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
   }
 
   .sf-color-field--size-3 .sf-color-label {
@@ -742,8 +744,8 @@
   }
 
   .sf-color-field--size-1\/3 .sf-color-hint {
-    font-size: var(--sf-text-size-1\/4);
-    line-height: var(--sf-text-height-1\/4);
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
   }
 
   .sf-color-field--size-1\/2 .sf-color-hint {
