@@ -110,6 +110,7 @@ function renderContext(context) {
 function renderDatepickerInput(context) {
     return html`
         <sf-input class="sf-datepicker-input" ${ref(context.component.refs.input)}
+            root-style=${`--sf-datepicker-input--chars: ${context.textChars || 0}`}
             appearance=${context.inputType} size=${context.inputSize}
             label=${context.label || nothing} name=${context.boxName || nothing}
             aria-label=${context.label ? nothing : (context.ariaLabel || nothing)}

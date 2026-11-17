@@ -46,6 +46,30 @@
       "remove_after": "2027-01-01",
       "section": "rename plan R0 (ui-control RENAME-PLAN-2026-11-03), naming decision 2026-11-02",
       "note": "the element is sf-input-date; sf-datepicker is a subclass defined beside it until the date"
+    },
+    {
+      "from": "left-icon",
+      "to": "icon-start",
+      "kind": "attribute",
+      "component": "sf-input-date",
+      "since": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§16 item 20, change journal attribute-input-date-legacy-names (SM-DP-2)",
+      "note": "the legacy name of icon-start; the element reads it itself until the date and notes it in SF.deprecations; icon-start wins when both are given",
+      "shim": "none"
+    },
+    {
+      "from": "input-size",
+      "to": "size",
+      "kind": "attribute",
+      "component": "sf-input-date",
+      "since": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§16 item 20, change journal attribute-input-date-legacy-names (SM-DP-2)",
+      "note": "the legacy name of size (contracts/public-api-axes.json); the element reads it itself until the date and notes it in SF.deprecations; size wins when both are given",
+      "shim": "none"
     }
   ]
 }

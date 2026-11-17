@@ -41,3 +41,31 @@ test('SM-QT-1: the number place counts its padding in its width and is border-bo
   assert.ok(box.includes('inline-size: calc((var(--sf-quantity--digits, 6) + 0.5) * 1ch + var(--sf-quantity-input--padding-inline-start, calc(var(--sf-px) * 0)) + var(--sf-quantity-input--padding-inline-end, calc(var(--sf-px) * 0)));'), box);
   assert.doesNotMatch(flat(q), /box-sizing: content-box/u);
 });
+
+test('SM-DP-1: the date field box holds a whole value of its format, two dates and the dash for a period', () => {
+  const source = read('src/smart/input-date/index.js');
+  assert.match(source, /get textChars\(\) \{/u);
+  assert.match(source, /const full = this\.range \? `\$\{one\}\$\{RANGE_SEPARATOR\}\$\{one\}` : one;/u);
+  assert.match(source, /textChars: this\.textChars,/u);
+  assert.match(read('src/smart/input-date/js/templates/default.js'), /root-style=\$\{`--sf-datepicker-input--chars: \$\{context\.textChars \|\| 0\}`\}/u);
+  const box = rule(read('src/component/datepicker/scss/_css_datepicker.scss'), '.sf-datepicker-wrap .sf-input-field > input');
+  assert.ok(box.includes('font-variant-numeric: tabular-nums;'), box);
+  assert.ok(box.includes('min-inline-size: calc(var(--sf-datepicker-input--chars, 0) * 1ch + var(--sf-input-input--padding-inline-start, calc(var(--sf-px) * 0)) + var(--sf-input-input--padding-inline-end, calc(var(--sf-px) * 0)));'), box);
+});
+
+test('SM-DP-2: left-icon and input-size are dated aliases until 2027-01-01, noted in SF.deprecations', () => {
+  const rows = json('src/smart/input-date/aliases.json').aliases;
+  for (const [from, to] of [['left-icon', 'icon-start'], ['input-size', 'size']]) {
+    const row = rows.find((item) => item.from === from);
+    assert.ok(row, `${from} has a dated row`);
+    assert.equal(row.to, to);
+    assert.equal(row.remove_after, '2027-01-01');
+    assert.equal(row.shim, 'none');
+  }
+  const source = read('src/smart/input-date/index.js');
+  assert.match(source, /noteDeprecated\(\{component: 'sf-input-date', kind: 'attribute', from, to,\s+since: '2026-11-17', remove_after: '2027-01-01'\}\);/u);
+  assert.match(source, /if \(this\.hasAttribute\('input-size'\)\) noteLegacyName\('input-size', 'size'\);/u);
+  assert.match(source, /if \(this\.hasAttribute\('left-icon'\)\) noteLegacyName\('left-icon', 'icon-start'\);/u);
+  const record = json('contracts/changes/journal.json').records.find((item) => item.id === 'attribute-input-date-legacy-names');
+  assert.equal(record?.remove_after, '2027-01-01');
+});

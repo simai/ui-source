@@ -451,6 +451,18 @@
     margin-inline-start: calc(var(--sf-field-action--inset) / 4);
   }
 
+  /* The text box holds a whole value of its format (SM-DP-1): at least
+     --sf-datepicker-input--chars figures, which sf-input-date writes (two
+     dates and the dash for a period, 23), plus the box's own padding. The
+     figures are tabular, so 1ch is one figure and the dots, the dash and the
+     spaces take less: a period's second date is never cut (07.09.2026 –
+     13.09.2026 stood in 186 of the 191 it needs). The class markup writes
+     no count and keeps the browser's width. */
+  .sf-datepicker-wrap .sf-input-field > input {
+    font-variant-numeric: tabular-nums;
+    min-inline-size: calc(var(--sf-datepicker-input--chars, 0) * 1ch + var(--sf-input-input--padding-inline-start, calc(var(--sf-px) * 0)) + var(--sf-input-input--padding-inline-end, calc(var(--sf-px) * 0)));
+  }
+
   /* A field chosen on the grid only (a period, sf-input-date pickOnly,
      RG-DP-5) is an ordinary field, not a read-only one, but its text box
      takes no typing and opens no keyboard (inputmode none): no caret blinks
