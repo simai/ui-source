@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.resizer",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "title": "Resizer",
   "summary": "A handle on a panel's edge that changes the panel's width by a drag, the keyboard or a double click back to the default, within limits; optionally remembered in the browser.",
   "kind": "smart",
@@ -111,7 +111,7 @@
   "contracts": {
     "attach": {
       "type": "object",
-      "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}, text}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value (share 0-100 with words); Enter and Escape on edges of options.handles are the caller's."
+      "description": "SF.Resizer.attach(root, {handles, session(handle) -> {measure, limits, apply, commit, reset, direction, step, start, end}, text, widthText}) gives any edge -- a table's column edges -- the same drag, keys, double click, cursor and separator value (share 0-100 with text's words; an edge whose max is not finite says its width in pixels from min, no aria-valuemax, with widthText's words); Enter and Escape on edges of options.handles are the caller's."
     }
   },
   "methods": {},
@@ -303,7 +303,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/resizer/index.js",
-        "sha256": "a8ba037b7fb7384e88795c4579342e973ddc31a841edc938943da5af8594a2df"
+        "sha256": "2af4bfc47eea0e30624505d00029e7df8c4bf93f3c30aff5f36cda9fd2842085"
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
@@ -319,7 +319,7 @@
       },
       {
         "path": "src/smart/resizer/engine.mjs",
-        "sha256": "03a60083b61b1ccdf3e47ab6d6083bb3100a87c03598b7ba7d1515f786067f68"
+        "sha256": "ed28f34f638230e072c64c8b91b3b2c5a374665b66bc02df3f432fa5c149ef57"
       }
     ],
     "generated_runtime": []

@@ -4,6 +4,7 @@
     "hint": "Drag, or use the arrow keys; a double click restores the width.",
     "label": "Resize",
     "value": "{n}%",
+    "width": "{n} px",
     "folded": "Collapsed",
     "show": "Show"
   },

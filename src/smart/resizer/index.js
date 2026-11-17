@@ -108,6 +108,9 @@ function writeStored(key, value, folded = false) {
 
 // The words of the value (aria-valuetext): «27 %», or folded (C158 (3)).
 const valueWords = (dictionary) => (share, folded, handle) => pageWord(dictionary, folded ? 'folded' : 'value', handle, {component: 'sf-resizer', source: 'ru', count: share});
+// The words of an edge without an upper limit, whose value is its width in
+// pixels: «244 px», or folded.
+const widthWords = (dictionary) => (width, folded, handle) => pageWord(dictionary, folded ? 'folded' : 'width', handle, {component: 'sf-resizer', source: 'ru', count: width});
 
 // The panel the handle folds is said folded by data-folded (the name the
 // study's prototype gives it); the «Показать» button that brings it back
@@ -241,6 +244,7 @@ export class SfResizer extends ResizerElement {
     this._detach = attachResizer(this, {
       session: () => (this.disabled || this._narrow ? null : this.session()),
       text: valueWords(ResizerElement.sfWords),
+      widthText: widthWords(ResizerElement.sfWords),
     });
     globalThis.addEventListener('resize', this._onWindowResize);
     document.addEventListener?.('scroll', this._onScroll, {capture: true, passive: true});
@@ -754,7 +758,7 @@ export class SfResizer extends ResizerElement {
   }
 
   syncValue(width = this.width()) {
-    setResizerValue(this, {limits: () => this.limits(), measure: () => width, folded: () => this.folded()}, width, valueWords(ResizerElement.sfWords));
+    setResizerValue(this, {limits: () => this.limits(), measure: () => width, folded: () => this.folded()}, width, valueWords(ResizerElement.sfWords), widthWords(ResizerElement.sfWords));
   }
 }
 
@@ -764,5 +768,5 @@ globalThis.SF = globalThis.SF || {};
 // attach: the same gesture on any handle -- a table's column edges use it.
 // Their value says its words in the page's language, as the handle's does,
 // unless the caller gives its own text().
-const attach = (root, options = {}) => attachResizer(root, {text: valueWords(ResizerElement.sfWords), ...options});
+const attach = (root, options = {}) => attachResizer(root, {text: valueWords(ResizerElement.sfWords), widthText: widthWords(ResizerElement.sfWords), ...options});
 globalThis.SF.Resizer = Object.freeze({SfResizer, attach, attachResizer: attach});

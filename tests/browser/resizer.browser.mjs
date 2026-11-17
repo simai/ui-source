@@ -169,6 +169,49 @@ try {
   if (dragged !== 160 || ended.width !== 260 || ended.role !== '100' || JSON.stringify(log) !== JSON.stringify([['commit', 160], ['commit', 260], ['reset']])) {
     note({case: 'SF.Resizer.attach on drawn edges', got: {dragged, ended, log}});
   }
+  // An edge without an upper limit (max Infinity: a column with no maxWidth)
+  // had no way from min to max, so aria-valuenow was always 0 (ui-view,
+  // 2026-11-17). It says its width in pixels from min, no aria-valuemax, and
+  // the page language's words; End leaves it where it is.
+  const open = await again.evaluate(async () => {
+    document.body.insertAdjacentHTML('beforeend', `<table id="open-grid" style="table-layout:fixed;border-collapse:collapse;margin-top:20px">
+      <thead><tr><th id="oa" style="width:120px;position:relative">A<button class="edge" type="button" style="position:absolute;right:-4px;top:0;width:8px;height:100%">|</button></th>
+      <th style="width:120px">B</th></tr></thead></table>`);
+    const table = document.getElementById('open-grid');
+    window.SF.Resizer.attach(table, {
+      handles: '.edge',
+      session: (edge) => {
+        const th = edge.closest('th');
+        return {
+          measure: () => th.getBoundingClientRect().width,
+          limits: () => ({min: 80, max: Infinity}),
+          apply: (next) => { th.style.width = `${next}px`; return next; },
+          direction: () => 1, step: 10,
+        };
+      },
+    });
+    const edge = table.querySelector('.edge');
+    const read = () => ({now: edge.getAttribute('aria-valuenow'), min: edge.getAttribute('aria-valuemin'),
+      max: edge.getAttribute('aria-valuemax'), text: edge.getAttribute('aria-valuetext'),
+      width: Math.round(document.getElementById('oa').getBoundingClientRect().width)});
+    edge.focus();
+    const reached = read();
+    const key = (name) => edge.dispatchEvent(new KeyboardEvent('keydown', {key: name, bubbles: true, cancelable: true}));
+    key('ArrowRight'); key('ArrowRight');
+    const widened = read();
+    key('End');
+    const ended = read();
+    key('Home');
+    const home = read();
+    return {reached, widened, ended, home};
+  });
+  const words = (n) => [`${n}\u00a0пикс.`, `${n} px`];
+  if (open.reached.now !== '120' || open.reached.min !== '80' || open.reached.max !== null || !words(120).includes(open.reached.text)
+    || open.widened.now !== '140' || open.widened.width !== 140 || !words(140).includes(open.widened.text)
+    || open.ended.width !== 140 || open.ended.now !== '140'
+    || open.home.now !== '80' || open.home.width !== 80) {
+    note({case: 'SF.Resizer.attach edge without an upper limit says its width', got: open});
+  }
   // The name and the hint come from the shared reader (SF.language), so the
   // page chooses the language and a product adds one; a handle already on the
   // page is renamed when a language is announced (ui-mail feedback

@@ -75,6 +75,7 @@ try {
     const page = await open(`<div id="shell">
       <sf-button id="close" text="Закрыть" data-action="close" data-add="block" title="Закрыть панель" aria-describedby="hint"></sf-button>
       <sf-button-icon id="toggle" icon="search" aria-label="Поиск" data-sf-admin-search-toggle data-column-key="f2"></sf-button-icon>
+      <sf-button id="named" icon="search" aria-label="Найти" data-row="7"></sf-button>
     </div>`);
 
     const found = await page.evaluate(() => {
@@ -115,6 +116,31 @@ try {
       && Object.keys(found.onHost.dataset).length === 0, found);
     check('aria-* and title still reach the native control', found.copied.title === 'Закрыть панель'
       && found.copied.describedby === 'hint' && found.copied.label === 'Поиск', found);
+
+    // aria-label is the host's own attribute (COMPONENT_ATTRIBUTES), not a
+    // data-*: it is copied, not moved. The host keeps it (a product that finds
+    // the host by its name still does), the native button carries it as its
+    // accessible name, and a change on the host renames the button
+    // (ui-view finding 2026-11-17: only data-* moves, by design).
+    const named = await page.evaluate(async () => {
+      const host = document.querySelector('#named');
+      const read = () => ({host: host.getAttribute('aria-label'), button: host.querySelector('button')?.getAttribute('aria-label') ?? null,
+        byName: document.querySelector('#shell sf-button[aria-label="Найти"]')?.id ?? null,
+        rowOnHost: host.getAttribute('data-row'), rowRecord: host.dataAttributes?.row ?? null,
+        rowMatch: document.querySelector('#shell [data-row="7"]')?.tagName.toLowerCase() ?? null});
+      const first = read();
+      host.setAttribute('aria-label', 'Искать');
+      await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+      await new Promise((done) => setTimeout(done, 100));
+      return {first, renamed: read()};
+    });
+    evidence.named = named;
+    check('aria-label stays on the sf-button host and names the native button',
+      named.first.host === 'Найти' && named.first.button === 'Найти' && named.first.byName === 'named', named);
+    check('a host aria-label change renames the native button and stays on the host',
+      named.renamed.host === 'Искать' && named.renamed.button === 'Искать', named);
+    check('a data-* beside aria-label moves to the button and stays readable on the host',
+      named.first.rowOnHost === null && named.first.rowRecord === '7' && named.first.rowMatch === 'button', named);
 
     // The match has a box and takes a real click at its own coordinates: this
     // is what the drag in table-sortable-lists and the visual read in
