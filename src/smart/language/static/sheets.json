@@ -28,7 +28,8 @@
     "utility/pointer-events/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
-    "utility/text-decoration/default/css/default.min.css"
+    "utility/text-decoration/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css"
   ],
   "examples": {
     "five": [
@@ -54,7 +55,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "reference": [
       "component/avatars/css/avatars.min.css",
@@ -79,7 +81,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "rtl": [
       "component/avatars/css/avatars.min.css",
@@ -104,7 +107,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "three": [
       "component/badges/css/badges.min.css",
@@ -125,7 +129,8 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "twelve": [
       "component/avatars/css/avatars.min.css",
@@ -150,7 +155,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "url": [
       "component/avatars/css/avatars.min.css",
@@ -175,7 +181,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ]
   }
 }

@@ -19,7 +19,8 @@
     "utility/pointer-events/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
-    "utility/text-decoration/default/css/default.min.css"
+    "utility/text-decoration/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css"
   ],
   "examples": {
     "panel": [
@@ -36,7 +37,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "reference": [
       "component/buttons/css/buttons.min.css",
@@ -52,7 +54,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "russian": [
       "component/buttons/css/buttons.min.css",
@@ -68,7 +71,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ]
   }
 }

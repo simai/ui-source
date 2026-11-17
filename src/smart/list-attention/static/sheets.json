@@ -31,7 +31,8 @@
     "utility/position/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
-    "utility/text-decoration/default/css/default.min.css"
+    "utility/text-decoration/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css"
   ],
   "examples": {
     "frameless": [
@@ -60,7 +61,8 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "group": [
       "component/avatars/css/avatars.min.css",
@@ -88,7 +90,8 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "one": [
       "component/avatars/css/avatars.min.css",
@@ -116,7 +119,8 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "quiet": [
       "component/badges/css/badges.min.css",
@@ -140,7 +144,8 @@
       "utility/place-items/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "reference": [
       "component/avatars/css/avatars.min.css",
@@ -168,7 +173,8 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ]
   }
 }

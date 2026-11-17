@@ -42,6 +42,7 @@
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/text-max-width/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/transition-property/default/css/default.min.css",
     "utility/visibility/default/css/default.min.css"
   ],
@@ -83,6 +84,7 @@
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-max-width/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ]

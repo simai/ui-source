@@ -25,7 +25,8 @@
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
-    "utility/text-align/default/css/default.min.css"
+    "utility/text-align/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css"
   ],
   "examples": {
     "expand-all": [
@@ -44,7 +45,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "one-section": [
       "component/accordion/css/accordion.min.css",

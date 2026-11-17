@@ -26,7 +26,8 @@
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
-    "utility/text-align/default/css/default.min.css"
+    "utility/text-align/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css"
   ],
   "examples": {
     "compact": [
@@ -50,7 +51,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "counter": [
       "component/badges/css/badges.min.css",
@@ -73,7 +75,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "course": [
       "component/badges/css/badges.min.css",
@@ -96,7 +99,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "course-finished": [
       "component/badges/css/badges.min.css",
@@ -119,7 +123,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "first-page": [
       "component/badges/css/badges.min.css",
@@ -142,7 +147,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "reference": [
       "component/badges/css/badges.min.css",
@@ -165,7 +171,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "row": [
       "component/badges/css/badges.min.css",
@@ -188,7 +195,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "steps": [
       "component/badges/css/badges.min.css",
@@ -211,7 +219,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "steps-last": [
       "component/badges/css/badges.min.css",
@@ -234,7 +243,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ]
   }
 }

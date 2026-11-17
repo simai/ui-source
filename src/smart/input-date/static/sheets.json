@@ -39,6 +39,7 @@
     "utility/resize/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
@@ -76,6 +77,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "datetime": [
@@ -109,6 +111,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "hint": [
@@ -145,6 +148,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "holidays": [
@@ -177,6 +181,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "inline": [
@@ -213,6 +218,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "presets": [
@@ -249,6 +255,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "range": [
@@ -285,6 +292,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "reference": [
@@ -321,6 +329,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "required": [
@@ -357,6 +366,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "time": [
@@ -390,6 +400,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ]
   }
