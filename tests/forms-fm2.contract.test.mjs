@@ -112,6 +112,13 @@ test('C251, SM-RD-1 / SM-SW-1: sf-radio and sf-switch take position start | end,
   assert.match(read('src/smart/switch/js/templates/default.js'), /\$\{atEnd \? '' : toggler\}\s+\$\{renderCheckableText[^\n]+\n\s+\$\{atEnd \? toggler : ''\}/u);
   assert.match(rule(read('src/component/radio/scss/_css_radio_custom.scss'), '.sf-radio-button:has(> .sf-radio-button-container + .sf-radio-button-box) > .sf-radio-button-container'), /flex: 1 1 auto;/u);
   assert.match(rule(read('src/component/switch/scss/_css_switch_custom.scss'), '.sf-switch:has(> .sf-switch-container-wrap + .sf-switch-toggler) > .sf-switch-container-wrap'), /flex: 1 1 auto;/u);
+  // The Smart row hugs its content (W1) except at the end, where it is the whole row (W4), as sf-checkbox's.
+  const row = read('src/smart/helpers/checkable-row.css');
+  const end = '.sf-checkable:has(> .sf-checkbox-container + .sf-checkbox-box:last-child, > .sf-radio-button-container + .sf-radio-button-box, > .sf-switch-container-wrap + .sf-switch-toggler)';
+  assert.match(rule(row, end), /inline-size: auto;/u);
+  assert.match(rule(row, `.sf-checkable-row > ${end}`), /flex: 1 1 auto;/u);
+  assert.match(row, /> \.sf-checkable--text > \.sf-radio-button-container \+ \.sf-radio-button-box, > \.sf-checkable--text > \.sf-switch-container-wrap \+ \.sf-switch-toggler\) \{\s+grid-template-columns: minmax\(0, auto\) auto 1fr auto;/u);
+  assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.15.0');
 });
 
 test('C251, SM-SW-1: sf-switch draws the class markup\'s thumb glyphs, icon alone or icon with icon-on', () => {

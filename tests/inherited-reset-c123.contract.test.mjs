@@ -64,5 +64,5 @@ test('the versions move with the look', () => {
     const note = new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123`, 'u');
     assert.ok(component['x-decisions'].some((line) => note.test(line)), `${folder} ${version} note`);
   }
-  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.13.0'); // 1.13.0: the anchored badge's .sf-dot (C185 (8))
+  assert.equal(JSON.parse(read('src/core/passports/module.smart-helpers.json')).version, '1.15.0'); // 1.13.0: the anchored badge's .sf-dot (C185 (8)); fix/forms-fm2 1.15.0: the radio and switch rows at the end (C251)
 });
