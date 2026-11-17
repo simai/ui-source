@@ -77,56 +77,64 @@ test('FO-2: sf-list draws by the core helper, between two spacers, with each row
 
 // ------------------------------------------------------------- FO-1 files drop
 
-const fakeElement = () => {
+const fakeDocument = () => {
+  const listeners = {};
+  return {
+    listeners,
+    addEventListener: (type, fn) => { (listeners[type] ??= new Set()).add(fn); },
+    removeEventListener: (type, fn) => { listeners[type]?.delete(fn); if (!listeners[type]?.size) delete listeners[type]; },
+    fire: (type, event) => { for (const fn of [...(listeners[type] ?? [])]) fn(event); },
+  };
+};
+const fakeElement = (doc = fakeDocument()) => {
   const listeners = {};
   const attributes = new Set();
-  const documentListeners = {};
   return {
     listeners,
     attributes,
-    documentListeners,
+    documentListeners: doc.listeners,
     addEventListener: (type, fn) => { listeners[type] = fn; },
     removeEventListener: (type) => { delete listeners[type]; },
     toggleAttribute: (name, on) => (on ? attributes.add(name) : attributes.delete(name)),
-    contains: (node) => node === 'child',
-    ownerDocument: {
-      addEventListener: (type, fn) => { documentListeners[type] = fn; },
-      removeEventListener: (type) => { delete documentListeners[type]; },
-    },
+    ownerDocument: doc,
   };
 };
-const dragEvent = ({types = ['Files'], files = [], relatedTarget = null} = {}) => {
-  const event = {dataTransfer: {types, files, dropEffect: ''}, relatedTarget, prevented: false};
-  event.preventDefault = () => { event.prevented = true; };
+const dragEvent = ({types = ['Files'], files = [], items = null} = {}) => {
+  const event = {dataTransfer: {types, files, items: items ?? [], dropEffect: ''}, prevented: false, defaultPrevented: false};
+  event.preventDefault = () => { event.prevented = true; event.defaultPrevented = true; };
   return event;
 };
+const settle = () => new Promise((done) => setTimeout(done, 0));
 
-test('FO-1: a drag that carries files is taken -- copy, the over state, one onFiles per drop', () => {
+test('FO-1: a drag that carries files is taken -- copy, the over state, one onFiles per drop', async () => {
   const element = fakeElement();
   const given = [];
   const over = [];
   const drop = filesDrop(element, {onFiles: (files) => given.push(files), onOver: (one) => over.push(one)});
-  const enter = dragEvent();
-  element.listeners.dragover(enter);
-  assert.equal(enter.prevented, true);
-  assert.equal(enter.dataTransfer.dropEffect, 'copy');
+  element.listeners.dragenter(dragEvent());
+  const held = dragEvent();
+  element.listeners.dragover(held);
+  assert.equal(held.prevented, true);
+  assert.equal(held.dataTransfer.dropEffect, 'copy');
   assert.ok(element.attributes.has(FILES_OVER_ATTRIBUTE));
-  element.listeners.dragover(dragEvent());
-  // Leaving for a child is not leaving.
-  element.listeners.dragleave(dragEvent({relatedTarget: 'child'}));
+  // FO1-6: entering a child, then leaving the element for it, is not leaving.
+  element.listeners.dragenter(dragEvent());
+  element.listeners.dragleave(dragEvent());
   assert.equal(drop.over, true);
   const dropped = dragEvent({files: ['a.png', 'b.png']});
   element.listeners.drop(dropped);
   assert.equal(dropped.prevented, true);
+  await settle();
   assert.deepEqual(given, [['a.png', 'b.png']]);
   assert.deepEqual(over, [true, false]);
   assert.equal(element.attributes.has(FILES_OVER_ATTRIBUTE), false);
+  drop.stop();
   drop.stop();
   assert.deepEqual(Object.keys(element.listeners), []);
   assert.deepEqual(Object.keys(element.documentListeners), []);
 });
 
-test('FO-1: text or a row dragged across passes on; a disabled element says no and gives nothing', () => {
+test('FO-1: text or a row dragged across passes on; a disabled element says no and gives nothing', async () => {
   const element = fakeElement();
   const given = [];
   let disabled = false;
@@ -144,7 +152,99 @@ test('FO-1: text or a row dragged across passes on; a disabled element says no a
   element.listeners.drop(dropped);
   // The browser must not open the file in place of the page.
   assert.equal(dropped.prevented, true);
+  await settle();
   assert.deepEqual(given, []);
+});
+
+test('FO1-1: zones inside zones -- the innermost takes the drop, the outer gives nothing', async () => {
+  const doc = fakeDocument();
+  const outer = fakeElement(doc);
+  const inner = fakeElement(doc);
+  const given = [];
+  filesDrop(outer, {onFiles: (files) => given.push(['outer', files])});
+  filesDrop(inner, {onFiles: (files) => given.push(['inner', files])});
+  // The event bubbles: the inner zone first, the outer one after it.
+  const held = dragEvent();
+  inner.listeners.dragover(held);
+  outer.listeners.dragover(held);
+  assert.ok(inner.attributes.has(FILES_OVER_ATTRIBUTE));
+  assert.equal(outer.attributes.has(FILES_OVER_ATTRIBUTE), false);
+  const dropped = dragEvent({files: ['a.png']});
+  inner.listeners.drop(dropped);
+  outer.listeners.drop(dropped);
+  await settle();
+  assert.deepEqual(given, [['inner', ['a.png']]]);
+});
+
+test('FO1-2: a file dropped beside every zone does not open in the tab while a zone is on the page', () => {
+  const doc = fakeDocument();
+  const one = filesDrop(fakeElement(doc), {});
+  const two = filesDrop(fakeElement(doc), {});
+  const beside = dragEvent({files: ['a.png']});
+  doc.fire('dragover', beside);
+  assert.equal(beside.prevented, true);
+  assert.equal(beside.dataTransfer.dropEffect, 'none');
+  const text = dragEvent({types: ['text/plain']});
+  doc.fire('drop', text);
+  assert.equal(text.prevented, false);
+  one.stop();
+  const still = dragEvent();
+  doc.fire('drop', still);
+  assert.equal(still.prevented, true);
+  two.stop();
+  // The last zone gone, the document is the browser's again.
+  assert.deepEqual(Object.keys(doc.listeners), []);
+});
+
+test('FO1-4: the target under the pointer takes the files; null takes nothing there', async () => {
+  const element = fakeElement();
+  const given = [];
+  const over = [];
+  let under = 'folder-a';
+  filesDrop(element, {target: () => under, onOver: (one, node) => over.push([one, node]), onFiles: (files, {target}) => given.push([target, files])});
+  element.listeners.dragover(dragEvent());
+  under = null;
+  const refused = dragEvent();
+  element.listeners.dragover(refused);
+  assert.equal(refused.prevented, false);
+  under = 'folder-b';
+  element.listeners.drop(dragEvent({files: ['a.png']}));
+  await settle();
+  assert.deepEqual(over, [[true, 'folder-a'], [false, null]]);
+  assert.deepEqual(given, [['folder-b', ['a.png']]]);
+});
+
+const folderItem = (name, children) => ({
+  kind: 'file',
+  getAsFile: () => null,
+  webkitGetAsEntry: () => folderEntry(name, children),
+});
+const folderEntry = (name, children) => ({
+  name,
+  isDirectory: true,
+  isFile: false,
+  createReader: () => {
+    let sent = false;
+    return {readEntries: (done) => { const batch = sent ? [] : children; sent = true; done(batch); }};
+  },
+});
+const fileEntry = (name) => ({name, isFile: true, isDirectory: false, file: (done) => done({name})});
+
+test('FO1-5: a dropped folder gives its files (open) or is named in skipped (skip)', async () => {
+  const children = [fileEntry('a.txt'), folderEntry('deep', [fileEntry('b.txt')])];
+  const open = fakeElement();
+  const opened = [];
+  filesDrop(open, {onFiles: (files, {skipped}) => opened.push([files.map((file) => file.name).sort(), skipped])});
+  open.listeners.drop(dragEvent({files: [{name: 'docs'}], items: [folderItem('docs', children)]}));
+  await settle();
+  await settle();
+  assert.deepEqual(opened, [[['a.txt', 'b.txt'], []]]);
+  const skip = fakeElement();
+  const skippedGiven = [];
+  filesDrop(skip, {folders: 'skip', onFiles: (files, {skipped}) => skippedGiven.push([files, skipped])});
+  skip.listeners.drop(dragEvent({files: [{name: 'docs'}], items: [folderItem('docs', children)]}));
+  await settle();
+  assert.deepEqual(skippedGiven, [[[], ['docs']]]);
 });
 
 test('FO-1: the drag words follow C223 -- no words about dragging on a screen with no fine pointer', () => {
@@ -156,12 +256,15 @@ test('FO-1: the drag words follow C223 -- no words about dragging on a screen wi
   assert.ok(read('src/component/file-upload/scss/_css__file_upload.scss').includes(`@media ${NO_DRAG_QUERY}`));
 });
 
-test('FO-1: three Framework places read drops through the one core part', () => {
-  for (const path of ['src/component/file-upload/js/_file_upload.js', 'src/smart/file-upload/index.js', 'src/smart/input-image/index.js']) {
+test('FO-1, FO1-4: five Framework places read file drops through the one core part', () => {
+  for (const path of ['src/component/file-upload/js/_file_upload.js', 'src/smart/file-upload/index.js', 'src/smart/input-image/index.js', 'src/smart/tree/index.js', 'src/smart/input-rich/index.js']) {
     const source = read(path);
     assert.match(source, /import \{[^}]*filesDrop[^}]*\} from '[./]+\/core\/js\/files-drop(?:\.js)?';/u, path);
-    assert.doesNotMatch(source, /addEventListener\('drop'/u, path);
+    // The tree's rows and the editor's text keep their own drop; files are not theirs.
+    if (!/tree|input-rich/u.test(path)) assert.doesNotMatch(source, /addEventListener\('drop'/u, path);
   }
+  assert.match(read('src/smart/tree/index.js'), /kind === 'files'\) return/u);
+  assert.match(read('src/smart/input-rich/index.js'), /this\._dragFromSelf \|\| carriesFiles\(event\)/u);
   assert.doesNotMatch(read('src/smart/input-image/js/templates/default.js'), /@drop=/u);
 });
 

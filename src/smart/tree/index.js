@@ -21,6 +21,7 @@ import {isTreeItemNode, treeItemNodeToData} from '../tree-item/js/node-data.js';
 import {instancePath, partId} from '../../core/js/instance-path.js';
 import {fileKind, fileType} from '../../core/js/file-types/index.js';
 import {createInlineSpinner} from '../../component/spinner/js/_spinner-draw';
+import {filesDrop, carriesFiles} from '../../core/js/files-drop.js';
 import { renderTreeTemplate, renderStaticTreeTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -498,6 +499,8 @@ class SfTree extends TreeElement {
 
   handleTreeDragOver = (event) => {
     const kind = this.dropKind(event);
+    // Files are core's files drop (FO-1, bound in connectedCallback).
+    if (kind === 'files') return;
     const node = kind ? this.dropNode(event) : null;
     if (!node) { this.markDropTarget(null); return; }
     if (kind === 'entry') {
@@ -514,11 +517,13 @@ class SfTree extends TreeElement {
   };
 
   handleTreeDragLeave = (event) => {
+    if (carriesFiles(event)) return;
     if (!this.contains(event.relatedTarget)) this.markDropTarget(null);
   };
 
   handleTreeDrop = (event) => {
     const kind = this.dropKind(event);
+    if (kind === 'files') return;
     const node = kind ? this.dropNode(event) : null;
     if (kind === 'entry') {
       const place = node ? this.dropPlace(event, node) : null;
@@ -536,10 +541,6 @@ class SfTree extends TreeElement {
     if (!node) return;
     event.preventDefault();
     const parent = node.dataset.sfEntry;
-    if (kind === 'files') {
-      this.sfEmit('attach', {files: [...event.dataTransfer.files], parent});
-      return;
-    }
     let payload = {};
     try { payload = JSON.parse(event.dataTransfer.getData(RECORDS_TYPE) || '{}'); } catch { payload = {}; }
     const ids = Array.isArray(payload.ids) ? payload.ids.map(String) : [];
@@ -557,6 +558,17 @@ class SfTree extends TreeElement {
     this.addEventListener('drop', this.handleTreeDrop);
     this.addEventListener('dragstart', this.handleTreeDragStart);
     this.addEventListener('dragend', this.handleTreeDragEnd);
+    // Files from the computer on an entry: core's files drop (FO-1, FO1-4).
+    // The entry under the pointer takes them; the tree uploads nothing, it
+    // asks attach {files, parent}. A dropped folder arrives as its files.
+    this._filesDrop ??= filesDrop(this, {
+      mark: false,
+      target: (event) => (!this.static && this.acceptFiles && this._dragId === undefined ? this.dropNode(event) : null),
+      onOver: (over, node) => this.markDropTarget(over ? node : null),
+      onFiles: (files, {target}) => {
+        if (files.length) this.sfEmit('attach', {files, parent: target.dataset.sfEntry});
+      },
+    });
     this.addEventListener('keydown', this.handleTreeKeydown);
     this.addEventListener('focusin', this.handleTreeFocusIn);
     this.addEventListener('click', this.handleTreeClick);
@@ -571,6 +583,8 @@ class SfTree extends TreeElement {
     this.removeEventListener('drop', this.handleTreeDrop);
     this.removeEventListener('dragstart', this.handleTreeDragStart);
     this.removeEventListener('dragend', this.handleTreeDragEnd);
+    this._filesDrop?.stop();
+    this._filesDrop = null;
     this.markDropTarget(null);
     this.removeEventListener('keydown', this.handleTreeKeydown);
     this.removeEventListener('focusin', this.handleTreeFocusIn);
