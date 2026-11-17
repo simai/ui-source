@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 156,
-    "translated": 156,
+    "words": 152,
+    "translated": 152,
     "share": 100
   },
   "words": {
@@ -26,10 +26,6 @@
       "operator": "Оператор",
       "rangeFrom": "От",
       "rangeTo": "До",
-      "dateOperator_gt": "Позже",
-      "dateOperator_gte": "Не раньше",
-      "dateOperator_lt": "Раньше",
-      "dateOperator_lte": "Не позже",
       "condition": "Условие",
       "numberOperator_eq": "Равно",
       "numberOperator_neq": "Не равно",
