@@ -15,7 +15,8 @@ test('Highlight exposes concise options and safe language fallback', async () =>
   const source = await read('src/component/highlight/js/index.js');
 
   assert.match(source, /dataset\.lang/);
-  assert.match(source, /dataset\.lines/);
+  // data-lines is read from the code, its pre or the root (1.10.0).
+  assert.match(source, /blockOption\(block, 'data-lines'\)/);
   assert.match(source, /dataset\.chrome/);
   assert.match(source, /supportedLanguages/);
   assert.match(source, /highlightState = hljs\.getLanguage\(language\) \? 'ready' : 'unsupported'/);

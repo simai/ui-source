@@ -17,7 +17,8 @@ test('publishes generic documentation primitives without a product namespace', a
 
   assert.match(menu, /\.sf-menu\.sf-menu--documentation-tree/);
   assert.match(highlight, /\.sf-code-surface/);
-  assert.match(highlightRuntime, /dataset\.lineNumbers === 'true'/);
+  // The historical data-line-numbers, read from the code, its pre or the root (highlight 1.10.0).
+  assert.match(highlightRuntime, /blockOption\(block, 'data-line-numbers'\) === 'true'/);
   assert.match(highlightRuntime, /languageAliases/);
   assert.match(highlightRuntime, /registerAliases/);
   assert.doesNotMatch(highlightRuntime, /highlight\.js/);
