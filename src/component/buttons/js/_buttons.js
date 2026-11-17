@@ -2,6 +2,8 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import buttonUtility from '../json/button.utility.json';
 import registerComponent from "../../register-helper";
 import { createInlineSpinner } from '../../spinner/js/_spinner-draw';
+import { BUTTON_LINK_ALIAS, watchButtonLinks } from './link-alias';
+import { noteDeprecated } from '../../../core/js/deprecations.js';
 
 class Buttons extends ComponentObserver {
   static componentName = 'Buttons';
@@ -28,6 +30,12 @@ class Buttons extends ComponentObserver {
       utilities = {},
     } = this.params || {};
     const className = this.attrs.class || this.attrs.className;
+    // type 'link' is ghost's former name (C15): the button gets both classes
+    // until 2027-01-01, as the Smart sf-button draws it, and the option is noted.
+    const look = type === 'link' ? 'ghost' : type;
+    if (type === 'link') {
+      noteDeprecated({...BUTTON_LINK_ALIAS, kind: 'option', attribute: 'type', from: 'link', to: 'ghost'});
+    }
     this.button = document.createElement('button');
     if (this.id) {
       this.button.id = this.id;
@@ -35,9 +43,12 @@ class Buttons extends ComponentObserver {
     this.button.classList.add(
       'sf-button',
       `sf-button--size-${size}`,
-      `sf-button--${type}`,
+      `sf-button--${look}`,
       `sf-button--${scheme}`,
     );
+    if (look === 'ghost') {
+      this.button.classList.add('sf-button--link');
+    }
     // The readable names for the same steps: compact, comfortable, spacious.
     // `normal` is the default and needs no class. When both options are given,
     // `spacing` wins, as it does on the Smart element (control-spacing.js), so
@@ -174,3 +185,11 @@ class Buttons extends ComponentObserver {
 Buttons.utilityMap = buttonUtility;
 
 registerComponent('Buttons', Buttons);
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => watchButtonLinks(document), {once: true});
+  } else {
+    watchButtonLinks(document);
+  }
+}

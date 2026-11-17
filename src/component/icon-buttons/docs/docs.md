@@ -68,8 +68,10 @@ ladder height (28 at size 1/2 compact and on a phone, not 28.55).
 `surface` takes its colour from the neutral alpha ramp instead of a scheme, so a
 toolbar or a row action reads the same on any background and in both themes: a
 faint fill and a hairline boundary. `tonal primary` tints with the primary
-container role, as on the button. `ghost` was identical to `link` at rest and
-differed only by a fainter hover, so it now reads as `link`.
+container role, as on the button. The look without a plate is
+`ghost` (decision C15): `sf-icon-button--ghost` and `sf-icon-button--link`
+draw the same, and `sf-button-icon` takes `appearance="ghost"` (`link` is its
+former value until 2027-01-01, journal `value-icon-button-looks-c15`).
 
 `radius-default` is the control radius `--sf-radius--ui`, the same as no
 radius class; it stays for the Smart `radius="default"` value. The utility
