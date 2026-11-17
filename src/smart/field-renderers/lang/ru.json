@@ -33,6 +33,12 @@
     "maskIncomplete": "Заполните поле полностью",
     "notNumber": "Введите число",
     "precisionMax": "Не больше {n} знаков после запятой",
+    "fractionNone": "Целая сумма, без знаков после запятой",
+    "boundBetween": "От {min} до {max}",
+    "boundAtLeast": "Не меньше {min}",
+    "boundAtMost": "Не больше {max}",
+    "currency": "Валюта",
+    "chooseCurrency": "Выберите валюту",
     "rowCount": {
       "one": "{n} строка",
       "few": "{n} строки",

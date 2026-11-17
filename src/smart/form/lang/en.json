@@ -5,6 +5,11 @@
     "submit": "Save",
     "cancel": "Cancel",
     "edit": "Edit",
+    "send": "Send",
+    "answer-sending": "Sending…",
+    "answer-cancelling": "Cancelling…",
+    "answer-sent": "Sent",
+    "answer-expired": "The time to answer has passed",
     "unsaved": "You have unsaved changes",
     "errors-title": {
       "one": "Fix {n} field",
@@ -16,6 +21,9 @@
   "events": {
     "submit": {
       "label": "Save"
+    },
+    "answer": {
+      "label": "Answer"
     },
     "cancel": {
       "label": "Cancel"

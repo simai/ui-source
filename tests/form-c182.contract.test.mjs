@@ -15,9 +15,9 @@ const sheet = read('src/smart/form/scss/_smart__form.scss');
 test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, footer, the descriptor list', () => {
   assert.equal(manifest.tag, 'sf-form');
   assert.equal(manifest.family, 'form');
-  assert.equal(manifest.version, '1.3.4'); // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch // fix/date-pd: 1.3.4, the unknown-type warning
-  assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'apply', 'labels', 'footer', 'label']);
-  assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant']);
+  assert.equal(manifest.version, '1.4.0'); // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch // fix/date-pd: 1.3.4, the unknown-type warning // C291 (3): 1.4.0, apply answer, size, state
+  assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'apply', 'size', 'state', 'labels', 'footer', 'label']);
+  assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.ok(manifest.settings.labels.values.includes('start'));
   assert.ok(manifest.settings.footer.values.includes('sticky'));
   assert.deepEqual(manifest.settings.fields.schema.items.properties.width.enum, ['s', 'm', 'full']);
@@ -25,7 +25,7 @@ test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, foote
     assert.ok(manifest.settings.fields.schema.items.properties[key], key);
   }
   assert.deepEqual(Object.keys(manifest.values), ['value', 'mode', 'valid', 'dirty']);
-  assert.deepEqual(Object.keys(manifest.events), ['input', 'change', 'submit', 'invalid', 'cancel']);
+  assert.deepEqual(Object.keys(manifest.events), ['input', 'change', 'submit', 'answer', 'invalid', 'cancel']);
   assert.equal(manifest.events.submit.cancelable, true);
   // The fields' own native input and change bubble through the form: its own are sf-form-*.
   assert.equal(manifest.events.input['x-native'], false);
@@ -64,7 +64,7 @@ test('C182 (4), (5), C52: one column, pairs from 44rem, labels beside from 40rem
 });
 
 test('C182 (8): view draws the values with renderViewField and «Изменить»', () => {
-  assert.match(source, /renderViewField\(field, value, host\)/u);
+  assert.match(source, /renderViewField\(field, value, host, this\.size === '1\/2' \? \{size: '1\/2'\} : \{\}\)/u);
   assert.match(template, /class="sf-form-edit" appearance="outline"/u);
 });
 

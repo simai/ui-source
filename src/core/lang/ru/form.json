@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 8,
-    "translated": 8,
+    "words": 13,
+    "translated": 13,
     "share": 100
   },
   "words": {
@@ -19,6 +19,11 @@
       "submit": "Сохранить",
       "cancel": "Отмена",
       "edit": "Изменить",
+      "send": "Отправить",
+      "answer-sending": "Отправляем…",
+      "answer-cancelling": "Отменяем…",
+      "answer-sent": "Отправлено",
+      "answer-expired": "Время ответа истекло",
       "unsaved": "Есть несохранённые изменения",
       "errors-title": {
         "one": "Исправьте {n} поле",

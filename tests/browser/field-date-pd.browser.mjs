@@ -129,9 +129,11 @@ async function run(lang) {
 
     const form = document.createElement('sf-form');
     form.fields = [
-      {key: 'price', label: 'Price', propertyType: 'money'},
-      {key: 'cost', label: 'Cost', propertyType: 'money'},
-      {key: 'share', label: 'Share', propertyType: 'percent'},
+      // money and percent are drawn since C291 (2); items and compound are
+      // still the View set's.
+      {key: 'price', label: 'Price', propertyType: 'items'},
+      {key: 'cost', label: 'Cost', propertyType: 'items'},
+      {key: 'share', label: 'Share', propertyType: 'compound'},
       {key: 'title', label: 'Title', propertyType: 'string'},
     ];
     holder.append(form);
@@ -173,8 +175,8 @@ try {
     expect(at('sf-form draws the known field only'), result.formFields, ['sf_field_title']);
     expect(at('sf-form says it once per unknown type'), warnings.length, 2);
     {
-      expect(at('the warning names the field and the type'), [warnings[0]?.includes('«price»') && warnings[0]?.includes('«money»'),
-        warnings[1]?.includes('«share»') && warnings[1]?.includes('«percent»')], [true, true]);
+      expect(at('the warning names the field and the type'), [warnings[0]?.includes('«price»') && warnings[0]?.includes('«items»'),
+        warnings[1]?.includes('«share»') && warnings[1]?.includes('«compound»')], [true, true]);
     }
     expect(at('no page errors'), errors, []);
   }

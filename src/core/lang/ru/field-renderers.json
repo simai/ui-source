@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 70,
-    "translated": 70,
+    "words": 76,
+    "translated": 76,
     "share": 100
   },
   "words": {
@@ -48,6 +48,12 @@
       "maskIncomplete": "Заполните поле полностью",
       "notNumber": "Введите число",
       "precisionMax": "Не больше {n} знаков после запятой",
+      "fractionNone": "Целая сумма, без знаков после запятой",
+      "boundBetween": "От {min} до {max}",
+      "boundAtLeast": "Не меньше {min}",
+      "boundAtMost": "Не больше {max}",
+      "currency": "Валюта",
+      "chooseCurrency": "Выберите валюту",
       "rowCount": {
         "one": "{n} строка",
         "few": "{n} строки",

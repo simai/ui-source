@@ -33,6 +33,12 @@
     "maskIncomplete": "Complete the field",
     "notNumber": "Enter a number",
     "precisionMax": "At most {n} digits after the point",
+    "fractionNone": "A whole amount, no digits after the point",
+    "boundBetween": "From {min} to {max}",
+    "boundAtLeast": "At least {min}",
+    "boundAtMost": "At most {max}",
+    "currency": "Currency",
+    "chooseCurrency": "Choose a currency",
     "rowCount": {
       "one": "{n} row",
       "other": "{n} rows"

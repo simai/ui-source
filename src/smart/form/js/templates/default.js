@@ -20,6 +20,12 @@ import {html, nothing} from 'lit';
 //   after it (C159 (4)), «Есть несохранённые изменения» under them as a
 //   polite status; in view «Изменить». footer="sticky" makes it a bar at the
 //   bottom of the scrolling place.
+// - apply answer (C291 (3)): «Отправить» first, «Отмена» after it, at the
+//   form's size; the status line under them is always in the page (a polite
+//   live region that appears with its words is not heard) and takes the focus
+//   when the buttons go. pending locks the fields and the pressed button
+//   waits; accepted is the read view with the line «Отправлено» and its glyph,
+//   no «Изменить»; expired is the line alone; declined draws nothing.
 
 function labelRow(field) {
   if (!field.labelRow) return nothing;
@@ -61,8 +67,28 @@ function summaryBlock(context) {
   </div>`;
 }
 
+function answerFooter(context) {
+  const answer = context.answer;
+  const line = html`<p class="sf-form-state sf-form-mark" role="status" tabindex="-1" data-state=${answer.state}>${answer.text
+    ? html`<sf-icon class="sf-form-mark-icon" icon=${answer.icon} size="1/2" aria-hidden="true"></sf-icon><span>${answer.text}</span>`
+    : nothing}</p>`;
+  if (answer.state === 'declined') return nothing;
+  if (!answer.open && !answer.pending) return html`<div class="sf-form-footer">${line}</div>`;
+  return html`<div class="sf-form-footer" data-sticky=${context.footer === 'sticky' ? '' : nothing}>
+    <div class="sf-form-actions">
+      <sf-button class="sf-form-submit" scheme="primary" size=${context.size === '1/2' ? '1/2' : nothing} native-type="submit" text=${context.words.send}
+        ?loading=${answer.pressed === true} ?disabled=${answer.pending && answer.pressed !== true}></sf-button>
+      <sf-button class="sf-form-cancel" appearance="ghost" scheme="on-surface" size=${context.size === '1/2' ? '1/2' : nothing} text=${context.words.cancel}
+        ?loading=${answer.pressed === false} ?disabled=${answer.pending && answer.pressed !== false}
+        @click=${() => context.component.cancel()}></sf-button>
+    </div>
+    ${line}
+  </div>`;
+}
+
 function footerBlock(context) {
   if (context.instant) return nothing;
+  if (context.answer) return answerFooter(context);
   if (!context.editing) {
     return html`<div class="sf-form-footer">
       <sf-button class="sf-form-edit" appearance="outline" scheme="primary" text=${context.words.edit}
@@ -71,8 +97,8 @@ function footerBlock(context) {
   }
   return html`<div class="sf-form-footer" data-sticky=${context.footer === 'sticky' ? '' : nothing}>
     <div class="sf-form-actions">
-      <sf-button class="sf-form-submit" scheme="primary" native-type="submit" text=${context.words.submit}></sf-button>
-      <sf-button class="sf-form-cancel" appearance="ghost" scheme="on-surface" text=${context.words.cancel}
+      <sf-button class="sf-form-submit" scheme="primary" size=${context.size === '1/2' ? '1/2' : nothing} native-type="submit" text=${context.words.submit}></sf-button>
+      <sf-button class="sf-form-cancel" appearance="ghost" scheme="on-surface" size=${context.size === '1/2' ? '1/2' : nothing} text=${context.words.cancel}
         @click=${() => context.component.cancel()}></sf-button>
     </div>
     <p class="sf-form-state" role="status">${context.dirty ? context.words.unsaved : nothing}</p>
@@ -84,10 +110,12 @@ export function renderFormTemplate(context) {
   return html`<form class=${classes} novalidate
     aria-label=${context.label || nothing}
     data-labels=${context.labels}
-    data-apply=${context.instant ? 'instant' : 'submit'}>
+    data-apply=${context.answer ? 'answer' : context.instant ? 'instant' : 'submit'}
+    data-size=${context.size === '1/2' ? '1/2' : nothing}>
     ${context.editing && context.requiredNote ? html`<p class="sf-form-note">${context.words.requiredNote}</p>` : nothing}
     ${summaryBlock(context)}
-    <div class="sf-form-body">${context.groups.map(groupBlock)}</div>
+    ${context.answer && !context.groups.length ? nothing
+      : html`<div class="sf-form-body" ?inert=${Boolean(context.answer?.pending)}>${context.groups.map(groupBlock)}</div>`}
     ${footerBlock(context)}
   </form>`;
 }

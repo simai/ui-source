@@ -8,7 +8,7 @@ import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTi
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
-import {formatDecimal, formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
+import {compareDecimal, currencyOf, editableDecimal, formatDecimal, formatMoney, formatPercent, fractionDigits, moneyParts, readDecimal} from "./decimal.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -133,7 +133,7 @@ function renderRangeFilterControl(field, host) {
     `;
 }
 
-function renderNumberFilterControl(field, host) {
+function renderNumberFilterControl(field, host, look = {}) {
     const control = host.getFilterControlValue(field.key);
     const operators = field.filter?.operators || ['eq'];
     const selectedOperator = control.operator || field.filter?.defaultOperator || operators[0];
@@ -142,7 +142,17 @@ function renderNumberFilterControl(field, host) {
     const rangeValue = Array.isArray(rawValue)
         ? rawValue
         : [rawValue || '', ''];
-    const patchNumberValue = (index, nextInputValue) => {
+    // A money amount and a percent are filtered as decimal strings (C291 (2)):
+    // what is typed with a comma or a point is written canonical, «1500.5»;
+    // text that is not a number is written as typed, for the host to refuse.
+    const written = (text) => {
+        if (!look.decimal) return text;
+        const read = readDecimal(text);
+        return read.ok && read.value !== null ? read.value : text;
+    };
+    const shown = (value) => (look.decimal ? editableDecimal(value, pageLocale(host ?? null)) || String(value ?? '') : value);
+    const patchNumberValue = (index, typed) => {
+        const nextInputValue = written(typed);
         if (!isBetween) {
             host.patchTempFilterValue(field.key, {
                 value: nextInputValue || '',
@@ -168,7 +178,10 @@ function renderNumberFilterControl(field, host) {
                         appearance="bordered"
                         root-class="flex-1 min-w-0"
                         label="${isBetween ? setText(host, 'rangeFrom') : host.getFilterOperatorLabel(selectedOperator)}"
-                        value="${isBetween ? rangeValue[0] || '' : rawValue || ''}"
+                        value="${shown(isBetween ? rangeValue[0] || '' : rawValue || '')}"
+                        inputmode=${look.decimal ? 'decimal' : nothing}
+                        text-start=${look.textStart || nothing}
+                        text-end=${look.textEnd || nothing}
                         name="sf_filter_${field.key || 'number'}"
                         @change=${(event) => {
                             patchNumberValue(0, event.target?.value);
@@ -180,7 +193,10 @@ function renderNumberFilterControl(field, host) {
                             appearance="bordered"
                             label="${setText(host, 'rangeTo')}"
                             root-class="flex-1 min-w-0"
-                            value="${rangeValue[1] || ''}"
+                            value="${shown(rangeValue[1] || '')}"
+                            inputmode=${look.decimal ? 'decimal' : nothing}
+                            text-start=${look.textStart || nothing}
+                            text-end=${look.textEnd || nothing}
                             name="sf_filter_${field.key || 'number'}_second"
                             @change=${(event) => {
                                 patchNumberValue(1, event.target?.value);
@@ -214,6 +230,22 @@ function renderNumberFilterControl(field, host) {
             </sf-dropdown>
         </div>
     `;
+}
+
+// Money and percent are filtered as numbers with their own sign in the field
+// (owner decision C291 (2)): «%» after a percent, a fixed currency's sign
+// where the locale writes it, the decimal keyboard on a phone, and the bound
+// written as a decimal string. A money field that lets the person choose the
+// currency has no sign: the host compares the amount.
+function renderMoneyFilterControl(field, host) {
+    const fixed = fixedCurrency(field);
+    const sign = fixed ? currencyOf(fixed, pageLocale(host ?? null)) : null;
+    return renderNumberFilterControl(field, host, {decimal: true,
+        textStart: sign?.before ? sign.sign : '', textEnd: sign && !sign.before ? sign.sign : ''});
+}
+
+function renderPercentFilterControl(field, host) {
+    return renderNumberFilterControl(field, host, {decimal: true, textEnd: '%'});
 }
 
 // The date filter (property type study «Дата», PD-4..PD-8, 2026-11-17). The
@@ -412,11 +444,11 @@ export const FILTER_RENDERERS = {
     lookup: renderEntityMultiSelectFilterControl,
     file: renderFileFilterControl,
     color: renderColorFilterControl,
-    // The types a component set draws (property-view port 1.18.0): a money
-    // amount and a percent are filtered as numbers (the host compares the
-    // amount, as a decimal), and an items field by its number of rows.
-    money: renderNumberFilterControl,
-    percent: renderNumberFilterControl,
+    // A money amount and a percent are filtered as decimals with their sign
+    // (C291 (2)); an items field, which the View set draws, by its number of
+    // rows (property-view port 1.18.0).
+    money: renderMoneyFilterControl,
+    percent: renderPercentFilterControl,
     items: renderNumberFilterControl,
 };
 
@@ -933,6 +965,8 @@ const EDIT_RENDERERS = {
     file: renderFileEdit,
     color: renderColorEdit,
     include: renderIncludeEdit,
+    money: renderMoneyEdit,
+    percent: renderPercentEdit,
 };
 
 function fieldName(field) {
@@ -1354,6 +1388,241 @@ function renderNumberEdit(field, value, host) {
                 @change=${(event) => write(event, true)}
         ></sf-input>
     `;
+}
+
+// Money and percent are the Framework's in every mode (owner decision C291
+// (2), 2026-11-17; set boundary study BQ-2): the View set's editors were the
+// reference, its option names kept -- `currency` (a fixed ISO 4217 code),
+// `min`, `max`, `precision` (a percent's digits; money's are its currency's
+// minor units, ISO 4217) and `placeholder`, as simai.property-view-port 1.18.0
+// declares them. Every value is a decimal string, never a float:
+//
+//   percent   "12.5" -- the percent, not the share; 0 to 100 unless the
+//             field bounds it otherwise
+//   money     {amount: "1500.50", currency: "RUB"}; a field with a fixed
+//             currency also reads a bare amount, and writes the pair
+//
+// One sf-input with the decimal keyboard and the sign in the field («%», a
+// fixed currency's «₽» after the amount or «$» before it, as the page's
+// language writes it); a money field without a fixed currency has a currency
+// dropdown beside the amount. What is typed is read with a comma or a point
+// and written canonical; the input shows it back in the page's language
+// («1500,5»). An entry that is not a value yet -- text that is not a number,
+// more digits after the point than allowed, a bound crossed, an amount without
+// a currency -- is written as typed and said through setFieldError, which holds
+// a save (port 1.16.0, as a masked string's), and under the field once the
+// person leaves it. A host without setFieldError hears undefined, as for a
+// number.
+const OFFERED_CURRENCIES = ['RUB', 'USD', 'EUR', 'CNY', 'KZT', 'BYN', 'AED', 'TRY', 'GBP', 'JPY'];
+
+// What a person is typing, per host and field: the value written is
+// canonical («12.5»), and drawn back as such it would move the caret under
+// «12,50» or swallow the comma of «12,». The typed text is shown while it
+// still reads as the value, and forgotten when the field is left.
+const DECIMAL_DRAFTS = new WeakMap();
+
+function draftOf(host, key) {
+    return host && typeof host === 'object' ? DECIMAL_DRAFTS.get(host)?.get(key) : undefined;
+}
+
+function keepDraft(host, key, text) {
+    if (!host || typeof host !== 'object') return;
+    let drafts = DECIMAL_DRAFTS.get(host);
+    if (!drafts) {
+        drafts = new Map();
+        DECIMAL_DRAFTS.set(host, drafts);
+    }
+    if (text === undefined) drafts.delete(key);
+    else drafts.set(key, text);
+}
+
+function decimalShown(host, key, value) {
+    if (value === null || value === undefined) return '';
+    const read = readDecimal(value);
+    if (!read.ok) return String(value);
+    const draft = draftOf(host, key);
+    if (typeof draft === 'string') {
+        const typed = readDecimal(draft);
+        if (typed.ok && typed.value === read.value) return draft;
+    }
+    return editableDecimal(read.value, pageLocale(host ?? null));
+}
+
+const hasBound = (bound) => bound !== null && bound !== undefined && bound !== '' && readDecimal(bound).ok;
+
+function setWord(host, key, vars) {
+    return pageWord(SET_TEXT, key, host ?? null, {component: SET_NAME, vars});
+}
+
+// What is wrong with a typed decimal, or '': not a number, more digits after
+// the point than `digits`, outside min..max.
+function decimalError(host, text, {digits = null, min = null, max = null} = {}) {
+    const read = readDecimal(text);
+    if (!read.ok) return setText(host, 'notNumber');
+    if (read.value === null) return '';
+    if (Number.isInteger(digits) && fractionDigits(read.value) > digits) {
+        return digits === 0
+            ? setText(host, 'fractionNone')
+            : pageWord(SET_TEXT, 'precisionMax', host ?? null, {component: SET_NAME, count: digits});
+    }
+    const low = hasBound(min) && compareDecimal(read.value, min) === -1;
+    const high = hasBound(max) && compareDecimal(read.value, max) === 1;
+    if (!low && !high) return '';
+    const locale = pageLocale(host ?? null);
+    const vars = {min: hasBound(min) ? formatDecimal(min, locale) : '', max: hasBound(max) ? formatDecimal(max, locale) : ''};
+    if (hasBound(min) && hasBound(max)) return setWord(host, 'boundBetween', vars);
+    return low ? setWord(host, 'boundAtLeast', vars) : setWord(host, 'boundAtMost', vars);
+}
+
+// The value goes to the host with what is wrong with it: a value that is not
+// one yet is written as typed while setFieldError holds the save.
+function writeDecimal(field, host, value, message) {
+    if (message) {
+        if (typeof host.setFieldError === 'function') {
+            host.setFieldError(field, message);
+            host.setFieldValue(field, value);
+        } else {
+            host.setFieldValue(field, undefined);
+        }
+        return;
+    }
+    host.setFieldError?.(field, null);
+    host.setFieldValue(field, value);
+}
+
+function decimalInput(field, value, host, {key, check, write, textStart = '', textEnd = '', rootClass = ''}) {
+    const own = EDIT_ERROR;
+    const typed = (event, left) => {
+        const input = event.currentTarget ?? event.target;
+        const text = String(input?.value ?? '');
+        keepDraft(host, key, left ? undefined : text);
+        const message = check(text);
+        if (input && !own) {
+            if (message && left) {
+                input.setAttribute('error-message', message);
+                input.toggleAttribute('invalid', true);
+            } else if (!message && input.hasAttribute?.('invalid') && !input.hasAttribute('data-sf-form-invalid')) {
+                input.toggleAttribute('invalid', false);
+                input.removeAttribute('error-message');
+            }
+        }
+        const read = readDecimal(text);
+        write(read.ok ? read.value : text, message);
+    };
+    return html`
+        <sf-input
+                size=${EDIT_SIZE}
+                appearance="bordered"
+                name=${fieldName(field)}
+                value=${decimalShown(host, key, value)}
+                inputmode="decimal"
+                text-start=${textStart || nothing}
+                text-end=${textEnd || nothing}
+                placeholder=${field.placeholder || nothing}
+                root-class=${rootClass || nothing}
+                ?required=${Boolean(field.required)}
+                ?invalid=${Boolean(own)}
+                error-message=${own || nothing}
+                aria-label=${field.label || field.key || ''}
+                @input=${(event) => typed(event, false)}
+                @change=${(event) => typed(event, true)}
+        ></sf-input>
+    `;
+}
+
+function fixedCurrency(field) {
+    return typeof field?.currency === 'string' && /^[A-Z]{3}$/u.test(field.currency) ? field.currency : null;
+}
+
+function renderPercentEdit(field, value, host) {
+    const key = String(field.key ?? '');
+    // 0 to 100 unless the field says otherwise (property types standard §2).
+    const min = hasBound(field.min) ? field.min : '0';
+    const max = hasBound(field.max) ? field.max : '100';
+    const digits = Number.isInteger(field.precision) ? field.precision : null;
+    return decimalInput(field, scalarValue(value), host, {
+        key,
+        textEnd: '%',
+        check: (text) => decimalError(host, text, {digits, min, max}),
+        write: (next, message) => writeDecimal(field, host, next, message),
+    });
+}
+
+function renderMoneyEdit(field, value, host) {
+    const locale = pageLocale(host ?? null);
+    const key = String(field.key ?? '');
+    const fixed = fixedCurrency(field);
+    const parts = moneyParts(scalarValue(value), fixed);
+    // A currency chosen before an amount is typed waits here: a value is an
+    // amount and its currency, never a currency alone.
+    const currencyKey = `${key}#currency`;
+    const currency = parts.currency || draftOf(host, currencyKey) || null;
+    const check = (text, code) => {
+        const message = decimalError(host, text, {
+            digits: code ? currencyOf(code, locale).minor : null,
+            min: field.min ?? null,
+            max: field.max ?? null,
+        });
+        if (message) return message;
+        return readDecimal(text).value !== null && !code ? setText(host, 'chooseCurrency') : '';
+    };
+    const write = (amount, message, code) => writeDecimal(field, host,
+        amount === null || amount === '' ? null : {amount, currency: code ?? null}, message);
+    const sign = fixed ? currencyOf(fixed, locale) : null;
+    const amount = decimalInput(field, parts.amount, host, {
+        key,
+        textStart: sign?.before ? sign.sign : '',
+        textEnd: sign && !sign.before ? sign.sign : '',
+        rootClass: fixed ? '' : 'flex-1 min-w-0',
+        check: (text) => check(text, currency),
+        write: (next, message) => write(next, message, currency),
+    });
+    if (fixed) return amount;
+
+    const offered = [...new Set([...(currency ? [currency] : []), ...OFFERED_CURRENCIES])];
+    const name = setText(host, 'currency');
+    return html`
+        <div class="flex gap-1/3 items-cross-start min-w-0 w-full">
+            ${amount}
+            <sf-dropdown
+                    size=${EDIT_SIZE}
+                    appearance="bordered"
+                    mode="select"
+                    search="false"
+                    root-class="basis-1/3 min-w-0"
+                    name=${`${fieldName(field)}_currency`}
+                    value=${currency ?? ''}
+                    placeholder=${name}
+                    aria-label=${name}
+                    .options=${offered.map((code) => {
+                        const {sign: mark} = currencyOf(code, locale);
+                        return {type: 'text', size: '1', value: code, text: mark === code ? code : `${code} ${mark}`, selected: code === currency};
+                    })}
+                    @change=${(event) => {
+                        const code = event.detail?.value || null;
+                        keepDraft(host, currencyKey, code ?? undefined);
+                        const typed = parts.amount;
+                        // The dropdown shows the code itself; a value is written
+                        // only with an amount.
+                        if (typed !== null && typed !== undefined && typed !== '') write(typed, check(typed, code), code);
+                    }}
+            ></sf-dropdown>
+        </div>
+    `;
+}
+
+function renderPercentView(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    const text = typeof formatted === 'string' ? formatted
+        : carriesText(value) ? value.text : formatPercent(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
+    return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
+}
+
+function renderMoneyView(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    const text = typeof formatted === 'string' ? formatted
+        : carriesText(value) ? value.text : formatMoney(scalarValue(value), field, pageLocale(host ?? null));
+    return text ? html`<span class="sf-field-view">${text}</span>` : nothing;
 }
 
 // A date control has no clock. `sf-input-date` declares a format and a date,
@@ -2686,6 +2955,8 @@ const VIEW_RENDERERS = {
     file: renderFileView,
     color: renderColorView,
     include: renderIncludeView,
+    money: renderMoneyView,
+    percent: renderPercentView,
 };
 
 // A field shown rather than edited. `host` is optional and used for one thing

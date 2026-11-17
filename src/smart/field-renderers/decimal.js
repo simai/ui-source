@@ -4,8 +4,9 @@
 // and a decimal, a money amount and a percent are shown in the page's language
 // through Intl, which formats a string by its digits: «1500.10» never passes
 // through a float on the way to «1 500,10 ₽». Pure, so the unit suite reads it
-// without a browser; the View set draws the editors of money, percent and
-// items with its own copy of the same rules.
+// without a browser. Money and percent are the Framework's in every mode
+// (owner decision C291 (2)); the View set keeps its own copy of these rules
+// for items, compound and ru.requisites.
 
 import {intlFormatter} from '../../core/js/format-intl.js';
 import {percentSign} from '../../core/js/format-number.js';
@@ -97,4 +98,63 @@ export function formatPercent(value, locale = 'en') {
     // One spelling in every language (C203 (3)): «12,5 %», «12.5 %».
     return percentSign(intlFormatter('NumberFormat', locale, {style: 'unit', unit: 'percent',
         minimumFractionDigits: digits, maximumFractionDigits: digits}).format(decimal));
+}
+
+// What the editors of money and percent need (owner decision C291 (2): the two
+// types are the Framework's in every mode, the View set's editors were the
+// reference): the sign and minor units of a currency, two decimals compared by
+// their digits, and a decimal as it is typed back in an input.
+
+/**
+ * A currency in a locale: {sign, before, minor} -- the narrow sign the locale
+ * writes («₽», «$»), whether it stands before the amount, and its ISO 4217
+ * minor units (RUB 2, JPY 0, KWD 3). A code Intl does not know keeps its
+ * letters, after the amount, with two minor digits.
+ */
+export function currencyOf(code, locale = 'en') {
+    const fallback = {sign: String(code ?? ''), before: false, minor: 2};
+    if (typeof code !== 'string' || !/^[A-Z]{3}$/u.test(code)) return fallback;
+    try {
+        const format = new Intl.NumberFormat(locale, {style: 'currency', currency: code, currencyDisplay: 'narrowSymbol'});
+        const parts = format.formatToParts(1);
+        const at = parts.findIndex((part) => part.type === 'currency');
+        if (at === -1) return fallback;
+        return {
+            sign: parts[at].value,
+            before: at < parts.findIndex((part) => part.type === 'integer'),
+            minor: format.resolvedOptions().maximumFractionDigits ?? 2,
+        };
+    } catch {
+        return fallback;
+    }
+}
+
+/** -1, 0 or 1: two decimals (canonical strings or integers) compared by their digits, never as floats; null when either is not a decimal. */
+export function compareDecimal(a, b) {
+    const left = readDecimal(a);
+    const right = readDecimal(b);
+    if (!left.ok || !right.ok || left.value === null || right.value === null) return null;
+    const scale = Math.max(fractionDigits(left.value), fractionDigits(right.value));
+    const units = (value) => {
+        const negative = value.startsWith('-');
+        const [whole, fraction = ''] = value.replace('-', '').split('.');
+        const digits = BigInt(whole + fraction.padEnd(scale, '0'));
+        return negative ? -digits : digits;
+    };
+    const x = units(left.value);
+    const y = units(right.value);
+    return x === y ? 0 : (x < y ? -1 : 1);
+}
+
+/** A decimal as typed back into an input: the locale's point, no groups («1500,5» on a Russian page); '' for nothing or not a decimal. */
+export function editableDecimal(value, locale = 'en') {
+    const read = readDecimal(value);
+    if (!read.ok || read.value === null) return '';
+    let point = '.';
+    try {
+        point = intlFormatter('NumberFormat', locale, {}).formatToParts(1.5).find((part) => part.type === 'decimal')?.value || '.';
+    } catch {
+        point = '.';
+    }
+    return read.value.replace('.', point);
 }

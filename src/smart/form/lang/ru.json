@@ -5,6 +5,11 @@
     "submit": "Сохранить",
     "cancel": "Отмена",
     "edit": "Изменить",
+    "send": "Отправить",
+    "answer-sending": "Отправляем…",
+    "answer-cancelling": "Отменяем…",
+    "answer-sent": "Отправлено",
+    "answer-expired": "Время ответа истекло",
     "unsaved": "Есть несохранённые изменения",
     "errors-title": {
       "one": "Исправьте {n} поле",
@@ -18,6 +23,9 @@
   "events": {
     "submit": {
       "label": "Сохранить"
+    },
+    "answer": {
+      "label": "Ответ"
     },
     "cancel": {
       "label": "Отмена"

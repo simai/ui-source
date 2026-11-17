@@ -351,6 +351,91 @@
         "max-bytes": 12288,
         "why": "a whole form, two groups of four fields with their labels, «*», «?», hint and the buttons: every field holds its row before any code, so the form does not grow as the controls arrive"
       }
+    },
+    {
+      "name": "answer",
+      "title": "apply=\"answer\" size=\"1/2\": анкета в сообщении, «Отправить» и «Отмена»",
+      "settings": {
+        "label": "Заявка на скидку",
+        "apply": "answer",
+        "size": "1/2",
+        "fields": [
+          {
+            "key": "company",
+            "label": "Компания",
+            "propertyType": "string",
+            "required": true
+          },
+          {
+            "key": "budget",
+            "label": "Бюджет",
+            "propertyType": "money",
+            "currency": "RUB",
+            "required": true
+          },
+          {
+            "key": "discount",
+            "label": "Скидка",
+            "propertyType": "percent",
+            "precision": 1,
+            "width": "s"
+          },
+          {
+            "key": "comment",
+            "label": "Комментарий",
+            "propertyType": "text"
+          }
+        ],
+        "value": {
+          "company": "ООО «Ромашка»"
+        }
+      }
+    },
+    {
+      "name": "answer-sent",
+      "title": "После ответа: значения текстом и «Отправлено»",
+      "settings": {
+        "label": "Заявка на скидку",
+        "apply": "answer",
+        "size": "1/2",
+        "state": "accepted",
+        "fields": [
+          {
+            "key": "company",
+            "label": "Компания",
+            "propertyType": "string",
+            "required": true
+          },
+          {
+            "key": "budget",
+            "label": "Бюджет",
+            "propertyType": "money",
+            "currency": "RUB",
+            "required": true
+          },
+          {
+            "key": "discount",
+            "label": "Скидка",
+            "propertyType": "percent",
+            "precision": 1,
+            "width": "s"
+          },
+          {
+            "key": "comment",
+            "label": "Комментарий",
+            "propertyType": "text"
+          }
+        ],
+        "value": {
+          "company": "ООО «Ромашка»",
+          "budget": {
+            "amount": "1500000.50",
+            "currency": "RUB"
+          },
+          "discount": "12.5",
+          "comment": "Нужна к пятнице"
+        }
+      }
     }
   ],
   "pages": [

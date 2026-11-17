@@ -127,19 +127,27 @@ export const PROPERTY_TYPES = Object.freeze([
     {type: 'include', label: typeLabel('type-include'),
         variants: [],
         params: ['language', 'required', 'readonly']},
+    // money and percent (owner decision C291 (2), 2026-11-17): the
+    // Framework's in every mode -- view, cell, edit and filter -- where the
+    // View set drew their view and edit until now. Every number is a decimal
+    // string, never a float. money is {amount, currency}: `currency` fixes an
+    // ISO 4217 code (a bare amount is then read in it, and no currency is
+    // offered), the digits after the point are the currency's minor units;
+    // min and max bound the amount. percent is the percent ("12.5" is
+    // 12,5 %), 0 to 100 unless min and max say otherwise; precision is its
+    // digits after the point.
+    {type: 'money', label: typeLabel('type-money'),
+        variants: [],
+        params: ['currency', 'min', 'max', 'placeholder', 'required', 'readonly']},
+    {type: 'percent', label: typeLabel('type-percent'),
+        variants: [],
+        params: ['min', 'max', 'precision', 'placeholder', 'required', 'readonly']},
     // The types a component set draws (property-view port 1.18.0; Larena
     // property types standard, notes of 2026-11-03): `set` names the set whose
-    // components show and edit them -- the View set's sf-view-properties and
-    // sf-view-flow -- and the Framework draws their table cells and filters
-    // (money and percent as numbers, items by its number of rows). `params` are
-    // the keys the type reads, in the set's renderers and in these. Every
-    // number is a decimal string, never a float.
-    {type: 'money', label: typeLabel('type-money'), set: 'view',
-        variants: [],
-        params: ['currency', 'min', 'max', 'required', 'readonly']},
-    {type: 'percent', label: typeLabel('type-percent'), set: 'view',
-        variants: [],
-        params: ['min', 'max', 'required', 'readonly']},
+    // components show and edit them -- the View set's sf-view-properties -- and
+    // the Framework draws their table cells and filters (items by its number
+    // of rows). `params` are the keys the type reads, in the set's renderers
+    // and in these.
     {type: 'items', label: typeLabel('type-items'), set: 'view',
         variants: [],
         params: ['columns', 'minRows', 'maxRows', 'required', 'readonly']},
