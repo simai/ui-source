@@ -85,9 +85,12 @@ test('Kbd sizes come from the ladder: the step below the place, never below 1/3'
   const css = await read('src/component/kbd/scss/_kbd.scss');
   const code = css.replace(/\/\/[^\n]*/gu, '').replace(/\/\*[\s\S]*?\*\//gu, '');
   assert.doesNotMatch(code, /(?:^|[\s:(,])-?\d*\.?\d+(?:px|rem)\b/mu, 'no pixel or rem literal');
-  // No em either (C18): plain glyphs inherit the row's text, their gap is a2.
+  // No em either (C18): plain glyphs inherit the row's text, their gap is
+  // --sf-space-1/4, a step of the role table (C105; it was the size primitive
+  // a2, fix/c178-findings).
   assert.doesNotMatch(code, /(?:^|[\s:(,])-?\d*\.?\d+em\b/mu, 'no em literal');
-  assert.equal(code.match(/gap: var\(--sf-a2\);/gu)?.length, 2, 'plain glyph gaps on a2');
+  assert.equal(code.match(/gap: var\(--sf-space-1\\\/4\);/gu)?.length, 2, 'plain glyph gaps on --sf-space-1/4');
+  assert.doesNotMatch(code, /gap: var\(--sf-a2\);/u);
   assert.match(code, /--sf-kbd--size: var\(--sf-kbd-size, var\(--sf-kbd--step-size, var\(--sf-text-height-1\\\/2\)\)\)/u);
   assert.match(code, /font-size: var\(--sf-kbd-font-size, var\(--sf-kbd--step-font-size, var\(--sf-text-size-1\\\/2\)\)\)/u);
   assert.match(code, /--sf-kbd--padding-inline: var\(--sf-kbd-padding-inline, var\(--sf-space-1\\\/4\)\)/u);

@@ -133,10 +133,11 @@ function renderFile(context) {
         )}
       </span>
     `;
+    // «Скачать» stands on the row's rung (C103): the row is the control
+    // height of its size, so the button takes the size's default height.
     return stack(html`<div class="sf-download-file__line">${row}<sf-button
       class="sf-download-file__get"
       size=${size}
-      height="low"
       appearance="default"
       scheme="primary"
       icon-start="download"
@@ -196,12 +197,12 @@ function renderFile(context) {
     `;
 
   // «Отменить» stands beside the row while the file is made and the host
-  // can stop it (cancelable).
+  // can stop it (cancelable), on the row's rung (C103): it was the low
+  // button, 32 beside the row's 40 at size 1.
   if (preparing && context.cancelable) {
     return stack(html`<div class="sf-download-file__line">${row}<sf-button
       class="sf-download-file__cancel"
       size=${size}
-      height="low"
       appearance="ghost"
       scheme="on-surface"
       text=${words.cancel}

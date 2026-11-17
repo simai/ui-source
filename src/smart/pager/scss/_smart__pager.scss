@@ -231,7 +231,8 @@
 
 .sf-pager-track {
   display: flex;
-  gap: var(--sf-a4);
+  /* The track's segments are plates side by side: H5 4 (C105). */
+  gap: var(--sf-space-1\/4);
   inline-size: 100%;
 }
 
@@ -259,7 +260,8 @@
   display: flex;
   flex: none;
   align-items: center;
-  gap: var(--sf-a4);
+  /* Dots are plates side by side: H5 4 (C105). */
+  gap: var(--sf-space-1\/4);
 }
 
 .sf-pager-dot {

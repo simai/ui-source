@@ -15,7 +15,9 @@
         border: 0;
         border-color: revert-layer;
         font: inherit;
-        gap: var(--sf-tag--gap, var(--sf-a1));
+        /* The tag's own gap, as the class sheet reads it (0 at every size);
+           the fallback was --sf-a1, a size primitive (C105, C178). */
+        gap: var(--sf-tag--gap, var(--sf-tag-gap, 0));
         cursor: pointer;
         /* The ring is drawn by the box after it (below), so the bare control
            does not draw a second one. Paired with the :focus-visible rule below. */

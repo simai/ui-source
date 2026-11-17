@@ -123,7 +123,9 @@ $tooltip-places: '[role="tooltip"], .sf-tooltip';
 }
 
 // Plain glyphs are the row's own text (C38): they inherit its size. The gap
-// between them is the hairline step a2 (2px), C18: no em off the ladder.
+// between them is --sf-space-1/4, the step of neighbours inside running text
+// (C105 H3/H5; it was the size primitive a2, 2 px, which the role table has
+// no step for, C178).
 @mixin plain {
   @if paint.writes-shape() {
     inline-size: auto;
@@ -285,7 +287,7 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   }
 
   :where(#{$plain-places}) :where(#{$group}) {
-    gap: var(--sf-a2);
+    gap: var(--sf-space-1\/4);
     vertical-align: baseline;
   }
 
@@ -315,7 +317,7 @@ $bare-controls: 'button, [role="button"], [role="combobox"], [role="searchbox"]'
   }
 
   :where(#{said-group(plain)}) {
-    gap: var(--sf-a2);
+    gap: var(--sf-space-1\/4);
     vertical-align: baseline;
   }
 

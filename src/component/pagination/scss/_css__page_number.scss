@@ -7,13 +7,15 @@
    look: no plate at rest (RG-NV 8: the surface-page plate was a white square
    on a card, C42 (2)), the button's hover and press fills, the current page
    primary-container with on-primary-container words and no frame.
-   utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-b0) justify-content/center (.justify-center) align-items/center (.items-center) */
+   utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-ui-1--text-space-x) justify-content/center (.justify-center) align-items/center (.items-center) */
 .sf-page-number {
   align-items: center;
   font-family: var(--sf-page-number--font-family, var(--sf-text--family));
   font-size: var(--sf-page-number--font-size, var(--sf-text-size-1));
   font-weight: var(--sf-page-number--font-weight, var(--sf-font-weight-medium));
-  gap: var(--sf-page-number--gap, var(--sf-b0));
+  /* A page number is the page button: its picture-to-words gap is the
+     button's label inset (C105 H1; it was --sf-b0, 10, no space step). */
+  gap: var(--sf-page-number--gap, var(--sf-ui-1--text-space-x));
   /* A page number is a size 1 control, like the arrows beside it: it was a
      text-height-4 box, which on mobile is shorter than the arrows. */
   block-size: var(--sf-page-number--height, var(--sf-ui-1--control-height));

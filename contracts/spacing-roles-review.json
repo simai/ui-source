@@ -16,72 +16,6 @@
       "reason": "C229: the label row gap is H2 (12, 8 compact and phone) from size 1/2 up, and 4 beside 1/4 and 1/3; this entry is that decided 4, not a defect"
     },
     {
-      "file": "src/component/context-menu/scss/_css__context_menu.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-d4",
-      "count": 1,
-      "status": "defect",
-      "owner": "context-menu (component)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 56 has no space step"
-    },
-    {
-      "file": "src/component/context-menu/scss/_css__context_menu.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-a4",
-      "count": 2,
-      "status": "defect",
-      "owner": "context-menu (component)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 4 is --sf-space-1/4 (H5 plates)"
-    },
-    {
-      "file": "src/component/inputs/scss/_css__inputs.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-b0",
-      "count": 1,
-      "status": "defect",
-      "owner": "inputs (component, field hint)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 10 has no space step (H2 12, H5 8)"
-    },
-    {
-      "file": "src/component/kbd/scss/_kbd.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-a2",
-      "count": 2,
-      "status": "defect",
-      "owner": "kbd (component)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
-    },
-    {
-      "file": "src/component/pagination/scss/_css__page_number.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-b0",
-      "count": 1,
-      "status": "defect",
-      "owner": "pagination (component)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 10 has no space step (H2 12, H5 8)"
-    },
-    {
-      "file": "src/component/pagination/scss/_css__pagination.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-b0",
-      "count": 1,
-      "status": "defect",
-      "owner": "pagination (component)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 10 has no space step (H2 12, H5 8)"
-    },
-    {
       "file": "src/component/progress-ring/scss/_css__progress_ring.scss",
       "role": "table",
       "property": "--sf-progress-ring--gap",
@@ -89,7 +23,7 @@
       "count": 1,
       "status": "defect",
       "owner": "progress-ring (component)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
+      "task": "C178 found defect, left on fix/c178-findings (2026-11-17): the gap is the ring's inset between its line and the picture on every side, not a horizontal distance; 2 keeps the content box a ladder step (size 1: 40 - 2 x (2 + 2) = 32, the avatar 1/2), 4 would make it 28. It needs a decision: an inset step for a picture in a ring, or the ring kept on the line width",
       "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
     },
     {
@@ -98,32 +32,10 @@
       "property": "gap",
       "step": "--sf-a2",
       "count": 1,
-      "status": "defect",
+      "status": "decided",
       "owner": "progress-scale (component)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 2 has no space step (H5 tags and plates are 4)"
-    },
-    {
-      "file": "src/smart/pager/scss/_smart__pager.scss",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-a4",
-      "count": 2,
-      "status": "defect",
-      "owner": "sf-pager (Smart)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 4 is --sf-space-1/4 (H5 plates)"
-    },
-    {
-      "file": "src/smart/tag/js/templates/default.css",
-      "role": "table",
-      "property": "gap",
-      "step": "--sf-a1",
-      "count": 1,
-      "status": "defect",
-      "owner": "sf-tag (Smart)",
-      "task": "C178 found defect: the owner component moves to the role step at its next change",
-      "reason": "a size primitive where the role table asks a space step (C18 values only from the systems, C105): 1 has no space step (H1 inside a tag is --sf-ui-S--text-space-x)"
+      "task": "Owner decision C131 (6) (2026-11-13): the scale's segments stand 2 px apart; the lint reads the segment gap as a horizontal distance of the role table",
+      "reason": "C131 (6): a 2 px gap between the segments of sf-progress-scale; this entry is that decided 2, not a defect"
     },
     {
       "file": "src/smart/wizard/scss/_smart__wizard.scss",
