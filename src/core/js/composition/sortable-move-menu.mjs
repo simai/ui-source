@@ -12,7 +12,7 @@
 // drag element in the sf-sortable bundle only: the editor overlay's bundle
 // carries the drag module and has handles of its own.
 import { pageText } from '../page-language.js';
-import { activeSortableSession, attachSortable, requestSortableMove, requestSortableTransfer, sortableMoveTargets } from './sortable.mjs';
+import { activeSortableSession, attachSortable, requestSortableMove, requestSortableTransfer, sortableItemLabel, sortableMoveTargets } from './sortable.mjs';
 import { menuOpen } from '../menu-open.js';
 import { standardMenu as placeStandardMenu } from '../overflow-row.js';
 
@@ -37,12 +37,8 @@ function items(list) {
   return [...list.querySelectorAll(ITEM)].filter((item) => item.closest('sf-sortable') === list);
 }
 
-function itemLabel(item) {
-  if (item.getAttribute('aria-label')) return item.getAttribute('aria-label');
-  const clone = item.cloneNode(true);
-  for (const hidden of clone.querySelectorAll('[aria-hidden="true"], .sf-sortable-live')) hidden.remove();
-  return clone.textContent.replace(/\s+/gu, ' ').trim();
-}
+// The item's name, read as sortable.mjs reads it (blocks joined by commas).
+const itemLabel = (item) => sortableItemLabel(item);
 
 // The control a handle is: itself when it is a button, else the button inside
 // it (sf-button-icon draws one), else the handle element.

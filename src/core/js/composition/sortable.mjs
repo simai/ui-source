@@ -101,13 +101,84 @@ export function registerSortableDropTarget(target) {
   return () => externalTargets.delete(target);
 }
 
-// Visible text of an item without decorative (aria-hidden) parts.
-function itemLabel(item) {
-  if (item.getAttribute('aria-label')) return item.getAttribute('aria-label');
-  const clone = item.cloneNode(true);
-  for (const hidden of clone.querySelectorAll('[aria-hidden="true"]')) hidden.remove();
-  return clone.textContent.replace(/\s+/gu, ' ').trim();
+// What an item is called in the move menu and the live announcements.
+//
+// An item's text read as one run glued its parts: a board card said «Заказ
+// № 1002 Кафе «Лето»5 070,00 ₽» (board study, 2026-11-17), the client and the
+// amount being two blocks with nothing between them. Now, in order: the
+// item's aria-label; the text of what aria-labelledby names; the part marked
+// data-sf-sortable-label or slot="title" (the card's title); else its visible
+// text with a comma between its blocks («Заказ № 1002, Кафе «Лето», 5 070,00
+// ₽»). Text inside one line (a <b> in a word) stays together. Decorative
+// parts (aria-hidden, hidden, tooltips, the list's live region, `skip`) are
+// not read.
+const LABEL_SKIP = '[aria-hidden="true"], [hidden], [role="tooltip"], .sf-sortable-live, template, script, style';
+const INLINE_TAGS = new Set(['a', 'abbr', 'b', 'bdi', 'bdo', 'cite', 'code', 'data', 'dfn', 'em', 'i', 'kbd', 'label', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr']);
+const FLOW_PARENTS = new Set(['flex', 'inline-flex', 'grid', 'inline-grid']);
+
+function displayOf(element) {
+  const view = element.ownerDocument?.defaultView;
+  if (typeof view?.getComputedStyle === 'function') {
+    try {
+      return view.getComputedStyle(element).display || 'inline';
+    } catch {
+      // A node outside a document: by its tag below.
+    }
+  }
+  return INLINE_TAGS.has(String(element.localName ?? '').toLowerCase()) ? 'inline' : 'block';
 }
+
+const tidy = (text) => String(text ?? '').replace(/\s+/gu, ' ').trim();
+
+/** The text of `node` read as a person sees it: its blocks, joined by commas. */
+export function sortableReadableText(node, { skip = '' } = {}) {
+  const skipping = skip ? `${LABEL_SKIP}, ${skip}` : LABEL_SKIP;
+  const runs = [''];
+  const walk = (current, parentDisplay) => {
+    for (const child of current.childNodes ?? []) {
+      if (child.nodeType === 3) {
+        runs[runs.length - 1] += child.nodeValue ?? '';
+        continue;
+      }
+      if (child.nodeType !== 1) continue;
+      if (typeof child.matches === 'function' && child.matches(skipping)) continue;
+      const display = displayOf(child);
+      if (display === 'none') continue;
+      // A flex or grid item is a block of its own whatever its tag.
+      // A box of its own (a block, an inline-block chip, a flex or grid
+      // item whatever its tag) is a part; an inline element is in the line;
+      // display: contents passes its parent's layout on to its children.
+      const contents = display === 'contents';
+      const apart = !contents && (display !== 'inline' || FLOW_PARENTS.has(parentDisplay));
+      if (apart) runs.push('');
+      walk(child, contents ? parentDisplay : display);
+      if (apart) runs.push('');
+    }
+  };
+  walk(node, node.nodeType === 1 ? displayOf(node) : 'block');
+  return runs.map(tidy).filter(Boolean).join(', ');
+}
+
+/** What an item is called (see above); `skip` names more parts not to read. */
+export function sortableItemLabel(item, { skip = '' } = {}) {
+  const own = tidy(item.getAttribute?.('aria-label'));
+  if (own) return own;
+  const ids = tidy(item.getAttribute?.('aria-labelledby')).split(' ').filter(Boolean);
+  const root = item.getRootNode?.();
+  const named = ids.map((id) => root?.getElementById?.(id) ?? item.ownerDocument?.getElementById?.(id)).filter(Boolean);
+  if (named.length) {
+    const text = named.map((node) => tidy(node.getAttribute?.('aria-label')) || sortableReadableText(node, { skip })).filter(Boolean).join(', ');
+    if (text) return text;
+  }
+  const title = item.querySelector?.('[data-sf-sortable-label], [slot="title"]');
+  if (title) {
+    const text = tidy(title.getAttribute?.('aria-label')) || sortableReadableText(title, { skip });
+    if (text) return text;
+  }
+  return sortableReadableText(item, { skip });
+}
+
+const itemLabel = (item) => sortableItemLabel(item);
 
 function listName(list) {
   return list.getAttribute('label') || list.getAttribute('aria-label') || list.getAttribute('group') || '';
@@ -1113,13 +1184,9 @@ export function attachSortable(container, options = {}) {
   // cell glued together.
   const labelOf = typeof options.labelOf === 'function' ? options.labelOf : (item) => {
     if (item.getAttribute('aria-label')) return item.getAttribute('aria-label');
-    const clean = (node) => {
-      const clone = node.cloneNode(true);
-      for (const hidden of clone.querySelectorAll(`[aria-hidden="true"], [role="tooltip"], .sf-sortable-live${handleSelector ? `, ${handleSelector}` : ''}`)) hidden.remove();
-      return clone.textContent.replace(/\s+/gu, ' ').trim();
-    };
-    if (item.tagName === 'TR') return [...item.cells].map(clean).filter(Boolean).join(', ');
-    return clean(item);
+    const skip = handleSelector;
+    if (item.tagName === 'TR') return [...item.cells].map((cell) => sortableReadableText(cell, { skip })).filter(Boolean).join(', ');
+    return sortableItemLabel(item, { skip });
   };
   const keyboard = vertical && options.keyboard !== false;
   const extentOf = () => options.extent?.isConnected ? options.extent : container;
