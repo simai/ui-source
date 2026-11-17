@@ -82,6 +82,30 @@
       "reason": "recorded by group build 9 from the branch commit (cut before the C251 gate): sf-progress-ring takes a lone avatar as its content (fix/avatar-ring-ar1 23096bb9a, AR-4); the class ring has no content slot",
       "decision": "AR-4",
       "date": "2026-11-17"
+    },
+    {
+      "unit": "smart.accordion",
+      "version": "1.2.4",
+      "twin": "component.accordion",
+      "reason": "recorded by pair next 13 (group builds 10 and 11): the Smart bundle carries English words only and Russian comes from the language file (feat/lang-file-c282 2146152f9); the class twin ships no words; the static copies read pointer-events-none (C268)",
+      "decision": "C282, C268",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "smart.alert",
+      "version": "1.5.3",
+      "twin": "component.alerts",
+      "reason": "recorded by pair next 13 (group builds 10 and 11): the Smart bundle carries English words only and Russian comes from the language file (feat/lang-file-c282 2146152f9); the class twin ships no words; the static copies read pointer-events-none (C268)",
+      "decision": "C282, C268",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "smart.icon",
+      "version": "1.4.2",
+      "twin": "component.icons",
+      "reason": "recorded by pair next 13 (group builds 10 and 11): the Smart bundle carries English words only and Russian comes from the language file (feat/lang-file-c282 2146152f9); the class twin ships no words; the static copies read pointer-events-none (C268)",
+      "decision": "C282, C268",
+      "date": "2026-11-17"
     }
   ]
 }
