@@ -479,7 +479,7 @@
       },
       {
         "path": "src/smart/theme-generator/scss/_smart__theme_generator.scss",
-        "sha256": "db4b9c64fe5018770a3745e61be2f65f8583997e55707ed2ea91e4c6d63e4d00"
+        "sha256": "847c564728cc73fa9decbfe636f373e54443892a15a2c1f4e9af9162b1f990c1"
       },
       {
         "path": "src/smart/theme-generator/rule.js",

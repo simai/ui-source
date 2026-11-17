@@ -208,7 +208,7 @@
       },
       {
         "path": "src/smart/time/scss/_smart__time.scss",
-        "sha256": "c9f0daea6c5d6b6205db04bcf818036a6302e25df7499c143d15ac4add6d5db4"
+        "sha256": "ab53968139b726e2f4396025218255d4dc26187ab663059ccaaaaf5e7695cd13"
       },
       {
         "path": "src/smart/time/rule.js",

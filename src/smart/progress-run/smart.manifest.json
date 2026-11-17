@@ -556,7 +556,7 @@
       },
       {
         "path": "src/smart/progress-run/scss/_smart__progress-run.scss",
-        "sha256": "3029e773677ad729b188bfb5fc3fe086962b9af402402858ce9af031e98560dc"
+        "sha256": "8bb4326d88247f8a5b53f296d40448c3198e7bd89096955f3b9c8d49e3a3d049"
       },
       {
         "path": "src/smart/progress-run/rule.js",

@@ -307,7 +307,7 @@
       },
       {
         "path": "src/smart/resizer/scss/_smart__resizer.scss",
-        "sha256": "3966d7431f46772744549dfc87b1b15901260115430c1444df141247ed904204"
+        "sha256": "f7fa783e2e036e1a8022c6313d96d98dafb95529ae3cbf6bab21a4c1fc5f4acc"
       },
       {
         "path": "src/smart/resizer/rule.js",

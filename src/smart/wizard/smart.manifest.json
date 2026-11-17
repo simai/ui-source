@@ -515,7 +515,7 @@
       },
       {
         "path": "src/smart/wizard/scss/_smart__wizard.scss",
-        "sha256": "c2a343e91059b4c95937414b3ba24e48ea2aa9ad8d62f75f681b4861f52c768b"
+        "sha256": "880d64e02d022bf4176b07297e230c4c2f0b5a61e73fa2f58c42b1cd01a3ca02"
       },
       {
         "path": "src/smart/wizard/rule.js",
