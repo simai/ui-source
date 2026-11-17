@@ -11,7 +11,7 @@ const json = (path) => JSON.parse(read(path));
 
 test('the names: item unread (boolean), setting time-format none|auto|relative|exact, word unread-text', () => {
   const contract = json('src/smart/list/component.json');
-  assert.equal(contract.version, '1.18.1'); // GB7 refresh: fix/list-lines-c130's number (the branch wrote 1.15.0; group build 7 1.17.0) // group build 8: 1.18.0 moved on by the merged branches or a GB8 patch
+  assert.equal(contract.version, '1.21.0'); // fix/smart-pass-sp1: items from a JSON attribute (SM-LS-1) // GB7 refresh: fix/list-lines-c130's number (the branch wrote 1.15.0; group build 7 1.17.0) // group build 8: 1.18.0 moved on by the merged branches or a GB8 patch
   assert.equal(contract.settings.items.of.unread.type, 'boolean');
   const format = contract.settings['time-format'];
   assert.deepEqual(format.values, ['none', 'auto', 'relative', 'exact']);
