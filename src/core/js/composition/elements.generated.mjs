@@ -696,7 +696,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.20.3"
+    "version": "1.20.4"
   },
   "sf-icon": {
     "inputs": {

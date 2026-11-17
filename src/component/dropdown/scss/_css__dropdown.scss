@@ -21,7 +21,11 @@
   padding-top: var(--sf-dropdown-field--padding-top);
 }
 
-.sf-dropdown .sf-icon-button {
+/* The field's own icon buttons are compact. The help mark's button after the
+   label (sf-help-mark) is no part of the field: it keeps the icon button's
+   own size, as after sf-input's label (32 / 28 at 1/2), so the «?» of every
+   field is one target (1.16.2; it was 28 / 24 here). */
+.sf-dropdown .sf-icon-button:where(:not(sf-help-mark *, .sf-help-mark *)) {
   --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
   --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
   --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
