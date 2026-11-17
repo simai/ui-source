@@ -263,7 +263,7 @@ test('SM-CPY-2: sf-button-icon writes one scheme class; the sheet carries on-sur
 
 // ---- SM-PN-1: five places fit a phone column -------------------------------
 
-test('SM-PN-1: below the sm step a numbers place takes the tightness, so five places fit 326', () => {
+test('SM-PN-1, EX-3: below the sm step both twins take the tightness: Smart five places and the class long range fit 326', () => {
   const sheet = read('src/component/pagination/scss/_css__pagination.scss');
   const narrow = sheet.match(/@include mq\.media-breakpoint-down\(sm\) \{([\s\S]*?)\n\}/u);
   assert.ok(narrow, 'the pagination sheet has a below-sm block');
@@ -272,6 +272,14 @@ test('SM-PN-1: below the sm step a numbers place takes the tightness, so five pl
   assert.match(block, /\.sf-pagination\.sf-pagination--size-1\\\/2 \{\s*--sf-pagination--space-x: var\(--sf-ui-1\\\/2--space-y-tightness-default\);/u);
   assert.match(block, /--sf-button--padding-inline-start: var\(--sf-pagination--space-x\);/u);
   assert.match(block, /--sf-button--padding-inline-end: var\(--sf-pagination--space-x\);/u);
+  // The plain twin (EX-3): sf-page-number reads --sf-page-number--space-x for
+  // its side padding where its place grows with its number; both steps set it
+  // to the same tightness as the Smart place.
+  const tightness = [...block.matchAll(/--sf-page-number--space-x: var\(--sf-pagination--space-x\);/gu)];
+  assert.equal(tightness.length, 2, 'the class place follows the Smart place at steps 1 and 1/2');
+  // Class long range (ui-doc examples/components/pagination/long-range): seven
+  // places, no arrows. Smart numbers: two arrows and five places.
+  assert.ok(7 * 36 + 6 * 8 <= 326, 'class long range fits');
   // The arithmetic the block answers: arrows and places are the control
   // height (36 at the phone step), six gaps of 8.
   const control = 36, gap = 8;

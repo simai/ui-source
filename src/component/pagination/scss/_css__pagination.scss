@@ -108,14 +108,19 @@
    the sm step a place takes the arrow's side padding (the step's tightness),
    so a two-digit place is the control height, as square as the arrows and
    the plain sf-page-number: the same row is 300. Three digits make a place
-   of 3ch and that padding (43 at step 1). */
+   of 3ch and that padding (43 at step 1). The plain twin's sf-page-number
+   takes the same padding (EX-3): where its place grows with its number and
+   the button's side padding, seven class places of a long range stood 17
+   past the phone column; at the tightness they are square, as here. */
 @include mq.media-breakpoint-down(sm) {
   .sf-pagination {
     --sf-pagination--space-x: var(--sf-ui-1--space-y-tightness-default);
+    --sf-page-number--space-x: var(--sf-pagination--space-x);
   }
 
   .sf-pagination.sf-pagination--size-1\/2 {
     --sf-pagination--space-x: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-page-number--space-x: var(--sf-pagination--space-x);
   }
 
   .sf-pagination .sf-pagination-slot > .sf-pagination-page {

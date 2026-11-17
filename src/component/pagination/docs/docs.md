@@ -30,7 +30,9 @@ its column: a place takes the arrow's side padding there (the step's
 tightness), so a two-digit place is as wide as the control is high, square like
 the arrows and the plain `sf-page-number` (1.5.2; with the button's own side
 padding two arrows and five places needed 350 in the 326 column of a 390
-screen, and the row scrolled).
+screen, and the row scrolled). A class row's `sf-page-number` takes the same
+side padding there, so a long range of seven class places fits the same
+column (EX-3).
 
 ## The row's box
 
