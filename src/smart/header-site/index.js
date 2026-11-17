@@ -48,6 +48,10 @@ function settingKind(node) {
   if (node?.nodeType !== 1) return null;
   const setting = node.matches(SETTING_TOOLS) ? node : node.querySelector?.(SETTING_TOOLS);
   if (!setting) return null;
+  // A wrapper that holds the setting beside other tools (search, language,
+  // theme in one row) is the tools row, not the language: it was labelled
+  // «Язык» though it held more (GB10). Its word is the neutral «Инструменты».
+  if (setting !== node && node.children.length > 1) return 'tools';
   return setting.localName === 'sf-language' ? 'language' : 'theme';
 }
 let sequence = 0;
@@ -467,7 +471,7 @@ class SfSiteHeader extends SiteHeaderElement {
   toolParts(collapsed) {
     const nodes = [].concat(this.hasSlotContent('tools') ? this.getSlotContent('tools') : []).filter((node) => node && typeof node === 'object' && 'nodeType' in node);
     if (!collapsed) return {bar: nodes, settings: []};
-    const settings = nodes.filter((node) => settingKind(node)).map((node) => ({node, label: this.sfWord(settingKind(node))}));
+    const settings = nodes.filter((node) => settingKind(node)).map((node) => ({node, kind: settingKind(node), label: this.sfWord(settingKind(node))}));
     return {bar: nodes.filter((node) => !settingKind(node)), settings};
   }
 
