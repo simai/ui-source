@@ -15,7 +15,8 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const styles = ['core/core/css/core.css', 'smart/smart/resizer/css/resizer.css'];
-const modules = ['core/core/js/core.js', 'smart/smart/resizer/js/resizer.js'];
+// The Russian words, as a Russian site lays them before core (C282, group build 11).
+const modules = ['core/core/lang/ru.js', 'core/core/js/core.js', 'smart/smart/resizer/js/resizer.js'];
 const absent = [...styles, ...modules].filter((path) => !existsSync(join(out, path)));
 if (absent.length) throw new Error(`${absent.length} build asset(s) not found under ${out}: ${absent.join(', ')}`);
 
@@ -55,7 +56,7 @@ try {
     // (simai/ui-source#8); here that is the build output's core/ root, not a
     // distr, so the page names the distr this probe routes.
     await page.evaluate(() => { window.sfPath = 'https://cdn.jsdelivr.net/gh/simai/ui@main/distr/'; });
-    for (const path of modules) await page.addScriptTag({url: `${origin}/${path}`, type: 'module'});
+    for (const path of modules) await page.addScriptTag(path.endsWith('/lang/ru.js') ? {url: `${origin}/${path}`} : {url: `${origin}/${path}`, type: 'module'});
     await page.waitForFunction(() => customElements.get('sf-resizer'), null, {timeout: 8000});
     await page.waitForTimeout(150);
     await page.evaluate(() => {
