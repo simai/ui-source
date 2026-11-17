@@ -185,6 +185,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "max-width": {
+          "default": "",
+          "type": "string"
+        },
         "name": {
           "default": "",
           "type": "string"
@@ -195,6 +199,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
             "button",
             "submit",
             "reset"
+          ],
+          "type": "string"
+        },
+        "overflow": {
+          "default": "wrap",
+          "enum": [
+            "wrap",
+            "truncate"
           ],
           "type": "string"
         },
@@ -311,7 +323,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.16.8"
+    "version": "1.17.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -696,7 +708,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.20.3"
+    "version": "1.20.5"
   },
   "sf-icon": {
     "inputs": {

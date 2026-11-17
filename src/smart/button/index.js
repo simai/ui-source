@@ -295,8 +295,8 @@ class SfButton extends ButtonElement {
   // the inner button. sf-input-image's «Заменить изображение «photo.png»» kept
   // the first file's name after a new drop (1.14.0); sf-button-icon watched it
   // since 2026-11-06. A change now draws the button again with the new name.
+  // title: a cut label's tooltip says it in place of the label (1.17.0).
   static get observedAttributes() {
-    // title: a cut label's tooltip says it in place of the label (1.17.0).
     return [...new Set([...super.observedAttributes, "aria-label", "title"])];
   }
 
