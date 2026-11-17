@@ -45,10 +45,10 @@
         <span class="sf-context-menu-item-lead"></span>
         <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Копировать</span></span>
       </button>
-      <!-- подпись под названием и значение в конце строки -->
+      <!-- пояснение под названием и значение в конце строки -->
       <button type="button" class="sf-context-menu-item">
         <span class="sf-context-menu-item-lead"></span>
-        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Плотность</span><span class="sf-context-menu-item-under">Обычно</span></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Экспорт</span><span class="sf-context-menu-item-caption">Таблица в формате CSV</span></span>
       </button>
       <button type="button" class="sf-context-menu-item">
         <span class="sf-context-menu-item-lead"></span>
@@ -68,6 +68,7 @@
       </button>
       <!-- переключатель -->
       <button type="button" class="sf-context-menu-item sf-context-menu-item--switch" aria-pressed="true">
+        <span class="sf-context-menu-item-lead"></span>
         <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Переносить строки</span></span>
         <span class="sf-context-menu-item-switch" aria-hidden="true"><span class="sf-context-menu-item-switch-thumb"></span></span>
       </button>
@@ -80,6 +81,11 @@
   </div>
 </div>
 ```
+
+Колонка `.sf-context-menu-item-lead` стоит у каждой строки меню, как только
+хотя бы у одной есть иконка, картинка или флажок; в меню без них её не пишут ни
+у одной строки. `.sf-context-menu-item-under` — значение под названием у строки,
+которая открывает следующий уровень (`submenu="drill"`).
 
 Состояния строки — модификаторы `.sf-context-menu-item`: `--chosen` (выбранный
 вариант списка, где выбирают одно), `--current` (текущий раздел), `--danger`
