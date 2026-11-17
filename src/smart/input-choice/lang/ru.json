@@ -2,6 +2,12 @@
   "title": "Выбор",
   "runtime": {
     "value-missing": "Выберите вариант.",
-    "help": "Подробнее: {label}"
+    "help": "Подробнее: {label}",
+    "search-label": "Найти в списке",
+    "loading-options": "Загрузка вариантов",
+    "options-error": "Не удалось загрузить варианты",
+    "nothing-found": "Ничего не найдено",
+    "retry": "Повторить",
+    "show-more": "Показать ещё"
   }
 }

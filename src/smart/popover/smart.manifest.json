@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.popover",
-  "version": "1.7.3",
+  "version": "1.8.0",
   "title": "Popover",
   "summary": "A surface anchored to a control the consumer supplies, with its own open state, dismissal and returned focus. Built as a general part because the Framework had the surface and not the behaviour: two composites wrote it by hand within a week, the second copying the first.",
   "kind": "smart",
@@ -110,6 +110,11 @@
         "type": "boolean",
         "default": false,
         "description": "Whether the surface is shown. Reflected, so a consumer can read it and set it."
+      },
+      "anchor": {
+        "type": "object",
+        "default": null,
+        "description": "The element the surface stands beside, in place of the trigger (FO-5): a chip, a column's heading, a cell -- any control. The focus goes back to it when the surface closes, and a press on it while the surface is open closes it (reason close). Without it the surface stands beside the host and its trigger. A property only."
       }
     },
     "additionalProperties": false
@@ -363,7 +368,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/popover/index.js",
-        "sha256": "de8ce0ae3385492c825b890ececf709de25a4476cfbd98267e0bfce776d64bf3"
+        "sha256": "dd02bb9e7802b71a47f25958711293b3cd221b8a90624211b9015d01dad39675"
       },
       {
         "path": "src/smart/popover/rule.js",

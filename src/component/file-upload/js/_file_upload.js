@@ -5,6 +5,7 @@ import { pageText, pageWord } from '../../../core/js/page-language';
 import { formatFileSize } from '../../../core/js/format-file-size.js';
 import { fileIcon } from '../../../core/js/composition/file-size.mjs';
 import { acceptFormats, fileRejection, positiveLimit } from './intake.mjs';
+import { filesDrop } from '../../../core/js/files-drop.js';
 // The words live in the component's language files (localization study LC-4):
 // one place for every language, as the Smart components keep them.
 import LANG_WORDS from '../lang/index.mjs';
@@ -1027,30 +1028,11 @@ function bindFileUpload(root) {
     event.target.value = '';
   };
 
-  const onDragOver = (event) => {
-    if (!Array.from(event.dataTransfer?.types || []).includes('Files')) return;
-    event.preventDefault();
-    if (isDisabledRoot(root)) {
-      event.dataTransfer.dropEffect = 'none';
-      return;
-    }
-    event.dataTransfer.dropEffect = 'copy';
-    root.classList.add('dragover');
-  };
-
-  const onDragLeave = (event) => {
-    if (!root.contains(event.relatedTarget)) {
-      root.classList.remove('dragover');
-    }
-  };
-
-  const onDrop = (event) => {
-    root.classList.remove('dragover');
-    const files = Array.from(event.dataTransfer?.files || []);
-    if (!files.length && !Array.from(event.dataTransfer?.types || []).includes('Files')) return;
-    event.preventDefault();
-    if (isDisabledRoot(root) || !files.length) return;
-
+  // Files from the computer: core's files drop (FO-1, core/js/files-drop.js)
+  // reads the drag -- only one that carries files, the copy cursor, none
+  // while disabled -- and gives the files of a drop once. The area keeps its
+  // .dragover while a file is held over it.
+  const onDroppedFiles = (files) => {
     const added = takeFiles(root, files, 'drop');
     if (!added.length) return;
     // A pick sends change from the native input; a drop sent none, so a form
@@ -1092,17 +1074,18 @@ function bindFileUpload(root) {
 
   root.addEventListener('click', onRootClick);
   root.addEventListener('keydown', onKeydown);
-  root.addEventListener('dragover', onDragOver);
-  root.addEventListener('dragleave', onDragLeave);
-  root.addEventListener('drop', onDrop);
+  const drop = filesDrop(root, {
+    onFiles: onDroppedFiles,
+    onOver: (over) => root.classList.toggle('dragover', over),
+    disabled: () => isDisabledRoot(root),
+    mark: false,
+  });
   input.addEventListener('change', onInputChange);
   filesContainer?.addEventListener('click', onFilesClick);
 
   root.__sfFileUploadOnClick = onRootClick;
   root.__sfFileUploadOnKeydown = onKeydown;
-  root.__sfFileUploadOnDragOver = onDragOver;
-  root.__sfFileUploadOnDragLeave = onDragLeave;
-  root.__sfFileUploadOnDrop = onDrop;
+  root.__sfFileUploadDrop = drop;
   root.__sfFileUploadOnChange = onInputChange;
   root.__sfFileUploadOnFilesClick = onFilesClick;
   root.__sfFileUploadBoundInput = input;
@@ -1126,15 +1109,7 @@ function unbindFileUpload(root) {
   if (root.__sfFileUploadOnKeydown) {
     root.removeEventListener('keydown', root.__sfFileUploadOnKeydown);
   }
-  if (root.__sfFileUploadOnDragOver) {
-    root.removeEventListener('dragover', root.__sfFileUploadOnDragOver);
-  }
-  if (root.__sfFileUploadOnDragLeave) {
-    root.removeEventListener('dragleave', root.__sfFileUploadOnDragLeave);
-  }
-  if (root.__sfFileUploadOnDrop) {
-    root.removeEventListener('drop', root.__sfFileUploadOnDrop);
-  }
+  root.__sfFileUploadDrop?.stop();
   if (input && root.__sfFileUploadOnChange) {
     input.removeEventListener('change', root.__sfFileUploadOnChange);
   }
@@ -1145,9 +1120,7 @@ function unbindFileUpload(root) {
 
   delete root.__sfFileUploadOnClick;
   delete root.__sfFileUploadOnKeydown;
-  delete root.__sfFileUploadOnDragOver;
-  delete root.__sfFileUploadOnDragLeave;
-  delete root.__sfFileUploadOnDrop;
+  delete root.__sfFileUploadDrop;
   delete root.__sfFileUploadOnChange;
   delete root.__sfFileUploadOnFilesClick;
   delete root.__sfFileUploadBoundInput;

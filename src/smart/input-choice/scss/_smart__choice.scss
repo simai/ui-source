@@ -550,6 +550,52 @@
   }
 }
 
+/* An option's visual in a row (FO-4): the picture and the colour circle
+   stand before the name, the row's line tall, a quarter step from it (the
+   box-to-name gap of C105 H2); a name drawn as a tonal badge keeps the line.
+   The circle is the menu's colour row (C85): the line less a quarter step,
+   on a hairline. */
+.sf-choice--list :is(.sf-checkbox-top, .sf-radio-button-top) {
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+}
+
+.sf-choice--list .sf-choice-avatar {
+  flex: none;
+}
+
+.sf-choice--list .sf-choice-swatch {
+  box-sizing: border-box;
+  display: block;
+  flex: none;
+  inline-size: calc(var(--sf-text-height-1) - var(--sf-space-1\/4));
+  block-size: calc(var(--sf-text-height-1) - var(--sf-space-1\/4));
+  margin: calc(var(--sf-space-1\/4) / 2);
+  border-width: var(--sf-px);
+  border-style: solid;
+  border-radius: var(--sf-radius-circle);
+  background-clip: padding-box;
+}
+
+/* The search over the rows (searchable): the field's width, a quarter step
+   above the first row. What the host's pages say under the rows: one line
+   of text 1/2, and «Show more» or «Retry» at the rows' start. */
+.sf-choice--list .sf-choice-search {
+  display: block;
+  inline-size: 100%;
+  margin-block-end: var(--sf-space-1\/4);
+}
+
+.sf-choice--list .sf-choice-status {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-choice--list .sf-choice-status[hidden] {
+  display: none;
+}
+
 /* The error under the last row: the error ink, text 1/2, the error icon a
    line tall first. */
 .sf-choice--list .sf-choice-message {
@@ -649,6 +695,13 @@
   }
   .sf-choice--list .sf-choice-message {
     color: var(--sf-error);
+  }
+  .sf-choice--list .sf-choice-swatch {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-choice--swatch, transparent);
+  }
+  .sf-choice--list .sf-choice-status {
+    color: var(--sf-on-surface-variant);
   }
   @include paint.part(all);
 }

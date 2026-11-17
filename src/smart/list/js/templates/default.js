@@ -120,7 +120,7 @@ const metaContent = (context, item, group) => {
         : nothing}`;
 };
 
-const row = (context, item, group) => {
+const row = (context, item, group, place = null) => {
     const {component} = context;
     const text = String(item.text ?? "") || context.untitledText;
     const supporting = item.supporting ? String(item.supporting) : "";
@@ -191,7 +191,8 @@ const row = (context, item, group) => {
                     ?divided=${context.divided}
             ><span slot="trailing" class="sf-list__meta">${metaContent(context, item, group)}</span></sf-list-item>`;
     return html`
-        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.unreadOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}>
+        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.unreadOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}
+            aria-posinset=${place ? place.at : nothing} aria-setsize=${place ? place.of : nothing}>
             ${listItem}
             ${menu
                 ? html`<button
@@ -208,11 +209,26 @@ const row = (context, item, group) => {
     `;
 };
 
-const rows = (context, group, labelled) => html`
-    <ul class="sf-list__rows" aria-labelledby=${labelled ?? nothing} aria-label=${labelled ? nothing : context.label}>
-        ${repeat(group.items, (item) => item.id, (item) => row(context, item, group))}
+// A long list draws the rows in view (FO-2, core/js/rows-window.js): the
+// range, and two spacers standing for the rows above and below it, so the
+// scroll bar and the scroll position are the whole list's. A drawn row says
+// its place in the whole (aria-posinset, aria-setsize); the spacers are not
+// read.
+const spacer = (height, edge) => html`<li class="sf-list__spacer" data-sf-rows-spacer=${edge} aria-hidden="true"
+        style=${`block-size: ${Math.max(0, Math.round(height))}px`}></li>`;
+
+const rows = (context, group, labelled) => {
+    const win = context.window && group.key === "all" ? context.window : null;
+    const items = win ? group.items.slice(win.first, win.last + 1) : group.items;
+    return html`
+    <ul class="sf-list__rows" aria-labelledby=${labelled ?? nothing} aria-label=${labelled ? nothing : context.label}
+        data-sf-rows-window=${win ? `${win.first}-${win.last}` : nothing}>
+        ${win ? spacer(win.before, "before") : nothing}
+        ${repeat(items, (item) => item.id, (item, index) => row(context, item, group, win ? {at: win.first + index + 1, of: group.items.length} : null))}
+        ${win ? spacer(win.after, "after") : nothing}
     </ul>
 `;
+};
 
 // The rows on their way (owner decision C130; list and feed study LF-2): the
 // list's own rows, sf-list-item of the list's size, so a skeleton row is as

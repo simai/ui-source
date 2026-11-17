@@ -348,6 +348,15 @@
     list-style: none;
   }
 
+  /* The spacers of a long list (FO-2): the rows above and below the drawn
+     range, as tall as they are, with nothing in them. */
+  .sf-list__spacer {
+    display: block;
+    flex: none;
+    margin: 0;
+    padding: 0;
+  }
+
   .sf-list__row {
     display: flex;
     align-items: center;

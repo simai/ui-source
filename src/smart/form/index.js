@@ -21,7 +21,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {fieldConditions, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {renderFormTemplate} from './js/templates/default';
 import {isListChoice, renderChoiceList} from './js/choice-list.js';
@@ -208,10 +208,28 @@ class SfForm extends FormElement {
     return normalizeFields(this.fields);
   }
 
-  // The fields the form shows now: every field the renderers draw.
+  // The fields the form shows now: every field the renderers draw whose
+  // conditions show it, as its conditions make it.
   shownFields() {
     const editing = this.isEditing;
-    return this.list.filter((field) => (editing ? this.drawsEdit(field) : this.drawsView(field)));
+    return this.list.map((field) => this.conditioned(field))
+      .filter((field) => field.visible !== false && (editing ? this.drawsEdit(field) : this.drawsView(field)));
+  }
+
+  // A field as its conditions make it over the values on screen (FO-3,
+  // field-renderers/conditions.js): when.visible shows or hides it, when.required
+  // makes it required, when.enabled false draws it read-only. A field with no
+  // when is as declared. A hidden field keeps its value and is not checked.
+  conditioned(field) {
+    if (!field?.when) return field;
+    const {visible, required, enabled} = fieldConditions(field, this._values);
+    return {...field, visible, required, readonly: field.readonly === true || !enabled};
+  }
+
+  // The field of a key as it stands now (its conditions applied).
+  fieldOf(key) {
+    const field = this.list.find((one) => one.key === key);
+    return field ? this.conditioned(field) : null;
   }
 
   // A field of a type the renderers do not draw in this mode is left out.
@@ -276,6 +294,9 @@ class SfForm extends FormElement {
     // A shown error goes the moment the value is right, and keeps the words
     // of what is wrong now (C153 (3)).
     if (this._errors.has(key)) this.recheck(key);
+    // A field another field's value hid, or made optional, takes its error
+    // with it (FO-3).
+    for (const other of [...this._errors.keys()]) if (other !== key && this.list.find((one) => one.key === other)?.when) this.recheck(other);
     this.requestComponentUpdate('value');
   }
 
@@ -311,8 +332,14 @@ class SfForm extends FormElement {
   }
 
   recheck(key) {
-    const field = this.list.find((one) => one.key === key);
+    const field = this.fieldOf(key);
     if (!field) return;
+    if (field.visible === false) {
+      this._errors.delete(key);
+      this.sfHostState('data-invalid', this._errors.size > 0);
+      this.requestComponentUpdate('validity');
+      return;
+    }
     const message = this.errorOf(field);
     if (message) this._errors.set(key, message);
     else this._errors.delete(key);
@@ -434,7 +461,7 @@ class SfForm extends FormElement {
     if (!this._errors.has(key) || this._hostErrors.has(key)) return;
     const control = this.controlOf(key);
     if (control?.validity?.valid && control.validity.valueMissing === false) {
-      const field = this.list.find((one) => one.key === key);
+      const field = this.fieldOf(key);
       if (field && (field.required !== true || hasValue(control.value))) {
         this._errors.delete(key);
         this.sfHostState('data-invalid', this._errors.size > 0);

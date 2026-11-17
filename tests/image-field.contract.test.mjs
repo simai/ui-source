@@ -45,7 +45,7 @@ test('image field: a drop takes what the dialog would have offered, images by de
   // A refused file is said, not silently dropped: rejected (standard 1.3.8,
   // vocabulary §9.1), and sf-image-field:reject after it (aliases.json). The
   // drop, the dialog and a paste go through one intake (input-image-c94 test).
-  assert.match(source, /this\._takeFiles\(files, 'drop'\);/u);
+  assert.match(source, /onFiles: \(files\) => this\._takeFiles\(files, 'drop'\),/u); // 1.10.6: through core's files drop (FO-1)
   assert.match(source, /this\.sfEmit\('rejected', /u);
 });
 

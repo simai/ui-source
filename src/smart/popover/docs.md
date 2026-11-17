@@ -51,6 +51,41 @@
 поверхности. Окно или боковая панель, открытые из поверхности, рисуются над
 ней: пока они открыты, поверхность выходит из верхнего слоя.
 
+## Открыть от любого элемента
+
+Свойство `anchor` (1.8.0) — элемент, рядом с которым встаёт поверхность
+вместо кнопки внутри `<sf-popover>`: чип фильтра, заголовок столбца, ячейка.
+Кнопка со `slot="trigger"` тогда не нужна. Фокус после закрытия
+возвращается на `anchor`, нажатие на него при открытой поверхности
+закрывает её (`reason: 'close'`). Свойство задаётся только из скрипта.
+
+```js
+const popover = document.createElement('sf-popover');
+popover.innerHTML = '<div slot="content">…</div>';
+chip.after(popover);
+await customElements.whenDefined('sf-popover');
+popover.anchor = chip;
+popover.show();
+```
+
+На этом построено окно фильтра одного поля:
+`SF.fieldRenderers.filterWindow.open({anchor, field, value, size})`
+показывает элемент фильтра поля по его типу, под ним «Применить» и
+«Сбросить» (главное действие первым, C157 (3)), и отвечает
+`{action: 'apply', value}`, `{action: 'reset', value: null}` или `null`, если
+окно закрыли без выбора. Таблица для этого не нужна.
+
+```js
+const answer = await SF.fieldRenderers.filterWindow.open({
+  anchor: chip,
+  field: {key: 'status', label: 'Статус', propertyType: 'choice',
+          filter: {options: [{value: 'new', label: 'Новый', color: 'blue'}], optionRenderer: 'badge'}},
+  value: {values: ['new']},
+});
+if (answer?.action === 'apply') applyFilter('status', answer.value);
+if (answer?.action === 'reset') clearFilter('status');
+```
+
 ## Методы и события
 
 `show()`, `close()` и `toggle(force)` открывают и закрывают поверхность из

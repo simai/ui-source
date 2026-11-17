@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.6.5",
+  "version": "1.7.0",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -38,8 +38,11 @@
       "component.checkbox",
       "component.icons",
       "component.radio",
+      "smart.avatar",
       "smart.badge",
-      "smart.help-mark"
+      "smart.button",
+      "smart.help-mark",
+      "smart.input"
     ],
     "public_parts": []
   },
@@ -60,6 +63,11 @@
         "type": "string",
         "default": "",
         "description": "Inline style declarations set on the root element the component draws, custom properties included."
+      },
+      "searchable": {
+        "type": "boolean",
+        "default": false,
+        "description": "appearance list: a search field over the options. Without a provider it searches the options in hand by name and description, case and accents folded; with one, the provider is asked with the query. The search box's own input and change stay inside."
       },
       "multiple": {
         "type": "boolean",
@@ -159,7 +167,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
+        "description": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out. appearance list draws three visuals in a row (FO-4): avatar, an address or {image, text}, a picture before the name (sf-avatar on the row's line); swatch, a CSS colour, a circle before the name; scheme, a badge scheme, a palette hue or a hex colour, the name itself as a tonal badge.",
         "examples": [
           [
             {
@@ -179,6 +187,11 @@
             }
           ]
         ]
+      },
+      "provider": {
+        "type": "object",
+        "default": null,
+        "description": "appearance list: the options come from the host a page at a time (FO-4): async function (query, {cursor, limit, signal}) answering {items, nextCursor?}, as sf-input-lookup's provider. Asked for the first page when given, again after a search (200 ms after the last key) and with nextCursor by «Show more»; a thrown error or a rejected promise is the error line with «Retry». The previous call is aborted through signal and an answer for an older call is dropped. The options in hand (items) stay first, so a chosen option the pages have not reached keeps its row. A property only."
       }
     },
     "additionalProperties": false
@@ -347,23 +360,23 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "1cccab71922dfe2456772bd875984e40e38b1927f6cac79718c10d01f28b2e9b"
+        "sha256": "3b78c1f1e7726711933b455eafcf25caeaa4d862b2c8431f489b4886241d1fae"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "6f7ba1e37505074ca2932039817dcb77e37e2ec8f96f360a807c44c871731a0b"
+        "sha256": "4287690dbfff623bd0b6d9d8f329f8bb3db4ef325baf3a76cf46bb8a4c1caabe"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "7abf240b6297e650ef03382b82c043b60b8233f65d9c898e08cf9fcb8aa1e848"
+        "sha256": "db1fc7a659305d789e44af0b09f45595b82d62dc5c26807a139ecc6699f3f2e9"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "c6fe53b8d683d8cbe70eaa8986d5378fa14de65eec4c1415f48f07b5d0bbd686"
+        "sha256": "f1a175889986498bf5e60179da12510d79cccecabdf91dd2383df2d5b61d8a4e"
       },
       {
         "path": "src/smart/input-choice/rule.js",
-        "sha256": "7d56822070344939d33f26c4907f9633dcbc8d39c35b0c5fe37e6c94f437f143"
+        "sha256": "42039a95b2ea2ad6ae7af60cbb6f81445398c83d49e4e03582c90fb41dde5c59"
       },
       {
         "path": "src/smart/input-choice/docs.md",

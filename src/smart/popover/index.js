@@ -75,6 +75,11 @@ const PopoverElement = elementFromManifest(manifest, {
 // protocol shared with every other surface that owns Escape, so it is held
 // through core (`core/js/open-surface-mark`) rather than written here.
 
+// The anchors given to popovers are told apart by a number of their own
+// (data-sf-popover-anchor), kept on a shared global: every bundle may carry
+// this module.
+const POPOVER_ANCHORS = globalThis[Symbol.for('sf.popover.anchors')] || (globalThis[Symbol.for('sf.popover.anchors')] = {count: 0});
+
 class SfPopover extends PopoverElement {
     // Its DOM updates are all it draws: the first one counts as its render
     // (Smart base, simai/ui-source#70).
@@ -183,10 +188,21 @@ class SfPopover extends PopoverElement {
         return next ? this.show() : this.close();
     }
 
+    // The element the surface stands beside (1.8.0, FO-5): the anchor
+    // property when a page gives one, else the host and the trigger in it. An
+    // anchor lets a surface open from any control -- a chip, a column's
+    // heading, a cell -- with no trigger of its own: the focus goes back to
+    // it, and a press on it while the surface is open closes the surface
+    // (reason close), as a press on a trigger does.
+    get _reference() {
+        const anchor = this.anchor;
+        return anchor && anchor.nodeType === 1 && anchor.isConnected ? anchor : this;
+    }
+
     show() {
         if (this.open) return applied();
         if (!this.sfEmit('open', {}, {cancelable: true})) return refused('prevented');
-        this._opener = this.querySelector('[slot="trigger"]') ?? null;
+        this._opener = this.querySelector('[slot="trigger"]') ?? (this._reference !== this ? this._reference : null);
         this.toggleAttribute('open', true);
         this.requestComponentUpdate('open');
         this._focusInSoon();
@@ -233,10 +249,10 @@ class SfPopover extends PopoverElement {
     returnFocus() {
         const trigger = this._opener?.isConnected
             ? this._opener
-            : this.querySelector('[slot="trigger"]');
-        const focusable = trigger?.matches?.('button, a[href], [tabindex]')
+            : this.querySelector('[slot="trigger"]') ?? (this._reference !== this ? this._reference : null);
+        const focusable = trigger?.matches?.('button, a[href], input, select, textarea, [tabindex]')
             ? trigger
-            : trigger?.querySelector?.('button, a[href], [tabindex]');
+            : trigger?.querySelector?.('button, a[href], input, select, textarea, [tabindex]');
         focusable?.focus?.();
         return applied();
     }
@@ -251,6 +267,12 @@ class SfPopover extends PopoverElement {
         this._onDocumentPointerDown = (event) => {
             const path = event.composedPath?.() ?? [];
             if (path.includes(this)) return;
+            // A press on the anchor closes it as a press on a trigger does.
+            const reference = this._reference;
+            if (reference !== this && path.includes(reference)) {
+                this.close({reason: 'close'});
+                return;
+            }
             // An outside press is the top layer's (standard 1.3.8 §19.3): a
             // press inside a drawer or a window opened from this popover is
             // theirs, and the popover under them stays. A list opened from it
@@ -391,13 +413,18 @@ class SfPopover extends PopoverElement {
         if (live && !this._under) this._lift(surface);
         else this._lower();
         const sheet = surface?.hasAttribute?.('data-sf-sheet');
-        const want = live && !sheet ? `${this.placement}|${this._offset()}|${this.arrow}|${Boolean(this._under)}` : null;
+        const reference = this._reference;
+        if (reference !== this && !reference.dataset.sfPopoverAnchor) {
+            POPOVER_ANCHORS.count += 1;
+            reference.dataset.sfPopoverAnchor = String(POPOVER_ANCHORS.count);
+        }
+        const want = live && !sheet ? `${this.placement}|${this._offset()}|${this.arrow}|${Boolean(this._under)}|${reference === this ? '' : reference.dataset.sfPopoverAnchor}` : null;
         if (this._anchor && (this._anchorSurface !== surface || this._anchorKey !== want)) this._releaseAnchor();
         if (!want || this._anchor) return;
         const {side, align} = ANCHOR_PLACEMENTS[this.placement] || ANCHOR_PLACEMENTS['bottom-end'];
         // The floating-surface engine (core/js/float-anchor.js, internal):
         // CSS anchor positioning in the top layer, SF.Position elsewhere.
-        this._anchor = anchorFloating(this, surface, {
+        this._anchor = anchorFloating(reference, surface, {
             side, align, offset: this._offset() || 0, flip: true, shift: true, fitHeight: false, topLayer: false,
             arrow: this.arrow,
         });

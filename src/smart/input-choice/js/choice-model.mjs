@@ -46,9 +46,28 @@ export function listFlow(asked, items) {
 
 const text = (value) => (value === null || value === undefined ? '' : String(value));
 
+// A colour an option stands for (FO-4; a colour row of a menu, C85): a CSS
+// colour -- a code, var() of a token, light-dark() of two; anything that
+// could close the declaration is not drawn.
+const SWATCH = /^[#\w\s(),.%/-]+$/u;
+
+// An option's picture (FO-4): an address, or {image | src, text | initials};
+// the initials are sf-avatar's when there is no picture. null without either.
+function avatarOf(given) {
+  if (!given) return null;
+  if (typeof given === 'string') return given.trim() ? {image: given.trim(), text: ''} : null;
+  if (typeof given !== 'object' || Array.isArray(given)) return null;
+  const image = text(given.image ?? given.src ?? given['image-url'] ?? given.imageUrl).trim();
+  const initials = text(given.text ?? given.initials).trim();
+  return image || initials ? {image, text: initials} : null;
+}
+
 // One option: {value, label, caption?, icon?, badge?, price?, term?, image?,
-// disabled?} -- the shape of sf-input-lookup's options, with an icon, a badge,
-// a price with its term and an image. `title` is read as the label; a missing
+// avatar?, swatch?, scheme?, disabled?} -- the shape of sf-input-lookup's
+// options, with an icon, a badge, a price with its term and an image. The
+// rows of appearance list draw three more visuals (FO-4): avatar a picture
+// before the name, swatch a colour circle before it, scheme the name itself
+// as a tonal badge in that scheme, palette hue or hex colour. `title` is read as the label; a missing
 // label is the value. An option without a value, or repeating an earlier one, is left
 // out: one value names one card.
 export function normaliseItems(items) {
@@ -80,6 +99,9 @@ export function normaliseItems(items) {
       price: text(source.price).trim(),
       term: text(source.term).trim(),
       image: text(source.image).trim(),
+      avatar: avatarOf(source.avatar),
+      swatch: SWATCH.test(text(source.swatch).trim()) ? text(source.swatch).trim() : '',
+      scheme: text(source.scheme).trim(),
       disabled: Boolean(source.disabled),
     });
   }
@@ -126,4 +148,25 @@ export function applyChoice(values, items, value, checked, multiple = false) {
   if (checked) next.add(value);
   else next.delete(value);
   return orderValues(values.concat(checked ? [value] : []).filter((one, at, all) => next.has(one) && all.indexOf(one) === at), items);
+}
+
+// The options a typed query keeps, searched in place (searchable without a
+// provider): the name or the description holds the query, case and accents
+// folded, as sf-input-lookup searches its inline options.
+const fold = (value) => text(value).normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase();
+export function searchItems(items, query) {
+  const wanted = fold(query).trim();
+  if (!wanted) return items;
+  return items.filter((item) => fold(item.label).includes(wanted) || fold(item.caption).includes(wanted));
+}
+
+// The options a provider's pages give, after the options given in hand: one
+// value names one option, the first one given keeps its place, a later page
+// may fill it in.
+export function mergeItems(given, paged) {
+  const seen = new Map();
+  for (const item of [...given, ...paged]) {
+    if (!seen.has(item.value)) seen.set(item.value, item);
+  }
+  return [...seen.values()];
 }

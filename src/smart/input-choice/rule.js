@@ -20,5 +20,11 @@ SF.RuleLoader['cl-input-choice'] = {
     // The «?» after the label or the heading (help, C153 (8), C165 (1)) is
     // sf-help-mark, only when help is set.
     { name: 'cl-help-mark', lazy: true },
+    // An option's picture in a row of appearance list (avatar, FO-4) is sf-avatar on the row's line, only when an option carries one.
+    { name: 'cl-avatar', lazy: true },
+    // The search field over the rows of appearance list (searchable, FO-4) is sf-input, filled, only when the field is searchable.
+    { name: 'cl-input', lazy: true },
+    // «Show more» and «Retry» under the rows of a provider's pages (FO-4) are sf-button, ghost, only with a provider.
+    { name: 'cl-button', lazy: true },
   ],
 };

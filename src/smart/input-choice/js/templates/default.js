@@ -1,5 +1,6 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
+import {optionBadgeProps} from '../../../helpers/option-badge.js';
 
 // sf-input-choice's markup: the label row, the cards and the hint or error
 // line under them (owner decision C28, prototype input-choice-world.html).
@@ -124,6 +125,31 @@ function renderCard(context, item, index) {
 // While invalid every row's control takes the error colour, as an invalid
 // sf-radio or sf-checkbox.
 
+// An option's visual in a row (FO-4): a picture (sf-avatar on the row's
+// line), a colour circle (the menu's colour row, C85), and the name drawn as
+// a tonal badge (sf-badge tight, its scheme, palette hue or hex through
+// helpers/option-badge.js, as a table cell's choice). The picture and the
+// circle are not read: the name is.
+function renderVisual(item) {
+  if (item.avatar) {
+    return html`<sf-avatar class="sf-choice-avatar" size="1" line="1" aria-hidden="true"
+                           image-url=${item.avatar.image || nothing}
+                           text=${item.avatar.text || nothing} heading=${item.label}></sf-avatar>`;
+  }
+  if (item.swatch) {
+    return html`<span class="sf-choice-swatch" style=${`--sf-choice--swatch: ${item.swatch}`} aria-hidden="true"></span>`;
+  }
+  return nothing;
+}
+
+function renderName(item, disabled) {
+  if (!item.scheme) return item.label;
+  const badge = optionBadgeProps({scheme: item.scheme});
+  return html`<sf-badge class="sf-choice-name-badge" appearance="tonal" tight line="1" scheme=${badge.scheme}
+                        root-style=${badge.rootStyle || nothing} root-class=${disabled ? 'sf-badge--disabled' : nothing}
+                        text=${item.label}></sf-badge>`;
+}
+
 function renderRow(context, item, index) {
   const checked = context.chosen.has(item.value);
   const disabled = context.fieldDisabled || item.disabled;
@@ -141,17 +167,51 @@ function renderRow(context, item, index) {
       <span class="sf-checkbox-box flex">${input}${checked
         ? html`<span class="sf-icon" aria-hidden="true">check</span>`
         : nothing}</span>
-      <span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-top flex"><span class="sf-checkbox-label" id=${titleId}>${item.label}</span></span>${item.caption
+      <span class="sf-checkbox-container flex flex-col"><span class="sf-checkbox-top flex">${renderVisual(item)}<span class="sf-checkbox-label" id=${titleId}>${renderName(item, disabled)}</span></span>${item.caption
         ? html`<span class="sf-checkbox-description" id=${captionId}>${item.caption}</span>`
         : nothing}</span>
     </label>`;
   }
   return html`<label class=${joinClasses('sf-radio-button', 'sf-radio-button--size-1', 'flex', 'sf-choice-row', disabled ? '' : 'cursor-pointer', error)}>
     <span class="sf-radio-button-box flex items-cross-center content-main-center">${input}<span class="sf-radio-button-mark" aria-hidden="true"></span></span>
-    <span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-top flex"><span class="sf-radio-button-text" id=${titleId}>${item.label}</span></span>${item.caption
+    <span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-top flex">${renderVisual(item)}<span class="sf-radio-button-text" id=${titleId}>${renderName(item, disabled)}</span></span>${item.caption
       ? html`<span class="sf-radio-button-description" id=${captionId}>${item.caption}</span>`
       : nothing}</span>
   </label>`;
+}
+
+// The search over the rows and what the host's pages say under them (FO-4):
+// searchable puts a search field over the options (sf-input, filled, the
+// field's step); a provider's answer is said in one polite status line --
+// loading, nothing found, the error with «Try again» -- and «Show more» asks
+// for its next page.
+function renderSearch(context) {
+  const {paging} = context;
+  if (!paging.searchable) return nothing;
+  return html`<sf-input class="sf-choice-search" size="1" appearance="filled" input-type="search" icon-start="search" clearable
+                        placeholder=${paging.words.search} aria-label=${paging.words.search}
+                        value=${paging.query} ?disabled=${context.fieldDisabled}
+                        @input=${(event) => {
+                          // The search box's own input and change stop here:
+                          // typing is not a change of the field's value.
+                          event.stopPropagation();
+                          context.component.searchFor(event.target?.value ?? '');
+                        }}
+                        @change=${(event) => event.stopPropagation()}></sf-input>`;
+}
+
+function renderPaging(context) {
+  const {paging} = context;
+  const line = paging.status === 'loading' ? paging.words.loading
+    : paging.status === 'error' ? paging.words.error
+      : paging.status === 'empty' ? paging.words.empty : '';
+  return html`<span class="sf-choice-status" role="status" aria-live="polite" ?hidden=${!line}>${line}</span>${paging.status === 'error'
+    ? html`<sf-button class="sf-choice-more" size="1/2" appearance="ghost" scheme="on-surface" text=${paging.words.retry}
+                      @click=${() => context.component.loadPage(paging.retryCursor)}></sf-button>`
+    : paging.nextCursor && paging.status !== 'loading'
+      ? html`<sf-button class="sf-choice-more" size="1/2" appearance="ghost" scheme="on-surface" icon="expand_more" text=${paging.words.more}
+                        @click=${() => context.component.loadPage(paging.nextCursor)}></sf-button>`
+      : nothing}`;
 }
 
 function renderListTemplate(context) {
@@ -168,6 +228,7 @@ function renderListTemplate(context) {
         : nothing}</span>${renderHelp(context)}</div>`
       : nothing}
     ${context.hint ? html`<span class="sf-choice-hint" id=${hintId}>${context.hint}</span>` : nothing}
+    ${renderSearch(context)}
     <div class="sf-choice-options" role=${context.multiple ? 'group' : 'radiogroup'}
          aria-labelledby=${context.label ? labelId : nothing}
          aria-label=${!context.label && context.ariaLabel ? context.ariaLabel : nothing}
@@ -177,6 +238,7 @@ function renderListTemplate(context) {
          aria-disabled=${context.fieldDisabled ? 'true' : nothing}>
       ${repeat(context.items, (item) => item.value, (item, index) => renderRow(context, item, index))}
     </div>
+    ${context.paging.shown ? renderPaging(context) : nothing}
     ${error
       ? html`<span class="sf-choice-message" id=${messageId} data-field-message="error"><span class="sf-icon sf-choice-message-icon" aria-hidden="true">error</span><span class="sf-choice-message-text">${error}</span></span>`
       : nothing}

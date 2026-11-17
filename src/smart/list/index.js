@@ -44,6 +44,7 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
 import {menuOpen} from "../../core/js/menu-open.js";
+import {rowsWindow} from "../../core/js/rows-window.js";
 import {noteDeprecated} from "../../core/js/deprecations";
 
 // Is the end within watchEdge's margin of the box that scrolls the list (or
@@ -188,6 +189,15 @@ class SfList extends ListElement {
         this._stopEdge = null;
         this._edge = null;
         this._dayTimer = 0;
+        // A long list draws the rows in view (FO-2, core/js/rows-window.js):
+        // an ungrouped list of 200 rows or more, the rows a person can see and
+        // 20 on each side, two spacers standing for the rest.
+        this._rowsWindow = rowsWindow({
+            body: () => this.querySelector(":scope > .sf-list__frame .sf-list__rows[data-sf-rows-window]"),
+            rows: () => [...this.querySelectorAll(":scope > .sf-list__frame .sf-list__rows[data-sf-rows-window] > .sf-list__row")],
+            onMove: () => this.requestComponentUpdate("window"),
+            guess: 40,
+        });
         listCount += 1;
         this._uid = `sf-list-${listCount}`;
         // A value set as a property before the element was defined is an own
@@ -552,8 +562,39 @@ class SfList extends ListElement {
         return {twoLine, lead: {kind: "avatar", wide, shape: learned ? learned.shape : "circle"}};
     }
 
+    // The range a long list draws, or null (FO-2): only an ungrouped list --
+    // one section of every row -- that is not loading and has no row being
+    // renamed is windowed; any other list draws every row.
+    windowOf(sections, loading) {
+        const one = sections.length === 1 && sections[0].key === "all" ? sections[0] : null;
+        if (!one || loading || this._editing) {
+            this._rowsWindow.slice(0);
+            return null;
+        }
+        return this._rowsWindow.slice(one.items.length);
+    }
+
+    // Home and End in a long list go to the whole list's first and last row,
+    // which may not be drawn: the range is put there first (FO-2). The
+    // arrows find the next row drawn, since the range keeps rows beyond the
+    // visible ones and moves as the focused row scrolls into view.
+    onWindowKey = (event) => {
+        if (!this._rowsWindow.windowed || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        if (event.key !== "Home" && event.key !== "End") return;
+        const row = event.target?.closest?.(".sf-list-item[data-sf-list-roving]");
+        if (!row || event.target !== row || !this.contains(row)) return;
+        const items = this.arranged()[0]?.items ?? [];
+        const item = event.key === "Home" ? items[0] : items.at(-1);
+        if (!item) return;
+        event.preventDefault();
+        event.stopPropagation();
+        this._rowsWindow.reveal(event.key === "Home" ? 0 : items.length - 1);
+        this.focusRow(item.id);
+    };
+
     templateContext() {
         const loading = this.loading;
+        const sections = this.arranged();
         const empty = !loading && this._items.length === 0;
         return {
             component: this,
@@ -564,7 +605,8 @@ class SfList extends ListElement {
             size: this.size,
             noWrap: this.noWrap === true,
             divided: this.divided === true,
-            sections: this.arranged(),
+            sections,
+            window: this.windowOf(sections, loading),
             leading: this.leadingPlace(),
             avatarOf,
             countOf,
@@ -618,6 +660,12 @@ class SfList extends ListElement {
 
     afterRender(changed) {
         super.afterRender?.(changed);
+        if (this._rowsWindow.windowed) {
+            this._rowsWindow.start();
+            this._rowsWindow.sync();
+        } else {
+            this._rowsWindow.stop();
+        }
         this.watchEnd();
         this.watchWidth();
         // The keys a row answers, said to assistive technology on the row itself
@@ -655,6 +703,7 @@ class SfList extends ListElement {
     onConnected() {
         super.onConnected?.();
         this.watchDay();
+        this.addEventListener("keydown", this.onWindowKey, true);
         // A long press on a row under a finger opens its menu, as its «⋯»
         // does (owner decision C148 (6)); the click its release sends opens
         // nothing. No swipe.
@@ -702,6 +751,8 @@ class SfList extends ListElement {
 
     onDisconnected() {
         this.unwatchEnd();
+        this._rowsWindow.stop();
+        this.removeEventListener("keydown", this.onWindowKey, true);
         this._widthObserver?.disconnect();
         this._widthObserver = null;
         cancelAnimationFrame(this._fitFrame);

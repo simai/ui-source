@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-choice's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14: choice cards, Larena's request of 2026-11-02 (Federation bus msg-993e1e39151942c19b23, item 3), named sf-input-choice in the dispatcher's plan of 2026-11-03 (msg-05e76ea0bc0746a690b8).",
   "id": "smart.input-choice",
   "tag": "sf-input-choice",
-  "version": "1.6.5",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -39,10 +39,22 @@
         "disabled": {
           "type": "boolean",
           "optional": true
+        },
+        "avatar": {
+          "type": "object",
+          "optional": true
+        },
+        "swatch": {
+          "type": "string",
+          "optional": true
+        },
+        "scheme": {
+          "type": "string",
+          "optional": true
         }
       },
       "x-markup": "the attribute takes the same list as JSON; a server prints it in the JSON island (script type=application/json data-sf-settings); title is read as label",
-      "summary": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
+      "summary": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out. appearance list draws three visuals in a row (FO-4): avatar, an address or {image, text}, a picture before the name (sf-avatar on the row's line); swatch, a CSS colour, a circle before the name; scheme, a badge scheme, a palette hue or a hex colour, the name itself as a tonal badge.",
       "examples": [
         [
           {
@@ -62,6 +74,16 @@
           }
         ]
       ]
+    },
+    "searchable": {
+      "type": "boolean",
+      "default": false,
+      "summary": "appearance list: a search field over the options. Without a provider it searches the options in hand by name and description, case and accents folded; with one, the provider is asked with the query. The search box's own input and change stay inside."
+    },
+    "provider": {
+      "type": "object",
+      "default": null,
+      "summary": "appearance list: the options come from the host a page at a time (FO-4): async function (query, {cursor, limit, signal}) answering {items, nextCursor?}, as sf-input-lookup's provider. Asked for the first page when given, again after a search (200 ms after the last key) and with nextCursor by «Show more»; a thrown error or a rejected promise is the error line with «Retry». The previous call is aborted through signal and an answer for an older call is dropped. The options in hand (items) stay first, so a chosen option the pages have not reached keeps its row. A property only."
     },
     "multiple": {
       "type": "boolean",
@@ -239,6 +261,27 @@
         "The «?» after the label or the heading (help, C153 (8), C165 (1)) is",
         "sf-help-mark, only when help is set."
       ]
+    },
+    {
+      "name": "cl-avatar",
+      "lazy": true,
+      "$comment": [
+        "An option's picture in a row of appearance list (avatar, FO-4) is sf-avatar on the row's line, only when an option carries one."
+      ]
+    },
+    {
+      "name": "cl-input",
+      "lazy": true,
+      "$comment": [
+        "The search field over the rows of appearance list (searchable, FO-4) is sf-input, filled, only when the field is searchable."
+      ]
+    },
+    {
+      "name": "cl-button",
+      "lazy": true,
+      "$comment": [
+        "«Show more» and «Retry» under the rows of a provider's pages (FO-4) are sf-button, ghost, only with a provider."
+      ]
     }
   ],
   "templates": {
@@ -346,7 +389,8 @@
     "version 1.5.1 (2026-11-16, owner decision C212 (7), focus offsets from two tokens; numbered above 1.5.0 on fix/input-choice-c165): a patch, nothing drawn differently: a ring drawn off its element stands out by --sf-focus--offset (it wrote var(--sf-px)); the ring width is read under the family name --sf-focus--width (it read the former --sf-focus-outline-width, an alias of it until 2027-01-01). Each spelling had the value of the token it now reads, so every ring stands where it stood (measured before and after on the built sheets). Settings, values, events and keys unchanged.",
     "version 1.6.2 (2026-11-17, feat/lang-file-c282; numbered above 1.6.1 on origin/fix/forms-fm2): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.6.3 (written on the branch as 1.5.2; 2026-11-17, owner decision C268; numbered above 1.5.1 on origin/fix/utilities-focus-c212): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
-    "version 1.6.4 (written on the branch as 1.6.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged."
+    "version 1.6.4 (written on the branch as 1.6.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
+    "version 1.7.0 (2026-11-17, Framework order FO-4 of the view set study, ui-control control/research/2026-11-17-view-round-1/framework-orders.md): a minor. The rows of appearance list draw an option's visual: avatar (an address or {image, text}) as sf-avatar on the row's line before the name, swatch (a CSS colour) as a circle before it -- the menu's colour row (C85) on the row's line, its hairline in outline-variant -- and scheme (a badge scheme, a static palette hue or a hex colour, read by helpers/option-badge.js as a table cell's choice) as the name itself in a tonal sf-badge, tight. searchable puts a search field (sf-input, filled, size 1) over the rows; without a provider it searches the options in hand. provider (a property) gives the options a page at a time from the host, as sf-input-lookup's provider: the first page when given, a search 200 ms after the last key, «Show more» with nextCursor, one polite status line (loading, nothing found, the error with «Retry»); the options in hand stay first. New words search-label, loading-options, options-error, nothing-found, retry, show-more. The set's table filter drew its own option rows and paging (renderFilterOption, renderFilterOptionVisual, loadEndpointFilterPage); the field renderers' filter now draws this field. Additions only: a field without the new settings and option keys draws as 1.6.5 did."
   ],
   "x-registry": {
     "reuse_mode": "whole",

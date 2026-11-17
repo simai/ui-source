@@ -905,7 +905,7 @@
       "doc": "guide/smart-components/field-renderers",
       "kind": "object",
       "loaded_by": "smart/field-renderers",
-      "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter.",
+      "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter. conditions (FO-3): a field descriptor's when {visible, required, enabled} over the values on screen -- field(field, values) answers the three, evaluate(condition, values) one condition of the grammar eq, ne, in, not_in, empty, not_empty, all, any, not. filterWindow (FO-5): open({anchor, field, value, size, placement}) shows one field's filter control in sf-popover beside any control, «Применить» then «Сбросить» (C157 (3)), and settles {action: 'apply', value}, {action: 'reset', value: null} or null; operatorLabel(operator) the operator's words.",
       "members": [
         "renderCellField",
         "renderEditField",
@@ -913,7 +913,9 @@
         "renderFilterField",
         "dateTime",
         "FILTER_RENDERERS",
-        "registry"
+        "registry",
+        "conditions",
+        "filterWindow"
       ]
     },
     {

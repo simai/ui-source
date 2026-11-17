@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 66,
-    "translated": 66,
+    "words": 81,
+    "translated": 81,
     "share": 100
   },
   "words": {
@@ -50,6 +50,21 @@
         "many": "{n} строк",
         "other": "{n} строки"
       },
+      "filterApply": "Применить",
+      "filterReset": "Сбросить",
+      "operatorAny": "Любая дата",
+      "operatorBetween": "Диапазон",
+      "operatorContains": "Содержит",
+      "operatorEq": "Точно",
+      "operatorGt": "Больше чем",
+      "operatorGte": "Больше или равно",
+      "operatorIn": "В списке",
+      "operatorLt": "Меньше чем",
+      "operatorLte": "Меньше или равно",
+      "operatorMonth": "Месяц",
+      "operatorStartsWith": "Начинается с",
+      "operatorToday": "Сегодня",
+      "operatorWeek": "Неделя",
       "type-string": "Строка",
       "variant-string-phone": "Телефон",
       "variant-string-password": "Пароль",

@@ -15,7 +15,7 @@ const sheet = read('src/smart/form/scss/_smart__form.scss');
 test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, footer, the descriptor list', () => {
   assert.equal(manifest.tag, 'sf-form');
   assert.equal(manifest.family, 'form');
-  assert.equal(manifest.version, '1.3.3'); // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.4.0'); // 1.4.0: field conditions (FO-3) // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
   assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'apply', 'labels', 'footer', 'label']);
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant']);
   assert.ok(manifest.settings.labels.values.includes('start'));
@@ -34,7 +34,7 @@ test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, foote
 });
 
 test('C182 (1), (3): the controls are the field renderers\' own, the frame is the form\'s', () => {
-  assert.match(source, /import \{propertyModes, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u);
+  assert.match(source, /import \{fieldConditions, propertyModes, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u); // 1.4.0: fieldConditions (FO-3)
   // apply instant reaches the renderers: a required yes/no is a switch there, a checkbox otherwise (C165 (4)).
   assert.match(source, /\{apply: 'instant'\}/u);
 });

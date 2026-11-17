@@ -9,6 +9,8 @@ import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
 import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
+import {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions} from "./conditions.js";
+import {filterOperatorLabel, filterWindowOpen} from "./filter-window.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -270,7 +272,69 @@ function renderDateFilterControl(field, host) {
     `;
 }
 
+// An option of a filter as sf-input-choice draws it (FO-4): the field's
+// optionRenderer picks the visual -- avatar-checkbox a picture (imageUrl, the
+// initials of avatarText), swatch the option's colour as a circle, badge the
+// name as a tonal badge in its colour or scheme.
+function choiceOption(field, option = {}) {
+    const value = option.value ?? option.id ?? option.key ?? option.label ?? option.title;
+    const label = option.label || option.title || String(value ?? '');
+    const look = field.filter?.optionRenderer;
+    const item = {value: String(value ?? ''), label, caption: option.caption || option.description || '', disabled: option.disabled === true};
+    if (look === 'avatar-checkbox') item.avatar = {image: option.imageUrl || option.avatar?.image || '', text: option.avatarText || label};
+    else if (look === 'swatch' && option.color) item.swatch = option.color;
+    else if (look === 'badge') item.scheme = option.scheme ?? option.color ?? '';
+    return item;
+}
+
+// A filter of a list of options is the Framework's choice field (FO-4):
+// sf-input-choice, appearance list, the checks of several values, with the
+// options' visuals, its own search (filter.searchable) and the host's pages
+// (filter.provider, or host.getFilterOptionsProvider(field): async (query,
+// {cursor, limit, signal}) answering {items, nextCursor?}). A host that still
+// draws its own option rows (renderFilterOption) gets the 1.13 controls.
+function renderChoiceFilterControl(field, host) {
+    const value = host.getFilterControlValue(field.key) || {};
+    const options = (Array.isArray(field.filter?.options) ? field.filter.options : (host.getVisibleFilterOptions?.(field) ?? []))
+        .map((option) => choiceOption(field, option));
+    const given = field.filter?.provider ?? host.getFilterOptionsProvider?.(field);
+    const provider = typeof given === 'function'
+        ? (query, request) => Promise.resolve(given(query, request)).then((answer) => ({
+            ...answer,
+            items: (Array.isArray(answer?.items) ? answer.items : []).map((option) => choiceOption(field, option)),
+        }))
+        : null;
+    // One wrapper per provider, so the field asks again only when the host's
+    // provider changes.
+    const pages = provider ? choiceProvider(given, provider) : null;
+    return html`
+        <sf-input-choice
+                appearance="list"
+                flow="column"
+                multiple
+                aria-label=${field.label || field.key || nothing}
+                ?searchable=${field.filter?.searchable === true}
+                .items=${options}
+                .provider=${pages}
+                .value=${Array.isArray(value.values) ? value.values.map(String) : []}
+                @change=${(event) => {
+                    host.patchTempFilterValue(field.key, {
+                        values: Array.isArray(event.detail?.values) ? [...event.detail.values] : [],
+                        operator: value.operator || field.filter?.defaultOperator || 'in',
+                    });
+                }}
+        ></sf-input-choice>
+    `;
+}
+
+const CHOICE_PROVIDERS = new WeakMap();
+function choiceProvider(given, wrapped) {
+    if (!CHOICE_PROVIDERS.has(given)) CHOICE_PROVIDERS.set(given, wrapped);
+    return CHOICE_PROVIDERS.get(given);
+}
+
 function renderMultiSelectFilterControl(field, host) {
+    if (typeof host?.renderFilterOption !== 'function') return renderChoiceFilterControl(field, host);
     const endpointPage = host.getEndpointFilterPage(field);
     const options = host.getVisibleFilterOptions(field);
     const value = host.getFilterControlValue(field.key);
@@ -2604,6 +2668,13 @@ export function propertyModes(type) {
 }
 
 export {PROPERTY_TYPES};
+export {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions};
+
+/** A filter field's window opened from any control (FO-5, filter-window.js): settles {action: 'apply' | 'reset', value} or null. */
+export function openFilterWindow(options = {}) {
+    return filterWindowOpen({...options, renderControl: renderFilterField});
+}
+export {filterOperatorLabel};
 
 export function renderViewField(field = {}, value, host, options = {}) {
     const asked = field.propertyType || field.type || field.dataType;
@@ -2644,6 +2715,12 @@ if (typeof window !== 'undefined') {
         // normalizeTime(text); and a time of day's: splitTime(value),
         // composeTime(stored, text).
         dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime, splitTime, composeTime},
+        // A field's when (FO-3): fieldConditions(field, values) answers
+        // {visible, required, enabled} over the values on screen.
+        conditions: {evaluate: evaluateCondition, field: fieldConditions, fields: conditionFields, ops: CONDITION_OPS},
+        // A filter field's window from any control (FO-5): open({anchor,
+        // field, value, size, placement}) settles {action, value} or null.
+        filterWindow: {open: openFilterWindow, operatorLabel: filterOperatorLabel},
         // The universal properties, each with the modes the set draws for it.
         registry: PROPERTY_TYPES.map((entry) => ({...entry, modes: propertyModes(entry.type)})),
     };
