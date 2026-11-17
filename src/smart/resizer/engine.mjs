@@ -31,6 +31,11 @@
 //   } -- or null, when this handle does not resize now.
 //   options.text(share, folded, handle): the words of the value
 //                     (aria-valuetext), «27 %»; without it, none.
+//   options.widthText(width, folded, handle): the words of an edge without
+//                     an upper limit (max not finite), whose value is its
+//                     width in pixels, «244 px»; without it, none. text is
+//                     never asked for such an edge: its share would be a
+//                     width, said as a percentage.
 //
 // Edges another component draws (options.handles) leave Enter and Escape to
 // it: a table's column edge goes back to its header on either (C158 (5)).
@@ -46,12 +51,30 @@ function share(session, width) {
   return Math.round(Math.min(100, Math.max(0, ((width - min) / (max - min)) * 100)));
 }
 
-function setValue(handle, session, width = session.measure(), text = null) {
+// An edge without an upper limit (max Infinity, or not a number: a column
+// with no maxWidth) has no way from min to max: its share was always 0
+// (ui-view, 2026-11-17). Its value is then the width in pixels from min, and
+// aria-valuemax is left out, as WAI-ARIA allows when the maximum is unknown;
+// its words are widthText's («244 px»), never the share's «%».
+function setValue(handle, session, width = session.measure(), text = null, widthText = null) {
+  const {min, max} = session.limits();
+  const folded = Boolean(session.folded?.());
+  if (!Number.isFinite(max)) {
+    const floor = Number.isFinite(min) ? Math.max(0, Math.round(min)) : 0;
+    const now = folded ? 0 : Math.max(floor, Math.round(Number(width) || 0));
+    handle.setAttribute('aria-valuemin', String(folded ? 0 : floor));
+    handle.removeAttribute('aria-valuemax');
+    handle.setAttribute('aria-valuenow', String(now));
+    const words = widthText?.(now, folded, handle);
+    if (words) handle.setAttribute('aria-valuetext', words);
+    else handle.removeAttribute('aria-valuetext');
+    return;
+  }
   const now = share(session, width);
   handle.setAttribute('aria-valuemin', '0');
   handle.setAttribute('aria-valuemax', '100');
   handle.setAttribute('aria-valuenow', String(now));
-  const words = text?.(now, Boolean(session.folded?.()), handle);
+  const words = text?.(now, folded, handle);
   if (words) handle.setAttribute('aria-valuetext', words);
   else handle.removeAttribute('aria-valuetext');
 }
@@ -66,7 +89,8 @@ export function attachResizer(root, options = {}) {
   const owns = (handle) => handle && (handle === root || root.contains(handle));
   const sessionOf = (handle) => (owns(handle) ? options.session?.(handle) ?? null : null);
   const text = options.text ?? null;
-  const say = (handle, session, width) => setValue(handle, session, width, text);
+  const widthText = options.widthText ?? null;
+  const say = (handle, session, width) => setValue(handle, session, width, text, widthText);
   let drag = null;
 
   const finish = (commit) => {
@@ -174,7 +198,9 @@ export function attachResizer(root, options = {}) {
     else if (event.key === 'PageUp') next = now + step * 4;
     else if (event.key === 'PageDown') next = now - step * 4;
     else if (event.key === 'Home') next = min;
-    else if (event.key === 'End') next = max;
+    // End on an edge without an upper limit has nowhere to go: it would
+    // write an infinite width. It is left to the page.
+    else if (event.key === 'End') next = Number.isFinite(max) ? max : null;
     if (next === null) return;
     event.preventDefault();
     event.stopPropagation();
