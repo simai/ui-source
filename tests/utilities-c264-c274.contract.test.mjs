@@ -205,14 +205,16 @@ test('C272: the skew sheet is retired until 2027-01-01 and noted once', () => {
 test('C274: the short text-role names are dated aliases of the roles and the C212 text utilities', () => {
   const {found, entry} = record('class-c274-text-role-short-names');
   const expected = {text: 'text-1', 'text-medium': 'text-1', 'text-small': 'text-1/2', 'text-large': 'text-2',
-    label: 'text-1/3', 'label-medium': 'text-1/3', 'label-small': 'text-1/4', 'label-large': 'sf-label-large'};
+    label: 'text-1/3', 'label-medium': 'text-1/3', 'label-small': 'text-1/4', 'label-large': 'sf-label-large',
+    // GB10: the body-text names are the same rules as text* (C274 by analogy).
+    'body-text': 'text-1', 'body-text-medium': 'text-1', 'body-text-small': 'text-1/2', 'body-text-large': 'text-2'};
   for (let step = 1; step <= 6; step++) {
     expected[`d${step}`] = `sf-display-${step}`;
     expected[`display${step}`] = `sf-display-${step}`;
   }
   assert.deepEqual(found.names, expected);
   for (const [from, name] of Object.entries(expected)) assert.equal(to(from), name, from);
-  for (const name of ['sf-display-1', 'sf-body-large', 'sf-label-small', 'text-1', 'text-2', 'body-text']) {
+  for (const name of ['sf-display-1', 'sf-body-large', 'sf-label-small', 'text-1', 'text-2', 'sf-body-medium']) {
     assert.equal(aliases.retiredClassName(name), null, `${name} stays`);
   }
   // sf-upgrade reports them only inside a class attribute: <label> and the word text elsewhere are not them.

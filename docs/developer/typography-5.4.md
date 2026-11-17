@@ -71,7 +71,7 @@ unchanged.
 ## Selectors
 
 Native H1-H6, `.sf-h-*`, Display selectors, `.label-*` and
-`.body-text-small|medium|large` resolve through their semantic role variables.
+`.body-text-small|medium|large` resolve through their semantic role variables; like `.text-*` they are former names until 2027-01-01 (C274): write `text-1/2`, `text-1`, `text-2`.
 The existing `.text*` selectors remain aliases for Body Text.
 
 ## Text utilities: one way per job (C212 (3))

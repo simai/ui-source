@@ -308,7 +308,8 @@
   // .display1-6 beside .sf-display-N in figma_typography_styles) draw only
   // the size and the line of a role. .label, .label-*, .text and
   // .text-small/-medium/-large are former names until 2027-01-01 (owner
-  // decision C274, 2026-11-17): they keep drawing, and the Loader notes them
+  // decision C274, 2026-11-17); .body-text and .body-text-small/-medium/-large,
+  // the same rules under a longer name, with them: they keep drawing, and the Loader notes them
   // in SF.deprecations (src/core/js/retired-classes.table.js, journal
   // class-c274-text-role-short-names). Write the role (.sf-body-*,
   // .sf-label-*, .sf-display-N) or the text utilities of C212 (text-N).

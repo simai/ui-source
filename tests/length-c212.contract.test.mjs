@@ -129,19 +129,19 @@ test('C212 (4): a raw spacing rung names the nearest space step (desktop, defaul
     'm-c6': 'm-4', 'm-d0': 'm-5', 'm-d2': 'm-6', 'm-d6': 'm-7', 'm-e0': 'm-8', 'm-i9': 'm-8',
     'm-b4': 'm-1', 'm-a2': 'm-1/4', // a tie takes the larger step
     '-m-top-b6': '-m-top-1', 'md:p-inline-end-c2': 'md:p-inline-end-3', 'p-b6': 'p-1',
-    'scroll-mt-b6': 'scroll-mt-1', 'scroll-m-inline-start-c0': 'scroll-m-inline-start-2',
-    'scroll-p-inline-start-b6': 'scroll-pl-1', 'scroll-p-inline-end-b6': 'scroll-pr-1', 'scroll-pb-b6': 'scroll-pb-1',
+    'scroll-mt-b6': 'scroll-m-top-1', 'scroll-m-inline-start-c0': 'scroll-m-inline-start-2',
+    'scroll-p-inline-start-b6': 'scroll-p-inline-start-1', 'scroll-p-inline-end-b6': 'scroll-p-inline-end-1', 'scroll-pb-b6': 'scroll-p-bottom-1', // C266 names, not the short letters
     '-scroll-m-b6': '', '-scroll-pt-a4': '',
   };
   for (const [name, hint] of Object.entries(cases)) assert.equal(to(name), hint, name);
   // Every step a hint names is a class of the step sheet.
   const steps = new Set(Object.values(record('class-c212-length-nearest').patterns.find(({values}) => values).values[2]));
   for (const step of steps) {
-    for (const [folder, name] of [['margin', `m-${step}`], ['margin', `-m-top-${step}`], ['padding', `p-inline-start-${step}`], ['scroll-margin', `scroll-mt-${step}`], ['scroll-padding', `scroll-pl-${step}`]]) {
+    for (const [folder, name] of [['margin', `m-${step}`], ['margin', `-m-top-${step}`], ['padding', `p-inline-start-${step}`], ['scroll-margin', `scroll-m-top-${step}`], ['scroll-padding', `scroll-p-inline-start-${step}`]]) {
       assert.ok(ruleOf(folder).test(name), `${name} is a step class`);
     }
   }
-  for (const kept of ['m-1', 'p-top-1/2', 'scroll-mt-2', 'm-auto', 'h-d0', 'top-b6']) assert.equal(aliases.retiredClassName(kept), null, kept);
+  for (const kept of ['m-1', 'p-top-1/2', 'scroll-m-top-2', 'm-auto', 'h-d0', 'top-b6']) assert.equal(aliases.retiredClassName(kept), null, kept);
 });
 
 test('C212 (4): the Loader notes the hint before the retired sheet, once', () => {

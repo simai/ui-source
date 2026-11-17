@@ -612,7 +612,7 @@ class Modal extends ComponentObserver {
         closeButton.setAttribute('aria-label', pageText(UNTITLED, 'close', closeButton.isConnected ? closeButton : document.documentElement, 'sf-modal'));
         closeButton.setAttribute('data-sf-modal-close', this.modalId);
         closeButton.innerHTML = '            <span\n' +
-            '              class="sf-close sf-close--size-1/3 flex content-main-center items-center pointer-event-none"\n' +
+            '              class="sf-close sf-close--size-1/3 flex content-main-center items-center pointer-events-none"\n' +
             '              aria-hidden="true"\n' +
             '            >\n' +
             '              <span class="sf-close-icon"></span>\n' +

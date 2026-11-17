@@ -252,7 +252,7 @@ export default {
       "component": "utility",
       "since": "2026-11-16",
       "remove_after": "2027-01-01",
-      "note": "Lengths with no exact twin in the system steps: they keep drawing what they drew until remove_after, and the name to write is the nearest, which looks different. w-1 ... w-99 (percent) -> the nearest fraction in lowest terms (w-33 -> w-1/3). space-x-N / space-y-N (margins on every child but the first) -> gap-x-N / gap-y-N on a flex or grid parent; space-x-reverse and space-y-reverse go with them (a gap needs no reverse). The raw rungs a0 ... i9 of margin-ext, padding-ext, scroll-margin-ext and scroll-padding-ext (retired by C187 (2)) -> the space step nearest to the rung on a desktop at the default root size (m-b6 -> m-1; a step is 4 ... 80 and follows the device, a rung does not); scroll-p-inline-start/-end -> scroll-pl/-pr; a negative scroll rung has no step. basis-1 ... basis-99 (percent, flex-basis-ext) -> the nearest fraction in lowest terms, as w-N (basis-33 -> basis-1/3).",
+      "note": "Lengths with no exact twin in the system steps: they keep drawing what they drew until remove_after, and the name to write is the nearest, which looks different. w-1 ... w-99 (percent) -> the nearest fraction in lowest terms (w-33 -> w-1/3). space-x-N / space-y-N (margins on every child but the first) -> gap-x-N / gap-y-N on a flex or grid parent; space-x-reverse and space-y-reverse go with them (a gap needs no reverse). The raw rungs a0 ... i9 of margin-ext, padding-ext, scroll-margin-ext and scroll-padding-ext (retired by C187 (2)) -> the space step nearest to the rung on a desktop at the default root size (m-b6 -> m-1; a step is 4 ... 80 and follows the device, a rung does not); the scroll rungs name the C266 sides (scroll-mt-b6 -> scroll-m-top-1, scroll-p-inline-start-b6 -> scroll-p-inline-start-1); a negative scroll rung has no step. basis-1 ... basis-99 (percent, flex-basis-ext) -> the nearest fraction in lowest terms, as w-N (basis-33 -> basis-1/3).",
       "names": {
         "w-1": "w-1/12",
         "w-2": "w-1/12",
@@ -458,8 +458,10 @@ export default {
           "to": "$1-$2",
           "values": {
             "1": {
-              "scroll-p-inline-start": "scroll-pl",
-              "scroll-p-inline-end": "scroll-pr"
+              "scroll-mt": "scroll-m-top",
+              "scroll-mb": "scroll-m-bottom",
+              "scroll-pt": "scroll-p-top",
+              "scroll-pb": "scroll-p-bottom"
             },
             "2": {
               "a0": "0",
@@ -1638,7 +1640,7 @@ export default {
       "component": "utility",
       "since": "2026-11-17",
       "remove_after": "2027-01-01",
-      "note": "The text roles are written .sf-display-N, .sf-body-*, .sf-label-*, or with the text utilities of C212 (text-N) (C274). .d1-6 and .display1-6 are .sf-display-N under another name; .text, .text-small, .text-medium, .text-large, .label, .label-small, .label-medium and .label-large draw only the size and the line of a role, without its family and weight. They keep drawing until remove_after; the name to write draws the same (text-N, sf-display-N), except label-large, which has no text step: its role .sf-label-large also sets the family and the regular weight.",
+      "note": "The text roles are written .sf-display-N, .sf-body-*, .sf-label-*, or with the text utilities of C212 (text-N) (C274). .d1-6 and .display1-6 are .sf-display-N under another name; .text, .text-small, .text-medium, .text-large, .label, .label-small, .label-medium and .label-large draw only the size and the line of a role, without its family and weight; .body-text, .body-text-small, .body-text-medium and .body-text-large are the same rules as .text, .text-small, .text-medium and .text-large under a longer name. They keep drawing until remove_after; the name to write draws the same (text-N, sf-display-N), except label-large, which has no text step: its role .sf-label-large also sets the family and the regular weight.",
       "names": {
         "d1": "sf-display-1",
         "display1": "sf-display-1",
@@ -1659,7 +1661,11 @@ export default {
         "label": "text-1/3",
         "label-medium": "text-1/3",
         "label-small": "text-1/4",
-        "label-large": "sf-label-large"
+        "label-large": "sf-label-large",
+        "body-text": "text-1",
+        "body-text-medium": "text-1",
+        "body-text-small": "text-1/2",
+        "body-text-large": "text-2"
       }
     },
     {

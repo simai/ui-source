@@ -477,11 +477,11 @@ function createUploadProgressItem(item, owner = null) {
     retry.className = 'sf-button sf-button--size-1 sf-button--ghost sf-button--link sf-button--primary flex items-cross-center';
     retry.dataset.action = 'retry';
     const retryIcon = document.createElement('i');
-    retryIcon.className = 'sf-icon pointer-event-none';
+    retryIcon.className = 'sf-icon pointer-events-none';
     retryIcon.setAttribute('aria-hidden', 'true');
     retryIcon.textContent = 'refresh';
     const retryText = document.createElement('span');
-    retryText.className = 'sf-button-text-container text-center pointer-event-none';
+    retryText.className = 'sf-button-text-container text-center pointer-events-none';
     retryText.textContent = row.retryText;
     retry.append(retryIcon, retryText);
     retryHost.append(retry);

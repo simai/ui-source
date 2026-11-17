@@ -17843,7 +17843,7 @@
       "recorded_on": "2026-11-17",
       "stage": "compat",
       "kind": "class",
-      "summary": "Owner decision C274: the documentation teaches the text roles .sf-display-N, .sf-body-*, .sf-label-* and the text utilities of C212. The short names .d1-.d6, .display1-.display6, .text, .text-small, .text-medium, .text-large, .label, .label-small, .label-medium and .label-large keep drawing until remove_after, and the Loader notes each once in SF.deprecations. They match only inside a class attribute: the same words are elements and attributes elsewhere (<label>, text).",
+      "summary": "Owner decision C274: the documentation teaches the text roles .sf-display-N, .sf-body-*, .sf-label-* and the text utilities of C212. The short names .d1-.d6, .display1-.display6, .text, .text-small, .text-medium, .text-large, .label, .label-small, .label-medium, .label-large and .body-text, .body-text-small, .body-text-medium, .body-text-large (the same rules as .text*, GB10) keep drawing until remove_after, and the Loader notes each once in SF.deprecations. They match only inside a class attribute: the same words are elements and attributes elsewhere (<label>, text).",
       "items": [
         {
           "component": "utility",
@@ -17964,12 +17964,36 @@
           "from": "label-large",
           "to": "sf-label-large",
           "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])label-large(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "body-text",
+          "to": "text-1",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])body-text(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "body-text-medium",
+          "to": "text-1",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])body-text-medium(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "body-text-small",
+          "to": "text-1/2",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])body-text-small(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "body-text-large",
+          "to": "text-2",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])body-text-large(?![\\w-])"
         }
       ],
       "deprecated_on": "2026-11-17",
       "remove_after": "2027-01-01",
       "rewrite": "manual",
-      "manual": "Write the role or the C212 text utility: d1 / display1 -> sf-display-1 (same look); text, text-medium -> text-1; text-small -> text-1/2; text-large -> text-2; label, label-medium -> text-1/3; label-small -> text-1/4 (same size and line); label-large -> sf-label-large (also sets the family and the regular weight). Where the family and weight of the role are wanted, write .sf-body-* / .sf-label-*.",
+      "manual": "Write the role or the C212 text utility: d1 / display1 -> sf-display-1 (same look); text, text-medium -> text-1; text-small -> text-1/2; text-large -> text-2; body-text, body-text-medium -> text-1; body-text-small -> text-1/2; body-text-large -> text-2; label, label-medium -> text-1/3; label-small -> text-1/4 (same size and line); label-large -> sf-label-large (also sets the family and the regular weight). Where the family and weight of the role are wanted, write .sf-body-* / .sf-label-*.",
       "examples": {
         "before": "<p class=\"text-large\">…</p><h1 class=\"d1\">…</h1>",
         "after": "<p class=\"text-2\">…</p><h1 class=\"sf-display-1\">…</h1>"
