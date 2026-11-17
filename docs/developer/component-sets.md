@@ -1,9 +1,10 @@
 # Component sets
 
-Status: draft standard `simai.component-set` 1.3.0
-(`contracts/standards/simai.component-set/1.3.0/standard.json`; 1.0.0, 1.1.0,
-1.1.1 and 1.2.0 are kept under `contracts/standards/history`; 1.1.1 changed no
-requirement of 1.1.0; 1.2.0 adds pair ranges; 1.3.0 adds the exports list). The Loader
+Status: draft standard `simai.component-set` 1.3.1
+(`contracts/standards/simai.component-set/1.3.1/standard.json`; 1.0.0, 1.1.0,
+1.1.1, 1.2.0 and 1.3.0 are kept under `contracts/standards/history`; 1.1.1 changed no
+requirement of 1.1.0; 1.2.0 adds pair ranges; 1.3.0 adds the exports list; 1.3.1
+lets `docs` be empty or absent while a set has no published documentation page). The Loader
 follows it since `core.runtime` 1.25.0 and the builder has a generic set
 release route; the package references do not follow it yet. See "What is not
 built yet" below.
@@ -77,6 +78,10 @@ The fields:
   - The Loader never loads a required set on its own: the page declares it.
 - **`families`**: the name families the set owns. They must match the
   registry.
+- **`docs`**: the set's documentation site, `https://<set>.simai.io/`. Since
+  1.3.1 (passport form 1.2.0, index form 1.3.0) it is empty or left out while
+  the set has no published documentation page yet; a consumer then links to
+  nothing rather than to an address that does not answer.
 - **`components`**: every element the set holds, with:
   - its rule (`cl-<folder>`);
   - its folder;

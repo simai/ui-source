@@ -16,7 +16,7 @@ const root = new URL('../', import.meta.url);
 const read = (relative) => readFileSync(new URL(relative, root));
 const json = (relative) => JSON.parse(read(relative).toString('utf8'));
 
-const STANDARD = 'contracts/standards/simai.component-set/1.3.0/standard.json';
+const STANDARD = 'contracts/standards/simai.component-set/1.3.1/standard.json';
 const PASSPORT_SCHEMA = 'contracts/schema/component-set.v1.schema.json';
 const REGISTRY_SCHEMA = 'contracts/schema/name-registry.v1.schema.json';
 const REGISTRY = 'contracts/registry/names.json';
@@ -95,7 +95,7 @@ test('the standard pins the passport and registry forms as frozen copies of the 
 });
 
 test('the standards index lists the set standard', () => {
-  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.3\.0 \|/u);
+  assert.match(read('contracts/standards/README.md').toString('utf8'), /\| `simai\.component-set` \| 1\.3\.1 \|/u);
 });
 
 test('a set passport takes the pinned form and its own rules', () => {
@@ -120,6 +120,32 @@ test('a set passport takes the pinned form and its own rules', () => {
   assert.notDeepEqual(broken((value) => { value.package_reference = 'ui-source'; return value; }), [], 'an unknown key');
 });
 
+// Standard 1.3.1 (dispatcher 2026-11-17, order E12 of the view round): a set
+// with no published documentation page yet leaves docs empty or out, in the
+// passport and in its index row; an address that is not one is still refused.
+test('a set without a documentation page yet leaves docs empty or out', () => {
+  const passportSchema = json(PASSPORT_SCHEMA);
+  const indexSchema = json(INDEX_SCHEMA);
+  const passport = json(FIXTURE);
+  const index = json(INDEX_FIXTURE);
+  assert.equal(passportSchema['x-simai-version'], '1.2.0');
+  assert.ok(!passportSchema.required.includes('docs'), 'docs is not required in the passport');
+  assert.ok(!indexSchema.properties.sets.items.required.includes('docs'), 'docs is not required in an index set row');
+  const passportWith = (change) => validate(passportSchema, change(structuredClone(passport)));
+  const indexWith = (change) => validate(indexSchema, change(structuredClone(index)));
+  assert.deepEqual(passportWith((value) => { value.docs = ''; return value; }), [], 'an empty docs');
+  assert.deepEqual(passportWith((value) => { delete value.docs; return value; }), [], 'no docs');
+  assert.deepEqual(indexWith((value) => { value.sets[0].docs = ''; return value; }), [], 'an empty docs in the index');
+  assert.deepEqual(indexWith((value) => { delete value.sets[0].docs; return value; }), [], 'no docs in the index');
+  for (const wrong of [' ', 'view.simai.io', 'http://view.simai.io/', 'https://']) {
+    assert.notDeepEqual(passportWith((value) => { value.docs = wrong; return value; }), [], `docs ${JSON.stringify(wrong)}`);
+    assert.notDeepEqual(indexWith((value) => { value.sets[0].docs = wrong; return value; }), [], `index docs ${JSON.stringify(wrong)}`);
+  }
+  const standard = json(STANDARD);
+  assert.match(standard.requirements.find(({id}) => id === 'passport-form').text, /empty or absent/u);
+  assert.match(standard.requirements.find(({id}) => id === 'one-site-per-set').text, /empty or absent/u);
+});
+
 // Standard 1.1.0 (owner decision 2026-11-07, set pair receipts): a release row
 // may list the further pairs its unchanged release was re-receipted over. The
 // row's facts never change; pairs only grows, never names the row's own pair
@@ -127,7 +153,7 @@ test('a set passport takes the pinned form and its own rules', () => {
 test('the compatibility index takes its pinned form, pairs included', () => {
   const schema = json(INDEX_SCHEMA);
   const index = json(INDEX_FIXTURE);
-  assert.equal(schema['x-simai-version'], '1.2.0');
+  assert.equal(schema['x-simai-version'], '1.3.0');
   assert.deepEqual(validate(schema, index), []);
   const listed = index.releases.filter((row) => row.pairs);
   assert.ok(listed.length > 0, 'the fixture holds a row with pairs');
@@ -245,12 +271,12 @@ test('a set passport agrees with the registry', () => {
 // (tests/browser/component-sets.browser.mjs runs the kit on a real page).
 test('a set lists its exports in the passport, and the kit holds them', () => {
   const standard = json(STANDARD);
-  assert.equal(standard.version, '1.3.0');
+  assert.match(standard.version, /^1\.3\.\d+$/u, 'exports-listed since 1.3.0');
   assert.ok(existsSync(new URL('contracts/standards/history/simai.component-set/1.2.0/standard.json', root)), '1.2.0 keeps its bytes');
   const requirement = standard.requirements.find(({id}) => id === 'exports-listed');
   assert.ok(requirement && requirement.level === 'must', 'exports-listed');
   const schema = json(PASSPORT_SCHEMA);
-  assert.equal(schema['x-simai-version'], '1.1.0');
+  assert.ok(['1.1.0', '1.2.0'].includes(schema['x-simai-version']), 'the passport form with exports');
   assert.ok(!schema.required.includes('exports'), 'exports is optional');
   const passport = json(FIXTURE);
   assert.ok(passport.exports.length > 0, 'the fixture lists exports');

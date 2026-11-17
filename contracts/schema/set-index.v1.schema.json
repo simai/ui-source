@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/schema/framework/set-index.v1.json",
-  "x-simai-version": "1.2.0",
+  "x-simai-version": "1.3.0",
   "title": "SIMAI Framework component set compatibility index",
-  "description": "The one compatibility index of every component set (standard simai.component-set, one-compatibility-index): one row per set release, with the npm version, the SIMAI Framework it was built over and the lowest core.runtime it needs, the sets it requires and the digest of its receipt. The Loader reads it to place a set a page names without a base: the newest release of the set whose core_runtime this Core meets, served from @simai-studio/<set>@<version>/dist/smart. Published as index.json of the npm package @simai-studio/sets (the Loader reads https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json unless SF_BOOT_CONFIG.setIndex says otherwise); written only by the set release route (ui-builder scripts/set-index.py), never by hand. A row is never removed and its facts never change: a fix is a new release and a new row. Since 1.1.0 a row may carry pairs, the further free pairs the same release, unchanged, was re-receipted over (ui-builder scripts/pair-receipt.py); pairs only grows. Since 1.2.0 a row may carry range, the digests of its pair range (ui-builder scripts/set-pair-range.py): the SIMAI Framework interface its released bytes take from the free pair, by which a consumer that pins exact pairs may accept the release over another pair that still offers it; a row's range is set once. The Loader chooses by core_runtime and reads neither pairs nor range.",
+  "description": "The one compatibility index of every component set (standard simai.component-set, one-compatibility-index): one row per set release, with the npm version, the SIMAI Framework it was built over and the lowest core.runtime it needs, the sets it requires and the digest of its receipt. The Loader reads it to place a set a page names without a base: the newest release of the set whose core_runtime this Core meets, served from @simai-studio/<set>@<version>/dist/smart. Published as index.json of the npm package @simai-studio/sets (the Loader reads https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json unless SF_BOOT_CONFIG.setIndex says otherwise); written only by the set release route (ui-builder scripts/set-index.py), never by hand. A row is never removed and its facts never change: a fix is a new release and a new row. Since 1.1.0 a row may carry pairs, the further free pairs the same release, unchanged, was re-receipted over (ui-builder scripts/pair-receipt.py); pairs only grows. Since 1.2.0 a row may carry range, the digests of its pair range (ui-builder scripts/set-pair-range.py): the SIMAI Framework interface its released bytes take from the free pair, by which a consumer that pins exact pairs may accept the release over another pair that still offers it; a row's range is set once. Since 1.3.0 a set's docs may be empty or absent, as its passport's (component-set.v1 1.2.0): no documentation page yet. The Loader chooses by core_runtime and reads neither pairs nor range.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema", "schema_version", "sets", "releases"],
@@ -17,7 +17,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "title", "repository", "npm", "licence", "docs"],
+        "required": ["id", "title", "repository", "npm", "licence"],
         "properties": {
           "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
           "title": {"type": "string", "minLength": 1},
@@ -32,7 +32,7 @@
               "spdx": {"type": "string", "minLength": 1}
             }
           },
-          "docs": {"type": "string", "pattern": "^https://[a-z0-9.-]+(/.*)?$"}
+          "docs": {"type": "string", "pattern": "^(|https://[a-z0-9.-]+(/.*)?)$", "description": "The set's documentation site, as its passport names it; since 1.3.0 empty or absent while the set has no published documentation page."}
         }
       }
     },
