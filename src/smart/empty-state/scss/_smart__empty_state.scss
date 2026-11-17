@@ -30,7 +30,12 @@ sf-empty-state {
    outline's, heading-level): 1/2 rung 1 (heading-6), 1 rung 2 (heading-4),
    2 rung 3 (heading-3, whose size is that rung, so a compact region keeps
    it, C44). Set on the title, where the placeholder sets the level's rung.
-   The sentence takes the text step of the size. */
+   The sentence takes the text step of the size. At size 1/2 the title's
+   line is the text ladder's for its size, the card title's line: 16/24 on a
+   desktop, 14/20 on a phone (Pro chat+mail pass, msg-bdf82830: the heading
+   line 18/16 set a 16/18 and 14/16 title over 14/20 sentences, off the
+   ladder the rows around it stand on). The size stays heading-6's (C21),
+   and neither moves with density (C44). */
 .sf-empty-state .sf-empty-state-title {
   --sf-placeholder--title-size: var(--sf-heading-4--size);
   --sf-placeholder--title-height: var(--sf-heading-4--height);
@@ -43,7 +48,7 @@ sf-empty-state {
 
 .sf-empty-state--size-1-2 .sf-empty-state-title {
   --sf-placeholder--title-size: var(--sf-heading-6--size);
-  --sf-placeholder--title-height: var(--sf-heading-6--height);
+  --sf-placeholder--title-height: var(--sf-title--height-card);
 }
 
 .sf-empty-state.sf-empty-state--size-1 {

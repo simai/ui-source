@@ -59,7 +59,7 @@ test('RG-NV 7, 8, 9: a page number is the ghost page button, no plate, as wide a
   assert.match(css, /--sf-page-number--background-color: var\(--sf-pagination-current-background-color, var\(--sf-primary-container\)\);\n\s+--sf-page-number--color: var\(--sf-pagination-current-color, var\(--sf-on-primary-container\)\);/u);
   assert.match(css, /--sf-page-number--background-color: var\(--sf-place--control-hover, var\(--sf-surface-container-hover\)\);/u);
   assert.match(css, /inline-size: auto;\n\s+min-inline-size: max\(/u);
-  assert.equal((await json('src/component/pagination/passport.json')).version, '1.6.0'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
+  assert.equal((await json('src/component/pagination/passport.json')).version, '1.6.2'); // group build 9: 1.5.0 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9)
 });
 
 test('RG-NV 10, 11: the row size reaches the arrows; the count row keeps the icon ink; a Smart number never breaks', async () => {

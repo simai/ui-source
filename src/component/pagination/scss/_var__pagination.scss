@@ -1,14 +1,3 @@
-@layer sf.components {
-
-            /*
-            * _var__component_name.scss
-            * 
-            * SCSS file containing variables for component styling.
-            * 
-            * Used to define default parameters (color, size, etc.)
-            * that can be overridden in other parts of the project.
-            * 
-            * Example usage:
-            * --sf-icon--fill: 0; // Fill for icon
-            */
-}
+// _var__pagination.scss: the pagination's own variables. It declares none
+// today; its public variables stand on the component's rules
+// (_css__pagination.scss, _css__page_number.scss), inside @layer sf.components.

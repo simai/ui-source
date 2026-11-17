@@ -275,16 +275,23 @@ test('SM-PN-1, EX-3: a numbers place of either twin shrinks to square when the r
   };
   // One place rule for the Smart slot and the plain sf-page-number item.
   const place = rule('.sf-pagination .sf-pagination-item.sf-pagination-slot,\n.sf-pagination .sf-pagination-item:has(> .sf-page-number)');
-  assert.match(place, /flex: 0 1 max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits\) \* 1ch \+ 2 \* var\(--sf-pagination--space-x\)\)\);/u);
-  assert.match(place, /min-inline-size: var\(--sf-pagination--control-height\);/u);
+  assert.match(place, /flex: 0 1 max\(var\(--sf-pagination--control-height\), calc\(var\(--sf-pagination--digits, 2\) \* 1ch \+ 2 \* var\(--sf-pagination--space-x\)\)\);/u);
+  // The floor is the place's own number (RG-NV 9, defects-d11): square for one
+  // or two digits, as wide as «10240» for five; the digits are the row's.
+  assert.match(place, /min-inline-size: min-content;/u);
+  assert.doesNotMatch(place, /--sf-pagination--digits:/u);
   // The numbers' own padding is the label's, a step of the role table, so the place can shrink.
   assert.match(sheet, /\.sf-pagination \{\s*--sf-pagination--place-x: var\(--sf-ui-1--text-space-x\);/u);
   assert.match(sheet, /\.sf-pagination\.sf-pagination--size-1\\\/2 \{\s*--sf-pagination--place-x: var\(--sf-ui-1\\\/2--text-space-x\);/u);
   const smart = rule('.sf-pagination .sf-pagination-slot > .sf-pagination-page');
   assert.match(smart, /--sf-button--padding-inline-start: var\(--sf-pagination--place-x\);/u);
+  assert.match(smart, /min-inline-size: var\(--sf-pagination--control-height\);/u);
   const plain = rule('.sf-pagination .sf-pagination-item > .sf-page-number');
   assert.match(plain, /--sf-page-number--space-x: var\(--sf-pagination--place-x\);/u);
-  assert.match(plain, /inline-size: 100%;\s*min-inline-size: var\(--sf-pagination--control-height\);/u);
+  // Square at least by RG-NV 9's own rule (_css__page_number.scss): the item
+  // hands it the control height as the width, no second min-inline-size.
+  assert.match(plain, /--sf-page-number--width: var\(--sf-pagination--control-height\);\s*inline-size: 100%;/u);
+  assert.doesNotMatch(plain, /min-inline-size/u);
   // The item's flex: 0 0 auto stays below the place rule in specificity (0,2,0 against 0,3,0).
   assert.match(sheet, /\.sf-pagination \.sf-pagination-item \{\s*display: flex;\s*flex: 0 0 auto;/u);
   // No screen query (C181): the row shrinks in any narrow box.
@@ -292,7 +299,7 @@ test('SM-PN-1, EX-3: a numbers place of either twin shrinks to square when the r
   // The arithmetic at the phone step (control 36, gap 8): Smart two arrows and
   // five places, the class long range seven places.
   assert.ok(2 * 36 + 5 * 36 + 6 * 8 <= 326 && 7 * 36 + 6 * 8 <= 326);
-  assert.equal(json('src/component/pagination/passport.json').version, '1.6.0'); // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch
+  assert.equal(json('src/component/pagination/passport.json').version, '1.6.2'); // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch // defects-d11: component.pagination 1.6.2 above 1.6.1 on fix/c178-findings: a place never below its own number (RG-NV 9)
 });
 
 // ---- SM-DL-2: the class row puts the size under the name on a phone --------
