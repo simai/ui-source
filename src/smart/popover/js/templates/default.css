@@ -52,8 +52,14 @@
     --sf-on-elevation-3--variant: var(--sf-on-surface-popup-variant);
   }
 
+  /* Closed, the surface is not drawn whatever its own classes say: a page
+     content node with a display utility of its own (flex, grid) showed
+     while closed, since a page's or a utility's rule outranks this layer
+     (the FO component study, ui-control
+     control/research/2026-11-18-framework-parts-fo). An important
+     declaration in a layer outranks every normal one, layered or not. */
   sf-popover[data-open='false'] > [slot='content'] {
-    display: none;
+    display: none !important;
   }
 
   sf-popover[data-placement='bottom-end'] > [slot='content'] {

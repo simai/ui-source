@@ -477,7 +477,7 @@ test('FO-5: the filter window -- a dialog popover from any anchor, «Приме�
   const apply = source.indexOf("data-action=\"apply\"");
   const reset = source.indexOf("data-action=\"reset\"");
   assert.ok(apply > 0 && reset > apply, 'apply first');
-  assert.match(source, /popover\.anchor = anchor/u);
+  assert.match(source, /if \(!sheet\) frame\.anchor = anchor;/u);
   assert.doesNotMatch(source, /sf-table|sf-view-table/u);
   const en = json('src/smart/field-renderers/lang/en.json').runtime;
   const ru = json('src/smart/field-renderers/lang/ru.json').runtime;
@@ -485,6 +485,19 @@ test('FO-5: the filter window -- a dialog popover from any anchor, «Приме�
   assert.equal(en.filterReset, 'Reset');
   assert.equal(ru.filterApply, 'Применить');
   assert.equal(ru.filterReset, 'Сбросить');
+});
+
+test('FO5-1..FO5-4: «Применить (N)», a bottom sheet on a phone, on the body like the menu, the reopen guard without a timer', () => {
+  const source = read('src/smart/field-renderers/filter-window.js');
+  assert.match(source, /return count \? `\$\{word\('filterApply', anchor\)\} \(\$\{count\}\)` : word\('filterApply', anchor\);/u);
+  assert.match(source, /frame = doc\.createElement\('sf-drawer'\);\s*frame\.setAttribute\('placement', 'bottom'\);\s*frame\.setAttribute\('heading', label\);/u);
+  assert.match(source, /foot\.setAttribute\('slot', 'footer'\);/u);
+  assert.match(source, /\(anchor\.closest\?\.\('dialog\[open\]'\) \|\| doc\.body\)\.append\(surface\);/u);
+  assert.match(source, /followDensity\(surface, anchor\);/u);
+  assert.doesNotMatch(source, /anchor\.after\(|Date\.now\(\)|< 500/u);
+  assert.match(source, /doc\.addEventListener\('click', clear\);/u);
+  // The popover's hide rule outranks a page's own display class on the content.
+  assert.match(read('src/smart/popover/js/templates/default.css'), /sf-popover\[data-open='false'\] > \[slot='content'\] \{\s*display: none !important;/u);
 });
 
 test('FO-5: sf-popover opens from an anchor given as a property and places itself against it', () => {
