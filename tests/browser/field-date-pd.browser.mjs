@@ -168,7 +168,7 @@ try {
       : {medium: 'Nov 17, 2026', short: '11/17/26', long: 'November 17, 2026', wrong: 'Nov 17, 2026', datetimeLong: 'November 17, 2026 at 10:30 AM'});
     expect(at('PD-3 the cell follows the format'), result.cellLong, lang === 'ru' ? '17 ноября 2026 г.' : 'November 17, 2026');
     expect(at('numbers in the page language'), result.number, lang === 'ru'
-      ? {view: '12,5 kg', viewString: '1 500,50', carried: 'twelve and a half', cell: '12,5', integerCell: '42', host: 'host text'}
+      ? {view: '12,5 kg', viewString: '1\u00a0500,50', carried: 'twelve and a half', cell: '12,5', integerCell: '42', host: 'host text'}
       : {view: '12.5 kg', viewString: '1,500.50', carried: 'twelve and a half', cell: '12.5', integerCell: '42', host: 'host text'});
     expect(at('sf-form draws the known field only'), result.formFields, ['sf_field_title']);
     expect(at('sf-form says it once per unknown type'), warnings.length, 2);
