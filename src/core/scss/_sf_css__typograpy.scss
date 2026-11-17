@@ -26,6 +26,15 @@
 // ------------------------------------------------
 
 @use '../figma_variables/figma_typography_styles';
+
+// The icons sheet's own registration (component icons), here too so a held
+// icon reads its parent's middle in that parent's pixels before the sheet is in.
+@property --sf-icon--text-middle {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0;
+}
+
 @layer sf.base {
   /* An icon waits unseen for the Loader's sf-icon-loaded mark -- on a
      page the Loader runs on (data-sf-loader, set by core.js). Without it
@@ -45,7 +54,11 @@
      before that sheet arrives too. The sheet's own rules are unlayered and
      replace these sizes when it is in; only the letters' ink and the clip
      stay important, so nothing a component sets shows the name; the box
-     has no weight (:where), so any rule of a component or a utility wins. */
+     has no weight (:where), so any rule of a component or a utility wins.
+     It stands where the sheet puts the glyph: on the middle of its text
+     line (C151 point 5), the parent's middle read as the sheet reads it
+     (the registered --sf-icon--text-middle below); a hold on middle stood
+     4 px lower and grew a 24 line to 28 until the sheet came. */
   :root[data-sf-loader] body .sf-icon:not(.sf-icon-loaded) {
     overflow: clip !important;
     -webkit-text-fill-color: transparent !important;
@@ -59,6 +72,16 @@
     line-height: 1;
     inline-size: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-text-height-1)));
     block-size: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1)));
+  }
+
+  @supports selector(:has(*)) {
+    :where(:root[data-sf-loader] body :has(> .sf-icon:not(.sf-icon-loaded))) {
+      --sf-icon--text-middle: var(--sf-text--middle);
+    }
+
+    :where(:root[data-sf-loader] body .sf-icon:not(.sf-icon-loaded)) {
+      vertical-align: calc(var(--sf-icon--text-middle) - var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1))) / 2);
+    }
   }
 
   button {
