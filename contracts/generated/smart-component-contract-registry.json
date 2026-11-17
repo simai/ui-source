@@ -359,13 +359,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "9e469491bccd8fd88a567895a0a92d48e240b01d451480ed6975874da840bdd6",
+      "manifest_sha256": "480e4913a5f11bc7bb23187f5d9ed108eb053f6b885a129c926b1de37c1cf5de",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
+      "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation. Attributes it does not own go to the inner control; a `data-*` is moved there, not copied (the host is display: contents and has no box): select the inner button by it (`[data-action]`, `closest('sf-button')` for the host), and read what was written on the host with `element.dataAttributes`.",
       "tags": [
         "buttons"
       ],
@@ -473,13 +473,13 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button-icon/smart.manifest.json",
-      "manifest_sha256": "cfbbb3f85338a6919b5e720376f4d5d542830125d23737884432fbf0f1d9bd89",
+      "manifest_sha256": "b9aa207337a43b0c5fb96551884e0108a59b66b5721a63303702b22897fb4fb7",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
         "ui_smart_revision": "856fb5d751fad1c76104c32515f4c1869dd75b6c"
       },
-      "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics.",
+      "summary": "Native icon-only action with token geometry, accessible naming and shared loading semantics. Attributes it does not own go to the inner control; a `data-*` is moved there, not copied (the host is display: contents and has no box): select the inner button by it (`[data-action]`, `closest('sf-button-icon')` for the host), and read what was written on the host with `element.dataAttributes`.",
       "tags": [
         "icon-buttons"
       ],
@@ -1747,7 +1747,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-quantity/smart.manifest.json",
-      "manifest_sha256": "9a38dfb6210d88a6ec12949e965c73c1cbab644f2aac1e88203dbcc3e1c0475e",
+      "manifest_sha256": "57b23eb5b5144adbd3e64dbdc294e02c604b9062b2039515ac73cd6960362c2d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2258,7 +2258,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu-context/smart.manifest.json",
-      "manifest_sha256": "129bc0066ed3336bde03de86578112334104539a181b1de14510525ab213da7d",
+      "manifest_sha256": "81e61048fb5a7c5cd2e7cb649a4b7492959f0dd5bddd43c60c107c691004aa16",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

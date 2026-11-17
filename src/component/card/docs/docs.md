@@ -98,6 +98,12 @@ A card the page colours is that coloured place: `sf-card bg-success-container`
 draws the success container (1.8.0, C16); the card's fills stand under the
 utilities, and its variables still set them.
 
+A card is positioned (`position: relative`, 1.10.0, cards study CV-6): a
+visually hidden label (`sr-only`) or a control set in a corner (`absolute`)
+inside it stands against the card, not against a far ancestor, so nothing
+escapes the card or widens the page. The rule stands under the utilities: a
+card the page places itself (`sf-card absolute`, `sticky`) keeps that place.
+
 `sf-card--plain` keeps the column and drops the surface: no fill, no edge, no
 padding. Use it inside a grid of cards that needs no frames.
 

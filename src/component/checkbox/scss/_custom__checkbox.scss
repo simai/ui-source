@@ -19,6 +19,15 @@
     inline-size: auto;
   }
 
+  /* A checkbox with no text (a row's selection box, named by aria-label) is
+     its box and nothing else: in a flex row it does not give way. min-width 0
+     above lets a labelled checkbox wrap its words; a label-less one shrank to
+     7 px while its 20 px box drew over the next element and took the first
+     letter of a title (cards study CV-8). */
+  .sf-checkbox:not(:has(> .sf-checkbox-container)) {
+    flex-shrink: 0;
+  }
+
   .sf-checkbox .sf-checkbox-label,
   .sf-checkbox .sf-checkbox-description {
     overflow-wrap: anywhere;

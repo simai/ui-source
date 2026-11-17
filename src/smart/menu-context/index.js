@@ -1151,6 +1151,16 @@ class SfContextMenu extends ContextMenuElement {
     this._openerSize = size === null ? undefined : size;
   }
 
+  // aria-label is the host's (§3.1), and the menu draws it on its role="menu"
+  // box: a change draws the menu again with the new name, as sf-button does
+  // since 1.14.0. Unwatched, a name set again after the menu drew stayed old
+  // on the box: sf-pagination's page-size menu kept «На странице:» after the
+  // page switched to Arabic, while its host already said «Per page:»
+  // (docs repin to ui-1ed6b6c9a040, language-switch example).
+  static get observedAttributes() {
+    return [...new Set([...super.observedAttributes, "aria-label"])];
+  }
+
   // A size written by anyone but the menu itself is the menu's own: it wins
   // over the opener's from then on.
   attributeChangedCallback(name, oldValue, newValue) {

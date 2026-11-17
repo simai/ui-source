@@ -23,6 +23,78 @@
 `ArrowDown`, `Home` и `End`. Хост по-прежнему отвечает за открытие, `Escape`, `Tab`,
 закрытие и возврат фокуса.
 
+## Строки: разметка без скрипта
+
+Строки меню — классы этого компонента; `<sf-menu-context>` рисует ту же разметку
+(1.18.2: записано здесь, чтобы статичная разметка и примеры документации брали
+строки, а не кнопки `sf-button`). Корень со строками получает
+`sf-context-menu--entries`: он задаёт меню ширину, кегль, строку и иконку ступени.
+Ступень — `sf-context-menu--size-1`; без неё — `1/2`.
+
+```html
+<div class="sf-context-menu sf-context-menu--entries">
+  <div class="sf-context-menu-frame">
+    <div class="sf-context-menu-content">
+      <!-- действие с иконкой -->
+      <button type="button" class="sf-context-menu-item">
+        <span class="sf-context-menu-item-lead"><i aria-hidden="true" class="sf-icon sf-context-menu-item-icon">edit</i></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Изменить</span></span>
+      </button>
+      <!-- без иконки: пустая колонка держит текст на линии остальных строк -->
+      <button type="button" class="sf-context-menu-item">
+        <span class="sf-context-menu-item-lead"></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Копировать</span></span>
+      </button>
+      <!-- подпись под названием и значение в конце строки -->
+      <button type="button" class="sf-context-menu-item">
+        <span class="sf-context-menu-item-lead"></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Плотность</span><span class="sf-context-menu-item-under">Обычно</span></span>
+      </button>
+      <button type="button" class="sf-context-menu-item">
+        <span class="sf-context-menu-item-lead"></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Сортировка</span></span>
+        <span class="sf-context-menu-item-value">А–Я</span>
+      </button>
+      <!-- флажок: галочка в колонке иконок -->
+      <button type="button" class="sf-context-menu-item" aria-pressed="true">
+        <span class="sf-context-menu-item-lead"><i aria-hidden="true" class="sf-icon sf-context-menu-item-check">check</i></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Название</span></span>
+      </button>
+      <!-- вложенное меню -->
+      <button type="button" class="sf-context-menu-item" aria-haspopup="menu" aria-expanded="false">
+        <span class="sf-context-menu-item-lead"></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Вставить</span></span>
+        <i aria-hidden="true" class="sf-icon sf-context-menu-item-chevron" data-sf-icon-mirror>chevron_right</i>
+      </button>
+      <!-- переключатель -->
+      <button type="button" class="sf-context-menu-item sf-context-menu-item--switch" aria-pressed="true">
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Переносить строки</span></span>
+        <span class="sf-context-menu-item-switch" aria-hidden="true"><span class="sf-context-menu-item-switch-thumb"></span></span>
+      </button>
+      <div class="sf-context-menu-separator" role="separator"></div>
+      <button type="button" class="sf-context-menu-item sf-context-menu-item--danger">
+        <span class="sf-context-menu-item-lead"><i aria-hidden="true" class="sf-icon sf-context-menu-item-icon">delete</i></span>
+        <span class="sf-context-menu-item-text"><span class="sf-context-menu-item-label">Удалить</span></span>
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+Состояния строки — модификаторы `.sf-context-menu-item`: `--chosen` (выбранный
+вариант списка, где выбирают одно), `--current` (текущий раздел), `--danger`
+(необратимое действие), `--disabled` вместе с `aria-disabled="true"` (строка видна,
+но не нажимается). Заголовок группы — `.sf-context-menu-heading`, разделитель —
+`.sf-context-menu-separator`. Роли `menu`/`menuitem` и клавиши ставит
+`<sf-menu-context>`; статичной разметке их не назначают (см. «Структура»).
+Кнопки `sf-button` прямо в `.sf-context-menu-content` по-прежнему строятся как
+строки (раздел «Кнопки в меню»), но их разметка — не разметка строки: для
+подписи, значения, флажка и стрелки берите строки этого раздела.
+
+Варианты поля выбора (`.sf-dropdown`) — не строки меню: это `.sf-list-item`
+списка поля (компонент Dropdown, раздел о вариантах), ту же разметку рисует
+`<sf-dropdown>`.
+
 ## Ширина
 
 Ширина зависит от того, что лежит в окне (решение C32). Разметке без атрибута

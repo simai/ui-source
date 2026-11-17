@@ -3,6 +3,14 @@
   min-width: 0;
 }
 
+/* A radio with no text (named by aria-label) is its circle and nothing
+   else: in a flex row it does not give way (cards study CV-8, as sf-checkbox).
+   min-width 0 above lets a labelled one wrap its words; a label-less one
+   shrank under its circle, which then drew over the next element. */
+.sf-radio-button:not(:has(> .sf-radio-button-container)) {
+  flex-shrink: 0;
+}
+
 .sf-radio-button:not(.disabled):has(input:not(:disabled)) {
   cursor: pointer;
 }
