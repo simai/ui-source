@@ -25,6 +25,7 @@
     "undo": "Undo",
     "passwordSet": "Set",
     "passwordUnset": "Not set",
+    "phoneExtension": "ext.",
     "passwordKeep": "Set; type a new one to replace it",
     "maskIncomplete": "Complete the field",
     "notNumber": "Enter a number",

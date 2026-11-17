@@ -9,7 +9,7 @@ import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
 import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
-import {formatPhone, phoneE164} from "./phone.js";
+import {formatPhone, phoneE164, splitPhone} from "./phone.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -912,12 +912,15 @@ function fieldName(field) {
 // whatever the box shows -- `+7 916 123-45-67` written back changed a stored
 // number on every save. It reads E.164 and the formatted strings stored before.
 //
+// An extension (`;ext=12`) is not the control's to edit: the number goes to
+// it alone and the extension is written back after it, so a save keeps it.
+//
 // The country an empty field starts on (FL-7): `defaultCountry` (ISO 3166
 // alpha-2, "RU") where the field names one, else the page's (ru is Russia,
 // en-GB Britain; sf-input-country's own rule). A stored number names its own
 // country, so the setting is passed only while the field is empty.
 function renderPhoneEdit(field, value, host) {
-    const stored = scalarValue(value) ?? '';
+    const {number: stored, extension} = splitPhone(scalarValue(value) ?? '');
     const preferred = String(field.defaultCountry ?? '').trim().toUpperCase();
     const iso2 = /^[A-Z]{2}$/u.test(preferred) && !String(stored).trim() ? preferred : nothing;
     return html`
@@ -931,17 +934,19 @@ function renderPhoneEdit(field, value, host) {
                 ?disabled=${field.readonly === true}
                 use-mask="true"
                 show-code="true"
-                @change=${(event) => host.setFieldValue(field, phoneWritten(event))}
+                @change=${(event) => host.setFieldValue(field, phoneWritten(event, extension))}
         ></sf-input-country>
     `;
 }
 
 // The control's form value (E.164; nothing for the dial code alone), or the
 // box's text brought to E.164 where the element is not defined yet.
-function phoneWritten(event) {
+function phoneWritten(event, extension = '') {
     const control = event.currentTarget;
-    if (typeof control?.sfFormValue === 'function') return control.sfFormValue() ?? '';
-    return phoneE164(event.detail?.value ?? event.target?.value ?? '');
+    const number = typeof control?.sfFormValue === 'function'
+        ? control.sfFormValue() ?? ''
+        : phoneE164(event.detail?.value ?? event.target?.value ?? '');
+    return number && extension ? `${number};ext=${extension}` : number;
 }
 
 function isPhoneField(field) {
@@ -956,7 +961,7 @@ function phoneText(field, value, host) {
     const formatted = host?.formatFieldValue?.(field, value);
     if (typeof formatted === 'string') return formatted;
     if (carriesText(value)) return value.text;
-    return formatPhone(scalarValue(value));
+    return formatPhone(scalarValue(value), setText(host, 'phoneExtension'));
 }
 
 // A password is a string the set never shows (owner, 2026-10-19; Larena's

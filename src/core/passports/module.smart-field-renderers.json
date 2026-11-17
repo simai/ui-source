@@ -21,7 +21,7 @@
     "src/smart/field-renderers/phone.js",
     "src/smart/field-renderers/registry.js"
   ],
-  "content_sha256": "28b9c2688d76491eb482aabf9afd29c6c69b51c9082d8fb6611f873cae04ac89",
+  "content_sha256": "7aba56118d301c88444b7bdc817f8bf0fd53aabdf761c75947273e947b5f8c52",
   "dependencies": [
     {
       "id": "core.runtime",

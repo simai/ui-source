@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import vm from 'node:vm';
-import {formatPhone, phoneDialCode, phoneE164} from '../src/smart/field-renderers/phone.js';
+import {formatPhone, phoneDialCode, phoneE164, splitPhone} from '../src/smart/field-renderers/phone.js';
 
 const read = (path) => fs.readFileSync(new URL(path, import.meta.url), 'utf8');
 const countries = JSON.parse(read('../src/component/country-code/data/countries.json')).items;
@@ -78,12 +78,27 @@ test('FL-1: E.164 and the legacy formatted strings are one number; a round trip 
 
 test('FL-1: the phone edit writes the control\'s form value, view and cell read left to right', () => {
   const edit = renderers.slice(renderers.indexOf('function renderPhoneEdit'), renderers.indexOf('function isPhoneField'));
-  assert.match(edit, /@change=\$\{\(event\) => host\.setFieldValue\(field, phoneWritten\(event\)\)\}/u);
+  assert.match(edit, /@change=\$\{\(event\) => host\.setFieldValue\(field, phoneWritten\(event, extension\)\)\}/u);
+  assert.match(edit, /return number && extension \? `\$\{number\};ext=\$\{extension\}` : number;/u);
   assert.match(edit, /control\.sfFormValue\(\)/u);
-  assert.match(edit, /return phoneE164\(/u);
+  assert.match(edit, /: phoneE164\(event\.detail/u);
   assert.doesNotMatch(edit, /setFieldValue\(field, event\.(detail|target)/u, 'never the box text');
   assert.match(renderers, /if \(isPhoneField\(field\)\) \{\s+const text = phoneText\(field, value, host\);\s+return text \? html`<bdi dir="ltr">/u);
   assert.match(renderers, /<span class="sf-field-view"><bdi dir="ltr">\$\{text\}<\/bdi><\/span>/u);
+});
+
+test('FL-1: an extension stays an extension, in E.164 and on screen', () => {
+  assert.deepEqual({...splitPhone('+73472468500;ext=12')}, {number: '+73472468500', extension: '12'});
+  for (const typed of ['+73472468500;ext=12', '+7 347 246-85-00 доб. 12', '+7 347 246-85-00 ext. 12', '+7 (347) 246 85 00, доб 12']) {
+    assert.equal(phoneE164(typed), '+73472468500;ext=12', typed);
+  }
+  assert.equal(formatPhone('+73472468500;ext=12', 'доб.'), '+7 347 246-85-00 доб. 12');
+  assert.equal(formatPhone('+73472468500;ext=12'), '+7 347 246-85-00 ext. 12');
+  assert.deepEqual({...splitPhone('+79161234567')}, {number: '+79161234567', extension: ''});
+  const en = JSON.parse(read('../src/smart/field-renderers/lang/en.json'));
+  const ru = JSON.parse(read('../src/smart/field-renderers/lang/ru.json'));
+  assert.equal(en.runtime.phoneExtension, 'ext.');
+  assert.equal(ru.runtime.phoneExtension, 'доб.');
 });
 
 test('FL-7: an empty field starts on the page locale\'s country', () => {

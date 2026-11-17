@@ -86,20 +86,40 @@ for (const [pattern, codes] of PATTERNS) for (const code of codes.split(' ')) NA
 
 const digitsOf = (text) => String(text ?? '').replace(/\D/gu, '');
 
-/**
- * The number in E.164: `+` and the digits. A text that starts with `+` (or the
- * international `00`) is a full number, laid out however it was:
- * `+7 916 123-45-67`, `+7 (916) 123 45 67` and `+79161234567` are one number.
- * A text without a country code is returned as it came, trimmed: which country
- * it belongs to is not the renderer's to guess. Empty for no digits.
- */
-export function phoneE164(value) {
+// An extension rides after the number: Larena writes `+73472468500;ext=12`
+// (RFC 3966), and a person may have typed «доб. 12» or «ext. 12». Its digits
+// are not the number's: read into the number they made `+7347246850012`.
+const EXTENSION = /\s*(?:;\s*ext\s*=\s*|,?\s*(?:ext|доб)\.?\s*)(\d+)\s*$/iu;
+
+/** The number and its extension apart: {number, extension}; extension '' for none. */
+export function splitPhone(value) {
     const text = String(value ?? '').trim();
+    const match = text.match(EXTENSION);
+    if (!match || !/\d/u.test(text.slice(0, match.index))) return {number: text, extension: ''};
+    return {number: text.slice(0, match.index).trim(), extension: match[1]};
+}
+
+function numberE164(text) {
     const digits = digitsOf(text);
     if (!digits) return '';
     if (text.startsWith('+')) return `+${digits}`;
     if (/^00[1-9]/u.test(text.replace(/[\s\-().]/gu, ''))) return `+${digits.slice(2)}`;
     return text;
+}
+
+/**
+ * The number in E.164: `+` and the digits. A text that starts with `+` (or the
+ * international `00`) is a full number, laid out however it was:
+ * `+7 916 123-45-67`, `+7 (916) 123 45 67` and `+79161234567` are one number.
+ * A text without a country code is returned as it came, trimmed: which country
+ * it belongs to is not the renderer's to guess. Empty for no digits. An
+ * extension is kept as `;ext=<digits>`: `+7 347 246-85-00 доб. 12` is
+ * `+73472468500;ext=12`.
+ */
+export function phoneE164(value) {
+    const {number, extension} = splitPhone(value);
+    const e164 = numberE164(number);
+    return extension && e164.startsWith('+') ? `${e164};ext=${extension}` : (extension ? String(value ?? '').trim() : e164);
 }
 
 /** The dial code (digits) an E.164 number starts with: the longest one known. */
@@ -115,10 +135,18 @@ export function phoneDialCode(e164) {
  * The number as a person reads it: `+79161234567` reads `+7 916 123-45-67`,
  * by the country its code names. Digits beyond the pattern stay at the end, a
  * number is never cut; an unknown code reads `+<digits>`; a number without a
- * country code is shown as it came.
+ * country code is shown as it came. An extension follows the number after the
+ * page language's word for it (`extensionWord`, «доб.» on a Russian page).
  */
-export function formatPhone(value) {
-    const e164 = phoneE164(value);
+export function formatPhone(value, extensionWord = 'ext.') {
+    const {number, extension} = splitPhone(value);
+    const main = formatNumber(number);
+    if (!extension || !main.startsWith('+')) return extension && !main.startsWith('+') ? String(value ?? '').trim() : main;
+    return `${main} ${extensionWord} ${extension}`;
+}
+
+function formatNumber(value) {
+    const e164 = numberE164(String(value ?? '').trim());
     if (!e164.startsWith('+')) return e164;
     const digits = e164.slice(1);
     const code = phoneDialCode(e164);
