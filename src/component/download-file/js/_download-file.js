@@ -167,8 +167,11 @@ function getRootLink(root) {
     : root.querySelector('a.sf-download-file');
 }
 
+// The size part by its BEM name, the one the class and the Smart element draw
+// alone; the plain markup's former -file-size is read as well (examples pass
+// EX-8: a row written with __size only never asked for its size).
 function getSizeNode(root) {
-  return root?.querySelector?.('.sf-download-file-file-size') || null;
+  return root?.querySelector?.('.sf-download-file__size, .sf-download-file-file-size') || null;
 }
 
 // A file's own row, the link or the button: a row that cannot be pressed (a
@@ -390,8 +393,12 @@ class DownloadFile extends ComponentObserver {
     // The row is as wide as its text (decision C51); full-width stretches it.
     if (toBoolean(fullWidth, false)) root.classList.add('sf-download-file--full-width');
 
+    // A file to fetch is the ready row (the Smart element's view word, its
+    // twin): the sheet gives sf-download-file--ready the pointer and the
+    // plate's motion (examples pass EX-8); the utilities stay for pages that
+    // read them.
     if (!isDisabled) {
-      root.classList.add('cursor-pointer', 'transition');
+      root.classList.add('sf-download-file--ready', 'cursor-pointer', 'transition');
     } else {
       root.classList.add('disabled');
       root.setAttribute('aria-disabled', 'true');

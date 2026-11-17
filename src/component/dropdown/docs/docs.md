@@ -79,3 +79,9 @@ text stands over the options' text at every size (C06, RG-NV 19). A filled
 disabled field shows its chevron in `--sf-on-surface-disabled` (C107 (3),
 RG-NV 20).
 
+The field's accessible name (1.16.1, examples pass EX-1): the visible text
+input of the field takes the field's name -- the `.sf-dropdown-label` text,
+else the page's `aria-label` or `aria-labelledby` on the root -- so a screen
+reader names the field and not its placeholder. An `aria-label` or
+`aria-labelledby` the page writes on the input itself wins. The Smart
+`sf-dropdown` names its input already and is unchanged.

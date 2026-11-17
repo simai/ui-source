@@ -66,6 +66,29 @@
     appearance: none;
   }
 
+  /* Ready: a file to fetch, the row a person presses (the Smart element's
+     view word, written by the class too). It points and its hover and press
+     plates move on the motion scale, as the transition utility does, so a
+     row needs no utility class to read as pressable (examples pass EX-8:
+     the class had no rule). A disabled ready row keeps the arrow. */
+  .sf-download-file.sf-download-file--ready {
+    cursor: pointer;
+    transition-property: color, background-color, border-color;
+    transition-duration: var(--sf-duration-normal);
+    transition-timing-function: var(--sf-ease-move);
+  }
+
+  .sf-download-file.sf-download-file--ready:is(:disabled, .disabled, [aria-disabled='true']) {
+    cursor: default;
+  }
+
+  /* Reduced motion: the plate changes at once. */
+  @media (prefers-reduced-motion: reduce) {
+    .sf-download-file.sf-download-file--ready {
+      transition-duration: 0s;
+    }
+  }
+
   .sf-download-file.sf-download-file--full-width {
     inline-size: 100%;
   }

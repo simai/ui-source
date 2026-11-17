@@ -19,7 +19,7 @@
     "src/component/download-file/scss/_css_download-file.scss",
     "src/component/download-file/scss/index.scss"
   ],
-  "content_sha256": "ad8e68553272ed721c9395dfd3df6642efdc6b71d29269904f5e51c4ee9ffad5",
+  "content_sha256": "ba44a2843b398fd787b5938ce10db9293e7694d04350fabeb657dfe79ed868b3",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -39,6 +39,10 @@
     },
     {
       "id": "tokens.colour",
+      "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.motion",
       "range": "^1.0.0"
     },
     {

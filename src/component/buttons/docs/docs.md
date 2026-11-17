@@ -35,7 +35,10 @@ the Smart `sf-button` projection.
   ghost and link labels step along the secondary's ladder under the pointer
   (`--sf-secondary-hover` / `-active`), as primary's do;
   focus draws the ring; disabled wears the disabled look and keeps the filled
-  icon. `sf-button--pressed` draws the same look without `aria-pressed`.
+  icon. `sf-button--pressed` draws the same look without `aria-pressed`
+  (below). Both are public on a toggle only: an `outline` or `ghost` button
+  in the neutral scheme (decision C211 (1)). A filled, tonal or primary
+  button is an action, not a toggle; do not write either on it.
   With the Loader's icon subset, give the icon of a pressed toggle
   `sf-icon--filled` too (the Smart button writes `filled` on its `sf-icon`):
   the subset holds the filled glyph only for an icon marked filled.
@@ -160,12 +163,19 @@ scheme:
 - `surface` — an action that needs its own plate on a coloured background or
   an image: a faint fill from the neutral alpha ramp and a hairline boundary,
   the same in both themes;
-- `link` — the lightest action, in a table row, a card or next to text: no
-  fill until it is hovered.
+- `ghost` — the lightest action, in a table row, a card or next to text: no
+  fill or edge until it is hovered.
 
-`ghost` was the transparent member of the quiet pair. At rest it was identical
-to `link` and differed only by a fainter hover, so it now reads as `link` and
-stays only as a compatibility name; it goes with the next major version.
+`ghost` is the name of the look (decision C15, CB-01). `sf-button--link` is
+its former name: the sheets draw it the same until 2027-01-01 (journal
+`class-button-link-to-ghost`), and a page that writes it without
+`sf-button--ghost` is noted once in `SF.deprecations` (a console line with
+`data-sf-deprecations="warn"`). The Smart `sf-button`, `sf-segmented` and
+`sf-alert` write both classes until then, so a selector that reached
+`sf-button--link` still does; the constructor's `type: 'link'` draws ghost
+the same way and is noted as the former option value. The earlier record
+`class-button-ghost-to-link` (2026-10-09) went the other way and is history:
+`sf-upgrade` neither reports nor rewrites an item a later record reverses.
 
 ## States and motion
 
@@ -178,6 +188,12 @@ resting button's. One that is disabled as well adds the `disabled` class and
 wears the disabled look; the constructor does that for `loading` with
 `disabled`. Markup with the bare `loading` class and no state class keeps the
 disabled look.
+
+`sf-button--loading` is not the loading state: it only clears the fill of a
+`default` button (primary, secondary or danger), so a page that draws its own
+progress over the button sees through it. It draws no spinner, sets no
+`aria-busy` and does not disable the button; for a button that waits, write
+`loading sf-button-state-loading` as above. No script writes it.
 
 `aria-disabled="true"` is disabled for the look as well (1.15.0, owner remark
 2026-11-15 on the copy button): a button that keeps its focus while it cannot

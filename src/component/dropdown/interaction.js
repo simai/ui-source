@@ -167,7 +167,20 @@ export function createDropdownInteraction(root, adapter) {
     button.setAttribute('aria-controls',identify(container,owner,'listbox'));
     button.querySelectorAll('.sf-icon').forEach(icon=>icon.setAttribute('aria-hidden','true'));
     if(field()!==button)field().tabIndex=-1;
-    if(input())input().tabIndex=-1;
+    // The visible field is named as the Smart one is (its readonly input says
+    // the drawn label, else the host's own name): the page's aria-labelledby,
+    // else its aria-label, else the visible label. The class markup's text
+    // input was left nameless beside a named button (examples pass EX-1).
+    const shown=input();
+    if(shown){
+      shown.tabIndex=-1;
+      const mine=assigned.get(shown)||{};
+      const authorInputName=['aria-label','aria-labelledby'].some(name=>shown.hasAttribute(name)&&mine[name]!==shown.getAttribute(name));
+      if(!authorInputName){
+        own(shown,'aria-labelledby',ownerRefs||(!ownerLabel?labelId:''));
+        own(shown,'aria-label',ownerLabel);
+      }
+    }
     container.setAttribute('role','listbox');
     container.setAttribute('aria-multiselectable',String(adapter.isMultiple()));
     own(container,'aria-labelledby',ownerRefs||labelId||buttonId);

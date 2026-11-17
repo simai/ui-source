@@ -68,6 +68,7 @@ export const LEGACY_IDS = Object.freeze({
   'component/highlight': 'sf-highlight',
   'component/modal': 'sf-modal',
   'component/progress-scale': 'sf-progress-scale',
+  'component/progress-bar': 'sf-progress-bar',
   'component/quantity': 'sf-quantity',
   'component/scrollbar': 'sf-scrollbar',
   'component/slider': 'sf-slider',
