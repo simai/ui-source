@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-rich's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Larena's request for an editor of its html@1 property type; owner approval q-6df38bf0d7.",
   "id": "smart.input-rich",
   "tag": "sf-input-rich",
-  "version": "1.10.2",
+  "version": "1.10.4",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -316,7 +316,8 @@
     "version 1.9.0 (2026-11-16, owner decision C226, prototype forms-inputs-study.html#q-in-label-floor; component.inputs 1.11.0; numbered above 1.8.3 on fix/utilities-focus-c212): a minor, a look. The label of a size 1/3 editor is 12, the field ladder's label floor; it was 10. Other sizes unchanged. Settings, values, events and keys unchanged.",
     "version 1.9.1 (2026-11-16, owner decision C141 (1), GB4 acceptance follow-up (1); numbered above 1.9.0 on origin/fix/fields-c224-c227): a patch. The count of a field with maxlength shows from 80 % of the limit, as the decision and these docs say: at 80 characters of 100 (0.8 x limit and more), where it showed only from the 81st (more than 0.8 x limit). The shared rule is src/smart/helpers/char-count.js. Settings, values, events and keys unchanged.",
     "version 1.10.1 (2026-11-17, feat/lang-file-c282; numbered above 1.10.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
-    "version 1.10.2 (written on the branch as 1.10.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged."
+    "version 1.10.2 (written on the branch as 1.10.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
+    "version 1.10.4 (2026-11-18, returns of the component study of Framework orders FO-1..FO-5, ui-control control/research/2026-11-18-framework-parts-fo; numbered above 1.10.3 on origin/feat/button-truncate-appearance): a patch. Files dragged from the computer onto the editor are refused through core's files drop (FO1-4): the cursor says no and the browser does not open the file in place of the page; text and markup dropped are taken as before."
   ],
   "x-registry": {
     "reuse_mode": "whole",

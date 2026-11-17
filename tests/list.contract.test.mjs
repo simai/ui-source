@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.22.0'], ['list-feed', 'sf-list-feed', '1.5.3']]) { // C282: both patched for the language file // group build 7: list-feed's patch for moved files // group build 8: both patched for the C185 dot sheet in their first-paint sheet lists
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.23.0'], ['list-feed', 'sf-list-feed', '1.5.3']]) { // C282: both patched for the language file // group build 7: list-feed's patch for moved files // group build 8: both patched for the C185 dot sheet in their first-paint sheet lists
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);

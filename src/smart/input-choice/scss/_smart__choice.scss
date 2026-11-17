@@ -567,7 +567,7 @@
 /* A card's picture or colour circle stands on the name line before the
    name, as its icon does (FO4-1). */
 .sf-choice:not(.sf-choice--list) :is(.sf-choice-avatar, .sf-choice-swatch) {
-  margin-inline-end: var(--sf-ui-1--text-space-x);
+  margin-inline-end: var(--sf-space-1\/2);
 }
 
 .sf-choice .sf-choice-swatch {

@@ -66,5 +66,5 @@ test('C165 (1): sf-form draws a short choice field through sf-input-choice appea
   assert.match(source, /new Set\(\['buttons', 'select', 'checklist'\]\)/u);
   const form = read('src/smart/form/index.js');
   assert.match(form, /isListChoice\(field\) \? renderChoiceList\(field, value, host\) : renderEditField/u);
-  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.4.0'); // 1.4.0: field conditions (FO-3) // 1.2.0: late fields and groups (R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
+  assert.equal(JSON.parse(read('src/smart/form/component.json')).version, '1.6.0'); // 1.6.0: a hidden field is not sent (FO3-1) // 1.4.0: field conditions (FO-3) // 1.2.0: late fields and groups (R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
 });

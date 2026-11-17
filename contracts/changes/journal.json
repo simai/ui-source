@@ -18326,6 +18326,35 @@
       "manual": "A product that needs Kazakh words registers its own pack (SF.language.addPack or SF_BOOT_CONFIG.languages) in the format docs/developer/language-packs.md describes.",
       "owner": "ui-source",
       "source": "ui-control control/docs-review/decisions.md C278"
+    },
+    {
+      "id": "input-choice-option-colour-one-key",
+      "recorded_on": "2026-11-18",
+      "stage": "compat",
+      "kind": "option",
+      "summary": "sf-input-choice 1.8.0 (returns FO4-2 of the component study, ui-control control/research/2026-11-18-framework-parts-fo; C302): an option's colour is one data word, color, drawn by the field's option-look (badge or dot). The option keys swatch (a circle) and scheme (a badge) are read as color with that look, and the field renderers read filter.optionRenderer (swatch, badge, avatar-checkbox) as the look, until the date.",
+      "items": [
+        {
+          "component": "sf-input-choice",
+          "from": "swatch",
+          "to": "color"
+        },
+        {
+          "component": "sf-input-choice",
+          "from": "scheme",
+          "to": "color"
+        },
+        {
+          "component": "field-renderers",
+          "from": "filter.optionRenderer",
+          "to": "templateParams.badge"
+        }
+      ],
+      "deprecated_on": "2026-11-18",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-option",
+      "manual": "Write the colour as color on the option; say how it is drawn with option-look (badge or dot) on sf-input-choice, or templateParams.badge (true a badge, false a circle) on the field.",
+      "source": "src/smart/input-choice/js/choice-model.mjs colourOf; src/smart/field-renderers/index.js optionLookOf"
     }
   ]
 }
