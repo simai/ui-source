@@ -14,7 +14,8 @@
 //   - overlay: sf-clipboard--overlay in a box with the p-2 padding stands on
 //     the first line of the content -- |button middle - line middle| <= 0.5 --
 //     and its glyph ends where the content ends (<= 0.5), at every size the
-//     docs use (none, 1/3, 1, 2 and the former sf-clipboard-1/2/3); a block of
+//     docs use (none, 1/3, 1, 2 and the former sf-clipboard-1/2/3) and as an
+//     icon button of every size (1/3, 1/2, 1, 2, 3); a block of
 //     three lines keeps it on the first line (the same top as one line).
 //
 // --report prints the measurements and exits 0 whatever they say.
@@ -29,7 +30,10 @@ const reportOnly = process.argv.includes('--report');
 const parts = {core: join(out, 'core', 'core'), rule: join(out, 'core', 'rule'), component: join(out, 'component', 'component'), smart: join(out, 'smart', 'smart'), utility: join(out, 'utility', 'utility')};
 
 const SIZES = [['none', ''], ['1/3', 'sf-clipboard--size-1/3'], ['1', 'sf-clipboard--size-1'], ['2', 'sf-clipboard--size-2'],
-  ['former 1', 'sf-clipboard-1'], ['former 2', 'sf-clipboard-2'], ['former 3', 'sf-clipboard-3']];
+  ['former 1', 'sf-clipboard-1'], ['former 2', 'sf-clipboard-2'], ['former 3', 'sf-clipboard-3'],
+  // The overlay drawn as an icon button (component.clipboard 1.6.0,
+  // msg-cd695627): placed by the icon button's own size, every size of it.
+  ...['1/3', '1/2', '1', '2', '3'].map((size) => [`icon-button ${size}`, `sf-icon-button sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface sf-icon-button--size-${size}`, true])];
 const ICON = '<i class="sf-icon" aria-hidden="true">content_copy</i>';
 const DISABLED = [
   ['surface', 'sf-clipboard sf-clipboard-surface', ''],
@@ -42,10 +46,10 @@ const DISABLED = [
 ];
 
 const body = () => `
-${SIZES.map(([name, cls]) => [1, 3].map((lines) => `
+${SIZES.map(([name, cls, iconButton]) => [1, 3].map((lines) => `
 <div class="relative p-2 radius-2 border border-outline-variant box" data-k="${name}|${lines}">
-  <code id="c-${lines}-${cls || 'none'}">${Array(lines).fill('npm install @simai/ui').join('<br>')}</code>
-  <button type="button" class="sf-clipboard sf-clipboard-surface sf-clipboard--overlay ${cls}" data-copy="x" aria-label="Копировать">${ICON}</button>
+  <code id="c-${lines}-${name.replace(/[^a-z0-9]+/giu, '-')}">${Array(lines).fill('npm install @simai/ui').join('<br>')}</code>
+  <button type="button" class="sf-clipboard${iconButton ? '' : ' sf-clipboard-surface'} sf-clipboard--overlay ${cls}" data-copy="x" aria-label="Копировать">${ICON}</button>
 </div>`).join('')).join('')}
 <div class="row">
 ${DISABLED.map(([name, cls, text]) => ['rest', 'aria', 'native'].map((state) => `

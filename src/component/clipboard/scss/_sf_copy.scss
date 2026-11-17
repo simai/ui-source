@@ -132,6 +132,45 @@
     --sf-clipboard--icon: var(--sf-text-height-3);
   }
 
+  /* An overlay drawn as an icon button (sf-icon-button sf-clipboard--overlay)
+     places itself by that button's size: its box is the icon button's control
+     height and its glyph the icon button's glyph of the size. Before, the
+     sizes above set the two values for the deprecated surface alone, so an
+     icon button of size 1/3, 1/2, 2 or 3 was placed as size 1 (msg-cd695627,
+     measured at 1440: its middle 6, 4, 4 and 8 off the first line's middle,
+     its glyph 2 off the content's end). Size 3's glyph is the icon button's:
+     36 below 60rem, the text line from there. */
+  .sf-clipboard--overlay.sf-icon-button--size-1\/3 {
+    --sf-clipboard--box: var(--sf-ui-1\/3--control-height);
+    --sf-clipboard--icon: var(--sf-text-height-1\/3);
+  }
+
+  .sf-clipboard--overlay.sf-icon-button--size-1\/2 {
+    --sf-clipboard--box: var(--sf-ui-1\/2--control-height);
+    --sf-clipboard--icon: var(--sf-text-height-1\/2);
+  }
+
+  .sf-clipboard--overlay.sf-icon-button--size-1 {
+    --sf-clipboard--box: var(--sf-ui-1--control-height);
+    --sf-clipboard--icon: var(--sf-text-height-1);
+  }
+
+  .sf-clipboard--overlay.sf-icon-button--size-2 {
+    --sf-clipboard--box: var(--sf-ui-2--control-height);
+    --sf-clipboard--icon: var(--sf-text-height-2);
+  }
+
+  .sf-clipboard--overlay.sf-icon-button--size-3 {
+    --sf-clipboard--box: var(--sf-ui-3--control-height);
+    --sf-clipboard--icon: var(--sf-c4);
+  }
+
+  @media (min-width: 60rem) {
+    .sf-clipboard--overlay.sf-icon-button--size-3 {
+      --sf-clipboard--icon: var(--sf-text-height-3);
+    }
+  }
+
   /* The status a screen reader hears takes no room (decision C48): the words
      a person reads stand above the button as a tooltip, so nothing moves. It
      stands at the start corner of its containing block, never at the place
