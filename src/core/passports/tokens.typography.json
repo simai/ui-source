@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "tokens.typography",
   "kind": "tokens",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "owner": "simai/ui-source",
   "summary": "Text sizes, line heights, the typography roles and styles, and links.",
   "includes": [
