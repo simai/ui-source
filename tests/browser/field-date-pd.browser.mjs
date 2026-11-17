@@ -155,12 +155,17 @@ try {
     expect(at('PD-4 the day field takes the table size'), result.filterSize, '1/2');
     expect(at('PD-5 no hard-coded locale'), result.filterLocale, null);
     expect(at('PD-5 the placeholder is the page language\'s'), result.filterPlaceholder, lang === 'ru' ? 'ДД.ММ.ГГГГ' : 'MM/DD/YYYY');
-    expect(at('PD-6 a day\'s words'), result.words, lang === 'ru'
-      ? ['host:eq', 'Позже', 'Не раньше', 'Раньше', 'Не позже', 'host:between', 'host:today', 'host:week', 'host:month']
-      : ['host:eq', 'After', 'On or after', 'Before', 'On or before', 'host:between', 'host:today', 'host:week', 'host:month']);
+    // PD-6 and PD-7 under C293 (field-date-filter-c293): the condition words
+    // and the whole periods; the old today, week and month keep the periods.
+    expect(at('C293 the condition words'), result.words, lang === 'ru'
+      ? ['Точная дата', 'Между', 'Раньше', 'Позже', 'Не раньше', 'Не позже', 'Сегодня', 'Вчера', 'Эта неделя', 'Прошлая неделя',
+        'Последние 7 дней', 'Этот месяц', 'Прошлый месяц', 'Этот год', 'Последние N дней']
+      : ['Exact date', 'Between', 'Before', 'After', 'On or after', 'On or before', 'Today', 'Yesterday', 'This week', 'Last week',
+        'Last 7 days', 'This month', 'Last month', 'This year', 'Last N days']);
     expect(at('PD-7 today draws no day field'), result.todayHasDay, false);
     expect(at('PD-7 a range is a range calendar'), result.betweenRange, true);
-    expect(at('PD-7 with the quick ranges'), result.betweenPresetButtons, ['today', 'this-week', 'this-month', 'last-7-days', 'last-30-days']);
+    expect(at('C293 with the whole periods as quick ranges'), result.betweenPresetButtons,
+      ['today', 'yesterday', 'this-week', 'last-week', 'last-7-days', 'this-month', 'last-month', 'this-year']);
     expect(at('PD-1 the error marks the date field'), [result.editInvalid, result.editMessage, result.editMessageShown], [true, 'Enter the due date', true]);
     expect(at('PD-1 no error, no mark'), result.cleanInvalid, false);
     expect(at('PD-1 a datetime too'), result.datetimeInvalid, true);

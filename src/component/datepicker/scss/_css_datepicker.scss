@@ -42,6 +42,82 @@
   .sf-datepicker-wrap {
     vertical-align: top;
   }
+  /* The calendar lays itself out (owner decision C293, DF-8, 2026-11-17). Its
+     markup carried the utility names grid, grid-col-7, flex, inline-flex,
+     absolute and gap-1/4, and its seven columns came from the utilities
+     layer. A host page's own unlayered .grid (site grids, older frameworks
+     name a container so) beat any layered rule and laid the days out in one
+     column, as a study page's phone sheet showed. The parts now carry only
+     the component's names and their layout is set here; the class markup
+     that still writes the utility names draws the same. */
+  .sf-datepicker {
+    display: inline-flex;
+  }
+  /* The field takes the row it stands in, as sf-input does (DF-7): an
+     inline box, it was as wide as its text box, 251 of the 350 px of a
+     24rem filter window. A flex row around it still sizes it as before. */
+  .sf-datepicker-wrap {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .sf-datepicker > .sf-datepicker-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .sf-datepicker .sf-datepicker-main {
+    position: relative;
+  }
+  .sf-datepicker .sf-datepicker-grid,
+  .sf-datepicker .sf-datepicker-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .sf-datepicker .sf-datepicker-top {
+    display: grid;
+    align-items: center;
+  }
+  .sf-datepicker .sf-datepicker-top.sf-datepicker-top--years {
+    display: flex;
+    justify-content: space-between;
+  }
+  .sf-datepicker .sf-datepicker-period,
+  .sf-datepicker .sf-datepicker-time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .sf-datepicker .sf-datepicker-time {
+    gap: var(--sf-space-1\/4);
+  }
+  .sf-datepicker .sf-datepicker-context {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--sf-space-1\/4);
+    overflow: auto;
+  }
+  .sf-datepicker .sf-datepicker-choice,
+  .sf-datepicker .sf-datepicker-time-value,
+  .sf-datepicker .sf-datepicker-time-step {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .sf-datepicker .sf-datepicker-time-part,
+  .sf-datepicker .sf-datepicker-preset {
+    display: flex;
+    align-items: center;
+  }
+  .sf-datepicker .sf-datepicker-presets {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/4);
+  }
+  .sf-datepicker .sf-datepicker-presets.sf-datepicker-sheet-presets {
+    flex-direction: row;
+  }
   /* A calendar drawn in the page (no field: sf-input-date without an input, or
      the class markup with sf-datepicker--inline) is the flat place of C20: no
      shadow, its edge the outline-variant hairline, drawn inside so the grid

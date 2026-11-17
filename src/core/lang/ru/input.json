@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 530,
-    "translated": 530,
+    "words": 535,
+    "translated": 535,
     "share": 100
   },
   "words": {
@@ -392,11 +392,16 @@
       "next-years": "Следующие годы",
       "period": "Период",
       "preset-last-month": "Прошлый месяц",
+      "preset-last-week": "Прошлая неделя",
       "preset-last30-days": "Последние 30 дней",
       "preset-last7-days": "Последние 7 дней",
+      "preset-next-month": "Следующий месяц",
+      "preset-next-week": "Следующая неделя",
       "preset-this-month": "Этот месяц",
       "preset-this-week": "Эта неделя",
+      "preset-this-year": "Этот год",
       "preset-today": "Сегодня",
+      "preset-tomorrow": "Завтра",
       "preset-yesterday": "Вчера",
       "presets": "Быстрый выбор",
       "previous-month": "Предыдущий месяц",

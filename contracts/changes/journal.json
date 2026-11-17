@@ -18328,6 +18328,43 @@
       "source": "ui-control control/docs-review/decisions.md C278"
     },
     {
+      "id": "value-date-filter-period-operators",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "The date filter's periods are one operator with a name (owner decision C293, DF-1/DF-2): {operator: \"period\", value: \"today\" | \"this-week\" | \"this-month\" | ...}. The field renderers' operators today, week and month (a period without a value, dropped by the table as empty, or sent with a stale day) are read as the periods today, this-week and this-month -- whole calendar periods resolved by the server in the request's context {timeZone, weekStart} -- and each use is noted once in SF.deprecations until remove_after.",
+      "items": [
+        {
+          "component": "sf-field-renderers",
+          "attribute": "filter operator",
+          "from": "today",
+          "to": "period today"
+        },
+        {
+          "component": "sf-field-renderers",
+          "attribute": "filter operator",
+          "from": "week",
+          "to": "period this-week"
+        },
+        {
+          "component": "sf-field-renderers",
+          "attribute": "filter operator",
+          "from": "month",
+          "to": "period this-month"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "{\"paid_at\": {\"operator\": \"week\"}}",
+        "after": "{\"paid_at\": {\"operator\": \"period\", \"value\": \"this-week\"}}"
+      },
+      "manual": "Write {operator: \"period\", value: <name>} for the operators today, week and month in a field's filter.operators, defaultOperator or a saved filter, and resolve the period on the server by name in the request's context; SF.fieldRenderers.dateFilter.normalizeEntry and buildFilterRequest rewrite a stored entry.",
+      "owner": "ui-source",
+      "source": "ui-control control/research/2026-11-17-date-filter/README.md; src/smart/field-renderers/date-filter.js LEGACY_DATE_OPERATORS"
+    },
+    {
       "id": "tag-sf-chart-metric-to-sf-tile-metric",
       "recorded_on": "2026-11-17",
       "stage": "compat",

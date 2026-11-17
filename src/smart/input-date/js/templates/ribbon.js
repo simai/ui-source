@@ -30,7 +30,7 @@ function renderRibbonMonth(month, context) {
     return html`
         <section class="sf-datepicker-ribbon-month" data-month=${month.key}>
             <div class="sf-datepicker-ribbon-title" aria-hidden="true">${month.label}</div>
-            <div class="sf-datepicker-grid grid grid-col-7" role="grid" aria-label=${month.label}>
+            <div class="sf-datepicker-grid" role="grid" aria-label=${month.label}>
                 <div class="sf-datepicker-week" role="row">
                     ${context.weekdayNames.map((name) => html`<span class="sr-only" role="columnheader">${name}</span>`)}
                 </div>
@@ -54,14 +54,14 @@ function renderRibbonPresets(context) {
     const focusable = context.disabled ? null
         : items.find((item) => item.pressed && !item.disabled) ?? items.find((item) => !item.disabled);
     return html`
-        <div class="sf-datepicker-presets sf-datepicker-sheet-presets flex gap-1/4" role="group" aria-label=${context.labels.presets}
+        <div class="sf-datepicker-presets sf-datepicker-sheet-presets" role="group" aria-label=${context.labels.presets}
             @keydown=${(event) => context.component.handlePresetKeydown(event)}>
             ${items.map((item) => html`
-                <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', item.pressed ? 'active' : '')}
+                <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset', item.pressed ? 'active' : '')}
                     type="button" ?disabled=${item.disabled || context.disabled} aria-pressed=${item.pressed ? 'true' : 'false'}
                     tabindex=${item === focusable ? '0' : '-1'} data-preset=${item.id}
                     @click=${() => context.component.pickRibbonPreset(item)}>${item.label}</button>`)}
-            <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset flex items-cross-center', context.customPressed ? 'active' : '')}
+            <button class=${joinClasses('sf-datepicker-text sf-datepicker-preset', context.customPressed ? 'active' : '')}
                 type="button" ?disabled=${context.disabled} aria-pressed=${context.customPressed ? 'true' : 'false'}
                 tabindex=${focusable || context.disabled ? '-1' : '0'} data-preset=""
                 @click=${() => context.component.pickRibbonCustomRange()}>${context.labels.customRange}</button>

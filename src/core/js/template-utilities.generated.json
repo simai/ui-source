@@ -192,14 +192,7 @@
     "transition-property/default"
   ],
   "cl-input-date": [
-    "align-items/default",
     "display/default",
-    "element-position/default",
-    "flex-direction/default",
-    "gap/default",
-    "grid-template-columns/default",
-    "justify-content/default",
-    "overflow/default",
     "position/default",
     "sr-only/default"
   ],
