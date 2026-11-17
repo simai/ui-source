@@ -19,10 +19,10 @@ test('FW-2: a counter beside the text container has the text family and step 1 b
   assert.match(base, /line-height: var\(--sf-text-height-1\);/u);
 });
 
-test('FW-2: each button size gives the counter its own text step', () => {
-  for (const [klass, step] of [['1\\/3', '1\\/3'], ['1\\/2', '1\\/2'], ['2', '2'], ['3', '3']]) {
-    const body = rule(`.sf-button.sf-button--size-${klass} > .sf-tabs-count`);
-    assert.match(body, new RegExp(`font-size: var\\(--sf-text-size-${step.replace('\\', '\\\\')}\\);`, 'u'));
-    assert.match(body, new RegExp(`line-height: var\\(--sf-text-height-${step.replace('\\', '\\\\')}\\);`, 'u'));
+test('FW-2: the tabs size classes give the counter their text step', () => {
+  for (const [klass, step] of [['1-2', '1\\\\/2'], ['2', '2']]) {
+    const body = rule(`.sf-tabs--size-${klass} .sf-button > .sf-tabs-count`);
+    assert.match(body, new RegExp(`font-size: var\\(--sf-text-size-${step}\\);`, 'u'));
+    assert.match(body, new RegExp(`line-height: var\\(--sf-text-height-${step}\\);`, 'u'));
   }
 });

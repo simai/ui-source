@@ -110,7 +110,8 @@ technology acceptance.
 
 A tab's counter written straight in the button, beside its text container
 (`<button class="sf-button sf-button--size-1"><span class="sf-button-text-container">События</span><span class="sf-tabs-count">3</span></button>`),
-takes the text step of the button's size and the text family (1.5.1, Docara
-audit FW-2): 16/24 at size 1 on a desktop, 14/20 at size 1/2. It took the
+takes the text family and the text step of the tabs' size (1.5.1, Docara
+audit FW-2): step 1 by default (16/24 on a desktop, 14/20 on a phone), 1/2 with
+`sf-tabs--size-1-2`, 2 with `sf-tabs--size-2`. It took the
 browser's button font before, Arial 13.33 on a line of «normal». A counter
 inside the text container keeps the label's size, as before.
