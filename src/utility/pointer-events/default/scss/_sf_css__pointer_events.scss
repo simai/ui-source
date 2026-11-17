@@ -13,8 +13,12 @@ $infix: xs;
 	@include breakpoint-media($infix) {
 		$infix: breakpoint-infix($infix, $breakpoint-array);
 
-		// Pointer Events
+		// Pointer Events. pointer-events-* is the class, named as the property
+		// (owner decision C268, 2026-11-17); pointer-event-* is its former
+		// name until 2027-01-01, noted in SF.deprecations
+		// (src/core/js/retired-classes.table.js, journal class-c268-pointer-events).
 		@each $pointer-events-name, $pointer-events-value in $pointer-events-array {
+			.#{$infix}pointer-events-#{$pointer-events-name},
 			.#{$infix}pointer-event-#{$pointer-events-name} {
 				pointer-events:#{$pointer-events-value};
 			}

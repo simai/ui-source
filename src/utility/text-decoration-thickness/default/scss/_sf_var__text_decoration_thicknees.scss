@@ -13,6 +13,9 @@ $text-decoration-thickness-array:(
     // a1 and a2, which grew with the root text size (2 px at 200 %).
     1 : var(--sf-line--border),
     2 : var(--sf-line--indicator),
+    // 3 and 4 stay, documented together on the one "extended" page, not as
+    // the line scale (owner decision C270, 2026-11-17; retired-classes.table.js
+    // extended).
     3 : var(--sf-a3),
     4 : var(--sf-a4),
     //5 : var(--sf-a5),

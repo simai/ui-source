@@ -24,33 +24,41 @@ $infix: xs;
                 scroll-padding: var(--sf-space-#{$size});
             }
 
-            // for top sides
+            // for top sides (scroll-pt-* is the former name until
+            // 2027-01-01, owner decision C266: the sides are named as p-*)
+            .#{$infix}scroll-p-top-#{$size},
             .#{$infix}scroll-pt-#{$size} {
                 scroll-padding-top: var(--sf-space-#{$size});
             }
 
-            // for Inline-end sides
+            // for the inline end (scroll-pr-* until 2027-01-01, C266: r
+            // meant the end of the line, the left under dir="rtl")
+            .#{$infix}scroll-p-inline-end-#{$size},
             .#{$infix}scroll-pr-#{$size} {
                 scroll-padding-inline-end: var(--sf-space-#{$size});
             }
 
-            // for bottom sides
+            // for bottom sides (scroll-pb-* until 2027-01-01, C266)
+            .#{$infix}scroll-p-bottom-#{$size},
             .#{$infix}scroll-pb-#{$size} {
                 scroll-padding-bottom: var(--sf-space-#{$size});
             }    
             
-            // for Inline-start sides
+            // for the inline start (scroll-pl-* until 2027-01-01, C266)
+            .#{$infix}scroll-p-inline-start-#{$size},
             .#{$infix}scroll-pl-#{$size} {
                 scroll-padding-inline-start: var(--sf-space-#{$size});
             }
 
-            // for Inline-start sides
+            // for both inline sides (scroll-px-* until 2027-01-01, C266)
+            .#{$infix}scroll-p-x-#{$size},
             .#{$infix}scroll-px-#{$size} {
                 scroll-padding-inline-end: var(--sf-space-#{$size});
                 scroll-padding-inline-start: var(--sf-space-#{$size});
             }
 
-            // for Inline-start sides
+            // for the block sides (scroll-py-* until 2027-01-01, C266)
+            .#{$infix}scroll-p-y-#{$size},
             .#{$infix}scroll-py-#{$size} {
                 scroll-padding-top: var(--sf-space-#{$size});
                 scroll-padding-bottom: var(--sf-space-#{$size});

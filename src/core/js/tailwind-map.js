@@ -151,8 +151,6 @@ export function mapTailwindBaseClass(className) {
     'flex-center': 'center-center',
     't-left': 'text-start',
     't-right': 'text-end',
-    'pointer-events-none': 'pointer-event-none',
-    'pointer-events-auto': 'pointer-event-auto',
     'not-italic': 'italic-none',
     'normal-case': 'normalcase',
     'no-underline': 'decoration-none',

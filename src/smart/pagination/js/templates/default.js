@@ -82,7 +82,7 @@ function renderDirection(context, {kind, icon, label, page, go, disabled = false
           title=${label}
           aria-label=${label}
           @click=${(event) => (href ? context.component.followLink(event, page) : event.preventDefault())}
-        ><sf-icon root-class="pointer-event-none" icon=${icon} weight="400" aria-hidden="true"></sf-icon></a>
+        ><sf-icon root-class="pointer-events-none" icon=${icon} weight="400" aria-hidden="true"></sf-icon></a>
       </li>
     `;
   }
@@ -180,7 +180,7 @@ function renderPageSlot(context, component, slot) {
     "items-cross-center",
   );
   const label = `${context.pageLabel} ${slot.value}`;
-  const text = html`<span class="sf-button-text-container text-center pointer-event-none flex-1">${slot.value}</span>`;
+  const text = html`<span class="sf-button-text-container text-center pointer-events-none flex-1">${slot.value}</span>`;
   const href = context.href ? component.pageHref(slot.value) : "";
   const body = href
     ? html`<a

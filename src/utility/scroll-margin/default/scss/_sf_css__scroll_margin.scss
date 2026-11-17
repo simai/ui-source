@@ -24,7 +24,9 @@ $infix: xs;
                 scroll-margin: var(--sf-space-#{$size});
             }
 
-            // for top sides
+            // for top sides (scroll-mt-* is the former name until
+            // 2027-01-01, owner decision C266: the sides are named as m-*)
+            .#{$infix}scroll-m-top-#{$size},
             .#{$infix}scroll-mt-#{$size} {
                 scroll-margin-top: var(--sf-space-#{$size});
             }
@@ -34,7 +36,8 @@ $infix: xs;
                 scroll-margin-inline-end: var(--sf-space-#{$size});
             }
 
-            // for bottom sides
+            // for bottom sides (scroll-mb-* until 2027-01-01, C266)
+            .#{$infix}scroll-m-bottom-#{$size},
             .#{$infix}scroll-mb-#{$size} {
                 scroll-margin-bottom: var(--sf-space-#{$size});
             }
@@ -50,7 +53,8 @@ $infix: xs;
                 scroll-margin-inline-start: var(--sf-space-#{$size});
             }
 
-            // for top sides
+            // for the block sides (scroll-my-* until 2027-01-01, C266)
+            .#{$infix}scroll-m-block-#{$size},
             .#{$infix}scroll-my-#{$size} {
                 scroll-margin-top: var(--sf-space-#{$size});
                 scroll-margin-bottom: var(--sf-space-#{$size});

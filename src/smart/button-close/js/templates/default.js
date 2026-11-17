@@ -60,5 +60,5 @@ export function renderCloseTemplate(context) {
     style=${context.rootStyle || nothing}
     aria-label=${context.label}
     ?disabled=${context.disabled}
-  >${renderCross(size, 'pointer-event-none', '')}</button>`;
+  >${renderCross(size, 'pointer-events-none', '')}</button>`;
 }

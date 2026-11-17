@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -354,7 +354,7 @@
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "c692771715212dd48e91b628e3000fc904e014581922f8805646e05466e15a95"
+        "sha256": "776d311dc973e4a8b0773d58721df801264e4980e239065b8ec7b8a962c0dea2"
       },
       {
         "path": "src/smart/confirm/lang/en.json",

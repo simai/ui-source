@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.text-decoration-thickness",
   "kind": "utility",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/text-decoration-thickness/default/index.js",
@@ -13,6 +13,6 @@
     "src/utility/text-decoration-thickness/default/scss/_sf_var__text_decoration_thicknees.scss",
     "src/utility/text-decoration-thickness/default/scss/index.scss"
   ],
-  "content_sha256": "e1e489173da9f8039ea159d33f9a6409df02f5c377ec900bfb512ec24779a14d",
+  "content_sha256": "7c16151c09f20ad952c59c33bf1afc41d92911c14ef32d0591d08686e6c4a2b3",
   "dependencies": []
 }

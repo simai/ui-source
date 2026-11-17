@@ -10,6 +10,9 @@ $stroke-width-array:(
     // a1 and a2, which grew with the root text size (2 px at 200 %).
     1: --sf-line--border,
     2: --sf-line--indicator,
+    // 3 ... 10 are the wider strokes of illustrations and charts: they stay,
+    // documented together on the one "extended" page, not as the line scale
+    // (owner decision C270, 2026-11-17; retired-classes.table.js extended).
     3: --sf-a3,
     4: --sf-a4,
     5: --sf-a5,

@@ -35,3 +35,13 @@ $bg-color-brand-array:(
     behance: #0057FF,
     soundcloud: #FF5500
 );
+// The brand colours are a listed exception to C18 (owner decision C269,
+// 2026-11-17): a brand's mark is someone else's sign, and its colour is not
+// the Framework's choice (docs/foundation-standard.md, "Exceptions to C18").
+//
+// The brands drawn in black or near black vanish on a dark surface (1.0 to
+// 1.2:1 against the dark page): in the dark theme they get an edge of the
+// place's quiet boundary, --sf-outline-variant, one line wide, inside the box
+// (C269). The light theme keeps no edge (the colour of the edge is
+// transparent there).
+$bg-color-brand-dark-edge: (tiktok, qq, tumblr);

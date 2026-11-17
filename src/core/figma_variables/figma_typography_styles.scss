@@ -76,6 +76,8 @@
     margin-block-end: calc(var(--sf-heading--space-bottom) / 2);
   }
 
+  // .display1-6 and .d1-6 are former names of .sf-display-N until
+  // 2027-01-01 (owner decision C274, 2026-11-17), noted in SF.deprecations.
   .sf-display-1, .display1, .d1 {
     font-size: var(--sf-display-1--size);
     font-family: var(--sf-display--family);

@@ -728,7 +728,7 @@ test('G-39: a paragraph\'s lead and muted modifiers print the SIMAI Framework te
   const muted = { id: 'm', type: 'content.paragraph', presentation: { modifiers: ['muted'] }, data: { content: [{ type: 'text', value: 'Muted' }] } };
   const { html, diagnostics } = await render(layout(lead, muted));
   assert.deepEqual(diagnostics, []);
-  assert.match(html, /<p class="text-large color-on-surface-variant" data-sf-composition-id="l">Lead<\/p>/u);
+  assert.match(html, /<p class="text-2 color-on-surface-variant" data-sf-composition-id="l">Lead<\/p>/u);
   assert.match(html, /<p class="color-on-surface-variant" data-sf-composition-id="m">Muted<\/p>/u);
   assert.ok(known('color-on-surface-variant'));
   assert.match(readFileSync(new URL('../src/core/scss/_sf_css__typograpy.scss', import.meta.url), 'utf8'), /\.text-large\b/u, 'text-large is the core sheet\'s large body text role');
@@ -746,7 +746,7 @@ test('a heading and a paragraph take alignment and visibility per screen, as a s
   const { html, diagnostics } = await render(layout(heading, paragraph, plain));
   assert.deepEqual(diagnostics, []);
   assert.match(html, /<h2 class="text-center md:text-start block lg:hidden" data-sf-composition-id="h">Title<\/h2>/u);
-  assert.match(html, /<p class="text-end hidden md:block text-large color-on-surface-variant" data-sf-composition-id="p">Text<\/p>/u);
+  assert.match(html, /<p class="text-end hidden md:block text-2 color-on-surface-variant" data-sf-composition-id="p">Text<\/p>/u);
   assert.match(html, /<p data-sf-composition-id="q">Plain<\/p>/u, 'unset: nothing printed');
   for (const name of ['text-center', 'md:text-start', 'text-end', 'hidden', 'md:block', 'lg:hidden']) assert.ok(known(name), name);
   assert.equal(validate(layout({ ...plain, props: { align: 'justify' } })).valid, false);

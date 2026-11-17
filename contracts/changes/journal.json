@@ -17553,6 +17553,431 @@
       "source": "src/utility/letter-spacing/default/scss/_sf_css__letter_spacing.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-typography-study.html UT-TYP-5"
     },
     {
+      "id": "class-c264-aspect-list",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C264 (with C188 (6), C230): one list of proportions -- aspect-1x1, aspect-4x3, aspect-3x2, aspect-16x9, aspect-21x9, aspect-3x4, aspect-auto (21x9 and auto are new; utility.aspect-ratio 1.1.0). aspect-9x16, aspect-1x2, aspect-2x3, aspect-2x1, aspect-3x1 and aspect-4x1 keep drawing their own ratio until remove_after, and the Loader notes each once in SF.deprecations (core/js/retired-classes.table.js).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "aspect-9x16",
+          "to": "aspect-3x4"
+        },
+        {
+          "component": "utility",
+          "from": "aspect-1x2",
+          "to": "aspect-3x4"
+        },
+        {
+          "component": "utility",
+          "from": "aspect-2x3",
+          "to": "aspect-3x4"
+        },
+        {
+          "component": "utility",
+          "from": "aspect-2x1",
+          "to": "aspect-16x9"
+        },
+        {
+          "component": "utility",
+          "from": "aspect-3x1",
+          "to": "aspect-21x9"
+        },
+        {
+          "component": "utility",
+          "from": "aspect-4x1",
+          "to": "aspect-21x9"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the nearest proportion of the list; it looks different: 9x16, 1x2 and 2x3 become 3x4, 2x1 becomes 16x9, 3x1 and 4x1 become 21x9. Where the picture must keep its own shape, write aspect-auto.",
+      "examples": {
+        "before": "<img class=\"aspect-9x16\">",
+        "after": "<img class=\"aspect-3x4\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/aspect-ratio/default/scss/_var__aspect_ratio.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-layout-study.html#q-ly-aspect; ui-control control/docs-review/decisions.md C264"
+    },
+    {
+      "id": "class-c266-scroll-side-names",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C266: the scroll margins and paddings name their sides as m-* and p-* do -- scroll-m-top, scroll-m-bottom, scroll-m-block; scroll-p-top, scroll-p-bottom, scroll-p-inline-start, scroll-p-inline-end, scroll-p-x, scroll-p-y (utility.scroll-margin and utility.scroll-padding 1.1.0). The short letters keep drawing until remove_after, and the Loader notes each once in SF.deprecations.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "scroll-mt-*",
+          "to": "scroll-m-top-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-mb-*",
+          "to": "scroll-m-bottom-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-my-*",
+          "to": "scroll-m-block-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-pt-*",
+          "to": "scroll-p-top-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-pb-*",
+          "to": "scroll-p-bottom-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-pl-*",
+          "to": "scroll-p-inline-start-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-pr-*",
+          "to": "scroll-p-inline-end-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-px-*",
+          "to": "scroll-p-x-*"
+        },
+        {
+          "component": "utility",
+          "from": "scroll-py-*",
+          "to": "scroll-p-y-*"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<main class=\"scroll-pt-4 scroll-px-2\">",
+        "after": "<main class=\"scroll-p-top-4 scroll-p-x-2\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/scroll-margin; src/utility/scroll-padding; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-overscroll-study.html#q-os-names; ui-control control/docs-review/decisions.md C266"
+    },
+    {
+      "id": "class-c268-pointer-events",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C268: the class is named as the property, pointer-events-none and pointer-events-auto (utility.pointer-events 1.1.0); the Framework's own templates write it. pointer-event-none and pointer-event-auto keep drawing until remove_after, and the Loader notes each once in SF.deprecations; the Loader's Tailwind conversion no longer rewrites pointer-events-* to the former name.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "pointer-event-*",
+          "to": "pointer-events-*"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-utility",
+      "examples": {
+        "before": "<span class=\"pointer-event-none\">",
+        "after": "<span class=\"pointer-events-none\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/pointer-events; src/core/js/tailwind-map.js; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-forms-study.html#q-fm-pointer; ui-control control/docs-review/decisions.md C268"
+    },
+    {
+      "id": "class-c271-scale-percent",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C271: the scale utilities say their percent -- scale-80, scale-90, scale-95, scale-100, scale-105, scale-110, scale-120 and the scale-x-* and scale-y-* forms (utility.transform-scale 1.1.0); scale-0 stays. scale-1/4, 1/3, 1/2, 1, 2, 3, 4 draw the same scale until remove_after, and the Loader notes each once in SF.deprecations.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "scale-1/2",
+          "to": "scale-95"
+        },
+        {
+          "component": "utility",
+          "from": "scale-1/3",
+          "to": "scale-90"
+        },
+        {
+          "component": "utility",
+          "from": "scale-1/4",
+          "to": "scale-80"
+        },
+        {
+          "component": "utility",
+          "from": "scale-x-1/2",
+          "to": "scale-x-95"
+        },
+        {
+          "component": "utility",
+          "from": "scale-x-1/3",
+          "to": "scale-x-90"
+        },
+        {
+          "component": "utility",
+          "from": "scale-x-1/4",
+          "to": "scale-x-80"
+        },
+        {
+          "component": "utility",
+          "from": "scale-y-1/2",
+          "to": "scale-y-95"
+        },
+        {
+          "component": "utility",
+          "from": "scale-y-1/3",
+          "to": "scale-y-90"
+        },
+        {
+          "component": "utility",
+          "from": "scale-y-1/4",
+          "to": "scale-y-80"
+        },
+        {
+          "component": "utility",
+          "from": "scale-1",
+          "to": "scale-100",
+          "match": "(?<![\\w-])scale-1(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "scale-2",
+          "to": "scale-105"
+        },
+        {
+          "component": "utility",
+          "from": "scale-3",
+          "to": "scale-110"
+        },
+        {
+          "component": "utility",
+          "from": "scale-4",
+          "to": "scale-120"
+        },
+        {
+          "component": "utility",
+          "from": "scale-x-1",
+          "to": "scale-x-100",
+          "match": "(?<![\\w-])scale-x-1(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "scale-x-2",
+          "to": "scale-x-105"
+        },
+        {
+          "component": "utility",
+          "from": "scale-x-3",
+          "to": "scale-x-110"
+        },
+        {
+          "component": "utility",
+          "from": "scale-x-4",
+          "to": "scale-x-120"
+        },
+        {
+          "component": "utility",
+          "from": "scale-y-1",
+          "to": "scale-y-100",
+          "match": "(?<![\\w-])scale-y-1(?![\\w/-])"
+        },
+        {
+          "component": "utility",
+          "from": "scale-y-2",
+          "to": "scale-y-105"
+        },
+        {
+          "component": "utility",
+          "from": "scale-y-3",
+          "to": "scale-y-110"
+        },
+        {
+          "component": "utility",
+          "from": "scale-y-4",
+          "to": "scale-y-120"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "rename-class",
+      "examples": {
+        "before": "<button class=\"hover:scale-2 active:scale-1/2\">",
+        "after": "<button class=\"hover:scale-105 active:scale-95\">"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/transform-scale/default/scss/_sf_var__transform_scale.scss; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-transform-study.html#q-tr-scale; ui-control control/docs-review/decisions.md C271"
+    },
+    {
+      "id": "utility-c272-skew-retired",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "utility",
+      "summary": "Owner decision C272: the slant utilities leave -- skew-x-0, 1, 2, 3, 5, 15 and skew-y-* and their hover: forms were used by no Framework part, product or example. They keep drawing until remove_after (the sheets stay, utility.full.css keeps them), and the Loader notes each once in SF.deprecations.",
+      "items": [
+        {
+          "component": "utility",
+          "from": "transform-skew",
+          "to": null,
+          "match": "(?<![\\w-])(?:hover:)?skew-[xy]-(?:0|1|2|3|5|15)(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Remove the class; a slant a design needs belongs to the effects package (C57), or a page rule with transform: skewX().",
+      "examples": {
+        "before": "<span class=\"skew-x-5\">",
+        "after": "<span>"
+      },
+      "owner": "ui-source",
+      "source": "src/utility/transform-skew; src/core/js/retired-classes.table.js; ui-control prototypes/utilities-transform-study.html#q-tr-skew; ui-control control/docs-review/decisions.md C272"
+    },
+    {
+      "id": "class-c274-text-role-short-names",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "Owner decision C274: the documentation teaches the text roles .sf-display-N, .sf-body-*, .sf-label-* and the text utilities of C212. The short names .d1-.d6, .display1-.display6, .text, .text-small, .text-medium, .text-large, .label, .label-small, .label-medium and .label-large keep drawing until remove_after, and the Loader notes each once in SF.deprecations. They match only inside a class attribute: the same words are elements and attributes elsewhere (<label>, text).",
+      "items": [
+        {
+          "component": "utility",
+          "from": "d1",
+          "to": "sf-display-1",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])d1(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "display1",
+          "to": "sf-display-1",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])display1(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "d2",
+          "to": "sf-display-2",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])d2(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "display2",
+          "to": "sf-display-2",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])display2(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "d3",
+          "to": "sf-display-3",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])d3(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "display3",
+          "to": "sf-display-3",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])display3(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "d4",
+          "to": "sf-display-4",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])d4(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "display4",
+          "to": "sf-display-4",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])display4(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "d5",
+          "to": "sf-display-5",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])d5(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "display5",
+          "to": "sf-display-5",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])display5(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "d6",
+          "to": "sf-display-6",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])d6(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "display6",
+          "to": "sf-display-6",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])display6(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "text",
+          "to": "text-1",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])text(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "text-medium",
+          "to": "text-1",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])text-medium(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "text-small",
+          "to": "text-1/2",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])text-small(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "text-large",
+          "to": "text-2",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])text-large(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "label",
+          "to": "text-1/3",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])label(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "label-medium",
+          "to": "text-1/3",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])label-medium(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "label-small",
+          "to": "text-1/4",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])label-small(?![\\w-])"
+        },
+        {
+          "component": "utility",
+          "from": "label-large",
+          "to": "sf-label-large",
+          "match": "(?<=\\bclass(?:Name)?=[\"'][^\"']*)(?<![\\w-])label-large(?![\\w-])"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Write the role or the C212 text utility: d1 / display1 -> sf-display-1 (same look); text, text-medium -> text-1; text-small -> text-1/2; text-large -> text-2; label, label-medium -> text-1/3; label-small -> text-1/4 (same size and line); label-large -> sf-label-large (also sets the family and the regular weight). Where the family and weight of the role are wanted, write .sf-body-* / .sf-label-*.",
+      "examples": {
+        "before": "<p class=\"text-large\">…</p><h1 class=\"d1\">…</h1>",
+        "after": "<p class=\"text-2\">…</p><h1 class=\"sf-display-1\">…</h1>"
+      },
+      "owner": "ui-source",
+      "source": "src/core/scss/_sf_css__typograpy.scss; src/core/figma_variables/figma_typography_styles.scss; src/core/js/retired-classes.table.js; ui-control prototypes/guide-size-and-type-study.html#q-gd-st-short; ui-control control/docs-review/decisions.md C274"
+    },
+    {
       "id": "attribute-list-has-more-to-pagination-more",
       "recorded_on": "2026-11-16",
       "stage": "compat",

@@ -108,7 +108,7 @@ test('a choice as buttons is one segmented sf-button-group; the dropdown is unch
   const group = element(buttons, 'sf-segmented');
   assert.match(group, /appearance="track"/u);
   assert.match(group, /size=\$\{size\}/u);
-  assert.match(group, /root-class=\$\{locked \? 'flex-wrap pointer-event-none' : 'flex-wrap'\}/u);
+  assert.match(group, /root-class=\$\{locked \? 'flex-wrap pointer-events-none' : 'flex-wrap'\}/u);
   assert.match(group, /\?disabled=\$\{disabled\}/u);
   assert.match(buttons, /const size = CHOICE_BUTTON_SIZES\.has\(asked\) \? asked : EDIT_SIZE;/u);
   assert.match(source, /const CHOICE_BUTTON_SIZES = new Set\(\['1\/2', '1', '2'\]\);/u);

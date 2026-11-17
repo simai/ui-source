@@ -20,6 +20,15 @@ $infix: lg;
                 object-position: #{$object-position-value};
             }
         }
+
+        // Under dir="rtl" the logical names take the other side (C265);
+        // :where() keeps the specificity of the class, so a breakpoint form
+        // later in the cascade still wins.
+        @each $object-position-name, $object-position-value in $object-position-rtl-array {
+            .#{$infix}object-#{$object-position-name}:where(:dir(rtl)) {
+                object-position: #{$object-position-value};
+            }
+        }
     }
 // }
 }

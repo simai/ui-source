@@ -3,16 +3,24 @@
 
 // ASPECT RATIO
 
+// One list of proportions for pictures, galleries, card images and the
+// aspect-* utility (owner decisions C188 (6), C230, C264, 2026-11-17):
+// 1x1, 4x3, 3x2, 16x9, 21x9, 3x4 and auto. 9x16, 2x1, 3x1, 4x1, 1x2 and 2x3
+// are former names until 2027-01-01: they keep drawing what they drew, and the
+// Loader notes them in SF.deprecations (src/core/js/retired-classes.table.js,
+// journal class-c264-aspect-list).
 $aspect-ratio-array: (
 	'1x1' : '1 / 1',
+	'4x3' : '4 / 3',
+	'3x2' : '3 / 2',
+	'16x9' : '16 / 9',
+	'21x9' : '21 / 9',
+	'3x4' : '3 / 4',
+	'auto' : 'auto',
 	'1x2' : '1 / 2',
 	'2x1' : '2 / 1',
 	'2x3' : '2 / 3',
 	'3x1' : '3 / 1',
-	'3x2' : '3 / 2',
-	'3x4' : '3 / 4',
 	'4x1' : '4 / 1',
-	'4x3' : '4 / 3',
-	'16x9' : '16 / 9',
 	'9x16' : '9 / 16',
 );

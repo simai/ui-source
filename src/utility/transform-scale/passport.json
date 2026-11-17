@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.transform-scale",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/transform-scale/default/index.js",
@@ -18,7 +18,7 @@
     "src/utility/transform-scale/hover/scss/_sf_css__transform_scale.scss",
     "src/utility/transform-scale/hover/scss/index.scss"
   ],
-  "content_sha256": "69c7a548736e8f69a0b36544cdba04a0905cbc40112978b181127bb27aa20982",
+  "content_sha256": "f4f1ec78f11d79415ea100a88cdf96ba23778c0ed3fe53575ba80f77cf0e4615",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

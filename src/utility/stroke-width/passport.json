@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "utility.stroke-width",
   "kind": "utility",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/stroke-width/default/index.js",
@@ -38,7 +38,7 @@
     "src/utility/stroke-width/xxl/scss/_sf_css__stroke_width.scss",
     "src/utility/stroke-width/xxl/scss/index.scss"
   ],
-  "content_sha256": "0f7ee48f5649f07b20d9ba2aa031a3484464c2a93e3169db2fd484a9e44d12a1",
+  "content_sha256": "526a47ef88e4f9f61139e7ad57c4f14b48084e4fc89ace1fb56b316064d70c2f",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

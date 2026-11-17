@@ -347,7 +347,7 @@ export const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     // G-39 (1.2.0): the prototype's lead is 19/30 px in the variant ink; the
     // SIMAI Framework's large body text role (20/28 px, 16/24 on the phone) in
     // on-surface-variant. Muted is the variant ink alone.
-    presentation: { views: ['default'], presets: [], modifiers: ['lead', 'muted'], modifier_utilities: { lead: ['text-large', 'color-on-surface-variant'], muted: ['color-on-surface-variant'] } },
+    presentation: { views: ['default'], presets: [], modifiers: ['lead', 'muted'], modifier_utilities: { lead: ['text-2', 'color-on-surface-variant'], muted: ['color-on-surface-variant'] } },
     slots: {},
     renderer: { kind: 'builtin', name: 'content.paragraph' },
     assets: [],
