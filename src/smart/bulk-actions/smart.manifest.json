@@ -422,11 +422,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/bulk-actions/index.js",
-        "sha256": "b220cfa28d8e9c7053abf43181595f94adff8c1048050556941364d188804509"
+        "sha256": "20b8c38fa1e2c006de54b22585efb14b21ad6521390714eb3a104d0abfdee3da"
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
-        "sha256": "512e2dbbc76063da5831c1b2d7c111c3e8a144704fe50dec89362ffa8491fecf"
+        "sha256": "2f19cd4f2b4d24d05a36bf02bdf517d0f91bee9b87f3294bbc5acec1a07bebf3"
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",

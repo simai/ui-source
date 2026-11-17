@@ -267,8 +267,8 @@ class SfBulkActions extends BulkActionsElement {
     const {rest} = this.split();
     const count = this.effectiveCount;
     const entries = [];
-    rest.forEach((action, index) => {
-      if (action.danger && index > 0 && !rest[index - 1].danger) entries.push({kind: 'separator'});
+    // The menu itself draws a destructive row last, after a line (C164 (5)).
+    rest.forEach((action) => {
       const reason = this.unavailableReason(action, count);
       entries.push({
         id: action.id,

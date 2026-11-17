@@ -99,7 +99,7 @@ try {
     window.SF.menu = {...(owner || {}), open: (options) => { entries.push(...(options.entries ?? [])); return Promise.resolve(null); }};
     document.querySelector('#p [data-sf-bulk-action="more"]').click();
     window.SF.menu = owner;
-    return entries.map((entry) => (entry.kind === 'separator' ? '|' : `${entry.id}${entry.status === 'danger' ? '!' : ''}`));
+    return entries.map((entry) => (entry.type === 'separator' ? '|' : `${entry.id}${entry.status === 'danger' ? '!' : ''}`));
   });
   if (menu.join(',') !== 'delete!,purge!') {
     note({case: 'more menu', got: menu, expected: 'delete and purge, both danger (C295 (2))'});

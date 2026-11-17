@@ -62,7 +62,7 @@ function result(context) {
   const {result: shown, component, size} = context;
   return html`<div class="sf-bulk-actions__run" data-sf-bulk-result>
     <span class="sf-bulk-actions__say sf-bulk-actions__say--warning">${shown.failed
-      ? html`<sf-icon class="sf-bulk-actions__warning" icon="warning" size="1/2" aria-hidden="true"></sf-icon>` : nothing}${shown.text}</span>
+      ? html`<sf-icon class="sf-bulk-actions__warning" icon="warning" size="1/2" aria-hidden="true"></sf-icon>` : nothing}<span class="sf-bulk-actions__text">${shown.text}</span></span>
     ${shown.failed ? html`<span class="sf-bulk-actions__answers">
       <sf-button data-sf-bulk-result-action="details" size=${size} appearance="outline" scheme="on-surface"
         text=${shown.details} @click=${() => component.showDetails()}></sf-button>
