@@ -3,7 +3,8 @@
   "schema_version": 1,
   "id": "utility.break-inside",
   "kind": "utility",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "summary": "1.0.1: the built sheet no longer writes the legacy page-break-inside fallback beside break-inside (dropped by the builder fix that shipped in pair ui-1ed6b6c9a040, which changed the output without a version step; DEV acceptance R-1).",
   "owner": "simai/ui-source",
   "files": [
     "src/utility/break-inside/default/index.js",
