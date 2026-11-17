@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import './support/russian-language-file.mjs';
 import {languageRows, lookFor, normalizeLanguages, pageName, shortLabelIn, useNames} from '../src/smart/language/js/languages.js';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');

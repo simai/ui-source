@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import {russianWords} from './support/russian-language-file.mjs';
 
 // Owner decision C186 (2026-11-14): links, text flow, the code block and the
 // headings -- plain group 3 (study control/research/2026-11-14-plain-group-3.md
@@ -45,9 +46,12 @@ test('C186 (3): a new-tab link gets arrow_outward after its last word and the wo
   const {WORDS, opensNewTab} = await import('../src/core/js/new-tab-link.js');
   for (const locale of ['en', 'ru']) {
     const words = JSON.parse(read(`src/smart/file-download/lang/${locale}.json`)).runtime;
-    assert.equal(WORDS[locale]['new-tab-text'], words['new-tab-text'], `${locale} new-tab-text is sf-file-download's`);
+    // English is built in; Russian is core's language file (C282).
+    const own = locale === 'en' ? WORDS.en : russianWords('core/js/lang/new-tab');
+    assert.equal(own['new-tab-text'], words['new-tab-text'], `${locale} new-tab-text is sf-file-download's`);
   }
-  assert.equal(WORDS.ru['new-tab-text'], '(откроется в новой вкладке)');
+  assert.equal(russianWords('core/js/lang/new-tab')['new-tab-text'], '(откроется в новой вкладке)');
+  assert.deepEqual(Object.keys(WORDS), ['en'], 'the bundle says English only');
   // The mark: the text's size, 4 from the word, one unbreakable run with it.
   assert.match(link, /a \[data-sf-new-tab='mark'\] \{[^}]*--sf-icon--font-size: 1em;[^}]*margin-inline-start: var\(--sf-space-1\\\/4\);[^}]*text-decoration: none;/su);
   assert.match(link, /a \[data-sf-new-tab='tail'\] \{\s*white-space: nowrap;/u);

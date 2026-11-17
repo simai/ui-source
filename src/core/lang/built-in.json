@@ -1,0 +1,12 @@
+{
+  "schema": "simai.language-built-in",
+  "schema_version": 1,
+  "$comment": "The languages built into the component bundles (owner decision C282, 2026-11-17): English only. Russian and every other language ship as language files (core/lang/<code>.js before core.js, or the parts core/lang/<code>/<family>.json core fetches). complete: the languages that must say every word (scripts/language-coverage.mjs exits 1 on a gap). Rollback: built_in [\"en\", \"ru\"], then node scripts/build-language-packs.mjs and a rebuild put Russian back into the bundles (the language files still ship, so a page that includes ru.js stays right).",
+  "built_in": [
+    "en"
+  ],
+  "complete": [
+    "en",
+    "ru"
+  ]
+}

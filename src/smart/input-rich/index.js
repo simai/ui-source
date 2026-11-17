@@ -8,12 +8,11 @@ import {roving} from '../../core/js/roving.js';
 import {renderRichTextTemplate} from './js/templates/default';
 import {richTextFromPlainText, richTextHref, sanitizeRichText} from './js/rich-text-html.mjs';
 import manifest from './component.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 import './scss/index.scss';
 
 // The marks the toolbar sets: the elements that say them, and the style of
@@ -64,7 +63,7 @@ const onPhone = (doc) => !doc.defaultView?.getComputedStyle(doc.documentElement)
 
 const RichTextElement = elementFromManifest(manifest, {
   base: SfBaseElement,
-  lang: {en, ru},
+  lang: languageFiles,
   source: 'en',
 });
 

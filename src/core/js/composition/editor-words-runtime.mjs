@@ -4,8 +4,8 @@ import { CATALOGUE_GROUP_TABLE } from './catalogue.mjs';
 
 // The editor words without the words (localization study LC-1, 2026-11-14).
 //
-// The words of the built-in editor manifests (editor-words.mjs, ru + en,
-// 8.7 KB gzip) were part of core.min.js, so every page paid for them though
+// The words of the built-in editor manifests (editor-words.mjs, then ru + en,
+// 8.7 KB gzip; English only since C282, Russian is a language file) were part of core.min.js, so every page paid for them though
 // only a page that draws a parameters form reads them. Core now carries this
 // module only: the keys a field reads, the lookup and a shared slot the words
 // are installed into. The words themselves are a chunk of their own
@@ -39,12 +39,13 @@ export function editorWordsReady() {
 }
 
 /**
- * Install the words `{en: {...}, ru: {...}}`; the first install wins, and the
- * page's components are told, as for a registered language, so a form drawn
- * before the words arrived draws again.
+ * Install the words `{en: {...}, ...}` (English is built in, owner decision
+ * C282; a bundle built before it brings `ru` too); the first install wins,
+ * and the page's components are told, as for a registered language, so a
+ * form drawn before the words arrived draws again.
  */
 export function installEditorWords(words) {
-  if (!STORE.words && words && typeof words.en === 'object' && typeof words.ru === 'object') {
+  if (!STORE.words && words && typeof words.en === 'object') {
     STORE.words = words;
     refreshLanguage();
   }
@@ -82,9 +83,12 @@ export function loadEditorWords() {
  * as it was. Empty until the words are on the page; the first read starts
  * loading them, and the page's components are told when they arrive.
  */
+// A language not built in (C282): the words its language file registered for
+// sf-composition.
+const registeredWords = (locale) => globalThis.__sfPageLanguage?.registered?.get?.(EDITOR_WORDS_OWNER)?.get?.(locale) ?? {};
 const readWords = (locale) => {
   if (!STORE.words) loadEditorWords();
-  return editorWords()[locale];
+  return editorWords()[locale] ?? registeredWords(locale);
 };
 export const EDITOR_FIELD_WORDS_LIVE = Object.freeze({
   get en() { return readWords('en'); },

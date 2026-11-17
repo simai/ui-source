@@ -23,12 +23,13 @@
 import {pageWord} from './page-language.js';
 
 export const ATTRIBUTE = 'data-sf-new-tab';
-// sf-file-download's words (src/smart/file-download/lang/*.json, new-tab-text);
-// tests/plain-group-3-c186.contract.test.mjs holds them equal.
-export const WORDS = {
-  en: {'new-tab-text': '(opens in a new tab)'},
-  ru: {'new-tab-text': '(откроется в новой вкладке)'},
-};
+// sf-file-download's words (src/smart/file-download/lang/*.json, new-tab-text),
+// core's own language files (core/js/lang/new-tab: English built in, the other
+// languages from a language file, C282); tests/plain-group-3-c186.contract.test.mjs
+// holds them equal.
+import WORDS from './lang/new-tab/index.mjs';
+
+export {WORDS};
 const GLYPH = 'arrow_outward';
 const NEW_TAB_GLYPHS = new Set(['arrow_outward', 'open_in_new', 'launch', 'north_east']);
 

@@ -47,7 +47,7 @@ test('RG-IB-2: the Framework writes sf-icon-button--ghost; link and surface are 
   assert.ok(journal.some((record) => record.id === 'class-icon-button-density-c213' && record.remove_after === '2027-01-01'));
   // Pinned at or above the 1.14.0 / 1.13.0 that carried RG-IB-2 (1.15.0 / 1.13.1: RG-CL-3).
   assert.ok(['1.14.0', '1.15.0', '1.16.0'].includes(JSON.parse(read('src/component/icon-buttons/passport.json')).version));
-  assert.ok(['1.13.0', '1.13.1', '1.13.3'].includes(JSON.parse(read('src/smart/button-icon/component.json')).version));
+  assert.ok(['1.13.0', '1.13.1', '1.13.3', '1.13.6'].includes(JSON.parse(read('src/smart/button-icon/component.json')).version));
 });
 
 /* RG-IB-1 b (DEV msg-98dc9215, 2026-11-16): the quiet tonal glyph read the

@@ -38,7 +38,7 @@ function fn(name) {
 }
 
 test('1.4.0 is noted', () => {
-  assert.equal(component.version, '1.4.0');
+  assert.equal(component.version, '1.4.2'); // C282: 1.4.0 moved on by the language-file patch (Russian is a language file)
   assert.ok(component['x-decisions'].some((line) => line.startsWith('version 1.4.0') && line.includes('C181 (2)')));
 });
 

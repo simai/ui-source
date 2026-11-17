@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.gallery",
-  "version": "1.4.3",
+  "version": "1.5.1",
   "title": "Gallery",
   "summary": "A set of pictures: a grid of picture tiles (or masonry, or the main picture with thumbnails) that opens the page's full-screen viewer, with an optional choice of tiles for a media library. The viewer is SF.Gallery.view(items, options), shared with sf-file-preview.",
   "kind": "smart",
@@ -774,7 +774,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/gallery/index.js",
-        "sha256": "319f0f69eeca49e6c099587c3c0275eb2a1f174f2fe24f3736c6c332b6df889f"
+        "sha256": "d5508ef8e4b490b890638ffbbf3961df6b572909f7123fd04eebc3b2e7adfbf3"
       }
     ],
     "generated_runtime": [

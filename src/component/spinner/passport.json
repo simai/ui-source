@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.spinner",
   "kind": "component",
-  "version": "1.4.0",
+  "version": "1.5.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/spinner/index.js",
@@ -19,7 +19,7 @@
     "src/component/spinner/scss/_var__spinner.scss",
     "src/component/spinner/scss/index.scss"
   ],
-  "content_sha256": "09fe3d1532f066f96d994589af72b0aa19954d8e91f8adf1c0f74ea48aab15c1",
+  "content_sha256": "1e58ae5c3f7809b3e606f24402539e08e696a024089995730cfba906cebf5633",
   "dependencies": [
     {
       "id": "core.runtime",

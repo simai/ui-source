@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import vm from 'node:vm';
+// Russian names are the ru language file's words (C282): loaded as a page loads it.
+import './support/russian-language-file.mjs';
+import {localeText} from '../src/core/js/page-language.js';
 
 // sf-input-country, owner decision C87 (2026-11-12, variant V4 with the caret;
 // ui-control prototypes/phone-country-study.html#r3-variant) and DEV letter
@@ -16,10 +19,11 @@ const langs = {en: await read('src/smart/input-country/lang/en.json'), ru: await
 const {items} = JSON.parse(await read('src/component/country-code/data/countries.json'));
 
 function runtime() {
-  const context = vm.createContext({COUNTRY_ITEMS: items, syncCountryAccessibility: () => {}});
+  const context = vm.createContext({localeText, Intl, Map, COUNTRY_ITEMS: items, syncCountryAccessibility: () => {}});
   for (const [start, end] of [
     ['function normalizeIso2', 'function resolveDefaultFlagBase'],
     ['function getCountryByIso2', 'function normalizeMaskPatternByStyle'],
+    ['const REGION_NAMES', 'function getCountryLabel'],
     ['function resolveInitialCountry', 'function syncDisabledState'],
     ['function countryMatchRank', 'function ensureCountryGroups'],
   ]) vm.runInContext(source.slice(source.indexOf(start), source.indexOf(end)), context);

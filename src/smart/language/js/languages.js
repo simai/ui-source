@@ -4,8 +4,11 @@
 // languages the component supports ship with it (data/names.json, from CLDR:
 // the browser's Intl.DisplayNames names fewer -- research LG-7); the browser
 // names the rest, and what neither can name is shown as its code. The
-// element gives this module the shipped names (useNames), so the module
-// itself has no import a plain Node.js test cannot take.
+// element gives this module the shipped names (useNames). Their names in
+// Russian and any other language are words of sf-language, name-<code>, a
+// language file's (owner decision C282), read through the page's language
+// registry.
+import {localeText} from '../../../core/js/page-language.js';
 
 export const MODES = ['auto', 'inline', 'menu', 'search', 'field'];
 export const SIZES = ['1/3', '1/2', '1', '2', '3'];
@@ -48,23 +51,43 @@ export function dirOf(code) {
 
 // The shipped names, by canonical code in lower case.
 const SHIPPED = new Map();
+// The code as the data writes it (zh-Hans), by its lower case: the key of its
+// name words (name-zh-Hans).
+const DATA_CODES = new Map();
+const canonicalWordCode = (code) => DATA_CODES.get(String(code).toLowerCase()) ?? String(code);
 
-/** Takes the shipped names (data/names.json): {names: {<code>: {native, en, ru}}}. */
+/** Takes the shipped names (data/names.json): {names: {<code>: {native, en}}}. */
 export function useNames(data) {
   SHIPPED.clear();
+  DATA_CODES.clear();
   for (const [code, names] of Object.entries(data?.names ?? {})) {
-    if (names && typeof names === 'object') SHIPPED.set(code.toLowerCase(), names);
+    if (!names || typeof names !== 'object') continue;
+    SHIPPED.set(code.toLowerCase(), names);
+    DATA_CODES.set(code.toLowerCase(), code);
   }
 }
 
-// A shipped name of a language in a language: native (in itself), en or ru;
-// '' when none ships.
+// The name of a language in a language the data does not name it in (owner
+// decision C282: the data names each in itself and in English; Russian and
+// any other language's names are words of sf-language, name-<code>, its
+// language file's). undefined when that language has none.
+function nameWord(code, inLanguage) {
+  const key = `name-${code}`;
+  const word = localeText(null, key, inLanguage, 'sf-language');
+  return word === key ? undefined : word;
+}
+
+// A shipped name of a language in a language: native (in itself), en, or the
+// words of the language it is named in; '' when none.
 function shippedName(code, inLanguage) {
   const names = SHIPPED.get(String(code).toLowerCase());
   if (!names) return '';
   const want = String(inLanguage).toLowerCase();
   if (want === String(code).toLowerCase()) return names.native || '';
-  return names[want] || names[want.split('-')[0]] || '';
+  const own = names[want] || names[want.split('-')[0]];
+  if (own) return own;
+  const word = nameWord(canonicalWordCode(code), want);
+  return typeof word === 'string' ? word : '';
 }
 
 // A language's name in a language: the shipped one first, else the

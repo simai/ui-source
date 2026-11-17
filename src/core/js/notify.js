@@ -21,14 +21,11 @@
 // The list of earlier pairs, every message whole with a gap, is a setting:
 // SF.notifications.configure({layout: 'list'}).
 import {pageText} from './page-language';
+// English built in; the other languages from a language file (C282).
+import NOTIFY_TEXT from './lang/notify/index.mjs';
 import {closeLayer, openLayer} from './layer-stack';
 // The device's reduced motion or the site's «остановить движение» (C196).
 import {reducedMotion} from './motion.js';
-
-const NOTIFY_TEXT = {
-  en: {region: 'Notifications'},
-  ru: {region: 'Уведомления'},
-};
 
 const STATUSES = new Set(['neutral', 'info', 'success', 'warning', 'error']);
 const ICONS = {success: 'check_circle', info: 'info', warning: 'warning', error: 'error', neutral: ''};
@@ -210,7 +207,7 @@ function region() {
   const area = document.createElement('section');
   area.className = 'sf-notifications';
   area.dataset.placement = state.placement;
-  area.setAttribute('aria-label', pageText(NOTIFY_TEXT, 'region', document.documentElement));
+  area.setAttribute('aria-label', pageText(NOTIFY_TEXT, 'region', document.documentElement, 'sf-notify'));
   if (typeof area.showPopover === 'function') area.setAttribute('popover', 'manual');
   area.addEventListener('sf-toast-close', (event) => {
     const entry = state.shown.find((item) => item.toast === event.target);

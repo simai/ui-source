@@ -110,14 +110,15 @@ async function resolveRemoteFileSize(href, node = null) {
 }
 
 // The words a screen reader hears after a link that opens a tab.
-const NEW_TAB_WORDS = {en: pick(LANG_WORDS.en, ["new-tab"]), ru: pick(LANG_WORDS.ru, ["new-tab"])};
+const NEW_TAB_WORDS = Object.fromEntries(Object.entries(LANG_WORDS).map(([code, words]) => [code, pick(words, ["new-tab"])]));
 
 // The size as it is said (decision C51): the unit in words, in the page's
 // language and in the number's form -- «112 байт», «2,4 мегабайта», «1 KB» is
 // «1 kilobyte». The visible «CSV · 112 Б» is hidden from a screen reader,
 // which hears «Смета.csv, CSV, 112 байт», the commas its pauses.
-const SIZE_WORDS = {en: pick(LANG_WORDS.en, ["byte","kilobyte","megabyte","gigabyte","terabyte"]), ru: pick(LANG_WORDS.ru, ["byte","kilobyte","megabyte","gigabyte","terabyte"])};
+const SIZE_WORDS = Object.fromEntries(Object.entries(LANG_WORDS).map(([code, words]) => [code, pick(words, ["byte","kilobyte","megabyte","gigabyte","terabyte"])]));
 
+// c282-allow-start: input parsing (size units a page writes, Russian among them)
 const SIZE_UNIT_WORDS = {
   'б': 'byte', b: 'byte', 'байт': 'byte', 'байта': 'byte', byte: 'byte', bytes: 'byte',
   'кб': 'kilobyte', kb: 'kilobyte', kib: 'kilobyte',
@@ -125,6 +126,7 @@ const SIZE_UNIT_WORDS = {
   'гб': 'gigabyte', gb: 'gigabyte', gib: 'gigabyte',
   'тб': 'terabyte', tb: 'terabyte', tib: 'terabyte',
 };
+// c282-allow-end
 
 const SIZE_TEXT = /^\s*(\d[\d\s\u00a0\u202f.,]*?)\s*([^\d\s.,]+)\.?\s*$/u;
 

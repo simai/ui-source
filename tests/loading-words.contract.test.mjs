@@ -45,7 +45,7 @@ test('both modals take the loading words from the page language, as a named stat
   const ordinary = read('src/component/modal/js/_modal.js');
   // The class modal's words are its language files (localization study LC-4).
   const ordinaryWords = (code) => JSON.parse(read(`src/component/modal/lang/${code}.json`)).runtime;
-  assert.match(ordinary, /const UNTITLED = \{en: LANG_WORDS\.en, ru: LANG_WORDS\.ru\};/u);
+  assert.match(ordinary, /const UNTITLED = LANG_WORDS;/u);
   assert.equal(ordinaryWords('en').loading, 'Loading…');
   assert.equal(ordinaryWords('ru').loading, 'Загрузка…');
   assert.equal(ordinaryWords('ru').loadFailed, 'Не удалось загрузить содержимое');

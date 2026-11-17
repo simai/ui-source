@@ -25,7 +25,7 @@ test('the three names are registered to the Framework, family tile with them, an
 
 test('sf-progress-bar 1.2.0: warning-at and error-at, the more serious of status and the threshold', () => {
   const manifest = json('src/smart/progress-bar/component.json');
-  assert.equal(manifest.version, '1.5.3'); // fix/returns-gb67: the thresholds from component/progress-threshold.js // group build 9: 1.5.2 moved on by the merged branches or a GB9 patch
+  assert.equal(manifest.version, '1.5.4'); // fix/returns-gb67: the thresholds from component/progress-threshold.js // group build 9: 1.5.2 moved on by the merged branches or a GB9 patch // C282: 1.5.3 moved on by the language-file patch (Russian is a language file)
   for (const name of ['warning-at', 'error-at']) {
     assert.equal(manifest.settings[name].type, 'number');
     assert.equal(manifest.settings[name].optional, true);

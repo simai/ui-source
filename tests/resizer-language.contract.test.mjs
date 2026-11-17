@@ -13,6 +13,7 @@
 // element the bundler ships, not a copy of its logic.
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {loadRussian} from './support/russian-language-file.mjs';
 import {readFile} from 'node:fs/promises';
 
 const here = (path) => new URL(path, import.meta.url);
@@ -24,8 +25,7 @@ const source = raw
   .replace(/^import '\.\/scss\/index\.scss';$/mu, '')
   .replace(/^import manifest from '\.\/component\.json';$/mu, await inline('manifest', 'component.json'))
   .replace(/^import aliases from '\.\/aliases\.json';$/mu, await inline('aliases', 'aliases.json'))
-  .replace(/^import enFile from '\.\/lang\/en\.json';$/mu, await inline('enFile', 'lang/en.json'))
-  .replace(/^import ruFile from '\.\/lang\/ru\.json';$/mu, await inline('ruFile', 'lang/ru.json'))
+  .replace("'./lang/index.mjs'", JSON.stringify(here('../src/smart/resizer/lang/index.mjs').href))
   .replace("'./engine.mjs'", JSON.stringify(here('../src/smart/resizer/engine.mjs').href))
   .replace("'../../core/js/page-language'", JSON.stringify(here('../src/core/js/page-language.js').href))
   .replace("'../../core/js/element-manifest'", JSON.stringify(here('../src/core/js/element-manifest.js').href))
@@ -73,7 +73,7 @@ const connected = (attributes = {}) => {
 };
 
 test('sf-resizer: the page language names the handle, and a live switch renames it', (t) => {
-  t.after(() => language.forget());
+  t.after(() => { language.forget(); loadRussian(); });
   const handle = connected();
   assert.equal(handle.getAttribute('aria-label'), 'Изменить ширину', 'a Russian page');
   assert.match(handle.title, /^Тяните или нажимайте стрелки/u);
@@ -89,7 +89,7 @@ test('sf-resizer: the page language names the handle, and a live switch renames 
 });
 
 test('sf-resizer: a language the Framework never shipped can be registered for it', (t) => {
-  t.after(() => language.forget());
+  t.after(() => { language.forget(); loadRussian(); });
   const handle = connected();
   language.register('sf-resizer', 'tr', {label: 'Boyutlandır', hint: 'Sürükleyin veya ok tuşlarını kullanın.'});
   assert.equal(handle.getAttribute('aria-label'), 'Изменить ширину', 'Turkish is registered, not yet chosen');
@@ -105,7 +105,7 @@ test('sf-resizer: a language the Framework never shipped can be registered for i
 });
 
 test('sf-resizer: a named label is the consumer\'s and no language changes it', (t) => {
-  t.after(() => language.forget());
+  t.after(() => { language.forget(); loadRussian(); });
   const handle = connected({label: 'Ширина меню'});
   assert.equal(handle.getAttribute('aria-label'), 'Ширина меню');
   assert.equal(handle.title, 'Ширина меню. Тяните или нажимайте стрелки; двойной щелчок возвращает ширину.');
@@ -116,7 +116,7 @@ test('sf-resizer: a named label is the consumer\'s and no language changes it', 
 });
 
 test('sf-resizer: a handle taken out of the page stops listening', (t) => {
-  t.after(() => language.forget());
+  t.after(() => { language.forget(); loadRussian(); });
   const handle = connected();
   handle.disconnectedCallback();
   handle.isConnected = false;
@@ -131,6 +131,6 @@ test('sf-resizer: no private reading of the page language is left in the source'
   assert.match(raw, /import \{language(?:, pageWord)?\} from '\.\.\/\.\.\/core\/js\/page-language'/u);
   // The words are its language files, read by the shared reader (sfWord).
   assert.match(raw, /this\.sfWord\('label'\)/u);
-  assert.match(raw, /lang: \{en, ru\}/u);
+  assert.match(raw, /lang: languageFiles/u);
   assert.match(raw, /language\.onChange\(/u, 'the announce refresh');
 });

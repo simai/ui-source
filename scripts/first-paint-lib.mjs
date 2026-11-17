@@ -503,7 +503,13 @@ export const head = ({sheets = ['/distr/core/css/core.css'], scripts = true, tit
 <title>${esc(title)}</title><link rel="icon" href="data:,">
 ${sheets.map((href) => `<link rel="stylesheet" href="${href}">`).join('\n')}
 ${scripts ? `<script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG=${JSON.stringify(BOOT_CONFIG)};</script>` : ''}
+${scripts ? languageScript : ''}
 ${extra}</head>`;
+// The page is Russian: its words come from the ru language file, included
+// before core as a site does (owner decision C282). Without it the Loader
+// would hold the components for the parts' fetch and the picture would wait
+// on the network; with it the words are in the registry before core runs.
+export const languageScript = '<script src="/distr/core/lang/ru.js"></script>';
 export const coreScript = '<script src="/distr/core/js/core.js"></script>';
 
 /** The assemblies, each with its layouts' HTML and the folders of its parts. */

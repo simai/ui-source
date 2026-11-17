@@ -3,18 +3,21 @@
   "schema_version": 1,
   "id": "component.tabs",
   "kind": "component",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/tabs/docs/docs.md",
     "src/component/tabs/index.js",
     "src/component/tabs/js/_tabs.js",
     "src/component/tabs/js/index.js",
+    "src/component/tabs/lang/en.json",
+    "src/component/tabs/lang/index.mjs",
+    "src/component/tabs/lang/ru.json",
     "src/component/tabs/rule.js",
     "src/component/tabs/scss/_css__tabs.scss",
     "src/component/tabs/scss/index.scss"
   ],
-  "content_sha256": "f2187c827aca05f9051a81199b370134c9299ad578416edba161893815f47cc4",
+  "content_sha256": "cc31f1c96113befa3aebf91c535586cc2c9c113b0f5325ae31c5d7d56e819591",
   "dependencies": [
     {
       "id": "core.runtime",

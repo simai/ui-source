@@ -1,0 +1,58 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-button-copy": {
+      "copy": "Копировать",
+      "copied": "Скопировано",
+      "failed": "Не удалось скопировать",
+      "selected": "Выделено — нажмите {keys}"
+    },
+    "sf-composition": {
+      "button": "Кнопка",
+      "badge": "Метка",
+      "send": "Отправить",
+      "field": "Поле",
+      "option": "Вариант",
+      "name": "Имя",
+      "phone": "Телефон",
+      "email": "Почта",
+      "message": "Сообщение"
+    },
+    "sf-display-settings": {
+      "skip-link-text": "Перейти к содержимому"
+    },
+    "sf-file-download": {
+      "new-tab-text": "(откроется в новой вкладке)"
+    },
+    "sf-file-size": {
+      "b": "Б",
+      "kb": "КБ",
+      "mb": "МБ",
+      "gb": "ГБ"
+    },
+    "sf-fragment": {
+      "heading": "Не удалось показать этот блок"
+    },
+    "sf-notify": {
+      "region": "Уведомления"
+    },
+    "sf-relative-day": {
+      "today": "сегодня",
+      "yesterday": "вчера",
+      "tomorrow": "завтра"
+    }
+  }
+}

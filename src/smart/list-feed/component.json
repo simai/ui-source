@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list-feed's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The feed variant of block list (duplication audit 2026-11-03 A-6): the behaviour of ui-pro's sf-message-log 1.2.5 on core's reading position (core/js/reading-position.js).",
   "id": "smart.list-feed",
   "tag": "sf-list-feed",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -588,7 +588,8 @@
     "version 1.3.3 (2026-11-16, owner decision C212 (7), focus offsets from two tokens; numbered above 1.3.2 on fix/scrollbar-system-c210): a patch, nothing drawn differently: a ring drawn inside its element stands in by --sf-focus--inset (it wrote calc(var(--sf-focus--width) * -1) or a like spelling). Each spelling had the value of the token it now reads, so every ring stands where it stood (measured before and after on the built sheets). Settings, values, events and keys unchanged.",
     "version 1.3.4 (written on the branch as 1.3.2; 2026-11-15; numbered above 1.3.1 on origin/fix/dot-avatar-badge-c185): a patch, a look (owner decision C210 (5): the own bars leave). The feed keeps the one bar's room on its own side only (scrollbar-gutter: stable, it was stable both-edges): the mirrored empty 14 on the other side is gone, and the turns still do not move when the feed starts to scroll. Settings, values, events and keys unchanged; evidence ui-control control/evidence/2026-11-15-scrollbar-c210.",
     "version 1.4.0 (2026-11-16, owner decision C167 (3) and (4); above 1.3.4 on fix/feedback-defects-fb1 and 1.3.3 on fix/utilities-focus-c212): a minor. Entries take sf-list's row fields date and unread. (3) The «Новые» line (word new-text: «Новые», «New») stands before the first unread entry (unread: true or a number above 0; one's own never), whoever draws the entries: block list's divider .sf-group-heading--divider in primary with role separator and the words its name, laid with the entry in one box (sf-list-feed__unread) and drawn again when the first unread entry changes. (4) The default entry reads «Автор · время»: the entry's date after the author, quiet and regular, in sf-time format auto tooltip none (relations group-heading and cl-time). Settings, events and keys unchanged.",
-    "version 1.4.1 (written on the branch as 1.3.4; 2026-11-16, DEV RG-PH-2; numbered above 1.3.3 on origin/fix/utilities-focus-c212): a patch, nothing this element draws changed: its empty example's first-paint snapshot and sheet list follow sf-empty-state 1.5.0, drawn from sf-placeholder's parts."
+    "version 1.4.1 (written on the branch as 1.3.4; 2026-11-16, DEV RG-PH-2; numbered above 1.3.3 on origin/fix/utilities-focus-c212): a patch, nothing this element draws changed: its empty example's first-paint snapshot and sheet list follow sf-empty-state 1.5.0, drawn from sf-placeholder's parts.",
+    "version 1.5.1 (2026-11-17, feat/lang-file-c282; numbered above 1.5.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged."
   ],
   "x-rule": {
     "$comment": [

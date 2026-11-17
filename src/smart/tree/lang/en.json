@@ -4,6 +4,8 @@
     "loading": "Loading…",
     "load-error": "Could not load",
     "retry": "Retry",
-    "hidden": "hidden"
+    "hidden": "hidden",
+    "open-label": "Open item",
+    "close-label": "Close item"
   }
 }

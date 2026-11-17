@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.include",
-  "version": "1.1.2",
+  "version": "1.2.1",
   "title": "Include",
   "summary": "Loads a part of the page from an address: a skeleton while it loads, the server's HTML in its place when it arrives (the Loader starts the components in it), an error with Retry when it does not. load=\"view\" waits until the part nears the viewport.",
   "kind": "smart",
@@ -247,7 +247,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/include/index.js",
-        "sha256": "1b2383d1517fbbe4469bdeb2694b790f5e5fbd914c3fa0af341c8f412f14106a"
+        "sha256": "8669e95389221f31b8dadaa82f8625c78a15f44b27206a717d4b24f284837c8a"
       },
       {
         "path": "src/smart/include/js/templates/default.js",

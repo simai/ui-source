@@ -36,7 +36,7 @@ test('C145 (3): sf-tag-group is a list of tags 4 apart', () => {
   assert.ok(JSON.stringify(names).includes('"sf-tag-group"'));
   assert.match(read('src/core/js/rule.src.js'), /import '\.\.\/\.\.\/smart\/tag-group\/rule\.js';/u);
   const manifest = json('src/smart/tag-group/component.json');
-  assert.equal(manifest.version, '1.0.1');
+  assert.equal(manifest.version, '1.0.4'); // C282: 1.0.1 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(manifest.settings.selection.enum ?? manifest.settings.selection.values ?? ['none', 'one', 'many'], ['none', 'one', 'many']);
   // The core holds its box before its code.
   assert.match(read('src/core/scss/_sf_css__placeholder.scss'), /:where\(sf-tag-group:not\(:defined\)\) \{[^}]*gap: var\((?:--sf-space-1\\\/4|--sf-gap--tags)\);/u);
@@ -109,12 +109,12 @@ test('C145 amendment R238: the first tag in a field stands 4 from its start edge
 });
 
 test('versions: sf-tag 1.8.0, component.tags 1.7.0, sf-tag-group 1.0.1, sf-dropdown 1.12.0, component.dropdown 1.10.0, sf-input-lookup 1.12.1 (group build 6: the integration line\'s higher numbers carry these notes)', () => {
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.18.1'); // C153 // group build 7: the integrated number (the branch wrote 1.14.0) // group build 9: 1.16.1 moved on by the merged branches or a GB9 patch
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.20.1'); // C153 // group build 7: the integrated number (the branch wrote 1.14.0) // group build 9: 1.16.1 moved on by the merged branches or a GB9 patch // C282: 1.18.1 moved on by the language-file patch (Russian is a language file)
   assert.equal(json('src/component/dropdown/passport.json').version, '1.15.0'); // group build 7: the patch for moved files (the line had 1.13.2) // group build 9: 1.13.4 moved on by the merged branches or a GB9 patch
-  assert.equal(json('src/smart/input-lookup/component.json').version, '1.16.1'); // group build 8: C208's patch above RG-S2's 1.15.2 (group build 7: the integrated number; the branch wrote 1.13.1) // group build 9: 1.15.3 moved on by the merged branches or a GB9 patch
-  assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.16.1'); // group build 9 // group build 8
-  assert.equal(json('src/smart/tag/component.json').version, '1.11.2'); // group build 9 // group build 7: the GB6 notes numbered above the released 1.9.1
-  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.11.2'); // group build 9 // group build 7
+  assert.equal(json('src/smart/input-lookup/component.json').version, '1.17.1'); // group build 8: C208's patch above RG-S2's 1.15.2 (group build 7: the integrated number; the branch wrote 1.13.1) // group build 9: 1.15.3 moved on by the merged branches or a GB9 patch // C282: 1.16.1 moved on by the language-file patch (Russian is a language file)
+  assert.equal(json('src/smart/input-lookup/smart.manifest.json').version, '1.17.1'); // C282: moved on by the language-file patch (Russian is a language file) // group build 9 // group build 8
+  assert.equal(json('src/smart/tag/component.json').version, '1.12.1'); // C282: moved on by the language-file patch (Russian is a language file) // group build 9 // group build 7: the GB6 notes numbered above the released 1.9.1
+  assert.equal(json('src/smart/tag/smart.manifest.json').version, '1.12.1'); // C282: moved on by the language-file patch (Russian is a language file) // group build 9 // group build 7
   assert.ok(atLeastTags(json('src/component/tags/passport.json').version), 'component.tags at least 1.7.0');
-  assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.1'); // first paint R222 open item 10: the printed «+N» replaced
+  assert.equal(json('src/smart/tag-group/smart.manifest.json').version, '1.0.4'); // C282: 1.0.1 moved on by the language-file patch, above 1.0.3 on origin // first paint R222 open item 10: the printed «+N» replaced
 });

@@ -18,6 +18,11 @@ import { fromMarkdown, toMarkdown } from '../src/core/js/composition/markdown.mj
 import { fromEditorJs, toEditorJs } from '../src/core/js/composition/editorjs.mjs';
 import { stable, withoutIds } from '../src/core/js/composition/foreign.mjs';
 import { canonicalHtml } from '../contracts/conformance/structured-content/normalize-html.mjs';
+import { registerLanguageFile } from './language-file-node.mjs';
+
+// The Russian cases say what a Russian page says: the ru language file's
+// words (owner decision C282; Russian is not built into the bundles).
+registerLanguageFile('ru');
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const kit = resolve(root, 'contracts/conformance/structured-content');

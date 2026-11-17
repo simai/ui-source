@@ -2,7 +2,7 @@
   "$comment": "The source of sf-breadcrumbs's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/breadcrumbs (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.breadcrumbs",
   "tag": "sf-breadcrumbs",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "kind": "leaf",
   "family": "breadcrumbs",
   "settings": {
@@ -279,7 +279,8 @@
     "version 1.2.4 (2026-11-13, a patch; N1 of the nav-4b acceptance of integration-fix/nav-4, in boxes of 140-180 px on the desktop ladder): «…» never shrinks (its entry and the button are flex: none), so the next separator is never drawn under it. A crumb cut to less than 3em of its text (a few letters with the ellipsis, _trail.js LABEL_MIN_EM, cutBelowMin) is no crumb: folded as far as room goes (nextFit null), such a crumb takes the parent behind «…» too and the page stands alone, «… › current» (starvedFit, trailStarved; a trail of parents keeps its parent). Before, «… › › Хлебные крошки» in a 140 px box. L1, L2, C93 item 2 and C128 unchanged. Class sheet and runtime component.breadcrumbs 1.1.4. Settings, values, events and keys unchanged.",
     "version 1.2.5 (2026-11-14, group build 5; numbered above 1.2.4 on origin/fix/accordion-c154): a patch, its own code unchanged: the passport family is the first word of the tag (C174, NM-5; fix/sets-step-1); 4 first-paint snapshot file(s) follow the merged markup (fix/icons-c151).",
     "version 1.2.6 (2026-11-15, group build 7; numbered above 1.2.5 on origin/fix/checkbox-hit-b4): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc).",
-    "version 1.2.7 (2026-11-17, group build 9; numbered above 1.2.6 on origin/feat/dependency-graph-c249): a patch, nothing drawn or done differently by this unit: its words of the withdrawn pilot interface pack leave it (C278)."
+    "version 1.2.7 (2026-11-17, group build 9; numbered above 1.2.6 on origin/feat/dependency-graph-c249): a patch, nothing drawn or done differently by this unit: its words of the withdrawn pilot interface pack leave it (C278).",
+    "version 1.2.8 (2026-11-17, feat/lang-file-c282; numbered above 1.2.7 on origin/integration/pair-next-11): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged."
   ],
   "x-registry": {
     "ownership": {

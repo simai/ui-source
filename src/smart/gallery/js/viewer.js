@@ -29,10 +29,9 @@
 
 import { html, nothing, render } from 'lit';
 import { pageWord } from '../../../core/js/page-language.js';
-import en from '../lang/en.json';
-import ru from '../lang/ru.json';
+// English built in; Russian and the rest from a language file (C282).
+import WORDS from '../lang/index.mjs';
 
-const WORDS = { en: en.runtime || {}, ru: ru.runtime || {} };
 const VIDEO = /\.(?:mp4|m4v|webm|ogv|ogg|mov)(?:[?#]|$)/iu;
 const PDF = /\.pdf(?:[?#]|$)/iu;
 // A move shorter than this is a press, not a swipe (CSS px).

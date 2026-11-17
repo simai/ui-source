@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import {russianWords} from './support/russian-language-file.mjs';
 
 // Code in running text (owner, 2026-11-07, docs review R024, rule C10): the
 // Gravity UI geometry, the neutral tone, the public variables and copy on
@@ -79,6 +80,8 @@ test('copy on click is opt-in and says what sf-button-copy says', async () => {
   const {WORDS} = await import('../src/core/js/code-copy.js');
   for (const locale of ['en', 'ru']) {
     const words = JSON.parse(await read(`src/smart/button-copy/lang/${locale}.json`)).runtime;
-    for (const key of ['copy', 'copied', 'selected']) assert.equal(WORDS[locale][key], words[key], `${locale}.${key}`);
+    // English is built in; Russian is core's language file (C282).
+    const own = locale === 'en' ? WORDS.en : russianWords('core/js/lang/copy');
+    for (const key of ['copy', 'copied', 'selected']) assert.equal(own[key], words[key], `${locale}.${key}`);
   }
 });

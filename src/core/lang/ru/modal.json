@@ -1,0 +1,31 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 14,
+    "translated": 14,
+    "share": 100
+  },
+  "words": {
+    "sf-modal": {
+      "close": "Закрыть",
+      "discard": "Не сохранять",
+      "discard-heading": "Закрыть без сохранения?",
+      "frame-failed": "Не удалось загрузить встроенную страницу",
+      "keep-editing": "Продолжить правку",
+      "load-failed": "Не удалось загрузить содержимое",
+      "loading": "Загрузка…",
+      "minimize": "Свернуть",
+      "title": "Окно",
+      "loadFailed": "Не удалось загрузить содержимое",
+      "frameFailed": "Не удалось загрузить встроенную страницу"
+    }
+  }
+}

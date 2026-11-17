@@ -4,6 +4,7 @@ import { instancePath, partId } from '../../../core/js/instance-path.js';
 import { pageText } from '../../../core/js/page-language';
 import { fitBesideMore, fitInOrder, rowRoom, triggerExtra } from '../../../core/js/overflow-row.js';
 import { menuOpen } from '../../../core/js/menu-open.js';
+import WORDS from '../lang/index.mjs';
 
 const TABS_SELECTOR = '.sf-tabs';
 const TABS_BOUND_FLAG = 'sfTabsBound';
@@ -20,12 +21,9 @@ const LEAD = 'data-sf-tabs-lead';
 const SQUEEZED = 'data-sf-tabs-squeezed';
 const ROW = 'data-sf-tabs-row';
 const ROW_STATE = '__sfTabsRow';
-// Every word this part says. A product adds a language with
+// Every word this part says: lang/ (English built in, the other languages
+// from a language file, C282). A product adds a language with
 // SF.language.register('sf-tabs', code, words).
-const WORDS = {
-  en: { more: 'More' },
-  ru: { more: 'Ещё' },
-};
 
 function isSmartTabsRoot(root) {
   return root?.parentElement?.localName === 'sf-tabs';

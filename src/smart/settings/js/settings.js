@@ -357,6 +357,7 @@ export function panelLayout(items, {search = false} = {}) {
 }
 
 // A search's words: no case, ё as е.
+// c282-allow: input parsing (ё is searched as е)
 export const folded = (value) => String(value ?? '').toLocaleLowerCase().replace(/ё/gu, 'е').trim();
 
 /** Whether a row's words hold the query (no case, ё as е). An empty query holds every row. */

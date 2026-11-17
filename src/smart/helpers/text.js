@@ -1,3 +1,4 @@
+// c282-allow-start: input parsing (initials read from Russian names, C152)
 const INITIALS_SKIP_WORDS = new Set([
     "а",
     "без",
@@ -54,6 +55,7 @@ const INITIALS_SERVICE_WORDS = new Set([
     "фон", "ван", "дер", "де", "ди", "да", "дю", "ла", "ле", "ибн", "бен", "оглы", "кызы",
     "von", "van", "der", "den", "de", "di", "da", "du", "del", "della", "la", "le", "ten", "ter", "bin", "ibn",
 ]);
+// c282-allow-end
 
 export function normalizeInitialsWords(value = "") {
     return String(value || "")

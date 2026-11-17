@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tree",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "title": "Tree",
   "summary": "A tree of entries: folders that open, files and links; one Tab stop walked with the arrows, optional selection, drops of records and files on an entry. Thousands of entries: keyed rows, a window over more than 300.",
   "kind": "smart",
@@ -583,7 +583,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tree/index.js",
-        "sha256": "72f50d552a6598b6bf6bd8d85c82d5270057613144cb2522c069e8fe2cfc5e1f"
+        "sha256": "2a03dc5c13ab5cbae5483a14f2df8047ee277de95c463f3d24fed6c5e4acbc44"
       },
       {
         "path": "src/smart/tree/js/templates/default.js",

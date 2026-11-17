@@ -3,12 +3,14 @@
 //
 // Every component keeps its words in its own folder: src/smart/<name>/lang/,
 // src/component/<name>/lang/ and core's src/core/js/lang/<part>/, one file per
-// language, the words on screen under `runtime`. ru and en are built in
+// language, the words on screen under `runtime`. en and ru are complete
 // (C177 (2)): each holds every word, and a word that takes a number holds
-// every plural form of its language. Any other language may come in parts
-// (C177 (4)): what it lacks is said in English on the page, and shown here.
+// every plural form of its language. English is built into the bundles,
+// Russian ships as a language file (C282, src/core/lang/built-in.json). Any
+// other language may come in parts (C177 (4)): what it lacks is said in
+// English on the page, and shown here.
 //
-//   node scripts/language-coverage.mjs            the built-in check (exit 1 on a gap)
+//   node scripts/language-coverage.mjs            the complete languages' check, en and ru (exit 1 on a gap)
 //   node scripts/language-coverage.mjs de         coverage of de: share and the words missing
 //   node scripts/language-coverage.mjs de --json  the same as JSON
 //
@@ -19,8 +21,22 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const BUILT_IN = Object.freeze(['ru', 'en']);
 export const FALLBACK = 'en';
+
+// Which languages the bundles carry and which must say every word (owner
+// decision C282, 2026-11-17): src/core/lang/built-in.json. English is built
+// in; Russian is a language file like every other, and stays complete, so
+// writing the words in Russian is unchanged. The switch is the file: built_in
+// ["en", "ru"] puts Russian back into the bundles (rollback).
+export function builtInLanguages(root = ROOT) {
+  const file = path.join(root, 'src/core/lang/built-in.json');
+  const data = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {built_in: ['ru', 'en'], complete: ['ru', 'en']};
+  const builtIn = [...new Set([FALLBACK, ...(data.built_in ?? [])])];
+  const complete = [...new Set([...builtIn, ...(data.complete ?? [])])];
+  return {builtIn: Object.freeze(builtIn), complete: Object.freeze(complete)};
+}
+export const BUILT_IN = builtInLanguages().builtIn;
+export const COMPLETE = builtInLanguages().complete;
 
 const PLURAL_FORMS = (code) => new Intl.PluralRules(code).resolvedOptions().pluralCategories;
 
@@ -116,6 +132,7 @@ export function languageCoverage(code, root = ROOT) {
   return {
     language: code,
     built_in: BUILT_IN.includes(code),
+    complete: COMPLETE.includes(code),
     words: total,
     missing,
     share: total ? Math.round(((total - missing) / total) * 1000) / 10 : 100,
@@ -129,19 +146,19 @@ if (isMain) {
   const json = args.includes('--json');
   const codes = args.filter((arg) => !arg.startsWith('--'));
   let failed = false;
-  for (const code of codes.length ? codes : BUILT_IN) {
+  for (const code of codes.length ? codes : COMPLETE) {
     const report = languageCoverage(code);
     if (json) {
       process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
     } else {
-      process.stdout.write(`${code}: ${report.share} % of ${report.words} words${report.built_in ? ' (built in)' : ''}\n`);
+      process.stdout.write(`${code}: ${report.share} % of ${report.words} words${report.built_in ? ' (built in)' : report.complete ? ' (a language file, kept complete)' : ''}\n`);
       for (const folder of report.folders) {
         if (!folder.file) process.stdout.write(`  ${folder.id}: no ${code}.json (${folder.words} words in English)\n`);
         else if (folder.missing.length) process.stdout.write(`  ${folder.id}: missing ${folder.missing.join(', ')}\n`);
         for (const gap of folder.gaps) process.stdout.write(`  ${folder.id}: ${gap}\n`);
       }
     }
-    if (report.built_in && report.folders.length) failed = true;
+    if (report.complete && report.folders.length) failed = true;
     const mismatched = placeholderGaps().filter((gap) => gap.code === code);
     if (!json) for (const gap of mismatched) process.stdout.write(`  ${gap.id}: ${gap.key}: {${gap.word.join('}, {')}} where ru says {${gap.ru.join('}, {')}}\n`);
     if (mismatched.length) failed = true;

@@ -21,7 +21,7 @@ const present = FOLDERS.filter((folder) => existsSync(new URL(`../src/smart/${fo
 test('every display component of group B is made from its component.json, language files and aliases', () => {
   for (const folder of present) {
     const source = read(`src/smart/${folder}/index.js`);
-    for (const file of ['./component.json', './aliases.json', './lang/en.json', './lang/ru.json']) {
+    for (const file of ['./component.json', './aliases.json', './lang/index.mjs']) {
       assert.match(source, new RegExp(`from ['"]${file.replace(/[./]/gu, (c) => `\\${c}`)}['"]`), `${folder}: ${file}`);
     }
     assert.match(source, /elementFromManifest\(manifest, \{/u, folder);

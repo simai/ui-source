@@ -2,6 +2,7 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { pageText } from '../../../core/js/page-language';
 import { tagSelector } from '../../../core/js/tag-aliases.js';
+import WORDS from '../lang/index.mjs';
 import {
   actionEntry,
   controlOf,
@@ -38,12 +39,9 @@ const STACKED = 'data-sf-stacked';
 const STACK_KEY = '__sfButtonGroupStack';
 const AUTHOR_ORIENTATION_KEY = '__sfButtonGroupAuthorOrientation';
 
-// Every word this part says (owner decision C155: «Ещё» names ⋯). A product
-// adds a language with SF.language.register('sf-button-group', code, words).
-const WORDS = {
-  en: { more: 'More' },
-  ru: { more: 'Ещё' },
-};
+// Every word this part says (owner decision C155: «Ещё» names ⋯): lang/,
+// English built in, the other languages from a language file (C282). A
+// product adds a language with SF.language.register('sf-button-group', code, words).
 
 // The buttons of the group that stand in it now: not out of the row, ⋯ when
 // it shows (C155).

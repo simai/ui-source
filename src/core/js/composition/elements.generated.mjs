@@ -111,7 +111,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.badge",
-    "version": "1.6.2"
+    "version": "1.6.3"
   },
   "sf-button": {
     "inputs": {
@@ -311,7 +311,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.16.3"
+    "version": "1.16.6"
   },
   "sf-button-icon": {
     "inputs": {
@@ -491,7 +491,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.13.3"
+    "version": "1.13.6"
   },
   "sf-checkbox": {
     "inputs": {
@@ -563,7 +563,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.5.2"
+    "version": "1.5.4"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -692,7 +692,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.18.1"
+    "version": "1.20.1"
   },
   "sf-icon": {
     "inputs": {
@@ -784,7 +784,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.icon",
-    "version": "1.4.1"
+    "version": "1.4.2"
   },
   "sf-input": {
     "inputs": {
@@ -993,7 +993,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.14.2"
+    "version": "1.15.1"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -1169,7 +1169,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.12.3"
+    "version": "1.13.1"
   },
   "sf-switch": {
     "inputs": {
@@ -1237,6 +1237,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.7.2"
+    "version": "1.9.1"
   }
 });

@@ -5,7 +5,7 @@ import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-swiper', code, words); a ternary on «ru» allowed two
 // and no more.
-const SWIPER_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const SWIPER_TEXT = LANG_WORDS;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 // A press becomes a drag after this many pixels; below it a press stays a

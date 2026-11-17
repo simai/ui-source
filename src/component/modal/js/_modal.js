@@ -105,7 +105,7 @@ function normalizeDisplay(value) {
 // The loading state and its failure speak the page's language too: they said
 // "Loading..." and "Failed to load content" on every page (simai/ui-source#11
 // follow-up). The words are sf-modal's, so one registration covers both.
-const UNTITLED = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const UNTITLED = LANG_WORDS;
 // The node the words are looked up from: the modal once it is on the page,
 // else the document, which is where a modal not yet attached will be.
 const modalText = (key, node) => pageText(UNTITLED, key, node?.isConnected ? node : document.documentElement, 'sf-modal');

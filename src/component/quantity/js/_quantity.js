@@ -11,7 +11,7 @@ import { tagSelector } from '../../../core/js/tag-aliases.js';
 // one place for every language, as the Smart components keep them.
 import LANG_WORDS from '../lang/index.mjs';
 
-const QUANTITY_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const QUANTITY_TEXT = LANG_WORDS;
 
 const QUANTITY_SELECTOR = '.sf-quantity';
 const BOUND_FLAG = 'sfQuantityBound';

@@ -28,7 +28,7 @@ import LANG_WORDS from '../lang/index.mjs';
 // product adds a language with SF.language.register('sf-badge', code,
 // {count, dot}); a count written as «a|b|c» (an author's label, a product's
 // word from before) still reads in the order of the categories.
-export const ANCHORED_BADGE_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+export const ANCHORED_BADGE_TEXT = LANG_WORDS;
 
 export const ANCHORED_BADGE_COMPONENT = 'sf-badge';
 export const DEFAULT_BADGE_CAP = 99;

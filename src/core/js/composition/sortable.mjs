@@ -46,15 +46,6 @@ const LINE = SORTABLE_DROP_LINE;
 const HALF = SORTABLE_DROP_LINE / 2;
 
 const MESSAGES = {
-  ru: {
-    instructions: 'Пробел или Enter — взять, стрелки — переместить, Пробел или Enter — положить, Escape — отменить.',
-    picked: 'Взято: {item}. Позиция {index} из {total} в «{list}».',
-    moved: 'Позиция {index} из {total} в «{list}».',
-    dropped: 'Положено: {item}, позиция {index} в «{list}».',
-    cancelled: 'Перемещение отменено.',
-    target: 'Цель: {target}.',
-    roledescription: 'перемещаемый',
-  },
   en: {
     instructions: 'Space or Enter to pick up, arrows to move, Space or Enter to drop, Escape to cancel.',
     picked: 'Picked up {item}. Position {index} of {total} in “{list}”.',

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync } from 'node:fs';
 import test from 'node:test';
+import './support/russian-language-file.mjs';
 
 import { BUILTIN_TYPE_MANIFESTS } from '../src/core/js/composition/builtins.mjs';
 import { render, validate } from '../src/core/js/composition/index.mjs';

@@ -2,6 +2,8 @@ import { ComponentObserver } from '../../../core/js/ComponentObserver';
 import registerComponent from '../../register-helper';
 import { percentText } from '../../../core/js/format-number.js';
 import { effectiveStatus, readThreshold } from '../../progress-threshold';
+import { pageText } from '../../../core/js/page-language';
+import LEVEL_WORDS from '../lang/index.mjs';
 
 const PROGRESS_SCALE_SELECTOR = '.sf-progress-scale';
 const BOUND_FLAG = 'sfProgressScaleBound';
@@ -42,10 +44,11 @@ function progressScaleLit(value, steps) {
 }
 
 // «4 из 5» in the page's language: the scale's own words, as the Smart
-// element's (lang/*.json «of-steps»).
+// element's (lang/*.json «of-steps»: English built in, the other languages
+// from a language file, C282).
 function levelWords(lit, steps) {
-  const lang = String(globalThis.document?.documentElement?.lang || '').toLowerCase();
-  return lang.startsWith('ru') ? `${lit} из ${steps}` : `${lit} of ${steps}`;
+  return pageText(LEVEL_WORDS, 'of-steps', globalThis.document?.documentElement, 'sf-progress-scale')
+    .replace('{value}', String(lit)).replace('{total}', String(steps));
 }
 
 function normalizeProgressScaleSize(value) {

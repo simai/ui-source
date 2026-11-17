@@ -3,12 +3,11 @@ import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderAvatarsTemplate } from './js/templates/default';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 // No sheet import: the rule has no css, so a sheet in this bundle never
 // reached a page; the avatars class sheet comes by the rule's relation
 // (audit 2026-11-11, dead Smart sheets).
@@ -21,7 +20,7 @@ const ru = {runtime: ruFile.runtime};
 // that.
 const AvatarsElement = elementFromManifest(manifest, {
   base: SfBaseElement,
-  lang: { en, ru },
+  lang: languageFiles,
   source: 'ru',
   aliases,
 });

@@ -26,14 +26,6 @@ export const SORTABLE_INSERT_EVENT = 'sf-sortable-insert';
 const ITEM = '[data-sf-sortable-item]';
 
 const MESSAGES = {
-  ru: {
-    point: 'Вставить: позиция {index} из {total}',
-    menu: 'Вставить',
-    search: 'Найти',
-    empty: 'Ничего не найдено',
-    inserted: 'Вставлено: {item}, позиция {index} в «{list}».',
-    hint: 'Плюс — вставить после.',
-  },
   en: {
     point: 'Insert: position {index} of {total}',
     menu: 'Insert',

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.wizard-step",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "title": "Wizard step",
   "summary": "One step of sf-wizard: its key, label, title, «why», type, optional, address in place pages, primary label and result line as attributes, its state as a value, and its body -- a form, a picture, a plan of changes -- as its children, which stay where the page put them.",
   "kind": "smart",
@@ -215,7 +215,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/wizard-step/index.js",
-        "sha256": "6e8804b6a2df156f9ef4b70b40c42cc68d26019f560e3120b955b8ebd46f13fd"
+        "sha256": "c779a08162d4815d2a0d10a56cc595b8f4349fa1bf9cd1ab348e37cc131ec24a"
       },
       {
         "path": "src/smart/wizard-step/js/templates/default.js",

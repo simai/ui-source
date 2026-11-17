@@ -37,7 +37,7 @@ test('RG-NV 3: «…» asks the Loader for sf-menu-context and opens the menu', 
 test('RG-NV 4: a crumb rings as a link, two pixels off', async () => {
   const item = await read('src/component/breadcrumbs/scss/_css__breadcrumbs_item.scss');
   assert.match(item, /:focus-visible \{\n\s+--sf-breadcrumbs-item--background-color: var\(--sf-transparent-for-focus\);\n\s+outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n\s+outline-offset: var\(--sf-a2\);/u);
-  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.2.0');
+  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.3.1'); // C282: 1.2.0 moved on by the language-file patch (Russian is a language file)
 });
 
 test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is one inline-flex control', async () => {
@@ -74,7 +74,7 @@ test('RG-NV 12: sf-pagination numbers fit seven or five places by its own room',
   assert.match(source, /return Boolean\(this\._sfNarrow\?\.matches\) \|\| this\._sfCramped === true;/u);
   assert.match(source, /fitPlaces\(\) \{/u);
   assert.match(source, /this\.noteFooterParts\(\);\n(?:\s+this\.\w+\(\);\n)*\s+this\.fitPlaces\(\);/u);
-  assert.equal((await json('src/smart/pagination/component.json')).version, '1.8.4'); // group build 9: 1.7.2 moved on by the merged branches or a GB9 patch
+  assert.equal((await json('src/smart/pagination/component.json')).version, '1.8.7'); // group build 9: 1.7.2 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file)
 });
 
 test('C237: sf-page-number--circle is a retired name that draws the square', async () => {

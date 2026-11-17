@@ -49,7 +49,7 @@ test('PG-11: the last-page button is drawn only where the jump can be answered',
 });
 
 test('PG-10: three settings, all off by default, and the word of the title', () => {
-  assert.equal(component.version, '1.8.4'); // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch
+  assert.equal(component.version, '1.8.7'); // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(
     [component.settings.href.type, component.settings.href.default],
     ['string', ''],

@@ -6,7 +6,7 @@ import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 import BundledPosition from '../../../core/js/position.js';
 import { ladderSize } from '../../field-size';
-import { pageLanguage, pageText } from '../../../core/js/page-language';
+import { localeText, pageLanguage, pageText } from '../../../core/js/page-language';
 import { holdOpenSurfaceMark } from '../../../core/js/open-surface-mark';
 import { tagSelector } from '../../../core/js/tag-aliases.js';
 // The words live in the component's language files (localization study LC-4):
@@ -15,7 +15,7 @@ import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-input-country', code, words); the locale here is
 // also what the number itself is formatted by, which is why it stays.
-const COUNTRY_CODE_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const COUNTRY_CODE_TEXT = LANG_WORDS;
 
 
 // Prefer the helper Core published; an isolated bundle uses its own copy.
@@ -453,12 +453,32 @@ function regionName(iso2, locale) {
   }
 }
 
+// A country's name in a language (owner decision C282: the Framework ships
+// the names in English; any other language's are its language file's words):
+// the name the item gives itself (a product's list may say nameEn and
+// nameRu), else the word registered for sf-input-country in that language
+// (country-<ISO2>, the ru language file's), else the browser's
+// (Intl.DisplayNames), else the English name, else the code.
+function countryName(country, locale) {
+  if (!country) return '';
+  const code = String(locale || 'en').toLowerCase().replace('_', '-').split('-')[0] || 'en';
+  const own = code === 'en' ? country.nameEn : code === 'ru' ? country.nameRu : null;
+  if (own) return own;
+  const iso2 = normalizeIso2(country.iso2);
+  if (code !== 'en' && iso2) {
+    const key = `country-${iso2}`;
+    const word = localeText(null, key, locale, 'sf-input-country');
+    if (word && word !== key) return word;
+    const named = regionName(iso2, locale);
+    if (named) return named;
+  }
+  return country.nameEn || country.nameRu || iso2 || '';
+}
+
 function getCountryLabel(country, locale) {
   if (!country) return '';
   if (country.label) return String(country.label);
-  const name = (locale === 'ru' ? country.nameRu || country.nameEn
-    : locale === 'en' ? country.nameEn || country.nameRu
-      : regionName(country.iso2, locale) || country.nameEn || country.nameRu) || country.iso2;
+  const name = countryName(country, locale);
   return name ? `${name} (${country.dialCode})` : String(country.dialCode || '');
 }
 
@@ -1074,7 +1094,7 @@ function countryMatchRank(item, query) {
   const known = getCountryByIso2(iso) || {};
   const shown = (item.querySelector(':scope > span')?.textContent || item.textContent).trim()
     .replace(/\s*\(\+?[\d\s-]*\)\s*$/u, '').toLocaleLowerCase();
-  const names = [shown, known.nameRu, known.nameEn].filter(Boolean).map((name) => String(name).toLocaleLowerCase());
+  const names = [shown, known.nameRu, countryName(known, 'ru'), known.nameEn].filter(Boolean).map((name) => String(name).toLocaleLowerCase());
   const digits = q.replace(/\D/gu, '');
   if (iso && q === iso) return 1;
   if (/^\+?[\d\s]+$/u.test(q) && digits) {
@@ -1801,7 +1821,7 @@ class CountryCode extends ComponentObserver {
         if (country?.label) {
           text.textContent = String(country.label);
         } else {
-          const fallbackLabel = country?.nameRu || country?.nameEn || country?.dialCode || '';
+          const fallbackLabel = countryName(country, locale) || country?.dialCode || '';
           const fallbackDial = country?.dialCode || country?.code || '';
           text.textContent = fallbackDial ? `${fallbackLabel} (${fallbackDial})` : fallbackLabel;
         }
@@ -1879,6 +1899,7 @@ countryCodeObserver.observe(document.documentElement, {
 export {
   bindCountryCode,
   countryFormValue,
+  countryName,
   normalizeCountriesList,
   normalizeIso2,
   resolveDefaultFlagBase,

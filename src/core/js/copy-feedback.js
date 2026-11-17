@@ -23,10 +23,11 @@
 import {copyText} from './clipboard.js';
 import {pageWord} from './page-language.js';
 
-export const WORDS = {
-  en: {copy: 'Copy', copied: 'Copied', failed: 'Could not copy', selected: 'Selected — press {keys}'},
-  ru: {copy: 'Копировать', copied: 'Скопировано', failed: 'Не удалось скопировать', selected: 'Выделено — нажмите {keys}'},
-};
+// core/js/lang/copy: English built in, the other languages from a language
+// file (C282).
+import WORDS from './lang/copy/index.mjs';
+
+export {WORDS};
 
 /** How long a result stays, in ms, unless the control says otherwise. */
 export const DURATION = 2000;

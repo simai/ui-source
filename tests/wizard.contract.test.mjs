@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.4.7'); // C210: the column takes the one bar // C208 patch // group build 7: the integrated number (the branch wrote 1.3.4) // group build 9: 1.4.4 moved on by the merged branches or a GB9 patch
+  assert.equal(manifest.version, '1.5.1'); // C210: the column takes the one bar // C208 patch // group build 7: the integrated number (the branch wrote 1.3.4) // group build 9: 1.4.4 moved on by the merged branches or a GB9 patch // C282: 1.4.7 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'drawer', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -124,7 +124,7 @@ test('the sheet: one rung, the container widths, 44px under a coarse pointer, th
 
 test('sf-steps 1.4.3 (C101, C105, C61 round 5): the wizard row is a row, its reachable steps buttons, the states in today\'s words', () => {
   const steps = json('src/smart/steps/component.json');
-  assert.equal(steps.version, '1.4.3');
+  assert.equal(steps.version, '1.4.5'); // C282: 1.4.3 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual(steps.settings.items.of.state.values, ['done', 'ahead', 'skipped', 'running', 'error', 'completed', 'default']);
   const template = read('src/smart/wizard/js/templates/default.js');
   assert.match(template, /layout="row" navigation="free"/u);

@@ -19,6 +19,7 @@
     "strong": "Bold",
     "toolbar": "Formatting",
     "unlink": "Remove link",
-    "url": "Link address"
+    "url": "Link address",
+    "strike": "Strikethrough"
   }
 }

@@ -1,0 +1,33 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 6,
+    "translated": 6,
+    "share": 100
+  },
+  "words": {
+    "sf-avatar": {
+      "aria-label": "Аватар",
+      "status-online": "в сети",
+      "status-away": "отошёл",
+      "status-offline": "не в сети"
+    },
+    "sf-avatar-group": {
+      "group-label": "Участники: {n}",
+      "more-label": {
+        "one": "Ещё {n} участник",
+        "few": "Ещё {n} участника",
+        "many": "Ещё {n} участников",
+        "other": "Ещё {n} участника"
+      }
+    }
+  }
+}

@@ -34,6 +34,9 @@
 // language changed nothing on screen. Only a browser shows that, and it did
 // (2026-10-11).
 import {canonicalTag} from './tag-aliases.js';
+// The languages built into the bundles (owner decision C282): English; every
+// other language, Russian too, is a language file (core/js/language-packs.js).
+import BUILT_IN_LANGUAGES from '../lang/built-in.mjs';
 
 const STORE = (() => {
   const root = typeof globalThis !== 'undefined' ? globalThis : {};
@@ -47,9 +50,10 @@ const STORE = (() => {
 const LISTENERS = STORE.listeners;
 const REGISTERED = STORE.registered;
 
-// Language packs (owner decision C177, 2026-11-14): every language but the two
-// built in is one file per language and delivery, fetched only by a page that
-// speaks it. A pack's words go into the same registry as words registered one
+// Language packs (owner decision C177, 2026-11-14; C282, 2026-11-17): every
+// language but English, the one built in, is one file per language and
+// delivery, fetched only by a page that speaks it (or included before core as
+// its script form, core/lang/<code>.js). A pack's words go into the same registry as words registered one
 // by one -- so a bundle built before packs existed reads them too -- a
 // Framework pack's beneath what is there, any other pack's over it: a product
 // overrides a Framework word whichever arrived first. The fetching is core's
@@ -58,11 +62,13 @@ const REGISTERED = STORE.registered;
 const PACKS = (STORE.packs ??= {
   loaded: new Map(), pending: new Map(), request: null,
 });
-const isBuiltIn = (code) => code === 'ru' || code === 'en';
+// The languages built into the bundles: English, and in a rollback build Russian
+// too (src/core/lang/built-in.json, C282).
+const isBuiltIn = (code) => code === 'en' || (BUILT_IN_LANGUAGES?.built_in ?? []).includes(code);
 
 /**
- * Ask core for the pack of a language this page speaks (nothing for ru and
- * en), and for the part that holds `component`'s words: the Framework's pack
+ * Ask core for the pack of a language this page speaks (nothing for a
+ * built-in language), and for the part that holds `component`'s words: the Framework's pack
  * comes in parts by family (core/js/language-packs.js). A core from before
  * parts takes the language alone.
  */

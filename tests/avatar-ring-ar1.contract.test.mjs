@@ -34,8 +34,8 @@ test('AR-4: a lone avatar child is the ring\'s content', async () => {
   // One the ring cannot take is still said.
   assert.match(ring, /an sf-avatar inside the ring beside other content is drawn beside the ring/u);
   assert.match(docs, /A lone sf-avatar child written without it\nis taken as the content too \(1\.6\.0\)/u);
-  assert.equal(manifest.version, '1.6.0');
-  assert.match(manifest['x-decisions'].at(-1), /^version 1\.6\.0 \(2026-11-16, fix\/avatar-ring-ar1/u);
+  assert.equal(manifest.version, '1.6.3'); // C282: 1.6.0 moved on by the language-file patch (Russian is a language file)
+  assert.ok(manifest['x-decisions'].some((note) => /^version 1\.6\.0 \(2026-11-16, fix\/avatar-ring-ar1/u.test(note))); // C282: moved on by the language-file patch (Russian is a language file)
 });
 
 test('RG-S1-24: the caption wraps a long word; a no-wrap line carries its full text', async () => {
@@ -54,7 +54,7 @@ test('RG-S1-24: the caption wraps a long word; a no-wrap line carries its full t
   assert.doesNotMatch(label, /<!--/u);
   assert.match(avatar.settings['no-wrap'].summary, /the full text is each line's title/u);
   assert.match(docs, /^- `no-wrap` -- the label template keeps the heading and the description on one$/mu);
-  assert.equal(avatar.version, '1.8.1');
+  assert.equal(avatar.version, '1.8.3'); // C282: 1.8.1 moved on by the language-file patch (Russian is a language file)
   assert.equal(passport.version, '1.12.0'); // group build 9: 1.10.1 moved on by the merged branches or a GB9 patch
 });
 

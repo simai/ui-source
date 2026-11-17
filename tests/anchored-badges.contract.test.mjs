@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import test from 'node:test';
+import './support/russian-language-file.mjs';
 import {anchoredBadgeState, iconBadgeStep, nameWithBadge, pluralForm} from '../src/component/badges/js/_anchored-state.js';
 
 // Anchored badges (simai/ui-source#12): what a count or a dot shows and says,

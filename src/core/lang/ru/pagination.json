@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 30,
+    "translated": 30,
+    "share": 100
+  },
+  "words": {
+    "sf-pagination": {
+      "action-apply-text": "Применить",
+      "action-choose-label": "Выберите действие",
+      "action-for-all-label": "Для всех",
+      "actions-label": "Действие с выбранными элементами",
+      "actions-region-label": "Действия с отмеченными",
+      "aria-label": "Страницы результатов",
+      "clear-selection-label": "Снять выделение",
+      "counting-label": "Считаем",
+      "cursor-next-text": "Дальше",
+      "first-label": "В начало",
+      "last-label": "Последняя",
+      "next-label": "Следующая страница",
+      "next-text": "Далее",
+      "of-pages": "{page} из {count}",
+      "page-field-label": "Страница:",
+      "page-label": "Страница",
+      "page-size-label": "На странице:",
+      "page-size-text": "По {size}",
+      "pages-label": "Страницы:",
+      "previous-label": "Предыдущая страница",
+      "previous-text": "Назад",
+      "range": "{from}–{to} из {total}",
+      "range-many": "{from}–{to} из многих",
+      "selected-label": "Отмечено:",
+      "show-count-label": "посчитать",
+      "show-more-count": "Показать ещё {count}",
+      "show-more-text": "Показать ещё",
+      "shown": "Показано {shown} из {total}",
+      "title-page": "Страница {page}",
+      "total-label": "Всего:"
+    }
+  }
+}

@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import test from 'node:test';
+import './support/russian-language-file.mjs';
 import {englishName, matchesQuery, nameIn, nativeName, normalizeLanguages, searchWords, useNames} from '../src/smart/language/js/languages.js';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -16,8 +17,12 @@ test('LG-7: the supported languages are named in themselves from shipped data, n
   assert.equal(englishName('sah'), 'Yakut');
   assert.equal(nameIn('ba', 'ru'), 'башкирский');
   assert.equal(nameIn('ba', 'ru-RU'), 'башкирский');
+  // The data names each in itself and in English; its Russian name is the ru
+  // language file's word name-<code> (C282).
+  const ruNames = JSON.parse(read('src/core/js/lang/language-names/ru.json')).runtime;
   for (const [code, names] of Object.entries(data.names)) {
-    assert.ok(names.native && names.en && names.ru, `${code} has all three names`);
+    assert.ok(names.native && names.en && ruNames[`name-${code}`], `${code} has all three names`);
+    assert.equal(names.ru, undefined, `${code}: no Russian in the data`);
   }
   assert.ok(Object.keys(data.names).length >= 60);
   // No literal names in the code: they are data.

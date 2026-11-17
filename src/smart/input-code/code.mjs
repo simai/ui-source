@@ -171,14 +171,6 @@ export const CODE_INPUT_TEXT = {
     'value-missing': 'Enter the code',
     help: 'More about: {label}',
   },
-  ru: {
-    digit: 'цифра {n} из {m}',
-    character: 'символ {n} из {m}',
-    group: 'Код',
-    'too-short': 'Введите код целиком',
-    'value-missing': 'Введите код',
-    help: 'Подробнее: {label}',
-  },
 };
 
 export function positionWords(template, cell, length) {

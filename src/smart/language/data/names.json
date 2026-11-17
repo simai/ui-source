@@ -1,330 +1,265 @@
 {
-  "$comment": "Names of the languages sf-language supports, from CLDR 48 (ICU 78 as Node.js ships it): each language in itself (native), in English (en) and in Russian (ru), the component's two languages. The browser's Intl.DisplayNames carries fewer languages (headless Chromium names be, hy, ka, tt, ky and tg only in English and ba, sah not at all; research 2026-11-14-language LG-7), so these names come first and Intl names every other language and page language. Spelled as CLDR writes them; the element gives a name its capital in a list. Data, not code: add a language here with all three names.",
+  "$comment": "Names of the languages sf-language supports, from CLDR 48 (ICU 78 as Node.js ships it): each language in itself (native) and in English (en). Since owner decision C282 their names in Russian are the ru language file's words (src/core/js/lang/language-names, name-<code>, registered for sf-language), as any other language's names may be. The browser's Intl.DisplayNames carries fewer languages (headless Chromium names be, hy, ka, tt, ky and tg only in English and ba, sah not at all; research 2026-11-14-language LG-7), so these names come first and Intl names every other language and page language. Spelled as CLDR writes them; the element gives a name its capital in a list. Data, not code: add a language here with both names, and its Russian name to the language file.",
   "names": {
     "ru": {
       "native": "русский",
-      "en": "Russian",
-      "ru": "русский"
+      "en": "Russian"
     },
     "en": {
       "native": "English",
-      "en": "English",
-      "ru": "английский"
+      "en": "English"
     },
     "de": {
       "native": "Deutsch",
-      "en": "German",
-      "ru": "немецкий"
+      "en": "German"
     },
     "fr": {
       "native": "français",
-      "en": "French",
-      "ru": "французский"
+      "en": "French"
     },
     "es": {
       "native": "español",
-      "en": "Spanish",
-      "ru": "испанский"
+      "en": "Spanish"
     },
     "it": {
       "native": "italiano",
-      "en": "Italian",
-      "ru": "итальянский"
+      "en": "Italian"
     },
     "pt": {
       "native": "português",
-      "en": "Portuguese",
-      "ru": "португальский"
+      "en": "Portuguese"
     },
     "pt-BR": {
       "native": "português (Brasil)",
-      "en": "Brazilian Portuguese",
-      "ru": "бразильский португальский"
+      "en": "Brazilian Portuguese"
     },
     "pt-PT": {
       "native": "português europeu",
-      "en": "European Portuguese",
-      "ru": "европейский португальский"
+      "en": "European Portuguese"
     },
     "tr": {
       "native": "Türkçe",
-      "en": "Turkish",
-      "ru": "турецкий"
+      "en": "Turkish"
     },
     "pl": {
       "native": "polski",
-      "en": "Polish",
-      "ru": "польский"
+      "en": "Polish"
     },
     "uk": {
       "native": "українська",
-      "en": "Ukrainian",
-      "ru": "украинский"
+      "en": "Ukrainian"
     },
     "be": {
       "native": "беларуская",
-      "en": "Belarusian",
-      "ru": "белорусский"
+      "en": "Belarusian"
     },
     "uz": {
       "native": "o‘zbek",
-      "en": "Uzbek",
-      "ru": "узбекский"
+      "en": "Uzbek"
     },
     "az": {
       "native": "azərbaycan",
-      "en": "Azerbaijani",
-      "ru": "азербайджанский"
+      "en": "Azerbaijani"
     },
     "hy": {
       "native": "հայերեն",
-      "en": "Armenian",
-      "ru": "армянский"
+      "en": "Armenian"
     },
     "ka": {
       "native": "ქართული",
-      "en": "Georgian",
-      "ru": "грузинский"
+      "en": "Georgian"
     },
     "he": {
       "native": "עברית",
-      "en": "Hebrew",
-      "ru": "иврит"
+      "en": "Hebrew"
     },
     "ar": {
       "native": "العربية",
-      "en": "Arabic",
-      "ru": "арабский"
+      "en": "Arabic"
     },
     "fa": {
       "native": "فارسی",
-      "en": "Persian",
-      "ru": "персидский"
+      "en": "Persian"
     },
     "hi": {
       "native": "हिन्दी",
-      "en": "Hindi",
-      "ru": "хинди"
+      "en": "Hindi"
     },
     "bn": {
       "native": "বাংলা",
-      "en": "Bangla",
-      "ru": "бенгальский"
+      "en": "Bangla"
     },
     "ja": {
       "native": "日本語",
-      "en": "Japanese",
-      "ru": "японский"
+      "en": "Japanese"
     },
     "ko": {
       "native": "한국어",
-      "en": "Korean",
-      "ru": "корейский"
+      "en": "Korean"
     },
     "zh": {
       "native": "中文",
-      "en": "Chinese",
-      "ru": "китайский"
+      "en": "Chinese"
     },
     "zh-Hans": {
       "native": "简体中文",
-      "en": "Simplified Chinese",
-      "ru": "китайский, упрощенное письмо"
+      "en": "Simplified Chinese"
     },
     "zh-Hant": {
       "native": "繁體中文",
-      "en": "Traditional Chinese",
-      "ru": "китайский, традиционное письмо"
+      "en": "Traditional Chinese"
     },
     "zh-TW": {
       "native": "中文（台灣）",
-      "en": "Chinese (Taiwan)",
-      "ru": "китайский (Тайвань)"
+      "en": "Chinese (Taiwan)"
     },
     "vi": {
       "native": "Tiếng Việt",
-      "en": "Vietnamese",
-      "ru": "вьетнамский"
+      "en": "Vietnamese"
     },
     "th": {
       "native": "ไทย",
-      "en": "Thai",
-      "ru": "тайский"
+      "en": "Thai"
     },
     "id": {
       "native": "Indonesia",
-      "en": "Indonesian",
-      "ru": "индонезийский"
+      "en": "Indonesian"
     },
     "ms": {
       "native": "Melayu",
-      "en": "Malay",
-      "ru": "малайский"
+      "en": "Malay"
     },
     "nl": {
       "native": "Nederlands",
-      "en": "Dutch",
-      "ru": "нидерландский"
+      "en": "Dutch"
     },
     "sv": {
       "native": "svenska",
-      "en": "Swedish",
-      "ru": "шведский"
+      "en": "Swedish"
     },
     "no": {
       "native": "norsk",
-      "en": "Norwegian",
-      "ru": "норвежский"
+      "en": "Norwegian"
     },
     "nb": {
       "native": "norsk bokmål",
-      "en": "Norwegian Bokmål",
-      "ru": "норвежский букмол"
+      "en": "Norwegian Bokmål"
     },
     "da": {
       "native": "dansk",
-      "en": "Danish",
-      "ru": "датский"
+      "en": "Danish"
     },
     "fi": {
       "native": "suomi",
-      "en": "Finnish",
-      "ru": "финский"
+      "en": "Finnish"
     },
     "cs": {
       "native": "čeština",
-      "en": "Czech",
-      "ru": "чешский"
+      "en": "Czech"
     },
     "sk": {
       "native": "slovenčina",
-      "en": "Slovak",
-      "ru": "словацкий"
+      "en": "Slovak"
     },
     "hu": {
       "native": "magyar",
-      "en": "Hungarian",
-      "ru": "венгерский"
+      "en": "Hungarian"
     },
     "ro": {
       "native": "română",
-      "en": "Romanian",
-      "ru": "румынский"
+      "en": "Romanian"
     },
     "bg": {
       "native": "български",
-      "en": "Bulgarian",
-      "ru": "болгарский"
+      "en": "Bulgarian"
     },
     "el": {
       "native": "Ελληνικά",
-      "en": "Greek",
-      "ru": "греческий"
+      "en": "Greek"
     },
     "tt": {
       "native": "татар",
-      "en": "Tatar",
-      "ru": "татарский"
+      "en": "Tatar"
     },
     "ky": {
       "native": "кыргызча",
-      "en": "Kyrgyz",
-      "ru": "киргизский"
+      "en": "Kyrgyz"
     },
     "tg": {
       "native": "тоҷикӣ",
-      "en": "Tajik",
-      "ru": "таджикский"
+      "en": "Tajik"
     },
     "ba": {
       "native": "башҡорт",
-      "en": "Bashkir",
-      "ru": "башкирский"
+      "en": "Bashkir"
     },
     "sah": {
       "native": "саха тыла",
-      "en": "Yakut",
-      "ru": "саха"
+      "en": "Yakut"
     },
     "tk": {
       "native": "türkmen dili",
-      "en": "Turkmen",
-      "ru": "туркменский"
+      "en": "Turkmen"
     },
     "mn": {
       "native": "монгол",
-      "en": "Mongolian",
-      "ru": "монгольский"
+      "en": "Mongolian"
     },
     "cv": {
       "native": "чӑваш чӗлхи",
-      "en": "Chuvash",
-      "ru": "чувашский"
+      "en": "Chuvash"
     },
     "ce": {
       "native": "нохчийн",
-      "en": "Chechen",
-      "ru": "чеченский"
+      "en": "Chechen"
     },
     "os": {
       "native": "ирон",
-      "en": "Ossetic",
-      "ru": "осетинский"
+      "en": "Ossetic"
     },
     "lv": {
       "native": "latviešu",
-      "en": "Latvian",
-      "ru": "латышский"
+      "en": "Latvian"
     },
     "lt": {
       "native": "lietuvių",
-      "en": "Lithuanian",
-      "ru": "литовский"
+      "en": "Lithuanian"
     },
     "et": {
       "native": "eesti",
-      "en": "Estonian",
-      "ru": "эстонский"
+      "en": "Estonian"
     },
     "sr": {
       "native": "српски",
-      "en": "Serbian",
-      "ru": "сербский"
+      "en": "Serbian"
     },
     "hr": {
       "native": "hrvatski",
-      "en": "Croatian",
-      "ru": "хорватский"
+      "en": "Croatian"
     },
     "sl": {
       "native": "slovenščina",
-      "en": "Slovenian",
-      "ru": "словенский"
+      "en": "Slovenian"
     },
     "mk": {
       "native": "македонски",
-      "en": "Macedonian",
-      "ru": "македонский"
+      "en": "Macedonian"
     },
     "sq": {
       "native": "shqip",
-      "en": "Albanian",
-      "ru": "албанский"
+      "en": "Albanian"
     },
     "bs": {
       "native": "bosanski",
-      "en": "Bosnian",
-      "ru": "боснийский"
+      "en": "Bosnian"
     },
     "ug": {
       "native": "ئۇيغۇرچە",
-      "en": "Uyghur",
-      "ru": "уйгурский"
+      "en": "Uyghur"
     },
     "ur": {
       "native": "اردو",
-      "en": "Urdu",
-      "ru": "урду"
+      "en": "Urdu"
     }
   }
 }

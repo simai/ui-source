@@ -15,7 +15,7 @@ import LANG_WORDS from '../lang/index.mjs';
 //     crumb with the separator before it (none in the first);
 //   - the flat form: nav.sf-breadcrumbs > crumb, separator, crumb ...
 const ROOT_SELECTOR = '.sf-breadcrumbs';
-const BREADCRUMBS_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const BREADCRUMBS_TEXT = LANG_WORDS;
 const ITEM_SELECTOR = '.sf-breadcrumbs-item';
 const GENERATED_SELECTOR = '[data-sf-breadcrumbs-generated="ellipsis"]';
 const BOUND_KEY = '__sfBreadcrumbsBound';

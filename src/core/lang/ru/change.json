@@ -1,0 +1,27 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 7,
+    "translated": 7,
+    "share": 100
+  },
+  "words": {
+    "sf-change": {
+      "empty-text": "пусто",
+      "change-text": "было {before}, стало {after}",
+      "label-separator": ":",
+      "show-text": "Показать изменения",
+      "hide-text": "Скрыть изменения",
+      "before-text": "Было",
+      "after-text": "Стало"
+    }
+  }
+}

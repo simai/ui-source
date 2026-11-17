@@ -46,12 +46,13 @@ export const LEGACY_SCHEMES = Object.freeze({
 export const LEGACY_SINCE = '2026-11-15';
 export const LEGACY_REMOVE_AFTER = '2027-01-01';
 
-// The words core says itself; the same as sf-display-settings' language files
-// (tests/display-settings.contract.test.mjs holds them equal).
-export const WORDS = {
-  en: {'skip-link-text': 'Skip to content'},
-  ru: {'skip-link-text': 'Перейти к содержимому'},
-};
+// The words core says itself (core/js/lang/skip-link: English built in, the
+// other languages from a language file, C282); the same as
+// sf-display-settings' language files (tests/display-settings.contract.test.mjs
+// holds them equal).
+import WORDS from './lang/skip-link/index.mjs';
+
+export {WORDS};
 
 export const DEFAULTS = Object.freeze({
   scheme: '',

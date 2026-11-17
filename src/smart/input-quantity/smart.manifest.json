@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.11.0",
+  "version": "1.12.1",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -663,7 +663,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "53e43104552196062504042d7ef1f0e7ddc5afa179abe1ad2eb8234cf259b407"
+        "sha256": "b536fc07925001c6a6567d869982daf34964c52d1e505a74ff7f7f206e6465b0"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",

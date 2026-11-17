@@ -17,7 +17,7 @@ test('automatic multiple-to-single transition uses the requested handle count',(
   }
   // The class extends the element its component.json makes (standard 1.3.8);
   // here the maker hands the base back.
-  const context=vm.createContext({SfBaseElement:Base,HTMLElement:Element,elementFromManifest:(manifest,{base})=>base,manifest:{},aliases:{},en:{},ru:{},
+  const context=vm.createContext({SfBaseElement:Base,HTMLElement:Element,elementFromManifest:(manifest,{base})=>base,manifest:{},aliases:{},languageFiles:{en:{}},
     setRangeSliderValue:()=>setterCalls++,getRangeSliderValue:()=>[40,75]});
   vm.runInContext(source.slice(source.indexOf('function serializeValue'),source.indexOf("SfRangeSlider.define('sf-slider-range');"))+'\nglobalThis.Slider=SfRangeSlider;',context);
   const slider=new context.Slider();

@@ -32,7 +32,7 @@ const own = template.slice(template.indexOf('function renderOwn'));
 
 test('the version and the new relations', () => {
   const manifest = json(`${base}/component.json`);
-  assert.equal(manifest.version, '1.18.1'); // 1.17.1: the ratio by Intl, no decimal word (C177 follow-up #86) // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch
+  assert.equal(manifest.version, '1.19.2'); // 1.17.1: the ratio by Intl, no decimal word (C177 follow-up #86) // group build 9: 1.17.1 moved on by the merged branches or a GB9 patch // C282: 1.18.1 moved on by the language-file patch (Russian is a language file)
   for (const name of ['cl-button', 'cl-button-copy']) {
     assert.ok(manifest.relations.some((relation) => relation.name === name && relation.lazy), `${name}, lazy`);
   }

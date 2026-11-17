@@ -1,7 +1,8 @@
 // Fetching language packs (owner decision C177, 2026-11-14; format
 // docs/developer/language-packs.md, schema core/contracts/language-pack.v1.schema.json).
 //
-// ru and en are built into every component. Any other language is one pack
+// English is built into every component (owner decision C282, 2026-11-17:
+// core/lang/built-in.json). Any other language, Russian too, is one pack
 // per language and delivery. The Framework's own is written in parts, one per
 // component family (core/lang/<code>/<family>.json, listed with the
 // components each holds in core/lang/index.json, written by
@@ -17,10 +18,18 @@
 // SF.language.addPack('de', '/assets/product/lang/de.json') or
 // SF_BOOT_CONFIG.languages = {de: '/assets/product/lang/de.json'}.
 //
+// A page may instead include a pack's script form before core.js
+// (core/lang/<code>.js, C282): its words are in the registry before core runs,
+// it is marked as here whole, and core fetches no Framework part of that
+// language.
+//
 // Only core fetches: every bundle carries page-language.js, which asks through
 // the shared store (globalThis.__sfPageLanguage.packs) and reads the words.
 import FRAMEWORK_PACKS from '../lang/index.mjs';
+import BUILT_IN_LANGUAGES from '../lang/built-in.mjs';
 import { language, refreshLanguage } from './page-language.js';
+
+const BUILT_IN = new Set(['en', ...(BUILT_IN_LANGUAGES?.built_in ?? [])]);
 
 // The family of core's own words (file sizes, relative days): fetched with the
 // language, as core formats without a component to ask for them.
@@ -111,9 +120,15 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
     return all;
   };
 
+  // A Framework pack of the language already here whole: its script form,
+  // included before core (C282). Its parts are not fetched.
+  const whole = (code) => (PACKS.loaded.get(code) ?? []).some((info) => info?.whole && (info.delivery ?? 'framework') === 'framework');
+
   // The Framework's parts of a language: {url of a family, family of a component}.
   const partUrl = (code, family) => parts.get(code)?.urls.get(family);
-  const familyOf = (code, component) => parts.get(code)?.families.get(component);
+  // A component's words may ride in two parts (C282: core says a few of a
+  // Smart component's words itself): every one of them.
+  const familiesOf = (code, component) => [...(parts.get(code)?.families.get(component) ?? [])];
 
   // What the page shows now: core's words and the families of the elements
   // already in the document. While the document is parsed, again once it is.
@@ -124,9 +139,13 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
     const doc = globalThis.document;
     const tags = [...known.families.keys()].filter((id) => /^[a-z][a-z0-9]*-[a-z0-9-]*$/u.test(id));
     try {
-      for (const element of doc?.querySelectorAll?.(tags.join(',')) ?? []) {
-        const family = known.families.get(String(element.localName ?? element.tagName ?? '').toLowerCase());
-        if (family) families.add(family);
+      // A tag, or a class component's class (sf-tabs, sf-slider: C282).
+      const selector = tags.flatMap((id) => [id, `.${id}`]).join(',');
+      for (const element of selector ? doc?.querySelectorAll?.(selector) ?? [] : []) {
+        const ids = [String(element.localName ?? element.tagName ?? '').toLowerCase(), ...(element.classList ?? [])];
+        for (const id of ids) {
+          for (const family of known.families.get(id) ?? []) families.add(family);
+        }
       }
     } catch {
       // A document that cannot be asked: the parts come with the first words.
@@ -137,10 +156,12 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
   const begin = (code) => {
     if (asked.has(code)) return;
     asked.add(code);
-    fetchSome(code, [...(sources.get(code) ?? []), ...shown(code)]);
+    fetchSome(code, [...(sources.get(code) ?? []), ...(whole(code) ? [] : shown(code))]);
     const doc = globalThis.document;
     if (parts.has(code) && doc?.readyState === 'loading' && typeof doc.addEventListener === 'function') {
-      doc.addEventListener('DOMContentLoaded', () => fetchSome(code, shown(code)), { once: true });
+      doc.addEventListener('DOMContentLoaded', () => {
+        if (!whole(code)) fetchSome(code, shown(code));
+      }, { once: true });
     }
   };
 
@@ -156,15 +177,15 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
   PACKS.load = (code) => {
     const codes = [...new Set([code.split('-')[0], code])];
     for (const one of codes) begin(one);
-    return Promise.all(codes.map((one) => fetchSome(one, [...(sources.get(one) ?? []), ...(parts.get(one)?.urls.values() ?? [])])))
+    return Promise.all(codes.map((one) => fetchSome(one, [...(sources.get(one) ?? []), ...(whole(one) ? [] : parts.get(one)?.urls.values() ?? [])])))
       .then((lists) => lists.flat());
   };
   // A bundle asks for a language and, from page-language.js of this pair on,
   // names the component that looks up a word: its family's part comes too.
   PACKS.request = (code, component) => {
     begin(code);
-    const family = component ? familyOf(code, component) : null;
-    if (family) fetchSome(code, [partUrl(code, family)]);
+    const families = component && !whole(code) ? familiesOf(code, component) : [];
+    if (families.length) fetchSome(code, families.map((family) => partUrl(code, family)));
   };
 
   for (const code of packs?.languages ?? []) {
@@ -176,7 +197,10 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
     const known = { urls: new Map(), families: new Map() };
     for (const [family, components] of Object.entries(byFamily)) {
       known.urls.set(family, resolve(`${root}lang/${code}/${family}.json`));
-      for (const component of [].concat(components)) known.families.set(component, family);
+      for (const component of [].concat(components)) {
+        if (!known.families.has(component)) known.families.set(component, new Set());
+        known.families.get(component).add(family);
+      }
     }
     parts.set(code, known);
   }
@@ -187,12 +211,13 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
     }
   }
   // The page's own language, as soon as core runs, so the words are usually
-  // here before the first component draws.
+  // here before the first component draws; the Loader holds the components
+  // while they are on their way (core/js/loader.js languageHold, C282).
   const lang = globalThis.document?.documentElement?.getAttribute('lang');
   if (lang) {
     const wanted = String(lang).trim().toLowerCase().replace('_', '-');
     const base = wanted.split('-')[0];
-    if (base !== 'ru' && base !== 'en') {
+    if (!BUILT_IN.has(base)) {
       PACKS.request(base);
       if (wanted !== base) PACKS.request(wanted);
     }

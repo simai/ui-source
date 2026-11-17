@@ -15,15 +15,21 @@ be copied.
 - Every component keeps its own words in its own folder, one file per language:
   `lang/en.json`, `lang/ru.json`, `lang/de.json`. There is no shared
   dictionary: two components that both say «Close» each say it.
-- **Russian and English are built in.** They are inside every component's
-  bundle and never cost a request. English is the fallback.
+- **English is built in.** It is inside every component's bundle and never
+  costs a request. English is the fallback.
+- **Russian is a language file** (owner decision C282, 2026-11-17). It is
+  written from the same `lang/ru.json` files and ships as
+  `distr/core/lang/ru.js`. A Russian site includes it with one line before
+  core (see [A Russian site](#a-russian-site-one-line-before-core)). Without
+  that line, core fetches the Russian parts the page shows. Either way the
+  page draws the same Russian words as before.
 - **Every other language is one pack per language and delivery** — one for the
   whole Framework, one for ui-pro, one for ui-chart, one for a product. A page
-  fetches it only when it speaks that language. A Russian or English page
-  never fetches anything.
+  fetches it only when it speaks that language. An English page never fetches
+  anything.
 - **The Framework's own pack comes in parts, one per component family**
-  (none ships today: the pilot pack was withdrawn by owner decision C278; a
-  page in a language without a pack says English, as any unknown language)
+  (the Framework ships Russian; the Kazakh pilot was withdrawn by owner
+  decision C278, so a page in a language without a pack says English)
   (`core/lang/<lang>/input.json`, `core/lang/<lang>/pagination.json`, …, and
   `core/lang/<lang>/core.json` for core's own words). A page fetches the parts of
   the families it shows. Each part is a whole pack of the format below; a
@@ -44,7 +50,8 @@ For a component on a page whose language is `de`, in this order:
    (`delivery` other than `framework`); between the product's own, the later wins;
 3. a word of the Framework's pack (`core/lang/de/<family>.json`) — it never replaces a
    product's word, whichever arrived first;
-4. the component's built-in word of that language (ru, en only);
+4. the component's built-in word of that language (en only; ru too in a
+   rollback build, below);
 5. the same for the language without its region (`de-CH` → `de`);
 6. English — and the word is reported as missing;
 7. the key itself, with a warning (a defect, never expected).
@@ -179,10 +186,85 @@ relative-time words of the language (it answers for another language, or in
 English): a page in such a language says its own day word, not
 «yesterday, 09:05». Where the browser has the words, they are the browser's.
 
+## A Russian site: one line before core
+
+```html
+<html lang="ru">
+<head>
+  <script src="/assets/simai/distr/core/lang/ru.js"></script>
+  <script src="/assets/simai/distr/core/js/core.min.js"></script>
+  <link rel="stylesheet" href="/assets/simai/distr/core/css/core.css">
+</head>
+```
+
+`core/lang/ru.js` is a classic script of the whole Russian pack, about 26 KB
+gzip. It registers its words before any component draws. Core then fetches
+nothing for Russian, and the first frame of every component is already in
+Russian. The file needs no server and no `fetch`, so it works:
+
+- **offline and from `file://`**: a page opened from the disk, a help file, or
+  an Electron or WebView shell;
+- **in a one-file build**: put the file's text in the same `<script>` before
+  core, or concatenate it in front of the bundle you ship. It has no imports
+  and needs nothing on the page.
+
+Included after core, it still works: it hands its pack to
+`SF.language.registerPack`, and the page draws again once.
+
+Without the line, a Russian page works as any other language with a pack.
+Core fetches `core/lang/ru/core.json` and the parts of the families the page
+shows. While these are on their way, the Loader holds each component's
+definition (below), so the page does not flash English.
+
+### The wait for the page language
+
+When core has asked for the parts of the page's language, `SF.Loader` holds
+every component script it adds until those words are here. It preloads the
+script meanwhile, so nothing arrives later than it would without the wait. The
+wait is at most 800 ms. After that the component draws in English and draws
+again when its words arrive. This applies to every language with a pack, and to
+a pack of a product named in `SF_BOOT_CONFIG.languages` before core.
+
+```html
+<script>window.SF_BOOT_CONFIG = {languageWait: 400};</script>  <!-- ms; 0: never wait -->
+```
+
+When `ru.js` came before core, nothing is pending and nothing waits.
+
+### Outside a browser (server-side rendering, generators)
+
+A Node.js script that renders Russian runs the same file before it renders. It
+takes the same path as a page:
+
+```js
+import {registerLanguageFile} from '@simai-studio/ui-source/scripts/language-file-node.mjs'; // or your path to ui-source
+registerLanguageFile('ru');
+```
+
+Or read `distr/core/lang/ru.js` and run it with `vm.runInThisContext`.
+Without it, `SF.Composition` and the field renderers print English
+placeholders and labels in Node.js.
+
+### Rollback: Russian inside the bundles again
+
+`src/core/lang/built-in.json` lists the languages the bundles carry:
+
+```json
+{"built_in": ["en"], "complete": ["en", "ru"]}
+```
+
+To put Russian back into every bundle, set `"built_in": ["en", "ru"]`, then run
+`node scripts/build-language-packs.mjs` and build. The script rewrites every
+folder's `lang/index.mjs` (the module a bundle takes its words through) and
+core's list of built-in languages. `ru.js` and the Russian parts still ship. A
+site that includes `ru.js` keeps working, and core fetches no Russian part.
+`complete` names the languages the check requires to have every word; today
+these are en and ru.
+
 ## How a page gets a pack
 
-Core reads `<html lang>` when it starts. When the language is neither Russian
-nor English and the Framework has a pack of it (`core/lang/index.json` lists
+Core reads `<html lang>` when it starts. When the language is not built in
+(English) and the Framework has a pack of it (`core/lang/index.json` lists
 the languages and, for each, the parts and the components each part holds;
 the index is inside core), core fetches beside itself the part `core` and the
 part of every family whose elements are already in the document, and once more
@@ -196,7 +278,9 @@ many parts came).
 `SF.language.load('de')` fetches every part at once.
 
 A page in a language with no pack makes no request: its words are English, and
-the console says once which language had no words.
+the console says once which language had no words. A language whose script
+form (`core/lang/<lang>.js`) came before core is already whole: core fetches
+none of its parts.
 
 ## Add your own language
 
@@ -241,7 +325,8 @@ SF.language.register('sf-pagination', 'de', {'next-label': 'Weiter'});
 A word registered this way wins over the Framework's pack whichever arrived
 first (and over your own pack if registered after it), and the page draws again. `null` removes what you registered:
 `SF.language.register('sf-pagination', 'de', null)`. Russian and English words
-are changed the same way. One word for one element only: its own attribute
+are changed the same way; a word registered before `ru.js` arrived stays over
+the file's. One word for one element only: its own attribute
 (`next-label="…"`).
 
 ## Missing words and coverage
@@ -270,7 +355,8 @@ says about the language itself (`name`, `dir`, `status`, `review`) is
 `src/core/lang/headers/<lang>.json`. The build collects them:
 
 ```sh
-node scripts/build-language-packs.mjs           # writes src/core/lang/<lang>/<family>.json and index.json
+node scripts/build-language-packs.mjs           # writes src/core/lang/<lang>/<family>.json, <lang>.js, index.json
+                                                # and every folder's lang/index.mjs (from built-in.json)
 node scripts/build-language-packs.mjs --check   # fails when a part is stale or a word is wrong
 ```
 
@@ -281,7 +367,15 @@ ways in two folders. A part's family is its component's `family`
 Smart one of its name is its own family. A part no source says any more is
 removed by the build and reported by `--check`. Each part stays under 8 KB
 gzip (the test of C177 (7)): a whole pack of one language had reached 15.2 KB
-of a 16 KB cap. The core build ships `src/core/lang/` as `distr/core/lang/`.
+of a 16 KB cap. The core build ships `src/core/lang/` as `distr/core/lang/`,
+the script form `<lang>.js` included (ui-builder: `LANGUAGE_SCRIPT` in
+`libs/generatedPackaging.js`).
+
+The bundles say no Russian word (C282). `node scripts/check-bundle-words.mjs
+<distr>` reads every literal of every built script and fails on a Cyrillic one.
+It allows two kinds: an input-parsing rule marked `c282-allow` in the source
+(what a person types, such as `ё` searched as `е`, «мб» read as megabytes, or
+«ООО» skipped in initials), and the languages' own names in sf-language's data.
 
 ui-pro, ui-chart and any package of components run the same script over their
 own sources and ship the result beside their bundles, then name it with

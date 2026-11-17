@@ -6,7 +6,7 @@ import LANG_WORDS from '../lang/index.mjs';
 // Every word this part says. A product adds a language with
 // SF.language.register('sf-admin-menu', code, words); a ternary on «ru» allowed two
 // and no more.
-const ADMIN_MENU_ITEM_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const ADMIN_MENU_ITEM_TEXT = LANG_WORDS;
 
 
 const SMART_TAG = 'SF-ADMIN-MENU';

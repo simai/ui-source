@@ -12,12 +12,11 @@ import {matchesBreakpoint} from '../../core/js/breakpoints.js';
 import {pageLocale} from '../../core/js/page-language';
 import manifest from './component.json';
 import aliases from './aliases.json';
-import enFile from './lang/en.json';
-import ruFile from './lang/ru.json';
-// Only the words on screen ship in the bundle; the title, settings and events
-// stay in the language files for the Studio and the docs (localization study LC-2).
-const en = {runtime: enFile.runtime};
-const ru = {runtime: ruFile.runtime};
+import {files as languageFiles} from './lang/index.mjs';
+// Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
 import {holdOpenSurfaceMark, isTopOpenSurface} from '../../core/js/open-surface-mark';
 
 const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -446,7 +445,7 @@ function getLabels(node) {
 // ElementInternals.
 const DatepickerElement = elementFromManifest(manifest, {
     base: SfBaseElement,
-    lang: {en, ru},
+    lang: languageFiles,
     source: 'ru',
     aliases,
     actions: {

@@ -42,7 +42,15 @@ test('the shared state names one cancellable event and draws one slot', () => {
   assert.match(helper, /aria-label=\$\{component\.resetLabel\}/u);
   assert.match(helper, /STEP_DOWN = Object\.freeze\(\{'1\/3': '1\/3', '1\/2': '1\/3', '1': '1\/2', '2': '1', '3': '2'\}\)/u);
   // The words, in both shipped languages.
-  assert.match(helper, /inherited: 'наследуется', reset: 'Сбросить к наследуемому'/u);
+  // English is built in; the Russian are each field's language file's
+  // words (C282), which the ru language file registers for its tag.
+  assert.doesNotMatch(helper, /наследуется/u);
+  for (const field of ['dropdown', 'input', 'input-color', 'input-quantity', 'input-textarea', 'switch']) {
+    const ru = JSON.parse(readFileSync(new URL(`../src/smart/${field}/lang/ru.json`, import.meta.url), 'utf8'));
+    const words = {...ru['x-trait-words']?.words, ...ru.runtime};
+    assert.equal(words.inherited, 'наследуется', field);
+    assert.equal(words.reset, 'Сбросить к наследуемому', field);
+  }
   assert.match(helper, /inherited: 'inherited', reset: 'Reset to inherited'/u);
 });
 

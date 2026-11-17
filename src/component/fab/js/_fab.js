@@ -5,7 +5,7 @@ import { pageText } from '../../../core/js/page-language';
 import LANG_WORDS from '../lang/index.mjs';
 import { watchFabs } from './_fab-checks.js';
 
-const FAB_TEXT = {en: LANG_WORDS.en, ru: LANG_WORDS.ru};
+const FAB_TEXT = LANG_WORDS;
 
 watchFabs();
 

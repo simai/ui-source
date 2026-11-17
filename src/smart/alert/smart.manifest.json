@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.alert",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "title": "Alert",
   "summary": "Persistent inline notice with semantic roles, optional actions and dismiss behavior.",
   "kind": "smart",
@@ -386,7 +386,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/alert/index.js",
-        "sha256": "536935558410bb753ed72e8adeee2c9eb09d37df37dec7973bcd020f19bae708"
+        "sha256": "117052f5419264ab02545086af4d6c451f06f08887b4e1510fe794e1e9c7f7ae"
       }
     ],
     "generated_runtime": [

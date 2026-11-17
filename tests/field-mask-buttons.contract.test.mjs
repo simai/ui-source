@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {join, resolve} from 'node:path';
 import test from 'node:test';
+import './support/russian-language-file.mjs';
 
 import {PROPERTY_TYPES} from '../src/smart/field-renderers/registry.js';
 import {maskPattern, maskState} from '../src/smart/field-renderers/mask.js';
