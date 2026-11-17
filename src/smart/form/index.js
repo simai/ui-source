@@ -184,9 +184,30 @@ class SfForm extends FormElement {
   // ---------------------------------------------------------------- value
 
   // Set from code, the value is the saved state: the form shows it, forgets
-  // the errors and is not dirty. No event, as for a native field.
+  // the errors and is not dirty. No event, as for a native field. Read, it
+  // is what is sent (FO3-1, Larena settings standard §4): a field its
+  // conditions hide is left out, though the form keeps what it held while it
+  // is open, so showing the field again brings it back.
   get value() {
-    return clone(this._values);
+    return this.sendable(this._values);
+  }
+
+  sendable(values) {
+    const out = clone(values);
+    for (const field of this.list) {
+      if (field.when && fieldConditions(field, values).visible === false) delete out[field.key];
+    }
+    return out;
+  }
+
+  // A host error for a field its conditions hide (FO3-1): it cannot stand at
+  // its field, so the summary says it by the field's label rather than
+  // dropping it. It does not hold the next submit back: the field is not sent.
+  hiddenHostErrors() {
+    if (!this._hostErrors.size) return [];
+    return this.list.map((field) => this.conditioned(field))
+      .filter((field) => field.visible === false && this._hostErrors.has(field.key))
+      .map((field) => ({key: field.key, message: `${text(field.label) || field.key}: ${this._hostErrors.get(field.key)}`, href: null}));
   }
 
   set value(next) {
@@ -359,11 +380,15 @@ class SfForm extends FormElement {
       this._errors.set(field.key, message);
       wrong.push(field.key);
     }
-    this.sfHostState('data-invalid', wrong.length > 0);
+    const hidden = this.hiddenHostErrors();
+    this.sfHostState('data-invalid', wrong.length > 0 || hidden.length > 0);
     this.requestComponentUpdate('validity');
-    if (!wrong.length) return true;
+    if (!wrong.length) {
+      if (focus && hidden.length) this.whenDrawn(() => this.focusSummary());
+      return true;
+    }
     this.sfEmit('invalid', {fields: wrong});
-    if (focus) this.whenDrawn(() => (wrong.length > 1 ? this.focusSummary() : this.focusField(wrong[0])));
+    if (focus) this.whenDrawn(() => (wrong.length + hidden.length > 1 ? this.focusSummary() : this.focusField(wrong[0])));
     return false;
   }
 
@@ -578,6 +603,7 @@ class SfForm extends FormElement {
     }));
     const errors = editing ? fields.filter((field) => this._errors.has(field.key))
       .map((field) => ({key: field.key, message: this._errors.get(field.key), href: `#${id}--field-${field.key}`})) : [];
+    const hiddenErrors = editing ? this.hiddenHostErrors() : [];
     this.sfHostState('data-mode', editing ? 'edit' : 'view');
     this.sfHostState('data-dirty', this._dirty);
     return this.createTemplateContext({
@@ -591,7 +617,8 @@ class SfForm extends FormElement {
       footer: this.footer === 'sticky' ? 'sticky' : 'static',
       groups,
       requiredNote: editing && !instant && fields.some((field) => field.required === true && field.readonly !== true && field.propertyType !== 'boolean'),
-      errorList: editing && this._submitted && errors.length > 1 ? errors : null,
+      // From two errors, or one a hidden field holds (FO3-1), the summary.
+      errorList: editing && ((this._submitted && errors.length + hiddenErrors.length > 1) || hiddenErrors.length) ? [...errors, ...hiddenErrors] : null,
       dirty: this._dirty,
       words: {
         requiredNote: word('required-note'),

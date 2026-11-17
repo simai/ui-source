@@ -11,7 +11,7 @@ import test from 'node:test';
 
 import {rowsWindow, ROWS_WINDOW_FROM, ROWS_WINDOW_INITIAL} from '../src/core/js/rows-window.js';
 import {filesDrop, carriesFiles, filesDragWords, FILES_OVER_ATTRIBUTE, NO_DRAG_QUERY} from '../src/core/js/files-drop.js';
-import {evaluateCondition, fieldConditions, conditionFields, CONDITION_OPS, CONDITION_NODES} from '../src/smart/field-renderers/conditions.js';
+import {evaluateCondition, fieldConditions, fieldEditable, conditionFields, CONDITION_OPS, CONDITION_NODES} from '../src/smart/field-renderers/conditions.js';
 import {normaliseItems, searchItems, mergeItems} from '../src/smart/input-choice/js/choice-model.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -324,6 +324,28 @@ test('FO-1, FO1-4: five Framework places read file drops through the one core pa
 });
 
 // ------------------------------------------------------------- FO-3 field conditions
+
+test('FO3-1: a hidden field is not sent; a host error for it is said in the summary by its label', () => {
+  const form = read('src/smart/form/index.js');
+  assert.match(form, /get value\(\) \{\s*return this\.sendable\(this\._values\);/u);
+  assert.match(form, /if \(field\.when && fieldConditions\(field, values\)\.visible === false\) delete out\[field\.key\];/u);
+  assert.match(form, /hiddenHostErrors\(\)/u);
+  assert.match(read('src/smart/form/js/templates/default.js'), /error\.href \? html`<li><a href=\$\{error\.href\}/u);
+  assert.match(json('src/smart/form/component.json').events.submit.summary, /not sent, FO3-1/u);
+});
+
+test('FO3-4: a single-field edit asks the conditions -- hidden or disabled by them, it does not open', () => {
+  const field = {key: 'address', when: {visible: {field: 'delivery', op: 'eq', value: 'courier'}, enabled: {field: 'locked', op: 'empty'}}};
+  assert.equal(fieldEditable(field, {delivery: 'courier'}), true);
+  assert.equal(fieldEditable(field, {delivery: 'pickup'}), false);
+  assert.equal(fieldEditable(field, {delivery: 'courier', locked: 'yes'}), false);
+  assert.equal(fieldEditable({...field, readonly: true}, {delivery: 'courier'}), false);
+  assert.equal(fieldEditable({key: 'plain'}, {}), true);
+  const renderers = read('src/smart/field-renderers/index.js');
+  assert.match(renderers, /if \(field\?\.when && options\?\.values && typeof options\.values === "object"\) \{\s*const decided = fieldConditions\(field, options\.values\);\s*if \(!decided\.visible\) return null;/u);
+  assert.match(renderers, /editable: fieldEditable\}/u);
+});
+
 
 test('FO-3: the grammar -- eq, ne, in, not_in, empty, not_empty, all, any, not', () => {
   assert.deepEqual([...CONDITION_OPS], ['eq', 'ne', 'in', 'not_in', 'empty', 'not_empty']);

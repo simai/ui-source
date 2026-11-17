@@ -134,7 +134,7 @@
     "value": {
       "type": "object",
       "default": {},
-      "summary": "The values by field key: {text: \"Подробнее\", tone: \"accent\"}. Set from code it is the saved state: the form shows it, forgets the errors and is not dirty; read, it is what the fields hold now. A value the person never set is absent"
+      "summary": "The values by field key: {text: \"Подробнее\", tone: \"accent\"}. Set from code it is the saved state: the form shows it, forgets the errors and is not dirty; read, it is what the fields hold now and what a save sends: a field its conditions hide (when.visible) is left out, while the form keeps what it held so that showing the field again brings it back (FO3-1, Larena settings standard §4). A value the person never set is absent"
     },
     "mode": {
       "type": "enum",
@@ -176,13 +176,13 @@
         "value": "object"
       },
       "cancelable": true,
-      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every field's value by key. Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)"
+      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every shown field's value by key (a field its conditions hide is not sent, FO3-1). Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)"
     },
     "invalid": {
       "carries": {
         "fields": "list"
       },
-      "summary": "A submit or check-validity found wrong fields: their keys in order. Every one shows its error at the field; from two errors a summary with a link to each stands over the form and takes the focus"
+      "summary": "A submit or check-validity found wrong fields: their keys in order. Every one shows its error at the field; from two errors a summary with a link to each stands over the form and takes the focus. A host error (set-errors) for a field its conditions hide is said in the summary by the field's label, without a link, and does not hold the next submit back (FO3-1)"
     },
     "cancel": {
       "carries": {

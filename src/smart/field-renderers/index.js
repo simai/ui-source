@@ -9,7 +9,7 @@ import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
 import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
-import {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions} from "./conditions.js";
+import {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fieldEditable} from "./conditions.js";
 import {filterOperatorLabel, filterWindowOpen} from "./filter-window.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
@@ -2322,6 +2322,15 @@ const keepsControlWhenLocked = (asked, field) => asked === 'choice' && isChoiceB
 let EDIT_DISABLED = false;
 
 export function renderEditField(field = {}, value, host, options = {}) {
+    // A single-field edit (a table cell, a card's quick edit) gives the
+    // record's values (options.values): the field's conditions decide it
+    // there as in a form (FO3-4) -- hidden, nothing is drawn; not enabled,
+    // its value as text; required as they say.
+    if (field?.when && options?.values && typeof options.values === "object") {
+        const decided = fieldConditions(field, options.values);
+        if (!decided.visible) return null;
+        field = {...field, required: decided.required, readonly: field.readonly === true || !decided.enabled};
+    }
     const asked = field.propertyType || field.type || field.dataType;
     const disabled = options?.disabled === true;
     // A field the person may not change is shown, not offered as a control that
@@ -2668,7 +2677,7 @@ export function propertyModes(type) {
 }
 
 export {PROPERTY_TYPES};
-export {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions};
+export {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fieldEditable};
 
 /** A filter field's window opened from any control (FO-5, filter-window.js): settles {action: 'apply' | 'reset', value} or null. */
 export function openFilterWindow(options = {}) {
@@ -2716,8 +2725,9 @@ if (typeof window !== 'undefined') {
         // composeTime(stored, text).
         dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime, splitTime, composeTime},
         // A field's when (FO-3): fieldConditions(field, values) answers
-        // {visible, required, enabled} over the values on screen.
-        conditions: {evaluate: evaluateCondition, field: fieldConditions, fields: conditionFields, ops: CONDITION_OPS},
+        // {visible, required, enabled} over the values on screen;
+        // editable(field, values) whether a single-field edit opens (FO3-4).
+        conditions: {evaluate: evaluateCondition, field: fieldConditions, fields: conditionFields, ops: CONDITION_OPS, editable: fieldEditable},
         // A filter field's window from any control (FO-5): open({anchor,
         // field, value, size, placement}) settles {action, value} or null.
         filterWindow: {open: openFilterWindow, operatorLabel: filterOperatorLabel},

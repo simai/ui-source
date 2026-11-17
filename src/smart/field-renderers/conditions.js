@@ -97,6 +97,18 @@ export function fieldConditions(field, values) {
   };
 }
 
+/**
+ * Whether a single-field edit may open (FO3-4): a table cell's edit, a
+ * card's quick edit. The field is shown, enabled by its conditions over the
+ * record's values and not declared readonly; otherwise the edit does not
+ * open and the value stays as text. The record's other fields are the values.
+ */
+export function fieldEditable(field, values) {
+  if (!field || field.readonly === true) return false;
+  const {visible, enabled} = fieldConditions(field, values);
+  return visible && enabled;
+}
+
 /** The keys of the fields a field's `when` reads, each once. */
 export function conditionFields(field) {
   const keys = new Set();
