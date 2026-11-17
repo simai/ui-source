@@ -547,7 +547,7 @@
       "kind": "set",
       "repository": "simai/ui-chart",
       "status": "active",
-      "note": "Active: released under simai.component-set (npm @simai-studio/chart 1.1.0, release chart-58ba480db497); its 19 components ship with status preview.",
+      "note": "Active: released under simai.component-set (npm @simai-studio/chart 1.2.0, release chart-f5bff4e90a69); its 19 components ship with status preview. sf-chart-metric stays a name of the set, but since chart 1.2.0 it is not a chart of its own: it is the dated alias of SIMAI Framework's sf-tile-metric until 2027-01-01 (decision C168; journal record tag-sf-chart-metric-to-sf-tile-metric), an element the set ships (a subclass of the class that defines sf-tile-metric, relation cl-tile-metric). The name leaves the set at remove_after.",
       "families": [
         "chart"
       ],
