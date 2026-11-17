@@ -106,6 +106,22 @@
       "reason": "recorded by pair next 13 (group builds 10 and 11): the Smart bundle carries English words only and Russian comes from the language file (feat/lang-file-c282 2146152f9); the class twin ships no words; the static copies read pointer-events-none (C268)",
       "decision": "C282, C268",
       "date": "2026-11-17"
+    },
+    {
+      "unit": "component.menu",
+      "version": "1.10.2",
+      "twin": "smart.menu",
+      "reason": "recorded by group build 12 from fix/defects-d12 57c314515: the menu panel's path line reads the block padding (--sf-menu--inset-block) for its first/last-row corner clearance; the class sheet holds the rule and sf-menu draws with that sheet, so the Smart side has nothing of its own to change",
+      "decision": "C105 H4",
+      "date": "2026-11-17"
+    },
+    {
+      "unit": "smart.file-upload",
+      "version": "1.5.5",
+      "twin": "component.file-upload",
+      "reason": "recorded by group build 12 from fix/defects-d12 c5c74747a: sf-file-upload's row previews carry data-said-by=\"host\" so sf-file-preview does not announce a failure the upload's own status line already says; a host attribute of the Smart element, the class component has no announcer",
+      "decision": "C251",
+      "date": "2026-11-17"
     }
   ]
 }
