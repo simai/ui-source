@@ -553,6 +553,13 @@
     // the light surface and 1.9:1 against the dark one, where an indicator needs
     // 3:1. The solid role gives 4.5:1 and 14:1.
     --sf-focus: light-dark(var(--sf-primary-50), var(--sf-primary-90));
+    // The ring's colour reads the role where a theme class stands, not on
+    // :root alone (GB10): a custom property substitutes its var() where it
+    // is declared, so with the theme class on body (or a section) and a
+    // palette set with that class, the ring kept the root's primary while
+    // --sf-focus itself followed the class. Core's border sheet keeps the
+    // :root declaration for a page with no theme sheet.
+    --sf-focus--color: var(--sf-focus);
     --sf-link-hover: light-dark(var(--sf-primary-35), var(--sf-primary-85));
     --sf-link-active: light-dark(var(--sf-primary-30), var(--sf-primary-90));
     --sf-link-visited: light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80));
