@@ -87,9 +87,10 @@ test('C202: the slider with the field picks its layout by its own width, at the 
   const at = sheet.indexOf('@container sf-range-slider (inline-size < #{mq.container-step(g3)}) {');
   assert.ok(at >= 0, 'the narrow layout is a container query at g3');
   const narrow = sheet.slice(at);
-  // Under the track: two boxes, equal halves of the full width, a group gap.
+  // Under the track: two boxes sharing the full width, a group gap (C261:
+  // they wrap rather than clip, see below).
   assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-line \{\n {4}align-items: stretch;\n {4}flex-direction: column;/u);
-  assert.match(narrow, /grid-auto-columns: minmax\(0, 1fr\);\n {4}grid-auto-flow: column;\n {4}inline-size: 100%;/u);
+  assert.match(narrow, /display: flex;\n {4}flex-wrap: wrap;\n {4}gap: var\(--sf-space-1\\\/3\);\n {4}inline-size: 100%;/u);
   assert.match(narrow, /gap: var\(--sf-space-1\\\/3\);/u);
   // Each box is a field of the step, the unit and the dash leave, the words and the name's unit show.
   assert.match(narrow, /\.sf-range-slider-group--field \.sf-range-slider-field-box \{[\s\S]*?block-size: var\(--sf-range-slider--row, var\(--sf-ui-1--control-height\)\);[\s\S]*?border: var\(--sf-px\) solid var\(--sf-outline\);/u);
@@ -99,4 +100,19 @@ test('C202: the slider with the field picks its layout by its own width, at the 
   assert.match(narrow, /\.sf-range-slider-field-box:has\(\.sf-range-slider-field-input:focus-visible\) \{\n {4}outline: var\(--sf-focus--width\)/u);
   // Wide: the words and the name's unit are printed but hidden.
   assert.match(rule('.sf-range-slider-field-word,\n.sf-range-slider-name-unit'), /display: none;/u);
+});
+
+test('C261: the from/to boxes always hold the whole number; two that do not fit one row wrap under the track', () => {
+  const at = sheet.indexOf('@container sf-range-slider (inline-size < #{mq.container-step(g3)}) {');
+  const narrow = sheet.slice(at);
+  // The row of boxes wraps; the equal grid halves (minmax(0, 1fr)) are gone.
+  assert.doesNotMatch(narrow, /grid-auto-columns: minmax\(0, 1fr\)/u);
+  assert.match(narrow, /\.sf-range-slider-field:has\(\.sf-range-slider-field-input:focus-visible\) \{\n {4}block-size: auto;\n {4}border: 0;\n {4}display: flex;\n {4}flex-wrap: wrap;/u);
+  // Each box grows to share the row and never shrinks below its word and its
+  // wider ruler: the number column starts at the ruler's width.
+  const box = narrow.match(/\.sf-range-slider-group--field \.sf-range-slider-field-box \{[^}]*\}/u)?.[0] || '';
+  assert.match(box, /flex: 1 1 0;/u);
+  assert.match(box, /grid-template-columns: auto minmax\(min-content, 1fr\);/u);
+  assert.match(box, /min-inline-size: min-content;/u);
+  assert.doesNotMatch(box, /min-inline-size: 0;/u);
 });
