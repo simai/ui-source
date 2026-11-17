@@ -34,7 +34,9 @@ const out = resolve(process.argv[2]);
 const SHEETS = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'component/component/icons/css/icons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/badges/css/badges.css',
   'component/component/menu/css/menu.css', 'smart/smart/menu/css/menu.css'];
-const SCRIPTS = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
+// core/lang/ru.js first, as a Russian site lays it before core (owner decision
+// C282: Russian is a language file; the bundle carries English only).
+const SCRIPTS = ['core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'component/component/menu/js/menu.js', 'component/component/badges/js/badges.js', 'smart/smart/menu/js/menu.js'];
 
 const failures = [];
@@ -68,11 +70,14 @@ const ROW = [
   {id: 'contacts', label: 'Контакты', href: '#contacts'},
 ];
 // The same column as the class runtime draws it from markup: the reference
-// the element's rows are measured against.
+// the element's rows are measured against. The page stands at
+// /catalog/solutions/, which the element marks current from the location, so
+// the reference marks the same row current: the navigation look (the default
+// since owner decision C238) paints the current row's plate.
 const classList = `<ul class="sf-menu" id="class-col">
   <li class="sf-menu-item" icon="info"><a class="sf-menu-element" href="/about/"><span class="sf-menu-element-wrap"><i class="sf-icon sf-menu-element-icon" aria-hidden="true">info</i><span class="sf-menu-element-text">О компании</span></span></a></li>
   <li class="sf-menu-item open">Каталог<ul class="sf-menu">
-    <li class="sf-menu-item"><a class="sf-menu-element" href="/catalog/solutions/"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Решения</span><span class="sf-badge" data-count="3"></span></span></a></li>
+    <li class="sf-menu-item"><a class="sf-menu-element" href="/catalog/solutions/" aria-current="page"><span class="sf-menu-element-wrap"><span class="sf-menu-element-text">Решения</span><span class="sf-badge" data-count="3"></span></span></a></li>
     <li class="sf-menu-item open"><div class="sf-menu-element"><a class="sf-menu-element-wrap" href="/catalog/products/"><span class="sf-menu-element-text">Продукты</span></a><button type="button" class="sf-icon-button" aria-label="Продукты"><span class="sf-icon" aria-hidden="true">keyboard_arrow_down</span></button></div><ul class="sf-menu">
       <li class="sf-menu-item"><a class="sf-menu-element" href="/catalog/products/framework/">SIMAI Framework</a></li>
       <li class="sf-menu-item"><a class="sf-menu-element" href="/catalog/products/docara/">Docara</a></li>
@@ -122,7 +127,7 @@ try {
   await page.route('http://menu.test/**', (route) => route.fulfill({status: 200, contentType: 'text/html; charset=utf-8', body: PAGE}));
   await page.goto('http://menu.test/catalog/solutions/');
   for (const path of SHEETS) await page.addStyleTag({path: join(out, path)});
-  for (const path of SCRIPTS) await page.addScriptTag({path: join(out, path), type: 'module'}).catch(() => {});
+  for (const path of SCRIPTS) await page.addScriptTag(path.endsWith('/lang/ru.js') ? {path: join(out, path)} : {path: join(out, path), type: 'module'}).catch(() => {});
   await page.waitForFunction(() => customElements.get('sf-menu') && document.querySelectorAll('#col .sf-menu-item').length >= 9
     && document.querySelector('#class-col .sf-menu-element-wrap'), null, {timeout: 8000});
   await page.evaluate(() => document.fonts.ready);
@@ -311,7 +316,9 @@ try {
       return {shown: b.height > 0, position: getComputedStyle(ul).position, top: b.top, bottom: b.bottom, left: b.left, right: b.right,
         anchorTop: a.top, anchorBottom: a.bottom, anchorLeft: a.left, anchorRight: a.right, side: ul.dataset.sfSide || null};
     };
-    const tops = [...list.children].map((li) => Math.round(li.getBoundingClientRect().top));
+    // The rows drawn: a hidden overflow row («Ещё», shown only when the row
+    // does not fit) takes no place and has no top.
+    const tops = [...list.children].filter((li) => li.getClientRects().length).map((li) => Math.round(li.getBoundingClientRect().top));
     return {horizontal: list.classList.contains('sf-menu--horizontal'), toggle: Boolean(host.querySelector('[data-sf-menu-panel-toggle]')),
       tops, catalog: panel('catalog'), products: panel('products'), services: panel('services'),
       open: [...host.querySelectorAll('[aria-expanded="true"]')].map((button) => button.dataset.sfMenuToggle),

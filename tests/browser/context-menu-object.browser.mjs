@@ -27,8 +27,10 @@ const styles = [
   'core/core/css/core.css', 'component/component/icons/css/icons.css', 'component/component/buttons/css/buttons.css',
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/context-menu/css/context-menu.css',
 ].map((p) => join(out, p));
+// The Russian words, as a Russian site lays them before core (owner decision
+// C282: Russian is a language file; the bundle carries English only).
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button-icon/js/button-icon.js',
+  'core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js', 'smart/smart/button-icon/js/button-icon.js',
   'smart/smart/menu-context/js/menu-context.js',
 ].map((p) => join(out, p));
 const absent = [...styles, ...modules].filter((path) => !existsSync(path));
@@ -51,7 +53,7 @@ async function open(browser, options, dir = 'ltr') {
     <sf-menu-context id="m" popup for="files" aria-label="Действия с файлом"></sf-menu-context>
   </body></html>`);
   for (const path of styles) await page.addStyleTag({path});
-  for (const path of modules) await page.addScriptTag({path, type: 'module'}).catch(() => {});
+  for (const path of modules) await page.addScriptTag(path.endsWith('/lang/ru.js') ? {path} : {path, type: 'module'}).catch(() => {});
   await page.waitForFunction(() => customElements.get('sf-menu-context'));
   await page.evaluate(() => {
     const menu = document.getElementById('m');

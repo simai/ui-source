@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import test from 'node:test';
 
 import tagAliases from '../src/core/js/tag-aliases.generated.js';
-import {BEM_MARK, TAG, checkComponentNames, familyOf, readFrameworkComponents, splitOpen} from '../scripts/component-names-kit.mjs';
+import {BEM_MARK, OPEN_UNTIL, TAG, checkComponentNames, familyOf, openFailures, readFrameworkComponents, splitOpen} from '../scripts/component-names-kit.mjs';
 
 // The naming gate (owner decision C174, 2026-11-14, point 6): run by the
 // candidate with every contract, so a pair cannot carry a tag that breaks
@@ -24,16 +24,31 @@ const run = (change = {}) => splitOpen(check(change), packages.open).fresh;
 
 test('every Smart tag of this checkout passes the naming gate; the open problems are listed, not hidden', () => {
   assert.equal(framework.length, registry.owners.find(({id}) => id === 'framework').names.length, 'every Framework component is read');
-  const problems = check({today: new Date().toISOString().slice(0, 10)});
+  const today = new Date().toISOString().slice(0, 10);
+  const problems = check({today});
   const {fresh, listed, gone} = splitOpen(problems, packages.open);
   assert.deepEqual(fresh, [], 'a problem the open list does not name');
-  assert.deepEqual(gone, [], 'a listed open problem is fixed: take its row out of package-tags.json open');
-  assert.equal(listed.length, packages.open.length);
+  // A listed problem its package fixed first is a note until OPEN_UNTIL
+  // (take its row out at the next refresh); from then the list must be empty.
+  assert.deepEqual(openFailures({fresh, listed, gone}, today), [], `open naming problems after ${OPEN_UNTIL}, or rows left for gone ones`);
+  assert.equal(listed.length + gone.length, packages.open.length);
   assert.ok(!problems.some((line) => line.startsWith('framework ')), 'SIMAI Framework itself has no open naming problem');
   for (const row of packages.open) {
     assert.ok(row.owner && row.gap && row.since && row.fix, `open row says who fixes it and how: ${row.problem}`);
     assert.ok(packages.packages.some(({id, repository}) => row.problem.startsWith(`${id} `) && repository === row.owner), `the owner is the package's repository: ${row.problem}`);
   }
+});
+
+test('a listed problem a package fixed first does not fail before OPEN_UNTIL; from then the open list must be empty', () => {
+  const [first] = packages.open;
+  const fixed = check().filter((line) => line !== first.problem);
+  const split = splitOpen(fixed, packages.open);
+  assert.deepEqual(split.gone, [first.problem]);
+  assert.deepEqual(openFailures(split, '2026-12-01'), [], 'a gone row is a note before the date');
+  const after = openFailures(split, OPEN_UNTIL);
+  assert.ok(after.includes(`GONE (remove it from package-tags.json open): ${first.problem}`), 'from the date a gone row fails');
+  assert.equal(after.filter((line) => line.startsWith(`OPEN AFTER ${OPEN_UNTIL}: `)).length, packages.open.length - 1, 'from the date every listed problem fails');
+  assert.deepEqual(openFailures({fresh: ['x'], listed: [], gone: []}, '2026-12-01'), ['NEW: x'], 'a new problem fails at once');
 });
 
 test('a package passport family is the first word of its tag too (NM-5 in the packages)', () => {

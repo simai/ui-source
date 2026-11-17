@@ -48,7 +48,10 @@ $nav: ":is(.sf-menu--navigation, :where(:not(.sf-menu--framed, .sf-menu--documen
 //
 // The box says where its border is: --sf-menu--inset (its padding: border to
 // plate, C05) and --sf-menu--border-width; --sf-menu--radius lets the line
-// start below the corner's curve on the box's first and last row.
+// start below the corner's curve on the box's first and last row. A box whose
+// block padding differs from its inline one (a row's panel: the border inside
+// the inline inset only, C105 H4) names it in --sf-menu--inset-block, which
+// the corner's clearance reads (it is a vertical distance).
 $path-closed: ".sf-menu-item:not(.open):has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]), .sf-menu-element.sf-menu-element--holds-current:not([aria-current])";
 $path-any: ".sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-current='true'])) > .sf-menu-element:not([aria-current]), .sf-menu-element.sf-menu-element--holds-current:not([aria-current])";
 
@@ -102,13 +105,13 @@ $path-any: ".sf-menu-item:has(> .sf-menu :is([aria-current='page'], [aria-curren
   // bordered: the head is above it) sets --sf-menu--radius-block-start to 0.
   > .sf-menu-item:first-child > .sf-menu-element {
     @if paint.writes-shape() {
-      --sf-menu-path--block-start: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius-block-start, var(--sf-menu--radius, calc(var(--sf-px) * 0))) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+      --sf-menu-path--block-start: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius-block-start, var(--sf-menu--radius, calc(var(--sf-px) * 0))) - var(--sf-menu--inset-block, var(--sf-menu--inset, calc(var(--sf-px) * 0))) - var(--sf-menu--border-width, var(--sf-px))));
     }
   }
 
   > .sf-menu-item:last-child > .sf-menu-element {
     @if paint.writes-shape() {
-      --sf-menu-path--block-end: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius, calc(var(--sf-px) * 0)) - var(--sf-menu--inset, calc(var(--sf-px) * 0)) - var(--sf-menu--border-width, var(--sf-px))));
+      --sf-menu-path--block-end: max(calc(var(--sf-px) * 0), calc(var(--sf-menu--radius, calc(var(--sf-px) * 0)) - var(--sf-menu--inset-block, var(--sf-menu--inset, calc(var(--sf-px) * 0))) - var(--sf-menu--border-width, var(--sf-px))));
     }
   }
 
@@ -300,9 +303,12 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
      2026-11-16), as the row's region, sf-menu-context and the dropdown's
      list; it was --sf-radius--ui (4). */
   --sf-menu--inset: var(--sf-menu-horizontal-submenu--padding, calc(var(--sf-space-1\/4) - var(--sf-px)));
+  /* The block padding is the whole inset (the border is inside the inline
+     inset only): the path line's corner clearance reads it. */
+  --sf-menu--inset-block: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/4));
   --sf-menu--border-width: var(--sf-px);
   --sf-menu--radius: var(--sf-menu-horizontal-submenu--radius, var(--sf-menu-submenu-radius, var(--sf-radius--surface)));
-  padding-block: var(--sf-menu-horizontal-submenu--padding, var(--sf-space-1\/4));
+  padding-block: var(--sf-menu--inset-block);
   padding-inline: var(--sf-menu--inset);
   border-width: var(--sf-menu--border-width);
   border-style: solid;

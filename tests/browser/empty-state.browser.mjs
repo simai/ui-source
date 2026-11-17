@@ -5,7 +5,8 @@
 // nothing-found and error are a polite status, the others are not; an error
 // without actions offers «Повторить» and says so with sf-empty-state-action;
 // the actions property draws buttons at the component's size; the title role
-// grows with the size; the column is at most 28rem.
+// grows with the size; the place sets the width (no column of its own since
+// 1.5.0, DEV RG-PH-2, owner decision C19: the 28rem column went).
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -99,7 +100,8 @@ try {
   if (!(parseFloat(s.found.titleSize) < parseFloat(s.none.titleSize) && parseFloat(s.none.titleSize) < parseFloat(s.denied.titleSize))) {
     note({case: 'the title grows with the size', got: [s.found.titleSize, s.none.titleSize, s.denied.titleSize]});
   }
-  if (s.none.width > 448) note({case: 'at most 28rem', got: s.none.width});
+  // The place sets the width: the body's 1160 px (1200 less its 20 px margins), not a 28rem column.
+  if (Math.abs(s.none.width - 1160) > 1) note({case: 'the place sets the width (no own column, 1.5.0)', got: s.none.width});
   if (acts.join() !== 'retry,create') note({case: 'actions are announced', got: acts});
   console.log(JSON.stringify({states, acts, inline}, null, 1));
 } finally {

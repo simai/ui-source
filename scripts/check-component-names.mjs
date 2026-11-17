@@ -8,7 +8,7 @@ import {dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import tagAliases from '../src/core/js/tag-aliases.generated.js';
-import {checkComponentNames, readFrameworkComponents, splitOpen} from './component-names-kit.mjs';
+import {OPEN_UNTIL, checkComponentNames, openFailures, readFrameworkComponents, splitOpen} from './component-names-kit.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const json = (relative) => JSON.parse(readFileSync(resolve(root, relative), 'utf8'));
@@ -24,6 +24,8 @@ const problems = checkComponentNames({
 const {fresh, listed, gone} = splitOpen(problems, packages.open);
 for (const line of listed) console.log(`open (listed in package-tags.json): ${line}`);
 for (const line of fresh) console.log(`NEW: ${line}`);
-for (const line of gone) console.log(`GONE (remove it from package-tags.json open): ${line}`);
+// A gone row is a note until OPEN_UNTIL: its package fixed it first.
+for (const line of gone) console.log(`GONE (remove it from package-tags.json open; fails from ${OPEN_UNTIL}): ${line}`);
+const failing = openFailures({fresh, listed, gone});
 console.log(`component names: ${framework.length} Framework tags, ${listed.length} open problem(s) listed, ${fresh.length} new, ${gone.length} gone`);
-process.exit(fresh.length || gone.length ? 1 : 0);
+process.exit(failing.length ? 1 : 0);

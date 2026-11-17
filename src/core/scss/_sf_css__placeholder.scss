@@ -110,8 +110,12 @@
    - inline: the track, one control of its size high; its width is its
      labels', which no attribute gives;
    - field: the field, its label line above it, the label's gap and one
-     control of the field's size (1/3 draws 1/2, 3 draws 2), as wide as its
-     container;
+     control of the field's size, as wide as its container: the field is
+     the field's ladder: the label is the text a step below the size (1/3
+     keeps 1/3, the smallest label) and, below the desktop breakpoint, size 1
+     sets it in the body text (16, so iOS does not zoom), as sf-input's box
+     above; it held 1/3 as 1/2 and 3 as 2, the fields' clamp before they took
+     every size (defects-d12: the row under a field moved 4 to 12 px);
    - one language (a languages list without a separator, no island) draws
      nothing, so nothing is held.
 
@@ -137,7 +141,7 @@
   --sf-language--text-x: var(--sf-ui-1\/3--text-space-x);
   --sf-language--line: var(--sf-text-height-1\/3);
   --sf-language--field-label: var(--sf-text-height-1\/3);
-  --sf-language--field: var(--sf-ui-1\/2--control-height);
+  --sf-language--field: var(--sf-ui-1\/3--control-height);
 }
 :where(sf-language[size="1/2"]) {
   --sf-language--box: var(--sf-ui-1\/2--control-height);
@@ -160,8 +164,12 @@
   --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-3--space-x));
   --sf-language--text-x: var(--sf-ui-3--text-space-x);
   --sf-language--line: var(--sf-text-height-3);
-  --sf-language--field-label: var(--sf-text-height-1);
-  --sf-language--field: var(--sf-ui-2--control-height);
+  --sf-language--field-label: var(--sf-text-height-2);
+  --sf-language--field: var(--sf-ui-3--control-height);
+}
+
+@media not all and (min-width: 60rem) {
+  :where(sf-language:not([size="1/3"], [size="1/2"], [size="2"], [size="3"])) { --sf-language--field-label: var(--sf-text-height-1); }
 }
 
 :where(sf-language:not([data-look])):not(:has(> [data-sf-static])) {
@@ -352,6 +360,37 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
 
 @media not all and (min-width: 60rem) {
   :where(sf-input:not([size="1/3"], [size="1/2"], [size="2"], [size="3"]):not(:defined)) { --sf-input--box-label-line: var(--sf-text-height-1); }
+}
+
+/* sf-file-upload before it draws (defects-d12; GB9 pair acceptance, the
+   files page: a bare tag was 0 px until its code, and when an sf-input-image
+   under it drew first the upload then pushed it down by 134, 114 on a phone:
+   CLS 0.02-0.03 in every load). The area of size 1, the default, is known
+   from its attributes, from the ladder its sheet draws with: the dashed
+   frame (1 px on each side), the block padding --sf-space-1 on each side, the
+   featured icon of size 1 (its icon line and the tightness of the 1 control
+   around it), the gap --sf-space-1/3, the line of «Выберите файлы» in the
+   text of size 1, and, when the area names formats or a supporting text
+   (formats, supporting-text), its second line after --sf-space-1/4. A
+   label above the area, formats read from accept alone or a line that wraps
+   are what the attributes do not tell: a label reserves nothing. Printed markup (data-sf-static) is its own
+   box. */
+:where(sf-file-upload:not(:defined)) {
+  --sf-file-upload--box-text: 0;
+}
+
+:where(sf-file-upload:is([formats]:not([formats=""]), [supporting-text]:not([supporting-text=""])):not(:defined)) {
+  --sf-file-upload--box-text: 1;
+}
+
+:where(sf-file-upload:not(:defined):not([size]:not([size="1"])):not([label]:not([label=""]))):not(:has(> [data-sf-static])) {
+  display: block;
+  block-size: calc(2 * var(--sf-px)
+    + 2 * var(--sf-space-1)
+    + 2 * var(--sf-ui-1--space-y-tightness-default) + var(--sf-text-height-1)
+    + var(--sf-space-1\/3)
+    + var(--sf-text-height-1)
+    + var(--sf-file-upload--box-text) * (var(--sf-space-1\/4) + var(--sf-text-height-1)));
 }
 
 /* sf-profile-picker before it draws (first-paint status R222: a bare tag was

@@ -309,7 +309,7 @@
       "axis": "status",
       "legacy": [],
       "state": "canonical_from_the_start",
-      "note": "sf-chart-metric lives in the chart set (simai/ui-chart). Its status is the page's statement about the number in the shared vocabulary, a dot of that tone and the hint; the tile never infers it from the value (ui-chart M1, need 9). A package component is recorded here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one."
+      "note": "sf-chart-metric lives in the chart set (simai/ui-chart). Since chart 1.2.0 (chart-f5bff4e90a69) it is the dated alias of SIMAI Framework's sf-tile-metric until 2027-01-01 (decision C168; journal record tag-sf-chart-metric-to-sf-tile-metric): its status is the tile's -- the page's statement about the number in the shared vocabulary, a dot of that tone and the hint; the tile never infers it from the value (ui-chart M1, need 9). A package component is recorded here because the package runs tests/public-api-axes.contract.test.mjs in its overlay of ui-source, against this file, and a package file may not replace a ui-source one; the entry goes with the alias at remove_after."
     }
   ],
   "not_an_axis": {

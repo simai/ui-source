@@ -327,6 +327,33 @@
     outline-color: var(--sf-error);
   }
 
+  /* A failed chip keeps a chip's width (defects-d12, found by ui-pro chat
+     C149): the row's container query (C260 above) made it a size container,
+     and a shrink-to-fit chip that is one has no width of its own -- it drew
+     32 wide and 524 high. A chip is at most --sf-f8 (18rem), always under
+     the g2 step, so it needs no query: it draws «Повторить» as the icon
+     (named «Повторить <имя>», the word in its tooltip) and the reason on its
+     one line, cut at the end; the whole reason is in its title and said by
+     the alert. */
+  .sf-file-preview.sf-file-preview--chip.sf-file-preview--error {
+    container-type: normal;
+  }
+
+  .sf-file-preview.sf-file-preview--chip.sf-file-preview--error .sf-file-preview-retry > button {
+    display: none;
+  }
+
+  .sf-file-preview.sf-file-preview--chip.sf-file-preview--error .sf-file-preview-retry-icon {
+    display: inline-flex;
+  }
+
+  .sf-file-preview.sf-file-preview--chip .sf-file-preview-error {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   /* One line of name in a chip and a tile, cut in the middle by the element. */
   .sf-file-preview:is(.sf-file-preview--chip, .sf-file-preview--tile) .sf-file-preview-name {
     --sf-file-preview-name--font-size: var(--sf-text-size-1\/2);

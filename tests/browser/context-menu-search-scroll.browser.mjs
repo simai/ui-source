@@ -139,10 +139,14 @@ function checkLayout(where, {before, after}) {
   if (before.listTop < before.searchBottom - 0.5 || before.listTop < before.fieldBottom) note({case: `${where}: the scroll area begins under the field`, got: {field: before.fieldBottom, search: before.searchBottom, list: before.listTop}});
   const {inset, pad, rowHeight} = before.tokens;
   const near = (a, b) => Math.abs(a - b) <= 0.5;
+  // The panel's 1 px border is inside the inline inset (owner decision C105
+  // H4, 2026-11-14): inside the border, the inline paddings are the inset
+  // less the border; the block ones stay the whole inset.
+  const edge = before.border ?? 0;
   const sp = before.searchPadding;
-  if (!near(sp[0], 0) || !near(sp[2], 0) || !near(sp[1], inset + pad) || !near(sp[3], inset + pad)) note({case: `${where}: the header's text starts at the inset and the row's padding`, got: {padding: sp, inset, pad}});
+  if (!near(sp[0], 0) || !near(sp[2], 0) || !near(sp[1], inset + pad - edge) || !near(sp[3], inset + pad - edge)) note({case: `${where}: the header's text starts at the inset and the row's padding`, got: {padding: sp, inset, pad, border: edge}});
   const lp = before.listPadding;
-  if (![0, 2, 3].every((i) => near(lp[i], inset)) || !(near(lp[1], inset) || near(lp[1], 0))) note({case: `${where}: the rows' area is padded by the inset`, got: {padding: lp, inset}});
+  if (![0, 2].every((i) => near(lp[i], inset)) || !near(lp[3], inset - edge) || !(near(lp[1], inset - edge) || near(lp[1], 0))) note({case: `${where}: the rows' area is padded by the inset`, got: {padding: lp, inset, border: edge}});
   if (before.contentPadding.join() !== '0,0,0,0') note({case: `${where}: the content has no padding of its own`, got: before.contentPadding});
   // The header spans the panel inside its border, a hairline under it, no frame.
   if (!near(before.searchLeft, before.border) || !near(before.searchRight, before.border)) note({case: `${where}: the header spans the panel`, got: [before.searchLeft, before.searchRight]});

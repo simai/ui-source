@@ -82,7 +82,7 @@ const shell = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}">
 <body><div class="layout">
   <sf-menu id="nav" label="Разделы сайта" appearance="navigation" sticky collapse="narrow" current="address" items='${SECTIONS}'></sf-menu>
   <div class="content">
-    <sf-input id="ref" label="Название сайта" value="Пример" style="inline-size:100%"></sf-input>
+    <sf-input id="ref" label="Название сайта" value="Пример" hint="Подсказка поля" style="inline-size:100%"></sf-input>
     <sf-input-choice id="kind" label="Тип сайта" name="kind" value="shop" hint="Тип можно сменить позже." items='${KINDS}'></sf-input-choice>
     <sf-input-choice id="targets" label="Куда сохранять копии" name="targets" multiple columns="3" value="local,s3" items='${TARGETS}'></sf-input-choice>
     <sf-input-choice id="bad" label="Тариф" name="plan" required invalid error-message="Выберите тариф." items='${KINDS}'></sf-input-choice>
@@ -233,6 +233,7 @@ for (const theme of ['light', 'dark']) {
         labelFont: getComputedStyle(label).fontSize, messageFont: getComputedStyle(message).fontSize,
         labelLeft: r(label).left, gridLeft: r(document.querySelector('#kind .sf-choice-grid')).left, refLeft: r(ref).left, refLabelLeft: refLabel ? r(refLabel).left : null,
         refLabelFont: refLabel ? getComputedStyle(refLabel).fontSize : null,
+        refHintFont: (() => { const hint = document.querySelector('#ref .sf-input-hint-text-wrap'); return hint ? getComputedStyle(hint).fontSize : null; })(),
         badge: r(badge).height, docsHeight: r(cards[2]).height, checkedBorder: getComputedStyle(checked).borderTopColor,
         targetCols: [...new Set([...document.querySelectorAll('#targets .sf-choice-card')].map((one) => Math.round(r(one).top)))].length,
         badBorder: getComputedStyle(document.querySelector('#bad .sf-choice-card')).borderTopColor,
@@ -245,7 +246,11 @@ for (const theme of ['light', 'dark']) {
     ok(`choice ${label}: the control is the class radio, its box the name line, centred on it`, near(c.mark[0], t.line1) && near(c.mark[1], t.line1) && near(c.markMid, c.titleMid, 1), JSON.stringify({mark: c.mark, t: t.line1}));
     ok(`choice ${label}: .sf-choice-mark is kept on the control as a legacy alias`, c.alias, '');
     ok(`choice ${label}: a badge stands on the title's line without growing it`, c.badge <= t.line1 + 0.5, JSON.stringify({badge: c.badge, line: t.line1}));
-    ok(`choice ${label}: the label and the message are sf-input's text 1/2${c.refLabelFont ? ', the label the size of sf-input\'s' : ''}`, c.labelFont === c.messageFont && (!c.refLabelFont || c.refLabelFont === c.labelFont), JSON.stringify(c));
+    // The label and the message are sf-input's: its label and its hint. On a
+    // desktop both are text 1/2 (14); on a phone (below 60rem) the label of
+    // size 1 stays 14, the value's step there, and the hint is 12 (C153 (1),
+    // SM-ICH-1), so the two are compared with sf-input's, not with each other.
+    ok(`choice ${label}: the label and the message are sf-input's label and hint`, c.refLabelFont === c.labelFont && c.refHintFont === c.messageFont && (width < 960 || c.labelFont === c.messageFont), JSON.stringify(c));
     ok(`choice ${label}: the label and the cards stand on the field's left edge, as sf-input above`, near(c.labelLeft, c.gridLeft) && near(c.gridLeft, c.refLeft, 1), JSON.stringify(c));
     if (narrow) ok(`choice ${label}: a phone stacks the cards`, new Set(c.lefts).size === 1 && c.targetCols === 3, JSON.stringify(c));
     else ok(`choice ${label}: the cards stand in one row; columns 3 is one row of three`, new Set(c.tops).size === 1 && c.targetCols === 1, JSON.stringify(c));

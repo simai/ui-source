@@ -1,7 +1,7 @@
 {
   "schema": "simai.framework.package-tags",
   "schema_version": 1,
-  "summary": "The Smart tags every package other than SIMAI Framework ships, read for the naming gate (scripts/component-names-kit.mjs, tests/component-names.release-gate.test.mjs): a Framework tag may not be one of them, a package tag starts with a family its owner holds in the name registry (contracts/registry/names.json), and a tag lives in one package -- the one allowed copy is the pro bundle of a set, until the bundle ends. Read on 2026-11-14 from each repository at the revision given (ui-control control/research/2026-11-14-component-sets, data/smart-components.json, commit 13d56e0b). Refresh it when a set releases a new tag. Refreshed 2026-11-16 to the latest releases of pro (pro-2ba35fabb343), view (1.8.1) and chat (1.0.0); their tags are unchanged. Since 2026-11-16 (C174, the name gate): each package carries the passport family of every tag (families, read from component.json: pro from its release asset, a set from its repository at the revision), and open lists the problems the gate knows and the package still has to fix; the gate fails on a problem not listed and on a listed one that is gone.",
+  "summary": "The Smart tags every package other than SIMAI Framework ships, read for the naming gate (scripts/component-names-kit.mjs, tests/component-names.release-gate.test.mjs): a Framework tag may not be one of them, a package tag starts with a family its owner holds in the name registry (contracts/registry/names.json), and a tag lives in one package -- the one allowed copy is the pro bundle of a set, until the bundle ends. Read on 2026-11-14 from each repository at the revision given (ui-control control/research/2026-11-14-component-sets, data/smart-components.json, commit 13d56e0b). Refresh it when a set releases a new tag. Refreshed 2026-11-16 to the latest releases of pro (pro-2ba35fabb343), view (1.8.1) and chat (1.0.0); their tags are unchanged. Refreshed 2026-11-17 to chart 1.2.0 (chart-f5bff4e90a69): sf-chart-metric is no longer a tag of the set but its dated alias element of sf-tile-metric until 2027-01-01 (journal record tag-sf-chart-metric-to-sf-tile-metric), as pro ships sf-message-log. Since 2026-11-16 (C174, the name gate): each package carries the passport family of every tag (families, read from component.json: pro from its release asset, a set from its repository at the revision), and open lists the problems the gate knows and the package still has to fix; the gate fails on a problem not listed and on a listed one that is gone.",
   "read_on": "2026-11-16",
   "packages": [
     {
@@ -145,8 +145,8 @@
       "id": "chart",
       "kind": "set",
       "repository": "simai/ui-chart",
-      "revision": "a89dd6eb054f",
-      "release": "chart 1.1.0 (chart-58ba480db497)",
+      "revision": "f5bff4e90a69",
+      "release": "chart 1.2.0 (chart-f5bff4e90a69)",
       "tags": [
         "sf-chart-bar",
         "sf-chart-box",
@@ -156,7 +156,6 @@
         "sf-chart-heatmap",
         "sf-chart-line",
         "sf-chart-map",
-        "sf-chart-metric",
         "sf-chart-parts",
         "sf-chart-pie",
         "sf-chart-radar",
@@ -169,6 +168,15 @@
         "sf-chart-waterfall"
       ],
       "former_tags": [],
+      "alias_elements": [
+        {
+          "element": "sf-chart-metric",
+          "of": "sf-tile-metric",
+          "owner": "framework",
+          "remove_after": "2027-01-01",
+          "record": "tag-sf-chart-metric-to-sf-tile-metric"
+        }
+      ],
       "families": {
         "sf-chart-bar": "chart",
         "sf-chart-box": "chart",
@@ -178,7 +186,6 @@
         "sf-chart-heatmap": "chart",
         "sf-chart-line": "chart",
         "sf-chart-map": "chart",
-        "sf-chart-metric": "chart",
         "sf-chart-parts": "chart",
         "sf-chart-pie": "chart",
         "sf-chart-radar": "chart",

@@ -158,8 +158,15 @@ export function checkComponentNames({registry, framework, packages, tagAliases =
 }
 
 // The gate's answer against the listed open problems (package-tags.json
-// `open`): a problem nobody listed fails, and so does a listed one that is
-// gone, so the list is kept true instead of hiding anything.
+// `open`): a problem nobody listed fails. A listed one that is gone -- its
+// package fixed it before this list was refreshed -- is reported for its row
+// to be taken out, and does not fail before OPEN_UNTIL: a package (ui-pro,
+// ui-view...) may fix its passports first without reddening this gate
+// (defects-d12, Pro products batch). From OPEN_UNTIL, when the pro bundle
+// ends, the list must be empty: a listed problem still there fails, and so
+// does a row left for one that is gone.
+export const OPEN_UNTIL = '2027-03-01';
+
 export function splitOpen(problems, open = []) {
   const listed = new Set(open.map((row) => row.problem));
   return {
@@ -167,4 +174,15 @@ export function splitOpen(problems, open = []) {
     listed: problems.filter((line) => listed.has(line)),
     gone: [...listed].filter((line) => !problems.includes(line)),
   };
+}
+
+// What fails the gate on `today` (YYYY-MM-DD): a new problem always; from
+// OPEN_UNTIL a listed one and a row left for a gone one too.
+export function openFailures({fresh, listed, gone}, today = new Date().toISOString().slice(0, 10)) {
+  const due = today >= OPEN_UNTIL;
+  return [
+    ...fresh.map((line) => `NEW: ${line}`),
+    ...(due ? listed.map((line) => `OPEN AFTER ${OPEN_UNTIL}: ${line}`) : []),
+    ...(due ? gone.map((line) => `GONE (remove it from package-tags.json open): ${line}`) : []),
+  ];
 }
