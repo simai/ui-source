@@ -18,7 +18,7 @@ test('the ribbon sheet draws the quick ranges between its head and the weekdays'
   assert.ok(head > 0 && presets > head && weekdays > presets, 'head, presets, weekdays in this order');
   // The popup's list: one group named by the presets word, aria-pressed buttons, one tab stop,
   // the popup's keys, and «Свой период» after the ranges.
-  assert.ok(template.includes('class="sf-datepicker-presets sf-datepicker-sheet-presets flex gap-1/4" role="group" aria-label=${context.labels.presets}'));
+  assert.ok(template.includes('class="sf-datepicker-presets sf-datepicker-sheet-presets" role="group" aria-label=${context.labels.presets}'));
   assert.ok(template.includes('@keydown=${(event) => context.component.handlePresetKeydown(event)}'));
   assert.ok(template.includes("aria-pressed=${item.pressed ? 'true' : 'false'}"));
   assert.ok(template.includes("tabindex=${item === focusable ? '0' : '-1'}"));

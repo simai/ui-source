@@ -272,13 +272,16 @@ function renderDateFilterControl(field, host) {
                     appearance="bordered"
                     mode="select"
                     label="${setText(host, 'dateCondition')}"
+                    .value=${current.key}
                     hint=${isDateTime ? setWord(host, 'dateByDayIn', {zone: dateFilterContext(host).timeZone}) : nothing}
                     root-class="flex-1"
                     search="false"
                     @change=${(event) => {
                         const key = event.detail?.values?.[0] || event.detail?.value || current.key;
                         const next = list.find((item) => item.key === key);
-                        if (!next || next.key === current.key) return;
+                        // The condition shown before any is chosen is the default;
+                        // choosing it writes it, with its own starting value.
+                        if (!next || (asked && next.key === current.key)) return;
                         patch({operator: next.operator, value: dateConditionValue(next, {value})});
                     }}
             >
@@ -342,6 +345,7 @@ function renderDateConditionValue(field, host, current, value, patch) {
                 appearance="bordered"
                 mode="select"
                 label="${setText(host, 'dateWhen')}"
+                .value=${own ? 'own' : (typeof value === 'string' ? value : '')}
                 root-class="flex-1"
                 search="false"
                 @change=${(event) => {

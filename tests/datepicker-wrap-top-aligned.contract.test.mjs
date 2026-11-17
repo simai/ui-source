@@ -18,5 +18,8 @@ test('the wrapper stays top-aligned, so its height never follows the held icon (
   const css = read('src/component/datepicker/scss/_css_datepicker.scss');
   assert.match(css, /\.sf-datepicker-wrap \{\s*vertical-align: top;\s*\}/u);
   const template = read('src/smart/input-date/js/templates/default.js');
-  assert.ok(template.includes("joinClasses('sf-datepicker-wrap inline-flex flex-col relative'"), 'the wrapper is the field root the rule names');
+  assert.ok(template.includes("joinClasses('sf-datepicker-wrap',"), 'the wrapper is the field root the rule names');
+  // C293 DF-7: the wrapper is a block flex column now (it takes the row, as sf-input does), so it
+  // stands on no text baseline at all; the top alignment stays for a host that makes it inline.
+  assert.match(css, /\.sf-datepicker-wrap \{\n {4}display: flex;\n {4}flex-direction: column;\n {4}position: relative;\n {2}\}/u);
 });
