@@ -205,9 +205,9 @@ try {
     const home = read();
     return {reached, widened, ended, home};
   });
-  const words = (n) => [`${n}\u00a0пикс.`, `${n} px`];
-  if (open.reached.now !== '120' || open.reached.min !== '80' || open.reached.max !== null || !words(120).includes(open.reached.text)
-    || open.widened.now !== '140' || open.widened.width !== 140 || !words(140).includes(open.widened.text)
+  const pixelWords = (n) => [`${n}\u00a0пикс.`, `${n} px`];
+  if (open.reached.now !== '120' || open.reached.min !== '80' || open.reached.max !== null || !pixelWords(120).includes(open.reached.text)
+    || open.widened.now !== '140' || open.widened.width !== 140 || !pixelWords(140).includes(open.widened.text)
     || open.ended.width !== 140 || open.ended.now !== '140'
     || open.home.now !== '80' || open.home.width !== 80) {
     note({case: 'SF.Resizer.attach edge without an upper limit says its width', got: open});
