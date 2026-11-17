@@ -24,7 +24,7 @@
 // The state is on the shared global: every bundle carries its own copy of
 // this module.
 import {noteDeprecated} from './deprecations.js';
-import {pageWord} from './page-language.js';
+import {language, pageWord} from './page-language.js';
 import {reducedMotion} from './motion.js';
 
 export const STORAGE_KEY = 'sf-display-settings';
@@ -313,7 +313,15 @@ export function installSkipLink(doc = globalThis.document) {
   link.className = 'sf-skip-link';
   link.href = `#${main.id}`;
   link.setAttribute('data-sf-skip-link', 'core');
-  link.textContent = pageWord(WORDS, 'skip-link-text', doc.documentElement, {component: 'sf-display-settings', source: 'ru'});
+  // Its word comes from the page's language part, which may arrive after the
+  // link is drawn (C282): it is written again whenever words arrive.
+  const draw = () => {
+    link.textContent = pageWord(WORDS, 'skip-link-text', doc.documentElement, {component: 'sf-display-settings', source: 'ru'});
+  };
+  draw();
+  language.onChange?.(() => {
+    if (link.isConnected) draw();
+  });
   doc.body.prepend(link);
   return link;
 }
@@ -339,7 +347,11 @@ function start() {
     installSkipLink(doc);
     if (root.getAttribute(ATTRIBUTES.images) === 'hide') followImages(doc, true);
   };
+  // A microtask later when the page is already parsed: core installs its
+  // language-pack fetcher after this module runs, and a word asked before it
+  // has no pack on its way (C282, group build 10).
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', ready, {once: true});
+  else if (typeof queueMicrotask === 'function') queueMicrotask(ready);
   else ready();
   // Another tab of the site changed the choice.
   globalThis.addEventListener?.('storage', (event) => {
