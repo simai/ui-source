@@ -408,7 +408,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/sortable/index.js",
-        "sha256": "858639598ffe3473eb4ce59f5424fd020893cb337ec5db14b6ffa9a3b795d9f7"
+        "sha256": "0f3b3b13390537180429f8da1b1ec2d37971645db070be4728d439e8df76e9c2"
       },
       {
         "path": "src/smart/sortable/scss/_smart__sortable.scss",
@@ -420,11 +420,11 @@
       },
       {
         "path": "src/smart/sortable/docs.md",
-        "sha256": "ae8e397b826cbff796f6b4d630ada68cab1d4674faa6dca1cc3a3892ef135882"
+        "sha256": "3408cb3b9c4f458d102c30af426995078f2dcbd258a2092514032afff06e7bd0"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
-        "sha256": "273980cddea40ce635a75cc58364ab0b9b6b354927898fdb6e33dbbccb93527f"
+        "sha256": "05b675eb87e7aaf9cdd5cf3873005dadf6eb5cc3f77ba6dfbcefea865022e977"
       },
       {
         "path": "src/core/js/composition/sortable-inserter.mjs",
