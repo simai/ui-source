@@ -27,8 +27,9 @@ const ITEMS = [
 test('the manifest: a leaf of family settings with items, look, apply, search, size, for, remember, label; change, changed, reset, open, opened, close, closed; four actions', () => {
   assert.equal(manifest.tag, 'sf-settings');
   assert.equal(manifest.family, 'settings');
-  assert.equal(manifest.version, '1.7.4'); // group build 8: C208's patch (written as 1.6.1) above fix/returns-gb67's 1.6.2 (snapshots follow TT-11) // group build 7: fix/settings-menu-c176's 1.4.0 above the line's 1.4.2 // group build 9: 1.6.3 moved on by the merged branches or a GB9 patch // C282: 1.6.5 moved on by the language-file patch (Russian is a language file) // group build 10: 1.7.1 moved on by the merged branches or a GB10 patch
-  assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'apply', 'search', 'size', 'for', 'remember', 'label']);
+  assert.equal(manifest.version, '1.8.0'); // C106 order (template rows, words, open/close): 1.8.0 above 1.7.4 on every origin branch // group build 8: C208's patch (written as 1.6.1) above fix/returns-gb67's 1.6.2 (snapshots follow TT-11) // group build 7: fix/settings-menu-c176's 1.4.0 above the line's 1.4.2 // group build 9: 1.6.3 moved on by the merged branches or a GB9 patch // C282: 1.6.5 moved on by the language-file patch (Russian is a language file) // group build 10: 1.7.1 moved on by the merged branches or a GB10 patch
+  assert.deepEqual(Object.keys(manifest.settings), ['items', 'look', 'apply', 'search', 'size', 'for', 'remember', 'label',
+    'apply-count', 'close-label', 'search-placeholder', 'empty-text', 'pin-label', 'unpin-label', 'move-label']);
   // C106: the panel is a value of look (the setting «вид»); view is reserved (standard §3.1).
   assert.deepEqual(manifest.settings.look.values, ['drill', 'rows', 'panel']);
   // C176 (5): tiles left; a dated value alias of drill until 2027-01-01.
@@ -42,7 +43,9 @@ test('the manifest: a leaf of family settings with items, look, apply, search, s
   assert.deepEqual(manifest.settings.size.values, ['1/2', '1']);
   assert.equal(manifest.settings.size.default, '1', 'C22 / C176 SM-1: the ordinary size; density makes it compact');
   // C106 follow-up: the popup panel of look=panel sends sf-menu-context's open/close events.
-  assert.deepEqual(Object.keys(manifest.events), ['change', 'changed', 'reset', 'open', 'opened', 'close', 'closed']);
+  assert.deepEqual(Object.keys(manifest.events), ['change', 'changed', 'reset', 'open', 'opened', 'close', 'closed', 'arrange', 'arranged']);
+  assert.equal(manifest.events.arrange.cancelable, true);
+  assert.deepEqual(Object.keys(manifest.events.arrange.carries), ['id', 'order', 'previous', 'value', 'item']);
   assert.equal(manifest.events.open.cancelable, true);
   assert.equal(manifest.events.close.cancelable, true);
   assert.deepEqual(Object.keys(manifest.events.close.carries), ['reason', 'unsaved']);
@@ -50,7 +53,7 @@ test('the manifest: a leaf of family settings with items, look, apply, search, s
   assert.equal(manifest.events.change.cancelable, true);
   assert.equal(manifest.events.reset.cancelable, true);
   assert.equal(manifest.events.changed.cancelable, undefined);
-  assert.deepEqual(Object.keys(manifest.actions), ['set-value', 'set-all', 'show', 'reset']);
+  assert.deepEqual(Object.keys(manifest.actions), ['set-value', 'set-all', 'show', 'reset', 'open', 'close']);
   assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-menu-context', 'cl-input-color', 'cl-button', 'cl-button-icon', 'cl-tabs', 'cl-switch'], 'the colour window of the colour rows (C85) and the panel look\'s parts (C106)');
   assert.ok(manifest.relations.slice(1).every((relation) => relation.lazy), 'the panel look\'s parts do not hold up a menu look');
   assert.equal(manifest['css-variables'], undefined, 'no public variables');

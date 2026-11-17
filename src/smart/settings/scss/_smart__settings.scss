@@ -264,12 +264,23 @@
 /* The handle (C106 (6)): at the row's start, always shown. It stands a step
    into the inset, so a list that orders starts its text where a list that
    does not starts its handle. */
-.sf-settings-row-handle {
+.sf-settings-row-handle,
+.sf-settings-row-handle-place {
   display: inline-flex;
   flex: none;
   margin-inline-start: calc(-1 * var(--sf-settings-panel--inset));
+}
+
+.sf-settings-row-handle {
   cursor: grab;
   touch-action: none;
+}
+
+/* A row of an ordering list that does not move (an option with sortable:
+   false) keeps the handle's place empty, so its text stands with its
+   neighbours' (C105 H2). */
+.sf-settings-row-handle-place {
+  visibility: hidden;
 }
 
 /* The check (C106 (2)): one column at the inline end, shown on a checked
@@ -306,6 +317,12 @@
   justify-self: end;
   margin-inline-end: calc(var(--sf-settings-panel--pad) + var(--sf-settings-panel--line) + var(--sf-settings-panel--gap));
   opacity: 0;
+}
+
+/* A choice that pins (C106 (3)) has no check column: its pin stands at the
+   row's end. */
+.sf-settings-row--option > .sf-settings-row-pin > .sf-icon-button {
+  margin-inline-end: var(--sf-settings-panel--pad);
 }
 
 .sf-settings-row:hover > .sf-settings-row-pin > .sf-icon-button,

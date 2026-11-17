@@ -42,8 +42,8 @@ import {noteDeprecated} from '../../core/js/deprecations.js';
 import {swipeToClose} from '../../core/js/sheet-swipe.js';
 import {PanelScrollbar} from '../../component/panel-scrollbar.js';
 import {
-  APPLY, DEFAULT_SIZE, FORMER_LOOKS, OWN_COLOR, SIZES, applyCount, lookOf, colorCode, entriesFor, findItem, itemValue, matches, movedField, panelGroups, panelLayout,
-  placedField, rewriteValues, sameValue, toggledField, valueMap, valuePatch,
+  APPLY, DEFAULT_SIZE, FORMER_LOOKS, OWN_COLOR, SIZES, applyCount, choiceArranges, choiceOrder, lookOf, colorCode, entriesFor, findItem, itemValue, matches,
+  movedField, orderMap, orderPatch, panelGroups, panelLayout, placedField, rewriteValues, sameValue, toggledField, valueMap, valuePatch,
 } from './js/settings';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -656,12 +656,17 @@ class SfSettings extends SettingsElement {
       open: Boolean(this._open),
       search: Boolean(this.search),
       apply: this.applyMode,
-      count: applyCount(items),
+      // The page's own number of conditions (a filter whose conditions are
+      // not rows of this panel), else what the panel counts.
+      count: Number.isInteger(this.applyCount) && this.applyCount >= 0 ? this.applyCount : applyCount(items),
       current: this._current,
+      // The panel's words: the element's own (close-label, search-placeholder,
+      // empty-text, pin-label, unpin-label, move-label), else the page language's.
       words: {
-        label: this.sfWord('label'), close: this.sfWord('close'), reset: this.sfWord('reset'), apply: this.sfWord('apply'),
-        search: this.sfWord('search'), empty: this.sfWord('empty'), pin: this.sfWord('pin'), unpin: this.sfWord('unpin'),
-        moveHint: this.sfWord('move-hint'),
+        label: this.sfWord('label'), close: this.closeLabel || this.sfWord('close'), reset: this.sfWord('reset'), apply: this.sfWord('apply'),
+        search: this.searchPlaceholder || this.sfWord('search'), empty: this.emptyText || this.sfWord('empty'),
+        pin: this.pinLabel || this.sfWord('pin'), unpin: this.unpinLabel || this.sfWord('unpin'),
+        moveHint: this.moveLabel || this.sfWord('move-hint'),
       },
     };
   }
@@ -708,6 +713,41 @@ class SfSettings extends SettingsElement {
     return true;
   }
 
+  // A list's new order or pin: a fields list's value, or the order of a
+  // choice that orders (its value stays the chosen option).
+  async commitArrangement(id, value) {
+    const item = findItem(this.shownItems(), id);
+    if (!item || item.type !== 'choice') return this.commitValue(id, value);
+    if (this.applyMode === 'button') {
+      const patch = orderPatch(item, value);
+      if (!patch) return false;
+      this._draft = rewriteValues(this.shownItems(), (one) => (one.id === id ? patch : null)).list;
+      this.requestComponentUpdate('draft');
+      await this.whenRendered?.();
+      return true;
+    }
+    return this.writeOrdered(id, value);
+  }
+
+  // arrange (cancellable), then the write and arranged: a choice's order.
+  writeOrdered(id, order) {
+    const item = findItem(this.items, id);
+    const patch = item && orderPatch(item, order);
+    if (!patch) return false;
+    const next = {...item, ...patch};
+    const previous = choiceOrder(item);
+    const asked = choiceOrder(next);
+    if (same(previous, asked)) return true;
+    const detail = {id, order: asked, previous, value: itemValue(item), item: next};
+    if (!this.sfEmit('arrange', detail, {cancelable: true})) {
+      this.requestComponentUpdate('refused');
+      return false;
+    }
+    this.writeItems(rewriteValues(this.items, (one) => (one.id === id ? patch : null)).list);
+    this.sfEmit('arranged', detail);
+    return true;
+  }
+
   // «Применить»: every setting the draft moved is asked and written, as at
   // once; then the popup closes.
   applyDraft() {
@@ -717,6 +757,9 @@ class SfSettings extends SettingsElement {
       const wanted = valueMap(draft);
       const now = valueMap(this.items);
       for (const [id, value] of Object.entries(wanted)) if (!same(now[id], value)) this.writeAsked(id, value);
+      const order = orderMap(draft);
+      const was = orderMap(this.items);
+      for (const [id, value] of Object.entries(order)) if (!same(was[id], value)) this.writeOrdered(id, value);
     }
     this.requestComponentUpdate('draft');
     if (this._open) this.closePanel({reason: 'api'});
@@ -793,7 +836,7 @@ class SfSettings extends SettingsElement {
     const value = item && toggledField(item, option, 'pinned');
     if (!value) return;
     const focused = button === document.activeElement;
-    await this.commitValue(id, value);
+    await this.commitArrangement(id, value);
     await this.whenRendered?.();
     if (focused) this.rowControl(id, option, `${PIN} button`)?.focus({preventScroll: true});
   }
@@ -922,7 +965,7 @@ class SfSettings extends SettingsElement {
     const item = findItem(this.shownItems(), id);
     const value = item && movedField(item, option, step);
     if (!value) return;
-    await this.commitValue(id, value);
+    await this.commitArrangement(id, value);
     await this.whenRendered?.();
     this.afterMove(id, option);
   }
@@ -933,7 +976,7 @@ class SfSettings extends SettingsElement {
     this.stand(main);
     if (document.activeElement !== main) main.focus({preventScroll: false});
     const item = findItem(this.shownItems(), id);
-    const options = item ? itemValue(item) : [];
+    const options = !item ? [] : (choiceArranges(item) ? choiceOrder(item) : itemValue(item));
     const index = options.findIndex((one) => one.id === option) + 1;
     const label = main.querySelector('.sf-settings-row-label')?.textContent ?? '';
     this.announce(this.sfWord('position', {vars: {text: label, index, count: options.length}}));
@@ -986,7 +1029,7 @@ class SfSettings extends SettingsElement {
       const item = findItem(this.shownItems(), id);
       const value = before === undefined || !item ? null : placedField(item, option, before);
       if (!value) return;
-      await this.commitValue(id, value);
+      await this.commitArrangement(id, value);
       await this.whenRendered?.();
       this.afterMove(id, option);
     };
@@ -1110,7 +1153,9 @@ class SfSettings extends SettingsElement {
   draftMoved() {
     if (!this._draft) return false;
     const now = valueMap(this.items);
-    return Object.entries(valueMap(this._draft)).some(([id, value]) => !same(now[id], value));
+    const order = orderMap(this.items);
+    return Object.entries(valueMap(this._draft)).some(([id, value]) => !same(now[id], value))
+      || Object.entries(orderMap(this._draft)).some(([id, value]) => !same(order[id], value));
   }
 
   // show(id) in the panel: a popup opens, the tab that holds the setting is
@@ -1130,6 +1175,38 @@ class SfSettings extends SettingsElement {
     if (control.matches(ROW)) this.stand(control);
     control.focus({preventScroll: false});
     return {outcome: 'applied'};
+  }
+
+  /** The tab the panel shows (its groups as tabs), 0 when they are sections or it is not a panel. */
+  get tab() {
+    if (!this.isPanel || panelLayout(this.shownItems(), {search: Boolean(this.search)}) !== 'tabs') return 0;
+    return Math.min(this._tab, Math.max(0, panelGroups(this.shownItems()).length - 1));
+  }
+
+  /**
+   * Opens a popup panel against its first trigger, on a tab when one is
+   * given (its index): open(), open(1) or open({tab: 1}). Refused for
+   * another look or an inline panel; unavailable without a trigger;
+   * cancelled when the page cancels open.
+   */
+  async open(given) {
+    const tab = given && typeof given === 'object' ? given.tab : given;
+    if (!this.isPanel || !this.popup) return {outcome: 'refused', reason: 'not-popup'};
+    await this.whenRendered?.();
+    if (Number.isInteger(tab) && tab >= 0 && tab < panelGroups(this.shownItems()).length) this.chooseGroup(tab);
+    if (this._open) {
+      await this.whenRendered?.();
+      return {outcome: 'applied'};
+    }
+    const anchor = this.anchor();
+    if (!anchor) return {outcome: 'unavailable', reason: 'no-trigger'};
+    return (await this.openPanel(anchor)) ? {outcome: 'applied'} : {outcome: 'cancelled'};
+  }
+
+  /** Closes an open popup panel, as its close button does (close, cancellable; reason api). */
+  close() {
+    if (!this._open) return {outcome: 'refused', reason: 'not-open'};
+    return this.closePanel({reason: 'api'}) ? {outcome: 'applied'} : {outcome: 'cancelled'};
   }
 }
 
