@@ -78,6 +78,10 @@ export function watchConsole(tab) {
   const errors = [];
   tab.on('pageerror', (error) => errors.push(error.message));
   tab.on('console', (message) => {
+    // The Loader preloads a component's lazy relations; one the page never
+    // draws (a search box of a field that is not searchable) is a browser
+    // note on a slow machine, not the page's error.
+    if (/was preloaded using link preload but not used/u.test(message.text())) return;
     if (['error', 'warning'].includes(message.type())) errors.push(`${message.type()}: ${message.text()}`);
   });
   tab.on('response', (response) => {
