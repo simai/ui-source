@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 18,
-    "translated": 18,
+    "words": 21,
+    "translated": 21,
     "share": 100
   },
   "words": {
@@ -20,16 +20,19 @@
       "empty": "Ничего не найдено",
       "hint": "Плюс — вставить после.",
       "inserted": "Вставлено: {item}, позиция {index} в «{list}».",
-      "instructions": "Пробел или Enter — взять, стрелки — переместить, Пробел или Enter — положить, Escape — отменить.",
+      "instructions": "Enter или пробел — взять, стрелки — переместить, Enter или пробел — положить, Escape — отменить.",
+      "instructions-select": "Пробел — выбрать, Enter — взять, стрелки — переместить, Enter — положить, Escape — отменить.",
       "menu": "Вставить",
       "move-down": "Ниже",
       "move-first": "В начало",
       "move-last": "В конец",
       "move-menu": "Переместить «{item}»",
+      "move-to": "Переместить в",
       "move-up": "Выше",
       "moved": "Позиция {index} из {total} в «{list}».",
       "picked": "Взято: {item}. Позиция {index} из {total} в «{list}».",
       "point": "Вставить: позиция {index} из {total}",
+      "refused": "Сюда нельзя",
       "roledescription": "перемещаемый",
       "search": "Найти",
       "target": "Цель: {target}."

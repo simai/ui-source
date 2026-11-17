@@ -10,11 +10,26 @@ import { pageText } from '../page-language.js';
 export const SORTABLE_MOVE_EVENT = 'sf-sortable-move';
 export const SORTABLE_INTENT_EVENT = 'sf-sortable-intent';
 export const SORTABLE_STATE_EVENT = 'sf-sortable-state';
+// The host's word on a target list before an item goes there by the handle's
+// menu, a drag or the keys (BV-7): cancelable; a host that refuses calls
+// preventDefault() and may say why in detail.reason, which the menu shows on
+// the disabled row.
+export const SORTABLE_CHECK_EVENT = 'sf-sortable-check';
 
 const ITEM = '[data-sf-sortable-item]';
 const HANDLE = '[data-sf-sortable-handle]';
 const INTERACTIVE = 'a[href],button,input,select,textarea,summary,[contenteditable]:not([contenteditable="false"])';
 const NAME = /^[a-z][a-z0-9-]{0,31}$/u;
+// The controls inside an item, which leave the Tab order (BV-6), and the ones
+// that keep their own arrows (a text field, a radio group, a list box).
+const CONTROL = `${INTERACTIVE},[tabindex]`;
+const OWN_ARROWS = 'input:not([type="checkbox"]):not([type="button"]):not([type="submit"]):not([type="reset"]),select,textarea,[contenteditable]:not([contenteditable="false"]),[role="slider"],[role="spinbutton"],[role="listbox"],[role="radiogroup"]';
+// An sf-list-item row keeps its list's one Tab stop and its arrows itself.
+const OWN_ROVING = '[data-sf-list-roving]';
+// What makes an item selectable (C146 (8)): a selection mark inside it, or a
+// host-kept aria-selected. On such an item Space selects and Enter picks up (BV-8).
+const SELECT_MARK = 'input[type="checkbox"],[role="checkbox"]';
+const TAMED = 'data-sf-sortable-tabindex';
 // The id of a list's instructions, which its items name in aria-describedby:
 // a page-wide count, kept on a shared global because every bundle that
 // carries this module has its own module scope. It used to be random base 36,
@@ -47,7 +62,9 @@ const HALF = SORTABLE_DROP_LINE / 2;
 
 const MESSAGES = {
   en: {
-    instructions: 'Space or Enter to pick up, arrows to move, Space or Enter to drop, Escape to cancel.',
+    instructions: 'Enter or Space to pick up, arrows to move, Enter or Space to drop, Escape to cancel.',
+    'instructions-select': 'Space to select, Enter to pick up, arrows to move, Enter to drop, Escape to cancel.',
+    refused: 'Not here',
     picked: 'Picked up {item}. Position {index} of {total} in “{list}”.',
     moved: 'Position {index} of {total} in “{list}”.',
     dropped: 'Dropped {item} at position {index} in “{list}”.',
@@ -105,6 +122,127 @@ function accepts(list, group) {
   const own = list.getAttribute('group');
   const extra = (list.getAttribute('accepts') || '').split(/\s+/u).filter(Boolean);
   return group === own || extra.includes(group);
+}
+
+/** The target list's name in a move request: its id, else its group. */
+function nameOf(list) {
+  return list.getAttribute('id') || list.group || list.getAttribute('group') || '';
+}
+
+/**
+ * Asks the host whether `item` may go from `from` to `target` (BV-7): ''
+ * when it may, else the reason (the host's detail.reason, or a plain «not
+ * here»). A list never asks about itself.
+ */
+export function sortableRefusal(target, from, item) {
+  if (!target || target === from) return '';
+  const detail = { item: item?.getAttribute?.('data-sf-sortable-item') || '', from: from ? nameOf(from) : '', to: nameOf(target), reason: '' };
+  const event = new globalThis.CustomEvent(SORTABLE_CHECK_EVENT, { bubbles: true, composed: true, cancelable: true, detail });
+  if (target.dispatchEvent(event)) return '';
+  return String(detail.reason || '').trim() || messages().refused;
+}
+
+/**
+ * The lists an item of `list` can be sent to by the handle's menu (BV-7):
+ * every list of the page that takes the list's group, the list itself among
+ * them (current), in the page's order, each with the host's refusal if any.
+ * A copy list or a list without a group sends nowhere.
+ */
+export function sortableMoveTargets(list, item) {
+  const group = list?.group;
+  if (!group || list.mode === 'copy') return [];
+  return [...globalThis.document.querySelectorAll('sf-sortable')]
+    .filter((other) => other === list || accepts(other, group))
+    .map((other) => ({ list: other, label: listName(other) || nameOf(other), current: other === list, reason: other === list ? '' : sortableRefusal(other, list, item) }));
+}
+
+/**
+ * A move to another list asked without dragging (the handle's «Move to»): the
+ * request a drag between lists ends with -- to the end of the target -- and
+ * its «dropped» words. False when the host refuses the target.
+ */
+export function requestSortableTransfer(list, item, target) {
+  const id = item?.getAttribute?.('data-sf-sortable-item');
+  if (!id || !target || target === list || !accepts(target, list.group) || sortableRefusal(target, list, item)) return false;
+  const index = items(target).length;
+  emitIntent(target, { item: id, from: nameOf(list), to: nameOf(target), index, mode: 'move' });
+  list.announce?.(format(messages().dropped, { item: itemLabel(item), index: index + 1, list: listName(target) || nameOf(target) }));
+  return true;
+}
+
+/** Whether an item is selectable: Space selects it rather than picking it up (BV-8). */
+export function sortableSelectable(item) {
+  return Boolean(item?.hasAttribute?.('aria-selected') || selectMarkOf(item));
+}
+
+function selectMarkOf(item) {
+  if (!item?.querySelectorAll) return null;
+  return [...item.querySelectorAll(SELECT_MARK)].find((mark) => mark.closest(ITEM) === item
+    && !mark.disabled && mark.getAttribute('aria-disabled') !== 'true') || null;
+}
+
+/**
+ * What a key does on a list's item outside a move (BV-6, the APG layout grid,
+ * as a table's rows, C146 (8)): 'prev', 'next', 'first', 'last' go to another
+ * item; 'in' to the item's next control, 'out' back towards the item. The
+ * list's axis moves between items; the other axis, toward its end, goes into
+ * the item. Logical: in a right-to-left page the arrows of the inline axis swap.
+ */
+export function sortableRovingStep(key, { orientation = 'vertical', rtl = false } = {}) {
+  const forward = rtl ? 'ArrowLeft' : 'ArrowRight';
+  const back = rtl ? 'ArrowRight' : 'ArrowLeft';
+  if (key === 'Home') return 'first';
+  if (key === 'End') return 'last';
+  if (orientation === 'horizontal') {
+    return { [back]: 'prev', [forward]: 'next', ArrowDown: 'in', ArrowUp: 'out' }[key] || null;
+  }
+  return { ArrowUp: 'prev', ArrowDown: 'next', [forward]: 'in', [back]: 'out' }[key] || null;
+}
+
+/**
+ * What Space and Enter do on an item outside a move (BV-8, dispatcher's
+ * decision 2026-11-17): Enter picks it up; Space selects a selectable item
+ * (C146 (8): Space marks a record in every layout) and picks up only an item
+ * that is not selectable. Anything else: null.
+ */
+export function sortableKeyAction(key, selectable) {
+  if (key === 'Enter') return 'pick';
+  if (key === ' ') return selectable ? 'select' : 'pick';
+  return null;
+}
+
+// The controls of an item: every one leaves the Tab order (BV-6) -- its own
+// tabindex kept in data-sf-sortable-tabindex, given back when the list goes --
+// and the ones a person can reach are the arrows' stops, inner ones only (an
+// sf-button-icon host around its own button is the button).
+function controlsOf(item) {
+  return [...item.querySelectorAll(CONTROL)].filter((control) => control.closest(ITEM) === item && !control.closest('.sf-sortable-live'));
+}
+
+function tame(control) {
+  if (!control.hasAttribute(TAMED)) control.setAttribute(TAMED, control.getAttribute('tabindex') ?? '');
+  if (control.getAttribute('tabindex') !== '-1') control.setAttribute('tabindex', '-1');
+}
+
+function untame(control) {
+  const own = control.getAttribute(TAMED);
+  control.removeAttribute(TAMED);
+  if (own === null) return;
+  if (own === '') control.removeAttribute('tabindex');
+  else control.setAttribute('tabindex', own);
+}
+
+function reachable(control) {
+  if (control.disabled || control.getAttribute('aria-disabled') === 'true' || control.closest('[hidden], [inert]')) return false;
+  const own = control.getAttribute(TAMED);
+  const natively = control.matches(INTERACTIVE);
+  if (!natively && !(own !== null && own !== '' && Number(own) >= 0)) return false;
+  return control.getClientRects().length > 0;
+}
+
+function stopsOf(item) {
+  const all = controlsOf(item).filter(reachable);
+  return all.filter((control) => !all.some((other) => other !== control && control.contains(other)));
 }
 
 function scrollContainer(element) {
@@ -374,6 +512,16 @@ function restoreFocusAfterDrop(ended) {
   globalThis.requestAnimationFrame(() => globalThis.requestAnimationFrame(place));
 }
 
+// A target list the host refused for the item being moved (BV-7), asked once
+// per list in a drag or a keyboard move.
+function refusedInSession(list) {
+  const session = shared.session;
+  if (!session || list === session.fromList) return '';
+  session.refusals ??= new Map();
+  if (!session.refusals.has(list)) session.refusals.set(list, sortableRefusal(list, session.fromList, session.source));
+  return session.refusals.get(list);
+}
+
 function finish(list, reason) {
   if (!shared.session) return;
   const ended = shared.session;
@@ -404,6 +552,7 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       this.connection = null;
       this.live = null;
       this.instructions = null;
+      this.currentItem = null;
     }
 
     connectedCallback() {
@@ -421,14 +570,23 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
         this.instructions.className = 'sf-sortable-live';
         this.instructions.id = nextHelpId();
       }
-      this.instructions.textContent = messages().instructions;
       this.append(this.live, this.instructions);
+      this.updateInstructions();
       this.addEventListener('pointerdown', (event) => this.onPointerDown(event), options);
       this.addEventListener('keydown', (event) => this.onKeyDown(event), options);
-      this.addEventListener('focusin', (event) => this.prepareItem(event.target.closest?.(ITEM)), options);
+      this.addEventListener('focusin', (event) => {
+        const item = event.target.closest?.(ITEM);
+        this.prepareItem(item);
+        // The item a person was on is the list's Tab stop (BV-6).
+        if (item && item.closest('sf-sortable') === this && !item.matches(OWN_ROVING) && this.currentItem !== item) {
+          this.currentItem = item;
+          this.syncRoving();
+        }
+      }, options);
       for (const item of items(this)) this.prepareItem(item);
+      this.syncRoving();
       // Items the host adds later become focusable and draggable as well.
-      this.observer = new globalThis.MutationObserver(() => { this.ensureAccessibilityNodes(); for (const item of items(this)) this.prepareItem(item); });
+      this.observer = new globalThis.MutationObserver(() => { this.ensureAccessibilityNodes(); for (const item of items(this)) this.prepareItem(item); this.syncRoving(); });
       this.observer.observe(this, { childList: true, subtree: true });
       this.setAttribute('data-sf-sortable', 'connected');
     }
@@ -439,13 +597,22 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       this.observer = null;
       this.connection?.abort();
       this.connection = null;
+      for (const control of this.querySelectorAll(`[${TAMED}]`)) untame(control);
       if (shared.session?.fromList === this || shared.session?.list === this) finish(this, 'cancelled');
       this.setAttribute('data-sf-sortable', 'disposed');
     }
 
     prepareItem(item) {
       if (!item || item.closest('sf-sortable') !== this) return;
-      if (!item.hasAttribute('tabindex') && !item.matches(INTERACTIVE)) item.tabIndex = 0;
+      // An sf-list-item row takes its own place in the list's one Tab stop.
+      if (item.matches(OWN_ROVING)) {
+        if (!item.hasAttribute('tabindex') && !item.matches(INTERACTIVE)) item.tabIndex = 0;
+      } else {
+        // The list is one Tab stop (BV-6): the arrows go between its items, and
+        // the controls inside an item are reached from it with the arrows.
+        if (!item.hasAttribute('tabindex')) item.tabIndex = -1;
+        for (const control of controlsOf(item)) tame(control);
+      }
       const described = (item.getAttribute('aria-describedby') || '').split(/\s+/u);
       if (this.instructions && !described.includes(this.instructions.id)) item.setAttribute('aria-describedby', [...described.filter(Boolean), this.instructions.id].join(' '));
       describeItem(item);
@@ -453,6 +620,77 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
       // press, so the page keeps scrolling over it (SO-3: touch-action none on
       // the whole row stopped that).
       item.toggleAttribute('data-sf-sortable-whole', !item.querySelector(HANDLE));
+    }
+
+    // The one item of the list that takes Tab (BV-6): the one a person was on
+    // last, else the selected one, else the first. Every other item and every
+    // control inside an item is -1.
+    syncRoving() {
+      const all = items(this).filter((item) => !item.matches(OWN_ROVING));
+      if (!all.includes(this.currentItem)) {
+        this.currentItem = all.find((item) => item.getAttribute('aria-selected') === 'true') || all[0] || null;
+      }
+      for (const item of all) {
+        const want = item === this.currentItem ? '0' : '-1';
+        if (item.getAttribute('tabindex') !== want) item.setAttribute('tabindex', want);
+      }
+      this.updateInstructions();
+    }
+
+    // On a list of selectable items the instructions say Space selects (BV-8).
+    updateInstructions() {
+      if (!this.instructions) return;
+      const words = messages();
+      const text = items(this).some(sortableSelectable) ? words['instructions-select'] : words.instructions;
+      if (this.instructions.textContent !== text) this.instructions.textContent = text;
+    }
+
+    focusItem(item) {
+      if (!item) return;
+      this.currentItem = item;
+      this.syncRoving();
+      item.focus({ preventScroll: false });
+    }
+
+    // Keys outside a move on an item or a control in it (BV-6): the list's
+    // axis goes between items, the other one in and out of the item's
+    // controls; Escape on a control goes back to its item. A control with
+    // arrows of its own (a field) keeps them.
+    onRovingKey(event, item) {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return false;
+      if (item.matches(OWN_ROVING)) return false;
+      const onItem = event.target === item;
+      if (!onItem && (event.target.matches(OWN_ARROWS) || event.target.closest?.(ITEM) !== item)) return false;
+      if (!onItem && event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.focusItem(item);
+        return true;
+      }
+      const step = sortableRovingStep(event.key, { orientation: this.getAttribute('orientation') === 'horizontal' ? 'horizontal' : 'vertical', rtl: globalThis.getComputedStyle(this).direction === 'rtl' });
+      if (!step) return false;
+      event.preventDefault();
+      event.stopPropagation();
+      const stops = stopsOf(item);
+      const at = stops.indexOf(event.target);
+      if (step === 'in') {
+        const next = onItem ? stops[0] : stops[Math.min(stops.length - 1, at + 1)];
+        next?.focus({ preventScroll: false });
+        return true;
+      }
+      if (step === 'out') {
+        if (!onItem) (at > 0 ? stops[at - 1] : item).focus({ preventScroll: false });
+        return true;
+      }
+      if (!onItem) {
+        this.focusItem(item);
+        return true;
+      }
+      const all = items(this).filter((entry) => !entry.matches(OWN_ROVING));
+      const index = all.indexOf(item);
+      const target = { prev: all[index - 1], next: all[index + 1], first: all[0], last: all.at(-1) }[step];
+      if (target && target !== item) this.focusItem(target);
+      return true;
     }
 
     // The list keeps its live region and its instructions among its own
@@ -464,8 +702,8 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
     ensureAccessibilityNodes() {
       if (!this.live || !this.instructions) return;
       if (this.live.parentNode === this && this.instructions.parentNode === this) return;
-      this.instructions.textContent = messages().instructions;
       this.append(this.live, this.instructions);
+      this.updateInstructions();
     }
 
     announce(text) {
@@ -602,6 +840,12 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
         }
       }
       shared.session.external = null;
+      if (list && accepts(list, shared.session.group) && refusedInSession(list)) {
+        shared.session.placeholder?.remove();
+        shared.session.list = null;
+        showIndicator(null);
+        return;
+      }
       if (list && accepts(list, shared.session.group)
           && shared.session.silhouette && silhouetteFor(list)) {
         shared.session.list = list;
@@ -675,7 +919,7 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
 
     // Keyboard path --------------------------------------------------------
     keyboardTargets() {
-      return [...globalThis.document.querySelectorAll('sf-sortable')].filter((list) => list === shared.session?.fromList ? shared.session.mode === 'move' : accepts(list, shared.session?.group));
+      return [...globalThis.document.querySelectorAll('sf-sortable')].filter((list) => list === shared.session?.fromList ? shared.session.mode === 'move' : accepts(list, shared.session?.group) && !refusedInSession(list));
     }
 
     describeKeyboard(announce = true) {
@@ -697,8 +941,20 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
     onKeyDown(event) {
       const item = event.target.closest?.(ITEM);
       if (!shared.session) {
-        if (!item || item.closest('sf-sortable') !== this || event.target !== item) return;
-        if (event.key !== ' ' && event.key !== 'Enter') return;
+        if (!item || item.closest('sf-sortable') !== this) return;
+        if (this.onRovingKey(event, item) || event.target !== item) return;
+        // Enter picks up; Space selects a selectable item and picks up any
+        // other (BV-8). The host that keeps aria-selected answers Space itself.
+        const action = event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey ? null : sortableKeyAction(event.key, sortableSelectable(item));
+        if (!action) return;
+        if (action === 'select') {
+          const mark = selectMarkOf(item);
+          if (mark) {
+            event.preventDefault();
+            mark.click();
+          }
+          return;
+        }
         event.preventDefault();
         if (!this.begin(item, 'keyboard')) return;
         // An abandoned keyboard move is cancelled when focus or a click leaves the list.
@@ -1123,7 +1379,10 @@ export function attachSortable(container, options = {}) {
       if (!session) {
         const item = event.target.closest?.(options.items);
         if (!item || event.target !== item || !container.contains(item) || shared.session) return;
-        if (event.key !== ' ' && event.key !== 'Enter') return;
+        // Enter picks up; Space picks up only a row that is not selectable --
+        // on a selectable row (a selection mark, aria-selected) Space is the
+        // selection's, left to the host (BV-8).
+        if (event.defaultPrevented || sortableKeyAction(event.key, sortableSelectable(item)) !== 'pick') return;
         if (!open(item)) return;
         event.preventDefault();
         event.stopPropagation();
@@ -1189,4 +1448,4 @@ export function attachSortable(container, options = {}) {
   return detach;
 }
 
-export default { SORTABLE_DROP_LINE, SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, requestSortableMove, sortableIndexAt };
+export default { SORTABLE_CHECK_EVENT, SORTABLE_DROP_LINE, SORTABLE_MOVE_EVENT, activeSortableSession, attachSortable, defineSortable, registerSortableDropTarget, requestSortableMove, requestSortableTransfer, sortableIndexAt, sortableKeyAction, sortableMoveTargets, sortableRefusal, sortableRovingStep, sortableSelectable };

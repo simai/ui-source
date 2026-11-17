@@ -111,8 +111,16 @@
         pointer-events: none;
     }
 
+    /* The live region and the instructions: heard, not seen. Placed at the
+       start corner of whatever box holds them (BV-9): without an offset an
+       absolute box stands where it would have flowed, and in a list that
+       scrolls sideways inside a board with no position of its own that place
+       is past the page's end -- the page grew 1155 px wider at 390. At the
+       corner it is always inside its containing block, positioned or not. */
     .sf-sortable-live {
         position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
         inline-size: 1px;
         block-size: 1px;
         overflow: hidden;
