@@ -136,7 +136,8 @@
   ],
   "cl-form": [
     "display/default",
-    "position/default"
+    "position/default",
+    "visibility/default"
   ],
   "cl-gallery": [
     "display/default"

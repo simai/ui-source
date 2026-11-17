@@ -101,7 +101,7 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       render(html`
         <div class="sf-filter-window-control flex flex-col">${renderControl(field, host)}</div>
         <div class="sf-filter-window-footer flex gap-1/3 items-cross-center">
-          <sf-button size=${size} appearance="filled" scheme="primary" text=${word('filterApply', anchor)}
+          <sf-button size=${size} scheme="primary" text=${word('filterApply', anchor)}
                      data-action="apply" @click=${() => finish('apply')}></sf-button>
           <sf-button size=${size} appearance="outline" scheme="on-surface" text=${word('filterReset', anchor)}
                      data-action="reset" @click=${() => finish('reset')}></sf-button>

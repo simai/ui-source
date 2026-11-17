@@ -280,7 +280,7 @@ function choiceOption(field, option = {}) {
     const value = option.value ?? option.id ?? option.key ?? option.label ?? option.title;
     const label = option.label || option.title || String(value ?? '');
     const look = field.filter?.optionRenderer;
-    const item = {value: String(value ?? ''), label, caption: option.caption || option.description || '', disabled: option.disabled === true};
+    const item = {value: String(value ?? ''), label, caption: option.caption || '', disabled: option.disabled === true};
     if (look === 'avatar-checkbox') item.avatar = {image: option.imageUrl || option.avatar?.image || '', text: option.avatarText || label};
     else if (look === 'swatch' && option.color) item.swatch = option.color;
     else if (look === 'badge') item.scheme = option.scheme ?? option.color ?? '';
