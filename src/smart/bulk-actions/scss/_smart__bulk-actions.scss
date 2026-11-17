@@ -40,6 +40,19 @@
   display: none;
 }
 
+/* The first paint (C55): the static markup is the wide row; on a phone the
+   code draws icon buttons in one row. Until it does, the row does not wrap
+   (its end is clipped), so the bar is already its drawn height and nothing
+   below it moves. */
+.sf-bulk-actions[data-sf-static],
+.sf-bulk-actions[data-sf-static] .sf-bulk-actions__lead {
+  flex-wrap: nowrap;
+}
+
+.sf-bulk-actions[data-sf-static] {
+  overflow: hidden;
+}
+
 .sf-bulk-actions__lead,
 .sf-bulk-actions__end,
 .sf-bulk-actions__actions,

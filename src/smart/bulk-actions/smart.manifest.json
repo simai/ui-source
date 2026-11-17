@@ -430,7 +430,7 @@
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
-        "sha256": "5674f921819eb31cb958068dc7a556a4945490c597b9ba3ecef246b0ba2672ae"
+        "sha256": "9293a064e030eef6095cd2e97639200d22579d75c91cbc229ebfa16e55fcd652"
       },
       {
         "path": "src/smart/bulk-actions/rule.js",
