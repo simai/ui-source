@@ -139,6 +139,12 @@ $sf-icon-ladder-optical: (
   // The glyph never leaves its box (C151 point 2): a name the font does not
   // draw spells its letters, up to 384 px wide over the label beside it.
   overflow: clip;
+  // Its baseline is its bottom edge, the font in or not (the lift below reads
+  // it so): layout containment leaves the box no baseline of its own, and the
+  // line takes the bottom edge. Without it the baseline was the name's text,
+  // and before Material Symbols came (no descent) a fallback face's descent
+  // stood the glyph 3-4 px low and grew a 24 line to 27 (group build 9).
+  contain: layout;
   height: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1)));
   width: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-text-height-1)));
   &:not(.hidden) {
@@ -199,7 +205,7 @@ $sf-icon-ladder-optical: (
 }
 
 // The glyph on the middle of its text line, exactly (C151 point 5). Its box
-// clips (overflow), so its baseline is its bottom edge; the middle of a text
+// clips and contains its layout, so its baseline is its bottom edge; the middle of a text
 // line stands above the text's baseline by --sf-text--middle (half of the
 // face's ascent less its descent, whatever the line height). So the glyph's
 // bottom is lifted by that less half its own height. The text is the
