@@ -55,6 +55,8 @@ export function renderQuantityTemplate(context) {
     'sf-quantity',
     `sf-quantity--size-${context.size}`,
     steppers ? '' : 'sf-quantity--steppers-none',
+    // C283: the filled look is the class component's own modifier.
+    context.appearance === 'filled' ? 'sf-quantity--filled' : '',
     field.invalid ? 'error' : '',
     context.rootClass,
     LAYOUT.root,

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -106,6 +106,15 @@
         "type": "boolean",
         "default": true,
         "description": "Group thousands the page's language's way («2 567»); `grouping=\"false\"` writes the digits together, for a year or a code."
+      },
+      "appearance": {
+        "type": "string",
+        "default": "bordered",
+        "description": "How the field looks, as sf-input's appearance (owner decision C283): `bordered`, the default, a box with a border; `filled`, the container fill with no border and the bottom line, as sf-input--filled and the plain sf-quantity--filled.",
+        "enum": [
+          "bordered",
+          "filled"
+        ]
       },
       "steppers": {
         "type": "string",
@@ -663,7 +672,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-quantity/index.js",
-        "sha256": "53e43104552196062504042d7ef1f0e7ddc5afa179abe1ad2eb8234cf259b407"
+        "sha256": "fc5f4b548329b8190c216caadd6fccac94469dea0b87d449ae3f1f9f56a5c8fc"
       },
       {
         "path": "src/smart/input-quantity/value.mjs",
@@ -671,7 +680,7 @@
       },
       {
         "path": "src/smart/input-quantity/js/templates/default.js",
-        "sha256": "da8a64821e019578e6a52f767fd60e35ea9d45ba389d3de8ae2030fef744716b"
+        "sha256": "8ba0e7873c628474a4764fba3154f7e079460493ba1e91bf2420d5cce4155589"
       },
       {
         "path": "src/smart/input-quantity/rule.js",
@@ -679,7 +688,7 @@
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "05985fcd06ef64d313a1810861ad383a24218ac9a92dfaf54de3bce2baef6e3c"
+        "sha256": "4be2034634c42cd0401b7da8a0a1647d2db4c88484d3ed1dc5a96f9183a48e62"
       }
     ],
     "generated_runtime": []

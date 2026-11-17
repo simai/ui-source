@@ -477,10 +477,14 @@
   /* The number place (F4): as tall as a stepper, the steppers' corner, the
      surface hover fill under a pointer and the text cursor, so it reads as a
      place to type. */
+  /* SM-QT-1: the width holds the box's own padding, and the box says its
+     sizing, so a page's border-box reset (unlayered, it wins over every
+     layered rule) no longer takes the padding out of the number: «2026» at
+     grouping="false" stood in 37 of the 42 it needs in a docs page. */
   .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input {
     flex: 0 1 auto;
-    box-sizing: content-box;
-    inline-size: calc((var(--sf-quantity--digits, 6) + 0.5) * 1ch);
+    box-sizing: border-box;
+    inline-size: calc((var(--sf-quantity--digits, 6) + 0.5) * 1ch + var(--sf-quantity-input--padding-inline-start, calc(var(--sf-px) * 0)) + var(--sf-quantity-input--padding-inline-end, calc(var(--sf-px) * 0)));
     min-inline-size: 0;
     block-size: var(--sf-quantity--number-height);
     align-self: center;

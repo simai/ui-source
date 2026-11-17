@@ -276,6 +276,13 @@ class SfQuantity extends ShownValidity(FormField(QuantityElement)) {
     return this.getAttribute('steppers') === 'none' ? 'none' : 'sides';
   }
 
+  // The look of the box (owner decision C283): bordered by default, filled on
+  // request -- the class component's sf-quantity--filled, as sf-input's
+  // appearance. Anything else reads as bordered.
+  get appearance() {
+    return this.getAttribute('appearance') === 'filled' ? 'filled' : 'bordered';
+  }
+
   // A unit written after the number, inside the box («кг», «%»).
   get unit() {
     return (this.getAttribute('unit') || '').trim();
@@ -880,6 +887,7 @@ class SfQuantity extends ShownValidity(FormField(QuantityElement)) {
       text: this.text,
       valueText: this.valueText,
       steppers: this.steppers,
+      appearance: this.appearance,
       unit: this.unit,
       digitsStyle: this.digitsStyle,
       formValue: this.formValue,
