@@ -76,5 +76,5 @@ test('the window draws the condition first and only what it needs; a boolean is 
 
 test('FF-9: a trigger handed in is the control it holds, not a wrapper with role button', () => {
   const source = read('src/component/dropdown/interaction.js');
-  assert.match(source, /box\.querySelector\(':scope > :is\(sf-button, sf-button-icon\) button, :scope > a\[href\]'\)/u);
+  assert.match(source, /box\.querySelector\(':scope > \* > button, :scope > a\[href\]'\)/u);
 });

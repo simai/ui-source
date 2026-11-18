@@ -589,7 +589,7 @@ test('FO-5: the filter window -- a dialog popover from any anchor, «Приме�
 
 test('FO5-1..FO5-4: «Применить (N)», a bottom sheet on a phone, on the body like the menu, the reopen guard without a timer', () => {
   const source = read('src/smart/field-renderers/filter-window.js');
-  assert.match(source, /return count \? `\$\{word\('filterApply', anchor\)\} \(\$\{count\}\)` : word\('filterApply', anchor\);/u);
+  assert.match(source, /return number \? `\$\{word\('filterApply', anchor\)\} \(\$\{number\}\)` : word\('filterApply', anchor\);/u);
   assert.match(source, /frame = doc\.createElement\('sf-drawer'\);\s*frame\.setAttribute\('placement', 'bottom'\);\s*frame\.setAttribute\('heading', label\);/u);
   assert.match(source, /foot\.setAttribute\('slot', 'footer'\);/u);
   assert.match(source, /\(anchor\.closest\?\.\('dialog\[open\]'\) \|\| doc\.body\)\.append\(surface\);/u);

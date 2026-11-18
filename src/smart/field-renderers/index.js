@@ -2786,7 +2786,7 @@ function renderNumberWindow(field, host, value, operator) {
     const named = (text) => (sign ? `${text}, ${sign}` : text);
     if (operator !== 'between') {
         const one = Array.isArray(value.value) ? value.value[0] : value.value;
-        return html`<sf-input size=${filterSize(host)} appearance="bordered" input-mode="decimal"
+        return html`<sf-input size=${filterSize(host)} appearance="bordered"
                 aria-label=${named(host.getFilterOperatorLabel(operator))} placeholder=${sign || nothing}
                 value=${one ?? ''} name="sf_filter_${field.key || 'number'}"
                 @change=${(event) => host.patchTempFilterValue(field.key, {operator, value: event.target?.value || ''})}></sf-input>`;

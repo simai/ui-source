@@ -48,7 +48,7 @@ export function createDropdownInteraction(root, adapter) {
     const box = field();
     if (!box) return null;
     return box.querySelector(':scope > button')
-      || (box.classList.contains('sf-dropdown-trigger') ? box.querySelector(':scope > :is(sf-button, sf-button-icon) button, :scope > a[href]') : null)
+      || (box.classList.contains('sf-dropdown-trigger') ? box.querySelector(':scope > * > button, :scope > a[href]') : null)
       || box;
   };
   const input = () => field()?.querySelector('input:not([type="hidden"])');
