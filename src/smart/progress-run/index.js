@@ -163,10 +163,16 @@ export function stepTime(step, now = Date.now()) {
   return step.state === 'running' ? Math.max(0, now - start.getTime()) : null;
 }
 
-/** Milliseconds as m:ss, or h:mm:ss over an hour. */
-export function formatTime(ms) {
+/**
+ * Milliseconds as m:ss, or h:mm:ss over an hour. A time that counts up is
+ * floored (a clock); a time something took (`took`: a finished step, the
+ * run's «заняло») is rounded to the second, and any time above zero reads at
+ * least 0:01 -- a step of 800 ms said «0:00», as if it took no time (Larena
+ * LF-8, 2026-11-18; the unit was right).
+ */
+export function formatTime(ms, {took = false} = {}) {
   if (ms === null || ms === undefined || !Number.isFinite(ms)) return '';
-  const total = Math.floor(ms / 1000);
+  const total = took && ms > 0 ? Math.max(1, Math.round(ms / 1000)) : Math.floor(ms / 1000);
   const hours = Math.floor(total / 3600);
   const minutes = Math.floor((total % 3600) / 60);
   const seconds = String(total % 60).padStart(2, '0');
@@ -675,7 +681,7 @@ class SfProgressRun extends ProgressRunElement {
     let time = '';
     let timeShort = '';
     if (ended) {
-      time = elapsed !== null ? word('took', {vars: {time: formatTime(elapsed)}}) : '';
+      time = elapsed !== null ? word('took', {vars: {time: formatTime(elapsed, {took: true})}}) : '';
     } else if (state === 'running' && total !== null) {
       time = remainingMs !== null ? remainingWords(remainingMs, word) : word('estimating');
       timeShort = remainingMs !== null ? remainingWords(remainingMs, word, {short: true}) : '';
@@ -714,7 +720,7 @@ class SfProgressRun extends ProgressRunElement {
         const log = `${step.log}${this._logs.get(step.id) ?? ''}`;
         return {
           ...step,
-          time: formatTime(stepTime(step, now)),
+          time: formatTime(stepTime(step, now), {took: step.state !== 'running'}),
           stateWord: word(`state-${step.state}`),
           figures: step.value !== null || step.total !== null ? this.figures(step.value, step.total && step.total > 0 ? step.total : null, step.unit) : '',
           log,

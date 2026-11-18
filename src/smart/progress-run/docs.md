@@ -16,6 +16,8 @@ tag in three looks (`look`, owner decision C34):
   `SF.deprecations`; the row writes the class `sf-progress-run--view-compact`
   beside `sf-progress-run--view-row` until then. The word compact means
   density only (`data-sf-density`, owner decision C134).
+  The row carries no name: the job is named by the row's own cell. Outside a
+  table use `notice`, the look with the name.
 - `notice` — one row for a corner panel: the ring in the icon field, the
   name, a line of figures and Expand. The panel itself (where it stands,
   several runs in it) is the page's composition.
@@ -91,8 +93,11 @@ confirmation around it (a change sheet) are the page's composition.
   `state` is `waiting`, `running`, `done`, `failed` or `skipped` (anything
   else is `waiting`). A step's `value`/`total` are its own figures («18 240
   из 42 600 файлов»). `log` is the step's log so far. The time of a step is
-  `duration` in milliseconds, else `finished − started`; a running step with
-  `started` counts up each second. Written `m:ss`, `h:mm:ss` over an hour.
+  `duration` in milliseconds (a number: `800`, `4000`), else
+  `finished − started` (both ISO 8601 date-times); a running step with
+  `started` counts up each second. Written `m:ss`, `h:mm:ss` over an hour; a
+  time a step took is rounded to the second and reads at least `0:01` (1.5.5:
+  800 ms read «0:00»).
 - `run-state` `auto|running|paused|done|partial|failed|cancelled` — `auto`
   (the default) works it out from the steps: failed when one failed, running
   while one runs, done when every step is done or skipped, else waiting

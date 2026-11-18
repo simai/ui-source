@@ -11,6 +11,7 @@ import { InheritedValueField } from '../helpers/inherited-value';
 import { FormField, innerControlName, ownInvalid } from '../helpers/form-field';
 import { instancePath, partId } from '../../core/js/instance-path.js';
 import { iconWords } from '../../core/js/icon-choices.js';
+import { noteDeprecated } from '../../core/js/deprecations';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import {files as languageFiles} from './lang/index.mjs';
@@ -105,9 +106,17 @@ function parseOptionNode(node, dropdownSize = '1') {
 // An option may also arrive as data rather than as a child element. The shape is
 // the one parseOptionNode produces, so both paths answer the same questions and
 // a missing field falls back the same way.
+// An option's name is label, as sf-input-choice's and sf-input-lookup's
+// (Larena LF-2, 2026-11-18: one option shape, {value, label}). text, the
+// first spelling here, is read until 2027-01-01 and noted once in
+// SF.deprecations (journal sf-dropdown-option-text-to-label).
+const OPTION_TEXT_ALIAS = {component: 'sf-dropdown', tag: 'sf-dropdown', kind: 'property', attribute: 'options', from: 'text', to: 'label', since: '2026-11-18', remove_after: '2027-01-01'};
+
 function parseOptionData(option, dropdownSize = '1') {
   if (!option || typeof option !== 'object') return null;
-  const text = option.text === undefined || option.text === null ? '' : String(option.text);
+  const named = option.label ?? option.text;
+  if ((option.label === undefined || option.label === null) && option.text !== undefined && option.text !== null) noteDeprecated(OPTION_TEXT_ALIAS);
+  const text = named === undefined || named === null ? '' : String(named);
   const value = option.value === undefined || option.value === null ? text : String(option.value);
   if (text === '' && value === '') return null;
 
@@ -145,7 +154,7 @@ function parseOptionList(value, dropdownSize = '1') {
   return list
     .map((option) =>
       typeof option === 'string' || typeof option === 'number'
-        ? parseOptionData({ text: String(option), value: String(option) }, dropdownSize)
+        ? parseOptionData({ label: String(option), value: String(option) }, dropdownSize)
         : parseOptionData(option, dropdownSize),
     )
     .filter(Boolean);

@@ -4,6 +4,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import {FormField, ShownValidity} from '../helpers/form-field';
 import {renderChoiceTemplate} from './js/templates/default';
 import {fieldHelpLabel} from '../helpers/field-help';
+import {noteDeprecated} from '../../core/js/deprecations';
 import {CHOICE_APPEARANCES, CHOICE_COLUMNS, CHOICE_LAYOUTS, applyChoice, formatValue, listFlow, normaliseItems, orderValues, parseValue} from './js/choice-model.mjs';
 import manifest from './component.json';
 import {files as languageFiles} from './lang/index.mjs';
@@ -42,6 +43,10 @@ const ChoiceElement = elementFromManifest(manifest, {
   lang: languageFiles,
   source: 'en',
 });
+
+// An option named by text (sf-dropdown's first spelling) rather than label:
+// read until the date, noted once in SF.deprecations (Larena LF-2).
+const noteOptionAlias = (from, to) => noteDeprecated({component: 'sf-input-choice', tag: 'sf-input-choice', kind: 'property', attribute: 'items', from, to, since: '2026-11-18', remove_after: '2027-01-01'});
 
 // The id the inner inputs' form attribute names: no element carries it.
 const NO_FORM = 'sf-input-choice-no-form';
@@ -85,9 +90,41 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
       this.sfSyncFormState?.();
     }
     // A list setting is a property (or the JSON island); the attribute holds
-    // the same list as JSON, as sf-menu's items.
-    if (name === 'items' && oldValue !== newValue) this.requestComponentUpdate?.('items');
+    // the same list as JSON, as sf-menu's items. A change after the element
+    // first connected is the property's list now (sfReadListAttributes below
+    // takes the first one).
+    if (name === 'items' && oldValue !== newValue) {
+      if (this.__sfListAttributesRead) this.adoptItemsAttribute(newValue);
+      this.requestComponentUpdate?.('items');
+    }
     super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  // The property says what the attribute gave (Larena LF-1, 2026-11-18:
+  // items read [] while the cards drew the attribute's options). The base
+  // reads a list attribute only for a setting no component observes; this
+  // one is observed, so the first reading is here, after the island and on
+  // the same terms: a property or the island that gave the list first wins.
+  sfReadListAttributes() {
+    const first = !this.__sfListAttributesRead;
+    super.sfReadListAttributes();
+    if (!first || !this.hasAttribute('items')) return;
+    const given = this.items;
+    const store = this.__sfManifestData ?? {};
+    if ((Array.isArray(given) && given.length) || Object.prototype.hasOwnProperty.call(store, 'items')) return;
+    this.adoptItemsAttribute(this.getAttribute('items'));
+  }
+
+  // The attribute's JSON as the items property; not JSON or not a list:
+  // the property keeps its value (the cards still read the attribute).
+  adoptItemsAttribute(raw) {
+    let list;
+    try {
+      list = raw === null ? [] : JSON.parse(raw);
+    } catch {
+      return;
+    }
+    if (Array.isArray(list)) this.items = list;
   }
 
   // ---------------------------------------------------------- settings
@@ -95,8 +132,8 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   // The options: the property or the island, else the attribute's JSON.
   get options() {
     const given = this.items;
-    if (Array.isArray(given) && given.length) return normaliseItems(given);
-    return normaliseItems(this.getAttribute('items'));
+    if (Array.isArray(given) && given.length) return normaliseItems(given, {onAlias: noteOptionAlias});
+    return normaliseItems(this.getAttribute('items'), {onAlias: noteOptionAlias});
   }
 
   get effectiveDisabled() {

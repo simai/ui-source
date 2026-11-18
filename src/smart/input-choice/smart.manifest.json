@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.6.5",
+  "version": "1.10.0",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -159,7 +159,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
+        "description": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title; text, sf-dropdown's first spelling, is read until 2027-01-01 and noted in SF.deprecations), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out.",
         "examples": [
           [
             {
@@ -347,7 +347,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "1cccab71922dfe2456772bd875984e40e38b1927f6cac79718c10d01f28b2e9b"
+        "sha256": "78ff830d7e79ff049c497c5ef1197e4e22a6b131f3522a0f1b4d91ef157964c3"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
@@ -355,7 +355,7 @@
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "7abf240b6297e650ef03382b82c043b60b8233f65d9c898e08cf9fcb8aa1e848"
+        "sha256": "0f1512d7ee5c81402f737e169634ca2aaa2239d925bae3c228c48f7ea2fb0904"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
@@ -367,7 +367,7 @@
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "9e1bb8689e945cffb7943f4125fef7d817ac7da1f09b7f244c721b21d6984a71"
+        "sha256": "a8ff3ad29db058add0957d41167dae78b94db7d0edb7c6fe65c8e24268bdad77"
       }
     ],
     "generated_runtime": []

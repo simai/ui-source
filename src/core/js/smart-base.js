@@ -368,6 +368,35 @@ export function createSmartElement(type, props = {}) {
   return element;
 }
 
+
+// The element a host's focus() reaches (Larena LF-7): the control the part
+// names (focusDelegate), else -- for a host with no box of its own and no
+// tabindex, which the browser cannot focus -- the first control inside it a
+// person could reach with Tab. focus() on such a host did nothing before.
+const TABBABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [contenteditable="true"], [tabindex]:not([tabindex="-1"])';
+function focusTargetOf(host) {
+  const named = host.focusDelegate?.();
+  if (named) return named;
+  if (host.hasAttribute?.("tabindex") || host.getClientRects?.().length) return null;
+  for (const candidate of host.querySelectorAll?.(TABBABLE) ?? []) {
+    if (candidate.getClientRects().length && !candidate.closest("[inert]")) return candidate;
+  }
+  return null;
+}
+
+// The element that is a host's box (Larena LF-7): the host itself when it has
+// one, else the first element it holds that has a box (depth first, in
+// order). null when nothing in it has a box.
+function boxOf(host) {
+  if (host.getClientRects?.().length) return host;
+  const walker = host.ownerDocument?.createTreeWalker?.(host, 1);
+  if (!walker) return null;
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (node.getClientRects().length) return node;
+  }
+  return null;
+}
+
 class SfBaseElement extends HTMLElement {
   static externalTemplateBasePath = "/local/smart/templates";
   static externalTemplateModules = new Map();
@@ -1799,7 +1828,7 @@ class SfBaseElement extends HTMLElement {
   }
 
   focus(options) {
-    const target = this.focusDelegate?.();
+    const target = focusTargetOf(this);
 
     if (target && typeof target.focus === "function") {
       const activeWhenAsked = this.ownerDocument?.activeElement || null;
@@ -1825,7 +1854,7 @@ class SfBaseElement extends HTMLElement {
     if (!target && typeof this.focusDelegate === "function" && !this.isRendered) {
       const activeWhenAsked = this.ownerDocument?.activeElement || null;
       this.whenRendered(() => {
-        const ready = this.focusDelegate?.();
+        const ready = focusTargetOf(this);
         if (!ready || typeof ready.focus !== "function") return;
         if ((this.ownerDocument?.activeElement || null) !== activeWhenAsked) return;
         ready.focus(options);
@@ -1836,8 +1865,26 @@ class SfBaseElement extends HTMLElement {
     super.focus(options);
   }
 
+  // The host lays out as display: contents and has no box (Larena LF-7,
+  // 2026-11-18): scrollIntoView on it did nothing, so a page that scrolled to
+  // a wizard, a form or a button it had found stayed where it was. It
+  // scrolls to the part's own box instead: the first element it drew that
+  // has one. A host with a box of its own (sf-popover, sf-tag-group,
+  // sf-reference-link) and a part that draws in a portal (sf-modal,
+  // sf-drawer: nothing of theirs is in the host) scroll as before.
+  scrollIntoView(options) {
+    const box = boxOf(this);
+    if (box && box !== this) {
+      box.scrollIntoView(options);
+      return;
+    }
+    super.scrollIntoView(options);
+  }
+
   blur() {
-    const target = this.focusDelegate?.();
+    // The control that took the host's focus (focusTargetOf) gives it up.
+    const active = this.ownerDocument?.activeElement;
+    const target = this.focusDelegate?.() || (active && active !== this && this.contains(active) && !this.getClientRects().length ? active : null);
 
     if (target && typeof target.blur === "function") {
       target.blur();
@@ -2566,14 +2613,7 @@ class SfBaseElement extends HTMLElement {
       // a picture or anything holding a figcaption: unwrapped, a
       // <figure slot="slide"> with its caption became two slides, the image
       // and the caption (gallery GL evidence, 2026-11-14).
-      const shouldUnwrapSlotHost =
-        !child.localName.includes("-") &&
-        child.localName !== "figure" && child.localName !== "picture" &&
-        !Array.from(child.children ?? []).some((node) => node.localName === "figcaption") &&
-        child.getAttributeNames().length === 1 && child.hasAttribute("slot");
-      const slotNodes = shouldUnwrapSlotHost
-        ? Array.from(child.childNodes)
-        : [child];
+      const slotNodes = this.slotNodesOf(child);
 
       this._liveSlotNodes.get(slotName).push(...slotNodes);
       // The page's content: a size it gives stays the page's (density, C22; it
@@ -2581,6 +2621,18 @@ class SfBaseElement extends HTMLElement {
       noteAuthored(slotNodes);
       this.holdSlotNode(child);
     });
+  }
+
+  // The nodes a slotted child gives its slot: a plain wrapper's children, or
+  // the child itself (the rule above, captureSlotTemplates). sf-modal reads
+  // the children a page writes later with it (Larena LF-3).
+  slotNodesOf(child) {
+    const unwrap =
+      !child.localName.includes("-") &&
+      child.localName !== "figure" && child.localName !== "picture" &&
+      !Array.from(child.children ?? []).some((node) => node.localName === "figcaption") &&
+      child.getAttributeNames().length === 1 && child.hasAttribute("slot");
+    return unwrap ? Array.from(child.childNodes) : [child];
   }
 
   // A child the slots took: out of the element now, or -- for a component

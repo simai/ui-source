@@ -4,6 +4,8 @@ import SfBaseElement from "../../core/js/smart-base";
 import { applied, refused, elementFromManifest } from "../../core/js/element-manifest";
 import { noteDeprecated } from "../../core/js/deprecations";
 import { instancePath, partId } from "../../core/js/instance-path";
+import { noteAuthored } from "../../core/js/density.js";
+import { watchLateChildren } from "../helpers/late-children.js";
 import { renderModalTemplate } from "./js/templates/default";
 import {
   focusModalInitial, trapModalFocus, windowFields, isOneLineField, holdFieldsReadOnly,
@@ -249,6 +251,47 @@ class SfModal extends ModalElement {
     super.connectedCallback();
     SfModal.registry.set(this.modalId, this);
     SfModal.bindGlobalEvents();
+    // What the page writes into the host from now on is the window's (Larena
+    // LF-3): the slots were taken once, when it connected.
+    if (this.isConnected && !this._lateChildren) {
+      this._lateChildren = watchLateChildren(this, (nodes) => this.takeLateChildren(nodes));
+    }
+  }
+
+  // Children the page wrote into the host after the window connected -- a
+  // body fetched while the window is open, a footer that appears with an
+  // answer (Larena LF-3, 2026-11-18). They are what their slot shows now: a
+  // child named for a slot replaces that slot's content, a loose one replaces
+  // the content, as at the start (a plain <div slot> gives its children, a
+  // <template slot> its copy). To add to what the window shows, the page adds
+  // into a node it already placed (a holder: <div slot="content" id="...">).
+  takeLateChildren(nodes) {
+    const bySlot = new Map();
+    for (const node of nodes) {
+      // An inline window draws in the host itself: its own drawing is not news.
+      if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains("sf-modal")) continue;
+      const slot = (node.nodeType === Node.ELEMENT_NODE && node.getAttribute("slot")) || "content";
+      if (!bySlot.has(slot)) bySlot.set(slot, []);
+      bySlot.get(slot).push(node);
+    }
+    if (!bySlot.size) return;
+    for (const [slot, written] of bySlot) {
+      const given = [];
+      for (const node of written) {
+        if (node.nodeType === Node.ELEMENT_NODE && node.localName === "template") {
+          given.push(...Array.from(node.content?.childNodes || []).map((one) => one.cloneNode(true)));
+          node.remove();
+          continue;
+        }
+        given.push(...(node.nodeType === Node.ELEMENT_NODE && node.hasAttribute("slot") ? this.slotNodesOf(node) : [node]));
+        // Left where the page wrote it until the drawing places it, as at the start.
+        this.holdSlotNode(node);
+      }
+      noteAuthored(given);
+      this._liveSlotNodes.set(slot, given);
+      this._slotTemplates.delete(slot);
+    }
+    this.requestComponentUpdate("content");
   }
 
   // A question window follows the screen: a centred window on a wide one, a
@@ -401,6 +444,9 @@ class SfModal extends ModalElement {
   }
 
   disconnectedCallback() {
+    // The page's nodes go back into the host now (returnSlotNodes): not news.
+    this._lateChildren?.disconnect();
+    this._lateChildren = null;
     this._phoneQuery?.removeEventListener?.("change", this._onPhoneChange);
     this._phoneQuery = null;
     this.teardownModal();

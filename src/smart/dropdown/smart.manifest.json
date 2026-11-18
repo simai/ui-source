@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.20.4",
+  "version": "1.22.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -174,7 +174,7 @@
       "options": {
         "type": "array",
         "default": [],
-        "description": "Options given as data instead of as sf-list-item children: [{text, value, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?}]. A string or a number is taken as both the label and the value. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
+        "description": "Options given as data instead of as sf-list-item children: [{value, label, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?}]. A string or a number is taken as both the label and the value. label is the option's name, as in sf-input-choice and sf-input-lookup; text, its first spelling, is still read until 2027-01-01 and noted in SF.deprecations. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
       },
       "inherited-value": {
         "type": "string",
@@ -505,7 +505,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "7f0eba4c6556068907ee231121670c87553fc0a5321768d1218c2218c8ced007"
+        "sha256": "2bc6ff01225123fec95242fe7e53d533fafed86baaad44f09495e4ba71e1d216"
       },
       {
         "path": "src/smart/dropdown/rule.js",

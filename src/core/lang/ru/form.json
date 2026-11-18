@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 13,
-    "translated": 13,
+    "words": 14,
+    "translated": 14,
     "share": 100
   },
   "words": {
@@ -32,7 +32,8 @@
         "other": "Исправьте {n} поля"
       },
       "value-missing": "Заполните поле «{label}»",
-      "help-label": "Подробнее: {label}"
+      "help-label": "Подробнее: {label}",
+      "empty-value": "Не указан"
     }
   }
 }
