@@ -85,7 +85,7 @@ Existing and inserted blocks initialize once. Applications can call
 `SF.Highlight.highlight(block)` or `SF.Highlight.refresh(block, nextSource)`.
 A block may be highlighted before it is placed on the page (a chat answer drawn
 off the page): it takes an id no element of the page or of its own tree holds,
-and keeps it when placed (1.10.1; until then such a block made the page hang).
+and keeps it when placed (1.10.2; until then such a block made the page hang).
 The global `window.hljs` and Loader registration name `hljs` remain available for
 compatibility; direct grammar accuracy and application CSP remain outside this
 component's presentation contract.
