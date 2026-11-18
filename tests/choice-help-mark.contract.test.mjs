@@ -16,7 +16,10 @@ for (const kind of ['checkbox', 'radio', 'switch']) {
     assert.match(base, /<sf-help-mark class=\$\{className\} size=\$\{CHECKABLE_HELP_SIZE\[context\.size\] \|\| '1\/3'\} text=\$\{context\.help\}/);
     assert.match(base, /CHECKABLE_HELP_SIZE = Object\.freeze\(\{'1\/2': '1\/3', 1: '1\/3', 2: '1\/2'\}\)/);
     assert.match(source, /renderCheckableHelp\(context, 'sf-[a-z-]+-help'\)/);
-    assert.match(source, /return renderCheckableRow\(size, control, helpContent\);/);
+    // The checkbox and the switch hand the row their error line too (field orders FO-1).
+    assert.match(source, kind === 'radio'
+      ? /return renderCheckableRow\(size, control, helpContent\);/
+      : /return renderCheckableRow\(size, control, helpContent, renderCheckableMessage\(context\)\);/);
     assert.match(source, /@click=\$\{keepHelpOutOfLabel\}/);
     assert.doesNotMatch(source, /aria-hidden="true"(?: icon="\$\{help\}"|>\$\{help\})/);
     const manifest = JSON.parse(await read(`src/smart/${kind}/component.json`));

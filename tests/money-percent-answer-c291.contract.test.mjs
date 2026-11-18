@@ -73,7 +73,7 @@ test('C291 (2): the editors write decimal strings and say what is wrong through 
 
 test('C291 (3): sf-form apply answer, size and state over the confirm surface\'s words', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.5.0'); // C302/C303: template keys declared
+  assert.equal(manifest.version, '1.6.0'); // field orders FO-1, FO-6 // C302/C303: template keys declared
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.deepEqual(manifest.settings.size.values, ['1', '1/2']);
   assert.equal(manifest.settings.size.default, '1');

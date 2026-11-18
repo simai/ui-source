@@ -4,14 +4,14 @@ import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
 import {formatDate} from "../../core/js/format-date.js";
 import {NUMBER_FILTER_OPERATORS, PLACES, PROPERTY_TYPES, TEMPLATE_ALIASES, TYPE_ALIASES, modesOf} from "./registry.js";
-import {composeLink, innError, innHolder, isLinkAddress, isWebAddress, readLink, shortAddress} from "./text-types.js";
+import {completeWebAddress, composeLink, innError, innHolder, isLinkAddress, isWebAddress, readLink, shortAddress} from "./text-types.js";
 import {resolveField, templateParam, typeEntry} from "./templates.js";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
 import {addDecimal, compareDecimal, currencyCodes, currencyDisplayOf, currencyOf, formatDecimal, formatMoney, formatPercent, fractionDigits, isRtlLocale, moneyParts, moneyTotals, readDecimal, readTypedDecimal, restingDecimal} from "./decimal.js";
-import {formatPhone, phoneE164, splitPhone} from "./phone.js";
+import {formatPhone, phoneE164, phoneSearchText, splitPhone} from "./phone.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -71,6 +71,41 @@ function renderTextFilterControl(field, host) {
                 @change=${(event) => {
                     host.patchTempFilterValue(field.key, {
                         value: event.target?.value || '',
+                        operator: value.operator || field.filter?.defaultOperator || 'contains',
+                    });
+                }}
+        ></sf-input>
+    `;
+}
+
+// A phone is searched by what is stored (field orders FO-3): the request gets
+// the number as E.164, or the digits of a part of one, however it was typed,
+// and the box shows what went -- one form in the view, the row, the edit and
+// the filter. The condition is the text filter's (contains by default).
+// A full number is sent as E.164 and shown the way view, cell and edit show it;
+// a part of a number is sent and shown as its digits.
+function phoneFilterShown(sent) {
+    return String(sent || '').startsWith('+') ? formatPhone(sent) : String(sent || '');
+}
+
+function renderPhoneFilterControl(field, host) {
+    const value = host.getFilterControlValue(field.key);
+
+    return html`
+        <sf-input
+                size=${filterSize(host)}
+                appearance="filled"
+                placeholder="${setText(host, 'containsText')}"
+                value="${phoneFilterShown(value.value)}"
+                name="sf_filter_${field.key || 'phone'}"
+                inputmode="tel"
+                @change=${(event) => {
+                    const input = event.currentTarget ?? event.target;
+                    const sent = phoneSearchText(input?.value ?? '');
+                    const shown = phoneFilterShown(sent);
+                    if (input && input.value !== shown) input.value = shown;
+                    host.patchTempFilterValue(field.key, {
+                        value: sent,
                         operator: value.operator || field.filter?.defaultOperator || 'contains',
                     });
                 }}
@@ -613,8 +648,9 @@ export const FILTER_RENDERERS = {
     choice: renderMultiSelectFilterControl,
     choices: renderMultiSelectFilterControl,
     boolean: renderMultiSelectFilterControl,
-    // phone: its digits, as a text (C302); password: set or not set.
-    phone: renderTextFilterControl,
+    // phone: its stored form, E.164 or the digits of a part (C302, FO-3);
+    // password: set or not set.
+    phone: renderPhoneFilterControl,
     password: renderPasswordFilterControl,
     // url, link (its text and its address) and ru.inn are searched as text
     // (catalogue step 3).
@@ -1319,10 +1355,14 @@ function renderPasswordEdit(field, value, host) {
 // not a value yet is said through setFieldError, which holds a save, and
 // under the field once the person leaves it; a host that does not hear
 // errors hears undefined. Empty writes null.
-function checkedTextEdit(field, value, host, {check, inputType = '', inputmode = '', maxlength = '', autocomplete = ''}) {
+function checkedTextEdit(field, value, host, {check, complete = null, inputType = '', inputmode = '', maxlength = '', autocomplete = ''}) {
     const write = (event, left) => {
         const input = event.currentTarget ?? event.target;
-        const text = String(input?.value ?? '').trim();
+        const typed = String(input?.value ?? '').trim();
+        // What the text stands for (a url's bare domain, FO-5): checked and
+        // written while typing, and shown in the field once the person leaves it.
+        const text = typed && complete ? complete(typed) : typed;
+        if (left && input && text !== typed && !check(text)) input.value = text;
         const reason = text ? check(text) : null;
         if (reason) {
             const message = setText(host, reason);
@@ -1372,6 +1412,9 @@ function checkedTextEdit(field, value, host, {check, inputType = '', inputmode =
 function renderUrlEdit(field, value, host) {
     return checkedTextEdit(field, value, host, {
         check: (text) => (isWebAddress(text) ? null : 'urlInvalid'),
+        // «simai.io» is https://simai.io (dispatcher decision FO-5); a text
+        // with a scheme of its own keeps it and is refused unless http(s).
+        complete: completeWebAddress,
         inputType: 'url', inputmode: 'url', autocomplete: 'url',
     });
 }
@@ -2375,6 +2418,8 @@ function renderBooleanEdit(field, value, host) {
                     name=${fieldName(field)}
                     ?checked=${value === true}
                     aria-label=${field.label || field.key || ''}
+                    ?invalid=${Boolean(EDIT_ERROR)}
+                    error-message=${EDIT_ERROR || nothing}
                     @change=${(event) => host.setFieldValue(field, Boolean(event.target?.checked))}
             ></sf-switch>
         `;
@@ -2387,6 +2432,8 @@ function renderBooleanEdit(field, value, host) {
                     name=${fieldName(field)}
                     ?checked=${value === true}
                     aria-label=${field.label || field.key || ''}
+                    ?invalid=${Boolean(EDIT_ERROR)}
+                    error-message=${EDIT_ERROR || nothing}
                     @change=${(event) => host.setFieldValue(field, Boolean(event.target?.checked ?? event.detail?.checked))}
             ></sf-checkbox>
         `;
@@ -2405,6 +2452,8 @@ function renderBooleanEdit(field, value, host) {
                 items=${items}
                 value=${value === true ? 'yes' : value === false ? 'no' : nothing}
                 aria-label=${field.label || field.key || ''}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     const next = event.detail?.value;
                     host.setFieldValue(field, next === 'yes' ? true : next === 'no' ? false : null);
@@ -3056,6 +3105,8 @@ function renderImageEdit(field, value, host) {
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
                 ?readonly=${field.readonly === true}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     const next = event.detail?.value ?? null;
                     host.setFieldValue(field, asList ? (next ? [next] : []) : next);
@@ -3125,6 +3176,8 @@ function renderFileEdit(field, value, host) {
                                 ?multiple=${multiple}
                                 ?disabled=${field.readonly === true}
                                 aria-label=${field.label || field.key || ''}
+                                ?invalid=${Boolean(EDIT_ERROR)}
+                                error-message=${EDIT_ERROR || nothing}
                                 .items=${items}
                                 @sf-file-upload:select=${(event) => {
                                     const picked = event.detail?.files;
@@ -3178,12 +3231,20 @@ let EDIT_DISABLED = false;
 
 // `options.error`: what is wrong with the field now, a sentence, or empty (PD-1,
 // property type study «Дата»). A control that says its own error (sf-input-date
-// for a date, a datetime and a time) is drawn invalid with the sentence under
-// it, the error-message of the field family, so a host that is not sf-form --
+// for a date, a datetime and a time; since 1.22.0 the yes/no -- sf-switch,
+// sf-checkbox, the «Да» | «Нет» sf-segmented -- and the file's sf-file-upload
+// and sf-input-image, field orders FO-1) is drawn invalid with the sentence
+// under it, the error-message of the field family, so a host that is not sf-form --
 // a record card -- marks the field itself instead of writing a line under a
 // field with a normal border. sf-form keeps setting invalid on the controls it
 // draws, as before.
 let EDIT_ERROR = '';
+
+// The controls the set draws that say `options.error` themselves, invalid and
+// the sentence under them (read by sf-form, which gives them its errors and
+// draws no line of its own under them): the field family's, and since 1.22.0
+// the yes/no and file ones (FO-1).
+export const OWN_ERROR_CONTROLS = Object.freeze(['sf-input-date', 'sf-input-image', 'sf-switch', 'sf-checkbox', 'sf-segmented', 'sf-file-upload']);
 
 export function renderEditField(field = {}, value, host, options = {}) {
     const asked = resolveField(field).type;
@@ -3711,6 +3772,14 @@ if (typeof window !== 'undefined') {
         aliases: {types: TYPE_ALIASES, templates: TEMPLATE_ALIASES},
         fieldTemplate,
     };
+    // The set's words in the page's language are asked for now, not at the
+    // first word a host draws (field orders FO-4): the set is a module, not an
+    // element, so nothing drew a filter again when its words arrived, and a
+    // Russian page that lets core fetch its language (no core/lang/ru.js)
+    // showed «Contains…», «From», «To» until the host redrew by chance.
+    // SF.whenFieldRenderers() waits for them (core.runtime, at most
+    // SF_BOOT_CONFIG.languageWait ms).
+    pageText(SET_TEXT, 'containsText', null, SET_NAME);
     // SF.whenFieldRenderers() settles on this, whichever bundle published the set.
     globalThis.document?.dispatchEvent?.(new CustomEvent('sf-field-renderers-ready'));
 }

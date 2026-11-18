@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.checkbox",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "title": "Checkbox",
   "summary": "A native checkbox with a label, Framework presentation and checked, indeterminate and disabled states kept in step between the host attributes and the inner input.",
   "kind": "smart",
@@ -100,6 +100,11 @@
         "type": "boolean",
         "default": false,
         "description": "The shown invalid state: the error look and aria-invalid on the native input."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The text shown under the control while it is invalid, in the error colour: what is wrong, as every field of the family says it (sf-input, sf-input-choice); the native control is described by it. Nothing is drawn without invalid."
       },
       "checked": {
         "type": "boolean",
@@ -420,7 +425,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/checkbox/index.js",
-        "sha256": "874639bd2b13c98b37d5850c8f9df1ef798944a8f54151ed20d7d718b8091145"
+        "sha256": "824799e5fa8318f189b8e5a0ffa8b0467bf43da36951a924149b29783efb1886"
       }
     ],
     "generated_runtime": [

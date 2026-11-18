@@ -4,6 +4,8 @@ import { bindSwitch, setSwitchState, unbindSwitch } from '../../component/switch
 import { renderSwitchTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
 import { InheritedValueField } from '../helpers/inherited-value';
+import { linkCheckableMessage } from '../helpers/checkable-row';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import {files as languageFiles} from './lang/index.mjs';
@@ -143,6 +145,8 @@ class SfSwitch extends SwitchElement {
       checkboxName: this.sfInternals || inherited ? '' : props.name,
       // The help button is named by its subject («Подробнее: Синхронизация»).
       helpLabel: props.help && props.label ? this.sfWord('help', { vars: { label: props.label } }) : '',
+      // The error line's id (error-message, FO-1): the switch is described by it.
+      messageId: partId(instancePath(this, { kind: 'sf-switch' }), 'error'),
       component: this,
     });
   }
@@ -171,6 +175,7 @@ class SfSwitch extends SwitchElement {
         });
         input.addEventListener('change', this._handleChange);
         this._releaseReset = bindCheckableReset(this, input);
+        linkCheckableMessage(this, input);
       }
     }
     this.syncInheritedState();

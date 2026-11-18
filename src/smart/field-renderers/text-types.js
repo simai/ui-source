@@ -36,6 +36,28 @@ export function isWebAddress(value) {
     return Boolean(url && (url.protocol === 'http:' || url.protocol === 'https:') && url.hostname && !url.username && !url.password);
 }
 
+// A bare domain is an address (dispatcher decision, field orders FO-5,
+// 2026-11-18): «simai.io» or «simai.io/docs» typed without a scheme is read as
+// https://simai.io/…, and the field shows and writes that. Only a text with no
+// scheme at all is completed -- «javascript:…», «mailto:…», «ftp://…» keep
+// theirs and are refused -- and only when it starts with a host name that has
+// a dot («localhost» or «/path» are not addresses of this type). A port after
+// the host («simai.io:8080») is not a scheme.
+const SCHEME = /^[a-z][a-z0-9+.-]*:(?!\d)/iu;
+const BARE_HOST = /^(?:[\p{L}\p{N}](?:[\p{L}\p{N}-]*[\p{L}\p{N}])?\.)+[\p{L}\p{N}-]{2,}(?::\d{1,5})?(?:[/?#]|$)/u;
+
+/**
+ * The address a typed text stands for: the text itself when it has a scheme
+ * or is not a bare domain, else https:// before it. Trimmed; isWebAddress()
+ * still decides whether the result is one.
+ */
+export function completeWebAddress(value) {
+    if (typeof value !== 'string') return value;
+    const text = value.trim();
+    if (!text || SCHEME.test(text) || text.startsWith('/') || !BARE_HOST.test(text)) return text;
+    return `https://${text}`;
+}
+
 /**
  * An address as a row shows it: the host and the start of the path, without
  * the scheme, a trailing slash or «www.», cut with «…» past `most` characters.

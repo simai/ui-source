@@ -5,6 +5,7 @@ import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { noteDeprecated } from '../../core/js/deprecations.js';
 import { bindFormReset } from '../../component/form-reset-helper';
 import { FormField } from '../helpers/form-field';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -433,7 +434,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     // (R074): a segment drawn later (out of loading, items set afresh) finds
     // its glyph in the page's font instead of asking for a grown one.
     preloadControlIcons(this, context.entries.filter((item) => item.icon).map((item) => ({icon: item.icon, filled: false})));
-    return renderButtonGroupTemplate(context);
+    // The error line's id (error-message, FO-1).
+    return renderButtonGroupTemplate({...context, messageId: partId(instancePath(this, {kind: 'sf-segmented'}), 'error')});
   }
 
   // Every form value control reports a committed change as `change` on its

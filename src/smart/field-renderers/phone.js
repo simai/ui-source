@@ -122,6 +122,18 @@ export function phoneE164(value) {
     return extension && e164.startsWith('+') ? `${e164};ext=${extension}` : (extension ? String(value ?? '').trim() : e164);
 }
 
+/**
+ * What a phone filter searches for (field orders FO-3): the stored form, so a
+ * number typed however it is laid out finds the E.164 it is kept as -- a full
+ * number is its E.164 (`+7 (916) 123-45-67` is `+79161234567`), a part of
+ * one its digits (`916 123-45` is `91612345`). Empty for no digits.
+ */
+export function phoneSearchText(value) {
+    const {number} = splitPhone(value);
+    const e164 = numberE164(number);
+    return e164.startsWith('+') ? e164 : digitsOf(number);
+}
+
 /** The dial code (digits) an E.164 number starts with: the longest one known. */
 export function phoneDialCode(e164) {
     const digits = digitsOf(e164);

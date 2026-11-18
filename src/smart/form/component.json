@@ -2,7 +2,7 @@
   "$comment": "The source of sf-form's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.15 and vocabulary 1.1.5: owner decision C182 (2026-11-14; study control/research/2026-11-14-form.md, prototype prototypes/form-study.html), a form drawn from field descriptions over the Framework's field renderers.",
   "id": "smart.form",
   "tag": "sf-form",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "form",
   "settings": {
@@ -87,6 +87,18 @@
                 "code",
                 "name"
               ]
+            },
+            "holder": {
+              "type": "string",
+              "enum": [
+                "any",
+                "organization",
+                "person"
+              ]
+            },
+            "defaultCountry": {
+              "type": "string",
+              "pattern": "^[A-Za-z]{2}$"
             }
           },
           "required": [
@@ -97,7 +109,7 @@
         }
       },
       "default": [],
-      "summary": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type, its template and its parameters (propertyType, template and templateParams -- variant is the former name of template until 2027-01-01 --, required, readonly, placeholder, options, min, max, step, unit, decimals, currency, currencies, currencyDisplay … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width s (8rem), m (16rem) or full; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
+      "summary": "The fields, in order: the Framework field descriptor that sf-view-properties sends -- the property registry's type, its template and its parameters (propertyType, template and templateParams -- variant is the former name of template until 2027-01-01 --, required, readonly, placeholder, options, min, max, step, unit, decimals, currency, currencies, currencyDisplay, holder (a ru.inn field: any, organization -- 10 digits -- or person -- 12), defaultCountry (a phone field: the ISO 3166 alpha-2 country an empty field starts on, else the page's) … as SF.fieldRenderers.registry lists them) plus key, label, hint, help, width and group. width s (8rem), m (16rem) or full; without it a field pairs with its neighbour from 44rem of the form's own width. A field of a type the field renderers do not draw is left out"
     },
     "groups": {
       "type": "list",
@@ -388,7 +400,8 @@
     "version 1.3.3 (written on the branch as 1.3.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.3.4 (2026-11-17, set boundary study msg-e78f2e51): a patch. A field of a property type the field renderers do not draw at all (money or percent, which a component set draws, or a misspelt type) is still left out, and the form now says so once per type on the page: one console warning naming the field and the type, where it was dropped without a word. Settings, values and events unchanged.",
     "version 1.4.0 (2026-11-17, owner decision C291 (3), FO-8): a minor, settings added. apply answer: a form a person answers once, the questionnaire in a message the View set drew as sf-view-flow -- «Отправить» and «Отмена» under the fields, the answer event (accepted, value; cancelable), the setting state with the confirm surface's words (open, pending, accepted, declined, expired) and its glyphs and lines («Отправляем…», «Отправлено», «Время ответа истекло»), a read view after the answer with the mark «Отправлено» and no «Изменить». size 1/2: the fields and the buttons a rung down for a message. Host state data-state. Fields of the property types money and percent are drawn now (module.smart-field-renderers 1.15.0, C291 (2)). apply submit and instant at size 1: unchanged.",
-    "version 1.5.0 (2026-11-18, feat/type-templates; numbered above 1.4.0, the highest on any origin branch): a minor. The field descriptor declares what the field renderers read since C302, C303 and C294: template and templateParams (variant is read as template until 2027-01-01, with one console warning from the renderers), decimals (a number's digits after the point, fixed when the field is created; 0 is a whole number), and a money field's currency, currencies and currencyDisplay (the C294 follow-up: the form passed them through without declaring them). A field of type integer is drawn as a number with decimals 0, phone and password are types of their own."
+    "version 1.5.0 (2026-11-18, feat/type-templates; numbered above 1.4.0, the highest on any origin branch): a minor. The field descriptor declares what the field renderers read since C302, C303 and C294: template and templateParams (variant is read as template until 2027-01-01, with one console warning from the renderers), decimals (a number's digits after the point, fixed when the field is created; 0 is a whole number), and a money field's currency, currencies and currencyDisplay (the C294 follow-up: the form passed them through without declaring them). A field of type integer is drawn as a number with decimals 0, phone and password are types of their own.",
+    "version 1.6.0 (2026-11-18, field orders FO-1 and FO-6 of the ui-view property pages, view round 2; numbered above 1.5.0, the highest on any origin branch): a minor. FO-6: the field descriptor declares holder, the ru.inn field's holder fixed when the field is created -- any (10 or 12 digits, the default), organization (10) or person (12) -- which the field renderers read since step 3 of the type-template catalogue and the form passed through undeclared. FO-1: sf-switch, sf-checkbox (a yes/no), sf-segmented (the «Да» | «Нет» buttons) and sf-file-upload say their error themselves now (invalid and error-message, SPEAKING_TAGS): the form gives them the two attributes and draws no error line of its own under them, so a yes/no or a file field shows its error as every other field does. FL-7 of the property page study: the field descriptor declares defaultCountry too (the phone field's starting country, which the field renderers read since 1.18.0). The control a field's error is told to is its first speaking control (a file field's upload area, not the preview of a file it holds). One option of a checklist (a long choices field drawn as boxes) is not that control: the form keeps its line under the list, and no longer writes the field's label on the first option's box."
   ],
   "x-registry": {
     "capabilities": [

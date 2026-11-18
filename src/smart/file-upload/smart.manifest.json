@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-upload",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "title": "File Upload",
   "summary": "A drop area that opens the platform file dialog or takes dropped files, filtered by accept, and lists each file with its upload progress, an error with a retry, and removal. The host uploads; the component shows the state the host sets.",
   "kind": "smart",
@@ -132,6 +132,16 @@
         "type": "boolean",
         "default": false,
         "description": "The form will not submit without a file: value-missing «Добавьте файл» (multiple: «Добавьте хотя бы один файл»), and the browser points at the area."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The shown invalid state: the drop zone's dashed edge in the error role."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The text shown under the control while it is invalid, in the error colour: what is wrong, as every field of the family says it (sf-input, sf-input-choice); the native control is described by it. Nothing is drawn without invalid."
       },
       "aria-label": {
         "type": "string",
@@ -953,7 +963,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/file-upload/index.js",
-        "sha256": "7863e15d2b4310cf3c51594ab5600c39eb7e81c7080c1489a2451913c440b610"
+        "sha256": "0b942a8c19a903b4fb62d9945de6081afba560c862cc99d7228743f9e511c2fb"
       }
     ],
     "generated_runtime": [

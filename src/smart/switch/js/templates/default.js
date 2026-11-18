@@ -1,12 +1,13 @@
 import { html, nothing } from 'lit';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 import { keepHelpOutOfLabel } from '../../../../component/checkable-text-helper';
-import { checkableClasses, renderCheckableHelp, renderCheckableRow, renderCheckableText } from '../../../helpers/checkable-row';
+import { checkableClasses, renderCheckableHelp, renderCheckableMessage, renderCheckableRow, renderCheckableText } from '../../../helpers/checkable-row';
 
 export function renderSwitchTemplate(context) {
   const { size, label, description, help, checked, disabled, checkboxName, value, ariaLabel } = context;
 
-  const rootClasses = ['sf-switch', `sf-switch--size-${size}`, context.short ? 'sf-switch--short' : '', 'flex', context.rootClass];
+  // invalid (FO-1): .error is the look, as sf-checkbox's (component.switch).
+  const rootClasses = ['sf-switch', `sf-switch--size-${size}`, context.short ? 'sf-switch--short' : '', context.invalid ? 'error' : '', 'flex', context.rootClass];
 
   const labelContent =
     context.component?.hasSlotContent?.('label')
@@ -47,6 +48,7 @@ export function renderSwitchTemplate(context) {
           .value=${value || 'on'}
           .checked=${checked}
           ?disabled=${disabled}
+          aria-invalid=${context.invalid ? 'true' : nothing}
           aria-label=${!labelContent && ariaLabel ? ariaLabel : nothing}
         />
         <span class="sf-switch-inner transition" aria-hidden="true">${icons}</span>
@@ -59,5 +61,5 @@ export function renderSwitchTemplate(context) {
       ${renderInheritedSlot(context.component, { size, disabled, className: 'sf-switch-inherited' })}
     </label>
   `;
-  return renderCheckableRow(size, control, helpContent);
+  return renderCheckableRow(size, control, helpContent, renderCheckableMessage(context));
 }

@@ -157,6 +157,21 @@ const sfSegmentedMeta = {
       "default": "false",
       "description": "Disables the whole group."
     },
+    "invalid": {
+      "kind": "boolean",
+      "values": [
+        "true",
+        "false"
+      ],
+      "default": "false",
+      "description": "The shown invalid state: the group's edge in the error role (the track's outline, or the buttons' frame) and aria-invalid on the radio group."
+    },
+    "error-message": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "The text shown under the control while it is invalid, in the error colour: what is wrong, as every field of the family says it (sf-input, sf-input-choice); the native control is described by it. Nothing is drawn without invalid."
+    },
     "value": {
       "kind": "custom",
       "valueType": "string",

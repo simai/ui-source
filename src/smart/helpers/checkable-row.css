@@ -221,6 +221,38 @@
       margin: 0;
     }
   }
+  /* The error line under a checkbox or a switch while it is invalid (FO-1):
+     the error role in the hint step of the field family -- 1/3 beside size
+     1/2, 1/2 beside size 1, 1 beside size 2 -- right under the row, whose
+     block padding is already the room between the two. */
+  .sf-checkable-field {
+    max-inline-size: 100%;
+  }
+
+  .sf-checkable-message {
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-weight--regular);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-checkable-field.sf-checkable--size-1\/2 > .sf-checkable-message {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-checkable-field.sf-checkable--size-2 > .sf-checkable-message {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+}
+
+/* Paint (C273): the error line's ink stands in sf.paint, under the utilities. */
+@layer sf.paint {
+  .sf-checkable-message {
+    color: var(--sf-error);
+  }
 }
 
 @media (pointer: coarse) {

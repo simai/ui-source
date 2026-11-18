@@ -78,7 +78,8 @@ function getFilesContainer(root) {
   }
 
   let next = root.nextElementSibling;
-  while (next?.classList?.contains('sf-file-upload-message') || next?.classList?.contains('sf-file-upload-status')) next = next.nextElementSibling;
+  // The field's error line (sf-file-upload 1.6.0, FO-1) stands before the list too.
+  while (next?.classList?.contains('sf-file-upload-message') || next?.classList?.contains('sf-file-upload-status') || next?.classList?.contains('sf-file-upload-error')) next = next.nextElementSibling;
   if (next?.classList?.contains('sf-file-upload-files')) {
     return next;
   }

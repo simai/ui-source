@@ -123,6 +123,15 @@
     border-inline-color: var(--sf-outline);
   }
 
+  /* invalid (sf-segmented 1.7.0, field orders FO-1): the buttons look -- the
+     yes/no «Да» | «Нет» of the field renderers -- draws its one perimeter and
+     every join in the error role, as an invalid field draws its edge. */
+  .sf-button-group.sf-button-group--invalid > sf-button[segment]:is([appearance], [type])[scheme] > .sf-button[class*='segment-'],
+  .sf-button-group.sf-button-group--invalid > .sf-button[class*='segment-'] {
+    border-block-color: var(--sf-error);
+    border-inline-color: var(--sf-error);
+  }
+
   .sf-button-group > sf-button[segment]:is([appearance], [type])[scheme]:first-child > .sf-button[class*='segment-'],
   .sf-button-group > .sf-button[class*='segment-']:first-child {
     --sf-button--border-inline-start-width: var(--sf-px);
@@ -380,6 +389,31 @@
   .sf-button-group--segmented.sf-button-group--radius-rounded {
     --sf-button-group--plate-radius: var(--sf-radius-rounded);
   }
+
+  /* The error line under an invalid group (sf-segmented 1.7.0, FO-1): what is
+     wrong, in the hint step of the field family beside the group's size --
+     1/3 beside 1/3 and 1/2, 1/2 beside 1, 1 beside 2 -- --sf-space-1/4 under
+     it, as sf-input's message. */
+  .sf-button-group-message {
+    display: block;
+    margin-block-start: var(--sf-space-1\/4);
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-weight--regular);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    overflow-wrap: anywhere;
+  }
+
+  .sf-button-group-message--size-1\/3,
+  .sf-button-group-message--size-1\/2 {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+
+  .sf-button-group-message--size-2 {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
 }
 
 // Paint (C273): the fill, edge and place colour of these parts stand in
@@ -391,6 +425,16 @@
        container's: 4.5:1 over the surfaces 0 to 3 in both themes. */
     background-color: var(--sf-button-group-background-color, var(--sf-surface-container));
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+
+  /* invalid (FO-1): the track's edge in the error role, drawn inside it so the
+     track keeps its size. */
+  .sf-button-group.sf-button-group--segmented.sf-button-group--invalid {
+    box-shadow: inset 0 0 0 var(--sf-px) var(--sf-error);
+  }
+
+  .sf-button-group-message {
+    color: var(--sf-error);
   }
 }
 

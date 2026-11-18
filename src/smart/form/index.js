@@ -21,7 +21,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {OWN_ERROR_CONTROLS, fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
 import {renderFormTemplate} from './js/templates/default';
@@ -56,10 +56,23 @@ function warnUnknownType(field) {
 // line, linked to their native control (C153 (3)): the form gives them
 // invalid and error-message. Every other control gets its error line from the
 // form. Read by tag, so it is known before the control's bundle arrives.
+// The yes/no and file controls joined them in 1.6.0 (field orders FO-1): the
+// field renderers name the controls they draw that say their error under
+// themselves (OWN_ERROR_CONTROLS: the switch, the checkbox and the «Да» |
+// «Нет» buttons of a yes/no, a file's upload area), where the form drew a line
+// under a control with a normal edge.
 export const SPEAKING_TAGS = new Set([
   'sf-input', 'sf-input-choice', 'sf-input-code', 'sf-input-color', 'sf-input-country', 'sf-input-date',
   'sf-input-image', 'sf-input-lookup', 'sf-input-quantity', 'sf-input-rich', 'sf-input-textarea', 'sf-dropdown',
 ]);
+
+// Whether the control says the field's error itself: one of the tags above,
+// and not one option of a checklist (a long choices field drawn as boxes,
+// whose error is the form's line under the list).
+export function speaksError(control) {
+  if (!control || !(SPEAKING_TAGS.has(control.localName) || OWN_ERROR_CONTROLS.includes(control.localName))) return false;
+  return !(control.localName === 'sf-checkbox' && control.closest?.('.sf-field-checklist'));
+}
 
 // The element a screen reader reads a field's description with: a group of
 // choices as a whole, else the control's own focus target, else its first
@@ -527,10 +540,15 @@ class SfForm extends FormElement {
   controlOf(key) {
     const slot = this.querySelector(`.sf-form-field[data-key="${CSS.escape(String(key))}"] > .sf-form-control`);
     if (!slot) return null;
+    // The control that says its own error first: a file field draws the files
+    // it holds (sf-file-preview) before its upload area (FO-1).
+    let first = null;
     for (const node of slot.querySelectorAll('*')) {
-      if (node.localName.startsWith('sf-') && node.localName !== 'sf-help-mark') return node;
+      if (!node.localName.startsWith('sf-') || node.localName === 'sf-help-mark') continue;
+      if (speaksError(node)) return node;
+      first ??= node;
     }
-    return null;
+    return first;
   }
 
   focusField(key) {
@@ -576,7 +594,10 @@ class SfForm extends FormElement {
       const control = this.controlOf(field.key);
       if (!control) continue;
       const message = this.isEditing ? (this._errors.get(field.key) || '') : '';
-      if (SPEAKING_TAGS.has(control.localName)) {
+      const speaks = speaksError(control);
+      // A yes/no checkbox carries its label (a box beside its name, not under it).
+      if (speaks && control.localName === 'sf-checkbox' && control.getAttribute('label') !== field.label) control.setAttribute('label', field.label);
+      if (speaks) {
         if (message) {
           if (control.getAttribute('error-message') !== message) control.setAttribute('error-message', message);
           if (!control.hasAttribute('invalid')) control.setAttribute('invalid', '');
@@ -586,9 +607,6 @@ class SfForm extends FormElement {
           control.removeAttribute('invalid');
           control.removeAttribute('error-message');
         }
-      } else if (control.localName === 'sf-checkbox') {
-        if (control.getAttribute('label') !== field.label) control.setAttribute('label', field.label);
-        control.toggleAttribute('invalid', Boolean(message));
       }
     }
     this.linkMessages();
@@ -696,7 +714,7 @@ class SfForm extends FormElement {
     const checkbox = editing && drawn.type === 'boolean' && drawn.template === 'checkbox' && field.readonly !== true;
     const error = editing ? (this._errors.get(field.key) || '') : '';
     const element = this.controlOf(field.key);
-    const speaks = Boolean(element && SPEAKING_TAGS.has(element.localName));
+    const speaks = speaksError(element);
     return {
       key: field.key,
       id: `${id}--field-${field.key}`,

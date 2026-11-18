@@ -1,6 +1,6 @@
 import {html, nothing} from 'lit';
 import {keepHelpOutOfLabel} from '../../../../component/checkable-text-helper';
-import {checkableClasses, renderCheckableHelp, renderCheckableRow, renderCheckableText} from '../../../helpers/checkable-row';
+import {checkableClasses, renderCheckableHelp, renderCheckableMessage, renderCheckableRow, renderCheckableText} from '../../../helpers/checkable-row';
 import './default.css'
 
 export function renderCheckboxTemplate(context) {
@@ -76,5 +76,5 @@ export function renderCheckboxTemplate(context) {
             ${!isStart ? input : ''}
         </label>
     `;
-    return renderCheckableRow(size, control, helpContent);
+    return renderCheckableRow(size, control, helpContent, renderCheckableMessage(context));
 }

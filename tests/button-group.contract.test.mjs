@@ -281,7 +281,8 @@ test('group joins key on the attributes a segment host carries (simai/ui-source#
   assert.doesNotMatch(template, /\stype=\$\{/);
   assert.doesNotMatch(styles, /sf-button\[segment\]\[type\]/);
   const hostRules = styles.match(/sf-button\[segment\]:is\(\[appearance\], \[type\]\)\[scheme\]/g) || [];
-  assert.equal(hostRules.length, 7);
+  // Seven joins, and the invalid frame of the buttons look (sf-segmented 1.7.0, FO-1).
+  assert.equal(hostRules.length, 8);
   // Every host rule is paired with the Native .sf-button rule of the same join.
   const nativeRules = styles.match(/> \.sf-button\[class\*='segment-'\]/g) || [];
   assert.ok(nativeRules.length >= 7);

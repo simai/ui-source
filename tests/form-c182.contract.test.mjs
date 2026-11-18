@@ -15,7 +15,7 @@ const sheet = read('src/smart/form/scss/_smart__form.scss');
 test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, footer, the descriptor list', () => {
   assert.equal(manifest.tag, 'sf-form');
   assert.equal(manifest.family, 'form');
-  assert.equal(manifest.version, '1.5.0'); // C302/C303: 1.5.0, template, templateParams, decimals and money keys declared // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch // fix/date-pd: 1.3.4, the unknown-type warning // C291 (3): 1.4.0, apply answer, size, state
+  assert.equal(manifest.version, '1.6.0'); // field orders: 1.6.0, holder declared, yes/no and file controls say their errors // C302/C303: 1.5.0, template, templateParams, decimals and money keys declared // 1.2.0: fields and groups declared late (first paint R222 FP-8) // group build 9: 1.2.0 moved on by the merged branches or a GB9 patch // C282: 1.2.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch // fix/date-pd: 1.3.4, the unknown-type warning // C291 (3): 1.4.0, apply answer, size, state
   assert.deepEqual(Object.keys(manifest.settings), ['fields', 'groups', 'apply', 'size', 'state', 'labels', 'footer', 'label']);
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.ok(manifest.settings.labels.values.includes('start'));
@@ -34,7 +34,7 @@ test('C182 (2), (9): sf-form of family form, apply submit|instant, labels, foote
 });
 
 test('C182 (1), (3): the controls are the field renderers\' own, the frame is the form\'s', () => {
-  assert.match(source, /import \{fieldTemplate, propertyModes, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u);
+  assert.match(source, /import \{OWN_ERROR_CONTROLS, fieldTemplate, propertyModes, renderEditField, renderViewField\} from '\.\.\/field-renderers\/index\.js';/u);
   // apply instant still reaches the renderers; the yes/no control is the field's template (C303 (4)):
   // a checkbox takes its label beside the box, a switch and the buttons a label row.
   assert.match(source, /\{apply: 'instant'\}/u);

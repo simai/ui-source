@@ -57,9 +57,37 @@ export function checkableClasses(size, hasText) {
 // (owner decision C59, as C33 for field labels): pressing «?» is no press on
 // the control -- the label and its input never become :active, the box is not
 // painted pressed and the value does not change.
-export function renderCheckableRow(size, control, help) {
-  if (!help) return control;
+export function renderCheckableRow(size, control, help, message = '') {
   // The help sits in a box of its own: sf-help-mark's host draws no box
   // (display: contents), so the row places this one.
-  return html`<span class=${`sf-checkable-row sf-checkable--size-${size} flex flex-nowrap items-cross-start`}>${control}<span class="sf-checkable-help">${help}</span></span>`;
+  const row = help
+    ? html`<span class=${`sf-checkable-row sf-checkable--size-${size} flex flex-nowrap items-cross-start`}>${control}<span class="sf-checkable-help">${help}</span></span>`
+    : control;
+  if (!message) return row;
+  return html`<span class=${`sf-checkable-field sf-checkable--size-${size} flex flex-col`}>${row}${message}</span>`;
+}
+
+// The error line of a checkbox or a switch while it is invalid (field orders
+// 2026-11-18, FO-1): what is wrong, under the control in the error role, as
+// every field of the family says it (sf-input, sf-input-choice), so a host
+// sets invalid and error-message on the control instead of writing a line of
+// its own under it. Nothing without both. Its id joins the native input's
+// aria-describedby (linkCheckableMessage).
+export function renderCheckableMessage(context) {
+  if (!context.invalid || !context.errorMessage) return '';
+  return html`<span class="sf-checkable-message" id=${context.messageId || nothing} data-field-message="error">${context.errorMessage}</span>`;
+}
+
+// The message's id on the input's aria-describedby, and off it once the line
+// is gone; ids put there by the author or the text link are kept.
+export function linkCheckableMessage(host, input) {
+  if (!host || !input) return;
+  const line = host.querySelector('.sf-checkable-message');
+  const before = String(input.getAttribute('aria-describedby') || '').split(/\s+/u).filter(Boolean);
+  const kept = before.filter((id) => id !== host.__sfCheckableMessageId);
+  const next = line?.id ? [...kept, line.id] : kept;
+  host.__sfCheckableMessageId = line?.id || '';
+  if (next.join(' ') === before.join(' ')) return;
+  if (next.length) input.setAttribute('aria-describedby', next.join(' '));
+  else input.removeAttribute('aria-describedby');
 }
