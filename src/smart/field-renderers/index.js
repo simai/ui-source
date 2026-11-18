@@ -3845,7 +3845,13 @@ export function renderTotalField(field = {}, values = [], host) {
     const numbers = list.filter((value) => value !== null && value !== undefined && value !== '' && readTypedDecimal(value).ok);
     if (!numbers.length) return null;
     const sum = addDecimal(numbers);
-    return sum === null ? null : [formatDecimal(sum, locale)];
+    if (sum === null) return null;
+    // The total keeps the field's unit as the cells print it («13 шт»): a
+    // number keeps its unit in every place (cards study CV-7; DEV, group build
+    // 12 acceptance: the table footer printed a bare «26»).
+    const text = formatDecimal(sum, locale);
+    const unit = fieldUnit(field);
+    return [unit ? `${text} ${unit}` : text];
 }
 
 // Whether a type is a number a table aligns to the end of the line with
