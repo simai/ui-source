@@ -73,9 +73,9 @@ test('C186 (3): a new-tab link gets arrow_outward after its last word and the wo
 });
 
 test('C186 (4): the ring of a link is 2px --sf-focus, 2 off the words, corner 4, around each line', () => {
-  assert.match(link, /&:focus-visible \{\s*outline-offset: var\(--sf-focus--offset\);\s*border-radius: var\(--sf-radius--ui\);\s*-webkit-box-decoration-break: clone;\s*box-decoration-break: clone;/u);
+  assert.match(link, /&:focus-visible \{\s*outline-offset: var\(--sf-a2\);\s*border-radius: var\(--sf-radius--ui\);\s*-webkit-box-decoration-break: clone;\s*box-decoration-break: clone;/u);
   assert.doesNotMatch(link, /^\s*outline: none;/mu);
-  assert.match(sfLink, /\.sf-link:focus-visible \{[^}]*outline-offset: var\(--sf-focus--offset\);/su);
+  assert.match(sfLink, /\.sf-link:focus-visible \{[^}]*outline-offset: var\(--sf-a2\);/su);
 });
 
 test('C186 (5): on a strong place a link is the place ink, underlined', () => {

@@ -21,8 +21,10 @@
 // KEPT lists the focus offsets that keep a distance of their own. One offset
 // everywhere (C212, dispatcher decision msg-bc1702eb, 2026-11-18): only the
 // forced-colours rings, the system's Highlight outline two pixels off the box,
-// stay; the flush segments and slider dots, the 2 px and 4 px rings of links,
-// the editor, the overlay, sortable, confirm and the feed, the selected day
+// and, by the owner's C186 (4) (dispatcher 2026-11-18: an owner decision
+// outranks the technical rule), a link's ring two pixels off its words - the
+// text link, sf-link, a crumb and a reference in text - stay; the flush
+// segments and slider dots, the 2 px and 4 px rings of the editor, the overlay, sortable, confirm and the feed, the selected day
 // and the two built from the tokens read the two tokens since. An entry that
 // no longer matches fails, so a fixed line leaves the list.
 //
@@ -49,6 +51,11 @@ export const KEPT = [
   {file: 'component/step/scss/_css__step.scss', value: 'var(--sf-focus--width)', why: 'forced colours, 2px out'},
   {file: 'component/switch/scss/_css_switch.scss', value: 'var(--sf-focus--width)', why: 'forced colours, 2px out'},
   {file: 'component/tags/scss/_css__tags.scss', value: 'var(--sf-focus--width)', why: 'forced colours, 2px out'},
+  // C186 (4), the owner's link ring: two pixels off the words.
+  {file: 'core/scss/_sf_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out (C186 (4))'},
+  {file: 'component/link/scss/_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out (C186 (4))'},
+  {file: 'component/breadcrumbs/scss/_css__breadcrumbs_item.scss', value: 'var(--sf-a2)', why: 'crumb link, 2px out (C186 (4))'},
+  {file: 'component/reference-link/scss/_css__reference_link.scss', value: 'var(--sf-a2)', why: 'link in text, 2px out (C186 (4))'},
 ];
 
 const SHEETS = new Set(['.css', '.scss']);

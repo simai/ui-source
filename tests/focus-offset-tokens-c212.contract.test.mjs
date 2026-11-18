@@ -44,9 +44,11 @@ test('every Framework focus ring reads the two tokens, apart from the listed one
   );
   assert.deepEqual(findings, [], 'no focus rule writes an offset of its own or reads --sf-focus-outline-width');
   assert.deepEqual(stale, [], 'every kept offset is still there; a fixed one leaves KEPT');
-  // One offset everywhere (msg-bc1702eb, 2026-11-18): only the 11 forced-
-  // colours rings (the system Highlight, 2px out) keep a distance of their own.
-  assert.equal(KEPT.length, 11);
-  assert.ok(KEPT.every((entry) => entry.why === 'forced colours, 2px out'), 'only forced-colours rings are kept');
+  // One offset everywhere (msg-bc1702eb, 2026-11-18): the 11 forced-colours
+  // rings (the system Highlight, 2px out) and the owner's link ring (C186 (4):
+  // text link, sf-link, crumb, reference in text, 2px out) keep their own.
+  assert.equal(KEPT.length, 15);
+  assert.equal(KEPT.filter((entry) => entry.why === 'forced colours, 2px out').length, 11);
+  assert.ok(KEPT.every((entry) => entry.why === 'forced colours, 2px out' || /\(C186 \(4\)\)$/u.test(entry.why)), 'only forced-colours rings and C186 (4) links are kept');
   assert.ok(KEPT.every((entry) => entry.why), 'each kept offset says why');
 });

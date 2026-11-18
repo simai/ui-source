@@ -680,7 +680,7 @@
      a wrapped reference (clone), as core rings a link in text. */
   .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:focus-visible {
     outline-color: var(--sf-focus);
-    outline-offset: var(--sf-focus--offset);
+    outline-offset: var(--sf-a2);
     outline-style: var(--sf-focus--style);
     outline-width: var(--sf-focus--width);
     -webkit-box-decoration-break: clone;

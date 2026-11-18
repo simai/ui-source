@@ -169,12 +169,12 @@
   }
 
   /* A crumb is a link: its ring is a link's (C186 (4); BC-08 «as the
-     Framework's links»): 2 px --sf-focus at the focus system's offset (C212,
-     one offset everywhere, msg-bc1702eb), the UI's corner. */
+     Framework's links»): 2 px --sf-focus, two pixels off (the named
+     exception to C212's one offset, dispatcher 2026-11-18), the UI's corner. */
   .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
     --sf-breadcrumbs-item--background-color: var(--sf-transparent-for-focus);
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-    outline-offset: var(--sf-focus--offset);
+    outline-offset: var(--sf-a2);
   }
 
   /* A disabled item takes the disabled ink, its icon too (C16; docs precheck

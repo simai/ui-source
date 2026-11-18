@@ -36,8 +36,8 @@ test('RG-NV 3: «…» asks the Loader for sf-menu-context and opens the menu', 
 
 test('RG-NV 4: a crumb rings as a link, two pixels off', async () => {
   const item = await read('src/component/breadcrumbs/scss/_css__breadcrumbs_item.scss');
-  assert.match(item, /:focus-visible \{\n\s+--sf-breadcrumbs-item--background-color: var\(--sf-transparent-for-focus\);\n\s+outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n\s+outline-offset: var\(--sf-focus--offset\);/u); // H3, C212: one offset
-  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.3.3'); // C282: 1.2.0 moved on by the language-file patch (Russian is a language file)
+  assert.match(item, /:focus-visible \{\n\s+--sf-breadcrumbs-item--background-color: var\(--sf-transparent-for-focus\);\n\s+outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);\n\s+outline-offset: var\(--sf-a2\);/u); // C186 (4): a crumb keeps a link's 2 px offset
+  assert.equal((await json('src/component/breadcrumbs/passport.json')).version, '1.3.4'); // C282: 1.2.0 moved on by the language-file patch (Russian is a language file)
 });
 
 test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is one inline-flex control', async () => {
@@ -48,7 +48,7 @@ test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is o
   assert.doesNotMatch(base, /var\(--sf-text-size-1\)|var\(--sf-text-height-1\)/u);
   assert.match(css, /\.sf-link:has\(> :is\(\.sf-link__icon, \.sf-link-icon\)\) \{\n[^}]*display: inline-flex;/u);
   assert.match(css, /--sf-icon--font-size: 1lh;\n\s+--sf-icon--width: 1em;\n\s+--sf-icon--height: 1em;\n\s+--sf-link-icon--size: 1em;/u);
-  assert.equal((await json('src/component/link/passport.json')).version, '1.3.1'); // group build 10: 1.2.0 moved on by the merged branches or a GB10 patch
+  assert.equal((await json('src/component/link/passport.json')).version, '1.3.2'); // group build 10: 1.2.0 moved on by the merged branches or a GB10 patch
 });
 
 test('RG-NV 7, 8, 9: a page number is the ghost page button, no plate, as wide as its number', async () => {

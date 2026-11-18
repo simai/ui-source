@@ -122,15 +122,15 @@
     outline: none;
   }
 
-  /* The ring of a link (C186 (4)): 2px --sf-focus at the focus system's
-     offset (C212, one offset everywhere, msg-bc1702eb; two pixels off
-     before), the UI's corner (4). */
+  /* The ring of a link (C186 (4)): 2px --sf-focus, two pixels off the
+     words (the named exception to C212's one offset, dispatcher
+     2026-11-18), the UI's corner (4). */
   .sf-link:focus-visible {
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
     border-radius: var(--sf-radius--ui);
     outline-color: var(--sf-focus);
-    outline-offset: var(--sf-focus--offset);
+    outline-offset: var(--sf-a2);
     outline-style: var(--sf-focus--style);
     outline-width: var(--sf-focus--width);
   }
