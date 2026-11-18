@@ -28,7 +28,11 @@
     "passwordKeep": "Definida; escribe una nueva para sustituirla",
     "maskIncomplete": "Completa el campo",
     "notNumber": "Introduce un número",
-    "precisionMax": "Como máximo {n} decimales",
+    "precisionMax": {
+      "one": "Como máximo {n} decimal",
+      "many": "Como máximo {n} decimales",
+      "other": "Como máximo {n} decimales"
+    },
     "rowCount": {
       "one": "{n} fila",
       "many": "{n} filas",

@@ -28,7 +28,9 @@
     "passwordKeep": "設定済み。変更するには新しい値を入力してください",
     "maskIncomplete": "すべて入力してください",
     "notNumber": "数値を入力してください",
-    "precisionMax": "小数点以下は {n} 桁まで",
+    "precisionMax": {
+      "other": "小数点以下は {n} 桁まで"
+    },
     "rowCount": {
       "other": "{n} 行"
     },

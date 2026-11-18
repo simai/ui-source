@@ -28,7 +28,10 @@
     "passwordKeep": "Festgelegt; zum Ersetzen ein neues eingeben",
     "maskIncomplete": "Füllen Sie das Feld vollständig aus",
     "notNumber": "Geben Sie eine Zahl ein",
-    "precisionMax": "Höchstens {n} Nachkommastellen",
+    "precisionMax": {
+      "one": "Höchstens {n} Nachkommastelle",
+      "other": "Höchstens {n} Nachkommastellen"
+    },
     "rowCount": {
       "one": "{n} Zeile",
       "other": "{n} Zeilen"

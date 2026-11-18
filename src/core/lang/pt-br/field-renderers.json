@@ -43,7 +43,11 @@
       "passwordKeep": "Definida; digite uma nova para substituí-la",
       "maskIncomplete": "Complete o campo",
       "notNumber": "Digite um número",
-      "precisionMax": "No máximo {n} casas decimais",
+      "precisionMax": {
+        "one": "No máximo {n} casa decimal",
+        "many": "No máximo {n} casas decimais",
+        "other": "No máximo {n} casas decimais"
+      },
       "rowCount": {
         "one": "{n} linha",
         "many": "{n} linhas",

@@ -28,7 +28,9 @@
     "passwordKeep": "已设置；输入新密码即可替换",
     "maskIncomplete": "请填写完整",
     "notNumber": "请输入数字",
-    "precisionMax": "小数点后最多 {n} 位",
+    "precisionMax": {
+      "other": "小数点后最多 {n} 位"
+    },
     "rowCount": {
       "other": "{n} 行"
     },
