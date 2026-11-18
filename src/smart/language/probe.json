@@ -12,7 +12,7 @@
       "  <sf-language id=\"codes\" languages=\"ru en de\" mode=\"inline\" labels=\"code\" size=\"1/2\" apply=\"none\"></sf-language>",
       "  <sf-language id=\"compact-alias\" languages=\"ru en de\" mode=\"inline\" compact size=\"1/2\" apply=\"none\"></sf-language>",
       "  <sf-language id=\"five\" languages=\"ru en de fr es\" size=\"1/2\"></sf-language>",
-      "  <sf-language id=\"twelve\" languages=\"ru en de fr es it pt tr pl uk ja ar\" size=\"1/2\" apply=\"none\"></sf-language>",
+      "  <sf-language id=\"twelve\" languages=\"ru en de fr es it pt tr pl nl ja ar\" size=\"1/2\" apply=\"none\"></sf-language>",
       "  <sf-language id=\"rtl\" languages=\"ru en ar\"></sf-language>",
       "  <sf-language id=\"url\" languages=\"ru en\" href=\"#/{code}/\" remember=\"probe\"></sf-language>",
       "  <sf-language id=\"one\" languages=\"ru\"></sf-language>",

@@ -11,7 +11,7 @@
 //     (ё searched as е, «мб» read as megabytes, the words an initials rule
 //     skips), not words the Framework says;
 //   - the languages' names in themselves (smart/language/data/names.json
-//     `native`, sf-language's data: «Беларуская» is Belarusian's own name).
+//     `native`, sf-language's data: «Саха тыла» is Yakut's own name).
 // The language files themselves (core/lang/**), the kits and the contracts
 // (core/kits/**, core/contracts/**) are not bundles of components.
 //

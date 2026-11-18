@@ -61,7 +61,7 @@ function renderInline(context) {
 // nothing moves when it draws (C130); two capitals stand in it. A list with
 // a longer code -- more than two letters (PT-BR) or letters wider than a
 // capital (简体) -- sizes the cell to its widest code instead.
-const NARROW_CODE = /^[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Greek}\p{Script=Armenian}\p{Script=Georgian}]{1,2}$/u;
+const NARROW_CODE = /^[\p{Script=Latin}\p{Script=Cyrillic}\p{Script=Greek}]{1,2}$/u;
 
 function renderCode(context) {
   const shown = context.current?.short ?? '';

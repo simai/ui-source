@@ -12,11 +12,11 @@ const data = JSON.parse(read('src/smart/language/data/names.json'));
 useNames(data);
 
 test('LG-7: the supported languages are named in themselves from shipped data, not by the browser alone', () => {
-  const expected = {be: 'Беларуская', hy: 'Հայերեն', ka: 'ქართული', tt: 'Татар', ky: 'Кыргызча', tg: 'Тоҷикӣ', ba: 'Башҡорт', sah: 'Саха тыла', ru: 'Русский', de: 'Deutsch'};
+  const expected = {sah: 'Саха тыла', cv: 'Чӑваш чӗлхи', he: 'עברית', mn: 'Монгол', ru: 'Русский', de: 'Deutsch'};
   for (const [code, name] of Object.entries(expected)) assert.equal(nativeName(code), name, code);
   assert.equal(englishName('sah'), 'Yakut');
-  assert.equal(nameIn('ba', 'ru'), 'башкирский');
-  assert.equal(nameIn('ba', 'ru-RU'), 'башкирский');
+  assert.equal(nameIn('cv', 'ru'), 'чувашский');
+  assert.equal(nameIn('cv', 'ru-RU'), 'чувашский');
   // The data names each in itself and in English; its Russian name is the ru
   // language file's word name-<code> (C282).
   const ruNames = JSON.parse(read('src/core/js/lang/language-names/ru.json')).runtime;
@@ -24,13 +24,18 @@ test('LG-7: the supported languages are named in themselves from shipped data, n
     assert.ok(names.native && names.en && ruNames[`name-${code}`], `${code} has all three names`);
     assert.equal(names.ru, undefined, `${code}: no Russian in the data`);
   }
-  assert.ok(Object.keys(data.names).length >= 60);
+  assert.ok(Object.keys(data.names).length >= 50);
+  // Owner decision C278: languages of CIS countries other than Russian are not named.
+  for (const code of ['uk', 'be', 'uz', 'az', 'hy', 'ka', 'kk', 'tt', 'ky', 'tg', 'ba', 'tk']) {
+    assert.equal(data.names[code], undefined, code);
+    assert.equal(ruNames[`name-${code}`], undefined, code);
+  }
   // No literal names in the code: they are data.
-  assert.doesNotMatch(read('src/smart/language/js/languages.js'), /Беларуская|беларуская|Башҡорт|башҡорт/u);
+  assert.doesNotMatch(read('src/smart/language/js/languages.js'), /Саха тыла|саха тыла|Чӑваш|чӑваш/u);
 });
 
 test('LG-8: a query matches the start of a word, in any case and without accents', () => {
-  const list = normalizeLanguages('ru en be ka ro de pt-BR fr it', []);
+  const list = normalizeLanguages('ru en lt ro de pt-BR fr it', []);
   const words = (language) => searchWords(language.label, language.native, language.english, nameIn(language.code, 'ru'), language.code);
   const find = (query) => list.filter((language) => matchesQuery(words(language), query)).map((language) => language.code);
   assert.deepEqual(find('ру'), ['ru', 'ro']);

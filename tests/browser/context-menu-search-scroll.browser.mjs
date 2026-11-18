@@ -40,7 +40,7 @@ const browser = await chromium.launch();
 
 const LANGUAGES = ['Русский', 'English', 'Deutsch', 'Français', 'Español', 'Italiano', 'Português', 'Polski',
   'Čeština', 'Nederlands', 'Svenska', 'Suomi', 'Dansk', 'Norsk', 'Türkçe', 'Ελληνικά', 'Magyar', 'Română',
-  'Українська', 'Hrvatski', '日本語', '中文', '한국어', 'العربية'];
+  'Български', 'Hrvatski', '日本語', '中文', '한국어', 'العربية'];
 const rows = () => LANGUAGES.map((text, index) => ({id: `l${index}`, text, kind: 'radio', checked: index === 0}));
 
 // What the probe measures on one surface: the field, the scroll area, the
