@@ -72,7 +72,7 @@ test('C291 (2): the editors write decimal strings and say what is wrong through 
 
 test('C291 (3): sf-form apply answer, size and state over the confirm surface\'s words', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.4.0');
+  assert.equal(manifest.version, '1.9.0'); // fix/larena-lf-data: moved on by the Larena LF items
   assert.deepEqual(manifest.settings.apply.values, ['submit', 'instant', 'answer']);
   assert.deepEqual(manifest.settings.size.values, ['1', '1/2']);
   assert.equal(manifest.settings.size.default, '1');

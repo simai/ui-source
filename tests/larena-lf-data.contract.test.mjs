@@ -44,7 +44,8 @@ test('LF-3: sf-modal and sf-drawer watch their host for content written later', 
 
 test('LF-7: focus and scrollIntoView on a host with no box reach the element inside', () => {
   const base = code('src/core/js/smart-base.js');
-  assert.match(base, /function focusTargetOf\(host\) \{/u);
+  assert.match(base, /function firstTabbableOf\(host\) \{/u);
+  assert.match(base, /const target = this\.focusDelegate\?\.\(\) \|\| firstTabbableOf\(this\);/u);
   assert.match(base, /function boxOf\(host\) \{/u);
   assert.match(base, /scrollIntoView\(options\) \{\n\s*const box = boxOf\(this\);/u);
   assert.ok(existsSync(new URL('../docs/developer/host-box.md', import.meta.url)), 'the shared note lists the parts and the element to measure');

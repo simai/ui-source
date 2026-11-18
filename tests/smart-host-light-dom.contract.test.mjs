@@ -73,10 +73,10 @@ test('focus() on a host reaches the control inside it', async () => {
   assert.match(base, /focusDelegate\(\) \{\s*return null;\s*\}/u, 'the base names no control; a component does');
   assert.match(
     base,
-    /focus\(options\) \{\s*const target = this\.focusDelegate\?\.\(\);\s*\n\s*if \(target && typeof target\.focus === "function"\) \{\s*const activeWhenAsked = this\.ownerDocument\?\.activeElement \|\| null;\s*target\.focus\(options\);/u,
+    /focus\(options\) \{\s*const target = this\.focusDelegate\?\.\(\) \|\| firstTabbableOf\(this\);\s*\n\s*if \(target && typeof target\.focus === "function"\) \{\s*const activeWhenAsked = this\.ownerDocument\?\.activeElement \|\| null;\s*target\.focus\(options\);/u,
     'focus() on the host goes to the named control',
   );
-  assert.match(base, /blur\(\) \{\s*const target = this\.focusDelegate\?\.\(\);/u, 'blur() follows focus()');
+  assert.match(base, /blur\(\) \{[^}]*?const target = this\.focusDelegate\?\.\(\) \|\| \(active && active !== this && this\.contains\(active\)/u, 'blur() follows focus()');
 
   // Asked before the control exists, the focus waits for the first render --
   // and is dropped if something else took focus meanwhile, so a queued focus

@@ -369,14 +369,12 @@ export function createSmartElement(type, props = {}) {
 }
 
 
-// The element a host's focus() reaches (Larena LF-7): the control the part
-// names (focusDelegate), else -- for a host with no box of its own and no
-// tabindex, which the browser cannot focus -- the first control inside it a
-// person could reach with Tab. focus() on such a host did nothing before.
+// Where a host's focus() goes when the part names no control (Larena LF-7):
+// a host with no box of its own and no tabindex, which the browser cannot
+// focus, sends it to the first control inside it a person could reach with
+// Tab. focus() on such a host did nothing before.
 const TABBABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [contenteditable="true"], [tabindex]:not([tabindex="-1"])';
-function focusTargetOf(host) {
-  const named = host.focusDelegate?.();
-  if (named) return named;
+function firstTabbableOf(host) {
   if (host.hasAttribute?.("tabindex") || host.getClientRects?.().length) return null;
   for (const candidate of host.querySelectorAll?.(TABBABLE) ?? []) {
     if (candidate.getClientRects().length && !candidate.closest("[inert]")) return candidate;
@@ -1828,7 +1826,7 @@ class SfBaseElement extends HTMLElement {
   }
 
   focus(options) {
-    const target = focusTargetOf(this);
+    const target = this.focusDelegate?.() || firstTabbableOf(this);
 
     if (target && typeof target.focus === "function") {
       const activeWhenAsked = this.ownerDocument?.activeElement || null;
@@ -1840,7 +1838,7 @@ class SfBaseElement extends HTMLElement {
       // the focus meanwhile.
       if (!this.isRendered && (this.ownerDocument?.activeElement || null) === activeWhenAsked && activeWhenAsked !== target) {
         this.whenRendered(() => {
-          const ready = this.focusDelegate?.();
+          const ready = this.focusDelegate?.() || firstTabbableOf(this);
           if (!ready || typeof ready.focus !== "function") return;
           if ((this.ownerDocument?.activeElement || null) !== activeWhenAsked) return;
           ready.focus(options);
@@ -1854,7 +1852,7 @@ class SfBaseElement extends HTMLElement {
     if (!target && typeof this.focusDelegate === "function" && !this.isRendered) {
       const activeWhenAsked = this.ownerDocument?.activeElement || null;
       this.whenRendered(() => {
-        const ready = focusTargetOf(this);
+        const ready = this.focusDelegate?.() || firstTabbableOf(this);
         if (!ready || typeof ready.focus !== "function") return;
         if ((this.ownerDocument?.activeElement || null) !== activeWhenAsked) return;
         ready.focus(options);
@@ -1882,7 +1880,7 @@ class SfBaseElement extends HTMLElement {
   }
 
   blur() {
-    // The control that took the host's focus (focusTargetOf) gives it up.
+    // The control that took the host's focus (firstTabbableOf) gives it up.
     const active = this.ownerDocument?.activeElement;
     const target = this.focusDelegate?.() || (active && active !== this && this.contains(active) && !this.getClientRects().length ? active : null);
 
@@ -2627,12 +2625,12 @@ class SfBaseElement extends HTMLElement {
   // the child itself (the rule above, captureSlotTemplates). sf-modal reads
   // the children a page writes later with it (Larena LF-3).
   slotNodesOf(child) {
-    const unwrap =
+    const shouldUnwrapSlotHost =
       !child.localName.includes("-") &&
       child.localName !== "figure" && child.localName !== "picture" &&
       !Array.from(child.children ?? []).some((node) => node.localName === "figcaption") &&
       child.getAttributeNames().length === 1 && child.hasAttribute("slot");
-    return unwrap ? Array.from(child.childNodes) : [child];
+    return shouldUnwrapSlotHost ? Array.from(child.childNodes) : [child];
   }
 
   // A child the slots took: out of the element now, or -- for a component

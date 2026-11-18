@@ -328,6 +328,11 @@ the next one.
   and left `document.activeElement` where it was. A focus asked before the first
   render is applied when the control appears, and dropped if something else took
   focus while it waited. Same checks as above.
+  A host with no delegate, no box and no `tabindex` sends `focus()` to the first
+  control inside it a person could reach with Tab, and `scrollIntoView()` to the
+  first element inside it that has a box (Larena LF-7, 2026-11-18): both did
+  nothing before. Which element to measure or scroll to, per part:
+  `docs/developer/host-box.md`.
 
 ## Surfaces and lines
 
