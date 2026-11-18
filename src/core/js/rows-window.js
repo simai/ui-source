@@ -22,6 +22,10 @@
 //                                  (a grouped list: its group's heading, FO2-1)
 //     from: 200,                   the length from which the list is windowed;
 //                                  Infinity never windows (a host's off, FO2-3)
+//     place: (element) => top,     where an entry stands in the flow, in
+//                                  viewport px (default its box's top): a
+//                                  sticky heading is read where it stuck, so
+//                                  a grouped list gives its group's top
 //   });
 //   win.slice(count)  -> null (draw every row) | {first, last, before, after}
 //   win.sync()        after a drawing: measure the entries drawn, move the
@@ -77,6 +81,7 @@ export function rowsWindow({
   clip = null,
   key = null,
   snap = null,
+  place = null,
 } = {}) {
   let windowed = false;
   let count = 0;
@@ -97,11 +102,19 @@ export function rowsWindow({
   // Measured heights by entry key (FO2-4), and the sums of heights before
   // each entry, made again when a height or the length changed.
   const heights = new Map();
+  let measuredTotal = 0;
   let sums = null;
   let threshold = from;
 
-  const rowHeight = () => height || guess;
+  // An entry not measured yet: the average of every entry measured so far
+  // (it settles as more are measured), else of the rows drawn, else the guess.
+  const rowHeight = () => (heights.size ? measuredTotal / heights.size : height || guess);
   const keyOf = (index) => (typeof key === 'function' ? key(index) : undefined);
+  const topOf = (element, box) => {
+    if (typeof place !== 'function') return box.top;
+    const at = Number(place(element));
+    return Number.isFinite(at) ? at : box.top;
+  };
   const heightOf = (index) => {
     const id = keyOf(index);
     return id !== undefined && heights.has(id) ? heights.get(id) : rowHeight();
@@ -180,13 +193,21 @@ export function rowsWindow({
     let changed = false;
     const drawn = rows?.() ?? [];
     if (drawn.length) {
-      const boxes = drawn.map((one) => one.getBoundingClientRect());
+      const boxes = drawn.map((one) => {
+        const box = one.getBoundingClientRect();
+        const top = topOf(one, box);
+        return {top, bottom: top + box.height, height: box.height};
+      });
       const total = boxes[boxes.length - 1].bottom - boxes[0].top;
       const measured = total / drawn.length;
+      // With keys the entries measured stand for the rest (rowHeight), so the
+      // average of the rows drawn now moves nothing.
       if (measured > 0 && Math.abs(measured - height) > 0.5) {
         height = measured;
-        sums = null;
-        changed = true;
+        if (typeof key !== 'function') {
+          sums = null;
+          changed = true;
+        }
       }
       // Each entry by its key (FO2-4): from its top to the next one's, the
       // last its own height and the gap the others keep.
@@ -201,6 +222,7 @@ export function rowsWindow({
           const id = keyOf(base + index);
           if (id === undefined || !(own > 0)) return;
           if (Math.abs((heights.get(id) ?? -1) - own) > 0.5) {
+            measuredTotal += own - (heights.get(id) ?? 0);
             heights.set(id, own);
             sums = null;
             changed = true;

@@ -626,7 +626,8 @@ class SfForm extends FormElement {
         cancel: word('cancel'),
         edit: word('edit'),
         unsaved: word('unsaved'),
-        errorsTitle: word('errors-title', {count: errors.length}),
+        // The summary counts every error it lists, a hidden field's too (FO3-1).
+        errorsTitle: word('errors-title', {count: errors.length + hiddenErrors.length}),
       },
       rootClass: this.getRootClass(),
     });

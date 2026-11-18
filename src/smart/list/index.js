@@ -206,6 +206,14 @@ class SfList extends ListElement {
             onMove: () => this.requestComponentUpdate("window"),
             key: (index) => this._entries[index]?.key,
             snap: (index) => this._entries[index]?.head ?? index,
+            // A sticky heading reads where it stuck (sticky-headings): its
+            // place in the flow is the top of its group's content box.
+            place: (element) => {
+                if (!element.classList.contains("sf-list__heading")) return element.getBoundingClientRect().top;
+                const group = element.parentElement;
+                const style = getComputedStyle(group);
+                return group.getBoundingClientRect().top + (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.paddingTop) || 0) + (parseFloat(getComputedStyle(element).marginTop) || 0);
+            },
             guess: 40,
         });
         listCount += 1;

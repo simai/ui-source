@@ -104,6 +104,60 @@ test('FO2-4: each entry keeps its own measured height by its id; the rest are th
   assert.ok(Math.abs(moved.before - measured) < 1, `${moved.before} vs ${measured}`);
 });
 
+test('FO2-1, FO2-4: an entry is read where it stands in the flow (place); a stuck heading does not move the range', () => {
+  // A grouped list: a heading every 41 entries, 32 px; rows 40 px. The
+  // heading drawn first is stuck at the top of the box (sticky-headings):
+  // its box says 0 wherever the list scrolled; its place in the flow says
+  // where it stands.
+  const heights = (index) => (index % 41 === 0 ? 32 : 40);
+  let scrolled = 0;
+  let range = {first: 0, last: ROWS_WINDOW_INITIAL - 1};
+  let before = 0;
+  // As in a page: the drawn entries stand after the spacer before them.
+  const flowTop = (index) => {
+    let top = before;
+    for (let at = range.first; at < index; at += 1) top += heights(at);
+    return top - scrolled;
+  };
+  const drawn = () => Array.from({length: range.last - range.first + 1}, (_, offset) => {
+    const index = range.first + offset;
+    const stuck = index === range.first && index % 41 === 0;
+    const top = stuck ? 0 : flowTop(index);
+    return {index, getBoundingClientRect: () => ({top, bottom: top + heights(index), height: heights(index)})};
+  });
+  const body = {getBoundingClientRect: () => ({top: -scrolled}), ownerDocument: {defaultView: {innerHeight: 480}}};
+  let moves = 0;
+  const win = rowsWindow({
+    body: () => body,
+    rows: drawn,
+    clip: () => null,
+    key: (index) => `e${index}`,
+    snap: (index) => index - (index % 41),
+    place: (element) => flowTop(element.index),
+    onMove: () => { moves += 1; },
+  });
+  win.slice(2_050);
+  for (const at of [0, 20_000, 20_000, 20_000, 40_000, 40_000]) {
+    scrolled = at;
+    for (let round = 0; round < 5; round += 1) {
+      if (!win.sync()) break;
+      const next = win.slice(2_050);
+      range = {first: next.first, last: next.last};
+      before = next.before;
+    }
+  }
+  // Settled: one more drawing at the same place moves nothing, and the
+  // range holds what is in view.
+  assert.equal(win.sync(), false);
+  assert.ok(moves < 12, `${moves} moves`);
+  const view = win.range;
+  let top = 0;
+  let first = 0;
+  while (top + heights(first) <= 40_000) top += heights(first++);
+  assert.ok(view.first <= first && view.last >= first + 10, `${JSON.stringify(view)} for ${first}`);
+  assert.match(read('src/smart/list/index.js'), /place: \(element\) => \{\s*if \(!element\.classList\.contains\("sf-list__heading"\)\)/u);
+});
+
 test('FO2-1, FO2-3: a range never starts inside a group without its heading; from Infinity is off', () => {
   // Groups of 50: heading at 0, 51, 102, ...
   const head = (index) => index - (index % 51);
@@ -330,6 +384,8 @@ test('FO3-1: a hidden field is not sent; a host error for it is said in the summ
   assert.match(form, /get value\(\) \{\s*return this\.sendable\(this\._values\);/u);
   assert.match(form, /if \(field\.when && fieldConditions\(field, values\)\.visible === false\) delete out\[field\.key\];/u);
   assert.match(form, /hiddenHostErrors\(\)/u);
+  // The summary counts every error it lists, the hidden field's too.
+  assert.match(form, /errorsTitle: word\('errors-title', \{count: errors\.length \+ hiddenErrors\.length\}\)/u);
   assert.match(read('src/smart/form/js/templates/default.js'), /error\.href \? html`<li><a href=\$\{error\.href\}/u);
   assert.match(json('src/smart/form/component.json').events.submit.summary, /not sent, FO3-1/u);
 });
