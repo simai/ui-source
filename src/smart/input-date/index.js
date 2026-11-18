@@ -40,6 +40,28 @@ const RIBBON_STEP = 6;
 const YEARS_PAGE_SIZE = 18;
 // The kinds of a special day a site passes (owner decision C198).
 const HOLIDAY_KINDS = new Set(['holiday', 'day-off', 'working-day']);
+// The inks a day mark may take (CL-6); a mark without a known tone is primary.
+const MARK_TONES = new Set(['primary', 'error', 'warning', 'success', 'tertiary', 'neutral']);
+// A count over this is drawn as «99+» (the screen reader still hears it whole).
+const MARK_COUNT_CAP = 99;
+
+// One day's mark as the grid draws it, or null for none (CL-6): a count of 1
+// or none is a dot, 2 and more a small number; a count under 1, or one that is
+// no number, is no mark. The label is the host's own words for the day.
+function readDayMark(raw) {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+    let count = null;
+    if (raw.count !== undefined && raw.count !== null && raw.count !== '') {
+        const number = Number(raw.count);
+        if (!Number.isFinite(number)) return null;
+        count = Math.floor(number);
+        if (count < 1) return null;
+    }
+    const label = typeof raw.label === 'string' ? raw.label.trim() : '';
+    const tone = MARK_TONES.has(raw.tone) ? raw.tone : 'primary';
+    const text = count !== null && count >= 2 ? (count > MARK_COUNT_CAP ? `${MARK_COUNT_CAP}+` : String(count)) : '';
+    return {count, tone, label, text};
+}
 
 function padDatePart(value) {
     return String(value).padStart(2, '0');
@@ -495,6 +517,12 @@ const DatepickerElement = elementFromManifest(manifest, {
             this._choosePreset(item);
             return 'applied';
         },
+        // Draw the day marks again (CL-6): for a dayMarks function whose data
+        // changed; a new map or attribute draws by itself.
+        'refresh'() {
+            this.redrawDayMarks();
+            return 'applied';
+        },
         'choose-custom-range'() {
             if (this.disabled) return 'disabled';
             if (this.valueLocked) return 'readonly';
@@ -601,6 +629,10 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
             // days off and moved working days, the property as a list or JSON
             // in the attribute (see get holidays).
             holidays: {default: ''},
+            // Marks on days (CL-6): a dot or a count of the day's events, the
+            // property as a function of the ISO day or a map by ISO day, the
+            // attribute as JSON of the map (see get dayMarks).
+            dayMarks: {attribute: 'day-marks', default: ''},
         };
     }
 
@@ -618,6 +650,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         this.upgradeProperty('value');
         this.upgradeProperty('presets');
         this.upgradeProperty('holidays');
+        this.upgradeProperty('dayMarks');
         super.connectedCallback();
     }
 
@@ -824,10 +857,14 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
     dayFacts(date, value, daysOff, locale = this.locale) {
         const special = this.holidayDays.get(value) || null;
         const weekend = special ? special.kind !== 'working-day' : daysOff.has(date.getDay());
+        const mark = this.dayMarkOf(value);
         const parts = [getDateLabel(date, locale)];
         if (special?.name) parts.push(special.name);
         if (weekend) parts.push(this.sfWord('day-off'));
-        return {weekend, special: Boolean(special), specialName: special?.name || '', label: parts.join(', ')};
+        // The day's mark (CL-6) is said last: the date, the holiday, then
+        // «3 события» or the host's label.
+        if (mark) parts.push(this.dayMarkWords(mark));
+        return {weekend, special: Boolean(special), specialName: special?.name || '', mark, label: parts.join(', ')};
     }
 
     // The line under the grid (C198): drawn only when the site gave special
@@ -861,6 +898,71 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
         if (!this.holidayDays.size || this._lineDay === value) return;
         this._lineDay = value;
         this.requestComponentUpdate('holidays');
+    }
+
+    // Marks on days (CL-6, calendar layout study 2026-11-18, mini month with
+    // events): the property as a function (isoDate) -> {count?, tone?, label?}
+    // | null, asked for each day drawn, or as a map {isoDate: {...}}; the
+    // attribute as JSON of the map. A host whose function reads new data asks
+    // for a new drawing with refresh(). Anything else is no marks.
+    get dayMarks() {
+        if (this._dayMarks) return this._dayMarks;
+        const raw = this.getAttribute('day-marks');
+        if (!raw) return null;
+        try {
+            const parsed = JSON.parse(raw);
+            return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+        } catch {
+            return null;
+        }
+    }
+
+    set dayMarks(next) {
+        if (typeof next === 'function' || (next && typeof next === 'object' && !Array.isArray(next))) {
+            this._dayMarks = next;
+            this.redrawDayMarks();
+            return;
+        }
+        this._dayMarks = null;
+        this.setState({dayMarks: typeof next === 'string' ? next : ''});
+        this.redrawDayMarks();
+    }
+
+    // The mark of one ISO day, or null. A function that throws marks nothing
+    // and is reported once per drawing, not once per day.
+    dayMarkOf(value) {
+        const marks = this.dayMarks;
+        if (!marks) return null;
+        if (typeof marks === 'function') {
+            try {
+                return readDayMark(marks(value));
+            } catch (error) {
+                if (!this._dayMarkFailed) {
+                    this._dayMarkFailed = true;
+                    this.reportComponentError?.(error, 'day-marks');
+                    queueMicrotask(() => { this._dayMarkFailed = false; });
+                }
+                return null;
+            }
+        }
+        return Object.prototype.hasOwnProperty.call(marks, value) ? readDayMark(marks[value]) : null;
+    }
+
+    // What a screen reader hears of a mark after the day's name: the host's
+    // label, else the count in the page language's plural («3 события»), else
+    // that the day has some.
+    dayMarkWords(mark) {
+        if (!mark) return '';
+        if (mark.label) return mark.label;
+        if (mark.count !== null) return this.sfWord('mark-count', {count: mark.count});
+        return this.sfWord('mark-present');
+    }
+
+    // The grid and the open phone ribbon drawn again with the marks as they
+    // are now.
+    redrawDayMarks() {
+        this.requestComponentUpdate('day-marks');
+        if (this._sheetOpen && this._ribbon) this.renderRibbon();
     }
 
     set preset(next) {
@@ -1530,13 +1632,14 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
             // only cue. The ink is the calendar's day-off role
             // (--sf-datepicker-day-off, C67 H2), not the error red. A special
             // day of the site (C198) says its own name too.
-            const {weekend, special, label} = this.dayFacts(date, value, daysOff);
+            const {weekend, special, mark, label} = this.dayFacts(date, value, daysOff);
             return {
                 date,
                 value,
                 formattedValue: formatDateValue(date, this.format),
                 label,
                 special,
+                mark,
                 day: date.getDate(),
                 today: sameDay(date, today),
                 currentMonth: date.getMonth() === this.month,
@@ -2217,7 +2320,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
                 if (day < 1 || day > length) return null;
                 const date = new Date(first.getFullYear(), first.getMonth(), day);
                 const value = formatIsoDate(date);
-                const {weekend, special, label} = this.dayFacts(date, value, daysOff, locale);
+                const {weekend, special, mark, label} = this.dayFacts(date, value, daysOff, locale);
                 const disabled = Boolean((minDate && compareDates(date, minDate) < 0) || (maxDate && compareDates(date, maxDate) > 0));
                 const both = Boolean(start && end);
                 return {
@@ -2225,6 +2328,7 @@ class SfDatepicker extends ShownValidity(FormField(DatepickerElement)) {
                     day,
                     weekend,
                     special,
+                    mark,
                     disabled,
                     today: sameDay(date, today),
                     label,

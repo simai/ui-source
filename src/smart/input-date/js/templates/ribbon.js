@@ -1,5 +1,6 @@
 import {html, nothing} from 'lit';
 import {repeat} from 'lit/directives/repeat.js';
+import {renderDayMark} from './default.js';
 
 function joinClasses(...tokens) {
     return tokens.flat().filter(Boolean).join(' ');
@@ -19,7 +20,7 @@ function renderRibbonDay(day, context) {
             aria-selected=${day.selected || day.rangeSelected ? 'true' : 'false'} tabindex=${day.tabIndex}
             @click=${() => context.component.pickRibbonDay(day.value)}
             @keydown=${(event) => context.component.handleRibbonKeydown(event, day.value)}>
-            <span class="sf-datepicker-day-date">${day.day}</span>
+            <span class="sf-datepicker-day-date">${day.day}</span>${renderDayMark(day.mark)}
         </button>`;
 }
 

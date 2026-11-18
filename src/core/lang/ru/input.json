@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 535,
-    "translated": 535,
+    "words": 537,
+    "translated": 537,
     "share": 100
   },
   "words": {
@@ -387,6 +387,13 @@
       "hours": "Часы",
       "later-hour": "Следующий час",
       "later-minute": "Следующие минуты",
+      "mark-count": {
+        "one": "{n} событие",
+        "few": "{n} события",
+        "many": "{n} событий",
+        "other": "{n} события"
+      },
+      "mark-present": "есть события",
       "minutes": "Минуты",
       "next-month": "Следующий месяц",
       "next-years": "Следующие годы",

@@ -302,6 +302,51 @@ Without `holidays` the calendar shows its plain weekends, with no dot and no
 line. Whether a holiday can be chosen (delivery, for example) is not the look:
 use `min-date` and `max-date` or validate on the host.
 
+## Day marks
+
+A day can carry a mark: a dot for a day with something on it, or a small
+number for two and more. With marks the panel serves as the mini month beside
+a calendar and as the month on a phone (CL-6, calendar layout study
+2026-11-18). `day-marks` is the property as a function of the ISO day, asked
+for each day drawn, or as a map by ISO day; the attribute takes JSON of the
+map:
+
+```html
+<sf-input-date input="false" locale="ru" value="2026-11-18" day-marks='{
+  "2026-11-10": {"count": 3},
+  "2026-11-12": {"count": 2, "tone": "warning", "label": "2 доставки без окна"},
+  "2026-11-19": {"tone": "success"},
+  "2026-11-27": {"count": 1, "tone": "error", "label": "Просрочена отгрузка"}
+}'></sf-input-date>
+```
+
+```js
+const panel = document.querySelector('sf-input-date');
+panel.dayMarks = (iso) => (deliveries[iso] ? {count: deliveries[iso].length} : null);
+// later, when the deliveries changed:
+panel.refresh();
+```
+
+- A mark is `{count?, tone?, label?}`; `null`, a missing day, a count under 1
+  or a count that is no number is no mark.
+- A count of 1, or no count, draws a 6 px dot under the number; 2 and more a
+  small number, `99+` over 99. The ink is the tone's: `primary` (the
+  default), `error`, `warning`, `success`, `tertiary` or `neutral`.
+- The mark stands in the row under the number that every day keeps: a marked
+  day is as tall as any other and its number does not move.
+- On a chosen day the mark takes the fill's ink, in a period's band the
+  band's, on a disabled day the disabled ink; today keeps the tone.
+- A screen reader hears the day's name, then the `label`, else the count in
+  the page language («3 события», «3 events»), else «есть события».
+- A holiday's dot gives way on a marked day; the day keeps its day-off ink and
+  its holiday name.
+- A new map or attribute draws by itself; a function that reads new data asks
+  for a new drawing with `refresh()`. The phone period sheet draws the marks
+  too.
+
+Marks say nothing about whether a day can be chosen: use `min-date`,
+`max-date` or the host's validation for that.
+
 ## Interaction and accessibility
 
 The popup field exposes `aria-haspopup`, `aria-expanded` and `aria-controls`.
