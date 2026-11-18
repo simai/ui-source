@@ -86,6 +86,8 @@ const PHASE_A = [
   'form',
   // Display settings (owner decision C196, 2026-11-15).
   'display-settings',
+  // The group actions bar (owner decision C295, 2026-11-17).
+  'bulk-actions',
 ];
 
 // Gate 1 (§4): the top-level fields of component.json are a closed list

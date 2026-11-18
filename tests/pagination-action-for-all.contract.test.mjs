@@ -6,11 +6,16 @@ const read = (path) => fs.readFileSync(new URL(`../${path}`, import.meta.url), '
 const template = read('src/smart/pagination/js/templates/default.js');
 const element = read('src/smart/pagination/index.js');
 
-test('the action-for-all checkbox follows its state, not a click on the label', () => {
-    const block = template.split('${context.showActionForAll')[1].split('</sf-checkbox>')[0];
-    assert.match(block, /@change=\$\{\(event\) =>\s*component\.setActionForAll\(Boolean\(event\.target\?\.checked\)\)\}/);
-    assert.doesNotMatch(block, /@click=/);
-    assert.doesNotMatch(block, /!context\.actionForAll/);
+test('«for all» is the bar\'s offer: «Выбрать все N» and «Только эта страница» set it, the bar shows its state (C295)', () => {
+    const block = template.split('<sf-bulk-actions')[1].split('></sf-bulk-actions>')[0];
+    assert.match(block, /@sf-bulk-actions-select-all=\$\{\(\) => component\.setActionForAll\(true\)\}/);
+    assert.match(block, /@sf-bulk-actions-select-page=\$\{\(\) => component\.setActionForAll\(false\)\}/);
+    assert.match(block, /\?all-selected=\$\{Boolean\(context\.showActionForAll && context\.actionForAll\)\}/);
+    assert.doesNotMatch(template, /<sf-checkbox/);
+});
+
+test('BA-3: a changed selected-count takes «for all» back', () => {
+    assert.match(element, /name === "selected-count" && this\.isConnected && oldValue !== null && oldValue !== newValue && this\.actionForAll\) \{\n\s+this\.setActionForAll\(false\);/);
 });
 
 test('setActionForAll stays idempotent, so a repeated state emits nothing', () => {

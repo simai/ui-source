@@ -18328,6 +18328,35 @@
       "source": "ui-control control/docs-review/decisions.md C278"
     },
     {
+      "id": "behaviour-pagination-band-is-bulk-actions",
+      "recorded_on": "2026-11-17",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "Owner decision C295 (2026-11-17): one group actions bar, sf-bulk-actions 1.0.0, replaces the four copies sf-pagination, sf-view, sf-view-table and sf-gallery drew. sf-pagination 1.9.0 draws its batch band (actions set) as <sf-bulk-actions place=\"dock\">: «Выбрано N», up to three labelled actions and «⋯», a dangerous action last in «⋯», the clear cross; the «для всех» checkbox is the bar's «Выбрать все N» offer (shown while the whole page is selected and total is larger). Its settings (actions, selected-count, action-for-all, selected-label) and events (sf-pagination-apply, sf-pagination-selection-clear, sf-pagination-action-for-all-change) keep working: a bar action sets the action and applies it as before, without a question window (confirm false; the host asks its own). The Smart element no longer draws the classes .sf-pagination-actions, -count, -separator and -clear; the plain component's class markup keeps them.",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "band .sf-pagination-actions with a dropdown and an apply button",
+          "to": "<sf-bulk-actions> (data-sf-bulk=\"bar\")"
+        },
+        {
+          "component": "sf-pagination",
+          "from": "the «для всех» checkbox",
+          "to": "«Выбрать все N» / «Только эта страница» in the bar"
+        }
+      ],
+      "deprecated_on": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "<sf-pagination selected-count=\"2\" actions='[{\"value\":\"archive\",\"text\":\"В архив\"}]'></sf-pagination>",
+        "after": "<sf-bulk-actions count=\"2\" page-count=\"12\" total=\"240\"></sf-bulk-actions> (bar.actions = [{id: 'archive', text: 'В архив'}])"
+      },
+      "manual": "A page that styled .sf-pagination-actions inside sf-pagination styles sf-bulk-actions through its public variables (--sf-bulk-actions-background, -border-color, -color, -gap, -radius). A list that draws its own selection bar uses <sf-bulk-actions> directly and listens to sf-bulk-actions-action {id, scope, count}; sf-pagination's actions setting stays until 2027-01-01.",
+      "owner": "ui-source",
+      "source": "src/smart/pagination/js/templates/default.js; src/smart/bulk-actions/component.json"
+    },
+    {
       "id": "value-date-filter-period-operators",
       "recorded_on": "2026-11-17",
       "stage": "compat",

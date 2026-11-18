@@ -98,18 +98,14 @@ test('options can be given as data, and data keeps the dropdown out of its paren
   assert.equal(options.type, 'array');
   assert.match(options.description, /sf-list-item children/u, 'the description says what it replaces');
 
-  // The one component that renders a dropdown from a template must use it.
   // Since 1.5.0 (decision C97 point 3) rows per page is a quiet button with an
-  // sf-menu-context, so only the band's actions list is still a dropdown.
+  // sf-menu-context, and since 1.9.0 (C295) the band's actions are
+  // sf-bulk-actions, fed as data too: pagination renders no dropdown at all.
   const template = await read('src/smart/pagination/js/templates/default.js');
   assert.doesNotMatch(
     template,
-    /<sf-list-item/u,
+    /<sf-list-item|<sf-dropdown\b/u,
     'pagination passes its lists as data rather than as dropdown children',
   );
-  assert.equal(
-    (template.match(/\.options=\$\{/gu) || []).length,
-    1,
-    'its dropdown, the actions list, is fed as data',
-  );
+  assert.match(template, /\.actions=\$\{context\.bulkActions\}/u, 'the bar\'s actions are data');
 });

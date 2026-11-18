@@ -11,6 +11,7 @@ const styles = [
   'core/core/css/core.css',
   'core/core/css/utility.full.css',
   'component/component/pagination/css/pagination.css',
+  'smart/smart/bulk-actions/css/bulk-actions.css',
 ].map((p) => join(out, p));
 const modules = [
   'core/core/js/core.js', 'core/core/js/smart-base.js',
@@ -22,6 +23,8 @@ const modules = [
   'smart/smart/dropdown/js/dropdown.js',
   'smart/smart/input/js/input.js',
   'smart/smart/spinner/js/spinner.js',
+  'smart/smart/progress-bar/js/progress-bar.js',
+  'smart/smart/bulk-actions/js/bulk-actions.js',
   'smart/smart/pagination/js/pagination.js',
 ].map((p) => join(out, p));
 
@@ -138,7 +141,8 @@ try {
   // is the card's job now — a sticky box cannot leave the box that contains it,
   // and the consumer saw the whole row floating over its own rows when the row
   // was made to stick. That arrangement is measured in data-view-reloads
-  // (package pro, with sf-view).
+  // (package pro, with sf-view). Since 1.9.0 (C295) the band is
+  // sf-bulk-actions, place dock: its box is the bar's own row.
   const card = await open(
     `<div id="card" style="width:900px;border:1px solid #ccc;display:flex;flex-direction:column">
        <sf-pagination id="p" top="false" total="450" page-size="10" current="1" selected-count="3"
@@ -147,7 +151,7 @@ try {
   );
   const band = await card.evaluate(async () => {
     await new Promise((done) => setTimeout(done, 200));
-    const dock = document.querySelector('.sf-pagination-actions');
+    const dock = document.querySelector('.sf-pagination sf-bulk-actions .sf-bulk-actions');
     if (!dock) return null;
     const style = getComputedStyle(dock);
     const root = document.querySelector('.sf-pagination');
@@ -160,7 +164,7 @@ try {
       shadow: style.boxShadow !== 'none',
       borderTop: style.borderBlockStartWidth,
       opaque: !/rgba\(0, 0, 0, 0\)/u.test(style.backgroundColor),
-      last: dock === root.lastElementChild,
+      last: root.lastElementChild?.localName === 'sf-bulk-actions' && root.lastElementChild.contains(dock),
     };
   });
   if (!band) {

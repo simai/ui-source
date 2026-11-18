@@ -1,0 +1,124 @@
+{
+  "component": "sf-bulk-actions",
+  "probe": "sf-bulk-actions against component.json (standard simai.smart-component 1.3.16 §12, gate 20)",
+  "format": "stands/15-scenarios (A4 modal: a page, probes in steps); the runner is tests/browser/manifest-probes.browser.mjs",
+  "page": {
+    "lang": "ru",
+    "body": [
+      "<main id=\"content\" style=\"inline-size: 60rem\">",
+      "  <ul id=\"list\" tabindex=\"0\" aria-label=\"Сайты\"><li>Портал клиента</li><li>Каталог товаров</li></ul>",
+      "  <sf-bulk-actions id=\"bar\" count=\"2\" page-count=\"12\" total=\"240\" size=\"1/2\"></sf-bulk-actions>",
+      "  <sf-bulk-actions id=\"page\" count=\"12\" page-count=\"12\" total=\"240\" place=\"inline\"></sf-bulk-actions>",
+      "  <sf-bulk-actions id=\"none\" count=\"0\"></sf-bulk-actions>",
+      "</main>",
+      "<script>",
+      "  const ACTIONS = [{id: 'publish', text: 'Опубликовать', icon: 'public'}, {id: 'move', text: 'Переместить', icon: 'drive_file_move'}, {id: 'export', text: 'Экспорт', icon: 'download'}, {id: 'archive', text: 'В архив', icon: 'archive', undo: true}, {id: 'cover', text: 'Сделать обложкой', icon: 'image', max: 1, reason: 'Выберите одну'}, {id: 'delete', text: 'Удалить', icon: 'delete'}];",
+      "  for (const id of ['bar', 'page', 'none']) document.getElementById(id).actions = ACTIONS;",
+      "  window.__heard = [];",
+      "  for (const name of ['action', 'select-all', 'select-page', 'clear', 'undo']) document.addEventListener(`sf-bulk-actions-${name}`, (event) => window.__heard.push({name, id: event.target.id, detail: event.detail}));",
+      "  document.getElementById('bar').addEventListener('sf-bulk-actions-clear', (event) => event.target.setAttribute('count', '0'));",
+      "</script>"
+    ]
+  },
+  "probes": [
+    {
+      "id": "p1-bar",
+      "title": "shown while count is above 0: a region named «Действия с выбранными», «Выбрано 2», three labelled actions and «⋯» in Tab order, the danger in «⋯», × at the end; count 0 draws no bar",
+      "covers": "settings.count, settings.label, settings.actions, accessibility, keyboard.host Tab",
+      "steps": [
+        {
+          "check": "(() => { const el = document.querySelector('#bar'); const bar = el.querySelector('[data-sf-bulk-actions]'); const buttons = [...bar.querySelectorAll('[data-sf-bulk-action]')].map((b) => b.getAttribute('data-sf-bulk-action')); return !bar.hidden && bar.getAttribute('role') === 'region' && bar.getAttribute('aria-label') === 'Действия с выбранными' && bar.querySelector('.sf-bulk-actions__count').textContent.trim() === 'Выбрано 2' && buttons.join() === 'publish,move,export,more,clear' && document.querySelector('#none [data-sf-bulk-actions]').hidden; })()"
+        },
+        {
+          "script": "(document.querySelector('#list').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Tab",
+          "wait": 120,
+          "check": "document.activeElement.closest('[data-sf-bulk-action]')?.getAttribute('data-sf-bulk-action') === 'publish'"
+        }
+      ]
+    },
+    {
+      "id": "p2-action",
+      "title": "Enter and Space on an action send sf-bulk-actions-action {id, scope selection, count}; the focus stays where it was",
+      "covers": "events.action, keyboard.host Enter Space",
+      "steps": [
+        {
+          "script": "(document.querySelector('#bar button[data-sf-bulk-action=publish]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Enter",
+          "wait": 150,
+          "check": "(() => { const one = window.__heard.find((e) => e.name === 'action'); return one && one.detail.id === 'publish' && one.detail.scope === 'selection' && one.detail.count === 2 && document.activeElement.closest('[data-sf-bulk-action]')?.getAttribute('data-sf-bulk-action') === 'publish'; })()"
+        },
+        {
+          "script": "(document.querySelector('#bar button[data-sf-bulk-action=move]').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Space",
+          "wait": 150,
+          "check": "window.__heard.some((e) => e.name === 'action' && e.detail.id === 'move')"
+        }
+      ]
+    },
+    {
+      "id": "p3-all",
+      "title": "the page selected: «Выбрать все 240» takes all under the filter (select-all), the count says so and the next action goes with scope all; «Только эта страница (12)» goes back",
+      "covers": "settings.page-count, settings.total, settings.all-selected, events.select-all, events.select-page",
+      "steps": [
+        {
+          "user": "click:#page button[data-sf-bulk-offer=all]",
+          "wait": 200,
+          "check": "(() => { const el = document.querySelector('#page'); return el.allSelected === true && el.querySelector('.sf-bulk-actions__count').textContent.trim() === 'Выбраны все 240' && el.querySelector('[data-sf-bulk-offer=page]')?.textContent.trim() === 'Только эта страница (12)' && window.__heard.some((e) => e.name === 'select-all' && e.detail.total === 240); })()"
+        },
+        {
+          "user": "click:#page button[data-sf-bulk-action=publish]",
+          "wait": 150,
+          "check": "window.__heard.some((e) => e.name === 'action' && e.detail.scope === 'all' && e.detail.count === 240)"
+        },
+        {
+          "user": "click:#page button[data-sf-bulk-offer=page]",
+          "wait": 200,
+          "check": "(() => { const el = document.querySelector('#page'); return el.allSelected === false && window.__heard.some((e) => e.name === 'select-page') && el.querySelector('[data-sf-bulk-offer=all]'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p4-escape",
+      "title": "Escape in the list clears the selection (clear {reason: escape}); the bar goes and the live region says «Выбор снят»",
+      "covers": "events.clear, keyboard.host Escape, actions.clear",
+      "steps": [
+        {
+          "script": "(document.querySelector('#list').focus(), true)",
+          "wait": 60
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 600,
+          "check": "(() => { const el = document.querySelector('#bar'); const one = window.__heard.find((e) => e.name === 'clear' && e.id === 'bar'); return one && one.detail.reason === 'escape' && el.querySelector('[data-sf-bulk-actions]').hidden && el.querySelector('[role=status]').textContent.trim() === 'Выбор снят'; })()"
+        }
+      ]
+    },
+    {
+      "id": "p5-result",
+      "title": "a short run and its result: progress() shows «Выполняем: 4 из 12», result() with two refusals says «Готово 10 из 12 · 2 не удалось» with «Подробнее» and «Повторить для 2»; over 100 items progress is refused (C34)",
+      "covers": "actions.progress, actions.result",
+      "steps": [
+        {
+          "script": "(() => { const el = document.querySelector('#page'); el.querySelector('button[data-sf-bulk-action=publish]').click(); return el.progress({done: 4, total: 12}); })()",
+          "wait": 150,
+          "check": "(() => { const el = document.querySelector('#page'); return el.querySelector('[data-sf-bulk-run] .sf-bulk-actions__say')?.textContent.trim() === 'Выполняем: 4 из 12' && el.progress({done: 1, total: 500}).reason === 'long'; })()"
+        },
+        {
+          "script": "(document.querySelector('#page').setAttribute('count', '2'), document.querySelector('#page').result({ok: 10, failed: [{id: 's3', text: 'Склад', reason: 'Нет главной страницы'}, {id: 's5', text: 'Блог', reason: 'Нет прав'}]}), true)",
+          "wait": 150,
+          "check": "(() => { const el = document.querySelector('#page'); const r = el.querySelector('[data-sf-bulk-result]'); return r && r.querySelector('.sf-bulk-actions__text').textContent.trim() === 'Готово 10 из 12 · 2 не удалось' && r.querySelector('[data-sf-bulk-result-action=details]') && r.querySelector('[data-sf-bulk-result-action=retry]')?.textContent.trim() === 'Повторить для 2'; })()"
+        }
+      ]
+    }
+  ]
+}

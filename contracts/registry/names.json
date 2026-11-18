@@ -15,6 +15,7 @@
         "avatar",
         "badge",
         "breadcrumbs",
+        "bulk",
         "button",
         "change",
         "checkbox",
@@ -90,6 +91,10 @@
         },
         {
           "element": "sf-breadcrumbs",
+          "status": "released"
+        },
+        {
+          "element": "sf-bulk-actions",
           "status": "released"
         },
         {
