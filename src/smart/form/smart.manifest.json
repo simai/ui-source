@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "title": "Form",
   "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "kind": "smart",
@@ -128,6 +128,11 @@
         "default": [],
         "description": "The groups the fields' group keys name, in order: {key, label}. With two or more, each is a fieldset with its label as the legend, 24 apart over a line. A field without a group, or with a group not listed, stands in one group of its own after the listed ones"
       },
+      "field-host": {
+        "type": "object",
+        "default": null,
+        "description": "The record host's half of the field renderers' host interface (1.7.0), a property only: getFieldOptionsPage, getFieldOptionSearch, setFieldOptionSearch and loadFieldOptions page and search a record, relation or user picker (template reference_picker); getFieldUploads, startFieldUpload and retryFieldUpload transfer a file (template upload: the upload area is drawn and says its own error); getFieldText and formatFieldValue are the host's words and formatting; renderField(field, value, host, {editing, size}) draws a type a component set draws (items, complex, ru.requisites). Each is called with the renderers' arguments and, last, the form's host for that field, whose setFieldValue writes into the form's value (a stored file the host was handed). The form keeps setFieldValue and setFieldError, so the values, their checks and the submit stay the form's. Without it a picker pages the field's own options and a file field keeps the chosen files in its value ({name, size, mime, file}: the File for the host to send with the values). Working name (name to confirm)"
+      },
       "value": {
         "type": "object",
         "default": {},
@@ -149,6 +154,14 @@
     },
     "reset": {
       "summary": "Every field returns to the saved state, without events; the errors and the summary are gone (§17.4)",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "The outcome."
+      }
+    },
+    "refreshFields": {
+      "summary": "The field host's answers changed -- a page of candidates, an upload's progress, a stored file -- and the fields are drawn again with what it answers now (1.7.0). The form draws again by itself when a host call answers a promise that settles. Working name (name to confirm)",
       "arguments": [],
       "returns": {
         "type": "object",
@@ -400,7 +413,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "b20f506133077cfdc122411d04d1c2cd39ddfbf6f176586f98046938879725f3"
+        "sha256": "e4e1140afa6d49b2d82ab3c70d52a9a831b9b8c98480b1d8c04944cf7feb74c2"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
@@ -416,7 +429,7 @@
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "4f8cfe167b5f8e33a85f6ffcd0a0386bb3d87475db5d97b3f83a5b718e549836"
+        "sha256": "e0dac14bb50d9b8a99249ce186c0e1d59d99a06bad9a05c991682f6b65e1e5af"
       }
     ],
     "generated_runtime": []

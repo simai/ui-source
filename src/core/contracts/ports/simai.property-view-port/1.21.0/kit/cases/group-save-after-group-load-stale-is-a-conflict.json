@@ -1,0 +1,42 @@
+{
+  "id": "group-save-after-group-load-stale-is-a-conflict",
+  "intent": "group.save",
+  "capability": "group-load",
+  "summary": "A group save sending a revision a group read answered, after the record moved on, is a conflict that carries the current revision.",
+  "given": {
+    "capabilities": [
+      "group-load"
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "section": "main",
+      "group": "about",
+      "values": {
+        "title": "Новое название"
+      },
+      "revision": "6"
+    },
+    "after": {
+      "intent": "group.load",
+      "payload": {
+        "record_id": "record-1",
+        "collection": "pages",
+        "section": "main",
+        "group": "about",
+        "reason": "started"
+      }
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "reason",
+      "revision"
+    ],
+    "note": "The group read answered \"6\"; another save of a different group made it \"7\" before this one. The host compares against the record's revision, not the group's: a change to another group is still a change to the record. The answer carries \"7\", and the component keeps what the person typed and reads the record again at it."
+  }
+}

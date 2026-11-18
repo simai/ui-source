@@ -21,7 +21,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {OWN_ERROR_CONTROLS, fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
 import {renderFormTemplate} from './js/templates/default';
@@ -34,6 +34,48 @@ import {files as languageFiles} from './lang/index.mjs';
 // docs (localization study LC-2).
 import './scss/index.scss';
 
+// The field host (1.7.0, record card order FO-C305-1): the half of the field
+// renderers' host interface a record keeps -- the pages of a reference picker
+// (record, relation, user), the transfer of a file, the host's own words and
+// formatting, and the drawing of a type a component set draws (items, complex,
+// ru.requisites). The form keeps setFieldValue and setFieldError, so what the
+// controls write is the form's value and its validation.
+export const FIELD_HOST_METHODS = Object.freeze([
+  'getFieldOptionsPage', 'getFieldOptionSearch', 'setFieldOptionSearch', 'loadFieldOptions',
+  'getFieldUploads', 'startFieldUpload', 'retryFieldUpload',
+  'getFieldText', 'formatFieldValue',
+]);
+const PICKED_TYPES = new Set(['record', 'relation', 'user']);
+// The types a component set draws (the registry's `set`): the host draws them.
+const SET_TYPES = new Set(PROPERTY_TYPES.filter((entry) => entry.set).map((entry) => entry.type).concat('compound'));
+
+/**
+ * A page of a reference picker over a field's own `options` (1.7.0): a form
+ * without a host that pages candidates still offers a short list of records or
+ * people given whole, searched by its label and caption.
+ */
+export function optionsPage(field, search = '') {
+  const query = String(search ?? '').trim().toLocaleLowerCase();
+  const items = (Array.isArray(field?.options) ? field.options : [])
+    .filter((item) => item && typeof item === 'object' && item.value !== undefined && item.value !== null)
+    .filter((item) => !query || `${item.label ?? ''} ${item.caption ?? ''}`.toLocaleLowerCase().includes(query));
+  return {status: 'ready', items, nextCursor: null};
+}
+
+/**
+ * Files chosen in a form that transfers nothing (1.7.0): each is a stored file
+ * of the field's shape, {name, size, mime}, carrying the File itself in `file`
+ * for the host to send with the values.
+ */
+export function chosenFiles(items) {
+  return (Array.isArray(items) ? items : []).map((item) => {
+    const file = item?.file ?? item;
+    if (!file || typeof file !== 'object') return null;
+    return {name: String(file.name ?? item?.name ?? ''), size: Number(file.size ?? 0) || 0,
+      mime: String(file.type ?? item?.mime ?? ''), file};
+  }).filter((one) => one && one.name);
+}
+
 export const WIDTHS = ['s', 'm', 'full'];
 
 // apply answer (owner decision C291 (3), FO-8): the states of the confirm
@@ -43,9 +85,9 @@ const ANSWERING = new Set(['open', 'pending']);
 // The property types already reported as unknown, once per page for each.
 const UNKNOWN_TYPES_TOLD = new Set();
 
-function warnUnknownType(field) {
+function warnUnknownType(field, hostDraws = false) {
   const type = String(field?.propertyType ?? '');
-  if (UNKNOWN_TYPES_TOLD.has(type)) return;
+  if (UNKNOWN_TYPES_TOLD.has(type) || hostDraws) return;
   const modes = propertyModes(type);
   if (modes.view || modes.edit) return;
   UNKNOWN_TYPES_TOLD.add(type);
@@ -86,6 +128,7 @@ function messageTarget(control) {
 }
 
 const text = (value) => (value === undefined || value === null ? '' : String(value).trim());
+
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 const clone = (value) => {
   if (!isObject(value)) return {};
@@ -153,6 +196,12 @@ const FormElement = elementFromManifest(manifest, {
     },
     reset() {
       this.restore();
+      return applied();
+    },
+    // The field host's answers changed (a page, an upload's progress): the
+    // fields are drawn again with what it answers now (1.7.0).
+    'refresh-fields'() {
+      this.requestComponentUpdate('field-host');
       return applied();
     },
     'set-errors'(args = {}) {
@@ -252,19 +301,27 @@ class SfForm extends FormElement {
     if (this.isAnswer && !ANSWERING.has(this.answerState) && this.answerState !== 'accepted') return [];
     const editing = this.isEditing;
     return this.list.filter((field) => {
-      warnUnknownType(field);
+      warnUnknownType(field, this.hostDraws(field));
       return editing ? this.drawsEdit(field) : this.drawsView(field);
     });
   }
 
-  // A field of a type the renderers do not draw in this mode is left out.
+  // A field of a type the renderers do not draw in this mode is left out; a
+  // type a component set draws stands where the field host draws it (1.7.0).
   drawsEdit(field) {
+    if (this.hostDraws(field)) return true;
     const modes = propertyModes(field.propertyType);
     return modes.edit || (field.readonly === true && modes.view);
   }
 
   drawsView(field) {
-    return propertyModes(field.propertyType).view;
+    return this.hostDraws(field) || propertyModes(field.propertyType).view;
+  }
+
+  // The field host draws the types a component set draws (items, complex,
+  // ru.requisites; 1.7.0): renderField(field, value, host, {editing, size}).
+  hostDraws(field) {
+    return SET_TYPES.has(String(field?.propertyType ?? '')) && typeof this.fieldHost?.renderField === 'function';
   }
 
   get isEditing() {
@@ -308,16 +365,55 @@ class SfForm extends FormElement {
   // ---------------------------------------------------------------- the renderers' host
 
   // One host per field (the field renderers' interface): setFieldValue writes
-  // the value, setFieldError says an incomplete text (a mask).
+  // the value, setFieldError says an incomplete text (a mask). Since 1.7.0 the
+  // rest of the interface is the field host's (fieldHost), called with the
+  // field and, last, this host -- so a host that stores a file it was handed
+  // writes it with host.setFieldValue into the form's value. Without a field
+  // host the form answers two of them itself: a reference picker pages the
+  // field's own options, and a file field keeps the files chosen in its value
+  // (the File in `file`), the host sending them with the values.
   hostOf(field) {
-    let host = this._hosts.get(field.key);
-    if (!host) {
-      host = {
-        setFieldValue: (one, value) => this.writeValue(one?.key ?? field.key, value),
-        setFieldError: (one, message) => this.writeRendererError(one?.key ?? field.key, message),
+    const outer = this.fieldHost && typeof this.fieldHost === 'object' ? this.fieldHost : null;
+    let entry = this._hosts.get(field.key);
+    if (entry && entry.outer === outer) return entry.host;
+    const host = {
+      setFieldValue: (one, value) => this.writeValue(one?.key ?? field.key, value),
+      setFieldError: (one, message) => this.writeRendererError(one?.key ?? field.key, message),
+    };
+    for (const name of FIELD_HOST_METHODS) {
+      if (typeof outer?.[name] !== 'function') continue;
+      host[name] = (...args) => {
+        const answer = outer[name].call(outer, ...args, host);
+        // What the host answers later (an upload landed, a page arrived) is
+        // drawn when it settles.
+        if (answer && typeof answer.then === 'function') {
+          answer.then(() => this.requestComponentUpdate('field-host'), () => this.requestComponentUpdate('field-host'));
+        }
+        if (name === 'startFieldUpload' || name === 'retryFieldUpload') this.requestComponentUpdate('field-host');
+        return answer;
       };
-      this._hosts.set(field.key, host);
     }
+    if (!host.loadFieldOptions && PICKED_TYPES.has(String(field.propertyType ?? '')) && Array.isArray(field.options)) {
+      const searches = new Map();
+      host.getFieldOptionsPage = (one) => optionsPage(one ?? field, searches.get((one ?? field).key) ?? '');
+      host.getFieldOptionSearch = (one) => searches.get((one ?? field).key) ?? '';
+      host.setFieldOptionSearch = (one, words) => searches.set((one ?? field).key, String(words ?? ''));
+      host.loadFieldOptions = async () => undefined;
+    }
+    if (!host.startFieldUpload && String(field.propertyType ?? '') === 'file') {
+      host.getFieldUploads = () => [];
+      host.startFieldUpload = (one, items) => {
+        const current = one ?? field;
+        const held = this._values[current.key];
+        const files = chosenFiles(items);
+        if (!files.length) return null;
+        const multiple = current.multiple === true || Array.isArray(held);
+        const before = Array.isArray(held) ? held : held ? [held] : [];
+        this.writeValue(current.key, multiple ? [...before, ...files] : files[0]);
+        return null;
+      };
+    }
+    this._hosts.set(field.key, {outer, host});
     return host;
   }
 
@@ -331,7 +427,15 @@ class SfForm extends FormElement {
     if (this.isInstant) this.sfEmit('change', {key, value});
     // A shown error goes the moment the value is right, and keeps the words
     // of what is wrong now (C153 (3)).
-    if (this._errors.has(key)) this.recheck(key);
+    if (this._errors.has(key)) {
+      this.recheck(key);
+      // A control reads its new value when it is drawn (an upload area its
+      // list): its own validity is read again then, so a file that landed
+      // does not keep «Дождитесь, пока файлы загрузятся» (1.7.0).
+      this.whenDrawn(() => {
+        if (this._errors.has(key)) this.recheck(key);
+      });
+    }
     this.requestComponentUpdate('value');
   }
 
@@ -704,9 +808,18 @@ class SfForm extends FormElement {
     const value = this._values[field.key];
     const host = this.hostOf(field);
     // A short choice is a ready group of radios or checks (C165 (1)).
-    const control = editing
-      ? (isListChoice(field) ? renderChoiceList(field, value, host) : renderEditField(field, value, host, this.renderOptions()))
-      : renderViewField(field, value, host, this.size === '1/2' ? {size: '1/2'} : {});
+    const size = this.size === '1/2' ? '1/2' : '1';
+    let control;
+    if (this.hostDraws(field)) {
+      control = this.fieldHost.renderField(field, value, host, {editing: editing && field.readonly !== true, size}) ?? null;
+    } else if (editing) {
+      control = isListChoice(field) ? renderChoiceList(field, value, host) : renderEditField(field, value, host, this.renderOptions());
+      // A control the renderers cannot build here (a picker nobody pages)
+      // shows the value it holds, read-only, as the renderers' own fallback.
+      if (control === null || control === undefined) control = renderViewField(field, value, host, size === '1/2' ? {size} : {});
+    } else {
+      control = renderViewField(field, value, host, this.size === '1/2' ? {size: '1/2'} : {});
+    }
     // A yes/no drawn as a checkbox carries its label beside the box (C165
     // (4)): no label row over it. The field's template says which it is
     // (C303 (4)); the form no longer picks it from required and apply.

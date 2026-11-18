@@ -1,0 +1,26 @@
+{
+  "intent": "view.rename",
+  "summary": "A rename changes the label. The id is permanent, so anything pointing at the view keeps pointing at it.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.rename",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "profile": "expert",
+      "label": "Экспертный режим"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "Answering with the record is how the list of views comes back renamed without a second read."
+  },
+  "id": "view-rename-changes-the-label-only"
+}

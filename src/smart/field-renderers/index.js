@@ -1476,6 +1476,11 @@ function renderLinkCell(field, value, host) {
 
 // Each change reads both fields as they stand, so the text typed before the
 // address is kept while the address is still empty.
+// The address box is text with the address keyboard, not input-type url: a
+// link's href may be a path from the site's root or an #anchor (link@1), which
+// the browser's url check calls wrong, and a form that reads the control's
+// validity refused a stored «/about» (sf-form 1.7.0 probe). composeLink is the
+// check.
 function renderLinkEdit(field, value, host) {
     const stored = readLink(linkValue(value)) ?? {href: '', text: ''};
     const write = (part, event, left) => {
@@ -1519,7 +1524,6 @@ function renderLinkEdit(field, value, host) {
                     name="${fieldName(field)}_href"
                     label=${setText(host, 'linkAddress')}
                     value=${stored.href}
-                    input-type="url"
                     inputmode="url"
                     ?required=${Boolean(field.required)}
                     aria-label=${`${field.label || field.key || ''} ${setText(host, 'linkAddress')}`.trim()}

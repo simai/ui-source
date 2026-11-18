@@ -1,0 +1,38 @@
+{
+  "id": "group-load-revision-is-the-records",
+  "intent": "group.load",
+  "capability": "group-load",
+  "summary": "Two group reads of one record with no save between them answer the same revision -- the record's, which is also the one record.load answers.",
+  "given": {
+    "capabilities": [
+      "group-load"
+    ]
+  },
+  "when": {
+    "intent": "group.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "section": "contacts",
+      "group": "phones",
+      "reason": "started"
+    },
+    "after": {
+      "intent": "group.load",
+      "payload": {
+        "record_id": "record-1",
+        "collection": "pages",
+        "section": "main",
+        "group": "about",
+        "reason": "connected"
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision"
+    ],
+    "note": "Both answers carry revision \"7\", as record.load does for record-1. A host that kept a revision per group would let a save of one group pass against another group's older state; the panel keeps one revision per record and every group save sends it."
+  }
+}

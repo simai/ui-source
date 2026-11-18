@@ -1,0 +1,23 @@
+{
+  "id": "a-related-group-is-a-list-not-fields",
+  "intent": "record.load",
+  "summary": "A group marked «related» holds other records rather than fields. The component composes a data view in it, and that view asks the host for its own port.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "reason": "connected"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The records themselves never travel through this port. A related list asks for a data-view port by raising sf-host-port-request with the owner, the record and the group, and the host answers with the port it already implements for collections. Routing rows, columns, sorting and paging through the property-view seam instead would duplicate a whole vocabulary and make the property view a relay for one it does not speak."
+  }
+}

@@ -95,10 +95,10 @@ test('FO-4: the set asks for its words when it publishes itself, and whenFieldRe
 
 test('FO-6: sf-form declares a ru.inn field\'s holder', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.6.0');
+  assert.equal(manifest.version, '1.7.0'); // form fields: 1.7.0
   assert.deepEqual(manifest.settings.fields.schema.items.properties.holder, {type: 'string', enum: ['any', 'organization', 'person']});
   // FL-7: a phone field's starting country is declared too.
   assert.deepEqual(manifest.settings.fields.schema.items.properties.defaultCountry, {type: 'string', pattern: '^[A-Za-z]{2}$'});
   assert.match(manifest.settings.fields.summary, /holder \(a ru\.inn field: any, organization -- 10 digits -- or person -- 12\)/);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.22.0');
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.23.0'); // form fields: 1.23.0
 });
