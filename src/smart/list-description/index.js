@@ -11,8 +11,11 @@
 // label over its value. A value is text: monospace, a link (navigate), copied
 // with an sf-button-copy, with a status icon and a hint, or a badge; an empty
 // one says so in words («Не указан»). A label can carry a help mark, a value
-// one action. Section items ({type: "section", label, action?}) split a record
-// into sections inside one grid, so every label of the record shares one
+// one action. A field template draws a value of its own (C302 (2), place
+// Показ): an item's slot names host content drawn as the value, or the value
+// is a node or a drawing given through the property (VP-24). Section items
+// ({type: "section", label, action?}) split a record into sections inside
+// one grid, so every label of the record shares one
 // column (owner decision C33, the record card); layout grid is the summary
 // under a record's heading, label over value in up to four columns. The list
 // is read-only and stores and loads nothing: an action asks the page (apply).
@@ -63,6 +66,17 @@ export function normalizeBadge(value) {
   };
 }
 
+/**
+ * A drawn value (VP-24): a DOM node or a lit drawing (a field template's
+ * place Показ), given through the property; null for anything else.
+ */
+export function drawnValue(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  if (typeof globalThis.Node === 'function' && value instanceof globalThis.Node) return value;
+  // A drawing of any lit copy: every bundle carries its own (the marker is lit's own).
+  return '_$litType$' in value ? value : null;
+}
+
 /** A value as the list writes it: text; a list joined with commas; nothing is ''. */
 export function valueText(value) {
   if (value === undefined || value === null) return '';
@@ -77,8 +91,13 @@ export function valueText(value) {
  * status outside the four words is none. An empty value (no text and no
  * badge) has no link, no copy button and no status: it says empty-text. A
  * value with a badge draws no status icon: the badge is its one mark.
+ * A drawn value -- the host content of the item's slot (hasSlot says it is
+ * there) or a node given as value -- stands in place of the text. The text
+ * (beside a slot the item's value, for a node its words) is what copy copies
+ * and the title of a cut value. A drawn value has no link: the drawing holds
+ * its own.
  */
-export function normalizeItems(value) {
+export function normalizeItems(value, {hasSlot} = {}) {
   const list = Array.isArray(value) ? value : [];
   const items = [];
   list.forEach((item, at) => {
@@ -90,15 +109,22 @@ export function normalizeItems(value) {
     }
     const label = text(item.label);
     if (!label) return;
-    const shown = valueText(item.value);
+    const slot = text(item.slot);
+    const slotted = Boolean(slot) && typeof hasSlot === 'function' && Boolean(hasSlot(slot));
+    const node = slotted ? null : drawnValue(item.value);
+    const drawn = slotted || Boolean(node);
+    const shown = node ? valueText(typeof node.textContent === 'string' ? node.textContent : '') : valueText(item.value);
     const status = text(item.status).toLowerCase();
     const badge = normalizeBadge(item.badge);
-    const empty = shown === '' && !badge;
+    const empty = shown === '' && !badge && !drawn;
     items.push({
       kind: 'item',
       id: text(item.id) || String(at),
       label,
       value: shown,
+      slot: slotted ? slot : '',
+      node,
+      drawn,
       empty,
       emptyText: typeof item.empty === 'string' ? text(item.empty) : '',
       hint: text(item.hint),
@@ -106,6 +132,7 @@ export function normalizeItems(value) {
       mono: item.mono === true,
       numeric: item.numeric === true || typeof item.value === 'number',
       copy: item.copy === true && shown !== '',
+      // A drawn value has no link of the list: the template draws it before a link.
       href: shown === '' ? '' : text(item.href),
       // One mark per value: a badge is the mark, so its row draws no status icon.
       status: !empty && !badge && STATUSES.includes(status) ? status : '',
@@ -124,7 +151,7 @@ const ListDescriptionElement = elementFromManifest(manifest, {
 
 class SfListDescription extends ListDescriptionElement {
   get list() {
-    return normalizeItems(this.items);
+    return normalizeItems(this.items, {hasSlot: (name) => this.hasSlotContent?.(name)});
   }
 
   // A value link: the request first; not cancelled, the browser follows it.
