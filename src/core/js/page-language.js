@@ -64,6 +64,43 @@ const PACKS = (STORE.packs ??= {
 });
 // The languages built into the bundles: English, and in a rollback build Russian
 // too (src/core/lang/built-in.json, C282).
+// Which registered words came from a Framework pack and nothing has said over
+// since: name -> code -> Set of keys. A Framework pack is the Framework's own
+// words in a file, so for a component that names itself by a dated alias of
+// its record's tag (sf-message-log, the heir of sf-list-feed, both under
+// sf-list-feed's record) they are the successor's words, not its own: the
+// words that component ships win over them (ui-control evidence
+// 2026-11-18-pro-over-1ed6: «Лента» instead of «Переписка» once the ru pack
+// was fetched). A word a product registers, or a product pack, is still over
+// everything. Kept beside the words, not instead of them, so a copy of this
+// module from before it reads the registry as it did. A STORE made by an older
+// bundle has none yet: added here.
+const FLOOR = (STORE.floor ??= (
+  new Map()
+));
+const floorOf = (name, code) => {
+  if (!FLOOR.has(name)) FLOOR.set(name, new Map());
+  const byLanguage = FLOOR.get(name);
+  if (!byLanguage.has(code)) byLanguage.set(code, new Set());
+  return byLanguage.get(code);
+};
+const notFloor = (name, code, keys) => {
+  const marked = FLOOR.get(name)?.get(code);
+  if (!marked) return;
+  for (const key of keys) marked.delete(key);
+};
+
+// Whether the word registered for `key` stands for the successor of the
+// component asking, so that its own shipped word is said instead: the asker
+// names a dated alias (its tag is not its record's), and the registered word
+// is a Framework pack's that no product has said over.
+function successorWord(owner, candidate, key) {
+  if (!owner) return false;
+  const name = normalise(owner);
+  const record = canonicalTag(name);
+  return record !== name && Boolean(FLOOR.get(record)?.get(candidate)?.has(key));
+}
+
 const isBuiltIn = (code) => code === 'en' || (BUILT_IN_LANGUAGES?.built_in ?? []).includes(code);
 
 /**
@@ -265,7 +302,8 @@ export function localeText(dictionary, key, locale, component) {
   const order = chain(locale || 'en');
   needPack(order[0], component);
   for (const candidate of order) {
-    const added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
+    let added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
+    if (added !== undefined && dictionary?.[candidate]?.[key] !== undefined && successorWord(component, candidate, key)) added = undefined;
     if (added !== undefined) {
       if (candidate === 'en' && added !== '') warnFallback(order, component, key);
       return added;
@@ -355,6 +393,7 @@ export function pageWord(dictionary, key, node, {component, source = '', count, 
   for (const candidate of order) {
     const registered = owner ? wordsOf(owner)?.get(candidate) : undefined;
     let added = registered?.[key];
+    if (added !== undefined && dictionary?.[candidate]?.[key] !== undefined && successorWord(owner, candidate, key)) added = undefined;
     if (added === undefined && registered) {
       const old = formerKeys.find((name) => registered[name] !== undefined && registered[name] !== null);
       if (old !== undefined) {
@@ -449,8 +488,13 @@ export const language = {
     if (!name || !code) throw new TypeError('a component and a language are required');
     if (!REGISTERED.has(name)) REGISTERED.set(name, new Map());
     const byLanguage = REGISTERED.get(name);
-    if (words === null) byLanguage.delete(code);
-    else byLanguage.set(code, { ...(byLanguage.get(code) ?? {}), ...words });
+    if (words === null) {
+      byLanguage.delete(code);
+      FLOOR.get(name)?.delete(code);
+    } else {
+      byLanguage.set(code, { ...(byLanguage.get(code) ?? {}), ...words });
+      notFloor(name, code, Object.keys(words ?? {}));
+    }
     announce();
     return this;
   },
@@ -478,6 +522,12 @@ export const language = {
       const byLanguage = REGISTERED.get(name);
       const now = byLanguage.get(code) ?? {};
       byLanguage.set(code, under ? { ...byKey, ...now } : { ...now, ...byKey });
+      if (under) {
+        const marked = floorOf(name, code);
+        for (const key of Object.keys(byKey)) if (!Object.prototype.hasOwnProperty.call(now, key) || marked.has(key)) marked.add(key);
+      } else {
+        notFloor(name, code, Object.keys(byKey));
+      }
       words += Object.keys(byKey).length;
     }
     const info = { lang: code, delivery: pack.delivery ?? 'framework', status: pack.status ?? null, coverage: pack.coverage ?? null, words, url };
@@ -549,6 +599,7 @@ export const language = {
   /** Everything registered is forgotten. For tests, and for a product reset. */
   forget() {
     REGISTERED.clear();
+    FLOOR.clear();
     PACKS.loaded.clear();
     STORE.chosen = null;
     announce();

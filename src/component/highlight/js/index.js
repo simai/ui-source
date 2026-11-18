@@ -195,11 +195,31 @@ function lineNumbersEnabled(block) {
   return block.dataset.lineNumbers === 'true';
 }
 
+// An id no other element holds: not in the document, and not in the tree the
+// block stands in when it is not placed yet. The block may be highlighted
+// before its markup is placed (sf-chat-message enhances an answer's code
+// before it puts the answer on the page): the loop asked the document for the
+// block itself, which a detached block never is, and never ended (100 % CPU,
+// ui-control evidence 2026-11-18-pro-over-1ed6). It now asks whether the id is
+// free, which ends for a detached block as for a placed one.
+function idTaken(block, id) {
+  const placed = block.ownerDocument?.getElementById?.(id);
+  if (placed && placed !== block) return true;
+  const root = block.getRootNode?.();
+  if (!root || root === block.ownerDocument) return false;
+  const local = typeof root.getElementById === 'function'
+    ? root.getElementById(id)
+    : (root.id === id ? root : root.querySelector?.(`[id="${id}"]`));
+  return Boolean(local && local !== block);
+}
+
 function ensureCodeId(block) {
   if (block.id) return block.id;
-  do { codeId += 1; block.id = `sf-highlight-code-${codeId}`; }
-  while (block.ownerDocument.getElementById(block.id) !== block);
-  return block.id;
+  let id;
+  do { codeId += 1; id = `sf-highlight-code-${codeId}`; }
+  while (idTaken(block, id));
+  block.id = id;
+  return id;
 }
 
 // A head button's name, shown as the Framework tooltip on hover and keyboard
