@@ -250,6 +250,12 @@ function renderLinkRow(context) {
 }
 
 // A strip of links draws its panel row only when a panel has content.
+// Tabs keep their panels (each tab's aria-controls names one) in a hidden
+// row marked data-sf-panels-empty when none has, so a tab row used
+// as a switcher (a board's lanes on a phone, a settings head) takes no room
+// under it: the row's padding was 24 px of nothing (view round 2 board,
+// 2026-11-18). Words or parts a host writes into a drawn panel later show
+// the row again (index.js syncPanelFocus).
 function hasPanelContent(context) {
   return context.items.some((item) => context.pagePanel?.(item, item.index)
     || context.component?.hasSlotContent?.(item.slotName)
@@ -261,6 +267,7 @@ export function renderTabsTemplate(context) {
   // (vertical); a custom template still reads context.type.
   const look = context.look ?? context.type;
   const vertical = look === 'vertical';
+  const panels = hasPanelContent(context);
   const sizeClass = `sf-tabs--size-${String(context.size || '1').replace('/', '-')}`;
   const rootClasses = joinClasses(
     'sf-tabs',
@@ -303,7 +310,7 @@ export function renderTabsTemplate(context) {
           : nothing}
       </div>
 
-      ${context.links && !hasPanelContent(context) ? nothing : html`<div class="sf-tabs-main-container">
+      ${context.links && !hasPanelContent(context) ? nothing : html`<div class="sf-tabs-main-container" ?hidden=${!panels} ?data-sf-panels-empty=${!panels}>
         ${context.items.map((item) => renderPanel(item, context))}
       </div>`}
     </div>

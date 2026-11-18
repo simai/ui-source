@@ -22,6 +22,15 @@ export function manifestHost(manifest, options = {}) {
 
   class PlainHost extends Html {
     connectedCallback() {
+      // An element placed inside another element's printed first paint (a
+      // list in a board's picture: the board drew the cards into it) is part
+      // of that picture, as a Smart element is (smart-base renderComponent):
+      // the children there are what the element around it drew, not this
+      // element's own static markup. It leaves them, and the element around
+      // it replaces the picture when its code comes. Clearing them took a
+      // board's cards away whenever sf-sortable's code came first (view
+      // round 2 board, 2026-11-18).
+      if (this.sfInPicture()) return;
       // Static markup printed for the first paint (standard 1.3.8 §5.4) goes
       // as the element connects: these elements draw in the same task.
       if (!this.__sfFirstPaintEnded) {
@@ -43,6 +52,13 @@ export function manifestHost(manifest, options = {}) {
     }
 
     disconnectedCallback() {}
+
+    // True while the element stands in a printed first paint: it, or a node
+    // around it, is static markup (data-sf-static). A page's own host is
+    // never marked, so an element the page wrote ends its first paint.
+    sfInPicture() {
+      return Boolean(this.closest?.('[data-sf-static]'));
+    }
 
     // The generated actions read the instance's scope (§7.7); a plain host's
     // ends when the page removes it.

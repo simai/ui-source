@@ -628,6 +628,11 @@ export function defineSortable(registry = globalThis.customElements, { base = nu
 
     connectedCallback() {
       super.connectedCallback?.();
+      // Inside another element's printed first paint the list is a picture:
+      // the element around it draws the live list (manifest-host.mjs
+      // sfInPicture). It adds no live region beside the printed one and
+      // takes no keys until then.
+      if (this.sfInPicture?.()) return;
       if (this.connection) return;
       this.connection = new AbortController();
       const options = { signal: this.connection.signal };

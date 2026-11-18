@@ -7,7 +7,7 @@
 <sf-button appearance="default" scheme="primary" size="1" text="Основное" root-class="selected" style="display: contents;" data-sf-size-relative>
 
 
-<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center selected" id="sf-tabs-more-1" role="tab" aria-controls="sf-tabs-more-11" aria-selected="true" aria-disabled="false" aria-labelledby="sf-tabs-more-2" tabindex="0" data-sf-tab-index="0" data-sf-static>
+<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center selected" id="sf-tabs-more-1" role="tab" aria-controls="sf-tabs-1--panel-0" aria-selected="true" aria-disabled="false" aria-labelledby="sf-tabs-more-2" tabindex="0" data-sf-tab-index="0" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-events-none flex-1" id="sf-tabs-more-2">
@@ -20,7 +20,7 @@
 <sf-button appearance="default" scheme="primary" size="1" text="Сделки" root-class style="display: contents;" data-sf-size-relative>
 
 
-<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-3" role="tab" aria-controls="sf-tabs-more-12" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-4" tabindex="-1" data-sf-tab-index="1" data-sf-static>
+<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-3" role="tab" aria-controls="sf-tabs-1--panel-1" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-4" tabindex="-1" data-sf-tab-index="1" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-events-none flex-1" id="sf-tabs-more-4">
@@ -33,7 +33,7 @@
 <sf-button appearance="default" scheme="primary" size="1" text="Задачи" root-class style="display: contents;" data-sf-size-relative>
 
 
-<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-5" role="tab" aria-controls="sf-tabs-more-13" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-6" tabindex="-1" data-sf-tab-index="2" data-sf-static>
+<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-5" role="tab" aria-controls="sf-tabs-1--panel-2" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-6" tabindex="-1" data-sf-tab-index="2" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-events-none flex-1" id="sf-tabs-more-6">
@@ -46,7 +46,7 @@
 <sf-button appearance="default" scheme="primary" size="1" text="Файлы" root-class style="display: contents;" data-sf-size-relative>
 
 
-<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-7" role="tab" aria-controls="sf-tabs-more-14" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-8" tabindex="-1" data-sf-tab-index="3" data-sf-static>
+<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-7" role="tab" aria-controls="sf-tabs-1--panel-3" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-8" tabindex="-1" data-sf-tab-index="3" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-events-none flex-1" id="sf-tabs-more-8">
@@ -59,7 +59,7 @@
 <sf-button appearance="default" scheme="primary" size="1" text="История" root-class style="display: contents;" data-sf-size-relative>
 
 
-<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-9" role="tab" aria-controls="sf-tabs-more-15" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-10" tabindex="-1" data-sf-tab-index="4" data-sf-static>
+<button type="button" class="sf-button sf-button--size-1 sf-button--default sf-button--primary flex items-cross-center" id="sf-tabs-more-9" role="tab" aria-controls="sf-tabs-1--panel-4" aria-selected="false" aria-disabled="false" aria-labelledby="sf-tabs-more-10" tabindex="-1" data-sf-tab-index="4" data-sf-static>
 
 
 <span class="sf-button-text-container text-center pointer-events-none flex-1" id="sf-tabs-more-10">
@@ -83,20 +83,6 @@
 
 
 </div>
-<div class="sf-tabs-main-container">
-
-<div class="sf-tabs-main-tab selected" role="tabpanel" id="sf-tabs-more-11" aria-labelledby="sf-tabs-more-1" data-sf-tab-panel="0" data-entry="main">
-
-</div>
-
-<div class="sf-tabs-main-tab" role="tabpanel" id="sf-tabs-more-12" aria-labelledby="sf-tabs-more-3" data-sf-tab-panel="1" data-entry="deals" hidden></div>
-
-<div class="sf-tabs-main-tab" role="tabpanel" id="sf-tabs-more-13" aria-labelledby="sf-tabs-more-5" data-sf-tab-panel="2" data-entry="tasks" hidden></div>
-
-<div class="sf-tabs-main-tab" role="tabpanel" id="sf-tabs-more-14" aria-labelledby="sf-tabs-more-7" data-sf-tab-panel="3" data-entry="files" hidden></div>
-
-<div class="sf-tabs-main-tab" role="tabpanel" id="sf-tabs-more-15" aria-labelledby="sf-tabs-more-9" data-sf-tab-panel="4" data-entry="history" hidden></div>
-
-</div>
+<div class="sf-tabs-main-container" hidden data-sf-panels-empty></div>
 </div>
 </sf-tabs>
