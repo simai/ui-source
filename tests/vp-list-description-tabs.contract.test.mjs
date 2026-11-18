@@ -87,7 +87,7 @@ function method(source, name) {
 
 test('VP-26: a tab list alone folds by the first box around it wider than its column', () => {
   const source = read('src/smart/tabs/index.js');
-  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.4.4');
+  assert.equal(JSON.parse(read('src/smart/tabs/component.json')).version, '1.4.6'); // group build 13: 1.4.4 moved on by the merged branches or a GB11 merge
   const contentWidth = (box) => box.width;
   const placeBox = new Function('contentWidth', `return function () {${method(source, 'placeBox')}}`)(contentWidth);
   const box = (width, parentElement = null) => ({width, parentElement, getBoundingClientRect: () => ({width})});

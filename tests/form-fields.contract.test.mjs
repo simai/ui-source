@@ -14,7 +14,7 @@ const json = (path) => JSON.parse(read(path));
 
 test('sf-form 1.7.0 takes a field host, a property only, and an action to draw again', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.7.0');
+  assert.equal(manifest.version, '1.12.1'); // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
   const setting = manifest.settings['field-host'];
   assert.equal(setting.type, 'object');
   assert.equal(setting.default, null);
@@ -48,11 +48,11 @@ test('a link\'s address box is text with the address keyboard: a path and an anc
   const edit = source.slice(source.indexOf('function renderLinkEdit'), source.indexOf('function renderInnEdit'));
   assert.doesNotMatch(edit, /input-type="url"/u);
   assert.match(edit, /inputmode="url"/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.25.0');
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.25.1'); // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {
-  assert.equal(json('src/smart/dropdown/component.json').version, '1.20.6');
+  assert.equal(json('src/smart/dropdown/component.json').version, '1.22.0'); // group build 13: 1.20.6 moved on by the merged branches or a GB11 merge
   const source = read('src/smart/dropdown/index.js');
   assert.match(source, /this\.watchOptionNodes\(optionNodes\);/u);
   assert.match(source, /this\._optionWatch\.observe\(node, \{attributes: true\}\);/u);

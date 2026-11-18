@@ -168,7 +168,7 @@ test('Badge draws its border inside its size and offers tight side room', async 
   // 1.7.0: the anchored dot and count take core's small steps (C132);
   // 1.7.1: the small steps' internal names are --sf-micro--*;
   // 1.8.0: sf-badge--icon-only (former sf-badge--compact, C134), tight on --sf-space-1/3 (BG-9).
-  assert.equal(passport.version, '1.11.2'); // 1.10.2: the count word is a plural object (C177 follow-up #86); 1.10.1: an unsized badge's icon is the 1/3 icon (RG-BD-1); 1.10.0: the script's layout in the sheet (RG-B-53); 1.9.0: the dot is the shared .sf-dot (C185 (8)); 1.8.1: the words in lang files (LC-4) // C282: 1.10.2 moved on by the language-file patch (Russian is a language file) // C278: 1.11.1 moved on by the language packs
+  assert.equal(passport.version, '1.12.0'); // 1.10.2: the count word is a plural object (C177 follow-up #86); 1.10.1: an unsized badge's icon is the 1/3 icon (RG-BD-1); 1.10.0: the script's layout in the sheet (RG-B-53); 1.9.0: the dot is the shared .sf-dot (C185 (8)); 1.8.1: the words in lang files (LC-4) // C282: 1.10.2 moved on by the language-file patch (Russian is a language file) // C278: 1.11.1 moved on by the language packs // group build 13: 1.11.2 moved on by the merged branches or a GB11 merge
   for (const side of ['block-start', 'block-end', 'inline-start', 'inline-end']) {
     assert.match(css, new RegExp(`padding-${side}: max\\(var\\(--sf-a0\\), calc\\(`), `padding-${side} gives up the border`);
   }
