@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 94,
-    "translated": 94,
+    "words": 96,
+    "translated": 96,
     "share": 100
   },
   "words": {
@@ -113,7 +113,9 @@
       "operatorEqualWord": "равно",
       "operatorMoreWord": "больше",
       "operatorLessWord": "меньше",
-      "operatorFromTo": "от – до"
+      "operatorFromTo": "от – до",
+      "operatorMoreOrEqualWord": "больше или равно",
+      "operatorLessOrEqualWord": "меньше или равно"
     }
   }
 }

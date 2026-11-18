@@ -446,7 +446,8 @@ test('FO3-4: a single-field edit asks the conditions -- hidden or disabled by th
 
 
 test('FO-3: the grammar -- eq, ne, in, not_in, empty, not_empty, all, any, not', () => {
-  assert.deepEqual([...CONDITION_OPS], ['eq', 'ne', 'in', 'not_in', 'empty', 'not_empty']);
+  // gt, gte, lt, lte: numbers (Larena msg-75b451e2eec6413aa2eb), tests/filter-field-c310.
+  assert.deepEqual([...CONDITION_OPS], ['eq', 'ne', 'in', 'not_in', 'empty', 'not_empty', 'gt', 'gte', 'lt', 'lte']);
   assert.deepEqual([...CONDITION_NODES], ['all', 'any', 'not']);
   const values = {delivery: 'courier', tags: ['a', {value: 'b', label: 'Б'}], count: 5, note: '', none: null};
   const cases = [

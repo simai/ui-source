@@ -25,7 +25,11 @@ test('FO3-2: every shared condition case decides shown, required and enabled as 
   let checked = 0;
   for (const one of fixture.cases) {
     if (!one.when || !('expect' in one)) continue;
-    const want = one.expect_client ?? one.expect;
+    // gt, gte, lt, lte are read in the browser too since the Framework's
+    // conditions take them (Larena msg-75b451e2eec6413aa2eb): those server
+    // cases are decided as the server decides them.
+    const ordered = JSON.stringify(one.when).match(/"op":"(gt|gte|lt|lte)"/u);
+    const want = ordered ? one.expect : (one.expect_client ?? one.expect);
     const field = {required: (one.field ?? {}).required === true, when: one.when};
     const got = fieldConditions(field, one.values ?? {});
     checked += 1;

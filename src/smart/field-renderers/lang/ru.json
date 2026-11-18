@@ -98,6 +98,8 @@
     "operatorEqualWord": "равно",
     "operatorMoreWord": "больше",
     "operatorLessWord": "меньше",
-    "operatorFromTo": "от – до"
+    "operatorFromTo": "от – до",
+    "operatorMoreOrEqualWord": "больше или равно",
+    "operatorLessOrEqualWord": "меньше или равно"
   }
 }

@@ -87,3 +87,22 @@ test('the window speaks one lower-case line: содержит, начинает�
   assert.match(window, /getFilterOperatorLabel: \(operator\) => filterOperatorLabel\(operator, anchor, kind\),/u);
   assert.match(read('src/component/dropdown/interaction.js'), /if\(button!==box\)\{\['role','aria-expanded','aria-haspopup','aria-controls','aria-labelledby','aria-label','aria-describedby'\]\.forEach\(name=>box\.removeAttribute\(name\)\);\}/u);
 });
+
+test('conditions order values as the server does: gt, gte, lt, lte (Larena msg-75b451e2eec6413aa2eb)', async () => {
+  const {CONDITION_OPS, evaluateCondition} = await import('../src/smart/field-renderers/conditions.js');
+  for (const op of ['gt', 'gte', 'lt', 'lte']) assert.ok(CONDITION_OPS.includes(op), op);
+  const values = {sum: '1500.5', count: 3, none: '', many: ['2', '9'], big: '9007199254740993', day: '2026-10-23', word: 'abc', neg: '-1.5'};
+  assert.equal(evaluateCondition({field: 'sum', op: 'gt', value: 1500}, values), true);
+  assert.equal(evaluateCondition({field: 'sum', op: 'lt', value: '1500'}, values), false);
+  assert.equal(evaluateCondition({field: 'count', op: 'gte', value: 3}, values), true);
+  assert.equal(evaluateCondition({field: 'count', op: 'lte', value: '2'}, values), false);
+  assert.equal(evaluateCondition({field: 'big', op: 'gt', value: '9007199254740992'}, values), true, 'big integers exactly');
+  assert.equal(evaluateCondition({field: 'neg', op: 'lte', value: '-1'}, values), true);
+  assert.equal(evaluateCondition({field: 'day', op: 'lt', value: '2026-12-31'}, values), true, 'ISO dates as text');
+  assert.equal(evaluateCondition({field: 'none', op: 'gt', value: 0}, values), false, 'nothing has no order');
+  assert.equal(evaluateCondition({field: 'many', op: 'gt', value: 0}, values), false, 'a list has no order');
+  assert.equal(evaluateCondition({field: 'word', op: 'gt', value: 5}, values), false, 'a text is not ordered against a decimal');
+  const ru = json('src/smart/field-renderers/lang/ru.json').runtime;
+  assert.deepEqual([ru.operatorGt, ru.operatorGte, ru.operatorLt, ru.operatorLte, ru.operatorMoreOrEqualWord, ru.operatorLessOrEqualWord],
+    ['Больше чем', 'Больше или равно', 'Меньше чем', 'Меньше или равно', 'больше или равно', 'меньше или равно']);
+});

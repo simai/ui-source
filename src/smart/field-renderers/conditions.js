@@ -11,7 +11,10 @@
 // The grammar is small on purpose (the data view port's, Larena's settings
 // SettingConditions):
 //
-//   {field, op, value}   op: eq, ne, in, not_in (value a list), empty, not_empty
+//   {field, op, value}   op: eq, ne, in, not_in (value a list), empty, not_empty,
+//                        gt, gte, lt, lte (an order as the server keeps it:
+//                        decimals exactly, ISO dates as text; Larena
+//                        msg-75b451e2eec6413aa2eb)
 //   {all: [...]}         every condition holds
 //   {any: [...]}         at least one holds
 //   {not: {...}}         the condition does not hold
@@ -28,7 +31,45 @@
 // test runs them without a DOM. sf-view-properties' js/conditions.js was the
 // copy this replaces; SF.fieldRenderers.conditions publishes it for a host.
 
-export const CONDITION_OPS = Object.freeze(['eq', 'ne', 'in', 'not_in', 'empty', 'not_empty']);
+export const CONDITION_OPS = Object.freeze(['eq', 'ne', 'in', 'not_in', 'empty', 'not_empty', 'gt', 'gte', 'lt', 'lte']);
+const COMPARE_OPS = new Set(['gt', 'gte', 'lt', 'lte']);
+
+// An order as the server keeps it (Larena when-cases, simai.settings.when-
+// cases 1): decimals compare exactly, by their digits, never as floats (a
+// big integer stays exact); ISO dates compare as text; a text is not ordered
+// against a decimal, and a list or nothing has no order. -1, 0, 1, or null
+// where there is no order.
+const DECIMAL = /^[-+]?\d+(\.\d+)?$/u;
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}([T ][\d:.]+(Z|[-+]\d{2}:?\d{2})?)?$/u;
+function compareDecimal(a, b) {
+  const sign = (text) => (text.startsWith('-') ? -1 : 1);
+  const parts = (text) => {
+    const [whole, fraction = ''] = text.replace(/^[-+]/u, '').split('.');
+    return [whole.replace(/^0+(?=\d)/u, ''), fraction.replace(/0+$/u, '')];
+  };
+  const [aw, af] = parts(a);
+  const [bw, bf] = parts(b);
+  const zero = (w, f) => /^0*$/u.test(w) && f === '';
+  const sa = zero(aw, af) ? 0 : sign(a);
+  const sb = zero(bw, bf) ? 0 : sign(b);
+  if (sa !== sb) return sa < sb ? -1 : 1;
+  if (sa === 0) return 0;
+  let order = aw.length !== bw.length ? (aw.length < bw.length ? -1 : 1) : (aw < bw ? -1 : aw > bw ? 1 : 0);
+  if (order === 0) {
+    const width = Math.max(af.length, bf.length);
+    const fa = af.padEnd(width, '0');
+    const fb = bf.padEnd(width, '0');
+    order = fa < fb ? -1 : fa > fb ? 1 : 0;
+  }
+  return sa < 0 ? -order : order;
+}
+function orderOf(held, bound) {
+  const a = String(held).trim();
+  const b = String(bound).trim();
+  if (DECIMAL.test(a) && DECIMAL.test(b)) return compareDecimal(a, b);
+  if (ISO_DATE.test(a) && ISO_DATE.test(b)) return a < b ? -1 : a > b ? 1 : 0;
+  return null;
+}
 export const CONDITION_NODES = Object.freeze(['all', 'any', 'not']);
 export const CONDITION_PARTS = Object.freeze(['visible', 'required', 'enabled']);
 
@@ -68,6 +109,16 @@ export function evaluateCondition(condition, values) {
   const held = itemsOf(read(condition.field));
   if (condition.op === 'empty') return held.length === 0;
   if (condition.op === 'not_empty') return held.length > 0;
+  if (COMPARE_OPS.has(condition.op)) {
+    // An order (gt, gte, lt, lte), as the server decides it: a list or
+    // nothing has no order, and no order holds.
+    const raw = read(condition.field);
+    const bound = scalar(condition.value);
+    if (Array.isArray(raw) || held.length !== 1 || bound === null || bound === undefined || typeof bound === 'object') return false;
+    const order = orderOf(held[0], bound);
+    if (order === null) return false;
+    return condition.op === 'gt' ? order > 0 : condition.op === 'gte' ? order >= 0 : condition.op === 'lt' ? order < 0 : order <= 0;
+  }
   if (condition.op === 'eq' || condition.op === 'ne') {
     const hit = held.includes(String(scalar(condition.value)));
     return condition.op === 'eq' ? hit : !hit;

@@ -59,7 +59,7 @@ const OPERATOR_WORDS = {
 // operator field (OPERATOR_WORDS).
 const CONDITION_WORDS = {
   string: {contains: 'operatorContainsWord', startsWith: 'operatorStartsWithWord'},
-  number: {between: 'operatorFromTo', eq: 'operatorEqualWord', gt: 'operatorMoreWord', lt: 'operatorLessWord'},
+  number: {between: 'operatorFromTo', eq: 'operatorEqualWord', gt: 'operatorMoreWord', gte: 'operatorMoreOrEqualWord', lt: 'operatorLessWord', lte: 'operatorLessOrEqualWord'},
 };
 
 const word = (key, node) => pageText(SET_TEXT, key, node ?? null, SET_NAME);

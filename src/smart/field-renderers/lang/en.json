@@ -96,6 +96,8 @@
     "operatorEqualWord": "equals",
     "operatorMoreWord": "more than",
     "operatorLessWord": "less than",
-    "operatorFromTo": "from – to"
+    "operatorFromTo": "from – to",
+    "operatorMoreOrEqualWord": "at least",
+    "operatorLessOrEqualWord": "at most"
   }
 }
