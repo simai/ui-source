@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.button-group",
   "kind": "component",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/button-group/docs/docs.md",
@@ -11,14 +11,23 @@
     "src/component/button-group/js/_button-group.js",
     "src/component/button-group/js/index.js",
     "src/component/button-group/json/button-group.utility.json",
+    "src/component/button-group/lang/ar.json",
+    "src/component/button-group/lang/de.json",
     "src/component/button-group/lang/en.json",
+    "src/component/button-group/lang/es.json",
+    "src/component/button-group/lang/fr.json",
     "src/component/button-group/lang/index.mjs",
+    "src/component/button-group/lang/it.json",
+    "src/component/button-group/lang/ja.json",
+    "src/component/button-group/lang/ko.json",
+    "src/component/button-group/lang/pt-br.json",
     "src/component/button-group/lang/ru.json",
+    "src/component/button-group/lang/zh-hans.json",
     "src/component/button-group/rule.js",
     "src/component/button-group/scss/_css__button-group.scss",
     "src/component/button-group/scss/index.scss"
   ],
-  "content_sha256": "d89ff8e7b346546880762046f319ec66d830ec9ba8ba188a424a3bb79530fd6f",
+  "content_sha256": "2a29e4c42befa25a042f211bd813de5755191c30bd6b1db2cec87a93bc39df60",
   "dependencies": [
     {
       "id": "core.runtime",

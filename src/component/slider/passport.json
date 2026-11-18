@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.slider",
   "kind": "component",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "owner": "simai/ui-source",
   "files": [
     "src/component/slider/docs/docs.md",
@@ -11,9 +11,18 @@
     "src/component/slider/js/_slide-content.js",
     "src/component/slider/js/_slider.js",
     "src/component/slider/js/index.js",
+    "src/component/slider/lang/ar.json",
+    "src/component/slider/lang/de.json",
     "src/component/slider/lang/en.json",
+    "src/component/slider/lang/es.json",
+    "src/component/slider/lang/fr.json",
     "src/component/slider/lang/index.mjs",
+    "src/component/slider/lang/it.json",
+    "src/component/slider/lang/ja.json",
+    "src/component/slider/lang/ko.json",
+    "src/component/slider/lang/pt-br.json",
     "src/component/slider/lang/ru.json",
+    "src/component/slider/lang/zh-hans.json",
     "src/component/slider/rule.js",
     "src/component/slider/scss/_css__slider.scss",
     "src/component/slider/scss/_css__slider_arrows.scss",
@@ -21,7 +30,7 @@
     "src/component/slider/scss/_var__slider.scss",
     "src/component/slider/scss/index.scss"
   ],
-  "content_sha256": "3e6b58629f316f52d2b774958d91cdcd15bc9c5deb052c353a8467a7cfe0fc91",
+  "content_sha256": "68666f284d74c450a3281726400c14a3ec496cb569be2cbed6a53ffc62172aa2",
   "dependencies": [
     {
       "id": "component.swiper",
