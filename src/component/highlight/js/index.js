@@ -210,11 +210,31 @@ function lineStart(block) {
   return 1;
 }
 
+// An id no other element holds: not in the document, and not in the tree the
+// block stands in when it is not placed yet. The block may be highlighted
+// before its markup is placed (sf-chat-message enhances an answer's code
+// before it puts the answer on the page): the loop asked the document for the
+// block itself, which a detached block never is, and never ended (100 % CPU,
+// ui-control evidence 2026-11-18-pro-over-1ed6). It now asks whether the id is
+// free, which ends for a detached block as for a placed one.
+function idTaken(block, id) {
+  const placed = block.ownerDocument?.getElementById?.(id);
+  if (placed && placed !== block) return true;
+  const root = block.getRootNode?.();
+  if (!root || root === block.ownerDocument) return false;
+  const local = typeof root.getElementById === 'function'
+    ? root.getElementById(id)
+    : (root.id === id ? root : root.querySelector?.(`[id="${id}"]`));
+  return Boolean(local && local !== block);
+}
+
 function ensureCodeId(block) {
   if (block.id) return block.id;
-  do { codeId += 1; block.id = `sf-highlight-code-${codeId}`; }
-  while (block.ownerDocument.getElementById(block.id) !== block);
-  return block.id;
+  let id;
+  do { codeId += 1; id = `sf-highlight-code-${codeId}`; }
+  while (idTaken(block, id));
+  block.id = id;
+  return id;
 }
 
 // A head button's name, shown as the Framework tooltip on hover and keyboard
@@ -377,6 +397,31 @@ function ensureStructure(block) {
   return { head, mode, root };
 }
 
+// A name cut with an ellipsis (a long data-title, C285) has its whole text as
+// the label's title, as a cut crumb of sf-breadcrumbs; a name that fits again
+// loses it. A title the page wrote on the label itself is left alone.
+const watchedNames = new WeakSet();
+
+function markCutName(language) {
+  if (language.hasAttribute('title') && !('sfHighlightCut' in language.dataset)) return;
+  const text = language.querySelector(':scope > .sf-highlight__language-text') || language;
+  const cut = text.scrollWidth > text.clientWidth + 1;
+  if (cut) {
+    language.setAttribute('title', text.textContent.trim());
+    language.dataset.sfHighlightCut = '';
+  } else if ('sfHighlightCut' in language.dataset) {
+    language.removeAttribute('title');
+    delete language.dataset.sfHighlightCut;
+  }
+}
+
+function watchName(language) {
+  const View = language.ownerDocument.defaultView;
+  if (!View?.ResizeObserver || watchedNames.has(language)) return;
+  watchedNames.add(language);
+  new View.ResizeObserver(() => markCutName(language)).observe(language);
+}
+
 function updateChrome(block, result) {
   const { head, mode, root } = ensureStructure(block);
   if (!root) return;
@@ -404,8 +449,13 @@ function updateChrome(block, result) {
     icon.className = 'sf-icon sf-icon--size-2';
     icon.setAttribute('aria-hidden', 'true');
     icon.textContent = 'terminal';
-    language.replaceChildren(icon, block.ownerDocument.createTextNode(title || pageText(HIGHLIGHT_TEXT, 'terminal', block, 'sf-highlight')));
+    const name = block.ownerDocument.createElement('span');
+    name.className = 'sf-highlight__language-text';
+    name.textContent = title || pageText(HIGHLIGHT_TEXT, 'terminal', block, 'sf-highlight');
+    language.replaceChildren(icon, name);
   } else language.textContent = title || block.dataset.requestedLang || result.language || 'text';
+  markCutName(language);
+  watchName(language);
   ensureCopyButton(block, root, head);
   ensureWrapButton(block, root, head);
 }

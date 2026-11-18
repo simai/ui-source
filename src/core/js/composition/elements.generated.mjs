@@ -323,7 +323,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.17.0"
+    "version": "1.17.1"
   },
   "sf-button-icon": {
     "inputs": {

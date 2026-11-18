@@ -7,6 +7,7 @@
   var url = (root.document && root.document.currentScript && root.document.currentScript.src) || null;
   var store = root.__sfPageLanguage || (root.__sfPageLanguage = {listeners: new Set(), registered: new Map(), chosen: null});
   var packs = store.packs || (store.packs = {loaded: new Map(), pending: new Map(), request: null});
+  if (!store.floor) store.floor = new Map();
   var language = root.SF && root.SF.language;
   var info;
   if (language && typeof language.registerPack === 'function') {
@@ -20,6 +21,14 @@
       var now = byLanguage.get(pack.lang) || {};
       var words = pack.words[component];
       byLanguage.set(pack.lang, under ? Object.assign({}, words, now) : Object.assign({}, now, words));
+      var floor = store.floor.get(component);
+      if (!floor) store.floor.set(component, floor = new Map());
+      var marked = floor.get(pack.lang);
+      if (!marked) floor.set(pack.lang, marked = new Set());
+      Object.keys(words).forEach(function (key) {
+        if (!under) marked.delete(key);
+        else if (!Object.prototype.hasOwnProperty.call(now, key) || marked.has(key)) marked.add(key);
+      });
       count += Object.keys(words).length;
     });
     info = {lang: pack.lang, delivery: pack.delivery, status: pack.status, coverage: pack.coverage, words: count, url: url};
