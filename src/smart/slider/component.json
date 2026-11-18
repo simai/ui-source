@@ -2,7 +2,7 @@
   "$comment": "The source of sf-slider's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/slider (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.slider",
   "tag": "sf-slider",
-  "version": "1.3.9",
+  "version": "1.3.10",
   "kind": "leaf",
   "family": "slider",
   "settings": {
@@ -301,7 +301,8 @@
     "version 1.3.5 (2026-11-16, first paint R222 FP-4; numbered above 1.3.4 on origin/fix/ot-swiper-slider-ot1): a patch, examples only. The examples write their slides with slot=\"slide\", as the component reads them; unslotted children stayed beside the drawn slider and grew the page by the dots row (+48 at 1440). Merge point with fix/ot-swiper-slider-ot1: the static snapshots of this folder (retake after the merge).",
     "version 1.3.6 (written on the branch as 1.3.4; 2026-11-16, joint pass RG-OT 5-9, owner decisions C245, C246; through component.slider 1.3.0 and component.swiper 1.2.0; numbered above 1.3.3 of group build 8 and every origin branch): a patch. button-type light writes the class look sf-slider-arrows--light, the ghost arrows on the light circle (RG-OT 9: the dark glyph lay on the picture, 1.28:1 on a dark photo). Through the class layer: the dots stand 8 apart (C246); an edge arrow is disabled by the engine and fades once (C245, RG-OT 6); hidden slides are inert by the engine; a card slider picks 1.15 or 2.2 cards by its own width (C181 (2), RG-OT 7); three cards at 2.2 drag to the last stop (RG-OT 2). Settings, values, events and keys are unchanged.",
     "version 1.3.8 (2026-11-17, feat/lang-file-c282; numbered above 1.3.7 on origin/fix/utilities-c264): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
-    "version 1.3.9 (written on the branch as 1.3.7; 2026-11-17, owner decision C268; numbered above 1.3.6 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged."
+    "version 1.3.9 (written on the branch as 1.3.7; 2026-11-17, owner decision C268; numbered above 1.3.6 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
+    "version 1.3.10 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
   ],
   "x-registry": {
     "ownership": {

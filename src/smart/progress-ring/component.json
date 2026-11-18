@@ -2,7 +2,7 @@
   "$comment": "The source of sf-progress-ring's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.11, vocabulary 1.1.5. Owner request 2026-10-28 (UI Chat thread): «if a component is missing, create it -- e.g. a circular variant of progress, with and without data».",
   "id": "smart.progress-ring",
   "tag": "sf-progress-ring",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "kind": "leaf",
   "family": "progress",
   "settings": {
@@ -203,7 +203,8 @@
     "version 1.6.0 (2026-11-16, fix/avatar-ring-ar1; numbered above 1.5.0 of fix/dot-avatar-badge-c185, which it carries): a minor (DEV AR-4, owner decision C152 (8)). A lone avatar child -- sf-avatar or a class .sf-avatar, the ring's only element child, no child in the content slot -- is the ring's content: the ring names slot=\"content\" for it before it takes its slots, so it stands in the middle at the content box, its presence point on the line at 45 degrees, as with the slot written (it stood beside the ring, its centre 60 px off at 1440 and 56 at 390). An avatar the ring cannot take (beside other children, or a content slot already named) is still drawn beside and said once a page and in SF.deprecations, as 1.5.0 said every unslotted one. Settings, values, events and keys unchanged.",
     "version 1.6.1 (2026-11-17, Smart joint pass SM-PR-1; numbered above 1.6.0 of group build 9): a patch, nothing drawn differently. The ring prints its percentage as the progress family does since core.runtime's percentText (C203 (3), C219): «62 %», a no-break space before the sign. Three probe checks still read «62%» and «100%»; they read the spelling drawn now. The class twin's docs (component.progress-ring 1.5.2) write «85 %» in their anatomy, which wrote «85%». Settings, values, events and keys unchanged.",
     "1.6.2: the avatars sheet and sf-avatar are declared lazy relations (C250): the ring's sheet sizes an avatar in its content and the element warns about one without the slot, and neither was declared.",
-    "version 1.6.3 (2026-11-17, feat/lang-file-c282; numbered above 1.6.2 on origin/fix/smart-pass-sp1): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged."
+    "version 1.6.3 (2026-11-17, feat/lang-file-c282; numbered above 1.6.2 on origin/fix/smart-pass-sp1): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
+    "version 1.6.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
   ],
   "x-registry": {
     "capabilities": [

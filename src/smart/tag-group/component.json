@@ -2,7 +2,7 @@
   "$comment": "The source of sf-tag-group's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.16 and vocabulary 1.1.5: owner decision C145 (3)-(5) (2026-11-14; tags study ui-control control/research/2026-11-14-tags.md #q-group, #q-keys, #q-more, prototype prototypes/tags-study.html).",
   "id": "smart.tag-group",
   "tag": "sf-tag-group",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "kind": "leaf",
   "family": "tag",
   "settings": {
@@ -128,7 +128,8 @@
     "version 1.0.1 (2026-11-16, first paint R222 open item 10): a patch. A printed first paint (static/more.html) carries its own «+N» item; the row now replaces it with its own once its own has drawn (until then the printed row stands, so no frame shows one tag too many), and the drawn row shows one «+N», not the printed one left beside its own (gate 24 static: 1 node left at 1440 and 390). Settings, values, events and keys unchanged.",
     "version 1.0.4 (2026-11-17, feat/lang-file-c282; numbered above 1.0.3 on origin/fix/smart-pass-sp1): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.0.5 (written on the branch as 1.0.2; 2026-11-17, owner decision C268; numbered above 1.0.1 on origin/fix/first-paint-c1): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
-    "version 1.0.6 (written on the branch as 1.0.3; 2026-11-17, owner decision C280; numbered above 1.0.2 on origin/fix/utilities-c264): a patch, nothing drawn or done differently. Its filter examples and docs write kind=\"checkbox\" on the tags they choose, since a bare sf-tag is a plain tag (sf-tag 1.12.0); a group that selects still toggles bare tags until 2027-01-01, noted. Settings, values, events and keys unchanged."
+    "version 1.0.6 (written on the branch as 1.0.3; 2026-11-17, owner decision C280; numbered above 1.0.2 on origin/fix/utilities-c264): a patch, nothing drawn or done differently. Its filter examples and docs write kind=\"checkbox\" on the tags they choose, since a bare sf-tag is a plain tag (sf-tag 1.12.0); a group that selects still toggles bare tags until 2027-01-01, noted. Settings, values, events and keys unchanged.",
+    "version 1.0.7 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
   ],
   "x-registry": {
     "capabilities": [

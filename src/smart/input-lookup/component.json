@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-lookup's element plumbing (core/js/element-manifest.js), written in the standard 1.4 form of five authored files; standard simai.smart-component 1.3.14. The people and object picker: owner decision q-efb6397065 (2026-10-29), UI Chat's request msg-8fbe39bb9acb40b9a08e item 1, design draft control/LOOKUP-FIELD-DESIGN-2026-10-30.md with the consumers' answers msg-41ac91281d8e4852a6f5.",
   "id": "smart.input-lookup",
   "tag": "sf-input-lookup",
-  "version": "1.17.3",
+  "version": "1.17.4",
   "kind": "leaf",
   "family": "input",
   "settings": {
@@ -400,7 +400,8 @@
     "version 1.16.1 (written on the branch as 1.16.0; 2026-11-16, owner decision C151 (1); above 1.15.4 of fix/utilities-focus-c212, the highest on any branch): a look. At size 3 on a phone the lookup's icons -- an item's icon in the field and in the list, and the clear and list actions -- are the icon ladder's 28 (field-ladder.icon-size), not the 24 of the text line; 36 on a desktop as before. Avatars keep the text line.",
     "version 1.17.1 (2026-11-17, feat/lang-file-c282; numbered above 1.17.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.17.2 (written on the branch as 1.16.2; 2026-11-17, owner decision C268; numbered above 1.16.1 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
-    "version 1.17.3 (written on the branch as 1.17.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged."
+    "version 1.17.3 (written on the branch as 1.17.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
+    "version 1.17.4 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
   ],
   "x-registry": {
     "inputs": {

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-steps's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/steps (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.steps",
   "tag": "sf-steps",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "kind": "leaf",
   "family": "steps",
   "settings": {
@@ -303,7 +303,8 @@
     "version 1.4.2 (2026-11-14, group build 5; numbered above 1.4.1 on origin/fix/accordion-c154): a patch, its own code unchanged: the passport family is the first word of the tag (C174, NM-5; fix/sets-step-1).",
     "version 1.4.3 (2026-11-15, C61 round 5, DEV answer msg-bf5253ac, through component.step 1.3.2; numbered above 1.4.2 on origin/fix/gb5-answers): a patch. (1) Marker to label is a role (C105 H2), not a screen step: the marker's ink stands 8 before its label at every width and density, in the row and in the column. The current marker's ring reaches 4 past it (2 px gap + 2 px ring), so the step's body gap is that reach plus 8 (12 everywhere); it was --sf-space-1/2, 8 on a phone and in compact density, where the ring stood 4 from the label. sf-wizard's row of steps takes it. (2) The ahead word is «Впереди» / «Upcoming», one word with sf-list-timeline (English read «Not started»). Markup, first-paint snapshots, settings, values, events and keys unchanged.",
     "1.4.4: first-paint snapshots retaken after the spinner's retired dots data (SM-SP-3) and the one scheme class of an icon button (SM-CPY-2); no change of its own.",
-    "version 1.4.5 (2026-11-17, feat/lang-file-c282; numbered above 1.4.4 on origin/fix/smart-pass-sp1): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged."
+    "version 1.4.5 (2026-11-17, feat/lang-file-c282; numbered above 1.4.4 on origin/fix/smart-pass-sp1): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
+    "version 1.4.6 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
   ],
   "x-registry": {
     "capabilities": [

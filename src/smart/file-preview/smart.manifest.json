@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.file-preview",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "title": "File Preview",
   "summary": "Accessible Smart projection of the ordinary File Preview row.",
   "kind": "smart",

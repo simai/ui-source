@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag-group",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "title": "Tag group",
   "summary": "A row of tags: 4 apart, a list to a screen reader, one Tab stop with arrows and Delete, one line with «+N» that opens the hidden tags in a popover, and single or multiple choice for filter tags.",
   "kind": "smart",

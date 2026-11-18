@@ -2,7 +2,7 @@
   "$comment": "The source of sf-wizard-step's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes the generated files from it). One step of sf-wizard (owner decision 2026-11-06, ui-control control/decisions/2026-11-06-sf-wizard.md): what the step is and where it stands, and its body as its children.",
   "id": "smart.wizard-step",
   "tag": "sf-wizard-step",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "kind": "leaf",
   "family": "wizard",
   "settings": {
@@ -112,7 +112,8 @@
     "version 1.0.4 (2026-11-14, group build 3): a patch; nothing in the component changed. The sf-input it draws takes the field layer's actions since sf-input 1.9.0 (owner decision C123, .sf-field-action), so its first-paint snapshot carries four more empty lines where those actions would stand; the snapshot was retaken from the group build and the component takes a patch with it. Settings, values, events and keys unchanged.",
     "version 1.0.5 (2026-11-15, group build 6; numbered above 1.0.4 on refs/remotes/origin/fix/accordion-c154): a patch, nothing drawn or done differently by this unit: only its on-screen words ship in the bundle, the rest of lang/*.json stays for the Studio and the docs (LC-2, fix/localization-lc); 2 first-paint snapshot file(s) follow the merged markup (fix/wizard-wz).",
     "version 1.0.6 (2026-11-15, group build 8; numbered above 1.0.5 on origin/fix/dot-avatar-badge-c185): a patch, nothing drawn or done differently by this unit: its first-paint sheet list follows the sheets its relations load now (component.dot beside badges and avatars, C185 (8), fix/dot-avatar-badge-c185).",
-    "version 1.0.7 (2026-11-17, feat/lang-file-c282; numbered above 1.0.6 on origin/feat/dependency-graph-c249): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged."
+    "version 1.0.7 (2026-11-17, feat/lang-file-c282; numbered above 1.0.6 on origin/feat/dependency-graph-c249): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
+    "version 1.0.8 (2026-11-18, group build 13; above every origin branch): a patch, words only. The C278 language packs (feat/lang-packs-c278 in fix/lang-follow, and the group build's words for the merged branches) gave this component its language files in de, es, fr, it, pt-br, ja, ko, zh-hans and ar; the pair before carried them under the same number. No behaviour, setting, key or Russian and English word changes."
   ],
   "x-registry": {
     "capabilities": [

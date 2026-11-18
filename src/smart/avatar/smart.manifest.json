@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.avatar",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "title": "Avatar",
   "summary": "Shows a person or organisation as a photo or initials, with an optional presence point or verification mark. By default a picture (role img with the name); a link with href, a native button as a menu's trigger; the card template is static and adds a title, description and meta line.",
   "kind": "smart",
