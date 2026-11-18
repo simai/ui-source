@@ -21,6 +21,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
+import {nothing, html} from 'lit';
 import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
@@ -859,6 +860,20 @@ class SfForm extends FormElement {
     };
   }
 
+  // The value in the read view; an empty one says the quiet word of
+  // sf-list-description (C33: «Не указан», en «Not set»; one word in both
+  // parts, each language file's empty-value equal to sf-list-description's
+  // empty-text -- Larena LF-12, 2026-11-18). It drew nothing before, and the
+  // label stood over a blank.
+  viewControl(field, value, host) {
+    const control = renderViewField(field, value, host, this.size === '1/2' ? {size: '1/2'} : {});
+    const blank = value === undefined || value === null || value === '' || (Array.isArray(value) && !value.length);
+    if (control === nothing || ((control === null || control === undefined) && blank)) {
+      return html`<span class="sf-field-view sf-form-empty">${this.sfWord('empty-value')}</span>`;
+    }
+    return control;
+  }
+
   fieldContext(field, {editing, id}) {
     const value = this._values[field.key];
     const host = this.hostOf(field);
@@ -873,7 +888,7 @@ class SfForm extends FormElement {
       // shows the value it holds, read-only, as the renderers' own fallback.
       if (control === null || control === undefined) control = renderViewField(field, value, host, size === '1/2' ? {size} : {});
     } else {
-      control = renderViewField(field, value, host, this.size === '1/2' ? {size: '1/2'} : {});
+      control = this.viewControl(field, value, host);
     }
     // A yes/no drawn as a checkbox carries its label beside the box (C165
     // (4)): no label row over it. The field's template says which it is

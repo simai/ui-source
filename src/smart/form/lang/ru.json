@@ -18,7 +18,8 @@
       "other": "Исправьте {n} поля"
     },
     "value-missing": "Заполните поле «{label}»",
-    "help-label": "Подробнее: {label}"
+    "help-label": "Подробнее: {label}",
+    "empty-value": "Не указан"
   },
   "events": {
     "submit": {

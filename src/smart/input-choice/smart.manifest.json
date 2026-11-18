@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -185,7 +185,7 @@
       "items": {
         "type": "array",
         "default": [],
-        "description": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out. Three visuals draw in every appearance (FO-4, FO4-1, FO4-3): avatar, an address or {image, text}, a picture before the name (sf-avatar on the row's line); icon before the name; color, a badge scheme, a palette hue or a hex colour, drawn by option-look. swatch (a circle) and scheme (a badge) are former names of color with their look, read until 2027-01-01 (FO4-2).",
+        "description": "The options, [{value, label, caption?, icon?, badge?, price?, term?, image?, disabled?}]: each a card with its name (label, or title; text, sf-dropdown's first spelling, is read until 2027-01-01 and noted in SF.deprecations), a description under it (caption), an icon on the name line, a short badge (sf-badge) beside the name, a price and its term (list: a column at the end of the name line; tile and picture: the foot of the card, after a divider) and an image (picture: to the card's edges, over the caption). A property, the JSON island or the attribute as JSON. An option without a value or repeating one is left out. Three visuals draw in every appearance (FO-4, FO4-1, FO4-3): avatar, an address or {image, text}, a picture before the name (sf-avatar on the row's line); icon before the name; color, a badge scheme, a palette hue or a hex colour, drawn by option-look. swatch (a circle) and scheme (a badge) are former names of color with their look, read until 2027-01-01 (FO4-2).",
         "examples": [
           [
             {
@@ -378,7 +378,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "f5e5baad7f18619a3836860000dd1a88886980baa18e1d50595fa285f99ac0d4"
+        "sha256": "0a9266f685c53c02463a0d480ae151cc19bd17405edab4c2c9ef917ea7a8c7ed"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
@@ -386,7 +386,7 @@
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "02e0f30b112ad2f575405c2ac5b4356cd8ba688b66e7ce0d3f49f65f66dfba36"
+        "sha256": "b0c3d4d222e9fef5b3982657b20ed2bffd3834adfae79b0608907c916dc343a2"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
@@ -398,7 +398,7 @@
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "35e3774b9ecb89bef532163f8b96437ebacd1c8351c9872dd90b8b4e1782a81e"
+        "sha256": "cef1512c9a48ae0d0d835efc40e1d3ba1ee481ef3201c8c939efee7be1c469f1"
       }
     ],
     "generated_runtime": []

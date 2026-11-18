@@ -18545,6 +18545,38 @@
       "source": "simai/ui-chart package/src/smart/chart-metric (component.json x-decisions, docs.md «Переход с sf-chart-metric»), package/docs/chart/journal.json (the set's own record), release chart-f5bff4e90a69 (@simai-studio/chart 1.2.0); src/smart/tile-metric (x-decisions C168); contracts/registry/names.json (chart note)"
     },
     {
+      "id": "sf-dropdown-option-text-to-label",
+      "recorded_on": "2026-11-18",
+      "stage": "compat",
+      "kind": "property",
+      "summary": "One option shape (Larena LF-2): an option given as data is {value, label} in sf-dropdown (options), sf-input-choice (items) and sf-input-lookup (options), as sf-menu's items. sf-dropdown named it text; text is still read until the date and noted once in SF.deprecations, and sf-input-choice reads text as well, so one list of options serves both parts. The sf-list-item children of sf-dropdown and their text attribute are not this field and stay.",
+      "items": [
+        {
+          "component": "sf-dropdown",
+          "attribute": "options",
+          "from": "text",
+          "to": "label",
+          "match": "[\"']?\\btext[\"']?\\s*:"
+        },
+        {
+          "component": "sf-input-choice",
+          "attribute": "items",
+          "from": "text",
+          "to": "label",
+          "match": "[\"']?\\btext[\"']?\\s*:"
+        }
+      ],
+      "deprecated_on": "2026-11-18",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "In the options given to sf-dropdown (the property, the options attribute's JSON or the island) and the items given to sf-input-choice, rename an option's text to label. Other objects with a text key are not options: rewrite by hand where the object is an option.",
+      "examples": {
+        "before": "dropdown.options = [{value: 'ru', text: 'Русский'}];",
+        "after": "dropdown.options = [{value: 'ru', label: 'Русский'}];"
+      },
+      "source": "src/smart/dropdown/index.js parseOptionData, OPTION_TEXT_ALIAS; src/smart/input-choice/js/choice-model.mjs normaliseItems; tests/larena-lf-data.contract.test.mjs"
+    },
+    {
       "id": "class-quantity-pointer-focus-c153",
       "recorded_on": "2026-11-18",
       "stage": "compat",

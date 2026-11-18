@@ -16,7 +16,8 @@
       "other": "Fix {n} fields"
     },
     "value-missing": "Fill in the field “{label}”",
-    "help-label": "More about {label}"
+    "help-label": "More about {label}",
+    "empty-value": "Not set"
   },
   "events": {
     "submit": {

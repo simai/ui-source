@@ -299,6 +299,11 @@
   .sf-form-hint {
     color: var(--sf-on-surface-variant);
   }
+  /* An empty value in the read view: the quiet word in the quiet ink, as
+     sf-list-description's empty value (Larena LF-12). */
+  .sf-form-empty {
+    color: var(--sf-on-surface-variant);
+  }
   .sf-form-error {
     color: var(--sf-error);
   }

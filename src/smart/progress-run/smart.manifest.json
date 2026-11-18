@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.progress-run",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "title": "Progress",
   "summary": "A long job as a person sees it, in one of three looks (C34): full -- title and state badge, the overall bar with «N из M · %» and the time left, the counts as one line, the first errors, the steps with states, times and a log each, Pause/Continue, Cancel, Minimize, and once ended the summary with Retry and Hide; row -- a table row's bar or badge; notice -- a corner panel's row. The host drives it; it polls nothing.",
   "kind": "smart",
@@ -68,7 +68,7 @@
       "look": {
         "type": "string",
         "default": "full",
-        "description": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. row -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes look (minimize, expand). Named look, not view: view is a name the element runtime keeps for itself. The old value compact is a dated alias of row until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-progress-run-look-compact-to-row)",
+        "description": "The look (owner decision C34): full -- the card: title with the state badge, the overall bar with «N из M · %» and the time left, the counts, the first errors, the steps with a log each, the actions; it is also the summary once the job ended. row -- one line for a table row: a thin bar with «62 % · 3 мин» while it runs, the state badge once it stopped, icon actions; it carries no name, the row's own cell names the job, so outside a table use notice, the look with the name. notice -- one row for a corner panel: the ring in the icon field, the name, a line of figures and Expand. The data are the same in every look; the host changes look (minimize, expand). Named look, not view: view is a name the element runtime keeps for itself. The old value compact is a dated alias of row until 2027-01-01 (owner decision C134: compact means density only; noted in SF.deprecations, journal value-progress-run-look-compact-to-row)",
         "enum": [
           "full",
           "row",
@@ -208,7 +208,7 @@
       "steps": {
         "type": "array",
         "default": [],
-        "description": "The job's steps in order, each {id, title, state waiting|running|done|failed|skipped, text?, value?, total?, unit?, log?, started?, finished?, duration?}. A property, or the JSON island a server prints; the host sets the whole list again or changes one step with the action step. Time per step: duration in milliseconds, else finished − started (ISO 8601), and a running step with started counts up each second. An unknown state reads as waiting. value and total give a step its own figures («18 240 из 42 600 файлов»), written before its text; log is the step's own log so far as plain text (a server prints it), and chunk({text, step}) appends to it"
+        "description": "The job's steps in order, each {id, title, state waiting|running|done|failed|skipped, text?, value?, total?, unit?, log?, started?, finished?, duration?}. A property, or the JSON island a server prints; the host sets the whole list again or changes one step with the action step. Time per step: duration in milliseconds (a number: 800, 4000), else finished − started (both ISO 8601 date-times), and a running step with started counts up each second; a time a step took is rounded to the second, and any time above zero reads at least 0:01. An unknown state reads as waiting. value and total give a step its own figures («18 240 из 42 600 файлов»), written before its text; log is the step's own log so far as plain text (a server prints it), and chunk({text, step}) appends to it"
       },
       "counters": {
         "type": "array",
@@ -548,7 +548,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/progress-run/index.js",
-        "sha256": "f0625aff44f9f60277d84ad69646268fbc2d04b8f0edb405c39035e93a114b85"
+        "sha256": "97f9aa6861a16c83005252dc3ec8a8c2e7188a1bd02d44115d29b10f1f2419f3"
       },
       {
         "path": "src/smart/progress-run/js/templates/default.js",
@@ -564,7 +564,7 @@
       },
       {
         "path": "src/smart/progress-run/docs.md",
-        "sha256": "650b97bb85b09141c8258230e1d364f1029319d9746902b81d21d310a9c0761b"
+        "sha256": "a362627de5150dbe58936810249217723da724ffc7deab1e017ad1ae2e9d42c2"
       }
     ],
     "generated_runtime": []

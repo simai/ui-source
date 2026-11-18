@@ -345,6 +345,13 @@ is a skeleton of three text lines in the window's width.
   placed after the slotted content
 - `footer`
 
+The slots are read when the window connects and watched after that (1.11.0):
+what the page writes into `<sf-modal>` later, open or closed, is what its slot
+shows now. A child with `slot="content"`, `"header"` or `"footer"` replaces that
+slot's content; a loose child replaces the content. To add to what is shown,
+add into a node already placed (a holder, `<div slot="content" id="body">`; a
+plain `<div slot>` with no other attribute gives its children and is not kept).
+
 ## Long content
 
 A window is never taller than the screen: the header and the footer stay in

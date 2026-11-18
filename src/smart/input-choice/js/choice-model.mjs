@@ -84,7 +84,10 @@ export const DEFAULT_OPTION_LOOK = 'badge';
 // input-choice-option-colour-one-key). `title` is read as the label; a
 // missing label is the value. An option without a value, or repeating an
 // earlier one, is left out: one value names one card.
-export function normaliseItems(items) {
+// An option's name is label (title too); text, the name sf-dropdown's options
+// used first, is read as well until 2027-01-01 (Larena LF-2, 2026-11-18: one
+// option shape, {value, label}); onAlias is told when an option used it.
+export function normaliseItems(items, {onAlias} = {}) {
   let list = items;
   if (typeof list === 'string') {
     const raw = list.trim();
@@ -106,7 +109,7 @@ export function normaliseItems(items) {
     seen.add(value);
     result.push({
       value,
-      label: text(source.label ?? source.title) || value,
+      label: text(source.label ?? source.title ?? aliasText(source, onAlias)) || value,
       caption: text(source.caption),
       icon: text(source.icon).trim(),
       badge: text(source.badge).trim(),
@@ -145,6 +148,12 @@ export function optionLook(item, asked) {
 export function chosenFirst(items, opened) {
   if (!opened?.size) return items;
   return [...items.filter((item) => opened.has(item.value)), ...items.filter((item) => !opened.has(item.value))];
+}
+
+function aliasText(source, onAlias) {
+  if (source.text === undefined || source.text === null) return undefined;
+  onAlias?.('text', 'label');
+  return source.text;
 }
 
 // The chosen values from what a host gave: a string -- one value, or values

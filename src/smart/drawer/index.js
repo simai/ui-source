@@ -9,6 +9,7 @@ import {scrollsAlong, startsOnControl, trackSwipe} from '../../core/js/sheet-swi
 import manifest from './component.json';
 import aliases from './aliases.json';
 import {files as languageFiles} from './lang/index.mjs';
+import {watchLateChildren} from '../helpers/late-children.js';
 // Only the words on screen ship in the bundle, English only (owner decision
 // C282): Russian and every other language come from a language file. The
 // title, settings and events stay in the language files for the Studio and the
@@ -460,6 +461,11 @@ class SfDrawer extends DrawerElement {
     if (!this._contentNodes) this._contentNodes = Array.from(this.childNodes).filter((node) => !node.hasAttribute?.('data-sf-static'));
     this.drawerId = this.resolveDrawerId();
     super.connectedCallback();
+    // What the page writes into the host from now on is the drawer's (Larena
+    // LF-3): the content was taken once, when it connected.
+    if (this.isConnected && !this._lateChildren) {
+      this._lateChildren = watchLateChildren(this, (nodes) => this.takeLateChildren(nodes));
+    }
     drawerManager.bindGlobalEvents();
     globalThis.addEventListener?.('resize', this.onWindowResize, {passive: true});
     if (this.openState) {
@@ -480,6 +486,8 @@ class SfDrawer extends DrawerElement {
   disconnectedCallback() {
     this._themeObserver?.disconnect();
     this._themeObserver = null;
+    this._lateChildren?.disconnect();
+    this._lateChildren = null;
     this._areaObserver?.disconnect();
     this._areaObserver = null;
     this._edgeObserver?.disconnect();
@@ -1019,6 +1027,23 @@ class SfDrawer extends DrawerElement {
       if (root) this.projectAreas(root);
     });
     this._areaObserver.observe(this, {childList: true});
+  }
+
+  // Content the page wrote into the host after the drawer connected -- a
+  // record's body fetched while the panel is open (Larena LF-3, 2026-11-18).
+  // It is the drawer's content now: it replaces what the body showed, in the
+  // order written, open or closed. A child asking for an area (edge, footer,
+  // header-action) is placed there by projectAreas, as before. To add to what
+  // the body shows, the page adds into a node it already placed (a holder).
+  takeLateChildren(nodes) {
+    const content = nodes.filter((node) => !asksForArea(node));
+    if (!content.length) return;
+    this._contentNodes = [...(this._contentNodes || []).filter(asksForArea), ...content];
+    const body = this.getDrawerRoot()?.querySelector('[data-sf-drawer-body]');
+    // Not drawn yet: the drawing takes them (afterRender).
+    if (!body || body.dataset.sfDrawerContentReady !== '1') return;
+    body.replaceChildren(...content);
+    this.requestComponentUpdate('content');
   }
 
   // Whether a child asks for the head's action: a head with no title and no
