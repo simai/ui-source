@@ -143,7 +143,7 @@ test('step 5: a percent has the number\'s templates; scale and meter fit 0..100'
   // The stepper writes a percent's decimal string with «%» beside it; scale
   // and meter draw in the view and the cell.
   assert.match(source, /if \(isStepperField\(field\)\) return renderStepperEdit\(field, value, host, \{percent: true\}\);/u);
-  assert.match(source, /unit=\$\{percent \? '%' : nothing\}/u);
+  assert.match(source, /unit=\$\{percent \? '%' : fieldUnit\(field\) \|\| nothing\}/u);
   assert.match(source, /const level = levelView\(field, value\);/u);
   assert.match(source, /const level = levelCell\(field, value\);/u);
   // integer reaches the same drawings as number with decimals 0.
