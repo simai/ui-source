@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "empty-text": "空",
+    "change-text": "原为 {before}，现为 {after}",
+    "label-separator": "：",
+    "show-text": "显示更改",
+    "hide-text": "隐藏更改",
+    "before-text": "之前",
+    "after-text": "之后"
+  }
+}

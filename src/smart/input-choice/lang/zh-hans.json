@@ -1,0 +1,6 @@
+{
+  "runtime": {
+    "value-missing": "请选择一项。",
+    "help": "详细了解：{label}"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "Movimentação cancelada.",
+    "dropped": "{label} movido. {place}.",
+    "editing": "Editando {label}. Enter salva, Esc cancela.",
+    "insert": "Inserir",
+    "insert-after": "Inserir após “{label}”",
+    "insert-at": "Inserir em “{slot}”, posição {index}",
+    "more": "Mais",
+    "picked": "Movendo {label}. As setas escolhem o lugar, Enter solta, Esc cancela.",
+    "position": "{index} de {total}",
+    "selected": "Selecionado: {label}",
+    "toolbar": "Ações",
+    "tree": "Estrutura da página"
+  }
+}

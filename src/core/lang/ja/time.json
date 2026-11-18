@@ -1,0 +1,49 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 29,
+    "translated": 29,
+    "share": 100
+  },
+  "words": {
+    "sf-time": {
+      "date-at": "{date} {time}",
+      "just-now": "たった今",
+      "yesterday-at": "{day} {time}",
+      "zone-asia-anadyr": "アナディリ",
+      "zone-asia-barnaul": "バルナウル",
+      "zone-asia-chita": "チタ",
+      "zone-asia-irkutsk": "イルクーツク",
+      "zone-asia-kamchatka": "ペトロパブロフスク・カムチャツキー",
+      "zone-asia-khandyga": "ハンドゥイガ",
+      "zone-asia-krasnoyarsk": "クラスノヤルスク",
+      "zone-asia-magadan": "マガダン",
+      "zone-asia-novokuznetsk": "ノヴォクズネツク",
+      "zone-asia-novosibirsk": "ノヴォシビルスク",
+      "zone-asia-omsk": "オムスク",
+      "zone-asia-sakhalin": "サハリン",
+      "zone-asia-srednekolymsk": "スレドネコリムスク",
+      "zone-asia-tomsk": "トムスク",
+      "zone-asia-ust-nera": "ウスチ・ネラ",
+      "zone-asia-vladivostok": "ウラジオストク",
+      "zone-asia-yakutsk": "ヤクーツク",
+      "zone-asia-yekaterinburg": "エカテリンブルク",
+      "zone-europe-astrakhan": "アストラハン",
+      "zone-europe-kaliningrad": "カリーニングラード",
+      "zone-europe-kirov": "キーロフ",
+      "zone-europe-moscow": "モスクワ",
+      "zone-europe-samara": "サマーラ",
+      "zone-europe-saratov": "サラトフ",
+      "zone-europe-ulyanovsk": "ウリヤノフスク",
+      "zone-europe-volgograd": "ヴォルゴグラード"
+    }
+  }
+}

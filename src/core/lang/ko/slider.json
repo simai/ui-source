@@ -1,0 +1,36 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 20,
+    "translated": 20,
+    "share": 100
+  },
+  "words": {
+    "sf-slider": {
+      "next": "다음 슬라이드",
+      "previous": "이전 슬라이드",
+      "label": "슬라이드",
+      "carousel": "캐러셀",
+      "slide": "슬라이드",
+      "position": "{n}/{count}",
+      "pause": "슬라이드 정지",
+      "play": "슬라이드 재생",
+      "thumb": "슬라이드 {n}(으)로 이동"
+    },
+    "sf-slider-range": {
+      "from": "최소",
+      "to": "최대",
+      "from-label": "{name}, 최소",
+      "to-label": "{name}, 최대",
+      "help": "자세히 보기: {label}"
+    }
+  }
+}

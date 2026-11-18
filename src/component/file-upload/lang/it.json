@@ -1,0 +1,41 @@
+{
+  "runtime": {
+    "remove": "Rimuovi",
+    "uploading": "Caricamento",
+    "uploading-name": "Caricamento di {name}",
+    "retry": "Riprova",
+    "remove-name": "Rimuovi {name}",
+    "retry-name": "Riprova {name}",
+    "linkText": "Fai clic per caricare",
+    "text": "o trascina qui",
+    "not-added": "Non aggiunti: {n}",
+    "reject-type": "«{name}» non accettato: consentiti {formats}",
+    "reject-one": "«{name}» non aggiunto: questo campo accetta un solo file",
+    "reject-duplicate": "«{name}» è già nell’elenco",
+    "reject-empty": "«{name}» è vuoto",
+    "reject-size": "«{name}» è di {size}; il limite è {max}",
+    "reject-min-size": "«{name}» è di {size}; deve essere almeno {min}",
+    "reject-count": {
+      "one": "«{name}» non aggiunto: massimo {n} file",
+      "many": "«{name}» non aggiunto: massimo {n} file",
+      "other": "«{name}» non aggiunto: massimo {n} file"
+    },
+    "reject-total": "«{name}» non aggiunto: massimo {max} per tutti i file insieme",
+    "formats-image": "immagini",
+    "formats-video": "video",
+    "formats-audio": "audio",
+    "done": "Caricato",
+    "done-line": "{size} · caricato",
+    "error": "Non caricato",
+    "error-line": "Non caricato: {message}",
+    "said-added": "«{name}» aggiunto",
+    "said-added-many": {
+      "one": "{n} file aggiunto",
+      "many": "{n} file aggiunti",
+      "other": "{n} file aggiunti"
+    },
+    "said-done": "«{name}» caricato",
+    "said-error": "«{name}» non caricato",
+    "said-error-line": "«{name}» non caricato: {message}"
+  }
+}

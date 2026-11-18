@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "label": "Pagine adiacenti",
+    "prev": "Indietro",
+    "next": "Avanti",
+    "done": "Fine",
+    "step": "Passaggio {n} di {count}",
+    "lesson": "Lezione {n} di {count}",
+    "position": "{n} di {count}",
+    "next-lesson": "Lezione successiva",
+    "last-lesson": "Ultima lezione",
+    "start": "Inizia",
+    "finished": "Corso completato",
+    "restart": "Ricomincia",
+    "prev-item": "Elemento precedente",
+    "next-item": "Elemento successivo",
+    "position-many": "{n} di molti",
+    "to-list": "Torna all’elenco"
+  }
+}

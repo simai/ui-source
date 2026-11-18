@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "button": "ボタン",
+    "badge": "バッジ",
+    "send": "送信",
+    "field": "フィールド",
+    "option": "オプション",
+    "name": "名前",
+    "phone": "電話番号",
+    "email": "メール",
+    "message": "メッセージ"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "heading": "갤러리",
+    "open-picture": "이미지 {n}/{total} 열기",
+    "open-picture-named": "이미지 {n}/{total} 열기: {alt}",
+    "show-picture": "이미지 {n} 보기",
+    "show-picture-named": "이미지 {n} 보기: {alt}",
+    "pick-picture": "이미지 {n} 선택",
+    "pick-picture-named": "이미지 {n} 선택: {alt}",
+    "count": "{n} / {total}",
+    "selection": "선택",
+    "selected-count": "{count}개 선택됨",
+    "clear-selection": "선택 해제",
+    "viewer-label": "뷰어",
+    "viewer-count": "{n} / {total}",
+    "viewer-count-words": "{n}/{total}",
+    "viewer-zoom-in": "확대",
+    "viewer-zoom-out": "축소",
+    "viewer-close": "닫기",
+    "viewer-previous": "이전 이미지",
+    "viewer-next": "다음 이미지",
+    "viewer-download": "{name} 다운로드",
+    "viewer-open-tab": "새 탭에서 열기",
+    "viewer-document": "문서"
+  }
+}

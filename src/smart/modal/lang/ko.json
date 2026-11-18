@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "close": "닫기",
+    "discard": "저장 안 함",
+    "discard-heading": "저장하지 않고 닫을까요?",
+    "frame-failed": "프레임 콘텐츠를 불러오지 못했습니다",
+    "keep-editing": "계속 편집",
+    "load-failed": "콘텐츠를 불러오지 못했습니다",
+    "loading": "불러오는 중…",
+    "minimize": "최소화",
+    "title": "대화 상자"
+  }
+}

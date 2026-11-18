@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "hint-min-length": {
+      "other": "请至少输入 {n} 个字符"
+    },
+    "searching": "正在搜索…",
+    "nothing-found": "未找到结果",
+    "unavailable": "搜索不可用",
+    "error": "搜索失败",
+    "retry": "重试",
+    "show-more": "显示更多",
+    "max-items": "最多 {n} 个",
+    "remove": "移除 {label}",
+    "clear": "清除",
+    "results": {
+      "other": "{n} 个结果"
+    },
+    "value-missing": "请选择一个值",
+    "more-chips": {
+      "other": "另外 {n} 个：{names}"
+    },
+    "create-item": "创建“{text}”",
+    "create-email": "添加地址 {text}",
+    "create-error": "无法创建",
+    "chip-position": "{label}，第 {position} 个，共 {total} 个，按 Delete 移除",
+    "done": "完成",
+    "help": "详细了解：{label}"
+  }
+}

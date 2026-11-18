@@ -47,11 +47,12 @@ function packProblems(pack, schema) {
 }
 
 
-test('C177 (1)(3), C278, C282: the Framework packs are written by the script and current; Russian is the one that ships', () => {
+test('C177 (1)(3), C278, C282: the Framework packs are written by the script and current; every registry language but English ships', () => {
   execFileSync(process.execPath, ['scripts/build-language-packs.mjs', '--check'], {cwd: new URL('..', import.meta.url)});
-  assert.deepEqual(packLanguages(), ['ru']);
+  const PACKS = ['ar', 'de', 'es', 'fr', 'it', 'ja', 'ko', 'pt-br', 'ru', 'zh-hans'];
+  assert.deepEqual(packLanguages(), PACKS);
   const index = json('src/core/lang/index.json');
-  assert.deepEqual([index.schema, index.schema_version, index.delivery, index.languages], ['simai.language-pack-index', 1, 'framework', ['ru']]);
+  assert.deepEqual([index.schema, index.schema_version, index.delivery, index.languages], ['simai.language-pack-index', 1, 'framework', PACKS]);
   // A part's family is its component's family (C177 follow-up #46): the map
   // the next pack is split by.
   const families = packFamilies();
@@ -60,7 +61,7 @@ test('C177 (1)(3), C278, C282: the Framework packs are written by the script and
   // Russian is a language file (owner decision C282): its parts by family
   // and its script form, included before core. English is built in and never
   // a pack; no whole-language JSON file is written.
-  assert.deepEqual(readdirSync(new URL('../src/core/lang/', import.meta.url)).sort(), ['built-in.json', 'built-in.mjs', 'headers', 'index.json', 'index.mjs', 'ru', 'ru.js']);
+  assert.deepEqual(readdirSync(new URL('../src/core/lang/', import.meta.url)).sort(), ['built-in.json', 'built-in.mjs', 'headers', 'index.json', 'index.mjs', ...PACKS.flatMap((code) => [code, `${code}.js`])].sort());
   assert.ok(existsSync(new URL('../src/core/lang/ru/core.json', import.meta.url)));
   assert.ok(!existsSync(new URL('../src/core/lang/ru.json', import.meta.url)));
   assert.ok(!existsSync(new URL('../src/core/lang/en.json', import.meta.url)));
@@ -80,10 +81,11 @@ test('C177 (8): the pack is what the public schema says', () => {
   }
 });
 
-test('C278: no component ships a language file other than ru and en', () => {
+test('C278: no component ships a language file of a language the registry does not hold', () => {
+  const registry = json('src/core/contracts/language-registry.v1.json').languages.map((one) => `${one.locale.toLowerCase()}.json`);
   const others = [];
   for (const folder of languageFolders()) {
-    for (const file of readdirSync(folder.dir)) if (/\.json$/u.test(file) && !['ru.json', 'en.json', 'index.json'].includes(file)) others.push(`${folder.id}/${file}`);
+    for (const file of readdirSync(folder.dir)) if (/\.json$/u.test(file) && !['index.json', ...registry].includes(file)) others.push(`${folder.id}/${file}`);
   }
   assert.deepEqual(others, []);
 });
@@ -176,7 +178,7 @@ test('C177 (1)(4): core fetches only the parts a page shows, only for a language
   const CDN = 'https://cdn.test/distr/core/lang/';
   let fetched = [];
   // A document in `lang` holding the elements `tags`.
-  // A Framework index of a made-up de pack in four parts (none ships, C278).
+  // A Framework index of a made-up de pack in four parts (a small stand-in for the shipped one).
   const PACKS = {schema: 'simai.language-pack-index', schema_version: 1, delivery: 'framework', languages: ['de'],
     parts: {de: {core: ['sf-file-size', 'sf-relative-day'], change: ['sf-change'], pagination: ['sf-pagination'], empty: ['sf-empty-state']}}};
   const PART_WORDS = {core: {'sf-file-size': {b: 'B'}}, change: {'sf-change': {'show-text': 'Änderungen zeigen'}},
@@ -201,11 +203,16 @@ test('C177 (1)(4): core fetches only the parts a page shows, only for a language
   };
   const settle = () => Promise.all([...globalThis.__sfPageLanguage.packs.pending.values()]);
   try {
-    for (const lang of ['en', 'de', 'fr']) {
+    for (const lang of ['en', 'tr', 'nl']) {
       install(lang, undefined, ['sf-change'], json('src/core/lang/index.json'));
       await settle();
       assert.deepEqual(fetched, [], `${lang}: nothing is asked (built in, or no Framework pack)`);
     }
+    // A registry language ships (C278): a German page over the real index asks
+    // for core's part and the parts of what it shows.
+    install('de', undefined, ['sf-change'], json('src/core/lang/index.json'));
+    await settle();
+    assert.deepEqual(fetched.sort(), [`${CDN}de/change.json`, `${CDN}de/core.json`]);
     // Russian is a language file (C282): a Russian page asks for core's part
     // and the parts of what it shows...
     install('ru', undefined, ['sf-change'], json('src/core/lang/index.json'));

@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "ファイル",
+    "download-label": "{name} をダウンロード",
+    "remove-label": "{name} を削除",
+    "uploading-label": "{name} をアップロード中",
+    "error-text": "アップロードされていません",
+    "error-line": "アップロードされていません: {message}",
+    "retry-text": "再試行",
+    "retry-label": "{name} を再試行",
+    "delete-label": "{name} を削除",
+    "delete-question": "「{name}」を削除しますか？",
+    "delete-text": "削除",
+    "viewer-previous": "前のファイル",
+    "viewer-next": "次のファイル"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "activity-running": "运行中",
+    "activity-waiting": "需要你的操作",
+    "activity-done": "就绪",
+    "activity-stopped": "已停止",
+    "activity-failed": "失败",
+    "activity-paused": "已暂停",
+    "activity-queued": "排队中"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "cancelled": "تم إلغاء النقل.",
+    "dropped": "تم إفلات {item} في الموضع {index} في «{list}».",
+    "empty": "لم يُعثر على شيء",
+    "hint": "زر الجمع للإدراج بعده.",
+    "inserted": "تم إدراج {item} في الموضع {index} في «{list}».",
+    "instructions": "المسافة أو Enter للالتقاط، والأسهم للتحريك، والمسافة أو Enter للإفلات، وEscape للإلغاء.",
+    "menu": "إدراج",
+    "move-down": "لأسفل",
+    "move-first": "إلى الأعلى",
+    "move-last": "إلى الأسفل",
+    "move-menu": "نقل «{item}»",
+    "move-up": "لأعلى",
+    "moved": "الموضع {index} من {total} في «{list}».",
+    "picked": "تم التقاط {item}. الموضع {index} من {total} في «{list}».",
+    "point": "إدراج: الموضع {index} من {total}",
+    "roledescription": "قابل للسحب",
+    "search": "بحث",
+    "target": "الهدف: {target}."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "Numéro de téléphone",
+    "phoneRequired": "Saisissez un numéro de téléphone.",
+    "countryLabel": "Indicatif du pays",
+    "countryUnknown": "Indicatif non reconnu. Choisissez un pays",
+    "searchPlaceholder": "Pays ou indicatif",
+    "frequent": "Fréquemment choisis",
+    "allCountries": "Tous les pays",
+    "nothingFound": "Aucun résultat"
+  }
+}

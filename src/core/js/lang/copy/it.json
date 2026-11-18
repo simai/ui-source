@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "copy": "Copia",
+    "copied": "Copiato",
+    "failed": "Impossibile copiare",
+    "selected": "Selezionato: premi {keys}"
+  }
+}

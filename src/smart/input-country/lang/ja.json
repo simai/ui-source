@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "すべての国",
+    "country-label": "国番号",
+    "country-unknown": "国番号を認識できません。国を選択してください",
+    "frequent": "よく選ばれる国",
+    "nothing-found": "見つかりませんでした",
+    "phone-label": "電話番号",
+    "phone-required": "電話番号を入力してください。",
+    "placeholder": "",
+    "search-placeholder": "国または番号",
+    "value-missing": "電話番号を入力してください。",
+    "pattern-mismatch": "番号をすべて入力してください",
+    "too-short": "番号をすべて入力してください",
+    "help": "詳細: {label}"
+  }
+}

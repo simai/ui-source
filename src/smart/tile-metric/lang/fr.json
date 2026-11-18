@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "untitled": "Indicateur",
+    "no-value": "—",
+    "loading": "Chargement",
+    "limit": "{value} sur {max}",
+    "limit-name": "{label} : utilisé",
+    "change-up": "en hausse",
+    "change-down": "en baisse",
+    "change-flat": "stable",
+    "status-success": "OK",
+    "status-info": "Info",
+    "status-warning": "Avertissement",
+    "status-error": "Erreur"
+  }
+}

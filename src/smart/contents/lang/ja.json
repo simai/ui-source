@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "このページの内容",
+    "more": "もっと見る",
+    "count-error": {
+      "other": "エラー {n} 件"
+    },
+    "count-warning": {
+      "other": "警告 {n} 件"
+    },
+    "count-success": {
+      "other": "{n} 件完了"
+    },
+    "status-error": "エラーあり",
+    "status-warning": "警告あり",
+    "status-success": "完了"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "value-missing": "请填写此字段",
+    "count-text": "{count} / {max}",
+    "too-long": "最多 {max} 个字符",
+    "too-short": "至少 {min} 个字符",
+    "help": "详细了解：{label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "继承",
+      "reset": "恢复为继承值",
+      "described": "继承：{value}"
+    }
+  }
+}

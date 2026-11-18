@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "aria-label": "단계",
+    "completed-label": "완료",
+    "current-label": "현재",
+    "ahead-label": "예정",
+    "error-label": "오류",
+    "skipped-label": "건너뜀",
+    "running-label": "진행 중",
+    "count-label": "{count}단계 중 {n}단계"
+  }
+}

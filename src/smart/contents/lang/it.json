@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "label": "In questa pagina",
+    "more": "Altro",
+    "count-error": {
+      "one": "{n} errore",
+      "many": "{n} errori",
+      "other": "{n} errori"
+    },
+    "count-warning": {
+      "one": "{n} avviso",
+      "many": "{n} avvisi",
+      "other": "{n} avvisi"
+    },
+    "count-success": {
+      "one": "{n}, fatto",
+      "many": "{n}, fatti",
+      "other": "{n}, fatti"
+    },
+    "status-error": "contiene errori",
+    "status-warning": "contiene avvisi",
+    "status-success": "fatto"
+  }
+}

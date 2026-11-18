@@ -1,0 +1,38 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "de",
+  "name": "Deutsch",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-sortable": {
+      "cancelled": "Verschieben abgebrochen.",
+      "dropped": "{item} an Position {index} in „{list}“ abgelegt.",
+      "empty": "Nichts gefunden",
+      "hint": "Plus zum Einfügen danach.",
+      "inserted": "{item} an Position {index} in „{list}“ eingefügt.",
+      "instructions": "Leertaste oder Enter zum Aufnehmen, Pfeiltasten zum Verschieben, Leertaste oder Enter zum Ablegen, Escape zum Abbrechen.",
+      "menu": "Einfügen",
+      "move-down": "Nach unten",
+      "move-first": "Ganz nach oben",
+      "move-last": "Ganz nach unten",
+      "move-menu": "„{item}“ verschieben",
+      "move-up": "Nach oben",
+      "moved": "Position {index} von {total} in „{list}“.",
+      "picked": "{item} aufgenommen. Position {index} von {total} in „{list}“.",
+      "point": "Einfügen: Position {index} von {total}",
+      "roledescription": "verschiebbar",
+      "search": "Suchen",
+      "target": "Ziel: {target}."
+    }
+  }
+}

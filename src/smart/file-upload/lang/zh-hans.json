@@ -1,0 +1,41 @@
+{
+  "runtime": {
+    "done": "已上传",
+    "done-line": "{size} · 已上传",
+    "error": "未上传",
+    "error-line": "未上传：{message}",
+    "formats-audio": "音频",
+    "formats-image": "图片",
+    "formats-video": "视频",
+    "link-text": "点击上传",
+    "not-added": "未添加：{n}",
+    "reject-count": {
+      "other": "未添加“{name}”：最多 {n} 个文件"
+    },
+    "reject-duplicate": "“{name}”已在列表中",
+    "reject-empty": "“{name}”为空",
+    "reject-min-size": "“{name}”大小为 {size}；至少需要 {min}",
+    "reject-one": "未添加“{name}”：此字段只接受一个文件",
+    "reject-size": "“{name}”大小为 {size}；上限为 {max}",
+    "reject-total": "未添加“{name}”：所有文件合计不超过 {max}",
+    "reject-type": "不接受“{name}”：允许 {formats}",
+    "remove": "移除",
+    "remove-failed": "请移除或重试上传失败的文件",
+    "retry": "重试",
+    "text": "或拖放到此处",
+    "uploading": "正在上传",
+    "value-missing": "请添加文件",
+    "value-missing-many": "请至少添加一个文件",
+    "wait-for-uploads": "请等待文件上传完成",
+    "file-removed": "已移除文件",
+    "undo": "撤销",
+    "help": "详细了解：{label}",
+    "said-added": "已添加“{name}”",
+    "said-added-many": {
+      "other": "已添加 {n} 个文件"
+    },
+    "said-done": "已上传“{name}”",
+    "said-error": "“{name}”未上传",
+    "said-error-line": "“{name}”未上传：{message}"
+  }
+}

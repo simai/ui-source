@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "from": "최소",
+    "to": "최대",
+    "from-label": "{name}, 최소",
+    "to-label": "{name}, 최대",
+    "help": "자세히 보기: {label}"
+  }
+}

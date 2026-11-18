@@ -1,0 +1,48 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 28,
+    "translated": 28,
+    "share": 100
+  },
+  "words": {
+    "sf-settings": {
+      "label": "Paramètres",
+      "hue-red": "Rouge",
+      "hue-orange": "Orange",
+      "hue-amber": "Ambre",
+      "hue-yellow": "Jaune",
+      "hue-lime": "Citron vert",
+      "hue-green": "Vert",
+      "hue-teal": "Sarcelle",
+      "hue-cyan": "Cyan",
+      "hue-sky": "Bleu ciel",
+      "hue-blue": "Bleu",
+      "hue-indigo": "Indigo",
+      "hue-violet": "Violet",
+      "hue-purple": "Pourpre",
+      "hue-pink": "Rose",
+      "hue-brown": "Marron",
+      "hue-gray": "Gris",
+      "own-color": "Couleur personnalisée…",
+      "own-color-value": "Personnalisée : {value}",
+      "close": "Fermer",
+      "reset": "Réinitialiser",
+      "apply": "Appliquer",
+      "search": "Rechercher",
+      "empty": "Aucun résultat",
+      "pin": "Épingler",
+      "unpin": "Désépingler",
+      "move-hint": "Alt avec les flèches haut et bas change l’ordre",
+      "position": "{text} : {index} sur {count}"
+    }
+  }
+}

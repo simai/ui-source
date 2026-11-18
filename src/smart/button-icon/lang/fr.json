@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "theme": "Thème",
+    "theme-system": "système",
+    "theme-light": "clair",
+    "theme-dark": "sombre",
+    "theme-system-now": "système (actuellement {theme})",
+    "cycle-next": "{name}. Appuyez pour {next}"
+  }
+}

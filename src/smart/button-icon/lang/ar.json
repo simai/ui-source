@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "theme": "المظهر",
+    "theme-system": "النظام",
+    "theme-light": "فاتح",
+    "theme-dark": "داكن",
+    "theme-system-now": "النظام (الآن {theme})",
+    "cycle-next": "{name}. اضغط للانتقال إلى {next}"
+  }
+}

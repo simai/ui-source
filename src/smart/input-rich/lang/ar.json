@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "toolbar": "التنسيق",
+    "paragraph": "فقرة",
+    "heading-2": "عنوان 2",
+    "heading-3": "عنوان 3",
+    "heading-4": "عنوان 4",
+    "bold": "غامق",
+    "italic": "مائل",
+    "link": "رابط",
+    "bulleted-list": "قائمة نقطية",
+    "numbered-list": "قائمة مرقمة",
+    "quote": "اقتباس",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "not-in-list": "غير متاح داخل قائمة",
+    "nothing-to-undo": "لا شيء للتراجع عنه",
+    "nothing-to-redo": "لا شيء لإعادته",
+    "link-dialog": "رابط",
+    "link-address": "عنوان الرابط",
+    "link-hint": "https://… أو mailto: أو tel: أو مسار في هذا الموقع مثل /about",
+    "link-invalid": "استخدم عنوان https: أو mailto: أو tel:، أو مسارًا في هذا الموقع يبدأ بـ /.",
+    "link-apply": "تطبيق",
+    "link-remove": "إزالة الرابط",
+    "value-missing": "املأ هذا الحقل",
+    "count-text": "{count} / {max}",
+    "too-long": "{max} حرفًا كحد أقصى",
+    "help": "المزيد عن: {label}",
+    "text-level": "مستوى النص",
+    "more": "المزيد"
+  }
+}

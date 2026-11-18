@@ -1,0 +1,33 @@
+{
+  "runtime": {
+    "date-at": "{date} {time}",
+    "just-now": "방금",
+    "yesterday-at": "{day} {time}",
+    "zone-asia-anadyr": "아나디리",
+    "zone-asia-barnaul": "바르나울",
+    "zone-asia-chita": "치타",
+    "zone-asia-irkutsk": "이르쿠츠크",
+    "zone-asia-kamchatka": "페트로파블롭스크캄차츠키",
+    "zone-asia-khandyga": "한디가",
+    "zone-asia-krasnoyarsk": "크라스노야르스크",
+    "zone-asia-magadan": "마가단",
+    "zone-asia-novokuznetsk": "노보쿠즈네츠크",
+    "zone-asia-novosibirsk": "노보시비르스크",
+    "zone-asia-omsk": "옴스크",
+    "zone-asia-sakhalin": "사할린",
+    "zone-asia-srednekolymsk": "스레드네콜림스크",
+    "zone-asia-tomsk": "톰스크",
+    "zone-asia-ust-nera": "우스트네라",
+    "zone-asia-vladivostok": "블라디보스토크",
+    "zone-asia-yakutsk": "야쿠츠크",
+    "zone-asia-yekaterinburg": "예카테린부르크",
+    "zone-europe-astrakhan": "아스트라한",
+    "zone-europe-kaliningrad": "칼리닌그라드",
+    "zone-europe-kirov": "키로프",
+    "zone-europe-moscow": "모스크바",
+    "zone-europe-samara": "사마라",
+    "zone-europe-saratov": "사라토프",
+    "zone-europe-ulyanovsk": "울리야놉스크",
+    "zone-europe-volgograd": "볼고그라드"
+  }
+}

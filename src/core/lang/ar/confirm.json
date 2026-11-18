@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "تأكيد",
+      "accepted-text": "تم",
+      "accepting-text": "جارٍ التنفيذ…",
+      "decline-text": "إلغاء",
+      "declining-text": "جارٍ الإلغاء…",
+      "expired-text": "انتهى وقت الرد",
+      "question-label": "تأكيد",
+      "require-error": "اكتب «{name}» تمامًا كما في الأعلى",
+      "require-text": "للتأكيد، اكتب {name}",
+      "until-text": "أجب قبل {time}"
+    },
+    "sf-confirm-change": {
+      "accept-text": "تأكيد",
+      "accepted-text": "تم التطبيق",
+      "accepting-text": "جارٍ التطبيق…",
+      "after-text": "سيصبح",
+      "before-text": "كان",
+      "changes-label": "ما الذي سيتغير",
+      "decline-text": "رفض",
+      "declining-text": "جارٍ الرفض…",
+      "empty-value-text": "فارغ",
+      "expired-text": "انتهى وقت التأكيد",
+      "until-text": "أكّد قبل {time}"
+    }
+  }
+}

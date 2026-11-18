@@ -1,0 +1,49 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 29,
+    "translated": 29,
+    "share": 100
+  },
+  "words": {
+    "sf-time": {
+      "date-at": "{date}، {time}",
+      "just-now": "الآن",
+      "yesterday-at": "{day}، {time}",
+      "zone-asia-anadyr": "أنادير",
+      "zone-asia-barnaul": "بارناول",
+      "zone-asia-chita": "تشيتا",
+      "zone-asia-irkutsk": "إيركوتسك",
+      "zone-asia-kamchatka": "بتروبافلوفسك كامتشاتسكي",
+      "zone-asia-khandyga": "خانديغا",
+      "zone-asia-krasnoyarsk": "كراسنويارسك",
+      "zone-asia-magadan": "ماغادان",
+      "zone-asia-novokuznetsk": "نوفوكوزنتسك",
+      "zone-asia-novosibirsk": "نوفوسيبيرسك",
+      "zone-asia-omsk": "أومسك",
+      "zone-asia-sakhalin": "سخالين",
+      "zone-asia-srednekolymsk": "سريدنيكوليمسك",
+      "zone-asia-tomsk": "تومسك",
+      "zone-asia-ust-nera": "أوست نيرا",
+      "zone-asia-vladivostok": "فلاديفوستوك",
+      "zone-asia-yakutsk": "ياكوتسك",
+      "zone-asia-yekaterinburg": "يكاترينبورغ",
+      "zone-europe-astrakhan": "أستراخان",
+      "zone-europe-kaliningrad": "كالينينغراد",
+      "zone-europe-kirov": "كيروف",
+      "zone-europe-moscow": "موسكو",
+      "zone-europe-samara": "سامارا",
+      "zone-europe-saratov": "ساراتوف",
+      "zone-europe-ulyanovsk": "أوليانوفسك",
+      "zone-europe-volgograd": "فولغوغراد"
+    }
+  }
+}

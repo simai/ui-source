@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "Datei",
+    "preparing-text": "Datei wird vorbereitet…",
+    "preparing-value-text": "Wird vorbereitet… {percent}",
+    "failed-text": "Konnte nicht erstellt werden",
+    "retry-text": "Wiederholen",
+    "retry-label": "Wiederholen: {name}",
+    "cancel-text": "Abbrechen",
+    "cancel-label": "Abbrechen: {name}",
+    "ready-text": "Fertig",
+    "get-text": "Herunterladen",
+    "get-label": "{name} herunterladen",
+    "new-tab-text": "(öffnet in neuem Tab)",
+    "said-preparing": "Datei „{name}“ wird vorbereitet",
+    "said-ready": "Die Datei ist fertig: „{name}“{said}",
+    "said-fetched": "Die Datei ist fertig und heruntergeladen: „{name}“{said}",
+    "said-offer": "Die Datei ist fertig: „{name}“{said}. Schaltfläche „Herunterladen“",
+    "said-cancelled": "Vorbereitung abgebrochen: „{name}“",
+    "said-failed": "Fehler: „{name}“ konnte nicht erstellt werden."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "toolbar": "格式",
+    "paragraph": "段落",
+    "heading-2": "标题 2",
+    "heading-3": "标题 3",
+    "heading-4": "标题 4",
+    "bold": "粗体",
+    "italic": "斜体",
+    "link": "链接",
+    "bulleted-list": "项目符号列表",
+    "numbered-list": "编号列表",
+    "quote": "引用",
+    "undo": "撤销",
+    "redo": "重做",
+    "not-in-list": "列表中不可用",
+    "nothing-to-undo": "没有可撤销的操作",
+    "nothing-to-redo": "没有可重做的操作",
+    "link-dialog": "链接",
+    "link-address": "链接地址",
+    "link-hint": "https://…、mailto:、tel: 或本站路径，如 /about",
+    "link-invalid": "请使用 https:、mailto: 或 tel: 地址，或以 / 开头的本站路径。",
+    "link-apply": "应用",
+    "link-remove": "移除链接",
+    "value-missing": "请填写此字段",
+    "count-text": "{count} / {max}",
+    "too-long": "最多 {max} 个字符",
+    "help": "详细了解：{label}",
+    "text-level": "文本级别",
+    "more": "更多"
+  }
+}

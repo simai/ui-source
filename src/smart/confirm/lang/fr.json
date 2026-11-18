@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "accept-text": "Confirmer",
+    "accepted-text": "Terminé",
+    "accepting-text": "En cours…",
+    "decline-text": "Annuler",
+    "declining-text": "Annulation…",
+    "expired-text": "Le délai de réponse est dépassé",
+    "question-label": "Confirmation",
+    "require-error": "Saisissez « {name} » exactement comme ci-dessus",
+    "require-text": "Pour confirmer, saisissez {name}",
+    "until-text": "Répondre avant {time}"
+  }
+}

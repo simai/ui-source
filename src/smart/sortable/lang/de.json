@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "cancelled": "Verschieben abgebrochen.",
+    "dropped": "{item} an Position {index} in „{list}“ abgelegt.",
+    "empty": "Nichts gefunden",
+    "hint": "Plus zum Einfügen danach.",
+    "inserted": "{item} an Position {index} in „{list}“ eingefügt.",
+    "instructions": "Leertaste oder Enter zum Aufnehmen, Pfeiltasten zum Verschieben, Leertaste oder Enter zum Ablegen, Escape zum Abbrechen.",
+    "menu": "Einfügen",
+    "move-down": "Nach unten",
+    "move-first": "Ganz nach oben",
+    "move-last": "Ganz nach unten",
+    "move-menu": "„{item}“ verschieben",
+    "move-up": "Nach oben",
+    "moved": "Position {index} von {total} in „{list}“.",
+    "picked": "{item} aufgenommen. Position {index} von {total} in „{list}“.",
+    "point": "Einfügen: Position {index} von {total}",
+    "roledescription": "verschiebbar",
+    "search": "Suchen",
+    "target": "Ziel: {target}."
+  }
+}

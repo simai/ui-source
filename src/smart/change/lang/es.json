@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "empty-text": "vacío",
+    "change-text": "antes {before}, ahora {after}",
+    "label-separator": ":",
+    "show-text": "Mostrar cambios",
+    "hide-text": "Ocultar cambios",
+    "before-text": "Antes",
+    "after-text": "Después"
+  }
+}

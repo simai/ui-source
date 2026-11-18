@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "command": "Command",
+    "control": "Control",
+    "option": "Option",
+    "shift": "Shift",
+    "ctrl": "Ctrl",
+    "alt": "Alt",
+    "win": "Windows",
+    "enter": "Enter",
+    "escape": "Esc",
+    "tab": "Tab",
+    "space": "Espaço",
+    "backspace": "Backspace",
+    "delete": "Delete",
+    "up": "Seta para cima",
+    "down": "Seta para baixo",
+    "left": "Seta para a esquerda",
+    "right": "Seta para a direita",
+    "home": "Home",
+    "end": "End",
+    "pageup": "Page Up",
+    "pagedown": "Page Down",
+    "plus": "Mais"
+  }
+}

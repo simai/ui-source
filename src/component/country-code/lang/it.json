@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "Numero di telefono",
+    "phoneRequired": "Inserisci un numero di telefono.",
+    "countryLabel": "Prefisso internazionale",
+    "countryUnknown": "Prefisso non riconosciuto. Scegli un paese",
+    "searchPlaceholder": "Paese o prefisso",
+    "frequent": "Scelti spesso",
+    "allCountries": "Tutti i paesi",
+    "nothingFound": "Nessun risultato"
+  }
+}

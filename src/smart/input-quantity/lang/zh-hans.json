@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "decrement": "减小数值",
+    "increment": "增大数值",
+    "range-underflow": "数值不能小于 {min}",
+    "range-overflow": "数值不能大于 {max}",
+    "step-mismatch": "数值必须是 {step} 的倍数",
+    "remove": "移除",
+    "value-missing": "请填写此字段",
+    "bad-input": "请输入数字",
+    "help": "详细了解：{label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "继承",
+      "reset": "恢复为继承值",
+      "described": "继承：{value}"
+    }
+  }
+}

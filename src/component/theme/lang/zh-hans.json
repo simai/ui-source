@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "theme": "主题",
+    "theme-light": "浅色",
+    "theme-dark": "深色",
+    "cycle-next": "{name}。按下切换为{next}"
+  }
+}

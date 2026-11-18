@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "文件",
+    "download-label": "下载 {name}",
+    "remove-label": "移除 {name}",
+    "uploading-label": "正在上传 {name}",
+    "error-text": "未上传",
+    "error-line": "未上传：{message}",
+    "retry-text": "重试",
+    "retry-label": "重试 {name}",
+    "delete-label": "删除 {name}",
+    "delete-question": "删除“{name}”？",
+    "delete-text": "删除",
+    "viewer-previous": "上一个文件",
+    "viewer-next": "下一个文件"
+  }
+}

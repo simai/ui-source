@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "empty-text": "暂无事件",
+    "more": "显示更多",
+    "loading": "正在加载…",
+    "today": "今天",
+    "yesterday": "昨天",
+    "tomorrow": "明天",
+    "status-success": "已完成",
+    "status-warning": "警告",
+    "status-error": "错误",
+    "status-info": "信息",
+    "state-done": "已完成",
+    "state-current": "当前",
+    "state-upcoming": "即将开始",
+    "step-status-success": "成功",
+    "step-status-warning": "有警告",
+    "step-status-error": "有错误",
+    "run-changes": {
+      "other": "还有 {n} 项更改"
+    },
+    "run-events": {
+      "other": "还有 {n} 个事件"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "runtime": {
+    "label": "要対応",
+    "empty-text": "問題ありません",
+    "empty-checked-text": "{text} · {when}に確認",
+    "status-error": "エラー",
+    "status-warning": "警告",
+    "status-info": "情報",
+    "status-success": "完了",
+    "status-passed": "合格",
+    "summary-error": {
+      "other": "エラー {n} 件"
+    },
+    "summary-warning": {
+      "other": "警告 {n} 件"
+    },
+    "summary-info": {
+      "other": "推奨 {n} 件"
+    },
+    "summary-success": {
+      "other": "解決済み {n} 件"
+    },
+    "group-error": "エラー",
+    "group-warning": "警告",
+    "group-info": "推奨事項",
+    "group-success": "解決済み",
+    "group-passed": "合格",
+    "affected-text": "影響: {text}",
+    "age-now": "たった今",
+    "age-minutes": "{n} 分",
+    "age-hours": "{n} 時間",
+    "age-days": {
+      "other": "{n} 日"
+    },
+    "checked-text": "{when}に確認",
+    "checked-now": "たった今",
+    "checked-minutes": "{n} 分前",
+    "checked-time": "{time}",
+    "checked-date": "{date} {time}",
+    "recheck-label": "再確認",
+    "more-text": "すべての問題（{n}）",
+    "show-all-text": "すべて表示（{n}）",
+    "more-label": "その他: {title}",
+    "snooze-day-text": "1日後に再通知",
+    "snooze-week-text": "1週間後に再通知",
+    "dismiss-text": "今後通知しない",
+    "help-text": "このチェックについて",
+    "snoozed-day-notice": "1日後に再通知: {title}",
+    "snoozed-week-notice": "1週間後に再通知: {title}",
+    "dismissed-notice": "今後通知しません: {title}",
+    "undo-text": "元に戻す"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "Avis importants",
+    "level-error": "Erreur",
+    "level-warning": "Avertissement",
+    "level-info": "Info",
+    "more": "{count} de plus",
+    "collapse-list": "Masquer la liste",
+    "list": "Tous les avis",
+    "hide-day": "Masquer pour la journée",
+    "hide": "Masquer",
+    "acknowledge": "Marquer comme lu",
+    "minimize": "Réduire la barre",
+    "expand": "déplier",
+    "expand-label": "Déplier les avis importants",
+    "count": "Avis importants : {count}"
+  }
+}

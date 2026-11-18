@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "next": "Slide successiva",
+    "previous": "Slide precedente",
+    "label": "Slide",
+    "carousel": "carosello",
+    "slide": "slide",
+    "position": "{n} di {count}",
+    "pause": "Ferma le slide",
+    "play": "Avvia le slide"
+  }
+}

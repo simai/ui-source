@@ -1,0 +1,58 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-button-copy": {
+      "copy": "복사",
+      "copied": "복사됨",
+      "failed": "복사하지 못했습니다",
+      "selected": "선택됨 — {keys} 누르기"
+    },
+    "sf-composition": {
+      "button": "버튼",
+      "badge": "배지",
+      "send": "보내기",
+      "field": "필드",
+      "option": "옵션",
+      "name": "이름",
+      "phone": "전화번호",
+      "email": "이메일",
+      "message": "메시지"
+    },
+    "sf-display-settings": {
+      "skip-link-text": "본문으로 건너뛰기"
+    },
+    "sf-file-download": {
+      "new-tab-text": "(새 탭에서 열림)"
+    },
+    "sf-file-size": {
+      "b": "B",
+      "kb": "KB",
+      "mb": "MB",
+      "gb": "GB"
+    },
+    "sf-fragment": {
+      "heading": "이 블록을 표시할 수 없습니다"
+    },
+    "sf-notify": {
+      "region": "알림"
+    },
+    "sf-relative-day": {
+      "today": "오늘",
+      "yesterday": "어제",
+      "tomorrow": "내일"
+    }
+  }
+}

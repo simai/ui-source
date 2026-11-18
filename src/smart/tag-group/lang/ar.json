@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "more": {
+      "zero": "{n} أخرى: {names}",
+      "one": "واحد آخر: {names}",
+      "two": "اثنان آخران: {names}",
+      "few": "{n} أخرى: {names}",
+      "many": "{n} أخرى: {names}",
+      "other": "{n} أخرى: {names}"
+    },
+    "more-panel": {
+      "zero": "لا وسوم أخرى",
+      "one": "وسم آخر",
+      "two": "وسمان آخران",
+      "few": "{n} وسوم أخرى",
+      "many": "{n} وسمًا آخر",
+      "other": "{n} وسم آخر"
+    },
+    "position": "{label}، {position} من {total}، اضغط Delete للإزالة",
+    "position-plain": "{label}، {position} من {total}"
+  }
+}

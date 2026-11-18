@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "untitled": "المؤشر",
+    "no-value": "—",
+    "loading": "جارٍ التحميل",
+    "limit": "{value} من {max}",
+    "limit-name": "{label}: المستخدم",
+    "change-up": "ارتفاع",
+    "change-down": "انخفاض",
+    "change-flat": "بلا تغيير",
+    "status-success": "سليم",
+    "status-info": "معلومات",
+    "status-warning": "تحذير",
+    "status-error": "خطأ"
+  }
+}

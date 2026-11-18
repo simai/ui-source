@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "untitled": "Métrica",
+    "no-value": "—",
+    "loading": "Cargando",
+    "limit": "{value} de {max}",
+    "limit-name": "{label}: usado",
+    "change-up": "sube",
+    "change-down": "baja",
+    "change-flat": "sin cambios",
+    "status-success": "Correcto",
+    "status-info": "Información",
+    "status-warning": "Advertencia",
+    "status-error": "Error"
+  }
+}

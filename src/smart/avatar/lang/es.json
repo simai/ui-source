@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "aria-label": "Avatar",
+    "status-online": "en línea",
+    "status-away": "ausente",
+    "status-offline": "desconectado"
+  }
+}

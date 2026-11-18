@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "new-tab-text": "(s’ouvre dans un nouvel onglet)",
+    "copy-label": "Copier le lien",
+    "missing-text": "supprimé",
+    "forbidden-text": "accès refusé"
+  }
+}

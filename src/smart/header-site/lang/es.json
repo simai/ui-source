@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "Menú",
+    "menu-label": "Abrir menú",
+    "close-label": "Cerrar menú",
+    "settings": "Ajustes",
+    "language": "Idioma",
+    "tools": "Herramientas",
+    "theme": "Tema"
+  }
+}

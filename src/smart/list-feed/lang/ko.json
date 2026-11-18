@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "earlier-text": "이전 항목 보기",
+    "empty-text": "아직 항목이 없습니다",
+    "latest-label": "최신 항목으로",
+    "loading-earlier-text": "이전 항목을 불러오는 중",
+    "new-text": "새 항목",
+    "log-label": "항목",
+    "region-label": "피드",
+    "you-text": "나"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "accept-text": "Bestätigen",
+    "accepted-text": "Übernommen",
+    "accepting-text": "Wird übernommen…",
+    "after-text": "Wird",
+    "before-text": "War",
+    "changes-label": "Was sich ändert",
+    "decline-text": "Ablehnen",
+    "declining-text": "Wird abgelehnt…",
+    "empty-value-text": "leer",
+    "expired-text": "Die Zeit zum Bestätigen ist abgelaufen",
+    "until-text": "Bestätigen bis {time}"
+  }
+}

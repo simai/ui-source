@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "Tutti i paesi",
+    "country-label": "Prefisso internazionale",
+    "country-unknown": "Prefisso non riconosciuto. Scegli un paese",
+    "frequent": "Scelti spesso",
+    "nothing-found": "Nessun risultato",
+    "phone-label": "Numero di telefono",
+    "phone-required": "Inserisci un numero di telefono.",
+    "placeholder": "",
+    "search-placeholder": "Paese o prefisso",
+    "value-missing": "Inserisci un numero di telefono.",
+    "pattern-mismatch": "Inserisci il numero completo",
+    "too-short": "Inserisci il numero completo",
+    "help": "Maggiori informazioni: {label}"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "runtime": {
+    "new-tab": "(öffnet in neuem Tab)",
+    "byte": {
+      "one": "Byte",
+      "other": "Bytes"
+    },
+    "kilobyte": {
+      "one": "Kilobyte",
+      "other": "Kilobyte"
+    },
+    "megabyte": {
+      "one": "Megabyte",
+      "other": "Megabyte"
+    },
+    "gigabyte": {
+      "one": "Gigabyte",
+      "other": "Gigabyte"
+    },
+    "terabyte": {
+      "one": "Terabyte",
+      "other": "Terabyte"
+    }
+  }
+}

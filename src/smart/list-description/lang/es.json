@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "empty-text": "Sin definir",
+    "copy": "Copiar: {label}",
+    "action": "{action}: {label}",
+    "help": "Más sobre: {label}",
+    "status-success": "Correcto",
+    "status-warning": "Advertencia",
+    "status-error": "Error",
+    "status-info": "Información"
+  }
+}

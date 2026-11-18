@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "close": "Fechar",
+    "discard": "Não salvar",
+    "discard-heading": "Fechar sem salvar?",
+    "frame-failed": "Não foi possível carregar o conteúdo do quadro",
+    "keep-editing": "Continuar editando",
+    "load-failed": "Não foi possível carregar o conteúdo",
+    "loading": "Carregando…",
+    "minimize": "Minimizar",
+    "title": "Caixa de diálogo"
+  }
+}

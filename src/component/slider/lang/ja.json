@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "スライド",
+    "carousel": "カルーセル",
+    "slide": "スライド",
+    "position": "{n}/{count}",
+    "pause": "スライドを停止",
+    "play": "スライドを再生",
+    "thumb": "スライド {n} へ移動"
+  }
+}

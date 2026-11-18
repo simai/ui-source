@@ -1,0 +1,6 @@
+{
+  "runtime": {
+    "value-missing": "Choisissez une option.",
+    "help": "En savoir plus : {label}"
+  }
+}

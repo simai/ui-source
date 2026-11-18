@@ -1,0 +1,41 @@
+{
+  "runtime": {
+    "remove": "Quitar",
+    "uploading": "Subiendo",
+    "uploading-name": "Subiendo {name}",
+    "retry": "Reintentar",
+    "remove-name": "Quitar {name}",
+    "retry-name": "Reintentar {name}",
+    "linkText": "Haz clic para subir",
+    "text": "o arrastra y suelta",
+    "not-added": "No añadidos: {n}",
+    "reject-type": "No se acepta «{name}»: se permiten {formats}",
+    "reject-one": "No se añadió «{name}»: este campo admite un solo archivo",
+    "reject-duplicate": "«{name}» ya está en la lista",
+    "reject-empty": "«{name}» está vacío",
+    "reject-size": "«{name}» ocupa {size}; el límite es {max}",
+    "reject-min-size": "«{name}» ocupa {size}; debe tener al menos {min}",
+    "reject-count": {
+      "one": "No se añadió «{name}»: máximo {n} archivo",
+      "many": "No se añadió «{name}»: máximo {n} archivos",
+      "other": "No se añadió «{name}»: máximo {n} archivos"
+    },
+    "reject-total": "No se añadió «{name}»: todos los archivos juntos hasta {max}",
+    "formats-image": "imágenes",
+    "formats-video": "vídeo",
+    "formats-audio": "audio",
+    "done": "Subido",
+    "done-line": "{size} · subido",
+    "error": "No se subió",
+    "error-line": "No se subió: {message}",
+    "said-added": "«{name}» añadido",
+    "said-added-many": {
+      "one": "{n} archivo añadido",
+      "many": "{n} archivos añadidos",
+      "other": "{n} archivos añadidos"
+    },
+    "said-done": "«{name}» subido",
+    "said-error": "«{name}» no se subió",
+    "said-error-line": "«{name}» no se subió: {message}"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "toggle-label": "Menú",
+    "more-label": "Más",
+    "status-success": "todo bien",
+    "status-warning": "requiere atención",
+    "status-error": "error",
+    "status-info": "algo nuevo",
+    "status-neutral": "sin datos",
+    "subsections": "subsecciones",
+    "search-placeholder": "Buscar",
+    "search-found": "Encontrados: {n}",
+    "search-empty": "No se encontró nada",
+    "new-tab": "se abre en una pestaña nueva"
+  }
+}

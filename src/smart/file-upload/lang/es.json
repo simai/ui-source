@@ -1,0 +1,45 @@
+{
+  "runtime": {
+    "done": "Subido",
+    "done-line": "{size} · subido",
+    "error": "No se subió",
+    "error-line": "No se subió: {message}",
+    "formats-audio": "audio",
+    "formats-image": "imágenes",
+    "formats-video": "vídeo",
+    "link-text": "Haz clic para subir",
+    "not-added": "No añadidos: {n}",
+    "reject-count": {
+      "one": "No se añadió «{name}»: máximo {n} archivo",
+      "many": "No se añadió «{name}»: máximo {n} archivos",
+      "other": "No se añadió «{name}»: máximo {n} archivos"
+    },
+    "reject-duplicate": "«{name}» ya está en la lista",
+    "reject-empty": "«{name}» está vacío",
+    "reject-min-size": "«{name}» ocupa {size}; debe tener al menos {min}",
+    "reject-one": "No se añadió «{name}»: este campo admite un solo archivo",
+    "reject-size": "«{name}» ocupa {size}; el límite es {max}",
+    "reject-total": "No se añadió «{name}»: todos los archivos juntos hasta {max}",
+    "reject-type": "No se acepta «{name}»: se permiten {formats}",
+    "remove": "Quitar",
+    "remove-failed": "Quita o reintenta los archivos con error",
+    "retry": "Reintentar",
+    "text": "o arrastra y suelta",
+    "uploading": "Subiendo",
+    "value-missing": "Añade un archivo",
+    "value-missing-many": "Añade al menos un archivo",
+    "wait-for-uploads": "Espera a que se suban los archivos",
+    "file-removed": "Archivo quitado",
+    "undo": "Deshacer",
+    "help": "Más sobre: {label}",
+    "said-added": "«{name}» añadido",
+    "said-added-many": {
+      "one": "{n} archivo añadido",
+      "many": "{n} archivos añadidos",
+      "other": "{n} archivos añadidos"
+    },
+    "said-done": "«{name}» subido",
+    "said-error": "«{name}» no se subió",
+    "said-error-line": "«{name}» no se subió: {message}"
+  }
+}

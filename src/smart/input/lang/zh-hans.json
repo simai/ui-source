@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "value-missing": "请填写此字段",
+    "clear": "清除",
+    "reveal": "显示密码",
+    "type-mismatch": "请检查值",
+    "type-mismatch-email": "请输入完整地址，例如 li@example.cn",
+    "type-mismatch-url": "请输入完整地址，例如 https://example.cn",
+    "pattern-mismatch": "请检查格式",
+    "too-short": "至少 {min} 个字符",
+    "too-long": "最多 {max} 个字符",
+    "range-underflow": "至少 {min}",
+    "range-overflow": "最多 {max}",
+    "step-mismatch": "请以 {step} 为步长",
+    "bad-input": "请输入数字",
+    "count-text": "{count} / {max}",
+    "help": "详细了解：{label}",
+    "caps-lock": "大写锁定已开启",
+    "conceal": "隐藏密码"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "继承",
+      "reset": "恢复为继承值",
+      "described": "继承：{value}"
+    }
+  }
+}

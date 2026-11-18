@@ -1,0 +1,7 @@
+{
+  "runtime": {
+    "aria-label": "パンくずリスト",
+    "expand-label": "非表示の階層を表示",
+    "siblings-label": "同じ階層のセクション"
+  }
+}

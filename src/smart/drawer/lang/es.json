@@ -1,0 +1,7 @@
+{
+  "runtime": {
+    "close-label": "Cerrar panel",
+    "handle-label": "Cambiar el tamaño del panel",
+    "back-label": "Atrás"
+  }
+}

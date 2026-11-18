@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "Diálogo",
+    "close": "Cerrar",
+    "loading": "Cargando…",
+    "loadFailed": "No se pudo cargar el contenido",
+    "frameFailed": "No se pudo cargar el contenido del marco"
+  }
+}

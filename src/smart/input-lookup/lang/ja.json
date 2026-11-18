@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "hint-min-length": {
+      "other": "{n} 文字以上入力してください"
+    },
+    "searching": "検索中…",
+    "nothing-found": "見つかりませんでした",
+    "unavailable": "検索は利用できません",
+    "error": "検索に失敗しました",
+    "retry": "再試行",
+    "show-more": "さらに表示",
+    "max-items": "{n} 件まで",
+    "remove": "{label} を削除",
+    "clear": "クリア",
+    "results": {
+      "other": "{n} 件の結果"
+    },
+    "value-missing": "値を選択してください",
+    "more-chips": {
+      "other": "他 {n} 件: {names}"
+    },
+    "create-item": "「{text}」を作成",
+    "create-email": "アドレス {text} を追加",
+    "create-error": "作成できませんでした",
+    "chip-position": "{label}、{total} 件中 {position} 件目、Delete で削除",
+    "done": "完了",
+    "help": "詳細: {label}"
+  }
+}

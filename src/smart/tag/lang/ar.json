@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "remove": "إزالة",
+    "more": {
+      "zero": "{n} أخرى: {names}",
+      "one": "واحد آخر: {names}",
+      "two": "اثنان آخران: {names}",
+      "few": "{n} أخرى: {names}",
+      "many": "{n} أخرى: {names}",
+      "other": "{n} أخرى: {names}"
+    },
+    "position": "{label}، {position} من {total}، اضغط Delete للإزالة"
+  }
+}

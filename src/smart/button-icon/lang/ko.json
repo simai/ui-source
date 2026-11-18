@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "theme": "테마",
+    "theme-system": "시스템",
+    "theme-light": "라이트",
+    "theme-dark": "다크",
+    "theme-system-now": "시스템(현재 {theme})",
+    "cycle-next": "{name}. 누르면 {next}"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "button": "버튼",
+    "badge": "배지",
+    "send": "보내기",
+    "field": "필드",
+    "option": "옵션",
+    "name": "이름",
+    "phone": "전화번호",
+    "email": "이메일",
+    "message": "메시지"
+  }
+}

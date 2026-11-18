@@ -1,0 +1,7 @@
+{
+  "runtime": {
+    "close-label": "Fechar painel",
+    "handle-label": "Redimensionar o painel",
+    "back-label": "Voltar"
+  }
+}

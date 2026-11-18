@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "close": "Schließen",
+    "back": "Zurück",
+    "on": "An",
+    "off": "Aus",
+    "selected": "{count} ausgewählt"
+  }
+}

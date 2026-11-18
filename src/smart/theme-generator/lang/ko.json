@@ -1,0 +1,28 @@
+{
+  "runtime": {
+    "advanced": "고급",
+    "check-adjusted-dark": "색상이 매우 어두워 버튼에는 {from} 대신 더 밝은 {to}를 사용합니다. 그렇지 않으면 텍스트와 구분되지 않습니다.",
+    "check-adjusted-light": "색상이 밝아 버튼에는 {from} 대신 더 어두운 {to}를 사용합니다. 그렇지 않으면 글자를 읽을 수 없습니다.",
+    "check-contrast": "{scheme} 테마에서 버튼 글자를 읽기 어렵습니다: {ratio} : 1, 4.5가 필요합니다.",
+    "check-grey": "색상이 거의 회색입니다. 강조 색도 회색이 되어 버튼과 링크가 텍스트와 잘 구분되지 않습니다.",
+    "check-status-error": "색상이 오류 색상과 비슷해 일반 버튼과 ‘삭제’가 거의 같아 보입니다.",
+    "check-status-success": "색상이 성공 색상과 비슷해 강조가 ‘완료’나 ‘결제됨’처럼 보일 수 있습니다.",
+    "check-status-warning": "색상이 경고 색상과 비슷해 강조가 ‘주의’처럼 보일 수 있습니다.",
+    "checks": "색상 검사",
+    "chroma": "채도",
+    "chroma-hint": "0~150",
+    "color": "기본 색상",
+    "hue": "색조",
+    "hue-hint": "0~360",
+    "inherited": "SIMAI Framework 색상",
+    "neutral": "중립",
+    "preview": "테마 미리 보기",
+    "primary": "기본",
+    "reset": "초기화",
+    "scheme-dark": "다크",
+    "scheme-light": "라이트",
+    "secondary": "보조",
+    "tertiary": "3차",
+    "title": "테마 생성기"
+  }
+}

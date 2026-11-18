@@ -1,0 +1,25 @@
+{
+  "runtime": {
+    "actions-label": "الإجراءات: {text}",
+    "count-label": {
+      "zero": "لا عناصر غير مقروءة",
+      "one": "{n} غير مقروء",
+      "two": "{n} غير مقروءين",
+      "few": "{n} غير مقروءة",
+      "many": "{n} غير مقروءة",
+      "other": "{n} غير مقروءة"
+    },
+    "empty-text": "لا شيء هنا بعد",
+    "label": "القائمة",
+    "loading-more-text": "جارٍ التحميل…",
+    "loading-text": "جارٍ تحميل القائمة",
+    "more-text": "عرض المزيد",
+    "pinned-text": "مثبّت",
+    "rename-label": "الاسم الجديد",
+    "rename-text": "إعادة التسمية",
+    "undated-text": "بلا تاريخ",
+    "ungrouped-text": "أخرى",
+    "unread-text": "غير مقروء",
+    "untitled-text": "بلا عنوان"
+  }
+}

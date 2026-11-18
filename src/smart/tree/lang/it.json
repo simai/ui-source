@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "loading": "Caricamento…",
+    "load-error": "Impossibile caricare",
+    "retry": "Riprova",
+    "hidden": "nascosto",
+    "open-label": "Apri elemento",
+    "close-label": "Chiudi elemento"
+  }
+}

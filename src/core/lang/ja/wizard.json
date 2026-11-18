@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 23,
+    "translated": 23,
+    "share": 100
+  },
+  "words": {
+    "sf-wizard": {
+      "label": "ステップごとの設定",
+      "running-text": "処理中…",
+      "position": "ステップ {n}/{count}",
+      "moved": "ステップ {n}/{count}: {step}",
+      "back": "戻る",
+      "skip": "スキップ",
+      "next": "次へ",
+      "run": "実行",
+      "retry": "再試行",
+      "apply": "適用",
+      "done": "完了",
+      "later": "後で続ける",
+      "steps": "ステップ",
+      "all-steps": "すべてのステップ",
+      "hide-steps": "ステップを隠す",
+      "progress": "ウィザードの進行状況",
+      "state-done": "完了",
+      "state-skipped": "スキップ",
+      "state-running": "実行中",
+      "state-error": "エラー",
+      "required": "この項目を入力してください",
+      "invalid": "値を確認してください",
+      "saved": "{time} に下書きを保存しました"
+    }
+  }
+}

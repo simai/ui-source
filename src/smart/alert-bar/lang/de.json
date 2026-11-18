@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "Wichtige Hinweise",
+    "level-error": "Fehler",
+    "level-warning": "Warnung",
+    "level-info": "Info",
+    "more": "{count} weitere",
+    "collapse-list": "Liste ausblenden",
+    "list": "Alle Hinweise",
+    "hide-day": "Für einen Tag ausblenden",
+    "hide": "Ausblenden",
+    "acknowledge": "Als gelesen markieren",
+    "minimize": "Leiste minimieren",
+    "expand": "aufklappen",
+    "expand-label": "Wichtige Hinweise aufklappen",
+    "count": "Wichtige Hinweise: {count}"
+  }
+}

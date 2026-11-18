@@ -1,0 +1,7 @@
+{
+  "runtime": {
+    "failed": "Impossibile caricare questa parte della pagina.",
+    "offline": "Nessuna connessione. Si caricherà da solo quando la rete tornerà.",
+    "retry": "Riprova"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "command": "Comando",
+    "control": "Control",
+    "option": "Opzione",
+    "shift": "Maiusc",
+    "ctrl": "Ctrl",
+    "alt": "Alt",
+    "win": "Windows",
+    "enter": "Invio",
+    "escape": "Esc",
+    "tab": "Tab",
+    "space": "Spazio",
+    "backspace": "Backspace",
+    "delete": "Canc",
+    "up": "Freccia su",
+    "down": "Freccia giù",
+    "left": "Freccia sinistra",
+    "right": "Freccia destra",
+    "home": "Home",
+    "end": "Fine",
+    "pageup": "Pag su",
+    "pagedown": "Pag giù",
+    "plus": "Più"
+  }
+}

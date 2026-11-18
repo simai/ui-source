@@ -1,0 +1,27 @@
+{
+  "runtime": {
+    "label": "Configurazione guidata",
+    "running-text": "In corso…",
+    "position": "Passaggio {n} di {count}",
+    "moved": "Passaggio {n} di {count}: {step}",
+    "back": "Indietro",
+    "skip": "Salta",
+    "next": "Avanti",
+    "run": "Esegui",
+    "retry": "Riprova",
+    "apply": "Applica",
+    "done": "Fine",
+    "later": "Continua più tardi",
+    "steps": "Passaggi",
+    "all-steps": "Tutti i passaggi",
+    "hide-steps": "Nascondi i passaggi",
+    "progress": "Avanzamento della procedura",
+    "state-done": "Fatto",
+    "state-skipped": "Saltato",
+    "state-running": "In corso",
+    "state-error": "Errore",
+    "required": "Compila questo campo",
+    "invalid": "Controlla il valore",
+    "saved": "Bozza salvata alle {time}"
+  }
+}

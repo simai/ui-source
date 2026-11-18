@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "customize": "Personalizza le schede",
+    "errors": {
+      "one": "{n} errore",
+      "many": "{n} errori",
+      "other": "{n} errori"
+    },
+    "more": "Altro",
+    "moved": "Spostata",
+    "pinned": "Sempre visibile",
+    "reset": "Ripristina",
+    "tab": "Scheda {n}",
+    "visible": "Visibile"
+  }
+}

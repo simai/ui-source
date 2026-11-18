@@ -1,0 +1,5 @@
+{
+  "runtime": {
+    "of-steps": "{value} / {total}"
+  }
+}

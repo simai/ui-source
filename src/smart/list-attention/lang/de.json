@@ -1,0 +1,58 @@
+{
+  "runtime": {
+    "label": "Erfordert Aufmerksamkeit",
+    "empty-text": "Alles in Ordnung",
+    "empty-checked-text": "{text} · geprüft {when}",
+    "status-error": "Fehler",
+    "status-warning": "Warnung",
+    "status-info": "Info",
+    "status-success": "Erledigt",
+    "status-passed": "Bestanden",
+    "summary-error": {
+      "one": "{n} Fehler",
+      "other": "{n} Fehler"
+    },
+    "summary-warning": {
+      "one": "{n} Warnung",
+      "other": "{n} Warnungen"
+    },
+    "summary-info": {
+      "one": "{n} Empfehlung",
+      "other": "{n} Empfehlungen"
+    },
+    "summary-success": {
+      "one": "{n} gelöst",
+      "other": "{n} gelöst"
+    },
+    "group-error": "Fehler",
+    "group-warning": "Warnungen",
+    "group-info": "Empfehlungen",
+    "group-success": "Gelöst",
+    "group-passed": "Bestanden",
+    "affected-text": "betroffen: {text}",
+    "age-now": "gerade eben",
+    "age-minutes": "{n} Min.",
+    "age-hours": "{n} Std.",
+    "age-days": {
+      "one": "{n} Tag",
+      "other": "{n} Tage"
+    },
+    "checked-text": "Geprüft {when}",
+    "checked-now": "gerade eben",
+    "checked-minutes": "vor {n} Min.",
+    "checked-time": "um {time}",
+    "checked-date": "am {date} um {time}",
+    "recheck-label": "Erneut prüfen",
+    "more-text": "Alle Probleme ({n})",
+    "show-all-text": "Alle anzeigen ({n})",
+    "more-label": "Mehr: {title}",
+    "snooze-day-text": "Für einen Tag zurückstellen",
+    "snooze-week-text": "Für eine Woche zurückstellen",
+    "dismiss-text": "Nicht mehr erinnern",
+    "help-text": "Über diese Prüfung",
+    "snoozed-day-notice": "Für einen Tag zurückgestellt: {title}",
+    "snoozed-week-notice": "Für eine Woche zurückgestellt: {title}",
+    "dismissed-notice": "Wir erinnern Sie nicht mehr: {title}",
+    "undo-text": "Rückgängig"
+  }
+}

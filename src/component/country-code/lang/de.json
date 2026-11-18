@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "Telefonnummer",
+    "phoneRequired": "Geben Sie eine Telefonnummer ein.",
+    "countryLabel": "Ländervorwahl",
+    "countryUnknown": "Ländervorwahl nicht erkannt. Wählen Sie ein Land",
+    "searchPlaceholder": "Land oder Vorwahl",
+    "frequent": "Häufig gewählt",
+    "allCountries": "Alle Länder",
+    "nothingFound": "Nichts gefunden"
+  }
+}

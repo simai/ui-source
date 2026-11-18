@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "aria-label": "アバター",
+    "status-online": "オンライン",
+    "status-away": "離席中",
+    "status-offline": "オフライン"
+  }
+}

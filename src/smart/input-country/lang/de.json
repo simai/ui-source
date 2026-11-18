@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "Alle Länder",
+    "country-label": "Ländervorwahl",
+    "country-unknown": "Ländervorwahl nicht erkannt. Wählen Sie ein Land",
+    "frequent": "Häufig gewählt",
+    "nothing-found": "Nichts gefunden",
+    "phone-label": "Telefonnummer",
+    "phone-required": "Geben Sie eine Telefonnummer ein.",
+    "placeholder": "",
+    "search-placeholder": "Land oder Vorwahl",
+    "value-missing": "Geben Sie eine Telefonnummer ein.",
+    "pattern-mismatch": "Geben Sie die vollständige Nummer ein",
+    "too-short": "Geben Sie die vollständige Nummer ein",
+    "help": "Mehr zu: {label}"
+  }
+}

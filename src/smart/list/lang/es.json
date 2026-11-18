@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "actions-label": "Acciones: {text}",
+    "count-label": {
+      "one": "{n} sin leer",
+      "many": "{n} sin leer",
+      "other": "{n} sin leer"
+    },
+    "empty-text": "Aún no hay nada",
+    "label": "Lista",
+    "loading-more-text": "Cargando…",
+    "loading-text": "Cargando la lista",
+    "more-text": "Mostrar más",
+    "pinned-text": "Fijado",
+    "rename-label": "Nombre nuevo",
+    "rename-text": "Cambiar nombre",
+    "undated-text": "Sin fecha",
+    "ungrouped-text": "Otros",
+    "unread-text": "sin leer",
+    "untitled-text": "Sin título"
+  }
+}

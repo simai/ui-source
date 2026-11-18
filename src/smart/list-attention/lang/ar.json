@@ -1,0 +1,78 @@
+{
+  "runtime": {
+    "label": "يحتاج إلى انتباه",
+    "empty-text": "كل شيء على ما يرام",
+    "empty-checked-text": "{text} · تم الفحص {when}",
+    "status-error": "خطأ",
+    "status-warning": "تحذير",
+    "status-info": "معلومات",
+    "status-success": "تم",
+    "status-passed": "ناجح",
+    "summary-error": {
+      "zero": "لا أخطاء",
+      "one": "خطأ واحد",
+      "two": "خطآن",
+      "few": "{n} أخطاء",
+      "many": "{n} خطأً",
+      "other": "{n} خطأ"
+    },
+    "summary-warning": {
+      "zero": "لا تحذيرات",
+      "one": "تحذير واحد",
+      "two": "تحذيران",
+      "few": "{n} تحذيرات",
+      "many": "{n} تحذيرًا",
+      "other": "{n} تحذير"
+    },
+    "summary-info": {
+      "zero": "لا توصيات",
+      "one": "توصية واحدة",
+      "two": "توصيتان",
+      "few": "{n} توصيات",
+      "many": "{n} توصية",
+      "other": "{n} توصية"
+    },
+    "summary-success": {
+      "zero": "لا شيء محلول",
+      "one": "مشكلة واحدة محلولة",
+      "two": "مشكلتان محلولتان",
+      "few": "{n} مشكلات محلولة",
+      "many": "{n} مشكلة محلولة",
+      "other": "{n} مشكلة محلولة"
+    },
+    "group-error": "الأخطاء",
+    "group-warning": "التحذيرات",
+    "group-info": "التوصيات",
+    "group-success": "محلولة",
+    "group-passed": "ناجحة",
+    "affected-text": "المتأثر: {text}",
+    "age-now": "الآن",
+    "age-minutes": "{n} د",
+    "age-hours": "{n} س",
+    "age-days": {
+      "zero": "{n} يوم",
+      "one": "يوم واحد",
+      "two": "يومان",
+      "few": "{n} أيام",
+      "many": "{n} يومًا",
+      "other": "{n} يوم"
+    },
+    "checked-text": "تم الفحص {when}",
+    "checked-now": "الآن",
+    "checked-minutes": "قبل {n} د",
+    "checked-time": "في {time}",
+    "checked-date": "{date} في {time}",
+    "recheck-label": "افحص مرة أخرى",
+    "more-text": "كل المشكلات ({n})",
+    "show-all-text": "عرض الكل ({n})",
+    "more-label": "المزيد: {title}",
+    "snooze-day-text": "تأجيل ليوم",
+    "snooze-week-text": "تأجيل لأسبوع",
+    "dismiss-text": "لا تذكّرني",
+    "help-text": "حول هذا الفحص",
+    "snoozed-day-notice": "تم التأجيل ليوم: {title}",
+    "snoozed-week-notice": "تم التأجيل لأسبوع: {title}",
+    "dismissed-notice": "لن نذكّرك مجددًا: {title}",
+    "undo-text": "تراجع"
+  }
+}

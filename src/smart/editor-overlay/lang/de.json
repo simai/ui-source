@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "Verschieben abgebrochen.",
+    "dropped": "{label} verschoben. {place}.",
+    "editing": "{label} wird bearbeitet. Enter speichert, Escape bricht ab.",
+    "insert": "Einfügen",
+    "insert-after": "Nach „{label}“ einfügen",
+    "insert-at": "In „{slot}“ einfügen, Position {index}",
+    "more": "Mehr",
+    "picked": "{label} wird verschoben. Pfeiltasten wählen den Platz, Enter legt ab, Escape bricht ab.",
+    "position": "{index} von {total}",
+    "selected": "Ausgewählt: {label}",
+    "toolbar": "Aktionen",
+    "tree": "Seitenstruktur"
+  }
+}

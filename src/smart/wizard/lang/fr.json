@@ -1,0 +1,27 @@
+{
+  "runtime": {
+    "label": "Configuration pas à pas",
+    "running-text": "En cours…",
+    "position": "Étape {n} sur {count}",
+    "moved": "Étape {n} sur {count} : {step}",
+    "back": "Retour",
+    "skip": "Ignorer",
+    "next": "Suivant",
+    "run": "Exécuter",
+    "retry": "Réessayer",
+    "apply": "Appliquer",
+    "done": "Terminé",
+    "later": "Continuer plus tard",
+    "steps": "Étapes",
+    "all-steps": "Toutes les étapes",
+    "hide-steps": "Masquer les étapes",
+    "progress": "Progression de l’assistant",
+    "state-done": "Terminé",
+    "state-skipped": "Ignoré",
+    "state-running": "En cours",
+    "state-error": "Erreur",
+    "required": "Remplissez ce champ",
+    "invalid": "Vérifiez la valeur",
+    "saved": "Brouillon enregistré à {time}"
+  }
+}

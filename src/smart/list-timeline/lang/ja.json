@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "empty-text": "まだイベントはありません",
+    "more": "さらに表示",
+    "loading": "読み込み中…",
+    "today": "今日",
+    "yesterday": "昨日",
+    "tomorrow": "明日",
+    "status-success": "完了",
+    "status-warning": "警告",
+    "status-error": "エラー",
+    "status-info": "情報",
+    "state-done": "完了",
+    "state-current": "現在",
+    "state-upcoming": "予定",
+    "step-status-success": "成功",
+    "step-status-warning": "警告あり",
+    "step-status-error": "エラーあり",
+    "run-changes": {
+      "other": "他 {n} 件の変更"
+    },
+    "run-events": {
+      "other": "他 {n} 件のイベント"
+    }
+  }
+}

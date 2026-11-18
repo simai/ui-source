@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "copy": "코드 복사",
+    "copied": "코드를 복사했습니다",
+    "wrap": "줄 바꿈",
+    "added": "추가됨",
+    "removed": "삭제됨",
+    "terminal": "터미널"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "count": {
+      "other": "{count} 条未读"
+    },
+    "dot": "新"
+  }
+}

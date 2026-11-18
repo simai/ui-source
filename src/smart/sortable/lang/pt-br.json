@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "cancelled": "Movimentação cancelada.",
+    "dropped": "{item} solto na posição {index} em “{list}”.",
+    "empty": "Nada encontrado",
+    "hint": "Mais para inserir depois.",
+    "inserted": "{item} inserido na posição {index} em “{list}”.",
+    "instructions": "Espaço ou Enter para pegar, setas para mover, Espaço ou Enter para soltar, Esc para cancelar.",
+    "menu": "Inserir",
+    "move-down": "Para baixo",
+    "move-first": "Para o topo",
+    "move-last": "Para o fim",
+    "move-menu": "Mover “{item}”",
+    "move-up": "Para cima",
+    "moved": "Posição {index} de {total} em “{list}”.",
+    "picked": "{item} pego. Posição {index} de {total} em “{list}”.",
+    "point": "Inserir: posição {index} de {total}",
+    "roledescription": "arrastável",
+    "search": "Buscar",
+    "target": "Destino: {target}."
+  }
+}

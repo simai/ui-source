@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "copy": "复制代码",
+    "copied": "代码已复制",
+    "wrap": "自动换行",
+    "added": "已添加",
+    "removed": "已删除",
+    "terminal": "终端"
+  }
+}

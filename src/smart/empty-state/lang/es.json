@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "create": "Crear",
+    "error-text": "Reintentar",
+    "error-title": "No se pudo cargar",
+    "first-use-text": "Crea el primer registro y aparecerá aquí",
+    "first-use-title": "Aún no hay nada",
+    "no-access-text": "Pide acceso a un administrador",
+    "no-access-title": "Sin acceso",
+    "no-data-text": "Aparecerán aquí cuando se añadan",
+    "no-data-title": "Aún no hay registros",
+    "nothing-found-text": "Prueba otra búsqueda u otros filtros",
+    "nothing-found-title": "No se encontró nada",
+    "offline-text": "Comprueba tu conexión; lo intentaremos de nuevo cuando vuelva",
+    "offline-title": "Sin conexión",
+    "processing-share": "Hecho",
+    "processing-text": "Puede tardar unos minutos. El resultado aparecerá aquí; puedes cerrar la página",
+    "processing-title": "En preparación",
+    "retry": "Reintentar"
+  }
+}

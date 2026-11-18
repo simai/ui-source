@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "toolbar": "Formatação",
+    "paragraph": "Parágrafo",
+    "heading-2": "Título 2",
+    "heading-3": "Título 3",
+    "heading-4": "Título 4",
+    "bold": "Negrito",
+    "italic": "Itálico",
+    "link": "Link",
+    "bulleted-list": "Lista com marcadores",
+    "numbered-list": "Lista numerada",
+    "quote": "Citação",
+    "undo": "Desfazer",
+    "redo": "Refazer",
+    "not-in-list": "Indisponível em uma lista",
+    "nothing-to-undo": "Nada para desfazer",
+    "nothing-to-redo": "Nada para refazer",
+    "link-dialog": "Link",
+    "link-address": "Endereço do link",
+    "link-hint": "https://…, mailto:, tel: ou um caminho deste site, como /about",
+    "link-invalid": "Use um endereço https:, mailto: ou tel:, ou um caminho deste site que comece com /.",
+    "link-apply": "Aplicar",
+    "link-remove": "Remover link",
+    "value-missing": "Preencha este campo",
+    "count-text": "{count} / {max}",
+    "too-long": "No máximo {max} caracteres",
+    "help": "Saiba mais: {label}",
+    "text-level": "Nível do texto",
+    "more": "Mais"
+  }
+}

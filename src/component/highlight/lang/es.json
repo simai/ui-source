@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "copy": "Copiar código",
+    "copied": "Código copiado",
+    "wrap": "Ajustar líneas",
+    "added": "añadido",
+    "removed": "eliminado",
+    "terminal": "Terminal"
+  }
+}

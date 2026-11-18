@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "de",
+  "name": "Deutsch",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-theme-generator": {
+      "advanced": "Erweitert",
+      "check-adjusted-dark": "Die Farbe ist sehr dunkel: Schaltflächen erhalten das hellere {to} statt {from}, sonst heben sie sich nicht vom Text ab.",
+      "check-adjusted-light": "Die Farbe ist hell: Schaltflächen erhalten das dunklere {to} statt {from}, sonst wäre ihr Text nicht lesbar.",
+      "check-contrast": "Text auf einer Schaltfläche ist im Design {scheme} schwer lesbar: {ratio} : 1, nötig sind 4,5.",
+      "check-grey": "Die Farbe ist fast grau: auch die Akzente sind grau, und Schaltflächen und Links heben sich kaum vom Text ab.",
+      "check-status-error": "Die Farbe liegt nahe an der Fehlerfarbe: eine normale Schaltfläche und „Löschen“ sehen fast gleich aus.",
+      "check-status-success": "Die Farbe liegt nahe an der Erfolgsfarbe: ein Akzent kann wie „Erledigt“ oder „Bezahlt“ wirken.",
+      "check-status-warning": "Die Farbe liegt nahe an der Warnfarbe: ein Akzent kann wie „Achtung“ wirken.",
+      "checks": "Farbprüfung",
+      "chroma": "Buntheit",
+      "chroma-hint": "0 bis 150",
+      "color": "Hauptfarbe",
+      "hue": "Farbton",
+      "hue-hint": "0 bis 360",
+      "inherited": "Farbe von SIMAI Framework",
+      "neutral": "Neutral",
+      "preview": "Designvorschau",
+      "primary": "Primär",
+      "reset": "Zurücksetzen",
+      "scheme-dark": "dunkel",
+      "scheme-light": "hell",
+      "secondary": "Sekundär",
+      "tertiary": "Tertiär",
+      "title": "Design-Generator"
+    }
+  }
+}

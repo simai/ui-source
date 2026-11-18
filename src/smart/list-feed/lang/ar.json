@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "earlier-text": "عرض الأقدم",
+    "empty-text": "لا توجد إدخالات بعد",
+    "latest-label": "إلى الأحدث",
+    "loading-earlier-text": "جارٍ تحميل الإدخالات الأقدم",
+    "new-text": "جديد",
+    "log-label": "الإدخالات",
+    "region-label": "الموجز",
+    "you-text": "أنت"
+  }
+}

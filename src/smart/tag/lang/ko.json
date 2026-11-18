@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "remove": "제거",
+    "more": {
+      "other": "{n}개 더: {names}"
+    },
+    "position": "{label}, {total}개 중 {position}번째, Delete로 제거"
+  }
+}

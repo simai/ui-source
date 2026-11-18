@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "decrement": "値を減らす",
+    "increment": "値を増やす",
+    "range-underflow": "値は {min} 以上にしてください",
+    "range-overflow": "値は {max} 以下にしてください",
+    "step-mismatch": "値は {step} の倍数にしてください",
+    "remove": "削除",
+    "value-missing": "この項目を入力してください",
+    "bad-input": "数値を入力してください",
+    "help": "詳細: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "継承",
+      "reset": "継承値に戻す",
+      "described": "継承: {value}"
+    }
+  }
+}

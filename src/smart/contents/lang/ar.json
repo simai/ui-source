@@ -1,0 +1,33 @@
+{
+  "runtime": {
+    "label": "في هذه الصفحة",
+    "more": "المزيد",
+    "count-error": {
+      "zero": "لا أخطاء",
+      "one": "خطأ واحد",
+      "two": "خطآن",
+      "few": "{n} أخطاء",
+      "many": "{n} خطأً",
+      "other": "{n} خطأ"
+    },
+    "count-warning": {
+      "zero": "لا تحذيرات",
+      "one": "تحذير واحد",
+      "two": "تحذيران",
+      "few": "{n} تحذيرات",
+      "many": "{n} تحذيرًا",
+      "other": "{n} تحذير"
+    },
+    "count-success": {
+      "zero": "{n}، تم",
+      "one": "{n}، تم",
+      "two": "{n}، تم",
+      "few": "{n}، تم",
+      "many": "{n}، تم",
+      "other": "{n}، تم"
+    },
+    "status-error": "يحتوي على أخطاء",
+    "status-warning": "يحتوي على تحذيرات",
+    "status-success": "تم"
+  }
+}

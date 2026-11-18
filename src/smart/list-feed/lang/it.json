@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "earlier-text": "Mostra precedenti",
+    "empty-text": "Ancora nessuna voce",
+    "latest-label": "Vai al più recente",
+    "loading-earlier-text": "Caricamento delle voci precedenti",
+    "new-text": "Nuovo",
+    "log-label": "Voci",
+    "region-label": "Feed",
+    "you-text": "Tu"
+  }
+}

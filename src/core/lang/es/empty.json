@@ -1,0 +1,37 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 17,
+    "translated": 17,
+    "share": 100
+  },
+  "words": {
+    "sf-empty-state": {
+      "create": "Crear",
+      "error-text": "Reintentar",
+      "error-title": "No se pudo cargar",
+      "first-use-text": "Crea el primer registro y aparecerá aquí",
+      "first-use-title": "Aún no hay nada",
+      "no-access-text": "Pide acceso a un administrador",
+      "no-access-title": "Sin acceso",
+      "no-data-text": "Aparecerán aquí cuando se añadan",
+      "no-data-title": "Aún no hay registros",
+      "nothing-found-text": "Prueba otra búsqueda u otros filtros",
+      "nothing-found-title": "No se encontró nada",
+      "offline-text": "Comprueba tu conexión; lo intentaremos de nuevo cuando vuelva",
+      "offline-title": "Sin conexión",
+      "processing-share": "Hecho",
+      "processing-text": "Puede tardar unos minutos. El resultado aparecerá aquí; puedes cerrar la página",
+      "processing-title": "En preparación",
+      "retry": "Reintentar"
+    }
+  }
+}

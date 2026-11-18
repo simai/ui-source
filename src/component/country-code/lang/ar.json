@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "رقم الهاتف",
+    "phoneRequired": "أدخل رقم الهاتف.",
+    "countryLabel": "رمز الدولة",
+    "countryUnknown": "لم يُتعرف على رمز الدولة. اختر دولة",
+    "searchPlaceholder": "الدولة أو الرمز",
+    "frequent": "الأكثر اختيارًا",
+    "allCountries": "كل الدول",
+    "nothingFound": "لم يُعثر على شيء"
+  }
+}

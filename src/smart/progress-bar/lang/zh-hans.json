@@ -1,0 +1,6 @@
+{
+  "runtime": {
+    "paused-value": "{value}%，已暂停",
+    "paused": "已暂停"
+  }
+}

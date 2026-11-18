@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "label": "En esta página",
+    "more": "Más",
+    "count-error": {
+      "one": "{n} error",
+      "many": "{n} errores",
+      "other": "{n} errores"
+    },
+    "count-warning": {
+      "one": "{n} advertencia",
+      "many": "{n} advertencias",
+      "other": "{n} advertencias"
+    },
+    "count-success": {
+      "one": "{n}, hecho",
+      "many": "{n}, hechos",
+      "other": "{n}, hechos"
+    },
+    "status-error": "tiene errores",
+    "status-warning": "tiene advertencias",
+    "status-success": "hecho"
+  }
+}

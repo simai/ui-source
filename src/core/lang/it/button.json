@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "it",
+  "name": "Italiano",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-button": {
+      "theme": "Tema",
+      "theme-system": "sistema",
+      "theme-light": "chiaro",
+      "theme-dark": "scuro",
+      "theme-system-now": "sistema (ora {theme})",
+      "cycle-next": "{name}. Premi per {next}",
+      "split-more": "Altre opzioni: {label}"
+    },
+    "sf-button-close": {
+      "close": "Chiudi"
+    },
+    "sf-button-copy": {
+      "copied": "Copiato",
+      "copy": "Copia",
+      "failed": "Impossibile copiare",
+      "selected": "Selezionato: premi {keys}"
+    },
+    "sf-button-icon": {
+      "theme": "Tema",
+      "theme-system": "sistema",
+      "theme-light": "chiaro",
+      "theme-dark": "scuro",
+      "theme-system-now": "sistema (ora {theme})",
+      "cycle-next": "{name}. Premi per {next}"
+    }
+  }
+}

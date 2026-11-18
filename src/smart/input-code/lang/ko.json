@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "character": "{m}자 중 {n}번째 문자",
+    "digit": "{m}자리 중 {n}번째 숫자",
+    "group": "코드",
+    "too-short": "코드를 모두 입력하세요",
+    "value-missing": "코드를 입력하세요",
+    "help": "자세히 보기: {label}"
+  }
+}

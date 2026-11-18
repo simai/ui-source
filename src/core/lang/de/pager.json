@@ -1,0 +1,36 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "de",
+  "name": "Deutsch",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 16,
+    "translated": 16,
+    "share": 100
+  },
+  "words": {
+    "sf-pager": {
+      "label": "Benachbarte Seiten",
+      "prev": "Zurück",
+      "next": "Weiter",
+      "done": "Fertig",
+      "step": "Schritt {n} von {count}",
+      "lesson": "Lektion {n} von {count}",
+      "position": "{n} von {count}",
+      "next-lesson": "Nächste Lektion",
+      "last-lesson": "Letzte Lektion",
+      "start": "Starten",
+      "finished": "Kurs abgeschlossen",
+      "restart": "Neu beginnen",
+      "prev-item": "Vorheriger Eintrag",
+      "next-item": "Nächster Eintrag",
+      "position-many": "{n} von vielen",
+      "to-list": "Zurück zur Liste"
+    }
+  }
+}

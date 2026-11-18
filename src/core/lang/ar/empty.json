@@ -1,0 +1,37 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 17,
+    "translated": 17,
+    "share": 100
+  },
+  "words": {
+    "sf-empty-state": {
+      "create": "إنشاء",
+      "error-text": "أعد المحاولة",
+      "error-title": "تعذر التحميل",
+      "first-use-text": "أنشئ أول سجل وسيظهر هنا",
+      "first-use-title": "لا شيء هنا بعد",
+      "no-access-text": "اطلب الوصول من المسؤول",
+      "no-access-title": "لا يوجد وصول",
+      "no-data-text": "ستظهر هنا بعد إضافتها",
+      "no-data-title": "لا توجد سجلات بعد",
+      "nothing-found-text": "جرّب بحثًا آخر أو عوامل تصفية أخرى",
+      "nothing-found-title": "لم يُعثر على شيء",
+      "offline-text": "تحقق من اتصالك؛ سنعيد المحاولة عند عودته",
+      "offline-title": "لا يوجد اتصال",
+      "processing-share": "تم",
+      "processing-text": "قد يستغرق ذلك بضع دقائق. ستظهر النتيجة هنا، ويمكنك إغلاق الصفحة",
+      "processing-title": "قيد التحضير",
+      "retry": "أعد المحاولة"
+    }
+  }
+}

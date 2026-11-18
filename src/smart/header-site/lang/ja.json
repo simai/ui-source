@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "メニュー",
+    "menu-label": "メニューを開く",
+    "close-label": "メニューを閉じる",
+    "settings": "設定",
+    "language": "言語",
+    "tools": "ツール",
+    "theme": "テーマ"
+  }
+}

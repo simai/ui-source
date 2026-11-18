@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 23,
+    "translated": 23,
+    "share": 100
+  },
+  "words": {
+    "sf-wizard": {
+      "label": "Configuration pas à pas",
+      "running-text": "En cours…",
+      "position": "Étape {n} sur {count}",
+      "moved": "Étape {n} sur {count} : {step}",
+      "back": "Retour",
+      "skip": "Ignorer",
+      "next": "Suivant",
+      "run": "Exécuter",
+      "retry": "Réessayer",
+      "apply": "Appliquer",
+      "done": "Terminé",
+      "later": "Continuer plus tard",
+      "steps": "Étapes",
+      "all-steps": "Toutes les étapes",
+      "hide-steps": "Masquer les étapes",
+      "progress": "Progression de l’assistant",
+      "state-done": "Terminé",
+      "state-skipped": "Ignoré",
+      "state-running": "En cours",
+      "state-error": "Erreur",
+      "required": "Remplissez ce champ",
+      "invalid": "Vérifiez la valeur",
+      "saved": "Brouillon enregistré à {time}"
+    }
+  }
+}

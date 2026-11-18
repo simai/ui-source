@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "aria-label": "步骤",
+    "completed-label": "已完成",
+    "current-label": "当前",
+    "ahead-label": "待完成",
+    "error-label": "错误",
+    "skipped-label": "已跳过",
+    "running-label": "进行中",
+    "count-label": "第 {n} 步，共 {count} 步"
+  }
+}

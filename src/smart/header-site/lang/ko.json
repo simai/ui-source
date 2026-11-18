@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "메뉴",
+    "menu-label": "메뉴 열기",
+    "close-label": "메뉴 닫기",
+    "settings": "설정",
+    "language": "언어",
+    "tools": "도구",
+    "theme": "테마"
+  }
+}

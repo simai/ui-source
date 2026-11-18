@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "customize": "タブをカスタマイズ",
+    "errors": {
+      "other": "エラー {n} 件"
+    },
+    "more": "その他",
+    "moved": "移動済み",
+    "pinned": "常に表示",
+    "reset": "リセット",
+    "tab": "タブ {n}",
+    "visible": "表示中"
+  }
+}

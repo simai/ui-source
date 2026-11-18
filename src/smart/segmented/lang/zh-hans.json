@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "dark": "深色",
+    "group": "主题",
+    "light": "浅色",
+    "system": "跟随系统",
+    "value-missing": "请选择一项。"
+  }
+}

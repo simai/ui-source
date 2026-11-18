@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "de",
+  "name": "Deutsch",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 23,
+    "translated": 23,
+    "share": 100
+  },
+  "words": {
+    "sf-wizard": {
+      "label": "Schrittweise Einrichtung",
+      "running-text": "Wird ausgeführt…",
+      "position": "Schritt {n} von {count}",
+      "moved": "Schritt {n} von {count}: {step}",
+      "back": "Zurück",
+      "skip": "Überspringen",
+      "next": "Weiter",
+      "run": "Ausführen",
+      "retry": "Erneut versuchen",
+      "apply": "Übernehmen",
+      "done": "Fertig",
+      "later": "Später fortsetzen",
+      "steps": "Schritte",
+      "all-steps": "Alle Schritte",
+      "hide-steps": "Schritte ausblenden",
+      "progress": "Fortschritt des Assistenten",
+      "state-done": "Erledigt",
+      "state-skipped": "Übersprungen",
+      "state-running": "In Bearbeitung",
+      "state-error": "Fehler",
+      "required": "Füllen Sie dieses Feld aus",
+      "invalid": "Prüfen Sie den Wert",
+      "saved": "Entwurf um {time} gespeichert"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "close": "닫기",
+    "back": "뒤로",
+    "on": "켜짐",
+    "off": "꺼짐",
+    "selected": "{count}개 선택됨"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "empty-text": "فارغ",
+    "change-text": "كان {before}، والآن {after}",
+    "label-separator": ":",
+    "show-text": "إظهار التغييرات",
+    "hide-text": "إخفاء التغييرات",
+    "before-text": "قبل",
+    "after-text": "بعد"
+  }
+}

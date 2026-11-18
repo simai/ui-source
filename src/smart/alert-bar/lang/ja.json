@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "重要なお知らせ",
+    "level-error": "エラー",
+    "level-warning": "警告",
+    "level-info": "情報",
+    "more": "他 {count} 件",
+    "collapse-list": "一覧を隠す",
+    "list": "すべてのお知らせ",
+    "hide-day": "1日非表示",
+    "hide": "非表示",
+    "acknowledge": "既読にする",
+    "minimize": "バーを最小化",
+    "expand": "展開",
+    "expand-label": "重要なお知らせを展開",
+    "count": "重要なお知らせ: {count}"
+  }
+}

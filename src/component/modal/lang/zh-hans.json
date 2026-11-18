@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "对话框",
+    "close": "关闭",
+    "loading": "正在加载…",
+    "loadFailed": "无法加载内容",
+    "frameFailed": "无法加载框架内容"
+  }
+}

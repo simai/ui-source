@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "toggle-label": "القائمة",
+    "more-label": "المزيد",
+    "status-success": "كل شيء على ما يرام",
+    "status-warning": "يحتاج إلى انتباه",
+    "status-error": "خطأ",
+    "status-info": "شيء جديد",
+    "status-neutral": "لا توجد بيانات",
+    "subsections": "أقسام فرعية",
+    "search-placeholder": "بحث",
+    "search-found": "تم العثور على: {n}",
+    "search-empty": "لم يُعثر على شيء",
+    "new-tab": "يُفتح في علامة تبويب جديدة"
+  }
+}

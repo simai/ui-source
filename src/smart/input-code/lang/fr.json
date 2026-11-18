@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "character": "caractère {n} sur {m}",
+    "digit": "chiffre {n} sur {m}",
+    "group": "Code",
+    "too-short": "Saisissez le code complet",
+    "value-missing": "Saisissez le code",
+    "help": "En savoir plus : {label}"
+  }
+}

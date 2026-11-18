@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "button": "Pulsante",
+    "badge": "Badge",
+    "send": "Invia",
+    "field": "Campo",
+    "option": "Opzione",
+    "name": "Nome",
+    "phone": "Telefono",
+    "email": "Email",
+    "message": "Messaggio"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 25,
+    "translated": 25,
+    "share": 100
+  },
+  "words": {
+    "sf-profile-picker": {
+      "actions": "Actions",
+      "builtin": "standard",
+      "cancel": "Annuler",
+      "close": "Fermer",
+      "copy-of": "Une copie de « {name} ».",
+      "create": "Créer",
+      "kind": "Qui voit le profil",
+      "label": "Profil",
+      "locked": "Vous ne pouvez pas le modifier",
+      "name": "Nom du profil",
+      "name-empty": "Donnez un nom au profil.",
+      "new-profile": "Nouveau profil…",
+      "personal": "Personnel",
+      "personal-taken": "Vous avez déjà un profil personnel",
+      "remove": "Supprimer",
+      "remove-ask": "Supprimer…",
+      "remove-question": "Supprimer « {name} » ?",
+      "remove-shared": "Il disparaîtra pour tous sur le site.",
+      "rename": "Renommer",
+      "reset": "Rétablir la valeur standard",
+      "save": "Enregistrer",
+      "seen-by-all": "Visible par tous sur le site.",
+      "seen-by-you": "Visible par vous seul.",
+      "shared": "Pour tous",
+      "shared-denied": "Vous ne pouvez pas créer de profils partagés"
+    }
+  }
+}

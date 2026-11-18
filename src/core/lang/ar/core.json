@@ -1,0 +1,58 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-button-copy": {
+      "copy": "نسخ",
+      "copied": "تم النسخ",
+      "failed": "تعذر النسخ",
+      "selected": "تم التحديد — اضغط {keys}"
+    },
+    "sf-composition": {
+      "button": "زر",
+      "badge": "شارة",
+      "send": "إرسال",
+      "field": "حقل",
+      "option": "خيار",
+      "name": "الاسم",
+      "phone": "الهاتف",
+      "email": "البريد الإلكتروني",
+      "message": "الرسالة"
+    },
+    "sf-display-settings": {
+      "skip-link-text": "انتقل إلى المحتوى"
+    },
+    "sf-file-download": {
+      "new-tab-text": "(يُفتح في علامة تبويب جديدة)"
+    },
+    "sf-file-size": {
+      "b": "بايت",
+      "kb": "ك.ب",
+      "mb": "م.ب",
+      "gb": "غ.ب"
+    },
+    "sf-fragment": {
+      "heading": "تعذر عرض هذه الكتلة"
+    },
+    "sf-notify": {
+      "region": "الإشعارات"
+    },
+    "sf-relative-day": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "tomorrow": "غدًا"
+    }
+  }
+}

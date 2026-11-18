@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "close": "关闭",
+    "back": "返回",
+    "on": "开",
+    "off": "关",
+    "selected": "已选 {count} 项"
+  }
+}

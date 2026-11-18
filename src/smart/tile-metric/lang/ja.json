@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "untitled": "指標",
+    "no-value": "—",
+    "loading": "読み込み中",
+    "limit": "{value} / {max}",
+    "limit-name": "{label}: 使用済み",
+    "change-up": "増加",
+    "change-down": "減少",
+    "change-flat": "変化なし",
+    "status-success": "正常",
+    "status-info": "情報",
+    "status-warning": "警告",
+    "status-error": "エラー"
+  }
+}

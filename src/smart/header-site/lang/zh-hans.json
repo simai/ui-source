@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "菜单",
+    "menu-label": "打开菜单",
+    "close-label": "关闭菜单",
+    "settings": "设置",
+    "language": "语言",
+    "tools": "工具",
+    "theme": "主题"
+  }
+}

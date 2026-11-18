@@ -1,0 +1,59 @@
+{
+  "runtime": {
+    "label": "進行状況",
+    "output-label": "出力",
+    "steps": "ステップ",
+    "state-waiting": "待機中",
+    "state-running": "実行中",
+    "state-done": "完了",
+    "state-failed": "失敗",
+    "state-skipped": "スキップ",
+    "result-done": "完了",
+    "result-failed": "失敗",
+    "result-cancelled": "キャンセル済み",
+    "cancel": "キャンセル",
+    "retry": "再試行",
+    "hide": "非表示",
+    "copy": "出力をコピー",
+    "download": "出力をダウンロード",
+    "result-partial": "エラーありで完了",
+    "state-word-running": "実行中",
+    "state-word-paused": "一時停止中",
+    "state-word-partial": "エラーあり",
+    "state-word-cancelled": "キャンセル済み",
+    "state-word-waiting": "待機中",
+    "announce-paused": "一時停止しました",
+    "announce-resumed": "再開しました",
+    "announce-progress": "{total}{unit} 中 {value}、{percent}%",
+    "announce-count": "{value}{unit}",
+    "figures": "{value} / {total}{unit} · {percent}%",
+    "figures-count": "{value}{unit}",
+    "percent": "{percent}%",
+    "estimating": "残り時間を計算中…",
+    "remaining": "残り約 {time}",
+    "remaining-short": "{time}",
+    "remaining-less": "残り 1 分未満",
+    "remaining-less-short": "1 分未満",
+    "minutes": "{n} 分",
+    "hours": "{h} 時間 {m} 分",
+    "took": "所要時間 {time}",
+    "errors-shown": {
+      "other": "エラー: {total} 件中最初の {n} 件"
+    },
+    "more-errors": {
+      "other": "他 {n} 件のエラー"
+    },
+    "errors-count": {
+      "other": "エラー {n} 件"
+    },
+    "no-errors": "エラーなし",
+    "retry-failed": "失敗分を再試行",
+    "pause": "一時停止",
+    "resume": "再開",
+    "minimize": "最小化",
+    "expand": "展開",
+    "step-log": "ステップのログ",
+    "counts": "結果",
+    "figures-plain": "{value} / {total}"
+  }
+}

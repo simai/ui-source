@@ -1,0 +1,41 @@
+{
+  "runtime": {
+    "done": "アップロード済み",
+    "done-line": "{size} · アップロード済み",
+    "error": "アップロードされていません",
+    "error-line": "アップロードされていません: {message}",
+    "formats-audio": "音声",
+    "formats-image": "画像",
+    "formats-video": "動画",
+    "link-text": "クリックしてアップロード",
+    "not-added": "追加されなかったファイル: {n}",
+    "reject-count": {
+      "other": "「{name}」は追加されませんでした: 最大 {n} ファイル"
+    },
+    "reject-duplicate": "「{name}」は既に一覧にあります",
+    "reject-empty": "「{name}」は空です",
+    "reject-min-size": "「{name}」は {size} です。{min} 以上が必要です",
+    "reject-one": "「{name}」は追加されませんでした: この欄には 1 ファイルのみです",
+    "reject-size": "「{name}」は {size} です。上限は {max} です",
+    "reject-total": "「{name}」は追加されませんでした: 合計 {max} まで",
+    "reject-type": "「{name}」は使用できません: 使用できる形式は {formats}",
+    "remove": "削除",
+    "remove-failed": "失敗したファイルを削除するか再試行してください",
+    "retry": "再試行",
+    "text": "またはドラッグ＆ドロップ",
+    "uploading": "アップロード中",
+    "value-missing": "ファイルを追加してください",
+    "value-missing-many": "ファイルを 1 つ以上追加してください",
+    "wait-for-uploads": "ファイルのアップロードが終わるまでお待ちください",
+    "file-removed": "ファイルを削除しました",
+    "undo": "元に戻す",
+    "help": "詳細: {label}",
+    "said-added": "「{name}」を追加しました",
+    "said-added-many": {
+      "other": "{n} 個のファイルを追加しました"
+    },
+    "said-done": "「{name}」をアップロードしました",
+    "said-error": "「{name}」はアップロードされませんでした",
+    "said-error-line": "「{name}」はアップロードされませんでした: {message}"
+  }
+}

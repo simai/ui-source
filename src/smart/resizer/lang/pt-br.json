@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "hint": "Arraste ou use as setas; um clique duplo restaura a largura.",
+    "label": "Redimensionar",
+    "value": "{n}%",
+    "width": "{n} px",
+    "folded": "Recolhido",
+    "show": "Mostrar"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "close": "Fermer",
+    "discard": "Ne pas enregistrer",
+    "discard-heading": "Fermer sans enregistrer ?",
+    "frame-failed": "Impossible de charger le contenu du cadre",
+    "keep-editing": "Continuer la modification",
+    "load-failed": "Impossible de charger le contenu",
+    "loading": "Chargement…",
+    "minimize": "Réduire",
+    "title": "Boîte de dialogue"
+  }
+}

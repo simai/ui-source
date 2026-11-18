@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "accept-text": "確認",
+    "accepted-text": "完了",
+    "accepting-text": "処理中…",
+    "decline-text": "キャンセル",
+    "declining-text": "キャンセル中…",
+    "expired-text": "回答期限が過ぎました",
+    "question-label": "確認",
+    "require-error": "上と同じように「{name}」と入力してください",
+    "require-text": "確認するには {name} と入力してください",
+    "until-text": "{time} までに回答"
+  }
+}

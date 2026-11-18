@@ -1,0 +1,45 @@
+{
+  "runtime": {
+    "done": "Caricato",
+    "done-line": "{size} · caricato",
+    "error": "Non caricato",
+    "error-line": "Non caricato: {message}",
+    "formats-audio": "audio",
+    "formats-image": "immagini",
+    "formats-video": "video",
+    "link-text": "Fai clic per caricare",
+    "not-added": "Non aggiunti: {n}",
+    "reject-count": {
+      "one": "«{name}» non aggiunto: massimo {n} file",
+      "many": "«{name}» non aggiunto: massimo {n} file",
+      "other": "«{name}» non aggiunto: massimo {n} file"
+    },
+    "reject-duplicate": "«{name}» è già nell’elenco",
+    "reject-empty": "«{name}» è vuoto",
+    "reject-min-size": "«{name}» è di {size}; deve essere almeno {min}",
+    "reject-one": "«{name}» non aggiunto: questo campo accetta un solo file",
+    "reject-size": "«{name}» è di {size}; il limite è {max}",
+    "reject-total": "«{name}» non aggiunto: massimo {max} per tutti i file insieme",
+    "reject-type": "«{name}» non accettato: consentiti {formats}",
+    "remove": "Rimuovi",
+    "remove-failed": "Rimuovi o riprova i file non riusciti",
+    "retry": "Riprova",
+    "text": "o trascina qui",
+    "uploading": "Caricamento",
+    "value-missing": "Aggiungi un file",
+    "value-missing-many": "Aggiungi almeno un file",
+    "wait-for-uploads": "Attendi il caricamento dei file",
+    "file-removed": "File rimosso",
+    "undo": "Annulla",
+    "help": "Maggiori informazioni: {label}",
+    "said-added": "«{name}» aggiunto",
+    "said-added-many": {
+      "one": "{n} file aggiunto",
+      "many": "{n} file aggiunti",
+      "other": "{n} file aggiunti"
+    },
+    "said-done": "«{name}» caricato",
+    "said-error": "«{name}» non caricato",
+    "said-error-line": "«{name}» non caricato: {message}"
+  }
+}

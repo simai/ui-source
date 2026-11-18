@@ -1,0 +1,63 @@
+{
+  "runtime": {
+    "label": "Richiede attenzione",
+    "empty-text": "Tutto a posto",
+    "empty-checked-text": "{text} · controllato {when}",
+    "status-error": "Errore",
+    "status-warning": "Avviso",
+    "status-info": "Info",
+    "status-success": "Fatto",
+    "status-passed": "Superato",
+    "summary-error": {
+      "one": "{n} errore",
+      "many": "{n} errori",
+      "other": "{n} errori"
+    },
+    "summary-warning": {
+      "one": "{n} avviso",
+      "many": "{n} avvisi",
+      "other": "{n} avvisi"
+    },
+    "summary-info": {
+      "one": "{n} suggerimento",
+      "many": "{n} suggerimenti",
+      "other": "{n} suggerimenti"
+    },
+    "summary-success": {
+      "one": "{n} risolto",
+      "many": "{n} risolti",
+      "other": "{n} risolti"
+    },
+    "group-error": "Errori",
+    "group-warning": "Avvisi",
+    "group-info": "Suggerimenti",
+    "group-success": "Risolti",
+    "group-passed": "Superati",
+    "affected-text": "interessato: {text}",
+    "age-now": "proprio ora",
+    "age-minutes": "{n} min",
+    "age-hours": "{n} h",
+    "age-days": {
+      "one": "{n} giorno",
+      "many": "{n} giorni",
+      "other": "{n} giorni"
+    },
+    "checked-text": "Controllato {when}",
+    "checked-now": "proprio ora",
+    "checked-minutes": "{n} min fa",
+    "checked-time": "alle {time}",
+    "checked-date": "il {date} alle {time}",
+    "recheck-label": "Ricontrolla",
+    "more-text": "Tutti i problemi ({n})",
+    "show-all-text": "Mostra tutto ({n})",
+    "more-label": "Altro: {title}",
+    "snooze-day-text": "Posticipa di un giorno",
+    "snooze-week-text": "Posticipa di una settimana",
+    "dismiss-text": "Non ricordarmelo più",
+    "help-text": "Informazioni su questo controllo",
+    "snoozed-day-notice": "Posticipato di un giorno: {title}",
+    "snoozed-week-notice": "Posticipato di una settimana: {title}",
+    "dismissed-notice": "Non te lo ricorderemo più: {title}",
+    "undo-text": "Annulla"
+  }
+}

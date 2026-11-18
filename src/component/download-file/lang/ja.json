@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "new-tab": "（新しいタブで開きます）",
+    "byte": {
+      "other": "バイト"
+    },
+    "kilobyte": {
+      "other": "キロバイト"
+    },
+    "megabyte": {
+      "other": "メガバイト"
+    },
+    "gigabyte": {
+      "other": "ギガバイト"
+    },
+    "terabyte": {
+      "other": "テラバイト"
+    }
+  }
+}

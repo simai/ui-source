@@ -1,0 +1,63 @@
+{
+  "runtime": {
+    "label": "À surveiller",
+    "empty-text": "Tout va bien",
+    "empty-checked-text": "{text} · vérifié {when}",
+    "status-error": "Erreur",
+    "status-warning": "Avertissement",
+    "status-info": "Info",
+    "status-success": "Terminé",
+    "status-passed": "Réussi",
+    "summary-error": {
+      "one": "{n} erreur",
+      "many": "{n} erreurs",
+      "other": "{n} erreurs"
+    },
+    "summary-warning": {
+      "one": "{n} avertissement",
+      "many": "{n} avertissements",
+      "other": "{n} avertissements"
+    },
+    "summary-info": {
+      "one": "{n} recommandation",
+      "many": "{n} recommandations",
+      "other": "{n} recommandations"
+    },
+    "summary-success": {
+      "one": "{n} résolu",
+      "many": "{n} résolus",
+      "other": "{n} résolus"
+    },
+    "group-error": "Erreurs",
+    "group-warning": "Avertissements",
+    "group-info": "Recommandations",
+    "group-success": "Résolus",
+    "group-passed": "Réussis",
+    "affected-text": "concerné : {text}",
+    "age-now": "à l’instant",
+    "age-minutes": "{n} min",
+    "age-hours": "{n} h",
+    "age-days": {
+      "one": "{n} jour",
+      "many": "{n} jours",
+      "other": "{n} jours"
+    },
+    "checked-text": "Vérifié {when}",
+    "checked-now": "à l’instant",
+    "checked-minutes": "il y a {n} min",
+    "checked-time": "à {time}",
+    "checked-date": "le {date} à {time}",
+    "recheck-label": "Revérifier",
+    "more-text": "Tous les problèmes ({n})",
+    "show-all-text": "Tout afficher ({n})",
+    "more-label": "Plus : {title}",
+    "snooze-day-text": "Reporter d’un jour",
+    "snooze-week-text": "Reporter d’une semaine",
+    "dismiss-text": "Ne plus me le rappeler",
+    "help-text": "À propos de cette vérification",
+    "snoozed-day-notice": "Reporté d’un jour : {title}",
+    "snoozed-week-notice": "Reporté d’une semaine : {title}",
+    "dismissed-notice": "Nous ne vous le rappellerons plus : {title}",
+    "undo-text": "Annuler"
+  }
+}

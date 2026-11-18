@@ -1,0 +1,88 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "pt-br",
+  "name": "Português (Brasil)",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 55,
+    "translated": 55,
+    "share": 100
+  },
+  "words": {
+    "sf-progress-bar": {
+      "paused-value": "{value}%, pausado",
+      "paused": "pausado"
+    },
+    "sf-progress-run": {
+      "label": "Progresso",
+      "output-label": "Saída",
+      "steps": "Etapas",
+      "state-waiting": "aguardando",
+      "state-running": "em execução",
+      "state-done": "concluído",
+      "state-failed": "falhou",
+      "state-skipped": "ignorado",
+      "result-done": "Concluído",
+      "result-failed": "Falhou",
+      "result-cancelled": "Cancelado",
+      "cancel": "Cancelar",
+      "retry": "Tentar de novo",
+      "hide": "Ocultar",
+      "copy": "Copiar a saída",
+      "download": "Baixar a saída",
+      "result-partial": "Concluído com erros",
+      "state-word-running": "Em execução",
+      "state-word-paused": "Pausado",
+      "state-word-partial": "Com erros",
+      "state-word-cancelled": "Cancelado",
+      "state-word-waiting": "Na fila",
+      "announce-paused": "Pausado",
+      "announce-resumed": "Continuando",
+      "announce-progress": "{value} de {total}{unit}, {percent}%",
+      "announce-count": "{value}{unit}",
+      "figures": "{value} de {total}{unit} · {percent}%",
+      "figures-count": "{value}{unit}",
+      "percent": "{percent}%",
+      "estimating": "estimando o tempo…",
+      "remaining": "faltam cerca de {time}",
+      "remaining-short": "{time}",
+      "remaining-less": "falta menos de um minuto",
+      "remaining-less-short": "< 1 min",
+      "minutes": "{n} min",
+      "hours": "{h} h {m} min",
+      "took": "levou {time}",
+      "errors-shown": {
+        "one": "Erros: o primeiro de {total}",
+        "many": "Erros: os primeiros {n} de {total}",
+        "other": "Erros: os primeiros {n} de {total}"
+      },
+      "more-errors": {
+        "one": "mais {n} erro",
+        "many": "mais {n} erros",
+        "other": "mais {n} erros"
+      },
+      "errors-count": {
+        "one": "{n} erro",
+        "many": "{n} erros",
+        "other": "{n} erros"
+      },
+      "no-errors": "sem erros",
+      "retry-failed": "Tentar de novo as falhas",
+      "pause": "Pausar",
+      "resume": "Continuar",
+      "minimize": "Minimizar",
+      "expand": "Expandir",
+      "step-log": "Registro da etapa",
+      "counts": "Resultado",
+      "figures-plain": "{value} de {total}"
+    },
+    "sf-progress-scale": {
+      "of-steps": "{value} de {total}"
+    }
+  }
+}

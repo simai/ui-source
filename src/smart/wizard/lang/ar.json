@@ -1,0 +1,27 @@
+{
+  "runtime": {
+    "label": "إعداد خطوة بخطوة",
+    "running-text": "جارٍ التنفيذ…",
+    "position": "الخطوة {n} من {count}",
+    "moved": "الخطوة {n} من {count}: {step}",
+    "back": "رجوع",
+    "skip": "تخطٍ",
+    "next": "التالي",
+    "run": "تشغيل",
+    "retry": "أعد المحاولة",
+    "apply": "تطبيق",
+    "done": "تم",
+    "later": "المتابعة لاحقًا",
+    "steps": "الخطوات",
+    "all-steps": "كل الخطوات",
+    "hide-steps": "إخفاء الخطوات",
+    "progress": "تقدم المعالج",
+    "state-done": "تم",
+    "state-skipped": "تم التخطي",
+    "state-running": "قيد التنفيذ",
+    "state-error": "خطأ",
+    "required": "املأ هذا الحقل",
+    "invalid": "تحقق من القيمة",
+    "saved": "تم حفظ المسودة في {time}"
+  }
+}

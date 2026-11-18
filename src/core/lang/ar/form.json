@@ -1,0 +1,35 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 8,
+    "translated": 8,
+    "share": 100
+  },
+  "words": {
+    "sf-form": {
+      "required-note": "* — حقول مطلوبة",
+      "submit": "حفظ",
+      "cancel": "إلغاء",
+      "edit": "تحرير",
+      "unsaved": "لديك تغييرات غير محفوظة",
+      "errors-title": {
+        "zero": "لا حقول للتصحيح",
+        "one": "صحّح حقلًا واحدًا",
+        "two": "صحّح حقلين",
+        "few": "صحّح {n} حقول",
+        "many": "صحّح {n} حقلًا",
+        "other": "صحّح {n} حقل"
+      },
+      "value-missing": "املأ الحقل «{label}»",
+      "help-label": "المزيد عن {label}"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 17,
+    "translated": 17,
+    "share": 100
+  },
+  "words": {
+    "sf-empty-state": {
+      "create": "作成",
+      "error-text": "再試行",
+      "error-title": "読み込めませんでした",
+      "first-use-text": "最初のレコードを作成すると、ここに表示されます",
+      "first-use-title": "まだ何もありません",
+      "no-access-text": "管理者にアクセス権を依頼してください",
+      "no-access-title": "アクセス権がありません",
+      "no-data-text": "追加されるとここに表示されます",
+      "no-data-title": "レコードはまだありません",
+      "nothing-found-text": "別のキーワードやフィルターをお試しください",
+      "nothing-found-title": "見つかりませんでした",
+      "offline-text": "接続を確認してください。回復したら再試行します",
+      "offline-title": "接続されていません",
+      "processing-share": "完了",
+      "processing-text": "数分かかる場合があります。結果はここに表示されます。ページを閉じてもかまいません",
+      "processing-title": "準備中",
+      "retry": "再試行"
+    }
+  }
+}

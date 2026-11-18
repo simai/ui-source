@@ -1,0 +1,7 @@
+{
+  "runtime": {
+    "close-label": "패널 닫기",
+    "handle-label": "패널 크기 조절",
+    "back-label": "뒤로"
+  }
+}

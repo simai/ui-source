@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "theme": "Tema",
+    "theme-light": "claro",
+    "theme-dark": "escuro",
+    "cycle-next": "{name}. Pressione para {next}"
+  }
+}

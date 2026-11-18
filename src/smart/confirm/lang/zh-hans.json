@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "accept-text": "确认",
+    "accepted-text": "已完成",
+    "accepting-text": "处理中…",
+    "decline-text": "取消",
+    "declining-text": "正在取消…",
+    "expired-text": "回复时间已过",
+    "question-label": "确认",
+    "require-error": "请完全按照上方输入“{name}”",
+    "require-text": "如需确认，请输入 {name}",
+    "until-text": "请在 {time} 前回复"
+  }
+}

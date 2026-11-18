@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "customize": "Personalizar abas",
+    "errors": {
+      "one": "{n} erro",
+      "many": "{n} erros",
+      "other": "{n} erros"
+    },
+    "more": "Mais",
+    "moved": "Movida",
+    "pinned": "Sempre visível",
+    "reset": "Redefinir",
+    "tab": "Aba {n}",
+    "visible": "Visível"
+  }
+}

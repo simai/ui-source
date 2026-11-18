@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "Fichier",
+    "preparing-text": "Préparation du fichier…",
+    "preparing-value-text": "Préparation… {percent}",
+    "failed-text": "Impossible à générer",
+    "retry-text": "Réessayer",
+    "retry-label": "Réessayer : {name}",
+    "cancel-text": "Annuler",
+    "cancel-label": "Annuler : {name}",
+    "ready-text": "Prêt",
+    "get-text": "Télécharger",
+    "get-label": "Télécharger {name}",
+    "new-tab-text": "(s’ouvre dans un nouvel onglet)",
+    "said-preparing": "Préparation du fichier « {name} »",
+    "said-ready": "Le fichier est prêt : « {name} »{said}",
+    "said-fetched": "Le fichier est prêt et téléchargé : « {name} »{said}",
+    "said-offer": "Le fichier est prêt : « {name} »{said}. Bouton « Télécharger »",
+    "said-cancelled": "Préparation annulée : « {name} »",
+    "said-failed": "Erreur : impossible de générer « {name} »."
+  }
+}

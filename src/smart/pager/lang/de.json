@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "label": "Benachbarte Seiten",
+    "prev": "Zurück",
+    "next": "Weiter",
+    "done": "Fertig",
+    "step": "Schritt {n} von {count}",
+    "lesson": "Lektion {n} von {count}",
+    "position": "{n} von {count}",
+    "next-lesson": "Nächste Lektion",
+    "last-lesson": "Letzte Lektion",
+    "start": "Starten",
+    "finished": "Kurs abgeschlossen",
+    "restart": "Neu beginnen",
+    "prev-item": "Vorheriger Eintrag",
+    "next-item": "Nächster Eintrag",
+    "position-many": "{n} von vielen",
+    "to-list": "Zurück zur Liste"
+  }
+}

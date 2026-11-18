@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "apply": "Übernehmen",
+    "code": "Code",
+    "editing": "{label}: Bearbeitung. Enter speichert, Escape bricht ab.",
+    "editing-block": "{label}: Bearbeitung. Enter beginnt einen neuen Block, Escape bricht ab.",
+    "em": "Kursiv",
+    "invalid": "Ungültige Linkadresse",
+    "link": "Link",
+    "link-empty": "Geben Sie die Linkadresse ein",
+    "link-hint": "https://…, mailto:, tel: oder ein Pfad dieser Website wie /about",
+    "link-long": "Die Adresse ist länger als {max} Zeichen",
+    "link-scheme": "Diese Adresse ist nicht erlaubt: beginnen Sie mit https://, mailto: oder tel:",
+    "link-slashes": "Eine Adresse dieser Website beginnt mit einem einzelnen Schrägstrich /",
+    "link-spaces": "Entfernen Sie die Leerzeichen: eine Adresse enthält keine",
+    "link-start": "Der Adresse fehlt der Anfang: https:// oder / für eine Seite dieser Website",
+    "more": "Mehr",
+    "strong": "Fett",
+    "toolbar": "Formatierung",
+    "unlink": "Link entfernen",
+    "url": "Linkadresse",
+    "strike": "Durchgestrichen"
+  }
+}

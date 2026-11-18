@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "activity-running": "실행 중",
+    "activity-waiting": "입력 필요",
+    "activity-done": "완료",
+    "activity-stopped": "중지됨",
+    "activity-failed": "실패",
+    "activity-paused": "일시 중지됨",
+    "activity-queued": "대기 중"
+  }
+}

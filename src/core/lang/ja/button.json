@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-button": {
+      "theme": "テーマ",
+      "theme-system": "システム",
+      "theme-light": "ライト",
+      "theme-dark": "ダーク",
+      "theme-system-now": "システム（現在: {theme}）",
+      "cycle-next": "{name}。押すと{next}",
+      "split-more": "その他のオプション: {label}"
+    },
+    "sf-button-close": {
+      "close": "閉じる"
+    },
+    "sf-button-copy": {
+      "copied": "コピーしました",
+      "copy": "コピー",
+      "failed": "コピーできませんでした",
+      "selected": "選択済み — {keys} を押してください"
+    },
+    "sf-button-icon": {
+      "theme": "テーマ",
+      "theme-system": "システム",
+      "theme-light": "ライト",
+      "theme-dark": "ダーク",
+      "theme-system-now": "システム（現在: {theme}）",
+      "cycle-next": "{name}。押すと{next}"
+    }
+  }
+}

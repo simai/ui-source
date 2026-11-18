@@ -1,0 +1,49 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 29,
+    "translated": 29,
+    "share": 100
+  },
+  "words": {
+    "sf-time": {
+      "date-at": "{date}, {time}",
+      "just-now": "ahora mismo",
+      "yesterday-at": "{day}, {time}",
+      "zone-asia-anadyr": "Anádyr",
+      "zone-asia-barnaul": "Barnaúl",
+      "zone-asia-chita": "Chitá",
+      "zone-asia-irkutsk": "Irkutsk",
+      "zone-asia-kamchatka": "Petropávlovsk-Kamchatski",
+      "zone-asia-khandyga": "Jandyga",
+      "zone-asia-krasnoyarsk": "Krasnoyarsk",
+      "zone-asia-magadan": "Magadán",
+      "zone-asia-novokuznetsk": "Novokuznetsk",
+      "zone-asia-novosibirsk": "Novosibirsk",
+      "zone-asia-omsk": "Omsk",
+      "zone-asia-sakhalin": "Sajalín",
+      "zone-asia-srednekolymsk": "Srednekolimsk",
+      "zone-asia-tomsk": "Tomsk",
+      "zone-asia-ust-nera": "Ust-Nera",
+      "zone-asia-vladivostok": "Vladivostok",
+      "zone-asia-yakutsk": "Yakutsk",
+      "zone-asia-yekaterinburg": "Ekaterimburgo",
+      "zone-europe-astrakhan": "Astracán",
+      "zone-europe-kaliningrad": "Kaliningrado",
+      "zone-europe-kirov": "Kírov",
+      "zone-europe-moscow": "Moscú",
+      "zone-europe-samara": "Samara",
+      "zone-europe-saratov": "Sarátov",
+      "zone-europe-ulyanovsk": "Uliánovsk",
+      "zone-europe-volgograd": "Volgogrado"
+    }
+  }
+}

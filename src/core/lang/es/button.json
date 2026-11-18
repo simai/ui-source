@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-button": {
+      "theme": "Tema",
+      "theme-system": "sistema",
+      "theme-light": "claro",
+      "theme-dark": "oscuro",
+      "theme-system-now": "sistema (ahora {theme})",
+      "cycle-next": "{name}. Pulsa para {next}",
+      "split-more": "Más opciones: {label}"
+    },
+    "sf-button-close": {
+      "close": "Cerrar"
+    },
+    "sf-button-copy": {
+      "copied": "Copiado",
+      "copy": "Copiar",
+      "failed": "No se pudo copiar",
+      "selected": "Seleccionado: pulsa {keys}"
+    },
+    "sf-button-icon": {
+      "theme": "Tema",
+      "theme-system": "sistema",
+      "theme-light": "claro",
+      "theme-dark": "oscuro",
+      "theme-system-now": "sistema (ahora {theme})",
+      "cycle-next": "{name}. Pulsa para {next}"
+    }
+  }
+}

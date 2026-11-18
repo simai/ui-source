@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "파일",
+    "download-label": "{name} 다운로드",
+    "remove-label": "{name} 제거",
+    "uploading-label": "{name} 업로드 중",
+    "error-text": "업로드 실패",
+    "error-line": "업로드 실패: {message}",
+    "retry-text": "다시 시도",
+    "retry-label": "{name} 다시 시도",
+    "delete-label": "{name} 삭제",
+    "delete-question": "‘{name}’을(를) 삭제할까요?",
+    "delete-text": "삭제",
+    "viewer-previous": "이전 파일",
+    "viewer-next": "다음 파일"
+  }
+}

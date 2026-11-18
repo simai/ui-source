@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "create": "إنشاء",
+    "error-text": "أعد المحاولة",
+    "error-title": "تعذر التحميل",
+    "first-use-text": "أنشئ أول سجل وسيظهر هنا",
+    "first-use-title": "لا شيء هنا بعد",
+    "no-access-text": "اطلب الوصول من المسؤول",
+    "no-access-title": "لا يوجد وصول",
+    "no-data-text": "ستظهر هنا بعد إضافتها",
+    "no-data-title": "لا توجد سجلات بعد",
+    "nothing-found-text": "جرّب بحثًا آخر أو عوامل تصفية أخرى",
+    "nothing-found-title": "لم يُعثر على شيء",
+    "offline-text": "تحقق من اتصالك؛ سنعيد المحاولة عند عودته",
+    "offline-title": "لا يوجد اتصال",
+    "processing-share": "تم",
+    "processing-text": "قد يستغرق ذلك بضع دقائق. ستظهر النتيجة هنا، ويمكنك إغلاق الصفحة",
+    "processing-title": "قيد التحضير",
+    "retry": "أعد المحاولة"
+  }
+}

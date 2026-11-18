@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "from": "从",
+    "to": "到",
+    "from-label": "{name}，从",
+    "to-label": "{name}，到",
+    "help": "详细了解：{label}"
+  }
+}

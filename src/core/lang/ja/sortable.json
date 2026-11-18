@@ -1,0 +1,38 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-sortable": {
+      "cancelled": "移動をキャンセルしました。",
+      "dropped": "{item} を「{list}」の {index} 番目に配置しました。",
+      "empty": "見つかりませんでした",
+      "hint": "+ で後ろに挿入。",
+      "inserted": "{item} を「{list}」の {index} 番目に挿入しました。",
+      "instructions": "Space または Enter で持ち上げ、矢印キーで移動、Space または Enter で配置、Esc でキャンセル。",
+      "menu": "挿入",
+      "move-down": "下へ",
+      "move-first": "先頭へ",
+      "move-last": "末尾へ",
+      "move-menu": "「{item}」を移動",
+      "move-up": "上へ",
+      "moved": "「{list}」の {total} 件中 {index} 番目。",
+      "picked": "{item} を持ち上げました。「{list}」の {total} 件中 {index} 番目。",
+      "point": "挿入: {total} 件中 {index} 番目",
+      "roledescription": "ドラッグ可能",
+      "search": "検索",
+      "target": "移動先: {target}。"
+    }
+  }
+}

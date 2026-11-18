@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 30,
+    "translated": 30,
+    "share": 100
+  },
+  "words": {
+    "sf-pagination": {
+      "action-apply-text": "적용",
+      "action-choose-label": "작업 선택",
+      "action-for-all-label": "전체에",
+      "actions-label": "선택한 항목에 대한 작업",
+      "actions-region-label": "선택 항목 작업",
+      "aria-label": "결과 페이지",
+      "clear-selection-label": "선택 해제",
+      "counting-label": "계산 중",
+      "cursor-next-text": "다음",
+      "first-label": "처음",
+      "last-label": "마지막",
+      "next-label": "다음 페이지",
+      "next-text": "다음",
+      "of-pages": "{page} / {count}",
+      "page-field-label": "페이지:",
+      "page-label": "페이지",
+      "page-size-label": "페이지당:",
+      "page-size-text": "{size}개씩",
+      "pages-label": "페이지:",
+      "previous-label": "이전 페이지",
+      "previous-text": "이전",
+      "range": "{total}개 중 {from}–{to}",
+      "range-many": "다수 중 {from}–{to}",
+      "selected-label": "선택됨:",
+      "show-count-label": "개수",
+      "show-more-count": "{count}개 더 보기",
+      "show-more-text": "더 보기",
+      "shown": "{total}개 중 {shown}개 표시",
+      "title-page": "{page}페이지",
+      "total-label": "전체:"
+    }
+  }
+}

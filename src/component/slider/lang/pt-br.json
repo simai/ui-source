@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "Slides",
+    "carousel": "carrossel",
+    "slide": "slide",
+    "position": "{n} de {count}",
+    "pause": "Parar os slides",
+    "play": "Iniciar os slides",
+    "thumb": "Ir para o slide {n}"
+  }
+}

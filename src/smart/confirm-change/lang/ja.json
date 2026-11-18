@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "accept-text": "確認",
+    "accepted-text": "適用しました",
+    "accepting-text": "適用中…",
+    "after-text": "変更後",
+    "before-text": "変更前",
+    "changes-label": "変更内容",
+    "decline-text": "却下",
+    "declining-text": "却下中…",
+    "empty-value-text": "空",
+    "expired-text": "確認期限が過ぎました",
+    "until-text": "{time} までに確認"
+  }
+}

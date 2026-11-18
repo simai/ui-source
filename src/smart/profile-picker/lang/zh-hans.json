@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "actions": "操作",
+    "builtin": "标准",
+    "cancel": "取消",
+    "close": "关闭",
+    "copy-of": "“{name}”的副本。",
+    "create": "创建",
+    "kind": "谁可以查看此配置",
+    "label": "配置",
+    "locked": "你无法更改",
+    "name": "配置名称",
+    "name-empty": "请为配置命名。",
+    "new-profile": "新建配置…",
+    "personal": "个人",
+    "personal-taken": "你已有个人配置",
+    "remove": "删除",
+    "remove-ask": "删除…",
+    "remove-question": "删除“{name}”？",
+    "remove-shared": "网站上所有人都将无法使用。",
+    "rename": "重命名",
+    "reset": "恢复为标准",
+    "save": "保存",
+    "seen-by-all": "网站上所有人可见。",
+    "seen-by-you": "仅你可见。",
+    "shared": "所有人",
+    "shared-denied": "你无法创建共享配置"
+  }
+}

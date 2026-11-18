@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "theme": "テーマ",
+    "theme-system": "システム",
+    "theme-light": "ライト",
+    "theme-dark": "ダーク",
+    "theme-system-now": "システム（現在: {theme}）",
+    "cycle-next": "{name}。押すと{next}"
+  }
+}

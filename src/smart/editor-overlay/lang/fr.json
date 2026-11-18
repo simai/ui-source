@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "Déplacement annulé.",
+    "dropped": "{label} déplacé. {place}.",
+    "editing": "Modification de {label}. Entrée enregistre, Échap annule.",
+    "insert": "Insérer",
+    "insert-after": "Insérer après « {label} »",
+    "insert-at": "Insérer dans « {slot} », position {index}",
+    "more": "Plus",
+    "picked": "Déplacement de {label}. Les flèches choisissent l’emplacement, Entrée dépose, Échap annule.",
+    "position": "{index} sur {total}",
+    "selected": "Sélectionné : {label}",
+    "toolbar": "Actions",
+    "tree": "Structure de la page"
+  }
+}

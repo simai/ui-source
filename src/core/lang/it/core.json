@@ -1,0 +1,58 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "it",
+  "name": "Italiano",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-button-copy": {
+      "copy": "Copia",
+      "copied": "Copiato",
+      "failed": "Impossibile copiare",
+      "selected": "Selezionato: premi {keys}"
+    },
+    "sf-composition": {
+      "button": "Pulsante",
+      "badge": "Badge",
+      "send": "Invia",
+      "field": "Campo",
+      "option": "Opzione",
+      "name": "Nome",
+      "phone": "Telefono",
+      "email": "Email",
+      "message": "Messaggio"
+    },
+    "sf-display-settings": {
+      "skip-link-text": "Vai al contenuto"
+    },
+    "sf-file-download": {
+      "new-tab-text": "(si apre in una nuova scheda)"
+    },
+    "sf-file-size": {
+      "b": "B",
+      "kb": "KB",
+      "mb": "MB",
+      "gb": "GB"
+    },
+    "sf-fragment": {
+      "heading": "Impossibile mostrare questo blocco"
+    },
+    "sf-notify": {
+      "region": "Notifiche"
+    },
+    "sf-relative-day": {
+      "today": "oggi",
+      "yesterday": "ieri",
+      "tomorrow": "domani"
+    }
+  }
+}

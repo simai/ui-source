@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "new-tab-text": "(se abre en una pestaña nueva)",
+    "copy-label": "Copiar enlace",
+    "missing-text": "eliminado",
+    "forbidden-text": "sin acceso"
+  }
+}

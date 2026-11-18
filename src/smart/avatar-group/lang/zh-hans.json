@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "group-label": "成员：{n}",
+    "more-label": {
+      "other": "还有 {n} 位成员"
+    }
+  }
+}

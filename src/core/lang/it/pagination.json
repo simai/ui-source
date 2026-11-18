@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "it",
+  "name": "Italiano",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 30,
+    "translated": 30,
+    "share": 100
+  },
+  "words": {
+    "sf-pagination": {
+      "action-apply-text": "Applica",
+      "action-choose-label": "Scegli un’azione",
+      "action-for-all-label": "Per tutti",
+      "actions-label": "Azione per gli elementi selezionati",
+      "actions-region-label": "Azioni per la selezione",
+      "aria-label": "Pagine dei risultati",
+      "clear-selection-label": "Cancella la selezione",
+      "counting-label": "Conteggio",
+      "cursor-next-text": "Avanti",
+      "first-label": "Prima",
+      "last-label": "Ultima",
+      "next-label": "Pagina successiva",
+      "next-text": "Avanti",
+      "of-pages": "{page} di {count}",
+      "page-field-label": "Pagina:",
+      "page-label": "Pagina",
+      "page-size-label": "Per pagina:",
+      "page-size-text": "{size} per pagina",
+      "pages-label": "Pagine:",
+      "previous-label": "Pagina precedente",
+      "previous-text": "Indietro",
+      "range": "{from}–{to} di {total}",
+      "range-many": "{from}–{to} di molti",
+      "selected-label": "Selezionati:",
+      "show-count-label": "numero",
+      "show-more-count": "Mostra altri {count}",
+      "show-more-text": "Mostra altro",
+      "shown": "{shown} di {total} mostrati",
+      "title-page": "Pagina {page}",
+      "total-label": "Totale:"
+    }
+  }
+}

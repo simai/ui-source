@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "ファイル",
+    "preparing-text": "ファイルを準備中…",
+    "preparing-value-text": "準備中… {percent}",
+    "failed-text": "作成できませんでした",
+    "retry-text": "再試行",
+    "retry-label": "再試行: {name}",
+    "cancel-text": "キャンセル",
+    "cancel-label": "キャンセル: {name}",
+    "ready-text": "準備完了",
+    "get-text": "ダウンロード",
+    "get-label": "{name} をダウンロード",
+    "new-tab-text": "（新しいタブで開きます）",
+    "said-preparing": "ファイル「{name}」を準備中",
+    "said-ready": "ファイルの準備ができました: 「{name}」{said}",
+    "said-fetched": "ファイルの準備とダウンロードが完了しました: 「{name}」{said}",
+    "said-offer": "ファイルの準備ができました: 「{name}」{said}。「ダウンロード」ボタン",
+    "said-cancelled": "準備をキャンセルしました: 「{name}」",
+    "said-failed": "エラー: 「{name}」を作成できませんでした。"
+  }
+}

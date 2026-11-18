@@ -1,0 +1,41 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "it",
+  "name": "Italiano",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 7,
+    "translated": 7,
+    "share": 100
+  },
+  "words": {
+    "sf-tag": {
+      "remove": "Rimuovi",
+      "more": {
+        "one": "altro {n}: {names}",
+        "many": "altri {n}: {names}",
+        "other": "altri {n}: {names}"
+      },
+      "position": "{label}, {position} di {total}, Canc per rimuovere"
+    },
+    "sf-tag-group": {
+      "more": {
+        "one": "altro {n}: {names}",
+        "many": "altri {n}: {names}",
+        "other": "altri {n}: {names}"
+      },
+      "more-panel": {
+        "one": "altro {n} tag",
+        "many": "altri {n} tag",
+        "other": "altri {n} tag"
+      },
+      "position": "{label}, {position} di {total}, Canc per rimuovere",
+      "position-plain": "{label}, {position} di {total}"
+    }
+  }
+}

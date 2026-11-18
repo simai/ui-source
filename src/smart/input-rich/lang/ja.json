@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "toolbar": "書式",
+    "paragraph": "段落",
+    "heading-2": "見出し 2",
+    "heading-3": "見出し 3",
+    "heading-4": "見出し 4",
+    "bold": "太字",
+    "italic": "斜体",
+    "link": "リンク",
+    "bulleted-list": "箇条書き",
+    "numbered-list": "番号付きリスト",
+    "quote": "引用",
+    "undo": "元に戻す",
+    "redo": "やり直し",
+    "not-in-list": "リスト内では使用できません",
+    "nothing-to-undo": "元に戻す操作はありません",
+    "nothing-to-redo": "やり直す操作はありません",
+    "link-dialog": "リンク",
+    "link-address": "リンクアドレス",
+    "link-hint": "https://…、mailto:、tel: またはこのサイトのパス（例: /about）",
+    "link-invalid": "https:、mailto:、tel: のアドレス、または / で始まるこのサイトのパスを使ってください。",
+    "link-apply": "適用",
+    "link-remove": "リンクを解除",
+    "value-missing": "この項目を入力してください",
+    "count-text": "{count} / {max}",
+    "too-long": "{max} 文字以内",
+    "help": "詳細: {label}",
+    "text-level": "テキストレベル",
+    "more": "その他"
+  }
+}

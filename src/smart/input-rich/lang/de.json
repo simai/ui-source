@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "toolbar": "Formatierung",
+    "paragraph": "Absatz",
+    "heading-2": "Überschrift 2",
+    "heading-3": "Überschrift 3",
+    "heading-4": "Überschrift 4",
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "link": "Link",
+    "bulleted-list": "Aufzählung",
+    "numbered-list": "Nummerierte Liste",
+    "quote": "Zitat",
+    "undo": "Rückgängig",
+    "redo": "Wiederholen",
+    "not-in-list": "In einer Liste nicht verfügbar",
+    "nothing-to-undo": "Nichts rückgängig zu machen",
+    "nothing-to-redo": "Nichts zu wiederholen",
+    "link-dialog": "Link",
+    "link-address": "Linkadresse",
+    "link-hint": "https://…, mailto:, tel: oder ein Pfad dieser Website wie /about",
+    "link-invalid": "Verwenden Sie eine https:-, mailto:- oder tel:-Adresse oder einen Pfad dieser Website, der mit / beginnt.",
+    "link-apply": "Übernehmen",
+    "link-remove": "Link entfernen",
+    "value-missing": "Füllen Sie dieses Feld aus",
+    "count-text": "{count} / {max}",
+    "too-long": "Höchstens {max} Zeichen",
+    "help": "Mehr zu: {label}",
+    "text-level": "Textebene",
+    "more": "Mehr"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "off": "disattivo",
+    "on": "attivo",
+    "help": "Maggiori informazioni: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "ereditato",
+      "reset": "Ripristina il valore ereditato",
+      "described": "Ereditato: {value}"
+    }
+  }
+}

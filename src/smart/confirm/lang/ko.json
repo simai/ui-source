@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "accept-text": "확인",
+    "accepted-text": "완료",
+    "accepting-text": "처리 중…",
+    "decline-text": "취소",
+    "declining-text": "취소 중…",
+    "expired-text": "응답 시간이 지났습니다",
+    "question-label": "확인",
+    "require-error": "위와 똑같이 ‘{name}’을(를) 입력하세요",
+    "require-text": "확인하려면 {name}을(를) 입력하세요",
+    "until-text": "{time}까지 응답"
+  }
+}

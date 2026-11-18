@@ -1,0 +1,30 @@
+{
+  "runtime": {
+    "empty-text": "Ainda não há eventos",
+    "more": "Mostrar mais",
+    "loading": "Carregando…",
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "tomorrow": "Amanhã",
+    "status-success": "Concluído",
+    "status-warning": "Aviso",
+    "status-error": "Erro",
+    "status-info": "Informação",
+    "state-done": "Concluído",
+    "state-current": "Agora",
+    "state-upcoming": "Próximo",
+    "step-status-success": "concluído",
+    "step-status-warning": "com um aviso",
+    "step-status-error": "com um erro",
+    "run-changes": {
+      "one": "mais {n} alteração",
+      "many": "mais {n} alterações",
+      "other": "mais {n} alterações"
+    },
+    "run-events": {
+      "one": "mais {n} evento",
+      "many": "mais {n} eventos",
+      "other": "mais {n} eventos"
+    }
+  }
+}

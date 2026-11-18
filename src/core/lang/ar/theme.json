@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-theme-generator": {
+      "advanced": "متقدم",
+      "check-adjusted-dark": "اللون داكن جدًا: تأخذ الأزرار اللون الأفتح {to} بدلًا من {from}، وإلا فلن تتميز عن النص.",
+      "check-adjusted-light": "اللون فاتح: تأخذ الأزرار اللون الأغمق {to} بدلًا من {from}، وإلا فلن يُقرأ نصها.",
+      "check-contrast": "يصعب قراءة نص الزر في المظهر {scheme}: {ratio} : 1، والمطلوب 4.5.",
+      "check-grey": "اللون شبه رمادي: تصبح ألوان الإبراز رمادية أيضًا، ولا تتميز الأزرار والروابط كثيرًا عن النص.",
+      "check-status-error": "اللون قريب من لون الخطأ: سيبدو الزر العادي وزر «حذف» متشابهين تقريبًا.",
+      "check-status-success": "اللون قريب من لون النجاح: قد يبدو الإبراز «تم» أو «مدفوع».",
+      "check-status-warning": "اللون قريب من لون التحذير: قد يبدو الإبراز «انتباه».",
+      "checks": "فحص اللون",
+      "chroma": "الصفاء اللوني",
+      "chroma-hint": "من 0 إلى 150",
+      "color": "اللون الرئيسي",
+      "hue": "تدرج اللون",
+      "hue-hint": "من 0 إلى 360",
+      "inherited": "لون SIMAI Framework",
+      "neutral": "محايد",
+      "preview": "معاينة المظهر",
+      "primary": "الأساسي",
+      "reset": "إعادة تعيين",
+      "scheme-dark": "الداكن",
+      "scheme-light": "الفاتح",
+      "secondary": "الثانوي",
+      "tertiary": "الثالثي",
+      "title": "مولّد المظهر"
+    }
+  }
+}

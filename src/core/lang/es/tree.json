@@ -1,0 +1,30 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 8,
+    "translated": 8,
+    "share": 100
+  },
+  "words": {
+    "sf-tree": {
+      "loading": "Cargando…",
+      "load-error": "No se pudo cargar",
+      "retry": "Reintentar",
+      "hidden": "oculto",
+      "open-label": "Abrir elemento",
+      "close-label": "Cerrar elemento"
+    },
+    "sf-tree-item": {
+      "open-label": "Abrir elemento",
+      "close-label": "Cerrar elemento"
+    }
+  }
+}

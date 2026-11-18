@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "Avvisi importanti",
+    "level-error": "Errore",
+    "level-warning": "Avviso",
+    "level-info": "Info",
+    "more": "altri {count}",
+    "collapse-list": "Nascondi l’elenco",
+    "list": "Tutti gli avvisi",
+    "hide-day": "Nascondi per un giorno",
+    "hide": "Nascondi",
+    "acknowledge": "Segna come letto",
+    "minimize": "Riduci la barra",
+    "expand": "espandi",
+    "expand-label": "Espandi gli avvisi importanti",
+    "count": "Avvisi importanti: {count}"
+  }
+}

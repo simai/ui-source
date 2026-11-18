@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "remove": "Entfernen",
+    "more": {
+      "one": "{n} weiteres: {names}",
+      "other": "{n} weitere: {names}"
+    },
+    "position": "{label}, {position} von {total}, Entf zum Entfernen"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "zh-hans",
+  "name": "简体中文",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "确认",
+      "accepted-text": "已完成",
+      "accepting-text": "处理中…",
+      "decline-text": "取消",
+      "declining-text": "正在取消…",
+      "expired-text": "回复时间已过",
+      "question-label": "确认",
+      "require-error": "请完全按照上方输入“{name}”",
+      "require-text": "如需确认，请输入 {name}",
+      "until-text": "请在 {time} 前回复"
+    },
+    "sf-confirm-change": {
+      "accept-text": "确认",
+      "accepted-text": "已应用",
+      "accepting-text": "正在应用…",
+      "after-text": "改为",
+      "before-text": "原为",
+      "changes-label": "将要更改的内容",
+      "decline-text": "拒绝",
+      "declining-text": "正在拒绝…",
+      "empty-value-text": "空",
+      "expired-text": "确认时间已过",
+      "until-text": "请在 {time} 前确认"
+    }
+  }
+}

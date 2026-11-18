@@ -1,0 +1,38 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-sortable": {
+      "cancelled": "Movimiento cancelado.",
+      "dropped": "{item} soltado en la posición {index} de «{list}».",
+      "empty": "No se encontró nada",
+      "hint": "Más para insertar después.",
+      "inserted": "{item} insertado en la posición {index} de «{list}».",
+      "instructions": "Espacio o Intro para tomar, flechas para mover, Espacio o Intro para soltar, Escape para cancelar.",
+      "menu": "Insertar",
+      "move-down": "Abajo",
+      "move-first": "Al principio",
+      "move-last": "Al final",
+      "move-menu": "Mover «{item}»",
+      "move-up": "Arriba",
+      "moved": "Posición {index} de {total} en «{list}».",
+      "picked": "{item} tomado. Posición {index} de {total} en «{list}».",
+      "point": "Insertar: posición {index} de {total}",
+      "roledescription": "arrastrable",
+      "search": "Buscar",
+      "target": "Destino: {target}."
+    }
+  }
+}

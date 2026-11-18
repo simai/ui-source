@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "Archivo",
+    "download-label": "Descargar {name}",
+    "remove-label": "Quitar {name}",
+    "uploading-label": "Subiendo {name}",
+    "error-text": "No se subió",
+    "error-line": "No se subió: {message}",
+    "retry-text": "Reintentar",
+    "retry-label": "Reintentar {name}",
+    "delete-label": "Eliminar {name}",
+    "delete-question": "¿Eliminar «{name}»?",
+    "delete-text": "Eliminar",
+    "viewer-previous": "Archivo anterior",
+    "viewer-next": "Archivo siguiente"
+  }
+}

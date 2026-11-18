@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "group-label": "Mitglieder: {n}",
+    "more-label": {
+      "one": "{n} weiteres Mitglied",
+      "other": "{n} weitere Mitglieder"
+    }
+  }
+}

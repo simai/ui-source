@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "more": {
+      "one": "{n} más: {names}",
+      "many": "{n} más: {names}",
+      "other": "{n} más: {names}"
+    },
+    "more-panel": {
+      "one": "{n} etiqueta más",
+      "many": "{n} etiquetas más",
+      "other": "{n} etiquetas más"
+    },
+    "position": "{label}, {position} de {total}, Supr para quitar",
+    "position-plain": "{label}, {position} de {total}"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 7,
+    "translated": 7,
+    "share": 100
+  },
+  "words": {
+    "sf-tag": {
+      "remove": "إزالة",
+      "more": {
+        "zero": "{n} أخرى: {names}",
+        "one": "واحد آخر: {names}",
+        "two": "اثنان آخران: {names}",
+        "few": "{n} أخرى: {names}",
+        "many": "{n} أخرى: {names}",
+        "other": "{n} أخرى: {names}"
+      },
+      "position": "{label}، {position} من {total}، اضغط Delete للإزالة"
+    },
+    "sf-tag-group": {
+      "more": {
+        "zero": "{n} أخرى: {names}",
+        "one": "واحد آخر: {names}",
+        "two": "اثنان آخران: {names}",
+        "few": "{n} أخرى: {names}",
+        "many": "{n} أخرى: {names}",
+        "other": "{n} أخرى: {names}"
+      },
+      "more-panel": {
+        "zero": "لا وسوم أخرى",
+        "one": "وسم آخر",
+        "two": "وسمان آخران",
+        "few": "{n} وسوم أخرى",
+        "many": "{n} وسمًا آخر",
+        "other": "{n} وسم آخر"
+      },
+      "position": "{label}، {position} من {total}، اضغط Delete للإزالة",
+      "position-plain": "{label}، {position} من {total}"
+    }
+  }
+}

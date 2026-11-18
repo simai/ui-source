@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "pt-br",
+  "name": "Português (Brasil)",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-theme-generator": {
+      "advanced": "Avançado",
+      "check-adjusted-dark": "A cor é muito escura: os botões usam {to}, mais claro, em vez de {from}; senão não se destacariam do texto.",
+      "check-adjusted-light": "A cor é clara: os botões usam {to}, mais escuro, em vez de {from}; senão o texto deles ficaria ilegível.",
+      "check-contrast": "O texto de um botão fica difícil de ler no tema {scheme}: {ratio} : 1; o mínimo é 4,5.",
+      "check-grey": "A cor é quase cinza: os destaques também ficam cinza, e botões e links pouco se destacam do texto.",
+      "check-status-error": "A cor é próxima da cor de erro: um botão comum e “Excluir” ficarão quase iguais.",
+      "check-status-success": "A cor é próxima da cor de sucesso: um destaque pode parecer “Concluído” ou “Pago”.",
+      "check-status-warning": "A cor é próxima da cor de aviso: um destaque pode parecer “Atenção”.",
+      "checks": "Verificação da cor",
+      "chroma": "Croma",
+      "chroma-hint": "de 0 a 150",
+      "color": "Cor principal",
+      "hue": "Matiz",
+      "hue-hint": "de 0 a 360",
+      "inherited": "Cor do SIMAI Framework",
+      "neutral": "Neutra",
+      "preview": "Prévia do tema",
+      "primary": "Primária",
+      "reset": "Redefinir",
+      "scheme-dark": "escuro",
+      "scheme-light": "claro",
+      "secondary": "Secundária",
+      "tertiary": "Terciária",
+      "title": "Gerador de tema"
+    }
+  }
+}

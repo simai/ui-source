@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "label": "Auf dieser Seite",
+    "more": "Mehr",
+    "count-error": {
+      "one": "{n} Fehler",
+      "other": "{n} Fehler"
+    },
+    "count-warning": {
+      "one": "{n} Warnung",
+      "other": "{n} Warnungen"
+    },
+    "count-success": {
+      "one": "{n}, erledigt",
+      "other": "{n}, erledigt"
+    },
+    "status-error": "enthält Fehler",
+    "status-warning": "enthält Warnungen",
+    "status-success": "erledigt"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "ملف",
+    "preparing-text": "جارٍ تحضير الملف…",
+    "preparing-value-text": "جارٍ التحضير… {percent}",
+    "failed-text": "تعذر إنشاؤه",
+    "retry-text": "إعادة المحاولة",
+    "retry-label": "إعادة المحاولة: {name}",
+    "cancel-text": "إلغاء",
+    "cancel-label": "إلغاء: {name}",
+    "ready-text": "جاهز",
+    "get-text": "تنزيل",
+    "get-label": "تنزيل {name}",
+    "new-tab-text": "(يُفتح في علامة تبويب جديدة)",
+    "said-preparing": "جارٍ تحضير الملف «{name}»",
+    "said-ready": "الملف جاهز: «{name}»{said}",
+    "said-fetched": "الملف جاهز وتم تنزيله: «{name}»{said}",
+    "said-offer": "الملف جاهز: «{name}»{said}. زر «تنزيل»",
+    "said-cancelled": "تم إلغاء التحضير: «{name}»",
+    "said-failed": "خطأ: تعذر إنشاء «{name}»."
+  }
+}

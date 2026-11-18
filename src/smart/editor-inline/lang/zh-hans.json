@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "apply": "应用",
+    "code": "代码",
+    "editing": "{label}：正在编辑。按 Enter 保存，按 Esc 取消。",
+    "editing-block": "{label}：正在编辑。按 Enter 新建块，按 Esc 取消。",
+    "em": "斜体",
+    "invalid": "链接地址无效",
+    "link": "链接",
+    "link-empty": "请输入链接地址",
+    "link-hint": "https://…、mailto:、tel: 或本站路径，如 /about",
+    "link-long": "地址超过 {max} 个字符",
+    "link-scheme": "不允许此地址：请以 https://、mailto: 或 tel: 开头",
+    "link-slashes": "本站地址以单个斜杠 / 开头",
+    "link-spaces": "请删除空格：地址中不能有空格",
+    "link-start": "地址缺少开头：https://，本站页面用 /",
+    "more": "更多",
+    "strong": "粗体",
+    "toolbar": "格式",
+    "unlink": "移除链接",
+    "url": "链接地址",
+    "strike": "删除线"
+  }
+}

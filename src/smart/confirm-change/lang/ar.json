@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "accept-text": "تأكيد",
+    "accepted-text": "تم التطبيق",
+    "accepting-text": "جارٍ التطبيق…",
+    "after-text": "سيصبح",
+    "before-text": "كان",
+    "changes-label": "ما الذي سيتغير",
+    "decline-text": "رفض",
+    "declining-text": "جارٍ الرفض…",
+    "empty-value-text": "فارغ",
+    "expired-text": "انتهى وقت التأكيد",
+    "until-text": "أكّد قبل {time}"
+  }
+}

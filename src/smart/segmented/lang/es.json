@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "dark": "Oscuro",
+    "group": "Tema",
+    "light": "Claro",
+    "system": "Sistema",
+    "value-missing": "Elige una opción."
+  }
+}

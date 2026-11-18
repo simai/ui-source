@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "from": "von",
+    "to": "bis",
+    "from-label": "{name}, von",
+    "to-label": "{name}, bis",
+    "help": "Mehr zu: {label}"
+  }
+}

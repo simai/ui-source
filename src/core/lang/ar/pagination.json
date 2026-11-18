@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 30,
+    "translated": 30,
+    "share": 100
+  },
+  "words": {
+    "sf-pagination": {
+      "action-apply-text": "تطبيق",
+      "action-choose-label": "اختر إجراءً",
+      "action-for-all-label": "للكل",
+      "actions-label": "إجراء للسجلات المحددة",
+      "actions-region-label": "إجراءات للمحدد",
+      "aria-label": "صفحات النتائج",
+      "clear-selection-label": "مسح التحديد",
+      "counting-label": "جارٍ العد",
+      "cursor-next-text": "التالي",
+      "first-label": "الأولى",
+      "last-label": "الأخيرة",
+      "next-label": "الصفحة التالية",
+      "next-text": "التالي",
+      "of-pages": "{page} من {count}",
+      "page-field-label": "الصفحة:",
+      "page-label": "الصفحة",
+      "page-size-label": "لكل صفحة:",
+      "page-size-text": "{size} لكل صفحة",
+      "pages-label": "الصفحات:",
+      "previous-label": "الصفحة السابقة",
+      "previous-text": "السابق",
+      "range": "{from}–{to} من {total}",
+      "range-many": "{from}–{to} من كثير",
+      "selected-label": "المحدد:",
+      "show-count-label": "العدد",
+      "show-more-count": "عرض {count} أخرى",
+      "show-more-text": "عرض المزيد",
+      "shown": "عرض {shown} من {total}",
+      "title-page": "الصفحة {page}",
+      "total-label": "الإجمالي:"
+    }
+  }
+}

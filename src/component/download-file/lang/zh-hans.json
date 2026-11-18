@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "new-tab": "（在新标签页中打开）",
+    "byte": {
+      "other": "字节"
+    },
+    "kilobyte": {
+      "other": "千字节"
+    },
+    "megabyte": {
+      "other": "兆字节"
+    },
+    "gigabyte": {
+      "other": "吉字节"
+    },
+    "terabyte": {
+      "other": "太字节"
+    }
+  }
+}

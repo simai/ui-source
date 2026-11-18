@@ -1,0 +1,33 @@
+{
+  "runtime": {
+    "date-at": "{date} {time}",
+    "just-now": "刚刚",
+    "yesterday-at": "{day} {time}",
+    "zone-asia-anadyr": "阿纳德尔",
+    "zone-asia-barnaul": "巴尔瑙尔",
+    "zone-asia-chita": "赤塔",
+    "zone-asia-irkutsk": "伊尔库茨克",
+    "zone-asia-kamchatka": "堪察加彼得罗巴甫洛夫斯克",
+    "zone-asia-khandyga": "汉德加",
+    "zone-asia-krasnoyarsk": "克拉斯诺亚尔斯克",
+    "zone-asia-magadan": "马加丹",
+    "zone-asia-novokuznetsk": "新库兹涅茨克",
+    "zone-asia-novosibirsk": "新西伯利亚",
+    "zone-asia-omsk": "鄂木斯克",
+    "zone-asia-sakhalin": "萨哈林",
+    "zone-asia-srednekolymsk": "中科雷姆斯克",
+    "zone-asia-tomsk": "托木斯克",
+    "zone-asia-ust-nera": "乌斯季涅拉",
+    "zone-asia-vladivostok": "符拉迪沃斯托克",
+    "zone-asia-yakutsk": "雅库茨克",
+    "zone-asia-yekaterinburg": "叶卡捷琳堡",
+    "zone-europe-astrakhan": "阿斯特拉罕",
+    "zone-europe-kaliningrad": "加里宁格勒",
+    "zone-europe-kirov": "基洛夫",
+    "zone-europe-moscow": "莫斯科",
+    "zone-europe-samara": "萨马拉",
+    "zone-europe-saratov": "萨拉托夫",
+    "zone-europe-ulyanovsk": "乌里扬诺夫斯克",
+    "zone-europe-volgograd": "伏尔加格勒"
+  }
+}

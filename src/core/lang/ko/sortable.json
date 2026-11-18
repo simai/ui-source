@@ -1,0 +1,38 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-sortable": {
+      "cancelled": "이동을 취소했습니다.",
+      "dropped": "{item}을(를) ‘{list}’의 {index}번째 위치에 놓았습니다.",
+      "empty": "검색 결과 없음",
+      "hint": "+로 뒤에 삽입합니다.",
+      "inserted": "{item}을(를) ‘{list}’의 {index}번째 위치에 삽입했습니다.",
+      "instructions": "Space 또는 Enter로 잡고, 화살표로 이동, Space 또는 Enter로 놓기, Esc로 취소.",
+      "menu": "삽입",
+      "move-down": "아래로",
+      "move-first": "맨 위로",
+      "move-last": "맨 아래로",
+      "move-menu": "‘{item}’ 이동",
+      "move-up": "위로",
+      "moved": "‘{list}’에서 {total}개 중 {index}번째.",
+      "picked": "{item}을(를) 잡았습니다. ‘{list}’에서 {total}개 중 {index}번째.",
+      "point": "삽입: {total}개 중 {index}번째",
+      "roledescription": "끌어서 이동 가능",
+      "search": "찾기",
+      "target": "대상: {target}."
+    }
+  }
+}

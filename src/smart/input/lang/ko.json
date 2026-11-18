@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "value-missing": "이 필드를 입력하세요",
+    "clear": "지우기",
+    "reveal": "비밀번호 표시",
+    "type-mismatch": "값을 확인하세요",
+    "type-mismatch-email": "전체 주소를 입력하세요(예: minji@example.kr)",
+    "type-mismatch-url": "전체 주소를 입력하세요(예: https://example.kr)",
+    "pattern-mismatch": "형식을 확인하세요",
+    "too-short": "최소 {min}자",
+    "too-long": "최대 {max}자",
+    "range-underflow": "최소 {min}",
+    "range-overflow": "최대 {max}",
+    "step-mismatch": "{step} 단위로 입력하세요",
+    "bad-input": "숫자를 입력하세요",
+    "count-text": "{count} / {max}",
+    "help": "자세히 보기: {label}",
+    "caps-lock": "Caps Lock이 켜져 있습니다",
+    "conceal": "비밀번호 숨기기"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "상속됨",
+      "reset": "상속값으로 재설정",
+      "described": "상속됨: {value}"
+    }
+  }
+}

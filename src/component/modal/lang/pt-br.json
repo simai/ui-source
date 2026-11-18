@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "Caixa de diálogo",
+    "close": "Fechar",
+    "loading": "Carregando…",
+    "loadFailed": "Não foi possível carregar o conteúdo",
+    "frameFailed": "Não foi possível carregar o conteúdo do quadro"
+  }
+}

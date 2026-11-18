@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "new-tab-text": "（新しいタブで開きます）",
+    "copy-label": "リンクをコピー",
+    "missing-text": "削除済み",
+    "forbidden-text": "アクセス権なし"
+  }
+}

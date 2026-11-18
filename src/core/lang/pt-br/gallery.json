@@ -1,0 +1,42 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "pt-br",
+  "name": "Português (Brasil)",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 22,
+    "translated": 22,
+    "share": 100
+  },
+  "words": {
+    "sf-gallery": {
+      "heading": "Galeria",
+      "open-picture": "Abrir a imagem {n} de {total}",
+      "open-picture-named": "Abrir a imagem {n} de {total}: {alt}",
+      "show-picture": "Mostrar a imagem {n}",
+      "show-picture-named": "Mostrar a imagem {n}: {alt}",
+      "pick-picture": "Selecionar a imagem {n}",
+      "pick-picture-named": "Selecionar a imagem {n}: {alt}",
+      "count": "{n} / {total}",
+      "selection": "Seleção",
+      "selected-count": "{count} selecionados",
+      "clear-selection": "Limpar seleção",
+      "viewer-label": "Visualizador",
+      "viewer-count": "{n} / {total}",
+      "viewer-count-words": "{n} de {total}",
+      "viewer-zoom-in": "Ampliar",
+      "viewer-zoom-out": "Reduzir",
+      "viewer-close": "Fechar",
+      "viewer-previous": "Imagem anterior",
+      "viewer-next": "Próxima imagem",
+      "viewer-download": "Baixar {name}",
+      "viewer-open-tab": "Abrir em uma nova aba",
+      "viewer-document": "Documento"
+    }
+  }
+}

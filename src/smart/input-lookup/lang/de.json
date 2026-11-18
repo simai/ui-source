@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "hint-min-length": {
+      "one": "Geben Sie mindestens {n} Zeichen ein",
+      "other": "Geben Sie mindestens {n} Zeichen ein"
+    },
+    "searching": "Suche läuft…",
+    "nothing-found": "Nichts gefunden",
+    "unavailable": "Suche nicht verfügbar",
+    "error": "Suche fehlgeschlagen",
+    "retry": "Wiederholen",
+    "show-more": "Mehr anzeigen",
+    "max-items": "Höchstens {n}",
+    "remove": "{label} entfernen",
+    "clear": "Leeren",
+    "results": {
+      "one": "{n} Ergebnis",
+      "other": "{n} Ergebnisse"
+    },
+    "value-missing": "Wählen Sie einen Wert",
+    "more-chips": {
+      "one": "{n} weiteres: {names}",
+      "other": "{n} weitere: {names}"
+    },
+    "create-item": "„{text}“ erstellen",
+    "create-email": "Adresse {text} hinzufügen",
+    "create-error": "Konnte nicht erstellt werden",
+    "chip-position": "{label}, {position} von {total}, Entf zum Entfernen",
+    "done": "Fertig",
+    "help": "Mehr zu: {label}"
+  }
+}

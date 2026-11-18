@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "heading": "Galerie",
+    "open-picture": "Bild {n} von {total} öffnen",
+    "open-picture-named": "Bild {n} von {total} öffnen: {alt}",
+    "show-picture": "Bild {n} zeigen",
+    "show-picture-named": "Bild {n} zeigen: {alt}",
+    "pick-picture": "Bild {n} auswählen",
+    "pick-picture-named": "Bild {n} auswählen: {alt}",
+    "count": "{n} / {total}",
+    "selection": "Auswahl",
+    "selected-count": "{count} ausgewählt",
+    "clear-selection": "Auswahl aufheben",
+    "viewer-label": "Bildbetrachter",
+    "viewer-count": "{n} / {total}",
+    "viewer-count-words": "{n} von {total}",
+    "viewer-zoom-in": "Vergrößern",
+    "viewer-zoom-out": "Verkleinern",
+    "viewer-close": "Schließen",
+    "viewer-previous": "Vorheriges Bild",
+    "viewer-next": "Nächstes Bild",
+    "viewer-download": "{name} herunterladen",
+    "viewer-open-tab": "In neuem Tab öffnen",
+    "viewer-document": "Dokument"
+  }
+}

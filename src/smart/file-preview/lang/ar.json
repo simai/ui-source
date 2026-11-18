@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "ملف",
+    "download-label": "تنزيل {name}",
+    "remove-label": "إزالة {name}",
+    "uploading-label": "جارٍ رفع {name}",
+    "error-text": "لم يُرفع",
+    "error-line": "لم يُرفع: {message}",
+    "retry-text": "إعادة المحاولة",
+    "retry-label": "إعادة محاولة {name}",
+    "delete-label": "حذف {name}",
+    "delete-question": "حذف «{name}»؟",
+    "delete-text": "حذف",
+    "viewer-previous": "الملف السابق",
+    "viewer-next": "الملف التالي"
+  }
+}

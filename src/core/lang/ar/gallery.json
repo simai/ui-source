@@ -1,0 +1,42 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 22,
+    "translated": 22,
+    "share": 100
+  },
+  "words": {
+    "sf-gallery": {
+      "heading": "المعرض",
+      "open-picture": "فتح الصورة {n} من {total}",
+      "open-picture-named": "فتح الصورة {n} من {total}: {alt}",
+      "show-picture": "إظهار الصورة {n}",
+      "show-picture-named": "إظهار الصورة {n}: {alt}",
+      "pick-picture": "تحديد الصورة {n}",
+      "pick-picture-named": "تحديد الصورة {n}: {alt}",
+      "count": "{n} / {total}",
+      "selection": "التحديد",
+      "selected-count": "تم تحديد {count}",
+      "clear-selection": "مسح التحديد",
+      "viewer-label": "العارض",
+      "viewer-count": "{n} / {total}",
+      "viewer-count-words": "{n} من {total}",
+      "viewer-zoom-in": "تكبير",
+      "viewer-zoom-out": "تصغير",
+      "viewer-close": "إغلاق",
+      "viewer-previous": "الصورة السابقة",
+      "viewer-next": "الصورة التالية",
+      "viewer-download": "تنزيل {name}",
+      "viewer-open-tab": "فتح في علامة تبويب جديدة",
+      "viewer-document": "مستند"
+    }
+  }
+}

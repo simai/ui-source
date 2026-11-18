@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "Spostamento annullato.",
+    "dropped": "{label} spostato. {place}.",
+    "editing": "Modifica di {label}. Invio salva, Esc annulla.",
+    "insert": "Inserisci",
+    "insert-after": "Inserisci dopo «{label}»",
+    "insert-at": "Inserisci in «{slot}», posizione {index}",
+    "more": "Altro",
+    "picked": "Spostamento di {label}. Le frecce scelgono la posizione, Invio rilascia, Esc annulla.",
+    "position": "{index} di {total}",
+    "selected": "Selezionato: {label}",
+    "toolbar": "Azioni",
+    "tree": "Struttura della pagina"
+  }
+}

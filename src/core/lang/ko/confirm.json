@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "확인",
+      "accepted-text": "완료",
+      "accepting-text": "처리 중…",
+      "decline-text": "취소",
+      "declining-text": "취소 중…",
+      "expired-text": "응답 시간이 지났습니다",
+      "question-label": "확인",
+      "require-error": "위와 똑같이 ‘{name}’을(를) 입력하세요",
+      "require-text": "확인하려면 {name}을(를) 입력하세요",
+      "until-text": "{time}까지 응답"
+    },
+    "sf-confirm-change": {
+      "accept-text": "확인",
+      "accepted-text": "적용됨",
+      "accepting-text": "적용 중…",
+      "after-text": "변경 후",
+      "before-text": "변경 전",
+      "changes-label": "변경될 내용",
+      "decline-text": "거부",
+      "declining-text": "거부 중…",
+      "empty-value-text": "비어 있음",
+      "expired-text": "확인 시간이 지났습니다",
+      "until-text": "{time}까지 확인"
+    }
+  }
+}

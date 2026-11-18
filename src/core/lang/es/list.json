@@ -1,0 +1,147 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 87,
+    "translated": 87,
+    "share": 100
+  },
+  "words": {
+    "sf-list": {
+      "actions-label": "Acciones: {text}",
+      "count-label": {
+        "one": "{n} sin leer",
+        "many": "{n} sin leer",
+        "other": "{n} sin leer"
+      },
+      "empty-text": "Aún no hay nada",
+      "label": "Lista",
+      "loading-more-text": "Cargando…",
+      "loading-text": "Cargando la lista",
+      "more-text": "Mostrar más",
+      "pinned-text": "Fijado",
+      "rename-label": "Nombre nuevo",
+      "rename-text": "Cambiar nombre",
+      "undated-text": "Sin fecha",
+      "ungrouped-text": "Otros",
+      "unread-text": "sin leer",
+      "untitled-text": "Sin título"
+    },
+    "sf-list-attention": {
+      "label": "Requiere atención",
+      "empty-text": "Todo en orden",
+      "empty-checked-text": "{text} · comprobado {when}",
+      "status-error": "Error",
+      "status-warning": "Advertencia",
+      "status-info": "Información",
+      "status-success": "Hecho",
+      "status-passed": "Superado",
+      "summary-error": {
+        "one": "{n} error",
+        "many": "{n} errores",
+        "other": "{n} errores"
+      },
+      "summary-warning": {
+        "one": "{n} advertencia",
+        "many": "{n} advertencias",
+        "other": "{n} advertencias"
+      },
+      "summary-info": {
+        "one": "{n} recomendación",
+        "many": "{n} recomendaciones",
+        "other": "{n} recomendaciones"
+      },
+      "summary-success": {
+        "one": "{n} resuelto",
+        "many": "{n} resueltos",
+        "other": "{n} resueltos"
+      },
+      "group-error": "Errores",
+      "group-warning": "Advertencias",
+      "group-info": "Recomendaciones",
+      "group-success": "Resueltos",
+      "group-passed": "Superados",
+      "affected-text": "afectado: {text}",
+      "age-now": "ahora mismo",
+      "age-minutes": "{n} min",
+      "age-hours": "{n} h",
+      "age-days": {
+        "one": "{n} día",
+        "many": "{n} días",
+        "other": "{n} días"
+      },
+      "checked-text": "Comprobado {when}",
+      "checked-now": "ahora mismo",
+      "checked-minutes": "hace {n} min",
+      "checked-time": "a las {time}",
+      "checked-date": "el {date} a las {time}",
+      "recheck-label": "Volver a comprobar",
+      "more-text": "Todos los problemas ({n})",
+      "show-all-text": "Mostrar todo ({n})",
+      "more-label": "Más: {title}",
+      "snooze-day-text": "Posponer un día",
+      "snooze-week-text": "Posponer una semana",
+      "dismiss-text": "No recordar más",
+      "help-text": "Sobre esta comprobación",
+      "snoozed-day-notice": "Pospuesto un día: {title}",
+      "snoozed-week-notice": "Pospuesto una semana: {title}",
+      "dismissed-notice": "No te lo recordaremos más: {title}",
+      "undo-text": "Deshacer"
+    },
+    "sf-list-description": {
+      "empty-text": "Sin definir",
+      "copy": "Copiar: {label}",
+      "action": "{action}: {label}",
+      "help": "Más sobre: {label}",
+      "status-success": "Correcto",
+      "status-warning": "Advertencia",
+      "status-error": "Error",
+      "status-info": "Información"
+    },
+    "sf-list-feed": {
+      "earlier-text": "Mostrar anteriores",
+      "empty-text": "Aún no hay entradas",
+      "latest-label": "Ir a lo más reciente",
+      "loading-earlier-text": "Cargando entradas anteriores",
+      "new-text": "Nuevo",
+      "log-label": "Entradas",
+      "region-label": "Feed",
+      "you-text": "Tú"
+    },
+    "sf-list-timeline": {
+      "empty-text": "Aún no hay eventos",
+      "more": "Mostrar más",
+      "loading": "Cargando…",
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "tomorrow": "Mañana",
+      "status-success": "Hecho",
+      "status-warning": "Advertencia",
+      "status-error": "Error",
+      "status-info": "Información",
+      "state-done": "Hecho",
+      "state-current": "Ahora",
+      "state-upcoming": "Próximo",
+      "step-status-success": "correcto",
+      "step-status-warning": "con una advertencia",
+      "step-status-error": "con un error",
+      "run-changes": {
+        "one": "{n} cambio más",
+        "many": "{n} cambios más",
+        "other": "{n} cambios más"
+      },
+      "run-events": {
+        "one": "{n} evento más",
+        "many": "{n} eventos más",
+        "other": "{n} eventos más"
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "apply": "適用",
+    "code": "コード",
+    "editing": "{label}: 編集中。Enter で保存、Esc でキャンセル。",
+    "editing-block": "{label}: 編集中。Enter で新しいブロック、Esc でキャンセル。",
+    "em": "斜体",
+    "invalid": "無効なリンクアドレス",
+    "link": "リンク",
+    "link-empty": "リンクアドレスを入力してください",
+    "link-hint": "https://…、mailto:、tel: またはこのサイトのパス（例: /about）",
+    "link-long": "アドレスが {max} 文字を超えています",
+    "link-scheme": "このアドレスは使用できません。https://、mailto:、tel: で始めてください",
+    "link-slashes": "このサイトのアドレスはスラッシュ 1 つ（/）で始まります",
+    "link-spaces": "スペースを削除してください。アドレスにスペースは使えません",
+    "link-start": "アドレスの先頭がありません。https://、またはこのサイトのページなら /",
+    "more": "その他",
+    "strong": "太字",
+    "toolbar": "書式",
+    "unlink": "リンクを解除",
+    "url": "リンクアドレス",
+    "strike": "取り消し線"
+  }
+}

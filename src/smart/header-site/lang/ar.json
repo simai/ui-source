@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "القائمة",
+    "menu-label": "فتح القائمة",
+    "close-label": "إغلاق القائمة",
+    "settings": "الإعدادات",
+    "language": "اللغة",
+    "tools": "الأدوات",
+    "theme": "المظهر"
+  }
+}

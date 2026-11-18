@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 18,
+    "translated": 18,
+    "share": 100
+  },
+  "words": {
+    "sf-button": {
+      "theme": "Thème",
+      "theme-system": "système",
+      "theme-light": "clair",
+      "theme-dark": "sombre",
+      "theme-system-now": "système (actuellement {theme})",
+      "cycle-next": "{name}. Appuyez pour {next}",
+      "split-more": "Plus d’options : {label}"
+    },
+    "sf-button-close": {
+      "close": "Fermer"
+    },
+    "sf-button-copy": {
+      "copied": "Copié",
+      "copy": "Copier",
+      "failed": "Impossible de copier",
+      "selected": "Sélectionné — appuyez sur {keys}"
+    },
+    "sf-button-icon": {
+      "theme": "Thème",
+      "theme-system": "système",
+      "theme-light": "clair",
+      "theme-dark": "sombre",
+      "theme-system-now": "système (actuellement {theme})",
+      "cycle-next": "{name}. Appuyez pour {next}"
+    }
+  }
+}

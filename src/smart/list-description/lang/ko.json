@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "empty-text": "설정 안 됨",
+    "copy": "복사: {label}",
+    "action": "{action}: {label}",
+    "help": "자세히 보기: {label}",
+    "status-success": "정상",
+    "status-warning": "경고",
+    "status-error": "오류",
+    "status-info": "정보"
+  }
+}

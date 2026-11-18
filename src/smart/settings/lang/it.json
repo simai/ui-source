@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "label": "Impostazioni",
+    "hue-red": "Rosso",
+    "hue-orange": "Arancione",
+    "hue-amber": "Ambra",
+    "hue-yellow": "Giallo",
+    "hue-lime": "Lime",
+    "hue-green": "Verde",
+    "hue-teal": "Verde acqua",
+    "hue-cyan": "Ciano",
+    "hue-sky": "Azzurro",
+    "hue-blue": "Blu",
+    "hue-indigo": "Indaco",
+    "hue-violet": "Viola",
+    "hue-purple": "Porpora",
+    "hue-pink": "Rosa",
+    "hue-brown": "Marrone",
+    "hue-gray": "Grigio",
+    "own-color": "Colore personalizzato…",
+    "own-color-value": "Personalizzato: {value}",
+    "close": "Chiudi",
+    "reset": "Ripristina",
+    "apply": "Applica",
+    "search": "Cerca",
+    "empty": "Nessun risultato",
+    "pin": "Fissa",
+    "unpin": "Sblocca",
+    "move-hint": "Alt con le frecce su e giù cambia l’ordine",
+    "position": "{text}: {index} di {count}"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "next": "次のスライド",
+    "previous": "前のスライド",
+    "label": "スライド",
+    "carousel": "カルーセル",
+    "slide": "スライド",
+    "position": "{n}/{count}",
+    "pause": "スライドを停止",
+    "play": "スライドを再生"
+  }
+}

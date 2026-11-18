@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "Arquivo",
+    "preparing-text": "Preparando o arquivo…",
+    "preparing-value-text": "Preparando… {percent}",
+    "failed-text": "Não foi possível gerar",
+    "retry-text": "Tentar de novo",
+    "retry-label": "Tentar de novo: {name}",
+    "cancel-text": "Cancelar",
+    "cancel-label": "Cancelar: {name}",
+    "ready-text": "Pronto",
+    "get-text": "Baixar",
+    "get-label": "Baixar {name}",
+    "new-tab-text": "(abre em uma nova aba)",
+    "said-preparing": "Preparando o arquivo “{name}”",
+    "said-ready": "O arquivo está pronto: “{name}”{said}",
+    "said-fetched": "O arquivo está pronto e baixado: “{name}”{said}",
+    "said-offer": "O arquivo está pronto: “{name}”{said}. Botão “Baixar”",
+    "said-cancelled": "Preparação cancelada: “{name}”",
+    "said-failed": "Erro: não foi possível gerar “{name}”."
+  }
+}

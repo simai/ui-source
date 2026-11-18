@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "이동을 취소했습니다.",
+    "dropped": "{label}을(를) 이동했습니다. {place}.",
+    "editing": "{label} 편집 중. Enter로 저장, Esc로 취소.",
+    "insert": "삽입",
+    "insert-after": "‘{label}’ 뒤에 삽입",
+    "insert-at": "‘{slot}’에 삽입, 위치 {index}",
+    "more": "더 보기",
+    "picked": "{label} 이동 중. 화살표로 위치 선택, Enter로 놓기, Esc로 취소.",
+    "position": "{index}/{total}",
+    "selected": "선택됨: {label}",
+    "toolbar": "작업",
+    "tree": "페이지 구조"
+  }
+}
