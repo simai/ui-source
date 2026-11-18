@@ -16,7 +16,7 @@ const template = read('src/smart/language/js/templates/default.js');
 test('the manifest: a leaf of family language, a form field with one cancellable change and select', () => {
   assert.equal(manifest.tag, 'sf-language');
   assert.equal(manifest.family, 'language');
-  assert.equal(manifest.version, '1.5.3'); // fix/returns-gb67: TT-11, the trigger's name is the Framework tooltip // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2) // queue #70: the field look takes the dropdown of the same size // C282: 1.5.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.6.0'); // C278 follow-up: 1.6.0, CIS language names withdrawn, words through the registry aliases // fix/returns-gb67: TT-11, the trigger's name is the Framework tooltip // group build 5 patch above 1.4.1 on fix/language-first-paint // group build 7: the integrated number (the branch wrote 1.4.2) // queue #70: the field look takes the dropdown of the same size // C282: 1.5.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.2 moved on by the merged branches or a GB10 patch
   assert.deepEqual(Object.keys(manifest.settings), ['languages', 'items', 'href', 'missing', 'home', 'mode', 'inline-max', 'search-from', 'labels', 'size', 'apply', 'remember', 'label', 'name', 'disabled']);
   assert.deepEqual(manifest.settings.mode.values, ['auto', 'inline', 'menu', 'search', 'field']);
   assert.deepEqual(manifest.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
@@ -101,8 +101,8 @@ test('the trigger\'s code slot is the width core holds before the code (C130)', 
   const placeholder = read('src/core/scss/_sf_css__placeholder.scss');
   assert.match(placeholder, /:where\(sf-language \.sf-language-code\) \{\n  inline-size: var\(--sf-language--line\);\n  min-inline-size: var\(--sf-language--line\);\n  grid-template-columns: minmax\(0, 1fr\);\n  justify-items: center;/u);
   const narrow = new RegExp(template.match(/const NARROW_CODE = \/(.+)\/u;/u)[1], 'u');
-  for (const code of ['RU', 'EN', 'DE', 'MN', 'PT', 'ΕΛ', 'ՀՅ', 'ქა', 'Ру']) assert.ok(narrow.test(code), code);
-  for (const code of ['PT-BR', '简体', '繁體', 'Укр', '', 'ع']) assert.ok(!narrow.test(code), code);
+  for (const code of ['RU', 'EN', 'DE', 'MN', 'PT', 'ΕΛ', 'Ру']) assert.ok(narrow.test(code), code);
+  for (const code of ['PT-BR', '简体', '繁體', 'Срп', '', 'ع']) assert.ok(!narrow.test(code), code);
 });
 
 test('a choice asks first, then remembers through SF.Preferences and applies or follows', () => {
