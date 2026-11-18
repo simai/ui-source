@@ -874,7 +874,20 @@ class SfForm extends FormElement {
     return control;
   }
 
-  fieldContext(field, {editing, id}) {
+  // A yes/no in a form saved by a button is a checkbox (C165 (4)): a switch
+  // acts at once, and sf-switch warns when it stands in such a form. The
+  // field's template says how a yes/no is drawn (C303 (4)); its default, the
+  // switch, is the instant form's, so a form that saves by a button (submit or
+  // answer) draws the switch template as the checkbox. «Да / Нет» buttons stay
+  // buttons. Group build 13, DEV return FF-R1.
+  buttonSaved(field, editing) {
+    if (!editing || this.isInstant) return field;
+    const drawn = fieldTemplate(field);
+    return drawn.type === 'boolean' && drawn.template === 'switch' ? {...field, template: 'checkbox'} : field;
+  }
+
+  fieldContext(given, {editing, id}) {
+    const field = this.buttonSaved(given, editing);
     const value = this._values[field.key];
     const host = this.hostOf(field);
     // A short choice is a ready group of radios or checks (C165 (1)).
