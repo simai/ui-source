@@ -644,6 +644,8 @@ export const language = {
     REGISTERED.clear();
     FLOOR.clear();
     PACKS.loaded.clear();
+    // The asks kept before core ran go too: they were for the words forgotten.
+    PACKS.early?.clear?.();
     STORE.chosen = null;
     announce();
     return this;

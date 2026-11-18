@@ -35,7 +35,7 @@ test('FF-3: a multiple dropdown puts the box at the row end on text and icon row
 
 test('FF-5: «Применить (N)» before «Сбросить»', () => {
   const panel = read('src/smart/settings/js/templates/panel.js');
-  assert.match(panel, /<div class="sf-settings-panel-footer"><sf-button size="1\/2" text=\$\{label\} data-sf-apply><\/sf-button>\$\{reset\}<\/div>/u);
+  assert.match(panel, /<div class="sf-settings-panel-footer"><sf-button size=\$\{size\} text=\$\{label\} data-sf-apply><\/sf-button>\$\{reset\}<\/div>/u);
 });
 
 test('FF-6: the settings search text over the rows\' text, its icon at the end', () => {
