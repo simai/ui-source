@@ -77,7 +77,7 @@ test('list head notes: sf-popover leaves data-open to the page and draws by its 
   const source = read('src/smart/popover/index.js');
   assert.doesNotMatch(source, /this\.dataset\.open\s*=/u);
   const sheet = read('src/smart/popover/js/templates/default.css');
-  assert.match(sheet, /sf-popover:not\(\[open\]\) > \[slot='content'\] \{\s+display: none;/u);
+  assert.match(sheet, /sf-popover:not\(\[open\]\) > \[slot='content'\] \{\s+display: none(?: !important)?;/u);
   assert.doesNotMatch(sheet, /\[data-open='false'\]/u);
   assert.doesNotMatch(read('src/smart/input-rich/scss/_smart__rich_text.scss'), /sf-rich-text-link[^{]*data-open/u);
   const record = json('contracts/changes/journal.json').records.find((one) => one.id === 'behaviour-popover-data-open-retired');
