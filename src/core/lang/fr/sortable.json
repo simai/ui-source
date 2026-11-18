@@ -1,0 +1,38 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 18,
+    "share": 85.7
+  },
+  "words": {
+    "sf-sortable": {
+      "cancelled": "Déplacement annulé.",
+      "dropped": "{item} déposé en position {index} dans « {list} ».",
+      "empty": "Aucun résultat",
+      "hint": "Plus pour insérer après.",
+      "inserted": "{item} inséré en position {index} dans « {list} ».",
+      "instructions": "Espace ou Entrée pour saisir, flèches pour déplacer, Espace ou Entrée pour déposer, Échap pour annuler.",
+      "menu": "Insérer",
+      "move-down": "Vers le bas",
+      "move-first": "Tout en haut",
+      "move-last": "Tout en bas",
+      "move-menu": "Déplacer « {item} »",
+      "move-up": "Vers le haut",
+      "moved": "Position {index} sur {total} dans « {list} ».",
+      "picked": "{item} saisi. Position {index} sur {total} dans « {list} ».",
+      "point": "Insérer : position {index} sur {total}",
+      "roledescription": "déplaçable",
+      "search": "Rechercher",
+      "target": "Cible : {target}."
+    }
+  }
+}

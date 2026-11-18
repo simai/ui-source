@@ -1,0 +1,36 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "zh-hans",
+  "name": "简体中文",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 20,
+    "translated": 20,
+    "share": 100
+  },
+  "words": {
+    "sf-slider": {
+      "next": "下一张",
+      "previous": "上一张",
+      "label": "幻灯片",
+      "carousel": "轮播",
+      "slide": "幻灯片",
+      "position": "{n}/{count}",
+      "pause": "停止播放",
+      "play": "开始播放",
+      "thumb": "转到第 {n} 张"
+    },
+    "sf-slider-range": {
+      "from": "从",
+      "to": "到",
+      "from-label": "{name}，从",
+      "to-label": "{name}，到",
+      "help": "详细了解：{label}"
+    }
+  }
+}

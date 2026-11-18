@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "파일",
+    "preparing-text": "파일 준비 중…",
+    "preparing-value-text": "준비 중… {percent}",
+    "failed-text": "만들지 못했습니다",
+    "retry-text": "다시 시도",
+    "retry-label": "다시 시도: {name}",
+    "cancel-text": "취소",
+    "cancel-label": "취소: {name}",
+    "ready-text": "준비됨",
+    "get-text": "다운로드",
+    "get-label": "{name} 다운로드",
+    "new-tab-text": "(새 탭에서 열림)",
+    "said-preparing": "파일 ‘{name}’ 준비 중",
+    "said-ready": "파일이 준비되었습니다: ‘{name}’{said}",
+    "said-fetched": "파일이 준비되어 다운로드되었습니다: ‘{name}’{said}",
+    "said-offer": "파일이 준비되었습니다: ‘{name}’{said}. ‘다운로드’ 버튼",
+    "said-cancelled": "준비가 취소되었습니다: ‘{name}’",
+    "said-failed": "오류: ‘{name}’을(를) 만들지 못했습니다."
+  }
+}

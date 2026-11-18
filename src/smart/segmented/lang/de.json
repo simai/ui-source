@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "dark": "Dunkel",
+    "group": "Design",
+    "light": "Hell",
+    "system": "System",
+    "value-missing": "Wählen Sie eine Option."
+  }
+}

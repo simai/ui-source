@@ -1,0 +1,27 @@
+{
+  "runtime": {
+    "label": "Configuração passo a passo",
+    "running-text": "Processando…",
+    "position": "Etapa {n} de {count}",
+    "moved": "Etapa {n} de {count}: {step}",
+    "back": "Voltar",
+    "skip": "Pular",
+    "next": "Próximo",
+    "run": "Executar",
+    "retry": "Tentar novamente",
+    "apply": "Aplicar",
+    "done": "Concluir",
+    "later": "Continuar depois",
+    "steps": "Etapas",
+    "all-steps": "Todas as etapas",
+    "hide-steps": "Ocultar etapas",
+    "progress": "Progresso do assistente",
+    "state-done": "Concluído",
+    "state-skipped": "Ignorado",
+    "state-running": "Em andamento",
+    "state-error": "Erro",
+    "required": "Preencha este campo",
+    "invalid": "Verifique o valor",
+    "saved": "Rascunho salvo às {time}"
+  }
+}

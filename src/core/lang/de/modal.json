@@ -1,0 +1,31 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "de",
+  "name": "Deutsch",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 14,
+    "translated": 14,
+    "share": 100
+  },
+  "words": {
+    "sf-modal": {
+      "close": "Schließen",
+      "discard": "Nicht speichern",
+      "discard-heading": "Ohne Speichern schließen?",
+      "frame-failed": "Inhalt des Frames konnte nicht geladen werden",
+      "keep-editing": "Weiter bearbeiten",
+      "load-failed": "Inhalt konnte nicht geladen werden",
+      "loading": "Wird geladen…",
+      "minimize": "Minimieren",
+      "title": "Dialog",
+      "loadFailed": "Inhalt konnte nicht geladen werden",
+      "frameFailed": "Inhalt des Frames konnte nicht geladen werden"
+    }
+  }
+}

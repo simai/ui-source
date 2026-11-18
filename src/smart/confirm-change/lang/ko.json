@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "accept-text": "확인",
+    "accepted-text": "적용됨",
+    "accepting-text": "적용 중…",
+    "after-text": "변경 후",
+    "before-text": "변경 전",
+    "changes-label": "변경될 내용",
+    "decline-text": "거부",
+    "declining-text": "거부 중…",
+    "empty-value-text": "비어 있음",
+    "expired-text": "확인 시간이 지났습니다",
+    "until-text": "{time}까지 확인"
+  }
+}

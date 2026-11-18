@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "earlier-text": "Frühere anzeigen",
+    "empty-text": "Noch keine Einträge",
+    "latest-label": "Zum Neuesten",
+    "loading-earlier-text": "Frühere Einträge werden geladen",
+    "new-text": "Neu",
+    "log-label": "Einträge",
+    "region-label": "Feed",
+    "you-text": "Sie"
+  }
+}

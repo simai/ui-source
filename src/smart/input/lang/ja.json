@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "value-missing": "この項目を入力してください",
+    "clear": "クリア",
+    "reveal": "パスワードを表示",
+    "type-mismatch": "値を確認してください",
+    "type-mismatch-email": "完全なアドレスを入力してください（例: hanako@example.jp）",
+    "type-mismatch-url": "完全なアドレスを入力してください（例: https://example.jp）",
+    "pattern-mismatch": "形式を確認してください",
+    "too-short": "{min} 文字以上",
+    "too-long": "{max} 文字以内",
+    "range-underflow": "{min} 以上",
+    "range-overflow": "{max} 以下",
+    "step-mismatch": "{step} 刻みで入力してください",
+    "bad-input": "数値を入力してください",
+    "count-text": "{count} / {max}",
+    "help": "詳細: {label}",
+    "caps-lock": "Caps Lock がオンです",
+    "conceal": "パスワードを隠す"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "継承",
+      "reset": "継承値に戻す",
+      "described": "継承: {value}"
+    }
+  }
+}

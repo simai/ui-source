@@ -5046,7 +5046,10 @@ function languageHold() {
   if (!limit) return null;
   const root = globalThis.document?.documentElement;
   const wanted = String(store.chosen || root?.getAttribute?.('lang') || '').trim().toLowerCase().replace('_', '-');
-  const waits = [...new Set([wanted, wanted.split('-')[0]])].filter(Boolean).map((code) => pending.get(code)).filter(Boolean);
+  // A registry alias waits for its pack (zh-cn: zh-hans, pt: pt-br).
+  const pack = (code) => store.packs.aliases?.[code] ?? code;
+  const base = wanted.split('-')[0];
+  const waits = [...new Set([wanted, pack(wanted), base, pack(base)])].filter(Boolean).map((code) => pending.get(code)).filter(Boolean);
   if (!waits.length) return null;
   const now = () => globalThis.performance?.now?.() ?? Date.now();
   const holds = waits.map((words) => {

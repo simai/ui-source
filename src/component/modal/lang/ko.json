@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "대화 상자",
+    "close": "닫기",
+    "loading": "불러오는 중…",
+    "loadFailed": "콘텐츠를 불러오지 못했습니다",
+    "frameFailed": "프레임 콘텐츠를 불러오지 못했습니다"
+  }
+}

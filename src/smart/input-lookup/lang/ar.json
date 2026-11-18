@@ -1,0 +1,44 @@
+{
+  "runtime": {
+    "hint-min-length": {
+      "zero": "اكتب {n} حرف على الأقل",
+      "one": "اكتب حرفًا واحدًا على الأقل",
+      "two": "اكتب حرفين على الأقل",
+      "few": "اكتب {n} أحرف على الأقل",
+      "many": "اكتب {n} حرفًا على الأقل",
+      "other": "اكتب {n} حرف على الأقل"
+    },
+    "searching": "جارٍ البحث…",
+    "nothing-found": "لم يُعثر على شيء",
+    "unavailable": "البحث غير متاح",
+    "error": "فشل البحث",
+    "retry": "إعادة المحاولة",
+    "show-more": "عرض المزيد",
+    "max-items": "{n} كحد أقصى",
+    "remove": "إزالة {label}",
+    "clear": "مسح",
+    "results": {
+      "zero": "لا نتائج",
+      "one": "نتيجة واحدة",
+      "two": "نتيجتان",
+      "few": "{n} نتائج",
+      "many": "{n} نتيجة",
+      "other": "{n} نتيجة"
+    },
+    "value-missing": "اختر قيمة",
+    "more-chips": {
+      "zero": "{n} أخرى: {names}",
+      "one": "واحد آخر: {names}",
+      "two": "اثنان آخران: {names}",
+      "few": "{n} أخرى: {names}",
+      "many": "{n} أخرى: {names}",
+      "other": "{n} أخرى: {names}"
+    },
+    "create-item": "إنشاء «{text}»",
+    "create-email": "إضافة العنوان {text}",
+    "create-error": "تعذر الإنشاء",
+    "chip-position": "{label}، {position} من {total}، اضغط Delete للإزالة",
+    "done": "تم",
+    "help": "المزيد عن: {label}"
+  }
+}

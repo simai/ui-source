@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "activity-running": "قيد التشغيل",
+    "activity-waiting": "بانتظار ردك",
+    "activity-done": "جاهز",
+    "activity-stopped": "متوقف",
+    "activity-failed": "فشل",
+    "activity-paused": "متوقف مؤقتًا",
+    "activity-queued": "في قائمة الانتظار"
+  }
+}

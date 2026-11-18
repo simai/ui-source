@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "required-note": "* — 必須項目",
+    "submit": "保存",
+    "cancel": "キャンセル",
+    "edit": "編集",
+    "unsaved": "保存されていない変更があります",
+    "errors-title": {
+      "other": "{n} 件の項目を修正してください"
+    },
+    "value-missing": "「{label}」を入力してください",
+    "help-label": "{label} の詳細"
+  }
+}

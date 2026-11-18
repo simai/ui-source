@@ -1,0 +1,62 @@
+{
+  "runtime": {
+    "label": "Fortschritt",
+    "output-label": "Ausgabe",
+    "steps": "Schritte",
+    "state-waiting": "wartet",
+    "state-running": "läuft",
+    "state-done": "erledigt",
+    "state-failed": "fehlgeschlagen",
+    "state-skipped": "übersprungen",
+    "result-done": "Erledigt",
+    "result-failed": "Fehlgeschlagen",
+    "result-cancelled": "Abgebrochen",
+    "cancel": "Abbrechen",
+    "retry": "Wiederholen",
+    "hide": "Ausblenden",
+    "copy": "Ausgabe kopieren",
+    "download": "Ausgabe herunterladen",
+    "result-partial": "Mit Fehlern erledigt",
+    "state-word-running": "Läuft",
+    "state-word-paused": "Pausiert",
+    "state-word-partial": "Mit Fehlern",
+    "state-word-cancelled": "Abgebrochen",
+    "state-word-waiting": "In der Warteschlange",
+    "announce-paused": "Pausiert",
+    "announce-resumed": "Geht weiter",
+    "announce-progress": "{value} von {total}{unit}, {percent} %",
+    "announce-count": "{value}{unit}",
+    "figures": "{value} von {total}{unit} · {percent} %",
+    "figures-count": "{value}{unit}",
+    "percent": "{percent} %",
+    "estimating": "Zeit wird geschätzt…",
+    "remaining": "noch etwa {time}",
+    "remaining-short": "{time}",
+    "remaining-less": "noch weniger als eine Minute",
+    "remaining-less-short": "< 1 Min.",
+    "minutes": "{n} Min.",
+    "hours": "{h} Std. {m} Min.",
+    "took": "dauerte {time}",
+    "errors-shown": {
+      "one": "Fehler: die ersten {n} von {total}",
+      "other": "Fehler: die ersten {n} von {total}"
+    },
+    "more-errors": {
+      "one": "{n} weiterer Fehler",
+      "other": "{n} weitere Fehler"
+    },
+    "errors-count": {
+      "one": "{n} Fehler",
+      "other": "{n} Fehler"
+    },
+    "no-errors": "keine Fehler",
+    "retry-failed": "Fehlgeschlagene wiederholen",
+    "pause": "Pausieren",
+    "resume": "Fortsetzen",
+    "minimize": "Minimieren",
+    "expand": "Aufklappen",
+    "step-log": "Schrittprotokoll",
+    "counts": "Ergebnis",
+    "figures-plain": "{value} von {total}"
+  }
+}

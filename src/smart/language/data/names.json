@@ -1,5 +1,5 @@
 {
-  "$comment": "Names of the languages sf-language supports, from CLDR 48 (ICU 78 as Node.js ships it): each language in itself (native) and in English (en). Since owner decision C282 their names in Russian are the ru language file's words (src/core/js/lang/language-names, name-<code>, registered for sf-language), as any other language's names may be. The browser's Intl.DisplayNames carries fewer languages (headless Chromium names be, hy, ka, tt, ky and tg only in English and ba, sah not at all; research 2026-11-14-language LG-7), so these names come first and Intl names every other language and page language. Spelled as CLDR writes them; the element gives a name its capital in a list. Data, not code: add a language here with both names, and its Russian name to the language file.",
+  "$comment": "Names of the languages sf-language supports, from CLDR 48 (ICU 78 as Node.js ships it): each language in itself (native) and in English (en). Since owner decision C282 their names in Russian are the ru language file's words (src/core/js/lang/language-names, name-<code>, registered for sf-language), as any other language's names may be. The browser's Intl.DisplayNames carries fewer languages (headless Chromium names tt only in English and ba, sah not at all; research 2026-11-14-language LG-7), so these names come first and Intl names every other language and page language. Spelled as CLDR writes them; the element gives a name its capital in a list. Data, not code: add a language here with both names, and its Russian name to the language file. Owner decision C278 (2026-11-17): languages of CIS countries other than Russian are not named here (uk, be, uz, az, hy, ka, ky, tg and tk left on 2026-11-18, kk before; tt and ba, languages of regions of Russia, stay); the browser names such a code if a product lists one.",
   "names": {
     "ru": {
       "native": "русский",
@@ -44,30 +44,6 @@
     "pl": {
       "native": "polski",
       "en": "Polish"
-    },
-    "uk": {
-      "native": "українська",
-      "en": "Ukrainian"
-    },
-    "be": {
-      "native": "беларуская",
-      "en": "Belarusian"
-    },
-    "uz": {
-      "native": "o‘zbek",
-      "en": "Uzbek"
-    },
-    "az": {
-      "native": "azərbaycan",
-      "en": "Azerbaijani"
-    },
-    "hy": {
-      "native": "հայերեն",
-      "en": "Armenian"
-    },
-    "ka": {
-      "native": "ქართული",
-      "en": "Georgian"
     },
     "he": {
       "native": "עברית",
@@ -181,14 +157,6 @@
       "native": "татар",
       "en": "Tatar"
     },
-    "ky": {
-      "native": "кыргызча",
-      "en": "Kyrgyz"
-    },
-    "tg": {
-      "native": "тоҷикӣ",
-      "en": "Tajik"
-    },
     "ba": {
       "native": "башҡорт",
       "en": "Bashkir"
@@ -196,10 +164,6 @@
     "sah": {
       "native": "саха тыла",
       "en": "Yakut"
-    },
-    "tk": {
-      "native": "türkmen dili",
-      "en": "Turkmen"
     },
     "mn": {
       "native": "монгол",

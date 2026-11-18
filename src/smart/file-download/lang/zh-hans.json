@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "文件",
+    "preparing-text": "正在准备文件…",
+    "preparing-value-text": "正在准备… {percent}",
+    "failed-text": "无法生成",
+    "retry-text": "重试",
+    "retry-label": "重试：{name}",
+    "cancel-text": "取消",
+    "cancel-label": "取消：{name}",
+    "ready-text": "已就绪",
+    "get-text": "下载",
+    "get-label": "下载 {name}",
+    "new-tab-text": "（在新标签页中打开）",
+    "said-preparing": "正在准备文件“{name}”",
+    "said-ready": "文件已就绪：“{name}”{said}",
+    "said-fetched": "文件已就绪并已下载：“{name}”{said}",
+    "said-offer": "文件已就绪：“{name}”{said}。“下载”按钮",
+    "said-cancelled": "已取消准备：“{name}”",
+    "said-failed": "错误：无法生成“{name}”。"
+  }
+}

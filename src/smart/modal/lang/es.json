@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "close": "Cerrar",
+    "discard": "No guardar",
+    "discard-heading": "¿Cerrar sin guardar?",
+    "frame-failed": "No se pudo cargar el contenido del marco",
+    "keep-editing": "Seguir editando",
+    "load-failed": "No se pudo cargar el contenido",
+    "loading": "Cargando…",
+    "minimize": "Minimizar",
+    "title": "Diálogo"
+  }
+}

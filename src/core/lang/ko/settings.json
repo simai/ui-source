@@ -1,0 +1,48 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 28,
+    "translated": 28,
+    "share": 100
+  },
+  "words": {
+    "sf-settings": {
+      "label": "설정",
+      "hue-red": "빨강",
+      "hue-orange": "주황",
+      "hue-amber": "호박색",
+      "hue-yellow": "노랑",
+      "hue-lime": "라임",
+      "hue-green": "초록",
+      "hue-teal": "청록",
+      "hue-cyan": "시안",
+      "hue-sky": "하늘색",
+      "hue-blue": "파랑",
+      "hue-indigo": "남색",
+      "hue-violet": "보라",
+      "hue-purple": "자주",
+      "hue-pink": "분홍",
+      "hue-brown": "갈색",
+      "hue-gray": "회색",
+      "own-color": "사용자 지정 색상…",
+      "own-color-value": "사용자 지정: {value}",
+      "close": "닫기",
+      "reset": "초기화",
+      "apply": "적용",
+      "search": "찾기",
+      "empty": "검색 결과 없음",
+      "pin": "고정",
+      "unpin": "고정 해제",
+      "move-hint": "Alt와 위/아래 화살표로 순서를 바꿉니다",
+      "position": "{text}: {index}/{count}"
+    }
+  }
+}

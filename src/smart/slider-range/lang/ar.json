@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "from": "من",
+    "to": "إلى",
+    "from-label": "{name}، من",
+    "to-label": "{name}، إلى",
+    "help": "المزيد عن: {label}"
+  }
+}

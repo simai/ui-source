@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "more": {
+      "other": "{n}개 더: {names}"
+    },
+    "more-panel": {
+      "other": "태그 {n}개 더"
+    },
+    "position": "{label}, {total}개 중 {position}번째, Delete로 제거",
+    "position-plain": "{label}, {total}개 중 {position}번째"
+  }
+}

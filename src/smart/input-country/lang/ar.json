@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "كل الدول",
+    "country-label": "رمز الدولة",
+    "country-unknown": "لم يُتعرف على رمز الدولة. اختر دولة",
+    "frequent": "الأكثر اختيارًا",
+    "nothing-found": "لم يُعثر على شيء",
+    "phone-label": "رقم الهاتف",
+    "phone-required": "أدخل رقم الهاتف.",
+    "placeholder": "",
+    "search-placeholder": "الدولة أو الرمز",
+    "value-missing": "أدخل رقم الهاتف.",
+    "pattern-mismatch": "أدخل الرقم كاملًا",
+    "too-short": "أدخل الرقم كاملًا",
+    "help": "المزيد عن: {label}"
+  }
+}

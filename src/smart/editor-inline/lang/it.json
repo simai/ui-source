@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "apply": "Applica",
+    "code": "Codice",
+    "editing": "{label}: modifica. Invio salva, Esc annulla.",
+    "editing-block": "{label}: modifica. Invio crea un nuovo blocco, Esc annulla.",
+    "em": "Corsivo",
+    "invalid": "Indirizzo del link non valido",
+    "link": "Link",
+    "link-empty": "Inserisci l’indirizzo del link",
+    "link-hint": "https://…, mailto:, tel: o un percorso di questo sito, come /about",
+    "link-long": "L’indirizzo supera i {max} caratteri",
+    "link-scheme": "Questo indirizzo non è consentito: inizia con https://, mailto: o tel:",
+    "link-slashes": "Un indirizzo di questo sito inizia con una sola barra /",
+    "link-spaces": "Rimuovi gli spazi: un indirizzo non ne ha",
+    "link-start": "Manca l’inizio dell’indirizzo: https://, o / per una pagina di questo sito",
+    "more": "Altro",
+    "strong": "Grassetto",
+    "toolbar": "Formattazione",
+    "unlink": "Rimuovi link",
+    "url": "Indirizzo del link",
+    "strike": "Barrato"
+  }
+}

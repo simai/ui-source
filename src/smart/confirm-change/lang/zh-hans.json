@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "accept-text": "确认",
+    "accepted-text": "已应用",
+    "accepting-text": "正在应用…",
+    "after-text": "改为",
+    "before-text": "原为",
+    "changes-label": "将要更改的内容",
+    "decline-text": "拒绝",
+    "declining-text": "正在拒绝…",
+    "empty-value-text": "空",
+    "expired-text": "确认时间已过",
+    "until-text": "请在 {time} 前确认"
+  }
+}

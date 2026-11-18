@@ -1,0 +1,6 @@
+{
+  "runtime": {
+    "paused-value": "{value}%, 일시 중지됨",
+    "paused": "일시 중지됨"
+  }
+}

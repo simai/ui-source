@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "cancelled": "已取消移动。",
+    "dropped": "已将 {item} 放到“{list}”的第 {index} 位。",
+    "empty": "未找到结果",
+    "hint": "按 + 在其后插入。",
+    "inserted": "已将 {item} 插入到“{list}”的第 {index} 位。",
+    "instructions": "按空格或 Enter 拿起，用方向键移动，按空格或 Enter 放下，按 Esc 取消。",
+    "menu": "插入",
+    "move-down": "下移",
+    "move-first": "移到顶部",
+    "move-last": "移到底部",
+    "move-menu": "移动“{item}”",
+    "move-up": "上移",
+    "moved": "位于“{list}”第 {index} 位，共 {total} 位。",
+    "picked": "已拿起 {item}。位于“{list}”第 {index} 位，共 {total} 位。",
+    "point": "插入：第 {index} 位，共 {total} 位",
+    "roledescription": "可拖动",
+    "search": "查找",
+    "target": "目标：{target}。"
+  }
+}

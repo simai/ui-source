@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "hint": "Ziehen oder Pfeiltasten verwenden; ein Doppelklick stellt die Breite wieder her.",
+    "label": "Größe ändern",
+    "value": "{n} %",
+    "width": "{n} px",
+    "folded": "Eingeklappt",
+    "show": "Anzeigen"
+  }
+}

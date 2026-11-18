@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "Folien",
+    "carousel": "Karussell",
+    "slide": "Folie",
+    "position": "{n} von {count}",
+    "pause": "Folien anhalten",
+    "play": "Folien starten",
+    "thumb": "Zu Folie {n}"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "runtime": {
+    "done": "Envoyé",
+    "done-line": "{size} · envoyé",
+    "error": "Non envoyé",
+    "error-line": "Non envoyé : {message}",
+    "formats-audio": "audio",
+    "formats-image": "images",
+    "formats-video": "vidéo",
+    "link-text": "Cliquez pour envoyer",
+    "not-added": "Non ajoutés : {n}",
+    "reject-count": {
+      "one": "« {name} » n’a pas été ajouté : {n} fichier au maximum",
+      "many": "« {name} » n’a pas été ajouté : {n} fichiers au maximum",
+      "other": "« {name} » n’a pas été ajouté : {n} fichiers au maximum"
+    },
+    "reject-duplicate": "« {name} » est déjà dans la liste",
+    "reject-empty": "« {name} » est vide",
+    "reject-min-size": "« {name} » fait {size} ; il doit faire au moins {min}",
+    "reject-one": "« {name} » n’a pas été ajouté : ce champ accepte un seul fichier",
+    "reject-size": "« {name} » fait {size} ; la limite est de {max}",
+    "reject-total": "« {name} » n’a pas été ajouté : {max} au maximum pour tous les fichiers",
+    "reject-type": "« {name} » n’est pas accepté : formats autorisés {formats}",
+    "remove": "Retirer",
+    "remove-failed": "Retirez ou renvoyez les fichiers en échec",
+    "retry": "Réessayer",
+    "text": "ou glissez-déposez",
+    "uploading": "Envoi en cours",
+    "value-missing": "Ajoutez un fichier",
+    "value-missing-many": "Ajoutez au moins un fichier",
+    "wait-for-uploads": "Attendez la fin de l’envoi des fichiers",
+    "file-removed": "Fichier retiré",
+    "undo": "Annuler",
+    "help": "En savoir plus : {label}",
+    "said-added": "« {name} » ajouté",
+    "said-added-many": {
+      "one": "{n} fichier ajouté",
+      "many": "{n} fichiers ajoutés",
+      "other": "{n} fichiers ajoutés"
+    },
+    "said-done": "« {name} » envoyé",
+    "said-error": "« {name} » n’a pas été envoyé",
+    "said-error-line": "« {name} » n’a pas été envoyé : {message}"
+  }
+}

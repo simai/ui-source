@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "所有国家/地区",
+    "country-label": "国家/地区代码",
+    "country-unknown": "无法识别国家/地区代码，请选择国家/地区",
+    "frequent": "常用",
+    "nothing-found": "未找到结果",
+    "phone-label": "电话号码",
+    "phone-required": "请输入电话号码。",
+    "placeholder": "",
+    "search-placeholder": "国家/地区或代码",
+    "value-missing": "请输入电话号码。",
+    "pattern-mismatch": "请输入完整号码",
+    "too-short": "请输入完整号码",
+    "help": "详细了解：{label}"
+  }
+}

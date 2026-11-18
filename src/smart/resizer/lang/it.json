@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "hint": "Trascina o usa le frecce; un doppio clic ripristina la larghezza.",
+    "label": "Ridimensiona",
+    "value": "{n}%",
+    "width": "{n} px",
+    "folded": "Compresso",
+    "show": "Mostra"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "actions-label": "操作：{text}",
+    "count-label": {
+      "other": "{n} 条未读"
+    },
+    "empty-text": "这里还没有内容",
+    "label": "列表",
+    "loading-more-text": "正在加载…",
+    "loading-text": "正在加载列表",
+    "more-text": "显示更多",
+    "pinned-text": "已置顶",
+    "rename-label": "新名称",
+    "rename-text": "重命名",
+    "undated-text": "无日期",
+    "ungrouped-text": "其他",
+    "unread-text": "未读",
+    "untitled-text": "无标题"
+  }
+}

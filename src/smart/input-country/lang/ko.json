@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "모든 국가",
+    "country-label": "국가 번호",
+    "country-unknown": "국가 번호를 인식할 수 없습니다. 국가를 선택하세요",
+    "frequent": "자주 선택함",
+    "nothing-found": "검색 결과 없음",
+    "phone-label": "전화번호",
+    "phone-required": "전화번호를 입력하세요.",
+    "placeholder": "",
+    "search-placeholder": "국가 또는 번호",
+    "value-missing": "전화번호를 입력하세요.",
+    "pattern-mismatch": "번호를 모두 입력하세요",
+    "too-short": "번호를 모두 입력하세요",
+    "help": "자세히 보기: {label}"
+  }
+}

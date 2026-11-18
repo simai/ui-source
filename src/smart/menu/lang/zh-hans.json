@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "toggle-label": "菜单",
+    "more-label": "更多",
+    "status-success": "一切正常",
+    "status-warning": "需要关注",
+    "status-error": "错误",
+    "status-info": "有新内容",
+    "status-neutral": "无数据",
+    "subsections": "子栏目",
+    "search-placeholder": "搜索",
+    "search-found": "找到：{n}",
+    "search-empty": "未找到结果",
+    "new-tab": "在新标签页中打开"
+  }
+}

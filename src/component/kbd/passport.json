@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.kbd",
   "kind": "component",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/kbd/docs/docs.md",
@@ -11,14 +11,23 @@
     "src/component/kbd/js/index.js",
     "src/component/kbd/js/shortcut.js",
     "src/component/kbd/js/spoken.js",
+    "src/component/kbd/lang/ar.json",
+    "src/component/kbd/lang/de.json",
     "src/component/kbd/lang/en.json",
+    "src/component/kbd/lang/es.json",
+    "src/component/kbd/lang/fr.json",
     "src/component/kbd/lang/index.mjs",
+    "src/component/kbd/lang/it.json",
+    "src/component/kbd/lang/ja.json",
+    "src/component/kbd/lang/ko.json",
+    "src/component/kbd/lang/pt-br.json",
     "src/component/kbd/lang/ru.json",
+    "src/component/kbd/lang/zh-hans.json",
     "src/component/kbd/rule.js",
     "src/component/kbd/scss/_kbd.scss",
     "src/component/kbd/scss/index.scss"
   ],
-  "content_sha256": "935a1ae4e93d445bd0ac42521f0b060cf6316245f850ea1e5724a28500920baa",
+  "content_sha256": "0bfc5c339a3740d7106a79e84f7557095b048d52aa2e138e52ee9921d7e8ba4b",
   "dependencies": [
     {
       "id": "core.styles",

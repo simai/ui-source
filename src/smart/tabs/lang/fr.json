@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "customize": "Personnaliser les onglets",
+    "errors": {
+      "one": "{n} erreur",
+      "many": "{n} erreurs",
+      "other": "{n} erreurs"
+    },
+    "more": "Plus",
+    "moved": "Déplacé",
+    "pinned": "Toujours affiché",
+    "reset": "Réinitialiser",
+    "tab": "Onglet {n}",
+    "visible": "Affiché"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 14,
+    "translated": 14,
+    "share": 100
+  },
+  "words": {
+    "sf-modal": {
+      "close": "閉じる",
+      "discard": "保存しない",
+      "discard-heading": "保存せずに閉じますか？",
+      "frame-failed": "フレームの内容を読み込めませんでした",
+      "keep-editing": "編集を続ける",
+      "load-failed": "内容を読み込めませんでした",
+      "loading": "読み込み中…",
+      "minimize": "最小化",
+      "title": "ダイアログ",
+      "loadFailed": "内容を読み込めませんでした",
+      "frameFailed": "フレームの内容を読み込めませんでした"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "dark": "داكن",
+    "group": "المظهر",
+    "light": "فاتح",
+    "system": "النظام",
+    "value-missing": "اختر خيارًا."
+  }
+}

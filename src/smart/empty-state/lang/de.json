@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "create": "Erstellen",
+    "error-text": "Erneut versuchen",
+    "error-title": "Laden fehlgeschlagen",
+    "first-use-text": "Erstellen Sie den ersten Eintrag, dann erscheint er hier",
+    "first-use-title": "Noch nichts vorhanden",
+    "no-access-text": "Bitten Sie einen Administrator um Zugriff",
+    "no-access-title": "Kein Zugriff",
+    "no-data-text": "Sie erscheinen hier, sobald sie hinzugefügt wurden",
+    "no-data-title": "Noch keine Einträge",
+    "nothing-found-text": "Versuchen Sie eine andere Suche oder andere Filter",
+    "nothing-found-title": "Nichts gefunden",
+    "offline-text": "Prüfen Sie Ihre Verbindung; wir versuchen es erneut, sobald sie wieder da ist",
+    "offline-title": "Keine Verbindung",
+    "processing-share": "Erledigt",
+    "processing-text": "Das kann einige Minuten dauern. Das Ergebnis erscheint hier; Sie können die Seite schließen",
+    "processing-title": "Wird vorbereitet",
+    "retry": "Erneut versuchen"
+  }
+}

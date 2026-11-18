@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "close": "Chiudi",
+    "discard": "Non salvare",
+    "discard-heading": "Chiudere senza salvare?",
+    "frame-failed": "Impossibile caricare il contenuto del riquadro",
+    "keep-editing": "Continua a modificare",
+    "load-failed": "Impossibile caricare il contenuto",
+    "loading": "Caricamento…",
+    "minimize": "Riduci",
+    "title": "Finestra di dialogo"
+  }
+}

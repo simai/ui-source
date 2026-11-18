@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "customize": "탭 사용자 지정",
+    "errors": {
+      "other": "오류 {n}개"
+    },
+    "more": "더 보기",
+    "moved": "이동됨",
+    "pinned": "항상 표시",
+    "reset": "초기화",
+    "tab": "탭 {n}",
+    "visible": "표시됨"
+  }
+}

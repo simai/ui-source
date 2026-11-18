@@ -12,7 +12,7 @@ follows the number of languages it is given:
 ```html
 <sf-language languages="ru en"></sf-language>
 <sf-language languages="ru en de fr es"></sf-language>
-<sf-language languages="ru en de fr es it pt tr pl uk ja ar"></sf-language>
+<sf-language languages="ru en de fr es it pt tr pl nl ja ar"></sf-language>
 ```
 
 Two languages and forty are the same button, so a site that adds a language
@@ -29,8 +29,8 @@ No flags and no globe.
 
 `languages` takes BCP 47 codes separated by spaces or commas: `ru en de ar`,
 `pt-BR`. The names of the languages it supports ship with the component
-(66 languages, from CLDR, Беларуская, Հայերեն, ქართული, Татар, Кыргызча,
-Тоҷикӣ, Башҡорт and Саха тыла among them), so every browser names them alike; the browser
+(56 languages, from CLDR, Ελληνικά, עברית, हिन्दी, Татар, Башҡорт and Саха тыла among them), so every
+browser names them alike; the browser
 (`Intl.DisplayNames`) names any other code:
 
 - the menu and the switch name each language in itself: «Русский»,
@@ -43,7 +43,8 @@ No flags and no globe.
 - the search finds a language by the start of a word of its own name, its
   English name, its name in the page's language or its code, in any case and
   without accents: «нем», «German» and «de» all find Deutsch; «ру» finds
-  Русский and Română (румынский), not Беларуская (белорусский);
+  Русский and Română (румынский); «ит» finds Italiano (итальянский), not
+  Lietuvių (литовский);
 - the menu keeps that width while you type in its search;
 - from eight languages on a phone (below 44rem) the menu is a sheet at the
   bottom of the screen, the search on top: no field takes the focus, so no

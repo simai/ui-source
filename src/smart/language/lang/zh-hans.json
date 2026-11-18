@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "label": "语言",
+    "trigger": "{label}：{name}",
+    "search": "查找语言",
+    "empty": "未找到语言",
+    "missing": "无翻译 — 将打开首页"
+  }
+}

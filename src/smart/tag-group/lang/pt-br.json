@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "more": {
+      "one": "mais {n}: {names}",
+      "many": "mais {n}: {names}",
+      "other": "mais {n}: {names}"
+    },
+    "more-panel": {
+      "one": "mais {n} tag",
+      "many": "mais {n} tags",
+      "other": "mais {n} tags"
+    },
+    "position": "{label}, {position} de {total}, Delete para remover",
+    "position-plain": "{label}, {position} de {total}"
+  }
+}

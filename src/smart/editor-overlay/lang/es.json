@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "Movimiento cancelado.",
+    "dropped": "{label} movido. {place}.",
+    "editing": "Editando {label}. Intro guarda, Escape cancela.",
+    "insert": "Insertar",
+    "insert-after": "Insertar después de «{label}»",
+    "insert-at": "Insertar en «{slot}», posición {index}",
+    "more": "Más",
+    "picked": "Moviendo {label}. Las flechas eligen el lugar, Intro lo suelta, Escape cancela.",
+    "position": "{index} de {total}",
+    "selected": "Seleccionado: {label}",
+    "toolbar": "Acciones",
+    "tree": "Estructura de la página"
+  }
+}

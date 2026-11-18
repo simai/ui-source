@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "theme": "Thème",
+    "theme-light": "clair",
+    "theme-dark": "sombre",
+    "cycle-next": "{name}. Appuyez pour {next}"
+  }
+}

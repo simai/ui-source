@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "value-missing": "املأ هذا الحقل",
+    "count-text": "{count} / {max}",
+    "too-long": "{max} حرفًا كحد أقصى",
+    "too-short": "{min} أحرف على الأقل",
+    "help": "المزيد عن: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "موروث",
+      "reset": "إعادة إلى القيمة الموروثة",
+      "described": "موروث: {value}"
+    }
+  }
+}

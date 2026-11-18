@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "Tous les pays",
+    "country-label": "Indicatif du pays",
+    "country-unknown": "Indicatif non reconnu. Choisissez un pays",
+    "frequent": "Fréquemment choisis",
+    "nothing-found": "Aucun résultat",
+    "phone-label": "Numéro de téléphone",
+    "phone-required": "Saisissez un numéro de téléphone.",
+    "placeholder": "",
+    "search-placeholder": "Pays ou indicatif",
+    "value-missing": "Saisissez un numéro de téléphone.",
+    "pattern-mismatch": "Saisissez le numéro complet",
+    "too-short": "Saisissez le numéro complet",
+    "help": "En savoir plus : {label}"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 13,
+    "translated": 8,
+    "share": 61.5
+  },
+  "words": {
+    "sf-form": {
+      "required-note": "* — campos obligatorios",
+      "submit": "Guardar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "unsaved": "Tienes cambios sin guardar",
+      "errors-title": {
+        "one": "Corrige {n} campo",
+        "many": "Corrige {n} campos",
+        "other": "Corrige {n} campos"
+      },
+      "value-missing": "Rellena el campo «{label}»",
+      "help-label": "Más sobre {label}"
+    }
+  }
+}

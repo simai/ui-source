@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "de",
+  "name": "Deutsch",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "Bestätigen",
+      "accepted-text": "Erledigt",
+      "accepting-text": "Wird ausgeführt…",
+      "decline-text": "Abbrechen",
+      "declining-text": "Wird abgebrochen…",
+      "expired-text": "Die Antwortzeit ist abgelaufen",
+      "question-label": "Bestätigung",
+      "require-error": "Geben Sie „{name}“ genau wie oben ein",
+      "require-text": "Geben Sie zur Bestätigung {name} ein",
+      "until-text": "Antwort bis {time}"
+    },
+    "sf-confirm-change": {
+      "accept-text": "Bestätigen",
+      "accepted-text": "Übernommen",
+      "accepting-text": "Wird übernommen…",
+      "after-text": "Wird",
+      "before-text": "War",
+      "changes-label": "Was sich ändert",
+      "decline-text": "Ablehnen",
+      "declining-text": "Wird abgelehnt…",
+      "empty-value-text": "leer",
+      "expired-text": "Die Zeit zum Bestätigen ist abgelaufen",
+      "until-text": "Bestätigen bis {time}"
+    }
+  }
+}

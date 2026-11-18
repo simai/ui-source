@@ -1,0 +1,59 @@
+{
+  "runtime": {
+    "label": "进度",
+    "output-label": "输出",
+    "steps": "步骤",
+    "state-waiting": "等待中",
+    "state-running": "运行中",
+    "state-done": "已完成",
+    "state-failed": "失败",
+    "state-skipped": "已跳过",
+    "result-done": "已完成",
+    "result-failed": "失败",
+    "result-cancelled": "已取消",
+    "cancel": "取消",
+    "retry": "重试",
+    "hide": "隐藏",
+    "copy": "复制输出",
+    "download": "下载输出",
+    "result-partial": "已完成，但有错误",
+    "state-word-running": "运行中",
+    "state-word-paused": "已暂停",
+    "state-word-partial": "有错误",
+    "state-word-cancelled": "已取消",
+    "state-word-waiting": "排队中",
+    "announce-paused": "已暂停",
+    "announce-resumed": "继续进行",
+    "announce-progress": "{value}/{total}{unit}，{percent}%",
+    "announce-count": "{value}{unit}",
+    "figures": "{value} / {total}{unit} · {percent}%",
+    "figures-count": "{value}{unit}",
+    "percent": "{percent}%",
+    "estimating": "正在估算时间…",
+    "remaining": "剩余约 {time}",
+    "remaining-short": "{time}",
+    "remaining-less": "剩余不到一分钟",
+    "remaining-less-short": "< 1 分钟",
+    "minutes": "{n} 分钟",
+    "hours": "{h} 小时 {m} 分钟",
+    "took": "用时 {time}",
+    "errors-shown": {
+      "other": "错误：共 {total} 个，显示前 {n} 个"
+    },
+    "more-errors": {
+      "other": "还有 {n} 个错误"
+    },
+    "errors-count": {
+      "other": "{n} 个错误"
+    },
+    "no-errors": "无错误",
+    "retry-failed": "重试失败项",
+    "pause": "暂停",
+    "resume": "继续",
+    "minimize": "最小化",
+    "expand": "展开",
+    "step-log": "步骤日志",
+    "counts": "结果",
+    "figures-plain": "{value}/{total}"
+  }
+}

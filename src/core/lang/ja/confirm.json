@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "確認",
+      "accepted-text": "完了",
+      "accepting-text": "処理中…",
+      "decline-text": "キャンセル",
+      "declining-text": "キャンセル中…",
+      "expired-text": "回答期限が過ぎました",
+      "question-label": "確認",
+      "require-error": "上と同じように「{name}」と入力してください",
+      "require-text": "確認するには {name} と入力してください",
+      "until-text": "{time} までに回答"
+    },
+    "sf-confirm-change": {
+      "accept-text": "確認",
+      "accepted-text": "適用しました",
+      "accepting-text": "適用中…",
+      "after-text": "変更後",
+      "before-text": "変更前",
+      "changes-label": "変更内容",
+      "decline-text": "却下",
+      "declining-text": "却下中…",
+      "empty-value-text": "空",
+      "expired-text": "確認期限が過ぎました",
+      "until-text": "{time} までに確認"
+    }
+  }
+}

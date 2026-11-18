@@ -1,0 +1,47 @@
+{
+  "runtime": {
+    "remove": "إزالة",
+    "uploading": "جارٍ الرفع",
+    "uploading-name": "جارٍ رفع {name}",
+    "retry": "أعد المحاولة",
+    "remove-name": "إزالة {name}",
+    "retry-name": "أعد محاولة {name}",
+    "linkText": "انقر للرفع",
+    "text": "أو اسحب وأفلت",
+    "not-added": "لم تُضف: {n}",
+    "reject-type": "«{name}» غير مقبول: المسموح {formats}",
+    "reject-one": "لم يُضف «{name}»: يقبل هذا الحقل ملفًا واحدًا",
+    "reject-duplicate": "«{name}» موجود في القائمة بالفعل",
+    "reject-empty": "«{name}» فارغ",
+    "reject-size": "حجم «{name}» هو {size}؛ والحد {max}",
+    "reject-min-size": "حجم «{name}» هو {size}؛ ويجب ألا يقل عن {min}",
+    "reject-count": {
+      "zero": "لم يُضف «{name}»: الحد {n} ملف",
+      "one": "لم يُضف «{name}»: الحد ملف واحد",
+      "two": "لم يُضف «{name}»: الحد ملفان",
+      "few": "لم يُضف «{name}»: الحد {n} ملفات",
+      "many": "لم يُضف «{name}»: الحد {n} ملفًا",
+      "other": "لم يُضف «{name}»: الحد {n} ملف"
+    },
+    "reject-total": "لم يُضف «{name}»: الحد لكل الملفات معًا {max}",
+    "formats-image": "الصور",
+    "formats-video": "الفيديو",
+    "formats-audio": "الصوت",
+    "done": "تم الرفع",
+    "done-line": "{size} · تم الرفع",
+    "error": "لم يُرفع",
+    "error-line": "لم يُرفع: {message}",
+    "said-added": "تمت إضافة «{name}»",
+    "said-added-many": {
+      "zero": "لم يُضف أي ملف",
+      "one": "تمت إضافة ملف واحد",
+      "two": "تمت إضافة ملفين",
+      "few": "تمت إضافة {n} ملفات",
+      "many": "تمت إضافة {n} ملفًا",
+      "other": "تمت إضافة {n} ملف"
+    },
+    "said-done": "تم رفع «{name}»",
+    "said-error": "لم يُرفع «{name}»",
+    "said-error-line": "لم يُرفع «{name}»: {message}"
+  }
+}

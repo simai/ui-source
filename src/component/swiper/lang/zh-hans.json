@@ -1,0 +1,5 @@
+{
+  "runtime": {
+    "goToSlide": "转到第 {n} 张"
+  }
+}

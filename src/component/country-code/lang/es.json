@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "Número de teléfono",
+    "phoneRequired": "Introduce un número de teléfono.",
+    "countryLabel": "Prefijo del país",
+    "countryUnknown": "No se reconoce el prefijo. Elige un país",
+    "searchPlaceholder": "País o prefijo",
+    "frequent": "Más elegidos",
+    "allCountries": "Todos los países",
+    "nothingFound": "No se encontró nada"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "runtime": {
+    "new-tab": "(s’ouvre dans un nouvel onglet)",
+    "byte": {
+      "one": "octet",
+      "many": "octets",
+      "other": "octets"
+    },
+    "kilobyte": {
+      "one": "kilooctet",
+      "many": "kilooctets",
+      "other": "kilooctets"
+    },
+    "megabyte": {
+      "one": "mégaoctet",
+      "many": "mégaoctets",
+      "other": "mégaoctets"
+    },
+    "gigabyte": {
+      "one": "gigaoctet",
+      "many": "gigaoctets",
+      "other": "gigaoctets"
+    },
+    "terabyte": {
+      "one": "téraoctet",
+      "many": "téraoctets",
+      "other": "téraoctets"
+    }
+  }
+}

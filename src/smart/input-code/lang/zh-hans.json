@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "character": "第 {n} 个字符，共 {m} 个",
+    "digit": "第 {n} 位，共 {m} 位",
+    "group": "验证码",
+    "too-short": "请输入完整验证码",
+    "value-missing": "请输入验证码",
+    "help": "详细了解：{label}"
+  }
+}

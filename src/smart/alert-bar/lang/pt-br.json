@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "Avisos importantes",
+    "level-error": "Erro",
+    "level-warning": "Aviso",
+    "level-info": "Informação",
+    "more": "mais {count}",
+    "collapse-list": "Ocultar a lista",
+    "list": "Todos os avisos",
+    "hide-day": "Ocultar por um dia",
+    "hide": "Ocultar",
+    "acknowledge": "Marcar como lido",
+    "minimize": "Minimizar a barra",
+    "expand": "expandir",
+    "expand-label": "Expandir os avisos importantes",
+    "count": "Avisos importantes: {count}"
+  }
+}

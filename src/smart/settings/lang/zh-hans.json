@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "label": "设置",
+    "hue-red": "红色",
+    "hue-orange": "橙色",
+    "hue-amber": "琥珀色",
+    "hue-yellow": "黄色",
+    "hue-lime": "青柠色",
+    "hue-green": "绿色",
+    "hue-teal": "蓝绿色",
+    "hue-cyan": "青色",
+    "hue-sky": "天蓝色",
+    "hue-blue": "蓝色",
+    "hue-indigo": "靛蓝色",
+    "hue-violet": "紫罗兰色",
+    "hue-purple": "紫色",
+    "hue-pink": "粉色",
+    "hue-brown": "棕色",
+    "hue-gray": "灰色",
+    "own-color": "自定义颜色…",
+    "own-color-value": "自定义：{value}",
+    "close": "关闭",
+    "reset": "重置",
+    "apply": "应用",
+    "search": "查找",
+    "empty": "未找到结果",
+    "pin": "置顶",
+    "unpin": "取消置顶",
+    "move-hint": "按 Alt 和上下方向键可调整顺序",
+    "position": "{text}：{index}/{count}"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "more": {
+      "other": "他 {n} 件: {names}"
+    },
+    "more-panel": {
+      "other": "他 {n} 個のタグ"
+    },
+    "position": "{label}、{total} 件中 {position} 件目、Delete で削除",
+    "position-plain": "{label}、{total} 件中 {position} 件目"
+  }
+}

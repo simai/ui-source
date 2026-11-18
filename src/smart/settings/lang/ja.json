@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "label": "設定",
+    "hue-red": "赤",
+    "hue-orange": "オレンジ",
+    "hue-amber": "琥珀",
+    "hue-yellow": "黄",
+    "hue-lime": "ライム",
+    "hue-green": "緑",
+    "hue-teal": "ティール",
+    "hue-cyan": "シアン",
+    "hue-sky": "スカイ",
+    "hue-blue": "青",
+    "hue-indigo": "インディゴ",
+    "hue-violet": "バイオレット",
+    "hue-purple": "パープル",
+    "hue-pink": "ピンク",
+    "hue-brown": "茶",
+    "hue-gray": "グレー",
+    "own-color": "カスタムカラー…",
+    "own-color-value": "カスタム: {value}",
+    "close": "閉じる",
+    "reset": "リセット",
+    "apply": "適用",
+    "search": "検索",
+    "empty": "見つかりませんでした",
+    "pin": "固定",
+    "unpin": "固定を解除",
+    "move-hint": "Alt と上下の矢印キーで順序を変更",
+    "position": "{text}: {index}/{count}"
+  }
+}

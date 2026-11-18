@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "empty-text": "아직 이벤트가 없습니다",
+    "more": "더 보기",
+    "loading": "불러오는 중…",
+    "today": "오늘",
+    "yesterday": "어제",
+    "tomorrow": "내일",
+    "status-success": "완료",
+    "status-warning": "경고",
+    "status-error": "오류",
+    "status-info": "정보",
+    "state-done": "완료",
+    "state-current": "현재",
+    "state-upcoming": "예정",
+    "step-status-success": "성공",
+    "step-status-warning": "경고 있음",
+    "step-status-error": "오류 있음",
+    "run-changes": {
+      "other": "변경 {n}개 더"
+    },
+    "run-events": {
+      "other": "이벤트 {n}개 더"
+    }
+  }
+}

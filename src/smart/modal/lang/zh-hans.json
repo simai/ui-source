@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "close": "关闭",
+    "discard": "不保存",
+    "discard-heading": "不保存就关闭？",
+    "frame-failed": "无法加载框架内容",
+    "keep-editing": "继续编辑",
+    "load-failed": "无法加载内容",
+    "loading": "正在加载…",
+    "minimize": "最小化",
+    "title": "对话框"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "已取消移动。",
+    "dropped": "已移动 {label}。{place}。",
+    "editing": "正在编辑 {label}。按 Enter 保存，按 Esc 取消。",
+    "insert": "插入",
+    "insert-after": "在“{label}”后插入",
+    "insert-at": "插入到“{slot}”，位置 {index}",
+    "more": "更多",
+    "picked": "正在移动 {label}。用方向键选择位置，按 Enter 放下，按 Esc 取消。",
+    "position": "第 {index} 个，共 {total} 个",
+    "selected": "已选中：{label}",
+    "toolbar": "操作",
+    "tree": "页面结构"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "loading": "Wird geladen…",
+    "load-error": "Laden fehlgeschlagen",
+    "retry": "Wiederholen",
+    "hidden": "ausgeblendet",
+    "open-label": "Element öffnen",
+    "close-label": "Element schließen"
+  }
+}

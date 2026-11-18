@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "decrement": "값 줄이기",
+    "increment": "값 늘리기",
+    "range-underflow": "값은 {min} 이상이어야 합니다",
+    "range-overflow": "값은 {max} 이하여야 합니다",
+    "step-mismatch": "값은 {step}의 배수여야 합니다",
+    "remove": "제거",
+    "value-missing": "이 필드를 입력하세요",
+    "bad-input": "숫자를 입력하세요",
+    "help": "자세히 보기: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "상속됨",
+      "reset": "상속값으로 재설정",
+      "described": "상속됨: {value}"
+    }
+  }
+}

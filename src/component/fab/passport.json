@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.fab",
   "kind": "component",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/fab/docs/docs.md",
@@ -12,14 +12,23 @@
     "src/component/fab/js/_fab.js",
     "src/component/fab/js/index.js",
     "src/component/fab/json/fab.utility.json",
+    "src/component/fab/lang/ar.json",
+    "src/component/fab/lang/de.json",
     "src/component/fab/lang/en.json",
+    "src/component/fab/lang/es.json",
+    "src/component/fab/lang/fr.json",
     "src/component/fab/lang/index.mjs",
+    "src/component/fab/lang/it.json",
+    "src/component/fab/lang/ja.json",
+    "src/component/fab/lang/ko.json",
+    "src/component/fab/lang/pt-br.json",
     "src/component/fab/lang/ru.json",
+    "src/component/fab/lang/zh-hans.json",
     "src/component/fab/rule.js",
     "src/component/fab/scss/_css_fab.scss",
     "src/component/fab/scss/index.scss"
   ],
-  "content_sha256": "207afdb97bf1d264083679fad3e0ed3947c7988a034f74736aaf6b2d31403fda",
+  "content_sha256": "0273359a0064c51e1c2d5b197d11db208172ebd338051ad67c366c00bf6f6597",
   "dependencies": [
     {
       "id": "core.runtime",

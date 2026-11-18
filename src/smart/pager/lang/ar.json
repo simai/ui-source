@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "label": "الصفحات المجاورة",
+    "prev": "السابق",
+    "next": "التالي",
+    "done": "تم",
+    "step": "الخطوة {n} من {count}",
+    "lesson": "الدرس {n} من {count}",
+    "position": "{n} من {count}",
+    "next-lesson": "الدرس التالي",
+    "last-lesson": "الدرس الأخير",
+    "start": "ابدأ",
+    "finished": "اكتملت الدورة",
+    "restart": "البدء من جديد",
+    "prev-item": "السجل السابق",
+    "next-item": "السجل التالي",
+    "position-many": "{n} من كثير",
+    "to-list": "العودة إلى القائمة"
+  }
+}

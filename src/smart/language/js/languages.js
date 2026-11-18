@@ -105,8 +105,8 @@ function displayName(code, inLanguage) {
 
 // A name begins with a capital in a list, as a person writes it in a menu
 // («Русский», «Español»); the capital is the language's own.
-// Georgian has no capitals in running text: its upper case (Mtavruli) is a
-// display style, so «ქართული» stays as it is.
+// A script whose upper case is a display style, not the capital of running
+// text (U+10D0-U+10FF), keeps the name as it is written.
 const UNCASED = /^[\u10D0-\u10FF]/u;
 
 function capitalised(name, code) {
@@ -310,8 +310,8 @@ export function searchWords(...texts) {
 
 /**
  * Whether a query finds a language by its words (searchWords): each word of
- * the query begins one of them. «ру» finds Русский and румынский, not
- * белорусский or грузинский, where «ру» is inside the word (research LG-8).
+ * the query begins one of them. «ит» finds итальянский, not литовский,
+ * where «ит» is inside the word (research LG-8).
  */
 export function matchesQuery(words, query) {
   const parts = folded(query).trim().split(WORD_BREAK).filter(Boolean);

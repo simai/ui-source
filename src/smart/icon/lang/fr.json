@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "count": {
+      "one": "{count} non lu",
+      "many": "{count} non lus",
+      "other": "{count} non lus"
+    },
+    "dot": "nouveau"
+  }
+}

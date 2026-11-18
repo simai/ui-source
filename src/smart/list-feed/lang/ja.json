@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "earlier-text": "以前の項目を表示",
+    "empty-text": "まだエントリーはありません",
+    "latest-label": "最新へ",
+    "loading-earlier-text": "以前のエントリーを読み込み中",
+    "new-text": "新着",
+    "log-label": "エントリー",
+    "region-label": "フィード",
+    "you-text": "あなた"
+  }
+}

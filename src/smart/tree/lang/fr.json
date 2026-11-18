@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "loading": "Chargement…",
+    "load-error": "Chargement impossible",
+    "retry": "Réessayer",
+    "hidden": "masqué",
+    "open-label": "Ouvrir l’élément",
+    "close-label": "Fermer l’élément"
+  }
+}

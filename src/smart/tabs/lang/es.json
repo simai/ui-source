@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "customize": "Personalizar pestañas",
+    "errors": {
+      "one": "{n} error",
+      "many": "{n} errores",
+      "other": "{n} errores"
+    },
+    "more": "Más",
+    "moved": "Movida",
+    "pinned": "Siempre visible",
+    "reset": "Restablecer",
+    "tab": "Pestaña {n}",
+    "visible": "Visible"
+  }
+}

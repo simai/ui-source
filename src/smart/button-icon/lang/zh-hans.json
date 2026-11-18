@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "theme": "主题",
+    "theme-system": "跟随系统",
+    "theme-light": "浅色",
+    "theme-dark": "深色",
+    "theme-system-now": "跟随系统（当前{theme}）",
+    "cycle-next": "{name}。按下切换为{next}"
+  }
+}

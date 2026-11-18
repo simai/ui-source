@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "label": "幻灯片",
+    "carousel": "轮播",
+    "slide": "幻灯片",
+    "position": "{n}/{count}",
+    "pause": "停止播放",
+    "play": "开始播放",
+    "thumb": "转到第 {n} 张"
+  }
+}

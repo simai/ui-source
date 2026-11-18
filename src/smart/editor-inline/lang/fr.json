@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "apply": "Appliquer",
+    "code": "Code",
+    "editing": "{label} : modification. Entrée enregistre, Échap annule.",
+    "editing-block": "{label} : modification. Entrée crée un nouveau bloc, Échap annule.",
+    "em": "Italique",
+    "invalid": "Adresse de lien non valide",
+    "link": "Lien",
+    "link-empty": "Saisissez l’adresse du lien",
+    "link-hint": "https://…, mailto:, tel: ou un chemin de ce site, comme /about",
+    "link-long": "L’adresse dépasse {max} caractères",
+    "link-scheme": "Cette adresse n’est pas autorisée : commencez par https://, mailto: ou tel:",
+    "link-slashes": "Une adresse de ce site commence par une seule barre oblique /",
+    "link-spaces": "Supprimez les espaces : une adresse n’en contient pas",
+    "link-start": "Il manque le début de l’adresse : https://, ou / pour une page de ce site",
+    "more": "Plus",
+    "strong": "Gras",
+    "toolbar": "Mise en forme",
+    "unlink": "Supprimer le lien",
+    "url": "Adresse du lien",
+    "strike": "Barré"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "customize": "Tabs anpassen",
+    "errors": {
+      "one": "{n} Fehler",
+      "other": "{n} Fehler"
+    },
+    "more": "Mehr",
+    "moved": "Verschoben",
+    "pinned": "Immer angezeigt",
+    "reset": "Zurücksetzen",
+    "tab": "Tab {n}",
+    "visible": "Angezeigt"
+  }
+}

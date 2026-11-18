@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "toggle-label": "메뉴",
+    "more-label": "더 보기",
+    "status-success": "정상",
+    "status-warning": "확인 필요",
+    "status-error": "오류",
+    "status-info": "새 소식",
+    "status-neutral": "데이터 없음",
+    "subsections": "하위 섹션",
+    "search-placeholder": "검색",
+    "search-found": "찾음: {n}",
+    "search-empty": "검색 결과 없음",
+    "new-tab": "새 탭에서 열림"
+  }
+}

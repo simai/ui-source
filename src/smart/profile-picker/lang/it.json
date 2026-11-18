@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "actions": "Azioni",
+    "builtin": "standard",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "copy-of": "Una copia di «{name}».",
+    "create": "Crea",
+    "kind": "Chi vede il profilo",
+    "label": "Profilo",
+    "locked": "Non puoi modificarlo",
+    "name": "Nome del profilo",
+    "name-empty": "Dai un nome al profilo.",
+    "new-profile": "Nuovo profilo…",
+    "personal": "Personale",
+    "personal-taken": "Hai già un profilo personale",
+    "remove": "Elimina",
+    "remove-ask": "Elimina…",
+    "remove-question": "Eliminare «{name}»?",
+    "remove-shared": "Sparirà per tutti sul sito.",
+    "rename": "Rinomina",
+    "reset": "Ripristina lo standard",
+    "save": "Salva",
+    "seen-by-all": "Visibile a tutti sul sito.",
+    "seen-by-you": "Visibile solo a te.",
+    "shared": "Per tutti",
+    "shared-denied": "Non puoi creare profili condivisi"
+  }
+}

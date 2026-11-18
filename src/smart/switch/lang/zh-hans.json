@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "off": "关",
+    "on": "开",
+    "help": "详细了解：{label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "继承",
+      "reset": "恢复为继承值",
+      "described": "继承：{value}"
+    }
+  }
+}

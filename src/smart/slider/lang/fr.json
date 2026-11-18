@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "next": "Diapositive suivante",
+    "previous": "Diapositive précédente",
+    "label": "Diapositives",
+    "carousel": "carrousel",
+    "slide": "diapositive",
+    "position": "{n} sur {count}",
+    "pause": "Arrêter le défilement",
+    "play": "Lancer le défilement"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "heading": "المعرض",
+    "open-picture": "فتح الصورة {n} من {total}",
+    "open-picture-named": "فتح الصورة {n} من {total}: {alt}",
+    "show-picture": "إظهار الصورة {n}",
+    "show-picture-named": "إظهار الصورة {n}: {alt}",
+    "pick-picture": "تحديد الصورة {n}",
+    "pick-picture-named": "تحديد الصورة {n}: {alt}",
+    "count": "{n} / {total}",
+    "selection": "التحديد",
+    "selected-count": "تم تحديد {count}",
+    "clear-selection": "مسح التحديد",
+    "viewer-label": "العارض",
+    "viewer-count": "{n} / {total}",
+    "viewer-count-words": "{n} من {total}",
+    "viewer-zoom-in": "تكبير",
+    "viewer-zoom-out": "تصغير",
+    "viewer-close": "إغلاق",
+    "viewer-previous": "الصورة السابقة",
+    "viewer-next": "الصورة التالية",
+    "viewer-download": "تنزيل {name}",
+    "viewer-open-tab": "فتح في علامة تبويب جديدة",
+    "viewer-document": "مستند"
+  }
+}

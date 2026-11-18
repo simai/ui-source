@@ -1,0 +1,53 @@
+{
+  "runtime": {
+    "label": "확인 필요",
+    "empty-text": "모두 정상입니다",
+    "empty-checked-text": "{text} · {when} 확인함",
+    "status-error": "오류",
+    "status-warning": "경고",
+    "status-info": "정보",
+    "status-success": "완료",
+    "status-passed": "통과",
+    "summary-error": {
+      "other": "오류 {n}개"
+    },
+    "summary-warning": {
+      "other": "경고 {n}개"
+    },
+    "summary-info": {
+      "other": "권장 사항 {n}개"
+    },
+    "summary-success": {
+      "other": "해결됨 {n}개"
+    },
+    "group-error": "오류",
+    "group-warning": "경고",
+    "group-info": "권장 사항",
+    "group-success": "해결됨",
+    "group-passed": "통과",
+    "affected-text": "영향 받음: {text}",
+    "age-now": "방금",
+    "age-minutes": "{n}분",
+    "age-hours": "{n}시간",
+    "age-days": {
+      "other": "{n}일"
+    },
+    "checked-text": "{when} 확인함",
+    "checked-now": "방금",
+    "checked-minutes": "{n}분 전",
+    "checked-time": "{time}",
+    "checked-date": "{date} {time}",
+    "recheck-label": "다시 확인",
+    "more-text": "모든 문제({n})",
+    "show-all-text": "모두 보기({n})",
+    "more-label": "더 보기: {title}",
+    "snooze-day-text": "하루 미루기",
+    "snooze-week-text": "일주일 미루기",
+    "dismiss-text": "다시 알리지 않기",
+    "help-text": "이 검사 정보",
+    "snoozed-day-notice": "하루 미룸: {title}",
+    "snoozed-week-notice": "일주일 미룸: {title}",
+    "dismissed-notice": "다시 알리지 않습니다: {title}",
+    "undo-text": "실행 취소"
+  }
+}

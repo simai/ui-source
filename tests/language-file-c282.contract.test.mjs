@@ -104,7 +104,7 @@ test('C282: the bundle-words gate reads literals, JSON payloads and the allowed 
   assert.deepEqual(literals("const a = 'Привет'; const r = /ё/gu; const t = `из ${n}`;").map((one) => [one.kind, one.value]), [['string', 'Привет'], ['regexp', 'ё'], ['template', 'из ']]);
   assert.deepEqual(literals(`var m = JSON.parse('{"a":"Ещё","b":["Да"]}');`).map((one) => one.value), ['a', 'Ещё', 'b', 'Да']);
   const {values, places} = allowedLiterals();
-  for (const word of ['ё', 'е', 'мб', 'ооо', 'беларуская']) assert.ok(values.has(word), word);
+  for (const word of ['ё', 'е', 'мб', 'ооо', 'саха тыла']) assert.ok(values.has(word), word);
   assert.ok(places.every((place) => !place.file.startsWith('src/core/lang/')));
   const dir = mkdtempSync(path.join(tmpdir(), 'c282-bundle-'));
   try {

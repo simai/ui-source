@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "Finestra di dialogo",
+    "close": "Chiudi",
+    "loading": "Caricamento…",
+    "loadFailed": "Impossibile caricare il contenuto",
+    "frameFailed": "Impossibile caricare il contenuto del riquadro"
+  }
+}

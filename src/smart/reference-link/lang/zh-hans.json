@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "new-tab-text": "（在新标签页中打开）",
+    "copy-label": "复制链接",
+    "missing-text": "已删除",
+    "forbidden-text": "无访问权限"
+  }
+}

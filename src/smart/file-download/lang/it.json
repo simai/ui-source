@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "file": "File",
+    "preparing-text": "Preparazione del file…",
+    "preparing-value-text": "Preparazione… {percent}",
+    "failed-text": "Impossibile generarlo",
+    "retry-text": "Riprova",
+    "retry-label": "Riprova: {name}",
+    "cancel-text": "Annulla",
+    "cancel-label": "Annulla: {name}",
+    "ready-text": "Pronto",
+    "get-text": "Scarica",
+    "get-label": "Scarica {name}",
+    "new-tab-text": "(si apre in una nuova scheda)",
+    "said-preparing": "Preparazione del file «{name}»",
+    "said-ready": "Il file è pronto: «{name}»{said}",
+    "said-fetched": "Il file è pronto e scaricato: «{name}»{said}",
+    "said-offer": "Il file è pronto: «{name}»{said}. Pulsante «Scarica»",
+    "said-cancelled": "Preparazione annullata: «{name}»",
+    "said-failed": "Errore: impossibile generare «{name}»."
+  }
+}

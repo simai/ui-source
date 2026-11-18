@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "button": "Botão",
+    "badge": "Selo",
+    "send": "Enviar",
+    "field": "Campo",
+    "option": "Opção",
+    "name": "Nome",
+    "phone": "Telefone",
+    "email": "E-mail",
+    "message": "Mensagem"
+  }
+}

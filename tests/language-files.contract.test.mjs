@@ -25,10 +25,16 @@ test('LC-7: every language file holds every word in ru and en, every plural form
 });
 
 test('C177 (4): a third language is reported with its share and the words it lacks', () => {
+  // A language with no files (Dutch is no registry language): every word missing, all listed.
+  const nl = languageCoverage('nl');
+  assert.equal(nl.built_in, false);
+  assert.equal(nl.share, 0);
+  assert.ok(nl.folders.every((folder) => folder.file === false && folder.missing.length === folder.words));
+  // A registry language ships whole (C278): nothing listed.
   const de = languageCoverage('de');
   assert.equal(de.built_in, false);
-  assert.equal(de.share, 0);
-  assert.ok(de.folders.every((folder) => folder.file === false && folder.missing.length === folder.words));
+  assert.equal(de.share, 100);
+  assert.deepEqual(de.folders, []);
 });
 
 test('LC-2: a bundle imports only the runtime words of its language files', () => {

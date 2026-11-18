@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "count": {
+      "one": "{count} ungelesen",
+      "other": "{count} ungelesen"
+    },
+    "dot": "neu"
+  }
+}

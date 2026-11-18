@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "earlier-text": "显示更早的内容",
+    "empty-text": "暂无条目",
+    "latest-label": "跳到最新",
+    "loading-earlier-text": "正在加载更早的条目",
+    "new-text": "新",
+    "log-label": "条目",
+    "region-label": "动态",
+    "you-text": "你"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "empty-text": "未设置",
+    "copy": "复制：{label}",
+    "action": "{action}：{label}",
+    "help": "详细了解：{label}",
+    "status-success": "正常",
+    "status-warning": "警告",
+    "status-error": "错误",
+    "status-info": "信息"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "runtime": {
+    "advanced": "詳細設定",
+    "check-adjusted-dark": "色がとても暗いため、ボタンには {from} の代わりに明るい {to} を使います。そうしないとテキストと区別できません。",
+    "check-adjusted-light": "色が明るいため、ボタンには {from} の代わりに暗い {to} を使います。そうしないと文字が読めません。",
+    "check-contrast": "{scheme}テーマではボタンの文字が読みにくくなります: {ratio} : 1（4.5 が必要）。",
+    "check-grey": "色がほぼグレーです。アクセントもグレーになり、ボタンやリンクがテキストとほとんど区別できません。",
+    "check-status-error": "色がエラーの色に近いため、通常のボタンと「削除」がほぼ同じに見えます。",
+    "check-status-success": "色が成功の色に近いため、アクセントが「完了」や「支払済み」に見える場合があります。",
+    "check-status-warning": "色が警告の色に近いため、アクセントが「注意」に見える場合があります。",
+    "checks": "色のチェック",
+    "chroma": "彩度",
+    "chroma-hint": "0～150",
+    "color": "メインカラー",
+    "hue": "色相",
+    "hue-hint": "0～360",
+    "inherited": "SIMAI Framework のカラー",
+    "neutral": "ニュートラル",
+    "preview": "テーマのプレビュー",
+    "primary": "プライマリ",
+    "reset": "リセット",
+    "scheme-dark": "ダーク",
+    "scheme-light": "ライト",
+    "secondary": "セカンダリ",
+    "tertiary": "ターシャリ",
+    "title": "テーマジェネレーター"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "Confirmer",
+      "accepted-text": "Terminé",
+      "accepting-text": "En cours…",
+      "decline-text": "Annuler",
+      "declining-text": "Annulation…",
+      "expired-text": "Le délai de réponse est dépassé",
+      "question-label": "Confirmation",
+      "require-error": "Saisissez « {name} » exactement comme ci-dessus",
+      "require-text": "Pour confirmer, saisissez {name}",
+      "until-text": "Répondre avant {time}"
+    },
+    "sf-confirm-change": {
+      "accept-text": "Confirmer",
+      "accepted-text": "Appliqué",
+      "accepting-text": "Application…",
+      "after-text": "Deviendra",
+      "before-text": "Était",
+      "changes-label": "Ce qui va changer",
+      "decline-text": "Refuser",
+      "declining-text": "Refus…",
+      "empty-value-text": "vide",
+      "expired-text": "Le délai de confirmation est dépassé",
+      "until-text": "Confirmer avant {time}"
+    }
+  }
+}

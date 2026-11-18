@@ -1,0 +1,30 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "zh-hans",
+  "name": "简体中文",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 8,
+    "translated": 8,
+    "share": 100
+  },
+  "words": {
+    "sf-tree": {
+      "loading": "正在加载…",
+      "load-error": "加载失败",
+      "retry": "重试",
+      "hidden": "已隐藏",
+      "open-label": "展开项目",
+      "close-label": "收起项目"
+    },
+    "sf-tree-item": {
+      "open-label": "展开项目",
+      "close-label": "收起项目"
+    }
+  }
+}

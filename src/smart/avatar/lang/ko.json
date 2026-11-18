@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "aria-label": "아바타",
+    "status-online": "온라인",
+    "status-away": "자리 비움",
+    "status-offline": "오프라인"
+  }
+}

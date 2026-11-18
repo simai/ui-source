@@ -1,0 +1,37 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "zh-hans",
+  "name": "简体中文",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 17,
+    "translated": 17,
+    "share": 100
+  },
+  "words": {
+    "sf-empty-state": {
+      "create": "创建",
+      "error-text": "重试",
+      "error-title": "加载失败",
+      "first-use-text": "创建第一条记录后会显示在这里",
+      "first-use-title": "这里还没有内容",
+      "no-access-text": "请向管理员申请访问权限",
+      "no-access-title": "无访问权限",
+      "no-data-text": "添加后会显示在这里",
+      "no-data-title": "暂无记录",
+      "nothing-found-text": "请尝试其他搜索词或筛选条件",
+      "nothing-found-title": "未找到结果",
+      "offline-text": "请检查网络连接；恢复后我们会重试",
+      "offline-title": "无网络连接",
+      "processing-share": "已完成",
+      "processing-text": "这可能需要几分钟。结果将显示在这里；你可以关闭页面",
+      "processing-title": "正在准备",
+      "retry": "重试"
+    }
+  }
+}

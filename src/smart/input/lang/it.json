@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "value-missing": "Compila questo campo",
+    "clear": "Cancella",
+    "reveal": "Mostra password",
+    "type-mismatch": "Controlla il valore",
+    "type-mismatch-email": "Inserisci l’indirizzo completo, ad esempio anna@esempio.it",
+    "type-mismatch-url": "Inserisci l’indirizzo completo, ad esempio https://esempio.it",
+    "pattern-mismatch": "Controlla il formato",
+    "too-short": "Almeno {min} caratteri",
+    "too-long": "Al massimo {max} caratteri",
+    "range-underflow": "Almeno {min}",
+    "range-overflow": "Al massimo {max}",
+    "step-mismatch": "Usa incrementi di {step}",
+    "bad-input": "Inserisci un numero",
+    "count-text": "{count} / {max}",
+    "help": "Maggiori informazioni: {label}",
+    "caps-lock": "Bloc Maiusc è attivo",
+    "conceal": "Nascondi password"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "ereditato",
+      "reset": "Ripristina il valore ereditato",
+      "described": "Ereditato: {value}"
+    }
+  }
+}

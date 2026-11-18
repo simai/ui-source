@@ -143,24 +143,35 @@ function normalise(value) {
   return String(value ?? '').trim().toLowerCase().replace('_', '-');
 }
 
-// The registry's second names of a language (localization registry, C278:
-// zh-CN and zh-SG are zh-Hans). Core puts them on the shared store from
-// core/contracts/language-registry.v1.json (core/js/language-packs.js), so a
-// bundle does not carry the registry: {'zh-cn': 'zh-hans', ...}. A page in
-// lang="zh-CN" reads the zh-hans words; a word registered for zh-cn itself
-// still comes first.
-function aliasOf(code) {
-  const aliases = STORE.aliases;
-  const named = aliases && typeof aliases === 'object' ? aliases[code] : undefined;
-  return typeof named === 'string' && named ? named : null;
+// The pack a page language takes. Two tables, both from the localization
+// registry (C278) and both on the shared store, so a bundle carries neither:
+// core/lang/index.json `aliases` (the shipped packs: zh-cn, zh-sg and zh take
+// zh-hans, pt takes pt-br; PACKS.aliases, set by core) and the registry's
+// second names of every language (STORE.aliases, core/js/language-packs.js).
+// A word registered for the alias itself still comes first; any other code
+// is its own.
+function packOf(code) {
+  const one = PACKS?.aliases?.[code] ?? STORE?.aliases?.[code];
+  return typeof one === 'string' && one ? one : code;
 }
 
-/** The languages to try, most specific first, English last. */
+function aliasOf(code) {
+  const named = packOf(code);
+  return named !== code ? named : null;
+}
+
+/**
+ * The languages to try, most specific first, English last: the language, the
+ * pack it is an alias of, the language without its region and that one's
+ * pack. zh-CN: zh-cn, zh-hans, zh, en; zh-TW: zh-tw, zh, zh-hans, en; pt-PT:
+ * pt-pt, pt, pt-br, en. Until 2026-11-18 a zh-CN or pt page found no pack and
+ * spoke English.
+ */
 const chain = (language) => {
   const wanted = normalise(language);
   const base = wanted.split('-')[0];
   const order = [];
-  for (const candidate of [wanted, aliasOf(wanted), base, 'en']) {
+  for (const candidate of [wanted, packOf(wanted), base, packOf(base), 'en']) {
     if (candidate && !order.includes(candidate)) order.push(candidate);
   }
   return order;
@@ -352,7 +363,7 @@ export function localeText(dictionary, key, locale, component) {
 // and the language files' coverage is scripts/language-coverage.mjs. Kept on
 // the shared global, because every bundle carries this module.
 function warnFallback(order, owner, key) {
-  const wanted = String(order[0] || '').split('-')[0];
+  const wanted = packOf(String(order[0] || '').split('-')[0]);
   // While its pack is on its way the English is a moment, not a gap (the
   // registry name's pack too: zh-hans for a zh-CN page). Before core runs
   // nothing can be on its way yet: the word is asked again when the pack core
@@ -610,7 +621,7 @@ export const language = {
   missing(value) {
     const seen = globalThis.__sfMissingWords instanceof Map ? globalThis.__sfMissingWords : new Map();
     if (value === undefined) return Object.fromEntries([...seen].map(([code, words]) => [code, [...words]]));
-    return [...(seen.get(normalise(value).split('-')[0]) ?? [])];
+    return [...(seen.get(packOf(normalise(value).split('-')[0])) ?? [])];
   },
 
   /** Every component something has been registered for. */

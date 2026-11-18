@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "电话号码",
+    "phoneRequired": "请输入电话号码。",
+    "countryLabel": "国家/地区代码",
+    "countryUnknown": "无法识别国家/地区代码，请选择国家/地区",
+    "searchPlaceholder": "国家/地区或代码",
+    "frequent": "常用",
+    "allCountries": "所有国家/地区",
+    "nothingFound": "未找到结果"
+  }
+}

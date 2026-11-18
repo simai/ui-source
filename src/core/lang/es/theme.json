@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-theme-generator": {
+      "advanced": "Avanzado",
+      "check-adjusted-dark": "El color es muy oscuro: los botones usan {to}, más claro, en lugar de {from}; si no, no se distinguirían del texto.",
+      "check-adjusted-light": "El color es claro: los botones usan {to}, más oscuro, en lugar de {from}; si no, su texto no se leería.",
+      "check-contrast": "El texto de un botón se lee mal en el tema {scheme}: {ratio} : 1; se necesita 4,5.",
+      "check-grey": "El color es casi gris: los acentos también lo son, y botones y enlaces apenas se distinguen del texto.",
+      "check-status-error": "El color se parece al de error: un botón normal y «Eliminar» se verán casi iguales.",
+      "check-status-success": "El color se parece al de éxito: un acento puede parecer «Hecho» o «Pagado».",
+      "check-status-warning": "El color se parece al de advertencia: un acento puede parecer «Atención».",
+      "checks": "Comprobación del color",
+      "chroma": "Croma",
+      "chroma-hint": "de 0 a 150",
+      "color": "Color principal",
+      "hue": "Tono",
+      "hue-hint": "de 0 a 360",
+      "inherited": "Color de SIMAI Framework",
+      "neutral": "Neutro",
+      "preview": "Vista previa del tema",
+      "primary": "Principal",
+      "reset": "Restablecer",
+      "scheme-dark": "oscuro",
+      "scheme-light": "claro",
+      "secondary": "Secundario",
+      "tertiary": "Terciario",
+      "title": "Generador de temas"
+    }
+  }
+}

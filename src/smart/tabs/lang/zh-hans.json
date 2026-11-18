@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "customize": "自定义标签页",
+    "errors": {
+      "other": "{n} 个错误"
+    },
+    "more": "更多",
+    "moved": "已移动",
+    "pinned": "始终显示",
+    "reset": "重置",
+    "tab": "标签页 {n}",
+    "visible": "已显示"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "actions": "操作",
+    "builtin": "標準",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "copy-of": "「{name}」のコピー。",
+    "create": "作成",
+    "kind": "プロファイルの公開範囲",
+    "label": "プロファイル",
+    "locked": "変更できません",
+    "name": "プロファイル名",
+    "name-empty": "プロファイルに名前を付けてください。",
+    "new-profile": "新しいプロファイル…",
+    "personal": "個人用",
+    "personal-taken": "個人用プロファイルは既にあります",
+    "remove": "削除",
+    "remove-ask": "削除…",
+    "remove-question": "「{name}」を削除しますか？",
+    "remove-shared": "サイトの全員から削除されます。",
+    "rename": "名前を変更",
+    "reset": "標準に戻す",
+    "save": "保存",
+    "seen-by-all": "サイトの全員に表示されます。",
+    "seen-by-you": "自分だけに表示されます。",
+    "shared": "全員",
+    "shared-denied": "共有プロファイルは作成できません"
+  }
+}

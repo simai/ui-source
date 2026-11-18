@@ -3,9 +3,1856 @@
   "schema_version": 1,
   "delivery": "framework",
   "languages": [
-    "ru"
+    "ar",
+    "de",
+    "es",
+    "fr",
+    "it",
+    "ja",
+    "ko",
+    "pt-br",
+    "ru",
+    "zh-hans"
   ],
+  "aliases": {
+    "pt": "pt-br",
+    "zh": "zh-hans",
+    "zh-cn": "zh-hans",
+    "zh-sg": "zh-hans"
+  },
   "parts": {
+    "ar": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
+    "de": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
+    "es": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
+    "fr": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
+    "it": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
+    "ja": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
+    "ko": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
+    "pt-br": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
+    },
     "ru": {
       "accordion": [
         "sf-accordion"
@@ -237,13 +2084,287 @@
       "wizard": [
         "sf-wizard"
       ]
+    },
+    "zh-hans": {
+      "accordion": [
+        "sf-accordion"
+      ],
+      "admin-menu": [
+        "sf-admin-menu"
+      ],
+      "alert": [
+        "sf-alert",
+        "sf-alert-bar"
+      ],
+      "avatar": [
+        "sf-avatar",
+        "sf-avatar-group"
+      ],
+      "badge": [
+        "sf-badge"
+      ],
+      "breadcrumbs": [
+        "sf-breadcrumbs"
+      ],
+      "button": [
+        "sf-button",
+        "sf-button-close",
+        "sf-button-copy",
+        "sf-button-icon"
+      ],
+      "button-group": [
+        "sf-button-group"
+      ],
+      "change": [
+        "sf-change"
+      ],
+      "checkbox": [
+        "sf-checkbox"
+      ],
+      "confirm": [
+        "sf-confirm",
+        "sf-confirm-change"
+      ],
+      "contents": [
+        "sf-contents"
+      ],
+      "core": [
+        "sf-button-copy",
+        "sf-composition",
+        "sf-display-settings",
+        "sf-file-download",
+        "sf-file-size",
+        "sf-fragment",
+        "sf-notify",
+        "sf-relative-day"
+      ],
+      "display": [
+        "sf-display-settings"
+      ],
+      "download-file": [
+        "download-file"
+      ],
+      "drawer": [
+        "sf-drawer"
+      ],
+      "dropdown": [
+        "sf-dropdown"
+      ],
+      "editor": [
+        "sf-composition",
+        "sf-editor-inline",
+        "sf-editor-overlay"
+      ],
+      "empty": [
+        "sf-empty-state"
+      ],
+      "fab": [
+        "sf-fab"
+      ],
+      "field-renderers": [
+        "sf-field-renderers"
+      ],
+      "file": [
+        "sf-file-download",
+        "sf-file-preview",
+        "sf-file-upload"
+      ],
+      "form": [
+        "sf-form"
+      ],
+      "gallery": [
+        "sf-gallery"
+      ],
+      "header": [
+        "sf-header-page",
+        "sf-header-site"
+      ],
+      "help": [
+        "sf-help-mark"
+      ],
+      "highlight": [
+        "sf-highlight"
+      ],
+      "icon": [
+        "sf-icon"
+      ],
+      "icon-search": [
+        "sf-icon-search"
+      ],
+      "include": [
+        "sf-include"
+      ],
+      "input": [
+        "sf-input",
+        "sf-input-choice",
+        "sf-input-code",
+        "sf-input-color",
+        "sf-input-country",
+        "sf-input-date",
+        "sf-input-image",
+        "sf-input-lookup",
+        "sf-input-quantity",
+        "sf-input-rich",
+        "sf-input-textarea"
+      ],
+      "kbd": [
+        "sf-kbd"
+      ],
+      "language": [
+        "sf-language"
+      ],
+      "list": [
+        "sf-list",
+        "sf-list-attention",
+        "sf-list-description",
+        "sf-list-feed",
+        "sf-list-timeline"
+      ],
+      "menu": [
+        "sf-menu",
+        "sf-menu-context"
+      ],
+      "modal": [
+        "sf-modal"
+      ],
+      "pager": [
+        "sf-pager"
+      ],
+      "pagination": [
+        "sf-pagination"
+      ],
+      "profile": [
+        "sf-profile-picker"
+      ],
+      "progress": [
+        "sf-progress-bar",
+        "sf-progress-run",
+        "sf-progress-scale"
+      ],
+      "quantity": [
+        "sf-quantity"
+      ],
+      "radio": [
+        "sf-radio"
+      ],
+      "reference": [
+        "sf-reference-link"
+      ],
+      "resizer": [
+        "sf-resizer"
+      ],
+      "scrollbar": [
+        "sf-scrollbar"
+      ],
+      "search": [
+        "sf-search"
+      ],
+      "segmented": [
+        "sf-segmented"
+      ],
+      "settings": [
+        "sf-settings"
+      ],
+      "slider": [
+        "sf-slider",
+        "sf-slider-range"
+      ],
+      "sortable": [
+        "sf-sortable"
+      ],
+      "spinner": [
+        "sf-spinner"
+      ],
+      "steps": [
+        "sf-steps"
+      ],
+      "swiper": [
+        "sf-swiper"
+      ],
+      "switch": [
+        "sf-switch"
+      ],
+      "tabs": [
+        "sf-tabs"
+      ],
+      "tag": [
+        "sf-tag",
+        "sf-tag-group"
+      ],
+      "theme": [
+        "sf-theme-generator"
+      ],
+      "theme-button": [
+        "sf-theme-button"
+      ],
+      "tile": [
+        "sf-tile-metric"
+      ],
+      "time": [
+        "sf-time"
+      ],
+      "toast": [
+        "sf-toast"
+      ],
+      "tree": [
+        "sf-tree",
+        "sf-tree-item"
+      ],
+      "wizard": [
+        "sf-wizard"
+      ]
     }
   },
   "coverage": {
+    "ar": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
+    "de": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
+    "es": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
+    "fr": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
+    "it": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
+    "ja": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
+    "ko": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
+    "pt-br": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
+    },
     "ru": {
-      "words": 2227,
-      "translated": 2227,
+      "words": 2218,
+      "translated": 2218,
       "share": 100
+    },
+    "zh-hans": {
+      "words": 2218,
+      "translated": 2034,
+      "share": 91.7
     }
   }
 }

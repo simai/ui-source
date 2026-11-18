@@ -1,0 +1,32 @@
+{
+  "runtime": {
+    "toolbar": "Mise en forme",
+    "paragraph": "Paragraphe",
+    "heading-2": "Titre 2",
+    "heading-3": "Titre 3",
+    "heading-4": "Titre 4",
+    "bold": "Gras",
+    "italic": "Italique",
+    "link": "Lien",
+    "bulleted-list": "Liste à puces",
+    "numbered-list": "Liste numérotée",
+    "quote": "Citation",
+    "undo": "Annuler",
+    "redo": "Rétablir",
+    "not-in-list": "Indisponible dans une liste",
+    "nothing-to-undo": "Rien à annuler",
+    "nothing-to-redo": "Rien à rétablir",
+    "link-dialog": "Lien",
+    "link-address": "Adresse du lien",
+    "link-hint": "https://…, mailto:, tel: ou un chemin de ce site, comme /about",
+    "link-invalid": "Utilisez une adresse https:, mailto: ou tel:, ou un chemin de ce site commençant par /.",
+    "link-apply": "Appliquer",
+    "link-remove": "Supprimer le lien",
+    "value-missing": "Remplissez ce champ",
+    "count-text": "{count} / {max}",
+    "too-long": "Au plus {max} caractères",
+    "help": "En savoir plus : {label}",
+    "text-level": "Niveau du texte",
+    "more": "Plus"
+  }
+}

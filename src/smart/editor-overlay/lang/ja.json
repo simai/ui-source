@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "移動をキャンセルしました。",
+    "dropped": "{label} を移動しました。{place}。",
+    "editing": "{label} を編集中。Enter で保存、Esc でキャンセル。",
+    "insert": "挿入",
+    "insert-after": "「{label}」の後に挿入",
+    "insert-at": "「{slot}」の {index} 番目に挿入",
+    "more": "その他",
+    "picked": "{label} を移動中。矢印キーで場所を選び、Enter で配置、Esc でキャンセル。",
+    "position": "{index} / {total}",
+    "selected": "選択中: {label}",
+    "toolbar": "操作",
+    "tree": "ページ構造"
+  }
+}

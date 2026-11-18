@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "label": "Nesta página",
+    "more": "Mais",
+    "count-error": {
+      "one": "{n} erro",
+      "many": "{n} erros",
+      "other": "{n} erros"
+    },
+    "count-warning": {
+      "one": "{n} aviso",
+      "many": "{n} avisos",
+      "other": "{n} avisos"
+    },
+    "count-success": {
+      "one": "{n}, concluído",
+      "many": "{n}, concluídos",
+      "other": "{n}, concluídos"
+    },
+    "status-error": "tem erros",
+    "status-warning": "tem avisos",
+    "status-success": "concluído"
+  }
+}

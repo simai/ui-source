@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "label": "Sur cette page",
+    "more": "Plus",
+    "count-error": {
+      "one": "{n} erreur",
+      "many": "{n} erreurs",
+      "other": "{n} erreurs"
+    },
+    "count-warning": {
+      "one": "{n} avertissement",
+      "many": "{n} avertissements",
+      "other": "{n} avertissements"
+    },
+    "count-success": {
+      "one": "{n}, terminé",
+      "many": "{n}, terminés",
+      "other": "{n}, terminés"
+    },
+    "status-error": "contient des erreurs",
+    "status-warning": "contient des avertissements",
+    "status-success": "terminé"
+  }
+}

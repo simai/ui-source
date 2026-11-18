@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "pt-br",
+  "name": "Português (Brasil)",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "Confirmar",
+      "accepted-text": "Concluído",
+      "accepting-text": "Processando…",
+      "decline-text": "Cancelar",
+      "declining-text": "Cancelando…",
+      "expired-text": "O prazo para responder terminou",
+      "question-label": "Confirmação",
+      "require-error": "Digite “{name}” exatamente como acima",
+      "require-text": "Para confirmar, digite {name}",
+      "until-text": "Responda até {time}"
+    },
+    "sf-confirm-change": {
+      "accept-text": "Confirmar",
+      "accepted-text": "Aplicado",
+      "accepting-text": "Aplicando…",
+      "after-text": "Ficará",
+      "before-text": "Era",
+      "changes-label": "O que vai mudar",
+      "decline-text": "Recusar",
+      "declining-text": "Recusando…",
+      "empty-value-text": "vazio",
+      "expired-text": "O prazo para confirmar terminou",
+      "until-text": "Confirme até {time}"
+    }
+  }
+}

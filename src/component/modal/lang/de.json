@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "Dialog",
+    "close": "Schließen",
+    "loading": "Wird geladen…",
+    "loadFailed": "Inhalt konnte nicht geladen werden",
+    "frameFailed": "Inhalt des Frames konnte nicht geladen werden"
+  }
+}

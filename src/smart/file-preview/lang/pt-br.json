@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "Arquivo",
+    "download-label": "Baixar {name}",
+    "remove-label": "Remover {name}",
+    "uploading-label": "Enviando {name}",
+    "error-text": "Não enviado",
+    "error-line": "Não enviado: {message}",
+    "retry-text": "Tentar de novo",
+    "retry-label": "Tentar de novo {name}",
+    "delete-label": "Excluir {name}",
+    "delete-question": "Excluir “{name}”?",
+    "delete-text": "Excluir",
+    "viewer-previous": "Arquivo anterior",
+    "viewer-next": "Próximo arquivo"
+  }
+}

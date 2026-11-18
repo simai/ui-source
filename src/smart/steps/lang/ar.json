@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "aria-label": "الخطوات",
+    "completed-label": "مكتمل",
+    "current-label": "الحالي",
+    "ahead-label": "قادم",
+    "error-label": "خطأ",
+    "skipped-label": "تم التخطي",
+    "running-label": "قيد التنفيذ",
+    "count-label": "الخطوة {n} من {count}"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "activity-running": "En curso",
+    "activity-waiting": "Requiere tu respuesta",
+    "activity-done": "Listo",
+    "activity-stopped": "Detenido",
+    "activity-failed": "Con error",
+    "activity-paused": "En pausa",
+    "activity-queued": "En cola"
+  }
+}

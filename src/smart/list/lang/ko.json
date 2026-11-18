@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "actions-label": "작업: {text}",
+    "count-label": {
+      "other": "읽지 않음 {n}개"
+    },
+    "empty-text": "아직 아무것도 없습니다",
+    "label": "목록",
+    "loading-more-text": "불러오는 중…",
+    "loading-text": "목록을 불러오는 중",
+    "more-text": "더 보기",
+    "pinned-text": "고정됨",
+    "rename-label": "새 이름",
+    "rename-text": "이름 바꾸기",
+    "undated-text": "날짜 없음",
+    "ungrouped-text": "기타",
+    "unread-text": "읽지 않음",
+    "untitled-text": "제목 없음"
+  }
+}

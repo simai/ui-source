@@ -1,0 +1,36 @@
+{
+  "runtime": {
+    "empty-text": "لا توجد أحداث بعد",
+    "more": "عرض المزيد",
+    "loading": "جارٍ التحميل…",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "tomorrow": "غدًا",
+    "status-success": "تم",
+    "status-warning": "تحذير",
+    "status-error": "خطأ",
+    "status-info": "معلومات",
+    "state-done": "تم",
+    "state-current": "الآن",
+    "state-upcoming": "قادم",
+    "step-status-success": "ناجح",
+    "step-status-warning": "مع تحذير",
+    "step-status-error": "مع خطأ",
+    "run-changes": {
+      "zero": "لا تغييرات أخرى",
+      "one": "تغيير آخر",
+      "two": "تغييران آخران",
+      "few": "{n} تغييرات أخرى",
+      "many": "{n} تغييرًا آخر",
+      "other": "{n} تغيير آخر"
+    },
+    "run-events": {
+      "zero": "لا أحداث أخرى",
+      "one": "حدث آخر",
+      "two": "حدثان آخران",
+      "few": "{n} أحداث أخرى",
+      "many": "{n} حدثًا آخر",
+      "other": "{n} حدث آخر"
+    }
+  }
+}

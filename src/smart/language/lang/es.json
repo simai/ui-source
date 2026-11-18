@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "label": "Idioma",
+    "trigger": "{label}: {name}",
+    "search": "Buscar un idioma",
+    "empty": "No se encontró ningún idioma",
+    "missing": "sin traducción: se abre la página de inicio"
+  }
+}

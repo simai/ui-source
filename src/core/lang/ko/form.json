@@ -1,0 +1,30 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 13,
+    "translated": 8,
+    "share": 61.5
+  },
+  "words": {
+    "sf-form": {
+      "required-note": "* — 필수 항목",
+      "submit": "저장",
+      "cancel": "취소",
+      "edit": "편집",
+      "unsaved": "저장하지 않은 변경 사항이 있습니다",
+      "errors-title": {
+        "other": "필드 {n}개를 수정하세요"
+      },
+      "value-missing": "‘{label}’ 필드를 입력하세요",
+      "help-label": "{label} 자세히 보기"
+    }
+  }
+}

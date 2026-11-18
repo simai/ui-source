@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "aria-label": "头像",
+    "status-online": "在线",
+    "status-away": "离开",
+    "status-offline": "离线"
+  }
+}

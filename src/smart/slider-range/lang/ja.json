@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "from": "最小",
+    "to": "最大",
+    "from-label": "{name}、最小",
+    "to-label": "{name}、最大",
+    "help": "詳細: {label}"
+  }
+}

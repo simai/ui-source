@@ -1,0 +1,42 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 22,
+    "translated": 22,
+    "share": 100
+  },
+  "words": {
+    "sf-gallery": {
+      "heading": "ギャラリー",
+      "open-picture": "画像 {n}/{total} を開く",
+      "open-picture-named": "画像 {n}/{total} を開く: {alt}",
+      "show-picture": "画像 {n} を表示",
+      "show-picture-named": "画像 {n} を表示: {alt}",
+      "pick-picture": "画像 {n} を選択",
+      "pick-picture-named": "画像 {n} を選択: {alt}",
+      "count": "{n} / {total}",
+      "selection": "選択",
+      "selected-count": "{count} 件選択中",
+      "clear-selection": "選択を解除",
+      "viewer-label": "ビューアー",
+      "viewer-count": "{n} / {total}",
+      "viewer-count-words": "{n}/{total}",
+      "viewer-zoom-in": "拡大",
+      "viewer-zoom-out": "縮小",
+      "viewer-close": "閉じる",
+      "viewer-previous": "前の画像",
+      "viewer-next": "次の画像",
+      "viewer-download": "{name} をダウンロード",
+      "viewer-open-tab": "新しいタブで開く",
+      "viewer-document": "ドキュメント"
+    }
+  }
+}

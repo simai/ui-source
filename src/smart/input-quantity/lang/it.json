@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "decrement": "Diminuisci il valore",
+    "increment": "Aumenta il valore",
+    "range-underflow": "Il valore deve essere almeno {min}",
+    "range-overflow": "Il valore deve essere al massimo {max}",
+    "step-mismatch": "Il valore deve essere un multiplo di {step}",
+    "remove": "Rimuovi",
+    "value-missing": "Compila questo campo",
+    "bad-input": "Inserisci un numero",
+    "help": "Maggiori informazioni: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "ereditato",
+      "reset": "Ripristina il valore ereditato",
+      "described": "Ereditato: {value}"
+    }
+  }
+}

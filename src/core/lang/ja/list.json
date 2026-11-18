@@ -1,0 +1,131 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 87,
+    "translated": 87,
+    "share": 100
+  },
+  "words": {
+    "sf-list": {
+      "actions-label": "操作: {text}",
+      "count-label": {
+        "other": "未読 {n} 件"
+      },
+      "empty-text": "まだ何もありません",
+      "label": "リスト",
+      "loading-more-text": "読み込み中…",
+      "loading-text": "リストを読み込み中",
+      "more-text": "さらに表示",
+      "pinned-text": "固定済み",
+      "rename-label": "新しい名前",
+      "rename-text": "名前を変更",
+      "undated-text": "日付なし",
+      "ungrouped-text": "その他",
+      "unread-text": "未読",
+      "untitled-text": "無題"
+    },
+    "sf-list-attention": {
+      "label": "要対応",
+      "empty-text": "問題ありません",
+      "empty-checked-text": "{text} · {when}に確認",
+      "status-error": "エラー",
+      "status-warning": "警告",
+      "status-info": "情報",
+      "status-success": "完了",
+      "status-passed": "合格",
+      "summary-error": {
+        "other": "エラー {n} 件"
+      },
+      "summary-warning": {
+        "other": "警告 {n} 件"
+      },
+      "summary-info": {
+        "other": "推奨 {n} 件"
+      },
+      "summary-success": {
+        "other": "解決済み {n} 件"
+      },
+      "group-error": "エラー",
+      "group-warning": "警告",
+      "group-info": "推奨事項",
+      "group-success": "解決済み",
+      "group-passed": "合格",
+      "affected-text": "影響: {text}",
+      "age-now": "たった今",
+      "age-minutes": "{n} 分",
+      "age-hours": "{n} 時間",
+      "age-days": {
+        "other": "{n} 日"
+      },
+      "checked-text": "{when}に確認",
+      "checked-now": "たった今",
+      "checked-minutes": "{n} 分前",
+      "checked-time": "{time}",
+      "checked-date": "{date} {time}",
+      "recheck-label": "再確認",
+      "more-text": "すべての問題（{n}）",
+      "show-all-text": "すべて表示（{n}）",
+      "more-label": "その他: {title}",
+      "snooze-day-text": "1日後に再通知",
+      "snooze-week-text": "1週間後に再通知",
+      "dismiss-text": "今後通知しない",
+      "help-text": "このチェックについて",
+      "snoozed-day-notice": "1日後に再通知: {title}",
+      "snoozed-week-notice": "1週間後に再通知: {title}",
+      "dismissed-notice": "今後通知しません: {title}",
+      "undo-text": "元に戻す"
+    },
+    "sf-list-description": {
+      "empty-text": "未設定",
+      "copy": "コピー: {label}",
+      "action": "{action}: {label}",
+      "help": "詳細: {label}",
+      "status-success": "正常",
+      "status-warning": "警告",
+      "status-error": "エラー",
+      "status-info": "情報"
+    },
+    "sf-list-feed": {
+      "earlier-text": "以前の項目を表示",
+      "empty-text": "まだエントリーはありません",
+      "latest-label": "最新へ",
+      "loading-earlier-text": "以前のエントリーを読み込み中",
+      "new-text": "新着",
+      "log-label": "エントリー",
+      "region-label": "フィード",
+      "you-text": "あなた"
+    },
+    "sf-list-timeline": {
+      "empty-text": "まだイベントはありません",
+      "more": "さらに表示",
+      "loading": "読み込み中…",
+      "today": "今日",
+      "yesterday": "昨日",
+      "tomorrow": "明日",
+      "status-success": "完了",
+      "status-warning": "警告",
+      "status-error": "エラー",
+      "status-info": "情報",
+      "state-done": "完了",
+      "state-current": "現在",
+      "state-upcoming": "予定",
+      "step-status-success": "成功",
+      "step-status-warning": "警告あり",
+      "step-status-error": "エラーあり",
+      "run-changes": {
+        "other": "他 {n} 件の変更"
+      },
+      "run-events": {
+        "other": "他 {n} 件のイベント"
+      }
+    }
+  }
+}

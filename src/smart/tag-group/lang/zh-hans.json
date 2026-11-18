@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "more": {
+      "other": "另外 {n} 个：{names}"
+    },
+    "more-panel": {
+      "other": "还有 {n} 个标签"
+    },
+    "position": "{label}，第 {position} 个，共 {total} 个，按 Delete 移除",
+    "position-plain": "{label}，第 {position} 个，共 {total} 个"
+  }
+}

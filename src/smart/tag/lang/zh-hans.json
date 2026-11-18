@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "remove": "移除",
+    "more": {
+      "other": "另外 {n} 个：{names}"
+    },
+    "position": "{label}，第 {position} 个，共 {total} 个，按 Delete 移除"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "runtime": {
+    "value-missing": "옵션을 선택하세요.",
+    "help": "자세히 보기: {label}"
+  }
+}

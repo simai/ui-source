@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "required-note": "* — 필수 항목",
+    "submit": "저장",
+    "cancel": "취소",
+    "edit": "편집",
+    "unsaved": "저장하지 않은 변경 사항이 있습니다",
+    "errors-title": {
+      "other": "필드 {n}개를 수정하세요"
+    },
+    "value-missing": "‘{label}’ 필드를 입력하세요",
+    "help-label": "{label} 자세히 보기"
+  }
+}

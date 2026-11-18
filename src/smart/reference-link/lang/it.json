@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "new-tab-text": "(si apre in una nuova scheda)",
+    "copy-label": "Copia link",
+    "missing-text": "eliminato",
+    "forbidden-text": "nessun accesso"
+  }
+}

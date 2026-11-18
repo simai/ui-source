@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "more": {
+      "one": "{n} weiteres: {names}",
+      "other": "{n} weitere: {names}"
+    },
+    "more-panel": {
+      "one": "{n} weiteres Tag",
+      "other": "{n} weitere Tags"
+    },
+    "position": "{label}, {position} von {total}, Entf zum Entfernen",
+    "position-plain": "{label}, {position} von {total}"
+  }
+}

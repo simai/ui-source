@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "button": "Schaltfläche",
+    "badge": "Badge",
+    "send": "Senden",
+    "field": "Feld",
+    "option": "Option",
+    "name": "Name",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "message": "Nachricht"
+  }
+}

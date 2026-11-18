@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "value-missing": "Remplissez ce champ",
+    "clear": "Effacer",
+    "reveal": "Afficher le mot de passe",
+    "type-mismatch": "Vérifiez la valeur",
+    "type-mismatch-email": "Saisissez l’adresse complète, par exemple marie@exemple.fr",
+    "type-mismatch-url": "Saisissez l’adresse complète, par exemple https://exemple.fr",
+    "pattern-mismatch": "Vérifiez le format",
+    "too-short": "Au moins {min} caractères",
+    "too-long": "Au plus {max} caractères",
+    "range-underflow": "Au moins {min}",
+    "range-overflow": "Au plus {max}",
+    "step-mismatch": "Par pas de {step}",
+    "bad-input": "Saisissez un nombre",
+    "count-text": "{count} / {max}",
+    "help": "En savoir plus : {label}",
+    "caps-lock": "Verr. Maj est activé",
+    "conceal": "Masquer le mot de passe"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "hérité",
+      "reset": "Rétablir la valeur héritée",
+      "described": "Hérité : {value}"
+    }
+  }
+}

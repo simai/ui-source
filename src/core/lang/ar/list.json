@@ -1,0 +1,171 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 87,
+    "translated": 87,
+    "share": 100
+  },
+  "words": {
+    "sf-list": {
+      "actions-label": "الإجراءات: {text}",
+      "count-label": {
+        "zero": "لا عناصر غير مقروءة",
+        "one": "{n} غير مقروء",
+        "two": "{n} غير مقروءين",
+        "few": "{n} غير مقروءة",
+        "many": "{n} غير مقروءة",
+        "other": "{n} غير مقروءة"
+      },
+      "empty-text": "لا شيء هنا بعد",
+      "label": "القائمة",
+      "loading-more-text": "جارٍ التحميل…",
+      "loading-text": "جارٍ تحميل القائمة",
+      "more-text": "عرض المزيد",
+      "pinned-text": "مثبّت",
+      "rename-label": "الاسم الجديد",
+      "rename-text": "إعادة التسمية",
+      "undated-text": "بلا تاريخ",
+      "ungrouped-text": "أخرى",
+      "unread-text": "غير مقروء",
+      "untitled-text": "بلا عنوان"
+    },
+    "sf-list-attention": {
+      "label": "يحتاج إلى انتباه",
+      "empty-text": "كل شيء على ما يرام",
+      "empty-checked-text": "{text} · تم الفحص {when}",
+      "status-error": "خطأ",
+      "status-warning": "تحذير",
+      "status-info": "معلومات",
+      "status-success": "تم",
+      "status-passed": "ناجح",
+      "summary-error": {
+        "zero": "لا أخطاء",
+        "one": "خطأ واحد",
+        "two": "خطآن",
+        "few": "{n} أخطاء",
+        "many": "{n} خطأً",
+        "other": "{n} خطأ"
+      },
+      "summary-warning": {
+        "zero": "لا تحذيرات",
+        "one": "تحذير واحد",
+        "two": "تحذيران",
+        "few": "{n} تحذيرات",
+        "many": "{n} تحذيرًا",
+        "other": "{n} تحذير"
+      },
+      "summary-info": {
+        "zero": "لا توصيات",
+        "one": "توصية واحدة",
+        "two": "توصيتان",
+        "few": "{n} توصيات",
+        "many": "{n} توصية",
+        "other": "{n} توصية"
+      },
+      "summary-success": {
+        "zero": "لا شيء محلول",
+        "one": "مشكلة واحدة محلولة",
+        "two": "مشكلتان محلولتان",
+        "few": "{n} مشكلات محلولة",
+        "many": "{n} مشكلة محلولة",
+        "other": "{n} مشكلة محلولة"
+      },
+      "group-error": "الأخطاء",
+      "group-warning": "التحذيرات",
+      "group-info": "التوصيات",
+      "group-success": "محلولة",
+      "group-passed": "ناجحة",
+      "affected-text": "المتأثر: {text}",
+      "age-now": "الآن",
+      "age-minutes": "{n} د",
+      "age-hours": "{n} س",
+      "age-days": {
+        "zero": "{n} يوم",
+        "one": "يوم واحد",
+        "two": "يومان",
+        "few": "{n} أيام",
+        "many": "{n} يومًا",
+        "other": "{n} يوم"
+      },
+      "checked-text": "تم الفحص {when}",
+      "checked-now": "الآن",
+      "checked-minutes": "قبل {n} د",
+      "checked-time": "في {time}",
+      "checked-date": "{date} في {time}",
+      "recheck-label": "افحص مرة أخرى",
+      "more-text": "كل المشكلات ({n})",
+      "show-all-text": "عرض الكل ({n})",
+      "more-label": "المزيد: {title}",
+      "snooze-day-text": "تأجيل ليوم",
+      "snooze-week-text": "تأجيل لأسبوع",
+      "dismiss-text": "لا تذكّرني",
+      "help-text": "حول هذا الفحص",
+      "snoozed-day-notice": "تم التأجيل ليوم: {title}",
+      "snoozed-week-notice": "تم التأجيل لأسبوع: {title}",
+      "dismissed-notice": "لن نذكّرك مجددًا: {title}",
+      "undo-text": "تراجع"
+    },
+    "sf-list-description": {
+      "empty-text": "غير محدد",
+      "copy": "نسخ: {label}",
+      "action": "{action}: {label}",
+      "help": "المزيد عن: {label}",
+      "status-success": "سليم",
+      "status-warning": "تحذير",
+      "status-error": "خطأ",
+      "status-info": "معلومات"
+    },
+    "sf-list-feed": {
+      "earlier-text": "عرض الأقدم",
+      "empty-text": "لا توجد إدخالات بعد",
+      "latest-label": "إلى الأحدث",
+      "loading-earlier-text": "جارٍ تحميل الإدخالات الأقدم",
+      "new-text": "جديد",
+      "log-label": "الإدخالات",
+      "region-label": "الموجز",
+      "you-text": "أنت"
+    },
+    "sf-list-timeline": {
+      "empty-text": "لا توجد أحداث بعد",
+      "more": "عرض المزيد",
+      "loading": "جارٍ التحميل…",
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "tomorrow": "غدًا",
+      "status-success": "تم",
+      "status-warning": "تحذير",
+      "status-error": "خطأ",
+      "status-info": "معلومات",
+      "state-done": "تم",
+      "state-current": "الآن",
+      "state-upcoming": "قادم",
+      "step-status-success": "ناجح",
+      "step-status-warning": "مع تحذير",
+      "step-status-error": "مع خطأ",
+      "run-changes": {
+        "zero": "لا تغييرات أخرى",
+        "one": "تغيير آخر",
+        "two": "تغييران آخران",
+        "few": "{n} تغييرات أخرى",
+        "many": "{n} تغييرًا آخر",
+        "other": "{n} تغيير آخر"
+      },
+      "run-events": {
+        "zero": "لا أحداث أخرى",
+        "one": "حدث آخر",
+        "two": "حدثان آخران",
+        "few": "{n} أحداث أخرى",
+        "many": "{n} حدثًا آخر",
+        "other": "{n} حدث آخر"
+      }
+    }
+  }
+}

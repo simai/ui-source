@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "count": {
+      "one": "{count} non letto",
+      "many": "{count} non letti",
+      "other": "{count} non letti"
+    },
+    "dot": "nuovo"
+  }
+}

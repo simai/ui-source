@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "本页内容",
+    "more": "更多",
+    "count-error": {
+      "other": "{n} 个错误"
+    },
+    "count-warning": {
+      "other": "{n} 个警告"
+    },
+    "count-success": {
+      "other": "{n} 项已完成"
+    },
+    "status-error": "有错误",
+    "status-warning": "有警告",
+    "status-success": "已完成"
+  }
+}

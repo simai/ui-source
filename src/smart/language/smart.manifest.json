@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.5.3",
+  "version": "1.6.1",
   "title": "Language",
   "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -60,7 +60,7 @@
       "languages": {
         "type": "string",
         "default": "",
-        "description": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named in itself and in English: the names of the 66 languages the component supports ship with it (data/names.json, CLDR), the browser (Intl.DisplayNames) names any other. items, when given, takes its place"
+        "description": "The languages, as BCP 47 codes separated by spaces or commas: «ru en de ar», «pt-BR». Each is named in itself and in English: the names of the 56 languages the component supports ship with it (data/names.json, CLDR), the browser (Intl.DisplayNames) names any other. items, when given, takes its place"
       },
       "href": {
         "type": "string",
@@ -347,11 +347,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "3b61bb3923970ba5fe8ef931a2550a7b9773e43a44086228b024ce0bb57a2ff2"
+        "sha256": "326c80f5016ec9cdec4fddde64ff7ac2a686e910ff08a653ddd08b01e3a3d7ee"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "575296867e2bebc2ddbb7710cb7ad2bbc2c616738e38c699415cd317880c1021"
+        "sha256": "c42ef62341a36f27990f2cff2a6adea65abef4e6cc226e304b685c8fa6a670d0"
       },
       {
         "path": "src/smart/language/rule.js",
@@ -359,7 +359,7 @@
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "3c528abb040cf9d6e66ed0877dc48fcd46e8276110ad0b7874aa58963decc6a6"
+        "sha256": "85416bb58a017a37e0095c8d750a23b102d296fcc8637f09a56a4d35e6338837"
       }
     ],
     "generated_runtime": []

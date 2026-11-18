@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "remove": "Quitar",
+    "more": {
+      "one": "{n} más: {names}",
+      "many": "{n} más: {names}",
+      "other": "{n} más: {names}"
+    },
+    "position": "{label}, {position} de {total}, Supr para quitar"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "pt-br",
+  "name": "Português (Brasil)",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 30,
+    "translated": 30,
+    "share": 100
+  },
+  "words": {
+    "sf-pagination": {
+      "action-apply-text": "Aplicar",
+      "action-choose-label": "Escolha uma ação",
+      "action-for-all-label": "Para todos",
+      "actions-label": "Ação para os registros selecionados",
+      "actions-region-label": "Ações para a seleção",
+      "aria-label": "Páginas de resultados",
+      "clear-selection-label": "Limpar a seleção",
+      "counting-label": "Contando",
+      "cursor-next-text": "Próximo",
+      "first-label": "Primeira",
+      "last-label": "Última",
+      "next-label": "Próxima página",
+      "next-text": "Próximo",
+      "of-pages": "{page} de {count}",
+      "page-field-label": "Página:",
+      "page-label": "Página",
+      "page-size-label": "Por página:",
+      "page-size-text": "{size} por página",
+      "pages-label": "Páginas:",
+      "previous-label": "Página anterior",
+      "previous-text": "Anterior",
+      "range": "{from}–{to} de {total}",
+      "range-many": "{from}–{to} de muitos",
+      "selected-label": "Selecionados:",
+      "show-count-label": "quantidade",
+      "show-more-count": "Mostrar mais {count}",
+      "show-more-text": "Mostrar mais",
+      "shown": "Mostrando {shown} de {total}",
+      "title-page": "Página {page}",
+      "total-label": "Total:"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "remove": "Rimuovi",
+    "more": {
+      "one": "altro {n}: {names}",
+      "many": "altri {n}: {names}",
+      "other": "altri {n}: {names}"
+    },
+    "position": "{label}, {position} di {total}, Canc per rimuovere"
+  }
+}

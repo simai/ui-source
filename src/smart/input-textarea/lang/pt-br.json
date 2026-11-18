@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "value-missing": "Preencha este campo",
+    "count-text": "{count} / {max}",
+    "too-long": "No máximo {max} caracteres",
+    "too-short": "Pelo menos {min} caracteres",
+    "help": "Saiba mais: {label}"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "herdado",
+      "reset": "Restaurar o valor herdado",
+      "described": "Herdado: {value}"
+    }
+  }
+}

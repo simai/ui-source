@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "untitled": "Kennzahl",
+    "no-value": "—",
+    "loading": "Wird geladen",
+    "limit": "{value} von {max}",
+    "limit-name": "{label}: belegt",
+    "change-up": "gestiegen",
+    "change-down": "gesunken",
+    "change-flat": "unverändert",
+    "status-success": "OK",
+    "status-info": "Info",
+    "status-warning": "Warnung",
+    "status-error": "Fehler"
+  }
+}

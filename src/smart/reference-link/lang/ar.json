@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "new-tab-text": "(يُفتح في علامة تبويب جديدة)",
+    "copy-label": "نسخ الرابط",
+    "missing-text": "محذوف",
+    "forbidden-text": "لا يوجد وصول"
+  }
+}

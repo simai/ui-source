@@ -1,0 +1,58 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-button-copy": {
+      "copy": "コピー",
+      "copied": "コピーしました",
+      "failed": "コピーできませんでした",
+      "selected": "選択済み — {keys} を押してください"
+    },
+    "sf-composition": {
+      "button": "ボタン",
+      "badge": "バッジ",
+      "send": "送信",
+      "field": "フィールド",
+      "option": "オプション",
+      "name": "名前",
+      "phone": "電話番号",
+      "email": "メール",
+      "message": "メッセージ"
+    },
+    "sf-display-settings": {
+      "skip-link-text": "本文へスキップ"
+    },
+    "sf-file-download": {
+      "new-tab-text": "（新しいタブで開きます）"
+    },
+    "sf-file-size": {
+      "b": "B",
+      "kb": "KB",
+      "mb": "MB",
+      "gb": "GB"
+    },
+    "sf-fragment": {
+      "heading": "このブロックを表示できませんでした"
+    },
+    "sf-notify": {
+      "region": "通知"
+    },
+    "sf-relative-day": {
+      "today": "今日",
+      "yesterday": "昨日",
+      "tomorrow": "明日"
+    }
+  }
+}

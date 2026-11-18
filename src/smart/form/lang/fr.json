@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "required-note": "* — champs obligatoires",
+    "submit": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "unsaved": "Vous avez des modifications non enregistrées",
+    "errors-title": {
+      "one": "Corrigez {n} champ",
+      "many": "Corrigez {n} champs",
+      "other": "Corrigez {n} champs"
+    },
+    "value-missing": "Remplissez le champ « {label} »",
+    "help-label": "En savoir plus sur {label}"
+  }
+}

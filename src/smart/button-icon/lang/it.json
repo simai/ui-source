@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "theme": "Tema",
+    "theme-system": "sistema",
+    "theme-light": "chiaro",
+    "theme-dark": "scuro",
+    "theme-system-now": "sistema (ora {theme})",
+    "cycle-next": "{name}. Premi per {next}"
+  }
+}

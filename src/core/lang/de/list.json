@@ -1,0 +1,139 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "de",
+  "name": "Deutsch",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 87,
+    "translated": 87,
+    "share": 100
+  },
+  "words": {
+    "sf-list": {
+      "actions-label": "Aktionen: {text}",
+      "count-label": {
+        "one": "{n} ungelesen",
+        "other": "{n} ungelesen"
+      },
+      "empty-text": "Noch nichts vorhanden",
+      "label": "Liste",
+      "loading-more-text": "Wird geladen…",
+      "loading-text": "Liste wird geladen",
+      "more-text": "Mehr anzeigen",
+      "pinned-text": "Angeheftet",
+      "rename-label": "Neuer Name",
+      "rename-text": "Umbenennen",
+      "undated-text": "Ohne Datum",
+      "ungrouped-text": "Sonstige",
+      "unread-text": "ungelesen",
+      "untitled-text": "Ohne Titel"
+    },
+    "sf-list-attention": {
+      "label": "Erfordert Aufmerksamkeit",
+      "empty-text": "Alles in Ordnung",
+      "empty-checked-text": "{text} · geprüft {when}",
+      "status-error": "Fehler",
+      "status-warning": "Warnung",
+      "status-info": "Info",
+      "status-success": "Erledigt",
+      "status-passed": "Bestanden",
+      "summary-error": {
+        "one": "{n} Fehler",
+        "other": "{n} Fehler"
+      },
+      "summary-warning": {
+        "one": "{n} Warnung",
+        "other": "{n} Warnungen"
+      },
+      "summary-info": {
+        "one": "{n} Empfehlung",
+        "other": "{n} Empfehlungen"
+      },
+      "summary-success": {
+        "one": "{n} gelöst",
+        "other": "{n} gelöst"
+      },
+      "group-error": "Fehler",
+      "group-warning": "Warnungen",
+      "group-info": "Empfehlungen",
+      "group-success": "Gelöst",
+      "group-passed": "Bestanden",
+      "affected-text": "betroffen: {text}",
+      "age-now": "gerade eben",
+      "age-minutes": "{n} Min.",
+      "age-hours": "{n} Std.",
+      "age-days": {
+        "one": "{n} Tag",
+        "other": "{n} Tage"
+      },
+      "checked-text": "Geprüft {when}",
+      "checked-now": "gerade eben",
+      "checked-minutes": "vor {n} Min.",
+      "checked-time": "um {time}",
+      "checked-date": "am {date} um {time}",
+      "recheck-label": "Erneut prüfen",
+      "more-text": "Alle Probleme ({n})",
+      "show-all-text": "Alle anzeigen ({n})",
+      "more-label": "Mehr: {title}",
+      "snooze-day-text": "Für einen Tag zurückstellen",
+      "snooze-week-text": "Für eine Woche zurückstellen",
+      "dismiss-text": "Nicht mehr erinnern",
+      "help-text": "Über diese Prüfung",
+      "snoozed-day-notice": "Für einen Tag zurückgestellt: {title}",
+      "snoozed-week-notice": "Für eine Woche zurückgestellt: {title}",
+      "dismissed-notice": "Wir erinnern Sie nicht mehr: {title}",
+      "undo-text": "Rückgängig"
+    },
+    "sf-list-description": {
+      "empty-text": "Nicht festgelegt",
+      "copy": "Kopieren: {label}",
+      "action": "{action}: {label}",
+      "help": "Mehr zu: {label}",
+      "status-success": "OK",
+      "status-warning": "Warnung",
+      "status-error": "Fehler",
+      "status-info": "Info"
+    },
+    "sf-list-feed": {
+      "earlier-text": "Frühere anzeigen",
+      "empty-text": "Noch keine Einträge",
+      "latest-label": "Zum Neuesten",
+      "loading-earlier-text": "Frühere Einträge werden geladen",
+      "new-text": "Neu",
+      "log-label": "Einträge",
+      "region-label": "Feed",
+      "you-text": "Sie"
+    },
+    "sf-list-timeline": {
+      "empty-text": "Noch keine Ereignisse",
+      "more": "Mehr anzeigen",
+      "loading": "Wird geladen…",
+      "today": "Heute",
+      "yesterday": "Gestern",
+      "tomorrow": "Morgen",
+      "status-success": "Erledigt",
+      "status-warning": "Warnung",
+      "status-error": "Fehler",
+      "status-info": "Info",
+      "state-done": "Erledigt",
+      "state-current": "Jetzt",
+      "state-upcoming": "Bevorstehend",
+      "step-status-success": "erfolgreich",
+      "step-status-warning": "mit einer Warnung",
+      "step-status-error": "mit einem Fehler",
+      "run-changes": {
+        "one": "{n} weitere Änderung",
+        "other": "{n} weitere Änderungen"
+      },
+      "run-events": {
+        "one": "{n} weiteres Ereignis",
+        "other": "{n} weitere Ereignisse"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "character": "{m} 文字中 {n} 文字目",
+    "digit": "{m} 桁中 {n} 桁目",
+    "group": "コード",
+    "too-short": "コードをすべて入力してください",
+    "value-missing": "コードを入力してください",
+    "help": "詳細: {label}"
+  }
+}

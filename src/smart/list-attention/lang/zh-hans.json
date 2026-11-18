@@ -1,0 +1,53 @@
+{
+  "runtime": {
+    "label": "需要关注",
+    "empty-text": "一切正常",
+    "empty-checked-text": "{text} · {when}已检查",
+    "status-error": "错误",
+    "status-warning": "警告",
+    "status-info": "信息",
+    "status-success": "已完成",
+    "status-passed": "已通过",
+    "summary-error": {
+      "other": "{n} 个错误"
+    },
+    "summary-warning": {
+      "other": "{n} 个警告"
+    },
+    "summary-info": {
+      "other": "{n} 条建议"
+    },
+    "summary-success": {
+      "other": "已解决 {n} 个"
+    },
+    "group-error": "错误",
+    "group-warning": "警告",
+    "group-info": "建议",
+    "group-success": "已解决",
+    "group-passed": "已通过",
+    "affected-text": "受影响：{text}",
+    "age-now": "刚刚",
+    "age-minutes": "{n} 分钟",
+    "age-hours": "{n} 小时",
+    "age-days": {
+      "other": "{n} 天"
+    },
+    "checked-text": "{when}已检查",
+    "checked-now": "刚刚",
+    "checked-minutes": "{n} 分钟前",
+    "checked-time": "{time}",
+    "checked-date": "{date} {time}",
+    "recheck-label": "重新检查",
+    "more-text": "全部问题（{n}）",
+    "show-all-text": "全部显示（{n}）",
+    "more-label": "更多：{title}",
+    "snooze-day-text": "推迟一天",
+    "snooze-week-text": "推迟一周",
+    "dismiss-text": "不再提醒",
+    "help-text": "关于此检查",
+    "snoozed-day-notice": "已推迟一天：{title}",
+    "snoozed-week-notice": "已推迟一周：{title}",
+    "dismissed-notice": "不会再提醒你：{title}",
+    "undo-text": "撤销"
+  }
+}

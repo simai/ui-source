@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "close": "إغلاق",
+    "discard": "عدم الحفظ",
+    "discard-heading": "إغلاق دون حفظ؟",
+    "frame-failed": "تعذر تحميل محتوى الإطار",
+    "keep-editing": "متابعة التحرير",
+    "load-failed": "تعذر تحميل المحتوى",
+    "loading": "جارٍ التحميل…",
+    "minimize": "تصغير",
+    "title": "مربع حوار"
+  }
+}

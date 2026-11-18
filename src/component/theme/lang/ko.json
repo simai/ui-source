@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "theme": "테마",
+    "theme-light": "라이트",
+    "theme-dark": "다크",
+    "cycle-next": "{name}. 누르면 {next}"
+  }
+}

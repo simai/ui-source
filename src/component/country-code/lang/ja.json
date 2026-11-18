@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "phoneLabel": "電話番号",
+    "phoneRequired": "電話番号を入力してください。",
+    "countryLabel": "国番号",
+    "countryUnknown": "国番号を認識できません。国を選択してください",
+    "searchPlaceholder": "国または番号",
+    "frequent": "よく選ばれる国",
+    "allCountries": "すべての国",
+    "nothingFound": "見つかりませんでした"
+  }
+}

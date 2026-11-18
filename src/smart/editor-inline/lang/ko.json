@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "apply": "적용",
+    "code": "코드",
+    "editing": "{label}: 편집 중. Enter로 저장, Esc로 취소.",
+    "editing-block": "{label}: 편집 중. Enter로 새 블록, Esc로 취소.",
+    "em": "기울임꼴",
+    "invalid": "잘못된 링크 주소",
+    "link": "링크",
+    "link-empty": "링크 주소를 입력하세요",
+    "link-hint": "https://…, mailto:, tel: 또는 이 사이트의 경로(예: /about)",
+    "link-long": "주소가 {max}자를 넘습니다",
+    "link-scheme": "허용되지 않는 주소입니다. https://, mailto: 또는 tel:로 시작하세요",
+    "link-slashes": "이 사이트의 주소는 슬래시 하나(/)로 시작합니다",
+    "link-spaces": "공백을 지우세요. 주소에는 공백이 없습니다",
+    "link-start": "주소의 시작이 없습니다. https:// 또는 이 사이트의 페이지는 /",
+    "more": "더 보기",
+    "strong": "굵게",
+    "toolbar": "서식",
+    "unlink": "링크 제거",
+    "url": "링크 주소",
+    "strike": "취소선"
+  }
+}

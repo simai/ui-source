@@ -1,0 +1,45 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 25,
+    "translated": 25,
+    "share": 100
+  },
+  "words": {
+    "sf-profile-picker": {
+      "actions": "الإجراءات",
+      "builtin": "قياسي",
+      "cancel": "إلغاء",
+      "close": "إغلاق",
+      "copy-of": "نسخة من «{name}».",
+      "create": "إنشاء",
+      "kind": "من يرى الملف الشخصي",
+      "label": "الملف الشخصي",
+      "locked": "لا يمكنك تغييره",
+      "name": "اسم الملف الشخصي",
+      "name-empty": "أعطِ الملف الشخصي اسمًا.",
+      "new-profile": "ملف شخصي جديد…",
+      "personal": "شخصي",
+      "personal-taken": "لديك ملف شخصي بالفعل",
+      "remove": "حذف",
+      "remove-ask": "حذف…",
+      "remove-question": "حذف «{name}»؟",
+      "remove-shared": "سيُحذف لكل من في الموقع.",
+      "rename": "إعادة التسمية",
+      "reset": "إعادة إلى القياسي",
+      "save": "حفظ",
+      "seen-by-all": "يراه كل من في الموقع.",
+      "seen-by-you": "تراه أنت فقط.",
+      "shared": "للجميع",
+      "shared-denied": "لا يمكنك إنشاء ملفات مشتركة"
+    }
+  }
+}

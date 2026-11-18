@@ -1,0 +1,43 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "it",
+  "name": "Italiano",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 21,
+    "translated": 21,
+    "share": 100
+  },
+  "words": {
+    "sf-confirm": {
+      "accept-text": "Conferma",
+      "accepted-text": "Fatto",
+      "accepting-text": "In corso…",
+      "decline-text": "Annulla",
+      "declining-text": "Annullamento…",
+      "expired-text": "Il tempo per rispondere è scaduto",
+      "question-label": "Conferma",
+      "require-error": "Digita «{name}» esattamente come sopra",
+      "require-text": "Per confermare, digita {name}",
+      "until-text": "Rispondi entro {time}"
+    },
+    "sf-confirm-change": {
+      "accept-text": "Conferma",
+      "accepted-text": "Applicato",
+      "accepting-text": "Applicazione…",
+      "after-text": "Diventerà",
+      "before-text": "Era",
+      "changes-label": "Cosa cambierà",
+      "decline-text": "Rifiuta",
+      "declining-text": "Rifiuto…",
+      "empty-value-text": "vuoto",
+      "expired-text": "Il tempo per confermare è scaduto",
+      "until-text": "Conferma entro {time}"
+    }
+  }
+}

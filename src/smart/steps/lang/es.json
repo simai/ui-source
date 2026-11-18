@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "aria-label": "Pasos",
+    "completed-label": "Completado",
+    "current-label": "Actual",
+    "ahead-label": "Pendiente",
+    "error-label": "Error",
+    "skipped-label": "Omitido",
+    "running-label": "En curso",
+    "count-label": "Paso {n} de {count}"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "actions-label": "操作: {text}",
+    "count-label": {
+      "other": "未読 {n} 件"
+    },
+    "empty-text": "まだ何もありません",
+    "label": "リスト",
+    "loading-more-text": "読み込み中…",
+    "loading-text": "リストを読み込み中",
+    "more-text": "さらに表示",
+    "pinned-text": "固定済み",
+    "rename-label": "新しい名前",
+    "rename-text": "名前を変更",
+    "undated-text": "日付なし",
+    "ungrouped-text": "その他",
+    "unread-text": "未読",
+    "untitled-text": "無題"
+  }
+}

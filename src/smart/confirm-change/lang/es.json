@@ -1,0 +1,15 @@
+{
+  "runtime": {
+    "accept-text": "Confirmar",
+    "accepted-text": "Aplicado",
+    "accepting-text": "Aplicando…",
+    "after-text": "Quedará",
+    "before-text": "Era",
+    "changes-label": "Qué cambiará",
+    "decline-text": "Rechazar",
+    "declining-text": "Rechazando…",
+    "empty-value-text": "vacío",
+    "expired-text": "El plazo para confirmar ha terminado",
+    "until-text": "Confirmar antes de {time}"
+  }
+}

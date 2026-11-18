@@ -48,7 +48,7 @@ test('Cyrillic is asked for only where the page language is written in it', () =
   assert.deepEqual(textFontProbes(''), [0x61]);
   assert.deepEqual(textFontProbes('ru'), [0x61, 0x430]);
   assert.deepEqual(textFontProbes('ru-RU'), [0x61, 0x430]);
-  assert.deepEqual(textFontProbes('uk'), [0x61, 0x430]);
+  assert.deepEqual(textFontProbes('bg'), [0x61, 0x430]);
   assert.deepEqual(textFontProbes('rus'), [0x61], 'a three-letter code is not taken for ru');
 });
 

@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "aria-label": "Datei",
+    "download-label": "{name} herunterladen",
+    "remove-label": "{name} entfernen",
+    "uploading-label": "{name} wird hochgeladen",
+    "error-text": "Nicht hochgeladen",
+    "error-line": "Nicht hochgeladen: {message}",
+    "retry-text": "Wiederholen",
+    "retry-label": "{name} erneut versuchen",
+    "delete-label": "{name} löschen",
+    "delete-question": "„{name}“ löschen?",
+    "delete-text": "Löschen",
+    "viewer-previous": "Vorherige Datei",
+    "viewer-next": "Nächste Datei"
+  }
+}

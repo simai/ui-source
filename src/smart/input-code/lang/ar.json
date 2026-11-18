@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "character": "الحرف {n} من {m}",
+    "digit": "الرقم {n} من {m}",
+    "group": "الرمز",
+    "too-short": "أدخل الرمز كاملًا",
+    "value-missing": "أدخل الرمز",
+    "help": "المزيد عن: {label}"
+  }
+}

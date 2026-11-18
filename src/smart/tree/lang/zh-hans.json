@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "loading": "正在加载…",
+    "load-error": "加载失败",
+    "retry": "重试",
+    "hidden": "已隐藏",
+    "open-label": "展开项目",
+    "close-label": "收起项目"
+  }
+}

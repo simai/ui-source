@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "label": "Páginas contiguas",
+    "prev": "Atrás",
+    "next": "Siguiente",
+    "done": "Listo",
+    "step": "Paso {n} de {count}",
+    "lesson": "Lección {n} de {count}",
+    "position": "{n} de {count}",
+    "next-lesson": "Lección siguiente",
+    "last-lesson": "Última lección",
+    "start": "Empezar",
+    "finished": "Curso completado",
+    "restart": "Empezar de nuevo",
+    "prev-item": "Registro anterior",
+    "next-item": "Registro siguiente",
+    "position-many": "{n} de muchos",
+    "to-list": "Volver a la lista"
+  }
+}

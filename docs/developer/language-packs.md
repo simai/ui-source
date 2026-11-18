@@ -53,6 +53,8 @@ For a component on a page whose language is `de`, in this order:
 4. the component's built-in word of that language (en only; ru too in a
    rollback build, below);
 5. the same for the language without its region (`de-CH` → `de`);
+   a page language that is an alias of a registry language takes that
+   language's pack first (below);
 6. English — and the word is reported as missing;
 7. the key itself, with a warning (a defect, never expected).
 
@@ -260,6 +262,20 @@ core's list of built-in languages. `ru.js` and the Russian parts still ship. A
 site that includes `ru.js` keeps working, and core fetches no Russian part.
 `complete` names the languages the check requires to have every word; today
 these are en and ru.
+
+## Aliases
+
+A page language need not be the pack's code. The language registry
+(`src/core/contracts/language-registry.v1.json`) gives each language its
+`aliases`, and `scripts/build-language-packs.mjs` writes them into
+`core/lang/index.json` as `aliases` (`{alias in lower case: pack}`): `zh`,
+`zh-CN` and `zh-SG` take `zh-hans`, `pt` takes `pt-br`. Case does not matter
+(`zh-Hans`, `ZH-cn`, `zh_CN`), and a region the registry does not name takes
+its base language's pack (`zh-TW` → `zh` → `zh-hans`, `pt-PT` → `pt` →
+`pt-br`). The lookup order for `zh-CN` is `zh-cn`, `zh-hans`, `zh`, English:
+a product's word registered for `zh-CN` itself still wins. Core fetches the
+pack's parts (never a `core/lang/zh-cn/` that does not exist), and the
+script form `core/lang/zh-hans.js` serves a `zh-CN` page too.
 
 ## How a page gets a pack
 

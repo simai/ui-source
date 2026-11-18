@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "create": "Crea",
+    "error-text": "Riprova",
+    "error-title": "Impossibile caricare",
+    "first-use-text": "Crea il primo elemento e comparirà qui",
+    "first-use-title": "Ancora niente",
+    "no-access-text": "Chiedi l’accesso a un amministratore",
+    "no-access-title": "Nessun accesso",
+    "no-data-text": "Compariranno qui una volta aggiunti",
+    "no-data-title": "Ancora nessun elemento",
+    "nothing-found-text": "Prova un’altra ricerca o altri filtri",
+    "nothing-found-title": "Nessun risultato",
+    "offline-text": "Controlla la connessione; riproveremo quando tornerà",
+    "offline-title": "Nessuna connessione",
+    "processing-share": "Fatto",
+    "processing-text": "Potrebbe richiedere qualche minuto. Il risultato comparirà qui; puoi chiudere la pagina",
+    "processing-title": "In preparazione",
+    "retry": "Riprova"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "empty-text": "غير محدد",
+    "copy": "نسخ: {label}",
+    "action": "{action}: {label}",
+    "help": "المزيد عن: {label}",
+    "status-success": "سليم",
+    "status-warning": "تحذير",
+    "status-error": "خطأ",
+    "status-info": "معلومات"
+  }
+}

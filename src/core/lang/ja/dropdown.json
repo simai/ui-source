@@ -1,0 +1,27 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 7,
+    "translated": 7,
+    "share": 100
+  },
+  "words": {
+    "sf-dropdown": {
+      "inherited": "継承",
+      "reset": "継承値に戻す",
+      "described": "継承: {value}",
+      "search": "検索",
+      "empty": "未選択",
+      "value-missing": "選択してください",
+      "help": "詳細: {label}"
+    }
+  }
+}

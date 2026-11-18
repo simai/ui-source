@@ -1,0 +1,33 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 11,
+    "translated": 11,
+    "share": 100
+  },
+  "words": {
+    "sf-header-page": {
+      "all-sites": "pour tous les sites",
+      "more": "Plus",
+      "star": "Ajouter aux favoris",
+      "unstar": "Retirer des favoris"
+    },
+    "sf-header-site": {
+      "label": "Menu",
+      "menu-label": "Ouvrir le menu",
+      "close-label": "Fermer le menu",
+      "settings": "Paramètres",
+      "language": "Langue",
+      "tools": "Outils",
+      "theme": "Thème"
+    }
+  }
+}

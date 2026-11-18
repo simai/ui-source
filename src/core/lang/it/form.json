@@ -1,0 +1,32 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "it",
+  "name": "Italiano",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 13,
+    "translated": 8,
+    "share": 61.5
+  },
+  "words": {
+    "sf-form": {
+      "required-note": "* — campi obbligatori",
+      "submit": "Salva",
+      "cancel": "Annulla",
+      "edit": "Modifica",
+      "unsaved": "Hai modifiche non salvate",
+      "errors-title": {
+        "one": "Correggi {n} campo",
+        "many": "Correggi {n} campi",
+        "other": "Correggi {n} campi"
+      },
+      "value-missing": "Compila il campo «{label}»",
+      "help-label": "Maggiori informazioni su {label}"
+    }
+  }
+}

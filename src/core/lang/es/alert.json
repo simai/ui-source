@@ -1,0 +1,37 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 15,
+    "translated": 15,
+    "share": 100
+  },
+  "words": {
+    "sf-alert": {
+      "close-label": "Cerrar aviso"
+    },
+    "sf-alert-bar": {
+      "label": "Avisos importantes",
+      "level-error": "Error",
+      "level-warning": "Advertencia",
+      "level-info": "Información",
+      "more": "{count} más",
+      "collapse-list": "Ocultar la lista",
+      "list": "Todos los avisos",
+      "hide-day": "Ocultar durante un día",
+      "hide": "Ocultar",
+      "acknowledge": "Marcar como leído",
+      "minimize": "Minimizar la barra",
+      "expand": "expandir",
+      "expand-label": "Expandir los avisos importantes",
+      "count": "Avisos importantes: {count}"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "runtime": {
+    "command": "Command",
+    "control": "Control",
+    "option": "Option",
+    "shift": "Umschalt",
+    "ctrl": "Strg",
+    "alt": "Alt",
+    "win": "Windows",
+    "enter": "Eingabe",
+    "escape": "Esc",
+    "tab": "Tab",
+    "space": "Leertaste",
+    "backspace": "Rücktaste",
+    "delete": "Entf",
+    "up": "Pfeil nach oben",
+    "down": "Pfeil nach unten",
+    "left": "Pfeil nach links",
+    "right": "Pfeil nach rechts",
+    "home": "Pos1",
+    "end": "Ende",
+    "pageup": "Bild auf",
+    "pagedown": "Bild ab",
+    "plus": "Plus"
+  }
+}

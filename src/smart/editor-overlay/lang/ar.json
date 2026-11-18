@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "cancelled": "تم إلغاء النقل.",
+    "dropped": "تم نقل {label}. {place}.",
+    "editing": "تحرير {label}. Enter للحفظ، وEscape للإلغاء.",
+    "insert": "إدراج",
+    "insert-after": "إدراج بعد «{label}»",
+    "insert-at": "إدراج في «{slot}»، الموضع {index}",
+    "more": "المزيد",
+    "picked": "نقل {label}. الأسهم لاختيار المكان، وEnter للإفلات، وEscape للإلغاء.",
+    "position": "{index} من {total}",
+    "selected": "المحدد: {label}",
+    "toolbar": "الإجراءات",
+    "tree": "بنية الصفحة"
+  }
+}

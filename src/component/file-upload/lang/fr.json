@@ -1,0 +1,41 @@
+{
+  "runtime": {
+    "remove": "Retirer",
+    "uploading": "Envoi en cours",
+    "uploading-name": "Envoi de {name}",
+    "retry": "Réessayer",
+    "remove-name": "Retirer {name}",
+    "retry-name": "Réessayer {name}",
+    "linkText": "Cliquez pour envoyer",
+    "text": "ou glissez-déposez",
+    "not-added": "Non ajoutés : {n}",
+    "reject-type": "« {name} » n’est pas accepté : formats autorisés {formats}",
+    "reject-one": "« {name} » n’a pas été ajouté : ce champ accepte un seul fichier",
+    "reject-duplicate": "« {name} » est déjà dans la liste",
+    "reject-empty": "« {name} » est vide",
+    "reject-size": "« {name} » fait {size} ; la limite est de {max}",
+    "reject-min-size": "« {name} » fait {size} ; il doit faire au moins {min}",
+    "reject-count": {
+      "one": "« {name} » n’a pas été ajouté : {n} fichier au maximum",
+      "many": "« {name} » n’a pas été ajouté : {n} fichiers au maximum",
+      "other": "« {name} » n’a pas été ajouté : {n} fichiers au maximum"
+    },
+    "reject-total": "« {name} » n’a pas été ajouté : {max} au maximum pour tous les fichiers",
+    "formats-image": "images",
+    "formats-video": "vidéo",
+    "formats-audio": "audio",
+    "done": "Envoyé",
+    "done-line": "{size} · envoyé",
+    "error": "Non envoyé",
+    "error-line": "Non envoyé : {message}",
+    "said-added": "« {name} » ajouté",
+    "said-added-many": {
+      "one": "{n} fichier ajouté",
+      "many": "{n} fichiers ajoutés",
+      "other": "{n} fichiers ajoutés"
+    },
+    "said-done": "« {name} » envoyé",
+    "said-error": "« {name} » n’a pas été envoyé",
+    "said-error-line": "« {name} » n’a pas été envoyé : {message}"
+  }
+}

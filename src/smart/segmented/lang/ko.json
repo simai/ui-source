@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "dark": "다크",
+    "group": "테마",
+    "light": "라이트",
+    "system": "시스템",
+    "value-missing": "옵션을 선택하세요."
+  }
+}

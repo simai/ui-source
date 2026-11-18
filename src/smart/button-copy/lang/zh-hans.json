@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "copied": "已复制",
+    "copy": "复制",
+    "failed": "复制失败",
+    "selected": "已选中 — 请按 {keys}"
+  }
+}

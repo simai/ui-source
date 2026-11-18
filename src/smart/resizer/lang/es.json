@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "hint": "Arrastra o usa las flechas; con doble clic se restablece el ancho.",
+    "label": "Cambiar tamaño",
+    "value": "{n} %",
+    "width": "{n} px",
+    "folded": "Contraído",
+    "show": "Mostrar"
+  }
+}

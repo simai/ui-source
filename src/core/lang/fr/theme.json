@@ -1,0 +1,44 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-theme-generator": {
+      "advanced": "Avancé",
+      "check-adjusted-dark": "La couleur est très sombre : les boutons prennent {to}, plus clair, au lieu de {from}, sinon ils ne se distingueraient pas du texte.",
+      "check-adjusted-light": "La couleur est claire : les boutons prennent {to}, plus foncé, au lieu de {from}, sinon leur texte serait illisible.",
+      "check-contrast": "Le texte d’un bouton est difficile à lire dans le thème {scheme} : {ratio} : 1, il faut 4,5.",
+      "check-grey": "La couleur est presque grise : les accents le sont aussi, et boutons et liens se distinguent peu du texte.",
+      "check-status-error": "La couleur est proche de celle des erreurs : un bouton ordinaire et « Supprimer » se ressembleront presque.",
+      "check-status-success": "La couleur est proche de celle des succès : un accent peut passer pour « Terminé » ou « Payé ».",
+      "check-status-warning": "La couleur est proche de celle des avertissements : un accent peut passer pour « Attention ».",
+      "checks": "Vérification de la couleur",
+      "chroma": "Chroma",
+      "chroma-hint": "de 0 à 150",
+      "color": "Couleur principale",
+      "hue": "Teinte",
+      "hue-hint": "de 0 à 360",
+      "inherited": "Couleur de SIMAI Framework",
+      "neutral": "Neutre",
+      "preview": "Aperçu du thème",
+      "primary": "Principale",
+      "reset": "Réinitialiser",
+      "scheme-dark": "sombre",
+      "scheme-light": "clair",
+      "secondary": "Secondaire",
+      "tertiary": "Tertiaire",
+      "title": "Générateur de thème"
+    }
+  }
+}

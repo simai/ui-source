@@ -39,7 +39,11 @@ export const FILE_SIZE_UNITS = /* @__PURE__ */ unitTable(UNIT_WORDS);
 /** The unit words for a locale: registered for it, its own, its language's, else English. */
 export function fileSizeUnits(locale = 'en') {
   const wanted = String(locale || 'en').trim().toLowerCase().replace('_', '-');
-  for (const code of [...new Set([wanted, wanted.split('-')[0]])]) {
+  // A registry alias takes its pack's words (zh-cn: zh-hans, pt: pt-br;
+  // core/lang/index.json aliases, kept on the shared store by core).
+  const pack = (code) => globalThis.__sfPageLanguage?.packs?.aliases?.[code] ?? code;
+  const base = wanted.split('-')[0];
+  for (const code of [...new Set([wanted, pack(wanted), base, pack(base)])]) {
     const units = registeredUnits(code) ?? (Object.hasOwn(FILE_SIZE_UNITS, code) ? FILE_SIZE_UNITS[code] : null);
     if (units) return units;
   }

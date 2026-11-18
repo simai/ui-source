@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "label": "인접 페이지",
+    "prev": "이전",
+    "next": "다음",
+    "done": "완료",
+    "step": "{count}단계 중 {n}단계",
+    "lesson": "{count}개 강의 중 {n}번째",
+    "position": "{n}/{count}",
+    "next-lesson": "다음 강의",
+    "last-lesson": "마지막 강의",
+    "start": "시작",
+    "finished": "과정 완료",
+    "restart": "처음부터 다시",
+    "prev-item": "이전 항목",
+    "next-item": "다음 항목",
+    "position-many": "{n} / 다수",
+    "to-list": "목록으로 돌아가기"
+  }
+}

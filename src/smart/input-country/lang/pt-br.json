@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "all-countries": "Todos os países",
+    "country-label": "Código do país",
+    "country-unknown": "Código do país não reconhecido. Escolha um país",
+    "frequent": "Mais escolhidos",
+    "nothing-found": "Nada encontrado",
+    "phone-label": "Número de telefone",
+    "phone-required": "Digite um número de telefone.",
+    "placeholder": "",
+    "search-placeholder": "País ou código",
+    "value-missing": "Digite um número de telefone.",
+    "pattern-mismatch": "Digite o número completo",
+    "too-short": "Digite o número completo",
+    "help": "Saiba mais: {label}"
+  }
+}

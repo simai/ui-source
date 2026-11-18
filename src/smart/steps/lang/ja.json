@@ -1,0 +1,12 @@
+{
+  "runtime": {
+    "aria-label": "ステップ",
+    "completed-label": "完了",
+    "current-label": "現在",
+    "ahead-label": "これから",
+    "error-label": "エラー",
+    "skipped-label": "スキップ",
+    "running-label": "実行中",
+    "count-label": "ステップ {n}/{count}"
+  }
+}

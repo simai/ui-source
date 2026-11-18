@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "untitled": "指标",
+    "no-value": "—",
+    "loading": "正在加载",
+    "limit": "{value}/{max}",
+    "limit-name": "{label}：已用",
+    "change-up": "上升",
+    "change-down": "下降",
+    "change-flat": "无变化",
+    "status-success": "正常",
+    "status-info": "信息",
+    "status-warning": "警告",
+    "status-error": "错误"
+  }
+}

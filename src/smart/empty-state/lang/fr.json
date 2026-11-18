@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "create": "Créer",
+    "error-text": "Réessayer",
+    "error-title": "Chargement impossible",
+    "first-use-text": "Créez le premier élément, il apparaîtra ici",
+    "first-use-title": "Rien pour l’instant",
+    "no-access-text": "Demandez l’accès à un administrateur",
+    "no-access-title": "Accès refusé",
+    "no-data-text": "Ils apparaîtront ici une fois ajoutés",
+    "no-data-title": "Aucun élément pour l’instant",
+    "nothing-found-text": "Essayez une autre recherche ou d’autres filtres",
+    "nothing-found-title": "Aucun résultat",
+    "offline-text": "Vérifiez votre connexion ; nous réessaierons dès son retour",
+    "offline-title": "Pas de connexion",
+    "processing-share": "Terminé",
+    "processing-text": "Cela peut prendre quelques minutes. Le résultat apparaîtra ici ; vous pouvez fermer la page",
+    "processing-title": "En préparation",
+    "retry": "Réessayer"
+  }
+}

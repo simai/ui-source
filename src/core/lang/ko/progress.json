@@ -1,0 +1,82 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 55,
+    "translated": 55,
+    "share": 100
+  },
+  "words": {
+    "sf-progress-bar": {
+      "paused-value": "{value}%, 일시 중지됨",
+      "paused": "일시 중지됨"
+    },
+    "sf-progress-run": {
+      "label": "진행 상황",
+      "output-label": "출력",
+      "steps": "단계",
+      "state-waiting": "대기 중",
+      "state-running": "실행 중",
+      "state-done": "완료",
+      "state-failed": "실패",
+      "state-skipped": "건너뜀",
+      "result-done": "완료",
+      "result-failed": "실패",
+      "result-cancelled": "취소됨",
+      "cancel": "취소",
+      "retry": "다시 시도",
+      "hide": "숨기기",
+      "copy": "출력 복사",
+      "download": "출력 다운로드",
+      "result-partial": "오류와 함께 완료",
+      "state-word-running": "실행 중",
+      "state-word-paused": "일시 중지됨",
+      "state-word-partial": "오류 있음",
+      "state-word-cancelled": "취소됨",
+      "state-word-waiting": "대기 중",
+      "announce-paused": "일시 중지됨",
+      "announce-resumed": "계속 진행",
+      "announce-progress": "{total}{unit} 중 {value}, {percent}%",
+      "announce-count": "{value}{unit}",
+      "figures": "{value} / {total}{unit} · {percent}%",
+      "figures-count": "{value}{unit}",
+      "percent": "{percent}%",
+      "estimating": "남은 시간 계산 중…",
+      "remaining": "약 {time} 남음",
+      "remaining-short": "{time}",
+      "remaining-less": "1분 미만 남음",
+      "remaining-less-short": "1분 미만",
+      "minutes": "{n}분",
+      "hours": "{h}시간 {m}분",
+      "took": "소요 시간 {time}",
+      "errors-shown": {
+        "other": "오류: {total}개 중 처음 {n}개"
+      },
+      "more-errors": {
+        "other": "오류 {n}개 더"
+      },
+      "errors-count": {
+        "other": "오류 {n}개"
+      },
+      "no-errors": "오류 없음",
+      "retry-failed": "실패한 항목 다시 시도",
+      "pause": "일시 중지",
+      "resume": "계속",
+      "minimize": "최소화",
+      "expand": "펼치기",
+      "step-log": "단계 로그",
+      "counts": "결과",
+      "figures-plain": "{value} / {total}"
+    },
+    "sf-progress-scale": {
+      "of-steps": "{value} / {total}"
+    }
+  }
+}

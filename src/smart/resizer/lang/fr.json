@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "hint": "Faites glisser ou utilisez les flèches ; un double-clic rétablit la largeur.",
+    "label": "Redimensionner",
+    "value": "{n} %",
+    "width": "{n} px",
+    "folded": "Replié",
+    "show": "Afficher"
+  }
+}

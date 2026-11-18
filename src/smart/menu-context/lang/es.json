@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "close": "Cerrar",
+    "back": "Atrás",
+    "on": "Activado",
+    "off": "Desactivado",
+    "selected": "{count} seleccionados"
+  }
+}

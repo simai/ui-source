@@ -1,0 +1,33 @@
+{
+  "runtime": {
+    "date-at": "{date}, {time}",
+    "just-now": "à l’instant",
+    "yesterday-at": "{day}, {time}",
+    "zone-asia-anadyr": "Anadyr",
+    "zone-asia-barnaul": "Barnaoul",
+    "zone-asia-chita": "Tchita",
+    "zone-asia-irkutsk": "Irkoutsk",
+    "zone-asia-kamchatka": "Petropavlovsk-Kamtchatski",
+    "zone-asia-khandyga": "Khandyga",
+    "zone-asia-krasnoyarsk": "Krasnoïarsk",
+    "zone-asia-magadan": "Magadan",
+    "zone-asia-novokuznetsk": "Novokouznetsk",
+    "zone-asia-novosibirsk": "Novossibirsk",
+    "zone-asia-omsk": "Omsk",
+    "zone-asia-sakhalin": "Sakhaline",
+    "zone-asia-srednekolymsk": "Srednekolymsk",
+    "zone-asia-tomsk": "Tomsk",
+    "zone-asia-ust-nera": "Oust-Nera",
+    "zone-asia-vladivostok": "Vladivostok",
+    "zone-asia-yakutsk": "Iakoutsk",
+    "zone-asia-yekaterinburg": "Iekaterinbourg",
+    "zone-europe-astrakhan": "Astrakhan",
+    "zone-europe-kaliningrad": "Kaliningrad",
+    "zone-europe-kirov": "Kirov",
+    "zone-europe-moscow": "Moscou",
+    "zone-europe-samara": "Samara",
+    "zone-europe-saratov": "Saratov",
+    "zone-europe-ulyanovsk": "Oulianovsk",
+    "zone-europe-volgograd": "Volgograd"
+  }
+}

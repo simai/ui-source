@@ -18328,6 +18328,32 @@
       "source": "ui-control control/docs-review/decisions.md C278"
     },
     {
+      "id": "behaviour-cis-language-names-withdrawn",
+      "recorded_on": "2026-11-18",
+      "stage": "removed",
+      "kind": "behaviour",
+      "summary": "Owner decision C278 (2026-11-17): languages of CIS countries other than Russian are not added and not named. The language-names words name-uk, name-be, name-uz, name-az, name-hy, name-ka, name-ky, name-tg and name-tk leave every pack (core/js/lang/language-names, so core/lang/<code>/language.json and core/lang/<code>.js of all ten packs and the built-in English), sf-language's names table (data/names.json, 1.6.1) loses the same nine entries, and core's Cyrillic font list (text-fonts.js) the four of them it held (uk, be, ky, tg). Tatar (tt) and Bashkir (ba), languages of regions of Russia, stay, as Chuvash, Chechen, Ossetian and Yakut do (dispatcher decision 2026-11-18). Country data (countries.json, phone codes, flags) is unchanged.",
+      "items": [
+        {
+          "component": "core.lang",
+          "from": "sf-language name-<code> for uk, be, uz, az, hy, ka, ky, tg, tk",
+          "to": "none (the browser's Intl.DisplayNames name, as for any code the table does not hold)"
+        },
+        {
+          "component": "smart.language",
+          "from": "data/names.json entries uk, be, uz, az, hy, ka, ky, tg, tk",
+          "to": "none"
+        }
+      ],
+      "deprecated_on": "2026-11-18",
+      "remove_after": "2027-01-01",
+      "removed_on": "2026-11-18",
+      "rewrite": "none",
+      "manual": "A product that names such a language registers its own words (SF.language.register('sf-language', <page language>, {'name-<code>': ...}) or a product pack) in the format docs/developer/language-packs.md describes.",
+      "owner": "ui-source",
+      "source": "ui-control control/docs-review/decisions.md C278"
+    },
+    {
       "id": "attribute-input-date-input-type-to-appearance",
       "recorded_on": "2026-11-17",
       "stage": "compat",

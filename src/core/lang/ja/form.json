@@ -1,0 +1,30 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 13,
+    "translated": 8,
+    "share": 61.5
+  },
+  "words": {
+    "sf-form": {
+      "required-note": "* — 必須項目",
+      "submit": "保存",
+      "cancel": "キャンセル",
+      "edit": "編集",
+      "unsaved": "保存されていない変更があります",
+      "errors-title": {
+        "other": "{n} 件の項目を修正してください"
+      },
+      "value-missing": "「{label}」を入力してください",
+      "help-label": "{label} の詳細"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "title": "Boîte de dialogue",
+    "close": "Fermer",
+    "loading": "Chargement…",
+    "loadFailed": "Impossible de charger le contenu",
+    "frameFailed": "Impossible de charger le contenu du cadre"
+  }
+}

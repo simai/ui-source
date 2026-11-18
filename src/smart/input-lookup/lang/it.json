@@ -1,0 +1,35 @@
+{
+  "runtime": {
+    "hint-min-length": {
+      "one": "Digita almeno {n} carattere",
+      "many": "Digita almeno {n} caratteri",
+      "other": "Digita almeno {n} caratteri"
+    },
+    "searching": "Ricerca…",
+    "nothing-found": "Nessun risultato",
+    "unavailable": "Ricerca non disponibile",
+    "error": "Ricerca non riuscita",
+    "retry": "Riprova",
+    "show-more": "Mostra altro",
+    "max-items": "Non più di {n}",
+    "remove": "Rimuovi {label}",
+    "clear": "Cancella",
+    "results": {
+      "one": "{n} risultato",
+      "many": "{n} risultati",
+      "other": "{n} risultati"
+    },
+    "value-missing": "Scegli un valore",
+    "more-chips": {
+      "one": "altro {n}: {names}",
+      "many": "altri {n}: {names}",
+      "other": "altri {n}: {names}"
+    },
+    "create-item": "Crea «{text}»",
+    "create-email": "Aggiungi l’indirizzo {text}",
+    "create-error": "Impossibile crearlo",
+    "chip-position": "{label}, {position} di {total}, Canc per rimuovere",
+    "done": "Fatto",
+    "help": "Maggiori informazioni: {label}"
+  }
+}

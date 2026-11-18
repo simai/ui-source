@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "copied": "복사됨",
+    "copy": "복사",
+    "failed": "복사하지 못했습니다",
+    "selected": "선택됨 — {keys} 누르기"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "runtime": {
+    "character": "carattere {n} di {m}",
+    "digit": "cifra {n} di {m}",
+    "group": "Codice",
+    "too-short": "Inserisci il codice completo",
+    "value-missing": "Inserisci il codice",
+    "help": "Maggiori informazioni: {label}"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "runtime": {
+    "value-missing": "Füllen Sie dieses Feld aus",
+    "clear": "Leeren",
+    "reveal": "Passwort anzeigen",
+    "type-mismatch": "Prüfen Sie den Wert",
+    "type-mismatch-email": "Geben Sie die vollständige Adresse ein, z. B. anna@beispiel.de",
+    "type-mismatch-url": "Geben Sie die vollständige Adresse ein, z. B. https://beispiel.de",
+    "pattern-mismatch": "Prüfen Sie das Format",
+    "too-short": "Mindestens {min} Zeichen",
+    "too-long": "Höchstens {max} Zeichen",
+    "range-underflow": "Mindestens {min}",
+    "range-overflow": "Höchstens {max}",
+    "step-mismatch": "In Schritten von {step}",
+    "bad-input": "Geben Sie eine Zahl ein",
+    "count-text": "{count} / {max}",
+    "help": "Mehr zu: {label}",
+    "caps-lock": "Feststelltaste ist aktiv",
+    "conceal": "Passwort verbergen"
+  },
+  "x-trait-words": {
+    "trait": "field-inherit@1",
+    "words": {
+      "inherited": "geerbt",
+      "reset": "Auf geerbten Wert zurücksetzen",
+      "described": "Geerbt: {value}"
+    }
+  }
+}

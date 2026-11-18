@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "theme": "Tema",
+    "theme-light": "chiaro",
+    "theme-dark": "scuro",
+    "cycle-next": "{name}. Premi per {next}"
+  }
+}

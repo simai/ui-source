@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "accept-text": "تأكيد",
+    "accepted-text": "تم",
+    "accepting-text": "جارٍ التنفيذ…",
+    "decline-text": "إلغاء",
+    "declining-text": "جارٍ الإلغاء…",
+    "expired-text": "انتهى وقت الرد",
+    "question-label": "تأكيد",
+    "require-error": "اكتب «{name}» تمامًا كما في الأعلى",
+    "require-text": "للتأكيد، اكتب {name}",
+    "until-text": "أجب قبل {time}"
+  }
+}

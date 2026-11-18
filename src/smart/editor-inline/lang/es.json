@@ -1,0 +1,24 @@
+{
+  "runtime": {
+    "apply": "Aplicar",
+    "code": "Código",
+    "editing": "{label}: editando. Intro guarda, Escape cancela.",
+    "editing-block": "{label}: editando. Intro inicia un bloque nuevo, Escape cancela.",
+    "em": "Cursiva",
+    "invalid": "Dirección de enlace no válida",
+    "link": "Enlace",
+    "link-empty": "Introduce la dirección del enlace",
+    "link-hint": "https://…, mailto:, tel: o una ruta de este sitio, como /about",
+    "link-long": "La dirección supera los {max} caracteres",
+    "link-scheme": "Esta dirección no está permitida: empieza por https://, mailto: o tel:",
+    "link-slashes": "Una dirección de este sitio empieza por una sola barra /",
+    "link-spaces": "Quita los espacios: una dirección no los tiene",
+    "link-start": "A la dirección le falta el inicio: https://, o / para una página de este sitio",
+    "more": "Más",
+    "strong": "Negrita",
+    "toolbar": "Formato",
+    "unlink": "Quitar enlace",
+    "url": "Dirección del enlace",
+    "strike": "Tachado"
+  }
+}

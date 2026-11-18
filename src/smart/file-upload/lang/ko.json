@@ -1,0 +1,41 @@
+{
+  "runtime": {
+    "done": "업로드됨",
+    "done-line": "{size} · 업로드됨",
+    "error": "업로드 실패",
+    "error-line": "업로드 실패: {message}",
+    "formats-audio": "오디오",
+    "formats-image": "이미지",
+    "formats-video": "동영상",
+    "link-text": "클릭하여 업로드",
+    "not-added": "추가되지 않음: {n}",
+    "reject-count": {
+      "other": "‘{name}’을(를) 추가하지 못했습니다: 최대 {n}개 파일"
+    },
+    "reject-duplicate": "‘{name}’은(는) 이미 목록에 있습니다",
+    "reject-empty": "‘{name}’이(가) 비어 있습니다",
+    "reject-min-size": "‘{name}’은(는) {size}입니다. {min} 이상이어야 합니다",
+    "reject-one": "‘{name}’을(를) 추가하지 못했습니다: 이 필드는 파일 하나만 받습니다",
+    "reject-size": "‘{name}’은(는) {size}입니다. 한도는 {max}입니다",
+    "reject-total": "‘{name}’을(를) 추가하지 못했습니다: 전체 파일 합계 최대 {max}",
+    "reject-type": "‘{name}’은(는) 허용되지 않습니다: 허용 형식 {formats}",
+    "remove": "제거",
+    "remove-failed": "실패한 파일을 제거하거나 다시 시도하세요",
+    "retry": "다시 시도",
+    "text": "또는 끌어다 놓기",
+    "uploading": "업로드 중",
+    "value-missing": "파일을 추가하세요",
+    "value-missing-many": "파일을 하나 이상 추가하세요",
+    "wait-for-uploads": "파일 업로드가 끝날 때까지 기다리세요",
+    "file-removed": "파일을 제거했습니다",
+    "undo": "실행 취소",
+    "help": "자세히 보기: {label}",
+    "said-added": "‘{name}’ 추가됨",
+    "said-added-many": {
+      "other": "파일 {n}개 추가됨"
+    },
+    "said-done": "‘{name}’ 업로드됨",
+    "said-error": "‘{name}’ 업로드 실패",
+    "said-error-line": "‘{name}’ 업로드 실패: {message}"
+  }
+}

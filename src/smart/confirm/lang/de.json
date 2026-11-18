@@ -1,0 +1,14 @@
+{
+  "runtime": {
+    "accept-text": "Bestätigen",
+    "accepted-text": "Erledigt",
+    "accepting-text": "Wird ausgeführt…",
+    "decline-text": "Abbrechen",
+    "declining-text": "Wird abgebrochen…",
+    "expired-text": "Die Antwortzeit ist abgelaufen",
+    "question-label": "Bestätigung",
+    "require-error": "Geben Sie „{name}“ genau wie oben ein",
+    "require-text": "Geben Sie zur Bestätigung {name} ein",
+    "until-text": "Antwort bis {time}"
+  }
+}

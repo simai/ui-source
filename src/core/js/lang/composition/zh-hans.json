@@ -1,0 +1,13 @@
+{
+  "runtime": {
+    "button": "按钮",
+    "badge": "徽标",
+    "send": "发送",
+    "field": "字段",
+    "option": "选项",
+    "name": "姓名",
+    "phone": "电话",
+    "email": "电子邮件",
+    "message": "留言"
+  }
+}

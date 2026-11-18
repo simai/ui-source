@@ -1,0 +1,18 @@
+{
+  "runtime": {
+    "label": "إشعارات مهمة",
+    "level-error": "خطأ",
+    "level-warning": "تحذير",
+    "level-info": "معلومات",
+    "more": "{count} أخرى",
+    "collapse-list": "إخفاء القائمة",
+    "list": "كل الإشعارات",
+    "hide-day": "إخفاء ليوم واحد",
+    "hide": "إخفاء",
+    "acknowledge": "تحديد كمقروء",
+    "minimize": "تصغير الشريط",
+    "expand": "توسيع",
+    "expand-label": "توسيع الإشعارات المهمة",
+    "count": "إشعارات مهمة: {count}"
+  }
+}

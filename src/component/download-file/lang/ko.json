@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "new-tab": "(새 탭에서 열림)",
+    "byte": {
+      "other": "바이트"
+    },
+    "kilobyte": {
+      "other": "킬로바이트"
+    },
+    "megabyte": {
+      "other": "메가바이트"
+    },
+    "gigabyte": {
+      "other": "기가바이트"
+    },
+    "terabyte": {
+      "other": "테라바이트"
+    }
+  }
+}

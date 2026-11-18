@@ -1,0 +1,9 @@
+{
+  "runtime": {
+    "close": "閉じる",
+    "back": "戻る",
+    "on": "オン",
+    "off": "オフ",
+    "selected": "{count} 件選択中"
+  }
+}

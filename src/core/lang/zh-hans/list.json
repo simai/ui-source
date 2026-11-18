@@ -1,0 +1,131 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "zh-hans",
+  "name": "简体中文",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 87,
+    "translated": 87,
+    "share": 100
+  },
+  "words": {
+    "sf-list": {
+      "actions-label": "操作：{text}",
+      "count-label": {
+        "other": "{n} 条未读"
+      },
+      "empty-text": "这里还没有内容",
+      "label": "列表",
+      "loading-more-text": "正在加载…",
+      "loading-text": "正在加载列表",
+      "more-text": "显示更多",
+      "pinned-text": "已置顶",
+      "rename-label": "新名称",
+      "rename-text": "重命名",
+      "undated-text": "无日期",
+      "ungrouped-text": "其他",
+      "unread-text": "未读",
+      "untitled-text": "无标题"
+    },
+    "sf-list-attention": {
+      "label": "需要关注",
+      "empty-text": "一切正常",
+      "empty-checked-text": "{text} · {when}已检查",
+      "status-error": "错误",
+      "status-warning": "警告",
+      "status-info": "信息",
+      "status-success": "已完成",
+      "status-passed": "已通过",
+      "summary-error": {
+        "other": "{n} 个错误"
+      },
+      "summary-warning": {
+        "other": "{n} 个警告"
+      },
+      "summary-info": {
+        "other": "{n} 条建议"
+      },
+      "summary-success": {
+        "other": "已解决 {n} 个"
+      },
+      "group-error": "错误",
+      "group-warning": "警告",
+      "group-info": "建议",
+      "group-success": "已解决",
+      "group-passed": "已通过",
+      "affected-text": "受影响：{text}",
+      "age-now": "刚刚",
+      "age-minutes": "{n} 分钟",
+      "age-hours": "{n} 小时",
+      "age-days": {
+        "other": "{n} 天"
+      },
+      "checked-text": "{when}已检查",
+      "checked-now": "刚刚",
+      "checked-minutes": "{n} 分钟前",
+      "checked-time": "{time}",
+      "checked-date": "{date} {time}",
+      "recheck-label": "重新检查",
+      "more-text": "全部问题（{n}）",
+      "show-all-text": "全部显示（{n}）",
+      "more-label": "更多：{title}",
+      "snooze-day-text": "推迟一天",
+      "snooze-week-text": "推迟一周",
+      "dismiss-text": "不再提醒",
+      "help-text": "关于此检查",
+      "snoozed-day-notice": "已推迟一天：{title}",
+      "snoozed-week-notice": "已推迟一周：{title}",
+      "dismissed-notice": "不会再提醒你：{title}",
+      "undo-text": "撤销"
+    },
+    "sf-list-description": {
+      "empty-text": "未设置",
+      "copy": "复制：{label}",
+      "action": "{action}：{label}",
+      "help": "详细了解：{label}",
+      "status-success": "正常",
+      "status-warning": "警告",
+      "status-error": "错误",
+      "status-info": "信息"
+    },
+    "sf-list-feed": {
+      "earlier-text": "显示更早的内容",
+      "empty-text": "暂无条目",
+      "latest-label": "跳到最新",
+      "loading-earlier-text": "正在加载更早的条目",
+      "new-text": "新",
+      "log-label": "条目",
+      "region-label": "动态",
+      "you-text": "你"
+    },
+    "sf-list-timeline": {
+      "empty-text": "暂无事件",
+      "more": "显示更多",
+      "loading": "正在加载…",
+      "today": "今天",
+      "yesterday": "昨天",
+      "tomorrow": "明天",
+      "status-success": "已完成",
+      "status-warning": "警告",
+      "status-error": "错误",
+      "status-info": "信息",
+      "state-done": "已完成",
+      "state-current": "当前",
+      "state-upcoming": "即将开始",
+      "step-status-success": "成功",
+      "step-status-warning": "有警告",
+      "step-status-error": "有错误",
+      "run-changes": {
+        "other": "还有 {n} 项更改"
+      },
+      "run-events": {
+        "other": "还有 {n} 个事件"
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "pt-br",
+  "name": "Português (Brasil)",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 28,
+    "translated": 28,
+    "share": 100
+  },
+  "words": {
+    "sf-settings": {
+      "label": "Configurações",
+      "hue-red": "Vermelho",
+      "hue-orange": "Laranja",
+      "hue-amber": "Âmbar",
+      "hue-yellow": "Amarelo",
+      "hue-lime": "Lima",
+      "hue-green": "Verde",
+      "hue-teal": "Verde-azulado",
+      "hue-cyan": "Ciano",
+      "hue-sky": "Azul-celeste",
+      "hue-blue": "Azul",
+      "hue-indigo": "Índigo",
+      "hue-violet": "Violeta",
+      "hue-purple": "Roxo",
+      "hue-pink": "Rosa",
+      "hue-brown": "Marrom",
+      "hue-gray": "Cinza",
+      "own-color": "Cor própria…",
+      "own-color-value": "Própria: {value}",
+      "close": "Fechar",
+      "reset": "Redefinir",
+      "apply": "Aplicar",
+      "search": "Buscar",
+      "empty": "Nada encontrado",
+      "pin": "Fixar",
+      "unpin": "Desafixar",
+      "move-hint": "Alt com as setas para cima e para baixo muda a ordem",
+      "position": "{text}: {index} de {count}"
+    }
+  }
+}

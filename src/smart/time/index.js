@@ -372,7 +372,10 @@ class SfTime extends TimeElement {
   justNow() {
     const wanted = formatLocale({node: this}).toLowerCase();
     const known = ['ru', 'en', ...language.known('sf-time')];
-    const has = known.includes(wanted) || known.includes(wanted.split('-')[0]);
+    // A registry alias counts as its pack's language (zh-cn: zh-hans, pt: pt-br).
+    const pack = (code) => globalThis.__sfPageLanguage?.packs?.aliases?.[code] ?? code;
+    const base = wanted.split('-')[0];
+    const has = [wanted, pack(wanted), base, pack(base)].some((code) => known.includes(code));
     return has ? this.sfWord('just-now') : null;
   }
 
@@ -385,7 +388,10 @@ class SfTime extends TimeElement {
     const key = zoneWordKey(id);
     const wanted = formatLocale({node: this}).toLowerCase().replace('_', '-');
     const registered = globalThis.__sfPageLanguage?.registered?.get?.('sf-time');
-    for (const code of [...new Set([wanted, wanted.split('-')[0]])]) {
+    // A registry alias takes its pack's words (zh-cn: zh-hans, pt: pt-br).
+    const pack = (code) => globalThis.__sfPageLanguage?.packs?.aliases?.[code] ?? code;
+    const base = wanted.split('-')[0];
+    for (const code of [...new Set([wanted, pack(wanted), base, pack(base)])]) {
       const own = registered?.get?.(code)?.[key] ?? languageFiles[code]?.runtime?.[key];
       if (typeof own === 'string' && own.trim()) return this.sfWord(key);
     }

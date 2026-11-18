@@ -1,0 +1,27 @@
+{
+  "runtime": {
+    "label": "Configuración paso a paso",
+    "running-text": "Procesando…",
+    "position": "Paso {n} de {count}",
+    "moved": "Paso {n} de {count}: {step}",
+    "back": "Atrás",
+    "skip": "Omitir",
+    "next": "Siguiente",
+    "run": "Ejecutar",
+    "retry": "Reintentar",
+    "apply": "Aplicar",
+    "done": "Listo",
+    "later": "Continuar más tarde",
+    "steps": "Pasos",
+    "all-steps": "Todos los pasos",
+    "hide-steps": "Ocultar pasos",
+    "progress": "Progreso del asistente",
+    "state-done": "Hecho",
+    "state-skipped": "Omitido",
+    "state-running": "En curso",
+    "state-error": "Error",
+    "required": "Rellena este campo",
+    "invalid": "Revisa el valor",
+    "saved": "Borrador guardado a las {time}"
+  }
+}

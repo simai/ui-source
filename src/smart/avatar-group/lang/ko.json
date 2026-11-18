@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "group-label": "구성원: {n}",
+    "more-label": {
+      "other": "구성원 {n}명 더"
+    }
+  }
+}

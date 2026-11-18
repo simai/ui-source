@@ -1,0 +1,48 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 28,
+    "translated": 28,
+    "share": 100
+  },
+  "words": {
+    "sf-settings": {
+      "label": "الإعدادات",
+      "hue-red": "أحمر",
+      "hue-orange": "برتقالي",
+      "hue-amber": "كهرماني",
+      "hue-yellow": "أصفر",
+      "hue-lime": "ليموني",
+      "hue-green": "أخضر",
+      "hue-teal": "أزرق مخضر",
+      "hue-cyan": "سماوي",
+      "hue-sky": "أزرق سماوي",
+      "hue-blue": "أزرق",
+      "hue-indigo": "نيلي",
+      "hue-violet": "بنفسجي",
+      "hue-purple": "أرجواني",
+      "hue-pink": "وردي",
+      "hue-brown": "بني",
+      "hue-gray": "رمادي",
+      "own-color": "لون مخصص…",
+      "own-color-value": "مخصص: {value}",
+      "close": "إغلاق",
+      "reset": "إعادة تعيين",
+      "apply": "تطبيق",
+      "search": "بحث",
+      "empty": "لم يُعثر على شيء",
+      "pin": "تثبيت",
+      "unpin": "إلغاء التثبيت",
+      "move-hint": "Alt مع السهمين لأعلى ولأسفل يغيّر الترتيب",
+      "position": "{text}: {index} من {count}"
+    }
+  }
+}
