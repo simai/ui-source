@@ -292,7 +292,7 @@ a.sf-search-row-main:focus-visible {
 /* A result's own picture (port 1.2.0 image; C175 (2) «картинка у файлов,
    плашка только у своей картинки записи»): the avatar's size, 1/2 (32, 28
    on a phone), on the container fill with the control radius, the picture
-   fitted inside it whole. The glyph inside waits for a picture that fails. */
+   fitted inside it whole. A picture that fails gives the row its glyph. */
 .sf-search-row-image {
   display: inline-flex;
   flex: none;
@@ -311,22 +311,9 @@ a.sf-search-row-main:focus-visible {
   object-fit: contain;
 }
 
-.sf-search-row-image > .sf-search-row-icon {
-  display: none;
-}
 
-.sf-search-row-image[data-failed] {
-  inline-size: auto;
-  block-size: auto;
-}
 
-.sf-search-row-image[data-failed] > .sf-search-row-image-picture {
-  display: none;
-}
 
-.sf-search-row-image[data-failed] > .sf-search-row-icon {
-  display: inline-flex;
-}
 
 .sf-search-row-text {
   display: flex;
@@ -692,15 +679,13 @@ a.sf-search-row-main:focus-visible {
   .sf-search-row--more {
     color: var(--sf-primary);
   }
-  /* A result's own picture stands on the container fill; the fallback glyph
-     takes the container's dim ink, and a picture that failed has no plate. */
+  /* A result's own picture stands on the container fill (the container's
+     dim ink with it, C16). */
   .sf-search-row-image {
     background: var(--sf-surface-container);
     --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
-  .sf-search-row-image[data-failed] {
-    background: none;
-  }
+
   .sf-search-row-main {
     color: inherit;
   }

@@ -416,15 +416,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/search/index.js",
-        "sha256": "40bc5ecb8da7dff910698d7ea39613d072009b46fc74a7030c18a6d9a29a3966"
+        "sha256": "625d3876cd3da38c604b62dc272d149cdfa026d7d46ef855bca3f2a305d7cb0b"
       },
       {
         "path": "src/smart/search/js/templates/default.js",
-        "sha256": "84ec23a96c5b836386a91399e83e11ae7d433f32ac6bbd4efb3689f0b77705df"
+        "sha256": "9a403c7bfc9eda156d96d314e27cb8985e89a6c763d496d246788f7229b40957"
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "efecfa2b57508ae297fc413068568a81ac5ad6b3708fc8faafe3ba763e6d35c2"
+        "sha256": "673049bbbf0ea1ee32eb7c301d7b0d1561757e6a60b21c9e0e8194eaac9cf5f2"
       },
       {
         "path": "src/smart/search/rule.js",

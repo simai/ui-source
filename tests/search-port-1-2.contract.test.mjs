@@ -44,6 +44,12 @@ test('the static host passes image through, sf-search draws it on its plate', as
   assert.match(host, /result\.image = /u);
   const template = readFileSync(join(root, 'src/smart/search/js/templates/default.js'), 'utf8');
   assert.match(template, /sf-search-row-image/u);
+  // A picture that fails gives the row its glyph back: the host remembers it
+  // and draws the glyph alone (the icon sheet's display is unlayered).
+  assert.match(template, /@error=\$\{\(\) => component\?\.pictureFailed\?\.\(image\)\}/u);
+  const element = readFileSync(join(root, 'src/smart/search/index.js'), 'utf8');
+  assert.match(element, /pictureFailed\(url\) \{/u);
+  assert.match(element, /pictureOk\(url\) \{/u);
   const sheet = readFileSync(join(root, 'src/smart/search/scss/_smart__search.scss'), 'utf8');
   const rule = sheet.match(/\.sf-search-row-image \{[^}]+\}/u)?.[0] ?? '';
   // The plate is paint (C273): in sf.paint, with the container's dim ink.
