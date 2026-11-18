@@ -38,7 +38,7 @@ test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next pa
   assert.equal(contract.events.rename.cancelable, true);
   assert.equal(contract.events['load-more'].cancelable, true);
   assert.deepEqual(Object.keys(contract.actions).sort(),
-    ['append-items', 'detach', 'more-failed', 'open-menu', 'rename', 'request-more', 'set-items', 'upsert']);
+    ['append-items', 'clear-selection', 'detach', 'more-failed', 'open-menu', 'rename', 'request-more', 'set-items', 'toggle-chosen', 'upsert']); // LF-10
   const template = read('src/smart/list/js/templates/default.js');
   // The row is the Framework's row, interactive, inside one [data-sf-list].
   assert.match(template, /<sf-list-item\s+interactive/u);
