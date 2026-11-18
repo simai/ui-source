@@ -12,12 +12,12 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf
 const json = (path) => JSON.parse(read(path));
 
 test('FO-1: switch, checkbox, segmented and file upload take invalid and error-message', () => {
-  for (const [folder, version] of [['switch', '1.10.0'], ['checkbox', '1.6.0'], ['segmented', '1.7.0'], ['file-upload', '1.6.0']]) {
+  for (const [folder, version, noted = version] of [['switch', '1.10.0'], ['checkbox', '1.6.0'], ['segmented', '1.8.0', '1.7.0'], ['file-upload', '1.6.3', '1.6.0']]) { // group build 13: segmented and file-upload moved on by the merged branches
     const manifest = json(`src/smart/${folder}/component.json`);
     assert.equal(manifest.version, version, folder);
     assert.equal(manifest.settings.invalid?.type, 'boolean', `${folder} invalid`);
     assert.equal(manifest.settings['error-message']?.type, 'string', `${folder} error-message`);
-    assert.ok(manifest['x-decisions'].some((line) => line.startsWith(`version ${version} (2026-11-18, field orders FO-1`)), `${folder} note`);
+    assert.ok(manifest['x-decisions'].some((line) => line.startsWith(`version ${noted} (2026-11-18, field orders FO-1`)), `${folder} note`);
   }
   // The line under a checkbox or a switch is the shared row's; segmented and the upload area draw their own.
   const row = read('src/smart/helpers/checkable-row.js');
@@ -95,10 +95,10 @@ test('FO-4: the set asks for its words when it publishes itself, and whenFieldRe
 
 test('FO-6: sf-form declares a ru.inn field\'s holder', () => {
   const manifest = json('src/smart/form/component.json');
-  assert.equal(manifest.version, '1.7.0'); // form fields: 1.7.0
+  assert.equal(manifest.version, '1.12.1'); // form fields: 1.7.0 // group build 13: 1.7.0 moved on by the merged branches or a GB11 merge
   assert.deepEqual(manifest.settings.fields.schema.items.properties.holder, {type: 'string', enum: ['any', 'organization', 'person']});
   // FL-7: a phone field's starting country is declared too.
   assert.deepEqual(manifest.settings.fields.schema.items.properties.defaultCountry, {type: 'string', pattern: '^[A-Za-z]{2}$'});
   assert.match(manifest.settings.fields.summary, /holder \(a ru\.inn field: any, organization -- 10 digits -- or person -- 12\)/);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.25.0'); // cards-fw: 1.25.0
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.25.1'); // cards-fw: 1.25.0 // group build 13: 1.25.0 moved on by the merged branches or a GB11 merge
 });
