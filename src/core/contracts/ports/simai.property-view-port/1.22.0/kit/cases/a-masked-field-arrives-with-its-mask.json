@@ -1,0 +1,43 @@
+{
+  "id": "a-masked-field-arrives-with-its-mask",
+  "intent": "record.load",
+  "summary": "A string field carries its mask, and its value as it is shown, fixed parts included; an answer carrying them is applied.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "phone",
+        "propertyType": "string",
+        "mask": "+7 (000) 000-00-00",
+        "value": "+7 (912) 345-67-89"
+      },
+      {
+        "key": "inn",
+        "propertyType": "string",
+        "mask": "0000000000",
+        "nullable": false,
+        "value": ""
+      },
+      {
+        "key": "title",
+        "propertyType": "string",
+        "value": "Без маски"
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contacts",
+      "reason": "connected"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The mask is the host's and the grammar is the Framework's, the one sf-input reads as mask-pattern, so a host does not translate its own. A field without a mask is the plain string field it always was."
+  }
+}

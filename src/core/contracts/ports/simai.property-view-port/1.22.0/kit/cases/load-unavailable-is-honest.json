@@ -1,0 +1,12 @@
+{
+  "id": "load-unavailable-is-honest",
+  "intent": "record.load",
+  "summary": "A host that cannot answer right now says unavailable; it never answers applied with an empty object.",
+  "given": {"capabilities": []},
+  "when": {"intent": "record.load", "payload": {"record_id": "record-1", "collection": "pages", "reason": "requested"}},
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": ["reason"],
+    "note": "applied with no sections would be read as an object that genuinely has no fields."
+  }
+}

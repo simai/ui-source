@@ -1,0 +1,29 @@
+{
+  "id": "group-load-without-a-group-answers-the-first",
+  "intent": "group.load",
+  "capability": "group-load",
+  "summary": "A group read with group null answers the group the panel opens on and names it.",
+  "given": {
+    "capabilities": [
+      "group-load"
+    ]
+  },
+  "when": {
+    "intent": "group.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "group": null,
+      "reason": "connected"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record",
+      "group",
+      "revision"
+    ],
+    "note": "The first group of the first section this person's view shows. The component knows no arrangement before its first read, so it does not guess a key; it reads the one the answer names."
+  }
+}

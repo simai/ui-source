@@ -1,0 +1,32 @@
+{
+  "id": "group-save-revision-moved-is-a-conflict",
+  "intent": "group.save",
+  "summary": "A save over a revision that moved may be refused revision_moved with the current revision, nothing written; the component reads it as a conflict.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "deals",
+      "section": "main",
+      "group": "pay",
+      "values": {
+        "amount": {
+          "amount": "420000",
+          "currency": "RUB"
+        }
+      },
+      "revision": "8"
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason",
+      "revision"
+    ],
+    "note": "reason revision_moved and revision \"9\", the current one; nothing is written. The card keeps what the person typed, says the record moved and reads it again at revision 9, as for answer conflict. Answering applied would lose the save that moved it."
+  }
+}

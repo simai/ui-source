@@ -1,0 +1,28 @@
+{
+  "id": "view-publish-against-a-newer-shared-layer-is-a-conflict",
+  "intent": "view.publish",
+  "capability": "view-settings",
+  "summary": "A publish against a shared revision someone else has moved on is a conflict carrying the newer shared layer.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.publish",
+    "payload": {
+      "record_id": null,
+      "collection": "crm.deals",
+      "profile": "main",
+      "personal_revision": "p4",
+      "shared_revision": "s2"
+    }
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": [
+      "shared"
+    ],
+    "note": "The card redraws from the newer shared layer and says «Вид изменился»; the personal layer is kept, so the person may publish again over what is now shared."
+  }
+}
