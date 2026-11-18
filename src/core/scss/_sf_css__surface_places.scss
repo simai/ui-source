@@ -56,6 +56,13 @@
     --sf-surface-container: var(--sf-white--alfa-12);
     --sf-surface-container-hover: var(--sf-white--alfa-16);
     --sf-surface-container-active: var(--sf-white--alfa-20);
+    // The hover and press fill of a neutral button on glass (DEV held answers
+    // H1, msg-bc1702eb): the strong place's D2b steps, white at 8 and 4 under
+    // the white label (16 and 20 read 4.5 and 4.17 over a white picture).
+    // Read by the sf-button rules only, as on a strong place; every other
+    // control keeps the fill family's 12/16/20.
+    --sf-place--control-hover: var(--sf-white--alfa-8);
+    --sf-place--control-active: var(--sf-white--alfa-4);
     --sf-outline: var(--sf-white--alfa-64);
     --sf-outline-variant: var(--sf-white--alfa-24);
     --sf-place--container-outline: var(--sf-outline);

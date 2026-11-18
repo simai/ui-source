@@ -27,9 +27,11 @@ const ACCENT = {
   'primary-active': 'var(--sf-neutral-90)',
   'on-primary': 'var(--sf-black)',
   'primary-container': 'var(--sf-white--alfa-12)',
-  // Hover and press up the fill family, 16 and 20 (C113; dispatcher 2026-11-13).
-  'primary-container-hover': 'var(--sf-white--alfa-16)',
-  'primary-container-active': 'var(--sf-white--alfa-20)',
+  // Hover and press down towards the glass, 8 and 4 (D2b; DEV held answers
+  // H1, msg-bc1702eb): 16 and 20 of C113 read 4.17 under white and 3.24 under
+  // neutral 90 over a white picture.
+  'primary-container-hover': 'var(--sf-white--alfa-8)',
+  'primary-container-active': 'var(--sf-white--alfa-4)',
   'on-primary-container': 'var(--sf-white)',
   link: 'var(--sf-white)',
   'link-hover': 'var(--sf-neutral-95)',

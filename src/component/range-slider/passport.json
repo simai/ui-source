@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.range-slider",
   "kind": "component",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "owner": "simai/ui-source",
   "files": [
     "src/component/range-slider/docs/docs.md",
@@ -18,7 +18,7 @@
     "src/component/range-slider/scss/_css__thumbs.scss",
     "src/component/range-slider/scss/index.scss"
   ],
-  "content_sha256": "7d3b822ce106a6495961ce77578bf7bc500ce20e9f62702098e3f06034245750",
+  "content_sha256": "57224d8e0aa836cb305a94e29bedf9fdc37b8433781e97cdebdaac0d2f0e47a6",
   "dependencies": [
     {
       "id": "core.runtime",

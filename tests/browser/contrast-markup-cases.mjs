@@ -74,11 +74,30 @@ FIXTURES.push(...['popup', 'popup-nested'].map((place) => `
 <div class="bg-surface-${place}"><span class="color-on-surface-variant" data-case="FW-B-6 color-on-surface-variant on bg-surface-${place}" data-need="4.5">Dim text</span></div>
 <div style="background: var(--sf-surface-${place})"><span style="color: var(--sf-on-surface-variant)" data-case="FW-B-6 --sf-on-surface-variant on --sf-surface-${place}" data-need="4.5">Dim text</span></div>`));
 
+// H1 (DEV held answers, msg-bc1702eb): every pressed step holds the floor on
+// every place -- a button pressed (the .active class draws :active) in each
+// look, primary and the neutral scheme, its label 4.5 and its glyph 3, on the
+// strong places, the inverse ones and glass over a white and a black picture.
+// Before: 3.81-3.92 for an outline, ghost or link primary pressed on a strong
+// place in the dark theme (tones 25/30 rising towards the plate), 4.17 and
+// 3.24 on glass over a white picture (the fill rising to white at 20).
+const PRESS_PLACES = [
+  ...ROLES.map((role) => [`bg-${role}`, `<div class="bg-${role}">`, '</div>']),
+  ['bg-surface-inverse', '<div class="bg-surface-inverse">', '</div>'],
+  ['bg-surface-inverse-fixed', '<div class="bg-surface-inverse-fixed">', '</div>'],
+  ...['#ffffff', '#000000'].map((picture) => [`glass over ${picture}`, `<div style="background: ${picture}"><div class="sf-surface-media">`, '</div></div>']),
+];
+const PRESS_LOOKS = ['default', 'tonal', 'outline', 'ghost', 'link'];
+FIXTURES.push(...PRESS_PLACES.map(([name, open, close]) => `${open}
+${PRESS_LOOKS.flatMap((look) => ['primary', 'on-surface'].map((scheme) => `<button type="button" class="sf-button sf-button--size-1 sf-button--${look} sf-button--${scheme} active"><i class="sf-icon" aria-hidden="true" data-case="H1 ${look} ${scheme} pressed glyph on ${name}" data-need="3">check</i><span class="sf-button-text-container" data-case="H1 ${look} ${scheme} pressed label on ${name}" data-need="4.5">Pressed</span></button>`)).join('\n')}
+${close}`));
+
 // The sheets a case needs, from the build output root.
 export function markupSheets(out) {
   return [
     'core/core/css/core.css',
     'core/core/css/utility.full.css',
+    'component/component/buttons/css/buttons.css',
     'component/component/icon-buttons/css/icon-buttons.css',
     'component/component/slider/css/slider.css',
   ].map((path) => join(out, path)).filter((path) => existsSync(path));
@@ -90,10 +109,26 @@ export async function measureMarkup(browser, out, theme) {
   try {
     await page.setContent(`<!doctype html><html class="theme-${theme}"><head><meta charset="utf-8"></head><body>${FIXTURES.join('\n')}</body></html>`);
     for (const path of markupSheets(out)) await page.addStyleTag({path});
+    // The colours as they rest: a control's fill eases in (the buttons' sheet),
+    // and a reading taken mid-way is neither state.
+    await page.addStyleTag({content: '*, *::before, *::after { transition: none !important; animation: none !important; }'});
     return await page.evaluate(() => {
+      // A colour the sheets write in another space (oklch, color()) is read
+      // through a 1x1 canvas, which gives it back as sRGB.
+      const canvas = document.createElement('canvas');
+      canvas.width = 1; canvas.height = 1;
+      const context = canvas.getContext('2d', {willReadFrequently: true});
       const parse = (text) => {
-        const found = String(text).match(/rgba?\(([^)]+)\)/);
-        if (!found) return null;
+        const found = String(text).match(/^rgba?\(([^)]+)\)/);
+        if (!found) {
+          if (!text || text === 'none' || text === 'transparent') return null;
+          context.clearRect(0, 0, 1, 1);
+          context.fillStyle = 'rgba(0, 0, 0, 0)';
+          context.fillStyle = String(text);
+          context.fillRect(0, 0, 1, 1);
+          const [r, g, b, a] = context.getImageData(0, 0, 1, 1).data;
+          return a ? {r, g, b, a: a / 255} : null;
+        }
         const parts = found[1].split(/[\s,/]+/).filter(Boolean).map(Number);
         return {r: parts[0], g: parts[1], b: parts[2], a: parts.length > 3 ? parts[3] : 1};
       };

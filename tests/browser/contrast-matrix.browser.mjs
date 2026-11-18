@@ -32,8 +32,13 @@
 //   status ink as text --sf-error, -primary, -success, -warning and -info are
 //                      written as the colour of text in the sources (an error
 //                      message, a link, a status word): on every opaque surface;
-//   glass              --sf-surface-media (the place over a picture) over a
-//                      white and a black picture, with its own ink;
+//   pressed steps      the hover and pressed steps of every status: the
+//                      filled step under --sf-on-X, the container step under
+//                      the container ink and under the status step as ink
+//                      (outline, ghost, link), and the status step as text;
+//   glass              --sf-surface-media (the place over a picture) and its
+//                      hover and pressed steps over a white and a black
+//                      picture, with its own ink;
 //   markup             text and glyphs as a page writes them with the
 //                      utilities and the components (contrast-markup-cases.mjs,
 //                      docs batch B FW-B-1..6, C192): an on-colour on its strong
@@ -63,6 +68,7 @@ const NEUTRAL = ['page', 'area', 'well', 'card', 'raised', 'popup', 'popup-neste
 const OWN_VARIANT = {card: 'card-variant', raised: 'raised-variant', popup: 'popup-variant', 'popup-nested': 'popup-nested-variant'};
 const FILLS = ['container', 'container-hover', 'container-active', 'container-strong'];
 const STATUS = ['primary', 'secondary', 'tertiary', 'error', 'warning', 'success', 'info', 'neutral'];
+const STEPS = ['hover', 'active'];
 const TONES = ['amber', 'green', 'indigo', 'lime', 'rose', 'sky', 'teal', 'violet'];
 const INK_AS_TEXT = ['error', 'primary', 'success', 'warning', 'info'];
 // The popup places' dim ink on a fill (C43), read from the mixin every popup
@@ -117,16 +123,30 @@ function pairs() {
       add(`--sf-on-${status}-container`, `--sf-${status}-container`, surface, 4.5, true, 'status container');
       add(`--sf-on-${status}-container-graphic`, `--sf-${status}-container`, surface, 3, true, 'status container graphic');
     }
+    // The pressed and hover steps (DEV held answers H1, msg-bc1702eb): a tonal
+    // control paints its container step with the container ink, an outline,
+    // ghost or link control writes the status step as its ink over that
+    // container step, and both must keep the floor the rest state keeps.
+    for (const status of STATUS) {
+      for (const step of STEPS) {
+        add(`--sf-on-${status}-container`, `--sf-${status}-container-${step}`, surface, 4.5, true, `status container ${step}`);
+        add(`--sf-${status}-${step}`, `--sf-${status}-container-${step}`, surface, 4.5, true, `status ink ${step} on its container`);
+        add(`--sf-${status}-${step}`, surface, null, 4.5, true, `status ink ${step}`);
+      }
+    }
     for (const tone of TONES) add(`--sf-on-tone-${tone}-container`, `--sf-tone-${tone}-container`, surface, 4.5, true, 'tone container');
     for (const status of INK_AS_TEXT) add(`--sf-${status}`, surface, null, 4.5, true, 'status ink as text');
   }
   for (const status of STATUS) add(`--sf-on-${status}`, `--sf-${status}`, '--sf-surface-page', 4.5, true, 'status fill');
+  for (const status of STATUS) for (const step of STEPS) add(`--sf-on-${status}`, `--sf-${status}-${step}`, '--sf-surface-page', 4.5, true, `status fill ${step}`);
   add('--sf-on-paper', '--sf-paper', null, 4.5, true, 'ink on a surface');
   add('--sf-on-surface-inverse', '--sf-surface-inverse', null, 4.5, true, 'ink on a surface');
   add('--sf-on-surface-inverse-fixed', '--sf-surface-inverse-fixed', null, 4.5, true, 'ink on a surface');
   for (const picture of ['#ffffff', '#000000']) {
     for (const [ink, threshold] of [['--sf-on-surface-media', 4.5], ['--sf-on-surface-media', 3]]) {
-      add(ink, '--sf-surface-media', picture, threshold, true, threshold === 3 ? 'glass icon' : 'glass text');
+      for (const glass of ['--sf-surface-media', '--sf-surface-media-hover', '--sf-surface-media-active']) {
+        add(ink, glass, picture, threshold, true, threshold === 3 ? 'glass icon' : 'glass text');
+      }
     }
   }
   return list;

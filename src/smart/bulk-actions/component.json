@@ -2,7 +2,7 @@
   "$comment": "The source of sf-bulk-actions' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.16 and vocabulary 1.1.5: owner decisions C291 (1) and C295 (2026-11-17; research ui-control control/research/2026-11-17-sf-bulk-actions/README.md, prototype prototypes/sf-bulk-actions-study.html, variant A).",
   "id": "smart.bulk-actions",
   "tag": "sf-bulk-actions",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "kind": "leaf",
   "family": "bulk",
   "settings": {
@@ -359,7 +359,8 @@
     "run and result: a short run (up to 100 items) in the bar through progress(); a longer one is the host's sf-progress-run (C34, progress refused {reason: long}); result() says how many failed, «Подробнее» lists them (sf-list-description in a question window), «Повторить для N» sends the action again with scope selection, and the failed items stay selected (the host's).",
     "keys and focus: a plain row of buttons in Tab order, 8 apart (C184: roving is for icon rows); the focus is never moved into the bar; Escape in the list or the bar clears the selection unless a menu, a window or a text field holds it; a polite live region says the count, the clear, the run and the result after 300 ms.",
     "look (prototype variant A): one row, padding space-1/4 (start space-1/2), groups 16 apart (space-1), inside 8 (space-1/3); the card surface, an outline-variant edge, the surface radius; the bar is the rung's control height plus 2 × space-1/4 and its edges (42 at 1/2, 50 at 1); five public variables.",
-    "replaces (until 2027-01-01): sf-pagination's band (now drawn by this bar, its settings and events kept), sf-view's _renderBulkBand, sf-view-table's setBulkActions / renderBulkActions and the gallery's actions slot (their owners move to the bar; journal bulk-actions-replace-copies)."
+    "replaces (until 2027-01-01): sf-pagination's band (now drawn by this bar, its settings and events kept), sf-view's _renderBulkBand, sf-view-table's setBulkActions / renderBulkActions and the gallery's actions slot (their owners move to the bar; journal bulk-actions-replace-copies).",
+    "version 1.1.0 (2026-11-18): a minor (owner decision C309 (1), DEV held answers H7, msg-839c5a4c). On a phone the bar stays one line: when the count, «Выбрать все N», the actions, «⋯» and the clear button would wrap at size 1 (a 90 px two-line bar), the select-all offer moves into «⋯» as its first entry and the bar keeps the height of its size; it comes back when the row has room (a ResizeObserver on the bar). The offer in the menu selects all, or the page, as the button did."
   ],
   "x-registry": {
     "capabilities": [

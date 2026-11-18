@@ -55,7 +55,7 @@ test('AA-10: a neutral button\'s hover and press fill on a strong place go to 8 
   const colourRoles = mix.slice(mix.indexOf('$sf-place-colour-roles: ('), mix.indexOf(');', mix.indexOf('$sf-place-colour-roles: (')));
   assert.match(colourRoles, /'on-surface-hover': /u);
   assert.match(colourRoles, /'on-surface-active': /u);
-  assert.ok(popover.includes('--sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));'));
+  assert.ok(popover.includes('--sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-85));'));
   const buttons = read('src/component/buttons/scss/_css__buttons.scss');
   assert.ok(buttons.includes('--sf-button--background-color: var(--sf-place--control-hover, var(--sf-surface-container-hover));'));
   assert.ok(buttons.includes('--sf-button--background-color: var(--sf-place--control-active, var(--sf-surface-container-active));'));

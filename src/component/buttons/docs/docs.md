@@ -36,9 +36,13 @@ the Smart `sf-button` projection.
   (`--sf-secondary-hover` / `-active`), as primary's do;
   focus draws the ring; disabled wears the disabled look and keeps the filled
   icon. `sf-button--pressed` draws the same look without `aria-pressed`
-  (below). Both are public on a toggle only: an `outline` or `ghost` button
-  in the neutral scheme (decision C211 (1)). A filled, tonal or primary
-  button is an action, not a toggle; do not write either on it.
+  (below). Both are public on a toggle: an `outline` or `ghost` button
+  in the neutral scheme (decision C211 (1)), and a filled (`default`) button
+  of any scheme (decision C309 (2)): a filled button pressed keeps its fill
+  at the scheme's pressed step (`--sf-primary-active`,
+  `--sf-on-surface-active`, `--sf-error-active`) with its own ink and a
+  filled icon. A tonal button, or an outline or ghost in another scheme, is
+  an action, not a toggle; do not write either on it.
   With the Loader's icon subset, give the icon of a pressed toggle
   `sf-icon--filled` too (the Smart button writes `filled` on its `sf-icon`):
   the subset holds the filled glyph only for an icon marked filled.
@@ -267,10 +271,11 @@ The button set's former words and the toggle (1.17.0, owner decisions C116
   sf-button--on-surface`, in every state; both are noted in `SF.deprecations`
   and leave after 2027-01-01 (journal `class-button-set-c116`).
 - The pressed look (`aria-pressed="true"` or `sf-button--pressed`, C12) is a
-  toggle's alone: `outline` or `ghost` in `on-surface`. A `default`, `tonal`
-  or danger button, or another scheme, keeps its own look under
-  `aria-pressed`, and the runtime says once per button in the console that it
-  is no toggle. A choice of one among several -- a view, a width, a theme --
+  toggle's: `outline` or `ghost` in `on-surface`, and since C309 (2)
+  (2026-11-18) a filled `default` button of any scheme, drawn at its
+  scheme's pressed step. A `tonal` button, or an outline or ghost in another
+  scheme, keeps its own look under `aria-pressed`, and the runtime says once
+  per button in the console that it is no toggle. A choice of one among several -- a view, a width, a theme --
   is not a set of toggles: write `sf-segmented` (the chosen segment takes a
   soft fill and keeps its regular icon).
 - A button with an icon and no label (no `.sf-button-text-container`, or an
