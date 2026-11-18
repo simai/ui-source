@@ -15,7 +15,7 @@ for (const [family, name, selector, nativeTag] of [
     let callback, releaseCount = 0, destroyCount = 0;
     const native = {value: '34', dataset: {}, required: false, classList: {contains: () => false},
       addEventListener() {}, removeEventListener() {}};
-    const root = {dataset: {}, classList: {add() {}, remove() {}, contains: () => false},
+    const root = {dataset: {}, tagName: 'LABEL', classList: {add() {}, remove() {}, contains: () => false},
       querySelector: query => query === nativeTag || query === '.sf-input-field input, input' ? native : null};
     const code = source.slice(source.indexOf(`const ${selector}_SELECTOR`), source.indexOf(`function initExisting${name === 'Input' ? 'Inputs' : 'Textareas'}`));
     const context = vm.createContext({

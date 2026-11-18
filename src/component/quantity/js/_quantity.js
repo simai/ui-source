@@ -534,6 +534,10 @@ function bindQuantity(root) {
     input.value = nextValue;
     input.dispatchEvent(new Event('input', { bubbles: true }));
   };
+  // sf-quantity--pointer-focus marks a focus that came from a pointer. It no
+  // longer changes the look (owner decision C153 (4): one focus look by mouse
+  // and by keys); it is written until 2027-01-01 for a page selector that
+  // reads it (journal class-quantity-pointer-focus-c153).
   const pointerFocusHandler = () => {
     root.classList.add('sf-quantity--pointer-focus');
   };

@@ -74,12 +74,25 @@ export function syncFieldContract(root, control, {
   if (root.tagName === 'LABEL' && !root.hasAttribute('for')) {
     root.setAttribute('for', control.id);
   }
+  // A root that is not a label carries its label text as a <label> of its
+  // own (div.sf-input, 1.13.0): it points at the control too.
+  if (labelNode?.tagName === 'LABEL' && !labelNode.hasAttribute('for')) {
+    labelNode.setAttribute('for', control.id);
+  }
   // Name the field by its visible label, not every hint or adjacent button.
   // Author-provided accessible names remain authoritative.
   if (labelNode?.textContent?.trim()
     && !control.hasAttribute('aria-label')
     && !control.hasAttribute('aria-labelledby')) {
-    if (!labelNode.id) labelNode.id = `${control.id}-label`;
+    // An id of its own: «<control>-label» may already name another element
+    // (a page that gave the field's root that id), and aria-labelledby would
+    // then read that element's whole text, the hint with it (DF-3).
+    if (!labelNode.id) {
+      const doc = labelNode.ownerDocument;
+      let id = `${control.id}-label`;
+      for (let n = 2; doc?.getElementById?.(id); n += 1) id = `${control.id}-label-${n}`;
+      labelNode.id = id;
+    }
     control.setAttribute('aria-labelledby', labelNode.id);
   }
   control.required = contract.required;

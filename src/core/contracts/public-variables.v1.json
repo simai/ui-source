@@ -11,7 +11,7 @@
           "name": "--sf-badge-background-color",
           "role": "background",
           "summary": "The badge's fill.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-surface-container)",
           "since": "2026-10-13",
           "varies_with": [
             "appearance",
@@ -23,7 +23,7 @@
           "name": "--sf-badge-color",
           "role": "color",
           "summary": "The text and icon colour.",
-          "default": "var(--sf-on-surface-inverse)",
+          "default": "var(--sf-on-surface)",
           "since": "2026-10-13",
           "varies_with": [
             "appearance",
@@ -394,7 +394,7 @@
           "name": "--sf-tag-gap",
           "role": "gap",
           "summary": "Space between the parts of the tag (every size sets 0: the label's own step spaces it).",
-          "default": "var(--sf-a1)",
+          "default": "0",
           "since": "2026-10-18",
           "varies_with": [
             "size"
@@ -421,7 +421,7 @@
           "name": "--sf-icon-button-color",
           "role": "color",
           "summary": "The icon and close-mark colour at rest; disabled keeps its own.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-on-primary)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance",
@@ -819,7 +819,7 @@
           "name": "--sf-modal-background-color",
           "role": "background",
           "summary": "The panel's fill; the backdrop keeps its own.",
-          "default": "var(--sf-surface-area)",
+          "default": "var(--sf-surface-popup)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -850,14 +850,14 @@
           "name": "--sf-modal-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the panel before and after its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-3)",
+          "default": "calc(var(--sf-space-2) - var(--sf-px))",
           "since": "2026-10-18"
         },
         {
           "name": "--sf-modal-padding-block",
           "role": "padding-block",
           "summary": "Space inside the panel above and below its content; the surface-padding attribute still wins.",
-          "default": "var(--sf-space-3)",
+          "default": "calc(var(--sf-space-2) - var(--sf-px))",
           "since": "2026-10-18"
         },
         {
@@ -884,7 +884,7 @@
           "name": "--sf-tooltip-background-color",
           "role": "background",
           "summary": "The tooltip's fill, its tail included.",
-          "default": "var(--sf-surface-popup)",
+          "default": "var(--sf-surface-inverse)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -894,7 +894,7 @@
           "name": "--sf-tooltip-color",
           "role": "color",
           "summary": "The colour of the text and the supporting text.",
-          "default": "var(--sf-on-surface)",
+          "default": "var(--sf-on-surface-inverse)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -914,7 +914,7 @@
           "name": "--sf-tooltip-border-width",
           "role": "border-width",
           "summary": "The border width on every side: one hairline on the light appearance, none on the dark one unless set.",
-          "default": "var(--sf-px)",
+          "default": "0",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -931,7 +931,7 @@
           "name": "--sf-tooltip-padding-inline",
           "role": "padding-inline",
           "summary": "Space before and after the text.",
-          "default": "var(--sf-ui-1--space-x)",
+          "default": "var(--sf-a8)",
           "since": "2026-10-18",
           "varies_with": [
             "size"
@@ -941,7 +941,7 @@
           "name": "--sf-tooltip-padding-block",
           "role": "padding-block",
           "summary": "Space above and below the text.",
-          "default": "var(--sf-ui-1--space-y-tightness-default)",
+          "default": "var(--sf-a4)",
           "since": "2026-10-18",
           "varies_with": [
             "size"
@@ -964,7 +964,7 @@
           "name": "--sf-tabs-color",
           "role": "color",
           "summary": "The label and icon colour of a tab at rest, in the underline and full appearances; the selected tab keeps its own.",
-          "default": "var(--sf-on-surface)",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -1050,7 +1050,7 @@
           "name": "--sf-avatar-background-color",
           "role": "background",
           "summary": "The fill behind the initials or the placeholder; an image covers it.",
-          "default": "transparent",
+          "default": "var(--sf-surface-container)",
           "since": "2026-10-18",
           "varies_with": [
             "appearance"
@@ -1215,7 +1215,7 @@
           "name": "--sf-button-group-plate-background-color",
           "role": "background",
           "summary": "The fill of the plate under the selected segment; disabled keeps its own.",
-          "default": "var(--sf-primary)",
+          "default": "var(--sf-place--plate, light-dark(var(--sf-surface-raised), var(--sf-surface-container-active)))",
           "since": "2026-10-19",
           "varies_with": [
             "appearance",
@@ -1226,7 +1226,7 @@
           "name": "--sf-button-group-plate-color",
           "role": "color",
           "summary": "The label, icon and count colour on the selected plate.",
-          "default": "var(--sf-on-primary)",
+          "default": "var(--sf-place--on-plate, var(--sf-on-surface))",
           "since": "2026-10-19",
           "varies_with": [
             "appearance",
@@ -1703,7 +1703,7 @@
           "name": "--sf-color-chip-radius",
           "role": "radius",
           "summary": "The corner radius of the swatch and of each preset.",
-          "default": "var(--sf-radius-1)",
+          "default": "var(--sf-radius--ui)",
           "since": "2026-10-27"
         },
         {
@@ -1991,7 +1991,7 @@
           "name": "--sf-close-color",
           "role": "background",
           "summary": "The cross's colour: it is drawn as the fill of a mask; forced colours keep their own.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-on-surface)",
           "since": "2026-10-27"
         },
         {
@@ -2374,7 +2374,7 @@
           "name": "--sf-progress-bar-fill-color",
           "role": "background",
           "summary": "The filled part; a status gives its own colour unless this is set.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-primary)",
           "varies_with": [
             "status"
           ],
@@ -2465,7 +2465,7 @@
           "name": "--sf-progress-ring-fill-color",
           "role": "background",
           "summary": "The filled part; a status gives its own colour unless this is set.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-primary)",
           "varies_with": [
             "status"
           ],
@@ -2495,7 +2495,7 @@
           "name": "--sf-progress-scale-fill-color",
           "role": "background",
           "summary": "The filled segments; a status gives its own colour unless this is set.",
-          "default": "var(--sf-on-surface-variant)",
+          "default": "var(--sf-primary)",
           "varies_with": [
             "status"
           ],
@@ -2548,8 +2548,8 @@
         {
           "name": "--sf-spinner-color",
           "role": "color",
-          "summary": "The arc, the dots or the comet: the current ink unless set.",
-          "default": "currentColor",
+          "summary": "The arc: the quiet ink of the place (C130 (6)) unless set; a control that draws a spinner gives it its own ink.",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
         },
         {
@@ -2787,7 +2787,7 @@
           "name": "--sf-slider-thumbnail-radius",
           "role": "radius",
           "summary": "The corners of a thumbnail.",
-          "default": "var(--sf-radius-square)",
+          "default": "var(--sf-radius--ui)",
           "since": "2026-10-27"
         }
       ]
@@ -3021,7 +3021,7 @@
           "name": "--sf-tree-item-icon-color",
           "role": "color",
           "summary": "The chevron's and the icon's ink.",
-          "default": "currentColor",
+          "default": "var(--sf-on-surface-variant)",
           "since": "2026-10-27"
         },
         {
@@ -3250,7 +3250,7 @@
           "name": "--sf-search-radius",
           "role": "radius",
           "summary": "The results card's corners; the rows follow them.",
-          "default": "var(--sf-radius-2)",
+          "default": "var(--sf-radius--surface)",
           "state": "open",
           "since": "2026-10-30"
         },
@@ -3378,7 +3378,10 @@
           "role": "gap",
           "summary": "The space between the links.",
           "default": "0",
-          "since": "2026-10-30"
+          "since": "2026-10-30",
+          "varies_with": [
+            "layout"
+          ]
         },
         {
           "name": "--sf-contents-inset-block-start",
@@ -3438,7 +3441,7 @@
           "name": "--sf-rich-text-padding-inline",
           "role": "padding-inline",
           "summary": "Space inside the frame before and after the text.",
-          "default": "calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--text-space-x))",
+          "default": "calc(var(--sf-ui-1--space-x) - var(--sf-px))",
           "since": "2026-10-30",
           "varies_with": [
             "size"
@@ -4042,7 +4045,7 @@
           "name": "--sf-wizard-padding",
           "role": "padding",
           "summary": "The frame's inset; 0 in a window, where the window's own padding is the inset.",
-          "default": "var(--sf-space-3)",
+          "default": "calc(var(--sf-space-2) - var(--sf-px))",
           "since": "2026-11-06"
         },
         {
@@ -4494,7 +4497,7 @@
           "name": "--sf-kbd-size",
           "role": "size",
           "summary": "A cap's and a key's height and least width: the line height of the text step one below the place's (C38). Read from the place: a button's or a field's size, a text class, else body text (component.kbd).",
-          "default": "var(--sf-text-height-1\\/2) (body text)",
+          "default": "var(--sf-text-height-1\\/2)",
           "since": "2026-11-08"
         },
         {
@@ -4515,7 +4518,7 @@
           "name": "--sf-kbd-font-size",
           "role": "font-size",
           "summary": "A cap's and a key's letters: the size of the text step one below the place's (C38). Read from the place: a button's or a field's size, a text class, else body text (component.kbd).",
-          "default": "var(--sf-text-size-1\\/2) (body text)",
+          "default": "var(--sf-text-size-1\\/2)",
           "since": "2026-11-08"
         },
         {
