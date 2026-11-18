@@ -598,7 +598,7 @@ test('FO5-1..FO5-4: «Применить (N)», a bottom sheet on a phone, on th
   assert.doesNotMatch(source, /anchor\.after\(|Date\.now\(\)|< 500/u);
   assert.match(source, /doc\.addEventListener\('pointerdown', clear, true\);\s*doc\.addEventListener\('keydown', clear, true\);/u);
   // The popover's hide rule outranks a page's own display class on the content.
-  assert.match(read('src/smart/popover/js/templates/default.css'), /sf-popover\[data-open='false'\] > \[slot='content'\] \{\s*display: none !important;/u);
+  assert.match(read('src/smart/popover/js/templates/default.css'), /sf-popover:not\(\[open\]\) > \[slot='content'\] \{\s*display: none !important;/u); // group build 13: C301 retired data-open; the open attribute draws, still !important
 });
 
 test('FO-5: sf-popover opens from an anchor given as a property and places itself against it', () => {
