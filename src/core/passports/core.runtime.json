@@ -287,6 +287,7 @@
     "src/core/lang/ru/avatar.json",
     "src/core/lang/ru/badge.json",
     "src/core/lang/ru/breadcrumbs.json",
+    "src/core/lang/ru/bulk.json",
     "src/core/lang/ru/button-group.json",
     "src/core/lang/ru/button.json",
     "src/core/lang/ru/change.json",
@@ -349,7 +350,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "3a91509d582fa35600839fea62f1829722616a4326fd03135e6360d2921ef7e5",
+  "content_sha256": "318e4f54d9ca7edf88893c60f38920ff3b1645f9e2567e0c0da202734410f7fb",
   "dependencies": [
     {
       "id": "core.styles",
