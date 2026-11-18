@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 88,
-    "translated": 88,
+    "words": 94,
+    "translated": 94,
     "share": 100
   },
   "words": {
@@ -107,7 +107,13 @@
       "operatorEmpty": "не задано",
       "operatorFilled": "задано",
       "filterNotSet": "Не задано",
-      "filterCondition": "Условие"
+      "filterCondition": "Условие",
+      "operatorContainsWord": "содержит",
+      "operatorStartsWithWord": "начинается с",
+      "operatorEqualWord": "равно",
+      "operatorMoreWord": "больше",
+      "operatorLessWord": "меньше",
+      "operatorFromTo": "от – до"
     }
   }
 }

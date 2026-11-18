@@ -92,6 +92,12 @@
     "operatorEmpty": "не задано",
     "operatorFilled": "задано",
     "filterNotSet": "Не задано",
-    "filterCondition": "Условие"
+    "filterCondition": "Условие",
+    "operatorContainsWord": "содержит",
+    "operatorStartsWithWord": "начинается с",
+    "operatorEqualWord": "равно",
+    "operatorMoreWord": "больше",
+    "operatorLessWord": "меньше",
+    "operatorFromTo": "от – до"
   }
 }

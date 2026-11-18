@@ -53,11 +53,20 @@ const OPERATOR_WORDS = {
   in: 'operatorAnyOf', all: 'operatorAllOf', not_in: 'operatorNoneOf', empty: 'operatorEmpty', not_empty: 'operatorFilled',
 };
 
+// The window's condition words of a string and a number (C310): содержит,
+// начинается с; от – до, равно, больше, меньше -- one lower-case line with
+// любой из and не задано. The former capitalised words stay for a table's
+// operator field (OPERATOR_WORDS).
+const CONDITION_WORDS = {
+  string: {contains: 'operatorContainsWord', startsWith: 'operatorStartsWithWord'},
+  number: {between: 'operatorFromTo', eq: 'operatorEqualWord', gt: 'operatorMoreWord', lt: 'operatorLessWord'},
+};
+
 const word = (key, node) => pageText(SET_TEXT, key, node ?? null, SET_NAME);
 
-/** The words of an operator in the page's language; an operator nobody has a word for is shown as it is stored. */
-export function filterOperatorLabel(operator, node = null) {
-  const key = OPERATOR_WORDS[operator];
+/** The words of an operator in the page's language; kind (string, number) picks the window's condition words. An operator nobody has a word for is shown as it is stored. */
+export function filterOperatorLabel(operator, node = null, kind = '') {
+  const key = CONDITION_WORDS[kind]?.[operator] ?? OPERATOR_WORDS[operator];
   return key ? word(key, node) : String(operator ?? '');
 }
 
@@ -106,7 +115,7 @@ function holdReopen(anchor) {
   doc.addEventListener('keydown', clear, true);
 }
 
-export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', width = 'panel', count, renderControl} = {}) {
+export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', width = 'panel', count, kind = '', renderControl} = {}) {
   if (!anchor?.isConnected || !field?.key) return Promise.resolve(null);
   const open = OPEN.get(anchor);
   if (open) {
@@ -167,7 +176,7 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
         temp = {...temp, ...patch};
         draw();
       },
-      getFilterOperatorLabel: (operator) => filterOperatorLabel(operator, anchor),
+      getFilterOperatorLabel: (operator) => filterOperatorLabel(operator, anchor, kind),
       getVisibleFilterOptions: (one) => (Array.isArray(one?.filter?.options) ? one.filter.options : []),
       getFilterOptionsProvider: (one) => one?.filter?.provider ?? null,
     };

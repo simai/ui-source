@@ -90,6 +90,12 @@
     "operatorEmpty": "not set",
     "operatorFilled": "set",
     "filterNotSet": "Not set",
-    "filterCondition": "Condition"
+    "filterCondition": "Condition",
+    "operatorContainsWord": "contains",
+    "operatorStartsWithWord": "starts with",
+    "operatorEqualWord": "equals",
+    "operatorMoreWord": "more than",
+    "operatorLessWord": "less than",
+    "operatorFromTo": "from – to"
   }
 }

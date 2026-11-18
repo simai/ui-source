@@ -78,3 +78,12 @@ test('FF-9: a trigger handed in is the control it holds, not a wrapper with role
   const source = read('src/component/dropdown/interaction.js');
   assert.match(source, /box\.querySelector\(':scope > \* > button, :scope > a\[href\]'\)/u);
 });
+
+test('the window speaks one lower-case line: содержит, начинается с; от – до, равно, больше, меньше', () => {
+  const ru = json('src/smart/field-renderers/lang/ru.json').runtime;
+  assert.deepEqual([ru.operatorContainsWord, ru.operatorStartsWithWord, ru.operatorFromTo, ru.operatorEqualWord, ru.operatorMoreWord, ru.operatorLessWord], ['содержит', 'начинается с', 'от – до', 'равно', 'больше', 'меньше']);
+  const window = read('src/smart/field-renderers/filter-window.js');
+  assert.match(window, /const key = CONDITION_WORDS\[kind\]\?\.\[operator\] \?\? OPERATOR_WORDS\[operator\];/u);
+  assert.match(window, /getFilterOperatorLabel: \(operator\) => filterOperatorLabel\(operator, anchor, kind\),/u);
+  assert.match(read('src/component/dropdown/interaction.js'), /if\(button!==box\)\{\['role','aria-expanded','aria-haspopup','aria-controls','aria-labelledby','aria-label','aria-describedby'\]\.forEach\(name=>box\.removeAttribute\(name\)\);\}/u);
+});

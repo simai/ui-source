@@ -2754,7 +2754,7 @@ function renderConditionControl(field, host, conditions, selected) {
     if (conditions.length < 2) return nothing;
     return html`<sf-dropdown class="sf-filter-window-condition" size=${filterSize(host)} appearance="bordered" mode="select"
             search="false" list-width="list" aria-label=${setText(host, 'filterCondition')}
-            .options=${conditions.map((operator) => ({value: operator, label: host.getFilterOperatorLabel(operator)}))}
+            .options=${conditions.map((operator) => ({value: operator, text: host.getFilterOperatorLabel(operator), label: host.getFilterOperatorLabel(operator)}))}
             value=${selected}
             @change=${(event) => {
                 const operator = event.detail?.values?.[0] || event.detail?.value || selected;
@@ -2847,6 +2847,7 @@ export function openFilterWindow(options = {}) {
     const field = options.field || {};
     return filterWindowOpen({
         width: filterWidth(field),
+        kind: filterKindOf(field),
         ...options,
         renderControl: renderFilterWindowField,
         // «Применить (N)»: the chosen values of a list condition only (C310).
@@ -2863,7 +2864,7 @@ export function filterFieldSummary(field = {}, value = {}, node = null) {
     const options = Array.isArray(field.filter?.options) ? field.filter.options : [];
     const names = new Map(options.map((option) => [String(option.value ?? option.id ?? option.key ?? option.label), option.label || option.title || String(option.value ?? '')]));
     return filterSummary(field, value, {
-        label: (operator) => filterOperatorLabel(operator, node),
+        label: (operator) => filterOperatorLabel(operator, node, filterKindOf(field)),
         name: (one) => names.get(one) ?? one,
         yes: field.trueText ?? pageText(SET_TEXT, 'yes', node, SET_NAME),
         no: field.falseText ?? pageText(SET_TEXT, 'no', node, SET_NAME),

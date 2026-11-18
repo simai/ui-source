@@ -149,6 +149,7 @@ export function createDropdownInteraction(root, adapter) {
     });
   };
   const owner=adapter.owner||root;
+  let waits=0;
   let summary = document.createElement('span');
   summary.className='sf-dropdown-value';root.append(summary);identify(summary,owner,'value');
   const refresh = () => {
@@ -160,6 +161,14 @@ export function createDropdownInteraction(root, adapter) {
     }
     const button=trigger(),container=popup?.querySelector('.sf-list-container');
     if(!button||!container)return;
+    // FF-9: a handed control draws its button after it is defined; until it
+    // has, the wrapper stands in, and the wrapper gives its role and tab stop
+    // up once the control's button is there.
+    const box=field();
+    if(box?.classList.contains('sf-dropdown-trigger')){
+      if(button===box&&box.querySelector(':scope > :not(input, button, a):not(:has(button))')&&waits<20){waits+=1;requestAnimationFrame(refresh);}
+      if(button!==box){['role','aria-expanded','aria-haspopup','aria-controls','aria-labelledby','aria-label','aria-describedby'].forEach(name=>box.removeAttribute(name));}
+    }
     if(!summary.isConnected)root.append(summary);
     const label=root.querySelector('.sf-dropdown-label .sf-dropdown-text');
     const labelId=label?.textContent.trim()?identify(label,owner,'label'):'';
