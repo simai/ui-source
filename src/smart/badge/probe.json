@@ -25,6 +25,10 @@
       "  <sf-badge id=\"bd-tight\" text=\"Черновик\" appearance=\"tonal\" tight></sf-badge>",
       "  <sf-badge id=\"bd-figure\" text=\"3\" scheme=\"primary\"></sf-badge>",
       "  <sf-badge id=\"bd-figures\" text=\"12\" scheme=\"primary\"></sf-badge>",
+      "  <sf-badge id=\"bd-value\" text=\"sf-wizard\" value=\"1.5.3\" value-label=\"версия\" appearance=\"outline\" scheme=\"on-surface\" size=\"1/2\"></sf-badge>",
+      "  <sf-badge id=\"bd-value-word\" text=\"Ключ\" value=\"Значение\"></sf-badge>",
+      "  <sf-badge id=\"bd-value-slot\" text=\"PHP\" appearance=\"outline\"><span slot=\"value\"><b>8.2</b></span></sf-badge>",
+      "  <sf-badge id=\"bd-value-label\" text=\"sf-tabs\" value=\"1.5.2\" aria-label=\"Компонент sf-tabs, версия 1.5.2\"></sf-badge>",
       "</main>"
     ]
   },
@@ -230,6 +234,33 @@
       "steps": [
         {
           "check": "(() => { const p = document.querySelector('#bd-paused'); const pb = p.querySelector('.sf-badge'); const q = document.querySelector('#bd-queued'); const qb = q.querySelector('.sf-badge'); return pb.querySelector('.sf-icon')?.textContent.trim() === 'pause_circle' && pb.classList.contains('sf-badge--warning') && pb.querySelector('.sf-badge-text').textContent === p.sfWord('activity-paused') && qb.querySelector('.sf-icon')?.textContent.trim() === 'schedule' && qb.classList.contains('sf-badge--neutral') && qb.querySelector('.sf-badge-text').textContent === q.sfWord('activity-queued'); })()"
+        }
+      ]
+    },
+    {
+      "id": "p-value",
+      "title": "a value draws after a hidden divider in the same badge, a hidden word before it; without one nothing is added (C317)",
+      "covers": "settings.value, value-label, slots.value, accessibility.name value",
+      "steps": [
+        {
+          "check": "(() => { const b = document.querySelector('#bd-value .sf-badge'); const v = b.querySelector(':scope > .sf-badge-value'); const d = b.querySelector(':scope > .sf-badge-divider'); return d?.getAttribute('aria-hidden') === 'true' && d.nextElementSibling === v && v.querySelector('.sr-only')?.textContent === ', версия ' && v.textContent === ', версия 1.5.3' && b.querySelector('.sf-badge-text').textContent === 'sf-wizard'; })()",
+          "expect": {
+            "values": {
+              "#bd-value.valueLabel": "версия"
+            }
+          }
+        },
+        {
+          "check": "['значение', 'value'].includes(document.querySelector('#bd-value-word .sf-badge-value .sr-only')?.textContent.trim().replace(/^, /u, ''))"
+        },
+        {
+          "check": "document.querySelector('#bd-value-slot .sf-badge-value b')?.textContent === '8.2'"
+        },
+        {
+          "check": "document.querySelector('#bd-value-label .sf-badge-value')?.getAttribute('aria-hidden') === 'true'"
+        },
+        {
+          "check": "document.querySelector('#bd-value').value.value === '1.5.3' && !document.querySelector('#bd .sf-badge-divider') && !document.querySelector('#bd .sf-badge-value')"
         }
       ]
     }

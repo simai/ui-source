@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 9,
-    "translated": 9,
+    "words": 10,
+    "translated": 10,
     "share": 100
   },
   "words": {
@@ -22,6 +22,7 @@
       "activity-failed": "Не удалось",
       "activity-paused": "Пауза",
       "activity-queued": "В очереди",
+      "value-label": "значение",
       "count": {
         "one": "{count} непрочитанное",
         "few": "{count} непрочитанных",

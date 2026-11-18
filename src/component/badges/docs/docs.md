@@ -77,6 +77,28 @@ padding and `--sf-space-1/4` at the sides, so one figure is a circle the line
 high; it stands on the top of the line box, so it lies on the line with no
 offset, and a flex row centres it. The size class is not read for the height.
 
+Name and value (component.badges 1.13.0, owner decisions C317-C319): one
+badge holds a name and a value, «sf-wizard | 1.5.3». After the name's
+`.sf-badge-text-container` come `.sf-badge-divider` (one pixel wide, as high
+as the text line, `aria-hidden="true"`) and `.sf-badge-value`; a visually
+hidden word before the value makes a screen reader say «sf-wizard, версия
+1.5.3». `--sf-space-1/3` stands on each side of the divider (`--sf-badge-gap`
+on a badge with a divider). The badge does not wrap inside: a long name
+truncates with an ellipsis, the value never. Every size and look keeps its
+height (C01, C140 (5)). The divider is the badge's border colour on an outline
+badge and `--sf-outline` on a fill, the text colour on the filled error count;
+`--sf-badge-divider-color` sets it. The value takes the text colour. A badge
+without the parts draws exactly as before. It is a static mark: no copy on a
+click (C319).
+
+```html
+<span class="sf-badge sf-badge--outline sf-badge--on-surface sf-badge--size-1/2 inline-flex flex-row flex-nowrap justify-center items-center">
+  <span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">sf-wizard</span></span>
+  <span class="sf-badge-divider" aria-hidden="true"></span>
+  <span class="sf-badge-value"><span class="sr-only">, версия </span>1.5.3</span>
+</span>
+```
+
 Disabled: `sf-badge--disabled` gives a badge the disable roles (`--sf-surface-disabled`
 fill, `--sf-on-surface-disabled` text, `--sf-outline-disabled` edge) whatever its look,
 for a badge inside a control that cannot be used now -- a choice card, a menu

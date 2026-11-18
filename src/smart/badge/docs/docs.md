@@ -31,6 +31,8 @@ Main attributes:
 - `icon-only`
 - `line`
 - `text`
+- `value`
+- `value-label`
 - `icon`
 - `icon-start`
 - `icon-end`
@@ -118,6 +120,38 @@ A badge whose text is one character and that draws no icon -- a single-figure
 count -- carries `sf-badge--figure`, takes `--sf-space-1/4` at the sides and
 stays round in either room. `icon-only` is unchanged.
 
+## Name and value
+
+`value` adds a second text after the name, in the same badge, behind a thin
+divider: «sf-wizard | 1.5.3», a component and its version, a key and its value
+(owner decisions C317-C319, 1.7.0). It is one pill: the divider is one pixel
+wide and as high as the text line, `--sf-space-1/3` stands on each side of it,
+and heights, sizes and looks are the badge's own. The pair never breaks: the
+badge does not wrap inside, a long name truncates with an ellipsis, and the
+value never does. The badge stays a static mark: nothing happens on a click.
+
+```html
+<sf-badge appearance="outline" scheme="on-surface" size="1/2"
+          text="sf-wizard" value="1.5.3" value-label="версия"></sf-badge>
+```
+
+- `value-label` is the word a screen reader says before the value, visually
+  hidden: the badge reads «sf-wizard, версия 1.5.3». Without it the word of
+  the page's language is said («значение», «value»; runtime `value-label`).
+- The divider is hidden from assistive technology. With `aria-label` the
+  label alone is said and the value is hidden too, as the text is.
+- The slot `value` takes markup in place of the attribute.
+- The divider takes the badge's border colour on an outline badge and
+  `--sf-outline` on a fill (`--sf-badge-divider-color`); the value takes the
+  text colour.
+- The property `value` stays the badge's state object, as on `sf-button`: it
+  carries the second text under `value` and the word under `valueLabel`, and a
+  string given to it writes the attribute `value`.
+- Without `value` (attribute or slot) the badge is drawn exactly as before.
+
+Two components on one line are two badges, one pair each: the place that sets
+them (a page head) keeps its own gap between them.
+
 ## On the line of a text
 
 `line="text"` sizes a badge by the text it stands beside, not by a badge size:
@@ -187,6 +221,7 @@ Supported light-DOM slot names:
 - `icon-start`
 - `icon-end`
 - `text`
+- `value` (after the divider, C317)
 
 The legacy slot names `icon-left` and `icon-right` remain compatible.
 

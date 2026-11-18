@@ -7,6 +7,7 @@
     "activity-stopped": "Stopped",
     "activity-failed": "Failed",
     "activity-paused": "Paused",
-    "activity-queued": "Queued"
+    "activity-queued": "Queued",
+    "value-label": "value"
   }
 }

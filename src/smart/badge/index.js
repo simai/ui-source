@@ -198,6 +198,11 @@ class SfBadge extends BadgeElement {
       drawnIcon: this.drawnIcon,
       activitySpinner: this.activitySpinner,
       ariaLabel: this.getAttribute('aria-label') || '',
+      // Name and value (C317): the second text and the word said before it.
+      // The property value is the state object, so the template reads the
+      // attribute through the props context.
+      valueText: props.value ?? '',
+      valueLabel: props.valueLabel || this.sfWord('value-label'),
       component: this,
     });
   }
@@ -226,10 +231,18 @@ class SfBadge extends BadgeElement {
       iconEnd: this.iconEnd,
       iconPosition: this.iconPosition,
       ariaLabel: this.getAttribute('aria-label') || '',
+      value: this.getAttribute('value') || '',
+      valueLabel: this.getAttribute('value-label') || '',
     };
   }
 
+  // An object writes its keys as attributes (value and valueLabel among
+  // them); a string is the second text, the attribute value (C317).
   set value(nextValue) {
+    if (nextValue === null || nextValue === undefined || typeof nextValue !== 'object') {
+      this.setAttributeValue('value', nextValue);
+      return;
+    }
     this.setValueAttributes(nextValue);
   }
 }
