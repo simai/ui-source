@@ -120,6 +120,11 @@ class SfSiteHeader extends SiteHeaderElement {
     this._collapsedNow = undefined;
     this._sizeObserver = null;
     this._observedHeader = null;
+    // F-1: the bar's width at which a nav that overflowed fits again (0: it
+    // fits, or it was never measured too wide).
+    this._fitNeed = 0;
+    this._fitFrame = 0;
+    this._onFonts = () => this.queueFit();
     this._outsideSwitch = false;
     this._switchFrame = 0;
     this._onResize = () => {
@@ -164,7 +169,10 @@ class SfSiteHeader extends SiteHeaderElement {
       this.observeSize();
       this.syncCollapsed();
       this.syncSwitches();
+      this.queueFit();
     }, {once: false});
+    // Words that arrive with a face change the nav's width, not the bar's.
+    globalThis.document?.fonts?.addEventListener?.('loadingdone', this._onFonts);
   }
 
   disconnectedCallback() {
@@ -175,6 +183,9 @@ class SfSiteHeader extends SiteHeaderElement {
     this._sizeObserver = null;
     this._observedHeader = null;
     this._collapsedNow = undefined;
+    globalThis.document?.fonts?.removeEventListener?.('loadingdone', this._onFonts);
+    if (this._fitFrame) globalThis.cancelAnimationFrame?.(this._fitFrame);
+    this._fitFrame = 0;
     this.unwatchScroll();
     if (typeof globalThis.removeEventListener === 'function') globalThis.removeEventListener('resize', this._onResize);
     if (this._switchFrame) globalThis.cancelAnimationFrame?.(this._switchFrame);
@@ -188,6 +199,7 @@ class SfSiteHeader extends SiteHeaderElement {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (name === 'collapse' && oldValue !== newValue && this._isMounted) {
       this._collapsedNow = undefined;
+      this.setFit(0);
       this.watchCollapse();
     }
     if (name === 'sticky' && oldValue !== newValue && this._isMounted) this.watchScroll();
@@ -226,7 +238,10 @@ class SfSiteHeader extends SiteHeaderElement {
     const header = this.header();
     if (!header || header === this._observedHeader || typeof ResizeObserver === 'undefined') return;
     this._sizeObserver?.disconnect();
-    this._sizeObserver = new ResizeObserver(() => this.syncCollapsed());
+    this._sizeObserver = new ResizeObserver(() => {
+      this.syncCollapsed();
+      this.syncFit();
+    });
     this._sizeObserver.observe(header);
     this._observedHeader = header;
   }
@@ -255,6 +270,66 @@ class SfSiteHeader extends SiteHeaderElement {
       }
     }
     if (!collapsed && this.isOpen) this.runClose({reason: 'api'});
+  }
+
+  // F-1 (docs header, 2026-11-18): a wide bar whose nav needs more room than
+  // the row leaves it drew the nav over the brand and the tools (the docs'
+  // static class menu of five sections at 1180-1320 px under collapse xl:
+  // up to 60 px over). The bar gives way instead: when the nav's content is
+  // wider than the nav's box, the host says data-nav-overflow and the sheet
+  // collapses the bar as below its step -- the menu button, the nav and the
+  // actions in the side panel -- until the bar is again as wide as the nav
+  // measured it needed. A nav whose sf-menu gives way itself (overflow more
+  // or collapse, its defaults) is left to it; collapse none never collapses
+  // and always already does.
+  navGivesWay() {
+    return this.navMenus().some((menu) => menu.getAttribute('overflow') !== 'none' || menu.getAttribute('collapse') !== 'none');
+  }
+
+  setFit(need) {
+    this._fitNeed = need;
+    this.sfHostState('data-nav-overflow', need > 0);
+  }
+
+  queueFit() {
+    if (this._fitFrame) return;
+    const raf = globalThis.requestAnimationFrame;
+    if (typeof raf !== 'function') {
+      this.syncFit();
+      return;
+    }
+    this._fitFrame = raf(() => {
+      this._fitFrame = 0;
+      this.syncFit();
+    });
+  }
+
+  syncFit() {
+    const header = this.header();
+    if (!header || this.collapse === 'none' || this.collapse === 'always' || typeof document === 'undefined') {
+      if (this._fitNeed) this.setFit(0);
+      return;
+    }
+    const width = header.getBoundingClientRect().width;
+    if (this._fitNeed) {
+      if (width < this._fitNeed) return;
+      // Room again: draw the row and measure it in the next frame.
+      this.setFit(0);
+      this.syncCollapsed();
+      this.queueFit();
+      return;
+    }
+    if (this.collapsed) return;
+    const nav = header.querySelector('.sf-site-header-nav');
+    if (!nav || !nav.firstElementChild || this.navGivesWay()) return;
+    const room = nav.getBoundingClientRect();
+    const range = document.createRange();
+    range.selectNodeContents(nav);
+    const spread = range.getBoundingClientRect();
+    const over = Math.max(0, room.left - spread.left) + Math.max(0, spread.right - room.right);
+    if (over <= 0.5 || !room.height) return;
+    this.setFit(Math.ceil(width + spread.width - room.width) + 1);
+    this.syncCollapsed();
   }
 
   // A sticky bar is the flat place while the page is at its top and the raised

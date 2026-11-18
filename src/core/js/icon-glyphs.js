@@ -169,13 +169,19 @@ function namesUrl() {
   return base ? `${base}/core/contracts/icon-names.v1.json` : '';
 }
 
+// The list answers null when it cannot be read: no sfPath, a server that
+// refuses it, or a sandboxed example frame (origin null) whose server sends
+// no Access-Control-Allow-Origin for JSON (DF-8). Unknown is not "no such
+// icon": an empty list made every glyph checked before its face arrived a
+// misspelling for good -- said in the console and never read again -- so
+// arrows in the docs' example frames stayed empty boxes.
 function loadNames() {
   const state = shared();
   if (!state.names) {
     const url = namesUrl();
     state.names = url && typeof fetch === 'function'
-      ? fetch(url).then((response) => (response.ok ? response.json() : null)).then((data) => (Array.isArray(data?.names) ? data.names : [])).catch(() => [])
-      : Promise.resolve([]);
+      ? fetch(url).then((response) => (response.ok ? response.json() : null)).then((data) => (Array.isArray(data?.names) ? data.names : null)).catch(() => null)
+      : Promise.resolve(null);
   }
   return state.names;
 }
@@ -219,7 +225,10 @@ function warnMissing(name) {
   if (state.warned.has(name)) return;
   state.warned.add(name);
   loadNames().then((names) => {
-    if (names.includes(name)) {
+    // A name the list holds, or any name when the list cannot be read: a
+    // face on its way, read again when one arrives; only a name the list
+    // lacks is said.
+    if (!names || names.includes(name)) {
       state.warned.delete(name);
       watchFaces();
       return;
