@@ -229,3 +229,41 @@ test('the about menu is on unless the page turns it off', () => {
   assert.equal(aboutEnabled(false), false);
   assert.equal(aboutEnabled('false'), false);
 });
+
+// Docara 3.18.0 (2026-11-18): SF_BOOT_CONFIG.effects is deprecated for the
+// set's declaration SF_BOOT_CONFIG.packages.effects, so Core's engine reads the
+// declaration first and the former place only for what it leaves out, noting
+// that read until remove_after (journal option-sf-boot-config-effects-to-package).
+test('effects settings: packages.effects first, SF_BOOT_CONFIG.effects as the noted fallback', () => {
+  const saved = globalThis.SF_BOOT_CONFIG;
+  const noted = () => (globalThis.SF?.deprecations?.list?.() ?? []).filter((note) => note.from === 'SF_BOOT_CONFIG.effects').length;
+  try {
+    globalThis.SF?.deprecations?.clear?.();
+    globalThis.SF_BOOT_CONFIG = {packages: {effects: {base: '/fx/smart/', foreign: 'refuse', about: false}}};
+    assert.equal(foreignMode(), 'refuse', 'new place: foreign');
+    assert.equal(aboutEnabled(), false, 'new place: about');
+    assert.equal(noted(), 0, 'the new place is not a legacy read');
+
+    globalThis.SF_BOOT_CONFIG = {effects: {foreign: 'refuse', about: false}};
+    assert.equal(foreignMode(), 'refuse', 'former place: foreign');
+    assert.equal(aboutEnabled(), false, 'former place: about');
+    assert.equal(noted() > 0, true, 'the former place is noted');
+
+    globalThis.SF?.deprecations?.clear?.();
+    globalThis.SF_BOOT_CONFIG = {packages: {effects: {foreign: 'sandbox'}}, effects: {foreign: 'refuse', about: false}};
+    assert.equal(foreignMode(), 'sandbox', 'a key in the declaration wins');
+    assert.equal(aboutEnabled(), false, 'a key it leaves out comes from the former place');
+    assert.equal(noted() > 0, true);
+
+    for (const declared of [true, '1.0.0', '/fx/smart/']) {
+      globalThis.SF?.deprecations?.clear?.();
+      globalThis.SF_BOOT_CONFIG = {packages: {effects: declared}};
+      assert.equal(foreignMode(), 'sandbox', `a declaration ${declared} holds no settings`);
+      assert.equal(aboutEnabled(), true);
+      assert.equal(noted(), 0);
+    }
+  } finally {
+    globalThis.SF_BOOT_CONFIG = saved;
+    globalThis.SF?.deprecations?.clear?.();
+  }
+});

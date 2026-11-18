@@ -302,14 +302,24 @@ function noteAlias(note) {
   noteDeprecated({component: 'effects', ...note, ...EFFECTS_ALIAS, ...(aliasExpired() ? {expired: true} : {})});
 }
 
-function effectsConfig() {
-  const config = globalThis.SF_BOOT_CONFIG?.effects;
-  if (config === undefined) return {};
+// The page's effects settings. Their place is the set's declaration,
+// SF_BOOT_CONFIG.packages.effects = {base, version, foreign, about, ...}: a
+// key there wins. SF_BOOT_CONFIG.effects, its former place, is still read for
+// the keys the declaration leaves out until remove_after, and each read is
+// noted (journal option-sf-boot-config-effects-to-package). A declaration
+// that is only a switch, a version or a base (true, '1.0.0', '.../smart')
+// holds no settings.
+function effectsConfig(boot = globalThis.SF_BOOT_CONFIG) {
+  const declared = boot?.packages?.effects;
+  const set = declared && typeof declared === 'object' && !Array.isArray(declared) ? declared : null;
+  const config = boot?.effects;
+  if (config === undefined || config === null) return set ?? {};
   noteAlias({kind: 'option', from: 'SF_BOOT_CONFIG.effects', to: 'SF_BOOT_CONFIG.packages.effects'});
-  return config ?? {};
+  return set ? {...config, ...set} : config;
 }
 
-// SF_BOOT_CONFIG.effects.foreign: 'sandbox' (the default) or 'refuse'. Any
+// SF_BOOT_CONFIG.packages.effects.foreign (formerly SF_BOOT_CONFIG.effects.foreign):
+// 'sandbox' (the default) or 'refuse'. Any
 // other value refuses: a switch mistyped fails closed.
 export function foreignMode(value = effectsConfig().foreign) {
   return value === undefined || value === 'sandbox' ? 'sandbox' : 'refuse';
@@ -799,7 +809,8 @@ const ABOUT_WORDS = Object.freeze({
 const aboutWord = (key, node, vars = {}) => pageText(ABOUT_WORDS, key, node, 'sf-effect-about')
   .replace(/\{(\w+)\}/gu, (whole, name) => (Object.hasOwn(vars, name) ? String(vars[name]) : whole));
 
-// SF_BOOT_CONFIG.effects.about: on unless it is false.
+// SF_BOOT_CONFIG.packages.effects.about (formerly SF_BOOT_CONFIG.effects.about):
+// on unless it is false.
 export function aboutEnabled(value = effectsConfig().about) {
   return value !== false && value !== 'false';
 }

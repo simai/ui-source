@@ -1876,12 +1876,13 @@
       "recorded_on": "2026-10-18",
       "stage": "compat",
       "kind": "event",
-      "summary": "sf-theme-generator's events are sf-theme-generator-change and sf-theme-generator-apply; their first names, sf-theme-change and sf-theme-apply, clash with the Loader's light/dark event and are emitted beside them until the sweep.",
+      "summary": "sf-theme-generator's events are sf-theme-generator-change and sf-theme-generator-apply; their first names, sf-theme-change and sf-theme-apply, clash with the Loader's light/dark event and are emitted beside them until the sweep. Only the theme generator's use of the name goes: the Loader's sf-theme-change on window (SF.Loader.setTheme, detail {theme, preference}) is current API and stays, so a listener on window is not reported (match); a listener on a theme generator is reported for a person to move.",
       "items": [
         {
           "component": "theme-generator",
           "from": "sf-theme-change",
-          "to": "sf-theme-generator-change"
+          "to": "sf-theme-generator-change",
+          "match": "(?<!(?:window|globalThis|self|top|parent|defaultView)\\??\\.(?:add|remove)EventListener(?:\\?\\.)?\\(\\s*)['\"`]sf-theme-change['\"`]"
         },
         {
           "component": "theme-generator",
@@ -2945,7 +2946,8 @@
         {
           "component": "sf-theme-generator",
           "from": "sf-theme-change",
-          "to": "change"
+          "to": "change",
+          "match": "(?<!(?:window|globalThis|self|top|parent|defaultView)\\??\\.(?:add|remove)EventListener(?:\\?\\.)?\\(\\s*)['\"`]sf-theme-change['\"`]"
         },
         {
           "component": "sf-theme-generator",
@@ -5923,7 +5925,7 @@
       "recorded_on": "2026-11-03",
       "stage": "compat",
       "kind": "option",
-      "summary": "The effects configuration moves from SF_BOOT_CONFIG.effects to the set's declaration, SF_BOOT_CONFIG.packages.effects = {base, foreign, about}. The catalogue is the set's own, at the same commit as its bundle, so the set reads no catalogue option; Core's frozen engine still reads SF_BOOT_CONFIG.effects.catalogue, foreign and about until remove_after and notes the read.",
+      "summary": "The effects configuration moves from SF_BOOT_CONFIG.effects to the set's declaration, SF_BOOT_CONFIG.packages.effects = {base, foreign, about}. The catalogue is the set's own, at the same commit as its bundle, so the set reads no catalogue option; Core's frozen engine still reads SF_BOOT_CONFIG.effects.catalogue, foreign and about until remove_after and notes the read. Since 2026-11-19 Core's engine reads SF_BOOT_CONFIG.packages.effects first (a key there wins) and the former place only for the keys the declaration leaves out; only that read is noted.",
       "items": [
         {
           "component": "effects",

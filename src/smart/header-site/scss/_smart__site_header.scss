@@ -504,6 +504,21 @@
   justify-content: flex-end;
 }
 
+/* A centred nav whose sf-menu gives way with «Ещё» (overflow more): the menu
+   is as wide as the room it is given (contain: inline-size), so as content it
+   is nothing, the nav's column above was 0 and every item went to «Ещё»
+   (Docara 3.18.0 at 1240 px: columns 557, 0, 557). The menu publishes the
+   width of its whole row as it measures it (--sf-menu--row-size, every item
+   and no «Ещё»), and the nav asks that much: while the row fits, the column
+   is the row and stands at the bar's centre; when it does not, the column is
+   the room between the brand and the tools, and the menu moves only the
+   items that do not fit to «Ещё», as a row at the start does. Before the
+   first measure the nav asks the whole page width, so it takes all the room
+   there is. */
+.sf-site-header--navigation-center :where(.sf-site-header-row:not(:has(.sf-site-header-actions))) .sf-site-header-nav .sf-smart-menu[data-overflow='more'] {
+  inline-size: var(--sf-menu--row-size, var(--sf-container-breakout-page, 100vw));
+}
+
 .sf-site-header--collapse-always {
   @include collapsed;
 
