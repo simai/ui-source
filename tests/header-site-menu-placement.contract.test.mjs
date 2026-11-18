@@ -88,7 +88,10 @@ test('header site C104: the bar keeps aria-expanded on the switch and draws no b
   assert.match(source, /&& !panel\?\.contains\(element\)\n\s+&& element\.getClientRects\(\)\.length > 0/u);
   assert.match(source, /ownMenuButton: !this\._outsideSwitch,/u);
   // Checked after every drawing, on resize (a frame, or at once without one), on open and on close.
-  assert.match(source, /this\._offSwitches = this\.onAfterRender\(\(\) => \{\n\s+this\.observeSize\(\);\n\s+this\.syncCollapsed\(\);\n\s+this\.syncSwitches\(\);\n\s+\}, \{once: false\}\);/u);
+  // The collapsed answer is read again after a drawing only when it can have
+  // changed (DF-9: a read after every drawing worked the page's styles out again).
+  assert.match(source, /this\._offSwitches = this\.onAfterRender\(\(\) => \{\n\s+this\.observeSize\(\);\n\s+if \(this\.collapsedAnswerStale\(\)\) this\.syncCollapsed\(\);\n\s+this\.syncSwitches\(\);\n\s+\}, \{once: false\}\);/u);
+  assert.match(source, /collapsedAnswerStale\(\) \{\n\s+return this\._collapsedNow === undefined\n\s+\|\| this\._collapsedRow !== this\.collapseRow\(\)\n\s+\|\| this\._collapsedStep !== this\.collapse;/u);
   assert.match(source, /globalThis\.addEventListener\('resize', this\._onResize, \{passive: true\}\);/u);
   assert.match(source, /globalThis\.removeEventListener\('resize', this\._onResize\);/u);
   assert.equal((source.match(/this\.syncSwitches\(\);/gu) || []).length, 5);

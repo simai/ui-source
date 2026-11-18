@@ -225,14 +225,19 @@
     // C259): below the md width a frame around such a table
     // ($table-frame-keyed-actions: its rows hold «≡» and it names its key cells)
     // draws nothing, and the table stands as the class .table draws it, its
-    // key cells alone (utility.table). Both conditions are weightless
+    // key cells alone (utility.table). From the md width up every frame draws,
+    // so the condition is asked only below it (DF-9: a :has() on the frame is
+    // asked again for each cell its rules try, and every style pass of a page
+    // with a large framed table paid for it). The condition is weightless
     // (:where), so a rule that reaches the frame weighs what it did.
-    .table-frame:not(:where(#{$table-frame-keyed-actions})) {
-        @include frame;
+    @media (min-width: $table-phone-min) {
+        .table-frame {
+            @include frame;
+        }
     }
 
-    @media (min-width: $table-phone-min) {
-        .table-frame:where(#{$table-frame-keyed-actions}) {
+    @media not all and (min-width: $table-phone-min) {
+        .table-frame:not(:where(#{$table-frame-keyed-actions})) {
             @include frame;
         }
     }

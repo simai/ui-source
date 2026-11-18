@@ -22,7 +22,11 @@ test('C259: the phone is below the md breakpoint, the condition one function for
   assert.match(vars, /\$table-phone-min: map\.get\(bp\.\$breakpoint-array, md\);/u);
   // A table with row actions: its body rows hold «≡» alone in a cell; and it
   // names its key cells. Without key cells nothing changes.
-  assert.match(vars, /@function table-keyed-actions\(\$table: ''\) \{\s*@return ":has\(#\{\$table\}> tbody > tr > \* > sf-button-icon\[icon='menu'\]:only-child, #\{\$table\}> tbody > tr > \* > sf-icon-button\[icon='menu'\]:only-child\):has\(#\{\$table\}> :not\(caption\) > tr > \.table-key\)";/u);
+  // Each argument reaches its control through a descendant combinator, the
+  // position in a :where() on the control (DF-9): the browser caches such an
+  // argument, and one of child combinators only was walked over the whole
+  // table again for every cell a rule under it tried.
+  assert.match(vars, /@function table-keyed-actions\(\$table: ''\) \{\s*@return ":has\(#\{\$table\}> tbody > tr > \* sf-button-icon\[icon='menu'\]:only-child:where\(tr > \* > \*\), #\{\$table\}> tbody > tr > \* sf-icon-button\[icon='menu'\]:only-child:where\(tr > \* > \*\)\):has\(#\{\$table\}> :not\(caption\) > tr \.table-key:where\(tr > \*\)\)";/u);
   // No :is() in the conditions: the build lays an :is() as one rule per part,
   // and inside :not() that is a different selector (it hid the check box and
   // kept the frame on the first build of this branch).
@@ -49,9 +53,12 @@ test('C259: on a phone the table keeps the control cells, the key cells and the 
 });
 
 test('C259: the frame draws nothing around such a table on a phone; a plain frame is unchanged', () => {
-  // Weightless conditions: a rule that reaches the frame weighs what it did.
-  assert.match(frame, /\.table-frame:not\(:where\(#\{\$table-frame-keyed-actions\}\)\) \{\s*@include frame;\s*\}/u);
-  assert.match(frame, /@media \(min-width: \$table-phone-min\) \{\s*\.table-frame:where\(#\{\$table-frame-keyed-actions\}\) \{\s*@include frame;/u);
+  // From the md width up every frame draws, and the condition is asked only
+  // below it (DF-9); weightless, so a rule that reaches the frame weighs what
+  // it did.
+  assert.match(frame, /@media \(min-width: \$table-phone-min\) \{\s*\.table-frame \{\s*@include frame;\s*\}/u);
+  assert.match(frame, /@media not all and \(min-width: \$table-phone-min\) \{\s*\.table-frame:not\(:where\(#\{\$table-frame-keyed-actions\}\)\) \{\s*@include frame;\s*\}/u);
+  assert.doesNotMatch(frame, /\.table-frame:where\(#\{\$table-frame-keyed-actions\}\)/u);
   assert.equal((frame.match(/@include frame;/gu) || []).length, 2);
 });
 

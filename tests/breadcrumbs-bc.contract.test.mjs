@@ -328,6 +328,6 @@ test('the manifest names the new setting and the new default', async () => {
   assert.equal(manifest.settings.siblings.default, false);
   assert.ok(manifest.relations.some((relation) => relation.name === 'cl-menu-context' && relation.lazy === true));
   const passport = JSON.parse(await read('src/component/breadcrumbs/passport.json'));
-  assert.equal(passport.version, '1.3.1'); // above every branch's 1.1.6 (register smart-2) // C212 focus offsets // group build 9: 1.1.8 moved on by the merged branches or a GB9 patch // C282: 1.2.0 moved on by the language-file patch (Russian is a language file)
+  assert.equal(passport.version, '1.3.5'); // DF-9: 1.3.5 above origin's 1.3.4 (fix/held-answers, integration/pair-next-15) // above every branch's 1.1.6 (register smart-2) // C212 focus offsets // group build 9: 1.1.8 moved on by the merged branches or a GB9 patch // C282: 1.2.0 moved on by the language-file patch (Russian is a language file)
   assert.ok(passport.files.includes('src/component/breadcrumbs/js/_trail.js'));
 });

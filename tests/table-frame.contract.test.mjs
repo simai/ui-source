@@ -23,12 +23,13 @@ const readFrame = () => unfoldModes(fs.readFileSync(path.join(root, stylePath), 
 test('the frame is the scroll area and the only outer edge', () => {
   const source = readFrame();
 
-  // The frame's rules stand in one mixin, laid on every frame but one around
-  // a table with row actions on a phone (C259), and on that one from the md
-  // width up; both conditions weightless.
+  // The frame's rules stand in one mixin, laid on every frame from the md
+  // width up and below it on every frame but one around a table with row
+  // actions (C259); the condition is weightless and asked only below md
+  // (DF-9).
   assert.match(source, /@mixin frame \{/u);
-  assert.match(source, /\.table-frame:not\(:where\(#\{\$table-frame-keyed-actions\}\)\) \{\s*@include frame;/u);
-  assert.match(source, /@media \(min-width: \$table-phone-min\) \{\s*\.table-frame:where\(#\{\$table-frame-keyed-actions\}\) \{\s*@include frame;/u);
+  assert.match(source, /@media \(min-width: \$table-phone-min\) \{\s*\.table-frame \{\s*@include frame;/u);
+  assert.match(source, /@media not all and \(min-width: \$table-phone-min\) \{\s*\.table-frame:not\(:where\(#\{\$table-frame-keyed-actions\}\)\) \{\s*@include frame;/u);
   assert.match(source, /overflow:\s*auto/u);
   assert.match(source, /border-width:\s*var\(--sf-px\);\s*border-style: solid;/u);
   assert.match(source, /border-color:\s*var\(--sf-table-frame-border-color\)/u);

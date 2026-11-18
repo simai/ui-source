@@ -1307,6 +1307,11 @@ export function installIconSubsetRuntime(
       }
     };
 
+    // Every icon is read first, then every class is set (DF-9): a read of an
+    // icon's computed font (isIconDrawnByPageFace) after the class of the one
+    // before it changed made the browser work out the page's styles again for
+    // each icon of the scan.
+    const decisions = [];
     const processNode = (el) => {
       if (!el || el.nodeType !== Node.ELEMENT_NODE) return;
       if (el.tagName?.toLowerCase?.() === "sf-icon") return;
@@ -1315,11 +1320,11 @@ export function installIconSubsetRuntime(
 
       const tracked = this.getTrackedStaticIconAttrs(el);
       if (!tracked) {
-        updateLoadedClass(el, false);
+        decisions.push([el, false]);
         return;
       }
 
-      updateLoadedClass(el, this.isTrackedIconLoaded(tracked, el));
+      decisions.push([el, this.isTrackedIconLoaded(tracked, el)]);
     };
 
     this.isSyncingStaticIconState = true;
@@ -1331,6 +1336,8 @@ export function installIconSubsetRuntime(
       if (host.querySelectorAll) {
         host.querySelectorAll(".sf-icon").forEach(processNode);
       }
+
+      decisions.forEach(([el, shouldBeLoaded]) => updateLoadedClass(el, shouldBeLoaded));
     } finally {
       this.isSyncingStaticIconState = false;
     }
@@ -1363,6 +1370,7 @@ export function installIconSubsetRuntime(
     if (!this.adoptedIconsPending) {
       this.adoptedIconsPending = new Set();
       const settle = () => {
+        const loaded = [];
         this.adoptedIconsPending.forEach((el) => {
           if (!el.isConnected) {
             this.adoptedIconsPending.delete(el);
@@ -1373,28 +1381,33 @@ export function installIconSubsetRuntime(
             this.adoptedIconsPending.delete(el);
             return;
           }
-          if (this.isTrackedIconLoaded(tracked, el)) {
-            el.classList.add("sf-icon-loaded");
-            checkIconGlyph(el);
-            this.adoptedIconsPending.delete(el);
-          }
+          if (this.isTrackedIconLoaded(tracked, el)) loaded.push(el);
+        });
+        loaded.forEach((el) => {
+          el.classList.add("sf-icon-loaded");
+          checkIconGlyph(el);
+          this.adoptedIconsPending.delete(el);
         });
       };
       window.addEventListener("sf-icons-subset:ready", settle);
     }
 
+    // Read every glyph, then set the classes (as syncStaticIconLoadedState).
     let added = 0;
-    glyphs.forEach((el) => {
+    const states = glyphs.map((el) => {
       const tracked = this.getTrackedStaticIconAttrs(el);
-      if (!tracked) {
-        el.classList.remove("sf-icon-loaded");
-        this.adoptedIconsPending.delete(el);
-        return;
-      }
+      if (!tracked) return null;
       if (this.isIconSubsetEnabled()) {
         added += this.trackIconDescriptor(tracked.icon, tracked.attrs);
       }
-      if (this.isTrackedIconLoaded(tracked, el)) {
+      return this.isTrackedIconLoaded(tracked, el);
+    });
+    glyphs.forEach((el, index) => {
+      const loaded = states[index];
+      if (loaded === null) {
+        el.classList.remove("sf-icon-loaded");
+        this.adoptedIconsPending.delete(el);
+      } else if (loaded) {
         el.classList.add("sf-icon-loaded");
         checkIconGlyph(el);
         this.adoptedIconsPending.delete(el);

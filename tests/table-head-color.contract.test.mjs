@@ -39,5 +39,5 @@ test('.table declares ten public variables (5-10)', () => {
 });
 
 test('the passport names the minor version that adds it', () => {
-  assert.equal(JSON.parse(read('src/utility/table/passport.json')).version, '1.8.0');
+  assert.equal(JSON.parse(read('src/utility/table/passport.json')).version, '1.8.1'); // DF-9: the keyed-actions condition cached
 });
