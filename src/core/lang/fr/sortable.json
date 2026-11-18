@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 21,
-    "translated": 18,
-    "share": 85.7
+    "translated": 21,
+    "share": 100
   },
   "words": {
     "sf-sortable": {
@@ -21,15 +21,18 @@
       "hint": "Plus pour insérer après.",
       "inserted": "{item} inséré en position {index} dans « {list} ».",
       "instructions": "Espace ou Entrée pour saisir, flèches pour déplacer, Espace ou Entrée pour déposer, Échap pour annuler.",
+      "instructions-select": "Espace pour sélectionner, Entrée pour saisir, flèches pour déplacer, Entrée pour déposer, Échap pour annuler.",
       "menu": "Insérer",
       "move-down": "Vers le bas",
       "move-first": "Tout en haut",
       "move-last": "Tout en bas",
       "move-menu": "Déplacer « {item} »",
+      "move-to": "Déplacer vers",
       "move-up": "Vers le haut",
       "moved": "Position {index} sur {total} dans « {list} ».",
       "picked": "{item} saisi. Position {index} sur {total} dans « {list} ».",
       "point": "Insérer : position {index} sur {total}",
+      "refused": "Pas ici",
       "roledescription": "déplaçable",
       "search": "Rechercher",
       "target": "Cible : {target}."

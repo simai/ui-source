@@ -17,6 +17,9 @@
     "point": "Inserisci: posizione {index} di {total}",
     "roledescription": "trascinabile",
     "search": "Cerca",
-    "target": "Destinazione: {target}."
+    "target": "Destinazione: {target}.",
+    "instructions-select": "Spazio per selezionare, Invio per prendere, frecce per spostare, Invio per rilasciare, Esc per annullare.",
+    "move-to": "Sposta in",
+    "refused": "Non qui"
   }
 }

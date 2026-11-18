@@ -1,6 +1,12 @@
 {
   "runtime": {
     "value-missing": "選択してください。",
-    "help": "詳細: {label}"
+    "help": "詳細: {label}",
+    "search-label": "リスト内を検索",
+    "loading-options": "選択肢を読み込み中",
+    "options-error": "選択肢を読み込めませんでした",
+    "nothing-found": "見つかりませんでした",
+    "retry": "再試行",
+    "show-more": "さらに表示"
   }
 }

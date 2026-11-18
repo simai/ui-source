@@ -1,0 +1,56 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "es",
+  "name": "Español",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "Acciones con lo seleccionado",
+      "count-text": {
+        "one": "{n} seleccionado",
+        "many": "{n} seleccionados",
+        "other": "{n} seleccionados"
+      },
+      "all-text": "Seleccionados los {n}",
+      "select-all-text": "Seleccionar los {n}",
+      "select-page-text": "Solo esta página ({n})",
+      "more-text": "Más acciones",
+      "clear-text": "Quitar la selección",
+      "clear-hint": "Quitar la selección (Esc)",
+      "cleared-text": "Selección quitada",
+      "min-reason": "Seleccione al menos {min}",
+      "max-reason": "Seleccione como máximo {max}",
+      "question-text": {
+        "one": "¿{action} {n} elemento?",
+        "many": "¿{action} {n} elementos?",
+        "other": "¿{action} {n} elementos?"
+      },
+      "accept-text": "{action}: {n}",
+      "consequence-text": "No se puede deshacer.",
+      "all-scope-text": "Los {n} del filtro actual.",
+      "notice-text": "{action}: {n}",
+      "undo-text": "Deshacer",
+      "progress-text": "En curso: {done} de {total}",
+      "result-text": "Hecho: {ok} de {total}",
+      "failed-text": {
+        "one": "{n} con error",
+        "many": "{n} con error",
+        "other": "{n} con error"
+      },
+      "details-text": "Detalles",
+      "details-heading": "Con error: {failed} de {total}",
+      "retry-text": "Reintentar para {n}",
+      "failed-reason": "Rechazado por el servidor"
+    }
+  }
+}

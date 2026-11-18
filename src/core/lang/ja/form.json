@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 14,
-    "translated": 8,
-    "share": 57.1
+    "translated": 14,
+    "share": 100
   },
   "words": {
     "sf-form": {
@@ -19,12 +19,18 @@
       "submit": "保存",
       "cancel": "キャンセル",
       "edit": "編集",
+      "send": "送信",
+      "answer-sending": "送信中…",
+      "answer-cancelling": "キャンセル中…",
+      "answer-sent": "送信済み",
+      "answer-expired": "回答期限が過ぎました",
       "unsaved": "保存されていない変更があります",
       "errors-title": {
         "other": "{n} 件の項目を修正してください"
       },
       "value-missing": "「{label}」を入力してください",
-      "help-label": "{label} の詳細"
+      "help-label": "{label} の詳細",
+      "empty-value": "未設定"
     }
   }
 }

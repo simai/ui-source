@@ -1,0 +1,56 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "pt-br",
+  "name": "Português (Brasil)",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "Ações com os selecionados",
+      "count-text": {
+        "one": "{n} selecionado",
+        "many": "{n} selecionados",
+        "other": "{n} selecionados"
+      },
+      "all-text": "Todos os {n} selecionados",
+      "select-all-text": "Selecionar todos os {n}",
+      "select-page-text": "Apenas esta página ({n})",
+      "more-text": "Mais ações",
+      "clear-text": "Limpar seleção",
+      "clear-hint": "Limpar seleção (Esc)",
+      "cleared-text": "Seleção limpa",
+      "min-reason": "Selecione pelo menos {min}",
+      "max-reason": "Selecione no máximo {max}",
+      "question-text": {
+        "one": "{action} {n} item?",
+        "many": "{action} {n} itens?",
+        "other": "{action} {n} itens?"
+      },
+      "accept-text": "{action}: {n}",
+      "consequence-text": "Isso não pode ser desfeito.",
+      "all-scope-text": "Todos os {n} do filtro atual.",
+      "notice-text": "{action}: {n}",
+      "undo-text": "Desfazer",
+      "progress-text": "Em andamento: {done} de {total}",
+      "result-text": "Concluído: {ok} de {total}",
+      "failed-text": {
+        "one": "{n} com falha",
+        "many": "{n} com falha",
+        "other": "{n} com falha"
+      },
+      "details-text": "Detalhes",
+      "details-heading": "Com falha: {failed} de {total}",
+      "retry-text": "Tentar novamente para {n}",
+      "failed-reason": "Recusado pelo servidor"
+    }
+  }
+}

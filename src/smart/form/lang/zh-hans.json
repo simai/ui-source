@@ -9,6 +9,12 @@
       "other": "请修正 {n} 个字段"
     },
     "value-missing": "请填写“{label}”",
-    "help-label": "详细了解{label}"
+    "help-label": "详细了解{label}",
+    "send": "发送",
+    "answer-sending": "正在发送…",
+    "answer-cancelling": "正在取消…",
+    "answer-sent": "已发送",
+    "answer-expired": "回答时间已过",
+    "empty-value": "未填写"
   }
 }

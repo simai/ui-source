@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 8,
-    "translated": 7,
-    "share": 87.5
+    "translated": 8,
+    "share": 100
   },
   "words": {
     "sf-dropdown": {
@@ -21,7 +21,8 @@
       "search": "検索",
       "empty": "未選択",
       "value-missing": "選択してください",
-      "help": "詳細: {label}"
+      "help": "詳細: {label}",
+      "nothing-found": "見つかりませんでした"
     }
   }
 }

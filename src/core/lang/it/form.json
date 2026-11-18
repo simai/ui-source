@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 14,
-    "translated": 8,
-    "share": 57.1
+    "translated": 14,
+    "share": 100
   },
   "words": {
     "sf-form": {
@@ -19,6 +19,11 @@
       "submit": "Salva",
       "cancel": "Annulla",
       "edit": "Modifica",
+      "send": "Invia",
+      "answer-sending": "Invio…",
+      "answer-cancelling": "Annullamento…",
+      "answer-sent": "Inviato",
+      "answer-expired": "Il tempo per rispondere è scaduto",
       "unsaved": "Hai modifiche non salvate",
       "errors-title": {
         "one": "Correggi {n} campo",
@@ -26,7 +31,8 @@
         "other": "Correggi {n} campi"
       },
       "value-missing": "Compila il campo «{label}»",
-      "help-label": "Maggiori informazioni su {label}"
+      "help-label": "Maggiori informazioni su {label}",
+      "empty-value": "Non indicato"
     }
   }
 }

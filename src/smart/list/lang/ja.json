@@ -15,6 +15,8 @@
     "undated-text": "日付なし",
     "ungrouped-text": "その他",
     "unread-text": "未読",
-    "untitled-text": "無題"
+    "untitled-text": "無題",
+    "files-drop-text": "離すと「{target}」にアップロードします",
+    "pick-label": "{text} を選択"
   }
 }

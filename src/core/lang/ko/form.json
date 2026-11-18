@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 14,
-    "translated": 8,
-    "share": 57.1
+    "translated": 14,
+    "share": 100
   },
   "words": {
     "sf-form": {
@@ -19,12 +19,18 @@
       "submit": "저장",
       "cancel": "취소",
       "edit": "편집",
+      "send": "보내기",
+      "answer-sending": "보내는 중…",
+      "answer-cancelling": "취소하는 중…",
+      "answer-sent": "보냄",
+      "answer-expired": "답변 기한이 지났습니다",
       "unsaved": "저장하지 않은 변경 사항이 있습니다",
       "errors-title": {
         "other": "필드 {n}개를 수정하세요"
       },
       "value-missing": "‘{label}’ 필드를 입력하세요",
-      "help-label": "{label} 자세히 보기"
+      "help-label": "{label} 자세히 보기",
+      "empty-value": "지정되지 않음"
     }
   }
 }

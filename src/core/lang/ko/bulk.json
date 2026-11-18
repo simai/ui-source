@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ko",
+  "name": "한국어",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "선택 항목 작업",
+      "count-text": {
+        "other": "{n}개 선택됨"
+      },
+      "all-text": "{n}개 모두 선택됨",
+      "select-all-text": "{n}개 모두 선택",
+      "select-page-text": "이 페이지만 ({n})",
+      "more-text": "작업 더 보기",
+      "clear-text": "선택 해제",
+      "clear-hint": "선택 해제 (Esc)",
+      "cleared-text": "선택이 해제됨",
+      "min-reason": "{min}개 이상 선택하세요",
+      "max-reason": "{max}개 이하로 선택하세요",
+      "question-text": {
+        "other": "{n}개 항목을 {action}할까요?"
+      },
+      "accept-text": "{action}: {n}",
+      "consequence-text": "이 작업은 되돌릴 수 없습니다.",
+      "all-scope-text": "현재 필터의 {n}개 모두.",
+      "notice-text": "{action}: {n}",
+      "undo-text": "실행 취소",
+      "progress-text": "처리 중: {total}개 중 {done}개",
+      "result-text": "완료: {total}개 중 {ok}개",
+      "failed-text": {
+        "other": "{n}개 실패"
+      },
+      "details-text": "자세히",
+      "details-heading": "실패: {total}개 중 {failed}개",
+      "retry-text": "{n}개 다시 시도",
+      "failed-reason": "서버에서 거부됨"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "runtime": {
+    "label-text": "Azioni sugli elementi selezionati",
+    "count-text": {
+      "one": "{n} selezionato",
+      "many": "{n} selezionati",
+      "other": "{n} selezionati"
+    },
+    "all-text": "Selezionati tutti i {n}",
+    "select-all-text": "Seleziona tutti i {n}",
+    "select-page-text": "Solo questa pagina ({n})",
+    "more-text": "Altre azioni",
+    "clear-text": "Annulla la selezione",
+    "clear-hint": "Annulla la selezione (Esc)",
+    "cleared-text": "Selezione annullata",
+    "min-reason": "Seleziona almeno {min}",
+    "max-reason": "Seleziona al massimo {max}",
+    "question-text": {
+      "one": "{action} {n} elemento?",
+      "many": "{action} {n} elementi?",
+      "other": "{action} {n} elementi?"
+    },
+    "accept-text": "{action}: {n}",
+    "consequence-text": "Non può essere annullato.",
+    "all-scope-text": "Tutti i {n} del filtro attuale.",
+    "notice-text": "{action}: {n}",
+    "undo-text": "Annulla",
+    "progress-text": "In corso: {done} di {total}",
+    "result-text": "Fatto: {ok} di {total}",
+    "failed-text": {
+      "one": "{n} non riuscito",
+      "many": "{n} non riusciti",
+      "other": "{n} non riusciti"
+    },
+    "details-text": "Dettagli",
+    "details-heading": "Non riusciti: {failed} di {total}",
+    "retry-text": "Riprova per {n}",
+    "failed-reason": "Rifiutato dal server"
+  }
+}

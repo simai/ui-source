@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 541,
-    "translated": 530,
-    "share": 98
+    "translated": 541,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -38,7 +38,13 @@
     },
     "sf-input-choice": {
       "value-missing": "Escolha uma opção.",
-      "help": "Saiba mais: {label}"
+      "help": "Saiba mais: {label}",
+      "search-label": "Pesquisar na lista",
+      "loading-options": "Carregando as opções",
+      "options-error": "Não foi possível carregar as opções",
+      "nothing-found": "Nada encontrado",
+      "retry": "Tentar novamente",
+      "show-more": "Mostrar mais"
     },
     "sf-input-code": {
       "character": "caractere {n} de {m}",
@@ -392,11 +398,16 @@
       "next-years": "Próximos anos",
       "period": "Período",
       "preset-last-month": "Mês passado",
+      "preset-last-week": "Semana passada",
       "preset-last30-days": "Últimos 30 dias",
       "preset-last7-days": "Últimos 7 dias",
+      "preset-next-month": "Próximo mês",
+      "preset-next-week": "Próxima semana",
       "preset-this-month": "Este mês",
       "preset-this-week": "Esta semana",
+      "preset-this-year": "Este ano",
       "preset-today": "Hoje",
+      "preset-tomorrow": "Amanhã",
       "preset-yesterday": "Ontem",
       "presets": "Períodos rápidos",
       "previous-month": "Mês anterior",

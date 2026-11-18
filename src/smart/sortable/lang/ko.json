@@ -17,6 +17,9 @@
     "point": "삽입: {total}개 중 {index}번째",
     "roledescription": "끌어서 이동 가능",
     "search": "찾기",
-    "target": "대상: {target}."
+    "target": "대상: {target}.",
+    "instructions-select": "Space로 선택, Enter로 집기, 화살표로 이동, Enter로 놓기, Escape로 취소.",
+    "move-to": "이동 위치",
+    "refused": "여기에는 안 됨"
   }
 }

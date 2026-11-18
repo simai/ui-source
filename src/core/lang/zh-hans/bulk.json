@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "zh-hans",
+  "name": "简体中文",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "对所选项的操作",
+      "count-text": {
+        "other": "已选择 {n} 项"
+      },
+      "all-text": "已选择全部 {n} 项",
+      "select-all-text": "选择全部 {n} 项",
+      "select-page-text": "仅本页 ({n})",
+      "more-text": "更多操作",
+      "clear-text": "清除选择",
+      "clear-hint": "清除选择 (Esc)",
+      "cleared-text": "已清除选择",
+      "min-reason": "请至少选择 {min} 项",
+      "max-reason": "最多选择 {max} 项",
+      "question-text": {
+        "other": "{action} {n} 项？"
+      },
+      "accept-text": "{action}：{n}",
+      "consequence-text": "此操作无法撤销。",
+      "all-scope-text": "当前筛选下的全部 {n} 项。",
+      "notice-text": "{action}：{n}",
+      "undo-text": "撤销",
+      "progress-text": "处理中：{done}/{total}",
+      "result-text": "已完成：{ok}/{total}",
+      "failed-text": {
+        "other": "{n} 项失败"
+      },
+      "details-text": "详情",
+      "details-heading": "失败：{failed}/{total}",
+      "retry-text": "重试 {n} 项",
+      "failed-reason": "被服务器拒绝"
+    }
+  }
+}

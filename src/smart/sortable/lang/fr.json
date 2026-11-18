@@ -17,6 +17,9 @@
     "point": "Insérer : position {index} sur {total}",
     "roledescription": "déplaçable",
     "search": "Rechercher",
-    "target": "Cible : {target}."
+    "target": "Cible : {target}.",
+    "instructions-select": "Espace pour sélectionner, Entrée pour saisir, flèches pour déplacer, Entrée pour déposer, Échap pour annuler.",
+    "move-to": "Déplacer vers",
+    "refused": "Pas ici"
   }
 }

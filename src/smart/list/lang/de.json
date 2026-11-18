@@ -16,6 +16,8 @@
     "undated-text": "Ohne Datum",
     "ungrouped-text": "Sonstige",
     "unread-text": "ungelesen",
-    "untitled-text": "Ohne Titel"
+    "untitled-text": "Ohne Titel",
+    "files-drop-text": "Loslassen, um in „{target}“ hochzuladen",
+    "pick-label": "{text} auswählen"
   }
 }

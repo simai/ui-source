@@ -3,7 +3,8 @@
     "search": "検索",
     "empty": "未選択",
     "value-missing": "選択してください",
-    "help": "詳細: {label}"
+    "help": "詳細: {label}",
+    "nothing-found": "見つかりませんでした"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

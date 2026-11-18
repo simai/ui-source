@@ -1,0 +1,50 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "選択項目の操作",
+      "count-text": {
+        "other": "{n} 件選択"
+      },
+      "all-text": "{n} 件すべて選択済み",
+      "select-all-text": "{n} 件すべて選択",
+      "select-page-text": "このページのみ ({n})",
+      "more-text": "その他の操作",
+      "clear-text": "選択を解除",
+      "clear-hint": "選択を解除 (Esc)",
+      "cleared-text": "選択を解除しました",
+      "min-reason": "{min} 件以上選択してください",
+      "max-reason": "{max} 件以下を選択してください",
+      "question-text": {
+        "other": "{n} 件を{action}しますか?"
+      },
+      "accept-text": "{action}: {n}",
+      "consequence-text": "この操作は元に戻せません。",
+      "all-scope-text": "現在のフィルターの {n} 件すべて。",
+      "notice-text": "{action}: {n}",
+      "undo-text": "元に戻す",
+      "progress-text": "処理中: {total} 件中 {done} 件",
+      "result-text": "完了: {total} 件中 {ok} 件",
+      "failed-text": {
+        "other": "{n} 件失敗"
+      },
+      "details-text": "詳細",
+      "details-heading": "失敗: {total} 件中 {failed} 件",
+      "retry-text": "{n} 件を再試行",
+      "failed-reason": "サーバーに拒否されました"
+    }
+  }
+}

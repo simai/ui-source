@@ -274,6 +274,9 @@
       "breadcrumbs": [
         "sf-breadcrumbs"
       ],
+      "bulk": [
+        "sf-bulk-actions"
+      ],
       "button": [
         "sf-button",
         "sf-button-close",
@@ -502,6 +505,9 @@
       ],
       "breadcrumbs": [
         "sf-breadcrumbs"
+      ],
+      "bulk": [
+        "sf-bulk-actions"
       ],
       "button": [
         "sf-button",
@@ -732,6 +738,9 @@
       "breadcrumbs": [
         "sf-breadcrumbs"
       ],
+      "bulk": [
+        "sf-bulk-actions"
+      ],
       "button": [
         "sf-button",
         "sf-button-close",
@@ -960,6 +969,9 @@
       ],
       "breadcrumbs": [
         "sf-breadcrumbs"
+      ],
+      "bulk": [
+        "sf-bulk-actions"
       ],
       "button": [
         "sf-button",
@@ -1190,6 +1202,9 @@
       "breadcrumbs": [
         "sf-breadcrumbs"
       ],
+      "bulk": [
+        "sf-bulk-actions"
+      ],
       "button": [
         "sf-button",
         "sf-button-close",
@@ -1419,6 +1434,9 @@
       "breadcrumbs": [
         "sf-breadcrumbs"
       ],
+      "bulk": [
+        "sf-bulk-actions"
+      ],
       "button": [
         "sf-button",
         "sf-button-close",
@@ -1647,6 +1665,9 @@
       ],
       "breadcrumbs": [
         "sf-breadcrumbs"
+      ],
+      "bulk": [
+        "sf-bulk-actions"
       ],
       "button": [
         "sf-button",
@@ -2109,6 +2130,9 @@
       "breadcrumbs": [
         "sf-breadcrumbs"
       ],
+      "bulk": [
+        "sf-bulk-actions"
+      ],
       "button": [
         "sf-button",
         "sf-button-close",
@@ -2326,38 +2350,38 @@
     },
     "de": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     },
     "es": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     },
     "fr": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     },
     "it": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     },
     "ja": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     },
     "ko": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     },
     "pt-br": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     },
     "ru": {
       "words": 2258,
@@ -2366,8 +2390,8 @@
     },
     "zh-hans": {
       "words": 2258,
-      "translated": 2034,
-      "share": 90.1
+      "translated": 2258,
+      "share": 100
     }
   }
 }

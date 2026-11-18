@@ -9,6 +9,12 @@
       "other": "필드 {n}개를 수정하세요"
     },
     "value-missing": "‘{label}’ 필드를 입력하세요",
-    "help-label": "{label} 자세히 보기"
+    "help-label": "{label} 자세히 보기",
+    "send": "보내기",
+    "answer-sending": "보내는 중…",
+    "answer-cancelling": "취소하는 중…",
+    "answer-sent": "보냄",
+    "answer-expired": "답변 기한이 지났습니다",
+    "empty-value": "지정되지 않음"
   }
 }

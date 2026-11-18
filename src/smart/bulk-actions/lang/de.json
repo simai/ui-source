@@ -1,0 +1,37 @@
+{
+  "runtime": {
+    "label-text": "Aktionen für die Auswahl",
+    "count-text": {
+      "one": "{n} ausgewählt",
+      "other": "{n} ausgewählt"
+    },
+    "all-text": "Alle {n} ausgewählt",
+    "select-all-text": "Alle {n} auswählen",
+    "select-page-text": "Nur diese Seite ({n})",
+    "more-text": "Weitere Aktionen",
+    "clear-text": "Auswahl aufheben",
+    "clear-hint": "Auswahl aufheben (Esc)",
+    "cleared-text": "Auswahl aufgehoben",
+    "min-reason": "Mindestens {min} auswählen",
+    "max-reason": "Höchstens {max} auswählen",
+    "question-text": {
+      "one": "{action}: {n} Element?",
+      "other": "{action}: {n} Elemente?"
+    },
+    "accept-text": "{action}: {n}",
+    "consequence-text": "Dies kann nicht rückgängig gemacht werden.",
+    "all-scope-text": "Alle {n} im aktuellen Filter.",
+    "notice-text": "{action}: {n}",
+    "undo-text": "Rückgängig",
+    "progress-text": "In Arbeit: {done} von {total}",
+    "result-text": "Erledigt: {ok} von {total}",
+    "failed-text": {
+      "one": "{n} fehlgeschlagen",
+      "other": "{n} fehlgeschlagen"
+    },
+    "details-text": "Details",
+    "details-heading": "Fehlgeschlagen: {failed} von {total}",
+    "retry-text": "Erneut für {n} versuchen",
+    "failed-reason": "Vom Server abgelehnt"
+  }
+}

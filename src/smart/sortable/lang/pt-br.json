@@ -17,6 +17,9 @@
     "point": "Inserir: posição {index} de {total}",
     "roledescription": "arrastável",
     "search": "Buscar",
-    "target": "Destino: {target}."
+    "target": "Destino: {target}.",
+    "instructions-select": "Espaço para selecionar, Enter para pegar, setas para mover, Enter para soltar, Escape para cancelar.",
+    "move-to": "Mover para",
+    "refused": "Aqui não"
   }
 }

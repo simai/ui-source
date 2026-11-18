@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 8,
-    "translated": 7,
-    "share": 87.5
+    "translated": 8,
+    "share": 100
   },
   "words": {
     "sf-dropdown": {
@@ -21,7 +21,8 @@
       "search": "검색",
       "empty": "선택 안 됨",
       "value-missing": "옵션을 선택하세요",
-      "help": "자세히 보기: {label}"
+      "help": "자세히 보기: {label}",
+      "nothing-found": "결과 없음"
     }
   }
 }

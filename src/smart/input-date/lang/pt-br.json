@@ -32,6 +32,11 @@
     "time-not-set": "Não definido",
     "value-missing": "Escolha uma data.",
     "value-missing-datetime": "Escolha uma data e uma hora.",
-    "value-missing-time": "Escolha uma hora."
+    "value-missing-time": "Escolha uma hora.",
+    "preset-last-week": "Semana passada",
+    "preset-next-month": "Próximo mês",
+    "preset-next-week": "Próxima semana",
+    "preset-this-year": "Este ano",
+    "preset-tomorrow": "Amanhã"
   }
 }

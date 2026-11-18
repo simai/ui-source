@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 541,
-    "translated": 530,
-    "share": 98
+    "translated": 541,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -38,7 +38,13 @@
     },
     "sf-input-choice": {
       "value-missing": "请选择一项。",
-      "help": "详细了解：{label}"
+      "help": "详细了解：{label}",
+      "search-label": "在列表中查找",
+      "loading-options": "正在加载选项",
+      "options-error": "无法加载选项",
+      "nothing-found": "未找到任何内容",
+      "retry": "重试",
+      "show-more": "显示更多"
     },
     "sf-input-code": {
       "character": "第 {n} 个字符，共 {m} 个",
@@ -392,11 +398,16 @@
       "next-years": "后几年",
       "period": "时间段",
       "preset-last-month": "上个月",
+      "preset-last-week": "上周",
       "preset-last30-days": "过去 30 天",
       "preset-last7-days": "过去 7 天",
+      "preset-next-month": "下月",
+      "preset-next-week": "下周",
       "preset-this-month": "本月",
       "preset-this-week": "本周",
+      "preset-this-year": "今年",
       "preset-today": "今天",
+      "preset-tomorrow": "明天",
       "preset-yesterday": "昨天",
       "presets": "快捷范围",
       "previous-month": "上个月",

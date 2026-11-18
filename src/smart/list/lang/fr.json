@@ -17,6 +17,8 @@
     "undated-text": "Sans date",
     "ungrouped-text": "Autres",
     "unread-text": "non lu",
-    "untitled-text": "Sans titre"
+    "untitled-text": "Sans titre",
+    "files-drop-text": "Relâchez pour envoyer dans « {target} »",
+    "pick-label": "Choisir {text}"
   }
 }

@@ -15,6 +15,8 @@
     "undated-text": "无日期",
     "ungrouped-text": "其他",
     "unread-text": "未读",
-    "untitled-text": "无标题"
+    "untitled-text": "无标题",
+    "files-drop-text": "松开以上传到“{target}”",
+    "pick-label": "选择 {text}"
   }
 }

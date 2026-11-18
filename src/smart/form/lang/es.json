@@ -11,6 +11,12 @@
       "other": "Corrige {n} campos"
     },
     "value-missing": "Rellena el campo «{label}»",
-    "help-label": "Más sobre {label}"
+    "help-label": "Más sobre {label}",
+    "send": "Enviar",
+    "answer-sending": "Enviando…",
+    "answer-cancelling": "Cancelando…",
+    "answer-sent": "Enviado",
+    "answer-expired": "Ha pasado el plazo para responder",
+    "empty-value": "Sin indicar"
   }
 }

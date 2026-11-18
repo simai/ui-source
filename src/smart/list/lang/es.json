@@ -17,6 +17,8 @@
     "undated-text": "Sin fecha",
     "ungrouped-text": "Otros",
     "unread-text": "sin leer",
-    "untitled-text": "Sin título"
+    "untitled-text": "Sin título",
+    "files-drop-text": "Suelte para subir a «{target}»",
+    "pick-label": "Elegir {text}"
   }
 }

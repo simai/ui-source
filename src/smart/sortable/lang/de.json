@@ -17,6 +17,9 @@
     "point": "Einfügen: Position {index} von {total}",
     "roledescription": "verschiebbar",
     "search": "Suchen",
-    "target": "Ziel: {target}."
+    "target": "Ziel: {target}.",
+    "instructions-select": "Leertaste zum Auswählen, Eingabe zum Aufnehmen, Pfeile zum Verschieben, Eingabe zum Ablegen, Escape zum Abbrechen.",
+    "move-to": "Verschieben nach",
+    "refused": "Nicht hier"
   }
 }

@@ -1,0 +1,40 @@
+{
+  "runtime": {
+    "label-text": "Ações com os selecionados",
+    "count-text": {
+      "one": "{n} selecionado",
+      "many": "{n} selecionados",
+      "other": "{n} selecionados"
+    },
+    "all-text": "Todos os {n} selecionados",
+    "select-all-text": "Selecionar todos os {n}",
+    "select-page-text": "Apenas esta página ({n})",
+    "more-text": "Mais ações",
+    "clear-text": "Limpar seleção",
+    "clear-hint": "Limpar seleção (Esc)",
+    "cleared-text": "Seleção limpa",
+    "min-reason": "Selecione pelo menos {min}",
+    "max-reason": "Selecione no máximo {max}",
+    "question-text": {
+      "one": "{action} {n} item?",
+      "many": "{action} {n} itens?",
+      "other": "{action} {n} itens?"
+    },
+    "accept-text": "{action}: {n}",
+    "consequence-text": "Isso não pode ser desfeito.",
+    "all-scope-text": "Todos os {n} do filtro atual.",
+    "notice-text": "{action}: {n}",
+    "undo-text": "Desfazer",
+    "progress-text": "Em andamento: {done} de {total}",
+    "result-text": "Concluído: {ok} de {total}",
+    "failed-text": {
+      "one": "{n} com falha",
+      "many": "{n} com falha",
+      "other": "{n} com falha"
+    },
+    "details-text": "Detalhes",
+    "details-heading": "Com falha: {failed} de {total}",
+    "retry-text": "Tentar novamente para {n}",
+    "failed-reason": "Recusado pelo servidor"
+  }
+}

@@ -3,7 +3,8 @@
     "search": "搜索",
     "empty": "未选择",
     "value-missing": "请选择一项",
-    "help": "详细了解：{label}"
+    "help": "详细了解：{label}",
+    "nothing-found": "未找到任何内容"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

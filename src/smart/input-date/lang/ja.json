@@ -32,6 +32,11 @@
     "time-not-set": "未設定",
     "value-missing": "日付を選択してください。",
     "value-missing-datetime": "日付と時刻を選択してください。",
-    "value-missing-time": "時刻を選択してください。"
+    "value-missing-time": "時刻を選択してください。",
+    "preset-last-week": "先週",
+    "preset-next-month": "来月",
+    "preset-next-week": "来週",
+    "preset-this-year": "今年",
+    "preset-tomorrow": "明日"
   }
 }

@@ -17,6 +17,9 @@
     "point": "插入：第 {index} 位，共 {total} 位",
     "roledescription": "可拖动",
     "search": "查找",
-    "target": "目标：{target}。"
+    "target": "目标：{target}。",
+    "instructions-select": "按空格选择，按 Enter 拿起，用方向键移动，按 Enter 放下，按 Escape 取消。",
+    "move-to": "移动到",
+    "refused": "不能放在这里"
   }
 }

@@ -1,6 +1,12 @@
 {
   "runtime": {
     "value-missing": "Escolha uma opção.",
-    "help": "Saiba mais: {label}"
+    "help": "Saiba mais: {label}",
+    "search-label": "Pesquisar na lista",
+    "loading-options": "Carregando as opções",
+    "options-error": "Não foi possível carregar as opções",
+    "nothing-found": "Nada encontrado",
+    "retry": "Tentar novamente",
+    "show-more": "Mostrar mais"
   }
 }

@@ -1,6 +1,12 @@
 {
   "runtime": {
     "value-missing": "请选择一项。",
-    "help": "详细了解：{label}"
+    "help": "详细了解：{label}",
+    "search-label": "在列表中查找",
+    "loading-options": "正在加载选项",
+    "options-error": "无法加载选项",
+    "nothing-found": "未找到任何内容",
+    "retry": "重试",
+    "show-more": "显示更多"
   }
 }

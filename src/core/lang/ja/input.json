@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 541,
-    "translated": 530,
-    "share": 98
+    "translated": 541,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -38,7 +38,13 @@
     },
     "sf-input-choice": {
       "value-missing": "選択してください。",
-      "help": "詳細: {label}"
+      "help": "詳細: {label}",
+      "search-label": "リスト内を検索",
+      "loading-options": "選択肢を読み込み中",
+      "options-error": "選択肢を読み込めませんでした",
+      "nothing-found": "見つかりませんでした",
+      "retry": "再試行",
+      "show-more": "さらに表示"
     },
     "sf-input-code": {
       "character": "{m} 文字中 {n} 文字目",
@@ -392,11 +398,16 @@
       "next-years": "次の年",
       "period": "期間",
       "preset-last-month": "先月",
+      "preset-last-week": "先週",
       "preset-last30-days": "過去 30 日間",
       "preset-last7-days": "過去 7 日間",
+      "preset-next-month": "来月",
+      "preset-next-week": "来週",
       "preset-this-month": "今月",
       "preset-this-week": "今週",
+      "preset-this-year": "今年",
       "preset-today": "今日",
+      "preset-tomorrow": "明日",
       "preset-yesterday": "昨日",
       "presets": "クイック選択",
       "previous-month": "前の月",

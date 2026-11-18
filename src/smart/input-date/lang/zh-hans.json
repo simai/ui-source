@@ -32,6 +32,11 @@
     "time-not-set": "未设置",
     "value-missing": "请选择日期。",
     "value-missing-datetime": "请选择日期和时间。",
-    "value-missing-time": "请选择时间。"
+    "value-missing-time": "请选择时间。",
+    "preset-last-week": "上周",
+    "preset-next-month": "下月",
+    "preset-next-week": "下周",
+    "preset-this-year": "今年",
+    "preset-tomorrow": "明天"
   }
 }

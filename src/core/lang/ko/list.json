@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 89,
-    "translated": 87,
-    "share": 97.8
+    "translated": 89,
+    "share": 100
   },
   "words": {
     "sf-list": {
@@ -20,10 +20,12 @@
         "other": "읽지 않음 {n}개"
       },
       "empty-text": "아직 아무것도 없습니다",
+      "files-drop-text": "놓으면 «{target}»에 업로드됩니다",
       "label": "목록",
       "loading-more-text": "불러오는 중…",
       "loading-text": "목록을 불러오는 중",
       "more-text": "더 보기",
+      "pick-label": "{text} 선택",
       "pinned-text": "고정됨",
       "rename-label": "새 이름",
       "rename-text": "이름 바꾸기",

@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 14,
-    "translated": 8,
-    "share": 57.1
+    "translated": 14,
+    "share": 100
   },
   "words": {
     "sf-form": {
@@ -19,12 +19,18 @@
       "submit": "保存",
       "cancel": "取消",
       "edit": "编辑",
+      "send": "发送",
+      "answer-sending": "正在发送…",
+      "answer-cancelling": "正在取消…",
+      "answer-sent": "已发送",
+      "answer-expired": "回答时间已过",
       "unsaved": "你有未保存的更改",
       "errors-title": {
         "other": "请修正 {n} 个字段"
       },
       "value-missing": "请填写“{label}”",
-      "help-label": "详细了解{label}"
+      "help-label": "详细了解{label}",
+      "empty-value": "未填写"
     }
   }
 }

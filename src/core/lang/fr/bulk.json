@@ -1,0 +1,56 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "fr",
+  "name": "Français",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "Actions sur la sélection",
+      "count-text": {
+        "one": "{n} sélectionné",
+        "many": "{n} sélectionnés",
+        "other": "{n} sélectionnés"
+      },
+      "all-text": "Les {n} sont sélectionnés",
+      "select-all-text": "Sélectionner les {n}",
+      "select-page-text": "Seulement cette page ({n})",
+      "more-text": "Plus d’actions",
+      "clear-text": "Effacer la sélection",
+      "clear-hint": "Effacer la sélection (Échap)",
+      "cleared-text": "Sélection effacée",
+      "min-reason": "Sélectionnez au moins {min}",
+      "max-reason": "Sélectionnez au plus {max}",
+      "question-text": {
+        "one": "{action} {n} élément ?",
+        "many": "{action} {n} éléments ?",
+        "other": "{action} {n} éléments ?"
+      },
+      "accept-text": "{action} : {n}",
+      "consequence-text": "Cette action est irréversible.",
+      "all-scope-text": "Les {n} du filtre actuel.",
+      "notice-text": "{action} : {n}",
+      "undo-text": "Annuler",
+      "progress-text": "En cours : {done} sur {total}",
+      "result-text": "Terminé : {ok} sur {total}",
+      "failed-text": {
+        "one": "{n} en échec",
+        "many": "{n} en échec",
+        "other": "{n} en échec"
+      },
+      "details-text": "Détails",
+      "details-heading": "Échecs : {failed} sur {total}",
+      "retry-text": "Réessayer pour {n}",
+      "failed-reason": "Refusé par le serveur"
+    }
+  }
+}

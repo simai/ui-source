@@ -15,6 +15,8 @@
     "undated-text": "날짜 없음",
     "ungrouped-text": "기타",
     "unread-text": "읽지 않음",
-    "untitled-text": "제목 없음"
+    "untitled-text": "제목 없음",
+    "files-drop-text": "놓으면 «{target}»에 업로드됩니다",
+    "pick-label": "{text} 선택"
   }
 }
