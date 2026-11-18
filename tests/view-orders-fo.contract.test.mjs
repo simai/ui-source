@@ -285,6 +285,24 @@ test('FO1-1: zones inside zones -- the innermost takes the drop, the outer gives
   assert.deepEqual(given, [['inner', ['a.png']]]);
 });
 
+test('FO1-1: a handler that only cancels the drag (a component\'s own area inside the zone) takes nothing from the zone', async () => {
+  const doc = fakeDocument();
+  const host = fakeElement(doc);
+  const given = [];
+  filesDrop(host, {onFiles: (files) => given.push(files)});
+  // sf-file-upload's area cancels the dragover and the drop before the host hears them.
+  const held = dragEvent();
+  held.preventDefault();
+  host.listeners.dragover(held);
+  assert.ok(host.attributes.has(FILES_OVER_ATTRIBUTE));
+  assert.equal(held.dataTransfer.dropEffect, 'copy');
+  const dropped = dragEvent({files: ['a.png']});
+  dropped.preventDefault();
+  host.listeners.drop(dropped);
+  await settle();
+  assert.deepEqual(given, [['a.png']]);
+});
+
 test('FO1-2: a file dropped beside every zone does not open in the tab while a zone is on the page', () => {
   const doc = fakeDocument();
   const one = filesDrop(fakeElement(doc), {});

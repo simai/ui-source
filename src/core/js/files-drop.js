@@ -32,7 +32,9 @@
 // page), and gives nothing.
 //
 // Zones inside zones (FO1-1): the innermost zone under the pointer takes the
-// drop; an outer one sees it taken (defaultPrevented) and gives nothing. A
+// drop; an outer one sees it taken by a zone (a mark on the event, shared by
+// every bundle's copy) and gives nothing. A handler that only cancels the
+// event (a component's own area inside the zone) takes nothing from it. A
 // file dropped beside every zone (FO1-2) does not open in the tab while a zone
 // is on the page: the document cancels a drop of files nobody took. The over
 // state counts the enters and leaves of the element (FO1-6): a leave for a
@@ -55,6 +57,14 @@
 export const FILES_OVER_ATTRIBUTE = 'data-sf-files-over';
 export const NO_DRAG_QUERY = '(pointer: coarse) and (not (any-pointer: fine))';
 const ZONES = '__sfFilesDropZones';
+// The zone that took a drag event, on the event (FO1-1).
+const TAKEN = Symbol.for('sf.filesDrop.taken');
+const takenByOther = (event, element) => Boolean(event[TAKEN]) && event[TAKEN] !== element;
+const take = (event, element) => {
+  try {
+    if (!event[TAKEN]) Object.defineProperty(event, TAKEN, {value: element, configurable: true});
+  } catch { /* a frozen event is read as not taken */ }
+};
 
 /** Whether a drag event carries files from the computer. */
 export function carriesFiles(event) {
@@ -167,7 +177,7 @@ export function filesDrop(element, {onFiles = null, onOver = null, disabled = nu
   const onDragOver = (event) => {
     if (!carriesFiles(event)) return;
     // An inner zone took it (FO1-1): it is that zone's.
-    if (event.defaultPrevented) {
+    if (takenByOther(event, element)) {
       setOver(false);
       return;
     }
@@ -176,6 +186,7 @@ export function filesDrop(element, {onFiles = null, onOver = null, disabled = nu
       setOver(false);
       return;
     }
+    take(event, element);
     event.preventDefault();
     if (isDisabled()) {
       event.dataTransfer.dropEffect = 'none';
@@ -193,13 +204,14 @@ export function filesDrop(element, {onFiles = null, onOver = null, disabled = nu
   const onDrop = (event) => {
     depth = 0;
     if (!carriesFiles(event) && !(event.dataTransfer?.files?.length)) return;
-    if (event.defaultPrevented) {
+    if (takenByOther(event, element)) {
       setOver(false);
       return;
     }
     const node = targetOf(event);
     setOver(false);
     if (!node) return;
+    take(event, element);
     event.preventDefault();
     if (isDisabled()) return;
     const dropped = droppedOf(event, folders);

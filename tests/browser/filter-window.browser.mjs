@@ -47,8 +47,8 @@ const open = (tab, anchor, field) => tab.evaluate(({anchor, field}) => {
   window.SF.fieldRenderers.filterWindow.open({anchor: target, field: given, value: {}}).then((answer) => window.answers.push(answer));
 }, {anchor, field});
 const shown = (tab) => tab.waitForFunction(() => {
-  const surface = document.querySelector('[data-sf-filter-window] [role="dialog"], [data-sf-filter-window] dialog, [data-sf-filter-window] .sf-popover__surface');
-  return document.querySelector('[data-sf-filter-window] button[data-action="apply"]') && surface && surface.getBoundingClientRect().height > 0;
+  const surface = document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) [role="dialog"], :is([data-sf-filter-window], [data-sf-drawer-portal]) dialog, :is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-popover__surface');
+  return document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) button[data-action="apply"]') && surface && surface.getBoundingClientRect().height > 0;
 }, null, {timeout: 10_000});
 const lastAnswer = (tab) => tab.evaluate(() => window.answers.at(-1));
 
@@ -82,12 +82,14 @@ for (const {width, theme} of CASES) {
     await tab.waitForTimeout(250);
     const window1 = await tab.evaluate(() => {
       const popover = document.querySelector('[data-sf-filter-window]');
-      const dialog = popover.querySelector('[role="dialog"]') ?? popover.querySelector('dialog') ?? popover;
+      // A phone sheet (sf-drawer) draws its panel on the body: its parts are read there.
+      const scope = popover.localName === 'sf-drawer' ? popover.getDrawerRoot?.() ?? popover : popover;
+      const dialog = scope.querySelector('[role="dialog"]') ?? scope.querySelector('dialog') ?? (scope.getAttribute('role') === 'dialog' ? scope : popover);
       const labelled = dialog.getAttribute('aria-labelledby');
-      const surface = popover.querySelector('.sf-popover__surface') ?? dialog;
+      const surface = scope.querySelector('.sf-popover__surface') ?? (popover.localName === 'sf-drawer' ? scope.querySelector('[data-sf-drawer-panel]') ?? dialog : dialog);
       const box = surface.getBoundingClientRect();
       const anchor = document.getElementById('status').getBoundingClientRect();
-      const buttons = [...popover.querySelectorAll('[data-action]')];
+      const buttons = [...scope.querySelectorAll('[data-action]')];
       const text = (node) => (node.getAttribute('text') || node.textContent).trim();
       return {
         role: dialog.getAttribute('role') || dialog.localName,
@@ -100,9 +102,9 @@ for (const {width, theme} of CASES) {
         xs: buttons.map((one) => Math.round(one.getBoundingClientRect().left)),
         onScreen: box.left >= 0 && box.right <= innerWidth + 0.5 && box.top >= 0 && box.bottom <= innerHeight + 0.5,
         below: box.top >= anchor.bottom - 1,
-        choice: Boolean(popover.querySelector('sf-input-choice[appearance="list"]')),
-        badges: popover.querySelectorAll('sf-input-choice sf-badge.sf-choice-name-badge').length,
-        focusInside: popover.contains(document.activeElement),
+        choice: Boolean(scope.querySelector('sf-input-choice[appearance="list"]')),
+        badges: scope.querySelectorAll('sf-input-choice sf-badge.sf-choice-name-badge').length,
+        focusInside: scope.contains(document.activeElement) || popover.contains(document.activeElement),
       };
     });
     ok(`${key}: no table on the page`, noTable);
@@ -111,11 +113,14 @@ for (const {width, theme} of CASES) {
     ok(`${key}: «Применить» then «Сбросить», in the document and from the start (C157 (3))`, window1.order.join() === 'apply,reset' && window1.words[0] === 'Применить' && window1.words[1] === 'Сбросить' && window1.xs[0] < window1.xs[1], window1);
     ok(`${key}: the control is sf-input-choice list, the statuses as tonal badges; the focus in the window`, window1.choice && window1.badges === 3 && window1.focusInside, window1);
 
-    await tab.click('[data-sf-filter-window] .sf-choice-input[value="work"]', {force: true});
+    await tab.click(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-input[value="work"]', {force: true});
     await tab.waitForTimeout(200);
-    const counted = await tab.evaluate(() => document.querySelector('[data-sf-filter-window] [data-action="apply"]').getAttribute('text'));
+    const counted = await tab.evaluate(() => {
+      const apply = document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) [data-action="apply"]');
+      return apply.closest('sf-button')?.getAttribute('text') ?? apply.getAttribute('text') ?? apply.textContent.trim();
+    });
     ok(`${key}: «Применить (1)» once a value is chosen (FO5-1)`, counted === 'Применить (1)', {counted});
-    await tab.click('[data-sf-filter-window] button[data-action="apply"]');
+    await tab.click(':is([data-sf-filter-window], [data-sf-drawer-portal]) button[data-action="apply"]');
     await tab.waitForTimeout(400);
     const applied = {answer: await lastAnswer(tab), left: await tab.evaluate(() => document.querySelectorAll('[data-sf-filter-window]').length)};
     ok(`${key}: apply answers the choice, the window leaves the page`, applied.answer?.action === 'apply' && JSON.stringify(applied.answer?.value?.values) === '["work"]' && applied.left === 0, applied);
@@ -123,7 +128,7 @@ for (const {width, theme} of CASES) {
     // 2. Reset.
     await open(tab, 'status', 'status');
     await shown(tab);
-    await tab.click('[data-sf-filter-window] button[data-action="reset"]');
+    await tab.click(':is([data-sf-filter-window], [data-sf-drawer-portal]) button[data-action="reset"]');
     await tab.waitForTimeout(400);
     const reset = await lastAnswer(tab);
     ok(`${key}: reset answers reset, with no value`, reset?.action === 'reset' && reset?.value === null, reset);
@@ -167,22 +172,22 @@ for (const {width, theme} of CASES) {
     // 5. From a chip, with the host's pages and search inside.
     await open(tab, 'owner', 'owner');
     await shown(tab);
-    await tab.waitForFunction(() => document.querySelectorAll('[data-sf-filter-window] .sf-choice-input').length >= 50
-      && document.querySelector('[data-sf-filter-window] .sf-choice-search input'), null, {timeout: 10_000}).catch(() => null);
+    await tab.waitForFunction(() => document.querySelectorAll(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-input').length >= 50
+      && document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-search input'), null, {timeout: 10_000}).catch(() => null);
     const paged = await tab.evaluate(() => ({
-      rows: document.querySelectorAll('[data-sf-filter-window] .sf-choice-input').length,
-      avatars: document.querySelectorAll('[data-sf-filter-window] sf-avatar.sf-choice-avatar').length,
-      search: Boolean(document.querySelector('[data-sf-filter-window] .sf-choice-search input')),
-      more: Boolean(document.querySelector('[data-sf-filter-window] .sf-choice-more')),
+      rows: document.querySelectorAll(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-input').length,
+      avatars: document.querySelectorAll(':is([data-sf-filter-window], [data-sf-drawer-portal]) sf-avatar.sf-choice-avatar').length,
+      search: Boolean(document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-search input')),
+      more: Boolean(document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-more')),
       onScreen: (() => {
-        const box = (document.querySelector('[data-sf-filter-window] .sf-popover__surface') ?? document.querySelector('[data-sf-filter-window] [role="dialog"]') ?? document.querySelector('[data-sf-filter-window] [slot="content"]')).getBoundingClientRect();
+        const box = (document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-popover__surface') ?? document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) [role="dialog"]') ?? document.querySelector(':is([data-sf-filter-window], [data-sf-drawer-portal]) [slot="content"]')).getBoundingClientRect();
         return box.left >= 0 && box.right <= innerWidth + 0.5;
       })(),
     }));
     ok(`${key}: from a chip -- the host's first page with avatars, search and «Показать ещё», on screen`, paged.rows === 50 && paged.avatars === 50 && paged.search && paged.more && paged.onScreen, paged);
-    await tab.locator('[data-sf-filter-window] .sf-choice-search input').fill('Сотрудник 7');
+    await tab.locator(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-search input').fill('Сотрудник 7');
     await tab.waitForTimeout(600);
-    const searched = await tab.evaluate(() => ({rows: [...document.querySelectorAll('[data-sf-filter-window] .sf-choice-input')].map((one) => one.value), calls: window.ownerCalls.map((one) => one.query)}));
+    const searched = await tab.evaluate(() => ({rows: [...document.querySelectorAll(':is([data-sf-filter-window], [data-sf-drawer-portal]) .sf-choice-input')].map((one) => one.value), calls: window.ownerCalls.map((one) => one.query)}));
     ok(`${key}: the search asks the host's provider`, searched.calls.includes('Сотрудник 7') && searched.rows.includes('u7') && searched.rows.includes('u70') && !searched.rows.includes('u1'), {rows: searched.rows.length, calls: searched.calls});
     await tab.keyboard.press('Escape');
     await tab.waitForTimeout(300);
