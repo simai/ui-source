@@ -20,7 +20,7 @@ const code = source.split('\n').filter((line) => !line.trimStart().startsWith('/
 test('the manifest: places, navigation, progress, one value, seven events, four actions', () => {
   assert.equal(manifest.tag, 'sf-wizard');
   assert.equal(manifest.family, 'wizard');
-  assert.equal(manifest.version, '1.5.3'); // C210: the column takes the one bar // C208 patch // group build 7: the integrated number (the branch wrote 1.3.4) // group build 9: 1.4.4 moved on by the merged branches or a GB9 patch // C282: 1.4.7 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.5.4'); // LF-6: the phone footer in every place // C210: the column takes the one bar // C208 patch // group build 7: the integrated number (the branch wrote 1.3.4) // group build 9: 1.4.4 moved on by the merged branches or a GB9 patch // C282: 1.4.7 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
   assert.deepEqual(manifest.settings.place.values, ['inline', 'modal', 'drawer', 'pages']);
   assert.deepEqual(manifest.settings.navigation.values, ['linear', 'free', 'visited']);
   assert.deepEqual(manifest.settings.progress.values, ['auto', 'row', 'count', 'column']);
@@ -171,7 +171,7 @@ test('C179: footer gap, names, window sizes, the phone footer and the Framework 
   // (C181 (2), 1.3.3; the browser test wizard-container-c181 measures it).
   const narrow = sheet.indexOf('@container sf-wizard (width < #{mq.container-step(g5)}) {');
   assert.ok(narrow > 0, 'the window footer rule is a container condition at g5');
-  assert.match(sheet.slice(narrow + 1), /^[^@]*\.sf-wizard--window \.sf-wizard-footer \{\n\s+position: sticky;/u);
+  assert.match(sheet.slice(narrow + 1), /^[^@]*\.sf-wizard \.sf-wizard-footer \{\n\s+position: sticky;/u); // LF-6: every place, not the window alone
   assert.doesNotMatch(sheet, /@media[^{]*(?:breakpoint-array|min-width|max-width|width <)/u, 'no screen-width query in the sheet');
   // (5), WZ-6: no browser words.
   assert.doesNotMatch(code, /: control\.validationMessage;/u);

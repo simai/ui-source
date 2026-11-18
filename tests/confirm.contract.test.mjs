@@ -71,7 +71,7 @@ test('the confirm surface applies nothing and keeps the question open when the h
 test('sf-confirm-change keeps its tag, API and former tag after the move from package pro', () => {
   const contract = json('src/smart/confirm-change/component.json');
   assert.equal(contract.tag, 'sf-confirm-change');
-  assert.equal(contract.version, '1.10.4'); // group build 9: 1.9.1 moved on by the merged branches or a GB9 patch // C282: 1.9.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.10.1 moved on by the merged branches or a GB10 patch
+  assert.equal(contract.version, '1.10.6'); // LF-5: disabled holds the acceptance only // group build 9: 1.9.1 moved on by the merged branches or a GB9 patch // C282: 1.9.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.10.1 moved on by the merged branches or a GB10 patch
   // 1.7.0 (C40): the values are sf-change's list, which it fetches.
   assert.ok(contract.relations.some(({name}) => name === 'cl-change'));
   assert.match(read('src/smart/confirm-change/js/templates/default.js'), /<sf-change class="sf-confirm-change__list sf-change-confirm__list" layout="list" \.changes=/u);
@@ -100,7 +100,7 @@ test('sf-confirm: a group named by its question, Escape declines, a dangerous ac
   assert.deepEqual(contract.settings.size.values, ['1/3', '1/2', '1', '2', '3']);
   assert.equal(contract.settings.size.default, '1');
   assert.match(contract.settings.destructive.summary, /2027-01-01/u);
-  assert.equal(contract.version, '1.5.4'); // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch // 1.4.0: require-text says {name} (C177 follow-up #86) // C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
+  assert.equal(contract.version, '1.5.6'); // LF-5: disabled holds the acceptance only // group build 8: 1.3.7 moved on by the merged branches or a GB8 patch // 1.4.0: require-text says {name} (C177 follow-up #86) // C282: 1.4.0 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
   assert.ok(contract.slots.description['x-summary']);
   for (const [name, variable] of Object.entries(contract['css-variables'])) assert.ok(variable['x-summary'], name);
   const source = read('src/smart/confirm/index.js');
@@ -156,7 +156,7 @@ test('sf-confirm-change 1.9.1 (RG-DP-1): expires-at names the event the card fir
   assert.match(summary, /says so once with sf-confirm-change-expired\./u);
   assert.doesNotMatch(summary, /sf-change-confirm-expired/u);
   const manifest = json('src/smart/confirm-change/smart.manifest.json');
-  assert.equal(manifest.version, '1.10.4'); // group build 9: 1.9.1 moved on by the merged branches or a GB9 patch // C282: 1.9.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.10.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.10.6'); // LF-5 // group build 9: 1.9.1 moved on by the merged branches or a GB9 patch // C282: 1.9.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.10.1 moved on by the merged branches or a GB10 patch
   assert.equal(manifest.inputs.properties['expires-at'].description, summary);
   // The former names stay dated aliases until their date (the aliases are unchanged).
   const events = json('src/smart/confirm-change/aliases.json').aliases.filter((row) => row.kind === 'event');
