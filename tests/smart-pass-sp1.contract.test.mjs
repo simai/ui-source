@@ -311,7 +311,7 @@ test('SM-DL-2: below sm the hand-written class row stacks the size under the nam
   const block = sheet.slice(at, sheet.indexOf('\n  }\n', at));
   assert.match(block, /\.sf-download-file-wrap:has\(> \.sf-download-file-file-size\)\) \{\s*flex-direction: column;/u);
   assert.match(block, /\.sf-download-file-wrap > \.sf-download-file-file-size\) \{\s*margin-inline-start: calc\(var\(--sf-file-download-icon-size[^;]*--sf-download-file--gap\)\)\)\);\s*font-size: var\(--sf-text-size-1\\\/2\);/u);
-  assert.equal(json('src/component/download-file/passport.json').version, '1.7.2'); // group build 10: 1.6.1 moved on by the merged branches or a GB10 patch
+  assert.equal(json('src/component/download-file/passport.json').version, '1.7.3'); // group build 10: 1.6.1 moved on by the merged branches or a GB10 patch // C278: 1.7.2 moved on by the language packs
 });
 
 // ---- C250: sf-progress-ring declares the avatar it holds -------------------
