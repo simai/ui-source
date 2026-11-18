@@ -1,0 +1,44 @@
+{
+  "schema": "simai.smart-component-fixture.v2",
+  "id": "reference",
+  "component": "smart.bulk-actions",
+  "title": "bulk-actions reference",
+  "summary": "Deterministic reference fixture for sf-bulk-actions.",
+  "locale": "ru",
+  "props": {
+    "count": 2,
+    "page-count": 12,
+    "total": 240,
+    "size": "1/2",
+    "actions": [
+      {
+        "id": "publish",
+        "text": "Опубликовать",
+        "icon": "public"
+      },
+      {
+        "id": "move",
+        "text": "Переместить",
+        "icon": "drive_file_move"
+      },
+      {
+        "id": "export",
+        "text": "Экспорт",
+        "icon": "download"
+      },
+      {
+        "id": "archive",
+        "text": "В архив",
+        "icon": "archive",
+        "undo": true
+      },
+      {
+        "id": "delete",
+        "text": "Удалить",
+        "icon": "delete"
+      }
+    ]
+  },
+  "children": [],
+  "state": "default"
+}

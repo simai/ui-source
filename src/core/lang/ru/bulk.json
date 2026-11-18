@@ -1,0 +1,59 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ru",
+  "name": "Русский",
+  "dir": "ltr",
+  "status": "reviewed",
+  "review": "The language the Framework's words are written in (C177); a language file since C282.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "Действия с выбранными",
+      "count-text": {
+        "one": "Выбрано {n}",
+        "few": "Выбрано {n}",
+        "many": "Выбрано {n}",
+        "other": "Выбрано {n}"
+      },
+      "all-text": "Выбраны все {n}",
+      "select-all-text": "Выбрать все {n}",
+      "select-page-text": "Только эта страница ({n})",
+      "more-text": "Ещё действия",
+      "clear-text": "Снять выбор",
+      "clear-hint": "Снять выбор (Esc)",
+      "cleared-text": "Выбор снят",
+      "min-reason": "Выберите не меньше {min}",
+      "max-reason": "Выберите не больше {max}",
+      "question-text": {
+        "one": "{action} {n} элемент?",
+        "few": "{action} {n} элемента?",
+        "many": "{action} {n} элементов?",
+        "other": "{action} {n} элемента?"
+      },
+      "accept-text": "{action} {n}",
+      "consequence-text": "Вернуть будет нельзя.",
+      "all-scope-text": "Все {n} по текущему фильтру.",
+      "notice-text": "{action}: {n}",
+      "undo-text": "Отменить",
+      "progress-text": "Выполняем: {done} из {total}",
+      "result-text": "Готово {ok} из {total}",
+      "failed-text": {
+        "one": "{n} не удалось",
+        "few": "{n} не удалось",
+        "many": "{n} не удалось",
+        "other": "{n} не удалось"
+      },
+      "details-text": "Подробнее",
+      "details-heading": "Не удалось: {failed} из {total}",
+      "retry-text": "Повторить для {n}",
+      "failed-reason": "Отказ сервера"
+    }
+  }
+}

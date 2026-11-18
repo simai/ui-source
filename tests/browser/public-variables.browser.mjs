@@ -258,6 +258,11 @@ const DRAW = {
     html: '<div style="display:flex;flex-direction:column;block-size:300px"><sf-list-feed><script type="application/json" data-sf-settings>{"items":[{"id":"1","author":"a","author-name":"Анна","text":"Один"},{"id":"2","author":"a","author-name":"Анна","text":"Два"},{"id":"3","author":"b","author-name":"Борис","text":"Три"}]}</script></sf-list-feed></div>'},
   // sf-wizard (2026-11-06): two steps inline, the frame drawing its head,
   // body and footer; the frame takes the gap, the fill, the edge and the corner.
+  // sf-bulk-actions (C295, 2026-11-17): two selected, two actions; the bar
+  // takes the fill, the edge, the text colour, the gap between its groups and
+  // the corner.
+  'bulk-actions': {css: ['buttons', 'icon-buttons', 'icons', 'smart/smart/bulk-actions/css/bulk-actions.css'], js: 'bulk-actions',
+    html: '<div style="inline-size:900px"><sf-bulk-actions count="2" page-count="12" place="inline"><script type="application/json" data-sf-settings>{"actions":[{"id":"publish","text":"Опубликовать"},{"id":"move","text":"Переместить"}]}</script></sf-bulk-actions></div>'},
   wizard: {css: ['buttons', 'step', 'icons', 'smart/smart/wizard/css/wizard.css'], js: ['wizard', 'wizard-step', 'steps'],
     html: '<sf-wizard heading="Мастер"><sf-wizard-step name="a" label="Первый"><p>Текст</p></sf-wizard-step><sf-wizard-step name="b" label="Второй" type="result"><p>Готово</p></sf-wizard-step></sf-wizard>'},
   // The bar at rest, wide: the brand's picture takes brand-size, the row the gap.

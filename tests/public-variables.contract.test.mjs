@@ -106,6 +106,8 @@ const FOLDERS = {
   change: 'smart/change',
   // Display settings (2026-11-15, C196): a sheet of its own.
   'display-settings': 'smart/display-settings',
+  // The group actions bar (2026-11-17, C295): a sheet of its own.
+  'bulk-actions': 'smart/bulk-actions',
   // The group heading of block list (2026-11-10, C40): a class, CSS only.
   'group-heading': 'group-heading',
   // The workspace layout (2026-10-30): a core layout, in the core sheet.

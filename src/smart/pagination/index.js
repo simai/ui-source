@@ -6,6 +6,7 @@ import { noteDeprecated } from "../../core/js/deprecations";
 import { breakpointMedia } from "../../core/js/breakpoints.js";
 import { EDGE_MARGIN, scrollerOf, watchEdge } from "../../core/js/reading-position.js";
 import { renderPaginationTemplate } from "./js/templates/default";
+import { isDestructiveAction } from "./js/actions.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import {files as languageFiles} from "./lang/index.mjs";
@@ -918,6 +919,9 @@ class SfPagination extends PaginationElement {
       actionChooseLabel: this.actionChooseLabel,
       actionsRegionLabel: this.actionsRegionLabel,
       clearSelectionLabel: this.clearSelectionLabel,
+      bulkActions: this.bulkActions,
+      bulkPageCount: this.bulkPageCount,
+      bulkCountText: this.bulkCountText,
     });
   }
 
@@ -1374,6 +1378,72 @@ class SfPagination extends PaginationElement {
       this.requestCount("action-for-all");
     }
 
+    return this;
+  }
+
+  // The band is sf-bulk-actions (C295, 1.9.0): the actions in its shape. The
+  // danger is the bar's one rule (BA-1); the band asked no question before,
+  // and a host that asks its own keeps doing so, so the band's actions say
+  // confirm false.
+  get bulkActions() {
+    return this.actions.map((item) => ({
+      id: item.value,
+      text: item.text,
+      disabled: Boolean(item.disabled),
+      status: isDestructiveAction(item) ? "danger" : "",
+      confirm: false,
+    }));
+  }
+
+  // A host's own count word (selected-label) stays its line; otherwise the
+  // bar's words: «Выбрано N», «Выбраны все N».
+  get bulkCountText() {
+    return this.hasAttribute("selected-label") ? `${this.selectedLabel} ${this.selectedCount}`.trim() : "";
+  }
+
+  // The rows on the page, for the bar's «Выбрать все N»: the page size, or
+  // what is left on the last page when the count is exact.
+  get bulkPageCount() {
+    if (!this.exactCount) return this.pageSize;
+    const left = this.total - (this.current - 1) * this.pageSize;
+    return Math.max(0, Math.min(this.pageSize, left));
+  }
+
+  // The bar's action: the band's chosen action and its scope, then Apply, so
+  // the host hears sf-pagination-action-change, -action-for-all-change and
+  // -apply as before.
+  applyBulkAction(event) {
+    const detail = event?.detail ?? {};
+    if (!detail.id) return this;
+    this.setAction(detail.id);
+    this.setActionForAll(detail.scope === "all");
+    return this.applyAction();
+  }
+
+  // BA-3: «for all» lasts while the selection does. A changed count takes it
+  // back, so a second action after a change no longer goes to all N.
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback?.(name, oldValue, newValue);
+    if (name === "selected-count" && this.isConnected && oldValue !== null && oldValue !== newValue && this.actionForAll) {
+      this.setActionForAll(false);
+    }
+    if (name === "selected-count" || name === "show-action-for-all") {
+      queueMicrotask(() => this.askCountForAll());
+    }
+  }
+
+  // The bar offers «Выбрать все N» once the whole page is selected, and N is
+  // the number the action would go to: without an exact count the old «для
+  // всех» box asked for it when marked. The bar has no box, so the count is
+  // asked for when the whole page is selected (reason action-for-all, as
+  // before) and the offer appears with the answer.
+  askCountForAll() {
+    if (!this.isConnected || !this.showActionForAll || this.exactCount || !this.canCount || this.counting) {
+      return this;
+    }
+    if (this.selectedCount > 0 && this.selectedCount >= this.bulkPageCount) {
+      this.requestCount("action-for-all");
+    }
     return this;
   }
 

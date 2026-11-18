@@ -10,6 +10,7 @@ SF.RuleLoader['cl-pagination'] = {
     { name: 'cl-checkbox' },
     { name: 'cl-dropdown' },
     { name: 'cl-button-icon' },
+    { name: 'cl-bulk-actions' },
     { name: 'cl-input' },
     { name: 'cl-list-item' },
     { name: 'cl-spinner' },
