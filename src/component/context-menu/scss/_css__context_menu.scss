@@ -16,6 +16,14 @@
      below), so nothing stands beside it: no gap. It was --sf-d4, a size
      primitive (56) the role table has no step for (C105, C178). */
   gap: 0;
+  /* As wide as its panel, in the page's flow too (F-2, 2026-11-18): the box
+     that carries the shadow and the corners is a flex row, so a menu standing
+     in a column -- sf-settings rows or drill with no trigger, an example --
+     stretched to the column while its panel kept its width, and a shadowed
+     empty area stood beside the rows. A menu over the page (popover, fixed)
+     was already as wide as its content; the sheet sets its own width. */
+  inline-size: fit-content;
+  max-inline-size: 100%;
 }
 
 /* Markup written for the tail it used to have draws none: a menu has no tail

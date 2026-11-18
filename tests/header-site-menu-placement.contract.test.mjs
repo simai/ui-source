@@ -88,7 +88,8 @@ test('header site C104: the bar keeps aria-expanded on the switch and draws no b
   assert.match(source, /&& !panel\?\.contains\(element\)\n\s+&& element\.getClientRects\(\)\.length > 0/u);
   assert.match(source, /ownMenuButton: !this\._outsideSwitch,/u);
   // Checked after every drawing, on resize (a frame, or at once without one), on open and on close.
-  assert.match(source, /this\._offSwitches = this\.onAfterRender\(\(\) => \{\n\s+this\.observeSize\(\);\n\s+this\.syncCollapsed\(\);\n\s+this\.syncSwitches\(\);\n\s+\}, \{once: false\}\);/u);
+  // 1.13.0 (F-1): after the switches, the nav's fit is measured too.
+  assert.match(source, /this\._offSwitches = this\.onAfterRender\(\(\) => \{\n\s+this\.observeSize\(\);\n\s+this\.syncCollapsed\(\);\n\s+this\.syncSwitches\(\);\n\s+this\.queueFit\(\);\n\s+\}, \{once: false\}\);/u);
   assert.match(source, /globalThis\.addEventListener\('resize', this\._onResize, \{passive: true\}\);/u);
   assert.match(source, /globalThis\.removeEventListener\('resize', this\._onResize\);/u);
   assert.equal((source.match(/this\.syncSwitches\(\);/gu) || []).length, 5);
@@ -112,11 +113,16 @@ test('header site C104 / C181 (2): collapse is a container step of the bar, and 
   assert.match(sheet, /container: sf-site-header \/ inline-size;/u);
   assert.match(sheet, /@each \$step, \$container-step in \(sm: g6, md: h1, lg: h5, xl: h8\) \{\n  @container sf-site-header \(width < #\{mq\.container-step\(\$container-step\)\}\) \{\n    \.sf-site-header--collapse-#\{\$step\} \{\n      @include collapsed;/u);
   assert.doesNotMatch(sheet, /@media not all and \(min-width/u);
-  assert.equal((sheet.match(/--sf-site-header--collapsed: 1;/gu) || []).length, 2, 'collapse-always and each step publish the answer');
+  // collapse-always, each step and (1.13.0, F-1) a nav that overflows its box.
+  assert.equal((sheet.match(/--sf-site-header--collapsed: 1;/gu) || []).length, 3, 'collapse-always, each step and the nav overflow publish the answer');
+  assert.match(sheet, /:is\(sf-header-site, sf-site-header\)\[data-nav-overflow='true'\] > \.sf-site-header \{\n  @include collapsed;/u);
   // Every rule of the collapsed state styles a part inside the container, never the container itself.
   for (const [, selector] of collapsed.matchAll(/^  (&[^{\n]*)\{/gmu)) assert.match(selector, /^&[^ ]* \S/u, `${selector} styles a part of the bar`);
   assert.match(source, /getPropertyValue\('--sf-site-header--collapsed'\)\.trim\(\) === '1'/u);
-  assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => this\.syncCollapsed\(\)\);/u);
+  assert.match(source, /this\._sizeObserver = new ResizeObserver\(\(\) => \{\n\s+this\.syncCollapsed\(\);\n\s+this\.syncFit\(\);\n\s+\}\);/u);
+  // F-1: the nav's content past its box collapses the bar until it is as wide as the nav needed.
+  assert.match(source, /this\.setFit\(Math\.ceil\(width \+ spread\.width - room\.width\) \+ 1\);/u);
+  assert.equal(component['host-states']['data-nav-overflow'], 'boolean');
   assert.match(source, /if \(collapsed === this\._collapsedNow\) return;/u);
   assert.match(component.settings.collapse.summary, /own width/u);
   // Below xl the row's gutter is the step the bar is at (the .container utility's own inset).

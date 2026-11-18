@@ -527,6 +527,19 @@
   }
 }
 
+/* A nav wider than the row leaves it (F-1, 2026-11-18): the host measured
+   its content past its box and says data-nav-overflow (index.js syncFit), so
+   the bar collapses as below its step -- the menu button, the nav and the
+   actions in the side panel -- rather than draw the nav over the brand and
+   the tools. The row publishes the answer as the step's condition does. */
+:is(sf-header-site, sf-site-header)[data-nav-overflow='true'] > .sf-site-header {
+  @include collapsed;
+
+  .sf-site-header-row {
+    --sf-site-header--collapsed: 1;
+  }
+}
+
 @each $step, $space in container.$container-array {
   @include mq.breakpoint-media($step) {
     .sf-site-header {
@@ -605,6 +618,9 @@
     color: inherit;
   }
   .sf-site-header--collapse-always {
+    @include collapsed;
+  }
+  :is(sf-header-site, sf-site-header)[data-nav-overflow='true'] > .sf-site-header {
     @include collapsed;
   }
   @each $step, $container-step in (sm: g6, md: h1, lg: h5, xl: h8) {
