@@ -124,7 +124,10 @@ for (const {width, theme} of CASES) {
     const firstPage = {rows: await rows(tab, 'paged'), ...(await status(tab, 'paged')), calls: await tab.evaluate(() => window.calls.slice())};
     ok(`${key} pages: the first page, «Показать ещё» under it`, firstPage.rows.length === 51 && /Показать ещё/u.test(firstPage.more) && firstPage.calls[0]?.cursor === null && firstPage.calls[0]?.limit === 50, {...firstPage, rows: firstPage.rows.length});
     ok(`${key} pages: the chosen option the pages have not reached keeps its row`, firstPage.rows.includes('u-120'), firstPage.rows.slice(0, 3));
-    await tab.click('#paged .sf-choice-more button');
+    // A press with no scrolling first: scrolling the button into view brings
+    // the list's end with it, which loads the next page by itself (FO4-4)
+    // and takes the button away under the pointer.
+    await tab.evaluate(() => document.querySelector('#paged .sf-choice-more button')?.click());
     await tab.waitForFunction(() => document.querySelectorAll('#paged .sf-choice-input').length >= 101, null, {timeout: 5000}).catch(() => null);
     // The list's end may stay in view after the page is added: the next page
     // then loads by itself (FO4-4). Each page is asked for once.
