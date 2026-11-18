@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.sortable",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "title": "Drag and drop",
   "summary": "A list whose items move by pointer, touch and keyboard, between lists of a group and onto registered drop targets; it asks the host to move and never moves the host's DOM or data.",
   "kind": "smart",
@@ -408,7 +408,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/sortable/index.js",
-        "sha256": "858639598ffe3473eb4ce59f5424fd020893cb337ec5db14b6ffa9a3b795d9f7"
+        "sha256": "0f3b3b13390537180429f8da1b1ec2d37971645db070be4728d439e8df76e9c2"
       },
       {
         "path": "src/smart/sortable/scss/_smart__sortable.scss",
@@ -420,11 +420,11 @@
       },
       {
         "path": "src/smart/sortable/docs.md",
-        "sha256": "ae8e397b826cbff796f6b4d630ada68cab1d4674faa6dca1cc3a3892ef135882"
+        "sha256": "0892a34410ba17200a89f0ee94eab9a7cc97acfffc72b8e6c7e841d72d8b7658"
       },
       {
         "path": "src/core/js/composition/sortable.mjs",
-        "sha256": "273980cddea40ce635a75cc58364ab0b9b6b354927898fdb6e33dbbccb93527f"
+        "sha256": "c62bb3105d92ba05fe08ec1b647d02e4a76664f95b26479f945dfb15460ef35d"
       },
       {
         "path": "src/core/js/composition/sortable-inserter.mjs",

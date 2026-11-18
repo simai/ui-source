@@ -22,7 +22,14 @@
 //   Smart component holding it: a row menu of a table of size 1 is size 1);
 // - returnTo: where the focus goes when the menu closes (the row it acted
 //   on); left out, the menu gives the focus back to where it was, or to the
-//   anchor.
+//   anchor;
+// - align: 'start' (the default) lines the menu's start edge up with the
+//   anchor's, 'end' its end edge -- for a control at the end of a toolbar,
+//   whose menu would otherwise run past it towards the window's edge (view
+//   round 1, table group). Start and end follow the page's direction (in a
+//   right-to-left page 'end' is the left edge), and a menu that does not fit
+//   still flips to the other side and is shifted inside the window. At a
+//   point, 'end' puts the menu's end corner at the point.
 //
 // The menu is fetched by the Loader the first time (SF.Loader.ensure), one on
 // the page -- on the body, or in the open modal dialog the anchor is in, since
@@ -38,6 +45,7 @@
 import {followDensity, RELATIVE} from './density.js';
 
 const SHARED = 'data-sf-menu-shared';
+const ALIGNS = new Set(['start', 'end']);
 
 function installMenuOpen() {
   let pending = null;
@@ -107,6 +115,8 @@ function installMenuOpen() {
 
   return async function open(options = {}) {
     const {anchor = null, x, y, entries = [], label = '', size = '', returnTo = null} = options || {};
+    // Logical, so a right-to-left page mirrors it; anything else is start.
+    const align = ALIGNS.has(options?.align) ? options.align : 'start';
     const atPoint = !(anchor instanceof Element);
     if (atPoint && !(Number.isFinite(Number(x)) && Number.isFinite(Number(y)))) return null;
     const doc = globalThis.document;
@@ -142,9 +152,9 @@ function installMenuOpen() {
       const mine = pending;
       const opening = atPoint
         ? (typeof menu.openAt === 'function'
-          ? menu.openAt(Number(x), Number(y), {target: returnTo ?? undefined})
-          : menu.openFor(pointAnchor(Number(x), Number(y), returnTo), {side: 'block-end', align: 'start', focus: 'first'}))
-        : menu.openFor(anchor, {side: 'block-end', align: 'start', focus: 'first'});
+          ? menu.openAt(Number(x), Number(y), {target: returnTo ?? undefined, align})
+          : menu.openFor(pointAnchor(Number(x), Number(y), returnTo), {side: 'block-end', align, focus: 'first'}))
+        : menu.openFor(anchor, {side: 'block-end', align, focus: 'first'});
       Promise.resolve(opening).then((answer) => {
         // Refused (a listener kept it closed) or no surface: nothing chosen.
         if (pending === mine && answer && answer !== true && answer.outcome !== 'applied') settle(null);
