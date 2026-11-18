@@ -47,13 +47,13 @@ const words = (self, file = ru) => (key, {vars = {}} = {}) => String(file.runtim
 const show = (places) => places.map((place) => (place === 'gap' ? '…' : place)).join(' ');
 
 test('C97 point 1: five appearances, field the default; no appearance is the compatible footer', () => {
-  assert.equal(component.version, '1.9.0'); // 1.8.0: of-pages says {page} (C177 follow-up #86) // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch // C295: 1.9.0, the band is sf-bulk-actions
+  assert.equal(component.version, '1.10.0'); // LF-11: one page draws no navigation, the footer's Show more only when top is written // 1.8.0: of-pages says {page} (C177 follow-up #86) // group build 9: 1.8.0 moved on by the merged branches or a GB9 patch // C282: 1.8.4 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.7 moved on by the merged branches or a GB10 patch // C295: 1.9.0, the band is sf-bulk-actions
   assert.deepEqual(component.settings.appearance.values, ['field', 'numbers', 'arrows', 'cursor', 'more']);
   assert.equal(component.settings.appearance.default, 'field');
   assert.match(source, /get footer\(\) \{\s*return !this\.hasAttribute\("appearance"\);/u);
   assert.match(markup, /const VIEWS = \{field: renderField, numbers: renderNumbers, arrows: renderArrows, cursor: renderCursor, more: renderMore\};/u);
   // Navigation only: an appearance draws its own view and nothing of the footer.
-  assert.match(markup, /\$\{context\.footer \? renderFooter\(context, component\) : VIEWS\[appearance\]\(context, component\)\}/u);
+  assert.match(markup, /\$\{empty \? nothing : context\.footer \? renderFooter\(context, component\) : VIEWS\[appearance\]\(context, component\)\}/u); // LF-11: one page draws no navigation
   for (const view of ['renderField', 'renderNumbers', 'renderArrows', 'renderCursor', 'renderMore']) {
     const body = markup.slice(markup.indexOf(`function ${view}(`), markup.indexOf('\n}\n', markup.indexOf(`function ${view}(`)));
     assert.doesNotMatch(body, /renderRange|renderPageSize|renderBand|sf-dropdown/u, `${view} holds navigation only`);

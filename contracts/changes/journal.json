@@ -18460,6 +18460,30 @@
       "source": "src/smart/pagination/js/templates/default.js; src/smart/bulk-actions/component.json"
     },
     {
+      "id": "behaviour-pagination-footer-show-more-written-only",
+      "recorded_on": "2026-11-18",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "sf-pagination 1.10.0 (decisions C97 (1), C167 (1); Larena LF-11): the compatible footer (no appearance written) draws «Показать ещё» above its page row only when an author writes top; before, top defaulted to on and a list showed «Показать ещё» together with «из 3» at 390. The same element draws no page navigation when everything fits one page (field, numbers, arrows, cursor; the footer keeps its range and page size). Written, top keeps the line until remove_after, noted in SF.deprecations (kind setting, top), as record value-pagination-show-more-to-more says.",
+      "items": [
+        {
+          "component": "sf-pagination",
+          "from": "top on by default in the compatible footer",
+          "to": "appearance=\"more\" (a list end) or top written"
+        }
+      ],
+      "deprecated_on": "2026-11-18",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "A list that appends portions writes <sf-pagination appearance=\"more\">; a table that pages writes appearance=\"field\" (or numbers, arrows, cursor). A page that still wants the footer's Show more line writes top (it stays until remove_after).",
+      "examples": {
+        "before": "<sf-pagination current=\"1\" total=\"47\" page-size=\"20\"></sf-pagination>",
+        "after": "<sf-pagination appearance=\"more\" current=\"1\" total=\"47\" page-size=\"20\"></sf-pagination>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/pagination/index.js get top, templateContext singlePage; src/smart/pagination/js/templates/default.js renderFooter, renderPaginationTemplate; Larena lists study msg-85bd0cb7 p4, msg-c44ac3b6 p4"
+    },
+    {
       "id": "value-date-filter-period-operators",
       "recorded_on": "2026-11-17",
       "stage": "compat",

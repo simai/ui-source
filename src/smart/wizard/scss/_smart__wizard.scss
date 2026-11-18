@@ -480,22 +480,27 @@
   flex: 1 1 auto;
 }
 
-/* A narrow frame in a window (below the container step g5, 30rem of its own
-   width; C181 (2)): the step's body takes the room and the footer stays at
-   the window's bottom while the step scrolls: it sticks to the end of the
-   window's scroll box on the window's surface. Back keeps the start and the
-   main the end (C179 (1)); the two halves share the row (C179 (4)). It read
-   the screen's sm step (32rem) before. A phone's window is the screen less
-   its frame, 16 px each side: below sm the frame is below 32rem less 2rem,
-   g5, so every phone draws it as before. Now a narrow window on a wide screen
-   draws it too, and a frame of 30rem or more on a phone-wide screen (a window
-   in a wide overlay container) does not. */
+/* A narrow frame (below the container step g5, 30rem of its own width;
+   C181 (2)) -- a phone in every place, owner decision C179 (4), Larena LF-6:
+   the footer is pinned at the bottom while the step scrolls. It sticks to the
+   end of the nearest scroll box: the window's (places modal and drawer) or
+   the page's, or the panel's that holds an inline wizard (places inline and
+   pages), on the surface it stands on -- the window's surface, else the
+   frame's own fill -- so the step's content passes under it. Back keeps the
+   start and the main the end (C179 (1)); the two halves share the row
+   (C179 (4)). In a window the step's body also takes the room, so a short
+   step leaves the footer at the window's bottom. It read the screen's sm step
+   (32rem) before, and only in a window: at 390 a wizard placed in a page
+   left its buttons below the screen (Larena admin, a step of 1281 px on an
+   844 px screen). A phone's window is the screen less its frame, 16 px each
+   side, and a phone's page frame is the screen less the page's gutters: both
+   are below g5 on every phone. */
 @container sf-wizard (width < #{mq.container-step(g5)}) {
   .sf-wizard--window > .sf-wizard-main {
     flex: 1 1 auto;
   }
 
-  .sf-wizard--window .sf-wizard-footer {
+  .sf-wizard .sf-wizard-footer {
     position: sticky;
     inset-block-end: 0;
     z-index: 1;
@@ -503,18 +508,18 @@
     padding-block-end: var(--sf-focus-room);
   }
 
-  .sf-wizard--window .sf-wizard-footer-end {
+  .sf-wizard .sf-wizard-footer-end {
     flex: 1 1 0;
     flex-wrap: nowrap;
   }
 
-  .sf-wizard--window .sf-wizard-footer > .sf-wizard-back,
-  .sf-wizard--window .sf-wizard-footer > .sf-wizard-back > :is(button, a) {
+  .sf-wizard .sf-wizard-footer > .sf-wizard-back,
+  .sf-wizard .sf-wizard-footer > .sf-wizard-back > :is(button, a) {
     flex: 1 1 0;
   }
 
-  .sf-wizard--window .sf-wizard-footer-end > sf-button,
-  .sf-wizard--window .sf-wizard-footer-end > sf-button > :is(button, a) {
+  .sf-wizard .sf-wizard-footer-end > sf-button,
+  .sf-wizard .sf-wizard-footer-end > sf-button > :is(button, a) {
     flex: 1 1 0;
     min-inline-size: 0;
   }
@@ -665,6 +670,9 @@
     color: var(--sf-on-surface-variant);
   }
   @container sf-wizard (width < #{mq.container-step(g5)}) {
+    .sf-wizard:not(.sf-wizard--window) .sf-wizard-footer {
+      background-color: var(--sf-wizard--background);
+    }
     .sf-wizard--window .sf-wizard-footer {
       background-color: var(--sf-modal-surface-bg, var(--sf-surface-popup));
     }

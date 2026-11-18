@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 88,
-    "translated": 88,
+    "words": 89,
+    "translated": 89,
     "share": 100
   },
   "words": {
@@ -28,6 +28,7 @@
       "loading-more-text": "Загружаю…",
       "loading-text": "Загружаю список",
       "more-text": "Показать ещё",
+      "pick-label": "Выбрать {text}",
       "pinned-text": "Закреплённые",
       "rename-label": "Новое название",
       "rename-text": "Переименовать",

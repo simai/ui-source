@@ -233,7 +233,7 @@ test('a tonal badge on a translucent fill lays its tone over the solid place (C4
     ['src/component/admin-menu/scss/_css__admin_menu.scss', /\.sf-admin-menu-search-row\.selected \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/component/tree/scss/_css__tree.scss', /\[aria-selected='true'\] > \.sf-tree-item-container \{[^}]*@include places\.sf-place-fill\(/u],
     ['src/component/menu/scss/_css__menu.scss', /@mixin current-plate \{(?:[^}]*\})?[^}]*@include places\.sf-place-fill\(/u], // (C273: a mode block may come first)
-    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\);\s*--sf-surface-place-fill: var\(--sf-list--current\);/u],
+    ['src/smart/list/js/templates/default.css', /\.sf-list__row--current(?:,\s*\.sf-list__row--chosen)? \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\);\s*--sf-surface-place-fill: var\(--sf-list--current\);/u],
   ];
   for (const [path, pattern] of rows) assert.match(await read(path), pattern, path);
   // A checked choice card is not such a row (input-choice audit 2026-11-11):
@@ -275,7 +275,7 @@ test('an anchored badge rings with the row it stands on, and hover rows keep a t
   assert.match(item, /\.sf-list \[role="option"\]\.sf-list-item:not\(:disabled\):not\(\.disabled\):hover \{[^}]*@include places\.sf-place-fill\(/u);
   assert.match(menu, /\.sf-menu-element\.open:not\(:disabled\)[^{]*\{[^}]*@include places\.sf-place-fill\(var\(--sf-menu-element--background-color\)\);/u);
   assert.match(choice, /:not\(\.sf-choice-card--disabled, \.sf-choice-card--checked\):hover \{[^}]*@include places\.sf-place-fill\(var\(--sf-surface-state-hover\)\);/u);
-  assert.match(smartList, /\.sf-list__row:not\(\.sf-list__row--current\):not\(\.sf-list__row--editing\):hover \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--hover\);/u);
+  assert.match(smartList, /\.sf-list__row:not\(\.sf-list__row--current\):(?:not\(\.sf-list__row--chosen\):)?not\(\.sf-list__row--editing\):hover \{[^}]*--sf-surface-underlay: var\(--sf-surface-place-solid\); --sf-surface-place-fill: var\(--sf-list--hover\);/u);
 });
 
 // C43 D3 and D4, the table rows (2026-11-12): a striped, hovered or active

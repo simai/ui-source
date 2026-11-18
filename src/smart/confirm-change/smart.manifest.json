@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.10.5",
+  "version": "1.10.6",
   "title": "Change confirmation",
   "summary": "A change someone else proposes (an assistant, a colleague, an import), put to a person: each value as it was and as it will be, «Подтвердить» first and filled, «Отклонить» quiet, until when it can be answered under them, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -93,7 +93,7 @@
       "disabled": {
         "type": "boolean",
         "default": false,
-        "description": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
+        "description": "The decisive answer is shown and cannot be pressed (a send is in flight elsewhere); the declining answer, Escape and a window's close still work, so a person can always leave."
       },
       "status": {
         "type": "string",
@@ -513,7 +513,7 @@
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "8b9727ac126a3f541ae2d4bd51e03c22cdb124a79ab03b9db7d699b80948ae76"
+        "sha256": "b05c5317c38bfd7f19aa7e1a9ee85333fdc147d7d023447955746c21c2e35af3"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",

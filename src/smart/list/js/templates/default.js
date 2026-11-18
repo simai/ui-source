@@ -120,6 +120,30 @@ const metaContent = (context, item, group) => {
         : nothing}`;
 };
 
+// Choosing several rows (1.22.0, owner decision C167 (5) by the rule of
+// C150 (9), Larena LF-10): with selection="many" each row has a check box at
+// its start, shown under the pointer and on the focused row, and on every row
+// once anything is chosen. It is the class checkbox, not a Tab stop of its own
+// (the rows stay one stop; Space on a row chooses it). Its change is the
+// list's, never the page's change.
+const pick = (context, item, text) => {
+    if (!context.selecting) return nothing;
+    const {component} = context;
+    return html`<label class="sf-list__pick sf-checkbox sf-checkbox--size-${context.size === "1/2" ? "1/2" : "1"} flex"
+            @click=${(event) => event.stopPropagation()}>
+        <span class="sf-checkbox-box flex">
+            <input type="checkbox" tabindex="-1" .checked=${context.chosen.has(item.id)}
+                   ?disabled=${item.disabled === true}
+                   aria-label=${context.pickLabel(text)}
+                   @change=${(event) => {
+                       event.stopPropagation();
+                       component.toggleChosen(item.id, component.takeShift());
+                   }}>
+            <span class="sf-icon" aria-hidden="true"></span>
+        </span>
+    </label>`;
+};
+
 const row = (context, item, group, place = null) => {
     const {component} = context;
     const text = String(item.text ?? "") || context.untitledText;
@@ -190,9 +214,11 @@ const row = (context, item, group, place = null) => {
                     ?disabled=${disabled}
                     ?divided=${context.divided}
             ><span slot="trailing" class="sf-list__meta">${metaContent(context, item, group)}</span></sf-list-item>`;
+    const chosen = context.selecting && context.chosen.has(item.id);
     return html`
-        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.unreadOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}
+        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.unreadOf(item) ? "sf-list__row--unread" : ""} ${chosen ? "sf-list__row--chosen" : ""}" data-id=${item.id}
             aria-posinset=${place ? place.at : nothing} aria-setsize=${place ? place.of : nothing}>
+            ${pick(context, item, text)}
             ${listItem}
             ${menu
                 ? html`<button
@@ -302,7 +328,7 @@ const skeleton = (context) => {
 export function renderListTemplate(context) {
     const {component} = context;
     return html`
-        <div class="sf-list sf-list__frame sf-list--size-${context.size}${context.leading?.wide ? " sf-list--lead-wide" : ""}${context.noWrap ? " sf-list--no-wrap" : ""} ${context.empty ? "sf-list--empty" : ""}"
+        <div class="sf-list sf-list__frame sf-list--size-${context.size}${context.leading?.wide ? " sf-list--lead-wide" : ""}${context.noWrap ? " sf-list--no-wrap" : ""} ${context.empty ? "sf-list--empty" : ""}${context.selecting ? " sf-list--selecting" : ""}${context.chosen.size ? " sf-list--choosing" : ""}"
              role=${context.grouped ? "group" : nothing}
              aria-label=${context.grouped ? context.label : nothing}
              aria-busy=${context.loading ? "true" : "false"}>
@@ -355,6 +381,23 @@ export function renderListTemplate(context) {
                 <span class="sr-only" role="status">${context.loadingMore ? context.loadingMoreText : ""}</span>
                 <span class="sf-list__end" aria-hidden="true"></span>
             </div>
+            ${context.selecting
+                // The bar of the choice is sf-bulk-actions (C295): at the
+                // list's bottom, at its width, sticking to the bottom of the
+                // scroll; hidden while nothing is chosen. Its action is the
+                // list's apply {action, scope: selection, ids}; its × and
+                // Escape clear the choice.
+                ? html`<sf-bulk-actions
+                        class="sf-list__bulk"
+                        place="dock"
+                        size=${context.size}
+                        count=${String(context.chosen.size)}
+                        page-count=${String(context.rowCount)}
+                        .actions=${context.selectionActions}
+                        @sf-bulk-actions-action=${(event) => component.onBulkAction(event)}
+                        @sf-bulk-actions-clear=${(event) => component.onBulkClear(event)}
+                ></sf-bulk-actions>`
+                : nothing}
         </div>
     `;
 }

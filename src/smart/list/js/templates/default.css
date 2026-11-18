@@ -425,6 +425,21 @@
 
   .sf-list__actions { margin-inline-end: var(--sf-space-1\/4); }
 
+  /* Choosing several rows (1.25.0, C167 (5) by the rule of C150 (9), Larena
+     LF-10): the check box stands where a row's icon does -- the row's
+     space-x from its edge, and the row's own space-x before its text (H2) --
+     in every row, so the text never moves when it shows. It shows under the
+     pointer, on the focused row, and on every row once anything is chosen;
+     a screen without hover keeps no room for it until then (a long press
+     chooses the first row). */
+  .sf-list__pick { flex: none; margin-inline-start: var(--sf-ui-1--space-x); }
+  .sf-list--size-1\/2 .sf-list__pick { margin-inline-start: var(--sf-ui-1\/2--space-x); }
+  .sf-list--size-2 .sf-list__pick { margin-inline-start: var(--sf-ui-2--space-x); }
+  .sf-list--selecting:not(.sf-list--choosing) .sf-list__row:not(:hover):not(:focus-within) .sf-list__pick { opacity: 0; }
+  @media (hover: none) {
+    .sf-list--selecting:not(.sf-list--choosing) .sf-list__pick { display: none; }
+  }
+
   .sf-list__actions:focus-visible { outline-offset: var(--sf-focus--inset); }
 
   .sf-list__rename {
@@ -561,7 +576,9 @@
     }
     /* A translucent fill: a tonal badge on the open row keeps its own tone
        (C43; core mix sf-place-fill, written out because this sheet is not Sass). */
-    .sf-list__row--current {
+    /* A chosen row has the open row's fill (selection many). */
+    .sf-list__row--current,
+    .sf-list__row--chosen {
         background-color: var(--sf-list--current);
         --sf-surface-underlay: var(--sf-surface-place-solid);
         --sf-surface-place-fill: var(--sf-list--current);
@@ -603,7 +620,7 @@
   /* The pointer over the row or over its «⋯»: one tint for both, the token
      the row itself takes under the pointer. A translucent fill, as the open
      row (C43 D4). */
-  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--hover); }
+  .sf-list__row:not(.sf-list__row--current):not(.sf-list__row--chosen):not(.sf-list__row--editing):hover { background-color: var(--sf-list--hover); --sf-surface-underlay: var(--sf-surface-place-solid); --sf-surface-place-fill: var(--sf-list--hover); }
 
   /* The open row is told by more than a tint: in forced colours it is marked
      by the system highlight at its start. */

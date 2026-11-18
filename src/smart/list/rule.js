@@ -27,5 +27,8 @@ SF.RuleLoader['cl-list'] = {
     { name: 'cl-empty-state' },
     { name: 'cl-menu-context', lazy: true },
     { name: 'sr-only/default' },
+    { name: 'checkbox' },
+    { name: 'cl-bulk-actions' },
+    { name: 'icons' },
   ],
 };

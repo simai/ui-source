@@ -73,10 +73,87 @@ function resumeToastTimer(root, reason) {
   startToastTimer(root);
 }
 
+// The action beside the text or under it (Larena LF-4, C115 L3a, C218).
+// The sheet puts one action in the row with the text from 24rem of the
+// toast's width; the title and the text then wrap at spaces and hyphens in
+// the column left beside it. A word -- a run of characters between spaces,
+// «a2-remove.test», a long address -- wider than that column would be broken
+// inside it to keep the action at the side. The script measures the widest
+// word of the title and the text in their own font, and when one does not fit
+// the column it marks the toast data-sf-toast-under: the sheet then draws the
+// action under the text, as actions-layout="under" does, and the text has the
+// toast's whole width. A word wider than that too still breaks (overflow-wrap
+// anywhere), only then. The mark is a state of the toast, measured again
+// whenever its width changes and when the fonts arrive.
+const TOAST_UNDER_ATTRIBUTE = 'data-sf-toast-under';
+const TOAST_FIT_TEXT = '.sf-toast-text, .sf-toast-supporting-text';
+let toastMeasure = null;
+let toastFitObserver = null;
+
+function widestWord(element) {
+  const text = String(element?.textContent || '').trim();
+  if (!text) return 0;
+  const style = getComputedStyle(element);
+  toastMeasure = toastMeasure || document.createElement('canvas').getContext('2d');
+  if (!toastMeasure) return 0;
+  toastMeasure.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+  const spacing = Number.parseFloat(style.letterSpacing) || 0;
+  let widest = 0;
+  for (const word of text.split(/\s+/u)) {
+    if (!word) continue;
+    widest = Math.max(widest, toastMeasure.measureText(word).width + spacing * word.length);
+  }
+  return widest;
+}
+
+function fitToastAction(root) {
+  if (!(root instanceof HTMLElement) || !root.isConnected) return;
+  const container = root.querySelector(':scope > .sf-toast-container');
+  const wrap = container?.querySelector(':scope > .sf-toast-wrap');
+  const bottom = container?.querySelector(':scope > .sf-toast-bottom');
+  const single = bottom && bottom.children.length === 1;
+  if (!wrap || !single || root.classList.contains('sf-toast--actions-under')) {
+    root.removeAttribute(TOAST_UNDER_ATTRIBUTE);
+    return;
+  }
+  // Measured in the sheet's own layout: without the mark the action stands
+  // beside the text only where the toast is wide enough (the row).
+  const was = root.hasAttribute(TOAST_UNDER_ATTRIBUTE);
+  if (was) root.removeAttribute(TOAST_UNDER_ATTRIBUTE);
+  let under = false;
+  if (getComputedStyle(container).flexDirection === 'row') {
+    const column = wrap.clientWidth;
+    const words = [...wrap.querySelectorAll(TOAST_FIT_TEXT)].map(widestWord);
+    // Half a pixel for the rounding of the column's width.
+    under = column > 0 && words.some((width) => width > column + 0.5);
+  }
+  if (under) root.setAttribute(TOAST_UNDER_ATTRIBUTE, '');
+}
+
+function watchToastFit(root) {
+  if (typeof ResizeObserver === 'undefined') {
+    fitToastAction(root);
+    return;
+  }
+  toastFitObserver = toastFitObserver || new ResizeObserver((entries) => {
+    for (const entry of entries) fitToastAction(entry.target);
+  });
+  toastFitObserver.observe(root);
+  fitToastAction(root);
+  document.fonts?.ready?.then(() => fitToastAction(root));
+}
+
+function unwatchToastFit(root) {
+  toastFitObserver?.unobserve(root);
+}
+
 function bindToast(root, removalTarget = root) {
   if (!(root instanceof HTMLElement)) return;
 
   root.__sfToastRemovalTarget = removalTarget instanceof Element ? removalTarget : root;
+  // The action's place is measured again on every binding: a toast drawn
+  // anew (sf-toast's own render) may carry another title.
+  watchToastFit(root);
   if (root.dataset[TOAST_BOUND_FLAG] === '1') return;
 
   const handleClick = (event) => {
@@ -170,6 +247,7 @@ function unbindToast(root) {
   }
 
   clearToastTimer(root);
+  unwatchToastFit(root);
   delete root.__sfToastHandlers;
   delete root.__sfToastPauseReasons;
   delete root.__sfToastRemaining;

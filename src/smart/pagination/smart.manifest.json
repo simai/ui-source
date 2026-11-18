@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.pagination",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "title": "Pagination",
   "summary": "Page navigation for a collection split into pages, in five appearances: field (a dense table), numbers (sites, search), arrows (an unknown count), cursor (a cursor list) and more (Show more).",
   "kind": "smart",
@@ -72,7 +72,7 @@
       "top": {
         "type": "boolean",
         "default": true,
-        "description": "Deprecated until 2027-01-01 (decision C97, change journal value-pagination-show-more-to-more): Show more of the compatible footer, drawn on a line of its own above the page row (never beside the arrows); write appearance=\"more\". Show the compatible show-more section."
+        "description": "Deprecated until 2027-01-01 (decision C97, change journals value-pagination-show-more-to-more and behaviour-pagination-footer-show-more-written-only): Show more of the compatible footer, drawn on a line of its own above the page row (never beside the arrows) only when an author writes top; a list end writes appearance=\"more\"."
       },
       "middle": {
         "type": "boolean",
@@ -1182,7 +1182,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/pagination/index.js",
-        "sha256": "db025d96e29617d4bc9ddc87abff82fe0b05c9f9472d47f1d8ddb6e4c63614e2"
+        "sha256": "b3edc530b8c4c41533f25ad23b1ea134dfbda9fb910366e1e7784211dcf35bd9"
       }
     ],
     "generated_runtime": [

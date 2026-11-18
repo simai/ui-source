@@ -478,6 +478,8 @@ class SfDrawer extends DrawerElement {
   }
 
   disconnectedCallback() {
+    this._themeObserver?.disconnect();
+    this._themeObserver = null;
     this._areaObserver?.disconnect();
     this._areaObserver = null;
     this._edgeObserver?.disconnect();
@@ -943,6 +945,7 @@ class SfDrawer extends DrawerElement {
     // of its area but none of its own private --sf-drawer-* names
     // (simai/ui-source#46 item 1, as sf-modal).
     carryLayerOrigin(portal, this, {variables: DRAWER_VARIABLES, area: true, except: ['--sf-drawer-']});
+    this.followTheme(portal);
     // Static markup printed for the first paint goes as the drawer draws
     // (standard 1.3.8 §5.4); the panel itself is rendered in the portal.
     if (!this.__sfFirstPaintEnded) {
@@ -960,6 +963,31 @@ class SfDrawer extends DrawerElement {
     });
     this.drawInto(result, portal);
     this.afterRender();
+  }
+
+  // The panel follows the theme of the place it was opened from at every
+  // width (Larena LF-9). The portal at the end of the body took the theme
+  // (and the area's variables) once, when the drawer drew: a page that turned
+  // its region dark later -- a theme switch on a wrapper of the page, or a
+  // class a script sets after the drawer has drawn -- kept a light panel and
+  // light content (Larena «История» at 390 in the dark theme). The drawer
+  // watches the class of every element it stands in (the host up to the
+  // root, not the subtree) and carries the origin again when one changes.
+  followTheme(portal) {
+    const chain = [];
+    for (let node = this.parentElement; node; node = node.parentElement) chain.push(node);
+    const same = this._themeChain && this._themeChain.length === chain.length
+      && this._themeChain.every((node, index) => node === chain[index]);
+    if (same && this._themeObserver) return;
+    this._themeObserver?.disconnect();
+    this._themeChain = chain;
+    if (typeof MutationObserver === 'undefined') return;
+    this._themeObserver = new MutationObserver(() => {
+      const target = this._portalRoot;
+      if (!target?.isConnected || !this.isConnected) return;
+      carryLayerOrigin(target, this, {variables: DRAWER_VARIABLES, area: true, except: ['--sf-drawer-']});
+    });
+    for (const node of chain) this._themeObserver.observe(node, {attributes: true, attributeFilter: ['class', 'data-sf-scheme']});
   }
 
   // The panel is rendered at the end of the body, above the page -- or, when the

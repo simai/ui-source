@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.24.0",
+  "version": "1.25.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -31,11 +31,14 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.checkbox",
       "component.dropdown",
       "component.group-heading",
       "component.icon-buttons",
+      "component.icons",
       "smart.avatar",
       "smart.badge",
+      "smart.bulk-actions",
       "smart.button",
       "smart.empty-state",
       "smart.icon",
@@ -76,6 +79,15 @@
           "none",
           "day",
           "key"
+        ]
+      },
+      "selection": {
+        "type": "string",
+        "default": "none",
+        "description": "Choosing several rows (owner decision C167 (5) by the rule of C150 (9)). many: a check box at each row's start, shown under the pointer and on the focused row, and on every row once anything is chosen; then a press on a row chooses it (Enter still opens), Shift a range, Space on the focused row chooses it, a phone chooses by a long press (the row's menu stays on its «⋯»). The bar of the choice is sf-bulk-actions (C295) at the list's bottom with selection-actions; its × and Escape let the choice go. The choice is the value chosen and the event select.",
+        "enum": [
+          "none",
+          "many"
         ]
       },
       "renamable": {
@@ -201,6 +213,16 @@
         "type": "array",
         "default": [],
         "description": "The row actions in the shared menu, after «Переименовать»: [{id, text, icon?, destructive?}]. Chosen, one leaves as apply {action, scope: entry, ids}."
+      },
+      "selection-actions": {
+        "type": "array",
+        "default": [],
+        "description": "With selection many, the actions of the choice's bar, in sf-bulk-actions' own shape [{id, text, icon?, status?, confirm?, undo?}]: up to three as buttons, the rest in «⋯», a dangerous one last and asked about. Chosen, one leaves as apply {action, scope: selection, ids}."
+      },
+      "chosen": {
+        "type": "array",
+        "default": [],
+        "description": "With selection many, the ids of the rows chosen, in the list's order. A page may write it (a list of ids) to choose; a row that leaves the list leaves the choice. It is not selected, which is the one open row."
       }
     },
     "additionalProperties": false
@@ -611,6 +633,40 @@
         "type": "object",
         "description": "{outcome: applied}"
       }
+    },
+    "clearSelection": {
+      "summary": "Lets every chosen row go (selection many) and sends select. Refused (empty) when nothing is chosen.",
+      "arguments": [],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
+    },
+    "toggleChosen": {
+      "summary": "Chooses a row or lets it go, as a press does once a row is chosen; range chooses every row from the last one pressed (Shift). Refused when selection is not many or the row is unknown or disabled.",
+      "arguments": [
+        {
+          "name": "args",
+          "type": "object",
+          "required": true,
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {},
+              "range": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": "{outcome: applied} or {outcome: refused, reason}"
+      }
     }
   },
   "events": {
@@ -635,7 +691,7 @@
       }
     },
     "sf-list-apply": {
-      "summary": "One of the row actions was chosen: {action, scope: entry, ids} (vocabulary apply).",
+      "summary": "One of the row actions was chosen: {action, scope: entry, ids}; or an action of the choice's bar (selection many): {action, scope: selection, ids} with the rows chosen (vocabulary apply).",
       "payload": {
         "type": "object",
         "required": [
@@ -648,7 +704,10 @@
             "type": "string"
           },
           "scope": {
-            "const": "entry"
+            "enum": [
+              "entry",
+              "selection"
+            ]
           },
           "ids": {
             "type": "array",
@@ -712,6 +771,29 @@
           },
           "skipped": {
             "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sf-list-select": {
+      "summary": "The choice changed (selection many): the ids of the rows chosen, their count and the number of rows. Its DOM name is sf-list-select.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "chosen",
+          "count",
+          "total"
+        ],
+        "properties": {
+          "chosen": {
+            "type": "array"
+          },
+          "count": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
           }
         },
         "additionalProperties": true
@@ -833,19 +915,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "117bd2d4278253f699300b6c80e58f301829d92ffb4f9b45b96b85e0dabacd82"
+        "sha256": "8a44e9fafcd83938f7c727731c8f425213beb4a7290606a98062563a7bda6ac7"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "2c8e9f9329dfe22a21c392902d551a7ff9f204ccfa844b882e56dfbd0101776c"
+        "sha256": "294e626ead08e28fd1bcd66dbd3aa33e6f7df7bb3ac9dd823708e7b098cb0490"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "e99636ff605effe144e8d7d3772250da9b0b7faef70d33eabfe632a278bcd41f"
+        "sha256": "19f4fee268f10d4208e61234371235604f14586bd978383a6c73492210d0f7aa"
       },
       {
         "path": "src/smart/list/rule.js",
-        "sha256": "8dba9aeffcd2097288cc4b0285143cc9f1461e539b603b875f92836ab6194727"
+        "sha256": "e2a71357332c070cd1acb3f836633ab158b28339a0178918b46cbdd3d87d9b48"
       },
       {
         "path": "src/smart/list/docs.md",
@@ -853,15 +935,15 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "dc61dc2a90f7d4e9f8cca7fc53802e413ee0481a65ffa1194e1314339565b8ac"
+        "sha256": "0db07db329944244e3ef9fda4aafa7dbfb7a07bf1b60c848c52f7384b4209f05"
       },
       {
         "path": "src/smart/list/lang/en.json",
-        "sha256": "9618b1c9fd85f46deaf85469dce2864b66980b21388d2699c54f07ae4c2e2da9"
+        "sha256": "be4839933242eeaee204d83ca52b746269bd5df9b33d66409340a87ad8a13d9d"
       },
       {
         "path": "src/smart/list/lang/ru.json",
-        "sha256": "4bd4e01b8c4174ba330d992b9d3c7f8766352d38505f29fb4d1abc0195c51668"
+        "sha256": "b916c363d1fe5cf6a8872e79574395df646499000aa124050951082b6060da95"
       }
     ],
     "generated_runtime": []
