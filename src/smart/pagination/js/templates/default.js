@@ -494,7 +494,9 @@ function renderFooter(context, component) {
     "content-main-between",
     context.mainClass,
   );
-  const hasPages = !context.countKnown || context.total > 0;
+  // One page: the range and the page size stay, the field does not
+  // (Larena LF-11).
+  const hasPages = (!context.countKnown || context.total > 0) && !context.singlePage;
 
   return html`
     ${context.top && context.hasNext
@@ -538,6 +540,10 @@ function renderFooter(context, component) {
 export function renderPaginationTemplate(context) {
   const { component } = context;
   const appearance = context.footer ? "footer" : (VIEWS[context.appearance] ? context.appearance : "field");
+  // Everything on one page: no page navigation (Larena LF-11). The more
+  // appearance keeps its «Показано 12 из 12» line; the others draw nothing
+  // and the nav is hidden, so it takes no room and is not announced.
+  const empty = !context.footer && appearance !== "more" && context.singlePage;
   const rootClasses = joinClasses(
     "sf-pagination",
     `sf-pagination--size-${stepOf(context)}`,
@@ -552,8 +558,9 @@ export function renderPaginationTemplate(context) {
       class=${rootClasses}
       style=${context.rootStyle || nothing}
       aria-label=${context.ariaLabel}
+      ?hidden=${empty}
     >
-      ${context.footer ? renderFooter(context, component) : VIEWS[appearance](context, component)}
+      ${empty ? nothing : context.footer ? renderFooter(context, component) : VIEWS[appearance](context, component)}
     </nav>
   `;
 }

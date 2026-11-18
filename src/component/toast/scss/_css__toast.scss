@@ -129,25 +129,29 @@
      16, the border inside them). The author's switch (owner 2026-11-13,
      #q-layout-override): the modifier .sf-toast--actions-under (sf-toast
      actions-layout="under") keeps the action under the text at every width,
-     with the same gap and the even bottom. */
+     with the same gap and the even bottom. The toast's script puts it there
+     too (data-sf-toast-under, Larena LF-4) when a word of the title or the
+     text -- a run of characters between spaces, «a2-remove.test» -- is wider
+     than the text's column beside the action: the text then never breaks
+     inside a word to keep the action at its side. */
   .sf-toast:has(> .sf-toast-container > .sf-toast-bottom) {
     container: sf-toast / inline-size;
   }
 
   @container sf-toast (min-width: #{mq.container-step(g2, $frame: 2 * 1rem)}) {
-    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
+    .sf-toast:not(.sf-toast--actions-under):not([data-sf-toast-under]):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-container:has(> .sf-toast-bottom) {
       flex-direction: row;
       align-items: center;
       column-gap: var(--sf-gap--groups);
       padding-block-end: 0;
     }
 
-    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-wrap {
+    .sf-toast:not(.sf-toast--actions-under):not([data-sf-toast-under]):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-wrap {
       flex: 1 1 0;
       min-inline-size: var(--sf-0);
     }
 
-    .sf-toast:not(.sf-toast--actions-under):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-bottom {
+    .sf-toast:not(.sf-toast--actions-under):not([data-sf-toast-under]):not(:has(.sf-toast-bottom > :nth-child(2))) .sf-toast-bottom {
       flex: none;
       flex-wrap: nowrap;
       margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));

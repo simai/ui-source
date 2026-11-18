@@ -135,6 +135,11 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
                 // Not named `disabled`: that is the setting, and this is more --
                 // the setting, or any state but open.
                 answersLocked: this.getProp("disabled") || shown !== "open",
+                // disabled locks the decisive answer only (Larena LF-5): the
+                // declining one, Escape and a window's close always work, so
+                // a person can leave a question whose acceptance waits.
+                acceptLocked: this.getProp("disabled") || shown !== "open",
+                declineLocked: shown !== "open",
                 // The step the answers stand on: a page's size, else 1 (C22).
                 size: CONFIRM_SIZES.includes(this.getAttribute("size")) ? this.getAttribute("size") : "1",
                 // Declined by the person here: the surface is hidden, and its
@@ -259,7 +264,8 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
             const accepted = this.readAnswer(params);
             if (accepted === null) return refused("unknown");
             if (this.shownState !== "open") return refused("closed");
-            if (this.getProp("disabled")) return refused("disabled");
+            // disabled holds the acceptance only: «no» always goes (LF-5).
+            if (accepted && this.getProp("disabled")) return refused("disabled");
             const focusWasInside = this.contains(this.ownerDocument.activeElement);
             this._pressed = accepted;
             // Before the event: a host may set the outcome inside its handler.
@@ -339,7 +345,7 @@ export function confirmSurface(Base, {kind, block, answerId = "answerId"} = {}) 
         // the focus then tries again for a few frames, unless the person has
         // moved it meanwhile.
         focusSafeAnswer(frames = 10) {
-            if (this.shownState !== "open" || this.getProp("disabled")) return false;
+            if (this.shownState !== "open") return false;
             const host = this.querySelector(`.${block}__actions:not([hidden]) [data-action="decline"]`);
             const button = host?.matches("button") ? host : host?.querySelector("button");
             button?.focus({preventScroll: true});
@@ -418,7 +424,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                             text=${context.acceptText}
                             data-action="accept"
                             ?loading=${context.pressed === true}
-                            ?disabled=${context.answersLocked && context.pressed !== true}
+                            ?disabled=${context.acceptLocked && context.pressed !== true}
                             @click=${() => component.confirm()}
                     ></sf-button>
                     <sf-button
@@ -428,7 +434,7 @@ export function renderConfirmFooter(context, block, {acceptStatus = "", window =
                             text=${context.declineText}
                             data-action="decline"
                             ?loading=${context.pressed === false}
-                            ?disabled=${context.answersLocked && context.pressed !== false}
+                            ?disabled=${context.declineLocked && context.pressed !== false}
                             @click=${() => component.cancel()}
                     ></sf-button>
                 </div>`;

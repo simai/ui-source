@@ -302,8 +302,13 @@ class SfPagination extends PaginationElement {
     };
   }
 
+  // Show more of the compatible footer (until 2027-01-01) only where an
+  // author wrote top: «Показать ещё» is an appearance of its own (C97 (1),
+  // C167 (1)), and a footer written without appearance drew it above its
+  // page row by default -- at 390 a list showed «Показать ещё» and «из 3»
+  // at once (Larena LF-11). Written, top keeps it, noted in SF.deprecations.
   get top() {
-    return this.getBooleanAttr("top", true);
+    return this.hasAttribute("top") && this.getBooleanAttr("top", true);
   }
 
   get middle() {
@@ -837,6 +842,7 @@ class SfPagination extends PaginationElement {
       rootClass: this.getRootClass(),
       appearance: this.appearance,
       footer: this.footer,
+      top: this.top,
       topClass: this.topClass,
       mainClass: this.mainClass,
       bottomClass: this.bottomClass,
@@ -878,6 +884,9 @@ class SfPagination extends PaginationElement {
       pageCount: this.knownPageCount,
       hasPrev: this.current > 1,
       hasNext: this.hasNext,
+      // Everything fits one page (C97, C167 (1), Larena LF-11): no page to
+      // go to either way, so the page navigation is not drawn.
+      singlePage: this.current <= 1 && !this.hasNext,
       countKnown: this.countKnown,
       totalExact: this.totalExact,
       shownTotal: this.shownTotal,

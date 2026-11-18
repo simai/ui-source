@@ -260,7 +260,8 @@ class SfConfirm extends ConfirmSurface {
             return;
         }
         if (event.key !== "Escape" || event.defaultPrevented) return;
-        if (this.shownState !== "open" || this.getProp("disabled")) return;
+        // Escape is the declining answer, which disabled never holds (LF-5).
+        if (this.shownState !== "open") return;
         const result = this.cancel();
         if (result?.outcome === "applied" && inWindow(this)) return;
         event.preventDefault();

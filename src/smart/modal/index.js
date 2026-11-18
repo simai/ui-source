@@ -364,7 +364,8 @@ class SfModal extends ModalElement {
     const target = this._renderTarget;
     if (!target?.querySelectorAll) return;
     for (const question of target.querySelectorAll('sf-confirm[appearance="window"]')) {
-      if (question.shownState === "open" && !question.getProp?.("disabled")) question.cancel?.();
+      // disabled holds the acceptance only: a way out is the decline (LF-5).
+      if (question.shownState === "open") question.cancel?.();
       question.clearRequire?.();
     }
   }
