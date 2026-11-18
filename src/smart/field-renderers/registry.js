@@ -46,6 +46,27 @@ const typeLabel = (key) => Object.freeze(Object.defineProperties({}, {
 export const PLACES = Object.freeze(['view', 'compact', 'edit', 'filter']);
 const ALL_PLACES = PLACES;
 
+// The filter place's conditions (step 4 of the catalogue): a type whose
+// filter is a condition first and then what the condition needs lists the
+// operators in the list's order and the one shown before any is chosen.
+// What travels is {operator, value}. A type without `conditions` is filtered
+// by its options (a choice, a user) or searched as text.
+//
+//   date, datetime   owner decision C293 (date-filter.js): a day, two days,
+//                    a period by name, a number of days, empty / not empty;
+//                    a deadline field (filter.future: true) adds `future`
+//   time             a time of day «hh:mm», two of them (both ends in),
+//                    earlier, later, empty / not empty
+//   number, money, percent   owner decision C294: the nine number conditions
+//   password         set (not-empty) or not set (empty), value true
+export const DATE_FILTER_OPERATORS = Object.freeze(['eq', 'between', 'lt', 'gt', 'gte', 'lte', 'period', 'last-days', 'empty', 'not-empty']);
+export const DATE_FUTURE_OPERATORS = Object.freeze(['next-days']);
+export const TIME_FILTER_OPERATORS = Object.freeze(['eq', 'between', 'lt', 'gt', 'empty', 'not-empty']);
+export const NUMBER_FILTER_OPERATORS = Object.freeze(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty']);
+const conditions = (operators, byDefault, extra = {}) => Object.freeze({operators, default: byDefault, ...extra});
+const DATE_CONDITIONS = conditions(DATE_FILTER_OPERATORS, 'between', {future: DATE_FUTURE_OPERATORS});
+const NUMBER_CONDITIONS = conditions(NUMBER_FILTER_OPERATORS, 'eq');
+
 const template = (type, id, {places = ALL_PLACES, params = [], fits = '', legacy = null, isDefault = false} = {}) => Object.freeze({
     id,
     label: typeLabel(`template-${type}-${id}`),
@@ -87,7 +108,25 @@ export const PROPERTY_TYPES = Object.freeze([
     // through setFieldValue and writes nothing for a field nobody typed in.
     entry({type: 'password', label: typeLabel('type-password'), writeOnly: true,
         templates: [byDefault('password', 'input')],
+        conditions: conditions(Object.freeze(['not-empty', 'empty']), 'not-empty'),
         params: ['placeholder', 'required', 'readonly']}),
+    // url, link and ru.inn (catalogue step 3): types Larena stores and checks
+    // (url@1, link@1, ru.inn@1) that the Framework drew as strings. url is an
+    // absolute http(s) address, at most 2048 bytes, without a login in it;
+    // link is {href, text?}, href an http(s) address, a path from the site's
+    // root or an #anchor; ru.inn is 10 digits (an organisation) or 12 (a
+    // person) with the tax service's check digits, `holder` (any,
+    // organization, person) fixed when the field is created. The rules are
+    // text-types.js; each is searched as text in the filter.
+    entry({type: 'url', label: typeLabel('type-url'),
+        templates: [byDefault('url', 'input')],
+        params: ['placeholder', 'required', 'readonly']}),
+    entry({type: 'link', label: typeLabel('type-link'),
+        templates: [byDefault('link', 'link')],
+        params: ['required', 'readonly']}),
+    entry({type: 'ru.inn', label: typeLabel('type-ru.inn'),
+        templates: [byDefault('ru.inn', 'input')],
+        params: ['holder', 'placeholder', 'required', 'readonly']}),
     entry({type: 'text', label: typeLabel('type-text'),
         templates: [byDefault('text', 'textarea', {params: ['rows']})],
         params: ['placeholder', 'required', 'readonly']}),
@@ -112,12 +151,14 @@ export const PROPERTY_TYPES = Object.freeze([
             template('number', 'scale', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
             template('number', 'meter', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
         ],
+        conditions: NUMBER_CONDITIONS,
         params: ['decimals', 'unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']}),
     // date (PD-2, PD-3): min and max bound the day, an ISO date (the day of a
     // date and time is read); format is the length the view and the cell print
     // the date in, Intl's dateStyle: short, medium (the default), long, full.
     entry({type: 'date', label: typeLabel('type-date'),
         templates: [byDefault('date', 'datepicker')],
+        conditions: DATE_CONDITIONS,
         params: ['min', 'max', 'format', 'required', 'readonly']}),
     // datetime and time: sf-input-date in mode datetime and time (1.4.0). min
     // and max bound the value -- an ISO date or date and time for a datetime,
@@ -125,9 +166,13 @@ export const PROPERTY_TYPES = Object.freeze([
     // format is its date's length, as a date's; the clock stays short.
     entry({type: 'datetime', label: typeLabel('type-datetime'),
         templates: [byDefault('datetime', 'datepicker')],
+        conditions: DATE_CONDITIONS,
         params: ['min', 'max', 'step', 'format', 'required', 'readonly']}),
+    // time (step 4): its own conditions, not a text search -- «Равно»,
+    // «Между» (both ends in), «Раньше», «Позже», «Пусто», «Не пусто».
     entry({type: 'time', label: typeLabel('type-time'),
         templates: [byDefault('time', 'timepicker')],
+        conditions: conditions(TIME_FILTER_OPERATORS, 'between'),
         params: ['min', 'max', 'step', 'required', 'readonly']}),
     // boolean (C303 (4)): the switch is the default; the checkbox, and the
     // buttons «Да» | «Нет» where «not set» differs from «no», are templates
@@ -217,9 +262,20 @@ export const PROPERTY_TYPES = Object.freeze([
     // name), else those of `step`.
     entry({type: 'money', label: typeLabel('type-money'), numeric: true,
         templates: [byDefault('money', 'money_input')],
+        conditions: NUMBER_CONDITIONS,
         params: ['currency', 'currencies', 'currencyDisplay', 'min', 'max', 'placeholder', 'required', 'readonly']}),
+    // percent (step 5): the number's templates -- stepper, scale and meter,
+    // the last two for a percent 0..100 (a growth of 150 % keeps the input).
+    // It had no former variants.
     entry({type: 'percent', label: typeLabel('type-percent'), numeric: true,
-        templates: [byDefault('percent', 'input')],
+        templates: [
+            byDefault('percent', 'input'),
+            template('percent', 'stepper', {places: ['edit']}),
+            template('percent', 'scale', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
+            template('percent', 'meter', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
+        ],
+        variants: [],
+        conditions: NUMBER_CONDITIONS,
         params: ['decimals', 'min', 'max', 'step', 'precision', 'placeholder', 'required', 'readonly']}),
     // The types a component set draws (property-view port 1.18.0; Larena
     // property types standard, notes of 2026-11-03): `set` names the set whose

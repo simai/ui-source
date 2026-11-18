@@ -66,7 +66,7 @@ test('the catalogue names and types (C302, C303)', () => {
   assert.deepEqual(templates('password'), ['input']);
   assert.deepEqual(templates('number'), ['input', 'stepper', 'scale', 'meter']);
   assert.deepEqual(templates('money'), ['money_input']);
-  assert.deepEqual(templates('percent'), ['input']);
+  assert.deepEqual(templates('percent'), ['input', 'stepper', 'scale', 'meter']);
   assert.deepEqual(templates('boolean'), ['switch', 'checkbox', 'buttons']);
   assert.deepEqual(templates('choice'), ['dropdown', 'buttons']);
   assert.deepEqual(templates('choices'), ['dropdown', 'checklist', 'badges']);
@@ -230,10 +230,14 @@ test('money: the sign in the field is isolated on a right-to-left page; a table 
   assert.match(source, /function isolatedSign\(sign, locale\) \{\n\s+if \(!sign \|\| !isRtlLocale\(locale\) \|\| !\/\[A-Za-z\]\/u\.test\(sign\)\) return sign;\n\s+return `\\u2066\$\{sign\}\\u2069`;/u);
   assert.match(source, /EDIT_ALIGN_END = options\?\.align === 'end';/u);
   assert.equal((source.match(/EDIT_ALIGN_END \? 'text-end num-tabular'/gu) ?? []).length, 2);
-  // C294 (c): the native input takes its field's alignment and figures.
+  // C294 (c): the native input of the end-aligned field (text-end, num-tabular)
+  // types at the end with tabular figures; every other input keeps its own
+  // start alignment, a centred container's too (type templates step 3-5 review).
   const inputs = readFileSync(join(root, 'src/component/inputs/scss/_css__inputs.scss'), 'utf8');
   const rule = inputs.slice(inputs.indexOf('.sf-input .sf-input-field input {'), inputs.indexOf('}', inputs.indexOf('.sf-input .sf-input-field input {')));
-  for (const line of ['text-align: inherit;', 'font-variant-numeric: inherit;', 'font-feature-settings: inherit;']) assert.ok(rule.includes(line), line);
+  for (const line of ['text-align', 'font-variant-numeric', 'font-feature-settings']) assert.ok(!rule.includes(line), `${line} is not on every input`);
+  assert.match(inputs, /\.sf-input\.text-end \.sf-input-field input \{\n\s+text-align: end;\n\s+\}/u);
+  assert.match(inputs, /\.sf-input\.num-tabular \.sf-input-field input \{\n\s+font-variant-numeric: tabular-nums;\n\s+\}/u);
   // C294 (b): the currency choice is never narrower than its longest option.
   assert.match(source, /root-class="basis-1\/3"\n\s+root-style=\$\{currencyMin\}/u);
   assert.match(source, /const currencyMin = `min-inline-size: calc\(\$\{longest \+ 1\}ch \+ var\(--sf-ui-\$\{sizeName\}--control-height\) \+ var\(--sf-space-1\)\)`;/u);

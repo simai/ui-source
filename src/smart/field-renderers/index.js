@@ -3,7 +3,8 @@ import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
 import {formatDate} from "../../core/js/format-date.js";
-import {PLACES, PROPERTY_TYPES, TEMPLATE_ALIASES, TYPE_ALIASES, modesOf} from "./registry.js";
+import {NUMBER_FILTER_OPERATORS, PLACES, PROPERTY_TYPES, TEMPLATE_ALIASES, TYPE_ALIASES, modesOf} from "./registry.js";
+import {composeLink, innError, innHolder, isLinkAddress, isWebAddress, readLink, shortAddress} from "./text-types.js";
 import {resolveField, templateParam, typeEntry} from "./templates.js";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
@@ -150,7 +151,8 @@ function renderRangeFilterControl(field, host) {
 // whose currency lives in the value adds a currency choice (q-mp-mix): the
 // request carries `currency` and compares amounts within it. A new condition
 // of another shape drops the old value.
-export const NUMBER_FILTER_OPERATORS = Object.freeze(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty']);
+// The list is the registry's (number, money and percent `conditions`).
+export {NUMBER_FILTER_OPERATORS};
 const NUMBER_NO_VALUE_OPERATORS = new Set(['empty', 'not-empty']);
 const operatorShape = (operator) => (NUMBER_NO_VALUE_OPERATORS.has(operator) ? 'none' : operator === 'between' ? 'two' : 'one');
 
@@ -406,6 +408,7 @@ function renderDateConditionValue(field, host, current, value, patch) {
             ></sf-input-date>`;
     }
     if (current.need === 'days') return renderDateRangeValue(field, host, current, value, patch);
+    if (current.need === 'time' || current.need === 'times') return renderTimeConditionValue(field, host, current, value, patch);
     // «when» (a period field): a period by name, or two days of one's own.
     const own = Array.isArray(value);
     const periods = [...DATE_PERIODS, ...(field.filter?.future === true ? DATE_FUTURE_PERIODS : [])];
@@ -435,6 +438,45 @@ function renderDateConditionValue(field, host, current, value, patch) {
             <sf-list-item kind="text" size=${size} text="${setText(host, 'dateOwnDays')}" value="own" ?selected=${own}></sf-list-item>
         </sf-dropdown>
         ${own ? renderDateRangeValue(field, host, current, value, patch) : nothing}`;
+}
+
+// A time of day's condition (catalogue step 4): one time, or two side by side
+// for «Между» (from, to; both ends in), typed as the edit types one -- the
+// time row of sf-input-date. A half-typed time writes nothing.
+function renderTimeConditionValue(field, host, current, value, patch) {
+    const size = filterSize(host);
+    const name = `sf_filter_${field.key || 'time'}`;
+    const two = current.need === 'times';
+    const times = two ? (Array.isArray(value) ? [String(value[0] ?? ''), String(value[1] ?? '')] : ['', ''])
+        : [typeof value === 'string' ? value : ''];
+    const control = (index, label) => html`
+        <sf-input-date
+                mode="time"
+                size=${size}
+                root-class=${two ? 'flex-1 min-w-0' : nothing}
+                label="${label}"
+                .value=${splitTime(times[index]).time}
+                minute-step=${minuteStepOf(field) || nothing}
+                name="${name}${index ? '_second' : ''}"
+                @change=${(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    const time = normalizeTime(String(event.detail?.value ?? ''));
+                    if (time === null) return;
+                    if (!two) {
+                        patch({operator: current.operator, value: time || null});
+                        return;
+                    }
+                    const next = [...times];
+                    next[index] = time;
+                    patch({operator: current.operator, value: next});
+                }}
+        ></sf-input-date>`;
+    if (!two) return control(0, setText(host, 'timeValue'));
+    return html`
+        <div class="sf-filter-operator-inputs flex gap-1/3 items-cross-start">
+            ${control(0, setText(host, 'rangeFrom'))}
+            ${control(1, setText(host, 'rangeTo'))}
+        </div>`;
 }
 
 // Two days on a range calendar. Its quick ranges are the whole periods: one
@@ -558,6 +600,9 @@ export const FILTER_RENDERERS = {
     integer: renderIntegerFilterControl,
     date: renderDateFilterControl,
     datetime: renderDateFilterControl,
+    // A time of day has its own conditions (catalogue step 4), drawn by the
+    // date filter: equals, between, earlier, later, empty, not empty.
+    time: renderDateFilterControl,
     range: renderRangeFilterControl,
     'date-range': renderDateFilterControl,
     // A period field (a start and an end, C293): its own conditions -- overlaps,
@@ -571,6 +616,11 @@ export const FILTER_RENDERERS = {
     // phone: its digits, as a text (C302); password: set or not set.
     phone: renderTextFilterControl,
     password: renderPasswordFilterControl,
+    // url, link (its text and its address) and ru.inn are searched as text
+    // (catalogue step 3).
+    url: renderTextFilterControl,
+    link: renderTextFilterControl,
+    'ru.inn': renderTextFilterControl,
     user: renderMultiSelectFilterControl,
     'entity-multi-select': renderEntityMultiSelectFilterControl,
     'entity-single-select': renderEntityMultiSelectFilterControl,
@@ -844,6 +894,9 @@ const CELL_RENDERERS = {
     string: renderStringCell,
     phone: renderPhoneCell,
     password: renderPasswordCell,
+    url: renderUrlCell,
+    link: renderLinkCell,
+    'ru.inn': renderInnCell,
     // A date in a row used to be whatever the host had stored, printed --
     // «2026-09-25T07:12:00+03:00» beside the same value reading «25 сентября
     // 2026» in the record panel, with no way for a consumer to change the
@@ -948,6 +1001,8 @@ function renderMoneyCell(field, value, host) {
 }
 
 function renderPercentCell(field, value, host) {
+    const level = levelCell(field, value);
+    if (level) return level;
     const formatted = renderHostFormattedCell(field, value, host);
     if (formatted !== null) return formatted;
     const text = formatPercent(scalarValue(value), pageLocale(host ?? null));
@@ -979,16 +1034,30 @@ function meterProps(field, number) {
     return {inline: true, meter: true, value: String(number), ...(name ? {label: name} : {})};
 }
 
+// A percent drawn as a scale or a meter (step 5): the number's own drawings,
+// for a percent 0..100; any other percent is its text.
+function levelCell(field, value) {
+    const variant = templateOf(field);
+    if (variant !== 'scale' && variant !== 'meter') return null;
+    const number = Number(scalarValue(value));
+    if (scalarValue(value) === null || scalarValue(value) === '' || !Number.isFinite(number) || number < 0 || number > 100) return null;
+    if (variant === 'meter') return {component: {type: 'progress-bar', props: meterProps(field, number)}};
+    return {component: {type: 'progress-scale', props: {line: CELL_LINE, value: String(number)}}};
+}
+
 function renderNumericCell(field, value, host) {
     const variant = templateOf(field);
     const number = Number(scalarValue(value));
     if ((variant !== 'scale' && variant !== 'meter') || !Number.isFinite(number)) {
         // The host's text first; else the number in the page's language, as
-        // the view prints it («12,5»), where the table printed «12.5».
+        // the view prints it («12,5»), where the table printed «12.5». The
+        // field's unit follows it as it does in the view (cards study CV-7:
+        // a card's stock read a bare «13» where the record said «13 шт»).
         const formatted = renderHostFormattedCell(field, value, host);
-        if (formatted !== null) return formatted;
-        if (carriesText(value)) return value.text || null;
-        return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || null;
+        const text = formatted !== null ? formatted
+            : carriesText(value) ? value.text || null
+                : formatDecimal(scalarValue(value), pageLocale(host ?? null)) || null;
+        return text && field.unit ? `${text} ${field.unit}` : text;
     }
     if (number < 0 || number > 100) return null;
     if (variant === 'meter') return {component: {type: 'progress-bar', props: meterProps(field, number)}};
@@ -1106,6 +1175,9 @@ const EDIT_RENDERERS = {
     string: renderTextEdit,
     phone: renderPhoneEdit,
     password: renderPasswordEdit,
+    url: renderUrlEdit,
+    link: renderLinkEdit,
+    'ru.inn': renderInnEdit,
     text: renderTextAreaEdit,
     html: renderHtmlEdit,
     number: renderNumberEdit,
@@ -1239,6 +1311,219 @@ function renderPasswordEdit(field, value, host) {
             ></sf-input>
         </span>
     `;
+}
+
+// url, link, ru.inn (catalogue step 3; text-types.js holds the rules).
+//
+// A text checked on the way in, as a masked string is (port 1.16.0): what is
+// not a value yet is said through setFieldError, which holds a save, and
+// under the field once the person leaves it; a host that does not hear
+// errors hears undefined. Empty writes null.
+function checkedTextEdit(field, value, host, {check, inputType = '', inputmode = '', maxlength = '', autocomplete = ''}) {
+    const write = (event, left) => {
+        const input = event.currentTarget ?? event.target;
+        const text = String(input?.value ?? '').trim();
+        const reason = text ? check(text) : null;
+        if (reason) {
+            const message = setText(host, reason);
+            if (left && input) {
+                input.setAttribute('error-message', message);
+                input.toggleAttribute('invalid', true);
+            }
+            if (typeof host.setFieldError === 'function') {
+                host.setFieldError(field, message);
+                host.setFieldValue(field, text);
+            } else {
+                host.setFieldValue(field, undefined);
+            }
+            return;
+        }
+        if (input?.hasAttribute?.('invalid')) {
+            input.toggleAttribute('invalid', false);
+            input.removeAttribute('error-message');
+        }
+        host.setFieldError?.(field, null);
+        host.setFieldValue(field, text || null);
+    };
+    const shown = scalarValue(value);
+    return html`
+        <sf-input
+                size=${EDIT_SIZE}
+                appearance="bordered"
+                name=${fieldName(field)}
+                value=${shown === null || shown === undefined ? '' : String(shown)}
+                placeholder=${field.placeholder || nothing}
+                input-type=${inputType || nothing}
+                inputmode=${inputmode || nothing}
+                maxlength=${maxlength || nothing}
+                autocomplete=${autocomplete || nothing}
+                ?required=${Boolean(field.required)}
+                aria-label=${field.label || field.key || ''}
+                @input=${(event) => write(event, false)}
+                @change=${(event) => write(event, true)}
+        ></sf-input>
+    `;
+}
+
+// A web address (url@1): the edit is sf-input of type url, checked as an
+// absolute http(s) address; the view a link that opens in a new tab; a row
+// the host and the start of the path. An address that is not one is shown as
+// text, never as a link.
+function renderUrlEdit(field, value, host) {
+    return checkedTextEdit(field, value, host, {
+        check: (text) => (isWebAddress(text) ? null : 'urlInvalid'),
+        inputType: 'url', inputmode: 'url', autocomplete: 'url',
+    });
+}
+
+function addressLink(href, text) {
+    return html`<a class="sf-link" href=${href} target="_blank" rel="noopener noreferrer"><bdi dir="ltr">${text}</bdi></a>`;
+}
+
+function renderUrlView(field, value, host) {
+    const text = viewText(field, value, host);
+    if (!text) return nothing;
+    const href = scalarValue(value);
+    return html`<span class="sf-field-view">${isWebAddress(href) ? addressLink(href, text) : text}</span>`;
+}
+
+function renderUrlCell(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    const href = scalarValue(value);
+    if (!isWebAddress(href)) return typeof formatted === 'string' ? formatted : null;
+    return addressLink(href, typeof formatted === 'string' ? formatted : shortAddress(href));
+}
+
+// A link with its text (link@1): {href, text?}. The view and the row are the
+// text as a link (the address where there is no text); a site path or an
+// anchor opens in place, an http(s) address in a new tab; an address that is
+// not one is the text alone. The edit is two fields, the address and the text.
+// A link's own `text` is its words, not a host's formatted text: an object
+// with an href is the link itself.
+function linkValue(value) {
+    return value && typeof value === 'object' && !Array.isArray(value) && typeof value.href === 'string' ? value : scalarValue(value);
+}
+
+function linkParts(value) {
+    const link = readLink(linkValue(value));
+    if (!link) return null;
+    const words = link.text || link.href;
+    return {...link, words, safe: isLinkAddress(link.href)};
+}
+
+function linkAnchor(link) {
+    if (!link.safe) return html`${link.words}`;
+    const away = isWebAddress(link.href);
+    return html`<a class="sf-link" href=${link.href} target=${away ? '_blank' : nothing} rel=${away ? 'noopener noreferrer' : nothing}>${link.text ? link.text : html`<bdi dir="ltr">${link.href}</bdi>`}</a>`;
+}
+
+function renderLinkView(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted ? html`<span class="sf-field-view">${formatted}</span>` : nothing;
+    const link = linkParts(value);
+    return link ? html`<span class="sf-field-view">${linkAnchor(link)}</span>` : nothing;
+}
+
+function renderLinkCell(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted || null;
+    const link = linkParts(value);
+    return link ? linkAnchor(link) : null;
+}
+
+// Each change reads both fields as they stand, so the text typed before the
+// address is kept while the address is still empty.
+function renderLinkEdit(field, value, host) {
+    const stored = readLink(linkValue(value)) ?? {href: '', text: ''};
+    const write = (part, event, left) => {
+        const input = event.currentTarget ?? event.target;
+        const box = input?.closest?.('.sf-field-link');
+        const hrefInput = box?.querySelector?.('[data-sf-link-part="href"]');
+        const textInput = box?.querySelector?.('[data-sf-link-part="text"]');
+        const read = (one, own) => String(one ? one.value ?? '' : own);
+        const next = {href: read(hrefInput, stored.href), text: read(textInput, stored.text)};
+        const result = composeLink(next.href, next.text);
+        if (result.error) {
+            const message = setText(host, result.error);
+            const at = result.error === 'linkTextLong' ? textInput : hrefInput;
+            if (left && at) {
+                at.setAttribute('error-message', message);
+                at.toggleAttribute('invalid', true);
+            }
+            if (typeof host.setFieldError === 'function') {
+                host.setFieldError(field, message);
+                host.setFieldValue(field, {href: next.href.trim(), ...(next.text.trim() ? {text: next.text.trim()} : {})});
+            } else {
+                host.setFieldValue(field, undefined);
+            }
+            return;
+        }
+        for (const one of [hrefInput, textInput]) {
+            if (one?.hasAttribute?.('invalid')) {
+                one.toggleAttribute('invalid', false);
+                one.removeAttribute('error-message');
+            }
+        }
+        host.setFieldError?.(field, null);
+        host.setFieldValue(field, result.value);
+    };
+    return html`
+        <span class="sf-field-link flex flex-col gap-1/3 min-w-0">
+            <sf-input
+                    size=${EDIT_SIZE}
+                    appearance="bordered"
+                    data-sf-link-part="href"
+                    name="${fieldName(field)}_href"
+                    label=${setText(host, 'linkAddress')}
+                    value=${stored.href}
+                    input-type="url"
+                    inputmode="url"
+                    ?required=${Boolean(field.required)}
+                    aria-label=${`${field.label || field.key || ''} ${setText(host, 'linkAddress')}`.trim()}
+                    @input=${(event) => write('href', event, false)}
+                    @change=${(event) => write('href', event, true)}
+            ></sf-input>
+            <sf-input
+                    size=${EDIT_SIZE}
+                    appearance="bordered"
+                    data-sf-link-part="text"
+                    name="${fieldName(field)}_text"
+                    label=${setText(host, 'linkText')}
+                    value=${stored.text}
+                    maxlength="255"
+                    aria-label=${`${field.label || field.key || ''} ${setText(host, 'linkText')}`.trim()}
+                    @input=${(event) => write('text', event, false)}
+                    @change=${(event) => write('text', event, true)}
+            ></sf-input>
+        </span>
+    `;
+}
+
+// A Russian taxpayer number (ru.inn@1): digits, typed with the digit
+// keyboard, checked by its length for the field's `holder` and by the check
+// digits; shown and listed as its digits, left to right. No maxlength: it
+// drew sf-input's «10 / 12» counter under a complete number, and the length
+// is the check's to say.
+function renderInnEdit(field, value, host) {
+    const holder = innHolder(field);
+    return checkedTextEdit(field, value, host, {
+        check: (text) => innError(text, holder),
+        inputmode: 'numeric', autocomplete: 'off',
+    });
+}
+
+function innText(field, value, host) {
+    return viewText(field, value, host);
+}
+
+function renderInnView(field, value, host) {
+    const text = innText(field, value, host);
+    return text ? html`<span class="sf-field-view num-tabular"><bdi dir="ltr">${text}</bdi></span>` : nothing;
+}
+
+function renderInnCell(field, value, host) {
+    const text = innText(field, value, host);
+    return text ? html`<bdi dir="ltr">${text}</bdi>` : null;
 }
 
 // A string in a row is its own text: the table prints the value.
@@ -1525,11 +1810,18 @@ function stepperNumber(raw) {
     return Number.isFinite(number) ? String(number) : '';
 }
 
-function renderStepperEdit(field, value, host) {
+// A percent's stepper (step 5) writes the decimal string a percent is
+// («12.5», never a float) and carries «%» after the number.
+function renderStepperEdit(field, value, host, {percent = false} = {}) {
     const {decimals} = resolveField(field);
     const step = stepperNumber(field.step);
     const precision = decimals !== null ? String(decimals) : (step ? '' : '2');
-    const write = (event) => host.setFieldValue(field, event.detail?.value ?? null);
+    const written = (raw) => {
+        if (!percent || raw === null || raw === undefined || raw === '') return raw ?? null;
+        const read = readDecimal(String(raw));
+        return read.ok ? read.value : null;
+    };
+    const write = (event) => host.setFieldValue(field, written(event.detail?.value ?? null));
     return html`
         <sf-input-quantity
                 size=${EDIT_SIZE}
@@ -1539,6 +1831,7 @@ function renderStepperEdit(field, value, host) {
                 max=${stepperNumber(field.max) || nothing}
                 step=${step || nothing}
                 precision=${precision || nothing}
+                unit=${percent ? '%' : nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
                 ?disabled=${field.readonly === true}
@@ -1801,6 +2094,7 @@ function percentDigits(field) {
 // only by the field's min and max -- a growth of 150 % or a change of −5 % is
 // a percent too (MP-11: the View set bounded it 0..100 without saying why).
 function renderPercentEdit(field, value, host) {
+    if (isStepperField(field)) return renderStepperEdit(field, value, host, {percent: true});
     const key = String(field.key ?? '');
     const min = hasBound(field.min) ? field.min : null;
     const max = hasBound(field.max) ? field.max : null;
@@ -1896,6 +2190,8 @@ function renderMoneyEdit(field, value, host) {
 }
 
 function renderPercentView(field, value, host) {
+    const level = levelView(field, value);
+    if (level) return level;
     const formatted = host?.formatFieldValue?.(field, value);
     const text = typeof formatted === 'string' ? formatted
         : carriesText(value) ? value.text : formatPercent(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
@@ -3004,6 +3300,18 @@ function numberText(field, value, host) {
     return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
 }
 
+// A percent as the number's scale or meter (step 5), 0..100; else null.
+function levelView(field, value) {
+    const variant = templateOf(field);
+    if (variant !== 'scale' && variant !== 'meter') return null;
+    const raw = scalarValue(value);
+    const number = Number(raw);
+    if (raw === null || raw === undefined || raw === '' || !Number.isFinite(number) || number < 0 || number > 100) return null;
+    if (variant === 'scale') return html`<sf-progress-scale size="1" value=${String(number)}></sf-progress-scale>`;
+    const {label} = meterProps(field, number);
+    return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing}></sf-progress-bar>`;
+}
+
 // A number carries its unit when the field declares one, and nothing when it
 // does not -- the set does not guess at a unit, and «42» with an invented «шт»
 // beside it is a worse answer than «42».
@@ -3251,6 +3559,9 @@ const VIEW_RENDERERS = {
     string: renderStringView,
     phone: renderPhoneView,
     password: renderPasswordView,
+    url: renderUrlView,
+    link: renderLinkView,
+    'ru.inn': renderInnView,
     text: renderTextView,
     html: renderHtmlView,
     number: renderNumberView,

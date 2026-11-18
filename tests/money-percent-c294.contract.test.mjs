@@ -80,7 +80,8 @@ test('C294 (MP-12): numeric in the registry; totals by the digits, one per curre
 });
 
 test('C294 (MP-6, MP-7): the filter puts the condition first, nine conditions, decimal strings, a currency for a value-currency field', () => {
-  assert.match(renderers, /NUMBER_FILTER_OPERATORS = Object\.freeze\(\['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty'\]\)/u);
+  // The list lives in the registry (the number types' `conditions`, type templates step 4).
+  assert.match(read('src/smart/field-renderers/registry.js'), /NUMBER_FILTER_OPERATORS = Object\.freeze\(\['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty'\]\)/u);
   const body = renderers.slice(renderers.indexOf('function renderNumberFilterControl'), renderers.indexOf('function renderIntegerFilterControl'));
   assert.ok(body.indexOf('data-sf-filter-part="operator"') < body.indexOf('sf-filter-operator-inputs'), 'the condition comes before the value');
   assert.match(body, /readTypedDecimal\(text, \{locale, currency\}\)/u);

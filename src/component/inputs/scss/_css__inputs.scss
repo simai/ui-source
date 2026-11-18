@@ -52,20 +52,27 @@
     line-height: var(--sf-input-input--line-height);
     padding-inline-end: var(--sf-input-input--padding-inline-end);
     padding-inline-start: var(--sf-input-input--padding-inline-start);
-    /* The value follows its field's alignment and figures: the browser's own
-       sheet gives a native input text-align start and the small-control font,
-       so text-end num-tabular on the field drew a table cell's number at the
-       start with proportional digits (C294 (c): numbers at the end with
-       tabular figures in an inline table edit too). */
-    text-align: inherit;
-    font-variant-numeric: inherit;
-    font-feature-settings: inherit;
     /* The field is as tall as the line box: the reset's height: 100% resolved
        against the centred flex line, and with a height given the browser
        centred the text in it by the font's own line, a pixel below where the
        line box sets it. The value stood a pixel under an sf-textarea's and an
        sf-button's text at sizes 1/2 and 1 (simai/ui-source#23). */
     block-size: auto;
+  }
+
+  /* A number edited where numbers end the line -- a table cell edited in
+     place, renderEditField(..., {align: 'end'}) -- types at the end with
+     figures of one width (C294 (c)): the field carries text-end and
+     num-tabular, which the native input, whose browser sheet sets text-align
+     start and the control font, does not take by itself. Only that field:
+     an input in a centred container (a dialog, a card) keeps the start
+     alignment every other input has. */
+  .sf-input.text-end .sf-input-field input {
+    text-align: end;
+  }
+
+  .sf-input.num-tabular .sf-input-field input {
+    font-variant-numeric: tabular-nums;
   }
 
   .sf-input .sf-input-field input::placeholder {

@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 191,
-    "translated": 191,
+    "words": 213,
+    "translated": 213,
     "share": 100
   },
   "words": {
@@ -225,7 +225,29 @@
       "template-percent-input": "Поле числа",
       "template-items-rows": "Таблица строк",
       "template-complex-parts": "Части",
-      "template-ru.requisites-requisites": "Блок реквизитов"
+      "template-ru.requisites-requisites": "Блок реквизитов",
+      "type-url": "Адрес в интернете",
+      "type-link": "Ссылка с текстом",
+      "type-ru.inn": "ИНН",
+      "template-url-input": "Поле адреса",
+      "template-link-link": "Ссылка",
+      "template-ru.inn-input": "Поле цифр",
+      "template-percent-stepper": "Кнопки «−» и «+»",
+      "template-percent-scale": "Шкала уровня",
+      "template-percent-meter": "Доля от предела",
+      "urlInvalid": "Нужен полный адрес: https://…",
+      "linkAddress": "Адрес",
+      "linkText": "Текст ссылки",
+      "linkNeedsAddress": "Нужен адрес",
+      "linkInvalid": "Адрес — https://…, путь на сайте /… или #якорь",
+      "linkTextLong": "Не больше 255 знаков",
+      "innDigits": "В ИНН 10 цифр у организации или 12 у человека",
+      "innOrganization": "ИНН организации — 10 цифр",
+      "innPerson": "ИНН человека — 12 цифр",
+      "innChecksum": "Не сходится контрольная цифра ИНН",
+      "dateGroup_time": "Время",
+      "timeCondition_eq": "Равно",
+      "timeValue": "Время"
     }
   }
 }

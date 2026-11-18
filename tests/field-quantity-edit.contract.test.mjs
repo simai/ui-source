@@ -58,6 +58,8 @@ test('the stepper takes the field as the other controls do', () => {
   // A number has its decimals (an integer field 0), its step's, or two.
   assert.match(edit, /const precision = decimals !== null \? String\(decimals\) : \(step \? '' : '2'\);/u);
   // The value written is the stepper's number, or null.
-  assert.match(edit, /const write = \(event\) => host\.setFieldValue\(field, event\.detail\?\.value \?\? null\);/u);
+  // A percent's stepper writes the percent's decimal string (type templates step 5); a number's, the value as before.
+  assert.match(edit, /const write = \(event\) => host\.setFieldValue\(field, written\(event\.detail\?\.value \?\? null\)\);/u);
+  assert.match(edit, /if \(!percent \|\| raw === null \|\| raw === undefined \|\| raw === ''\) return raw \?\? null;/u);
   assert.equal((edit.match(/@[a-z-:]+=/gu) ?? []).join(), '@input=,@change=');
 });
