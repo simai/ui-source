@@ -1,0 +1,65 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ar",
+  "name": "العربية",
+  "dir": "rtl",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-bulk-actions": {
+      "label-text": "إجراءات على المحدد",
+      "count-text": {
+        "zero": "{n} محددة",
+        "one": "{n} محدد",
+        "two": "{n} محددة",
+        "few": "{n} محددة",
+        "many": "{n} محددة",
+        "other": "{n} محددة"
+      },
+      "all-text": "تم تحديد الكل ({n})",
+      "select-all-text": "تحديد الكل ({n})",
+      "select-page-text": "هذه الصفحة فقط ({n})",
+      "more-text": "إجراءات أخرى",
+      "clear-text": "مسح التحديد",
+      "clear-hint": "مسح التحديد (Esc)",
+      "cleared-text": "تم مسح التحديد",
+      "min-reason": "حدّد {min} على الأقل",
+      "max-reason": "حدّد {max} على الأكثر",
+      "question-text": {
+        "zero": "{action} {n} عناصر؟",
+        "one": "{action} {n} عنصر؟",
+        "two": "{action} {n} عناصر؟",
+        "few": "{action} {n} عناصر؟",
+        "many": "{action} {n} عناصر؟",
+        "other": "{action} {n} عناصر؟"
+      },
+      "accept-text": "{action}: {n}",
+      "consequence-text": "لا يمكن التراجع عن هذا.",
+      "all-scope-text": "كل العناصر ({n}) ضمن عامل التصفية الحالي.",
+      "notice-text": "{action}: {n}",
+      "undo-text": "تراجع",
+      "progress-text": "قيد التنفيذ: {done} من {total}",
+      "result-text": "تم: {ok} من {total}",
+      "failed-text": {
+        "zero": "فشل {n}",
+        "one": "فشل {n}",
+        "two": "فشل {n}",
+        "few": "فشل {n}",
+        "many": "فشل {n}",
+        "other": "فشل {n}"
+      },
+      "details-text": "التفاصيل",
+      "details-heading": "فشل: {failed} من {total}",
+      "retry-text": "إعادة المحاولة لـ {n}",
+      "failed-reason": "رفضه الخادم"
+    }
+  }
+}

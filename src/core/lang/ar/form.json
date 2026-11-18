@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 14,
-    "translated": 8,
-    "share": 57.1
+    "translated": 14,
+    "share": 100
   },
   "words": {
     "sf-form": {
@@ -19,6 +19,11 @@
       "submit": "حفظ",
       "cancel": "إلغاء",
       "edit": "تحرير",
+      "send": "إرسال",
+      "answer-sending": "جارٍ الإرسال…",
+      "answer-cancelling": "جارٍ الإلغاء…",
+      "answer-sent": "تم الإرسال",
+      "answer-expired": "انتهى وقت الرد",
       "unsaved": "لديك تغييرات غير محفوظة",
       "errors-title": {
         "zero": "لا حقول للتصحيح",
@@ -29,7 +34,8 @@
         "other": "صحّح {n} حقل"
       },
       "value-missing": "املأ الحقل «{label}»",
-      "help-label": "المزيد عن {label}"
+      "help-label": "المزيد عن {label}",
+      "empty-value": "غير محدد"
     }
   }
 }

@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 21,
-    "translated": 18,
-    "share": 85.7
+    "translated": 21,
+    "share": 100
   },
   "words": {
     "sf-sortable": {
@@ -21,15 +21,18 @@
       "hint": "زر الجمع للإدراج بعده.",
       "inserted": "تم إدراج {item} في الموضع {index} في «{list}».",
       "instructions": "المسافة أو Enter للالتقاط، والأسهم للتحريك، والمسافة أو Enter للإفلات، وEscape للإلغاء.",
+      "instructions-select": "مسافة للتحديد، Enter للالتقاط، الأسهم للنقل، Enter للإفلات، Escape للإلغاء.",
       "menu": "إدراج",
       "move-down": "لأسفل",
       "move-first": "إلى الأعلى",
       "move-last": "إلى الأسفل",
       "move-menu": "نقل «{item}»",
+      "move-to": "نقل إلى",
       "move-up": "لأعلى",
       "moved": "الموضع {index} من {total} في «{list}».",
       "picked": "تم التقاط {item}. الموضع {index} من {total} في «{list}».",
       "point": "إدراج: الموضع {index} من {total}",
+      "refused": "ليس هنا",
       "roledescription": "قابل للسحب",
       "search": "بحث",
       "target": "الهدف: {target}."

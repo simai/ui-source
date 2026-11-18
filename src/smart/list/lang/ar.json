@@ -20,6 +20,8 @@
     "undated-text": "بلا تاريخ",
     "ungrouped-text": "أخرى",
     "unread-text": "غير مقروء",
-    "untitled-text": "بلا عنوان"
+    "untitled-text": "بلا عنوان",
+    "files-drop-text": "أفلت للرفع إلى «{target}»",
+    "pick-label": "اختيار {text}"
   }
 }

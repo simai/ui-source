@@ -17,6 +17,9 @@
     "point": "إدراج: الموضع {index} من {total}",
     "roledescription": "قابل للسحب",
     "search": "بحث",
-    "target": "الهدف: {target}."
+    "target": "الهدف: {target}.",
+    "instructions-select": "مسافة للتحديد، Enter للالتقاط، الأسهم للنقل، Enter للإفلات، Escape للإلغاء.",
+    "move-to": "نقل إلى",
+    "refused": "ليس هنا"
   }
 }

@@ -3,7 +3,8 @@
     "search": "بحث",
     "empty": "غير محدد",
     "value-missing": "اختر خيارًا",
-    "help": "المزيد عن: {label}"
+    "help": "المزيد عن: {label}",
+    "nothing-found": "لم يُعثر على شيء"
   },
   "x-trait-words": {
     "trait": "field-inherit@1",

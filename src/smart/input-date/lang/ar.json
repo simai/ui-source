@@ -32,6 +32,11 @@
     "time-not-set": "غير محدد",
     "value-missing": "اختر تاريخًا.",
     "value-missing-datetime": "اختر تاريخًا ووقتًا.",
-    "value-missing-time": "اختر وقتًا."
+    "value-missing-time": "اختر وقتًا.",
+    "preset-last-week": "الأسبوع الماضي",
+    "preset-next-month": "الشهر القادم",
+    "preset-next-week": "الأسبوع القادم",
+    "preset-this-year": "هذا العام",
+    "preset-tomorrow": "غدًا"
   }
 }

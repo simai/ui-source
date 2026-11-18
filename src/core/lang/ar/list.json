@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 89,
-    "translated": 87,
-    "share": 97.8
+    "translated": 89,
+    "share": 100
   },
   "words": {
     "sf-list": {
@@ -25,10 +25,12 @@
         "other": "{n} غير مقروءة"
       },
       "empty-text": "لا شيء هنا بعد",
+      "files-drop-text": "أفلت للرفع إلى «{target}»",
       "label": "القائمة",
       "loading-more-text": "جارٍ التحميل…",
       "loading-text": "جارٍ تحميل القائمة",
       "more-text": "عرض المزيد",
+      "pick-label": "اختيار {text}",
       "pinned-text": "مثبّت",
       "rename-label": "الاسم الجديد",
       "rename-text": "إعادة التسمية",

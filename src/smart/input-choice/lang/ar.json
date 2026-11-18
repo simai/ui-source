@@ -1,6 +1,12 @@
 {
   "runtime": {
     "value-missing": "اختر خيارًا.",
-    "help": "المزيد عن: {label}"
+    "help": "المزيد عن: {label}",
+    "search-label": "البحث في القائمة",
+    "loading-options": "جارٍ تحميل الخيارات",
+    "options-error": "تعذّر تحميل الخيارات",
+    "nothing-found": "لم يُعثر على شيء",
+    "retry": "إعادة المحاولة",
+    "show-more": "عرض المزيد"
   }
 }

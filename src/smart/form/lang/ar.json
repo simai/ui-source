@@ -14,6 +14,12 @@
       "other": "صحّح {n} حقل"
     },
     "value-missing": "املأ الحقل «{label}»",
-    "help-label": "المزيد عن {label}"
+    "help-label": "المزيد عن {label}",
+    "send": "إرسال",
+    "answer-sending": "جارٍ الإرسال…",
+    "answer-cancelling": "جارٍ الإلغاء…",
+    "answer-sent": "تم الإرسال",
+    "answer-expired": "انتهى وقت الرد",
+    "empty-value": "غير محدد"
   }
 }

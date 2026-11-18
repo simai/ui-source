@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 541,
-    "translated": 530,
-    "share": 98
+    "translated": 541,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -38,7 +38,13 @@
     },
     "sf-input-choice": {
       "value-missing": "اختر خيارًا.",
-      "help": "المزيد عن: {label}"
+      "help": "المزيد عن: {label}",
+      "search-label": "البحث في القائمة",
+      "loading-options": "جارٍ تحميل الخيارات",
+      "options-error": "تعذّر تحميل الخيارات",
+      "nothing-found": "لم يُعثر على شيء",
+      "retry": "إعادة المحاولة",
+      "show-more": "عرض المزيد"
     },
     "sf-input-code": {
       "character": "الحرف {n} من {m}",
@@ -392,11 +398,16 @@
       "next-years": "السنوات التالية",
       "period": "الفترة",
       "preset-last-month": "الشهر الماضي",
+      "preset-last-week": "الأسبوع الماضي",
       "preset-last30-days": "آخر 30 يومًا",
       "preset-last7-days": "آخر 7 أيام",
+      "preset-next-month": "الشهر القادم",
+      "preset-next-week": "الأسبوع القادم",
       "preset-this-month": "هذا الشهر",
       "preset-this-week": "هذا الأسبوع",
+      "preset-this-year": "هذا العام",
       "preset-today": "اليوم",
+      "preset-tomorrow": "غدًا",
       "preset-yesterday": "أمس",
       "presets": "فترات سريعة",
       "previous-month": "الشهر السابق",
