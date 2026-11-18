@@ -126,8 +126,10 @@ for (const {width, theme} of CASES) {
     ok(`${key} pages: the chosen option the pages have not reached keeps its row`, firstPage.rows.includes('u-120'), firstPage.rows.slice(0, 3));
     await tab.click('#paged .sf-choice-more button');
     await tab.waitForFunction(() => document.querySelectorAll('#paged .sf-choice-input').length >= 101, null, {timeout: 5000}).catch(() => null);
-    const second = {rows: (await rows(tab, 'paged')).length, call: await tab.evaluate(() => window.calls.at(-1))};
-    ok(`${key} pages: «Показать ещё» asks with the cursor and adds the page`, second.rows === 101 && second.call.cursor === '50', second);
+    // The list's end may stay in view after the page is added: the next page
+    // then loads by itself (FO4-4). Each page is asked for once.
+    const second = {rows: (await rows(tab, 'paged')).length, cursors: await tab.evaluate(() => window.calls.map((one) => one.cursor))};
+    ok(`${key} pages: «Показать ещё» asks with the cursor and adds the page`, second.rows >= 101 && second.cursors.filter((one) => one === '50').length === 1 && new Set(second.cursors).size === second.cursors.length, second);
 
     // A search: the older answer dropped, the newer drawn.
     await tab.locator('#paged .sf-choice-search input').fill('медленно');

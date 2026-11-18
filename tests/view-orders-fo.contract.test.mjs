@@ -285,6 +285,30 @@ test('FO1-1: zones inside zones -- the innermost takes the drop, the outer gives
   assert.deepEqual(given, [['inner', ['a.png']]]);
 });
 
+test('FO1-1: a host around its own zone follows the drag (follow) -- the over state while its area takes the files, nothing taken twice', async () => {
+  const doc = fakeDocument();
+  const host = fakeElement(doc);
+  const area = fakeElement(doc);
+  const given = [];
+  const over = [];
+  filesDrop(host, {follow: true, onOver: (one) => over.push(one), onFiles: (files) => given.push(['host', files])});
+  filesDrop(area, {onFiles: (files) => given.push(['area', files])});
+  host.listeners.dragenter(dragEvent());
+  const held = dragEvent();
+  area.listeners.dragover(held);
+  host.listeners.dragover(held);
+  assert.ok(area.attributes.has(FILES_OVER_ATTRIBUTE));
+  assert.ok(host.attributes.has(FILES_OVER_ATTRIBUTE));
+  const dropped = dragEvent({files: ['a.png']});
+  area.listeners.drop(dropped);
+  host.listeners.drop(dropped);
+  await settle();
+  assert.deepEqual(given, [['area', ['a.png']]]);
+  assert.deepEqual(over, [true, false]);
+  assert.equal(host.attributes.has(FILES_OVER_ATTRIBUTE), false);
+  assert.match(read('src/smart/file-upload/index.js'), /filesDrop\(this, \{\s*mark: false,\s*follow: true,/u);
+});
+
 test('FO1-1: a handler that only cancels the drag (a component\'s own area inside the zone) takes nothing from the zone', async () => {
   const doc = fakeDocument();
   const host = fakeElement(doc);

@@ -144,9 +144,10 @@ class SfFileUpload extends FormField(FileUploadElement) {
     this._pictures = new Map();
     // A file held over the area is said on the host (§5.3), read by core's
     // files drop (FO-1, core/js/files-drop.js); the area's class component
-    // takes the files of the drop.
+    // takes the files of the drop; the host only follows the drag (follow).
     filesDrop(this, {
       mark: false,
+      follow: true,
       disabled: () => Boolean(this.disabled),
       onOver: (over) => this.sfHostState('data-dragged-over', over),
     });

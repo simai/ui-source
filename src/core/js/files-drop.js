@@ -21,6 +21,11 @@
 //                                      through the entries (open, the default),
 //                                      or left out and named in skipped
 //     mark: true,                      data-sf-files-over on the element
+//     follow: false,                   a host around its own zone (sf-file-upload
+//                                      and its area): it only follows the drag
+//                                      -- the over state while files are held
+//                                      over it, wherever inside they are taken
+//                                      -- and takes no files
 //   });
 //   drop.stop();
 //
@@ -154,7 +159,7 @@ function droppedOf(event, folders) {
   return {files: Promise.all(reads).then((lists) => lists.flat()), skipped};
 }
 
-export function filesDrop(element, {onFiles = null, onOver = null, disabled = null, target = null, folders = 'open', mark = true} = {}) {
+export function filesDrop(element, {onFiles = null, onOver = null, disabled = null, target = null, folders = 'open', mark = true, follow = false} = {}) {
   if (!element?.addEventListener) return {stop() {}, get over() { return false; }};
   let over = false;
   let depth = 0;
@@ -176,6 +181,10 @@ export function filesDrop(element, {onFiles = null, onOver = null, disabled = nu
   };
   const onDragOver = (event) => {
     if (!carriesFiles(event)) return;
+    if (follow) {
+      setOver(!isDisabled(), element);
+      return;
+    }
     // An inner zone took it (FO1-1): it is that zone's.
     if (takenByOther(event, element)) {
       setOver(false);
@@ -204,6 +213,10 @@ export function filesDrop(element, {onFiles = null, onOver = null, disabled = nu
   const onDrop = (event) => {
     depth = 0;
     if (!carriesFiles(event) && !(event.dataTransfer?.files?.length)) return;
+    if (follow) {
+      setOver(false);
+      return;
+    }
     if (takenByOther(event, element)) {
       setOver(false);
       return;
