@@ -253,6 +253,30 @@ one of two ways:
   `style="--sf-skeleton-block-size: 320px"` or a class that sets it; the
   element keeps that floor until it draws.
 
+**Made by script.** An element a script creates has no printed markup, and
+core has none to put in it: the snapshots and skeletons are files for servers,
+not part of the bundles, and a set's (sf-view-table) are not in the
+Framework's distribution at all. A skeleton fetched on creation would come no
+sooner than the code, and its rows would be the page-size setting's, not the
+rows the script sets later. So a script that inserts a data tag into a page
+already on screen holds the box itself, by size (above) or by order: ask for
+the tag and insert it drawn, with its data set before it is placed:
+
+```js
+await SF.Loader.ensure(['sf-list'], {timeout: 10000});
+await customElements.whenDefined('sf-list');
+const list = document.createElement('sf-list');
+list.items = items;           // before it is placed: its first render has them
+column.append(list);
+```
+
+Four `sf-list` made this way under a heading (ui-control evidence
+2026-11-18-core-fixes, scene «made»): CLS 0.3101 at 1440 and 0.523 at 390
+when the bare tags are placed first and the items set once they are defined
+(or set before, while the code is still on its way); 0.0152 and 0.0195 made
+after the definition, which is the text under them moving once, as for any
+insertion; 0 when the page sizes them.
+
 Three bare tags have markup or attributes core reads, yet not enough for an
 exact box; the host holds them the same two ways (first-paint status R222,
 open items 4, 5 and 9, 2026-11-16):
