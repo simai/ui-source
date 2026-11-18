@@ -98,6 +98,10 @@
     "operatorLessWord": "less than",
     "operatorFromTo": "from – to",
     "operatorMoreOrEqualWord": "at least",
-    "operatorLessOrEqualWord": "at most"
+    "operatorLessOrEqualWord": "at most",
+    "rangeFromWord": "from",
+    "rangeToWord": "to",
+    "filterTextPlaceholder": "Text",
+    "filterRemoveCondition": "Remove condition"
   }
 }

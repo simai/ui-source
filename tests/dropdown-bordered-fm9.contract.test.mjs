@@ -13,7 +13,7 @@ const json = async (path) => JSON.parse(await read(path));
    dropdown write bordered. */
 test('FM-9: sf-dropdown names its field look bordered', async () => {
   const manifest = await json('src/smart/dropdown/smart.manifest.json');
-  assert.deepEqual(manifest.inputs.properties.appearance.enum, ['filled', 'bordered']);
+  assert.deepEqual(manifest.inputs.properties.appearance.enum, ['filled', 'bordered', 'band']);
   assert.equal(manifest.inputs.properties.appearance.default, 'bordered');
   for (const name of ['input', 'input-textarea', 'input-lookup', 'input-rich']) {
     const other = await json(`src/smart/${name}/smart.manifest.json`);
@@ -31,7 +31,7 @@ test('FM-9: outlined is a dated alias of bordered until 2027-01-01', async () =>
   assert.ok(record, 'the change journal records it');
   assert.equal(record.remove_after, '2027-01-01');
   const source = await read('src/smart/dropdown/index.js');
-  assert.match(source, /appearance: \{default: 'bordered', values: \['filled', 'bordered'\], aliases: \['type'\], valueAliases: \{bordered: \['outlined'\]\}\}/);
+  assert.match(source, /appearance: \{default: 'bordered', values: \['filled', 'bordered', 'band'\], aliases: \['type'\], valueAliases: \{bordered: \['outlined'\]\}\}/);
 });
 
 test('FM-9: bordered draws the class markup\'s outlined look', async () => {

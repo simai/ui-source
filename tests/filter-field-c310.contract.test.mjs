@@ -70,7 +70,7 @@ test('the window draws the condition first and only what it needs; a boolean is 
   assert.match(source, /const control = filterValueless\(operator\) \? nothing/u);
   assert.match(source, /\{value: 'true', label: words\.yes\}, \{value: 'false', label: words\.no\}, \{value: 'empty', label: setText\(host, 'filterNotSet'\)\}/u);
   assert.match(source, /renderControl: renderFilterWindowField,/u);
-  assert.match(source, /filterWindow: \{open: openFilterWindow, operatorLabel: filterOperatorLabel, summary: filterFieldSummary, conditions: filterConditions, count: filterCount\},/u);
+  assert.match(source, /filterWindow: \{open: openFilterWindow, operatorLabel: filterOperatorLabel, summary: filterFieldSummary, conditions: filterConditions, count: filterCount, tone: filterConditionTone\},/u);
   assert.match(source, /if \(mode === 'off' \|\| asked === false\) return false;/u);
 });
 

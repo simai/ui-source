@@ -264,6 +264,25 @@
   inline-size: min(var(--sf-popup-list-max-width), calc(100vi - var(--sf-space-1)));
 }
 
+/* list-width="trigger" (FF-10, owner decision C313 (2)): exactly the
+   trigger's width, edges flush with it -- the filter window's condition band
+   opens its menu across the window. Anchored, the positioning writes the
+   trigger's width (SF.Position matchWidth true) and nothing caps it; in place
+   the trigger's box is the list's. A trigger handed in (the free width) is
+   matched the same way. */
+.sf-dropdown .sf-list[data-sf-list-width="trigger"]:not([data-sf-portal]) {
+  left: 0;
+  right: 0;
+  inline-size: auto;
+  min-inline-size: 0;
+  max-inline-size: none;
+}
+
+.sf-list[data-sf-portal][data-sf-list-width="trigger"] {
+  min-inline-size: 0;
+  max-inline-size: none;
+}
+
 /* A list in place has the anchored list's height (R171 follow-up,
    2026-11-12): the room the screen gives it, less the panel's edge padding,
    which the dropdown measures on opening (--sf-dropdown-available-block-size,
@@ -770,5 +789,108 @@
     .sf-dropdown .sf-list .sf-list-item.#{ladder.size-class('sf-list-item', $size)} .sf-list-item-wrap > .sf-flag {
       --sf-flag--size: calc(#{ladder.text-height($size)} * 3 / 4);
     }
+  }
+}
+
+/* appearance="band" (owner decisions C313 (1), C314; FF-11): the field as a
+   band across its place -- the filter field window's condition. No frame and
+   no radius; the height of a dropping panel's search header (a row of the
+   step and the panel's inset above and below: 48 at size 1, 44 on a phone),
+   a hairline under it; the text where the open list's rows put theirs (the
+   panel's inset and the row's padding, 16 / 12) and the chevron's glyph
+   ending there too. The fill is the container grey, the same while the menu
+   is open, under the focus and after a choice; under the pointer the state
+   layer darkens it. A page tints it with the public variable
+   --sf-dropdown-background-color (the fill family: the scheme's
+   -container, 12 % light, 24 % dark); the text keeps the text ink. The
+   ring turns inwards, as every field's. The selectors outrank the open and
+   focus looks of the field (.sf-dropdown.open .sf-dropdown-field). */
+@layer sf.components {
+  .sf-dropdown.sf-dropdown--band {
+    /* --sf-dropdown-band-edge (public): how far the band reaches past its
+       place on either side -- a phone sheet's inset -- its text and chevron
+       moving in by as much, so they stay over the rows. */
+    --sf-dropdown--band-edge: var(--sf-dropdown-band-edge, calc(var(--sf-px) * 0));
+    --sf-dropdown--band-inset: calc(#{panel.$inset} + #{panel.$row-padding} + var(--sf-dropdown--band-edge));
+    --sf-dropdown--band-row: var(--sf-ui-1--control-height);
+    gap: 0;
+    margin-inline: calc(-1 * var(--sf-dropdown--band-edge));
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--size-1\/2 {
+    --sf-dropdown--band-row: var(--sf-ui-1\/2--control-height);
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--size-2 {
+    --sf-dropdown--band-row: var(--sf-ui-2--control-height);
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--band > .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--border: 0 solid;
+    --sf-dropdown-field--border-start-start-radius: 0;
+    --sf-dropdown-field--border-start-end-radius: 0;
+    --sf-dropdown-field--border-end-start-radius: 0;
+    --sf-dropdown-field--border-end-end-radius: 0;
+    --sf-dropdown-field--padding-top: 0;
+    --sf-dropdown-field--padding-bottom: 0;
+    --sf-dropdown-field--padding-inline-start: var(--sf-dropdown--band-inset);
+    --sf-dropdown-field--padding-inline-end: var(--sf-dropdown--band-inset);
+    --sf-dropdown-field--background-color: var(--sf-dropdown-background-color, var(--sf-surface-container));
+    /* The chevron on the fill: the container's variant ink, as on a filled field. */
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    box-sizing: border-box;
+    min-block-size: calc(var(--sf-dropdown--band-row) + 2 * #{panel.$inset} + var(--sf-px));
+    border-block-end-width: var(--sf-px);
+    border-block-end-style: solid;
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--band:not(:has(> .sf-dropdown-field > :disabled)) > .sf-dropdown-field.sf-dropdown-field:hover {
+    background-image: linear-gradient(var(--sf-surface-state-hover), var(--sf-surface-state-hover));
+  }
+
+  .sf-dropdown.sf-dropdown--band .sf-dropdown-field input {
+    --sf-dropdown-input--padding-inline-start: 0;
+    --sf-dropdown-input--font-family: var(--sf-text--family);
+    --sf-dropdown-input--font-weight: var(--sf-font-weight-regular);
+    --sf-dropdown-input--font-size: var(--sf-text-size-1);
+    --sf-dropdown-input--line-height: var(--sf-text-height-1);
+    --sf-dropdown-input--color: var(--sf-on-surface);
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--size-1\/2 .sf-dropdown-field input {
+    --sf-dropdown-input--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-input--line-height: var(--sf-text-height-1\/2);
+  }
+
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--size-2 .sf-dropdown-field input {
+    --sf-dropdown-input--font-size: var(--sf-text-size-2);
+    --sf-dropdown-input--line-height: var(--sf-text-height-2);
+  }
+
+  .sf-dropdown.sf-dropdown--band .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--font-family: var(--sf-text--family);
+    --sf-dropdown-placeholder--font-size: var(--sf-dropdown-input--font-size);
+    --sf-dropdown-placeholder--line-height: var(--sf-dropdown-input--line-height);
+    --sf-dropdown-placeholder--color: var(--sf-on-surface-container-variant);
+  }
+
+  .sf-dropdown.sf-dropdown--band:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input {
+    --sf-dropdown-input--color: var(--sf-on-surface-disabled);
+  }
+
+  /* An option's dot (C314 (4)): the status dot (sf-dot, 8) before the
+     option's name, at the dot's own gap from it. The dot's box holds the
+     name's line and stands at the line's top, so the row keeps its height
+     (sf-dot's middle alignment hung it below the line: 42 in a 40 row). */
+  .sf-dropdown-option-dot.sf-dot {
+    vertical-align: top;
+  }
+}
+
+/* The band's hairline is a divider, not a control's boundary: the area role
+   (outline-variant), as under a panel's search header. */
+@layer sf.paint {
+  .sf-dropdown.sf-dropdown--band.sf-dropdown--band > .sf-dropdown-field.sf-dropdown-field {
+    border-block-end-color: var(--sf-outline-variant);
   }
 }

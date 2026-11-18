@@ -639,7 +639,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "field",
           "enum": [
             "field",
-            "list"
+            "list",
+            "trigger"
           ],
           "type": "string"
         },
@@ -704,7 +705,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.21.0"
+    "version": "1.23.0"
   },
   "sf-icon": {
     "inputs": {
@@ -807,7 +808,8 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "enum": [
             "bordered",
             "filled",
-            "hidden"
+            "hidden",
+            "plain"
           ],
           "type": "string"
         },
@@ -1005,7 +1007,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.15.2"
+    "version": "1.16.0"
   },
   "sf-input-textarea": {
     "inputs": {

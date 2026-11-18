@@ -135,7 +135,10 @@ export function positionDropdownPortal(root, list) {
       // or the field, whichever is wider, and never stands narrower than the
       // field. A trigger of the consumer's own is not a field: an icon button
       // would make the list the width of a glyph.
-      matchWidth: field.classList.contains('sf-dropdown-field') ? 'min' : false,
+      // list-width="trigger" (FF-10): exactly the trigger's width, whichever
+      // trigger it is -- the field, or a band or a button handed in that is
+      // as wide as the place it stands in (the filter window's condition).
+      matchWidth: list.dataset.sfListWidth === 'trigger' ? true : field.classList.contains('sf-dropdown-field') ? 'min' : false,
       fitHeight: true,
       autoUpdate: false,
       onPosition: ({side}) => {

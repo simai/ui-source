@@ -249,6 +249,19 @@ words under the field in the field-message type, and `aria-invalid` /
 `aria-errormessage` on the control. The page's `invalid` with `error-message`
 wins over it.
 
+## Appearance: plain (C313)
+
+Since 1.16.0 `appearance="plain"` draws the field with no frame, no fill and
+no radius, its text at its own edge: a value that stands where an open
+list's search would (the filter field window's value row). Under the focus
+its foot turns primary in place of the ring, as the search header's line;
+an error keeps that line in the error colour. Its text insets are the
+bordered look's.
+
+```html
+<sf-input appearance="plain" placeholder="Текст" aria-label="Название: содержит"></sf-input>
+```
+
 ## Hover, focus and autofill
 
 Hover draws the border in the text ink. Focus, by mouse or keys, draws a 2 px

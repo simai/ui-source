@@ -32,7 +32,7 @@ test('Dropdown placement measures semantic spacing and bounds the available view
   // field, so the list is not made as wide as it -- an icon button would give
   // the list the width of a glyph.
   assert.match(source,/position\(\)\.anchor\(field, list, \{/);
-  assert.match(source,/matchWidth: field\.classList\.contains\('sf-dropdown-field'\)/);
+  assert.match(source,/matchWidth: list\.dataset\.sfListWidth === 'trigger' \? true : field\.classList\.contains\('sf-dropdown-field'\)/);
   assert.match(source,/fitHeight: true/);
   // And it hangs from whichever of the two is there: looking only for the
   // field, the portal never opened for a dropdown with its own trigger, so the

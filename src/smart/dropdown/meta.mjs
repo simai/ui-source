@@ -25,10 +25,11 @@ const sfDropdownMeta = {
       "kind": "enum",
       "values": [
         "filled",
-        "bordered"
+        "bordered",
+        "band"
       ],
       "default": "bordered",
-      "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, SF.deprecations)."
+      "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled; band (owner decision C313 (1), FF-11): a grey band across its place with no frame and no radius, the height of a dropping panel's search header (48, 44 on a phone), a hairline under it, its text and chevron where the open list's rows put theirs, grey under the pointer (darker), with the list open and after a choice; --sf-dropdown-background-color tints it, --sf-dropdown-band-edge lets it reach past its place (a sheet's inset). outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, SF.deprecations)."
     },
     "columns": {
       "kind": "custom",
@@ -89,10 +90,11 @@ const sfDropdownMeta = {
       "kind": "enum",
       "values": [
         "field",
-        "list"
+        "list",
+        "trigger"
       ],
       "default": "field",
-      "description": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen."
+      "description": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen. trigger (FF-10): exactly the trigger's width, edges flush with it -- the field's or a trigger handed in -- for a trigger as wide as its place, such as the filter window's condition band."
     },
     "mode": {
       "kind": "enum",
@@ -179,7 +181,8 @@ const sfDropdownMeta = {
       "kind": "enum",
       "values": [
         "filled",
-        "bordered"
+        "bordered",
+        "band"
       ],
       "default": "bordered",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."

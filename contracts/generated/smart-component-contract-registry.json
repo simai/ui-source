@@ -775,6 +775,7 @@
       "composition": {
         "public_parts": [],
         "uses": [
+          "component.dot",
           "component.dropdown",
           "component.icon-buttons",
           "component.inputs",
@@ -795,7 +796,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "8c813a685e4db43dfde4f1028f7bc6fc41799face10896ae8848b028f48f2553",
+      "manifest_sha256": "e9b7a9c0c384146ea6c9eb36eb9508d5d0156c41c0372e76b0f07f45a83d5b0b",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1366,7 +1367,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input/smart.manifest.json",
-      "manifest_sha256": "8f2b76d24d30507f1715e1751002077bd99e2d8cfd8866ae2442ff18890250a2",
+      "manifest_sha256": "6f1c55278afad847f0cc76d4e754ee44f50557ba443cdfb638c6f95f81b9f305",
       "reuse_mode": "both",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1413,7 +1414,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-choice/smart.manifest.json",
-      "manifest_sha256": "b4232b89496786735218d02db1280aa5e640d69cc780ac524a489643a610bea8",
+      "manifest_sha256": "53cbf821e7c2d566e4d2029bf7e0ff44829c54933b06b35f31bbe0e04caaccaa",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

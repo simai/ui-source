@@ -80,6 +80,12 @@
     --sf-dot-item--background-color: var(--sf-primary);
   }
 
+  /* Tertiary (owner decision C314 (2)): the filter window's presence
+     conditions, «не задано» and «задано», in sf-dropdown's option dots. */
+  .sf-dot.sf-dot--tertiary {
+    --sf-dot-item--background-color: var(--sf-tertiary);
+  }
+
   .sf-dot.sf-dot--info {
     --sf-dot-item--background-color: var(--sf-info);
   }

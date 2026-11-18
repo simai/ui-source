@@ -115,7 +115,7 @@ function holdReopen(anchor) {
   doc.addEventListener('keydown', clear, true);
 }
 
-export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', width = 'panel', count, kind = '', renderControl} = {}) {
+export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', width = 'panel', count, kind = '', renderControl, footer: withFooter = true} = {}) {
   if (!anchor?.isConnected || !field?.key) return Promise.resolve(null);
   const open = OPEN.get(anchor);
   if (open) {
@@ -141,10 +141,16 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       frame.setAttribute('heading', label);
       frame.setAttribute('data-sf-filter-window', field.key);
       body = doc.createElement('div');
-      body.className = 'sf-filter-window flex flex-col gap-1/2';
-      foot = doc.createElement('div');
-      foot.setAttribute('slot', 'footer');
-      frame.append(body, foot);
+      body.className = 'sf-filter-window flex flex-col';
+      // The window's list scrolls inside it, under the band and the search
+      // (C313): every box down to it may be shorter than its content.
+      body.style.minBlockSize = '0';
+      frame.append(body);
+      if (withFooter) {
+        foot = doc.createElement('div');
+        foot.setAttribute('slot', 'footer');
+        frame.append(foot);
+      }
     } else {
       frame = doc.createElement('sf-popover');
       frame.setAttribute('surface-role', 'dialog');
@@ -153,7 +159,10 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       frame.setAttribute('data-sf-filter-window', field.key);
       const surface = doc.createElement('div');
       surface.setAttribute('slot', 'content');
-      surface.className = 'sf-filter-window flex flex-col gap-1/2 p-1/2';
+      // The window's parts reach its edges (owner decision C313): the
+      // condition band, the search's and the list's hairlines; each part
+      // keeps its own inset, the footer the panel's.
+      surface.className = 'sf-filter-window flex flex-col p-0';
       // The window's width (C157, C310): the panel's step, 20rem; 24rem for
       // people and records with a caption.
       surface.setAttribute('data-sf-filter-width', width === 'wide' ? 'wide' : 'panel');
@@ -161,8 +170,15 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       surface.style.maxInlineSize = '100%';
       body = doc.createElement('div');
       body.className = 'sf-filter-window-control flex flex-col';
-      foot = doc.createElement('div');
-      surface.append(body, foot);
+      body.style.minBlockSize = '0';
+      surface.append(body);
+      if (withFooter) {
+        foot = doc.createElement('div');
+        foot.className = 'sf-filter-window-foot p-1/2';
+        // The footer's hairline across the window, as the band's and the search's.
+        foot.style.borderBlockStart = 'var(--sf-px) solid var(--sf-outline-variant)';
+        surface.append(foot);
+      }
       frame.append(surface);
     }
 
@@ -170,6 +186,8 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       size,
       // The single-field window (C308 FO-5): the rows' checks stand at the end.
       filterWindow: true,
+      // In a phone's sheet the band reaches the sheet's edges (C313 (1)).
+      sheet,
       getFieldText: (key) => word(key, anchor),
       getFilterControlValue: () => temp,
       patchTempFilterValue: (key, patch) => {
@@ -179,6 +197,13 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       getFilterOperatorLabel: (operator) => filterOperatorLabel(operator, anchor, kind),
       getVisibleFilterOptions: (one) => (Array.isArray(one?.filter?.options) ? one.filter.options : []),
       getFilterOptionsProvider: (one) => one?.filter?.provider ?? null,
+      // A single choice applies on a press, as a menu item (C312 (2)).
+      applyTempFilterValue: (key, patch) => {
+        temp = {...temp, ...patch};
+        finish('apply');
+      },
+      // «Снять условие» (C312 (2)): the filter taken off, as «Сбросить».
+      resetFilter: () => finish('reset'),
     };
     const finish = (action) => {
       answer = action === 'apply' ? {action, value: clone(temp)} : {action, value: null};
@@ -186,16 +211,23 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     };
     // «Применить (N)» (FO5-1, C157 (3)): the number of values chosen when the
     // condition is a list; plain «Применить» otherwise or with none chosen.
+    const footSize = sheet ? size : '1/2';
     const applyText = () => {
       const number = typeof count === 'function' ? count(temp) : (Array.isArray(temp?.values) ? temp.values.length : 0);
       return number ? `${word('filterApply', anchor)} (${number})` : word('filterApply', anchor);
     };
     function draw() {
       render(html`${renderControl(field, host)}`, body);
+      if (!foot) return;
+      // The popover's footer buttons are a step below the rows (the accepted
+      // study #top3, C313): at size 1 «Применить (N)» and «Сбросить» did not
+      // fit a 20rem window side by side and the main one wrapped onto two
+      // lines. A phone's sheet is the screen's width and keeps the rows' step,
+      // a finger's target.
       render(html`<div class="sf-filter-window-footer flex gap-1/3 items-cross-center">
-          <sf-button size=${size} scheme="primary" text=${applyText()}
+          <sf-button size=${footSize} scheme="primary" text=${applyText()}
                      data-action="apply" @click=${() => finish('apply')}></sf-button>
-          <sf-button size=${size} appearance="outline" scheme="on-surface" text=${word('filterReset', anchor)}
+          <sf-button size=${footSize} appearance="outline" scheme="on-surface" text=${word('filterReset', anchor)}
                      data-action="reset" @click=${() => finish('reset')}></sf-button>
         </div>`, foot);
     }

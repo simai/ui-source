@@ -54,7 +54,7 @@ test('Smart Input projects the same native metadata and closed visual axes', asy
   // sf-input keeps the ladder's outer steps (1.6.0, actions block item 4).
   assert.deepEqual(manifest.inputs.properties.size.enum, ['1/3', '1/2', '1', '2', '3']);
   assert.deepEqual(manifest.inputs.properties.radius.enum, ['', 'default', 'square', 'rounded']);
-  assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'hidden']);
+  assert.deepEqual(manifest.inputs.properties.type.enum, ['bordered', 'filled', 'hidden', 'plain']);
   assert.deepEqual(manifest.inputs.properties['input-type'].enum, ['text', 'email', 'password', 'search', 'tel', 'url', 'number']);
   // A number field's range and step (1.5.0) are the native input's.
   for (const name of ['min', 'max', 'step']) assert.deepEqual(manifest.inputs.properties[name], {...manifest.inputs.properties[name], type: 'string', default: ''});

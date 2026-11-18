@@ -818,3 +818,113 @@ $choice-search-edge: calc(var(--sf-px) * 0);
     }
   }
 }
+
+/* panel (owner decisions C313 (3), C312 (1)): the list as a dropping
+   panel's content -- the filter field window. The search is the panel's
+   header exactly as in sf-dropdown's open list: a row of the step and the
+   panel's inset above and below (48, 44 on a phone), across the whole list,
+   its hairline from edge to edge; its text over the names; its icon over
+   the rows' pictures (avatar, icon, colour circle) or, over rows without
+   one, at its end. The rows stand at the panel's inset and the row's padding
+   (16, 12 on a phone), a picture at the row's padding from its name, as a
+   dropdown option. «Select found (N)» is a row of the list in the primary
+   ink, its glyph over the pictures. */
+@layer sf.components {
+  // Shape only (C273): the header's hairline colour is the list search's
+  // paint in sf.paint, the same element.
+  @include paint.part(shape);
+  .sf-choice--list[data-panel] {
+    --sf-choice--panel-inset: calc(#{panel.$inset} + #{panel.$row-padding});
+    gap: 0;
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-search {
+    @include panel.search-header(var(--sf-ui-1--control-height), panel.$inset, panel.$inset, panel.$inset, panel.$inset);
+    margin-block-end: 0;
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-search-input {
+    block-size: calc(var(--sf-ui-1--control-height) + 2 * #{panel.$inset} - var(--sf-px));
+  }
+
+  .sf-choice--list[data-panel]:has(.sf-choice-avatar) .sf-choice-search-icon,
+  .sf-choice--list[data-panel]:has(.sf-choice-icon) .sf-choice-search-icon,
+  .sf-choice--list[data-panel]:has(.sf-choice-swatch) .sf-choice-search-icon {
+    order: 0;
+  }
+
+  /* The list scrolls under the search (C313): the band and the search stay
+     where they are and reach both edges; the panel's own scroll would draw
+     its bar beside them. */
+  .sf-choice--list[data-panel] {
+    min-block-size: 0;
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-scroll {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 0;
+    overflow-y: auto;
+    scroll-padding: var(--sf-focus-room);
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-options {
+    align-items: stretch;
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-row {
+    inline-size: 100%;
+    max-inline-size: none;
+    padding-inline: var(--sf-choice--panel-inset);
+  }
+
+  .sf-choice--list[data-panel] :is(.sf-checkbox-top, .sf-radio-button-top) {
+    gap: #{panel.$row-padding};
+  }
+
+  .sf-choice--list[data-panel] :is(.sf-choice-status, .sf-choice-message) {
+    padding-inline: var(--sf-choice--panel-inset);
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-more {
+    margin-inline: var(--sf-choice--panel-inset);
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-found {
+    display: flex;
+    align-items: center;
+    gap: #{panel.$row-padding};
+    inline-size: 100%;
+    min-block-size: var(--sf-ui-1--control-height);
+    margin: 0;
+    padding: 0 var(--sf-choice--panel-inset);
+    border-width: 0;
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .sf-choice--list[data-panel] .sf-choice-found-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+    flex: none;
+  }
+  @include paint.part(all);
+}
+
+@layer sf.paint {
+  .sf-choice--list[data-panel] .sf-choice-found {
+    background-color: var(--sf-transparent);
+    color: var(--sf-primary);
+    --sf-icon--color: var(--sf-primary);
+  }
+}
+
+@layer sf.states {
+  .sf-choice--list[data-panel] .sf-choice-found:not(:disabled):hover {
+    background-color: var(--sf-surface-state-hover);
+  }
+}

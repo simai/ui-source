@@ -20,5 +20,7 @@ SF.RuleLoader['cl-dropdown'] = {
     { name: 'cl-help-mark' },
     // An option's colour (owner decision C308 FO-4) draws its name as sf-badge (tonal, tight, line 1) in its row, only when an option carries color.
     { name: 'cl-badge', lazy: true },
+    // An option's dot (owner decision C314 (4)) is sf-dot's class markup before its name, only when an option carries dot.
+    { name: 'dot', lazy: true },
   ],
 };

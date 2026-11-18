@@ -8,6 +8,7 @@
     "options-error": "The options could not be loaded",
     "nothing-found": "Nothing found",
     "retry": "Retry",
-    "show-more": "Show more"
+    "show-more": "Show more",
+    "select-found": "Select found"
   }
 }
