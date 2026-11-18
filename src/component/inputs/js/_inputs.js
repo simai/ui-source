@@ -6,7 +6,16 @@ import { inputSize } from '../../field-size';
 import { bindFormReset } from '../../form-reset-helper';
 import { maskService } from '../../mask-service';
 
-const INPUT_SELECTOR = 'label.sf-input';
+// Two roots (1.13.0, DF-3). The wrapping label.sf-input names the input by
+// everything inside it, the hint and a help mark too, until this script points
+// aria-labelledby at the label text. div.sf-input keeps the hint out of the
+// name in the markup itself: the label text is a <label for> of its own
+// (label.sf-input-text), the hint a sibling the input points at with
+// aria-describedby.
+const INPUT_SELECTOR = '.sf-input:is(label, div)';
+// What a press on the box hands to the input in a div root, where no wrapping
+// label does it: anything but a control of its own (an action, a link).
+const BOX_CONTROLS = 'input, button, a, select, textarea, label, [tabindex], sf-help-mark, sf-button, sf-button-icon';
 const INPUT_BOUND_FLAG = 'sfInputBound';
 const INPUT_TYPES = new Set(['text', 'email', 'password', 'search', 'tel', 'url']);
 const INPUT_MODES = new Set(['', 'none', 'text', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']);
@@ -150,6 +159,20 @@ function bindInput(root) {
   root.__sfInputNoopHandler = noopHandler;
   root.__sfInputPointerFocusHandler = pointerFocusHandler;
   root.__sfInputBlurHandler = blurHandler;
+  // A div root: a press on the box (its padding, an icon, the text before or
+  // after the value) focuses the input, as the wrapping label does.
+  if (root.tagName !== 'LABEL') {
+    const boxHandler = (event) => {
+      if (event.button !== 0 || input.disabled) return;
+      const target = event.target;
+      if (!(target instanceof Element) || !target.closest('.sf-input-field')) return;
+      if (target.closest(BOX_CONTROLS)) return;
+      event.preventDefault();
+      input.focus();
+    };
+    root.addEventListener('pointerdown', boxHandler);
+    root.__sfInputBoxHandler = boxHandler;
+  }
 
   root.dataset[INPUT_BOUND_FLAG] = '1';
   const message = messageState(root);
@@ -179,6 +202,8 @@ function unbindInput(root) {
   if (input && root.__sfInputBlurHandler) {
     input.removeEventListener('blur', root.__sfInputBlurHandler);
   }
+  if (root.__sfInputBoxHandler) root.removeEventListener('pointerdown', root.__sfInputBoxHandler);
+  delete root.__sfInputBoxHandler;
   if (root.__sfInputMask) {
     window.SF?.Mask?.destroy?.(root.__sfInputMask);
   }
@@ -295,7 +320,9 @@ class Inputs extends ComponentObserver {
     const normalizedSize = inputSize(size);
     const normalizedVariant = boundedValue(type, INPUT_VARIANTS, 'bordered');
 
-    this.template = document.createElement('label');
+    // The div root (1.13.0, DF-3): the label text is the <label>, so the
+    // hint under the field is a description, never part of the name.
+    this.template = document.createElement('div');
     if (this.id) this.template.id = this.id;
     this.template.classList.add(
       'sf-input',
@@ -315,7 +342,7 @@ class Inputs extends ComponentObserver {
     const labelWrap = document.createElement('span');
     labelWrap.classList.add('sf-input-label');
 
-    const labelText = document.createElement('span');
+    const labelText = document.createElement('label');
     labelText.classList.add('sf-input-text');
     labelText.textContent = label;
     labelWrap.append(labelText);

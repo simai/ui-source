@@ -18387,6 +18387,30 @@
       "manual": "Write <sf-tile-metric> for <sf-chart-metric>; the settings keep their names. data-state=\"loading\" is loading (data-state=\"empty\" goes: no value already reads «—»); listen for sf-tile-metric-open (detail {id}) for sf-chart-metric-open; --sf-tile-metric-background-color, -value-color and -hover-background-color for the same --sf-chart-metric-* variables; -label-color, -positive-color, -negative-color and -meter-color have no counterpart (the tile takes the status tones); -min-inline-size is --sf-tile-metric-min-width on a .sf-tile-metric-grid row. The tag alone is not a mechanical rename, because data-state lives only on the alias element.",
       "owner": "ui-chart",
       "source": "simai/ui-chart package/src/smart/chart-metric (component.json x-decisions, docs.md «Переход с sf-chart-metric»), package/docs/chart/journal.json (the set's own record), release chart-f5bff4e90a69 (@simai-studio/chart 1.2.0); src/smart/tile-metric (x-decisions C168); contracts/registry/names.json (chart note)"
+    },
+    {
+      "id": "class-quantity-pointer-focus-c153",
+      "recorded_on": "2026-11-18",
+      "stage": "compat",
+      "kind": "class",
+      "summary": "component.quantity 1.10.0 (owner decision C153 (4), finished): focus by mouse and by keys is one look, so sf-quantity--pointer-focus no longer changes anything. The class component's script still writes it on .sf-quantity while a pointer focus lasts, for a page selector that reads it, until remove_after; sf-input-quantity never wrote it. The stylesheet reads it nowhere since 1.10.0.",
+      "items": [
+        {
+          "component": "sf-quantity",
+          "from": "sf-quantity--pointer-focus",
+          "to": null
+        }
+      ],
+      "deprecated_on": "2026-11-18",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "manual": "Nothing to change in markup: the class is written by the script, not by the page. A page stylesheet that tells a pointer focus from a keyboard one by .sf-quantity--pointer-focus reads :focus-visible on the input or the stepper instead.",
+      "examples": {
+        "before": ".sf-quantity:not(.sf-quantity--pointer-focus):focus-within .sf-quantity-wrap { … }",
+        "after": ".sf-quantity:has(:focus-visible) .sf-quantity-wrap { … }"
+      },
+      "owner": "ui-source",
+      "source": "src/component/quantity/scss/_css__quantity.scss; src/component/quantity/js/_quantity.js; ui-control control/docs-review/decisions.md C153"
     }
   ]
 }

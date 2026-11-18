@@ -124,10 +124,17 @@ steppers hug the number, gap 0, the number as wide as its digits) is
 `.sf-quantity-row` (1.4.4).
 
 The composite control uses the UI radius token `--sf-radius--ui`, the hairline
-token `--sf-px`, semantic typography and spacing tokens. Pointer activation
-does not leave a focus ring. Keyboard focus is visible on the actual field or
-button, including forced-colors mode. Disabled and readonly states do not alter
-the selected size geometry.
+token `--sf-px`, semantic typography and spacing tokens. Focus by mouse and by
+keys is one look (owner decision C153 (4)): a 2 px edge of the focus colour
+inside the box, over its border, with no ring outside, as an Input; a stepper
+reached by keys draws its own ring inwards, including forced-colors mode.
+Disabled and readonly states do not alter the selected size geometry.
+
+`sf-quantity--pointer-focus` no longer changes the look (1.10.0, C153 (4)
+finished; it hid nothing that was still drawn). The script writes it on the
+root while a pointer focus lasts until 2027-01-01, for a page selector that
+reads it (journal `class-quantity-pointer-focus-c153`); a page that needs the
+difference reads `:focus-visible` instead.
 
 ## Input mode behavior
 

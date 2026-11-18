@@ -7,8 +7,8 @@ Registration: `registerComponent('Inputs', Inputs)`
 
 ## Runtime behavior
 
-- Existing `label.sf-input` nodes are auto-bound on init.
-- Dynamically added `label.sf-input` nodes are auto-bound via `MutationObserver`.
+- Existing `label.sf-input` and `div.sf-input` nodes are auto-bound on init.
+- Dynamically added ones are auto-bound via `MutationObserver`.
 - The native input owns its value, focus, validation, form submission and reset.
 - Constructor `inputType` is bounded to `text`, `email`, `password`, `search`,
   `tel` or `url`; unsupported values fall back to `text`.
@@ -98,6 +98,43 @@ Priority:
 1. input `data-mask-options`
 2. root `data-mask-options`
 3. input/root `data-mask-pattern`
+
+## Markup with a hint (1.13.0, DF-3)
+
+A wrapping `label.sf-input` names its input by everything inside it: the
+label text, the hint under the field, a help mark's name, a counter. Until the
+script points `aria-labelledby` at the label text, a screen reader reads the
+hint as part of the label, and a page without the script keeps it so. The
+`div.sf-input` root keeps the hint out of the name in the markup itself: the
+label text is a `<label for>` of its own, `label.sf-input-text` inside the
+label row, and the hint a sibling the input points at with `aria-describedby`.
+The star and a help mark stand in the row beside the label, outside it.
+
+```html
+<div class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">
+  <span class="sf-input-label flex">
+    <label class="sf-input-text" for="email">Work email</label>
+  </span>
+  <span class="sf-input-field items-cross-center transition flex">
+    <i class="sf-icon" aria-hidden="true">mail</i>
+    <input id="email" type="email" name="email" autocomplete="email" aria-describedby="email-hint">
+  </span>
+  <span class="sf-input-hint-text-wrap" id="email-hint">Used for notices only</span>
+</div>
+```
+
+The name is the label text alone and the hint is the description, with or
+without the script. Both roots draw the same (the stylesheet reads classes,
+not tags). The script binds both; on a `div.sf-input` it also hands a press on
+the box (its padding, an icon, the text before or after the value) to the
+input, which the wrapping label did, and writes `for` on `label.sf-input-text`
+when it has none. The constructor builds the `div` form. `label.sf-input`
+stays supported.
+
+The id the script gives the label text is its own: `<input id>-label` when no
+element holds it, else the first free `<input id>-label-<n>`. Before 1.13.0 a
+page whose field root already carried that id had the input labelled by the
+root, the hint with it.
 
 ## Example
 

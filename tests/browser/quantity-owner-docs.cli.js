@@ -79,7 +79,7 @@ async (page) => {
       const keyboardStyle = await overview.evaluate(() => ({
         active: document.activeElement?.outerHTML,
         focusVisible: document.activeElement?.matches(':focus-visible'),
-        ruleMatch: Boolean(document.querySelector('.sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible')),
+        ruleMatch: Boolean(document.querySelector('.sf-quantity .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible')),
         styles: Array.from(document.styleSheets).map(sheet => sheet.href).filter(Boolean),
         shadow: getComputedStyle(document.querySelectorAll('.sf-quantity-count')[1]).boxShadow,
         token: getComputedStyle(document.querySelectorAll('.sf-quantity-count')[1]).getPropertyValue('--sf-icon-button--box-shadow'),

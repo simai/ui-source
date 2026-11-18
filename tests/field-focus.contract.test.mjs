@@ -19,6 +19,7 @@ for (const [kind, file] of [['inputs','_css__inputs.scss'], ['textarea','_css__t
 test('Quantity button focus stays inside joined controls; shadow is never a background', async () => {
   const css = await source('quantity/scss/_css__quantity.scss');
   assert.doesNotMatch(css, /--background-color:\s*var\(--sf-ui-focus\)/);
-  // The step button brings its own ring; inside the field it only turns inwards.
-  assert.match(css, /\.sf-quantity:not\(\.sf-quantity--pointer-focus\) \.sf-icon-button\.sf-quantity-count:not\(:disabled\):focus-visible\s*\{\s*outline-offset: var\(--sf-focus--inset\)/);
+  // The step button brings its own ring; inside the field it only turns inwards,
+  // by pointer and by keys alike since 1.10.0 (C153 (4)): no pointer-focus gate.
+  assert.match(css, /\.sf-quantity \.sf-icon-button\.sf-quantity-count:not\(:disabled\):focus-visible\s*\{\s*outline-offset: var\(--sf-focus--inset\)/);
 });

@@ -651,17 +651,16 @@
 }
 
 @layer sf.states {
-  .sf-quantity.sf-quantity--pointer-focus .sf-quantity-wrap {
-    --sf-quantity-wrap--box-shadow: none;
-  }
-  .sf-quantity.sf-quantity--pointer-focus .sf-icon-button.sf-quantity-count {
-    --sf-icon-button--box-shadow: none;
-  }
+  /* One focus look by mouse and by keys (owner decision C153 (4), finished in
+     component.quantity 1.10.0): sf-quantity--pointer-focus no longer changes
+     anything. The script still writes it while a pointer focus lasts, for a
+     page selector that reads it, until 2027-01-01 (journal
+     class-quantity-pointer-focus-c153). */
   .sf-quantity .sf-quantity-count:disabled .sf-icon {
     --sf-icon--color: var(--sf-on-surface-disabled);
   }
   /* The step buttons sit inside the field, so their own ring turns inwards. */
-  .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
+  .sf-quantity .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
     outline-offset: var(--sf-focus--inset);
   }
   @media (forced-colors: active) {
@@ -670,7 +669,7 @@
       outline-offset: var(--sf-focus--inset);
       --sf-quantity-wrap--box-shadow: none;
     }
-    .sf-quantity:not(.sf-quantity--pointer-focus) .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
+    .sf-quantity .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
       outline: var(--sf-focus--width) solid currentColor;
       outline-offset: var(--sf-focus--inset);
       --sf-icon-button--box-shadow: none;
