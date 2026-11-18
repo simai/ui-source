@@ -150,6 +150,26 @@
     margin-block: 0;
   }
 
+  /* The name in the head (the file name of data-title, C285, or the
+     language) keeps one line: a long name ends with an ellipsis and gives up
+     its room first, the wrap and copy buttons keep their size. The whole name
+     is the label's title when it is cut (the script marks it, as a cut crumb
+     of sf-breadcrumbs). A terminal's label is a row of its icon and the name,
+     so the name's own span is the one cut. */
+  :is(.sf-highlight__head, .sf--highlight-head) > :not(.sf-highlight__language) {
+    flex-shrink: 0;
+  }
+  :is(.sf-highlight__head, .sf--highlight-head) > .sf-highlight__language {
+    min-inline-size: 0;
+  }
+  :is(.sf-highlight__head, .sf--highlight-head) > .sf-highlight__language:not(:has(> .sf-highlight__language-text)),
+  .sf-highlight__language-text {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .sf-highlight__head {
     padding: 0 var(--sf-space-1);
     margin: 0;
@@ -403,6 +423,12 @@
   @media (forced-colors: active) {
     .sf-code-surface {
       border-color: CanvasText;
+    }
+    /* The fill and the start bar of a marked or focused line are background
+       layers, which forced colours drop; the bar comes back as an edge in
+       the system highlight colour. A diff line keeps its + / - sign. */
+    .sf-code-line:is(.sf-code-line--highlight, .sf-code-line--focus, [data-line-mark], [data-line-focus]) {
+      border-inline-start: calc(2 * var(--sf-px)) solid Highlight;
     }
     .hljs-ln-numbers div {
       border-color: CanvasText;

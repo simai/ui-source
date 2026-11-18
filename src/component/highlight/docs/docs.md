@@ -20,9 +20,16 @@ the text's ink under the pointer, the primary colour on a press. The wrap
 toggle beside it keeps its look. A file name (1.9.0, owner decision C285): `data-title="config/app.php"` on
 the `code`, its `pre` or the root puts the name where the header shows the
 language, in the same header text; the language is not shown then. Without
-`data-title` the header names the language as before. A terminal
+`data-title` the header names the language as before. The name keeps one
+line (1.11.0): a long file name ends with an ellipsis and gives up its room
+first, the wrap and copy buttons keep their size, and a cut name carries the
+whole name as the label's `title`, which goes again once the name fits. A terminal
 (`data-frame="terminal"`) keeps its icon and shows the name in place of the
-word "Terminal". `data-chrome="none"` omits the header. `data-chrome="static"` lets the host own
+word "Terminal". The header is the control height of step 1 (40, 36 on a
+phone) and lays out its parts with no block margin of their own (1.11.0): the
+text utility on the label (`sf-text-1/2`) brought its flow margin to the next
+part, and a header with a button after the label drew 48. A page that writes
+its own header needs no margin reset. `data-chrome="none"` omits the header. `data-chrome="static"` lets the host own
 the existing header without duplication. The historical
 `data-sf-highlight-chrome="static"` input remains compatible. Generated copy
 labels follow the document language and may be overridden by `data-copy-label`

@@ -397,6 +397,31 @@ function ensureStructure(block) {
   return { head, mode, root };
 }
 
+// A name cut with an ellipsis (a long data-title, C285) has its whole text as
+// the label's title, as a cut crumb of sf-breadcrumbs; a name that fits again
+// loses it. A title the page wrote on the label itself is left alone.
+const watchedNames = new WeakSet();
+
+function markCutName(language) {
+  if (language.hasAttribute('title') && !('sfHighlightCut' in language.dataset)) return;
+  const text = language.querySelector(':scope > .sf-highlight__language-text') || language;
+  const cut = text.scrollWidth > text.clientWidth + 1;
+  if (cut) {
+    language.setAttribute('title', text.textContent.trim());
+    language.dataset.sfHighlightCut = '';
+  } else if ('sfHighlightCut' in language.dataset) {
+    language.removeAttribute('title');
+    delete language.dataset.sfHighlightCut;
+  }
+}
+
+function watchName(language) {
+  const View = language.ownerDocument.defaultView;
+  if (!View?.ResizeObserver || watchedNames.has(language)) return;
+  watchedNames.add(language);
+  new View.ResizeObserver(() => markCutName(language)).observe(language);
+}
+
 function updateChrome(block, result) {
   const { head, mode, root } = ensureStructure(block);
   if (!root) return;
@@ -424,8 +449,13 @@ function updateChrome(block, result) {
     icon.className = 'sf-icon sf-icon--size-2';
     icon.setAttribute('aria-hidden', 'true');
     icon.textContent = 'terminal';
-    language.replaceChildren(icon, block.ownerDocument.createTextNode(title || pageText(HIGHLIGHT_TEXT, 'terminal', block, 'sf-highlight')));
+    const name = block.ownerDocument.createElement('span');
+    name.className = 'sf-highlight__language-text';
+    name.textContent = title || pageText(HIGHLIGHT_TEXT, 'terminal', block, 'sf-highlight');
+    language.replaceChildren(icon, name);
   } else language.textContent = title || block.dataset.requestedLang || result.language || 'text';
+  markCutName(language);
+  watchName(language);
   ensureCopyButton(block, root, head);
   ensureWrapButton(block, root, head);
 }
