@@ -48,7 +48,7 @@ test('a link\'s address box is text with the address keyboard: a path and an anc
   const edit = source.slice(source.indexOf('function renderLinkEdit'), source.indexOf('function renderInnEdit'));
   assert.doesNotMatch(edit, /input-type="url"/u);
   assert.match(edit, /inputmode="url"/u);
-  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.23.0');
+  assert.equal(json('src/core/passports/module.smart-field-renderers.json').version, '1.25.0');
 });
 
 test('sf-dropdown 1.20.6 reads the option elements again when their owner rewrites them', () => {

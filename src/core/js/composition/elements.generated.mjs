@@ -651,6 +651,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           ],
           "type": "string"
         },
+        "list-width": {
+          "default": "field",
+          "enum": [
+            "field",
+            "list"
+          ],
+          "type": "string"
+        },
         "mode": {
           "default": "select",
           "enum": [
@@ -712,7 +720,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.20.6"
+    "version": "1.21.0"
   },
   "sf-icon": {
     "inputs": {

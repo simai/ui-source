@@ -210,7 +210,8 @@ function renderNumberFilterControl(field, host, look = {}) {
     const currency = currencies ? (currencies.includes(control.currency) ? control.currency : currencies[0]) : (look.currency || null);
     const sign = look.money && currency ? currencyOf(currency, locale, currencyDisplayOf(field)) : null;
     const textStart = isolatedSign(sign?.before ? sign.sign : '', locale);
-    const textEnd = look.percent ? '%' : isolatedSign(sign && !sign.before ? sign.sign : '', locale);
+    const textEnd = look.percent ? '%' : isolatedSign(sign && !sign.before ? sign.sign : '', locale)
+        || (look.money ? '' : fieldUnit(field));
     const minDigits = look.money && currency ? currencyOf(currency, locale).minor : 0;
     const shown = (value) => restingDecimal(value, locale, value === '' || value === null || value === undefined ? 0 : minDigits);
     const withCurrency = (patch) => (currencies ? {...patch, currency} : patch);
@@ -1983,7 +1984,7 @@ function renderStepperEdit(field, value, host, {percent = false} = {}) {
                 max=${stepperNumber(field.max) || nothing}
                 step=${step || nothing}
                 precision=${precision || nothing}
-                unit=${percent ? '%' : nothing}
+                unit=${percent ? '%' : fieldUnit(field) || nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
                 ?disabled=${field.readonly === true}
@@ -2011,6 +2012,16 @@ function declaresDecimals(field) {
 
 function isDecimalStringField(field, value) {
     return typeof value === 'string' || declaresDecimals(field);
+}
+
+// A number's unit (`unit`, «шт», «кг») in every place the field is drawn
+// (C302 (2): the template knows every place; cards study CV-7): after the
+// number in the view and the compact place, inside the box after the value
+// when it is edited or filtered -- in the hint's ink, not part of the value.
+// It was only the view's: the edit box and the filter box showed a bare
+// «13» where the record said «13 шт». A field with no unit draws none.
+function fieldUnit(field) {
+    return typeof field?.unit === 'string' ? field.unit.trim() : '';
 }
 
 function renderNumberEdit(field, value, host) {
@@ -2059,6 +2070,7 @@ function renderNumberEdit(field, value, host) {
                 value=${value ?? ''}
                 inputmode=${decimals === 0 ? 'numeric' : 'decimal'}
                 root-class=${EDIT_ALIGN_END ? 'text-end num-tabular' : nothing}
+                text-end=${fieldUnit(field) || nothing}
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 @input=${(event) => write(event, false)}
