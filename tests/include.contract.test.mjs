@@ -13,7 +13,7 @@ const source = read('src/smart/include/index.js');
 
 test('the manifest: a leaf that fetches, two facts and the refresh action', () => {
   assert.equal(manifest.tag, 'sf-include');
-  assert.equal(manifest.version, '1.2.3'); // group build 7: the patch for moved files (the line had 1.1.0) // group build 9: 1.1.1 moved on by the merged branches or a GB9 patch // C282: 1.1.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.2.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.2.4'); // group build 7: the patch for moved files (the line had 1.1.0) // group build 9: 1.1.1 moved on by the merged branches or a GB9 patch // C282: 1.1.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.2.1 moved on by the merged branches or a GB10 patch // group build 13: 1.2.3 moved on by the merged branches or the C278 language patch
   assert.deepEqual(manifest['side-effects'], ['network']);
   assert.deepEqual(Object.keys(manifest.settings), ['src', 'load', 'lines']);
   assert.deepEqual(manifest.settings.load.values, ['now', 'view']);

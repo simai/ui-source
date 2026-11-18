@@ -26,8 +26,8 @@ const method = (name, next) => source.slice(source.indexOf(`  ${name}`), source.
 // hovered entry is a fill, tests/badges-owner.contract.test.mjs) keep every
 // 1.5.0 fix below.
 test('contents is 1.7.1 in its manifest and its generated manifest (1.7.1: the status mark writes sf-badge icon-only, C134)', () => {
-  assert.equal(manifest.version, '1.8.3'); // C212 focus offsets // group build 9: 1.7.5 moved on by the merged branches or a GB9 patch // C282: 1.7.7 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.1 moved on by the merged branches or a GB10 patch
-  assert.equal(generated.version, '1.8.3'); // C212 focus offsets // group build 9: 1.7.5 moved on by the merged branches or a GB9 patch // C282: 1.7.7 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.8.4'); // C212 focus offsets // group build 9: 1.7.5 moved on by the merged branches or a GB9 patch // C282: 1.7.7 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.1 moved on by the merged branches or a GB10 patch // group build 13: 1.8.3 moved on by the merged branches or the C278 language patch
+  assert.equal(generated.version, '1.8.4'); // C212 focus offsets // group build 9: 1.7.5 moved on by the merged branches or a GB9 patch // C282: 1.7.7 moved on by the language-file patch (Russian is a language file) // group build 10: 1.8.1 moved on by the merged branches or a GB10 patch // group build 13: 1.8.3 moved on by the merged branches or the C278 language patch
 });
 
 test('CT-03: fewer than two sections draw nothing, by the host state and in the printed markup', () => {

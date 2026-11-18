@@ -18,7 +18,7 @@ const record = (id) => json('contracts/changes/journal.json').records.find((entr
 
 test('C134 sf-badge: icon-only replaces the boolean compact, a dated setting alias of the shim', () => {
   const component = json('src/smart/badge/component.json');
-  assert.equal(component.version, '1.6.3'); // 1.6.1: group build 6 patch (LC-2 words) // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file)
+  assert.equal(component.version, '1.6.4'); // 1.6.1: group build 6 patch (LC-2 words) // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file) // group build 13: 1.6.3 moved on by the merged branches or the C278 language patch
   assert.ok(!('compact' in component.settings));
   assert.deepEqual({type: component.settings['icon-only'].type, default: component.settings['icon-only'].default}, {type: 'boolean', default: false});
   assert.doesNotMatch(component.settings['icon-only'].summary, /legacy name|compatibility alias|dated alias/iu, 'icon-only stays printable by the composition');

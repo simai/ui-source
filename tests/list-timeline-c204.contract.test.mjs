@@ -48,6 +48,6 @@ test('C204 (3): the slot an event names stands under its meta line', () => {
 
 test('C204: version 1.4.0 with its note', () => {
   const manifest = json('src/smart/list-timeline/component.json');
-  assert.equal(manifest.version, '1.5.3'); // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch // C282: 1.4.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
+  assert.equal(manifest.version, '1.5.4'); // group build 9: 1.4.0 moved on by the merged branches or a GB9 patch // C282: 1.4.1 moved on by the language-file patch (Russian is a language file) // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // group build 13: 1.5.3 moved on by the merged branches or the C278 language patch
   assert.ok(manifest['x-decisions'].some((note) => note.startsWith('version 1.4.0 (2026-11-15, owner decision C204')));
 });

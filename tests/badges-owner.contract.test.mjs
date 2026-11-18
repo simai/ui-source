@@ -75,8 +75,8 @@ test('Smart Badge declares the run state: its settings, marks, roles and words',
   };
 
   // 1.6.0 renames compact to icon-only (C134); the run state is unchanged.
-  assert.equal(component.version, '1.6.3'); // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file)
-  assert.equal(manifest.version, '1.6.3'); // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file)
+  assert.equal(component.version, '1.6.4'); // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file) // group build 13: 1.6.3 moved on by the merged branches or the C278 language patch
+  assert.equal(manifest.version, '1.6.4'); // group build 9: 1.6.1 moved on by the merged branches or a GB9 patch // C282: 1.6.2 moved on by the language-file patch (Russian is a language file) // group build 13: 1.6.3 moved on by the merged branches or the C278 language patch
   assert.deepEqual(component.settings.activity.values, ['', ...Object.keys(states)]);
   assert.equal(component.settings.activity.default, '');
   assert.equal(component.settings['icon-only'].type, 'boolean');
