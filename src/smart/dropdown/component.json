@@ -60,6 +60,15 @@
       "default": "list",
       "summary": "How the options are laid out. A list is one option a row; a grid puts several in a row, which is the only way a hundred glyphs can be looked at -- a column of them is a column nobody scrolls to the end of. In a grid an option shows its picture and keeps its text as the name a search reads and a pointer sees."
     },
+    "list-width": {
+      "type": "enum",
+      "values": [
+        "field",
+        "list"
+      ],
+      "default": "field",
+      "summary": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen."
+    },
     "mode": {
       "type": "enum",
       "values": [
@@ -472,7 +481,7 @@
     "version 1.20.1 (2026-11-17, feat/lang-file-c282; numbered above 1.20.0 on origin/fix/forms-fm2): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.20.2 (written on the branch as 1.19.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.20.3 (written on the branch as 1.20.0; 2026-11-17, group build 10, fix/forms-fm2; numbered above 1.19.0 on another origin branch): a minor, a setting. `hint`, as sf-input's (field parity): the help line under the field (.sf-dropdown-message, data-field-message=\"hint\", the hint's ink, a step below the value), the trigger's description (aria-describedby); an error message or the required word takes its place while shown, and an invalid field with no message keeps its hint, as sf-input's. aria-errormessage points at the line only while it holds an error. Values, events and keys unchanged.",
-    "version 1.21.0 (2026-11-18, owner decision C308 FO-4; numbered above 1.20.5 on origin): a minor. An option's color (C302's one data word: a scheme, a hue of the static palette or a hex) draws the option's name as a tonal label in that colour in its row (sf-badge tight, line 1, through helpers/option-badge.js), as a cell, a view, a checklist and segmented buttons draw it. An option without color is unchanged."
+    "version 1.21.0 (2026-11-18, owner decision C308 FO-4; numbered above 1.20.5 on origin): a minor. An option's color (C302's one data word: a scheme, a hue of the static palette or a hex) draws the option's name as a tonal label in that colour in its row (sf-badge tight, line 1, through helpers/option-badge.js), as a cell, a view, a checklist and segmented buttons draw it. An option without color is unchanged. The same minor (filter field study 2026-11-18): a search that finds nothing says «Ничего не найдено» / \"Nothing found\" under the header (FF-1, word nothing-found); setting list-width field|list (FF-2); in a multiple list the box of a text or icon row stands at the row's end, as on avatar rows (FF-3, C308 (4))."
   ],
   "x-rule": {
     "$comment": [

@@ -196,6 +196,17 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     return chosenFirst(shown, this._opened);
   }
 
+  // The index of the last row that stands first because it was chosen when
+  // the list opened, while other rows follow it; -1 when nothing stands first.
+  chosenLastIndex() {
+    const opened = this._opened;
+    if (!opened?.size) return -1;
+    const shown = this.shownOptions;
+    let last = -1;
+    while (last + 1 < shown.length && opened.has(shown[last + 1].value)) last += 1;
+    return last >= 0 && last < shown.length - 1 ? last : -1;
+  }
+
   // Where a row's box stands (C308 FO-5): start, or end of the row.
   get controlPositionValue() {
     return this.getAttribute('control-position') === 'end' ? 'end' : 'start';
@@ -359,6 +370,7 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
       component: this,
       id,
       items: this.shownOptions,
+      chosenLast: this.chosenLastIndex(),
       chosen: new Set(this.selected),
       paging: this.pagingContext(),
       multiple: Boolean(this.multiple),

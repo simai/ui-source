@@ -173,5 +173,5 @@ test('C166 follow-up, C144: the footer labels stay on one line; the buttons grow
   assert.doesNotMatch(share, /flex: 1 1 0;/u);
   assert.match(css, /\.sf-settings-panel-footer \.sf-button-text-container \{\s*white-space: nowrap;\s*\}/u);
   const component = JSON.parse(read('src/smart/settings/component.json'));
-  assert.equal(component.version, '1.7.4'); // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch
+  assert.equal(component.version, '1.9.0'); // FF-5, FF-6: 1.9.0 above 1.8.0 on origin/feat/field-orders // group build 10: 1.7.2 moved on by the merged branches or a GB10 patch
 });

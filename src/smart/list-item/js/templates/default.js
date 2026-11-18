@@ -205,7 +205,11 @@ export function renderListItemTemplate(context) {
     // to mark (docs precheck smart content LI-01: an empty checkbox stood at
     // the end of every such row); an option of a single choice says it is
     // chosen with its fill alone (owner C08; DEV P2, owner R143, 2026-11-12).
-    if (isOption && context.multiple && (context.type === "avatar" || context.type === "color")) {
+    // Every option of a list that may hold several chosen carries it there,
+    // at the row's end (owner decision C308 (4), FF-3): a text or icon row
+    // too, which drew its box at the start beside picture rows with theirs at
+    // the end.
+    if (isOption && context.multiple && (context.type === "avatar" || context.type === "color" || context.checkEnd === true)) {
       return html`
         <label
           class="sf-checkbox sf-checkbox--size-${context.sizeGroup
@@ -275,6 +279,7 @@ export function renderListItemOption(option = {}, {multiple = false} = {}) {
     avatarImageUrl: option.avatarImageUrl,
     avatarTitle: option.avatarTitle,
     ariaLabel: option.ariaLabel,
+    checkEnd: option.checkEnd === true,
     multiple: Boolean(multiple),
     option: true,
   });

@@ -12,7 +12,7 @@ import {fieldOptions, holdsValue, itemValue, matches} from '../settings.js';
 //   body     the groups as sections in one scroll, or the chosen tab's rows;
 //            the only part that scrolls (the scroll-area inset rule)
 //   footer   apply="instant": one «Сбросить»; apply="button" (a filter):
-//            «Сбросить» and «Применить (N)»
+//            «Применить (N)» then «Сбросить» (FF-5)
 //
 // A row is a plate (.sf-settings-row) with the control a person works
 // (.sf-settings-row-main, the role) and, in a fields list that pins, the pin
@@ -204,7 +204,8 @@ function renderFooter(context) {
     const reset = html`<sf-button size="1/2" appearance="outline" scheme="on-surface" text=${words.reset} data-sf-reset></sf-button>`;
     if (apply !== 'button') return html`<div class="sf-settings-panel-footer">${reset}</div>`;
     const label = count ? `${words.apply} (${count})` : words.apply;
-    return html`<div class="sf-settings-panel-footer">${reset}<sf-button size="1/2" text=${label} data-sf-apply></sf-button></div>`;
+    // The main action first (C157 (3), C159 (4), FF-5).
+    return html`<div class="sf-settings-panel-footer"><sf-button size="1/2" text=${label} data-sf-apply></sf-button>${reset}</div>`;
 }
 
 export function renderPanel(context) {

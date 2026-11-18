@@ -48,9 +48,11 @@ function renderOptions(options = [], multiple = false) {
     // place the box would take; an avatar or a colour row then draws its box
     // after the picture, and only in a multiple list (C08: a single choice
     // is the row's fill, no box).
-    const withBox = multiple && (!option.type || option.type === "text");
+    // The box stands at the row's end on every row (owner decision C308 (4),
+    // FF-3): a text or icon row draws it after its name, as a picture row does.
+    const withBox = multiple && (!option.type || option.type === "text" || option.type === "icon");
     const named = optionName(option);
-    parts.push(renderListItemOption(withBox ? {...named, type: "checkbox"} : named, {multiple}));
+    parts.push(renderListItemOption(withBox ? {...named, checkEnd: true} : named, {multiple}));
   }
 
   return parts;
@@ -331,6 +333,7 @@ export function renderDropdownTemplate(context) {
           context.component?.hasSlotContent?.('trigger') ? " sf-list--free-width" : ""
         }`}
         style=${`--sf-list--cell: ${CELL[context.size] || CELL["1"]}`}
+        data-sf-list-width=${context.listWidth === "list" ? "list" : nothing}
         ?hidden=${!context.open}
       >
         ${context.search
@@ -363,6 +366,11 @@ export function renderDropdownTemplate(context) {
             @keydown=${(event) => context.component.handleOptionKeydown(event)}
           >
             ${renderOptions(context.options, context.multiple)}
+            ${context.nothingFound
+              // A search that finds nothing says so, under the search header
+              // (FF-1): the header alone read as a list that had not loaded.
+              ? html`<div class="sf-list-empty" role="status">${context.nothingFound}</div>`
+              : nothing}
           </div>
         </div>
       </div>

@@ -255,6 +255,15 @@
   max-inline-size: var(--sf-popup-list-max-width);
 }
 
+/* list-width="list" (FF-2): the list's step whatever the field -- a list
+   opened from a narrow filter button was as narrow as the button. Never
+   narrower than the field (the minimum above, or the positioning's), never
+   wider than the screen. */
+.sf-dropdown .sf-list[data-sf-list-width="list"]:not(.sf-list--free-width),
+.sf-list[data-sf-portal][data-sf-list-width="list"]:not(.sf-list--free-width) {
+  inline-size: min(var(--sf-popup-list-max-width), calc(100vi - var(--sf-space-1)));
+}
+
 /* A list in place has the anchored list's height (R171 follow-up,
    2026-11-12): the room the screen gives it, less the panel's edge padding,
    which the dropdown measures on opening (--sf-dropdown-available-block-size,

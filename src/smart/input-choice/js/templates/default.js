@@ -165,8 +165,11 @@ function renderRow(context, item, index) {
            aria-labelledby=${titleId} aria-describedby=${item.caption ? captionId : nothing}
            aria-invalid=${context.invalid ? 'true' : nothing}>`;
   const error = context.invalid ? 'error' : '';
+  // The last of what was chosen when the list opened, which stands first
+  // (FO4-5): a hairline under it parts it from the rest (filter field study).
+  const last = index === context.chosenLast ? 'sf-choice-row--chosen-last' : '';
   if (context.multiple) {
-    return html`<label class=${joinClasses('sf-checkbox', 'sf-checkbox--size-1', 'flex', 'sf-choice-row', disabled ? '' : 'cursor-pointer', error)}>
+    return html`<label class=${joinClasses('sf-checkbox', 'sf-checkbox--size-1', 'flex', 'sf-choice-row', last, disabled ? '' : 'cursor-pointer', error)}>
       <span class="sf-checkbox-box flex">${input}${checked
         ? html`<span class="sf-icon" aria-hidden="true">check</span>`
         : nothing}</span>
@@ -175,7 +178,7 @@ function renderRow(context, item, index) {
         : nothing}</span>
     </label>`;
   }
-  return html`<label class=${joinClasses('sf-radio-button', 'sf-radio-button--size-1', 'flex', 'sf-choice-row', disabled ? '' : 'cursor-pointer', error)}>
+  return html`<label class=${joinClasses('sf-radio-button', 'sf-radio-button--size-1', 'flex', 'sf-choice-row', last, disabled ? '' : 'cursor-pointer', error)}>
     <span class="sf-radio-button-box flex items-cross-center content-main-center">${input}<span class="sf-radio-button-mark" aria-hidden="true"></span></span>
     <span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-top flex">${renderVisual(context, item)}<span class="sf-radio-button-text" id=${titleId}>${renderName(context, item, disabled)}</span></span>${item.caption
       ? html`<span class="sf-radio-button-description" id=${captionId}>${item.caption}</span>`
@@ -184,23 +187,28 @@ function renderRow(context, item, index) {
 }
 
 // The search over the rows and what the host's pages say under them (FO-4):
-// searchable puts a search field over the options (sf-input, filled, the
-// field's step); a provider's answer is said in one polite status line --
+// searchable puts the dropping panel's search header over the options (C06,
+// FF-7: one search look with sf-dropdown's and sf-settings' -- no frame, no
+// fill, a hairline under it, its text over the rows' text and its icon at
+// the end; it was a filled sf-input, a second look); a provider's answer is said in one polite status line --
 // loading, nothing found, the error with «Try again» -- and «Show more» asks
 // for its next page.
 function renderSearch(context) {
   const {paging} = context;
   if (!paging.searchable) return nothing;
-  return html`<sf-input class="sf-choice-search" size="1" appearance="filled" input-type="search" icon-start="search" clearable
-                        placeholder=${paging.words.search} aria-label=${paging.words.search}
-                        value=${paging.query} ?disabled=${context.fieldDisabled}
-                        @input=${(event) => {
-                          // The search box's own input and change stop here:
-                          // typing is not a change of the field's value.
-                          event.stopPropagation();
-                          context.component.searchFor(event.target?.value ?? '');
-                        }}
-                        @change=${(event) => event.stopPropagation()}></sf-input>`;
+  return html`<label class="sf-choice-search">
+    <span class="sf-choice-search-icon" aria-hidden="true"><i class="sf-icon">search</i></span>
+    <input type="search" class="sf-choice-search-input" autocomplete="off" spellcheck="false"
+           placeholder=${paging.words.search} aria-label=${paging.words.search}
+           .value=${paging.query} ?disabled=${context.fieldDisabled}
+           @input=${(event) => {
+             // The search box's own input and change stop here:
+             // typing is not a change of the field's value.
+             event.stopPropagation();
+             context.component.searchFor(event.target?.value ?? '');
+           }}
+           @change=${(event) => event.stopPropagation()}>
+  </label>`;
 }
 
 function renderPaging(context) {

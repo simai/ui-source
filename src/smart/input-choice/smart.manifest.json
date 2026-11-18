@@ -378,11 +378,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "007db62cacdda2068452b2ec132bf7a4707f6de190c80bd2a337d8ea806899e6"
+        "sha256": "f5e5baad7f18619a3836860000dd1a88886980baa18e1d50595fa285f99ac0d4"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "dd2e78ee15834621928bc6d31bb2a159772617967ef090234a4f15e1123c6907"
+        "sha256": "37a02652e07a6d821dc29cbd9930de46783097597c7b24d8153785dc19e30b77"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
@@ -390,7 +390,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "28e28efb27be9d50dacd77d4e0b46213ab679e7ac831d5fab1025acaf8a1490b"
+        "sha256": "6ae9336263feb390574213add7a123ace39379a85c8137e2f25364aabbbe4e24"
       },
       {
         "path": "src/smart/input-choice/rule.js",

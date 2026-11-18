@@ -335,7 +335,7 @@ function renderChoiceFilterControl(field, host) {
                 flow="column"
                 multiple
                 aria-label=${field.label || field.key || nothing}
-                ?searchable=${field.filter?.searchable === true}
+                ?searchable=${choiceSearchable(field, host, options, pages)}
                 option-look=${optionLookOf(field) || nothing}
                 control-position=${host.filterWindow === true ? 'end' : nothing}
                 .items=${options}
@@ -349,6 +349,17 @@ function renderChoiceFilterControl(field, host) {
                 }}
         ></sf-input-choice>
     `;
+}
+
+// Whether the choice filter shows its search: when the field asks for it;
+// in the single-field filter window also from ten options or with the host's
+// pages, which search on the server (filter field study, decided: «search
+// from 10»), unless the field says searchable false.
+function choiceSearchable(field, host, options, pages) {
+    const asked = field.filter?.searchable;
+    if (asked === true) return true;
+    if (asked === false || host.filterWindow !== true) return false;
+    return Boolean(pages) || options.length >= 10;
 }
 
 const CHOICE_PROVIDERS = new WeakMap();

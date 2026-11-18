@@ -185,7 +185,7 @@ test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text,
 
 test('owner decision C148: the list row -- end column, one Tab stop with arrows into its controls, no lines but divided, one line or lines="2", long press', () => {
   const item = json('src/smart/list-item/component.json');
-  assert.equal(item.version, '1.6.2'); // group build 7: the patch for moved files (the line had 1.6.0) // C282: 1.6.1 moved on by the language-file patch (Russian is a language file)
+  assert.equal(item.version, '1.7.0'); // FF-3: checkEnd, 1.7.0 above 1.6.2 on origin // group build 7: the patch for moved files (the line had 1.6.0) // C282: 1.6.1 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual([item.settings.divided.type, item.settings.divided.default], ['boolean', false]);
   assert.deepEqual([item.settings.lines.values, item.settings.lines.default], [['1', '2'], '1']);
   const list = json('src/smart/list/component.json');

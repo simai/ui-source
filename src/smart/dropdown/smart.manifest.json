@@ -103,6 +103,15 @@
           "grid"
         ]
       },
+      "list-width": {
+        "type": "string",
+        "default": "field",
+        "description": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen.",
+        "enum": [
+          "field",
+          "list"
+        ]
+      },
       "mode": {
         "type": "string",
         "default": "select",
@@ -506,7 +515,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "ab7895c7155d31ac3514e7d1926a751903042e2c00abb0bf287c4524c9f23680"
+        "sha256": "e69fff9e6673c47d558ef83e8bf364f971413620bfbe776e5bc586abc47374b3"
       },
       {
         "path": "src/smart/dropdown/rule.js",
@@ -514,7 +523,7 @@
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "0c17a68c906d6a42fb108e492a2dfc1878aaeac3c5d5fc900c519fa9b406aaa4"
+        "sha256": "318be349e77da76318211e3458a88d5edfcabf441cbcbb63955db55ba4d586f9"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

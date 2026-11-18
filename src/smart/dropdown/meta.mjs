@@ -85,6 +85,15 @@ const sfDropdownMeta = {
       "default": "list",
       "description": "How the options are laid out. A list is one option a row; a grid puts several in a row, which is the only way a hundred glyphs can be looked at -- a column of them is a column nobody scrolls to the end of. In a grid an option shows its picture and keeps its text as the name a search reads and a pointer sees."
     },
+    "list-width": {
+      "kind": "enum",
+      "values": [
+        "field",
+        "list"
+      ],
+      "default": "field",
+      "description": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen."
+    },
     "mode": {
       "kind": "enum",
       "values": [
