@@ -1171,9 +1171,38 @@ function renderDateCell(field, value, host) {
 // number 0..100 is the inline sf-progress-bar meter -- a 64 track, the number
 // «72 %» before it -- named by the field's label. The scale stays for levels
 // («4 из 5», C185 (5)). Out of range it is left as text, as the scale is.
+//
+// Its thresholds are the HTML meter's (dispatcher decision msg-bc1702eb, the
+// variant name meter): low and high split 0..100 into three regions and
+// optimum says which one is good (unset, the middle of the range, as <meter>).
+// The value in the optimum's region draws no status, in the region next to it
+// warning, two regions away error -- so a disk share with low 80 and high 95
+// is warning from above 80 and error above 95, and a fill rate with optimum
+// 100 is error below low. Without low and high the meter draws no status.
+function meterLimit(raw, fallback, from, to) {
+    const number = raw === null || raw === undefined || raw === '' ? NaN : Number(raw);
+    return Number.isFinite(number) ? Math.min(to, Math.max(from, number)) : fallback;
+}
+
+export function meterStatus(field, number) {
+    if (!field || !Number.isFinite(number)) return '';
+    const {low: lowSet, high: highSet, optimum: optimumSet} = field;
+    const given = (value) => value !== undefined && value !== null && value !== '';
+    if (!given(lowSet) && !given(highSet)) return '';
+    const low = meterLimit(lowSet, 0, 0, 100);
+    const high = meterLimit(highSet, 100, low, 100);
+    const optimum = meterLimit(optimumSet, 50, 0, 100);
+    const region = (point) => (point < low ? 0 : point > high ? 2 : 1);
+    // The optimum on a boundary or between them makes the middle the good region.
+    const best = optimum < low ? 0 : optimum > high ? 2 : 1;
+    const away = Math.abs(region(number) - best);
+    return away === 0 ? '' : away === 1 ? 'warning' : 'error';
+}
+
 function meterProps(field, number) {
     const name = typeof field.label === 'string' ? field.label : (field.key || '');
-    return {inline: true, meter: true, value: String(number), ...(name ? {label: name} : {})};
+    const status = meterStatus(field, number);
+    return {inline: true, meter: true, value: String(number), ...(name ? {label: name} : {}), ...(status ? {status} : {})};
 }
 
 // A percent drawn as a scale or a meter (step 5): the number's own drawings,
@@ -3538,8 +3567,8 @@ function renderNumberView(field, value, host) {
         return html`<sf-progress-scale size="1" value=${String(number)}></sf-progress-scale>`;
     }
     if (variant === 'meter' && Number.isFinite(number) && number >= 0 && number <= 100) {
-        const {label} = meterProps(field, number);
-        return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing}></sf-progress-bar>`;
+        const {label, status} = meterProps(field, number);
+        return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing} status=${status || nothing}></sf-progress-bar>`;
     }
 
     const text = numberText(field, value, host);

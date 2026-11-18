@@ -123,7 +123,8 @@
   }
 
   /* The ring of a link (C186 (4)): 2px --sf-focus, two pixels off the
-     words, the UI's corner (4). */
+     words (the named exception to C212's one offset, dispatcher
+     2026-11-18), the UI's corner (4). */
   .sf-link:focus-visible {
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;

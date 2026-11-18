@@ -1,0 +1,33 @@
+{
+  "id": "preview-stale-sequence-dropped",
+  "intent": "result.preview",
+  "capability": "preview",
+  "summary": "A preview is sequenced like the query: the person moves through the rows faster than a server answers, so an answer to an older sequence is dropped.",
+  "given": {
+    "capabilities": [
+      "preview"
+    ],
+    "in_flight": [
+      8,
+      9
+    ]
+  },
+  "when": {
+    "intent": "result.preview",
+    "payload": {
+      "sequence": 9,
+      "id": "table",
+      "query": "tab"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "sequence"
+    ],
+    "data_must_include": [
+      "preview"
+    ],
+    "note": "The host answers both; the panel keeps sequence 9 and drops 8, whichever arrives last. The rule is the one query.change follows, and for the same reason."
+  }
+}

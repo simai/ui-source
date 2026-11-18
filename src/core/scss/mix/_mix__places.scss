@@ -82,7 +82,7 @@
 $sf-place-theme-roles: (
   'on-surface': 'light-dark(var(--sf-neutral-10), var(--sf-neutral-90))',
   'on-surface-hover': 'light-dark(var(--sf-neutral-15), var(--sf-neutral-85))',
-  'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-80))',
+  'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-85))',
   'on-surface-icon': 'light-dark(var(--sf-neutral-25), var(--sf-neutral-80))',
   'on-surface-variant': 'light-dark(var(--sf-neutral-40), var(--sf-neutral-70))',
   'on-surface-container-variant': 'light-dark(var(--sf-neutral-35), var(--sf-neutral-85))',
@@ -112,7 +112,7 @@ $sf-place-colour-roles: (
   // The ink of a hovered and a pressed control: a strong place re-declares it
   // as its own on-colour (R190 AA-10), so an opaque place on it takes it back.
   'on-surface-hover': 'light-dark(var(--sf-neutral-15), var(--sf-neutral-85))',
-  'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-80))',
+  'on-surface-active': 'light-dark(var(--sf-neutral-20), var(--sf-neutral-85))',
 );
 
 // The accent (C42 item 4): a strong place re-declares it on its children
@@ -280,6 +280,7 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
       --sf-place--fill-placeholder: initial;
       --sf-place--control-hover: initial;
       --sf-place--control-active: initial;
+      --sf-place--tonal-edge: initial;
     }
     // On glass (C70): the accent, the link and the ring the page had there.
     :where(.sf-surface-media) & {
@@ -291,6 +292,10 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
         --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
       }
       --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
+      // The glass's hover and press fill of a neutral button (H1, D2b steps):
+      // an opaque place on glass has its own.
+      --sf-place--control-hover: initial;
+      --sf-place--control-active: initial;
     }
   }
 }
@@ -644,6 +649,10 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
       --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
     }
     --sf-focus--color: var(--sf-focus);
+    // A tonal fill is an alpha of its colour and stood 1.09-1.38:1 against
+    // the inverse surface (C208, msg-bc1702eb): the place asks its tonal
+    // marks for a hairline edge (sf-badge draws it in its graphic ink).
+    --sf-place--tonal-edge: var(--sf-px);
   }
 }
 
@@ -749,8 +758,13 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 @mixin sf-place-strong-accent($c) {
   @if paint.writes-paint() {
     --sf-primary: light-dark(var(--sf-white), var(--sf-#{$c}-20));
-    --sf-primary-hover: light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-25));
-    --sf-primary-active: light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-30));
+    // The dark half steps away from the place (DEV held answers H1,
+    // msg-bc1702eb): the place is light there (tone 80) and the press plate
+    // darker (the ink at 20), so the ink goes darker too, 15 and 10. Tones 25
+    // and 30 rose towards the plate: 3.81-3.92 for an outline, ghost or link
+    // primary pressed on every strong place.
+    --sf-primary-hover: light-dark(var(--sf-#{$c}-95), var(--sf-#{$c}-15));
+    --sf-primary-active: light-dark(var(--sf-#{$c}-90), var(--sf-#{$c}-10));
     // The place's own colour (its solid colour, declared on the place, so a
     // project's --sf-primary brands the label of a white button on its banner
     // too); the tones only where a child is no solid place.
@@ -830,13 +844,20 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
 // re-declares.
 @mixin sf-place-glass-accent {
   @if paint.writes-paint() {
+    // Hover and press on glass (DEV held answers H1, msg-bc1702eb): the D2b
+    // rule of a strong place in the light theme, as glass is a light ink over
+    // a grey plate. The tonal plate goes down 12 -> 8 -> 4 towards the glass,
+    // so the label gains contrast: white at 16 and 20 over the black-64 glass
+    // on a white picture read 4.5 and 4.17 under white, 4.01 and 3.24 under
+    // the neutral 95 and 90 an outline, ghost or link writes. The inks keep
+    // their steps (a filled button's plate on glass is one of them).
     --sf-primary: var(--sf-white);
     --sf-primary-hover: var(--sf-neutral-95);
     --sf-primary-active: var(--sf-neutral-90);
     --sf-on-primary: var(--sf-black);
     --sf-primary-container: var(--sf-white--alfa-12);
-    --sf-primary-container-hover: var(--sf-white--alfa-16);
-    --sf-primary-container-active: var(--sf-white--alfa-20);
+    --sf-primary-container-hover: var(--sf-white--alfa-8);
+    --sf-primary-container-active: var(--sf-white--alfa-4);
     --sf-on-primary-container: var(--sf-white);
     --sf-link: var(--sf-white);
     --sf-link-hover: var(--sf-neutral-95);

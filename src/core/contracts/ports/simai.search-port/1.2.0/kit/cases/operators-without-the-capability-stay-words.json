@@ -1,0 +1,24 @@
+{
+  "id": "operators-without-the-capability-stay-words",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A host that announces no operators is asked the words as typed: «от:» stays text of the query and no tag is made.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 10,
+      "query": "от: иван"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "No operators field is sent; nothing in the field turns into a tag."
+  }
+}

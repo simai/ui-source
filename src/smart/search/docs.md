@@ -13,7 +13,7 @@ that container's width.
 
 The trigger is the page's own element, so the header looks the same before
 the code arrives and after it. The results come from a host through the port
-`simai.search-port` 1.1.0 (1.0.0 still accepted); a site with no server of its
+`simai.search-port` 1.2.0 (1.0.0 and 1.1.0 still accepted); a site with no server of its
 own uses one of the two built-in hosts: a static JSON index (`index`) or a
 function the page gives (`provider`).
 
@@ -90,6 +90,14 @@ glyph) and, on a command, `steps` (its next step's options, each
 `{id, title, icon}`). A group may name `more`, the address of the product's
 results page for that group.
 
+Port 1.2 adds `image`, the result's own picture: a file's thumbnail or a
+record's image (a product photo, a logo), an address. It stands where the
+glyph stands, at the avatar's size (32, 28 on a phone), on a plate of its own
+-- the container fill with the control radius, the picture fitted whole
+inside it. It is the only row picture with a plate: a glyph and an avatar
+have none. An `avatar` wins where both are given, and a picture that fails to
+load gives its place back to the glyph.
+
 ### A provider
 
 `provider` is a property: a function, usually async, that answers a query.
@@ -137,7 +145,7 @@ and `provider`.
 ```js
 search.connectPort({
   port: 'simai.search-port',
-  version: '1.1.0',
+  version: '1.2.0',
   capabilities: ['scopes', 'recent', 'popular', 'actions', 'preview', 'spelling', 'operators'],
   async raise(intent, payload, {signal} = {}) {
     if (intent === 'query.change') {
@@ -177,7 +185,7 @@ offered, never applied: choosing it is an ordinary query.
 | A connected host | What it says | The host keeps them, `recent-key` is not read |
 
 The full contract and its conformance kit are in
-`core/contracts/ports/simai.search-port/1.1.0` (1.0.0 beside it).
+`core/contracts/ports/simai.search-port/1.2.0` (1.0.0 and 1.1.0 beside it).
 
 ## What the window shows
 
@@ -200,7 +208,8 @@ name where the table says so:
 
 There is no preset setting (C175 (10)): what a window shows follows what its
 host can do and the settings above. The rows are menu and list rows: a glyph
-20, or an `sf-avatar` for a person; a type mark (`badge`); a time at the end.
+20, an `sf-avatar` for a person, or a file's or a record's own picture on its
+plate (`image`); a type mark (`badge`); a time at the end.
 A row is 40 on one line and 48 with its path (44 compact), 44 and 60 under a
 finger. The preview pane is drawn only for a host that announces `preview`,
 from lg, in the 48rem window, the list and the pane halves with a line

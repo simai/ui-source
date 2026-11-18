@@ -65,8 +65,8 @@
 .sf-thumb:not(:disabled):not(.disabled):focus-visible .sf-thumb-handle,
 .sf-range-slider:not([disabled]):not(.disabled) .sf-range-slider-handle:focus-visible .sf-thumb-handle {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  // Outside the surface ring when one is set, so the focus ring is not drawn over it.
-  outline-offset: calc(var(--sf-thumb-handle--ring-width, 0px) + var(--sf-focus--offset));
+  // The focus system's outward offset (C212, one offset everywhere: msg-bc1702eb).
+  outline-offset: var(--sf-focus--offset);
 }
 
 // Hover and press grow a halo of the primary state layer around the disc, not

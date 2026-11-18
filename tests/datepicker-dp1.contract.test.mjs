@@ -79,7 +79,7 @@ function checkSheet(css, where) {
   for (const chosen of ['.active', '.sf-datepicker-day-start', '.sf-datepicker-day-end']) {
     const focus = ruleFor(css, (head) => head.startsWith('.sf-datepicker-day') && head.includes(chosen) && head.includes(':focus-visible') && !head.includes('forced'));
     assert.match(focus, /outline-color:var\(--sf-datepicker-selected-color,var\(--sf-on-primary\)\)/u, `${where}: focus ink on a chosen day (${chosen})`);
-    assert.match(focus, /outline-offset:calc\(var\(--sf-focus--width\)\s?\*\s?-2\)/u, `${where}: focus ring inside the fill (${chosen})`);
+    assert.match(focus, /outline-offset:var\(--sf-focus--inset\)/u, `${where}: focus ring inside the fill (${chosen})`);
   }
 }
 

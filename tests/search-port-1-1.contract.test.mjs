@@ -70,11 +70,11 @@ test('the kit grows by the six new cases and stays whole', () => {
   assert.ok(!(words.given.capabilities ?? []).includes('operators'), 'the absence of operators is held too');
 });
 
-test('sf-search declares 1.1.0 and still accepts 1.0.0, with the digest of the file', async () => {
+test('sf-search still accepts 1.1.0 and 1.0.0 (it declares 1.2.0 since sf-search\'s image row, search-port-1-2), with the digest of the file', async () => {
   const {createHash} = await import('node:crypto');
-  assert.equal(component.port.version, '1.1.0');
-  assert.equal(component.port.contract, 'src/core/contracts/ports/simai.search-port/1.1.0/port.json');
-  assert.deepEqual(component['x-port'].supports, ['1.0.0', '1.1.0']);
+  assert.equal(component.port.version, '1.2.0');
+  assert.equal(component.port.contract, 'src/core/contracts/ports/simai.search-port/1.2.0/port.json');
+  assert.deepEqual(component['x-port'].supports, ['1.0.0', '1.1.0', '1.2.0']);
   assert.ok(component['x-port'].capabilities.includes('operators'));
   const digest = createHash('sha256').update(readFileSync(join(root, component.port.contract))).digest('hex');
   assert.equal(component['x-port'].sha256, digest);

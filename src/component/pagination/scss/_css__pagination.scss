@@ -211,7 +211,7 @@
 
 .sf-pagination .sf-pagination-shown:focus-visible {
   outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: var(--sf-a2);
+  outline-offset: var(--sf-focus--offset);
   border-radius: var(--sf-radius--ui);
 }
 

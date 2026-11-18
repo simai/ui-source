@@ -1,0 +1,29 @@
+{
+  "id": "preview-answers-the-row-it-was-asked-for",
+  "intent": "result.preview",
+  "capability": "preview",
+  "summary": "The words of the result the person stands on are asked for on their own, and the answer names the result they belong to.",
+  "given": {
+    "capabilities": [
+      "preview"
+    ]
+  },
+  "when": {
+    "intent": "result.preview",
+    "payload": {
+      "sequence": 4,
+      "id": "buttons",
+      "query": "but"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "sequence"
+    ],
+    "data_must_include": [
+      "preview"
+    ],
+    "note": "preview.id is buttons: the panel drops a preview that arrives for a row the person has left. preview.text is plain text in the reader's language, never HTML and never server diagnostics. A host that cannot show a result without opening it announces no preview."
+  }
+}

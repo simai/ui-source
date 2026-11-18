@@ -152,7 +152,9 @@ export const PROPERTY_TYPES = Object.freeze([
             template('number', 'meter', {places: ['view', 'compact'], fits: 'bounds-0-100'}),
         ],
         conditions: NUMBER_CONDITIONS,
-        params: ['decimals', 'unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']}),
+        // The meter's thresholds low, high and optimum are the HTML meter's
+        // (msg-bc1702eb), read by that template alone.
+        params: ['decimals', 'unit', 'min', 'max', 'step', 'precision', 'low', 'high', 'optimum', 'required', 'readonly']}),
     // date (PD-2, PD-3): min and max bound the day, an ISO date (the day of a
     // date and time is read); format is the length the view and the cell print
     // the date in, Intl's dateStyle: short, medium (the default), long, full.

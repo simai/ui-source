@@ -169,8 +169,8 @@
   }
 
   /* A crumb is a link: its ring is a link's (C186 (4); BC-08 «as the
-     Framework's links»): 2 px --sf-focus, two pixels off, the UI's corner.
-     It stood one pixel off, as a button's (RG-NV 4). */
+     Framework's links»): 2 px --sf-focus, two pixels off (the named
+     exception to C212's one offset, dispatcher 2026-11-18), the UI's corner. */
   .sf-breadcrumbs-item.sf-breadcrumbs-item--link:not(:disabled):not(.disabled):not([aria-disabled="true"]):focus-visible {
     --sf-breadcrumbs-item--background-color: var(--sf-transparent-for-focus);
     outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);

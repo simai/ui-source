@@ -82,7 +82,7 @@
 
   .sf-list-feed__item[tabindex]:focus-visible,
   .sf-list-feed__item > [tabindex="-1"]:focus-visible {
-    outline-offset: var(--sf-space-1\/4);
+    outline-offset: var(--sf-focus--offset);
     border-radius: var(--sf-radius--ui);
   }
 

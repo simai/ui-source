@@ -55,7 +55,7 @@ test('C236: a card puts its route under the name at every width, one line at 1/2
 
 test('versions: procedure 1.3.1, reference-link 1.3.0, sf-reference-link 1.2.3', () => {
   assert.equal(json('src/component/procedure/passport.json').version, '1.4.0'); // group build 10: 1.3.1 moved on by the merged branches or a GB10 patch
-  assert.equal(json('src/component/reference-link/passport.json').version, '1.4.0'); // group build 9: 1.3.0 moved on by the merged branches or a GB9 patch // group build 10: 1.3.2 moved on by the merged branches or a GB10 patch
+  assert.equal(json('src/component/reference-link/passport.json').version, '1.4.2'); // group build 9: 1.3.0 moved on by the merged branches or a GB9 patch // group build 10: 1.3.2 moved on by the merged branches or a GB10 patch
   assert.equal(json('src/smart/reference-link/component.json').version, '1.3.3'); // group build 9: 1.2.3 moved on by the merged branches or a GB9 patch // C282: 1.3.2 moved on by the language-file patch (Russian is a language file)
   assert.equal(json('src/smart/reference-link/smart.manifest.json').version, '1.3.3'); // group build 9: 1.2.3 moved on by the merged branches or a GB9 patch // C282: 1.3.2 moved on by the language-file patch (Russian is a language file)
 });

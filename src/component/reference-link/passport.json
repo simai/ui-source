@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.reference-link",
   "kind": "component",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "owner": "simai/ui-source",
   "files": [
     "src/component/reference-link/docs/docs.md",

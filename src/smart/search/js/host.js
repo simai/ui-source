@@ -26,10 +26,13 @@
 // (steps: an array of options in a static index; a provider is asked the step
 // with options.step). A group may name the product's results page (more), and
 // so may the whole answer.
+//
+// 1.2.0 (C175 (2), msg-bc1702eb): an entry may carry its own picture (image:
+// a file's thumbnail or a record's image, an address).
 
 export const PORT_ID = 'simai.search-port';
-export const PORT_VERSION = '1.1.0';
-export const SUPPORTED_PORT_VERSIONS = ['1.0.0', '1.1.0'];
+export const PORT_VERSION = '1.2.0';
+export const SUPPORTED_PORT_VERSIONS = ['1.0.0', '1.1.0', '1.2.0'];
 export const BUILTIN_CAPABILITIES = ['scopes', 'recent', 'popular', 'actions'];
 export const RECENT_LIMIT = 5;
 export const RECENT_PAGES_LIMIT = 3;
@@ -67,6 +70,8 @@ export function resultOf(entry, order) {
   if (text(entry?.time)) result.time = text(entry.time);
   const avatar = avatarOf(entry?.avatar);
   if (avatar) result.avatar = avatar;
+  // 1.2.0: the result's own picture, an address.
+  if (text(entry?.image).trim()) result.image = text(entry.image).trim();
   if (kind === 'action' && (entry?.steps === true || (Array.isArray(entry?.steps) && entry.steps.length))) result.steps = true;
   return {result, match: `${result.title} ${result.path ?? ''} ${text(entry?.text)} ${result.snippet ?? ''}`.toLowerCase(),
     options: kind === 'action' && Array.isArray(entry?.steps) ? entry.steps : null};

@@ -1,0 +1,29 @@
+{
+  "id": "scope-leads-to-the-results-page",
+  "intent": "query.change",
+  "capability": "scopes",
+  "summary": "A group with more results than the window draws names the product's results page: the window draws five rows and «Все результаты: N ›».",
+  "given": {
+    "capabilities": [
+      "scopes"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 11,
+      "query": "заказ",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo",
+      "scopes"
+    ],
+    "note": "scopes[].count is N and scopes[].more the page; the window never loads more rows into itself."
+  }
+}

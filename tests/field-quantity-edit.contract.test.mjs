@@ -37,7 +37,7 @@ test('the registry names the stepper template of the one number type, and the ke
   const number = PROPERTY_TYPES.find((one) => one.type === 'number');
   assert.deepEqual(number.variants.find((variant) => variant.id === 'stepper'),
     {id: 'stepper', label: {ru: 'Кнопками «−» и «+»', en: 'With steppers'}});
-  assert.deepEqual(number.params, ['decimals', 'unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']);
+  assert.deepEqual(number.params, ['decimals', 'unit', 'min', 'max', 'step', 'precision', 'low', 'high', 'optimum', 'required', 'readonly']); // H4: the meter's thresholds
   assert.deepEqual(number.templates.map((one) => one.id), ['input', 'stepper', 'scale', 'meter']);
 });
 

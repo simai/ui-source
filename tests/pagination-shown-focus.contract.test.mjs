@@ -20,7 +20,7 @@ const rule = (selector) => {
 test('the shown line has the Framework focus ring', () => {
   const visible = rule('.sf-pagination .sf-pagination-shown:focus-visible');
   assert.match(visible, /outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\);/u);
-  assert.match(visible, /outline-offset: var\(--sf-a2\);/u);
+  assert.match(visible, /outline-offset: var\(--sf-focus--offset\);/u /* H3, C212 */);
   assert.match(visible, /border-radius: var\(--sf-radius--ui\);/u);
   assert.match(rule('.sf-pagination .sf-pagination-shown:focus'), /outline: none;/u);
 });

@@ -18,11 +18,15 @@
 // thumbnail, a selected dot, an avatar's frame) is not read. It also fails on
 // a read of the former width name var(--sf-focus-outline-width) (C178).
 //
-// KEPT lists the focus offsets that keep a distance of their own: changing
-// them would move a ring the owner has seen, and C212 says the look does not
-// change. Each is an open question to the owner (a third distance, or the ring
-// moves to one of the two); an entry that no longer matches fails, so a fixed
-// line leaves the list.
+// KEPT lists the focus offsets that keep a distance of their own. One offset
+// everywhere (C212, dispatcher decision msg-bc1702eb, 2026-11-18): only the
+// forced-colours rings, the system's Highlight outline two pixels off the box,
+// and, by the owner's C186 (4) (dispatcher 2026-11-18: an owner decision
+// outranks the technical rule), a link's ring two pixels off its words - the
+// text link, sf-link, a crumb and a reference in text - stay; the flush
+// segments and slider dots, the 2 px and 4 px rings of the editor, the overlay, sortable, confirm and the feed, the selected day
+// and the two built from the tokens read the two tokens since. An entry that
+// no longer matches fails, so a fixed line leaves the list.
 //
 // Default folders: src/component, src/smart, src/core/scss. Exit 0 clean,
 // 1 findings or stale KEPT entries.
@@ -47,34 +51,11 @@ export const KEPT = [
   {file: 'component/step/scss/_css__step.scss', value: 'var(--sf-focus--width)', why: 'forced colours, 2px out'},
   {file: 'component/switch/scss/_css_switch.scss', value: 'var(--sf-focus--width)', why: 'forced colours, 2px out'},
   {file: 'component/tags/scss/_css__tags.scss', value: 'var(--sf-focus--width)', why: 'forced colours, 2px out'},
-  // Flush: a segment of a segmented group and a slider dot draw the ring on
-  // their own edge.
-  {file: 'component/button-group/scss/_css__button-group.scss', value: '0', why: 'segment, flush (screen and forced colours)'},
-  {file: 'component/slider/scss/_css__slider_dots.scss', value: '0', why: 'slider dot, flush'},
-  // Two pixels out: a link's ring clears its underline and descenders; the
-  // editor's field controls, the insert button of the composition overlay and
-  // a sortable item stand off their neighbours' frames.
-  {file: 'core/scss/_sf_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out'},
-  {file: 'component/link/scss/_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out'},
+  // C186 (4), the owner's link ring: two pixels off the words.
+  {file: 'core/scss/_sf_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out (C186 (4))'},
+  {file: 'component/link/scss/_css__link.scss', value: 'var(--sf-a2)', why: 'link, 2px out (C186 (4))'},
   {file: 'component/breadcrumbs/scss/_css__breadcrumbs_item.scss', value: 'var(--sf-a2)', why: 'crumb link, 2px out (C186 (4))'},
   {file: 'component/reference-link/scss/_css__reference_link.scss', value: 'var(--sf-a2)', why: 'link in text, 2px out (C186 (4))'},
-  {file: 'component/pagination/scss/_css__pagination.scss', value: 'var(--sf-a2)', why: 'shown line, a ring of words, 2px out'},
-  {file: 'core/scss/_sf_css__composition.scss', value: '2px', why: 'editor field control, 2px out'},
-  {file: 'smart/editor-overlay/scss/_smart__composition-overlay.scss', value: 'var(--sf-a2)', why: 'overlay insert, 2px out'},
-  {file: 'smart/sortable/scss/_smart__sortable.scss', value: '2px', why: 'sortable item, 2px out'},
-  // Four pixels out: a status line focused by script, and a feed item, ringed
-  // a little off their words.
-  {file: 'smart/confirm/js/templates/default.css', value: 'var(--sf-space-1\\/4)', why: 'status line, 4px out'},
-  {file: 'smart/confirm-change/js/templates/default.css', value: 'var(--sf-space-1\\/4)', why: 'status line, 4px out'},
-  {file: 'smart/list-feed/js/templates/default.css', value: 'var(--sf-space-1\\/4)', why: 'feed item, 4px out'},
-  // Two ring widths in: a selected day's ring in its fill's ink, a rim of the
-  // fill round it.
-  {file: 'component/datepicker/scss/_css_day.scss', value: 'calc(var(--sf-focus--width) * -2)', why: 'selected day, inside its fill'},
-  // Built from the tokens: a copy button inside a field keeps its ring inside
-  // the field's 1px border (inset minus the border); a range thumb's ring stands
-  // the focus offset off the handle's own ring.
-  {file: 'smart/button-copy/scss/_smart__copy_button.scss', value: 'calc(var(--sf-focus--inset) - var(--sf-px))', why: 'inside the field border, 3px in'},
-  {file: 'component/range-slider/scss/_css__thumbs.scss', value: 'calc(var(--sf-thumb-handle--ring-width, 0px) + var(--sf-focus--offset))', why: 'off the handle ring'},
 ];
 
 const SHEETS = new Set(['.css', '.scss']);

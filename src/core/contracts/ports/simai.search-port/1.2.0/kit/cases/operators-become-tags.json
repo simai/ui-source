@@ -1,0 +1,37 @@
+{
+  "id": "operators-become-tags",
+  "intent": "query.change",
+  "capability": "operators",
+  "summary": "A host that reads operators gets the tags of the field as operators of the query, each with the value it reads.",
+  "given": {
+    "capabilities": [
+      "operators"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 8,
+      "query": "договор",
+      "operators": [
+        {
+          "id": "from",
+          "value": "u-17",
+          "label": "Иван Петров"
+        },
+        {
+          "id": "has",
+          "value": "attachment"
+        }
+      ]
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "«от:» and «есть:» typed in the field became tags; the words left are the query."
+  }
+}

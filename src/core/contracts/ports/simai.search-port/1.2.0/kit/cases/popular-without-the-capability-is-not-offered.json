@@ -1,0 +1,26 @@
+{
+  "id": "popular-without-the-capability-is-not-offered",
+  "intent": "query.change",
+  "capability": "popular",
+  "summary": "A host that counts nothing announces no popular, and the panel draws no pills on the empty field.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": "",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "popular in the answer is ignored where the capability is absent. With recent absent too and no commands to show, the empty field is the start prompt -- one line of words, never an empty list and never an empty pill row."
+  }
+}

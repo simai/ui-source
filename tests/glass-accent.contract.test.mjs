@@ -27,9 +27,11 @@ const ACCENT = {
   'primary-active': 'var(--sf-neutral-90)',
   'on-primary': 'var(--sf-black)',
   'primary-container': 'var(--sf-white--alfa-12)',
-  // Hover and press up the fill family, 16 and 20 (C113; dispatcher 2026-11-13).
-  'primary-container-hover': 'var(--sf-white--alfa-16)',
-  'primary-container-active': 'var(--sf-white--alfa-20)',
+  // Hover and press down towards the glass, 8 and 4 (D2b; DEV held answers
+  // H1, msg-bc1702eb): 16 and 20 of C113 read 4.17 under white and 3.24 under
+  // neutral 90 over a white picture.
+  'primary-container-hover': 'var(--sf-white--alfa-8)',
+  'primary-container-active': 'var(--sf-white--alfa-4)',
   'on-primary-container': 'var(--sf-white)',
   link: 'var(--sf-white)',
   'link-hover': 'var(--sf-neutral-95)',
@@ -61,6 +63,13 @@ test('glass takes its white ink as the accent, on its children, from the palette
 test('an opaque place on glass, and a popover in it, take the page accent, link and ring back', () => {
   const back = block(mix, '@mixin sf-place-back-on-colour {');
   assert.match(back, /:where\(\.sf-surface-media\) & \{\s*@each \$role, \$value in \$sf-place-glass-accent-roles/u);
+  // The glass's D2b hover and press fill of a neutral button (H1) stays on the
+  // glass: a card on it, and a popover bubble, draw their own (on a light card
+  // white at 8 and 4 had made the hover and the press vanish).
+  const glassBack = back.slice(back.indexOf(':where(.sf-surface-media) & {'));
+  assert.match(glassBack, /--sf-place--control-hover: initial;\s*--sf-place--control-active: initial;/u);
+  const bubble = popover.slice(popover.indexOf(":where(.sf-surface-media) sf-popover > [slot='content'] {"));
+  assert.match(bubble.slice(0, bubble.indexOf('\n    }')), /--sf-place--control-hover: initial;\s*--sf-place--control-active: initial;/u);
   // The fallbacks are the theme's own values.
   for (const role of ['link', 'link-hover', 'link-active', 'link-visited', 'focus']) {
     const value = theme.match(new RegExp(`\\n\\s*--sf-${role}: ([^;]+);`, 'u'))?.[1];

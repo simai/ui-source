@@ -77,7 +77,7 @@
   /* Focus arrives here by script, when the answers go; the ring is the
      Framework's own, a little off the words. */
   .sf-confirm__status:focus-visible {
-    outline-offset: var(--sf-space-1\/4);
+    outline-offset: var(--sf-focus--offset);
   }
 
   /* Declined, the line says nothing (C35, R067): the focus the answers left

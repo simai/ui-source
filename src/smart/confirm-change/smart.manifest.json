@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm-change",
-  "version": "1.10.4",
+  "version": "1.10.5",
   "title": "Change confirmation",
   "summary": "A change someone else proposes (an assistant, a colleague, an import), put to a person: each value as it was and as it will be, «Подтвердить» first and filled, «Отклонить» quiet, until when it can be answered under them, and then only the outcome. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -501,7 +501,7 @@
       },
       {
         "path": "src/smart/confirm-change/js/templates/default.css",
-        "sha256": "81e71fc6733cc5f2b006e5127e8a88ac83541dd39cfb55bb4359848ac619d0a6"
+        "sha256": "31af8bc7296777791bb912d98b744cfa727859e1f79d6a83821b56ff561ee556"
       },
       {
         "path": "src/smart/confirm-change/rule.js",
@@ -513,7 +513,7 @@
       },
       {
         "path": "src/smart/confirm-change/component.json",
-        "sha256": "f7f958b0d3ed67da209a025c5cd88e0fee7debd50d33a67ee7857db15b8d3ddd"
+        "sha256": "8b9727ac126a3f541ae2d4bd51e03c22cdb124a79ab03b9db7d699b80948ae76"
       },
       {
         "path": "src/smart/confirm-change/aliases.json",

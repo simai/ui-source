@@ -2,7 +2,7 @@
   "$comment": "The source of sf-search's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). Made against standard simai.smart-component 1.3.13 and vocabulary 1.1.5; the design is variant 1 «Прожектор» of ui-control prototypes/search-and-settings.html, approved by the owner as it is on 2026-10-30. 1.1.0 asks a host through simai.search-port 1.0.0 (§4.9): the capability says what is possible and the setting says what is wanted.",
   "id": "smart.search",
   "tag": "sf-search",
-  "version": "1.11.5",
+  "version": "1.12.0",
   "kind": "leaf",
   "family": "search",
   "settings": {
@@ -236,8 +236,8 @@
   },
   "port": {
     "id": "simai.search-port",
-    "version": "1.1.0",
-    "contract": "src/core/contracts/ports/simai.search-port/1.1.0/port.json"
+    "version": "1.2.0",
+    "contract": "src/core/contracts/ports/simai.search-port/1.2.0/port.json"
   },
   "relations": [
     {
@@ -380,10 +380,11 @@
     "placeholder"
   ],
   "x-port": {
-    "sha256": "49ba9ceb249917b4617bf3e24bd3decac1d5977fb0311db61fa15d51b961a095",
+    "sha256": "03cb457bca00b44cbc8b95d28710b0a0564ca31238a6cab9e8a31e0fc9cd2404",
     "supports": [
       "1.0.0",
-      "1.1.0"
+      "1.1.0",
+      "1.2.0"
     ],
     "capabilities": [
       "scopes",
@@ -437,7 +438,8 @@
     "version 1.11.2 (written on the branch as 1.10.5; 2026-11-17, owner decision C268; numbered above 1.10.4 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.11.3 (written on the branch as 1.11.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.11.4 (written on the branch as 1.10.6; 2026-11-17, dispatcher decision 2026-11-16, queue small fixes SF1): a patch, a behaviour. A scope tag chosen with a pointer gives the focus back to the field, so the person types on (the scope pills before 1.10 kept it there); chosen from the keyboard (Enter or Space on a tag) the focus stays on the tag (C175 (4)). Settings, values, events and keys unchanged.",
-    "version 1.11.5 (written on the branch as 1.10.6; 2026-11-17, owner decision C280; numbered above 1.10.5 on origin/fix/utilities-c264): a patch, nothing drawn or done differently. The scope tags write kind=\"checkbox\", the filter toggle by name, since a bare sf-tag is a plain tag (sf-tag 1.12.0). Settings, values, events and keys unchanged."
+    "version 1.11.5 (written on the branch as 1.10.6; 2026-11-17, owner decision C280; numbered above 1.10.5 on origin/fix/utilities-c264): a patch, nothing drawn or done differently. The scope tags write kind=\"checkbox\", the filter toggle by name, since a bare sf-tag is a plain tag (sf-tag 1.12.0). Settings, values, events and keys unchanged.",
+    "version 1.12.0 (2026-11-18): a minor (owner decision C175 (2), DEV held answers H5, msg-bc1702eb): simai.search-port 1.2.0 -- a result may carry image, a picture URL drawn as the row lead (32 x 32, the size 1/2 control height, contain, radius 1, lazy); a picture that fails to load falls back to the glyph. 1.0.0 and 1.1.0 hosts are still read."
   ],
   "x-registry": {
     "capabilities": [

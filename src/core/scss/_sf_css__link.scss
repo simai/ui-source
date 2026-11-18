@@ -125,7 +125,8 @@ a[class*=':link-'],
 }
 
 // The keyboard ring of a link in text (C186 (4)): the base ring (2px
-// --sf-focus) two pixels off the letters (--sf-a2, the base offset is one),
+// --sf-focus) two pixels off the letters (--sf-a2; the named C186 (4)
+// exception to C212's one offset, dispatcher 2026-11-18),
 // with the corner of the UI (--sf-radius--ui, 4), and drawn around each line
 // of a wrapped link (box-decoration-break: clone) instead of one box open at
 // the line ends.

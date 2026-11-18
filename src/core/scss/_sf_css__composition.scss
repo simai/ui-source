@@ -259,7 +259,7 @@
     .sf-editor-field-control:focus-visible,
     .sf-editor-field-disclosure > summary:focus-visible {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-primary, Highlight);
-        outline-offset: 2px;
+        outline-offset: var(--sf-focus--offset);
     }
 
     .sf-editor-field-disclosure > summary {

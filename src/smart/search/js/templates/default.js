@@ -72,11 +72,25 @@ function rowEnd(context, row) {
 // avatar for a person or a chat. sf-avatar draws a button; in a row it is a
 // picture, so the host is inert: no Tab stop, nothing read, a press falls to
 // the row.
-function rowLead(row) {
+//
+// A result's own picture (port 1.2.0 image, msg-bc1702eb): a file's thumbnail
+// or a record's image, on a plate of its own at the avatar's size -- the only
+// row picture with a plate. The picture is decoration beside the title (alt
+// empty); one that fails to load gives its place back to the glyph. Keyed by
+// the address, so a reused row never keeps another picture's failure.
+function rowLead(context, row) {
   const avatar = row.avatar ?? row.item?.avatar;
   if (avatar && (avatar.name || avatar.image)) {
     return html`<sf-avatar class="sf-search-row-avatar" size="1/2" heading=${avatar.name || nothing} image-url=${avatar.image || nothing}
       hue="auto" inert></sf-avatar>`;
+  }
+  const image = typeof row.item?.image === 'string' ? row.item.image.trim() : '';
+  const {component} = context;
+  // A picture of its own (port 1.2.0, C175 (2)) on its plate; one that failed
+  // to load gives the row its glyph back (sf-search pictureFailed).
+  if (image && (!component?.pictureOk || component.pictureOk(image))) {
+    return keyed(image, html`<span class="sf-search-row-image" aria-hidden="true"><img class="sf-search-row-image-picture" src=${image} alt=""
+      loading="lazy" decoding="async" @error=${() => component?.pictureFailed?.(image)}></span>`);
   }
   return row.icon ? glyph(row.icon, 'sf-search-row-icon') : nothing;
 }
@@ -90,7 +104,7 @@ function renderRow(context, row) {
     row.kind === 'more' ? 'sf-search-row--more' : '', isSelected ? 'sf-search-row--selected' : ''].filter(Boolean).join(' ');
   const line = html`<span class="sf-search-row-line"><span class="sf-search-row-title">${marked(row.title)}</span>${item.badge
     ? html`<sf-badge class="sf-search-row-badge" appearance="outline" size="1/3" text=${item.badge}></sf-badge>` : nothing}</span>`;
-  const words = html`${rowLead(row)}<span class="sf-search-row-text">${line}${path ? html`<span class="sf-search-row-path">${row.path}</span>` : nothing}</span>`;
+  const words = html`${rowLead(context, row)}<span class="sf-search-row-text">${line}${path ? html`<span class="sf-search-row-path">${row.path}</span>` : nothing}</span>`;
   const {url} = row;
   // A page row is a link (C175 (6)): Ctrl/Command with a press and the middle
   // button open it in a new tab, as any link does. The link covers the row;

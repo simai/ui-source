@@ -801,6 +801,22 @@ class SfSearch extends SearchElement {
     this.askQuery(this.query.trim());
   }
 
+  // A result's picture (port 1.2.0 image) that did not load: the row draws
+  // its glyph instead, from the next drawing on, for as long as the window
+  // lives (the icon sheet's display stands outside the layers, so the glyph
+  // is not drawn and hidden: it is drawn or not).
+  pictureFailed(url) {
+    if (!url) return;
+    (this._failedPictures ||= new Set());
+    if (this._failedPictures.has(url)) return;
+    this._failedPictures.add(url);
+    if (this.shown()) this.renderWindow();
+  }
+
+  pictureOk(url) {
+    return !this._failedPictures || !this._failedPictures.has(url);
+  }
+
   hover(index) {
     if (!this.shown() || this.selected === index) return;
     this.selected = index;

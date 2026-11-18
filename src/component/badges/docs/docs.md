@@ -47,6 +47,12 @@ padding, so `main`, `tonal` and `outline` badges standing side by side line up.
 On a `line-*` size, which has no block padding, the text line gives up the
 border instead.
 
+A tonal badge on an inverse place (`bg-surface-inverse`,
+`bg-surface-inverse-fixed`) draws a hairline edge in its graphic ink (1.12.0,
+owner decision C208): its translucent fill alone stood 1.09-1.38:1 against
+the inverse surface. The place asks for it with `--sf-place--tonal-edge`; an
+opaque place on it takes the request back.
+
 Indicator sizes: a badge is a non-interactive indicator, not a control, so its
 heights may stand below the control ladder (C18): a `line-*` badge is its text
 line, 16 at `line-1/2` on a phone. Sizes `1/3`, `1/2`, `1` are 24, 28, 32 on

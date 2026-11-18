@@ -11,8 +11,11 @@ sf-resizer {
   inset-inline-end: calc(-1 * var(--sf-resizer--hit) / 2);
   /* Above the panel's own positioned layers -- a menu that lifts itself to
      z-6 covered the handle and the drag and double-click never reached it
-     (docs trial 5) -- and below the page's overlays (z-9). */
-  z-index: var(--sf-resizer-z-index, var(--sf-layer--sticky, 50));
+     (docs trial 5) -- and below the page's windows and messages. The popup
+     layer (GB11, dispatcher decision msg-bc1702eb): the sticky role (50) of
+     the C181 layer roles put the handle back under a z-6 menu, and no role
+     lies between 60 and 90. */
+  z-index: var(--sf-resizer-z-index, var(--sf-layer--popover, 90));
   display: block;
   inline-size: var(--sf-resizer--hit);
   cursor: col-resize;
@@ -91,7 +94,7 @@ sf-resizer[data-sf-resizer-narrow] {
   position: absolute;
   inset-block-start: var(--sf-space-1\/4);
   inset-inline-start: 100%;
-  z-index: calc(var(--sf-resizer-z-index, var(--sf-layer--sticky, 50)) + 1);
+  z-index: calc(var(--sf-resizer-z-index, var(--sf-layer--popover, 90)) + 1);
   display: inline-flex;
   margin-inline-start: calc(var(--sf-ui-1\/2--control-height) / -2);
 }
