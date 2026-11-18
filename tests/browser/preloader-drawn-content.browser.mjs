@@ -18,7 +18,7 @@
 //   bare       nothing drawn, nothing preloaded: the preloader shows (the
 //              probe sees it when it is there);
 //   late       nothing drawn when the delay ends, so the preloader shows; a
-//              Smart element draws under it LATE_DRAW ms in (Docara's frames
+//              Smart element draws under it LATE_DRAW ms after it is up (Docara's frames
 //              on a cold load, R216): from that frame on no frame shows the
 //              preloader, while the loader is still held.
 import {readFileSync, existsSync} from 'node:fs';
@@ -28,7 +28,7 @@ import {chromium} from 'playwright';
 if (!process.argv[2]) throw new Error('Build output root is required');
 const out = resolve(process.argv[2]);
 const LOADER_DELAY = Number(process.env.LOADER_DELAY || 1500);
-const LATE_DRAW = Number(process.env.LATE_DRAW || 800);
+const LATE_DRAW = Number(process.env.LATE_DRAW || 200); // after the preloader is seen up
 const file = (path) => {
   const [product, ...rest] = path.split('/');
   return join(out, product, product, ...rest);
@@ -41,11 +41,25 @@ const DRAWN = `<script>
     connectedCallback() { this.textContent = 'Карточка'; this.isRendered = true; }
   });
 </script>`;
+// Group build 13 (A4): the element drew LATE_DRAW ms after the page began, but
+// at CPU x4 the preloader comes up only after core.js (0-300 ms late) runs and
+// its own delay ends, about 700-800 ms in: the case kept a window of 0-100 ms,
+// and a slow load drew the element before the preloader ever showed (1 of 24
+// in held-answers, 4 of 12 under a loaded gate run, «nothing drawn when the
+// delay ends, the preloader shows», shown 0). The element now draws LATE_DRAW
+// ms after the preloader is first seen up (at most 4 s in, so a preloader that
+// never comes still fails the case), as the case means: drawn under it.
 const LATE = `<script>
   // A Smart element that draws after the preloader is up (R216).
-  setTimeout(() => customElements.define('sf-probe-drawn', class extends HTMLElement {
+  const define = () => customElements.get('sf-probe-drawn') || customElements.define('sf-probe-drawn', class extends HTMLElement {
     connectedCallback() { this.textContent = 'Карточка'; this.isRendered = true; this.dispatchEvent(new CustomEvent('sf-after-render', {bubbles: true})); }
-  }), ${LATE_DRAW});
+  });
+  const up = () => {
+    const wrap = document.querySelector('.sf-loader-boot')?.closest('.sf-loader');
+    return Boolean(wrap && !wrap.classList.contains('hidden') && getComputedStyle(wrap).display !== 'none' && getComputedStyle(wrap).visibility !== 'hidden' && Number(getComputedStyle(wrap).opacity) > 0);
+  };
+  const wait = () => (up() ? setTimeout(define, ${LATE_DRAW}) : performance.now() > 4000 ? define() : requestAnimationFrame(wait));
+  requestAnimationFrame(wait);
 </script>`;
 const page = (mode, theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8"><title>preloader</title>
   <link rel="stylesheet" href="/distr/core/css/core.css">
