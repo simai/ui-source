@@ -1,0 +1,12 @@
+{
+  "id": "the-address-is-the-hosts",
+  "intent": "record.load",
+  "summary": "A window's address comes with the object, and a host that sends none gets no copy or open controls rather than an invented link.",
+  "given": {"capabilities": []},
+  "when": {"intent": "record.load", "payload": {"record_id": "record-1", "collection": "pages", "reason": "connected"}},
+  "then": {
+    "answer": "applied",
+    "answer_must_include": ["record"],
+    "note": "record.address is optional. The component copies it and opens it and constructs nothing: a composite that guessed at a URL would be guessing at the consumer's routing, and would be wrong first in whichever consumer did not match the guess."
+  }
+}

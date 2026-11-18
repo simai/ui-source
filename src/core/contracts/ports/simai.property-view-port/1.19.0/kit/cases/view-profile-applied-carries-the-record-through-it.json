@@ -1,0 +1,25 @@
+{
+  "id": "view-profile-applied-carries-the-record-through-it",
+  "intent": "view.profile",
+  "summary": "Choosing a view answers with the record read through it, because a view is a whole arrangement rather than a filter over the one already on screen.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.profile",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "pages",
+      "profile": "expert"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "Answering applied with nothing else would leave the component holding the old arrangement under a new name."
+  }
+}

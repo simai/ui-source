@@ -1,0 +1,35 @@
+{
+  "id": "view-save-is-one-layer-one-revision",
+  "intent": "view.save",
+  "capability": "view-settings",
+  "summary": "A change to the arrangement writes the whole layer against its revision and answers with the revision the layer now has.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "target": {
+        "kind": "personal",
+        "revision": "v7"
+      },
+      "view": {
+        "schema_version": 1,
+        "sections": {},
+        "groups": {},
+        "fields": {}
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision"
+    ],
+    "note": "The layer is sent whole, never as a patch of the entry that changed. Two people reordering the same view with per-entry writes would interleave into an arrangement neither of them chose; whole-layer compare-and-set makes them collide, which is the same reason a group saves as one revision."
+  }
+}

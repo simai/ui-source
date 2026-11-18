@@ -1,0 +1,30 @@
+{
+  "id": "view-lock-answers-the-locked-paths",
+  "intent": "view.lock",
+  "capability": "view-settings",
+  "summary": "Locking a setting answers the locked list and the new shared revision.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.lock",
+    "payload": {
+      "record_id": null,
+      "collection": "crm.deals",
+      "profile": "main",
+      "path": "fields.stage.hidden",
+      "locked": true,
+      "revision": "s3"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "locked",
+      "revision"
+    ],
+    "note": "Only a person who may write the shared layer is offered the lock. Below it the path is drawn with «Закрыто администратором» and no control that would change it."
+  }
+}
