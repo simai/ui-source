@@ -27,6 +27,7 @@
 // the shared store (globalThis.__sfPageLanguage.packs) and reads the words.
 import FRAMEWORK_PACKS from '../lang/index.mjs';
 import BUILT_IN_LANGUAGES from '../lang/built-in.mjs';
+import LANGUAGE_REGISTRY from '../contracts/language-registry.mjs';
 import { language, refreshLanguage } from './page-language.js';
 
 const BUILT_IN = new Set(['en', ...(BUILT_IN_LANGUAGES?.built_in ?? [])]);
@@ -37,6 +38,28 @@ const CORE_PART = 'core';
 
 const STORE = globalThis.__sfPageLanguage;
 const PACKS = STORE?.packs;
+
+/**
+ * The registry's second names of each language, lower case, to its name
+ * (localization registry §3, C278: registry only): {'zh-cn': 'zh-hans',
+ * 'zh-sg': 'zh-hans'}. Put on the shared store, where every bundle's
+ * page-language.js reads it, so a page in lang="zh-CN" asks for and reads
+ * the zh-hans pack. No pack is added by this.
+ */
+export function registryAliases(registry = LANGUAGE_REGISTRY) {
+  const aliases = {};
+  for (const entry of registry?.languages ?? []) {
+    const slug = String(entry?.slug ?? '').trim().toLowerCase();
+    if (!slug) continue;
+    for (const name of [entry.locale, ...(entry.aliases ?? [])]) {
+      const code = String(name ?? '').trim().toLowerCase().replace('_', '-');
+      if (code && code !== slug) aliases[code] = slug;
+    }
+  }
+  return Object.freeze(aliases);
+}
+
+if (STORE && !STORE.aliases) STORE.aliases = registryAliases();
 
 // Where core came from (public-path.js): core/lang/ beside core/js/.
 function coreRoot() {
@@ -220,6 +243,8 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
     if (!BUILT_IN.has(base)) {
       PACKS.request(base);
       if (wanted !== base) PACKS.request(wanted);
+      const named = STORE.aliases?.[wanted];
+      if (named && named !== wanted && named !== base) PACKS.request(named);
     }
   }
   return PACKS;

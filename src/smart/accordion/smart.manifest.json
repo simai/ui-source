@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.accordion",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "title": "Accordion",
   "summary": "Sections that open and close, built from data -- a record's groups, a settings panel, an FAQ, catalogue filters -- or from <details> in the markup, drawn as the class accordion: lines by default, the same sizes on the control ladder, appearances, marker and single section. The marker at the end points down and turns up when open, the section moves to its height in 200 ms; closed text is found by the browser's find-in-page; link makes a section's id its address; expand-all adds «Развернуть все». single keeps one open; the headers are buttons with the WAI-ARIA accordion keyboard.",
   "kind": "smart",
@@ -496,7 +496,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/accordion/index.js",
-        "sha256": "889ceafbb5e1fc105ec87c2dfe05cff4c543f6f67eebbf3d9750defa94ba6325"
+        "sha256": "4e97f138859ea15247c224a33975e37abc4bdb4907388464dcfe81e7bc85a5b6"
       },
       {
         "path": "src/smart/accordion/sections.mjs",

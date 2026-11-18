@@ -14,7 +14,7 @@ import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {renderAccordionTemplate} from './js/templates/default';
-import {moveSection, sectionHeight, stopSectionMotion} from '../../component/accordion/js/motion.js';
+import {markClosing, moveSection, sectionHeight, stopSectionMotion} from '../../component/accordion/js/motion.js';
 import {
   ACCORDION_APPEARANCES,
   ACCORDION_DEFAULT_APPEARANCE,
@@ -50,9 +50,8 @@ const HEADING_LEVELS = ['2', '3', '4', '5', '6'];
 // open('main') and open({id: 'main'}) both name a section (§4.4).
 const sectionArgument = (value) => (value && typeof value === 'object' ? value.id : value);
 
-// A closing section's panel stays drawn while it shrinks (the class sheet's
-// mark, component/accordion/js/_accordion.js).
-const CLOSING_ATTRIBUTE = 'data-sf-accordion-closing';
+// A closing section's panel stays drawn while it shrinks, inert (markClosing,
+// component/accordion/js/motion.js).
 
 // The section the address names (C154 (5)): the fragment, without its #.
 function addressId() {
@@ -294,9 +293,9 @@ class SfSmartAccordion extends AccordionElement {
       const article = this.sectionElement(id);
       if (!article) return;
       stopSectionMotion(article);
-      article.removeAttribute(CLOSING_ATTRIBUTE);
-      const moved = moveSection(article, from, () => article.removeAttribute(CLOSING_ATTRIBUTE));
-      if (moved && !this.isOpen(id)) article.setAttribute(CLOSING_ATTRIBUTE, '');
+      markClosing(article, false);
+      const moved = moveSection(article, from, () => markClosing(article, false));
+      if (moved && !this.isOpen(id)) markClosing(article, true);
     });
     return result;
   }
