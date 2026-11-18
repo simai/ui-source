@@ -124,7 +124,8 @@ test('reference C1/C2: the card route keeps its line; a disabled name is cut lik
 test('reference C3/C4: the line in text at ink 48, the ring 2 off and cloned (C186 (1), (4))', () => {
   assert.match(reference, /--inline :where\(\.sf-reference-link__label\) \{[^}]*text-decoration-color: color-mix\(in srgb, currentColor 48%, transparent\)/u);
   const ring = block(reference, '  .sf-reference-link.sf-reference-link--inline a.sf-reference-link__link:focus-visible');
-  assert.match(ring, /outline-offset: var\(--sf-a2\)/u);
+  // DEV held answers H3 (C212, msg-bc1702eb): one focus offset, --sf-focus--offset.
+  assert.match(ring, /outline-offset: var\(--sf-focus--offset\)/u);
   assert.match(ring, /box-decoration-break: clone/u);
 });
 

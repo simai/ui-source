@@ -302,7 +302,6 @@ a.sf-search-row-main:focus-visible {
   inline-size: var(--sf-ui-1\/2--control-height);
   block-size: var(--sf-ui-1\/2--control-height);
   border-radius: var(--sf-radius-1);
-  background: var(--sf-surface-container);
 }
 
 .sf-search-row-image-picture {
@@ -319,7 +318,6 @@ a.sf-search-row-main:focus-visible {
 .sf-search-row-image[data-failed] {
   inline-size: auto;
   block-size: auto;
-  background: none;
 }
 
 .sf-search-row-image[data-failed] > .sf-search-row-image-picture {
@@ -693,6 +691,15 @@ a.sf-search-row-main:focus-visible {
   }
   .sf-search-row--more {
     color: var(--sf-primary);
+  }
+  /* A result's own picture stands on the container fill; the fallback glyph
+     takes the container's dim ink, and a picture that failed has no plate. */
+  .sf-search-row-image {
+    background: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-search-row-image[data-failed] {
+    background: none;
   }
   .sf-search-row-main {
     color: inherit;

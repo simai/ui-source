@@ -177,7 +177,7 @@ test('button group offers a segmented appearance with the same semantics', async
   assert.match(styles, /--sf-button--background-color: var\(--sf-surface-state-active\)/);
   assert.match(styles, /sf-button-group--plate-raised[^{]*\{[^}]*--sf-surface-raised[^}]*--sf-shadow-raised/);
   assert.match(styles, /font-variant-numeric: tabular-nums/);
-  assert.match(styles, /\.sf-button-group-segment:focus-visible \{\s*outline-offset: 0;/);
+  assert.match(styles, /\.sf-button-group-segment:focus-visible \{\s*outline-offset: var\(--sf-focus--offset\);/);
   assert.match(styles, /forced-colors: active[\s\S]*sf-button-group--segmented[\s\S]*Highlight/);
   assert.doesNotMatch(styles, /\b(?:left|right|margin-left|margin-right|padding-left|padding-right)\s*:/u, 'logical properties only');
   const entry = variables.components.find((candidate) => candidate.component === 'button-group');

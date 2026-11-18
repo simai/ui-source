@@ -46,7 +46,10 @@ test('the static host passes image through, sf-search draws it on its plate', as
   assert.match(template, /sf-search-row-image/u);
   const sheet = readFileSync(join(root, 'src/smart/search/scss/_smart__search.scss'), 'utf8');
   const rule = sheet.match(/\.sf-search-row-image \{[^}]+\}/u)?.[0] ?? '';
-  assert.match(rule, /background: var\(--sf-surface-container\)/u);
+  // The plate is paint (C273): in sf.paint, with the container's dim ink.
+  const paintRule = sheet.slice(sheet.indexOf('@layer sf.paint')).match(/\.sf-search-row-image \{[^}]+\}/u)?.[0] ?? '';
+  assert.match(paintRule, /background: var\(--sf-surface-container\)/u);
+  assert.match(paintRule, /--sf-on-surface-variant: var\(--sf-on-surface-container-variant\)/u);
   assert.match(rule, /inline-size: var\(--sf-ui-1\\\/2--control-height\)/u);
   assert.match(rule, /border-radius: var\(--sf-radius-1\)/u);
 });

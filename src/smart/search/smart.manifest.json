@@ -424,7 +424,7 @@
       },
       {
         "path": "src/smart/search/scss/_smart__search.scss",
-        "sha256": "8a61c53aa5408b2edebe573b44fa28ace42e0c6ef00e086792e2d1bdf0fbfdc1"
+        "sha256": "efecfa2b57508ae297fc413068568a81ac5ad6b3708fc8faafe3ba763e6d35c2"
       },
       {
         "path": "src/smart/search/rule.js",

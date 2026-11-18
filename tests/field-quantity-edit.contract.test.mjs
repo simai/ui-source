@@ -37,7 +37,7 @@ test('the registry names the stepper variant for both number types, and the keys
       {id: 'stepper', label: {ru: 'Кнопками «−» и «+»', en: 'With steppers'}}, type);
   }
   assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'integer').params, ['unit', 'min', 'max', 'step', 'required', 'readonly']);
-  assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'number').params, ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']);
+  assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'number').params, ['unit', 'min', 'max', 'step', 'precision', 'low', 'high', 'optimum', 'required', 'readonly']); // H4: the meter's thresholds
   // The scale stays the number's first variant.
   assert.equal(PROPERTY_TYPES.find((one) => one.type === 'number').variants[0].id, 'scale');
 });
