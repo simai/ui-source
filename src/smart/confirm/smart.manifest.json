@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.confirm",
-  "version": "1.5.4",
+  "version": "1.5.6",
   "title": "Confirmation",
   "summary": "A question put to a person in place -- a delete asked in its row, a member removed, a view reset: what will happen, two answers, a pending state while the answer is applied, the outcome, and an optional time it runs out. Applies nothing; a press is an event.",
   "kind": "smart",
@@ -78,7 +78,7 @@
       "disabled": {
         "type": "boolean",
         "default": false,
-        "description": "The answers are shown and cannot be pressed (a send is in flight elsewhere)."
+        "description": "The decisive answer is shown and cannot be pressed (a send is in flight elsewhere); the declining answer, Escape and a window's close still work, so a person can always leave."
       },
       "status": {
         "type": "string",
@@ -334,7 +334,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/confirm/index.js",
-        "sha256": "635c6525b1e388c1137cd9cdd037c91ac66f41c49b9d9d003dd4a8b06ad2a09f"
+        "sha256": "47c33b21059e13b142680f23052e2ae0b6e21f9a934c9018d77c6dff605774d6"
       },
       {
         "path": "src/smart/confirm/js/templates/default.js",
@@ -354,7 +354,7 @@
       },
       {
         "path": "src/smart/confirm/component.json",
-        "sha256": "ab27b694cdbca64caa0dddc6f9b6880e51208e1417bc7314edb302ab4ac54b84"
+        "sha256": "542ebf00bc44b008a4a41d96f0e6a4bdae8ea13ffcc99871cb71544c075dba01"
       },
       {
         "path": "src/smart/confirm/lang/en.json",

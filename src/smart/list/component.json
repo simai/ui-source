@@ -2,7 +2,7 @@
   "$comment": "The source of sf-list's element plumbing (core/js/element-manifest.js); standard simai.smart-component 1.3.8, vocabulary 1.1.5. The main member of block list (duplication audit 2026-11-03 A-7): rows from data drawn as sf-list-item; sf-list-feed is the block's feed variant.",
   "id": "smart.list",
   "tag": "sf-list",
-  "version": "1.21.4",
+  "version": "1.25.0",
   "kind": "leaf",
   "family": "list",
   "settings": {
@@ -117,6 +117,36 @@
       },
       "summary": "The row actions in the shared menu, after «Переименовать»: [{id, text, icon?, destructive?}]. Chosen, one leaves as apply {action, scope: entry, ids}."
     },
+    "selection": {
+      "type": "enum",
+      "values": [
+        "none",
+        "many"
+      ],
+      "default": "none",
+      "summary": "Choosing several rows (owner decision C167 (5) by the rule of C150 (9)). many: a check box at each row's start, shown under the pointer and on the focused row, and on every row once anything is chosen; then a press on a row chooses it (Enter still opens), Shift a range, Space on the focused row chooses it, a phone chooses by a long press (the row's menu stays on its «⋯»). The bar of the choice is sf-bulk-actions (C295) at the list's bottom with selection-actions; its × and Escape let the choice go. The choice is the value chosen and the event select."
+    },
+    "selection-actions": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "text": "string",
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "status": {
+          "type": "enum",
+          "values": [
+            "",
+            "danger"
+          ],
+          "optional": true
+        }
+      },
+      "summary": "With selection many, the actions of the choice's bar, in sf-bulk-actions' own shape [{id, text, icon?, status?, confirm?, undo?}]: up to three as buttons, the rest in «⋯», a dangerous one last and asked about. Chosen, one leaves as apply {action, scope: selection, ids}."
+    },
     "renamable": {
       "type": "boolean",
       "default": false,
@@ -208,7 +238,14 @@
       "summary": "The empty state's heading (sf-empty-state no-data); the empty slot replaces the whole state."
     }
   },
-  "values": {},
+  "values": {
+    "chosen": {
+      "type": "list",
+      "default": [],
+      "of": "id",
+      "summary": "With selection many, the ids of the rows chosen, in the list's order. A page may write it (a list of ids) to choose; a row that leaves the list leaves the choice. It is not selected, which is the one open row."
+    }
+  },
   "events": {
     "open": {
       "carries": {
@@ -229,7 +266,8 @@
         "scope": {
           "type": "enum",
           "values": [
-            "entry"
+            "entry",
+            "selection"
           ]
         },
         "ids": {
@@ -241,7 +279,7 @@
           }
         }
       },
-      "summary": "One of the row actions was chosen: {action, scope: entry, ids} (vocabulary apply)."
+      "summary": "One of the row actions was chosen: {action, scope: entry, ids}; or an action of the choice's bar (selection many): {action, scope: selection, ids} with the rows chosen (vocabulary apply)."
     },
     "rename": {
       "carries": {
@@ -273,6 +311,17 @@
       },
       "cancelable": true,
       "summary": "Deprecated until 2027-01-01 (owner decision C167 (1)): the end of a list is sf-pagination appearance=\"more\" after it (its button, «Показано X из Y», load=button|auto, sf-pagination-load-more); noted once per element in SF.deprecations, journal attribute-list-has-more-to-pagination-more. The next page is asked for: a person's scroll brought the end into reach, or «Показать ещё»: {direction: after, after}. Never on load by itself. Cancelling it is moreFailed()."
+    },
+    "select": {
+      "carries": {
+        "chosen": {
+          "type": "list",
+          "of": "id"
+        },
+        "count": "number",
+        "total": "number"
+      },
+      "summary": "The choice changed (selection many): the ids of the rows chosen, their count and the number of rows. Its DOM name is sf-list-select."
     }
   },
   "actions": {
@@ -517,6 +566,29 @@
       ],
       "summary": "Deprecated until 2027-01-01 (owner decision C167 (1)): the end of a list is sf-pagination appearance=\"more\" after it (its button, «Показано X из Y», load=button|auto, sf-pagination-load-more); noted once per element in SF.deprecations, journal attribute-list-has-more-to-pagination-more. The next page could not be loaded: «Показать ещё» and the end ask again.",
       "x-returns": "{outcome: applied}"
+    },
+    "clear-selection": {
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Lets every chosen row go (selection many) and sends select. Refused (empty) when nothing is chosen.",
+      "x-returns": "{outcome: applied} or {outcome: refused, reason}"
+    },
+    "toggle-chosen": {
+      "with": {
+        "id": "id",
+        "range": {
+          "type": "boolean",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "Chooses a row or lets it go, as a press does once a row is chosen; range chooses every row from the last one pressed (Shift). Refused when selection is not many or the row is unknown or disabled.",
+      "x-returns": "{outcome: applied} or {outcome: refused, reason}"
     }
   },
   "slots": {
@@ -535,7 +607,10 @@
       "Enter": "open",
       "F2": "rename",
       "Shift+F10": "open-menu",
-      "ContextMenu": "open-menu"
+      "ContextMenu": "open-menu",
+      "Space": "toggle-chosen",
+      "Shift+Space": "toggle-chosen",
+      "Escape": "clear-selection"
     }
   },
   "relations": [
@@ -575,6 +650,12 @@
     },
     {
       "name": "sr-only/default"
+    },
+    {
+      "name": "checkbox"
+    },
+    {
+      "name": "cl-bulk-actions"
     }
   ],
   "templates": {
@@ -699,7 +780,8 @@
     "version 1.21.1 (2026-11-17, feat/lang-file-c282; numbered above 1.21.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.21.2 (written on the branch as 1.20.3; 2026-11-17, owner decision C268; numbered above 1.20.2 on integration/pair-next-11): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
     "version 1.21.3 (written on the branch as 1.21.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
-    "version 1.21.4 (written on the branch as 1.21.0; 2026-11-17, Smart joint pass SM-LS-1; numbered above 1.20.3 on origin/fix/utilities-c264): a minor. items written as a JSON attribute in markup (<sf-list items='[...]'>) draws its rows, as sf-accordion items, sf-change changes and sf-avatar-group avatars already did: it drew the empty state «Здесь пока пусто» and said nothing. The rule is the base's, one for every list setting (core/js/element-manifest.js sfReadListAttributes): read once when the element connects, after the island; a property, setItems() or the island given first wins; an attribute that is not JSON or not a list is said once in the console. Settings, values, events and keys unchanged."
+    "version 1.21.4 (written on the branch as 1.21.0; 2026-11-17, Smart joint pass SM-LS-1; numbered above 1.20.3 on origin/fix/utilities-c264): a minor. items written as a JSON attribute in markup (<sf-list items='[...]'>) draws its rows, as sf-accordion items, sf-change changes and sf-avatar-group avatars already did: it drew the empty state «Здесь пока пусто» and said nothing. The rule is the base's, one for every list setting (core/js/element-manifest.js sfReadListAttributes): read once when the element connects, after the island; a property, setItems() or the island given first wins; an attribute that is not JSON or not a list is said once in the console. Settings, values, events and keys unchanged.",
+    "version 1.25.0 (2026-11-18, Larena LF-10; owner decision C167 (5) by the rule of C150 (9), the bar C295; numbered above 1.24.0 on origin/feat/view-orders-fo1-5): a minor. Choosing several rows: setting selection none (default) | many. many: a check box (the class checkbox, not a Tab stop) at each row's start, shown under the pointer, on the focused row and on every row once anything is chosen (a screen without hover draws them only then); once a row is chosen a press on a row chooses it and Shift a range from the last row pressed (Enter still opens); Space on the focused row chooses, Shift+Space a range; a long press under a finger chooses (with selection many it no longer opens the row's menu, which stays on its «⋯»); Escape lets the choice go. The choice is the value chosen (row ids, the list's order; a row that leaves the list leaves the choice), the event select {chosen, count, total} (sf-list-select), the actions clear-selection and toggle-chosen. The bar is sf-bulk-actions (C295, place dock, the list's size, count and page-count) with the new list setting selection-actions; its action leaves as the list's apply {action, scope: selection, ids} (a page that cancels it cancels the bar's action), its × clears. A chosen row has the open row's fill. Relations: checkbox, cl-bulk-actions. Nothing changes without selection."
   ],
   "x-rule": {
     "$comment": [

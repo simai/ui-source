@@ -188,11 +188,17 @@ class SfList extends ListElement {
         this._stopEdge = null;
         this._edge = null;
         this._dayTimer = 0;
+        // The rows chosen (selection many, 1.22.0): ids, and the row a Shift
+        // range starts from.
+        this._chosen = new Set();
+        this._lastPicked = null;
+        this._shiftPress = false;
+        this._selectionActions = [];
         listCount += 1;
         this._uid = `sf-list-${listCount}`;
         // A value set as a property before the element was defined is an own
         // property that would hide the accessor; it is taken through it.
-        for (const name of ["items", "actions", "groups"]) {
+        for (const name of ["items", "actions", "groups", "chosen", "selectionActions"]) {
             if (!Object.prototype.hasOwnProperty.call(this, name)) continue;
             const early = this[name];
             delete this[name];
@@ -222,7 +228,116 @@ class SfList extends ListElement {
             .filter((item) => item && item.id != null && !seen.has(String(item.id)) && seen.add(String(item.id)))
             .map(normalItem);
         if (this._editing && !seen.has(this._editing)) this._editing = null;
+        this.keepChosen();
         this.requestComponentUpdate("items");
+    }
+
+    // ── choosing several rows (1.22.0; C167 (5), C150 (9), Larena LF-10) ────
+
+    /** The ids of the rows chosen, in the list's order (selection many). */
+    get chosen() {
+        return this._items.filter((item) => this._chosen.has(item.id)).map((item) => item.id);
+    }
+
+    /** A page may choose rows: a list of ids, or ids separated by commas or spaces. */
+    set chosen(value) {
+        const list = Array.isArray(value) ? value : String(value ?? "").split(/[\s,]+/u);
+        this._chosen = new Set(list.map((one) => String(one)).filter(Boolean));
+        this._lastPicked = null;
+        this.keepChosen();
+        this.requestComponentUpdate("chosen");
+    }
+
+    /** The actions of the choice's bar, sf-bulk-actions' own shape: [{id, text, icon?, status?, confirm?, undo?}]. */
+    get selectionActions() {
+        return this._selectionActions.map((action) => ({...action}));
+    }
+
+    set selectionActions(value) {
+        let list = value;
+        if (typeof list === "string") {
+            try { list = JSON.parse(list); } catch { list = []; }
+        }
+        this._selectionActions = Array.isArray(list)
+            ? list.filter((action) => action && action.id && action.text).map((action) => ({...action, id: String(action.id)}))
+            : [];
+        this.requestComponentUpdate("selection-actions");
+    }
+
+    get selecting() {
+        return this.getAttribute("selection") === "many";
+    }
+
+    // A chosen row that left the list is no longer chosen: the ids kept are
+    // the rows the list holds (items not yet given keep the page's choice).
+    keepChosen() {
+        if (!this._chosen.size || !this._sfDataGiven) return;
+        const ids = new Set(this._items.map((item) => item.id));
+        const before = this._chosen.size;
+        for (const id of [...this._chosen]) if (!ids.has(id)) this._chosen.delete(id);
+        if (this._chosen.size !== before) this.choiceChanged();
+    }
+
+    // A press, Space or the check box on a row: the row is chosen or let go;
+    // with Shift every row from the last one pressed to this one is chosen.
+    // A disabled row is never chosen.
+    toggleChosen(id, range = false) {
+        // As an action it takes {id, range} too (data-sf-action, §4.4).
+        if (id && typeof id === "object") ({id, range = false} = id);
+        if (!this.selecting) return refused("selection");
+        const key = String(id);
+        const order = this._items.filter((item) => item.disabled !== true).map((item) => item.id);
+        if (!order.includes(key)) return refused("unknown");
+        if (range && this._lastPicked !== null && order.includes(this._lastPicked)) {
+            const [from, to] = [order.indexOf(this._lastPicked), order.indexOf(key)].sort((a, b) => a - b);
+            for (const one of order.slice(from, to + 1)) this._chosen.add(one);
+        } else if (this._chosen.has(key)) {
+            this._chosen.delete(key);
+        } else {
+            this._chosen.add(key);
+        }
+        this._lastPicked = key;
+        this.choiceChanged();
+        return applied();
+    }
+
+    /** Lets every row go (the bar's ×, Escape, or the page). */
+    clearSelection() {
+        if (!this._chosen.size) return refused("empty");
+        this._chosen.clear();
+        this._lastPicked = null;
+        this.choiceChanged();
+        return applied();
+    }
+
+    // The choice is the host's to act on: select {chosen, count, total}.
+    choiceChanged() {
+        this.requestComponentUpdate("chosen");
+        this.sfEmit("select", {chosen: this.chosen, count: this._chosen.size, total: this._items.length});
+    }
+
+    // Whether the press that is being answered held Shift (a click, or the
+    // check box's change after it), read once.
+    takeShift() {
+        const shift = this._shiftPress;
+        this._shiftPress = false;
+        return shift;
+    }
+
+    // The bar's action is the list's apply over the chosen rows; a page that
+    // cancels it keeps the bar's own handling (the question, the undo).
+    onBulkAction(event) {
+        event.stopPropagation();
+        const id = String(event.detail?.id ?? "");
+        if (!id) return;
+        const delivered = this.sfEmit("apply", {action: id, scope: "selection", ids: this.chosen});
+        if (!delivered) event.preventDefault();
+    }
+
+    onBulkClear(event) {
+        event.stopPropagation();
+        this.clearSelection();
+        this.focusRow(this._lastPicked ?? this.chosen[0] ?? null);
     }
 
     /**
@@ -579,6 +694,11 @@ class SfList extends ListElement {
             countLabel: (count) => this.sfWord("count-label", {count}),
             grouped: this.groupBy === "day" || this.groupBy === "key",
             selected: this.selected,
+            selecting: this.selecting,
+            chosen: this.selecting ? this._chosen : new Set(),
+            pickLabel: (text) => this.sfWord("pick-label", {vars: {text}}),
+            rowCount: this._items.length,
+            selectionActions: this._selectionActions,
             editing: this._editing,
             loading,
             // The skeleton's rows take the shape of the rows the list has
@@ -660,18 +780,28 @@ class SfList extends ListElement {
         // nothing. No swipe.
         if (!this._longPress) {
             this._longPress = watchLongPress(this, {
+                // With selection many a long press chooses the row (C150 (9),
+                // a phone has no hover); its menu stays on its «⋯».
                 accepts: (event) => {
                     const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
                     if (!row || !this.contains(row) || event.target.closest(".sf-list__actions, .sf-list__rename")) return false;
                     const item = this._items.find((one) => one.id === this.idOf(row));
+                    if (item && this.selecting) return item.disabled !== true;
                     return Boolean(item) && this.hasMenu(item);
                 },
                 press: (event) => {
                     const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
                     const id = this.idOf(row);
-                    if (id != null) this.openMenu(id);
+                    if (id == null) return;
+                    if (this.selecting) this.toggleChosen(id);
+                    else this.openMenu(id);
                 },
             });
+            // Whether a press held Shift, for the row's open and the check
+            // box's change that follow it (a range, C150 (9)).
+            this.addEventListener("click", (event) => {
+                this._shiftPress = event.shiftKey === true;
+            }, true);
             this.addEventListener("click", (event) => {
                 if (!this._longPress.swallowed()) return;
                 event.preventDefault();
@@ -958,7 +1088,15 @@ class SfList extends ListElement {
         event.stopPropagation();
         const id = String(event.detail?.id ?? "");
         if (!id || !this._items.some((item) => item.id === id)) return;
-        this.sfEmit("open", {id, trigger: event.detail?.trigger ?? "pointer"});
+        // Once a row is chosen a press chooses (C150 (9)); Shift chooses a
+        // range from the last row pressed. Enter still opens the row.
+        const trigger = event.detail?.trigger ?? "pointer";
+        const shift = this.takeShift();
+        if (this.selecting && trigger !== "keyboard" && (this._chosen.size || shift)) {
+            this.toggleChosen(id, shift);
+            return;
+        }
+        this.sfEmit("open", {id, trigger});
     }
 
     onKey(event) {
@@ -981,7 +1119,21 @@ class SfList extends ListElement {
             return;
         }
         const row = event.target.closest?.(".sf-list-item[data-sf-list-roving]");
+        // Escape lets the choice go (C295); the key goes no further, so a
+        // panel around the list stays open.
+        if (event.key === "Escape" && this.selecting && this._chosen.size && !event.shiftKey) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.clearSelection();
+            return;
+        }
         if (!row || event.target !== row) return;
+        // Space chooses the row, Shift+Space a range (selection many).
+        if (event.key === " " && this.selecting) {
+            event.preventDefault();
+            this.toggleChosen(this.idOf(row), event.shiftKey);
+            return;
+        }
         if (event.key === forward && !event.shiftKey) {
             const button = row.closest(".sf-list__row")?.querySelector(":scope > .sf-list__actions");
             if (button) {
