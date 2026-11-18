@@ -122,6 +122,126 @@
       "reason": "recorded by group build 12 from fix/defects-d12 c5c74747a: sf-file-upload's row previews carry data-said-by=\"host\" so sf-file-preview does not announce a failure the upload's own status line already says; a host attribute of the Smart element, the class component has no announcer",
       "decision": "C251",
       "date": "2026-11-17"
+    },
+    {
+      "unit": "smart.alert",
+      "version": "1.5.4",
+      "twin": "component.alerts",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-alert its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.avatar-group",
+      "version": "1.5.3",
+      "twin": "component.avatars",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-avatar-group its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.button-close",
+      "version": "1.4.7",
+      "twin": "component.close",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-button-close its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.button-copy",
+      "version": "1.7.5",
+      "twin": "component.clipboard",
+      "reason": "recorded by group build 13 from fix/held-answers (H3): sf-button-copy's focus ring stands at the shared --sf-focus--offset / --sf-focus--inset instead of its own number; a rule of the Smart element's own sheet, the class clipboard component keeps core's focus ring",
+      "decision": "C212",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.file-preview",
+      "version": "1.5.5",
+      "twin": "component.file-preview",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-file-preview its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.icon",
+      "version": "1.4.3",
+      "twin": "component.icons",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-icon its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.input-textarea",
+      "version": "1.13.3",
+      "twin": "component.textarea",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-input-textarea its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.menu",
+      "version": "1.14.3",
+      "twin": "component.menu",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-menu its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.progress-ring",
+      "version": "1.6.4",
+      "twin": "component.progress-ring",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-progress-ring its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.skeleton",
+      "version": "1.3.3",
+      "twin": "component.skeleton",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-skeleton its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.steps",
+      "version": "1.4.6",
+      "twin": "component.step",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-steps its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.tag",
+      "version": "1.12.6",
+      "twin": "component.tags",
+      "reason": "recorded by group build 13 from feat/button-truncate-appearance (list head notes): an interactive sf-tag without kind is no longer taken for a toggle in a selecting sf-tag-group; behaviour of the Smart element's script, the class tags draw no selection",
+      "decision": "C280",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.tooltip",
+      "version": "1.5.2",
+      "twin": "component.tooltip",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-tooltip its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.tree",
+      "version": "2.5.0",
+      "twin": "component.tree",
+      "reason": "recorded by group build 13 from feat/view-orders-fo1-5 (FO2-5): the window over a long sf-tree is core's rows window, as sf-list draws; a script of the Smart element, the class tree has no window",
+      "decision": "C308",
+      "date": "2026-11-18"
+    },
+    {
+      "unit": "smart.tree-item",
+      "version": "1.3.5",
+      "twin": "component.tree-item",
+      "reason": "recorded by group build 13: language files only -- the C278 packs (feat/lang-packs-c278 in fix/lang-follow) gave sf-tree-item its de, es, fr, it, pt-br, ja, ko, zh-hans and ar words; the class component has no words of its own to change",
+      "decision": "C278",
+      "date": "2026-11-18"
     }
   ]
 }
