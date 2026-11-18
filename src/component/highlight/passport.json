@@ -3,7 +3,7 @@
   "schema_version": 1,
   "id": "component.highlight",
   "kind": "component",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "owner": "simai/ui-source",
   "files": [
     "src/component/highlight/docs/docs.md",

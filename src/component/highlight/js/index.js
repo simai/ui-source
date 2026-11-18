@@ -190,9 +190,24 @@ function chromeMode(block, root) {
   return CHROME_MODES.has(value) ? value : 'auto';
 }
 
+// data-lines on the code, its pre or the root turns the numbers on;
+// "false" turns them off, and a number is the first line's number
+// (data-lines="40": a file region from line 40, 1.10.0). The historical
+// data-line-numbers="true" still turns them on.
 function lineNumbersEnabled(block) {
-  if (block.hasAttribute('data-lines')) return block.dataset.lines !== 'false';
-  return block.dataset.lineNumbers === 'true';
+  const lines = blockOption(block, 'data-lines');
+  if (lines !== null) return lines !== 'false';
+  return blockOption(block, 'data-line-numbers') === 'true';
+}
+
+// The first line's number: data-start, else a number in data-lines, else the
+// historical data-ln-start-from, else 1; read from the code, its pre or the
+// root.
+function lineStart(block) {
+  for (const value of [blockOption(block, 'data-start'), blockOption(block, 'data-lines'), blockOption(block, 'data-ln-start-from')]) {
+    if (/^\s*\d+\s*$/u.test(value ?? '')) return Number.parseInt(value, 10);
+  }
+  return 1;
 }
 
 // An id no other element holds: not in the document, and not in the tree the
@@ -424,6 +439,7 @@ hljs.addPlugin({
     if (numbers || marks?.marked) {
       hljs.lineNumbersBlock(el, {
         numbers,
+        start: lineStart(el),
         lines: marks?.lines,
         words: {
           add: pageText(HIGHLIGHT_TEXT, 'added', el, 'sf-highlight'),
@@ -509,5 +525,5 @@ if (typeof window !== 'undefined') {
 }
 registerComponent('hljs', hljs);
 
-export { highlightAllLazy, highlightBlock, lineNumbersEnabled, lineRanges, normalizeLanguage, readLineMarks, refresh, requestedLanguage };
+export { highlightAllLazy, highlightBlock, lineNumbersEnabled, lineRanges, lineStart, normalizeLanguage, readLineMarks, refresh, requestedLanguage };
 export default hljs;

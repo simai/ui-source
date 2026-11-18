@@ -36,8 +36,19 @@ attribute: the Loader's markup scan skips the inside of `pre` and `code`, so a
 block without any other highlight hook was left unstyled before 1.6.0.
 
 Use `data-lines` for line numbers and `data-start` for a non-default first number.
-The historical `data-line-numbers="true"` and `data-ln-start-from` inputs remain
-accepted. Numbers are decorative reference aids, excluded from assistive output
+A number in `data-lines` is the first line's number too (1.10.0):
+`data-lines="40"` numbers a file region that starts at line 40, so a page
+that shows an excerpt of a longer file needs one attribute. Both are read from
+the `code`, its `pre` or the root, as the line-mark attributes are;
+`data-start` wins over a number in `data-lines`, and `data-lines="false"`
+turns the numbers off. The number column is three digits wide plus its end
+room and widens to the longest number of the block (line 998 to 1003: four),
+so every row's code starts at the same place (before 1.10.0 the room was
+counted inside the three digits, so rows 9 and 10 started their code at
+different places). The historical `data-line-numbers="true"` and
+`data-ln-start-from` inputs remain accepted (before 1.10.0 the runtime read
+neither from the `pre` or the root, and never read `data-ln-start-from`).
+Numbers are decorative reference aids, excluded from assistive output
 and reconstructed line breaks remain available to Clipboard selection.
 
 Canonical generated structure uses `.sf-highlight`, `.sf-highlight__head` and
@@ -108,7 +119,10 @@ holding `[!code ++]`, `[!code --]`, `[!code highlight]` (or `hl`) or
 its comment leave the text before it is coloured, shown or copied; `[!!code ...]`
 shows a marker as text, and a Markdown block (`md`, `markdown`) shows markers
 as written. The Loader no longer reads `[!name]` inside `pre` or `code` as a
-shortcode (it took `[!code ++]` for the shortcode "code").
+shortcode (it took `[!code ++]` for the shortcode "code"), and since 1.10.0
+neither does the boot script of `core.js`: it hid such a marker in a comment
+while the page was parsed, so a block in the page's HTML lost its markers
+before the highlighter read them.
 
 - Changed lines (C255): the row is tinted with the diff roles
   (`--sf-highlight-addition-background`, `--sf-highlight-deletion-background`:
@@ -125,6 +139,51 @@ shortcode (it took `[!code ++]` for the shortcode "code").
   starts with `$ ` is a command, its prompt drawn by the stylesheet; the other
   lines are its output in the place's dim ink. Copy takes the commands only,
   without prompts or output. A terminal without any `$ ` line is all commands.
+
+Line mark classes (1.10.0). Each mark is a class of the row, so a page that
+writes its rows at build time (a documentation site, C252 first paint) marks them with
+Framework classes and gets the same look without a rule of its own:
+
+| class | line |
+|---|---|
+| `sf-code-line--added` | an added line (C255): success tint, `+` sign |
+| `sf-code-line--removed` | a removed line (C255): error tint, `−` sign |
+| `sf-code-line--highlight` | a marked line (C256): primary-container fill, 2 px primary bar |
+| `sf-code-line--focus` | a focused line (C256): drawn as a marked line |
+| `sf-code-line--prompt` | a terminal command (C257) |
+| `sf-code-line--output` | a terminal command's output (C257): the place's dim ink |
+
+The runtime writes these classes on its rows; the `data-line-diff`,
+`data-line-mark`, `data-line-focus`, `data-line-prompt` and
+`data-line-output` attributes it wrote before stay on its rows and draw the
+same. A block whose rows carry a diff is `sf-code-lines sf-code-lines--diff`.
+The parts a mark draws are spans of the row, in this order:
+`sf-code-line__number` (the number as `aria-hidden` text), in a diff block
+`sf-code-line__sign` on every row (empty; the stylesheet draws the sign) and,
+on a changed row, `sf-code-line__state` with the word a screen reader hears
+("added: ", "removed: "), on a command row `sf-code-line__prompt` (empty; the
+stylesheet draws `$`), then `sf-code-line__content`. Rows a copy leaves
+behind (removed lines, terminal output) carry `data-copy="false"`.
+Written by hand, the rows stand inside the `code` with no white space between
+the spans: code keeps its white space, so a line break between two rows is an
+empty line. The example below is indented for reading only.
+
+```html
+<span class="sf-code-lines sf-code-lines--diff" role="presentation">
+  <span class="sf-code-line sf-code-line--removed" data-copy="false">
+    <span class="sf-code-line__number" aria-hidden="true">40</span>
+    <span class="sf-code-line__sign" aria-hidden="true"></span>
+    <span class="sf-code-line__state">removed: </span>
+    <span class="sf-code-line__content">old()</span>
+  </span>
+  <span class="sf-code-line sf-code-line--added">
+    <span class="sf-code-line__number" aria-hidden="true">41</span>
+    <span class="sf-code-line__sign" aria-hidden="true"></span>
+    <span class="sf-code-line__state">added: </span>
+    <span class="sf-code-line__content">next()</span>
+  </span>
+</span>
+```
 
 Rows carry the block's side room (`--sf-space-1`), not the scroller, so a
 row's fill reaches the block's edges. A token that runs over several lines (a

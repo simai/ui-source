@@ -516,6 +516,11 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     while (walker.nextNode()) {
       const node = walker.currentNode;
       if (!node.nodeValue || !node.nodeValue.includes('[!')) continue;
+      // Code shows its text as written (C258), as the Loader's own reader
+      // does (SHORTCODE_SKIPPED): a line marker such as // [!code ++] in a
+      // code block was hidden in a comment here, while the page was parsed,
+      // so the highlighter never saw it and the line went unmarked.
+      if (node.parentElement?.closest?.('pre, code, script, style')) continue;
       toReplace.push(node);
     }
     toReplace.forEach((textNode) => {
