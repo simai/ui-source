@@ -9,7 +9,8 @@
 //   first answer; Decline is reported the same way;
 // - the keyboard answers as the pointer does (Tab, Space, Enter);
 // - an offer runs out at expires-at: the answers go, the host hears it once;
-// - disabled answers cannot be pressed, and a long value wraps inside the card;
+// - disabled locks the decisive answer only (LF-5): Confirm cannot be pressed,
+//   Decline still can; a long value wraps inside the card;
 // - the words in both languages, accept-text and decline-text winning.
 import {resolve, join} from 'node:path';
 import {existsSync} from 'node:fs';
@@ -206,7 +207,7 @@ try {
     answered: document.getElementById('card').answer({accepted: true}).outcome === 'applied',
     overflow: (() => { const card = document.querySelector('#card .sf-change-confirm'); return card.scrollWidth > card.clientWidth; })(),
   }));
-  if (JSON.stringify(disabled) !== JSON.stringify({buttons: [true, true], answered: false, overflow: false})) note({case: 'disabled answers, and a long value wraps', got: disabled});
+  if (JSON.stringify(disabled) !== JSON.stringify({buttons: [true, false], answered: false, overflow: false})) note({case: 'disabled locks the decisive answer only (LF-5), and a long value wraps', got: disabled});
 
   // 7. Words.
   await make({attributes: {'accept-text': 'Применить', 'decline-text': 'Отменить'}});
