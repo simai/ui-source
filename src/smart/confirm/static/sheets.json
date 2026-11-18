@@ -33,6 +33,7 @@
     "utility/pointer-events/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
@@ -61,6 +62,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "card": [
@@ -88,6 +90,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "expired": [
@@ -115,6 +118,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "pending": [
@@ -142,6 +146,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "reference": [
@@ -169,6 +174,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "untitled": [
@@ -196,6 +202,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "window": [
@@ -226,6 +233,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ]
   }

@@ -28,7 +28,7 @@ const sfDropdownMeta = {
         "bordered"
       ],
       "default": "bordered",
-      "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, SF.deprecations)."
+      "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, noted in SF.deprecations and said once per page in the console)."
     },
     "columns": {
       "kind": "custom",

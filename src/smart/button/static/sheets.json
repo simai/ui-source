@@ -16,6 +16,7 @@
     "component/icons/css/icons.min.css",
     "component/kbd/css/kbd.min.css",
     "component/spinner/css/spinner.min.css",
+    "component/tooltip/css/tooltip.min.css",
     "core/css/core.css",
     "smart/button-close/css/button-close.min.css",
     "smart/button-icon/css/button-icon.min.css",
@@ -31,6 +32,7 @@
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/text-decoration/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/width/default/css/default.min.css"
   ],
   "examples": {
@@ -45,7 +47,8 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "danger": [
       "component/buttons/css/buttons.min.css",
@@ -58,7 +61,8 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "disabled": [
       "component/buttons/css/buttons.min.css",
@@ -72,7 +76,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "expanded": [
       "component/buttons/css/buttons.min.css",
@@ -86,7 +91,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "full-width": [
       "component/buttons/css/buttons.min.css",
@@ -99,7 +105,8 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "ghost": [
       "component/buttons/css/buttons.min.css",
@@ -112,7 +119,8 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "icon-only": [
       "component/buttons/css/buttons.min.css",
@@ -126,7 +134,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "icons": [
       "component/buttons/css/buttons.min.css",
@@ -140,7 +149,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "loading": [
       "component/buttons/css/buttons.min.css",
@@ -155,7 +165,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "menu-button": [
       "component/avatars/css/avatars.min.css",
@@ -171,7 +182,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "new-tab": [
       "component/buttons/css/buttons.min.css",
@@ -184,7 +196,8 @@
       "utility/font-weight/default/css/default.min.css",
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "outline": [
       "component/buttons/css/buttons.min.css",
@@ -198,7 +211,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "reference": [
       "component/buttons/css/buttons.min.css",
@@ -212,7 +226,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "search-trigger": [
       "component/buttons/css/buttons.min.css",
@@ -228,6 +243,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
     "shortcut": [
@@ -242,7 +258,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "sizes": [
       "component/buttons/css/buttons.min.css",
@@ -257,7 +274,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "split": [
       "component/avatars/css/avatars.min.css",
@@ -281,7 +299,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "split-outline": [
       "component/avatars/css/avatars.min.css",
@@ -305,7 +324,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "surface": [
       "component/buttons/css/buttons.min.css",
@@ -319,7 +339,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "tonal": [
       "component/buttons/css/buttons.min.css",
@@ -333,7 +354,23 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
+    ],
+    "truncate": [
+      "component/buttons/css/buttons.min.css",
+      "component/icons/css/icons.min.css",
+      "component/kbd/css/kbd.min.css",
+      "component/tooltip/css/tooltip.min.css",
+      "core/css/core.css",
+      "utility/align-items/default/css/default.min.css",
+      "utility/display/default/css/default.min.css",
+      "utility/flex/default/css/default.min.css",
+      "utility/font-weight/default/css/default.min.css",
+      "utility/pointer-events/default/css/default.min.css",
+      "utility/sr-only/default/css/default.min.css",
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ]
   }
 }

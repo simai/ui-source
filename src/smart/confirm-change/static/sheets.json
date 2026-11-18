@@ -21,7 +21,8 @@
     "utility/pointer-events/default/css/default.min.css",
     "utility/position/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
-    "utility/text-align/default/css/default.min.css"
+    "utility/text-align/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css"
   ],
   "examples": {
     "accepted": [
@@ -40,7 +41,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "assistant-offer": [
       "component/buttons/css/buttons.min.css",
@@ -58,7 +60,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "declined": [
       "component/buttons/css/buttons.min.css",
@@ -76,7 +79,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "expired": [
       "component/buttons/css/buttons.min.css",
@@ -94,7 +98,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "pending": [
       "component/buttons/css/buttons.min.css",
@@ -112,7 +117,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "reference": [
       "component/buttons/css/buttons.min.css",
@@ -130,7 +136,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "untitled": [
       "component/buttons/css/buttons.min.css",
@@ -148,7 +155,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
-      "utility/text-align/default/css/default.min.css"
+      "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ]
   }
 }

@@ -26,6 +26,7 @@
     "utility/resize/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/width/default/css/default.min.css"
   ],
   "examples": {
@@ -50,6 +51,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
     "links": [
@@ -73,6 +75,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
     "rail": [
@@ -96,6 +99,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
     "reference": [
@@ -119,6 +123,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
     "sheet": [
@@ -140,6 +145,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ],
     "size-1": [
@@ -163,6 +169,7 @@
       "utility/resize/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/width/default/css/default.min.css"
     ]
   }

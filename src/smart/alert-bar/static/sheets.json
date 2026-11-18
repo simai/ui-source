@@ -32,6 +32,7 @@
     "utility/position/default/css/default.min.css",
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/visibility/default/css/default.min.css"
   ],
   "examples": {
@@ -62,6 +63,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "info": [
@@ -91,6 +93,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "large": [
@@ -120,6 +123,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "many": [
@@ -149,6 +153,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "minimized": [
@@ -178,6 +183,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "reference": [
@@ -207,6 +213,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "three": [
@@ -236,6 +243,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ]
   }

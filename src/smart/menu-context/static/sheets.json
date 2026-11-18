@@ -25,6 +25,7 @@
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/text-decoration/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
@@ -42,7 +43,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "opened": [
       "component/avatars/css/avatars.min.css",
@@ -58,7 +60,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "profile-meter": [
       "component/avatars/css/avatars.min.css",
@@ -77,6 +80,7 @@
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "reference": [
@@ -93,7 +97,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "right-click": [
       "component/avatars/css/avatars.min.css",
@@ -113,7 +118,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "settings": [
       "component/avatars/css/avatars.min.css",
@@ -129,7 +135,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "submenu": [
       "component/avatars/css/avatars.min.css",
@@ -145,7 +152,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ],
     "values": [
       "component/avatars/css/avatars.min.css",
@@ -161,7 +169,8 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
-      "utility/text-decoration/default/css/default.min.css"
+      "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css"
     ]
   }
 }

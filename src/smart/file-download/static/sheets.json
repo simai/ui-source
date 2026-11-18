@@ -38,6 +38,7 @@
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/text-color/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/transition-property/default/css/default.min.css"
   ],
   "examples": {
@@ -67,6 +68,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "disabled": [
@@ -95,6 +97,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "error": [
@@ -122,6 +125,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "full-width": [
@@ -139,6 +143,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "open": [
@@ -167,6 +172,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "preparing": [
@@ -195,6 +201,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "progress": [
@@ -213,6 +220,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "reference": [
@@ -241,6 +249,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "several": [
@@ -264,6 +273,7 @@
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-color/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "size": [
@@ -292,6 +302,7 @@
       "utility/position/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "table": [
@@ -319,6 +330,7 @@
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-color/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ],
     "type": [
@@ -346,6 +358,7 @@
       "utility/pointer-events/default/css/default.min.css",
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/transition-property/default/css/default.min.css"
     ]
   }
