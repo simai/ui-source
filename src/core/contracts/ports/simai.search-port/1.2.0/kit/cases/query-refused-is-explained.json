@@ -1,0 +1,24 @@
+{
+  "id": "query-refused-is-explained",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A query the host will not answer is refused with a reason, and the panel says so instead of drawing an empty list.",
+  "given": {},
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 3,
+      "query": "a",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason",
+      "sequence"
+    ],
+    "note": "reason is query-too-short here; a host may add its own words in text, in the reader's language. The panel keeps the field as it stands and says the reason: an empty list would be a lie, because nothing was searched."
+  }
+}

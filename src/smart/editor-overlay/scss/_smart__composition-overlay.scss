@@ -75,7 +75,7 @@
 
     .sf-composition-overlay[data-sf-overlay-focus] .sf-composition-overlay-frame--selected {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-composition-overlay-color);
-        outline-offset: var(--sf-a2);
+        outline-offset: var(--sf-focus--offset);
     }
 
     .sf-composition-overlay-frame[hidden] {
@@ -293,7 +293,7 @@
 
     .sf-composition-overlay-insert:focus-visible {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-composition-overlay-color);
-        outline-offset: var(--sf-a2);
+        outline-offset: var(--sf-focus--offset);
     }
 
     // The navigation tree is for assistive technology and keyboard focus only.

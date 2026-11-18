@@ -687,7 +687,7 @@
   /* The ring stands around the segment, on the track's padding, rather than
      inside a plate it could share a colour with. */
   .sf-button-group--segmented > .sf-button-group-segment:focus-visible {
-    outline-offset: 0;
+    outline-offset: var(--sf-focus--offset);
   }
 
   @media (forced-colors: active) {
@@ -718,7 +718,7 @@
 
     .sf-button-group--segmented > .sf-button-group-segment:focus-visible {
       outline: var(--sf-focus--width) solid CanvasText;
-      outline-offset: 0;
+      outline-offset: var(--sf-focus--offset);
     }
   }
 }

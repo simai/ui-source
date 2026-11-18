@@ -120,12 +120,12 @@
   /* On a chosen day -- the selected one, a period's start or end -- the focus
      colour lay on the primary fill, 1.44:1 light and 1.31:1 dark (RG-DP-3;
      WCAG 2.4.11 asks 3:1). There the ring is the fill's own ink (on-primary,
-     the number's colour) one ring width further in, so a rim of the fill
-     stays round it and it reads as a ring on the surface as well as on a
-     period's band. */
+     the number's colour) drawn inside the day's edge, at the focus system's
+     inward offset (C212, one offset everywhere: msg-bc1702eb), so it reads as
+     a ring on the fill, on the surface and on a period's band. */
   .sf-datepicker-day:is(.active, .sf-datepicker-day-start, .sf-datepicker-day-end):not(:disabled):focus-visible {
     outline-color: var(--sf-datepicker-selected-color, var(--sf-on-primary));
-    outline-offset: calc(var(--sf-focus--width) * -2);
+    outline-offset: var(--sf-focus--inset);
   }
 
   .sf-datepicker-day:not(:disabled):not(.disabled):active .sf-datepicker-day-date, .sf-datepicker-day.active .sf-datepicker-day-date {

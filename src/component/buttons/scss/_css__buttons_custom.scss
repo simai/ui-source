@@ -356,7 +356,8 @@
    to stand over every appearance's state rule in this layer.
    Only a toggle wears it (1.17.0, owner decision C211 (1)): a button with an
    edge or without a fill in the neutral scheme -- outline or ghost (link) in
-   on-surface. A filled, tonal or danger button, or another scheme, keeps its
+   on-surface. A filled button draws its own pressed state (C309 (2), below).
+   A tonal button, or an outline or ghost one in another scheme, keeps its
    own look under aria-pressed and the runtime says so once in the console
    (js/_buttons.js); a choice of one among several (a view, a width, a theme)
    is sf-segmented, not toggles. The tonal toggle rules (TB-3, the neutral
@@ -404,10 +405,34 @@
   }
 }
 
+/* A filled button that is pressed (owner decision C309 (2), 2026-11-18,
+   extending C211 (1)): the pressed state is drawn on a filled button too, so
+   a filled toggle over an effect (pause, «less motion») reads and shows that
+   it is on. It keeps its fill's family and takes the press step of its scheme
+   for as long as it is pressed -- the colour a press gives it for a moment
+   (primary-active, on-surface-active, error-active; the tone scale holds its
+   label at 4.5:1 there, msg-bc1702eb) -- and its icons are filled (below), so
+   the state is told by two cues, not by colour alone. Hover keeps the press
+   step; focus draws the ring; disabled wears the disabled look. */
+@layer sf.states {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--default.sf-button--primary:is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-active));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger, .sf-button--error))):is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-on-surface-active));
+  }
+
+  .sf-button.sf-button.sf-button.sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):is(.sf-button--pressed, [aria-pressed="true"]):not(:disabled, [aria-disabled="true"]):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-error-active));
+  }
+}
+
 /* The second cue: the icons of a pressed toggle are filled. Outside the
    layers because the glyph's own --sf-icon--fill is (component.icons); a
    page's --sf-icon-fill still wins, as everywhere. */
-.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed="true"]) .sf-icon {
+.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed="true"]) .sf-icon,
+.sf-button.sf-button--default:is(.sf-button--pressed, [aria-pressed="true"]) .sf-icon {
   --sf-icon--fill: 1;
 }
 

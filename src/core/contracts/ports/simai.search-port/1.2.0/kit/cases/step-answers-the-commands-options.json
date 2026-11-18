@@ -1,0 +1,27 @@
+{
+  "id": "step-answers-the-commands-options",
+  "intent": "query.change",
+  "capability": "actions",
+  "summary": "A command with steps chosen asks its next step with the command's id: the answer's results are the options, drawn in the same window under the command's tag.",
+  "given": {
+    "capabilities": [
+      "actions"
+    ]
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 7,
+      "query": "",
+      "step": "order.status"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "The panel puts the command's tag in the field and the back arrow before it; the options are rows of the same list; Backspace on the empty field and Escape go back to the results. The option chosen is sent as action.run's value."
+  }
+}

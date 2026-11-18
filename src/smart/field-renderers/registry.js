@@ -63,9 +63,11 @@ export const PROPERTY_TYPES = Object.freeze([
         variants: [{id: 'scale', label: typeLabel('variant-number-scale')},
             // meter (owner decision C203 (5)): a share of a limit, 0..100, as
             // the inline sf-progress-bar meter; the scale stays for levels.
+            // Its thresholds low, high and optimum are the HTML meter's
+            // (msg-bc1702eb), read by that variant alone.
             {id: 'meter', label: typeLabel('variant-number-meter')},
             {id: 'stepper', label: typeLabel('variant-number-stepper')}],
-        params: ['unit', 'min', 'max', 'step', 'precision', 'required', 'readonly']},
+        params: ['unit', 'min', 'max', 'step', 'precision', 'low', 'high', 'optimum', 'required', 'readonly']},
     // date (PD-2, PD-3): min and max bound the day, an ISO date (the day of a
     // date and time is read); format is the length the view and the cell print
     // the date in, Intl's dateStyle: short, medium (the default), long, full.

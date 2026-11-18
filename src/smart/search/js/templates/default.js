@@ -72,11 +72,23 @@ function rowEnd(context, row) {
 // avatar for a person or a chat. sf-avatar draws a button; in a row it is a
 // picture, so the host is inert: no Tab stop, nothing read, a press falls to
 // the row.
+//
+// A result's own picture (port 1.2.0 image, msg-bc1702eb): a file's thumbnail
+// or a record's image, on a plate of its own at the avatar's size -- the only
+// row picture with a plate. The picture is decoration beside the title (alt
+// empty); one that fails to load gives its place back to the glyph. Keyed by
+// the address, so a reused row never keeps another picture's failure.
 function rowLead(row) {
   const avatar = row.avatar ?? row.item?.avatar;
   if (avatar && (avatar.name || avatar.image)) {
     return html`<sf-avatar class="sf-search-row-avatar" size="1/2" heading=${avatar.name || nothing} image-url=${avatar.image || nothing}
       hue="auto" inert></sf-avatar>`;
+  }
+  const image = typeof row.item?.image === 'string' ? row.item.image.trim() : '';
+  if (image) {
+    return keyed(image, html`<span class="sf-search-row-image" aria-hidden="true"><img class="sf-search-row-image-picture" src=${image} alt=""
+      loading="lazy" decoding="async" @error=${(event) => event.currentTarget.parentElement?.setAttribute('data-failed', '')}>${row.icon
+      ? glyph(row.icon, 'sf-search-row-icon') : nothing}</span>`);
   }
   return row.icon ? glyph(row.icon, 'sf-search-row-icon') : nothing;
 }

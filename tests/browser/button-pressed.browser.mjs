@@ -19,7 +19,11 @@
 //   - a group of three (B / I / U) with one pressed: one filled segment, three
 //     of one height;
 //   - a disabled pressed toggle wears the disabled look and keeps the filled
-//     icon; the setting turns the look on and off without a reload.
+//     icon; the setting turns the look on and off without a reload;
+//   - a filled button pressed (owner decision C309 (2)) keeps its fill's
+//     family and takes its scheme's press step (primary-active,
+//     on-surface-active, error-active), the icon filled, the label at least
+//     4.5:1 on it; filled and pressed says nothing in the console.
 //
 // --report prints the measurements and exits 0 whatever they say.
 import {createServer} from 'node:http';
@@ -47,6 +51,9 @@ ${SIZES.map((size) => `<div class="row" data-size="${size}">
   <sf-button appearance="outline" scheme="on-surface" text="В избранное" text-pressed="В избранном" icon-start="star" pressed data-k="fav-on"></sf-button>
   <sf-button-icon appearance="link" scheme="on-surface" icon="star" aria-label="Добавить в избранное" label-pressed="Убрать из избранного" pressed data-k="icon-fav-on"></sf-button-icon>
   <sf-button appearance="default" scheme="primary" text="Уведомления" icon-start="notifications" pressed data-k="default-on"></sf-button>
+  <sf-button appearance="default" scheme="on-surface" text="Пауза" icon-start="pause" pressed data-k="default-on-surface-on"></sf-button>
+  <sf-button appearance="default" scheme="danger" text="Запись" icon-start="radio_button_checked" pressed data-k="default-danger-on"></sf-button>
+  <sf-button-icon appearance="default" scheme="primary" icon="pause" aria-label="Пауза" pressed data-k="icon-default-on"></sf-button-icon>
   <sf-button appearance="link" scheme="on-surface" text="Перенос" icon-start="wrap_text" pressed data-k="link-on"></sf-button>
   <sf-button appearance="outline" scheme="on-surface" text="Жирный" icon-start="format_bold" pressed disabled data-k="disabled-on"></sf-button>
   <button type="button" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 flex items-cross-center" aria-pressed="true" data-k="plain-on"><span class="sf-button-text-container">Жирный</span></button>
@@ -62,7 +69,10 @@ ${SIZES.map((size) => `<div class="row" data-size="${size}">
 <span id="pc" style="color: var(--sf-primary-container)">x</span>
 <span id="pc-hover" style="color: var(--sf-primary-container-hover)">x</span>
 <span id="on-pc" style="color: var(--sf-on-primary-container)">x</span>
-<span id="outline" style="color: var(--sf-outline)">x</span>`;
+<span id="outline" style="color: var(--sf-outline)">x</span>
+<span id="primary-active" style="color: var(--sf-primary-active)">x</span>
+<span id="on-surface-active" style="color: var(--sf-on-surface-active)">x</span>
+<span id="error-active" style="color: var(--sf-error-active)">x</span>`;
 
 const page = (theme) => `<!doctype html><html lang="ru" class="theme-${theme}"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';</script>
@@ -150,7 +160,8 @@ const MEASURE = () => {
     };
   }
   const color = (id) => getComputedStyle(document.getElementById(id)).color;
-  return {cells, page, pc: color('pc'), pcHover: color('pc-hover'), onPc: color('on-pc'), outline: color('outline')};
+  return {cells, page, pc: color('pc'), pcHover: color('pc-hover'), onPc: color('on-pc'), outline: color('outline'),
+    pressedFill: {primary: color('primary-active'), 'on-surface': color('on-surface-active'), danger: color('error-active')}};
 };
 
 const failures = [];
@@ -163,7 +174,11 @@ try {
       const tab = await browser.newPage({viewport: {width: 1280, height: 900}, colorScheme: theme});
       const errors = [];
       tab.on('pageerror', (error) => errors.push(error.message));
-      tab.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+      tab.on('console', (message) => {
+        if (message.type() === 'error') errors.push(message.text());
+        // C309 (2): a filled button that is pressed is a toggle, not a warning.
+        if (message.type() === 'warning' && /says aria-pressed/u.test(message.text()) && /Уведомления|Пауза|Запись/u.test(message.text())) errors.push(message.text());
+      });
       await tab.goto(`http://127.0.0.1:${server.address().port}/?theme=${theme}`);
       const hosts = await tab.evaluate(() => document.querySelectorAll('sf-button, sf-button-icon').length);
       await tab.waitForFunction((count) => customElements.get('sf-button') && customElements.get('sf-button-icon')
@@ -225,7 +240,7 @@ try {
       await tab.close();
     }
 
-    const {cells, pc, pcHover, onPc, outline, hover, flip} = report[theme];
+    const {cells, pc, pcHover, onPc, outline, hover, flip, pressedFill} = report[theme];
     const fail = (message) => failures.push(`${theme}: ${message}`);
     const pressedLook = (key, {label = true} = {}) => {
       const cell = cells[key];
@@ -271,7 +286,14 @@ try {
     const iconFav = cells['extra icon-fav-on'];
     pressedLook('extra icon-fav-on', {label: false});
     if (iconFav?.name !== 'Убрать из избранного' || iconFav?.ariaPressed !== null) fail(`label-pressed: name «${iconFav?.name}», aria-pressed ${iconFav?.ariaPressed}`);
-    pressedLook('extra default-on');
+    for (const [key, scheme] of [['extra default-on', 'primary'], ['extra default-on-surface-on', 'on-surface'], ['extra default-danger-on', 'danger'], ['extra icon-default-on', 'primary']]) {
+      const cell = cells[key];
+      if (!cell) { fail(`${key} not drawn`); continue; }
+      if (cell.fill !== pressedFill[scheme]) fail(`${key} fill ${cell.fill}, the ${scheme} press step ${pressedFill[scheme]} (C309 (2))`);
+      if (!cell.iconFill) fail(`${key} icon not filled`);
+      if (cell.label !== null && cell.labelContrast < 4.5) fail(`${key} label contrast ${cell.labelContrast}:1 under 4.5:1`);
+      if (cell.iconContrast !== null && cell.iconContrast < 3) fail(`${key} icon contrast ${cell.iconContrast}:1 under 3:1`);
+    }
     pressedLook('extra link-on');
     pressedLook('extra plain-on');
     const disabled = cells['extra disabled-on'];

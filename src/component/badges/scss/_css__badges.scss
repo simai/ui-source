@@ -149,6 +149,19 @@
    tonal look, main on any colour but error, and a badge with no look. */
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):not(.sf-badge--anchored) {
   background-image: linear-gradient(var(--sf-badge--background-color), var(--sf-badge--background-color)), linear-gradient(var(--sf-surface-underlay), var(--sf-surface-underlay));
+  /* On an inverse place (C208, dispatcher decision msg-bc1702eb): a tonal
+     fill there stood 1.09-1.38:1 against the surface, under the 3:1 a part of
+     a control needs. The place declares its tonal edge, --sf-place--tonal-edge
+     (core mix sf-place-inverse-accent: the hairline, initial on every other
+     place and on an opaque place standing on the inverse), and the badge
+     draws its edge in its colour's graphic ink (on-<c>-container-graphic, the
+     other theme's tone there). The edge is drawn inside the badge's size
+     (R019), so its height and width do not move. */
+  --sf-badge--border-top-width: var(--sf-badge-border-width, var(--sf-place--tonal-edge, var(--sf-a0)));
+  --sf-badge--border-bottom-width: var(--sf-badge-border-width, var(--sf-place--tonal-edge, var(--sf-a0)));
+  --sf-badge--border-inline-start-width: var(--sf-badge-border-width, var(--sf-place--tonal-edge, var(--sf-a0)));
+  --sf-badge--border-inline-end-width: var(--sf-badge-border-width, var(--sf-place--tonal-edge, var(--sf-a0)));
+  --sf-badge--border-color: var(--sf-badge-border-color, var(--sf-badge--tonal-edge, var(--sf-on-neutral-container-graphic)));
 }
 
 /* The spinner's slot (activity running): exactly the box of the badge's icon at
@@ -190,16 +203,19 @@
    a badge its own way -- the menu rail's count on the icon -- wins. */
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--neutral, .sf-badge--on-surface) {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-surface-container));
+  --sf-badge--tonal-edge: var(--sf-on-neutral-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-surface));
 }
 
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--primary {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-primary-container));
+  --sf-badge--tonal-edge: var(--sf-on-primary-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-primary-container));
 }
 
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--secondary {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-secondary-container));
+  --sf-badge--tonal-edge: var(--sf-on-secondary-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-secondary-container));
 }
 
@@ -220,6 +236,7 @@
 
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--tertiary {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-tertiary-container));
+  --sf-badge--tonal-edge: var(--sf-on-tertiary-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-tertiary-container));
 }
 
@@ -235,6 +252,7 @@
 
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--info {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-info-container));
+  --sf-badge--tonal-edge: var(--sf-on-info-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-info-container));
 }
 
@@ -245,6 +263,7 @@
 
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--success {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-success-container));
+  --sf-badge--tonal-edge: var(--sf-on-success-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-success-container));
 }
 
@@ -255,6 +274,7 @@
 
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)).sf-badge--warning {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-warning-container));
+  --sf-badge--tonal-edge: var(--sf-on-warning-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-warning-container));
 }
 
@@ -271,6 +291,7 @@
 
 .sf-badge:where(.sf-badge--tonal, :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):is(.sf-badge--error, .sf-badge--danger) {
   --sf-badge--background-color: var(--sf-badge-background-color, var(--sf-error-container));
+  --sf-badge--tonal-edge: var(--sf-on-error-container-graphic);
   --sf-badge--color: var(--sf-badge-color, var(--sf-on-error-container));
 }
 

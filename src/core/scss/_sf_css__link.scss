@@ -125,7 +125,8 @@ a[class*=':link-'],
 }
 
 // The keyboard ring of a link in text (C186 (4)): the base ring (2px
-// --sf-focus) two pixels off the letters (--sf-a2, the base offset is one),
+// --sf-focus) at the focus system's offset (C212, one offset everywhere,
+// msg-bc1702eb; it stood two pixels off, --sf-a2, before),
 // with the corner of the UI (--sf-radius--ui, 4), and drawn around each line
 // of a wrapped link (box-decoration-break: clone) instead of one box open at
 // the line ends.
@@ -137,7 +138,7 @@ a[class*=':link-'],
 [class*=' link-'] ~ a,
 [class*=':link-'] ~ a {
   &:focus-visible {
-    outline-offset: var(--sf-a2);
+    outline-offset: var(--sf-focus--offset);
     border-radius: var(--sf-radius--ui);
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;

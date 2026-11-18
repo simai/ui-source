@@ -280,6 +280,7 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
       --sf-place--fill-placeholder: initial;
       --sf-place--control-hover: initial;
       --sf-place--control-active: initial;
+      --sf-place--tonal-edge: initial;
     }
     // On glass (C70): the accent, the link and the ring the page had there.
     :where(.sf-surface-media) & {
@@ -644,6 +645,10 @@ $sf-place-step4-container-variant: 'light-dark(var(--sf-neutral-30), var(--sf-pl
       --sf-#{$role}: #{sf-place-light-dark-half($value, $half)};
     }
     --sf-focus--color: var(--sf-focus);
+    // A tonal fill is an alpha of its colour and stood 1.09-1.38:1 against
+    // the inverse surface (C208, msg-bc1702eb): the place asks its tonal
+    // marks for a hairline edge (sf-badge draws it in its graphic ink).
+    --sf-place--tonal-edge: var(--sf-px);
   }
 }
 

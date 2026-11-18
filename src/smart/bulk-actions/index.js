@@ -48,6 +48,8 @@ const PLACES = ['dock', 'top', 'float', 'inline'];
 const SHORT_RUN = 100;
 // The live region speaks after the selection settles (Carbon, Shopify).
 const SAY_AFTER = 300;
+// The «⋯» row of the folded offer (C309 (1)): an id no action of a host takes.
+const OFFER_ENTRY = 'sf-bulk-actions-offer';
 
 const BulkActionsElement = elementFromManifest(manifest, {
   base: SfBaseElement,
@@ -74,6 +76,10 @@ class SfBulkActions extends BulkActionsElement {
     this._result = null;
     this._announcement = '';
     this._compact = false;
+    // C309 (1): on a phone the offer «Выбрать все N» goes into «⋯» when the
+    // row would take a second line; _offerFold is the bar's width it was
+    // folded at, so it comes back only on a wider bar (no flicker).
+    this._offerFold = null;
     this._onKey = (event) => this.onDocumentKey(event);
   }
 
@@ -87,6 +93,8 @@ class SfBulkActions extends BulkActionsElement {
     this.ownerDocument.removeEventListener('keydown', this._onKey);
     this._widthObserver?.disconnect();
     this._widthObserver = null;
+    this._rowObserver?.disconnect();
+    this._rowObserver = null;
     clearTimeout(this._sayTimer);
     super.disconnectedCallback?.();
   }
@@ -195,6 +203,58 @@ class SfBulkActions extends BulkActionsElement {
     measure();
   }
 
+  // One line on a phone (owner decision C309 (1), 2026-11-18): the bar never
+  // wraps under a finger. When its row would take a second line with the
+  // offer «Выбрать все N» (or «Только эта страница») shown -- size 1 with a
+  // count of hundreds, 90 px in two rows before -- the offer moves into «⋯»
+  // as its first row, and comes back when the bar is wider than the width it
+  // left at. Read after each draw and on every change of the bar's size.
+  afterRender() {
+    const root = this.querySelector(':scope > .sf-bulk-actions');
+    if (root && typeof ResizeObserver === 'function' && this._rowRoot !== root) {
+      this._rowObserver?.disconnect();
+      this._rowRoot = root;
+      this._rowObserver = new ResizeObserver(() => this.fitRow());
+      this._rowObserver.observe(root);
+    }
+    this.fitRow();
+  }
+
+  rowWraps(root) {
+    const parts = [...root.querySelectorAll('.sf-bulk-actions__count, .sf-bulk-actions__offer > button, .sf-bulk-actions__actions > * > button, .sf-bulk-actions__more > button, .sf-bulk-actions__clear > button')]
+      .map((part) => part.getBoundingClientRect()).filter((box) => box.height > 0);
+    if (parts.length < 2) return false;
+    const middles = parts.map((box) => box.top + box.height / 2);
+    return Math.max(...middles) - Math.min(...middles) > Math.min(...parts.map((box) => box.height)) / 2;
+  }
+
+  fitRow() {
+    const root = this._rowRoot;
+    if (!root || !root.isConnected || root.hidden) return;
+    const width = root.getBoundingClientRect().width;
+    const offerShown = Boolean(root.querySelector('.sf-bulk-actions__offer'));
+    if (!this._compact) {
+      if (this._offerFold !== null) {
+        this._offerFold = null;
+        this.requestComponentUpdate('offer-fold');
+      }
+      return;
+    }
+    if (this._offerFold === null) {
+      if (offerShown && this.rowWraps(root)) {
+        this._offerFold = width;
+        this.requestComponentUpdate('offer-fold');
+      }
+    } else if (width > this._offerFold + 1) {
+      this._offerFold = null;
+      this.requestComponentUpdate('offer-fold');
+    }
+  }
+
+  get offerFolded() {
+    return this._compact && this._offerFold !== null;
+  }
+
   get actionList() {
     const actions = this.actions;
     return Array.isArray(actions) ? actions : [];
@@ -267,6 +327,9 @@ class SfBulkActions extends BulkActionsElement {
     const {rest} = this.split();
     const count = this.effectiveCount;
     const entries = [];
+    // C309 (1): the folded offer is the menu's first row.
+    const offer = this.offerFolded ? this.currentOffer() : null;
+    if (offer) entries.push({id: OFFER_ENTRY, text: offer.text, icon: offer.kind === 'all' ? 'select_all' : 'deselect'});
     // The menu itself draws a destructive row last, after a line (C164 (5)).
     rest.forEach((action) => {
       const reason = this.unavailableReason(action, count);
@@ -283,6 +346,11 @@ class SfBulkActions extends BulkActionsElement {
     if (typeof open !== 'function') return;
     const button = anchor?.querySelector?.('button') ?? anchor;
     const choice = await open({anchor: button, entries, label: this.sfWord('more-text'), size: this.size});
+    if (offer && choice?.id === OFFER_ENTRY) {
+      if (offer.kind === 'all') this.selectAll();
+      else this.selectPage();
+      return;
+    }
     const action = choice?.id ? this.findAction(choice.id) : null;
     if (action && this.unavailableReason(action) === null) this.runAction(action);
   }
@@ -440,6 +508,19 @@ class SfBulkActions extends BulkActionsElement {
     return splitActions(this.actionList, this._compact ? VISIBLE_COMPACT : VISIBLE);
   }
 
+  // «Выбрать все N» once the whole page is selected and the total is larger;
+  // «Только эта страница (N)» while all are; nothing while a run or a result
+  // holds the start.
+  currentOffer() {
+    if (this._run || this._result) return null;
+    const count = this.selectedCount;
+    const total = this.total;
+    const pageCount = this.pageCount;
+    if (this.allSelected && total > 0) return {kind: 'page', text: this.word('select-page-text', pageCount || count)};
+    if (total && pageCount && count === pageCount && total > pageCount) return {kind: 'all', text: this.word('select-all-text', total)};
+    return null;
+  }
+
   templateContext() {
     const count = this.selectedCount;
     const effective = this.effectiveCount;
@@ -451,11 +532,8 @@ class SfBulkActions extends BulkActionsElement {
       const reason = this.unavailableReason(action, effective);
       return {...action, unavailable: reason !== null, reason: reason || ''};
     };
-    let offer = null;
-    if (!this._run && !this._result) {
-      if (all) offer = {kind: 'page', text: this.word('select-page-text', pageCount || count)};
-      else if (total && pageCount && count === pageCount && total > pageCount) offer = {kind: 'all', text: this.word('select-all-text', total)};
-    }
+    const offer = this.currentOffer();
+    const folded = Boolean(offer) && this.offerFolded;
     const countText = this.getAttribute('count-text') || (all ? this.word('all-text', total) : this.word('count-text', count));
     const run = this._run ? {
       text: this.progressText(this._run.done, this._run.total, this._run.text),
@@ -479,7 +557,8 @@ class SfBulkActions extends BulkActionsElement {
       shown,
       label: this.label || this.sfWord('label-text'),
       countText,
-      offer,
+      offer: folded ? null : offer,
+      offerFolded: folded,
       visible: visible.map(mark),
       rest,
       run,

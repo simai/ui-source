@@ -236,8 +236,8 @@
   },
   "port": {
     "id": "simai.search-port",
-    "version": "1.1.0",
-    "contract": "src/core/contracts/ports/simai.search-port/1.1.0/port.json"
+    "version": "1.2.0",
+    "contract": "src/core/contracts/ports/simai.search-port/1.2.0/port.json"
   },
   "relations": [
     {
@@ -380,10 +380,11 @@
     "placeholder"
   ],
   "x-port": {
-    "sha256": "49ba9ceb249917b4617bf3e24bd3decac1d5977fb0311db61fa15d51b961a095",
+    "sha256": "03cb457bca00b44cbc8b95d28710b0a0564ca31238a6cab9e8a31e0fc9cd2404",
     "supports": [
       "1.0.0",
-      "1.1.0"
+      "1.1.0",
+      "1.2.0"
     ],
     "capabilities": [
       "scopes",

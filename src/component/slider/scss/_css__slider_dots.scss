@@ -79,7 +79,7 @@
   /* The dots are small and close together, so the ring is clamped to half the gap
      between them. Colour and style stay the shared ones. */
   outline: min(var(--sf-focus--width), calc(var(--sf-slider-dots--gap) / 2)) var(--sf-focus--style) var(--sf-focus--color);
-  outline-offset: 0;
+  outline-offset: var(--sf-focus--offset);
 }
 
 @media (forced-colors: active) {

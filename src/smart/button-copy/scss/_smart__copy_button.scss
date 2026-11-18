@@ -57,14 +57,14 @@
    the field layer's .sf-field-action, its ring round the glyph). A copy with
    text in a field is still a button, the field's height (R214 FA-2): its own ring,
    2 px round the box with the 1 px offset, stood 3 px out of the field top and
-   bottom. Inside a field the ring turns inwards and keeps to the field's inner
-   box -- the focus width plus the field's 1 px border in from the button's
-   edge, the same inward ring sf-input-quantity's step buttons draw -- so it
-   never leaves the field and never paints over its border. The focus system's
-   width and the field's border are the only values. In the states layer, where
-   the button's own ring is. Outside a field the ring is unchanged. */
+   bottom. Inside a field the ring turns inwards, at the focus system's inward
+   offset (C212, one offset everywhere: msg-bc1702eb; it stood one field
+   border further in before), so it never leaves the field: it lies on the
+   button's own edge, over the field's border there, as a field's own ring
+   does. In the states layer, where the button's own ring is. Outside a field
+   the ring is unchanged. */
 @layer sf.states {
   .sf-input-field .sf-copy-button :is(.sf-icon-button, .sf-button):not(:disabled):not(.disabled):focus-visible {
-    outline-offset: calc(var(--sf-focus--inset) - var(--sf-px));
+    outline-offset: var(--sf-focus--inset);
   }
 }

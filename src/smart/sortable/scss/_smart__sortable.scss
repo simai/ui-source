@@ -27,7 +27,7 @@
 
     [data-sf-sortable-item]:focus-visible {
         outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-primary, Highlight);
-        outline-offset: 2px;
+        outline-offset: var(--sf-focus--offset);
     }
 
     [data-sf-sortable-handle] {

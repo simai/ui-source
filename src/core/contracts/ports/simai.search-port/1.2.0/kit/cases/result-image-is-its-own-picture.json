@@ -1,0 +1,25 @@
+{
+  "id": "result-image-is-its-own-picture",
+  "intent": "query.change",
+  "summary": "A result that has a picture of its own -- a file's thumbnail, a record's image -- carries its address as image; the panel draws it on a plate where the glyph stands, and a result without one keeps its glyph.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 4,
+      "query": "logo",
+      "limit": 50,
+      "offset": 0
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "results",
+      "echo"
+    ],
+    "note": "results is [{id: f1, title: «logo.svg», url: /files/f1, image: /files/f1/thumb.png}, {id: p2, title: «Логотип», url: /pages/p2}]: the first row draws the picture on its plate, the second its glyph. image is the result's own picture only: a person or a chat is an avatar, never an image."
+  }
+}

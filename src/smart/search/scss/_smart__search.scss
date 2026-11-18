@@ -289,6 +289,47 @@ a.sf-search-row-main:focus-visible {
   flex: none;
 }
 
+/* A result's own picture (port 1.2.0 image; C175 (2) «картинка у файлов,
+   плашка только у своей картинки записи»): the avatar's size, 1/2 (32, 28
+   on a phone), on the container fill with the control radius, the picture
+   fitted inside it whole. The glyph inside waits for a picture that fails. */
+.sf-search-row-image {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  inline-size: var(--sf-ui-1\/2--control-height);
+  block-size: var(--sf-ui-1\/2--control-height);
+  border-radius: var(--sf-radius-1);
+  background: var(--sf-surface-container);
+}
+
+.sf-search-row-image-picture {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+.sf-search-row-image > .sf-search-row-icon {
+  display: none;
+}
+
+.sf-search-row-image[data-failed] {
+  inline-size: auto;
+  block-size: auto;
+  background: none;
+}
+
+.sf-search-row-image[data-failed] > .sf-search-row-image-picture {
+  display: none;
+}
+
+.sf-search-row-image[data-failed] > .sf-search-row-icon {
+  display: inline-flex;
+}
+
 .sf-search-row-text {
   display: flex;
   flex: 1 1 auto;

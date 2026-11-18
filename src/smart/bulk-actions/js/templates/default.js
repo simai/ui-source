@@ -7,7 +7,8 @@ import {keyed} from 'lit/directives/keyed.js';
 //   [start] Выбрано 2 · Выбрать все 240      [Опубликовать] [Переместить] [Экспорт] [⋯] [end] ×
 //
 // One row, a region named by label: the count (or the host's count-text) and
-// the offer to take all under the filter at the start; the actions, «⋯» and
+// the offer to take all under the filter at the start (on a phone, in «⋯»
+// when the row would take a second line: C309 (1)); the actions, «⋯» and
 // the clear cross at the end. While a short run goes the start says «Выполняем:
 // 4 из 12» over a bar; a result with refusals says «Готово 10 из 12 · 2 не
 // удалось» with «Подробнее» and «Повторить для 2». The row is a plain row of
@@ -94,7 +95,7 @@ export function renderBulkActionsTemplate(context) {
       <div class="sf-bulk-actions__end">
         ${busy ? nothing : html`<div class="sf-bulk-actions__actions">
           ${context.visible.map((action) => actionButton(context, action))}
-          ${context.rest.length ? moreButton(context) : nothing}
+          ${context.rest.length || context.offerFolded ? moreButton(context) : nothing}
         </div>`}
         ${context.end}
         <sf-button-icon class="sf-bulk-actions__clear" data-sf-bulk-action="clear" size=${size} appearance="ghost"
