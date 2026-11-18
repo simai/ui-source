@@ -5,7 +5,8 @@
 // and in the name the status region gives a screen reader. Both modals: the
 // smart sf-modal and the ordinary one. They said "Loading..." on every page
 // (simai/ui-source#11 follow-up). The content never arrives, so the loading
-// state stays up to be read.
+// state stays up to be read. Since C159 (9) sf-modal's loading is a skeleton
+// in the window's size: its words are the status region's name only.
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join, resolve} from 'node:path';
@@ -73,7 +74,10 @@ try {
       // The accessible name as the browser computes it, not as the attribute says.
       state.snapshot = await region.ariaSnapshot().catch((error) => `unavailable: ${error.message}`);
       seen[`${lang}-${kind}`] = state;
-      if (state.text !== words) failures.push(`${lang} ${kind}: the loading state reads ${JSON.stringify(state.text)}, expected ${words}`);
+      // sf-modal's loading is a skeleton in the window's size (owner decision
+      // C159 (9)): it shows no words, the status region carries them as its
+      // name. The ordinary modal still writes them.
+      if (kind !== 'smart' && state.text !== words) failures.push(`${lang} ${kind}: the loading state reads ${JSON.stringify(state.text)}, expected ${words}`);
       if (state.role !== 'status') failures.push(`${lang} ${kind}: the loading state is not a status region (${state.role})`);
       if (state.label !== words) failures.push(`${lang} ${kind}: the loading state is named ${JSON.stringify(state.label)}, expected ${words}`);
       if (!state.snapshot.includes(`status "${words}"`)) failures.push(`${lang} ${kind}: the browser names the status ${JSON.stringify(state.snapshot)}, expected ${words}`);

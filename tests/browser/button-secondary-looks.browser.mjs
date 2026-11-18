@@ -18,8 +18,9 @@
 //
 // Since sf-button 1.14.0 (owner decision C116) secondary is a former name of
 // the Smart button: it draws as on-surface, label and icon included, and the
-// filled and tonal ones lose the secondary fill. The plain class buttons keep
-// the secondary ink above (component.buttons is unchanged).
+// filled and tonal ones lose the secondary fill. The plain class buttons
+// follow (component.buttons, RG-B-54 / C116 (3)): sf-button--secondary is a
+// former class name drawn exactly as sf-button--on-surface, ink included.
 //
 // --report prints the measurements and exits 0 whatever they say.
 import {createServer} from 'node:http';
@@ -162,8 +163,7 @@ try {
           for (const property of ['h', 'block', 'side', 'textSide', 'border', 'fill', 'font']) {
             if (base[property] !== secondary[property]) failures.push(`${theme} size ${size} ${kind} ${look}: secondary ${property} ${secondary[property]}, on-surface ${base[property]}`);
           }
-          if (kind === 'plain' && secondary.label !== ink) failures.push(`${theme} size ${size} ${kind} ${look}: secondary label ${secondary.label}, --sf-secondary ${ink}`);
-          if (kind === 'smart' && (secondary.label !== base.label || secondary.icon !== base.icon)) failures.push(`${theme} size ${size} ${kind} ${look}: secondary label ${secondary.label} icon ${secondary.icon}, on-surface ${base.label} ${base.icon} (C116)`);
+          if (secondary.label !== base.label || secondary.icon !== base.icon) failures.push(`${theme} size ${size} ${kind} ${look}: secondary label ${secondary.label} icon ${secondary.icon}, on-surface ${base.label} ${base.icon} (C116)`);
         }
       }
       // One height per size: every cell of the row, Smart and plain, stands as tall.

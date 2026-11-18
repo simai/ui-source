@@ -120,14 +120,19 @@ try {
   evidence.data = data;
   check('data: four sections, in order', data.map((one) => one.id).join() === 'main,seo,access,faq', {got: data.map((one) => one.id)});
   check('data: buttons inside headings of level 3', data.every((one) => one.tag === 'button' && one.heading === 'heading' && one.level === '3'), {data});
+  // C154 (6): a closed panel is hidden="until-found", so the browser's find
+  // opens it.
   check('data: the first is open, the rest closed', data.map((one) => one.expanded).join() === 'true,false,false,false'
-    && data.map((one) => one.hidden).join() === 'false,true,true,true' && data[0].active && !data[1].active, {data});
+    && data.map((one) => one.hidden).join() === 'false,until-found,until-found,until-found' && data[0].active && !data[1].active, {data});
   check('data: aria-controls and region names', data.every((one) => one.controls && one.region === 'region' && one.named), {data});
   check('data: the disabled section is a disabled button', data[2].disabled === true && data[0].disabled === false, {data});
   check('data: the badge and the slot', data[1].badge === '3' && data[3].text.startsWith('Ответ'), {seo: data[1], faq: data[3]});
   check('data: the class runtime left the sections to the element', data.every((one) => one.classBound), {data});
-  check('data: the marker turns open, the icon before the title does not', data[0].markerTurn !== 'none' && data[0].leadTurn === 'none'
-    && ['none', 'matrix(1, 0, 0, 1, 0, 0)'].includes(data[1].markerTurn), {open: data[0], closed: data[1]});
+  // C154 (1): the arrow at the end points down on a closed section and up on
+  // an open one (the › glyph turned a quarter each way); the icon before the
+  // title does not turn.
+  check('data: the marker turns open, the icon before the title does not', data[0].markerTurn === 'matrix(0, -1, 1, 0, 0, 0)' && data[0].leadTurn === 'none'
+    && data[1].markerTurn === 'matrix(0, 1, -1, 0, 0, 0)', {open: data[0], closed: data[1]});
 
   // A click toggles once; single mode closes the one that was open.
   await page.click('#data .sf-accordion[data-sf-accordion-id="seo"] .sf-accordion-trigger');
@@ -162,6 +167,9 @@ try {
   const keyEvents = await events();
   check('keyboard: three events, source user', keyEvents.length === 3 && keyEvents.every((one) => one.source === 'user'), {keyEvents});
   // Tab order: the enabled headers, the slotted button only while its section is open.
+  // A closing section stays drawn through its motion (C154 (4), 200 ms); the
+  // order is read once it has shrunk to its header.
+  await page.waitForFunction(() => !document.querySelector('#data [data-sf-accordion-closing]'), null, {timeout: 5000});
   await page.focus('#before');
   const tabs = [];
   for (let at = 0; at < 4; at += 1) { await page.keyboard.press('Tab'); tabs.push(await focused()); }
@@ -220,7 +228,10 @@ try {
         const headers = [...row.querySelectorAll('sf-accordion[data-appearance]')].map((host) => {
           const article = host.querySelector('.sf-accordion');
           const style = getComputedStyle(article);
-          return {appearance: host.dataset.appearance, height: article.querySelector('.sf-accordion-trigger').getBoundingClientRect().height,
+          // The frame is inside the height (C01, AC-02): the trigger plus the
+          // outline's edges or the flush divider is the control height.
+          return {appearance: host.dataset.appearance, height: article.querySelector('.sf-accordion-trigger').getBoundingClientRect().height
+            + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth),
             background: style.backgroundColor, border: parseFloat(style.borderTopWidth), bottom: parseFloat(style.borderBottomWidth),
             radius: parseFloat(style.borderTopLeftRadius)};
         });

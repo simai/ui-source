@@ -25,8 +25,10 @@ const styles = [
   'component/component/buttons/css/buttons.css',
   'smart/smart/confirm/css/confirm.css',
 ].map((p) => join(out, p));
+// C282: Russian is a language file (the bundles carry English only); the
+// Loader's page brings it before core.js, so this page does too.
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
+  'core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js',
   'smart/smart/confirm/js/confirm.js',
 ].map((p) => join(out, p));
@@ -42,7 +44,7 @@ try {
   page.on('pageerror', (error) => { if (!/Automatic publicPath/u.test(error.message)) errors.push(error.message); });
   await page.setContent('<!doctype html><html class="theme-light" lang="ru"><head><meta charset="utf-8"></head><body style="margin:0"><button id="before">до</button><div id="box" style="width:420px;padding:16px"></div></body></html>');
   for (const style of styles) await page.addStyleTag({path: style}).catch(() => {});
-  for (const module of modules) await page.addScriptTag({path: module, type: 'module'}).catch(() => {});
+  for (const module of modules) await page.addScriptTag((module.endsWith('/lang/ru.js') ? {path: module} : {path: module, type: 'module'})).catch(() => {});
   await page.waitForFunction(() => Boolean(customElements.get('sf-confirm')));
 
   const make = async ({attributes = {}, cancel = null} = {}) => {
@@ -189,7 +191,7 @@ try {
       tab.on('pageerror', (error) => { if (!/Automatic publicPath/u.test(error.message)) errors.push(error.message); });
       await tab.setContent(`<!doctype html><html class="theme-${theme}" lang="ru"><head><meta charset="utf-8"></head><body style="margin:0"><div id="box" style="width:420px;padding:16px"></div></body></html>`);
       for (const style of [...styles, changeFiles[0]]) await tab.addStyleTag({path: style}).catch(() => {});
-      for (const module of [...modules, changeFiles[1]]) await tab.addScriptTag({path: module, type: 'module'}).catch(() => {});
+      for (const module of [...modules, changeFiles[1]]) await tab.addScriptTag((module.endsWith('/lang/ru.js') ? {path: module} : {path: module, type: 'module'})).catch(() => {});
       await tab.waitForFunction(() => Boolean(customElements.get('sf-confirm') && customElements.get('sf-confirm-change')));
       const said = await tab.evaluate(async () => {
         const box = document.getElementById('box');
@@ -232,7 +234,7 @@ try {
       tab.on('pageerror', (error) => { if (!/Automatic publicPath/u.test(error.message)) errors.push(error.message); });
       await tab.setContent(`<!doctype html><html class="theme-${theme}" lang="ru"><head><meta charset="utf-8"></head><body style="margin:0"><div id="box" style="width:420px;padding:16px"><button id="opener" type="button">Удалить</button><div id="slot"></div><div id="static"></div><button id="after" type="button">Дальше</button><div id="history"></div></div></body></html>`);
       for (const style of [...styles, changeFiles[0]]) await tab.addStyleTag({path: style}).catch(() => {});
-      for (const module of [...modules, changeFiles[1]]) await tab.addScriptTag({path: module, type: 'module'}).catch(() => {});
+      for (const module of [...modules, changeFiles[1]]) await tab.addScriptTag((module.endsWith('/lang/ru.js') ? {path: module} : {path: module, type: 'module'})).catch(() => {});
       await tab.waitForFunction(() => Boolean(customElements.get('sf-confirm') && customElements.get('sf-confirm-change')));
       await tab.evaluate(() => {
         // The host: the opener puts the question in place; an answer is set

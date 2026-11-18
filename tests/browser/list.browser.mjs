@@ -34,7 +34,8 @@ const styles = [
   'smart/smart/list/css/list.css',
 ].map((p) => join(out, p));
 const modules = [
-  'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
+  // C282: Russian is a language file, before core.js as the Loader's page has it.
+  'core/core/lang/ru.js', 'core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/icon/js/icon.js',
   'smart/smart/button/js/button.js', 'smart/smart/button-icon/js/button-icon.js',
   'smart/smart/list-item/js/list-item.js', 'smart/smart/empty-state/js/empty-state.js',
   'smart/smart/menu-context/js/menu-context.js',
@@ -52,7 +53,7 @@ try {
   page.on('pageerror', (error) => { if (!/Automatic publicPath/u.test(error.message)) errors.push(error.message); });
   await page.setContent('<!doctype html><html class="theme-light" lang="ru"><head><meta charset="utf-8"></head><body style="margin:0"><button id="before">до</button><div id="box" style="width:360px;height:420px;overflow:auto;padding:8px"></div><button id="after">после</button></body></html>');
   for (const style of styles) await page.addStyleTag({path: style}).catch(() => {});
-  for (const module of modules) await page.addScriptTag({path: module, type: 'module'}).catch(() => {});
+  for (const module of modules) await page.addScriptTag(module.endsWith('/lang/ru.js') ? {path: module} : {path: module, type: 'module'}).catch(() => {});
   await page.waitForFunction(() => Boolean(customElements.get('sf-list') && customElements.get('sf-list-item') && customElements.get('sf-menu-context')));
 
   const settle = (ms = 200) => page.waitForTimeout(ms);

@@ -9,7 +9,8 @@
 // focus kept in the region, a Smart component in the part loaded and drawn
 // while the part's script does not run, and the error row's geometry on rung 1
 // of the ladder at 1280 px light and 375 px dark (one row wide; narrow, the
-// message wraps in whole lines and Retry goes under it at the row's start).
+// message wraps in whole lines beside Retry, which keeps the row's end:
+// include study IN-4).
 import {createServer} from 'node:http';
 import {existsSync, readFileSync, statSync} from 'node:fs';
 import {extname, join} from 'node:path';
@@ -136,9 +137,12 @@ for (const [width, theme] of [[1280, 'light'], [375, 'dark']]) {
   ok(`error ${width} ${theme}: inset and gap are the rung's space`, near(geometry.padY, geometry.want.padY) && near(geometry.padX, geometry.want.padX) && near(geometry.gap, geometry.want.gap), JSON.stringify(geometry));
   if (width >= 768) ok(`error ${width} ${theme}: one row, centres on one axis`, near(geometry.rowHeight, geometry.want.control + 2 * geometry.want.padY + 2) && Math.abs(geometry.buttonCentre - geometry.messageCentre) < 1 && Math.abs(geometry.iconCentre - geometry.messageCentre) < 1, JSON.stringify(geometry));
   else {
-    // Narrow: the message wraps in whole lines, Retry goes under it at the row's start, one gap between.
-    const lines = (geometry.rowHeight - 2 - 2 * geometry.want.padY - geometry.want.gap - geometry.want.control) / geometry.want.line;
-    ok(`error ${width} ${theme}: wraps on the ladder (whole text lines, one gap, Retry at the start)`, Math.abs(lines - Math.round(lines)) < 0.05 && lines >= 1 && near(geometry.buttonStart, geometry.iconStart), JSON.stringify({lines, geometry}));
+    // Narrow (include study IN-4): Retry keeps its place at the row's end and
+    // the message wraps beside it in whole lines; the row is its words' height
+    // (at least the control's), every part centred on one axis.
+    const lines = (geometry.rowHeight - 2 - 2 * geometry.want.padY) / geometry.want.line;
+    ok(`error ${width} ${theme}: wraps on the ladder (whole text lines beside Retry, Retry at the end)`, Math.abs(lines - Math.round(lines)) < 0.05 && lines >= 2
+      && geometry.buttonStart > geometry.messageStart && Math.abs(geometry.buttonCentre - geometry.messageCentre) < 1 && Math.abs(geometry.iconCentre - geometry.messageCentre) < 1, JSON.stringify({lines, geometry}));
   }
   ok(`error ${width} ${theme}: polite status, words, data-failed, no sideways scroll`, geometry.status === 'status' && geometry.text === 'Не удалось загрузить эту часть страницы.' && geometry.retry === 'Повторить' && geometry.failed && !geometry.overflow, JSON.stringify(geometry));
   await tab.focus('#e .sf-include-retry button');

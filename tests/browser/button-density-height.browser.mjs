@@ -15,8 +15,9 @@
 //     has the steps;
 //   - a segmented sf-button-group of a size is as tall as a button of it at
 //     every density;
-//   - sf-button-icon the same: one height per size (the size's control
-//     height) at every appearance and density, the side padding moving;
+//   - sf-button-icon: one height per size (the size's control height) at
+//     every appearance and density, and square: density words do not move its
+//     side padding (owner decision C213);
 //   - the places that used compact spacing for a smaller button keep their
 //     released height with the next size down: the calendar's month and year
 //     toggles (sf-input-date) and the inline empty-state link.
@@ -168,7 +169,9 @@ try {
       for (const appearance of APPEARANCES) {
         const side = {};
         for (const icon of (report[label][size]?.icons ?? []).filter((b) => b.a === appearance)) side[STEP[icon.d]] = icon.side;
-        if (!(side.compact <= side.normal && side.normal <= side.comfortable && side.comfortable <= side.spacious && side.spacious > side.compact)) failures.push(`${label} size ${size} icon ${appearance}: side padding not in order ${JSON.stringify(side)}`);
+        // C213: an icon button has no density; its size and height keep it
+        // square, so the side padding is one value at every density word.
+        if (new Set(Object.values(side)).size !== 1) failures.push(`${label} size ${size} icon ${appearance}: density moved the side padding of a square icon button ${JSON.stringify(side)} (C213)`);
       }
       // Side padding by step, per appearance: monotonic, an alias equal to its step.
       for (const appearance of APPEARANCES) {

@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
 //
-// The sf-modal footer puts its actions at the end, with a step of the ladder
-// between them (simai/ui-source#26 C2, ui-mail P-12: the slotted actions sat
-// at the start with a wide gap). On the built bytes, through the loader, at
-// 1280px:
-//   - actions slotted directly: the last one ends where the footer's content
-//     ends, the gap between them is --sf-space-1/3 (C105 H5), they keep their order
+// The sf-modal footer puts its actions at its start (owner decisions C159 (4),
+// C157 (3); before them at the end), with a step of the ladder between them
+// (simai/ui-source#26 C2, ui-mail P-12: a wide gap). On the built bytes,
+// through the loader, at 1280px:
+//   - actions slotted directly: the first one starts where the footer's
+//     content starts, the gap between them is --sf-space-1/3 (C105 H5), they keep their order
 //     and stand on one centre line;
-//   - the audit's repro, a wrapper div in the slot: it stands at the end;
-//   - right to left: the actions stand at the left end;
+//   - the audit's repro, a wrapper div in the slot: it stands at the start;
+//   - right to left: the actions stand at the start, the right end;
 //   - footer-class with a utility (content-main-between) still wins: a
 //     checkbox at the start, the action at the end;
 //   - --sf-modal-footer-gap changes the gap.
@@ -101,17 +101,18 @@ try {
     if (m.missing) { check(`${name}: the footer is drawn`, false); await tab.close(); continue; }
     const [first, last] = [m.actions[0], m.actions.at(-1)];
     if (name === 'direct') {
-      check('direct: the last action ends where the footer\'s content ends', near(last.right, m.content.right), m);
+      // C159 (4) / C157 (3): the footer's actions stand at its start.
+      check('direct: the first action starts where the footer\'s content starts', near(first.left, m.content.left), m);
       check('direct: the gap between the actions is space-1/3', m.ladder > 0 && near(m.actions[1].left - m.actions[0].right, m.ladder, 0.5) && m.gap === `${m.ladder}px`, m);
       check('direct: the actions keep their order, the primary last', first.text === 'Отмена' && last.text === 'Удалить', m);
       check('direct: they stand on one centre line', near((first.top + first.bottom) / 2, (last.top + last.bottom) / 2, 0.5), m);
     }
     if (name === 'wrapper') {
-      check('wrapper: the slotted wrapper stands at the end', near(m.items.at(-1).right, m.content.right), m);
-      check('wrapper: its last action ends there', near(last.right, m.content.right), m);
+      check('wrapper: the slotted wrapper stands at the start', near(m.items[0].left, m.content.left), m);
+      check('wrapper: its first action starts there', near(first.left, m.content.left), m);
     }
     if (name === 'rtl') {
-      check('rtl: the actions stand at the left end', near(m.actions.reduce((x, a) => Math.min(x, a.left), Infinity), m.content.left), m);
+      check('rtl: the actions stand at the start, the right end', near(m.actions.reduce((x, a) => Math.max(x, a.right), -Infinity), m.content.right), m);
       check('rtl: the first action stands on the right', first.left > last.left, m);
     }
     if (name === 'between') {

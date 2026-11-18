@@ -23,7 +23,9 @@
 //                page, an admin table page and a form, at 1440 and 390, the
 //                page does not scroll sideways and no column is squeezed
 //                below a readable width (a data table may scroll in its own
-//                box, WCAG 1.4.10);
+//                box, WCAG 1.4.10: a .table-frame, the table that keeps its
+//                words whole and scrolls; a bare table breaks long runs to
+//                stay in its holder, C186 (7));
 //   spacing      «Шире» gives line 1.5, letters 0.12, words 0.16 (1.4.12);
 //   images       grey is grey; hidden pictures leave their alt as text;
 //   motion       «Остановить» stops CSS motion and core's own scripts;
@@ -36,7 +38,8 @@
 //   legacy       the SF4 panel's classes (html.special, body.sf-special-*)
 //                and an old scheme name are read as the new schemes and noted
 //                in SF.deprecations;
-//   console      no error on any page.
+//   console      no error on any page (icons from the local full font,
+//                icons.enabled false: the probe serves no icon service).
 //
 // Prints {checks, failures, evidence} and exits 1 on a failure.
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
@@ -57,7 +60,7 @@ const PICTURE = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg x
 const head = ({lang = 'ru', theme = 'light', html = '', title = 'Страница'} = {}) => `<!doctype html>
 <html lang="${lang}" class="theme-${theme}"${html}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
-<script>window.sfPath=${JSON.stringify(DISTR)};window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
+<script>window.sfPath=${JSON.stringify(DISTR)};window.SF_BOOT_CONFIG={preloader:{enabled:false},icons:{enabled:false}};</script>
 <link rel="stylesheet" href="${DISTR}core/css/core.css">
 <script src="${DISTR}core/js/core.js"></script>
 <style>
@@ -90,7 +93,7 @@ const PAGES = {
   '/table.html': () => `${head({title: 'Заказы'})}<body>${header()}
 <div class="page"><main>
   <h1>Заказы</h1>
-  <div class="table-box"><table>
+  <div class="table-box table-frame"><table class="table">
     <thead><tr><th>Номер</th><th>Клиент</th><th>Город</th><th>Сумма</th><th>Статус</th><th>Дата</th></tr></thead>
     <tbody>
       <tr><td>10421</td><td>ООО «Ромашка»</td><td>Екатеринбург</td><td>12 400 ₽</td><td>Оплачен</td><td>14.11.2026</td></tr>

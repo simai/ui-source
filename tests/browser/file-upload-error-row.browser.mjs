@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// A failed file's retry line (docs report on pair ui-2d39b617a719): the words
-// «Не удалось передать. Повторить» are the file's second line under its name,
-// like the size line of a file in progress --
-// - the retry words start where the size line starts (no inset), in every size;
-// - they take the size line's font size and weight (not bold, not larger).
+// A failed file's reason line (docs report on pair ui-2d39b617a719). Since
+// sf-file-upload 1.3.0 its rows are sf-file-preview rows (owner decisions C81,
+// C149 (8)): the retired .sf-upload-progress-repeat line is the preview's
+// .sf-file-preview-error, and «Повторить» is the row's own action. The reason
+// is still the file's second line under its name, like the size line of a
+// ready file --
+// - the reason starts where the ready file's size line starts (no inset), in
+//   every size;
+// - it takes the size line's font size and weight (not bold, not larger).
 import {resolve, join} from 'node:path';
 import {existsSync, readFileSync} from 'node:fs';
 import {chromium} from 'playwright';
@@ -15,7 +19,7 @@ const styles = ['core/core/css/core.css', 'core/core/css/utility.full.css', 'com
   'component/component/icon-buttons/css/icon-buttons.css', 'component/component/featured-icon/css/featured-icon.css',
   'component/component/progress-bar/css/progress-bar.css', 'component/component/file-upload/css/file-upload.css'];
 const modules = ['core/core/js/core.js', 'core/core/js/smart-base.js', 'smart/smart/progress-bar/js/progress-bar.js',
-  'smart/smart/file-upload/js/file-upload.js'];
+  'smart/smart/file-preview/js/file-preview.js', 'smart/smart/file-upload/js/file-upload.js'];
 
 const failures = [];
 const note = (detail) => failures.push(detail);
@@ -48,17 +52,17 @@ try {
   await page.evaluate(() => {
     for (const host of document.querySelectorAll('sf-file-upload')) {
       host.items = [
-        {id: 'a', name: 'report.pdf', fileSize: '2MB', state: 'process', progress: 40},
+        {id: 'a', name: 'report.pdf', fileSize: '2MB', state: 'ready'},
         {id: 'b', name: 'photo.png', fileSize: '3MB', state: 'error', errorMessage: 'Не удалось передать. Повторить'},
       ];
     }
   });
-  await page.waitForFunction(() => document.querySelectorAll('.sf-upload-progress-repeat').length === 3, null, {timeout: 8000});
+  await page.waitForFunction(() => document.querySelectorAll('.sf-file-preview--error .sf-file-preview-error').length === 3
+    && document.querySelectorAll('.sf-file-preview-size').length === 3, null, {timeout: 8000});
   await page.waitForTimeout(300);
   const got = await page.evaluate(() => [...document.querySelectorAll('sf-file-upload')].map((host) => {
-    const row = host.querySelector('.sf-upload-progress--error');
-    const meta = row.querySelector('.sf-upload-progress-text');
-    const retry = row.querySelector('.sf-upload-progress-repeat');
+    const meta = host.querySelector('.sf-file-preview:not(.sf-file-preview--error) .sf-file-preview-size');
+    const retry = host.querySelector('.sf-file-preview--error .sf-file-preview-error');
     // Where the words start: the first glyph's box, not the element's.
     const textLeft = (node) => {
       const range = document.createRange();
@@ -74,8 +78,8 @@ try {
   }));
   seen.rows = got;
   for (const row of got) {
-    if (Math.abs(row.metaLeft - row.retryLeft) > 1) note({size: row.size, case: 'the retry words start where the size line starts', got: row});
-    if (row.meta.size !== row.retry.size || row.meta.weight !== row.retry.weight) note({size: row.size, case: 'the retry words take the size line type', got: row});
+    if (Math.abs(row.metaLeft - row.retryLeft) > 1) note({size: row.size, case: 'the reason starts where the size line starts', got: row});
+    if (row.meta.size !== row.retry.size || row.meta.weight !== row.retry.weight) note({size: row.size, case: 'the reason takes the size line type', got: row});
   }
   console.log(JSON.stringify(seen, null, 1));
 } finally {

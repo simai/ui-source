@@ -163,13 +163,14 @@ try {
     const colour = await page.evaluate(() => {
       const glyph = document.querySelector('#list .sf-sortable-insert .sf-icon');
       const probe = document.createElement('i');
-      probe.style.color = 'var(--sf-on-surface)';
+      // C107 (2), (3): a glyph without text takes the icon role.
+      probe.style.color = 'var(--sf-on-surface-icon)';
       document.body.append(probe);
       const expected = getComputedStyle(probe).color;
       probe.remove();
       return {actual: getComputedStyle(glyph).color, expected};
     });
-    check(colour.actual === colour.expected, `${tag}: the glyph takes the on-surface role`, colour);
+    check(colour.actual === colour.expected, `${tag}: the glyph takes the icon role (--sf-on-surface-icon, C107)`, colour);
 
     // 3. Keyboard: the point is the list's last tab stop and traps nothing.
     await page.locator('#list [data-sf-sortable-item="r3"]').focus();

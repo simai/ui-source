@@ -2874,15 +2874,60 @@ export function installIconSubsetRuntime(
       timer = setTimeout(check, budgetMs);
     });
 
+    // Defined and connected, not drawn yet. A Smart element defined a frame
+    // before the hold looks draws its icons a moment later; the first request
+    // must carry them (menu-chevron-swap). Such an element is waited for until
+    // it has drawn once, for at most drawCapMs from the first time one is
+    // seen: one that waits for its data, or never draws, does not hold the
+    // page's icons longer than that (a drawing takes tens of milliseconds
+    // after the definition; a second font costs ten times more). An element
+    // inside another's printed first paint draws with that one.
+    const drawCapMs = 600;
+    let drawSeen = 0;
+    const undrawn = () => {
+      if (drawSeen && Date.now() - drawSeen >= drawCapMs) return [];
+      const page = globalThis.document;
+      if (typeof page?.querySelectorAll !== "function" || typeof page.addEventListener !== "function") return [];
+      const found = [];
+      for (const el of page.querySelectorAll("*")) {
+        if (!el.localName.startsWith("sf-") || el.isRendered !== false) continue;
+        if (el.closest("[data-sf-static]") || el.sfAwaitingData?.() === true) continue;
+        found.push(el);
+      }
+      if (found.length && !drawSeen) drawSeen = Date.now();
+      return found;
+    };
+    const drawn = (elements) => {
+      let timer = 0;
+      let done = null;
+      const left = () => elements.filter((el) => el.isConnected && el.isRendered === false);
+      return new Promise((resolve) => {
+        done = () => {
+          if (left().length) return;
+          resolve();
+        };
+        document.addEventListener("sf-after-render", done);
+        timer = setTimeout(resolve, Math.max(0, Math.min(capLeft(), drawSeen + drawCapMs - Date.now())));
+        done();
+      }).finally(() => {
+        clearTimeout(timer);
+        document.removeEventListener("sf-after-render", done);
+      });
+    };
+
     for (let round = 0; round < 8 && capLeft() > 0; round += 1) {
       await frame();
       const waiting = onTheWay();
-      if (!waiting.length) return;
+      const drawing = undrawn();
+      if (!waiting.length && !drawing.length) return;
       // Defined or failed: a tag whose module failed to load is let go at
       // once (D2: an aborted sf-tag held the first request for the whole cap).
       const pending = window.SF?.__internal?.pendingTags;
       await withinCap(
-        Promise.all(waiting.map((tag) => pending?.settled?.(tag) || registry.whenDefined(tag))),
+        Promise.all([
+          ...waiting.map((tag) => pending?.settled?.(tag) || registry.whenDefined(tag)),
+          ...(drawing.length ? [drawn(drawing)] : []),
+        ]),
       );
     }
   };
@@ -2918,6 +2963,16 @@ export function installIconSubsetRuntime(
         this.iconFirstRequestHeld = this.holdFirstIconRequest().then(() => {
           this.iconFirstRequestReleased = true;
           this.iconFirstRequestHeld = null;
+          // What the elements drew while the hold lasted is on the page, but
+          // the Loader's observer may still keep those records (until its
+          // search ends, then a debounce): sf-menu's chevrons, drawn before
+          // the hold let go, were tracked only after the first request had
+          // left with the header's menu glyph alone, and came in a second
+          // whole font 600-700 ms later (menu-chevron-swap). One scan of the
+          // page now tracks every drawn glyph without loading, so the first
+          // request carries them all; the observer's later records find them
+          // tracked and ask for nothing new.
+          if (globalThis.document?.body) this.scanStaticIcons(globalThis.document.body, false);
           return this.loadFonts();
         });
       }

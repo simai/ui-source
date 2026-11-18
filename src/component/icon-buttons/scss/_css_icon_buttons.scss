@@ -228,6 +228,27 @@
     }
   }
 
+  /* A loading size 3 button draws its spinner in that same icon box (C11):
+     28 with the padding's two pixels a side on a phone, the text line of
+     size 3 from 60rem (the custom sheet's slot, here one class stronger). */
+  .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon {
+    --sf-icon-button-spinner--size: var(--sf-c4);
+  }
+
+  .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon .sf-icon-button-spinner {
+    margin: calc((var(--sf-text-height-3) - var(--sf-c4)) / 2);
+  }
+
+  @media (min-width: 60rem) {
+    .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon {
+      --sf-icon-button-spinner--size: var(--sf-text-height-3);
+    }
+
+    .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon .sf-icon-button-spinner {
+      margin: 0;
+    }
+  }
+
   .sf-icon-button.sf-icon-button--size-1\/2.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
     --sf-icon--font-size: var(--sf-text-height-1\/2);
     --sf-icon--height: var(--sf-text-height-1\/2);
