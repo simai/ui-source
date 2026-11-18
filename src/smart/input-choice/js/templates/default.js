@@ -224,7 +224,8 @@ function renderListTemplate(context) {
   const error = context.invalid && context.errorMessage ? context.errorMessage : '';
   const described = [context.hint ? hintId : '', error ? messageId : ''].filter(Boolean).join(' ');
   return html`<div class=${joinClasses('sf-choice', 'sf-choice--list', context.multiple ? 'sf-choice--multiple' : '', context.invalid ? 'sf-choice--invalid' : '', context.fieldDisabled ? 'sf-choice--disabled' : '', context.rootClass)}
-                   style=${context.rootStyle || nothing} data-appearance="list" data-flow=${context.flow}>
+                   style=${context.rootStyle || nothing} data-appearance="list" data-flow=${context.flow}
+                   data-control-position=${context.controlPosition}>
     ${context.label
       ? html`<div class="sf-choice-heading"><span class="sf-choice-heading-text" id=${labelId}>${context.label}${context.required
         ? html`<span class="sf-choice-required" aria-hidden="true">*</span>`

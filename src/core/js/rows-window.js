@@ -49,15 +49,20 @@
 // draws, and nothing is kept outside the controller it returns, so every
 // bundle may carry its own copy.
 //
-// The length from which a list is windowed (ROWS_WINDOW_FROM, 200) waits for
-// the owner (q-fo2-find: from 200 as built, or every row in the document with
-// content-visibility up to 1 000): it is this one constant and a list's from.
+// The length from which a list is windowed (owner decision C308 FO-2): up to
+// 1 000 entries every row stays in the document, drawn with content-visibility
+// (the rows off screen skip their layout and paint), so the browser's find
+// and printing reach them all (DEV measured 1 000 rows 0.42 s against 0.70-
+// 0.88 s); from 1 000 the window of the rows in view. A list may set its own
+// length or turn the window off (from).
 
 import {scrollerOf} from './reading-position.js';
 
-// A list shorter than this draws every row: below it the window saves less
-// than it costs (the table's threshold).
-export const ROWS_WINDOW_FROM = 200;
+// A list shorter than this draws every row (C308 FO-2).
+export const ROWS_WINDOW_FROM = 1000;
+// From this length a list drawn whole draws its rows with content-visibility
+// (C308 FO-2): a short list keeps its rows as they are.
+export const ROWS_VISIBILITY_FROM = 100;
 // The first range, before anything is measured, and the rows kept beyond the
 // visible ones on each side, so a key or a quick scroll finds rows drawn.
 export const ROWS_WINDOW_INITIAL = 60;

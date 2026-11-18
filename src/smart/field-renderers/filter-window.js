@@ -27,9 +27,9 @@
 // Returns of the component study (ui-control control/research/2026-11-18-
 // framework-parts-fo): «Применить (N)» (FO5-1); a bottom sheet on a phone
 // (FO5-2); on the body like SF.menu.open, not beside the anchor (FO5-3); the
-// reopen guard by the anchor's press, no timer (FO5-4). Where the check
-// stands in a value row waits for the owner (q-fo5-mark): the rows are
-// sf-input-choice's list rows, mark at the start, as built.
+// reopen guard by the anchor's press, no timer (FO5-4). The check of a value
+// row stands at the end of the row (owner decision C308 FO-5, design d03,
+// C106 (2)): sf-input-choice's list rows with control-position="end".
 import {html, render} from 'lit';
 import {pageText} from '../../core/js/page-language';
 import {followDensity} from '../../core/js/density.js';
@@ -149,6 +149,8 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
 
     const host = {
       size,
+      // The single-field window (C308 FO-5): the rows' checks stand at the end.
+      filterWindow: true,
       getFieldText: (key) => word(key, anchor),
       getFilterControlValue: () => temp,
       patchTempFilterValue: (key, patch) => {

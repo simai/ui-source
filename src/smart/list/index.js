@@ -44,7 +44,8 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
 import {menuOpen} from "../../core/js/menu-open.js";
-import {rowsWindow, ROWS_WINDOW_FROM} from "../../core/js/rows-window.js";
+import {rowsWindow, ROWS_WINDOW_FROM, ROWS_VISIBILITY_FROM} from "../../core/js/rows-window.js";
+import {filesDrop} from "../../core/js/files-drop.js";
 import {noteDeprecated} from "../../core/js/deprecations";
 
 // Is the end within watchEdge's margin of the box that scrolls the list (or
@@ -190,7 +191,7 @@ class SfList extends ListElement {
         this._edge = null;
         this._dayTimer = 0;
         // A long list draws the rows in view (FO-2, core/js/rows-window.js):
-        // a list of 200 entries or more, the entries a person can see and 20
+        // a list of 1 000 entries or more (C308), the entries a person can see and 20
         // on each side, two spacers standing for the rest. A grouped list is
         // one run of «heading, its rows» (FO2-1); a range never starts inside
         // a group without its heading. Each entry's height is kept by its id
@@ -586,7 +587,10 @@ class SfList extends ListElement {
     // range says, per group, the rows it draws (parts: group key -> [from,
     // to], rows of the group). rows-window="off" draws every row (FO2-3).
     windowOf(sections, loading) {
-        this._rowsWindow.from = this.getAttribute("rows-window") === "off" ? Infinity : ROWS_WINDOW_FROM;
+        // C308 FO-2: from 1 000 entries, or the list's own rows-window-from;
+        // rows-window="off" never.
+        const own = Number.parseInt(this.getAttribute("rows-window-from") ?? "", 10);
+        this._rowsWindow.from = this.getAttribute("rows-window") === "off" ? Infinity : (own > 0 ? own : ROWS_WINDOW_FROM);
         const flat = sections.length === 1 && sections[0].key === "all";
         const entries = [];
         for (const group of sections) {
@@ -638,6 +642,7 @@ class SfList extends ListElement {
         const loading = this.loading;
         const sections = this.arranged();
         const empty = !loading && this._items.length === 0;
+        const range = this.windowOf(sections, loading);
         return {
             component: this,
             uid: this._uid,
@@ -648,7 +653,10 @@ class SfList extends ListElement {
             noWrap: this.noWrap === true,
             divided: this.divided === true,
             sections,
-            window: this.windowOf(sections, loading),
+            window: range,
+            // Drawn whole, a long list's rows skip layout and paint off
+            // screen (content-visibility, C308 FO-2); find and print reach them.
+            rowsAll: !range && !loading && this._entries.length >= ROWS_VISIBILITY_FROM,
             leading: this.leadingPlace(),
             avatarOf,
             countOf,
@@ -745,6 +753,18 @@ class SfList extends ListElement {
     onConnected() {
         super.onConnected?.();
         this.watchDay();
+        // Files from the computer on the whole list (owner decision C308
+        // FO-1): a folder, a chat, attachments, when the list's owner turns it
+        // on (accept-files); the one drop overlay of the page says where they
+        // go; a zone inside the list (a row's own) wins. The list uploads
+        // nothing itself: attach asks the host.
+        this._filesDrop ??= filesDrop(this, {
+            target: () => (this.acceptFiles === true || this.hasAttribute("accept-files") ? this : null),
+            overlay: () => this.sfWord("files-drop-text", {vars: {target: this.label || this.sfWord("label")}}),
+            onFiles: (files, {skipped}) => {
+                if (files.length || skipped.length) this.sfEmit("attach", {files, skipped});
+            },
+        });
         this.addEventListener("keydown", this.onWindowKey, true);
         // A long press on a row under a finger opens its menu, as its «⋯»
         // does (owner decision C148 (6)); the click its release sends opens
@@ -792,6 +812,8 @@ class SfList extends ListElement {
     }
 
     onDisconnected() {
+        this._filesDrop?.stop();
+        this._filesDrop = null;
         this.unwatchEnd();
         this._rowsWindow.stop();
         this.removeEventListener("keydown", this.onWindowKey, true);

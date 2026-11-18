@@ -196,6 +196,11 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     return chosenFirst(shown, this._opened);
   }
 
+  // Where a row's box stands (C308 FO-5): start, or end of the row.
+  get controlPositionValue() {
+    return this.getAttribute('control-position') === 'end' ? 'end' : 'start';
+  }
+
   get optionLookValue() {
     const look = this.getAttribute('option-look');
     return OPTION_LOOKS.includes(look) ? look : '';
@@ -362,6 +367,7 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
       layout: this.layoutValue,
       flow: this.flowValue,
       optionLook: this.optionLookValue,
+      controlPosition: this.controlPositionValue,
       label: this.label || '',
       // C165 (1), C153 (8): the «?» after the heading, named by its subject.
       help: this.help || '',

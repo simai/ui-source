@@ -42,7 +42,7 @@ test('the own more button is noted once per element, dated 2027-01-01', () => {
 });
 
 test('the contract, the journal and the docs say it', () => {
-  assert.equal(component.version, '1.23.0'); // 1.23.0: grouped window, rows-window, heights by id (FO2-1, FO2-3, FO2-4) // 1.22.0: rows window (FO-2) // group build 9: 1.20.0 moved on by the merged branches or a GB9 patch // C282: 1.20.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.21.1 moved on by the merged branches or a GB10 patch
+  assert.equal(component.version, '1.24.0'); // 1.24.0: accept-files, rows-window-from, content-visibility (C308) // 1.23.0: grouped window, rows-window, heights by id (FO2-1, FO2-3, FO2-4) // 1.22.0: rows window (FO-2) // group build 9: 1.20.0 moved on by the merged branches or a GB9 patch // C282: 1.20.2 moved on by the language-file patch (Russian is a language file) // group build 10: 1.21.1 moved on by the merged branches or a GB10 patch
   for (const summary of [component.settings['has-more'].summary, component.events['load-more'].summary,
     component.actions['request-more'].summary, component.actions['more-failed'].summary]) {
     assert.match(summary, /^Deprecated until 2027-01-01 \(owner decision C167 \(1\)\)/u);

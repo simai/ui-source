@@ -2,6 +2,21 @@ import { html, nothing } from "lit";
 import {renderFieldHelp} from '../../../helpers/field-help';
 import { renderInheritedSlot } from "../../../helpers/inherited-value";
 import { avatarPicture } from "../../../avatar/js/picture";
+import { optionBadgeProps } from "../../../helpers/option-badge.js";
+
+// An option's colour (owner decision C308 FO-4; color, one data word, C302):
+// the option's name is a tonal badge in that colour in its row, as in a cell,
+// a view, a checklist and segmented buttons; the badge's text is the row's
+// name.
+function optionName(option) {
+  if (!option.color || typeof option.text !== "string") return option;
+  const badge = optionBadgeProps({color: option.color});
+  return {
+    ...option,
+    text: html`<sf-badge class="sf-dropdown-option-badge" appearance="tonal" tight line="1" scheme=${badge.scheme}
+                         root-style=${badge.rootStyle || nothing} text=${option.text}></sf-badge>`,
+  };
+}
 import {
   renderListItemHeading,
   renderListItemOption,
@@ -34,7 +49,8 @@ function renderOptions(options = [], multiple = false) {
     // after the picture, and only in a multiple list (C08: a single choice
     // is the row's fill, no box).
     const withBox = multiple && (!option.type || option.type === "text");
-    parts.push(renderListItemOption(withBox ? {...option, type: "checkbox"} : option, {multiple}));
+    const named = optionName(option);
+    parts.push(renderListItemOption(withBox ? {...named, type: "checkbox"} : named, {multiple}));
   }
 
   return parts;

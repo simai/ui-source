@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 87,
-    "translated": 87,
+    "words": 88,
+    "translated": 88,
     "share": 100
   },
   "words": {
@@ -23,6 +23,7 @@
         "other": "{n} непрочитанного"
       },
       "empty-text": "Здесь пока пусто",
+      "files-drop-text": "Отпустите, чтобы загрузить в «{target}»",
       "label": "Список",
       "loading-more-text": "Загружаю…",
       "loading-text": "Загружаю список",

@@ -130,6 +130,9 @@ function normalizeItems(items = []) {
         count: source.count === null || typeof source.count === 'undefined' ? '' : String(source.count).trim(),
         // Only an icon can stand alone; the label stays as the accessible name.
         iconOnly: Boolean((source.iconOnly ?? source['icon-only']) && source.icon),
+        // An option's colour (owner decision C308 FO-4): the label is drawn
+        // as a tonal badge in it, as everywhere an option's colour is shown.
+        color: String(source.color || '').trim(),
         // A loading item shows the spinner and is disabled while it works, as
         // a loading button is (simai/ui-source#10).
         loading: Boolean(source.loading),

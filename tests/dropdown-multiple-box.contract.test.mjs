@@ -12,7 +12,8 @@ test('every option of a multiple dropdown carries the box', async () => {
   assert.ok(template.includes('function renderOptions(options = [], multiple = false)'));
   assert.ok(template.includes('${renderOptions(context.options, context.multiple)}'));
   assert.ok(template.includes('const withBox = multiple && (!option.type || option.type === "text");'));
-  assert.ok(template.includes('renderListItemOption(withBox ? {...option, type: "checkbox"} : option, {multiple})'));
+  // C308 FO-4: an option's colour names it as a tonal label first (optionName).
+  assert.ok(template.includes('renderListItemOption(withBox ? {...named, type: "checkbox"} : named, {multiple})'));
 });
 
 // A picture row (avatar, colour) of a single choice drew an empty box at its

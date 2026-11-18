@@ -21,6 +21,11 @@
 //                                      through the entries (open, the default),
 //                                      or left out and named in skipped
 //     mark: true,                      data-sf-files-over on the element
+//     overlay: () => text | null,      the one drop overlay of the page over the
+//                                      element while files are held over it,
+//                                      saying the text (C308 FO-1: «Отпустите,
+//                                      чтобы загрузить в «…»» from the
+//                                      component's language pack)
 //     follow: false,                   a host around its own zone (sf-file-upload
 //                                      and its area): it only follows the drag
 //                                      -- the over state while files are held
@@ -52,9 +57,12 @@
 // answers whether the words about dragging belong on this screen, the same
 // media query the file field's sheet hides them by.
 //
-// The look of a drop zone and where in a list files may be dropped wait for
-// the owner (q-fo1-zone); each component draws its own zone by the over state
-// until then.
+// Where files may be dropped and what the page shows (owner decision C308
+// FO-1): a whole list (a folder, a chat, attachments) takes them when its
+// owner turns it on; one drop overlay for the page stands on top of the zone
+// the files are held over, with the words of the zone's component; zones
+// inside zones, the innermost wins. A component that draws its own zone (the
+// file field's area) keeps drawing it by the over state.
 //
 // Every bundle carries its own copy of this module: the zones on a page are
 // counted on one shared global, so the document guard is one for them all.
@@ -83,6 +91,53 @@ export function filesDragWords(view = globalThis) {
   } catch {
     return true;
   }
+}
+
+// The one drop overlay of a page (C308 FO-1): an element on the body, over
+// the zone the files are held over (the part of it on screen), the words in
+// a label in its middle; it takes no pointer, so the drop reaches the zone
+// under it. Found by its attribute, so every bundle's copy draws the same one.
+const OVERLAY_ATTRIBUTE = 'data-sf-files-overlay';
+let overlayOwner = null;
+function showOverlay(element, text) {
+  const doc = element.ownerDocument;
+  const view = doc?.defaultView;
+  if (!doc?.body || !view) return;
+  let layer = doc.body.querySelector(`:scope > [${OVERLAY_ATTRIBUTE}]`);
+  if (!layer) {
+    layer = doc.createElement('div');
+    layer.setAttribute(OVERLAY_ATTRIBUTE, '');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.style.cssText = [
+      'position: fixed', 'z-index: 2147483000', 'pointer-events: none', 'box-sizing: border-box',
+      'display: flex', 'align-items: center', 'justify-content: center',
+      'border: var(--sf-px) dashed var(--sf-primary-outline)', 'border-radius: var(--sf-radius--surface)',
+      'background: var(--sf-primary-state-select)', 'padding: var(--sf-space-1)',
+    ].join(';');
+    const words = doc.createElement('span');
+    words.style.cssText = [
+      'background: var(--sf-surface)', 'color: var(--sf-primary)', 'border-radius: var(--sf-radius--surface)',
+      'padding: var(--sf-space-1\\/2) var(--sf-space-1)', 'font: inherit', 'max-inline-size: 100%', 'text-align: center',
+    ].join(';');
+    layer.append(words);
+    doc.body.append(layer);
+  }
+  const box = element.getBoundingClientRect();
+  const top = Math.max(0, box.top);
+  const left = Math.max(0, box.left);
+  const bottom = Math.min(view.innerHeight, box.bottom);
+  const right = Math.min(view.innerWidth, box.right);
+  Object.assign(layer.style, {top: `${top}px`, left: `${left}px`, width: `${Math.max(0, right - left)}px`, height: `${Math.max(0, bottom - top)}px`});
+  layer.firstElementChild.textContent = text;
+  layer.hidden = false;
+  overlayOwner = element;
+}
+function hideOverlay(element) {
+  const doc = element.ownerDocument;
+  if (overlayOwner !== element && overlayOwner !== null) return;
+  overlayOwner = null;
+  const layer = doc?.body?.querySelector(`:scope > [${OVERLAY_ATTRIBUTE}]`);
+  if (layer) layer.hidden = true;
 }
 
 // The document guard (FO1-2): one per document, on while a zone is on it.
@@ -159,7 +214,7 @@ function droppedOf(event, folders) {
   return {files: Promise.all(reads).then((lists) => lists.flat()), skipped};
 }
 
-export function filesDrop(element, {onFiles = null, onOver = null, disabled = null, target = null, folders = 'open', mark = true, follow = false} = {}) {
+export function filesDrop(element, {onFiles = null, onOver = null, disabled = null, target = null, folders = 'open', mark = true, follow = false, overlay = null} = {}) {
   if (!element?.addEventListener) return {stop() {}, get over() { return false; }};
   let over = false;
   let depth = 0;
@@ -172,6 +227,11 @@ export function filesDrop(element, {onFiles = null, onOver = null, disabled = nu
     over = next;
     place = next ? node : null;
     if (mark) element.toggleAttribute(FILES_OVER_ATTRIBUTE, over);
+    if (typeof overlay === 'function') {
+      const text = over ? overlay(place) : null;
+      if (text) showOverlay(element, String(text));
+      else hideOverlay(element);
+    }
     if (typeof onOver === 'function') onOver(over, place);
   };
 

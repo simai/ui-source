@@ -12,5 +12,7 @@ SF.RuleLoader['cl-segmented'] = {
     { name: 'spinner', lazy: true },
     // cl-dropdown: when the labels do not fit on one line the element draws an sf-dropdown in the track's place (owner decision C47 C), fetched after the page is ready.
     { name: 'cl-dropdown', lazy: true },
+    // An item's colour (owner decision C308 FO-4) draws its label as sf-badge (tonal, tight, line 1) in the segmented appearance, only when an item carries color.
+    { name: 'cl-badge', lazy: true },
   ],
 };

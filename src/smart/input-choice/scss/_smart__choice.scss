@@ -531,6 +531,23 @@
   }
 }
 
+/* control-position end (owner decision C308 FO-5, design d03, C106 (2)):
+   the box stands at the end of the row, the row as wide as the list, the
+   name taking the room before it (the single-field filter window). The
+   document keeps the box first. */
+.sf-choice--list[data-control-position='end'] .sf-choice-row {
+  inline-size: 100%;
+}
+
+.sf-choice--list[data-control-position='end'] .sf-choice-row > :is(.sf-checkbox-box, .sf-radio-button-box) {
+  order: 1;
+}
+
+.sf-choice--list[data-control-position='end'] .sf-choice-row > :is(.sf-checkbox-container, .sf-radio-button-container) {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
 /* flow row (C165 (3)): side by side, the groups' gap between them (C105
    H6, --sf-space-1: 16, compact and phone 12); a row that does not fit
    wraps. */

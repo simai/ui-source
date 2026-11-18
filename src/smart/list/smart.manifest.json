@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.list",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "title": "List",
   "summary": "A list a person acts on -- conversations, letters, templates, files, members, versions: rows from data drawn as sf-list-item, grouped by day or by key, one Tab stop, the open row, row actions in one shared menu, rename in place, the next page at the end, an empty state. Fetches nothing; every request is an event.",
   "kind": "smart",
@@ -164,11 +164,21 @@
       "rows-window": {
         "type": "string",
         "default": "auto",
-        "description": "auto: a list of 200 entries or more (rows, and the headings of a grouped list) draws the ones in view and two spacers for the rest (core rows window, Framework order FO-2); off: every row stays in the document, for a page that is printed or searched with the browser's find (FO2-3). The length from which auto windows waits for the owner (q-fo2-find).",
+        "description": "auto: up to 1 000 entries (rows, and the headings of a grouped list) every row stays in the document, a long list's rows (100 and more) drawn with content-visibility so the browser's find and printing reach them; from 1 000 (or rows-window-from) the entries in view and two spacers for the rest (core rows window; owner decision C308 FO-2). off: every row stays in the document at any length (FO2-3).",
         "enum": [
           "auto",
           "off"
         ]
+      },
+      "rows-window-from": {
+        "type": "number",
+        "default": 1000,
+        "description": "The length from which rows-window auto draws the entries in view (owner decision C308 FO-2): 1 000 by default; a list sets its own, a whole number above 0."
+      },
+      "accept-files": {
+        "type": "boolean",
+        "default": false,
+        "description": "The whole list takes files dragged from the computer (owner decision C308 FO-1): a folder, a chat, attachments. While files are held over it the page's one drop overlay says «Отпустите, чтобы загрузить в «{label}»»; a drop asks the host with attach. Off by default."
       },
       "empty-text": {
         "type": "string",
@@ -687,6 +697,25 @@
         },
         "additionalProperties": true
       }
+    },
+    "sf-list-attach": {
+      "summary": "Files were dropped on the list (accept-files, owner decision C308 FO-1): the request to attach them there (vocabulary §5 attach); skipped names the folders left out. The list uploads nothing itself.",
+      "payload": {
+        "type": "object",
+        "required": [
+          "files",
+          "skipped"
+        ],
+        "properties": {
+          "files": {
+            "type": "array"
+          },
+          "skipped": {
+            "type": "array"
+          }
+        },
+        "additionalProperties": true
+      }
     }
   },
   "state": {
@@ -804,15 +833,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/list/index.js",
-        "sha256": "251e79fb37e608a7f789cf4ab1de052131fd15fc6781c8fdbdabb622ed86a655"
+        "sha256": "117bd2d4278253f699300b6c80e58f301829d92ffb4f9b45b96b85e0dabacd82"
       },
       {
         "path": "src/smart/list/js/templates/default.js",
-        "sha256": "b6e27d8696cd87868797b179bcf8bc5f0c26f336bc7288ad0acd4a45ddbb4f5e"
+        "sha256": "2c8e9f9329dfe22a21c392902d551a7ff9f204ccfa844b882e56dfbd0101776c"
       },
       {
         "path": "src/smart/list/js/templates/default.css",
-        "sha256": "52e84580bfbb36f675b40e812fbc8a2b3f53f23d6581ad22bfa5d8a09f8cd356"
+        "sha256": "e99636ff605effe144e8d7d3772250da9b0b7faef70d33eabfe632a278bcd41f"
       },
       {
         "path": "src/smart/list/rule.js",
@@ -824,15 +853,15 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "c46581f7ab3809d6232b7bd08f6c547d8490db8bd1615c87991354a830437a3a"
+        "sha256": "dc61dc2a90f7d4e9f8cca7fc53802e413ee0481a65ffa1194e1314339565b8ac"
       },
       {
         "path": "src/smart/list/lang/en.json",
-        "sha256": "ee058b8d31d3dfebbc992d2fea9a9b3b586367eb2e07bbf9c82db08c8a9e615c"
+        "sha256": "9618b1c9fd85f46deaf85469dce2864b66980b21388d2699c54f07ae4c2e2da9"
       },
       {
         "path": "src/smart/list/lang/ru.json",
-        "sha256": "ad87273e42a7d86a8c2a3d98bac2f7932ff196c525662e413eb99754fdf79454"
+        "sha256": "4bd4e01b8c4174ba330d992b9d3c7f8766352d38505f29fb4d1abc0195c51668"
       }
     ],
     "generated_runtime": []

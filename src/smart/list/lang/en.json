@@ -7,6 +7,7 @@
       "other": "{n} unread"
     },
     "empty-text": "Nothing here yet",
+    "files-drop-text": "Release to upload to “{target}”",
     "label": "List",
     "loading-more-text": "Loading…",
     "loading-text": "Loading the list",

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -72,10 +72,19 @@
       "option-look": {
         "type": "string",
         "default": "",
-        "description": "How an option's color is drawn (FO4-2; C302: the field template's parameter): badge -- the name itself as a tonal badge in that colour, as a table cell draws it; dot -- a colour circle before the name. Unset: an option's former key says it (scheme a badge, swatch a circle), else the default, the cell's badge; which look is the default waits for the owner (q-fo4-colour).",
+        "description": "How an option's color is drawn (FO4-2; C302: the field template's parameter): badge -- the name itself as a tonal badge in that colour, as a table cell draws it; dot -- a colour circle before the name. Unset: an option's former key says it (scheme a badge, swatch a circle), else the badge, the look every template and place draws an option's colour with (owner decision C308 FO-4: dropdown, buttons, checklist, view, cell).",
         "enum": [
           "badge",
           "dot"
+        ]
+      },
+      "control-position": {
+        "type": "string",
+        "default": "start",
+        "description": "Where a row's checkbox or radio button stands under appearance list (owner decision C308 FO-5, design d03, C106 (2)): start -- before the name, as built; end -- at the end of the row, the row as wide as the list (the single-field filter window). The document keeps the box first either way.",
+        "enum": [
+          "start",
+          "end"
         ]
       },
       "multiple": {
@@ -369,19 +378,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "320b1c33db2f5a4ff0077f6a3792f23f3b4857911957d4aec06699aec626b9ce"
+        "sha256": "007db62cacdda2068452b2ec132bf7a4707f6de190c80bd2a337d8ea806899e6"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "5c82d968014ec03c70aac88a5d914b1fdab070dd205e3ac1d3f437b432481bcb"
+        "sha256": "dd2e78ee15834621928bc6d31bb2a159772617967ef090234a4f15e1123c6907"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
-        "sha256": "89e7e34a107b5668980f3c09ce75189965c8f23f51bc5fcc0f29708c4d20e60b"
+        "sha256": "02e0f30b112ad2f575405c2ac5b4356cd8ba688b66e7ce0d3f49f65f66dfba36"
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "5b153a35a565e7534a581c33185573128bc1057f5e5ee9fcadf39b6eeddc2810"
+        "sha256": "28e28efb27be9d50dacd77d4e0b46213ab679e7ac831d5fab1025acaf8a1490b"
       },
       {
         "path": "src/smart/input-choice/rule.js",

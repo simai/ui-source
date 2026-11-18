@@ -9,6 +9,7 @@
       "other": "{n} непрочитанного"
     },
     "empty-text": "Здесь пока пусто",
+    "files-drop-text": "Отпустите, чтобы загрузить в «{target}»",
     "label": "Список",
     "loading-more-text": "Загружаю…",
     "loading-text": "Загружаю список",

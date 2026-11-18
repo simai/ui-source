@@ -351,11 +351,15 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "d78a9a22742a94ee615d2f4683c64bdd76e087245f12066876d8dc395ce1a16b",
+  "content_sha256": "a578e6d729ab9f059491068d84b2971cc5f8fd29f1763905354abdb8af4b053f",
   "dependencies": [
     {
       "id": "core.styles",
       "range": "^1.0.0"
+    },
+    {
+      "id": "tokens.border",
+      "range": "^1.2.3"
     },
     {
       "id": "tokens.colour",
@@ -364,6 +368,10 @@
     {
       "id": "tokens.radius",
       "range": "^1.1.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.6.1"
     },
     {
       "id": "tokens.space",

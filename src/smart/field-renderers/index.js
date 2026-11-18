@@ -297,7 +297,8 @@ function choiceOption(field, option = {}) {
 // How a choice field's option colours are drawn (FO4-2; C302: the look is the
 // template's parameter): templateParams.badge true a badge, false a circle;
 // else the former filter.optionRenderer (swatch a circle, badge a badge);
-// else '' -- sf-input-choice's own default (q-fo4-colour).
+// else '' -- sf-input-choice's own default, the tonal label (owner decision
+// C308 FO-4).
 function optionLookOf(field) {
     const badge = field.templateParams?.badge ?? field.template?.params?.badge;
     if (badge === true) return 'badge';
@@ -336,6 +337,7 @@ function renderChoiceFilterControl(field, host) {
                 aria-label=${field.label || field.key || nothing}
                 ?searchable=${field.filter?.searchable === true}
                 option-look=${optionLookOf(field) || nothing}
+                control-position=${host.filterWindow === true ? 'end' : nothing}
                 .items=${options}
                 .provider=${pages}
                 .value=${Array.isArray(value.values) ? value.values.map(String) : []}
@@ -1597,6 +1599,13 @@ function renderBooleanEdit(field, value, host) {
     `;
 }
 
+// An option's colour by its one data word (C302): color; scheme and swatch
+// are its former names (FO4-2).
+function optionColorOf(option = {}) {
+    const raw = option?.color ?? option?.scheme ?? option?.swatch;
+    return typeof raw === 'string' ? raw.trim() : '';
+}
+
 function editOptions(field, value, multiple) {
     const options = field.options || field.filter?.options || field.constraints?.options || [];
     const chosen = multiple
@@ -1604,8 +1613,8 @@ function editOptions(field, value, multiple) {
         : new Set([String(value ?? '')]);
 
     // An option's picture or icon is drawn in the dropdown too (FO4-1, FO4-3):
-    // sf-dropdown's avatar and icon rows. Its colour is not yet (the
-    // dropdown's colour row takes a class, not the option's colour).
+    // sf-dropdown's avatar and icon rows. Its colour (C308 FO-4) is the
+    // name as a tonal badge in that colour, the dropdown's color word.
     return options.map((option) => {
         const text = option.label ?? option.text ?? String(option.value);
         const avatar = typeof option.avatar === 'string' ? {image: option.avatar} : option.avatar;
@@ -1618,6 +1627,7 @@ function editOptions(field, value, multiple) {
             ...visual,
             size: '1',
             text,
+            ...(optionColorOf(option) ? {color: optionColorOf(option)} : {}),
             value: String(option.value),
             selected: chosen.has(String(option.value)),
         };
@@ -1666,6 +1676,8 @@ function renderChoiceButtons(field, value, host) {
         value: String(option.value),
         label: String(option.label ?? option.text ?? option.value),
         ...(option.icon ? {icon: String(option.icon)} : {}),
+        // One data word for colour (C302, C308 FO-4): the segment's name a tonal badge.
+        ...(optionColorOf(option) ? {color: optionColorOf(option)} : {}),
         ...(option.disabled ? {disabled: true} : {}),
     }));
     const asked = String(field.size ?? '');

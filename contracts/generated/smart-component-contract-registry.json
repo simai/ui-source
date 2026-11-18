@@ -778,6 +778,7 @@
           "component.dropdown",
           "component.icon-buttons",
           "component.inputs",
+          "smart.badge",
           "smart.button-icon",
           "smart.help-mark",
           "smart.icon",
@@ -794,7 +795,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/dropdown/smart.manifest.json",
-      "manifest_sha256": "d6da3b21cef8fc4c19f51bca844c86112265b5927f4c9828858833dfe9ddbacb",
+      "manifest_sha256": "6eca1e1366a54b792aa816cef36b897c4e8da3e21ac76230b7dad0e0b208cc56",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1412,7 +1413,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/input-choice/smart.manifest.json",
-      "manifest_sha256": "b1b9c965cd527aaee77a9f1b939db0e1b39abe68765ff9db2ca7f6f8a69cfb74",
+      "manifest_sha256": "9250714c25c3948bdfd353303d04d8990cde0a5eb8b4f05d54ded3bce933b626",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1942,7 +1943,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "7e22b3f98c7e50044e6a9fe2b580cd5f7ab5dd28292729c86c127c60fb4cbef7",
+      "manifest_sha256": "1250102f2d9c3bcd0b00c39013e6aed0c9d78ad6a966cf448f4f826edd1c75d6",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2821,6 +2822,7 @@
         "uses": [
           "component.button-group",
           "component.spinner",
+          "smart.badge",
           "smart.button",
           "smart.dropdown",
           "smart.icon"
@@ -2835,7 +2837,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/segmented/smart.manifest.json",
-      "manifest_sha256": "d259e866dab15aca7e93dfe9916b092026b32f97f98eb68fdb4cedbe973a38ab",
+      "manifest_sha256": "cbfc9ea6bfe3cc8553cc23b19cd7177ab6c2b484105a78dd180e571fb56bb219",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

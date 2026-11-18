@@ -121,6 +121,9 @@ function parseOptionData(option, dropdownSize = '1') {
     selected: toBoolean(option.selected),
     disabled: toBoolean(option.disabled),
     colorClass: option.colorClass ? String(option.colorClass) : 'bg-tertiary',
+    // An option's colour (owner decision C308 FO-4, C302's one data word): its
+    // name is drawn as a tonal badge in it.
+    color: typeof option.color === 'string' ? option.color.trim() : '',
     avatarImageUrl: option.avatarImageUrl ? String(option.avatarImageUrl) : '',
     avatarTitle: option.avatarTitle ? String(option.avatarTitle) : text,
     value,

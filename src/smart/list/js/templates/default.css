@@ -366,6 +366,15 @@
     overflow-anchor: none;
   }
 
+  /* A long list drawn whole (owner decision C308 FO-2, up to 1 000 rows):
+     the rows off screen skip their layout and paint, and keep the height
+     they were last drawn at; every row stays in the document for the
+     browser's find and for printing. */
+  .sf-list__body[data-sf-rows-all] .sf-list__row {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--sf-ui-1--control-height);
+  }
+
   /* A grouped long list (FO2-1): the spacers stand in the body beside the
      groups and take no gap of their own -- their heights already hold the
      space between the groups they stand for. */

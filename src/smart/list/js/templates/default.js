@@ -313,6 +313,7 @@ export function renderListTemplate(context) {
             <div class="sf-list__body"
                  data-sf-list
                  data-sf-rows-window=${context.window && !context.window.flat ? `${context.window.first}-${context.window.last}` : nothing}
+                 ?data-sf-rows-all=${context.rowsAll === true}
                  ?hidden=${context.empty || context.loading}
                  @keydown=${(event) => component.onKey(event)}
                  @sf-list-item-open=${(event) => component.onRowOpen(event)}>

@@ -68,9 +68,9 @@ function avatarOf(given) {
 // before the name (the menu's colour row, C85).
 export const OPTION_LOOKS = Object.freeze(['badge', 'dot']);
 // The look of an option's colour when nobody says (option-look unset, no
-// former key): the table cell's, the one the Framework drew a colour with
-// until now. Which look is the default waits for the owner (q-fo4-colour):
-// this constant is that switch.
+// former key): the option's name in a tonal label, the same in every
+// template and place -- dropdown, buttons, checklist, view, cell (owner
+// decision C308 FO-4); the circle (dot) is a template's parameter (C302).
 export const DEFAULT_OPTION_LOOK = 'badge';
 
 // One option: {value, label, caption?, icon?, badge?, price?, term?, image?,

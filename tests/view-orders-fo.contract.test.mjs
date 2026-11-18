@@ -68,7 +68,7 @@ test('FO-2: the range stays around a revealed row until the page scrolls to it',
 
 test('FO-2: sf-list draws by the core helper, between two spacers, with each row\'s place in the whole list', () => {
   const index = read('src/smart/list/index.js');
-  assert.match(index, /import \{\s*rowsWindow, ROWS_WINDOW_FROM\s*\} from "\.\.\/\.\.\/core\/js\/rows-window(?:\.js)?";/u);
+  assert.match(index, /import \{\s*rowsWindow, ROWS_WINDOW_FROM, ROWS_VISIBILITY_FROM\s*\} from "\.\.\/\.\.\/core\/js\/rows-window(?:\.js)?";/u);
   const template = read('src/smart/list/js/templates/default.js');
   assert.match(template, /data-sf-rows-spacer/u);
   assert.match(template, /aria-posinset/u);
@@ -176,7 +176,7 @@ test('FO2-1, FO2-3: a range never starts inside a group without its heading; fro
 test('FO2-1, FO2-3, FO2-5: sf-list windows grouped lists and has rows-window; sf-tree draws by the same helper', () => {
   const list = read('src/smart/list/index.js');
   assert.match(list, /entries\.push\(\{key: `head:\$\{group\.key\}`/u);
-  assert.match(list, /getAttribute\("rows-window"\) === "off" \? Infinity : ROWS_WINDOW_FROM/u);
+  assert.match(list, /getAttribute\("rows-window"\) === "off" \? Infinity : \(own > 0 \? own : ROWS_WINDOW_FROM\)/u);
   assert.deepEqual(json('src/smart/list/component.json').settings['rows-window'].values, ['auto', 'off']);
   const tree = read('src/smart/tree/index.js');
   assert.match(tree, /import \{rowsWindow\} from '\.\.\/\.\.\/core\/js\/rows-window\.js';/u);
@@ -607,4 +607,94 @@ test('FO-5: sf-popover opens from an anchor given as a property and places itsel
   const component = json('src/smart/popover/component.json');
   const settings = component.settings ?? component.properties ?? {};
   assert.ok(settings.anchor, 'anchor setting');
+});
+
+// ---------------------------------------------------------------- C308
+
+test('C308 FO-2: up to 1 000 rows every row stays, a long list with content-visibility; from 1 000 the window; a list sets its own length or off', () => {
+  assert.equal(ROWS_WINDOW_FROM, 1000);
+  assert.equal(rowsWindow({}).slice(999), null);
+  assert.ok(rowsWindow({}).slice(1000));
+  const list = read('src/smart/list/index.js');
+  assert.match(list, /Number\.parseInt\(this\.getAttribute\("rows-window-from"\)/u);
+  assert.match(list, /rowsAll: !range && !loading && this\._entries\.length >= ROWS_VISIBILITY_FROM/u);
+  assert.match(read('src/smart/list/js/templates/default.js'), /\?data-sf-rows-all=\$\{context\.rowsAll === true\}/u);
+  assert.match(read('src/smart/list/js/templates/default.css'), /\.sf-list__body\[data-sf-rows-all\] \.sf-list__row \{\s*content-visibility: auto;/u);
+  const settings = json('src/smart/list/component.json').settings;
+  assert.equal(settings['rows-window-from'].default, 1000);
+  assert.deepEqual(settings['rows-window'].values, ['auto', 'off']);
+});
+
+test('C308 FO-1: the whole list takes files when its owner turns it on; one overlay of the page says where, in every language', () => {
+  const list = read('src/smart/list/index.js');
+  assert.match(list, /target: \(\) => \(this\.acceptFiles === true \|\| this\.hasAttribute\("accept-files"\) \? this : null\)/u);
+  assert.match(list, /overlay: \(\) => this\.sfWord\("files-drop-text"/u);
+  assert.match(list, /this\.sfEmit\("attach", \{files, skipped\}\)/u);
+  const manifest = json('src/smart/list/component.json');
+  assert.equal(manifest.settings['accept-files'].default, false);
+  assert.deepEqual(Object.keys(manifest.events.attach.carries), ['files', 'skipped']);
+  assert.equal(json('src/smart/list/lang/ru.json').runtime['files-drop-text'], 'Отпустите, чтобы загрузить в «{target}»');
+  assert.match(json('src/smart/list/lang/en.json').runtime['files-drop-text'], /\{target\}/u);
+  assert.match(read('src/core/lang/ru/list.json'), /Отпустите, чтобы загрузить в «\{target\}»/u);
+  const drop = read('src/core/js/files-drop.js');
+  assert.match(drop, /const OVERLAY_ATTRIBUTE = 'data-sf-files-overlay';/u);
+  assert.match(drop, /'pointer-events: none'/u);
+});
+
+test('C308 FO-1: the overlay follows the zone the files are over and leaves with them', () => {
+  const doc = fakeDocument();
+  const made = [];
+  const body = {
+    children: [],
+    append(node) { this.children.push(node); },
+    querySelector() { return this.children[0] ?? null; },
+  };
+  doc.body = body;
+  doc.defaultView = {innerHeight: 800, innerWidth: 1200};
+  doc.createElement = (tag) => {
+    const node = {tag, style: {cssText: ''}, attributes: {}, hidden: false, children: [], textContent: '',
+      setAttribute(name, value) { this.attributes[name] = value; },
+      append(child) { this.children.push(child); },
+      get firstElementChild() { return this.children[0]; }};
+    made.push(node);
+    return node;
+  };
+  const zone = fakeElement(doc);
+  zone.getBoundingClientRect = () => ({top: -50, left: 10, bottom: 300, right: 410});
+  filesDrop(zone, {overlay: () => 'Отпустите, чтобы загрузить в «Отчёты»'});
+  zone.listeners.dragenter(dragEvent());
+  zone.listeners.dragover(dragEvent());
+  const layer = body.children[0];
+  assert.ok(layer && layer.attributes['data-sf-files-overlay'] === '');
+  assert.equal(layer.hidden, false);
+  assert.equal(layer.firstElementChild.textContent, 'Отпустите, чтобы загрузить в «Отчёты»');
+  // The part of the zone on screen.
+  assert.deepEqual([layer.style.top, layer.style.left, layer.style.width, layer.style.height], ['0px', '10px', '400px', '300px']);
+  zone.listeners.dragleave(dragEvent());
+  assert.equal(layer.hidden, true);
+  assert.equal(made.length, 2);
+});
+
+test('C308 FO-4: an option\'s colour is its name in a tonal label in the dropdown and in segmented buttons too', () => {
+  const dropdown = read('src/smart/dropdown/js/templates/default.js');
+  assert.match(dropdown, /function optionName\(option\) \{/u);
+  assert.match(dropdown, /<sf-badge class="sf-dropdown-option-badge" appearance="tonal" tight line="1"/u);
+  assert.match(read('src/smart/dropdown/index.js'), /color: typeof option\.color === 'string' \? option\.color\.trim\(\) : '',/u);
+  const segmented = read('src/smart/segmented/js/templates/default.js');
+  assert.match(segmented, /<sf-badge class="sf-button-group-badge" appearance="tonal" tight line="1"/u);
+  assert.match(read('src/smart/segmented/index.js'), /color: String\(source\.color \|\| ''\)\.trim\(\),/u);
+  const renderers = read('src/smart/field-renderers/index.js');
+  assert.match(renderers, /\.\.\.\(optionColorOf\(option\) \? \{color: optionColorOf\(option\)\} : \{\}\),\s*value: String\(option\.value\),/u);
+  assert.match(renderers, /\/\/ One data word for colour \(C302, C308 FO-4\): the segment's name a tonal badge\.\n\s*\.\.\.\(optionColorOf\(option\)/u);
+  assert.equal(DEFAULT_OPTION_LOOK, 'badge');
+});
+
+test('C308 FO-5: the single-field filter window puts each row\'s check at the end of the row', () => {
+  const choice = json('src/smart/input-choice/component.json').settings['control-position'];
+  assert.deepEqual(choice.values, ['start', 'end']);
+  assert.equal(choice.default, 'start');
+  assert.match(read('src/smart/input-choice/js/templates/default.js'), /data-control-position=\$\{context\.controlPosition\}/u);
+  assert.match(read('src/smart/input-choice/scss/_smart__choice.scss'), /\[data-control-position='end'\] \.sf-choice-row > :is\(\.sf-checkbox-box, \.sf-radio-button-box\) \{\s*order: 1;/u);
+  assert.match(read('src/smart/field-renderers/filter-window.js'), /filterWindow: true,/u);
+  assert.match(read('src/smart/field-renderers/index.js'), /control-position=\$\{host\.filterWindow === true \? 'end' : nothing\}/u);
 });
