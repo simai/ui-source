@@ -34,8 +34,8 @@
         {
           "name": "--sf-badge-border-color",
           "role": "border-color",
-          "summary": "The border colour; seen with a border width.",
-          "default": "transparent",
+          "summary": "The border colour; seen with a border width. Its resting default is the tonal edge's graphic ink (component.badges 1.12.0, C208): drawn only where a place asks for the edge (an inverse place), invisible at the default width 0.",
+          "default": "var(--sf-on-neutral-container-graphic)",
           "since": "2026-10-13",
           "varies_with": [
             "appearance",
