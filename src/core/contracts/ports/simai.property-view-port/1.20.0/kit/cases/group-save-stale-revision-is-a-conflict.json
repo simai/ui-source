@@ -1,0 +1,16 @@
+{
+  "id": "group-save-stale-revision-is-a-conflict",
+  "intent": "group.save",
+  "summary": "A save against a revision the host has moved past is a conflict, never a silent overwrite.",
+  "given": {"capabilities": []},
+  "when": {
+    "intent": "group.save",
+    "payload": {"record_id": "record-1", "collection": "pages", "section": "main", "group": "about",
+                "values": {"title": "Новое название"}, "revision": "6"}
+  },
+  "then": {
+    "answer": "conflict",
+    "answer_must_include": ["reason"],
+    "note": "The component keeps what the person typed and says the object moved. Answering applied here would lose somebody else's save without anyone being told."
+  }
+}

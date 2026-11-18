@@ -20,14 +20,15 @@ const body = (name) => {
 };
 
 test('only a single image is drawn with sf-image-field', () => {
+  // The template image (C302; the variant image before it).
   assert.match(body('isSingleImageField'),
-    /return String\(field\.variant \?\? ''\) === 'image' && field\.multiple !== true && storedFiles\(value\)\.length <= 1;/u);
+    /return templateOf\(field\) === 'image' && field\.multiple !== true && storedFiles\(value\)\.length <= 1;/u);
   // The decision is the file editor's first line, so every other file field
   // reaches the pair it reached before.
   assert.match(body('renderFileEdit'), /^function renderFileEdit\(field, value, host\) \{\n    if \(isSingleImageField\(field, value\)\) return renderImageEdit\(field, value, host\);\n/u);
-  // The variant is the registry's own, not a new name.
+  // The template is the registry's own, not a new name.
   const file = PROPERTY_TYPES.find((entry) => entry.type === 'file');
-  assert.ok(file.variants.some((variant) => variant.id === 'image'));
+  assert.ok(file.templates.some((one) => one.id === 'image'));
   // The map still names one editor for a file.
   assert.match(source, /\n    file: renderFileEdit,\n/u);
 });

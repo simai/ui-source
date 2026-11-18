@@ -1,0 +1,70 @@
+{
+  "id": "lookup-arrives-with-its-label",
+  "intent": "record.load",
+  "summary": "A lookup field carries its value as {value, label} -- a list of them when it is multiple -- and names the reference list it is chosen from.",
+  "given": {
+    "capabilities": [
+      "field-options"
+    ],
+    "fields": [
+      {
+        "key": "country",
+        "propertyType": "lookup",
+        "source": "countries",
+        "value": {
+          "value": "RU",
+          "label": "Россия"
+        }
+      },
+      {
+        "key": "regions",
+        "propertyType": "lookup",
+        "source": "regions",
+        "multiple": true,
+        "value": [
+          {
+            "value": 77,
+            "label": "Москва"
+          },
+          {
+            "value": 78,
+            "label": "Санкт-Петербург"
+          }
+        ]
+      },
+      {
+        "key": "status",
+        "propertyType": "lookup",
+        "options": [
+          {
+            "value": "draft",
+            "label": "Черновик"
+          },
+          {
+            "value": "signed",
+            "label": "Подписан"
+          }
+        ],
+        "value": {
+          "value": "draft",
+          "label": "Черновик"
+        }
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.load",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "reason": "connected"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The label travels with the value, so the view shows «Россия» without a second read. A short list arrives as options and is chosen from in place; a long one is named by source and paged by field.options."
+  }
+}

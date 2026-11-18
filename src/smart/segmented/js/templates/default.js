@@ -119,6 +119,7 @@ function renderFolded(context) {
         value=${context.value || nothing}
         aria-label=${context.ariaLabel || nothing}
         ?disabled=${context.disabled}
+        ?invalid=${context.invalid}
         .options=${context.foldedOptions}
         @change=${(event) => context.component.handleFoldedChange(event)}
         @input=${(event) => event.stopPropagation()}
@@ -148,8 +149,12 @@ export function renderButtonGroupTemplate(context) {
     segmented && context.fullWidth ? 'sf-button-group--full-width' : '',
     segmented && context.folded ? 'sf-button-group--folded' : '',
     context.radius ? `sf-button-group--radius-${context.radius}` : '',
+    context.invalid ? 'sf-button-group--invalid' : '',
     context.rootClass,
   ].filter(Boolean).join(' ');
+  // The error line while invalid (error-message, FO-1): under the group, in the
+  // error role, and the radio group is described by it.
+  const message = context.invalid && context.errorMessage ? context.errorMessage : '';
 
   return html`
     <div
@@ -160,12 +165,17 @@ export function renderButtonGroupTemplate(context) {
       aria-hidden=${segmented && context.folded ? 'true' : nothing}
       aria-label=${context.ariaLabel || nothing}
       aria-orientation=${context.orientation}
+      aria-invalid=${context.invalid ? 'true' : nothing}
+      aria-describedby=${message ? context.messageId : nothing}
       data-value=${context.value || ''}
     >
       ${segmented ? html`<span class="sf-button-group-plate" aria-hidden="true"></span>` : nothing}
       ${context.entries.map((item, index) => (segmented ? renderSegment(item, context) : renderItem(item, index, context)))}
     </div>
     ${segmented && context.folded ? renderFolded(context) : nothing}
+    ${message
+      ? html`<span class=${`sf-button-group-message sf-button-group-message--size-${context.size}`} id=${context.messageId} data-field-message="error">${message}</span>`
+      : nothing}
     ${context.hiddenName
       ? html`<input class="sf-button-group-input" type="hidden" name=${context.hiddenName} value=${context.value || ''} ?disabled=${context.disabled}>`
       : nothing}

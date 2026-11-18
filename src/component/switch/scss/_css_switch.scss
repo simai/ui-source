@@ -164,6 +164,13 @@
   --sf-switch-toggler--border-color: var(--sf-switch-checked-background-color, var(--sf-primary));
 }
 
+/* invalid (sf-switch 1.10.0, field orders FO-1): the track's edge in the
+   error role, off and on, as an invalid field's edge and sf-checkbox's .error
+   box; disabled keeps its own look. */
+.sf-switch.error:has(input):not(:has(input:disabled)) .sf-switch-toggler {
+  --sf-switch-toggler--border-color: var(--sf-error);
+}
+
 /* The track stands as tall as the line of its size, which is the rule the
    checkbox box already follows, so the mobile and the desktop ladder both come
    out of the typography contract instead of being listed twice. Its length is

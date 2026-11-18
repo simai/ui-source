@@ -1,0 +1,28 @@
+{
+  "id": "a-masked-value-is-saved-as-shown",
+  "intent": "group.save",
+  "summary": "A completed masked value is saved as the text the field shows, fixed parts included.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contacts",
+      "section": "main",
+      "group": "phones",
+      "values": {
+        "phone": "+7 (912) 345-67-89"
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "The host stores what it receives. Stripping the fixed parts would make the stored value depend on the mask of the day, and a mask changed later would read old values wrongly."
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "a-field-hidden-by-its-condition-is-not-saved",
+  "intent": "group.save",
+  "summary": "A field its condition hides is absent from the save, and the host keeps what it holds.",
+  "given": {
+    "capabilities": [],
+    "fields": [
+      {
+        "key": "type",
+        "value": "framework"
+      },
+      {
+        "key": "valid_until",
+        "value": "2027-01-01",
+        "when": {
+          "visible": {
+            "field": "type",
+            "op": "eq",
+            "value": "framework"
+          }
+        }
+      }
+    ]
+  },
+  "when": {
+    "intent": "group.save",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "contracts",
+      "section": "main",
+      "group": "terms",
+      "values": {
+        "type": "single"
+      },
+      "revision": "7"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "record"
+    ],
+    "note": "valid_until is hidden once the type is single, so it is not in values -- and it is not emptied: the record answered still holds 2027-01-01. Hidden by a condition is not the same as cleared."
+  }
+}

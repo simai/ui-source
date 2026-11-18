@@ -509,6 +509,7 @@ class SfDropdown extends FormField(DropdownElement) {
       .map((node) => parseOptionNode(node, this.size))
       .filter(Boolean);
     this._optionsCaptured = true;
+    this.watchOptionNodes(optionNodes);
 
     if (!this.selectedValue && !this._selectedValues.length) {
       this._selectedValues = this._options
@@ -520,6 +521,28 @@ class SfDropdown extends FormField(DropdownElement) {
   }
 
   /**
+   * The option elements taken out of the page keep their owner: a parent's
+   * template still writes them (a Lit repeat updates the nodes it made, in or
+   * out of the page). Their words follow it -- a page whose language changes
+   * redraws the parent, which rewrites each option's text, and the list showed
+   * the words it was first drawn with (field orders, open point 1). The taken
+   * elements are watched and read again when an attribute changes; what is
+   * chosen stays chosen.
+   */
+  watchOptionNodes(nodes) {
+    this._optionWatch?.disconnect();
+    this._optionWatch = null;
+    this._optionNodes = nodes;
+    if (!nodes.length || typeof globalThis.MutationObserver !== 'function') return;
+    this._optionWatch = new MutationObserver(() => {
+      if (this._optionsFromData || this._optionNodes !== nodes) return;
+      this._options = nodes.map((node) => parseOptionNode(node, this.size)).filter(Boolean);
+      this.requestComponentUpdate('options');
+    });
+    for (const node of nodes) this._optionWatch.observe(node, {attributes: true});
+  }
+
+  /**
    * Options given as data instead of as child elements. A Smart parent that
    * renders this dropdown from a template owns those children, and capturing
    * them means removing them, which takes them out of the parent's hands for
@@ -528,6 +551,8 @@ class SfDropdown extends FormField(DropdownElement) {
    */
   set options(value) {
     const next = parseOptionList(value, this.size);
+    this._optionWatch?.disconnect();
+    this._optionWatch = null;
     this._optionsFromData = true;
     this._options = next;
     this._optionsCaptured = true;

@@ -6128,14 +6128,25 @@ SF.loadSmartBase = function loadSmartBase() {
 // from the Smart base, and settles with the set when it has published itself
 // -- from this script or from any bundle that carries a copy of it.
 let fieldRenderersReady = null;
+// The set settles with its words (field orders FO-4): a host draws its fields
+// once the set is here, and a field is no element that draws again when the
+// page's language file arrives, so a page whose words core fetches (no
+// core/lang/<code>.js) drew «Contains…» and «From» on a Russian page. The set
+// asks for its part when it publishes itself; this waits for the parts on
+// their way, at most languageWait ms (800 by default), as the scripts the
+// Loader adds wait.
+const withSetWords = (set) => {
+  const hold = languageHold();
+  return hold ? hold.then(() => set, () => set) : Promise.resolve(set);
+};
 SF.whenFieldRenderers = function whenFieldRenderers() {
-  if (SF.fieldRenderers?.renderEditField) return Promise.resolve(SF.fieldRenderers);
+  if (SF.fieldRenderers?.renderEditField) return withSetWords(SF.fieldRenderers);
   if (fieldRenderersReady) return fieldRenderersReady;
   fieldRenderersReady = new Promise((resolve, reject) => {
     const settle = () => {
       if (!SF.fieldRenderers?.renderEditField) return false;
       document.removeEventListener('sf-field-renderers-ready', settle);
-      resolve(SF.fieldRenderers);
+      resolve(withSetWords(SF.fieldRenderers));
       return true;
     };
     document.addEventListener('sf-field-renderers-ready', settle);

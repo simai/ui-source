@@ -79,5 +79,5 @@ test('sf-form still leaves out a field of an unknown type, and says so once per 
   const form = read('src/smart/form/index.js');
   assert.match(form, /const UNKNOWN_TYPES_TOLD = new Set\(\);/u);
   assert.match(form, /if \(modes\.view \|\| modes\.edit\) return;\n {2}UNKNOWN_TYPES_TOLD\.add\(type\);\n {2}console\.warn\(/u);
-  assert.ok(form.includes('warnUnknownType(field);'));
+  assert.ok(form.includes('warnUnknownType(field, this.hostDraws(field));')); // form fields 1.7.0: a type a field host draws is not unknown
 });

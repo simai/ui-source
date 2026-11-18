@@ -529,6 +529,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "error-message": {
+          "default": "",
+          "type": "string"
+        },
         "help": {
           "default": "",
           "type": "string"
@@ -575,7 +579,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.5.5"
+    "version": "1.6.0"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -708,7 +712,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.20.4"
+    "version": "1.20.5"
   },
   "sf-icon": {
     "inputs": {
@@ -1207,6 +1211,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "error-message": {
+          "default": "",
+          "type": "string"
+        },
         "help": {
           "default": "",
           "type": "string"
@@ -1226,6 +1234,10 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
         "inherited-value": {
           "default": "",
           "type": "string"
+        },
+        "invalid": {
+          "default": false,
+          "type": "boolean"
         },
         "label": {
           "default": "",
@@ -1269,6 +1281,6 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.9.3"
+    "version": "1.10.0"
   }
 });

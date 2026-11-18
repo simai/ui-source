@@ -3,13 +3,15 @@ import {unsafeHTML} from "lit/directives/unsafe-html.js";
 import {optionBadgeProps} from "../helpers/option-badge.js";
 import {pageLocale, pageText, pageWord} from "../../core/js/page-language";
 import {formatDate} from "../../core/js/format-date.js";
-import {PROPERTY_TYPES, modesOf} from "./registry.js";
+import {NUMBER_FILTER_OPERATORS, PLACES, PROPERTY_TYPES, TEMPLATE_ALIASES, TYPE_ALIASES, modesOf} from "./registry.js";
+import {completeWebAddress, composeLink, innError, innHolder, isLinkAddress, isWebAddress, readLink, shortAddress} from "./text-types.js";
+import {resolveField, templateParam, typeEntry} from "./templates.js";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
-import {addDecimal, compareDecimal, currencyCodes, currencyDisplayOf, currencyOf, formatDecimal, formatMoney, formatPercent, fractionDigits, moneyParts, moneyTotals, readDecimal, readTypedDecimal, restingDecimal} from "./decimal.js";
-import {formatPhone, phoneE164, splitPhone} from "./phone.js";
+import {addDecimal, compareDecimal, currencyCodes, currencyDisplayOf, currencyOf, formatDecimal, formatMoney, formatPercent, fractionDigits, isRtlLocale, moneyParts, moneyTotals, readDecimal, readTypedDecimal, restingDecimal} from "./decimal.js";
+import {formatPhone, phoneE164, phoneSearchText, splitPhone} from "./phone.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -69,6 +71,41 @@ function renderTextFilterControl(field, host) {
                 @change=${(event) => {
                     host.patchTempFilterValue(field.key, {
                         value: event.target?.value || '',
+                        operator: value.operator || field.filter?.defaultOperator || 'contains',
+                    });
+                }}
+        ></sf-input>
+    `;
+}
+
+// A phone is searched by what is stored (field orders FO-3): the request gets
+// the number as E.164, or the digits of a part of one, however it was typed,
+// and the box shows what went -- one form in the view, the row, the edit and
+// the filter. The condition is the text filter's (contains by default).
+// A full number is sent as E.164 and shown the way view, cell and edit show it;
+// a part of a number is sent and shown as its digits.
+function phoneFilterShown(sent) {
+    return String(sent || '').startsWith('+') ? formatPhone(sent) : String(sent || '');
+}
+
+function renderPhoneFilterControl(field, host) {
+    const value = host.getFilterControlValue(field.key);
+
+    return html`
+        <sf-input
+                size=${filterSize(host)}
+                appearance="filled"
+                placeholder="${setText(host, 'containsText')}"
+                value="${phoneFilterShown(value.value)}"
+                name="sf_filter_${field.key || 'phone'}"
+                inputmode="tel"
+                @change=${(event) => {
+                    const input = event.currentTarget ?? event.target;
+                    const sent = phoneSearchText(input?.value ?? '');
+                    const shown = phoneFilterShown(sent);
+                    if (input && input.value !== shown) input.value = shown;
+                    host.patchTempFilterValue(field.key, {
+                        value: sent,
                         operator: value.operator || field.filter?.defaultOperator || 'contains',
                     });
                 }}
@@ -149,7 +186,8 @@ function renderRangeFilterControl(field, host) {
 // whose currency lives in the value adds a currency choice (q-mp-mix): the
 // request carries `currency` and compares amounts within it. A new condition
 // of another shape drops the old value.
-export const NUMBER_FILTER_OPERATORS = Object.freeze(['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty']);
+// The list is the registry's (number, money and percent `conditions`).
+export {NUMBER_FILTER_OPERATORS};
 const NUMBER_NO_VALUE_OPERATORS = new Set(['empty', 'not-empty']);
 const operatorShape = (operator) => (NUMBER_NO_VALUE_OPERATORS.has(operator) ? 'none' : operator === 'between' ? 'two' : 'one');
 
@@ -168,8 +206,8 @@ function renderNumberFilterControl(field, host, look = {}) {
     const currencies = look.currencies || null;
     const currency = currencies ? (currencies.includes(control.currency) ? control.currency : currencies[0]) : (look.currency || null);
     const sign = look.money && currency ? currencyOf(currency, locale, currencyDisplayOf(field)) : null;
-    const textStart = sign?.before ? sign.sign : '';
-    const textEnd = look.percent ? '%' : (sign && !sign.before ? sign.sign : '');
+    const textStart = isolatedSign(sign?.before ? sign.sign : '', locale);
+    const textEnd = look.percent ? '%' : isolatedSign(sign && !sign.before ? sign.sign : '', locale);
     const minDigits = look.money && currency ? currencyOf(currency, locale).minor : 0;
     const shown = (value) => restingDecimal(value, locale, value === '' || value === null || value === undefined ? 0 : minDigits);
     const withCurrency = (patch) => (currencies ? {...patch, currency} : patch);
@@ -200,7 +238,7 @@ function renderNumberFilterControl(field, host, look = {}) {
                 root-class="flex-1 min-w-0"
                 label=${label}
                 value=${shown(value)}
-                inputmode=${look.integer ? 'numeric' : 'decimal'}
+                inputmode=${look.integer || resolveField(field).decimals === 0 ? 'numeric' : 'decimal'}
                 text-start=${textStart || nothing}
                 text-end=${textEnd || nothing}
                 name="sf_filter_${field.key || 'number'}${index ? '_second' : ''}"
@@ -405,6 +443,7 @@ function renderDateConditionValue(field, host, current, value, patch) {
             ></sf-input-date>`;
     }
     if (current.need === 'days') return renderDateRangeValue(field, host, current, value, patch);
+    if (current.need === 'time' || current.need === 'times') return renderTimeConditionValue(field, host, current, value, patch);
     // «when» (a period field): a period by name, or two days of one's own.
     const own = Array.isArray(value);
     const periods = [...DATE_PERIODS, ...(field.filter?.future === true ? DATE_FUTURE_PERIODS : [])];
@@ -434,6 +473,45 @@ function renderDateConditionValue(field, host, current, value, patch) {
             <sf-list-item kind="text" size=${size} text="${setText(host, 'dateOwnDays')}" value="own" ?selected=${own}></sf-list-item>
         </sf-dropdown>
         ${own ? renderDateRangeValue(field, host, current, value, patch) : nothing}`;
+}
+
+// A time of day's condition (catalogue step 4): one time, or two side by side
+// for «Между» (from, to; both ends in), typed as the edit types one -- the
+// time row of sf-input-date. A half-typed time writes nothing.
+function renderTimeConditionValue(field, host, current, value, patch) {
+    const size = filterSize(host);
+    const name = `sf_filter_${field.key || 'time'}`;
+    const two = current.need === 'times';
+    const times = two ? (Array.isArray(value) ? [String(value[0] ?? ''), String(value[1] ?? '')] : ['', ''])
+        : [typeof value === 'string' ? value : ''];
+    const control = (index, label) => html`
+        <sf-input-date
+                mode="time"
+                size=${size}
+                root-class=${two ? 'flex-1 min-w-0' : nothing}
+                label="${label}"
+                .value=${splitTime(times[index]).time}
+                minute-step=${minuteStepOf(field) || nothing}
+                name="${name}${index ? '_second' : ''}"
+                @change=${(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    const time = normalizeTime(String(event.detail?.value ?? ''));
+                    if (time === null) return;
+                    if (!two) {
+                        patch({operator: current.operator, value: time || null});
+                        return;
+                    }
+                    const next = [...times];
+                    next[index] = time;
+                    patch({operator: current.operator, value: next});
+                }}
+        ></sf-input-date>`;
+    if (!two) return control(0, setText(host, 'timeValue'));
+    return html`
+        <div class="sf-filter-operator-inputs flex gap-1/3 items-cross-start">
+            ${control(0, setText(host, 'rangeFrom'))}
+            ${control(1, setText(host, 'rangeTo'))}
+        </div>`;
 }
 
 // Two days on a range calendar. Its quick ranges are the whole periods: one
@@ -557,6 +635,9 @@ export const FILTER_RENDERERS = {
     integer: renderIntegerFilterControl,
     date: renderDateFilterControl,
     datetime: renderDateFilterControl,
+    // A time of day has its own conditions (catalogue step 4), drawn by the
+    // date filter: equals, between, earlier, later, empty, not empty.
+    time: renderDateFilterControl,
     range: renderRangeFilterControl,
     'date-range': renderDateFilterControl,
     // A period field (a start and an end, C293): its own conditions -- overlaps,
@@ -567,6 +648,15 @@ export const FILTER_RENDERERS = {
     choice: renderMultiSelectFilterControl,
     choices: renderMultiSelectFilterControl,
     boolean: renderMultiSelectFilterControl,
+    // phone: its stored form, E.164 or the digits of a part (C302, FO-3);
+    // password: set or not set.
+    phone: renderPhoneFilterControl,
+    password: renderPasswordFilterControl,
+    // url, link (its text and its address) and ru.inn are searched as text
+    // (catalogue step 3).
+    url: renderTextFilterControl,
+    link: renderTextFilterControl,
+    'ru.inn': renderTextFilterControl,
     user: renderMultiSelectFilterControl,
     'entity-multi-select': renderEntityMultiSelectFilterControl,
     'entity-single-select': renderEntityMultiSelectFilterControl,
@@ -591,7 +681,7 @@ export {buildFilterRequest, dateFilterChipText, dateFilterConditions, filterRequ
     normalizeFilterEntry, resolveDatePeriod, DATE_PERIODS, DATE_FUTURE_PERIODS};
 
 export function renderFilterField(field = {}, host) {
-    const asked = field.filter?.control || field.propertyType || field.type || field.dataType || 'text';
+    const asked = field.filter?.control || resolveField(field).type || 'text';
     const renderer = FILTER_RENDERERS[asked] || FILTER_RENDERERS.text;
 
     return renderer(field, host);
@@ -638,6 +728,17 @@ const CELL_LINE = '1/2';
 // C140 (2)) and its own text colour, so the tint survives the appearance
 // untouched. Both are measured on the built bytes.
 const CELL_BADGE_APPEARANCE = 'tonal';
+
+// The template parameter badge (C302; badgeAppearance before it): tonal or
+// outline. main is the attention count's alone (C140 (4)): sf-badge draws it
+// tonal on any colour but error, so a value badge reads main as tonal here
+// and never asks the badge for it (FW-1).
+const VALUE_BADGE_APPEARANCES = new Set(['tonal', 'outline']);
+
+function badgeAppearanceOf(field) {
+    const asked = String(templateParam(field, 'badge') ?? '');
+    return VALUE_BADGE_APPEARANCES.has(asked) ? asked : CELL_BADGE_APPEARANCE;
+}
 
 // A file cell is a reference link with an icon chosen from the mime type: the
 // consumer asked for an icon and the label and nothing else -- no size as text
@@ -718,7 +819,7 @@ function renderColorEdit(field, value, host) {
                 name=${fieldName(field)}
                 value=${hex ? String(hex) : nothing}
                 inherited-value=${inherited ? String(inherited) : nothing}
-                swatches=${field.swatches ? String(field.swatches) : nothing}
+                swatches=${templateParam(field, 'swatches') ? String(templateParam(field, 'swatches')) : nothing}
                 ?clearable=${Boolean(inherited) || field.required !== true}
                 ?readonly=${field.readonly === true}
                 aria-label=${field.label || field.key || ''}
@@ -778,7 +879,7 @@ function renderFilePreviewCell(value) {
 // rather than the attributes, which is what makes that true.
 function renderChoicesCell(field, value) {
     if (!Array.isArray(value) || !value.length) return null;
-    if (String(field.variant ?? '') === 'badges') return renderChoicesBadgesCell(field, value);
+    if (templateOf(field) === 'badges') return renderChoicesBadgesCell(field, value);
     const options = field.options || field.filter?.options || field.constraints?.options;
     const label = (item) => {
         const option = Array.isArray(options)
@@ -814,7 +915,7 @@ function renderChoicesBadgesCell(field, value) {
                 props: {
                     line: CELL_LINE,
                     text,
-                    appearance: field.badgeAppearance ?? CELL_BADGE_APPEARANCE,
+                    appearance: badgeAppearanceOf(field),
                     ...(badge?.scheme ? {scheme: badge.scheme} : {}),
                     ...(badge?.rootStyle ? {rootStyle: badge.rootStyle} : {}),
                 },
@@ -827,6 +928,11 @@ const CELL_RENDERERS = {
     // A string is its own text in a row -- except a password, which is never
     // shown anywhere: a row says whether one is set.
     string: renderStringCell,
+    phone: renderPhoneCell,
+    password: renderPasswordCell,
+    url: renderUrlCell,
+    link: renderLinkCell,
+    'ru.inn': renderInnCell,
     // A date in a row used to be whatever the host had stored, printed --
     // «2026-09-25T07:12:00+03:00» beside the same value reading «25 сентября
     // 2026» in the record panel, with no way for a consumer to change the
@@ -841,7 +947,6 @@ const CELL_RENDERERS = {
     color: renderColorCell,
     include: renderIncludeCell,
     choice: renderChoiceCell,
-    integer: renderNumericCell,
     number: renderNumericCell,
     user: renderUserCell,
     record: renderReferenceCell,
@@ -863,8 +968,8 @@ const CELL_RENDERERS = {
 // was -- an English admin saw «Да» -- so it follows the page's language now.
 function booleanWords(field, host) {
     return {
-        yes: field.trueText ?? field.labels?.true ?? setText(host, 'yes'),
-        no: field.falseText ?? field.labels?.false ?? setText(host, 'no'),
+        yes: templateParam(field, 'trueText') ?? field.labels?.true ?? setText(host, 'yes'),
+        no: templateParam(field, 'falseText') ?? field.labels?.false ?? setText(host, 'no'),
     };
 }
 
@@ -890,7 +995,7 @@ function renderChoiceCell(field, value) {
             props: {
                 line: CELL_LINE,
                 text: option.label ?? option.text ?? String(value),
-                appearance: field.badgeAppearance ?? CELL_BADGE_APPEARANCE,
+                appearance: badgeAppearanceOf(field),
                 ...(badge?.scheme ? {scheme: badge.scheme} : {}),
                 ...(badge?.rootStyle ? {rootStyle: badge.rootStyle} : {}),
             },
@@ -932,6 +1037,8 @@ function renderMoneyCell(field, value, host) {
 }
 
 function renderPercentCell(field, value, host) {
+    const level = levelCell(field, value);
+    if (level) return level;
     const formatted = renderHostFormattedCell(field, value, host);
     if (formatted !== null) return formatted;
     const text = formatPercent(scalarValue(value), pageLocale(host ?? null));
@@ -963,16 +1070,30 @@ function meterProps(field, number) {
     return {inline: true, meter: true, value: String(number), ...(name ? {label: name} : {})};
 }
 
+// A percent drawn as a scale or a meter (step 5): the number's own drawings,
+// for a percent 0..100; any other percent is its text.
+function levelCell(field, value) {
+    const variant = templateOf(field);
+    if (variant !== 'scale' && variant !== 'meter') return null;
+    const number = Number(scalarValue(value));
+    if (scalarValue(value) === null || scalarValue(value) === '' || !Number.isFinite(number) || number < 0 || number > 100) return null;
+    if (variant === 'meter') return {component: {type: 'progress-bar', props: meterProps(field, number)}};
+    return {component: {type: 'progress-scale', props: {line: CELL_LINE, value: String(number)}}};
+}
+
 function renderNumericCell(field, value, host) {
-    const variant = field.variant || field.filter?.variant;
+    const variant = templateOf(field);
     const number = Number(scalarValue(value));
     if ((variant !== 'scale' && variant !== 'meter') || !Number.isFinite(number)) {
         // The host's text first; else the number in the page's language, as
-        // the view prints it («12,5»), where the table printed «12.5».
+        // the view prints it («12,5»), where the table printed «12.5». The
+        // field's unit follows it as it does in the view (cards study CV-7:
+        // a card's stock read a bare «13» where the record said «13 шт»).
         const formatted = renderHostFormattedCell(field, value, host);
-        if (formatted !== null) return formatted;
-        if (carriesText(value)) return value.text || null;
-        return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || null;
+        const text = formatted !== null ? formatted
+            : carriesText(value) ? value.text || null
+                : formatDecimal(scalarValue(value), pageLocale(host ?? null)) || null;
+        return text && field.unit ? `${text} ${field.unit}` : text;
     }
     if (number < 0 || number > 100) return null;
     if (variant === 'meter') return {component: {type: 'progress-bar', props: meterProps(field, number)}};
@@ -1043,7 +1164,7 @@ function renderHtmlCell(field, value) {
 // table renders it through the path it already had, so the set adds no second
 // way to draw a cell.
 export function renderCellField(field = {}, value, host) {
-    const asked = field.propertyType || field.type || field.dataType;
+    const asked = resolveField(field).type;
     const renderer = CELL_RENDERERS[asked];
     if (!renderer) return null;
 
@@ -1088,9 +1209,13 @@ const EDIT_RENDERERS = {
     user: renderRecordLookup,
     lookup: renderLookupEdit,
     string: renderTextEdit,
+    phone: renderPhoneEdit,
+    password: renderPasswordEdit,
+    url: renderUrlEdit,
+    link: renderLinkEdit,
+    'ru.inn': renderInnEdit,
     text: renderTextAreaEdit,
     html: renderHtmlEdit,
-    integer: renderNumberEdit,
     number: renderNumberEdit,
     date: renderDateEdit,
     datetime: renderDateTimeEdit,
@@ -1109,10 +1234,11 @@ function fieldName(field) {
     return `sf_field_${field.key || 'value'}`;
 }
 
-// A telephone is a string with a shape, not a type of its own: the Framework
-// already has a control that knows country codes, dial prefixes and masks, so a
-// `string` whose variant is `phone` gets it and everything else about a string
-// stays true. Counted on a running Larena site, which declares one.
+// A telephone is a type of its own (owner decision C302 (1), 2026-11-17): it
+// stores E.164 and is checked as a number, where a string is any text. It was
+// a `string` whose variant was `phone`, which is still read as this type until
+// 2027-01-01 (templates.js). The control is sf-input-country, which knows
+// country codes, dial prefixes and masks.
 //
 // What it writes is E.164, `+79161234567` (FL-1): the control's own form value,
 // whatever the box shows -- `+7 916 123-45-67` written back changed a stored
@@ -1155,10 +1281,6 @@ function phoneWritten(event, extension = '') {
     return number && extension ? `${number};ext=${extension}` : number;
 }
 
-function isPhoneField(field) {
-    return String(field.variant ?? '') === 'phone';
-}
-
 // A phone shown: the host's text first (formatFieldValue, or {value, text}),
 // as for any string; else the number
 // laid out by its country, left to right on a right-to-left page too (an
@@ -1170,9 +1292,10 @@ function phoneText(field, value, host) {
     return formatPhone(scalarValue(value), setText(host, 'phoneExtension'));
 }
 
-// A password is a string the set never shows (owner, 2026-10-19; Larena's
-// storage settings). The host never sends one: the value of a `password`
-// variant is {set: true} or {set: false}, and null or an absent value reads as
+// A password is a type the set never shows (owner, 2026-10-19; a type of its
+// own since C302 (1), a string with variant `password` before, read as it
+// until 2027-01-01). The host never sends one: the value of a `password`
+// field is {set: true} or {set: false}, and null or an absent value reads as
 // not set. View, cell and a read-only field say «задан» or «не задан» in the
 // page's language and nothing else. A host that sends a string by mistake gets
 // «задан» for it, and the string is still not drawn.
@@ -1188,10 +1311,6 @@ function phoneText(field, value, host) {
 // sf-input's own (C123 (4): a glyph inside the field, the crossed eye after a
 // press); the set drew a second one beside the field until the text inputs
 // study (TI-7), so a record card showed two.
-function isPasswordField(field) {
-    return String(field.variant ?? '') === 'password';
-}
-
 function passwordIsSet(value) {
     if (value && typeof value === 'object' && !Array.isArray(value)) return value.set === true;
     return typeof value === 'string' && value !== '';
@@ -1230,30 +1349,299 @@ function renderPasswordEdit(field, value, host) {
     `;
 }
 
-function renderStringCell(field, value, host) {
-    if (isPhoneField(field)) {
-        const text = phoneText(field, value, host);
-        return text ? html`<bdi dir="ltr">${text}</bdi>` : null;
-    }
-    return isPasswordField(field) ? passwordState(host, value) : null;
+// url, link, ru.inn (catalogue step 3; text-types.js holds the rules).
+//
+// A text checked on the way in, as a masked string is (port 1.16.0): what is
+// not a value yet is said through setFieldError, which holds a save, and
+// under the field once the person leaves it; a host that does not hear
+// errors hears undefined. Empty writes null.
+function checkedTextEdit(field, value, host, {check, complete = null, inputType = '', inputmode = '', maxlength = '', autocomplete = ''}) {
+    const write = (event, left) => {
+        const input = event.currentTarget ?? event.target;
+        const typed = String(input?.value ?? '').trim();
+        // What the text stands for (a url's bare domain, FO-5): checked and
+        // written while typing, and shown in the field once the person leaves it.
+        const text = typed && complete ? complete(typed) : typed;
+        if (left && input && text !== typed && !check(text)) input.value = text;
+        const reason = text ? check(text) : null;
+        if (reason) {
+            const message = setText(host, reason);
+            if (left && input) {
+                input.setAttribute('error-message', message);
+                input.toggleAttribute('invalid', true);
+            }
+            if (typeof host.setFieldError === 'function') {
+                host.setFieldError(field, message);
+                host.setFieldValue(field, text);
+            } else {
+                host.setFieldValue(field, undefined);
+            }
+            return;
+        }
+        if (input?.hasAttribute?.('invalid')) {
+            input.toggleAttribute('invalid', false);
+            input.removeAttribute('error-message');
+        }
+        host.setFieldError?.(field, null);
+        host.setFieldValue(field, text || null);
+    };
+    const shown = scalarValue(value);
+    return html`
+        <sf-input
+                size=${EDIT_SIZE}
+                appearance="bordered"
+                name=${fieldName(field)}
+                value=${shown === null || shown === undefined ? '' : String(shown)}
+                placeholder=${field.placeholder || nothing}
+                input-type=${inputType || nothing}
+                inputmode=${inputmode || nothing}
+                maxlength=${maxlength || nothing}
+                autocomplete=${autocomplete || nothing}
+                ?required=${Boolean(field.required)}
+                aria-label=${field.label || field.key || ''}
+                @input=${(event) => write(event, false)}
+                @change=${(event) => write(event, true)}
+        ></sf-input>
+    `;
+}
+
+// A web address (url@1): the edit is sf-input of type url, checked as an
+// absolute http(s) address; the view a link that opens in a new tab; a row
+// the host and the start of the path. An address that is not one is shown as
+// text, never as a link.
+function renderUrlEdit(field, value, host) {
+    return checkedTextEdit(field, value, host, {
+        check: (text) => (isWebAddress(text) ? null : 'urlInvalid'),
+        // «simai.io» is https://simai.io (dispatcher decision FO-5); a text
+        // with a scheme of its own keeps it and is refused unless http(s).
+        complete: completeWebAddress,
+        inputType: 'url', inputmode: 'url', autocomplete: 'url',
+    });
+}
+
+function addressLink(href, text) {
+    return html`<a class="sf-link" href=${href} target="_blank" rel="noopener noreferrer"><bdi dir="ltr">${text}</bdi></a>`;
+}
+
+function renderUrlView(field, value, host) {
+    const text = viewText(field, value, host);
+    if (!text) return nothing;
+    const href = scalarValue(value);
+    return html`<span class="sf-field-view">${isWebAddress(href) ? addressLink(href, text) : text}</span>`;
+}
+
+function renderUrlCell(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    const href = scalarValue(value);
+    if (!isWebAddress(href)) return typeof formatted === 'string' ? formatted : null;
+    return addressLink(href, typeof formatted === 'string' ? formatted : shortAddress(href));
+}
+
+// A link with its text (link@1): {href, text?}. The view and the row are the
+// text as a link (the address where there is no text); a site path or an
+// anchor opens in place, an http(s) address in a new tab; an address that is
+// not one is the text alone. The edit is two fields, the address and the text.
+// A link's own `text` is its words, not a host's formatted text: an object
+// with an href is the link itself.
+function linkValue(value) {
+    return value && typeof value === 'object' && !Array.isArray(value) && typeof value.href === 'string' ? value : scalarValue(value);
+}
+
+function linkParts(value) {
+    const link = readLink(linkValue(value));
+    if (!link) return null;
+    const words = link.text || link.href;
+    return {...link, words, safe: isLinkAddress(link.href)};
+}
+
+function linkAnchor(link) {
+    if (!link.safe) return html`${link.words}`;
+    const away = isWebAddress(link.href);
+    return html`<a class="sf-link" href=${link.href} target=${away ? '_blank' : nothing} rel=${away ? 'noopener noreferrer' : nothing}>${link.text ? link.text : html`<bdi dir="ltr">${link.href}</bdi>`}</a>`;
+}
+
+function renderLinkView(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted ? html`<span class="sf-field-view">${formatted}</span>` : nothing;
+    const link = linkParts(value);
+    return link ? html`<span class="sf-field-view">${linkAnchor(link)}</span>` : nothing;
+}
+
+function renderLinkCell(field, value, host) {
+    const formatted = host?.formatFieldValue?.(field, value);
+    if (typeof formatted === 'string') return formatted || null;
+    const link = linkParts(value);
+    return link ? linkAnchor(link) : null;
+}
+
+// Each change reads both fields as they stand, so the text typed before the
+// address is kept while the address is still empty.
+// The address box is text with the address keyboard, not input-type url: a
+// link's href may be a path from the site's root or an #anchor (link@1), which
+// the browser's url check calls wrong, and a form that reads the control's
+// validity refused a stored «/about» (sf-form 1.7.0 probe). composeLink is the
+// check.
+function renderLinkEdit(field, value, host) {
+    const stored = readLink(linkValue(value)) ?? {href: '', text: ''};
+    const write = (part, event, left) => {
+        const input = event.currentTarget ?? event.target;
+        const box = input?.closest?.('.sf-field-link');
+        const hrefInput = box?.querySelector?.('[data-sf-link-part="href"]');
+        const textInput = box?.querySelector?.('[data-sf-link-part="text"]');
+        const read = (one, own) => String(one ? one.value ?? '' : own);
+        const next = {href: read(hrefInput, stored.href), text: read(textInput, stored.text)};
+        const result = composeLink(next.href, next.text);
+        if (result.error) {
+            const message = setText(host, result.error);
+            const at = result.error === 'linkTextLong' ? textInput : hrefInput;
+            if (left && at) {
+                at.setAttribute('error-message', message);
+                at.toggleAttribute('invalid', true);
+            }
+            if (typeof host.setFieldError === 'function') {
+                host.setFieldError(field, message);
+                host.setFieldValue(field, {href: next.href.trim(), ...(next.text.trim() ? {text: next.text.trim()} : {})});
+            } else {
+                host.setFieldValue(field, undefined);
+            }
+            return;
+        }
+        for (const one of [hrefInput, textInput]) {
+            if (one?.hasAttribute?.('invalid')) {
+                one.toggleAttribute('invalid', false);
+                one.removeAttribute('error-message');
+            }
+        }
+        host.setFieldError?.(field, null);
+        host.setFieldValue(field, result.value);
+    };
+    return html`
+        <span class="sf-field-link flex flex-col gap-1/3 min-w-0">
+            <sf-input
+                    size=${EDIT_SIZE}
+                    appearance="bordered"
+                    data-sf-link-part="href"
+                    name="${fieldName(field)}_href"
+                    label=${setText(host, 'linkAddress')}
+                    value=${stored.href}
+                    inputmode="url"
+                    ?required=${Boolean(field.required)}
+                    aria-label=${`${field.label || field.key || ''} ${setText(host, 'linkAddress')}`.trim()}
+                    @input=${(event) => write('href', event, false)}
+                    @change=${(event) => write('href', event, true)}
+            ></sf-input>
+            <sf-input
+                    size=${EDIT_SIZE}
+                    appearance="bordered"
+                    data-sf-link-part="text"
+                    name="${fieldName(field)}_text"
+                    label=${setText(host, 'linkText')}
+                    value=${stored.text}
+                    maxlength="255"
+                    aria-label=${`${field.label || field.key || ''} ${setText(host, 'linkText')}`.trim()}
+                    @input=${(event) => write('text', event, false)}
+                    @change=${(event) => write('text', event, true)}
+            ></sf-input>
+        </span>
+    `;
+}
+
+// A Russian taxpayer number (ru.inn@1): digits, typed with the digit
+// keyboard, checked by its length for the field's `holder` and by the check
+// digits; shown and listed as its digits, left to right. No maxlength: it
+// drew sf-input's «10 / 12» counter under a complete number, and the length
+// is the check's to say.
+function renderInnEdit(field, value, host) {
+    const holder = innHolder(field);
+    return checkedTextEdit(field, value, host, {
+        check: (text) => innError(text, holder),
+        inputmode: 'numeric', autocomplete: 'off',
+    });
+}
+
+function innText(field, value, host) {
+    return viewText(field, value, host);
+}
+
+function renderInnView(field, value, host) {
+    const text = innText(field, value, host);
+    return text ? html`<span class="sf-field-view num-tabular"><bdi dir="ltr">${text}</bdi></span>` : nothing;
+}
+
+function renderInnCell(field, value, host) {
+    const text = innText(field, value, host);
+    return text ? html`<bdi dir="ltr">${text}</bdi>` : null;
+}
+
+// A string in a row is its own text: the table prints the value.
+function renderStringCell() {
+    return null;
 }
 
 function renderStringView(field, value, host) {
-    if (isPasswordField(field)) return html`<span class="sf-field-view">${passwordState(host, value)}</span>`;
-    if (isPhoneField(field)) {
-        const text = phoneText(field, value, host);
-        return text ? html`<span class="sf-field-view"><bdi dir="ltr">${text}</bdi></span>` : nothing;
-    }
     return renderTextView(field, value, host);
 }
 
-// A file shown as what it is. The site keeps logos, so a file whose variant says
-// image is drawn as the image rather than as a row with a paperclip -- the same
-// stored file, told apart by the host rather than guessed from a file name.
-const IMAGE_VARIANTS = new Set(['image', 'image-card', 'image-list']);
+function renderPhoneCell(field, value, host) {
+    const text = phoneText(field, value, host);
+    return text ? html`<bdi dir="ltr">${text}</bdi>` : null;
+}
+
+function renderPhoneView(field, value, host) {
+    const text = phoneText(field, value, host);
+    return text ? html`<span class="sf-field-view"><bdi dir="ltr">${text}</bdi></span>` : nothing;
+}
+
+// A password is never shown anywhere: a row and a record say whether one is set.
+function renderPasswordCell(field, value, host) {
+    return passwordState(host, value);
+}
+
+function renderPasswordView(field, value, host) {
+    return html`<span class="sf-field-view">${passwordState(host, value)}</span>`;
+}
+
+// A password is filtered by whether it is set: «Задан» is the condition
+// not-empty, «Не задан» empty, each with the value true, as the number
+// filter writes the two (C294).
+function renderPasswordFilterControl(field, host) {
+    const control = host.getFilterControlValue(field.key) || {};
+    const chosen = control.operator === 'empty' ? 'unset' : control.operator === 'not-empty' ? 'set' : '';
+    return html`
+        <sf-dropdown
+                size=${filterSize(host)}
+                appearance="bordered"
+                mode="select"
+                search="false"
+                label=${setText(host, 'condition')}
+                placeholder=${setText(host, 'condition')}
+                name="sf_filter_${field.key || 'password'}"
+                .options=${[['set', 'passwordSet'], ['unset', 'passwordUnset']].map(([value, word]) => ({
+                    type: 'text', size: filterSize(host), value, text: setText(host, word), selected: value === chosen}))}
+                @change=${(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    const next = event.detail?.values?.[0] || event.detail?.value;
+                    if (!next) return;
+                    host.patchTempFilterValue(field.key, {operator: next === 'set' ? 'not-empty' : 'empty', value: true});
+                }}
+        ></sf-dropdown>
+    `;
+}
+
+// A file shown as what it is. The site keeps logos, so a file whose template
+// is image, image_card or image_list is drawn as the image rather than as a
+// row with a paperclip -- the same stored file, told apart by the host rather
+// than guessed from a file name.
+const IMAGE_TEMPLATES = new Set(['image', 'image_card', 'image_list']);
+
+// The template a field is drawn with (C302): templates.js resolveField, which
+// reads the former variant and says a fallback once.
+function templateOf(field) {
+    return resolveField(field).template;
+}
 
 function isImageField(field) {
-    return IMAGE_VARIANTS.has(String(field.variant ?? ''));
+    return IMAGE_TEMPLATES.has(templateOf(field));
 }
 
 // A block of text or code the host keeps in a file: six of them on a running
@@ -1272,7 +1660,7 @@ function renderIncludeView(field, value) {
     const text = scalarValue(value);
     if (!text) return nothing;
     return html`
-        <pre class="sf-field-include" data-language=${field.language ? String(field.language) : nothing}><code>${String(text)}</code></pre>
+        <pre class="sf-field-include" data-language=${templateParam(field, 'language') ? String(templateParam(field, 'language')) : nothing}><code>${String(text)}</code></pre>
     `;
 }
 
@@ -1286,7 +1674,7 @@ function renderIncludeEdit(field, value, host) {
                 class="sf-field-include-edit"
                 name=${fieldName(field)}
                 value=${scalarValue(value) ?? ''}
-                rows="8"
+                rows=${rowsOf(field, 8)}
                 text="code"
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
@@ -1295,6 +1683,12 @@ function renderIncludeEdit(field, value, host) {
                 @input=${(event) => host.setFieldValue(field, event.target?.value ?? '')}
         ></sf-input-textarea>
     `;
+}
+
+// The rows a text or a code area shows (template parameter rows, 1..50).
+function rowsOf(field, fallback) {
+    const asked = Number(templateParam(field, 'rows'));
+    return Number.isInteger(asked) && asked >= 1 && asked <= 50 ? String(asked) : (fallback ? String(fallback) : nothing);
 }
 
 function renderIncludeCell(field, value) {
@@ -1308,8 +1702,6 @@ function renderIncludeCell(field, value) {
 
 function renderTextEdit(field, value, host) {
     const mask = maskPattern(field);
-    if (String(field.variant ?? '') === 'phone') return renderPhoneEdit(field, value, host);
-    if (isPasswordField(field)) return renderPasswordEdit(field, value, host);
     if (mask) return renderMaskedEdit(field, value, host, mask);
     value = scalarValue(value);
     return html`
@@ -1408,6 +1800,7 @@ function renderTextAreaEdit(field, value, host) {
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
+                rows=${rowsOf(field)}
                 placeholder=${field.placeholder || nothing}
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
@@ -1448,14 +1841,14 @@ function renderHtmlEdit(field, value, host) {
 // own keys, read by this variant alone: a renderer still does not enforce a
 // constraint, the stepper only stops at it and the host validates the record.
 //
-// An integer has no digits after the point, whatever the field says. A number
-// takes `precision`, else the digits its `step` implies, else two: a number
-// field whose stepper could not take a decimal mark would be an integer field.
+// A number's digits are its `decimals` (C303 (2); `precision` before it, an
+// integer's 0), else the digits its `step` implies, else two: a number field
+// whose stepper could not take a decimal mark would be a whole one.
 // The value goes out as the stepper's number, or null when the field is
 // emptied; the panel prints the label, so the control takes it as its
 // accessible name only.
 function isStepperField(field) {
-    return String(field.variant ?? '') === 'stepper';
+    return templateOf(field) === 'stepper';
 }
 
 function stepperNumber(raw) {
@@ -1464,13 +1857,18 @@ function stepperNumber(raw) {
     return Number.isFinite(number) ? String(number) : '';
 }
 
-function renderStepperEdit(field, value, host) {
-    const decimal = (field.propertyType || field.type) === 'number';
+// A percent's stepper (step 5) writes the decimal string a percent is
+// («12.5», never a float) and carries «%» after the number.
+function renderStepperEdit(field, value, host, {percent = false} = {}) {
+    const {decimals} = resolveField(field);
     const step = stepperNumber(field.step);
-    const precision = decimal
-        ? stepperNumber(field.precision) || (step ? '' : '2')
-        : '0';
-    const write = (event) => host.setFieldValue(field, event.detail?.value ?? null);
+    const precision = decimals !== null ? String(decimals) : (step ? '' : '2');
+    const written = (raw) => {
+        if (!percent || raw === null || raw === undefined || raw === '') return raw ?? null;
+        const read = readDecimal(String(raw));
+        return read.ok ? read.value : null;
+    };
+    const write = (event) => host.setFieldValue(field, written(event.detail?.value ?? null));
     return html`
         <sf-input-quantity
                 size=${EDIT_SIZE}
@@ -1480,6 +1878,7 @@ function renderStepperEdit(field, value, host) {
                 max=${stepperNumber(field.max) || nothing}
                 step=${step || nothing}
                 precision=${precision || nothing}
+                unit=${percent ? '%' : nothing}
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
                 ?disabled=${field.readonly === true}
@@ -1491,43 +1890,28 @@ function renderStepperEdit(field, value, host) {
 
 // A number is a decimal (property-view port 1.18.0: «never a float on the
 // wire»). What is typed is read with a comma or a point and spaces between
-// groups. A number field whose value arrives as a string, or that declares
-// `precision`, is a decimal-string field: it writes the canonical decimal
-// string («1500.50»), never a float, and refuses more digits after the point
-// than `precision` allows. Any other number field writes a number, as before;
-// an integer field is unchanged. Text that is not a number is reported as a
+// groups. A number is one type (C303 (2)): `decimals`, fixed when the field
+// is created, is how many digits it keeps after the point, 0 for a whole
+// number (an integer field reads as decimals 0); more is a field error,
+// never rounded, and a whole number has the digit keyboard. A number field
+// whose value arrives as a string, or that declares its decimals, is a
+// decimal-string field: it writes the canonical decimal string («1500.50»),
+// never a float. Any other number field -- an integer field among them --
+// writes a number, as before. Text that is not a number is reported as a
 // masked string's incomplete entry is: through setFieldError, which holds the
 // save, and under the field once the person leaves it.
+function declaresDecimals(field) {
+    return Number.isInteger(field.decimals) || Number.isInteger(field.precision);
+}
+
 function isDecimalStringField(field, value) {
-    return (field.propertyType || field.type) === 'number'
-        && (typeof value === 'string' || Number.isInteger(field.precision));
+    return typeof value === 'string' || declaresDecimals(field);
 }
 
 function renderNumberEdit(field, value, host) {
     if (isStepperField(field)) return renderStepperEdit(field, value, host);
-    const decimal = (field.propertyType || field.type) === 'number';
+    const {decimals} = resolveField(field);
     value = scalarValue(value);
-    if (!decimal) {
-        return html`
-            <sf-input
-                    size=${EDIT_SIZE}
-                    appearance="bordered"
-                    name=${fieldName(field)}
-                    value=${value ?? ''}
-                    inputmode="numeric"
-                    ?required=${Boolean(field.required)}
-                    aria-label=${field.label || field.key || ''}
-                    @input=${(event) => {
-                        const next = event.target?.value ?? '';
-                        host.setFieldValue(field, next === '' ? null : Number(next));
-                    }}
-                    @change=${(event) => {
-                        const next = event.target?.value ?? '';
-                        host.setFieldValue(field, next === '' ? null : Number(next));
-                    }}
-            ></sf-input>
-        `;
-    }
     const asString = isDecimalStringField(field, value);
     const write = (event, left) => {
         const input = event.currentTarget ?? event.target;
@@ -1535,8 +1919,10 @@ function renderNumberEdit(field, value, host) {
         const read = readDecimal(text);
         let message = null;
         if (!read.ok) message = setText(host, 'notNumber');
-        else if (read.value !== null && Number.isInteger(field.precision) && fractionDigits(read.value) > field.precision) {
-            message = pageWord(SET_TEXT, 'precisionMax', host ?? null, {component: SET_NAME, count: field.precision});
+        else if (read.value !== null && decimals !== null && fractionDigits(read.value) > decimals) {
+            message = decimals === 0
+                ? setText(host, 'wholeNumber')
+                : pageWord(SET_TEXT, 'precisionMax', host ?? null, {component: SET_NAME, count: decimals});
         }
         if (message) {
             if (left && input) {
@@ -1566,7 +1952,8 @@ function renderNumberEdit(field, value, host) {
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
-                inputmode="decimal"
+                inputmode=${decimals === 0 ? 'numeric' : 'decimal'}
+                root-class=${EDIT_ALIGN_END ? 'text-end num-tabular' : nothing}
                 ?required=${Boolean(field.required)}
                 aria-label=${field.label || field.key || ''}
                 @input=${(event) => write(event, false)}
@@ -1706,6 +2093,7 @@ function decimalInput(field, value, host, {key, check, write, currency = null, m
         const read = readTypedDecimal(text, {locale, currency});
         write(read.ok ? read.value : text, message);
     };
+    const rootClasses = [rootClass, EDIT_ALIGN_END ? 'text-end num-tabular' : ''].filter(Boolean).join(' ');
     return html`
         <sf-input
                 size=${EDIT_SIZE}
@@ -1713,10 +2101,10 @@ function decimalInput(field, value, host, {key, check, write, currency = null, m
                 name=${fieldName(field)}
                 value=${decimalShown(host, key, value, {currency, minDigits})}
                 inputmode="decimal"
-                text-start=${textStart || nothing}
-                text-end=${textEnd || nothing}
+                text-start=${isolatedSign(textStart, locale) || nothing}
+                text-end=${isolatedSign(textEnd, locale) || nothing}
                 placeholder=${field.placeholder || nothing}
-                root-class=${rootClass || nothing}
+                root-class=${rootClasses || nothing}
                 ?required=${Boolean(field.required)}
                 ?invalid=${Boolean(own)}
                 error-message=${own || nothing}
@@ -1727,6 +2115,15 @@ function decimalInput(field, value, host, {key, check, write, currency = null, m
     `;
 }
 
+// A currency sign inside the field on a right-to-left page (C294 follow-up):
+// «US$» or «CA$» ends in a neutral mark, and the browser drew «$US» in the
+// field's affix while the display text, isolated by decimal.js, read right.
+// The sign is isolated left to right (U+2066 .. U+2069) there too.
+function isolatedSign(sign, locale) {
+    if (!sign || !isRtlLocale(locale) || !/[A-Za-z]/u.test(sign)) return sign;
+    return `\u2066${sign}\u2069`;
+}
+
 function fixedCurrency(field) {
     return typeof field?.currency === 'string' && /^[A-Z]{3}$/u.test(field.currency) ? field.currency : null;
 }
@@ -1734,7 +2131,8 @@ function fixedCurrency(field) {
 // A percent's digits after the point: `precision`, else the digits its
 // `step` has («0.1» is one), else as many as typed.
 function percentDigits(field) {
-    if (Number.isInteger(field.precision)) return field.precision;
+    const {decimals} = resolveField(field);
+    if (decimals !== null) return decimals;
     const step = readDecimal(field.step);
     return step.ok && step.value !== null && Number(step.value) > 0 ? fractionDigits(step.value) : null;
 }
@@ -1743,6 +2141,7 @@ function percentDigits(field) {
 // only by the field's min and max -- a growth of 150 % or a change of −5 % is
 // a percent too (MP-11: the View set bounded it 0..100 without saying why).
 function renderPercentEdit(field, value, host) {
+    if (isStepperField(field)) return renderStepperEdit(field, value, host, {percent: true});
     const key = String(field.key ?? '');
     const min = hasBound(field.min) ? field.min : null;
     const max = hasBound(field.max) ? field.max : null;
@@ -1797,6 +2196,17 @@ function renderMoneyEdit(field, value, host) {
     const listed = fieldCurrencies(field);
     const offered = [...new Set([...(currency ? [currency] : []), ...listed])];
     const name = setText(host, 'currency');
+    const optionText = (code) => {
+        const {sign: mark} = currencyOf(code, locale, display);
+        return mark === code ? code : `${code} ${mark}`;
+    };
+    // C294 (b): the choice is a third of the row but never narrower than its
+    // longest option and the field's own chrome -- the chevron's square (the
+    // control height of the size) and the insets (space-1). A third of a narrow
+    // row cut «USD US$» on an ar page and «USD $» in a form column at 390.
+    const longest = Math.max(3, ...offered.map((code) => [...optionText(code)].length));
+    const sizeName = String(EDIT_SIZE).replace('/', '\\/');
+    const currencyMin = `min-inline-size: calc(${longest + 1}ch + var(--sf-ui-${sizeName}--control-height) + var(--sf-space-1))`;
     return html`
         <div class="flex gap-1/3 items-cross-start min-w-0 w-full">
             ${amount}
@@ -1805,15 +2215,13 @@ function renderMoneyEdit(field, value, host) {
                     appearance="bordered"
                     mode="select"
                     search=${offered.length > 12 ? 'true' : 'false'}
-                    root-class="basis-1/3 min-w-0"
+                    root-class="basis-1/3"
+                    root-style=${currencyMin}
                     name=${`${fieldName(field)}_currency`}
                     value=${currency ?? ''}
                     placeholder=${name}
                     aria-label=${name}
-                    .options=${offered.map((code) => {
-                        const {sign: mark} = currencyOf(code, locale, display);
-                        return {type: 'text', size: '1', value: code, text: mark === code ? code : `${code} ${mark}`, selected: code === currency};
-                    })}
+                    .options=${offered.map((code) => ({type: 'text', size: '1', value: code, text: optionText(code), selected: code === currency}))}
                     @change=${(event) => {
                         const code = event.detail?.values?.[0] || event.detail?.value || null;
                         keepDraft(host, currencyKey, code ?? undefined);
@@ -1829,6 +2237,8 @@ function renderMoneyEdit(field, value, host) {
 }
 
 function renderPercentView(field, value, host) {
+    const level = levelView(field, value);
+    if (level) return level;
     const formatted = host?.formatFieldValue?.(field, value);
     const text = typeof formatted === 'string' ? formatted
         : carriesText(value) ? value.text : formatPercent(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
@@ -1993,39 +2403,41 @@ function renderTimeEdit(field, value, host) {
     `;
 }
 
-// A required boolean has two states and nothing else. In a form saved with a
-// button it is a checkbox, and a switch only where the change acts at once
-// (owner decision C165 (4), form study FM-6): a switch says «on now», which a
-// form that has not been saved has not done. The host says it acts at once with
-// renderEditField(…, {apply: 'instant'}). The checkbox carries no `required`:
-// a required yes/no is one with a value, and an unticked box is «Нет», not an
-// empty answer. An optional one is a pair of buttons with nothing chosen while
-// the value is absent -- the consumer owner's decision of 2026-10-06, and the
-// reason is that neither a switch nor a checkbox can say «не задано»: rendering
-// one over an absent value would write false on the first save, a value nobody
-// chose.
+// A yes/no is drawn by its template (owner decision C303 (4), 2026-11-17): the
+// switch is the default for every field; the checkbox and the buttons «Да» |
+// «Нет» are templates the administrator picks -- the buttons where «not set»
+// differs from «no», since neither a switch nor a checkbox can say «не
+// задано». The Framework no longer picks the control from `required` and the
+// apply mode (the rule of C165 (4) and of 2026-10-06 goes; FW-4): a field
+// draws the template it names. A switch or a checkbox over an absent value
+// writes nothing until it is pressed. Neither carries `required`: a yes/no
+// with a value is answered, and an unticked box is «Нет».
 function renderBooleanEdit(field, value, host) {
-    const optional = field.required !== true;
+    const template = templateOf(field);
 
-    if (!optional && EDIT_APPLY === 'instant') {
+    if (template === 'switch') {
         return html`
             <sf-switch
                     size=${EDIT_SIZE}
                     name=${fieldName(field)}
                     ?checked=${value === true}
                     aria-label=${field.label || field.key || ''}
+                    ?invalid=${Boolean(EDIT_ERROR)}
+                    error-message=${EDIT_ERROR || nothing}
                     @change=${(event) => host.setFieldValue(field, Boolean(event.target?.checked))}
             ></sf-switch>
         `;
     }
 
-    if (!optional) {
+    if (template === 'checkbox') {
         return html`
             <sf-checkbox
                     size=${EDIT_SIZE}
                     name=${fieldName(field)}
                     ?checked=${value === true}
                     aria-label=${field.label || field.key || ''}
+                    ?invalid=${Boolean(EDIT_ERROR)}
+                    error-message=${EDIT_ERROR || nothing}
                     @change=${(event) => host.setFieldValue(field, Boolean(event.target?.checked ?? event.detail?.checked))}
             ></sf-checkbox>
         `;
@@ -2044,6 +2456,8 @@ function renderBooleanEdit(field, value, host) {
                 items=${items}
                 value=${value === true ? 'yes' : value === false ? 'no' : nothing}
                 aria-label=${field.label || field.key || ''}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     const next = event.detail?.value;
                     host.setFieldValue(field, next === 'yes' ? true : next === 'no' ? false : null);
@@ -2098,7 +2512,7 @@ const CHOICE_BUTTON_SIZES = new Set(['1/2', '1', '2']);
 const CHOOSING_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ', 'Enter']);
 
 function isChoiceButtons(field) {
-    return String(field.variant ?? '') === 'buttons';
+    return templateOf(field) === 'buttons';
 }
 
 function renderChoiceButtons(field, value, host) {
@@ -2111,7 +2525,7 @@ function renderChoiceButtons(field, value, host) {
         ...(option.icon ? {icon: String(option.icon)} : {}),
         ...(option.disabled ? {disabled: true} : {}),
     }));
-    const asked = String(field.size ?? '');
+    const asked = String(templateParam(field, 'size') ?? '');
     const size = CHOICE_BUTTON_SIZES.has(asked) ? asked : EDIT_SIZE;
     const disabled = EDIT_DISABLED;
     const locked = !disabled && field.readonly === true;
@@ -2218,8 +2632,11 @@ function renderChoicesChecklist(field, value, host) {
 
 function renderChoicesEdit(field, value, host) {
     const options = field.options || field.filter?.options || field.constraints?.options || [];
-    const variant = String(field.variant ?? '');
-    if (variant === 'checklist' || (variant !== 'select' && options.length >= CHECKLIST_FROM)) {
+    // The dropdown is the default; from 13 options it is a checklist, unless
+    // the field asked for the dropdown by its former name select, which kept
+    // it at any length (until 2027-01-01).
+    const {template, former} = resolveField(field);
+    if (template === 'checklist' || (former !== 'select' && options.length >= CHECKLIST_FROM)) {
         return renderChoicesChecklist(field, value, host);
     }
     return html`
@@ -2676,7 +3093,7 @@ function storedFiles(value) {
 // object URL the thumbnail is showing. The panel prints the label, so the field
 // takes it as its accessible name only.
 function isSingleImageField(field, value) {
-    return String(field.variant ?? '') === 'image' && field.multiple !== true && storedFiles(value).length <= 1;
+    return templateOf(field) === 'image' && field.multiple !== true && storedFiles(value).length <= 1;
 }
 
 function renderImageEdit(field, value, host) {
@@ -2692,6 +3109,8 @@ function renderImageEdit(field, value, host) {
                 aria-label=${field.label || field.key || ''}
                 ?required=${Boolean(field.required)}
                 ?readonly=${field.readonly === true}
+                ?invalid=${Boolean(EDIT_ERROR)}
+                error-message=${EDIT_ERROR || nothing}
                 @change=${(event) => {
                     const next = event.detail?.value ?? null;
                     host.setFieldValue(field, asList ? (next ? [next] : []) : next);
@@ -2761,6 +3180,8 @@ function renderFileEdit(field, value, host) {
                                 ?multiple=${multiple}
                                 ?disabled=${field.readonly === true}
                                 aria-label=${field.label || field.key || ''}
+                                ?invalid=${Boolean(EDIT_ERROR)}
+                                error-message=${EDIT_ERROR || nothing}
                                 .items=${items}
                                 @sf-file-upload:select=${(event) => {
                                     const picked = event.detail?.files;
@@ -2791,10 +3212,15 @@ const sizeOption = (options) => (options?.size === '1/2' ? '1/2' : '1');
 const DENSITIES = new Set(['compact', 'normal']);
 const densityOption = (options) => (DENSITIES.has(options?.density) ? options.density : '');
 
-// `options.apply`: 'instant' when a change acts at once (a settings panel, the
-// parameters of a block), anything else for a form saved with a button. Read by
-// the yes/no field only: a switch at once, a checkbox in a form (C165 (4)).
-let EDIT_APPLY = '';
+// `options.apply` ('instant' when a change acts at once) chose the yes/no
+// control until C303 (4); the field's template chooses it now, and the option
+// is accepted and not read.
+//
+// `options.align`: 'end' for a number edited where numbers stand at the end of
+// the line -- a table cell edited in place (C294: a form starts the digits, a
+// table ends them). A number, a money amount and a percent are then typed at
+// the end of the field with figures of one width, as the column shows them.
+let EDIT_ALIGN_END = false;
 
 // A control that stays a control when it may not be changed: a choice as
 // buttons shows which button is chosen, which is what it is for, where the
@@ -2809,15 +3235,23 @@ let EDIT_DISABLED = false;
 
 // `options.error`: what is wrong with the field now, a sentence, or empty (PD-1,
 // property type study «Дата»). A control that says its own error (sf-input-date
-// for a date, a datetime and a time) is drawn invalid with the sentence under
-// it, the error-message of the field family, so a host that is not sf-form --
+// for a date, a datetime and a time; since 1.22.0 the yes/no -- sf-switch,
+// sf-checkbox, the «Да» | «Нет» sf-segmented -- and the file's sf-file-upload
+// and sf-input-image, field orders FO-1) is drawn invalid with the sentence
+// under it, the error-message of the field family, so a host that is not sf-form --
 // a record card -- marks the field itself instead of writing a line under a
 // field with a normal border. sf-form keeps setting invalid on the controls it
 // draws, as before.
 let EDIT_ERROR = '';
 
+// The controls the set draws that say `options.error` themselves, invalid and
+// the sentence under them (read by sf-form, which gives them its errors and
+// draws no line of its own under them): the field family's, and since 1.22.0
+// the yes/no and file ones (FO-1).
+export const OWN_ERROR_CONTROLS = Object.freeze(['sf-input-date', 'sf-input-image', 'sf-switch', 'sf-checkbox', 'sf-segmented', 'sf-file-upload']);
+
 export function renderEditField(field = {}, value, host, options = {}) {
-    const asked = field.propertyType || field.type || field.dataType;
+    const asked = resolveField(field).type;
     const disabled = options?.disabled === true;
     // A field the person may not change is shown, not offered as a control that
     // refuses: the same rule for every type, so `readonly` means one thing
@@ -2831,7 +3265,7 @@ export function renderEditField(field = {}, value, host, options = {}) {
     const outer = EDIT_SIZE;
     const outerDisabled = EDIT_DISABLED;
     const outerPicker = EDIT_PICKER;
-    const outerApply = EDIT_APPLY;
+    const outerAlign = EDIT_ALIGN_END;
     const outerError = EDIT_ERROR;
     EDIT_SIZE = sizeOption(options);
     EDIT_ERROR = typeof options?.error === 'string' ? options.error.trim() : '';
@@ -2839,14 +3273,14 @@ export function renderEditField(field = {}, value, host, options = {}) {
     // `options.picker: 'dropdown'`: the record, relation, user and paged lookup
     // fields drawn as before C139, a searchable sf-dropdown (until 2027-01-01).
     EDIT_PICKER = options?.picker === 'dropdown' ? 'dropdown' : '';
-    EDIT_APPLY = options?.apply === 'instant' ? 'instant' : '';
+    EDIT_ALIGN_END = options?.align === 'end';
     try {
         return inDensity(renderer(field, value, host), densityOption(options));
     } finally {
         EDIT_SIZE = outer;
         EDIT_DISABLED = outerDisabled;
         EDIT_PICKER = outerPicker;
-        EDIT_APPLY = outerApply;
+        EDIT_ALIGN_END = outerAlign;
         EDIT_ERROR = outerError;
     }
 }
@@ -2931,12 +3365,24 @@ function numberText(field, value, host) {
     return formatDecimal(scalarValue(value), pageLocale(host ?? null)) || viewText(field, value, null);
 }
 
+// A percent as the number's scale or meter (step 5), 0..100; else null.
+function levelView(field, value) {
+    const variant = templateOf(field);
+    if (variant !== 'scale' && variant !== 'meter') return null;
+    const raw = scalarValue(value);
+    const number = Number(raw);
+    if (raw === null || raw === undefined || raw === '' || !Number.isFinite(number) || number < 0 || number > 100) return null;
+    if (variant === 'scale') return html`<sf-progress-scale size="1" value=${String(number)}></sf-progress-scale>`;
+    const {label} = meterProps(field, number);
+    return html`<sf-progress-bar inline meter value=${String(number)} label=${label || nothing}></sf-progress-bar>`;
+}
+
 // A number carries its unit when the field declares one, and nothing when it
 // does not -- the set does not guess at a unit, and «42» with an invented «шт»
 // beside it is a worse answer than «42».
 function renderNumberView(field, value, host) {
     if (value === null || typeof value === 'undefined' || value === '') return nothing;
-    const variant = field.variant || field.filter?.variant;
+    const variant = templateOf(field);
     // The scale needs the number, not the host's text for it.
     const number = Number(scalarValue(value));
 
@@ -3046,7 +3492,7 @@ function renderChoiceView(field, value) {
         <sf-badge
                 line=${VIEW_LINE}
                 tight
-                appearance=${field.badgeAppearance ?? CELL_BADGE_APPEARANCE}
+                appearance=${badgeAppearanceOf(field)}
                 scheme=${badge.scheme}
                 style=${badge.rootStyle || nothing}
                 text=${String(option.label ?? option.text ?? value)}
@@ -3061,19 +3507,31 @@ function renderChoiceView(field, value) {
 // No disclosure for a long list here: a record's
 // field in view is the button that opens its group, and a control inside a
 // button is not one.
+// Tags and badges of one value stand 4 apart (C105 H5 tags, --sf-space-1/4;
+// FW-3: they stood 8, the buttons' gap). The badges template draws each value
+// as its option's badge, in the option's colour, as the cell does.
 function renderChoicesView(field, value) {
     if (!Array.isArray(value) || !value.length) return nothing;
     const options = field.options || field.filter?.options || field.constraints?.options;
+    const optionOf = (item) => (Array.isArray(options)
+        ? options.find((candidate) => String(candidate?.value) === String(item && typeof item === 'object' ? item.value : item))
+        : null);
     const label = (item) => {
-        const option = Array.isArray(options)
-            ? options.find((candidate) => String(candidate?.value) === String(item))
-            : null;
-        return String(option?.label ?? option?.text ?? item);
+        const option = optionOf(item);
+        if (item && typeof item === 'object' && item.text !== undefined) return String(item.text);
+        return String(option?.label ?? option?.text ?? (item && typeof item === 'object' ? item.value : item));
     };
+    const badges = templateOf(field) === 'badges';
 
     return html`
-        <span class="sf-field-view flex flex-wrap items-cross-center gap-1/3 min-w-0">
-            ${value.map((item) => html`<sf-tag root-class="flex-none" line=${VIEW_LINE} kind="default" text=${label(item)}></sf-tag>`)}
+        <span class="sf-field-view flex flex-wrap items-cross-center gap-1/4 min-w-0">
+            ${value.map((item) => {
+                if (!badges) return html`<sf-tag root-class="flex-none" line=${VIEW_LINE} kind="default" text=${label(item)}></sf-tag>`;
+                const option = optionOf(item);
+                const badge = option ? optionBadgeProps(option) : null;
+                return html`<sf-badge line=${VIEW_LINE} tight appearance=${badgeAppearanceOf(field)}
+                        scheme=${badge?.scheme || nothing} style=${badge?.rootStyle || nothing} text=${label(item)}></sf-badge>`;
+            })}
         </span>
     `;
 }
@@ -3141,7 +3599,7 @@ function renderFileView(field, value) {
     // host's to say through the variant: guessing from a file name would be wrong
     // for every stored file whose name does not end in a familiar three letters.
     const asImage = isImageField(field);
-    const card = String(field.variant ?? '') === 'image-card';
+    const card = templateOf(field) === 'image_card';
 
     return html`
         <span class="sf-field-view flex ${card ? 'flex-row' : 'flex-col'} gap-1/3">
@@ -3164,9 +3622,13 @@ function renderFileView(field, value) {
 
 const VIEW_RENDERERS = {
     string: renderStringView,
+    phone: renderPhoneView,
+    password: renderPasswordView,
+    url: renderUrlView,
+    link: renderLinkView,
+    'ru.inn': renderInnView,
     text: renderTextView,
     html: renderHtmlView,
-    integer: renderNumberView,
     number: renderNumberView,
     date: renderDateView,
     datetime: renderDateView,
@@ -3195,14 +3657,14 @@ const VIEW_RENDERERS = {
 // text has no total (null). `values` are the column's stored values; what is
 // not a number is left out.
 export function renderTotalField(field = {}, values = [], host) {
-    const type = field.propertyType || field.type || field.dataType;
+    const type = resolveField(field).type;
     const locale = pageLocale(host ?? null);
     const list = (Array.isArray(values) ? values : []).map((value) => scalarValue(value));
     if (type === 'money') {
         const totals = moneyTotals(list, field, locale);
         return totals.length ? totals.map((total) => total.text) : null;
     }
-    if (type !== 'number' && type !== 'integer') return null;
+    if (type !== 'number') return null;
     const numbers = list.filter((value) => value !== null && value !== undefined && value !== '' && readTypedDecimal(value).ok);
     if (!numbers.length) return null;
     const sum = addDecimal(numbers);
@@ -3212,17 +3674,28 @@ export function renderTotalField(field = {}, values = [], host) {
 // Whether a type is a number a table aligns to the end of the line with
 // figures of one width (the registry's `numeric`, C294 MP-12).
 export function isNumericType(type) {
-    return Boolean(PROPERTY_TYPES.find((entry) => entry.type === type)?.numeric);
+    return Boolean(typeEntry(type)?.numeric);
 }
 
+// A former type name (integer, compound) has the modes of the type it reads as.
 export function propertyModes(type) {
-    return modesOf(type, {view: VIEW_RENDERERS, edit: EDIT_RENDERERS, cell: CELL_RENDERERS, filter: FILTER_RENDERERS});
+    const own = TYPE_ALIASES[type]?.type ?? type;
+    return modesOf(own, {view: VIEW_RENDERERS, edit: EDIT_RENDERERS, cell: CELL_RENDERERS, filter: FILTER_RENDERERS});
+}
+
+// What a field is drawn with (C302): {type, template, params} -- the type
+// after its former names, the template the field names when the type has it
+// and the field fits it (else the default), and the templateParams. A host
+// that offers a template switch reads it to show the template drawn.
+export function fieldTemplate(field = {}) {
+    const {type, template, params} = resolveField(field);
+    return {type, template, params};
 }
 
 export {PROPERTY_TYPES};
 
 export function renderViewField(field = {}, value, host, options = {}) {
-    const asked = field.propertyType || field.type || field.dataType;
+    const asked = resolveField(field).type;
     const renderer = VIEW_RENDERERS[asked];
     if (!renderer) return null;
 
@@ -3294,9 +3767,23 @@ if (typeof window !== 'undefined') {
         // normalizeTime(text); and a time of day's: splitTime(value),
         // composeTime(stored, text).
         dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime, splitTime, composeTime},
-        // The universal properties, each with the modes the set draws for it.
+        // The universal properties, each with the modes the set draws for it
+        // and its templates, the default first (C302).
         registry: PROPERTY_TYPES.map((entry) => ({...entry, modes: propertyModes(entry.type)})),
+        // C302, C303: the four places a template draws in; the former type and
+        // template names read until 2027-01-01; what a field is drawn with.
+        places: PLACES,
+        aliases: {types: TYPE_ALIASES, templates: TEMPLATE_ALIASES},
+        fieldTemplate,
     };
+    // The set's words in the page's language are asked for now, not at the
+    // first word a host draws (field orders FO-4): the set is a module, not an
+    // element, so nothing drew a filter again when its words arrived, and a
+    // Russian page that lets core fetch its language (no core/lang/ru.js)
+    // showed «Contains…», «From», «To» until the host redrew by chance.
+    // SF.whenFieldRenderers() waits for them (core.runtime, at most
+    // SF_BOOT_CONFIG.languageWait ms).
+    pageText(SET_TEXT, 'containsText', null, SET_NAME);
     // SF.whenFieldRenderers() settles on this, whichever bundle published the set.
     globalThis.document?.dispatchEvent?.(new CustomEvent('sf-field-renderers-ready'));
 }

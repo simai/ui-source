@@ -905,7 +905,7 @@
       "doc": "guide/smart-components/field-renderers",
       "kind": "object",
       "loaded_by": "smart/field-renderers",
-      "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter.",
+      "summary": "The field renderer set: a value in a cell, in a record's view, in its edit control and in a filter, by its type and its template (C302: registry lists each type's templates, the default first; fieldTemplate(field) says the type and template a field is drawn with; places and aliases name the four places and the former names read until 2027-01-01).",
       "members": [
         "renderCellField",
         "renderEditField",
@@ -918,7 +918,10 @@
         "isNumericType",
         "decimal",
         "dateFilter",
-        "registry"
+        "registry",
+        "places",
+        "aliases",
+        "fieldTemplate"
       ]
     },
     {

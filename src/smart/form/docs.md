@@ -15,7 +15,7 @@ SIMAI Framework `field-renderers` (`SF.fieldRenderers`, `renderEditField` и
        {"key": "url", "label": "Ссылка", "propertyType": "string", "required": true, "group": "content"},
        {"key": "tone", "label": "Тон", "propertyType": "choice", "width": "m", "group": "look",
         "options": [{"value": "accent", "label": "Акцент"}, {"value": "quiet", "label": "Тихая"}]},
-       {"key": "radius", "label": "Скругление, px", "propertyType": "integer", "width": "s", "min": 0, "max": 24,
+       {"key": "radius", "label": "Скругление, px", "propertyType": "number", "decimals": 0, "width": "s", "min": 0, "max": 24,
         "help": "Только для залитой кнопки", "group": "look"}],
      "value": {"text": "Подробнее", "url": "https://simai.io", "tone": "accent", "radius": 8}}
   </script>
@@ -30,8 +30,10 @@ SIMAI Framework `field-renderers` (`SF.fieldRenderers`, `renderEditField` и
 ## Описание поля
 
 То же описание, что передаёт `sf-view-properties`: тип и параметры из реестра
-свойств (`SF.fieldRenderers.registry`: `propertyType`, `variant`, `required`,
-`readonly`, `placeholder`, `options`, `min`, `max`, `step`, `unit` …) и:
+свойств (`SF.fieldRenderers.registry`: `propertyType`, `template` и
+`templateParams` (C302; `variant` — старое имя `template` до 2027-01-01),
+`required`, `readonly`, `placeholder`, `options`, `min`, `max`, `step`, `unit`,
+`decimals`, у денег `currency`, `currencies`, `currencyDisplay` …) и:
 
 | Ключ | Что значит |
 | --- | --- |
@@ -47,10 +49,12 @@ SIMAI Framework `field-renderers` (`SF.fieldRenderers`, `renderEditField` и
 одного — радиокнопки, выбор нескольких — флажки, до трёх коротких вариантов в
 строку, остальное столбиком. Подпись, «*», «?» и подсказка — формы, как у
 любого поля; ошибка — под последней строкой группы. Длинный список —
-выпадающий; `variant: "buttons"`, `"select"` или `"checklist"` оставляет полю
-свой элемент.
+выпадающий; шаблон не по умолчанию (`template: "buttons"` или `"checklist"`) и
+старое `variant: "select"` оставляют полю свой элемент.
 
-Поле типа, которого `field-renderers` не рисует, не показывается.
+Поле типа, которого `field-renderers` не рисует, не показывается — кроме
+типов набора компонентов (`items`, `complex`, `ru.requisites`), когда их рисует
+хозяин полей (`fieldHost.renderField`, ниже).
 `readonly: true` — значение текстом, а не выключенное поле.
 
 ## Настройки
@@ -58,9 +62,10 @@ SIMAI Framework `field-renderers` (`SF.fieldRenderers`, `renderEditField` и
 - `fields` — поля по порядку (см. выше).
 - `groups` — группы `{key, label}`. От двух групп каждая — `fieldset` с
   заголовком, между группами 24 и линия.
-- `apply` — `submit` (по умолчанию): кнопки «Сохранить» и «Отмена» под полями,
-  обязательное «да / нет» — флажок (C165 (4)); `instant`: каждое изменение
-  применяется сразу, кнопок нет, обязательное «да / нет» — переключатель;
+- `apply` — `submit` (по умолчанию): кнопки «Сохранить» и «Отмена» под полями;
+  `instant`: каждое изменение применяется сразу, кнопок нет. Вид «да / нет»
+  задаёт шаблон поля (C303 (4)): переключатель по умолчанию, `checkbox` —
+  флажок с подписью рядом, `buttons` — кнопки «Да» | «Нет»;
   `answer`: анкета, на которую отвечают один раз (сообщение в чате, запись в
   ленте; C291 (3)) — «Отправить» и «Отмена», после ответа значения текстом с
   отметкой «Отправлено» и без «Изменить». `mode` в этом режиме не читается.
@@ -79,6 +84,28 @@ SIMAI Framework `field-renderers` (`SF.fieldRenderers`, `renderEditField` и
   кнопки в полосе, прилипающей к низу прокручиваемого места (страница
   настроек, C166 (3)).
 - `label` — имя формы для экранного диктора (ориентир «форма»).
+- `fieldHost` — только свойство (1.7.0): та часть хозяина полей, которую держит
+  запись (карточка `sf-view-properties`), чтобы правка любой группы шла в
+  `sf-form`:
+  - `getFieldOptionsPage`, `getFieldOptionSearch`, `setFieldOptionSearch`,
+    `loadFieldOptions` — страницы и поиск выбора записи, связи и сотрудника
+    (`record`, `relation`, `user`, шаблон `reference_picker`);
+  - `getFieldUploads`, `startFieldUpload`, `retryFieldUpload` — передача файла
+    (шаблон `upload`): форма рисует поле загрузки, и оно само говорит свою
+    ошибку под собой;
+  - `getFieldText`, `formatFieldValue` — слова и формат хозяина;
+  - `renderField(field, value, host, {editing, size})` — тип, который рисует
+    набор компонентов (`items`, `complex`, `ru.requisites`).
+
+  Каждый вызывается с аргументами `field-renderers` и последним аргументом —
+  хозяином формы для этого поля: его `setFieldValue` пишет в значение формы
+  (например, сохранённый файл, когда загрузка закончилась). Значения, проверки
+  (обязательный выбор, файл, строки) и то, что получит сервер, остаются
+  формы, в формах реестра типов: выбранная запись `{value, label}`, файл —
+  в форме хозяина, строки — список. Без `fieldHost` выбор берёт свои
+  варианты из `options` поля, а файловое поле держит выбранные файлы в
+  значении (`{name, size, mime, file}`, сам `File` — хозяину отправить вместе
+  со значениями); выбор, который некому листать, показывает значение текстом.
 
 Рабочие имена, которые ещё подтверждает владелец: `top`, `static`, `fields`,
 `groups`, `label`, `mode`, `dirty`, `set-errors`, событие `cancel`.
@@ -151,3 +178,6 @@ Framework (C291 (2)).
   `refused {reason: invalid}`.
 - `reset()` — вернуть сохранённые значения, без событий.
 - `setErrors({errors: {url: "Адрес уже занят"}})` — ошибки хозяина у полей.
+- `refreshFields()` — ответы хозяина полей изменились (страница вариантов,
+  ход загрузки): поля рисуются заново (1.7.0). Когда вызов хозяина отвечает
+  обещанием, форма перерисовывается сама, как только оно выполнено.

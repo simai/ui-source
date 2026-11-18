@@ -5,6 +5,8 @@ import { renderCheckboxTemplate } from './js/templates/default';
 import { bindCheckableReset } from '../helpers/checkableReset';
 import { CHECKBOX_TEXT_PARTS, linkCheckableText } from '../../component/checkable-text-helper';
 import { FormField, innerControlName } from '../helpers/form-field';
+import { linkCheckableMessage } from '../helpers/checkable-row';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import {files as languageFiles} from './lang/index.mjs';
@@ -157,6 +159,8 @@ class SfCheckbox extends FormField(CheckboxElement) {
       // (§17.1 item 6).
       name: innerControlName(this, context.name),
       stateIcon: this.stateIcon,
+      // The error line's id (error-message, FO-1): the input is described by it.
+      messageId: partId(instancePath(this, { kind: 'sf-checkbox' }), 'error'),
       ariaLabel: this.ariaLabel,
       // The help button is named by its subject («Подробнее: Сохранять черновики»).
       helpLabel: context.help && context.label ? this.sfWord('help', { vars: { label: context.label } }) : '',
@@ -173,6 +177,7 @@ class SfCheckbox extends FormField(CheckboxElement) {
     // The class binding is skipped inside sf-checkbox; the name and the
     // description are linked here the same way.
     linkCheckableText(this.querySelector('.sf-checkbox'), CHECKBOX_TEXT_PARTS);
+    linkCheckableMessage(this, input);
     this._releaseReset?.();
     this._releaseReset = bindCheckableReset(this, input);
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.switch",
-  "version": "1.9.3",
+  "version": "1.10.0",
   "title": "Switch",
   "summary": "An on/off control for a setting that applies at once: a native checkbox with role=\"switch\", a track and a moving thumb, with a label, description and help text.",
   "kind": "smart",
@@ -112,6 +112,16 @@
         "type": "string",
         "default": "on",
         "description": "What a checked switch submits; without it, \"on\", as a native checkbox (simai/ui-source#38)."
+      },
+      "invalid": {
+        "type": "boolean",
+        "default": false,
+        "description": "The shown invalid state: the track's edge in the error role and aria-invalid on the native switch."
+      },
+      "error-message": {
+        "type": "string",
+        "default": "",
+        "description": "The text shown under the control while it is invalid, in the error colour: what is wrong, as every field of the family says it (sf-input, sf-input-choice); the native control is described by it. Nothing is drawn without invalid."
       },
       "checked": {
         "type": "boolean",
@@ -442,7 +452,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/switch/index.js",
-        "sha256": "02850fbeb49d6d0270863a5439b77e2f1f0ccc23dfab73914f760808203f0206"
+        "sha256": "26a110193c8d61bf392492e713384078cd1d33a10db220234da81d2d9241eaa9"
       },
       {
         "path": "src/smart/switch/rule.js",
@@ -450,7 +460,7 @@
       },
       {
         "path": "src/smart/switch/js/templates/default.js",
-        "sha256": "2cffdeee90c4b97fe1edfc7d8ba0d2a12f416d2824f9b742c6d8ae55bec186a7"
+        "sha256": "fc9efae7de74a6439a378decf433864f4e2206ea2355b2147c32281f5f9f3ddc"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

@@ -1,0 +1,29 @@
+{
+  "id": "history-is-a-page-newest-first",
+  "intent": "record.history",
+  "capability": "record-history",
+  "summary": "The history arrives a page at a time, newest first, with has_more and the cursor of the next page; never the whole of it.",
+  "given": {
+    "capabilities": [
+      "record-history"
+    ]
+  },
+  "when": {
+    "intent": "record.history",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "deals",
+      "cursor": null,
+      "kinds": null,
+      "limit": 20
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "events",
+      "has_more"
+    ],
+    "note": "At most `limit` events (20 by default, 50 at most), each {id, time, actor, kind, changes}; the oldest event's revision is the cursor «Показать ещё» sends back. A host with more than a page answers has_more true; a page of every event is not an answer."
+  }
+}

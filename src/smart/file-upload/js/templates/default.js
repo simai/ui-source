@@ -59,6 +59,8 @@ export function renderFileUploadTemplate(context) {
         'sf-file-upload',
         `sf-file-upload--size-${size}`,
         context.disabled ? 'disabled' : '',
+        // invalid (FO-1): .error is the look, as the field family's.
+        context.invalid ? 'error' : '',
         'flex',
         'flex-col',
         'items-cross-center',
@@ -86,6 +88,10 @@ export function renderFileUploadTemplate(context) {
           </span>`
         : nothing;
     const labelledBy = context.label && !context.ariaLabel ? context.labelId : '';
+    // The error line while invalid (error-message, FO-1): under the area, in
+    // the error role, and the area is described by it. The line of the files a
+    // choice left out keeps its own place.
+    const error = context.invalid && context.errorMessage ? context.errorMessage : '';
 
     return html`
         ${label}
@@ -103,6 +109,8 @@ export function renderFileUploadTemplate(context) {
                 ?disabled=${context.disabled}
                 aria-label=${context.ariaLabel || nothing}
                 aria-labelledby=${labelledBy || nothing}
+                aria-invalid=${context.invalid ? 'true' : nothing}
+                aria-describedby=${error ? context.errorId : nothing}
         >
             <div class=${featuredIconClasses}>
                 <i class="sf-icon" aria-hidden="true">${context.icon}</i>
@@ -125,6 +133,10 @@ export function renderFileUploadTemplate(context) {
         <div class="sf-file-upload-message" role="status" hidden></div>
 
         <div class="sf-file-upload-status" role="status" aria-atomic="true"></div>
+
+        ${error
+                ? html`<div class=${`sf-file-upload-error sf-file-upload-error--size-${size}`} id=${context.errorId} data-field-message="error">${error}</div>`
+                : nothing}
 
         <div class="sf-file-upload-files grid grid-col-1 gap-1/2 w-full" role="list">
             ${Array.isArray(context.items)

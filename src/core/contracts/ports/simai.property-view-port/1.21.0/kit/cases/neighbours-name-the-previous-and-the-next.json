@@ -1,0 +1,30 @@
+{
+  "id": "neighbours-name-the-previous-and-the-next",
+  "intent": "record.neighbours",
+  "capability": "record-neighbours",
+  "summary": "The record before and the record after this one over the view it was opened from; archived records only when the query includes them.",
+  "given": {
+    "capabilities": [
+      "record-neighbours"
+    ]
+  },
+  "when": {
+    "intent": "record.neighbours",
+    "payload": {
+      "record_id": "d17",
+      "collection": "deals",
+      "query": {
+        "include_archived": false
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "listed",
+      "previous",
+      "next"
+    ],
+    "note": "{listed: true, previous: {record_id: \"d16\"}, next: {record_id: \"d18\"}} over the view's filters, search and sort. A null neighbour is the end of the view: the step to it is refused no-neighbour. With include_archived true an archived record may be a neighbour; without it never."
+  }
+}

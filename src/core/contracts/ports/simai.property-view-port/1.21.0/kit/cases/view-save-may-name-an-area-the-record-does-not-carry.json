@@ -1,0 +1,49 @@
+{
+  "id": "view-save-may-name-an-area-the-record-does-not-carry",
+  "intent": "view.save",
+  "capability": "view-settings",
+  "summary": "A layer may name an area or a section the record does not carry. The host keeps it and returns it in the next read, or refuses with its reason.",
+  "given": {
+    "capabilities": [
+      "view-settings"
+    ]
+  },
+  "when": {
+    "intent": "view.save",
+    "payload": {
+      "record_id": null,
+      "collection": "pages",
+      "target": {
+        "kind": "personal",
+        "revision": "v7"
+      },
+      "view": {
+        "schema_version": 1,
+        "sections": {
+          "view-section-m1": {
+            "label": "Договоры",
+            "order": 2,
+            "hidden": false
+          }
+        },
+        "groups": {
+          "view-group-m1": {
+            "label": "Договор",
+            "section": "view-section-m1",
+            "order": 1,
+            "columns": 1,
+            "hidden": false
+          }
+        },
+        "fields": {}
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "revision"
+    ],
+    "note": "This is the one act of arranging that does not rearrange what the host sent: it names something new. The component draws it at once from the layer, so a person sees what they made, but it survives the next record.load only if the host returns it. A host that will not keep a new area answers refused with a reason rather than applied, and the component reads the record again."
+  }
+}

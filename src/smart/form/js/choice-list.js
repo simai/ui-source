@@ -1,4 +1,5 @@
 import {html} from 'lit';
+import {resolveField} from '../../field-renderers/templates.js';
 
 // The short choice fields of a form drawn as a ready group of radios or checks
 // (owner decision C165 (1): «sf-form рисует поля выбора через неё», names by
@@ -13,15 +14,16 @@ import {html} from 'lit';
 // Which fields: an editable `choice` or `choices` of at most LIST_MOST options
 // (research 2026-11-14-checks.md §4: radios for one of few, 2-5 seen at once;
 // a dropdown for one of many). A field that asks for its own control keeps it:
-// variant `buttons` (the segmented group), `select` (the dropdown at any
-// length), `checklist` (the two-column checklist); a read-only field is shown
-// as text, as every field of the form.
+// a template other than the type's default (C302) -- `buttons` (the segmented
+// group), `checklist` (the two-column checklist) -- or the former variant
+// `select` (the dropdown at any length, until 2027-01-01); a read-only field
+// is shown as text, as every field of the form.
 export const LIST_MOST = 5;
 
 const LIST_TYPES = new Set(['choice', 'choices']);
-const KEEPS_OWN = new Set(['buttons', 'select', 'checklist']);
+const DEFAULT_TEMPLATE = 'dropdown';
 
-const typeOf = (field) => field.propertyType || field.type || field.dataType;
+const typeOf = (field) => resolveField(field, {quiet: true}).type;
 
 /** The options a field offers, those with a value. */
 export function choiceOptions(field = {}) {
@@ -33,7 +35,8 @@ export function choiceOptions(field = {}) {
 /** Whether the form draws this field as a group of radios or checks. */
 export function isListChoice(field = {}) {
   if (!LIST_TYPES.has(typeOf(field)) || field.readonly === true) return false;
-  if (KEEPS_OWN.has(String(field.variant ?? ''))) return false;
+  const {template, former} = resolveField(field);
+  if (template !== DEFAULT_TEMPLATE || former === 'select') return false;
   const count = choiceOptions(field).length;
   return count > 0 && count <= LIST_MOST;
 }

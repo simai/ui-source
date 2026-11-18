@@ -1,0 +1,24 @@
+{
+  "id": "history-without-the-capability",
+  "intent": "record.history",
+  "capability": "record-history",
+  "summary": "A host that does not announce record-history is never asked: the card offers no history.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "record.history",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "deals",
+      "cursor": null
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "A host asked anyway answers unavailable. The component does not ask: «История изменений» is not in its menu."
+  }
+}

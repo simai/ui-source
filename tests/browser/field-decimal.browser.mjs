@@ -140,7 +140,8 @@ try {
   expect('items cell empty', cells.itemsEmpty, '');
   expect('set types: modes', modes, {
     items: {set: 'view', view: false, edit: false, cell: 'own', filter: 'own'},
-    compound: {set: 'view', view: false, edit: false, cell: 'text', filter: 'text'},
+    // C302: compound is complex in the catalogue; compound is read as complex until 2027-01-01.
+    complex: {set: 'view', view: false, edit: false, cell: 'text', filter: 'text'},
     'ru.requisites': {set: 'view', view: false, edit: false, cell: 'text', filter: 'text'},
   });
   // C294: the condition, the amount and, for a currency kept in the value, the currency.

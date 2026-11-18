@@ -2,7 +2,7 @@
   "$comment": "The source of sf-checkbox's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/checkbox (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.checkbox",
   "tag": "sf-checkbox",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "kind": "leaf",
   "family": "checkbox",
   "settings": {
@@ -60,6 +60,11 @@
       "type": "boolean",
       "default": false,
       "summary": "The shown invalid state: the error look and aria-invalid on the native input."
+    },
+    "error-message": {
+      "type": "string",
+      "default": "",
+      "summary": "The text shown under the control while it is invalid, in the error colour: what is wrong, as every field of the family says it (sf-input, sf-input-choice); the native control is described by it. Nothing is drawn without invalid."
     }
   },
   "values": {
@@ -236,7 +241,8 @@
     "version 1.5.1 (2026-11-15, owner decision C201; numbered above every open line): a patch, its own code unchanged. The first-paint snapshots that hold sf-help-mark follow its plain look (sf-help-mark 1.5.0: its button is sf-button-icon appearance=\"plain\", the class sf-icon-button--plain).",
     "version 1.5.2 (2026-11-16, queue item #53; component.checkbox 1.5.1): a patch. The tick and the indeterminate dash (check, remove) are asked of the icon subset when the element connects (SF.Loader.preloadIcons), with the page's first icons: a box that starts unchecked names no glyph, so the first subset font had no check and the first tick stayed unseen until a second font arrived. Settings, values, events and keys unchanged.",
     "version 1.5.4 (2026-11-17, feat/lang-file-c282; numbered above 1.5.3 on origin/fix/utilities-c264): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
-    "version 1.5.5 (written on the branch as 1.5.3; 2026-11-17, owner decision C268; numbered above 1.5.2 on origin/fix/containers-a1): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged."
+    "version 1.5.5 (written on the branch as 1.5.3; 2026-11-17, owner decision C268; numbered above 1.5.2 on origin/fix/containers-a1): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
+    "version 1.6.0 (2026-11-18, field orders FO-1 (ui-view property pages, view round 2); numbered above every origin branch): a minor, a setting. error-message: while invalid, the sentence of what is wrong stands under the box and its text in the error role (the hint step of the size: 1/3, 1/2, 1 beside sizes 1/2, 1, 2; helpers/checkable-row.js, module.smart-helpers), and the native input is described by it (aria-describedby). A host -- sf-form, a record card, a property page -- sets invalid and error-message on the checkbox as on sf-input, instead of a line of its own under a box with a normal frame. Without error-message, or without invalid, nothing changes."
   ],
   "x-registry": {
     "contracts": {

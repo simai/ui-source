@@ -1,0 +1,32 @@
+{
+  "id": "history-names-a-sealed-field-without-values",
+  "intent": "record.history",
+  "capability": "record-history",
+  "summary": "A field the reader may not see is said in the history and never shown: {field, label, sealed: true}, no before or after.",
+  "given": {
+    "capabilities": [
+      "record-history"
+    ],
+    "sealed": [
+      "margin"
+    ]
+  },
+  "when": {
+    "intent": "record.history",
+    "payload": {
+      "record_id": "record-1",
+      "collection": "deals",
+      "cursor": null,
+      "kinds": [
+        "update"
+      ]
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "answer_must_include": [
+      "events"
+    ],
+    "note": "The revision that changed the margin carries {field: \"margin\", label: \"Маржа, %\", sealed: true}; neither value travels, so the card says «Значение скрыто: Маржа, %». kinds [\"update\"] leaves out the create, delete, restore and publish events."
+  }
+}

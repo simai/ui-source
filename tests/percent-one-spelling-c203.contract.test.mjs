@@ -92,11 +92,13 @@ test('sf-tile-metric and sf-progress-run write the per cent with the no-break sp
   }
 });
 
-test('field renderers: a percent value and the meter variant', async () => {
+test('field renderers: a percent value and the meter template', async () => {
   assert.equal(formatPercent('12.5', 'ru'), `12,5${NBSP}%`);
   assert.equal(formatPercent('20', 'en'), `20${NBSP}%`);
   const {PROPERTY_TYPES} = await import('../src/smart/field-renderers/registry.js');
-  assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'number').variants.map((one) => one.id), ['scale', 'meter', 'stepper']);
+  // C302: templates, the default first; the variants are their former ids.
+  assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'number').templates.map((one) => one.id), ['input', 'stepper', 'scale', 'meter']);
+  assert.deepEqual(PROPERTY_TYPES.find((one) => one.type === 'number').variants.map((one) => one.id), ['stepper', 'scale', 'meter']);
   const source = await read('src/smart/field-renderers/index.js');
   assert.match(source, /if \(variant === 'meter'\) return \{component: \{type: 'progress-bar', props: meterProps\(field, number\)\}\};/u);
   assert.match(source, /return \{inline: true, meter: true, value: String\(number\)/u);

@@ -62,19 +62,20 @@ try {
     const fields = [
       {key: 'title', label: 'Название', propertyType: 'string', required: true},
       {key: 'about', label: 'Описание', propertyType: 'text'},
-      {key: 'count', label: 'Счёт', propertyType: 'integer'},
+      {key: 'count', label: 'Счёт', propertyType: 'number', decimals: 0},
       {key: 'when', label: 'Дата', propertyType: 'date'},
-      {key: 'live', label: 'Опубликовано', propertyType: 'boolean', required: true},
-      // The same required yes/no where a change acts at once: a switch there,
-      // a checkbox in a form saved with a button (C165 (4), form study FM-6).
+      // C303 (4): a boolean draws its template -- the switch by default, the
+      // checkbox and the buttons Да / Нет when the field names them; required
+      // and the apply mode no longer choose the look.
+      {key: 'live', label: 'Опубликовано', propertyType: 'boolean', required: true, template: 'checkbox'},
       {key: 'instant', label: 'Показывать', propertyType: 'boolean', required: true, draw: {apply: 'instant'}},
-      {key: 'maybe', label: 'Активно', propertyType: 'boolean'},
+      {key: 'maybe', label: 'Активно', propertyType: 'boolean', template: 'buttons'},
       // A field drawn in a density the host asks for (C22, form study FM-5).
       {key: 'dense', label: 'Плотно', propertyType: 'string', draw: {density: 'compact'}},
       // A consumer saw «Да»/«Нет» in an English admin, because the words were
       // written into the set. They come from the field now, so this one asks
       // for its own and the one above keeps the published fallback.
-      {key: 'english', label: 'Enabled', propertyType: 'boolean', trueText: 'Yes', falseText: 'No'},
+      {key: 'english', label: 'Enabled', propertyType: 'boolean', template: 'buttons', templateParams: {trueText: 'Yes', falseText: 'No'}},
       {key: 'status', label: 'Статус', propertyType: 'choice', options: [
         {value: 'live', label: 'Опубликовано'}, {value: 'draft', label: 'Черновик'},
       ]},

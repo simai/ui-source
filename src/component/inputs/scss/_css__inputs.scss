@@ -60,6 +60,21 @@
     block-size: auto;
   }
 
+  /* A number edited where numbers end the line -- a table cell edited in
+     place, renderEditField(..., {align: 'end'}) -- types at the end with
+     figures of one width (C294 (c)): the field carries text-end and
+     num-tabular, which the native input, whose browser sheet sets text-align
+     start and the control font, does not take by itself. Only that field:
+     an input in a centred container (a dialog, a card) keeps the start
+     alignment every other input has. */
+  .sf-input.text-end .sf-input-field input {
+    text-align: end;
+  }
+
+  .sf-input.num-tabular .sf-input-field input {
+    font-variant-numeric: tabular-nums;
+  }
+
   .sf-input .sf-input-field input::placeholder {
     --sf-input-placeholder--color: var(--sf-on-surface-variant);
     --sf-input-placeholder--font-family: var(--sf-text--family);

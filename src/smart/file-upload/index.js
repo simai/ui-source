@@ -533,6 +533,8 @@ class SfFileUpload extends FormField(FileUploadElement) {
       // The visible label names the area (aria-labelledby) unless the page
       // gave the area an aria-label of its own.
       labelId: partId(instancePath(this, {kind: 'sf-file-upload'}), 'label'),
+      // The error line's id (error-message, FO-1).
+      errorId: partId(instancePath(this, {kind: 'sf-file-upload'}), 'error'),
     });
   }
 

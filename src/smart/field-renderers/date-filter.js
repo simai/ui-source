@@ -16,6 +16,9 @@
 //   a period    overlaps, within, starts, ends   value: a period's name or two days
 //               contains                      value: "yyyy-mm-dd"
 //   both        empty, not-empty              value: true
+//   a time      eq, lt, gt                    value: "hh:mm" (catalogue step 4)
+//               between                       value: ["hh:mm", "hh:mm"], both ends in
+//               empty, not-empty              value: true
 //
 // The request carries the context the server resolves the periods in,
 // {timeZone, weekStart} (weekStart 0 Sunday .. 6 Saturday, as Date#getDay
@@ -33,6 +36,7 @@ import {pageLocale, pageWord} from '../../core/js/page-language.js';
 import {noteDeprecated} from '../../core/js/deprecations.js';
 import {localeWeekStart} from '../input-date/js/locale-calendar.js';
 import LANG_WORDS from './lang/index.mjs';
+import {TIME_FILTER_OPERATORS} from './registry.js';
 
 const SET_NAME = 'sf-field-renderers';
 
@@ -53,8 +57,8 @@ export const LEGACY_DATE_OPERATORS_UNTIL = '2027-01-01';
 const DAY_OPERATORS = ['eq', 'lt', 'gt', 'gte', 'lte'];
 const PERIOD_FIELD_OPERATORS = ['overlaps', 'within', 'starts', 'ends'];
 
-function condition(operator, need, group, period = '') {
-    return Object.freeze({key: period ? `period:${period}` : operator, operator, need, group, ...(period ? {period} : {})});
+function condition(operator, need, group, period = '', extra = {}) {
+    return Object.freeze({key: period ? `period:${period}` : operator, operator, need, group, ...(period ? {period} : {}), ...extra});
 }
 
 function singleConditions(future) {
@@ -87,11 +91,23 @@ function periodFieldConditions() {
     ];
 }
 
+// A time of day (catalogue step 4; it was searched as text): one time, two
+// (both ends in), earlier, later, empty, not empty. A time has no zone and no
+// week: the request's context does not change it.
+const TIME_NEEDS = {eq: 'time', between: 'times', lt: 'time', gt: 'time', empty: 'none', 'not-empty': 'none'};
+
+function timeConditions() {
+    return TIME_FILTER_OPERATORS.map((operator) => condition(operator, TIME_NEEDS[operator],
+        TIME_NEEDS[operator] === 'none' ? 'filled' : 'time', '', {time: true}));
+}
+
 // A field is a period when it says so: its property type or control is
-// `period`, or its filter's kind is. Every other date field holds one date.
+// `period`, or its filter's kind is; a time of day when its type or control
+// is `time`. Every other date field holds one date.
 export function dateFilterKind(field = {}) {
     const asked = [field.filter?.kind, field.filter?.control, field.propertyType, field.type];
-    return asked.includes('period') ? 'period' : 'date';
+    if (asked.includes('period')) return 'period';
+    return [field.filter?.kind, field.filter?.control, field.propertyType || field.type].includes('time') ? 'time' : 'date';
 }
 
 function isDueField(field = {}) {
@@ -103,7 +119,8 @@ function isDueField(field = {}) {
 // every period, and the old today, week and month keep every period and «last
 // N days» (they were the list's periods).
 export function dateFilterConditions(field = {}) {
-    const all = dateFilterKind(field) === 'period' ? periodFieldConditions() : singleConditions(isDueField(field));
+    const kind = dateFilterKind(field);
+    const all = kind === 'period' ? periodFieldConditions() : kind === 'time' ? timeConditions() : singleConditions(isDueField(field));
     const asked = field.filter?.operators;
     if (!Array.isArray(asked) || !asked.length) return all;
     const names = new Set();
@@ -127,6 +144,18 @@ function dayOf(value) {
     if (typeof value !== 'string') return '';
     const day = value.slice(0, 10);
     return isDay(day) ? day : '';
+}
+
+const TIME_TEXT_RE = /^([01]\d|2[0-3]):[0-5]\d$/u;
+
+function timeOf(value) {
+    if (typeof value !== 'string') return '';
+    const time = value.trim().slice(0, 5);
+    return TIME_TEXT_RE.test(time) ? time : '';
+}
+
+function isTwoTimes(value) {
+    return Array.isArray(value) && value.length === 2 && Boolean(timeOf(value[0])) && Boolean(timeOf(value[1]));
 }
 
 function isTwoDays(value) {
@@ -208,6 +237,10 @@ export function dateConditionValue(next, previous = {}) {
             return isCount(before) ? Number(before) : 30;
         case 'when':
             return isPeriodName(before) || isTwoDays(before) ? before : 'this-week';
+        case 'time':
+            return timeOf(before) || (Array.isArray(before) ? timeOf(before[0]) || null : null);
+        case 'times':
+            return isTwoTimes(before) ? before.map(timeOf) : timeOf(before) ? [timeOf(before), ''] : ['', ''];
         default:
             return null;
     }
@@ -292,6 +325,7 @@ function word(node, key, vars, count) {
 export function dateConditionLabel(node, item) {
     if (!item) return '';
     if (item.period) return word(node, `datePeriod_${camel(item.period)}`);
+    if (item.time && item.operator === 'eq') return word(node, 'timeCondition_eq');
     return word(node, `dateCondition_${camel(item.operator)}`);
 }
 
@@ -345,9 +379,36 @@ function periodPhrase(node, name) {
     return word(node, `datePeriodIn_${camel(name)}`);
 }
 
+// A time as the chip says it, in the page's language: «10:30», «10:30 AM».
+function timeText(node, value) {
+    const time = timeOf(value);
+    if (!time) return '…';
+    const [h, m] = time.split(':').map(Number);
+    try {
+        return new Intl.DateTimeFormat(pageLocale(node), {hour: 'numeric', minute: '2-digit', timeZone: 'UTC'})
+            .format(new Date(Date.UTC(2000, 0, 1, h, m)));
+    } catch {
+        return time;
+    }
+}
+
+function timePhrase(node, {operator, value}) {
+    switch (operator) {
+        case 'eq': return timeText(node, value);
+        case 'between': return Array.isArray(value) ? `${timeText(node, value[0])}\u2013${timeText(node, value[1])}` : '…';
+        case 'lt':
+        case 'gt': return word(node, `dateChip_${operator}`, {date: timeText(node, value)});
+        case 'empty':
+        case 'not-empty': return word(node, `dateChip_${camel(operator)}`);
+        default: return '';
+    }
+}
+
 // What a condition says after the field's name on its chip: «в прошлом
-// месяце», «не позже 17 ноября», «идёт на этой неделе», «пусто» (DF-4).
+// месяце», «не позже 17 ноября», «идёт на этой неделе», «пусто» (DF-4); for
+// a time «10:00–18:00», «раньше 10:30».
 export function dateConditionPhrase(field, entry, node = null, {timeZone} = {}) {
+    if (dateFilterKind(field) === 'time') return timePhrase(node, entry || {});
     const one = normalizeFilterEntry(entry || {});
     const zone = timeZone || filterRequestContext(node).timeZone;
     const {operator, value} = one || {};

@@ -70,7 +70,8 @@ test('C294 (MP-8): what a person pastes is read as they mean it', () => {
 
 test('C294 (MP-12): numeric in the registry; totals by the digits, one per currency', () => {
   const numeric = PROPERTY_TYPES.filter((entry) => entry.numeric).map((entry) => entry.type);
-  assert.deepEqual(numeric, ['integer', 'number', 'money', 'percent']);
+  // C303 (2): integer is read as number (decimals 0); it is numeric through it.
+  assert.deepEqual(numeric, ['number', 'money', 'percent']);
   assert.equal(addDecimal('0.1', '0.2'), '0.3');
   assert.equal(addDecimal(['1500.5', '-0.5', null]), '1500');
   const totals = moneyTotals([{amount: '12500', currency: 'USD'}, {amount: '3000', currency: 'EUR'}, {amount: '7250.75', currency: 'USD'}, null], {}, 'en');
@@ -79,7 +80,8 @@ test('C294 (MP-12): numeric in the registry; totals by the digits, one per curre
 });
 
 test('C294 (MP-6, MP-7): the filter puts the condition first, nine conditions, decimal strings, a currency for a value-currency field', () => {
-  assert.match(renderers, /NUMBER_FILTER_OPERATORS = Object\.freeze\(\['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty'\]\)/u);
+  // The list lives in the registry (the number types' `conditions`, type templates step 4).
+  assert.match(read('src/smart/field-renderers/registry.js'), /NUMBER_FILTER_OPERATORS = Object\.freeze\(\['eq', 'neq', 'gt', 'gte', 'lt', 'lte', 'between', 'empty', 'not-empty'\]\)/u);
   const body = renderers.slice(renderers.indexOf('function renderNumberFilterControl'), renderers.indexOf('function renderIntegerFilterControl'));
   assert.ok(body.indexOf('data-sf-filter-part="operator"') < body.indexOf('sf-filter-operator-inputs'), 'the condition comes before the value');
   assert.match(body, /readTypedDecimal\(text, \{locale, currency\}\)/u);

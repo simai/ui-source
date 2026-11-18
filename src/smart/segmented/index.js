@@ -5,6 +5,7 @@ import { resolveControlSpacing } from '../../core/js/control-spacing';
 import { noteDeprecated } from '../../core/js/deprecations.js';
 import { bindFormReset } from '../../component/form-reset-helper';
 import { FormField } from '../helpers/form-field';
+import { instancePath, partId } from '../../core/js/instance-path.js';
 import { preloadControlIcons } from '../helpers/cycle';
 import manifest from './component.json';
 import aliases from './aliases.json';
@@ -375,11 +376,21 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     return {need, room};
   }
 
+  // A track its author lets wrap (root-class flex-wrap, as the field
+  // renderers' choice buttons do) takes more lines instead of folding: it
+  // was asked to show every option, and a dropdown in its place is another
+  // control (C302: the template is the administrator's choice; FW-2).
+  wrapsLines() {
+    const root = this.querySelector(':scope > .sf-button-group');
+    return Boolean(root) && globalThis.getComputedStyle?.(root)?.flexWrap === 'wrap';
+  }
+
   checkFit() {
     if (!this.isConnected) return;
-    if (!this.foldable) {
+    if (!this.foldable || this.wrapsLines()) {
       if (this._folded) {
         this._folded = false;
+        this.toggleAttribute('data-sf-folded', false);
         this.requestComponentUpdate?.('fit');
       }
       return;
@@ -423,7 +434,8 @@ class SfButtonGroup extends FormField(ButtonGroupElement) {
     // (R074): a segment drawn later (out of loading, items set afresh) finds
     // its glyph in the page's font instead of asking for a grown one.
     preloadControlIcons(this, context.entries.filter((item) => item.icon).map((item) => ({icon: item.icon, filled: false})));
-    return renderButtonGroupTemplate(context);
+    // The error line's id (error-message, FO-1).
+    return renderButtonGroupTemplate({...context, messageId: partId(instancePath(this, {kind: 'sf-segmented'}), 'error')});
   }
 
   // Every form value control reports a committed change as `change` on its
