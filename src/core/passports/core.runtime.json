@@ -1055,7 +1055,7 @@
     "src/core/types/smart-components.d.ts",
     "src/core/utility-full.js"
   ],
-  "content_sha256": "71b7d2094b7cab49ff9acd8615a6e98f9e66fcf91fe75e8b0b5b49e924d7beda",
+  "content_sha256": "0311a11cc2da87114fefb2815d530795728dbc1836837e308f6cca1c19b96846",
   "dependencies": [
     {
       "id": "core.styles",
