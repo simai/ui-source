@@ -990,6 +990,11 @@ class SfTabs extends TabsElement {
   syncPanelFocus() {
     const links = this.links;
     const panels = this.drawnPanels();
+    // A panel row drawn hidden because no panel had content (the template's
+    // data-sf-panels-empty) shows while a drawn panel holds something the
+    // host wrote into it, and hides again when it is empty.
+    const row = this.querySelector?.(':scope > .sf-tabs > .sf-tabs-main-container[data-sf-panels-empty]');
+    if (row && !links) row.hidden = !panels.some(panelHasContent);
     for (const panel of panels) {
       if (this._authoredPanelFocus.has(panel)) continue;
       if (links || !panelHasContent(panel) || panel.querySelector(FOCUSABLE)) panel.removeAttribute('tabindex');

@@ -6,16 +6,19 @@
     "empty": "Nothing found",
     "hint": "Plus to insert after.",
     "inserted": "Inserted {item} at position {index} in “{list}”.",
-    "instructions": "Space or Enter to pick up, arrows to move, Space or Enter to drop, Escape to cancel.",
+    "instructions": "Enter or Space to pick up, arrows to move, Enter or Space to drop, Escape to cancel.",
+    "instructions-select": "Space to select, Enter to pick up, arrows to move, Enter to drop, Escape to cancel.",
     "menu": "Insert",
     "move-down": "Down",
     "move-first": "To the top",
     "move-last": "To the bottom",
     "move-menu": "Move “{item}”",
+    "move-to": "Move to",
     "move-up": "Up",
     "moved": "Position {index} of {total} in “{list}”.",
     "picked": "Picked up {item}. Position {index} of {total} in “{list}”.",
     "point": "Insert: position {index} of {total}",
+    "refused": "Not here",
     "roledescription": "draggable",
     "search": "Find",
     "target": "Target: {target}."
@@ -26,6 +29,9 @@
     },
     "insert": {
       "label": "Insert"
+    },
+    "check": {
+      "label": "Target check"
     }
   }
 }

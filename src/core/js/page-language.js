@@ -75,8 +75,21 @@ const isBuiltIn = (code) => code === 'en' || (BUILT_IN_LANGUAGES?.built_in ?? []
 function needPack(code, component) {
   const wanted = normalise(code);
   const base = wanted.split('-')[0];
-  if (!base || isBuiltIn(base) || typeof PACKS.request !== 'function') return;
+  if (!base || isBuiltIn(base)) return;
   const name = component ? canonicalTag(component) : undefined;
+  if (typeof PACKS.request !== 'function') {
+    // Core has not run yet: a Smart bundle placed before core.js (a Docara
+    // page and its example frames load core last) draws before anyone can
+    // fetch. The ask is kept and core makes it when it starts
+    // (core/js/language-packs.js), so the family's part still comes.
+    const early = (PACKS.early ??= new Map());
+    const named = aliasOf(wanted);
+    for (const one of new Set([base, wanted, ...(named ? [named] : [])])) {
+      if (!early.has(one)) early.set(one, new Set());
+      early.get(one).add(name ?? '');
+    }
+    return;
+  }
   PACKS.request(base, name);
   if (wanted !== base) PACKS.request(wanted, name);
   const named = aliasOf(wanted);
@@ -303,8 +316,12 @@ export function localeText(dictionary, key, locale, component) {
 function warnFallback(order, owner, key) {
   const wanted = String(order[0] || '').split('-')[0];
   // While its pack is on its way the English is a moment, not a gap (the
-  // registry name's pack too: zh-hans for a zh-CN page).
-  if (!wanted || wanted === 'en' || order.some((code) => code !== 'en' && PACKS.pending.has(code))) return;
+  // registry name's pack too: zh-hans for a zh-CN page). Before core runs
+  // nothing can be on its way yet: the word is asked again when the pack core
+  // fetches arrives, and only a word still missing then is one (ui-view
+  // example frames reported sf-pagination "of-pages", which the ru pack holds,
+  // on loads where the bundle ran before core).
+  if (!wanted || wanted === 'en' || typeof PACKS.request !== 'function' || order.some((code) => code !== 'en' && PACKS.pending.has(code))) return;
   const root = globalThis;
   if (!(root.__sfMissingWords instanceof Map)) root.__sfMissingWords = new Map();
   const seen = root.__sfMissingWords;

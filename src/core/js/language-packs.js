@@ -233,6 +233,17 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
       for (const url of [].concat(urls)) PACKS.add(String(code).trim().toLowerCase(), url);
     }
   }
+  // What bundles that ran before core asked for (page-language.js needPack):
+  // their families' parts, which a component drawn in a shadow root would
+  // not get from what the document shows.
+  const early = PACKS.early;
+  PACKS.early = null;
+  for (const [code, components] of early ?? []) {
+    for (const component of components) PACKS.request(code, component || undefined);
+  }
+  // Their words are asked again: a word no pack holds (a language without
+  // one) is reported then, as it would have been with core first.
+  if (early?.size) redraw();
   // The page's own language, as soon as core runs, so the words are usually
   // here before the first component draws; the Loader holds the components
   // while they are on their way (core/js/loader.js languageHold, C282).

@@ -77,9 +77,19 @@ test('LC-6: a word said in English for want of one in the page language warns on
   const said = [];
   const warn = console.warn;
   console.warn = (...args) => said.push(args.join(' '));
+  // Core is here (its pack requester): a word looked up before core runs is
+  // a moment, not a gap (sortable-label-of-pages: sf-pagination "of-pages" in
+  // Docara example frames, where the bundles load before core).
+  const packs = globalThis.__sfPageLanguage.packs;
+  const request = packs.request;
   try {
     delete globalThis.__sfMissingWords;
     const words = { en: { a: 'A', b: 'B' }, ru: { a: 'А', b: 'Б' } };
+    packs.request = null;
+    assert.equal(localeText(words, 'a', 'de', 'sf-x'), 'A');
+    assert.equal(said.length, 0, 'before core nothing is said');
+    packs.request = () => {};
+    packs.early = null;
     assert.equal(localeText(words, 'a', 'de', 'sf-x'), 'A');
     assert.equal(localeText(words, 'b', 'de-AT', 'sf-x'), 'B');
     assert.equal(pageWord(words, 'a', { closest: () => ({ getAttribute: () => 'de' }) }, { component: 'sf-y' }), 'A');
@@ -93,6 +103,8 @@ test('LC-6: a word said in English for want of one in the page language warns on
     language.register('sf-x', 'de', { a: 'Ä' });
     assert.equal(localeText(words, 'a', 'de', 'sf-x'), 'Ä', 'a registered word is no fallback');
   } finally {
+    packs.request = request;
+    packs.early = null;
     console.warn = warn;
     language.forget();
   }
