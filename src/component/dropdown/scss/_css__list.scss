@@ -212,6 +212,17 @@
     @include panel.search-icon-trailing;
   }
 
+  /* A search that finds nothing (FF-1): one line where the rows were, a
+     row's height, its text where the rows' and the search's text start. */
+  .sf-dropdown .sf-list .sf-list-empty {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--sf-list--row-height);
+    padding-inline: panel.$row-padding;
+    font-size: var(--sf-list--text);
+    line-height: var(--sf-list--line);
+  }
+
   .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
   .sf-list--menu > .sf-list-search > .sf-list-search-input {
     @include panel.search-input;
@@ -269,6 +280,9 @@
   .sf-dropdown .sf-list > .sf-list-search > .sf-list-search-input,
   .sf-list--menu > .sf-list-search > .sf-list-search-input {
     @include panel.search-input;
+  }
+  .sf-dropdown .sf-list .sf-list-empty {
+    color: var(--sf-on-surface-variant);
   }
   .sf-dropdown .sf-list [role="option"].sf-list-item:not(:disabled):not(.disabled):not(.selected):hover,
   .sf-list--menu [role="option"].sf-list-item:not(:disabled):not(.disabled):not(.selected):hover {

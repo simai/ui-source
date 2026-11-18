@@ -27,6 +27,7 @@ export function renderTreeTemplate(context) {
       style=${context.rootStyle || nothing}
       role="tree"
       data-sf-tree-flat=${context.hasBranches ? nothing : 'true'}
+      data-sf-rows-window=${context.windowed ? 'true' : nothing}
       aria-label=${context.ariaLabel || nothing}
       aria-multiselectable=${context.selection === 'many' || context.selection === 'check' ? 'true' : nothing}
     >${context.before

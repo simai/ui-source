@@ -21,7 +21,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {applied, refused, elementFromManifest} from '../../core/js/element-manifest';
 import {instancePath, partId} from '../../core/js/instance-path';
-import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
+import {OWN_ERROR_CONTROLS, PROPERTY_TYPES, fieldConditions, fieldTemplate, propertyModes, renderEditField, renderViewField} from '../field-renderers/index.js';
 import {validityWords} from '../helpers/form-field.js';
 import {CONFIRM_ICON, CONFIRM_STATES} from '../helpers/confirm-surface.js';
 import {renderFormTemplate} from './js/templates/default';
@@ -266,9 +266,30 @@ class SfForm extends FormElement {
   // ---------------------------------------------------------------- value
 
   // Set from code, the value is the saved state: the form shows it, forgets
-  // the errors and is not dirty. No event, as for a native field.
+  // the errors and is not dirty. No event, as for a native field. Read, it
+  // is what is sent (FO3-1, Larena settings standard §4): a field its
+  // conditions hide is left out, though the form keeps what it held while it
+  // is open, so showing the field again brings it back.
   get value() {
-    return clone(this._values);
+    return this.sendable(this._values);
+  }
+
+  sendable(values) {
+    const out = clone(values);
+    for (const field of this.list) {
+      if (field.when && fieldConditions(field, values).visible === false) delete out[field.key];
+    }
+    return out;
+  }
+
+  // A host error for a field its conditions hide (FO3-1): it cannot stand at
+  // its field, so the summary says it by the field's label rather than
+  // dropping it. It does not hold the next submit back: the field is not sent.
+  hiddenHostErrors() {
+    if (!this._hostErrors.size) return [];
+    return this.list.map((field) => this.conditioned(field))
+      .filter((field) => field.visible === false && this._hostErrors.has(field.key))
+      .map((field) => ({key: field.key, message: `${text(field.label) || field.key}: ${this._hostErrors.get(field.key)}`, href: null}));
   }
 
   set value(next) {
@@ -290,20 +311,38 @@ class SfForm extends FormElement {
     return normalizeFields(this.fields);
   }
 
-  // The fields the form shows now: every field the renderers draw. A field of
-  // a type the renderers do not know at all (items or compound, which a
-  // component set draws, or a misspelt type) is still left out, and the page
-  // hears it once per type, with the field that brought it (set boundary
-  // study, 2026-11-17): it was dropped without a word.
+  // The fields the form shows now: every field the renderers draw whose
+  // conditions show it, as its conditions make it. A field of a type the
+  // renderers do not know at all (items or compound, which a component set
+  // draws, or a misspelt type) is still left out, and the page hears it once
+  // per type, with the field that brought it (set boundary study,
+  // 2026-11-17): it was dropped without a word.
   shownFields() {
     // An answer declined or run out shows only its outcome (the confirm
     // surface; C35: a declined answer says nothing).
     if (this.isAnswer && !ANSWERING.has(this.answerState) && this.answerState !== 'accepted') return [];
     const editing = this.isEditing;
-    return this.list.filter((field) => {
+    return this.list.map((field) => this.conditioned(field)).filter((field) => {
+      if (field.visible === false) return false;
       warnUnknownType(field, this.hostDraws(field));
       return editing ? this.drawsEdit(field) : this.drawsView(field);
     });
+  }
+
+  // A field as its conditions make it over the values on screen (FO-3,
+  // field-renderers/conditions.js): when.visible shows or hides it, when.required
+  // makes it required, when.enabled false draws it read-only. A field with no
+  // when is as declared. A hidden field keeps its value and is not checked.
+  conditioned(field) {
+    if (!field?.when) return field;
+    const {visible, required, enabled} = fieldConditions(field, this._values);
+    return {...field, visible, required, readonly: field.readonly === true || !enabled};
+  }
+
+  // The field of a key as it stands now (its conditions applied).
+  fieldOf(key) {
+    const field = this.list.find((one) => one.key === key);
+    return field ? this.conditioned(field) : null;
   }
 
   // A field of a type the renderers do not draw in this mode is left out; a
@@ -436,6 +475,9 @@ class SfForm extends FormElement {
         if (this._errors.has(key)) this.recheck(key);
       });
     }
+    // A field another field's value hid, or made optional, takes its error
+    // with it (FO-3).
+    for (const other of [...this._errors.keys()]) if (other !== key && this.list.find((one) => one.key === other)?.when) this.recheck(other);
     this.requestComponentUpdate('value');
   }
 
@@ -471,8 +513,14 @@ class SfForm extends FormElement {
   }
 
   recheck(key) {
-    const field = this.list.find((one) => one.key === key);
+    const field = this.fieldOf(key);
     if (!field) return;
+    if (field.visible === false) {
+      this._errors.delete(key);
+      this.sfHostState('data-invalid', this._errors.size > 0);
+      this.requestComponentUpdate('validity');
+      return;
+    }
     const message = this.errorOf(field);
     if (message) this._errors.set(key, message);
     else this._errors.delete(key);
@@ -492,11 +540,15 @@ class SfForm extends FormElement {
       this._errors.set(field.key, message);
       wrong.push(field.key);
     }
-    this.sfHostState('data-invalid', wrong.length > 0);
+    const hidden = this.hiddenHostErrors();
+    this.sfHostState('data-invalid', wrong.length > 0 || hidden.length > 0);
     this.requestComponentUpdate('validity');
-    if (!wrong.length) return true;
+    if (!wrong.length) {
+      if (focus && hidden.length) this.whenDrawn(() => this.focusSummary());
+      return true;
+    }
     this.sfEmit('invalid', {fields: wrong});
-    if (focus) this.whenDrawn(() => (wrong.length > 1 ? this.focusSummary() : this.focusField(wrong[0])));
+    if (focus) this.whenDrawn(() => (wrong.length + hidden.length > 1 ? this.focusSummary() : this.focusField(wrong[0])));
     return false;
   }
 
@@ -630,7 +682,7 @@ class SfForm extends FormElement {
     if (!this._errors.has(key) || this._hostErrors.has(key)) return;
     const control = this.controlOf(key);
     if (control?.validity?.valid && control.validity.valueMissing === false) {
-      const field = this.list.find((one) => one.key === key);
+      const field = this.fieldOf(key);
       if (field && (field.required !== true || hasValue(control.value))) {
         this._errors.delete(key);
         this.sfHostState('data-invalid', this._errors.size > 0);
@@ -753,6 +805,7 @@ class SfForm extends FormElement {
     const answer = this.isAnswer ? this.answerContext() : null;
     const errors = editing ? fields.filter((field) => this._errors.has(field.key))
       .map((field) => ({key: field.key, message: this._errors.get(field.key), href: `#${id}--field-${field.key}`})) : [];
+    const hiddenErrors = editing ? this.hiddenHostErrors() : [];
     this.sfHostState('data-mode', editing ? 'edit' : 'view');
     this.sfHostState('data-dirty', this._dirty);
     this.sfHostState('data-state', answer ? answer.state : null);
@@ -769,7 +822,8 @@ class SfForm extends FormElement {
       footer: this.footer === 'sticky' ? 'sticky' : 'static',
       groups,
       requiredNote: editing && !instant && !(answer && answer.state !== 'open') && fields.some((field) => field.required === true && field.readonly !== true && field.propertyType !== 'boolean'),
-      errorList: editing && this._submitted && errors.length > 1 ? errors : null,
+      // From two errors, or one a hidden field holds (FO3-1), the summary.
+      errorList: editing && ((this._submitted && errors.length + hiddenErrors.length > 1) || hiddenErrors.length) ? [...errors, ...hiddenErrors] : null,
       dirty: answer ? false : this._dirty,
       words: {
         send: word('send'),
@@ -778,7 +832,8 @@ class SfForm extends FormElement {
         cancel: word('cancel'),
         edit: word('edit'),
         unsaved: word('unsaved'),
-        errorsTitle: word('errors-title', {count: errors.length}),
+        // The summary counts every error it lists, a hidden field's too (FO3-1).
+        errorsTitle: word('errors-title', {count: errors.length + hiddenErrors.length}),
       },
       rootClass: this.getRootClass(),
     });

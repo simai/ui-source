@@ -41,7 +41,16 @@ export function createDropdownInteraction(root, adapter) {
   // The dropdown's own field, or the trigger the consumer handed in: the
   // keyboard, the focus and the aria state belong to whichever one is there.
   const field = () => root.querySelector('.sf-dropdown-field, .sf-dropdown-trigger');
-  const trigger = () => field()?.querySelector(':scope > button') || field();
+  // A trigger the consumer handed in is the control it holds (FF-9): its own
+  // button, or the inner button of an sf-button it gave. The wrapper then
+  // takes no role and no tab stop, so there is no button inside a button.
+  const trigger = () => {
+    const box = field();
+    if (!box) return null;
+    return box.querySelector(':scope > button')
+      || (box.classList.contains('sf-dropdown-trigger') ? box.querySelector(':scope > * > button, :scope > a[href]') : null)
+      || box;
+  };
   const input = () => field()?.querySelector('input:not([type="hidden"])');
   // The search header (.sf-list-search, since R029) or a search field written
   // as an sf-input before it.
@@ -140,6 +149,7 @@ export function createDropdownInteraction(root, adapter) {
     });
   };
   const owner=adapter.owner||root;
+  let waits=0;
   let summary = document.createElement('span');
   summary.className='sf-dropdown-value';root.append(summary);identify(summary,owner,'value');
   const refresh = () => {
@@ -151,6 +161,14 @@ export function createDropdownInteraction(root, adapter) {
     }
     const button=trigger(),container=popup?.querySelector('.sf-list-container');
     if(!button||!container)return;
+    // FF-9: a handed control draws its button after it is defined; until it
+    // has, the wrapper stands in, and the wrapper gives its role and tab stop
+    // up once the control's button is there.
+    const box=field();
+    if(box?.classList.contains('sf-dropdown-trigger')){
+      if(button===box&&box.querySelector(':scope > :not(input, button, a):not(:has(button))')&&waits<20){waits+=1;requestAnimationFrame(refresh);}
+      if(button!==box){['role','aria-expanded','aria-haspopup','aria-controls','aria-labelledby','aria-label','aria-describedby'].forEach(name=>box.removeAttribute(name));}
+    }
     if(!summary.isConnected)root.append(summary);
     const label=root.querySelector('.sf-dropdown-label .sf-dropdown-text');
     const labelId=label?.textContent.trim()?identify(label,owner,'label'):'';

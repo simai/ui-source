@@ -120,7 +120,7 @@ const metaContent = (context, item, group) => {
         : nothing}`;
 };
 
-const row = (context, item, group) => {
+const row = (context, item, group, place = null) => {
     const {component} = context;
     const text = String(item.text ?? "") || context.untitledText;
     const supporting = item.supporting ? String(item.supporting) : "";
@@ -191,7 +191,8 @@ const row = (context, item, group) => {
                     ?divided=${context.divided}
             ><span slot="trailing" class="sf-list__meta">${metaContent(context, item, group)}</span></sf-list-item>`;
     return html`
-        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.unreadOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}>
+        <li class="sf-list__row ${current ? "sf-list__row--current" : ""} ${context.unreadOf(item) ? "sf-list__row--unread" : ""}" data-id=${item.id}
+            aria-posinset=${place ? place.at : nothing} aria-setsize=${place ? place.of : nothing}>
             ${listItem}
             ${menu
                 ? html`<button
@@ -208,11 +209,36 @@ const row = (context, item, group) => {
     `;
 };
 
-const rows = (context, group, labelled) => html`
-    <ul class="sf-list__rows" aria-labelledby=${labelled ?? nothing} aria-label=${labelled ? nothing : context.label}>
-        ${repeat(group.items, (item) => item.id, (item) => row(context, item, group))}
+// A long list draws the rows in view (FO-2, core/js/rows-window.js): the
+// range, and two spacers standing for the rows above and below it, so the
+// scroll bar and the scroll position are the whole list's. A drawn row says
+// its place in its list (aria-posinset, aria-setsize); the spacers are not
+// read. An ungrouped list's spacers stand in its rows; a grouped list
+// (FO2-1) draws the groups the range reaches, each with its heading and the
+// rows of it in the range, between two spacers in the list's body.
+const spacer = (height, edge, tag = "li") => tag === "li"
+    ? html`<li class="sf-list__spacer" data-sf-rows-spacer=${edge} aria-hidden="true"
+        style=${`block-size: ${Math.max(0, Math.round(height))}px`}></li>`
+    : html`<div class="sf-list__spacer" data-sf-rows-spacer=${edge} aria-hidden="true"
+        style=${`block-size: ${Math.max(0, Math.round(height))}px`}></div>`;
+
+const rows = (context, group, labelled) => {
+    const win = context.window?.flat && group.key === "all" ? context.window : null;
+    const part = context.window && !context.window.flat ? context.window.parts.get(group.key) : null;
+    const from = win ? win.first : part ? part[0] : 0;
+    const items = win
+        ? group.items.slice(win.first, win.last + 1)
+        : part ? (part[1] < 0 ? [] : group.items.slice(part[0], part[1] + 1)) : group.items;
+    const placed = Boolean(win || part);
+    return html`
+    <ul class="sf-list__rows" aria-labelledby=${labelled ?? nothing} aria-label=${labelled ? nothing : context.label}
+        data-sf-rows-window=${win ? `${win.first}-${win.last}` : nothing}>
+        ${win ? spacer(win.before, "before") : nothing}
+        ${repeat(items, (item) => item.id, (item, index) => row(context, item, group, placed ? {at: from + index + 1, of: group.items.length} : null))}
+        ${win ? spacer(win.after, "after") : nothing}
     </ul>
 `;
+};
 
 // The rows on their way (owner decision C130; list and feed study LF-2): the
 // list's own rows, sf-list-item of the list's size, so a skeleton row is as
@@ -286,10 +312,13 @@ export function renderListTemplate(context) {
                 : nothing}
             <div class="sf-list__body"
                  data-sf-list
+                 data-sf-rows-window=${context.window && !context.window.flat ? `${context.window.first}-${context.window.last}` : nothing}
+                 ?data-sf-rows-all=${context.rowsAll === true}
                  ?hidden=${context.empty || context.loading}
                  @keydown=${(event) => component.onKey(event)}
                  @sf-list-item-open=${(event) => component.onRowOpen(event)}>
-                ${repeat(context.sections, (group) => group.key, (group) => context.grouped
+                ${context.window && !context.window.flat && context.window.before > 0 ? spacer(context.window.before, "before", "div") : nothing}
+                ${repeat(context.window && !context.window.flat ? context.sections.filter((group) => context.window.parts.has(group.key)) : context.sections, (group) => group.key, (group) => context.grouped
                     ? html`
                         <section class="sf-list__group" data-group=${group.key}>
                             <div class=${`sf-group-heading sf-list__heading${context.size === "1" ? "" : ` sf-group-heading--size-${context.size}`}${context.stickyHeadings ? " sf-group-heading--sticky" : ""}`}
@@ -300,6 +329,7 @@ export function renderListTemplate(context) {
                             ${rows(context, group, `${context.uid}-${group.key.replace(/[^\w-]/gu, "_")}`)}
                         </section>`
                     : rows(context, group, null))}
+                ${context.window && !context.window.flat && context.window.after > 0 ? spacer(context.window.after, "after", "div") : nothing}
             </div>
             ${context.emptyContent
                 // The page's own empty state stays in the document while the

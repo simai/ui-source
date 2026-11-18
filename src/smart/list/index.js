@@ -44,6 +44,8 @@ import {elementFromManifest} from "../../core/js/element-manifest";
 import {calendarDayOffset, formatRelativeDay, msUntilNextDay, toDate} from "../../core/js/format.js";
 import {EDGE_MARGIN, scrollerOf, watchEdge} from "../../core/js/reading-position.js";
 import {menuOpen} from "../../core/js/menu-open.js";
+import {rowsWindow, ROWS_WINDOW_FROM, ROWS_VISIBILITY_FROM} from "../../core/js/rows-window.js";
+import {filesDrop} from "../../core/js/files-drop.js";
 import {noteDeprecated} from "../../core/js/deprecations";
 
 // Is the end within watchEdge's margin of the box that scrolls the list (or
@@ -188,6 +190,33 @@ class SfList extends ListElement {
         this._stopEdge = null;
         this._edge = null;
         this._dayTimer = 0;
+        // A long list draws the rows in view (FO-2, core/js/rows-window.js):
+        // a list of 1 000 entries or more (C308), the entries a person can see and 20
+        // on each side, two spacers standing for the rest. A grouped list is
+        // one run of «heading, its rows» (FO2-1); a range never starts inside
+        // a group without its heading. Each entry's height is kept by its id
+        // (FO2-4). rows-window="off" draws every row (FO2-3).
+        this._entries = [];
+        this._rowsWindow = rowsWindow({
+            body: () => this.querySelector(":scope > .sf-list__frame [data-sf-rows-window]"),
+            rows: () => [...this.querySelectorAll([
+                ":scope > .sf-list__frame .sf-list__rows[data-sf-rows-window] > .sf-list__row",
+                ":scope > .sf-list__frame .sf-list__body[data-sf-rows-window] > .sf-list__group > .sf-list__heading",
+                ":scope > .sf-list__frame .sf-list__body[data-sf-rows-window] > .sf-list__group > .sf-list__rows > .sf-list__row",
+            ].join(", "))],
+            onMove: () => this.requestComponentUpdate("window"),
+            key: (index) => this._entries[index]?.key,
+            snap: (index) => this._entries[index]?.head ?? index,
+            // A sticky heading reads where it stuck (sticky-headings): its
+            // place in the flow is the top of its group's content box.
+            place: (element) => {
+                if (!element.classList.contains("sf-list__heading")) return element.getBoundingClientRect().top;
+                const group = element.parentElement;
+                const style = getComputedStyle(group);
+                return group.getBoundingClientRect().top + (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.paddingTop) || 0) + (parseFloat(getComputedStyle(element).marginTop) || 0);
+            },
+            guess: 40,
+        });
         listCount += 1;
         this._uid = `sf-list-${listCount}`;
         // A value set as a property before the element was defined is an own
@@ -552,9 +581,68 @@ class SfList extends ListElement {
         return {twoLine, lead: {kind: "avatar", wide, shape: learned ? learned.shape : "circle"}};
     }
 
+    // The range a long list draws, or null (FO-2): a list that is not
+    // loading and has no row being renamed. An ungrouped list is its rows; a
+    // grouped one is one run of each group's heading and rows (FO2-1), and the
+    // range says, per group, the rows it draws (parts: group key -> [from,
+    // to], rows of the group). rows-window="off" draws every row (FO2-3).
+    windowOf(sections, loading) {
+        // C308 FO-2: from 1 000 entries, or the list's own rows-window-from;
+        // rows-window="off" never.
+        const own = Number.parseInt(this.getAttribute("rows-window-from") ?? "", 10);
+        this._rowsWindow.from = this.getAttribute("rows-window") === "off" ? Infinity : (own > 0 ? own : ROWS_WINDOW_FROM);
+        const flat = sections.length === 1 && sections[0].key === "all";
+        const entries = [];
+        for (const group of sections) {
+            const head = entries.length;
+            if (!flat) entries.push({key: `head:${group.key}`, head, group: group.key, row: -1});
+            group.items.forEach((item, row) => entries.push({key: `row:${item.id}`, head: flat ? entries.length : head, group: group.key, row}));
+        }
+        this._entries = entries;
+        if (loading || this._editing) {
+            this._rowsWindow.slice(0);
+            return null;
+        }
+        const slice = this._rowsWindow.slice(entries.length);
+        if (!slice) return null;
+        const parts = new Map();
+        for (let index = slice.first; index <= slice.last; index += 1) {
+            const entry = entries[index];
+            if (!entry) continue;
+            const part = parts.get(entry.group) ?? [Infinity, -1];
+            if (entry.row >= 0) parts.set(entry.group, [Math.min(part[0], entry.row), Math.max(part[1], entry.row)]);
+            else parts.set(entry.group, part);
+        }
+        return {...slice, flat, parts};
+    }
+
+    // Home and End in a long list go to the whole list's first and last row,
+    // which may not be drawn: the range is put there first (FO-2). The
+    // arrows find the next row drawn, since the range keeps rows beyond the
+    // visible ones and moves as the focused row scrolls into view.
+    onWindowKey = (event) => {
+        if (!this._rowsWindow.windowed || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        if (event.key !== "Home" && event.key !== "End") return;
+        const row = event.target?.closest?.(".sf-list-item[data-sf-list-roving]");
+        if (!row || event.target !== row || !this.contains(row)) return;
+        const sections = this.arranged();
+        const items = sections.flatMap((group) => group.items);
+        const item = event.key === "Home" ? items[0] : items.at(-1);
+        if (!item) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const at = this._entries.findIndex((entry) => entry.key === `row:${item.id}`);
+        this._rowsWindow.reveal(event.key === "Home" ? 0 : Math.max(0, at));
+        // The row is drawn with the moved range and draws itself a frame or
+        // more later: it is waited for longer than a renamed row.
+        this.focusRow(item.id, 30);
+    };
+
     templateContext() {
         const loading = this.loading;
+        const sections = this.arranged();
         const empty = !loading && this._items.length === 0;
+        const range = this.windowOf(sections, loading);
         return {
             component: this,
             uid: this._uid,
@@ -564,7 +652,11 @@ class SfList extends ListElement {
             size: this.size,
             noWrap: this.noWrap === true,
             divided: this.divided === true,
-            sections: this.arranged(),
+            sections,
+            window: range,
+            // Drawn whole, a long list's rows skip layout and paint off
+            // screen (content-visibility, C308 FO-2); find and print reach them.
+            rowsAll: !range && !loading && this._entries.length >= ROWS_VISIBILITY_FROM,
             leading: this.leadingPlace(),
             avatarOf,
             countOf,
@@ -618,6 +710,12 @@ class SfList extends ListElement {
 
     afterRender(changed) {
         super.afterRender?.(changed);
+        if (this._rowsWindow.windowed) {
+            this._rowsWindow.start();
+            this._rowsWindow.sync();
+        } else {
+            this._rowsWindow.stop();
+        }
         this.watchEnd();
         this.watchWidth();
         // The keys a row answers, said to assistive technology on the row itself
@@ -655,6 +753,19 @@ class SfList extends ListElement {
     onConnected() {
         super.onConnected?.();
         this.watchDay();
+        // Files from the computer on the whole list (owner decision C308
+        // FO-1): a folder, a chat, attachments, when the list's owner turns it
+        // on (accept-files); the one drop overlay of the page says where they
+        // go; a zone inside the list (a row's own) wins. The list uploads
+        // nothing itself: attach asks the host.
+        this._filesDrop ??= filesDrop(this, {
+            target: () => (this.acceptFiles === true || this.hasAttribute("accept-files") ? this : null),
+            overlay: () => this.sfWord("files-drop-text", {vars: {target: this.label || this.sfWord("label")}}),
+            onFiles: (files, {skipped}) => {
+                if (files.length || skipped.length) this.sfEmit("attach", {files, skipped});
+            },
+        });
+        this.addEventListener("keydown", this.onWindowKey, true);
         // A long press on a row under a finger opens its menu, as its «⋯»
         // does (owner decision C148 (6)); the click its release sends opens
         // nothing. No swipe.
@@ -701,7 +812,11 @@ class SfList extends ListElement {
     }
 
     onDisconnected() {
+        this._filesDrop?.stop();
+        this._filesDrop = null;
         this.unwatchEnd();
+        this._rowsWindow.stop();
+        this.removeEventListener("keydown", this.onWindowKey, true);
         this._widthObserver?.disconnect();
         this._widthObserver = null;
         cancelAnimationFrame(this._fitFrame);

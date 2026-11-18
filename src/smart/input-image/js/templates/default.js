@@ -148,10 +148,6 @@ function groupAttributes(context) {
     describedby: context.message ? field.messageId : nothing,
     invalid: field.invalid ? 'true' : nothing,
     handlers: {
-      dragenter: (event) => component.onDragOver(event),
-      dragover: (event) => component.onDragOver(event),
-      dragleave: (event) => component.onDragLeave(event),
-      drop: (event) => component.onDrop(event),
       paste: (event) => component.onPaste(event),
     },
   };
@@ -167,10 +163,6 @@ function renderRow(context) {
          aria-label=${group.label}
          aria-describedby=${group.describedby}
          aria-invalid=${group.invalid}
-         @dragenter=${group.handlers.dragenter}
-         @dragover=${group.handlers.dragover}
-         @dragleave=${group.handlers.dragleave}
-         @drop=${group.handlers.drop}
          @paste=${group.handlers.paste}>
       <span class=${thumbClasses.filter(Boolean).join(' ')}>${renderPicture(context)}${renderRing(context)}</span>
       ${renderBody(context)}
@@ -197,10 +189,6 @@ function renderPreview(context) {
          aria-label=${group.label}
          aria-describedby=${group.describedby}
          aria-invalid=${group.invalid}
-         @dragenter=${group.handlers.dragenter}
-         @dragover=${group.handlers.dragover}
-         @dragleave=${group.handlers.dragleave}
-         @drop=${group.handlers.drop}
          @paste=${group.handlers.paste}>
       ${value
         ? renderPicture(context)

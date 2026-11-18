@@ -451,7 +451,7 @@
         },
         {
           "element": "sf-view-flow",
-          "status": "released"
+          "status": "preview"
         },
         {
           "element": "sf-view-properties",
@@ -462,7 +462,7 @@
           "status": "released"
         }
       ],
-      "source": "simai/ui-view package/set.json (moved from ui-pro components/src/smart at c2a3b48); sf-view-flow: ui-view package/src/smart/view-flow (renamed from view-property-block, not yet released), owner decision 2026-11-06; sf-view-board (rule cl-view-board): ui-view package/src/smart/view-board, the board layout of sf-view (view round 2, 2026-11-18), reserved until a view release carries it",
+      "source": "simai/ui-view package/set.json (moved from ui-pro components/src/smart at c2a3b48); sf-view-flow: ui-view package/src/smart/view-flow (renamed from view-property-block), owner decision 2026-11-06; status preview as the set's set.json says (dispatcher decision 10 of the view round 1, ui-control control/research/2026-11-17-view-round-1/assignment.md, 2026-11-17); sf-view-board (rule cl-view-board): ui-view package/src/smart/view-board, the board layout of sf-view (view round 2, 2026-11-18), reserved until a view release carries it",
       "note": "The set of data views (table, kanban, calendar, gantt and further views), owner decision 2026-11-03 point 12 (ui-control decisions/2026-11-03-component-sets.md): simai/ui-view, view.simai.io, Pro licence; other sets use its views. Active: released under simai.component-set (npm @simai-studio/view 1.7.1, release view-9eff67bbf11f); sf-view-flow ships in it with status preview."
     },
     {

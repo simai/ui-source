@@ -52,6 +52,22 @@
       "reason": "The phone ribbon's bottom sheet stops a step 1 under the field it fills (owner decision C62, prototypes/datepicker.html#lenta): the field's bottom edge is measured with getBoundingClientRect when the sheet opens, in CSS pixels, and is kept exact; the step itself is the space token."
     },
     {
+      "id": "list-rows-window-spacers",
+      "category": "runtime-review",
+      "filePattern": "^smart/list/js/templates/default\\.js$",
+      "contextPattern": "block-size: \\$\\{Math\\.max\\(0, Math\\.round\\(height\\)\\)\\}px",
+      "status": "accepted-runtime-geometry",
+      "reason": "A long list's two spacers stand for the rows not drawn (Framework order FO-2, core/js/rows-window.js): their height is the measured average row height in CSS pixels times the rows they replace, kept exact so the scroll position and the scroll bar are those of the whole list."
+    },
+    {
+      "id": "files-drop-overlay-geometry",
+      "category": "runtime-review",
+      "filePattern": "^core/js/files-drop\\.js$",
+      "contextPattern": "Object\\.assign\\(layer\\.style, \\{top: `\\$\\{top\\}px`",
+      "status": "accepted-runtime-geometry",
+      "reason": "The page's one drop overlay (owner decision C308 FO-1, core/js/files-drop.js) covers the part on screen of the zone the files are held over: its box is the zone's getBoundingClientRect in CSS pixels, clipped to the window, kept exact so the overlay stands on the zone."
+    },
+    {
       "id": "legacy-accessibility-font-setting",
       "category": "runtime-review",
       "filePattern": "^component/sf-system/js/04-blocks/_special\\.js$",

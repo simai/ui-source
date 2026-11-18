@@ -53,9 +53,15 @@
   }
 
   /* Closed: the open attribute is the value (1.8.0); data-open is the
-     page's. Before the element is defined a closed surface stays hidden too. */
+     page's. Before the element is defined a closed surface stays hidden too.
+     Closed, the surface is not drawn whatever its own classes say: a page
+     content node with a display utility of its own (flex, grid) showed
+     while closed, since a page's or a utility's rule outranks this layer
+     (the FO component study, ui-control
+     control/research/2026-11-18-framework-parts-fo). An important
+     declaration in a layer outranks every normal one, layered or not. */
   sf-popover:not([open]) > [slot='content'] {
-    display: none;
+    display: none !important;
   }
 
   sf-popover[data-placement='bottom-end'] > [slot='content'] {

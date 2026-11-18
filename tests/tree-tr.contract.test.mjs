@@ -90,8 +90,8 @@ test('tree versions: sf-tree 2.4.0, sf-tree-item 1.3.2 (C243 and RG-NV 31g-31l o
     json('src/smart/tree/smart.manifest.json'),
     json('src/smart/tree-item/smart.manifest.json'),
   ]);
-  assert.equal(tree.version, '2.4.1'); // C282: 2.4.0 moved on by the language-file patch (Russian is a language file)
+  assert.equal(tree.version, '2.5.0'); // 2.5.0: core rows window and files drop (FO2-5, FO1-4) // C282: 2.4.0 moved on by the language-file patch (Russian is a language file)
   assert.equal(item.version, '1.3.4'); // group build 9: 1.3.2 moved on by the merged branches or a GB9 patch // C282: 1.3.3 moved on by the language-file patch (Russian is a language file)
-  assert.equal(treeManifest.version, '2.4.1'); // C282: moved on by the language-file patch (Russian is a language file)
+  assert.equal(treeManifest.version, '2.5.0'); // C282: moved on by the language-file patch (Russian is a language file)
   assert.equal(itemManifest.version, '1.3.4'); // C282: moved on by the language-file patch (Russian is a language file) // group build 9: 1.3.2 moved on by the merged branches or a GB9 patch
 });

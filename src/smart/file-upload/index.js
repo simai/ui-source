@@ -8,6 +8,7 @@ import {
   unbindFileUpload,
 } from '../../component/file-upload/js/_file_upload';
 import SfBaseElement from '../../core/js/smart-base';
+import { filesDrop } from '../../core/js/files-drop.js';
 import { elementFromManifest } from '../../core/js/element-manifest';
 import { renderFileUploadTemplate } from './js/templates/default';
 import { FIELD_LADDER, ladderSize } from '../../component/field-size';
@@ -141,21 +142,16 @@ class SfFileUpload extends FormField(FileUploadElement) {
     // The object addresses of chosen photos drawn in their rows: File -> URL,
     // given back when the file leaves the list or the element the page.
     this._pictures = new Map();
-    // A file held over the area is said on the host (§5.3).
-    this.addEventListener('dragover', this._onDragState);
-    this.addEventListener('dragleave', this._onDragState);
-    this.addEventListener('drop', this._onDragState);
+    // A file held over the area is said on the host (§5.3), read by core's
+    // files drop (FO-1, core/js/files-drop.js); the area's class component
+    // takes the files of the drop; the host only follows the drag (follow).
+    filesDrop(this, {
+      mark: false,
+      follow: true,
+      disabled: () => Boolean(this.disabled),
+      onOver: (over) => this.sfHostState('data-dragged-over', over),
+    });
   }
-
-  _onDragState = (event) => {
-    if (event.type === 'dragover') {
-      const files = Array.from(event.dataTransfer?.types || []).includes('Files');
-      this.sfHostState('data-dragged-over', files && !this.disabled);
-      return;
-    }
-    if (event.type === 'dragleave' && event.relatedTarget && this.contains(event.relatedTarget)) return;
-    this.sfHostState('data-dragged-over', false);
-  };
 
   get componentName() {
     return 'file-upload';

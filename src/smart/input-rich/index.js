@@ -1,6 +1,7 @@
 import SfBaseElement from '../../core/js/smart-base';
 import {elementFromManifest} from '../../core/js/element-manifest';
 import {ladderSize} from '../../component/field-size';
+import {filesDrop, carriesFiles} from '../../core/js/files-drop.js';
 import {FormField, ShownRequired} from '../helpers/form-field';
 import {charCount, countAnnouncement} from '../helpers/char-count';
 import {layoutActionRow, openRowMenu} from '../../core/js/overflow-row.js';
@@ -498,6 +499,12 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
     on('dragstart', () => { this._dragFromSelf = true; });
     on('dragend', () => { this._dragFromSelf = false; });
     on('drop', (event) => this._onDrop(event));
+    // Files from the computer (FO1-4): the editor takes no files, so a file
+    // dropped on it is refused through the one files-drop reading (the no
+    // cursor, and the browser does not open the file in place of the page).
+    // Text and markup dropped keep _onDrop.
+    const files = filesDrop(editor, {mark: false, disabled: () => true});
+    signal?.addEventListener?.('abort', () => files.stop(), {once: true});
     on('focus', () => {
       try {
         this.ownerDocument.execCommand('defaultParagraphSeparator', false, 'p');
@@ -983,7 +990,7 @@ class SfRichText extends ShownRequired(FormField(RichTextElement)) {
   _onDrop(event) {
     // A move inside the editor is the browser's; its result is cleaned as
     // typing is.
-    if (this._dragFromSelf) return;
+    if (this._dragFromSelf || carriesFiles(event)) return;
     event.preventDefault();
     if (this.effectiveDisabled || this.readonly) return;
     const doc = this.ownerDocument;

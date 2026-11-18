@@ -72,6 +72,39 @@ C165): заголовок группы с «*» и «?», подсказка п�
 | `term` | Срок или единица цены («2–3 дня», «в месяц»): под ценой в строках, рядом с ценой в плитках. |
 | `image` | Адрес картинки для раскладки `picture`: картинка до краёв карточки, подпись под ней. |
 | `disabled` | Карточку нельзя выбрать. |
+| `avatar` | Готовая группа: картинка перед названием — адрес или `{image, text}`; без картинки — инициалы `text` (`sf-avatar` высотой в строку). |
+| `swatch` | Готовая группа: кружок цвета перед названием — цвет CSS (код, `var()` токена). |
+| `scheme` | Готовая группа: само название тональной меткой `sf-badge` — схема (`success`, `error`…), оттенок палитры (`red`, `teal`…) или код цвета, приведённый к ближайшему оттенку. |
+
+## Поиск и варианты от сайта
+
+В готовой группе (`appearance="list"`) `searchable` ставит над вариантами
+поле поиска. Без поставщика оно ищет среди своих вариантов по названию и
+пояснению, без учёта регистра и «ё».
+
+`provider` — свойство: варианты приходят от сайта частями, как у
+`sf-input-lookup`. Это асинхронная функция `(query, {cursor, limit, signal})`,
+которая отвечает `{items, nextCursor}`. Поле спрашивает первую часть сразу,
+после ввода в поиск — через 200 мс после последней клавиши, следующую часть —
+кнопкой «Показать ещё». Под вариантами одна строка состояния: загрузка,
+«Ничего не найдено» или ошибка с кнопкой «Повторить». Варианты из `items`
+остаются первыми — выбранный вариант, до которого части ещё не дошли,
+сохраняет свою строку.
+
+```js
+const field = document.querySelector('sf-input-choice[name="owner"]');
+field.provider = async (query, {cursor, limit, signal}) => {
+  const answer = await fetch(`/api/users?q=${encodeURIComponent(query)}&cursor=${cursor ?? ''}&limit=${limit}`, {signal});
+  const page = await answer.json();
+  return {items: page.items.map((user) => ({value: user.id, label: user.name, avatar: {image: user.photo, text: user.initials}})),
+          nextCursor: page.next};
+};
+```
+
+Фильтр списка вариантов у `SF.fieldRenderers` (`renderFilterField`) рисует
+это поле: `filter.optionRenderer` выбирает картинку (`avatar-checkbox`), кружок
+цвета (`swatch`) или метку (`badge`), `filter.searchable` — поиск,
+`filter.provider` — части от сайта.
 
 ## Раскладка
 

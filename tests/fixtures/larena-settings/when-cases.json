@@ -1,0 +1,3155 @@
+{
+ "format": "simai.settings.when-cases",
+ "format_version": 1,
+ "standard": "docs/architecture/2026-10-23-settings-standard.md#conditions",
+ "contract": "simai.property-view-port 1.14.0 field.when (sf-property-view conditions.js)",
+ "conventions": {
+  "values": "the other settings' values by key; a key that is absent is an absent field",
+  "field": "what the setting declares: {required}; absent means required false",
+  "expect": "{visible, required, enabled} the Framework decides and, unless server_only, the server decides too",
+  "expect_client": "server_only cases: what sf-property-view 1.14.0 decides (it cannot read gt/gte/lt/lte, so the field is as declared)",
+  "expect_server": "a rule the server refuses but whose evaluation differs between server and browser: the server's evaluation, for the record",
+  "expect_reject": "the server refuses the rule before it is kept: part_unknown, node_invalid, field_invalid, operator_unknown, value_invalid, value_unexpected, too_deep"
+ },
+ "cases": [
+  {
+   "id": "held.absent.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.absent.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.null.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": null
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.null.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": null
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.false.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": false
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.false.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": false
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.zero.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": 0
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.zero.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": 0
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.empty-string.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": ""
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.empty-string.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": ""
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.empty-list.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": []
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.empty-list.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": []
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.int-5.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": 5
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.int-5.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": 5
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.string-5.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": "5"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.string-5.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": "5"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.float-5.0.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": 5.0
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.float-5.0.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": 5.0
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.true.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.true.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.string-true.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": "true"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.string-true.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": "true"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.string-1.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": "1"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.string-1.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": "1"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.list-of-nothing.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": [
+     null,
+     ""
+    ]
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.list-of-nothing.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": [
+     null,
+     ""
+    ]
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.whitespace.not_empty",
+   "note": "not_empty holds when the field holds some text; null, \"\", [] and an absent field hold nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": " "
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "held.whitespace.empty",
+   "note": "empty is the opposite of not_empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": " "
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.int-5",
+   "note": "5 and \"5\" are the same text",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "5"
+    }
+   },
+   "values": {
+    "demo.v": 5
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.int-5",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "5"
+    }
+   },
+   "values": {
+    "demo.v": 5
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.string-5",
+   "note": "\"5\" equals 5",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": "5"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.string-5",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": "5"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.float-5.0",
+   "note": "5.0 is the text \"5\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "5"
+    }
+   },
+   "values": {
+    "demo.v": 5.0
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.float-5.0",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "5"
+    }
+   },
+   "values": {
+    "demo.v": 5.0
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.float-5.0-vs-5.0-text",
+   "note": "5.0 is \"5\", not \"5.0\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "5.0"
+    }
+   },
+   "values": {
+    "demo.v": 5.0
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.float-5.0-vs-5.0-text",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "5.0"
+    }
+   },
+   "values": {
+    "demo.v": 5.0
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.string-5.0",
+   "note": "the string \"5.0\" is not \"5\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": "5.0"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.string-5.0",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": "5.0"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.true-vs-true-text",
+   "note": "true is the text \"true\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "true"
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.true-vs-true-text",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "true"
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.true-text-vs-true",
+   "note": "\"true\" equals true",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": true
+    }
+   },
+   "values": {
+    "demo.v": "true"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.true-text-vs-true",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": true
+    }
+   },
+   "values": {
+    "demo.v": "true"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.true-vs-1",
+   "note": "true is not \"1\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "1"
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.true-vs-1",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "1"
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.true-vs-1-number",
+   "note": "true is not 1",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 1
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.true-vs-1-number",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": 1
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.1-text-vs-true",
+   "note": "\"1\" is not true",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": true
+    }
+   },
+   "values": {
+    "demo.v": "1"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.1-text-vs-true",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": true
+    }
+   },
+   "values": {
+    "demo.v": "1"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.false-vs-0",
+   "note": "false is not \"0\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "0"
+    }
+   },
+   "values": {
+    "demo.v": false
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.false-vs-0",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "0"
+    }
+   },
+   "values": {
+    "demo.v": false
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.false-vs-false",
+   "note": "false equals false (false is filled, not empty)",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": false
+    }
+   },
+   "values": {
+    "demo.v": false
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.false-vs-false",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": false
+    }
+   },
+   "values": {
+    "demo.v": false
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.zero-vs-0-text",
+   "note": "0 is \"0\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "0"
+    }
+   },
+   "values": {
+    "demo.v": 0
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.zero-vs-0-text",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "0"
+    }
+   },
+   "values": {
+    "demo.v": 0
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.zero-vs-false",
+   "note": "0 is not false",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": false
+    }
+   },
+   "values": {
+    "demo.v": 0
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.zero-vs-false",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": false
+    }
+   },
+   "values": {
+    "demo.v": 0
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.case",
+   "note": "text compares exactly, case included",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "fixed"
+    }
+   },
+   "values": {
+    "demo.v": "Fixed"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.case",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "fixed"
+    }
+   },
+   "values": {
+    "demo.v": "Fixed"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.no-trim",
+   "note": "no trimming",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": " 5"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.no-trim",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": " 5"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.decimal-canonical",
+   "note": "a canonical decimal string equals the number with the same text",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 5.5
+    }
+   },
+   "values": {
+    "demo.v": "5.5"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.decimal-canonical",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": 5.5
+    }
+   },
+   "values": {
+    "demo.v": "5.5"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.decimal-not-canonical",
+   "note": "\"5.50\" is not \"5.5\": decimals are kept canonical, so a condition names the canonical text",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "5.5"
+    }
+   },
+   "values": {
+    "demo.v": "5.50"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.decimal-not-canonical",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "5.5"
+    }
+   },
+   "values": {
+    "demo.v": "5.50"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.decimal-0.1",
+   "note": "0.1 is the text \"0.1\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 0.1
+    }
+   },
+   "values": {
+    "demo.v": "0.1"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.decimal-0.1",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": 0.1
+    }
+   },
+   "values": {
+    "demo.v": "0.1"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.big-integer-string",
+   "note": "a big integer travels and compares as a string",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "9007199254740993"
+    }
+   },
+   "values": {
+    "demo.v": "9007199254740993"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.big-integer-string",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "9007199254740993"
+    }
+   },
+   "values": {
+    "demo.v": "9007199254740993"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.negative-zero",
+   "note": "-0 is the text \"0\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "0"
+    }
+   },
+   "values": {
+    "demo.v": -0.0
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.negative-zero",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "0"
+    }
+   },
+   "values": {
+    "demo.v": -0.0
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.exponent-large",
+   "note": "1e21 is the text \"1e+21\" (ECMAScript Number::toString)",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "1e+21"
+    }
+   },
+   "values": {
+    "demo.v": 1e+21
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.exponent-large",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "1e+21"
+    }
+   },
+   "values": {
+    "demo.v": 1e+21
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.exponent-small",
+   "note": "1e-7 is the text \"1e-7\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "1e-7"
+    }
+   },
+   "values": {
+    "demo.v": 1e-07
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.exponent-small",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "1e-7"
+    }
+   },
+   "values": {
+    "demo.v": 1e-07
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.plain-small",
+   "note": "1e-6 is still plain text",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "0.000001"
+    }
+   },
+   "values": {
+    "demo.v": 1e-06
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.plain-small",
+   "note": "ne is the opposite of eq",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "0.000001"
+    }
+   },
+   "values": {
+    "demo.v": 1e-06
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "eq.absent",
+   "note": "an absent field holds nothing: eq is false",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "x"
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.absent",
+   "note": "an absent field holds nothing: ne is true",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "x"
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "ne.null",
+   "note": "null holds nothing: ne is true",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "x"
+    }
+   },
+   "values": {
+    "demo.v": null
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.eq-any-item",
+   "note": "a list is eq when any item is",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "b"
+    }
+   },
+   "values": {
+    "demo.v": [
+     "a",
+     "b"
+    ]
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.ne-no-item",
+   "note": "a list is ne only when no item is",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "b"
+    }
+   },
+   "values": {
+    "demo.v": [
+     "a",
+     "b"
+    ]
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.ne-none",
+   "note": "ne holds when no item is the operand",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "ne",
+     "value": "z"
+    }
+   },
+   "values": {
+    "demo.v": [
+     "a",
+     "b"
+    ]
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.in-any",
+   "note": "in holds when any item is among the operands",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "c",
+      "a"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": [
+     "a",
+     "b"
+    ]
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.in-none",
+   "note": "in does not hold when no item is among them",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "c",
+      "d"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": [
+     "a",
+     "b"
+    ]
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.not_in-some",
+   "note": "not_in does not hold when some item is among them",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_in",
+     "value": [
+      "a"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": [
+     "a",
+     "b"
+    ]
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.not_in-none",
+   "note": "not_in holds when no item is among them",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_in",
+     "value": [
+      "z"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": [
+     "a",
+     "b"
+    ]
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.empty-in",
+   "note": "an empty list is in nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "a"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": []
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.empty-not_in",
+   "note": "an empty list is not_in anything",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_in",
+     "value": [
+      "a"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": []
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "list.numbers-in-text",
+   "note": "items compare as text: 1 is among [\"1\"]",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "1"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": [
+     1,
+     2
+    ]
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "scalar.in",
+   "note": "a single value is a list of one",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "sticky",
+      "fixed"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": "fixed"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "scalar.in-typed",
+   "note": "in compares as text: 5 is among [\"5\"]",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "5"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": 5
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "scalar.not_in-absent",
+   "note": "an absent field is not_in anything",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_in",
+     "value": [
+      "a"
+     ]
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "scalar.in-absent",
+   "note": "an absent field is in nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "a"
+     ]
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "lookup.eq-value",
+   "note": "a lookup is compared by its value",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "Europe/Moscow"
+    }
+   },
+   "values": {
+    "demo.v": {
+     "value": "Europe/Moscow",
+     "label": "Москва"
+    }
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "lookup.eq-label",
+   "note": "never by its label",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "Москва"
+    }
+   },
+   "values": {
+    "demo.v": {
+     "value": "Europe/Moscow",
+     "label": "Москва"
+    }
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "lookup.list-in",
+   "note": "a list of lookups: any item's value",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      "Asia/Tokyo"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": [
+     {
+      "value": "Europe/Moscow",
+      "label": "Москва"
+     },
+     {
+      "value": "Asia/Tokyo",
+      "label": "Токио"
+     }
+    ]
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "lookup.not_empty",
+   "note": "a lookup holding a value is filled",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "not_empty"
+    }
+   },
+   "values": {
+    "demo.v": {
+     "value": "Europe/Moscow",
+     "label": "Москва"
+    }
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "lookup.value-null",
+   "note": "a lookup whose value is null holds nothing",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": {
+     "value": null,
+     "label": ""
+    }
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "lookup.formatted",
+   "note": "a formatted {value, text} is compared by its value",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": {
+     "value": "5",
+     "text": "5 шт."
+    }
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "alias.code-0-vs-number",
+   "note": "a choice code \"0\" equals the operand 0 in a condition (text projection); the stored code stays \"0\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 0
+    }
+   },
+   "values": {
+    "demo.v": "0"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "alias.code-0-vs-false",
+   "note": "but not false",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": false
+    }
+   },
+   "values": {
+    "demo.v": "0"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "alias.code-true-vs-boolean",
+   "note": "a choice code \"true\" equals the operand true in a condition; it is still the string \"true\" in storage",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": true
+    }
+   },
+   "values": {
+    "demo.v": "true"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "alias.boolean-vs-code-1",
+   "note": "a boolean true does not equal the code \"1\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "1"
+    }
+   },
+   "values": {
+    "demo.v": true
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "alias.codes-in",
+   "note": "in over alias-prone codes compares their text",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      0,
+      1
+     ]
+    }
+   },
+   "values": {
+    "demo.v": "1"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "tree.all-any-both",
+   "note": "the handoff example: cookies on and the menu fixed",
+   "when": {
+    "visible": {
+     "all": [
+      {
+       "field": "demo.cookies",
+       "op": "eq",
+       "value": true
+      },
+      {
+       "any": [
+        {
+         "field": "demo.menu",
+         "op": "in",
+         "value": [
+          "fixed",
+          "sticky"
+         ]
+        },
+        {
+         "not": {
+          "field": "demo.logo",
+          "op": "empty"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "values": {
+    "demo.cookies": true,
+    "demo.menu": "fixed"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "tree.all-any-logo",
+   "note": "cookies on, menu static, a logo set",
+   "when": {
+    "visible": {
+     "all": [
+      {
+       "field": "demo.cookies",
+       "op": "eq",
+       "value": true
+      },
+      {
+       "any": [
+        {
+         "field": "demo.menu",
+         "op": "in",
+         "value": [
+          "fixed",
+          "sticky"
+         ]
+        },
+        {
+         "not": {
+          "field": "demo.logo",
+          "op": "empty"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "values": {
+    "demo.cookies": true,
+    "demo.menu": "static",
+    "demo.logo": "file:logo"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "tree.all-any-neither",
+   "note": "cookies on, menu static, no logo",
+   "when": {
+    "visible": {
+     "all": [
+      {
+       "field": "demo.cookies",
+       "op": "eq",
+       "value": true
+      },
+      {
+       "any": [
+        {
+         "field": "demo.menu",
+         "op": "in",
+         "value": [
+          "fixed",
+          "sticky"
+         ]
+        },
+        {
+         "not": {
+          "field": "demo.logo",
+          "op": "empty"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "values": {
+    "demo.cookies": true,
+    "demo.menu": "static"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "tree.all-first-false",
+   "note": "cookies off",
+   "when": {
+    "visible": {
+     "all": [
+      {
+       "field": "demo.cookies",
+       "op": "eq",
+       "value": true
+      },
+      {
+       "any": [
+        {
+         "field": "demo.menu",
+         "op": "in",
+         "value": [
+          "fixed",
+          "sticky"
+         ]
+        },
+        {
+         "not": {
+          "field": "demo.logo",
+          "op": "empty"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "values": {
+    "demo.cookies": false,
+    "demo.menu": "fixed",
+    "demo.logo": "file:logo"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "tree.cookies-text",
+   "note": "the stored \"true\" text satisfies eq true",
+   "when": {
+    "visible": {
+     "all": [
+      {
+       "field": "demo.cookies",
+       "op": "eq",
+       "value": true
+      },
+      {
+       "any": [
+        {
+         "field": "demo.menu",
+         "op": "in",
+         "value": [
+          "fixed",
+          "sticky"
+         ]
+        },
+        {
+         "not": {
+          "field": "demo.logo",
+          "op": "empty"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "values": {
+    "demo.cookies": "true",
+    "demo.menu": "sticky"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "tree.not-not",
+   "note": "not over not",
+   "when": {
+    "visible": {
+     "not": {
+      "not": {
+       "field": "demo.v",
+       "op": "eq",
+       "value": "x"
+      }
+     }
+    }
+   },
+   "values": {
+    "demo.v": "x"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "tree.any-of-one",
+   "note": "any with one child",
+   "when": {
+    "visible": {
+     "any": [
+      {
+       "field": "demo.v",
+       "op": "empty"
+      }
+     ]
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "parts.all-three",
+   "note": "visible, required and enabled each decided by its own tree",
+   "when": {
+    "visible": {
+     "field": "demo.a",
+     "op": "not_empty"
+    },
+    "required": {
+     "field": "demo.b",
+     "op": "eq",
+     "value": true
+    },
+    "enabled": {
+     "not": {
+      "field": "demo.c",
+      "op": "eq",
+      "value": "locked"
+     }
+    }
+   },
+   "values": {
+    "demo.a": "x",
+    "demo.b": true,
+    "demo.c": "locked"
+   },
+   "expect": {
+    "visible": true,
+    "required": true,
+    "enabled": false
+   }
+  },
+  {
+   "id": "parts.absent-declared",
+   "note": "a part that is not named is what the field declares",
+   "when": {},
+   "values": {
+    "demo.v": "x"
+   },
+   "expect": {
+    "visible": true,
+    "required": true,
+    "enabled": true
+   },
+   "field": {
+    "required": true
+   }
+  },
+  {
+   "id": "parts.required-false-over-declared",
+   "note": "a required condition decides over the declared required",
+   "when": {
+    "required": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": "x"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "field": {
+    "required": true
+   }
+  },
+  {
+   "id": "parts.hidden-keeps-value",
+   "note": "a hidden field keeps its value: evaluation reads the values, it changes none",
+   "when": {
+    "visible": {
+     "field": "demo.on",
+     "op": "eq",
+     "value": true
+    }
+   },
+   "values": {
+    "demo.on": false,
+    "demo.v": "kept"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "unreadable.unknown-op",
+   "note": "an unknown op leaves the field as declared; the server refuses the rule",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "like",
+     "value": "a"
+    }
+   },
+   "values": {
+    "demo.v": "b"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "operator_unknown"
+  },
+  {
+   "id": "unreadable.unknown-op-in-all",
+   "note": "an unreadable child makes the whole tree unreadable",
+   "when": {
+    "visible": {
+     "all": [
+      {
+       "field": "demo.v",
+       "op": "eq",
+       "value": "x"
+      },
+      {
+       "field": "demo.v",
+       "op": "like",
+       "value": "a"
+      }
+     ]
+    }
+   },
+   "values": {
+    "demo.v": "y"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "operator_unknown"
+  },
+  {
+   "id": "unreadable.unknown-op-required",
+   "note": "an unreadable required condition leaves required as declared",
+   "when": {
+    "required": {
+     "field": "demo.v",
+     "op": "like",
+     "value": "a"
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": true,
+    "enabled": true
+   },
+   "field": {
+    "required": true
+   },
+   "expect_reject": "operator_unknown"
+  },
+  {
+   "id": "unreadable.empty-node",
+   "note": "a node with no conditions",
+   "when": {
+    "visible": {}
+   },
+   "values": {
+    "demo.v": "x"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "node_invalid"
+  },
+  {
+   "id": "unreadable.empty-all",
+   "note": "all with no children",
+   "when": {
+    "visible": {
+     "all": []
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "node_invalid"
+  },
+  {
+   "id": "unreadable.empty-any",
+   "note": "any with no children",
+   "when": {
+    "enabled": {
+     "any": []
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "node_invalid"
+  },
+  {
+   "id": "unreadable.not-empty-node",
+   "note": "not over a node with no conditions",
+   "when": {
+    "visible": {
+     "not": {}
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "node_invalid"
+  },
+  {
+   "id": "unreadable.in-not-list",
+   "note": "in needs a list",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": "a"
+    }
+   },
+   "values": {
+    "demo.v": "a"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "unreadable.field-not-text",
+   "note": "a field must be a key",
+   "when": {
+    "visible": {
+     "field": 5,
+     "op": "empty"
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "field_invalid"
+  },
+  {
+   "id": "unreadable.list-node",
+   "note": "a list is not a node",
+   "when": {
+    "visible": [
+     {
+      "field": "demo.v",
+      "op": "empty"
+     }
+    ]
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "node_invalid"
+  },
+  {
+   "id": "reject.part-unknown",
+   "note": "an unknown part is ignored by the browser, refused by the server",
+   "when": {
+    "shown": {
+     "field": "demo.v",
+     "op": "empty"
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "part_unknown"
+  },
+  {
+   "id": "reject.eq-null",
+   "note": "eq null compares with the text \"null\" in the browser and never holds for an empty field: use empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": null
+    }
+   },
+   "values": {
+    "demo.v": null
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "reject.eq-missing-value",
+   "note": "eq without a value compares with \"undefined\" in the browser",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq"
+    }
+   },
+   "values": {
+    "demo.v": "x"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "reject.eq-empty-string",
+   "note": "eq \"\" never holds (\"\" is held as nothing): use empty",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": ""
+    }
+   },
+   "values": {
+    "demo.v": ""
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "reject.in-null-item",
+   "note": "a null operand in a list is the text \"null\"",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "in",
+     "value": [
+      null,
+      "a"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": "a"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "reject.eq-object-operand",
+   "note": "an object operand: the browser reads its value, the server takes scalars only",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": {
+      "value": "a",
+      "label": "A"
+     }
+    }
+   },
+   "values": {
+    "demo.v": "a"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "reject.eq-list-operand",
+   "note": "a list operand of eq is its items joined by commas in the browser",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": [
+      "a",
+      "b"
+     ]
+    }
+   },
+   "values": {
+    "demo.v": "a,b"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "reject.big-integer-operand",
+   "note": "an integer beyond 2^53-1 as a JSON number is another number in the browser: send it as a string",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": 9007199254740993
+    }
+   },
+   "values": {
+    "demo.v": "9007199254740993"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "expect_client": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "expect_server": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_invalid"
+  },
+  {
+   "id": "reject.empty-with-value",
+   "note": "empty takes no value; the browser ignores it",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "empty",
+     "value": "x"
+    }
+   },
+   "values": {
+    "demo.v": ""
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "value_unexpected"
+  },
+  {
+   "id": "reject.extra-key",
+   "note": "a leaf takes field, op and value only; the browser ignores the rest",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "eq",
+     "value": "x",
+     "label": "X"
+    }
+   },
+   "values": {
+    "demo.v": "x"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "node_invalid"
+  },
+  {
+   "id": "reject.mixed-node",
+   "note": "a node is one of all, any, not or a leaf",
+   "when": {
+    "visible": {
+     "all": [
+      {
+       "field": "demo.v",
+       "op": "not_empty"
+      }
+     ],
+     "field": "demo.w",
+     "op": "empty"
+    }
+   },
+   "values": {
+    "demo.v": "x",
+    "demo.w": "y"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "node_invalid"
+  },
+  {
+   "id": "reject.too-deep",
+   "note": "a tree deeper than 8 levels is refused (the browser reads it)",
+   "when": {
+    "visible": {
+     "not": {
+      "not": {
+       "not": {
+        "not": {
+         "not": {
+          "not": {
+           "not": {
+            "not": {
+             "field": "demo.v",
+             "op": "not_empty"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "values": {
+    "demo.v": "x"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "expect_reject": "too_deep"
+  },
+  {
+   "id": "server.gt-decimal",
+   "note": "gt over exact decimals",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "gt",
+     "value": "1000"
+    }
+   },
+   "values": {
+    "demo.v": "1234.5"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.gt-equal",
+   "note": "gt does not hold for an equal value",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "gt",
+     "value": "1000"
+    }
+   },
+   "values": {
+    "demo.v": "1000"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.gte-equal",
+   "note": "gte holds for an equal value",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "gte",
+     "value": 1000
+    }
+   },
+   "values": {
+    "demo.v": "1000"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.lt-number-operand",
+   "note": "a number operand is read by its text",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "lt",
+     "value": 5.5
+    }
+   },
+   "values": {
+    "demo.v": "5.49"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.lte-negative",
+   "note": "negative decimals order",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "lte",
+     "value": "-1"
+    }
+   },
+   "values": {
+    "demo.v": "-1.5"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.gt-big",
+   "note": "big integers compare exactly, never as floats",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "gt",
+     "value": "9007199254740992"
+    }
+   },
+   "values": {
+    "demo.v": "9007199254740993"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.gt-absent",
+   "note": "nothing held: no order holds",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "gt",
+     "value": 0
+    }
+   },
+   "values": {},
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.gt-list",
+   "note": "a list has no order",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "gt",
+     "value": 0
+    }
+   },
+   "values": {
+    "demo.v": [
+     "1",
+     "2"
+    ]
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.gt-text-vs-decimal",
+   "note": "a text is not ordered against a decimal",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "gt",
+     "value": 5
+    }
+   },
+   "values": {
+    "demo.v": "abc"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.lt-date",
+   "note": "ISO dates order as text",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "lt",
+     "value": "2026-12-31"
+    }
+   },
+   "values": {
+    "demo.v": "2026-10-23"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.gt-in-any",
+   "note": "inside a tree: the browser cannot read the tree, the field is as declared",
+   "when": {
+    "visible": {
+     "any": [
+      {
+       "field": "demo.v",
+       "op": "gt",
+       "value": "10"
+      },
+      {
+       "field": "demo.v",
+       "op": "eq",
+       "value": "x"
+      }
+     ]
+    }
+   },
+   "values": {
+    "demo.v": "12"
+   },
+   "expect": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  },
+  {
+   "id": "server.lt-false",
+   "note": "lt that does not hold hides the field on the server; the browser shows it",
+   "when": {
+    "visible": {
+     "field": "demo.v",
+     "op": "lt",
+     "value": "10"
+    }
+   },
+   "values": {
+    "demo.v": "12"
+   },
+   "expect": {
+    "visible": false,
+    "required": false,
+    "enabled": true
+   },
+   "server_only": true,
+   "expect_client": {
+    "visible": true,
+    "required": false,
+    "enabled": true
+   }
+  }
+ ]
+}

@@ -55,8 +55,11 @@ While its list is open the dropdown says so on the root
 raises), so a drawer, a modal or a record panel leaves that Escape alone: they
 listen on the document in capture, and without the mark one press closed the
 list and the window behind it together. A `multiple` dropdown draws a box
-beside every option that has no picture of its own, because a class and
-`aria-selected` tell a sighted person nothing about what they have picked.
+at the end of every option, after its name and any picture, because a class and
+`aria-selected` tell a sighted person nothing about what they have picked. A
+search that finds nothing says «Ничего не найдено». `list-width="list"` opens
+the list at the list's step from a narrow button; the default `field`
+keeps it at least as wide as the field.
 
 The actual toggle button is the primary Tab stop. It controls a named listbox;
 the optional searchbox is separate from its options. ArrowDown opens search

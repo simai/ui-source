@@ -29,7 +29,7 @@
     "src/component/file-upload/scss/_css__upload_progress.scss",
     "src/component/file-upload/scss/index.scss"
   ],
-  "content_sha256": "4abe5472bce2eb4b6acbe4ad55f97ba23eed03118e3aee7237dc2773823807f4",
+  "content_sha256": "959ceee3585026dede9d347a71be230fda5f166b964401f9323b40f337c3d9cc",
   "dependencies": [
     {
       "id": "component.inputs",

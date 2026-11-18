@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://simai.io/schema/framework/name-registry.v1.json",
-  "x-simai-version": "1.0.0",
+  "x-simai-version": "1.1.0",
   "title": "SIMAI Framework shared name registry",
   "description": "The one public registry of Smart component names (standard simai.component-set): which owner, SIMAI Framework or one component set, holds each name family under the one prefix sf-, and the names known in each family. It holds names only: no files, versions, rules, relations or bytes. A family has one owner; a name starts with a family its owner holds. It is read from simai/ui-source main, the one documented exception to main is not a contract, so a set's CI needs no SIMAI Framework release to check against it.",
   "type": "object",
@@ -40,7 +40,8 @@
               "required": ["element", "status"],
               "properties": {
                 "element": {"type": "string", "pattern": "^sf-[a-z][a-z0-9]*(-[a-z0-9]+)*$"},
-                "status": {"enum": ["released", "reserved"]}
+                "status": {"enum": ["released", "preview", "reserved"], "description": "released: shipped in a release of its owner; preview: shipped, but its shape may still change before it is released (the set marks it preview); reserved: held for the owner, not shipped yet."},
+                "note": {"type": "string", "description": "Optional: why a name is reserved or in preview, with its decision reference."}
               }
             }
           },

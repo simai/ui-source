@@ -38,6 +38,7 @@ import {noteDeprecated} from '../../core/js/deprecations.js';
 import {instancePath, partId} from '../../core/js/instance-path';
 import {tagSelector} from '../../core/js/tag-aliases.js';
 import {breakpointMedia} from '../../core/js/breakpoints.js';
+import {filesDrop} from '../../core/js/files-drop.js';
 import {createFieldContract} from '../../component/field-contract';
 import {FIELD_LADDER, ladderSize} from '../../component/field-size';
 import {FormField, ownInvalid} from '../helpers/form-field';
@@ -260,9 +261,12 @@ class SfImageField extends FormField(ImageFieldElement) {
     // submit takes the focus (helpers/form-field.js ownInvalid).
     this._invalidListener = ownInvalid(this, this._onInvalid);
     this.addEventListener('focusout', this._onFocusOut);
+    this._bindFilesDrop();
   }
 
   onDisconnected() {
+    this._filesDrop?.stop();
+    this._filesDrop = null;
     clearTimeout(this._announceTimer);
     coarseQuery()?.removeEventListener?.('change', this._onCoarse);
     this._phoneQuery?.removeEventListener?.('change', this._onPhone);
@@ -1037,44 +1041,23 @@ class SfImageField extends FormField(ImageFieldElement) {
   // ------------------------------------------------------- drop and paste
 
   // A file held over the field: the whole field is the target, and says so --
-  // the border and fill of a selection and the words «Отпустите файл…». Only a
-  // drag that carries files is taken, so text dragged across a form is not.
-  onDragOver(event) {
-    if (!Array.from(event.dataTransfer?.types || []).includes('Files')) return;
-    event.preventDefault();
-    if (!this.interactive) {
-      event.dataTransfer.dropEffect = 'none';
-      return;
-    }
-    event.dataTransfer.dropEffect = 'copy';
-    if (!this.dragging) {
-      this.dragging = true;
-      this.sfHostState('data-dragged-over', true);
-      this.requestComponentUpdate('drag');
-    }
-  }
-
-  onDragLeave(event) {
-    const well = event.currentTarget;
-    if (event.relatedTarget && well.contains(event.relatedTarget)) return;
-    if (!this.dragging) return;
-    this.dragging = false;
-    this.sfHostState('data-dragged-over', false);
-    this.requestComponentUpdate('drag');
-  }
-
-  onDrop(event) {
-    const types = Array.from(event.dataTransfer?.types || []);
-    const files = Array.from(event.dataTransfer?.files || []);
-    if (!files.length && !types.includes('Files')) return;
-    event.preventDefault();
-    if (this.dragging) {
-      this.dragging = false;
-      this.sfHostState('data-dragged-over', false);
-      this.requestComponentUpdate('drag');
-    }
-    if (!this.interactive || !files.length) return;
-    this._takeFiles(files, 'drop');
+  // the border and fill of a selection and the words «Отпустите файл…». Core's
+  // files drop (FO-1, core/js/files-drop.js) reads the drag: only one that
+  // carries files is taken, so text dragged across a form is not; the cursor
+  // says no while the field takes nothing, and a drop gives its files once.
+  _bindFilesDrop() {
+    if (this._filesDrop) return;
+    this._filesDrop = filesDrop(this, {
+      mark: false,
+      disabled: () => !this.interactive,
+      onOver: (over) => {
+        if (this.dragging === over) return;
+        this.dragging = over;
+        this.sfHostState('data-dragged-over', over);
+        this.requestComponentUpdate('drag');
+      },
+      onFiles: (files) => this._takeFiles(files, 'drop'),
+    });
   }
 
   // A picture pasted while the field has focus (IF-5): the files the

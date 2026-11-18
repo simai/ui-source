@@ -15,7 +15,7 @@ const json = (path) => JSON.parse(read(path));
 test('both are the Framework\'s, family list, registered and in the rule', () => {
   const names = json('contracts/registry/names.json');
   const flat = JSON.stringify(names);
-  for (const [folder, tag, version] of [['list', 'sf-list', '1.21.4'], ['list-feed', 'sf-list-feed', '1.5.3']]) { // C282: both patched for the language file // group build 7: list-feed's patch for moved files // group build 8: both patched for the C185 dot sheet in their first-paint sheet lists
+  for (const [folder, tag, version] of [['list', 'sf-list', '1.24.0'], ['list-feed', 'sf-list-feed', '1.5.3']]) { // C282: both patched for the language file // group build 7: list-feed's patch for moved files // group build 8: both patched for the C185 dot sheet in their first-paint sheet lists
     const contract = json(`src/smart/${folder}/component.json`);
     assert.equal(contract.tag, tag);
     assert.equal(contract.family, 'list', folder);
@@ -32,9 +32,9 @@ test('both are the Framework\'s, family list, registered and in the rule', () =>
 test('sf-list: rows are sf-list-item, one Tab stop, one shared menu, the next page by the core edge watch', () => {
   const contract = json('src/smart/list/component.json');
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'lines', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
+    ['accept-files', 'actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'lines', 'loading', 'no-wrap', 'renamable', 'rows-window', 'rows-window-from', 'selected', 'size', 'sticky-headings', 'time-format']);
   assert.deepEqual(contract.settings['group-by'].enum ?? contract.settings['group-by'].values, ['none', 'day', 'key']);
-  assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'load-more', 'open', 'rename']);
+  assert.deepEqual(Object.keys(contract.events).sort(), ['apply', 'attach', 'load-more', 'open', 'rename']);
   assert.equal(contract.events.rename.cancelable, true);
   assert.equal(contract.events['load-more'].cancelable, true);
   assert.deepEqual(Object.keys(contract.actions).sort(),
@@ -66,7 +66,7 @@ test('sf-list 1.1.0: avatar, count, badge and pinned are bounded row data drawn 
     ['actions', 'avatar', 'badge', 'count', 'date', 'disabled', 'group', 'icon', 'id', 'pinned', 'supporting', 'text', 'unread']);
   // Additions only: no setting, event or action of 1.0.0 changed (1.2.0 adds no-wrap, 1.17.0 leading, 1.18.0 lines).
   assert.deepEqual(Object.keys(contract.settings).sort(),
-    ['actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'lines', 'loading', 'no-wrap', 'renamable', 'selected', 'size', 'sticky-headings', 'time-format']);
+    ['accept-files', 'actions', 'divided', 'empty-text', 'group-by', 'groups', 'has-more', 'heading-level', 'items', 'label', 'leading', 'lines', 'loading', 'no-wrap', 'renamable', 'rows-window', 'rows-window-from', 'selected', 'size', 'sticky-headings', 'time-format']);
   const item = contract['x-registry'].contracts.item.properties;
   assert.deepEqual(item.avatar.properties.shape.enum, ['circle', 'square']);
   // The badge's tone is the Framework's status vocabulary.
@@ -185,7 +185,7 @@ test('sf-list 1.5.0: a narrow list puts a row\'s badge and count under its text,
 
 test('owner decision C148: the list row -- end column, one Tab stop with arrows into its controls, no lines but divided, one line or lines="2", long press', () => {
   const item = json('src/smart/list-item/component.json');
-  assert.equal(item.version, '1.6.2'); // group build 7: the patch for moved files (the line had 1.6.0) // C282: 1.6.1 moved on by the language-file patch (Russian is a language file)
+  assert.equal(item.version, '1.7.0'); // FF-3: checkEnd, 1.7.0 above 1.6.2 on origin // group build 7: the patch for moved files (the line had 1.6.0) // C282: 1.6.1 moved on by the language-file patch (Russian is a language file)
   assert.deepEqual([item.settings.divided.type, item.settings.divided.default], ['boolean', false]);
   assert.deepEqual([item.settings.lines.values, item.settings.lines.default], [['1', '2'], '1']);
   const list = json('src/smart/list/component.json');

@@ -348,6 +348,48 @@
     list-style: none;
   }
 
+  /* The spacers of a long list (FO-2): the rows above and below the drawn
+     range, as tall as they are, with nothing in them. */
+  .sf-list__spacer {
+    display: block;
+    flex: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* A long list's rows are no scroll anchor: when the range moves, the
+     browser kept a drawn row in place by moving the scroll position, which
+     moved the range again, until the list ran to its end (measured: a
+     scroll to the middle of 10 000 rows ended at the last row). */
+  .sf-list__rows[data-sf-rows-window],
+  .sf-list__body[data-sf-rows-window] {
+    overflow-anchor: none;
+  }
+
+  /* A long list drawn whole (owner decision C308 FO-2, up to 1 000 rows):
+     the rows off screen skip their layout and paint, and keep the height
+     they were last drawn at; every row stays in the document for the
+     browser's find and for printing. */
+  .sf-list__body[data-sf-rows-all] .sf-list__row {
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--sf-ui-1--control-height);
+  }
+
+  /* A grouped long list (FO2-1): the spacers stand in the body beside the
+     groups and take no gap of their own -- their heights already hold the
+     space between the groups they stand for. */
+  .sf-list__body > .sf-list__spacer[data-sf-rows-spacer="before"] {
+    margin-block-end: calc(var(--sf-list--group-gap) * -1);
+  }
+
+  .sf-list__body > .sf-list__spacer[data-sf-rows-spacer="before"] + .sf-list__group {
+    margin-block-start: 0;
+  }
+
+  .sf-list__body > .sf-list__spacer[data-sf-rows-spacer="after"] {
+    margin-block-start: calc(var(--sf-list--group-gap) * -1);
+  }
+
   .sf-list__row {
     display: flex;
     align-items: center;

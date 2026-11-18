@@ -1,6 +1,10 @@
 @use '../../../core/scss/mix/mix__places' as places;
 @use '../../../core/scss/mix/mix__breakpoint' as mq;
 @use '../../../core/scss/mix/mix__paint' as paint;
+@use '../../../component/context-menu/scss/panel';
+
+// The search header stands flush with the rows: no inset around it (FF-7).
+$choice-search-edge: calc(var(--sf-px) * 0);
 @layer sf.components {
   @include paint.part(shape);
 /* sf-input-choice (standard simai.smart-component 1.3.15 §6; owner decision
@@ -531,6 +535,23 @@
   }
 }
 
+/* control-position end (owner decision C308 FO-5, design d03, C106 (2)):
+   the box stands at the end of the row, the row as wide as the list, the
+   name taking the room before it (the single-field filter window). The
+   document keeps the box first. */
+.sf-choice--list[data-control-position='end'] .sf-choice-row {
+  inline-size: 100%;
+}
+
+.sf-choice--list[data-control-position='end'] .sf-choice-row > :is(.sf-checkbox-box, .sf-radio-button-box) {
+  order: 1;
+}
+
+.sf-choice--list[data-control-position='end'] .sf-choice-row > :is(.sf-checkbox-container, .sf-radio-button-container) {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
 /* flow row (C165 (3)): side by side, the groups' gap between them (C105
    H6, --sf-space-1: 16, compact and phone 12); a row that does not fit
    wraps. */
@@ -548,6 +569,96 @@
   .sf-choice--list[data-flow='row'] .sf-choice-options {
     flex-direction: column;
   }
+}
+
+/* An option's visual in a row (FO-4): the picture and the colour circle
+   stand before the name, the row's line tall, a quarter step from it (the
+   box-to-name gap of C105 H2); a name drawn as a tonal badge keeps the line.
+   The circle is the menu's colour row (C85): the line less a quarter step,
+   on a hairline. */
+.sf-choice--list :is(.sf-checkbox-top, .sf-radio-button-top) {
+  align-items: center;
+  gap: var(--sf-space-1\/4);
+}
+
+.sf-choice .sf-choice-avatar {
+  flex: none;
+}
+
+/* A card's picture or colour circle stands on the name line before the
+   name, as its icon does (FO4-1). */
+.sf-choice:not(.sf-choice--list) :is(.sf-choice-avatar, .sf-choice-swatch) {
+  margin-inline-end: var(--sf-space-1\/2);
+}
+
+.sf-choice .sf-choice-swatch {
+  box-sizing: border-box;
+  display: block;
+  flex: none;
+  inline-size: calc(var(--sf-text-height-1) - var(--sf-space-1\/4));
+  block-size: calc(var(--sf-text-height-1) - var(--sf-space-1\/4));
+  margin: calc(var(--sf-space-1\/4) / 2);
+  border-width: var(--sf-px);
+  border-style: solid;
+  border-radius: var(--sf-radius-circle);
+  background-clip: padding-box;
+}
+
+/* The search over the rows (searchable): the dropping panel's search header
+   (C06, FF-7), one look with sf-dropdown's and sf-settings': a row of the
+   step, no frame, no fill, a hairline under it. The rows have no inline
+   padding and no leading picture, so its text starts at the rows' text and
+   its icon stands at the end. What the host's pages say under the rows: one
+   line of text 1/2, and «Show more» or «Retry» at the rows' start. */
+.sf-choice--list .sf-choice-search {
+  @include panel.search-header(var(--sf-ui-1--control-height), $choice-search-edge, $choice-search-edge, $choice-search-edge, $choice-search-edge);
+  padding-inline: 0;
+  margin-block-end: var(--sf-space-1\/4);
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  line-height: var(--sf-text-height-1);
+  cursor: text;
+}
+
+.sf-choice--list .sf-choice-search-icon {
+  @include panel.search-icon(var(--sf-text-height-1));
+  @include panel.search-icon-trailing;
+}
+
+.sf-choice--list .sf-choice-search-input {
+  @include panel.search-input;
+  block-size: calc(var(--sf-ui-1--control-height) - var(--sf-px));
+}
+
+.sf-choice--list .sf-choice-search-input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* What was chosen when the list opened stands first (FO4-5); a hairline
+   under the last of it parts it from the rest, across the list's width. */
+.sf-choice--list .sf-choice-row.sf-choice-row--chosen-last {
+  inline-size: 100%;
+  border-block-end-width: var(--sf-px);
+  border-block-end-style: solid;
+}
+
+.sf-choice--list .sf-choice-status {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+.sf-choice--list .sf-choice-status[hidden] {
+  display: none;
+}
+
+/* The end of the host's pages (FO4-4): a mark of no size after «Show more»;
+   when it comes into view the next page is asked for. */
+.sf-choice--list .sf-choice-end {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--sf-px);
+  margin-block-start: calc(var(--sf-px) * -1);
 }
 
 /* The error under the last row: the error ink, text 1/2, the error icon a
@@ -650,6 +761,22 @@
   .sf-choice--list .sf-choice-message {
     color: var(--sf-error);
   }
+  .sf-choice .sf-choice-swatch {
+    border-color: var(--sf-outline-variant);
+    background-color: var(--sf-choice--swatch, transparent);
+  }
+  .sf-choice--list .sf-choice-status {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-choice--list .sf-choice-search {
+    @include panel.search-header(var(--sf-ui-1--control-height), $choice-search-edge, $choice-search-edge, $choice-search-edge, $choice-search-edge);
+  }
+  .sf-choice--list .sf-choice-search-input {
+    @include panel.search-input;
+  }
+  .sf-choice--list .sf-choice-row.sf-choice-row--chosen-last {
+    border-block-end-color: var(--sf-outline-variant);
+  }
   @include paint.part(all);
 }
 
@@ -664,6 +791,15 @@
 }
 
 @layer sf.states {
+  /* The header's focus is its line in the primary colour (C06), as the
+     dropdown's; the bare field draws no ring of its own inside it. */
+  .sf-choice--list .sf-choice-search {
+    @include panel.search-focus;
+  }
+  .sf-choice--list .sf-choice-search-input:focus-visible {
+    outline: none !important;
+  }
+
   @media (forced-colors: active) {
     .sf-choice .sf-choice-card--checked,
     .sf-choice[data-layout='picture'] .sf-choice-card--checked::after {

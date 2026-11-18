@@ -6,6 +6,13 @@
     pointer-events: none;
   }
 
+  /* A long tree's rows are no scroll anchor (core rows window, FO2-5): the
+     browser would keep a drawn row in place by moving the scroll position
+     when the range moves, and the range would move again. */
+  .sf-tree[data-sf-rows-window] {
+    overflow-anchor: none;
+  }
+
   /* A name is one line, cut with an ellipsis (TR-14): a long name wrapped and
      took the row off the ladder (88 px in a 12rem column), and an unbroken
      file name ran out of the column. The tree gives a cut name's row its

@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 213,
-    "translated": 213,
+    "words": 243,
+    "translated": 243,
     "share": 100
   },
   "words": {
@@ -151,6 +151,21 @@
         "many": "{n} строк",
         "other": "{n} строки"
       },
+      "filterApply": "Применить",
+      "filterReset": "Сбросить",
+      "operatorAny": "Любая дата",
+      "operatorBetween": "Диапазон",
+      "operatorContains": "Содержит",
+      "operatorEq": "Точно",
+      "operatorGt": "Больше чем",
+      "operatorGte": "Больше или равно",
+      "operatorIn": "В списке",
+      "operatorLt": "Меньше чем",
+      "operatorLte": "Меньше или равно",
+      "operatorMonth": "Месяц",
+      "operatorStartsWith": "Начинается с",
+      "operatorToday": "Сегодня",
+      "operatorWeek": "Неделя",
       "type-string": "Строка",
       "variant-string-phone": "Телефон",
       "variant-string-password": "Пароль",
@@ -247,7 +262,22 @@
       "innChecksum": "Не сходится контрольная цифра ИНН",
       "dateGroup_time": "Время",
       "timeCondition_eq": "Равно",
-      "timeValue": "Время"
+      "timeValue": "Время",
+      "operatorAnyOf": "любой из",
+      "operatorAllOf": "все из",
+      "operatorNoneOf": "ни один из",
+      "operatorEmpty": "не задано",
+      "operatorFilled": "задано",
+      "filterNotSet": "Не задано",
+      "filterCondition": "Условие",
+      "operatorContainsWord": "содержит",
+      "operatorStartsWithWord": "начинается с",
+      "operatorEqualWord": "равно",
+      "operatorMoreWord": "больше",
+      "operatorLessWord": "меньше",
+      "operatorFromTo": "от – до",
+      "operatorMoreOrEqualWord": "больше или равно",
+      "operatorLessOrEqualWord": "меньше или равно"
     }
   }
 }

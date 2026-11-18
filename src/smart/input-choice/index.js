@@ -4,7 +4,7 @@ import {instancePath, partId} from '../../core/js/instance-path';
 import {FormField, ShownValidity} from '../helpers/form-field';
 import {renderChoiceTemplate} from './js/templates/default';
 import {fieldHelpLabel} from '../helpers/field-help';
-import {CHOICE_APPEARANCES, CHOICE_COLUMNS, CHOICE_LAYOUTS, applyChoice, formatValue, listFlow, normaliseItems, orderValues, parseValue} from './js/choice-model.mjs';
+import {CHOICE_APPEARANCES, CHOICE_COLUMNS, CHOICE_LAYOUTS, OPTION_LOOKS, applyChoice, chosenFirst, formatValue, listFlow, mergeItems, normaliseItems, orderValues, parseValue, searchItems} from './js/choice-model.mjs';
 import manifest from './component.json';
 import {files as languageFiles} from './lang/index.mjs';
 // Only the words on screen ship in the bundle, English only (owner decision
@@ -46,6 +46,11 @@ const ChoiceElement = elementFromManifest(manifest, {
 // The id the inner inputs' form attribute names: no element carries it.
 const NO_FORM = 'sf-input-choice-no-form';
 
+// A provider's page (FO-4): the options asked for at once, and the wait after
+// the last key of a search before the provider is asked.
+const PAGE_LIMIT = 50;
+const SEARCH_DEBOUNCE = 200;
+
 class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   static get props() {
     return {
@@ -77,10 +82,88 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     this.addEventListener('change', this.onInnerEvent, true);
   }
 
+  // ---------------------------------------------------------- the host's pages (FO-4)
+
+  // searchable: a search field over the rows; without a provider it searches
+  // the options in hand. provider: the options come from the host, a page at
+  // a time -- async (query, {cursor, limit, signal}) answering {items,
+  // nextCursor?}, as sf-input-lookup's provider; a thrown error or a rejected
+  // promise is the error line with «Try again». The previous call is aborted
+  // through signal and an answer for an older call is dropped. The options in
+  // hand (items) stay first -- a chosen option the pages have not reached
+  // keeps its row.
+  get _pages() {
+    if (!this.__pages) this.__pages = {provider: null, items: [], status: 'idle', nextCursor: null, retryCursor: null, sequence: 0, abort: null, timer: 0, query: ''};
+    return this.__pages;
+  }
+
+  searchFor(query) {
+    const pages = this._pages;
+    pages.query = String(query ?? '');
+    clearTimeout(pages.timer);
+    if (typeof this.provider === 'function') {
+      pages.timer = setTimeout(() => this.loadPage(null), SEARCH_DEBOUNCE);
+      return;
+    }
+    this.requestComponentUpdate('search');
+  }
+
+  async loadPage(cursor = null) {
+    const provider = this.provider;
+    const pages = this._pages;
+    if (typeof provider !== 'function' || !this.isConnected) return false;
+    pages.abort?.abort();
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    pages.abort = controller;
+    const sequence = ++pages.sequence;
+    pages.status = 'loading';
+    pages.retryCursor = cursor;
+    this.requestComponentUpdate('page');
+    try {
+      const answer = await provider(pages.query, {cursor, limit: PAGE_LIMIT, signal: controller?.signal});
+      if (sequence !== pages.sequence || !this.isConnected) return false;
+      const items = normaliseItems(Array.isArray(answer?.items) ? answer.items : []);
+      pages.items = cursor ? mergeItems(pages.items, items) : items;
+      pages.nextCursor = answer?.nextCursor ?? answer?.next_cursor ?? null;
+      pages.status = pages.items.length ? 'ready' : 'empty';
+      this.requestComponentUpdate('page');
+      return true;
+    } catch (error) {
+      if (sequence !== pages.sequence || error?.name === 'AbortError') return false;
+      pages.status = 'error';
+      this.requestComponentUpdate('page');
+      return false;
+    }
+  }
+
+  // A provider given (or replaced) is asked for its first page.
+  _followProvider() {
+    const pages = this._pages;
+    const provider = typeof this.provider === 'function' ? this.provider : null;
+    if (provider === pages.provider) return;
+    pages.abort?.abort();
+    Object.assign(pages, {provider, items: [], status: 'idle', nextCursor: null, retryCursor: null});
+    if (provider) queueMicrotask(() => this.loadPage(null));
+  }
+
+  onDisconnected() {
+    super.onDisconnected?.();
+    this._opened = null;
+    this._moreWatch?.disconnect();
+    this._moreWatch = null;
+    this._moreWatched = null;
+    const pages = this._pages;
+    clearTimeout(pages.timer);
+    pages.abort?.abort();
+    // Back on the page, the provider is asked again.
+    pages.provider = null;
+  }
+
   attributeChangedCallback(name, oldValue, newValue) {
     // The value attribute written again is the value again.
     if (name === 'value' && oldValue !== newValue) {
       this._value = undefined;
+      this._opened = null;
       this.requestComponentUpdate?.('value');
       this.sfSyncFormState?.();
     }
@@ -95,8 +178,43 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   // The options: the property or the island, else the attribute's JSON.
   get options() {
     const given = this.items;
-    if (Array.isArray(given) && given.length) return normaliseItems(given);
-    return normaliseItems(this.getAttribute('items'));
+    const own = Array.isArray(given) && given.length ? normaliseItems(given) : normaliseItems(this.getAttribute('items'));
+    if (typeof this.provider === 'function') return mergeItems(own, this._pages.items);
+    return own;
+  }
+
+  // The rows drawn: the options, searched in place when the field is
+  // searchable and has no provider (a provider searches itself).
+  get shownOptions() {
+    const options = this.options;
+    const paged = typeof this.provider === 'function';
+    if (!this.searchable && !paged) return options;
+    // FO4-5: with a search or a host's pages, what was chosen when the list
+    // opened stands first; the order does not move while it is open.
+    this._opened ??= new Set(this.selected);
+    const shown = paged ? options : searchItems(options, this._pages.query);
+    return chosenFirst(shown, this._opened);
+  }
+
+  // The index of the last row that stands first because it was chosen when
+  // the list opened, while other rows follow it; -1 when nothing stands first.
+  chosenLastIndex() {
+    const opened = this._opened;
+    if (!opened?.size) return -1;
+    const shown = this.shownOptions;
+    let last = -1;
+    while (last + 1 < shown.length && opened.has(shown[last + 1].value)) last += 1;
+    return last >= 0 && last < shown.length - 1 ? last : -1;
+  }
+
+  // Where a row's box stands (C308 FO-5): start, or end of the row.
+  get controlPositionValue() {
+    return this.getAttribute('control-position') === 'end' ? 'end' : 'start';
+  }
+
+  get optionLookValue() {
+    const look = this.getAttribute('option-look');
+    return OPTION_LOOKS.includes(look) ? look : '';
   }
 
   get effectiveDisabled() {
@@ -138,6 +256,9 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   // Set from code it is not a change: no event, as for a native field.
   set value(next) {
     this._value = next === undefined || next === null ? undefined : formatValue(parseValue(next, Boolean(this.multiple)));
+    // A value the host sets is what was chosen when the list opened (FO4-5);
+    // a person's own choice (onChange) does not move the order.
+    this._opened = null;
     this.requestComponentUpdate?.('value');
     this.sfSyncFormState?.();
   }
@@ -215,6 +336,31 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
 
   // ---------------------------------------------------------- drawing
 
+  pagingContext() {
+    this._followProvider();
+    const pages = this._pages;
+    const paged = typeof this.provider === 'function';
+    const searchable = Boolean(this.searchable);
+    const status = paged ? pages.status
+      : searchable && pages.query.trim() && !this.shownOptions.length ? 'empty' : 'ready';
+    return {
+      shown: paged || searchable,
+      searchable,
+      query: pages.query,
+      status,
+      nextCursor: paged ? pages.nextCursor : null,
+      retryCursor: pages.retryCursor,
+      words: {
+        search: this.sfWord('search-label'),
+        loading: this.sfWord('loading-options'),
+        error: this.sfWord('options-error'),
+        empty: this.sfWord('nothing-found'),
+        retry: this.sfWord('retry'),
+        more: this.sfWord('show-more'),
+      },
+    };
+  }
+
   templateContext() {
     const props = this.getPropsContext();
     const internals = Boolean(this.sfInternals);
@@ -223,13 +369,17 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
       ...props,
       component: this,
       id,
-      items: this.options,
+      items: this.shownOptions,
+      chosenLast: this.chosenLastIndex(),
       chosen: new Set(this.selected),
+      paging: this.pagingContext(),
       multiple: Boolean(this.multiple),
       columns: this.columnsValue,
       appearance: this.appearanceValue,
       layout: this.layoutValue,
       flow: this.flowValue,
+      optionLook: this.optionLookValue,
+      controlPosition: this.controlPositionValue,
       label: this.label || '',
       // C165 (1), C153 (8): the «?» after the heading, named by its subject.
       help: this.help || '',
@@ -257,7 +407,27 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   afterRender(callback) {
     if (typeof callback === 'function') return super.afterRender(callback);
     this.sfSyncFormState();
+    this.watchMore();
     return undefined;
+  }
+
+  // FO4-4: the host's next page loads when the list is scrolled to its end
+  // (the mark after «Показать ещё» comes into view, in the window or the
+  // box that scrolls the list); the button stays the last row, for the keyboard and for a
+  // browser without IntersectionObserver.
+  watchMore() {
+    const more = this.querySelector(':scope .sf-choice-end[data-sf-more]');
+    if (more === this._moreWatched) return;
+    this._moreWatch?.disconnect();
+    this._moreWatched = more;
+    const Observer = this.ownerDocument?.defaultView?.IntersectionObserver ?? globalThis.IntersectionObserver;
+    if (!more || typeof Observer !== 'function') return;
+    this._moreWatch ??= new Observer((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      const pages = this._pages;
+      if (pages.nextCursor && pages.status !== 'loading') this.loadPage(pages.nextCursor);
+    });
+    this._moreWatch.observe(more);
   }
 }
 

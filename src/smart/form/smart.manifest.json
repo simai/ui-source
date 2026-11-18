@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.form",
-  "version": "1.7.0",
+  "version": "1.11.0",
   "title": "Form",
   "summary": "A form drawn from field descriptions: the label row, «*», «?», hint and error around each control the Framework's field renderers draw, groups, one column that pairs fields from 44rem, an errors summary with links from two errors, the buttons under the fields with the main one first, a view mode with «Изменить», and apply submit, instant or answer (a questionnaire answered once, read-only with «Отправлено» after it) in one component.",
   "kind": "smart",
@@ -136,7 +136,7 @@
       "value": {
         "type": "object",
         "default": {},
-        "description": "The values by field key: {text: \"Подробнее\", tone: \"accent\"}. Set from code it is the saved state: the form shows it, forgets the errors and is not dirty; read, it is what the fields hold now. A value the person never set is absent"
+        "description": "The values by field key: {text: \"Подробнее\", tone: \"accent\"}. Set from code it is the saved state: the form shows it, forgets the errors and is not dirty; read, it is what the fields hold now and what a save sends: a field its conditions hide (when.visible) is left out, while the form keeps what it held so that showing the field again brings it back (FO3-1, Larena settings standard §4). A value the person never set is absent"
       }
     },
     "additionalProperties": false
@@ -234,7 +234,7 @@
       }
     },
     "sf-form-submit": {
-      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every field's value by key. Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)",
+      "summary": "apply submit: «Сохранить» (or Enter in a one-line field) found every field right; value is every shown field's value by key (a field its conditions hide is not sent, FO3-1). Not cancelled, the value becomes the saved state (dirty false) and a form that was opened from view returns to view; cancelled, the form stays as it is (the host answers later, with set-errors or a new value)",
       "payload": {
         "type": "object",
         "required": [
@@ -268,7 +268,7 @@
       }
     },
     "sf-form-invalid": {
-      "summary": "A submit or check-validity found wrong fields: their keys in order. Every one shows its error at the field; from two errors a summary with a link to each stands over the form and takes the focus",
+      "summary": "A submit or check-validity found wrong fields: their keys in order. Every one shows its error at the field; from two errors a summary with a link to each stands over the form and takes the focus. A host error (set-errors) for a field its conditions hide is said in the summary by the field's label, without a link, and does not hold the next submit back (FO3-1)",
       "payload": {
         "type": "object",
         "required": [
@@ -413,11 +413,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/form/index.js",
-        "sha256": "e4e1140afa6d49b2d82ab3c70d52a9a831b9b8c98480b1d8c04944cf7feb74c2"
+        "sha256": "e8ea841103e89ff89ef99b2736304b9a20b9a9f3897d16fa7baf32d87dcdf89b"
       },
       {
         "path": "src/smart/form/js/templates/default.js",
-        "sha256": "bf00d09b152963015a4f49e8c4efc11c73f2a0daa1579c4848d14c7e670125d8"
+        "sha256": "41d45e5e876fef9a04afa9c525e43798288759a802ecbe67009cf9f14989547c"
       },
       {
         "path": "src/smart/form/js/choice-list.js",
@@ -429,7 +429,7 @@
       },
       {
         "path": "src/smart/form/docs.md",
-        "sha256": "e0dac14bb50d9b8a99249ce186c0e1d59d99a06bad9a05c991682f6b65e1e5af"
+        "sha256": "8a73538aa686287c001443ac6ca52f95057c1828914719fe51210147a0a3716a"
       }
     ],
     "generated_runtime": []

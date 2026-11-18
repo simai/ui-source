@@ -11,8 +11,10 @@ test('every option of a multiple dropdown carries the box', async () => {
   const template = await read('src/smart/dropdown/js/templates/default.js');
   assert.ok(template.includes('function renderOptions(options = [], multiple = false)'));
   assert.ok(template.includes('${renderOptions(context.options, context.multiple)}'));
-  assert.ok(template.includes('const withBox = multiple && (!option.type || option.type === "text");'));
-  assert.ok(template.includes('renderListItemOption(withBox ? {...option, type: "checkbox"} : option, {multiple})'));
+  assert.ok(template.includes('const withBox = multiple && (!option.type || option.type === "text" || option.type === "icon");'));
+  // C308 FO-4: an option's colour names it as a tonal label first (optionName);
+  // C308 (4), FF-3: the box stands at the row's end on every row (checkEnd).
+  assert.ok(template.includes('renderListItemOption(withBox ? {...named, checkEnd: true} : named, {multiple})'));
 });
 
 // A picture row (avatar, colour) of a single choice drew an empty box at its
@@ -23,14 +25,16 @@ test('an avatar or colour option draws its box only in a multiple list', async (
   const listItem = await read('src/smart/list-item/js/templates/default.js');
   assert.ok(listItem.includes('export function renderListItemOption(option = {}, {multiple = false} = {})'));
   assert.ok(listItem.includes('multiple: Boolean(multiple),'));
-  assert.ok(listItem.includes('if (isOption && context.multiple && (context.type === "avatar" || context.type === "color")) {'));
+  assert.ok(listItem.includes('if (isOption && context.multiple && (context.type === "avatar" || context.type === "color" || context.checkEnd === true)) {'));
+  assert.ok(listItem.includes('checkEnd: option.checkEnd === true,'));
 });
 
 test('an option that draws a picture of its own keeps it', async () => {
   const template = await read('src/smart/dropdown/js/templates/default.js');
-  // The box would take the place the icon, the colour swatch or the avatar
-  // stands in, so only a plain text row becomes a checkbox row.
+  // The box stands after the name (FF-3), so an icon row keeps its icon and
+  // a colour or avatar row its picture; none of them becomes a checkbox row.
   assert.doesNotMatch(template, /withBox = multiple(?!.*option\.type === "text")/u);
+  assert.doesNotMatch(template, /\{\.\.\.named, type: "checkbox"\}/u);
 
   // The row itself is unchanged: the box is what a checkbox option has always
   // drawn, and it is checked from the selection.

@@ -58,7 +58,8 @@ test('the floating-surface engine: CSS anchor positioning in the top layer, SF.P
 
 test('sf-popover: the top layer, engine auto, a step down under a window', () => {
   const source = read('src/smart/popover/index.js');
-  assert.match(source, /this\._anchor = anchorFloating\(this, surface, \{/u);
+  assert.match(source, /this\._anchor = anchorFloating\(reference, surface, \{/u); // 1.8.0: the host, or the anchor given (FO-5)
+  assert.match(source, /return anchor && anchor\.nodeType === 1 && anchor\.isConnected \? anchor : this;/u);
   assert.match(source, /arrow: this\.arrow,/u);
   assert.match(source, /topLayer: false,/u, 'the popover lifts the surface itself, so a sheet stays lifted');
   assert.match(source, /positioning\(\)\.liftToTopLayer\?\.\(surface\)/u);

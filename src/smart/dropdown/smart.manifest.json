@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.20.6",
+  "version": "1.21.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -25,6 +25,7 @@
       "component.dropdown",
       "component.icon-buttons",
       "component.inputs",
+      "smart.badge",
       "smart.button-icon",
       "smart.help-mark",
       "smart.icon",
@@ -100,6 +101,15 @@
         "enum": [
           "list",
           "grid"
+        ]
+      },
+      "list-width": {
+        "type": "string",
+        "default": "field",
+        "description": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen.",
+        "enum": [
+          "field",
+          "list"
         ]
       },
       "mode": {
@@ -505,15 +515,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "5c2b423654797ac4e5aec299f7ed7d3ccafa794ab2fbaf97e15af99a49b07a39"
+        "sha256": "c2f09715bdfe2896fa79e3a5248bcb2555752ddd55e0acd7ca505d3c3d86504e"
       },
       {
         "path": "src/smart/dropdown/rule.js",
-        "sha256": "a0d34f8ec653f2168e93b79a46a2c0466a42b21465187fe9c6a51f1fa7b07f2c"
+        "sha256": "50a4c2d3fc9779cd7128a8dda3c7efb294c5a15b7bb8685b35399c00f5e557fd"
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "58e31c9ac014875e479ea8f4e479ecb13a6617b40930a923c64f956cccac080b"
+        "sha256": "318be349e77da76318211e3458a88d5edfcabf441cbcbb63955db55ba4d586f9"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

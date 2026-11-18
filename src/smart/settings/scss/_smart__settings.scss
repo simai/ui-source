@@ -133,8 +133,8 @@
   align-self: center;
 }
 
-/* The search (C06): a header over the rows, its icon and text over the rows'
-   text, a hairline under it that turns primary while it has the focus. */
+/* The search (C06): a header over the rows, its text over the rows' text
+   and its icon at the end (FF-6), a hairline under it that turns primary while it has the focus. */
 .sf-settings-panel-search {
   display: flex;
   flex: none;
@@ -148,6 +148,9 @@
 
 .sf-settings-panel-search-icon {
   @include panel.search-icon(var(--sf-settings-panel--line));
+  /* FF-6: the rows have no leading picture, so the search text stands over
+     the rows' text and the icon goes to the header's end. */
+  @include panel.search-icon-trailing;
 }
 
 .sf-settings-panel-search-input {

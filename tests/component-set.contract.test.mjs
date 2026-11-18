@@ -241,7 +241,9 @@ test('every registered name starts with a family its owner holds, or is a listed
 });
 
 test('the registry lists exactly the Framework\'s own Smart components', () => {
-  const registered = json(REGISTRY).owners.find(({id}) => id === 'framework').names.map(({element}) => element).sort();
+  // A reserved name is held for the Framework and not shipped yet: no component stands behind it.
+  const registered = json(REGISTRY).owners.find(({id}) => id === 'framework').names
+    .filter(({status}) => status !== 'reserved').map(({element}) => element).sort();
   assert.deepEqual(registered, frameworkElements());
 });
 

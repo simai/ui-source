@@ -59,11 +59,11 @@ function summaryBlock(context) {
   if (!context.errorList) return nothing;
   return html`<div class="sf-form-summary" role="alert" tabindex="-1">
     <p class="sf-form-summary-title">${context.words.errorsTitle}</p>
-    <ul class="sf-form-summary-list">${context.errorList.map((error) => html`<li><a href=${error.href}
+    <ul class="sf-form-summary-list">${context.errorList.map((error) => (error.href ? html`<li><a href=${error.href}
       @click=${(event) => {
         event.preventDefault();
         context.component.focusField(error.key);
-      }}>${error.message}</a></li>`)}</ul>
+      }}>${error.message}</a></li>` : html`<li>${error.message}</li>`))}</ul>
   </div>`;
 }
 

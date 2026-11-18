@@ -2,6 +2,12 @@
   "title": "Choice",
   "runtime": {
     "value-missing": "Choose an option.",
-    "help": "More about: {label}"
+    "help": "More about: {label}",
+    "search-label": "Find in the list",
+    "loading-options": "Loading the options",
+    "options-error": "The options could not be loaded",
+    "nothing-found": "Nothing found",
+    "retry": "Retry",
+    "show-more": "Show more"
   }
 }

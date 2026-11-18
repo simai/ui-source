@@ -18,5 +18,7 @@ SF.RuleLoader['cl-dropdown'] = {
     { name: 'cl-icon' },
     // The «?» after the label (help, owner decision C153 (8)) is sf-help-mark: fetched with the field.
     { name: 'cl-help-mark' },
+    // An option's colour (owner decision C308 FO-4) draws its name as sf-badge (tonal, tight, line 1) in its row, only when an option carries color.
+    { name: 'cl-badge', lazy: true },
   ],
 };

@@ -122,6 +122,9 @@ function parseOptionData(option, dropdownSize = '1') {
     selected: toBoolean(option.selected),
     disabled: toBoolean(option.disabled),
     colorClass: option.colorClass ? String(option.colorClass) : 'bg-tertiary',
+    // An option's colour (owner decision C308 FO-4, C302's one data word): its
+    // name is drawn as a tonal badge in it.
+    color: typeof option.color === 'string' ? option.color.trim() : '',
     avatarImageUrl: option.avatarImageUrl ? String(option.avatarImageUrl) : '',
     avatarTitle: option.avatarTitle ? String(option.avatarTitle) : text,
     value,
@@ -230,6 +233,10 @@ class SfDropdown extends FormField(DropdownElement) {
       // several in a row, which is the only way a hundred icons can be looked
       // at -- a column of them is a column nobody scrolls to the end of.
       layout: { default: 'list', values: ['list', 'grid'] },
+      // How wide the open list is (FF-2): at least the field and up to the
+      // list's step by its options (field, C32), or the list's step whatever
+      // the field (list) -- a narrow filter button opened a list as narrow.
+      listWidth: { attribute: 'list-width', default: 'field', values: ['field', 'list'] },
       columns: { default: '6' },
       disabled: { type: Boolean, default: false },
       // The option value the field falls back to while nothing is chosen
@@ -628,6 +635,8 @@ class SfDropdown extends FormField(DropdownElement) {
       selectedValues: this.selectedValues,
       selectedOptions: this.selectedOptions,
       options: this.visibleOptions,
+      listWidth: this.listWidth === 'list' ? 'list' : 'field',
+      nothingFound: String(this._searchValue || '').trim() && !this.visibleOptions.length ? this.sfWord('nothing-found') : '',
       inheritedValue: this.inheritedValue,
       inheritedLabel: this.hasInheritedValue ? this.inheritedDisplayValue() : '',
     });

@@ -12,6 +12,9 @@ import {cleanHtml, htmlText} from "./html.js";
 import {noteDeprecated} from "../../core/js/deprecations.js";
 import {addDecimal, compareDecimal, currencyCodes, currencyDisplayOf, currencyOf, formatDecimal, formatMoney, formatPercent, fractionDigits, isRtlLocale, moneyParts, moneyTotals, readDecimal, readTypedDecimal, restingDecimal} from "./decimal.js";
 import {formatPhone, phoneE164, phoneSearchText, splitPhone} from "./phone.js";
+import {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fieldEditable} from "./conditions.js";
+import {filterOperatorLabel, filterWindowOpen} from "./filter-window.js";
+import {filterActive, filterCondition, filterConditions, filterCount, filterKindOf, filterSummary, filterValueless, filterWidth} from "./filter-conditions.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -540,7 +543,109 @@ function renderDateRangeValue(field, host, current, value, patch) {
         ></sf-input-date>`;
 }
 
+// An option of a filter as sf-input-choice draws it (FO-4): its picture
+// (avatar, or the former imageUrl and avatarText), its icon and its colour
+// (color, or the former scheme) are the option's data and drawn wherever it
+// is (FO4-1); how the colour is drawn is the field template's parameter
+// (optionLookOf). filter.optionRenderer is the former way of saying it, read
+// until 2027-01-01 (FO4-2): avatar-checkbox the picture from the initials of
+// the name when none is given, swatch a circle, badge a badge.
+function choiceOption(field, option = {}) {
+    const value = option.value ?? option.id ?? option.key ?? option.label ?? option.title;
+    const label = option.label || option.title || String(value ?? '');
+    const look = field.filter?.optionRenderer;
+    const item = {value: String(value ?? ''), label, caption: option.caption || '', disabled: option.disabled === true};
+    const avatar = typeof option.avatar === 'string' ? {image: option.avatar} : option.avatar;
+    const image = avatar?.image || avatar?.src || option.imageUrl || '';
+    const initials = avatar?.text || option.avatarText || '';
+    if (image || initials || look === 'avatar-checkbox') item.avatar = {image, text: initials || label};
+    if (option.icon) item.icon = String(option.icon);
+    const color = option.color ?? option.scheme ?? '';
+    if (color) item.color = String(color);
+    return item;
+}
+
+// How a choice field's option colours are drawn (FO4-2; C302: the look is the
+// template's parameter): templateParams.badge true a badge, false a circle;
+// else the former filter.optionRenderer (swatch a circle, badge a badge);
+// else '' -- sf-input-choice's own default, the tonal label (owner decision
+// C308 FO-4).
+function optionLookOf(field) {
+    const badge = field.templateParams?.badge ?? field.template?.params?.badge;
+    if (badge === true) return 'badge';
+    if (badge === false) return 'dot';
+    const look = field.filter?.optionRenderer;
+    if (look === 'swatch') return 'dot';
+    if (look === 'badge') return 'badge';
+    return '';
+}
+
+// A filter of a list of options is the Framework's choice field (FO-4):
+// sf-input-choice, appearance list, the checks of several values, with the
+// options' visuals, its own search (filter.searchable) and the host's pages
+// (filter.provider, or host.getFilterOptionsProvider(field): async (query,
+// {cursor, limit, signal}) answering {items, nextCursor?}). A host that still
+// draws its own option rows (renderFilterOption) gets the 1.13 controls.
+function renderChoiceFilterControl(field, host) {
+    const value = host.getFilterControlValue(field.key) || {};
+    const options = (Array.isArray(field.filter?.options) ? field.filter.options : (host.getVisibleFilterOptions?.(field) ?? []))
+        .map((option) => choiceOption(field, option));
+    const given = field.filter?.provider ?? host.getFilterOptionsProvider?.(field);
+    const provider = typeof given === 'function'
+        ? (query, request) => Promise.resolve(given(query, request)).then((answer) => ({
+            ...answer,
+            items: (Array.isArray(answer?.items) ? answer.items : []).map((option) => choiceOption(field, option)),
+        }))
+        : null;
+    // One wrapper per provider, so the field asks again only when the host's
+    // provider changes.
+    const pages = provider ? choiceProvider(given, provider) : null;
+    return html`
+        <sf-input-choice
+                appearance="list"
+                flow="column"
+                multiple
+                aria-label=${field.label || field.key || nothing}
+                ?searchable=${choiceSearchable(field, host, options, pages)}
+                option-look=${optionLookOf(field) || nothing}
+                control-position=${host.filterWindow === true ? 'end' : nothing}
+                .items=${options}
+                .provider=${pages}
+                .value=${Array.isArray(value.values) ? value.values.map(String) : []}
+                @change=${(event) => {
+                    host.patchTempFilterValue(field.key, {
+                        values: Array.isArray(event.detail?.values) ? [...event.detail.values] : [],
+                        operator: value.operator || field.filter?.defaultOperator || 'in',
+                    });
+                }}
+        ></sf-input-choice>
+    `;
+}
+
+// Whether the choice filter shows its search: when the field asks for it;
+// in the single-field filter window also from ten options or with the host's
+// pages, which search on the server (filter field study, decided: «search
+// from 10»), unless the field says searchable false.
+// filter.search (C310): 'off' none; 'local' over the options; 'server' the
+// host's pages search; 'auto' (the default in the window) from ten options,
+// or with the host's pages.
+function choiceSearchable(field, host, options, pages) {
+    const asked = field.filter?.searchable;
+    const mode = field.filter?.search;
+    if (mode === 'off' || asked === false) return false;
+    if (asked === true || mode === 'local' || mode === 'server') return true;
+    if (host.filterWindow !== true) return false;
+    return Boolean(pages) || options.length >= 10;
+}
+
+const CHOICE_PROVIDERS = new WeakMap();
+function choiceProvider(given, wrapped) {
+    if (!CHOICE_PROVIDERS.has(given)) CHOICE_PROVIDERS.set(given, wrapped);
+    return CHOICE_PROVIDERS.get(given);
+}
+
 function renderMultiSelectFilterControl(field, host) {
+    if (typeof host?.renderFilterOption !== 'function') return renderChoiceFilterControl(field, host);
     const endpointPage = host.getEndpointFilterPage(field);
     const options = host.getVisibleFilterOptions(field);
     const value = host.getFilterControlValue(field.key);
@@ -2466,19 +2571,39 @@ function renderBooleanEdit(field, value, host) {
     `;
 }
 
+// An option's colour by its one data word (C302): color; scheme and swatch
+// are its former names (FO4-2).
+function optionColorOf(option = {}) {
+    const raw = option?.color ?? option?.scheme ?? option?.swatch;
+    return typeof raw === 'string' ? raw.trim() : '';
+}
+
 function editOptions(field, value, multiple) {
     const options = field.options || field.filter?.options || field.constraints?.options || [];
     const chosen = multiple
         ? new Set((Array.isArray(value) ? value : []).map((item) => String(item)))
         : new Set([String(value ?? '')]);
 
-    return options.map((option) => ({
-        type: 'text',
-        size: '1',
-        text: option.label ?? option.text ?? String(option.value),
-        value: String(option.value),
-        selected: chosen.has(String(option.value)),
-    }));
+    // An option's picture or icon is drawn in the dropdown too (FO4-1, FO4-3):
+    // sf-dropdown's avatar and icon rows. Its colour (C308 FO-4) is the
+    // name as a tonal badge in that colour, the dropdown's color word.
+    return options.map((option) => {
+        const text = option.label ?? option.text ?? String(option.value);
+        const avatar = typeof option.avatar === 'string' ? {image: option.avatar} : option.avatar;
+        const picture = avatar?.image || avatar?.src || option.imageUrl || '';
+        const initials = avatar?.text || option.avatarText || '';
+        const visual = picture || initials
+            ? {type: 'avatar', avatarImageUrl: picture, avatarTitle: text}
+            : option.icon ? {type: 'icon', icon: String(option.icon)} : {type: 'text'};
+        return {
+            ...visual,
+            size: '1',
+            text,
+            ...(optionColorOf(option) ? {color: optionColorOf(option)} : {}),
+            value: String(option.value),
+            selected: chosen.has(String(option.value)),
+        };
+    });
 }
 
 // A choice as buttons (simai.property-view-port 1.16.0, variant `buttons`;
@@ -2523,6 +2648,8 @@ function renderChoiceButtons(field, value, host) {
         value: String(option.value),
         label: String(option.label ?? option.text ?? option.value),
         ...(option.icon ? {icon: String(option.icon)} : {}),
+        // One data word for colour (C302, C308 FO-4): the segment's name a tonal badge.
+        ...(optionColorOf(option) ? {color: optionColorOf(option)} : {}),
         ...(option.disabled ? {disabled: true} : {}),
     }));
     const asked = String(templateParam(field, 'size') ?? '');
@@ -3251,6 +3378,15 @@ let EDIT_ERROR = '';
 export const OWN_ERROR_CONTROLS = Object.freeze(['sf-input-date', 'sf-input-image', 'sf-switch', 'sf-checkbox', 'sf-segmented', 'sf-file-upload']);
 
 export function renderEditField(field = {}, value, host, options = {}) {
+    // A single-field edit (a table cell, a card's quick edit) gives the
+    // record's values (options.values): the field's conditions decide it
+    // there as in a form (FO3-4) -- hidden, nothing is drawn; not enabled,
+    // its value as text; required as they say.
+    if (field?.when && options?.values && typeof options.values === "object") {
+        const decided = fieldConditions(field, options.values);
+        if (!decided.visible) return null;
+        field = {...field, required: decided.required, readonly: field.readonly === true || !decided.enabled};
+    }
     const asked = resolveField(field).type;
     const disabled = options?.disabled === true;
     // A field the person may not change is shown, not offered as a control that
@@ -3693,6 +3829,137 @@ export function fieldTemplate(field = {}) {
 }
 
 export {PROPERTY_TYPES};
+export {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fieldEditable};
+
+// The window's content per property type (owner decision C310): the
+// condition first (C293), then only what the condition needs -- the list of
+// a list property, one field of a string, one or two of a number; nothing
+// for не задано / задано. A boolean is three rows, one choice, no condition
+// line. A type with a window of its own (a date) keeps its filter control.
+// Where the condition stands and how quiet it is wait for the owner's answer
+// on the window without repeats (study §11); here it is the set's operator
+// field, as every filter control's.
+function renderConditionControl(field, host, conditions, selected) {
+    if (conditions.length < 2) return nothing;
+    return html`<sf-dropdown class="sf-filter-window-condition" size=${filterSize(host)} appearance="bordered" mode="select"
+            search="false" list-width="list" aria-label=${setText(host, 'filterCondition')}
+            .options=${conditions.map((operator) => ({value: operator, text: host.getFilterOperatorLabel(operator), label: host.getFilterOperatorLabel(operator)}))}
+            value=${selected}
+            @change=${(event) => {
+                const operator = event.detail?.values?.[0] || event.detail?.value || selected;
+                if (operator !== selected) host.patchTempFilterValue(field.key, {operator});
+            }}></sf-dropdown>`;
+}
+
+function currencySign(field, host) {
+    const code = typeof field.currency === 'string' ? field.currency : field.currency?.code;
+    if (!code) return '';
+    try {
+        return new Intl.NumberFormat(pageLocale(host ?? null) || 'ru-RU', {style: 'currency', currency: code})
+            .formatToParts(0).find((part) => part.type === 'currency')?.value || code;
+    } catch {
+        return code;
+    }
+}
+
+function renderStringWindow(field, host, value, operator) {
+    return html`<sf-input size=${filterSize(host)} appearance="bordered" aria-label=${host.getFilterOperatorLabel(operator)}
+            value=${typeof value.value === 'string' ? value.value : ''} name="sf_filter_${field.key || 'text'}"
+            @change=${(event) => host.patchTempFilterValue(field.key, {operator, value: event.target?.value || ''})}></sf-input>`;
+}
+
+// A number or an amount (C294: an amount is compared inside its currency,
+// whose sign the fields carry): от – до, or one field.
+function renderNumberWindow(field, host, value, operator) {
+    const sign = currencySign(field, host);
+    const named = (text) => (sign ? `${text}, ${sign}` : text);
+    if (operator !== 'between') {
+        const one = Array.isArray(value.value) ? value.value[0] : value.value;
+        return html`<sf-input size=${filterSize(host)} appearance="bordered"
+                aria-label=${named(host.getFilterOperatorLabel(operator))} placeholder=${sign || nothing}
+                value=${one ?? ''} name="sf_filter_${field.key || 'number'}"
+                @change=${(event) => host.patchTempFilterValue(field.key, {operator, value: event.target?.value || ''})}></sf-input>`;
+    }
+    const range = Array.isArray(value.value) ? value.value : [value.value ?? '', ''];
+    const patch = (index, next) => {
+        const both = [range[0] ?? '', range[1] ?? ''];
+        both[index] = next || '';
+        host.patchTempFilterValue(field.key, {operator, value: both});
+    };
+    return html`<div class="sf-filter-window-range flex gap-1/3 items-cross-end">
+        <sf-input size=${filterSize(host)} appearance="bordered" root-class="flex-1 min-w-0" label=${named(setText(host, 'rangeFrom'))}
+                  value=${range[0] ?? ''} name="sf_filter_${field.key || 'number'}" @change=${(event) => patch(0, event.target?.value)}></sf-input>
+        <sf-input size=${filterSize(host)} appearance="bordered" root-class="flex-1 min-w-0" label=${named(setText(host, 'rangeTo'))}
+                  value=${range[1] ?? ''} name="sf_filter_${field.key || 'number'}_second" @change=${(event) => patch(1, event.target?.value)}></sf-input>
+    </div>`;
+}
+
+// A boolean (C310): Да / Нет / Не задано, one choice, no condition line and
+// no search. «Не задано» is the empty condition.
+function renderBooleanWindow(field, host, value) {
+    const words = {
+        yes: field.trueText ?? field.labels?.true ?? setText(host, 'yes'),
+        no: field.falseText ?? field.labels?.false ?? setText(host, 'no'),
+    };
+    const operator = filterCondition(field, value);
+    const one = Array.isArray(value.values) ? value.values[0] : value.value;
+    const chosen = operator === 'empty' ? 'empty' : one === true || String(one) === 'true' ? 'true' : one === false || String(one) === 'false' ? 'false' : '';
+    return html`<sf-input-choice appearance="list" flow="column" aria-label=${field.label || field.key || nothing}
+            control-position="end"
+            .items=${[{value: 'true', label: words.yes}, {value: 'false', label: words.no}, {value: 'empty', label: setText(host, 'filterNotSet')}]}
+            .value=${chosen}
+            @change=${(event) => {
+                const next = event.detail?.value ?? event.detail?.values?.[0] ?? '';
+                host.patchTempFilterValue(field.key, next === 'empty'
+                    ? {operator: 'empty', value: undefined, values: undefined}
+                    : {operator: 'eq', value: next === 'true', values: undefined});
+            }}></sf-input-choice>`;
+}
+
+/** A filter field's window content (C310): the condition, then what it needs. */
+export function renderFilterWindowField(field = {}, host) {
+    const kind = filterKindOf(field);
+    if (kind === 'own') return renderFilterField(field, host);
+    const value = host.getFilterControlValue(field.key) || {};
+    if (kind === 'boolean') return renderBooleanWindow(field, host, value);
+    const conditions = filterConditions(field);
+    const operator = filterCondition(field, value);
+    const control = filterValueless(operator) ? nothing
+        : kind === 'string' ? renderStringWindow(field, host, value, operator)
+            : kind === 'number' ? renderNumberWindow(field, host, value, operator)
+                : renderChoiceFilterControl(field, host);
+    return html`<div class="sf-filter-window-fields flex flex-col gap-1/2">${renderConditionControl(field, host, conditions, operator)}${control}</div>`;
+}
+
+/** A filter field's window opened from any control (FO-5, filter-window.js): settles {action: 'apply' | 'reset', value} or null. */
+export function openFilterWindow(options = {}) {
+    const field = options.field || {};
+    return filterWindowOpen({
+        width: filterWidth(field),
+        kind: filterKindOf(field),
+        ...options,
+        renderControl: renderFilterWindowField,
+        // «Применить (N)»: the chosen values of a list condition only (C310).
+        count: (value) => (filterKindOf(field) === 'own' ? (Array.isArray(value?.values) ? value.values.length : 0) : filterCount(field, value)),
+    });
+}
+
+/**
+ * What a filter field button shows after applying (C300, C310), for the
+ * list head that draws it: {active, count, words} -- the colour while
+ * active, the number only for a list condition, the words for its tooltip.
+ */
+export function filterFieldSummary(field = {}, value = {}, node = null) {
+    const options = Array.isArray(field.filter?.options) ? field.filter.options : [];
+    const names = new Map(options.map((option) => [String(option.value ?? option.id ?? option.key ?? option.label), option.label || option.title || String(option.value ?? '')]));
+    return filterSummary(field, value, {
+        label: (operator) => filterOperatorLabel(operator, node, filterKindOf(field)),
+        name: (one) => names.get(one) ?? one,
+        yes: field.trueText ?? pageText(SET_TEXT, 'yes', node, SET_NAME),
+        no: field.falseText ?? pageText(SET_TEXT, 'no', node, SET_NAME),
+    });
+}
+export {filterOperatorLabel, filterActive, filterConditions, filterCount, filterWidth};
 
 export function renderViewField(field = {}, value, host, options = {}) {
     const asked = resolveField(field).type;
@@ -3767,6 +4034,15 @@ if (typeof window !== 'undefined') {
         // normalizeTime(text); and a time of day's: splitTime(value),
         // composeTime(stored, text).
         dateTime: {split: readDateTime, compose: composeDateTime, normalizeTime, splitTime, composeTime},
+        // A field's when (FO-3): fieldConditions(field, values) answers
+        // {visible, required, enabled} over the values on screen;
+        // editable(field, values) whether a single-field edit opens (FO3-4).
+        conditions: {evaluate: evaluateCondition, field: fieldConditions, fields: conditionFields, ops: CONDITION_OPS, editable: fieldEditable},
+        // A filter field's window from any control (FO-5): open({anchor,
+        // field, value, size, placement}) settles {action, value} or null.
+        // summary(field, value) {active, count, words} is what the filter
+        // field button shows (C300, C310); conditions(field) what a window offers.
+        filterWindow: {open: openFilterWindow, operatorLabel: filterOperatorLabel, summary: filterFieldSummary, conditions: filterConditions, count: filterCount},
         // The universal properties, each with the modes the set draws for it
         // and its templates, the default first (C302).
         registry: PROPERTY_TYPES.map((entry) => ({...entry, modes: propertyModes(entry.type)})),

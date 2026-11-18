@@ -2,7 +2,7 @@
   "$comment": "The source of sf-popover's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/popover (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.popover",
   "tag": "sf-popover",
-  "version": "1.8.0",
+  "version": "1.10.1",
   "kind": "leaf",
   "family": "popover",
   "settings": {
@@ -26,6 +26,11 @@
       ],
       "default": "bottom-end",
       "summary": "Where the surface stands beside the trigger: top, bottom, start or end, centred on it, or with -start or -end its start or end edge on the trigger's (inline-start and inline-end are start-start and end-start). Logical: start and end follow the writing direction. At the window's edge it moves along the trigger's edge, or to the other side."
+    },
+    "anchor": {
+      "type": "object",
+      "default": null,
+      "summary": "The element the surface stands beside, in place of the trigger (FO-5): a chip, a column's heading, a cell -- any control. The focus goes back to it when the surface closes, and a press on it while the surface is open closes it (reason close). Without it the surface stands beside the host and its trigger. A property only."
     },
     "label": {
       "type": "string",
@@ -348,7 +353,9 @@
     "version 1.7.1 (2026-11-17, feat/lang-file-c282; numbered above 1.7.0 on origin/fix/layer-order-c273): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
     "version 1.7.2 (written on the branch as 1.7.0; 2026-11-17): a minor (owner decision C273, utility or component). The component's fill, edge colour, text colour and the place roles it declares stand in the new cascade layer sf.paint, under the utilities, so a bg-*, border-* or color-* class on it or on one of its parts now paints it; its size, padding, radius, height and edge width stay in sf.components, over the utilities. The look without a utility is unchanged (the built sheets hold the same declarations, the paint ones in sf.paint). Settings, values, events and keys unchanged.",
     "version 1.7.3 (written on the branch as 1.6.6; 2026-11-17, Smart joint pass SM-PO-2; numbered above 1.6.5): a patch, nothing drawn or done differently by the element. The passport examples «Настройки поля», «Открыта» and «Меню команд» put a bare <button> in the trigger slot, the browser's default button (65 x 15, 45 x 15, 35 x 15 on the pair); they write the Framework's button, <sf-button appearance=\"outline\" scheme=\"on-surface\">, as the documentation does, so Studio and the first-paint snapshots show a Framework trigger. Settings, values, events and keys unchanged.",
-    "version 1.8.0 (2026-11-17, DEV order msg-d56fa72b, list head notes; standard §5.3): a minor. The popover no longer writes data-open on its host. It wrote \"true\" or \"false\" on every drawing, over any data-open the page kept there, and repeated the open value, which is reflected as the open attribute, in an undeclared host state. The sheet hides a closed surface by sf-popover:not([open]) -- also before the element is defined, so a closed surface printed without the script no longer shows -- and sf-input-rich reads [open] (1.10.3). A page selector on sf-popover[data-open=\"true\"] writes sf-popover[open] (journal behaviour-popover-data-open-retired). Settings, values, events, actions and keys unchanged."
+    "version 1.8.0 (2026-11-17, DEV order msg-d56fa72b, list head notes; standard §5.3): a minor. The popover no longer writes data-open on its host. It wrote \"true\" or \"false\" on every drawing, over any data-open the page kept there, and repeated the open value, which is reflected as the open attribute, in an undeclared host state. The sheet hides a closed surface by sf-popover:not([open]) -- also before the element is defined, so a closed surface printed without the script no longer shows -- and sf-input-rich reads [open] (1.10.3). A page selector on sf-popover[data-open=\"true\"] writes sf-popover[open] (journal behaviour-popover-data-open-retired). Settings, values, events, actions and keys unchanged.",
+    "version 1.10.0 (written on the branch as 1.8.0; 2026-11-17, Framework order FO-5 of the view set study, ui-control control/research/2026-11-17-view-round-1/framework-orders.md): a minor. anchor, a property: the element the surface stands beside in place of the host's trigger, so a surface opens from any control with no trigger of its own (the field renderers' filter window, SF.fieldRenderers.filterWindow.open, opens from a chip or a column's heading). The surface is placed against it by the same engine (core/js/float-anchor.js), the focus goes back to it on close, and a press on it while open closes the surface with reason close. Additions only: a popover without anchor is placed and closes as 1.7.3 did.",
+    "version 1.10.1 (written on the branch as 1.9.0; 2026-11-18, returns of the component study of Framework orders FO-1..FO-5, ui-control control/research/2026-11-18-framework-parts-fo; numbered above 1.8.0 on origin/feat/button-truncate-appearance): a patch of the sheet. Closed, the surface is hidden whatever its own classes say: a content node with a display utility of its own (flex, grid) showed while closed, since a page's or a utility's rule outranks the component layer; the hide rule is an important declaration now."
   ],
   "x-rule": {
     "$comment": [
