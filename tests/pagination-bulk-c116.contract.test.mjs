@@ -31,8 +31,16 @@ test('the actions markup takes the danger flag', () => {
   assert.match(manifest.settings.actions['x-markup'], /danger/u);
 });
 
-test('Apply is outline on-surface, danger over a deleting action, drawn anew when that changes', () => {
-  assert.doesNotMatch(template, /appearance="default"\s*scheme="primary"\s*text=\$\{context\.actionApplyText\}/u);
-  assert.match(template, /keyed\(danger, html`<sf-button\s+data-sf-bulk="apply"[\s\S]*?appearance="outline"\s*scheme="on-surface"\s*status=\$\{danger \? "danger" : nothing\}/u);
-  assert.match(template, /\.\.\.orderActions\(context\.actions\)\.map/u);
+test('the band is the group actions bar: the actions in its shape, the danger by the one rule, no question (C295, BA-1)', () => {
+  assert.match(template, /<sf-bulk-actions[\s\S]*?\.actions=\$\{context\.bulkActions\}[\s\S]*?@sf-bulk-actions-action=\$\{\(event\) => component\.applyBulkAction\(event\)\}/u);
+  assert.match(template, /@sf-bulk-actions-clear=\$\{\(\) => component\.clearSelection\(\)\}/u);
+  assert.doesNotMatch(template, /data-sf-bulk="apply"|<sf-dropdown[^>]*aria-label=\$\{context\.actionsLabel\}/u);
+  assert.match(source, /status: isDestructiveAction\(item\) \? "danger" : "",\s+confirm: false,/u);
+  assert.match(source, /this\.setAction\(detail\.id\);\s+this\.setActionForAll\(detail\.scope === "all"\);\s+return this\.applyAction\(\);/u);
+});
+
+test('sf-pagination re-exports the bar\'s danger rule', async () => {
+  const bar = await import('../src/smart/bulk-actions/js/danger.js');
+  assert.equal(isDestructiveAction, bar.isDestructiveAction);
+  assert.equal(orderActions, bar.orderActions);
 });

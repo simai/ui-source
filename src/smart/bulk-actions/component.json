@@ -1,0 +1,469 @@
+{
+  "$comment": "The source of sf-bulk-actions' element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.16 and vocabulary 1.1.5: owner decisions C291 (1) and C295 (2026-11-17; research ui-control control/research/2026-11-17-sf-bulk-actions/README.md, prototype prototypes/sf-bulk-actions-study.html, variant A).",
+  "id": "smart.bulk-actions",
+  "tag": "sf-bulk-actions",
+  "version": "1.0.0",
+  "kind": "leaf",
+  "family": "bulk",
+  "settings": {
+    "count": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 0,
+      "summary": "How many items the host has selected. 0 hides the bar (its live region stays and says «Выбор снят»); the host owns the selection and writes this on every change"
+    },
+    "page-count": {
+      "type": "number",
+      "integer": true,
+      "min": 0,
+      "default": 0,
+      "summary": "How many items are on screen (the rows of the page). When count equals it and total is larger, the bar offers «Выбрать все N». 0: not known, no offer"
+    },
+    "total": {
+      "type": "number",
+      "optional": true,
+      "min": 0,
+      "summary": "How many items are under the filter. Unset or 0: not known (a cursor list), no «Выбрать все N»"
+    },
+    "all-selected": {
+      "type": "boolean",
+      "default": false,
+      "summary": "All items under the filter are selected: the count says «Выбраны все 240», the offer turns to «Только эта страница (12)» and an action goes with scope all. The bar sets it on «Выбрать все N» and takes it off on «Только эта страница», on clear and when count stops being page-count"
+    },
+    "count-text": {
+      "type": "string",
+      "default": "",
+      "summary": "The host's own count line in place of «Выбрано N» («Выбрано 3 · с вложенными 48» of a tree). Empty: the bar's words"
+    },
+    "place": {
+      "type": "enum",
+      "values": [
+        "dock",
+        "top",
+        "float",
+        "inline"
+      ],
+      "default": "dock",
+      "summary": "Where the bar stands (C295 (1)): dock over the list's bottom edge at its width, sticking to the bottom of the scroll; top in the toolbar's place, in the primary container; float a plate at the middle of the window's bottom edge; inline a plain row in the flow. The host places the element: after its list for dock and inline, before it for top"
+    },
+    "size": {
+      "type": "enum",
+      "values": [
+        "1/2",
+        "1",
+        "2"
+      ],
+      "default": "1",
+      "summary": "The ladder rung its buttons and count take (the bar is the rung's control height and space-1/4 above and below: 42 px at 1/2, 50 at 1). Unset: the size of the nearest element around it that has one (the list that places it), else 1"
+    },
+    "label": {
+      "type": "string",
+      "default-from": "runtime.label-text",
+      "summary": "The region's name. Empty: «Действия с выбранными» («Actions on the selected»)"
+    },
+    "actions": {
+      "type": "list",
+      "default": [],
+      "of": {
+        "id": "id",
+        "text": "string",
+        "icon": {
+          "type": "icon",
+          "optional": true
+        },
+        "status": {
+          "type": "enum",
+          "values": [
+            "",
+            "danger"
+          ],
+          "optional": true,
+          "summary": "danger: red (C13), last in «⋯» after a line, asked about first (C39). An id that deletes (delete, remove, destroy, trash) is danger by itself (one rule, BA-1)"
+        },
+        "confirm": {
+          "type": "object",
+          "optional": true,
+          "summary": "true or {question?, consequence?, accept-text?}: ask first in the question window (sf-modal size=\"question\" + sf-confirm appearance=\"window\", C39). A danger asks unless confirm is false"
+        },
+        "undo": {
+          "type": "boolean",
+          "optional": true,
+          "summary": "Reversible: it goes at once, and the notice (SF.notify) offers «Отменить», which sends undo (C25)"
+        },
+        "min": {
+          "type": "number",
+          "optional": true,
+          "summary": "The fewest items it takes; below it the action is pale, still reached, with its reason (C164 (4))"
+        },
+        "max": {
+          "type": "number",
+          "optional": true,
+          "summary": "The most items it takes («Сделать обложкой»: 1)"
+        },
+        "reason": {
+          "type": "string",
+          "optional": true,
+          "summary": "Why it cannot go now, said under the pointer and to a screen reader"
+        },
+        "priority": {
+          "type": "number|string",
+          "optional": true,
+          "summary": "C155's: a whole number from 1 (a bigger number leaves for «⋯» sooner; none leaves first) or \"pin\""
+        },
+        "disabled": {
+          "type": "boolean",
+          "optional": true
+        }
+      },
+      "x-markup": "the property, or the JSON island (data-sf-settings) a server prints; sf-pagination's {value, text, danger} and sf-view-table's {id, name} are read too",
+      "summary": "The actions on the selection: up to three labelled outline buttons (one icon button on a phone), the rest in «⋯» (the page's one menu, SF.menu.open), a dangerous one always last in «⋯»"
+    }
+  },
+  "events": {
+    "action": {
+      "own-verb": true,
+      "cancelable": true,
+      "carries": {
+        "id": {
+          "type": "id",
+          "summary": "The action's id."
+        },
+        "scope": {
+          "type": "enum",
+          "values": [
+            "selection",
+            "all"
+          ],
+          "summary": "selection: the items selected; all: every item under the filter («Выбрать все N» was taken)."
+        },
+        "count": {
+          "type": "number",
+          "summary": "How many items it goes to."
+        }
+      },
+      "summary": "A person chose an action (after «yes» in the question when it asks one): the host does it on the selection or on all under the filter. Cancel it to refuse; a reversible action's notice is then not shown"
+    },
+    "undo": {
+      "own-verb": true,
+      "carries": {
+        "id": {
+          "type": "id",
+          "summary": "The action undone."
+        },
+        "scope": {
+          "type": "enum",
+          "values": [
+            "selection",
+            "all"
+          ]
+        },
+        "count": "number"
+      },
+      "summary": "A person pressed «Отменить» in the notice of a reversible action (C25): the host puts the items back"
+    },
+    "select-all": {
+      "own-verb": true,
+      "carries": {
+        "total": "number",
+        "count": "number"
+      },
+      "summary": "A person took «Выбрать все N»: every item under the filter is selected (all-selected is set)"
+    },
+    "select-page": {
+      "own-verb": true,
+      "carries": {
+        "count": "number"
+      },
+      "summary": "A person took «Только эта страница»: back to the items on screen (all-selected is off)"
+    },
+    "clear": {
+      "own-verb": true,
+      "carries": {
+        "count": "number",
+        "scope": {
+          "type": "enum",
+          "values": [
+            "selection",
+            "all"
+          ]
+        },
+        "reason": {
+          "type": "enum",
+          "values": [
+            "button",
+            "escape",
+            "api"
+          ]
+        }
+      },
+      "summary": "A person pressed × or Escape (or the page called clear()): the host drops the selection and writes count 0"
+    }
+  },
+  "actions": {
+    "progress": {
+      "with": {
+        "done": "number",
+        "total": "number",
+        "text": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied",
+        "refused"
+      ],
+      "summary": "A short run in the bar: «Выполняем: 4 из 12» (or «<text>: 4 / 12») over a progress bar, the actions out of reach until done reaches total or result() comes. Refused {reason: long} over 100 items -- a job longer than that is the host's sf-progress-run (C34) -- and {reason: invalid} without a total"
+    },
+    "result": {
+      "with": {
+        "ok": "number",
+        "failed": "list",
+        "text": {
+          "type": "string",
+          "optional": true
+        }
+      },
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "How it went, failed as [{id, text, reason}]: with refusals the bar says «Готово 10 из 12 · 2 не удалось» with «Подробнее» (the list in a question window) and «Повторить для 2»; the host keeps the failed items selected, and the result goes when the selection changes. Without refusals it is said and the bar goes back"
+    },
+    "clear": {
+      "with": {},
+      "x-outcomes": [
+        "applied"
+      ],
+      "summary": "Sends clear {reason: api}, as × does"
+    }
+  },
+  "slots": {
+    "start": {
+      "x-summary": "Rare own content before the count («Выбрать все» of a phone list that has no head box, BA-6)."
+    },
+    "end": {
+      "x-summary": "Rare own content before the clear cross (the gallery's own buttons)."
+    }
+  },
+  "keyboard": {
+    "host": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "relations": [
+    {
+      "name": "cl-button"
+    },
+    {
+      "name": "cl-button-icon"
+    },
+    {
+      "name": "cl-progress-bar"
+    },
+    {
+      "name": "cl-icon"
+    },
+    {
+      "name": "cl-modal",
+      "lazy": true,
+      "$comment": [
+        "The question window before a dangerous action and the «Подробнее» list of failures (decision C39)."
+      ]
+    },
+    {
+      "name": "cl-confirm",
+      "lazy": true,
+      "$comment": [
+        "The question inside that window, appearance window (decision C39)."
+      ]
+    },
+    {
+      "name": "cl-list-description",
+      "lazy": true,
+      "$comment": [
+        "The failed items and their reasons under «Подробнее» (decision C295 (6))."
+      ]
+    },
+    {
+      "name": "sr-only/default"
+    }
+  ],
+  "templates": {
+    "default": {
+      "file": "js/templates/default.js",
+      "$comment": "The Lit template in JavaScript, the migration form of §5.2 (§16)."
+    }
+  },
+  "examples": "examples.json",
+  "docs": "docs.md",
+  "lang": "lang/",
+  "accessibility": {
+    "$comment": "A region named by label. The count is text; the offer, the actions, «⋯» (aria-haspopup menu) and × are buttons in Tab order, a plain row (not a roving toolbar: 2-5 labelled buttons, C184). An action that cannot go now is aria-disabled, still reached, its reason in aria-description and the tooltip (C164 (4)). A polite live region, outside the hidden bar, says «Выбрано 3», «Выбраны все 240», «Выбор снят», the run and the result after the selection settles (300 ms). The focus is never moved into the bar; after the question it goes back to where it was (the window gives it back). Escape in the list or the bar clears the selection, unless a menu, a window or a text field holds it.",
+    "role": "region",
+    "name": {
+      "from": [
+        "label",
+        "runtime.label-text"
+      ]
+    },
+    "keys": {
+      "Tab": "reach",
+      "Enter": "activate",
+      "Space": "activate",
+      "Escape": "close"
+    }
+  },
+  "host-states": {
+    "data-state": "string",
+    "data-place": "string"
+  },
+  "css-variables": {
+    "--sf-bulk-actions-background": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-bulk-actions-border-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-bulk-actions-color": {
+      "type": "color",
+      "state": "default"
+    },
+    "--sf-bulk-actions-gap": {
+      "type": "length",
+      "state": "default"
+    },
+    "--sf-bulk-actions-radius": {
+      "type": "length",
+      "state": "default"
+    }
+  },
+  "x-summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run and its per-item result. One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
+  "x-source": {
+    "package": "framework",
+    "folder": "bulk-actions",
+    "brief": "Owner decisions C291 (1) (the name, 2026-11-17) and C295 (the bar, 2026-11-17, DEV msg-706d3661): one bar instead of the copies in sf-pagination, sf-view, sf-view-table and sf-gallery; place dock by default, top, float and inline by setting; buttons, not «dropdown + Apply»; «Выбрать все N» as a button after the page is selected; one danger rule (BA-1)."
+  },
+  "x-words": [],
+  "x-decisions": [
+    "name: sf-bulk-actions («Действия с выбранными»), family bulk (owner C291 (1); reserved in contracts/registry/names.json).",
+    "place (C295 (1)): dock by default -- over the list's bottom edge at the card's width, sticky to the bottom of the scroll, the raised shadow; top (the primary container, in the toolbar's place), float (a popup plate at the bottom middle of the window) and inline (a plain row) by setting.",
+    "actions (C295 (2)): buttons, not «dropdown + Apply»: up to three labelled outline on-surface buttons (C116), the rest in «⋯» (more_horiz, C155 (2), the page's one menu SF.menu.open, C184 (4)); a phone (the box under the sm step, 32rem) shows one icon button with its name in the tooltip and «⋯». A dangerous action is always in «⋯», last after a line (C164 (5)), red (C13), and asked about in the question window (sf-modal size=\"question\" + sf-confirm appearance=\"window\", C39) unless it says confirm false. A reversible one (undo) goes at once with «Отменить» in the notice (SF.notify, C25). An action outside min/max is pale, reached, with its reason (C164 (4)).",
+    "all under the filter (C295 (3)): «Выбрать все N» is a ghost primary button that appears when the page is selected (count = page-count < total); taken, the count says «Выбраны все N», the button «Только эта страница (n)», and an action goes with scope all. Any other change of the selection takes it back (BA-3 of sf-pagination).",
+    "one danger rule (BA-1): status danger, the danger flag, or an id that starts with delete, remove, destroy or trash (js/danger.js); sf-pagination re-exports it.",
+    "run and result: a short run (up to 100 items) in the bar through progress(); a longer one is the host's sf-progress-run (C34, progress refused {reason: long}); result() says how many failed, «Подробнее» lists them (sf-list-description in a question window), «Повторить для N» sends the action again with scope selection, and the failed items stay selected (the host's).",
+    "keys and focus: a plain row of buttons in Tab order, 8 apart (C184: roving is for icon rows); the focus is never moved into the bar; Escape in the list or the bar clears the selection unless a menu, a window or a text field holds it; a polite live region says the count, the clear, the run and the result after 300 ms.",
+    "look (prototype variant A): one row, padding space-1/4 (start space-1/2), groups 16 apart (space-1), inside 8 (space-1/3); the card surface, an outline-variant edge, the surface radius; the bar is the rung's control height plus 2 × space-1/4 and its edges (42 at 1/2, 50 at 1); five public variables.",
+    "replaces (until 2027-01-01): sf-pagination's band (now drawn by this bar, its settings and events kept), sf-view's _renderBulkBand, sf-view-table's setBulkActions / renderBulkActions and the gallery's actions slot (their owners move to the bar; journal bulk-actions-replace-copies)."
+  ],
+  "x-registry": {
+    "capabilities": [
+      "render",
+      "interaction",
+      "keyboard",
+      "theme",
+      "i18n",
+      "responsive"
+    ],
+    "persistence": {
+      "mode": "none",
+      "source_of_truth": "host",
+      "network_owner": "host",
+      "revision_field": null
+    },
+    "tags": [
+      "bulk",
+      "selection",
+      "actions",
+      "batch",
+      "toolbar",
+      "list",
+      "table",
+      "gallery",
+      "admin"
+    ],
+    "state": {
+      "machines": {
+        "bar": [
+          "hidden",
+          "shown",
+          "running",
+          "result"
+        ]
+      },
+      "visual_states": [
+        "default",
+        "disabled",
+        "loading"
+      ]
+    },
+    "ownership": {
+      "source": "simai/ui-source",
+      "data": "host",
+      "effects": "host",
+      "forbidden_client_responsibilities": [
+        "holding the selection or the row boxes (the host list does)",
+        "doing an action or undoing it (the host does, on the action and undo events)",
+        "deciding which items failed (the host says so through result())"
+      ]
+    },
+    "security": {
+      "permissions_owner": "host",
+      "untrusted_inputs": [
+        "props",
+        "attributes"
+      ],
+      "network_policy": "deny"
+    },
+    "presentation": {
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "responsive": [
+        "desktop",
+        "mobile"
+      ],
+      "skeleton": {
+        "shape": "none",
+        "while_loading": "none"
+      }
+    },
+    "ai_guidance": {
+      "use_when": "Use sf-bulk-actions with any list, table, gallery or tree whose items a person selects to act on several at once: place it after the list (before it for place top), write count, page-count and total from the selection, give it actions and do the work on sf-bulk-actions-action.",
+      "do_not": [
+        "Do not draw your own «Выбрано N» row, Apply button or «для всех» checkbox beside a list",
+        "Do not move the focus into the bar when a row is selected",
+        "Do not run a job over 100 items or longer than about 10 s in the bar; use sf-progress-run (C34)",
+        "Do not ask your own question before a dangerous action the bar already asks about"
+      ],
+      "required_reads": [
+        "inputs",
+        "accessibility",
+        "ownership"
+      ],
+      "minimal_example": "<sf-bulk-actions count=\"2\" page-count=\"12\" total=\"240\"></sf-bulk-actions>",
+      "owner_commands": [
+        "npm run contract:verify",
+        "npm test"
+      ]
+    },
+    "accessibility": {
+      "accessible_name": "required",
+      "keyboard": [
+        "Tab reaches the offer, every action, «⋯» and ×; Enter or Space presses it",
+        "Escape in the list or the bar clears the selection, unless a menu, a window or a text field holds it"
+      ],
+      "focus": "Never moved into the bar on a selection; the question window gives the focus back to where it opened, the menu to «⋯»."
+    }
+  }
+}

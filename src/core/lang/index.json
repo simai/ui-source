@@ -27,6 +27,9 @@
       "breadcrumbs": [
         "sf-breadcrumbs"
       ],
+      "bulk": [
+        "sf-bulk-actions"
+      ],
       "button": [
         "sf-button",
         "sf-button-close",
@@ -238,8 +241,8 @@
   },
   "coverage": {
     "ru": {
-      "words": 2139,
-      "translated": 2139,
+      "words": 2163,
+      "translated": 2163,
       "share": 100
     }
   }

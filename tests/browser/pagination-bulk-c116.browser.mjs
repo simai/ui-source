@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Usage: node this-file /absolute/path/to/output
-// C116 for the band of bulk actions sf-pagination still draws (until
-// 2027-01-01): Apply is a regular button (outline on-surface), never the
-// filled main one; while the chosen action deletes it is the outlined danger
-// button, drawn anew as the choice changes; such an action is listed last;
-// one press of Apply sends one sf-pagination-apply.
+// C116 for the band of bulk actions sf-pagination draws (until 2027-01-01).
+// Since 1.9.0 (C295) the band is sf-bulk-actions: every action is a regular
+// button (outline on-surface), never the filled main one; up to three safe
+// actions are labelled buttons and the deleting ones wait in «⋯», last and
+// red; one press of an action sends one sf-pagination-apply with that action
+// and asks nothing (the host asks its own question, confirm false).
 import {resolve, join} from 'node:path';
 import {chromium} from 'playwright';
 
@@ -27,6 +28,8 @@ const modules = [
   'smart/smart/input/js/input.js',
   'smart/smart/spinner/js/spinner.js',
   'smart/smart/menu-context/js/menu-context.js',
+  'smart/smart/progress-bar/js/progress-bar.js',
+  'smart/smart/bulk-actions/js/bulk-actions.js',
   'smart/smart/pagination/js/pagination.js',
 ].map((p) => join(out, p));
 
@@ -49,61 +52,67 @@ try {
     document.getElementById('p').addEventListener('sf-pagination-apply', (event) => window.applies.push(event.detail.action));
   });
 
-  const look = () => page.evaluate(() => {
-    const host = document.querySelector('#p .sf-pagination-actions sf-button');
-    const button = host?.querySelector('button');
-    if (!button) return null;
-    const style = getComputedStyle(button);
+  const bar = () => page.evaluate(() => {
+    const host = document.querySelector('#p sf-bulk-actions');
+    const root = host?.querySelector('.sf-bulk-actions');
+    if (!root) return null;
+    // sf-button hands its data attributes to its inner native button.
+    const buttons = [...root.querySelectorAll('[data-sf-bulk-action]')].map((one) => {
+      const button = one.localName === 'button' ? one : one.querySelector('button');
+      const style = button ? getComputedStyle(button) : null;
+      return {
+        id: one.dataset.sfBulkAction,
+        outline: Boolean(button?.classList.contains('sf-button--outline')),
+        filled: Boolean(button?.classList.contains('sf-button--default')),
+        primary: Boolean(button?.classList.contains('sf-button--primary')),
+        danger: Boolean(button?.classList.contains('sf-button--danger')),
+        background: style?.backgroundColor ?? null,
+      };
+    });
     return {
-      outline: button.classList.contains('sf-button--outline'),
-      filled: button.classList.contains('sf-button--default'),
-      primary: button.classList.contains('sf-button--primary'),
-      onSurface: button.classList.contains('sf-button--on-surface'),
-      danger: button.classList.contains('sf-button--danger'),
-      background: style.backgroundColor,
-      borderWidth: style.borderTopWidth,
+      shown: !root.hidden,
+      count: root.querySelector('.sf-bulk-actions__count')?.textContent.trim() ?? '',
+      buttons,
     };
   });
-  const choose = async (action) => {
-    await page.evaluate((value) => document.getElementById('p').setAction(value), action);
-    await page.waitForTimeout(250);
-  };
 
-  const order = await page.evaluate(() => (document.querySelector('#p .sf-pagination-actions sf-dropdown')?.options ?? []).map((option) => option.value));
-  if (order.join(',') !== ',archive,export,delete,purge') {
-    note({case: 'order', got: order, expected: 'the choice, then archive, export, and the deleting delete, purge last'});
+  const shown = await bar();
+  if (!shown || !shown.shown) {
+    note({case: 'bar', got: shown, expected: 'sf-bulk-actions drawn while four rows are marked'});
+  } else {
+    const ids = shown.buttons.map((one) => one.id);
+    if (ids.join(',') !== 'archive,export,more,clear') {
+      note({case: 'order', got: ids, expected: 'archive, export labelled; delete and purge in «⋯»; the clear cross'});
+    }
+    for (const one of shown.buttons.filter((button) => button.id === 'archive' || button.id === 'export')) {
+      if (!one.outline || one.filled || one.primary || one.danger || one.background !== 'rgba(0, 0, 0, 0)') {
+        note({case: `look ${one.id}`, got: one, expected: 'outline on-surface, no fill, no danger (C116)'});
+      }
+    }
   }
 
-  const regular = (got, kase) => {
-    if (!got || !got.outline || got.filled || got.primary || !got.onSurface || got.danger || got.borderWidth === '0px' || got.background !== 'rgba(0, 0, 0, 0)') {
-      note({case: kase, got, expected: 'Apply outline on-surface, no fill, no danger'});
-    }
-  };
-  const dangerous = (got, kase) => {
-    if (!got || !got.outline || got.filled || got.primary || !got.danger || got.borderWidth === '0px' || got.background !== 'rgba(0, 0, 0, 0)') {
-      note({case: kase, got, expected: 'Apply outlined danger, no fill'});
-    }
-  };
-
-  regular(await look(), 'rest (nothing chosen)');
-  await choose('archive');
-  regular(await look(), 'archive');
-  await choose('delete');
-  dangerous(await look(), 'delete');
-  await choose('export');
-  regular(await look(), 'export after delete (repaints back)');
-  await choose('purge');
-  dangerous(await look(), 'purge (danger flag)');
-  await choose('');
-  regular(await look(), 'back to nothing');
+  // «⋯» lists the dangerous ones last, after a line, marked danger.
+  const menu = await page.evaluate(() => {
+    const entries = [];
+    window.SF = window.SF || {};
+    const owner = window.SF.menu;
+    window.SF.menu = {...(owner || {}), open: (options) => { entries.push(...(options.entries ?? [])); return Promise.resolve(null); }};
+    document.querySelector('#p [data-sf-bulk-action="more"]').click();
+    window.SF.menu = owner;
+    return entries.map((entry) => (entry.type === 'separator' ? '|' : `${entry.id}${entry.status === 'danger' ? '!' : ''}`));
+  });
+  if (menu.join(',') !== 'delete!,purge!') {
+    note({case: 'more menu', got: menu, expected: 'delete and purge, both danger (C295 (2))'});
+  }
 
   for (const action of ['archive', 'delete', 'purge']) {
-    await choose(action);
     await page.evaluate(() => { window.applies = []; });
-    await page.locator('#p .sf-pagination-actions sf-button button').click();
+    await page.evaluate((id) => document.querySelector('#p sf-bulk-actions').pressAction(id), action);
     await page.waitForTimeout(250);
     const sent = await page.evaluate(() => window.applies.slice());
+    const asked = await page.evaluate(() => Boolean(document.querySelector('sf-modal')));
     if (sent.length !== 1 || sent[0] !== action) note({case: `one press, ${action}`, got: sent, expected: [action]});
+    if (asked) note({case: `no question, ${action}`, expected: 'sf-pagination\'s actions ask nothing (confirm false)'});
   }
   await page.close();
 } finally {

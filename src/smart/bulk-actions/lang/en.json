@@ -1,0 +1,38 @@
+{
+  "title": "Group actions",
+  "runtime": {
+    "label-text": "Actions on the selected",
+    "count-text": {
+      "one": "{n} selected",
+      "other": "{n} selected"
+    },
+    "all-text": "All {n} selected",
+    "select-all-text": "Select all {n}",
+    "select-page-text": "Only this page ({n})",
+    "more-text": "More actions",
+    "clear-text": "Clear selection",
+    "clear-hint": "Clear selection (Esc)",
+    "cleared-text": "Selection cleared",
+    "min-reason": "Select at least {min}",
+    "max-reason": "Select at most {max}",
+    "question-text": {
+      "one": "{action} {n} item?",
+      "other": "{action} {n} items?"
+    },
+    "accept-text": "{action} {n}",
+    "consequence-text": "This cannot be undone.",
+    "all-scope-text": "All {n} under the current filter.",
+    "notice-text": "{action}: {n}",
+    "undo-text": "Undo",
+    "progress-text": "Working: {done} of {total}",
+    "result-text": "Done {ok} of {total}",
+    "failed-text": {
+      "one": "{n} failed",
+      "other": "{n} failed"
+    },
+    "details-text": "Details",
+    "details-heading": "Failed: {failed} of {total}",
+    "retry-text": "Retry for {n}",
+    "failed-reason": "Refused by the server"
+  }
+}
