@@ -12,7 +12,7 @@ const data = JSON.parse(read('src/smart/language/data/names.json'));
 useNames(data);
 
 test('LG-7: the supported languages are named in themselves from shipped data, not by the browser alone', () => {
-  const expected = {sah: 'Саха тыла', cv: 'Чӑваш чӗлхи', he: 'עברית', mn: 'Монгол', ru: 'Русский', de: 'Deutsch'};
+  const expected = {tt: 'Татар', ba: 'Башҡорт', sah: 'Саха тыла', cv: 'Чӑваш чӗлхи', he: 'עברית', mn: 'Монгол', ru: 'Русский', de: 'Deutsch'};
   for (const [code, name] of Object.entries(expected)) assert.equal(nativeName(code), name, code);
   assert.equal(englishName('sah'), 'Yakut');
   assert.equal(nameIn('cv', 'ru'), 'чувашский');
@@ -26,7 +26,7 @@ test('LG-7: the supported languages are named in themselves from shipped data, n
   }
   assert.ok(Object.keys(data.names).length >= 50);
   // Owner decision C278: languages of CIS countries other than Russian are not named.
-  for (const code of ['uk', 'be', 'uz', 'az', 'hy', 'ka', 'kk', 'tt', 'ky', 'tg', 'ba', 'tk']) {
+  for (const code of ['uk', 'be', 'uz', 'az', 'hy', 'ka', 'ky', 'tg', 'tk']) {
     assert.equal(data.names[code], undefined, code);
     assert.equal(ruNames[`name-${code}`], undefined, code);
   }

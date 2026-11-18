@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 59,
-    "translated": 59,
+    "words": 61,
+    "translated": 61,
     "share": 100
   },
   "words": {
@@ -58,6 +58,8 @@
       "name-ro": "ルーマニア語",
       "name-bg": "ブルガリア語",
       "name-el": "ギリシャ語",
+      "name-tt": "タタール語",
+      "name-ba": "バシキール語",
       "name-sah": "サハ語",
       "name-mn": "モンゴル語",
       "name-cv": "チュヴァシ語",

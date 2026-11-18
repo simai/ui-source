@@ -18332,16 +18332,16 @@
       "recorded_on": "2026-11-18",
       "stage": "removed",
       "kind": "behaviour",
-      "summary": "Owner decision C278 (2026-11-17): languages of CIS countries other than Russian are not added and not named. The language-names words name-uk, name-be, name-uz, name-az, name-hy, name-ka, name-tt, name-ky, name-tg, name-ba and name-tk leave every pack (core/js/lang/language-names, so core/lang/<code>/language.json and core/lang/<code>.js of all ten packs and the built-in English), sf-language's names table (data/names.json, 1.6.0) loses the same eleven entries, and core's Cyrillic font list (text-fonts.js) the six of them it held. Country data (countries.json, phone codes, flags) is unchanged.",
+      "summary": "Owner decision C278 (2026-11-17): languages of CIS countries other than Russian are not added and not named. The language-names words name-uk, name-be, name-uz, name-az, name-hy, name-ka, name-ky, name-tg and name-tk leave every pack (core/js/lang/language-names, so core/lang/<code>/language.json and core/lang/<code>.js of all ten packs and the built-in English), sf-language's names table (data/names.json, 1.6.1) loses the same nine entries, and core's Cyrillic font list (text-fonts.js) the four of them it held (uk, be, ky, tg). Tatar (tt) and Bashkir (ba), languages of regions of Russia, stay, as Chuvash, Chechen, Ossetian and Yakut do (dispatcher decision 2026-11-18). Country data (countries.json, phone codes, flags) is unchanged.",
       "items": [
         {
           "component": "core.lang",
-          "from": "sf-language name-<code> for uk, be, uz, az, hy, ka, tt, ky, tg, ba, tk",
+          "from": "sf-language name-<code> for uk, be, uz, az, hy, ka, ky, tg, tk",
           "to": "none (the browser's Intl.DisplayNames name, as for any code the table does not hold)"
         },
         {
           "component": "smart.language",
-          "from": "data/names.json entries uk, be, uz, az, hy, ka, tt, ky, tg, ba, tk",
+          "from": "data/names.json entries uk, be, uz, az, hy, ka, ky, tg, tk",
           "to": "none"
         }
       ],

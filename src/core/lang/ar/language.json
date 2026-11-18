@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 59,
-    "translated": 59,
+    "words": 61,
+    "translated": 61,
     "share": 100
   },
   "words": {
@@ -58,6 +58,8 @@
       "name-ro": "الرومانية",
       "name-bg": "البلغارية",
       "name-el": "اليونانية",
+      "name-tt": "التترية",
+      "name-ba": "الباشكيرية",
       "name-sah": "الساخيّة",
       "name-mn": "المنغولية",
       "name-cv": "التشوفاشي",

@@ -29,7 +29,7 @@ No flags and no globe.
 
 `languages` takes BCP 47 codes separated by spaces or commas: `ru en de ar`,
 `pt-BR`. The names of the languages it supports ship with the component
-(54 languages, from CLDR, Ελληνικά, עברית, हिन्दी and Саха тыла among them), so every
+(56 languages, from CLDR, Ελληνικά, עברית, हिन्दी, Татар, Башҡорт and Саха тыла among them), so every
 browser names them alike; the browser
 (`Intl.DisplayNames`) names any other code:
 

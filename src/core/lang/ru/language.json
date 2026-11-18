@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 59,
-    "translated": 59,
+    "words": 61,
+    "translated": 61,
     "share": 100
   },
   "words": {
@@ -58,6 +58,8 @@
       "name-ro": "румынский",
       "name-bg": "болгарский",
       "name-el": "греческий",
+      "name-tt": "татарский",
+      "name-ba": "башкирский",
       "name-sah": "саха",
       "name-mn": "монгольский",
       "name-cv": "чувашский",
