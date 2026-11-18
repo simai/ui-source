@@ -52,7 +52,7 @@ ${SIZES.map((size) => `<div class="row" data-size="${size}">
   <sf-button-icon appearance="link" scheme="on-surface" icon="star" aria-label="Добавить в избранное" label-pressed="Убрать из избранного" pressed data-k="icon-fav-on"></sf-button-icon>
   <sf-button appearance="default" scheme="primary" text="Уведомления" icon-start="notifications" pressed data-k="default-on"></sf-button>
   <sf-button appearance="default" scheme="on-surface" text="Пауза" icon-start="pause" pressed data-k="default-on-surface-on"></sf-button>
-  <sf-button appearance="default" scheme="danger" text="Запись" icon-start="radio_button_checked" pressed data-k="default-danger-on"></sf-button>
+  <sf-button appearance="default" status="error" text="Запись" icon-start="radio_button_checked" pressed data-k="default-danger-on"></sf-button>
   <sf-button-icon appearance="default" scheme="primary" icon="pause" aria-label="Пауза" pressed data-k="icon-default-on"></sf-button-icon>
   <sf-button appearance="link" scheme="on-surface" text="Перенос" icon-start="wrap_text" pressed data-k="link-on"></sf-button>
   <sf-button appearance="outline" scheme="on-surface" text="Жирный" icon-start="format_bold" pressed disabled data-k="disabled-on"></sf-button>
