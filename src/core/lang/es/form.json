@@ -32,7 +32,7 @@
       },
       "value-missing": "Rellena el campo «{label}»",
       "help-label": "Más sobre {label}",
-      "empty-value": "Sin indicar"
+      "empty-value": "Sin definir"
     }
   }
 }

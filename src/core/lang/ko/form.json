@@ -30,7 +30,7 @@
       },
       "value-missing": "‘{label}’ 필드를 입력하세요",
       "help-label": "{label} 자세히 보기",
-      "empty-value": "지정되지 않음"
+      "empty-value": "설정 안 됨"
     }
   }
 }

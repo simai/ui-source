@@ -30,7 +30,7 @@
       },
       "value-missing": "请填写“{label}”",
       "help-label": "详细了解{label}",
-      "empty-value": "未填写"
+      "empty-value": "未设置"
     }
   }
 }

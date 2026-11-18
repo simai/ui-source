@@ -32,7 +32,7 @@
       },
       "value-missing": "Compila il campo «{label}»",
       "help-label": "Maggiori informazioni su {label}",
-      "empty-value": "Non indicato"
+      "empty-value": "Non impostato"
     }
   }
 }

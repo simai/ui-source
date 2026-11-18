@@ -31,7 +31,7 @@
       },
       "value-missing": "Füllen Sie das Feld „{label}“ aus",
       "help-label": "Mehr zu {label}",
-      "empty-value": "Nicht angegeben"
+      "empty-value": "Nicht festgelegt"
     }
   }
 }
