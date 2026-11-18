@@ -533,6 +533,8 @@ test('FO4-5: chosen first when the list opens; the order does not move while it 
   const element = read('src/smart/input-choice/index.js');
   assert.match(element, /this\._opened \?\?= new Set\(this\.selected\);/u);
   assert.match(element, /onDisconnected\(\) \{\s*super\.onDisconnected\?\.\(\);\s*this\._opened = null;/u);
+  // A value the host sets is read again; the person's own choice is not.
+  assert.match(read('src/smart/input-choice/index.js'), /set value\(next\) \{[^}]*?this\._opened = null;/su);
 });
 
 test('FO4-1, FO4-3, FO4-4: visuals in both appearances and in the dropdown; the next page loads at the list\'s end', () => {

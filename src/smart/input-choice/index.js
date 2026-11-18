@@ -163,6 +163,7 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     // The value attribute written again is the value again.
     if (name === 'value' && oldValue !== newValue) {
       this._value = undefined;
+      this._opened = null;
       this.requestComponentUpdate?.('value');
       this.sfSyncFormState?.();
     }
@@ -239,6 +240,9 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
   // Set from code it is not a change: no event, as for a native field.
   set value(next) {
     this._value = next === undefined || next === null ? undefined : formatValue(parseValue(next, Boolean(this.multiple)));
+    // A value the host sets is what was chosen when the list opened (FO4-5);
+    // a person's own choice (onChange) does not move the order.
+    this._opened = null;
     this.requestComponentUpdate?.('value');
     this.sfSyncFormState?.();
   }
