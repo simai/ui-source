@@ -234,7 +234,7 @@ test('sf-input-date: a leaf with outcome actions; the form gets the ISO date; th
   const manifest = json('src/smart/input-date/component.json');
   assert.equal(manifest.kind, 'leaf');
   assert.ok(manifest['x-decisions'].some((line) => line.startsWith('assembly: it stays a leaf')));
-  assert.deepEqual(Object.keys(manifest.actions), ['open-panel', 'close-panel', 'toggle-panel', 'choose-preset', 'choose-custom-range']);
+  assert.deepEqual(Object.keys(manifest.actions), ['open-panel', 'close-panel', 'toggle-panel', 'choose-preset', 'choose-custom-range', 'refresh']); // refresh: CL-6 day marks
   assert.equal(manifest.settings.presets.type, 'list');
   assert.equal(manifest['side-effects'], undefined, 'the panel is never moved to the end of body');
 });

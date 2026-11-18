@@ -89,7 +89,10 @@
      with an event or a small number for two and more («99+» over 99), in the
      tone's ink. It stands in the row under the number that every day keeps
      (the day's own height, as the caption above), so a marked day is no
-     taller and its number does not move. The dot is a coloured mark, so it
+     taller and its number does not move. The row is the cell's last line of
+     the smallest text (12 at every size): under the number's ink, with the
+     count's whole line inside the day (a row from the number's line box down
+     was 8 px at 40 and pushed the count's line 2 px past the day's edge). The dot is a coloured mark, so it
      is the micro ladder's 6, never the tick's 4 (C132); the number is the
      smallest text step. A holiday's dot (C198) steps aside on a marked day:
      the day keeps its day-off ink and its name, and the two would overlap. */
@@ -101,8 +104,9 @@
     --sf-datepicker-day-mark--color: var(--sf-primary);
     --sf-datepicker-day-mark--size: #{size.small-step(6)};
     position: absolute;
-    inset-block: calc(50% + var(--sf-datepicker-day-date--line-height, var(--sf-text--height)) / 2) 0;
+    inset-block-end: 0;
     inset-inline: 0;
+    block-size: var(--sf-text-height-1\/4);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -78,7 +78,7 @@ test('both grids draw the mark, hidden from a screen reader', () => {
 test('the mark stands in the row under the number: a 6 px dot (C132), the smallest text, state inks', () => {
   const day = read('src/component/datepicker/scss/_css_day.scss');
   assert.ok(day.includes('--sf-datepicker-day-mark--size: #{size.small-step(6)};'));
-  assert.ok(day.includes('inset-block: calc(50% + var(--sf-datepicker-day-date--line-height, var(--sf-text--height)) / 2) 0;'));
+  assert.ok(day.includes('inset-block-end: 0;\n    inset-inline: 0;\n    block-size: var(--sf-text-height-1\\/4);'));
   assert.ok(day.includes('font-size: var(--sf-text-size-1\\/4);'));
   assert.ok(day.includes('line-height: var(--sf-text-height-1\\/4);'));
   for (const [tone, ink] of [['error', '--sf-error'], ['warning', '--sf-warning'], ['success', '--sf-success'], ['tertiary', '--sf-tertiary'], ['neutral', '--sf-on-surface-variant']]) {
