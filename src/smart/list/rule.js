@@ -29,5 +29,6 @@ SF.RuleLoader['cl-list'] = {
     { name: 'sr-only/default' },
     { name: 'checkbox' },
     { name: 'cl-bulk-actions' },
+    { name: 'icons' },
   ],
 };

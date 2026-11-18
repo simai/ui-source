@@ -1973,6 +1973,7 @@
           "component.dropdown",
           "component.group-heading",
           "component.icon-buttons",
+          "component.icons",
           "smart.avatar",
           "smart.badge",
           "smart.bulk-actions",
@@ -1993,7 +1994,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/list/smart.manifest.json",
-      "manifest_sha256": "c7e25535d4ad502d11271dee41617b02c2ea3c9c195e03be52bdd7aec5c4f2ba",
+      "manifest_sha256": "50420ff950866e12e7b73998552dd5bdf85cba44b01caca02a313c1aa568068e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

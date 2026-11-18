@@ -35,6 +35,7 @@
       "component.dropdown",
       "component.group-heading",
       "component.icon-buttons",
+      "component.icons",
       "smart.avatar",
       "smart.badge",
       "smart.bulk-actions",
@@ -888,7 +889,7 @@
       },
       {
         "path": "src/smart/list/rule.js",
-        "sha256": "18b4ce631af0126a8fadee155c38d711f78dcf71208b5bbf9ae76f541f73966f"
+        "sha256": "e2a71357332c070cd1acb3f836633ab158b28339a0178918b46cbdd3d87d9b48"
       },
       {
         "path": "src/smart/list/docs.md",
@@ -896,7 +897,7 @@
       },
       {
         "path": "src/smart/list/component.json",
-        "sha256": "4de08d059eb5c1a6ee80c1565d10518630860c13b1b75c3f59a8964265bdbc34"
+        "sha256": "b03610d78cc7f56c7ea585f25470756a9e8cc8178afa86992859bb1d001209d6"
       },
       {
         "path": "src/smart/list/lang/en.json",
