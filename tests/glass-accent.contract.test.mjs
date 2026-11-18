@@ -63,6 +63,13 @@ test('glass takes its white ink as the accent, on its children, from the palette
 test('an opaque place on glass, and a popover in it, take the page accent, link and ring back', () => {
   const back = block(mix, '@mixin sf-place-back-on-colour {');
   assert.match(back, /:where\(\.sf-surface-media\) & \{\s*@each \$role, \$value in \$sf-place-glass-accent-roles/u);
+  // The glass's D2b hover and press fill of a neutral button (H1) stays on the
+  // glass: a card on it, and a popover bubble, draw their own (on a light card
+  // white at 8 and 4 had made the hover and the press vanish).
+  const glassBack = back.slice(back.indexOf(':where(.sf-surface-media) & {'));
+  assert.match(glassBack, /--sf-place--control-hover: initial;\s*--sf-place--control-active: initial;/u);
+  const bubble = popover.slice(popover.indexOf(":where(.sf-surface-media) sf-popover > [slot='content'] {"));
+  assert.match(bubble.slice(0, bubble.indexOf('\n    }')), /--sf-place--control-hover: initial;\s*--sf-place--control-active: initial;/u);
   // The fallbacks are the theme's own values.
   for (const role of ['link', 'link-hover', 'link-active', 'link-visited', 'focus']) {
     const value = theme.match(new RegExp(`\\n\\s*--sf-${role}: ([^;]+);`, 'u'))?.[1];

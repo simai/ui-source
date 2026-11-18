@@ -285,6 +285,7 @@
         --sf-place--fill-placeholder: initial;
         --sf-place--control-hover: initial;
         --sf-place--control-active: initial;
+        --sf-place--tonal-edge: initial;
     }
     /* On glass (C70, mix sf-place-back-on-colour): the accent, the link and the
        focus ring the page had there; glass makes them its white ink. */
@@ -319,6 +320,10 @@
         --sf-on-error-container-graphic: var(--sf-place--outer-on-error-container-graphic, light-dark(var(--sf-error-50), var(--sf-error-70)));
         --sf-on-neutral-container: var(--sf-place--outer-on-neutral-container, light-dark(var(--sf-neutral-10), var(--sf-neutral-90)));
         --sf-on-neutral-container-graphic: var(--sf-place--outer-on-neutral-container-graphic, light-dark(var(--sf-neutral-50), var(--sf-neutral-70)));
+        /* The glass's hover and press fill of a neutral button (H1): the
+           bubble is opaque and has its own. */
+        --sf-place--control-hover: initial;
+        --sf-place--control-active: initial;
     }
     sf-popover[arrow] > [slot='content'][data-sf-side]:not([data-sf-sheet])::before {
         background: inherit;

@@ -292,6 +292,10 @@ $sf-place-coloured-selectors: list.join(list.join($sf-place-strong-selectors, sf
         --sf-#{$role}: var(--sf-place--outer-#{$role}, #{string.unquote($value)});
       }
       --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
+      // The glass's hover and press fill of a neutral button (H1, D2b steps):
+      // an opaque place on glass has its own.
+      --sf-place--control-hover: initial;
+      --sf-place--control-active: initial;
     }
   }
 }
