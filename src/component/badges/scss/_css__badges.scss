@@ -149,6 +149,9 @@
    tonal look, main on any colour but error, and a badge with no look. */
 .sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):not(.sf-badge--anchored) {
   background-image: linear-gradient(var(--sf-badge--background-color), var(--sf-badge--background-color)), linear-gradient(var(--sf-surface-underlay), var(--sf-surface-underlay));
+}
+
+.sf-badge:where(.sf-badge--tonal, .sf-badge--main:not(.sf-badge--error, .sf-badge--danger), :not(.sf-badge--main, .sf-badge--tonal, .sf-badge--outline)):not(.sf-badge--anchored) {
   /* On an inverse place (C208, dispatcher decision msg-bc1702eb): a tonal
      fill there stood 1.09-1.38:1 against the surface, under the 3:1 a part of
      a control needs. The place declares its tonal edge, --sf-place--tonal-edge
