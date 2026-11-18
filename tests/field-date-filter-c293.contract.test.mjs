@@ -31,8 +31,10 @@ test('one date: grouped Date, Period, Filled; the words for dates are before and
   assert.deepEqual([...new Set(list.map((one) => one.group))], ['date', 'period', 'filled']);
   assert.deepEqual(list.filter((one) => one.need === 'none').map((one) => one.key).slice(-2), ['empty', 'not-empty']);
   const en = JSON.parse(read('src/smart/field-renderers/lang/en.json')).runtime;
-  // A day reads before/after; «Greater than» / «Less than» stay the number conditions' own (C294, numberOperator_*).
-  assert.ok(!Object.entries(en).some(([key, word]) => !key.startsWith('numberOperator_') && typeof word === 'string' && /greater|less than/iu.test(word)));
+  // A day reads before/after; «Greater than» / «Less than» stay the number conditions' own (C294, numberOperator_*;
+  // C310 filter window number operators operatorGt/Gte/Lt/Lte and operatorMore*/Less*).
+  const numberOwn = (key) => /^(numberOperator_|operator(Gt|Gte|Lt|Lte)$|operator(More|Less))/u.test(key);
+  assert.ok(!Object.entries(en).some(([key, word]) => !numberOwn(key) && typeof word === 'string' && /greater|less than/iu.test(word)));
 });
 
 test('a deadline (filter.future) also looks forward; overdue is not a date condition', () => {
