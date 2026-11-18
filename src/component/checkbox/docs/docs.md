@@ -41,6 +41,8 @@ A checkbox is named by its label row and described by its description (aria-labe
 
 The help mark stands beside the <label>, not inside it (.sf-checkable-row, 1.2.0, C59): pressing «?» never presses the control. The Smart element's own <label> hugs its content (inline-size: fit-content), so a press on the empty rest of the row does nothing; class markup in list rows, menus, choice lists and table rows keeps the full row as its target.
 
+A checkbox with no text (a row's selection box named by `aria-label`) does not give way in a flex row (1.6.1, cards study CV-8): `.sf-checkbox` without `.sf-checkbox-container` is `flex-shrink: 0`. Before, the `min-width: 0` that lets a labelled checkbox wrap its words let a label-less one shrink to 7 px while its 20 px box drew over the title beside it.
+
 A Smart element with text is a row of its step (C63 W5): (control height − line) / 2 above and below, 40 at size 1, 60 with a description, 32 in compact, the touch target under a coarse pointer. The label is regular in all three choice controls (W6). The three share one base (W9): src/smart/helpers/checkable-row.js and checkable-row.css, and the name binding src/component/checkable-text-helper.js.
 
 Layout without the script (1.4.0, RG-B-53): the layout the component's

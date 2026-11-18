@@ -4,6 +4,10 @@ Switch changes a binary setting immediately. It is backed by a native checkbox
 with `role="switch"`, so checked state, disabled state, form data and reset stay
 owned by the browser.
 
+## Without text
+
+A switch with no text (named by `aria-label`, as a row's control in a table or a card) does not give way in a flex row (1.5.2, cards study CV-8, as Checkbox): the root without its text column is `flex-shrink: 0`. Before, the `min-width: 0` that lets a labelled switch wrap its words let a label-less one shrink under its track, which drew over the element beside it.
+
 ## Public variations
 
 - `.sf-switch--size-1` is the normal size and supports label, description and

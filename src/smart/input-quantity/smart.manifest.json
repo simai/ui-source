@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.12.2",
+  "version": "1.12.3",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -189,7 +189,7 @@
       "removable": {
         "type": "boolean",
         "default": false,
-        "description": "The remove mode for a cart line (owner decision C122; name agreed by the owner 2026-11-13): on the lower bound «−» becomes a trash in the same button and the same grey, in the Tab order; pressing it, or typing «0» and Enter while 0 is below `min`, sends the cancelable `remove` event. A held «−» stops on the bound: removal takes a new press. The field never removes itself: the page removes the line and offers «Вернуть» (C25). Needs a lower bound; off by default."
+        "description": "The remove mode for a cart line (owner decision C122; name agreed by the owner 2026-11-13): on the lower bound «−» becomes a trash in the same button and the same grey, in the Tab order; pressing it, or typing «0» and Enter while 0 is below `min`, sends the cancelable event `sf-input-quantity-remove` (its detail is `{value, name, source}`, see Events). A held «−» stops on the bound: removal takes a new press. The field never removes itself: the page removes the line and offers «Вернуть» (C25). Needs a lower bound; off by default."
       },
       "remove-label": {
         "type": "string",

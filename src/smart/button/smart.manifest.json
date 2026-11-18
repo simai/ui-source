@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "title": "Buttons",
-  "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
+  "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation. Attributes it does not own go to the inner control; a `data-*` is moved there, not copied (the host is display: contents and has no box): select the inner button by it (`[data-action]`, `closest('sf-button')` for the host), and read what was written on the host with `element.dataAttributes`.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",

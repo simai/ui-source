@@ -2,7 +2,7 @@
   "$comment": "The source of sf-input-quantity's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/quantity (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.input-quantity",
   "tag": "sf-input-quantity",
-  "version": "1.12.2",
+  "version": "1.12.3",
   "kind": "leaf",
   "family": "input",
   "traits": [
@@ -153,7 +153,7 @@
     "removable": {
       "type": "boolean",
       "default": false,
-      "summary": "The remove mode for a cart line (owner decision C122; name agreed by the owner 2026-11-13): on the lower bound «−» becomes a trash in the same button and the same grey, in the Tab order; pressing it, or typing «0» and Enter while 0 is below `min`, sends the cancelable `remove` event. A held «−» stops on the bound: removal takes a new press. The field never removes itself: the page removes the line and offers «Вернуть» (C25). Needs a lower bound; off by default."
+      "summary": "The remove mode for a cart line (owner decision C122; name agreed by the owner 2026-11-13): on the lower bound «−» becomes a trash in the same button and the same grey, in the Tab order; pressing it, or typing «0» and Enter while 0 is below `min`, sends the cancelable event `sf-input-quantity-remove` (its detail is `{value, name, source}`, see Events). A held «−» stops on the bound: removal takes a new press. The field never removes itself: the page removes the line and offers «Вернуть» (C25). Needs a lower bound; off by default."
     },
     "remove-label": {
       "type": "string",
@@ -584,7 +584,8 @@
     "version 1.10.0 (2026-11-16, owner decision C224, prototype forms-quantity-study.html#q-qty-filled; component.quantity 1.7.0; numbered above 1.9.1 on main): a minor, a look. The field draws the class component's default look, which is now filled: the container fill, no border, the bottom line in --sf-outline, as sf-input--filled and the other fields of a form; the hover fill and text-ink edge under the pointer, the ordinary field's edge while typing, the error container fill when invalid, the disabled fill when disabled. The bordered box stays a choice: root-class=\"sf-quantity--bordered\". The label at size 1/3 is 12, the field ladder's floor (C226; was 10). Settings, values, events and keys unchanged.",
     "version 1.11.0 (2026-11-17, owner decision C283, group build 9; component.quantity 1.9.0; numbered above 1.10.0 on origin/fix/fields-c224-c227): a minor, a look. The field is bordered by default again, as in the released pair: C283 reverses the filled-by-default part of C224 (1.10.0). The filled look stays, on request only: root-class=\"sf-quantity--filled\" (the appearance setting comes in a later build). The label floor of C226 and everything else of 1.10.0 stay. Settings, values, events and keys unchanged.",
     "version 1.12.1 (2026-11-17, feat/lang-file-c282; numbered above 1.12.0 on origin/fix/forms-fm2): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
-    "version 1.12.2 (written on the branch as 1.12.0; 2026-11-17, owner decision C283, group build 10, fix/forms-fm2; numbered above 1.11.0 on the group build 9 line): a minor, a setting. `appearance`, as sf-input's: `bordered` (the default, unchanged) or `filled`, which puts the class component's sf-quantity--filled on the root (the container fill, no border, the bottom line). root-class=\"sf-quantity--filled\" keeps working. The number's place holds its own padding in its width and says its box sizing (component.quantity 1.9.1, SM-QT-1): a page's border-box reset cut «2026» at grouping=\"false\" to 37 of the 42 px it needs. Values, events and keys unchanged."
+    "version 1.12.2 (written on the branch as 1.12.0; 2026-11-17, owner decision C283, group build 10, fix/forms-fm2; numbered above 1.11.0 on the group build 9 line): a minor, a setting. `appearance`, as sf-input's: `bordered` (the default, unchanged) or `filled`, which puts the class component's sf-quantity--filled on the root (the container fill, no border, the bottom line). root-class=\"sf-quantity--filled\" keeps working. The number's place holds its own padding in its width and says its box sizing (component.quantity 1.9.1, SM-QT-1): a page's border-box reset cut «2026» at grouping=\"false\" to 37 of the 42 px it needs. Values, events and keys unchanged.",
+    "version 1.12.3 (2026-11-18, docs finding of the docs repin to ui-1ed6b6c9a040): a patch, text only. The `removable` setting's summary named the event by its component.json key, `remove`, which no page can find: a reader listens for `sf-input-quantity-remove`, the name the events table and the element use. The summary now names that event and its detail. Nothing drawn or done differently."
   ],
   "x-rule": {
     "$comment": [

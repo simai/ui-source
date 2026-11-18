@@ -41,6 +41,18 @@
 // outline-variant edge, and keeps the place it stands in.
 $sf-card-above-card: '.sf-card, .sf-modal-surface, .sf-drawer:not([data-sf-drawer-column="true"]) .sf-drawer-panel, sf-popover > [slot="content"], .bg-surface-popup, .bg-surface-popup-nested';
 
+// A card is the frame of what is placed inside it (cards study CV-6, as BV-9
+// for a board): a visually hidden label (.sr-only) or a control set in a
+// corner (absolute) stands against the card, not against a far ancestor, so
+// it neither escapes the card nor widens the page. In sf.base, below the
+// utilities, so a card the page places itself (sf-card absolute, sticky)
+// keeps that place.
+@layer sf.base {
+  .sf-card {
+    position: relative;
+  }
+}
+
 // A card is a place (C16): its colour for a cut-out, its dim ink and the
 // theme's roles back, so a card on a coloured block is an ordinary card. In
 // sf.base, below the utilities, so a card the page colours (sf-card
