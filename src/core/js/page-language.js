@@ -91,12 +91,23 @@ function normalise(value) {
   return String(value ?? '').trim().toLowerCase().replace('_', '-');
 }
 
-/** The languages to try, most specific first, English last. */
+// The pack a page language takes (core/lang/index.json `aliases`, from the
+// language registry, set on the shared store by core): zh-cn, zh-sg and zh
+// take zh-hans, pt takes pt-br; any other code is its own.
+const packOf = (code) => PACKS.aliases?.[code] ?? code;
+
+/**
+ * The languages to try, most specific first, English last: the language, the
+ * pack it is an alias of, the language without its region and that one's
+ * pack. zh-CN: zh-cn, zh-hans, zh, en; zh-TW: zh-tw, zh, zh-hans, en; pt-PT:
+ * pt-pt, pt, pt-br, en. Until 2026-11-18 a zh-CN or pt page found no pack and
+ * spoke English.
+ */
 const chain = (language) => {
   const wanted = normalise(language);
   const base = wanted.split('-')[0];
   const order = [];
-  for (const candidate of [wanted, base, 'en']) {
+  for (const candidate of [wanted, packOf(wanted), base, packOf(base), 'en']) {
     if (candidate && !order.includes(candidate)) order.push(candidate);
   }
   return order;
@@ -287,7 +298,7 @@ export function localeText(dictionary, key, locale, component) {
 // and the language files' coverage is scripts/language-coverage.mjs. Kept on
 // the shared global, because every bundle carries this module.
 function warnFallback(order, owner, key) {
-  const wanted = String(order[0] || '').split('-')[0];
+  const wanted = packOf(String(order[0] || '').split('-')[0]);
   // While its pack is on its way the English is a moment, not a gap.
   if (!wanted || wanted === 'en' || PACKS.pending.has(wanted)) return;
   const root = globalThis;
@@ -528,7 +539,7 @@ export const language = {
   missing(value) {
     const seen = globalThis.__sfMissingWords instanceof Map ? globalThis.__sfMissingWords : new Map();
     if (value === undefined) return Object.fromEntries([...seen].map(([code, words]) => [code, [...words]]));
-    return [...(seen.get(normalise(value).split('-')[0]) ?? [])];
+    return [...(seen.get(packOf(normalise(value).split('-')[0])) ?? [])];
   },
 
   /** Every component something has been registered for. */

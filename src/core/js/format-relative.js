@@ -39,7 +39,10 @@ function packDayWord(offset, locale) {
   if (intlSpeaks(locale)) return null;
   const words = globalThis.__sfPageLanguage?.registered?.get?.('sf-relative-day');
   const wanted = String(locale || '').trim().toLowerCase().replace('_', '-');
-  for (const code of [...new Set([wanted, wanted.split('-')[0]])]) {
+  // A registry alias takes its pack's words (zh-cn: zh-hans, pt: pt-br).
+  const pack = (code) => globalThis.__sfPageLanguage?.packs?.aliases?.[code] ?? code;
+  const base = wanted.split('-')[0];
+  for (const code of [...new Set([wanted, pack(wanted), base, pack(base)])]) {
     const word = words?.get?.(code)?.[DAY_KEYS[offset]];
     if (typeof word === 'string' && word.trim()) return word;
   }

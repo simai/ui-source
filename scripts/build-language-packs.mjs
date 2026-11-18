@@ -334,12 +334,42 @@ function familyCoverage(code, {root, families}) {
  * {code: {family: [component ids]}}, and `coverage`: {code: {words,
  * translated, share}} of the whole language.
  */
-export function packIndex(codes, delivery = 'framework', {parts = null, coverage = null} = {}) {
+export function packIndex(codes, delivery = 'framework', {parts = null, coverage = null, aliases = null} = {}) {
   return {
     schema: INDEX_FORMAT, schema_version: SCHEMA_VERSION, delivery, languages: codes,
+    ...(aliases && Object.keys(aliases).length ? {aliases} : {}),
     ...(parts ? {parts} : {}),
     ...(coverage ? {coverage} : {}),
   };
+}
+
+/**
+ * The page languages that take a pack of another code, from the language
+ * registry (src/core/contracts/language-registry.v1.json `aliases`): {alias
+ * in lower case: pack code}, for the packs in `codes` only. A page in zh-CN
+ * or zh takes zh-hans, a page in pt takes pt-br; core maps with it
+ * (core/js/language-packs.js) and every bundle looks words up through it
+ * (core/js/page-language.js). An alias that is itself a pack, or that two
+ * languages claim, is refused.
+ */
+export function packAliases(codes, root = ROOT) {
+  const file = path.join(root, 'src/core/contracts/language-registry.v1.json');
+  if (!existsSync(file)) return {};
+  const registry = JSON.parse(readFileSync(file, 'utf8'));
+  const shipped = new Set(codes);
+  const aliases = {};
+  for (const one of registry.languages ?? []) {
+    const code = String(one.locale ?? '').toLowerCase();
+    if (!shipped.has(code)) continue;
+    for (const alias of one.aliases ?? []) {
+      const name = String(alias).trim().toLowerCase().replace('_', '-');
+      if (!name || name === code) continue;
+      if (shipped.has(name)) throw new Error(`language registry: alias ${alias} of ${one.locale} is a pack of its own`);
+      if (aliases[name] && aliases[name] !== code) throw new Error(`language registry: alias ${alias} claimed by ${aliases[name]} and ${code}`);
+      aliases[name] = code;
+    }
+  }
+  return Object.fromEntries(Object.entries(aliases).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 }
 
 /**
@@ -448,7 +478,7 @@ if (isMain) {
     files.set(path.join(out, `${code}.js`), packScript(pack));
     process.stdout.write(`${code}: ${pack.coverage.share} % of ${pack.coverage.words} words, ${Object.keys(pack.words).length} components${inParts ? ` in ${Object.keys(parts[code]).length} parts` : ''}, ${pack.status}\n`);
   }
-  files.set(path.join(out, 'index.json'), text(packIndex(codes, delivery, inParts ? {parts, coverage} : {})));
+  files.set(path.join(out, 'index.json'), text(packIndex(codes, delivery, {...(inParts ? {parts, coverage} : {}), aliases: delivery === 'framework' ? packAliases(codes, root) : null})));
   // The Framework's folders: the module each bundle takes its words through.
   if (delivery === 'framework') {
     const {builtIn} = builtInLanguages(root);

@@ -1,7 +1,7 @@
 {
   "schema": "simai.language-registry",
   "schema_version": 1,
-  "$comment": "The SIMAI language registry (localization standard §3, decision L4: kept in the Framework, products read it with the Framework). order is the switcher order, priority the translation order (null: ru is the language of writing). The registry declares that a language exists; a product publishes it (§4). Arabic ar added 11th by owner decision C278 (2026-11-17); languages of CIS countries other than Russian are not in the registry. pack: how the Framework's interface words reach a page in that language - built-in (English, inside every bundle) or shipped (a language file core/lang/<code>.js and its parts core/lang/<code>/<family>.json, listed in core/lang/index.json, owner decisions C282 and C278). The pack's code is the locale in lower case (pt-br, zh-hans).",
+  "$comment": "The SIMAI language registry (localization standard §3, decision L4: kept in the Framework, products read it with the Framework). order is the switcher order, priority the translation order (null: ru is the language of writing). The registry declares that a language exists; a product publishes it (§4). Arabic ar added 11th by owner decision C278 (2026-11-17); languages of CIS countries other than Russian are not in the registry. pack: how the Framework's interface words reach a page in that language - built-in (English, inside every bundle) or shipped (a language file core/lang/<code>.js and its parts core/lang/<code>/<family>.json, listed in core/lang/index.json, owner decisions C282 and C278). The pack's code is the locale in lower case (pt-br, zh-hans). aliases: the page languages that take this language's pack, matched without regard to case (lang=\"zh-CN\" or \"zh\" speaks zh-hans, lang=\"pt\" speaks pt-br); a page language with a region the registry does not name takes its base language's (zh-TW -> zh -> zh-hans, pt-PT -> pt -> pt-br). Written into core/lang/index.json by scripts/build-language-packs.mjs.",
   "languages": [
     {
       "locale": "en",
@@ -34,6 +34,7 @@
       "priority": 2,
       "plural": "intl",
       "aliases": [
+        "zh",
         "zh-CN",
         "zh-SG"
       ],
@@ -58,7 +59,9 @@
       "order": 5,
       "priority": 4,
       "plural": "intl",
-      "aliases": [],
+      "aliases": [
+        "pt"
+      ],
       "pack": "shipped"
     },
     {

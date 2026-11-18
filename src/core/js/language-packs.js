@@ -65,6 +65,14 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
   const asked = new Set();
   const fetched = new Set();
   const inFlight = new Map();
+  // The page languages that take another code's pack (core/lang/index.json
+  // `aliases`, from the language registry): a page in zh-CN, zh-SG or zh
+  // speaks zh-hans, a page in pt speaks pt-br. Kept on the shared store, so
+  // every bundle's page-language.js looks words up through the same table.
+  if (packs?.aliases && typeof packs.aliases === 'object') {
+    PACKS.aliases = { ...(PACKS.aliases ?? {}), ...packs.aliases };
+  }
+  const packOf = (code) => PACKS.aliases?.[code] ?? code;
   const get = fetchJson ?? ((url) => globalThis.fetch(url, { credentials: 'same-origin' }).then((response) => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
@@ -175,17 +183,21 @@ export function installLanguagePacks({ root = coreRoot(), packs = FRAMEWORK_PACK
     return true;
   };
   PACKS.load = (code) => {
-    const codes = [...new Set([code.split('-')[0], code])];
+    const codes = [...new Set([code.split('-')[0], code].flatMap((one) => [one, packOf(one)]))];
     for (const one of codes) begin(one);
     return Promise.all(codes.map((one) => fetchSome(one, [...(sources.get(one) ?? []), ...(whole(one) ? [] : parts.get(one)?.urls.values() ?? [])])))
       .then((lists) => lists.flat());
   };
   // A bundle asks for a language and, from page-language.js of this pair on,
   // names the component that looks up a word: its family's part comes too.
+  // An alias asks for its pack (zh-cn: zh-hans) and for anything a product
+  // named under the alias itself.
   PACKS.request = (code, component) => {
-    begin(code);
-    const families = component && !whole(code) ? familiesOf(code, component) : [];
-    if (families.length) fetchSome(code, families.map((family) => partUrl(code, family)));
+    const pack = packOf(code);
+    if (pack !== code) begin(code);
+    begin(pack);
+    const families = component && !whole(pack) ? familiesOf(pack, component) : [];
+    if (families.length) fetchSome(pack, families.map((family) => partUrl(pack, family)));
   };
 
   for (const code of packs?.languages ?? []) {

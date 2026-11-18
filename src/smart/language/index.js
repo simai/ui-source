@@ -422,8 +422,8 @@ class SfLanguage extends FormField(LanguageElement) {
   // translation of says so under its name (C142 (6)). A search
   // keeps the rows whose words -- the label, the native name, the English
   // name, the name in the page's language and the code -- a query's words
-  // begin (research LG-8: a query matched inside words, «ру» found
-  // белорусский and грузинский).
+  // begin (research LG-8: a query matched inside words, «ит» found
+  // литовский).
   menuEntries(list, current, query = '') {
     return languageRows(list, current, {page: pageLocale(this), query, missing: this.sfWord('missing')});
   }
@@ -518,7 +518,11 @@ SfLanguage.menuEntry = function menuEntry({languages = '', items = [], value = '
   // language file registered for sf-language (C282).
   const code = String(pageCode).toLowerCase().replace('_', '-');
   const registered = globalThis.__sfPageLanguage?.registered?.get?.('sf-language');
-  const words = {...en.runtime, ...(registered?.get?.(code.split('-')[0]) ?? {}), ...(registered?.get?.(code) ?? {})};
+  // A registry alias takes its pack's words (zh-cn: zh-hans, pt: pt-br;
+  // core/lang/index.json aliases, kept on the shared store by core).
+  const pack = (one) => globalThis.__sfPageLanguage?.packs?.aliases?.[one] ?? one;
+  const base = code.split('-')[0];
+  const words = {...en.runtime, ...[...new Set([base, pack(base), pack(code), code])].reduce((all, one) => ({...all, ...(registered?.get?.(one) ?? {})}), {})};
   const current = (value && matchLanguage(list, value)) ?? matchLanguage(list, pageCode) ?? list[0] ?? null;
   const entry = {
     id: 'language',

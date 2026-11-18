@@ -14,6 +14,12 @@
     "ru",
     "zh-hans"
   ],
+  "aliases": {
+    "pt": "pt-br",
+    "zh": "zh-hans",
+    "zh-cn": "zh-hans",
+    "zh-sg": "zh-hans"
+  },
   "parts": {
     "ar": {
       "accordion": [
@@ -2308,53 +2314,53 @@
   },
   "coverage": {
     "ar": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "de": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "es": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "fr": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "it": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "ja": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "ko": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "pt-br": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "ru": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     },
     "zh-hans": {
-      "words": 2043,
-      "translated": 2043,
+      "words": 2032,
+      "translated": 2032,
       "share": 100
     }
   }
