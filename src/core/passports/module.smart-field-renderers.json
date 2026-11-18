@@ -13,6 +13,7 @@
     "src/smart/field-renderers/conditions.js",
     "src/smart/field-renderers/datetime.js",
     "src/smart/field-renderers/decimal.js",
+    "src/smart/field-renderers/filter-conditions.js",
     "src/smart/field-renderers/filter-window.js",
     "src/smart/field-renderers/html.js",
     "src/smart/field-renderers/index.js",
@@ -22,7 +23,7 @@
     "src/smart/field-renderers/mask.js",
     "src/smart/field-renderers/registry.js"
   ],
-  "content_sha256": "8d4aaafd0350427b4e923e6a428a490ea243424f054f2ec4664c4beb90d1e307",
+  "content_sha256": "09fbfd1e74e636303b6dde3717103a9732d7d79c8565307fad5185c455c2795c",
   "dependencies": [
     {
       "id": "core.runtime",
@@ -35,6 +36,10 @@
     {
       "id": "smart.input-rich",
       "range": "^1.1.0"
+    },
+    {
+      "id": "tokens.size",
+      "range": "^1.6.1"
     }
   ]
 }

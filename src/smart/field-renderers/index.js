@@ -11,6 +11,7 @@ import {noteDeprecated} from "../../core/js/deprecations.js";
 import {formatMoney, formatPercent, fractionDigits, readDecimal} from "./decimal.js";
 import {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fieldEditable} from "./conditions.js";
 import {filterOperatorLabel, filterWindowOpen} from "./filter-window.js";
+import {filterActive, filterCondition, filterConditions, filterCount, filterKindOf, filterSummary, filterValueless, filterWidth} from "./filter-conditions.js";
 // The set's words and the property types' names live in its language files
 // (localization study LC-5), as a Smart component keeps them.
 import LANG_WORDS from './lang/index.mjs';
@@ -355,10 +356,15 @@ function renderChoiceFilterControl(field, host) {
 // in the single-field filter window also from ten options or with the host's
 // pages, which search on the server (filter field study, decided: «search
 // from 10»), unless the field says searchable false.
+// filter.search (C310): 'off' none; 'local' over the options; 'server' the
+// host's pages search; 'auto' (the default in the window) from ten options,
+// or with the host's pages.
 function choiceSearchable(field, host, options, pages) {
     const asked = field.filter?.searchable;
-    if (asked === true) return true;
-    if (asked === false || host.filterWindow !== true) return false;
+    const mode = field.filter?.search;
+    if (mode === 'off' || asked === false) return false;
+    if (asked === true || mode === 'local' || mode === 'server') return true;
+    if (host.filterWindow !== true) return false;
     return Boolean(pages) || options.length >= 10;
 }
 
@@ -2736,11 +2742,134 @@ export function propertyModes(type) {
 export {PROPERTY_TYPES};
 export {CONDITION_OPS, conditionFields, evaluateCondition, fieldConditions, fieldEditable};
 
+// The window's content per property type (owner decision C310): the
+// condition first (C293), then only what the condition needs -- the list of
+// a list property, one field of a string, one or two of a number; nothing
+// for не задано / задано. A boolean is three rows, one choice, no condition
+// line. A type with a window of its own (a date) keeps its filter control.
+// Where the condition stands and how quiet it is wait for the owner's answer
+// on the window without repeats (study §11); here it is the set's operator
+// field, as every filter control's.
+function renderConditionControl(field, host, conditions, selected) {
+    if (conditions.length < 2) return nothing;
+    return html`<sf-dropdown class="sf-filter-window-condition" size=${filterSize(host)} appearance="bordered" mode="select"
+            search="false" list-width="list" aria-label=${setText(host, 'filterCondition')}
+            .options=${conditions.map((operator) => ({value: operator, label: host.getFilterOperatorLabel(operator)}))}
+            value=${selected}
+            @change=${(event) => {
+                const operator = event.detail?.values?.[0] || event.detail?.value || selected;
+                if (operator !== selected) host.patchTempFilterValue(field.key, {operator});
+            }}></sf-dropdown>`;
+}
+
+function currencySign(field, host) {
+    const code = typeof field.currency === 'string' ? field.currency : field.currency?.code;
+    if (!code) return '';
+    try {
+        return new Intl.NumberFormat(pageLocale(host ?? null) || 'ru-RU', {style: 'currency', currency: code})
+            .formatToParts(0).find((part) => part.type === 'currency')?.value || code;
+    } catch {
+        return code;
+    }
+}
+
+function renderStringWindow(field, host, value, operator) {
+    return html`<sf-input size=${filterSize(host)} appearance="bordered" aria-label=${host.getFilterOperatorLabel(operator)}
+            value=${typeof value.value === 'string' ? value.value : ''} name="sf_filter_${field.key || 'text'}"
+            @change=${(event) => host.patchTempFilterValue(field.key, {operator, value: event.target?.value || ''})}></sf-input>`;
+}
+
+// A number or an amount (C294: an amount is compared inside its currency,
+// whose sign the fields carry): от – до, or one field.
+function renderNumberWindow(field, host, value, operator) {
+    const sign = currencySign(field, host);
+    const named = (text) => (sign ? `${text}, ${sign}` : text);
+    if (operator !== 'between') {
+        const one = Array.isArray(value.value) ? value.value[0] : value.value;
+        return html`<sf-input size=${filterSize(host)} appearance="bordered" input-mode="decimal"
+                aria-label=${named(host.getFilterOperatorLabel(operator))} placeholder=${sign || nothing}
+                value=${one ?? ''} name="sf_filter_${field.key || 'number'}"
+                @change=${(event) => host.patchTempFilterValue(field.key, {operator, value: event.target?.value || ''})}></sf-input>`;
+    }
+    const range = Array.isArray(value.value) ? value.value : [value.value ?? '', ''];
+    const patch = (index, next) => {
+        const both = [range[0] ?? '', range[1] ?? ''];
+        both[index] = next || '';
+        host.patchTempFilterValue(field.key, {operator, value: both});
+    };
+    return html`<div class="sf-filter-window-range flex gap-1/3 items-cross-end">
+        <sf-input size=${filterSize(host)} appearance="bordered" root-class="flex-1 min-w-0" label=${named(setText(host, 'rangeFrom'))}
+                  value=${range[0] ?? ''} name="sf_filter_${field.key || 'number'}" @change=${(event) => patch(0, event.target?.value)}></sf-input>
+        <sf-input size=${filterSize(host)} appearance="bordered" root-class="flex-1 min-w-0" label=${named(setText(host, 'rangeTo'))}
+                  value=${range[1] ?? ''} name="sf_filter_${field.key || 'number'}_second" @change=${(event) => patch(1, event.target?.value)}></sf-input>
+    </div>`;
+}
+
+// A boolean (C310): Да / Нет / Не задано, one choice, no condition line and
+// no search. «Не задано» is the empty condition.
+function renderBooleanWindow(field, host, value) {
+    const words = {
+        yes: field.trueText ?? field.labels?.true ?? setText(host, 'yes'),
+        no: field.falseText ?? field.labels?.false ?? setText(host, 'no'),
+    };
+    const operator = filterCondition(field, value);
+    const one = Array.isArray(value.values) ? value.values[0] : value.value;
+    const chosen = operator === 'empty' ? 'empty' : one === true || String(one) === 'true' ? 'true' : one === false || String(one) === 'false' ? 'false' : '';
+    return html`<sf-input-choice appearance="list" flow="column" aria-label=${field.label || field.key || nothing}
+            control-position="end"
+            .items=${[{value: 'true', label: words.yes}, {value: 'false', label: words.no}, {value: 'empty', label: setText(host, 'filterNotSet')}]}
+            .value=${chosen}
+            @change=${(event) => {
+                const next = event.detail?.value ?? event.detail?.values?.[0] ?? '';
+                host.patchTempFilterValue(field.key, next === 'empty'
+                    ? {operator: 'empty', value: undefined, values: undefined}
+                    : {operator: 'eq', value: next === 'true', values: undefined});
+            }}></sf-input-choice>`;
+}
+
+/** A filter field's window content (C310): the condition, then what it needs. */
+export function renderFilterWindowField(field = {}, host) {
+    const kind = filterKindOf(field);
+    if (kind === 'own') return renderFilterField(field, host);
+    const value = host.getFilterControlValue(field.key) || {};
+    if (kind === 'boolean') return renderBooleanWindow(field, host, value);
+    const conditions = filterConditions(field);
+    const operator = filterCondition(field, value);
+    const control = filterValueless(operator) ? nothing
+        : kind === 'string' ? renderStringWindow(field, host, value, operator)
+            : kind === 'number' ? renderNumberWindow(field, host, value, operator)
+                : renderChoiceFilterControl(field, host);
+    return html`<div class="sf-filter-window-fields flex flex-col gap-1/2">${renderConditionControl(field, host, conditions, operator)}${control}</div>`;
+}
+
 /** A filter field's window opened from any control (FO-5, filter-window.js): settles {action: 'apply' | 'reset', value} or null. */
 export function openFilterWindow(options = {}) {
-    return filterWindowOpen({...options, renderControl: renderFilterField});
+    const field = options.field || {};
+    return filterWindowOpen({
+        width: filterWidth(field),
+        ...options,
+        renderControl: renderFilterWindowField,
+        // «Применить (N)»: the chosen values of a list condition only (C310).
+        count: (value) => (filterKindOf(field) === 'own' ? (Array.isArray(value?.values) ? value.values.length : 0) : filterCount(field, value)),
+    });
 }
-export {filterOperatorLabel};
+
+/**
+ * What a filter field button shows after applying (C300, C310), for the
+ * list head that draws it: {active, count, words} -- the colour while
+ * active, the number only for a list condition, the words for its tooltip.
+ */
+export function filterFieldSummary(field = {}, value = {}, node = null) {
+    const options = Array.isArray(field.filter?.options) ? field.filter.options : [];
+    const names = new Map(options.map((option) => [String(option.value ?? option.id ?? option.key ?? option.label), option.label || option.title || String(option.value ?? '')]));
+    return filterSummary(field, value, {
+        label: (operator) => filterOperatorLabel(operator, node),
+        name: (one) => names.get(one) ?? one,
+        yes: field.trueText ?? pageText(SET_TEXT, 'yes', node, SET_NAME),
+        no: field.falseText ?? pageText(SET_TEXT, 'no', node, SET_NAME),
+    });
+}
+export {filterOperatorLabel, filterActive, filterConditions, filterCount, filterWidth};
 
 export function renderViewField(field = {}, value, host, options = {}) {
     const asked = field.propertyType || field.type || field.dataType;
@@ -2787,7 +2916,9 @@ if (typeof window !== 'undefined') {
         conditions: {evaluate: evaluateCondition, field: fieldConditions, fields: conditionFields, ops: CONDITION_OPS, editable: fieldEditable},
         // A filter field's window from any control (FO-5): open({anchor,
         // field, value, size, placement}) settles {action, value} or null.
-        filterWindow: {open: openFilterWindow, operatorLabel: filterOperatorLabel},
+        // summary(field, value) {active, count, words} is what the filter
+        // field button shows (C300, C310); conditions(field) what a window offers.
+        filterWindow: {open: openFilterWindow, operatorLabel: filterOperatorLabel, summary: filterFieldSummary, conditions: filterConditions, count: filterCount},
         // The universal properties, each with the modes the set draws for it.
         registry: PROPERTY_TYPES.map((entry) => ({...entry, modes: propertyModes(entry.type)})),
     };

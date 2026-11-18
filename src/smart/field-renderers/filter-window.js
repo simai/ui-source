@@ -45,7 +45,12 @@ const OPEN = new WeakMap();
 const OPERATOR_WORDS = {
   eq: 'operatorEq', gt: 'operatorGt', gte: 'operatorGte', lt: 'operatorLt', lte: 'operatorLte',
   between: 'operatorBetween', contains: 'operatorContains', startsWith: 'operatorStartsWith',
-  any: 'operatorAny', today: 'operatorToday', week: 'operatorWeek', month: 'operatorMonth', in: 'operatorIn',
+  any: 'operatorAny', today: 'operatorToday', week: 'operatorWeek', month: 'operatorMonth',
+  // The conditions of a list property (owner decision C310, FF-8): любой из,
+  // все из, ни один из; and of every type, не задано / задано (C310 replaces
+  // C293's «Пусто» / «Не пусто»). operatorIn («В списке») stays in the packs
+  // for a host that names it.
+  in: 'operatorAnyOf', all: 'operatorAllOf', not_in: 'operatorNoneOf', empty: 'operatorEmpty', not_empty: 'operatorFilled',
 };
 
 const word = (key, node) => pageText(SET_TEXT, key, node ?? null, SET_NAME);
@@ -101,7 +106,7 @@ function holdReopen(anchor) {
   doc.addEventListener('keydown', clear, true);
 }
 
-export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', renderControl} = {}) {
+export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', placement = 'bottom-start', width = 'panel', count, renderControl} = {}) {
   if (!anchor?.isConnected || !field?.key) return Promise.resolve(null);
   const open = OPEN.get(anchor);
   if (open) {
@@ -140,6 +145,11 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
       const surface = doc.createElement('div');
       surface.setAttribute('slot', 'content');
       surface.className = 'sf-filter-window flex flex-col gap-1/2 p-1/2';
+      // The window's width (C157, C310): the panel's step, 20rem; 24rem for
+      // people and records with a caption.
+      surface.setAttribute('data-sf-filter-width', width === 'wide' ? 'wide' : 'panel');
+      surface.style.inlineSize = width === 'wide' ? 'var(--sf-popup-form-wide-width)' : 'var(--sf-popup-panel-width)';
+      surface.style.maxInlineSize = '100%';
       body = doc.createElement('div');
       body.className = 'sf-filter-window-control flex flex-col';
       foot = doc.createElement('div');
@@ -168,8 +178,8 @@ export function filterWindowOpen({anchor, field = {}, value = {}, size = '1', pl
     // «Применить (N)» (FO5-1, C157 (3)): the number of values chosen when the
     // condition is a list; plain «Применить» otherwise or with none chosen.
     const applyText = () => {
-      const count = Array.isArray(temp?.values) ? temp.values.length : 0;
-      return count ? `${word('filterApply', anchor)} (${count})` : word('filterApply', anchor);
+      const number = typeof count === 'function' ? count(temp) : (Array.isArray(temp?.values) ? temp.values.length : 0);
+      return number ? `${word('filterApply', anchor)} (${number})` : word('filterApply', anchor);
     };
     function draw() {
       render(html`${renderControl(field, host)}`, body);

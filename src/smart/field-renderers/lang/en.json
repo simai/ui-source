@@ -83,6 +83,13 @@
     "type-percent": "Percent",
     "type-items": "Rows",
     "type-compound": "Compound",
-    "type-ru.requisites": "Requisites (Russia)"
+    "type-ru.requisites": "Requisites (Russia)",
+    "operatorAnyOf": "any of",
+    "operatorAllOf": "all of",
+    "operatorNoneOf": "none of",
+    "operatorEmpty": "not set",
+    "operatorFilled": "set",
+    "filterNotSet": "Not set",
+    "filterCondition": "Condition"
   }
 }

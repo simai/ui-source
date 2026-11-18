@@ -85,6 +85,13 @@
     "type-percent": "Процент",
     "type-items": "Строки",
     "type-compound": "Составное",
-    "type-ru.requisites": "Реквизиты"
+    "type-ru.requisites": "Реквизиты",
+    "operatorAnyOf": "любой из",
+    "operatorAllOf": "все из",
+    "operatorNoneOf": "ни один из",
+    "operatorEmpty": "не задано",
+    "operatorFilled": "задано",
+    "filterNotSet": "Не задано",
+    "filterCondition": "Условие"
   }
 }

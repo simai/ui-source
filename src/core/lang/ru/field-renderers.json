@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 81,
-    "translated": 81,
+    "words": 88,
+    "translated": 88,
     "share": 100
   },
   "words": {
@@ -100,7 +100,14 @@
       "type-percent": "Процент",
       "type-items": "Строки",
       "type-compound": "Составное",
-      "type-ru.requisites": "Реквизиты"
+      "type-ru.requisites": "Реквизиты",
+      "operatorAnyOf": "любой из",
+      "operatorAllOf": "все из",
+      "operatorNoneOf": "ни один из",
+      "operatorEmpty": "не задано",
+      "operatorFilled": "задано",
+      "filterNotSet": "Не задано",
+      "filterCondition": "Условие"
     }
   }
 }

@@ -41,7 +41,16 @@ export function createDropdownInteraction(root, adapter) {
   // The dropdown's own field, or the trigger the consumer handed in: the
   // keyboard, the focus and the aria state belong to whichever one is there.
   const field = () => root.querySelector('.sf-dropdown-field, .sf-dropdown-trigger');
-  const trigger = () => field()?.querySelector(':scope > button') || field();
+  // A trigger the consumer handed in is the control it holds (FF-9): its own
+  // button, or the inner button of an sf-button it gave. The wrapper then
+  // takes no role and no tab stop, so there is no button inside a button.
+  const trigger = () => {
+    const box = field();
+    if (!box) return null;
+    return box.querySelector(':scope > button')
+      || (box.classList.contains('sf-dropdown-trigger') ? box.querySelector(':scope > :is(sf-button, sf-button-icon) button, :scope > a[href]') : null)
+      || box;
+  };
   const input = () => field()?.querySelector('input:not([type="hidden"])');
   // The search header (.sf-list-search, since R029) or a search field written
   // as an sf-input before it.
