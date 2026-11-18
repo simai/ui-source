@@ -60,7 +60,8 @@
     "display/default",
     "flex/default",
     "pointer-events/default",
-    "sr-only/default"
+    "sr-only/default",
+    "text-overflow/default"
   ],
   "cl-button-close": [
     "align-items/default",

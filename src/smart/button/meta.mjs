@@ -174,6 +174,21 @@ const sfButtonMeta = {
       "default": "false",
       "description": "The control fills its container, as sf-segmented's full-width does, and its content stays in the middle; without it the button is as wide as its content (owner decision C36). The height does not change."
     },
+    "overflow": {
+      "kind": "enum",
+      "values": [
+        "wrap",
+        "truncate"
+      ],
+      "default": "wrap",
+      "description": "What a label longer than the button may be does (owner decision C301 (2); the values of sf-list-description's overflow): wrap (the default) keeps the label whole as before; truncate keeps it on one line and cuts it with an ellipsis at max-width, or at the width the container gives, whichever is less, the icons, the menu arrow and the keys keeping their size. While the label is cut, hover and keyboard focus show the whole label (the host's title when the page wrote one) in the Framework's tooltip, and the browser's own title tooltip is not drawn over it; the accessible name stays the whole label. A label that fits draws no tooltip."
+    },
+    "max-width": {
+      "kind": "custom",
+      "valueType": "string",
+      "default": "",
+      "description": "With overflow=\"truncate\": the widest the button grows before its label is cut, a CSS length (rem, vw, a min() of them, or var(--sf-...)); it wins over the public variable --sf-button-max-width, which a page may set on the button or an ancestor instead. Empty: that variable, else the container's width. A value with ; { } < > \" or \\ is ignored."
+    },
     "loading": {
       "kind": "boolean",
       "values": [

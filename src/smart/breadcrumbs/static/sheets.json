@@ -23,6 +23,7 @@
     "utility/sr-only/default/css/default.min.css",
     "utility/text-align/default/css/default.min.css",
     "utility/text-decoration/default/css/default.min.css",
+    "utility/text-overflow/default/css/default.min.css",
     "utility/visibility/default/css/default.min.css"
   ],
   "examples": {
@@ -66,6 +67,7 @@
       "utility/sr-only/default/css/default.min.css",
       "utility/text-align/default/css/default.min.css",
       "utility/text-decoration/default/css/default.min.css",
+      "utility/text-overflow/default/css/default.min.css",
       "utility/visibility/default/css/default.min.css"
     ],
     "reference": [

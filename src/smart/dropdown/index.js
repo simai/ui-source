@@ -11,6 +11,7 @@ import { InheritedValueField } from '../helpers/inherited-value';
 import { FormField, innerControlName, ownInvalid } from '../helpers/form-field';
 import { instancePath, partId } from '../../core/js/instance-path.js';
 import { iconWords } from '../../core/js/icon-choices.js';
+import { sayFieldAppearanceFormer } from '../helpers/field-appearance.js';
 import manifest from './component.json';
 import aliases from './aliases.json';
 import {files as languageFiles} from './lang/index.mjs';
@@ -571,6 +572,15 @@ class SfDropdown extends FormField(DropdownElement) {
 
   templateContext() {
     const props = this.getPropsContext();
+    // outlined, the former name of bordered (FM-9): said once per page in the
+    // console as well as noted (1.20.5, helpers/field-appearance.js).
+    // The alias layer writes bordered in place of outlined before the
+    // template reads it and notes the use; the note says it was there.
+    const look = String(this.getAttribute('appearance') ?? this.getAttribute('type') ?? '').trim().toLowerCase();
+    const noted = (globalThis.SF?.deprecations?.list?.() ?? []).some((one) => one.component === 'sf-dropdown' && one.kind === 'value' && one.from === 'outlined');
+    if (look === 'outlined' || noted) {
+      sayFieldAppearanceFormer('sf-dropdown', {from: 'outlined', to: 'bordered', since: '2026-11-16', journal: 'value-dropdown-appearance-outlined-to-bordered', noted: look !== 'outlined'});
+    }
 
     return this.createTemplateContext({
       ...props,

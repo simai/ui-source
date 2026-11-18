@@ -283,7 +283,7 @@ test('1.3.0: the toolbar, the headings and the link editor are drawn by the syst
   assert.match(template, /const linkSize = '1\/2';/u);
   assert.ok(template.indexOf('sf-rich-text-link-apply') < template.indexOf('sf-rich-text-link-remove'));
   // While the link editor is open only the link tool looks active: the others rest, glyph unfilled.
-  assert.match(sheet, /:has\(sf-popover\.sf-rich-text-link\[data-open='true'\]\) \.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-rich-text-tool:not\(\[data-sf-tool='link'\]\)[^{]*\{\s*--sf-icon-button--background-color: transparent;/u);
+  assert.match(sheet, /:has\(sf-popover\.sf-rich-text-link\[open\]\) \.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-icon-button\.sf-rich-text-tool:not\(\[data-sf-tool='link'\]\)[^{]*\{\s*--sf-icon-button--background-color: transparent;/u);
   assert.match(sheet, /\[aria-pressed='true'\] \.sf-icon \{\s*--sf-icon--fill: 0;/u);
 });
 

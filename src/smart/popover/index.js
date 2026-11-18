@@ -295,10 +295,13 @@ class SfPopover extends PopoverElement {
     }
 
     // What it owns is said in attributes the stylesheet reads: where the surface
-    // sits, whether it is shown, how wide it is, and what it is to a reader.
+    // sits, how wide it is, and what it is to a reader. Whether it is shown is
+    // the open value's own attribute (open); the host's data-open is the
+    // page's (1.8.0, DEV order msg-d56fa72b: it was written as "true" or
+    // "false" on every drawing, over a page's own data-open, and repeated the
+    // value in an undeclared state; journal behaviour-popover-data-open-retired).
     updateDom() {
         this.dataset.placement = this.placement;
-        this.dataset.open = this.open ? 'true' : 'false';
         this._adoptLegacyRole();
         // The control that opens it says that it does and whether it has.
         const trigger = this.querySelector('[slot="trigger"]');

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.tag",
-  "version": "1.12.5",
+  "version": "1.12.6",
   "title": "Tags",
   "summary": "Compact static, selectable and removable labels with one explicit interaction owner.",
   "kind": "smart",
@@ -201,7 +201,7 @@
       "interactive": {
         "type": "boolean",
         "default": false,
-        "description": "Render the label as a button next to the remove action, for tags that open something (for example a filter chip menu); ignored for checkbox tags."
+        "description": "Render the label as a button next to the remove action, for tags that open something (for example a filter chip menu); ignored for checkbox tags. An interactive tag without kind is never a toggle, also in an sf-tag-group that selects or with a change listener."
       },
       "close-label": {
         "type": "string",
@@ -438,7 +438,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/tag/index.js",
-        "sha256": "6370e6e658092e94ea0016859200657a757aff7d0f9920d69f700788bc9117a4"
+        "sha256": "a34939bf93180ab71e9bdf3ba408987d2129bac6a1ef66d0d9704d8bbf1d72fc"
       }
     ],
     "generated_runtime": [

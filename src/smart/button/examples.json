@@ -338,6 +338,22 @@
       "expect": {
         "full-width": true
       }
+    },
+    {
+      "name": "truncate",
+      "title": "Длинная подпись с многоточием",
+      "settings": {
+        "text": "Фильтр: Просроченные задачи отдела продаж за квартал",
+        "icon-start": "filter_list",
+        "appearance": "outline",
+        "scheme": "on-surface",
+        "overflow": "truncate",
+        "max-width": "16rem"
+      },
+      "expect": {
+        "overflow": "truncate",
+        "max-width": "16rem"
+      }
     }
   ],
   "pages": [

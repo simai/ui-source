@@ -70,6 +70,18 @@
       "section": "§16 item 20, change journal attribute-input-date-legacy-names (SM-DP-2)",
       "note": "the legacy name of size (contracts/public-api-axes.json); the element reads it itself until the date and notes it in SF.deprecations; size wins when both are given",
       "shim": "none"
+    },
+    {
+      "from": "input-type",
+      "to": "appearance",
+      "kind": "attribute",
+      "component": "sf-input-date",
+      "since": "2026-11-17",
+      "remove_after": "2027-01-01",
+      "mode": "manifest-only",
+      "section": "§16 item 20, change journal attribute-input-date-input-type-to-appearance",
+      "note": "the legacy name of appearance (one look vocabulary for every field); the element reads it itself until the date, notes it in SF.deprecations and says it once per page; appearance wins when both are given",
+      "shim": "none"
     }
   ]
 }

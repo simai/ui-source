@@ -35,6 +35,57 @@
       "menu-context": "an entry's status (danger; error read as danger) or danger: true"
     }
   },
+  "field_appearance": {
+    "$comment": "One look vocabulary for every field (dispatcher decision 2026-11-17 on the Larena record forms letter msg-9e7b5015; FM-9 2026-11-16): a record form gives all its fields one look, so every field names it on the same setting, appearance, with the same words. bordered (the default): a box with a border; filled: the container fill, no border, the bottom line. They are the words the docs promise on six field pages (inputs, textarea, code-input, lookup, rich text, quantity); outlined, which sf-dropdown alone said, is bordered's former name. A field may add a look of its own beside the two (sf-input hidden, sf-input-textarea flush), never another meaning for them. A former name is noted in SF.deprecations and said once per page in the console until remove_after (src/smart/helpers/field-appearance.js). sf-input-color's appearance bounds the colour swatch, not the field (bordered, outlined, plain; CO-06), and sf-input-choice's lays out options (cards, list): neither is a field look.",
+    "vocabulary": [
+      "bordered",
+      "filled"
+    ],
+    "default": "bordered",
+    "aliases": {
+      "outlined": "bordered"
+    },
+    "components": [
+      "input",
+      "input-textarea",
+      "input-quantity",
+      "input-lookup",
+      "input-rich",
+      "input-code",
+      "dropdown",
+      "input-date"
+    ],
+    "extras": {
+      "input": [
+        "hidden"
+      ],
+      "input-textarea": [
+        "flush"
+      ]
+    },
+    "former_settings": [
+      {
+        "component": "input-date",
+        "from": "input-type",
+        "to": "appearance",
+        "remove_after": "2027-01-01",
+        "journal": "attribute-input-date-input-type-to-appearance"
+      }
+    ],
+    "former_values": [
+      {
+        "component": "dropdown",
+        "from": "outlined",
+        "to": "bordered",
+        "remove_after": "2027-01-01",
+        "journal": "value-dropdown-appearance-outlined-to-bordered"
+      }
+    ],
+    "not_field_looks": {
+      "input-color": "the swatch border (bordered, outlined, plain; CO-06)",
+      "input-choice": "the options' layout (cards, list; C165)"
+    }
+  },
   "rules": [
     "A new public input that answers one of these questions uses the axis name, never type.",
     "A legacy name keeps working through the prop's aliases, and is listed here until it is retired.",

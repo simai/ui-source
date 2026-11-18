@@ -7,6 +7,29 @@
   justify-content: center;
 }
 
+/* overflow="truncate" (sf-button 1.17.0, FW-LH-1, owner decision C301 (2)):
+   the label stays on one line and is cut with an ellipsis at the button's
+   max-width (the max-width setting, then the public --sf-button-max-width) or
+   at the width its container gives, whichever is less; the icons, the menu arrow and the keys
+   keep their size. The whole label is in the markup (the accessible name) and
+   in the Framework's tooltip the button draws while it is cut. The class form
+   is the same markup: .sf-button--truncate on the button. */
+.sf-button.sf-button--truncate {
+  max-inline-size: min(var(--sf-button--max-width, var(--sf-button-max-width, 100%)), 100%);
+  min-inline-size: 0;
+}
+
+.sf-button.sf-button--truncate > .sf-button-text-container {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-button.sf-button--truncate > :not(.sf-button-text-container) {
+  flex-shrink: 0;
+}
+
 /* The split button (owner decision C119; ui-control research
    2026-11-13-buttons-system R206): a label part, an ordinary .sf-button, and a
    square arrow part, an .sf-icon-button of the same size and height (the icon

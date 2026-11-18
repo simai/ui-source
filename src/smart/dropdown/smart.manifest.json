@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.20.4",
+  "version": "1.20.5",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -54,7 +54,7 @@
       "appearance": {
         "type": "string",
         "default": "bordered",
-        "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, SF.deprecations).",
+        "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, noted in SF.deprecations and said once per page in the console).",
         "enum": [
           "filled",
           "bordered"
@@ -505,7 +505,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "7f0eba4c6556068907ee231121670c87553fc0a5321768d1218c2218c8ced007"
+        "sha256": "3f32a343e1ddb8498fc1de89df4defc703a762383b5b4957529b478a07150a25"
       },
       {
         "path": "src/smart/dropdown/rule.js",

@@ -111,6 +111,23 @@ Main attributes:
   ```html
   <sf-button full-width text="Войти" icon-start="login"></sf-button>
   ```
+- `overflow="wrap|truncate"` and `max-width` (1.17.0, owner decision C301
+  (2); the name and the values of sf-list-description's `overflow`) — what a
+  long label does. `wrap`, the default, keeps it whole. `truncate` keeps it on
+  one line and cuts it with an ellipsis at `max-width` (a CSS length; the
+  public variable `--sf-button-max-width` when the attribute is not given), or
+  at the width the container gives, whichever is less; the icons, the menu
+  arrow and the keys keep their size. While the label is cut, hover and
+  keyboard focus show the whole label in the Framework's tooltip (the host's
+  `title` when the page wrote one, which the browser then does not draw over
+  it); a label that fits draws none. The accessible name is the whole label.
+  A saved filter's name on «Фильтр» is the case it was made for:
+
+  ```html
+  <sf-button overflow="truncate" max-width="min(22rem, 40vw)" appearance="outline"
+             scheme="on-surface" icon-start="filter_list"
+             text="Фильтр: Просроченные задачи отдела продаж"></sf-button>
+  ```
 - `root-class`
 - `loading`
 - `disabled`

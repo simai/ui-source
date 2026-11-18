@@ -195,7 +195,7 @@ const sfTagMeta = {
         "false"
       ],
       "default": "false",
-      "description": "Render the label as a button next to the remove action, for tags that open something (for example a filter chip menu); ignored for checkbox tags."
+      "description": "Render the label as a button next to the remove action, for tags that open something (for example a filter chip menu); ignored for checkbox tags. An interactive tag without kind is never a toggle, also in an sf-tag-group that selects or with a change listener."
     },
     "close-label": {
       "kind": "custom",

@@ -685,6 +685,10 @@
             "default": false,
             "type": "boolean"
           },
+          "max-width": {
+            "default": "",
+            "type": "string"
+          },
           "name": {
             "default": "",
             "type": "string"
@@ -695,6 +699,14 @@
               "button",
               "submit",
               "reset"
+            ],
+            "type": "string"
+          },
+          "overflow": {
+            "default": "wrap",
+            "enum": [
+              "wrap",
+              "truncate"
             ],
             "type": "string"
           },
@@ -811,7 +823,7 @@
       },
       "kind": "custom-element",
       "manifest": "smart.button",
-      "version": "1.16.8"
+      "version": "1.17.0"
     },
     "sf-button-icon": {
       "inputs": {

@@ -88,6 +88,17 @@
       ]
     },
     {
+      "plain": "component.datepicker",
+      "smart": "smart.input-date",
+      "since": "2026-11-17",
+      "codes": [
+        "appearance-values"
+      ],
+      "notes": [
+        "Smart appearance values with no plain modifier: filled (sf-input-date 1.16.0 takes the shared field looks; its field is the plain sf-input, whose sf-input--filled draws it, so the class datepicker needs no modifier of its own)"
+      ]
+    },
+    {
       "plain": "component.download-file",
       "smart": "smart.file-download",
       "since": "2026-11-16",
