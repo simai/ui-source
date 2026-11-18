@@ -30,7 +30,7 @@ test('sf-alert: one action in the row from 36rem, two from 48rem of the notice\'
 
 test('sf-toast: one action in the row from 24rem of the toast\'s whole width (C218)', () => {
   assert.match(toast, /\.sf-toast:has\(> \.sf-toast-container > \.sf-toast-bottom\) \{\s*container: sf-toast \/ inline-size;/u);
-  assert.match(toast, /@container sf-toast \(min-width: #\{mq\.container-step\(g2, \$frame: 2 \* 1rem\)\}\) \{\s*\.sf-toast:not\(\.sf-toast--actions-under\):not\(:has\(\.sf-toast-bottom > :nth-child\(2\)\)\)/u);
+  assert.match(toast, /@container sf-toast \(min-width: #\{mq\.container-step\(g2, \$frame: 2 \* 1rem\)\}\) \{\s*\.sf-toast:not\(\.sf-toast--actions-under\):not\(\[data-sf-toast-under\]\):not\(:has\(\.sf-toast-bottom > :nth-child\(2\)\)\)/u); // LF-4: a title that would break a word puts the action under
 });
 
 // The 1 px border is inside the inline inset (owner decision C105 H4/H6, as
