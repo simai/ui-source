@@ -509,10 +509,11 @@ try {
 results.sort((a, b) => a.id.localeCompare(b.id));
 // Measurements that fail for a reason outside the first paint, each with
 // that reason (tests/fixtures/first-paint/gate-known.json): reported, not counted. An entry
-// that no longer fails is reported too, to be taken out.
+// that no longer fails is reported too, to be taken out. An entry names the width it
+// fails at («settings/large @390»): the same case at another width is counted (GB14 A2).
 const knownFile = new URL('../fixtures/first-paint/gate-known.json', import.meta.url);
 const known = existsSync(knownFile) ? JSON.parse(readFileSync(knownFile, 'utf8')).known ?? {} : {};
-const keyOf = (one) => one.id.replace(/ @\d+$/u, '').replace(/ \(load \d+\)$/u, '');
+const keyOf = (one) => one.id.replace(/ \(load \d+\)(?= @\d+$)/u, '');
 const failing = results.filter((one) => one.problems.length);
 // 24b, reported: per component not yet covered, how many bare loads jumped
 // and the worst jump (width, height).
