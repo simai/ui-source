@@ -246,12 +246,14 @@ try {
   });
   await page.keyboard.press(`${mod}+k`);
   await page.waitForTimeout(300);
-  check('Mod+K opens the link editor', await page.evaluate(() => document.querySelector('#r sf-popover').getAttribute('data-open') === 'true'));
+  // The popover says it is open with its open attribute (popover 1.8.0 retired
+  // the host's data-open; journal behaviour-popover-data-open-retired).
+  check('Mod+K opens the link editor', await page.evaluate(() => document.querySelector('#r sf-popover').hasAttribute('open')));
   check('the address field has focus', await page.evaluate(() => Boolean(document.activeElement?.closest('.sf-rich-text-link-input'))));
   await page.keyboard.type('javascript:alert(1)');
   await page.keyboard.press('Enter');
   await page.waitForTimeout(200);
-  check('javascript: is refused with the words', await page.evaluate(() => document.querySelector('#r sf-popover').getAttribute('data-open') === 'true'
+  check('javascript: is refused with the words', await page.evaluate(() => document.querySelector('#r sf-popover').hasAttribute('open')
     && document.querySelector('#r .sf-rich-text-link-input').textContent.includes('Use an https:')));
   check('refused: the value is unchanged', await value(page) === '<p>Read the docs</p>');
   await page.keyboard.press(`${mod}+a`);
@@ -260,7 +262,7 @@ try {
   await page.waitForTimeout(400);
   check('a /path is applied', await value(page) === '<p>Read the <a href="/docs">docs</a></p>', {got: await value(page)});
   check('the caret is back in the text', await page.evaluate(() => document.activeElement === document.querySelector('#r .sf-rich-text-editor')));
-  check('the link editor closed', await page.evaluate(() => document.querySelector('#r sf-popover').getAttribute('data-open') !== 'true'));
+  check('the link editor closed', await page.evaluate(() => !document.querySelector('#r sf-popover').hasAttribute('open')));
 
   // ---- form ------------------------------------------------------------------
   check('form value', await page.evaluate(() => new FormData(document.getElementById('f')).get('body') === document.getElementById('r').value));
