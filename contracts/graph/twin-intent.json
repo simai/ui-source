@@ -266,6 +266,46 @@
       "reason": "RTL icons (fix/rtl-direction-icons): this sheet turned a directional glyph that the icons sheet already turns (C151 point 3), so it pointed the left-to-right way in RTL; the rule for the closed chevron (scale instead of transform) is fixed in the class sheet, which smart.tree draws its markup with, so the Smart twin takes the fix without a change of its own files",
       "decision": "C151 (3)",
       "date": "2026-11-19"
+    },
+    {
+      "unit": "smart.alert",
+      "version": "1.5.5",
+      "twin": "component.alerts",
+      "reason": "recorded by group build 14 from fix/manifest-probes-round: the Smart element's manifest probe (examples.json, probe.json) follows its decided behaviour; the class component has no manifest probe to change",
+      "decision": "C251",
+      "date": "2026-11-19"
+    },
+    {
+      "unit": "smart.progress-bar",
+      "version": "1.5.6",
+      "twin": "component.progress-bar",
+      "reason": "recorded by group build 14 from fix/manifest-probes-round: the Smart element's manifest probe (examples.json, probe.json) follows its decided behaviour; the class component has no manifest probe to change",
+      "decision": "C251",
+      "date": "2026-11-19"
+    },
+    {
+      "unit": "smart.spinner",
+      "version": "1.5.4",
+      "twin": "component.spinner",
+      "reason": "recorded by group build 14 from fix/manifest-probes-round: the Smart element's manifest probe (examples.json, probe.json) follows its decided behaviour; the class component has no manifest probe to change",
+      "decision": "C251",
+      "date": "2026-11-19"
+    },
+    {
+      "unit": "smart.segmented",
+      "version": "1.8.1",
+      "twin": "component.button-group",
+      "reason": "recorded by group build 14 from fix/segmented-transform: sf-segmented measures its row in layout boxes under a scale() or rotate() ancestor; a script of the Smart element, the class button group measures nothing",
+      "decision": "C251",
+      "date": "2026-11-19"
+    },
+    {
+      "unit": "smart.tabs",
+      "version": "1.4.7",
+      "twin": "component.tabs",
+      "reason": "recorded by group build 14 from fix/segmented-transform: sf-tabs measures its row, its place and «Ещё» in layout boxes under a scale() or rotate() ancestor; a script of the Smart element, the class tabs measure nothing",
+      "decision": "C251",
+      "date": "2026-11-19"
     }
   ]
 }
