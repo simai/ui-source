@@ -123,8 +123,27 @@ const editable = (element) => Boolean(element?.matches?.('input, select, textare
 // list item role, or a list item; an area without rows is one object itself.
 const TARGETS = 'tbody > tr, [role="row"]:not(:has(> [role="columnheader"])), [role="option"], [role="treeitem"], [role="listitem"], li';
 // Where the browser's own menu stays: a link, a field and text being edited,
-// selected text and the right button with Shift (C164 (1)).
-const BROWSER_KEEPS = 'a[href], input, select, textarea, [contenteditable=""], [contenteditable="true"]';
+// selected text and the right button with Shift (C164 (1)). A field is one
+// that takes typed text: a text-like input, a textarea, editable text and a
+// textbox, searchbox or combobox with text entry (an editable one). A
+// checkbox, a radio, a switch, a select and a button are not: their browser
+// menu offers nothing, and a row's selection checkbox is where the keyboard
+// stands in a table, so the menu key there opens the row's menu (1.27.3).
+const BROWSER_KEEPS = 'a[href], textarea, [role="textbox"], [role="searchbox"]';
+const TEXT_ENTRY_TYPES = new Set(["text", "search", "email", "url", "tel", "password", "number", "date", "time", "datetime-local", "month", "week"]);
+const keepsBrowserMenu = (node) => node instanceof Element && (node.matches(BROWSER_KEEPS) || node.isContentEditable
+  || (node.localName === "input" && TEXT_ENTRY_TYPES.has(node.type)));
+// The node an area's event came from and every node above it up to the
+// object, through the shadow roots between them (the composed path): one of
+// them that keeps the browser's menu keeps it for the event.
+const keptBy = (event, target) => {
+  const path = event.composedPath?.() ?? [event.target];
+  for (const node of path) {
+    if (keepsBrowserMenu(node) && holds(target, node)) return true;
+    if (node === target) break;
+  }
+  return false;
+};
 // A long press: half a second, the finger still within ten pixels (the
 // platforms' own slop); a move further is a scroll.
 const LONG_PRESS_MS = 500;
@@ -1260,8 +1279,7 @@ class SfContextMenu extends ContextMenuElement {
   // browser's own menu (C164 (1)).
   browserKeeps(event, target) {
     if (event.shiftKey && event.type === "contextmenu" && event.button === 2) return true;
-    const from = inTreeOf(origin(event), target);
-    if (from?.closest?.(BROWSER_KEEPS) && target.contains(from.closest(BROWSER_KEEPS))) return true;
+    if (keptBy(event, target)) return true;
     const root = target.getRootNode?.();
     const selection = (typeof root?.getSelection === "function" ? root : document).getSelection?.();
     return Boolean(selection && !selection.isCollapsed && String(selection).trim()
@@ -1311,11 +1329,10 @@ class SfContextMenu extends ContextMenuElement {
     if (event.defaultPrevented || holds(this, node)) return;
     const found = this.targetOf(node);
     if (!found) return;
-    const from = inTreeOf(node, found.area);
     if (type === "pointerdown") {
       this.cancelPress();
       if (event.pointerType !== "touch" || event.button > 0 || !event.isPrimary) return;
-      if (from.closest?.(BROWSER_KEEPS)) return;
+      if (keptBy(event, found.target)) return;
       const press = {x: event.clientX, y: event.clientY, fired: false, at: 0};
       press.timer = setTimeout(() => {
         if (this._press !== press) return;
@@ -1328,7 +1345,7 @@ class SfContextMenu extends ContextMenuElement {
     }
     if (type === "keydown") {
       if (event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10")) return;
-      if (from.closest?.(BROWSER_KEEPS)) return;
+      if (keptBy(event, found.target)) return;
       event.preventDefault();
       this._keyAt = Date.now();
       this.openAtTarget(found.target);

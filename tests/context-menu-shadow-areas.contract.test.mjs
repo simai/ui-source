@@ -41,7 +41,8 @@ test('the events are read at the node they came from, once, on the document', ()
   const handler = slice('  handleAreaEvent(event) {', '  surface() {');
   assert.ok(!handler.includes('event.target'), 'the handler never reads the retargeted event.target');
   assert.match(handler, /const node = origin\(event\);/);
-  assert.match(handler, /const from = inTreeOf\(node, found\.area\);/);
+  // 1.27.3: what keeps the browser's menu is read along the composed path up to the object.
+  assert.match(handler, /keptBy\(event, found\.target\)/);
   // One listener per event type, on the document: no second one on a root.
   assert.match(source, /for \(const type of AREA_EVENTS\) document\.addEventListener\(type, this\._onAreaEvent, type === "click"\);/);
   assert.equal((source.match(/addEventListener\(type, this\._onAreaEvent/g) ?? []).length, 1);
@@ -52,7 +53,7 @@ test('the events are read at the node they came from, once, on the document', ()
 
 test('light DOM stays as it was: Shift, links, focus back, openFor and toggleFor', () => {
   assert.match(source, /if \(event\.shiftKey && event\.type === "contextmenu" && event\.button === 2\) return true;/);
-  assert.match(source, /const BROWSER_KEEPS = 'a\[href\], input, select, textarea/);
+  assert.match(source, /const BROWSER_KEEPS = 'a\[href\], textarea, \[role="textbox"\], \[role="searchbox"\]';/);
   assert.match(source, /const back = forObject && !\(somewhere && found\.target\.contains\(active\)\);/);
   // The deep focus is taken only when the document's focus is outside the
   // object and the deep one is inside it -- a shadow root's case alone.
