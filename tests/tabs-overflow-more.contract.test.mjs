@@ -43,9 +43,13 @@ test('the default change is in the change journal', () => {
 test('the row keeps the tabs in their order up to the first that does not fit, in its content box', () => {
   const layout = source.slice(source.indexOf('  layoutOverflow() {'), source.indexOf('  async openMore(anchor) {'));
   assert.ok(layout.length > 0);
-  assert.match(source, /import \{ fitInOrder, fitBesideMore, rowRoom, standardMenu, triggerExtra \} from '\.\.\/\.\.\/core\/js\/overflow-row\.js';/u);
-  // C54 return: fractional, not the rounded clientWidth.
-  assert.match(layout, /const room = \(\) => rowRoom\(list\);/u);
+  assert.match(source, /import \{ fitInOrder, fitBesideMore, layoutRowRoom, layoutWidth, standardMenu, triggerExtra \} from '\.\.\/\.\.\/core\/js\/overflow-row\.js';/u);
+  // C54 return: fractional, not the rounded clientWidth; sf-tabs 1.4.7: layout
+  // pixels, before any transform (docs hero study 2026-11-19, section 9).
+  assert.match(layout, /const room = \(\) => layoutRowRoom\(list\);/u);
+  assert.match(layout, /const width = \(host\) => layoutWidth\(tabBox\(host\)\);/u);
+  assert.match(engine, /export function layoutRowRoom\(list\) \{[^]*?return layoutWidth\(list\) - edges\.reduce\(/u);
+  assert.match(engine, /export function layoutWidth\(element\) \{[^]*?const width = parseFloat\(style\.width\);/u);
   assert.match(engine, /const edges = \['borderInlineStartWidth', 'borderInlineEndWidth', 'paddingInlineStart', 'paddingInlineEnd'\];/u);
   assert.match(engine, /return list\.getBoundingClientRect\(\)\.width - edges\.reduce\(/u);
   assert.match(engine, /const TOLERANCE = 0\.5;/u);
@@ -82,7 +86,7 @@ test('the row is laid out before the paint: in the resize observer, with every t
   assert.match(source, /expected\.set\(box, kept && !kept\.includes\(at\) \? 0 : widths\[at\]\);/u);
   assert.match(source, /if \(!kept\) this\.expectTabSizes\(hosts, widths, null\);/u);
   assert.match(source, /this\.expectTabSizes\(hosts, widths, kept\);\s*if \(more\) \{/u);
-  assert.match(source, /const width = \(host\) => tabBox\(host\)\?\.getBoundingClientRect\(\)\.width \?\? 0;/u);
+  assert.match(source, /const width = \(host\) => layoutWidth\(tabBox\(host\)\);/u);
   assert.match(source, /layoutOverflowNow\(\) \{\s*if \(this\._overflowFrame\) \{\s*cancelAnimationFrame\(this\._overflowFrame\);/u);
   assert.match(source, /observeTabBoxes\(\) \{/u);
   assert.match(source, /this\._resizeObserver\.disconnect\(\);\s*this\._observedTrigger = null;\s*this\._observedTabs = null;/u);
