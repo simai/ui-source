@@ -7,7 +7,12 @@
 //   End reaches the unavailable «Повторить» (dimmed, focusable, its reason as
 //   title and description), ← from the first tool wraps to the last, Tab goes
 //   to the text and Shift+Tab comes back to the tool left; in a right-to-left
-//   page ← moves forward; sf-editor-inline's toolbar is one Tab stop too;
+//   page ← moves forward; sf-editor-inline's toolbar is one Tab stop too.
+//   Since sf-input-rich 1.6.0 (owner decision C155) the text levels are one
+//   menu button «Абзац ▾» first in the row and what does not fit leaves for ⋯,
+//   so the row is levels, bold, italic, link, the lists, quote, undo, redo
+//   (and ⋯ while something is out); the page waits until the element has laid
+//   the row out;
 // - (4) SF.menu.open: two lists share the page's one menu; it opens at a point
 //   with its corner there and answers the row chosen;
 //   sf-editor-overlay's action toolbar is one Tab stop, Home and End reach its ends;
@@ -46,9 +51,14 @@ const server = createServer((request, response) => {
 await new Promise((settle) => server.once('listening', settle));
 const base = `http://127.0.0.1:${server.address().port}`;
 
+// A Russian page includes core/lang/ru.js before core, as a site does (owner
+// decision C282: English is built in, Russian is a language file); the checks
+// read the Russian words («Нечего повторять», «Действия: …») at once.
+if (!existsSync(join(parts.core, 'lang', 'ru.js'))) throw new Error(`core/lang/ru.js not found under ${out}`);
 const shell = (dir) => `<!doctype html><html lang="ru" dir="${dir}" class="theme-light"><head><meta charset="utf-8">
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false},icons:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
+<script src="/distr/core/lang/ru.js"></script>
 <script src="/distr/core/js/core.js"></script></head><body style="margin:0;padding:16px;display:grid;gap:16px">
 <button id="before" type="button">до</button>
 <sf-input-rich id="rich" label="Описание" value="&lt;p&gt;Текст&lt;/p&gt;"></sf-input-rich>
@@ -69,7 +79,7 @@ async function open(page, dir) {
   current = shell(dir);
   await page.goto(`${base}/probe`, {waitUntil: 'load'});
   await page.waitForFunction(() => customElements.get('sf-input-rich') && customElements.get('sf-list')
-    && document.querySelectorAll('#rich button.sf-rich-text-tool').length === 12, null, {timeout: 20000});
+    && document.querySelector('#rich .sf-rich-text-toolbar[data-sf-row-laid] button[data-sf-tool="levels"]'), null, {timeout: 20000});
   await page.evaluate(() => {
     const actions = [{id: 'copy', text: 'Копировать', icon: 'content_copy'}, {id: 'delete', text: 'Удалить', icon: 'delete', destructive: true}];
     const a = document.getElementById('a');
@@ -106,11 +116,16 @@ try {
   await open(page, 'ltr');
 
   // (1)-(3) the rich text toolbar.
-  const stops = await page.evaluate(() => [...document.querySelectorAll('#rich button.sf-rich-text-tool')].filter((b) => b.tabIndex >= 0).length);
-  check('the toolbar is one Tab stop', stops === 1, {got: stops});
+  const row = await page.evaluate(() => {
+    const tools = [...document.querySelectorAll('#rich button.sf-rich-text-tool')];
+    return {stops: tools.filter((b) => b.tabIndex >= 0).length,
+      shown: tools.filter((b) => !b.closest('.sf-rich-text-out') && !b.classList.contains('sf-rich-text-out')).map((b) => b.dataset.sfTool)};
+  });
+  check('the toolbar is one Tab stop', row.stops === 1, {got: row});
+  check('the row shows every tool at this width, the levels first', row.shown.join() === 'levels,bold,italic,link,bulleted-list,numbered-list,quote,undo,redo', {got: row});
   await page.focus('#before');
   await page.keyboard.press('Tab');
-  check('Tab enters on the first tool', (await focus(page)).tool === 'paragraph', {got: await focus(page)});
+  check('Tab enters on the first tool', (await focus(page)).tool === 'levels', {got: await focus(page)});
   await page.keyboard.press('End');
   const end = await focus(page);
   check('End reaches the unavailable «Повторить», with its reason', end.tool === 'redo' && end.disabled === 'true' && end.title === 'Нечего повторять' && end.description === 'Нечего повторять', {got: end});
@@ -123,7 +138,7 @@ try {
   await page.keyboard.press('Tab');
   check('Tab goes to the text', (await focus(page)).editor, {got: await focus(page)});
   await page.keyboard.press('Shift+Tab');
-  check('Shift+Tab comes back to the tool left', (await focus(page)).tool === 'heading-3', {got: await focus(page)});
+  check('Shift+Tab comes back to the tool left', (await focus(page)).tool === 'italic', {got: await focus(page)});
 
   // (5) a list: one Tab stop; Shift+F10, Escape; the menu key; «⋯» and a choice.
   await page.focus('#between');
@@ -172,7 +187,10 @@ try {
     await customElements.whenDefined('sf-editor-inline');
     await document.getElementById('ie').edit(document.getElementById('p1'), {nodeId: 'p1', label: 'Абзац'});
     await new Promise((done) => setTimeout(done, 200));
-    const buttons = [...document.querySelectorAll('.sf-inline-editor-toolbar > button')];
+    // The buttons stand in groups (C141 (4), C172); ⋯ at the row's end is
+    // .sf-inline-editor-out (display: none, out of the walk) while every group
+    // fits, so it is no Tab stop. The row itself shows on a selection.
+    const buttons = [...document.querySelectorAll('.sf-inline-editor-toolbar button')].filter((b) => !b.closest('.sf-inline-editor-out'));
     return {buttons: buttons.length, stops: buttons.filter((b) => b.tabIndex >= 0).length};
   });
   check('sf-editor-inline: the toolbar is one Tab stop', inline.buttons > 1 && inline.stops === 1, {got: inline});
@@ -202,7 +220,7 @@ try {
   await page.focus('#before');
   await page.keyboard.press('Tab');
   await page.keyboard.press('ArrowLeft');
-  check('right to left: ← moves to the next tool', (await focus(page)).tool === 'heading-2', {got: await focus(page)});
+  check('right to left: ← moves to the next tool', (await focus(page)).tool === 'bold', {got: await focus(page)});
 
   check('no page errors', errors.length === 0, {got: errors});
 } finally {
