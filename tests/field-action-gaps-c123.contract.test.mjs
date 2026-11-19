@@ -49,7 +49,7 @@ test('the versions', () => {
   assert.equal(json('src/core/passports/module.smart-helpers.json').version, '1.19.0'); // feat/button-truncate-appearance: field-appearance.js (one look vocabulary for every field) // 1.13.0: the anchored badge's .sf-dot (C185 (8)) // group build 9: 1.13.0 moved on by the merged branches or a GB9 patch // C282: 1.13.1 moved on by the language-file patch (Russian is a language file) // group build 13: 1.16.0 moved on by the merged branches or a GB11 merge
   // input-color moved on to 1.13.0 (fix/field-action-gaps-2-c123); its 1.12.1 note stays.
   // Group build 7: the notes numbered above the released pair (1.12.1 -> 1.13.1, 1.13.2 -> 1.15.1).
-  for (const [folder, version, current] of [['input-color', '1.13.1', '1.19.6'], ['input-lookup', '1.15.1', '1.17.4']] /* group build 9: input-color 1.18.1 */) {
+  for (const [folder, version, current] of [['input-color', '1.13.1', '1.19.6'], ['input-lookup', '1.15.1', '1.17.5']] /* group build 9: input-color 1.18.1 */) {
     const component = json(`src/smart/${folder}/component.json`);
     assert.equal(component.version, current, folder);
     const note = new RegExp(`^version ${version.replaceAll('.', '\\.')} \\(2026-11-15, owner decision C123 \\(6\\)`, 'u');
