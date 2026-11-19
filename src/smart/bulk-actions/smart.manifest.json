@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "id": "smart.bulk-actions",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "title": "Group actions",
-  "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run and its per-item result. One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
+  "summary": "The group actions bar of a list while items are selected: «Выбрано N» and ×, up to three labelled actions and «⋯», «Выбрать все N» after the page is selected, the question before a dangerous action, Undo in the notice of a reversible one, a short run, a fast action's result in place of the count and a long one's in a notice, failures written to «Уведомления». One bar for sf-view, sf-view-table, sf-gallery, sf-pagination and any list.",
   "kind": "smart",
   "reuse_mode": "whole",
   "lifecycle": "experimental",
@@ -125,7 +125,7 @@
   "contracts": {},
   "methods": {
     "progress": {
-      "summary": "A short run in the bar: «Выполняем: 4 из 12» (or «<text>: 4 / 12») over a progress bar, the actions out of reach until done reaches total or result() comes. Refused {reason: long} over 100 items -- a job longer than that is the host's sf-progress-run (C34) -- and {reason: invalid} without a total",
+      "summary": "A short run in the bar: «Выполняем: 4 из 12» (or «<text>: 4 / 12») over a progress bar, the actions out of reach until done reaches total or result() comes. Refused {reason: long} over 100 items -- an action that long goes in the background and its result in a notice (C387); its progress is the host's sf-progress-run (C34) -- and {reason: invalid} without a total",
       "arguments": [
         {
           "name": "args",
@@ -156,7 +156,7 @@
       }
     },
     "result": {
-      "summary": "How it went, failed as [{id, text, reason}]: with refusals the bar says «Готово 10 из 12 · 2 не удалось» with «Подробнее» (the list in a question window) and «Повторить для 2»; the host keeps the failed items selected, and the result goes when the selection changes. Without refusals it is said and the bar goes back",
+      "summary": "How an action went, failed as [{id, text, reason}] (owner decision C387, refining C295 and C331). A fast action: without refusals the bar says «Удалено: 5» (the action's done-text, else «Готово: 5») in place of the count for 4 s and goes back, the selection may drop to 0 meanwhile; with refusals «Готово 10 из 12 · 2 не удалось» with «Подробнее» (the list in a question window) and «Повторить для 2», the host keeps the failed items selected and the result goes when the selection changes. A long action (long in its action event): a notice, success or an error that stays with «Подробнее». A failure is written to «Уведомления» either way: SF.notify's sf-notification record, source sf-bulk-actions (a fast one's not shown again as a toast, the bar shows it). A reversible action's success says nothing more: its notice with «Отменить» already did",
       "arguments": [
         {
           "name": "args",
@@ -165,6 +165,9 @@
           "schema": {
             "type": "object",
             "properties": {
+              "id": {
+                "description": "The action it reports (its id in the action event); the last one sent when not given."
+              },
               "ok": {
                 "type": "number"
               },
@@ -196,13 +199,14 @@
   },
   "events": {
     "sf-bulk-actions-action": {
-      "summary": "A person chose an action (after «yes» in the question when it asks one): the host does it on the selection or on all under the filter. Cancel it to refuse; a reversible action's notice is then not shown",
+      "summary": "A person chose an action (after «yes» in the question when it asks one): the host does it on the selection or on all under the filter, and says how it went with result(). Cancel it to refuse; a reversible action's notice is then not shown",
       "payload": {
         "type": "object",
         "required": [
           "id",
           "scope",
-          "count"
+          "count",
+          "long"
         ],
         "properties": {
           "id": {
@@ -218,6 +222,10 @@
           "count": {
             "type": "number",
             "description": "How many items it goes to."
+          },
+          "long": {
+            "type": "boolean",
+            "description": "The action is long (C387): the host runs it in the background and answers with result({id, ...}) when it ends; the bar does not show its progress."
           }
         },
         "additionalProperties": true
@@ -320,7 +328,8 @@
         "hidden",
         "shown",
         "running",
-        "result"
+        "result",
+        "done"
       ]
     },
     "visual_states": [
@@ -422,15 +431,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/bulk-actions/index.js",
-        "sha256": "2f1f304f9972f264b71f423eb9c592639cf9c2f7b33da33cc2c348080db1091f"
+        "sha256": "7c4c8dd9f385ab8a94b200ad882b43dc1d5877779e7499446da63f533075e502"
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
-        "sha256": "1e378ae0f8fe8ccf096d6dc9a852d5b239dfa0fbce8e10a2aee26f0530486608"
+        "sha256": "9db78fdf75c361577938c924512ec99aa1588961d907184b4dcf98bfc15af02d"
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
-        "sha256": "799a0d915910c05beddc66be47ee44ffe1d413bf8349864cb58dfef8d65eb64e"
+        "sha256": "0321d7bdaca417f6eb46bc9b0000ec71c53698cf9191a7d12bcff3a2555c81b4"
       },
       {
         "path": "src/smart/bulk-actions/rule.js",
@@ -438,17 +447,17 @@
       },
       {
         "path": "src/smart/bulk-actions/docs.md",
-        "sha256": "1ecaf798dd071d0d7089299aadecfb89d0dc67377f1610ffc668f5b57bf608e9"
+        "sha256": "3fe1197591e52ea26889c5674cf166d987e70402d89c710c0c0db06caecc9498"
       }
     ],
     "generated_runtime": []
   },
   "ai_guidance": {
-    "use_when": "Use sf-bulk-actions with any list, table, gallery or tree whose items a person selects to act on several at once: place it after the list (before it for place top), write count, page-count and total from the selection, give it actions and do the work on sf-bulk-actions-action.",
+    "use_when": "Use sf-bulk-actions with any list, table, gallery or tree whose items a person selects to act on several at once: place it after the list (before it for place top), write count, page-count and total from the selection, give it actions, do the work on sf-bulk-actions-action and answer with result({id, ok, failed}).",
     "do_not": [
       "Do not draw your own «Выбрано N» row, Apply button or «для всех» checkbox beside a list",
       "Do not move the focus into the bar when a row is selected",
-      "Do not run a job over 100 items or longer than about 10 s in the bar; use sf-progress-run (C34)",
+      "Do not show your own toast or bar line for a bulk result: call result() and the bar says it in place, in a notice or in «Уведомления» (C387); give a job's progress with sf-progress-run (C34)",
       "Do not ask your own question before a dangerous action the bar already asks about"
     ],
     "required_reads": [

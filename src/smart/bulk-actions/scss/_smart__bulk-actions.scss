@@ -111,7 +111,8 @@
   line-height: var(--sf-text-height-2);
 }
 
-.sf-bulk-actions__say--warning {
+.sf-bulk-actions__say--warning,
+.sf-bulk-actions__say--done {
   display: inline-flex;
   align-items: center;
   gap: var(--sf-gap--icon-inline);
@@ -172,6 +173,12 @@
   }
   .sf-bulk-actions__warning {
     color: var(--sf-warning);
+  }
+  .sf-bulk-actions__done--done {
+    color: var(--sf-success);
+  }
+  .sf-bulk-actions__done--background {
+    color: var(--sf-on-surface-icon);
   }
   @media (forced-colors: active) {
     .sf-bulk-actions {

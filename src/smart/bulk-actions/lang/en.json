@@ -33,6 +33,14 @@
     "details-text": "Details",
     "details-heading": "Failed: {failed} of {total}",
     "retry-text": "Retry for {n}",
-    "failed-reason": "Refused by the server"
+    "failed-reason": "Refused by the server",
+    "done-text": "Done: {n}",
+    "done-own-text": "{done}: {n}",
+    "background-text": "{action}: running in the background",
+    "failure-text": "{action}: {failed} of {total} failed",
+    "more-failed-text": {
+      "one": "{n} more",
+      "other": "{n} more"
+    }
   }
 }

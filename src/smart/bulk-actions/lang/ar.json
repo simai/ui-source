@@ -44,6 +44,18 @@
     "details-text": "التفاصيل",
     "details-heading": "فشل: {failed} من {total}",
     "retry-text": "إعادة المحاولة لـ {n}",
-    "failed-reason": "رفضه الخادم"
+    "failed-reason": "رفضه الخادم",
+    "done-text": "تم: {n}",
+    "done-own-text": "{done}: {n}",
+    "background-text": "{action}: يعمل في الخلفية",
+    "failure-text": "{action}: فشل {failed} من {total}",
+    "more-failed-text": {
+      "zero": "و{n} أخرى",
+      "one": "و{n} أخرى",
+      "two": "و{n} أخريان",
+      "few": "و{n} أخرى",
+      "many": "و{n} أخرى",
+      "other": "و{n} أخرى"
+    }
   }
 }

@@ -39,6 +39,16 @@
     "details-text": "Подробнее",
     "details-heading": "Не удалось: {failed} из {total}",
     "retry-text": "Повторить для {n}",
-    "failed-reason": "Отказ сервера"
+    "failed-reason": "Отказ сервера",
+    "done-text": "Готово: {n}",
+    "done-own-text": "{done}: {n}",
+    "background-text": "{action}: идёт в фоне",
+    "failure-text": "{action}: не удалось {failed} из {total}",
+    "more-failed-text": {
+      "one": "и ещё {n}",
+      "few": "и ещё {n}",
+      "many": "и ещё {n}",
+      "other": "и ещё {n}"
+    }
   }
 }

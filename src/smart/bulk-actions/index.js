@@ -17,9 +17,13 @@
 // action runs at once and the notice offers «Отменить» (SF.notify, C25).
 // After the page is selected, «Выбрать все N» takes all under the filter
 // (all-selected, «Только эта страница» back). A short run shows in the bar
-// (progress()), its result says which failed (result()); a long job is the
-// host's sf-progress-run (C34). The focus is never moved into the bar; Esc
-// in the list or the bar clears the selection.
+// (progress()). Where a result goes (owner decision C387, 2026-11-19, refining
+// C295 and C331): a fast action's result is said in the bar in place of the
+// count («Удалено: 5», then back), or which failed; a long one (more than 100
+// items, or long: true) goes in the background and ends with a notice
+// (SF.notify); a failure is written to «Уведомления» too (the notice's
+// sf-notification record). The focus is never moved into the bar; Esc in the
+// list or the bar clears the selection.
 //
 // The host list owns the selection, what «all under the filter» means, doing
 // an action, undoing it and which items failed: the bar only says and asks.
@@ -34,18 +38,22 @@ import {openLayers} from '../../core/js/layer-stack';
 import {pageLocale} from '../../core/js/page-language';
 import {BREAKPOINTS} from '../../core/js/breakpoints.js';
 import {isDestructiveAction, orderActions} from './js/danger.js';
-import {VISIBLE, VISIBLE_COMPACT, normalizeAction, number, splitActions} from './js/actions.js';
+import {LONG_OVER, VISIBLE, VISIBLE_COMPACT, isLongAction, normalizeAction, number, resultRoute, splitActions} from './js/actions.js';
 import {renderBulkActionsTemplate} from './js/templates/default';
 import manifest from './component.json';
 import './scss/index.scss';
 import {files as languageFiles} from './lang/index.mjs';
 
-export {isDestructiveAction, normalizeAction, orderActions, splitActions};
+export {isDestructiveAction, isLongAction, normalizeAction, orderActions, resultRoute, splitActions};
 
 const SIZES = ['1/2', '1', '2'];
 const PLACES = ['dock', 'top', 'float', 'inline'];
 // A run longer than this many items is a job: the host's sf-progress-run (C34).
-const SHORT_RUN = 100;
+const SHORT_RUN = LONG_OVER;
+// How long a fast action's result stays in the bar before it goes back (C387).
+const DONE_FOR = 4000;
+// The failed items a notice names before «и ещё N».
+const NAMED_FAILURES = 3;
 // The live region speaks after the selection settles (Carbon, Shopify).
 const SAY_AFTER = 300;
 // The «⋯» row of the folded offer (C309 (1)): an id no action of a host takes.
@@ -59,8 +67,8 @@ const BulkActionsElement = elementFromManifest(manifest, {
     progress({done, total, text} = {}) {
       return this.showProgress({done, total, text});
     },
-    result({ok, failed, text} = {}) {
-      return this.showResult({ok, failed, text});
+    result({id, ok, failed, text} = {}) {
+      return this.showResult({id, ok, failed, text});
     },
     clear() {
       this.clear();
@@ -74,6 +82,11 @@ class SfBulkActions extends BulkActionsElement {
     super();
     this._run = null;
     this._result = null;
+    // A fast action's result said in place of the count, or a long one's
+    // start (C387): {text, kind: done | background}, for DONE_FOR.
+    this._done = null;
+    // The actions sent and not answered yet, by id: what result() reports on.
+    this._sent = new Map();
     this._announcement = '';
     this._compact = false;
     // C309 (1): on a phone the offer «Выбрать все N» goes into «⋯» when the
@@ -96,6 +109,7 @@ class SfBulkActions extends BulkActionsElement {
     this._rowObserver?.disconnect();
     this._rowObserver = null;
     clearTimeout(this._sayTimer);
+    clearTimeout(this._doneTimer);
     super.disconnectedCallback?.();
   }
 
@@ -115,8 +129,12 @@ class SfBulkActions extends BulkActionsElement {
       return;
     }
     if (this._result && count !== this._result.failed.length) this._result = null;
+    // A new selection takes the place of a said result; the selection going
+    // to none after the action (the rows it deleted) leaves it said.
+    if (this._done && count > 0 && name === 'count') this.endDone({update: false});
     if (this._run) return;
     const before = name === 'count' ? number(oldValue) : count;
+    if (this._done && count === 0) return;
     if (count > 0) this.say(this.allSelected && this.total ? this.word('all-text', this.total) : this.word('count-text', count));
     else if (before > 0) this.say(this.sfWord('cleared-text'));
   }
@@ -157,10 +175,11 @@ class SfBulkActions extends BulkActionsElement {
     return this.allSelected && this.total ? this.total : this.selectedCount;
   }
 
-  /** What the bar does now: idle, running a short run, or showing a result. */
+  /** What the bar does now: idle, running a short run, showing a result or a done line. */
   get runState() {
     if (this._run) return 'running';
     if (this._result) return 'result';
+    if (this._done) return 'done';
     return this.selectedCount > 0 ? 'shown' : 'hidden';
   }
 
@@ -293,6 +312,7 @@ class SfBulkActions extends BulkActionsElement {
 
   clear(reason = 'button') {
     this._result = null;
+    this.endDone({update: false});
     const count = this.selectedCount;
     const all = this.allSelected;
     if (all) this.removeAttribute('all-selected');
@@ -367,13 +387,75 @@ class SfBulkActions extends BulkActionsElement {
       if (!yes) return {outcome: 'refused', reason: 'declined'};
     }
     this._result = null;
+    this.endDone({update: false});
     this._lastAction = action.id;
-    const detail = {id: action.id, scope, count};
+    // C387: long (more than 100 items, or the author's long) goes in the
+    // background and ends with a notice; the host reads it here too.
+    const long = isLongAction(action, count);
+    const detail = {id: action.id, scope, count, long};
     const allowed = this.sfEmit('action', detail);
     this.requestComponentUpdate('action');
     if (!allowed) return {outcome: 'refused', reason: 'prevented'};
+    this._sent.set(action.id, {action, detail});
     if (action.undo) this.offerUndo(action, detail);
+    else if (long) this.showDone(this.sfWord('background-text', {vars: {action: action.text}}), 'background');
     return {outcome: 'applied'};
+  }
+
+  // A line in place of the count for DONE_FOR, then back (C387): a fast
+  // action's «Удалено: 5», or a long one's start in the background.
+  showDone(text, kind = 'done') {
+    clearTimeout(this._doneTimer);
+    this._done = {text, kind};
+    this.say(text);
+    this.requestComponentUpdate('done');
+    this._doneTimer = setTimeout(() => this.endDone(), DONE_FOR);
+  }
+
+  endDone({update = true} = {}) {
+    clearTimeout(this._doneTimer);
+    if (!this._done) return;
+    this._done = null;
+    if (update) this.requestComponentUpdate('done');
+  }
+
+  // What a done action says: its own word («Удалено: 5») or «Готово: 5».
+  doneLine(action, ok) {
+    const n = this.formatNumber(ok);
+    return action?.doneText
+      ? this.sfWord('done-own-text', {count: ok, vars: {done: action.doneText, n}})
+      : this.word('done-text', ok);
+  }
+
+  // «Опубликовать: не удалось 2 из 12».
+  failureLine(action, shown) {
+    return this.sfWord('failure-text', {count: shown.failed.length, vars: {
+      action: action?.text ?? '', failed: this.formatNumber(shown.failed.length), total: this.formatNumber(shown.total)}});
+  }
+
+  // A failure for «Уведомления» (C331, C332, C341): one record with the
+  // action, how many of how many, the first failed items and why. A long
+  // action's is shown as an error notice that stays until closed (C339); a
+  // fast one's only recorded (the bar shows it): SF.notify's sf-notification
+  // event is what a notification centre writes down.
+  noticeFailure({action, shown, show}) {
+    const notify = globalThis.SF?.notify;
+    if (typeof notify !== 'function') return;
+    const fallback = this.sfWord('failed-reason');
+    const named = shown.failed.slice(0, NAMED_FAILURES)
+      .map((item) => `${item.text || item.id} — ${item.reason || fallback}`);
+    const more = shown.failed.length - named.length;
+    if (more > 0) named.push(this.word('more-failed-text', more));
+    const title = show ? shown.text : this.failureLine(action, shown);
+    notify({
+      status: 'error',
+      title,
+      text: named.join('; '),
+      source: 'sf-bulk-actions',
+      key: `sf-bulk-actions|${action?.id ?? ''}|${title}`,
+      silent: !show,
+      actions: show ? [{label: this.sfWord('details-text'), onSelect: () => this.showDetails(shown)}] : undefined,
+    });
   }
 
   offerUndo(action, detail) {
@@ -456,27 +538,50 @@ class SfBulkActions extends BulkActionsElement {
     return text ? `${text}: ${vars.done} / ${vars.total}` : this.sfWord('progress-text', {vars});
   }
 
-  // The result in place: «Готово 10 из 12 · 2 не удалось», «Подробнее» and
-  // «Повторить для 2»; the host keeps the failed items selected.
-  showResult({ok = 0, failed = [], text = ''} = {}) {
+  // How an action went (C387). id names the action (the last one sent when
+  // not given). A fast one's result is in place: «Удалено: 5» for a while and
+  // back, or «Готово 10 из 12 · 2 не удалось» with «Подробнее» and «Повторить
+  // для 2» (the host keeps the failed items selected). A long one's is a
+  // notice: success, or an error that stays with «Подробнее». A failure is
+  // written to «Уведомления» either way.
+  showResult({id, ok = 0, failed = [], text = ''} = {}) {
     const refusals = (Array.isArray(failed) ? failed : [])
       .map((item) => (item && typeof item === 'object' ? item : {id: String(item ?? '')}))
       .map((item) => ({id: String(item.id ?? ''), text: String(item.text ?? item.id ?? ''), reason: String(item.reason ?? '')}));
     const done = number(ok);
     const total = done + refusals.length;
-    this._run = null;
-    const line = text || [
-      this.sfWord('result-text', {vars: {ok: this.formatNumber(done), total: this.formatNumber(total)}}),
-      refusals.length ? this.word('failed-text', refusals.length) : '',
-    ].filter(Boolean).join(' · ');
-    this._result = refusals.length ? {ok: done, total, failed: refusals, text: line, action: this._lastAction ?? null} : null;
-    this.say(line);
-    this.requestComponentUpdate('result');
+    const actionId = id === undefined || id === null || id === '' ? this._lastAction ?? null : String(id);
+    const sent = actionId !== null ? this._sent.get(actionId) : null;
+    if (sent) this._sent.delete(actionId);
+    const action = sent?.action ?? (actionId !== null ? this.findAction(actionId) : null);
+    const long = sent?.detail.long ?? false;
+    const route = resultRoute({long, failed: refusals.length, undo: Boolean(action?.undo)});
+    const line = refusals.length
+      ? text || (long
+        ? this.failureLine(action, {failed: refusals, total})
+        : [
+          this.sfWord('result-text', {vars: {ok: this.formatNumber(done), total: this.formatNumber(total)}}),
+          this.word('failed-text', refusals.length),
+        ].join(' · '))
+      : text || this.doneLine(action, done);
+    const shown = {ok: done, total, failed: refusals, text: line, action: actionId};
+    if (!long) {
+      this._run = null;
+      this._result = route.bar === 'failed' ? shown : null;
+      if (route.bar === 'done') this.showDone(line, 'done');
+      else {
+        this.endDone({update: false});
+        this.say(line);
+      }
+      this.requestComponentUpdate('result');
+    } else if (route.notice === 'success') {
+      globalThis.SF?.notify?.({status: 'success', title: line, source: 'sf-bulk-actions'});
+    }
+    if (route.record) this.noticeFailure({action, shown, show: long});
     return undefined;
   }
 
-  showDetails() {
-    const shown = this._result;
+  showDetails(shown = this._result) {
     if (!shown) return;
     const doc = this.ownerDocument;
     const modal = doc.createElement('sf-modal');
@@ -509,10 +614,10 @@ class SfBulkActions extends BulkActionsElement {
   }
 
   // «Выбрать все N» once the whole page is selected and the total is larger;
-  // «Только эта страница (N)» while all are; nothing while a run or a result
-  // holds the start.
+  // «Только эта страница (N)» while all are; nothing while a run, a result or
+  // a done line holds the start.
   currentOffer() {
-    if (this._run || this._result) return null;
+    if (this._run || this._result || this._done) return null;
     const count = this.selectedCount;
     const total = this.total;
     const pageCount = this.pageCount;
@@ -525,7 +630,6 @@ class SfBulkActions extends BulkActionsElement {
     const count = this.selectedCount;
     const effective = this.effectiveCount;
     const total = this.total;
-    const pageCount = this.pageCount;
     const all = this.allSelected && total > 0;
     const {visible, rest} = this.split();
     const mark = (action) => {
@@ -545,7 +649,10 @@ class SfBulkActions extends BulkActionsElement {
       details: this.sfWord('details-text'),
       retry: this._result.action ? this.word('retry-text', this._result.failed.length) : '',
     } : null;
-    const shown = count > 0 || Boolean(this._run) || Boolean(this._result);
+    // A done line in place of the count (C387); the actions stay while items
+    // are still selected (an action that keeps them, «В архив»).
+    const done = this._done && !this._run && !this._result ? {...this._done, actions: count > 0} : null;
+    const shown = count > 0 || Boolean(this._run) || Boolean(this._result) || Boolean(done);
     this.sfHostState('data-state', this.runState);
     this.sfHostState('data-place', this.place);
     return this.createTemplateContext({
@@ -563,6 +670,7 @@ class SfBulkActions extends BulkActionsElement {
       rest,
       run,
       result,
+      done,
       start: this.hasSlotContent('start') ? this.getSlotContent('start') : nothing,
       end: this.hasSlotContent('end') ? this.getSlotContent('end') : nothing,
       announcement: this._announcement,

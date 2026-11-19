@@ -6,6 +6,9 @@ import {isDestructiveAction, orderActions} from './danger.js';
 // as an icon button with its name in the tooltip.
 export const VISIBLE = 3;
 export const VISIBLE_COMPACT = 1;
+// An action on more items than this is long (C34's limit, C387): it goes in
+// the background and its result comes in a notice, not in the bar.
+export const LONG_OVER = 100;
 
 export const number = (value) => {
   const parsed = Number(value);
@@ -14,7 +17,8 @@ export const number = (value) => {
 
 /**
  * One action as the bar reads it. Takes the bar's own shape {id, text, icon,
- * status, confirm, undo, min, max, reason, priority, disabled} and the shapes
+ * status, confirm, undo, long, done-text, min, max, reason, priority,
+ * disabled} and the shapes
  * of the copies it replaces: sf-pagination's {value, text, danger, disabled}
  * and sf-view-table's {id, name}.
  */
@@ -38,6 +42,9 @@ export function normalizeAction(item, index = 0) {
     danger,
     confirm,
     undo: item.undo === true,
+    // true or false as the author says; null: long over LONG_OVER items.
+    long: typeof item.long === 'boolean' ? item.long : null,
+    doneText: String(item['done-text'] ?? item.doneText ?? '').trim(),
     min: number(item.min),
     max: number(item.max),
     reason: String(item.reason ?? '').trim(),
@@ -59,3 +66,28 @@ export function splitActions(actions, cap = VISIBLE) {
   return {visible, rest};
 }
 
+
+/**
+ * Whether an action on count items is long (owner decision C387): what the
+ * author says (long true or false), else more than LONG_OVER items. A long
+ * one goes in the background and ends with a notice; a fast one says its
+ * result in the bar.
+ */
+export function isLongAction(action, count) {
+  if (action?.long === true || action?.long === false) return action.long;
+  return number(count) > LONG_OVER;
+}
+
+/**
+ * Where a result goes (C387, C331, C332): a fast action's in the bar (done
+ * or the failed ones), a long one's in a notice; a failure is also written to
+ * «Уведомления» (the sf-notification record) -- a long one's shown as an
+ * error notice that stays, a fast one's only recorded, the bar shows it.
+ */
+export function resultRoute({long = false, failed = 0, undo = false} = {}) {
+  const failures = number(failed) > 0;
+  if (long) return {bar: null, notice: failures ? 'error' : 'success', record: failures};
+  if (failures) return {bar: 'failed', notice: null, record: true};
+  // A reversible action's notice already said it, with «Отменить» (C25).
+  return {bar: undo ? null : 'done', notice: null, record: false};
+}

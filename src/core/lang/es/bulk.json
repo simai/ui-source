@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 24,
-    "translated": 24,
+    "words": 29,
+    "translated": 29,
     "share": 100
   },
   "words": {
@@ -50,7 +50,16 @@
       "details-text": "Detalles",
       "details-heading": "Con error: {failed} de {total}",
       "retry-text": "Reintentar para {n}",
-      "failed-reason": "Rechazado por el servidor"
+      "failed-reason": "Rechazado por el servidor",
+      "done-text": "Hecho: {n}",
+      "done-own-text": "{done}: {n}",
+      "background-text": "{action}: en segundo plano",
+      "failure-text": "{action}: fallaron {failed} de {total}",
+      "more-failed-text": {
+        "one": "y {n} más",
+        "many": "y {n} más",
+        "other": "y {n} más"
+      }
     }
   }
 }

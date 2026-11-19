@@ -35,6 +35,15 @@
     "details-text": "Detalhes",
     "details-heading": "Com falha: {failed} de {total}",
     "retry-text": "Tentar novamente para {n}",
-    "failed-reason": "Recusado pelo servidor"
+    "failed-reason": "Recusado pelo servidor",
+    "done-text": "Concluído: {n}",
+    "done-own-text": "{done}: {n}",
+    "background-text": "{action}: em segundo plano",
+    "failure-text": "{action}: {failed} de {total} falharam",
+    "more-failed-text": {
+      "one": "e mais {n}",
+      "many": "e mais {n}",
+      "other": "e mais {n}"
+    }
   }
 }

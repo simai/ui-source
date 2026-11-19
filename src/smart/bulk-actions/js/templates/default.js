@@ -11,7 +11,9 @@ import {keyed} from 'lit/directives/keyed.js';
 // when the row would take a second line: C309 (1)); the actions, «⋯» and
 // the clear cross at the end. While a short run goes the start says «Выполняем:
 // 4 из 12» over a bar; a result with refusals says «Готово 10 из 12 · 2 не
-// удалось» with «Подробнее» and «Повторить для 2». The row is a plain row of
+// удалось» with «Подробнее» and «Повторить для 2»; a fast action's result
+// says «Удалено: 5» in place of the count for a while, a long action's start
+// «Экспорт: идёт в фоне» (C387). The row is a plain row of
 // buttons in Tab order, 8 apart (C184: roving is for icon rows), the focus is
 // never moved into it.
 //
@@ -73,6 +75,16 @@ function result(context) {
   </div>`;
 }
 
+// A fast action's result, or a long one's start, in place of the count (C387).
+function done(context) {
+  const {done: shown} = context;
+  const icon = shown.kind === 'background' ? 'schedule' : 'check_circle';
+  return html`<div class="sf-bulk-actions__lead" data-sf-bulk-done=${shown.kind}>
+    <span class="sf-bulk-actions__say sf-bulk-actions__say--done"><sf-icon class=${`sf-bulk-actions__done sf-bulk-actions__done--${shown.kind}`}
+      icon=${icon} size="1/2" aria-hidden="true"></sf-icon><span class="sf-bulk-actions__text">${shown.text}</span></span>
+  </div>`;
+}
+
 export function renderBulkActionsTemplate(context) {
   const {words, component, size} = context;
   const classes = [
@@ -83,17 +95,22 @@ export function renderBulkActionsTemplate(context) {
     context.rootClass,
   ].filter(Boolean).join(' ');
   const busy = Boolean(context.run || context.result);
+  const quiet = busy || Boolean(context.done && !context.done.actions);
+  let lead;
+  if (busy) lead = context.run ? run(context) : result(context);
+  else if (context.done) lead = done(context);
+  else {
+    lead = html`<div class="sf-bulk-actions__lead">
+            <span class="sf-bulk-actions__count">${context.countText}</span>
+            ${offer(context)}
+          </div>`;
+  }
   return html`<div class=${classes} role="region" aria-label=${context.label} ?hidden=${!context.shown}
       aria-busy=${context.run ? 'true' : nothing} data-sf-bulk-actions>
       ${context.start}
-      ${busy
-        ? (context.run ? run(context) : result(context))
-        : html`<div class="sf-bulk-actions__lead">
-            <span class="sf-bulk-actions__count">${context.countText}</span>
-            ${offer(context)}
-          </div>`}
+      ${lead}
       <div class="sf-bulk-actions__end">
-        ${busy ? nothing : html`<div class="sf-bulk-actions__actions">
+        ${quiet ? nothing : html`<div class="sf-bulk-actions__actions">
           ${context.visible.map((action) => actionButton(context, action))}
           ${context.rest.length || context.offerFolded ? moreButton(context) : nothing}
         </div>`}

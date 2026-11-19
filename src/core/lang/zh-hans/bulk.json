@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 24,
-    "translated": 24,
+    "words": 29,
+    "translated": 29,
     "share": 100
   },
   "words": {
@@ -44,7 +44,14 @@
       "details-text": "详情",
       "details-heading": "失败：{failed}/{total}",
       "retry-text": "重试 {n} 项",
-      "failed-reason": "被服务器拒绝"
+      "failed-reason": "被服务器拒绝",
+      "done-text": "已完成：{n}",
+      "done-own-text": "{done}：{n}",
+      "background-text": "{action}：正在后台运行",
+      "failure-text": "{action}：{total} 项中有 {failed} 项失败",
+      "more-failed-text": {
+        "other": "等另外 {n} 项"
+      }
     }
   }
 }

@@ -29,6 +29,13 @@
     "details-text": "詳細",
     "details-heading": "失敗: {total} 件中 {failed} 件",
     "retry-text": "{n} 件を再試行",
-    "failed-reason": "サーバーに拒否されました"
+    "failed-reason": "サーバーに拒否されました",
+    "done-text": "完了: {n}",
+    "done-own-text": "{done}: {n}",
+    "background-text": "{action}: バックグラウンドで実行中",
+    "failure-text": "{action}: {total} 件中 {failed} 件が失敗",
+    "more-failed-text": {
+      "other": "ほか {n} 件"
+    }
   }
 }
