@@ -8,7 +8,21 @@ import { optionBadgeProps } from "../../../helpers/option-badge.js";
 // the option's name is a tonal badge in that colour in its row, as in a cell,
 // a view, a checklist and segmented buttons; the badge's text is the row's
 // name.
+//
+// An option's dot (owner decision C314 (4)): `dot` names a status colour --
+// primary, tertiary, info, success, warning, error or neutral (the grey) --
+// and the row draws sf-dot's 8 px disc before the name, at the dot's gap
+// (the filter window's conditions: excluding red, presence purple, the rest
+// grey). The name stays the row's text.
+const OPTION_DOTS = new Set(["primary", "tertiary", "info", "success", "warning", "error", "neutral"]);
+
 function optionName(option) {
+  if (option.dot && OPTION_DOTS.has(String(option.dot)) && typeof option.text === "string") {
+    return {
+      ...option,
+      text: html`<span class="sf-dot sf-dot--size-1 sf-dot--${String(option.dot)} sf-dropdown-option-dot"><span class="sf-dot-item" aria-hidden="true"></span>${option.text}</span>`,
+    };
+  }
   if (!option.color || typeof option.text !== "string") return option;
   const badge = optionBadgeProps({color: option.color});
   return {
@@ -333,7 +347,7 @@ export function renderDropdownTemplate(context) {
           context.component?.hasSlotContent?.('trigger') ? " sf-list--free-width" : ""
         }`}
         style=${`--sf-list--cell: ${CELL[context.size] || CELL["1"]}`}
-        data-sf-list-width=${context.listWidth === "list" ? "list" : nothing}
+        data-sf-list-width=${context.listWidth === "list" || context.listWidth === "trigger" ? context.listWidth : nothing}
         ?hidden=${!context.open}
       >
         ${context.search

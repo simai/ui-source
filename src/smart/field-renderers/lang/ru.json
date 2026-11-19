@@ -262,6 +262,10 @@
     "operatorLessWord": "меньше",
     "operatorFromTo": "от – до",
     "operatorMoreOrEqualWord": "больше или равно",
-    "operatorLessOrEqualWord": "меньше или равно"
+    "operatorLessOrEqualWord": "меньше или равно",
+    "rangeFromWord": "от",
+    "rangeToWord": "до",
+    "filterTextPlaceholder": "Текст",
+    "filterRemoveCondition": "Снять условие"
   }
 }

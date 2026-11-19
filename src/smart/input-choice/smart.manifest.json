@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-choice",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "title": "Choice",
   "summary": "A form field that picks one option, or several, from cards in three layouts: list (one frame of rows, delivery and payment), tile (plans, modules) and picture (templates with an image). Each card has a name, a badge, a description, a price and term, and the real radio or checkbox on its name line. One option is a radio group the arrow keys move through; several are checkboxes. A chosen card has a 2 px primary edge over the lowest primary fill; invalid cards an error edge and a message under them.",
   "kind": "smart",
@@ -86,6 +86,11 @@
           "start",
           "end"
         ]
+      },
+      "panel": {
+        "type": "boolean",
+        "default": false,
+        "description": "appearance list as a dropping panel's content (owner decisions C313 (3), C312 (1); the filter field window): the search is the panel's header, as in sf-dropdown's open list -- a row of the step and the panel's inset above and below (48, 44 on a phone), across the whole list with its hairline, its icon over the rows' pictures or at its end over rows without one, its text over the names; the rows stand at the panel's inset, their picture at the row's padding from the name. While a search is typed in a multiple list, «Select found (N)» is the first row and chooses the N rows found and not chosen."
       },
       "multiple": {
         "type": "boolean",
@@ -378,11 +383,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/input-choice/index.js",
-        "sha256": "0a9266f685c53c02463a0d480ae151cc19bd17405edab4c2c9ef917ea7a8c7ed"
+        "sha256": "bbbc22fc972d72710d51afb8cec40907388ebcea81b1325a97b11581b385894a"
       },
       {
         "path": "src/smart/input-choice/js/templates/default.js",
-        "sha256": "37a02652e07a6d821dc29cbd9930de46783097597c7b24d8153785dc19e30b77"
+        "sha256": "31c213a093998fce649a996eb0a205cd1877f5df1eff726145fdfff4ad99f504"
       },
       {
         "path": "src/smart/input-choice/js/choice-model.mjs",
@@ -390,7 +395,7 @@
       },
       {
         "path": "src/smart/input-choice/scss/_smart__choice.scss",
-        "sha256": "6ae9336263feb390574213add7a123ace39379a85c8137e2f25364aabbbe4e24"
+        "sha256": "fb4ddf6a370251d6a713411a65ade795da9dba9515386d8c4b6dc51dee069b84"
       },
       {
         "path": "src/smart/input-choice/rule.js",
@@ -398,7 +403,7 @@
       },
       {
         "path": "src/smart/input-choice/docs.md",
-        "sha256": "cef1512c9a48ae0d0d835efc40e1d3ba1ee481ef3201c8c939efee7be1c469f1"
+        "sha256": "a4b6c1510d6add9aac7a4fbb6e0e467c7c324f07c746023ced38f7a9aec6f8a3"
       }
     ],
     "generated_runtime": []

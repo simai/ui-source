@@ -211,6 +211,18 @@ function renderSearch(context) {
   </label>`;
 }
 
+// «Select found (N)» (owner decision C312 (1)): in a panel, while a search
+// is typed in a multiple list, the first row chooses the rows found and not
+// chosen; it is gone with the search, or when nothing found is left to choose.
+function renderSelectFound(context) {
+  const {paging} = context;
+  if (!context.panel || !context.multiple || !paging.found) return nothing;
+  return html`<button type="button" class="sf-choice-found" data-sf-select-found ?disabled=${context.fieldDisabled}
+                      @click=${() => context.component.selectFound()}>
+    <span class="sf-icon sf-choice-found-icon" aria-hidden="true">done_all</span><span class="sf-choice-found-text">${paging.words.found} (${paging.found})</span>
+  </button>`;
+}
+
 function renderPaging(context) {
   const {paging} = context;
   const line = paging.status === 'loading' ? paging.words.loading
@@ -225,6 +237,13 @@ function renderPaging(context) {
       : nothing}`;
 }
 
+// In a panel (C313 (3)) the rows and their paging scroll under the search,
+// in one box: the band and the search stay and reach both edges, and the
+// mark after «Show more» comes into view only at the list's end (FO4-4).
+function renderScroll(context, content) {
+  return context.panel ? html`<div class="sf-choice-scroll">${content}</div>` : content;
+}
+
 function renderListTemplate(context) {
   const labelId = `${context.id}--label`;
   const hintId = `${context.id}--hint`;
@@ -233,7 +252,7 @@ function renderListTemplate(context) {
   const described = [context.hint ? hintId : '', error ? messageId : ''].filter(Boolean).join(' ');
   return html`<div class=${joinClasses('sf-choice', 'sf-choice--list', context.multiple ? 'sf-choice--multiple' : '', context.invalid ? 'sf-choice--invalid' : '', context.fieldDisabled ? 'sf-choice--disabled' : '', context.rootClass)}
                    style=${context.rootStyle || nothing} data-appearance="list" data-flow=${context.flow}
-                   data-control-position=${context.controlPosition}>
+                   data-control-position=${context.controlPosition} ?data-panel=${context.panel}>
     ${context.label
       ? html`<div class="sf-choice-heading"><span class="sf-choice-heading-text" id=${labelId}>${context.label}${context.required
         ? html`<span class="sf-choice-required" aria-hidden="true">*</span>`
@@ -241,7 +260,8 @@ function renderListTemplate(context) {
       : nothing}
     ${context.hint ? html`<span class="sf-choice-hint" id=${hintId}>${context.hint}</span>` : nothing}
     ${renderSearch(context)}
-    <div class="sf-choice-options" role=${context.multiple ? 'group' : 'radiogroup'}
+    ${renderSelectFound(context)}
+    ${renderScroll(context, html`<div class="sf-choice-options" role=${context.multiple ? 'group' : 'radiogroup'}
          aria-labelledby=${context.label ? labelId : nothing}
          aria-label=${!context.label && context.ariaLabel ? context.ariaLabel : nothing}
          aria-describedby=${described || nothing}
@@ -250,7 +270,7 @@ function renderListTemplate(context) {
          aria-disabled=${context.fieldDisabled ? 'true' : nothing}>
       ${repeat(context.items, (item) => item.value, (item, index) => renderRow(context, item, index))}
     </div>
-    ${context.paging.shown ? renderPaging(context) : nothing}
+    ${context.paging.shown ? renderPaging(context) : nothing}`)}
     ${error
       ? html`<span class="sf-choice-message" id=${messageId} data-field-message="error"><span class="sf-icon sf-choice-message-icon" aria-hidden="true">error</span><span class="sf-choice-message-text">${error}</span></span>`
       : nothing}

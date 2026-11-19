@@ -150,7 +150,9 @@ export function renderInputTemplate(context) {
     'sf-input',
       field.invalid ? 'error' : '',
     `sf-input--size-${size}`,
-    `sf-input--${appearance ?? type}`,
+    // plain (C313 (4)) is drawn on the bordered look, which gives it its
+    // type and states; its own class takes the frame away.
+    `sf-input--${appearance === 'plain' ? 'bordered sf-input--plain' : appearance ?? type}`,
     countOver ? 'sf-input--over' : '',
     radius && radius !== 'default' ? `sf-input--radius-${radius}` : '',
       rootClass,

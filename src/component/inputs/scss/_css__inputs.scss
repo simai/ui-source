@@ -824,3 +824,41 @@
     transition: background-color 0s 2147483647s, color 0s 2147483647s;
   }
 }
+
+/* appearance="plain" (owner decision C313 (4)): the field with no frame, no
+   fill and no radius, its text at its own edge -- the look of a dropping
+   panel's search field (C06), for a value that stands where a search would
+   (the filter field window's value row). It is drawn on the bordered look
+   (the class markup carries both), which gives it its type and states; here
+   its frame gives way to its foot alone, a hairline nobody sees until the
+   focus turns it primary in place of the ring -- the search header's line
+   (sf-dropdown's panel search, C06); an error keeps it in the error colour.
+   In sf.overrides, so the bordered look's states never draw a frame back. */
+@layer sf.overrides {
+  .sf-input.sf-input--plain .sf-input-field {
+    --sf-input-field--background-color: var(--sf-transparent);
+    border-color: transparent;
+    border-inline-width: 0;
+    border-block-start-width: 0;
+    border-radius: 0;
+    background-color: transparent;
+    padding-inline: 0;
+    outline: none;
+    box-shadow: none;
+  }
+
+  .sf-input.sf-input--plain:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-input-field {
+    outline: none;
+    border-block-end-color: var(--sf-primary);
+  }
+
+  .sf-input.sf-input--plain.error .sf-input-field {
+    border-block-end-color: var(--sf-error);
+  }
+
+  @media (forced-colors: active) {
+    .sf-input.sf-input--plain:has(input:enabled:not(:disabled):not(.disabled):focus) .sf-input-field {
+      border-block-end-color: Highlight;
+    }
+  }
+}

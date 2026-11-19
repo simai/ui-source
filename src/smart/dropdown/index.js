@@ -101,6 +101,8 @@ function parseOptionNode(node, dropdownSize = '1') {
     // Where this option comes from. Options carrying the same group, one after
     // another, are drawn under one heading.
     group: node.getAttribute('group') || '',
+    // A status dot before the name (owner decision C314 (4)).
+    dot: node.getAttribute('dot') || '',
   };
 }
 
@@ -139,6 +141,7 @@ function parseOptionData(option, dropdownSize = '1') {
     value,
     ariaLabel: option.ariaLabel ? String(option.ariaLabel) : '',
     group: option.group ? String(option.group) : '',
+    dot: option.dot ? String(option.dot) : '',
   };
 }
 
@@ -226,8 +229,11 @@ class SfDropdown extends FormField(DropdownElement) {
       // `type` keeps working: see contracts/public-api-axes.json. The field
       // look is named bordered, as every field's (FM-9, 2026-11-16); outlined
       // is its dated alias until 2027-01-01 (aliases.json, change journal
-      // value-dropdown-appearance-outlined-to-bordered).
-      appearance: {default: 'bordered', values: ['filled', 'bordered'], aliases: ['type'], valueAliases: {bordered: ['outlined']}},
+      // value-dropdown-appearance-outlined-to-bordered). band (owner decision
+      // C313, FF-11): the field as a grey band across its place, with no
+      // frame and no radius, the height of a panel's search header, its text
+      // and chevron where the open list's rows put theirs.
+      appearance: {default: 'bordered', values: ['filled', 'bordered', 'band'], aliases: ['type'], valueAliases: {bordered: ['outlined']}},
       mode: { default: 'select', values: ['tag', 'select'] },
       multiple: { type: Boolean, default: false },
       portal: { type: Boolean, default: true },
@@ -244,8 +250,11 @@ class SfDropdown extends FormField(DropdownElement) {
       layout: { default: 'list', values: ['list', 'grid'] },
       // How wide the open list is (FF-2): at least the field and up to the
       // list's step by its options (field, C32), or the list's step whatever
-      // the field (list) -- a narrow filter button opened a list as narrow.
-      listWidth: { attribute: 'list-width', default: 'field', values: ['field', 'list'] },
+      // the field (list) -- a narrow filter button opened a list as narrow;
+      // or exactly the trigger (trigger, FF-10): a trigger as wide as its
+      // place -- the filter window's condition band -- opens its menu at its
+      // own width, edges flush with it.
+      listWidth: { attribute: 'list-width', default: 'field', values: ['field', 'list', 'trigger'] },
       columns: { default: '6' },
       disabled: { type: Boolean, default: false },
       // The option value the field falls back to while nothing is chosen
@@ -644,7 +653,7 @@ class SfDropdown extends FormField(DropdownElement) {
       selectedValues: this.selectedValues,
       selectedOptions: this.selectedOptions,
       options: this.visibleOptions,
-      listWidth: this.listWidth === 'list' ? 'list' : 'field',
+      listWidth: ['list', 'trigger'].includes(this.listWidth) ? this.listWidth : 'field',
       nothingFound: String(this._searchValue || '').trim() && !this.visibleOptions.length ? this.sfWord('nothing-found') : '',
       inheritedValue: this.inheritedValue,
       inheritedLabel: this.hasInheritedValue ? this.inheritedDisplayValue() : '',

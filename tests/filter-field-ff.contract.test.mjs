@@ -19,11 +19,11 @@ test('FF-1: a dropdown search that finds nothing says so in the language packs',
   assert.equal(json('src/smart/dropdown/lang/en.json').runtime['nothing-found'], 'Nothing found');
 });
 
-test('FF-2: list-width field|list, the list step whatever the field', () => {
+test('FF-2, FF-10: list-width field|list|trigger, the list step whatever the field, or the trigger\'s own width', () => {
   const manifest = json('src/smart/dropdown/component.json');
-  assert.deepEqual(manifest.settings['list-width'].values, ['field', 'list']);
+  assert.deepEqual(manifest.settings['list-width'].values, ['field', 'list', 'trigger']);
   assert.equal(manifest.settings['list-width'].default, 'field');
-  assert.match(read('src/smart/dropdown/js/templates/default.js'), /data-sf-list-width=\$\{context\.listWidth === "list" \? "list" : nothing\}/u);
+  assert.match(read('src/smart/dropdown/js/templates/default.js'), /data-sf-list-width=\$\{context\.listWidth === "list" \|\| context\.listWidth === "trigger" \? context\.listWidth : nothing\}/u);
   assert.match(read('src/component/dropdown/scss/_css__custom.scss'), /\[data-sf-list-width="list"\]:not\(\.sf-list--free-width\) \{\n\s+inline-size: min\(var\(--sf-popup-list-max-width\), calc\(100vi - var\(--sf-space-1\)\)\);/u);
 });
 

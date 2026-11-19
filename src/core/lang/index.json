@@ -2344,54 +2344,54 @@
   },
   "coverage": {
     "ar": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "de": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "es": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "fr": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "it": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "ja": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "ko": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "pt-br": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     },
     "ru": {
-      "words": 2258,
-      "translated": 2258,
+      "words": 2263,
+      "translated": 2263,
       "share": 100
     },
     "zh-hans": {
-      "words": 2258,
+      "words": 2263,
       "translated": 2258,
-      "share": 100
+      "share": 99.8
     }
   }
 }

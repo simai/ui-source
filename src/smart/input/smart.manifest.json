@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input",
-  "version": "1.15.3",
+  "version": "1.16.0",
   "title": "Text fields",
   "summary": "A native single-line form control with Framework presentation, validation messaging and optional mask integration.",
   "kind": "smart",
@@ -81,11 +81,12 @@
       "appearance": {
         "type": "string",
         "default": "bordered",
-        "description": "How the field looks: a bordered box, a filled one, or hidden.",
+        "description": "How the field looks: a bordered box, a filled one, or hidden. plain (owner decision C313 (4)): no frame, no fill and no radius, the text at the field's edge, under the focus a primary line at its foot -- a value standing where a panel's search stands (the filter field window's value row).",
         "enum": [
           "bordered",
           "filled",
-          "hidden"
+          "hidden",
+          "plain"
         ]
       },
       "label": {
@@ -290,7 +291,8 @@
         "enum": [
           "bordered",
           "filled",
-          "hidden"
+          "hidden",
+          "plain"
         ]
       },
       "left-icon": {
@@ -683,7 +685,7 @@
       },
       {
         "path": "src/smart/input/js/templates/default.js",
-        "sha256": "88ce4cfa52f81d68433000bc0fcececb3e698de9c93f3f2a89dccead505207ad"
+        "sha256": "359917b45b770182b16201de9872bf805ae6ad5ddfe2c503c16dae501d999e7c"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",

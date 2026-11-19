@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 541,
-    "translated": 541,
+    "words": 542,
+    "translated": 542,
     "share": 100
   },
   "words": {
@@ -44,7 +44,8 @@
       "options-error": "Не удалось загрузить варианты",
       "nothing-found": "Ничего не найдено",
       "retry": "Повторить",
-      "show-more": "Показать ещё"
+      "show-more": "Показать ещё",
+      "select-found": "Выбрать найденные"
     },
     "sf-input-code": {
       "character": "символ {n} из {m}",

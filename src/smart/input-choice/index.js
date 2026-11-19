@@ -244,6 +244,31 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
     return last >= 0 && last < shown.length - 1 ? last : -1;
   }
 
+  // panel (owner decisions C313 (3), C312 (1)): the list as a dropping
+  // panel's content. While a search is typed in a multiple list, the rows
+  // found and not chosen can be chosen at once («Select found (N)»).
+  get panelValue() {
+    return this.hasAttribute('panel') && this.getAttribute('panel') !== 'false';
+  }
+
+  foundToSelect() {
+    if (!this.multiple || !this.panelValue || !this._pages.query.trim()) return [];
+    const chosen = new Set(this.selected);
+    return this.shownOptions.filter((one) => !one.disabled && !chosen.has(one.value)).map((one) => one.value);
+  }
+
+  selectFound() {
+    const found = this.foundToSelect();
+    if (!found.length || this.effectiveDisabled) return;
+    const next = [...this.selected, ...found];
+    this._value = formatValue(next);
+    this.requestComponentUpdate('value');
+    this.sfSyncFormState();
+    const detail = {value: this.value, values: [...next], item: null, checked: true};
+    this.sfEmit('input', detail);
+    this.sfEmit('change', detail);
+  }
+
   // Where a row's box stands (C308 FO-5): start, or end of the row.
   get controlPositionValue() {
     return this.getAttribute('control-position') === 'end' ? 'end' : 'start';
@@ -394,7 +419,9 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
         empty: this.sfWord('nothing-found'),
         retry: this.sfWord('retry'),
         more: this.sfWord('show-more'),
+        found: this.sfWord('select-found'),
       },
+      found: this.foundToSelect().length,
     };
   }
 
@@ -417,6 +444,7 @@ class SfInputChoice extends ShownValidity(FormField(ChoiceElement)) {
       flow: this.flowValue,
       optionLook: this.optionLookValue,
       controlPosition: this.controlPositionValue,
+      panel: this.panelValue,
       label: this.label || '',
       // C165 (1), C153 (8): the «?» after the heading, named by its subject.
       help: this.help || '',

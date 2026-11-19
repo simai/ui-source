@@ -67,6 +67,19 @@ export function filterCondition(field = {}, value = {}) {
   return conditions[0] || asked || '';
 }
 
+// The colour of a condition (owner decision C314): only an unusual condition
+// has one. Excluding (ни один из, не равно, не содержит) is error red,
+// presence (не задано, задано) tertiary purple; every other condition is
+// the grey of the band (C313) and a grey dot in its menu.
+const EXCLUDING_CONDITIONS = new Set(['not_in', 'ne', 'neq', 'not_eq', 'not_contains', 'notContains']);
+
+/** A condition's colour (C314): 'error' for an excluding one, 'tertiary' for presence, '' for the rest (grey). */
+export function filterConditionTone(operator) {
+  if (EXCLUDING_CONDITIONS.has(operator)) return 'error';
+  if (VALUELESS_CONDITIONS.includes(operator)) return 'tertiary';
+  return '';
+}
+
 /** Whether a condition is answered without a value (не задано / задано). */
 export function filterValueless(operator) {
   return VALUELESS_CONDITIONS.includes(operator);

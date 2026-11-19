@@ -49,10 +49,11 @@ const sfInputMeta = {
       "values": [
         "bordered",
         "filled",
-        "hidden"
+        "hidden",
+        "plain"
       ],
       "default": "bordered",
-      "description": "How the field looks: a bordered box, a filled one, or hidden."
+      "description": "How the field looks: a bordered box, a filled one, or hidden. plain (owner decision C313 (4)): no frame, no fill and no radius, the text at the field's edge, under the focus a primary line at its foot -- a value standing where a panel's search stands (the filter field window's value row)."
     },
     "label": {
       "kind": "custom",
@@ -311,7 +312,8 @@ const sfInputMeta = {
       "values": [
         "bordered",
         "filled",
-        "hidden"
+        "hidden",
+        "plain"
       ],
       "default": "bordered",
       "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json."

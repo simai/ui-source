@@ -2,7 +2,7 @@
   "$comment": "The source of sf-dropdown's element plumbing (core/js/element-manifest.js). Taken from simai/ui-control control/smart-architecture/migration/out/dropdown (migration/convert-1.3.8.mjs over simai/ui-source@5100227); standard simai.smart-component 1.3.8, vocabulary 1.1.5. Every x-todo of the conversion is decided: x-decisions says how.",
   "id": "smart.dropdown",
   "tag": "sf-dropdown",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "kind": "leaf",
   "family": "dropdown",
   "traits": [
@@ -13,10 +13,11 @@
       "type": "enum",
       "values": [
         "filled",
-        "bordered"
+        "bordered",
+        "band"
       ],
       "default": "bordered",
-      "summary": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, noted in SF.deprecations and said once per page in the console)."
+      "summary": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled; band (owner decision C313 (1), FF-11): a grey band across its place with no frame and no radius, the height of a dropping panel's search header (48, 44 on a phone), a hairline under it, its text and chevron where the open list's rows put theirs, grey under the pointer (darker), with the list open and after a choice; --sf-dropdown-background-color tints it, --sf-dropdown-band-edge lets it reach past its place (a sheet's inset). outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, noted in SF.deprecations and said once per page in the console)."
     },
     "columns": {
       "type": "number",
@@ -64,10 +65,11 @@
       "type": "enum",
       "values": [
         "field",
-        "list"
+        "list",
+        "trigger"
       ],
       "default": "field",
-      "summary": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen."
+      "summary": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen. trigger (FF-10): exactly the trigger's width, edges flush with it -- the field's or a trigger handed in -- for a trigger as wide as its place, such as the filter window's condition band."
     },
     "mode": {
       "type": "enum",
@@ -107,7 +109,7 @@
         }
       },
       "x-shape": "ui-source 5100227 src/smart/dropdown/smart.manifest.json inputs.options; a string or a number is both the text and the value; constant options in a manifest give only the value, the text lives in lang roles.<role>.items.<value> (standard 1.3.8 §11.3)",
-      "summary": "Options given as data instead of as sf-list-item children: [{value, label, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?}]. A string or a number is taken as both the label and the value. label is the option's name, as in sf-input-choice and sf-input-lookup; text, its first spelling, is still read until 2027-01-01 and noted in SF.deprecations. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
+      "summary": "Options given as data instead of as sf-list-item children: [{value, label, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?, color?, dot?}]. dot (owner decision C314 (4)) names a status colour -- primary, tertiary, info, success, warning, error or neutral -- drawn as sf-dot's 8 px disc before the name. A string or a number is taken as both the label and the value. label is the option's name, as in sf-input-choice and sf-input-lookup; text, its first spelling, is still read until 2027-01-01 and noted in SF.deprecations. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
     },
     "placeholder": {
       "type": "string",
@@ -298,6 +300,13 @@
       "$comment": [
         "An option's colour (owner decision C308 FO-4) draws its name as sf-badge (tonal, tight, line 1) in its row, only when an option carries color."
       ]
+    },
+    {
+      "name": "dot",
+      "lazy": true,
+      "$comment": [
+        "An option's dot (owner decision C314 (4)) is sf-dot's class markup before its name, only when an option carries dot."
+      ]
     }
   ],
   "templates": {
@@ -355,6 +364,10 @@
     "--sf-dropdown-list-background-color": {
       "type": "color",
       "state": "open"
+    },
+    "--sf-dropdown-band-edge": {
+      "type": "length",
+      "state": "default"
     }
   },
   "aliases": {
@@ -485,7 +498,8 @@
     "version 1.20.5 (2026-11-17, Larena record forms msg-9e7b5015; numbered above 1.20.4 on origin/fix/field-hints-slider-dropdown): a patch, nothing drawn differently. appearance=\"outlined\" (and type=\"outlined\"), the former name of bordered (FM-9), is said once per page in the console as well as noted in SF.deprecations (helpers/field-appearance.js, the one look vocabulary of every field: bordered and filled).",
     "version 1.20.6 (2026-11-18; numbered above 1.20.5, the highest on any origin branch): a patch, field orders open point 1. The options given as sf-list-item children are taken out of the page when they are read, and their owner's template still writes them (a Lit repeat updates the nodes it made): a page whose language changed redrew the parent, which rewrote each option's text, and the list kept the words it was first drawn with. The taken elements are watched and read again when an attribute changes; the chosen value stays chosen. Settings, values, events and keys unchanged; evidence ui-control control/evidence/2026-11-18-form-fields.",
     "version 1.21.0 (2026-11-18, owner decision C308 FO-4; numbered above 1.20.5 on origin): a minor. An option's color (C302's one data word: a scheme, a hue of the static palette or a hex) draws the option's name as a tonal label in that colour in its row (sf-badge tight, line 1, through helpers/option-badge.js), as a cell, a view, a checklist and segmented buttons draw it. An option without color is unchanged. The same minor (filter field study 2026-11-18): a search that finds nothing says «Ничего не найдено» / \"Nothing found\" under the header (FF-1, word nothing-found); setting list-width field|list (FF-2); in a multiple list the box of a text or icon row stands at the row's end, as on avatar rows (FF-3, C308 (4)).",
-    "version 1.22.0 (2026-11-18, Larena LF-2, fix/larena-lf-data; above 1.21.0 on origin/feat/view-orders-fo1-5): a minor. An option given as data is named by label, as sf-input-choice's and sf-input-lookup's options (one option shape, {value, label}); text, the first spelling, is still read until 2027-01-01 and noted once in SF.deprecations (property options, text -> label; journal sf-dropdown-option-text-to-label). A string or a number option is unchanged. The sf-list-item children, their text attribute included, are unchanged. Values, events and keys unchanged."
+    "version 1.22.0 (2026-11-18, Larena LF-2, fix/larena-lf-data; above 1.21.0 on origin/feat/view-orders-fo1-5): a minor. An option given as data is named by label, as sf-input-choice's and sf-input-lookup's options (one option shape, {value, label}); text, the first spelling, is still read until 2027-01-01 and noted once in SF.deprecations (property options, text -> label; journal sf-dropdown-option-text-to-label). A string or a number option is unchanged. The sf-list-item children, their text attribute included, are unchanged. Values, events and keys unchanged.",
+    "version 1.23.0 (2026-11-18, owner decisions C313 (1), C314 (4); Framework orders FF-10, FF-11; numbered above 1.22.0 on origin): a minor. appearance band: the field as a band across its place -- no frame and no radius, the height of a dropping panel's search header (48 at size 1, 44 on a phone) with a hairline under it, the container grey fill (a page tints it with --sf-dropdown-background-color), the text and the chevron's glyph at the open list's row edge (16 / 12); --sf-dropdown-band-edge (public) lets it reach past its place (a phone sheet's inset). list-width trigger: the menu takes the trigger's (the field's) width, in place and portaled. An option's dot (data dot, attribute dot): primary, tertiary, info, success, warning, error or neutral -- sf-dot's 8 px disc before the name (relation dot, lazy). Nothing renamed or retired."
   ],
   "x-rule": {
     "$comment": [

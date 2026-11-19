@@ -333,3 +333,32 @@ name, draws the same until 2027-01-01: the attribute is rewritten to
 `bordered` and the use is noted once in `SF.deprecations` with its dates
 (change journal `value-dropdown-appearance-outlined-to-bordered`). The base
 component's class markup keeps its modifier `.sf-dropdown--outlined`.
+
+## Appearance: band, a trigger-wide menu and option dots (C313, C314)
+
+Since 1.23.0 `appearance="band"` draws the field as a band across its
+place: no frame and no radius, the height of an open list's search header
+(48 at size 1, 44 on a phone) with a hairline under it, the container grey
+fill (`--sf-surface-container`) darkened by the state layer under the
+pointer, and the text and the chevron at the open list's row edge (16, 12 on
+a phone). It stays grey while its menu is open and after a choice; a page
+tints it through `--sf-dropdown-background-color` (the filter field window
+uses a scheme's `-container`: 12 % in the light theme, 24 % in the dark).
+`--sf-dropdown-band-edge` lets the band reach past its place by a length --
+a phone sheet's inset -- with its text and chevron moving in by as much.
+
+`list-width="trigger"` opens the menu at exactly the field's width, edges
+flush with it, in place and when it is moved to the top layer
+(`field` keeps the field's width as a minimum, `list` the list step).
+
+An option given as data may carry `dot` -- `primary`, `tertiary`, `info`,
+`success`, `warning`, `error` or `neutral`; as an element, the attribute
+`dot`. Its row draws sf-dot's 8 px disc before the name; the name stays the
+row's text.
+
+```html
+<sf-dropdown appearance="band" mode="select" list-width="trigger" value="in"
+  options='[{"value":"in","text":"любой из","dot":"neutral"},
+            {"value":"not_in","text":"ни один из","dot":"error"},
+            {"value":"empty","text":"не задано","dot":"tertiary"}]'></sf-dropdown>
+```

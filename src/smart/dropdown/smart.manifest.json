@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.dropdown",
-  "version": "1.22.0",
+  "version": "1.23.0",
   "title": "Dropdown",
   "summary": "Accessible single or multiple selection control with searchable options and optional portal projection.",
   "kind": "smart",
@@ -22,6 +22,7 @@
   "exported_parts": [],
   "composition": {
     "uses": [
+      "component.dot",
       "component.dropdown",
       "component.icon-buttons",
       "component.inputs",
@@ -55,10 +56,11 @@
       "appearance": {
         "type": "string",
         "default": "bordered",
-        "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled. outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, noted in SF.deprecations and said once per page in the console).",
+        "description": "How the field looks: bordered (the default, the field look of every field, FM-9) or filled; band (owner decision C313 (1), FF-11): a grey band across its place with no frame and no radius, the height of a dropping panel's search header (48, 44 on a phone), a hairline under it, its text and chevron where the open list's rows put theirs, grey under the pointer (darker), with the list open and after a choice; --sf-dropdown-background-color tints it, --sf-dropdown-band-edge lets it reach past its place (a sheet's inset). outlined, the former name of bordered, draws the same until 2027-01-01 (a dated alias, noted in SF.deprecations and said once per page in the console).",
         "enum": [
           "filled",
-          "bordered"
+          "bordered",
+          "band"
         ]
       },
       "columns": {
@@ -106,10 +108,11 @@
       "list-width": {
         "type": "string",
         "default": "field",
-        "description": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen.",
+        "description": "How wide the open list is. field: at least the field and up to the list's step by its longest option (C32). list: the list's step (--sf-popup-list-max-width) whatever the field, for a list opened from a narrow button such as a filter's; never narrower than the field, never wider than the screen. trigger (FF-10): exactly the trigger's width, edges flush with it -- the field's or a trigger handed in -- for a trigger as wide as its place, such as the filter window's condition band.",
         "enum": [
           "field",
-          "list"
+          "list",
+          "trigger"
         ]
       },
       "mode": {
@@ -178,13 +181,14 @@
         "description": "Legacy name for appearance, still honoured. See contracts/public-api-axes.json.",
         "enum": [
           "filled",
-          "bordered"
+          "bordered",
+          "band"
         ]
       },
       "options": {
         "type": "array",
         "default": [],
-        "description": "Options given as data instead of as sf-list-item children: [{value, label, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?}]. A string or a number is taken as both the label and the value. label is the option's name, as in sf-input-choice and sf-input-lookup; text, its first spelling, is still read until 2027-01-01 and noted in SF.deprecations. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
+        "description": "Options given as data instead of as sf-list-item children: [{value, label, type?, size?, icon?, selected?, disabled?, colorClass?, avatarImageUrl?, avatarTitle?, ariaLabel?, group?, color?, dot?}]. dot (owner decision C314 (4)) names a status colour -- primary, tertiary, info, success, warning, error or neutral -- drawn as sf-dot's 8 px disc before the name. A string or a number is taken as both the label and the value. label is the option's name, as in sf-input-choice and sf-input-lookup; text, its first spelling, is still read until 2027-01-01 and noted in SF.deprecations. A parent that renders this dropdown from a template passes its options this way, because capturing child elements means removing them, and the parent can then no longer put a changed list back. Options carrying the same `group`, one after another, are drawn under one heading, so a long list says where each stretch of it comes from instead of repeating that in every row."
       },
       "inherited-value": {
         "type": "string",
@@ -515,15 +519,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/dropdown/index.js",
-        "sha256": "2bebac88353855a5cd0e16becaf9d992d2ebf120f3336de29d5469342cd27823"
+        "sha256": "d858f48fc1ef6a2a090e7fdeb7bef58539a1b1addb77824426de7727c3ec43ed"
       },
       {
         "path": "src/smart/dropdown/rule.js",
-        "sha256": "50a4c2d3fc9779cd7128a8dda3c7efb294c5a15b7bb8685b35399c00f5e557fd"
+        "sha256": "62aac8ac3278af2775a4af20666422c795b4a4333fe1b6282e3903375e5fbba6"
       },
       {
         "path": "src/smart/dropdown/js/templates/default.js",
-        "sha256": "318be349e77da76318211e3458a88d5edfcabf441cbcbb63955db55ba4d586f9"
+        "sha256": "00be676594acb42fed9757420e0d691a4c42fb2bcabd5c9ca0475807ec286629"
       },
       {
         "path": "src/smart/helpers/inherited-value.js",
