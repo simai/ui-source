@@ -451,6 +451,20 @@
   min-inline-size: 0;
 }
 
+/* A nav menu whose code has not come yet is its plain list -- one section
+   under another -- and the bar grew to that column for the frames until the
+   menu drew its row (the page under it went down 116 px and back at 1440,
+   every collapse value, C372 acceptance CLS 0). Until it is defined it holds
+   one row of the bar's control height, unseen, as wide as the room it has. */
+.sf-site-header-nav > sf-menu:not(:defined) {
+  display: block;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: var(--sf-site-header--control-height);
+  overflow: clip;
+  visibility: hidden;
+}
+
 .sf-site-header-actions,
 .sf-site-header-tools {
   display: flex;
