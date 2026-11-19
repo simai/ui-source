@@ -14,13 +14,13 @@ const docs = read('src/smart/menu-context/docs/docs.md');
 const slice = (from, to) => source.slice(source.indexOf(from), source.indexOf(to, source.indexOf(from)));
 
 test('for takes the areas themselves as the property, ids in the attribute', () => {
-  assert.equal(manifest.version, '1.27.0');
+  assert.ok(['1.27.0', '1.27.3'].includes(manifest.version), manifest.version); // 1.27.3: a checkbox is not a text field (fix/menu-context-checkbox)
   assert.equal(manifest.settings.for.type, 'string');
   assert.match(manifest.settings.for['x-note'], /the property also takes a list of the areas, elements or ids/);
   assert.match(manifest.settings.for.summary, /menu\.for = \[table, \.\.\.\]/);
   assert.deepEqual(manifest['x-registry'].inputs.for.type, ['string', 'array']);
   assert.deepEqual(passport.inputs.properties.for.type, ['string', 'array']);
-  assert.equal(passport.version, '1.27.0');
+  assert.equal(passport.version, manifest.version);
   assert.ok(manifest['x-decisions'].some((note) => note.startsWith('version 1.27.0 (2026-11-17, queue db8793a2')));
   assert.match(source, /  get for\(\) \{\n\s*return Array\.isArray\(this\._forList\) \? this\._forList\.slice\(\) : \(this\.getAttribute\("for"\) \?\? ""\);/);
   assert.match(source, /  set for\(value\) \{\n\s*if \(Array\.isArray\(value\)\) \{\n\s*this\._forList = value\.slice\(\);/);
@@ -41,7 +41,8 @@ test('the events are read at the node they came from, once, on the document', ()
   const handler = slice('  handleAreaEvent(event) {', '  surface() {');
   assert.ok(!handler.includes('event.target'), 'the handler never reads the retargeted event.target');
   assert.match(handler, /const node = origin\(event\);/);
-  assert.match(handler, /const from = inTreeOf\(node, found\.area\);/);
+  // 1.27.3: what keeps the browser's menu is read along the composed path up to the object.
+  assert.match(handler, /keptBy\(event, found\.target\)/);
   // One listener per event type, on the document: no second one on a root.
   assert.match(source, /for \(const type of AREA_EVENTS\) document\.addEventListener\(type, this\._onAreaEvent, type === "click"\);/);
   assert.equal((source.match(/addEventListener\(type, this\._onAreaEvent/g) ?? []).length, 1);
@@ -52,7 +53,7 @@ test('the events are read at the node they came from, once, on the document', ()
 
 test('light DOM stays as it was: Shift, links, focus back, openFor and toggleFor', () => {
   assert.match(source, /if \(event\.shiftKey && event\.type === "contextmenu" && event\.button === 2\) return true;/);
-  assert.match(source, /const BROWSER_KEEPS = 'a\[href\], input, select, textarea/);
+  assert.match(source, /const BROWSER_KEEPS = 'a\[href\], textarea, \[role="textbox"\], \[role="searchbox"\]';/);
   assert.match(source, /const back = forObject && !\(somewhere && found\.target\.contains\(active\)\);/);
   // The deep focus is taken only when the document's focus is outside the
   // object and the deep one is inside it -- a shadow root's case alone.
