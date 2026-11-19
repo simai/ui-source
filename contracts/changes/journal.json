@@ -18468,26 +18468,6 @@
       "source": "simai/ui-chart package/src/smart/chart-metric (component.json x-decisions, docs.md «Переход с sf-chart-metric»), package/docs/chart/journal.json (the set's own record), release chart-f5bff4e90a69 (@simai-studio/chart 1.2.0); src/smart/tile-metric (x-decisions C168); contracts/registry/names.json (chart note)"
     },
     {
-      "id": "behaviour-icon-subset-axis-params",
-      "recorded_on": "2026-11-19",
-      "stage": "compat",
-      "kind": "behaviour",
-      "summary": "The core runtime asks the icon service for grade and optical size under the service's own names, grad and opsz, each a range kept as a variable axis in the subset: grad -25..0 (the light and the dark theme, C151 point 4) widened to an author's grade, opsz 20..48 (every icon size). It sent grade and optical_size, which the service never read, so every subset was cut at GRAD 0 and opsz 24: a 20 px glyph drew the 24 drawing, the dark theme's -25 drew as 0, and an author's grade never arrived. Each icon picks its own point with font-variation-settings, so an author's grade on one icon restyles no other. The icon service (simai/ui-icons 0.2.0) reads the old names as aliases until remove_after; a page on an older Framework keeps its old font until then.",
-      "items": [
-        {
-          "component": "core.runtime",
-          "from": "?grade=<values>&optical_size=<values> (unread)",
-          "to": "?grad=-25..0&opsz=20..48 (ranges)"
-        }
-      ],
-      "deprecated_on": "2026-11-19",
-      "remove_after": "2027-01-01",
-      "rewrite": "none",
-      "manual": "Nothing to rewrite in markup: sf-icon's grade and optical-size attributes and the --sf-icon--grade / --sf-icon--optical-size variables are unchanged. A host that builds its own subset URL asks with grad and opsz.",
-      "owner": "ui-source",
-      "source": "ui-control control/evidence/2026-11-19-icons-axes; simai/ui-icons feat/variable-opsz-grad"
-    },
-    {
       "id": "input-choice-option-colour-one-key",
       "recorded_on": "2026-11-18",
       "stage": "compat",
@@ -18621,6 +18601,26 @@
       },
       "owner": "ui-source",
       "source": "src/component/quantity/scss/_css__quantity.scss; src/component/quantity/js/_quantity.js; ui-control control/docs-review/decisions.md C153"
+    },
+    {
+      "id": "behaviour-icon-subset-axis-params",
+      "recorded_on": "2026-11-19",
+      "stage": "compat",
+      "kind": "behaviour",
+      "summary": "The core runtime asks the icon service for grade and optical size under the service's own names, grad and opsz, each a range kept as a variable axis in the subset: grad -25..0 (the light and the dark theme, C151 point 4) widened to an author's grade, opsz 20..48 (every icon size). It sent grade and optical_size, which the service never read, so every subset was cut at GRAD 0 and opsz 24: a 20 px glyph drew the 24 drawing, the dark theme's -25 drew as 0, and an author's grade never arrived. Each icon picks its own point with font-variation-settings, so an author's grade on one icon restyles no other. The icon service (simai/ui-icons 0.2.0) reads the old names as aliases until remove_after; a page on an older Framework keeps its old font until then.",
+      "items": [
+        {
+          "component": "core.runtime",
+          "from": "?grade=<values>&optical_size=<values> (unread)",
+          "to": "?grad=-25..0&opsz=20..48 (ranges)"
+        }
+      ],
+      "deprecated_on": "2026-11-19",
+      "remove_after": "2027-01-01",
+      "rewrite": "none",
+      "manual": "Nothing to rewrite in markup: sf-icon's grade and optical-size attributes and the --sf-icon--grade / --sf-icon--optical-size variables are unchanged. A host that builds its own subset URL asks with grad and opsz.",
+      "owner": "ui-source",
+      "source": "ui-control control/evidence/2026-11-19-icons-axes; simai/ui-icons feat/variable-opsz-grad"
     }
   ]
 }
