@@ -2604,5 +2604,17 @@
     "survivors": ["--sf-layer--base", "--sf-layer--sticky", "--sf-layer--popover", "--sf-layer--window", "--sf-layer--message"],
     "former": ["--sf-z-index--1", "--sf-z-index-0", "--sf-z-index-1", "--sf-z-index-2", "--sf-z-index-3", "--sf-z-index-4", "--sf-z-index-5", "--sf-z-index-6", "--sf-z-index-7", "--sf-z-index-8", "--sf-z-index-9"],
     "summary": "Components take a layer role, never a numbered step (src/component and src/smart read none of --sf-z-index-3 ... 9; only local stacking --sf-z-index-1/-2 remains). The numbered steps stay declared with their own values until remove_after: on 2026-11-14 the group build 4 sheets read them 400 times, ui-doc content 60 times (the z-index utility pages and the token lists), ui-pro components 10 times. They are not one-to-one aliases of the roles (eleven steps, five roles): the roles read steps 0, 5, 9 and --sf-z-index-layer, so before the numbered steps go the roles must take the scale's numbers from src/utility/z-index/default/scss/_sf_var__z_index.scss."
+  },
+  "measures": {
+    "decision": "C396, owner 2026-11-19 (ui-control control/docs-review/decisions.md; research control/research/2026-11-19-text-measure section 8; demo prototypes/width-system-study.html)",
+    "since": "2026-11-19",
+    "remove_after": "2027-01-01",
+    "survivors": ["--sf-measure-20", "--sf-measure-28", "--sf-measure-36", "--sf-measure-44", "--sf-measure-52", "--sf-measure-64", "--sf-measure-80", "--sf-measure-96"],
+    "tokens": [
+      {"from": "--sf-text--measure", "to": "--sf-measure-80", "before": "65ch"},
+      {"from": "--sf-text--measure-wide", "to": "--sf-measure-96", "before": "80ch"},
+      {"from": "--sf-text--measure-narrow", "to": "--sf-measure-52", "before": "45ch"}
+    ],
+    "summary": "The width ladder in characters: a step is N times half the body text size (--sf-measure--char), so it follows density and the browser's font size with the text. The reading measures --sf-text--measure, -wide and -narrow were a unit of their own (ch of the zero); they stay declared as var() of the nearest step until remove_after and no component reads them. The utilities measure, measure-wide and measure-narrow keep their names and write the steps. The popup and window roles (--sf-popup-*-width, C32 and C159) keep their names and read steps (no alias needed); text containers that read a base ladder point (--sf-g*, --sf-h*) for a width read a step instead (tests/measure-c396.contract.test.mjs)."
   }
 }

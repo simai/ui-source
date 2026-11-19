@@ -3,9 +3,14 @@
 
 // TYPOFRAPHY
 
-// Measure
+// Measure: the reading widths, each a step of the width ladder in characters
+// (owner decision C396, 2026-11-19; core figma_variables/figma_measure.scss).
+// Before C396 they were 65ch, 80ch and 45ch, a unit of their own; the nearest
+// steps are 80, 96 and 52. The classes write the step; the variables
+// --sf-text--measure, -wide and -narrow stay as dated aliases of the same steps
+// until 2027-01-01 (src/core/contracts/token-aliases.v1.json, measures).
 $text-measure-array:(
-    '': 65ch,
-    -wide: 80ch,
-    -narrow: 45ch
+    '': var(--sf-measure-80),
+    -wide: var(--sf-measure-96),
+    -narrow: var(--sf-measure-52)
 );

@@ -3,12 +3,13 @@
   "schema_version": 1,
   "id": "tokens.size",
   "kind": "tokens",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "owner": "simai/ui-source",
-  "summary": "The size ladder: control heights, icon sizes, the tightness steps, floating labels, the viewport and container sizes.",
+  "summary": "The size ladder: control heights, icon sizes, the tightness steps, floating labels, the viewport and container sizes, and the width ladder in characters (--sf-measure-N, C396).",
   "includes": [
     "src/core/scss/vars/_sf_var__size.scss",
     "src/core/scss/_sf_css__size.scss",
+    "src/core/figma_variables/figma_measure.scss",
     "src/core/figma_variables/figma_ui_control_height.scss",
     "src/core/figma_variables/figma_icon_sizes.scss",
     "src/core/figma_variables/figma_ui_tightness_default.scss",
@@ -25,6 +26,7 @@
     "src/core/figma_variables/figma_icon_sizes.scss",
     "src/core/figma_variables/figma_input_floating_active.scss",
     "src/core/figma_variables/figma_input_floating_the_others.scss",
+    "src/core/figma_variables/figma_measure.scss",
     "src/core/figma_variables/figma_ui_control_height.scss",
     "src/core/figma_variables/figma_ui_tightness_default.scss",
     "src/core/figma_variables/figma_ui_tightness_high.scss",
@@ -36,7 +38,7 @@
     "src/core/scss/vars/_sf_var__max_container.scss",
     "src/core/scss/vars/_sf_var__size.scss"
   ],
-  "content_sha256": "a71bfadbc21b08a5c70e791444019da622b91790d4b9524c05cd5fa0f7b36ed2",
+  "content_sha256": "00f4bafc1c03882abdf4ec3347cdc1e9c1c3b158415a91b028166dd862381662",
   "dependencies": [
     {
       "id": "tokens.breakpoint",

@@ -1,0 +1,38 @@
+/*
+ * Generated from src/core/contracts/adaptive-sizing.v1.json.
+ * contract-sha256: 6553bc8e514453db82d2e97493b830c38cd3f918c7634f1131c0935563bab9b8
+ * Do not edit semantic values in this file directly.
+ */
+@layer sf.base {
+  :root {
+    --sf-measure--char: calc(var(--sf-text--size-1) / 2);
+    --sf-measure-20: calc(20 * var(--sf-measure--char));
+    --sf-measure-28: calc(28 * var(--sf-measure--char));
+    --sf-measure-36: calc(36 * var(--sf-measure--char));
+    --sf-measure-44: calc(44 * var(--sf-measure--char));
+    --sf-measure-52: calc(52 * var(--sf-measure--char));
+    --sf-measure-64: calc(64 * var(--sf-measure--char));
+    --sf-measure-80: calc(80 * var(--sf-measure--char));
+    --sf-measure-96: calc(96 * var(--sf-measure--char));
+    --sf-field--width-short: var(--sf-measure-20);
+    --sf-field--width-medium: var(--sf-measure-28);
+    --sf-field--width-long: var(--sf-measure-44);
+  }
+
+  @media (min-width: 60rem) {
+    :root {
+      --sf-measure--char: calc(var(--sf-text--size-1) / 2);
+      --sf-measure-20: calc(20 * var(--sf-measure--char));
+      --sf-measure-28: calc(28 * var(--sf-measure--char));
+      --sf-measure-36: calc(36 * var(--sf-measure--char));
+      --sf-measure-44: calc(44 * var(--sf-measure--char));
+      --sf-measure-52: calc(52 * var(--sf-measure--char));
+      --sf-measure-64: calc(64 * var(--sf-measure--char));
+      --sf-measure-80: calc(80 * var(--sf-measure--char));
+      --sf-measure-96: calc(96 * var(--sf-measure--char));
+      --sf-field--width-short: var(--sf-measure-20);
+      --sf-field--width-medium: var(--sf-measure-28);
+      --sf-field--width-long: var(--sf-measure-44);
+    }
+  }
+}

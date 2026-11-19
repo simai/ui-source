@@ -2,6 +2,9 @@
 @use "sass:string";
 @use "vars/sf_var__size" as size;
 @use '../../utility/z-index/default/scss/sf_var__z_index' as zIndexVars;
+// The width ladder in characters (C396): --sf-measure--char and the steps
+// --sf-measure-20 ... 96, generated from the adaptive-sizing contract.
+@use '../figma_variables/figma_measure.scss';
 
 // "1/4" -> "1\/4" (a CSS name): the ladder names its steps with an escaped slash.
 @function str-replace-slash($name) {
@@ -65,26 +68,30 @@
 		// whichever is wider; a panel with a search and actions (a views picker)
 		// is the panel's step or its trigger, whichever is wider -- fixed, so the
 		// search never makes it jump; a form in a popup is the form's step, or
-		// the wide one for two columns or long hints. These are the normal
-		// density's; data-sf-density="compact" moves each with the text
-		// (x 14/16, rounded up to the next step: core/scss/_sf_css__density.scss,
-		// generated). The phone keeps them, capped by the screen.
-		--sf-popup-menu-min-width: var(--sf-f0);
-		--sf-popup-menu-max-width: var(--sf-f8);
-		--sf-popup-list-max-width: var(--sf-g0);
-		--sf-popup-panel-width: var(--sf-g0);
-		--sf-popup-form-width: var(--sf-g0);
-		--sf-popup-form-wide-width: var(--sf-g2);
+		// the wide one for two columns or long hints. Since owner decision C396
+		// (2026-11-19; research ui-control control/research/2026-11-19-text-measure
+		// section 8.3) each is a step of the width ladder in characters, the
+		// nearest one to its C32 width, a tie to the wider: the step follows the
+		// body text, so a compact region and the browser's font size move it with
+		// the text and the C32 compact table is gone (the density regions only
+		// declare these again, so a region reads its own steps). The phone keeps
+		// them, capped by the screen.
+		--sf-popup-menu-min-width: var(--sf-measure-20);
+		--sf-popup-menu-max-width: var(--sf-measure-36);
+		--sf-popup-list-max-width: var(--sf-measure-44);
+		--sf-popup-panel-width: var(--sf-measure-44);
+		--sf-popup-form-width: var(--sf-measure-44);
+		--sf-popup-form-wide-width: var(--sf-measure-52);
 		// A question window (sf-modal size="question", decision C39): a title,
-		// the consequences, a field or a checkbox and two answers, 28rem;
-		// compact 26rem by the same rule.
-		--sf-popup-question-width: var(--sf-g4);
+		// the consequences, a field or a checkbox and two answers (C396: 52
+		// characters, 416px at text 16).
+		--sf-popup-question-width: var(--sf-measure-52);
 		// The other named window widths (owner decision C159 (1), 2026-11-14;
 		// ui-control control/research/2026-11-14-modal.md): sf-modal size="form",
-		// the default, 36rem, and size="wide" 48rem; compact one step narrower
-		// by the same rule (32rem, 44rem). Read by sf-modal only, so internal.
-		--sf-popup--window-form-width: var(--sf-g8);
-		--sf-popup--window-wide-width: var(--sf-h2);
+		// the default, and size="wide" (C396: 80 and 96 characters, 640 and 768px
+		// at text 16). Read by sf-modal and sf-search, so internal.
+		--sf-popup--window-form-width: var(--sf-measure-80);
+		--sf-popup--window-wide-width: var(--sf-measure-96);
 	}
 }
 
