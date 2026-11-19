@@ -135,6 +135,13 @@
   --sf-language--field-box: calc(var(--sf-language--field-label) + var(--sf-space-1\/4) + var(--sf-language--field));
 }
 
+/* trigger icon (owner decision C369): the glyph alone, a square of the
+   size's step -- the icon button's box -- held before the code as the code
+   trigger's box is. */
+:where(sf-language[trigger="icon"]) {
+  --sf-language--trigger: var(--sf-language--box);
+}
+
 :where(sf-language[size="1/3"]) {
   --sf-language--box: var(--sf-ui-1\/3--control-height);
   --sf-language--space-x: var(--sf-button-padding-inline, var(--sf-ui-1\/3--space-x));
@@ -192,7 +199,7 @@
 /* Drawn, the element is its parts (display: contents); a part whose own
    code has not come yet (sf-dropdown is fetched on its own) holds the same
    box until it draws, or the row closed up for a frame between the two. */
-:where(sf-language .sf-language-parts > sf-button:not(:defined)) {
+:where(sf-language .sf-language-parts > :is(sf-button, sf-button-icon):not(:defined)) {
   display: inline-block;
   vertical-align: middle;
   block-size: var(--sf-language--box);

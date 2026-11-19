@@ -75,8 +75,26 @@ function renderCode(context) {
   })}</span>`;
 }
 
+// trigger icon (owner decision C369, docs header 2026-11-19): the glyph
+// alone, a square icon button of the element's size -- ghost on-surface, as
+// the code trigger -- named «Язык: Русский», which shows that name as the
+// Framework's tooltip by itself (C160 (1)); the menu is the same.
+function renderIconTrigger(context) {
+  return html`<sf-button-icon
+      class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
+      icon="translate"
+      appearance="ghost"
+      scheme="on-surface"
+      size=${context.size}
+      aria-label=${context.triggerLabel}
+      aria-haspopup="menu"
+      ?disabled=${context.disabled}
+      @click=${() => context.component.toggleMenu()}
+    ></sf-button-icon>`;
+}
+
 function renderMenu(context) {
-  return html`<sf-button
+  return html`${context.icon ? renderIconTrigger(context) : html`<sf-button
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
       icon-start="translate"
       icon-end="expand_more"
@@ -88,7 +106,7 @@ function renderMenu(context) {
       aria-haspopup="menu"
       ?disabled=${context.disabled}
       @click=${() => context.component.toggleMenu()}
-    >${renderCode(context)}</sf-button>
+    >${renderCode(context)}</sf-button>`}
     <sf-menu-context
       popup
       size=${context.menuSize}

@@ -2,7 +2,7 @@
   "$comment": "The source of sf-language's element plumbing (core/js/element-manifest.js), in the 1.4 form (scripts/generate-component-files.mjs writes rule.js, aliases.json, studio.fixture.json, studio.scenario.json, probe.json and smart.manifest.json from it). A new component, made against standard simai.smart-component 1.3.14 and vocabulary 1.1.5: the site's language picker of the owner decision of 2026-11-06 (Federation bus msg-3063edc9fe684dfe9909).",
   "id": "smart.language",
   "tag": "sf-language",
-  "version": "1.5.3",
+  "version": "1.7.0",
   "kind": "leaf",
   "family": "language",
   "settings": {
@@ -102,6 +102,15 @@
       ],
       "default": "1",
       "summary": "The ladder rung: the trigger is a button of that size, the switch a segmented control of that size; the menu's rows are 32 px up to 1/2 and 40 px from 1. 1/2 fits the tools slot of sf-header-site"
+    },
+    "trigger": {
+      "type": "enum",
+      "values": [
+        "code",
+        "icon"
+      ],
+      "default": "code",
+      "summary": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). The menu is the same. Core holds the trigger's box before the code arrives for both (--sf-language--trigger)"
     },
     "apply": {
       "type": "enum",
@@ -242,6 +251,12 @@
       "name": "cl-button"
     },
     {
+      "name": "cl-button-icon",
+      "$comment": [
+        "trigger icon (C369): the glyph alone is sf-button-icon, which shows its own name tooltip (C160 (1))."
+      ]
+    },
+    {
       "name": "cl-icon"
     },
     {
@@ -327,7 +342,8 @@
     "version 1.4.4 (2026-11-15, DEV return TT-11 of the GB6+GB7 intent acceptance, owner decision C160 (1)): a patch: the menu trigger names itself by the Framework's tooltip («Язык: Русский» on hover, keyboard focus or a long press), not a browser title; the surface stands after the menu, named by the trigger's data-tooltip, and the tooltip component is a lazy relation asked for once a trigger draws. The accessible name (aria-label) is unchanged.",
     "version 1.5.0 (2026-11-16, queue #70, fields ladder): a minor, a look. The field look (look=field, C142 (8)) is sf-dropdown of the language's own size at every step: sf-dropdown stands on the whole field ladder since 1.18.0, so at 1/3 and 3 the field is 28 / 56 high at 1440 beside buttons of the size -- it drew sf-dropdown 1/2 and 2 (32 / 48). It writes appearance=\"bordered\" on that dropdown, the field look's name since sf-dropdown 1.18.0 (FM-9; same look). Other looks, settings, values, events and keys unchanged.",
     "version 1.5.2 (2026-11-17, feat/lang-file-c282; numbered above 1.5.1 on origin/fix/utilities-c264): a patch. Russian is a language file (owner decision C282, 2026-11-17): the bundle carries the English words only (lang/index.mjs, written by scripts/build-language-packs.mjs from src/core/lang/built-in.json); the Russian ones come from core/lang/ru.js included before core, or from the ru part of its family that core fetches, and SF.Loader holds the definition until that part is here (at most 800 ms). A page with the language file draws the same Russian as before; lang/ru.json is unchanged.",
-    "version 1.5.3 (written on the branch as 1.5.1; 2026-11-17, owner decision C268; numbered above 1.5.0 on origin/fix/fields-sizes-e2): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged."
+    "version 1.5.3 (written on the branch as 1.5.1; 2026-11-17, owner decision C268; numbered above 1.5.0 on origin/fix/fields-sizes-e2): a patch, nothing to see. The template writes pointer-events-none, the class named as the property, for pointer-event-none, its former name until 2027-01-01 (journal class-c268-pointer-events), so a page of the component no longer notes a deprecation. Settings, values, events, keys and drawing unchanged.",
+    "version 1.7.0 (2026-11-19, owner decision C369, docs header study ui-control control/research/2026-11-19-docs-header, DEV msg-d9c2e1640ee24748b154 item 1.3; numbered above 1.6.1 on origin/fix/lang-follow and origin/integration/pair-next-15): a minor, all additions. trigger=\"icon\": the menu's trigger is sf-button-icon with the translate glyph alone -- a square of the size's step, ghost on-surface, aria-haspopup menu, named «Язык: Русский» (the word trigger) -- which shows its name as the Framework's tooltip by itself (C160 (1)); the element draws no tooltip surface of its own then. The menu, the search, the sheet on a phone and the keys are the same. Core's first paint holds the square for it (core.styles, hash only: --sf-language--trigger is the box for sf-language[trigger=\"icon\"], and an undefined sf-button-icon in the parts holds it too), so the tools beside it do not move. Relation cl-button-icon. The element's former undocumented getter trigger (the drawn button) is triggerButton now; trigger is the setting. Settings otherwise, values, events and keys unchanged."
   ],
   "x-registry": {
     "capabilities": [

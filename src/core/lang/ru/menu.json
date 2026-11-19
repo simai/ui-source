@@ -9,14 +9,15 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 17,
-    "translated": 17,
+    "words": 18,
+    "translated": 18,
     "share": 100
   },
   "words": {
     "sf-menu": {
       "toggle-label": "Меню",
       "more-label": "Ещё",
+      "holds-current": "содержит текущую страницу",
       "status-success": "в порядке",
       "status-warning": "внимание",
       "status-error": "ошибка",

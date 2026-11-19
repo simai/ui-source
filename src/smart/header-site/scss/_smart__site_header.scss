@@ -598,6 +598,21 @@
     }
   }
 }
+
+/* collapse auto (C371, C372): the bar measures its row and gives way itself
+   (index.js fitRow: tools, then the nav's sections into «Ещё», then the menu
+   button), at any width, and says so with data-nav-overflow above. Until it
+   has measured once (data-fitted) -- the first paint before the script, a
+   page without ResizeObserver -- it draws as collapse md, the phone's step. */
+@container sf-site-header (width < #{mq.container-step(h1)}) {
+  :is(sf-header-site, sf-site-header):not([data-fitted='true']) > .sf-site-header--collapse-auto {
+    @include collapsed;
+
+    .sf-site-header-row {
+      --sf-site-header--collapsed: 1;
+    }
+  }
+}
   @include paint.part(all);
 }
 
@@ -628,6 +643,11 @@
       .sf-site-header--collapse-#{$step} {
         @include collapsed;
       }
+    }
+  }
+  @container sf-site-header (width < #{mq.container-step(h1)}) {
+    :is(sf-header-site, sf-site-header):not([data-fitted='true']) > .sf-site-header--collapse-auto {
+      @include collapsed;
     }
   }
   @include paint.part(all);

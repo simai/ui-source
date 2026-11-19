@@ -7,6 +7,26 @@
   justify-content: center;
 }
 
+/* shrink="icon" (owner decision C370, 2026-11-19): an sf-button its bar asks
+   to give way (sf-header-site collapse auto sets data-shrunk on it) draws its
+   glyph only, as a square of its own height -- the side padding takes the
+   top padding, the glyph is the line's square -- so it stands in one row
+   with the icon buttons beside it. The words and the keys stay in the button
+   (its name and aria-keyshortcuts are unchanged) and are not drawn. A rule,
+   not a drawing, so the bar measures the row it decided in the same task;
+   the ghost look and the tooltip come with the button's next drawing. The
+   glyph keeps its regular weight, as an icon-only button does. */
+sf-button[shrink='icon'][data-shrunk='true'] > .sf-button {
+  --sf-button--padding-inline-start: var(--sf-button--padding-top);
+  --sf-button--padding-inline-end: var(--sf-button--padding-top);
+  --sf-icon--weight: var(--sf-weight--regular);
+  justify-content: center;
+}
+
+sf-button[shrink='icon'][data-shrunk='true'] > .sf-button > :is(.sf-button-text-container, .sf-button-shortcut) {
+  display: none;
+}
+
 /* The split button (owner decision C119; ui-control research
    2026-11-13-buttons-system R206): a label part, an ordinary .sf-button, and a
    square arrow part, an .sf-icon-button of the same size and height (the icon

@@ -17,6 +17,7 @@ import {
   shortcutCaps,
 } from "../../component/kbd/js/shortcut";
 import { cycleState, hasCycle, parseCycle, preloadSwitchIcons, pressCycle, themeCycleFollow, warnCycleToggle } from "../helpers/cycle";
+import { unlinkNameTip } from "../../component/icon-buttons/js/_name-tooltip.js";
 import manifest from "./component.json";
 import aliases from "./aliases.json";
 import {files as languageFiles} from "./lang/index.mjs";
@@ -280,7 +281,17 @@ class SfButton extends ButtonElement {
   // the first file's name after a new drop (1.14.0); sf-button-icon watched it
   // since 2026-11-06. A change now draws the button again with the new name.
   static get observedAttributes() {
-    return [...new Set([...super.observedAttributes, "aria-label"])];
+    return [...new Set([...super.observedAttributes, "aria-label", "data-shrunk"])];
+  }
+
+  // shrink="icon" (owner decision C370, 2026-11-19): the bar the button stands
+  // in (sf-header-site collapse auto) asks it to give way by its host state
+  // data-shrunk; then it draws its glyph only, ghost, with its name, its
+  // aria-keyshortcuts and the Framework's tooltip «Поиск ⌘K» (C160). The
+  // sheet draws the glyph's square at once (component.buttons), so the bar
+  // measures the row it decided in the same task.
+  get shrunk() {
+    return this.getAttribute("shrink") === "icon" && this.getAttribute("data-shrunk") === "true";
   }
 
   constructor() {
@@ -422,18 +433,27 @@ class SfButton extends ButtonElement {
       icons: [this.iconStart, this.iconEnd, ...["icon", "icon-left", "icon-right"].map((name) => this.getAttribute(name))],
     });
 
+    // shrink="icon": the name stays the same whole and as a glyph (the text,
+    // unless the page named it), so a screen reader hears no change; as a
+    // glyph the look is ghost and the tooltip says the text and the keys.
+    const shrinks = this.getAttribute("shrink") === "icon";
+    const shrunk = this.shrunk;
+    const caps = shortcutCaps(parseShortcut(this.shortcut));
+    const shrinkName = shrinks ? (this.getAttribute("aria-label") || String(this.text || "").trim()) : "";
     return this.createTemplateContext({
       ...props,
       // Through the getter: the props context knows only the text attribute,
       // and a button whose label is a text child has none.
       text: this.text,
+      shrunk,
+      shrinkTip: shrunk && shrinkName ? [shrinkName, caps.map((cap) => cap.text).join(isApplePlatform() ? "" : "+")].filter(Boolean).join(" ") : "",
       // Resolved names the template reads (contracts/template-context.json).
       iconStart: this.iconStart,
       iconEnd: this.iconEnd,
       // A menu button draws its arrow at the end unless the page wrote an end icon.
       menuArrow: mode === "menu" && this.iconEnd === null ? "expand_more" : "",
-      appearance: this.appearance,
-      type: this.appearance,
+      appearance: shrunk ? "ghost" : this.appearance,
+      type: shrunk ? "ghost" : this.appearance,
       status: this.status,
       scheme: this.scheme,
       size: this.size,
@@ -452,7 +472,7 @@ class SfButton extends ButtonElement {
       radius: this.radius,
       // A cycle's name says its current value; without an aria-label the
       // shown label is the name.
-      ariaLabel: cycle ? (this.getAttribute("aria-label") || (cycleIcon && !this.text) ? cycle.name : "") : this.getAttribute("aria-label") || "",
+      ariaLabel: cycle ? (this.getAttribute("aria-label") || (cycleIcon && !this.text) ? cycle.name : "") : this.getAttribute("aria-label") || shrinkName || "",
       // A menu button says it has a menu and whether it is open; the menu
       // writes aria-expanded while it is open.
       expanded: mode === "menu" ? Boolean(this.expanded) : this.expanded,
@@ -564,6 +584,11 @@ class SfButton extends ButtonElement {
     super.attributeChangedCallback?.(name, oldValue, newValue);
     if ((name === "shortcut" || name === "shortcut-listen") && oldValue !== newValue && this.isConnected) {
       this.syncShortcutListener();
+    }
+    if ((name === "data-shrunk" || name === "shrink") && oldValue !== newValue && this._isMounted) {
+      // Whole again: the name tooltip made for the glyph leaves with it.
+      if (!this.shrunk) unlinkNameTip(this.querySelector(":scope > .sf-button"));
+      this.requestComponentUpdate("shrink");
     }
   }
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.language",
-  "version": "1.5.3",
+  "version": "1.7.0",
   "title": "Language",
   "summary": "The site's language picker. From two languages a button with the translate glyph, the current code and expand_more («RU ▾», one width whatever is chosen) opens a menu at the C32 panel width, each row the name in itself and its name in the page's language beside it; eight and more the same menu with search, on a phone a sheet at the bottom. A settings page can write mode=\"inline\" for a segmented switch (the arrows move, Enter chooses), a form mode=\"field\" for a dropdown field with its label; an app menu takes SfLanguage.menuEntry() for its «Язык» row. A language without this page stays, marked «нет перевода — откроется главная». One language draws nothing. A choice is a cancellable change; then the element follows the language's href or applies the language to the page (SF.language.use, lang and dir on <html>).",
   "kind": "smart",
@@ -32,6 +32,7 @@
     "uses": [
       "component.tooltip",
       "smart.button",
+      "smart.button-icon",
       "smart.dropdown",
       "smart.icon",
       "smart.menu-context",
@@ -120,6 +121,15 @@
           "1",
           "2",
           "3"
+        ]
+      },
+      "trigger": {
+        "type": "string",
+        "default": "code",
+        "description": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). The menu is the same. Core holds the trigger's box before the code arrives for both (--sf-language--trigger)",
+        "enum": [
+          "code",
+          "icon"
         ]
       },
       "apply": {
@@ -347,15 +357,15 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "3b61bb3923970ba5fe8ef931a2550a7b9773e43a44086228b024ce0bb57a2ff2"
+        "sha256": "462444c5fc2ec401d9bf2e4de7d8995ea48d590063d973c004790783cb656542"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "575296867e2bebc2ddbb7710cb7ad2bbc2c616738e38c699415cd317880c1021"
+        "sha256": "63787b95b442075f74fb7aa0687eace7177610107ea670124d9515bcfc91618d"
       },
       {
         "path": "src/smart/language/rule.js",
-        "sha256": "0eacb6755dc8360b9f48e3efdad0d335c8c2cac76ccecf944b449aee4dd0de90"
+        "sha256": "31f3ae94c763f0b0870387d772365e75d299a7c88555b76662804b4830b019d3"
       },
       {
         "path": "src/smart/language/docs.md",

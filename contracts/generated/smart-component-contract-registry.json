@@ -325,6 +325,7 @@
             "rel",
             "shortcut",
             "shortcut-listen",
+            "shrink",
             "expanded",
             "pressed",
             "text-pressed",
@@ -359,7 +360,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "9e469491bccd8fd88a567895a0a92d48e240b01d451480ed6975874da840bdd6",
+      "manifest_sha256": "88a0f06dde23000f1d0014357e91496abb668738668d2bcbf6e9450c4ea35b5e",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1199,7 +1200,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "0426ecb88bf957865654ab06e51cc560c5a2feac85078a6c861a083e34e3ae25",
+      "manifest_sha256": "1d9c877de35ac3ef93a5cbf95314b6acecc78521b45f1a2c1ad02ad4fa5dd14f",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1871,6 +1872,7 @@
         "uses": [
           "component.tooltip",
           "smart.button",
+          "smart.button-icon",
           "smart.dropdown",
           "smart.icon",
           "smart.menu-context",
@@ -1886,7 +1888,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/language/smart.manifest.json",
-      "manifest_sha256": "6344b5b667e74b0648db078480c07616a8e57a9a58cbe3618ef36838db852359",
+      "manifest_sha256": "dfe8b3a11452d1183ebccadaa8c2ab3ca804413442c48d4103ece3c838b100b2",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -2214,7 +2216,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/menu/smart.manifest.json",
-      "manifest_sha256": "bed550df549f59f0873d057c0ac92295f86fac370c53628aa06f484d01bc1621",
+      "manifest_sha256": "9289c5e9a94597979527ade0575ee73679b214c0c6c4ca3b82d3cc9bf004766d",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

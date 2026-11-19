@@ -141,6 +141,7 @@ export function renderButtonTemplate(context) {
                 aria-label=${ariaLabel || nothing}
                 aria-busy=${loading ? 'true' : nothing}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
+                data-sf-shrink-tip=${context.shrinkTip || nothing}
         >${content}</a>
     `;
     }
@@ -161,6 +162,7 @@ export function renderButtonTemplate(context) {
                 @keydown=${context.menuMode === 'menu' ? (event) => component.onMenuKey(event) : nothing}
                 aria-pressed=${announcesPressed ? String(Boolean(context.pressed)) : nothing}
                 aria-keyshortcuts=${context.ariaKeyShortcuts || nothing}
+                data-sf-shrink-tip=${context.shrinkTip || nothing}
         >${content}</button>${context.cycleView ? html`<span class="sf-button-announce sr-only" role="status" aria-live="polite" aria-atomic="true">${context.cycleView.announcement}</span>` : nothing}
     `;
 

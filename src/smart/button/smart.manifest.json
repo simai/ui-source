@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.button",
-  "version": "1.16.8",
+  "version": "1.18.0",
   "title": "Buttons",
   "summary": "A native button with Framework presentation: size, appearance, colour role or status, optional start and end icons, height and radius. loading sets aria-busy and disables it against repeated activation.",
   "kind": "smart",
@@ -65,6 +65,7 @@
         "rel",
         "shortcut",
         "shortcut-listen",
+        "shrink",
         "expanded",
         "pressed",
         "text-pressed",
@@ -321,6 +322,15 @@
         "type": "boolean",
         "default": false,
         "description": "The button listens to its shortcut on the page and is pressed by it, as by a click. A combination without mod, ctrl, alt or meta is not heard while focus is in an editable field"
+      },
+      "shrink": {
+        "type": "string",
+        "default": "none",
+        "description": "How the button gives way when the bar it stands in asks it to (owner decision C370): icon, its glyph only -- a square of its height, ghost -- keeping its name (its text, unless aria-label names it), its aria-keyshortcuts and the Framework's tooltip with its text and keys («Поиск ⌘K», C160); none, never. sf-header-site collapse auto asks first, before its nav gives way (C372), by the host state data-shrunk; a button needs an icon to give way to",
+        "enum": [
+          "none",
+          "icon"
+        ]
       },
       "expanded": {
         "type": "boolean",
@@ -736,7 +746,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "3355e00809fb59a46d55a61daeb036eb5b9d17ff894f57b4155d38367f8aae95"
+        "sha256": "d18acf1151acc0c9a28d84698e2d3a1ad0bcfe25ddf6dab6b6e1b96362aa200e"
       }
     ],
     "generated_runtime": [
