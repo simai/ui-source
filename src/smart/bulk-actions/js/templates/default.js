@@ -81,7 +81,7 @@ function done(context) {
   const icon = shown.kind === 'background' ? 'schedule' : 'check_circle';
   return html`<div class="sf-bulk-actions__lead" data-sf-bulk-done=${shown.kind}>
     <span class="sf-bulk-actions__say sf-bulk-actions__say--done"><sf-icon class=${`sf-bulk-actions__done sf-bulk-actions__done--${shown.kind}`}
-      icon=${icon} size="1/2" aria-hidden="true"></sf-icon><span class="sf-bulk-actions__text">${shown.text}</span></span>
+      icon=${icon} size="1/2" aria-hidden="true"></sf-icon><span class="sf-bulk-actions__text" title=${shown.text}>${shown.text}</span></span>
     ${shown.actions ? offer(context) : nothing}
   </div>`;
 }

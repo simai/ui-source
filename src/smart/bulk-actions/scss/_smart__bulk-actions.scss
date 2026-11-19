@@ -118,6 +118,23 @@
   gap: var(--sf-gap--icon-inline);
 }
 
+/* The done line (C387) gives way to the actions: one row, the line cut with
+   an ellipsis where the bar is narrow (its whole text in the tooltip and the
+   live region). */
+.sf-bulk-actions__lead[data-sf-bulk-done] {
+  flex: 1 1 0;
+  flex-wrap: nowrap;
+}
+
+.sf-bulk-actions__say--done {
+  min-inline-size: 0;
+}
+
+.sf-bulk-actions__say--done .sf-bulk-actions__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .sf-bulk-actions__progress {
   flex: 1 1 var(--sf-f0);
   min-inline-size: var(--sf-e2);

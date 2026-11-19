@@ -435,11 +435,11 @@
       },
       {
         "path": "src/smart/bulk-actions/js/templates/default.js",
-        "sha256": "c9056aa73ad2b0d2b968f201ac45e95e80435299bc9d97297b4e82ad42accabe"
+        "sha256": "2dbf90b748c37209de464f23172da36daa4437badba17764a19e1987c4adf2ed"
       },
       {
         "path": "src/smart/bulk-actions/scss/_smart__bulk-actions.scss",
-        "sha256": "0321d7bdaca417f6eb46bc9b0000ec71c53698cf9191a7d12bcff3a2555c81b4"
+        "sha256": "e0cb8c8810611ae18653a670d1d94f042c360df24743a2d9d206b6d49359e55c"
       },
       {
         "path": "src/smart/bulk-actions/rule.js",
