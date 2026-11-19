@@ -35,5 +35,9 @@ test('the icon is not copied, the route is selectable and still follows the link
 test('a disabled reference is an unavailable link (RL-16) and the arrow turns in RTL (RL-17)', () => {
   assert.match(template, /<span role="link" aria-disabled="true"/u);
   assert.doesNotMatch(template, /aria-disabled=\$\{disabled/u);
-  assert.match(css, /sf-reference-link:not\(\[icon\]\)[^{]*:dir\(rtl\)[^{]*\{\s*transform: scaleX\(-1\);/u);
+  // The directional glyphs (the default arrow_forward among them) are turned
+  // by the icons sheet (C151 point 3); east and west, which its list does not
+  // hold, turn here with the same scale property (RTL icons, 2026-11-19).
+  assert.match(css, /sf-reference-link:is\(\[icon="east"\], \[icon="west"\]\)\)[^{]*:dir\(rtl\)[^{]*\{\s*scale: -1 1;/u);
+  assert.doesNotMatch(css, /scaleX\(-1\)/u);
 });

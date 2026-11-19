@@ -533,10 +533,10 @@
     --sf-icon--color: var(--sf-on-surface-variant);
   }
 
-  .sf-admin-menu-direction-icon:dir(rtl),
-  .sf-admin-menu-back-button:dir(rtl) .sf-icon {
-    transform: scaleX(-1);
-  }
+  /* The direction icon (keyboard_double_arrow_left) and the back button's
+     chevron_left are directional glyphs: the icons sheet turns them in a
+     right-to-left menu (C151 point 3); a turn here as well turned them back
+     (RTL icons, 2026-11-19). */
 
   .sf-admin-menu-bottom {
     padding-inline-start: var(

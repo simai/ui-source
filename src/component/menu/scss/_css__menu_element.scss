@@ -263,9 +263,10 @@
     @include places.sf-place-fill(var(--sf-menu-element--background-color));
   }
 
-  .sf-menu-element[aria-expanded='false']:dir(rtl) > .sf-icon-button .sf-icon {
-    transform: scaleX(-1);
-  }
+  /* A closed row's chevron (chevron_right) is a directional glyph: the icons
+     sheet turns it in a right-to-left menu (C151 point 3); a turn here as
+     well turned it back, and turned a closed column branch's down arrow
+     (RTL icons, 2026-11-19). */
 
   .sf-menu-element:focus {
     outline: none;

@@ -20,9 +20,14 @@
 //      and document.fonts holds a loaded face for it;
 //   2. the new name waits unseen until its glyph is in: at no frame is it
 //      drawn as its name in a fallback font (the observer's debounce let
-//      "light_mode" show spelled out on effects.simai.io);
+//      "light_mode" show spelled out on effects.simai.io). Since 2026-11-16
+//      (first paint R222 open item 1) the wait keeps the glyph's size: the
+//      name lays out at its font size, its letters unseen (text fill
+//      transparent) and clipped to the glyph's box, rather than at font-size 0;
 //   3. the grown subset was asked for, and once its file is in, the new name
-//      draws as a glyph too;
+//      draws as a glyph too, and the stylesheet it replaced is retired (two
+//      frames after the face is verified, so it is waited for, not read in the
+//      frame the glyph first draws);
 //   4. the page raised no error.
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
@@ -163,6 +168,9 @@ const READ = () => [...document.querySelectorAll('.sf-icon')].map((el) => {
     width: Math.round(width * 10) / 10,
     fontSize,
     glyph: fontSize > 0 && Math.abs(width - fontSize) <= 1.5,
+    // Held: letters unseen and clipped to a box one glyph wide.
+    unseen: /^(transparent|rgba\(0, 0, 0, 0\))$/u.test(style.webkitTextFillColor) && /clip|hidden/u.test(style.overflowX)
+      && Math.abs(el.getBoundingClientRect().width - fontSize) <= 1.5,
     faceLoaded: document.fonts.check(`${style.fontWeight} ${fontSize || 24}px ${family}`, text),
   };
 });
@@ -264,7 +272,7 @@ try {
   for (const frame of frames) {
     const changed = frame.icons.find((icon) => icon.text === 'dark_mode');
     check('the new name waits unseen, never spelled out in a fallback font',
-      changed && (changed.fontSize === 0 || (changed.glyph && changed.faceLoaded)), {at: frame.at, ...changed});
+      changed && (changed.fontSize === 0 || changed.unseen || (changed.glyph && changed.faceLoaded)), {at: frame.at, ...changed});
     for (const icon of others(frame.icons)) {
       check(`an icon that showed keeps its glyph after the click (${icon.text})`, icon.glyph && icon.faceLoaded,
         {at: frame.at, ...icon});
@@ -279,7 +287,10 @@ try {
   const dark = after.find((icon) => icon.text === 'dark_mode');
   check('the new name draws as a glyph once its subset is in', dark?.glyph && dark?.faceLoaded, {dark});
   for (const icon of after) check('every icon draws its glyph after the grown subset', icon.glyph && icon.faceLoaded, icon);
-  const styles = await tab.evaluate(() => document.querySelectorAll('style[data-sf-icons-subset-family="outlined"]').length);
+  const countStyles = () => document.querySelectorAll('style[data-sf-icons-subset-family="outlined"]').length;
+  await tab.waitForFunction(() => document.querySelectorAll('style[data-sf-icons-subset-family="outlined"]').length === 1, null,
+    {timeout: 2000}).catch(() => {});
+  const styles = await tab.evaluate(countStyles);
   check('one subset stylesheet is left for the family', styles === 1, {styles});
   check('the page raised no error', errors.length === 0, {errors});
   evidence.cssRequests = cssRequests;

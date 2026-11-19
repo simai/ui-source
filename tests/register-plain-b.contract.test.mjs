@@ -48,5 +48,5 @@ test('C102 (4) (RG-B-47): the class tree toggles by the chevron, the folder is t
   assert.match(js, /if \(branch && nodeIcon && folderPair\.includes\(nodeIcon\.textContent\.trim\(\)\)\)/);
   // A press on the button or the chevron opens and closes the branch.
   assert.match(js, /event\.target\.closest\?\.\('\.sf-icon-button, \.sf-tree-chevron'\)/);
-  assert.equal((await json('src/component/tree/passport.json')).version, '1.6.0'); // C212 focus offsets: 1.4.1 // group build 9: 1.4.1 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
+  assert.equal((await json('src/component/tree/passport.json')).version, '1.6.1'); // C212 focus offsets: 1.4.1 // group build 9: 1.4.1 moved on by the merged branches or a GB9 patch // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch // fix/rtl-direction-icons: one RTL turn
 });

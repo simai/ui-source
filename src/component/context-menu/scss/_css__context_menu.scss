@@ -290,9 +290,9 @@
   --sf-icon--color: var(--sf-primary);
 }
 
-.sf-context-menu-item-chevron:dir(rtl) {
-  transform: scaleX(-1);
-}
+/* The submenu chevron (chevron_right) is a directional glyph: the icons
+   sheet turns it in a right-to-left menu (C151 point 3); a turn here as
+   well turned it back (RTL icons, 2026-11-19). */
 
 .sf-context-menu-item-text {
   display: flex;

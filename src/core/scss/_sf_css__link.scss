@@ -170,11 +170,10 @@ a [data-sf-new-tab='mark'] {
 }
 
 // The arrow points the way the text runs: up and to the end of the line,
-// so in a right-to-left page it points up and left (as the reference link's
-// arrows turn, C147).
-a:dir(rtl) [data-sf-new-tab='mark'] {
-  transform: scaleX(-1);
-}
+// so in a right-to-left page it points up and left (C147). arrow_outward is
+// a directional glyph: the icons sheet turns it (C151 point 3), and a turn
+// here as well turned it back, so it pointed up and right in every
+// right-to-left line (RTL icons, 2026-11-19).
 
 a [data-sf-new-tab='words'] {
   position: absolute;

@@ -340,13 +340,11 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 /* A row's deeper branch opens a panel to the side (C30): its chevron is ›
    whether the panel is open or not, mirrored in RTL only. Which side the
    panel stands on follows the room (SF.Position flips it at the window's
-   edge); the chevron never turns with it (R059). */
+   edge); the chevron never turns with it (R059). The RTL mirror is the
+   icons sheet's: chevron_right is a directional glyph (C151 point 3); a
+   transform here as well turned it back (RTL icons, 2026-11-19). */
 .sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu > .sf-menu-element .sf-icon-button .sf-icon {
   transform: none;
-}
-
-.sf-menu.sf-menu--horizontal .sf-menu .sf-menu-item--has-submenu > .sf-menu-element:dir(rtl) .sf-icon-button .sf-icon {
-  transform: scaleX(-1);
 }
 
 /* A section that is a page and has subsections is a split control (C30,
@@ -799,7 +797,8 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
 @layer sf.components {
   // A branch that is also a destination: its link is the row's words, drawn as
   // the row draws them, and takes the row's focus ring inside its own box; the
-  // disclosure button beside it mirrors its glyph in RTL as the row's does.
+  // disclosure button beside it mirrors its glyph in RTL as the row's does:
+  // the icons sheet turns chevron_right, a directional glyph (C151 point 3).
   .sf-menu .sf-menu-element > a.sf-menu-element-wrap {
     text-decoration: none;
     border-radius: inherit;
@@ -814,9 +813,9 @@ $row-current: "> .sf-menu-item:is(:has(> .sf-menu-element:is([aria-current='page
     outline-offset: var(--sf-focus--inset);
   }
 
-  .sf-menu .sf-menu-element > button.sf-icon-button[aria-expanded='false']:dir(rtl) .sf-icon {
-    transform: scaleX(-1);
-  }
+  // No turn of its own: a transform here as well turned chevron_right back,
+  // and turned the down arrow of a closed column branch (RTL icons,
+  // 2026-11-19).
 
   @media (forced-colors: active) {
     .sf-menu .sf-menu-element > a.sf-menu-element-wrap:focus-visible {

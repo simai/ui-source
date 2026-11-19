@@ -272,9 +272,9 @@
     inset-inline-end: var(--sf-space-1);
   }
 
-  .sf-gallery-viewer-side :where(.sf-icon):dir(rtl) {
-    transform: scaleX(-1);
-  }
+  /* The sides' chevrons are directional glyphs: the icons sheet turns them
+     in a right-to-left page (C151 point 3); a turn here as well turned them
+     back (RTL icons, 2026-11-19). */
 
   .sf-gallery-viewer-caption {
     min-block-size: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2) + var(--sf-space-1));

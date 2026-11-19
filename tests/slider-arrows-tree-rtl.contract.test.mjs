@@ -26,6 +26,10 @@ test('slider: the arrow pair is a row 8 apart', () => {
 
 test('tree: the chevron is mirrored right to left', () => {
   const sheet = read('src/component/tree/scss/_css__tree.scss');
-  assert.match(rule(sheet, '.sf-tree .sf-tree-chevron:dir(rtl)'), /transform: scaleX\(-1\);/u);
-  assert.equal(JSON.parse(read('src/component/tree/passport.json')).version, '1.6.0'); // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
+  // With the scale property the icons sheet turns a directional glyph with:
+  // one turn whatever the glyph (a transform as well turned chevron_right
+  // back; RTL icons, 2026-11-19).
+  assert.match(rule(sheet, '.sf-tree .sf-tree-chevron:dir(rtl)'), /scale: -1 1;/u);
+  assert.doesNotMatch(rule(sheet, '.sf-tree .sf-tree-chevron:dir(rtl)'), /transform/u);
+  assert.equal(JSON.parse(read('src/component/tree/passport.json')).version, '1.6.1'); // fix/rtl-direction-icons: one turn // group build 10: 1.5.1 moved on by the merged branches or a GB10 patch
 });
