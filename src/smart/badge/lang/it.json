@@ -6,6 +6,7 @@
     "activity-stopped": "Interrotto",
     "activity-failed": "Non riuscito",
     "activity-paused": "In pausa",
-    "activity-queued": "In coda"
+    "activity-queued": "In coda",
+    "value-label": "valore"
   }
 }

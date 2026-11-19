@@ -250,6 +250,10 @@
     "operatorLessWord": "미만",
     "operatorFromTo": "부터 – 까지",
     "operatorMoreOrEqualWord": "이상",
-    "operatorLessOrEqualWord": "이하"
+    "operatorLessOrEqualWord": "이하",
+    "rangeFromWord": "부터",
+    "rangeToWord": "까지",
+    "filterTextPlaceholder": "텍스트",
+    "filterRemoveCondition": "조건 제거"
   }
 }

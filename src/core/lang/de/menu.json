@@ -10,13 +10,14 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 18,
-    "translated": 17,
-    "share": 94.4
+    "translated": 18,
+    "share": 100
   },
   "words": {
     "sf-menu": {
       "toggle-label": "Menü",
       "more-label": "Mehr",
+      "holds-current": "enthält die aktuelle Seite",
       "status-success": "alles in Ordnung",
       "status-warning": "erfordert Aufmerksamkeit",
       "status-error": "Fehler",

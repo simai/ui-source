@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 544,
-    "translated": 541,
-    "share": 99.4
+    "translated": 544,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -44,7 +44,8 @@
       "options-error": "옵션을 불러올 수 없습니다",
       "nothing-found": "결과 없음",
       "retry": "다시 시도",
-      "show-more": "더 보기"
+      "show-more": "더 보기",
+      "select-found": "찾은 항목 선택"
     },
     "sf-input-code": {
       "character": "{m}자 중 {n}번째 문자",
@@ -393,6 +394,10 @@
       "hours": "시",
       "later-hour": "다음 시간",
       "later-minute": "다음 분",
+      "mark-count": {
+        "other": "일정 {n}개"
+      },
+      "mark-present": "일정 있음",
       "minutes": "분",
       "next-month": "다음 달",
       "next-years": "다음 연도",

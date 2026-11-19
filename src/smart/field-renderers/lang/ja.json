@@ -250,6 +250,10 @@
     "operatorLessWord": "より小さい",
     "operatorFromTo": "から – まで",
     "operatorMoreOrEqualWord": "以上",
-    "operatorLessOrEqualWord": "以下"
+    "operatorLessOrEqualWord": "以下",
+    "rangeFromWord": "から",
+    "rangeToWord": "まで",
+    "filterTextPlaceholder": "テキスト",
+    "filterRemoveCondition": "条件を削除"
   }
 }

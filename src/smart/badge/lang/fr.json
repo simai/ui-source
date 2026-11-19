@@ -6,6 +6,7 @@
     "activity-stopped": "Arrêté",
     "activity-failed": "Échec",
     "activity-paused": "En pause",
-    "activity-queued": "En file d’attente"
+    "activity-queued": "En file d’attente",
+    "value-label": "valeur"
   }
 }

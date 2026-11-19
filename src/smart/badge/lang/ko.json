@@ -6,6 +6,7 @@
     "activity-stopped": "중지됨",
     "activity-failed": "실패",
     "activity-paused": "일시 중지됨",
-    "activity-queued": "대기 중"
+    "activity-queued": "대기 중",
+    "value-label": "값"
   }
 }

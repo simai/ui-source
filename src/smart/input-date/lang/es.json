@@ -37,6 +37,12 @@
     "preset-next-month": "El próximo mes",
     "preset-next-week": "La próxima semana",
     "preset-this-year": "Este año",
-    "preset-tomorrow": "Mañana"
+    "preset-tomorrow": "Mañana",
+    "mark-count": {
+      "one": "{n} evento",
+      "many": "{n} eventos",
+      "other": "{n} eventos"
+    },
+    "mark-present": "tiene eventos"
   }
 }

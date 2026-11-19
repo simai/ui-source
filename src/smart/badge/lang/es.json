@@ -6,6 +6,7 @@
     "activity-stopped": "Detenido",
     "activity-failed": "Con error",
     "activity-paused": "En pausa",
-    "activity-queued": "En cola"
+    "activity-queued": "En cola",
+    "value-label": "valor"
   }
 }

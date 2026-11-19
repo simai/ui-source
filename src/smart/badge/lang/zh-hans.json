@@ -6,6 +6,7 @@
     "activity-stopped": "已停止",
     "activity-failed": "失败",
     "activity-paused": "已暂停",
-    "activity-queued": "排队中"
+    "activity-queued": "排队中",
+    "value-label": "值"
   }
 }

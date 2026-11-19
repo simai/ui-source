@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 10,
-    "translated": 9,
-    "share": 90
+    "translated": 10,
+    "share": 100
   },
   "words": {
     "sf-badge": {
@@ -22,6 +22,7 @@
       "activity-failed": "失敗",
       "activity-paused": "一時停止中",
       "activity-queued": "待機中",
+      "value-label": "値",
       "count": {
         "other": "未読 {count} 件"
       },

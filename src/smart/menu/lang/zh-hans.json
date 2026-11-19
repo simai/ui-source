@@ -11,6 +11,7 @@
     "search-placeholder": "搜索",
     "search-found": "找到：{n}",
     "search-empty": "未找到结果",
-    "new-tab": "在新标签页中打开"
+    "new-tab": "在新标签页中打开",
+    "holds-current": "包含当前页面"
   }
 }

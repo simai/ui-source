@@ -7,6 +7,7 @@
     "options-error": "No se pudieron cargar las opciones",
     "nothing-found": "No se encontró nada",
     "retry": "Reintentar",
-    "show-more": "Mostrar más"
+    "show-more": "Mostrar más",
+    "select-found": "Seleccionar encontrados"
   }
 }

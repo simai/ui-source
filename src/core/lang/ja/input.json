@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 544,
-    "translated": 541,
-    "share": 99.4
+    "translated": 544,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -44,7 +44,8 @@
       "options-error": "選択肢を読み込めませんでした",
       "nothing-found": "見つかりませんでした",
       "retry": "再試行",
-      "show-more": "さらに表示"
+      "show-more": "さらに表示",
+      "select-found": "見つかった項目を選択"
     },
     "sf-input-code": {
       "character": "{m} 文字中 {n} 文字目",
@@ -393,6 +394,10 @@
       "hours": "時",
       "later-hour": "次の時間",
       "later-minute": "次の分",
+      "mark-count": {
+        "other": "{n} 件の予定"
+      },
+      "mark-present": "予定あり",
       "minutes": "分",
       "next-month": "次の月",
       "next-years": "次の年",

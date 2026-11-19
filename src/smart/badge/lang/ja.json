@@ -6,6 +6,7 @@
     "activity-stopped": "停止",
     "activity-failed": "失敗",
     "activity-paused": "一時停止中",
-    "activity-queued": "待機中"
+    "activity-queued": "待機中",
+    "value-label": "値"
   }
 }

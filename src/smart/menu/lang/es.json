@@ -11,6 +11,7 @@
     "search-placeholder": "Buscar",
     "search-found": "Encontrados: {n}",
     "search-empty": "No se encontró nada",
-    "new-tab": "se abre en una pestaña nueva"
+    "new-tab": "se abre en una pestaña nueva",
+    "holds-current": "contiene la página actual"
   }
 }

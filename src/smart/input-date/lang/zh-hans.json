@@ -37,6 +37,10 @@
     "preset-next-month": "下月",
     "preset-next-week": "下周",
     "preset-this-year": "今年",
-    "preset-tomorrow": "明天"
+    "preset-tomorrow": "明天",
+    "mark-count": {
+      "other": "{n} 个事件"
+    },
+    "mark-present": "有事件"
   }
 }

@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 247,
-    "translated": 243,
-    "share": 98.4
+    "translated": 247,
+    "share": 100
   },
   "words": {
     "sf-field-renderers": {
@@ -265,7 +265,11 @@
       "operatorLessWord": "より小さい",
       "operatorFromTo": "から – まで",
       "operatorMoreOrEqualWord": "以上",
-      "operatorLessOrEqualWord": "以下"
+      "operatorLessOrEqualWord": "以下",
+      "rangeFromWord": "から",
+      "rangeToWord": "まで",
+      "filterTextPlaceholder": "テキスト",
+      "filterRemoveCondition": "条件を削除"
     }
   }
 }

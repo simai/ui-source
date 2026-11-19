@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 544,
-    "translated": 541,
-    "share": 99.4
+    "translated": 544,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -44,7 +44,8 @@
       "options-error": "无法加载选项",
       "nothing-found": "未找到任何内容",
       "retry": "重试",
-      "show-more": "显示更多"
+      "show-more": "显示更多",
+      "select-found": "选择找到的项"
     },
     "sf-input-code": {
       "character": "第 {n} 个字符，共 {m} 个",
@@ -393,6 +394,10 @@
       "hours": "时",
       "later-hour": "下一小时",
       "later-minute": "下一分钟",
+      "mark-count": {
+        "other": "{n} 个事件"
+      },
+      "mark-present": "有事件",
       "minutes": "分",
       "next-month": "下个月",
       "next-years": "后几年",

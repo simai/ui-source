@@ -11,6 +11,7 @@
     "search-placeholder": "検索",
     "search-found": "{n} 件見つかりました",
     "search-empty": "見つかりませんでした",
-    "new-tab": "新しいタブで開きます"
+    "new-tab": "新しいタブで開きます",
+    "holds-current": "現在のページを含む"
   }
 }

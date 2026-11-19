@@ -7,6 +7,7 @@
     "options-error": "選択肢を読み込めませんでした",
     "nothing-found": "見つかりませんでした",
     "retry": "再試行",
-    "show-more": "さらに表示"
+    "show-more": "さらに表示",
+    "select-found": "見つかった項目を選択"
   }
 }

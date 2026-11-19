@@ -270,6 +270,10 @@
     "operatorLessWord": "أقل من",
     "operatorFromTo": "من – إلى",
     "operatorMoreOrEqualWord": "على الأقل",
-    "operatorLessOrEqualWord": "على الأكثر"
+    "operatorLessOrEqualWord": "على الأكثر",
+    "rangeFromWord": "من",
+    "rangeToWord": "إلى",
+    "filterTextPlaceholder": "نص",
+    "filterRemoveCondition": "إزالة الشرط"
   }
 }

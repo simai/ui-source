@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 247,
-    "translated": 243,
-    "share": 98.4
+    "translated": 247,
+    "share": 100
   },
   "words": {
     "sf-field-renderers": {
@@ -273,7 +273,11 @@
       "operatorLessWord": "moins de",
       "operatorFromTo": "de – à",
       "operatorMoreOrEqualWord": "au moins",
-      "operatorLessOrEqualWord": "au plus"
+      "operatorLessOrEqualWord": "au plus",
+      "rangeFromWord": "de",
+      "rangeToWord": "à",
+      "filterTextPlaceholder": "Texte",
+      "filterRemoveCondition": "Retirer la condition"
     }
   }
 }

@@ -10,8 +10,8 @@
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
     "words": 544,
-    "translated": 541,
-    "share": 99.4
+    "translated": 544,
+    "share": 100
   },
   "words": {
     "sf-input": {
@@ -44,7 +44,8 @@
       "options-error": "Impossible de charger les options",
       "nothing-found": "Aucun résultat",
       "retry": "Réessayer",
-      "show-more": "Afficher plus"
+      "show-more": "Afficher plus",
+      "select-found": "Sélectionner les résultats"
     },
     "sf-input-code": {
       "character": "caractère {n} sur {m}",
@@ -393,6 +394,12 @@
       "hours": "Heures",
       "later-hour": "Heure suivante",
       "later-minute": "Minutes suivantes",
+      "mark-count": {
+        "one": "{n} événement",
+        "many": "{n} événements",
+        "other": "{n} événements"
+      },
+      "mark-present": "a des événements",
       "minutes": "Minutes",
       "next-month": "Mois suivant",
       "next-years": "Années suivantes",

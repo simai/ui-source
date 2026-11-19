@@ -6,6 +6,7 @@
     "activity-stopped": "Parado",
     "activity-failed": "Falhou",
     "activity-paused": "Pausado",
-    "activity-queued": "Na fila"
+    "activity-queued": "Na fila",
+    "value-label": "valor"
   }
 }

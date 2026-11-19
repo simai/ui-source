@@ -37,6 +37,10 @@
     "preset-next-month": "다음 달",
     "preset-next-week": "다음 주",
     "preset-this-year": "올해",
-    "preset-tomorrow": "내일"
+    "preset-tomorrow": "내일",
+    "mark-count": {
+      "other": "일정 {n}개"
+    },
+    "mark-present": "일정 있음"
   }
 }

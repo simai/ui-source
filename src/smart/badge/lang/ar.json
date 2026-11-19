@@ -6,6 +6,7 @@
     "activity-stopped": "متوقف",
     "activity-failed": "فشل",
     "activity-paused": "متوقف مؤقتًا",
-    "activity-queued": "في قائمة الانتظار"
+    "activity-queued": "في قائمة الانتظار",
+    "value-label": "القيمة"
   }
 }

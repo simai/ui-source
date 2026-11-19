@@ -11,6 +11,7 @@
     "search-placeholder": "검색",
     "search-found": "찾음: {n}",
     "search-empty": "검색 결과 없음",
-    "new-tab": "새 탭에서 열림"
+    "new-tab": "새 탭에서 열림",
+    "holds-current": "현재 페이지 포함"
   }
 }

@@ -258,6 +258,10 @@
     "operatorLessWord": "moins de",
     "operatorFromTo": "de – à",
     "operatorMoreOrEqualWord": "au moins",
-    "operatorLessOrEqualWord": "au plus"
+    "operatorLessOrEqualWord": "au plus",
+    "rangeFromWord": "de",
+    "rangeToWord": "à",
+    "filterTextPlaceholder": "Texte",
+    "filterRemoveCondition": "Retirer la condition"
   }
 }

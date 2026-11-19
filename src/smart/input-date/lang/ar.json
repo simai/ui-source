@@ -37,6 +37,15 @@
     "preset-next-month": "الشهر القادم",
     "preset-next-week": "الأسبوع القادم",
     "preset-this-year": "هذا العام",
-    "preset-tomorrow": "غدًا"
+    "preset-tomorrow": "غدًا",
+    "mark-count": {
+      "zero": "{n} أحداث",
+      "one": "{n} حدث",
+      "two": "{n} أحداث",
+      "few": "{n} أحداث",
+      "many": "{n} أحداث",
+      "other": "{n} أحداث"
+    },
+    "mark-present": "توجد أحداث"
   }
 }

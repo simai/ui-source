@@ -250,6 +250,10 @@
     "operatorLessWord": "小于",
     "operatorFromTo": "从 – 到",
     "operatorMoreOrEqualWord": "至少",
-    "operatorLessOrEqualWord": "至多"
+    "operatorLessOrEqualWord": "至多",
+    "rangeFromWord": "从",
+    "rangeToWord": "到",
+    "filterTextPlaceholder": "文本",
+    "filterRemoveCondition": "移除条件"
   }
 }

@@ -254,6 +254,10 @@
     "operatorLessWord": "weniger als",
     "operatorFromTo": "von – bis",
     "operatorMoreOrEqualWord": "mindestens",
-    "operatorLessOrEqualWord": "höchstens"
+    "operatorLessOrEqualWord": "höchstens",
+    "rangeFromWord": "von",
+    "rangeToWord": "bis",
+    "filterTextPlaceholder": "Text",
+    "filterRemoveCondition": "Bedingung entfernen"
   }
 }

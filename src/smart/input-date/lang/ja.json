@@ -37,6 +37,10 @@
     "preset-next-month": "来月",
     "preset-next-week": "来週",
     "preset-this-year": "今年",
-    "preset-tomorrow": "明日"
+    "preset-tomorrow": "明日",
+    "mark-count": {
+      "other": "{n} 件の予定"
+    },
+    "mark-present": "予定あり"
   }
 }

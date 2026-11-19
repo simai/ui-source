@@ -36,7 +36,7 @@
     "src/smart/field-renderers/templates.js",
     "src/smart/field-renderers/text-types.js"
   ],
-  "content_sha256": "e3ff25b62b5b72a8dc76d1ef3f10331a2089019d99c1d42ba268b7bce5a72bcd",
+  "content_sha256": "2035deaa351e2dccd6a8078a0b57af1ca1a66bf773692c3e113ef4e93d821724",
   "dependencies": [
     {
       "id": "core.runtime",
