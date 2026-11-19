@@ -177,8 +177,14 @@
   .sf-tabs-top-container {
     border-color: var(--sf-tabs-top-container--border-color, var(--sf-tabs-border-color, var(--sf-outline-variant)));
   }
+  // The sticky strip covers what scrolls under it with the ground it stands
+  // on: the nearest opaque place (C16, --sf-surface-place-ground), the page
+  // on a page, the area in a docked panel, the popup surface in a window.
+  // It read --sf-surface-page everywhere until 1.5.4, so inside a panel on
+  // the area it stood darker than the panel in the dark theme (view round 6,
+  // VB-1) and lighter in the light one.
   .sf-tabs.sf-tabs--sticky > .sf-tabs-top-container {
-    background-color: var(--sf-surface-page);
+    background-color: var(--sf-surface-place-ground, var(--sf-surface-page));
   }
 }
 
