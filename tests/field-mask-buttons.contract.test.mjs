@@ -114,7 +114,9 @@ test('a choice as buttons is one segmented sf-button-group; the dropdown is unch
   assert.match(source, /const CHOICE_BUTTON_SIZES = new Set\(\['1\/2', '1', '2'\]\);/u);
   // Clearing: only a field that is not required, by pressing the chosen button again.
   assert.match(buttons, /const clearable = field\.required !== true && !locked && !disabled;/u);
-  assert.match(buttons, /group\.clear\?\.\(\);/u);
+  // The press is pressAgainClears, shared with the boolean's buttons (GB13 note 1).
+  assert.match(buttons, /const press = pressAgainClears\(\{locked, clearable\}\);/u);
+  assert.match(body('pressAgainClears'), /group\.clear\?\.\(\);/u);
   // The option's own value, or null.
   assert.match(group, /host\.setFieldValue\(field, next === '' \? null : optionValue\(next\)\);/u);
 });

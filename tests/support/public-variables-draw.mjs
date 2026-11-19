@@ -14,7 +14,9 @@ export const DRAW = {
   // A pressed toggle beside the button: the pressed variables colour its resting look.
   // A third with overflow="truncate" (C301 (2), sf-button 1.17.0) and a label
   // longer than its ceiling: only a cut button reads --sf-button-max-width.
-  button: {css: ['buttons'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button><sf-button text="Жирный" icon-start="format_bold" appearance="outline" scheme="on-surface" pressed size="1"></sf-button><sf-button text="Сохранить черновик и вернуться к списку документов раздела" overflow="truncate" size="1"></sf-button>',
+  // The button's markup lays out with the display and flex utilities (flex,
+  // flex-1), as on every page; without them its label is not cut.
+  button: {css: ['buttons', 'utility/utility/display/default/css/default.css', 'utility/utility/flex/default/css/default.css'], js: 'button', html: '<sf-button text="Сохранить" size="1"></sf-button><sf-button text="Жирный" icon-start="format_bold" appearance="outline" scheme="on-surface" pressed size="1"></sf-button><sf-button text="Сохранить черновик и вернуться к списку документов раздела" overflow="truncate" size="1"></sf-button>',
     // The ceiling drawn, not only computed: at rest (default 100%) the cut
     // button is as wide as its label; at 213px it is 213 wide and its label cut.
     proves: `(() => {
