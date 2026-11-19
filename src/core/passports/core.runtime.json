@@ -364,6 +364,10 @@
       "range": "^1.1.0"
     },
     {
+      "id": "tokens.size",
+      "range": "^1.6.2"
+    },
+    {
       "id": "tokens.space",
       "range": "^1.0.0"
     },

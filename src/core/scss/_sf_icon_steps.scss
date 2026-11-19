@@ -1,0 +1,44 @@
+// The icon size steps, shared by the core sheet and the icons sheet: the core
+// sheet keeps an sf-icon's box before its element is defined (AM-16), the
+// icons sheet sizes the drawn glyph, from the same steps.
+@use 'sass:list';
+@use 'vars/sf_var__breakpoint' as bp;
+
+// size -> (phone, desktop): a step variable each. A button rung's text step
+// already holds its phone, compact and desktop values, so both are the same.
+$sf-icon-steps: (
+  '1/4': (var(--sf-icon-size-1\/4), var(--sf-icon-size-1\/4)),
+  '1/3': (var(--sf-icon-size-1\/4), var(--sf-icon-size-1\/3)),
+  '1/2': (var(--sf-icon-size-1\/3), var(--sf-icon-size-1\/2)),
+  '1': (var(--sf-text-height-1\/3), var(--sf-text-height-1\/3)),
+  '2': (var(--sf-text-height-1\/2), var(--sf-text-height-1\/2)),
+  '3': (var(--sf-text-height-1), var(--sf-text-height-1)),
+  '4': (var(--sf-text-height-2), var(--sf-text-height-2)),
+  '5': (var(--sf-icon-size-4), var(--sf-icon-size-5)),
+  '6': (var(--sf-icon-size-5), var(--sf-icon-size-6)),
+  '7': (var(--sf-icon-size-6), var(--sf-icon-size-7)),
+);
+
+@function icon-step-class($size) {
+  @if $size == '1/4' { @return '1\\/4'; }
+  @if $size == '1/3' { @return '1\\/3'; }
+  @if $size == '1/2' { @return '1\\/2'; }
+  @return $size;
+}
+
+@mixin icon-step($size, $steps, $props: ('--sf-icon--font-size', '--sf-icon--width', '--sf-icon--height'), $optical: null) {
+  $phone: list.nth($steps, 1);
+  $desktop: list.nth($steps, 2);
+  @each $p in $props { #{$p}: #{$phone}; }
+  @if $optical { --sf-icon--optical-size: #{list.nth($optical, 1)}; }
+  @if $phone != $desktop or ($optical and list.nth($optical, 1) != list.nth($optical, 2)) {
+    @media (min-width: bp.$breakpoint-desktop) {
+      @if $phone != $desktop {
+        @each $p in $props { #{$p}: #{$desktop}; }
+      }
+      @if $optical and list.nth($optical, 1) != list.nth($optical, 2) {
+        --sf-icon--optical-size: #{list.nth($optical, 2)};
+      }
+    }
+  }
+}

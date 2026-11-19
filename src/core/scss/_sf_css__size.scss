@@ -2,6 +2,7 @@
 @use "sass:string";
 @use "vars/sf_var__size" as size;
 @use '../../utility/z-index/default/scss/sf_var__z_index' as zIndexVars;
+@use 'sf_icon_steps' as iconSteps;
 
 // "1/4" -> "1\/4" (a CSS name): the ladder names its steps with an escaped slash.
 @function str-replace-slash($name) {
@@ -123,6 +124,32 @@
 					--sf-micro--#{$role}-#{str-replace-slash($host)}: #{size.small-step(map.get(map.get(size.$small-step-roles, $role), $host))};
 				}
 			}
+		}
+	}
+}
+
+@layer sf.base {
+	/* An sf-icon before its element is defined keeps the box its glyph will
+		 have, and draws nothing (AM-16). The element's host is empty until its
+		 bundle runs, and the box it held came with the icons sheet: a rail of
+		 glyphs drew its names at once and its icons 0 wide for 1.5 s on a cold
+		 load (10 Mbit/s, 100 ms), then grew them and moved the names. The box is
+		 the icons sheet's, from the same steps (_sf_icon_steps.scss) and the
+		 same size variables, the one a component gives the glyph included; it
+		 has no weight (:where), so the icons sheet and any component rule
+		 still speak over it when they are in. A ladder region's size names wait
+		 for the icons sheet, which holds the region's steps. */
+	:where(sf-icon:not(:defined):not([hidden])) {
+		display: inline-block;
+		flex: none;
+		vertical-align: middle;
+		inline-size: var(--sf-icon-glyph-size, var(--sf-icon--width, var(--sf-text-height-1)));
+		block-size: var(--sf-icon-glyph-size, var(--sf-icon--height, var(--sf-text-height-1)));
+	}
+
+	@each $size, $steps in iconSteps.$sf-icon-steps {
+		:where(sf-icon[size="#{$size}"]:not(:defined)) {
+			@include iconSteps.icon-step($size, $steps, ('--sf-icon--width', '--sf-icon--height'));
 		}
 	}
 }

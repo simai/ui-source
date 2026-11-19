@@ -8,6 +8,10 @@ const iconStyles = fs.readFileSync(
   new URL('../src/component/icons/scss/_css__icons.scss', import.meta.url),
   'utf8',
 );
+const coreSizeStyles = fs.readFileSync(
+  new URL('../src/core/scss/_sf_css__size.scss', import.meta.url),
+  'utf8',
+);
 const iconButtonStyles = fs.readFileSync(
   new URL('../src/component/icon-buttons/scss/_css_icon_buttons.scss', import.meta.url),
   'utf8',
@@ -44,9 +48,17 @@ test('an undefined Smart icon reserves its final control geometry', () => {
   assert.match(iconStyles, /sf-icon:not\(:defined\) \{/);
   // No size: a size-1 button's icon (24, phone 20; icons study IC-2); each
   // size reserves its step from the same table the drawn glyph reads.
-  assert.match(iconStyles, /width: var\(--sf-icon--width, var\(--sf-text-height-1\)\)/);
-  assert.match(iconStyles, /height: var\(--sf-icon--height, var\(--sf-text-height-1\)\)/);
+  // A size a component gives the glyph (--sf-icon-glyph-size) is the box
+  // too, as the drawn glyph reads it (AM-16).
+  assert.match(iconStyles, /width: var\(--sf-icon-glyph-size, var\(--sf-icon--width, var\(--sf-text-height-1\)\)\)/);
+  assert.match(iconStyles, /height: var\(--sf-icon-glyph-size, var\(--sf-icon--height, var\(--sf-text-height-1\)\)\)/);
   assert.match(iconStyles, /@each \$size, \$steps in \$sf-icon-steps \{\n  sf-icon\[size="#\{\$size\}"\]:not\(:defined\)/);
+  // core.css holds the same box before the icons sheet is in (AM-16): a
+  // rail's glyphs were 0 wide for 1.5 s on a cold load while its names drew.
+  assert.match(coreSizeStyles, /:where\(sf-icon:not\(:defined\):not\(\[hidden\]\)\) \{/);
+  assert.match(coreSizeStyles, /inline-size: var\(--sf-icon-glyph-size, var\(--sf-icon--width, var\(--sf-text-height-1\)\)\)/);
+  assert.match(coreSizeStyles, /block-size: var\(--sf-icon-glyph-size, var\(--sf-icon--height, var\(--sf-text-height-1\)\)\)/);
+  assert.match(coreSizeStyles, /@each \$size, \$steps in iconSteps\.\$sf-icon-steps \{\s*:where\(sf-icon\[size="#\{\$size\}"\]:not\(:defined\)\)/);
   assert.match(
     iconButtonStyles,
     /sf-icon-button--size-1\.sf-icon-button--icon :is\(\.sf-icon, sf-icon:not\(:defined\)\)/,
