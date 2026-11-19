@@ -14,7 +14,11 @@
 > 2027-01-01: `SF.Effects`, `data-sf-effect*` and `SF_BOOT_CONFIG.effects` keep
 > working and each use is noted in `SF.deprecations` (journal records
 > `global-sf-effects-to-package`, `attribute-data-sf-effect-to-sf-effect`,
-> `option-sf-boot-config-effects-to-package`). The set's engine never reads
+> `option-sf-boot-config-effects-to-package`). Core's copy reads its settings
+> (`foreign`, `about`, `catalogue`, `index`, `indexSha256`) from
+> `SF_BOOT_CONFIG.packages.effects` first; `SF_BOOT_CONFIG.effects` is read
+> only for the keys the declaration leaves out, and only that read is noted.
+> The set's engine never reads
 > `data-sf-effect`, so nothing is drawn twice. See
 > `docs/developer/component-sets.md`.
 

@@ -286,6 +286,11 @@ R084) отмечен одним знаком. У закрытой ветки к�
 событие `sf-menu-overflow` с `detail: {hidden}`. Пункт «Ещё» — ветка с `id`
 `@more`: `open('@more')` открывает её.
 
+При `overflow="more"` строка сама меряет ширину всех своих пунктов без
+«Ещё» и пишет её в `--sf-menu--row-size` на своём `<nav>`: так место,
+которое подбирает ширину по содержимому (раздел по центру шапки
+`sf-header-site`), даёт строке столько места, сколько ей нужно.
+
 ```html
 <sf-menu orientation="horizontal" appearance="navigation" overflow="more"
          more-label="Ещё" current-from-location>…</sf-menu>

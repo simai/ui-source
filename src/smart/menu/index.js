@@ -1178,6 +1178,16 @@ class SfSmartMenu extends MenuElement {
     // is a whole pixel, the C54 return), the arithmetic the shared engine's
     // (fitRow, owner decision C155 (1)).
     const room = rowRoom(nav);
+    // The width of the whole row, every item shown and no «Ещё», with the
+    // nav's own edges: the room the row asks. The nav's width is the room it
+    // is given (contain: inline-size), so as content it is nothing; a place
+    // that sizes the nav from its content -- sf-header-site's centred nav --
+    // reads this instead (--sf-menu--row-size) and gives the row that much
+    // while it fits. It does not change with the items that left, so the
+    // row's own measure stays the room it is given (Docara, 2026-11-18).
+    const whole = widths.reduce((sum, width) => sum + width, 0) + gap * Math.max(0, widths.length - 1) + (nav.getBoundingClientRect().width - room);
+    const rowSize = `${Math.ceil(whole)}px`;
+    if (nav.style.getPropertyValue('--sf-menu--row-size') !== rowSize) nav.style.setProperty('--sf-menu--row-size', rowSize);
     const stays = new Set(fitRow(widths, moreWidth, room, gap, keep));
     this.setOverflowHidden(ids.filter((_, at) => !stays.has(at)), nav.clientWidth);
   }

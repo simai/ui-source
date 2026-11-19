@@ -156,6 +156,28 @@ test('sf-upgrade: a general value rename skips the elements that rename it back'
   }
 });
 
+/* sf-theme-change is two events: the Loader's light/dark event on window
+   (SF.Loader.setTheme), current API, and the theme generator's first name for
+   its change, which leaves on 2026-12-01. Only a listener on something other
+   than the window is the generator's, so only that is reported, and nothing
+   is rewritten: Docara's window listener (PortableMarkdownRenderer) was turned
+   into the generator's name by the event rule before (2026-11-18). */
+test('sf-upgrade: the Loader\'s sf-theme-change on window is not the theme generator\'s', () => {
+  const project = mkdtempSync(join(tmpdir(), 'sf-upgrade-'));
+  try {
+    const page = join(project, 'page.js');
+    const source = "window.addEventListener('sf-theme-change', a);\nglobalThis.addEventListener?.(\"sf-theme-change\", b);\ngenerator.addEventListener('sf-theme-change', c);\n";
+    writeFileSync(page, source);
+    const run = (...extra) => spawnSync(process.execPath, [resolve(root, 'scripts/sf-upgrade.mjs'), project, '--json', ...extra], {encoding: 'utf8'});
+    const findings = JSON.parse(run().stdout).findings.filter((row) => row.from === 'sf-theme-change');
+    assert.deepEqual([...new Set(findings.map((row) => `${row.line} ${row.mechanical}`))], ['3 false']);
+    run('--apply');
+    assert.equal(readFileSync(page, 'utf8'), source, 'nothing rewritten');
+  } finally {
+    rmSync(project, {recursive: true, force: true});
+  }
+});
+
 /* A rename reversed by a later record (sf-button--ghost -> sf-button--link,
    2026-10-09; sf-button--link -> sf-button--ghost, C15, 2026-11-11): the
    earlier item is history, so the current name is never reported or turned
