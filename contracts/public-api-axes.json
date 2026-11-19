@@ -57,7 +57,8 @@
     ],
     "extras": {
       "input": [
-        "hidden"
+        "hidden",
+        "plain"
       ],
       "input-textarea": [
         "flush"
