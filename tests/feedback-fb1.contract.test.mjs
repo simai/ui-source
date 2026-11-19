@@ -49,8 +49,9 @@ function checkSkeleton(css, where) {
   // The built sheet may carry physical fallbacks before the logical size, so the
   // icon rules are read as a declaration anywhere in their body.
   // A circle or square icon keeps equal sides (the shape rule leaves icons to the icon rule).
-  // The builder spells :is()/:not() lists out, one selector per shape.
-  assert.match(flat, /\.sf-skeleton-text:is\(\.sf-skeleton-circle, ?\.sf-skeleton-square\):not\(\.sf-skeleton-icon, ?\[style\*=["']?inline-size["']?\]\)|\.sf-skeleton-text\.sf-skeleton-circle:not\(\.sf-skeleton-icon\):not\(\[style\*=["']?inline-size["']?\]\)\{/u, `${where}: icon shapes square`);
+  // A builder before ui-builder fix/sheet-weight spelt :is() lists out, one
+  // selector per shape; since then :is() stays and only the :not() list is split.
+  assert.match(flat, /\.sf-skeleton-text:is\(\.sf-skeleton-circle, ?\.sf-skeleton-square\):not\(\.sf-skeleton-icon, ?\[style\*=["']?inline-size["']?\]\)|\.sf-skeleton-text:is\(\.sf-skeleton-circle, ?\.sf-skeleton-square\):not\(\.sf-skeleton-icon\):not\(\[style\*=["']?inline-size["']?\]\) ?\{|\.sf-skeleton-text\.sf-skeleton-circle:not\(\.sf-skeleton-icon\):not\(\[style\*=["']?inline-size["']?\]\)\{/u, `${where}: icon shapes square`);
   assert.match(flat, /\.sf-skeleton-text\.sf-skeleton-icon:not\(\[style\*=["']?block-size["']?\]\) ?\{[^}]*block-size: ?var\(--sf-skeleton-text--icon/u, `${where}: icon height`);
 }
 
