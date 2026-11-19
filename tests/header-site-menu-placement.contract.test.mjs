@@ -92,7 +92,12 @@ test('header site C104: the bar keeps aria-expanded on the switch and draws no b
   // collapsed answer is read again after a drawing only when it can have
   // changed (DF-9: a read after every drawing worked the page's styles out again).
   assert.match(source, /this\._offSwitches = this\.onAfterRender\(\(\) => \{\n\s+this\.observeSize\(\);\n\s+if \(this\.collapsedAnswerStale\(\)\) this\.syncCollapsed\(\);\n\s+this\.syncSwitches\(\);\n\s+this\.queueFit\(\);\n\s+\}, \{once: false\}\);/u);
-  assert.match(source, /collapsedAnswerStale\(\) \{\n\s+return this\._collapsedNow === undefined\n\s+\|\| this\._collapsedRow !== this\.collapseRow\(\)\n\s+\|\| this\._collapsedStep !== this\.collapse;/u);
+  assert.match(source, /collapsedAnswerStale\(\) \{\n\s+return this\._collapsedNow === undefined\n\s+\|\| this\._collapsedRow !== this\.collapseRow\(\)\n\s+\|\| this\._collapsedStep !== this\.collapse\n\s+\|\| this\._collapsedMenusDefined !== this\.navMenusDefined\(\);/u);
+  // Under collapse auto the sheet answers by the nav menu's definition too
+  // (the phone's step until it has its code): its arrival is a change (GB14:
+  // the bar stood open for one frame, CLS 1.68 at 390).
+  assert.match(source, /navMenusDefined\(\) \{\n\s+return this\.collapse !== 'auto' \|\| this\.navMenus\(\)\.every\(\(menu\) => menu\.matches\(':defined'\)\);/u);
+  assert.match(source, /this\._collapsedMenusDefined = this\.navMenusDefined\(\);/u);
   assert.match(source, /globalThis\.addEventListener\('resize', this\._onResize, \{passive: true\}\);/u);
   assert.match(source, /globalThis\.removeEventListener\('resize', this\._onResize\);/u);
   assert.equal((source.match(/this\.syncSwitches\(\);/gu) || []).length, 5);

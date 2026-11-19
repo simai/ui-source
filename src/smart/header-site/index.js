@@ -235,10 +235,20 @@ class SfSiteHeader extends SiteHeaderElement {
   // the observer's (it answers after layout, at no cost). A read after each
   // drawing made the browser work out the page's styles again every time the
   // bar drew (DF-9).
+  // Under collapse auto the sheet also answers by whether the nav's sf-menu
+  // has its code yet (the phone's step until it has): its definition changes
+  // the answer without drawing the row again, so it counts as a change too
+  // (group build 14: without it the bar stood open for one frame when the
+  // menu arrived, CLS 1.68 at 390).
   collapsedAnswerStale() {
     return this._collapsedNow === undefined
       || this._collapsedRow !== this.collapseRow()
-      || this._collapsedStep !== this.collapse;
+      || this._collapsedStep !== this.collapse
+      || this._collapsedMenusDefined !== this.navMenusDefined();
+  }
+
+  navMenusDefined() {
+    return this.collapse !== 'auto' || this.navMenus().every((menu) => menu.matches(':defined'));
   }
 
   collapseRow() {
@@ -295,6 +305,7 @@ class SfSiteHeader extends SiteHeaderElement {
     const collapsed = this.collapsed;
     this._collapsedRow = this.collapseRow();
     this._collapsedStep = this.collapse;
+    this._collapsedMenusDefined = this.navMenusDefined();
     if (collapsed === this._collapsedNow) return;
     this._collapsedNow = collapsed;
     this.sfHostState('data-collapsed', collapsed);
