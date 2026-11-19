@@ -41,7 +41,7 @@ const PageHeaderElement = elementFromManifest(manifest, {
 });
 
 // The header's slots. A child naming one of them is the page's content for it.
-const HOST_SLOTS = new Set(['path', 'start', 'actions', 'tabs']);
+const HOST_SLOTS = new Set(['path', 'start', 'media', 'heading', 'actions', 'tabs']);
 
 // The nearest box that scrolls the header (overflow auto or scroll on the
 // block axis), or null for the window: the work area a sticky header stays
@@ -224,14 +224,18 @@ class SfPageHeader extends PageHeaderElement {
     for (const child of line.children) {
       if (child === row) continue;
       if (child.classList.contains('sf-page-header-title')) {
-        const heading = child.querySelector(':scope > .sf-page-header-heading');
+        // With a description (1.10.0) the heading and its line stand in a
+        // column (sf-page-header-name) that gives way as the heading does;
+        // its words are the wider of the two lines.
+        const heading = child.querySelector(':scope > .sf-page-header-heading, :scope > .sf-page-header-name');
         const titleGap = parseFloat(getComputedStyle(child).columnGap) || 0;
         // The star is counted at the actions' rung, the size it takes when
         // the actions keep the line beside it (C103): the room is the same
         // whichever size it has now, so the row never moves for the star.
         const parts = [...child.children].filter((part) => part !== heading)
           .map((part) => (part.classList.contains('sf-page-header-star') ? Math.max(drawnBox(part).width, this.actionsRungSide(row)) : drawnBox(part).width));
-        const words = (heading?.scrollWidth || 0) + parts.reduce((sum, width) => sum + width + titleGap, 0);
+        const named = heading?.classList.contains('sf-page-header-name') ? Math.max(0, ...[...heading.children].map((line) => line.scrollWidth)) : heading?.scrollWidth;
+        const words = (named || 0) + parts.reduce((sum, width) => sum + width + titleGap, 0);
         const basis = parseFloat(getComputedStyle(child).flexBasis);
         room -= Math.min(words, Number.isFinite(basis) ? basis : words) + gap;
       } else {
@@ -291,7 +295,7 @@ class SfPageHeader extends PageHeaderElement {
     const row = this.actionRow();
     const sizeOf = (element) => element?.getAttribute('size') || '1';
     const first = row ? this.actionItems(row).find((item) => !item.classList.contains('sf-page-header-out')) : null;
-    const start = [...line.children].find((child) => child !== title && child !== row && child.nodeType === 1);
+    const start = [...line.children].find((child) => child !== title && child !== row && child.nodeType === 1 && !child.classList.contains('sf-page-header-media'));
     // Not laid yet: the line before its sheet, an action before its code.
     if (getComputedStyle(line).display !== 'flex' || (first && !drawnBox(controlOf(first)).height)) return;
     let want = '1/2';
@@ -431,6 +435,8 @@ class SfPageHeader extends PageHeaderElement {
       sticky: this.sticky,
       actions: () => this.orderedActions(),
       heading: this.heading,
+      headingLevel: this.headingLevelValue(),
+      description: this.description || '',
       count: this.count,
       level: this.level,
       star: this.star,
@@ -464,7 +470,40 @@ class SfPageHeader extends PageHeaderElement {
     return '1/2';
   }
 
+  // The heading element's level (1.10.0): 1 to 6, 1 when the attribute says
+  // anything else. Only the tag changes; the look stays the fourth heading
+  // step. A head inside a page that has its own h1 (a conversation embedded
+  // in a page) says 2.
+  headingLevelValue() {
+    const value = Number(this.getAttribute('heading-level'));
+    return Number.isInteger(value) && value >= 1 && value <= 6 ? value : 1;
+  }
+
+  // The media slot (1.10.0): an avatar before the title stands on the line's
+  // rung, as the star does before the line is laid: the size the page gave
+  // its first action, else its start control's, else 1 beside a description
+  // (the heading and its line are that tall) and the half step alone with
+  // the heading. A size the page writes itself stays; the header writes only
+  // a size it chose (data-sf-page-header-size marks it, so it follows a rung
+  // that changes).
+  sizeMedia() {
+    const media = (this._liveSlotNodes?.get?.('media') || []).filter((node) => node.nodeType === 1);
+    if (!media.length) return;
+    let rung = '';
+    for (const name of ['actions', 'start']) {
+      const first = (this._liveSlotNodes?.get?.(name) || []).find((node) => node.nodeType === 1);
+      if (first) { rung = first.getAttribute('size') || '1'; break; }
+    }
+    if (!rung) rung = this.description ? '1' : '1/2';
+    for (const node of media) {
+      if (node.hasAttribute('size') && !node.hasAttribute('data-sf-page-header-size')) continue;
+      if (node.getAttribute('size') !== rung) node.setAttribute('size', rung);
+      node.setAttribute('data-sf-page-header-size', '');
+    }
+  }
+
   template() {
+    this.sizeMedia();
     return renderPageHeaderTemplate(this.templateContext());
   }
 }

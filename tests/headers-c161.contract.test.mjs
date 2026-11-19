@@ -34,7 +34,7 @@ test('C161 (5): a tabs slot ends the header, its line the header edge', () => {
   assert.ok(page.slots.tabs);
   assert.ok(pageTemplate.lastIndexOf('sf-page-header-tabs') > pageTemplate.lastIndexOf('sf-page-header-actions'));
   assert.match(pageSheet, /\.sf-page-header:has\(> \.sf-page-header-tabs\) \{\s*padding-block-end: 0;/u);
-  assert.match(pageSource, /'path', 'start', 'actions', 'tabs'/u);
+  assert.match(pageSource, /'path', 'start', 'media', 'heading', 'actions', 'tabs'/u);
 });
 
 test('C161 (6): the count stays for a page without a table footer', () => {

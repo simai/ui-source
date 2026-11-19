@@ -130,6 +130,9 @@ const NOT_A_MANIFEST = [
   {file: 'src/smart/avatar/index.js', read: 'this.description'},
   {file: 'src/smart/avatar/js/templates/label.js', read: 'context.description'},
   {file: 'src/smart/avatar/js/templates/card.js', read: 'context.description'},
+  // sf-header-page's own setting `description` (1.10.0, the line under a conversation's heading).
+  {file: 'src/smart/header-page/index.js', read: 'this.description'},
+  {file: 'src/smart/header-page/js/templates/default.js', read: 'context.description'},
   // A fragment descriptor's ports (simai.composition fragments), not a component.json.
   {file: 'src/core/js/composition/fragments.mjs', read: 'port.summary'},
   // A component's smart.manifest.json with `composition.declarative` (the

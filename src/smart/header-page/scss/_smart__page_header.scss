@@ -55,13 +55,39 @@
 
 /* The marks keep their size; only the heading gives way. The badge and the
    icon button hosts are display: contents, so their boxes are the items. */
-.sf-page-header-title > :not(.sf-page-header-heading),
-.sf-page-header-title > :not(.sf-page-header-heading) > * {
+.sf-page-header-title > :not(.sf-page-header-heading, .sf-page-header-name),
+.sf-page-header-title > :not(.sf-page-header-heading, .sf-page-header-name) > * {
   flex: none;
 }
 
 .sf-page-header-heading {
   flex: 0 1 auto;
+}
+
+/* The head of a conversation (C161, 1.10.0). With a description the heading
+   and its line stand in a column that gives way as the heading does, each
+   line ending in its ellipsis; the line is the small text step. */
+.sf-page-header-name {
+  flex: 0 1 auto;
+}
+
+.sf-page-header-description {
+  font-size: var(--sf-text-size-1\/2);
+  line-height: var(--sf-text-height-1\/2);
+}
+
+/* A control in the heading slot (a picker of whom to talk to) keeps its own
+   look inside the heading element and gives way as the heading's words do;
+   the heading draws no ellipsis of its own around it, which would clip the
+   control's focus ring. */
+.sf-page-header-heading--slot > * {
+  min-inline-size: 0;
+}
+
+/* The media slot: an avatar before the title, the line's gap from it, kept
+   whole. */
+.sf-page-header-media {
+  flex: none;
 }
 
 /* The actions are buttons of one group: 8 apart (C105 H5, --sf-space-1/3);
@@ -278,6 +304,9 @@
 @layer sf.paint {
   .sf-page-header-heading {
     color: var(--sf-page-header-heading-color, inherit);
+  }
+  .sf-page-header-description {
+    color: var(--sf-on-surface-variant);
   }
   .sf-page-header--sticky {
     background-color: var(--sf-surface-page);

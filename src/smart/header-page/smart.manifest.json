@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.header-page",
-  "version": "1.9.4",
+  "version": "1.10.0",
   "title": "Page header",
   "summary": "The head of a work page of an app: path, heading, favourite star, install mark, actions (the main one last) and views (tabs); sticky on request. An app with a side menu has no top bar, so this is the page's head (C161).",
   "kind": "smart",
@@ -54,6 +54,18 @@
         "type": "string",
         "default": "",
         "description": "The page heading, drawn as the fourth heading step (20/24): a work page of an app titles itself there, an exception to C21's h1 at step 6 (owner decision C161 (2)); a page of a site keeps its own h1"
+      },
+      "heading-level": {
+        "type": "integer",
+        "default": 1,
+        "description": "The heading element's level, 1 to 6 (1.10.0): h1 by default, the page's own title; 2 for a head inside a page that has its own h1 (a conversation embedded in a page). Only the tag changes: the look stays the fourth heading step",
+        "minimum": 1,
+        "maximum": 6
+      },
+      "description": {
+        "type": "string",
+        "default": "",
+        "description": "A line under the heading, in the small text step and the secondary ink (1.10.0): between people the conversation's head says whether the person is online («в сети», «был(а) вчера»). Empty draws no line, and the head is the one it always was"
       },
       "count": {
         "type": "string",
@@ -247,11 +259,11 @@
     "source_artifacts": [
       {
         "path": "src/smart/header-page/index.js",
-        "sha256": "7a9dc991c2c55999aecf45261035eb0e582f96859a57e771d061215f608cf068"
+        "sha256": "dca4a14164d8b5af7aa95ba4bccaf91351da32d1a924d3067a6f4d27a275f3d6"
       },
       {
         "path": "src/smart/header-page/js/templates/default.js",
-        "sha256": "43d484124179fb4277c87ea12116f8dbd8cb22ebfb8d0694c7f49f05e5186063"
+        "sha256": "32895b068da69a48cffb092607e932a724e353c5355f8a8cb50d543be57e8d64"
       }
     ],
     "generated_runtime": [
