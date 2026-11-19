@@ -87,7 +87,7 @@ test('C369: sf-language trigger icon is the glyph alone, and core holds its squa
   assert.equal(language.settings.trigger.default, 'code');
   const core = read('src/core/scss/_sf_css__placeholder.scss');
   assert.match(core, /:where\(sf-language\[trigger="icon"\]\) \{\n  --sf-language--trigger: var\(--sf-language--box\);\n\}/u);
-  assert.match(core, /:where\(sf-language \.sf-language-parts > :is\(sf-button, sf-button-icon, sf-icon-button\):not\(:defined\)\)/u);
+  assert.match(core, /:where\(sf-language \.sf-language-parts > :is\(sf-button, :is\(sf-button-icon, sf-icon-button\)\):not\(:defined\)\)/u);
   const source = read('src/smart/language/index.js');
   assert.match(source, /tipId: \(look === 'menu' \|\| look === 'search'\) && this\.getAttribute\('trigger'\) !== 'icon'/u);
 });
