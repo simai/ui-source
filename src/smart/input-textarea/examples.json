@@ -163,6 +163,17 @@
       "expect": {
         "size": "2"
       }
+    },
+    {
+      "name": "width",
+      "title": "Длинное поле",
+      "settings": {
+        "label": "Адрес доставки",
+        "width": "long"
+      },
+      "expect": {
+        "width": "long"
+      }
     }
   ],
   "pages": [

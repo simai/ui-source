@@ -254,3 +254,18 @@ shown error goes the moment the value is right -- and the browser's bubble
 never shows. See sf-input «Errors the field shows itself». The label is in the text ink, the «*» in the label's
 ink; hover draws the border in the text ink and focus a 2 px primary edge
 inside the field, with no ring outside it.
+
+## Ширина по значению (C396)
+
+`width="short | medium | long"` (sf-input-quantity 1.13.0) задаёт ширину поля по значению, для
+которого оно сделано, в знаках шкалы ширин: `short` — 20 (дата, число, код),
+`medium` — 28 (имя, телефон), `long` — 44 (путь, адрес почты, адрес). Это
+роли `--sf-field--width-short`, `-medium`, `-long` на ступенях
+`--sf-measure-20`, `-28`, `-44`: 160 / 224 / 352 px при тексте 16 и
+140 / 196 / 308 в компактной плотности и на телефоне — знаки те же, пиксели
+идут за текстом. Поле не шире этого и не шире контейнера. Без настройки (по
+умолчанию) поле во всю ширину контейнера, как раньше.
+
+```html
+<sf-input-quantity label="Количество" width="short"></sf-input-quantity>
+```

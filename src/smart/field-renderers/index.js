@@ -6,6 +6,7 @@ import {formatDate} from "../../core/js/format-date.js";
 import {NUMBER_FILTER_OPERATORS, PLACES, PROPERTY_TYPES, TEMPLATE_ALIASES, TYPE_ALIASES, modesOf} from "./registry.js";
 import {completeWebAddress, composeLink, innError, innHolder, isLinkAddress, isWebAddress, readLink, shortAddress} from "./text-types.js";
 import {resolveField, templateParam, typeEntry} from "./templates.js";
+import {fieldWidth, fieldWidthClass} from "../../component/field-size";
 import {composeDateTime, composeTime, normalizeTime, splitDateTime as readDateTime, splitTime} from "./datetime.js";
 import {maskPattern, maskState} from "./mask.js";
 import {cleanHtml, htmlText} from "./html.js";
@@ -1337,6 +1338,14 @@ export function renderCellField(field = {}, value, host) {
 // 1/2 read a step larger than it (owner, 2026-10-14). Set for the duration of
 // one synchronous render.
 let EDIT_SIZE = '1';
+// The width a field's control is drawn at (owner decision C396, WM-4): the
+// template parameter `width` (templateParams.width: short, medium or long,
+// 20 / 28 / 44 characters of the width ladder) passed to the control's own
+// width setting; empty, the control takes the whole column as before. The
+// field key `width` (half or full, the column a property view lays the field
+// in) is another thing and is not read here. Set for one synchronous render,
+// as EDIT_SIZE is.
+let EDIT_WIDTH = '';
 
 const EDIT_RENDERERS = {
     record: renderRecordLookup,
@@ -1393,6 +1402,7 @@ function renderPhoneEdit(field, value, host) {
     return html`
         <sf-input-country
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 name=${fieldName(field)}
                 value=${stored}
                 iso2=${iso2}
@@ -1469,6 +1479,7 @@ function renderPasswordEdit(field, value, host) {
         <span class="sf-field-password flex items-cross-center gap-1/3 min-w-0" spellcheck="false">
             <sf-input
                     size=${EDIT_SIZE}
+                    width=${EDIT_WIDTH || nothing}
                     appearance="bordered"
                     root-class="flex-1 min-w-0"
                     input-type="password"
@@ -1524,6 +1535,7 @@ function checkedTextEdit(field, value, host, {check, complete = null, inputType 
     return html`
         <sf-input
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${shown === null || shown === undefined ? '' : String(shown)}
@@ -1654,6 +1666,7 @@ function renderLinkEdit(field, value, host) {
         <span class="sf-field-link flex flex-col gap-1/3 min-w-0">
             <sf-input
                     size=${EDIT_SIZE}
+                    width=${EDIT_WIDTH || nothing}
                     appearance="bordered"
                     data-sf-link-part="href"
                     name="${fieldName(field)}_href"
@@ -1667,6 +1680,7 @@ function renderLinkEdit(field, value, host) {
             ></sf-input>
             <sf-input
                     size=${EDIT_SIZE}
+                    width=${EDIT_WIDTH || nothing}
                     appearance="bordered"
                     data-sf-link-part="text"
                     name="${fieldName(field)}_text"
@@ -1842,6 +1856,7 @@ function renderTextEdit(field, value, host) {
     return html`
         <sf-input
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
@@ -1912,6 +1927,7 @@ function renderMaskedEdit(field, value, host, mask) {
     return html`
         <sf-input
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
@@ -1932,6 +1948,7 @@ function renderTextAreaEdit(field, value, host) {
     return html`
         <sf-input-textarea
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
@@ -2007,6 +2024,7 @@ function renderStepperEdit(field, value, host, {percent = false} = {}) {
     return html`
         <sf-input-quantity
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 name=${fieldName(field)}
                 value=${stepperNumber(scalarValue(value))}
                 min=${stepperNumber(field.min) || nothing}
@@ -2094,6 +2112,7 @@ function renderNumberEdit(field, value, host) {
     return html`
         <sf-input
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${value ?? ''}
@@ -2243,6 +2262,7 @@ function decimalInput(field, value, host, {key, check, write, currency = null, m
     return html`
         <sf-input
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 name=${fieldName(field)}
                 value=${decimalShown(host, key, value, {currency, minDigits})}
@@ -2325,6 +2345,12 @@ function renderMoneyEdit(field, value, host) {
     const write = (amount, message, code) => writeDecimal(field, host,
         amount === null || amount === '' ? null : {amount, currency: code ?? null}, message);
     const sign = fixed ? currencyOf(fixed, locale, display) : null;
+    // The width (C396, WM-4): a fixed currency's amount is the field and takes
+    // it; with a currency to choose, the row of the two does, and the amount
+    // fills the row as before.
+    const rowWidth = fixed ? '' : fieldWidthClass(EDIT_WIDTH);
+    const fieldWidthOuter = EDIT_WIDTH;
+    if (!fixed) EDIT_WIDTH = '';
     const amount = decimalInput(field, parts.amount, host, {
         key,
         currency,
@@ -2335,6 +2361,7 @@ function renderMoneyEdit(field, value, host) {
         check: (text) => check(text, currency),
         write: (next, message) => write(next, message, currency),
     });
+    EDIT_WIDTH = fieldWidthOuter;
     if (fixed) return amount;
 
     // The field's `currencies`, the value's own currency first when the list
@@ -2354,7 +2381,7 @@ function renderMoneyEdit(field, value, host) {
     const sizeName = String(EDIT_SIZE).replace('/', '\\/');
     const currencyMin = `min-inline-size: calc(${longest + 1}ch + var(--sf-ui-${sizeName}--control-height) + var(--sf-space-1))`;
     return html`
-        <div class="flex gap-1/3 items-cross-start min-w-0 w-full">
+        <div class=${['flex gap-1/3 items-cross-start min-w-0 w-full', rowWidth].filter(Boolean).join(' ')}>
             ${amount}
             <sf-dropdown
                     size=${EDIT_SIZE}
@@ -2435,6 +2462,7 @@ function renderDateEdit(field, value, host) {
     return html`
         <sf-input-date
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 name=${fieldName(field)}
                 value=${date ?? ''}
                 min-date=${min || nothing}
@@ -2489,6 +2517,7 @@ function renderDateTimeEdit(field, value, host) {
                 class="sf-field-datetime"
                 mode="datetime"
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 name=${fieldName(field)}
                 .value=${shown}
                 min-date=${min || nothing}
@@ -2527,6 +2556,7 @@ function renderTimeEdit(field, value, host) {
                 class="sf-field-time"
                 mode="time"
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 name=${fieldName(field)}
                 .value=${stored.time}
                 min-time=${min || nothing}
@@ -2756,6 +2786,7 @@ function renderChoiceEdit(field, value, host) {
     return html`
         <sf-dropdown
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 mode="select"
                 search="false"
@@ -2810,6 +2841,7 @@ function renderChoicesEdit(field, value, host) {
     return html`
         <sf-dropdown
                 size=${EDIT_SIZE}
+                width=${EDIT_WIDTH || nothing}
                 appearance="bordered"
                 mode="select"
                 multiple
@@ -2970,6 +3002,7 @@ function renderHostLookup(field, value, host, {multiple, placeholder}) {
         <div class="sf-field-picker flex flex-col gap-1/3" data-field-picker=${field.key || nothing}>
             <sf-input-lookup
                     size=${EDIT_SIZE}
+                    width=${EDIT_WIDTH || nothing}
                     ?multiple=${multiple}
                     suggest
                     min-length="1"
@@ -3041,6 +3074,7 @@ function renderRecordPicker(field, value, host) {
         <div class="sf-field-picker flex flex-col gap-1/3" data-field-picker=${field.key || nothing}>
             <sf-dropdown
                     size=${EDIT_SIZE}
+                    width=${EDIT_WIDTH || nothing}
                     appearance="bordered"
                     mode="select"
                     search="true"
@@ -3162,6 +3196,7 @@ function renderLookupEdit(field, value, host) {
         <div class="sf-field-picker flex flex-col gap-1/3" data-field-picker=${field.key || nothing}>
             <sf-dropdown
                     size=${EDIT_SIZE}
+                    width=${EDIT_WIDTH || nothing}
                     appearance="bordered"
                     mode="select"
                     ?multiple=${multiple}
@@ -3444,7 +3479,9 @@ export function renderEditField(field = {}, value, host, options = {}) {
     const outerPicker = EDIT_PICKER;
     const outerAlign = EDIT_ALIGN_END;
     const outerError = EDIT_ERROR;
+    const outerWidth = EDIT_WIDTH;
     EDIT_SIZE = sizeOption(options);
+    EDIT_WIDTH = fieldWidth(templateParam(field, 'width'));
     EDIT_ERROR = typeof options?.error === 'string' ? options.error.trim() : '';
     EDIT_DISABLED = disabled;
     // `options.picker: 'dropdown'`: the record, relation, user and paged lookup
@@ -3459,6 +3496,7 @@ export function renderEditField(field = {}, value, host, options = {}) {
         EDIT_PICKER = outerPicker;
         EDIT_ALIGN_END = outerAlign;
         EDIT_ERROR = outerError;
+        EDIT_WIDTH = outerWidth;
     }
 }
 

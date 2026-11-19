@@ -177,6 +177,17 @@
       "expect": {
         "size": "2"
       }
+    },
+    {
+      "name": "width",
+      "title": "Среднее поле",
+      "settings": {
+        "label": "Фамилия",
+        "width": "medium"
+      },
+      "expect": {
+        "width": "medium"
+      }
     }
   ],
   "pages": [

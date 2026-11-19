@@ -2,6 +2,7 @@ import {html, nothing} from 'lit';
 import {renderFieldHelp} from '../../../helpers/field-help';
 import {live} from 'lit/directives/live.js';
 import {createFieldContract} from '../../../../component/field-contract';
+import {fieldWidthClass} from '../../../../component/field-size';
 import {matchRanges, splitByRanges} from '../lookup-model.mjs';
 import {avatarPicture} from '../../../avatar/js/picture';
 
@@ -312,6 +313,8 @@ export function renderLookupTemplate(context) {
     'flex',
     'flex-col',
     context.rootClass,
+    // The field's width (C396, WM-4); none without the setting.
+    fieldWidthClass(context.width),
   ].filter(Boolean);
   const panelClasses = ['sf-lookup-panel', blank ? 'sf-lookup-panel--blank' : '', sheet ? 'sf-lookup-panel--sheet' : ''].filter(Boolean);
 

@@ -431,6 +431,18 @@
           "label": "Samara"
         }
       }
+    },
+    {
+      "name": "width",
+      "title": "Длинное поле",
+      "settings": {
+        "label": "Ответственный",
+        "placeholder": "Найдите сотрудника",
+        "width": "long"
+      },
+      "expect": {
+        "width": "long"
+      }
     }
   ],
   "pages": [

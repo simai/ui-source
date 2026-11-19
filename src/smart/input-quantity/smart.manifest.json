@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.input-quantity",
-  "version": "1.12.3",
+  "version": "1.13.0",
   "title": "Quantity",
   "summary": "A number field with «−» and «+»: a WAI-ARIA spinbutton with bounds, a step and digits, strict typing in the page's language, ArrowUp/ArrowDown, PageUp/PageDown and Home/End, a held stepper repeats; label, help, error, required, disabled, read-only, the three field sizes and the inherited value as every field has them.",
   "kind": "smart",
@@ -151,6 +151,17 @@
           "1",
           "2",
           "3"
+        ]
+      },
+      "width": {
+        "type": "string",
+        "default": "",
+        "description": "How wide the field is, by the value it is made for (owner decision C396): short, 20 characters of the width ladder (--sf-field--width-short; a date, a number, a code), medium, 28 (a name, a phone), or long, 44 (a path, an e-mail, an address). The field is at most that wide and the container's width below it; the characters follow the text size, the density and the phone (160 / 224 / 352 px at text 16, 140 / 196 / 308 compact and on a phone). Empty, the default: the container's whole width.",
+        "enum": [
+          "",
+          "short",
+          "medium",
+          "long"
         ]
       },
       "required": {
@@ -680,7 +691,7 @@
       },
       {
         "path": "src/smart/input-quantity/js/templates/default.js",
-        "sha256": "8ba0e7873c628474a4764fba3154f7e079460493ba1e91bf2420d5cce4155589"
+        "sha256": "424cd2a9cbbc28f4534a8eaa909043c7d0218aaa8d902033d8540b10834887ff"
       },
       {
         "path": "src/smart/input-quantity/rule.js",
@@ -688,7 +699,7 @@
       },
       {
         "path": "src/smart/input-quantity/docs.md",
-        "sha256": "4be2034634c42cd0401b7da8a0a1647d2db4c88484d3ed1dc5a96f9183a48e62"
+        "sha256": "da4c7482f017cd5323674826ec678b275bdd22bcb053052347b88924ed83de50"
       }
     ],
     "generated_runtime": []

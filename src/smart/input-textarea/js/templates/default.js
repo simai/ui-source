@@ -1,6 +1,7 @@
 import { html, nothing } from 'lit';
 import {renderFieldHelp} from '../../../helpers/field-help';
 import { createFieldContract } from '../../../../component/field-contract';
+import { fieldWidthClass } from '../../../../component/field-size';
 import { renderInheritedSlot } from '../../../helpers/inherited-value';
 
 export function renderTextareaTemplate(context) {
@@ -74,6 +75,8 @@ export function renderTextareaTemplate(context) {
     'flex',
     'flex-col',
     context.rootClass,
+    // The field's width (C396, WM-4); none without the setting.
+    fieldWidthClass(context.width),
   ].filter(Boolean);
 
   const labelContent = label

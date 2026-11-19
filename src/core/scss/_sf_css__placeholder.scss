@@ -362,6 +362,13 @@ $sf-site-header-wide-row: '> sf-menu:not([slot])#{$sf-site-header-wide}, > [slot
   :where(sf-input:not([size="1/3"], [size="1/2"], [size="2"], [size="3"]):not(:defined)) { --sf-input--box-label-line: var(--sf-text-height-1); }
 }
 
+/* Its width (C396, WM-4): a field with width="short | medium | long" holds the
+   width it draws at, the field role's characters at most (core
+   _sf_css__field_width.scss); without it, the container's width. */
+:where(sf-input[width="short"]:not(:defined)) { max-inline-size: var(--sf-field--width-short); }
+:where(sf-input[width="medium"]:not(:defined)) { max-inline-size: var(--sf-field--width-medium); }
+:where(sf-input[width="long"]:not(:defined)) { max-inline-size: var(--sf-field--width-long); }
+
 /* sf-file-upload before it draws (defects-d12; GB9 pair acceptance, the
    files page: a bare tag was 0 px until its code, and when an sf-input-image
    under it drew first the upload then pushed it down by 134, 114 on a phone:
