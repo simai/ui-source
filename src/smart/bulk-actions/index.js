@@ -614,10 +614,10 @@ class SfBulkActions extends BulkActionsElement {
   }
 
   // «Выбрать все N» once the whole page is selected and the total is larger;
-  // «Только эта страница (N)» while all are; nothing while a run, a result or
-  // a done line holds the start.
+  // «Только эта страница (N)» while all are; nothing while a run or a result
+  // holds the start (a done line keeps it beside it while items are selected).
   currentOffer() {
-    if (this._run || this._result || this._done) return null;
+    if (this._run || this._result) return null;
     const count = this.selectedCount;
     const total = this.total;
     const pageCount = this.pageCount;
