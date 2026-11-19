@@ -44,7 +44,8 @@ test('sf-resizer: the narrow handle the script marks stays hidden at every width
 });
 
 test('sf-resizer: the built sheet carries the phone rule', {skip: process.env.UI_CORE_ROOT ? false : 'UI_CORE_ROOT names no build'}, () => {
-  const file = join(process.env.UI_CORE_ROOT, 'smart', 'resizer', 'css', 'resizer.min.css');
+  // UI_CORE_ROOT=<ui root>: its distribution, distr/ (as container-ladder-c181 reads it).
+  const file = join(process.env.UI_CORE_ROOT, 'distr', 'smart', 'resizer', 'css', 'resizer.min.css');
   if (!existsSync(file)) return assert.fail(`${file} is missing`);
   const css = readFileSync(file, 'utf8');
   assert.match(css, /@media not all and \(min-width:\s*32rem\)\s*\{[^}]*sf-resizer\s*\{\s*display:\s*none;?\s*\}/u);
