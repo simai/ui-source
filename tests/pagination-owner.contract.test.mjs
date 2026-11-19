@@ -126,12 +126,10 @@ test(
     assert.doesNotMatch(template, /<span class="sf-pagination-last">/);
     // The current page of numbers is marked by its own class (C97).
     assert.match(template, /sf-pagination-page--current/);
-    assert.match(
-      styles,
-      /\[dir="rtl"\] \.sf-pagination \.sf-pagination-direction \.sf-icon/,
-    );
-    assert.match(styles, /\.sf-pagination-direction sf-icon/);
-    assert.match(styles, /transform: scaleX\(-1\)/);
+    // Right to left the direction arrows are turned by the icons sheet alone
+    // (directional glyphs, C151 point 3): a turn of this sheet's own, on the
+    // glyph or its sf-icon host, turned them back (RTL icons, 2026-11-19).
+    assert.doesNotMatch(styles, /sf-pagination-direction[^{]*\{[^}]*(scaleX\(-1\)|scale: -1)/);
     assert.match(styles, /white-space: nowrap/);
     // A narrow screen keeps every place: the window is five numbers wide by
     // design, and the ends and the field are how a person leaves it.

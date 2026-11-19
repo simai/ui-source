@@ -66,12 +66,10 @@
   flex: none;
 }
 
-.sf-pager:dir(rtl) .sf-pager-icon:not(.sf-pager-lesson-mark),
-.sf-pager:dir(rtl) .sf-pager-back .sf-icon,
-.sf-pager:dir(rtl) .sf-pager-forward .sf-icon,
-.sf-pager:dir(rtl) .sf-pager-lesson-action .sf-icon {
-  transform: scaleX(-1);
-}
+/* The arrows (chevron_left/right, arrow_back/forward) are directional
+   glyphs: the icons sheet turns them in a right-to-left page (C151 point 3).
+   A turn here as well turned them back, so every arrow of the pager pointed
+   the left-to-right way (RTL icons, 2026-11-19). */
 
 .sf-pager-title {
   display: block;

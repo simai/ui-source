@@ -221,10 +221,16 @@
 
   /* The default arrow points the way the text runs (RL-17): in a
      right-to-left page it points left. Only the arrow glyphs turn; any other
-     icon is a picture and keeps its drawing. */
-  :where(sf-reference-link:not([icon]), sf-reference-link:is([icon="arrow_forward"], [icon="arrow_back"], [icon="arrow_right_alt"], [icon="east"], [icon="west"], [icon="chevron_right"], [icon="chevron_left"]))
+     icon is a picture and keeps its drawing. arrow_forward (the default),
+     arrow_back, arrow_right_alt and the chevrons are directional glyphs, which
+     the icons sheet turns (C151 point 3); a transform here as well turned
+     them back, and turned the link_off of a forbidden reference, which has no
+     icon attribute (RTL icons, 2026-11-19). east and west are not in that
+     list: they turn here, with the same scale property, so the two can only
+     agree. */
+  :where(sf-reference-link:is([icon="east"], [icon="west"]))
     .sf-reference-link:dir(rtl) :where(.sf-reference-link__icon) {
-    transform: scaleX(-1);
+    scale: -1 1;
   }
 }
 

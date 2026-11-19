@@ -122,6 +122,38 @@
       "reason": "recorded by group build 12 from fix/defects-d12 c5c74747a: sf-file-upload's row previews carry data-said-by=\"host\" so sf-file-preview does not announce a failure the upload's own status line already says; a host attribute of the Smart element, the class component has no announcer",
       "decision": "C251",
       "date": "2026-11-17"
+    },
+    {
+      "unit": "component.context-menu",
+      "version": "1.19.1",
+      "twin": "smart.menu-context",
+      "reason": "RTL icons (fix/rtl-direction-icons): this sheet turned a directional glyph that the icons sheet already turns (C151 point 3), so it pointed the left-to-right way in RTL; the rule for the submenu chevron is fixed in the class sheet, which smart.menu-context draws its markup with, so the Smart twin takes the fix without a change of its own files",
+      "decision": "C151 (3)",
+      "date": "2026-11-19"
+    },
+    {
+      "unit": "component.menu",
+      "version": "1.10.3",
+      "twin": "smart.menu",
+      "reason": "RTL icons (fix/rtl-direction-icons): this sheet turned a directional glyph that the icons sheet already turns (C151 point 3), so it pointed the left-to-right way in RTL; the rule for the closed rows' and the horizontal submenu chevrons is fixed in the class sheet, which smart.menu draws its markup with, so the Smart twin takes the fix without a change of its own files",
+      "decision": "C151 (3)",
+      "date": "2026-11-19"
+    },
+    {
+      "unit": "component.reference-link",
+      "version": "1.4.3",
+      "twin": "smart.reference-link",
+      "reason": "RTL icons (fix/rtl-direction-icons): this sheet turned a directional glyph that the icons sheet already turns (C151 point 3), so it pointed the left-to-right way in RTL; the rule for the arrow (east and west turn with scale; the forbidden link_off no longer turns) is fixed in the class sheet, which smart.reference-link draws its markup with, so the Smart twin takes the fix without a change of its own files",
+      "decision": "C151 (3)",
+      "date": "2026-11-19"
+    },
+    {
+      "unit": "component.tree",
+      "version": "1.6.1",
+      "twin": "smart.tree",
+      "reason": "RTL icons (fix/rtl-direction-icons): this sheet turned a directional glyph that the icons sheet already turns (C151 point 3), so it pointed the left-to-right way in RTL; the rule for the closed chevron (scale instead of transform) is fixed in the class sheet, which smart.tree draws its markup with, so the Smart twin takes the fix without a change of its own files",
+      "decision": "C151 (3)",
+      "date": "2026-11-19"
     }
   ]
 }

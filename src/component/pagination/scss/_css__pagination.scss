@@ -385,10 +385,11 @@
    --sf-on-surface-icon, as every other arrow of the pagination (RG-NV 11,
    C107 (3)): a rule here forced them to --sf-on-surface-variant. */
 
-[dir="rtl"] .sf-pagination .sf-pagination-direction .sf-icon,
-[dir="rtl"] .sf-pagination .sf-pagination-direction sf-icon {
-  transform: scaleX(-1);
-}
+/* The direction arrows (first_page, keyboard_arrow_left/right, last_page)
+   are directional glyphs: the icons sheet turns them in a right-to-left
+   page (C151 point 3). This sheet turned them as well, the glyph and its
+   sf-icon host both, and the arrows pointed the left-to-right way (RTL
+   icons, 2026-11-19). */
 
 /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-pagination-count--gap) justify-content/flex-end (.justify-end) align-items/center (.items-center) */
 .sf-pagination .sf-pagination-count {

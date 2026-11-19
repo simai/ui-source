@@ -44,7 +44,10 @@ test('Menu uses disclosure glyph semantics and keyboard-visible paint',()=>{
   // instead of covering the edge of its neighbour.
   assert.match(elementCss,/outline: var\(--sf-focus--width\) var\(--sf-focus--style\) var\(--sf-focus--color\)/);
   assert.match(elementCss,/outline-offset: var\(--sf-focus--inset\)/);
-  assert.match(elementCss,/:dir\(rtl\)[^}]*transform: scaleX\(-1\)/s);
+  // Right to left the closed row's chevron_right is turned by the icons sheet
+  // alone (C151 point 3); a turn of this sheet's own turned it back (RTL
+  // icons, 2026-11-19).
+  assert.doesNotMatch(elementCss,/:dir\(rtl\)[^{]*\{[^}]*(scaleX\(-1\)|scale: -1)/);
   assert.match(elementCss,/\.sf-menu-element:focus \{\s*outline: none/);
   assert.match(elementCss,/@media \(forced-colors: active\)/);
 });

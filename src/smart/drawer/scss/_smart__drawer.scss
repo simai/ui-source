@@ -437,10 +437,9 @@
   }
 
   /* «Назад» in the head of a nested panel (C157 (6)) points to the start of
-     the line: in a right-to-left page the arrow turns. */
-  .sf-drawer-back:dir(rtl) .sf-icon {
-    transform: scaleX(-1);
-  }
+     the line: arrow_back is a directional glyph, so in a right-to-left page
+     the icons sheet turns it (C151 point 3); a turn here as well turned it
+     back (RTL icons, 2026-11-19). */
 
   /* One panel at an edge (C157 (6)): a drawer opened from a floating panel
      at the same edge is drawn inside it. The panel under it hides at once

@@ -256,8 +256,12 @@
      the breadcrumbs' do: chevron_right is drawn mirrored (the open one, a
      down arrow, is the same either way). The class tree and sf-tree draw the
      same .sf-tree-chevron. */
+  /* The author may name the chevrons (chevron-closed-icon), so the turn is
+     the tree's: with the scale property the icons sheet turns a directional
+     glyph with, one turn whatever the glyph -- a transform here as well
+     turned chevron_right back (RTL icons, 2026-11-19). */
   .sf-tree .sf-tree-chevron:dir(rtl) {
-    transform: scaleX(-1);
+    scale: -1 1;
   }
 
   .sf-tree .sf-tree-chevron .sf-icon,
