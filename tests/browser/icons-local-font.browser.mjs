@@ -13,7 +13,10 @@
 // `<sf-button-icon>`; more of each is added after load. The local font file is
 // held back for a while first. What it holds:
 //   1. no flash: while the font is held back, no icon is marked loaded and none
-//      is drawn at a non-zero font size (the ligature text never shows);
+//      shows its ligature text. Since 2026-11-16 (first paint R222 open item
+//      1) the hold keeps the glyph's box and hides the letters instead of
+//      setting font-size 0: the text is unseen (text fill transparent) and
+//      clipped to a box one glyph wide (the box of its size, not 0);
 //   2. once it arrives, every icon -- present before load and added after, the
 //      static ones and the Smart ones -- is marked loaded and has a width;
 //   3. nothing is asked of the subset service (icons.simai.io), and the font
@@ -100,8 +103,14 @@ const readIcons = (tab) => tab.evaluate(() => [...document.querySelectorAll('.sf
     loaded: el.classList.contains('sf-icon-loaded'),
     width: Math.round(box.width * 10) / 10,
     fontSize: parseFloat(getComputedStyle(el).fontSize),
+    fill: getComputedStyle(el).webkitTextFillColor,
+    overflow: getComputedStyle(el).overflowX,
   };
 }));
+// Held: the letters are unseen and clipped, and the box is the glyph's own.
+const unseen = (icon) => icon.fontSize === 0
+  || (/^(transparent|rgba\(0, 0, 0, 0\))$/u.test(icon.fill) && /clip|hidden/u.test(icon.overflow)
+    && Math.abs(icon.width - icon.fontSize) <= 1.5);
 
 const browser = await chromium.launch();
 try {
@@ -124,7 +133,7 @@ try {
   check('the local font was asked for', fontRequests.length > 0, {fontRequests});
   for (const icon of held) {
     check('no icon is marked loaded before its font is', !icon.loaded, icon);
-    check('no icon draws its ligature text before its font is', icon.fontSize === 0, icon);
+    check('no icon draws its ligature text before its font is', unseen(icon), icon);
   }
 
   // Added after load, while the font is still on its way.

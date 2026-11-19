@@ -19,6 +19,13 @@
 //   - class markup without .flex: the same;
 //   - every height a whole pixel; the icon in running text stays on middle.
 //
+// "On middle" is the text's middle, not the keyword: since the content glyphs
+// study (2026-11-16) the icons sheet lifts the glyph's bottom by the text's
+// middle less half its own height (vertical-align: calc(...), a length), so
+// the computed value is a few tenths of a pixel and the keyword never shows.
+// The probe measures what the rule promises: the glyph's centre stands on the
+// paragraph's baseline less --sf-icon--text-middle, within half a pixel.
+//
 // --report prints the measurements and exits 0 whatever they say.
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
@@ -123,12 +130,23 @@ try {
       const row = (button) => ({size: sizeOf(button), height: Math.round(button.getBoundingClientRect().height * 100) / 100, display: getComputedStyle(button).display});
       const all = (selector) => [...document.querySelectorAll(selector)].filter((button) => button.getBoundingClientRect().width > 0).map(row);
       const icon = document.querySelector('#text sf-icon .sf-icon') || document.querySelector('#text sf-icon');
+      // The line's baseline: the bottom of an empty inline-block laid on it.
+      const text = document.getElementById('text');
+      const mark = document.createElement('span');
+      mark.style.cssText = 'display:inline-block;inline-size:0;block-size:0;vertical-align:baseline';
+      text.append(mark);
+      const baseline = mark.getBoundingClientRect().bottom;
+      mark.remove();
+      const middle = icon ? parseFloat(getComputedStyle(icon).getPropertyValue('--sf-icon--text-middle')) || 0 : 0;
+      const box = icon ? icon.getBoundingClientRect() : {top: 0, height: 0};
+      const inline = {align: icon ? getComputedStyle(icon).verticalAlign : '', centre: Math.round((box.top + box.height / 2) * 100) / 100,
+        textMiddle: Math.round((baseline - middle) * 100) / 100, middle};
       return {
         ladder: [...document.querySelectorAll('#ladder sf-button-icon')].map((host) => row(host.querySelector('.sf-icon-button'))),
         pager: [...document.querySelectorAll('#pager sf-pager')].flatMap((host) => [...host.querySelectorAll('.sf-icon-button')].map((button) => ({...row(button), size: host.dataset.step}))),
         filePreview: all('#file-preview .sf-icon-button'),
         classMarkup: all('#class .sf-icon-button'),
-        inline: icon ? getComputedStyle(icon).verticalAlign : '',
+        inline,
       };
     });
     const key = `${view.label}-${theme}`;
@@ -145,7 +163,8 @@ try {
     check('sf-file-preview', read.filePreview);
     check('class markup', read.classMarkup);
     if (read.ladder.length !== SIZES.length || read.pager.length < 6 || read.filePreview.length < 4 || read.classMarkup.length !== 2) failures.push({view: key, check: 'every host drew its buttons', counts: [read.ladder.length, read.pager.length, read.filePreview.length, read.classMarkup.length]});
-    if (read.inline !== 'middle') failures.push({view: key, check: 'an icon in running text stays on middle', got: read.inline});
+    const onMiddle = read.inline.align === 'middle' || (read.inline.middle > 0 && Math.abs(read.inline.centre - read.inline.textMiddle) <= 0.5);
+    if (!onMiddle) failures.push({view: key, check: "an icon in running text stays on its text's middle", got: read.inline});
     if (errors.length) failures.push({view: key, check: 'console', errors});
     await context.close();
   }
