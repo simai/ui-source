@@ -13,7 +13,7 @@ left-to-right and a right-to-left page at 390, 800, 1100 and 1600px
 | `container` | the element | full width up to the step of the current breakpoint (`--sf-breakpoint-*`), with the gutter as inline padding. It sets **no inline margins**: it starts at the inline start of its parent. |
 | `m-inline-auto` | the element | centres it. A container that should stand in the middle of the page takes both: `container m-inline-auto`. |
 | `max-container-1` … `max-container-8` | an **ancestor** of the container | `.max-container-N .container`: from the desktop breakpoint (`lg`), the descendant container's step becomes a wider ladder step (h5 … i4). On the same element as `container` it does nothing. |
-| `max-w-prose` | the element | a text measure, 65ch. On the same element as `container` the two `max-width`s compete with equal weight, and which one wins depends on the order of the sheets, which the Loader does not fix. Put it on an element inside the container. |
+| `max-w-prose` | the element | a text measure: 80 characters, `--sf-measure-80` (C396; 65ch before; `max-w-measure-80` is the new name). On the same element as `container` the two `max-width`s compete with equal weight, and which one wins depends on the order of the sheets, which the Loader does not fix. Put it on an element inside the container. |
 | `container-flush` | a container | empties the container's own gutter (a nested container whose outer one already holds the edge). |
 | `container-breakout` | a block inside a centred container | spans the page's whole width; see below. |
 
