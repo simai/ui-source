@@ -9,8 +9,8 @@
   "status": "reviewed",
   "review": "The language the Framework's words are written in (C177); a language file since C282.",
   "coverage": {
-    "words": 93,
-    "translated": 93,
+    "words": 95,
+    "translated": 95,
     "share": 100
   },
   "words": {
@@ -69,6 +69,7 @@
       "reject-empty": "«{name}» пустой — в нём нет данных",
       "reject-min-size": "«{name}» — {size}, а нужно от {min}",
       "reject-one": "«{name}» не добавлен: сюда можно только один файл",
+      "reject-folder": "Папка «{name}» не добавлена: сюда можно только один файл",
       "reject-size": "«{name}» — {size}, а можно до {max}",
       "reject-total": "«{name}» не добавлен: все файлы вместе — до {max}",
       "reject-type": "«{name}» не подходит: можно {formats}",

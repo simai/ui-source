@@ -2559,6 +2559,11 @@ function renderTimeEdit(field, value, host) {
 // draws the template it names. A switch or a checkbox over an absent value
 // writes nothing until it is pressed. Neither carries `required`: a yes/no
 // with a value is answered, and an unticked box is «Нет».
+// The buttons are the one template that can say «не задано», so they are the
+// one that reads `required` (GB13 note 1): an optional field clears on a
+// second press of the chosen button, as the choice buttons do, and writes
+// null; a required one keeps its answer once given, and sf-form asks for
+// one while it has none (value-missing, the required mark and note).
 function renderBooleanEdit(field, value, host) {
     const template = templateOf(field);
 
@@ -2595,6 +2600,7 @@ function renderBooleanEdit(field, value, host) {
         {value: 'yes', label: words.yes},
         {value: 'no', label: words.no},
     ]);
+    const clearable = field.required !== true && field.readonly !== true && !EDIT_DISABLED;
 
     return html`
         <sf-segmented
@@ -2605,6 +2611,7 @@ function renderBooleanEdit(field, value, host) {
                 aria-label=${field.label || field.key || ''}
                 ?invalid=${Boolean(EDIT_ERROR)}
                 error-message=${EDIT_ERROR || nothing}
+                @click=${pressAgainClears({clearable})}
                 @change=${(event) => {
                     const next = event.detail?.value;
                     host.setFieldValue(field, next === 'yes' ? true : next === 'no' ? false : null);
@@ -2682,6 +2689,30 @@ function isChoiceButtons(field) {
     return templateOf(field) === 'buttons';
 }
 
+// The capture-phase press of a button group drawn for a field: read-only
+// stops every press; a clearable field clears on a press of the chosen
+// button (the choice buttons, and the boolean's «Да» | «Нет»).
+function pressAgainClears({locked = false, clearable = false} = {}) {
+    return {
+        capture: true,
+        handleEvent(event) {
+            const group = event.currentTarget;
+            const segment = event.target?.closest?.('[data-sf-button-group-value]');
+            if (!group || !segment || !group.contains(segment)) return;
+            if (locked) {
+                event.preventDefault();
+                event.stopPropagation();
+                return;
+            }
+            if (!clearable || segment.disabled) return;
+            if (segment.getAttribute('data-sf-button-group-value') !== group.value) return;
+            event.preventDefault();
+            event.stopPropagation();
+            group.clear?.();
+        },
+    };
+}
+
 function renderChoiceButtons(field, value, host) {
     value = scalarValue(value);
     const options = (field.options || field.filter?.options || field.constraints?.options || [])
@@ -2702,24 +2733,7 @@ function renderChoiceButtons(field, value, host) {
     const chosen = value === null || value === undefined ? '' : String(value);
     const optionValue = (text) => options.find((option) => String(option.value) === text)?.value ?? text;
 
-    const press = {
-        capture: true,
-        handleEvent(event) {
-            const group = event.currentTarget;
-            const segment = event.target?.closest?.('[data-sf-button-group-value]');
-            if (!group || !segment || !group.contains(segment)) return;
-            if (locked) {
-                event.preventDefault();
-                event.stopPropagation();
-                return;
-            }
-            if (!clearable || segment.disabled) return;
-            if (segment.getAttribute('data-sf-button-group-value') !== group.value) return;
-            event.preventDefault();
-            event.stopPropagation();
-            group.clear?.();
-        },
-    };
+    const press = pressAgainClears({locked, clearable});
     const keys = {
         capture: true,
         handleEvent(event) {

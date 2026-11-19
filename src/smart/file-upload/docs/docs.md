@@ -43,7 +43,9 @@ area adds each choice to its list (a file once); a single area replaces its
 file. Files left out -- a type accept does not name (on a pick too), a second
 file on a single area, a file already listed, an empty one, one past
 `max-size`, `min-size`, `max-files` or `max-total-size` -- are said under the
-area and in `rejected` with their reason. Text/link drags are ignored. Disabled
+area and in `rejected` with their reason. A folder dropped on a single area is
+refused whole, its files with reason `count` and one line naming the folder
+(1.6.4); the file the area holds stays. Text/link drags are ignored. Disabled
 file drops are cancelled without accepting files or firing selection events.
 
 The shared ordinary binder also owns keyboard focus and disabled controls. Tab

@@ -11,6 +11,7 @@
     "not-added": "追加されなかったファイル: {n}",
     "reject-type": "「{name}」は使用できません: 使用できる形式は {formats}",
     "reject-one": "「{name}」は追加されませんでした: この欄には 1 ファイルのみです",
+    "reject-folder": "フォルダー「{name}」は追加されませんでした: この欄には 1 ファイルのみです",
     "reject-duplicate": "「{name}」は既に一覧にあります",
     "reject-empty": "「{name}」は空です",
     "reject-size": "「{name}」は {size} です。上限は {max} です",

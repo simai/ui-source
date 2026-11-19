@@ -212,7 +212,17 @@ test('boolean: the switch by default, the checkbox and the buttons as templates,
   assert.match(edit, /const template = templateOf\(field\);\n\n    if \(template === 'switch'\) \{\n\s+return html`\n\s+<sf-switch/u);
   assert.match(edit, /if \(template === 'checkbox'\) \{\n\s+return html`\n\s+<sf-checkbox/u);
   assert.match(edit, /<sf-segmented\n\s+appearance="buttons"/u);
-  assert.doesNotMatch(edit, /required|EDIT_APPLY/u);
+  assert.doesNotMatch(edit, /EDIT_APPLY/u);
+  // The template is never chosen by required: the switch and the checkbox
+  // never read it; the buttons, the one template that can say «не задано»,
+  // read it to keep a required answer (GB13 note 1).
+  const flags = edit.slice(0, edit.indexOf('const words = booleanWords('));
+  assert.doesNotMatch(flags, /required/u);
+  assert.match(edit, /const clearable = field\.required !== true && field\.readonly !== true && !EDIT_DISABLED;/u);
+  assert.match(edit, /@click=\$\{pressAgainClears\(\{clearable\}\)\}/u);
+  const form = readFileSync(join(root, 'src/smart/form/index.js'), 'utf8');
+  assert.match(form, /export function answeredByValue\(field\) \{[\s\S]*?return drawn\.type === 'boolean' && drawn\.template !== 'buttons';/u);
+  assert.equal((form.match(/!answeredByValue\(field\)/gu) ?? []).length, 3);
 });
 
 test('choice buttons wrap and never fold (FW-2); tags and badges of one value stand 4 apart (FW-3)', () => {

@@ -878,6 +878,15 @@ function showFileUploadRejections(root, rejected = []) {
   message.append(head, list);
 }
 
+// The folder a file was read from, when a folder was dropped: the first part
+// of the path files-drop gives it (sfPath), or of the path a folder pick gives
+// (webkitRelativePath); '' for a file given on its own.
+function folderOf(file) {
+  const path = String(file?.sfPath || file?.webkitRelativePath || '');
+  const at = path.indexOf('/');
+  return at > 0 ? path.slice(0, at) : '';
+}
+
 // What a choice or a drop leaves out, and why: a type the accept list does
 // not name (on a pick too: the dialog's «All files» skipped the filter), a
 // second file on a single area, a file already listed. The drop took the
@@ -887,6 +896,26 @@ function showFileUploadRejections(root, rejected = []) {
 function takeFiles(root, files = [], source = 'input') {
   const accept = getAccept(root);
   const multiple = getMultiple(root);
+  // A folder dropped on a single area (core/js/files-drop.js reads its
+  // entries, FO1-5) is refused whole, however many files it holds (GB13 note
+  // 3, FO-R1 follow-up): the area takes one file, a folder is not one, and
+  // its first file is only the order the browser read the folder in. The file
+  // the area holds stays; one line under the area names the folder, and
+  // reject lists every file of it with reason count. Several loose files keep
+  // FU-6: the first is taken and each other one is named.
+  const given = Array.from(files);
+  const folder = multiple ? '' : (given.map(folderOf).find(Boolean) || '');
+  if (folder) {
+    const message = fileUploadWord(root, 'reject-folder', {vars: {name: folder}});
+    const refused = given.map((file) => ({file, name: String(file?.name || ''), reason: 'count', message}));
+    showFileUploadRejections(root, refused.slice(0, 1));
+    root.__sfFileUploadRejected = refused;
+    root.dispatchEvent(new CustomEvent('sf-file-upload:reject', {
+      bubbles: true,
+      detail: {files: given, rejected: refused, accept, source},
+    }));
+    return [];
+  }
   const kept = multiple ? Array.from(root.__sfFileUploadItems || []) : [];
   const listed = new Set(kept.map((item, index) => getItemEventKey(item, index)));
   const maxSize = getLimit(root, 'max-size');

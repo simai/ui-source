@@ -155,6 +155,15 @@ export function hasValue(value) {
   return true;
 }
 
+// A yes/no drawn as a switch or a checkbox is answered by its value, an
+// unticked box is «Нет»; the buttons «Да» | «Нет» can say «не задано», so a
+// required one asks for an answer like any other field (GB13 note 1).
+export function answeredByValue(field) {
+  if ((field?.propertyType || field?.type || field?.dataType) !== 'boolean') return false;
+  const drawn = fieldTemplate(field);
+  return drawn.type === 'boolean' && drawn.template !== 'buttons';
+}
+
 /** The fields as given, made safe: objects with a key and a type, each key once, width one of s, m, full or none. */
 export function normalizeFields(list) {
   const seen = new Set();
@@ -498,8 +507,9 @@ class SfForm extends FormElement {
     if (this._hostErrors.has(key)) return this._hostErrors.get(key);
     if (field.readonly === true) return '';
     const value = this._values[key];
-    // A required yes/no is answered by its value, an unticked box is «Нет».
-    if (field.required === true && field.propertyType !== 'boolean' && !hasValue(value)) {
+    // A required yes/no is answered by its value, an unticked box is «Нет»;
+    // its buttons are answered by a press (answeredByValue).
+    if (field.required === true && !answeredByValue(field) && !hasValue(value)) {
       return this.sfWord('value-missing', {vars: {label: field.label}});
     }
     const rendered = this._rendererErrors?.[key];
@@ -822,7 +832,7 @@ class SfForm extends FormElement {
       labels: this.labels === 'start' ? 'start' : 'top',
       footer: this.footer === 'sticky' ? 'sticky' : 'static',
       groups,
-      requiredNote: editing && !instant && !(answer && answer.state !== 'open') && fields.some((field) => field.required === true && field.readonly !== true && field.propertyType !== 'boolean'),
+      requiredNote: editing && !instant && !(answer && answer.state !== 'open') && fields.some((field) => field.required === true && field.readonly !== true && !answeredByValue(field)),
       // From two errors, or one a hidden field holds (FO3-1), the summary.
       errorList: editing && ((this._submitted && errors.length + hiddenErrors.length > 1) || hiddenErrors.length) ? [...errors, ...hiddenErrors] : null,
       dirty: answer ? false : this._dirty,
@@ -916,7 +926,7 @@ class SfForm extends FormElement {
       id: `${id}--field-${field.key}`,
       label: field.label,
       labelRow: !checkbox,
-      required: editing && field.required === true && field.readonly !== true && drawn.type !== 'boolean',
+      required: editing && field.required === true && field.readonly !== true && !answeredByValue(field),
       help: text(field.help),
       helpLabel: this.sfWord('help-label', {vars: {label: field.label}}),
       // The hint gives its place to the error (C153 (3)).

@@ -9,8 +9,8 @@
   "status": "draft",
   "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
   "coverage": {
-    "words": 93,
-    "translated": 93,
+    "words": 95,
+    "translated": 95,
     "share": 100
   },
   "words": {
@@ -66,6 +66,7 @@
       "reject-empty": "“{name}”为空",
       "reject-min-size": "“{name}”大小为 {size}；至少需要 {min}",
       "reject-one": "未添加“{name}”：此字段只接受一个文件",
+      "reject-folder": "未添加文件夹“{name}”：此字段只接受一个文件",
       "reject-size": "“{name}”大小为 {size}；上限为 {max}",
       "reject-total": "未添加“{name}”：所有文件合计不超过 {max}",
       "reject-type": "不接受“{name}”：允许 {formats}",

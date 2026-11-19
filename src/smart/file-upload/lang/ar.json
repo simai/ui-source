@@ -21,6 +21,7 @@
     "reject-empty": "«{name}» فارغ",
     "reject-min-size": "حجم «{name}» هو {size}؛ ويجب ألا يقل عن {min}",
     "reject-one": "لم يُضف «{name}»: يقبل هذا الحقل ملفًا واحدًا",
+    "reject-folder": "لم يُضف المجلد «{name}»: يقبل هذا الحقل ملفًا واحدًا",
     "reject-size": "حجم «{name}» هو {size}؛ والحد {max}",
     "reject-total": "لم يُضف «{name}»: الحد لكل الملفات معًا {max}",
     "reject-type": "«{name}» غير مقبول: المسموح {formats}",

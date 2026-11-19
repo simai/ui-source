@@ -18,6 +18,7 @@
     "reject-empty": "«{name}» está vacío",
     "reject-min-size": "«{name}» ocupa {size}; debe tener al menos {min}",
     "reject-one": "No se añadió «{name}»: este campo admite un solo archivo",
+    "reject-folder": "No se añadió la carpeta «{name}»: este campo admite un solo archivo",
     "reject-size": "«{name}» ocupa {size}; el límite es {max}",
     "reject-total": "No se añadió «{name}»: todos los archivos juntos hasta {max}",
     "reject-type": "No se acepta «{name}»: se permiten {formats}",

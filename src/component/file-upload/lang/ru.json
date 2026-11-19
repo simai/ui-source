@@ -11,6 +11,7 @@
     "not-added": "Не добавлено {n}:",
     "reject-type": "«{name}» не подходит: можно {formats}",
     "reject-one": "«{name}» не добавлен: сюда можно только один файл",
+    "reject-folder": "Папка «{name}» не добавлена: сюда можно только один файл",
     "reject-duplicate": "«{name}» уже добавлен",
     "reject-empty": "«{name}» пустой — в нём нет данных",
     "reject-size": "«{name}» — {size}, а можно до {max}",

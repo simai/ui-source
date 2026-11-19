@@ -48,19 +48,29 @@ try {
     }
     await page.waitForTimeout(700);
     if (open) { await page.evaluate(open); await page.waitForTimeout(500); }
-    const measured = await page.evaluate(({selector, variables, roles}) => {
+    const measured = await page.evaluate(({selector, parts, variables, roles}) => {
       const roots = [...document.querySelectorAll(selector)];
       if (!roots.length) return {missing: selector};
       // Every instance on the stage and its parts: a variant drawn beside the
-      // first (the anchored badge) is part of the component too.
-      const scope = roots.flatMap((root) => [root, ...root.querySelectorAll('*')]);
+      // first (the anchored badge) is part of the component too. `parts`: what
+      // the component draws outside its root (a colour field's window beside
+      // .sf-color, a gallery's viewer on the body), with what is inside them.
+      const own = parts ? [...document.querySelectorAll(parts)] : [];
+      const scope = [...new Set([...roots, ...own].flatMap((root) => [root, ...root.querySelectorAll('*')]))];
       const answers = [];
       for (const variable of variables) {
         const role = roles[variable.role];
         if (!role) { answers.push({name: variable.name, role: variable.role, unmeasured: true}); continue; }
         // A part may be a pseudo-element: the accordion's divider is the
         // header's ::after, a procedure's marker a ::before.
-        const read = () => scope.flatMap((element) => [null, '::before', '::after'].flatMap((pseudo) => role.properties.map((property) => getComputedStyle(element, pseudo).getPropertyValue(property).trim())));
+        // `edges`: an inset with the element's edge counted inside it (owner
+        // decision C105 H4, as the fields' C77): the padding gives the border
+        // back, so the inset is the padding and the border's width together.
+        const read = () => scope.flatMap((element) => [null, '::before', '::after'].flatMap((pseudo) => {
+          const style = getComputedStyle(element, pseudo);
+          return [...role.properties.map((property) => style.getPropertyValue(property).trim()),
+            ...(role.edges ?? []).map(([padding, border]) => `${parseFloat(style.getPropertyValue(padding)) + parseFloat(style.getPropertyValue(border))}px`)];
+        }));
         const before = read();
         document.documentElement.style.setProperty(variable.name, role.value);
         const after = read();
@@ -72,7 +82,20 @@ try {
         answers.push({name: variable.name, role: variable.role, ok});
       }
       return {answers};
-    }, {selector: entry.selector, variables: entry.variables, roles: ROLES});
+    }, {selector: entry.selector, parts: draw.parts ?? null, variables: entry.variables, roles: ROLES});
+    // `proves`: a drawing the computed value cannot show (a ceiling the
+    // element reaches), on the first page only (GB13 note 2).
+    if (draw.proves && !merged) {
+      const proof = await page.evaluate(draw.proves);
+      results[`${entry.component}:proves`] = proof;
+      if (!proof?.ok) note({component: entry.component, said: 'the drawing does not prove the variable', got: proof});
+      // `proven`: variables the drawing proves where the computed value cannot
+      // show them (a width cap taken when a window opens, a length inside a
+      // calc() or a grid track): they pass on the proof.
+      if (proof?.ok && measured.answers) {
+        measured.answers = measured.answers.map((answer) => ((draw.proven ?? []).includes(answer.name) ? {...answer, ok: true, proven: true} : answer));
+      }
+    }
     await page.close();
     if (!merged || measured.missing) merged = measured;
     else if (merged.answers && measured.answers) {
@@ -89,8 +112,8 @@ try {
 } finally {
   await browser.close();
 }
-const unmeasured = Object.entries(results).flatMap(([component, measured]) => (measured.answers ?? []).filter((answer) => answer.unmeasured).map((answer) => `${component}:${answer.name}`));
-const measuredCount = Object.values(results).reduce((sum, measured) => sum + (measured.answers ?? []).filter((answer) => !answer.unmeasured).length, 0);
+const unmeasured = Object.entries(results).filter(([name]) => !name.endsWith(':proves')).flatMap(([component, measured]) => (measured.answers ?? []).filter((answer) => answer.unmeasured).map((answer) => `${component}:${answer.name}`));
+const measuredCount = Object.entries(results).filter(([name]) => !name.endsWith(':proves')).map(([, one]) => one).reduce((sum, measured) => sum + (measured.answers ?? []).filter((answer) => !answer.unmeasured).length, 0);
 console.log(JSON.stringify({measured: measuredCount, unmeasured}));
 // PV_SHOW=<component,...> prints those components' answers (evidence runs).
 for (const name of (process.env.PV_SHOW ?? '').split(',').filter(Boolean)) console.log(JSON.stringify({[name]: results[name]}));

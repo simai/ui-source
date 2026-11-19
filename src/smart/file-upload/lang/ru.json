@@ -20,6 +20,7 @@
     "reject-empty": "«{name}» пустой — в нём нет данных",
     "reject-min-size": "«{name}» — {size}, а нужно от {min}",
     "reject-one": "«{name}» не добавлен: сюда можно только один файл",
+    "reject-folder": "Папка «{name}» не добавлена: сюда можно только один файл",
     "reject-size": "«{name}» — {size}, а можно до {max}",
     "reject-total": "«{name}» не добавлен: все файлы вместе — до {max}",
     "reject-type": "«{name}» не подходит: можно {formats}",
