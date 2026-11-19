@@ -1,3 +1,6 @@
+@use 'sass:map';
+@use '../../../core/scss/vars/sf_var__breakpoint' as bp;
+
 @layer sf.components {
 /* A strip on the panel's edge, wider than it looks so a pointer finds it: the
    line it draws on hover, focus and drag is a hairline in the middle. The
@@ -65,6 +68,18 @@ sf-resizer[aria-disabled="true"] {
    and the width waits for a wide screen (owner decision C158 (4)). */
 sf-resizer[data-sf-resizer-narrow] {
   display: none;
+}
+
+/* On a phone's screen (below sm, 32rem) the split a panel stands in is
+   always under the split step, so the handle is never there: said by the
+   sheet as well, the first paint a page prints has no handle before the
+   script measures the split (data-sf-resizer-narrow), and nothing appears and
+   goes when it comes (first-paint gate 24 at 390). Between sm and the split
+   step the script alone decides: the split there may be a container. */
+@media not all and (min-width: map.get(bp.$breakpoint-array, sm)) {
+  sf-resizer {
+    display: none;
+  }
 }
 
 /* A folded panel (collapsible, C158 (2)): it keeps only its edge -- its own
