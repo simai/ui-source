@@ -281,27 +281,28 @@
           "  <sf-avatar id=\"a-auto\" heading=\"Boris Ilyin\" hue=\"auto\"></sf-avatar>",
           "  <sf-avatar id=\"a-tone-image\" image-url=\"data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=\" text=\"RM\" hue=\"pink\"></sf-avatar>",
           "  <sf-avatar id=\"a-tone-none\" hue=\"auto\"></sf-avatar>",
+          "  <sf-avatar id=\"a-menu\" text=\"AZ\" aria-label=\"Анна Захарова\" aria-haspopup=\"menu\"></sf-avatar>",
           "</main>"
         ]
       },
       "checks": [
         {
           "id": "p1-button",
-          "title": "the avatar is a native button named by the host's aria-label",
-          "covers": "accessibility.role button, accessibility.name aria-label",
+          "title": "the avatar is a picture (role img) named by the host's aria-label; a menu trigger (aria-haspopup) is a native button (C152 (1))",
+          "covers": "accessibility.role img, button only as a trigger, accessibility.name aria-label",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#a button.sf-avatar'); return b && b.type === 'button' && b.getAttribute('aria-label') === 'Анна Захарова' && b.textContent.includes('AZ'); })()"
+              "check": "(() => { const i = document.querySelector('#a .sf-avatar'); const b = document.querySelector('#a-menu button.sf-avatar'); return i && i.localName === 'span' && i.getAttribute('role') === 'img' && i.getAttribute('aria-label') === 'Анна Захарова' && i.textContent.includes('AZ') && !document.querySelector('#a button') && b && b.type === 'button' && b.getAttribute('aria-label') === 'Анна Захарова' && b.textContent.includes('AZ'); })()"
             }
           ]
         },
         {
           "id": "p2-default-word",
-          "title": "without aria-label the button says the page's word",
+          "title": "without aria-label the picture is named by its initials; the host's ariaLabel property answers the page's word",
           "covers": "lang runtime aria-label",
           "steps": [
             {
-              "check": "document.querySelector('#a-word button').getAttribute('aria-label') === 'Аватар'",
+              "check": "document.querySelector('#a-word .sf-avatar').getAttribute('aria-label') === 'НН'",
               "expect": {
                 "values": {
                   "#a-word.ariaLabel": "Аватар"
@@ -343,7 +344,7 @@
           "covers": "settings.badge-count",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#a-badge button'); return Boolean(b.querySelector('.sf-badge')) && b.getAttribute('aria-label').startsWith('Анна Белова') && b.getAttribute('aria-label').includes('3'); })()"
+              "check": "(() => { const b = document.querySelector('#a-badge .sf-avatar'); return Boolean(b.querySelector('.sf-badge')) && b.getAttribute('aria-label').startsWith('Анна Белова') && b.getAttribute('aria-label').includes('3'); })()"
             }
           ]
         },
@@ -365,24 +366,24 @@
         },
         {
           "id": "p7-disabled-property",
-          "title": "disabled written as a property disables the button",
+          "title": "disabled written as a property disables the trigger's button",
           "covers": "settings.disabled property",
           "steps": [
             {
-              "script": "(() => { document.querySelector('#a').disabled = true; return true; })()"
+              "script": "(() => { document.querySelector('#a-menu').disabled = true; return true; })()"
             },
             {
-              "check": "document.querySelector('#a button').disabled && document.querySelector('#a').hasAttribute('disabled')"
+              "check": "document.querySelector('#a-menu button').disabled && document.querySelector('#a-menu').hasAttribute('disabled')"
             }
           ]
         },
         {
           "id": "p8-hue",
-          "title": "a named hue and auto reach the initials, the former tone too, and nothing else takes one",
+          "title": "a named hue and auto reach the initials, the former tone too, the initials under a photo as well (C152); nothing else takes one",
           "covers": "settings.hue",
           "steps": [
             {
-              "check": "(() => { const hue = (id) => [...document.querySelector(id + ' button').classList].filter((one) => one.startsWith('sf-hue-') || one.startsWith('sf-avatar--tone-')).join(); return hue('#a-hue') === 'sf-hue-pink' && hue('#a-tone') === 'sf-hue-pink' && hue('#a-auto') === 'sf-hue-purple' && hue('#a-tone-image') === '' && hue('#a-tone-none') === '' && hue('#a') === ''; })()",
+              "check": "(() => { const hue = (id) => [...document.querySelector(id + ' .sf-avatar').classList].filter((one) => one.startsWith('sf-hue-') || one.startsWith('sf-avatar--tone-')).join(); return hue('#a-hue') === 'sf-hue-pink' && hue('#a-tone') === 'sf-hue-pink' && hue('#a-auto') === 'sf-hue-purple' && hue('#a-tone-image') === 'sf-hue-pink' && hue('#a-tone-none') === '' && hue('#a') === ''; })()",
               "expect": {
                 "values": {
                   "#a-hue.hue": "pink",

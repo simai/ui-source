@@ -149,11 +149,11 @@
         },
         {
           "id": "p5-aliases",
-          "title": "variant answers as kind; getSpinnerRoot is kept and noted",
+          "title": "variant answers as kind, and the retired dots look draws the arc (C130 (5)), both noted; getSpinnerRoot is kept and noted",
           "covers": "aliases.json",
           "steps": [
             {
-              "check": "document.getElementById('s-old').getAttribute('kind') === 'dots' && document.querySelector('#s-old .sf-loader-container').dataset.variant === 'dots'"
+              "check": "document.getElementById('s-old').getAttribute('kind') === 'arc' && document.querySelector('#s-old .sf-loader-container').dataset.variant === 'arc' && [...SF.__deprecationNotes.values()].some((n) => n.component === 'sf-spinner' && n.from === 'variant' && n.to === 'kind') && [...SF.__deprecationNotes.values()].some((n) => n.component === 'sf-spinner' && n.attribute === 'kind' && n.from === 'dots' && n.to === 'arc' && n.remove_after === '2027-01-01')"
             },
             {
               "script": "Boolean(document.getElementById('s1').getSpinnerRoot())",

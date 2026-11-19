@@ -133,7 +133,7 @@
         },
         {
           "id": "p4-results",
-          "title": "typing asks the provider: grouped results, the match marked, the first row selected",
+          "title": "typing asks the provider: grouped results, the match marked, the first row selected; the scopes are an sf-tag-group with counts (C175 (4))",
           "covers": "settings.provider, settings.scopes, settings.path",
           "steps": [
             {
@@ -143,13 +143,13 @@
               "script": "(async () => { const i = document.querySelector('.sf-search-input'); i.value = \"кноп\"; i.dispatchEvent(new Event('input', {bubbles: true})); await new Promise((r) => setTimeout(r, 400)); return true; })()"
             },
             {
-              "check": "(() => { const rows = document.querySelectorAll('.sf-search-row'); const mark = document.querySelector('.sf-search-row mark'); return rows.length === 2 && mark && mark.textContent === 'Кноп' && rows[0].getAttribute('aria-selected') === 'true' && document.querySelector('.sf-search-input').getAttribute('aria-activedescendant') === rows[0].id && document.querySelectorAll('.sf-search-scope').length === 3; })()"
+              "check": "(() => { const rows = document.querySelectorAll('.sf-search-row'); const mark = document.querySelector('.sf-search-row mark'); return rows.length === 2 && mark && mark.textContent === 'Кноп' && rows[0].getAttribute('aria-selected') === 'true' && document.querySelector('.sf-search-input').getAttribute('aria-activedescendant') === rows[0].id && [...document.querySelectorAll('.sf-search-scopes sf-tag')].map((t) => t.getAttribute('text') + ':' + t.getAttribute('count')).join() === 'Все:2,Страницы:1,Компоненты:1'; })()"
             }
           ]
         },
         {
           "id": "p5-clear-then-close",
-          "title": "the X clears a filled field and keeps the focus, then closes the empty window",
+          "title": "the X clears a filled field and keeps the focus, and goes; the back arrow «Закрыть» at the head's start closes the empty window (C175)",
           "covers": "events.close reason close, events.closed",
           "steps": [
             {
@@ -162,10 +162,10 @@
               "user": "click:.sf-search-clear button"
             },
             {
-              "check": "document.querySelector('.sf-search-input').value === '' && document.activeElement === document.querySelector('.sf-search-input')"
+              "check": "document.querySelector('.sf-search-input').value === '' && document.activeElement === document.querySelector('.sf-search-input') && !document.querySelector('.sf-search-clear')"
             },
             {
-              "user": "click:.sf-search-clear button",
+              "user": "click:.sf-search-back button",
               "expect": {
                 "events": [
                   {

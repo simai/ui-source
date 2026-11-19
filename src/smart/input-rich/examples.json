@@ -165,11 +165,11 @@
         },
         {
           "id": "r1-textbox",
-          "title": "the editing surface is a multiline textbox named by the label and described by the hint; the toolbar is one Tab stop",
+          "title": "the editing surface is a multiline textbox named by the label and described by the hint; the toolbar is one Tab stop: the level menu button, eight tools and ⋯ (C155, sf-input-rich 1.6.0)",
           "covers": "accessibility",
           "steps": [
             {
-              "check": "(() => { const e = document.querySelector('#r1 .sf-rich-text-editor'); const label = document.getElementById(e.getAttribute('aria-labelledby')); const hint = document.getElementById(e.getAttribute('aria-describedby')); const bar = document.querySelector('#r1 [role=toolbar]'); const tools = [...bar.querySelectorAll('button.sf-rich-text-tool')]; return e.getAttribute('role') === 'textbox' && e.getAttribute('aria-multiline') === 'true' && e.isContentEditable && label.textContent.trim() === 'Page text' && hint.textContent.trim() === 'Formatted text' && bar.getAttribute('aria-label') === 'Formatting' && bar.getAttribute('aria-controls') === e.id && tools.length === 12 && tools.filter((t) => t.tabIndex === 0).length === 1; })()"
+              "check": "(() => { const e = document.querySelector('#r1 .sf-rich-text-editor'); const label = document.getElementById(e.getAttribute('aria-labelledby')); const hint = document.getElementById(e.getAttribute('aria-describedby')); const bar = document.querySelector('#r1 [role=toolbar]'); const tools = [...bar.querySelectorAll('button.sf-rich-text-tool')]; return e.getAttribute('role') === 'textbox' && e.getAttribute('aria-multiline') === 'true' && e.isContentEditable && label.textContent.trim() === 'Page text' && hint.textContent.trim() === 'Formatted text' && bar.getAttribute('aria-label') === 'Formatting' && bar.getAttribute('aria-controls') === e.id && tools.length === 10 && tools[0].getAttribute('aria-haspopup') === 'menu' && tools.filter((t) => t.tabIndex === 0).length === 1; })()"
             }
           ]
         },

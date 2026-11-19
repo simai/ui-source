@@ -325,7 +325,7 @@
           "covers": "settings.paused, host-states data-status",
           "steps": [
             {
-              "check": "(() => { const a = document.querySelector('#p9'); const r = a.querySelector('.sf-progress-bar'); const b = document.querySelector('#p10'); return a.getAttribute('data-status') === 'warning' && r.classList.contains('sf-progress-bar--warning') && r.getAttribute('aria-valuetext') === '35 %, на паузе' && b.getAttribute('data-status') === 'error'; })()"
+              "check": "(() => { const a = document.querySelector('#p9'); const r = a.querySelector('.sf-progress-bar'); const b = document.querySelector('#p10'); return a.getAttribute('data-status') === 'warning' && r.classList.contains('sf-progress-bar--warning') && r.getAttribute('aria-valuetext') === '35 %, на паузе' && b.getAttribute('data-status') === 'error'; })()"
             },
             {
               "script": "(() => { document.querySelector('#p9').paused = false; return true; })()",

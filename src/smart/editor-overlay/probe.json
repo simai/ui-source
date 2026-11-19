@@ -50,14 +50,19 @@
     },
     {
       "id": "p3-apply",
-      "title": "a toolbar action sends sf-composition-overlay-apply {action, scope: entry, ids}, then the dated -action {action_id, node_id}",
+      "title": "an action without an icon is in ⋯ «Ещё» (C170 (1)); choosing it sends sf-composition-overlay-apply {action, scope: entry, ids}, then the dated -action {action_id, node_id}",
       "covers": "events.apply, aliases.json sf-composition-overlay-action",
       "steps": [
         {
           "script": "(document.getElementById('o').select('p'), true)"
         },
         {
-          "user": "click:#o .sf-composition-overlay-action[data-action=remove]",
+          "script": "(() => { const more = [...document.querySelectorAll('#o button[aria-haspopup=menu]')].find((b) => b.getAttribute('aria-label') === 'Ещё'); more.focus(); more.click(); return Boolean(more); })()",
+          "wait": 600,
+          "check": "[...document.querySelectorAll('[role=menuitem]')].some((m) => m.textContent.trim() === 'Удалить')"
+        },
+        {
+          "script": "(() => { const row = [...document.querySelectorAll('[role=menuitem]')].find((m) => m.textContent.trim() === 'Удалить'); row.focus(); row.click(); return true; })()",
           "expect": {
             "events": [
               {
@@ -113,13 +118,13 @@
     },
     {
       "id": "p5-icon-actions",
-      "title": "an action with an icon is an icon button named by its label; an unavailable one stays where it is, dimmed; an action of id and label stays a text button",
+      "title": "an action with an icon is an icon button named by its label; an unavailable one stays where it is, dimmed; an action of id and label goes to ⋯ «Ещё» (C170 (1))",
       "covers": "settings.actions",
       "steps": [
         {
           "script": "(() => { const o = document.getElementById('o'); o.select('h'); o.actions = [{id: 'up', label: 'Выше', icon: 'arrow_upward', shortcut: '⌥↑', disabled: true}, {id: 'remove', label: 'Удалить', icon: 'delete', tone: 'danger'}, {id: 'plain', label: 'Текст'}]; return true; })()",
           "wait": 1500,
-          "check": "(() => { const o = document.getElementById('o'); const up = o.querySelector('button[data-action=up]'); const remove = o.querySelector('button[data-action=remove]'); const plain = o.querySelector('button.sf-composition-overlay-action[data-action=plain]'); let refused = false; try { o.actions = [{id: 'x', label: 'x', tone: 'loud'}]; } catch (error) { refused = error instanceof TypeError; } return up.disabled && up.getAttribute('aria-label') === 'Выше' && remove.getAttribute('aria-label') === 'Удалить' && !remove.disabled && plain.textContent === 'Текст' && refused; })()"
+          "check": "(() => { const o = document.getElementById('o'); const up = o.querySelector('button[data-action=up]'); const remove = o.querySelector('button[data-action=remove]'); const plain = o.querySelector('[data-action=plain]'); const more = [...o.querySelectorAll('button[aria-haspopup=menu]')].find((b) => b.getAttribute('aria-label') === 'Ещё'); let refused = false; try { o.actions = [{id: 'x', label: 'x', tone: 'loud'}]; } catch (error) { refused = error instanceof TypeError; } return up.disabled && up.getAttribute('aria-label') === 'Выше' && remove.getAttribute('aria-label') === 'Удалить' && !remove.disabled && !plain && Boolean(more) && refused; })()"
         }
       ]
     },

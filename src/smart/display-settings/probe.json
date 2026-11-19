@@ -29,7 +29,7 @@
           "check": "(() => { const el = document.querySelector('#disclosure'); const b = el.querySelector('.sf-display-settings__trigger button'); const panel = el.querySelector('.sf-display-settings__panel'); return b.getAttribute('aria-expanded') === 'true' && !panel.hidden && el.open === true && el.hasAttribute('data-open') && panel.getAttribute('aria-label') === 'Версия для слабовидящих'; })()"
         },
         {
-          "user": "press:Escape",
+          "user": "keyboard:Escape",
           "wait": 150,
           "check": "(() => { const el = document.querySelector('#disclosure'); return el.open === false && el.querySelector('.sf-display-settings__panel').hidden && el.contains(document.activeElement); })()"
         }
@@ -42,9 +42,12 @@
       "steps": [
         {
           "script": "(window.__cookie = document.cookie, window.__changes = [], document.querySelector('#plain').addEventListener('sf-display-settings-change', (e) => window.__changes.push(e.detail.setting)), true)",
-          "user": "click:#plain sf-button[data-value='yellow-on-black'] button",
+          "wait": 60
+        },
+        {
+          "user": "click:#plain button[data-value='yellow-on-black']",
           "wait": 150,
-          "check": "(() => { const root = document.documentElement; const b = document.querySelector(\"#plain sf-button[data-value='yellow-on-black'] button\"); const group = b.closest('[role=group][data-group=scheme]'); const label = document.getElementById(group.getAttribute('aria-labelledby')); const kept = JSON.parse(localStorage.getItem('sf-display-settings') || '{}'); return root.getAttribute('data-sf-scheme') === 'yellow-on-black' && b.getAttribute('aria-pressed') === 'true' && label.textContent === 'Цвет' && kept.scheme === 'yellow-on-black' && document.cookie === window.__cookie && getComputedStyle(document.querySelector('#link')).textDecorationLine === 'underline' && getComputedStyle(document.body).backgroundColor === 'rgb(0, 0, 0)' && window.__changes.join() === 'scheme' && document.querySelector('#panel').settings.scheme === 'yellow-on-black'; })()"
+          "check": "(() => { const root = document.documentElement; const b = document.querySelector(\"#plain button[data-value='yellow-on-black']\"); const group = b.closest('[role=group][data-group=scheme]'); const label = document.getElementById(group.getAttribute('aria-labelledby')); const kept = JSON.parse(localStorage.getItem('sf-display-settings') || '{}'); return root.getAttribute('data-sf-scheme') === 'yellow-on-black' && b.getAttribute('aria-pressed') === 'true' && label.textContent === 'Цвет' && kept.scheme === 'yellow-on-black' && document.cookie === window.__cookie && getComputedStyle(document.querySelector('#link')).textDecorationLine === 'underline' && getComputedStyle(document.body).backgroundColor === 'rgb(0, 0, 0)' && window.__changes.join() === 'scheme' && document.querySelector('#panel').settings.scheme === 'yellow-on-black'; })()"
         }
       ]
     },
@@ -55,11 +58,14 @@
       "steps": [
         {
           "script": "(window.__base = parseFloat(getComputedStyle(document.documentElement).fontSize) / (Number(document.documentElement.getAttribute('data-sf-text-scale') || 100) / 100), true)",
-          "user": "click:#plain sf-button[data-setting='textScale'][data-value='1'] button",
+          "wait": 60
+        },
+        {
+          "user": "click:#plain button[data-setting='textScale'][data-value='1']",
           "wait": 120
         },
         {
-          "user": "click:#plain sf-button[data-setting='textScale'][data-value='1'] button",
+          "user": "click:#plain button[data-setting='textScale'][data-value='1']",
           "wait": 150,
           "check": "(() => { const root = document.documentElement; const value = document.querySelector('#plain .sf-display-settings__value'); return root.getAttribute('data-sf-text-scale') === '150' && Math.abs(parseFloat(getComputedStyle(root).fontSize) - window.__base * 1.5) < 0.5 && value.textContent.trim() === '150 %' && value.getAttribute('aria-live') === 'polite'; })()"
         },
@@ -79,7 +85,7 @@
           "check": "(() => { const has = (id, g) => Boolean(document.querySelector(`#${id} [data-group=${g}]`)); return has('panel', 'font') && has('panel', 'links') && !has('plain', 'font') && !has('plain', 'links'); })()"
         },
         {
-          "user": "click:#plain sf-button[data-value='hide'] button",
+          "user": "click:#plain button[data-value='hide']",
           "wait": 200,
           "check": "(() => { const pic = document.querySelector('#pic'); const caption = pic.nextElementSibling; return document.documentElement.getAttribute('data-sf-images') === 'hide' && getComputedStyle(pic).display === 'none' && caption.classList.contains('sf-image-caption') && caption.textContent === 'Читальный зал после ремонта' && getComputedStyle(caption).display === 'block'; })()"
         },

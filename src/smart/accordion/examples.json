@@ -248,7 +248,7 @@
         },
         {
           "id": "p2-enter-toggles",
-          "title": "Enter on a header opens it; single closes the other: sf-accordion-toggle twice, sf-accordion:toggle twice, noted with its dates",
+          "title": "Enter on a header opens it; single closes the other: sf-accordion-toggle twice, sf-accordion:toggle twice, noted with its dates; a closed panel stays findable, hidden=until-found (C154)",
           "covers": "keyboard.header Enter toggle:open, events.toggle, aliases sf-accordion:toggle, settings.single",
           "steps": [
             {
@@ -291,7 +291,7 @@
                   }
                 ]
               },
-              "check": "document.querySelector('#acc [data-sf-accordion-id=\"seo\"] .sf-accordion-content').hidden === false && document.querySelector('#acc [data-sf-accordion-id=\"main\"] .sf-accordion-content').hidden === true"
+              "check": "document.querySelector('#acc [data-sf-accordion-id=\"seo\"] .sf-accordion-content').hidden === false && document.querySelector('#acc [data-sf-accordion-id=\"main\"] .sf-accordion-content').hidden === 'until-found'"
             }
           ]
         },

@@ -412,7 +412,7 @@
     },
     {
       "id": "c1-counter-across-pages",
-      "title": "counter (C97 point 7): «20 из 240» with no items; ] asks for record 21 by its place in the whole list and moves; «К списку» links back",
+      "title": "counter (C97 point 7): «20 из 240» with no items; ] (the page's only pager with keys: a key one pager took is no other's) asks for record 21 by its place in the whole list and moves; «К списку» links back",
       "covers": "settings.total, settings.list-href, keys [ ]",
       "steps": [
         {
@@ -420,7 +420,10 @@
           "check": "(() => { const el = document.getElementById('record'); return el.querySelector('.sf-pager-place')?.textContent.trim() === '20 из 240' && el.querySelector('a.sf-pager-list')?.getAttribute('href') === '#list' && el.querySelector('a.sf-pager-list')?.getAttribute('aria-label') === 'К списку'; })()"
         },
         {
-          "script": "(document.body.focus(), true)",
+          "script": "(document.getElementById('counter').removeAttribute('keys'), document.body.focus(), true)",
+          "wait": 120
+        },
+        {
           "user": "keyboard:]",
           "expect": {
             "events": [

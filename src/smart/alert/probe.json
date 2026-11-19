@@ -16,14 +16,19 @@
   "probes": [
     {
       "id": "p1-live-region",
-      "title": "the root is a live region: status for success, alert for error, named by the heading",
-      "covers": "accessibility (role when status, name)",
+      "title": "the root is a live region named by the heading: printed with the page it is status at every level (NS-1); an error put in after the load is alert",
+      "covers": "accessibility (role by level after the load, status when printed with the page, name)",
       "steps": [
         {
-          "check": "(() => { const a = document.querySelector('#a1 .sf-alert'); const b = document.querySelector('#a2 .sf-alert'); return a.getAttribute('role') === 'status' && a.getAttribute('aria-label') === 'Изменения сохранены' && b.getAttribute('role') === 'alert'; })()"
+          "check": "(() => { const a = document.querySelector('#a1 .sf-alert'); const b = document.querySelector('#a2 .sf-alert'); return a.getAttribute('role') === 'status' && a.getAttribute('aria-label') === 'Изменения сохранены' && b.getAttribute('role') === 'status'; })()"
         },
         {
           "check": "document.querySelector('#a3 .sf-alert').getAttribute('aria-label') === 'Подсказка'"
+        },
+        {
+          "script": "(() => { const n = document.createElement('sf-alert'); n.id = 'a-late'; n.setAttribute('heading', 'Связь потеряна'); n.setAttribute('status', 'error'); document.querySelector('main').append(n); return true; })()",
+          "wait": 800,
+          "check": "document.querySelector('#a-late .sf-alert')?.getAttribute('role') === 'alert' && document.querySelector('#a-late .sf-alert').getAttribute('aria-label') === 'Связь потеряна'"
         }
       ]
     },
@@ -141,7 +146,7 @@
       "covers": "aliases.json",
       "steps": [
         {
-          "check": "(() => { const el = document.getElementById('a-old'); const r = el.querySelector('.sf-alert'); return el.getAttribute('heading') === 'Старое имя' && el.status === 'error' && el.appearance === 'outlined' && r.getAttribute('role') === 'alert' && r.textContent.includes('Старое имя'); })()"
+          "check": "(() => { const el = document.getElementById('a-old'); const r = el.querySelector('.sf-alert'); return el.getAttribute('heading') === 'Старое имя' && el.status === 'error' && el.appearance === 'outlined' && r.getAttribute('role') === 'status' && r.textContent.includes('Старое имя'); })()"
         },
         {
           "script": "document.getElementById('a-old').dismiss()",

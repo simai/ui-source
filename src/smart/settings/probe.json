@@ -296,14 +296,19 @@
     },
     {
       "id": "p10-width",
-      "title": "the panel is 288 px (the menu's ceiling, 18rem) in every look; a long name wraps and a long value is cut with the whole of it in title",
+      "title": "the panel is 288 px (the menu's ceiling, 18rem) in every look; a long name wraps and a long value is cut, the whole of it in the row's Framework tooltip on focus, never a browser title (C160 (1))",
       "covers": "width, long names",
       "steps": [
         {
           "check": "['#drill', '#rows', '#tiles', '#long'].every((id) => Math.round(document.querySelector(id + ' .sf-context-menu-content').getBoundingClientRect().width) === 288)"
         },
         {
-          "check": "(() => { const row = document.querySelector('#long .sf-context-menu-item'); const under = row.querySelector('.sf-context-menu-item-under'); return row.getBoundingClientRect().height > 40 && under.scrollWidth > under.clientWidth && under.getAttribute('title') === 'Раз в неделю, в понедельник утром, со всеми задачами'; })()"
+          "check": "(() => { const row = document.querySelector('#long .sf-context-menu-item'); const under = row.querySelector('.sf-context-menu-item-under'); return row.getBoundingClientRect().height > 40 && under.scrollWidth > under.clientWidth && !under.hasAttribute('title'); })()"
+        },
+        {
+          "script": "(document.querySelector('#long .sf-context-menu-item').focus(), true)",
+          "wait": 300,
+          "check": "(() => { const row = document.querySelector('#long .sf-context-menu-item'); const tip = document.getElementById(row.getAttribute('data-tooltip')); return Boolean(tip) && tip.classList.contains('sf-context-menu-value-tooltip') && tip.textContent.trim() === 'Раз в неделю, в понедельник утром, со всеми задачами'; })()"
         }
       ]
     },

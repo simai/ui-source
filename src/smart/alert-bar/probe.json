@@ -155,7 +155,7 @@
     },
     {
       "id": "p7-acknowledge",
-      "title": "acknowledge («Прочитано») asks sf-alert-bar-acknowledge with the id; the item leaves the bar and its list",
+      "title": "acknowledge («Прочитано») asks sf-alert-bar-acknowledge with the id; the item leaves the bar and its list, the focus goes to the next row; the open toggle is «Свернуть список» (1.6.1), Escape closes the list and «Ещё 3» counts the others",
       "covers": "events.acknowledge",
       "steps": [
         {
@@ -176,7 +176,12 @@
               }
             ]
           },
-          "check": "(() => { const el = document.querySelector('#many'); return el.querySelectorAll('.sf-alert-bar-list > li').length === 3 && !el.querySelector('.sf-alert-bar-item[data-id=\"down\"]') && document.activeElement === el.querySelector('.sf-alert-bar-list > li .sf-alert-bar-action :is(a, button)') && el.querySelector('.sf-alert-bar-all').textContent.includes('Ещё 3'); })()"
+          "check": "(() => { const el = document.querySelector('#many'); return el.querySelectorAll('.sf-alert-bar-list > li').length === 3 && !el.querySelector('.sf-alert-bar-item[data-id=\"down\"]') && document.activeElement === el.querySelector('.sf-alert-bar-list > li .sf-alert-bar-action :is(a, button)') && el.querySelector('.sf-alert-bar-all [aria-label]')?.getAttribute('aria-label') === 'Свернуть список'; })()"
+        },
+        {
+          "user": "keyboard:Escape",
+          "wait": 250,
+          "check": "(() => { const el = document.querySelector('#many'); return el.querySelector('.sf-alert-bar-all').textContent.includes('Ещё 3') && el.querySelector('.sf-alert-bar-all').contains(document.activeElement); })()"
         }
       ]
     },

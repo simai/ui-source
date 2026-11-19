@@ -312,11 +312,11 @@
         },
         {
           "id": "p3-dated-aliases",
-          "title": "variant, type and tightness still draw, each noted with its dates",
+          "title": "variant and type still draw, noted with their dates; tightness answers as spacing, which draws nothing on an icon button (C213), both noted until 2027-01-01",
           "covers": "aliases.json variant, type, tightness, low",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#ib-old button'); return b.classList.contains('sf-icon-button--close') && b.classList.contains('sf-icon-button--tonal') && b.classList.contains('tightness-low'); })()",
+              "check": "(() => { const b = document.querySelector('#ib-old button'); return b.classList.contains('sf-icon-button--close') && b.classList.contains('sf-icon-button--tonal') && ![...b.classList].some((one) => one.startsWith('tightness-') || one.startsWith('spacing-')); })()",
               "expect": {
                 "values": {
                   "#ib-old.kind": "close",
@@ -326,7 +326,7 @@
               }
             },
             {
-              "check": "['variant', 'type', 'tightness'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2026-12-01'))"
+              "check": "['variant', 'type'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2026-12-01')) && ['tightness', 'spacing'].every((from) => [...SF.__deprecationNotes.values()].some((note) => note.component === 'sf-button-icon' && note.from === from && note.remove_after === '2027-01-01'))"
             }
           ]
         },
@@ -435,11 +435,11 @@
         },
         {
           "id": "p9-cycle",
-          "title": "a cycle shows the current item's icon and pressed look, names it, steps, wraps, sends change and announces; label-pressed beside it is ignored",
+          "title": "a cycle shows the current item's icon and pressed look, names it and describes the next step (the name tooltip's text, C160), steps, wraps, sends change and announces; label-pressed beside it is ignored",
           "covers": "settings.cycle, settings.value, events.change",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#ib-cyc button'); return b.getAttribute('aria-label') === 'Повтор: выключен' && b.querySelector('sf-icon').getAttribute('icon') === 'repeat' && !b.classList.contains('sf-icon-button--pressed') && !b.hasAttribute('aria-pressed') && b.title.includes('весь список'); })()"
+              "check": "(() => { const b = document.querySelector('#ib-cyc button'); return b.getAttribute('aria-label') === 'Повтор: выключен' && b.querySelector('sf-icon').getAttribute('icon') === 'repeat' && !b.classList.contains('sf-icon-button--pressed') && !b.hasAttribute('aria-pressed') && (b.getAttribute('aria-description') || '').includes('весь список'); })()"
             },
             {
               "user": "click:#ib-cyc button",
@@ -475,7 +475,7 @@
           "covers": "settings.theme-cycle",
           "steps": [
             {
-              "check": "(() => { const b = document.querySelector('#ib-theme button'); const pref = SF.Loader?.themePreference || 'system'; const icon = b.querySelector('sf-icon').getAttribute('icon'); const want = {system: 'contrast', light: 'light_mode', dark: 'dark_mode'}[pref]; return icon === want && b.getAttribute('aria-label').startsWith('Тема: ') && b.title.includes('Нажмите'); })()"
+              "check": "(() => { const b = document.querySelector('#ib-theme button'); const pref = SF.Loader?.themePreference || 'system'; const icon = b.querySelector('sf-icon').getAttribute('icon'); const want = {system: 'contrast', light: 'light_mode', dark: 'dark_mode'}[pref]; return icon === want && b.getAttribute('aria-label').startsWith('Тема: ') && (b.getAttribute('aria-description') || '').includes('Нажмите'); })()"
             }
           ]
         },
