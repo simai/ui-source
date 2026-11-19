@@ -1,0 +1,28 @@
+{
+  "id": "preferences-without-the-capability-stay-in-the-browser",
+  "intent": "preferences.save",
+  "capability": "personal-preferences",
+  "summary": "A host that keeps no view state for this person -- a guest's page, a host on 1.15.0 -- is not asked to; the view keeps the state in the browser.",
+  "given": {
+    "records": [],
+    "capabilities": [
+      "saved-views"
+    ]
+  },
+  "when": {
+    "intent": "preferences.save",
+    "payload": {
+      "preferences": {
+        "page_size": 20
+      },
+      "base_revision": "p1"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "reason capability-not-provided. Without the capability the view never raises preferences.save: it keeps the page size and the zone's state in SF.Preferences under its preferences-key (owner decision C298: a guest's personal level is the browser)."
+  }
+}

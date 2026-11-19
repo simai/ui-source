@@ -1,0 +1,44 @@
+{
+  "id": "view-open-carries-everything",
+  "intent": "view.open",
+  "capability": "saved-views",
+  "summary": "Opening a stored view restores its query, roles, layout and settings together with its revision.",
+  "given": {
+    "saved_views": [
+      {
+        "key": "mine",
+        "label": "Mine",
+        "revision": "v4",
+        "query": {
+          "filters": {
+            "owner": [
+              "me"
+            ]
+          }
+        },
+        "layout": {
+          "columns": [
+            {
+              "key": "name",
+              "visible": true
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "when": {
+    "intent": "view.open",
+    "payload": {
+      "key": "mine"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "column_settings",
+      "echo"
+    ],
+    "note": "The settings target becomes {kind: saved_view, key: mine, revision: v4}."
+  }
+}

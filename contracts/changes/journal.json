@@ -18599,6 +18599,31 @@
       },
       "owner": "ui-source",
       "source": "src/component/quantity/scss/_css__quantity.scss; src/component/quantity/js/_quantity.js; ui-control control/docs-review/decisions.md C153"
+    },
+    {
+      "id": "value-dataview-saved-view-level-package-to-system",
+      "recorded_on": "2026-11-20",
+      "stage": "compat",
+      "kind": "value",
+      "summary": "simai.dataview-port 1.16.0 (owner decision C298, the levels of a view) names a saved view's levels system, shared and personal. 1.0.0 to 1.15.0 called the system level package (saved_views[].level). A host that still sends package is read as system until remove_after; a 1.16.0 host writes system. The column settings layers (settings.layers, column_settings.layers.package) are not renamed: they belong to the host-port standard.",
+      "items": [
+        {
+          "component": "simai.dataview-port",
+          "from": "package",
+          "to": "system",
+          "match": "[\"']level[\"']\\s*[:=]>?\\s*[\"']package[\"']"
+        }
+      ],
+      "deprecated_on": "2026-11-20",
+      "remove_after": "2027-01-01",
+      "rewrite": "manual",
+      "examples": {
+        "before": "{\"key\": \"all\", \"label\": \"Все заказы\", \"revision\": 1, \"level\": \"package\"}",
+        "after": "{\"key\": \"all\", \"label\": \"Все заказы\", \"revision\": 1, \"level\": \"system\"}"
+      },
+      "manual": "In the host's answer, write level system where it writes package for a saved view shipped with the product, and speak simai.dataview-port 1.16.0. A view that reads levels groups package with system until remove_after.",
+      "owner": "ui-source",
+      "source": "src/core/contracts/ports/simai.dataview-port/1.16.0/port.json data.saved_views; tests/dataview-port-levels.contract.test.mjs; ui-control control/research/2026-11-17-views-architecture/view-config-1-draft.md"
     }
   ]
 }

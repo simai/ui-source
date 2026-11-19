@@ -1,0 +1,28 @@
+{
+  "id": "settings-shared-needs-permission",
+  "intent": "settings.save_shared",
+  "capability": "shared-column-settings",
+  "summary": "Saving for everyone is a separate permission: a host that does not announce it never receives the intent.",
+  "given": {
+    "capabilities": []
+  },
+  "when": {
+    "intent": "settings.save_shared",
+    "payload": {
+      "columnSettings": {
+        "name": {
+          "visible": false
+        }
+      },
+      "base_revision": "s1",
+      "target": "shared"
+    }
+  },
+  "then": {
+    "answer": "unavailable",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "Without the capability the view explains that saving for everyone is not connected here; it does not show a button that fails."
+  }
+}

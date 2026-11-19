@@ -1,0 +1,29 @@
+{
+  "id": "preferences-save-merges-the-changed-fields",
+  "intent": "preferences.save",
+  "capability": "personal-preferences",
+  "summary": "A save names only what changed and is merged into the person's layer against its revision.",
+  "given": {
+    "preferences": {
+      "revision": "p3",
+      "page_size": 50,
+      "view_zone": "open"
+    }
+  },
+  "when": {
+    "intent": "preferences.save",
+    "payload": {
+      "preferences": {
+        "view_zone": "closed"
+      },
+      "base_revision": "p3"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "preferences"
+    ],
+    "note": "The answer's preferences are {page_size: 50, view_zone: closed} with a new revision: the page size the save did not name stays. A field sent as null is removed and the view's default shows again."
+  }
+}

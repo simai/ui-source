@@ -1,0 +1,36 @@
+{
+  "id": "record-mutate-refused",
+  "intent": "record.mutate",
+  "capability": "row-actions",
+  "summary": "An action the record does not allow is refused with a reason.",
+  "given": {
+    "records": [
+      {
+        "id": 2,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.mutate",
+    "payload": {
+      "action_id": "delete",
+      "record_ids": [
+        2
+      ],
+      "revisions": {
+        "2": "r1"
+      }
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "note": "Refusal is checked on the host even when the view never offered the button."
+  }
+}

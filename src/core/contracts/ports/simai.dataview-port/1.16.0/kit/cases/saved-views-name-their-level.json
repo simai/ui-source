@@ -1,0 +1,67 @@
+{
+  "id": "saved-views-name-their-level",
+  "intent": "view.open",
+  "capability": "saved-views",
+  "summary": "Each saved view names its level -- system, shared or personal -- and the view groups its menu by them; package, the 1.15.0 name of system, is read as system until 2027-01-01.",
+  "given": {
+    "saved_views": [
+      {
+        "key": "all",
+        "label": "Все заказы",
+        "revision": "v1",
+        "level": "system"
+      },
+      {
+        "key": "unpaid",
+        "label": "Ждут оплаты",
+        "revision": "v3",
+        "level": "shared",
+        "query": {
+          "filters": {
+            "status": [
+              "unpaid"
+            ]
+          }
+        }
+      },
+      {
+        "key": "mine",
+        "label": "Мои срочные",
+        "revision": "v7",
+        "level": "personal",
+        "query": {
+          "filters": {
+            "owner": [
+              "me"
+            ]
+          }
+        }
+      },
+      {
+        "key": "legacy",
+        "label": "Архив",
+        "revision": "v2",
+        "level": "package"
+      },
+      {
+        "key": "plain",
+        "label": "Без уровня",
+        "revision": "v1"
+      }
+    ]
+  },
+  "when": {
+    "intent": "view.open",
+    "payload": {
+      "key": "unpaid"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "column_settings",
+      "echo"
+    ],
+    "note": "Every view conforms to data.saved_views: level is one of system, shared, personal or (until 2027-01-01) package. The views menu reads Системные (all, legacy), Для всех (unpaid), Мои (mine), then the view without a level. A 1.16.0 host writes system, never package."
+  }
+}

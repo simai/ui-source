@@ -1,0 +1,41 @@
+{
+  "id": "columns-list-place-is-one-of-five",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "A column's list place is one of the five the port names; a host whose store holds another word sends the column without a place.",
+  "given": {
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "view"
+        ],
+        "name": "shop.example",
+        "plan": "Pro"
+      }
+    ],
+    "stored_list_places": {
+      "name": "title",
+      "plan": "badge"
+    }
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 1,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records",
+      "columns"
+    ],
+    "note": "columns[].list is an enum of status, title, supporting, fact and hidden, and a column has no other fields (additionalProperties false): a column with list: badge does not conform to data.columns, and a view that validates the answer refuses it. The host sends name with list: title and plan without list (or with a place of the five). A view given a value outside the five anyway treats the column as one without a place: it is left out of the list and drawn in the table as before."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "cell-set-applies-and-answers-the-record",
+  "intent": "record.set",
+  "capability": "inline-edit",
+  "summary": "A field the record names in `editable` is written in place; the applied answer carries the record as it now is, with its new revision.",
+  "given": {
+    "records": [
+      {
+        "id": "title",
+        "revision": "s1",
+        "actions": [
+          "edit"
+        ],
+        "hidden": false,
+        "editable": [
+          "hidden"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "record.set",
+    "payload": {
+      "record_id": "title",
+      "key": "hidden",
+      "value": true,
+      "revision": "s1"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "data_must_include": [
+      "records"
+    ],
+    "note": "records[0].hidden is true and records[0].revision is not s1. A key the record does not name in editable is refused."
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "id": "view-switch-reports-dropped",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "Switching to another view reports what carried over and what was dropped.",
+  "given": {
+    "switch_from": "list",
+    "switch_to": "board"
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 9,
+      "query": {
+        "filters": {
+          "status": [
+            "active"
+          ]
+        },
+        "sort": [
+          {
+            "key": "name",
+            "direction": "asc"
+          }
+        ],
+        "page": 1,
+        "per_page": 25
+      },
+      "reason": "view-switch"
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "echo_must_include": {
+      "switch": {
+        "query": {
+          "filters": {
+            "status": [
+              "active"
+            ]
+          }
+        },
+        "dropped": [
+          "sort"
+        ]
+      }
+    },
+    "note": "The person sees that sorting did not carry over instead of guessing."
+  }
+}

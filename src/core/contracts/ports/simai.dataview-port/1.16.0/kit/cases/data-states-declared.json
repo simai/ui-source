@@ -1,0 +1,23 @@
+{
+  "id": "data-states-declared",
+  "intent": "query.change",
+  "capability": null,
+  "summary": "Loading, empty, error and ready are declared states of the view, readable from the outside.",
+  "given": {
+    "store": "slow"
+  },
+  "when": {
+    "intent": "query.change",
+    "payload": {
+      "sequence": 10,
+      "query": {
+        "page": 1,
+        "per_page": 25
+      }
+    }
+  },
+  "then": {
+    "answer": "applied",
+    "note": "While waiting the region carries data-state=loading and aria-busy; an empty answer is the empty state, not a blank table."
+  }
+}

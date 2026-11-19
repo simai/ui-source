@@ -1,0 +1,51 @@
+{
+  "id": "bulk-selected-confirmed-first",
+  "intent": "bulk.apply_selected",
+  "capability": null,
+  "summary": "A host that confirms a batch -- deleting the checked records -- first refuses it with confirm_required and a digest, and applies it when raised again with that digest. Nothing is written before.",
+  "given": {
+    "confirms": [
+      "bulk.apply_selected"
+    ],
+    "records": [
+      {
+        "id": 1,
+        "revision": "r1",
+        "actions": [
+          "delete"
+        ]
+      },
+      {
+        "id": 2,
+        "revision": "r2",
+        "actions": [
+          "delete"
+        ]
+      }
+    ]
+  },
+  "when": {
+    "intent": "bulk.apply_selected",
+    "payload": {
+      "action_id": "delete",
+      "record_ids": [
+        1,
+        2
+      ],
+      "revisions": {
+        "1": "r1",
+        "2": "r2"
+      }
+    }
+  },
+  "then": {
+    "answer": "refused",
+    "answer_must_include": [
+      "reason"
+    ],
+    "data_must_include": [
+      "confirm"
+    ],
+    "note": "reason is confirm_required; the summary in data.confirm says what happens to the records. Both records are still in the store. The same payload with confirm set to data.confirm.digest is answered applied; with another digest, refused. A stale revision is still answered with a conflict, confirmed or not."
+  }
+}
