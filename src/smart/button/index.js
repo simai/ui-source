@@ -457,7 +457,7 @@ class SfButton extends ButtonElement {
       // A menu button draws its arrow at the end unless the page wrote an end icon.
       menuArrow: mode === "menu" && this.iconEnd === null ? "expand_more" : "",
       appearance: shrunk ? "ghost" : this.appearance,
-      type: shrunk ? "ghost" : this.appearance,
+      type: this.appearance,
       status: this.status,
       scheme: this.scheme,
       size: this.size,

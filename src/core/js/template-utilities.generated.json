@@ -51,6 +51,7 @@
   "cl-button": [
     "align-items/default",
     "display/default",
+    "flex-shrink/default",
     "flex/default",
     "pointer-events/default",
     "sr-only/default"
@@ -153,6 +154,7 @@
   ],
   "cl-header-site": [
     "container/default",
+    "flex-shrink/default",
     "margin/default",
     "position/default",
     "width/default"

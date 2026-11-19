@@ -383,7 +383,7 @@ class SfSiteHeader extends SiteHeaderElement {
 
   shrinkingTools() {
     const tools = this.header()?.querySelector(':scope > .sf-site-header-row > .sf-site-header-tools');
-    return tools ? Array.from(tools.querySelectorAll('sf-button[shrink="icon"]')) : [];
+    return tools ? Array.from(tools.querySelectorAll('[shrink="icon"]')) : [];
   }
 
   setToolsCompact(compact) {

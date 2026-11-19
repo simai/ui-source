@@ -344,8 +344,10 @@
         "public_parts": [],
         "uses": [
           "component.buttons",
+          "component.icon-buttons",
           "component.kbd",
           "component.spinner",
+          "component.tooltip",
           "smart.button-icon",
           "smart.icon",
           "smart.menu-context"
@@ -360,7 +362,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/button/smart.manifest.json",
-      "manifest_sha256": "4de2a7f9605a86c5381b5548eae138981d9702df588e84cefd0f5db44116a4e7",
+      "manifest_sha256": "ff58e278ffd3311837e1a46aa02ab4018309294ff3bf2733e295fb44ceedb0cc",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",
@@ -1200,7 +1202,7 @@
       "kind": "smart",
       "lifecycle": "experimental",
       "manifest_path": "src/smart/header-site/smart.manifest.json",
-      "manifest_sha256": "690171fda13e56f286ad1318a40ca40965bded3800f614b8e36147cda0001ba5",
+      "manifest_sha256": "8b9ed32e1f33724909dc834b676d75869987782f55904761677eb78ceba763dd",
       "reuse_mode": "whole",
       "runtime_pair": {
         "ui_revision": "094f3d549aa7921d2d7f8773972c73711dd6a72e",

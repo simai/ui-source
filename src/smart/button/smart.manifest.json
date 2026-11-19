@@ -23,8 +23,10 @@
   "composition": {
     "uses": [
       "component.buttons",
+      "component.icon-buttons",
       "component.kbd",
       "component.spinner",
+      "component.tooltip",
       "smart.button-icon",
       "smart.icon",
       "smart.menu-context"
@@ -746,7 +748,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/button/index.js",
-        "sha256": "f63b9f1b20fc71fba5a4ff70e149d8e99ffe32ca869006b2d45436582bd928a5"
+        "sha256": "4459a6daadebb159f9d53a6d4fbf1a391758dd2d46289b9ff2c8737b8cc4c5cf"
       }
     ],
     "generated_runtime": [

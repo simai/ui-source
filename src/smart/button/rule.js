@@ -19,6 +19,10 @@ SF.RuleLoader['cl-button'] = {
     { name: 'cl-button-icon', lazy: true },
     // The menu of a menu or split button (C119).
     { name: 'cl-menu-context', lazy: true },
+    // The name tooltip a shrunk button shows (shrink icon, C370): the icon buttons' shared one, C160.
+    { name: 'icon-buttons', lazy: true },
+    // The tooltip controller and sheet that name tooltip uses, fetched on the first hover, focus or long press.
+    { name: 'tooltip', lazy: true },
   ],
 };
 

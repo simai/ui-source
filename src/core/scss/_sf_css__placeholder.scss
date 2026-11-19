@@ -199,7 +199,7 @@
 /* Drawn, the element is its parts (display: contents); a part whose own
    code has not come yet (sf-dropdown is fetched on its own) holds the same
    box until it draws, or the row closed up for a frame between the two. */
-:where(sf-language .sf-language-parts > :is(sf-button, sf-button-icon):not(:defined)) {
+:where(sf-language .sf-language-parts > :is(sf-button, sf-button-icon, sf-icon-button):not(:defined)) {
   display: inline-block;
   vertical-align: middle;
   block-size: var(--sf-language--box);
