@@ -179,10 +179,10 @@
   :where(sf-language:not([size="1/3"], [size="1/2"], [size="2"], [size="3"])) { --sf-language--field-label: var(--sf-text-height-1); }
 }
 
-/* trigger link (C381): the glyph and the language's own name in the words of
+/* trigger name (C381): the glyph and the language's own name in the words of
    its place, one line of that place high; its width is the name's, which no
    attribute gives, so before the code the host holds the line and no width. */
-:where(sf-language[trigger="link"]) {
+:where(sf-language[trigger="name"]) {
   --sf-language--box: 1lh;
   --sf-language--trigger: auto;
 }

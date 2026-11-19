@@ -127,11 +127,11 @@
       "trigger": {
         "type": "string",
         "default": "code",
-        "description": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). link, the glyph and the current language's own name («Русский», «Deutsch») in the link role (component link, owner decisions C381, C186: the navigation form, the ink and size of its place, no fill in any state, the line under the name on hover, press, keyboard focus and while open, the link's focus ring), as wide as the name, no tooltip (the name is shown), still named «Язык: Русский». The menu is the same. Core holds the trigger's box before the code arrives (--sf-language--trigger: the code's width, the icon's square, the link's line)",
+        "description": "The menu's trigger (looks menu and search): code, the default, the translate glyph, the current code and the arrow («文A RU ▾», C142 (1)); icon, the translate glyph alone (owner decision C369, the docs header), a square icon button of the size's step, ghost, named «Язык: Русский» and showing that name as the Framework's tooltip (C160). name, the glyph and the current language's own name («Русский», «Deutsch») in the link role (component link, owner decisions C381, C186: the navigation form, the ink and size of its place, no fill in any state, the line under the name on hover, press, keyboard focus and while open, the link's focus ring), as wide as the name, no tooltip (the name is shown), still named «Язык: Русский». The menu is the same. Core holds the trigger's box before the code arrives (--sf-language--trigger: the code's width, the icon's square, the name's line)",
         "enum": [
           "code",
           "icon",
-          "link"
+          "name"
         ]
       },
       "apply": {
@@ -359,19 +359,19 @@
     "source_artifacts": [
       {
         "path": "src/smart/language/index.js",
-        "sha256": "5a7ec6a40769e318866b3b89b6f38d7cef764089eb43ea965ff241e755765f30"
+        "sha256": "3f2e5859627bdb972b946697ed7f7dee8a410a30c70c6c2583cc7f43936ac509"
       },
       {
         "path": "src/smart/language/js/templates/default.js",
-        "sha256": "37d25af94ae4fb5f05418855aefbbcf00fb686096511f2a98da3b7c0c910239c"
+        "sha256": "ee7b33aa5ebe5768b9809001265a60e72ef2182698b7c331564ccbf6e881dde0"
       },
       {
         "path": "src/smart/language/rule.js",
-        "sha256": "754f8f8da8b1bb3a20079c04b3bd74fc8e28c54e1e6a6cd67cf4752082ea3daf"
+        "sha256": "ed63ab34755f05936b88f1e43a1f9c263ecb6c2b4c9e0eb1180cd63cec9b3804"
       },
       {
         "path": "src/smart/language/docs.md",
-        "sha256": "23d48c15ed62b8d8628e7065da65e37c1a3dcb16de950f8ec36102bb88b80755"
+        "sha256": "c77efa98e4862f86fb24bf188d6e2cf41e4ca573914dfc98be6ed5148dcca7ea"
       }
     ],
     "generated_runtime": []

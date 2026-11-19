@@ -243,6 +243,14 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "shrink": {
+          "default": "none",
+          "enum": [
+            "none",
+            "icon"
+          ],
+          "type": "string"
+        },
         "size": {
           "default": "1",
           "enum": [
@@ -311,7 +319,7 @@ export const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.16.8"
+    "version": "1.18.0"
   },
   "sf-button-icon": {
     "inputs": {

@@ -29,7 +29,7 @@
 // - The glyphs: the shrunk search keeps its name and aria-keyshortcuts and
 //   shows the tooltip «Поиск ⌘K»; the language glyph is a square named
 //   «Язык: Русский» showing that tooltip.
-// - sf-language trigger="link" (C381), light and dark, in lines of 14/20 and
+// - sf-language trigger="name" (C381), light and dark, in lines of 14/20 and
 //   16/24 with no page CSS: at rest, hover, keyboard focus and open the
 //   trigger and its pseudo boxes are transparent, the glyph is one line high
 //   on the trigger's left edge, 4 from the name, the words take their place's
@@ -78,7 +78,7 @@ ${kind === 'home' ? '<sf-language slot="tools" languages="ru en" trigger="icon" 
 </sf-header-site>
 <main class="page-body"><p>Страница</p></main>
 </body></html>`;
-// sf-language trigger="link" (owner decision C381, DEV msg-cfe379b5d6aa492c8ba6
+// sf-language trigger="name" (owner decision C381, DEV msg-cfe379b5d6aa492c8ba6
 // item 1 a): the sign-in screen's language beside a form, in a line of 14/20
 // and in one of 16/24, without any page CSS for the trigger.
 const linkPage = (theme) => `<!doctype html><html lang="ru" class="${theme}"><head><meta charset="utf-8">
@@ -86,8 +86,8 @@ const linkPage = (theme) => `<!doctype html><html lang="ru" class="${theme}"><he
 <script>window.sfPath='/distr/';window.sfSmartPath='/distr/';window.SF_BOOT_CONFIG={preloader:{enabled:false}};</script>
 <link rel="stylesheet" href="/distr/core/css/core.css">
 <script src="/distr/core/js/core.js"></script></head><body class="bg-surface">
-<p class="text-1/2" id="small">Вход в панель · <sf-language id="l1" languages="ru en de" mode="menu" trigger="link" apply="none" label="Язык"></sf-language></p>
-<p class="text-1" id="large"><sf-language id="l2" languages="ru en de" mode="menu" trigger="link" apply="none" label="Язык"></sf-language></p>
+<p class="text-1/2" id="small">Вход в панель · <sf-language id="l1" languages="ru en de" mode="menu" trigger="name" apply="none" label="Язык"></sf-language></p>
+<p class="text-1" id="large"><sf-language id="l2" languages="ru en de" mode="menu" trigger="name" apply="none" label="Язык"></sf-language></p>
 </body></html>`;
 
 const host = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><style>body{margin:0}iframe{display:block;border:0;block-size:232px}</style></head>
@@ -339,18 +339,18 @@ try {
     await page.close();
   }
 
-  // sf-language trigger="link" (C381): rest, hover, keyboard focus, open, a choice.
+  // sf-language trigger="name" (C381): rest, hover, keyboard focus, open, a choice.
   for (const theme of ['theme-light', 'theme-dark']) {
     const page = await browser.newPage({viewport: {width: 1440, height: 700}});
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('console', (message) => { if (['error', 'warning'].includes(message.type())) errors.push(message.text()); });
     await page.goto(`${origin}/link?theme=${theme}`);
-    await page.waitForFunction(() => document.querySelector('#l2 button.sf-language-link sf-icon i') && document.fonts.status === 'loaded', null, {timeout: 20000});
+    await page.waitForFunction(() => document.querySelector('#l2 button.sf-language-name sf-icon i') && document.fonts.status === 'loaded', null, {timeout: 20000});
     await page.waitForTimeout(400);
     const look = (id) => page.evaluate((sel) => {
       const host = document.querySelector(sel);
-      const b = host.querySelector('button.sf-language-link');
+      const b = host.querySelector('button.sf-language-name');
       // sf-icon is its glyph (display: contents): the box is the glyph's.
       const icon = b.querySelector('sf-icon');
       const glyph = [icon.querySelector('i, svg, .sf-icon'), icon].find((element) => element && element.getBoundingClientRect().width) || icon;
@@ -370,11 +370,11 @@ try {
     }, id);
     const states = {};
     states.rest = await look('#l1');
-    await page.hover('#l1 button.sf-language-link');
+    await page.hover('#l1 button.sf-language-name');
     await page.waitForTimeout(700);
     states.hover = await look('#l1');
     await page.mouse.move(5, 650);
-    await page.focus('#l1 button.sf-language-link');
+    await page.focus('#l1 button.sf-language-name');
     await page.keyboard.press('Tab');
     await page.waitForTimeout(300);
     states.focus = await look('#l2');

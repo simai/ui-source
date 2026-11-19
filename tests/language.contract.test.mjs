@@ -28,8 +28,8 @@ test('the manifest: a leaf of family language, a form field with one cancellable
   assert.deepEqual(Object.keys(manifest.events.change.carries), ['value', 'previous', 'href', 'dir', 'reason']);
   assert.deepEqual(Object.keys(manifest.actions), ['select']);
   assert.equal(manifest.form.value, 'value');
-  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button', 'cl-button-icon', 'link', 'cl-icon', 'cl-menu-context', 'cl-dropdown', 'tooltip']); // tooltip: the trigger's name tooltip, TT-11; cl-button-icon: trigger icon, C369; link: trigger link, C381
-  assert.deepEqual(manifest.settings.trigger.values, ['code', 'icon', 'link']);
+  assert.deepEqual(manifest.relations.map((relation) => relation.name), ['cl-segmented', 'cl-button', 'cl-button-icon', 'link', 'cl-icon', 'cl-menu-context', 'cl-dropdown', 'tooltip']); // tooltip: the trigger's name tooltip, TT-11; cl-button-icon: trigger icon, C369; link: trigger name, C381
+  assert.deepEqual(manifest.settings.trigger.values, ['code', 'icon', 'name']);
   assert.equal(manifest.settings.trigger.default, 'code');
   assert.equal(manifest['css-variables'], undefined, 'no sheet of its own');
 });

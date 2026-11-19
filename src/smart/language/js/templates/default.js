@@ -93,7 +93,7 @@ function renderIconTrigger(context) {
     ></sf-button-icon>`;
 }
 
-// trigger link (owner decision C381 with C369, the sign-in screen
+// trigger name (owner decision C381 with C369, the sign-in screen
 // 2026-11-19): the glyph and the current language's own name («Русский»,
 // «Deutsch») in the link role (component link, C186) in its navigation
 // form: the words in the ink and the size of their place, no fill in any
@@ -102,11 +102,11 @@ function renderIconTrigger(context) {
 // 4 from the words. A native button: it opens a menu, it goes nowhere. Its
 // width is the name's; the name is shown, so no tooltip. Its accessible name
 // stays «Язык: Русский», the name in the language's own lang.
-function renderLinkTrigger(context) {
+function renderNameTrigger(context) {
   const current = context.current;
   return html`<button
       type="button"
-      class=${['sf-link', 'sf-link--navigation', 'sf-language-link', context.rootClass].filter(Boolean).join(' ')}
+      class=${['sf-link', 'sf-link--navigation', 'sf-language-name', context.rootClass].filter(Boolean).join(' ')}
       aria-label=${context.triggerLabel}
       aria-haspopup="menu"
       aria-expanded="false"
@@ -116,7 +116,7 @@ function renderLinkTrigger(context) {
 }
 
 function renderMenu(context) {
-  return html`${context.link ? renderLinkTrigger(context) : context.icon ? renderIconTrigger(context) : html`<sf-button
+  return html`${context.name ? renderNameTrigger(context) : context.icon ? renderIconTrigger(context) : html`<sf-button
       class=${['sf-language', context.rootClass].filter(Boolean).join(' ')}
       icon-start="translate"
       icon-end="expand_more"

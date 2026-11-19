@@ -45,7 +45,7 @@ focus-ring.
 ссылки (`aria-expanded="true"`). Цвет в состояниях не меняется. Ссылкой может
 быть и нативная кнопка (`button.sf-link`), если она открывает меню, а не
 ведёт на страницу: рамка, поля и заливка кнопки убираются. Так нарисован
-триггер `sf-language trigger="link"`.
+триггер `sf-language trigger="name"`.
 
 ```html
 <button type="button" class="sf-link sf-link--navigation" aria-haspopup="menu" aria-expanded="false">

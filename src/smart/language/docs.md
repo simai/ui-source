@@ -275,7 +275,7 @@ it do not move.
 <sf-language slot="tools" languages="ru en" trigger="icon"></sf-language>
 ```
 
-Beside a form or in a quiet row, `trigger="link"` (owner decision C381, the
+Beside a form or in a quiet row, `trigger="name"` (owner decision C381, the
 sign-in screen) is the glyph and the current language's own name,
 «Русский», «Deutsch», in the link role: the words take the size and the ink
 of their place, nothing is filled in any state, the name is underlined on
@@ -286,7 +286,7 @@ holds one line of its place for it; its width comes with the name.
 
 ```html
 <p class="text-1/2">
-  <sf-language languages="ru en de" mode="menu" trigger="link" apply="none"></sf-language>
+  <sf-language languages="ru en de" mode="menu" trigger="name" apply="none"></sf-language>
 </p>
 ```
 

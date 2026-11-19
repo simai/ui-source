@@ -48,7 +48,7 @@ test('RG-NV 5, 6: sf-link is a run of its text, inline; a link with an icon is o
   assert.doesNotMatch(base, /var\(--sf-text-size-1\)|var\(--sf-text-height-1\)/u);
   assert.match(css, /\.sf-link:has\(> :is\(\.sf-link__icon, \.sf-link-icon\)\) \{\n[^}]*display: inline-flex;/u);
   assert.match(css, /--sf-icon--font-size: 1lh;\n\s+--sf-icon--width: 1em;\n\s+--sf-icon--height: 1em;\n\s+--sf-link-icon--size: 1em;/u);
-  assert.equal((await json('src/component/link/passport.json')).version, '1.3.0'); // group build 10: 1.2.0 moved on by the merged branches or a GB10 patch
+  assert.equal((await json('src/component/link/passport.json')).version, '1.4.0'); // 1.4.0: navigation form, button link (C381) // group build 10: 1.2.0 moved on by the merged branches or a GB10 patch
 });
 
 test('RG-NV 7, 8, 9: a page number is the ghost page button, no plate, as wide as its number', async () => {

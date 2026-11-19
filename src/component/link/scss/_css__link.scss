@@ -47,13 +47,14 @@
   }
 
   /* A link that is a native button (a menu's trigger in the link role,
-     sf-language trigger="link", owner decision C381): the button's own box,
+     sf-language trigger="name", owner decision C381): the button's own box,
      edge and padding go, so it is the words of its place as a link is. */
   button.sf-link {
     appearance: none;
     margin: var(--sf-0);
     padding: var(--sf-0);
-    border: var(--sf-0) none;
+    border-width: var(--sf-0);
+    border-style: none;
     border-radius: var(--sf-radius--ui);
     text-align: start;
     cursor: pointer;

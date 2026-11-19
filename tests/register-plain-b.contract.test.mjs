@@ -15,7 +15,7 @@ test('C105 H3 (RG-B-1): an icon in a link stands 4 from the words', async () => 
   assert.match(css, /--sf-link--gap: var\(--sf-gap--icon-inline, var\(--sf-space-1\\\/4\)\);/);
   assert.doesNotMatch(css, /--sf-link--gap: var\(--sf-space-1\\\/3\)/);
   assert.match(css, /gap\/var\(--sf-space-1\\\/4\)/);
-  assert.equal((await json('src/component/link/passport.json')).version, '1.3.0'); // RG-NV 5, 6 // group build 10: 1.2.0 moved on by the merged branches or a GB10 patch
+  assert.equal((await json('src/component/link/passport.json')).version, '1.4.0'); // 1.4.0: navigation form, button link (C381) // RG-NV 5, 6 // group build 10: 1.2.0 moved on by the merged branches or a GB10 patch
 });
 
 test('C105 H5 (RG-B-11): the pagination list spaces its numbers without the container', async () => {
