@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "id": "smart.segmented",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "title": "Segmented control",
   "summary": "A controlled single-selection group built from SF5 buttons.",
   "kind": "smart",
@@ -507,7 +507,7 @@
     "source_artifacts": [
       {
         "path": "src/smart/segmented/index.js",
-        "sha256": "113f8232ea4a81d953093a5049b9b69fff8a12292f2e372378b7b451df9567b7"
+        "sha256": "928d037a658d4a6cec4d2249061bbb60d7d72b5fa7c65c859d7ba3507cd01e46"
       }
     ],
     "generated_runtime": []
